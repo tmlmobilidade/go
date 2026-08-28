@@ -2,13 +2,14 @@
 
 import { GtfsStrictV29DayTypeSchema } from '@/v29/calendar-dates/day-type.js';
 import { GtfsStrictV29PeriodSchema } from '@/v29/calendar-dates/period.js';
-import { GtfsBinarySchema, GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsBinarySchema } from '@tmlmobilidade/go-types-gtfs';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const GtfsStrictV29ExtCalendarDatesSchema = z.object({
-	date: GtfsDateSchema,
+	date: OperationalDateIntSchema,
 	day_type: GtfsStrictV29DayTypeSchema,
 	exception_type: z.literal('1'),
 	holiday: GtfsBinarySchema,

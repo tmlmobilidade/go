@@ -1,7 +1,8 @@
 /* * */
 
-import { type GtfsDate, type GtfsRoutes, type GtfsShapes, type GtfsStops, type GtfsStopTimes, type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
 import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/go-clients-sqlite';
+import { type GtfsRoutes, type GtfsShapes, type GtfsStops, type GtfsStopTimes, type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Holds references to all GTFS-related SQL tables.
@@ -14,7 +15,7 @@ import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/go
  */
 export interface GtfsSQLTables {
 	_db: SQLiteDatabase
-	calendar_dates: Record<string, GtfsDate[]>
+	calendar_dates: Record<string, OperationalDateInt[]>
 	routes: SQLiteTableInstance<GtfsRoutes>
 	shapes: SQLiteTableInstance<GtfsShapes>
 	stop_times: SQLiteTableInstance<GtfsStopTimes>

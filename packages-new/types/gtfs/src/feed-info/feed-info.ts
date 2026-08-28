@@ -1,9 +1,7 @@
 /* * */
 
-import { LanguageTagSchema } from '@tmlmobilidade/go-types-shared';
+import { LanguageTagSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
-
-import { GtfsDateSchema } from '../shared/gtfs-date.js';
 
 /* * */
 
@@ -11,11 +9,11 @@ export const GtfsFeedInfoSchema = z.object({
 	default_lang: LanguageTagSchema.default('pt'),
 	feed_contact_email: z.string().optional().default(''),
 	feed_contact_url: z.string().optional().default(''),
-	feed_end_date: GtfsDateSchema,
+	feed_end_date: OperationalDateIntSchema,
 	feed_lang: z.string(),
 	feed_publisher_name: z.string().optional().default(''),
 	feed_publisher_url: z.string().optional().default(''),
-	feed_start_date: GtfsDateSchema,
+	feed_start_date: OperationalDateIntSchema,
 	feed_version: z.string().optional().default(''),
 });
 

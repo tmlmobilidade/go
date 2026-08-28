@@ -1,12 +1,12 @@
 /* * */
 
 import { type PlanNormalized } from '@/types/normalized';
-import { Dates } from '@tmlmobilidade/dates';
-import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
-export const getPlanValidityStatus = (startDate: GtfsDate, endDate: GtfsDate): PlanNormalized['validity_status'] => {
+export const getPlanValidityStatus = (startDate: OperationalDateInt, endDate: OperationalDateInt): PlanNormalized['validity_status'] => {
 	//
 
 	//
@@ -20,12 +20,12 @@ export const getPlanValidityStatus = (startDate: GtfsDate, endDate: GtfsDate): P
 	// Parse start and end dates to Unix timestamp format
 
 	const startDateUnixMilliseconds = Dates
-		.fromOperationalDate(startDate, 'Europe/Lisbon')
+		.fromOperationalDateInt(startDate, 'Europe/Lisbon')
 		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
 		.unix_milliseconds;
 
 	const endDateUnixMilliseconds = Dates
-		.fromOperationalDate(endDate, 'Europe/Lisbon')
+		.fromOperationalDateInt(endDate, 'Europe/Lisbon')
 		.plus({ days: 1 })
 		.set({ hour: 3, millisecond: 59, minute: 59, second: 59 })
 		.unix_milliseconds;

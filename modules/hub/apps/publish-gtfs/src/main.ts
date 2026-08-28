@@ -4,7 +4,8 @@ import { Files } from '@tmlmobilidade/files';
 import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type GtfsDate, GtfsDateSchema, type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
+import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -71,12 +72,12 @@ export async function main() {
 	//
 	// Setup the necessary variables for the export process.
 
-	let farthestDateFound: GtfsDate;
+	let farthestDateFound: OperationalDateInt;
 
 	const referencedAgencyIds = new Set<string>();
 	const routesMarkedForFinalExport: Record<string, GtfsRoutes> = {};
 
-	const currentDate = GtfsDateSchema.parse(Dates.now('Europe/Lisbon').toFormat('yyyyMMdd'));
+	const currentDate = Dates.now('Europe/Lisbon').operational_date_int;
 
 	//
 	// Retrieve all Plans from the database
@@ -161,8 +162,8 @@ export async function main() {
 				},
 				time_range: {
 					date_range: {
-						end: GtfsDateSchema.parse(planData.gtfs_feed_info.feed_end_date),
-						start: GtfsDateSchema.parse(planData.gtfs_feed_info.feed_start_date),
+						end: OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date),
+						start: OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_start_date),
 					},
 				},
 			};

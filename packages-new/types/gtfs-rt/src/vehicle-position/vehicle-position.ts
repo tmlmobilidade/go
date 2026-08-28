@@ -1,5 +1,6 @@
 /* * */
 
+import { UnixSecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { GtfsRtOccupancyStatusSchema } from '../shared/occupancy-status.js';
@@ -21,7 +22,7 @@ export const GtfsRtVehiclePositionSchema = z.object({
 	occupancy_status: GtfsRtOccupancyStatusSchema.nullish(),
 	position: GtfsRtPositionSchema,
 	stop_id: z.string().nullish(),
-	timestamp: z.number().nullish(),
+	timestamp: UnixSecondsSchema,
 	trip: GtfsRtTripDescriptorSchema,
 	vehicle: GtfsRtVehicleDescriptorSchema,
 });

@@ -1,7 +1,7 @@
 /* * */
 
-import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type HubGtfsExportFeedInfoInput, HubGtfsExportFeedInfoSchema } from '@tmlmobilidade/go-types-hub';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -13,7 +13,7 @@ import { type ExportGtfsContext } from '../types/context.js';
  * @param startDate The feed start date.
  * @param endDate The feed end date.
  */
-export async function exportFeedInfoFile(context: ExportGtfsContext, startDate: GtfsDate, endDate: GtfsDate) {
+export async function exportFeedInfoFile(context: ExportGtfsContext, startDate: OperationalDateInt, endDate: OperationalDateInt) {
 	//
 
 	const timer = new Timer();

@@ -1,8 +1,8 @@
 /* * */
 
-import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
+import { type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 import { type GtfsStrictV29SQLTables } from './types.js';
 
@@ -13,7 +13,7 @@ import { type GtfsStrictV29SQLTables } from './types.js';
 export function initGtfsStrictV29SqlTables(): GtfsStrictV29SQLTables {
 	//
 
-	const calendarDatesMap: Record<string, GtfsDate[]> = {};
+	const calendarDatesMap: Record<string, OperationalDateInt[]> = {};
 
 	const database = new SQLiteDatabase();
 
