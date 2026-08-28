@@ -1,11 +1,12 @@
 /* * */
 
+import { GtfsStopsSchema } from '@tmlmobilidade/go-types-gtfs';
 import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const HubGtfsExportStopsSchema = z.object({
+export const HubGtfsExportStopsSchema = GtfsStopsSchema.extend({
 	district_id: z.string(),
 	district_name: z.string(),
 	flags: z.string(),
@@ -13,24 +14,13 @@ export const HubGtfsExportStopsSchema = z.object({
 	lifecycle_status: LifecycleStatusSchema,
 	locality_id: z.string().optional(),
 	locality_name: z.string().optional(),
-	location_type: z.enum(['0', '1', '2', '3', '4']),
 	municipality_id: z.string(),
 	municipality_name: z.string(),
-	parent_station: z.string(),
 	parish_id: z.string(),
 	parish_name: z.string(),
-	platform_code: z.string(),
-	stop_code: z.number(),
-	stop_id: z.number(),
-	stop_lat: z.number(),
-	stop_lon: z.number(),
-	stop_name: z.string(),
-	stop_short_name: z.string(),
-	tts_stop_name: z.string(),
-	wheelchair_boarding: z.enum(['0', '1', '2']),
 });
 
 /**
- * Structure for the Hub GTFS export of the `stops.txt` file.
+ * Representation of a GTFS stop for the Hub GTFS export.
  */
 export type HubGtfsExportStops = z.infer<typeof HubGtfsExportStopsSchema>;

@@ -15,6 +15,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
+import { evaluatePlan } from './evaluate-plan.js';
 import { exportAgencyFile } from './exports/agency.js';
 import { exportCalendarDatesFile } from './exports/calendar-dates.js';
 import { exportFeedInfoFile } from './exports/feed-info.js';
@@ -25,7 +26,6 @@ import { exportStopTimesFile } from './exports/stop-times.js';
 import { exportStopsFile } from './exports/stops.js';
 import { exportTripsFile } from './exports/trips.js';
 import { initExportGtfsContext } from './utils/init-contex.js';
-import { validatePlan } from './validate-plan.js';
 
 /* * */
 
@@ -110,7 +110,7 @@ export async function main() {
 	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
 
 	//
-	// Mark as plans as 'waiting' in the database.
+	// Mark plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
 		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'waiting', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
@@ -134,9 +134,9 @@ export async function main() {
 			// and mark it as 'skipped' in the database.
 			// Otherwise, mark it as 'processing'.
 
-			const isValidPlan = await validatePlan(planData);
+			const isEligiblePlan = await evaluatePlan(planData);
 
-			if (!isValidPlan) {
+			if (!isEligiblePlan) {
 				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;

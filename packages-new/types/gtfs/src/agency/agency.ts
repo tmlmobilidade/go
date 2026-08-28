@@ -1,5 +1,6 @@
 /* * */
 
+import { GtfsTernarySchema } from '@/shared/ternary.js';
 import { z } from 'zod';
 
 /* * */
@@ -13,6 +14,7 @@ export const GtfsAgencySchema = z.object({
 	agency_phone: z.string().optional(),
 	agency_timezone: z.string(),
 	agency_url: z.string().optional(),
+	cemv_support: GtfsTernarySchema.default('0'),
 });
 
 /**
