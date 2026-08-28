@@ -1,7 +1,7 @@
 /* * */
 
 import { useSamsDetailContext } from '@/contexts/SamDetail.context';
-import { SamAnalysis } from '@tmlmobilidade/types';
+import { SamAnalysis } from '@tmlmobilidade/go-types-operation';
 import { DataTable, DataTableColumn, Label, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

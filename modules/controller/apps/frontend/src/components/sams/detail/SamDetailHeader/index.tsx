@@ -62,16 +62,16 @@ export function SamsDetailHeader() {
 			<Spacer />
 			<HasPermission action={PermissionCatalog.all.sams.actions.export} scope={PermissionCatalog.all.sams.scope}>
 				<IconButton
-					disabled={!samId}
 					icon={<IconFileDownload />}
+					isDisabled={!samId}
 					onClick={handleExportSam}
 					tooltip={t('default:sams.export.SamsExportModal.title')}
 					variant="secondary"
 				/>
 			</HasPermission>
 			<IconButton
-				disabled={!samId || samsFavoritesContext.flags.loading}
 				icon={isFavorite ? <IconHeartFilled /> : <IconHeart />}
+				isDisabled={!samId || samsFavoritesContext.flags.loading}
 				onClick={handleToggleFavorite}
 				tooltip={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
 				variant="primary"

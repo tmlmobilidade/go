@@ -3,7 +3,7 @@
 import { RidesExportModalContextProvider, useRidesExportModalContext } from '@/contexts/RidesExport.context';
 import { IconFileDownload } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { UnixTimestamp } from '@tmlmobilidade/types';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Button, CloseButton, closeModal, DateTimeInput, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Spacer, Text, Toolbar, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
