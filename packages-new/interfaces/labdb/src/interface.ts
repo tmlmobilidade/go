@@ -11,6 +11,13 @@ import { SimplifiedApexDatabase } from './databases/simplified-apex.js';
 
 class LabDbClass {
 	//
+	
+	private constructor(client: ClickHouseClient) {
+		this.clickhouseClient = client;
+		this.operation = new OperationDatabase(this.clickhouseClient);
+		this.performance = new PerformanceDatabase(this.clickhouseClient);
+		this.simplifiedApex = new SimplifiedApexDatabase(this.clickhouseClient);
+	}
 
 	private static _instance: null | Promise<LabDbClass> = null;
 
@@ -19,13 +26,6 @@ class LabDbClass {
 	public readonly simplifiedApex: SimplifiedApexDatabase;
 
 	private readonly clickhouseClient: ClickHouseClient;
-
-	private constructor(client: ClickHouseClient) {
-		this.clickhouseClient = client;
-		this.operation = new OperationDatabase(this.clickhouseClient);
-		this.performance = new PerformanceDatabase(this.clickhouseClient);
-		this.simplifiedApex = new SimplifiedApexDatabase(this.clickhouseClient);
-	}
 
 	/**
 	 * Returns the singleton instance.

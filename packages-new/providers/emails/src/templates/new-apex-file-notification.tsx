@@ -31,14 +31,14 @@ export default function NewApexFileNotificationTemplate({ agencyName, planId, st
 			<Greeting text="Olá 👋" />
 			<Paragraph>
 				Foi disponibilizado no GO um novo ficheiro de configuração APEX para o plano
-				<Anchor href={`https://go.tmlmobilidade.pt/plans/approved/${planId}`} spaceAfter spaceBefore text={planId} />
+				<Anchor href={`https://go.tmlmobilidade.pt/plans/approved/${planId}`} text={planId} spaceAfter spaceBefore />
 				do operador
-				<Span spaceAfter spaceBefore weight="bold">{agencyName}</Span>
+				<Span weight="bold" spaceAfter spaceBefore>{agencyName}</Span>
 				com início a
-				<Span spaceBefore weight="bold">{Dates.fromOperationalDate(startDate, 'Europe/Lisbon').toFormat('yyyy-MM-dd')}</Span>
+				<Span weight="bold" spaceBefore>{Dates.fromOperationalDate(startDate, 'Europe/Lisbon').toFormat('yyyy-MM-dd')}</Span>
 				.
 			</Paragraph>
-			<Paragraph bold color="success">O ficheiro de configuração está em anexo neste email.</Paragraph>
+			<Paragraph color="success" bold>O ficheiro de configuração está em anexo neste email.</Paragraph>
 			<Paragraph>Se tiveres alguma questão, entra em contacto connosco via Email ou Teams.</Paragraph>
 		</Wrapper>
 	);

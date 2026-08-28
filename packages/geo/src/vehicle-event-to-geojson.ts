@@ -28,7 +28,7 @@ export function transformVehicleDataIntoGeoJsonFeature(event: HubVehiclePosition
 		},
 		id: `${event.agency_id}-${event.vehicle_id}`,
 		properties: {
-			...(vehicleData ?? {}),
+			...vehicleData,
 			...event,
 		},
 		type: 'Feature',

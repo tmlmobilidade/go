@@ -30,11 +30,11 @@ export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidat
 	return (
 		<Wrapper previewMessage="Validação GTFS realizada com sucesso">
 			<Greeting text={`${firstName},`} />
-			<Paragraph bold color="success">Não foram encontrados erros no GTFS que enviaste para validação.</Paragraph>
+			<Paragraph color="success" bold>Não foram encontrados erros no GTFS que enviaste para validação.</Paragraph>
 			{totalWarnings === 1 && (
 				<Paragraph>
 					No entanto, foi encontrado
-					<Span color="warning" spaceAfter spaceBefore weight="bold">
+					<Span color="warning" weight="bold" spaceAfter spaceBefore>
 						{totalWarnings}
 						{' '}
 						aviso
@@ -45,7 +45,7 @@ export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidat
 			{totalWarnings > 1 && (
 				<Paragraph>
 					No entanto, foram encontrados
-					<Span color="warning" spaceAfter spaceBefore weight="bold">
+					<Span color="warning" weight="bold" spaceAfter spaceBefore>
 						{totalWarnings}
 						{' '}
 						avisos
@@ -55,7 +55,7 @@ export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidat
 			)}
 			<Paragraph>
 				Se tiveres dúvidas sobre alguma regra
-				<Anchor href="https://go.tmlmobilidade.pt/reference" spaceAfter spaceBefore text="explora a documentação" />
+				<Anchor href="https://go.tmlmobilidade.pt/reference" text="explora a documentação" spaceAfter spaceBefore />
 				ou entra em contacto connosco.
 			</Paragraph>
 			<Paragraph>A validação pode agora ser aprovada para plano.</Paragraph>

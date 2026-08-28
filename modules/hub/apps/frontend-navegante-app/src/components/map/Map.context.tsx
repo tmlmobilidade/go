@@ -69,7 +69,7 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 	const toggleBaseMapOverlay = (source: BaseMapOverlayType) => {
 		setActiveBaseMapOverlays((prev) => {
 			// Create a new set with the previous sources
-			const result = new Set([...prev]);
+			const result = new Set(prev);
 			// Toggle the source
 			if (result.has(source)) result.delete(source);
 			else result.add(source);

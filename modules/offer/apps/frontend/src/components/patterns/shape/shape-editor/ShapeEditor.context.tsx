@@ -258,7 +258,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			const updatedPath = applyRouteToPath(nextPath, nextRouteData, points);
 
 			const updatedShape: Shape = {
-				...(localShapeRef.current ?? {}),
+				...localShapeRef.current,
 				anchors: nextAnchors,
 				encoded_polyline: nextRouteData.encoded_polyline,
 				extension: Math.round(nextRouteData.distance),

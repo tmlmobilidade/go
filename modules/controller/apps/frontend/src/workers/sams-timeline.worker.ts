@@ -116,4 +116,4 @@ self.onmessage = (event: MessageEvent<WorkerAggregateRequest>) => {
 	self.postMessage(response);
 };
 
-export { };
+

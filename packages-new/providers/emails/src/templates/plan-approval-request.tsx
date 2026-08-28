@@ -36,19 +36,19 @@ export default function PlanApprovalRequestTemplate({ agencyName, endDate, first
 			<Greeting text={`${firstName},`} />
 			<Paragraph>
 				Após uma validação de GTFS com sucesso,
-				<Span spaceAfter spaceBefore weight="bold">{requestedBy}</Span>
+				<Span weight="bold" spaceAfter spaceBefore>{requestedBy}</Span>
 				pede a respetiva aprovação para plano.
 			</Paragraph>
 			<Paragraph>
-				<Span spaceAfter spaceBefore weight="bold">Operador: </Span>
+				<Span weight="bold" spaceAfter spaceBefore>Operador: </Span>
 				{agencyName}
 			</Paragraph>
 			<Paragraph>
-				<Span spaceAfter spaceBefore weight="bold">Início: </Span>
+				<Span weight="bold" spaceAfter spaceBefore>Início: </Span>
 				{Dates.fromOperationalDate(startDate, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
 			</Paragraph>
 			<Paragraph>
-				<Span spaceAfter spaceBefore weight="bold">Fim: </Span>
+				<Span weight="bold" spaceAfter spaceBefore>Fim: </Span>
 				{Dates.fromOperationalDate(endDate, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
 			</Paragraph>
 			<MainButton href={gtfsValidationUrl} label="Ver detalhes da validação" />

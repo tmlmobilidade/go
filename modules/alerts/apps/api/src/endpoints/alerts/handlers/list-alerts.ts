@@ -35,17 +35,17 @@ export async function listAlertsHandler(request: FastifyRequest<{ Body: AlertsLi
 
 	const pipeline: AggregationPipeline<Omit<AlertsListItem, 'title_normalized'>> = [
 		{
-			$match: {
-				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
-				...{ publish_status: { $in: validatedFilters.publish_status ?? [] } },
-				...{ reference_type: { $in: validatedFilters.reference_type ?? [] } },
-				...{ cause: { $in: validatedFilters.causes ?? [] } },
-				...{ effect: { $in: validatedFilters.effects ?? [] } },
-				...{ publish_start_date: { $gte: validatedFilters.publish_date_start } },
-				...{ publish_end_date: { $lte: validatedFilters.publish_date_end } },
-				...(validatedFilters.active_period_start ? { active_period_start_date: { $gte: validatedFilters.active_period_start } } : {}),
-				...(validatedFilters.active_period_end ? { active_period_end_date: { $lte: validatedFilters.active_period_end } } : {}),
-			},
+			$match: ({
+	agency_id: { $in: validatedFilters.agency_ids ?? [] },
+	...{ publish_status: { $in: validatedFilters.publish_status ?? [] } },
+	...{ reference_type: { $in: validatedFilters.reference_type ?? [] } },
+	...{ cause: { $in: validatedFilters.causes ?? [] } },
+	...{ effect: { $in: validatedFilters.effects ?? [] } },
+	...{ publish_start_date: { $gte: validatedFilters.publish_date_start } },
+	...{ publish_end_date: { $lte: validatedFilters.publish_date_end } },
+	...validatedFilters.active_period_start ? { active_period_start_date: { $gte: validatedFilters.active_period_start } } : {},
+	...validatedFilters.active_period_end ? { active_period_end_date: { $lte: validatedFilters.active_period_end } } : {}
+}),
 
 		},
 		{ $project: Object.fromEntries(Object.keys(AlertsListItemSchema.shape).map(key => [key, 1])) },

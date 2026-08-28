@@ -168,18 +168,14 @@ export function RideAnalysisPath() {
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((item) => {
 				// Get oldest and latest timestamp of all APEX transactions
-				const seenFirstAt = Math.min(...[
-					...(validationsByStopId[item.stop_id]?.map(validation => validation.created_at) || []),
+				const seenFirstAt = Math.min(...(validationsByStopId[item.stop_id]?.map(validation => validation.created_at) || []),
 					...(bankingTapsByStopId[item.stop_id]?.map(bankingTap => bankingTap.created_at) || []),
 					...(salesByStopId[item.stop_id]?.map(sale => sale.created_at) || []),
-					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || []),
-				]) as UnixTimestamp;
-				const seenLastAt = Math.max(...[
-					...(validationsByStopId[item.stop_id]?.map(validation => validation.created_at) || []),
+					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || [])) as UnixTimestamp;
+				const seenLastAt = Math.max(...(validationsByStopId[item.stop_id]?.map(validation => validation.created_at) || []),
 					...(bankingTapsByStopId[item.stop_id]?.map(bankingTap => bankingTap.created_at) || []),
 					...(salesByStopId[item.stop_id]?.map(sale => sale.created_at) || []),
-					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || []),
-				]) as UnixTimestamp;
+					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || [])) as UnixTimestamp;
 				// Return the data
 				return {
 					passengers_observed: validationsByStopId[item.stop_id]?.filter(validation => validation.is_passenger).length || 0,

@@ -27,7 +27,7 @@
 		"build:controller:pckg": "turbo run build --filter=@tmlmobilidade/go-controller-pckg-*",
 		"build:core": "turbo run build --filter=@tmlmobilidade/go-core-*",
 		"build:dates": "turbo run build --filter=@tmlmobilidade/go-dates-*",
-		"build:eslint": "turbo build --filter=@tmlmobilidade/eslint",
+		"build:oxlint": "turbo build --filter=@tmlmobilidade/oxlint",
 		"build:eta": "turbo run build --filter=@tmlmobilidade/go-eta-*",
 		"build:eta:pckg": "turbo run build --filter=@tmlmobilidade/go-eta-pckg-*",
 		"build:exporter": "turbo run build --filter=@tmlmobilidade/go-exporter-*",
@@ -164,7 +164,7 @@
 	"devDependencies": {
 		"@commitlint/cli": "21.2.2",
 		"@commitlint/config-conventional": "21.2.2",
-		"@tmlmobilidade/eslint": "*",
+		"@tmlmobilidade/oxlint": "*",
 		"husky": "9.1.7",
 		"turbo": "2.10.12"
 	},

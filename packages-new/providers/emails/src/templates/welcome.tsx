@@ -31,7 +31,7 @@ export default function WelcomeTemplate({ firstName, resetPasswordUrl }: Welcome
 			<Paragraph>É um prazer dar-te as boas vindas ao GO.</Paragraph>
 			<Paragraph>Esta plataforma é o resultado de uma enorme vontade de evoluir o setor dos transportes públicos.</Paragraph>
 			<Paragraph>
-				<Anchor href={GO_HOMEPAGE_URL} spaceAfter text="Na página inicial do GO" />
+				<Anchor href={GO_HOMEPAGE_URL} text="Na página inicial do GO" spaceAfter />
 				encontras documentação útil sobre a plataforma, o GTFS e a API APEX, assim como novidades e outros conteúdos interessantes. Estes recursos são atualizados regularmente e estão disponíveis para consulta a qualquer momento.
 			</Paragraph>
 			<Paragraph>Comprometemo-nos a ser transparentes e a manter uma atitude de colaboração contigo. Se tiveres alguma dúvida ou sugestão não hesites em falar connosco respondendo a este email.</Paragraph>

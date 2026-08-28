@@ -57,10 +57,10 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlanListF
 
 	const pipeline: AggregationPipeline<PlanListItem> = [
 		{
-			$match: {
-				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
-				...(validityStatusFilters.length ? { $or: validityStatusFilters } : {}),
-			},
+			$match: ({
+	agency_id: { $in: validatedFilters.agency_ids ?? [] },
+	...validityStatusFilters.length ? { $or: validityStatusFilters } : {}
+}),
 		},
 		{ $project: Object.fromEntries(Object.keys(PlanListItemSchema.shape).map(key => [key, 1])) },
 		{ $sort: { 'gtfs_feed_info.feed_start_date': -1 } },

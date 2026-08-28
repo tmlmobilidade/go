@@ -33,9 +33,18 @@
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint ./src/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix",
-		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'",
+		"postbuild": "pkill -f 'oxlint --lsp' || true"
 	},
 	"dependencies": {
+		"@stylistic/eslint-plugin": "5.10.0",
+		"eslint-plugin-perfectionist": "5.10.1",
+		"oxfmt": "0.65.0",
+		"oxlint": "1.80.0",
+		"stylelint": "17.14.1",
+		"stylelint-config-recess-order": "7.7.0",
+		"stylelint-config-standard": "40.0.0",
+		"stylelint-order": "8.0.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

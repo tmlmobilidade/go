@@ -34,7 +34,7 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsVali
 			{totalErrors === 1 && (
 				<Paragraph>
 					Foi encontrado
-					<Span color="danger" spaceAfter spaceBefore weight="bold">
+					<Span color="danger" weight="bold" spaceAfter spaceBefore>
 						{totalErrors}
 						{' '}
 						erro
@@ -45,7 +45,7 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsVali
 			{totalErrors > 1 && (
 				<Paragraph>
 					Foram encontrados
-					<Span color="danger" spaceAfter spaceBefore weight="bold">
+					<Span color="danger" weight="bold" spaceAfter spaceBefore>
 						{totalErrors}
 						{' '}
 						erros
@@ -56,7 +56,7 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsVali
 			{totalWarnings === 1 && (
 				<Paragraph>
 					Também foi encontrado
-					<Span color="warning" spaceAfter spaceBefore weight="bold">
+					<Span color="warning" weight="bold" spaceAfter spaceBefore>
 						{totalWarnings}
 						{' '}
 						aviso
@@ -67,7 +67,7 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsVali
 			{totalWarnings > 1 && (
 				<Paragraph>
 					Também foram encontrados
-					<Span color="warning" spaceAfter spaceBefore weight="bold">
+					<Span color="warning" weight="bold" spaceAfter spaceBefore>
 						{totalWarnings}
 						{' '}
 						avisos
@@ -77,10 +77,10 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsVali
 			)}
 			<Paragraph>
 				Se tiveres dúvidas sobre alguma regra
-				<Anchor href="https://go.tmlmobilidade.pt/reference" spaceAfter spaceBefore text="explora a documentação" />
+				<Anchor href="https://go.tmlmobilidade.pt/reference" text="explora a documentação" spaceAfter spaceBefore />
 				ou entra em contacto connosco.
 			</Paragraph>
-			<Paragraph bold size="md">Erros formais impedem a publicação do GTFS e devem ser corrigidos para prosseguir com a aprovação.</Paragraph>
+			<Paragraph size="md" bold>Erros formais impedem a publicação do GTFS e devem ser corrigidos para prosseguir com a aprovação.</Paragraph>
 			<MainButton href={gtfsValidationUrl} label="Ver resumo da validação" />
 			<DebugCode label="GTFS Validation ID" value={gtfsValidationId} />
 		</Wrapper>

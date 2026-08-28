@@ -19,7 +19,7 @@ export function DebugCode({ label = 'Olá,', value }: DebugCodeProps) {
 		<Text style={styles.text}>
 			{label}
 			:
-			<Span spaceBefore weight="bold">{value}</Span>
+			<Span weight="bold" spaceBefore>{value}</Span>
 		</Text>
 	);
 };

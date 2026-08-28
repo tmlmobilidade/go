@@ -36,11 +36,11 @@ export async function listGtfsValidationsHandler(request: FastifyRequest<{ Body:
 
 	const pipeline: AggregationPipeline<ValidationListItem> = [
 		{
-			$match: {
-				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
-				...(validatedFilters.processing_statuses.length ? { processing_status: { $in: validatedFilters.processing_statuses } } : []),
-				...(validatedFilters.validity_statuses.length ? { validity_status: { $in: validatedFilters.validity_statuses } } : []),
-			},
+			$match: ({
+	agency_id: { $in: validatedFilters.agency_ids ?? [] },
+	...validatedFilters.processing_statuses.length ? { processing_status: { $in: validatedFilters.processing_statuses } } : [],
+	...validatedFilters.validity_statuses.length ? { validity_status: { $in: validatedFilters.validity_statuses } } : []
+}),
 		},
 		{ $project: Object.fromEntries(Object.keys(ValidationListItemSchema.shape).map(key => [key, 1])) },
 		{ $sort: { created_at: -1 } },

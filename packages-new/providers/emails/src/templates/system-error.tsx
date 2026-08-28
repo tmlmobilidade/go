@@ -26,18 +26,18 @@ export interface SystemErrorTemplateProps {
 export default function SystemErrorTemplate({ errorMessage, serviceName, timestamp }: SystemErrorTemplateProps) {
 	return (
 		<Wrapper previewMessage="Por favor verifica o que se passou.">
-			<Paragraph bold color="danger">Ocorreu um erro de sistema.</Paragraph>
-			<Paragraph bold size="md">
+			<Paragraph color="danger" bold>Ocorreu um erro de sistema.</Paragraph>
+			<Paragraph size="md" bold>
 				Serviço:
-				<Span spaceBefore weight="normal">{serviceName}</Span>
+				<Span weight="normal" spaceBefore>{serviceName}</Span>
 			</Paragraph>
-			<Paragraph bold size="md">
+			<Paragraph size="md" bold>
 				Mensagem:
-				<Span spaceBefore weight="normal">{errorMessage ?? 'N/A'}</Span>
+				<Span weight="normal" spaceBefore>{errorMessage ?? 'N/A'}</Span>
 			</Paragraph>
-			<Paragraph bold size="md">
+			<Paragraph size="md" bold>
 				Timestamp:
-				<Span spaceBefore weight="normal">{Dates.fromUnixTimestamp(timestamp).toFormat('yyyy-MM-dd HH:mm:ss')}</Span>
+				<Span weight="normal" spaceBefore>{Dates.fromUnixTimestamp(timestamp).toFormat('yyyy-MM-dd HH:mm:ss')}</Span>
 			</Paragraph>
 		</Wrapper>
 	);

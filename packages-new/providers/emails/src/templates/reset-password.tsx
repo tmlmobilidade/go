@@ -28,7 +28,7 @@ export default function ResetPasswordTemplate({ firstName, resetPasswordUrl }: R
 			<Paragraph>Recebemos um pedido para recuperar a palavra-passe da tua conta do GO.</Paragraph>
 			<Paragraph>Se iniciaste este pedido, utiliza o botão seguinte para redefinir a tua palavra-passe.</Paragraph>
 			<MainButton href={resetPasswordUrl} label="Definir Palavra-passe" />
-			<Paragraph bold color="danger">Se não fizeste este pedido, por favor ignora este e-mail.</Paragraph>
+			<Paragraph color="danger" bold>Se não fizeste este pedido, por favor ignora este e-mail.</Paragraph>
 			<Paragraph>A tua palavra-passe atual permanecerá válida e inalterada. Não partilhes o conteúdo deste email com ninguém.</Paragraph>
 			<Paragraph>Se continuares a ter dificuldades em aceder à tua conta ou suspeitares de atividade não autorizada, entra imediatamente em contacto connosco.</Paragraph>
 		</Wrapper>

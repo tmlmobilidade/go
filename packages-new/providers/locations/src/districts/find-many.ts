@@ -17,9 +17,7 @@ export interface FindManyInput {
  */
 export async function findMany({ districtIds }: FindManyInput = {}): Promise<District[]> {
 	return await goDb.locations.districts.aggregate([
-		{ $match: {
-			...(districtIds ? { 'properties.district_id': { $in: districtIds } } : {}),
-		} },
+		{ $match: (districtIds ? { 'properties.district_id': { $in: districtIds } } : {}) },
 		...flattenPropertiesPipeline() as never[],
 	]) as unknown as District[];
 }
