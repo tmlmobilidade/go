@@ -41,7 +41,6 @@
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-downloads": "*",
-		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
