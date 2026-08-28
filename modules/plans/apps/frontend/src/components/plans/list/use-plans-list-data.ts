@@ -60,7 +60,7 @@ export function usePlansListData(): UsePlansListDataReturnType {
 	});
 
 	const sortedSearchResultsData = useMemo(() => {
-		return [...searchResultsData].sort((a, b) => {
+		return [...searchResultsData ?? []].sort((a, b) => {
 			return b.gtfs_feed_info.feed_start_date.localeCompare(a.gtfs_feed_info.feed_start_date);
 		});
 	}, [searchResultsData]);
