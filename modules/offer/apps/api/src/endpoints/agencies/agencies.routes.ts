@@ -1,7 +1,8 @@
 /* * */
 
-import { AgenciesSharedController } from '@tmlmobilidade/controllers';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+
+import { listAgenciesHandler } from './list-agencies.js';
 
 /* * */
 
@@ -18,7 +19,7 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware() },
-			AgenciesSharedController.getAll,
+			listAgenciesHandler,
 		);
 
 		next();
