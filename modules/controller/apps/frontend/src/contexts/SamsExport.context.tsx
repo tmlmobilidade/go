@@ -2,7 +2,7 @@
 
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { type CreateFileExportDto, type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';

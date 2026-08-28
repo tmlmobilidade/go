@@ -1,4 +1,5 @@
-import { type Sam, type SamAnalysis, type SystemStatus } from '@tmlmobilidade/types';
+import { type Sam, type SamAnalysis } from '@tmlmobilidade/go-types-operation';
+import { type SystemStatus } from '@tmlmobilidade/go-types-shared';
 
 type SamTxAggregate = Pick<Sam, 'transactions_expected' | 'transactions_found' | 'transactions_missing'>;
 

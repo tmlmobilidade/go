@@ -1,6 +1,6 @@
 'use client';
 
-import { type TicketingStatus, TicketingStatusSchema } from '@tmlmobilidade/types';
+import { type TicketingStatus, TicketingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
