@@ -3,9 +3,10 @@
 import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Stop } from '@tmlmobilidade/types';
-import { type MapOverlayMultipleStopsDataProps, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, type MapOverlayMultipleStopsDataProps, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -51,7 +52,11 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data: allStopsData, error, isLoading } = useSWR<Stop[]>(API_ROUTES.infrastructure.STOPS_LIST, { refreshInterval: 5000 });
+	const { data: stopsResponse, error, isLoading } = useSWR<ApiResponse<Stop[]>>(API_ROUTES.infrastructure.STOPS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Stop[]>({ url }),
+		refreshInterval: 5000,
+	});
+	const allStopsData = stopsResponse?.data;
 
 	//
 	// C. Transform data

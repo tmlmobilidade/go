@@ -78,9 +78,9 @@ export function SidebarNavigationGroup({ group }: SidebarNavigationGroupProps) {
 				<div className={styles.items}>
 					{group.items.map(item => (
 						<SidebarNavigationGroupItem
+							key={item._id}
 							isActive={normalizePathname(getItemPathname(item.href)) === activeItemPathname}
 							item={item}
-							key={item._id}
 						/>
 					))}
 				</div>

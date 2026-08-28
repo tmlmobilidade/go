@@ -1,8 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { type Stop } from '@tmlmobilidade/types';
-import { useFilterStateList, type UseFilterStateListReturnType, useLocationsContext } from '@tmlmobilidade/ui';
+import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -26,7 +27,10 @@ export function useStopsListFilterMunicipality(): UseFilterStateListReturnType {
 		municipalityOptions,
 	);
 
-	const { data: allStopsData } = useSWR<Stop[]>(API_ROUTES.infrastructure.STOPS_LIST);
+	const { data: stopsResponse } = useSWR<ApiResponse<Stop[]>>(API_ROUTES.infrastructure.STOPS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Stop[]>({ url }),
+	});
+	const allStopsData = stopsResponse?.data;
 
 	const filteredMunicipalityOptions = useMemo(() => {
 		if (!allStopsData?.length || !filterMunicipality.options?.length) {
