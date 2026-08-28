@@ -13,14 +13,16 @@ export async function listExports(request: FastifyRequest, reply: FastifyReply<F
 	//
 	// Get the file exports
 
-	const fileExports = await goDb.core.exports.findMany({
-		filter: {
+	const fileExports = await goDb.core.exports.findMany(
+		{
 			created_by: request.me._id,
 		},
-		sort: {
-			created_at: -1,
+		{
+			sort: {
+				created_at: -1,
+			},
 		},
-	});
+	);
 
 	//
 	// Return the file exports
