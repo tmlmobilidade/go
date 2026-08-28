@@ -177,7 +177,7 @@
 		"cli/*"
 	],
 	"overrides": {
-		"eslint": "10.8.0",
+		"eslint": "10.9.1",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
 		"zod": "3.25.76"
