@@ -38,7 +38,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/node": "26.1.2",
+		"@types/node": "26.4.0",
 		"@types/papaparse": "5.5.2",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.4",

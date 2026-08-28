@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/geojson": "7946.0.16",
-		"@types/node": "26.1.2",
+		"@types/node": "26.4.0",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.4",
 		"typescript": "6.0.3"
