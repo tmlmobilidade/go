@@ -5,7 +5,7 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-client
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateFareDto, type Fare, type UpdateFareDto } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog, type PermissionResourceCheck } from '@tmlmobilidade/types';
+import { PermissionCatalog, type PermissionResourceCheck } from '@tmlmobilidade/go-types-permissions';
 
 /* * */;
 
@@ -58,7 +58,16 @@ export class FaresController {
 		//
 		// Create the new fare
 
-		const newFare = await goDb.offer.fares.insertOne(request.body);
+		const newFare = await goDb.offer.fares.insertOne({
+			created_by: request.me._id,
+			currency_type: 'EUR',
+			is_locked: false,
+			payment_method: '0',
+			price: 0,
+			transfers: '0',
+			updated_by: request.me._id,
+			...request.body,
+		});
 
 		//
 		// Send the response

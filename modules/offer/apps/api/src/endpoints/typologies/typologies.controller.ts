@@ -59,7 +59,6 @@ export class TypologiesController {
 		// Create the new typology
 
 		const newTypology = await goDb.offer.typologies.insertOne({
-			...request.body,
 			color: request.body.color ?? '#000000',
 			created_by: request.me._id,
 			default_onboard_fare_ids: request.body.default_onboard_fare_ids ?? [],
@@ -67,6 +66,7 @@ export class TypologiesController {
 			is_locked: false,
 			text_color: request.body.text_color ?? '#FFFFFF',
 			updated_by: request.me._id,
+			...request.body,
 		});
 
 		//

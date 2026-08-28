@@ -4,12 +4,13 @@ import { generateComments } from '@/utils/comments.js';
 import { mergePatternWithEventRules } from '@/utils/rules.js';
 import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreatePatternDto, type Pattern, type PatternShapeMapItem, type PopulatedPath, type PopulatedPattern, type StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type NoteComment } from '@tmlmobilidade/go-types-shared';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type NoteComment, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 
@@ -36,7 +37,11 @@ export class PatternsController {
 
 		const updateResult = await goDb.offer.patterns.updateById(
 			request.params.id,
-			{ comments: [...patternData.comments, { ...request.body, created_by: createdBy, updated_by: createdBy }], updated_by: createdBy },
+			{ comments: [...patternData.comments, {
+				...request.body,
+				created_by: createdBy,
+				updated_by: createdBy,
+			}], updated_by: createdBy },
 		);
 
 		return reply.send({
