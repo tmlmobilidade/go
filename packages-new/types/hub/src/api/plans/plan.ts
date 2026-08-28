@@ -15,12 +15,12 @@ export const HubPlanSchema = z.object({
 	hash: z.string(),
 	is_active: z.boolean().default(false),
 	operation_file_id: z.string(),
-	operation_file_url: z.string(),
+	operation_file_url: z.string().url(),
 	updated_at: UnixTimestampSchema,
 });
 
 /**
- * Publishable plan data for the Hub Plans API.
+ * Plan data for the Hub Plans API.
  */
 export type HubPlan = z.infer<typeof HubPlanSchema>;
 

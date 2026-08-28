@@ -1,5 +1,6 @@
 /* * */
 
+import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { StopFlagSchema, StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
@@ -12,13 +13,13 @@ export const HubStopSchema = z.object({
 	district_id: z.string(),
 	district_name: z.string(),
 	flags: z.array(StopFlagSchema),
-	latitude: z.number(),
+	latitude: LatitudeSchema,
 	legacy_ids: z.array(z.string()),
 	lifecycle_status: LifecycleStatusSchema,
 	line_ids: z.array(z.string()),
 	locality_id: z.string().nullable(),
 	locality_name: z.string().nullable(),
-	longitude: z.number(),
+	longitude: LongitudeSchema,
 	municipality_id: z.string(),
 	municipality_name: z.string(),
 	name: z.string(),
@@ -31,7 +32,7 @@ export const HubStopSchema = z.object({
 });
 
 /**
- * Publishable stop data for the Hub Stops API.
+ * Stop data for the Hub Network API.
  */
 export type HubStop = z.infer<typeof HubStopSchema>;
 

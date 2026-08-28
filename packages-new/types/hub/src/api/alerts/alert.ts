@@ -1,29 +1,30 @@
 /* * */
 
-import { AlertSchema } from '@tmlmobilidade/go-types-operation';
+import { GtfsRtCauseSchema, GtfsRtEffectSchema } from '@tmlmobilidade/go-types-gtfs-rt';
+import { AlertReferenceSchema, AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
+import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const HubAlertSchema = AlertSchema.omit({
-	auto_texts: true,
-	created_at: true,
-	created_by: true,
-	external_id: true,
-	file_id: true,
-	is_locked: true,
-	publish_end_date: true,
-	publish_start_date: true,
-	publish_status: true,
-	updated_at: true,
-	updated_by: true,
-	user_instructions: true,
-}).extend({
+export const HubAlertSchema = z.object({
+	active_period_end_date: UnixTimestampSchema.nullable().default(null),
+	active_period_start_date: UnixTimestampSchema,
+	agency_id: z.string(),
+	cause: GtfsRtCauseSchema,
+	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
+	description: z.string(),
+	effect: GtfsRtEffectSchema,
 	image_url: z.string().nullable().default(null),
+	info_url: z.union([z.string().url(), z.literal('')]).nullable().default(null),
+	municipality_ids: z.array(z.string()).default([]),
+	reference_type: AlertReferenceTypeSchema,
+	references: z.array(AlertReferenceSchema).default([]),
+	title: z.string(),
 });
 
 /**
- * Publishable alert data for the Hub Alerts API.
+ * Alert data for the Hub Alerts API.
  */
 export type HubAlert = z.infer<typeof HubAlertSchema>;
 

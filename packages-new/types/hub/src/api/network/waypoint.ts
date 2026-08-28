@@ -1,5 +1,6 @@
 /* * */
 
+import { NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -7,13 +8,13 @@ import { z } from 'zod';
 export const HubWaypointSchema = z.object({
 	allow_drop_off: z.boolean(),
 	allow_pickup: z.boolean(),
-	distance: z.number(),
-	distance_delta: z.number(),
+	distance: NonNegativeIntegerSchema,
+	distance_delta: NonNegativeIntegerSchema,
 	stop_id: z.string(),
-	stop_sequence: z.number(),
+	stop_sequence: NonNegativeIntegerSchema,
 });
 
 /**
- * Publishable waypoint data for the Hub Network API.
+ * Waypoint data for the Hub Network API.
  */
 export type HubWaypoint = z.infer<typeof HubWaypointSchema>;
