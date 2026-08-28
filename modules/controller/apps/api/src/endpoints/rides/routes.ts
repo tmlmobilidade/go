@@ -33,7 +33,7 @@ server.register(
 
 		instance.post('/list', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, listRidesHandler);
 
-		instance.post('/list-agencies', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, listAgenciesHandler);
+		instance.get('/list-agencies', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, listAgenciesHandler);
 
 		instance.get('/:id/ride', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getRideHandler);
 
