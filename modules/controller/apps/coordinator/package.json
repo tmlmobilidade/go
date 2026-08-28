@@ -24,7 +24,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"fastify": "5.11.2"
+		"fastify": "5.12.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

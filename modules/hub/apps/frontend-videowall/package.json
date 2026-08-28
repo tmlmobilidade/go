@@ -20,13 +20,13 @@
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.3.0",
-		"nuqs": "2.9.5",
+		"next": "16.3.3",
+		"nuqs": "2.10.1",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
-		"react-i18next": "17.0.11",
-		"sharp": "0.35.3",
-		"swr": "2.5.0"
+		"react-i18next": "17.0.12",
+		"sharp": "0.35.4",
+		"swr": "2.5.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
@@ -34,7 +34,7 @@
 		"@types/geojson": "7946.0.16",
 		"@types/node": "26.4.0",
 		"@types/react": "19.2.18",
-		"@types/react-dom": "19.2.4",
+		"@types/react-dom": "19.2.5",
 		"typescript": "6.0.3"
 	}
 }

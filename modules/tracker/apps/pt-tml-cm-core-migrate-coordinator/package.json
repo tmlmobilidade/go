@@ -20,7 +20,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/timer": "*",
-		"fastify": "5.11.2"
+		"fastify": "5.12.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

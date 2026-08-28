@@ -26,7 +26,6 @@
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "20260730.2028.44",
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",

@@ -38,8 +38,8 @@
 	"dependencies": {
 		"@fastify/cookie": "11.1.2",
 		"@fastify/cors": "11.3.0",
-		"@fastify/multipart": "10.1.0",
-		"@fastify/one-line-logger": "2.1.0",
+		"@fastify/multipart": "10.1.1",
+		"@fastify/one-line-logger": "2.2.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/go-types-core": "*",
@@ -48,7 +48,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.11.2"
+		"fastify": "5.12.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

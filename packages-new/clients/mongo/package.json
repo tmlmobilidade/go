@@ -36,7 +36,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-clients-ssh": "*",
 		"@tmlmobilidade/logger": "*",
-		"mongodb": "7.5.0"
+		"mongodb": "7.6.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

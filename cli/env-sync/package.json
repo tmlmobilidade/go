@@ -33,7 +33,7 @@
 		"archiver": "8.0.0",
 		"chalk": "6.0.0",
 		"dotenv": "17.4.2",
-		"mongodb": "7.5.0"
+		"mongodb": "7.6.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

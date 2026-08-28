@@ -27,7 +27,7 @@
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"mongodb": "7.5.0"
+		"mongodb": "7.6.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
