@@ -41,6 +41,7 @@
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/logger": "*",
