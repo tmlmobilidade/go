@@ -1,0 +1,8 @@
+.title {
+	flex: 0 0 auto;
+	min-width: max-content;
+}
+
+.title > * {
+	white-space: nowrap;
+}

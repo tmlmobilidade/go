@@ -1,15 +1,14 @@
 /* * */
 
 import { calendarKey, CalendarKey, calendarWeekday, datesFromCalendarKey, keyToYYYYMMDD } from '@/calendar/utils/index.js';
-import { Dates } from '@/dates.js';
-import { Event, Holiday, ManualRule, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
+import { type CalendarDate, Event, Holiday, ManualRule, OperationalDate, toCalendarDate, YearPeriod } from '@tmlmobilidade/types';
 
 /**
  * Context for computing which dates a manual rule affects within a calendar range.
  */
 interface CalendarContext {
 	/** End date of the calendar range */
-	endDate: Date
+	endDate: CalendarDate
 	/** Optional events list for event_id matching */
 	events?: Event[]
 	/** Available holidays for accurate weekday calculations */
@@ -17,7 +16,7 @@ interface CalendarContext {
 	/** Available periods for matching rule criteria */
 	periods: YearPeriod[]
 	/** Start date of the calendar range */
-	startDate: Date
+	startDate: CalendarDate
 }
 
 /**
@@ -82,13 +81,13 @@ function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: Calendar
  *
  * @param rule - The manual rule to analyze
  * @param ctx - Calendar context with date range and periods
- * @returns Object with count and array of affected CalendarKeys
+ * @returns Object with count and array of affected CalendarDate values
  */
 export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContext) {
 	const affected: CalendarKey[] = [];
 
-	const startKey = calendarKey(Dates.fromJSDate(ctx.startDate));
-	const endKey = calendarKey(Dates.fromJSDate(ctx.endDate));
+	const startKey = ctx.startDate;
+	const endKey = ctx.endDate;
 
 	// normalize direction (ensure from <= to)
 	const from = startKey < endKey ? startKey : endKey;
@@ -100,7 +99,7 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 		if (!event?.dates?.length) return { count: 0, dates: [] };
 
 		for (const opDate of event.dates) {
-			const key = calendarKey(Dates.fromOperationalDate(opDate, 'Europe/Lisbon'));
+			const key = toCalendarDate(opDate);
 			if (key >= from && key <= to) {
 				// If weekdays are specified, narrow event dates to matching weekdays only
 				if (rule.weekdays?.length) {

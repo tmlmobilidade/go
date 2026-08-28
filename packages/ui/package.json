@@ -16,7 +16,8 @@
 	},
 	"scripts": {
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix"
+		"lint:fix": "eslint ./src --fix",
+		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"peerDependencies": {
 		"react": "19.x",
@@ -36,6 +37,7 @@
 		"@mantine/hooks": "9.5.1",
 		"@mantine/modals": "9.5.1",
 		"@mantine/notifications": "9.5.1",
+		"@mantine/schedule": "9.5.1",
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
@@ -47,6 +49,7 @@
 		"@tmlmobilidade/utils": "*",
 		"@vis.gl/react-maplibre": "8.1.2",
 		"clsx": "2.1.1",
+		"dayjs": "1.11.21",
 		"i18next": "26.3.6",
 		"i18next-icu": "2.4.4",
 		"intl-messageformat": "11.2.13",
@@ -69,6 +72,7 @@
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.4",
 		"postcss": "8.5.26",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

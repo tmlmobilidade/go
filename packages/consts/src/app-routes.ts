@@ -84,6 +84,9 @@ export const PAGE_ROUTES = Object.freeze({
 		HOLIDAYS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/holidays/${encodeURIComponent(id)}`,
 		HOLIDAYS_LIST: `${getModuleConfig('dates', 'frontend_url')}/holidays`,
 
+		// YEAR_PERIODS_DATES
+		YEAR_PERIODS_DATES_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/year-periods/${encodeURIComponent(id)}/dates`,
+
 		// YEAR_PERIODS
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/year-periods/${encodeURIComponent(id)}`,
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'frontend_url')}/year-periods`,
@@ -307,6 +310,7 @@ export const API_ROUTES = Object.freeze({
 		// YEAR-PERIODS
 		YEAR_PERIODS_CHECK_CONFLICTS: `${getModuleConfig('dates', 'api_url')}/year-periods/check-conflicts`,
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/year-periods/${encodeURIComponent(id)}`,
+		YEAR_PERIODS_DETAIL_DATES: (id: string) => `${getModuleConfig('dates', 'api_url')}/year-periods/${encodeURIComponent(id)}/dates`,
 		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/year-periods/${encodeURIComponent(id)}/lock`,
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},

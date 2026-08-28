@@ -22,6 +22,7 @@ export interface SegmentedMultiSelectProps<T extends SegmentedValue> {
 	size?: 'md' | 'sm'
 	title?: string
 	value?: T[]
+	wrap?: boolean
 }
 
 /* * */
@@ -34,6 +35,7 @@ export function SegmentedMultiSelect<T extends SegmentedValue>({
 	size = 'md',
 	title,
 	value = [],
+	wrap = false,
 }: SegmentedMultiSelectProps<T>) {
 	const toggle = (v: T) => {
 		const next = value.includes(v) ? value.filter(x => x !== v) : [...value, v];
@@ -44,7 +46,7 @@ export function SegmentedMultiSelect<T extends SegmentedValue>({
 		<div className={cn(styles.card, fullWidth && styles.fullWidth, className)}>
 			{title && <div className={styles.title}>{title}</div>}
 
-			<div aria-label={title ?? 'Selector'} className={styles.bar} role="group">
+			<div aria-label={title ?? 'Selector'} className={cn(styles.bar, wrap && styles.wrap)} role="group">
 				{options.map((opt) => {
 					const selected = value.includes(opt.value);
 					return (

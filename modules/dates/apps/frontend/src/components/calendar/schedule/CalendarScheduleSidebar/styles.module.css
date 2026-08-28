@@ -1,0 +1,93 @@
+.root {
+	display: flex;
+	flex: 0 0 280px;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	padding: var(--size-spacing-md);
+	overflow-y: auto;
+	border-right: 1px solid var(--color-system-border-100);
+}
+
+.miniCalendar {
+	align-self: center;
+}
+
+.miniCalendarHeaderLevel {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+}
+
+.miniCalendarHeaderControl {
+	color: var(--color-system-text-200);
+	border-radius: var(--border-radius-sm);
+}
+
+.miniCalendarDay[data-selected] {
+	color: var(--color-contrast);
+	background-color: var(--color-primary);
+	border-radius: var(--border-radius-sm);
+}
+
+.miniCalendarDay[data-selected]:hover {
+	background-color: var(--color-secondary);
+}
+
+.miniCalendarDay[data-today][data-highlight-today]:not([data-selected]) {
+	color: var(--color-primary);
+	background-color: var(--color-background);
+	border-color: var(--color-primary);
+}
+
+.section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+}
+
+.title {
+	margin: 0;
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.filters {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+}
+
+.label {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-xs);
+}
+
+.count,
+.hint {
+	color: var(--color-system-text-300);
+}
+
+.hint {
+	margin: 0;
+	font-size: var(--font-size-xs);
+	line-height: 1.4;
+}
+
+.dayCounterButton {
+	width: 100%;
+	margin-top: auto;
+}
+
+@media (width <= 700px) {
+	.root {
+		flex: none;
+		border-right: 0;
+		border-bottom: 1px solid var(--color-system-border-100);
+	}
+
+	.filters {
+		flex-flow: row wrap;
+	}
+}

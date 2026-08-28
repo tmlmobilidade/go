@@ -56,3 +56,25 @@
 	color: var(--color-system-background-100);
 	background: var(--color-primary);
 }
+
+.wrap {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-spacing-xs);
+	overflow: visible;
+	background-color: var(--color-system-background-100);
+}
+
+.wrap .segment {
+	width: auto;
+	min-width: 64px;
+	padding-inline: var(--size-spacing-md);
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+}
+
+.wrap .segment.selected {
+	background-color: var(--color-primary);
+	border-color: var(--color-primary);
+}

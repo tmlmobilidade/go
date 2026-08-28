@@ -27,7 +27,9 @@ export function PeriodsDetail() {
 	// B. Handle actions
 
 	const openCalendar = () => {
-		router.push(PAGE_ROUTES.dates.YEAR_PERIODS_LIST);
+		const period = periodsDetailContext.data.period;
+		if (!period) return;
+		router.push(PAGE_ROUTES.dates.YEAR_PERIODS_DATES_DETAIL(period._id));
 	};
 
 	//
@@ -42,7 +44,7 @@ export function PeriodsDetail() {
 	}
 
 	return (
-		<Pane header={[<PeriodsDetailHeader />]}>
+		<Pane header={[<PeriodsDetailHeader key="header" />]}>
 			<Section gap="lg">
 
 				<TextInput
@@ -81,7 +83,7 @@ export function PeriodsDetail() {
 					{...periodsDetailContext.data.form.getInputProps('color')}
 				/>
 
-				<Button label="Atribuir Datas" onClick={openCalendar} />
+				<Button label="Gerir datas" onClick={openCalendar} />
 
 			</Section>
 		</Pane>

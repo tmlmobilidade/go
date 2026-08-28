@@ -1,0 +1,65 @@
+.dayContent {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.dayContent[data-with-tooltip] {
+	pointer-events: auto;
+}
+
+.dayContent[data-has-events] > [data-year-day-number] {
+	transform: translateY(-4px);
+}
+
+.indicators {
+	position: absolute;
+	inset-inline: 0;
+	bottom: 5px;
+	display: flex;
+	justify-content: center;
+	gap: 2px;
+}
+
+.indicator {
+	width: 5px;
+	height: 5px;
+	background-color: var(--event-type-color);
+	border-radius: 50%;
+}
+
+.indicator[data-type='period'] {
+	--event-type-color: var(--color-system-text-200);
+}
+
+.indicator[data-type='holiday'] {
+	--event-type-color: #8b5cf6;
+}
+
+.indicator[data-type='annotation'] {
+	--event-type-color: #f59e0b;
+}
+
+.indicator[data-type='event'] {
+	--event-type-color: #00bd72;
+}
+
+.indicator[data-type='rule-impact'] {
+	--event-type-color: var(--color-primary);
+}
+
+.tooltip {
+	max-width: none;
+	padding: 0;
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	box-shadow: var(--mantine-shadow-lg);
+}
+
+.tooltipArrow {
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+}
