@@ -4,7 +4,7 @@ import { useSchoolsListData } from '@/components/schools/list/use-schools-list-d
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { School } from '@tmlmobilidade/go-types-operation';
 import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useSchoolsCreateFormContext } from './SchoolsCreateForm.context';
 
@@ -43,11 +43,16 @@ export function useSchoolsCreatePublish(): UseSchoolsCreatePublishReturnType {
 		},
 	});
 
+	const publish = useCallback(async () => {
+		if (!(await form.trigger())) return;
+		await action();
+	}, [action, form]);
+
 	//
 	// C. Return state
 
 	return useMemo(() => ({
 		isLoading,
-		publish: action,
-	}), [action, isLoading]);
+		publish,
+	}), [isLoading, publish]);
 }

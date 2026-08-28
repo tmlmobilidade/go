@@ -6,6 +6,18 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 
 /* * */
 
+const SchoolsCreateSchema = CreateSchoolSchema.superRefine((school, context) => {
+	if (school.email && !CreateSchoolSchema.shape.email.safeParse(school.email).success) {
+		context.addIssue({ code: 'custom', message: 'Email inválido', path: ['email'] });
+	}
+	if (!/^\d{4}-\d{3}$/.test(school.postal_code)) {
+		context.addIssue({ code: 'custom', message: 'Código postal inválido', path: ['postal_code'] });
+	}
+	if (school.stops.length === 0) {
+		context.addIssue({ code: 'custom', message: 'Selecione pelo menos uma paragem', path: ['stops'] });
+	}
+});
+
 const SchoolsCreateFormContext = createContext<undefined | UseStandardFormReturnType<CreateSchoolDto>>(undefined);
 
 export function useSchoolsCreateFormContext() {
@@ -21,7 +33,6 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 
 	//
 	// A. Setup form
-
 	const formDefaultValues = useMemo<Partial<CreateSchoolDto>>(() => ({
 		address: '',
 		agency_id: '',
@@ -60,13 +71,10 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 		validation_date: null,
 	}), []);
 
-	const { form, isDirty, isValid, unblock } = useStandardForm<CreateSchoolDto, typeof CreateSchoolSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateSchoolDto, typeof SchoolsCreateSchema>({
 		defaultValues: formDefaultValues,
-		schema: CreateSchoolSchema,
+		schema: SchoolsCreateSchema,
 	});
-
-	//
-	// B. Return state
 
 	return (
 		<SchoolsCreateFormContext.Provider value={{ form, isDirty, isValid, unblock }}>
