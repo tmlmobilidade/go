@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { calculateAgencyVkm } from '@tmlmobilidade/go-utils-dates';
+import { calculateAgencyVkm } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CalculateVkmDto, CalculateVkmSchema, type VkmCalculationResult } from '@tmlmobilidade/go-types-offer';

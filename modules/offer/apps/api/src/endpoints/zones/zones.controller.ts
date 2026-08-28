@@ -5,7 +5,7 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-client
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateZoneDto, type UpdateZoneDto, type Zone } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog, type PermissionResourceCheck } from '@tmlmobilidade/types';
+import { PermissionCatalog, type PermissionResourceCheck } from '@tmlmobilidade/go-types-permissions';
 
 /* * */;
 
@@ -58,7 +58,13 @@ export class ZonesController {
 		//
 		// Create the new zone
 
-		const newZone = await goDb.offer.zones.insertOne(request.body);
+		const newZone = await goDb.offer.zones.insertOne({
+			...request.body,
+			created_by: request.me._id,
+			geojson: request.body.geojson ?? { features: [], type: 'FeatureCollection' },
+			is_locked: false,
+			updated_by: request.me._id,
+		});
 
 		//
 		// Send the response
