@@ -20,7 +20,7 @@ type QueryParams = z.infer<typeof queryParamsSchema>;
  * @param request Fastify request
  * @param reply Fastify reply
 */
-export async function getMunicipalityById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Municipality>) {
+export async function getMunicipalityHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Municipality>) {
 	//
 
 	//

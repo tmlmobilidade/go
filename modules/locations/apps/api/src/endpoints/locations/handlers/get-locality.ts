@@ -16,11 +16,11 @@ const queryParamsSchema = z.object({
 type QueryParams = z.infer<typeof queryParamsSchema>;
 
 /**
- * Retrieves a locality filtered by id.
+ * Gets a locality filtered by id.
  * @param request Fastify request
  * @param reply Fastify reply
 */
-export async function getLocalityById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Locality>) {
+export async function getLocalityHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Locality>) {
 	//
 
 	//

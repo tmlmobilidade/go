@@ -6,11 +6,11 @@ import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type District } from '@tmlmobilidade/go-types-locations';
 
 /**
- * Retrieves all districts.
+ * Lists all districts.
  * @param request Fastify request
  * @param reply Fastify reply
 */
-export async function getDistricts(request: FastifyRequest, reply: FastifyReply<District[]>) {
+export async function listDistrictsHandler(request: FastifyRequest, reply: FastifyReply<District[]>) {
 	//
 
 	//

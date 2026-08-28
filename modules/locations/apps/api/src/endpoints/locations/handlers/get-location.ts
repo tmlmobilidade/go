@@ -22,7 +22,7 @@ type QueryParams = z.infer<typeof queryParamsSchema>;
  * @param request Fastify request
  * @param reply Fastify reply
 */
-export async function getLocation(request: FastifyRequest, reply: FastifyReply<Location>) {
+export async function getLocationHandler(request: FastifyRequest, reply: FastifyReply<Location>) {
 	//
 
 	//

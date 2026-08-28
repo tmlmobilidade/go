@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { type Locality } from '@tmlmobilidade/go-types-locations';
+import { type Municipality } from '@tmlmobilidade/go-types-locations';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 import { z } from 'zod';
 
@@ -13,18 +13,16 @@ const queryParamsArrayStringSchema = z.preprocess(val => typeof val === 'string'
 
 const queryParamsSchema = z.object({
 	district_ids: queryParamsArrayStringSchema,
-	municipality_ids: queryParamsArrayStringSchema,
-	parish_ids: queryParamsArrayStringSchema,
 });
 
 type QueryParams = z.infer<typeof queryParamsSchema>;
 
 /**
- * Retrieves all localities.
+ * Retrieves all municipalities.
  * @param request Fastify request
  * @param reply Fastify reply
 */
-export async function getLocalities(request: FastifyRequest, reply: FastifyReply<Locality[]>) {
+export async function listMunicipalitiesHandler(request: FastifyRequest, reply: FastifyReply<Municipality[]>) {
 	//
 
 	//
@@ -32,16 +30,11 @@ export async function getLocalities(request: FastifyRequest, reply: FastifyReply
 	const query = validateQueryParams<QueryParams>(request.query, queryParamsSchema);
 
 	//
-	// Fetch all localities
+	// Fetch all municipalities
 
-	const localities = await locationsProvider.findLocalities({
-		districtIds: query.district_ids,
-		municipalityIds: query.municipality_ids,
-		parishIds: query.parish_ids,
-	});
+	const municipalities = await locationsProvider.findMunicipalities({ districtIds: query.district_ids });
 
-	return reply
-		.send({ data: localities, error: null, statusCode: HTTP_STATUS.OK });
+	return reply.send({ data: municipalities, error: null, statusCode: HTTP_STATUS.OK });
 
 	//
 }
