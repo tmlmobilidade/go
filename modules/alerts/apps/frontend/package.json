@@ -18,6 +18,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-alerts-pckg-types": "*",
 		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
