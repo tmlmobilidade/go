@@ -58,11 +58,6 @@ export async function findRides<K extends RideFilterKey>(fields: RideFilterField
 	);
 
 	//
-	// Throw an error if no rides are found
-
-	if (!selectResult?.length) throw new Error(`Rides not found using the following fields: ${JSON.stringify(fields)} and the following params: ${JSON.stringify(params)}`);
-
-	//
 	// Return the rides found
 
 	return selectResult;
