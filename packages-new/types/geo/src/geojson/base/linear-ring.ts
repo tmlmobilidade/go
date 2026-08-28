@@ -1,7 +1,8 @@
 /* * */
 
-import { GeoJsonPositionSchema } from '@/geojson/base/position.js';
 import { z } from 'zod';
+
+import { GeoJsonPositionSchema } from './position.js';
 
 /**
  * A linear ring is a closed polygon with at least 4 points.

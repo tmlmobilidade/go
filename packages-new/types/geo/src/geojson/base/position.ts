@@ -1,8 +1,9 @@
 /* * */
 
-import { LatitudeSchema } from '@/geojson/base/latitude.js';
-import { LongitudeSchema } from '@/geojson/base/longitude.js';
 import { z } from 'zod';
+
+import { LatitudeSchema } from './latitude.js';
+import { LongitudeSchema } from './longitude.js';
 
 /* * */
 

@@ -1,13 +1,14 @@
 /* * */
 
-import { type DefaultGeoJsonFeatureProperties, DefaultGeoJsonFeaturePropertiesSchema } from '@/geojson/features/properties.js';
-import { GeoJsonLineStringGeometrySchema } from '@/geojson/geometry/line-string.js';
-import { GeoJsonMultiLineStringGeometrySchema } from '@/geojson/geometry/multi-line-string.js';
-import { GeoJsonMultiPointGeometrySchema } from '@/geojson/geometry/multi-point.js';
-import { GeoJsonMultiPolygonGeometrySchema } from '@/geojson/geometry/multi-polygon.js';
-import { GeoJsonPointGeometrySchema } from '@/geojson/geometry/point.js';
-import { GeoJsonPolygonGeometrySchema } from '@/geojson/geometry/polygon.js';
 import { z } from 'zod';
+
+import { GeoJsonLineStringGeometrySchema } from '../geometry/line-string.js';
+import { GeoJsonMultiLineStringGeometrySchema } from '../geometry/multi-line-string.js';
+import { GeoJsonMultiPointGeometrySchema } from '../geometry/multi-point.js';
+import { GeoJsonMultiPolygonGeometrySchema } from '../geometry/multi-polygon.js';
+import { GeoJsonPointGeometrySchema } from '../geometry/point.js';
+import { GeoJsonPolygonGeometrySchema } from '../geometry/polygon.js';
+import { type DefaultGeoJsonFeatureProperties, DefaultGeoJsonFeaturePropertiesSchema } from './properties.js';
 
 /* * */
 

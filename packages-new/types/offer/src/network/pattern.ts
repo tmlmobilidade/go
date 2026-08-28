@@ -2,7 +2,7 @@
 
 import { type GtfsTripDirection } from '@tmlmobilidade/go-types-gtfs';
 import { type Stop, StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
-import { CommentSchema, BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, CommentSchema } from '@tmlmobilidade/go-types-shared';
 import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 

@@ -1,7 +1,8 @@
 /* * */
 
-import { GeoJsonLinearRingSchema } from '@/geojson/base/linear-ring.js';
 import { z } from 'zod';
+
+import { GeoJsonLinearRingSchema } from '../base/linear-ring.js';
 
 /* * */
 

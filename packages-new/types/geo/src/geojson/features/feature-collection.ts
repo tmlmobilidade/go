@@ -1,8 +1,9 @@
 /* * */
 
-import { GeoJsonFeature, GeoJsonFeatureSchema } from '@/geojson/features/feature.js';
-import { DefaultGeoJsonFeatureProperties, DefaultGeoJsonFeaturePropertiesSchema } from '@/geojson/features/properties.js';
 import { z } from 'zod';
+
+import { GeoJsonFeature, GeoJsonFeatureSchema } from './feature.js';
+import { DefaultGeoJsonFeatureProperties, DefaultGeoJsonFeaturePropertiesSchema } from './properties.js';
 
 /* * */
 

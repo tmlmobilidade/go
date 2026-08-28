@@ -1,7 +1,9 @@
 /* * */
 
-import { Latitude, LatitudeSchema, Longitude, LongitudeSchema } from '@/geojson/index.js';
 import { z } from 'zod';
+
+import { type Latitude, LatitudeSchema } from '../geojson/base/latitude.js';
+import { type Longitude, LongitudeSchema } from '../geojson/base/longitude.js';
 
 /**
  * The encoded polyline for a geographic LineString,

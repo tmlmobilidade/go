@@ -1,7 +1,8 @@
 /* * */
 
-import { GeoJsonPositionSchema } from '@/geojson/base/position.js';
 import { z } from 'zod';
+
+import { GeoJsonPositionSchema } from '../base/position.js';
 
 /* * */
 
