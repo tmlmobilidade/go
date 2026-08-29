@@ -10,7 +10,10 @@ export const GtfsTernaryValues = [
 	'2', // NO
 ] as const;
 
-export const GtfsTernarySchema = z.enum(GtfsTernaryValues);
+export const GtfsTernarySchema = z
+	.union([z.string(), z.number()])
+	.transform(value => String(value))
+	.pipe(z.enum(GtfsTernaryValues));
 
 /**
  * The GTFS Ternary type represents a value that can be one of three states:

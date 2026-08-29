@@ -9,7 +9,10 @@ export const GtfsExceptionTypeValues = [
 	'2', // Service Removed
 ] as const;
 
-export const GtfsExceptionTypeSchema = z.enum(GtfsExceptionTypeValues);
+export const GtfsExceptionTypeSchema = z
+	.union([z.string(), z.number()])
+	.transform(value => String(value))
+	.pipe(z.enum(GtfsExceptionTypeValues));
 
 /**
  * Represents the type of exception for a service in the GTFS format.

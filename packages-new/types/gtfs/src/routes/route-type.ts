@@ -17,7 +17,10 @@ export const GtfsRouteTypeValues = [
 	'12', // Monorail. Railway in which the track consists of a single rail or a beam.
 ] as const;
 
-export const GtfsRouteTypeSchema = z.enum(GtfsRouteTypeValues);
+export const GtfsRouteTypeSchema = z
+	.union([z.string(), z.number()])
+	.transform(value => String(value))
+	.pipe(z.enum(GtfsRouteTypeValues));
 
 /**
  * Represents the type of vehicle or service provided by a GTFS Route.
