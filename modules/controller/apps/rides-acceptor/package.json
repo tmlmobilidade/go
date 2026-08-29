@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-controller-pckg-utils": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
