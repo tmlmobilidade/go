@@ -23,7 +23,7 @@ type AnySimplifiedApexDocument =
 
 /* * */
 
-export interface ApexRidesCallbackWindow {
+export interface RidesCallbackWindow {
 	agency_id: string
 	trip_id: string
 	window_end: number
@@ -47,72 +47,77 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 
 		if (!data || data.length === 0) return;
 
-		await performInChunks(data, async (chunk) => {
+		//
+		// Build out the query to find all Rides
+		// that are affected by the new data.
+
+		const callbackWindowsMap = new Map<string, RidesCallbackWindow>();
+
+		for (const item of data) {
+			if (!item.trip_id) continue;
+			const standardWindowInterval = Dates
+				.fromUnixMilliseconds(item.created_at)
+				.std_window;
+			const window: RidesCallbackWindow = {
+				agency_id: item.agency_id,
+				trip_id: item.trip_id,
+				window_end: standardWindowInterval.end,
+				window_start: standardWindowInterval.start,
+			};
+			callbackWindowsMap.set(`${window.agency_id}|${window.trip_id}|${window.window_start}|${window.window_end}`, window);
+		}
+
+		const callbackWindows: RidesCallbackWindow[] = [...callbackWindowsMap.values()];
+
+		if (!callbackWindows.length) return;
+
+		//
+		// Perform the operation in chunks to avoid hitting Clickhouse limits.
+
+		await performInChunks(callbackWindows, async (chunk) => {
 			//
 
 			//
-			// Build out the query to find all Rides
-			// that are affected by the new data.
+			// Get the native Clickhouse client.
 
-			const callbackWindowsMap = new Map<string, ApexRidesCallbackWindow>();
-
-			for (const item of chunk) {
-				if (!item.trip_id) continue;
-				const standardWindowInterval = Dates
-					.fromUnixMilliseconds(item.created_at)
-					.std_window;
-				const window: ApexRidesCallbackWindow = {
-					agency_id: item.agency_id,
-					trip_id: item.trip_id,
-					window_end: standardWindowInterval.end,
-					window_start: standardWindowInterval.start,
-				};
-				callbackWindowsMap.set(`${window.agency_id}|${window.trip_id}|${window.window_start}|${window.window_end}`, window);
-			}
-
-			const callbackWindows: ApexRidesCallbackWindow[] = [...callbackWindowsMap.values()];
-
-			if (!callbackWindows.length) return;
+			const clickhouseClient = await labDb.getClient();
 
 			//
-			// Build the ClickHouse query and parameters.
-
-			const conditions = callbackWindows.map((_, index) => {
-				const paramIndex = index * 4;
-				return `
-					(
-						agency_id = $${paramIndex}
-						AND trip_id = $${paramIndex + 1}
-						AND start_time_scheduled >= $${paramIndex + 2}
-						AND start_time_scheduled <= $${paramIndex + 3}
-					)
-				`;
-			});
+			// Build the ClickHouse query.
 
 			const query = `
+				WITH
+					arrayJoin(
+						arrayZip(
+							{agency_ids:Array(String)},
+							{trip_ids:Array(String)},
+							{window_starts:Array(Int64)},
+							{window_ends:Array(Int64)}
+						)
+					) AS window
 				SELECT *
 				FROM operation.rides
-				WHERE ${conditions.join('\nOR\n')}
+				WHERE
+					agency_id = window.1
+					AND trip_id = window.2
+					AND start_time_scheduled >= window.3
+					AND start_time_scheduled <= window.4
 				ORDER BY updated_at DESC
 				LIMIT 1 BY _id
 			`;
 
-			const queryParams = Object.fromEntries(
-				callbackWindows.flatMap((window, index) => {
-					const paramIndex = index * 4;
-					return [
-						[paramIndex, window.agency_id],
-						[paramIndex + 1, window.trip_id],
-						[paramIndex + 2, window.window_start],
-						[paramIndex + 3, window.window_end],
-					];
-				}),
-			);
+			const queryResult = await clickhouseClient.query({
+				format: 'JSONEachRow',
+				query,
+				query_params: {
+					agency_ids: chunk.map(window => window.agency_id),
+					trip_ids: chunk.map(window => window.trip_id),
+					window_ends: chunk.map(window => window.window_end),
+					window_starts: chunk.map(window => window.window_start),
+				},
+			});
 
-			//
-			// Retrieve the latest version of all affected Rides.
-
-			const matchingRides = await labDb.queryFromString<Ride>(query, queryParams);
+			const matchingRides = await queryResult.json<Ride>();
 
 			//
 			// For the affected Rides, set them as 'waiting' and insert a new document in the operation.rides_waiting collection.
@@ -130,7 +135,7 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 			Logger.info({ message: `Marked as 'waiting': ${matchingRides.length} Rides (${timer.get()})` });
 
 			//
-		}, 100); // The chunk size
+		}, 3_000); // The chunk size
 
 		//
 	} catch (error) {
