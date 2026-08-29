@@ -5,7 +5,6 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Sends a notification to the APEX contact emails.
@@ -92,7 +91,7 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 		data: {
 			agencyName: agencyData.name,
 			planId: foundPlan._id,
-			startDate: validateOperationalDate(foundPlan.gtfs_feed_info.feed_start_date),
+			startDate: foundPlan.gtfs_feed_info.feed_start_date,
 		},
 		to: agencyData.apex.contact_emails ?? [],
 	});

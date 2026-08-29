@@ -4,8 +4,8 @@ import { type ExportedCalendarDatesRow, type GtfsV29ExportConfig } from '@/types
 import { getDayType, getPeriodForDate } from '@/utils/calendar-helpers.js';
 import { type ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates, isHoliday } from '@tmlmobilidade/dates';
-import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -40,7 +40,7 @@ export async function exportCalendarDates(
 				const dateObj = Dates.fromOperationalDate(date, 'Europe/Lisbon');
 
 				const row: ExportedCalendarDatesRow = {
-					date: validateGtfsDate(date),
+					date: OperationalDateIntSchema.parse(date),
 					day_type: String(getDayType(date, holidaysArray)) as '1' | '2' | '3',
 					exception_type: '1', // Service added (all our dates are service additions)
 					holiday: isHoliday(dateObj, holidaysArray) ? '1' : '0',

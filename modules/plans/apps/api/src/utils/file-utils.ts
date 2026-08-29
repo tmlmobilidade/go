@@ -1,7 +1,7 @@
 import { Files } from '@tmlmobilidade/files';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Attachment } from '@tmlmobilidade/go-types-core';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { File as NodeFile } from 'node:buffer';
 
 /**
@@ -24,7 +24,7 @@ export function updateFileName(string: string): string {
  * @param feed_end_date - The new feed end date
  * @returns The updated file and the path to the file
  */
-export async function updateFeedInfoDates(fileId: string, feedStartDate?: OperationalDate, feedEndDate?: OperationalDate): Promise<{ file: NodeFile, info: Attachment }> {
+export async function updateFeedInfoDates(fileId: string, feedStartDate?: OperationalDateInt, feedEndDate?: OperationalDateInt): Promise<{ file: NodeFile, info: Attachment }> {
 	if (!fileId) {
 		throw new Error('File ID is required to update dates');
 	}
@@ -46,13 +46,13 @@ export async function updateFeedInfoDates(fileId: string, feedStartDate?: Operat
 			column: 'feed_start_date',
 			csvString: feedInfoCsv,
 			rowIndex: 0,
-			value: feedStartDate,
+			value: String(feedStartDate),
 		},
 		{
 			column: 'feed_end_date',
 			csvString: feedInfoCsv,
 			rowIndex: 0,
-			value: feedEndDate,
+			value: String(feedEndDate),
 		},
 	]);
 

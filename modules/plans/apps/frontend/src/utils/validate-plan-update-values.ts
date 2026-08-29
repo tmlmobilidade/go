@@ -1,7 +1,5 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
-import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
 
 /* * */
@@ -22,27 +20,14 @@ export const validatePlanUpdateValues = (values: UpdatePlanDto): UpdatePlanDto =
 	}
 
 	//
-	// Transform dates to OperationalDate
-
-	const feedStartDate = Dates
-		.fromFormat(values.gtfs_feed_info.feed_start_date, 'yyyy-MM-dd', 'Europe/Lisbon')
-		.set({ hour: 12 })
-		.operational_date;
-
-	const feedEndDate = Dates
-		.fromFormat(values.gtfs_feed_info.feed_end_date, 'yyyy-MM-dd', 'Europe/Lisbon')
-		.set({ hour: 12 })
-		.operational_date;
-
-	//
 	// Return prepared values
 
 	return {
 		...values,
 		gtfs_feed_info: {
 			...values.gtfs_feed_info,
-			feed_end_date: validateGtfsDate(feedEndDate),
-			feed_start_date: validateGtfsDate(feedStartDate),
+			feed_end_date: values.gtfs_feed_info.feed_end_date,
+			feed_start_date: values.gtfs_feed_info.feed_start_date,
 		},
 	};
 

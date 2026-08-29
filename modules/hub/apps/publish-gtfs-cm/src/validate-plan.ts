@@ -1,6 +1,5 @@
 /* * */
 
-import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
@@ -49,7 +48,7 @@ export function validatePlan(planData: Plan): boolean {
 
 	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
 
-	if (planData.gtfs_feed_info.feed_end_date < validateGtfsDate(currentOperationalDate)) {
+	if (planData.gtfs_feed_info.feed_end_date < currentOperationalDate) {
 		Logger.error({ message: `Skip processing: Plan is no longer active as feed_end_date '${planData.gtfs_feed_info.feed_end_date}' is before current operational date '${currentOperationalDate}'.` });
 		return false;
 	}

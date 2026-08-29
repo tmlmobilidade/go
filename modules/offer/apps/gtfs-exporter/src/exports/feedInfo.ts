@@ -1,8 +1,8 @@
 import { GtfsV29ExportConfig } from '@/types.js';
 import { getCurrentTimestamp } from '@/utils.js';
 import { type Agency } from '@tmlmobilidade/go-types-core';
-import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29FeedInfo } from '@tmlmobilidade/go-types-gtfs-strict';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Parses feed info data into GTFS feed_info.txt format
@@ -19,11 +19,11 @@ function parseFeedInfo(
 			default_lang: 'en',
 			feed_contact_email: 'go@tmlmobilidade.pt',
 			feed_contact_url: 'https://api.carrismetropolitana.pt/gtfs',
-			feed_end_date: validateGtfsDate(exportConfig.feed_end_date),
+			feed_end_date: OperationalDateIntSchema.parse(exportConfig.feed_end_date),
 			feed_lang: 'pt',
 			feed_publisher_name: agencyData.name || 'Carris Metropolitana',
 			feed_publisher_url: agencyData.website_url || 'https://www.carrismetropolitana.pt',
-			feed_start_date: validateGtfsDate(exportConfig.feed_start_date),
+			feed_start_date: OperationalDateIntSchema.parse(exportConfig.feed_start_date),
 			feed_version: getCurrentTimestamp(),
 		};
 	} catch (error) {
