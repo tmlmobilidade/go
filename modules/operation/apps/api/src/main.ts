@@ -12,8 +12,8 @@ import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 	const fastifyService = FastifyService.getInstance({
 		bodyLimit: 1024 * 1024 * 1024 * 2, // 2GB
 		module: 'plans',
-		origin: getModuleConfig('plans', 'cors_origin'),
-		port: getModuleConfig('plans', 'api_port'),
+		origin: getModuleConfig('operation', 'cors_origin'),
+		port: getModuleConfig('operation', 'api_port'),
 	});
 
 	await fastifyService.server.register(fastifyMultipart, {

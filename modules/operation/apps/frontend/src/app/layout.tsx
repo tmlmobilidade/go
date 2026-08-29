@@ -9,8 +9,8 @@ import { type PropsWithChildren } from 'react';
 /* * */
 
 export const metadata: Metadata = {
-	description: 'Validação e gestão de Planos.',
-	title: 'GO | Planos',
+	description: 'Gestão da Operação de Transportes Públicos.',
+	title: 'GO | Operação',
 };
 
 /* * */

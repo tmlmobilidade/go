@@ -28,7 +28,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 
 	if (!sessionToken) {
 		const authUrl = getModuleConfig('core', 'frontend_url');
-		const appUrl = getModuleConfig('plans', 'frontend_url');
+		const appUrl = getModuleConfig('operation', 'frontend_url');
 		redirect(`${authUrl}/login?redirect=${encodeURI(appUrl)}`, RedirectType.replace);
 	}
 
