@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type RawApexTransactionLocationV30, type SimplifiedApexLocation, SimplifiedApexLocationSchema } from '@tmlmobilidade/go-types-apex';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { ApexBankingBrandSchema, type RawApexTransactionBankingTapV40, type SimplifiedApexBankingTap, SimplifiedApexBankingTapSchema } from '@tmlmobilidade/go-types-apex';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

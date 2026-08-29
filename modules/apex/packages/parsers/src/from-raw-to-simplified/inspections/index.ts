@@ -1,1 +1,1 @@
-export * from '@/from-raw-to-simplified/inspections/inspection-v20.js';
+export * from './inspection-v20.js';
