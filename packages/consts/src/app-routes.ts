@@ -435,11 +435,11 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_DETAIL_DUPLICATE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/duplicate`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/lock`,
-		ALERTS_LINES: `${getModuleConfig('operation', 'api_url')}/alerts/lines`,
 		ALERTS_LIST: `${getModuleConfig('operation', 'api_url')}/alerts/list`,
 		ALERTS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/alerts/list-agencies`,
-		ALERTS_RIDES: `${getModuleConfig('operation', 'api_url')}/alerts/rides`,
-		ALERTS_STOPS: `${getModuleConfig('operation', 'api_url')}/alerts/stops`,
+		ALERTS_LIST_LINES: `${getModuleConfig('operation', 'api_url')}/alerts/list-lines`,
+		ALERTS_LIST_RIDES: `${getModuleConfig('operation', 'api_url')}/alerts/list-rides`,
+		ALERTS_LIST_STOPS: `${getModuleConfig('operation', 'api_url')}/alerts/list-stops`,
 
 		// GTFS-VALIDATIONS
 		GTFS_VALIDATIONS_CREATE: `${getModuleConfig('operation', 'api_url')}/gtfs-validations/create`,

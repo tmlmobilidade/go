@@ -93,7 +93,7 @@ export function AlertsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: AlertsListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.ALERTS_DETAIL(item._id)));
 	};
 
 	//

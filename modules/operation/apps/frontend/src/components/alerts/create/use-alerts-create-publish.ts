@@ -31,13 +31,13 @@ export function useAlertsCreatePublish(): UseAlertsCreatePublishReturnType {
 	// B. Handle actions
 
 	const { action, isLoading } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'POST', url: API_ROUTES.alerts.ALERTS_CREATE }),
+		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'POST', url: API_ROUTES.operation.ALERTS_CREATE }),
 		onSuccess: ({ data }) => {
 			form.reset();
 			unblock();
 			mutate();
 			if (data?._id) {
-				const newUrl = keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(data._id));
+				const newUrl = keepUrlParams(PAGE_ROUTES.operation.ALERTS_DETAIL(data._id));
 				window.location.href = newUrl;
 			};
 		},

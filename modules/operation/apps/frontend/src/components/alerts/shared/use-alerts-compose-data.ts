@@ -25,7 +25,7 @@ export function useAlertsComposeData(requestBody: AlertsComposeRequest): UseAler
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsComposeResponse>>([API_ROUTES.alerts.ALERTS_COMPOSE, requestBody], {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsComposeResponse>>([API_ROUTES.operation.ALERTS_COMPOSE, requestBody], {
 		fetcher: async ([url, requestBody]) => await fetchApiData<AlertsComposeResponse>({ body: requestBody, method: 'POST', url }),
 		refreshInterval: 0, // Disabled
 		revalidateIfStale: false,

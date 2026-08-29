@@ -62,7 +62,7 @@ export function useAlertsListData(): UseAlertsListDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<AlertsListItem[]>>([API_ROUTES.alerts.ALERTS_LIST, query], {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<AlertsListItem[]>>([API_ROUTES.operation.ALERTS_LIST, query], {
 		fetcher: async ([url, query]) => await fetchApiData<AlertsListItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

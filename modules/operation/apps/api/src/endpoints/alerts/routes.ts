@@ -34,11 +34,11 @@ server.register(
 
 		instance.post('/list-agencies', { preHandler: authorizationMiddleware('alerts', ['read', 'create']) }, listAgenciesHandler);
 
-		instance.post('/lines', { preHandler: authorizationMiddleware('alerts', ['read', 'create']) }, listLines);
+		instance.post('/list-lines', { preHandler: authorizationMiddleware('alerts', ['read', 'create']) }, listLines);
 
-		instance.post('/rides', { preHandler: authorizationMiddleware('alerts', ['read', 'create']) }, listRides);
+		instance.post('/list-rides', { preHandler: authorizationMiddleware('alerts', ['read', 'create']) }, listRides);
 
-		instance.post('/stops', { preHandler: authorizationMiddleware('alerts', ['read', 'create']) }, listStops);
+		instance.post('/list-stops', { preHandler: authorizationMiddleware('alerts', ['read', 'create']) }, listStops);
 
 		instance.get('/:id', { preHandler: authorizationMiddleware('alerts', ['read']) }, getAlertHandler);
 

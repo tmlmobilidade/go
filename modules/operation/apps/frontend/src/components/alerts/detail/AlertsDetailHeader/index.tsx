@@ -51,7 +51,7 @@ export function AlertsDetailHeader() {
 	// C. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.ALERTS_LIST));
 	};
 
 	//

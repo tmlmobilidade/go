@@ -29,7 +29,7 @@ export function useAlertsAgenciesData(query: AlertsAgencyRequest): UseAlertsAgen
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsAgencyItem[]>>([API_ROUTES.alerts.ALERTS_LIST_AGENCIES, query], {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsAgencyItem[]>>([API_ROUTES.operation.ALERTS_LIST_AGENCIES, query], {
 		fetcher: async ([url, query]) => await fetchApiData<AlertsAgencyItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
