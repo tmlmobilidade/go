@@ -59,7 +59,7 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 	//
 	// A. Setup variables
 
-	const { data: samData, error: samError, isLoading: samLoading } = useSWR<Sam, Error>(samId && API_ROUTES.controller.SAMS_DETAIL(samId), { refreshInterval: 5000 });
+	const { data: samData, error: samError, isLoading: samLoading } = useSWR<Sam, Error>(samId && API_ROUTES.operation.SAMS_DETAIL(samId), { refreshInterval: 5000 });
 	const [selectedDayKey, setSelectedDayKey] = useState<null | string>(null);
 	const [analysisFilterStartTime, setAnalysisFilterStartTime] = useState<null | UnixMilliseconds>(null);
 	const [analysisFilterEndTime, setAnalysisFilterEndTime] = useState<null | UnixMilliseconds>(null);

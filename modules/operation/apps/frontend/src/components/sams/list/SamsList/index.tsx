@@ -96,7 +96,7 @@ export function SamsList() {
 	// B. Handle actions
 
 	const handleRowClick = useCallback((item: Sam | SamsListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.controller.SAMS_DETAIL(item._id.toString())));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.SAMS_DETAIL(item._id.toString())));
 	}, [router]);
 
 	const tableRecords = useMemo(

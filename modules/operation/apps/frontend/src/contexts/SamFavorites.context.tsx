@@ -47,9 +47,9 @@ export const SamsFavoritesContextProvider = ({ children }: PropsWithChildren) =>
 	const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
 	const { mutate: mutateCache } = useSWRConfig();
 
-	const getFavoriteSamsSWRKey = (favoriteIds: string[]) => favoriteIds.length ? `${API_ROUTES.controller.SAMS_FAVORITES}?ids=${favoriteIds.join(',')}` : null;
+	const getFavoriteSamsSWRKey = (favoriteIds: string[]) => favoriteIds.length ? `${API_ROUTES.operation.SAMS_FAVORITES}?ids=${favoriteIds.join(',')}` : null;
 	const favoritesIdsQuery = useMemo(() => favorites.join(','), [favorites]);
-	const favoriteSamsKey = favorites.length ? `${API_ROUTES.controller.SAMS_FAVORITES}?ids=${favoritesIdsQuery}` : null;
+	const favoriteSamsKey = favorites.length ? `${API_ROUTES.operation.SAMS_FAVORITES}?ids=${favoritesIdsQuery}` : null;
 	const { data: favoriteSamsData, error: favoriteSamsError, isLoading: favoriteSamsLoading, mutate: mutateFavoriteSams } = useSWR<Sam[], Error>(favoriteSamsKey);
 
 	const favoriteSamsWithStatus = useMemo(

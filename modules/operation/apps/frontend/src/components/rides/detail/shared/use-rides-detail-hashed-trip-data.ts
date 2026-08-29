@@ -32,7 +32,7 @@ export function useRidesDetailHashedTripData(): UseRidesDetailHashedTripDataRetu
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<HashedTrip[]>>(rideId && API_ROUTES.controller.RIDES_DETAIL_HASHED_TRIP(rideId), {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<HashedTrip[]>>(rideId && API_ROUTES.operation.RIDES_DETAIL_HASHED_TRIP(rideId), {
 		fetcher: async (url: string) => await fetchApiData<HashedTrip[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

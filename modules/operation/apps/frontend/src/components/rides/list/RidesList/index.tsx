@@ -173,7 +173,7 @@ export function RidesList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: ControllerRidesListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.RIDES_DETAIL(item._id)));
 	};
 
 	//

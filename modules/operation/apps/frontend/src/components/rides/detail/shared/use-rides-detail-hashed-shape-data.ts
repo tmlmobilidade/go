@@ -32,7 +32,7 @@ export function useRidesDetailHashedShapeData(): UseRidesDetailHashedShapeDataRe
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<HashedShape>>(rideId && API_ROUTES.controller.RIDES_DETAIL_HASHED_SHAPE(rideId), {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<HashedShape>>(rideId && API_ROUTES.operation.RIDES_DETAIL_HASHED_SHAPE(rideId), {
 		fetcher: async (url: string) => await fetchApiData<HashedShape>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

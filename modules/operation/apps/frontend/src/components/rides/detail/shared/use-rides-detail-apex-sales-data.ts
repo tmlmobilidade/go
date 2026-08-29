@@ -32,7 +32,7 @@ export function useRidesDetailApexSalesData(): UseRidesDetailApexSalesDataReturn
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedApexOnBoardSale[]>>(rideId && API_ROUTES.controller.RIDES_DETAIL_APEX_SALES(rideId), {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedApexOnBoardSale[]>>(rideId && API_ROUTES.operation.RIDES_DETAIL_APEX_SALES(rideId), {
 		fetcher: async (url: string) => await fetchApiData<SimplifiedApexOnBoardSale[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

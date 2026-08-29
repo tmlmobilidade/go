@@ -32,7 +32,7 @@ export function useRidesDetailApexLocationsData(): UseRidesDetailApexLocationsDa
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedApexLocation[]>>(rideId && API_ROUTES.controller.RIDES_DETAIL_APEX_LOCATIONS(rideId), {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedApexLocation[]>>(rideId && API_ROUTES.operation.RIDES_DETAIL_APEX_LOCATIONS(rideId), {
 		fetcher: async (url: string) => await fetchApiData<SimplifiedApexLocation[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

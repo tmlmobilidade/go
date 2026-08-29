@@ -33,7 +33,7 @@ export function SamsDetailHeader() {
 	// B. Handle actions
 
 	const handleGoBack = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.controller.SAMS_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.SAMS_LIST));
 	};
 
 	const handleToggleFavorite = () => {

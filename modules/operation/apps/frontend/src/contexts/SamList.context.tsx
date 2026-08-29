@@ -142,7 +142,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const apexVersionsUrl = useMemo(() => {
 		// if (agenciesLoading) return null;
-		const base = `${API_ROUTES.controller.SAMS_LIST}/apex-versions`;
+		const base = `${API_ROUTES.operation.SAMS_LIST}/apex-versions`;
 		return baseQueryString ? `${base}?${baseQueryString}` : base;
 	}, [baseQueryString]);
 
@@ -201,7 +201,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const samsListUrl = useMemo(() => {
 		// if (agenciesLoading) return null;
-		const base = API_ROUTES.controller.SAMS_BASE;
+		const base = API_ROUTES.operation.SAMS_BASE;
 		return samsListQueryString ? `${base}?${samsListQueryString}` : base;
 	}, [samsListQueryString]);
 
@@ -230,7 +230,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 		try {
 			const summaryResponse = await fetchData<SamTimelineSummaryListItem[]>(
-				API_ROUTES.controller.SAMS_TIMELINE_SUMMARY,
+				API_ROUTES.operation.SAMS_TIMELINE_SUMMARY,
 				'POST',
 				{ ids: samIds },
 			);

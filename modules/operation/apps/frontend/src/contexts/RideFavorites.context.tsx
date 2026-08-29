@@ -43,9 +43,9 @@ export const RideFavoritesContextProvider = ({ children }: PropsWithChildren) =>
 	const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
 	const { mutate: mutateCache } = useSWRConfig();
 
-	const getFavoriteRidesSWRKey = (favoriteIds: string[]) => favoriteIds.length ? `${API_ROUTES.controller.RIDES_FAVORITES}?ids=${favoriteIds.join(',')}` : null;
+	const getFavoriteRidesSWRKey = (favoriteIds: string[]) => favoriteIds.length ? `${API_ROUTES.operation.RIDES_FAVORITES}?ids=${favoriteIds.join(',')}` : null;
 	const favoritesIdsQuery = useMemo(() => favorites.join(','), [favorites]);
-	const favoriteRidesKey = favorites.length ? `${API_ROUTES.controller.RIDES_FAVORITES}?ids=${favoritesIdsQuery}` : null;
+	const favoriteRidesKey = favorites.length ? `${API_ROUTES.operation.RIDES_FAVORITES}?ids=${favoritesIdsQuery}` : null;
 	const { data: favoriteRidesData, error: favoriteRidesError, isLoading: favoriteRidesLoading, mutate: mutateFavoriteRides } = useSWR<any[], Error>(favoriteRidesKey);
 
 	//

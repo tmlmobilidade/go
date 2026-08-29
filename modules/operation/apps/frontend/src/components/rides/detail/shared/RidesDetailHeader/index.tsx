@@ -60,7 +60,7 @@ export function RidesDetailHeader() {
 	// C. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.RIDES_LIST));
 	};
 
 	// const handleToggleFavorite = () => {
