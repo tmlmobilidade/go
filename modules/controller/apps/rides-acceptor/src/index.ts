@@ -1,11 +1,9 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { Interval } from 'luxon';
 
 import { processRideAcceptanceChunk } from './process.js';
 
@@ -53,6 +51,7 @@ async function main() {
 				Logger.spacer(1);
 				Logger.divider();
 			},
+			order: 'desc',
 			startDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK }).unix_milliseconds,
 		});
 

@@ -19,15 +19,13 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-controller-pckg-utils": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/normalizers": "*",
-		"@tmlmobilidade/timer": "*",
-		"luxon": "3.7.2"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
