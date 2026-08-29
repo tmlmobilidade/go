@@ -1,0 +1,46 @@
+{
+	"name": "@tmlmobilidade/go-operation-api",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint --fix ."
+	},
+	"dependencies": {
+		"@fastify/multipart": "10.1.1",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-operation-pckg-types": "*",
+		"@tmlmobilidade/go-providers-emails": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-gtfs": "*",
+		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.23.12",
+		"typescript": "6.0.3"
+	}
+}
