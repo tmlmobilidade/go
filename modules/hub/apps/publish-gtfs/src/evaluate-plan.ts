@@ -16,15 +16,14 @@ export async function evaluatePlan(planData: Plan): Promise<boolean> {
 	const agencyData = await goDb.core.agencies.findById(planData.agency_id);
 
 	if (!agencyData) {
-		Logger.error({ message: `Skip processing: No agency data found for agency_id '${planData.agency_id}'.` });
-		return false;
+		throw new Error(`Plan ${planData._id} has no agency data associated for agency_id: ${planData.agency_id}`);
 	}
 
 	//
 	// Return false if the agency does not have GTFS enabled
 
 	if (!agencyData.open_data.gtfs_enabled) {
-		Logger.error({ message: `Skip processing: Agency '${planData.agency_id}' does not have GTFS enabled.` });
+		Logger.info({ message: `Skip processing: Agency '${planData.agency_id}' does not have GTFS enabled.` });
 		return false;
 	}
 
@@ -32,21 +31,18 @@ export async function evaluatePlan(planData: Plan): Promise<boolean> {
 	// Return false if it does not have an associated operation file
 
 	if (!planData.operation_file_id) {
-		Logger.error({ message: `Skip processing: No operation file found.` });
-		return false;
+		throw new Error(`Plan ${planData._id} has no operation file`);
 	}
 
 	//
 	// Return false if it does not have feed_info start and end dates
 
 	if (!planData.gtfs_feed_info?.feed_start_date) {
-		Logger.error({ message: `Skip processing: No feed_info start date.` });
-		return false;
+		throw new Error(`Plan ${planData._id} has no feed_info start date`);
 	}
 
 	if (!planData.gtfs_feed_info?.feed_end_date) {
-		Logger.error({ message: `Skip processing: No feed_info end date.` });
-		return false;
+		throw new Error(`Plan ${planData._id} has no feed_info end date`);
 	}
 
 	//
@@ -55,7 +51,7 @@ export async function evaluatePlan(planData: Plan): Promise<boolean> {
 	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
 
 	if (planData.gtfs_feed_info.feed_end_date < currentOperationalDate) {
-		Logger.error({ message: `Skip processing: Plan is no longer active as feed_end_date '${planData.gtfs_feed_info.feed_end_date}' is before current date '${currentOperationalDate}'.` });
+		Logger.info({ message: `Skip processing: Plan is no longer active as feed_end_date '${planData.gtfs_feed_info.feed_end_date}' is before current date '${currentOperationalDate}'.` });
 		return false;
 	}
 
