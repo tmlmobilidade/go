@@ -16,11 +16,11 @@ export interface PerformInTimeChunksOptions {
 	endDate?: UnixMilliseconds
 	intervalHrs: number
 	onChunk: (chunk: PerformInTimeChunksItem) => Promise<void>
-	order?: 'asc' | 'desc'
+	order: 'asc' | 'desc'
 	startDate: UnixMilliseconds
 }
 
-export async function performInTimeChunks({ endDate, intervalHrs, onChunk, order = 'desc', startDate }: PerformInTimeChunksOptions) {
+export async function performInTimeChunks({ endDate, intervalHrs, onChunk, order, startDate }: PerformInTimeChunksOptions) {
 	//
 
 	// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -32,15 +32,7 @@ export async function performInTimeChunks({ endDate, intervalHrs, onChunk, order
 
 	const endDateValue = endDate || Dates.now('utc').minus({ seconds: 30 }).unix_milliseconds;
 
-	const allTimestampChunks = splitTimeIntervals(startDate, endDateValue, intervalHrs);
-
-	//
-	// Sort the timestamp chunks in the desired order.
-	// Timestamp chunks are usually sorted in descending order, so that more recent data is processed first.
-	// Timestamp chunks are in the format { start: day1, end: day2 }, so end is always greater than start.
-	// This might be confusing as the array of chunks itself is sorted in descending order, but the chunks individually are not.
-
-	allTimestampChunks.sort((a, b) => order === 'asc' ? a.start - b.start : b.start - a.start);
+	const allTimestampChunks = splitTimeIntervals(startDate, endDateValue, intervalHrs, order);
 
 	//
 	// Iterate over each timestamp chunk and sync the documents.
