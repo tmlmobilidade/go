@@ -1,12 +1,12 @@
 'use client';
 
-import { useAlertsCreateFormStepsContext } from '@/components/create/AlertsCreateFormSteps.context';
-import { AlertCreateStepAgency } from '@/components/create/steps/AlertCreateStepAgency';
-import { AlertCreateStepCause } from '@/components/create/steps/AlertCreateStepCause';
-import { AlertCreateStepDates } from '@/components/create/steps/AlertCreateStepDates';
-import { AlertCreateStepEffect } from '@/components/create/steps/AlertCreateStepEffect';
-import { AlertCreateStepReferences } from '@/components/create/steps/AlertCreateStepReferences';
-import { AlertCreateStepSummary } from '@/components/create/steps/AlertCreateStepSummary';
+import { useAlertsCreateFormStepsContext } from '@/components/alerts/create/AlertsCreateFormSteps.context';
+import { AlertCreateStepAgency } from '@/components/alerts/create/steps/AlertCreateStepAgency';
+import { AlertCreateStepCause } from '@/components/alerts/create/steps/AlertCreateStepCause';
+import { AlertCreateStepDates } from '@/components/alerts/create/steps/AlertCreateStepDates';
+import { AlertCreateStepEffect } from '@/components/alerts/create/steps/AlertCreateStepEffect';
+import { AlertCreateStepReferences } from '@/components/alerts/create/steps/AlertCreateStepReferences';
+import { AlertCreateStepSummary } from '@/components/alerts/create/steps/AlertCreateStepSummary';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { NoDataLabel, Surface, useMeContext } from '@tmlmobilidade/ui';
 

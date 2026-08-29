@@ -1,12 +1,12 @@
 'use client';
 
-import { ReferencesEditor } from '@/components/alerts/references/shared/ReferencesEditor';
-import { useAlertsAgenciesData } from '@/components/alerts/shared/use-alerts-agencies-data';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { LoadingSection, NoDataLabel, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ReferencesEditor } from '../../references/shared/ReferencesEditor';
+import { useAlertsAgenciesData } from '../../shared/use-alerts-agencies-data';
 import { useAlertsDetailFormContext } from '../AlertsDetailForm.context';
 
 /* * */

@@ -1,10 +1,10 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
-import { ReferencesEditorStopsItem } from '@/components/references/stops/ReferencesEditorStopsItem';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, LoadingSection, NoDataLabel, Section, Surface } from '@tmlmobilidade/ui';
 
+import { useReferencesEditorContext } from '../../shared/ReferencesEditor.context';
+import { ReferencesEditorStopsItem } from '../ReferencesEditorStopsItem';
 import { useAlertsStopsData } from '../use-alerts-stops-data';
 
 /* * */

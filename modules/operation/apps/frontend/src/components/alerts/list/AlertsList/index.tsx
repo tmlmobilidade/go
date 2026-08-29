@@ -1,11 +1,5 @@
 'use client';
 
-import { useAlertsDetailAlertId } from '@/components/alerts/detail/use-alerts-detail-alert-id';
-import { AlertsListHeader } from '@/components/alerts/list/AlertsListHeader';
-import { AlertsListFiltersBar } from '@/components/alerts/list/filters/AlertsListFiltersBar';
-import { AlertsListCellCauseEffect } from '@/components/alerts/list/table/AlertsListCellCauseEffect';
-import { AlertsListCellReferenceType } from '@/components/alerts/list/table/AlertsListCellReferenceType';
-import { useAlertsAgenciesData } from '@/components/alerts/shared/use-alerts-agencies-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertsListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -13,6 +7,12 @@ import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
+import { useAlertsDetailAlertId } from '../../detail/use-alerts-detail-alert-id';
+import { AlertsListHeader } from '../../list/AlertsListHeader';
+import { AlertsListFiltersBar } from '../../list/filters/AlertsListFiltersBar';
+import { AlertsListCellCauseEffect } from '../../list/table/AlertsListCellCauseEffect';
+import { AlertsListCellReferenceType } from '../../list/table/AlertsListCellReferenceType';
+import { useAlertsAgenciesData } from '../../shared/use-alerts-agencies-data';
 import { useAlertsListData } from '../use-alerts-list-data';
 
 /* * */

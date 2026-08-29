@@ -1,7 +1,7 @@
 'use client';
 
-import { ReferencesEditor } from '@/components/references/shared/ReferencesEditor';
-import { useAlertsAgenciesData } from '@/components/shared/use-alerts-agencies-data';
+import { ReferencesEditor } from '@/components/alerts/references/shared/ReferencesEditor';
+import { useAlertsAgenciesData } from '@/components/alerts/shared/use-alerts-agencies-data';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { LoadingSection, NoDataLabel, Section, useStandardFormWatch } from '@tmlmobilidade/ui';

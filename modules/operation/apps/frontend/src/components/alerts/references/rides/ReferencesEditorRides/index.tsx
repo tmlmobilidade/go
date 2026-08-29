@@ -1,10 +1,10 @@
 'use client';
 
-import { ReferencesEditorRidesFilters } from '@/components/references/rides/ReferencesEditorRidesFilters';
-import { ReferencesEditorRidesList } from '@/components/references/rides/ReferencesEditorRidesList';
-import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { useMemo, useState } from 'react';
 
+import { useReferencesEditorContext } from '../../shared/ReferencesEditor.context';
+import { ReferencesEditorRidesFilters } from '../ReferencesEditorRidesFilters';
+import { ReferencesEditorRidesList } from '../ReferencesEditorRidesList';
 import { useAlertsRidesData } from '../use-alerts-rides-data';
 
 /* * */

@@ -1,6 +1,6 @@
 'use client';
 
-import { useAlertsListData } from '@/components/list/use-alerts-list-data';
+import { useAlertsListData } from '@/components/alerts/list/use-alerts-list-data';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Alert } from '@tmlmobilidade/go-types-operation';
 import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';

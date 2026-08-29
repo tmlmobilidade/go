@@ -1,8 +1,9 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { AlertsRidesItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { Checkbox, DataTable, DataTableColumn, displayUnixMilliseconds, Label, LoadingSection, NoDataLabel, OperationalDateDisplay, OperationalStatusDisplay, Section, SeenStatusDisplay, Surface, Tag } from '@tmlmobilidade/ui';
+
+import { useReferencesEditorContext } from '../../shared/ReferencesEditor.context';
 
 /* * */
 

@@ -1,11 +1,11 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { Button, Grid, MultiSelect, Section, Select, type SelectDataItem, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
+import { useReferencesEditorContext } from '../../shared/ReferencesEditor.context';
 import { useAlertsStopsData } from '../use-alerts-stops-data';
 
 /* * */

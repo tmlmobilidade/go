@@ -1,10 +1,11 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Divider, Grid, Section, SegmentedControl, useMeContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useReferencesEditorContext } from '../../shared/ReferencesEditor.context';
 
 /* * */
 

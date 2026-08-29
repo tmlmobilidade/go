@@ -1,8 +1,9 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { IconArrowLoopRight } from '@tabler/icons-react';
 import { Grid, MultiSelect, SearchField, Section, SegmentedControl } from '@tmlmobilidade/ui';
+
+import { useReferencesEditorContext } from '../../shared/ReferencesEditor.context';
 
 /* * */
 

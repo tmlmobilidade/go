@@ -1,10 +1,10 @@
 'use client';
 
-import { ReferencesEditorLinesItem } from '@/components/references/lines/ReferencesEditorLinesItem';
-import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, LoadingSection, NoDataLabel, Section, Surface } from '@tmlmobilidade/ui';
 
+import { useReferencesEditorContext } from '../../shared/ReferencesEditor.context';
+import { ReferencesEditorLinesItem } from '../ReferencesEditorLinesItem';
 import { useAlertsLinesData } from '../use-alerts-lines-data';
 
 /* * */

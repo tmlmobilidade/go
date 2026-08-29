@@ -1,11 +1,11 @@
 'use client';
 
-import { ReferencesEditorLines } from '@/components/references/lines/ReferencesEditorLines';
-import { ReferencesEditorRides } from '@/components/references/rides/ReferencesEditorRides';
-import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
-import { ReferencesEditorAgency } from '@/components/references/shared/ReferencesEditorAgency';
-import { ReferencesEditorControls } from '@/components/references/shared/ReferencesEditorControls';
-import { ReferencesEditorStops } from '@/components/references/stops/ReferencesEditorStops';
+import { ReferencesEditorLines } from '../../lines/ReferencesEditorLines';
+import { ReferencesEditorRides } from '../../rides/ReferencesEditorRides';
+import { useReferencesEditorContext } from '../../shared/ReferencesEditor.context';
+import { ReferencesEditorAgency } from '../../shared/ReferencesEditorAgency';
+import { ReferencesEditorControls } from '../../shared/ReferencesEditorControls';
+import { ReferencesEditorStops } from '../../stops/ReferencesEditorStops';
 
 /* * */
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { useAlertsAgenciesData } from '@/components/shared/use-alerts-agencies-data';
+import { useAlertsAgenciesData } from '@/components/alerts/shared/use-alerts-agencies-data';
 import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AlertCauseIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useStandardFormWatch } from '@tmlmobilidade/ui';

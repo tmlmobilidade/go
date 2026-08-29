@@ -1,12 +1,12 @@
 'use client';
 
-import { AlertCreateFooter } from '@/components/alerts/create/AlertCreateFooter';
-import { AlertCreateHeader } from '@/components/alerts/create/AlertCreateHeader';
-import { AlertCreateSteps } from '@/components/alerts/create/steps/AlertCreateSteps';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { NoDataLabel, Pane, Surface, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
+import { AlertCreateFooter } from '../../create/AlertCreateFooter';
+import { AlertCreateHeader } from '../../create/AlertCreateHeader';
+import { AlertCreateSteps } from '../../create/steps/AlertCreateSteps';
 import { AlertsCreateFormContextProvider } from '../AlertsCreateForm.context';
 import { AlertsCreateFormStepsContextProvider } from '../AlertsCreateFormSteps.context';
 

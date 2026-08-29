@@ -1,6 +1,6 @@
 'use client';
 
-import { useAlertsAgenciesData } from '@/components/shared/use-alerts-agencies-data';
+import { useAlertsAgenciesData } from '@/components/alerts/shared/use-alerts-agencies-data';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Grid, Label, openConfirmModal, Section, Select, StandardFormController } from '@tmlmobilidade/ui';
