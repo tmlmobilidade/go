@@ -130,7 +130,7 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 			Logger.info({ message: `Marked as 'waiting': ${matchingRides.length} Rides (${timer.get()})` });
 
 			//
-		}, 500); // The chunk size
+		}, 100); // The chunk size
 
 		//
 	} catch (error) {
