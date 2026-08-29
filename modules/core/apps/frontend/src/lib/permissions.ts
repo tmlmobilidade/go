@@ -321,7 +321,7 @@ const linesActions: PermissionConfig = {
 	title: 'Permissões de Linhas',
 };
 
-const fleetActions: PermissionConfig = {
+const vehiclesActions: PermissionConfig = {
 	actions: [
 		{ action: 'read', description: 'Permite ver veículos', label: 'Ver veículos', resources: ['AGENCIES'] },
 		{ action: 'create', description: 'Permite criar um veículo', label: 'Criar veículo', resources: ['AGENCIES'] },
@@ -358,7 +358,7 @@ export const permissionsConfig = [
 	stopActions,
 	rideActions,
 	performanceActions,
-	fleetActions,
+	vehiclesActions,
 	annotationsActions,
 	periodsActions,
 	faresActions,
