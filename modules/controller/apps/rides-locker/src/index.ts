@@ -37,7 +37,6 @@ async function main() {
 			intervalHrs: 1,
 			onChunk: async (chunk) => {
 				//
-				//
 
 				const chunkTimer = new Timer();
 				const progress = `[${chunk.index + 1}/${chunk.total}]`;
@@ -47,29 +46,27 @@ async function main() {
 
 				//
 				// Fetch the ride acceptances.
+
 				const foundRides = await goDb.operation.rideAcceptances.findMany({ created_at: { $gte: chunk.start, $lte: chunk.end } });
 
 				//
 				// Loop through the found rides and process
+
 				let totalRides = 0;
+
 				for (const rideAcceptance of foundRides) {
-				//
-
 					totalRides++;
-
 					if (rideAcceptance.is_locked) continue;
-
 					await goDb.operation.rideAcceptances.updateById(rideAcceptance._id, { ...rideAcceptance, is_locked: true, updated_by: 'system' });
 					Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance._id}.` });
 				}
-
-				//
 
 				Logger.info({ message: `Found ${totalRides} ride acceptances. (${chunkTimer.get()})` });
 
 				Logger.spacer(1);
 				Logger.divider();
 			},
+			order: 'desc',
 			startDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK }).unix_milliseconds,
 		});
 
