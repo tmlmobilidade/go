@@ -1,8 +1,10 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexBankingTap, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { performInChunks } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -19,65 +21,110 @@ type AnySimplifiedApexDocument =
   | SimplifiedApexOnBoardSale
   | SimplifiedApexValidation;
 
+/* * */
+
+export interface ApexRidesCallbackWindow {
+	agency_id: string
+	trip_id: string
+	window_end: number
+	window_start: number
+}
+
 /**
- * Callback function to set Rides as 'waiting' based on new SimplifiedApex data.
+ * Callback function to set Rides as 'waiting' based on new AnySimplifiedApexDocument data.
  * This function identifies all Rides that are affected by the new data and marks them as 'waiting',
  * which will trigger the necessary reprocessing in the system.
- * @param data An array of SimplifiedApex documents that have been inserted or updated.
+ * @param data An array of AnySimplifiedApexDocument documents that have been inserted or updated.
  */
 export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 	try {
 		//
 
-		throw new Error('Not implemented');
+		const timer = new Timer();
 
-		// const timer = new Timer();
+		//
+		// Skip if there's no data to process
 
-		// //
-		// // Skip if there's no data to process
+		if (!data || data.length === 0) return;
 
-		// if (!data || data.length === 0) return;
+		await performInChunks(data, async (chunk) => {
+			//
 
-		// //
-		// // Build out the query to find all Rides
-		// // that are affected by the new data.
+			//
+			// Build out the query to find all Rides
+			// that are affected by the new data.
 
-		// const updateRidesOps = data
-		// 	// Filter out documents that don't have a trip_id,
-		// 	// as they can't be associated with a Ride.
-		// 	.filter(item => !!item.trip_id)
-		// 	// Map each document to a query that will match
-		// 	// Rides that are affected by the new data.
-		// 	.map((item: AnySimplifiedApexDocument) => {
-		// 		const standardWindowInterval = Dates
-		// 			.fromUnixMilliseconds(item.created_at)
-		// 			.std_window;
-		// 		return {
-		// 			agency_id: item.agency_id,
-		// 			start_time_scheduled: {
-		// 				$gte: standardWindowInterval.start,
-		// 				$lte: standardWindowInterval.end,
-		// 			},
-		// 			trip_id: item.trip_id,
-		// 		};
-		// 	});
+			const callbackWindowsMap = new Map<string, ApexRidesCallbackWindow>();
 
-		// //
-		// // Skip if there are no valid queries to run
+			for (const item of chunk) {
+				if (!item.trip_id) continue;
+				const standardWindowInterval = Dates
+					.fromUnixMilliseconds(item.created_at)
+					.std_window;
+				const window: ApexRidesCallbackWindow = {
+					agency_id: item.agency_id,
+					trip_id: item.trip_id,
+					window_end: standardWindowInterval.end,
+					window_start: standardWindowInterval.start,
+				};
+				callbackWindowsMap.set(`${window.agency_id}|${window.trip_id}|${window.window_start}|${window.window_end}`, window);
+			}
 
-		// if (!updateRidesOps.length) return;
+			const callbackWindows: ApexRidesCallbackWindow[] = [...callbackWindowsMap.values()];
 
-		// //
-		// // Run the update query to mark all affected Rides as 'waiting',
-		// // which will trigger the necessary reprocessing in the system.
+			if (!callbackWindows.length) return;
 
-		// const updateRidesResult = await goDb.operation.rides.updateMany(
-		// 	{ $or: updateRidesOps },
-		// 	{ system_status: 'waiting' },
-		// 	{ returnResults: false },
-		// );
+			//
+			// Build the ClickHouse query and parameters.
 
-		// Logger.info({ message: `Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${timer.get()})` });
+			const conditions = callbackWindows.map((_, index) => `
+				(
+					agency_id = {agency_id_${index}:String}
+					AND trip_id = {trip_id_${index}:String}
+					AND start_time_scheduled >= {window_start_${index}:Int64}
+					AND start_time_scheduled <= {window_end_${index}:Int64}
+				)
+			`);
+
+			const query = `
+				SELECT *
+				FROM operation.rides
+				WHERE ${conditions.join('\nOR\n')}
+				ORDER BY updated_at DESC
+				LIMIT 1 BY _id
+			`;
+
+			const queryParams = Object.fromEntries(
+				callbackWindows.flatMap((window, index) => [
+					[`agency_id_${index}`, window.agency_id],
+					[`trip_id_${index}`, window.trip_id],
+					[`window_start_${index}`, window.window_start],
+					[`window_end_${index}`, window.window_end],
+				]),
+			);
+
+			//
+			// Retrieve the latest version of all affected Rides.
+
+			const matchingRides = await labDb.queryFromString<Ride>(query, queryParams);
+
+			//
+			// For the affected Rides, set them as 'waiting' and insert a new document in the operation.rides_waiting collection.
+
+			const now = Dates.now('utc').unix_milliseconds;
+
+			const newRides: Ride[] = matchingRides.map(ride => ({
+				...ride,
+				processing_status: 'waiting',
+				updated_at: now,
+			}));
+
+			await labDb.operation.rides.insert('JSONEachRow', newRides);
+
+			Logger.info({ message: `Marked as 'waiting': ${matchingRides.length} Rides (${timer.get()})` });
+
+			//
+		}, 500); // The chunk size
 
 		//
 	} catch (error) {
