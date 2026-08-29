@@ -1,8 +1,9 @@
 /* * */
 
-import colors from '@/styles/colors.js';
-import { fontFamily, fontSize, fontWeight } from '@/styles/font.js';
 import { type CSSProperties } from 'react';
+
+import colors from '../../styles/colors.js';
+import { fontFamily, fontSize, fontWeight } from '../../styles/font.js';
 
 /* * */
 /* TEXT */

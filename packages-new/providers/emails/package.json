@@ -37,6 +37,7 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/utils": "*",
 		"nodemailer": "9.0.6",
 		"react": "19.2.8",

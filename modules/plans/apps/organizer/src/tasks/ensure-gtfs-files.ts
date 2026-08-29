@@ -77,6 +77,7 @@ export async function ensureGtfsFiles() {
 			agency_phone: foundAgencyData.phone,
 			agency_timezone: foundAgencyData.timezone,
 			agency_url: foundAgencyData.website_url,
+			cemv_support: '0',
 		};
 
 		const updateAgencyTxtString = Papa.unparse([updatedAgencyTxtData]);

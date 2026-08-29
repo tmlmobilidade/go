@@ -1,8 +1,8 @@
 /* * */
 
-import { GO_HOMEPAGE_URL } from '@/constants.js';
 import { Link, Section, Text } from 'react-email';
 
+import { GO_HOMEPAGE_URL } from '../../constants.js';
 import styles from './styles.js';
 
 /* * */

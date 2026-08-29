@@ -1,8 +1,9 @@
 /* * */
 
-import colors from '@/styles/colors.js';
-import { fontSize, fontWeight } from '@/styles/font.js';
 import { type PropsWithChildren } from 'react';
+
+import colors from '../../styles/colors.js';
+import { fontSize, fontWeight } from '../../styles/font.js';
 
 /* * */
 

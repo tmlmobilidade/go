@@ -1,10 +1,10 @@
 /* * */
 
-import colors from '@/styles/colors.js';
-import { fontSize, fontWeight } from '@/styles/font.js';
 import { type PropsWithChildren } from 'react';
 import { Text } from 'react-email';
 
+import colors from '../../styles/colors.js';
+import { fontSize, fontWeight } from '../../styles/font.js';
 import styles from './styles.js';
 
 /* * */

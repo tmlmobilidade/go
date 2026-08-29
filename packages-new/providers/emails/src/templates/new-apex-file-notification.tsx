@@ -1,15 +1,16 @@
 /* * */
 
-import { Anchor } from '@/components/Anchor/index.js';
-import { Greeting } from '@/components/Greeting/index.js';
-import { Paragraph } from '@/components/Paragraph/index.js';
-import { Span } from '@/components/Span/index.js';
-import { Wrapper } from '@/components/Wrapper/index.js';
-import { emailProvider } from '@/email.provider.js';
-import { type SendEmailProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { render } from 'react-email';
+
+import { Anchor } from '../components/Anchor/index.js';
+import { Greeting } from '../components/Greeting/index.js';
+import { Paragraph } from '../components/Paragraph/index.js';
+import { Span } from '../components/Span/index.js';
+import { Wrapper } from '../components/Wrapper/index.js';
+import { emailProvider } from '../email.provider.js';
+import { type SendEmailProps } from '../types.js';
 
 /* * */
 
@@ -20,7 +21,7 @@ export const newApexFileNotificationSubject = 'Novo ficheiro de configuração A
 export interface NewApexFileNotificationTemplateProps {
 	agencyName: string
 	planId: string
-	startDate: OperationalDate
+	startDate: OperationalDateInt
 }
 
 /* * */
@@ -35,7 +36,7 @@ export default function NewApexFileNotificationTemplate({ agencyName, planId, st
 				do operador
 				<Span spaceAfter spaceBefore weight="bold">{agencyName}</Span>
 				com início a
-				<Span spaceBefore weight="bold">{Dates.fromOperationalDate(startDate, 'Europe/Lisbon').toFormat('yyyy-MM-dd')}</Span>
+				<Span spaceBefore weight="bold">{Dates.fromOperationalDateInt(startDate, 'Europe/Lisbon').toLocaleString('short')}</Span>
 				.
 			</Paragraph>
 			<Paragraph bold color="success">O ficheiro de configuração está em anexo neste email.</Paragraph>
@@ -49,7 +50,7 @@ export default function NewApexFileNotificationTemplate({ agencyName, planId, st
 NewApexFileNotificationTemplate.PreviewProps = {
 	agencyName: 'Operador 1',
 	planId: 'ABC56',
-	startDate: '20260101' as OperationalDate,
+	startDate: 20260101 as OperationalDateInt,
 } satisfies NewApexFileNotificationTemplateProps;
 
 /* * */
