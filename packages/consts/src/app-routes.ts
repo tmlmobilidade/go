@@ -9,19 +9,6 @@ import { getModuleConfig } from './app-configs.js';
 
 export const PAGE_ROUTES = Object.freeze({
 
-	controller: {
-		// BASE
-		BASE: `${getModuleConfig('controller', 'frontend_url')}`,
-
-		// RIDES
-		RIDES_DETAIL: (rideId: string) => `${getModuleConfig('controller', 'frontend_url')}/rides/${encodeURIComponent(rideId)}`,
-		RIDES_LIST: `${getModuleConfig('controller', 'frontend_url')}/rides`,
-
-		// SAMS
-		SAMS_DETAIL: (id: string) => `${getModuleConfig('controller', 'frontend_url')}/sams/${encodeURIComponent(id)}`,
-		SAMS_LIST: `${getModuleConfig('controller', 'frontend_url')}/sams`,
-	},
-
 	core: {
 		// BASE
 		BASE: `${getModuleConfig('core', 'frontend_url')}`,
@@ -131,6 +118,14 @@ export const PAGE_ROUTES = Object.freeze({
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/plans/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('operation', 'frontend_url')}/plans`,
 
+		// RIDES
+		RIDES_DETAIL: (rideId: string) => `${getModuleConfig('operation', 'frontend_url')}/rides/${encodeURIComponent(rideId)}`,
+		RIDES_LIST: `${getModuleConfig('operation', 'frontend_url')}/rides`,
+
+		// SAMS
+		SAMS_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/sams/${encodeURIComponent(id)}`,
+		SAMS_LIST: `${getModuleConfig('operation', 'frontend_url')}/sams`,
+
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/vehicles/${encodeURIComponent(id)}`,
 		VEHICLES_LIST: `${getModuleConfig('operation', 'frontend_url')}/vehicles`,
@@ -166,43 +161,6 @@ export const PAGE_ROUTES = Object.freeze({
 } as const);
 
 export const API_ROUTES = Object.freeze({
-
-	controller: {
-		// BASE
-		BASE: `${getModuleConfig('controller', 'api_url')}`,
-
-		// RIDE-ACCEPTANCE
-		ACCEPTANCE_CHANGE_STATUS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/acceptance/change-status`,
-		ACCEPTANCE_COMMENT: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/acceptance/comment`,
-		ACCEPTANCE_DETAIL: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/acceptance`,
-		ACCEPTANCE_JUSTIFY: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/acceptance/justify`,
-		ACCEPTANCE_LOCK: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/acceptance/lock`,
-
-		// RIDES
-		RIDES_DETAIL_ANALYSES: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/analyses`,
-		RIDES_DETAIL_APEX_BANKING_TAPS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-banking-taps`,
-		RIDES_DETAIL_APEX_LOCATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-locations`,
-		RIDES_DETAIL_APEX_REFUNDS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-refunds`,
-		RIDES_DETAIL_APEX_SALES: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-sales`,
-		RIDES_DETAIL_APEX_VALIDATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-validations`,
-		RIDES_DETAIL_HASHED_SHAPE: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-shape`,
-		RIDES_DETAIL_HASHED_TRIP: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-trip`,
-		RIDES_DETAIL_REPROCESS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/reprocess`,
-		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/ride`,
-		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/vehicle-events`,
-		RIDES_FAVORITES: `${getModuleConfig('controller', 'api_url')}/rides/favorites`,
-		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides/list`,
-		RIDES_LIST_AGENCIES: `${getModuleConfig('controller', 'api_url')}/rides/list-agencies`,
-
-		// SAMS
-		SAMS_APEX_VERSIONS: `${getModuleConfig('controller', 'api_url')}/sams/apex-versions`,
-		SAMS_BASE: `${getModuleConfig('controller', 'api_url')}/sams/base`,
-		SAMS_DETAIL: (id: string) => `${getModuleConfig('controller', 'api_url')}/sams/${encodeURIComponent(id)}`,
-		SAMS_EXPORT_ANALYSIS: `${getModuleConfig('controller', 'api_url')}/sams/export/analysis`,
-		SAMS_FAVORITES: `${getModuleConfig('controller', 'api_url')}/sams/favorites`,
-		SAMS_LIST: `${getModuleConfig('controller', 'api_url')}/sams`,
-		SAMS_TIMELINE_SUMMARY: `${getModuleConfig('controller', 'api_url')}/sams/timeline-summary`,
-	},
 
 	core: {
 		// BASE
@@ -466,6 +424,38 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('operation', 'api_url')}/plans/list`,
 		PLANS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/plans/list-agencies`,
+
+		// RIDE-ACCEPTANCES
+		RIDE_ACCEPTANCES_CHANGE_STATUS: (id: string) => `${getModuleConfig('operation', 'api_url')}/ride-acceptances/${encodeURIComponent(id)}/change-status`,
+		RIDE_ACCEPTANCES_COMMENT: (id: string) => `${getModuleConfig('operation', 'api_url')}/ride-acceptances/${encodeURIComponent(id)}/comment`,
+		RIDE_ACCEPTANCES_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/ride-acceptances/${encodeURIComponent(id)}`,
+		RIDE_ACCEPTANCES_JUSTIFY: (id: string) => `${getModuleConfig('operation', 'api_url')}/ride-acceptances/${encodeURIComponent(id)}/justify`,
+		RIDE_ACCEPTANCES_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/ride-acceptances/${encodeURIComponent(id)}/lock`,
+
+		// RIDES
+		RIDES_DETAIL_ANALYSES: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/analyses`,
+		RIDES_DETAIL_APEX_BANKING_TAPS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/apex-banking-taps`,
+		RIDES_DETAIL_APEX_LOCATIONS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/apex-locations`,
+		RIDES_DETAIL_APEX_REFUNDS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/apex-refunds`,
+		RIDES_DETAIL_APEX_SALES: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/apex-sales`,
+		RIDES_DETAIL_APEX_VALIDATIONS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/apex-validations`,
+		RIDES_DETAIL_HASHED_SHAPE: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-shape`,
+		RIDES_DETAIL_HASHED_TRIP: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-trip`,
+		RIDES_DETAIL_REPROCESS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/reprocess`,
+		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/ride`,
+		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/vehicle-events`,
+		RIDES_FAVORITES: `${getModuleConfig('operation', 'api_url')}/rides/favorites`,
+		RIDES_LIST: `${getModuleConfig('operation', 'api_url')}/rides/list`,
+		RIDES_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/rides/list-agencies`,
+
+		// SAMS
+		SAMS_APEX_VERSIONS: `${getModuleConfig('operation', 'api_url')}/sams/apex-versions`,
+		SAMS_BASE: `${getModuleConfig('operation', 'api_url')}/sams/base`,
+		SAMS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/sams/${encodeURIComponent(id)}`,
+		SAMS_EXPORT_ANALYSIS: `${getModuleConfig('operation', 'api_url')}/sams/export/analysis`,
+		SAMS_FAVORITES: `${getModuleConfig('operation', 'api_url')}/sams/favorites`,
+		SAMS_LIST: `${getModuleConfig('operation', 'api_url')}/sams`,
+		SAMS_TIMELINE_SUMMARY: `${getModuleConfig('operation', 'api_url')}/sams/timeline-summary`,
 
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/vehicles/${encodeURIComponent(id)}`,
