@@ -1,11 +1,11 @@
 'use client';
 
-import { AlertsDetailFootnote } from '@/components/detail/AlertsDetailFootnote';
-import { AlertsDetailHeader } from '@/components/detail/AlertsDetailHeader';
-import { AlertsDetailSectionCauseEffect } from '@/components/detail/AlertsDetailSectionCauseEffect';
-import { AlertsDetailSectionDates } from '@/components/detail/AlertsDetailSectionDates';
-import { AlertsDetailSectionReferences } from '@/components/detail/AlertsDetailSectionReferences';
-import { AlertsDetailSectionTexts } from '@/components/detail/AlertsDetailSectionTexts';
+import { AlertsDetailFootnote } from '@/components/alerts/detail/AlertsDetailFootnote';
+import { AlertsDetailHeader } from '@/components/alerts/detail/AlertsDetailHeader';
+import { AlertsDetailSectionCauseEffect } from '@/components/alerts/detail/AlertsDetailSectionCauseEffect';
+import { AlertsDetailSectionDates } from '@/components/alerts/detail/AlertsDetailSectionDates';
+import { AlertsDetailSectionReferences } from '@/components/alerts/detail/AlertsDetailSectionReferences';
+import { AlertsDetailSectionTexts } from '@/components/alerts/detail/AlertsDetailSectionTexts';
 import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
