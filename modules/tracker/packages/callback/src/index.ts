@@ -64,14 +64,17 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 			//
 			// Build the ClickHouse query and parameters.
 
-			const conditions = callbackWindows.map((_, index) => `
-				(
-					agency_id = {agency_id_${index}:String}
-					AND trip_id = {trip_id_${index}:String}
-					AND start_time_scheduled >= {window_start_${index}:Int64}
-					AND start_time_scheduled <= {window_end_${index}:Int64}
-				)
-			`);
+			const conditions = callbackWindows.map((_, index) => {
+				const paramIndex = index * 4;
+				return `
+					(
+						agency_id = $${paramIndex}
+						AND trip_id = $${paramIndex + 1}
+						AND start_time_scheduled >= $${paramIndex + 2}
+						AND start_time_scheduled <= $${paramIndex + 3}
+					)
+				`;
+			});
 
 			const query = `
 				SELECT *
@@ -82,12 +85,15 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 			`;
 
 			const queryParams = Object.fromEntries(
-				callbackWindows.flatMap((window, index) => [
-					[`agency_id_${index}`, window.agency_id],
-					[`trip_id_${index}`, window.trip_id],
-					[`window_start_${index}`, window.window_start],
-					[`window_end_${index}`, window.window_end],
-				]),
+				callbackWindows.flatMap((window, index) => {
+					const paramIndex = index * 4;
+					return [
+						[paramIndex, window.agency_id],
+						[paramIndex + 1, window.trip_id],
+						[paramIndex + 2, window.window_start],
+						[paramIndex + 3, window.window_end],
+					];
+				}),
 			);
 
 			//
