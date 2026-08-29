@@ -61,7 +61,7 @@ export function RideAnalysisMap() {
 					sequence: index,
 					stop_id: vehicleEvent.stop_id,
 					timestamp: Dates
-						.fromUnixTimestamp(vehicleEvent.created_at)
+						.fromUnixMilliseconds(vehicleEvent.created_at)
 						.setZone('local', 'offset_only')
 						.toFormat('dd/MM/yyyy HH:mm:ss'),
 					trigger_door: '-',

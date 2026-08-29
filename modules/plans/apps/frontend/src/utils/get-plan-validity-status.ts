@@ -1,43 +1,43 @@
 /* * */
 
 import { type PlanNormalized } from '@/types/normalized';
-import { Dates } from '@tmlmobilidade/dates';
-import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
-export const getPlanValidityStatus = (startDate: GtfsDate, endDate: GtfsDate): PlanNormalized['validity_status'] => {
+export const getPlanValidityStatus = (startDate: OperationalDateInt, endDate: OperationalDateInt): PlanNormalized['validity_status'] => {
 	//
 
 	//
 	// Get current date in Unix timestamp format
 
-	const nowInUnixTimestamp = Dates
+	const nowInUnixMilliseconds = Dates
 		.now('Europe/Lisbon')
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	//
 	// Parse start and end dates to Unix timestamp format
 
-	const startDateUnixTimestamp = Dates
-		.fromOperationalDate(startDate, 'Europe/Lisbon')
+	const startDateUnixMilliseconds = Dates
+		.fromOperationalDateInt(startDate, 'Europe/Lisbon')
 		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-		.unix_timestamp;
+		.unix_milliseconds;
 
-	const endDateUnixTimestamp = Dates
-		.fromOperationalDate(endDate, 'Europe/Lisbon')
+	const endDateUnixMilliseconds = Dates
+		.fromOperationalDateInt(endDate, 'Europe/Lisbon')
 		.plus({ days: 1 })
 		.set({ hour: 3, millisecond: 59, minute: 59, second: 59 })
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	//
 	// Return validity status
 
-	if (nowInUnixTimestamp > startDateUnixTimestamp && nowInUnixTimestamp > endDateUnixTimestamp) return 'expired';
+	if (nowInUnixMilliseconds > startDateUnixMilliseconds && nowInUnixMilliseconds > endDateUnixMilliseconds) return 'expired';
 
-	if (nowInUnixTimestamp >= startDateUnixTimestamp && nowInUnixTimestamp <= endDateUnixTimestamp) return 'active';
+	if (nowInUnixMilliseconds >= startDateUnixMilliseconds && nowInUnixMilliseconds <= endDateUnixMilliseconds) return 'active';
 
-	if (nowInUnixTimestamp < startDateUnixTimestamp && nowInUnixTimestamp < endDateUnixTimestamp) return 'upcoming';
+	if (nowInUnixMilliseconds < startDateUnixMilliseconds && nowInUnixMilliseconds < endDateUnixMilliseconds) return 'upcoming';
 
 	//
 };

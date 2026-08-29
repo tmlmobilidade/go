@@ -1,25 +1,25 @@
 /* * */
 
-import { GtfsBinarySchema } from '@/shared/binary.js';
-import { GtfsTimeSchema } from '@/shared/gtfs-time.js';
-import { GtfsPickupDropoffTypeSchema } from '@/shared/pickup-dropoff-type.js';
-import { NonNegativeFloatSchema, NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeFloatSchema, NonNegativeIntegerSchema, OperationalTimeSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { GtfsBinarySchema } from '../shared/binary.js';
+import { GtfsPickupDropoffTypeSchema } from '../shared/pickup-dropoff-type.js';
 
 /* * */
 
 export const GtfsStopTimesSchema = z.object({
-	arrival_time: GtfsTimeSchema,
-	continuous_drop_off: GtfsPickupDropoffTypeSchema.optional(),
-	continuous_pickup: GtfsPickupDropoffTypeSchema.optional(),
-	departure_time: GtfsTimeSchema,
-	drop_off_type: GtfsPickupDropoffTypeSchema.optional(),
-	pickup_type: GtfsPickupDropoffTypeSchema.optional(),
-	shape_dist_traveled: NonNegativeFloatSchema.optional(),
-	stop_headsign: z.string().optional(),
+	arrival_time: OperationalTimeSchema,
+	continuous_drop_off: GtfsPickupDropoffTypeSchema.default('1'),
+	continuous_pickup: GtfsPickupDropoffTypeSchema.default('1'),
+	departure_time: OperationalTimeSchema,
+	drop_off_type: GtfsPickupDropoffTypeSchema.default('1'),
+	pickup_type: GtfsPickupDropoffTypeSchema.default('1'),
+	shape_dist_traveled: NonNegativeFloatSchema.default(0),
+	stop_headsign: z.string().default(''),
 	stop_id: z.string(),
 	stop_sequence: NonNegativeIntegerSchema,
-	timepoint: GtfsBinarySchema,
+	timepoint: GtfsBinarySchema.default('0'),
 	trip_id: z.string(),
 });
 

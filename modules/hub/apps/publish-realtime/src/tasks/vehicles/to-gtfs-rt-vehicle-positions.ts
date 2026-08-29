@@ -2,7 +2,7 @@
 
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
+import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -51,7 +51,7 @@ export function toGtfsRtVehiclePositions(positions: HubVehiclePosition[]): GtfsR
 		header: {
 			gtfs_realtime_version: '2.0',
 			incrementality: 'FULL_DATASET',
-			timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			timestamp: Dates.now('Europe/Lisbon').unix_milliseconds,
 		},
 	};
 }

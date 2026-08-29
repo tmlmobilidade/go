@@ -1,16 +1,17 @@
-/* eslint-disable perfectionist/sort-objects */
+/* * */
 
-import { type ExportGtfsContext } from '@/types/context.js';
-import { clampCoordinate } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-public-info';
+import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
+import { type HubGtfsExportStopsInput, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { type ExportGtfsContext } from '../types/context.js';
+
 /* * */
 
-export async function exportStopsFile(agencyIds: string[], context: ExportGtfsContext) {
+export async function exportStopsFile(context: ExportGtfsContext, agencyIds: string[]) {
 	//
 
 	const timer = new Timer();
@@ -35,15 +36,18 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 	//
 	// Get all the stops for the specified agency IDs
 
-	const allStopsList = await goDb.infrastructure.stops.findMany({
-		'flags.agency_ids': { $in: agencyIds },
-		'is_deleted': false,
-	});
+	const allStopsData = await goDb.infrastructure.stops.findMany(
+		{
+			'flags.agency_ids': { $in: agencyIds },
+			'is_deleted': false,
+		},
+		{ sort: { _id: 1 } },
+	);
 
 	//
 	// Export the stops
 
-	for (const stopData of allStopsList) {
+	for (const stopData of allStopsData) {
 		//
 
 		//
@@ -66,29 +70,27 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 		const matchingParishName = allParishesMap.get(stopData.parish_id);
 		const matchingLocalityName = allLocalitiesMap.get(stopData.locality_id);
 
-		const parsedStopsRow: HubGtfsExportStops = {
-			stop_id: stopData._id,
-			stop_code: stopData._id,
+		const parsedStopsRow: HubGtfsExportStopsInput = {
+			district_id: stopData.district_id,
+			district_name: matchingDistrictName,
 			flags: formattedStopFlagsValue.join('|'),
 			legacy_ids: stopData.legacy_ids.join('|'),
-			stop_name: stopData.name,
-			tts_stop_name: stopData.tts_name ?? '',
-			municipality_id: stopData.municipality_id ?? '',
-			municipality_name: matchingMunicipalityName ?? '',
-			district_id: stopData.district_id ?? '',
-			district_name: matchingDistrictName ?? '',
-			parish_id: stopData.parish_id ?? '',
 			lifecycle_status: stopData.lifecycle_status,
-			parish_name: matchingParishName ?? '',
-			locality_id: stopData.locality_id ?? '',
-			stop_short_name: stopData.short_name,
-			locality_name: matchingLocalityName ?? '',
-			stop_lat: clampCoordinate(stopData.latitude),
-			stop_lon: clampCoordinate(stopData.longitude),
-			wheelchair_boarding: '0',
+			locality_id: stopData.locality_id,
+			locality_name: matchingLocalityName,
 			location_type: '0',
-			parent_station: '',
+			municipality_id: stopData.municipality_id,
+			municipality_name: matchingMunicipalityName,
+			parish_id: stopData.parish_id,
+			parish_name: matchingParishName,
 			platform_code: '',
+			stop_code: String(stopData._id),
+			stop_id: String(stopData._id),
+			stop_lat: LatitudeSchema.parse(stopData.latitude),
+			stop_lon: LongitudeSchema.parse(stopData.longitude),
+			stop_name: stopData.name,
+			tts_stop_name: stopData.tts_name,
+			wheelchair_boarding: '0',
 		};
 
 		const validatedStopsRow = HubGtfsExportStopsSchema.parse(parsedStopsRow);

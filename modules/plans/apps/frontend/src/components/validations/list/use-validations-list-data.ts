@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type ValidationListFilters, type ValidationListItem } from '@tmlmobilidade/go-plans-pckg-types';
-import { type ApiResponse, ProcessingStatus, type UnixTimestamp, ValidityStatus } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, ProcessingStatus, type UnixMilliseconds, ValidityStatus } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -20,7 +20,7 @@ interface UseValidationsListDataReturnType {
 	isLoading: boolean
 	isValidating: boolean
 	mutate: () => void
-	timestamp: null | UnixTimestamp
+	timestamp: null | UnixMilliseconds
 }
 
 /* * */

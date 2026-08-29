@@ -1,14 +1,14 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Label } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
 interface ValidationsListCellDateProps {
-	value: UnixTimestamp
+	value: UnixMilliseconds
 }
 
 /* * */
@@ -24,7 +24,7 @@ export function ValidationsListCellDate({ value }: ValidationsListCellDateProps)
 		if (!value) return 'N/A';
 		// Convert the Unix timestamp to a Date object.
 		return Dates
-			.fromUnixTimestamp(value)
+			.fromUnixMilliseconds(value)
 			.setZone('Europe/Lisbon', 'offset_only')
 			.toLocaleString({ day: '2-digit', hour: '2-digit', minute: '2-digit', month: 'long', year: 'numeric' }, 'pt-PT');
 	}, [value]);

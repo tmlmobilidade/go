@@ -18,7 +18,6 @@ import { z } from 'zod';
  * ```
  */
 export const NonNegativeIntegerSchema = z
-	.coerce
-	.number()
-	.transform(Math.round)
+	.union([z.string(), z.number()])
+	.transform(value => Number(value))
 	.pipe(z.number().int().nonnegative());

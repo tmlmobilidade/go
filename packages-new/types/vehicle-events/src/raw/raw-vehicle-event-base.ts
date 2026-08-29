@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -8,8 +8,8 @@ import { z } from 'zod';
 export const RawVehicleEventBaseSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
-	created_at: UnixTimestampSchema,
+	created_at: UnixMillisecondsSchema,
 	entity_id: z.string(),
-	received_at: UnixTimestampSchema,
+	received_at: UnixMillisecondsSchema,
 	version: z.string(),
 });

@@ -6,7 +6,7 @@ import { PathWaypointHeader } from '@/components/lines/detail/PathWaypointHeader
 import { PathWaypointNextArrivals } from '@/components/lines/detail/PathWaypointNextArrivals';
 import { PathWaypointSpine } from '@/components/lines/detail/PathWaypointSpine';
 import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
-import { type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
+import { type HubWaypoint } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 

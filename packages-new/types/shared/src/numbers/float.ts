@@ -16,5 +16,5 @@ import { z } from 'zod';
  * ```
  */
 export const FloatSchema = z
-	.coerce
-	.number();
+	.union([z.string(), z.number()])
+	.transform(value => Number(value));

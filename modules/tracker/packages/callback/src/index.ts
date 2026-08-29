@@ -83,7 +83,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 					.filter(item => !!item.trip_id)
 					.map((item) => {
 						const standardWindowInterval = Dates
-							.fromUnixTimestamp(item.created_at)
+							.fromUnixMilliseconds(item.created_at)
 							.std_window;
 						const window: TrackerRidesCallbackWindow = {
 							agency_id: item.agency_id,
@@ -128,7 +128,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 		//
 		// For the affected Rides, set them as 'waiting' and insert a new document in the operation.rides_waiting collection.
 
-		const now = Dates.now('utc').unix_timestamp;
+		const now = Dates.now('utc').unix_milliseconds;
 
 		const newRides: Ride[] = matchingRides.map(ride => ({
 			...ride,

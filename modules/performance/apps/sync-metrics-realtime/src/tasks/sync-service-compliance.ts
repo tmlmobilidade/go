@@ -22,11 +22,11 @@ async function processRidesStream(stream, results, agencies, mode: 'last_week' |
 
 		const referenceNow = Dates.now('Europe/Lisbon');
 
-		const nowInUnixTimestamp = mode === 'now'
-			? referenceNow.unix_timestamp - 300_000 // 5 minutes ago
-			: referenceNow.minus({ days: 7 }).unix_timestamp - 300_000;
+		const nowInUnixMilliseconds = mode === 'now'
+			? referenceNow.unix_milliseconds - 300_000 // 5 minutes ago
+			: referenceNow.minus({ days: 7 }).unix_milliseconds - 300_000;
 
-		if (nowInUnixTimestamp - rideData.start_time_scheduled < 0) continue;
+		if (nowInUnixMilliseconds - rideData.start_time_scheduled < 0) continue;
 
 		//
 		// Scheduled rides
@@ -124,7 +124,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	const now = Dates.now('Europe/Lisbon');
 	const currentOperationalDate = now.operational_date;
 	const previousOperationalDate = now.minus({ days: 7 }).operational_date;
-	const previousUntilNowAsUnix = now.minus({ days: 7 }).unix_timestamp;
+	const previousUntilNowAsUnix = now.minus({ days: 7 }).unix_milliseconds;
 
 	//
 	// Initialize results object

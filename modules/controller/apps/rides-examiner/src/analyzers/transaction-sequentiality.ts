@@ -36,7 +36,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 				reason: 'NO_TRANSACTIONS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -112,7 +112,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 				reason: 'ALL_TRANSACTIONS_RECEIVED',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -134,7 +134,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 			reason: 'MISSING_TRANSACTIONS',
 			remarks: missingGapsRemarks,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 
 		//
@@ -149,7 +149,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

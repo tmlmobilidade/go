@@ -1,6 +1,6 @@
 /* * */
 
-import { TimeInterval, type UnixTimestamp, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { TimeInterval, type UnixMilliseconds, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Splits a time interval into smaller intervals of a given duration.
@@ -9,7 +9,7 @@ import { TimeInterval, type UnixTimestamp, UnixTimestampSchema } from '@tmlmobil
  * @param intervalHrs The duration of the intervals in hours.
  * @returns An array of intervals.
  */
-export function splitTimeIntervals(from: UnixTimestamp, to: UnixTimestamp, intervalHrs: number) {
+export function splitTimeIntervals(from: UnixMilliseconds, to: UnixMilliseconds, intervalHrs: number) {
 	//
 
 	//
@@ -32,14 +32,14 @@ export function splitTimeIntervals(from: UnixTimestamp, to: UnixTimestamp, inter
 
 	const finalIntervals: TimeInterval[] = [];
 
-	let endTimestamp: UnixTimestamp = to;
+	let endTimestamp: UnixMilliseconds = to;
 
 	//
 	// Handle the first, potentially shorter interval.
 	// If there is a remainder, create an interval with the remainder as the duration.
 
 	if (remainder > 0) {
-		const startTimestamp = UnixTimestampSchema.parse(Math.max(from, endTimestamp - remainder));
+		const startTimestamp = UnixMillisecondsSchema.parse(Math.max(from, endTimestamp - remainder));
 		finalIntervals.push({ end: endTimestamp, start: startTimestamp });
 		endTimestamp = startTimestamp;
 	}
@@ -50,7 +50,7 @@ export function splitTimeIntervals(from: UnixTimestamp, to: UnixTimestamp, inter
 	// create an interval with the duration of the interval.
 
 	while (endTimestamp > from) {
-		const startTimestamp = UnixTimestampSchema.parse(Math.max(from, endTimestamp - intervalMs));
+		const startTimestamp = UnixMillisecondsSchema.parse(Math.max(from, endTimestamp - intervalMs));
 		finalIntervals.push({ end: endTimestamp, start: startTimestamp });
 		endTimestamp = startTimestamp;
 	}

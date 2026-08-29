@@ -1,7 +1,7 @@
 /* * */
 
 import { GtfsValidationSchema } from '@tmlmobilidade/go-types-operation';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -19,7 +19,7 @@ export const ValidationListItemSchema = GtfsValidationSchema
 		validity_status: true,
 	})
 	.extend({
-		created_at: UnixTimestampSchema,
+		created_at: UnixMillisecondsSchema,
 	});
 
 /**

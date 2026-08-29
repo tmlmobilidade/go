@@ -29,8 +29,8 @@ export async function fetchHistoricalRidesForDayIndex() {
 			ORDER BY start_time_scheduled ASC
 		`,
 		{
-			1: start.unix_timestamp,
-			2: end.unix_timestamp,
+			1: start.unix_milliseconds,
+			2: end.unix_milliseconds,
 		},
 	);
 }

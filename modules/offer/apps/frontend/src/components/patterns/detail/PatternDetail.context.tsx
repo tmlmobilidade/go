@@ -319,11 +319,11 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const addComment = useCallback(async (comment: string) => {
 		try {
 			const commentToAdd = {
-				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				created_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 				created_by: 'will-be-set-by-api',
 				message: comment,
 				type: 'note',
-				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				updated_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 			};
 			const res = await fetchData(API_ROUTES.offer.PATTERNS_DETAIL_COMMENT(patternId), 'POST', commentToAdd);
 

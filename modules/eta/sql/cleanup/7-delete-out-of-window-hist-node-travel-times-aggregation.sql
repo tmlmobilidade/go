@@ -6,7 +6,7 @@
 -- Drop everything whose `operational_date` (UInt32 YYYYMMDD) falls
 -- before today minus the configured window.
 --
--- `operational_date` is built from `fromUnixTimestamp64Milli(created_at)`
+-- `operational_date` is built from `fromUnixMilliseconds64Milli(created_at)`
 -- in the loader (server TZ), so we compare against `today()` here for
 -- consistency.
 --

@@ -42,7 +42,7 @@ async function main() {
 		// await performInTimeChunks({
 		// 	onChunk: syncVehicleEvents,
 		// 	splitBy: { minutes: 5 },
-		// 	startDate: earliestDate.unix_timestamp,
+		// 	startDate: earliestDate.unix_milliseconds,
 		// });
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);

@@ -1,6 +1,6 @@
 /* * */
 
-import { type UnixTimestamp } from '@/datetime/unix-timestamp.js';
+import { type UnixMilliseconds } from '@/datetime/unix-millis.js';
 import { BaseDocumentSchema } from '@/documents/document.js';
 import { type ApprovalStatus, ApprovalStatusSchema } from '@/status/approval.js';
 import { z } from 'zod';
@@ -29,14 +29,14 @@ export const ProposedChangeSchema = BaseDocumentSchema.extend({
 export type ProposedChange<T> = {
 	[P in keyof T]: {
 		_id: string
-		created_at: UnixTimestamp
+		created_at: UnixMilliseconds
 		created_by: string
 		curr_value: T[P]
 		field: P
 		related_id: string
 		scope: Scope
 		status: ApprovalStatus
-		updated_at: UnixTimestamp
+		updated_at: UnixMilliseconds
 		updated_by: string
 	}
 }[keyof T];

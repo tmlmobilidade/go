@@ -2,13 +2,13 @@
 
 import { z } from 'zod';
 
-import { UnixTimestampSchema } from './unix-timestamp.js';
+import { UnixMillisecondsSchema } from './unix-millis.js';
 
 /* * */
 
 export const TimeIntervalSchema = z.object({
-	end: UnixTimestampSchema,
-	start: UnixTimestampSchema,
+	end: UnixMillisecondsSchema,
+	start: UnixMillisecondsSchema,
 });
 
 /**

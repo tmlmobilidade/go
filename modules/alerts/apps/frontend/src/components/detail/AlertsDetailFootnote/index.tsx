@@ -24,7 +24,7 @@ export function AlertsDetailFootnote() {
 		if (!alertData?.created_at) return 'N/A';
 		// Convert the Unix timestamp to a Date object.
 		return Dates
-			.fromUnixTimestamp(alertData?.created_at)
+			.fromUnixMilliseconds(alertData?.created_at)
 			.toLocaleString('full', 'pt-PT');
 	}, [alertData?.created_at]);
 

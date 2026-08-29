@@ -1,7 +1,8 @@
 /* * */
 
-import { type GtfsDate, type GtfsRoutes, type GtfsShapes, type GtfsStops, type GtfsStopTimes, type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
 import { SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
+import { type GtfsRoutes, type GtfsShapes, type GtfsStops, type GtfsStopTimes, type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 import { type GtfsSQLTables } from './types.js';
 
@@ -12,7 +13,7 @@ import { type GtfsSQLTables } from './types.js';
 export function initGtfsSqlTables(): GtfsSQLTables {
 	//
 
-	const calendarDatesMap: Record<string, GtfsDate[]> = {};
+	const calendarDatesMap: Record<string, OperationalDateInt[]> = {};
 
 	const database = new SQLiteDatabase();
 

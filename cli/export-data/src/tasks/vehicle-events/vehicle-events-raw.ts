@@ -27,11 +27,11 @@
 // 		$gte: Dates
 // 			.fromOperationalDate(context.dates.start, 'Europe/Lisbon')
 // 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-// 			.unix_timestamp,
+// 			.unix_milliseconds,
 // 		$lt: Dates
 // 			.fromOperationalDate(context.dates.end, 'Europe/Lisbon')
 // 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-// 			.unix_timestamp,
+// 			.unix_milliseconds,
 // 	};
 
 // 	if (context.filters.agency_ids.length) {

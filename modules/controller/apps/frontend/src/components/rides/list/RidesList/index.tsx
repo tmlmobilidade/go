@@ -12,7 +12,7 @@ import { RidesListCellVehicles } from '@/components/rides/list/table/RidesListCe
 import { useRidesListData } from '@/components/rides/list/use-rides-list-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-types';
-import { DataTable, DataTableColumn, displayUnixTimestamp, ErrorDisplay, GradeStatusDisplay, Label, OperationalDateDisplay, OperationalStatusDisplay, Pane, Section, SeenStatusDisplay, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, displayUnixMilliseconds, ErrorDisplay, GradeStatusDisplay, Label, OperationalDateDisplay, OperationalStatusDisplay, Pane, Section, SeenStatusDisplay, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,7 @@ export function RidesList() {
 	const columns: DataTableColumn<ControllerRidesListItem>[] = [
 		{
 			accessor: 'seen_last_at',
-			render: item => <SeenStatusDisplay status={item.seen_status} tooltip={displayUnixTimestamp(item.seen_last_at)} />,
+			render: item => <SeenStatusDisplay status={item.seen_status} tooltip={displayUnixMilliseconds(item.seen_last_at)} />,
 			title: t('default:list.RidesList.columns.seen_last_at.label'),
 			width: 24,
 		},
@@ -71,7 +71,7 @@ export function RidesList() {
 		},
 		{
 			accessor: 'start_time_scheduled',
-			render: item => <Tag label={displayUnixTimestamp(item.start_time_scheduled)} variant="muted" />,
+			render: item => <Tag label={displayUnixMilliseconds(item.start_time_scheduled)} variant="muted" />,
 			title: t('default:list.RidesList.columns.start_time_scheduled.label'),
 			width: 80,
 		},
@@ -89,7 +89,7 @@ export function RidesList() {
 		},
 		{
 			accessor: 'end_time_scheduled',
-			render: item => item.end_time_scheduled && <Tag label={displayUnixTimestamp(item.end_time_scheduled)} variant="muted" />,
+			render: item => item.end_time_scheduled && <Tag label={displayUnixMilliseconds(item.end_time_scheduled)} variant="muted" />,
 			title: t('default:list.RidesList.columns.end_time_scheduled.label'),
 			width: 80,
 		},

@@ -45,7 +45,7 @@ export async function getSimplifiedApexValidationsHandler(request: FastifyReques
 	// Fetch the simplified apex validations data by ride ID
 	// and send it back to the client
 
-	const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
+	const standardWindowInterval = Dates.fromUnixMilliseconds(rideData.start_time_scheduled).std_window;
 
 	const simplifiedApexValidationsData = await labDb.simplifiedApex.validations.select(
 		'*',

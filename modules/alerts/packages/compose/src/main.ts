@@ -3,7 +3,7 @@
 import { type AlertsComposeRequest, AlertsComposeRequestSchema, type AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/go-providers-ai';
-import { I18nCodeValues } from '@tmlmobilidade/go-types-shared';
+import { LanguageTagValues } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { addToPromptContext, getFinalPrompt } from './context/index.js';
@@ -67,7 +67,7 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 	// Iterate on the available language codes to generate
 	// a title and description for each language
 
-	for (const i18nCode of I18nCodeValues.filter(code => code === 'pt')) {
+	for (const i18nCode of LanguageTagValues.filter(code => code === 'pt')) {
 		//
 
 		//
@@ -114,12 +114,12 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 		// Add the active period prompt
 
 		const activePeriodStart = Dates
-			.fromUnixTimestamp(validatedRequestData.active_period_start_date)
+			.fromUnixMilliseconds(validatedRequestData.active_period_start_date)
 			.setZone(foundAgency.timezone, 'offset_only')
 			.toFormat('yyyy-MM-dd HH:mm');
 
 		const activePeriodEnd = Dates
-			.fromUnixTimestamp(validatedRequestData.active_period_end_date)
+			.fromUnixMilliseconds(validatedRequestData.active_period_end_date)
 			.toFormat('yyyy-MM-dd HH:mm');
 
 		addToPromptContext(promptContext, activePeriodPrompt[i18nCode](activePeriodStart, activePeriodEnd));

@@ -18,9 +18,9 @@
 // 	year: 'numeric',
 // });
 
-// function getMonthKeyFromTimestamp(unixTimestamp: number): null | string {
-// 	if (!Number.isFinite(unixTimestamp)) return null;
-// 	const parts = YEAR_MONTH_FORMATTER.formatToParts(new Date(unixTimestamp));
+// function getMonthKeyFromTimestamp(unixMilliseconds: number): null | string {
+// 	if (!Number.isFinite(unixMilliseconds)) return null;
+// 	const parts = YEAR_MONTH_FORMATTER.formatToParts(new Date(unixMilliseconds));
 // 	const year = parts.find(part => part.type === 'year')?.value;
 // 	const month = parts.find(part => part.type === 'month')?.value;
 // 	if (!year || !month) return null;
@@ -39,11 +39,11 @@
 // 	const to = Math.max(startTs, endTs);
 
 // 	const monthKeys = new Set<string>();
-// 	let cursor = Dates.fromUnixTimestamp(from).setZone(LISBON_TZ, 'offset_only').startOf('month');
-// 	const last = Dates.fromUnixTimestamp(to).setZone(LISBON_TZ, 'offset_only').startOf('month');
+// 	let cursor = Dates.fromUnixMilliseconds(from).setZone(LISBON_TZ, 'offset_only').startOf('month');
+// 	const last = Dates.fromUnixMilliseconds(to).setZone(LISBON_TZ, 'offset_only').startOf('month');
 
-// 	while (cursor.unix_timestamp <= last.unix_timestamp) {
-// 		const monthKey = getMonthKeyFromTimestamp(cursor.unix_timestamp);
+// 	while (cursor.unix_milliseconds <= last.unix_milliseconds) {
+// 		const monthKey = getMonthKeyFromTimestamp(cursor.unix_milliseconds);
 // 		if (monthKey) monthKeys.add(monthKey);
 // 		cursor = cursor.plus({ months: 1 });
 // 	}
@@ -193,13 +193,13 @@
 // 					.minus({ days: 1 })
 // 					.set({ hour: 4, millisecond: 0, minute: 0, second: 0 });
 
-// 				Logger.divider(`#${counter} [${samData.agency_id}] SAM ${samData._id} | ${searchTimestampStart.iso}[${searchTimestampStart.unix_timestamp}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_timestamp}]`);
+// 				Logger.divider(`#${counter} [${samData.agency_id}] SAM ${samData._id} | ${searchTimestampStart.iso}[${searchTimestampStart.unix_milliseconds}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_milliseconds}]`);
 
 // 				//
 // 				// Prepare the aggregation pipeline for APEX transactions.
 
 // 				const aggregationPipeline = [
-// 					{ $match: { created_at: { $gte: searchTimestampStart.unix_timestamp, $lte: searchTimestampEnd.unix_timestamp }, mac_sam_serial_number: samData._id } },
+// 					{ $match: { created_at: { $gte: searchTimestampStart.unix_milliseconds, $lte: searchTimestampEnd.unix_milliseconds }, mac_sam_serial_number: samData._id } },
 // 					{ $project: { _id: 1, agency_id: 1, apex_version: 1, created_at: 1, device_id: 1, mac_ase_counter_value: 1, vehicle_id: 1 } },
 // 				];
 

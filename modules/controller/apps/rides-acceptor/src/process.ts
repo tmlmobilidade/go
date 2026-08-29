@@ -23,11 +23,11 @@ export async function processRideAcceptanceChunk(chunk: PerformInTimeChunksItem)
 	const progress = `[${chunk.index + 1}/${chunk.total}]`;
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(chunk.start)
+		.fromUnixMilliseconds(chunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(chunk.end)
+		.fromUnixMilliseconds(chunk.end)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
@@ -35,8 +35,8 @@ export async function processRideAcceptanceChunk(chunk: PerformInTimeChunksItem)
 
 	//
 	// Fetch the rides.
-	// const foundRides = await goDb.operation.rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
-	const foundRides = await labDb.queryFromString<RideWithAnalyses>(ridesWithAnalysesQuery, { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
+	// const foundRides = await goDb.operation.rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_milliseconds, $lte: chunkEndDate.unix_milliseconds } });
+	const foundRides = await labDb.queryFromString<RideWithAnalyses>(ridesWithAnalysesQuery, { 1: chunkStartDate.unix_milliseconds, 2: chunkEndDate.unix_milliseconds });
 
 	//
 	// Bulk fetch acceptances.

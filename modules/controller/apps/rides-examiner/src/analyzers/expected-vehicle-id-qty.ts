@@ -28,7 +28,7 @@ export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAn
 				reason: 'NO_VEHICLE_EVENTS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -41,7 +41,7 @@ export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAn
 				reason: 'UNEXPECTED_VEHICLE_ID_QTY',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -53,7 +53,7 @@ export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAn
 			reason: 'EXPECTED_VEHICLE_ID_QTY',
 			remarks: null,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 
 		//
@@ -66,7 +66,7 @@ export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAn
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

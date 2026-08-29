@@ -1,30 +1,14 @@
-/* eslint-disable perfectionist/sort-objects */
-/* eslint-disable perfectionist/sort-interfaces */
+/* * */
 
-import { type ExportGtfsContext } from '@/types/context.js';
+import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type GtfsBinary, type GtfsPickupDropoffType } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStopTimes } from '@tmlmobilidade/go-types-gtfs';
+import { type HubGtfsExportStopTimesInput, HubGtfsExportStopTimesSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { getPublicTripId } from '@tmlmobilidade/utils';
 
-/* * */
-
-export interface ExportedStopTimesRow {
-	trip_id: string
-	arrival_time: string
-	departure_time: string
-	stop_id: number
-	stop_sequence: number
-	pickup_type: GtfsPickupDropoffType
-	drop_off_type: GtfsPickupDropoffType
-	continuous_pickup: GtfsPickupDropoffType
-	continuous_drop_off: GtfsPickupDropoffType
-	shape_dist_traveled: number
-	timepoint: GtfsBinary
-}
+import { type ExportGtfsContext } from '../types/context.js';
 
 /**
  * Export the stop_times.txt file.
@@ -32,16 +16,14 @@ export interface ExportedStopTimesRow {
  * @param sqlTables The SQL tables.
  * @param context The export context.
  */
-export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTables, context: ExportGtfsContext) {
+export async function exportStopTimesFile(context: ExportGtfsContext, planData: Plan, sqlTables: GtfsSQLTables) {
 	//
 
 	//
 	// Fetch all stops for the current agency
 	// and build a map of flag IDs to stop_id
 
-	const allStopsData = await goDb.infrastructure.stops.findMany({
-		'flags.agency_ids': { $in: [planData.agency_id] },
-	});
+	const allStopsData = await goDb.infrastructure.stops.findMany({ 'flags.agency_ids': { $in: [planData.agency_id] } });
 
 	const allStopsMap = new Map<string, number>();
 
@@ -52,26 +34,28 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 	}
 
 	for await (const stopTimeItem of sqlTables.stop_times.stream('ORDER BY trip_id, stop_sequence ASC')) {
-		const stopTimeData: GtfsStrictV29StopTimes = stopTimeItem;
+		const stopTimeData: GtfsStopTimes = stopTimeItem;
 		const matchingStopId = allStopsMap.get(stopTimeData.stop_id);
 		if (!matchingStopId) {
 			Logger.error({ message: `Stop time ${stopTimeData.stop_id} not found in stops map for agency ${planData.agency_id}` });
 			continue;
 		}
-		const parsedStopTimesRow: ExportedStopTimesRow = {
-			trip_id: getPublicTripId(planData._id, planData.agency_id, stopTimeData.trip_id),
+		const parsedStopTimesRow: HubGtfsExportStopTimesInput = {
 			arrival_time: stopTimeData.arrival_time,
+			continuous_drop_off: stopTimeData.continuous_drop_off,
+			continuous_pickup: stopTimeData.continuous_pickup,
 			departure_time: stopTimeData.departure_time,
-			stop_id: matchingStopId,
+			drop_off_type: stopTimeData.drop_off_type,
+			pickup_type: stopTimeData.pickup_type,
+			shape_dist_traveled: stopTimeData.shape_dist_traveled,
+			stop_headsign: stopTimeData.stop_headsign,
+			stop_id: String(matchingStopId),
 			stop_sequence: stopTimeData.stop_sequence,
-			pickup_type: stopTimeData.pickup_type ?? '0',
-			drop_off_type: stopTimeData.drop_off_type ?? '0',
-			continuous_pickup: '0',
-			continuous_drop_off: '0',
-			shape_dist_traveled: stopTimeData.shape_dist_traveled ?? 0,
-			timepoint: stopTimeData.timepoint ?? '0',
+			timepoint: stopTimeData.timepoint,
+			trip_id: getQualifiedTripId(planData._id, planData.agency_id, stopTimeData.trip_id),
 		};
-		await context.writers.stop_times.write(parsedStopTimesRow);
+		const validatedStopTimesRow = HubGtfsExportStopTimesSchema.parse(parsedStopTimesRow);
+		await context.writers.stop_times.write(validatedStopTimesRow);
 	}
 
 	await context.writers.stop_times.flush();

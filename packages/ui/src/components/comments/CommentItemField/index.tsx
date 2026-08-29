@@ -6,7 +6,7 @@ import { FieldChange, FieldChangedComment } from '@tmlmobilidade/go-types-shared
 import styles from './styles.module.css';
 
 import { IconButton } from '../../../buttons';
-import { displayUnixTimestamp } from '../../../utils';
+import { displayUnixMilliseconds } from '../../../utils';
 import { Label } from '../../display/Label';
 
 /* * */
@@ -71,7 +71,7 @@ export function CommentItemField({ comment, loading, onRevert, reverse }: Commen
 					</div>
 					<div className={styles.footer}>
 						<Label size="sm">
-							{createdBy} a {displayUnixTimestamp(comment.created_at, 'short')}
+							{createdBy} a {displayUnixMilliseconds(comment.created_at, 'short')}
 						</Label>
 					</div>
 				</div>

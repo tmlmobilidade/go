@@ -1,27 +1,30 @@
 /* * */
 
 import { type AlertEffect } from '@tmlmobilidade/go-types-operation';
-import { type I18nCode } from '@tmlmobilidade/go-types-shared';
+import { type LanguageTag } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Effect specific instructions to be included in the prompt for the generation of the alert descriptions.
  * This includes the correct nomenclature to be used for each effect, as well as any additional information
  * that may be relevant for the generation of the descriptions.
  */
-export const effectPrompt: Record<AlertEffect, Record<I18nCode, string>> = {
+export const effectPrompt: Record<AlertEffect, Record<LanguageTag, string>> = {
 
 	ACCESSIBILITY_ISSUE: {
 		en: '',
+		es: '',
 		pt: 'Efeito: Problema de Acessibilidade para Pessoas com Mobilidade Reduzida',
 	},
 
 	ADDITIONAL_SERVICE: {
 		en: '',
+		es: '',
 		pt: 'Efeito: Aumento de Serviço ou Novos Horários (escolhe um)',
 	},
 
 	DETOUR: {
 		en: '',
+		es: '',
 		pt: `
 			Efeito: Desvio de Percurso.
 			Se a referência for uma linha ou viagem com paragens específicas afetadas, não digas que a linha
@@ -33,11 +36,13 @@ export const effectPrompt: Record<AlertEffect, Record<I18nCode, string>> = {
 
 	MODIFIED_SERVICE: {
 		en: '',
+		es: '',
 		pt: 'Efeito: Serviço Modificado',
 	},
 
 	NO_SERVICE: {
 		en: '',
+		es: '',
 		pt: `
 			Efeito: cancelamento ou não realização do serviço.
 			NUNCA uses "interrompido", "interrupções", "foram interrompidas" ou "serão retomadas".
@@ -52,26 +57,31 @@ export const effectPrompt: Record<AlertEffect, Record<I18nCode, string>> = {
 
 	ON_BOARD_SALE_ISSUE: {
 		en: '',
+		es: '',
 		pt: 'Efeito: Venda a bordo condicionada',
 	},
 
 	REALTIME_INFO_ISSUE: {
 		en: '',
+		es: '',
 		pt: 'Efeito: Informação em tempo real limitada',
 	},
 
 	REDUCED_SERVICE: {
 		en: '',
+		es: '',
 		pt: 'Efeito: Encurtamento de Percurso',
 	},
 
 	SIGNIFICANT_DELAYS: {
 		en: '',
+		es: '',
 		pt: 'Efeito: Atrasos Significativos ou apenas Atrasos (escolhe um)',
 	},
 
 	STOP_MOVED: {
 		en: '',
+		es: '',
 		pt: 'Efeito: Paragem Deslocada ou Alteração de Local de Paragem (escolhe um)',
 	},
 

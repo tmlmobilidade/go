@@ -97,9 +97,9 @@ export async function replace(deps: StorageDeps, input: ReplaceInput): Promise<A
 					inserted = await goDb.core.attachments.insertOneUnsafe({
 						...createAttachmentDto,
 						_id: fileId,
-						created_at: Dates.now('utc').unix_timestamp,
+						created_at: Dates.now('utc').unix_milliseconds,
 						type: mimeType,
-						updated_at: Dates.now('utc').unix_timestamp,
+						updated_at: Dates.now('utc').unix_milliseconds,
 					});
 				},
 				name: 'replaceMetadata',

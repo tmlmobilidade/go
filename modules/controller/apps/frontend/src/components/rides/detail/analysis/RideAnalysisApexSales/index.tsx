@@ -5,7 +5,7 @@ import { ApexPaymentMethodTag } from '@/components/common/ApexPaymentMethodTag';
 import { CurrencyTag } from '@/components/common/CurrencyTag';
 import { useRidesDetailApexSalesData } from '@/components/rides/detail/shared/use-rides-detail-apex-sales-data';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +24,7 @@ export function RideAnalysisApexSales() {
 	const columns: DataTableColumn<SimplifiedApexOnBoardSale>[] = [
 		{
 			accessor: 'created_at',
-			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			render: item => <UnixMillisecondsDisplay value={item.created_at} showDate />,
 			title: t('default:rides.analysis.RideAnalysisApexOnBoardSales.table.columns.created_at.label'),
 			width: 280,
 		},

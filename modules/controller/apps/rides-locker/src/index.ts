@@ -33,7 +33,7 @@ async function main() {
 
 		const totalRides = 0;
 		performInTimeChunks({
-			endDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK - 2 }).unix_timestamp,
+			endDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK - 2 }).unix_milliseconds,
 			intervalHrs: 1,
 			onChunk: async (chunk) => {
 				//
@@ -43,7 +43,7 @@ async function main() {
 				const progress = `[${chunk.index + 1}/${chunk.total}]`;
 
 				Logger.spacer(1);
-				Logger.title(`${progress} - ${Dates.fromUnixTimestamp(chunk.start).toLocaleString('full')} › ${Dates.fromUnixTimestamp(chunk.end).toLocaleString('full')}`);
+				Logger.title(`${progress} - ${Dates.fromUnixMilliseconds(chunk.start).toLocaleString('full')} › ${Dates.fromUnixMilliseconds(chunk.end).toLocaleString('full')}`);
 
 				//
 				// Fetch the ride acceptances.
@@ -70,7 +70,7 @@ async function main() {
 				Logger.spacer(1);
 				Logger.divider();
 			},
-			startDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK }).unix_timestamp,
+			startDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK }).unix_milliseconds,
 		});
 
 		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });

@@ -2,49 +2,30 @@
 
 import { type PlanNormalized } from '@/types/normalized';
 import { IconArrowRight } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
-import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { Indicator, Tag } from '@tmlmobilidade/ui';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Indicator, OperationalDateDisplay } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface PlansListCellFeedDatesProps {
-	endDate: GtfsDate
-	startDate: GtfsDate
+	endDate: OperationalDateInt
+	startDate: OperationalDateInt
 	validityStatus: PlanNormalized['validity_status']
 }
 
 /* * */
 
 export function PlansListCellFeedDates({ endDate, startDate, validityStatus }: PlansListCellFeedDatesProps) {
-	//
-
-	//
-	// A. Transform data
-
-	const startDateFormatted = Dates
-		.fromOperationalDate(startDate, 'Europe/Lisbon')
-		.toFormat('dd-MM-yyyy');
-
-	const endDateFormatted = Dates
-		.fromOperationalDate(endDate, 'Europe/Lisbon')
-		.toFormat('dd-MM-yyyy');
-
-	//
-	// B. Render components
-
 	return (
 		<div className={styles.wrapper}>
 			{validityStatus === 'expired' && <Indicator variant="muted" />}
 			{validityStatus === 'active' && <Indicator variant="primary" filled />}
 			{validityStatus === 'upcoming' && <Indicator variant="primary" />}
-			<Tag label={startDateFormatted} variant="secondary" />
+			<OperationalDateDisplay value={startDate} />
 			<IconArrowRight size={16} />
-			<Tag label={endDateFormatted} variant="secondary" />
+			<OperationalDateDisplay value={endDate} />
 		</div>
 	);
-
-	//
 }

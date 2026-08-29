@@ -50,7 +50,7 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 		// 	// Rides that are affected by the new data.
 		// 	.map((item: AnySimplifiedApexDocument) => {
 		// 		const standardWindowInterval = Dates
-		// 			.fromUnixTimestamp(item.created_at)
+		// 			.fromUnixMilliseconds(item.created_at)
 		// 			.std_window;
 		// 		return {
 		// 			agency_id: item.agency_id,

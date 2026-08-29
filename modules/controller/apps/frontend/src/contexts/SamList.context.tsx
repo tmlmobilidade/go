@@ -4,7 +4,7 @@ import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam } from '@tmlmobilidade/go-types-operation';
-import { type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type SystemStatus, SystemStatusSchema, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
@@ -20,8 +20,8 @@ export type SamsListItem = Omit<Sam, 'analysis'> & {
 export interface SamsListContextState {
 	actions: {
 		setFavoritesEnabled: () => void
-		setFilterSeenFirstAt: (value: null | UnixTimestamp) => void
-		setFilterSeenLastAt: (value: null | UnixTimestamp) => void
+		setFilterSeenFirstAt: (value: null | UnixMilliseconds) => void
+		setFilterSeenLastAt: (value: null | UnixMilliseconds) => void
 		trackVisibleSamIds: (ids: number[]) => void
 	}
 	data: {
@@ -33,8 +33,8 @@ export interface SamsListContextState {
 		agency: UseFilterStateListReturnType
 		apex_version: UseFilterStateListReturnType<string>
 		search: UseFilterStateTextReturnType
-		seen_first_at: null | UnixTimestamp
-		seen_last_at: null | UnixTimestamp
+		seen_first_at: null | UnixMilliseconds
+		seen_last_at: null | UnixMilliseconds
 		status: UseFilterStateListReturnType<SystemStatus>
 	}
 	flags: {
@@ -335,8 +335,8 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 				agency: filterAgency,
 				apex_version: filterApexVersion,
 				search: filterSearch,
-				seen_first_at: (filterSeenFirstAt ?? null) as null | UnixTimestamp,
-				seen_last_at: (filterSeenLastAt ?? null) as null | UnixTimestamp,
+				seen_first_at: (filterSeenFirstAt ?? null) as null | UnixMilliseconds,
+				seen_last_at: (filterSeenLastAt ?? null) as null | UnixMilliseconds,
 				status: filterStatus,
 			},
 			flags: {

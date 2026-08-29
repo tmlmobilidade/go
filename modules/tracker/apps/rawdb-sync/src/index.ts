@@ -69,7 +69,7 @@ async function main() {
 		// and sync each one sequentially.
 
 		await performInTimeChunks({
-			endDate: Dates.now('utc').minus({ minutes: 10 }).unix_timestamp,
+			endDate: Dates.now('utc').minus({ minutes: 10 }).unix_milliseconds,
 			intervalHrs: 2,
 			onChunk: async (chunk) => {
 				for (const configItem of syncConfig) {
@@ -94,7 +94,7 @@ async function main() {
 					}
 				}
 			},
-			startDate: earliestDate.unix_timestamp,
+			startDate: earliestDate.unix_milliseconds,
 		});
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);

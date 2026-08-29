@@ -15,7 +15,7 @@ import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-
 import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { fromGtfsTimeAndGtfsDateToUnixTimestamp } from '@tmlmobilidade/utils';
+import { fromOperationalTimeAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 
 /* * */
@@ -187,7 +187,7 @@ export async function parsePlan(planData: Plan) {
 			const hashedShapeItem = HashedShapeSchema.parse({
 				...createHashedShape,
 				_id: uniqueIdValueForHashedShape,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 
 			if (!currentHashedShapeAlreadyExists) {
@@ -263,7 +263,7 @@ export async function parsePlan(planData: Plan) {
 				return HashedTripSchema.parse({
 					...item,
 					_id: uniqueIdValueForHashedTrip,
-					updated_at: Dates.now('utc').unix_timestamp,
+					updated_at: Dates.now('utc').unix_milliseconds,
 				});
 			});
 
@@ -288,10 +288,10 @@ export async function parsePlan(planData: Plan) {
 				const uniqueIdValueForRide = `${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`;
 
 				const startTimeScheduledString = firstStopTime.arrival_time;
-				const startTimeScheduledUnixTimestamp = fromGtfsTimeAndGtfsDateToUnixTimestamp(startTimeScheduledString, calendarDate);
+				const startTimeScheduledUnixMilliseconds = fromOperationalTimeAndOperationalDateToUnixMilliseconds(startTimeScheduledString, calendarDate);
 
 				const endTimeScheduledString = lastStopTime.arrival_time;
-				const endTimeScheduledUnixTimestamp = fromGtfsTimeAndGtfsDateToUnixTimestamp(endTimeScheduledString, calendarDate);
+				const endTimeScheduledUnixMilliseconds = fromOperationalTimeAndOperationalDateToUnixMilliseconds(endTimeScheduledString, calendarDate);
 
 				//
 				// Build the final Ride objects
@@ -311,7 +311,7 @@ export async function parsePlan(planData: Plan) {
 					direction_id: currentTrip.direction_id,
 					driver_ids: [],
 					end_time_observed: null,
-					end_time_scheduled: endTimeScheduledUnixTimestamp,
+					end_time_scheduled: endTimeScheduledUnixMilliseconds,
 					extension_observed: null,
 					extension_scheduled: NonNegativeIntegerSchema.parse(Math.round(extensionScheduledInMeters)),
 					hashed_shape_id: uniqueIdValueForHashedShape,
@@ -338,9 +338,9 @@ export async function parsePlan(planData: Plan) {
 					seen_last_at: null,
 					shape_id: currentTrip.shape_id,
 					start_time_observed: null,
-					start_time_scheduled: startTimeScheduledUnixTimestamp,
+					start_time_scheduled: startTimeScheduledUnixMilliseconds,
 					trip_id: currentTrip.trip_id,
-					updated_at: Dates.now('utc').unix_timestamp,
+					updated_at: Dates.now('utc').unix_milliseconds,
 					vehicle_ids: [],
 				};
 
@@ -400,7 +400,7 @@ export async function parsePlan(planData: Plan) {
 
 	const plansCollection = await goDb.operation.plans.getCollection();
 
-	await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.controller.last_hash': planData.hash, 'apps.controller.status': 'complete', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+	await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.controller.last_hash': planData.hash, 'apps.controller.status': 'complete', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 	Logger.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 

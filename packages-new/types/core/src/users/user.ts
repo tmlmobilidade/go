@@ -1,7 +1,7 @@
 /* * */
 
 import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
-import { BaseDocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -20,7 +20,7 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 
 export const UserSchema = BaseDocumentSchema.extend({
 	email: z.string().email(),
-	email_verified: UnixTimestampSchema.nullable().default(null),
+	email_verified: UnixMillisecondsSchema.nullable().default(null),
 	first_name: z.string().min(2),
 	last_name: z.string().min(2),
 	organization_id: z.string(),
@@ -29,7 +29,7 @@ export const UserSchema = BaseDocumentSchema.extend({
 	phone: z.string().nullable().default(null),
 	preferences: z.record(z.record(UserPreferenceValueSchema)).nullable().default(null),
 	role_ids: z.array(z.string()).default([]),
-	seen_last_at: UnixTimestampSchema.nullable().default(null),
+	seen_last_at: UnixMillisecondsSchema.nullable().default(null),
 	session_ids: z.array(z.string()).default([]),
 	verification_token_ids: z.array(z.string()).default([]),
 });

@@ -30,7 +30,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 				reason: 'NO_START_TIME_SCHEDULED',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -44,7 +44,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 				reason: 'NO_VEHICLE_EVENTS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -58,7 +58,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 				reason: 'UNKNOWN_START',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -80,7 +80,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 				reason: 'EARLY_START',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -94,7 +94,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 				reason: 'START_ON_TIME',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -108,7 +108,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 				reason: 'LATE_START',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -125,7 +125,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

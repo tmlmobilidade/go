@@ -31,7 +31,7 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				total_vehicle_ids_qty: null,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -47,7 +47,7 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				total_vehicle_ids_qty: null,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -90,7 +90,7 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				total_vehicle_ids_qty: combinedUniqueVehicleIds.size,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -109,7 +109,7 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 			remarks: null,
 			ride_id: analysisData.ride._id,
 			total_vehicle_ids_qty: combinedUniqueVehicleIds.size,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 
 		//
@@ -125,7 +125,7 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			total_vehicle_ids_qty: null,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

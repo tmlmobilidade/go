@@ -16,7 +16,7 @@ export function useAlertsListFilterPublishDate(): UseFilterStateDateRangeReturnT
 			.now('local')
 			.minus({ days: 30 })
 			.startOf('day')
-			.unix_timestamp;
+			.unix_milliseconds;
 	}, []);
 
 	const defaultEndValue = useMemo(() => {
@@ -24,7 +24,7 @@ export function useAlertsListFilterPublishDate(): UseFilterStateDateRangeReturnT
 			.now('local')
 			.plus({ days: 30 })
 			.endOf('day')
-			.unix_timestamp;
+			.unix_milliseconds;
 	}, []);
 
 	return useFilterStateDateRange(

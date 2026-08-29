@@ -146,7 +146,7 @@ export async function exportValidationsPMunicipalities({
 			minute: 0,
 			second: 0,
 		})
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	const endTimestamp = Dates
 		.fromOperationalDate(context.dates.end, 'Europe/Lisbon')
@@ -157,7 +157,7 @@ export async function exportValidationsPMunicipalities({
 			minute: 0,
 			second: 0,
 		})
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	//
 	// Validations

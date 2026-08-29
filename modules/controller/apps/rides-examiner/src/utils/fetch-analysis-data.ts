@@ -15,7 +15,7 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 	// This includes static data, like hashed shapes and trips, and dynamic data,
 	// like vehicle events and apex transactions. Request all data in parallel.
 
-	const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
+	const standardWindowInterval = Dates.fromUnixMilliseconds(rideData.start_time_scheduled).std_window;
 
 	//
 	// Fetch data from LabDB in parallel.

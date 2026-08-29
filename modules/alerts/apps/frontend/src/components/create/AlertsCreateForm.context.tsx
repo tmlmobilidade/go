@@ -37,25 +37,25 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 			.now('local')
 			.plus({ hours: 4 })
 			.endOf('hour')
-			.unix_timestamp,
+			.unix_milliseconds,
 
 		active_period_start_date: Dates
 			.now('local')
 			.minus({ hours: 1 })
 			.startOf('hour')
-			.unix_timestamp,
+			.unix_milliseconds,
 
 		auto_texts: true,
 
 		publish_end_date: Dates
 			.now('local')
 			.endOf('day')
-			.unix_timestamp,
+			.unix_milliseconds,
 
 		publish_start_date: Dates
 			.now('local')
 			.startOf('day')
-			.unix_timestamp,
+			.unix_milliseconds,
 		publish_status: 'published',
 
 		references: [],
@@ -129,8 +129,8 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 		// Skip if "active_period_end_date" is already set
 		if (activePeriodEndDateValue) return;
 		// Restore default end dates when active_period_end_date is cleared.
-		form.setValue('active_period_end_date', Dates.now('local').plus({ hours: 4 }).unix_timestamp);
-		form.setValue('publish_end_date', Dates.now('local').endOf('day').unix_timestamp);
+		form.setValue('active_period_end_date', Dates.now('local').plus({ hours: 4 }).unix_milliseconds);
+		form.setValue('publish_end_date', Dates.now('local').endOf('day').unix_milliseconds);
 		// eslint-disable-next-line no-console
 		console.log(`[Form] Restored default end dates because "active_period_end_date" was cleared -> active_period_end_date: "${activePeriodEndDateValue}"`);
 	}, [activePeriodEndDateValue, form]);

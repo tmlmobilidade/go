@@ -106,7 +106,7 @@ export async function fetchApiData<T, K = unknown>(params: FetchApiDataParams<K>
 			data: null,
 			error: error instanceof Error ? error.message : 'Unknown error',
 			status_code: '500',
-			timestamp: Dates.now('utc').unix_timestamp,
+			timestamp: Dates.now('utc').unix_milliseconds,
 		};
 	}
 }

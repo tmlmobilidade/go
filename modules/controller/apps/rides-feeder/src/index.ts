@@ -47,11 +47,9 @@ async function main() {
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
-		const allPlansDataSorted = allPlansData.sort((a, b) => (b.gtfs_feed_info?.feed_start_date || '').localeCompare(a.gtfs_feed_info?.feed_start_date || ''));
-
 		Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
 
-		for (const [planIndex, currentPlan] of allPlansDataSorted.entries()) {
+		for (const [planIndex, currentPlan] of allPlansData.entries()) {
 			try {
 				//
 
@@ -63,7 +61,7 @@ async function main() {
 
 				if (!currentPlan.operation_file_id) {
 					Logger.error({ message: `Skip processing: No operation file found.` });
-					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 					continue;
 				}
 
@@ -82,7 +80,7 @@ async function main() {
 
 				//
 			} catch (error) {
-				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 				Logger.error({ error, message: `Error processing plan ${currentPlan._id}` });
 				Logger.divider();
 			}

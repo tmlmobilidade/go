@@ -7,7 +7,7 @@ WITH
 	 * Capture the current time once so all derived statuses use exactly
 	 * the same timestamp.
 	 */
-	toUnixTimestamp64Milli(now64(3)) AS now_ms,
+	toUnixMilliseconds64Milli(now64(3)) AS now_ms,
 
 	/*
 	 * -----------------------------------------------------------------------

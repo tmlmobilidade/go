@@ -12,15 +12,15 @@ export const AppConfig = Object.freeze({
 	database: 'eta',
 	processing: {
 		// Current rides Time Range
-		currentRidesEndTime: Dates.now('local').plus({ hours: Dates.standardWindowHours }).unix_timestamp,
-		currentRidesStartTime: Dates.now('local').minus({ hours: Dates.standardWindowHours }).unix_timestamp,
+		currentRidesEndTime: Dates.now('local').plus({ hours: Dates.standardWindowHours }).unix_milliseconds,
+		currentRidesStartTime: Dates.now('local').minus({ hours: Dates.standardWindowHours }).unix_milliseconds,
 
 		/** Geohash prefix length used to restrict candidate events to cells near a stop. A length of 6 matches a geohash-7 cell and its neighbours (~1.2 km). */
 		geohashPrefixLength: 6,
 
 		// Historical rides Time Range
-		historicalRidesEndTime: Dates.now('local').minus({ hours: Dates.standardWindowHours }).unix_timestamp,
-		historicalRidesStartTime: Dates.now('local').minus({ days: 30, hours: Dates.standardWindowHours }).unix_timestamp,
+		historicalRidesEndTime: Dates.now('local').minus({ hours: Dates.standardWindowHours }).unix_milliseconds,
+		historicalRidesStartTime: Dates.now('local').minus({ days: 30, hours: Dates.standardWindowHours }).unix_milliseconds,
 
 		/** Length of shape node chunks in meters. */
 		shapeNodeChunkLength: 25,

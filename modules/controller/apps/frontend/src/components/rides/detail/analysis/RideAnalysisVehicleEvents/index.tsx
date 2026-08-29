@@ -2,7 +2,7 @@
 
 import { useRidesDetailVehicleEventsData } from '@/components/rides/detail/shared/use-rides-detail-vehicle-events-data';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,7 +26,7 @@ export function RideAnalysisVehicleEvents() {
 		},
 		{
 			accessor: 'created_at',
-			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			render: item => <UnixMillisecondsDisplay value={item.created_at} showDate />,
 			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.created_at.label'),
 			width: 280,
 		},

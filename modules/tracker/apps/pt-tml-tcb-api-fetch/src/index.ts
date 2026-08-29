@@ -62,7 +62,7 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlTcbV1> = {
 				agency_id: 'A3H3M',
-				created_at: Dates.fromSeconds(timestampSeconds).unix_timestamp,
+				created_at: Dates.fromSeconds(timestampSeconds).unix_milliseconds,
 				entity_id: entity.id,
 				payload: {
 					header: {
@@ -84,7 +84,7 @@ const main = async () => {
 				document: {
 					...hashableRawEvent,
 					_id: hashableRawEventId,
-					received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+					received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 				},
 			});
 

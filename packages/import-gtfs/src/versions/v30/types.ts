@@ -1,8 +1,8 @@
 /* * */
 
-import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV30Routes, type GtfsStrictV30Shapes, type GtfsStrictV30Stops, type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/go-clients-sqlite';
+import { type GtfsStrictV30Routes, type GtfsStrictV30Shapes, type GtfsStrictV30Stops, type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Holds references to all GTFS-related SQL tables.
@@ -15,7 +15,7 @@ import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/go
  */
 export interface GtfsStrictV30SQLTables {
 	_db: SQLiteDatabase
-	calendar_dates: Record<string, GtfsDate[]>
+	calendar_dates: Record<string, OperationalDateInt[]>
 	routes: SQLiteTableInstance<GtfsStrictV30Routes>
 	shapes: SQLiteTableInstance<GtfsStrictV30Shapes>
 	stop_times: SQLiteTableInstance<GtfsStrictV30StopTimes>

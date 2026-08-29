@@ -1,7 +1,7 @@
 'use client';
 
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { type HubLine } from '@tmlmobilidade/go-types-public-info';
+import { type HubLine } from '@tmlmobilidade/go-types-hub';
 import { type ListContextStateTemplate, useFilterStateText, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 

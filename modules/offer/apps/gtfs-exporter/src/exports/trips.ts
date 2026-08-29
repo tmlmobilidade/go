@@ -74,7 +74,7 @@ function buildTimepointSchedules(
 
 	let currentDate = startDate;
 
-	while (currentDate.unix_timestamp <= endDate.unix_timestamp) {
+	while (currentDate.unix_milliseconds <= endDate.unix_milliseconds) {
 		const operationalDate = currentDate.operational_date;
 
 		// 1) Resolve which rules are active on this date.

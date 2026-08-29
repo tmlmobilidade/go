@@ -46,7 +46,7 @@ export async function getSimplifiedApexOnBoardSalesHandler(request: FastifyReque
 		// Fetch the simplified apex on board sales data by ride ID
 		// and send it back to the client
 
-		const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
+		const standardWindowInterval = Dates.fromUnixMilliseconds(rideData.start_time_scheduled).std_window;
 
 		const simplifiedApexOnBoardSalesData = await labDb.simplifiedApex.sales.select(
 			'*',

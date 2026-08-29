@@ -7,7 +7,7 @@ import { SAM_EXPORT_MODAL_ID, SamsExportContextProvider, type SamsExportSummaryF
 import { translateFilterKey, translateFilterValue } from '@/lib/translations';
 import { IconFileDownload } from '@tabler/icons-react';
 import { type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { type SystemStatus, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type SystemStatus, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Button, CloseButton, closeModal, Divider, ExportsContextProvider, Label, MeContextProvider, openModal, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -28,8 +28,8 @@ interface SamsExportModalListPayload {
 
 interface SamsExportModalDetailPayload {
 	analysisApexVersions: string[]
-	analysisFilterEndTime: null | UnixTimestamp
-	analysisFilterStartTime: null | UnixTimestamp
+	analysisFilterEndTime: null | UnixMilliseconds
+	analysisFilterStartTime: null | UnixMilliseconds
 	favoritesEnabled?: boolean
 	samId: number
 	source: 'detail'
@@ -192,7 +192,7 @@ export default function SamsExportModal() {
 						return (
 							<div key={key}>
 								<Label size="sm" caps>{translateFilterKey(key)}</Label>
-								<Text size="sm">{Dates.fromUnixTimestamp(value as UnixTimestamp).iso}</Text>
+								<Text size="sm">{Dates.fromUnixMilliseconds(value as UnixMilliseconds).iso}</Text>
 							</div>
 						);
 					}

@@ -28,15 +28,15 @@
 // 	//
 
 // 	const chunkStartDate = Dates
-// 		.fromUnixTimestamp(timeChunk.start)
+// 		.fromUnixMilliseconds(timeChunk.start)
 // 		.setZone('Europe/Lisbon', 'offset_only');
 
 // 	const chunkEndDate = Dates
-// 		.fromUnixTimestamp(timeChunk.end)
+// 		.fromUnixMilliseconds(timeChunk.end)
 // 		.setZone('Europe/Lisbon', 'offset_only');
 
 // 	Logger.spacer(1);
-// 	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+// 	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_milliseconds}] › ${chunkStartDate.iso}[${chunkStartDate.unix_milliseconds}]`, 150);
 
 // 	//
 // 	// Prepare the RAWDB query to retrieve documents
@@ -44,8 +44,8 @@
 
 // 	const rawdbQuery = {
 // 		created_at: {
-// 			$gte: chunkStartDate.unix_timestamp,
-// 			$lte: chunkEndDate.unix_timestamp,
+// 			$gte: chunkStartDate.unix_milliseconds,
+// 			$lte: chunkEndDate.unix_milliseconds,
 // 		},
 // 	};
 
@@ -62,7 +62,7 @@
 // 			return await labDb.operation.simplifiedVehicleEvents.count(
 // 				'*',
 // 				'created_at >= $1 AND created_at <= $2',
-// 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+// 				{ 1: chunkStartDate.unix_milliseconds, 2: chunkEndDate.unix_milliseconds },
 // 			);
 // 		},
 
@@ -82,7 +82,7 @@
 // 			return await labDb.operation.simplifiedVehicleEvents.distinct(
 // 				'_id',
 // 				'created_at >= $1 AND created_at <= $2',
-// 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+// 				{ 1: chunkStartDate.unix_milliseconds, 2: chunkEndDate.unix_milliseconds },
 // 			);
 // 		},
 

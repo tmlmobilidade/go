@@ -3,7 +3,7 @@
 import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
 import { StopDisplayName } from '@/components/stops/common/StopDisplayName';
 import { Skeleton } from '@mantine/core';
-import { type HubStop } from '@tmlmobilidade/go-types-public-info';
+import { type HubStop } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 

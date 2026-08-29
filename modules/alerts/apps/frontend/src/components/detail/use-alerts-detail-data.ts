@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
-import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -17,7 +17,7 @@ interface UseAlertsDetailDataReturnType {
 	isLoading: boolean
 	isValidating: boolean
 	mutate: (newData?: ApiResponse<Alert>) => void
-	timestamp: null | UnixTimestamp
+	timestamp: null | UnixMilliseconds
 }
 
 /* * */

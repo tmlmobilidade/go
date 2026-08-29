@@ -3,7 +3,7 @@
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLoopRight, IconSelector, IconX } from '@tabler/icons-react';
-import { HubLine } from '@tmlmobilidade/go-types-public-info';
+import { HubLine } from '@tmlmobilidade/go-types-hub';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 

@@ -30,11 +30,11 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
+		.fromUnixMilliseconds(timeChunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
+		.fromUnixMilliseconds(timeChunk.end)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);

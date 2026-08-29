@@ -37,7 +37,7 @@ export async function updateById<T extends Document>(context: GoDbCollectionCont
 	const updatableDocument = {
 		...existingDocument,
 		...updateFields,
-		updated_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_milliseconds,
 	};
 
 	//

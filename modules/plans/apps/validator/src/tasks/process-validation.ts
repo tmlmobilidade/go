@@ -186,7 +186,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			data: {
 				errorMessage: error.message ?? 'Unknown error',
 				serviceName: pjson.name,
-				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+				timestamp: Dates.now('Europe/Lisbon').unix_milliseconds,
 			},
 			to: SYSTEM_CONTACT_EMAIL,
 		});

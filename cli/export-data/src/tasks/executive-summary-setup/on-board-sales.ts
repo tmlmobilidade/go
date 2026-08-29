@@ -19,8 +19,8 @@ export async function calculateOnBoardSales({ context, message }: TaskProps): Pr
 	const start = context.dates.start;
 	const end = context.dates.end;
 
-	const startDate = Dates.fromOperationalDate(start, 'Europe/Lisbon').unix_timestamp;
-	const endDate = Dates.fromOperationalDate(end, 'Europe/Lisbon').unix_timestamp;
+	const startDate = Dates.fromOperationalDate(start, 'Europe/Lisbon').unix_milliseconds;
+	const endDate = Dates.fromOperationalDate(end, 'Europe/Lisbon').unix_milliseconds;
 
 	// MongoDB pipeline based on your query
 	const pipeline = [

@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
-import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -16,7 +16,7 @@ interface UseRidesDetailHashedTripDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	timestamp: null | UnixTimestamp
+	timestamp: null | UnixMilliseconds
 }
 
 /* * */

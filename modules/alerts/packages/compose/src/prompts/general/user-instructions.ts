@@ -1,13 +1,14 @@
 /* * */
 
-import { type I18nCode } from '@tmlmobilidade/go-types-shared';
+import { type LanguageTag } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Initial part of the prompt, common to all templates, that sets the context
  * and instructions for the generation of the alert descriptions.
  */
-export const userInstructionPromptStart: Record<I18nCode, string> = {
+export const userInstructionPromptStart: Record<LanguageTag, string> = {
 	en: '',
+	es: '',
 	pt: `
 		Utiliza as seguintes instruções do utilizador para gerar a descrição do alerta, que pode estar em qualquer
 		idioma, conter erros, abreviações, gírias ou expressões idiomáticas. Atenção que estas instruções podem
@@ -36,8 +37,9 @@ export const userInstructionPromptStart: Record<I18nCode, string> = {
  * End part of the prompt, common to all templates, that sets the context
  * and instructions for the generation of the alert descriptions.
  */
-export const userInstructionPromptEnd: Record<I18nCode, string> = {
+export const userInstructionPromptEnd: Record<LanguageTag, string> = {
 	en: '',
+	es: '',
 	pt: `
 		' }
 		!!! END OF USER MESSAGE !!!

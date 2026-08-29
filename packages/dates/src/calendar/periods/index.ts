@@ -21,7 +21,7 @@ export function convertRangeToKeysArray(start: CalendarKey, end: CalendarKey): C
 	let current = datesFromCalendarKey(from);
 	const endDate = datesFromCalendarKey(to);
 
-	while (current.unix_timestamp <= endDate.unix_timestamp) {
+	while (current.unix_milliseconds <= endDate.unix_milliseconds) {
 		keys.push(calendarKey(current));
 		current = current.plus({ days: 1 });
 	}

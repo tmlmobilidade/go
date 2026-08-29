@@ -3,7 +3,7 @@
 import { useRidesAgenciesData } from '@/components/rides/shared/use-rides-agencies-data';
 import { RidesExportModalContextProvider, useRidesExportModalContext } from '@/contexts/RidesExport.context';
 import { IconFileDownload } from '@tabler/icons-react';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Button, CloseButton, closeModal, DateTimeInput, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -94,12 +94,12 @@ export default function RidesExportModal() {
 
 						onChange={value => context.actions.setFilterDateStart(value)}
 						placeholder={t('default:rides.export.RidesExportModal.fields.start_date.placeholder')}
-						value={context.filters.date_start as UnixTimestamp}
+						value={context.filters.date_start as UnixMilliseconds}
 					/>
 					<DateTimeInput
 						onChange={value => context.actions.setFilterDateEnd(value)}
 						placeholder={t('default:rides.export.RidesExportModal.fields.end_date.placeholder')}
-						value={context.filters.date_end as UnixTimestamp}
+						value={context.filters.date_end as UnixMilliseconds}
 					/>
 				</Grid>
 			</Section>

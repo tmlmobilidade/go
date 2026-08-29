@@ -23,7 +23,7 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 				reason: 'NO_APEX_VALIDATIONS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -34,7 +34,7 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 			reason: 'ONE_OR_MORE_APEX_VALIDATIONS',
 			remarks: null,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 
 		//
@@ -46,7 +46,7 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

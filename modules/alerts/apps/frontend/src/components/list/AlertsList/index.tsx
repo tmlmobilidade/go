@@ -9,7 +9,7 @@ import { useAlertsAgenciesData } from '@/components/shared/use-alerts-agencies-d
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane, PublishStatusDisplay, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane, PublishStatusDisplay, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -71,13 +71,13 @@ export function AlertsList() {
 		},
 		{
 			accessor: 'created_at',
-			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			render: item => <UnixMillisecondsDisplay value={item.created_at} showDate />,
 			title: t('alerts:list.AlertsList.columns.created_at.label'),
 			width: 225,
 		},
 		{
 			accessor: 'publish_start_date',
-			render: item => <UnixTimestampDisplay value={item.publish_start_date} showDate />,
+			render: item => <UnixMillisecondsDisplay value={item.publish_start_date} showDate />,
 			title: t('alerts:list.AlertsList.columns.publish_date.label'),
 			width: 225,
 		},

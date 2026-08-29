@@ -5,7 +5,7 @@ import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDa
 import { UserDisplay } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { CommentInput, CommentItemProps, CommentList, displayUnixTimestamp, HasPermission, Label, Section, Tooltip } from '@tmlmobilidade/ui';
+import { CommentInput, CommentItemProps, CommentList, displayUnixMilliseconds, HasPermission, Label, Section, Tooltip } from '@tmlmobilidade/ui';
 import React, { createElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -150,7 +150,7 @@ export function RideAcceptanceCommentList() {
 								</Tooltip>
 							))}
 						</Section>
-						<Label size="sm">{createdBy} a {displayUnixTimestamp(comment.created_at, 'short')}</Label>
+						<Label size="sm">{createdBy} a {displayUnixMilliseconds(comment.created_at, 'short')}</Label>
 					</div>
 				);
 			}
@@ -161,7 +161,7 @@ export function RideAcceptanceCommentList() {
 				item.content = (
 					<div className={styles.messageContainer}>
 						<div className={styles.label}>{comment.message}</div>
-						<Label size="sm">{createdBy} a {displayUnixTimestamp(comment.created_at, 'short')}</Label>
+						<Label size="sm">{createdBy} a {displayUnixMilliseconds(comment.created_at, 'short')}</Label>
 					</div>
 				);
 			}
@@ -180,11 +180,11 @@ export function RideAcceptanceCommentList() {
 
 	function addComment(comment: string) {
 		acceptanceContext.actions.addComment({
-			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			created_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 			created_by: 'will-be-set-by-api',
 			message: comment,
 			type: 'note',
-			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			updated_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 		});
 	}
 

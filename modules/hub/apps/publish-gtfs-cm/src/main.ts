@@ -30,7 +30,6 @@ import { exportShapesRows } from '@/exports/shapes.js';
 import { exportStopTimesRows } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsRows } from '@/exports/trips.js';
-import { GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
 
 /* * */
 
@@ -125,7 +124,7 @@ export async function main() {
 	// Mark as plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
-		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'waiting', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'waiting', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 	}
 
 	//
@@ -149,12 +148,12 @@ export async function main() {
 			const isValidPlan = validatePlan(planData);
 
 			if (!isValidPlan) {
-				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'skipped', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'skipped', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;
 			}
 
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'processing', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'processing', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 			//
 			// Get the operation file URL
@@ -251,7 +250,7 @@ export async function main() {
 			//
 			// Mark the plan as complete in the database.
 
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'complete', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'complete', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
@@ -266,7 +265,7 @@ export async function main() {
 
 			//
 		} catch (error) {
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'error', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'error', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 			Logger.error({ error, message: `Error processing plan ${planData._id}` });
 			Logger.divider();
 		}

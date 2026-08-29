@@ -2,7 +2,7 @@
 
 import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { AlertsRidesItem } from '@tmlmobilidade/go-alerts-pckg-types';
-import { Checkbox, DataTable, DataTableColumn, displayUnixTimestamp, Label, LoadingSection, NoDataLabel, OperationalDateDisplay, OperationalStatusDisplay, Section, SeenStatusDisplay, Surface, Tag } from '@tmlmobilidade/ui';
+import { Checkbox, DataTable, DataTableColumn, displayUnixMilliseconds, Label, LoadingSection, NoDataLabel, OperationalDateDisplay, OperationalStatusDisplay, Section, SeenStatusDisplay, Surface, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -30,7 +30,7 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 		},
 		{
 			accessor: 'seen_last_at',
-			render: item => <SeenStatusDisplay status={item.seen_status} tooltip={displayUnixTimestamp(item.seen_last_at)} />,
+			render: item => <SeenStatusDisplay status={item.seen_status} tooltip={displayUnixMilliseconds(item.seen_last_at)} />,
 			title: '',
 			width: 24,
 		},
@@ -48,7 +48,7 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 		},
 		{
 			accessor: 'start_time_scheduled',
-			render: item => <Tag label={displayUnixTimestamp(item.start_time_scheduled)} variant="muted" />,
+			render: item => <Tag label={displayUnixMilliseconds(item.start_time_scheduled)} variant="muted" />,
 			title: 'Partida',
 			width: 80,
 		},

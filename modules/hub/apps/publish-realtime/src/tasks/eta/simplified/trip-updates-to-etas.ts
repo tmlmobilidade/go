@@ -68,7 +68,7 @@ export function tripUpdateToEtas(
 
 	const vehicleId = tripUpdate.vehicle?.id ?? '';
 	const operationalDate = resolveOperationalDate(tripId);
-	const nowUnix = Dates.now('Europe/Lisbon').unix_timestamp / 1000;
+	const nowUnix = Dates.now('Europe/Lisbon').unix_milliseconds / 1000;
 	const etas: TripStopEta[] = [];
 
 	for (const stopTimeUpdate of tripUpdate.stop_time_update ?? []) {

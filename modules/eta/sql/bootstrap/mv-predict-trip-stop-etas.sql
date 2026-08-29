@@ -41,7 +41,7 @@ WITH
             argMax(hashed_shape_id, created_at) AS hashed_shape_id,
             max(created_at)                     AS position_created_at
         FROM eta.curr_vehicle_events
-        WHERE created_at >= toUnixTimestamp64Milli(now64(3)) - 30 * 60 * 1000
+        WHERE created_at >= toUnixMilliseconds64Milli(now64(3)) - 30 * 60 * 1000
         GROUP BY trip_id, vehicle_id
     ),
     -- Current node = furthest-forward node observed in the last 2 minutes before
@@ -79,7 +79,7 @@ WITH
             cn.latitude                 AS current_node_latitude,
             cn.longitude                AS current_node_longitude,
             lp.position_created_at      AS position_created_at,
-            fromUnixTimestamp64Milli(lp.position_created_at) AS pos_dt
+            fromUnixMilliseconds64Milli(lp.position_created_at) AS pos_dt
         FROM latest_pos AS lp
         INNER JOIN eta.curr_rides AS d ON lp.trip_id = d.trip_id
         LEFT JOIN eta.hist_shape_nodes AS cn
@@ -248,7 +248,7 @@ WITH
                             * exp(
                                 -greatest(
                                     toFloat64(0),
-                                    (toUnixTimestamp64Milli(now64(3)) - position_created_at) / 1000.0
+                                    (toUnixMilliseconds64Milli(now64(3)) - position_created_at) / 1000.0
                                 ) / 180.0
                             )
                         ) * ((observed_seconds / baseline_seconds) - 1)
@@ -467,5 +467,5 @@ SELECT
         NULL,
         position_created_at + toInt64(assumeNotNull(eta_seconds)) * 1000
     ) AS eta_at,
-    toUnixTimestamp64Milli(now64(3)) AS refreshed_at
+    toUnixMilliseconds64Milli(now64(3)) AS refreshed_at
 FROM eta_resolved;

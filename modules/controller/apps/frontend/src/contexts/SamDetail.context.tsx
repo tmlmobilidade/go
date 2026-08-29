@@ -3,7 +3,7 @@
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam } from '@tmlmobilidade/go-types-operation';
-import { type SystemStatus, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type SystemStatus, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { DateTime } from 'luxon';
 
 /* * */
@@ -21,8 +21,8 @@ export interface SamsDetailContextState {
 	actions: {
 		applyAnalysisFilterFromCalendarDay: (dayKey: string) => void
 		setAnalysisApexVersionFilter: (values: string[]) => void
-		setAnalysisFilterEnd: (value: null | UnixTimestamp) => void
-		setAnalysisFilterStart: (value: null | UnixTimestamp) => void
+		setAnalysisFilterEnd: (value: null | UnixMilliseconds) => void
+		setAnalysisFilterStart: (value: null | UnixMilliseconds) => void
 	}
 	data: {
 		sam: null | Sam
@@ -34,8 +34,8 @@ export interface SamsDetailContextState {
 	}
 	ui: {
 		analysisApexVersionFilter: string[]
-		analysisFilterEndTime: null | UnixTimestamp
-		analysisFilterStartTime: null | UnixTimestamp
+		analysisFilterEndTime: null | UnixMilliseconds
+		analysisFilterStartTime: null | UnixMilliseconds
 		listOpenVersion: number
 		selectedDayKey: null | string
 	}
@@ -61,8 +61,8 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 
 	const { data: samData, error: samError, isLoading: samLoading } = useSWR<Sam, Error>(samId && API_ROUTES.controller.SAMS_DETAIL(samId), { refreshInterval: 5000 });
 	const [selectedDayKey, setSelectedDayKey] = useState<null | string>(null);
-	const [analysisFilterStartTime, setAnalysisFilterStartTime] = useState<null | UnixTimestamp>(null);
-	const [analysisFilterEndTime, setAnalysisFilterEndTime] = useState<null | UnixTimestamp>(null);
+	const [analysisFilterStartTime, setAnalysisFilterStartTime] = useState<null | UnixMilliseconds>(null);
+	const [analysisFilterEndTime, setAnalysisFilterEndTime] = useState<null | UnixMilliseconds>(null);
 	const [analysisApexVersionFilter, setAnalysisApexVersionFilter] = useState<string[]>([]);
 	const [listOpenVersion, setListOpenVersion] = useState(0);
 
@@ -74,21 +74,21 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 		if (!dayStart.isValid) return;
 		const dayEnd = dayStart.endOf('day');
 		setSelectedDayKey(dayKey);
-		setAnalysisFilterStartTime(dayStart.toMillis() as UnixTimestamp);
-		setAnalysisFilterEndTime(dayEnd.toMillis() as UnixTimestamp);
+		setAnalysisFilterStartTime(dayStart.toMillis() as UnixMilliseconds);
+		setAnalysisFilterEndTime(dayEnd.toMillis() as UnixMilliseconds);
 		setListOpenVersion(currentValue => currentValue + 1);
 	}, []);
 
 	//
 
-	const setAnalysisFilterStart = useCallback((value: null | UnixTimestamp) => {
+	const setAnalysisFilterStart = useCallback((value: null | UnixMilliseconds) => {
 		setAnalysisFilterStartTime(value);
 		setSelectedDayKey(null);
 	}, []);
 
 	//
 
-	const setAnalysisFilterEnd = useCallback((value: null | UnixTimestamp) => {
+	const setAnalysisFilterEnd = useCallback((value: null | UnixMilliseconds) => {
 		setAnalysisFilterEndTime(value);
 		setSelectedDayKey(null);
 	}, []);

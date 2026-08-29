@@ -3,7 +3,7 @@
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, Flatten, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
@@ -208,14 +208,14 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param options - The options for the insert operation
 	 * @returns A promise that resolves to the result of the insert operation
 	 */
-	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], { options, unsafe = false }: { options?: InsertOneOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
+	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixMilliseconds, created_by?: string, updated_at?: UnixMilliseconds, updated_by?: string })[], { options, unsafe = false }: { options?: InsertOneOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
 		const newDocuments = docs.map((doc) => {
 			return {
 				...doc,
 				_id: doc._id || generateRandomString({ length: 5 }),
-				created_at: doc.created_at || Dates.now('utc').unix_timestamp,
+				created_at: doc.created_at || Dates.now('utc').unix_milliseconds,
 				created_by: doc.created_by || 'system',
-				updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
+				updated_at: doc.updated_at || Dates.now('utc').unix_milliseconds,
 				updated_by: doc.updated_by || 'system',
 			} as unknown as OptionalUnlessRequiredId<T>;
 		});
@@ -253,7 +253,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param options The options for the insert operation.
 	 * @returns A promise that resolves to the result of the insert operation.
 	 */
-	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
+	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: T['_id'], created_at?: UnixMilliseconds, created_by?: string, updated_at?: UnixMilliseconds, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
 		// Setup a copy of the document to be inserted
 		let parsedDocument = { ...doc } as OptionalUnlessRequiredId<T>;
 		// Validate the document against the create schema if unsafe is false
@@ -276,9 +276,9 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			}
 		}
 		// Add default fields if they are missing from the original document
-		if (!doc.created_at) parsedDocument.created_at = Dates.now('utc').unix_timestamp;
+		if (!doc.created_at) parsedDocument.created_at = Dates.now('utc').unix_milliseconds;
 		if (!doc.created_by) parsedDocument.created_by = 'system';
-		if (!doc.updated_at) parsedDocument.updated_at = Dates.now('utc').unix_timestamp;
+		if (!doc.updated_at) parsedDocument.updated_at = Dates.now('utc').unix_milliseconds;
 		if (!doc.updated_by) parsedDocument.updated_by = 'system';
 		// Add the ID if it is missing from the original document
 		// If the document is missing any default fields, add them
@@ -371,10 +371,10 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param options - The options for the update operation
 	 * @returns A promise that resolves to the result of the update operation
 	 */
-	public async updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: TUpdate & { updated_at?: UnixTimestamp, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>> {
+	public async updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: TUpdate & { updated_at?: UnixMilliseconds, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>> {
 		let parsedUpdateFields = {
 			...updateFields,
-			updated_at: updateFields.updated_at || Dates.now('utc').unix_timestamp,
+			updated_at: updateFields.updated_at || Dates.now('utc').unix_milliseconds,
 			updated_by: updateFields.updated_by || 'system',
 		};
 
@@ -386,7 +386,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			}
 		}
 
-		const result = await this.mongoCollection.updateMany(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
+		const result = await this.mongoCollection.updateMany(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_milliseconds } } as unknown as Partial<T>, options);
 
 		if (options?.returnResults === false) return result as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
 
@@ -427,7 +427,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			}
 		}
 
-		const result = await this.mongoCollection.updateOne(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
+		const result = await this.mongoCollection.updateOne(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_milliseconds } } as unknown as Partial<T>, options);
 
 		if (options?.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
 

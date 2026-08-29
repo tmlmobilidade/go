@@ -28,7 +28,7 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-operation": "*",
-		"@tmlmobilidade/go-types-public-info": "*",
+		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/ui": "*",

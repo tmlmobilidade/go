@@ -35,7 +35,7 @@ export async function fetchRidesReferenceContext(request: AlertsComposeRequest, 
 
 	return queryResult.map((item) => {
 		const formattedDate = Dates
-			.fromUnixTimestamp(item.start_time_scheduled)
+			.fromUnixMilliseconds(item.start_time_scheduled)
 			.setZone(timezone, 'offset_only')
 			.toFormat('HH:mm');
 		return `Trip of the line ${item.route_short_name} headed to ${item.headsign} departing at ${formattedDate}`;

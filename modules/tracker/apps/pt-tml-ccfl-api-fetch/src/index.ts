@@ -59,7 +59,7 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlCcflV1> = {
 				agency_id: 'IA9T6',
-				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
+				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_milliseconds,
 				entity_id: entity.id,
 				payload: {
 					header: decodedMessage.header,
@@ -84,7 +84,7 @@ const main = async () => {
 			await rawDb.vehicleEvents.ptTmlCcfl.insertOne({
 				...hashableRawEvent,
 				_id: hashableRawEventId,
-				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 			});
 
 			saveCount++;

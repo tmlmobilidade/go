@@ -1,22 +1,22 @@
 /* * */
 
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates, splitTimeIntervals } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
 export interface PerformInTimeChunksItem {
-	end: UnixTimestamp
+	end: UnixMilliseconds
 	index: number
-	start: UnixTimestamp
+	start: UnixMilliseconds
 	total: number
 }
 
 export interface PerformInTimeChunksOptions {
-	endDate?: UnixTimestamp
+	endDate?: UnixMilliseconds
 	intervalHrs: number
 	onChunk: (chunk: PerformInTimeChunksItem) => Promise<void>
-	startDate: UnixTimestamp
+	startDate: UnixMilliseconds
 }
 
 export async function performInTimeChunks({ endDate, intervalHrs, onChunk, startDate }: PerformInTimeChunksOptions) {
@@ -30,10 +30,10 @@ export async function performInTimeChunks({ endDate, intervalHrs, onChunk, start
 	// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
 
 	const endDateValue = endDate
-		? Dates.fromUnixTimestamp(endDate).unix_timestamp
-		: Dates.now('utc').minus({ seconds: 30 }).unix_timestamp;
+		? Dates.fromUnixMilliseconds(endDate).unix_milliseconds
+		: Dates.now('utc').minus({ seconds: 30 }).unix_milliseconds;
 
-	const startDateValue = Dates.fromUnixTimestamp(startDate).unix_timestamp;
+	const startDateValue = Dates.fromUnixMilliseconds(startDate).unix_milliseconds;
 
 	const allTimestampChunks = splitTimeIntervals(startDateValue, endDateValue, intervalHrs);
 
@@ -47,14 +47,14 @@ export async function performInTimeChunks({ endDate, intervalHrs, onChunk, start
 		//
 
 		const chunkStartDate = Dates
-			.fromUnixTimestamp(chunkData.start)
+			.fromUnixMilliseconds(chunkData.start)
 			.setZone('Europe/Lisbon', 'offset_only');
 
 		const chunkEndDate = Dates
-			.fromUnixTimestamp(chunkData.end)
+			.fromUnixMilliseconds(chunkData.end)
 			.setZone('Europe/Lisbon', 'offset_only');
 
-		await onChunk({ end: chunkEndDate.unix_timestamp, index: chunkIndex, start: chunkStartDate.unix_timestamp, total: allTimestampChunks.length });
+		await onChunk({ end: chunkEndDate.unix_milliseconds, index: chunkIndex, start: chunkStartDate.unix_milliseconds, total: allTimestampChunks.length });
 	}
 
 	//

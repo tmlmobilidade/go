@@ -1,16 +1,17 @@
 /* * */
 
 import { type AlertReferenceType } from '@tmlmobilidade/go-types-operation';
-import { type I18nCode } from '@tmlmobilidade/go-types-shared';
+import { type LanguageTag } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Reference type specific instructions to be included in the prompt
  * for the generation of the alert descriptions.
  */
-export const referenceTypePrompt: Record<AlertReferenceType, Record<I18nCode, string>> = {
+export const referenceTypePrompt: Record<AlertReferenceType, Record<LanguageTag, string>> = {
 
 	agency: {
 		en: '',
+		es: '',
 		pt: `
 			Este alerta afeta toda a rede do operador.
 			Tenta construir um título natural com a seguinte fórmula:
@@ -20,6 +21,7 @@ export const referenceTypePrompt: Record<AlertReferenceType, Record<I18nCode, st
 
 	lines: {
 		en: '',
+		es: '',
 		pt: `
 			Este alerta afeta uma ou mais linhas específicas:
 			Nem sempre é uma situação negativa (como em situações de aumento de serviço).
@@ -37,6 +39,7 @@ export const referenceTypePrompt: Record<AlertReferenceType, Record<I18nCode, st
 
 	rides: {
 		en: '',
+		es: '',
 		pt: `
 			Este alerta afeta uma ou mais viagens específicas:
 			- menciona o número da linha;
@@ -63,6 +66,7 @@ export const referenceTypePrompt: Record<AlertReferenceType, Record<I18nCode, st
 
 	stops: {
 		en: '',
+		es: '',
 		pt: `
 			Este alerta afeta uma ou mais paragens específicas:
 			- identifica as paragens afetadas;
