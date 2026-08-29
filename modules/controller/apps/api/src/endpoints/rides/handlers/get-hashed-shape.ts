@@ -45,7 +45,7 @@ export async function getHashedShapeHandler(request: FastifyRequest<{ Params: { 
 
 	const foundHashedShapeData = await labDb.operation.hashedShapes.select(
 		'*',
-		'_id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id, stop_sequence',
+		'_id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id',
 		{ 1: rideData.hashed_shape_id },
 	);
 
