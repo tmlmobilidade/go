@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-alerts-pckg-compose",
+	"name": "@tmlmobilidade/go-operation-pckg-compose-alert",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -15,9 +15,9 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-alerts-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-operation-pckg-types": "*",
 		"@tmlmobilidade/go-providers-ai": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",
