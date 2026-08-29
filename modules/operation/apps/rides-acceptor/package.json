@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-controller-rides-examiner",
+	"name": "@tmlmobilidade/go-operation-rides-acceptor",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -18,17 +18,14 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-operation-pckg-utils": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
-		"@tmlmobilidade/go-types-apex": "*",
-		"@tmlmobilidade/go-types-geo": "*",
+		"@tmlmobilidade/go-operation-pckg-utils": "*",
 		"@tmlmobilidade/go-types-operation": "*",
-		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-geo": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
