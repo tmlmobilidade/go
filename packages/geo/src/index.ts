@@ -9,4 +9,5 @@ export * from '@/hashed-shapes-to-geojson.js';
 export * from '@/is-point-in-polygon.js';
 export * from '@/measurements.js';
 export * from '@/polyline.js';
+export * from '@/vehicle-event-to-geojson.js';
 export * from '@turf/turf';
