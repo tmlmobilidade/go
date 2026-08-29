@@ -86,14 +86,14 @@ async function main() {
 						await performInTimeChunks({
 							endDate: chunk.end,
 							intervalHrs: 10 / 60, // 10 minutes
-							onChunk: async (chunk) => {
-								await syncVehicleEvents(chunk, configItem);
-							},
+							onChunk: async chunk => await syncVehicleEvents(chunk, configItem),
+							order: 'desc',
 							startDate: chunk.start,
 						});
 					}
 				}
 			},
+			order: 'desc',
 			startDate: earliestDate.unix_milliseconds,
 		});
 

@@ -96,8 +96,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawdbCollection.distinct('_id', rawdbQuery);
-			return result.map(String);
+			return await rawdbCollection.distinct('_id', rawdbQuery);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
