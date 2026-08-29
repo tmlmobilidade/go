@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertsList } from '@/components/list/AlertsList';
+import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { Fragment, type PropsWithChildren } from 'react';
 
