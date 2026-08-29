@@ -45,14 +45,14 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 	//
 	// A. Setup variables
 
-	const { data: acceptanceData, error: acceptanceError, isLoading: acceptanceLoading, mutate: acceptanceMutate } = useSWR<RideAcceptance>(API_ROUTES.operation.ACCEPTANCE_DETAIL(rideId));
+	const { data: acceptanceData, error: acceptanceError, isLoading: acceptanceLoading, mutate: acceptanceMutate } = useSWR<RideAcceptance>(API_ROUTES.operation.RIDE_ACCEPTANCES_DETAIL(rideId));
 
 	//
 	// B. Handle actions
 
 	async function addComment(comment: RideAcceptance['comments'][number]) {
 		try {
-			const res = await fetchData(API_ROUTES.operation.ACCEPTANCE_COMMENT(rideId), 'POST', comment);
+			const res = await fetchData(API_ROUTES.operation.RIDE_ACCEPTANCES_COMMENT(rideId), 'POST', comment);
 
 			if (res.error) {
 				useToast.error({ message: res.error, title: 'Erro ao adicionar comentário' });
@@ -67,7 +67,7 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 
 	async function changeStatus(status: RideAcceptance['acceptance_status']) {
 		try {
-			const statusResponse = await fetchData(API_ROUTES.operation.ACCEPTANCE_CHANGE_STATUS(rideId), 'PUT', { acceptance_status: status });
+			const statusResponse = await fetchData(API_ROUTES.operation.RIDE_ACCEPTANCES_CHANGE_STATUS(rideId), 'PUT', { acceptance_status: status });
 
 			if (statusResponse.error) {
 				useToast.error({ message: statusResponse.error, title: 'Erro ao alterar status' });
@@ -81,7 +81,7 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 	}
 
 	async function justify(message: string, cause: AlertCause, manual_trip_id?: string) {
-		const response = await fetchData(API_ROUTES.operation.ACCEPTANCE_JUSTIFY(rideId), 'PUT', { justification_cause: cause, manual_trip_id, pto_message: message });
+		const response = await fetchData(API_ROUTES.operation.RIDE_ACCEPTANCES_JUSTIFY(rideId), 'PUT', { justification_cause: cause, manual_trip_id, pto_message: message });
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao justificar' });
 			return;
@@ -90,7 +90,7 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 	}
 
 	async function toggleLock(is_locked: RideAcceptance['is_locked']) {
-		const response = await fetchData(API_ROUTES.operation.ACCEPTANCE_LOCK(rideId), 'PUT', { is_locked });
+		const response = await fetchData(API_ROUTES.operation.RIDE_ACCEPTANCES_LOCK(rideId), 'PUT', { is_locked });
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao bloquear justificação' });
 			return;
