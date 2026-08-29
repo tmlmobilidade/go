@@ -1,5 +1,6 @@
 /* * */
 
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { render } from 'react-email';
@@ -32,7 +33,7 @@ export default function NewApexFileNotificationTemplate({ agencyName, planId, st
 			<Greeting text="Olá 👋" />
 			<Paragraph>
 				Foi disponibilizado no GO um novo ficheiro de configuração APEX para o plano
-				<Anchor href={`https://go.tmlmobilidade.pt/plans/approved/${planId}`} spaceAfter spaceBefore text={planId} />
+				<Anchor href={PAGE_ROUTES.operation.PLANS_DETAIL(planId)} spaceAfter spaceBefore text={planId} />
 				do operador
 				<Span spaceAfter spaceBefore weight="bold">{agencyName}</Span>
 				com início a

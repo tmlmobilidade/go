@@ -1,5 +1,6 @@
 /* * */
 
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { render } from 'react-email';
@@ -62,7 +63,7 @@ PlanApprovedTemplate.PreviewProps = {
 	endDate: 20260131 as OperationalDateInt,
 	firstName: 'Josué',
 	planId: 'YUA81A',
-	planUrl: 'https://go.tmlmobilidade.pt/plans/YUA81A',
+	planUrl: PAGE_ROUTES.operation.PLANS_DETAIL('YUA81A'),
 	startDate: 20250101 as OperationalDateInt,
 } satisfies PlanApprovedTemplateProps;
 

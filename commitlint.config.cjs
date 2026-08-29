@@ -49,7 +49,7 @@ module.exports = {
         'locations',
         'offer',
         'performance',
-        'plans',
+        'operation',
         'replicator',
         'stops',
         'tracker',
