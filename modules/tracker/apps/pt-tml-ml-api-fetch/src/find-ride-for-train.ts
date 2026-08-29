@@ -5,7 +5,7 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { enrichTripPathWithStopCodes } from './enrich-trip-path-with-stop-codes.js';
-import { findRidesForTrainQuery, findTripPathQuery } from './find-rides-for-train-query.js';
+import { findHashedShapeQuery, findHashedTripQuery, findRidesForTrainQuery } from './find-rides-for-train-query.js';
 import { type AggregationResult, ML_AGENCY_ID } from './types.js';
 
 /* * */
@@ -48,13 +48,16 @@ export async function findRideForTrain({ destinationId, now }: FindRideForTrainP
 	const ride = rides[Math.floor(rides.length / 2)];
 	if (!ride) return null;
 
-	const path = await labDb.operation.hashedTrips.queryFromString(findTripPathQuery, { 1: ride.hashed_trip_id });
+	const path = await labDb.operation.hashedTrips.queryFromString(findHashedTripQuery, { 1: ride.hashed_trip_id });
 	if (!path.length) return null;
+
+	const shape = await labDb.operation.hashedShapes.queryFromString(findHashedShapeQuery, { 1: ride.hashed_shape_id });
+	if (!shape.length) return null;
 
 	return {
 		_id: ride._id,
 		hashed_trip: { path: await enrichTripPathWithStopCodes(path) },
-		shape_polyline: ride.shape_polyline,
+		shape_polyline: shape[0].shape_polyline,
 		trip_id: ride.trip_id,
 	};
 }

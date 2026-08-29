@@ -25,7 +25,7 @@ export const findRidesForTrainQuery = `
 	ORDER BY start_time_scheduled
 `;
 
-export const findTripPathQuery = `
+export const findHashedTripQuery = `
 	SELECT
 		_id,
 		agency_id,
@@ -50,4 +50,16 @@ export const findTripPathQuery = `
 		LIMIT 1 BY _id, stop_sequence
 	)
 	ORDER BY stop_sequence
+`;
+
+export const findHashedShapeQuery = `
+	SELECT
+		shape_polyline
+	FROM (
+		SELECT *
+		FROM operation.hashed_shapes
+		WHERE _id = $1
+		ORDER BY updated_at DESC
+		LIMIT 1 BY _id
+	)
 `;
