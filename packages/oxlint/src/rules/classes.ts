@@ -8,7 +8,7 @@ import { defineConfig } from "oxlint";
  * within each group. Scoped to `**\*.{js,ts}` (not JSX).
  *
  * Sets `plugins: []` so this fragment does not pull default plugins into
- * the extends union when composed by {@link commonConfig}.
+ * the extends union when composed by {@link lintConfig}.
  *
  * @see https://perfectionist.dev/rules/sort-classes
  */

@@ -7,7 +7,7 @@ import { defineConfig } from "oxlint";
  * unused vars, and requires optional chaining where applicable.
  *
  * Sets `plugins: []` so this fragment does not pull default plugins into
- * the extends union when composed by {@link commonConfig}.
+ * the extends union when composed by {@link lintConfig}.
  *
  * @see https://oxc.rs/docs/guide/usage/linter/rules.html
  */

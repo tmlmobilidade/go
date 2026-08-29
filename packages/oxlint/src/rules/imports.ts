@@ -8,7 +8,7 @@ import { defineConfig } from "oxlint";
  * member sorting off.
  *
  * Sets `plugins: []` so this fragment does not pull default plugins into
- * the extends union when composed by {@link commonConfig}.
+ * the extends union when composed by {@link lintConfig}.
  *
  * @see https://perfectionist.dev/
  */
