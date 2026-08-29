@@ -10,7 +10,7 @@ import { type Vehicle } from '@tmlmobilidade/go-types-operation';
  * @param request Fastify request containing vehicle ID in params.
  * @param reply Fastify reply.
  */
-export async function lockVehicle(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
+export async function lockVehicleHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
 	await goDb.operation.vehicles.toggleLockById(request.params.id);
 	const foundVehicle = await goDb.operation.vehicles.findById(request.params.id);
 	if (!foundVehicle) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');

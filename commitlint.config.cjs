@@ -44,7 +44,6 @@ module.exports = {
         'dates',
         'eta',
         'exporter',
-        'fleet',
         'hub',
         'locations',
         'offer',

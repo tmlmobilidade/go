@@ -41,12 +41,11 @@ Each module represents a domain area of the GO platform. A module is self-contai
 | `dates` | Operational calendar and date period management |
 | `eta` | Estimated time of arrival computation |
 | `exporter` | GTFS and data export pipeline |
-| `fleet` | Vehicle fleet management |
 | `hub` | Central data hub — GTFS sync, Navegante app integration |
 | `locations` | Geographic locations and GeoJSON management |
 | `offer` | Service offer — lines, routes, schedules, GTFS import/export |
 | `performance` | KPI metrics — trip compliance, punctuality, reporting |
-| `plans` | Operational and offer plans — validation, publication |
+| `operation` | Operational and offer plans — validation, publication |
 | `replicator` | Data replication from APEX and vehicle event sources |
 | `stops` | Stop management and organisation |
 | `tracker` | Real-time vehicle tracking — event ingestion from operators |

@@ -10,7 +10,7 @@ import { type Vehicle } from '@tmlmobilidade/go-types-operation';
  * @param request Fastify request containing vehicle ID in params
  * @param reply Fastify reply
  */
-export async function getVehicleById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
+export async function getVehicleHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
 	//
 
 	//

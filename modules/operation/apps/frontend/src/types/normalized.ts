@@ -1,7 +1,7 @@
 /* * */
 
 import { type PlanValidityStatus, PlanValidityStatusSchema } from '@tmlmobilidade/go-operation-pckg-types';
-import { type GtfsValidation, type Plan } from '@tmlmobilidade/go-types-operation';
+import { type GtfsValidation, type Plan, Vehicle } from '@tmlmobilidade/go-types-operation';
 import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { SelectDataItem } from '@tmlmobilidade/ui';
 
@@ -40,4 +40,8 @@ export interface ValidationNormalized extends GtfsValidation {
 	agency_code_normalized: string
 	agency_id_normalized: string
 	agency_name_normalized: string
+}
+
+export interface VehicleNormalized extends Vehicle {
+	agency_id_normalized: string
 }

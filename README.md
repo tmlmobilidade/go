@@ -140,7 +140,6 @@ npm run dev:infrastructure:ui
 | `exporter` | GTFS and data export pipelines | — |
 | `hub` | Public open-data API and Navegante integrations | [Open data](https://go.tmlmobilidade.pt/reference/open-data) |
 | `stops` | Stop inventory and organisation | — |
-| `fleet` | Vehicle fleet management | — |
 | `locations` | Geographic boundaries (districts, municipalities, …) | — |
 | `dates` | Operational calendar and date periods | — |
 | `replicator` | Data replication from APEX and vehicle sources | — |

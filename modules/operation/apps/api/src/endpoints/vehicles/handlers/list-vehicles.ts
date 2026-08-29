@@ -10,7 +10,7 @@ import { type Vehicle } from '@tmlmobilidade/go-types-operation';
  * @param request Fastify request
  * @param reply Fastify reply
  */
-export async function getAllVehicles(request: FastifyRequest, reply: FastifyReply<Vehicle[]>) {
+export async function listVehiclesHandler(request: FastifyRequest, reply: FastifyReply<Vehicle[]>) {
 	//
 
 	//

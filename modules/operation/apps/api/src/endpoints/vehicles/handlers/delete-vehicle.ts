@@ -10,7 +10,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request Fastify request containing vehicle ID in params
  * @param reply Fastify reply
  */
-export async function deleteVehicle(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+export async function deleteVehicleHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 	const { id } = request.params;
 	const vehicle = await goDb.operation.vehicles.findById(id);
 

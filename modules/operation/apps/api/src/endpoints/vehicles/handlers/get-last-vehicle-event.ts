@@ -10,7 +10,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
  * @param request Fastify request containing vehicle ID in params
  * @param reply Fastify reply
  */
-export async function getLastVehicleEvent(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent>) {
+export async function getLastVehicleEventHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent>) {
 	//
 
 	const [agencyId, vehicleId] = request.params.id.split('-');

@@ -11,7 +11,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request Fastify request containing vehicle data
  * @param reply Fastify reply
  */
-export async function createVehicle(request: FastifyRequest<{ Body: CreateVehicleDto | CreateVehicleDto[] }>, reply: FastifyReply<null | Vehicle>) {
+export async function createVehicleHandler(request: FastifyRequest<{ Body: CreateVehicleDto | CreateVehicleDto[] }>, reply: FastifyReply<null | Vehicle>) {
 	//
 
 	//

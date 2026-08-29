@@ -11,7 +11,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request Fastify request containing vehicle ID in params and update data in body
  * @param reply Fastify reply
  */
-export async function updateVehicle(request: FastifyRequest<{ Body: UpdateVehicleDto | UpdateVehicleDto[], Params: { id: string | string[] } }>, reply: FastifyReply<null | Vehicle>) {
+export async function updateVehicleHandler(request: FastifyRequest<{ Body: UpdateVehicleDto | UpdateVehicleDto[], Params: { id: string | string[] } }>, reply: FastifyReply<null | Vehicle>) {
 	//
 
 	//
