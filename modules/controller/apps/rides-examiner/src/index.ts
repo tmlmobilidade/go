@@ -3,7 +3,7 @@
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
-import { ridesProvider } from '@tmlmobilidade/go-controller-pckg-utils';
+import { ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';

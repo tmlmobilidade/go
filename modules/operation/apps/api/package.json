@@ -28,6 +28,7 @@
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-operation-pckg-compose-alert": "*",
 		"@tmlmobilidade/go-operation-pckg-types": "*",
+		"@tmlmobilidade/go-operation-pckg-utils": "*",
 		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",

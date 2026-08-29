@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { ridesProvider } from '@tmlmobilidade/go-controller-pckg-utils';
+import { ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 

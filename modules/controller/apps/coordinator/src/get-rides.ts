@@ -1,6 +1,6 @@
 /* * */
 
-import { ridesProvider } from '@tmlmobilidade/go-controller-pckg-utils';
+import { ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';

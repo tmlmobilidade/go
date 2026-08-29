@@ -1,6 +1,6 @@
 /* * */
 
-import { ridesProvider } from '@tmlmobilidade/go-controller-pckg-utils';
+import { ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
