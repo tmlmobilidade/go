@@ -12,11 +12,11 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { useRidesDetailApexValidationsData } from '../..//shared/use-rides-detail-apex-validations-data';
-import { useRidesDetailHashedTripData } from '../..//shared/use-rides-detail-hashed-trip-data';
-import { useRidesDetailRideData } from '../..//shared/use-rides-detail-ride-data';
-import { useRidesDetailVehicleEventsData } from '../..//shared/use-rides-detail-vehicle-events-data';
+import { useRidesDetailApexValidationsData } from '../../shared/use-rides-detail-apex-validations-data';
 import { useRidesDetailHashedShapeData } from '../../shared/use-rides-detail-hashed-shape-data';
+import { useRidesDetailHashedTripData } from '../../shared/use-rides-detail-hashed-trip-data';
+import { useRidesDetailRideData } from '../../shared/use-rides-detail-ride-data';
+import { useRidesDetailVehicleEventsData } from '../../shared/use-rides-detail-vehicle-events-data';
 
 /* * */
 
