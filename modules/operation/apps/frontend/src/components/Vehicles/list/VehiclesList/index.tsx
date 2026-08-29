@@ -56,7 +56,7 @@ export function VehiclesList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: VehicleNormalized) => {
-		router.push(keepUrlParams(PAGE_ROUTES.fleet.VEHICLES_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.VEHICLES_DETAIL(item._id)));
 	};
 
 	//

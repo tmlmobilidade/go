@@ -60,7 +60,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const [createdCount, setCreatedCount] = useState(0);
 	const [updatedCount, setUpdatedCount] = useState(0);
 
-	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
+	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(API_ROUTES.operation.VEHICLES_LIST);
 
 	const { form } = useTypicalForm<CreateVehicleDto>(CreateVehicleSchema);
 	const agencies = useAgenciesContext();
@@ -105,7 +105,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 		try {
 			const vehiclesFromFile = await parseTxtFile(file);
-			const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
+			const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.operation.VEHICLES_LIST, 'GET');
 
 			if (vehiclesFromFile.length === 0) {
 				setIsError(new Error('Invalid or empty file'));
@@ -192,7 +192,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				.map(item => item.vehicle);
 
 			if (vehiclesToCreate.length > 0) {
-				const response = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', vehiclesToCreate);
+				const response = await fetchData<Vehicle[]>(API_ROUTES.operation.VEHICLES_LIST, 'POST', vehiclesToCreate);
 				if (response.error) {
 					setIsError(new Error(response.error));
 					return;
@@ -206,7 +206,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 			if (vehiclesToUpdate.length > 0) {
 				const vehicleIds = vehiclesToUpdate.map(vehicle => vehicle._id).join(',');
-				const response = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleIds), 'PUT', vehiclesToUpdate);
+				const response = await fetchData<Vehicle[]>(API_ROUTES.operation.VEHICLES_DETAIL(vehicleIds), 'PUT', vehiclesToUpdate);
 				if (response.error) {
 					setIsError(new Error(response.error));
 					return;

@@ -88,15 +88,6 @@ export const PAGE_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'frontend_url')}/year-periods`,
 	},
 
-	fleet: {
-		// BASE
-		BASE: `${getModuleConfig('fleet', 'frontend_url')}`,
-
-		// VEHICLES
-		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('fleet', 'frontend_url')}/vehicles/${encodeURIComponent(id)}`,
-		VEHICLES_LIST: `${getModuleConfig('fleet', 'frontend_url')}/vehicles`,
-	},
-
 	infrastructure: {
 		// BASE
 		BASE: `${getModuleConfig('infrastructure', 'frontend_url')}`,
@@ -144,6 +135,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// PLANS
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/plans/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('operation', 'frontend_url')}/plans`,
+
+		// VEHICLES
+		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/vehicles/${encodeURIComponent(id)}`,
+		VEHICLES_LIST: `${getModuleConfig('operation', 'frontend_url')}/vehicles`,
 	},
 
 	performance: {
@@ -330,17 +325,6 @@ export const API_ROUTES = Object.freeze({
 		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter`,
 	},
 
-	fleet: {
-		// BASE
-		BASE: `${getModuleConfig('fleet', 'api_url')}`,
-
-		// VEHICLES
-		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('fleet', 'api_url')}/vehicles/${encodeURIComponent(id)}`,
-		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getModuleConfig('fleet', 'api_url')}/vehicles/${encodeURIComponent(id)}/last-event`,
-		VEHICLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('fleet', 'api_url')}/vehicles/${encodeURIComponent(id)}/lock`,
-		VEHICLES_LIST: `${getModuleConfig('fleet', 'api_url')}/vehicles`,
-	},
-
 	hub: {
 		// BASE
 		BASE: `${getModuleConfig('hub', 'api_url')}`,
@@ -494,6 +478,12 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('operation', 'api_url')}/plans/list`,
 		PLANS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/plans/list-agencies`,
+
+		// VEHICLES
+		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/vehicles/${encodeURIComponent(id)}`,
+		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getModuleConfig('operation', 'api_url')}/vehicles/${encodeURIComponent(id)}/last-event`,
+		VEHICLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/vehicles/${encodeURIComponent(id)}/lock`,
+		VEHICLES_LIST: `${getModuleConfig('operation', 'api_url')}/vehicles`,
 	},
 
 	performance: {

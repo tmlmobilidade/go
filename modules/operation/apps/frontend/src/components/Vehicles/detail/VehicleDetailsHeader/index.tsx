@@ -23,7 +23,7 @@ export function VehicleDetailsHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.fleet.VEHICLES_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.VEHICLES_LIST));
 	};
 
 	//

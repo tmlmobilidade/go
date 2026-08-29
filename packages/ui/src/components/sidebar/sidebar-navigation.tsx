@@ -87,7 +87,7 @@ export const sidebarNavigationGroups = [
 			},
 			{
 				_id: 'vehicles',
-				href: PAGE_ROUTES.fleet.VEHICLES_LIST,
+				href: PAGE_ROUTES.operation.VEHICLES_LIST,
 				icon: <IconBus />,
 				permissions: [{ action: PermissionCatalog.all.vehicles.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.vehicles.scope }],
 			},

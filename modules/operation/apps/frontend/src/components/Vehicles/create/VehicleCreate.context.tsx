@@ -52,7 +52,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// B. Fetch data
 
-	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
+	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(API_ROUTES.operation.VEHICLES_LIST);
 
 	//
 	// C. Setup form
@@ -65,7 +65,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 	const handleCreateVehicle = async () => {
 		setIsError(null);
 		setIsSaving(true);
-		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', form.getValues());
+		const response = await fetchData<Vehicle>(API_ROUTES.operation.VEHICLES_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar veículo' });
@@ -85,7 +85,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 		setIsSaving(false);
 		closeCreateVehicleModal();
 		useToast.success({ message: 'Veículo criado com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.fleet.VEHICLES_DETAIL(response.data._id)));
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.operation.VEHICLES_DETAIL(response.data._id)));
 	};
 
 	//
