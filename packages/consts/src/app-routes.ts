@@ -9,15 +9,6 @@ import { getModuleConfig } from './app-configs.js';
 
 export const PAGE_ROUTES = Object.freeze({
 
-	alerts: {
-		// BASE
-		BASE: `${getModuleConfig('alerts', 'frontend_url')}`,
-
-		// ALERTS
-		ALERTS_DETAIL: (alertId: string) => `${getModuleConfig('alerts', 'frontend_url')}/${encodeURIComponent(alertId)}`,
-		ALERTS_LIST: `${getModuleConfig('alerts', 'frontend_url')}`,
-	},
-
 	controller: {
 		// BASE
 		BASE: `${getModuleConfig('controller', 'frontend_url')}`,
@@ -128,6 +119,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('operation', 'frontend_url')}`,
 
+		// ALERTS
+		ALERTS_DETAIL: (alertId: string) => `${getModuleConfig('operation', 'frontend_url')}/alerts/${encodeURIComponent(alertId)}`,
+		ALERTS_LIST: `${getModuleConfig('operation', 'frontend_url')}/alerts`,
+
 		// GTFS_VALIDATIONS
 		GTFS_VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/gtfs-validations/${encodeURIComponent(id)}`,
 		GTFS_VALIDATIONS_LIST: `${getModuleConfig('operation', 'frontend_url')}/gtfs-validations`,
@@ -171,26 +166,6 @@ export const PAGE_ROUTES = Object.freeze({
 } as const);
 
 export const API_ROUTES = Object.freeze({
-
-	alerts: {
-		// BASE
-		BASE: `${getModuleConfig('alerts', 'api_url')}`,
-
-		// ALERTS
-		ALERTS_COMPOSE: `${getModuleConfig('alerts', 'api_url')}/alerts/compose`,
-		ALERTS_CREATE: `${getModuleConfig('alerts', 'api_url')}/alerts/create`,
-		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}`,
-		ALERTS_DETAIL_DUPLICATE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/duplicate`,
-		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/image`,
-		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/lock`,
-		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts/list`,
-		ALERTS_LIST_AGENCIES: `${getModuleConfig('alerts', 'api_url')}/alerts/list-agencies`,
-
-		// OPERATION
-		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
-		OPERATION_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation/rides`,
-		OPERATION_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation/stops`,
-	},
 
 	controller: {
 		// BASE
@@ -452,6 +427,19 @@ export const API_ROUTES = Object.freeze({
 	operation: {
 		// BASE
 		BASE: `${getModuleConfig('operation', 'api_url')}`,
+
+		// ALERTS
+		ALERTS_COMPOSE: `${getModuleConfig('operation', 'api_url')}/alerts/compose`,
+		ALERTS_CREATE: `${getModuleConfig('operation', 'api_url')}/alerts/create`,
+		ALERTS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}`,
+		ALERTS_DETAIL_DUPLICATE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/duplicate`,
+		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/image`,
+		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/lock`,
+		ALERTS_LINES: `${getModuleConfig('operation', 'api_url')}/alerts/lines`,
+		ALERTS_LIST: `${getModuleConfig('operation', 'api_url')}/alerts/list`,
+		ALERTS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/alerts/list-agencies`,
+		ALERTS_RIDES: `${getModuleConfig('operation', 'api_url')}/alerts/rides`,
+		ALERTS_STOPS: `${getModuleConfig('operation', 'api_url')}/alerts/stops`,
 
 		// GTFS-VALIDATIONS
 		GTFS_VALIDATIONS_CREATE: `${getModuleConfig('operation', 'api_url')}/gtfs-validations/create`,
