@@ -64,7 +64,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		fetchFn: async () => await fetchApiData<Plan>({
 			body: { validation_id: validationId },
 			method: 'POST',
-			url: API_ROUTES.plans.PLANS_CREATE,
+			url: API_ROUTES.operation.PLANS_CREATE,
 		}),
 		labels: {
 			error_title: 'Erro ao aprovar plano',
@@ -75,14 +75,14 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 			closeModal(CREATE_PLAN_MODAL_ID);
 
 			if (response.data) {
-				window.location.href = PAGE_ROUTES.plans.APPROVED_DETAIL(response.data._id);
+				window.location.href = PAGE_ROUTES.operation.APPROVED_DETAIL(response.data._id);
 			}
 		},
 	});
 
 	const { action: requestApproval, isError: requestApprovalError, isLoading: isRequestingApproval } = useHandleUpdate<GtfsValidation>({
 		fetchFn: async () => await fetchApiData<GtfsValidation>({
-			url: API_ROUTES.plans.VALIDATIONS_DETAIL_REQUEST_APPROVAL(validationId),
+			url: API_ROUTES.operation.VALIDATIONS_DETAIL_REQUEST_APPROVAL(validationId),
 		}),
 		labels: {
 			error_title: 'Erro ao solicitar aprovação à TML',

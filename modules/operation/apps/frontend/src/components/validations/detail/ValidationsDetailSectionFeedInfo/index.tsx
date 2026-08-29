@@ -21,7 +21,7 @@ export function ValidationsDetailSectionFeedInfo() {
 	const handleDownload = async () => {
 		try {
 			// Open file.url in a new window
-			window.open(API_ROUTES.plans.VALIDATIONS_DETAIL_FILE_DOWNLOAD(validationsDetailContext.data.validation?._id), '_blank');
+			window.open(API_ROUTES.operation.VALIDATIONS_DETAIL_FILE_DOWNLOAD(validationsDetailContext.data.validation?._id), '_blank');
 		} catch (error) {
 			useToast.error({
 				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',

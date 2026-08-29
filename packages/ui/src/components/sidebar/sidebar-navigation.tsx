@@ -63,13 +63,13 @@ export const sidebarNavigationGroups = [
 			},
 			{
 				_id: 'gtfs_validations',
-				href: PAGE_ROUTES.plans.VALIDATIONS_LIST,
+				href: PAGE_ROUTES.operation.VALIDATIONS_LIST,
 				icon: <IconFileCheck />,
 				permissions: [{ action: PermissionCatalog.all.gtfs_validations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.gtfs_validations.scope }],
 			},
 			{
 				_id: 'plans',
-				href: PAGE_ROUTES.plans.APPROVED_LIST,
+				href: PAGE_ROUTES.operation.APPROVED_LIST,
 				icon: <IconFileCertificate />,
 				permissions: [{ action: PermissionCatalog.all.plans.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.plans.scope }],
 			},

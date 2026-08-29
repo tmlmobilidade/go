@@ -29,7 +29,7 @@ export function useGtfsValidationsAgenciesData(query: GtfsValidationsAgencyReque
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<GtfsValidationsAgencyItem[]>>([API_ROUTES.plans.VALIDATIONS_LIST_AGENCIES, query], {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<GtfsValidationsAgencyItem[]>>([API_ROUTES.operation.VALIDATIONS_LIST_AGENCIES, query], {
 		fetcher: async ([url, query]) => await fetchApiData<GtfsValidationsAgencyItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

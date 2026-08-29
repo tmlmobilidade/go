@@ -137,9 +137,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('operation', 'frontend_url')}`,
 
-		// APPROVED
-		APPROVED_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/approved/${encodeURIComponent(id)}`,
-		APPROVED_LIST: `${getModuleConfig('operation', 'frontend_url')}/approved`,
+		// PLANS
+		PLANS_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/plans/${encodeURIComponent(id)}`,
+		PLANS_LIST: `${getModuleConfig('operation', 'frontend_url')}/plans`,
 
 		// VALIDATIONS
 		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/validations/${encodeURIComponent(id)}`,

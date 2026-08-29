@@ -48,7 +48,7 @@ export function useValidationsListData(): UseValidationsListDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<ValidationListItem[]>>([API_ROUTES.plans.VALIDATIONS_LIST, query], {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<ValidationListItem[]>>([API_ROUTES.operation.VALIDATIONS_LIST, query], {
 		fetcher: async ([url, query]) => await fetchApiData<ValidationListItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000,
 	});

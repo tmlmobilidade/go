@@ -61,7 +61,7 @@ export function PlanChangeContextProvider({ children, planId }: PropsWithChildre
 	//
 	// C. Fetch data
 
-	const { data: planResponse, error: planSwrError, isLoading: planLoading, mutate: planMutate } = useSWR<ApiResponse<Plan>>(API_ROUTES.plans.PLANS_DETAIL(planId), {
+	const { data: planResponse, error: planSwrError, isLoading: planLoading, mutate: planMutate } = useSWR<ApiResponse<Plan>>(API_ROUTES.operation.PLANS_DETAIL(planId), {
 		fetcher: async (url: string) => await fetchApiData<Plan>({ url }),
 	});
 
@@ -97,7 +97,7 @@ export function PlanChangeContextProvider({ children, planId }: PropsWithChildre
 		fetchFn: async () => await fetchApiData<Plan>({
 			body: form.getValues(),
 			method: 'POST',
-			url: API_ROUTES.plans.PLANS_DETAIL_CHANGE_GTFS(planId),
+			url: API_ROUTES.operation.PLANS_DETAIL_CHANGE_GTFS(planId),
 		}),
 		onSuccess: (response) => {
 			form.reset();

@@ -33,7 +33,7 @@ export function usePlansDetailData(): UsePlansDetailDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Plan>>(API_ROUTES.plans.PLANS_DETAIL(planId), {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Plan>>(API_ROUTES.operation.PLANS_DETAIL(planId), {
 		fetcher: async (url: string) => await fetchApiData<Plan>({ url }),
 		refreshInterval: 5_000,
 	});

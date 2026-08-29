@@ -29,7 +29,7 @@ export function usePlansAgenciesData(): PlansAgenciesDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<PlansAgencyItem[]>>(API_ROUTES.plans.PLANS_LIST_AGENCIES, {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<PlansAgencyItem[]>>(API_ROUTES.operation.PLANS_LIST_AGENCIES, {
 		fetcher: async (url: string) => await fetchApiData<PlansAgencyItem[]>({ method: 'GET', url: url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

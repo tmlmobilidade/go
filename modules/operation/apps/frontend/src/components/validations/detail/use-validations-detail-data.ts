@@ -34,7 +34,7 @@ export function useValidationsDetailData(validationIdOverride?: string): UseVali
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<GtfsValidation>>(API_ROUTES.plans.VALIDATIONS_DETAIL(validationId), {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<GtfsValidation>>(API_ROUTES.operation.VALIDATIONS_DETAIL(validationId), {
 		fetcher: async (url: string) => await fetchApiData<GtfsValidation>({ url }),
 		refreshInterval: 3_000,
 	});
