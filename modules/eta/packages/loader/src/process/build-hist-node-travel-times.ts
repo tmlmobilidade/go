@@ -36,6 +36,7 @@ export async function buildHistNodeTravelTimes(windowStart: UnixMilliseconds, wi
 
 			await labDb.queryFromFile(pipelinePath(SQL_PATH), { chunk_end: chunk.end, chunk_start: chunk.start });
 		},
+		order: 'desc',
 		startDate: windowStart,
 	});
 }

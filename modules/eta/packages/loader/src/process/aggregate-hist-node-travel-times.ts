@@ -37,6 +37,7 @@ export async function aggregateHistNodeTravelTimes(windowStart: UnixMilliseconds
 				scan_start: day.unix_milliseconds - 16 * hourMs,
 			});
 		},
+		order: 'desc',
 		startDate: windowStart,
 	});
 }

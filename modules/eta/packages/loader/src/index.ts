@@ -105,6 +105,7 @@ export async function loadEta(config: AppConfig) {
 					chunk_start: chunk.start,
 				});
 			},
+			order: 'desc',
 			startDate: config.processing.historicalRidesStartTime,
 		});
 	}

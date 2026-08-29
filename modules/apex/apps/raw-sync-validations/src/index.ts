@@ -54,13 +54,13 @@ async function main() {
 					await performInTimeChunks({
 						endDate: chunk.end,
 						intervalHrs: 5 / 60, // 5 minutes
-						onChunk: async (chunk) => {
-							await syncApexValidations(chunk);
-						},
+						onChunk: async chunk => await syncApexValidations(chunk),
+						order: 'desc',
 						startDate: chunk.start,
 					});
 				}
 			},
+			order: 'desc',
 			startDate: earliestDate.unix_milliseconds,
 		});
 

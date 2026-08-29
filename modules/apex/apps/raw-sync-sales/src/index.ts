@@ -54,13 +54,13 @@ async function main() {
 					await performInTimeChunks({
 						endDate: chunk.end,
 						intervalHrs: 5 / 60, // 5 minutes
-						onChunk: async (chunk) => {
-							await syncApexSales(chunk);
-						},
+						onChunk: async chunk => await syncApexSales(chunk),
+						order: 'desc',
 						startDate: chunk.start,
 					});
 				}
 			},
+			order: 'desc',
 			startDate: earliestDate.unix_milliseconds,
 		});
 
