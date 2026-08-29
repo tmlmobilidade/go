@@ -1,10 +1,12 @@
 /* * */
 
-import { cleanOldValidations } from '@/tasks/clean-old-validations.js';
-import { ensureGtfsFiles } from '@/tasks/ensure-gtfs-files.js';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { cleanOldValidations } from './tasks/clean-old-validations.js';
+import { ensureAlertsStructure } from './tasks/ensure-alerts-structure.js';
+import { ensureGtfsFiles } from './tasks/ensure-gtfs-files.js';
 
 /* * */
 
@@ -32,6 +34,7 @@ const main = async () => {
 
 	await cleanOldValidations();
 	await ensureGtfsFiles();
+	await ensureAlertsStructure();
 
 	//
 	// Log the total time taken for all tasks

@@ -30,26 +30,6 @@ const DEFAULT_STG_CONFIG: Omit<ModuleConfigGroup, 'api_url' | 'frontend_url'> = 
 
 const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 
-	alerts: {
-		dev: {
-			api_port: 52001,
-			api_url: 'http://localhost:52001',
-			cors_origin: true,
-			frontend_port: 51001,
-			frontend_url: 'http://localhost:51001/alerts',
-		},
-		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/alerts/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/alerts',
-			...DEFAULT_PRD_CONFIG,
-		},
-		stg: {
-			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/alerts/api`,
-			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/alerts`,
-			...DEFAULT_STG_CONFIG,
-		},
-	},
-
 	controller: {
 		dev: {
 			api_port: 52002,

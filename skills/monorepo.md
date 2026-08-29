@@ -82,7 +82,7 @@ Apps inside a module follow the pattern `@tmlmobilidade/go-[module]-[app]`:
 Module-internal packages follow `@tmlmobilidade/go-[module]-pckg-[name]`:
 
 ```
-@tmlmobilidade/go-alerts-pckg-compose
+@tmlmobilidade/go-operation-pckg-compose-alert
 @tmlmobilidade/go-alerts-pckg-organize
 @tmlmobilidade/go-infrastructure-pckg-organize
 @tmlmobilidade/go-tracker-pckg-parsers
@@ -265,12 +265,12 @@ Run this any time you add, rename, or remove a `page.tsx` or `*.routes.ts` file 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 // Frontend navigation
-router.push(PAGE_ROUTES.alerts.ALERTS_LIST);
-router.push(PAGE_ROUTES.alerts.ALERTS_DETAIL(alertId));
+router.push(PAGE_ROUTES.operation.ALERTS_LIST);
+router.push(PAGE_ROUTES.operation.ALERTS_DETAIL(alertId));
 
 // SWR data fetching
-useSWR(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
+useSWR(API_ROUTES.operation.ALERTS_DETAIL(alertId));
 
 // Mutations
-fetchData(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', body);
+fetchData(API_ROUTES.operation.ALERTS_DETAIL(alertId), 'PUT', body);
 ```

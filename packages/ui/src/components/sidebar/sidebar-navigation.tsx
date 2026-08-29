@@ -57,7 +57,7 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'alerts',
-				href: PAGE_ROUTES.alerts.ALERTS_LIST,
+				href: PAGE_ROUTES.operation.ALERTS_LIST,
 				icon: <IconAlertTriangle />,
 				permissions: [{ action: PermissionCatalog.all.alerts.actions.read, resources: { agency_ids: [], reference_types: [] }, scope: PermissionCatalog.all.alerts.scope }],
 			},
