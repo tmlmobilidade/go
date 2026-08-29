@@ -4,7 +4,6 @@ import { classesConfig } from "./classes.js";
 import { importsConfig } from "./imports.js";
 import { indentConfig } from "./indent.js";
 import { jsonConfig } from "./json.js";
-import { namingConventionsConfig } from "./naming-conventions.js";
 import { packageJsonConfig } from "./pjson.js";
 import { promisesConfig } from "./promises.js";
 import { reactConfig } from "./react.js";
@@ -20,6 +19,8 @@ import { typescriptConfig } from "./typescript.js";
  *
  * Not ported yet:
  * - `import/no-extraneous-dependencies` (needs `eslint-plugin-import` JS plugin)
+ * - `@typescript-eslint/naming-convention` (type-aware; Oxlint JS plugins
+ *   cannot supply type info, and the rule is not in native tsgolint)
  * - JSON / package.json / tsconfig rules are configured but inert until
  *   Oxlint supports custom file parsers (`jsonc-eslint-parser`)
  *
@@ -31,7 +32,6 @@ export const lintConfig = defineConfig({
 		importsConfig,
 		indentConfig,
 		jsonConfig,
-		namingConventionsConfig,
 		packageJsonConfig,
 		promisesConfig,
 		reactConfig,
@@ -63,7 +63,6 @@ export const lintConfig = defineConfig({
 	// JS Plugins — for rules with no native Oxlint port (alpha feature)
 	jsPlugins: [
 		"@stylistic/eslint-plugin",
-		"@typescript-eslint/eslint-plugin",
 		"eslint-plugin-jsonc",
 		"eslint-plugin-perfectionist",
 	],

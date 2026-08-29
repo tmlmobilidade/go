@@ -12,8 +12,6 @@ import { defineConfig } from "oxlint";
  * @see https://ota-meshi.github.io/eslint-plugin-jsonc/rules/sort-keys.html
  */
 export const tsconfigConfig = defineConfig({
-	plugins: [],
-
 	overrides: [
 		{
 			files: ["**/tsconfig.json"],
@@ -39,4 +37,6 @@ export const tsconfigConfig = defineConfig({
 			},
 		},
 	],
+
+	plugins: [],
 });

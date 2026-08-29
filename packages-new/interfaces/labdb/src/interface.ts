@@ -12,26 +12,26 @@ import { SimplifiedApexDatabase } from './databases/simplified-apex.js';
 class LabDbClass {
 	//
 	
+	public readonly operation: OperationDatabase;
+	public readonly performance: PerformanceDatabase;
+	public readonly simplifiedApex: SimplifiedApexDatabase;
+
 	private constructor(client: ClickHouseClient) {
 		this.clickhouseClient = client;
 		this.operation = new OperationDatabase(this.clickhouseClient);
 		this.performance = new PerformanceDatabase(this.clickhouseClient);
 		this.simplifiedApex = new SimplifiedApexDatabase(this.clickhouseClient);
 	}
-
-	private static _instance: null | Promise<LabDbClass> = null;
-
-	public readonly operation: OperationDatabase;
-	public readonly performance: PerformanceDatabase;
-	public readonly simplifiedApex: SimplifiedApexDatabase;
-
-	private readonly clickhouseClient: ClickHouseClient;
-
 	/**
 	 * Returns the singleton instance.
 	 * Concurrent callers share the same initialization promise so schema setup runs once.
-	 */
+	*/
+	private static _instance: null | Promise<LabDbClass> = null;
+	
+	private readonly clickhouseClient: ClickHouseClient;
+
 	public static async getInstance() {
+		const CHELLO = 'hello';
 		if (!LabDbClass._instance) {
 			LabDbClass._instance = (async () => {
 				const clickhouseClient = await ClickHouseDatabaseClient.getClient({ prefix: 'LABDB', tunnelType: 'GO' });

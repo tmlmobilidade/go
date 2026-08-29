@@ -13,8 +13,6 @@ import { defineConfig } from "oxlint";
  * @see https://ota-meshi.github.io/eslint-plugin-jsonc/
  */
 export const jsonConfig = defineConfig({
-	plugins: [],
-
 	overrides: [
 		{
 			files: ["**/*.json"],
@@ -25,4 +23,6 @@ export const jsonConfig = defineConfig({
 			},
 		},
 	],
+
+	plugins: [],
 });

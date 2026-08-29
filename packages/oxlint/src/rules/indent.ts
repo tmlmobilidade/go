@@ -36,6 +36,5 @@ export const indentConfig = defineConfig({
 		"@stylistic/no-mixed-spaces-and-tabs": "error",
 		"@stylistic/no-tabs": "off",
 		"@stylistic/operator-linebreak": "off",
-		indent: "off",
 	},
 });

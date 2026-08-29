@@ -1,7 +1,7 @@
 /* * */
 
-import config from '@tmlmobilidade/oxlint'
+import {lintConfig} from '@tmlmobilidade/oxlint';
 
 /* * */
 
-export default config;
+export default lintConfig;
