@@ -1,13 +1,16 @@
 import { defineConfig } from "oxlint";
 
-/* * */
-
+/**
+ * React / Next.js Oxlint config for browser JSX/TSX.
+ *
+ * Enables `react` and `nextjs` plugins, sets a browser env, and applies
+ * JSX stylistic overrides (closing tags, curly presence, prop sort) plus
+ * hooks / key / self-closing rules. Formatting-only JSX concerns belong
+ * in oxfmt; these stay as lint errors.
+ *
+ * @see https://oxc.rs/docs/guide/usage/linter/rules.html
+ */
 export const reactConfig = defineConfig({
-	// Re-check its contents against oxlint's native rule set and
-	// oxlint's Rules reference before dropping the ESLint config
-	// entirely: https://oxc.rs/docs/guide/usage/linter/rules.html
-
-	// Categories
 	categories: {
 		correctness: "error",
 	},
@@ -16,9 +19,6 @@ export const reactConfig = defineConfig({
 	env: {
 		browser: true,
 	},
-
-	// JS Plugins — for rules with no native Oxlint port (alpha feature)
-	jsPlugins: ["@stylistic/eslint-plugin", "eslint-plugin-perfectionist"],
 
 	// JSX/TSX Styling Rules
 	// Scoped to jsx/tsx files, same as the original file filter.
@@ -65,8 +65,8 @@ export const reactConfig = defineConfig({
 		},
 	],
 
-	// Native Plugins
-	plugins: ["react", "nextjs"],
+	// Do not contribute default plugins into the extends union.
+	plugins: [],
 
 	// Next.js + React Rules
 	rules: {
