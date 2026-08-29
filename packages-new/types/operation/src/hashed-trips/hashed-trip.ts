@@ -1,8 +1,8 @@
 /* * */
 
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
-import { GtfsPickupDropoffTypeSchema, GtfsTimeSchema } from '@tmlmobilidade/go-types-gtfs';
-import { NonNegativeFloatSchema, NonNegativeIntegerSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { GtfsPickupDropoffTypeSchema } from '@tmlmobilidade/go-types-gtfs';
+import { NonNegativeFloatSchema, NonNegativeIntegerSchema, OperationalTimeSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,8 +10,8 @@ import { z } from 'zod';
 export const HashedTripSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
-	arrival_time: GtfsTimeSchema,
-	departure_time: GtfsTimeSchema,
+	arrival_time: OperationalTimeSchema,
+	departure_time: OperationalTimeSchema,
 	drop_off_type: GtfsPickupDropoffTypeSchema,
 	pickup_type: GtfsPickupDropoffTypeSchema,
 	shape_dist_traveled: NonNegativeFloatSchema,

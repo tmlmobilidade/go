@@ -15,7 +15,7 @@ import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-
 import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { fromGtfsTimeAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
+import { fromOperationalTimeAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
 
 /* * */
@@ -288,10 +288,10 @@ export async function parsePlan(planData: Plan) {
 				const uniqueIdValueForRide = `${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`;
 
 				const startTimeScheduledString = firstStopTime.arrival_time;
-				const startTimeScheduledUnixMilliseconds = fromGtfsTimeAndOperationalDateToUnixMilliseconds(startTimeScheduledString, calendarDate);
+				const startTimeScheduledUnixMilliseconds = fromOperationalTimeAndOperationalDateToUnixMilliseconds(startTimeScheduledString, calendarDate);
 
 				const endTimeScheduledString = lastStopTime.arrival_time;
-				const endTimeScheduledUnixMilliseconds = fromGtfsTimeAndOperationalDateToUnixMilliseconds(endTimeScheduledString, calendarDate);
+				const endTimeScheduledUnixMilliseconds = fromOperationalTimeAndOperationalDateToUnixMilliseconds(endTimeScheduledString, calendarDate);
 
 				//
 				// Build the final Ride objects
