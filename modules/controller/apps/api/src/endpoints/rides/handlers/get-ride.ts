@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { type ControllerRidesDetailRideItem, ControllerRidesDetailRideItemSchema, controllerRidesDetailRideQuery } from '@tmlmobilidade/go-controller-pckg-types';
+import { type ControllerRidesDetailRideItem, ControllerRidesDetailRideItemSchema, controllerRidesDetailRideQuery } from '@tmlmobilidade/go-operation-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
 /**

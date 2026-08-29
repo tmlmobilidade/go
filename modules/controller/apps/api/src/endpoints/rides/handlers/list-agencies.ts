@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
-import { type RidesAgencyItem, RidesAgencyItemSchema } from '@tmlmobilidade/go-controller-pckg-types';
+import { type RidesAgencyItem, RidesAgencyItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 

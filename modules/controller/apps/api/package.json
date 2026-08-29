@@ -21,7 +21,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
-		"@tmlmobilidade/go-controller-pckg-types": "*",
+		"@tmlmobilidade/go-operation-pckg-types": "*",
 		"@tmlmobilidade/go-controller-pckg-utils": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
