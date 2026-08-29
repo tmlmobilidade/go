@@ -92,13 +92,12 @@
 			"no_name": "Sin nombre"
 		},
 		"SidebarGroups": {
-			"administration": "Administración",
-			"calendar_management": "Calendario",
-			"fleet_management": "Flota",
-			"network_offer": "Oferta de red",
+			"core": "Base",
+			"dates": "Fechas",
+			"infrastructure": "Infraestructura",
 			"offer": "Oferta",
 			"operation": "Operación",
-			"overview": "Visión general"
+			"overview": "Vista General"
 		},
 		"SidebarNotifications": {
 			"label": "Notificaciones",

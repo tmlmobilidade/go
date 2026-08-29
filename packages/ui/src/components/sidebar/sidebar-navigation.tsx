@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconFlag2, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type JSX } from 'react';
@@ -53,37 +53,14 @@ export const sidebarNavigationGroups = [
 		],
 	},
 	{
-		_id: 'administration',
-		items: [
-			{
-				_id: 'agencies',
-				href: PAGE_ROUTES.core.AGENCIES_LIST,
-				icon: <IconBuildings />,
-				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
-			},
-			{
-				_id: 'organizations',
-				href: PAGE_ROUTES.core.ORGANIZATIONS_LIST,
-				icon: <IconSitemap />,
-				permissions: [{ action: PermissionCatalog.all.organizations.actions.read, scope: PermissionCatalog.all.organizations.scope }],
-			},
-			{
-				_id: 'roles',
-				href: PAGE_ROUTES.core.ROLES_LIST,
-				icon: <IconKey />,
-				permissions: [{ action: PermissionCatalog.all.roles.actions.read, scope: PermissionCatalog.all.roles.scope }],
-			},
-			{
-				_id: 'users',
-				href: PAGE_ROUTES.core.USERS_LIST,
-				icon: <IconUser />,
-				permissions: [{ action: PermissionCatalog.all.users.actions.read, scope: PermissionCatalog.all.users.scope }],
-			},
-		],
-	},
-	{
 		_id: 'operation',
 		items: [
+			{
+				_id: 'alerts',
+				href: PAGE_ROUTES.alerts.ALERTS_LIST,
+				icon: <IconAlertTriangle />,
+				permissions: [{ action: PermissionCatalog.all.alerts.actions.read, resources: { agency_ids: [], reference_types: [] }, scope: PermissionCatalog.all.alerts.scope }],
+			},
 			{
 				_id: 'gtfs_validations',
 				href: PAGE_ROUTES.plans.VALIDATIONS_LIST,
@@ -95,12 +72,6 @@ export const sidebarNavigationGroups = [
 				href: PAGE_ROUTES.plans.APPROVED_LIST,
 				icon: <IconFileCertificate />,
 				permissions: [{ action: PermissionCatalog.all.plans.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.plans.scope }],
-			},
-			{
-				_id: 'alerts',
-				href: PAGE_ROUTES.alerts.ALERTS_LIST,
-				icon: <IconAlertTriangle />,
-				permissions: [{ action: PermissionCatalog.all.alerts.actions.read, resources: { agency_ids: [], reference_types: [] }, scope: PermissionCatalog.all.alerts.scope }],
 			},
 			{
 				_id: 'rides',
@@ -125,12 +96,6 @@ export const sidebarNavigationGroups = [
 	{
 		_id: 'offer',
 		items: [
-			{
-				_id: 'stops',
-				href: PAGE_ROUTES.infrastructure.INFRASTRUCTURE_LIST,
-				icon: <IconBusStop />,
-				permissions: [{ action: PermissionCatalog.all.stops.actions.read, resources: { agency_ids: [], municipality_ids: [] }, scope: PermissionCatalog.all.stops.scope }],
-			},
 			{
 				_id: 'lines',
 				href: PAGE_ROUTES.offer.LINES_LIST,
@@ -158,7 +123,7 @@ export const sidebarNavigationGroups = [
 		],
 	},
 	{
-		_id: 'calendar_management',
+		_id: 'dates',
 		items: [
 			{
 				_id: 'calendar',
@@ -192,6 +157,46 @@ export const sidebarNavigationGroups = [
 				href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,
 				icon: <IconNote />,
 				permissions: [{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope }],
+			},
+		],
+	},
+	{
+		_id: 'infrastructure',
+		items: [
+			{
+				_id: 'stops',
+				href: PAGE_ROUTES.infrastructure.INFRASTRUCTURE_LIST,
+				icon: <IconFlag2 />,
+				permissions: [{ action: PermissionCatalog.all.stops.actions.read, resources: { agency_ids: [], municipality_ids: [] }, scope: PermissionCatalog.all.stops.scope }],
+			},
+		],
+	},
+	{
+		_id: 'core',
+		items: [
+			{
+				_id: 'agencies',
+				href: PAGE_ROUTES.core.AGENCIES_LIST,
+				icon: <IconBuildings />,
+				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
+			},
+			{
+				_id: 'organizations',
+				href: PAGE_ROUTES.core.ORGANIZATIONS_LIST,
+				icon: <IconSitemap />,
+				permissions: [{ action: PermissionCatalog.all.organizations.actions.read, scope: PermissionCatalog.all.organizations.scope }],
+			},
+			{
+				_id: 'roles',
+				href: PAGE_ROUTES.core.ROLES_LIST,
+				icon: <IconKey />,
+				permissions: [{ action: PermissionCatalog.all.roles.actions.read, scope: PermissionCatalog.all.roles.scope }],
+			},
+			{
+				_id: 'users',
+				href: PAGE_ROUTES.core.USERS_LIST,
+				icon: <IconUser />,
+				permissions: [{ action: PermissionCatalog.all.users.actions.read, scope: PermissionCatalog.all.users.scope }],
 			},
 		],
 	},
