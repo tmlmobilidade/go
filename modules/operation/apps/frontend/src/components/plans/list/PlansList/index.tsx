@@ -109,7 +109,7 @@ export function PlansList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: PlanListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.operation.APPROVED_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.PLANS_DETAIL(item._id)));
 	};
 
 	//

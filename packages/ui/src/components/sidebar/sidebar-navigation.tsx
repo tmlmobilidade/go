@@ -69,7 +69,7 @@ export const sidebarNavigationGroups = [
 			},
 			{
 				_id: 'plans',
-				href: PAGE_ROUTES.operation.APPROVED_LIST,
+				href: PAGE_ROUTES.operation.PLANS_LIST,
 				icon: <IconFileCertificate />,
 				permissions: [{ action: PermissionCatalog.all.plans.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.plans.scope }],
 			},

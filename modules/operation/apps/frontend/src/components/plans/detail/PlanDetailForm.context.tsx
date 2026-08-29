@@ -121,7 +121,7 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 		onSuccess: () => {
 			form.resetDirty();
 			plansListMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.operation.APPROVED_LIST));
+			router.push(keepUrlParams(PAGE_ROUTES.operation.PLANS_LIST));
 		},
 	});
 

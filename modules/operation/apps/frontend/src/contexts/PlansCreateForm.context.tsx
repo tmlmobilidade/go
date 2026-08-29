@@ -75,7 +75,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 			closeModal(CREATE_PLAN_MODAL_ID);
 
 			if (response.data) {
-				window.location.href = PAGE_ROUTES.operation.APPROVED_DETAIL(response.data._id);
+				window.location.href = PAGE_ROUTES.operation.PLANS_DETAIL(response.data._id);
 			}
 		},
 	});
