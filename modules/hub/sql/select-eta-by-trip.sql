@@ -10,7 +10,7 @@ SELECT
                     'stop_sequence', toUInt16(stop_sequence),
                     'stop_id', stop_id,
                     'stop_name', stop_name,
-                    'eta_seconds', toInt32(intDiv(eta_at - toUnixMilliseconds64Milli(now64(3)), 1000)),
+                    'eta_seconds', toInt32(intDiv(eta_at - toUnixTimestamp64Milli(now64(3)), 1000)),
                     'eta_at', toInt64(eta_at)
                 )
             )

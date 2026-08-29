@@ -33,7 +33,7 @@ WITH latest_events AS (
 				) AS bearing
 			)
 		FROM operation.simplified_vehicle_events
-		WHERE created_at > toUnixMilliseconds64Milli(
+		WHERE created_at > toUnixTimestamp64Milli(
 			now64(3)
 			- INTERVAL $secondsAgo SECOND
 			- INTERVAL $bearingInferenceLookbackSeconds SECOND
@@ -43,7 +43,7 @@ WITH latest_events AS (
 			ORDER BY created_at
 		)
 	)
-	WHERE created_at > toUnixMilliseconds64Milli(now64(3) - INTERVAL $secondsAgo SECOND)
+	WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL $secondsAgo SECOND)
 	ORDER BY created_at DESC
 	LIMIT 1 BY agency_id, vehicle_id
 ),
@@ -63,8 +63,8 @@ associated_rides AS (
 	FROM operation.rides
 	WHERE
 		start_time_scheduled BETWEEN
-			toUnixMilliseconds64Milli(now64(3) - INTERVAL $stdWindowHours HOUR)
-			AND toUnixMilliseconds64Milli(now64(3) + INTERVAL $stdWindowHours HOUR)
+			toUnixTimestamp64Milli(now64(3) - INTERVAL $stdWindowHours HOUR)
+			AND toUnixTimestamp64Milli(now64(3) + INTERVAL $stdWindowHours HOUR)
 		AND trip_id IN (
 			SELECT trip_id
 			FROM latest_events
