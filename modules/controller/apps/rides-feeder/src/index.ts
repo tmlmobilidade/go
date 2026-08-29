@@ -47,11 +47,9 @@ async function main() {
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
-		const allPlansDataSorted = allPlansData.sort((a, b) => (b.gtfs_feed_info?.feed_start_date || '').localeCompare(a.gtfs_feed_info?.feed_start_date || ''));
-
 		Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
 
-		for (const [planIndex, currentPlan] of allPlansDataSorted.entries()) {
+		for (const [planIndex, currentPlan] of allPlansData.entries()) {
 			try {
 				//
 
