@@ -5,7 +5,6 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/go-providers-emails';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Requests approval for a Validation by ID
@@ -73,12 +72,12 @@ export async function requestApprovalHandler(request: FastifyRequest<{ Params: {
 	await sendPlanApprovalRequestEmail({
 		data: {
 			agencyName: agencyData.name,
-			endDate: validateOperationalDate(validationData.gtfs_feed_info.feed_end_date),
+			endDate: validationData.gtfs_feed_info.feed_end_date,
 			firstName: request.me.first_name,
 			gtfsValidationId: validationData._id,
 			gtfsValidationUrl: `${process.env.FRONTEND_URL}/validations/${validationData._id.toString()}`,
 			requestedBy: request.me.first_name + ' ' + request.me.last_name,
-			startDate: validateOperationalDate(validationData.gtfs_feed_info.feed_start_date),
+			startDate: validationData.gtfs_feed_info.feed_start_date,
 		},
 		to: agencyData.contact_emails_pta || [],
 	});
