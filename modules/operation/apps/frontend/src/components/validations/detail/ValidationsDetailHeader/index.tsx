@@ -57,7 +57,7 @@ export function ValidationsDetailHeader() {
 	};
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.operation.VALIDATIONS_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.GTFS_VALIDATIONS_LIST));
 	};
 
 	const handleApprovePlan = () => {

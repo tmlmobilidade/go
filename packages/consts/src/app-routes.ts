@@ -137,13 +137,13 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('operation', 'frontend_url')}`,
 
+		// GTFS_VALIDATIONS
+		GTFS_VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/gtfs-validations/${encodeURIComponent(id)}`,
+		GTFS_VALIDATIONS_LIST: `${getModuleConfig('operation', 'frontend_url')}/gtfs-validations`,
+
 		// PLANS
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/plans/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('operation', 'frontend_url')}/plans`,
-
-		// VALIDATIONS
-		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'frontend_url')}/validations/${encodeURIComponent(id)}`,
-		VALIDATIONS_LIST: `${getModuleConfig('operation', 'frontend_url')}/validations`,
 	},
 
 	performance: {
@@ -469,6 +469,17 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('operation', 'api_url')}`,
 
+		// GTFS-VALIDATIONS
+		VALIDATIONS_CREATE: `${getModuleConfig('operation', 'api_url')}/validations/create`,
+		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}`,
+		VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/file`,
+		VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/file/download`,
+		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/lock`,
+		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/processing-status`,
+		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/request-approval`,
+		VALIDATIONS_LIST: `${getModuleConfig('operation', 'api_url')}/validations/list`,
+		VALIDATIONS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/validations/list-agencies`,
+
 		// PLANS
 		PLANS_CREATE: `${getModuleConfig('operation', 'api_url')}/plans/create`,
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}`,
@@ -483,17 +494,6 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('operation', 'api_url')}/plans/list`,
 		PLANS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/plans/list-agencies`,
-
-		// VALIDATIONS
-		VALIDATIONS_CREATE: `${getModuleConfig('operation', 'api_url')}/validations/create`,
-		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}`,
-		VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/file`,
-		VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/file/download`,
-		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/lock`,
-		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/processing-status`,
-		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/request-approval`,
-		VALIDATIONS_LIST: `${getModuleConfig('operation', 'api_url')}/validations/list`,
-		VALIDATIONS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/validations/list-agencies`,
 	},
 
 	performance: {

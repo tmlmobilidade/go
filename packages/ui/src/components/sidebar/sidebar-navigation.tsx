@@ -63,7 +63,7 @@ export const sidebarNavigationGroups = [
 			},
 			{
 				_id: 'gtfs_validations',
-				href: PAGE_ROUTES.operation.VALIDATIONS_LIST,
+				href: PAGE_ROUTES.operation.GTFS_VALIDATIONS_LIST,
 				icon: <IconFileCheck />,
 				permissions: [{ action: PermissionCatalog.all.gtfs_validations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.gtfs_validations.scope }],
 			},

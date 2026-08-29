@@ -73,7 +73,7 @@ export function ValidationsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: ValidationListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.operation.VALIDATIONS_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.operation.GTFS_VALIDATIONS_DETAIL(item._id)));
 	};
 
 	//

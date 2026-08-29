@@ -82,7 +82,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 
 	const { action: requestApproval, isError: requestApprovalError, isLoading: isRequestingApproval } = useHandleUpdate<GtfsValidation>({
 		fetchFn: async () => await fetchApiData<GtfsValidation>({
-			url: API_ROUTES.operation.VALIDATIONS_DETAIL_REQUEST_APPROVAL(validationId),
+			url: API_ROUTES.operation.GTFS_VALIDATIONS_DETAIL_REQUEST_APPROVAL(validationId),
 		}),
 		labels: {
 			error_title: 'Erro ao solicitar aprovação à TML',

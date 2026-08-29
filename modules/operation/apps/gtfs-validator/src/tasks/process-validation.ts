@@ -132,7 +132,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 					data: {
 						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
-						gtfsValidationUrl: PAGE_ROUTES.operation.VALIDATIONS_DETAIL(gtfsValidation._id),
+						gtfsValidationUrl: PAGE_ROUTES.operation.GTFS_VALIDATIONS_DETAIL(gtfsValidation._id),
 						totalWarnings: gtfsValidationResult.summary.total_warnings,
 					},
 					to: foundUser.email,
@@ -142,7 +142,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 					data: {
 						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
-						gtfsValidationUrl: PAGE_ROUTES.operation.VALIDATIONS_DETAIL(gtfsValidation._id),
+						gtfsValidationUrl: PAGE_ROUTES.operation.GTFS_VALIDATIONS_DETAIL(gtfsValidation._id),
 						totalErrors: gtfsValidationResult.summary.total_errors,
 						totalWarnings: gtfsValidationResult.summary.total_warnings,
 					},

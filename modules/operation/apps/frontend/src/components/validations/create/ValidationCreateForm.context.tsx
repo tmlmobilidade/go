@@ -124,7 +124,7 @@ export function ValidationCreateContextProvider({ children }: PropsWithChildren)
 			uploadFormData.append('gtfs_agency', JSON.stringify(gtfsAgency));
 			uploadFormData.append('gtfs_feed_info', JSON.stringify(gtfsFeedInfo));
 			uploadFormData.append('file', file);
-			return await fetchApiMultipart<GtfsValidation>(API_ROUTES.operation.VALIDATIONS_CREATE, uploadFormData);
+			return await fetchApiMultipart<GtfsValidation>(API_ROUTES.operation.GTFS_VALIDATIONS_CREATE, uploadFormData);
 		},
 		labels: {
 			error_title: 'Erro ao iniciar Validação',
@@ -137,7 +137,7 @@ export function ValidationCreateContextProvider({ children }: PropsWithChildren)
 			unblock();
 			mutate();
 			if (!data?._id) return;
-			router.push(keepUrlParams(PAGE_ROUTES.operation.VALIDATIONS_DETAIL(data._id)));
+			router.push(keepUrlParams(PAGE_ROUTES.operation.GTFS_VALIDATIONS_DETAIL(data._id)));
 		},
 	});
 

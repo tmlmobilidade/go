@@ -58,7 +58,7 @@ export const ValidationsDetailContextProvider = ({ children }: PropsWithChildren
 
 	const { mutate: validationsListMutate } = useValidationsListData();
 
-	const { data: fileResponse, error: fileSwrError, isLoading: fileLoading } = useSWR<ApiResponse<Attachment>>(API_ROUTES.operation.VALIDATIONS_DETAIL_FILE(validationId), {
+	const { data: fileResponse, error: fileSwrError, isLoading: fileLoading } = useSWR<ApiResponse<Attachment>>(API_ROUTES.operation.GTFS_VALIDATIONS_DETAIL_FILE(validationId), {
 		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
 	});
 
@@ -78,7 +78,7 @@ export const ValidationsDetailContextProvider = ({ children }: PropsWithChildren
 			const response = await fetchApiData<GtfsValidation>({
 				body: { processing_status: status },
 				method: 'PUT',
-				url: API_ROUTES.operation.VALIDATIONS_DETAIL_PROCESSING_STATUS(validationId),
+				url: API_ROUTES.operation.GTFS_VALIDATIONS_DETAIL_PROCESSING_STATUS(validationId),
 			});
 			if (response.error || !response.data) {
 				useToast.error({ message: response.error ?? 'Erro ao atualizar estado da validação.', title: 'Erro' });
