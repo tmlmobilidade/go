@@ -1,9 +1,9 @@
 /* * */
 
-import { type AlertsAgencyItem, AlertsAgencyItemSchema, type AlertsAgencyRequest, AlertsAgencyRequestSchema } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type AlertsAgencyItem, AlertsAgencyItemSchema, type AlertsAgencyRequest, AlertsAgencyRequestSchema } from '@tmlmobilidade/go-operation-pckg-types';
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 
 /**

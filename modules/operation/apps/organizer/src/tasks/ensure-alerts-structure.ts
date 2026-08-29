@@ -9,7 +9,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-export async function ensureStructure() {
+export async function ensureAlertsStructure() {
 	//
 
 	Logger.title('Starting alert structure organization...');

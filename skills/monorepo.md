@@ -82,7 +82,7 @@ Apps inside a module follow the pattern `@tmlmobilidade/go-[module]-[app]`:
 Module-internal packages follow `@tmlmobilidade/go-[module]-pckg-[name]`:
 
 ```
-@tmlmobilidade/go-alerts-pckg-compose
+@tmlmobilidade/go-operation-pckg-compose-alert
 @tmlmobilidade/go-alerts-pckg-organize
 @tmlmobilidade/go-infrastructure-pckg-organize
 @tmlmobilidade/go-tracker-pckg-parsers

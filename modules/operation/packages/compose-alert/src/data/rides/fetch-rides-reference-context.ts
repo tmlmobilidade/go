@@ -1,7 +1,7 @@
 /* * */
 
-import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type AlertsComposeRequest } from '@tmlmobilidade/go-operation-pckg-types';
 import { type TimezoneIdentified } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 

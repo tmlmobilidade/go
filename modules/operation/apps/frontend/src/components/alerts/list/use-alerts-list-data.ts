@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertsListFilters, type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsListFilters, type AlertsListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

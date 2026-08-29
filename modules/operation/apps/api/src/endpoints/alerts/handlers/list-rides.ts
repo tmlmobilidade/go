@@ -1,8 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { type AlertsRidesFilters, AlertsRidesFiltersSchema, type AlertsRidesItem, alertsRidesQuery } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type AlertsRidesFilters, AlertsRidesFiltersSchema, type AlertsRidesItem, alertsRidesQuery } from '@tmlmobilidade/go-operation-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**

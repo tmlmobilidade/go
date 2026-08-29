@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { AlertsComposeRequest, AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
+import { AlertsComposeRequest, AlertsComposeResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

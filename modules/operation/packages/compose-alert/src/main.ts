@@ -1,7 +1,7 @@
 /* * */
 
-import { type AlertsComposeRequest, AlertsComposeRequestSchema, type AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type AlertsComposeRequest, AlertsComposeRequestSchema, type AlertsComposeResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/go-providers-ai';
 import { LanguageTagValues } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';

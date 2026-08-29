@@ -1,8 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { type AlertsStopsFilters, AlertsStopsFiltersSchema, type AlertsStopsItem, AlertsStopsItemSchema, alertsStopsQuery, AlertsStopsQueryRow } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type AlertsStopsFilters, AlertsStopsFiltersSchema, type AlertsStopsItem, AlertsStopsItemSchema, alertsStopsQuery, AlertsStopsQueryRow } from '@tmlmobilidade/go-operation-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**

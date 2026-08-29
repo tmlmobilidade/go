@@ -1,7 +1,7 @@
 /* * */
 
 import { fetchProtobuf } from '@/protobuf.js';
-import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-alerts-pckg-compose';
+import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-operation-pckg-compose-alert';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';

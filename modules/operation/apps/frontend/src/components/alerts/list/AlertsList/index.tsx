@@ -7,7 +7,7 @@ import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCel
 import { AlertsListCellReferenceType } from '@/components/list/table/AlertsListCellReferenceType';
 import { useAlertsAgenciesData } from '@/components/shared/use-alerts-agencies-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane, PublishStatusDisplay, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';

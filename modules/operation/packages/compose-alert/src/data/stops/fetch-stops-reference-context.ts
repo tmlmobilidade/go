@@ -1,7 +1,7 @@
 /* * */
 
-import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type AlertsComposeRequest } from '@tmlmobilidade/go-operation-pckg-types';
 
 import { type FetchStopsReferenceContextItem } from './fetch-stops-reference-context-item.js';
 import { fetchStopsReferenceContextQuery } from './fetch-stops-reference-context-query.js';

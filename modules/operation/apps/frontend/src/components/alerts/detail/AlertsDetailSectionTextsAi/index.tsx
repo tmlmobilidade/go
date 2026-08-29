@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
+import { AlertsComposeRequest } from '@tmlmobilidade/go-operation-pckg-types';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { Divider, Inline, Label, LoadingThinking, Section, StandardFormController, Surface, Switch, Text, TextInput, useDebouncedValue, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
