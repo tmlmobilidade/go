@@ -1,11 +1,11 @@
 'use client';
 
-import { useAlertsDetailAlertId } from '@/components/detail/use-alerts-detail-alert-id';
-import { AlertsListHeader } from '@/components/list/AlertsListHeader';
-import { AlertsListFiltersBar } from '@/components/list/filters/AlertsListFiltersBar';
-import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCellCauseEffect';
-import { AlertsListCellReferenceType } from '@/components/list/table/AlertsListCellReferenceType';
-import { useAlertsAgenciesData } from '@/components/shared/use-alerts-agencies-data';
+import { useAlertsDetailAlertId } from '@/components/alerts/detail/use-alerts-detail-alert-id';
+import { AlertsListHeader } from '@/components/alerts/list/AlertsListHeader';
+import { AlertsListFiltersBar } from '@/components/alerts/list/filters/AlertsListFiltersBar';
+import { AlertsListCellCauseEffect } from '@/components/alerts/list/table/AlertsListCellCauseEffect';
+import { AlertsListCellReferenceType } from '@/components/alerts/list/table/AlertsListCellReferenceType';
+import { useAlertsAgenciesData } from '@/components/alerts/shared/use-alerts-agencies-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertsListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
