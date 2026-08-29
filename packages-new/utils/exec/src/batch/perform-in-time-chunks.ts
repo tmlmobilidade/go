@@ -16,10 +16,11 @@ export interface PerformInTimeChunksOptions {
 	endDate?: UnixMilliseconds
 	intervalHrs: number
 	onChunk: (chunk: PerformInTimeChunksItem) => Promise<void>
+	order?: 'asc' | 'desc'
 	startDate: UnixMilliseconds
 }
 
-export async function performInTimeChunks({ endDate, intervalHrs, onChunk, startDate }: PerformInTimeChunksOptions) {
+export async function performInTimeChunks({ endDate, intervalHrs, onChunk, order = 'desc', startDate }: PerformInTimeChunksOptions) {
 	//
 
 	// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -29,13 +30,17 @@ export async function performInTimeChunks({ endDate, intervalHrs, onChunk, start
 	// More recent data is more important than older data, so we start syncing the most recent data first.
 	// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
 
-	const endDateValue = endDate
-		? Dates.fromUnixMilliseconds(endDate).unix_milliseconds
-		: Dates.now('utc').minus({ seconds: 30 }).unix_milliseconds;
+	const endDateValue = endDate || Dates.now('utc').minus({ seconds: 30 }).unix_milliseconds;
 
-	const startDateValue = Dates.fromUnixMilliseconds(startDate).unix_milliseconds;
+	const allTimestampChunks = splitTimeIntervals(startDate, endDateValue, intervalHrs);
 
-	const allTimestampChunks = splitTimeIntervals(startDateValue, endDateValue, intervalHrs);
+	//
+	// Sort the timestamp chunks in the desired order.
+	// Timestamp chunks are usually sorted in descending order, so that more recent data is processed first.
+	// Timestamp chunks are in the format { start: day1, end: day2 }, so end is always greater than start.
+	// This might be confusing as the array of chunks itself is sorted in descending order, but the chunks individually are not.
+
+	allTimestampChunks.sort((a, b) => order === 'asc' ? a.start - b.start : b.start - a.start);
 
 	//
 	// Iterate over each timestamp chunk and sync the documents.
@@ -44,17 +49,12 @@ export async function performInTimeChunks({ endDate, intervalHrs, onChunk, start
 	// This might be confusing as the array of chunks itself is sorted in descending order, but the chunks individually are not.
 
 	for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
-		//
-
-		const chunkStartDate = Dates
-			.fromUnixMilliseconds(chunkData.start)
-			.setZone('Europe/Lisbon', 'offset_only');
-
-		const chunkEndDate = Dates
-			.fromUnixMilliseconds(chunkData.end)
-			.setZone('Europe/Lisbon', 'offset_only');
-
-		await onChunk({ end: chunkEndDate.unix_milliseconds, index: chunkIndex, start: chunkStartDate.unix_milliseconds, total: allTimestampChunks.length });
+		await onChunk({
+			end: chunkData.end,
+			index: chunkIndex,
+			start: chunkData.start,
+			total: allTimestampChunks.length,
+		});
 	}
 
 	//
