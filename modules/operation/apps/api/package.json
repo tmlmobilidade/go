@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"@fastify/multipart": "10.1.1",
+		"@fastify/websocket": "11.3.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
