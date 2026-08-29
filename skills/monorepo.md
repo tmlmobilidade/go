@@ -75,8 +75,8 @@ Apps inside a module follow the pattern `@tmlmobilidade/go-[module]-[app]`:
 @tmlmobilidade/go-alerts-api
 @tmlmobilidade/go-alerts-frontend
 @tmlmobilidade/go-alerts-organizer
-@tmlmobilidade/go-controller-rides-feeder
-@tmlmobilidade/go-controller-rides-examiner
+@tmlmobilidade/go-operation-rides-feeder
+@tmlmobilidade/go-operation-rides-examiner
 ```
 
 Module-internal packages follow `@tmlmobilidade/go-[module]-pckg-[name]`:
