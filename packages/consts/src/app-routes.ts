@@ -470,15 +470,15 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('operation', 'api_url')}`,
 
 		// GTFS-VALIDATIONS
-		VALIDATIONS_CREATE: `${getModuleConfig('operation', 'api_url')}/validations/create`,
-		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}`,
-		VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/file`,
-		VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/file/download`,
-		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/lock`,
-		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/processing-status`,
-		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('operation', 'api_url')}/validations/${encodeURIComponent(id)}/request-approval`,
-		VALIDATIONS_LIST: `${getModuleConfig('operation', 'api_url')}/validations/list`,
-		VALIDATIONS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/validations/list-agencies`,
+		GTFS_VALIDATIONS_CREATE: `${getModuleConfig('operation', 'api_url')}/gtfs-validations/create`,
+		GTFS_VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}`,
+		GTFS_VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/file`,
+		GTFS_VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/file/download`,
+		GTFS_VALIDATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/lock`,
+		GTFS_VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/processing-status`,
+		GTFS_VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/request-approval`,
+		GTFS_VALIDATIONS_LIST: `${getModuleConfig('operation', 'api_url')}/gtfs-validations/list`,
+		GTFS_VALIDATIONS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/gtfs-validations/list-agencies`,
 
 		// PLANS
 		PLANS_CREATE: `${getModuleConfig('operation', 'api_url')}/plans/create`,

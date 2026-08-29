@@ -14,7 +14,7 @@ import { updateProcessingStatusHandler } from './handlers/update-processing-stat
 
 /* * */
 
-const NAMESPACE = '/validations';
+const NAMESPACE = '/gtfs-validations';
 
 /* * */
 
