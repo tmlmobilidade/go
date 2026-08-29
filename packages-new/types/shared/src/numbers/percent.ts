@@ -20,8 +20,6 @@ import { z } from 'zod';
  * ```
  */
 export const PercentSchema = z
-	.coerce
-	.number()
-	.int()
-	.min(0)
-	.max(100);
+	.union([z.string(), z.number()])
+	.transform(value => Number(value))
+	.pipe(z.number().int().min(0).max(100));

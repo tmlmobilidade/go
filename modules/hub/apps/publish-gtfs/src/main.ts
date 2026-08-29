@@ -171,7 +171,7 @@ export async function main() {
 			if (currentDate >= planData.gtfs_feed_info.feed_start_date && currentDate <= planData.gtfs_feed_info.feed_end_date) {
 				// If the plan is currently active, set the start date
 				// to a far past date to be able to provide a full year of data.
-				importConfig.time_range.date_range.start = GtfsDateSchema.parse('20010101');
+				importConfig.time_range.date_range.start = OperationalDateIntSchema.parse('20010101');
 				// Update the flag
 				thisIsAnActivePlan = true;
 			}

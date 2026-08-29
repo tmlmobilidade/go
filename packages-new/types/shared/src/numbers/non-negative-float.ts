@@ -18,6 +18,6 @@ import { z } from 'zod';
  * ```
  */
 export const NonNegativeFloatSchema = z
-	.coerce
-	.number()
-	.nonnegative();
+	.union([z.string(), z.number()])
+	.transform(value => Number(value))
+	.pipe(z.number().nonnegative());

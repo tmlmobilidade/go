@@ -30,8 +30,7 @@ export type OperationalDateInt = number & {
  * ```
  */
 export const OperationalDateIntSchema = z
-	.coerce
-	.string()
-	.transform(value => value.replaceAll('-', ''))
+	.union([z.string(), z.number()])
+	.transform(value => String(value).replaceAll('-', ''))
 	.refine(value => DateTime.fromFormat(value, OPERATIONAL_DATE_FORMAT).isValid, { message: `Expected a date in the format ${OPERATIONAL_DATE_FORMAT} or ${CALENDAR_DATE_FORMAT}` })
 	.transform(value => Number(value) as OperationalDateInt);

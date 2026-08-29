@@ -30,7 +30,6 @@ import { exportShapesRows } from '@/exports/shapes.js';
 import { exportStopTimesRows } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsRows } from '@/exports/trips.js';
-import { GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
 
 /* * */
 

@@ -16,6 +16,6 @@ import { z } from 'zod';
  * ```
  */
 export const IntegerSchema = z
-	.coerce
-	.number()
-	.int();
+	.union([z.string(), z.number()])
+	.transform(value => Number(value))
+	.pipe(z.number().int());
