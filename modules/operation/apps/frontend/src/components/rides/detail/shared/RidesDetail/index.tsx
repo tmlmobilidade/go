@@ -1,14 +1,13 @@
 'use client';
 
-import { RideAcceptance } from '@/components/rides/detail/acceptance/RideAcceptance';
-import { RideAnalysis } from '@/components/rides/detail/analysis/RideAnalysis';
-import { RideAnalysisAudit } from '@/components/rides/detail/audit';
-import { RidesDetailHeader } from '@/components/rides/detail/shared/RidesDetailHeader';
-import { useRidesDetailCurrentView } from '@/components/rides/detail/shared/use-rides-detail-current-view';
-import { useRidesDetailRideData } from '@/components/rides/detail/shared/use-rides-detail-ride-data';
 import { ErrorDisplay, Pane } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
+import { RideAcceptance } from '../../acceptance/RideAcceptance';
+import { RideAnalysis } from '../../analysis/RideAnalysis';
+import { RidesDetailHeader } from '../../shared/RidesDetailHeader';
+import { useRidesDetailCurrentView } from '../../shared/use-rides-detail-current-view';
+import { useRidesDetailRideData } from '../../shared/use-rides-detail-ride-data';
 import { useRidesDetailApexBankingTapsData } from '../use-rides-detail-apex-banking-taps-data';
 import { useRidesDetailApexRefundsData } from '../use-rides-detail-apex-refunds-data';
 import { useRidesDetailApexSalesData } from '../use-rides-detail-apex-sales-data';
@@ -66,7 +65,6 @@ export function RidesDetail() {
 		<Pane header={[<RidesDetailHeader key="header" />]} isLoading={isLoading}>
 			{isError && <ErrorDisplay message={isError} />}
 			{currentView === 'analysis' && <RideAnalysis />}
-			{currentView === 'audit' && <RideAnalysisAudit />}
 			{currentView === 'acceptance' && <RideAcceptance />}
 		</Pane>
 	);
