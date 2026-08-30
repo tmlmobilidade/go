@@ -1,6 +1,6 @@
 'use client';
 
-import { type GradeStatusFilter, GradeStatusFilterSchema } from '@tmlmobilidade/go-types-shared';
+import { type GradeStatusFilter, GradeStatusFilterValues } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ export function useRidesListFilterAnalysisExpectedApexValidationInterval(): UseF
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() =>
-		GradeStatusFilterSchema.options.map(item => ({
+		GradeStatusFilterValues.map(item => ({
 			label: t(`shared:status.grade_status.${item}`),
 			value: item,
 		})),
@@ -23,7 +23,7 @@ export function useRidesListFilterAnalysisExpectedApexValidationInterval(): UseF
 
 	return useFilterStateList(
 		'analysis_expected_apex_validation_interval',
-		GradeStatusFilterSchema.options,
+		[...GradeStatusFilterValues],
 		selectOptions,
 	);
 }

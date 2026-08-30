@@ -1,6 +1,6 @@
 'use client';
 
-import { type GradeStatusFilter, GradeStatusFilterSchema } from '@tmlmobilidade/go-types-shared';
+import { type GradeStatusFilter, GradeStatusFilterValues } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ export function useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop(): Us
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() =>
-		GradeStatusFilterSchema.options.map(item => ({
+		GradeStatusFilterValues.map(item => ({
 			label: t(`shared:status.grade_status.${item}`),
 			value: item,
 		})),
@@ -23,7 +23,7 @@ export function useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop(): Us
 
 	return useFilterStateList(
 		'analysis_at_least_one_vehicle_event_on_last_stop',
-		GradeStatusFilterSchema.options,
+		[...GradeStatusFilterValues],
 		selectOptions,
 	);
 }
