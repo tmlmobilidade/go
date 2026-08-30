@@ -1,4 +1,3 @@
-export * from './activity.js';
 export * from './approval.js';
 export * from './availability.js';
 export * from './condition.js';
@@ -11,5 +10,6 @@ export * from './publish.js';
 export * from './seen.js';
 export * from './severity.js';
 export * from './system.js';
+export * from './temporal.js';
 export * from './ticketing.js';
 export * from './validity.js';

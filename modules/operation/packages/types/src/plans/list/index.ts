@@ -1,2 +1,2 @@
-export * from './plan-list-filters.js';
-export * from './plan-list-item.js';
+export * from './plans-list-filters.js';
+export * from './plans-list-item.js';

@@ -3,16 +3,18 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type PlanListFilters, PlanListFiltersSchema, PlanListItem, PlanListItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
+import { type PlansListFilters, PlansListFiltersSchema, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+
+import { getPlanTemporalStatus } from '../utils/get-plan-temporal-status.js';
 
 /**
  * Retrieves all plans.
  * @param request Fastify request
  * @param reply Fastify reply
  */
-export async function listPlansHandler(request: FastifyRequest<{ Body: PlanListFilters }>, reply: FastifyReply<PlanListItem[]>) {
+export async function listPlansHandler(request: FastifyRequest<{ Body: PlansListFilters }>, reply: FastifyReply<PlansListItem[]>) {
 	//
 
 	//
@@ -29,7 +31,7 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlanListF
 	//
 	// Validate the filters
 
-	const validatedFilters = PlanListFiltersSchema.parse(request.body);
+	const validatedFilters = PlansListFiltersSchema.parse(request.body);
 
 	//
 	// Build the validity filter from the plan feed dates.
@@ -37,32 +39,31 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlanListF
 
 	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
 
-	const validityStatusFilters = validatedFilters.validity_statuses.map((status) => {
+	const temporalStatusFilters = validatedFilters.temporal_statuses.map((status) => {
 		if (status === 'active') {
 			return {
 				'gtfs_feed_info.feed_end_date': { $gte: currentOperationalDate },
 				'gtfs_feed_info.feed_start_date': { $lte: currentOperationalDate },
 			};
 		}
-
 		if (status === 'expired') {
 			return { 'gtfs_feed_info.feed_end_date': { $lt: currentOperationalDate } };
 		}
-
-		return { 'gtfs_feed_info.feed_start_date': { $gt: currentOperationalDate } };
+		if (status === 'upcoming') {
+			return { 'gtfs_feed_info.feed_start_date': { $gt: currentOperationalDate } };
+		}
 	});
 
 	//
 	// Build aggregation pipeline
 
-	const pipeline: AggregationPipeline<PlanListItem> = [
+	const pipeline: AggregationPipeline<PlansListItem> = [
 		{
 			$match: {
 				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
-				...(validityStatusFilters.length ? { $or: validityStatusFilters } : {}),
+				...(temporalStatusFilters.length ? { $or: temporalStatusFilters } : {}),
 			},
 		},
-		{ $project: Object.fromEntries(Object.keys(PlanListItemSchema.shape).map(key => [key, 1])) },
 		{ $sort: { 'gtfs_feed_info.feed_start_date': -1 } },
 	];
 
@@ -78,5 +79,15 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlanListF
 		});
 	}
 
-	return sendSuccessApiResponse(reply, aggregationResult);
+	//
+	// Add temporal status to the results
+
+	const resultsWithTemporalStatus = aggregationResult.map((result: PlansListItem) => {
+		return {
+			...result,
+			temporal_status: getPlanTemporalStatus(result.gtfs_feed_info.feed_start_date, result.gtfs_feed_info.feed_end_date),
+		};
+	});
+
+	return sendSuccessApiResponse(reply, resultsWithTemporalStatus);
 }
