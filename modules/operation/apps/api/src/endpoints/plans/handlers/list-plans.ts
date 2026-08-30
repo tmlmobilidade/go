@@ -5,7 +5,6 @@ import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PlansListFilters, PlansListFiltersSchema, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { getPlanTemporalStatus } from '../utils/get-plan-temporal-status.js';
 
@@ -34,34 +33,12 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 	const validatedFilters = PlansListFiltersSchema.parse(request.body);
 
 	//
-	// Build the validity filter from the plan feed dates.
-	// The validity status is derived and is not stored in the database.
-
-	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
-
-	const temporalStatusFilters = validatedFilters.temporal_statuses.map((status) => {
-		if (status === 'active') {
-			return {
-				'gtfs_feed_info.feed_end_date': { $gte: currentOperationalDate },
-				'gtfs_feed_info.feed_start_date': { $lte: currentOperationalDate },
-			};
-		}
-		if (status === 'expired') {
-			return { 'gtfs_feed_info.feed_end_date': { $lt: currentOperationalDate } };
-		}
-		if (status === 'upcoming') {
-			return { 'gtfs_feed_info.feed_start_date': { $gt: currentOperationalDate } };
-		}
-	});
-
-	//
 	// Build aggregation pipeline
 
 	const pipeline: AggregationPipeline<PlansListItem> = [
 		{
 			$match: {
 				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
-				...(temporalStatusFilters.length ? { $or: temporalStatusFilters } : {}),
 			},
 		},
 		{ $sort: { 'gtfs_feed_info.feed_start_date': -1 } },
@@ -80,7 +57,7 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 	}
 
 	//
-	// Add temporal status to the results
+	// Add temporal status to the results and filter by its value
 
 	const resultsWithTemporalStatus = aggregationResult.map((result: PlansListItem) => {
 		return {
@@ -89,5 +66,10 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 		};
 	});
 
-	return sendSuccessApiResponse(reply, resultsWithTemporalStatus);
+	const filteredResults = resultsWithTemporalStatus.filter(result => validatedFilters.temporal_statuses.includes(result.temporal_status));
+
+	//
+	// Send the response
+
+	return sendSuccessApiResponse(reply, filteredResults);
 }
