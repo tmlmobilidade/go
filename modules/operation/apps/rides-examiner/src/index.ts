@@ -41,7 +41,7 @@ export async function analyzeRides() {
 		const currentEnvironment = getCurrentEnvironment();
 		let coordinatorUrl: string;
 		if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/rides`;
-		else coordinatorUrl = `http://${currentEnvironment}-operatrion-rides-coordinator.${currentEnvironment}-operation.svc.cluster.local/rides`;
+		else coordinatorUrl = `http://${currentEnvironment}-operation-rides-coordinator.${currentEnvironment}-operation.svc.cluster.local/rides`;
 
 		const rideIdsBatchResponse = await fetch(coordinatorUrl);
 		const rideIdsBatch = await rideIdsBatchResponse.json() as string[];
