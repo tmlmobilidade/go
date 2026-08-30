@@ -1,6 +1,6 @@
 'use client';
 
-import { type AlertEffect, AlertEffectSchema } from '@tmlmobilidade/go-types-operation';
+import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,10 +14,8 @@ export function useAlertsListFilterEffect(): UseFilterStateListReturnType<AlertE
 
 	const { t } = useTranslation();
 
-	const options = AlertEffectSchema.options;
-
 	const selectOptions = useMemo(() =>
-		options.map(item => ({
+		AlertEffectValues.map(item => ({
 			label: t(`effects:${item}`),
 			value: item,
 		})),
@@ -25,7 +23,7 @@ export function useAlertsListFilterEffect(): UseFilterStateListReturnType<AlertE
 
 	return useFilterStateList(
 		'effect',
-		AlertEffectSchema.options,
+		[...AlertEffectValues],
 		selectOptions,
 	);
 }
