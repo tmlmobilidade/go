@@ -1,3 +1,4 @@
+export * from './activity.js';
 export * from './approval.js';
 export * from './availability.js';
 export * from './condition.js';

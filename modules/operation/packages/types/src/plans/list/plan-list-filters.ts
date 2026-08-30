@@ -15,6 +15,7 @@ export type PlanValidityStatus = z.infer<typeof PlanValidityStatusSchema>;
 /* * */
 
 export const PlanListFiltersSchema = z.object({
+
 	agency_ids: z
 		.array(z.string())
 		.default([]),
@@ -26,6 +27,7 @@ export const PlanListFiltersSchema = z.object({
 	validity_statuses: z
 		.array(PlanValidityStatusSchema)
 		.default([]),
+
 });
 
 export type PlanListFilters = z.infer<typeof PlanListFiltersSchema>;

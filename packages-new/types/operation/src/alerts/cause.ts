@@ -34,7 +34,10 @@ export const AlertCauseValues = [
 
 ] as const;
 
-export const AlertCauseSchema = z.enum(AlertCauseValues);
+export const AlertCauseSchema = z
+	.string()
+	.transform(value => String(value).toUpperCase())
+	.pipe(z.enum(AlertCauseValues));
 
 /**
  * The Alert extended cause types.

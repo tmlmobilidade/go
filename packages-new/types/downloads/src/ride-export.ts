@@ -100,9 +100,9 @@ export const FlatRideSchema = z.object({
 	/* ACCEPTANCE / JUSTIFICATION */
 	/* * */
 
-	acceptance_status: z.enum(GradeStatusSchema.options).nullish().nullable(),
+	acceptance_status: GradeStatusSchema.nullish().nullable(),
 	justification_cause: AlertCauseSchema.nullish().nullable(),
-	justification_source: z.enum(RideJustificationSourceSchema.options).nullish().nullable(),
+	justification_source: RideJustificationSourceSchema.nullish().nullable(),
 	manual_trip_id: z.string().nullish().nullable(),
 	pto_message: z.string().min(2).max(5000).default('').nullish().nullable(),
 });

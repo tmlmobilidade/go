@@ -9,7 +9,10 @@ export const ThemeModeValues = [
 	'dark',
 ] as const;
 
-export const ThemeModeSchema = z.enum(ThemeModeValues);
+export const ThemeModeSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(ThemeModeValues));
 
 export type ThemeMode = z.infer<typeof ThemeModeSchema>;
 
@@ -20,6 +23,9 @@ export const ThemeModePreferenceValues = [
 	'system',
 ] as const;
 
-export const ThemeModePreferenceSchema = z.enum(ThemeModePreferenceValues);
+export const ThemeModePreferenceSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(ThemeModePreferenceValues));
 
 export type ThemeModePreference = z.infer<typeof ThemeModePreferenceSchema>;

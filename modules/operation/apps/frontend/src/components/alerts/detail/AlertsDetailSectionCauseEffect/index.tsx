@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertCauseSchema, AlertEffectSchema } from '@tmlmobilidade/go-types-operation';
+import { AlertCauseValues, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select, StandardFormController, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -42,13 +42,13 @@ export function AlertsDetailSectionCauseEffect() {
 		return permissionForAgencyId && permissionForReferenceType;
 	}, [agencyIdValue, meData?.permissions, referenceTypeValue]);
 
-	const causeItems = AlertCauseSchema.options.map(cause => ({
+	const causeItems = AlertCauseValues.map(cause => ({
 		icon: AlertCauseIcons[cause],
 		label: t(`shared:alerts.causes.${cause}.title`),
 		value: cause,
 	}));
 
-	const effectItems = AlertEffectSchema.options.map(effect => ({
+	const effectItems = AlertEffectValues.map(effect => ({
 		icon: AlertEffectIcons[effect],
 		label: t(`shared:alerts.effects.${effect}.title`),
 		value: effect,

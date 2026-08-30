@@ -12,6 +12,9 @@ export const ProcessingStatusValues = [
 	'skipped',
 ] as const;
 
-export const ProcessingStatusSchema = z.enum(ProcessingStatusValues);
+export const ProcessingStatusSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(ProcessingStatusValues));
 
 export type ProcessingStatus = z.infer<typeof ProcessingStatusSchema>;

@@ -10,7 +10,10 @@ export const LanguageTagValues = [
 	'en',
 ] as const;
 
-export const LanguageTagSchema = z.enum(LanguageTagValues);
+export const LanguageTagSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(LanguageTagValues));
 
 /**
  * A language tag as defined by the IANA language subtag registry.
