@@ -1,12 +1,12 @@
 /* * */
 
 import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type RealtimeDemand } from '@tmlmobilidade/go-types-performance';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type RealtimeDemand } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -16,14 +16,14 @@ export const syncRealtimeDemand = async () => {
 	Logger.title(`Sync Demand Metrics in Realtime`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'realtime_demand';
+	const metric = 'realtime_demand';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metric}' metrics...` });
+	await metrics.deleteMany({ metric: metric });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -118,7 +118,7 @@ export const syncRealtimeDemand = async () => {
 		data: results,
 		description: `Realtime Demand Metrics by agencies and for all CM, compared with previous week in the same day period.`,
 		generated_at: new Date(),
-		metric: METRIC,
+		metric: metric,
 	};
 
 	//
@@ -128,13 +128,13 @@ export const syncRealtimeDemand = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Count validations by agency', key: 'count_validations_by_agency' },
-		metric: METRIC,
+		metric: metric,
 		queryCount: 2,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
 	});
 
-	Logger.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${metric} (${globalTimer.get()})`);
 };
 
 //
