@@ -1,6 +1,6 @@
 'use client';
 
-import { type TicketingStatus, TicketingStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type TicketingStatus, TicketingStatusValues } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -11,14 +11,14 @@ import { useMemo } from 'react';
 export function useRidesListFilterTicketingStatus(): UseFilterStateListReturnType<TicketingStatus> {
 	//
 
-	const selectOptions = useMemo(() => TicketingStatusSchema.options.map(item => ({
+	const selectOptions = useMemo(() => TicketingStatusValues.map(item => ({
 		label: item,
 		value: item,
 	})), []);
 
 	return useFilterStateList(
 		'ticketing_status',
-		TicketingStatusSchema.options,
+		[...TicketingStatusValues],
 		selectOptions,
 	);
 }

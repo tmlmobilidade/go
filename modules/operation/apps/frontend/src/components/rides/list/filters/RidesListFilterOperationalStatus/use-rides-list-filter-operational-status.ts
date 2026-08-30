@@ -1,6 +1,6 @@
 'use client';
 
-import { type OperationalStatus, OperationalStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type OperationalStatus, OperationalStatusValues } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ export function useRidesListFilterOperationalStatus(): UseFilterStateListReturnT
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() =>
-		OperationalStatusSchema.options.map(item => ({
+		OperationalStatusValues.map(item => ({
 			label: t(`shared:status.operational_status.${item}`),
 			value: item,
 		})),
@@ -23,7 +23,7 @@ export function useRidesListFilterOperationalStatus(): UseFilterStateListReturnT
 
 	return useFilterStateList(
 		'operational_status',
-		OperationalStatusSchema.options,
+		[...OperationalStatusValues],
 		selectOptions,
 	);
 }
