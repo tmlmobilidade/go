@@ -1,10 +1,11 @@
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { type RealtimeServiceCompliance } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
