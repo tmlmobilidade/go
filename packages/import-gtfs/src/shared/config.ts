@@ -1,5 +1,6 @@
 /* * */
 
+import { type SQLiteDatabaseConfig } from '@tmlmobilidade/go-clients-sqlite';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 /**
@@ -28,5 +29,6 @@ interface ImportGtfsConfigTimeRange {
  */
 export interface ImportGtfsConfig {
 	source: ImportGtfsConfigSource
+	sqlite_config?: SQLiteDatabaseConfig
 	time_range?: ImportGtfsConfigTimeRange
 }

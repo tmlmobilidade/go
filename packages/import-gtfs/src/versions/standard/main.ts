@@ -34,7 +34,7 @@ export async function importGtfsToDatabase(config: ImportGtfsConfig): Promise<Gt
 		// Initialize context for the import process.
 		// If an initial context is provided, use it, otherwise create a new one.
 
-		const sqlTables = initGtfsSqlTables();
+		const sqlTables = initGtfsSqlTables(config.sqlite_config);
 		const context = initImportGtfsContext(sqlTables, config);
 
 		//

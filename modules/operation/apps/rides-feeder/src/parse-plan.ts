@@ -69,6 +69,9 @@ export async function parsePlan(planData: Plan) {
 		source: {
 			url: operationFileUrl,
 		},
+		sqlite_config: {
+			memory: true,
+		},
 		time_range: {
 			date_range: {
 				end: planData.gtfs_feed_info.feed_end_date,

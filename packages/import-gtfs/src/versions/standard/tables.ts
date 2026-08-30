@@ -1,6 +1,6 @@
 /* * */
 
-import { SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
+import { SQLiteDatabase, type SQLiteDatabaseConfig } from '@tmlmobilidade/go-clients-sqlite';
 import { type GtfsRoutes, type GtfsShapes, type GtfsStops, type GtfsStopTimes, type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
@@ -10,12 +10,12 @@ import { type GtfsSQLTables } from './types.js';
  * Initializes GTFS Strict v29 SQL tables and writers.
  * @returns The initialized GTFS SQL tables.
  */
-export function initGtfsSqlTables(): GtfsSQLTables {
+export function initGtfsSqlTables(sqliteConfig?: SQLiteDatabaseConfig): GtfsSQLTables {
 	//
 
 	const calendarDatesMap: Record<string, OperationalDateInt[]> = {};
 
-	const database = new SQLiteDatabase();
+	const database = new SQLiteDatabase(sqliteConfig);
 
 	const tripsTable = database.registerTable<GtfsTrips>('trips', {
 		batch_size: 10000,
