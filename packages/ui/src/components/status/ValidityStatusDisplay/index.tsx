@@ -1,6 +1,6 @@
 'use client';
 
-import { type ValidityStatus, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type ValidityStatus, ValidityStatusValues } from '@tmlmobilidade/go-types-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,7 +32,7 @@ export function ValidityStatusDisplay({ disabled, onChange, onClick, showUnknown
 	//
 	// B. Transform data
 
-	const validityStatusOptions = ValidityStatusSchema.options.map(value => ({
+	const validityStatusOptions = ValidityStatusValues.map(value => ({
 		label: t(`shared:status.validity_status.${value}`),
 		value: value,
 	}));
