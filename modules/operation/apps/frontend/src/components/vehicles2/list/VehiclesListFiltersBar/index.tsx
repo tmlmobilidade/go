@@ -1,6 +1,6 @@
 /* * */
 
-import { VehiclesListFilterAgencies } from '@/components/Vehicles/list/VehicleListFilterAgencies';
+import { VehiclesListFilterAgencies } from '@/components/vehicles2/list/VehicleListFilterAgencies';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */

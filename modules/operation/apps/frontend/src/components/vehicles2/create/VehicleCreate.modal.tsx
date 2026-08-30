@@ -1,7 +1,7 @@
 'use client';
 
-import { VehicleCreate } from '@/components/Vehicles/create/VehicleCreate';
-import { VehicleCreateContextProvider } from '@/components/Vehicles/create/VehicleCreate.context';
+import { VehicleCreate } from '@/components/vehicles2/create/VehicleCreate';
+import { VehicleCreateContextProvider } from '@/components/vehicles2/create/VehicleCreate.context';
 import { DataProviders } from '@/providers/data-providers';
 import { closeModal, openModal } from '@tmlmobilidade/ui';
 
