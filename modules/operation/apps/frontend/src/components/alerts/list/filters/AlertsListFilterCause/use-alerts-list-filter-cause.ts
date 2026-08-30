@@ -1,6 +1,6 @@
 'use client';
 
-import { type AlertCause, AlertCauseSchema } from '@tmlmobilidade/go-types-operation';
+import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,10 +14,8 @@ export function useAlertsListFilterCause(): UseFilterStateListReturnType<AlertCa
 
 	const { t } = useTranslation();
 
-	const options = AlertCauseSchema.options;
-
 	const selectOptions = useMemo(() =>
-		options.map(item => ({
+		AlertCauseValues.map(item => ({
 			label: t(`causes:${item}`),
 			value: item,
 		})),
@@ -25,7 +23,7 @@ export function useAlertsListFilterCause(): UseFilterStateListReturnType<AlertCa
 
 	return useFilterStateList(
 		'cause',
-		AlertCauseSchema.options,
+		[...AlertCauseValues],
 		selectOptions,
 	);
 }

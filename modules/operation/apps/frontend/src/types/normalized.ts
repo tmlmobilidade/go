@@ -1,32 +1,11 @@
 /* * */
 
-import { type PlanValidityStatus, PlanValidityStatusSchema } from '@tmlmobilidade/go-operation-pckg-types';
-import { type GtfsValidation, type Plan, Vehicle } from '@tmlmobilidade/go-types-operation';
-import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
-import { SelectDataItem } from '@tmlmobilidade/ui';
+import { type GtfsValidation, type Vehicle } from '@tmlmobilidade/go-types-operation';
+import { ProcessingStatusValues } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
-export const planValidityStatusOptions: SelectDataItem[] = PlanValidityStatusSchema.options.map((value) => {
-	if (value === 'active') return { label: 'Ativo', value };
-	if (value === 'expired') return { label: 'Expirado', value };
-	return { label: 'Agendado', value };
-});
-
-export const planValidityStatusValues = PlanValidityStatusSchema.options;
-
-/* * */
-
-export interface PlanNormalized extends Plan {
-	agency_code_normalized: string
-	agency_id_normalized: string
-	agency_name_normalized: string
-	validity_status: PlanValidityStatus
-}
-
-/* * */
-
-export const validationProcessingStatus = ProcessingStatusSchema.options.map((item) => {
+export const validationProcessingStatus = ProcessingStatusValues.map((item) => {
 	if (item === 'complete') return { label: 'Válido', value: item };
 	if (item === 'error') return { label: 'Erro', value: item };
 	if (item === 'processing') return { label: 'Em Análise', value: item };

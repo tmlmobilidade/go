@@ -1,12 +1,11 @@
 /* * */
 
-import { type PlanNormalized } from '@/types/normalized';
-import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, type TemporalStatus } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
-export const getPlanValidityStatus = (startDate: OperationalDateInt, endDate: OperationalDateInt): PlanNormalized['validity_status'] => {
+export function getPlanTemporalStatus(startDate: OperationalDateInt, endDate: OperationalDateInt): TemporalStatus {
 	//
 
 	//
@@ -38,6 +37,4 @@ export const getPlanValidityStatus = (startDate: OperationalDateInt, endDate: Op
 	if (nowInUnixMilliseconds >= startDateUnixMilliseconds && nowInUnixMilliseconds <= endDateUnixMilliseconds) return 'active';
 
 	if (nowInUnixMilliseconds < startDateUnixMilliseconds && nowInUnixMilliseconds < endDateUnixMilliseconds) return 'upcoming';
-
-	//
 };

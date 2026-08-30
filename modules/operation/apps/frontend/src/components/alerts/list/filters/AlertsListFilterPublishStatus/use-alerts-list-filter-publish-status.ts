@@ -1,6 +1,6 @@
 'use client';
 
-import { type PublishStatus, PublishStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type PublishStatus, PublishStatusValues } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,10 +14,8 @@ export function useAlertsListFilterPublishStatus(): UseFilterStateListReturnType
 
 	const { t } = useTranslation();
 
-	const options = PublishStatusSchema.options;
-
 	const selectOptions = useMemo(() =>
-		options.map(item => ({
+		PublishStatusValues.map(item => ({
 			label: t(`shared:status.publish_status.${item}`),
 			value: item,
 		})),
@@ -25,7 +23,7 @@ export function useAlertsListFilterPublishStatus(): UseFilterStateListReturnType
 
 	return useFilterStateList(
 		'publish_status',
-		PublishStatusSchema.options,
+		[...PublishStatusValues],
 		selectOptions,
 	);
 }

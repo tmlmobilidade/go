@@ -11,6 +11,9 @@ export const AlertReferenceTypeValues = [
 	'rides',
 ] as const;
 
-export const AlertReferenceTypeSchema = z.enum(AlertReferenceTypeValues);
+export const AlertReferenceTypeSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(AlertReferenceTypeValues));
 
 export type AlertReferenceType = z.infer<typeof AlertReferenceTypeSchema>;

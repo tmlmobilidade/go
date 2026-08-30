@@ -1,6 +1,6 @@
 'use client';
 
-import { type DelayStatusFilter, DelayStatusFilterSchema } from '@tmlmobilidade/go-types-shared';
+import { type DelayStatusFilter, DelayStatusFilterValues } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ export function useRidesListFilterEndDelayStatus(): UseFilterStateListReturnType
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() =>
-		DelayStatusFilterSchema.options.map(item => ({
+		DelayStatusFilterValues.map(item => ({
 			label: t(`shared:status.delay_status.${item}`),
 			value: item,
 		})),
@@ -23,7 +23,7 @@ export function useRidesListFilterEndDelayStatus(): UseFilterStateListReturnType
 
 	return useFilterStateList(
 		'end_delay_status',
-		DelayStatusFilterSchema.options,
+		[...DelayStatusFilterValues],
 		selectOptions,
 	);
 }

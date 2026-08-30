@@ -3,7 +3,7 @@
 import { AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
-import { AlertCause, AlertCauseSchema, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
+import { type AlertCause, AlertCauseValues, type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, HasPermission, IconButton, Label, Section, Select, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
@@ -45,7 +45,7 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 				placeholder={t('default:rides.acceptance.RideAcceptanceJustification.fields.cause.placeholder')}
 				value={cause}
 				w="100%"
-				data={AlertCauseSchema.options.map(cause => ({
+				data={AlertCauseValues.map(cause => ({
 					label: t(`shared:alerts.causes.${cause}.title`),
 					value: cause,
 				}))}

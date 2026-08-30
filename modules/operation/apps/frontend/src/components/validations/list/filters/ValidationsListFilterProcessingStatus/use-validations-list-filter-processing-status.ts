@@ -1,6 +1,6 @@
 'use client';
 
-import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { ProcessingStatusValues } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,9 +14,13 @@ export function useValidationsListFilterProcessingStatus(): UseFilterStateListRe
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() =>
-		ProcessingStatusSchema.options.map(item => ({ label: t(`shared:status.processing_status.${item}`), value: item })),
+		ProcessingStatusValues.map(item => ({ label: t(`shared:status.processing_status.${item}`), value: item })),
 	[t],
 	);
 
-	return useFilterStateList('processing_status', ProcessingStatusSchema.options, selectOptions);
+	return useFilterStateList(
+		'processing_status',
+		[...ProcessingStatusValues],
+		selectOptions,
+	);
 }

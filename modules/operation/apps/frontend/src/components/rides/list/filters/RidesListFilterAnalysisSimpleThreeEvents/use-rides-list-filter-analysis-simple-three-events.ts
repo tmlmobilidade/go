@@ -1,6 +1,6 @@
 'use client';
 
-import { type GradeStatusFilter, GradeStatusFilterSchema } from '@tmlmobilidade/go-types-shared';
+import { type GradeStatusFilter, GradeStatusFilterValues } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ export function useRidesListFilterAnalysisSimpleThreeEvents(): UseFilterStateLis
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() =>
-		GradeStatusFilterSchema.options.map(item => ({
+		GradeStatusFilterValues.map(item => ({
 			label: t(`shared:status.grade_status.${item}`),
 			value: item,
 		})),
@@ -23,7 +23,7 @@ export function useRidesListFilterAnalysisSimpleThreeEvents(): UseFilterStateLis
 
 	return useFilterStateList(
 		'analysis_simple_three_events',
-		GradeStatusFilterSchema.options,
+		[...GradeStatusFilterValues],
 		selectOptions,
 	);
 }

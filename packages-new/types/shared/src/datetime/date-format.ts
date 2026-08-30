@@ -13,7 +13,10 @@ export const DateFormatValues = [
 	'iso',
 ] as const;
 
-export const DateFormatSchema = z.enum(DateFormatValues);
+export const DateFormatSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(DateFormatValues));
 
 /**
  * A date format.

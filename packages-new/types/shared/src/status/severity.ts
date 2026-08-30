@@ -12,6 +12,9 @@ export const SeverityStatusValues = [
 	'forbidden',
 ] as const;
 
-export const SeverityStatusSchema = z.enum(SeverityStatusValues);
+export const SeverityStatusSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(SeverityStatusValues));
 
 export type SeverityStatus = z.infer<typeof SeverityStatusSchema>;

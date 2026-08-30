@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PlanListFilters, type PlanListItem } from '@tmlmobilidade/go-operation-pckg-types';
+import { type PlansListFilters, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -9,13 +9,12 @@ import useSWR from 'swr';
 
 import { usePlansListFilterAgency } from './filters/PlansListFilterAgency/use-plans-list-filter-agency';
 import { usePlansListFilterSearch } from './filters/PlansListFilterSearch/use-plans-list-filter-search';
-import { usePlansListFilterValidityStatus } from './filters/PlansListFilterValidityStatus/use-plans-list-filter-validity-status';
-import { usePlansListFilterFeedDates } from './table/PlansListCellFeedDates/use-plans-list-cell-feed-dates';
+import { usePlansListFilterTemporalStatus } from './filters/PlansListFilterTemporalStatus/use-plans-list-filter-temporal-status';
 
 /* * */
 
 interface UsePlansListDataReturnType {
-	data: PlanListItem[]
+	data: PlansListItem[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -33,27 +32,26 @@ export function usePlansListData(): UsePlansListDataReturnType {
 
 	const filterAgency = usePlansListFilterAgency();
 	const filterSearch = usePlansListFilterSearch();
-	const filterValidityStatus = usePlansListFilterValidityStatus();
-	const filterFeedDates = usePlansListFilterFeedDates();
+	const filterTemporalStatus = usePlansListFilterTemporalStatus();
 
 	//
 	// B. Transform data
 
-	const query = useMemo<PlanListFilters>(() => ({
+	const query = useMemo<PlansListFilters>(() => ({
 		agency_ids: filterAgency.value,
 		search: filterSearch.value,
-		validity_statuses: filterValidityStatus.value,
-	}), [filterAgency.value, filterFeedDates.value_end, filterFeedDates.value_start, filterSearch.value, filterValidityStatus.value]);
+		temporal_statuses: filterTemporalStatus.value,
+	}), [filterAgency.value, filterSearch.value, filterTemporalStatus.value]);
 
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<PlanListItem[]>>([API_ROUTES.operation.PLANS_LIST, query], {
-		fetcher: async ([url, query]) => await fetchApiData<PlanListItem[]>({ body: query, method: 'POST', url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<PlansListItem[]>>([API_ROUTES.operation.PLANS_LIST, query], {
+		fetcher: async ([url, query]) => await fetchApiData<PlansListItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000,
 	});
 
-	const searchResultsData = useSearch<PlanListItem>({
+	const searchResultsData = useSearch<PlansListItem>({
 		accessors: ['_id'],
 		data: data?.data,
 		query: filterSearch.value,

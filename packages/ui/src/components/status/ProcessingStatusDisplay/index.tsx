@@ -1,6 +1,6 @@
 'use client';
 
-import { type ProcessingStatus, ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type ProcessingStatus, ProcessingStatusValues } from '@tmlmobilidade/go-types-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,7 +32,7 @@ export function ProcessingStatusDisplay({ disabled, onChange, onClick, tooltip, 
 	//
 	// B. Transform data
 
-	const processingStatusOptions = ProcessingStatusSchema.options.map(value => ({
+	const processingStatusOptions = ProcessingStatusValues.map(value => ({
 		label: t(`shared:status.processing_status.${value}`),
 		value: value,
 	}));

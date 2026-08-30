@@ -4,10 +4,9 @@ import { PlansListFiltersBar } from '@/components/plans/list/filters/PlansListFi
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { PlansListCellFeedDates } from '@/components/plans/list/table/PlansListCellFeedDates';
 import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agencies-data';
-import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type PlanListItem } from '@tmlmobilidade/go-operation-pckg-types';
+import { type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -29,7 +28,7 @@ export function PlansList() {
 
 	const { data: agenciesData } = usePlansAgenciesData();
 
-	const columns: DataTableColumn<PlanListItem>[] = [
+	const columns: DataTableColumn<PlansListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -55,7 +54,7 @@ export function PlansList() {
 				<PlansListCellFeedDates
 					endDate={item.gtfs_feed_info.feed_end_date}
 					startDate={item.gtfs_feed_info.feed_start_date}
-					validityStatus={getPlanValidityStatus(item.gtfs_feed_info.feed_start_date, item.gtfs_feed_info.feed_end_date)}
+					temporalStatus={item.temporal_status}
 				/>
 			),
 			title: 'Datas de Validade',
@@ -108,7 +107,7 @@ export function PlansList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: PlanListItem) => {
+	const handleRowClick = (item: PlansListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.operation.PLANS_DETAIL(item._id)));
 	};
 

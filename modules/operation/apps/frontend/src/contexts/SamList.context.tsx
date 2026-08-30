@@ -4,7 +4,7 @@ import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam } from '@tmlmobilidade/go-types-operation';
-import { type SystemStatus, SystemStatusSchema, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { type SystemStatus, SystemStatusValues, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
@@ -76,7 +76,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	const timelineByIdRef = useRef<Record<number, null | Sam['timeline_summary'] | undefined>>({});
 
 	const filterStatusOptions = useMemo(() => {
-		return SystemStatusSchema.options.map(status => ({
+		return SystemStatusValues.map(status => ({
 			checked: false,
 			disabled: false,
 			label: status,
@@ -85,7 +85,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	}, []);
 	const filterStatus = useFilterStateList<SystemStatus>(
 		'system_status',
-		SystemStatusSchema.options,
+		[...SystemStatusValues],
 		filterStatusOptions,
 	);
 

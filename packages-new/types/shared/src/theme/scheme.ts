@@ -10,6 +10,9 @@ export const ThemeSchemeValues = [
 	// ...
 ] as const;
 
-export const ThemeSchemeSchema = z.enum(ThemeSchemeValues);
+export const ThemeSchemeSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(ThemeSchemeValues));
 
 export type ThemeScheme = z.infer<typeof ThemeSchemeSchema>;
