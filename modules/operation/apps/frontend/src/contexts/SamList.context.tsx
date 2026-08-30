@@ -85,7 +85,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	}, []);
 	const filterStatus = useFilterStateList<SystemStatus>(
 		'system_status',
-		SystemStatusValues,
+		[...SystemStatusValues],
 		filterStatusOptions,
 	);
 
