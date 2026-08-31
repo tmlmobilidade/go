@@ -3,8 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type LineNormalized, type Route, type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -60,16 +59,16 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			routeMutate(updatedItem);
+			routeMutate(data);
 			lineMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId), 'DELETE', routeData),
+		fetchFn: async () => await fetchApiData<Route>({ body: routeData, method: 'DELETE', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			lineMutate();
@@ -78,10 +77,10 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_DETAIL_LOCK(routeId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Route>({ url: API_ROUTES.offer.ROUTES_DETAIL_LOCK(routeId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			routeMutate(updatedItem);
+			routeMutate(data);
 			lineMutate();
 		},
 	});
