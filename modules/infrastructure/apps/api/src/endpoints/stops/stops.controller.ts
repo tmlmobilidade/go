@@ -6,9 +6,10 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-client
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type Attachment, } from '@tmlmobilidade/go-types-core';
-import {  CreateStopSchema, , type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/go-types-infrastructure';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
+import { CreateStopSchema, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/go-types-infrastructure';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * This is an example controller that is using the stops interface.
@@ -42,7 +43,14 @@ export class StopsController {
 		// if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create this stop, because you do not have permission for all the agencies involved in the stop.');
 
 		const newStopId = await generateStopId();
-		const result = await goDb.infrastructure.stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
+		const now = Dates.now('utc').unix_milliseconds;
+		const result = await goDb.infrastructure.stops.insertOneUnsafe({
+			...data,
+			_id: newStopId,
+			associated_patterns: [],
+			created_at: now,
+			updated_at: now,
+		});
 
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
@@ -76,7 +84,7 @@ export class StopsController {
 		}
 
 		// If authorized, toggle the deleted status of the stop
-		await goDb.infrastructure.stops.updateOne({ _id: request.params.id }, { is_deleted: !foundStop.is_deleted });
+		await goDb.infrastructure.stops.updateById(request.params.id, { is_deleted: !foundStop.is_deleted });
 
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
