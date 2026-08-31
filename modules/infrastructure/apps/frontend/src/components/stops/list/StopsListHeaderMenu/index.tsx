@@ -1,12 +1,8 @@
 /* * */
 
-import { openStopCreateModal } from '@/components/stops/create/StopCreate.modal';
-import { openStopListExportModal } from '@/components/stops/list/StopListExportModal/StopListExport.modal';
 import { IconFileDownload, IconGardenCart, IconPlus } from '@tabler/icons-react';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, HasPermission, IconButton, Label, LoadingActivity, Menu, MenuItem, MenuLabel, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { ToolbarActions } from '@tmlmobilidade/ui';
 
-import { StopsListFilterSearch } from '../filters/StopsListFilterSearch';
 import { useStopsListData } from '../use-stops-list-data';
 
 /* * */
@@ -16,8 +12,6 @@ export function StopsListHeaderMenu() {
 
 	//
 	// A. Setup variables
-
-	const { isLoading, isValidating, timestamp } = useStopsListData();
 
 	//
 	// B. Render components
@@ -31,11 +25,14 @@ export function StopsListHeaderMenu() {
 	// 	</Toolbar>
 
 	return (
-		<Menu icon={IconGardenCart}>
-			<MenuLabel>Paragens</MenuLabel>
-			<MenuItem title="Settings" />
-			<MenuItem title="Messages" />
-			<MenuItem title="Gallery" />
-		</Menu>
+		<ToolbarActions groups={[{
+			actions: [
+				{ icon: <IconGardenCart size={20} />, label: 'Paragens', onClick: () => {} },
+				{ icon: <IconPlus size={20} />, label: 'Nova Paragem', onClick: () => {} },
+				{ icon: <IconFileDownload size={20} />, label: 'Exportar Paragens', onClick: () => {} },
+			],
+			label: 'Paragens',
+		}]}
+		/>
 	);
 }
