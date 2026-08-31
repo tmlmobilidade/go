@@ -6,11 +6,11 @@ import { useMemo } from 'react';
 
 import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
 import { useStopsDetailData } from '../../use-stops-detail-data';
-import { openStopsDetailEditNameModal } from '../StopsDetailEditCoordinates.modal';
+import { openStopsDetailUpdateCoordinatesModal } from '../StopsDetailUpdateCoordinates.modal';
 
 /* * */
 
-export function StopsDetailEditName() {
+export function StopsDetailUpdateCoordinates() {
 	//
 
 	//
@@ -25,9 +25,9 @@ export function StopsDetailEditName() {
 	//
 	// B. Transform data
 
-	const canEditName = useMemo(() => {
+	const canUpdateCoordinates = useMemo(() => {
 		const hasPermission = hasPermissionResource(meData?.permissions, {
-			requiredPermission: { action: 'edit_name', scope: 'stops' },
+			requiredPermission: { action: 'edit_coordinates', scope: 'stops' },
 			requiredValue: data?.municipality_id,
 			resourceKey: 'municipality_ids',
 		});
@@ -39,9 +39,9 @@ export function StopsDetailEditName() {
 
 	return (
 		<ValueDisplay
-			footer={canEditName && <Inline onClick={openStopsDetailEditNameModal} dotted>Editar</Inline>}
-			label="Nome Único da Paragem"
-			value={data?.name ?? 'N/A'}
+			footer={canUpdateCoordinates && <Inline onClick={openStopsDetailUpdateCoordinatesModal} dotted>Editar</Inline>}
+			label="Coordenadas"
+			value={`${data?.latitude ?? 'N/A'}, ${data?.longitude ?? 'N/A'}`}
 			variant="bordered"
 		/>
 	);

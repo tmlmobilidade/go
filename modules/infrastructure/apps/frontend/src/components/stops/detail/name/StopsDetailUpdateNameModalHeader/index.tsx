@@ -2,18 +2,18 @@
 
 import { Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
-import { closeStopsDetailEditNameModal } from '../StopsDetailEditName.modal';
-import { useStopsDetailEditNameFormContext } from '../StopsDetailEditNameForm.context';
+import { closeStopsDetailUpdateNameModal } from '../StopsDetailUpdateName.modal';
+import { useStopsDetailUpdateNameFormContext } from '../StopsDetailUpdateNameForm.context';
 
 /* * */
 
-export function StopsDetailEditNameModalHeader() {
+export function StopsDetailUpdateNameModalHeader() {
 	//
 
 	//
 	// A. Setup variables
 
-	const { actions, form, status, unblock } = useStopsDetailEditNameFormContext();
+	const { actions, form, status, unblock } = useStopsDetailUpdateNameFormContext();
 
 	//
 	// D. Handle actions
@@ -21,7 +21,7 @@ export function StopsDetailEditNameModalHeader() {
 	const handleClose = () => {
 		form.reset();
 		unblock();
-		closeStopsDetailEditNameModal();
+		closeStopsDetailUpdateNameModal();
 	};
 
 	//
@@ -30,7 +30,7 @@ export function StopsDetailEditNameModalHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleClose} type="close" />
-			<Label size="md" caps singleLine>Alterar nome da paragem</Label>
+			<Label size="lg" singleLine>Alterar nome da paragem</Label>
 			<Spacer />
 			<Button
 				label="Alterar nome"

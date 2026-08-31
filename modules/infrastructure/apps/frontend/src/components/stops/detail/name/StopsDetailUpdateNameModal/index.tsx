@@ -2,24 +2,24 @@
 
 import { Divider, Pane, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 
-import { useStopsDetailEditNameFormContext } from '../StopsDetailEditNameForm.context';
-import { StopsDetailEditNameModalHeader } from '../StopsDetailEditNameModalHeader';
+import { useStopsDetailUpdateNameFormContext } from '../StopsDetailUpdateNameForm.context';
+import { StopsDetailUpdateNameModalHeader } from '../StopsDetailUpdateNameModalHeader';
 
 /* * */
 
-export function StopsDetailEditNameModal() {
+export function StopsDetailUpdateNameModal() {
 	//
 
 	//
 	// A. Setup variables
 
-	const { form } = useStopsDetailEditNameFormContext();
+	const { form } = useStopsDetailUpdateNameFormContext();
 
 	//
 	// B. Render components
 
 	return (
-		<Pane header={[<StopsDetailEditNameModalHeader key="header" />]}>
+		<Pane header={[<StopsDetailUpdateNameModalHeader key="header" />]}>
 
 			<Section>
 				<StandardFormController

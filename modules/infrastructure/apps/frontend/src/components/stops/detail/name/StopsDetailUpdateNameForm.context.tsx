@@ -10,21 +10,21 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 import { useStopsListData } from '../../list/use-stops-list-data';
 import { useStopsDetailData } from '../use-stops-detail-data';
 import { useStopsDetailStopId } from '../use-stops-detail-stop-id';
-import { closeStopsDetailEditNameModal } from './StopsDetailEditName.modal';
+import { closeStopsDetailUpdateNameModal } from './StopsDetailUpdateName.modal';
 
 /* * */
 
-const StopsDetailEditNameFormContext = createContext<StandardFormContextValue<StopsUpdateNameRequest> | undefined>(undefined);
+const StopsDetailUpdateNameFormContext = createContext<StandardFormContextValue<StopsUpdateNameRequest> | undefined>(undefined);
 
-export function useStopsDetailEditNameFormContext() {
-	const context = useContext(StopsDetailEditNameFormContext);
-	if (!context) throw new Error('useStopsDetailEditNameFormContext must be used within a StopsDetailEditNameFormContextProvider');
+export function useStopsDetailUpdateNameFormContext() {
+	const context = useContext(StopsDetailUpdateNameFormContext);
+	if (!context) throw new Error('useStopsDetailUpdateNameFormContext must be used within a StopsDetailUpdateNameFormContextProvider');
 	return context;
 }
 
 /* * */
 
-export function StopsDetailEditNameFormContextProvider({ children }: PropsWithChildren) {
+export function StopsDetailUpdateNameFormContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -60,7 +60,7 @@ export function StopsDetailEditNameFormContextProvider({ children }: PropsWithCh
 			stopsDetailMutate(response);
 			stopsListMutate();
 			unblock();
-			closeStopsDetailEditNameModal();
+			closeStopsDetailUpdateNameModal();
 		},
 	});
 
@@ -102,8 +102,8 @@ export function StopsDetailEditNameFormContextProvider({ children }: PropsWithCh
 	}), [editEnabled, form, handleUpdate, isUpdating, stopDataLoading, unblock, updateEnabled, isDirty, isValid]);
 
 	return (
-		<StopsDetailEditNameFormContext.Provider value={stateValue}>
+		<StopsDetailUpdateNameFormContext.Provider value={stateValue}>
 			{children}
-		</StopsDetailEditNameFormContext.Provider>
+		</StopsDetailUpdateNameFormContext.Provider>
 	);
 }

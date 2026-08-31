@@ -1,14 +1,12 @@
 'use client';
 
 import { Translations } from '@/lib/translations';
-import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { LifecycleStatusValues } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, Grid, Inline, Section, SegmentedControl, StandardFormController, useMeData, ValueDisplay } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { Collapsible, Grid, Section, SegmentedControl, StandardFormController } from '@tmlmobilidade/ui';
 
-import { StopsDetailEditName } from '../../name/StopsDetailEditName';
+import { StopsDetailUpdateCoordinates } from '../../coordinates/StopsDetailUpdateCoordinates';
+import { StopsDetailUpdateName } from '../../name/StopsDetailUpdateName';
 import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
-import { useStopsDetailData } from '../../use-stops-detail-data';
 
 /* * */
 
@@ -17,10 +15,6 @@ export function StopsDetailSectionGeneral() {
 
 	//
 	// A. Setup variables
-
-	const { data } = useStopsDetailData();
-
-	const { data: meData } = useMeData();
 
 	const { capabilities, form } = useStopsDetailFormContext();
 
@@ -31,15 +25,6 @@ export function StopsDetailSectionGeneral() {
 		label: Translations.LIFECYCLE_STATUS[value],
 		value: value,
 	}));
-
-	const canEditCoordinates = useMemo(() => {
-		const hasPermission = hasPermissionResource(meData?.permissions, {
-			requiredPermission: { action: 'edit_coordinates', scope: 'stops' },
-			requiredValue: data?.municipality_id,
-			resourceKey: 'municipality_ids',
-		});
-		return hasPermission && !capabilities.updateEnabled;
-	}, [data?.municipality_id, meData?.permissions, capabilities.updateEnabled]);
 
 	//
 	// C. Render components
@@ -53,13 +38,8 @@ export function StopsDetailSectionGeneral() {
 
 			<Section>
 				<Grid columns="ab" gap="md" placeItems="start">
-					<ValueDisplay
-						footer={canEditCoordinates && <Inline onClick={() => {}} dotted>Editar</Inline>}
-						label="Coordenadas"
-						value={`${data?.latitude ?? 'N/A'}, ${data?.longitude ?? 'N/A'}`}
-						variant="bordered"
-					/>
-					<StopsDetailEditName />
+					<StopsDetailUpdateCoordinates />
+					<StopsDetailUpdateName />
 				</Grid>
 			</Section>
 
