@@ -11,7 +11,6 @@ import { ConflictError, MetadataError, NotFoundError } from '@tmlmobilidade/go-c
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Attachment, AttachmentSchema, type CreateAttachmentDto } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { convertObject } from '@tmlmobilidade/utils';
 
 /**
  * Replace an existing attachment in place (same id / path).
@@ -88,7 +87,7 @@ export async function replace(deps: StorageDeps, input: ReplaceInput): Promise<A
 				compensate: async () => {
 					if (inserted && existing) {
 						await goDb.core.attachments.deleteById(fileId);
-						const restored = convertObject(existing, AttachmentSchema);
+						const restored = AttachmentSchema.parse(existing);
 						await goDb.core.attachments.insertOneUnsafe({ ...restored, _id: fileId });
 					}
 				},

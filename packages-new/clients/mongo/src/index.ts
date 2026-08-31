@@ -31,6 +31,7 @@ export type {
 	InsertManyResult,
 	InsertOneOptions,
 	InsertOneResult,
+	MatchKeysAndValues,
 	MongoClient,
 	MongoClientOptions,
 	OptionalUnlessRequiredId,

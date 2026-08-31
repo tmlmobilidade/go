@@ -42,7 +42,7 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@types/geojson": "7946.0.16",
 		"gtfs-types": "5.1.0",
-		"zod": "3.25.76"
+		"zod": "4.5.4"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

@@ -2,11 +2,11 @@
 
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, Flatten, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
+import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, Flatten, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, MatchKeysAndValues, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
@@ -263,7 +263,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 				// In safe mode, a schema is required to validate the document.
 				if (!this.createSchema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
 				// Validate the document against the create schema
-				parsedDocument = this.createSchema.parse(parsedDocument);
+				parsedDocument = this.createSchema.parse(parsedDocument) as OptionalUnlessRequiredId<T>;
 				// Add the missing default fields, if present in the original document.
 				// The schema might have omitted these fields, so we need to add them back.
 				if (doc._id) parsedDocument._id = doc._id;
@@ -380,7 +380,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 
 		if (this.updateSchema) {
 			try {
-				parsedUpdateFields = this.updateSchema.parse(updateFields);
+				parsedUpdateFields = this.updateSchema.parse(updateFields) as TUpdate & { updated_at: UnixMilliseconds, updated_by: string };
 			} catch (error) {
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
@@ -421,7 +421,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		let parsedUpdateFields = updateFields;
 		if (this.updateSchema) {
 			try {
-				parsedUpdateFields = this.updateSchema.parse(updateFields);
+				parsedUpdateFields = this.updateSchema.parse(updateFields) as TUpdate & { updated_at: UnixMilliseconds, updated_by: string };
 			} catch (error) {
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}

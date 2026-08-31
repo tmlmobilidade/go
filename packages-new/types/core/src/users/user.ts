@@ -27,7 +27,7 @@ export const UserSchema = BaseDocumentSchema.extend({
 	password_hash: z.string().nullable().default(null),
 	permissions: z.array(PermissionSchema).default([]),
 	phone: z.string().nullable().default(null),
-	preferences: z.record(z.record(UserPreferenceValueSchema)).nullable().default(null),
+	preferences: z.record(z.string(), z.record(z.string(), UserPreferenceValueSchema)).nullable().default(null),
 	role_ids: z.array(z.string()).default([]),
 	seen_last_at: UnixMillisecondsSchema.nullable().default(null),
 	session_ids: z.array(z.string()).default([]),

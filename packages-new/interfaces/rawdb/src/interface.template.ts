@@ -1,6 +1,6 @@
 /* * */
 
-import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, Collection, CreateIndexesOptions, Db, Document, Filter, FindOptions, InsertOneOptions, isSameIndex, prepareMongoIndexOptions, SimplifiedMongoIndex, WithId } from '@tmlmobilidade/go-clients-mongo';
+import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, Collection, CreateIndexesOptions, Db, Document, Filter, FindOptions, InsertOneOptions, isSameIndex, OptionalUnlessRequiredId, prepareMongoIndexOptions, SimplifiedMongoIndex, WithId } from '@tmlmobilidade/go-clients-mongo';
 import { Logger } from '@tmlmobilidade/logger';
 import { z } from 'zod';
 
@@ -121,7 +121,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 		const parsedDocuments = data.map((doc) => {
 			const parseResult = this.createSchema.safeParse(doc);
 			if (!parseResult.success) throw new Error(`Document validation failed: ${parseResult.error.message}`);
-			return parseResult.data;
+			return parseResult.data as OptionalUnlessRequiredId<T>;
 		});
 		// Attempt to insert the documents into the collection
 		return await this.collection.insertMany(parsedDocuments, options);
@@ -135,7 +135,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 		const parseResult = this.createSchema.safeParse(data);
 		if (!parseResult.success) throw new Error(`Document validation failed: ${parseResult.error.message}`);
 		// Attempt to insert the document into the collection
-		return await this.collection.insertOne(parseResult.data, options);
+		return await this.collection.insertOne(parseResult.data as OptionalUnlessRequiredId<T>, options);
 	}
 
 	/**

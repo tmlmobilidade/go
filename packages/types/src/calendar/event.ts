@@ -11,7 +11,7 @@ export const CalendarEventSchema = z.object({
 	endDate: z.string().optional(),
 	icon: z.any().optional(),
 	id: z.string(),
-	metadata: z.record(z.unknown()).optional(),
+	metadata: z.record(z.string(), z.unknown()).optional(),
 	startDate: z.string(),
 	title: z.string(),
 	type: z.enum(['annotation', 'period', 'holiday', 'event', 'rule-impact']).optional(),

@@ -10,7 +10,6 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Attachment, CreateAttachmentSchema } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { convertObject } from '@tmlmobilidade/utils';
 
 import { type StorageDeps } from '../types/deps.js';
 
@@ -72,7 +71,7 @@ export async function copy(deps: StorageDeps, input: CopyInput): Promise<Attachm
 				},
 				execute: async () => {
 					if (!source) throw new MetadataError('Copy source missing during insert');
-					const newFile = convertObject(source, CreateAttachmentSchema);
+					const newFile = CreateAttachmentSchema.parse(source);
 					inserted = await goDb.core.attachments.insertOneUnsafe({
 						...newFile,
 						_id,

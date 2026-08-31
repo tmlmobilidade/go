@@ -12,9 +12,9 @@ export const AgencyAlertsMapSchema = z.record(
 		z.record(
 			AlertReferenceTypeSchema,
 			z.boolean().default(true),
-		).default({}),
-	).default({}),
-).default({});
+		),
+	),
+);
 
 /* * */
 

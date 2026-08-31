@@ -40,7 +40,7 @@ export async function toggleLockById<T extends Document>(context: GoDbCollection
 	//
 	// Validate the document against the schema
 
-	const validatedDocument = context.schema.parse(updatableDocument);
+	const validatedDocument = context.schema.parse(updatableDocument) as Document[];
 
 	//
 	// Attempt to update the document in the collection

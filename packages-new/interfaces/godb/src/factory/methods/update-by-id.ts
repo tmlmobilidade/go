@@ -1,6 +1,6 @@
 /* * */
 
-import { type Document, type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type Document, type Filter, MatchKeysAndValues } from '@tmlmobilidade/go-clients-mongo';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
@@ -43,7 +43,7 @@ export async function updateById<T extends Document>(context: GoDbCollectionCont
 	//
 	// Validate the document against the schema
 
-	const validatedDocument = context.schema.parse(updatableDocument);
+	const validatedDocument = context.schema.parse(updatableDocument) as MatchKeysAndValues<T>;
 
 	//
 	// Attempt to update the document in the collection
