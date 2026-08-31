@@ -1,9 +1,9 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type StopId, StopSchema } from '@tmlmobilidade/types';
+import { type StopId, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { fetchData } from '@tmlmobilidade/utils';
 import Papa from 'papaparse';
 

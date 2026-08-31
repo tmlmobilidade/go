@@ -63,7 +63,7 @@ export async function runnerPatterns() {
 			if (patternTts && patternTts !== '#N/A') {
 				const hash = await generateHash(patternTts, patternData._id);
 
-				if (patternData.tts_hash === hash) {
+				if (patternData.tts_headsign === hash) {
 					Logger.info({
 						message: `[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Skipping | Line ${lineData._id} | Pattern ${patternData._id} | TTS already exists`,
 					});
