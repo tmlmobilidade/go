@@ -1,4 +1,4 @@
--- Current window rides: operation.rides + hashed_trips first/last stops → eta.curr_rides.
+-- Current window rides: operation.rides + hashed_shapes + hashed_trips first/last stops → eta.curr_rides.
 -- first/last geohash columns use table DEFAULTs (omit from insert column list).
 --
 -- Params:
@@ -58,7 +58,7 @@ WITH
             seen_first_at,
             seen_last_at,
             shape_id,
-            shape_polyline,
+            hashed_shape_id,
             start_time_observed,
             start_time_scheduled,
             trip_id,
@@ -85,6 +85,13 @@ WITH
         FROM operation.hashed_trips FINAL
         WHERE _id IN (SELECT hashed_trip_id FROM matched_rides)
         GROUP BY _id
+    ),
+    hashed_shapes AS (
+        SELECT
+            _id AS hashed_shape_id,
+            shape_polyline
+        FROM operation.hashed_shapes FINAL
+        WHERE _id IN (SELECT hashed_shape_id FROM matched_rides)
     )
 SELECT
     r._id,
@@ -104,13 +111,13 @@ SELECT
     r.seen_first_at,
     r.seen_last_at,
     r.shape_id,
-    r.shape_polyline,
+    s.shape_polyline,
     r.start_time_observed,
     r.start_time_scheduled,
     r.trip_id,
     r.updated_at,
     r.vehicle_ids,
-    cityHash64(concat(r.shape_id, r.shape_polyline)) AS hashed_shape_id,
+    r.hashed_shape_id,
     t.first_stop_id,
     t.first_stop_name,
     (toFloat64(t.first_stop_lat), toFloat64(t.first_stop_lon)) AS first_stop_coordinates,
@@ -118,4 +125,5 @@ SELECT
     t.last_stop_name,
     (toFloat64(t.last_stop_lat), toFloat64(t.last_stop_lon)) AS last_stop_coordinates
 FROM matched_rides AS r
-INNER JOIN trip_stops AS t ON r.hashed_trip_id = t.hashed_trip_id;
+INNER JOIN trip_stops AS t ON r.hashed_trip_id = t.hashed_trip_id
+INNER JOIN hashed_shapes AS s ON r.hashed_shape_id = s.hashed_shape_id;

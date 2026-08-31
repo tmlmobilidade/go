@@ -15,8 +15,6 @@ self.addEventListener('message', async (event) => {
 		const agency = await zip.file('agency.txt')?.async('string');
 		const stopTimes = await zip.file('stop_times.txt')?.async('blob');
 
-		console.log('Stop times size:', stopTimes?.size);
-
 		if (!feedInfo || !agency || !stopTimes) {
 			const filesNotFound: string[] = [];
 			if (!feedInfo) filesNotFound.push('feed_info.txt');
@@ -24,6 +22,9 @@ self.addEventListener('message', async (event) => {
 			console.log(filesNotFound);
 			throw new Error(`${filesNotFound.join(', ')} not found in the GTFS zip file`);
 		}
+
+		const emptyToUndefined = <T extends Record<string, unknown>>(obj: T) =>
+			Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v === '' ? undefined : v])) as T;
 
 		const agencyData = papa.parse<GtfsAgency>(agency, {
 			header: true,
@@ -36,7 +37,10 @@ self.addEventListener('message', async (event) => {
 		});
 
 		// Return the feed info data
-		self.postMessage({ agency: agencyData.data[0], feed_info: feedInfoData.data[0] });
+		self.postMessage({
+			agency: emptyToUndefined(agencyData.data[0]),
+			feed_info: emptyToUndefined(feedInfoData.data[0]),
+		});
 	} catch (error) {
 		console.error('Error parsing GTFS file:', error);
 		self.postMessage({ error: error instanceof Error ? error : new Error('Unknown error') });

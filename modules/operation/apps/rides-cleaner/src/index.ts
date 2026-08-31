@@ -1,7 +1,7 @@
 /* * */
 
 import { ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { performInChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -88,10 +88,13 @@ async function reprocessStuckRides() {
 		// Mark the rides as 'waiting' to be reprocessed.
 
 		if (stuckRideIds.length > 0) {
-			const updateTimer = new Timer();
-			await ridesProvider.updateRides({ _id: stuckRideIds }, { processing_status: 'waiting' });
-			Logger.info({ message: `Found ${stuckRideIds.length} stuck rides that were marked as 'waiting'. (${updateTimer.get()})` });
-			Logger.spacer(1);
+			Logger.info({ message: `Found ${stuckRideIds.length} stuck rides that will be marked as 'waiting'.` });
+			await performInChunks(stuckRideIds, async (chunk) => {
+				const updateTimer = new Timer();
+				await ridesProvider.updateRides({ _id: chunk }, { processing_status: 'waiting' });
+				Logger.info({ message: `Marked ${chunk.length} stuck rides as 'waiting'. (${updateTimer.get()})` });
+				Logger.spacer(1);
+			}, 300);
 		} else {
 			Logger.info({ message: `No stuck rides found!` });
 			Logger.spacer(1);
