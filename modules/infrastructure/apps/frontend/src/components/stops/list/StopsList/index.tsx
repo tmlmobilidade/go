@@ -6,8 +6,9 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsListItem } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { DataTable, DataTableColumn, ErrorDisplay, IdTag, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
+import { useStopsDetailStopId } from '../../detail/use-stops-detail-stop-id';
 import { useStopsListData } from '../use-stops-list-data';
 
 /* * */
@@ -19,7 +20,8 @@ export function StopsList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
+
+	const { stopId } = useStopsDetailStopId();
 
 	const { data, error, isLoading } = useStopsListData();
 
@@ -90,7 +92,7 @@ export function StopsList() {
 				onRowClick={handleRowClick}
 				records={data}
 				rowIdAccessor="_id"
-				selectedId={Number(params.id)}
+				selectedId={stopId}
 			/>
 		</Pane>
 	);
