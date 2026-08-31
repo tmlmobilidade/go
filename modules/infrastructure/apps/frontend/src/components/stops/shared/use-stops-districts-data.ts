@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type StopsMunicipalityItem, type StopsMunicipalityRequest } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type District } from '@tmlmobilidade/go-types-locations';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -9,29 +9,29 @@ import useSWR from 'swr';
 
 /* * */
 
-interface StopsMunicipalitiesDataReturnType {
-	data: StopsMunicipalityItem[]
+interface StopsDistrictsDataReturnType {
+	data: District[]
 	error: null | string
 	ids: string[]
 	isLoading: boolean
-	map: Map<string, StopsMunicipalityItem>
+	map: Map<string, District>
 	options: SelectDataItem[]
 	timestamp: null | UnixMilliseconds
 }
 
 /**
- * Hook to fetch municipalities data. Useful for supplying data
+ * Hook to fetch districts data. Useful for supplying data
  * to filters or select components.
- * @returns An object containing the municipalities data.
+ * @returns An object containing the districts data.
  */
-export function useStopsMunicipalitiesData(request: StopsMunicipalityRequest): StopsMunicipalitiesDataReturnType {
+export function useStopsDistrictsData(): StopsDistrictsDataReturnType {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<StopsMunicipalityItem[]>>([API_ROUTES.infrastructure.STOPS_LIST_MUNICIPALITIES, request], {
-		fetcher: async ([url, request]) => await fetchApiData<StopsMunicipalityItem[]>({ body: request, method: 'POST', url: url }),
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<District[]>>([API_ROUTES.infrastructure.STOPS_LIST_MUNICIPALITIES, request], {
+		fetcher: async ([url, request]) => await fetchApiData<District[]>({ body: request, method: 'POST', url: url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 

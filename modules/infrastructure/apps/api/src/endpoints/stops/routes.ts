@@ -8,7 +8,7 @@ import { getStopHandler } from './handlers/get-stop.js';
 import { getTtsHandler } from './handlers/get-tts.js';
 import { getValidIdHandler } from './handlers/get-valid-id.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';
-import { listMunicipalitiesHandler } from './handlers/list-municipalities.js';
+import { listLocationsHandler } from './handlers/list-locations.js';
 import { listStopsHandler } from './handlers/list-stops.js';
 import { lockStopHandler } from './handlers/lock-stop.js';
 import { updateStopHandler } from './handlers/update-stop.js';
@@ -25,11 +25,11 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/list', { preHandler: authorizationMiddleware('stops', ['read']) }, listStopsHandler);
+		instance.post('/list', { preHandler: authorizationMiddleware('stops', ['read']) }, listStopsHandler);
 
 		instance.post('/list-agencies', { preHandler: authorizationMiddleware('stops', ['read']) }, listAgenciesHandler);
 
-		instance.post('/list-municipalities', { preHandler: authorizationMiddleware('stops', ['read']) }, listMunicipalitiesHandler);
+		instance.post('/list-locations', { preHandler: authorizationMiddleware('stops', ['read']) }, listLocationsHandler);
 
 		instance.get('/get/valid-id', { preHandler: authorizationMiddleware('stops', ['read']) }, getValidIdHandler);
 
