@@ -1,13 +1,12 @@
 'use client';
 
+import { useSchoolsDetailFormContext } from '@/components/schools/detail/SchoolsDetailForm.context';
 import { Collapsible, Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
-
 /* * */
 
-export function SchoolCreateSectionOrganization() {
+export function SchoolDetailSectionOrganization() {
 	//
 
 	//
@@ -15,7 +14,7 @@ export function SchoolCreateSectionOrganization() {
 
 	const { t } = useTranslation();
 
-	const { form } = useSchoolsCreateFormContext();
+	const { capabilities, form } = useSchoolsDetailFormContext();
 
 	//
 	// B. Render components
@@ -27,12 +26,12 @@ export function SchoolCreateSectionOrganization() {
 		>
 			<Section padding="lg">
 				<Grid columns="ab" gap="md">
-
 					<StandardFormController
 						control={form.control}
 						name="email"
 						render={({ field, fieldState }) => (
 							<TextInput
+								disabled={!capabilities?.editEnabled}
 								error={fieldState.error?.message}
 								label={t('schools:create.SchoolCreateSectionOrganization.fields.email.label')}
 								onBlur={field.onBlur}
@@ -49,6 +48,7 @@ export function SchoolCreateSectionOrganization() {
 						name="url"
 						render={({ field, fieldState }) => (
 							<TextInput
+								disabled={!capabilities?.editEnabled}
 								error={fieldState.error?.message}
 								label={t('schools:create.SchoolCreateSectionOrganization.fields.url.label')}
 								onBlur={field.onBlur}

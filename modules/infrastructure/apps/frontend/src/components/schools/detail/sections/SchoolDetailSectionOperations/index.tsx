@@ -1,5 +1,6 @@
 'use client';
 
+import { useSchoolsDetailFormContext } from '@/components/schools/detail/SchoolsDetailForm.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
@@ -8,18 +9,17 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
-import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
-
 /* * */
 
-export function SchoolCreateSectionOperations() {
+export function SchoolDetailSectionOperations() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { form } = useSchoolsCreateFormContext();
+
+	const { capabilities, form } = useSchoolsDetailFormContext();
 
 	//
 	// B. Fetch data
@@ -51,6 +51,7 @@ export function SchoolCreateSectionOperations() {
 						render={({ field, fieldState }) => (
 							<Switch
 								checked={field.value ?? false}
+								disabled={!capabilities?.editEnabled}
 								error={fieldState.error?.message}
 								label={t('schools:create.SchoolCreateSectionOperations.fields.is_active')}
 								onChange={e => field.onChange(e.currentTarget.checked)}
@@ -63,6 +64,7 @@ export function SchoolCreateSectionOperations() {
 						name="validation_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
+								disabled={!capabilities?.editEnabled}
 								error={fieldState.error?.message}
 								label={t('schools:create.SchoolCreateSectionOperations.fields.validation_date.label')}
 								onChange={field.onChange}
@@ -79,7 +81,7 @@ export function SchoolCreateSectionOperations() {
 						render={({ field, fieldState }) => (
 							<MultiSelect
 								data={stopsOptions}
-								disabled={stopsLoading}
+								disabled={!capabilities?.editEnabled || stopsLoading}
 								error={fieldState.error?.message}
 								label={t('schools:create.SchoolCreateSectionOperations.fields.stops.label')}
 								onChange={field.onChange}

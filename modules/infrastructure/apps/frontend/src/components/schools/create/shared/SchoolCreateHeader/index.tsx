@@ -3,7 +3,6 @@
 import { CreateButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 import { useSchoolsCreateFormContext } from '../SchoolsCreateForm.context';
-import { useSchoolsCreatePublish } from '../use-schools-create-publish';
 
 /* * */
 
@@ -13,8 +12,7 @@ export function SchoolCreateHeader() {
 	//
 	// A. Setup variables
 
-	const { isDirty, isValid } = useSchoolsCreateFormContext();
-	const { isLoading, publish } = useSchoolsCreatePublish();
+	const { actions, capabilities, status } = useSchoolsCreateFormContext();
 
 	//
 	// B. Render components
@@ -24,9 +22,9 @@ export function SchoolCreateHeader() {
 			<Label size="lg" caps>Nova Escola</Label>
 			<Spacer />
 			<CreateButton
-				isDisabled={!isDirty || !isValid}
-				isLoading={isLoading}
-				onClick={publish}
+				isDisabled={!capabilities?.createEnabled}
+				isLoading={status.isCreating}
+				onClick={actions.create}
 			/>
 		</Toolbar>
 	);

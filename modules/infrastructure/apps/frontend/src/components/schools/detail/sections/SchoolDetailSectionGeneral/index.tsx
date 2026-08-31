@@ -1,6 +1,6 @@
 'use client';
 
-import { useSchoolsCreateFormContext } from '@/components/schools/create/shared/SchoolsCreateForm.context';
+import { useSchoolsDetailFormContext } from '@/components/schools/detail/SchoolsDetailForm.context';
 import { Collapsible, CoordinatesInput, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +10,7 @@ const periodOrganizationOptions = ['semester', 'trimester'] as const;
 
 /* * */
 
-export function SchoolCreateSectionGeneral() {
+export function SchoolDetailSectionGeneral() {
 	//
 
 	//
@@ -18,7 +18,7 @@ export function SchoolCreateSectionGeneral() {
 
 	const { t } = useTranslation();
 
-	const { form } = useSchoolsCreateFormContext();
+	const { capabilities, form } = useSchoolsDetailFormContext();
 
 	//
 	// B. Render components
@@ -35,6 +35,7 @@ export function SchoolCreateSectionGeneral() {
 						name="code"
 						render={({ field }) => (
 							<TextInput
+								disabled={!capabilities?.editEnabled}
 								label={t('schools:create.SchoolCreateSectionGeneral.code.label')}
 								onBlur={field.onBlur}
 								onChange={e => field.onChange(e.currentTarget.value)}
@@ -50,6 +51,7 @@ export function SchoolCreateSectionGeneral() {
 						name="name"
 						render={({ field }) => (
 							<TextInput
+								disabled={!capabilities?.editEnabled}
 								label={t('schools:create.SchoolCreateSectionGeneral.name.label')}
 								onBlur={field.onBlur}
 								onChange={e => field.onChange(e.currentTarget.value)}
@@ -61,6 +63,7 @@ export function SchoolCreateSectionGeneral() {
 					/>
 
 					<CoordinatesInput
+						disabled={!capabilities?.editEnabled}
 						label={t('schools:create.SchoolCreateSectionGeneral.coordinates.label')}
 						onChange={coordinates => form.setValue('coordinates', coordinates, { shouldDirty: true })}
 						value={form.watch('coordinates')}
@@ -71,6 +74,7 @@ export function SchoolCreateSectionGeneral() {
 						name="nature"
 						render={({ field }) => (
 							<TextInput
+								disabled={!capabilities?.editEnabled}
 								label={t('schools:create.SchoolCreateSectionGeneral.nature.label')}
 								onBlur={field.onBlur}
 								onChange={e => field.onChange(e.currentTarget.value)}
@@ -86,6 +90,7 @@ export function SchoolCreateSectionGeneral() {
 						name="grouping"
 						render={({ field }) => (
 							<TextInput
+								disabled={!capabilities?.editEnabled}
 								label={t('schools:create.SchoolCreateSectionGeneral.grouping.label')}
 								onBlur={field.onBlur}
 								onChange={e => field.onChange(e.currentTarget.value)}
@@ -102,6 +107,7 @@ export function SchoolCreateSectionGeneral() {
 						render={({ field, fieldState }) => (
 							<Select
 								clearable={false}
+								disabled={!capabilities?.editEnabled}
 								error={fieldState.error?.message}
 								label={t('schools:create.SchoolCreateSectionGeneral.period_organization.label')}
 								onBlur={field.onBlur}
@@ -118,7 +124,6 @@ export function SchoolCreateSectionGeneral() {
 					/>
 				</Grid>
 			</Section>
-
 		</Collapsible>
 	);
 }

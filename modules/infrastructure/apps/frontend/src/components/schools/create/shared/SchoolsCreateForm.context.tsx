@@ -1,7 +1,11 @@
 'use client';
 
-import { type CreateSchoolDto, CreateSchoolSchema } from '@tmlmobilidade/go-types-operation';
-import { useStandardForm, type UseStandardFormReturnType } from '@tmlmobilidade/ui';
+import { useSchoolsListData } from '@/components/schools/list/use-schools-list-data';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type CreateSchoolDto, CreateSchoolSchema, type School } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleUpdate, useMeContext, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
@@ -12,7 +16,7 @@ const SchoolsCreateSchema = CreateSchoolSchema.extend({
 	stops: CreateSchoolSchema.shape.stops.refine(value => value.length > 0, 'Selecione pelo menos uma paragem'),
 });
 
-const SchoolsCreateFormContext = createContext<undefined | UseStandardFormReturnType<CreateSchoolDto>>(undefined);
+const SchoolsCreateFormContext = createContext<StandardFormContextValue<CreateSchoolDto> | undefined>(undefined);
 
 export function useSchoolsCreateFormContext() {
 	const context = useContext(SchoolsCreateFormContext);
@@ -26,7 +30,17 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 	//
 
 	//
-	// A. Setup form
+	// A. Setup variables
+
+	const router = useRouter();
+
+	const meContext = useMeContext();
+
+	const { mutate } = useSchoolsListData();
+
+	//
+	// B. Setup form
+
 	const formDefaultValues = useMemo<Partial<CreateSchoolDto>>(() => ({
 		address: '',
 		agency_id: '',
@@ -70,8 +84,60 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 		schema: SchoolsCreateSchema,
 	});
 
+	//
+	// C. Handle actions
+
+	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
+		fetchFn: async () => await fetchApiData<School>({ body: form.getValues(), method: 'POST', url: `${API_ROUTES.infrastructure.BASE}/schools` }),
+		onSuccess: ({ data }) => {
+			form.reset();
+			unblock();
+			mutate();
+			if (!data?._id) return;
+			router.push(keepUrlParams(PAGE_ROUTES.infrastructure.SCHOOLS_DETAIL(data._id)));
+		},
+	});
+
+	//
+	// D. Setup flags
+
+	const hasCreatePermission = useMemo(() => {
+		return meContext?.actions.hasPermission(PermissionCatalog.all.schools.scope, PermissionCatalog.all.schools.actions.create);
+	}, [meContext]);
+
+	const { createEnabled, editEnabled } = useStandardFormCapabilities({
+		create: {
+			hasPermission: hasCreatePermission,
+			isCreating: isCreating,
+		},
+		form: {
+			isDirty,
+			isValid,
+		},
+	});
+
+	//
+	// E. Return context value
+
+	const stateValue: StandardFormContextValue<CreateSchoolDto> = useMemo(() => ({
+		actions: {
+			create: handleCreate,
+		},
+		capabilities: {
+			createEnabled,
+			editEnabled,
+		},
+		form,
+		isDirty,
+		isValid,
+		status: {
+			isCreating,
+		},
+		unblock,
+	}), [createEnabled, editEnabled, form, handleCreate, isCreating, unblock, isDirty, isValid]);
+
 	return (
-		<SchoolsCreateFormContext.Provider value={{ form, isDirty, isValid, unblock }}>
+		<SchoolsCreateFormContext.Provider value={stateValue}>
 			{children}
 		</SchoolsCreateFormContext.Provider>
 	);

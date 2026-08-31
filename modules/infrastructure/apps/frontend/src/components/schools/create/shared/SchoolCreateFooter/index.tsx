@@ -13,10 +13,10 @@ export function SchoolCreateFooter() {
 	//
 	// A. Setup variables
 
-	const { form: schoolsCreateForm } = useSchoolsCreateFormContext();
+	const { form } = useSchoolsCreateFormContext();
 
-	const agencyIdValue = useStandardFormWatch({ control: schoolsCreateForm.control, name: 'agency_id' });
-	const publishStatusValue = useStandardFormWatch({ control: schoolsCreateForm.control, name: 'publish_status' });
+	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
+	const publishStatusValue = useStandardFormWatch({ control: form.control, name: 'publish_status' });
 
 	//
 	// B. Render components
@@ -30,7 +30,7 @@ export function SchoolCreateFooter() {
 				value={agencyIdValue}
 			>
 				<PublishStatusDisplay
-					onChange={value => schoolsCreateForm.setValue('publish_status', value, { shouldDirty: true })}
+					onChange={value => form.setValue('publish_status', value, { shouldDirty: true })}
 					value={publishStatusValue}
 				/>
 			</HasPermission>

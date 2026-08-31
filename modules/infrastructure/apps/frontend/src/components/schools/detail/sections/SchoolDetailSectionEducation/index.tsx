@@ -1,6 +1,6 @@
 'use client';
 
-import { useSchoolsCreateFormContext } from '@/components/schools/create/shared/SchoolsCreateForm.context';
+import { useSchoolsDetailFormContext } from '@/components/schools/detail/SchoolsDetailForm.context';
 import { Collapsible, Grid, Section, StandardFormController, Switch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -21,14 +21,15 @@ const educationFields = [
 
 /* * */
 
-export function SchoolCreateSectionEducation() {
+export function SchoolDetailSectionEducation() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { form } = useSchoolsCreateFormContext();
+
+	const { capabilities, form } = useSchoolsDetailFormContext();
 
 	//
 	// B. Render components
@@ -48,6 +49,7 @@ export function SchoolCreateSectionEducation() {
 							render={({ field, fieldState }) => (
 								<Switch
 									checked={field.value ?? false}
+									disabled={!capabilities?.editEnabled}
 									error={fieldState.error?.message}
 									label={t(`schools:create.SchoolCreateSectionEducation.fields.${name}`)}
 									onChange={e => field.onChange(e.currentTarget.checked)}

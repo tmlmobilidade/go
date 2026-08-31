@@ -1,15 +1,14 @@
 /* * */
 
 import { SchoolDetail } from '@/components/schools/detail/SchoolDetail';
-import { SchoolDetailContextProvider } from '@/components/schools/detail/SchoolDetail.context';
+import { SchoolsDetailFormContextProvider } from '@/components/schools/detail/SchoolsDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ schoolId: string }> }) {
-	const { schoolId } = await params;
+export default async function Page() {
 	return (
-		<SchoolDetailContextProvider schoolId={schoolId}>
+		<SchoolsDetailFormContextProvider>
 			<SchoolDetail />
-		</SchoolDetailContextProvider>
+		</SchoolsDetailFormContextProvider>
 	);
 }

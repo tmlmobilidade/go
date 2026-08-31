@@ -1,20 +1,22 @@
 'use client';
 
-import { useSchoolsCreateFormContext } from '@/components/schools/create/shared/SchoolsCreateForm.context';
+import { useSchoolsDetailFormContext } from '@/components/schools/detail/SchoolsDetailForm.context';
 import { Collapsible, Grid, Section, Select, StandardFormController, TextInput, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export function SchoolCreateSectionAdministrative() {
+export function SchoolDetailSectionAdministrative() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { form } = useSchoolsCreateFormContext();
+
+	const { capabilities, form } = useSchoolsDetailFormContext();
+
 	const locationsContext = useLocationsContext();
 
 	//
@@ -39,9 +41,6 @@ export function SchoolCreateSectionAdministrative() {
 		form.setValue('district_name', district?.name ?? '', { shouldDirty: true });
 	};
 
-	// IDs stay in form state; users select names only.
-	// Region has no locations endpoint yet, so region_id remains backend-populated.
-
 	//
 	// D. Render components
 
@@ -58,7 +57,7 @@ export function SchoolCreateSectionAdministrative() {
 						render={({ field, fieldState }) => (
 							<Select
 								data={municipalityOptions}
-								disabled={locationsContext.flags.is_loading}
+								disabled={!capabilities?.editEnabled || locationsContext.flags.is_loading}
 								error={fieldState.error?.message}
 								label={t('schools:create.SchoolCreateSectionAdministrative.fields.municipality_name.label')}
 								onBlur={field.onBlur}
@@ -88,6 +87,7 @@ export function SchoolCreateSectionAdministrative() {
 						name="region_name"
 						render={({ field, fieldState }) => (
 							<TextInput
+								disabled={!capabilities?.editEnabled}
 								error={fieldState.error?.message}
 								label={t('schools:create.SchoolCreateSectionAdministrative.fields.region_name.label')}
 								onBlur={field.onBlur}
