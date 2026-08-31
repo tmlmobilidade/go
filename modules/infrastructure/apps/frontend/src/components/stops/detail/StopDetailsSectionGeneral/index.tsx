@@ -6,7 +6,7 @@ import { StopDetailNamesModal } from '@/components/stops/detail/StopDetailNames/
 import { StopDetailTts } from '@/components/stops/detail/StopDetailTts';
 import { Translations } from '@/lib/translations';
 import { IconEdit } from '@tabler/icons-react';
-import { LifecycleStatusSchema } from '@tmlmobilidade/types';
+import { LifecycleStatusValues } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, Grid, Section, SegmentedControl, useMeContext, ValueDisplay } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -28,7 +28,7 @@ export function StopDetailsSectionGeneral() {
 	//
 	// B. Transform data
 
-	const lifecycleStatusItems = LifecycleStatusSchema.options.map(value => ({
+	const lifecycleStatusItems = LifecycleStatusValues.map(value => ({
 		label: Translations.LIFECYCLE_STATUS[value],
 		value: value,
 	}));

@@ -20,7 +20,6 @@ export function StopDetailsSectionEquipment() {
 							key={value}
 							label={Translations.FACILITIES[value]}
 							value={value}
-							proposeable
 						/>
 					))}
 				</Grid>
