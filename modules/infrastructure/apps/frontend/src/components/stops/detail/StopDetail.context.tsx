@@ -4,8 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-organize';
 import { type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchApiData, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -95,28 +94,28 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	// E. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_GET(stopId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.infrastructure.STOPS_UPDATE(stopId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			stopMutate(updatedItem);
+			stopMutate(data);
 			allStopsMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_GET(stopId), 'DELETE'),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Stop>({ method: 'DELETE', url: API_ROUTES.infrastructure.STOPS_DELETE(stopId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			stopMutate(updatedItem);
+			stopMutate(data);
 			allStopsMutate();
 		},
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_GET_LOCK(stopId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Stop>({ method: 'PUT', url: API_ROUTES.infrastructure.STOPS_LOCK(stopId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			stopMutate(updatedItem);
+			stopMutate(data);
 			allStopsMutate();
 		},
 	});

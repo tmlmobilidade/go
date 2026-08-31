@@ -2,18 +2,18 @@
 
 import { IconEye, IconRouteOff } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Event } from '@tmlmobilidade/types';
+import { type Pattern } from '@tmlmobilidade/go-types-offer';
 import { Menu, MenuItem, MenuList, MenuNoContent } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface StopDetailPatternsMenuProps {
-	patterns?: Event['associated_patterns']
+	patterns?: Pattern[]
 }
 
 /* * */
 
-function StopDetailPatternsMenuItem({ item: pattern }: { item: Event['associated_patterns'][number] }) {
+function StopDetailPatternsMenuItem({ item: pattern }: { item: Pattern }) {
 	return (
 		<MenuItem
 			description={pattern.headsign}
