@@ -52,7 +52,12 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	// D. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(roleId) }),
+		fetchFn: async () => {
+			const values = form.getValues();
+			const parsed = UpdateRoleSchema.safeParse(form.getValues());
+			console.log(values.permissions[118]);
+			return await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(roleId) });
+		},
 		onSuccess: (response) => {
 			form.reset(response.data);
 			rolesDetailMutate(response);
