@@ -3,8 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Fare, type UpdateFareDto, UpdateFareSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -59,16 +58,16 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL(fareId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Fare>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.FARES_DETAIL(fareId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			fareMutate(updatedItem);
+			fareMutate(data);
 			faresListMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL(fareId), 'DELETE', fareData),
+		fetchFn: async () => await fetchApiData<Fare>({ body: fareData, method: 'DELETE', url: API_ROUTES.offer.FARES_DETAIL(fareId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			faresListMutate();
@@ -77,10 +76,10 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL_LOCK(fareId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Fare>({ url: API_ROUTES.offer.FARES_DETAIL_LOCK(fareId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			fareMutate(updatedItem);
+			fareMutate(data);
 			faresListMutate();
 		},
 	});

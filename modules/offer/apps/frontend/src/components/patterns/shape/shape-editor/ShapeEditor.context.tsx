@@ -5,9 +5,9 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { buildRoutePreviewModel, buildRoutePreviewRecalculationPlan, composeRoutePreviewResponse, mergeRoutePreviewRange, type RoutePreviewAnchor, type RoutePreviewPoint, type RoutePreviewResponse } from '@/utils/route-preview';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { Path, PopulatedPath, Shape } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type Stop } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';

@@ -35,16 +35,16 @@ export function ShapeEditorFooter() {
 				/>
 
 				<IconButton
-					disabled={!stopsEditorContext.flags.canUndo}
 					icon={<IconArrowBackUp size={18} />}
+					isDisabled={!stopsEditorContext.flags.canUndo}
 					onClick={() => stopsEditorContext.actions.undo()}
 					tooltip="Desfazer"
 					variant="primary"
 				/>
 
 				<IconButton
-					disabled={!stopsEditorContext.flags.canRedo}
 					icon={<IconArrowForwardUp size={18} />}
+					isDisabled={!stopsEditorContext.flags.canRedo}
 					onClick={() => stopsEditorContext.actions.redo()}
 					tooltip="Refazer"
 					variant="primary"

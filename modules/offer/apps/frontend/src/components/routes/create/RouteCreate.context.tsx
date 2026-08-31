@@ -3,8 +3,7 @@
 import { closeCreateRouteModal } from '@/components/routes/create/RouteCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateRouteDto, CreateRouteSchema, type LineNormalized, type Route } from '@tmlmobilidade/go-types-offer';
-import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -59,12 +58,12 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_LIST, 'POST', form.getValues()),
-		onSuccess: (newItem) => {
+		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.ROUTES_LIST }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			lineMutate();
 			closeCreateRouteModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.ROUTE_DETAIL(lineId, newItem._id)));
+			router.push(keepUrlParams(PAGE_ROUTES.offer.ROUTE_DETAIL(lineId, data._id)));
 		},
 	});
 
