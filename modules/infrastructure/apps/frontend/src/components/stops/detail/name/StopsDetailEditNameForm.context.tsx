@@ -1,9 +1,11 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type StopsUpdateNameRequest, StopsUpdateNameRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { type StandardFormContextValue, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleUpdate } from '@tmlmobilidade/ui';
-import { createContext, Dispatch, type PropsWithChildren, SetStateAction, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useStopsListData } from '../../list/use-stops-list-data';
 import { useStopsDetailData } from '../use-stops-detail-data';
@@ -12,22 +14,7 @@ import { closeStopsDetailEditNameModal } from './StopsDetailEditName.modal';
 
 /* * */
 
-interface StopsDetailEditNameFormContextValue {
-	actions: {
-		updateName: () => void
-	}
-	form: {
-		nameValue: string
-		setNameValue: Dispatch<SetStateAction<string>>
-	}
-	status: {
-		isLoading: boolean
-	}
-}
-
-/* * */
-
-const StopsDetailEditNameFormContext = createContext<StopsDetailEditNameFormContextValue | undefined>(undefined);
+const StopsDetailEditNameFormContext = createContext<StandardFormContextValue<StopsUpdateNameRequest> | undefined>(undefined);
 
 export function useStopsDetailEditNameFormContext() {
 	const context = useContext(StopsDetailEditNameFormContext);
@@ -47,40 +34,70 @@ export function StopsDetailEditNameFormContextProvider({ children }: PropsWithCh
 
 	const { mutate: stopsListMutate } = useStopsListData();
 
-	const { data: stopData, mutate: stopsDetailMutate } = useStopsDetailData();
+	const { data: stopData, isLoading: stopDataLoading, mutate: stopsDetailMutate } = useStopsDetailData();
 
 	//
 	// B. Setup form
 
-	const [nameValue, setNameValue] = useState<string>(stopData?.name);
+	const currentNameValue = useMemo<StopsUpdateNameRequest>(() => ({
+		name: stopData?.name,
+	}), [stopData?.name]);
+
+	const { form, isDirty, isValid, unblock } = useStandardForm<StopsUpdateNameRequest, typeof StopsUpdateNameRequestSchema>({
+		apiData: currentNameValue,
+		schema: StopsUpdateNameRequestSchema,
+	});
 
 	//
 	// C. Handle actions
 
-	const { action: handleUpdateName, isLoading: isUpdatingName } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Stop>({ body: { name: nameValue }, method: 'PUT', url: API_ROUTES.infrastructure.STOPS_UPDATE_NAME(stopId) }),
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
+		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.infrastructure.STOPS_UPDATE_NAME(stopId) }),
 		onSuccess: (response) => {
-			stopsListMutate();
+			form.reset(response.data);
 			stopsDetailMutate(response);
+			stopsListMutate();
+			unblock();
 			closeStopsDetailEditNameModal();
+		},
+	});
+
+	//
+	// D. Setup flags
+
+	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
+		form: {
+			isDirty,
+			isValid,
+		},
+		loading: {
+			isLoading: stopDataLoading,
+		},
+		update: {
+			isUpdating: isUpdating,
 		},
 	});
 
 	//
 	// E. Return state
 
-	const stateValue: StopsDetailEditNameFormContextValue = useMemo(() => ({
+	const stateValue: StandardFormContextValue<StopsUpdateNameRequest> = useMemo(() => ({
 		actions: {
-			updateName: handleUpdateName,
+			update: handleUpdate,
 		},
-		form: {
-			nameValue,
-			setNameValue,
+		capabilities: {
+			editEnabled,
+			updateEnabled,
 		},
+		form,
+		isDirty,
+		isValid,
 		status: {
-			isLoading: isUpdatingName,
+			isLoading: stopDataLoading,
+			isUpdating,
 		},
-	}), [handleUpdateName, isUpdatingName, nameValue]);
+		unblock,
+	}), [editEnabled, form, handleUpdate, isUpdating, stopDataLoading, unblock, updateEnabled, isDirty, isValid]);
 
 	return (
 		<StopsDetailEditNameFormContext.Provider value={stateValue}>

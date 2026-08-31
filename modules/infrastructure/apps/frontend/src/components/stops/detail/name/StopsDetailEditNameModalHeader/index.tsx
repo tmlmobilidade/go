@@ -13,20 +13,29 @@ export function StopsDetailEditNameModalHeader() {
 	//
 	// A. Setup variables
 
-	const { actions, status } = useStopsDetailEditNameFormContext();
+	const { actions, form, status, unblock } = useStopsDetailEditNameFormContext();
+
+	//
+	// D. Handle actions
+
+	const handleClose = () => {
+		form.reset();
+		unblock();
+		closeStopsDetailEditNameModal();
+	};
 
 	//
 	// D. Render components
 
 	return (
 		<Toolbar>
-			<CloseButton onClick={closeStopsDetailEditNameModal} type="close" />
+			<CloseButton onClick={handleClose} type="close" />
 			<Label size="md" caps singleLine>Alterar nome da paragem</Label>
 			<Spacer />
 			<Button
 				label="Alterar nome"
-				loading={status.isLoading}
-				onClick={actions.updateName}
+				loading={status.isUpdating}
+				onClick={actions.update}
 			/>
 		</Toolbar>
 	);

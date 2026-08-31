@@ -1,6 +1,6 @@
 'use client';
 
-import { Grid, Pane, Section, TextInput } from '@tmlmobilidade/ui';
+import { Grid, Pane, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 
 import { useStopsDetailEditNameFormContext } from '../StopsDetailEditNameForm.context';
 import { StopsDetailEditNameModalHeader } from '../StopsDetailEditNameModalHeader';
@@ -23,13 +23,22 @@ export function StopsDetailEditNameModal() {
 			<Section>
 
 				<Grid columns="a" gap="md">
-					<TextInput
-						label="Nome Único da Paragem"
-						onChange={event => form.setNameValue(event.target.value)}
-						value={form.nameValue ?? ''}
-						variant="bordered"
+					<StandardFormController
+						control={form.control}
+						name="name"
+						render={({ field, fieldState }) => (
+							<TextInput
+								disabled={field.disabled}
+								error={fieldState.error?.message}
+								label="Nome Único da Paragem"
+								onChange={event => field.onChange(event.target.value)}
+								value={field.value ?? ''}
+								variant="bordered"
+							/>
+						)}
 					/>
 				</Grid>
+
 				<Grid columns="ab" gap="md">
 					{/* <TextInput
 						label="Nome Curto"

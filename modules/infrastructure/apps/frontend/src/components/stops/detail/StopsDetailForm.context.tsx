@@ -49,7 +49,7 @@ export function StopsDetailFormContextProvider({ children }: PropsWithChildren) 
 	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.infrastructure.STOPS_UPDATE(String(stopId)) }),
+		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.infrastructure.STOPS_UPDATE(stopId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
 			stopsDetailMutate(response);

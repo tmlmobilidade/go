@@ -7,7 +7,7 @@ import { StopsDetailEditNameModal } from './StopsDetailEditNameModal';
 
 /* * */
 
-const MODAL_ID = 'stops-detail-section-general-edit-name-modal';
+const MODAL_ID = 'stops-detail-edit-name-modal';
 
 /* * */
 
