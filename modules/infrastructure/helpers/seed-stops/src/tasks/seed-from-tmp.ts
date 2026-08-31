@@ -50,7 +50,7 @@ export async function seedFromTmp() {
 
 		for (const [index, originalStop] of ut1StopsData.data.entries()) {
 			console.log(`Processing stop ${index + 1}/${ut1StopsData.data.length}: ${originalStop.stop_name} (${originalStop.stop_id})`);
-			const newStopId = await fetchData<StopId>(API_ROUTES.infrastructure.STOPS_VALID_ID);
+			const newStopId = await fetchData<StopId>(API_ROUTES.infrastructure.STOPS_GET_VALID_ID);
 			console.log(`Generated new stop ID`, newStopId.data);
 			const stop = StopSchema.safeParse({
 				_id: newStopId.data,

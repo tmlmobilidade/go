@@ -1,6 +1,6 @@
 'use client';
 
-import { StopConnectionSchema } from '@tmlmobilidade/types';
+import { StopConnectionValues } from '@tmlmobilidade/go-types-infrastructure';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
@@ -10,7 +10,7 @@ import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobil
 export function useStopsListFilterConnections(): UseFilterStateListReturnType {
 	return useFilterStateList(
 		'connections',
-		StopConnectionSchema.options,
-		StopConnectionSchema.options.map(item => ({ label: item, value: item })),
+		[...StopConnectionValues],
+		StopConnectionValues.map(item => ({ label: item, value: item })),
 	);
 }
