@@ -2,9 +2,8 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-organize';
-import { CreateStopDto, Stop } from '@tmlmobilidade/types';
-import { CreateContextStateTemplate, keepUrlParams, useStandardForm, useStandardFormWatch, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type CreateStopDto, type Stop, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
+import { CreateContextStateTemplate, fetchApiData, keepUrlParams, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType, useStandardForm, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -45,7 +44,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Setup form
 
-	const { form, unblock } = useStandardForm<CreateStopDto>({
+	const { form, unblock } = useStandardForm<CreateStopDto, typeof StopSchema>({
 		// schema: CreateStopSchema,
 	});
 
@@ -106,24 +105,30 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const steps = useMemo(() => [
 		{
 			id: 'location',
-			isValid: () => !!form.getValues('latitude') && !!form.getValues('longitude') && !!form.getValues('district_id') && !!form.getValues('municipality_id') && !!form.getValues('parish_id'),
+			isEnabled: true,
+			isValid: !!form.getValues('latitude') && !!form.getValues('longitude') && !!form.getValues('district_id') && !!form.getValues('municipality_id') && !!form.getValues('parish_id'),
 			isVisible: true,
 			label: 'Localização',
 			order: 0,
+			validate: () => !!form.getValues('latitude') && !!form.getValues('longitude') && !!form.getValues('district_id') && !!form.getValues('municipality_id') && !!form.getValues('parish_id'),
 		},
 		{
 			id: 'names',
-			isValid: () => !!form.getValues('name') && !!form.getValues('short_name') && !!form.getValues('tts_name'),
+			isEnabled: true,
+			isValid: !!form.getValues('name') && !!form.getValues('short_name') && !!form.getValues('tts_name'),
 			isVisible: true,
 			label: 'Nomes',
 			order: 1,
+			validate: () => !!form.getValues('name') && !!form.getValues('short_name') && !!form.getValues('tts_name'),
 		},
 		{
 			id: 'summary',
-			isValid: () => true,
+			isEnabled: true,
+			isValid: true,
 			isVisible: true,
 			label: 'Resumo',
 			order: 2,
+			validate: () => true,
 		},
 	], [form]);
 
@@ -133,12 +138,12 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// F. Submit action
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_LIST, 'POST', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'POST', url: API_ROUTES.infrastructure.STOPS_CREATE }),
+		onSuccess: ({ data }) => {
 			form.reset();
 			unblock();
 			allStopsMutate();
-			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(updatedItem._id.toString())));
+			if (data?._id) router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(String(data._id))));
 			closeStopCreateModal();
 		},
 	});

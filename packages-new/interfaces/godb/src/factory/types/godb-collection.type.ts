@@ -25,7 +25,7 @@ export interface GoDbCollection<T extends Document> {
 
 	distinct<Key extends keyof T>(key: Key, filter?: Filter<T>): Promise<Array<T[Key]>>
 
-	// exists<K extends keyof T>(key: K, value: T[K]): Promise<boolean>
+	exists<Key extends keyof T>(key: Key, value: T[Key], options?: MinimalOptions): Promise<boolean>
 
 	// existsById(id: string): Promise<boolean>
 

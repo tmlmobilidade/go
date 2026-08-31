@@ -1,4 +1,4 @@
-import { type Location } from '@tmlmobilidade/types';
+import { type Location } from '@tmlmobilidade/go-types-locations';
 
 /* * */
 

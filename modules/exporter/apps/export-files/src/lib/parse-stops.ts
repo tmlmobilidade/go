@@ -1,5 +1,5 @@
 import { type StopExportData } from '@tmlmobilidade/go-types-downloads';
-import { type Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 
 export type StopExportCsvData = Omit<StopExportData, 'flags'> & {
 	municipality_name: null | string

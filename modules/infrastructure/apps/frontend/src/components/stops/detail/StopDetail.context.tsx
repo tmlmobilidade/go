@@ -2,9 +2,9 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-organize';
-import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/go-types-infrastructure';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { fetchApiData, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -69,7 +69,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	// B. Fetch data
 
 	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.infrastructure.STOPS_LIST);
-	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(stopId));
+	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.infrastructure.STOPS_GET(stopId));
 
 	//
 	// C. Setup form
@@ -94,28 +94,28 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	// E. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(stopId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.infrastructure.STOPS_UPDATE(stopId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			stopMutate(updatedItem);
+			stopMutate(data);
 			allStopsMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(stopId), 'DELETE'),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Stop>({ method: 'DELETE', url: API_ROUTES.infrastructure.STOPS_DELETE(stopId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			stopMutate(updatedItem);
+			stopMutate(data);
 			allStopsMutate();
 		},
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL_LOCK(stopId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Stop>({ method: 'PUT', url: API_ROUTES.infrastructure.STOPS_LOCK(stopId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			stopMutate(updatedItem);
+			stopMutate(data);
 			allStopsMutate();
 		},
 	});

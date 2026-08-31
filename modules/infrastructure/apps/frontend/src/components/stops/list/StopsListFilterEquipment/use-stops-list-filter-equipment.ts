@@ -1,6 +1,6 @@
 'use client';
 
-import { StopEquipmentSchema } from '@tmlmobilidade/types';
+import { StopEquipmentValues } from '@tmlmobilidade/go-types-infrastructure';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
@@ -10,7 +10,7 @@ import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobil
 export function useStopsListFilterEquipment(): UseFilterStateListReturnType {
 	return useFilterStateList(
 		'equipment',
-		StopEquipmentSchema.options,
-		StopEquipmentSchema.options.map(item => ({ label: item, value: item })),
+		[...StopEquipmentValues],
+		StopEquipmentValues.map(item => ({ label: item, value: item })),
 	);
 }

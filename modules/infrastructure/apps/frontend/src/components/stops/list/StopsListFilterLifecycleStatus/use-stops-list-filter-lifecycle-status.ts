@@ -1,6 +1,6 @@
 'use client';
 
-import { LifecycleStatusSchema } from '@tmlmobilidade/types';
+import { LifecycleStatusValues } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
@@ -10,7 +10,7 @@ import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobil
 export function useStopsListFilterLifecycleStatus(): UseFilterStateListReturnType {
 	return useFilterStateList(
 		'lifecycle_status',
-		LifecycleStatusSchema.options,
-		LifecycleStatusSchema.options.map(item => ({ label: item, value: item })),
+		[...LifecycleStatusValues],
+		LifecycleStatusValues.map(item => ({ label: item, value: item })),
 	);
 }

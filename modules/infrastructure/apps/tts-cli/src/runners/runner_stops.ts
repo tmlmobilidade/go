@@ -61,7 +61,7 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 		updated_by: 'system',
 	});
 
-	await goDb.infrastructure.stops.updateById(stopData._id, { tts_hash: hash }, { forceIfLocked: true });
+	await goDb.infrastructure.stops.updateById(stopData._id, { tts_hash: hash });
 }
 
 /* * */

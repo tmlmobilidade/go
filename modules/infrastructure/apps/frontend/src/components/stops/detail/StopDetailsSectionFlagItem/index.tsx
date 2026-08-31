@@ -1,9 +1,9 @@
 'use client';
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { IconEqual, IconEqualNot } from '@tabler/icons-react';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Checkbox, DeleteButton, Grid, MultiSelect, Section, Surface, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { Checkbox, DeleteButton, Grid, MultiSelect, Section, Surface, TextInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -25,7 +25,7 @@ export function StopDetailsSectionFlagItem({ index }: StopDetailsSectionFlagItem
 	//
 	// B. Transform data
 
-	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
+	const { options: agenciesOptions } = useAgenciesData();
 
 	//
 	// C. Transform data

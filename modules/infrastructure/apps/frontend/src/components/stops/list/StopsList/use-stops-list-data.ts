@@ -3,8 +3,8 @@
 import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Stop } from '@tmlmobilidade/types';
 import { type MapOverlayMultipleStopsDataProps, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useMemo } from 'react';

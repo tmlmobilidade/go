@@ -2,7 +2,8 @@
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Translations } from '@/lib/translations';
-import { AvailabilityStatusSchema, StopRoadTypeSchema } from '@tmlmobilidade/types';
+import { StopRoadTypeSchema } from '@tmlmobilidade/go-types-infrastructure';
+import { AvailabilityStatusValues } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, Grid, Section, Select, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -18,7 +19,7 @@ export function StopDetailsSectionInfrastructure() {
 	//
 	// B. Transform data
 
-	const availabilityStatusOptions = AvailabilityStatusSchema.options.map(value => ({
+	const availabilityStatusOptions = AvailabilityStatusValues.map(value => ({
 		label: Translations.AVAILABILITY_STATUS[value],
 		value: value,
 	}));

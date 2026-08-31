@@ -1,4 +1,5 @@
-import { Agency, HasPermissionResourceArgs, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type Agency } from '@tmlmobilidade/go-types-core';
+import { type HasPermissionResourceArgs, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 

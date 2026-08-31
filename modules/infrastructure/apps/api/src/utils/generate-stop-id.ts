@@ -2,7 +2,7 @@
 
 import { deletedCmStops } from '@/lib/deleted-cm-stops.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type StopId, validateStopIdStructure } from '@tmlmobilidade/types';
+import { type StopId, validateStopIdStructure } from '@tmlmobilidade/go-types-infrastructure';
 
 /**
  * Generates a new unique Stop ID that does not conflict
@@ -24,7 +24,7 @@ export async function generateStopId(): Promise<StopId> {
 		// Generate a random Stop ID between 100000 and 999999
 		newStopId = Math.floor(Math.random() * 900_000) + 100_000 as StopId;
 		// Check if the generated Stop ID already exists
-		const isExistingId = await goDb.infrastructure.stops.existsById(newStopId);
+		const isExistingId = await goDb.infrastructure.stops.exists('_id', newStopId);
 		// Check if the generated Stop ID does not conflict with a legacy ID
 		const isExistingLegacyId = await goDb.infrastructure.stops.exists('legacy_id', String(newStopId));
 		// Check if the generated Stop ID is not in the list of deleted CM Stops

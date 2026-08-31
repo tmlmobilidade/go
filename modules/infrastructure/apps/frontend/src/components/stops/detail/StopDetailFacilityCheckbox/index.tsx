@@ -1,28 +1,26 @@
 /* * */
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { StopFacilitySchema } from '@tmlmobilidade/types';
-import { Checkbox, ProposedChangesWrapper } from '@tmlmobilidade/ui';
+import { StopFacilityValues } from '@tmlmobilidade/go-types-infrastructure';
+import { Checkbox } from '@tmlmobilidade/ui';
 import React from 'react';
 
 /* * */
 
 interface StopDetailFacilityCheckboxProps {
 	label: string
-	proposeable?: boolean
-	value: typeof StopFacilitySchema.options[number]
+	value: typeof StopFacilityValues[number]
 }
 
 /* * */
 
-export function StopDetailFacilityCheckbox({ label, proposeable, value }: StopDetailFacilityCheckboxProps) {
+export function StopDetailFacilityCheckbox({ label, value }: StopDetailFacilityCheckboxProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-	const stopId = stopDetailContext.data.stop?._id;
 
 	//
 	// B. Render components
@@ -40,7 +38,7 @@ export function StopDetailFacilityCheckbox({ label, proposeable, value }: StopDe
 		/>
 	);
 
-	return proposeable ? <ProposedChangesWrapper inputName={value} relatedId={String(stopId)} scope="stop">{checkbox}</ProposedChangesWrapper> : checkbox;
+	return checkbox;
 
 	//
 }

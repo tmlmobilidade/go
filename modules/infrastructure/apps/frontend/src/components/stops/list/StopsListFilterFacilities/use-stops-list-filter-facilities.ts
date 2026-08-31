@@ -1,6 +1,6 @@
 'use client';
 
-import { StopFacilitySchema } from '@tmlmobilidade/types';
+import { StopFacilityValues } from '@tmlmobilidade/go-types-infrastructure';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
@@ -10,7 +10,7 @@ import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobil
 export function useStopsListFilterFacilities(): UseFilterStateListReturnType {
 	return useFilterStateList(
 		'facilities',
-		StopFacilitySchema.options,
-		StopFacilitySchema.options.map(item => ({ label: item, value: item })),
+		[...StopFacilityValues],
+		StopFacilityValues.map(item => ({ label: item, value: item })),
 	);
 }

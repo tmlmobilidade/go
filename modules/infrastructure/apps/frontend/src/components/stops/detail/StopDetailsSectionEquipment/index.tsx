@@ -2,7 +2,7 @@
 
 import { StopDetailFacilityCheckbox } from '@/components/stops/detail/StopDetailFacilityCheckbox';
 import { Translations } from '@/lib/translations';
-import { StopFacilitySchema } from '@tmlmobilidade/types';
+import { StopFacilityValues } from '@tmlmobilidade/go-types-infrastructure';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
@@ -15,12 +15,11 @@ export function StopDetailsSectionEquipment() {
 		>
 			<Section>
 				<Grid columns="abcd" gap="md">
-					{StopFacilitySchema.options.map(value => (
+					{StopFacilityValues.map(value => (
 						<StopDetailFacilityCheckbox
 							key={value}
 							label={Translations.FACILITIES[value]}
 							value={value}
-							proposeable
 						/>
 					))}
 				</Grid>

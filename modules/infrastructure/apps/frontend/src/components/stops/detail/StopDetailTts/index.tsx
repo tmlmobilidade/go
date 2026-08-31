@@ -3,7 +3,7 @@
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Attachment } from '@tmlmobilidade/types';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
 import { Button } from '@tmlmobilidade/ui';
 import { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
@@ -19,7 +19,7 @@ export function StopDetailTts() {
 	const stopDetailContext = useStopDetailContext();
 	const stopId = stopDetailContext.data.stop?._id;
 
-	const { data: stopTtsData, error: stopTtsError, isLoading: stopTtsLoading } = useSWR<Attachment, Error>(API_ROUTES.infrastructure.STOPS_TTS(String(`tts-${stopId}`)));
+	const { data: stopTtsData, error: stopTtsError, isLoading: stopTtsLoading } = useSWR<Attachment, Error>(API_ROUTES.infrastructure.STOPS_GET_TTS(String(`tts-${stopId}`)));
 
 	const audioUrl = stopTtsData?.url;
 	const audioRef = useRef<HTMLAudioElement | null>(null);
