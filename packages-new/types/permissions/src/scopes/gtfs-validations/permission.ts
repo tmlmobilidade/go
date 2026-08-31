@@ -10,7 +10,7 @@ import { GtfsValidationsPermissionScopeSchema } from './scope.js';
 
 export const GtfsValidationsPermissionSchema = z.object({
 	action: GtfsValidationsPermissionActionsSchema,
-	resources: GtfsValidationsPermissionResourcesSchema.default({}),
+	resources: GtfsValidationsPermissionResourcesSchema.default({ agency_ids: [] }),
 	scope: GtfsValidationsPermissionScopeSchema,
 });
 
