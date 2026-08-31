@@ -1,15 +1,14 @@
 /* * */
 
-import { StopDetail } from '@/components/stops/detail/StopDetail';
-import { StopDetailContextProvider } from '@/components/stops/detail/StopDetail.context';
+import { StopsDetail } from '@/components/stops/detail/StopsDetail';
+import { StopsDetailFormContextProvider } from '@/components/stops/detail/StopsDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<StopDetailContextProvider stopId={id}>
-			<StopDetail />
-		</StopDetailContextProvider>
+		<StopsDetailFormContextProvider>
+			<StopsDetail />
+		</StopsDetailFormContextProvider>
 	);
 }
