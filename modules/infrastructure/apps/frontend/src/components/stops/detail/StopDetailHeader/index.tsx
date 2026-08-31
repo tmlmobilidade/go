@@ -4,7 +4,7 @@ import { useStopDetailContext } from '@/components/stops/detail/StopDetail.conte
 import { IconWorldShare } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, HasPermission, IconButton, IdTag, keepUrlParams, LockButton, UpdateButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IconButton, IdTag, keepUrlParams, LockButton, Spacer, Tag, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import { StopDetailPatternsMenu } from '../StopDetailPatternsMenu';

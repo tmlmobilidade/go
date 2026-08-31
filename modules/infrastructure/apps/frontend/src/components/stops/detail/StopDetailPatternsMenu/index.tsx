@@ -8,7 +8,13 @@ import { Menu, MenuItem, MenuList, MenuNoContent } from '@tmlmobilidade/ui';
 /* * */
 
 interface StopDetailPatternsMenuProps {
-	patterns?: Pattern[]
+	patterns?: {
+		_id: string
+		code: string
+		headsign: string
+		line_id: string
+		route_id: string
+	}[]
 }
 
 /* * */
