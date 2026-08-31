@@ -1,5 +1,11 @@
 {
 	"create": {
+		"SchoolCreate": {
+			"no_permission": "No tiene permiso para crear escuelas."
+		},
+		"SchoolCreateHeader": {
+			"title": "Nueva escuela"
+		},
 		"SchoolCreateSectionAddress": {
 			"description": "Dirección y ubicación de la escuela.",
 			"fields": {
@@ -135,14 +141,36 @@
 			"title": {
 				"label": "Título"
 			}
+		},
+		"validation": {
+			"email": "Correo electrónico no válido",
+			"postal_code": "Código postal no válido",
+			"stops": "Seleccione al menos una parada"
+		}
+	},
+	"detail": {
+		"SchoolDetailFootnote": {
+			"at": "el",
+			"created_by": "Escuela creada por",
+			"not_available": "N/D"
+		},
+		"SchoolDetailHeader": {
+			"delete": {
+				"confirm_message": "¿Está seguro de que desea eliminar esta escuela? Esta acción es irreversible.",
+				"confirm_title": "Eliminar escuela"
+			}
 		}
 	},
 	"list": {
 		"SchoolsList": {
 			"columns": {
+				"agency_id": {
+					"label": "Operador"
+				}
 			}
 		},
 		"SchoolsListHeader": {
+			"create_button": "Nueva escuela",
 			"title": "Escuelas"
 		},
 		"filters": {

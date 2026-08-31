@@ -35,7 +35,7 @@ export function SchoolsListHeader() {
 			<Spacer shrink />
 			<SchoolsListFilterSearch />
 			<HasPermission action={PermissionCatalog.all.schools.actions.create} scope={PermissionCatalog.all.schools.scope}>
-				<Button label="Nova Escola" leftSection={<IconPlus size={20} />} onClick={openSchoolCreate} />
+				<Button label={t('schools:list.SchoolsListHeader.create_button')} leftSection={<IconPlus size={20} />} onClick={openSchoolCreate} />
 			</HasPermission>
 		</Toolbar>
 	);

@@ -7,14 +7,9 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleUpdate, useMeContext, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
-
-const SchoolsCreateSchema = CreateSchoolSchema.extend({
-	email: CreateSchoolSchema.shape.email.refine(value => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), 'Email inválido'),
-	postal_code: CreateSchoolSchema.shape.postal_code.regex(/^\d{4}-\d{3}$/, 'Código postal inválido'),
-	stops: CreateSchoolSchema.shape.stops.refine(value => value.length > 0, 'Selecione pelo menos uma paragem'),
-});
 
 const SchoolsCreateFormContext = createContext<StandardFormContextValue<CreateSchoolDto> | undefined>(undefined);
 
@@ -33,6 +28,7 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 	// A. Setup variables
 
 	const router = useRouter();
+	const { t } = useTranslation();
 
 	const meContext = useMeContext();
 
@@ -40,6 +36,12 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 
 	//
 	// B. Setup form
+
+	const schoolsCreateSchema = useMemo(() => CreateSchoolSchema.extend({
+		email: CreateSchoolSchema.shape.email.refine(value => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), t('schools:create.validation.email')),
+		postal_code: CreateSchoolSchema.shape.postal_code.regex(/^\d{4}-\d{3}$/, t('schools:create.validation.postal_code')),
+		stops: CreateSchoolSchema.shape.stops.refine(value => value.length > 0, t('schools:create.validation.stops')),
+	}), [t]);
 
 	const formDefaultValues = useMemo<Partial<CreateSchoolDto>>(() => ({
 		address: '',
@@ -79,9 +81,9 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 		validation_date: null,
 	}), []);
 
-	const { form, isDirty, isValid, unblock } = useStandardForm<CreateSchoolDto, typeof SchoolsCreateSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateSchoolDto, typeof schoolsCreateSchema>({
 		defaultValues: formDefaultValues,
-		schema: SchoolsCreateSchema,
+		schema: schoolsCreateSchema,
 	});
 
 	//

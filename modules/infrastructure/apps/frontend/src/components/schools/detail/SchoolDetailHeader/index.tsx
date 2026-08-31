@@ -8,6 +8,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useAgenciesContext, useMeContext, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,6 +19,7 @@ export function SchoolDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const { t } = useTranslation();
 
 	const meContext = useMeContext();
 
@@ -109,8 +111,8 @@ export function SchoolDetailHeader() {
 				value={schoolData?.agency_id}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que pretende eliminar esta escola? Esta ação é irreversível."
-					confirmTitle="Eliminar escola"
+					confirmMessage={t('schools:detail.SchoolDetailHeader.delete.confirm_message')}
+					confirmTitle={t('schools:detail.SchoolDetailHeader.delete.confirm_title')}
 					isDisabled={!capabilities?.deleteEnabled}
 					isLoading={status.isDeleting}
 					onDelete={actions.delete}

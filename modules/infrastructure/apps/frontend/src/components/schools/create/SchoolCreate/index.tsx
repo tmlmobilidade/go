@@ -12,6 +12,7 @@ import { SchoolsCreateFormContextProvider } from '@/components/schools/create/sh
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { NoDataLabel, Pane, Surface, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -22,6 +23,7 @@ export function SchoolCreate() {
 	// A. Setup variables
 
 	const meContext = useMeContext();
+	const { t } = useTranslation();
 
 	const hasPermissionCreate = useMemo(() => {
 		return meContext?.actions.hasPermission(PermissionCatalog.all.schools.scope, PermissionCatalog.all.schools.actions.create);
@@ -33,7 +35,7 @@ export function SchoolCreate() {
 	if (!hasPermissionCreate) {
 		return (
 			<Surface align="center" justify="center" variant="transparent">
-				<NoDataLabel text="Selecione um alerta" />
+				<NoDataLabel text={t('schools:create.SchoolCreate.no_permission')} />
 			</Surface>
 		);
 	}
