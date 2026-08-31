@@ -3,8 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type UpdateZoneDto, UpdateZoneSchema, type Zone } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -59,16 +58,16 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL(zoneId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Zone>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.ZONES_DETAIL(zoneId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			zoneMutate(updatedItem);
+			zoneMutate(data);
 			zonesListMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL(zoneId), 'DELETE', zoneData),
+		fetchFn: async () => await fetchApiData<Zone>({ method: 'DELETE', url: API_ROUTES.offer.ZONES_DETAIL(zoneId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			zonesListMutate();
@@ -77,10 +76,10 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL_LOCK(zoneId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Zone>({ method: 'PUT', url: API_ROUTES.offer.ZONES_DETAIL_LOCK(zoneId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			zoneMutate(updatedItem);
+			zoneMutate(data);
 			zonesListMutate();
 		},
 	});

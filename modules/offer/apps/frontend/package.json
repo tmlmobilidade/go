@@ -20,6 +20,7 @@
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-permissions": "*",

@@ -4,7 +4,6 @@ import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type FileExport, type GtfsExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
@@ -135,7 +134,7 @@ async function main() {
 	Logger.init();
 
 	const waitingExports = await goDb.core.exports.findMany({
-		processing_status: ProcessingStatusSchema.enum.waiting,
+		processing_status: 'waiting',
 		type: 'gtfs',
 	});
 
