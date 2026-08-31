@@ -165,7 +165,7 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'stops',
-				href: PAGE_ROUTES.infrastructure.INFRASTRUCTURE_LIST,
+				href: PAGE_ROUTES.infrastructure.STOPS_LIST,
 				icon: <IconFlag2 />,
 				permissions: [{ action: 'read', resources: { agency_ids: [], municipality_ids: [] }, scope: 'stops' }],
 			},
