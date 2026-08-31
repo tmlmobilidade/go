@@ -6,6 +6,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 import { type TripStopEta } from '../types.js';
 import { getClickHouseEtas } from './get-clickhouse-etas.js';
+import { TTL_REALTIME } from '@/config.js';
 
 /* * */
 
@@ -16,7 +17,7 @@ export async function cacheAllEtas(): Promise<TripStopEta[]> {
 
 	const etas = await getClickHouseEtas();
 
-	await cacheDb.set('hub:v1:realtime:eta:all', JSON.stringify(etas));
+	await cacheDb.set('hub:v1:realtime:eta:all', JSON.stringify(etas), TTL_REALTIME);
 
 	Logger.info({ message: `Cached ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfterOrBefore: 1 });
 

@@ -3,6 +3,7 @@
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 
 import { type TripStopEta } from '../types.js';
+import { TTL_REALTIME } from '@/config.js';
 
 /* * */
 
@@ -19,7 +20,7 @@ export async function cacheCpEtasInAll(etas: TripStopEta[]) {
 		...etas,
 	];
 
-	await cacheDb.set('hub:v1:realtime:eta:all', JSON.stringify(merged));
+	await cacheDb.set('hub:v1:realtime:eta:all', JSON.stringify(merged), TTL_REALTIME);
 
 	//
 };

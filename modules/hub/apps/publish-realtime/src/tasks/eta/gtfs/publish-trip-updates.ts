@@ -9,6 +9,7 @@ import { Timer } from '@tmlmobilidade/timer';
 import { cacheEtasFromClickHouseByStop } from './cache-etas-from-clickhouse-by-stop.js';
 import { cacheEtasFromClickHouseByTrip } from './cache-etas-from-clickhouse-by-trip.js';
 import { getClickHouseTripUpdates } from './get-clickhouse-trip-updates.js';
+import { TTL_REALTIME } from '@/config.js';
 
 /* * */
 
@@ -46,7 +47,7 @@ export async function publishTripUpdates() {
 
 	//
 	// Cache the feed result
-	await cacheDb.set('hub:v1:realtime:eta:all:gtfs', JSON.stringify(feedResult));
+	await cacheDb.set('hub:v1:realtime:eta:all:gtfs', JSON.stringify(feedResult), TTL_REALTIME);
 
 	Logger.success(`Finished publishing GTFS-RT TripUpdate feed (${globalTimer.get()})`);
 

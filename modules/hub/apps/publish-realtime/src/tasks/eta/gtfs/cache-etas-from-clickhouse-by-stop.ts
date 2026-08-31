@@ -6,6 +6,8 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { TTL_REALTIME } from '@/config.js';
+
 /* * */
 
 /**
@@ -28,7 +30,7 @@ export async function cacheEtasFromClickHouseByStop() {
 
 	const tripUpdatesByStop = await labDb.queryFromFile<{ key: string, value: string }>(pipelinePath('select-eta-by-stop-gtfs.sql'));
 
-	await Promise.all(tripUpdatesByStop.map(row => cacheDb.set(`hub:v1:realtime:eta:by-stop:${row.key}:gtfs`, row.value)));
+	await Promise.all(tripUpdatesByStop.map(row => cacheDb.set(`hub:v1:realtime:eta:by-stop:${row.key}:gtfs`, row.value, TTL_REALTIME)));
 
 	Logger.info({ message: `Cached ${tripUpdatesByStop.length} stop GTFS-RT groups in ${timer.get()}`, spacesAfterOrBefore: 1 });
 

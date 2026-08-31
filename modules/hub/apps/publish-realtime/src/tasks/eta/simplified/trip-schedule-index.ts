@@ -24,7 +24,7 @@ export function parseServiceDateFromTripId(tripId: string): string | undefined {
 function gtfsArrivalTimeToUnixMs(operationalDate: string, arrivalTime: string): number {
 	const [hours, minutes, seconds = 0] = arrivalTime.split(':').map(Number);
 
-	return Dates.fromOperationalDate(operationalDate, 'Europe/Lisbon')
+	return Dates.fromOperationalDateInt(operationalDate, 'Europe/Lisbon')
 		.plus({ hours, minutes, seconds })
 		.unix_milliseconds;
 };
@@ -38,7 +38,7 @@ function indexPatterns(patternGroups: HubPattern[]): TripScheduleIndex {
 
 			for (const tripId of trip.trip_ids) {
 				const entries = index.get(tripId) ?? [];
-				entries.push({ stops, valid_on: trip.valid_on });
+				entries.push({ stops, valid_on: trip.valid_on.map(valid_on => valid_on.toString()) });
 				index.set(tripId, entries);
 			}
 		}
@@ -100,5 +100,5 @@ export function getScheduledArrivalUnix(
 };
 
 export function resolveOperationalDate(tripId: string): string {
-	return parseServiceDateFromTripId(parsePublicTripId(tripId)?.tripId ?? tripId) ?? Dates.now('Europe/Lisbon').operational_date;
+	return parseServiceDateFromTripId(parsePublicTripId(tripId)?.tripId ?? tripId) ?? Dates.now('Europe/Lisbon').operational_date_int.toString();
 };

@@ -8,6 +8,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 import { type ClickHouseEtaKeyValue, type TripStopEta, type TripStopEtaCached } from '../types.js';
 import { groupEtasByStop, toCachedEta } from './trip-updates-to-etas.js';
+import { TTL_REALTIME } from '@/config.js';
 
 /* * */
 
@@ -20,7 +21,7 @@ export async function cacheEtasByStopFromClickHouse() {
 
 	const etasByStop = await labDb.queryFromFile<ClickHouseEtaKeyValue>(pipelinePath('select-eta-by-stop.sql'));
 
-	await Promise.all(etasByStop.map(row => cacheDb.set(`hub:v1:realtime:eta:by-stop:${row.key}`, row.value)));
+	await Promise.all(etasByStop.map(row => cacheDb.set(`hub:v1:realtime:eta:by-stop:${row.key}`, row.value, TTL_REALTIME)));
 
 	Logger.info({ message: `Cached ${etasByStop.length} stop ETA groups in ${timer.get()}`, spacesAfterOrBefore: 1 });
 
