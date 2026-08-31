@@ -1,12 +1,11 @@
 'use client';
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useFareDetailContext } from '@/components/fares/detail/FareDetail.context';
 import { FareDetailHeader } from '@/components/fares/detail/FareDetailHeader';
 import { currencyOptions, paymentMethodsOptions, transfersOptions } from '@/types/fares';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { FareSchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, NumberInput, Pane, Section, Select, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, NumberInput, Pane, Section, Select, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,10 +17,7 @@ export function FareDetail() {
 
 	const fareDetailContext = useFareDetailContext();
 
-	const { options: agencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
-		actions: [fareDetailContext.flags.isReadOnly ? PermissionCatalog.all.fares.actions.nav : PermissionCatalog.all.fares.actions.update],
-		scope: PermissionCatalog.all.fares.scope,
-	});
+	const { options: agencyOptions } = useAgenciesData();
 
 	//
 	// B. Render components

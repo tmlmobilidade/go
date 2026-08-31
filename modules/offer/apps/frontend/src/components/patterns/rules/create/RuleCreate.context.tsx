@@ -3,7 +3,7 @@
 import { useEventsContext } from '@/contexts/Events.context';
 import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/go-utils-dates';
+import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
 import { ManualRule, ManualRuleSchema } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { useForm, type UseFormReturnType } from '@tmlmobilidade/ui';

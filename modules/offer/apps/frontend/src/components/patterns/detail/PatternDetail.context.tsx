@@ -7,12 +7,13 @@ import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/go-utils-dates';
+import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { EventReplacementRule, EventRestrictionRule, type LineNormalized, ManualRule, Path, Pattern, PopulatedPath, PopulatedPattern, ScheduleRule, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { PermissionCatalog, Stop } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
@@ -343,16 +344,16 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const enrichPath = useCallback(async (path: Path[]): Promise<PopulatedPath[]> => {
 		const stopIds = [...new Set(path.map(p => p.stop_id))];
 		const results = await Promise.all(
-			stopIds.map(id => fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(String(id)))),
+			stopIds.map(id => fetchApiData<Stop>({ url: API_ROUTES.infrastructure.STOPS_DETAIL(String(id)) })),
 		);
 		const stopsMap = new Map(
-			results.flatMap(r => r.isOk && r.data ? [[r.data._id, r.data]] : []),
+			results.flatMap(r => r.data ? [[r.data._id, r.data]] : []),
 		);
 		return path.map(p => ({ ...p, stop: stopsMap.get(p.stop_id) ?? null }));
 	}, []);
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchApiData<Pattern>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.PATTERNS_DETAIL(patternId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			void patternMutate();
@@ -361,7 +362,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'DELETE', patternData),
+		fetchFn: async () => await fetchApiData<Pattern>({ body: patternData, method: 'DELETE', url: API_ROUTES.offer.PATTERNS_DETAIL(patternId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			void lineMutate();
@@ -370,7 +371,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL_LOCK(patternId)),
+		fetchFn: async () => await fetchApiData<Pattern>({ url: API_ROUTES.offer.PATTERNS_DETAIL_LOCK(patternId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			void patternMutate();
