@@ -4,7 +4,7 @@ import { StopsListFilterBar } from '@/components/stops/list/StopsListFilterBar';
 import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
 import { type StopNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, IdTag, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -77,22 +77,16 @@ export function StopsList() {
 	//
 	// C. Render components
 
-	if (stopsListData.isLoading) {
-		return <LoadingOverlay />;
-	}
-
-	if (stopsListData.error) {
-		return <ErrorDisplay message={stopsListData.error.message} />;
-	}
-
 	return (
 		<Pane header={[
 			<StopsListHeader key="header" />,
 			<StopsListFilterBar key="filters" />,
 		]}
 		>
+			{stopsListData.error && <ErrorDisplay message={stopsListData.error.message} />}
 			<DataTable
 				columns={columns}
+				isLoading={stopsListData.isLoading}
 				onRowClick={handleRowClick}
 				records={stopsListData.data.filtered}
 				rowIdAccessor="_id"
@@ -100,6 +94,4 @@ export function StopsList() {
 			/>
 		</Pane>
 	);
-
-	//
 }
