@@ -1,41 +1,18 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { useFilterStateList, type UseFilterStateListReturnType, useLocationsContext } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
-import useSWR from 'swr';
+import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+
+import { useStopsMunicipalitiesData } from '../../../shared/use-stops-municipalities-data';
 
 /**
- * Hook to manage the municipality filter for the stops list filter bar.
- * @returns The filter state management object.
+ * Manage the municipality filter for the stops list.
  */
 export function useStopsListFilterMunicipality(): UseFilterStateListReturnType {
-	const locationsContext = useLocationsContext();
+	//
 
-	const municipalityOptions = useMemo(
-		() => Array.from(locationsContext.data.municipalities.values())
-			.map(item => ({ label: item.name, value: item._id }))
-			.sort((a, b) => a.label?.localeCompare(b.label, 'pt')),
-		[locationsContext.data.municipalities],
-	);
+	const { ids, options } = useStopsMunicipalitiesData({
+		permissions: { actions: ['read'], scope: 'stops' },
+	});
 
-	const filterMunicipality = useFilterStateList(
-		'municipalities',
-		Array.from(locationsContext.data.municipalities.keys()),
-		municipalityOptions,
-	);
-
-	const { data: allStopsData } = useSWR<Stop[]>(API_ROUTES.infrastructure.STOPS_LIST);
-
-	const filteredMunicipalityOptions = useMemo(() => {
-		if (!allStopsData?.length || !filterMunicipality.options?.length) {
-			return filterMunicipality.options;
-		}
-		const municipalityIds = new Set(allStopsData.map(stop => stop.municipality_id));
-
-		return filterMunicipality.options.filter(item => municipalityIds.has(item.value));
-	}, [allStopsData, filterMunicipality.options]);
-
-	return { ...filterMunicipality, options: filteredMunicipalityOptions };
+	return useFilterStateList('municipality', ids, options);
 }

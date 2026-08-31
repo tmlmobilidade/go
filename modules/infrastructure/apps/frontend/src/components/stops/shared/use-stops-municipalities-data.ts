@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type StopsMunicipalityItem, StopsMunicipalityRequest } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type StopsMunicipalityItem, type StopsMunicipalityRequest } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

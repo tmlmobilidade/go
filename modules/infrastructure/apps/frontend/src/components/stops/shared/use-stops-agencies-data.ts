@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type StopsAgencyItem } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type StopsAgencyItem, type StopsAgencyRequest } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -23,14 +23,14 @@ interface StopsAgenciesDataReturnType {
  * to filters or select components.
  * @returns An object containing the agencies data.
  */
-export function useStopsAgenciesData(): StopsAgenciesDataReturnType {
+export function useStopsAgenciesData(request: StopsAgencyRequest): StopsAgenciesDataReturnType {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<StopsAgencyItem[]>>(API_ROUTES.infrastructure.STOPS_LIST_AGENCIES, {
-		fetcher: async (url: string) => await fetchApiData<StopsAgencyItem[]>({ method: 'GET', url: url }),
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<StopsAgencyItem[]>>([API_ROUTES.infrastructure.STOPS_LIST_AGENCIES, request], {
+		fetcher: async ([url, request]) => await fetchApiData<StopsAgencyItem[]>({ body: request, method: 'POST', url: url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 

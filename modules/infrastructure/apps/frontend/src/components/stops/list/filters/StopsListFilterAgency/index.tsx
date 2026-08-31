@@ -9,13 +9,7 @@ import { useStopsListFilterAgency } from './use-stops-list-filter-agency';
 export function StopsListFilterAgency() {
 	//
 
-	//
-	// A. Setup variables
-
 	const filterAgency = useStopsListFilterAgency();
-
-	//
-	// B. Render components
 
 	return (
 		<ListFilter
@@ -27,6 +21,4 @@ export function StopsListFilterAgency() {
 			withToggleAll
 		/>
 	);
-
-	//
 }

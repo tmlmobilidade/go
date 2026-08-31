@@ -2,7 +2,7 @@
 
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
-import { useStopsAgenciesData } from '../../use-stops-agencies-data';
+import { useStopsAgenciesData } from '../../../shared/use-stops-agencies-data';
 
 /**
  * Manage the agency filter for the stops list.
@@ -10,7 +10,9 @@ import { useStopsAgenciesData } from '../../use-stops-agencies-data';
 export function useStopsListFilterAgency(): UseFilterStateListReturnType {
 	//
 
-	const { ids, options } = useStopsAgenciesData();
+	const { ids, options } = useStopsAgenciesData({
+		permissions: { actions: ['read'], scope: 'stops' },
+	});
 
 	return useFilterStateList('agency', ids, options);
 }
