@@ -10,7 +10,19 @@ import { TTL_REALTIME } from '@/config.js';
 
 /* * */
 
-export async function cacheAllEtas(): Promise<TripStopEta[]> {
+/**
+ * Rebuilds the full simplified ETA list cache from ClickHouse.
+ *
+ * Fetches all trip-stop ETAs via {@link getClickHouseEtas} and writes them to
+ * `hub:v1:realtime:eta:all`.
+ *
+ * Use this for the main ClickHouse-sourced ETA pipeline (full replace).
+ * For merging in-memory `TripStopEta[]` from an external feed (e.g. CP) into
+ * the same key, use {@link cacheEtasInAll} instead.
+ *
+ * @returns The ClickHouse ETAs that were written to cache
+ */
+export async function cacheAllEtasFromClickHouse(): Promise<TripStopEta[]> {
 	//
 
 	const timer = new Timer();
