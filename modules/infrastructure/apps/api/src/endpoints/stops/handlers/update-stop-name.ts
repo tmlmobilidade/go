@@ -1,6 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type StopsUpdateNameRequest, StopsUpdateNameRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Stop, type StopId } from '@tmlmobilidade/go-types-infrastructure';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
@@ -10,8 +11,13 @@ import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
  * @param request Fastify request containing stop ID in params and update data in body
  * @param reply Fastify reply
  */
-export async function updateStopNameHandler(request: FastifyRequest<{ Body: { name: string }, Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
+export async function updateStopNameHandler(request: FastifyRequest<{ Body: StopsUpdateNameRequest, Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 	//
+
+	//
+	// Validate the request body
+
+	const validatedRequest = StopsUpdateNameRequestSchema.parse(request.body);
 
 	//
 	// Fetch the stop from the database
@@ -44,7 +50,7 @@ export async function updateStopNameHandler(request: FastifyRequest<{ Body: { na
 	//
 	// Update the stop name and return the updated stop
 
-	const data = await goDb.infrastructure.stops.updateById(request.params.id, { name: request.body.name });
+	const data = await goDb.infrastructure.stops.updateById(request.params.id, { name: validatedRequest.name });
 
 	return sendSuccessApiResponse(reply, data);
 }
