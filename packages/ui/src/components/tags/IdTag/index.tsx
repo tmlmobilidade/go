@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 
 export interface IdTagProps {
 	copyOnClick?: boolean
-	id?: number | string
+	id?: string
 }
 
 /* * */
