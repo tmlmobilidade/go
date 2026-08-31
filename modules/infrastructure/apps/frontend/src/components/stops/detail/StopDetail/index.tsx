@@ -14,11 +14,23 @@ import { StopDetailsSectionPublicInformation } from '@/components/stops/detail/S
 import { StopDetailsSectionShelter } from '@/components/stops/detail/StopDetailsSectionShelter';
 import { Divider, Pane } from '@tmlmobilidade/ui';
 
+import { useStopsDetailData } from '../use-stops-detail-data';
+
 /* * */
 
 export function StopDetail() {
+	//
+
+	//
+	// A. Setup variables
+
+	const { isLoading } = useStopsDetailData();
+
+	//
+	// B. Render components
+
 	return (
-		<Pane header={[<StopDetailHeader key="header" />]}>
+		<Pane header={[<StopDetailHeader key="header" />]} isLoading={isLoading}>
 			<StopDetailsSectionMap />
 			<Divider />
 			<StopDetailsSectionGeneral />
