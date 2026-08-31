@@ -27,7 +27,7 @@ export function StopCreateModalControls() {
 					onClick={stopCreateContext.form.multi_step.progress.current?.order === 0 ? closeStopCreateModal : stopCreateContext.form.multi_step.actions.prev}
 				/>
 				<Button
-					disabled={!stopCreateContext.form.multi_step.progress.current?.isValid?.()}
+					disabled={!stopCreateContext.form.multi_step.progress.current?.isValid}
 					label={stopCreateContext.form.multi_step.progress.current?.order === stopCreateContext.form.multi_step.length - 1 ? 'Criar Paragem' : 'Avançar'}
 					loading={stopCreateContext.flags.isCreating}
 					onClick={stopCreateContext.form.multi_step.progress.current?.order === stopCreateContext.form.multi_step.length - 1 ? stopCreateContext.actions.create : stopCreateContext.form.multi_step.actions.next}
