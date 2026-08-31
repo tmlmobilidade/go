@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type RawVehicleEventPtTmlCmTstV1, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function parseRawVehicleEventPtTmlCmTstV1(doc: RawVehicleEventPtTmlCmTstV
 		geohash: null,
 		latitude: doc.payload.vehicle.position.latitude,
 		longitude: doc.payload.vehicle.position.longitude,
-		odometer: doc.payload.vehicle.position.odometer,
+		odometer: doc.payload.vehicle.position.odometer && doc.payload.vehicle.position.odometer >= 0 ? doc.payload.vehicle.position.odometer : null, // TST sends -1 when no odometer is available,
 		operational_date: Dates.fromUnixMilliseconds(doc.created_at).operational_date_int,
 		received_at: doc.received_at,
 		speed: doc.payload.vehicle.position.speed,
