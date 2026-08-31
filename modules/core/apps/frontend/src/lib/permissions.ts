@@ -7,6 +7,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 export const RESOURCES_OPTIONS = [
 	'AGENCIES',
 	'ALERT_REFERENCE_TYPES',
+	'MUNICIPALITIES',
 ] as const;
 
 export interface PermissionConfigAction {

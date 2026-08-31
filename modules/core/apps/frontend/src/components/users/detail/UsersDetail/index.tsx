@@ -9,6 +9,7 @@ import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permi
 import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
 
 import { useUsersAgenciesData } from '../../shared/use-users-agencies-data';
+import { useUsersMunicipalitiesData } from '../../shared/use-users-municipalities-data';
 import { useUsersRolesData } from '../../shared/use-users-roles-data';
 import { useUsersDetailData } from '../use-users-detail-data';
 import { useUsersDetailFormContext } from '../UsersDetailForm.context';
@@ -26,6 +27,7 @@ export function UsersDetail() {
 	const { capabilities, form } = useUsersDetailFormContext();
 
 	const { options: usersAgenciesOptions } = useUsersAgenciesData();
+	const { options: usersMunicipalitiesOptions } = useUsersMunicipalitiesData();
 	const { data: usersRolesData } = useUsersRolesData();
 
 	const permissionsValue = useStandardFormWatch({ control: form.control, name: 'permissions' });
@@ -82,6 +84,7 @@ export function UsersDetail() {
 					description={item.description}
 					disabled={!capabilities.editEnabled}
 					enabledPermissions={permissionsValue}
+					municipalitiesOptions={usersMunicipalitiesOptions}
 					onResourceToggle={handlePermissionResourceToggle}
 					onToggle={handlePermissionToggle}
 					rolesData={usersRolesData}
