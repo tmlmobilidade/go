@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 /* * */
 
 interface UseStopsDetailStopIdReturnType {
-	stopId: number
+	stopId: string
 }
 
 /* * */
@@ -25,6 +25,6 @@ export function useStopsDetailStopId(): UseStopsDetailStopIdReturnType {
 	// B. Return data
 
 	return useMemo(() => ({
-		stopId: Number(stopId),
+		stopId,
 	}), [stopId]);
 }
