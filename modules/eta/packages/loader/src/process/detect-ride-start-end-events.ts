@@ -49,7 +49,6 @@ export async function detectRideStartEndEvents(config: AppConfig) {
 	const histRidesTable = qualifiedTable('eta', 'hist_rides');
 	const batchTable = qualifiedTable('eta', BATCH_TABLE);
 	const valuesTable = qualifiedTable('eta', VALUES_TABLE);
-	const client = await labDb.getClient();
 
 	//
 	// Create the staging tables once. They are truncated and repopulated per batch.
