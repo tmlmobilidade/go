@@ -7,6 +7,7 @@ import { deleteStopHandler } from './handlers/delete-stop.js';
 import { getStopHandler } from './handlers/get-stop.js';
 import { getTtsHandler } from './handlers/get-tts.js';
 import { getValidIdHandler } from './handlers/get-valid-id.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listStopsHandler } from './handlers/list-stops.js';
 import { lockStopHandler } from './handlers/lock-stop.js';
 import { updateStopHandler } from './handlers/update-stop.js';
@@ -23,21 +24,23 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', { preHandler: authorizationMiddleware('stops', ['read']) }, listStopsHandler);
+		instance.get('/list', { preHandler: authorizationMiddleware('stops', ['read']) }, listStopsHandler);
 
-		instance.get('/valid-id', { preHandler: authorizationMiddleware('stops', ['read']) }, getValidIdHandler);
+		instance.get('/list/agencies', { preHandler: authorizationMiddleware('stops', ['read']) }, listAgenciesHandler);
 
-		instance.get('/:id', { preHandler: authorizationMiddleware('stops', ['read']) }, getStopHandler);
+		instance.get('/get/valid-id', { preHandler: authorizationMiddleware('stops', ['read']) }, getValidIdHandler);
 
-		instance.post('/', { preHandler: authorizationMiddleware('stops', ['create']) }, createStopHandler);
+		instance.get('/get/:id', { preHandler: authorizationMiddleware('stops', ['read']) }, getStopHandler);
 
-		instance.put('/:id', { preHandler: authorizationMiddleware('stops', ['update']) }, updateStopHandler);
+		instance.post('/create', { preHandler: authorizationMiddleware('stops', ['create']) }, createStopHandler);
 
-		instance.get('/tts/:id', { preHandler: authorizationMiddleware('stops', ['read']) }, getTtsHandler);
+		instance.put('/update/:id', { preHandler: authorizationMiddleware('stops', ['update']) }, updateStopHandler);
 
-		instance.get('/:id/lock', { preHandler: authorizationMiddleware('stops', ['lock']) }, lockStopHandler);
+		instance.get('/get/tts/:id', { preHandler: authorizationMiddleware('stops', ['read']) }, getTtsHandler);
 
-		instance.delete('/:id', { preHandler: authorizationMiddleware('stops', ['delete']) }, deleteStopHandler);
+		instance.get('/lock/:id', { preHandler: authorizationMiddleware('stops', ['lock']) }, lockStopHandler);
+
+		instance.delete('/delete/:id', { preHandler: authorizationMiddleware('stops', ['delete']) }, deleteStopHandler);
 
 		next();
 	},
