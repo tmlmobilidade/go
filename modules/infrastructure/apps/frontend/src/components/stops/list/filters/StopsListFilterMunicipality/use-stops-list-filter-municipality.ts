@@ -2,7 +2,7 @@
 
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
-import { useStopsMunicipalitiesData } from '../../../shared/use-stops-municipalities-data';
+import { useStopsLocationsData } from '../../../shared/use-stops-locations-data';
 
 /**
  * Manage the municipality filter for the stops list.
@@ -10,9 +10,9 @@ import { useStopsMunicipalitiesData } from '../../../shared/use-stops-municipali
 export function useStopsListFilterMunicipality(): UseFilterStateListReturnType {
 	//
 
-	const { ids, options } = useStopsMunicipalitiesData({
+	const { municipalityIds, municipalityOptions } = useStopsLocationsData({
 		permissions: { actions: ['read'], scope: 'stops' },
 	});
 
-	return useFilterStateList('municipality', ids, options);
+	return useFilterStateList('municipality', municipalityIds, municipalityOptions);
 }

@@ -7,7 +7,7 @@ import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useStopsMunicipalitiesData } from '../shared/use-stops-municipalities-data';
+import { useStopsMunicipalitiesData } from '../shared/use-stops-locations-data';
 import { useStopsListFilterAgency } from './filters/StopsListFilterAgency/use-stops-list-filter-agency';
 import { useStopsListFilterMunicipality } from './filters/StopsListFilterMunicipality/use-stops-list-filter-municipality';
 import { useStopsListFilterSearch } from './filters/StopsListFilterSearch/use-stops-list-filter-search';

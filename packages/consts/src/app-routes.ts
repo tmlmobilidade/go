@@ -317,7 +317,7 @@ export const API_ROUTES = Object.freeze({
 		STOPS_GET_VALID_ID: `${getModuleConfig('infrastructure', 'api_url')}/stops/get/valid-id`,
 		STOPS_LIST: `${getModuleConfig('infrastructure', 'api_url')}/stops/list`,
 		STOPS_LIST_AGENCIES: `${getModuleConfig('infrastructure', 'api_url')}/stops/list-agencies`,
-		STOPS_LIST_MUNICIPALITIES: `${getModuleConfig('infrastructure', 'api_url')}/stops/list-municipalities`,
+		STOPS_LIST_LOCATIONS: `${getModuleConfig('infrastructure', 'api_url')}/stops/list-locations`,
 		STOPS_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/lock/${encodeURIComponent(id)}`,
 		STOPS_UPDATE: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update/${encodeURIComponent(id)}`,
 	},
