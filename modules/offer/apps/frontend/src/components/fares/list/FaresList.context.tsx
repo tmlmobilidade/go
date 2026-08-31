@@ -4,7 +4,8 @@ import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Fare } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useFilterStateList, UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData, useFilterStateList, UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -58,14 +59,17 @@ export const FaresListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allFaresData, error: allFaresError, isLoading: allFaresLoading } = useSWR<Fare[], Error>(API_ROUTES.offer.FARES_LIST, { refreshInterval: 5000 });
+	const { data: allFaresData, error: allFaresError, isLoading: allFaresLoading } = useSWR<ApiResponse<Fare[]>>(API_ROUTES.offer.FARES_LIST, {
+		fetcher: async url => await fetchApiData<Fare[]>({ url }),
+		refreshInterval: 5000,
+	});
 
 	//
 	// C. Transform data
 
 	const searchResultsData = useSearch<Fare>({
 		accessors: ['_id', 'name', 'code', 'agency_ids'],
-		data: allFaresData ?? [],
+		data: allFaresData?.data ?? [],
 		query: filterSearch.value,
 	});
 
@@ -95,7 +99,7 @@ export const FaresListContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: FaresListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allFaresData ?? [],
+			raw: allFaresData?.data ?? [],
 		},
 		filters: {
 			agencies: filterAgencies,

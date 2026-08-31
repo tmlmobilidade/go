@@ -4,7 +4,8 @@ import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Typology } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -58,14 +59,16 @@ export const TypologiesListContextProvider = ({ children }: PropsWithChildren) =
 	//
 	// B. Fetch data
 
-	const { data: allTypologiesData, error: allTypologiesError, isLoading: allTypologiesLoading } = useSWR<Typology[], Error>(API_ROUTES.offer.TYPOLOGIES_LIST);
+	const { data: allTypologiesData, error: allTypologiesError, isLoading: allTypologiesLoading } = useSWR<ApiResponse<Typology[]>>(API_ROUTES.offer.TYPOLOGIES_LIST, {
+		fetcher: async url => await fetchApiData<Typology[]>({ url }),
+	});
 
 	//
 	// C. Transform data
 
 	const searchResultsData = useSearch<Typology>({
 		accessors: ['_id', 'name', 'code', 'agency_ids'],
-		data: allTypologiesData ?? [],
+		data: allTypologiesData?.data ?? [],
 		query: filterSearch.value,
 	});
 
@@ -95,7 +98,7 @@ export const TypologiesListContextProvider = ({ children }: PropsWithChildren) =
 	const contextValue: TypologiesListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allTypologiesData ?? [],
+			raw: allTypologiesData?.data ?? [],
 		},
 		filters: {
 			agencies: filterAgencies,

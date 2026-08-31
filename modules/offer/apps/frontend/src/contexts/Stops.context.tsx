@@ -4,6 +4,8 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -39,7 +41,9 @@ export const StopsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[], Error>(API_ROUTES.infrastructure.STOPS_LIST);
+	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<ApiResponse<Stop[]>>(API_ROUTES.infrastructure.STOPS_LIST, {
+		fetcher: async url => await fetchApiData<Stop[]>({ url }),
+	});
 
 	//
 	// B. Define context value
@@ -47,7 +51,7 @@ export const StopsContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: StopsContextState = useMemo(() => {
 		return {
 			data: {
-				raw: allStopsData?.sort((a, b) => a.name.localeCompare(b.name)) ?? [],
+				raw: allStopsData?.data?.sort((a, b) => a.name.localeCompare(b.name)) ?? [],
 			},
 			flags: {
 				error: allStopsError,

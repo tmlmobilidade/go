@@ -3,6 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type LineNormalized, type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -47,19 +48,21 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	// B. Fetch data
 
 	const { mutate: linesListMutate } = useSWR<LineNormalized[]>(API_ROUTES.offer.LINES_LIST);
-	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<LineNormalized>(API_ROUTES.offer.LINES_DETAIL(lineId));
+	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	});
 
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateLineDto>(UpdateLineSchema, lineData);
+	const { form } = useTypicalForm<UpdateLineDto>(UpdateLineSchema, lineData?.data);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<LineNormalized>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.LINES_DETAIL(lineId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (data) => {
 			form.resetDirty();
 			lineMutate(data);
 			linesListMutate();
@@ -77,7 +80,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<LineNormalized>({ url: API_ROUTES.offer.LINES_DETAIL_LOCK(lineId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (data) => {
 			form.resetDirty();
 			lineMutate(data);
 			linesListMutate();
@@ -92,7 +95,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: lineData?.agency_id ? [lineData.agency_id] : [],
+			value: lineData?.data?.agency_id ? [lineData.data.agency_id] : [],
 		},
 		scope: PermissionCatalog.all.lines.scope,
 	});
@@ -103,7 +106,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: lineLoading,
-		isLocked: lineData?.is_locked,
+		isLocked: lineData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -127,7 +130,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 		data: {
 			form,
 			id: lineId,
-			line: lineData,
+			line: lineData?.data,
 		},
 		flags: {
 			canDelete,

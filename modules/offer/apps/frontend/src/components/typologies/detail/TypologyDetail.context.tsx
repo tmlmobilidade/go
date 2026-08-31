@@ -3,6 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Typology, type UpdateTypologyDto, UpdateTypologySchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -47,19 +48,21 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 	// B. Fetch data
 
 	const { mutate: typologiesListMutate } = useSWR<Typology[]>(API_ROUTES.offer.TYPOLOGIES_LIST);
-	const { data: typologyData, error: typologyError, isLoading: typologyLoading, mutate: typologyMutate } = useSWR<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId));
+	const { data: typologyData, error: typologyError, isLoading: typologyLoading, mutate: typologyMutate } = useSWR<ApiResponse<Typology>>(API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId), {
+		fetcher: async url => await fetchApiData<Typology>({ url }),
+	});
 
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateTypologyDto>(UpdateTypologySchema, typologyData);
+	const { form } = useTypicalForm<UpdateTypologyDto>(UpdateTypologySchema, typologyData?.data);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Typology>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (data) => {
 			form.resetDirty();
 			typologyMutate(data);
 			typologiesListMutate();
@@ -77,7 +80,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Typology>({ url: API_ROUTES.offer.TYPOLOGIES_DETAIL_LOCK(typologyId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (data) => {
 			form.resetDirty();
 			typologyMutate(data);
 			typologiesListMutate();
@@ -93,7 +96,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: typologyData?.agency_ids ?? [],
+			value: typologyData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.typologies.scope,
 	});
@@ -104,7 +107,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 		resource: {
 			key: 'agency_ids',
 			requireAll: true,
-			value: typologyData?.agency_ids ?? [],
+			value: typologyData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.typologies.scope,
 	});
@@ -122,7 +125,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: typologyLoading,
-		isLocked: typologyData?.is_locked,
+		isLocked: typologyData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -146,7 +149,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 		data: {
 			form,
 			id: typologyId,
-			typology: typologyData,
+			typology: typologyData?.data,
 		},
 		flags: {
 			canDelete,

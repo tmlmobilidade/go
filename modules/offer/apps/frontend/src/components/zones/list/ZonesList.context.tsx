@@ -4,7 +4,8 @@ import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Zone } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useFilterStateList, UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData, useFilterStateList, UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -58,14 +59,17 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allZonesData, error: allZonesError, isLoading: allZonesLoading } = useSWR<Zone[], Error>(API_ROUTES.offer.ZONES_LIST, { refreshInterval: 5000 });
+	const { data: allZonesData, error: allZonesError, isLoading: allZonesLoading } = useSWR<ApiResponse<Zone[]>>(API_ROUTES.offer.ZONES_LIST, {
+		fetcher: async url => await fetchApiData<Zone[]>({ url }),
+		refreshInterval: 5000,
+	});
 
 	//
 	// C. Transform data
 
 	const searchResultsData = useSearch<Zone>({
 		accessors: ['_id', 'name', 'code', 'agency_ids'],
-		data: allZonesData ?? [],
+		data: allZonesData?.data ?? [],
 		query: filterSearch.value,
 	});
 
@@ -88,7 +92,7 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: ZonesListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allZonesData ?? [],
+			raw: allZonesData?.data ?? [],
 		},
 		filters: {
 			agencies: filterAgencies,

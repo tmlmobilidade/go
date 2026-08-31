@@ -3,6 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type LineNormalized, type Route, type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -47,20 +48,25 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	//
 	// B. Fetch data
 
-	const { data: routeData, error: routeError, isLoading: routeLoading, mutate: routeMutate } = useSWR<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId));
-	const { data: lineData, mutate: lineMutate } = useSWR<LineNormalized>(API_ROUTES.offer.LINES_DETAIL(lineId));
+	const { data: routeData, error: routeError, isLoading: routeLoading, mutate: routeMutate } = useSWR<ApiResponse<Route>>(API_ROUTES.offer.ROUTES_DETAIL(routeId), {
+		fetcher: async url => await fetchApiData<Route>({ url }),
+	});
+
+	const { data: lineData, mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	});
 
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateRouteDto>(UpdateRouteSchema, routeData);
+	const { form } = useTypicalForm<UpdateRouteDto>(UpdateRouteSchema, routeData?.data);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (data) => {
 			form.resetDirty();
 			routeMutate(data);
 			lineMutate();
@@ -78,7 +84,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Route>({ url: API_ROUTES.offer.ROUTES_DETAIL_LOCK(routeId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (data) => {
 			form.resetDirty();
 			routeMutate(data);
 			lineMutate();
@@ -93,7 +99,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: lineData?.agency_id ? [lineData.agency_id] : [],
+			value: lineData?.data?.agency_id ? [lineData.data.agency_id] : [],
 		},
 		scope: PermissionCatalog.all.lines.scope,
 	});
@@ -104,7 +110,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: routeLoading,
-		isLocked: routeData?.is_locked,
+		isLocked: routeData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -128,8 +134,8 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 		data: {
 			form,
 			id: routeId,
-			line: lineData,
-			route: routeData,
+			line: lineData?.data,
+			route: routeData?.data,
 		},
 		flags: {
 			canDelete,

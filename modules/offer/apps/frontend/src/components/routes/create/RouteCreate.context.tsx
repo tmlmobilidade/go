@@ -3,6 +3,7 @@
 import { closeCreateRouteModal } from '@/components/routes/create/RouteCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateRouteDto, CreateRouteSchema, type LineNormalized, type Route } from '@tmlmobilidade/go-types-offer';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -47,7 +48,9 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	//
 	// B. Fetch data
 
-	const { mutate: lineMutate } = useSWR<LineNormalized>(API_ROUTES.offer.LINES_DETAIL(lineId));
+	const { mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	});
 
 	//
 	// C. Setup form
