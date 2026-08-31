@@ -9,7 +9,7 @@ import { cacheEtasByTrip } from './cache-etas-by-trip.js';
 import { cacheAllEtasFromClickHouse } from './cache-etas-from-clickhouse-all.js';
 import { cacheEtasFromClickHouseByStop } from './cache-etas-from-clickhouse-by-stop.js';
 import { cacheEtasFromClickHouseByTrip } from './cache-etas-from-clickhouse-by-trip.js';
-import { cacheEtasInAll } from './cache-etas-in-all.js';
+import { cacheEtasByAll } from './cache-etas-by-all.js';
 import { getExternalEtas } from './get-external-etas.js';
 
 /* * */
@@ -34,11 +34,10 @@ export async function publishEtas() {
 	await cacheEtasFromClickHouseByStop();
 
 	for (const feed of EXTERNAL_FEEDS) {
-		Logger.info({ message: `Retrieving ETAs from ${feed.label} API...` });
 		const etas = await getExternalEtas(feed);
 		await cacheEtasByTrip(etas);
 		await cacheEtasByStop(etas);
-		await cacheEtasInAll(etas);
+		await cacheEtasByAll(etas);
 	}
 
 	Logger.success(`Finished publishing trip stop ETAs (${globalTimer.get()})`);
