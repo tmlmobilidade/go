@@ -1,14 +1,14 @@
 'use client';
 
-import { StopsListFilterBar } from '@/components/stops/list/StopsListFilterBar';
+import { StopsListFilterBar } from '@/components/stops/list/filters/StopsListFilterBar';
 import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
-import { type StopNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type StopsListItem } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { DataTable, DataTableColumn, ErrorDisplay, IdTag, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
-import { useStopsListData } from './use-stops-list-data';
+import { useStopsListData } from '../use-stops-list-data';
 
 /* * */
 
@@ -21,9 +21,9 @@ export function StopsList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const stopsListData = useStopsListData();
+	const { data, error, isLoading } = useStopsListData();
 
-	const columns: DataTableColumn<StopNormalized>[] = [
+	const columns: DataTableColumn<StopsListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -70,7 +70,7 @@ export function StopsList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: StopNormalized) => {
+	const handleRowClick = (item: StopsListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(String(item._id))));
 	};
 
@@ -83,12 +83,12 @@ export function StopsList() {
 			<StopsListFilterBar key="filters" />,
 		]}
 		>
-			{stopsListData.error && <ErrorDisplay message={stopsListData.error.message} />}
+			{error && <ErrorDisplay message={error} />}
 			<DataTable
 				columns={columns}
-				isLoading={stopsListData.isLoading}
+				isLoading={isLoading}
 				onRowClick={handleRowClick}
-				records={stopsListData.data.filtered}
+				records={data}
 				rowIdAccessor="_id"
 				selectedId={Number(params.id)}
 			/>

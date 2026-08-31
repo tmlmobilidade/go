@@ -1,13 +1,33 @@
 /* * */
 
-import { TemporalStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const PlansListFiltersSchema = z.object({
+export const StopsListFiltersSchema = z.object({
 
 	agency_ids: z
+		.array(z.string())
+		.default([]),
+
+	district_ids: z
+		.array(z.string())
+		.default([]),
+
+	lifecycle_statuses: z
+		.array(LifecycleStatusSchema)
+		.default([]),
+
+	locality_ids: z
+		.array(z.string())
+		.default([]),
+
+	municipality_ids: z
+		.array(z.string())
+		.default([]),
+
+	parish_ids: z
 		.array(z.string())
 		.default([]),
 
@@ -15,10 +35,6 @@ export const PlansListFiltersSchema = z.object({
 		.string()
 		.optional(),
 
-	temporal_statuses: z
-		.array(TemporalStatusSchema)
-		.default([]),
-
 });
 
-export type PlansListFilters = z.infer<typeof PlansListFiltersSchema>;
+export type StopsListFilters = z.infer<typeof StopsListFiltersSchema>;

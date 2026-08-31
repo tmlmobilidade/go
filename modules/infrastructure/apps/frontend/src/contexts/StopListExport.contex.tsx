@@ -1,12 +1,12 @@
 'use client';
 
-import { useStopsListData } from '@/components/stops/list/StopsList/use-stops-list-data';
-import { useStopsListFilterAgencies } from '@/components/stops/list/StopsListFilterAgencies/use-stops-list-filter-agencies';
-import { useStopsListFilterConnections } from '@/components/stops/list/StopsListFilterConnections/use-stops-list-filter-connections';
-import { useStopsListFilterEquipment } from '@/components/stops/list/StopsListFilterEquipment/use-stops-list-filter-equipment';
-import { useStopsListFilterFacilities } from '@/components/stops/list/StopsListFilterFacilities/use-stops-list-filter-facilities';
-import { useStopsListFilterLifecycleStatus } from '@/components/stops/list/StopsListFilterLifecycleStatus/use-stops-list-filter-lifecycle-status';
-import { useStopsListFilterMunicipality } from '@/components/stops/list/StopsListFilterMunicipality/use-stops-list-filter-municipality';
+import { useStopsListData } from '@/components/stops/list/use-stops-list-data';
+import { useStopsListFilterAgencies } from '@/components/stops/list/filters/StopsListFilterAgencies/use-stops-list-filter-agencies';
+import { useStopsListFilterConnections } from '@/components/stops/list/filters/StopsListFilterConnections/use-stops-list-filter-connections';
+import { useStopsListFilterEquipment } from '@/components/stops/list/filters/StopsListFilterEquipment/use-stops-list-filter-equipment';
+import { useStopsListFilterFacilities } from '@/components/stops/list/filters/StopsListFilterFacilities/use-stops-list-filter-facilities';
+import { useStopsListFilterLifecycleStatus } from '@/components/stops/list/filters/StopsListFilterLifecycleStatus/use-stops-list-filter-lifecycle-status';
+import { useStopsListFilterMunicipality } from '@/components/stops/list/filters/StopsListFilterMunicipality/use-stops-list-filter-municipality';
 import { useStopsListFilterSearch } from '@/components/stops/list/StopsListHeader/use-stops-list-filter-search';
 import { type CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { closeModal, useAgenciesContext, useExportsContext, useLocationsContext, useToast } from '@tmlmobilidade/ui';

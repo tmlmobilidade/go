@@ -1,7 +1,7 @@
 'use client';
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
-import { useStopsListData } from '@/components/stops/list/StopsList/use-stops-list-data';
+import { useStopsListData } from '@/components/stops/list/use-stops-list-data';
 import { getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { MapOverlayMultipleStops, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
 import { type Point } from 'geojson';
