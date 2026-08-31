@@ -47,11 +47,11 @@ parsed_timestamps AS (
         hashed_shape_id,
         node_index,
         travel_time_seconds,
-        fromUnixMilliseconds64Milli(toInt64(created_at)) AS event_ts,
+        fromUnixTimestamp64Milli(toInt64(created_at)) AS event_ts,
         if(
-            toHour(fromUnixMilliseconds64Milli(toInt64(created_at))) < 4,
-            fromUnixMilliseconds64Milli(toInt64(created_at)) - INTERVAL 1 DAY,
-            fromUnixMilliseconds64Milli(toInt64(created_at))
+            toHour(fromUnixTimestamp64Milli(toInt64(created_at))) < 4,
+            fromUnixTimestamp64Milli(toInt64(created_at)) - INTERVAL 1 DAY,
+            fromUnixTimestamp64Milli(toInt64(created_at))
         ) AS operational_ts
     FROM eta.hist_node_travel_times
     WHERE
