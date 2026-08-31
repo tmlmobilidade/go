@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

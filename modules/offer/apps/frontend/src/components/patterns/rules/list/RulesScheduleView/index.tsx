@@ -6,7 +6,7 @@ import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Badge } from '@mantine/core';
 import { IconCancel, IconCheck, IconSwitchHorizontal } from '@tabler/icons-react';
-import { buildRuleSummary, computeRuleTimePoints } from '@tmlmobilidade/go-utils-dates';
+import { buildRuleSummary, computeRuleTimePoints } from '@tmlmobilidade/dates';
 import { Section, Text, Tooltip } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 

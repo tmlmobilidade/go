@@ -5,7 +5,7 @@ import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import { type CreateFileExportDto, type FileExport, type FileExportType, type GtfsExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { useForm } from '@tmlmobilidade/ui';
 import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';

@@ -51,8 +51,8 @@ export function StopsTableTableColumnZones({ pathItem, rowIndex }: { pathItem: P
 				leftSection={(
 					<IconButton
 						color="gray"
-						disabled={patternsDetailContext.flags.isReadOnly}
 						icon={<IconRotate2 size={20} />}
+						isDisabled={patternsDetailContext.flags.isReadOnly}
 						onClick={handleResetZones}
 						variant="subtle"
 					/>
