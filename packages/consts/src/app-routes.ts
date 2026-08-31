@@ -70,9 +70,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('infrastructure', 'frontend_url')}`,
 
-		// INFRASTRUCTURE
-		INFRASTRUCTURE_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/${encodeURIComponent(id)}`,
-		INFRASTRUCTURE_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}`,
+		// STOPS
+		STOPS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/stops/${encodeURIComponent(id)}`,
+		STOPS_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}/stops`,
 	},
 
 	offer: {
@@ -308,11 +308,15 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('infrastructure', 'api_url')}`,
 
 		// STOPS
-		STOPS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/${encodeURIComponent(id)}`,
-		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/${encodeURIComponent(id)}/lock`,
-		STOPS_LIST: `${getModuleConfig('infrastructure', 'api_url')}/stops`,
-		STOPS_TTS: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/tts/${encodeURIComponent(id)}`,
-		STOPS_VALID_ID: `${getModuleConfig('infrastructure', 'api_url')}/stops/valid-id`,
+		STOPS_CREATE: `${getModuleConfig('infrastructure', 'api_url')}/stops/create`,
+		STOPS_DELETE: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/delete/${encodeURIComponent(id)}`,
+		STOPS_GET: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/get/${encodeURIComponent(id)}`,
+		STOPS_GET_TTS: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/get/tts/${encodeURIComponent(id)}`,
+		STOPS_GET_VALID_ID: `${getModuleConfig('infrastructure', 'api_url')}/stops/get/valid-id`,
+		STOPS_LIST: `${getModuleConfig('infrastructure', 'api_url')}/stops/list`,
+		STOPS_LIST_AGENCIES: `${getModuleConfig('infrastructure', 'api_url')}/stops/list/agencies`,
+		STOPS_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/lock/${encodeURIComponent(id)}`,
+		STOPS_UPDATE: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update/${encodeURIComponent(id)}`,
 	},
 
 	locations: {
