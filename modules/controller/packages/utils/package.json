@@ -26,6 +26,6 @@
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
 		"tsx": "4.23.12",
-		"typescript": "6.0.3"
+		"typescript": "7.0.2"
 	}
 }
