@@ -1,0 +1,175 @@
+{
+	"create": {
+		"SchoolCreateSectionAddress": {
+			"description": "Morada e localização da escola.",
+			"fields": {
+				"address": {
+					"label": "Morada",
+					"placeholder": "Introduza a morada da escola"
+				},
+				"locality": {
+					"label": "Localidade",
+					"placeholder": "Introduza a localidade da escola"
+				},
+				"parish_name": {
+					"label": "Freguesia",
+					"placeholder": "Introduza a freguesia da escola"
+				},
+				"postal_code": {
+					"label": "Código postal",
+					"placeholder": "Introduza o código postal da escola"
+				}
+			},
+			"title": "Localização"
+		},
+		"SchoolCreateSectionAdministrative": {
+			"description": "Identificadores administrativos e localização territorial.",
+			"fields": {
+				"district_id": {
+					"label": "ID do distrito",
+					"placeholder": "Selecione o distrito"
+				},
+				"district_name": {
+					"label": "Distrito",
+					"placeholder": "Selecione o distrito"
+				},
+				"municipality_id": {
+					"label": "ID do município",
+					"placeholder": "Selecione o município"
+				},
+				"municipality_name": {
+					"label": "Município",
+					"placeholder": "Selecione o município"
+				},
+				"region_id": {
+					"label": "ID da região",
+					"placeholder": "Introduza o ID da região"
+				},
+				"region_name": {
+					"label": "Região",
+					"placeholder": "Introduza a região da escola"
+				}
+			},
+			"title": "Dados administrativos"
+		},
+		"SchoolCreateSectionEducation": {
+			"description": "Níveis e modalidades de ensino disponibilizados pela escola.",
+			"fields": {
+				"artistic": "Ensino artístico",
+				"basic_1": "1.º ciclo",
+				"basic_2": "2.º ciclo",
+				"basic_3": "3.º ciclo",
+				"high_school": "Ensino secundário",
+				"other": "Outro ensino",
+				"pre_school": "Educação pré-escolar",
+				"professional": "Ensino profissional",
+				"special": "Educação especial",
+				"university": "Ensino superior"
+			},
+			"title": "Ensino"
+		},
+		"SchoolCreateSectionGeneral": {
+			"agency": "Operador",
+			"code": {
+				"label": "Código",
+				"placeholder": "Introduza o código da escola"
+			},
+			"coordinates": {
+				"label": "Coordenadas",
+				"placeholder": "Introduza as coordenadas da escola"
+			},
+			"description": "Informações gerais da escola.",
+			"grouping": {
+				"label": "Agrupamento",
+				"placeholder": "Introduza o agrupamento da escola"
+			},
+			"name": {
+				"label": "Nome",
+				"placeholder": "Introduza o nome da escola"
+			},
+			"nature": {
+				"label": "Natureza",
+				"placeholder": "Introduza a natureza da escola"
+			},
+			"period_organization": {
+				"label": "Período de organização",
+				"options": {
+					"semester": "Semestre",
+					"trimester": "Trimestre"
+				},
+				"placeholder": "Selecione o período de organização"
+			},
+			"title": "Dados gerais"
+		},
+		"SchoolCreateSectionOperations": {
+			"description": "Estado de validação, atividade e paragens associadas.",
+			"fields": {
+				"is_active": "Escola ativa",
+				"stops": {
+					"label": "Paragens associadas",
+					"placeholder": "Selecione as paragens associadas"
+				},
+				"validation_date": {
+					"label": "Data de validação",
+					"placeholder": "Selecione a data de validação"
+				}
+			},
+			"title": "Estado e ligações"
+		},
+		"SchoolCreateSectionOrganization": {
+			"description": "Operador e contacto da escola.",
+			"fields": {
+				"agency_id": "Operador",
+				"email": {
+					"label": "Email",
+					"placeholder": "Introduza o email da escola"
+				},
+				"url": {
+					"label": "Website",
+					"placeholder": "Introduza o website da escola"
+				}
+			},
+			"title": "Organização e contacto"
+		},
+		"summary": {
+			"title": {
+				"label": "Título"
+			}
+		}
+	},
+	"list": {
+		"AlertsList": {
+			"columns": {
+				"agency_id": {
+					"label": "Operador"
+				}
+			}
+		},
+		"SchoolsListHeader": {
+			"title": "Escolas"
+		},
+		"filters": {
+			"cycle": {
+				"label": "Ciclo",
+				"options": {
+					"artistic": "Ensino artístico",
+					"basic_1": "1.º ciclo",
+					"basic_2": "2.º ciclo",
+					"basic_3": "3.º ciclo",
+					"high_school": "Ensino secundário",
+					"other": "Outro ensino",
+					"pre_school": "Educação pré-escolar",
+					"professional": "Ensino profissional",
+					"special": "Educação especial",
+					"university": "Ensino superior"
+				}
+			},
+			"grouping": {
+				"label": "Agrupamento"
+			},
+			"municipality": {
+				"label": "Município"
+			}
+		}
+	}
+}

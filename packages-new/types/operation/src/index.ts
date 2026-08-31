@@ -7,4 +7,5 @@ export * from './ride-acceptances/index.js';
 export * from './ride-analyses/index.js';
 export * from './rides/index.js';
 export * from './sams/index.js';
+export * from './schools/index.js';
 export * from './vehicles/index.js';
