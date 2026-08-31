@@ -8,7 +8,7 @@ import { useStopsListFilterFacilities } from '@/components/stops/list/StopsListF
 import { useStopsListFilterLifecycleStatus } from '@/components/stops/list/StopsListFilterLifecycleStatus/use-stops-list-filter-lifecycle-status';
 import { useStopsListFilterMunicipality } from '@/components/stops/list/StopsListFilterMunicipality/use-stops-list-filter-municipality';
 import { useStopsListFilterSearch } from '@/components/stops/list/StopsListHeader/use-stops-list-filter-search';
-import { CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/types';
+import { type CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { closeModal, useAgenciesContext, useExportsContext, useLocationsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
