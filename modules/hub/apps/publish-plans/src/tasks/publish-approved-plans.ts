@@ -28,12 +28,22 @@ export async function publishApprovedPlans() {
 	//
 	// For each plan, get the file URL
 
+	const plansWithOperationFiles = await Promise.all(
+		allPlansData.map(async (planData) => {
+			const operationFile = await storageProvider.findById(planData.operation_file_id);
+			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
+			return { operationFile, planData };
+		}),
+	);
+
+	//
+	// Parse the plans
+
 	const approvedPlans: HubPlan[] = [];
 
-	for (const planData of allPlansData) {
+	for (const { operationFile, planData } of plansWithOperationFiles) {
 		try {
-			// Get the operation file URL
-			const operationFile = await storageProvider.findById(planData.operation_file_id);
+			// Check if the operation file exists
 			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
 			// Check if the plans is active
 			const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
