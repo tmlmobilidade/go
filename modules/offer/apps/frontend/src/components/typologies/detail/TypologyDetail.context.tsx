@@ -3,8 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Typology, type UpdateTypologyDto, UpdateTypologySchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -59,16 +58,16 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Typology>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			typologyMutate(updatedItem);
+			typologyMutate(data);
 			typologiesListMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId), 'DELETE', typologyData),
+		fetchFn: async () => await fetchApiData<Typology>({ body: typologyData, method: 'DELETE', url: API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			typologiesListMutate();
@@ -77,10 +76,10 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL_LOCK(typologyId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Typology>({ url: API_ROUTES.offer.TYPOLOGIES_DETAIL_LOCK(typologyId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			typologyMutate(updatedItem);
+			typologyMutate(data);
 			typologiesListMutate();
 		},
 	});

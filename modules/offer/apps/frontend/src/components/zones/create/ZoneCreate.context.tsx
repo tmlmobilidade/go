@@ -3,8 +3,7 @@
 import { closeCreateZoneModal } from '@/components/zones/create/ZoneCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateZoneDto, CreateZoneSchema, Zone } from '@tmlmobilidade/go-types-offer';
-import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -59,12 +58,12 @@ export const ZoneCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_LIST, 'POST', form.getValues()),
-		onSuccess: (createdItem) => {
+		fetchFn: async () => await fetchApiData<Zone>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.ZONES_LIST }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			allZonesMutate();
 			closeCreateZoneModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.ZONES_DETAIL(createdItem._id)));
+			router.push(keepUrlParams(PAGE_ROUTES.offer.ZONES_DETAIL(data._id)));
 		},
 	});
 
