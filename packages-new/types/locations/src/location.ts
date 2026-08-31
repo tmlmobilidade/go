@@ -1,9 +1,9 @@
 /* * */
 
-import { District } from './district.js';
-import { Locality } from './locality.js';
-import { Municipality } from './municipality.js';
-import { Parish } from './parish.js';
+import { District } from './districts/district.js';
+import { Locality } from './localities/locality.js';
+import { Municipality } from './municipalities/municipality.js';
+import { Parish } from './parishes/parish.js';
 
 /**
  * This type represents the aggregated location information,

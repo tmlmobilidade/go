@@ -7,11 +7,11 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Get agencies platform data.
+ * Get municipalities platform data.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listAgenciesHandler(request: FastifyRequest, reply: FastifyReply<StopsAgencyItem[]>) {
+export async function listMunicipalitiesHandler(request: FastifyRequest, reply: FastifyReply<StopsMunicipalityItem[]>) {
 	//
 
 	//

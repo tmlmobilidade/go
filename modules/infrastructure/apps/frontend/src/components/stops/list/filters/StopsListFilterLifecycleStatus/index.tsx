@@ -1,6 +1,5 @@
-'use client';
+/* * */
 
-import { Translations } from '@/lib/translations';
 import { ListFilter } from '@tmlmobilidade/ui';
 
 import { useStopsListFilterLifecycleStatus } from './use-stops-list-filter-lifecycle-status';
@@ -23,14 +22,8 @@ export function StopsListFilterLifecycleStatus() {
 			active={filterLifecycleStatus.isActive}
 			label="Estado"
 			onChange={filterLifecycleStatus.set}
-			options={filterLifecycleStatus.options.map(option => ({
-				...option,
-				label: Translations.LIFECYCLE_STATUS[option.value as keyof typeof Translations.LIFECYCLE_STATUS],
-			}))}
-			isMultiple
+			options={filterLifecycleStatus.options}
 			withToggleAll
 		/>
 	);
-
-	//
 }

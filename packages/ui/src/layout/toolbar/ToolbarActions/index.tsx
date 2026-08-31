@@ -14,7 +14,7 @@ export interface ToolbarActionsItemType {
 
 export interface ToolbarActionsGroupType {
 	actions: ToolbarActionsItemType[]
-	label: string
+	label?: string
 }
 
 interface ToolbarActionsProps {
@@ -39,10 +39,10 @@ export function ToolbarActions({ groups }: PropsWithChildren<ToolbarActionsProps
 			</Menu.Target>
 
 			<Menu.Dropdown>
-				{groups.map(group => (
-					<Fragment key={group.label}>
+				{groups.map((group, index) => (
+					<Fragment key={index}>
 
-						<Menu.Label>{group.label}</Menu.Label>
+						{group.label && <Menu.Label>{group.label}</Menu.Label>}
 
 						{group.actions.map(action => (
 							<Menu.Item

@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const PlansAgencyItemSchema = AgencySchema.pick({
+export const StopsAgencyItemSchema = AgencySchema.pick({
 	_id: true,
 	code: true,
 	name: true,
@@ -16,4 +16,4 @@ export const PlansAgencyItemSchema = AgencySchema.pick({
  * The item schema for listing plans agencies.
  * It is intended for use in the plans module.
  */
-export type PlansAgencyItem = z.infer<typeof PlansAgencyItemSchema>;
+export type StopsAgencyItem = z.infer<typeof StopsAgencyItemSchema>;

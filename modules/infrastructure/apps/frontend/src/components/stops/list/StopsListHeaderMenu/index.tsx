@@ -1,38 +1,37 @@
-/* * */
+'use client';
 
-import { IconFileDownload, IconGardenCart, IconPlus } from '@tabler/icons-react';
-import { ToolbarActions } from '@tmlmobilidade/ui';
-
-import { useStopsListData } from '../use-stops-list-data';
+import { IconFileDownload, IconPlus } from '@tabler/icons-react';
+import { hasPermission } from '@tmlmobilidade/go-types-permissions';
+import { ToolbarActions, useMeData } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
 export function StopsListHeaderMenu() {
 	//
 
-	//
-	// A. Setup variables
+	const { data: meData } = useMeData();
 
-	//
-	// B. Render components
-
-	// <HasPermission action={PermissionCatalog.all.stops.actions.create} scope={PermissionCatalog.all.stops.scope}>
-	// 			<Button label="Nova Paragem" leftSection={<IconPlus size={20} />} onClick={openStopCreateModal} />
-	// 		</HasPermission>
-	// 		<HasPermission action={PermissionCatalog.all.stops.actions.export} scope={PermissionCatalog.all.stops.scope}>
-	// 			<IconButton icon={<IconFileDownload />} onClick={openStopListExportModal} tooltip="Exportar paragens" variant="secondary" />
-	// 		</HasPermission>
-	// 	</Toolbar>
+	const menuActions = useMemo(() => {
+		const actions = [];
+		if (hasPermission(meData.permissions, { action: 'create', scope: 'stops' })) {
+			actions.push({
+				icon: <IconPlus />,
+				label: 'Nova Paragem',
+				onClick: () => {},
+			});
+		}
+		if (hasPermission(meData.permissions, { action: 'export', scope: 'stops' })) {
+			actions.push({
+				icon: <IconFileDownload />,
+				label: 'Exportar Paragens',
+				onClick: () => {},
+			});
+		}
+		return actions;
+	}, [meData.permissions]);
 
 	return (
-		<ToolbarActions groups={[{
-			actions: [
-				{ icon: <IconGardenCart size={20} />, label: 'Paragens', onClick: () => {} },
-				{ icon: <IconPlus size={20} />, label: 'Nova Paragem', onClick: () => {} },
-				{ icon: <IconFileDownload size={20} />, label: 'Exportar Paragens', onClick: () => {} },
-			],
-			label: 'Paragens',
-		}]}
-		/>
+		<ToolbarActions groups={[{ actions: menuActions }]} />
 	);
 }

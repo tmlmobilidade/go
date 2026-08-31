@@ -1,6 +1,6 @@
 'use client';
 
-import { StopsListFilterAgencies } from '@/components/stops/list/filters/StopsListFilterAgencies';
+import { StopsListFilterAgency } from '@/components/stops/list/filters/StopsListFilterAgency';
 import { StopsListFilterConnections } from '@/components/stops/list/filters/StopsListFilterConnections';
 // import { StopsListFilterDistrict } from '@/components/stops/list/StopsListFilterDistrict';
 import { StopsListFilterEquipment } from '@/components/stops/list/filters/StopsListFilterEquipment';
@@ -15,7 +15,7 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 export function StopsListFilterBar() {
 	return (
 		<FiltersBar>
-			<StopsListFilterAgencies />
+			<StopsListFilterAgency />
 			<StopsListFilterLifecycleStatus />
 			<StopsListFilterFacilities />
 			<StopsListFilterConnections />

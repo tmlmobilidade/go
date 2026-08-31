@@ -1,7 +1,7 @@
 'use client';
 
 import { useStopsListData } from '@/components/stops/list/use-stops-list-data';
-import { useStopsListFilterAgencies } from '@/components/stops/list/filters/StopsListFilterAgencies/use-stops-list-filter-agencies';
+import { useStopsListFilterAgencies } from '@/components/stops/list/filters/StopsListFilterAgency/use-stops-list-filter-agency';
 import { useStopsListFilterConnections } from '@/components/stops/list/filters/StopsListFilterConnections/use-stops-list-filter-connections';
 import { useStopsListFilterEquipment } from '@/components/stops/list/filters/StopsListFilterEquipment/use-stops-list-filter-equipment';
 import { useStopsListFilterFacilities } from '@/components/stops/list/filters/StopsListFilterFacilities/use-stops-list-filter-facilities';

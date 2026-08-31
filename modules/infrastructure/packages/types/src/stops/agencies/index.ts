@@ -1,1 +1,1 @@
-export * from './plans-agency-item.js';
+export * from './stops-agency-item.js';

@@ -41,7 +41,7 @@ export async function listAgenciesHandler(request: FastifyRequest, reply: Fastif
 
 	if (!aggregationResult?.length) {
 		return sendErrorApiResponse(reply, {
-			error: 'No rides agencies found for this user.',
+			error: 'No plans agencies found for this user.',
 			status_code: '404',
 		});
 	}
