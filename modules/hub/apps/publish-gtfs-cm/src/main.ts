@@ -160,6 +160,9 @@ export async function main() {
 				source: {
 					url: operationFileUrl,
 				},
+				sqlite_config: {
+					memory: true,
+				},
 				time_range: {
 					date_range: {
 						end: OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date),
