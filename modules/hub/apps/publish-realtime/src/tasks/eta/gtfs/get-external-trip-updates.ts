@@ -1,5 +1,6 @@
 /* * */
 
+import fs from 'fs';
 import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
@@ -44,7 +45,22 @@ export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<
 		const stopIdCache = new Map<string, null | string>();
 		const tripUpdates: GtfsRtTripUpdate[] = [];
 
+		/**
+		 * Processes entities from the external GTFS-RT feed, remapping stop IDs and qualifying trip IDs.
+		 *
+		 * For each trip update entity:
+		 * - Skips if missing a trip update or external trip ID.
+		 * - For each stop time update:
+		 *    - Looks up the corresponding internal stop ID, caching results.
+		 *    - Skips and logs if the stop cannot be mapped to an internal stop ID.
+		 *    - Rewrites the stop_time_update with the internal stop ID if found.
+		 * - If at least one stop time update is valid:
+		 *    - Rewrites the trip update with mapped stop time updates and a qualified trip_id.
+		 *    - Appends it to the outgoing tripUpdates list.
+		 * Skips entities where none of the stops can be mapped.
+		 */
 		for (const entity of externalFeed.entity ?? []) {
+
 			const tripUpdate = entity.trip_update;
 			const externalTripId = tripUpdate?.trip?.trip_id;
 			if (!tripUpdate || !externalTripId) continue;
@@ -57,10 +73,7 @@ export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<
 				let internalStopId = stopIdCache.get(stopTimeUpdate.stop_id);
 				if (internalStopId === undefined) {
 					const foundStop = await goDb.infrastructure.stops.findOne(
-						{
-							'flags.agency_ids': { $in: [feed.agencyId] },
-							'flags.stop_id': stopTimeUpdate.stop_id,
-						},
+						{ 'flags.agency_ids': { $in: [feed.agencyId] },'flags.stop_id': stopTimeUpdate.stop_id },
 						{ projection: { _id: 1 } },
 					);
 					internalStopId = foundStop ? String(foundStop._id) : null;
@@ -88,6 +101,8 @@ export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<
 		}
 
 		Logger.info({ message: `Found ${tripUpdates.length} ${feed.label} trip updates in ${timer.get()}`, spacesAfterOrBefore: 1 });
+
+		fs.writeFileSync('trip-updates.json', JSON.stringify(tripUpdates, null, 2));
 
 		return tripUpdates;
 	} catch (error) {
