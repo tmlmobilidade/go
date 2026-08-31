@@ -3,8 +3,30 @@
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { AlertMessage, Divider, FileUpload, Label, Section, Select } from '@tmlmobilidade/ui';
+import { type FieldErrors } from 'react-hook-form';
 
 import { useValidationCreateContext } from '../ValidationCreateForm.context';
+
+/* * */
+
+function collectErrorMessages(errors: FieldErrors, path = ''): string[] {
+	const messages: string[] = [];
+
+	for (const [key, value] of Object.entries(errors)) {
+		if (!value || typeof value !== 'object') continue;
+
+		const nextPath = path ? `${path}.${key}` : key;
+
+		if ('message' in value && typeof value.message === 'string') {
+			messages.push(`${nextPath}: ${value.message}`);
+			continue;
+		}
+
+		messages.push(...collectErrorMessages(value as FieldErrors, nextPath));
+	}
+
+	return messages;
+}
 
 /* * */
 
@@ -17,6 +39,7 @@ export function ValidationCreateBasicInfo() {
 	const validationCreateContext = useValidationCreateContext();
 	const gtfsAgency = validationCreateContext.form.watch('gtfs_agency');
 	const gtfsFeedInfo = validationCreateContext.form.watch('gtfs_feed_info');
+	const formErrorMessages = collectErrorMessages(validationCreateContext.form.formState.errors);
 
 	//
 	// B. Render components
@@ -27,6 +50,15 @@ export function ValidationCreateBasicInfo() {
 			{validationCreateContext.data.validationError && (
 				<>
 					<AlertMessage title={validationCreateContext.data.validationError.message} variant="danger" />
+					<Divider />
+				</>
+			)}
+
+			{formErrorMessages.length > 0 && (
+				<>
+					{formErrorMessages.map(message => (
+						<AlertMessage key={message} title={message} variant="danger" />
+					))}
 					<Divider />
 				</>
 			)}
