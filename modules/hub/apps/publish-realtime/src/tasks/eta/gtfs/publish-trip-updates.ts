@@ -1,15 +1,19 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { TTL_REALTIME } from '@/config.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { EXTERNAL_FEEDS } from '../external-feeds.js';
 import { cacheEtasFromClickHouseByStop } from './cache-etas-from-clickhouse-by-stop.js';
 import { cacheEtasFromClickHouseByTrip } from './cache-etas-from-clickhouse-by-trip.js';
+import { cacheTripUpdatesByStop } from './cache-trip-updates-by-stop.js';
+import { cacheTripUpdatesByTrip } from './cache-trip-updates-by-trip.js';
 import { getClickHouseTripUpdates } from './get-clickhouse-trip-updates.js';
-import { TTL_REALTIME } from '@/config.js';
+import { getExternalTripUpdates } from './get-external-trip-updates.js';
 
 /* * */
 
@@ -37,13 +41,13 @@ export async function publishTripUpdates() {
 	await cacheEtasFromClickHouseByTrip();
 	await cacheEtasFromClickHouseByStop();
 
-	//
-	// CP TripUpdates
-	// const cpTripUpdates = await getCpTripUpdates();
-	// cpTripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
-	// // Merge CP TripUpdates into the same per-trip / per-stop ETA cache keys
-	// await cacheTripUpdatesByTrip(cpTripUpdates);
-	// await cacheTripUpdatesByStop(cpTripUpdates);
+	for (const feed of EXTERNAL_FEEDS) {
+		Logger.info({ message: `Retrieving TripUpdates from ${feed.label} API...` });
+		const tripUpdates = await getExternalTripUpdates(feed);
+		tripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
+		await cacheTripUpdatesByTrip(tripUpdates);
+		await cacheTripUpdatesByStop(tripUpdates);
+	}
 
 	//
 	// Cache the feed result

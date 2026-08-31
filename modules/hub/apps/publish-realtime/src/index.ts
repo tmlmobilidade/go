@@ -7,6 +7,7 @@ import { publishVehiclesMetadata } from '@/tasks/vehicles/publish-vehicles-metad
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 
 /* * */
 

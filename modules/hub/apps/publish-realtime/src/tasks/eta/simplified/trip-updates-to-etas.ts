@@ -8,6 +8,12 @@ import { getScheduledArrival, getScheduledArrivalUnix, resolveOperationalDate, t
 
 /* * */
 
+/**
+ * Resolves a stop-time event to unix seconds.
+ *
+ * Prefers absolute `time`; otherwise applies `delay` to the event's
+ * `scheduled_time` or the provided schedule-backed `scheduledUnix`.
+ */
 function getStopTimeEventUnix(
 	event: GtfsRtStopTimeEvent | undefined,
 	scheduledUnix?: number,
@@ -22,6 +28,10 @@ function getStopTimeEventUnix(
 	return undefined;
 };
 
+/**
+ * Converts a flat {@link TripStopEta} into the string-valued cache shape
+ * used by per-trip / per-stop Redis maps.
+ */
 export function toCachedEta(eta: TripStopEta): TripStopEtaCached {
 	return {
 		eta_at: String(eta.eta_at),
@@ -34,6 +44,7 @@ export function toCachedEta(eta: TripStopEta): TripStopEtaCached {
 	};
 };
 
+/** Groups flat ETAs by `trip_id`. */
 export function groupEtasByTrip(etas: TripStopEta[]): Map<string, TripStopEta[]> {
 	const byTrip = new Map<string, TripStopEta[]>();
 
@@ -46,6 +57,7 @@ export function groupEtasByTrip(etas: TripStopEta[]): Map<string, TripStopEta[]>
 	return byTrip;
 };
 
+/** Groups flat ETAs by `stop_id`. */
 export function groupEtasByStop(etas: TripStopEta[]): Map<string, TripStopEta[]> {
 	const byStop = new Map<string, TripStopEta[]>();
 
@@ -58,6 +70,19 @@ export function groupEtasByStop(etas: TripStopEta[]): Map<string, TripStopEta[]>
 	return byStop;
 };
 
+/**
+ * Converts one GTFS-RT TripUpdate into flat simplified {@link TripStopEta} rows.
+ *
+ * For each stop-time update with a `stop_id`, resolves arrival (or departure)
+ * unix time — using absolute `time`, or delay against schedule when a
+ * {@link TripScheduleIndex} is provided — and computes `eta_seconds` from now.
+ * Skips stops with no resolvable arrival time. Backfills `stop_sequence` from
+ * the schedule when the feed omits it.
+ *
+ * @param tripUpdate - Source TripUpdate (qualified `trip_id`, internal stop IDs)
+ * @param stopNames - Optional stop ID → display name map
+ * @param scheduleIndex - Optional schedule index for delay/sequence backfill
+ */
 export function tripUpdateToEtas(
 	tripUpdate: GtfsRtTripUpdate,
 	stopNames: ReadonlyMap<string, string> = new Map(),
@@ -110,6 +135,11 @@ export function tripUpdateToEtas(
 	return etas;
 };
 
+/**
+ * Converts many GTFS-RT TripUpdates into flat simplified {@link TripStopEta} rows.
+ *
+ * @see {@link tripUpdateToEtas}
+ */
 export function tripUpdatesToEtas(
 	tripUpdates: GtfsRtTripUpdate[],
 	stopNames: ReadonlyMap<string, string> = new Map(),
