@@ -72,7 +72,8 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 	};
 
 	const handleResourceToggle = (resource: Record<string, unknown>) => {
-		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, resources: resource, scope });
+		const currentResourceValues = 'resources' in currentPermissionEntry ? currentPermissionEntry?.resources : {};
+		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, resources: { ...currentResourceValues, ...resource }, scope });
 		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
 		onResourceToggle(validatedPermission.data);
 	};
