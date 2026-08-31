@@ -21,6 +21,7 @@
 		"@tmlmobilidade/go-infrastructure-pckg-organize": "*",
 		"@tmlmobilidade/go-schools-pckg-types": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
+		"@tmlmobilidade/go-types-location": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
