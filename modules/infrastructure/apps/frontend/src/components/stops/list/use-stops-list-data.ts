@@ -55,8 +55,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 		locality_ids: filterLocality.value,
 		municipality_ids: filterMunicipality.value,
 		parish_ids: filterParish.value,
-		search: filterSearch.value,
-	}), [filterSearch.value, filterAgency.value, filterMunicipality.value, filterDistrict.value, filterLocality.value, filterParish.value]);
+	}), [filterAgency.value, filterMunicipality.value, filterDistrict.value, filterLocality.value, filterParish.value]);
 
 	//
 	// C. Fetch data

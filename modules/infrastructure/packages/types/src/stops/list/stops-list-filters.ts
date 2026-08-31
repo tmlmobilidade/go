@@ -31,10 +31,6 @@ export const StopsListFiltersSchema = z.object({
 		.array(z.string())
 		.default([]),
 
-	search: z
-		.string()
-		.optional(),
-
 });
 
 export type StopsListFilters = z.infer<typeof StopsListFiltersSchema>;
