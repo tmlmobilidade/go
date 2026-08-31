@@ -303,10 +303,10 @@ export async function main() {
 	const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
 
 	await storageProvider.replace(fileStream, {
-		_id: 'gtfs-latest',
+		_id: 'gtfs-cm-latest',
 		created_by: 'system',
 		name: `${context.run_id}.zip`,
-		resource_id: 'gtfs-latest',
+		resource_id: 'gtfs-cm-latest',
 		scope: 'plans',
 		size: fs.statSync(`${context.workdir.path}/${context.run_id}.zip`).size,
 		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${context.run_id}.zip`)),
