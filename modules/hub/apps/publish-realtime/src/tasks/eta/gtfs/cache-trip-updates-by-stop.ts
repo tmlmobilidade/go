@@ -2,7 +2,8 @@
 
 import { TTL_REALTIME } from '@/config.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type GtfsRtFeedMessage, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
+import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 
 /* * */
 
@@ -10,8 +11,8 @@ import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
  * Upserts in-memory GTFS-RT TripUpdates into the per-stop ETA cache.
  *
  * Splits each TripUpdate into one entry per `stop_time_update`, groups by
- * `stop_id`, then merges into the existing Redis value at
- * `hub:v1:realtime:eta:by-stop:{stopId}:gtfs` (replace same `trip_id`, append otherwise).
+ * `stop_id`, then merges into the existing Redis FeedMessage at
+ * `hub:v1:realtime:eta:by-stop:{stopId}:gtfs` (replace same entity `id`, append otherwise).
  *
  * Use this for external feeds that produce TripUpdate objects in process
  * (e.g. CP). For a full rebuild from ClickHouse SQL, use
@@ -40,15 +41,16 @@ export async function cacheTripUpdatesByStop(tripUpdates: GtfsRtTripUpdate[]) {
 
 	await Promise.all([...byStopUpdates.entries()].map(async ([stopId, updates]) => {
 		const existing = await cacheDb.get(`hub:v1:realtime:eta:by-stop:${stopId}:gtfs`);
-		const merged: GtfsRtTripUpdate[] = existing ? JSON.parse(existing) : [];
+		const feed: GtfsRtFeedMessage = existing ? JSON.parse(existing) : getEmptyGtfsRtFeedMessage();
 
 		for (const tripUpdate of updates) {
-			const index = merged.findIndex(tu => tu.trip.trip_id === tripUpdate.trip.trip_id);
-			if (index >= 0) merged[index] = tripUpdate;
-			else merged.push(tripUpdate);
+			const entity = { id: tripUpdate.trip.trip_id, trip_update: tripUpdate };
+			const index = feed.entity.findIndex(e => e.id === entity.id);
+			if (index >= 0) feed.entity[index] = entity;
+			else feed.entity.push(entity);
 		}
 
-		await cacheDb.set(`hub:v1:realtime:eta:by-stop:${stopId}:gtfs`, JSON.stringify(merged), TTL_REALTIME);
+		await cacheDb.set(`hub:v1:realtime:eta:by-stop:${stopId}:gtfs`, JSON.stringify(feed), TTL_REALTIME);
 	}));
 
 	//

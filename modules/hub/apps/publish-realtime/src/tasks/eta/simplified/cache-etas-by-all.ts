@@ -18,7 +18,7 @@ import { TTL_REALTIME } from '@/config.js';
  *
  * @param etas - Trip-stop ETAs to merge into the all-ETAs cache
  */
-export async function cacheEtasInAll(etas: TripStopEta[]) {
+export async function cacheEtasByAll(etas: TripStopEta[]) {
 	//
 
 	if (!etas.length) return;
