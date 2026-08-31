@@ -1,30 +1,35 @@
 /* * */
 
+import { type MergedGtfsExportConfig } from '@/types.js';
+import { validatePlan } from '@/validate-plan.js';
 import { Files } from '@tmlmobilidade/files';
-import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
-import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDateInt, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { CsvWriter } from '@tmlmobilidade/writers';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
-import { evaluatePlan } from './evaluate-plan.js';
-import { exportAgencyFile } from './exports/agency.js';
-import { exportCalendarDatesFile } from './exports/calendar-dates.js';
-import { exportFeedInfoFile } from './exports/feed-info.js';
-import { exportPlansFile } from './exports/plans.js';
-import { exportRoutesFile } from './exports/routes.js';
-import { exportShapesFile } from './exports/shapes.js';
-import { exportStopTimesFile } from './exports/stop-times.js';
-import { exportStopsFile } from './exports/stops.js';
-import { exportTripsFile } from './exports/trips.js';
-import { initExportGtfsContext } from './utils/init-contex.js';
+/* * */
+
+import { exportAgencyFile } from '@/exports/agency.js';
+import { exportCalendarDatesRows } from '@/exports/calendar-dates.js';
+import { exportDatesFile } from '@/exports/dates.js';
+import { exportFeedInfoFile } from '@/exports/feed-info.js';
+import { exportMunicipalitiesFile } from '@/exports/municipalities.js';
+import { exportPeriodsFile } from '@/exports/periods.js';
+import { exportPlansFile } from '@/exports/plans.js';
+import { exportRoutesFile } from '@/exports/routes.js';
+import { exportShapesRows } from '@/exports/shapes.js';
+import { exportStopTimesRows } from '@/exports/stop-times.js';
+import { exportStopsFile } from '@/exports/stops.js';
+import { exportTripsRows } from '@/exports/trips.js';
 
 /* * */
 
@@ -40,9 +45,9 @@ export async function main() {
 
 	try {
 		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-gtfs', message: 'Sentry Hub Publish GTFS initialized', module: 'hub', severity: 'info' });
+		Logger.startNodeLogs({ app: 'publish-gtfs-cm', message: 'Sentry Hub Publish GTFS CM initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS' });
+		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS CM' });
 	}
 
 	//
@@ -53,31 +58,38 @@ export async function main() {
 	const globalTimer = new Timer();
 
 	//
-	// Initialize context for the export process.
+	// Setup the global export config object
+	// that will be used throughout the export process.
+	// This includes the working directory, the version string,
+	// and the CSV writers for each GTFS file.
 
-	const context = initExportGtfsContext();
+	const exportVersion = Dates.now('Europe/Lisbon').toFormat('yyyyLLdd-HHmm-ss');
 
-	//
-	// Prepare the working directory.
-
-	try {
-		fs.rmSync(context.workdir.path, { force: true, recursive: true });
-		fs.mkdirSync(context.workdir.path, { recursive: true });
-		Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
-	} catch (error) {
-		Logger.error({ error, message: `Error preparing workdir path "${context.workdir.path}".` });
-		process.exit(1);
-	}
-
-	//
-	// Setup the necessary variables for the export process.
+	const exportConfig: MergedGtfsExportConfig = {
+		version: exportVersion,
+		workdir: `/tmp/${exportVersion}`,
+		writers: {
+			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 10000 }),
+			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 10000 }),
+			dates: new CsvWriter('dates.txt', `/tmp/${exportVersion}/dates.txt`, { batch_size: 10000 }),
+			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 10000 }),
+			municipalities: new CsvWriter('municipalities.txt', `/tmp/${exportVersion}/municipalities.txt`, { batch_size: 10000 }),
+			periods: new CsvWriter('periods.txt', `/tmp/${exportVersion}/periods.txt`, { batch_size: 10000 }),
+			plans: new CsvWriter('plans.txt', `/tmp/${exportVersion}/plans.txt`, { batch_size: 10000 }),
+			routes: new CsvWriter('routes.txt', `/tmp/${exportVersion}/routes.txt`, { batch_size: 10000 }),
+			shapes: new CsvWriter('shapes.txt', `/tmp/${exportVersion}/shapes.txt`, { batch_size: 10000 }),
+			stop_times: new CsvWriter('stop_times.txt', `/tmp/${exportVersion}/stop_times.txt`, { batch_size: 10000 }),
+			stops: new CsvWriter('stops.txt', `/tmp/${exportVersion}/stops.txt`, { batch_size: 10000 }),
+			trips: new CsvWriter('trips.txt', `/tmp/${exportVersion}/trips.txt`, { batch_size: 10000 }),
+		},
+	};
 
 	let farthestDateFound: OperationalDateInt;
 
 	const referencedAgencyIds = new Set<string>();
-	const routesMarkedForFinalExport: Record<string, GtfsRoutes> = {};
+	const routesMarkedForFinalExport: Record<string, GtfsStrictV29Routes> = {};
 
-	const currentDate = Dates.now('Europe/Lisbon').operational_date_int;
+	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
 
 	//
 	// Retrieve all Plans from the database
@@ -109,7 +121,7 @@ export async function main() {
 	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
 
 	//
-	// Mark plans as 'waiting' in the database.
+	// Mark as plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
 		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'waiting', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
@@ -133,9 +145,9 @@ export async function main() {
 			// and mark it as 'skipped' in the database.
 			// Otherwise, mark it as 'processing'.
 
-			const isEligiblePlan = await evaluatePlan(planData);
+			const isValidPlan = validatePlan(planData);
 
-			if (!isEligiblePlan) {
+			if (!isValidPlan) {
 				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'skipped', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;
@@ -162,16 +174,16 @@ export async function main() {
 				},
 				time_range: {
 					date_range: {
-						end: OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date),
-						start: OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_start_date),
+						end: GtfsDateSchema.parse(planData.gtfs_feed_info.feed_end_date),
+						start: GtfsDateSchema.parse(planData.gtfs_feed_info.feed_start_date),
 					},
 				},
 			};
 
-			if (currentDate >= planData.gtfs_feed_info.feed_start_date && currentDate <= planData.gtfs_feed_info.feed_end_date) {
+			if (currentOperationalDate >= OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_start_date) && currentOperationalDate <= OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date)) {
 				// If the plan is currently active, set the start date
 				// to a far past date to be able to provide a full year of data.
-				importConfig.time_range.date_range.start = OperationalDateIntSchema.parse('20010101');
+				importConfig.time_range.date_range.start = GtfsDateSchema.parse('20010101');
 				// Update the flag
 				thisIsAnActivePlan = true;
 			}
@@ -193,10 +205,10 @@ export async function main() {
 
 			const exportTimer = new Timer();
 
-			await exportTripsFile(context, planData, importedGtfsSql);
-			await exportStopTimesFile(context, planData, importedGtfsSql);
-			await exportShapesFile(context, planData, importedGtfsSql);
-			await exportCalendarDatesFile(context, planData, importedGtfsSql);
+			await exportTripsRows(planData, importedGtfsSql, exportConfig);
+			await exportStopTimesRows(planData, importedGtfsSql, exportConfig);
+			await exportShapesRows(planData, importedGtfsSql, exportConfig);
+			await exportCalendarDatesRows(planData, importedGtfsSql, exportConfig);
 
 			Logger.success(`Exported plan ${planData._id} files in ${exportTimer.get()}.`);
 
@@ -212,10 +224,9 @@ export async function main() {
 			// This block only determines which routes should be exported; no files are written here.
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
-				const routeData: GtfsRoutes = routeItem;
-				const publicRouteId = getQualifiedRouteId(planData.agency_id, routeData.route_id);
-				if (thisIsAnActivePlan || !routesMarkedForFinalExport[publicRouteId]) {
-					routesMarkedForFinalExport[publicRouteId] = { ...routeData, agency_id: planData.agency_id };
+				const routeData: GtfsStrictV29Routes = routeItem;
+				if (thisIsAnActivePlan || !routesMarkedForFinalExport[routeData.route_id]) {
+					routesMarkedForFinalExport[routeData.route_id] = routeData;
 				}
 			}
 
@@ -227,14 +238,14 @@ export async function main() {
 
 			referencedAgencyIds.add(planData.agency_id);
 
-			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
-				? planData.gtfs_feed_info.feed_end_date
+			farthestDateFound = !farthestDateFound || OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date) > farthestDateFound
+				? OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date)
 				: farthestDateFound;
 
 			//
 			// Finally, write the plan entry into the plans.txt file.
 
-			await exportPlansFile(context, planData);
+			await exportPlansFile(planData.agency_id, planData._id, validateOperationalDate(planData.gtfs_feed_info.feed_start_date), validateOperationalDate(planData.gtfs_feed_info.feed_end_date), exportConfig);
 
 			//
 			// Mark the plan as complete in the database.
@@ -263,10 +274,13 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await exportRoutesFile(context, Object.values(routesMarkedForFinalExport));
-	await exportStopsFile(context, Array.from(referencedAgencyIds));
-	await exportAgencyFile(context, Array.from(referencedAgencyIds));
-	await exportFeedInfoFile(context, currentDate, farthestDateFound);
+	await exportStopsFile(exportConfig);
+	await exportDatesFile(exportConfig);
+	await exportPeriodsFile(exportConfig);
+	await exportMunicipalitiesFile(exportConfig);
+	await exportRoutesFile(Object.values(routesMarkedForFinalExport), exportConfig);
+	await exportAgencyFile(Array.from(referencedAgencyIds), exportConfig);
+	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, exportConfig);
 
 	//
 	// Zip the exported GTFS files into a single archive.
@@ -274,18 +288,16 @@ export async function main() {
 
 	const zipTimer = new Timer();
 
-	Logger.info({ message: 'Zipping GTFS export...' });
-
 	const outputZip = new ZipFile();
 
 	await new Promise<void>((resolve) => {
 		// Read the working directory contents
-		const workdirDirContents = fs.readdirSync(context.workdir.path, { withFileTypes: true });
+		const workdirDirContents = fs.readdirSync(exportConfig.workdir, { withFileTypes: true });
 		// Add each file to the zip
-		workdirDirContents.forEach(outputDirFile => outputZip.addFile(`${context.workdir.path}/${outputDirFile.name}`, outputDirFile.name));
+		workdirDirContents.forEach(outputDirFile => outputZip.addFile(`${exportConfig.workdir}/${outputDirFile.name}`, outputDirFile.name));
 		// Setup a write stream to the final zip file
 		outputZip.outputStream
-			.pipe(fs.createWriteStream(`${context.workdir.path}/${context.run_id}.zip`))
+			.pipe(fs.createWriteStream(`${exportConfig.workdir}/${exportConfig.version}.zip`))
 			.on('close', resolve);
 		// Finalize the zip creation, which triggers
 		// the piping and writing process.
@@ -298,18 +310,16 @@ export async function main() {
 	// Upload the GTFS zip file to the Files collection,
 	// which handles storage and retrieval.
 
-	Logger.info({ message: 'Uploading GTFS zip file to Files collection...' });
-
-	const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
+	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
 
 	await storageProvider.replace(fileStream, {
 		_id: 'gtfs-cm-latest',
 		created_by: 'system',
-		name: `${context.run_id}.zip`,
+		name: `${exportConfig.version}.zip`,
 		resource_id: 'gtfs-cm-latest',
 		scope: 'plans',
-		size: fs.statSync(`${context.workdir.path}/${context.run_id}.zip`).size,
-		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${context.run_id}.zip`)),
+		size: fs.statSync(`${exportConfig.workdir}/${exportConfig.version}.zip`).size,
+		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${exportConfig.version}.zip`)),
 		updated_by: 'system',
 	});
 
@@ -317,9 +327,9 @@ export async function main() {
 	// Finalize the export process
 
 	try {
-		fs.rmSync(context.workdir.path, { force: true, recursive: true });
+		fs.rmSync(exportConfig.workdir, { force: true, recursive: true });
 	} catch (error) {
-		Logger.error({ error, message: `Error removing export workdir "${context.workdir.path}".` });
+		Logger.error({ error, message: `Error removing export workdir "${exportConfig.workdir}".` });
 	}
 
 	Logger.terminate(`Run took ${globalTimer.get()}`);

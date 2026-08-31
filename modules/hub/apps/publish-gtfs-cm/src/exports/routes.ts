@@ -1,56 +1,45 @@
-/* eslint-disable perfectionist/sort-objects */
-/* eslint-disable perfectionist/sort-interfaces */
+/* * */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
-import { GtfsBinary, type GtfsRouteType } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29PathType, type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
+import { type HubGtfsExportRoutesInput, HubGtfsExportRoutesSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
-/* * */
+import { type ExportGtfsContext } from '../types/context.js';
 
-export interface ExportedRoutesRow {
-	agency_id: string
-	line_id: string
-	line_short_name: string
-	line_long_name: string
-	route_id: string
-	route_short_name: string
-	route_long_name: string
-	route_type: GtfsRouteType
-	route_color: string
-	route_text_color: string
-	path_type: GtfsStrictV29PathType
-	circular: GtfsBinary
-	school: GtfsBinary
-}
-
-/* * */
-
-export async function exportRoutesFile(routesList: GtfsStrictV29Routes[], exportConfig: MergedGtfsExportConfig) {
+/**
+ * Export the routes.txt file.
+ * @param context The export context.
+ * @param routesList The list of routes to export.
+ */
+export async function exportRoutesFile(context: ExportGtfsContext, routesList: GtfsRoutes[]) {
 	//
+
+	const timer = new Timer();
+
+	Logger.info({ message: 'Exporting routes.txt file...' });
 
 	const sortedRoutesList = routesList.sort((a, b) => a.route_id.localeCompare(b.route_id));
 
 	for (const routeData of sortedRoutesList) {
-		const parsedRouteRow: ExportedRoutesRow = {
+		const parsedRouteRow: HubGtfsExportRoutesInput = {
 			agency_id: routeData.agency_id,
-			line_id: routeData.line_id,
-			line_short_name: routeData.line_short_name,
-			line_long_name: routeData.line_long_name,
-			route_id: routeData.route_id,
-			route_short_name: routeData.route_short_name,
-			route_long_name: routeData.route_long_name,
-			route_type: routeData.route_type,
+			cemv_support: routeData.cemv_support,
+			continuous_drop_off: routeData.continuous_drop_off,
+			continuous_pickup: routeData.continuous_pickup,
 			route_color: routeData.route_color,
+			route_id: getQualifiedRouteId(routeData.agency_id, routeData.route_id),
+			route_long_name: routeData.route_long_name,
+			route_short_name: routeData.route_short_name,
 			route_text_color: routeData.route_text_color,
-			path_type: routeData.path_type,
-			circular: routeData.circular,
-			school: routeData.school,
+			route_type: routeData.route_type,
 		};
-		await exportConfig.writers.routes.write(parsedRouteRow);
+		const validatedRouteRow = HubGtfsExportRoutesSchema.parse(parsedRouteRow);
+		await context.writers.routes.write(validatedRouteRow);
 	}
 
-	await exportConfig.writers.routes.flush();
+	await context.writers.routes.flush();
 
-	Logger.info({ message: 'Exported routes.txt file.' });
+	Logger.success(`Exported routes.txt file in ${timer.get()}.`);
 }

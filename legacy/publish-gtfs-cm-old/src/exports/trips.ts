@@ -1,0 +1,53 @@
+/* eslint-disable perfectionist/sort-objects */
+/* eslint-disable perfectionist/sort-interfaces */
+
+import { type MergedGtfsExportConfig } from '@/types.js';
+import { type GtfsTernary, type GtfsTripDirection, type GtfsWheelchairBoarding } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { Logger } from '@tmlmobilidade/logger';
+
+/* * */
+
+export interface ExportedTripsRow {
+	route_id: string
+	service_id: string
+	trip_id: string
+	pattern_id: string
+	trip_headsign: string
+	direction_id: GtfsTripDirection
+	shape_id: string
+	wheelchair_accessible: GtfsWheelchairBoarding
+	bikes_allowed: GtfsTernary
+	cars_allowed: GtfsTernary
+	calendar_desc: string
+}
+
+/* * */
+
+export async function exportTripsRows(planData: Plan, sqlTables: GtfsSQLTables, exportConfig: MergedGtfsExportConfig) {
+	//
+
+	for await (const tripItem of sqlTables.trips.stream('ORDER BY trip_id ASC')) {
+		const tripData: GtfsStrictV29Trips = tripItem;
+		const parsedTripsRow: ExportedTripsRow = {
+			route_id: tripData.route_id,
+			service_id: `[${planData._id}]${tripData.service_id}`,
+			trip_id: `[${planData._id}]${tripData.trip_id}`,
+			pattern_id: tripData.pattern_id,
+			trip_headsign: tripData.trip_headsign,
+			direction_id: tripData.direction_id,
+			shape_id: `[${planData._id}]${tripData.shape_id}`,
+			wheelchair_accessible: tripData.wheelchair_accessible ?? '0',
+			bikes_allowed: tripData.bikes_allowed ?? '0',
+			cars_allowed: '0',
+			calendar_desc: '',
+		};
+		await exportConfig.writers.trips.write(parsedTripsRow);
+	}
+
+	await exportConfig.writers.trips.flush();
+
+	Logger.info({ message: 'Exported trip.txt file.' });
+}

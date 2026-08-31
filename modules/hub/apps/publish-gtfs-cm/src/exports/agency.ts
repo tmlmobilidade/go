@@ -1,55 +1,47 @@
-/* eslint-disable perfectionist/sort-objects */
-/* eslint-disable perfectionist/sort-interfaces */
-
-import { type MergedGtfsExportConfig } from '@/types.js';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
-
 /* * */
 
-export interface ExportedAgencyRow {
-	agency_id: string
-	agency_name: string
-	agency_email: string
-	agency_phone: string
-	agency_url: string
-	agency_fare_url: string
-	agency_lang: string
-	agency_timezone: string
-	cemv_support: 0 | 1 | 2
-}
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type HubGtfsExportAgencyInput, HubGtfsExportAgencySchema } from '@tmlmobilidade/go-types-hub';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
+
+import { type ExportGtfsContext } from '../types/context.js';
 
 /**
  * Export the agency.txt file.
+ * @param context The export context.
  * @param agencyIds The list of agency IDs to export.
- * @param exportConfig The export configuration.
  */
-export async function exportAgencyFile(agencyIds: string[], exportConfig: MergedGtfsExportConfig) {
+export async function exportAgencyFile(context: ExportGtfsContext, agencyIds: string[]) {
 	//
+
+	const timer = new Timer();
+
+	Logger.info({ message: 'Exporting agency.txt file...' });
 
 	//
 	// Get agencies data from the database.
 
-	const foundAgenciesData = await goDb.core.agencies.findMany(
-		{ _id: { $in: agencyIds } },
-	);
+	const foundAgenciesData = await goDb.core.agencies.findMany({ _id: { $in: agencyIds } });
 
 	for (const agencyData of foundAgenciesData) {
-		const parsedAgencyRow: ExportedAgencyRow = {
-			agency_id: agencyData.code,
-			agency_name: agencyData.public_name || agencyData.name,
+		const parsedAgencyRow: HubGtfsExportAgencyInput = {
+			agency_code: agencyData.code,
 			agency_email: agencyData.public_email,
-			agency_phone: agencyData.phone,
-			agency_url: agencyData.website_url,
 			agency_fare_url: agencyData.fare_url,
-			agency_lang: 'pt',
+			agency_id: agencyData._id,
+			agency_lang: agencyData.primary_language,
+			agency_name: agencyData.public_name || agencyData.name,
+			agency_phone: agencyData.phone,
 			agency_timezone: agencyData.timezone,
-			cemv_support: 0,
+			agency_url: agencyData.website_url,
+			cemv_support: '0',
 		};
-		await exportConfig.writers.agency.write(parsedAgencyRow);
+		const validatedAgencyRow = HubGtfsExportAgencySchema.parse(parsedAgencyRow);
+		await context.writers.agency.write(validatedAgencyRow);
 	}
 
-	await exportConfig.writers.agency.flush();
+	await context.writers.agency.flush();
 
-	Logger.info({ message: 'Exported agency.txt file.' });
+	Logger.success(`Exported agency.txt file in ${timer.get()}.`);
 }
