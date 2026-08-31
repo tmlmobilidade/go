@@ -71,7 +71,7 @@ export function StopsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: StopNormalized) => {
-		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(String(item._id))));
+		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_GET(String(item._id))));
 	};
 
 	//

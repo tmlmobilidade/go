@@ -138,7 +138,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			form.reset();
 			unblock();
 			allStopsMutate();
-			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(updatedItem._id.toString())));
+			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_GET(updatedItem._id.toString())));
 			closeStopCreateModal();
 		},
 	});

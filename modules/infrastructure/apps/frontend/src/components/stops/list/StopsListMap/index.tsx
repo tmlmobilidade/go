@@ -20,7 +20,7 @@ export function StopsListMap() {
 	// B. Handle actions
 
 	const handleStopClick = (value: MapOverlayMultipleStopsDataProps) => {
-		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(String(value.id))));
+		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_GET(String(value.id))));
 	};
 
 	//
