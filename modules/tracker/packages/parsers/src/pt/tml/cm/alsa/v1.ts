@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type RawVehicleEventPtTmlCmAlsaV1, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

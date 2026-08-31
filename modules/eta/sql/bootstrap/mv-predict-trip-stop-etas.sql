@@ -79,7 +79,7 @@ WITH
             cn.latitude                 AS current_node_latitude,
             cn.longitude                AS current_node_longitude,
             lp.position_created_at      AS position_created_at,
-            fromUnixMilliseconds64Milli(lp.position_created_at) AS pos_dt
+            fromUnixTimestamp64Milli(lp.position_created_at) AS pos_dt
         FROM latest_pos AS lp
         INNER JOIN eta.curr_rides AS d ON lp.trip_id = d.trip_id
         LEFT JOIN eta.hist_shape_nodes AS cn
