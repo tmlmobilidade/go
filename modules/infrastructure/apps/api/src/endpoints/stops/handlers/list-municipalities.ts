@@ -54,7 +54,7 @@ export async function listMunicipalitiesHandler(request: FastifyRequest<{ Body: 
 	//
 	// Parse and return the result
 
-	if (!aggregationResult?.length) {
+	if (!stopsMunicipalityItems?.length) {
 		return sendErrorApiResponse(reply, {
 			error: 'No stops municipalities found for this user.',
 			status_code: '404',

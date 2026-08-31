@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
