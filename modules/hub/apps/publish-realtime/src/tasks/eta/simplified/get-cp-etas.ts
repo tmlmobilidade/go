@@ -22,6 +22,13 @@ async function getStopNames(stopIds: string[]): Promise<Map<string, string>> {
 	return new Map(stops.map(stop => [String(stop._id), stop.name]));
 };
 
+/**
+ * Builds simplified trip-stop ETAs from the CP GTFS-RT feed.
+ *
+ * Converts CP TripUpdates into `TripStopEta[]` using stop names and the CP
+ * schedule index. Pass the result to {@link cacheEtasByTrip},
+ * {@link cacheEtasByStop}, and {@link cacheEtasInAll} to merge into cache.
+ */
 export async function getCpEtas(): Promise<TripStopEta[]> {
 	//
 
