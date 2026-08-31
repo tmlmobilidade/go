@@ -5,7 +5,20 @@ import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 
 /* * */
 
-export async function cacheGtfsTripUpdatesByStop(tripUpdates: GtfsRtTripUpdate[]) {
+/**
+ * Upserts in-memory GTFS-RT TripUpdates into the per-stop ETA cache.
+ *
+ * Splits each TripUpdate into one entry per `stop_time_update`, groups by
+ * `stop_id`, then merges into the existing Redis value at
+ * `hub:v1:realtime:eta:by-stop:{stopId}:gtfs` (replace same `trip_id`, append otherwise).
+ *
+ * Use this for external feeds that produce TripUpdate objects in process
+ * (e.g. CP). For a full rebuild from ClickHouse SQL, use
+ * {@link cacheEtasFromClickHouseByStop} instead.
+ *
+ * @param tripUpdates - TripUpdates to merge into the stop-keyed cache
+ */
+export async function cacheTripUpdatesByStop(tripUpdates: GtfsRtTripUpdate[]) {
 	//
 
 	const byStopUpdates = new Map<string, GtfsRtTripUpdate[]>();

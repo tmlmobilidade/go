@@ -8,7 +8,18 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-export async function cacheGtfsByStop() {
+/**
+ * Writes the per-stop ETA Redis cache from ClickHouse Query Results.
+ *
+ * Runs `select-eta-by-stop-gtfs.sql`, which returns one pre-aggregated JSON
+ * blob of GTFS-RT TripUpdates per stop, then writes each to
+ * `hub:v1:realtime:eta:by-stop:{stopId}:gtfs`.
+ *
+ * Use this for the main ClickHouse-sourced ETA pipeline (full replace).
+ * For merging in-memory TripUpdates from an external feed (e.g. CP), use
+ * {@link cacheTripUpdatesByStop} instead.
+ */
+export async function cacheEtasFromClickHouseByStop() {
 	//
 
 	const timer = new Timer();

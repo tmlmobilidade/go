@@ -6,12 +6,9 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { cacheGtfsByStop } from './cache-gtfs-by-stop.js';
-import { cacheGtfsByTrip } from './cache-gtfs-by-trip.js';
-import { cacheGtfsTripUpdatesByStop } from './cache-gtfs-trip-updates-by-stop.js';
-import { cacheGtfsTripUpdatesByTrip } from './cache-gtfs-trip-updates-by-trip.js';
+import { cacheEtasFromClickHouseByStop } from './cache-etas-from-clickhouse-by-stop.js';
+import { cacheEtasFromClickHouseByTrip } from './cache-etas-from-clickhouse-by-trip.js';
 import { getClickHouseTripUpdates } from './get-clickhouse-trip-updates.js';
-import { getCpTripUpdates } from './get-cp-trip-updates.js';
 
 /* * */
 
@@ -35,17 +32,17 @@ export async function publishTripUpdates() {
 	// Get Clickhouse TripUpdates
 	const clickhouseTripUpdates = await getClickHouseTripUpdates();
 	clickhouseTripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
-	// These come already from clickhouse as by-trip and by-stop
-	await cacheGtfsByTrip();
-	await cacheGtfsByStop();
+	// Rebuild per-trip / per-stop ETA cache from ClickHouse SQL aggregations
+	await cacheEtasFromClickHouseByTrip();
+	await cacheEtasFromClickHouseByStop();
 
 	//
 	// CP TripUpdates
 	// const cpTripUpdates = await getCpTripUpdates();
 	// cpTripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
-	// // Cache the CP trip updates by trip and stop
-	// await cacheGtfsTripUpdatesByTrip(cpTripUpdates);
-	// await cacheGtfsTripUpdatesByStop(cpTripUpdates);
+	// // Merge CP TripUpdates into the same per-trip / per-stop ETA cache keys
+	// await cacheTripUpdatesByTrip(cpTripUpdates);
+	// await cacheTripUpdatesByStop(cpTripUpdates);
 
 	//
 	// Cache the feed result

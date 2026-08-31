@@ -8,7 +8,18 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-export async function cacheGtfsByTrip() {
+/**
+ * Rebuilds the per-trip ETA cache from ClickHouse.
+ *
+ * Runs `select-eta-by-trip-gtfs.sql`, which returns one pre-aggregated JSON
+ * TripUpdate per trip, then writes each to
+ * `hub:v1:realtime:eta:by-trip:{tripId}:gtfs`.
+ *
+ * Use this for the main ClickHouse-sourced ETA pipeline (full replace).
+ * For writing in-memory TripUpdates from an external feed (e.g. CP), use
+ * {@link cacheTripUpdatesByTrip} instead.
+ */
+export async function cacheEtasFromClickHouseByTrip() {
 	//
 
 	const timer = new Timer();
