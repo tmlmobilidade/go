@@ -38,7 +38,8 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 	const currentPermissionEntry = enabledPermissions?.find(p => p.scope === scope && p.action === configAction.action);
 
 	const hasPermissionFromRole = useMemo(() => {
-		if (!enabledRoleIds || enabledRoleIds.length === 0) return false;
+		if (!rolesData?.length) return false;
+		if (!enabledRoleIds?.length) return false;
 		return hasRolePermission(scope, configAction.action, enabledRoleIds, rolesData);
 	}, [scope, configAction.action, enabledRoleIds, rolesData]);
 

@@ -22,7 +22,7 @@ export function UsersDetail() {
 	//
 	// A. Setup variables
 
-	const { isLoading } = useUsersDetailData();
+	const { data: userData, isLoading } = useUsersDetailData();
 
 	const { capabilities, form } = useUsersDetailFormContext();
 
@@ -84,6 +84,7 @@ export function UsersDetail() {
 					description={item.description}
 					disabled={!capabilities.editEnabled}
 					enabledPermissions={permissionsValue}
+					enabledRoleIds={userData?.role_ids}
 					municipalitiesOptions={usersMunicipalitiesOptions}
 					onResourceToggle={handlePermissionResourceToggle}
 					onToggle={handlePermissionToggle}
