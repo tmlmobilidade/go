@@ -10,7 +10,7 @@ import { PlansPermissionScopeSchema } from './scope.js';
 
 export const PlansPermissionSchema = z.object({
 	action: PlansPermissionActionsSchema,
-	resources: PlansPermissionResourcesSchema.default({ agency_ids: [] }),
+	resources: PlansPermissionResourcesSchema.default({}),
 	scope: PlansPermissionScopeSchema,
 });
 

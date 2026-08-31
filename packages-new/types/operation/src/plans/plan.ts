@@ -16,7 +16,7 @@ export const PlanSchema = BaseDocumentSchema.extend({
 		hub_gtfs: PlanAppStatusSchema,
 		hub_schedules: PlanAppStatusSchema,
 		merger: PlanAppStatusSchema,
-	}),
+	}).default({}),
 	gtfs_agency: GtfsStrictV30AgencySchema,
 	gtfs_feed_info: GtfsStrictV30FeedInfoSchema,
 	hash: z.string(),

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { CALENDAR_DATE_FORMAT, type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/lib/date-format.js';
-import { type TimezoneIdentified, TimezoneIdentifiedValues } from '@tmlmobilidade/go-types-shared';
+import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@tmlmobilidade/go-types-shared';
 import { type CalendarDate, type OperationalDate, type OperationalDateInt, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
 
@@ -64,7 +64,7 @@ export class Dates {
 
 	static get TIMEZONE_LIST() { return TimezoneIdentifiedValues; }
 
-	static get TIMEZONE_LIST_VALUES() { return TimezoneIdentifiedValues; }
+	static get TIMEZONE_LIST_VALUES() { return TimezoneIdentifiedSchema.Values; }
 
 	/**
 	 * Creates a Dates object from a date/time string in a specific format.

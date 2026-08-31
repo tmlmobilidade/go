@@ -17,8 +17,8 @@ export function validateQueryParams<T>(queryParams: unknown, schema: z.ZodTypeAn
 	const result = schema.safeParse(queryParams);
 
 	if (!result.success) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.issues.map(error => error.message).join(', '));
+		throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.errors.map(error => error.message).join(', '));
 	}
 
-	return result.data as T;
+	return result.data;
 }

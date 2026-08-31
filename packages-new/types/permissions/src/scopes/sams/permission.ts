@@ -10,7 +10,7 @@ import { SamsPermissionScopeSchema } from './scope.js';
 
 export const SamsPermissionSchema = z.object({
 	action: SamsPermissionActionsSchema,
-	resources: SamsPermissionResourcesSchema.default({ agency_ids: [] }),
+	resources: SamsPermissionResourcesSchema.default({}),
 	scope: SamsPermissionScopeSchema,
 });
 

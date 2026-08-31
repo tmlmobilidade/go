@@ -77,8 +77,8 @@ export const EventDerivedBaseSchema = z.object({
 
 export const EventRestrictionSchema = EventDerivedBaseSchema.extend({
 	all_day: z.boolean(),
-	end_time: HHMMSchema,
-	start_time: HHMMSchema,
+	end_time: HHMMSchema.default(''),
+	start_time: HHMMSchema.default(''),
 
 	// Event info
 	event: z.object({

@@ -10,7 +10,7 @@ import { ZonesPermissionScopeSchema } from './scope.js';
 
 export const ZonesPermissionSchema = z.object({
 	action: ZonesPermissionActionsSchema,
-	resources: ZonesPermissionResourcesSchema.default({ agency_ids: [] }),
+	resources: ZonesPermissionResourcesSchema.default({}),
 	scope: ZonesPermissionScopeSchema,
 });
 

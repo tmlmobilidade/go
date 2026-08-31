@@ -41,7 +41,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/timer": "*",
 		"mergekit": "3.0.6",
-		"zod": "4.5.4"
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

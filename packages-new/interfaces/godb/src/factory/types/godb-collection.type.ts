@@ -1,6 +1,6 @@
 /* * */
 
-import type { AggregateOptions, AggregationCursor, AggregationPipeline, Collection, DeleteResult, Document, Filter, OptionalUnlessRequiredId } from '@tmlmobilidade/go-clients-mongo';
+import type { AggregateOptions, AggregationCursor, AggregationPipeline, Collection, DeleteResult, Document, Filter } from '@tmlmobilidade/go-clients-mongo';
 
 import { type InsertableDocument } from './insertable-document.type.js';
 import { type MinimalOptions } from './minimal-options.type.js';
@@ -43,7 +43,7 @@ export interface GoDbCollection<T extends Document> {
 
 	insertOne(doc: InsertableDocument<T>, options?: MinimalOptions): Promise<T>
 
-	insertOneUnsafe(doc: OptionalUnlessRequiredId<T>, options?: MinimalOptions): Promise<T>
+	insertOneUnsafe(doc: T, options?: MinimalOptions): Promise<T>
 
 	// isLocked(filter: Filter<T>): Promise<boolean>
 

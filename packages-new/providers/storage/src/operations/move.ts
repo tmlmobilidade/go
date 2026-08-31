@@ -10,6 +10,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Attachment, CreateAttachmentSchema } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
+import { convertObject } from '@tmlmobilidade/utils';
 
 import { type StorageDeps } from '../types/deps.js';
 
@@ -73,7 +74,7 @@ export async function move(deps: StorageDeps, input: MoveInput): Promise<Attachm
 				},
 				execute: async () => {
 					if (!source) throw new MetadataError('Move source missing during insert');
-					const newFile = CreateAttachmentSchema.parse(source);
+					const newFile = convertObject(source, CreateAttachmentSchema);
 					inserted = await goDb.core.attachments.insertOneUnsafe({
 						...newFile,
 						_id,
@@ -100,7 +101,7 @@ export async function move(deps: StorageDeps, input: MoveInput): Promise<Attachm
 			{
 				compensate: async () => {
 					if (sourceMetaDeleted && source) {
-						const restored = CreateAttachmentSchema.parse(source);
+						const restored = convertObject(source, CreateAttachmentSchema);
 						await goDb.core.attachments.insertOneUnsafe({ ...restored, _id: fileId, created_at: Dates.now('utc').unix_milliseconds, updated_at: Dates.now('utc').unix_milliseconds });
 					}
 				},

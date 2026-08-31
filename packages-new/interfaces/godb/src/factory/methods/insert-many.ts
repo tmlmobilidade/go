@@ -1,6 +1,6 @@
 /* * */
 
-import { type Document, OptionalUnlessRequiredId } from '@tmlmobilidade/go-clients-mongo';
+import { type Document } from '@tmlmobilidade/go-clients-mongo';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
@@ -52,7 +52,7 @@ export async function insertMany<T extends Document>(context: GoDbCollectionCont
 	//
 	// Validate the document against the schema
 
-	const validatedDocuments = context.schema.array().parse(insertableDocuments) as OptionalUnlessRequiredId<T>[];
+	const validatedDocuments = context.schema.array().parse(insertableDocuments);
 
 	//
 	// Attempt to insert the document into the collection

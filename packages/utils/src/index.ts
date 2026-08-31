@@ -6,6 +6,7 @@ export * from '@/maps/index.js';
 export * from '@/numbers/index.js';
 export * from '@/objects/index.js';
 export * from '@/permissions.js';
+export * from '@/query-param-schemas.js';
 export * from '@/singleton-proxy.js';
 export * from '@/validate-query-params.js';
 export * from '@/with-retry.js';

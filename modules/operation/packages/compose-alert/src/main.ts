@@ -28,8 +28,6 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 	//
 
 	const result = {
-		en: { description: '', title: '' },
-		es: { description: '', title: '' },
 		pt: { description: '', title: '' },
 	} satisfies AlertsComposeResponse;
 

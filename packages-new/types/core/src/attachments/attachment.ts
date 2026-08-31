@@ -10,7 +10,7 @@ export const AttachmentSchema = BaseDocumentSchema
 	.extend({
 		created_by: z.string(),
 		description: z.string().nullish(),
-		metadata: z.record(z.string(), z.unknown()).nullish(),
+		metadata: z.record(z.unknown()).nullish(),
 		name: z.string(),
 		resource_id: z.string(),
 		scope: z.string(),

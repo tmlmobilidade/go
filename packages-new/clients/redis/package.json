@@ -37,7 +37,7 @@
 		"@tmlmobilidade/go-clients-ssh": "*",
 		"@tmlmobilidade/logger": "*",
 		"redis": "6.2.1",
-		"zod": "4.5.4"
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

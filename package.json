@@ -181,7 +181,7 @@
 		"eslint": "10.9.1",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
-		"zod": "4.5.4"
+		"zod": "3.25.76"
 	},
 	"allowScripts": {
 		"@parcel/watcher": true,

@@ -36,7 +36,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"zod": "4.5.4"
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
