@@ -61,7 +61,7 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 
 		},
 		{ $project: Object.fromEntries(Object.keys(StopsListResponseSchema.shape).map(key => [key, 1])) },
-		{ $sort: { created_at: -1 } },
+		{ $sort: { created_at: 1 } },
 	];
 
 	const aggregationResult = await goDb.infrastructure.stops.aggregate(pipeline);

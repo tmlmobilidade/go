@@ -48,7 +48,9 @@ export function StopsDetailHeader() {
 
 			<HasPermission
 				action={PermissionCatalog.all.stops.actions.update}
+				resourceKey="municipality_ids"
 				scope={PermissionCatalog.all.stops.scope}
+				value={data?.municipality_id}
 			>
 				<UpdateButton
 					isDisabled={!capabilities.updateEnabled}
@@ -59,7 +61,9 @@ export function StopsDetailHeader() {
 
 			<HasPermission
 				action={PermissionCatalog.all.stops.actions.lock}
+				resourceKey="municipality_ids"
 				scope={PermissionCatalog.all.stops.scope}
+				value={data?.municipality_id}
 			>
 				<LockButton
 					isDisabled={!capabilities.lockEnabled}
@@ -71,7 +75,9 @@ export function StopsDetailHeader() {
 
 			<HasPermission
 				action={PermissionCatalog.all.stops.actions.delete}
+				resourceKey="municipality_ids"
 				scope={PermissionCatalog.all.stops.scope}
+				value={data?.municipality_id}
 			>
 				<DeleteButton
 					confirmMessage="Tem a certeza que pretende eliminar esta paragem? A paragem ficará indisponível para utilização futura."
@@ -87,6 +93,4 @@ export function StopsDetailHeader() {
 
 		</Toolbar>
 	);
-
-	//
 }
