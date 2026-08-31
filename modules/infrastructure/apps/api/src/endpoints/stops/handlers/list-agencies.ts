@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
-import { type StopsAgencyItem, StopsAgencyItemSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type StopsAgencyItem, StopsAgencyItemSchema, StopsAgencyRequest, StopsAgencyRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 
@@ -11,15 +11,21 @@ import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listAgenciesHandler(request: FastifyRequest, reply: FastifyReply<StopsAgencyItem[]>) {
+export async function listAgenciesHandler(request: FastifyRequest<{ Body: StopsAgencyRequest }>, reply: FastifyReply<StopsAgencyItem[]>) {
 	//
 
 	//
-	// Get the agency IDs this user has access to
+	// Validate the filters
 
-	const resourceAgencyIds = request.permissions
-		.filter(permission => permission.scope === 'plans' && permission.action === 'read')
-		.flatMap(permission => 'resources' in permission ? permission.resources.agency_ids ?? [] : []) ?? [];
+	const validatedFilters = StopsAgencyRequestSchema.parse(request.body);
+
+	//
+	// Get the agency IDs from the permissions
+
+	const resourceAgencyIds = validatedFilters.permissions.actions?.flatMap(action => request.permissions
+		.filter(permission => permission.scope === validatedFilters.permissions.scope && permission.action === action)
+		.flatMap(permission => 'resources' in permission ? permission.resources.agency_ids ?? [] : []),
+	) ?? [];
 
 	//
 	// Build aggregation pipeline

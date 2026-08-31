@@ -5,12 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const StopsMunicipalityItemSchema = MunicipalitySchema.pick({
-	_id: true,
-	code: true,
-	name: true,
-	short_name: true,
-});
+export const StopsMunicipalityItemSchema = MunicipalitySchema;
 
 /**
  * The item schema for listing plans agencies.
