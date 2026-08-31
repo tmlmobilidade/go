@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const UsersMunicipalityItemSchema = MunicipalitySchema;
 
 /**
- * The item schema for listing users agencies.
+ * The item schema for listing users municipalities.
  * It is intended for use in the users module.
  */
 export type UsersMunicipalityItem = z.infer<typeof UsersMunicipalityItemSchema>;

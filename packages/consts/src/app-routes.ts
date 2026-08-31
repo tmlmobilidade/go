@@ -206,6 +206,7 @@ export const API_ROUTES = Object.freeze({
 		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}`,
 		ROLES_LIST: `${getModuleConfig('core', 'api_url')}/roles/list`,
 		ROLES_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/roles/list-agencies`,
+		ROLES_LIST_MUNICIPALITIES: `${getModuleConfig('core', 'api_url')}/roles/list-municipalities`,
 		ROLES_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/lock/${encodeURIComponent(id)}`,
 		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
 
