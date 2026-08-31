@@ -45,7 +45,10 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 		{
 			$match: {
 				...{ 'flags.agency_ids': { $in: validatedFilters.agency_ids ?? [] } },
+				...{ district_id: { $in: validatedFilters.district_ids ?? [] } },
 				...{ municipality_id: { $in: validatedFilters.municipality_ids ?? [] } },
+				...{ parish_id: { $in: validatedFilters.parish_ids ?? [] } },
+				...{ locality_id: { $in: validatedFilters.locality_ids ?? [] } },
 				// ...{ publish_status: { $in: validatedFilters.publish_status ?? [] } },
 				// ...{ reference_type: { $in: validatedFilters.reference_type ?? [] } },
 				// ...{ cause: { $in: validatedFilters.causes ?? [] } },

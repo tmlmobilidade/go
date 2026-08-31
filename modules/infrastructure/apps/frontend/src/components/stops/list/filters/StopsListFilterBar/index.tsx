@@ -1,12 +1,16 @@
 'use client';
 
-import { StopsListFilterAgency } from '@/components/stops/list/filters/StopsListFilterAgency';
-import { StopsListFilterConnections } from '@/components/stops/list/filters/StopsListFilterConnections';
-import { StopsListFilterEquipment } from '@/components/stops/list/filters/StopsListFilterEquipment';
-import { StopsListFilterFacilities } from '@/components/stops/list/filters/StopsListFilterFacilities';
-import { StopsListFilterLifecycleStatus } from '@/components/stops/list/filters/StopsListFilterLifecycleStatus';
-import { StopsListFilterMunicipality } from '@/components/stops/list/filters/StopsListFilterMunicipality';
 import { FiltersBar } from '@tmlmobilidade/ui';
+
+import { StopsListFilterAgency } from '../StopsListFilterAgency';
+import { StopsListFilterConnections } from '../StopsListFilterConnections';
+import { StopsListFilterDistrict } from '../StopsListFilterDistrict';
+import { StopsListFilterEquipment } from '../StopsListFilterEquipment';
+import { StopsListFilterFacilities } from '../StopsListFilterFacilities';
+import { StopsListFilterLifecycleStatus } from '../StopsListFilterLifecycleStatus';
+import { StopsListFilterLocality } from '../StopsListFilterLocality';
+import { StopsListFilterMunicipality } from '../StopsListFilterMunicipality';
+import { StopsListFilterParish } from '../StopsListFilterParish';
 
 /* * */
 
@@ -18,7 +22,10 @@ export function StopsListFilterBar() {
 			<StopsListFilterFacilities />
 			<StopsListFilterConnections />
 			<StopsListFilterEquipment />
+			<StopsListFilterDistrict />
 			<StopsListFilterMunicipality />
+			<StopsListFilterParish />
+			<StopsListFilterLocality />
 		</FiltersBar>
 	);
 }
