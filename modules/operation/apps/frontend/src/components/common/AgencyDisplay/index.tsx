@@ -1,12 +1,12 @@
 /* * */
 
-import { type GtfsAgency } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV30Agency } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Grid, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface AgencyDisplayProps {
-	data?: GtfsAgency
+	data?: GtfsStrictV30Agency
 }
 
 /* * */

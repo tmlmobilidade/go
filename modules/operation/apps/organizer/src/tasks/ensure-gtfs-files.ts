@@ -3,7 +3,7 @@
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV30Agency, type GtfsStrictV30FeedInfo } from '@tmlmobilidade/go-types-gtfs-strict';
 import { HashablePlanMetadata } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -68,7 +68,7 @@ export async function ensureGtfsFiles() {
 			continue;
 		}
 
-		const updatedAgencyTxtData: GtfsAgency = {
+		const updatedAgencyTxtData: GtfsStrictV30Agency = {
 			agency_email: foundAgencyData.public_email,
 			agency_fare_url: foundAgencyData.fare_url,
 			agency_id: foundAgencyData._id,
@@ -77,7 +77,6 @@ export async function ensureGtfsFiles() {
 			agency_phone: foundAgencyData.phone,
 			agency_timezone: foundAgencyData.timezone,
 			agency_url: foundAgencyData.website_url,
-			cemv_support: '0',
 		};
 
 		const updateAgencyTxtString = Papa.unparse([updatedAgencyTxtData]);
@@ -101,7 +100,7 @@ export async function ensureGtfsFiles() {
 
 		let feedInfoTxtChanged = false;
 
-		const updatedFeedInfoTxtData: GtfsFeedInfo = {
+		const updatedFeedInfoTxtData: GtfsStrictV30FeedInfo = {
 			default_lang: 'pt',
 			feed_contact_email: foundAgencyData.public_email,
 			feed_contact_url: foundAgencyData.website_url,
