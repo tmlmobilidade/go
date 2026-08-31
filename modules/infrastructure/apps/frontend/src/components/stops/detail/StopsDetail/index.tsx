@@ -1,19 +1,9 @@
 'use client';
 
-// import { StopDetailsSectionAdministrative } from '@/components/stops/detail/StopDetailsSectionAdministrative';
-// import { StopDetailsSectionConnections } from '@/components/stops/detail/StopDetailsSectionConnections';
-// import { StopDetailsSectionEquipment } from '@/components/stops/detail/StopDetailsSectionEquipment';
-// import { StopDetailsSectionFlags } from '@/components/stops/detail/StopDetailsSectionFlags';
-import { StopsDetailsSectionGeneral } from '../general/StopsDetailsSectionGeneral';
-// import { StopDetailsSectionImages } from '@/components/stops/detail/StopDetailsSectionImages';
-// import { StopDetailsSectionInfrastructure } from '@/components/stops/detail/StopDetailsSectionInfrastructure';
-// import { StopDetailsSectionMap } from '@/components/stops/detail/StopDetailsSectionMap';
-// import { StopDetailsSectionNotes } from '@/components/stops/detail/StopDetailsSectionNotes';
-// import { StopDetailsSectionPublicInformation } from '@/components/stops/detail/StopDetailsSectionPublicInformation';
-// import { StopDetailsSectionShelter } from '@/components/stops/detail/StopDetailsSectionShelter';
-import { StopsDetailHeader } from '@/components/stops/detail/StopsDetailHeader';
 import { Divider, Pane } from '@tmlmobilidade/ui';
 
+import { StopsDetailSectionGeneral } from '../general/StopsDetailSectionGeneral';
+import { StopsDetailHeader } from '../StopsDetailHeader';
 import { useStopsDetailData } from '../use-stops-detail-data';
 
 /* * */
@@ -33,7 +23,7 @@ export function StopsDetail() {
 		<Pane header={[<StopsDetailHeader key="header" />]} isLoading={isLoading}>
 			{/* <StopDetailsSectionMap /> */}
 			<Divider />
-			<StopsDetailsSectionGeneral />
+			<StopsDetailSectionGeneral />
 			{/* <StopDetailsSectionFlags /> */}
 			{/* <StopDetailsSectionAdministrative /> */}
 			{/* <StopDetailsSectionShelter /> */}

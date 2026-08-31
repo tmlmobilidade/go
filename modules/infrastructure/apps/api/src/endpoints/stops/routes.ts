@@ -11,6 +11,7 @@ import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listLocationsHandler } from './handlers/list-locations.js';
 import { listStopsHandler } from './handlers/list-stops.js';
 import { lockStopHandler } from './handlers/lock-stop.js';
+import { updateStopNameHandler } from './handlers/update-stop-name.js';
 import { updateStopHandler } from './handlers/update-stop.js';
 
 /* * */
@@ -38,6 +39,8 @@ server.register(
 		instance.post('/create', { preHandler: authorizationMiddleware('stops', ['create']) }, createStopHandler);
 
 		instance.put('/update/:id', { preHandler: authorizationMiddleware('stops', ['update']) }, updateStopHandler);
+
+		instance.put('/update-name/:id', { preHandler: authorizationMiddleware('stops', ['edit_name']) }, updateStopNameHandler);
 
 		instance.get('/get/tts/:id', { preHandler: authorizationMiddleware('stops', ['read']) }, getTtsHandler);
 

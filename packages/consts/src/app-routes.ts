@@ -71,7 +71,7 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('infrastructure', 'frontend_url')}`,
 
 		// STOPS
-		STOPS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/stops/${encodeURIComponent(id)}`,
+		STOPS_DETAIL: (stopId: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/stops/${encodeURIComponent(stopId)}`,
 		STOPS_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}/stops`,
 	},
 
@@ -320,6 +320,7 @@ export const API_ROUTES = Object.freeze({
 		STOPS_LIST_LOCATIONS: `${getModuleConfig('infrastructure', 'api_url')}/stops/list-locations`,
 		STOPS_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/lock/${encodeURIComponent(id)}`,
 		STOPS_UPDATE: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update/${encodeURIComponent(id)}`,
+		STOPS_UPDATE_NAME: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update-name/${encodeURIComponent(id)}`,
 	},
 
 	locations: {

@@ -1,18 +1,18 @@
 'use client';
 
-// import { StopDetailTts } from '@/components/stops/detail/general/StopDetailTts';
 import { Translations } from '@/lib/translations';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { LifecycleStatusValues } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, Grid, Inline, Section, SegmentedControl, StandardFormController, useMeData, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
+import { StopsDetailEditName } from '../../name/StopsDetailEditName';
 import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
 import { useStopsDetailData } from '../../use-stops-detail-data';
 
 /* * */
 
-export function StopsDetailsSectionGeneral() {
+export function StopsDetailSectionGeneral() {
 	//
 
 	//
@@ -33,20 +33,13 @@ export function StopsDetailsSectionGeneral() {
 	}));
 
 	const canEditCoordinates = useMemo(() => {
-		return hasPermissionResource(meData?.permissions, {
+		const hasPermission = hasPermissionResource(meData?.permissions, {
 			requiredPermission: { action: 'edit_coordinates', scope: 'stops' },
 			requiredValue: data?.municipality_id,
 			resourceKey: 'municipality_ids',
 		});
-	}, [data?.municipality_id, meData?.permissions]);
-
-	const canEditName = useMemo(() => {
-		return hasPermissionResource(meData?.permissions, {
-			requiredPermission: { action: 'edit_name', scope: 'stops' },
-			requiredValue: data?.municipality_id,
-			resourceKey: 'municipality_ids',
-		});
-	}, [data?.municipality_id, meData?.permissions]);
+		return hasPermission && !capabilities.updateEnabled;
+	}, [data?.municipality_id, meData?.permissions, capabilities.updateEnabled]);
 
 	//
 	// C. Render components
@@ -66,12 +59,7 @@ export function StopsDetailsSectionGeneral() {
 						value={`${data?.latitude ?? 'N/A'}, ${data?.longitude ?? 'N/A'}`}
 						variant="bordered"
 					/>
-					<ValueDisplay
-						footer={canEditName && <Inline onClick={() => {}} dotted>Editar</Inline>}
-						label="Nome Único da Paragem"
-						value={data?.name ?? 'N/A'}
-						variant="bordered"
-					/>
+					<StopsDetailEditName />
 				</Grid>
 			</Section>
 
