@@ -1,10 +1,9 @@
 'use client';
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useTypologyCreateContext } from '@/components/typologies/create/TypologyCreate.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { TypologySchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { MultiSelect, Section, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
+import { MultiSelect, Section, TextInput } from '@tmlmobilidade/ui';
 /* * */
 
 export function TypologyCreateBasicInfo() {
@@ -15,10 +14,7 @@ export function TypologyCreateBasicInfo() {
 
 	const typologyCreateContext = useTypologyCreateContext();
 
-	const { options: allAgencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.typologies.actions.create],
-		scope: PermissionCatalog.all.typologies.scope,
-	});
+	const { options: allAgencyOptions } = useAgenciesData();
 
 	//
 	// B. Render Components
@@ -51,6 +47,4 @@ export function TypologyCreateBasicInfo() {
 			/>
 		</Section>
 	);
-
-	//
 }
