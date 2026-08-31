@@ -12,6 +12,7 @@ import { LinesPermissionResourcesSchema } from './scopes/lines/resources.js';
 import { PlansPermissionResourcesSchema } from './scopes/plans/resources.js';
 import { RidesPermissionResourcesSchema } from './scopes/rides/resources.js';
 import { SamsPermissionResourcesSchema } from './scopes/sams/resources.js';
+import { SchoolsPermissionResourcesSchema } from './scopes/schools/resources.js';
 import { StopsPermissionResourcesSchema } from './scopes/stops/resources.js';
 import { TypologiesPermissionResourcesSchema } from './scopes/typologies/resources.js';
 import { VehiclesPermissionResourcesSchema } from './scopes/vehicles/resources.js';
@@ -30,6 +31,7 @@ export const PermissionsResourcesSchema = AlertsPermissionResourcesSchema
 	.merge(PlansPermissionResourcesSchema)
 	.merge(RidesPermissionResourcesSchema)
 	.merge(SamsPermissionResourcesSchema)
+	.merge(SchoolsPermissionResourcesSchema)
 	.merge(StopsPermissionResourcesSchema)
 	.merge(TypologiesPermissionResourcesSchema)
 	.merge(VehiclesPermissionResourcesSchema)

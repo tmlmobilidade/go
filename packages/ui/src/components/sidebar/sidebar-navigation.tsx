@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconFlag2, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconFlag2, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSchool, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { type JSX } from 'react';
@@ -163,6 +163,12 @@ export const sidebarNavigationGroups = [
 	{
 		_id: 'infrastructure',
 		items: [
+			{
+				_id: 'schools',
+				href: PAGE_ROUTES.infrastructure.SCHOOLS_LIST,
+				icon: <IconSchool />,
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'schools' }],
+			},
 			{
 				_id: 'stops',
 				href: PAGE_ROUTES.infrastructure.STOPS_LIST,

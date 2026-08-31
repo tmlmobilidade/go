@@ -1,10 +1,10 @@
 /* * */
-import { DocumentSchema, PublishStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, PublishStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const SchoolSchema = DocumentSchema.extend({
+export const SchoolSchema = BaseDocumentSchema.extend({
 	_id: z.string(),
 	address: z.string(),
 	agency_id: z.string(),
@@ -39,7 +39,7 @@ export const SchoolSchema = DocumentSchema.extend({
 	stops: z.array(z.string()).default([]),
 	university: z.boolean().default(false),
 	url: z.union([z.string().url(), z.literal('')]).nullable().default(null),
-	validation_date: UnixTimestampSchema.nullable().default(null),
+	validation_date: UnixMillisecondsSchema.nullable().default(null),
 });
 
 export const CreateSchoolSchema = SchoolSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });

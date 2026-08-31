@@ -70,6 +70,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('infrastructure', 'frontend_url')}`,
 
+		// SCHOOLS
+		SCHOOLS_DETAIL: (schoolId: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/schools/${encodeURIComponent(schoolId)}`,
+		SCHOOLS_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}/schools`,
+
 		// STOPS
 		STOPS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/stops/${encodeURIComponent(id)}`,
 		STOPS_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}/stops`,
@@ -306,6 +310,12 @@ export const API_ROUTES = Object.freeze({
 	infrastructure: {
 		// BASE
 		BASE: `${getModuleConfig('infrastructure', 'api_url')}`,
+
+		// SCHOOLS
+		SCHOOLS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/schools/${encodeURIComponent(id)}`,
+		SCHOOLS_DETAIL_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/schools/${encodeURIComponent(id)}/lock`,
+		SCHOOLS_LIST: `${getModuleConfig('infrastructure', 'api_url')}/schools/list`,
+		SCHOOLS_LIST_AGENCIES: `${getModuleConfig('infrastructure', 'api_url')}/schools/list-agencies`,
 
 		// STOPS
 		STOPS_CREATE: `${getModuleConfig('infrastructure', 'api_url')}/stops/create`,

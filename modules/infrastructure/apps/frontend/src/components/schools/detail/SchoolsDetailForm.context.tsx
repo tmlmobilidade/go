@@ -4,7 +4,7 @@ import { useSchoolsListData } from '@/components/schools/list/use-schools-list-d
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type School, type UpdateSchoolDto, UpdateSchoolSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type StandardFormContextValue, fetchApiData, keepUrlParams, useHandleUpdate, useMeContext, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleUpdate, useMeContext, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 

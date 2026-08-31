@@ -21,7 +21,7 @@ export function SchoolDetailFootnote() {
 	const formattedDateString = useMemo(() => {
 		if (!schoolData?.created_at) return 'N/A';
 		return Dates
-			.fromUnixTimestamp(schoolData.created_at)
+			.fromUnixMilliseconds(schoolData.created_at)
 			.toLocaleString('full', 'pt-PT');
 	}, [schoolData?.created_at]);
 

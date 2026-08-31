@@ -27,7 +27,11 @@ export class SchoolsController {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create schools for this agency');
 		}
 
-		const result = await goDb.operation.schools.insertOne(data);
+		const result = await goDb.operation.schools.insertOne({
+			...data,
+			created_by: request.me._id,
+			updated_by: request.me._id,
+		});
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
@@ -51,7 +55,10 @@ export class SchoolsController {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this school');
 		}
 
-		await goDb.operation.schools.updateById(request.params.id, { is_deleted: !foundSchool.is_deleted });
+		await goDb.operation.schools.updateById(request.params.id, {
+			is_deleted: !foundSchool.is_deleted,
+			updated_by: request.me._id,
+		});
 		reply.send({ data: foundSchool, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -162,7 +169,10 @@ export class SchoolsController {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this school');
 		}
 
-		const data = await goDb.operation.schools.updateById(request.params.id, request.body);
+		const data = await goDb.operation.schools.updateById(request.params.id, {
+			...request.body,
+			updated_by: request.me._id,
+		});
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }
