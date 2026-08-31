@@ -3,8 +3,8 @@
 /* * */
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { toFiniteLngLat } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
-import { coordinatesToSearchQuery, getEditRadiusCircleFeatureCollection, getEditRadiusOutsideMaskFeatureCollection, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
+import { toFiniteLngLat } from '@/components/stops/detail/coordinates/StopDetailCoordinatesModal/coordinates-query';
+import { coordinatesToSearchQuery, getEditRadiusCircleFeatureCollection, getEditRadiusOutsideMaskFeatureCollection, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/coordinates/StopDetailCoordinatesModal/coordinates-query';
 import { getBaseGeoJsonFeatureCollection, METERS_PER_DEGREE } from '@tmlmobilidade/geo';
 import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPolygon, MapView, useMapContext, useMapViewContext, useToast } from '@tmlmobilidade/ui';
 import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
