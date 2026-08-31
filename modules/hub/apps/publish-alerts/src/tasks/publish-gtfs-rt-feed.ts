@@ -7,6 +7,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { transformAlertIntoGtfsRtEntity } from '../transform/gtfs-rt/main.js';
+import { GtfsRtFeedEntity, GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 
 /* * */
 
