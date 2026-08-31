@@ -2,7 +2,7 @@
 
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
-import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixSecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -32,7 +32,7 @@ export function toGtfsRtVehiclePositions(positions: HubVehiclePosition[]): GtfsR
 					speed: position.speed,
 				},
 				stop_id: position.stop_id,
-				timestamp: position.created_at,
+				timestamp: UnixSecondsSchema.parse(position.created_at / 1000),
 				trip: {
 					route_id: position.route_id,
 					schedule_relationship: 'SCHEDULED',

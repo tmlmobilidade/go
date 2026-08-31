@@ -1,13 +1,13 @@
 /* * */
 
 import { externalClients } from '@tmlmobilidade/external';
+import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubPlan } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { getPublicTripId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -47,7 +47,7 @@ export async function getCpTripUpdates(): Promise<GtfsRtTripUpdate[]> {
 			if (!tripUpdate || !cpTripId) continue;
 
 			// Convert the trip ID to a public trip ID
-			const publicTripId = getPublicTripId(activePlanId, AGENCY_ID, cpTripId);
+			const publicTripId = getQualifiedTripId(activePlanId, AGENCY_ID, cpTripId);
 			const stopTimeUpdates = [];
 
 			// Iterate over the stop time updates and convert the stop IDs to internal IDs
