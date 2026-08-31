@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 
 import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
 import { useStopsDetailData } from '../../use-stops-detail-data';
-import { openStopsDetailEditNameModal } from '../StopsDetailEditName.modal';
+import { openStopsDetailEditNameModal } from '../StopsDetailEditCoordinates.modal';
 
 /* * */
 

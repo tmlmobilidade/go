@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-types-operation": "*",

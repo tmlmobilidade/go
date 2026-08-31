@@ -2,24 +2,24 @@
 
 import { Grid, Pane, Section, TextInput } from '@tmlmobilidade/ui';
 
-import { useStopsDetailEditNameFormContext } from '../StopsDetailEditNameForm.context';
-import { StopsDetailEditNameModalHeader } from '../StopsDetailEditNameModalHeader';
+import { useStopsDetailEditCoordinatesFormContext } from '../StopsDetailEditCoordinatesForm.context';
+import { StopsDetailEditCoordinatesModalHeader, StopsDetailEditNameModalHeader } from '../StopsDetailEditCoordinatesModalHeader';
 
 /* * */
 
-export function StopsDetailEditNameModal() {
+export function StopsDetailEditCoordinatesModal() {
 	//
 
 	//
 	// A. Setup variables
 
-	const { form } = useStopsDetailEditNameFormContext();
+	const { form } = useStopsDetailEditCoordinatesFormContext();
 
 	//
 	// B. Render components
 
 	return (
-		<Pane header={[<StopsDetailEditNameModalHeader key="header" />]}>
+		<Pane header={[<StopsDetailEditCoordinatesModalHeader key="header" />]}>
 			<Section>
 
 				<Grid columns="a" gap="md">
