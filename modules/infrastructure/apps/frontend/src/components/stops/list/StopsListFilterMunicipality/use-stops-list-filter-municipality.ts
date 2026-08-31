@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { useFilterStateList, type UseFilterStateListReturnType, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';

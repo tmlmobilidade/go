@@ -2,8 +2,8 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-organize';
-import { CreateStopDto, Stop } from '@tmlmobilidade/types';
-import { CreateContextStateTemplate, keepUrlParams, useStandardForm, useStandardFormWatch, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType } from '@tmlmobilidade/ui';
+import { CreateStopDto, Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { CreateContextStateTemplate, keepUrlParams, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType, useStandardForm, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
