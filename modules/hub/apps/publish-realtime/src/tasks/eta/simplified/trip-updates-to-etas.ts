@@ -3,7 +3,7 @@
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type GtfsRtStopTimeEvent, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 
-import { type TripStopEta, type TripStopEtaCached } from '../types.js';
+import { type TripStopEta } from '../types.js';
 import { getScheduledArrival, getScheduledArrivalUnix, resolveOperationalDate, type TripScheduleIndex } from './trip-schedule-index.js';
 
 /* * */
@@ -26,22 +26,6 @@ function getStopTimeEventUnix(
 	if (scheduledUnix != null && event.delay != null) return scheduledUnix + event.delay;
 
 	return undefined;
-};
-
-/**
- * Converts a flat {@link TripStopEta} into the string-valued cache shape
- * used by per-trip / per-stop Redis maps.
- */
-export function toCachedEta(eta: TripStopEta): TripStopEtaCached {
-	return {
-		eta_at: String(eta.eta_at),
-		eta_seconds: String(eta.eta_seconds),
-		stop_id: eta.stop_id,
-		stop_name: eta.stop_name,
-		stop_sequence: String(eta.stop_sequence),
-		trip_id: eta.trip_id,
-		vehicle_id: eta.vehicle_id,
-	};
 };
 
 /** Groups flat ETAs by `trip_id`. */
