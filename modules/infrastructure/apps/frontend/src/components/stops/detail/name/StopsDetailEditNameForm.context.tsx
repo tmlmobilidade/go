@@ -41,7 +41,9 @@ export function StopsDetailEditNameFormContextProvider({ children }: PropsWithCh
 
 	const currentNameValue = useMemo<StopsUpdateNameRequest>(() => ({
 		name: stopData?.name,
-	}), [stopData?.name]);
+		short_name: stopData?.short_name,
+		tts_name: stopData?.tts_name,
+	}), [stopData?.name, stopData?.short_name, stopData?.tts_name]);
 
 	const { form, isDirty, isValid, unblock } = useStandardForm<StopsUpdateNameRequest, typeof StopsUpdateNameRequestSchema>({
 		apiData: currentNameValue,
