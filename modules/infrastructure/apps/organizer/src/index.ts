@@ -41,4 +41,6 @@ async function main() {
 	//
 }
 
+/* * */
+
 await runOnInterval(main, { intervalMs: '5m' });

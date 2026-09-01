@@ -42,8 +42,13 @@ export async function updateById<T extends Document>(context: GoDbCollectionCont
 
 	//
 	// Validate the document against the schema
+	// and remove fields that should not be updated
 
 	const validatedDocument = context.schema.parse(updatableDocument);
+
+	delete validatedDocument._id;
+	delete validatedDocument.created_at;
+	delete validatedDocument.created_by;
 
 	//
 	// Attempt to update the document in the collection
