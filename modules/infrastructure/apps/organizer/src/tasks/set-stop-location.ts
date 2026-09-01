@@ -50,8 +50,6 @@ export async function setStopLocationTask() {
 				try {
 					//
 
-					console.log(`[${stopData._id}] Processing location for [${stopData.latitude}, ${stopData.longitude}]...`);
-
 					const matchingLocation = await locationsProvider.findLocationByGeo(stopData.latitude, stopData.longitude);
 
 					if (!matchingLocation.municipality?._id) {
@@ -65,7 +63,7 @@ export async function setStopLocationTask() {
 						parish_id: matchingLocation.parish?._id || null,
 					});
 
-					console.log(`[${stopData._id}] Location set: district [${matchingLocation.district?._id}] ${matchingLocation.district?.name} | municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name} | parish [${matchingLocation.parish?._id}] ${matchingLocation.parish?.name} | locality [${matchingLocation.locality?._id}] ${matchingLocation.locality?.name}`);
+					console.log(`[${stopData._id}] Location set for coordinates [${stopData.latitude}, ${stopData.longitude}]: district [${matchingLocation.district?._id}] ${matchingLocation.district?.name} | municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name} | parish [${matchingLocation.parish?._id}] ${matchingLocation.parish?.name} | locality [${matchingLocation.locality?._id}] ${matchingLocation.locality?.name}`);
 				} catch (error) {
 					console.error(`[${stopData._id}] Error setting location: ${error}`);
 				}
