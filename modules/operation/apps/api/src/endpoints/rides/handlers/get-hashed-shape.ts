@@ -9,7 +9,7 @@ import { type HashedShape, type Ride } from '@tmlmobilidade/go-types-operation';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getHashedShapeHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HashedShape[]>) {
+export async function getHashedShapeHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HashedShape>) {
 	//
 
 	//
@@ -56,5 +56,5 @@ export async function getHashedShapeHandler(request: FastifyRequest<{ Params: { 
 		});
 	}
 
-	return sendSuccessApiResponse(reply, foundHashedShapeData);
+	return sendSuccessApiResponse(reply, foundHashedShapeData[0]);
 }

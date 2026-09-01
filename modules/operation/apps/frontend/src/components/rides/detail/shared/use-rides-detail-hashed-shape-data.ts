@@ -5,7 +5,7 @@ import { type HashedShape } from '@tmlmobilidade/go-types-operation';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { useRidesDetailRideId } from './use-rides-detail-ride-id';
 
@@ -32,9 +32,8 @@ export function useRidesDetailHashedShapeData(): UseRidesDetailHashedShapeDataRe
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<HashedShape>>(rideId && API_ROUTES.operation.RIDES_DETAIL_HASHED_SHAPE(rideId), {
+	const { data, error, isLoading, isValidating } = useSWRImmutable<ApiResponse<HashedShape>>(rideId && API_ROUTES.operation.RIDES_DETAIL_HASHED_SHAPE(rideId), {
 		fetcher: async (url: string) => await fetchApiData<HashedShape>({ url }),
-		refreshInterval: 10_000, // 10 seconds
 	});
 
 	//
