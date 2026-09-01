@@ -22,7 +22,7 @@ async function getStopNames(stopIds: string[]): Promise<Map<string, string>> {
 	if (!stopIds.length) return new Map();
 
 	const stops = await goDb.infrastructure.stops.findMany(
-		{ _id: { $in: stopIds.map(Number) } },
+		{ _id: { $in: stopIds } },
 		{ projection: { _id: 1, name: 1 } },
 	);
 
