@@ -1,12 +1,11 @@
 'use client';
 
-import { MapOverlayPins, MapOverlayPinsPointDataProps, MapOverlayPolygon, MapView, useMapContext, useMapViewContext } from '@tmlmobilidade/ui';
+import { MapOverlayPins, MapOverlayPinsPointDataProps, MapOverlayPolygon, MapView } from '@tmlmobilidade/ui';
 import * as turf from '@turf/turf';
 import { FeatureCollection, Point } from 'geojson';
 import { useMemo } from 'react';
 
 import { useStopsDetailData } from '../../use-stops-detail-data';
-import { useStopsDetailUpdateCoordinatesFormContext } from '../StopsDetailUpdateCoordinatesForm.context';
 
 /* * */
 
@@ -17,8 +16,6 @@ export function StopsDetailUpdateCoordinatesModalMap() {
 	// A. Setup variables
 
 	const { data } = useStopsDetailData();
-
-	const { form } = useStopsDetailUpdateCoordinatesFormContext();
 
 	//
 	// B. Transform data
