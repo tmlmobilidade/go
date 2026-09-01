@@ -47,25 +47,26 @@ export async function setStopLocationTask() {
 
 		await Promise.all(
 			stops.map(async (stopData) => {
-				//
+				try {
+					//
 
-				console.log(`[${stopData._id}] Processing location for [${stopData.latitude}, ${stopData.longitude}]...`);
+					const matchingLocation = await locationsProvider.findLocationByGeo(stopData.latitude, stopData.longitude);
 
-				const matchingLocation = await locationsProvider.findLocationByGeo(stopData.latitude, stopData.longitude);
+					if (!matchingLocation.municipality?._id) {
+						throw new Error(`No municipality found for coordinates [${stopData.latitude}, ${stopData.longitude}], skipping...`);
+					}
 
-				if (!matchingLocation.municipality?._id) {
-					console.log(`[${stopData._id}] No municipality found, skipping...`);
-					return;
+					await goDb.infrastructure.stops.updateById(stopData._id, {
+						district_id: matchingLocation.district?._id || null,
+						locality_id: matchingLocation.locality?._id || null,
+						municipality_id: matchingLocation.municipality._id,
+						parish_id: matchingLocation.parish?._id || null,
+					});
+
+					console.log(`[${stopData._id}] Location set for coordinates [${stopData.latitude}, ${stopData.longitude}]: district [${matchingLocation.district?._id}] ${matchingLocation.district?.name} | municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name} | parish [${matchingLocation.parish?._id}] ${matchingLocation.parish?.name} | locality [${matchingLocation.locality?._id}] ${matchingLocation.locality?.name}`);
+				} catch (error) {
+					console.error(`[${stopData._id}] Error setting location: ${error}`);
 				}
-
-				await goDb.infrastructure.stops.updateById(stopData._id, {
-					district_id: matchingLocation.district?._id || null,
-					locality_id: matchingLocation.locality?._id || null,
-					municipality_id: matchingLocation.municipality._id,
-					parish_id: matchingLocation.parish?._id || null,
-				});
-
-				console.log(`[${stopData._id}] Location set — municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name}`);
 			}),
 		);
 
