@@ -314,6 +314,7 @@ export const API_ROUTES = Object.freeze({
 		STOPS_CREATE: `${getModuleConfig('infrastructure', 'api_url')}/stops/create`,
 		STOPS_DELETE: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/delete/${encodeURIComponent(id)}`,
 		STOPS_GET: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/get/${encodeURIComponent(id)}`,
+		STOPS_GET_STOP_LOCATION: `${getModuleConfig('infrastructure', 'api_url')}/stops/get-stop-location`,
 		STOPS_GET_TTS: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/get/tts/${encodeURIComponent(id)}`,
 		STOPS_GET_VALID_ID: `${getModuleConfig('infrastructure', 'api_url')}/stops/get/valid-id`,
 		STOPS_LIST: `${getModuleConfig('infrastructure', 'api_url')}/stops/list`,

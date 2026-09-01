@@ -4,6 +4,7 @@ import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clien
 
 import { createStopHandler } from './handlers/create-stop.js';
 import { deleteStopHandler } from './handlers/delete-stop.js';
+import { getStopLocationHandler } from './handlers/get-stop-location.js';
 import { getStopHandler } from './handlers/get-stop.js';
 import { getTtsHandler } from './handlers/get-tts.js';
 import { getValidIdHandler } from './handlers/get-valid-id.js';
@@ -32,6 +33,8 @@ server.register(
 		instance.post('/list-agencies', { preHandler: authorizationMiddleware('stops', ['read']) }, listAgenciesHandler);
 
 		instance.post('/list-locations', { preHandler: authorizationMiddleware('stops', ['read']) }, listLocationsHandler);
+
+		instance.post('/get-stop-location', { preHandler: authorizationMiddleware('stops', ['read']) }, getStopLocationHandler);
 
 		instance.get('/get/valid-id', { preHandler: authorizationMiddleware('stops', ['read']) }, getValidIdHandler);
 
