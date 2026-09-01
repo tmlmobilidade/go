@@ -8,7 +8,7 @@ import { StopCreateStepLocationMap } from '@/components/stops/create/StopCreateS
 
 /* * */
 
-export function StopCreateStepLocation() {
+export function StopsCreateStepLocation() {
 	//
 
 	//

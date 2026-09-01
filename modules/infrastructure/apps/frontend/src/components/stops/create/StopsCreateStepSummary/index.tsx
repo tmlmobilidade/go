@@ -2,7 +2,7 @@
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { StopCreateStepLocationLocationsCards } from '@/components/stops/create/StopCreateStepLocationLocationsCards';
-import { StandardFormController, Divider, Section, useLocationsContext, ValueDisplay } from '@tmlmobilidade/ui';
+import { Divider, Section, StandardFormController, useLocationsContext, ValueDisplay } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function StopCreateStepSummary() {
+export function StopsCreateStepSummary() {
 	//
 
 	//

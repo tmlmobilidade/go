@@ -1,12 +1,12 @@
 /* * */
 
-import { StandardFormController, Section, TextInput } from '@tmlmobilidade/ui';
+import { Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 
 import { useStopCreateContext } from '../StopCreate.context';
 
 /* * */
 
-export function StopCreateStepNames() {
+export function StopsCreateStepNames() {
 	//
 	// A. Setup variables
 
