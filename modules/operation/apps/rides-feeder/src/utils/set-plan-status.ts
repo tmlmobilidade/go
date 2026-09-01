@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
-export async function setPlanStatus(planId: string, status: ProcessingStatus) {
+export async function setPlanStatus(planId: string, status: ProcessingStatus, hash?: string) {
 	//
 
 	const plansCollection = await goDb.operation.plans.getCollection();
@@ -15,7 +15,7 @@ export async function setPlanStatus(planId: string, status: ProcessingStatus) {
 		{ _id: { $eq: planId } },
 		{
 			$set: {
-				'apps.controller.last_hash': null,
+				'apps.controller.last_hash': hash ?? null,
 				'apps.controller.status': status,
 				'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
 			},

@@ -1,14 +1,14 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { RidesCoordinatorPlansResponse } from '@tmlmobilidade/go-operation-pckg-types';
+import { type RidesCoordinatorPlansResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { getCoordinatorUrl } from '@tmlmobilidade/go-operation-pckg-utils';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { parsePlan } from './parse-plan.js';
-import { setPlanStatus } from './set-plan-status.js';
+import { parsePlanTask } from './tasks/parse-plan.js';
+import { setPlanStatus } from './utils/set-plan-status.js';
 
 /* * */
 
@@ -25,9 +25,6 @@ async function main() {
 		Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
 	}
 
-	//
-	// Initialize the logger
-
 	Logger.init();
 
 	const globalTimer = new Timer();
@@ -42,15 +39,15 @@ async function main() {
 		.then(data => data as RidesCoordinatorPlansResponse)
 		.then(data => data.plan_id);
 
-	const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
-
-	//
-	// Skip this run if there is no plan to process
-
 	if (!planId) {
-		Logger.info({ message: 'No plan to process. Skipping run.' });
+		console.log(`No plan to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})`);
 		return;
 	}
+
+	console.log(`Received plan ID from coordinator: ${planId} (fetch: ${fetchCoordinatorTimer.get()})`);
+
+	//
+	// Retrieve the plan from the database
 
 	const currentPlan = await goDb.operation.plans.findById(planId);
 
@@ -60,39 +57,10 @@ async function main() {
 	}
 
 	//
-	// Retrieve the current plan from the database
-
-	Logger.info({ message: `Coordinator gave me this plan ID to process: ${planId} (fetch: ${fetchCoordinatorTimerResult})` });
+	// Parse the plan
 
 	try {
-		//
-
-		Logger.spacer(1);
-		Logger.divider(`Agency ${currentPlan.agency_id} - Plan ${currentPlan._id}`);
-
-		//
-		// Mark the plan as 'error' if it does not have an associated operation file
-
-		if (!currentPlan.operation_file_id) {
-			Logger.error({ message: `Skip processing: No operation file found.` });
-			await setPlanStatus(currentPlan._id, 'error');
-			return;
-		}
-
-		//
-		// Mark the plan as 'processing' to prevent multiple concurrent runs.
-
-		await setPlanStatus(currentPlan._id, 'processing');
-
-		Logger.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
-		Logger.spacer(1);
-
-		//
-		// Parse the plan into Rides
-
-		await parsePlan(currentPlan);
-
-		//
+		await parsePlanTask(currentPlan);
 	} catch (error) {
 		await setPlanStatus(currentPlan._id, 'error');
 		Logger.error({ error, message: `Error processing plan ${currentPlan._id}` });
@@ -100,10 +68,8 @@ async function main() {
 	}
 
 	Logger.terminate(`Run took ${globalTimer.get()}`);
-
-	//
 };
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '1m' });
+await runOnInterval(main, { intervalMs: '10s' });

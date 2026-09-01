@@ -1,13 +1,10 @@
 /* * */
 
-import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
-import { CreateHashedShapeSchema, type CreateHashedTrip, CreateHashedTripSchema, type HashedShape, HashedShapeSchema, type HashedTrip, HashedTripSchema, type Ride } from '@tmlmobilidade/go-types-operation';
-import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { CreateHashedShapeSchema, type CreateHashedTrip, CreateHashedTripSchema, type HashedShape, HashedShapeSchema, type HashedTrip, HashedTripSchema, type Plan, type Ride } from '@tmlmobilidade/go-types-operation';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
@@ -17,6 +14,10 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { fromOperationalTimeAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
 import crypto from 'crypto';
+
+import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
+import { startPlanHeartbeat } from '../utils/heartbeat.js';
+import { setPlanStatus } from '../utils/set-plan-status.js';
 
 /* * */
 
@@ -46,10 +47,30 @@ const hashedTripsWritter = new BatchWriter<HashedTrip>({
 
 /* * */
 
-export async function parsePlan(planData: Plan) {
+export async function parsePlanTask(planData: Plan) {
 	//
 
 	const globalTimer = new Timer();
+
+	Logger.spacer(1);
+	Logger.divider(`Agency ${planData.agency_id} - Plan ${planData._id}`);
+
+	//
+	// Mark the plan as 'error' if it does not have an associated operation file
+
+	if (!planData.operation_file_id) {
+		console.error(`Skip processing: No operation file found. (plan: ${planData._id})`);
+		await setPlanStatus(planData._id, 'error');
+		return;
+	}
+
+	//
+	// Start a heartbeat to indicate the plan is still being processed.
+
+	const heartbeat = startPlanHeartbeat(planData._id);
+
+	Logger.success(`Processing started: feed_start_date: ${planData.gtfs_feed_info.feed_start_date} | feed_end_date: ${planData.gtfs_feed_info.feed_end_date}`);
+	Logger.spacer(1);
 
 	//
 	// Setup variables to save formatted entities found in this Plan
@@ -401,9 +422,9 @@ export async function parsePlan(planData: Plan) {
 	//
 	// Mark this plan as 'complete' to indicate that it was processed successfully
 
-	const plansCollection = await goDb.operation.plans.getCollection();
+	heartbeat.stop();
 
-	await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.controller.last_hash': planData.hash, 'apps.controller.status': 'complete', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+	await setPlanStatus(planData._id, 'complete', planData.hash);
 
 	Logger.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 

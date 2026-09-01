@@ -95,6 +95,7 @@
 		"dev:operation:rides-cleaner": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-operation-rides-cleaner",
 		"dev:operation:rides-cleaner:prd": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-operation-rides-cleaner",
 		"dev:operation:rides-coordinator": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-operation-rides-coordinator",
+		"dev:operation:rides-coordinator:prd": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-operation-rides-coordinator",
 		"dev:operation:rides-examiner": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-operation-rides-examiner",
 		"dev:operation:rides-feeder": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-operation-rides-feeder",
 		"dev:operation:rides-feeder:prd": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-operation-rides-feeder",

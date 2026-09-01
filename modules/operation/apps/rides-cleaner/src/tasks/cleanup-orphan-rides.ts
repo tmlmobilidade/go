@@ -18,8 +18,16 @@ export async function cleanupOrphanRides() {
 
 	const allPlanIds = await goDb.operation.plans.distinct('_id');
 
-	await labDb.operation.rides.delete('plan_id NOT IN ($1)', { 1: allPlanIds.join(',') });
+	if (!allPlanIds.length) {
+		Logger.info({ message: `No plans found!` });
+		return;
+	}
 
-	Logger.success(`Deleted orphan Rides from Plans that do not exist anymore. (${timer.get()})`);
+	const result = await labDb.command({
+		query: 'ALTER TABLE operation.rides DELETE WHERE plan_id NOT IN ({planIds:Array(String)})',
+		query_params: { planIds: allPlanIds },
+	});
+
+	Logger.success(`Deleted ${result.summary.result_rows} orphan Rides from Plans that do not exist anymore. (${timer.get()})`);
 	Logger.spacer(1);
 }
