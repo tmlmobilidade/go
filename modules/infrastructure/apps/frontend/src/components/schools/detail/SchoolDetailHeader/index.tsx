@@ -5,7 +5,7 @@ import { useSchoolsDetailSchoolData } from '@/components/schools/detail/use-scho
 import { useSchoolsDetailSchoolId } from '@/components/schools/detail/use-schools-detail-school-id';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { AgencyTag, CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useAgenciesContext, useMeContext, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useMeContext, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,8 +22,6 @@ export function SchoolDetailHeader() {
 	const { t } = useTranslation();
 
 	const meContext = useMeContext();
-
-	const agenciesContext = useAgenciesContext();
 
 	const { schoolId } = useSchoolsDetailSchoolId();
 
@@ -62,11 +60,6 @@ export function SchoolDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={schoolId} copyOnClick />
-			<AgencyTag
-				agencyId={schoolData?.agency_id ?? ''}
-				data={agenciesContext.data.raw}
-				showName
-			/>
 			<Label size="lg" singleLine>{nameValue}</Label>
 
 			<PublishStatusDisplay
