@@ -1,110 +1,102 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { getCoordinatorUrl } from '@tmlmobilidade/go-operation-pckg-utils';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from './cleanup.js';
 import { parsePlan } from './parse-plan.js';
+import { setPlanStatus } from './set-plan-status.js';
 
 /* * */
 
 async function main() {
+	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
+	}
+
+	//
+	// Initialize the logger
+
+	Logger.init();
+
+	const globalTimer = new Timer();
+
+	//
+	// Ask the coordinator for a new Plan ID to process
+
+	const fetchCoordinatorTimer = new Timer();
+
+	const planId = await fetch(getCoordinatorUrl('plans'))
+		.then(response => response.text());
+
+	const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
+
+	//
+	// Skip this run if there is no plan to process
+
+	if (!planId) {
+		Logger.info({ message: 'No plan to process. Skipping run.' });
+		return;
+	}
+
+	const currentPlan = await goDb.operation.plans.findById(planId);
+
+	if (!currentPlan) {
+		Logger.error({ message: `Plan not found: ${planId}` });
+		return;
+	}
+
+	//
+	// Retrieve the current plan from the database
+
+	Logger.info({ message: `Coordinator gave me this plan ID to process: ${planId} (fetch: ${fetchCoordinatorTimerResult})` });
+
 	try {
 		//
 
-		//
-		// Initialize Sentry
+		Logger.spacer(1);
+		Logger.divider(`Agency ${currentPlan.agency_id} - Plan ${currentPlan._id}`);
 
-		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
-		} catch (error) {
-			Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
+		//
+		// Mark the plan as 'error' if it does not have an associated operation file
+
+		if (!currentPlan.operation_file_id) {
+			Logger.error({ message: `Skip processing: No operation file found.` });
+			await setPlanStatus(currentPlan._id, 'error');
+			return;
 		}
 
 		//
-		// Initialize the logger
+		// Mark the plan as 'processing' to prevent multiple concurrent runs.
 
-		Logger.init();
+		await setPlanStatus(currentPlan._id, 'processing');
 
-		const globalTimer = new Timer();
-
-		//
-		// Get all Plans and iterate on each one
-
-		const plansCollection = await goDb.operation.plans.getCollection();
-
-		const allPlansData = await goDb.operation.plans.findMany(
-			{
-				'$expr': { $ne: ['$hash', '$apps.controller.last_hash'] },
-				'apps.controller.status': { $in: ['waiting', 'processing'] },
-			},
-			{ sort: { 'gtfs_feed_info.feed_start_date': -1 } },
-		);
-
-		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
-
-		Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
-
-		for (const [planIndex, currentPlan] of allPlansData.entries()) {
-			try {
-				//
-
-				Logger.spacer(1);
-				Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.agency_id} - Plan ${currentPlan._id}`);
-
-				//
-				// Mark the plan as 'error' if it does not have an associated operation file
-
-				if (!currentPlan.operation_file_id) {
-					Logger.error({ message: `Skip processing: No operation file found.` });
-					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
-					continue;
-				}
-
-				//
-				// Mark the plan as 'processing' to prevent multiple concurrent runs.
-
-				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.status': 'processing' } });
-
-				Logger.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
-				Logger.spacer(1);
-
-				//
-				// Parse the plan into Rides
-
-				await parsePlan(currentPlan);
-
-				//
-			} catch (error) {
-				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
-				Logger.error({ error, message: `Error processing plan ${currentPlan._id}` });
-				Logger.divider();
-			}
-		}
+		Logger.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
+		Logger.spacer(1);
 
 		//
-		// Perform the cleanup operations after processing all plans
+		// Parse the plan into Rides
 
-		await cleanupOrphanRidesGlobally();
-		await cleanupOrphanHashedTrips();
-		await cleanupOrphanHashedShapes();
-
-		//
-
-		Logger.terminate(`Run took ${globalTimer.get()}`);
+		await parsePlan(currentPlan);
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'An error occurred. Halting execution.' });
-		Logger.error({ message: 'Retrying in 10 seconds...' });
-		setTimeout(() => {
-			process.exit(1); // End process
-		}, 10000); // after 10 seconds
+		await setPlanStatus(currentPlan._id, 'error');
+		Logger.error({ error, message: `Error processing plan ${currentPlan._id}` });
+		Logger.divider();
 	}
+
+	Logger.terminate(`Run took ${globalTimer.get()}`);
 
 	//
 };
