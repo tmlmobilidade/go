@@ -1,7 +1,7 @@
 // 'use client';
 
 // import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-// import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-organize';
+// import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
 // import { type CreateStopDto, type Stop, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
 // import { CreateContextStateTemplate, fetchApiData, keepUrlParams, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType, useStandardForm, useStandardFormWatch } from '@tmlmobilidade/ui';
 // import { useRouter } from 'next/navigation';

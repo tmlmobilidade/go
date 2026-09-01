@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-organize';
+import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
 import { type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';

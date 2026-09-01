@@ -18,7 +18,7 @@
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/go-infrastructure-pckg-organize": "*",
+		"@tmlmobilidade/go-infrastructure-pckg-utils": "*",
 		"@tmlmobilidade/go-infrastructure-pckg-types": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-downloads": "*",

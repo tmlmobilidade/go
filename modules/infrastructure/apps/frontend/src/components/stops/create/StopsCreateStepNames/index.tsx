@@ -1,6 +1,8 @@
 /* * */
 
-import { Divider, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
+import { Divider, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 import { useStopsCreateFormContext } from '../StopsCreateForm.context';
 
@@ -13,6 +15,21 @@ export function StopsCreateStepNames() {
 	// A. Setup variables
 
 	const { form } = useStopsCreateFormContext();
+
+	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
+
+	//
+	// B. Transform data
+
+	const automaticShortName = useMemo(() => {
+		if (!nameValue) return '';
+		return getStopShortName(nameValue);
+	}, [nameValue]);
+
+	const automaticTtsName = useMemo(() => {
+		if (!nameValue) return '';
+		return getStopTtsName(nameValue);
+	}, [nameValue]);
 
 	//
 	// B. Render components
@@ -42,23 +59,20 @@ export function StopsCreateStepNames() {
 			<Divider />
 
 			<Section gap="sm">
-
 				<TextInput
 					description="Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos."
 					label="Nome Curto (automático)"
-					value=""
+					value={automaticShortName}
 					w="100%"
 					readOnly
 				/>
-
 				<TextInput
 					description="O nome a ser utilizado pelo sistema de TTS (Text-to-Speech)."
 					label="Nome TTS (automático)"
-					value=""
+					value={automaticTtsName}
 					w="100%"
 					readOnly
 				/>
-
 			</Section>
 
 		</>
