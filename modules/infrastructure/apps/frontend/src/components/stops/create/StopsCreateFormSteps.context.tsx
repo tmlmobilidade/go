@@ -1,9 +1,10 @@
 'use client';
 
-import { hasPermission } from '@tmlmobilidade/go-types-permissions';
+import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { useMeData, useMultiStep, type UseMultiStepReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
+import { useStopsGetLocationData } from '../shared/use-stops-get-location-data';
 import { useStopsCreateFormContext } from './StopsCreateForm.context';
 
 /* * */
@@ -32,28 +33,37 @@ export function StopsCreateFormStepsContextProvider({ children }: PropsWithChild
 	const longitudeValue = useStandardFormWatch({ control: form.control, name: 'longitude' });
 	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
 
+	const { data: locationData } = useStopsGetLocationData({
+		latitude: latitudeValue,
+		longitude: longitudeValue,
+	});
+
 	//
 	// E. Multi-step setup
 
-	const hasCreateDatesPermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
-			action: 'update_dates',
-			scope: 'stops',
+	const hasCreateStopsPermission = useMemo(() => {
+		// Return false is municipality is not available
+		if (!locationData?.municipality?._id) return false;
+		// Check if the user is allowed to create stops in the municipality
+		return hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'create', scope: 'stops' },
+			requiredValue: locationData.municipality._id,
+			resourceKey: 'municipality_ids',
 		});
-	}, [meData?.permissions]);
+	}, [locationData?.municipality?._id, meData?.permissions]);
 
 	const steps = useMemo(() => [
 		{
 			id: 'location',
 			isEnabled: true,
-			isValid: !!latitudeValue && !!longitudeValue,
+			isValid: !!latitudeValue && !!longitudeValue && hasCreateStopsPermission,
 			isVisible: true,
 			label: 'Localização',
 			order: 0,
-			validate: () => !!form.getValues('latitude') && !!form.getValues('longitude'),
+			validate: () => !!form.getValues('latitude') && !!form.getValues('longitude') && hasCreateStopsPermission,
 		},
 		{
-			id: 'cause',
+			id: 'names',
 			isEnabled: !!latitudeValue && !!longitudeValue,
 			isValid: !!nameValue,
 			isVisible: true,
@@ -70,7 +80,7 @@ export function StopsCreateFormStepsContextProvider({ children }: PropsWithChild
 			order: 2,
 			validate: () => !!form.getValues('name'),
 		},
-	], [form, latitudeValue, longitudeValue, nameValue]);
+	], [form, hasCreateStopsPermission, latitudeValue, longitudeValue, nameValue]);
 
 	const multiStep = useMultiStep({ steps });
 

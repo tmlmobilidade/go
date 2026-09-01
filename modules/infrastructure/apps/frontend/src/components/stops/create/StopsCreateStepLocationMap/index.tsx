@@ -74,8 +74,11 @@ export function StopsCreateStepLocationMap() {
 	// C. Handle actions
 
 	const handleMapClick = (event) => {
-		form.setValue('latitude', event.lngLat.lat);
-		form.setValue('longitude', event.lngLat.lng);
+		const validatedLatitude = LatitudeSchema.safeParse(event.lngLat.lat);
+		const validatedLongitude = LongitudeSchema.safeParse(event.lngLat.lng);
+		if (!validatedLatitude.success || !validatedLongitude.success) return;
+		form.setValue('latitude', validatedLatitude.data);
+		form.setValue('longitude', validatedLongitude.data);
 	};
 
 	//
@@ -95,6 +98,4 @@ export function StopsCreateStepLocationMap() {
 			/>
 		</MapView>
 	);
-
-	//
 }

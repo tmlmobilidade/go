@@ -1,9 +1,10 @@
 'use client';
 
-import { closeModal, openModal } from '@tmlmobilidade/ui';
+import { AppProvider, closeModal, openModal } from '@tmlmobilidade/ui';
 
 import { StopsCreate } from './StopsCreate';
 import { StopsCreateFormContextProvider } from './StopsCreateForm.context';
+import { StopsCreateFormStepsContextProvider } from './StopsCreateFormSteps.context';
 
 /* * */
 
@@ -14,9 +15,13 @@ const MODAL_ID = 'stops-create-modal';
 export const openStopsCreateModal = () => {
 	openModal({
 		children: (
-			<StopsCreateFormContextProvider>
-				<StopsCreate />
-			</StopsCreateFormContextProvider>
+			<AppProvider>
+				<StopsCreateFormContextProvider>
+					<StopsCreateFormStepsContextProvider>
+						<StopsCreate />
+					</StopsCreateFormStepsContextProvider>
+				</StopsCreateFormContextProvider>
+			</AppProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,

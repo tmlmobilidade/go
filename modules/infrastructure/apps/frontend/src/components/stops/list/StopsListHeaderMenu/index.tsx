@@ -5,6 +5,8 @@ import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { ToolbarActions, useMeData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
+import { openStopsCreateModal } from '../../create/StopsCreate.modal';
+
 /* * */
 
 export function StopsListHeaderMenu() {
@@ -18,7 +20,7 @@ export function StopsListHeaderMenu() {
 			actions.push({
 				icon: <IconPlus />,
 				label: 'Nova Paragem',
-				onClick: () => {},
+				onClick: openStopsCreateModal,
 			});
 		}
 		if (hasPermission(meData.permissions, { action: 'export', scope: 'stops' })) {

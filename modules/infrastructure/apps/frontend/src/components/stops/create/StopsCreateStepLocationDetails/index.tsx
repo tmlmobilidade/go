@@ -1,6 +1,6 @@
 'use client';
 
-import { Grid, Section, Skeleton, useStandardFormWatch, ValueDisplay } from '@tmlmobilidade/ui';
+import { Grid, Section, useStandardFormWatch, ValueDisplay } from '@tmlmobilidade/ui';
 
 import { useStopsGetLocationData } from '../../shared/use-stops-get-location-data';
 import { useStopsCreateFormContext } from '../StopsCreateForm.context';
@@ -33,23 +33,27 @@ export function StopsCreateStepLocationDetails() {
 		<Section>
 			<Grid columns="ab" gap="md">
 				<ValueDisplay
+					isLoading={isLoading}
 					label="Distrito"
-					value={isLoading ? <Skeleton height={12} width={230} /> : locationData?.district?.name}
+					value={locationData?.district?.name ?? 'N/A'}
 					variant="bordered"
 				/>
 				<ValueDisplay
+					isLoading={isLoading}
 					label="Município"
-					value={isLoading ? <Skeleton height={12} width={230} /> : locationData?.municipality?.name}
+					value={locationData?.municipality?.name ?? 'N/A'}
 					variant="bordered"
 				/>
 				<ValueDisplay
+					isLoading={isLoading}
 					label="Freguesia"
-					value={isLoading ? <Skeleton height={12} width={230} /> : locationData?.parish?.name}
+					value={locationData?.parish?.name ?? 'N/A'}
 					variant="bordered"
 				/>
 				<ValueDisplay
+					isLoading={isLoading}
 					label="Localidade"
-					value={isLoading ? <Skeleton height={12} width={230} /> : locationData?.locality?.name}
+					value={locationData?.locality?.name ?? 'N/A'}
 					variant="bordered"
 				/>
 			</Grid>

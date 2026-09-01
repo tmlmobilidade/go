@@ -1,6 +1,6 @@
 'use client';
 
-import { Latitude, LatitudeSchema, Longitude, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
+import { type Latitude, type Longitude } from '@tmlmobilidade/go-types-geo';
 import { CoordinatesInput, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
 
 import { useStopsCreateFormContext } from '../StopsCreateForm.context';
