@@ -3,8 +3,8 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
-import { encodeGtfsRtFeed, getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
+import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
@@ -24,14 +24,7 @@ export async function getEtaByStopIdGtfsProtobuf(request: FastifyRequest<{ Param
 			.send();
 	}
 
-	const tripUpdates = JSON.parse(raw) as GtfsRtTripUpdate[];
-	const feed = getEmptyGtfsRtFeedMessage();
-	feed.entity.push(...tripUpdates.map(tripUpdate => ({
-		id: tripUpdate.trip.trip_id,
-		trip_update: tripUpdate,
-	})));
-
-	const buffer = await encodeGtfsRtFeed(feed);
+	const buffer = await encodeGtfsRtFeed(JSON.parse(raw) as GtfsRtFeedMessage);
 
 	return reply
 		.header('access-control-allow-origin', '*')

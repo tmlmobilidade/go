@@ -58,7 +58,7 @@ WITH
             cn.latitude                 AS current_node_latitude,
             cn.longitude                AS current_node_longitude,
             lp.position_created_at      AS position_created_at,
-            fromUnixMilliseconds64Milli(lp.position_created_at) AS pos_dt
+            fromUnixTimestamp64Milli(lp.position_created_at) AS pos_dt
         FROM latest_pos AS lp
         INNER JOIN eta.curr_rides AS d ON lp.trip_id = d.trip_id
         LEFT JOIN eta.hist_shape_nodes AS cn
@@ -501,7 +501,7 @@ SELECT
     )                                                                        AS scheduled_arrival_unix,
     if(
         e.current_node_index >= e.stop_node_index,
-        formatDateTime(fromUnixMilliseconds64Milli(e.position_created_at), '%H:%i:%S', 'Europe/Lisbon'),
+        formatDateTime(fromUnixTimestamp64Milli(e.position_created_at), '%H:%i:%S', 'Europe/Lisbon'),
         NULL
     )                                                                        AS observed_arrival,
     if(
@@ -512,7 +512,7 @@ SELECT
     if(
         e.eta_at IS NULL,
         NULL,
-        formatDateTime(fromUnixMilliseconds64Milli(assumeNotNull(e.eta_at)), '%H:%i:%S', 'Europe/Lisbon')
+        formatDateTime(fromUnixTimestamp64Milli(assumeNotNull(e.eta_at)), '%H:%i:%S', 'Europe/Lisbon')
     )                                                                        AS estimated_arrival,
     if(
         e.eta_at IS NULL,
