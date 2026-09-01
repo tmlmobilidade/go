@@ -2,7 +2,6 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { type HubGtfsExportStopsInput, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -86,8 +85,8 @@ export async function exportStopsFile(context: ExportGtfsContext, agencyIds: str
 			platform_code: '',
 			stop_code: String(stopData._id),
 			stop_id: String(stopData._id),
-			stop_lat: LatitudeSchema.parse(stopData.latitude),
-			stop_lon: LongitudeSchema.parse(stopData.longitude),
+			stop_lat: stopData.latitude,
+			stop_lon: stopData.longitude,
 			stop_name: stopData.name,
 			tts_stop_name: stopData.tts_name,
 			wheelchair_boarding: '0',
