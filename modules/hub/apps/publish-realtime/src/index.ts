@@ -1,13 +1,13 @@
 /* * */
 
-import { publishTripUpdates } from '@/tasks/eta/gtfs/publish-trip-updates.js';
-import { publishEtas } from '@/tasks/eta/simplified/publish-etas.js';
-import { publishVehiclesPositions } from '@/tasks/vehicles/publish-vehicle-positions.js';
-import { publishVehiclesMetadata } from '@/tasks/vehicles/publish-vehicles-metadata.js';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+
+import { publishTripUpdates } from './tasks/eta/gtfs/publish-trip-updates.js';
+import { publishEtas } from './tasks/eta/simplified/publish-etas.js';
+import { publishVehiclesPositions } from './tasks/vehicles/publish-vehicle-positions.js';
+import { publishVehiclesMetadata } from './tasks/vehicles/publish-vehicles-metadata.js';
 
 /* * */
 

@@ -21,20 +21,20 @@ import { Timer } from '@tmlmobilidade/timer';
  * Do not use this type outside of the setRidesAsWaiting callback.
  */
 type AnySimplifiedApexDocument =
-	| SimplifiedApexBankingTap
-	| SimplifiedApexLocation
-	| SimplifiedApexOnBoardRefund
-	| SimplifiedApexOnBoardSale
-	| SimplifiedApexValidation;
+  | SimplifiedApexBankingTap
+  | SimplifiedApexLocation
+  | SimplifiedApexOnBoardRefund
+  | SimplifiedApexOnBoardSale
+  | SimplifiedApexValidation;
 
 /* * */
 
 export interface RidesCallbackWindow {
 	agency_id: string
+	operational_dates: number[]
 	trip_id: string
 	window_end: number
 	window_start: number
-	operational_dates: number[]
 }
 
 /* * */
@@ -75,14 +75,14 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 
 			const minOperationalDate = Dates.fromUnixMilliseconds(windowStart).operational_date_int;
 			const maxOperationalDate = Dates.fromUnixMilliseconds(windowEnd).operational_date_int;
-			const operationalDateRange = Array.from({length: maxOperationalDate - minOperationalDate + 1}, (_, i) => minOperationalDate + i);
+			const operationalDateRange = Array.from({ length: maxOperationalDate - minOperationalDate + 1 }, (_, i) => minOperationalDate + i);
 
 			const window: RidesCallbackWindow = {
 				agency_id: item.agency_id,
+				operational_dates: operationalDateRange,
 				trip_id: item.trip_id,
 				window_end: windowEnd,
 				window_start: windowStart,
-				operational_dates: operationalDateRange,
 			};
 
 			callbackWindowsMap.set(
@@ -137,10 +137,10 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 				query,
 				query_params: {
 					agency_ids: chunk.map(window => window.agency_id),
+					operational_dates: chunk.map(window => window.operational_dates),
 					trip_ids: chunk.map(window => window.trip_id),
 					window_ends: chunk.map(window => window.window_end),
 					window_starts: chunk.map(window => window.window_start),
-					operational_dates: chunk.map(window => window.operational_dates),
 				},
 			});
 
