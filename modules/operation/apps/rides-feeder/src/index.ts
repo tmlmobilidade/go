@@ -50,10 +50,15 @@ async function main() {
 		return;
 	}
 
+	const currentPlan = await goDb.operation.plans.findById(planId);
+
+	if (!currentPlan) {
+		Logger.error({ message: `Plan not found: ${planId}` });
+		return;
+	}
+
 	//
 	// Retrieve the current plan from the database
-
-	const currentPlan = await goDb.operation.plans.findOne({ _id: { $eq: planId } });
 
 	Logger.info({ message: `Coordinator gave me this plan ID to process: ${planId} (fetch: ${fetchCoordinatorTimerResult})` });
 
