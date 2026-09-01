@@ -1,19 +1,25 @@
 'use client';
 
-import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { StopDetailsSectionFlagItem } from '@/components/stops/detail/StopDetailsSectionFlagItem';
-import { Button, Collapsible, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Grid, Section, useStandardFormWatch, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+
+import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
+import { useStopsDetailData } from '../../use-stops-detail-data';
+import { StopsDetailSectionFlagItem } from '../StopsDetailSectionFlagItem';
 
 /* * */
 
-export function StopDetailsSectionFlags() {
+export function StopsDetailSectionFlags() {
 	//
 
 	//
 	// A. Setup variables
 
-	const stopDetailContext = useStopDetailContext();
+	const { data } = useStopsDetailData();
+
+	const { form } = useStopsDetailFormContext();
+
+	const flagsValues = useStandardFormWatch({ control: form.control, name: 'flags' });
 
 	//
 	// B. Transform data
@@ -22,28 +28,27 @@ export function StopDetailsSectionFlags() {
 		// Group flag and legacy IDs together,
 		// remove values that are equal to the unique ID,
 		// remove duplicates, remove empty values and sort.
-		const flagIds = stopDetailContext.data.form.getValues().flags?.map(flag => flag.stop_id) ?? [];
-		const legacyIds = stopDetailContext.data.stop?.legacy_ids ?? [];
-		const uniqueId = stopDetailContext.data.stop?._id;
+		const flagIds = flagsValues?.map(flag => flag.stop_id) ?? [];
+		const legacyIds = data?.legacy_ids ?? [];
+		const uniqueId = data?._id;
 		return Array
 			.from(new Set([...flagIds, ...legacyIds]))
 			.filter(id => id && id !== String(uniqueId))
 			.sort();
-	}, [stopDetailContext.data.form, stopDetailContext.data.stop]);
+	}, [flagsValues, data?._id, data?.legacy_ids]);
 
 	//
 	// C. Handle actions
 
 	const handleAddLegacyId = () => {
-		if (!stopDetailContext.data.form.getValues().flags) {
-			stopDetailContext.data.form.setFieldValue('flags', []);
-		}
-		stopDetailContext.data.form.insertListItem('flags', {
+		const latestValues = form.getValues('flags');
+		const newValues = [...(latestValues ?? []), {
 			agency_ids: [],
 			is_harmonized: false,
 			short_name: '',
 			stop_id: '',
-		});
+		}];
+		form.setValue('flags', newValues, { shouldDirty: true });
 	};
 
 	//
@@ -53,6 +58,7 @@ export function StopDetailsSectionFlags() {
 		<Collapsible
 			description="Gestão de IDs desta paragem."
 			title="Identificadores e Postaletes"
+			defaultOpen
 		>
 
 			<Section gap="md">
@@ -60,7 +66,7 @@ export function StopDetailsSectionFlags() {
 				<Grid columns="abb" gap="md">
 					<ValueDisplay
 						label="Código Único da Paragem"
-						value={stopDetailContext.data.stop?._id ?? 'N/A'}
+						value={data?._id ?? 'N/A'}
 						variant="primary"
 						elevated
 						strong
@@ -71,8 +77,8 @@ export function StopDetailsSectionFlags() {
 					/>
 				</Grid>
 
-				{stopDetailContext.data.form.getValues().flags?.map((flag, index) => (
-					<StopDetailsSectionFlagItem key={`flag-${index}`}index={index} />
+				{flagsValues?.map((_, index) => (
+					<StopsDetailSectionFlagItem key={`flag-${index}`} index={index} />
 				))}
 
 				<Button label="Adicionar Novo Postalete" onClick={handleAddLegacyId} />

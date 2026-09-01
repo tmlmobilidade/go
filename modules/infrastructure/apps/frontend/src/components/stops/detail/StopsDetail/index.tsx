@@ -2,6 +2,7 @@
 
 import { Divider, Pane } from '@tmlmobilidade/ui';
 
+import { StopsDetailSectionFlags } from '../flags/StopsDetailSectionFlags';
 import { StopsDetailSectionGeneral } from '../general/StopsDetailSectionGeneral';
 import { StopsDetailHeader } from '../StopsDetailHeader';
 import { useStopsDetailData } from '../use-stops-detail-data';
@@ -24,7 +25,7 @@ export function StopsDetail() {
 			{/* <StopDetailsSectionMap /> */}
 			<Divider />
 			<StopsDetailSectionGeneral />
-			{/* <StopDetailsSectionFlags /> */}
+			<StopsDetailSectionFlags />
 			{/* <StopDetailsSectionAdministrative /> */}
 			{/* <StopDetailsSectionShelter /> */}
 			{/* <StopDetailsSectionInfrastructure /> */}

@@ -33,7 +33,6 @@ export function StopsDetailSectionGeneral() {
 		<Collapsible
 			description="Informações gerais sobre esta paragem."
 			title="Detalhes desta Paragem"
-			defaultOpen
 		>
 
 			<Section>
