@@ -42,7 +42,7 @@ export function SamsList() {
 	const columns = useMemo<DataTableColumn<Sam | SamsListItem>[]>(() => [
 		{
 			accessor: '_id',
-			render: item => <IdTag id={item._id} />,
+			render: item => <IdTag id={item._id.toString()} />,
 			title: '#ID',
 			width: 150,
 		},

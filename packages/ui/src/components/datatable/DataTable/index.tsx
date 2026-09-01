@@ -55,12 +55,12 @@ export interface DataTableProps<T> {
 	/**
 	 * The ID of the row to mark as selected.
 	 */
-	selectedId?: number | string
+	selectedId?: string
 
 	/**
 	 * A list of IDs of the rows to mark as selected.
 	 */
-	selectedIds?: (number | string)[]
+	selectedIds?: (string)[]
 
 	/**
 	 * Whether to render the table with a top border.

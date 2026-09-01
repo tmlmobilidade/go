@@ -3,7 +3,7 @@
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 
 import { type TripStopEta } from '../types.js';
-import { groupEtasByTrip, toCachedEta } from './trip-updates-to-etas.js';
+import { groupEtasByTrip } from './trip-updates-to-etas.js';
 import { TTL_REALTIME } from '@/config.js';
 
 /* * */
@@ -25,7 +25,7 @@ export async function cacheEtasByTrip(etas: TripStopEta[]) {
 
 	await Promise.all([...groupEtasByTrip(etas).entries()].map(async ([tripId, tripEtas]) => {
 		const sorted = [...tripEtas].sort((a, b) => a.stop_sequence - b.stop_sequence);
-		await cacheDb.set(`hub:v1:realtime:eta:by-trip:${tripId}`, JSON.stringify(sorted.map(toCachedEta)), TTL_REALTIME);
+		await cacheDb.set(`hub:v1:realtime:eta:by-trip:${tripId}`, JSON.stringify(sorted), TTL_REALTIME);
 	}));
 
 	//

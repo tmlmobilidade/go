@@ -1,7 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { organizeStop } from '@tmlmobilidade/go-infrastructure-pckg-organize';
+import { organizeStop } from '@tmlmobilidade/go-infrastructure-pckg-utils';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';

@@ -84,7 +84,7 @@ Module-internal packages follow `@tmlmobilidade/go-[module]-pckg-[name]`:
 ```
 @tmlmobilidade/go-operation-pckg-compose-alert
 @tmlmobilidade/go-alerts-pckg-organize
-@tmlmobilidade/go-infrastructure-pckg-organize
+@tmlmobilidade/go-infrastructure-pckg-utils
 @tmlmobilidade/go-tracker-pckg-parsers
 ```
 

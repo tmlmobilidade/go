@@ -143,12 +143,12 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51003/infrastructure',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/stops/api',
+			api_url: 'https://go.tmlmobilidade.pt/infrastructure/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/infrastructure',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/stops/api`,
+			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/infrastructure/api`,
 			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/infrastructure`,
 			...DEFAULT_STG_CONFIG,
 		},

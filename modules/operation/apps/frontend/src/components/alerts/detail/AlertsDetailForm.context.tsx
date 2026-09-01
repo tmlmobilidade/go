@@ -49,7 +49,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(alertId) }),
+		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.operation.ALERTS_DETAIL(alertId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
 			alertsDetailMutate(response);

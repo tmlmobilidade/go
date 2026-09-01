@@ -2,8 +2,8 @@
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 
-import { type TripStopEta, type TripStopEtaCached } from '../types.js';
-import { groupEtasByStop, toCachedEta } from './trip-updates-to-etas.js';
+import { type TripStopEta } from '../types.js';
+import { groupEtasByStop } from './trip-updates-to-etas.js';
 
 /* * */
 
@@ -24,15 +24,15 @@ export async function cacheEtasByStop(etas: TripStopEta[]) {
 
 	await Promise.all([...groupEtasByStop(etas).entries()].map(async ([stopId, stopEtas]) => {
 		const existing = await cacheDb.get(`hub:v1:realtime:eta:by-stop:${stopId}`);
-		const merged: TripStopEtaCached[] = existing ? JSON.parse(existing) : [];
+		const merged: TripStopEta[] = existing ? JSON.parse(existing) : [];
 
-		for (const eta of stopEtas.map(toCachedEta)) {
+		for (const eta of stopEtas) {
 			const index = merged.findIndex(row => row.trip_id === eta.trip_id && row.stop_sequence === eta.stop_sequence);
 			if (index >= 0) merged[index] = eta;
 			else merged.push(eta);
 		}
 
-		merged.sort((a, b) => Number(a.stop_sequence) - Number(b.stop_sequence));
+		merged.sort((a, b) => a.stop_sequence - b.stop_sequence);
 
 		await cacheDb.set(`hub:v1:realtime:eta:by-stop:${stopId}`, JSON.stringify(merged));
 	}));

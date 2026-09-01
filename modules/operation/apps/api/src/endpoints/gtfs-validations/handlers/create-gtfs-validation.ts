@@ -119,6 +119,7 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 						...validationData,
 						_id: validationId,
 						file_id: attachment._id,
+						updated_at: Dates.now('utc').unix_milliseconds,
 					});
 
 					finalValidationData = await goDb.operation.gtfsValidations.insertOne(validatedGtfsValidation, { session });

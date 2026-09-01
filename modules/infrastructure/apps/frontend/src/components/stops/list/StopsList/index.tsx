@@ -1,14 +1,15 @@
 'use client';
 
-import { StopsListFilterBar } from '@/components/stops/list/StopsListFilterBar';
+import { StopsListFilterBar } from '@/components/stops/list/filters/StopsListFilterBar';
 import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
-import { type StopNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { type StopsListItem } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { DataTable, DataTableColumn, ErrorDisplay, IdTag, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-import { useStopsListData } from './use-stops-list-data';
+import { useStopsDetailStopId } from '../../detail/use-stops-detail-stop-id';
+import { useStopsListData } from '../use-stops-list-data';
 
 /* * */
 
@@ -19,11 +20,12 @@ export function StopsList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
 
-	const stopsListData = useStopsListData();
+	const { stopId } = useStopsDetailStopId();
 
-	const columns: DataTableColumn<StopNormalized>[] = [
+	const { data, error, isLoading } = useStopsListData();
+
+	const columns: DataTableColumn<StopsListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -58,7 +60,7 @@ export function StopsList() {
 		{
 			accessor: 'parish_name',
 			title: 'Freguesia',
-			width: 250,
+			width: 400,
 		},
 		{
 			accessor: 'locality_name',
@@ -70,20 +72,12 @@ export function StopsList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: StopNormalized) => {
-		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(String(item._id))));
+	const handleRowClick = (item: StopsListItem) => {
+		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(item._id)));
 	};
 
 	//
 	// C. Render components
-
-	if (stopsListData.isLoading) {
-		return <LoadingOverlay />;
-	}
-
-	if (stopsListData.error) {
-		return <ErrorDisplay message={stopsListData.error.message} />;
-	}
 
 	return (
 		<Pane header={[
@@ -91,15 +85,15 @@ export function StopsList() {
 			<StopsListFilterBar key="filters" />,
 		]}
 		>
+			{error && <ErrorDisplay message={error} />}
 			<DataTable
 				columns={columns}
+				isLoading={isLoading}
 				onRowClick={handleRowClick}
-				records={stopsListData.data.filtered}
+				records={data}
 				rowIdAccessor="_id"
-				selectedId={Number(params.id)}
+				selectedId={stopId}
 			/>
 		</Pane>
 	);
-
-	//
 }

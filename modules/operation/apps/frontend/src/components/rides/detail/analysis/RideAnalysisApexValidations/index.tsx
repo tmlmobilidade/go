@@ -71,7 +71,7 @@ export function RideAnalysisApexValidations() {
 		},
 		{
 			accessor: 'mac_sam_serial_number',
-			render: item => <IdTag id={item.mac_sam_serial_number} copyOnClick />,
+			render: item => <IdTag id={item.mac_sam_serial_number.toString()} copyOnClick />,
 			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.mac_sam_serial_number.label'),
 			width: 160,
 		},

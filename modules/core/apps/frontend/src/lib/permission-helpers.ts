@@ -1,7 +1,7 @@
 /* * */
 
 import { type Role } from '@tmlmobilidade/go-types-core';
-import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
+import { type Permission } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Calculate permissions that a user has from their assigned roles
@@ -10,25 +10,28 @@ import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permi
  * @returns Array of permissions inherited from roles
  */
 export function calculateRolePermissions(roleIds: string[], roles: Role[]): Permission[] {
-	const rolePermissions: Permission[] = [];
+	//
+
+	if (!roles?.length) return [];
+
+	const rolePermissions = new Map<string, Permission>();
 
 	// Get all roles assigned to the user
-	const userRoles = roles.filter(role => roleIds.includes(role._id));
+	const userRoles = roles?.filter(role => roleIds.includes(role._id));
 
 	// Collect all permissions from user's roles
-	userRoles.forEach((role) => {
+	userRoles?.forEach((role) => {
 		role.permissions.forEach((permission) => {
+			// Build a key for the permission
+			const key = `${permission.scope}-${permission.action}`;
 			// Check if this permission is already in the array (avoid duplicates)
-			const existingPermission = rolePermissions.find(p => p.scope === permission.scope && p.action === permission.action);
-
-			if (!existingPermission) {
-				const validatedPermission = PermissionSchema.safeParse(permission);
-				rolePermissions.push(validatedPermission.data);
-			}
+			if (rolePermissions.has(key)) return;
+			// Add the permission to the map
+			rolePermissions.set(key, permission);
 		});
 	});
-
-	return rolePermissions;
+	// Return the permissions as an array
+	return Array.from(rolePermissions.values());
 }
 
 /**

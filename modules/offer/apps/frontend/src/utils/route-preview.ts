@@ -5,8 +5,8 @@ import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 
 export interface RoutePreviewAnchor {
 	_id: string
-	after_stop_id: number
-	before_stop_id: number
+	after_stop_id: string
+	before_stop_id: string
 	lat: number
 	lon: number
 	sequence: number
@@ -14,8 +14,8 @@ export interface RoutePreviewAnchor {
 }
 
 export interface RoutePreviewLegSegment {
-	after_stop_id: number
-	before_stop_id: number
+	after_stop_id: string
+	before_stop_id: string
 	leg_from_index: number
 	leg_to_index: number
 	stop_from_index: number

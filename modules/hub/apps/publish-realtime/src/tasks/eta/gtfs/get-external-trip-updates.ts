@@ -1,6 +1,5 @@
 /* * */
 
-import fs from 'fs';
 import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
@@ -101,8 +100,6 @@ export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<
 		}
 
 		Logger.info({ message: `Found ${tripUpdates.length} ${feed.label} trip updates in ${timer.get()}`, spacesAfterOrBefore: 1 });
-
-		fs.writeFileSync('trip-updates.json', JSON.stringify(tripUpdates, null, 2));
 
 		return tripUpdates;
 	} catch (error) {

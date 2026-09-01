@@ -32,7 +32,7 @@ export function useUsersAgenciesData(): UseUsersAgenciesDataReturnType {
 	});
 
 	//
-	// C. Transform data
+	// B. Transform data
 
 	const optionsData = useMemo(() => {
 		// Skip if no data is available
@@ -47,7 +47,7 @@ export function useUsersAgenciesData(): UseUsersAgenciesDataReturnType {
 	}, [data?.data]);
 
 	//
-	// D. Return value
+	// C. Return value
 
 	return useMemo(() => ({
 		error: error?.error,
