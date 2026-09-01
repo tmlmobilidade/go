@@ -6,7 +6,7 @@ import { District, Locality, Municipality, Parish } from '@tmlmobilidade/go-type
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 /* * */
 
@@ -40,9 +40,8 @@ export function useStopsLocationsData(request: StopsLocationRequest): StopsLocat
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<StopsLocationResponse>>([API_ROUTES.infrastructure.STOPS_LIST_LOCATIONS, request], {
+	const { data, error, isLoading, isValidating } = useSWRImmutable<ApiResponse<StopsLocationResponse>>([API_ROUTES.infrastructure.STOPS_LIST_LOCATIONS, request], {
 		fetcher: async ([url, request]) => await fetchApiData<StopsLocationResponse>({ body: request, method: 'POST', url: url }),
-		refreshInterval: 600_000, // 10 minutes
 	});
 
 	//
