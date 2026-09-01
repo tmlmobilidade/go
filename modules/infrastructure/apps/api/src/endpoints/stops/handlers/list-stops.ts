@@ -4,7 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { type StopsListFilters, StopsListFiltersSchema, type StopsListResponse, StopsListResponseSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Lists all stops, sorted by creation date descending
@@ -15,28 +15,28 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 	//
 
 	//
-	// Apply permission filters to the request body
-
-	request.body.agency_ids = PermissionCatalog.filterPermissionResourceValues<string>({
-		action: PermissionCatalog.all.stops.actions.read,
-		permissions: request.permissions,
-		resourceKey: 'agency_ids',
-		scope: PermissionCatalog.all.stops.scope,
-		values: request.body.agency_ids,
-	});
-
-	request.body.municipality_ids = PermissionCatalog.filterPermissionResourceValues<string>({
-		action: PermissionCatalog.all.stops.actions.read,
-		permissions: request.permissions,
-		resourceKey: 'municipality_ids',
-		scope: PermissionCatalog.all.stops.scope,
-		values: request.body.municipality_ids,
-	});
-
-	//
 	// Validate the filters
 
 	const validatedFilters = StopsListFiltersSchema.parse(request.body);
+
+	//
+	// Apply permission filters to the request body
+
+	validatedFilters.agency_ids = filterPermissionResourceValues<string>({
+		action: 'read',
+		permissions: request.permissions,
+		resourceKey: 'agency_ids',
+		scope: 'stops',
+		values: request.body.agency_ids,
+	});
+
+	validatedFilters.municipality_ids = filterPermissionResourceValues<string>({
+		action: 'read',
+		permissions: request.permissions,
+		resourceKey: 'municipality_ids',
+		scope: 'stops',
+		values: validatedFilters.municipality_ids,
+	});
 
 	//
 	// Build aggregation pipeline
