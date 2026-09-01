@@ -185,7 +185,7 @@ export async function parsePlan(planData: Plan) {
 				.update(JSON.stringify(createHashedShape))
 				.digest('hex');
 
-			const currentHashedShapeAlreadyExists = await labDb.operation.hashedShapes.count('DISTINCT(_id)', '_id = $1', { 1: uniqueIdValueForHashedShape });
+			const currentHashedShapeAlreadyExists = await labDb.queryFromString('SELECT 1 FROM operation.hashed_shapes WHERE _id = $1 LIMIT 1', { 1: uniqueIdValueForHashedShape });
 
 			const hashedShapeItem = HashedShapeSchema.parse({
 				...createHashedShape,
@@ -260,7 +260,7 @@ export async function parsePlan(planData: Plan) {
 			// Check if there are rows with this unique ID value.
 			// If there are no rows, save the HashedTrip items to the database.
 
-			const currentHashedTripAlreadyExists = await labDb.operation.hashedTrips.count('DISTINCT(_id)', '_id = $1', { 1: uniqueIdValueForHashedTrip });
+			const currentHashedTripAlreadyExists = await labDb.queryFromString('SELECT 1 FROM operation.hashed_trips WHERE _id = $1 LIMIT 1', { 1: uniqueIdValueForHashedTrip });
 
 			const hashedTripItems = sortedCreateHashedTripItems.map((item): HashedTrip => {
 				return HashedTripSchema.parse({
