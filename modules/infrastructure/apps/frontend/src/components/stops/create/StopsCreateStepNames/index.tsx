@@ -2,7 +2,7 @@
 
 import { Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 
-import { useStopCreateContext } from '../StopCreate.context';
+import { useStopsCreateFormContext } from '../StopsCreateForm.context';
 
 /* * */
 
@@ -10,15 +10,16 @@ export function StopsCreateStepNames() {
 	//
 	// A. Setup variables
 
-	const stopCreateContext = useStopCreateContext();
+	const { form } = useStopsCreateFormContext();
 
 	//
 	// B. Render components
 
 	return (
 		<Section gap="sm" width="100%">
+
 			<StandardFormController
-				control={stopCreateContext.form.instance.control}
+				control={form.control}
 				name="name"
 				render={({ field, fieldState }) => (
 					<TextInput
@@ -33,32 +34,23 @@ export function StopsCreateStepNames() {
 					/>
 				)}
 			/>
-			<StandardFormController
-				control={stopCreateContext.form.instance.control}
-				name="short_name"
-				render={({ field }) => (
-					<TextInput
-						description="Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos."
-						label="Nome Curto (automático)"
-						value={field.value ?? ''}
-						w="100%"
-						readOnly
-					/>
-				)}
+
+			<TextInput
+				description="Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos."
+				label="Nome Curto (automático)"
+				value=""
+				w="100%"
+				readOnly
 			/>
-			<StandardFormController
-				control={stopCreateContext.form.instance.control}
-				name="tts_name"
-				render={({ field }) => (
-					<TextInput
-						description="O nome a ser utilizado pelo sistema de TTS (Text-to-Speech)."
-						label="Nome TTS (automático)"
-						value={field.value ?? ''}
-						w="100%"
-						readOnly
-					/>
-				)}
+
+			<TextInput
+				description="O nome a ser utilizado pelo sistema de TTS (Text-to-Speech)."
+				label="Nome TTS (automático)"
+				value=""
+				w="100%"
+				readOnly
 			/>
+
 		</Section>
 	);
 }
