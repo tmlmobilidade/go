@@ -58,7 +58,7 @@ export function SamsDetailHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleGoBack} type="close" />
-			<IdTag id={samDetailContext.data.sam?._id} copyOnClick />
+			<IdTag id={samDetailContext.data.sam?._id.toString()} copyOnClick />
 			<Spacer />
 			<HasPermission action={PermissionCatalog.all.sams.actions.export} scope={PermissionCatalog.all.sams.scope}>
 				<IconButton
