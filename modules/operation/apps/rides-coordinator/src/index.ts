@@ -3,6 +3,7 @@
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import Fastify from 'fastify';
 
+import { getPlans } from './get-plans.js';
 import { getRides } from './get-rides.js';
 
 /* * */
@@ -29,6 +30,8 @@ await (async function init() {
 	// Setup the API services
 
 	fastify.get('/rides', getRides);
+
+	fastify.get('/plans', getPlans);
 
 	//
 	// Start the API service

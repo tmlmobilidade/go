@@ -10,6 +10,7 @@ import { HttpStatusSchema } from './http-status.js';
 export const ApiResponseSuccessSchema = z.object({
 	data: z.unknown(),
 	error: z.null(),
+	generated_at: UnixMillisecondsSchema.nullable().default(null),
 	status_code: HttpStatusSchema.extract([
 		'200', // OK
 		'201', // Created

@@ -1,8 +1,8 @@
 /* * */
 
 import { type FastifyReply } from '@/fastify-service.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type ApiResponseSuccess } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { type ApiResponseOptions, getCacheControlHeader } from './response-options.js';
 
@@ -56,6 +56,7 @@ export function sendSuccessApiResponse<T>(reply: FastifyReply<T>, data: T, optio
 	const response: ApiResponseSuccess<T> = {
 		data,
 		error: null,
+		generated_at: options?.generated_at || null,
 		status_code: statusCodeValue,
 		timestamp: Dates.now('local').unix_milliseconds,
 	};
