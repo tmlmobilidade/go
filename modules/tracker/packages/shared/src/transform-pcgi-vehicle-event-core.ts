@@ -1,8 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEventPtTmlCm, RawVehicleEventPtTmlCmSchema } from '@tmlmobilidade/go-types-vehicle-events';
-import { Logger } from '@tmlmobilidade/logger';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import crypto from 'node:crypto';
 
 /* * */
@@ -77,7 +76,7 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 		});
 
 		if (!parsedDocument.success) {
-			Logger.error({ error: parsedDocument.error, message: `Failed to insert document "${pcgiVehicleEvent._id}" -> ${parsedDocument.error.issues.map(issue => `${issue.path.join('.') || '<root>'}: ${issue.message}`).join('; ')}` });
+			console.error({ error: parsedDocument.error, message: `Failed to insert document "${pcgiVehicleEvent._id}" -> ${parsedDocument.error.issues.map(issue => `${issue.path.join('.') || '<root>'}: ${issue.message}`).join('; ')}` });
 			continue;
 		}
 
