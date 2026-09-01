@@ -107,7 +107,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				parish_name: gtfsStop.parish_name,
 				pattern_ids: JSON.parse(gtfsStop.pattern_ids),
 				route_ids: JSON.parse(gtfsStop.route_ids),
-				short_name: gtfsStop.stop_short_name ?? gtfsStop.stop_name,
+				short_name: gtfsStop.stop_name,
 				tts_name: gtfsStop.tts_stop_name,
 			};
 

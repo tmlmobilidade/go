@@ -71,7 +71,7 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('infrastructure', 'frontend_url')}`,
 
 		// STOPS
-		STOPS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/stops/${encodeURIComponent(id)}`,
+		STOPS_DETAIL: (stopId: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/stops/${encodeURIComponent(stopId)}`,
 		STOPS_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}/stops`,
 	},
 
@@ -199,6 +199,7 @@ export const API_ROUTES = Object.freeze({
 		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
 		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
 		PLATFORM_SIDEBAR_LOGO: `${getModuleConfig('core', 'api_url')}/platform/sidebar-logo`,
+		PLATFORM_UPDATE_ME_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/update-me-preferences`,
 
 		// ROLES
 		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,
@@ -206,6 +207,7 @@ export const API_ROUTES = Object.freeze({
 		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}`,
 		ROLES_LIST: `${getModuleConfig('core', 'api_url')}/roles/list`,
 		ROLES_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/roles/list-agencies`,
+		ROLES_LIST_MUNICIPALITIES: `${getModuleConfig('core', 'api_url')}/roles/list-municipalities`,
 		ROLES_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/lock/${encodeURIComponent(id)}`,
 		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
 
@@ -216,6 +218,7 @@ export const API_ROUTES = Object.freeze({
 		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
 		USERS_LIST: `${getModuleConfig('core', 'api_url')}/users/list`,
 		USERS_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/users/list-agencies`,
+		USERS_LIST_MUNICIPALITIES: `${getModuleConfig('core', 'api_url')}/users/list-municipalities`,
 		USERS_LIST_ORGANIZATIONS: `${getModuleConfig('core', 'api_url')}/users/list-organizations`,
 		USERS_LIST_ROLES: `${getModuleConfig('core', 'api_url')}/users/list-roles`,
 		USERS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/lock/${encodeURIComponent(id)}`,
@@ -314,9 +317,12 @@ export const API_ROUTES = Object.freeze({
 		STOPS_GET_TTS: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/get/tts/${encodeURIComponent(id)}`,
 		STOPS_GET_VALID_ID: `${getModuleConfig('infrastructure', 'api_url')}/stops/get/valid-id`,
 		STOPS_LIST: `${getModuleConfig('infrastructure', 'api_url')}/stops/list`,
-		STOPS_LIST_AGENCIES: `${getModuleConfig('infrastructure', 'api_url')}/stops/list/agencies`,
+		STOPS_LIST_AGENCIES: `${getModuleConfig('infrastructure', 'api_url')}/stops/list-agencies`,
+		STOPS_LIST_LOCATIONS: `${getModuleConfig('infrastructure', 'api_url')}/stops/list-locations`,
 		STOPS_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/lock/${encodeURIComponent(id)}`,
 		STOPS_UPDATE: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update/${encodeURIComponent(id)}`,
+		STOPS_UPDATE_COORDINATES: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update-coordinates/${encodeURIComponent(id)}`,
+		STOPS_UPDATE_NAME: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update-name/${encodeURIComponent(id)}`,
 	},
 
 	locations: {

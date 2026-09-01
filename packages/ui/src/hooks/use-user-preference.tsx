@@ -1,12 +1,14 @@
 'use client';
 
 import { useDebouncedCallback } from '@mantine/hooks';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
-import { useMeContext } from '../contexts/Me.context';
+import { useMeData } from '../auth';
+import { fetchApiData } from '../fetch';
 
 /* * */
 
@@ -26,9 +28,10 @@ export function useUserPreference<T extends UserPreferenceValue>(scope: string, 
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 
 	const [preferenceValue, setPreferenceValue] = useState<T>(defaultValue);
+
 	const preferenceValueRef = useRef<T>(defaultValue);
 
 	/** Baseline: last local edit time, or last applied server `updated_at`. */
@@ -38,20 +41,20 @@ export function useUserPreference<T extends UserPreferenceValue>(scope: string, 
 	// B. Handle actions
 
 	const savePreferenceValueDebounced = useDebouncedCallback((value: T) => {
-		const valueFromUserData = meContext.data.user?.preferences?.[scope]?.[key];
+		const valueFromUserData = meData?.preferences?.[scope]?.[key];
 		if (JSON.stringify(value) === JSON.stringify(valueFromUserData)) return;
-		meContext.actions.updatePreference(scope, key, value);
+		fetchApiData({ body: { key, scope, value }, method: 'PUT', url: API_ROUTES.core.PLATFORM_UPDATE_ME_PREFERENCES });
 	}, 500);
 
 	useEffect(() => {
 		// Get the server's `updated_at`.
 		// Skip local sync if not available.
-		const serverUpdatedAt = meContext.data.user?.updated_at;
+		const serverUpdatedAt = meData?.updated_at;
 		if (!serverUpdatedAt) return;
 		// Skip local sync unless the server document is strictly newer.
 		if (serverUpdatedAt <= latestUpdatedAtRef.current) return;
 		// Get the value from the server.
-		const valueFromUserData = (meContext.data.user?.preferences?.[scope]?.[key] as T | undefined) ?? defaultValue;
+		const valueFromUserData = (meData?.preferences?.[scope]?.[key] as T | undefined) ?? defaultValue;
 		// Update the latest updated at.
 		latestUpdatedAtRef.current = serverUpdatedAt;
 		// Cancel the debounced save.
@@ -62,7 +65,7 @@ export function useUserPreference<T extends UserPreferenceValue>(scope: string, 
 		preferenceValueRef.current = valueFromUserData;
 		// Update the local state.
 		setPreferenceValue(valueFromUserData);
-	}, [defaultValue, key, meContext.data.user?.preferences, meContext.data.user?.updated_at, savePreferenceValueDebounced, scope]);
+	}, [defaultValue, key, meData?.preferences, meData?.updated_at, savePreferenceValueDebounced, scope]);
 
 	const handleSetPreferenceValue = useCallback((value: SetStateAction<T>, options?: SetUserPreferenceOptions) => {
 		// The next value is the current value,

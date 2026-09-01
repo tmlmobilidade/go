@@ -7,6 +7,7 @@ import { deleteUserHandler } from './handlers/delete-user.js';
 import { getUserSimplifiedHandler } from './handlers/get-user-simplified.js';
 import { getUserHandler } from './handlers/get-user.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';
+import { listMunicipalitiesHandler } from './handlers/list-municipalities.js';
 import { listOrganizationsHandler } from './handlers/list-organizations.js';
 import { listRolesHandler } from './handlers/list-roles.js';
 import { listUsersHandler } from './handlers/list-users.js';
@@ -28,6 +29,8 @@ server.register(
 		instance.get('/list', { preHandler: authorizationMiddleware('users', ['read']) }, listUsersHandler);
 
 		instance.get('/list-agencies', { preHandler: authorizationMiddleware('users', ['read', 'create']) }, listAgenciesHandler);
+
+		instance.get('/list-municipalities', { preHandler: authorizationMiddleware('users', ['read', 'create']) }, listMunicipalitiesHandler);
 
 		instance.get('/list-roles', { preHandler: authorizationMiddleware('users', ['read', 'create']) }, listRolesHandler);
 

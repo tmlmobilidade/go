@@ -10,7 +10,7 @@ import { EventsPermissionScopeSchema } from './scope.js';
 
 export const EventsPermissionSchema = z.object({
 	action: EventsPermissionActionsSchema,
-	resources: EventsPermissionResourcesSchema.default({}),
+	resources: EventsPermissionResourcesSchema.default({ agency_ids: [] }),
 	scope: EventsPermissionScopeSchema,
 });
 

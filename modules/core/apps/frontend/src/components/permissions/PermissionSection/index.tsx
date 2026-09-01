@@ -15,6 +15,7 @@ interface PermissionSectionProps {
 	disabled?: boolean
 	enabledPermissions: Permission[]
 	enabledRoleIds?: string[]
+	municipalitiesOptions: SelectDataItem[]
 	onResourceToggle?: (permission: Permission) => void
 	onToggle: (permission: Permission) => void
 	rolesData: Role[]
@@ -24,7 +25,7 @@ interface PermissionSectionProps {
 
 /* * */
 
-export function PermissionSection({ agenciesOptions, configActions, description, disabled, enabledPermissions, enabledRoleIds, onResourceToggle, onToggle, rolesData, scope, title }: PermissionSectionProps) {
+export function PermissionSection({ agenciesOptions, configActions, description, disabled, enabledPermissions, enabledRoleIds, municipalitiesOptions, onResourceToggle, onToggle, rolesData, scope, title }: PermissionSectionProps) {
 	return (
 		<Collapsible description={description} title={title}>
 			<Section gap="md">
@@ -37,6 +38,7 @@ export function PermissionSection({ agenciesOptions, configActions, description,
 							disabled={disabled}
 							enabledPermissions={enabledPermissions}
 							enabledRoleIds={enabledRoleIds}
+							municipalitiesOptions={municipalitiesOptions}
 							onResourceToggle={onResourceToggle}
 							onToggle={onToggle}
 							rolesData={rolesData}

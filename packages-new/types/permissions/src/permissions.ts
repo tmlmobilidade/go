@@ -17,6 +17,7 @@ import { PlansPermissionSchema } from './scopes/plans/permission.js';
 import { RidesPermissionSchema } from './scopes/rides/permission.js';
 import { RolesPermissionSchema } from './scopes/roles/permission.js';
 import { SamsPermissionSchema } from './scopes/sams/permission.js';
+import { SchoolsPermissionSchema } from './scopes/schools/permission.js';
 import { StopsPermissionSchema } from './scopes/stops/permission.js';
 import { TypologiesPermissionSchema } from './scopes/typologies/permission.js';
 import { UsersPermissionSchema } from './scopes/users/permission.js';
@@ -42,6 +43,7 @@ export const PermissionSchema = z.discriminatedUnion('scope', [
 	RidesPermissionSchema,
 	RolesPermissionSchema,
 	SamsPermissionSchema,
+	SchoolsPermissionSchema,
 	StopsPermissionSchema,
 	TypologiesPermissionSchema,
 	UsersPermissionSchema,

@@ -4,7 +4,7 @@ import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clien
 
 import { getMeHandler } from './handlers/get-me.js';
 import { getSidebarLogoHandler } from './handlers/get-sidebar-logo.js';
-import { updateMeHandler } from './handlers/update-me.js';
+import { updateMePreferencesHandler } from './handlers/update-me-preferences.js';
 
 /* * */
 
@@ -20,7 +20,7 @@ server.register(
 
 		instance.get('/me', { preHandler: authorizationMiddleware() }, getMeHandler);
 
-		instance.put('/me', { preHandler: authorizationMiddleware() }, updateMeHandler);
+		instance.put('/update-me-preferences', { preHandler: authorizationMiddleware() }, updateMePreferencesHandler);
 
 		instance.get('/downloads', { preHandler: authorizationMiddleware() }, getMeHandler);
 
