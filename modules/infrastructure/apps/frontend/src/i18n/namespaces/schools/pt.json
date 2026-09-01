@@ -166,6 +166,18 @@
 			"columns": {
 				"agency_id": {
 					"label": "Operador"
+				},
+				"grouping": {
+					"label": "Agrupamento"
+				},
+				"id": {
+					"label": "ID"
+				},
+				"municipality_name": {
+					"label": "Município"
+				},
+				"name": {
+					"label": "Nome"
 				}
 			}
 		},

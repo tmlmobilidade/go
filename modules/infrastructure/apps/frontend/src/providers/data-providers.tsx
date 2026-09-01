@@ -1,6 +1,6 @@
 'use client';
 
-import { AgenciesContextProvider } from '@tmlmobilidade/ui';
+import { AgenciesContextProvider, LocationsContextProvider } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -8,7 +8,9 @@ import { type PropsWithChildren } from 'react';
 export function DataProviders({ children }: PropsWithChildren) {
 	return (
 		<AgenciesContextProvider>
-			{children}
+			<LocationsContextProvider>
+				{children}
+			</LocationsContextProvider>
 		</AgenciesContextProvider>
 	);
 }

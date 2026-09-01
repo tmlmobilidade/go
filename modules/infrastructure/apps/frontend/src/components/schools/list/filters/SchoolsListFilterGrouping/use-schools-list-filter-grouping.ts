@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type SchoolsListItem } from '@tmlmobilidade/go-schools-pckg-types';
+import { type SchoolsListItem } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
