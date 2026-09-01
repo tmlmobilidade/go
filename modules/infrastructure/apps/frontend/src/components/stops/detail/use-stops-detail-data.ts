@@ -35,7 +35,7 @@ export function useStopsDetailData(): UseStopsDetailDataReturnType {
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Stop>>(stopId && API_ROUTES.infrastructure.STOPS_GET(String(stopId)), {
 		fetcher: async (url: string) => await fetchApiData<Stop>({ url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 600_000, // 10 minutes
 	});
 
 	//

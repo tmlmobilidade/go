@@ -42,7 +42,7 @@ export function useStopsLocationsData(request: StopsLocationRequest): StopsLocat
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<StopsLocationResponse>>([API_ROUTES.infrastructure.STOPS_LIST_LOCATIONS, request], {
 		fetcher: async ([url, request]) => await fetchApiData<StopsLocationResponse>({ body: request, method: 'POST', url: url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 600_000, // 10 minutes
 	});
 
 	//

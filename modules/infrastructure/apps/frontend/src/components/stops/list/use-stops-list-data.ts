@@ -62,7 +62,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<StopsListResponse[]>>([API_ROUTES.infrastructure.STOPS_LIST, query], {
 		fetcher: async ([url, query]) => await fetchApiData<StopsListResponse[]>({ body: query, method: 'POST', url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 600_000, // 10 minutes
 	});
 
 	//

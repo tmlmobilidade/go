@@ -31,7 +31,7 @@ export function useStopsAgenciesData(request: StopsAgencyRequest): StopsAgencies
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<StopsAgencyItem[]>>([API_ROUTES.infrastructure.STOPS_LIST_AGENCIES, request], {
 		fetcher: async ([url, request]) => await fetchApiData<StopsAgencyItem[]>({ body: request, method: 'POST', url: url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 600_000, // 10 minutes
 	});
 
 	//

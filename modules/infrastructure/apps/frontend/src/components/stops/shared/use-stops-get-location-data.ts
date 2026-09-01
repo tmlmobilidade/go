@@ -5,7 +5,7 @@ import { type StopsGetLocationRequest, type StopsGetLocationResponse } from '@tm
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 /* * */
 
@@ -27,9 +27,8 @@ export function useStopsGetLocationData(request: StopsGetLocationRequest): Stops
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<StopsGetLocationResponse>>([API_ROUTES.infrastructure.STOPS_GET_STOP_LOCATION, request], {
+	const { data, error, isLoading, isValidating } = useSWRImmutable<ApiResponse<StopsGetLocationResponse>>([API_ROUTES.infrastructure.STOPS_GET_STOP_LOCATION, request], {
 		fetcher: async ([url, request]) => await fetchApiData<StopsGetLocationResponse>({ body: request, method: 'POST', url: url }),
-		refreshInterval: 10_000, // 10 seconds
 	});
 
 	//
