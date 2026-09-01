@@ -2,11 +2,11 @@
 
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { getStopShortName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
-import { type sStopsCreateRequest, StopsCreateRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type StopsCreateRequest, StopsCreateRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { CreateStopSchema, type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { type Stop, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
@@ -57,28 +57,27 @@ export async function createStopHandler(request: FastifyRequest<{ Body: StopsCre
 
 	const nowMs = Dates.now('utc').unix_milliseconds;
 
-	const fullStopData: Stop = {
-		...validatedRequest,
+	const validatedStopData = StopSchema.parse({
 		_id: newStopId,
-		associated_patterns: [],
 		created_at: nowMs,
 		created_by: request.me._id,
-		flags: [],
-		is_deleted: false,
-		is_locked: false,
+		district_id: foundDistrict?._id,
+		latitude: validatedRequest.latitude,
+		locality_id: foundLocality?._id,
+		longitude: validatedRequest.longitude,
+		municipality_id: foundMunicipality?._id,
+		name: validatedRequest.name,
+		parish_id: foundParish?._id,
 		short_name: getStopShortName(validatedRequest.name),
+		tts_name: getStopTtsName(validatedRequest.name),
 		updated_at: nowMs,
 		updated_by: request.me._id,
-	};
-
-	const result = await goDb.infrastructure.stops.insertOneUnsafe({
-		...validatedRequest,
-		_id: newStopId,
-		associated_patterns: [],
-		created_at: now,
-
-		updated_at: now,
 	});
 
-	return sendSuccessApiResponse(reply, result);
+	const insertResult = await goDb.infrastructure.stops.insertOneUnsafe(validatedStopData);
+
+	//
+	// Return the result
+
+	return sendSuccessApiResponse(reply, insertResult);
 }
