@@ -59,7 +59,6 @@ export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<
 		 * Skips entities where none of the stops can be mapped.
 		 */
 		for (const entity of externalFeed.entity ?? []) {
-
 			const tripUpdate = entity.trip_update;
 			const externalTripId = tripUpdate?.trip?.trip_id;
 			if (!tripUpdate || !externalTripId) continue;
@@ -72,7 +71,7 @@ export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<
 				let internalStopId = stopIdCache.get(stopTimeUpdate.stop_id);
 				if (internalStopId === undefined) {
 					const foundStop = await goDb.infrastructure.stops.findOne(
-						{ 'flags.agency_ids': { $in: [feed.agencyId] },'flags.stop_id': stopTimeUpdate.stop_id },
+						{ 'flags.agency_ids': { $in: [feed.agencyId] }, 'flags.stop_id': stopTimeUpdate.stop_id },
 						{ projection: { _id: 1 } },
 					);
 					internalStopId = foundStop ? String(foundStop._id) : null;

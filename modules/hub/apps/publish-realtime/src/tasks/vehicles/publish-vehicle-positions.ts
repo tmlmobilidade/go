@@ -1,5 +1,6 @@
 /* * */
 
+import { TTL_REALTIME } from '@/config.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubPlan } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
@@ -8,7 +9,6 @@ import { Timer } from '@tmlmobilidade/timer';
 import { getVehiclePositions } from './get-vehicle-positions.js';
 import { parseVehiclePositions } from './parse-vehicle-positions.js';
 import { toGtfsRtVehiclePositions } from './to-gtfs-rt-vehicle-positions.js';
-import { TTL_REALTIME } from '@/config.js';
 
 /* * */
 
