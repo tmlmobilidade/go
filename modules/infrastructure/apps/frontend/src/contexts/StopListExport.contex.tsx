@@ -1,6 +1,5 @@
 'use client';
 
-import { useStopsListData } from '@/components/stops/list/use-stops-list-data';
 import { useStopsListFilterAgencies } from '@/components/stops/list/filters/StopsListFilterAgency/use-stops-list-filter-agency';
 import { useStopsListFilterConnections } from '@/components/stops/list/filters/StopsListFilterConnections/use-stops-list-filter-connections';
 import { useStopsListFilterEquipment } from '@/components/stops/list/filters/StopsListFilterEquipment/use-stops-list-filter-equipment';
@@ -8,6 +7,7 @@ import { useStopsListFilterFacilities } from '@/components/stops/list/filters/St
 import { useStopsListFilterLifecycleStatus } from '@/components/stops/list/filters/StopsListFilterLifecycleStatus/use-stops-list-filter-lifecycle-status';
 import { useStopsListFilterMunicipality } from '@/components/stops/list/filters/StopsListFilterMunicipality/use-stops-list-filter-municipality';
 import { useStopsListFilterSearch } from '@/components/stops/list/StopsListHeader/use-stops-list-filter-search';
+import { useStopsListData } from '@/components/stops/list/use-stops-list-data';
 import { type CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { closeModal, useAgenciesContext, useExportsContext, useLocationsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
