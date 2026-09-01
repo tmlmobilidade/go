@@ -88,7 +88,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			// Build the final stop object
 
 			const validatedStop: HubStop = {
-				_id: Number(gtfsStop.stop_id),
+				_id: gtfsStop.stop_id,
 				agency_ids: JSON.parse(gtfsStop.agency_ids),
 				district_id: gtfsStop.district_id,
 				district_name: gtfsStop.district_name,

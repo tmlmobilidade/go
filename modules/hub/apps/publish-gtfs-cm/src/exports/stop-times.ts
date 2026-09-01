@@ -4,6 +4,7 @@ import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsStopTimes } from '@tmlmobilidade/go-types-gtfs';
 import { type HubGtfsExportStopTimesInput, HubGtfsExportStopTimesSchema } from '@tmlmobilidade/go-types-hub';
+import { type StopId } from '@tmlmobilidade/go-types-infrastructure';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -25,7 +26,7 @@ export async function exportStopTimesFile(context: ExportGtfsContext, planData: 
 
 	const allStopsData = await goDb.infrastructure.stops.findMany({ 'flags.agency_ids': { $in: [planData.agency_id] } });
 
-	const allStopsMap = new Map<string, number>();
+	const allStopsMap = new Map<string, StopId>();
 
 	for (const stopData of allStopsData) {
 		for (const flag of stopData.flags) {
