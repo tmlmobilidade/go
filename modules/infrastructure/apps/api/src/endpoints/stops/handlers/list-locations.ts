@@ -50,10 +50,14 @@ export async function listLocationsHandler(request: FastifyRequest<{ Body: Stops
 	}));
 
 	//
+	// Get the unique district and municipality IDs from the resulting list of allowed municipalities
+
+	const uniqueMunicipalityIds = new Set(parsedMunicipalities.map(municipality => municipality._id));
+	const uniqueDistrictIds = new Set(parsedMunicipalities.map(municipality => municipality.district_id));
+
+	//
 	// Build aggregation pipeline for districts from the list of municipalities
 	// and transform the result into a list of District objects
-
-	const uniqueDistrictIds = new Set(parsedMunicipalities.map(municipality => municipality.district_id));
 
 	const districtsPipeline: AggregationPipeline<DistrictFeature> = [
 		{ $match: { _id: { $in: Array.from(uniqueDistrictIds) } } },
@@ -73,7 +77,7 @@ export async function listLocationsHandler(request: FastifyRequest<{ Body: Stops
 	// and transform the result into a list of Parish objects
 
 	const parishesPipeline: AggregationPipeline<ParishFeature> = [
-		{ $match: { 'properties.municipality_id': { $in: resourceMunicipalityIds } } },
+		{ $match: { 'properties.municipality_id': { $in: Array.from(uniqueMunicipalityIds) } } },
 		{ $project: { _id: 1, properties: 1 } },
 		{ $sort: { name: 1 } },
 	];
@@ -90,7 +94,7 @@ export async function listLocationsHandler(request: FastifyRequest<{ Body: Stops
 	// and transform the result into a list of Locality objects
 
 	const localitiesPipeline: AggregationPipeline<LocalityFeature> = [
-		{ $match: { 'properties.municipality_id': { $in: resourceMunicipalityIds } } },
+		{ $match: { 'properties.municipality_id': { $in: Array.from(uniqueMunicipalityIds) } } },
 		{ $project: { _id: 1, properties: 1 } },
 		{ $sort: { name: 1 } },
 	];
