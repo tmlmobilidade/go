@@ -83,6 +83,7 @@
 		"dev:hub:ui:videowall": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-videowall",
 		"dev:infrastructure": "npm run build:infrastructure:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-*",
 		"dev:infrastructure:organizer": "npm run build:infrastructure:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-organizer",
+		"dev:infrastructure:organizer:prd": "npm run build:infrastructure:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-organizer",
 		"dev:infrastructure:tts-cli": "npm run build:infrastructure:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-tts-cli",
 		"dev:infrastructure:ui": "npm run build:infrastructure:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-api --filter=@tmlmobilidade/go-infrastructure-frontend",
 		"dev:locations": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-locations-*",

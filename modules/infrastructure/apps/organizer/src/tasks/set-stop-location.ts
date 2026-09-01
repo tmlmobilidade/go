@@ -47,25 +47,28 @@ export async function setStopLocationTask() {
 
 		await Promise.all(
 			stops.map(async (stopData) => {
-				//
+				try {
+					//
 
-				console.log(`[${stopData._id}] Processing location for [${stopData.latitude}, ${stopData.longitude}]...`);
+					console.log(`[${stopData._id}] Processing location for [${stopData.latitude}, ${stopData.longitude}]...`);
 
-				const matchingLocation = await locationsProvider.findLocationByGeo(stopData.latitude, stopData.longitude);
+					const matchingLocation = await locationsProvider.findLocationByGeo(stopData.latitude, stopData.longitude);
 
-				if (!matchingLocation.municipality?._id) {
-					console.log(`[${stopData._id}] No municipality found, skipping...`);
-					return;
+					if (!matchingLocation.municipality?._id) {
+						throw new Error(`No municipality found for coordinates [${stopData.latitude}, ${stopData.longitude}], skipping...`);
+					}
+
+					await goDb.infrastructure.stops.updateById(stopData._id, {
+						district_id: matchingLocation.district?._id || null,
+						locality_id: matchingLocation.locality?._id || null,
+						municipality_id: matchingLocation.municipality._id,
+						parish_id: matchingLocation.parish?._id || null,
+					});
+
+					console.log(`[${stopData._id}] Location set — municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name}`);
+				} catch (error) {
+					console.error(`[${stopData._id}] Error setting location: ${error}`);
 				}
-
-				await goDb.infrastructure.stops.updateById(stopData._id, {
-					district_id: matchingLocation.district?._id || null,
-					locality_id: matchingLocation.locality?._id || null,
-					municipality_id: matchingLocation.municipality._id,
-					parish_id: matchingLocation.parish?._id || null,
-				});
-
-				console.log(`[${stopData._id}] Location set — municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name}`);
 			}),
 		);
 
