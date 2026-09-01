@@ -408,13 +408,4 @@ export async function parsePlan(planData: Plan) {
 	Logger.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 
 	//
-	// When a plan is successfully processed, the program must be restarted
-	// to retrieve the latest data. This is because plans take a long time to process,
-	// and in the meantime users may have changed status and updated files.
-
-	Logger.divider('Restarting to fetch latest plan data...');
-
-	process.exit(0);
-
-	//
 };

@@ -43,12 +43,13 @@ export async function getPlans(): Promise<RidesCoordinatorPlansResponse> {
 
 		const fetchTimer = new Timer();
 
-		const waitingPlan = await goDb.operation.plans.findOne(
+		const waitingPlans = await goDb.operation.plans.findMany(
 			{
 				'$expr': { $ne: ['$hash', '$apps.controller.last_hash'] },
 				'apps.controller.status': { $in: ['waiting'] },
 			},
 			{
+				limit: 1,
 				projection: { _id: 1 },
 				sort: { 'gtfs_feed_info.feed_start_date': -1 },
 			},
@@ -60,7 +61,7 @@ export async function getPlans(): Promise<RidesCoordinatorPlansResponse> {
 
 		const fetchTimerResult = fetchTimer.get();
 
-		if (!waitingPlan) {
+		if (!waitingPlans.length) {
 			Logger.info({ message: `[${sessionId}] No plans waiting (fetch: ${fetchTimerResult})` });
 			IS_BUSY = false;
 			return { plan_id: null };
@@ -72,11 +73,11 @@ export async function getPlans(): Promise<RidesCoordinatorPlansResponse> {
 
 		const markTimer = new Timer();
 
-		Logger.info({ message: `[${sessionId}] New plan: ${waitingPlan._id} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
+		Logger.info({ message: `[${sessionId}] New plan: ${waitingPlans[0]._id} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 
 		IS_BUSY = false;
 
-		return { plan_id: waitingPlan._id };
+		return { plan_id: waitingPlans[0]._id };
 
 		//
 	} catch (error) {
