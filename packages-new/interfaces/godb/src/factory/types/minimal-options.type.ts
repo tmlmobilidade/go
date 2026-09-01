@@ -7,6 +7,7 @@ import { type ClientSession, type FindOptions } from '@tmlmobilidade/go-clients-
  * simplifying the interface for the most common use cases.
  */
 export interface MinimalOptions {
+	limit?: FindOptions['limit']
 	projection?: FindOptions['projection']
 	session?: ClientSession
 	sort?: FindOptions['sort']

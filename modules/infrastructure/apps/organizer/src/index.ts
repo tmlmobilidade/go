@@ -1,10 +1,10 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { organizeStop } from '@tmlmobilidade/go-infrastructure-pckg-utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+
+import { setStopLocationTask } from './tasks/set-stop-location.js';
 
 /* * */
 
@@ -29,30 +29,18 @@ async function main() {
 	const globalTimer = new Timer();
 
 	//
-	// Get all Stop documents from the database
+	// Run tasks
 
-	const allStopsData = await goDb.infrastructure.stops.findMany();
-
-	Logger.info({ message: `Found ${allStopsData.length} stops.` });
+	await setStopLocationTask();
 
 	//
-	// Loop through all stops and request updated attributes for each document
+	// Log completion
 
-	for (const [stopIndex, stopData] of allStopsData.entries()) {
-		//
-
-		Logger.info({ message: `[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...` });
-
-		const organizedStopData = await organizeStop(stopData);
-
-		await goDb.infrastructure.stops.updateById(stopData._id, organizedStopData);
-
-		//
-	}
-
-	Logger.terminate(`Organization completed in ${globalTimer.get()}`);
+	Logger.terminate(`Tasks completed in ${globalTimer.get()}`);
 
 	//
 }
+
+/* * */
 
 await runOnInterval(main, { intervalMs: '5m' });
