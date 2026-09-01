@@ -26,7 +26,7 @@ export async function cleanStuckPlans() {
 
 	const fetchTimer = new Timer();
 
-	const processingPlans = await goDb.operation.plans.findMany({ 'apps.controller.status': ['processing'] });
+	const processingPlans = await goDb.operation.plans.findMany({ 'apps.controller.status': { $in: ['processing'] } });
 
 	const stuckPlanIds = processingPlans
 		.filter(plan => plan.apps.controller.timestamp < Dates.now('Europe/Lisbon').unix_milliseconds - STUCK_PLAN_TIMEOUT_MS)
