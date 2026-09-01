@@ -4,8 +4,8 @@ import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
-import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
+import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
+import { getCoordinatorUrl, ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -39,13 +39,10 @@ export async function analyzeRides() {
 
 		const fetchCoordinatorTimer = new Timer();
 
-		const currentEnvironment = getCurrentEnvironment();
-		let coordinatorUrl: string;
-		if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/rides`;
-		else coordinatorUrl = `http://${currentEnvironment}-operation-rides-coordinator.${currentEnvironment}-operation.svc.cluster.local/rides`;
-
-		const rideIdsBatchResponse = await fetch(coordinatorUrl);
-		const rideIdsBatch = await rideIdsBatchResponse.json() as string[];
+		const rideIdsBatch = await fetch(getCoordinatorUrl('rides'))
+			.then(response => response.json())
+			.then(data => data as RidesCoordinatorRidesResponse)
+			.then(data => data.ride_ids);
 
 		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
 

@@ -1,6 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type RidesCoordinatorPlansResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -10,7 +11,7 @@ let IS_BUSY = false;
 
 /* * */
 
-export async function getPlans(): Promise<string> {
+export async function getPlans(): Promise<RidesCoordinatorPlansResponse> {
 	//
 
 	const timer = new Timer();
@@ -27,7 +28,7 @@ export async function getPlans(): Promise<string> {
 
 		if (IS_BUSY) {
 			Logger.info({ message: `[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})` });
-			return null;
+			return { plan_id: null };
 		}
 
 		//
@@ -62,7 +63,7 @@ export async function getPlans(): Promise<string> {
 		if (!waitingPlan) {
 			Logger.info({ message: `[${sessionId}] No plans waiting (fetch: ${fetchTimerResult})` });
 			IS_BUSY = false;
-			return null;
+			return { plan_id: null };
 		}
 
 		//
@@ -75,12 +76,12 @@ export async function getPlans(): Promise<string> {
 
 		IS_BUSY = false;
 
-		return waitingPlan._id;
+		return { plan_id: waitingPlan._id };
 
 		//
 	} catch (error) {
 		Logger.error({ error, message: `[${sessionId}] Error getting plans: ${error.message}` });
 		IS_BUSY = false;
-		return null;
+		return { plan_id: null };
 	}
 }

@@ -1,6 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { RidesCoordinatorPlansResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { getCoordinatorUrl } from '@tmlmobilidade/go-operation-pckg-utils';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -37,7 +38,9 @@ async function main() {
 	const fetchCoordinatorTimer = new Timer();
 
 	const planId = await fetch(getCoordinatorUrl('plans'))
-		.then(response => response.text());
+		.then(response => response.json())
+		.then(data => data as RidesCoordinatorPlansResponse)
+		.then(data => data.plan_id);
 
 	const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
 

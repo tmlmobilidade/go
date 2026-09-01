@@ -1,6 +1,7 @@
 /* * */
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
@@ -12,7 +13,7 @@ let IS_BUSY = false;
 
 /* * */
 
-export async function getRides(): Promise<string[]> {
+export async function getRides(): Promise<RidesCoordinatorRidesResponse> {
 	//
 
 	const timer = new Timer();
@@ -29,7 +30,7 @@ export async function getRides(): Promise<string[]> {
 
 		if (IS_BUSY) {
 			Logger.info({ message: `[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})` });
-			return [];
+			return { ride_ids: [] };
 		}
 
 		//
@@ -67,7 +68,7 @@ export async function getRides(): Promise<string[]> {
 		if (!latestWaitingRides.length) {
 			Logger.info({ message: `[${sessionId}] No documents waiting | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})` });
 			IS_BUSY = false;
-			return [];
+			return { ride_ids: [] };
 		}
 
 		//
@@ -84,12 +85,12 @@ export async function getRides(): Promise<string[]> {
 
 		IS_BUSY = false;
 
-		return latestWaitingRidesIds;
+		return { ride_ids: latestWaitingRidesIds };
 
 		//
 	} catch (error) {
 		Logger.error({ error, message: `[${sessionId}] Error getting rides: ${error.message}` });
 		IS_BUSY = false;
-		return [];
+		return { ride_ids: [] };
 	}
 }

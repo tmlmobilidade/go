@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-operation-pckg-types": "*",
 		"@tmlmobilidade/go-operation-pckg-utils": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
