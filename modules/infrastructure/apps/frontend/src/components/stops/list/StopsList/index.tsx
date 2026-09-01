@@ -60,7 +60,7 @@ export function StopsList() {
 		{
 			accessor: 'parish_name',
 			title: 'Freguesia',
-			width: 250,
+			width: 400,
 		},
 		{
 			accessor: 'locality_name',
