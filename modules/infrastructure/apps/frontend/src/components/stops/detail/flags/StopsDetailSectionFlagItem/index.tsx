@@ -58,7 +58,7 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 
 	const handleDeleteFlagItem = () => {
 		const latestValues = form.getValues('flags');
-		form.setValue('flags', latestValues?.filter((_, i) => i !== index) ?? []);
+		form.setValue('flags', latestValues?.filter((_, i) => i !== index) ?? [], { shouldDirty: true });
 	};
 
 	//
