@@ -72,12 +72,12 @@ export class CPAuthClient {
 		Logger.info({ message: '[CPAuthClient] Connecting and fetching token...' });
 
 		//
-		// Get the authentication URL, which also sets up the SSH tunnel if needed.
+		// Resolve host/port (direct or via SSH tunnel when CP_TUNNEL_ENABLED=true).
 
-		const port = await this.getAuthenticationPort();
+		const { host, port } = await this.getAuthenticationEndpoint();
 
 		//
-		// Make the POST request to the Authentication API through the SSH tunnel,
+		// Make the POST request to the Authentication API,
 		// and handle the response, extracting the access token or throwing an error if the request fails.
 
 		const responseResult = await new Promise<CPAuthTokenResponse>((resolve, reject) => {
@@ -95,10 +95,10 @@ export class CPAuthClient {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'host': process.env.CP_AUTH_HOST,
 				},
-				host: 'localhost',
+				host,
 				method: 'POST',
 				path: process.env.CP_AUTH_PATH,
-				port: port,
+				port,
 				rejectUnauthorized: false,
 				servername: process.env.CP_AUTH_HOST,
 			};
@@ -136,18 +136,11 @@ export class CPAuthClient {
 	}
 
 	/**
-	 * Constructs the authentication URL based on environment variables
-	 * and SSH tunneling configuration, and handles both direct connections and SSH-tunneled
-	 * connections, validating the necessary environment variables for each case.
-	 * This method is called internally by the service and should not be used directly.
-	 * @throws Will throw an error if required environment variables are missing or if the SSH tunnel setup fails.
-	 * @returns A promise that resolves to the authentication URL.
+	 * Resolves the auth host/port: direct to CP_AUTH_HOST:443, or via SSH tunnel
+	 * when `CP_TUNNEL_ENABLED=true` (`cpSshTunnel` returns null otherwise).
 	 */
-	private async getAuthenticationPort(): Promise<number> {
+	private async getAuthenticationEndpoint(): Promise<{ host: string, port: number }> {
 		//
-
-		//
-		// Validate required environment variables
 
 		if (!process.env.CP_AUTH_HOST || !process.env.CP_AUTH_PATH) {
 			throw new Error('Missing CP_AUTH_HOST or CP_AUTH_PATH environment variables.');
@@ -159,10 +152,15 @@ export class CPAuthClient {
 
 		if (!this.tunnel) {
 			this.tunnel = cpSshTunnel({ dstAddr: process.env.CP_AUTH_HOST, dstPort: 443 });
-			await this.tunnel.connect();
+			if (this.tunnel) {
+				Logger.info({ message: '[CPAuthClient] Setting up SSH Tunnel...' });
+				await this.tunnel.connect();
+			}
 		}
 
-		Logger.info({ message: '[CPAuthClient] Setting up SSH Tunnel...' });
+		if (!this.tunnel) {
+			return { host: process.env.CP_AUTH_HOST, port: 443 };
+		}
 
 		const addr = this.tunnel.server.address();
 
@@ -170,7 +168,7 @@ export class CPAuthClient {
 			throw new Error('[CPAuthClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return addr.port;
+		return { host: 'localhost', port: addr.port };
 	}
 
 	//
