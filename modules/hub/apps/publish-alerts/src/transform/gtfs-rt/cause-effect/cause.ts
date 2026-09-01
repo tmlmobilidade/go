@@ -1,7 +1,8 @@
 /* * */
 
+import { type GtfsRtCause } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type Alert, AlertCauseToGtfsRtCauseMap } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, AlertCauseToGtfsRtCauseMap, type GtfsRtCause } from '@tmlmobilidade/types';
 
 /* * */
 

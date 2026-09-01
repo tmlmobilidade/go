@@ -1,7 +1,8 @@
 /* * */
 
+import { type GtfsRtEffect } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type Alert, AlertEffectToGtfsRtEffectMap } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, AlertEffectToGtfsRtEffectMap, type GtfsRtEffect } from '@tmlmobilidade/types';
 
 /* * */
 

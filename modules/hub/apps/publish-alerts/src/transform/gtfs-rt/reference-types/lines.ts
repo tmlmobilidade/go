@@ -1,10 +1,12 @@
 /* * */
 
+import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type GtfsRtEntitySelector } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type Alert } from '@tmlmobilidade/go-types-operation';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type GtfsRtEntitySelector, UnixMilliseconds } from '@tmlmobilidade/types';
-import { getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -47,23 +49,25 @@ export async function transformReferenceTypeLinesIntoGtfsRt(alertData: Alert): P
 		// for rides matching the line ID,
 		// the agency ID, and the alert start time.
 
-		const foundRouteIds = await goDb.operation.rides.aggregate([
-			{
-				$match: {
-					agency_id: alertData.agency_id,
-					line_id: reference.parent_id,
-					start_time_scheduled: {
-						$gte: alertData.active_period_start_date,
-						$lte: activePeriodEndDate,
-					},
-				},
-			},
-			{
-				$group: {
-					_id: '$route_id',
-				},
-			},
-		]);
+		// const foundRouteIds = await labDb.operation.rides.aggregate([
+		// 	{
+		// 		$match: {
+		// 			agency_id: alertData.agency_id,
+		// 			line_id: reference.parent_id,
+		// 			start_time_scheduled: {
+		// 				$gte: alertData.active_period_start_date,
+		// 				$lte: activePeriodEndDate,
+		// 			},
+		// 		},
+		// 	},
+		// 	{
+		// 		$group: {
+		// 			_id: '$route_id',
+		// 		},
+		// 	},
+		// ]);
+
+		const foundRouteIds = [];
 
 		if (!foundRouteIds?.length) {
 			Logger.error({ message: `[Alert ID: ${alertData._id}] No rides found for line ID ${reference.parent_id} and start time ${alertData.active_period_start_date}.` });
@@ -81,7 +85,7 @@ export async function transformReferenceTypeLinesIntoGtfsRt(alertData: Alert): P
 
 			const parsedEntitySelector: GtfsRtEntitySelector = {
 				agency_id: alertData.agency_id,
-				route_id: getPublicRouteId(alertData.agency_id, routeId),
+				route_id: getQualifiedRouteId(alertData.agency_id, routeId),
 			};
 
 			if (!reference.child_ids?.length) {

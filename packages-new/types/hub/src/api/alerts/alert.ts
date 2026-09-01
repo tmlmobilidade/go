@@ -8,6 +8,7 @@ import { z } from 'zod';
 /* * */
 
 export const HubAlertSchema = z.object({
+	_id: z.string(),
 	active_period_end_date: UnixMillisecondsSchema.nullable().default(null),
 	active_period_start_date: UnixMillisecondsSchema,
 	agency_id: z.string(),
