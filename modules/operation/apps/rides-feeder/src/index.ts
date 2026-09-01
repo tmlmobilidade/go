@@ -37,8 +37,7 @@ async function main() {
 	const fetchCoordinatorTimer = new Timer();
 
 	const planId = await fetch(getCoordinatorUrl('plans'))
-		.then(response => response.json())
-		.then(data => data as string);
+		.then(response => response.text());
 
 	const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
 
