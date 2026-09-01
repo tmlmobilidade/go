@@ -3,8 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type SchoolsListFilters, SchoolsListFiltersSchema, type SchoolsListItem, SchoolsListItemSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type SchoolsListFilters, SchoolsListFiltersSchema, type SchoolsListItem, SchoolsListItemSchema } from '@tmlmobilidade/go-schools-pckg-types';
 import { type CreateSchoolDto, CreateSchoolSchema, type School, type UpdateSchoolDto } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 

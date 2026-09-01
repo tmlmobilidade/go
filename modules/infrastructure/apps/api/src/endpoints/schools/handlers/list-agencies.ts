@@ -2,8 +2,8 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
+import { type SchoolsAgencyItem, SchoolsAgencyItemSchema, type SchoolsAgencyRequest, SchoolsAgencyRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type SchoolsAgencyItem, SchoolsAgencyItemSchema, type SchoolsAgencyRequest, SchoolsAgencyRequestSchema } from '@tmlmobilidade/go-schools-pckg-types';
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 
 /**
