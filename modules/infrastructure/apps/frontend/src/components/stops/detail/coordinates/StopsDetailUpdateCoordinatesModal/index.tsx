@@ -4,6 +4,7 @@ import { Grid, Pane, Section, StandardFormController, TextInput } from '@tmlmobi
 
 import { useStopsDetailUpdateCoordinatesFormContext } from '../StopsDetailUpdateCoordinatesForm.context';
 import { StopsDetailUpdateCoordinatesModalHeader } from '../StopsDetailUpdateCoordinatesModalHeader';
+import { StopsDetailUpdateCoordinatesModalMap } from '../StopsDetailUpdateCoordinatesModalMap';
 
 /* * */
 
@@ -20,8 +21,9 @@ export function StopsDetailUpdateCoordinatesModal() {
 
 	return (
 		<Pane header={[<StopsDetailUpdateCoordinatesModalHeader key="header" />]}>
+			<StopsDetailUpdateCoordinatesModalMap />
 			<Section>
-				<Grid>
+				<Grid columns="ab" gap="md">
 					<StandardFormController
 						control={form.control}
 						name="latitude"

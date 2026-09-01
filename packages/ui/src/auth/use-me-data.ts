@@ -14,7 +14,7 @@ interface UseMeDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: () => void
+	mutate: (data?: ApiResponse<User>) => void
 	timestamp: null | UnixMilliseconds
 }
 

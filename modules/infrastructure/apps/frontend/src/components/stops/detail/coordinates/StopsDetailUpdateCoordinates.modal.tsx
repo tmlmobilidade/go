@@ -1,6 +1,6 @@
 'use client';
 
-import { closeModal, openModal } from '@tmlmobilidade/ui';
+import { closeModal, MapContextProvider, openModal } from '@tmlmobilidade/ui';
 
 import { StopsDetailUpdateCoordinatesFormContextProvider } from './StopsDetailUpdateCoordinatesForm.context';
 import { StopsDetailUpdateCoordinatesModal } from './StopsDetailUpdateCoordinatesModal';
@@ -14,9 +14,11 @@ const MODAL_ID = 'stops-detail-edit-name-modal';
 export const openStopsDetailUpdateCoordinatesModal = () => {
 	openModal({
 		children: (
-			<StopsDetailUpdateCoordinatesFormContextProvider>
-				<StopsDetailUpdateCoordinatesModal />
-			</StopsDetailUpdateCoordinatesFormContextProvider>
+			<MapContextProvider>
+				<StopsDetailUpdateCoordinatesFormContextProvider>
+					<StopsDetailUpdateCoordinatesModal />
+				</StopsDetailUpdateCoordinatesFormContextProvider>
+			</MapContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,
