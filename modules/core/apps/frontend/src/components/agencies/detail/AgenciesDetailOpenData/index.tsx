@@ -28,7 +28,7 @@ export function AgenciesDetailOpenData() {
 			<Section gap="lg">
 				<StandardFormController
 					control={form.control}
-					name="open_data.gtfs_enabled"
+					name="open_data.services.gtfs_enabled"
 					render={({ field, fieldState }) => (
 						<Switch
 							checked={field.value}
@@ -41,7 +41,7 @@ export function AgenciesDetailOpenData() {
 				/>
 				<StandardFormController
 					control={form.control}
-					name="open_data.positions_enabled"
+					name="open_data.services.positions_enabled"
 					render={({ field, fieldState }) => (
 						<Switch
 							checked={field.value}
@@ -54,7 +54,7 @@ export function AgenciesDetailOpenData() {
 				/>
 				<StandardFormController
 					control={form.control}
-					name="open_data.eta_enabled"
+					name="open_data.services.eta_enabled"
 					render={({ field, fieldState }) => (
 						<Switch
 							checked={field.value}
@@ -67,7 +67,7 @@ export function AgenciesDetailOpenData() {
 				/>
 				<StandardFormController
 					control={form.control}
-					name="open_data.service_alerts_enabled"
+					name="open_data.services.service_alerts_enabled"
 					render={({ field, fieldState }) => (
 						<Switch
 							checked={field.value}

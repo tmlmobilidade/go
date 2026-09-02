@@ -4,32 +4,37 @@ import { BaseDocumentSchema, LanguageTagSchema, OperationalDateIntSchema, Timezo
 import { z } from 'zod';
 
 import { AgencyAlertsMapSchema } from './alerts-map.js';
+import { AgencyAlertsSchema } from './alerts.js';
 import { AgencyApexSchema } from './apex.js';
 import { AgencyFinancialsSchema } from './financials.js';
 import { AgencyOpenDataSchema } from './open-data.js';
+import { AgencyPlansSchema } from './plans.js';
 
 /* * */
 
 export const AgencySchema = BaseDocumentSchema.extend({
-	alerts_map: AgencyAlertsMapSchema,
+	alerts: AgencyAlertsSchema,
 	apex: AgencyApexSchema,
 	code: z.string().max(20),
-	contact_emails_pta: z.array(z.string().email()).default([]),
-	contact_emails_pto: z.array(z.string().email()).default([]),
-	fare_url: z.string().url(),
 	financials: AgencyFinancialsSchema,
 	name: z.string(),
 	open_data: AgencyOpenDataSchema,
-	operation_start_date: OperationalDateIntSchema.nullable().default(null),
-	phone: z.string(),
+	plans: AgencyPlansSchema,
 	primary_language: LanguageTagSchema.default('pt'),
 	pta_name: z.string().default(''),
-	public_email: z.string().email(),
-	public_name: z.string(),
 	short_name: z.string().max(4).default(''),
 	timezone: TimezoneIdentifiedSchema.default('Europe/Lisbon'),
-	validation_rules: z.any().nullable().default(null),
-	website_url: z.string().url(),
+	// DEPRECATED FIELDS
+	alerts_map: AgencyAlertsMapSchema, // Deprecated
+	contact_emails_pta: z.array(z.string().email()).default([]), // Deprecated
+	contact_emails_pto: z.array(z.string().email()).default([]), // Deprecated
+	fare_url: z.string().url(), // Deprecated
+	operation_start_date: OperationalDateIntSchema.nullable().default(null), // Deprecated
+	phone: z.string(), // Deprecated
+	public_email: z.string().email(), // Deprecated
+	public_name: z.string(), // Deprecated
+	validation_rules: z.any().nullable().default(null), // Deprecated
+	website_url: z.string().url(), // Deprecated
 });
 
 export const CreateAgencySchema = AgencySchema.omit({ created_at: true, updated_at: true });
