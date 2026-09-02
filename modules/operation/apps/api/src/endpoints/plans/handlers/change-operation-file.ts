@@ -65,23 +65,30 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 	let updatedPlanData: null | Plan;
 
 	const appsWaitingForReprocessing: Plan['apps'] = {
-		controller: {
+		hub_publish_gtfs: {
 			last_hash: null,
+			message: null,
+			metadata_hash: null,
 			status: 'waiting',
 			timestamp: null,
 		},
-		hub_gtfs: {
+		hub_publish_gtfs_cm: {
 			last_hash: null,
+			message: null,
+			metadata_hash: null,
 			status: 'waiting',
 			timestamp: null,
 		},
-		hub_schedules: {
+		organizer: {
 			last_hash: null,
+			message: null,
+			metadata_hash: null,
 			status: 'waiting',
 			timestamp: null,
 		},
-		merger: {
+		rides_feeder: {
 			last_hash: null,
+			message: null,
 			status: 'waiting',
 			timestamp: null,
 		},

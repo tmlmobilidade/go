@@ -46,23 +46,30 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 		agency_id: validationData.agency_id,
 		apex_file_id: null,
 		apps: {
-			controller: {
+			hub_publish_gtfs: {
 				last_hash: null,
+				message: null,
+				metadata_hash: null,
 				status: 'waiting',
 				timestamp: null,
 			},
-			hub_gtfs: {
+			hub_publish_gtfs_cm: {
 				last_hash: null,
+				message: null,
+				metadata_hash: null,
 				status: 'waiting',
 				timestamp: null,
 			},
-			hub_schedules: {
+			organizer: {
 				last_hash: null,
+				message: null,
+				metadata_hash: null,
 				status: 'waiting',
 				timestamp: null,
 			},
-			merger: {
+			rides_feeder: {
 				last_hash: null,
+				message: null,
 				status: 'waiting',
 				timestamp: null,
 			},
