@@ -28,6 +28,9 @@ export async function exportStopTimesFile(context: ExportGtfsContext, planData: 
 			if (flag.is_harmonized) allStopsMap.set(flag.stop_id, stopData._id);
 			else allStopsMap.set(flag.stop_id, flag.stop_id);
 		});
+		stopData.legacy_ids?.forEach((legacyId) => {
+			allStopsMap.set(legacyId, stopData._id);
+		});
 	});
 
 	for await (const stopTimeItem of sqlTables.stop_times.stream('ORDER BY trip_id, stop_sequence ASC')) {
