@@ -25,5 +25,5 @@ export async function getVehiclePositionsJson(request: FastifyRequest, reply: Fa
 		});
 	};
 
-	return sendSuccessApiResponse(reply, cachedData, { max_age: '3s' });
+	return sendSuccessApiResponse(reply, JSON.parse(cachedData), { max_age: '3s' });
 }
