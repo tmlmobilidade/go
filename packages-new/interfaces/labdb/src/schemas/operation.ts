@@ -46,7 +46,7 @@ export const hashedTripTableSchema: ClickHouseTableSchema<HashedTrip> = {
 	departure_time: { type: 'FixedString(8)' },
 	drop_off_type: { type: 'FixedString(1)' },
 	pickup_type: { type: 'FixedString(1)' },
-	shape_dist_traveled: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
+	shape_dist_traveled: { type: 'UInt32 CODEC(T64, ZSTD)' },
 	shape_id: { type: 'LowCardinality(String)' },
 	stop_id: { type: 'LowCardinality(String)' },
 	stop_lat: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
