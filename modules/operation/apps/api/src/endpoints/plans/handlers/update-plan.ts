@@ -1,14 +1,9 @@
 /* * */
 
-import { updateFeedInfoDates } from '@/utils/file-utils.js';
-import { mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { CreateAttachmentDto } from '@tmlmobilidade/go-types-core';
-import { HashablePlanMetadata, Plan } from '@tmlmobilidade/go-types-operation';
-import { UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type HashablePlanMetadata, type Plan, type UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
+import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { createHash } from 'node:crypto';
 
@@ -35,12 +30,10 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 	//
 	// Check if the user has permission to update the Plan
 
-	const hasPermissionUpdatePlan = PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.plans.actions.update,
-		permissions: request.permissions,
-		resource_key: 'agency_ids',
-		scope: PermissionCatalog.all.plans.scope,
-		value: foundPlan.agency_id,
+	const hasPermissionUpdatePlan = hasPermissionResource(request.permissions, {
+		requiredPermission: { action: 'update', scope: 'plans' },
+		requiredValue: foundPlan.agency_id,
+		resourceKey: 'agency_ids',
 	});
 
 	if (!hasPermissionUpdatePlan) {
@@ -53,8 +46,8 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 	//
 	// Validate the new feed info dates
 
-	const validatedFeedStartDate = OperationalDateIntSchema.parse(request.body.gtfs_feed_info?.feed_start_date);
-	const validatedFeedEndDate = OperationalDateIntSchema.parse(request.body.gtfs_feed_info?.feed_end_date);
+	const validatedFeedStartDate = OperationalDateIntSchema.parse(request.body.active_from);
+	const validatedFeedEndDate = OperationalDateIntSchema.parse(request.body.active_until);
 
 	if (validatedFeedStartDate > validatedFeedEndDate) {
 		return sendErrorApiResponse(reply, {
@@ -67,18 +60,16 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 	// Check if the dates actually changed
 	// to avoid unnecessary file updates
 
-	if (foundPlan.gtfs_feed_info.feed_start_date !== validatedFeedStartDate || foundPlan.gtfs_feed_info.feed_end_date !== validatedFeedEndDate) {
+	if (foundPlan.active_from !== validatedFeedStartDate || foundPlan.active_until !== validatedFeedEndDate) {
 		//
 
 		//
-		// Check if the user has permission to update the PCGI legacy field
+		// Check if the user has permission to update the feed info dates
 
-		const hasPermissionUpdateFeedInfoDates = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.plans.actions.update_feed_info_dates,
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.plans.scope,
-			value: foundPlan.agency_id,
+		const hasPermissionUpdateFeedInfoDates = hasPermissionResource(request.permissions, {
+			requiredPermission: { action: 'update_feed_info_dates', scope: 'plans' },
+			requiredValue: foundPlan.agency_id,
+			resourceKey: 'agency_ids',
 		});
 
 		if (!hasPermissionUpdateFeedInfoDates) {
@@ -88,35 +79,35 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 			});
 		}
 
-		//
-		// Update the feed info dates in the operation file
+		// //
+		// // Update the feed info dates in the operation file
 
-		const updateDatesResult = await updateFeedInfoDates(
-			foundPlan.operation_file_id,
-			validatedFeedStartDate,
-			validatedFeedEndDate,
-		);
+		// const updateDatesResult = await updateFeedInfoDates(
+		// 	foundPlan.operation_file_id,
+		// 	validatedFeedStartDate,
+		// 	validatedFeedEndDate,
+		// );
 
-		//
-		// Prepare the updated file metadata
+		// //
+		// // Prepare the updated file metadata
 
-		const updatedFileData: CreateAttachmentDto = {
-			created_by: updateDatesResult.info.created_by,
-			name: updateDatesResult.info.name,
-			resource_id: updateDatesResult.info.resource_id,
-			scope: updateDatesResult.info.scope,
-			size: updateDatesResult.file.size,
-			type: mimeTypes.zip,
-			updated_by: 'system',
-		};
+		// const updatedFileData: CreateAttachmentDto = {
+		// 	created_by: updateDatesResult.info.created_by,
+		// 	name: updateDatesResult.info.name,
+		// 	resource_id: updateDatesResult.info.resource_id,
+		// 	scope: updateDatesResult.info.scope,
+		// 	size: updateDatesResult.file.size,
+		// 	type: mimeTypes.zip,
+		// 	updated_by: 'system',
+		// };
 
-		//
-		// Upload updated file and store new file ID
+		// //
+		// // Upload updated file and store new file ID
 
-		const updateFileResult = await storageProvider.upload(
-			Buffer.from(await updateDatesResult.file.arrayBuffer()),
-			updatedFileData,
-		);
+		// const updateFileResult = await storageProvider.upload(
+		// 	Buffer.from(await updateDatesResult.file.arrayBuffer()),
+		// 	updatedFileData,
+		// );
 
 		//
 		// Get a hash of all metadata to make it possible
@@ -124,13 +115,9 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 
 		const hashablePlanMetadata: HashablePlanMetadata = {
 			_id: foundPlan._id,
-			gtfs_agency: foundPlan.gtfs_agency,
-			gtfs_feed_info: {
-				...foundPlan.gtfs_feed_info,
-				feed_end_date: validatedFeedEndDate,
-				feed_start_date: validatedFeedStartDate,
-			},
-			operation_file_id: updateFileResult._id,
+			active_from: validatedFeedStartDate,
+			active_until: validatedFeedEndDate,
+			operation_file_id: foundPlan.operation_file_id,
 		};
 
 		const hashValue = createHash('sha256')
@@ -138,49 +125,10 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 			.digest('hex');
 
 		await goDb.operation.plans.updateById(foundPlan._id, {
-			gtfs_feed_info: {
-				...foundPlan.gtfs_feed_info,
-				feed_end_date: validatedFeedEndDate,
-				feed_start_date: validatedFeedStartDate,
-			},
+			active_from: validatedFeedStartDate,
+			active_until: validatedFeedEndDate,
 			hash: hashValue,
-			operation_file_id: updateFileResult._id,
-		});
-
-		//
-	}
-
-	//
-	// Check if the PCGI legacy field is being updated
-
-	if (request.body.pcgi_legacy?.operation_plan_id && request.body.pcgi_legacy?.operation_plan_id !== foundPlan.pcgi_legacy?.operation_plan_id) {
-		//
-
-		//
-		// Check if the user has permission to update the PCGI legacy field
-
-		const hasPermissionUpdatePcgiLegacy = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.plans.actions.update_pcgi_legacy,
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.plans.scope,
-			value: foundPlan.agency_id,
-		});
-
-		if (!hasPermissionUpdatePcgiLegacy) {
-			return sendErrorApiResponse(reply, {
-				error: 'You are not authorized to update the PCGI legacy field.',
-				status_code: '403',
-			});
-		}
-
-		//
-		// Update the plan with the new data
-
-		await goDb.operation.plans.updateById(foundPlan._id, {
-			pcgi_legacy: {
-				operation_plan_id: request.body.pcgi_legacy.operation_plan_id,
-			},
+			operation_file_id: foundPlan.operation_file_id,
 		});
 
 		//

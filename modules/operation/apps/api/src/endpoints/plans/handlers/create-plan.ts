@@ -3,8 +3,8 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { CreatePlanDto, HashablePlanMetadata, Plan } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type CreatePlanDto, type HashablePlanMetadata, type Plan } from '@tmlmobilidade/go-types-operation';
+import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { createHash } from 'node:crypto';
 
@@ -24,12 +24,10 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 	//
 	// Check if have permissions to create the plan
 
-	const hasPermissionCreatePlan = PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.plans.actions.create,
-		permissions: request.permissions,
-		resource_key: 'agency_ids',
-		scope: PermissionCatalog.all.plans.scope,
-		value: validationData.agency_id,
+	const hasPermissionCreatePlan = hasPermissionResource(request.permissions, {
+		requiredPermission: { action: 'create', scope: 'plans' },
+		requiredValue: validationData.agency_id,
+		resourceKey: 'agency_ids',
 	});
 
 	if (!hasPermissionCreatePlan) {
@@ -43,6 +41,8 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 	// Create the new plan data
 
 	const newPlanData: CreatePlanDto = {
+		active_from: validationData.gtfs_feed_info.feed_start_date,
+		active_until: validationData.gtfs_feed_info.feed_end_date,
 		agency_id: validationData.agency_id,
 		apex_file_id: null,
 		apps: {
@@ -69,14 +69,9 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 		},
 		created_at: Dates.now('utc').unix_milliseconds,
 		created_by: request.me._id,
-		gtfs_agency: validationData.gtfs_agency,
-		gtfs_feed_info: validationData.gtfs_feed_info,
 		hash: '',
 		is_locked: false,
 		operation_file_id: null,
-		pcgi_legacy: {
-			operation_plan_id: '',
-		},
 	};
 
 	//
@@ -94,7 +89,7 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 
 	await storageProvider.copy(
 		validationData.file_id,
-		PermissionCatalog.all.plans.scope,
+		'plans',
 		planResult._id.toString(),
 		{
 			onRollback: async () => {
@@ -104,8 +99,8 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 			onSuccess: async (_ctx, result) => {
 				const hashablePlanMetadata: HashablePlanMetadata = {
 					_id: planResult._id,
-					gtfs_agency: planResult.gtfs_agency,
-					gtfs_feed_info: planResult.gtfs_feed_info,
+					active_from: planResult.active_from,
+					active_until: planResult.active_until,
 					operation_file_id: result._id,
 				};
 

@@ -11,6 +11,4 @@ export const PlanAppStatusSchema = z.object({
 	timestamp: UnixMillisecondsSchema.nullable().default(null),
 }).default({});
 
-/* * */
-
 export type PlanAppStatus = z.infer<typeof PlanAppStatusSchema>;

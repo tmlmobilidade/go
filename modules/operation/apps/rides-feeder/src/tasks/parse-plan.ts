@@ -2,6 +2,7 @@
 
 import { toHashedShape } from '@/utils/to-hashed-shape.js';
 import { toHashedTrip } from '@/utils/to-hashed-trip.js';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HashedShape, type HashedTrip, type Plan, type Ride } from '@tmlmobilidade/go-types-operation';
@@ -63,11 +64,22 @@ export async function parsePlanTask(planData: Plan) {
 	}
 
 	//
+	// Fetch the agency data from the database
+
+	const agencyData = await goDb.core.agencies.findById(planData.agency_id);
+
+	if (!agencyData) {
+		Logger.error({ message: `Agency not found: ${planData.agency_id}` });
+		await setPlanStatus(planData._id, 'error');
+		return;
+	}
+
+	//
 	// Start a heartbeat to indicate the plan is still being processed.
 
 	const heartbeat = startPlanHeartbeat(planData._id);
 
-	Logger.success(`Processing started: feed_start_date: ${planData.gtfs_feed_info.feed_start_date} | feed_end_date: ${planData.gtfs_feed_info.feed_end_date}`);
+	Logger.success(`Processing started: feed_start_date: ${planData.active_from} | feed_end_date: ${planData.active_until}`);
 	Logger.spacer(1);
 
 	//
@@ -86,8 +98,8 @@ export async function parsePlanTask(planData: Plan) {
 		},
 		time_range: {
 			date_range: {
-				end: planData.gtfs_feed_info.feed_end_date,
-				start: planData.gtfs_feed_info.feed_start_date,
+				end: planData.active_until,
+				start: planData.active_from,
 			},
 		},
 	};
@@ -239,7 +251,7 @@ export async function parsePlanTask(planData: Plan) {
 
 				const finalRide: Ride = {
 					_id: uniqueIdValueForRide,
-					agency_code: planData.gtfs_agency.agency_id,
+					agency_code: agencyData.code,
 					agency_id: planData.agency_id,
 					apex_banking_taps_amount: null,
 					apex_banking_taps_qty: null,

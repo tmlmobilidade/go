@@ -3,8 +3,8 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { HashablePlanMetadata, Plan } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type HashablePlanMetadata, type Plan } from '@tmlmobilidade/go-types-operation';
+import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { createHash } from 'node:crypto';
 
 /**
@@ -19,6 +19,7 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 	// Get the Plan from the database
 
 	const planData = await goDb.operation.plans.findById(request.params.id);
+
 	if (!planData) {
 		return sendErrorApiResponse(reply, {
 			error: `Plan with ID ${request.params.id} not found`,
@@ -26,22 +27,15 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 		});
 	}
 
-	const originalFileId = planData.operation_file_id;
-	const originalApps = planData.apps;
-	const originalGtfsAgency = planData.gtfs_agency;
-	const originalGtfsFeedInfo = planData.gtfs_feed_info;
-	const originalHash = planData.hash;
-
+	//
 	// Check if the user has permission to change the GTFS of the Plan
-	const hasPermissionChangeGtfsPlan = PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
-		permissions: request.permissions,
-		resource_key: 'agency_ids',
-		scope: PermissionCatalog.all.plans.scope,
-		value: planData.agency_id,
+
+	const hasPermissionChangeGtfsPlan = hasPermissionResource(request.permissions, {
+		requiredPermission: { action: 'update_gtfs_plan', scope: 'plans' },
+		requiredValue: planData.agency_id,
+		resourceKey: 'agency_ids',
 	});
 
-	// Throw an error if the user is not authorized
 	if (!hasPermissionChangeGtfsPlan) {
 		return sendErrorApiResponse(reply, {
 			error: 'You are not authorized to change the GTFS of the plan.',
@@ -49,11 +43,14 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 		});
 	}
 
+	//
 	// For a given validation ID, get the validation data
+
 	const validationData = await goDb.operation.gtfsValidations.findById(request.body.validation_id);
+
 	if (!validationData) {
 		return sendErrorApiResponse(reply, {
-			error: 'Validation not found',
+			error: `GTFS Validation with ID "${request.body.validation_id}" not found.`,
 			status_code: '404',
 		});
 	}
@@ -65,7 +62,8 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 	// - plan update fails → onSuccess throws → saga compensates the copy
 	// - old-file delete fails → onSuccess throws → onRollback restores plan → saga compensates the copy
 
-	let updatedPlanData: null | Plan = null;
+	let updatedPlanData: null | Plan;
+
 	const appsWaitingForReprocessing: Plan['apps'] = {
 		controller: {
 			last_hash: null,
@@ -91,25 +89,14 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 
 	await storageProvider.copy(
 		validationData.file_id,
-		PermissionCatalog.all.plans.scope,
+		'plans',
 		planData._id.toString(),
 		{
-			onRollback: async () => {
-				if (!updatedPlanData) return;
-				await goDb.operation.plans.updateById(planData._id, {
-					apps: originalApps,
-					gtfs_agency: originalGtfsAgency,
-					gtfs_feed_info: originalGtfsFeedInfo,
-					hash: originalHash,
-					operation_file_id: originalFileId,
-				});
-				updatedPlanData = null;
-			},
 			onSuccess: async (_ctx, result) => {
 				const hashablePlanMetadata: HashablePlanMetadata = {
 					_id: planData._id,
-					gtfs_agency: validationData.gtfs_agency,
-					gtfs_feed_info: validationData.gtfs_feed_info,
+					active_from: planData.active_from,
+					active_until: planData.active_until,
 					operation_file_id: result._id,
 				};
 
@@ -121,14 +108,12 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 					planData._id,
 					{
 						apps: appsWaitingForReprocessing,
-						gtfs_agency: validationData.gtfs_agency,
-						gtfs_feed_info: validationData.gtfs_feed_info,
 						hash: hashValue,
 						operation_file_id: result._id,
 					},
 				);
 
-				await storageProvider.delete(originalFileId);
+				await storageProvider.delete(planData.operation_file_id);
 			},
 		},
 	);
