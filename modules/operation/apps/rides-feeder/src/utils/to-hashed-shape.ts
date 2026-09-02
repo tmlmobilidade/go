@@ -6,18 +6,18 @@ import { type GtfsStrictV30Shapes, type GtfsStrictV30Trips } from '@tmlmobilidad
 import { CreateHashedShapeSchema, type HashedShape, HashedShapeSchema, type Plan } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
-import { Timer } from '@tmlmobilidade/timer';
 import crypto from 'crypto';
 
 /**
  * Transforms the GTFS shape data into a HashedShape.
  * @param shapeData The GTFS shape data to transform into a HashedShape.
  * @returns The HashedShape.
+ * @cost In normal circumstances, this function costs between 5ms and 100ms to complete.
+ * For plans with 20.000 trips this means 15 minutes, and for plans with 150.000 trips this means 2 hours,
+ * just for running the function. This is why it is important to store the resulting values in memory and reuse them.
  */
 export function toHashedShape(planData: Plan, tripData: GtfsStrictV30Trips, shapeData: GtfsStrictV30Shapes[]): HashedShape {
 	//
-
-	const timer = new Timer();
 
 	//
 	// Transform the GTFS shape data into a GeoJSON LineString,
@@ -61,8 +61,6 @@ export function toHashedShape(planData: Plan, tripData: GtfsStrictV30Trips, shap
 		_id: uniqueIdValueForHashedShape,
 		updated_at: Dates.now('utc').unix_milliseconds,
 	});
-
-	console.log(`Transformed shape data "${tripData.shape_id}" into a HashedShape "${uniqueIdValueForHashedShape}" (${timer.get()})`);
 
 	return hashedShapeItem;
 };

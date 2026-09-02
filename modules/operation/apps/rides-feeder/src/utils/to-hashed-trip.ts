@@ -4,15 +4,21 @@ import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { type GtfsStrictV30Stops, type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type CreateHashedTrip, CreateHashedTripSchema, type HashedTrip, HashedTripSchema, type Plan } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Timer } from '@tmlmobilidade/timer';
 import crypto from 'crypto';
 
-/* * */
-
+/**
+ * Transforms the GTFS trip data into a HashedTrip.
+ * @param planData The plan data.
+ * @param tripData The GTFS trip data to transform into a HashedTrip.
+ * @param stopTimesData The GTFS stop times data to transform into a HashedTrip.
+ * @param stopsData The GTFS stops data to transform into a HashedTrip.
+ * @returns The HashedTrip items.
+ * @cost In normal circumstances, this function costs between 5ms and 100ms to complete.
+ * For plans with 20.000 trips this means 15 minutes, and for plans with 150.000 trips this means 2 hours,
+ * just for running the function. This is why it is important to store the resulting values in memory and reuse them.
+ */
 export function toHashedTrip(planData: Plan, tripData: GtfsStrictV30Trips, stopTimesData: GtfsStrictV30StopTimes[], stopsData: GtfsStrictV30Stops[]): HashedTrip[] {
 	//
-
-	const timer = new Timer();
 
 	//
 	// Extract commonly used variables to avoid
@@ -79,8 +85,6 @@ export function toHashedTrip(planData: Plan, tripData: GtfsStrictV30Trips, stopT
 			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	});
-
-	console.log(`Transformed trip data "${tripData.trip_id}" into a HashedTrip with ${hashedTripItems.length} stops "${uniqueIdValueForHashedTrip}" (${timer.get()})`);
 
 	return hashedTripItems;
 }
