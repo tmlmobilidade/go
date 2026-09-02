@@ -5,10 +5,12 @@ import { z } from 'zod';
 
 /* * */
 
-export const PlanAppStatusSchema = z.object({
+export const PlanAppHubPublishGtfsSchema = z.object({
 	last_hash: z.string().nullable().default(null),
+	message: z.string().nullable().default(null),
+	metadata_hash: z.string().nullable().default(null),
 	status: ProcessingStatusSchema.default('waiting'),
 	timestamp: UnixMillisecondsSchema.nullable().default(null),
 }).default({});
 
-export type PlanAppStatus = z.infer<typeof PlanAppStatusSchema>;
+export type PlanAppHubPublishGtfs = z.infer<typeof PlanAppHubPublishGtfsSchema>;
