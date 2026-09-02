@@ -16,11 +16,8 @@ import Papa from 'papaparse';
  * This will download the zip archive, unzip it, check and update the
  * necessary files, re-zip it and upload it again, for each plan document.
  */
-export async function ensureGtfsFiles() {
+export async function normalizePlans() {
 	//
-
-	Logger.info({ message: 'Task disabled.' });
-	return;
 
 	Logger.init();
 
