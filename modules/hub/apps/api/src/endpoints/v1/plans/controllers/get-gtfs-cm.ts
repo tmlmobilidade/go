@@ -18,9 +18,10 @@ export async function getGtfsCm(request: FastifyRequest, reply: FastifyReply<unk
 	if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
 	// Set headers and pipe the response body to the client
 	reply.header('access-control-allow-origin', '*');
-	reply.header('cache-control', 'public, max-age=300');
 	reply.header('content-disposition', `attachment; filename="gtfs-cm-latest.zip"`);
 	reply.header('content-type', 'application/zip');
+	reply.header('cache-control', 'no-store'); // Disable nginx and client caching
+	reply.header('X-Accel-Buffering', 'no'); // Disable nginx buffering to memory
 	// Set content length if available
 	const contentLength = storageServiceResponse.headers.get('content-length');
 	if (contentLength) reply.header('content-length', contentLength);
