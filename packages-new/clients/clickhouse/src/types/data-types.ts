@@ -4,7 +4,7 @@
  */
 export type ClickHouseDataType =
   | 'Array(LowCardinality(String))'
-  | 'Array(UInt32 CODEC(T64, ZSTD))'
+  | 'Array(UInt32) CODEC(ZSTD)'
   | 'Bool'
   | 'Date'
   | 'Float32'

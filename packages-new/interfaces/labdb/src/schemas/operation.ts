@@ -249,6 +249,6 @@ export const rideProcessingWindowTableSchema: ClickHouseTableSchema<RideProcessi
 	trip_id: { type: 'LowCardinality(String)' },
 	window_start: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	window_end: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	operational_dates: { type: 'Array(UInt32 CODEC(T64, ZSTD))' },
+	operational_dates: { type: 'Array(UInt32) CODEC(ZSTD)' },
 	generated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 };
