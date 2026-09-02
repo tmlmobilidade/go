@@ -17,7 +17,7 @@ export interface GoDbCollection<T extends Document> {
 
 	count(filter?: Filter<T>, options?: MinimalOptions): Promise<number>
 
-	deleteById(_id: number | string, options?: MinimalOptions): Promise<DeleteResult>
+	deleteById(_id: string, options?: MinimalOptions): Promise<DeleteResult>
 
 	deleteMany(filter: Filter<T>, options?: MinimalOptions): Promise<DeleteResult>
 
@@ -29,7 +29,7 @@ export interface GoDbCollection<T extends Document> {
 
 	// existsById(id: string): Promise<boolean>
 
-	findById(_id: number | string, options?: MinimalOptions): Promise<null | T>
+	findById(_id: string, options?: MinimalOptions): Promise<null | T>
 
 	findMany(filter?: Filter<T>, options?: MinimalOptions): Promise<T[]>
 
@@ -54,9 +54,9 @@ export interface GoDbCollection<T extends Document> {
 	 * @param _id The ID of the document to toggle the lock status of.
 	 * @returns A promise that resolves to the result of the toggle operation.
 	 */
-	toggleLockById(id: number | string, options?: MinimalOptions): Promise<T>
+	toggleLockById(id: string, options?: MinimalOptions): Promise<T>
 
-	updateById(_id: number | string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T>
+	updateById(_id: string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T>
 
 	// updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: T & { updated_at?: UnixMilliseconds, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>>
 
