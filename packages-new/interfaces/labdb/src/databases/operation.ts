@@ -122,7 +122,7 @@ export class OperationDatabase {
 			partitionBy: 'intDiv(operational_date, 100)',
 		});
 		this.eventRideOpportunities = new ClickHouseInterfaceTemplate<EventRideOpportunity>(instance, this.databaseName, 'event_ride_opportunities', eventRideOpportunitiesTableSchema, {
-			engine: 'ReplacingMergeTree(_id)',
+			engine: 'ReplacingMergeTree(updated_at)',
 			orderBy: ['agency_id', 'trip_id', 'window_start', 'window_end'],
 		});
 		this.rides = new ClickHouseInterfaceTemplate<Ride>(instance, this.databaseName, 'rides', ridesTableSchema, {
