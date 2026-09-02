@@ -5,6 +5,7 @@ import Fastify from 'fastify';
 
 import { getPlans } from './get-plans.js';
 import { getRides } from './get-rides.js';
+import { getEventRideOpportunities } from './get-event-ride-opportunities.js';
 
 /* * */
 
@@ -30,6 +31,8 @@ await (async function init() {
 	// Setup the API services
 
 	fastify.get('/rides', getRides);
+	
+	fastify.get('/event-ride-opportunities', getEventRideOpportunities);
 
 	fastify.get('/plans', getPlans);
 

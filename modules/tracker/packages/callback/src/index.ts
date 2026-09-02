@@ -49,12 +49,14 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 			const operationalDateRange = OperationalDateIntSchema.array().parse(Array.from({ length: maxOperationalDate - minOperationalDate + 1 }, (_, i) => minOperationalDate + i));
 
 			const window: EventRideOpportunity = {
+				_id: item._id,
 				agency_id: item.agency_id,
-				generated_at: Dates.now('utc').unix_milliseconds,
 				operational_dates: operationalDateRange,
 				trip_id: item.trip_id,
 				window_end: windowEnd,
 				window_start: windowStart,
+				updated_at: Dates.now('utc').unix_milliseconds,
+				processing_status: 'waiting'
 			};
 
 			callbackWindowsMap.set(
