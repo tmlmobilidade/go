@@ -1,22 +1,12 @@
 /* * */
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { RideProcessingWindow } from '@tmlmobilidade/go-types-operation';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { performInChunks } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-
-/* * */
-
-export interface RidesCallbackWindow {
-	agency_id: string
-	operational_dates: number[]
-	trip_id: string
-	window_end: number
-	window_start: number
-}
 
 /* * */
 
@@ -39,10 +29,10 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 		if (!data || data.length === 0) return;
 
 		//
-		// Build out the query to find all Rides
+		// Build processing windows for all Rides
 		// that are affected by the new data.
 
-		const callbackWindowsMap = new Map<string, RidesCallbackWindow>();
+		const callbackWindowsMap = new Map<string, RideProcessingWindow>();
 
 		for (const item of data) {
 			if (!item.trip_id) continue;
@@ -56,10 +46,11 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 
 			const minOperationalDate = Dates.fromUnixMilliseconds(windowStart).operational_date_int;
 			const maxOperationalDate = Dates.fromUnixMilliseconds(windowEnd).operational_date_int;
-			const operationalDateRange = Array.from({ length: maxOperationalDate - minOperationalDate + 1 }, (_, i) => minOperationalDate + i);
+			const operationalDateRange = OperationalDateIntSchema.array().parse(Array.from({ length: maxOperationalDate - minOperationalDate + 1 }, (_, i) => minOperationalDate + i));
 
-			const window: RidesCallbackWindow = {
+			const window: RideProcessingWindow = {
 				agency_id: item.agency_id,
+				generated_at: Dates.now('utc').unix_milliseconds,
 				operational_dates: operationalDateRange,
 				trip_id: item.trip_id,
 				window_end: windowEnd,
@@ -72,85 +63,17 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 			);
 		}
 
-		const callbackWindows: RidesCallbackWindow[] = [...callbackWindowsMap.values()];
+		const callbackWindows: RideProcessingWindow[] = [...callbackWindowsMap.values()];
 
 		if (!callbackWindows.length) return;
 
 		//
-		// Perform the operation in chunks to avoid hitting ClickHouse limits.
+		// Insert values into ClickHouse.
+		await labDb.operation.rideProcessingWindows.insert('JSONEachRow', callbackWindows);
 
-		await performInChunks(callbackWindows, async (chunk) => {
-			//
-
-			//
-			// Get the native ClickHouse client.
-
-			const clickhouseClient = await labDb.getClient();
-
-			//
-			// Build the ClickHouse query.
-
-			const query = `
-				WITH
-					windows AS (
-						SELECT
-							arrayJoin(
-								arrayZip(
-									{agency_ids:Array(String)},
-									{trip_ids:Array(String)},
-									{window_starts:Array(Int64)},
-									{window_ends:Array(Int64)},
-									{operational_dates:Array(Array(UInt32))}
-								)
-							) AS window
-					)
-				SELECT r.*
-				FROM operation.rides AS r
-				CROSS JOIN windows
-				WHERE
-					r.agency_id = window.1
-					AND r.operational_date IN window.5
-					AND r.trip_id = window.2
-					AND r.start_time_scheduled >= window.3
-					AND r.start_time_scheduled <= window.4
-				ORDER BY r.updated_at DESC
-				LIMIT 1 BY r._id
-			`;
-
-			const queryResult = await clickhouseClient.query({
-				format: 'JSONEachRow',
-				query,
-				query_params: {
-					agency_ids: chunk.map(window => window.agency_id),
-					operational_dates: chunk.map(window => [...new Set(window.operational_dates)]),
-					trip_ids: chunk.map(window => window.trip_id),
-					window_ends: chunk.map(window => window.window_end),
-					window_starts: chunk.map(window => window.window_start),
-				},
-			});
-
-			const matchingRides = await queryResult.json<Ride>();
-
-			//
-			// For the affected Rides, set them as 'waiting' and insert
-			// a new document in the operation.rides_waiting collection.
-
-			const now = Dates.now('utc').unix_milliseconds;
-
-			const newRides: Ride[] = matchingRides.map(ride => ({
-				...ride,
-				processing_status: 'waiting',
-				updated_at: now,
-			}));
-
-			await labDb.operation.rides.insert('JSONEachRow', newRides);
-
-			Logger.info({
-				message: `Marked as 'waiting': ${matchingRides.length} Rides (${timer.get()})`,
-			});
-
-			//
-		}, 1_000);
+		Logger.info({
+			message: `Queued ${callbackWindows.length} Ride processing windows (${timer.get()})`,
+		});
 
 		//
 	} catch (error) {
