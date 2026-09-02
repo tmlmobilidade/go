@@ -13,12 +13,14 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint . --fix"
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix",
+		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-operation-pckg-utils": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-operation": "*",
@@ -26,7 +28,6 @@
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
 		"papaparse": "5.7.0"
 	},
 	"devDependencies": {
