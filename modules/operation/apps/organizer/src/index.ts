@@ -5,7 +5,7 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { removeOldGtfsValidationsTask } from './tasks/gtfs-validations/remove-old-gtfs-validations.js';
-import { releaseStuckPlansTask } from './tasks/plans/release-stuck-plans.js';
+import { releaseStuckPlansTask } from './tasks/rides/release-stuck-plans.js';
 import { removeOrphanRidesTask } from './tasks/rides/remove-orphan-rides.js';
 
 /* * */
@@ -38,11 +38,10 @@ async function reprocessStuckRides() {
 	/* * */
 	/* PLANS */
 
-	await releaseStuckPlansTask();
-
 	/* * */
 	/* RIDES */
 
+	await releaseStuckPlansTask();
 	// await releaseStuckRidesTask();
 	await removeOrphanRidesTask();
 	// await cleanupOrphanHashedTrips();

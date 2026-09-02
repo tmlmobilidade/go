@@ -29,7 +29,7 @@ export async function releaseStuckPlansTask() {
 	const processingPlans = await goDb.operation.plans.findMany({ 'apps.controller.status': { $in: ['processing'] } });
 
 	const stuckPlanIds = processingPlans
-		.filter(plan => plan.apps.controller.timestamp < Dates.now('Europe/Lisbon').unix_milliseconds - STUCK_PLAN_TIMEOUT_MS)
+		.filter(plan => plan.apps.rides_feeder.timestamp < Dates.now('Europe/Lisbon').unix_milliseconds - STUCK_PLAN_TIMEOUT_MS)
 		.map(plan => plan._id);
 
 	Logger.info({ message: `Fetched ${processingPlans.length} 'processing' plans, of which ${stuckPlanIds.length} are stuck. (${fetchTimer.get()})` });
