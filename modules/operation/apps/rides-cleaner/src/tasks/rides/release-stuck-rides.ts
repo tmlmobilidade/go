@@ -7,7 +7,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-export async function cleanStuckRides() {
+export async function releaseStuckRidesTask() {
 	//
 
 	//

@@ -7,7 +7,7 @@ import { Timer } from '@tmlmobilidade/timer';
 /**
  * Delete all HashedShapes that are not referenced by any Ride.
  */
-export async function cleanupOrphanHashedTrips() {
+export async function removeOrphanHashedTripsTask() {
 	//
 
 	const timer = new Timer();

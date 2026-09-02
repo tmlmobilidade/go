@@ -8,7 +8,7 @@ import { Timer } from '@tmlmobilidade/timer';
 /**
  * Delete all Rides from Plans that do not exist anymore.
  */
-export async function cleanupOrphanRides() {
+export async function removeOrphanRidesTask() {
 	//
 
 	const timer = new Timer();

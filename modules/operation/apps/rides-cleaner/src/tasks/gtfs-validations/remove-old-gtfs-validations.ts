@@ -9,11 +9,10 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /**
- * This script removes gtfs-validation documents and their associated files
- * that are older than a given threshold (30 days). Depending on the status of the validation,
- * it will delete the associated files and the validation document itself.
+ * This script removes GTFS Validation documents and their associated files
+ * that are older than a given threshold according to the its validity status.
  */
-export async function cleanOldValidations() {
+export async function removeOldGtfsValidationsTask() {
 	//
 
 	Logger.init();

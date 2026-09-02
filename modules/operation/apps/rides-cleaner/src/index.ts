@@ -4,11 +4,9 @@ import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { cleanStuckPlans } from './tasks/clean-stuck-plans.js';
-// import { cleanStuckRides } from './tasks/clean-stuck-rides.js';
-// import { cleanupOrphanHashedShapes } from './tasks/cleanup-orphan-hashed-shapes.js';
-// import { cleanupOrphanHashedTrips } from './tasks/cleanup-orphan-hashed-trips.js';
-import { cleanupOrphanRides } from './tasks/cleanup-orphan-rides.js';
+import { removeOldGtfsValidationsTask } from './tasks/gtfs-validations/remove-old-gtfs-validations.js';
+import { releaseStuckPlansTask } from './tasks/plans/release-stuck-plans.js';
+import { removeOrphanRidesTask } from './tasks/rides/remove-orphan-rides.js';
 
 /* * */
 
@@ -32,16 +30,25 @@ async function reprocessStuckRides() {
 
 	const globalTimer = new Timer();
 
-	//
-	// Run cleanup tasks
+	/* * */
+	/* GTFS VALIDATIONS */
 
-	// await cleanStuckRides();
+	await removeOldGtfsValidationsTask();
 
-	await cleanupOrphanRides();
+	/* * */
+	/* PLANS */
+
+	await releaseStuckPlansTask();
+
+	/* * */
+	/* RIDES */
+
+	// await releaseStuckRidesTask();
+	await removeOrphanRidesTask();
 	// await cleanupOrphanHashedTrips();
 	// await cleanupOrphanHashedShapes();
 
-	await cleanStuckPlans();
+	/* * */
 
 	Logger.terminate(`Run took ${globalTimer.get()}.`);
 
