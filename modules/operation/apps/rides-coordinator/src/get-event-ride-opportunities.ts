@@ -2,6 +2,7 @@
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RidesCoordinatorEventRideOpportunitiesResponse } from '@tmlmobilidade/go-operation-pckg-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -45,10 +46,10 @@ export async function getEventRideOpportunities(): Promise<RidesCoordinatorEvent
 
 		const latestWaitingEventRideOpportunities = await labDb.operation.eventRideOpportunities.queryFromString(
 			`
-				SELECT _id,
+				SELECT *
 				FROM operation.event_ride_opportunities FINAL
 				WHERE processing_status = 'waiting'
-				ORDER BY start_time_scheduled DESC
+				ORDER BY window_start DESC
 				LIMIT 750
 			`,
 		);
@@ -66,20 +67,20 @@ export async function getEventRideOpportunities(): Promise<RidesCoordinatorEvent
 		}
 
 		//
-		// Mark those Rides as 'processing' to ensure the next batch of Rdes does not include them,
-		// and return them to the caller instance.
+		// Mark those documents as 'processing' to ensure the next batch does not include them,
+		// and return them to the caller instance. ReplacingMergeTree versions rows by insert.
 
 		const markTimer = new Timer();
 
 		const latestWaitingEventRideOpportunitiesIds = latestWaitingEventRideOpportunities.map(item => item._id);
 
-		await labDb.operation.eventRideOpportunities.queryFromString(
-			`
-				UPDATE operation.event_ride_opportunities
-				SET processing_status = 'processing'
-				WHERE _id IN ($1)
-			`,
-			{ 1: latestWaitingEventRideOpportunitiesIds.join(',') },
+		await labDb.operation.eventRideOpportunities.insert(
+			'JSONEachRow',
+			latestWaitingEventRideOpportunities.map(item => ({
+				...item,
+				processing_status: 'processing',
+				updated_at: Dates.now('utc').unix_milliseconds,
+			})),
 		);
 
 		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingEventRideOpportunitiesIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
