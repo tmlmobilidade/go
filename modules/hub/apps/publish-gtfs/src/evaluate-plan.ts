@@ -22,7 +22,7 @@ export async function evaluatePlan(planData: Plan): Promise<boolean> {
 	//
 	// Return false if the agency does not have GTFS enabled
 
-	if (!agencyData.open_data.gtfs_enabled) {
+	if (!agencyData.open_data.services.gtfs_enabled) {
 		Logger.info({ message: `Skip processing: Agency '${planData.agency_id}' does not have GTFS enabled.` });
 		return false;
 	}
