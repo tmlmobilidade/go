@@ -1,11 +1,11 @@
 /* * */
 
-import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
 export interface WorkerMessage {
-	agency: Plan['gtfs_agency']
+	agency: GtfsValidation['gtfs_agency']
 	error: Error | null
-	feed_info: Plan['gtfs_feed_info']
+	feed_info: GtfsValidation['gtfs_feed_info']
 }

@@ -9,22 +9,22 @@ import styles from './styles.module.css';
 /* * */
 
 interface PlansListCellFeedDatesProps {
-	endDate: OperationalDateInt
-	startDate: OperationalDateInt
+	activeFrom: OperationalDateInt
+	activeUntil: OperationalDateInt
 	temporalStatus: TemporalStatus
 }
 
 /* * */
 
-export function PlansListCellFeedDates({ endDate, startDate, temporalStatus }: PlansListCellFeedDatesProps) {
+export function PlansListCellFeedDates({ activeFrom, activeUntil, temporalStatus }: PlansListCellFeedDatesProps) {
 	return (
 		<div className={styles.wrapper}>
 			{temporalStatus === 'expired' && <Indicator variant="muted" />}
 			{temporalStatus === 'active' && <Indicator variant="primary" filled />}
 			{temporalStatus === 'upcoming' && <Indicator variant="primary" />}
-			<OperationalDateDisplay value={startDate} />
+			<OperationalDateDisplay value={activeFrom} />
 			<IconArrowRight size={16} />
-			<OperationalDateDisplay value={endDate} />
+			<OperationalDateDisplay value={activeUntil} />
 		</div>
 	);
 }

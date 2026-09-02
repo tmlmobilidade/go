@@ -3,9 +3,8 @@
 import { PlanDetailFootnote } from '@/components/plans/detail/PlanDetailFootnote';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';
-import { PlanDetailSectionAgency } from '@/components/plans/detail/PlanDetailSectionAgency';
+import { PlanDetailSectionActiveDates } from '@/components/plans/detail/PlanDetailSectionActiveDates';
 import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetailSectionController';
-import { PlanDetailSectionFeedInfo } from '@/components/plans/detail/PlanDetailSectionFeedInfo';
 import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
 import { PlanDetailSectionApexFile } from '@/components/plans/detail/PlansDetailSectionApexFile';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -38,8 +37,7 @@ export function PlanDetail() {
 
 			{planDetailContext.flags.error && <ErrorDisplay message={planDetailContext.flags.error.message} />}
 
-			<PlanDetailSectionAgency />
-			<PlanDetailSectionFeedInfo />
+			<PlanDetailSectionActiveDates />
 			<PlanDetailSectionOperationFile />
 
 			<HasPermission

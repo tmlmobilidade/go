@@ -58,7 +58,7 @@ export function usePlansListData(): UsePlansListDataReturnType {
 	});
 
 	const sortedSearchResultsData = useMemo(() => {
-		return [...searchResultsData ?? []].sort((a, b) => b.gtfs_feed_info.feed_start_date - a.gtfs_feed_info.feed_start_date);
+		return [...searchResultsData ?? []].sort((a, b) => b.active_from - a.active_from);
 	}, [searchResultsData]);
 
 	//

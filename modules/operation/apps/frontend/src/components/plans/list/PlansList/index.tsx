@@ -52,8 +52,8 @@ export function PlansList() {
 			accessor: 'gtfs_feed_info',
 			render: item => (
 				<PlansListCellFeedDates
-					endDate={item.gtfs_feed_info.feed_end_date}
-					startDate={item.gtfs_feed_info.feed_start_date}
+					activeFrom={item.active_from}
+					activeUntil={item.active_until}
 					temporalStatus={item.temporal_status}
 				/>
 			),
