@@ -64,9 +64,9 @@ export function PlansList() {
 			accessor: 'apps',
 			render: item => (
 				<ProcessingStatusDisplay
-					value={item.apps?.controller?.status}
-					tooltip={item.apps?.controller?.timestamp && Dates
-						.fromUnixMilliseconds(item.apps?.controller?.timestamp)
+					value={item.apps?.rides_feeder?.status}
+					tooltip={item.apps?.rides_feeder?.timestamp && Dates
+						.fromUnixMilliseconds(item.apps?.rides_feeder?.timestamp)
 						.setZone('Europe/Lisbon', 'offset_only')
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
@@ -78,9 +78,9 @@ export function PlansList() {
 			accessor: 'apps',
 			render: item => (
 				<ProcessingStatusDisplay
-					value={item.apps?.merger?.status}
-					tooltip={item.apps?.merger?.timestamp && Dates
-						.fromUnixMilliseconds(item.apps?.merger?.timestamp)
+					value={item.apps?.hub_publish_gtfs_cm?.status}
+					tooltip={item.apps?.hub_publish_gtfs_cm?.timestamp && Dates
+						.fromUnixMilliseconds(item.apps?.hub_publish_gtfs_cm?.timestamp)
 						.setZone('Europe/Lisbon', 'offset_only')
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
@@ -92,9 +92,9 @@ export function PlansList() {
 			accessor: 'apps',
 			render: item => (
 				<ProcessingStatusDisplay
-					value={item.apps?.hub_gtfs?.status}
-					tooltip={item.apps?.hub_gtfs?.timestamp && Dates
-						.fromUnixMilliseconds(item.apps?.hub_gtfs?.timestamp)
+					value={item.apps?.hub_publish_gtfs?.status}
+					tooltip={item.apps?.hub_publish_gtfs?.timestamp && Dates
+						.fromUnixMilliseconds(item.apps?.hub_publish_gtfs?.timestamp)
 						.setZone('Europe/Lisbon', 'offset_only')
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>

@@ -23,10 +23,10 @@ export function PlanDetailSectionController() {
 		>
 			<Section gap="sm">
 
-				<ProcessingStatusDisplay value={planDetailContext.data.plan.apps?.controller?.status} />
+				<ProcessingStatusDisplay value={planDetailContext.data.plan.apps?.rides_feeder?.status} />
 
 				<Tag label={planDetailContext.data.plan.hash || 'N/A'} variant="secondary" />
-				<Tag label={planDetailContext.data.plan.apps?.controller?.last_hash || 'N/A'} variant="secondary" />
+				<Tag label={planDetailContext.data.plan.apps?.rides_feeder?.last_hash || 'N/A'} variant="secondary" />
 
 				<Button
 					disabled={planDetailContext.flags.isReadOnly}
