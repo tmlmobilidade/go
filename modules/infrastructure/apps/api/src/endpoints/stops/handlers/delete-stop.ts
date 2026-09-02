@@ -16,7 +16,7 @@ export async function deleteStopHandler(request: FastifyRequest<{ Params: { id: 
 	//
 	// Get the stop from the database
 
-	const foundStop = await goDb.infrastructure.stops.findById(Number(request.params.id));
+	const foundStop = await goDb.infrastructure.stops.findById(request.params.id);
 
 	if (!foundStop) {
 		return sendErrorApiResponse(reply, {
