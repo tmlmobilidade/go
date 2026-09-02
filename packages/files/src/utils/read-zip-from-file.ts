@@ -24,6 +24,6 @@ export async function readZipFromFile(path: string): Promise<ArrayBuffer> {
 		const buffer = await readFile(path);
 		return buffer.buffer as ArrayBuffer;
 	} catch (error) {
-		throw new Error(`Failed to read ZIP file: ${(error as Error).message}`);
+		throw new Error(`Failed to read ZIP file: ${(error as Error).message}`, error);
 	}
 }

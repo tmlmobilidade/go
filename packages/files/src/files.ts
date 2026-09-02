@@ -145,7 +145,7 @@ export class Files {
 			return zip;
 		} catch (error) {
 			if (error instanceof Error && error.message.includes('Central Directory')) {
-				throw new Error('Invalid or corrupted ZIP file');
+				throw new Error('Invalid or corrupted ZIP file', error);
 			}
 			throw error;
 		}
@@ -195,7 +195,7 @@ export class Files {
 
 			return zipContent;
 		} catch (error) {
-			throw new Error(`Failed to create ZIP archive: ${(error as Error).message}`);
+			throw new Error(`Failed to create ZIP archive: ${(error as Error).message}`, error);
 		}
 	}
 }
