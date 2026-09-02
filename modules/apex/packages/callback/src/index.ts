@@ -111,25 +111,29 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 
 			const query = `
 				WITH
-					arrayJoin(
-						arrayZip(
-							{agency_ids:Array(String)},
-							{trip_ids:Array(String)},
-							{window_starts:Array(Int64)},
-							{window_ends:Array(Int64)},
-							{operational_dates:Array(Array(UInt32))}
-						)
-					) AS window
-				SELECT *
-				FROM operation.rides
+					windows AS (
+						SELECT
+							arrayJoin(
+								arrayZip(
+									{agency_ids:Array(String)},
+									{trip_ids:Array(String)},
+									{window_starts:Array(Int64)},
+									{window_ends:Array(Int64)},
+									{operational_dates:Array(Array(UInt32))}
+								)
+							) AS window
+					)
+				SELECT r.*
+				FROM operation.rides AS r
+				CROSS JOIN windows
 				WHERE
-					agency_id = window.1
-					AND operational_date IN window.5
-					AND trip_id = window.2
-					AND start_time_scheduled >= window.3
-					AND start_time_scheduled <= window.4
-				ORDER BY updated_at DESC
-				LIMIT 1 BY _id
+					r.agency_id = window.1
+					AND r.operational_date IN window.5
+					AND r.trip_id = window.2
+					AND r.start_time_scheduled >= window.3
+					AND r.start_time_scheduled <= window.4
+				ORDER BY r.updated_at DESC
+				LIMIT 1 BY r._id
 			`;
 
 			const queryResult = await clickhouseClient.query({
@@ -137,7 +141,7 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 				query,
 				query_params: {
 					agency_ids: chunk.map(window => window.agency_id),
-					operational_dates: chunk.map(window => window.operational_dates),
+					operational_dates: chunk.map(window => [...new Set(window.operational_dates)]),
 					trip_ids: chunk.map(window => window.trip_id),
 					window_ends: chunk.map(window => window.window_end),
 					window_starts: chunk.map(window => window.window_start),
