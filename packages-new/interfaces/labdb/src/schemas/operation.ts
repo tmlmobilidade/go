@@ -245,10 +245,12 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 /* * */
 
 export const eventRideOpportunitiesTableSchema: ClickHouseTableSchema<EventRideOpportunity> = {
+	_id: { type: 'String' },
 	agency_id: { type: 'LowCardinality(String)' },
 	trip_id: { type: 'LowCardinality(String)' },
 	window_start: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	window_end: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	operational_dates: { type: 'Array(UInt32) CODEC(ZSTD)' },
-	generated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	processing_status: { type: 'LowCardinality(String)' },
+	updated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 };
