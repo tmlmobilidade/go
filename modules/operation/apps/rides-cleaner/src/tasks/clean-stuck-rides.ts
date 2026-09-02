@@ -18,7 +18,8 @@ export async function cleanStuckRides() {
 	const globalTimer = new Timer();
 
 	//
-	// Get all 'processing' rides from the database
+	// Get the latest version of rides which are in the 'processing' or 'error' status,
+	// and the updated_at timestamp is more than 3 minutes ago.
 
 	const fetchTimerA = new Timer();
 

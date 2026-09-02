@@ -1,19 +1,17 @@
 /* * */
 
-import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
+import { toHashedShape } from '@/utils/to-hashed-shape.js';
+import { toHashedTrip } from '@/utils/to-hashed-trip.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
-import { CreateHashedShapeSchema, type CreateHashedTrip, CreateHashedTripSchema, type HashedShape, HashedShapeSchema, type HashedTrip, HashedTripSchema, type Plan, type Ride } from '@tmlmobilidade/go-types-operation';
+import { type HashedShape, type HashedTrip, type Plan, type Ride } from '@tmlmobilidade/go-types-operation';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
 import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { fromOperationalTimeAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
-import crypto from 'crypto';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
 import { startPlanHeartbeat } from '../utils/heartbeat.js';
@@ -73,13 +71,6 @@ export async function parsePlanTask(planData: Plan) {
 	Logger.spacer(1);
 
 	//
-	// Setup variables to save formatted entities found in this Plan
-
-	const savedRideIds = new Set<string>();
-	const savedHashedTripIds = new Set<string>();
-	const savedHashedShapeIds = new Set<string>();
-
-	//
 	// Import the GTFS into SQLite using the helper package
 
 	const importTimer = new Timer();
@@ -104,6 +95,16 @@ export async function parsePlanTask(planData: Plan) {
 	const importedGtfsSql = await importGtfsStrictV30ToDatabase(importConfig);
 
 	Logger.success(`Imported Plan ${planData._id} in ${importTimer.get()}.`);
+
+	//
+	// Setup variables to save formatted entities found in this Plan
+
+	const processedShapeIds = new Map<string, HashedShape>();
+	const processedTripIds = new Map<string, HashedTrip[]>();
+
+	const savedRideIds = new Set<string>();
+	const savedHashedTripIds = new Set<string>();
+	const savedHashedShapeIds = new Set<string>();
 
 	/* * */
 	/* OUTPUT FILES */
@@ -141,6 +142,7 @@ export async function parsePlanTask(planData: Plan) {
 			const routeData = importedGtfsSql.routes.get('route_id', currentTrip.route_id);
 			const shapeData = importedGtfsSql.shapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
 			const stopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [currentTrip.trip_id]);
+			const stopsData = importedGtfsSql.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times WHERE trip_id = ?)', [currentTrip.trip_id]);
 
 			//
 			// Validate the required data for this trip
@@ -166,135 +168,50 @@ export async function parsePlanTask(planData: Plan) {
 				continue;
 			}
 
+			if (!stopsData || stopsData.length === 0) {
+				Logger.error({ message: `Trip "${currentTrip.trip_id}" has no stops data. Skipping...` });
+				continue;
+			}
+
 			/* * */
 			/* HASHED SHAPE */
 
 			//
-			// Transform the GTFS shape data into a GeoJSON LineString,
-			// and then encode it as a polyline string.
+			// If this shape has been processed already, skip it.
+			// Otherwise, transform the shape data into a HashedShape
+			// and save it to the database.
 
-			const sortedShapeData = shapeData.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
-
-			const shapeAsGeoJsonGeometry = GeoJsonLineStringGeometrySchema.parse({
-				coordinates: sortedShapeData.map(point => [point.shape_pt_lon, point.shape_pt_lat]),
-				type: 'LineString',
-			});
-
-			const shapeAsEncodedPolyline = fromGeoJsonLineStringToEncodedPolyline(shapeAsGeoJsonGeometry);
-
-			//
-			// Calculate the extension in meters for the shape.
-
-			const firstShapePoint = sortedShapeData[0];
-			const lastShapePoint = sortedShapeData[sortedShapeData.length - 1];
-
-			const extensionScheduledInMeters = Math.round(toMetersFromKilometersOrMeters(lastShapePoint.shape_dist_traveled, firstShapePoint.shape_dist_traveled));
-
-			//
-			// Hash the object contents and check if it already exists in the database.
-			// The hash value is the _id of the HashedTrip item.
-
-			const createHashedShape = CreateHashedShapeSchema.parse({
-				agency_id: planData.agency_id,
-				extension: extensionScheduledInMeters,
-				shape_id: currentTrip.shape_id,
-				shape_polyline: shapeAsEncodedPolyline,
-			});
-
-			const uniqueIdValueForHashedShape = crypto
-				.createHash('sha256')
-				.update(JSON.stringify(createHashedShape))
-				.digest('hex');
-
-			const currentHashedShapeAlreadyExists = await labDb.queryFromString('SELECT 1 FROM operation.hashed_shapes WHERE _id = $1 LIMIT 1', { 1: uniqueIdValueForHashedShape });
-
-			const hashedShapeItem = HashedShapeSchema.parse({
-				...createHashedShape,
-				_id: uniqueIdValueForHashedShape,
-				updated_at: Dates.now('utc').unix_milliseconds,
-			});
-
-			if (!currentHashedShapeAlreadyExists) {
+			if (!processedShapeIds.has(currentTrip.shape_id)) {
+				const hashedShapeItem = toHashedShape(planData, currentTrip, shapeData);
 				await hashedShapesWritter.write(hashedShapeItem);
-				savedHashedShapeIds.add(uniqueIdValueForHashedShape);
+				savedHashedShapeIds.add(hashedShapeItem._id);
+				processedShapeIds.set(currentTrip.shape_id, hashedShapeItem);
 			}
+
+			const uniqueIdValueForHashedShape = processedShapeIds.get(currentTrip.shape_id)?._id;
+			const extensionScheduledInMeters = processedShapeIds.get(currentTrip.shape_id)?.extension;
 
 			/* * */
 			/* HASHED TRIP */
 
 			//
-			// Extract commonly used variables to avoid
-			// repeated lookups and calculations.
+			// If this trip has been processed already, skip it.
+			// Otherwise, transform the trip data into a HashedTrip and save it to the database.
+			// HashedTrip items are harder to keep track of because they change more often, and in plans
+			// with individual trips per operational day, the amount of data would quickly become too large
+			// to fit in memory. Hoewver, shape_id + start time are a good enough unique identifier for the trip
+			// when inside the plan, so we can use that to identify the hashed trip during the parsing process.
 
-			const sortedStopTimesData = stopTimesData?.sort((a, b) => a.stop_sequence - b.stop_sequence);
+			const keyForHashedTrip = `${currentTrip.shape_id}-${stopTimesData[0].arrival_time}`;
 
-			const firstStopTime = sortedStopTimesData[0];
-			const lastStopTime = sortedStopTimesData[sortedStopTimesData.length - 1];
-
-			//
-			// Build the HashedTrip data, including formatting the path data by combining
-			// properties from stop_times and stops. Sort it by stop_sequence to ensure
-			// the order is stable for hashing.
-
-			const formattedCreateHashedTripItems: CreateHashedTrip[] = [];
-
-			for (const stopTime of sortedStopTimesData) {
-				// Get the corresponding stop data for this stop_time
-				const stopData = importedGtfsSql.stops.get('stop_id', stopTime.stop_id);
-				if (!stopData) throw new Error(`Stop "${stopTime.stop_id}" not found for trip "${currentTrip.trip_id}" for Plan "${planData._id}".`);
-				// Normalize the shape_dist_traveled to meters, if necessary
-				const normalizedShapeDistTraveled = toMetersFromKilometersOrMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
-				// Validate this stop_time in the schema
-				const validatedCreateHashedTripItem = CreateHashedTripSchema.parse({
-					agency_id: planData.agency_id,
-					arrival_time: stopTime.arrival_time,
-					departure_time: stopTime.departure_time,
-					drop_off_type: stopTime.drop_off_type,
-					pickup_type: stopTime.pickup_type,
-					shape_dist_traveled: normalizedShapeDistTraveled,
-					shape_id: currentTrip.shape_id,
-					stop_id: stopTime.stop_id,
-					stop_lat: stopData.stop_lat,
-					stop_lon: stopData.stop_lon,
-					stop_name: stopData.stop_name,
-					stop_sequence: stopTime.stop_sequence,
-					timepoint: stopTime.timepoint === '1' ? true : false,
-				});
-				// Save the formatted path data for this stop_time
-				formattedCreateHashedTripItems.push(validatedCreateHashedTripItem);
-			}
-
-			const sortedCreateHashedTripItems = formattedCreateHashedTripItems.sort((a, b) => {
-				return a.stop_sequence - b.stop_sequence;
-			});
-
-			//
-			// Hash the object contents and check if it already exists in the database.
-			// The hash value is the _id of the HashedTrip item.
-
-			const uniqueIdValueForHashedTrip = crypto
-				.createHash('sha256')
-				.update(JSON.stringify(sortedCreateHashedTripItems))
-				.digest('hex');
-
-			//
-			// Check if there are rows with this unique ID value.
-			// If there are no rows, save the HashedTrip items to the database.
-
-			const currentHashedTripAlreadyExists = await labDb.queryFromString('SELECT 1 FROM operation.hashed_trips WHERE _id = $1 LIMIT 1', { 1: uniqueIdValueForHashedTrip });
-
-			const hashedTripItems = sortedCreateHashedTripItems.map((item): HashedTrip => {
-				return HashedTripSchema.parse({
-					...item,
-					_id: uniqueIdValueForHashedTrip,
-					updated_at: Dates.now('utc').unix_milliseconds,
-				});
-			});
-
-			if (!currentHashedTripAlreadyExists) {
+			if (!processedTripIds.has(keyForHashedTrip)) {
+				const hashedTripItems = toHashedTrip(planData, currentTrip, stopTimesData, stopsData);
 				await hashedTripsWritter.write(hashedTripItems);
-				savedHashedTripIds.add(uniqueIdValueForHashedTrip);
+				savedHashedTripIds.add(hashedTripItems[0]._id);
+				processedTripIds.set(keyForHashedTrip, hashedTripItems);
 			}
+
+			const uniqueIdValueForHashedTrip = processedTripIds.get(keyForHashedTrip)?.[0]._id;
 
 			/* * */
 			/* RIDES */
@@ -311,10 +228,10 @@ export async function parsePlanTask(planData: Plan) {
 
 				const uniqueIdValueForRide = `${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`;
 
-				const startTimeScheduledString = firstStopTime.arrival_time;
+				const startTimeScheduledString = stopTimesData[0].arrival_time;
 				const startTimeScheduledUnixMilliseconds = fromOperationalTimeAndOperationalDateToUnixMilliseconds(startTimeScheduledString, calendarDate);
 
-				const endTimeScheduledString = lastStopTime.arrival_time;
+				const endTimeScheduledString = stopTimesData[stopTimesData.length - 1].arrival_time;
 				const endTimeScheduledUnixMilliseconds = fromOperationalTimeAndOperationalDateToUnixMilliseconds(endTimeScheduledString, calendarDate);
 
 				//
@@ -411,7 +328,7 @@ export async function parsePlanTask(planData: Plan) {
 		//
 	} catch (error) {
 		Logger.error({ error, message: `Error transforming or saving Shapes, Trips or Rides to database: ${error.message}` });
-		throw new Error('✖︎ Error transforming or saving Shapes, Trips or Rides to database.', error);
+		throw error;
 	}
 
 	//
