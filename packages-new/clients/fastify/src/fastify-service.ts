@@ -348,16 +348,18 @@ export class FastifyService {
 		 * This ensures that the HTTP status code in the response matches the statusCode property
 		 * in the application's response payload, providing consistent status handling.
 		 */
-		this.server.addHook('onSend', (_, reply, payload, done) => {
-			try {
-				const payloadJson = JSON.parse(payload as string) as HttpResponse<unknown>;
-				reply.code(payloadJson.statusCode ?? HTTP_STATUS.OK);
-			} catch {
-				// Do nothing
-			} finally {
-				done();
-			}
-		});
+		// this.server.addHook('onSend', (_, reply, payload, done) => {
+		// 	done();
+		// 	return;
+		// 	// try {
+		// 	// 	const payloadJson = JSON.parse(payload as string) as HttpResponse<unknown>;
+		// 	// 	reply.code(payloadJson.statusCode ?? HTTP_STATUS.OK);
+		// 	// } catch {
+		// 	// 	// Do nothing
+		// 	// } finally {
+		// 	// 	done();
+		// 	// }
+		// });
 	}
 
 	/**

@@ -9,7 +9,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getGtfsCm(request: FastifyRequest, reply: FastifyReply<string>) {
+export async function getGtfsCm(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	// Retrieve file data from database
 	const foundFileData = await storageProvider.findById('gtfs-cm-latest');
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
@@ -19,11 +19,11 @@ export async function getGtfsCm(request: FastifyRequest, reply: FastifyReply<str
 	// Set headers and pipe the response body to the client
 	reply.header('access-control-allow-origin', '*');
 	reply.header('cache-control', 'public, max-age=300');
-	reply.header('Content-Disposition', `attachment; filename="gtfs-cm-latest.zip"`);
-	reply.header('Content-Type', 'application/zip');
+	reply.header('content-disposition', `attachment; filename="gtfs-cm-latest.zip"`);
+	reply.header('content-type', 'application/zip');
 	// Set content length if available
-	const contentLength = storageServiceResponse.headers.get('Content-Length');
-	if (contentLength) reply.header('Content-Length', contentLength);
+	const contentLength = storageServiceResponse.headers.get('content-length');
+	if (contentLength) reply.header('content-length', contentLength);
 	// Pipe the response body to the client
 	return reply.send(storageServiceResponse.body);
 }
