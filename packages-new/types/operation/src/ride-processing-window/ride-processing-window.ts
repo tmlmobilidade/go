@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const RideProcessingWindowSchema = z.object({
+export const EventRideOpportunitieschema = z.object({
 	agency_id: z.string(),
 	trip_id: z.string(),
 	window_start: UnixMillisecondsSchema,
@@ -19,4 +19,4 @@ export const RideProcessingWindowSchema = z.object({
  * the window_start and window_end are the `event.created_at` ± the `std_window` (defined in `Dates.standardWindowMilliseconds`)
  * which will be used to match the vehicle event to the ride's `start_time_scheduled` and `end_time_scheduled`.
  */
-export type RideProcessingWindow = z.infer<typeof RideProcessingWindowSchema>;
+export type EventRideOpportunity = z.infer<typeof EventRideOpportunitieschema>;

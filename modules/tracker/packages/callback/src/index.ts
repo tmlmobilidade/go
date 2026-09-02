@@ -1,7 +1,7 @@
 /* * */
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { RideProcessingWindow } from '@tmlmobilidade/go-types-operation';
+import { EventRideOpportunity } from '@tmlmobilidade/go-types-operation';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -32,7 +32,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 		// Build processing windows for all Rides
 		// that are affected by the new data.
 
-		const callbackWindowsMap = new Map<string, RideProcessingWindow>();
+		const callbackWindowsMap = new Map<string, EventRideOpportunity>();
 
 		for (const item of data) {
 			if (!item.trip_id) continue;
@@ -48,7 +48,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 			const maxOperationalDate = Dates.fromUnixMilliseconds(windowEnd).operational_date_int;
 			const operationalDateRange = OperationalDateIntSchema.array().parse(Array.from({ length: maxOperationalDate - minOperationalDate + 1 }, (_, i) => minOperationalDate + i));
 
-			const window: RideProcessingWindow = {
+			const window: EventRideOpportunity = {
 				agency_id: item.agency_id,
 				generated_at: Dates.now('utc').unix_milliseconds,
 				operational_dates: operationalDateRange,
@@ -63,13 +63,13 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 			);
 		}
 
-		const callbackWindows: RideProcessingWindow[] = [...callbackWindowsMap.values()];
+		const callbackWindows: EventRideOpportunity[] = [...callbackWindowsMap.values()];
 
 		if (!callbackWindows.length) return;
 
 		//
 		// Insert values into ClickHouse.
-		await labDb.operation.rideProcessingWindows.insert('JSONEachRow', callbackWindows);
+		await labDb.operation.eventRideOpportunities.insert('JSONEachRow', callbackWindows);
 
 		Logger.info({
 			message: `Queued ${callbackWindows.length} Ride processing windows (${timer.get()})`,
