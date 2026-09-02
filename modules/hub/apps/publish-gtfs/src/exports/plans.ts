@@ -16,9 +16,9 @@ export async function exportPlansFile(context: ExportGtfsContext, planData: Plan
 
 	const parsedPlansRow: HubGtfsExportPlansInput = {
 		agency_id: planData.agency_id,
-		plan_end_date: planData.gtfs_feed_info.feed_end_date,
+		plan_end_date: planData.active_until,
 		plan_id: planData._id,
-		plan_start_date: planData.gtfs_feed_info.feed_start_date,
+		plan_start_date: planData.active_from,
 	};
 
 	const validatedPlansRow = HubGtfsExportPlansSchema.parse(parsedPlansRow);
