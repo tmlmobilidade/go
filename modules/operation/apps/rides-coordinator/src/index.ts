@@ -8,18 +8,18 @@ import { getRides } from './get-rides.js';
 
 /* * */
 
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Coordinator' });
+}
+
 await (async function init() {
 	//
-
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Coordinator' });
-	}
 
 	//
 	// Setup variables
