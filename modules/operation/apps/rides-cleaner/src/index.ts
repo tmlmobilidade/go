@@ -5,9 +5,7 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { cleanStuckPlans } from './tasks/clean-stuck-plans.js';
-// import { cleanStuckRides } from './tasks/clean-stuck-rides.js';
-// import { cleanupOrphanHashedShapes } from './tasks/cleanup-orphan-hashed-shapes.js';
-// import { cleanupOrphanHashedTrips } from './tasks/cleanup-orphan-hashed-trips.js';
+import { cleanupCompleteEventRideOpportunities } from './tasks/cleanup-complete-event-ride-opportunities.js';
 import { cleanupOrphanRides } from './tasks/cleanup-orphan-rides.js';
 
 /* * */
@@ -38,6 +36,7 @@ async function reprocessStuckRides() {
 	// await cleanStuckRides();
 
 	await cleanupOrphanRides();
+	await cleanupCompleteEventRideOpportunities();
 	// await cleanupOrphanHashedTrips();
 	// await cleanupOrphanHashedShapes();
 
