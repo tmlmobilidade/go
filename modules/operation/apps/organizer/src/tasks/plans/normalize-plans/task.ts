@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HashablePlanMetadata } from '@tmlmobilidade/go-types-operation';
-import { unzipFile } from '@tmlmobilidade/go-utils-exec';
+import { calculateZipFileHash, unzipFile } from '@tmlmobilidade/go-utils-exec';
 import { getTmpWorkdirPath } from '@tmlmobilidade/go-utils-files';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -133,13 +133,11 @@ export async function normalizePlansTask() {
 		// Hash the contents of the original and the new GTFS archives,
 		// and compare them to see if there are any changes.
 
-		const originalGtfsHash = createHash('sha256')
-			.update(fs.readFileSync(`${workdirPath}/original-gtfs.zip`))
-			.digest('hex');
+		const originalGtfsHash = await calculateZipFileHash(`${workdirPath}/original-gtfs.zip`);
+		const newGtfsHash = await calculateZipFileHash(`${workdirPath}/new-gtfs.zip`);
 
-		const newGtfsHash = createHash('sha256')
-			.update(fs.readFileSync(`${workdirPath}/new-gtfs.zip`))
-			.digest('hex');
+		console.log('hash_1', originalGtfsHash);
+		console.log('hash_2', newGtfsHash);
 
 		if (originalGtfsHash === newGtfsHash) {
 			Logger.info({ message: `[${planData._id}] No changes detected in the GTFS archive.` });
