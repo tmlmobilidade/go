@@ -16,14 +16,14 @@ export function parseAgency(agencyData: Agency): GtfsStrictV29Agency {
 	try {
 		return {
 			// agency_code: agencyData.code,
-			agency_email: agencyData.public_email || '',
-			agency_fare_url: agencyData.fare_url || '',
+			agency_email: agencyData.open_data?.details?.email || '',
+			agency_fare_url: agencyData.open_data?.details?.fare_url || '',
 			agency_id: agencyData.code,
 			agency_lang: 'pt',
 			agency_name: agencyData.name, // 'Carris Metropolitana',
-			agency_url: agencyData.website_url, // 'https://www.carrismetropolitana.pt',
+			agency_url: agencyData.open_data?.details?.website_url || '', // 'https://www.carrismetropolitana.pt',
 			agency_timezone: agencyData.timezone || 'Europe/Lisbon',
-			agency_phone: agencyData.phone, // '210410400',
+			agency_phone: agencyData.open_data?.details?.phone || '', // '210410400',
 		};
 	} catch (error) {
 		throw new Error(`Error parsing agency: ${error}`, error);
