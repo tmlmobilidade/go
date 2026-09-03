@@ -86,7 +86,7 @@ export async function applyPatternIdsAsShapeIds(workdirPath: string): Promise<vo
 		tripsWriter.write({ ...data, shape_id: currentPatternId });
 	};
 
-	await streamCsvFile(`${workdirPath}/trips.txt`, parseEachTripsRow);
+	await streamCsvFile(`${workdirPath}/extracted/trips.txt`, parseEachTripsRow);
 
 	tripsWriter.flush();
 
@@ -109,7 +109,7 @@ export async function applyPatternIdsAsShapeIds(workdirPath: string): Promise<vo
 		shapesWriter.write({ ...data, shape_id: currentPatternId });
 	};
 
-	await streamCsvFile(`${workdirPath}/shapes.txt`, parseEachShapesRow);
+	await streamCsvFile(`${workdirPath}/extracted/shapes.txt`, parseEachShapesRow);
 
 	shapesWriter.flush();
 

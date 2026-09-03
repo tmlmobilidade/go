@@ -58,14 +58,14 @@ export async function normalizePlansTask() {
 		Logger.info({ message: `Downloading GTFS file from URL: ${operationFileData.url}` });
 		const downloadResponse = await fetch(operationFileData.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
-		fs.writeFileSync(`${workdirPath}/gtfs.zip`, Buffer.from(downloadArrayBuffer));
+		fs.writeFileSync(`${workdirPath}/original-gtfs.zip`, Buffer.from(downloadArrayBuffer));
 		Logger.success(`Downloaded GTFS file from URL: ${operationFileData.url}`);
 
 		//
 		// Unzip the GTFS file.
 
 		Logger.info({ message: 'Unzipping GTFS file...' });
-		await unzipFile(`${workdirPath}/gtfs.zip`, `${workdirPath}/extracted`);
+		await unzipFile(`${workdirPath}/original-gtfs.zip`, `${workdirPath}/extracted`);
 		Logger.success(`Unzipped GTFS file from "${workdirPath}" to "${workdirPath}/extracted".`, 1);
 
 		//
@@ -174,7 +174,7 @@ export async function normalizePlansTask() {
 
 			await goDb.operation.plans.updateById(planData._id, {
 				hash: hashValue,
-				operation_file_id: updatedFileResult._id,
+				operation_file_id: ctx.attachmentId,
 			});
 		} });
 
@@ -183,7 +183,7 @@ export async function normalizePlansTask() {
 		//
 		// Cleanup the working directory.
 
-		fs.rmdirSync(workdirPath);
+		fs.rmSync(workdirPath, { recursive: true });
 
 		Logger.success(`Cleaned up working directory "${workdirPath}".`, 1);
 
