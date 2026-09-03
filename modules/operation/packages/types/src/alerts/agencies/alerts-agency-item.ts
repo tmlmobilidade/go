@@ -1,16 +1,19 @@
 /* * */
 
-import { AgencySchema } from '@tmlmobilidade/go-types-core';
+import { AgencyAlertsSchema, AgencySchema } from '@tmlmobilidade/go-types-core';
 import { z } from 'zod';
 
 /* * */
 
 export const AlertsAgencyItemSchema = AgencySchema.pick({
 	_id: true,
-	alerts_map: true,
 	code: true,
 	name: true,
 	short_name: true,
+}).extend({
+	alerts: AgencyAlertsSchema.pick({
+		catalog: true,
+	}),
 });
 
 /**
