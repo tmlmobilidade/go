@@ -1,9 +1,9 @@
 /* * */
 
 import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { parseCsvFile } from '@/shared/parse-csv.js';
 import { type GtfsSQLTables } from '@/versions/standard/types.js';
 import { type GtfsShapes, GtfsShapesSchema } from '@tmlmobilidade/go-types-gtfs';
+import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -37,7 +37,7 @@ export async function processGtfsShapes(context: ImportGtfsContext<GtfsSQLTables
 		//
 		// Setup the CSV parsing operation
 
-		await parseCsvFile(`${context.workdir.extract_dir_path}/shapes.txt`, parseEachRow);
+		await streamCsvFile(`${context.workdir.extract_dir_path}/shapes.txt`, parseEachRow);
 
 		context.gtfs.shapes.flush();
 

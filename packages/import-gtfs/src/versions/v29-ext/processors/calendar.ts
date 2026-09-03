@@ -1,11 +1,11 @@
 /* * */
 
 import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { parseCsvFile } from '@/shared/parse-csv.js';
 import { type GtfsStrictV29ExtSQLTables } from '@/versions/v29-ext/types.js';
 import { type GtfsStrictV29ExtCalendar, GtfsStrictV29ExtCalendarSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
+import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
@@ -103,7 +103,7 @@ export async function processGtfsStrictV29ExtCalendar(context: ImportGtfsContext
 		// Setup the CSV parsing operation only if the file exists
 
 		if (fs.existsSync(`${context.workdir.extract_dir_path}/calendar.txt`)) {
-			await parseCsvFile(`${context.workdir.extract_dir_path}/calendar.txt`, parseEachRow);
+			await streamCsvFile(`${context.workdir.extract_dir_path}/calendar.txt`, parseEachRow);
 			Logger.success(`Finished processing "calendar.txt": ${context.gtfs.calendar_dates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
 		} else {
 			Logger.info({ message: 'Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...' });

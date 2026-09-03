@@ -1,9 +1,9 @@
 /* * */
 
 import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { parseCsvFile } from '@/shared/parse-csv.js';
 import { type GtfsSQLTables } from '@/versions/standard/types.js';
 import { type GtfsCalendarDates, GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs';
+import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
@@ -84,7 +84,7 @@ export async function processGtfsCalendarDates(context: ImportGtfsContext<GtfsSQ
 		// Setup the CSV parsing operation only if the file exists
 
 		if (fs.existsSync(`${context.workdir.extract_dir_path}/calendar_dates.txt`)) {
-			await parseCsvFile(`${context.workdir.extract_dir_path}/calendar_dates.txt`, parseEachRow);
+			await streamCsvFile(`${context.workdir.extract_dir_path}/calendar_dates.txt`, parseEachRow);
 			Logger.success(`Finished processing "calendar_dates.txt": ${Object.keys(context.gtfs.calendar_dates).length} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
 		} else {
 			Logger.info({ message: 'Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...' });
