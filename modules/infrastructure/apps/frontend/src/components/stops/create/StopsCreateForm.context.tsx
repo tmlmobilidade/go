@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { StopsCreateRequest, StopsCreateRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleUpdate, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -43,7 +43,7 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// C. Handle actions
 
-	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
+	const { action: handleCreate, isLoading: isCreating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'POST', url: API_ROUTES.infrastructure.STOPS_CREATE }),
 		onSuccess: (response) => {
 			form.reset(response.data);

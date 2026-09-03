@@ -4,7 +4,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Typology, type UpdateTypologyDto, UpdateTypologySchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -60,7 +60,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 	//
 	// D. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Typology>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId) }),
 		onSuccess: (data) => {
 			form.resetDirty();
@@ -69,7 +69,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Typology>({ body: typologyData, method: 'DELETE', url: API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId) }),
 		onSuccess: () => {
 			form.resetDirty();
@@ -78,7 +78,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Typology>({ url: API_ROUTES.offer.TYPOLOGIES_DETAIL_LOCK(typologyId) }),
 		onSuccess: (data) => {
 			form.resetDirty();

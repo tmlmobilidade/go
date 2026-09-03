@@ -4,7 +4,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { fetchApiData, useHandleUpdate } from '@tmlmobilidade/ui';
+import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -51,7 +51,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	//
 	// C. Handle actions
 
-	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.operation.ALERTS_DETAIL(alertId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
@@ -60,7 +60,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 		},
 	});
 
-	const { action: handleDuplicate, isLoading: isDuplicating } = useHandleUpdate({
+	const { action: handleDuplicate, isLoading: isDuplicating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'POST', url: API_ROUTES.operation.ALERTS_DETAIL_DUPLICATE(alertId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);

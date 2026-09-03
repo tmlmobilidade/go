@@ -14,7 +14,7 @@ import { EventReplacementRule, EventRestrictionRule, type LineNormalized, Manual
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { DetailContextStateTemplate, fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
@@ -359,7 +359,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		return path.map(p => ({ ...p, stop: stopsMap.get(p.stop_id) ?? null }));
 	}, []);
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Pattern>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.PATTERNS_DETAIL(patternId) }),
 		onSuccess: () => {
 			form.resetDirty();
@@ -368,7 +368,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Pattern>({ body: patternData, method: 'DELETE', url: API_ROUTES.offer.PATTERNS_DETAIL(patternId) }),
 		onSuccess: () => {
 			form.resetDirty();
@@ -377,7 +377,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Pattern>({ url: API_ROUTES.offer.PATTERNS_DETAIL_LOCK(patternId) }),
 		onSuccess: () => {
 			form.resetDirty();

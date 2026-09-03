@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateOrganizationDto, CreateOrganizationSchema, Organization } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleUpdate, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -44,7 +44,7 @@ export function OrganizationsCreateFormContextProvider({ children }: PropsWithCh
 	//
 	// C. Handle actions
 
-	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
+	const { action: handleCreate, isLoading: isCreating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'POST', url: API_ROUTES.core.ORGANIZATIONS_CREATE }),
 		onSuccess: ({ data }) => {
 			closeOrganizationsCreateModal();
