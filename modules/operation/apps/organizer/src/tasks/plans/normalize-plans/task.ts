@@ -3,14 +3,15 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HashablePlanMetadata } from '@tmlmobilidade/go-types-operation';
-import { Files } from '@tmlmobilidade/go-utils-files';
+import { Files, getTmpWorkdirPath } from '@tmlmobilidade/go-utils-files';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { createHash } from 'node:crypto';
+import fs from 'node:fs';
 
 import { buildAgencyTxt } from './agency.js';
 import { buildFeedInfoTxt } from './feed-info.js';
-import { applyPatternIdsAsShapeIds, ShapeIdConflictError } from './shapes.js';
+import { applyPatternIdsAsShapeIds } from './shapes.js';
 
 /**
  * This task makes sure the associated GTFS files of plan documents have the correct
@@ -108,66 +109,60 @@ export async function normalizePlansTask() {
 
 		//
 		// Align the shape_id values of trips.txt and shapes.txt with the pattern_id
-		// of each trip. A conflicting relation leaves both files untouched.
+		// of each trip. Both files are streamed through a temporary working directory,
+		// which the zip archive reads from while it is being generated below.
 
-		let shapeIdsChanged = false;
+		const workdirPath = getTmpWorkdirPath(undefined, true);
 
-		const originalTripsTxtString = await operationFileZipInstance.file('trips.txt')?.async('string');
-		const originalShapesTxtString = await operationFileZipInstance.file('shapes.txt')?.async('string');
+		try {
+			//
 
-		if (!originalTripsTxtString || !originalShapesTxtString) {
-			Logger.error({ message: `[${planData._id}] Missing trips.txt or shapes.txt. Skipping shape_id alignment.` });
-		} else {
-			try {
-				const updatedGtfsShapes = await applyPatternIdsAsShapeIds(originalTripsTxtString, originalShapesTxtString);
+			let shapeIdsChanged = false;
 
-				if (!updatedGtfsShapes) {
-					Logger.info({ message: `[${planData._id}] No pattern_id values found in trips.txt. Skipping shape_id alignment.` });
-				} else if (updatedGtfsShapes.tripsCsvString !== originalTripsTxtString || updatedGtfsShapes.shapesCsvString !== originalShapesTxtString) {
-					shapeIdsChanged = true;
-					operationFileZipInstance.file('trips.txt', updatedGtfsShapes.tripsCsvString);
-					operationFileZipInstance.file('shapes.txt', updatedGtfsShapes.shapesCsvString);
-					Logger.info({ message: `[${planData._id}] trips.txt and shapes.txt shape_id values aligned with pattern_id.` });
-				} else {
-					Logger.info({ message: `[${planData._id}] shape_id values are already aligned with pattern_id.` });
-				}
-			} catch (error) {
-				if (!(error instanceof ShapeIdConflictError)) throw error;
-				Logger.error({ error, message: `[${planData._id}] Conflicting shape_id and pattern_id relation. Skipping shape_id alignment.` });
+			if (!operationFileZipInstance.file('trips.txt') || !operationFileZipInstance.file('shapes.txt')) {
+				Logger.error({ message: `[${planData._id}] Missing trips.txt or shapes.txt. Skipping shape_id alignment.` });
+			} else {
+				shapeIdsChanged = await applyPatternIdsAsShapeIds(operationFileZipInstance, workdirPath);
+				if (shapeIdsChanged) Logger.info({ message: `[${planData._id}] trips.txt and shapes.txt shape_id values aligned with pattern_id.` });
+				else Logger.info({ message: `[${planData._id}] shape_id values are already aligned with pattern_id.` });
 			}
+
+			//
+			// Re-zip and upload the updated operation file
+
+			let updatedFileResult = operationFileData;
+
+			if (agencyTxtChanged || feedInfoTxtChanged || shapeIdsChanged) {
+				const updatedOperationFileArrayBuffer = await operationFileZipInstance.generateAsync({ compression: 'DEFLATE', compressionOptions: { level: 9 }, type: 'arraybuffer' });
+				const updatedOperationFileBuffer = Buffer.from(updatedOperationFileArrayBuffer);
+				updatedFileResult = await storageProvider.replace(updatedOperationFileBuffer, { ...operationFileData, size: updatedOperationFileBuffer.byteLength });
+				Logger.info({ message: `[${planData._id}] Operation file updated: ${updatedFileResult.size}` });
+			}
+
+			//
+			// Get a hash of all metadata to make it possible
+			// to keep track of changes to the plan.
+
+			const hashablePlanMetadata: HashablePlanMetadata = {
+				_id: planData._id,
+				active_from: planData.active_from,
+				active_until: planData.active_until,
+				operation_file_id: updatedFileResult._id,
+			};
+
+			const hashValue = createHash('sha256')
+				.update(JSON.stringify(hashablePlanMetadata))
+				.digest('hex');
+
+			await goDb.operation.plans.updateById(planData._id, {
+				hash: hashValue,
+				operation_file_id: updatedFileResult._id,
+			});
+
+			//
+		} finally {
+			fs.rmSync(workdirPath, { force: true, recursive: true });
 		}
-
-		//
-		// Re-zip and upload the updated operation file
-
-		let updatedFileResult = operationFileData;
-
-		if (agencyTxtChanged || feedInfoTxtChanged || shapeIdsChanged) {
-			const updatedOperationFileArrayBuffer = await operationFileZipInstance.generateAsync({ compression: 'DEFLATE', compressionOptions: { level: 9 }, type: 'arraybuffer' });
-			const updatedOperationFileBuffer = Buffer.from(updatedOperationFileArrayBuffer);
-			updatedFileResult = await storageProvider.replace(updatedOperationFileBuffer, { ...operationFileData, size: updatedOperationFileBuffer.byteLength });
-			Logger.info({ message: `[${planData._id}] Operation file updated: ${updatedFileResult.size}` });
-		}
-
-		//
-		// Get a hash of all metadata to make it possible
-		// to keep track of changes to the plan.
-
-		const hashablePlanMetadata: HashablePlanMetadata = {
-			_id: planData._id,
-			active_from: planData.active_from,
-			active_until: planData.active_until,
-			operation_file_id: updatedFileResult._id,
-		};
-
-		const hashValue = createHash('sha256')
-			.update(JSON.stringify(hashablePlanMetadata))
-			.digest('hex');
-
-		await goDb.operation.plans.updateById(planData._id, {
-			hash: hashValue,
-			operation_file_id: updatedFileResult._id,
-		});
 
 		//
 	}

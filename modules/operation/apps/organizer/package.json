@@ -31,6 +31,7 @@
 		"@tmlmobilidade/go-utils-files": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
+		"csv-parse": "7.0.2",
 		"papaparse": "5.7.0"
 	},
 	"devDependencies": {
