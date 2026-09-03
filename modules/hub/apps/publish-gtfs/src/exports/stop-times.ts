@@ -28,39 +28,44 @@ export async function exportStopTimesFile(context: ExportGtfsContext, planData: 
 
 	const allStopsMap = new Map<string, StopId>();
 
-	for (const stopData of allStopsData) {
-		for (const flag of stopData.flags) {
-			allStopsMap.set(flag.stop_id, stopData._id);
-		}
-		for (const legacyId of stopData.legacy_ids) {
-			if (allStopsMap.has(legacyId)) continue;
+	allStopsData.forEach((stopData) => {
+		allStopsMap.set(stopData._id, stopData._id);
+		stopData.flags?.forEach((flag) => {
+			if (flag.agency_ids?.includes(planData.agency_id)) {
+				allStopsMap.set(flag.stop_id, stopData._id);
+			}
+		});
+		stopData.legacy_ids?.forEach((legacyId) => {
 			allStopsMap.set(legacyId, stopData._id);
-		}
-	}
+		});
+	});
 
 	for await (const stopTimeItem of sqlTables.stop_times.stream('ORDER BY trip_id, stop_sequence ASC')) {
-		const stopTimeData: GtfsStopTimes = stopTimeItem;
-		const matchingStopId = allStopsMap.get(stopTimeData.stop_id);
-		if (!matchingStopId) {
-			console.error(`Stop time ${stopTimeData.stop_id} not found in stops map for agency ${planData.agency_id}`);
-			continue;
+		try {
+			const stopTimeData: GtfsStopTimes = stopTimeItem;
+			const matchingStopId = allStopsMap.get(stopTimeData.stop_id);
+			if (!matchingStopId) {
+				throw new Error(`Stop time ${stopTimeData.stop_id} not found in stops map for agency ${planData.agency_id}`);
+			}
+			const parsedStopTimesRow: HubGtfsExportStopTimesInput = {
+				arrival_time: stopTimeData.arrival_time,
+				continuous_drop_off: '0',
+				continuous_pickup: '0',
+				departure_time: stopTimeData.departure_time,
+				drop_off_type: stopTimeData.drop_off_type ?? '0',
+				pickup_type: stopTimeData.pickup_type ?? '0',
+				shape_dist_traveled: stopTimeData.shape_dist_traveled ?? 0,
+				stop_id: matchingStopId,
+				stop_sequence: stopTimeData.stop_sequence,
+				timepoint: stopTimeData.timepoint ?? '0',
+				trip_id: getQualifiedTripId(planData._id, planData.agency_id, stopTimeData.trip_id),
+			};
+			const validatedStopTimesRow = HubGtfsExportStopTimesSchema.parse(parsedStopTimesRow);
+			await context.writers.stop_times.write(validatedStopTimesRow);
+		} catch (error) {
+			console.error(stopTimeItem);
+			throw error;
 		}
-		const parsedStopTimesRow: HubGtfsExportStopTimesInput = {
-			arrival_time: stopTimeData.arrival_time,
-			continuous_drop_off: stopTimeData.continuous_drop_off,
-			continuous_pickup: stopTimeData.continuous_pickup,
-			departure_time: stopTimeData.departure_time,
-			drop_off_type: stopTimeData.drop_off_type,
-			pickup_type: stopTimeData.pickup_type,
-			shape_dist_traveled: stopTimeData.shape_dist_traveled,
-			stop_headsign: stopTimeData.stop_headsign,
-			stop_id: matchingStopId,
-			stop_sequence: stopTimeData.stop_sequence,
-			timepoint: stopTimeData.timepoint,
-			trip_id: getQualifiedTripId(planData._id, planData.agency_id, stopTimeData.trip_id),
-		};
-		const validatedStopTimesRow = HubGtfsExportStopTimesSchema.parse(parsedStopTimesRow);
-		await context.writers.stop_times.write(validatedStopTimesRow);
 	}
 
 	await context.writers.stop_times.flush();
