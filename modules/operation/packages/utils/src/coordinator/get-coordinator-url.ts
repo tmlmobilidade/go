@@ -7,7 +7,7 @@ import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
  * @param endpoint The endpoint to get the coordinator URL for.
  * @returns The coordinator URL for the given endpoint.
  */
-export function getCoordinatorUrl(endpoint: 'plans' | 'rides'): string {
+export function getCoordinatorUrl(endpoint: 'plans' | 'rides' | 'event-ride-opportunities'): string {
 	//
 
 	const currentEnvironment = getCurrentEnvironment();
