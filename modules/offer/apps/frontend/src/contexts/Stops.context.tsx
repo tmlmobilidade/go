@@ -41,7 +41,7 @@ export const StopsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<ApiResponse<Stop[]>>(API_ROUTES.infrastructure.STOPS_LIST, {
+	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<ApiResponse<Stop[]>>(API_ROUTES.offer.PATTERNS_STOPS, {
 		fetcher: async url => await fetchApiData<Stop[]>({ url }),
 	});
 
