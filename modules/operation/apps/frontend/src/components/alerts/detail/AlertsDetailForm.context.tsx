@@ -57,30 +57,61 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 		},
 	});
 
+	const { action: handleDuplicate, isLoading: isDuplicating } = useHandleUpdate({
+		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'POST', url: API_ROUTES.operation.ALERTS_DETAIL_DUPLICATE(alertId) }),
+		onSuccess: (response) => {
+			form.reset(response.data);
+			unblock();
+			alertsDetailMutate(response);
+			alertsListMutate();
+		},
+	});
+
 	//
 	// D. Setup flags
 
 	const hasUpdatePermission = useMemo(() => {
 		const hasPermissionAgencyId = hasPermissionResource(meData?.permissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
-			requiredValue: alertData?._id,
+			requiredValue: alertData?.agency_id,
 			resourceKey: 'agency_ids',
 		});
 		const hasPermissionReferenceType = hasPermissionResource(meData?.permissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
-			requiredValue: alertData?._id,
+			requiredValue: alertData?.reference_type,
 			resourceKey: 'reference_types',
 		});
 		return hasPermissionAgencyId && hasPermissionReferenceType;
-	}, [alertData?._id, meData?.permissions]);
+	}, [alertData?.agency_id, alertData?.reference_type, meData?.permissions]);
 
-	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
+	const hasDuplicatePermission = useMemo(() => {
+		const hasPermissionAgencyId = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'create', scope: 'alerts' },
+			requiredValue: alertData?.agency_id,
+			resourceKey: 'agency_ids',
+		});
+		const hasPermissionReferenceType = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'create', scope: 'alerts' },
+			requiredValue: alertData?.reference_type,
+			resourceKey: 'reference_types',
+		});
+		return hasPermissionAgencyId && hasPermissionReferenceType;
+	}, [alertData?.agency_id, alertData?.reference_type, meData?.permissions]);
+
+	const { duplicateEnabled, editEnabled, updateEnabled } = useStandardFormCapabilities({
+		duplicate: {
+			hasPermission: hasDuplicatePermission,
+			isDuplicating: isDuplicating,
+		},
 		form: {
 			isDirty,
 			isValid,
 		},
 		loading: {
 			isLoading: alertDataLoading,
+		},
+		locked: {
+			isLocked: alertData?.is_locked,
 		},
 		update: {
 			hasPermission: hasUpdatePermission,
@@ -93,9 +124,11 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 
 	const stateValue: StandardFormContextValue<UpdateAlertDto> = useMemo(() => ({
 		actions: {
+			duplicate: handleDuplicate,
 			update: handleUpdate,
 		},
 		capabilities: {
+			duplicateEnabled,
 			editEnabled,
 			updateEnabled,
 		},
