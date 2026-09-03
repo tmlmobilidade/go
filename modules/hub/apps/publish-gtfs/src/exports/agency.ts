@@ -27,14 +27,14 @@ export async function exportAgencyFile(context: ExportGtfsContext, agencyIds: st
 	for (const agencyData of foundAgenciesData) {
 		const parsedAgencyRow: HubGtfsExportAgencyInput = {
 			agency_code: agencyData.code,
-			agency_email: agencyData.public_email,
-			agency_fare_url: agencyData.fare_url,
+			agency_email: agencyData.open_data?.details?.email,
+			agency_fare_url: agencyData.open_data?.details?.fare_url,
 			agency_id: agencyData._id,
 			agency_lang: agencyData.primary_language,
-			agency_name: agencyData.public_name || agencyData.name,
-			agency_phone: agencyData.phone,
+			agency_name: agencyData.open_data?.details?.name || agencyData.name,
+			agency_phone: agencyData.open_data?.details?.phone,
 			agency_timezone: agencyData.timezone,
-			agency_url: agencyData.website_url,
+			agency_url: agencyData.open_data?.details?.website_url,
 			cemv_support: '0',
 		};
 		const validatedAgencyRow = HubGtfsExportAgencySchema.parse(parsedAgencyRow);
