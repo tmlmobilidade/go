@@ -160,6 +160,7 @@ export async function normalizePlansTask() {
 				_id: planData._id,
 				active_from: planData.active_from,
 				active_until: planData.active_until,
+				operation_file_hash: newGtfsHash,
 				operation_file_id: ctx.attachmentId,
 			};
 
