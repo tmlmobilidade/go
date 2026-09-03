@@ -88,7 +88,7 @@ const main = async () => {
 
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmpUnir> = {
 			agency_id: AGENCY_NAME_ID_MAP[event.nomeOperador].id,
-			created_at: Dates.fromFormat(event.recordedAtTime, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp,
+			created_at: Dates.fromFormat(event.recordedAtTime, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_milliseconds,
 			entity_id: hashableRawEventHash,
 			payload: event,
 			version: AGENCY_NAME_ID_MAP[event.nomeOperador].version,
@@ -104,7 +104,7 @@ const main = async () => {
 		const insertableDocument = {
 			...hashableRawEvent,
 			_id: hashableRawEventHash,
-			received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 		} as typeof insertableDocument[number];
 
 		if (collection === 'ptTmpUnirUt1') await ut1Writer.write(insertableDocument);

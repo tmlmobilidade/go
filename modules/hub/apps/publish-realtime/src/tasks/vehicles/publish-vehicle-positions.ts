@@ -1,7 +1,8 @@
 /* * */
 
+import { TTL_REALTIME } from '@/config.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubPlan } from '@tmlmobilidade/go-types-public-info';
+import { type HubPlan } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -34,7 +35,7 @@ export async function publishVehiclesPositions() {
 	const vehiclePositionsJson = parseVehiclePositions(await getVehiclePositions());
 	Logger.info({ message: `Retrieved ${vehiclePositionsJson.length} latest vehicles positions...` });
 
-	await cacheDb.set('hub:v1:realtime:vehicles:positions:json', JSON.stringify(vehiclePositionsJson));
+	await cacheDb.set('hub:v1:realtime:vehicles:positions:json', JSON.stringify(vehiclePositionsJson), TTL_REALTIME);
 	Logger.success(`Finished publishing latest vehicles positions (${globalTimer.get()})`);
 
 	//
@@ -42,7 +43,7 @@ export async function publishVehiclesPositions() {
 
 	const vehiclePositionsGtfs = toGtfsRtVehiclePositions(vehiclePositionsJson);
 
-	await cacheDb.set('hub:v1:realtime:vehicles:positions:gtfs', JSON.stringify(vehiclePositionsGtfs));
+	await cacheDb.set('hub:v1:realtime:vehicles:positions:gtfs', JSON.stringify(vehiclePositionsGtfs), TTL_REALTIME);
 	Logger.success(`Finished publishing latest vehicles positions GTFS-RT (${globalTimer.get()})`);
 
 	//

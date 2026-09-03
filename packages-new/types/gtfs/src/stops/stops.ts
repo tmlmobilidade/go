@@ -1,27 +1,30 @@
 /* * */
 
-import { GtfsTernarySchema } from '@/shared/ternary.js';
-import { GtfsLocationTypeSchema } from '@/stops/location-type.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
+import { TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { GtfsTernarySchema } from '../shared/ternary.js';
+import { GtfsLocationTypeSchema } from './location-type.js';
 
 /* * */
 
 export const GtfsStopsSchema = z.object({
-	level_id: z.string().optional(),
-	location_type: GtfsLocationTypeSchema.optional(),
-	parent_station: z.string().optional(),
-	platform_code: z.string().optional(),
+	level_id: z.string().default(''),
+	location_type: GtfsLocationTypeSchema.default('0'),
+	parent_station: z.string().default(''),
+	platform_code: z.string().default(''),
 	stop_code: z.string(),
-	stop_desc: z.string().optional(),
+	stop_desc: z.string().default(''),
 	stop_id: z.string(),
 	stop_lat: LatitudeSchema,
 	stop_lon: LongitudeSchema,
 	stop_name: z.string(),
-	stop_timezone: z.string().optional(),
-	stop_url: z.string().optional(),
+	stop_timezone: TimezoneIdentifiedSchema.default('Europe/Lisbon'),
+	stop_url: z.string().default(''),
+	tts_stop_name: z.string().default(''),
 	wheelchair_boarding: GtfsTernarySchema.optional(),
-	zone_id: z.string().optional(),
+	zone_id: z.string().default(''),
 });
 
 /**

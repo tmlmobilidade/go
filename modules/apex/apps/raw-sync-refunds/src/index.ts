@@ -54,14 +54,14 @@ async function main() {
 					await performInTimeChunks({
 						endDate: chunk.end,
 						intervalHrs: 5 / 60, // 5 minutes
-						onChunk: async (chunk) => {
-							await syncApexRefunds(chunk);
-						},
+						onChunk: async chunk => await syncApexRefunds(chunk),
+						order: 'desc',
 						startDate: chunk.start,
 					});
 				}
 			},
-			startDate: earliestDate.unix_timestamp,
+			order: 'desc',
+			startDate: earliestDate.unix_milliseconds,
 		});
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);

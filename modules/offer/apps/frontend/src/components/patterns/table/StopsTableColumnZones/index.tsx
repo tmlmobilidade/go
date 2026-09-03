@@ -3,8 +3,8 @@
 import { usePatternDetailContext } from '@/components/patterns/detail//PatternDetail.context';
 import { IconRotate2, IconTicket } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Path } from '@tmlmobilidade/go-types-offer';
-import { IconButton, MultiSelect } from '@tmlmobilidade/ui';
+import { Path, Zone } from '@tmlmobilidade/go-types-offer';
+import { fetchApiData, IconButton, MultiSelect } from '@tmlmobilidade/ui';
 import useSWR from 'swr';
 
 import styles from '../styles.module.css';
@@ -21,9 +21,11 @@ export function StopsTableTableColumnZones({ pathItem, rowIndex }: { pathItem: P
 	//
 	// B. Fetch data
 
-	const { data: zonesData } = useSWR(API_ROUTES.offer.ZONES_LIST);
+	const { data: zonesData } = useSWR(API_ROUTES.offer.ZONES_LIST, {
+		fetcher: async url => await fetchApiData<Zone[]>({ url }),
+	});
 
-	const zonesOptions = zonesData?.map(zone => ({
+	const zonesOptions = zonesData?.data?.map(zone => ({
 		label: zone.name,
 		value: zone._id,
 	})) || [];
@@ -51,8 +53,8 @@ export function StopsTableTableColumnZones({ pathItem, rowIndex }: { pathItem: P
 				leftSection={(
 					<IconButton
 						color="gray"
-						disabled={patternsDetailContext.flags.isReadOnly}
 						icon={<IconRotate2 size={20} />}
+						isDisabled={patternsDetailContext.flags.isReadOnly}
 						onClick={handleResetZones}
 						variant="subtle"
 					/>

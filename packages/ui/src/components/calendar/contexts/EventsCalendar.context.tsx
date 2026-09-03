@@ -131,7 +131,7 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 			const currDate = Dates.fromOperationalDate(sortedDates[i], 'Europe/Lisbon');
 
 			// Check if dates are consecutive (1 day apart)
-			const daysDiff = Math.round((currDate.unix_timestamp - prevDate.unix_timestamp) / (1000 * 60 * 60 * 24));
+			const daysDiff = Math.round((currDate.unix_milliseconds - prevDate.unix_milliseconds) / (1000 * 60 * 60 * 24));
 
 			if (daysDiff === 1) {
 				// Dates are consecutive, add to current range

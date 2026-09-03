@@ -7,12 +7,14 @@ import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/go-utils-dates';
+import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { EventReplacementRule, EventRestrictionRule, type LineNormalized, ManualRule, Path, Pattern, PopulatedPath, PopulatedPattern, ScheduleRule, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { PermissionCatalog, Stop } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
@@ -29,7 +31,7 @@ interface PatternDetailContextState {
 		duplicateRule: (rule: ManualRule) => void
 		editRule: (rule: ManualRule) => void
 		enrichPath: (path: Path[]) => Promise<PopulatedPath[]>
-		mutate: () => Promise<Pattern | undefined>
+		mutate: () => Promise<ApiResponse<Pattern> | undefined>
 		openRuleModal: (rule?: ManualRule) => void
 		openRulesCalendarPreviewModal: () => void
 		openStopsParameterModal: (rule?: StopsParameter) => void
@@ -79,25 +81,31 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// B. Fetch data
 
-	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<PopulatedPattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId));
-	const { data: lineData, mutate: lineMutate } = useSWR<LineNormalized>(API_ROUTES.offer.LINES_DETAIL(lineId));
-	const typologyData = lineData?.typology_data;
+	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<ApiResponse<PopulatedPattern>>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), {
+		fetcher: async url => await fetchApiData<PopulatedPattern>({ url }),
+	});
+
+	const { data: lineData, mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	});
+
+	const typologyData = lineData?.data?.typology_data;
 
 	//
 	// C. Setup form
 
 	const manualRules = useMemo(
-		() => (patternData?.rules ?? []).filter((r): r is ManualRule => r.kind === 'manual'),
+		() => (patternData?.data?.rules ?? []).filter((r): r is ManualRule => r.kind === 'manual'),
 		[patternData],
 	);
 
 	const derivedRules = useMemo(
-		() => (patternData?.rules ?? []).filter(r => r.kind === 'event_restriction' || r.kind === 'event_replacement') as (EventReplacementRule | EventRestrictionRule)[],
+		() => (patternData?.data?.rules ?? []).filter(r => r.kind === 'event_restriction' || r.kind === 'event_replacement') as (EventReplacementRule | EventRestrictionRule)[],
 		[patternData],
 	);
 
 	const patternForForm = useMemo(
-		() => (patternData ? { ...patternData, rules: manualRules } : patternData),
+		() => (patternData ? { ...patternData.data, rules: manualRules } : patternData),
 		[patternData, manualRules],
 	);
 
@@ -107,10 +115,10 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	// C. Editable pattern data
 
 	const editablePath = useMemo(
-		() => (form.values.path ?? patternData?.path ?? []) as PopulatedPath[],
-		[form.values.path, patternData?.path],
+		() => (form.values.path ?? patternData?.data?.path ?? []) as PopulatedPath[],
+		[form.values.path, patternData?.data?.path],
 	);
-	const editableShape = form.values.shape ?? patternData?.shape;
+	const editableShape = form.values.shape ?? patternData?.data?.shape;
 
 	//
 	// D. Transform editable data to GeoJSON
@@ -118,7 +126,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const patternLineFC: MapOverlayPatternShapeLineData | null = useMemo(() => {
 		const properties: MapOverlayPatternShapeLineDataProps = {
 			color: typologyData?.color,
-			id: patternData?._id ?? patternId,
+			id: patternData?.data?._id ?? patternId,
 		};
 
 		if (editableShape?.encoded_polyline) {
@@ -138,7 +146,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			properties,
 			type: 'Feature' as const,
 		};
-	}, [editableShape, typologyData?.color, patternData?._id, patternId]);
+	}, [editableShape, typologyData?.color, patternData?.data?._id, patternId]);
 
 	const patternStopsFC: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null = useMemo(() => {
 		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayPatternShapeStopsDataProps>();
@@ -255,16 +263,16 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		const onDelete = rule?._id ? () => handleDeleteRule(rule._id) : undefined;
 		const onDuplicate = rule?._id ? (duplicatedRule: ManualRule) => handleDuplicateRule(duplicatedRule) : undefined;
 
-		openCreateRuleModal(lineData?.agency_id || '', onSubmit, rule, onDelete, onDuplicate);
-	}, [handleAddRule, handleEditRule, handleDeleteRule, handleDuplicateRule, lineData?.agency_id]);
+		openCreateRuleModal(lineData?.data?.agency_id || '', onSubmit, rule, onDelete, onDuplicate);
+	}, [handleAddRule, handleEditRule, handleDeleteRule, handleDuplicateRule, lineData?.data?.agency_id]);
 
 	const handleOpenRulesCalendarPreviewModal = useCallback(() => {
 		openRulesCalendarPreviewModal(
-			lineData?.agency_id || '',
+			lineData?.data?.agency_id || '',
 			rulesForUI,
-			patternData?.code,
+			patternData?.data?.code,
 		);
-	}, [lineData?.agency_id, rulesForUI, patternData?.code]);
+	}, [lineData?.data?.agency_id, rulesForUI, patternData?.data?.code]);
 
 	//
 	// F. Handle Schedule RULES actions
@@ -310,8 +318,8 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		const onDelete = rule?._id ? () => handleDeleteStopParameter(rule._id) : undefined;
 
 		const defaultParameter = (form.getValues().parameters ?? []).find((p): p is StopsParameter => p.kind === 'default');
-		openCreateParameterModal(lineData?.agency_id || '', onSubmit, (form.getValues().path ?? patternData?.path) as PopulatedPath[], rule, onDelete, defaultParameter);
-	}, [lineData?.agency_id, patternData, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter, form]);
+		openCreateParameterModal(lineData?.data?.agency_id || '', onSubmit, (form.getValues().path ?? patternData?.data?.path) as PopulatedPath[], rule, onDelete, defaultParameter);
+	}, [lineData?.data?.agency_id, patternData?.data, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter, form]);
 
 	//
 	// G. Handle comments actions
@@ -319,11 +327,11 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const addComment = useCallback(async (comment: string) => {
 		try {
 			const commentToAdd = {
-				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				created_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 				created_by: 'will-be-set-by-api',
 				message: comment,
 				type: 'note',
-				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				updated_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 			};
 			const res = await fetchData(API_ROUTES.offer.PATTERNS_DETAIL_COMMENT(patternId), 'POST', commentToAdd);
 
@@ -343,16 +351,16 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const enrichPath = useCallback(async (path: Path[]): Promise<PopulatedPath[]> => {
 		const stopIds = [...new Set(path.map(p => p.stop_id))];
 		const results = await Promise.all(
-			stopIds.map(id => fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(String(id)))),
+			stopIds.map(id => fetchApiData<Stop>({ url: API_ROUTES.infrastructure.STOPS_GET(String(id)) })),
 		);
 		const stopsMap = new Map(
-			results.flatMap(r => r.isOk && r.data ? [[r.data._id, r.data]] : []),
+			results.flatMap(r => r.data ? [[r.data._id, r.data]] : []),
 		);
 		return path.map(p => ({ ...p, stop: stopsMap.get(p.stop_id) ?? null }));
 	}, []);
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchApiData<Pattern>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.PATTERNS_DETAIL(patternId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			void patternMutate();
@@ -361,7 +369,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'DELETE', patternData),
+		fetchFn: async () => await fetchApiData<Pattern>({ body: patternData, method: 'DELETE', url: API_ROUTES.offer.PATTERNS_DETAIL(patternId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			void lineMutate();
@@ -370,7 +378,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL_LOCK(patternId)),
+		fetchFn: async () => await fetchApiData<Pattern>({ url: API_ROUTES.offer.PATTERNS_DETAIL_LOCK(patternId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			void patternMutate();
@@ -386,7 +394,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: lineData?.agency_id ? [lineData.agency_id] : [],
+			value: lineData?.data?.agency_id ? [lineData.data.agency_id] : [],
 		},
 		scope: PermissionCatalog.all.lines.scope,
 	});
@@ -397,7 +405,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: patternLoading,
-		isLocked: patternData?.is_locked,
+		isLocked: patternData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -429,12 +437,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			save: handleSave,
 		},
 		data: {
-			agency_id: lineData?.agency_id || '',
+			agency_id: lineData?.data?.agency_id || '',
 			form,
 			id: patternId,
 			lineId,
 			mergedRules: rulesForUI,
-			pattern: patternData,
+			pattern: patternData?.data,
 			stopsParameterRules: parametersForUI,
 			typologyData,
 		},
@@ -453,7 +461,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			pattern_line: patternLineFC,
 			pattern_stops: patternStopsFC,
 		},
-	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, lineData?.agency_id, form, patternId, lineId, rulesForUI, patternData, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
+	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, lineData?.data?.agency_id, form, patternId, lineId, rulesForUI, patternData?.data, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
 
 	//
 	// H. Render components

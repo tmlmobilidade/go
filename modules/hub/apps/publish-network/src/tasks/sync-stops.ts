@@ -1,7 +1,7 @@
 /* * */
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubGtfsExportStops, type HubStop, HubStopSchema } from '@tmlmobilidade/go-types-public-info';
+import { type HubGtfsExportStops, type HubStop, HubStopSchema } from '@tmlmobilidade/go-types-hub';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -88,7 +88,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			// Build the final stop object
 
 			const validatedStop: HubStop = {
-				_id: Number(gtfsStop.stop_id),
+				_id: gtfsStop.stop_id,
 				agency_ids: JSON.parse(gtfsStop.agency_ids),
 				district_id: gtfsStop.district_id,
 				district_name: gtfsStop.district_name,
@@ -107,7 +107,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				parish_name: gtfsStop.parish_name,
 				pattern_ids: JSON.parse(gtfsStop.pattern_ids),
 				route_ids: JSON.parse(gtfsStop.route_ids),
-				short_name: gtfsStop.stop_short_name ?? gtfsStop.stop_name,
+				short_name: gtfsStop.stop_name,
 				tts_name: gtfsStop.tts_stop_name,
 			};
 

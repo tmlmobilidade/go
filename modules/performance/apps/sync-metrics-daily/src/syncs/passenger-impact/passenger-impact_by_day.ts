@@ -38,15 +38,15 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	// Target interval (operational cut-off at 04:00)
 	const startDate = Dates.now('Europe/Lisbon')
 		.set({ day: 1, hour: 4, month: 1, year: 2024 })
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	const endDate = Dates.now('Europe/Lisbon')
 		.set({ hour: 4 })
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	// Rolling 30-day window (aligned with the 04:00 operational cut-off)
 	const allDaysChunks = Interval
-		.fromISO(`${Dates.fromUnixTimestamp(startDate).iso}/${Dates.fromUnixTimestamp(endDate).iso}`)
+		.fromISO(`${Dates.fromUnixMilliseconds(startDate).iso}/${Dates.fromUnixMilliseconds(endDate).iso}`)
 		.splitBy({ day: 1 })
 		.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }));
 
@@ -124,19 +124,19 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	const out = new Map<OperationalDate, Map<AgencyId, AgencyDayStats>>();
 
 	for (const dayChunk of allDaysChunks) {
-		const start30dTs = Dates.fromUnixTimestamp(dayChunk.start)
+		const start30dTs = Dates.fromUnixMilliseconds(dayChunk.start)
 			.set({ hour: 4, minute: 0, second: 0 })
 			.setZone('Europe/Lisbon', 'rebase_utc')
 			.minus({ days: 30 })
-			.unix_timestamp;
+			.unix_milliseconds;
 
-		const endTs = Dates.fromUnixTimestamp(dayChunk.start)
+		const endTs = Dates.fromUnixMilliseconds(dayChunk.start)
 			.set({ hour: 4, minute: 0, second: 0 })
 			.setZone('Europe/Lisbon', 'rebase_utc')
-			.unix_timestamp;
+			.unix_milliseconds;
 
 		Logger.info(
-			{ message: `Calculating passenger impact for day ${Dates.fromUnixTimestamp(start30dTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}...${Dates.fromUnixTimestamp(endTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}` },
+			{ message: `Calculating passenger impact for day ${Dates.fromUnixMilliseconds(start30dTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}...${Dates.fromUnixMilliseconds(endTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}` },
 		);
 
 		// 2) Median passengers_observed per (agency_id, patternHour) over the last 30 days
@@ -205,7 +205,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 
 		// 3) Aggregate ONLY for the current dayChunk's operational day
 		const operationalDateForChunk: OperationalDate = Dates
-			.fromUnixTimestamp(dayChunk.start) // NOTE: assumes Dates.fromUnixTimestamp accepts ms here (same as your current usage)
+			.fromUnixMilliseconds(dayChunk.start) // NOTE: assumes Dates.fromUnixMilliseconds accepts ms here (same as your current usage)
 			.setZone('Europe/Lisbon', 'rebase_utc')
 			.operational_date;
 

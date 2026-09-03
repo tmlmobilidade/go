@@ -2,9 +2,9 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconFlag2, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { type JSX } from 'react';
 
 import { i18nResourceKeysPtShared } from '../../i18n/resources';
@@ -34,15 +34,15 @@ export const sidebarNavigationGroups = [
 				href: PAGE_ROUTES.core.HOME_LIST,
 				icon: <IconHome />,
 				permissions: [
-					{ action: PermissionCatalog.all.home.actions.read_links, scope: PermissionCatalog.all.home.scope },
-					{ action: PermissionCatalog.all.home.actions.read_wiki, scope: PermissionCatalog.all.home.scope },
+					{ action: 'read_links', scope: 'home' },
+					{ action: 'read_wiki', scope: 'home' },
 				],
 			},
 			{
 				_id: 'performance',
 				href: PAGE_ROUTES.performance.BASE,
 				icon: <IconRocket />,
-				permissions: [{ action: PermissionCatalog.all.performance.actions.read, scope: PermissionCatalog.all.performance.scope }],
+				permissions: [{ action: 'read', scope: 'performance' }],
 			},
 			{
 				_id: 'reference',
@@ -53,72 +53,43 @@ export const sidebarNavigationGroups = [
 		],
 	},
 	{
-		_id: 'administration',
-		items: [
-			{
-				_id: 'agencies',
-				href: PAGE_ROUTES.core.AGENCIES_LIST,
-				icon: <IconBuildings />,
-				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
-			},
-			{
-				_id: 'organizations',
-				href: PAGE_ROUTES.core.ORGANIZATIONS_LIST,
-				icon: <IconSitemap />,
-				permissions: [{ action: PermissionCatalog.all.organizations.actions.read, scope: PermissionCatalog.all.organizations.scope }],
-			},
-			{
-				_id: 'roles',
-				href: PAGE_ROUTES.core.ROLES_LIST,
-				icon: <IconKey />,
-				permissions: [{ action: PermissionCatalog.all.roles.actions.read, scope: PermissionCatalog.all.roles.scope }],
-			},
-			{
-				_id: 'users',
-				href: PAGE_ROUTES.core.USERS_LIST,
-				icon: <IconUser />,
-				permissions: [{ action: PermissionCatalog.all.users.actions.read, scope: PermissionCatalog.all.users.scope }],
-			},
-		],
-	},
-	{
 		_id: 'operation',
 		items: [
 			{
+				_id: 'alerts',
+				href: PAGE_ROUTES.operation.ALERTS_LIST,
+				icon: <IconAlertTriangle />,
+				permissions: [{ action: 'read', resources: { agency_ids: [], reference_types: [] }, scope: 'alerts' }],
+			},
+			{
 				_id: 'gtfs_validations',
-				href: PAGE_ROUTES.plans.VALIDATIONS_LIST,
+				href: PAGE_ROUTES.operation.GTFS_VALIDATIONS_LIST,
 				icon: <IconFileCheck />,
-				permissions: [{ action: PermissionCatalog.all.gtfs_validations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.gtfs_validations.scope }],
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'gtfs_validations' }],
 			},
 			{
 				_id: 'plans',
-				href: PAGE_ROUTES.plans.APPROVED_LIST,
+				href: PAGE_ROUTES.operation.PLANS_LIST,
 				icon: <IconFileCertificate />,
-				permissions: [{ action: PermissionCatalog.all.plans.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.plans.scope }],
-			},
-			{
-				_id: 'alerts',
-				href: PAGE_ROUTES.alerts.ALERTS_LIST,
-				icon: <IconAlertTriangle />,
-				permissions: [{ action: PermissionCatalog.all.alerts.actions.read, resources: { agency_ids: [], reference_types: [] }, scope: PermissionCatalog.all.alerts.scope }],
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'plans' }],
 			},
 			{
 				_id: 'rides',
-				href: PAGE_ROUTES.controller.RIDES_LIST,
+				href: PAGE_ROUTES.operation.RIDES_LIST,
 				icon: <IconListCheck />,
-				permissions: [{ action: PermissionCatalog.all.rides.actions.analysis_read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.rides.scope }],
+				permissions: [{ action: 'analysis_read', resources: { agency_ids: [] }, scope: 'rides' }],
 			},
 			{
 				_id: 'sams',
-				href: PAGE_ROUTES.controller.SAMS_LIST,
+				href: PAGE_ROUTES.operation.SAMS_LIST,
 				icon: <IconDeviceSim />,
-				permissions: [{ action: PermissionCatalog.all.sams.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.sams.scope }],
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'sams' }],
 			},
 			{
 				_id: 'vehicles',
-				href: PAGE_ROUTES.fleet.VEHICLES_LIST,
+				href: PAGE_ROUTES.operation.VEHICLES_LIST,
 				icon: <IconBus />,
-				permissions: [{ action: PermissionCatalog.all.vehicles.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.vehicles.scope }],
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'vehicles' }],
 			},
 		],
 	},
@@ -126,72 +97,106 @@ export const sidebarNavigationGroups = [
 		_id: 'offer',
 		items: [
 			{
-				_id: 'stops',
-				href: PAGE_ROUTES.infrastructure.INFRASTRUCTURE_LIST,
-				icon: <IconBusStop />,
-				permissions: [{ action: PermissionCatalog.all.stops.actions.read, resources: { agency_ids: [], municipality_ids: [] }, scope: PermissionCatalog.all.stops.scope }],
-			},
-			{
 				_id: 'lines',
 				href: PAGE_ROUTES.offer.LINES_LIST,
 				icon: <IconRoute />,
-				permissions: [{ action: PermissionCatalog.all.lines.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.lines.scope }],
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'lines' }],
 			},
 			{
 				_id: 'typologies',
 				href: PAGE_ROUTES.offer.TYPOLOGIES_LIST,
 				icon: <IconTopologyStar3 />,
-				permissions: [{ action: PermissionCatalog.all.typologies.actions.nav, resources: { agency_ids: [] }, scope: PermissionCatalog.all.typologies.scope }],
+				permissions: [{ action: 'nav', resources: { agency_ids: [] }, scope: 'typologies' }],
 			},
 			{
 				_id: 'fares',
 				href: PAGE_ROUTES.offer.FARES_LIST,
 				icon: <IconTicket />,
-				permissions: [{ action: PermissionCatalog.all.fares.actions.nav, resources: { agency_ids: [] }, scope: PermissionCatalog.all.fares.scope }],
+				permissions: [{ action: 'nav', resources: { agency_ids: [] }, scope: 'fares' }],
 			},
 			{
 				_id: 'zones',
 				href: PAGE_ROUTES.offer.ZONES_LIST,
 				icon: <IconLayoutCollage />,
-				permissions: [{ action: PermissionCatalog.all.zones.actions.nav, resources: { agency_ids: [] }, scope: PermissionCatalog.all.zones.scope }],
+				permissions: [{ action: 'nav', resources: { agency_ids: [] }, scope: 'zones' }],
 			},
 		],
 	},
 	{
-		_id: 'calendar_management',
+		_id: 'dates',
 		items: [
 			{
 				_id: 'calendar',
 				href: PAGE_ROUTES.dates.CALENDAR_LIST,
 				icon: <IconCalendarEvent />,
 				permissions: [
-					{ action: PermissionCatalog.all.year_periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.year_periods.scope },
-					{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope },
+					{ action: 'read', resources: { agency_ids: [] }, scope: 'year_periods' },
+					{ action: 'read', resources: { agency_ids: [] }, scope: 'annotations' },
 				],
 			},
 			{
 				_id: 'events',
 				href: PAGE_ROUTES.dates.EVENTS_LIST,
 				icon: <IconCalendarStar />,
-				permissions: [{ action: PermissionCatalog.all.events.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.events.scope }],
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'events' }],
 			},
 			{
 				_id: 'holidays',
 				href: PAGE_ROUTES.dates.HOLIDAYS_LIST,
 				icon: <IconBeach />,
-				permissions: [{ action: PermissionCatalog.all.holidays.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.holidays.scope }],
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'holidays' }],
 			},
 			{
 				_id: 'year_periods',
 				href: PAGE_ROUTES.dates.YEAR_PERIODS_LIST,
 				icon: <IconClock />,
-				permissions: [{ action: PermissionCatalog.all.year_periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.year_periods.scope }],
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'year_periods' }],
 			},
 			{
 				_id: 'annotations',
 				href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,
 				icon: <IconNote />,
-				permissions: [{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope }],
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'annotations' }],
+			},
+		],
+	},
+	{
+		_id: 'infrastructure',
+		items: [
+			{
+				_id: 'stops',
+				href: PAGE_ROUTES.infrastructure.STOPS_LIST,
+				icon: <IconFlag2 />,
+				permissions: [{ action: 'read', resources: { agency_ids: [], municipality_ids: [] }, scope: 'stops' }],
+			},
+		],
+	},
+	{
+		_id: 'core',
+		items: [
+			{
+				_id: 'agencies',
+				href: PAGE_ROUTES.core.AGENCIES_LIST,
+				icon: <IconBuildings />,
+				permissions: [{ action: 'read', scope: 'agencies' }],
+			},
+			{
+				_id: 'organizations',
+				href: PAGE_ROUTES.core.ORGANIZATIONS_LIST,
+				icon: <IconSitemap />,
+				permissions: [{ action: 'read', scope: 'organizations' }],
+			},
+			{
+				_id: 'roles',
+				href: PAGE_ROUTES.core.ROLES_LIST,
+				icon: <IconKey />,
+				permissions: [{ action: 'read', scope: 'roles' }],
+			},
+			{
+				_id: 'users',
+				href: PAGE_ROUTES.core.USERS_LIST,
+				icon: <IconUser />,
+				permissions: [{ action: 'read', scope: 'users' }],
 			},
 		],
 	},

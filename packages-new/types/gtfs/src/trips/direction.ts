@@ -9,7 +9,10 @@ export const GtfsTripDirectionValues = [
 	'1', // OUTBOUND
 ] as const;
 
-export const GtfsTripDirectionSchema = z.enum(GtfsTripDirectionValues);
+export const GtfsTripDirectionSchema = z
+	.union([z.string(), z.number()])
+	.transform(value => String(value))
+	.pipe(z.enum(GtfsTripDirectionValues));
 
 /**
  * The GTFS Trip Direction type represents the direction

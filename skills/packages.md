@@ -47,14 +47,14 @@ Use this for: all type imports. Never define entity types locally in a module.
 import { API_ROUTES, HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 // API routes (used in both frontend SWR keys and backend route handlers)
-API_ROUTES.alerts.ALERTS_LIST
-API_ROUTES.alerts.ALERTS_DETAIL(id)
-API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(id)
-API_ROUTES.alerts.ALERTS_DETAIL_LOCK(id)
+API_ROUTES.operation.ALERTS_LIST
+API_ROUTES.operation.ALERTS_DETAIL(id)
+API_ROUTES.operation.ALERTS_DETAIL_IMAGE(id)
+API_ROUTES.operation.ALERTS_DETAIL_LOCK(id)
 
 // Page routes (used in frontend navigation)
-PAGE_ROUTES.alerts.ALERTS_LIST
-PAGE_ROUTES.alerts.ALERTS_DETAIL(id)
+PAGE_ROUTES.operation.ALERTS_LIST
+PAGE_ROUTES.operation.ALERTS_DETAIL(id)
 
 // HTTP status codes
 HTTP_STATUS.OK          // 200
@@ -165,10 +165,10 @@ Use this for: all Fastify API apps. Never bootstrap a Fastify server directly.
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 
 // Typed API fetch (used in frontend mutations)
-const result = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(id), 'PUT', body);
+const result = await fetchData<Alert>(API_ROUTES.operation.ALERTS_DETAIL(id), 'PUT', body);
 
 // File upload
-await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(id), file);
+await uploadFile(API_ROUTES.operation.ALERTS_DETAIL_IMAGE(id), file);
 ```
 
 Also contains batching, caching, generic object/array utilities. Check `packages/utils/src/` before writing a utility function locally.

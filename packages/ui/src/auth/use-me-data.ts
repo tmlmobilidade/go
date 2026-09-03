@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type User } from '@tmlmobilidade/go-types-core';
-import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -14,8 +14,8 @@ interface UseMeDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: () => void
-	timestamp: null | UnixTimestamp
+	mutate: (data?: ApiResponse<User>) => void
+	timestamp: null | UnixMilliseconds
 }
 
 /* * */

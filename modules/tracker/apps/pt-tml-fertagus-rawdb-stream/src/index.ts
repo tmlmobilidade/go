@@ -45,7 +45,7 @@ async function findTripId(event: RawVehicleEventPtTmlFertagusV1['payload']): Pro
 	const cached = ridesMap.get(rideKey);
 	if (cached) return cached;
 
-	const startTimeScheduled = Dates.fromISO(event.startsAt).unix_timestamp;
+	const startTimeScheduled = Dates.fromISO(event.startsAt).unix_milliseconds;
 
 	const foundRides = await labDb.queryFromString<{ trip_id: string }>(findTripIdQuery, {
 		1: AGENCY_ID,

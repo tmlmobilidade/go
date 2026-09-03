@@ -1,12 +1,13 @@
 /* * */
 
-import { GtfsDateSchema, GtfsExceptionTypeSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsExceptionTypeSchema } from '@tmlmobilidade/go-types-gtfs';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const GtfsStrictV30CalendarDatesSchema = z.object({
-	date: GtfsDateSchema,
+	date: OperationalDateIntSchema,
 	exception_type: GtfsExceptionTypeSchema,
 	service_id: z.string(),
 });

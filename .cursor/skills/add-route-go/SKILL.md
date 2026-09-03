@@ -11,7 +11,7 @@ You are adding a new API route to a GO module. Follow every step in order. Ask f
 ## Steps
 
 ### 1. Confirm inputs
-- `[module]` — the module name (e.g. `alerts`, `fleet`)
+- `[module]` — the module name (e.g. `operation`, `offer`)
 - `[resource]` — the resource name in singular, lowercase, kebab-case (e.g. `alert`, `vehicle-event`)
 
 ### 2. Create the routes file

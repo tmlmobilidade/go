@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,7 +10,7 @@ import { z } from 'zod';
 // AND PREVENTS STALE PREFERENCES TO BE KEPT IN THE DATABASE
 
 export const UserPreferenceValueSchema = z.object({
-	updated_at: UnixTimestampSchema,
+	updated_at: UnixMillisecondsSchema,
 	value: z.union([
 		z.string(),
 		z.number(),

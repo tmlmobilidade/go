@@ -1,17 +1,18 @@
 /* * */
 
-import { GtfsBinarySchema, GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsBinarySchema } from '@tmlmobilidade/go-types-gtfs';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const GtfsStrictV29ExtCalendarSchema = z.object({
-	end_date: GtfsDateSchema,
+	end_date: OperationalDateIntSchema,
 	friday: GtfsBinarySchema,
 	monday: GtfsBinarySchema,
 	saturday: GtfsBinarySchema,
 	service_id: z.string(),
-	start_date: GtfsDateSchema,
+	start_date: OperationalDateIntSchema,
 	sunday: GtfsBinarySchema,
 	thursday: GtfsBinarySchema,
 	tuesday: GtfsBinarySchema,

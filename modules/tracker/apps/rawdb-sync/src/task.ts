@@ -8,6 +8,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
+import { ZodError } from 'zod';
 
 import { type SyncConfig, type VehicleEventsCollectionDocument } from './types.js';
 
@@ -32,11 +33,11 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 	//
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
+		.fromUnixMilliseconds(timeChunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
+		.fromUnixMilliseconds(timeChunk.end)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
@@ -96,8 +97,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawdbCollection.distinct('_id', rawdbQuery);
-			return result.map(String);
+			return await rawdbCollection.distinct('_id', rawdbQuery);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
@@ -121,7 +121,10 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 				// Write the simplified vehicle event document to the destination database
 				await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
-				Logger.error({ message: `Error transforming RawVehicleEvent document: ${sourceDbDocument._id} Reason: ${error.message}` });
+				const errorMessage = error instanceof ZodError
+					? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
+					: error instanceof Error ? error.message : String(error);
+				Logger.info({ message: `=> Error transforming RawVehicleEvent document: [${sourceDbDocument.agency_id}] ${sourceDbDocument._id} Reason: ${errorMessage}` });
 			}
 		},
 

@@ -5,6 +5,7 @@ export * from './hashed-trips/index.js';
 export * from './plans/index.js';
 export * from './ride-acceptances/index.js';
 export * from './ride-analyses/index.js';
+export * from './event-ride-opportunities/index.js';
 export * from './rides/index.js';
 export * from './sams/index.js';
 export * from './vehicles/index.js';

@@ -47,12 +47,12 @@ export const syncDemandByProductByLineByYear = async () => {
 	const allTimestampChunks: { end: number, endIso: string, start: number, startIso: string }[] = [];
 
 	let cursor = earliestDataNeeded;
-	while (cursor.unix_timestamp < latest.unix_timestamp) {
+	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ years: 1 });
 		allTimestampChunks.push({
-			end: next.unix_timestamp,
+			end: next.unix_milliseconds,
 			endIso: next.iso,
-			start: cursor.unix_timestamp,
+			start: cursor.unix_milliseconds,
 			startIso: cursor.iso,
 		});
 		cursor = next;

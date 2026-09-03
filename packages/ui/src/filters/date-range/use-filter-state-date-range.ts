@@ -1,7 +1,7 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useEffect, useMemo } from 'react';
 
@@ -18,27 +18,27 @@ export interface UseFilterStateDateRangeReturnType {
 	 * Function to set the end value of the filter.
 	 * @param value The new end value for the filter.
 	 */
-	setEnd: (value: null | UnixTimestamp) => void
+	setEnd: (value: null | UnixMilliseconds) => void
 
 	/**
 	 * Function to set the start value of the filter.
 	 * @param value The new start value for the filter.
 	 */
-	setStart: (value: null | UnixTimestamp) => void
+	setStart: (value: null | UnixMilliseconds) => void
 
 	/**
 	 * The current end value of the filter.
 	 */
-	value_end: null | UnixTimestamp
+	value_end: null | UnixMilliseconds
 
 	/**
 	 * The current start value of the filter.
 	 */
-	value_start: null | UnixTimestamp
+	value_start: null | UnixMilliseconds
 
 }
 
-export function useFilterStateDateRange(key: string, defaultStart?: null | UnixTimestamp, defaultEnd?: null | UnixTimestamp): UseFilterStateDateRangeReturnType {
+export function useFilterStateDateRange(key: string, defaultStart?: null | UnixMilliseconds, defaultEnd?: null | UnixMilliseconds): UseFilterStateDateRangeReturnType {
 	//
 
 	//
@@ -46,12 +46,12 @@ export function useFilterStateDateRange(key: string, defaultStart?: null | UnixT
 
 	const defaultStartValueSecondsPrecision = useMemo(() => {
 		if (!defaultStart) return null;
-		return Dates.fromUnixTimestamp(defaultStart).set({ millisecond: 0 }).unix_timestamp;
+		return Dates.fromUnixMilliseconds(defaultStart).set({ millisecond: 0 }).unix_milliseconds;
 	}, [defaultStart]);
 
 	const defaultEndValueSecondsPrecision = useMemo(() => {
 		if (!defaultEnd) return null;
-		return Dates.fromUnixTimestamp(defaultEnd).set({ millisecond: 0 }).unix_timestamp;
+		return Dates.fromUnixMilliseconds(defaultEnd).set({ millisecond: 0 }).unix_milliseconds;
 	}, [defaultEnd]);
 
 	const [urlValueStart, setUrlValueStart] = useQueryState(`${key}-start`, parseAsInteger.withDefault(defaultStartValueSecondsPrecision));
@@ -62,12 +62,12 @@ export function useFilterStateDateRange(key: string, defaultStart?: null | UnixT
 
 	const effectiveValueStart = useMemo(() => {
 		if (!urlValueStart) return defaultStart;
-		return urlValueStart as UnixTimestamp;
+		return urlValueStart as UnixMilliseconds;
 	}, [urlValueStart, defaultStart]);
 
 	const effectiveValueEnd = useMemo(() => {
 		if (!urlValueEnd) return defaultEnd;
-		return urlValueEnd as UnixTimestamp;
+		return urlValueEnd as UnixMilliseconds;
 	}, [urlValueEnd, defaultEnd]);
 
 	const isActive = useMemo(() => {

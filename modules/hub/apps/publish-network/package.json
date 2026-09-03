@@ -21,7 +21,7 @@
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
-		"@tmlmobilidade/go-types-public-info": "*",
+		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

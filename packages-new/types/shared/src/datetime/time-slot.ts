@@ -22,7 +22,10 @@ export const TimeSlotValues = [
 	'24h',
 ] as const;
 
-export const TimeSlotSchema = z.enum(TimeSlotValues);
+export const TimeSlotSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(TimeSlotValues));
 
 /**
  * A time slot in human readable format.

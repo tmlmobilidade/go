@@ -3,8 +3,7 @@
 import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
-import { buildRuleSummary } from '@tmlmobilidade/go-utils-dates';
-import { DayRuleDetail } from '@tmlmobilidade/go-utils-dates/dist/calendar/rules/preview/types';
+import { buildRuleSummary, DayRuleDetail } from '@tmlmobilidade/dates';
 import { type HHMM, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
 import { DayPeriodsTimepoints, Section, Text, TimeChip } from '@tmlmobilidade/ui';
 

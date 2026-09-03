@@ -13,8 +13,8 @@ import { useStopsEditorContext } from '../ShapeEditor.context';
 /* * */
 
 function SegmentInfo({ afterStopId, beforeStopId, distance }: {
-	afterStopId: number
-	beforeStopId: number
+	afterStopId: string
+	beforeStopId: string
 	distance: number
 }) {
 	const stopsEditorContext = useStopsEditorContext();

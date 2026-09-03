@@ -5,7 +5,7 @@ import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import { type CreateFileExportDto, type FileExport, type FileExportType, type GtfsExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate, type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { useForm } from '@tmlmobilidade/ui';
 import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -15,10 +15,10 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useMemo
 
 export interface GtfsExportFormValues {
 	agency_ids: string[]
-	clip_end_date: null | OperationalDate
-	clip_start_date: null | OperationalDate
-	feed_end_date: null | OperationalDate
-	feed_start_date: null | OperationalDate
+	clip_end_date: null | OperationalDateInt
+	clip_start_date: null | OperationalDateInt
+	feed_end_date: null | OperationalDateInt
+	feed_start_date: null | OperationalDateInt
 	lines_exclude: string[]
 	lines_include: string[]
 	lines_mode: LinesMode
@@ -56,11 +56,11 @@ export const useGtfsExportModalContext = () => {
 
 /* * */
 
-const AGENCY_DEFAULT_VALUES: Record<string, { clip_end: OperationalDate, clip_start: OperationalDate, feed_end: OperationalDate, feed_start: OperationalDate, numeric_calendar_codes?: boolean }> = {
-	41: { clip_end: '20261231' as OperationalDate, clip_start: '20260101' as OperationalDate, feed_end: '20261231' as OperationalDate, feed_start: '20260501' as OperationalDate },
-	42: { clip_end: '20261231' as OperationalDate, clip_start: '20260101' as OperationalDate, feed_end: '20261231' as OperationalDate, feed_start: '20260501' as OperationalDate },
-	43: { clip_end: '20260630' as OperationalDate, clip_start: '20250701' as OperationalDate, feed_end: '20260630' as OperationalDate, feed_start: '20260501' as OperationalDate },
-	44: { clip_end: '20270430' as OperationalDate, clip_start: '20260501' as OperationalDate, feed_end: '20270430' as OperationalDate, feed_start: '20260501' as OperationalDate, numeric_calendar_codes: true },
+const AGENCY_DEFAULT_VALUES: Record<string, { clip_end: OperationalDateInt, clip_start: OperationalDateInt, feed_end: OperationalDateInt, feed_start: OperationalDateInt, numeric_calendar_codes?: boolean }> = {
+	41: { clip_end: 20261231 as OperationalDateInt, clip_start: 20260101 as OperationalDateInt, feed_end: 20261231 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt },
+	42: { clip_end: 20261231 as OperationalDateInt, clip_start: 20260101 as OperationalDateInt, feed_end: 20261231 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt },
+	43: { clip_end: 20260630 as OperationalDateInt, clip_start: 20250701 as OperationalDateInt, feed_end: 20260630 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt },
+	44: { clip_end: 20270430 as OperationalDateInt, clip_start: 20260501 as OperationalDateInt, feed_end: 20270430 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt, numeric_calendar_codes: true },
 };
 
 export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) => {
@@ -153,10 +153,10 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 			processing_status: 'waiting',
 			properties: {
 				agency_ids: values.agency_ids,
-				calendars_clip_end_date: values.clip_end_date,
-				calendars_clip_start_date: values.clip_start_date,
-				feed_end_date: values.feed_end_date,
-				feed_start_date: values.feed_start_date,
+				calendars_clip_end_date: String(values.clip_end_date) as OperationalDate,
+				calendars_clip_start_date: String(values.clip_start_date) as OperationalDate,
+				feed_end_date: String(values.feed_end_date) as OperationalDate,
+				feed_start_date: String(values.feed_start_date) as OperationalDate,
 				lines_exclude: values.lines_exclude,
 				lines_include: values.lines_include,
 				lines_mode: values.lines_mode,

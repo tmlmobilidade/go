@@ -4,7 +4,7 @@ import { transformAlertDataIntoGeoJsonFeature, useAlertsContext } from '@/compon
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
+import { type HubAlert } from '@tmlmobilidade/go-types-hub';
 import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useFilterStateText, UseFilterStateTextReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -90,7 +90,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Transform data
 
-	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_timestamp, []);
+	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_milliseconds, []);
 
 	const searchResultsData = useSearch<HubAlert>({
 		accessors: ['title', 'description'],
@@ -170,7 +170,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			if (!alert.active_period_start_date) return result;
 
 			const alertStartDate = Dates
-				.fromUnixTimestamp(alert.active_period_start_date)
+				.fromUnixMilliseconds(alert.active_period_start_date)
 				.setZone('Europe/Lisbon', 'offset_only');
 			const alertStartDateString = alertStartDate.toFormat('yyyyMMdd');
 			const existingGroup = result.find(group => group.value === alertStartDateString);
@@ -184,13 +184,13 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			const formattedDate = alertStartDate.toFormat('d LLLL yyyy', { locale: displayLocale });
 
 			let formattedGroupLabel: string;
-			if (alertStartDateCompare.unix_timestamp === today.unix_timestamp) {
+			if (alertStartDateCompare.unix_milliseconds === today.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.today', '', { value: formattedDate });
-			} else if (alertStartDateCompare.unix_timestamp === tomorrow.unix_timestamp) {
+			} else if (alertStartDateCompare.unix_milliseconds === tomorrow.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.tomorrow', '', { value: formattedDate });
-			} else if (alertStartDateCompare.unix_timestamp === yesterday.unix_timestamp) {
+			} else if (alertStartDateCompare.unix_milliseconds === yesterday.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.yesterday', '', { value: formattedDate });
-			} else if (alertStartDateCompare.unix_timestamp < yesterday.unix_timestamp) {
+			} else if (alertStartDateCompare.unix_milliseconds < yesterday.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.past', '', { value: formattedDate });
 			} else {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.future', '', { value: formattedDate });

@@ -1,14 +1,16 @@
 'use client';
 
-import { AgencyPermissionMultiselect } from '@/components/permissions/AgencyPermissionMultiselect';
-import { AlertReferenceTypePermissionMultiselect } from '@/components/permissions/AlertReferenceTypePermissionMultiselect';
-import { PermissionSectionItemCard } from '@/components/permissions/PermissionSectionItemCard';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Role } from '@tmlmobilidade/go-types-core';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { Grid, type SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+
+import { AgencyPermissionMultiselect } from '../AgencyPermissionMultiselect';
+import { AlertReferenceTypePermissionMultiselect } from '../AlertReferenceTypePermissionMultiselect';
+import { MunicipalityPermissionMultiselect } from '../MunicipalityPermissionMultiselect';
+import { PermissionSectionItemCard } from '../PermissionSectionItemCard';
 
 /* * */
 
@@ -18,6 +20,7 @@ interface PermissionSectionItemProps {
 	disabled?: boolean
 	enabledPermissions: Permission[]
 	enabledRoleIds?: string[]
+	municipalitiesOptions: SelectDataItem[]
 	onResourceToggle: (permission: Permission) => void
 	onToggle: (permission: Permission) => void
 	rolesData: Role	[]
@@ -26,7 +29,7 @@ interface PermissionSectionItemProps {
 
 /* * */
 
-export function PermissionSectionItem({ agenciesOptions, configAction, disabled, enabledPermissions, enabledRoleIds, onResourceToggle, onToggle, rolesData, scope }: PermissionSectionItemProps) {
+export function PermissionSectionItem({ agenciesOptions, configAction, disabled, enabledPermissions, enabledRoleIds, municipalitiesOptions, onResourceToggle, onToggle, rolesData, scope }: PermissionSectionItemProps) {
 	//
 
 	//
@@ -35,7 +38,8 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 	const currentPermissionEntry = enabledPermissions?.find(p => p.scope === scope && p.action === configAction.action);
 
 	const hasPermissionFromRole = useMemo(() => {
-		if (!enabledRoleIds || enabledRoleIds.length === 0) return false;
+		if (!rolesData?.length) return false;
+		if (!enabledRoleIds?.length) return false;
 		return hasRolePermission(scope, configAction.action, enabledRoleIds, rolesData);
 	}, [scope, configAction.action, enabledRoleIds, rolesData]);
 
@@ -43,6 +47,12 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 		if (!currentPermissionEntry) return [];
 		if (!('resources' in currentPermissionEntry)) return [];
 		return currentPermissionEntry.resources['agency_ids'] || [];
+	})();
+
+	const selectedMunicipalityIds = (() => {
+		if (!currentPermissionEntry) return [];
+		if (!('resources' in currentPermissionEntry)) return [];
+		return currentPermissionEntry.resources['municipality_ids'] || [];
 	})();
 
 	const selectedAlertReferenceTypeIds = (() => {
@@ -62,7 +72,8 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 	};
 
 	const handleResourceToggle = (resource: Record<string, unknown>) => {
-		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, resources: resource, scope });
+		const currentResourceValues = 'resources' in currentPermissionEntry ? currentPermissionEntry?.resources : {};
+		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, resources: { ...currentResourceValues, ...resource }, scope });
 		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
 		onResourceToggle(validatedPermission.data);
 	};
@@ -98,6 +109,14 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 					/>
 				)}
 
+				{onResourceToggle && configAction.resources?.includes('MUNICIPALITIES') && (
+					<MunicipalityPermissionMultiselect
+						disabled={disabled || hasPermissionFromRole}
+						onChange={(inputValue: string[]) => handleResourceToggle({ municipality_ids: inputValue })}
+						options={municipalitiesOptions}
+						value={selectedMunicipalityIds}
+					/>
+				)}
 			</Grid>
 		</PermissionSectionItemCard>
 	);

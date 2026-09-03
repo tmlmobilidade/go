@@ -1,6 +1,5 @@
 /* * */
 
-import { AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { MultiSelect } from '@tmlmobilidade/ui';
 
@@ -22,9 +21,9 @@ export function AlertReferenceTypePermissionMultiselect({ disabled, onChange, va
 
 	const alertReferenceTypeOptionsWithAllowAll = [
 		{ label: 'Todo o tipo de referências', value: PermissionCatalog.ALLOW_ALL_FLAG },
-		{ label: 'Linhas', value: AlertReferenceTypeSchema.enum.lines },
-		{ label: 'Paragens', value: AlertReferenceTypeSchema.enum.stops },
-		{ label: 'Circulações', value: AlertReferenceTypeSchema.enum.rides },
+		{ label: 'Linhas', value: 'lines' },
+		{ label: 'Paragens', value: 'stops' },
+		{ label: 'Circulações', value: 'rides' },
 	];
 
 	//

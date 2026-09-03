@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Add Module
 
-You are creating a new GO module. Follow every step in order. Ask for the **module name** if not provided (lowercase, kebab-case, e.g. `fleet`, `alerts`).
+You are creating a new GO module. Follow every step in order. Ask for the **module name** if not provided (lowercase, kebab-case, e.g. `operation`, `offer`).
 
 ## Steps
 

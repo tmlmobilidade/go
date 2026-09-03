@@ -1,9 +1,9 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type StopId, StopSchema } from '@tmlmobilidade/types';
+import { type StopId, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { fetchData } from '@tmlmobilidade/utils';
 import Papa from 'papaparse';
 
@@ -50,11 +50,11 @@ export async function seedFromTmp() {
 
 		for (const [index, originalStop] of ut1StopsData.data.entries()) {
 			console.log(`Processing stop ${index + 1}/${ut1StopsData.data.length}: ${originalStop.stop_name} (${originalStop.stop_id})`);
-			const newStopId = await fetchData<StopId>(API_ROUTES.infrastructure.STOPS_VALID_ID);
+			const newStopId = await fetchData<StopId>(API_ROUTES.infrastructure.STOPS_GET_VALID_ID);
 			console.log(`Generated new stop ID`, newStopId.data);
 			const stop = StopSchema.safeParse({
 				_id: newStopId.data,
-				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				created_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 				created_by: 'system',
 				district_id: '',
 				flags: [{
@@ -75,7 +75,7 @@ export async function seedFromTmp() {
 				previous_go_id: originalStop.stop_id,
 				short_name: '-----',
 				tts_name: '',
-				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				updated_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 				updated_by: 'system',
 			});
 			if (stop.success) {

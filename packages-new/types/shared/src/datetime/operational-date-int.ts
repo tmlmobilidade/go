@@ -3,6 +3,8 @@
 import { DateTime } from 'luxon';
 import { z } from 'zod';
 
+import { CALENDAR_DATE_FORMAT } from './calendar-date.js';
+
 /**
  * The format for an operational date.
  */
@@ -28,8 +30,7 @@ export type OperationalDateInt = number & {
  * ```
  */
 export const OperationalDateIntSchema = z
-	.coerce
-	.string()
-	.transform(value => value.replaceAll('-', ''))
-	.refine(value => DateTime.fromFormat(value, OPERATIONAL_DATE_FORMAT).isValid, { message: `Expected a date in the format ${OPERATIONAL_DATE_FORMAT} (or yyyy-MM-dd)` })
+	.union([z.string(), z.number()])
+	.transform(value => String(value).replaceAll('-', ''))
+	.refine(value => DateTime.fromFormat(value, OPERATIONAL_DATE_FORMAT).isValid, { message: `Expected a date in the format ${OPERATIONAL_DATE_FORMAT} or ${CALENDAR_DATE_FORMAT}` })
 	.transform(value => Number(value) as OperationalDateInt);

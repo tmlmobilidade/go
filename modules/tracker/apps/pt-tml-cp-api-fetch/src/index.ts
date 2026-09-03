@@ -70,7 +70,7 @@ const main = async () => {
 		// and avoid storing them multiple times in the database
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlCpV1> = {
 			agency_id: 'N18KL',
-			created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
+			created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_milliseconds,
 			entity_id: entity.id,
 			payload: {
 				header: decodedMessage.header,
@@ -100,7 +100,7 @@ const main = async () => {
 		await rawDb.vehicleEvents.ptTmlCp.insertOne({
 			...hashableRawEvent,
 			_id: hashableRawEventId,
-			received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 		});
 
 		saveCount++;
@@ -115,4 +115,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '5s', throwOnError: true });
+await runOnInterval(main, { intervalMs: '1s', throwOnError: true });

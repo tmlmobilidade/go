@@ -3,7 +3,7 @@
 import { IconMessageCircle } from '@tabler/icons-react';
 import { NoteComment } from '@tmlmobilidade/go-types-shared';
 
-import { displayUnixTimestamp } from '../../../utils';
+import { displayUnixMilliseconds } from '../../../utils';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
 import { CommentItem } from '../CommentItem';
@@ -27,7 +27,7 @@ export function CommentItemNote({ comment, reverse }: CommentItemNoteProps) {
 				{comment.message}
 			</div>
 			<Label size="sm">
-				{comment.created_by} a {displayUnixTimestamp(comment.created_at, 'short')}
+				{comment.created_by} a {displayUnixMilliseconds(comment.created_at, 'short')}
 			</Label>
 		</Section>
 	);

@@ -1,7 +1,7 @@
 'use client';
 
 import { Layer, Source } from '@vis.gl/react-maplibre';
-import { FeatureCollection, type Polygon } from 'geojson';
+import { FeatureCollection, MultiPolygon, type Polygon } from 'geojson';
 import { useEffect } from 'react';
 
 import { useMapViewContext } from '../../view/MapViewContext';
@@ -14,7 +14,7 @@ export interface MapOverlayPolygonDataProps {
 
 export interface MapOverlayPolygonProps {
 	color?: string
-	data: FeatureCollection<Polygon, MapOverlayPolygonDataProps>
+	data: FeatureCollection<MultiPolygon | Polygon, MapOverlayPolygonDataProps>
 	fillOpacity?: number
 	id: string
 	lineOpacity?: number

@@ -1,13 +1,13 @@
 /* * */
 
-import { type GtfsDate, type GtfsTime, validateGtfsDate, validateGtfsTime } from '@tmlmobilidade/go-types-gtfs';
-import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type OperationalTime, OperationalTimeSchema } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDate, OperationalDateInt, OperationalDateIntSchema, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
- * @deprecated Use `fromGtfsTimeAndGtfsDateToUnixTimestamp()` instead.
+ * @deprecated Use `fromOperationalTimeAndOperationalDateToUnixMilliseconds()` instead.
  */
-export function convertGTFSTimeStringAndOperationalDateToUnixTimestamp(timeString: string, operationalDate: OperationalDate): UnixTimestamp {
+export function convertGTFSTimeStringAndOperationalDateToUnixMilliseconds(timeString: string, operationalDate: OperationalDate): UnixMilliseconds {
 	// Return early if no time string is provided
 	if (!timeString || !operationalDate) throw new Error(`✖︎ No time string or operational date provided. timeString: ${timeString}, operationalDate: ${operationalDate}`);
 	// Check if the timestring is in the format HH:MM:SS
@@ -17,7 +17,7 @@ export function convertGTFSTimeStringAndOperationalDateToUnixTimestamp(timeStrin
 	return Dates
 		.fromOperationalDateInt(operationalDate, 'Europe/Lisbon')
 		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
-		.unix_timestamp;
+		.unix_milliseconds;
 };
 
 /**
@@ -26,17 +26,17 @@ export function convertGTFSTimeStringAndOperationalDateToUnixTimestamp(timeStrin
  * @param gtfsDate The GTFS date to be converted.
  * @returns The given time and date as a Unix timestamp.
  */
-export function fromGtfsTimeAndGtfsDateToUnixTimestamp(gtfsTime: GtfsTime, gtfsDate: GtfsDate): UnixTimestamp {
+export function fromOperationalTimeAndOperationalDateToUnixMilliseconds(gtfsTime: OperationalTime, gtfsDate: OperationalDateInt): UnixMilliseconds {
 	// Return early if no time string is provided
 	if (!gtfsTime || !gtfsDate) throw new Error(`✖︎ No GTFS Time string or GTFS date string provided. gtfsTime: ${gtfsTime}, gtfsDate: ${gtfsDate}`);
 	// Check if both params are valid
-	const validatedGtfsTime = validateGtfsTime(gtfsTime);
-	const validatedGtfsDate = validateGtfsDate(gtfsDate);
+	const validatedGtfsTime = OperationalTimeSchema.parse(gtfsTime);
+	const validatedGtfsDate = OperationalDateIntSchema.parse(gtfsDate);
 	// Extract the individual components of the time string (HH:MM:SS)
 	const [hours, minutes, seconds] = validatedGtfsTime.split(':').map(Number);
 	// Convert the combination of the time and date to a Unix timestamp
 	return Dates
 		.fromOperationalDateInt(validatedGtfsDate, 'Europe/Lisbon')
 		.set({ hour: hours, minute: minutes, second: seconds })
-		.unix_timestamp;
+		.unix_milliseconds;
 };

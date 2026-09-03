@@ -12,7 +12,7 @@ export async function changePasswordHandler(request: FastifyRequest<{ Body: { pa
 	// Check if the verification token is valid
 	const tokenResult = await goDb.core.verificationTokens.findOne({ token: { $eq: request.body.token } });
 	// If the token is invalid or expired, throw an error
-	if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
+	if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_milliseconds) {
 		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
 	}
 	// Update the user's password in the database

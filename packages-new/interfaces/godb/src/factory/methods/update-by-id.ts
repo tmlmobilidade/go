@@ -15,7 +15,7 @@ import { type UpdatableDocument } from '../types/updatable-document.type.js';
  * @param options Optional options for the update operation.
  * @returns A promise that resolves to the result of the update operation.
  */
-export async function updateById<T extends Document>(context: GoDbCollectionContext<T>, _id: number | string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T> {
+export async function updateById<T extends Document>(context: GoDbCollectionContext<T>, _id: string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T> {
 	//
 
 	if (!context.schema) {
@@ -37,13 +37,18 @@ export async function updateById<T extends Document>(context: GoDbCollectionCont
 	const updatableDocument = {
 		...existingDocument,
 		...updateFields,
-		updated_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_milliseconds,
 	};
 
 	//
 	// Validate the document against the schema
+	// and remove fields that should not be updated
 
 	const validatedDocument = context.schema.parse(updatableDocument);
+
+	delete validatedDocument._id;
+	delete validatedDocument.created_at;
+	delete validatedDocument.created_by;
 
 	//
 	// Attempt to update the document in the collection

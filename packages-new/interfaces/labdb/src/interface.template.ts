@@ -86,8 +86,8 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 * @returns A promise that resolves to an array of distinct values matching the query.
 	 */
 	public async distinct<K extends keyof T>(field: K, where: string, params?: Record<string, number | string>): Promise<T[K][]> {
-		const result = await queryFromString<T[K]>(this.client, `SELECT DISTINCT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
-		return result;
+		const rows = await queryFromString<Pick<T, K>>(this.client, `SELECT DISTINCT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
+		return rows.map(row => row[field]);
 	}
 
 	/**

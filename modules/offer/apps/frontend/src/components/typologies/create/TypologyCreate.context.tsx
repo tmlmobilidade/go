@@ -3,8 +3,7 @@
 import { closeCreateTypologyModal } from '@/components/typologies/create/TypologyCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateTypologyDto, CreateTypologySchema, Typology } from '@tmlmobilidade/go-types-offer';
-import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -59,12 +58,12 @@ export const TypologyCreateContextProvider = ({ children }: PropsWithChildren) =
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_LIST, 'POST', form.getValues()),
-		onSuccess: (createdItem) => {
+		fetchFn: async () => await fetchApiData<Typology>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.TYPOLOGIES_LIST }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			allTypologiesMutate();
 			closeCreateTypologyModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.TYPOLOGIES_DETAIL(createdItem._id)));
+			router.push(keepUrlParams(PAGE_ROUTES.offer.TYPOLOGIES_DETAIL(data._id)));
 		},
 	});
 

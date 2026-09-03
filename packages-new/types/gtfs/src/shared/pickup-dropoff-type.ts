@@ -11,7 +11,11 @@ export const GtfsPickupDropoffTypeValues = [
 	'3', // Must contact driver to arrange pickup or drop-off
 ] as const;
 
-export const GtfsPickupDropoffTypeSchema = z.enum(GtfsPickupDropoffTypeValues).default('1');
+export const GtfsPickupDropoffTypeSchema = z
+	.union([z.string(), z.number()])
+	.transform(value => String(value))
+	.pipe(z.enum(GtfsPickupDropoffTypeValues))
+	.default('1');
 
 /**
  * Represents the type of pickup or drop-off allowed for a transit service.

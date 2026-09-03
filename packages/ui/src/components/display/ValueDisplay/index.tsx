@@ -1,6 +1,6 @@
 /* * */
 
-import { type ReactNode } from 'react';
+import { Skeleton } from '@mantine/core';
 
 import styles from './styles.module.css';
 
@@ -9,24 +9,27 @@ import { Section, Surface, type SurfaceProps } from '../../layout';
 /* * */
 
 interface ValueDisplayProps {
-	className?: string
 	elevated?: SurfaceProps['elevated']
-	icon?: ReactNode
+	footer?: React.ReactNode
+	icon?: React.ReactNode
+	isLoading?: boolean
 	label: string
-	onClick?: () => void
 	strong?: boolean
-	value: ReactNode | string
+	value: React.ReactNode | string
 	variant?: SurfaceProps['variant']
 }
 
 /* * */
 
-export function ValueDisplay({ className, elevated, icon, label, onClick, strong, value, variant = 'bordered' }: ValueDisplayProps) {
+export function ValueDisplay({ elevated, footer, icon, isLoading, label, strong, value, variant = 'bordered' }: ValueDisplayProps) {
 	return (
 		<Surface elevated={elevated} variant={variant}>
-			<Section>
-				<p className={`${styles.label} ${className}`} onClick={onClick}>{label} {icon}</p>
-				<p className={styles.value} data-strong={strong}>{value}</p>
+			<Section gap="xs">
+				<p className={styles.label}>{label} {icon}</p>
+				{isLoading
+					? <Skeleton height={12} width={230} />
+					: <p className={styles.value} data-strong={strong}>{value}</p>}
+				{footer && <p className={styles.footer}>{footer}</p>}
 			</Section>
 		</Surface>
 	);

@@ -1,22 +1,24 @@
 /* * */
 
-import { GtfsTernarySchema } from '@/shared/ternary.js';
-import { GtfsTripDirectionSchema } from '@/trips/direction.js';
 import { z } from 'zod';
+
+import { GtfsTernarySchema } from '../shared/ternary.js';
+import { GtfsTripDirectionSchema } from './direction.js';
 
 /* * */
 
 export const GtfsTripsSchema = z.object({
-	bikes_allowed: GtfsTernarySchema.optional(),
+	bikes_allowed: GtfsTernarySchema.default('0'),
 	block_id: z.string().optional(),
+	cars_allowed: GtfsTernarySchema.default('0'),
 	direction_id: GtfsTripDirectionSchema,
 	route_id: z.string(),
 	service_id: z.string(),
 	shape_id: z.string(),
-	trip_headsign: z.string().optional(),
+	trip_headsign: z.string().default(''),
 	trip_id: z.string(),
-	trip_short_name: z.string().optional(),
-	wheelchair_accessible: GtfsTernarySchema.optional(),
+	trip_short_name: z.string().default(''),
+	wheelchair_accessible: GtfsTernarySchema.default('0'),
 });
 
 /**

@@ -15,7 +15,10 @@ export const SystemStatusValues = [
 /**
  * @deprecated Use ProcessingStatusSchema instead
  */
-export const SystemStatusSchema = z.enum(SystemStatusValues);
+export const SystemStatusSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(SystemStatusValues));
 
 /**
  * @deprecated Use ProcessingStatus instead

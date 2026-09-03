@@ -31,7 +31,7 @@ export interface HasPermissionResourceArgs {
  * Arguments for filterPermissionResourceValues function.
  * @param T The type of the resource.
  */
-export interface FilterPermissionResourceValuesArgs<TValue = string> {
+interface FilterPermissionResourceValuesArgs<TValue = string> {
 	action: ActionsOf<Permission['scope']>
 	permissions: Permission[]
 	resourceKey: string
@@ -444,6 +444,8 @@ export class PermissionCatalog {
 	 * @param resource_key The resource key containing the allowed values.
 	 * @param values The resource values requested by the caller.
 	 * @returns Only the requested values that the user is permitted to access.
+	 * @deprecated Use the direct import instead of the PermissionCatalog class:
+	 * import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
 	*/
 	static filterPermissionResourceValues<TValue = string>({ action, permissions, resourceKey, scope, values }: FilterPermissionResourceValuesArgs<TValue>): TValue[] {
 		// No filter was requested, so preserve the original values.

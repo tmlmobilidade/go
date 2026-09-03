@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { MapOverlayPatternShape, MapView, Section, Select, Text, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useState } from 'react';
@@ -41,7 +41,7 @@ export function InitialStopSelector({ isLoading, lineColor, lineData, onInitiali
 		setSecondStopId(null);
 		if (!id) return;
 
-		const selectedStopResult = await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(id));
+		const selectedStopResult = await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_GET(id));
 		if (!selectedStopResult.isOk) {
 			useToast.error({ message: selectedStopResult.error, title: 'Erro ao carregar paragem' });
 			return;
@@ -54,7 +54,7 @@ export function InitialStopSelector({ isLoading, lineColor, lineData, onInitiali
 		setSecondStopId(id);
 		if (!id || !firstStop) return;
 
-		const selectedStopResult = await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(id));
+		const selectedStopResult = await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_GET(id));
 		if (!selectedStopResult.isOk) {
 			useToast.error({ message: selectedStopResult.error, title: 'Erro ao carregar paragem' });
 			return;

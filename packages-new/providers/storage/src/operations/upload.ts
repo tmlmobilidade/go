@@ -48,9 +48,9 @@ export async function upload(deps: StorageDeps, input: UploadInput): Promise<Att
 			const attachment = await goDb.core.attachments.insertOneUnsafe({
 				...createAttachmentDto,
 				_id: fileId,
-				created_at: Dates.now('utc').unix_timestamp,
+				created_at: Dates.now('utc').unix_milliseconds,
 				type: mimeType,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			}, { session });
 
 			await hooks?.onSuccess?.(context, attachment, session);

@@ -2,7 +2,7 @@
 
 import { ApexCardTypeSchema } from '@/utils/card-type.js';
 import { ApexPaymentMethodSchema } from '@/utils/payment-method.js';
-import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -14,7 +14,7 @@ export const SimplifiedApexOnBoardRefundSchema = z.object({
 	apex_version: z.string(),
 	card_physical_type: ApexCardTypeSchema.default('255'),
 	card_serial_number: z.string().nullable().default(null),
-	created_at: UnixTimestampSchema,
+	created_at: UnixMillisecondsSchema,
 	device_id: z.string(),
 	is_ok: z.boolean().default(false),
 	is_ok_pcgi: z.boolean().default(false),
@@ -28,10 +28,10 @@ export const SimplifiedApexOnBoardRefundSchema = z.object({
 	price: z.number(),
 	product_id: z.string(),
 	product_quantity: z.number(),
-	received_at: UnixTimestampSchema,
+	received_at: UnixMillisecondsSchema,
 	stop_id: z.string().nullable().default(null),
 	trip_id: z.string().nullable().default(null),
-	updated_at: UnixTimestampSchema,
+	updated_at: UnixMillisecondsSchema,
 	validation_id: z.string().nullable().default(null),
 	vehicle_id: z.string().nullable().default(null),
 }).transform((val) => {

@@ -6,8 +6,8 @@ import { IconCrosshair } from '@tabler/icons-react';
 import { Button } from '../../../../buttons';
 import { useMapContext } from '../../../../contexts/Map.context';
 import { SearchField } from '../../../../filters';
+import { Toolbar } from '../../../../layout';
 import { Spacer } from '../../../layout/Spacer';
-import { Toolbar } from '../../../layout/Toolbar';
 import { MAP_STYLES } from '../../configs/styles';
 import { useMapViewContext } from '../MapViewContext';
 

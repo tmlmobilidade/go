@@ -12,7 +12,7 @@ import { type MinimalOptions } from '../types/minimal-options.type.js';
  * @param _id The ID of the document to toggle the lock status of.
  * @returns A promise that resolves to the result of the toggle operation.
  */
-export async function toggleLockById<T extends Document>(context: GoDbCollectionContext<T>, _id: number | string, options?: MinimalOptions): Promise<T> {
+export async function toggleLockById<T extends Document>(context: GoDbCollectionContext<T>, _id: string, options?: MinimalOptions): Promise<T> {
 	//
 
 	if (!context.schema) {
@@ -34,7 +34,7 @@ export async function toggleLockById<T extends Document>(context: GoDbCollection
 	const updatableDocument = {
 		...existingDocument,
 		is_locked: !existingDocument.is_locked,
-		updated_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_milliseconds,
 	};
 
 	//

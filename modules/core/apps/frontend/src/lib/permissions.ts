@@ -7,6 +7,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 export const RESOURCES_OPTIONS = [
 	'AGENCIES',
 	'ALERT_REFERENCE_TYPES',
+	'MUNICIPALITIES',
 ] as const;
 
 export interface PermissionConfigAction {
@@ -171,14 +172,14 @@ const organizationActions: PermissionConfig = {
 
 const stopActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver paragens', label: 'Ver', resources: ['AGENCIES'] },
-		{ action: 'create', description: 'Permite criar uma paragem', label: 'Criar', resources: ['AGENCIES'] },
-		{ action: 'update', description: 'Permite editar uma paragem', label: 'Editar', resources: ['AGENCIES'] },
-		{ action: 'delete', description: 'Permite eliminar uma paragem', label: 'Eliminar', resources: ['AGENCIES'] },
-		{ action: 'lock', description: 'Permite bloquear/desbloquear uma paragem', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
-		{ action: 'export', description: 'Permite exportar paragens', label: 'Exportar', resources: ['AGENCIES'] },
-		{ action: 'edit_coordinates', description: 'Permite editar as coordenadas de uma paragem', label: 'Editar Coordenadas', resources: ['AGENCIES'] },
-		{ action: 'edit_name', description: 'Permite editar o nome de uma paragem', label: 'Editar Nomes', resources: ['AGENCIES'] },
+		{ action: 'read', description: 'Permite ver paragens', label: 'Ver', resources: ['AGENCIES', 'MUNICIPALITIES'] },
+		{ action: 'create', description: 'Permite criar uma paragem', label: 'Criar', resources: ['AGENCIES', 'MUNICIPALITIES'] },
+		{ action: 'update', description: 'Permite editar uma paragem', label: 'Editar', resources: ['AGENCIES', 'MUNICIPALITIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma paragem', label: 'Eliminar', resources: ['AGENCIES', 'MUNICIPALITIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma paragem', label: 'Bloquear/Desbloquear', resources: ['AGENCIES', 'MUNICIPALITIES'] },
+		{ action: 'export', description: 'Permite exportar paragens', label: 'Exportar', resources: ['AGENCIES', 'MUNICIPALITIES'] },
+		{ action: 'edit_coordinates', description: 'Permite editar as coordenadas de uma paragem', label: 'Editar Coordenadas', resources: ['AGENCIES', 'MUNICIPALITIES'] },
+		{ action: 'edit_name', description: 'Permite editar o nome de uma paragem', label: 'Editar Nomes', resources: ['AGENCIES', 'MUNICIPALITIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de paragens.',
 	scope: PermissionCatalog.all.stops.scope,
@@ -321,7 +322,7 @@ const linesActions: PermissionConfig = {
 	title: 'Permissões de Linhas',
 };
 
-const fleetActions: PermissionConfig = {
+const vehiclesActions: PermissionConfig = {
 	actions: [
 		{ action: 'read', description: 'Permite ver veículos', label: 'Ver veículos', resources: ['AGENCIES'] },
 		{ action: 'create', description: 'Permite criar um veículo', label: 'Criar veículo', resources: ['AGENCIES'] },
@@ -358,7 +359,7 @@ export const permissionsConfig = [
 	stopActions,
 	rideActions,
 	performanceActions,
-	fleetActions,
+	vehiclesActions,
 	annotationsActions,
 	periodsActions,
 	faresActions,

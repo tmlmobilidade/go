@@ -11,7 +11,10 @@ export const GradeStatusValues = [
 	'error',
 ] as const;
 
-export const GradeStatusSchema = z.enum(GradeStatusValues);
+export const GradeStatusSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(GradeStatusValues));
 
 export type GradeStatus = z.infer<typeof GradeStatusSchema>;
 
@@ -19,6 +22,9 @@ export type GradeStatus = z.infer<typeof GradeStatusSchema>;
 
 export const GradeStatusFilterValues = [...GradeStatusValues, 'none'] as const;
 
-export const GradeStatusFilterSchema = z.enum(GradeStatusFilterValues);
+export const GradeStatusFilterSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(GradeStatusFilterValues));
 
 export type GradeStatusFilter = z.infer<typeof GradeStatusFilterSchema>;

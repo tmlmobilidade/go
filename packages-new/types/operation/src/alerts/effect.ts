@@ -1,7 +1,7 @@
 /* * */
 
 import { type GtfsRtEffect } from '@tmlmobilidade/go-types-gtfs-rt';
-import z from 'zod';
+import { z } from 'zod';
 
 /* * */
 
@@ -27,7 +27,10 @@ export const AlertEffectValues = [
 
 ] as const;
 
-export const AlertEffectSchema = z.enum(AlertEffectValues);
+export const AlertEffectSchema = z
+	.string()
+	.transform(value => String(value).toUpperCase())
+	.pipe(z.enum(AlertEffectValues));
 
 /**
  * The Alert extended effect types.

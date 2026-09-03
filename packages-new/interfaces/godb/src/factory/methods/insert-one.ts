@@ -29,8 +29,8 @@ export async function insertOne<T extends Document>(context: GoDbCollectionConte
 	const insertableDocument = {
 		...doc,
 		_id: generateRandomString({ length: 5 }),
-		created_at: Dates.now('utc').unix_timestamp,
-		updated_at: Dates.now('utc').unix_timestamp,
+		created_at: Dates.now('utc').unix_milliseconds,
+		updated_at: Dates.now('utc').unix_milliseconds,
 	};
 
 	while (await context.collection.findOne<T>({ _id: insertableDocument._id as WithId<T>['_id'] }, { session: options?.session })) {

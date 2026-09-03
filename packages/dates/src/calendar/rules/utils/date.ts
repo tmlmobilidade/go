@@ -57,7 +57,7 @@ export function buildOperationalDateRange(startDate: Date, endDate: Date): Opera
 	let current = Dates.fromJSDate(startDate);
 	const end = Dates.fromJSDate(endDate);
 
-	while (current.unix_timestamp <= end.unix_timestamp) {
+	while (current.unix_milliseconds <= end.unix_milliseconds) {
 		dateRange.push(current.operational_date);
 		current = current.plus({ days: 1 });
 	}

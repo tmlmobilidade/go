@@ -1,13 +1,13 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type HubPlan, HubPlanSchema } from '@tmlmobilidade/go-types-public-info';
+import { type HubPlan, HubPlanSchema } from '@tmlmobilidade/go-types-hub';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { validateOperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -28,17 +28,27 @@ export async function publishApprovedPlans() {
 	//
 	// For each plan, get the file URL
 
-	const approvedPlans: HubPlan[] = [];
-
-	for (const planData of allPlansData) {
-		try {
-			// Get the operation file URL
+	const plansWithOperationFiles = await Promise.all(
+		allPlansData.map(async (planData) => {
 			const operationFile = await storageProvider.findById(planData.operation_file_id);
 			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
+			return { operationFile, planData };
+		}),
+	);
+
+	//
+	// Parse the plans
+
+	const approvedPlans: HubPlan[] = [];
+
+	for (const { operationFile, planData } of plansWithOperationFiles) {
+		try {
+			// Check if the operation file exists
+			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
 			// Check if the plans is active
-			const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
-			const nowIsAfterStartDate = planData.gtfs_feed_info?.feed_start_date && currentOperationalDate >= validateOperationalDate(planData.gtfs_feed_info?.feed_start_date);
-			const nowIsBeforeEndDate = planData.gtfs_feed_info?.feed_end_date && currentOperationalDate <= validateOperationalDate(planData.gtfs_feed_info?.feed_end_date);
+			const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
+			const nowIsAfterStartDate = planData.gtfs_feed_info?.feed_start_date && currentOperationalDate >= OperationalDateIntSchema.parse(planData.gtfs_feed_info?.feed_start_date);
+			const nowIsBeforeEndDate = planData.gtfs_feed_info?.feed_end_date && currentOperationalDate <= OperationalDateIntSchema.parse(planData.gtfs_feed_info?.feed_end_date);
 			const isActive = nowIsAfterStartDate && nowIsBeforeEndDate;
 			// Parse the plan data
 			const parsedPlan = HubPlanSchema.safeParse({

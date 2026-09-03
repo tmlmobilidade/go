@@ -93,7 +93,7 @@ export async function buildPatternsForRoute(params: {
 				continue;
 			}
 			const formattedPath: CreatePatternDto['path'] = [];
-			const parametersPath: { avg_speed: number, dwell_time: number, stop_id: number }[] = [];
+			const parametersPath: { avg_speed: number, dwell_time: number, stop_id: string }[] = [];
 			const pathMetrics: Array<{ arrivalSec: null | number, departureSec: null | number, distanceDelta: number, stopRefId: string }> = [];
 			let prevDistance: null | number = null;
 
@@ -135,7 +135,7 @@ export async function buildPatternsForRoute(params: {
 					allow_drop_off: parseInt(stopTime.drop_off_type) === 0,
 					allow_pickup: parseInt(stopTime.pickup_type) === 0,
 					distance_delta: distanceDelta,
-					stop_id: Number(stopRef._id),
+					stop_id: String(stopRef._id),
 					timepoint: parseInt(stopTime.timepoint) === 1,
 					zones,
 				});
@@ -166,7 +166,7 @@ export async function buildPatternsForRoute(params: {
 				parametersPath.push({
 					avg_speed: avgSpeed,
 					dwell_time: dwellTime,
-					stop_id: Number(current.stopRefId),
+					stop_id: String(current.stopRefId),
 				});
 			}
 

@@ -51,7 +51,7 @@ RUN rm -rf /var/lib/apt/lists/*
 COPY --from=pruner /app/out/json/ .
 COPY .github/templates/docker/scripts /app/.docker/scripts
 
-RUN npm ci
+RUN npm ci --foreground-scripts --verbose
 
 COPY --from=pruner /app/out/full/ .
 

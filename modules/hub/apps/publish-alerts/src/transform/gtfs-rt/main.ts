@@ -1,17 +1,19 @@
 /* * */
 
-import { transformCause } from '@/transform/gtfs-rt/cause-effect/cause.js';
-import { transformEffect } from '@/transform/gtfs-rt/cause-effect/effect.js';
-import { transformDescriptionText } from '@/transform/gtfs-rt/content/description-text.js';
-import { transformHeaderText } from '@/transform/gtfs-rt/content/header-text.js';
-import { transformImage } from '@/transform/gtfs-rt/content/image.js';
-import { transformUrl } from '@/transform/gtfs-rt/content/url.js';
-import { transformReferenceTypeAgencyIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/agency.js';
-import { transformReferenceTypeLinesIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/lines.js';
-import { transformReferenceTypeRidesIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/rides.js';
-import { transformReferenceTypeStopsIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/stops.js';
+import { GtfsRtAlert, type GtfsRtFeedEntity } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@tmlmobilidade/types';
+
+import { transformCause } from './cause-effect/cause.js';
+import { transformEffect } from './cause-effect/effect.js';
+import { transformDescriptionText } from './content/description-text.js';
+import { transformHeaderText } from './content/header-text.js';
+import { transformImage } from './content/image.js';
+import { transformUrl } from './content/url.js';
+import { transformReferenceTypeAgencyIntoGtfsRt } from './reference-types/agency.js';
+import { transformReferenceTypeLinesIntoGtfsRt } from './reference-types/lines.js';
+import { transformReferenceTypeRidesIntoGtfsRt } from './reference-types/rides.js';
+import { transformReferenceTypeStopsIntoGtfsRt } from './reference-types/stops.js';
 
 /**
  * Transforms an Alert object into a GTFS-RT Feed Entity object.
@@ -45,7 +47,7 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 		// Prepare the active_period value. GTFS-RT expects active_period to be
 		// an array of objects with start and end properties in seconds since the epoch.
 
-		const activePeriodValues = [{
+		const activePeriodValues: GtfsRtAlert['active_period'] = [{
 			end: alertData.active_period_end_date ? alertData.active_period_end_date / 1_000 : undefined,
 			start: alertData.active_period_start_date / 1_000,
 		}];

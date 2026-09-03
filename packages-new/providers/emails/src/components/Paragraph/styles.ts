@@ -1,7 +1,8 @@
 /* * */
 
-import { fontFamily, fontSize, lineHeight } from '@/styles/font.js';
 import { type CSSProperties } from 'react';
+
+import { fontFamily, fontSize, lineHeight } from '../../styles/font.js';
 
 /* * */
 

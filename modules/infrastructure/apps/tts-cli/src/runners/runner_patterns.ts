@@ -5,7 +5,7 @@ import { generateHash } from '@/utils/generateHash.js';
 import { makePattern } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-public-info';
+import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -63,7 +63,7 @@ export async function runnerPatterns() {
 			if (patternTts && patternTts !== '#N/A') {
 				const hash = await generateHash(patternTts, patternData._id);
 
-				if (patternData.tts_hash === hash) {
+				if (patternData.tts_headsign === hash) {
 					Logger.info({
 						message: `[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Skipping | Line ${lineData._id} | Pattern ${patternData._id} | TTS already exists`,
 					});

@@ -17,9 +17,9 @@ export async function insertOneUnsafe<T extends Document>(context: GoDbCollectio
 	// Setup a copy of the document to be inserted with defaults
 	let parsedDocument = {
 		...doc,
-		// created_at: doc.created_at || Dates.now('utc').unix_timestamp,
+		// created_at: doc.created_at || Dates.now('utc').unix_milliseconds,
 		// created_by: doc.created_by || 'system',
-		// updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
+		// updated_at: doc.updated_at || Dates.now('utc').unix_milliseconds,
 		// updated_by: doc.updated_by || 'system',
 	} as OptionalUnlessRequiredId<T>;
 

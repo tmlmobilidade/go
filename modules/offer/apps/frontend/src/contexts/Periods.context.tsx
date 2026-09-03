@@ -1,7 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,7 +35,9 @@ export const PeriodsContextProvider = ({ agencyId, children }: PropsWithChildren
 	//
 	// A. Fetch data
 
-	const { data: periodsData } = useSWR<YearPeriod[]>(API_ROUTES.dates.YEAR_PERIODS_LIST);
+	const { data: periodsData } = useSWR<ApiResponse<YearPeriod[]>>(API_ROUTES.dates.YEAR_PERIODS_LIST, {
+		fetcher: async url => await fetchApiData<YearPeriod[]>({ url }),
+	});
 
 	//
 	// B. Define context value
@@ -41,7 +45,7 @@ export const PeriodsContextProvider = ({ agencyId, children }: PropsWithChildren
 	const contextValue: PeriodsContextState = useMemo(() => ({
 
 		data: {
-			raw: periodsData?.filter(period => !agencyId || period.agency_ids.includes(agencyId)) || [],
+			raw: periodsData?.data?.filter(period => !agencyId || period.agency_ids.includes(agencyId)) || [],
 		},
 	}), [periodsData, agencyId]);
 

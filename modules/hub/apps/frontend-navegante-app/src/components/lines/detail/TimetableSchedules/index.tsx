@@ -2,7 +2,7 @@
 
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { useColorScheme } from '@mantine/hooks';
-import { type Hour, type Minute, type Timetable } from '@tmlmobilidade/go-types-public-info';
+import { type Hour, type Minute, type Timetable } from '@tmlmobilidade/go-types-hub';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

@@ -1,18 +1,22 @@
 /* * */
 
+import { LanguageTagSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { GtfsTernarySchema } from '../shared/ternary.js';
 
 /* * */
 
 export const GtfsAgencySchema = z.object({
-	agency_email: z.string().optional(),
-	agency_fare_url: z.string().optional(),
+	agency_email: z.string().optional().default(''),
+	agency_fare_url: z.string().optional().default(''),
 	agency_id: z.string(),
-	agency_lang: z.string().optional(),
+	agency_lang: LanguageTagSchema.default('pt'),
 	agency_name: z.string(),
-	agency_phone: z.string().optional(),
+	agency_phone: z.string().optional().default(''),
 	agency_timezone: z.string(),
-	agency_url: z.string().optional(),
+	agency_url: z.string().optional().default(''),
+	cemv_support: GtfsTernarySchema.default('0'),
 });
 
 /**

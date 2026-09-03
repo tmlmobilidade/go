@@ -5,6 +5,8 @@ import { type CreateFileExportDto, type FileExport, type FileExportType } from '
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
+import { fetchApiData } from '..';
+import { ApiResponse, ApiResponseErrorSchema } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -42,7 +44,10 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// A. Setup variables
-	const { data, error, isLoading, mutate } = useSWR<FileExport[], HttpException>(API_ROUTES.exporter.EXPORTER_LIST);
+	const { data, error, isLoading, mutate } = useSWR<ApiResponse<FileExport[]>, HttpException>(API_ROUTES.exporter.EXPORTER_LIST, {
+		fetcher: async () => await fetchApiData<FileExport[]>({ method: 'GET', url: API_ROUTES.exporter.EXPORTER_LIST }),
+		refreshInterval: 10_000, // 10 seconds
+	});
 
 	//
 	// B. Transform data
@@ -51,10 +56,10 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 	// C. Handle actions
 
 	async function create<T extends { properties: Record<string, unknown>, type: FileExportType }>(dto: CreateFileExportDto<T>): Promise<FileExport> {
-		const response = await fetchData<FileExport>(API_ROUTES.exporter.EXPORTER_LIST, 'POST', dto);
+		const response = await fetchApiData<FileExport>({ body: dto, method: 'POST', url: API_ROUTES.exporter.EXPORTER_LIST });
 
 		if (response.error || !response.data) {
-			throw new HttpException(response.statusCode, response.error ?? 'Failed to create file export');
+			throw new HttpException(Number(response.status_code), response.error ?? 'Failed to create file export');
 		}
 
 		mutate();
@@ -77,7 +82,7 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 				mutate,
 			},
 			data: {
-				fileExports: data || [],
+				fileExports: data?.data || [],
 			},
 			flags: {
 				error,

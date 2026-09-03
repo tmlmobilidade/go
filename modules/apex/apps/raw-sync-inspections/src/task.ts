@@ -8,6 +8,7 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Filter } from 'mongodb';
+import { ZodError } from 'zod';
 
 /* * */
 
@@ -28,11 +29,11 @@ export async function syncApexInspections(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
+		.fromUnixMilliseconds(timeChunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
+		.fromUnixMilliseconds(timeChunk.end)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
@@ -112,7 +113,10 @@ export async function syncApexInspections(timeChunk: PerformInTimeChunksItem) {
 				if (!parseResult) return;
 				await writer.write(parseResult);
 			} catch (error) {
-				Logger.error({ message: `Error transforming APEX Inspection: ${sourceDbDocument._id} Reason: ${error.message}` });
+				const errorMessage = error instanceof ZodError
+					? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
+					: error instanceof Error ? error.message : String(error);
+				Logger.error({ message: `Error transforming APEX Inspection: ${sourceDbDocument._id} Reason: ${errorMessage}` });
 			}
 		},
 

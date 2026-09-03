@@ -14,6 +14,7 @@ import { type MinimalOptions } from '../types/minimal-options.type.js';
  */
 export async function findMany<T extends Document>(context: GoDbCollectionContext<T>, filter?: Filter<T>, options?: MinimalOptions): Promise<T[]> {
 	return await context.collection.find<T>(filter ?? {}, {
+		limit: options?.limit,
 		projection: options?.projection,
 		session: options?.session,
 		sort: options?.sort,

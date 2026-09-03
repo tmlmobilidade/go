@@ -10,5 +10,6 @@ export * from './publish.js';
 export * from './seen.js';
 export * from './severity.js';
 export * from './system.js';
+export * from './temporal.js';
 export * from './ticketing.js';
 export * from './validity.js';

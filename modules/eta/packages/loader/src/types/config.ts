@@ -1,6 +1,6 @@
 /* * */
 
-import { TimeSlot, UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { TimeSlot, UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -9,15 +9,15 @@ export interface AppConfig {
 	database: string
 	processing: {
 		// Current rides Time Range
-		currentRidesEndTime: UnixTimestamp
-		currentRidesStartTime: UnixTimestamp
+		currentRidesEndTime: UnixMilliseconds
+		currentRidesStartTime: UnixMilliseconds
 
 		/** Geohash prefix length used to restrict candidate events to cells near a stop. A length of 6 matches a geohash-7 cell and its neighbours (~1.2 km). */
 		geohashPrefixLength: number
 
 		// Historical rides Time Range
-		historicalRidesEndTime: UnixTimestamp
-		historicalRidesStartTime: UnixTimestamp
+		historicalRidesEndTime: UnixMilliseconds
+		historicalRidesStartTime: UnixMilliseconds
 
 		/** Length of shape node chunks in meters. */
 		shapeNodeChunkLength: number

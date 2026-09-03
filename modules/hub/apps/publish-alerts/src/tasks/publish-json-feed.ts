@@ -4,14 +4,14 @@ import { transformReferenceTypeAgencyIntoJson } from '@/transform/json/reference
 import { transformReferenceTypeLinesIntoJson } from '@/transform/json/reference-types/lines.js';
 import { transformReferenceTypeRidesIntoJson } from '@/transform/json/reference-types/rides.js';
 import { transformReferenceTypeStopsIntoJson } from '@/transform/json/reference-types/stops.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-public-info';
+import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-hub';
+import { AlertCauseToGtfsRtCauseMap, AlertEffectToGtfsRtEffectMap, type AlertReference } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type AlertReference } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -30,12 +30,12 @@ export async function publishJsonFeed() {
 			$and: [
 				{
 					$or: [
-						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
+						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_milliseconds } },
 						{ publish_end_date: null },
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
-					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
+					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_milliseconds },
 					publish_status: 'published',
 				},
 			],
@@ -99,15 +99,21 @@ export async function publishJsonFeed() {
 				return;
 			}
 
+			//
+			// Map cause and effect to GTFS-RT feed entities
+
+			const mappedCause = AlertCauseToGtfsRtCauseMap[alertData.cause];
+			const mappedEffect = AlertEffectToGtfsRtEffectMap[alertData.effect];
+
 			const transformedAlert: HubAlert = {
 				_id: alertData._id,
 				active_period_end_date: alertData.active_period_end_date,
 				active_period_start_date: alertData.active_period_start_date,
 				agency_id: alertData.agency_id,
-				cause: alertData.cause,
+				cause: mappedCause,
 				coordinates: alertData.coordinates,
 				description: alertData.description,
-				effect: alertData.effect,
+				effect: mappedEffect,
 				image_url: imageUrl,
 				info_url: alertData.info_url,
 				municipality_ids: alertData.municipality_ids,

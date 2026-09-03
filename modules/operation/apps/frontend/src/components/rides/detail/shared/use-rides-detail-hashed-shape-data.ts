@@ -1,0 +1,49 @@
+'use client';
+
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type HashedShape } from '@tmlmobilidade/go-types-operation';
+import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
+import useSWRImmutable from 'swr/immutable';
+
+import { useRidesDetailRideId } from './use-rides-detail-ride-id';
+
+/* * */
+
+interface UseRidesDetailHashedShapeDataReturnType {
+	data: HashedShape
+	error: null | string
+	isLoading: boolean
+	isValidating: boolean
+	timestamp: null | UnixMilliseconds
+}
+
+/* * */
+
+export function useRidesDetailHashedShapeData(): UseRidesDetailHashedShapeDataReturnType {
+	//
+
+	//
+	// A. Setup variables
+
+	const { rideId } = useRidesDetailRideId();
+
+	//
+	// B. Fetch data
+
+	const { data, error, isLoading, isValidating } = useSWRImmutable<ApiResponse<HashedShape>>(rideId && API_ROUTES.operation.RIDES_DETAIL_HASHED_SHAPE(rideId), {
+		fetcher: async (url: string) => await fetchApiData<HashedShape>({ url }),
+	});
+
+	//
+	// C. Return data
+
+	return useMemo(() => ({
+		data: data?.data,
+		error: error?.error,
+		isLoading,
+		isValidating,
+		timestamp: data?.timestamp,
+	}), [data, error, isLoading, isValidating]);
+};

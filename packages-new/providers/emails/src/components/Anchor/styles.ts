@@ -1,7 +1,8 @@
 /* * */
 
-import { fontFamily } from '@/styles/font.js';
 import { type CSSProperties } from 'react';
+
+import { fontFamily } from '../../styles/font.js';
 
 /* * */
 /* LINK */

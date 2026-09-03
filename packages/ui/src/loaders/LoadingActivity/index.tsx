@@ -1,7 +1,7 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Indicator, IndicatorProps, Loader } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 interface LoadingActivityProps {
 	isLoading: boolean
 	isValidating: boolean
-	timestamp: null | UnixTimestamp | UnixTimestamp[]
+	timestamp: null | UnixMilliseconds | UnixMilliseconds[]
 }
 
 /* * */
@@ -34,14 +34,14 @@ export function LoadingActivity({ isLoading, isValidating, timestamp }: LoadingA
 		if (!timestamp) return;
 		if (Array.isArray(timestamp)) {
 			const filteredTimestamps = [...timestamp].filter(Boolean);
-			return Math.min(...filteredTimestamps) as UnixTimestamp;
+			return Math.min(...filteredTimestamps) as UnixMilliseconds;
 		} else return timestamp;
 	}, [timestamp]);
 
 	useEffect(() => {
 		const updateTooltipValue = () => {
 			if (!effectiveTimestampValue) return;
-			const diff = Dates.now('local').unix_timestamp - effectiveTimestampValue;
+			const diff = Dates.now('local').unix_milliseconds - effectiveTimestampValue;
 			if (diff < 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.just_now'));
 			if (diff < 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.seconds_ago', '', { count: Math.floor(diff / 1000) }));
 			if (diff < 60 * 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.minutes_ago', '', { count: Math.floor(diff / 1000 / 60) }));
@@ -56,7 +56,7 @@ export function LoadingActivity({ isLoading, isValidating, timestamp }: LoadingA
 	useEffect(() => {
 		const updateIndicatorVariant = () => {
 			if (!effectiveTimestampValue) return;
-			const diff = Dates.now('local').unix_timestamp - effectiveTimestampValue;
+			const diff = Dates.now('local').unix_milliseconds - effectiveTimestampValue;
 			if (diff < 10_000) return setIndicatorVariant('primary');
 			return setIndicatorVariant('muted');
 		};

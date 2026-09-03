@@ -5,6 +5,7 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexInspection } from '@tmlmobilidade/go-types-apex';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
+import { ZodError } from 'zod';
 
 /* * */
 
@@ -37,7 +38,10 @@ export async function processRawApexTransactionInspection(databaseOperation) {
 		if (!parseResult) return;
 		await writer.write(parseResult);
 	} catch (error) {
-		Logger.error({ message: `Error transforming APEX Inspection: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
+		const errorMessage = error instanceof ZodError
+			? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
+			: error instanceof Error ? error.message : String(error);
+		Logger.error({ message: `Error transforming APEX Inspection: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${errorMessage}` });
 	}
 
 	//

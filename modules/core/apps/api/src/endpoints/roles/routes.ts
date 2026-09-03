@@ -6,6 +6,7 @@ import { createRoleHandler } from './handlers/create-role.js';
 import { deleteRoleHandler } from './handlers/delete-role.js';
 import { getRoleHandler } from './handlers/get-role.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';
+import { listMunicipalitiesHandler } from './handlers/list-municipalities.js';
 import { listRolesHandler } from './handlers/list-roles.js';
 import { lockRoleHandler } from './handlers/lock-role.js';
 import { updateRoleHandler } from './handlers/update-role.js';
@@ -22,47 +23,21 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get(
-			'/list',
-			{ preHandler: authorizationMiddleware('roles', ['read']) },
-			listRolesHandler,
-		);
+		instance.get('/list', { preHandler: authorizationMiddleware('roles', ['read']) }, listRolesHandler);
 
-		instance.get(
-			'/list-agencies',
-			{ preHandler: authorizationMiddleware('roles', ['read', 'create']) },
-			listAgenciesHandler,
-		);
+		instance.get('/list-agencies', { preHandler: authorizationMiddleware('roles', ['read', 'create']) }, listAgenciesHandler);
 
-		instance.get(
-			'/:id',
-			{ preHandler: authorizationMiddleware('roles', ['read']) },
-			getRoleHandler,
-		);
+		instance.get('/list-municipalities', { preHandler: authorizationMiddleware('roles', ['read', 'create']) }, listMunicipalitiesHandler);
 
-		instance.post(
-			'/create',
-			{ preHandler: authorizationMiddleware('roles', ['create']) },
-			createRoleHandler,
-		);
+		instance.get('/:id', { preHandler: authorizationMiddleware('roles', ['read']) }, getRoleHandler);
 
-		instance.put(
-			'/update/:id',
-			{ preHandler: authorizationMiddleware('roles', ['update']) },
-			updateRoleHandler,
-		);
+		instance.post('/create', { preHandler: authorizationMiddleware('roles', ['create']) }, createRoleHandler);
 
-		instance.delete(
-			'/delete/:id',
-			{ preHandler: authorizationMiddleware('roles', ['delete']) },
-			deleteRoleHandler,
-		);
+		instance.put('/update/:id', { preHandler: authorizationMiddleware('roles', ['update']) }, updateRoleHandler);
 
-		instance.get(
-			'/lock/:id',
-			{ preHandler: authorizationMiddleware('roles', ['lock']) },
-			lockRoleHandler,
-		);
+		instance.delete('/delete/:id', { preHandler: authorizationMiddleware('roles', ['delete']) }, deleteRoleHandler);
+
+		instance.get('/lock/:id', { preHandler: authorizationMiddleware('roles', ['lock']) }, lockRoleHandler);
 
 		next();
 	},

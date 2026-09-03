@@ -2,9 +2,8 @@
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Translations } from '@/lib/translations';
-import { ScopeOption } from '@/types/proposed-changes';
-import { AvailabilityStatusSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, ProposedChangesWrapper, Section, Select, Spacer, TextInput } from '@tmlmobilidade/ui';
+import { AvailabilityStatusValues } from '@tmlmobilidade/go-types-shared';
+import { Collapsible, Grid, Section, Select, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,12 +14,11 @@ export function StopDetailsSectionShelter() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-	const scopeOption: ScopeOption = 'stop';
 
 	//
 	// B. Transform data
 
-	const availabilityStatusOptions = AvailabilityStatusSchema.options.map(value => ({
+	const availabilityStatusOptions = AvailabilityStatusValues.map(value => ({
 		label: Translations.AVAILABILITY_STATUS[value],
 		value: value,
 	}));
@@ -35,19 +33,12 @@ export function StopDetailsSectionShelter() {
 		>
 			<Section>
 				<Grid columns="abc" gap="md">
-					<ProposedChangesWrapper
-						inputName="has_shelter"
-						label="Existe Abrigo?"
-						relatedId={String(stopDetailContext.data.stop?._id)}
-						scope={scopeOption}
-					>
-						<Select
-							key={stopDetailContext.data.form.key('has_shelter')}
-							data={availabilityStatusOptions}
-							readOnly={stopDetailContext.flags.isReadOnly}
-							{...stopDetailContext.data.form.getInputProps('has_shelter')}
-						/>
-					</ProposedChangesWrapper>
+					<Select
+						key={stopDetailContext.data.form.key('has_shelter')}
+						data={availabilityStatusOptions}
+						readOnly={stopDetailContext.flags.isReadOnly}
+						{...stopDetailContext.data.form.getInputProps('has_shelter')}
+					/>
 					<TextInput
 						key={stopDetailContext.data.form.key('shelter_code')}
 						label="Código do Abrigo"

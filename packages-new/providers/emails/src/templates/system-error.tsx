@@ -1,13 +1,14 @@
 /* * */
 
-import { Paragraph } from '@/components/Paragraph/index.js';
-import { Span } from '@/components/Span/index.js';
-import { Wrapper } from '@/components/Wrapper/index.js';
-import { emailProvider } from '@/email.provider.js';
-import { type SendEmailProps } from '@/types.js';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { render } from 'react-email';
+
+import { Paragraph } from '../components/Paragraph/index.js';
+import { Span } from '../components/Span/index.js';
+import { Wrapper } from '../components/Wrapper/index.js';
+import { emailProvider } from '../email.provider.js';
+import { type SendEmailProps } from '../types.js';
 
 /* * */
 
@@ -18,7 +19,7 @@ export const failedBackupSubject = '🚨 Erro de Sistema';
 export interface SystemErrorTemplateProps {
 	errorMessage?: string
 	serviceName: string
-	timestamp: UnixTimestamp
+	timestamp: UnixMilliseconds
 }
 
 /* * */
@@ -37,7 +38,7 @@ export default function SystemErrorTemplate({ errorMessage, serviceName, timesta
 			</Paragraph>
 			<Paragraph size="md" bold>
 				Timestamp:
-				<Span weight="normal" spaceBefore>{Dates.fromUnixTimestamp(timestamp).toFormat('yyyy-MM-dd HH:mm:ss')}</Span>
+				<Span spaceBefore weight="normal">{Dates.fromUnixMilliseconds(timestamp).toFormat('yyyy-MM-dd HH:mm:ss')}</Span>
 			</Paragraph>
 		</Wrapper>
 	);
@@ -48,7 +49,7 @@ export default function SystemErrorTemplate({ errorMessage, serviceName, timesta
 SystemErrorTemplate.PreviewProps = {
 	errorMessage: 'Conexão com a base de dados falhou após 3 tentativas',
 	serviceName: 'MongoDB - Produção',
-	timestamp: 1772279176000 as UnixTimestamp,
+	timestamp: 1772279176000 as UnixMilliseconds,
 } satisfies SystemErrorTemplateProps;
 
 /* * */

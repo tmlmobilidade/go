@@ -9,7 +9,10 @@ export const GtfsBinaryValues = [
 	'1', // YES
 ] as const;
 
-export const GtfsBinarySchema = z.enum(GtfsBinaryValues);
+export const GtfsBinarySchema = z
+	.union([z.string(), z.number()])
+	.transform(value => String(value))
+	.pipe(z.enum(GtfsBinaryValues));
 
 /**
  * The GTFS Binary type represents a boolean value in the GTFS format.

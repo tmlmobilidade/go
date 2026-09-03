@@ -1,8 +1,8 @@
 /* * */
 
-import { Span } from '@/components/Span/index.js';
 import { Text } from 'react-email';
 
+import { Span } from '../Span/index.js';
 import styles from './styles.js';
 
 /* * */

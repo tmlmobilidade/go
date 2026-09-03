@@ -5,6 +5,8 @@ import { PatternShapeMapInteractionState } from '@/types/lines-overview';
 import { getPatternFeaturesAtEvent } from '@/utils/lines-overview';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PatternShapeMapItem } from '@tmlmobilidade/go-types-offer';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -87,7 +89,9 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// C. Fetch data
 
-	const { data: fetchedPatternsData, error: patternsError, isLoading: patternsLoading } = useSWR<PatternShapeMapItem[]>(patternsRequestKey);
+	const { data: fetchedPatternsData, error: patternsError, isLoading: patternsLoading } = useSWR<ApiResponse<PatternShapeMapItem[]>>(patternsRequestKey, {
+		fetcher: async url => await fetchApiData<PatternShapeMapItem[]>({ url }),
+	});
 
 	//
 	// D. Handle side effects and actions
@@ -99,7 +103,7 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 			const nextPatternsByAgencyId = { ...previousPatternsByAgencyId };
 
 			for (const agencyId of missingAgencyIds) {
-				nextPatternsByAgencyId[agencyId] = fetchedPatternsData.filter((pattern) => {
+				nextPatternsByAgencyId[agencyId] = fetchedPatternsData?.data?.filter((pattern) => {
 					return pattern.agency_id === agencyId;
 				});
 			}

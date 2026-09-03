@@ -49,7 +49,7 @@ export function sendErrorApiResponse<T>(reply: FastifyReply<T>, options: SendErr
 		data: null,
 		error: options.error,
 		status_code: options.status_code,
-		timestamp: Dates.now('local').unix_timestamp,
+		timestamp: Dates.now('local').unix_milliseconds,
 	};
 
 	return reply.send(response);

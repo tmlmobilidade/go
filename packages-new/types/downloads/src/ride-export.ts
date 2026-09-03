@@ -2,7 +2,7 @@
 
 import { FileExportBaseSchema } from '@/base.js';
 import { AlertCauseSchema, RideJustificationSourceSchema } from '@tmlmobilidade/go-types-operation';
-import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, SeenStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, SeenStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -100,9 +100,9 @@ export const FlatRideSchema = z.object({
 	/* ACCEPTANCE / JUSTIFICATION */
 	/* * */
 
-	acceptance_status: z.enum(GradeStatusSchema.options).nullish().nullable(),
+	acceptance_status: GradeStatusSchema.nullish().nullable(),
 	justification_cause: AlertCauseSchema.nullish().nullable(),
-	justification_source: z.enum(RideJustificationSourceSchema.options).nullish().nullable(),
+	justification_source: RideJustificationSourceSchema.nullish().nullable(),
 	manual_trip_id: z.string().nullish().nullable(),
 	pto_message: z.string().min(2).max(5000).default('').nullish().nullable(),
 });
@@ -122,8 +122,8 @@ export const RideExportPropertiesSchema = z.object({
 
 		/* * */
 
-		date_end: UnixTimestampSchema,
-		date_start: UnixTimestampSchema,
+		date_end: UnixMillisecondsSchema,
+		date_start: UnixMillisecondsSchema,
 
 		/* * */
 

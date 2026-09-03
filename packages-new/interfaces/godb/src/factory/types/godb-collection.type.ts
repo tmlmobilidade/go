@@ -17,7 +17,7 @@ export interface GoDbCollection<T extends Document> {
 
 	count(filter?: Filter<T>, options?: MinimalOptions): Promise<number>
 
-	deleteById(_id: number | string, options?: MinimalOptions): Promise<DeleteResult>
+	deleteById(_id: string, options?: MinimalOptions): Promise<DeleteResult>
 
 	deleteMany(filter: Filter<T>, options?: MinimalOptions): Promise<DeleteResult>
 
@@ -25,11 +25,11 @@ export interface GoDbCollection<T extends Document> {
 
 	distinct<Key extends keyof T>(key: Key, filter?: Filter<T>): Promise<Array<T[Key]>>
 
-	// exists<K extends keyof T>(key: K, value: T[K]): Promise<boolean>
+	exists<Key extends keyof T>(key: Key, value: T[Key], options?: MinimalOptions): Promise<boolean>
 
 	// existsById(id: string): Promise<boolean>
 
-	findById(_id: number | string, options?: MinimalOptions): Promise<null | T>
+	findById(_id: string, options?: MinimalOptions): Promise<null | T>
 
 	findMany(filter?: Filter<T>, options?: MinimalOptions): Promise<T[]>
 
@@ -54,11 +54,11 @@ export interface GoDbCollection<T extends Document> {
 	 * @param _id The ID of the document to toggle the lock status of.
 	 * @returns A promise that resolves to the result of the toggle operation.
 	 */
-	toggleLockById(id: number | string, options?: MinimalOptions): Promise<T>
+	toggleLockById(id: string, options?: MinimalOptions): Promise<T>
 
-	updateById(_id: number | string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T>
+	updateById(_id: string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T>
 
-	// updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: T & { updated_at?: UnixTimestamp, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>>
+	// updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: T & { updated_at?: UnixMilliseconds, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>>
 
 	// updateOne<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: T, options?: UpdateOptions & { forceIfLocked?: boolean, returnResult?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T> : UpdateResult<T>>
 }

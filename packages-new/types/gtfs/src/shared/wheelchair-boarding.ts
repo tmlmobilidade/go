@@ -10,6 +10,9 @@ export const GtfsWheelchairBoardingValues = [
 	'2', // Not wheelchair accessible
 ] as const;
 
-export const GtfsWheelchairBoardingSchema = z.enum(GtfsWheelchairBoardingValues);
+export const GtfsWheelchairBoardingSchema = z
+	.union([z.string(), z.number()])
+	.transform(value => String(value))
+	.pipe(z.enum(GtfsWheelchairBoardingValues));
 
 export type GtfsWheelchairBoarding = z.infer<typeof GtfsWheelchairBoardingSchema>;

@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type RawVehicleEventPtTmlCmAlsaV1, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
@@ -18,7 +18,7 @@ export function parseRawVehicleEventPtTmlCmAlsaV1(doc: RawVehicleEventPtTmlCmAls
 		latitude: doc.payload.vehicle.position.latitude,
 		longitude: doc.payload.vehicle.position.longitude,
 		odometer: doc.payload.vehicle.position.odometer,
-		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date_int,
+		operational_date: Dates.fromUnixMilliseconds(doc.created_at).operational_date_int,
 		received_at: doc.received_at,
 		speed: doc.payload.vehicle.position.speed,
 		stop_id: doc.payload.vehicle.stopId ?? null,

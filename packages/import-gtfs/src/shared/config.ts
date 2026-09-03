@@ -1,6 +1,7 @@
 /* * */
 
-import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { type SQLiteDatabaseConfig } from '@tmlmobilidade/go-clients-sqlite';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Source type of the GTFS data to import.
@@ -16,10 +17,10 @@ type ImportGtfsConfigSource = {
  */
 interface ImportGtfsConfigTimeRange {
 	date_range?: {
-		end: GtfsDate
-		start: GtfsDate
+		end: OperationalDateInt
+		start: OperationalDateInt
 	}
-	discrete_dates?: (GtfsDate)[]
+	discrete_dates?: OperationalDateInt[]
 }
 
 /**
@@ -28,5 +29,6 @@ interface ImportGtfsConfigTimeRange {
  */
 export interface ImportGtfsConfig {
 	source: ImportGtfsConfigSource
+	sqlite_config?: SQLiteDatabaseConfig
 	time_range?: ImportGtfsConfigTimeRange
 }

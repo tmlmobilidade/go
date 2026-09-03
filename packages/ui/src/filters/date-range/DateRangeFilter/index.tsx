@@ -1,6 +1,6 @@
 /* * */
 
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 
 import { DateTimeInput, Label, Section, Spacer } from '../../../components';
 import { FilterWrapper } from '../../shared';
@@ -11,11 +11,11 @@ interface DateRangeFilterProps {
 	active?: boolean
 	clearable?: boolean
 	disabled?: boolean
-	endDate?: null | UnixTimestamp
+	endDate?: null | UnixMilliseconds
 	label: string
-	onEndDateChange?: (values: null | UnixTimestamp) => void
-	onStartDateChange?: (values: null | UnixTimestamp) => void
-	startDate?: null | UnixTimestamp
+	onEndDateChange?: (values: null | UnixMilliseconds) => void
+	onStartDateChange?: (values: null | UnixMilliseconds) => void
+	startDate?: null | UnixMilliseconds
 }
 
 /* * */

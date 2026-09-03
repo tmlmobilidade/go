@@ -3,8 +3,8 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type UpdateZoneDto, UpdateZoneSchema, type Zone } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -48,27 +48,30 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 	// B. Fetch data
 
 	const { mutate: zonesListMutate } = useSWR<Zone[]>(API_ROUTES.offer.ZONES_LIST);
-	const { data: zoneData, error: zoneError, isLoading: zoneLoading, mutate: zoneMutate } = useSWR<Zone>(API_ROUTES.offer.ZONES_DETAIL(zoneId), { refreshInterval: 5000 });
+	const { data: zoneData, error: zoneError, isLoading: zoneLoading, mutate: zoneMutate } = useSWR<ApiResponse<Zone>>(API_ROUTES.offer.ZONES_DETAIL(zoneId), {
+		fetcher: async url => await fetchApiData<Zone>({ url }),
+		refreshInterval: 5000,
+	});
 
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateZoneDto>(UpdateZoneSchema, zoneData);
+	const { form } = useTypicalForm<UpdateZoneDto>(UpdateZoneSchema, zoneData?.data);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL(zoneId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Zone>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.ZONES_DETAIL(zoneId) }),
+		onSuccess: (data) => {
 			form.resetDirty();
-			zoneMutate(updatedItem);
+			zoneMutate(data);
 			zonesListMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL(zoneId), 'DELETE', zoneData),
+		fetchFn: async () => await fetchApiData<Zone>({ method: 'DELETE', url: API_ROUTES.offer.ZONES_DETAIL(zoneId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			zonesListMutate();
@@ -77,10 +80,10 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL_LOCK(zoneId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Zone>({ method: 'PUT', url: API_ROUTES.offer.ZONES_DETAIL_LOCK(zoneId) }),
+		onSuccess: (data) => {
 			form.resetDirty();
-			zoneMutate(updatedItem);
+			zoneMutate(data);
 			zonesListMutate();
 		},
 	});
@@ -94,7 +97,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: zoneData?.agency_ids ?? [],
+			value: zoneData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.zones.scope,
 	});
@@ -105,7 +108,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 		resource: {
 			key: 'agency_ids',
 			requireAll: true,
-			value: zoneData?.agency_ids ?? [],
+			value: zoneData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.zones.scope,
 	});
@@ -123,7 +126,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: zoneLoading,
-		isLocked: zoneData?.is_locked,
+		isLocked: zoneData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -147,7 +150,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 		data: {
 			form,
 			id: zoneId,
-			zone: zoneData,
+			zone: zoneData?.data,
 		},
 		flags: {
 			canDelete,

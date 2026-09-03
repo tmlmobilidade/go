@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type RawVehicleEventPtTmlTcbV1, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
@@ -9,7 +9,7 @@ export function parseRawVehicleEventPtTmlTcbV1(doc: RawVehicleEventPtTmlTcbV1): 
 	return SimplifiedVehicleEventSchema.parse({
 		_id: doc._id,
 		agency_id: doc.agency_id,
-		bearing: doc.payload.vehicle.position.bearing ?? null,
+		bearing: doc.payload.vehicle.position.bearing && doc.payload.vehicle.position.bearing >= 0 ? doc.payload.vehicle.position.bearing : null, // TCB sends -1 when no bearing is available
 		created_at: doc.created_at,
 		current_status: doc.payload.vehicle.current_status ?? null,
 		driver_id: null,
@@ -18,7 +18,7 @@ export function parseRawVehicleEventPtTmlTcbV1(doc: RawVehicleEventPtTmlTcbV1): 
 		latitude: doc.payload.vehicle.position.latitude,
 		longitude: doc.payload.vehicle.position.longitude,
 		odometer: null,
-		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date_int,
+		operational_date: Dates.fromUnixMilliseconds(doc.created_at).operational_date_int,
 		received_at: doc.received_at,
 		speed: doc.payload.vehicle.position.speed ?? null,
 		stop_id: doc.payload.vehicle.stop_id ?? null,

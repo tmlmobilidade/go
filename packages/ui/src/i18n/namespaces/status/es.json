@@ -80,6 +80,11 @@
 		"Unknown": "Desconocido",
 		"Waiting": "En espera"
 	},
+	"temporal_status": {
+		"active": "Activo",
+		"expired": "Expirado",
+		"upcoming": "Futuro"
+	},
 	"validity_status": {
 		"invalid": "Inválido",
 		"unknown": "Desconocido",

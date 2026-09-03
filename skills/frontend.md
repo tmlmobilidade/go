@@ -69,7 +69,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import useSWR from 'swr';
 
 const { data, error, isLoading, mutate } = useSWR<Alert>(
-  API_ROUTES.alerts.ALERTS_DETAIL(alertId)
+  API_ROUTES.operation.ALERTS_DETAIL(alertId)
 );
 ```
 
@@ -162,7 +162,7 @@ import { fetchData } from '@tmlmobilidade/utils';
 
 const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
   fetchFn: async () => await fetchData<Alert>(
-    API_ROUTES.alerts.ALERTS_DETAIL(alertId),
+    API_ROUTES.operation.ALERTS_DETAIL(alertId),
     'PUT',
     form.getValues()
   ),
@@ -216,7 +216,7 @@ import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 const router = useRouter();
-router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
+router.push(keepUrlParams(PAGE_ROUTES.operation.ALERTS_LIST));
 ```
 
 ---

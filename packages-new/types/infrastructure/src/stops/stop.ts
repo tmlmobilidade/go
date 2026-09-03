@@ -7,7 +7,8 @@ import { StopFlagSchema } from '@/stops/flag.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
 import { StopRoadTypeSchema } from '@/stops/road-type.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
-import { AvailabilityStatusSchema, CommentSchema, ConditionStatusSchema, BaseDocumentSchema, LifecycleStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
+import { AvailabilityStatusSchema, BaseDocumentSchema, CommentSchema, ConditionStatusSchema, LifecycleStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -35,9 +36,9 @@ export const StopSchema = BaseDocumentSchema.extend({
 	// Location
 
 	district_id: z.string(),
-	latitude: z.number(),
+	latitude: LatitudeSchema,
 	locality_id: z.string().nullable().default(null),
-	longitude: z.number(),
+	longitude: LongitudeSchema,
 	municipality_id: z.string(),
 	parish_id: z.string().nullable().default(null),
 
@@ -54,7 +55,7 @@ export const StopSchema = BaseDocumentSchema.extend({
 
 	shelter_code: z.string().nullable().default(null),
 	shelter_frame_size: z.tuple([z.number(), z.number()]).nullable().default(null),
-	shelter_installation_date: UnixTimestampSchema.nullable().default(null),
+	shelter_installation_date: UnixMillisecondsSchema.nullable().default(null),
 	shelter_maintainer: z.string().nullable().default(null),
 	shelter_make: z.string().nullable().default(null),
 	shelter_model: z.string().nullable().default(null),
@@ -63,10 +64,10 @@ export const StopSchema = BaseDocumentSchema.extend({
 	//
 	// Checks
 
-	last_infrastructure_check: UnixTimestampSchema.nullable().default(null),
-	last_infrastructure_maintenance: UnixTimestampSchema.nullable().default(null),
-	last_schedules_check: UnixTimestampSchema.nullable().default(null),
-	last_schedules_maintenance: UnixTimestampSchema.nullable().default(null),
+	last_infrastructure_check: UnixMillisecondsSchema.nullable().default(null),
+	last_infrastructure_maintenance: UnixMillisecondsSchema.nullable().default(null),
+	last_schedules_check: UnixMillisecondsSchema.nullable().default(null),
+	last_schedules_maintenance: UnixMillisecondsSchema.nullable().default(null),
 
 	//
 	// Facilities

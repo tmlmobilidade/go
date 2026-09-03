@@ -2,7 +2,7 @@
 
 import { PlanAppStatusSchema } from '@/plans/plan-app-status.js';
 import { PlanPcgiLegacySchema } from '@/plans/plan-pcgi-legacy.js';
-import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsStrictV30AgencySchema, GtfsStrictV30FeedInfoSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -17,8 +17,8 @@ export const PlanSchema = BaseDocumentSchema.extend({
 		hub_schedules: PlanAppStatusSchema,
 		merger: PlanAppStatusSchema,
 	}).default({}),
-	gtfs_agency: GtfsAgencySchema,
-	gtfs_feed_info: GtfsFeedInfoSchema,
+	gtfs_agency: GtfsStrictV30AgencySchema,
+	gtfs_feed_info: GtfsStrictV30FeedInfoSchema,
 	hash: z.string(),
 	is_locked: z.boolean().default(false),
 	operation_file_id: z.string().nullable().default(null),

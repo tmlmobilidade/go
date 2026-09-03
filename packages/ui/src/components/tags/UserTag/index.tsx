@@ -44,7 +44,7 @@ export function UserTag({ showFullName = true, userId, variant = 'tag' }: UserTa
 			<UserTagCard
 				fullName="Plataforma GO"
 				organizationName="Sistema"
-				seenLastAt={Dates.now('Europe/Lisbon').unix_timestamp}
+				seenLastAt={Dates.now('Europe/Lisbon').unix_milliseconds}
 			>
 				<Inline dotted>GO</Inline>
 			</UserTagCard>

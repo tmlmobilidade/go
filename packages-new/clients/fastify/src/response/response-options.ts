@@ -1,6 +1,16 @@
 /* * */
 
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+
+/* * */
+
 export interface ApiResponseOptions {
+
+	/**
+	 * The time the response was generated at in UTC milliseconds.
+	 * @default undefined
+	 */
+	generated_at?: UnixMilliseconds
 
 	/**
 	 * The maximum age of the response in seconds.

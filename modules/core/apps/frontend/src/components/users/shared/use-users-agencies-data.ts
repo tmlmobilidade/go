@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type UsersAgencyItem } from '@tmlmobilidade/go-core-pckg-types';
-import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -12,7 +12,7 @@ import useSWR from 'swr';
 interface UseUsersAgenciesDataReturnType {
 	error: null | string
 	options: SelectDataItem[]
-	timestamp: null | UnixTimestamp
+	timestamp: null | UnixMilliseconds
 }
 
 /**
@@ -32,7 +32,7 @@ export function useUsersAgenciesData(): UseUsersAgenciesDataReturnType {
 	});
 
 	//
-	// C. Transform data
+	// B. Transform data
 
 	const optionsData = useMemo(() => {
 		// Skip if no data is available
@@ -47,7 +47,7 @@ export function useUsersAgenciesData(): UseUsersAgenciesDataReturnType {
 	}, [data?.data]);
 
 	//
-	// D. Return value
+	// C. Return value
 
 	return useMemo(() => ({
 		error: error?.error,

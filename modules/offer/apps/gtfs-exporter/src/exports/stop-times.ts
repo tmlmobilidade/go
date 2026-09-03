@@ -3,10 +3,10 @@
 import { type TripSchedule } from '@/exports/trips.js';
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
-import { validateGtfsTime } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/go-types-offer';
+import { OperationalTimeSchema } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { metersToGtfsKm } from '@tmlmobilidade/types';
 
@@ -105,10 +105,10 @@ export async function exportStopTimesForPattern(
 				const stopId = currentStopData ? getAgencyStopId(currentStopData, agencyId) : String(pathItem.stop_id);
 
 				const stopTimeRow: GtfsStrictV29StopTimes = {
-					arrival_time: validateGtfsTime(formatGtfsTime(arrivalSeconds)),
+					arrival_time: OperationalTimeSchema.parse(formatGtfsTime(arrivalSeconds)),
 					// continuous_drop_off: '0',
 					// continuous_pickup: '0',
-					departure_time: validateGtfsTime(formatGtfsTime(departureSeconds)),
+					departure_time: OperationalTimeSchema.parse(formatGtfsTime(departureSeconds)),
 					drop_off_type: pathItem.allow_drop_off ? '0' : '1',
 					pickup_type: pathItem.allow_pickup ? '0' : '1',
 					shape_dist_traveled: metersToGtfsKm(cumulativeDistanceMeters),

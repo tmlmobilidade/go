@@ -6,7 +6,7 @@ import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { type Location } from '@tmlmobilidade/go-types-locations';
 import { validateQueryParams } from '@tmlmobilidade/utils';
-import z from 'zod';
+import { z } from 'zod';
 
 /* * */
 

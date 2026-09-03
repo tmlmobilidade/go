@@ -37,15 +37,15 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 	const timeChunkTimer = new Timer();
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
+		.fromUnixMilliseconds(timeChunk.start)
 		.setZone('utc', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
+		.fromUnixMilliseconds(timeChunk.end)
 		.setZone('utc', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`APEX Tx [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+	Logger.divider(`APEX Tx [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_milliseconds}] › ${chunkStartDate.iso}[${chunkStartDate.unix_milliseconds}]`, 150);
 
 	//
 	// Setup the queries for both the source and destination databases,

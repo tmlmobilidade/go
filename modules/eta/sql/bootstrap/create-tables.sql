@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS eta.hist_rides
 AS operation.rides;
 
 ALTER TABLE eta.hist_rides
-ADD COLUMN hashed_shape_id LowCardinality(String),
+ADD COLUMN shape_polyline String CODEC(ZSTD),
 ADD COLUMN first_stop_id String,
 ADD COLUMN first_stop_name String,
 ADD COLUMN first_stop_coordinates Tuple(Float64, Float64),

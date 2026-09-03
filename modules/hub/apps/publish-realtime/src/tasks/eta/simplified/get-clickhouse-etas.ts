@@ -9,6 +9,11 @@ import { type TripStopEta } from '../types.js';
 
 /* * */
 
+/**
+ * Fetches all simplified trip-stop ETAs from ClickHouse (`select-eta.sql`).
+ *
+ * Used by {@link cacheAllEtasFromClickHouse} to rebuild `hub:v1:realtime:eta:all`.
+ */
 export async function getClickHouseEtas(): Promise<TripStopEta[]> {
 	//
 

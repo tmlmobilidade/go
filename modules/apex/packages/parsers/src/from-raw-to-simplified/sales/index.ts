@@ -1,1 +1,1 @@
-export * from '@/from-raw-to-simplified/sales/sale-v30.js';
+export * from './sale-v30.js';

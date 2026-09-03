@@ -1,0 +1,338 @@
+/* * */
+
+import { type MergedGtfsExportConfig } from '@/types.js';
+import { validatePlan } from '@/validate-plan.js';
+import { Files } from '@tmlmobilidade/files';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDateInt, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
+import { CsvWriter } from '@tmlmobilidade/writers';
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import { ZipFile } from 'yazl';
+
+/* * */
+
+import { exportAgencyFile } from '@/exports/agency.js';
+import { exportCalendarDatesRows } from '@/exports/calendar-dates.js';
+import { exportDatesFile } from '@/exports/dates.js';
+import { exportFeedInfoFile } from '@/exports/feed-info.js';
+import { exportMunicipalitiesFile } from '@/exports/municipalities.js';
+import { exportPeriodsFile } from '@/exports/periods.js';
+import { exportPlansFile } from '@/exports/plans.js';
+import { exportRoutesFile } from '@/exports/routes.js';
+import { exportShapesRows } from '@/exports/shapes.js';
+import { exportStopTimesRows } from '@/exports/stop-times.js';
+import { exportStopsFile } from '@/exports/stops.js';
+import { exportTripsRows } from '@/exports/trips.js';
+
+/* * */
+
+let PREVIOUS_PLANS_LIST_HASH: null | string = null;
+
+/* * */
+
+export async function main() {
+	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'publish-gtfs-cm', message: 'Sentry Hub Publish GTFS CM initialized', module: 'hub', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS CM' });
+	}
+
+	//
+	// Initialize the logger
+
+	Logger.init();
+
+	const globalTimer = new Timer();
+
+	//
+	// Setup the global export config object
+	// that will be used throughout the export process.
+	// This includes the working directory, the version string,
+	// and the CSV writers for each GTFS file.
+
+	const exportVersion = Dates.now('Europe/Lisbon').toFormat('yyyyLLdd-HHmm-ss');
+
+	const exportConfig: MergedGtfsExportConfig = {
+		version: exportVersion,
+		workdir: `/tmp/${exportVersion}`,
+		writers: {
+			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 10000 }),
+			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 10000 }),
+			dates: new CsvWriter('dates.txt', `/tmp/${exportVersion}/dates.txt`, { batch_size: 10000 }),
+			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 10000 }),
+			municipalities: new CsvWriter('municipalities.txt', `/tmp/${exportVersion}/municipalities.txt`, { batch_size: 10000 }),
+			periods: new CsvWriter('periods.txt', `/tmp/${exportVersion}/periods.txt`, { batch_size: 10000 }),
+			plans: new CsvWriter('plans.txt', `/tmp/${exportVersion}/plans.txt`, { batch_size: 10000 }),
+			routes: new CsvWriter('routes.txt', `/tmp/${exportVersion}/routes.txt`, { batch_size: 10000 }),
+			shapes: new CsvWriter('shapes.txt', `/tmp/${exportVersion}/shapes.txt`, { batch_size: 10000 }),
+			stop_times: new CsvWriter('stop_times.txt', `/tmp/${exportVersion}/stop_times.txt`, { batch_size: 10000 }),
+			stops: new CsvWriter('stops.txt', `/tmp/${exportVersion}/stops.txt`, { batch_size: 10000 }),
+			trips: new CsvWriter('trips.txt', `/tmp/${exportVersion}/trips.txt`, { batch_size: 10000 }),
+		},
+	};
+
+	let farthestDateFound: OperationalDateInt;
+
+	const referencedAgencyIds = new Set<string>();
+	const routesMarkedForFinalExport: Record<string, GtfsStrictV29Routes> = {};
+
+	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
+
+	//
+	// Retrieve all Plans from the database
+	// and iterate on each one.
+
+	const plansCollection = await goDb.operation.plans.getCollection();
+
+	const allPlansData = await goDb.operation.plans.findMany();
+
+	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
+
+	Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
+
+	//
+	// Hash the allPlansData response and check if it differs
+	// from the last processed hash stored in memory. This way,
+	// if no Plans were changed/added/removed since the last export,
+	// we can skip the entire export process.
+
+	const currentPlansListHash = crypto
+		.createHash('sha1')
+		.update(JSON.stringify(allPlansData.map(plan => plan.hash)))
+		.digest('hex');
+
+	if (PREVIOUS_PLANS_LIST_HASH === currentPlansListHash) {
+		return Logger.terminate('No changes detected in Plans list since last export. Skipping this run...');
+	}
+
+	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
+
+	//
+	// Mark as plans as 'waiting' in the database.
+
+	for (const planData of allPlansData) {
+		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'waiting', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+	}
+
+	//
+	// For each plan, validate it and import its GTFS into
+	// a database and cut it according to the plan's feed_info dates.
+
+	for (const [planIndex, planData] of allPlansData.entries()) {
+		try {
+			//
+
+			const planTimer = new Timer();
+
+			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.agency_id} - Plan ${planData._id}` });
+
+			//
+			// Validate the Plan data before processing.
+			// If the plan is invalid, skip to the next one
+			// and mark it as 'skipped' in the database.
+			// Otherwise, mark it as 'processing'.
+
+			const isValidPlan = validatePlan(planData);
+
+			if (!isValidPlan) {
+				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'skipped', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
+				continue;
+			}
+
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'processing', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+
+			//
+			// Get the operation file URL
+
+			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
+
+			//
+			// Find out if this plan is a currently active plan.
+			// Active plans are those whose feed_info dates
+			// encompass the current date, and should be cut only at the end,
+			// not at the start, as to be able to provide a full year of data.
+
+			let thisIsAnActivePlan = false;
+
+			const importConfig: ImportGtfsConfig = {
+				source: {
+					url: operationFileUrl,
+				},
+				time_range: {
+					date_range: {
+						end: GtfsDateSchema.parse(planData.gtfs_feed_info.feed_end_date),
+						start: GtfsDateSchema.parse(planData.gtfs_feed_info.feed_start_date),
+					},
+				},
+			};
+
+			if (currentOperationalDate >= OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_start_date) && currentOperationalDate <= OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date)) {
+				// If the plan is currently active, set the start date
+				// to a far past date to be able to provide a full year of data.
+				importConfig.time_range.date_range.start = GtfsDateSchema.parse('20010101');
+				// Update the flag
+				thisIsAnActivePlan = true;
+			}
+
+			//
+			// Import the GTFS into a SQLite database.
+			// Let the function handle the parsing and cutting,
+			// and return table instances with processed data.
+
+			const importTimer = new Timer();
+
+			const importedGtfsSql = await importGtfsToDatabase(importConfig);
+
+			Logger.success(`Imported plan ${planData._id} in ${importTimer.get()}.`);
+
+			//
+			// Setup the export config and export the GTFS files
+			// into a temporary working directory.
+
+			const exportTimer = new Timer();
+
+			await exportTripsRows(planData, importedGtfsSql, exportConfig);
+			await exportStopTimesRows(planData, importedGtfsSql, exportConfig);
+			await exportShapesRows(planData, importedGtfsSql, exportConfig);
+			await exportCalendarDatesRows(planData, importedGtfsSql, exportConfig);
+
+			Logger.success(`Exported plan ${planData._id} files in ${exportTimer.get()}.`);
+
+			//
+			// Routes behave a little differently as only one version of each will be exported:
+			// 1. If the route exists in an active plan, use that version.
+			// 2. Otherwise, use the most recent version available.
+			// Unlike other files, we do not add Plan ID modifier to the route_id. This is a deliberate
+			// stylistic choice to keep route_ids consistent across plans, making it easier to reference
+			// and manage routes without relying on plan-scoped identifiers. Instead, we track inclusion
+			// at the export scope — each route can only be exported once, even though it may appear in
+			// multiple plans, and could have different attributes in each plan.
+			// This block only determines which routes should be exported; no files are written here.
+
+			for await (const routeItem of importedGtfsSql.routes.stream()) {
+				const routeData: GtfsStrictV29Routes = routeItem;
+				if (thisIsAnActivePlan || !routesMarkedForFinalExport[routeData.route_id]) {
+					routesMarkedForFinalExport[routeData.route_id] = routeData;
+				}
+			}
+
+			Logger.info({ message: `Added route references for plan ${planData._id}.` });
+
+			//
+			// Add the plan's referenced agency ID and farthest
+			// feed end date to the global variables for later export.
+
+			referencedAgencyIds.add(planData.agency_id);
+
+			farthestDateFound = !farthestDateFound || OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date) > farthestDateFound
+				? OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date)
+				: farthestDateFound;
+
+			//
+			// Finally, write the plan entry into the plans.txt file.
+
+			await exportPlansFile(planData.agency_id, planData._id, validateOperationalDate(planData.gtfs_feed_info.feed_start_date), validateOperationalDate(planData.gtfs_feed_info.feed_end_date), exportConfig);
+
+			//
+			// Mark the plan as complete in the database.
+
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'complete', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+
+			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
+
+			//
+			// Force the closure of the SQLite database connection to release resources.
+			// Since SQLite sets up memory using C-level allocations, it is not possible
+			// to rely on garbage collection alone to free up memory in a timely manner.
+
+			importedGtfsSql._db.cleanup();
+
+			Logger.divider();
+
+			//
+		} catch (error) {
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'error', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+			Logger.error({ error, message: `Error processing plan ${planData._id}` });
+			Logger.divider();
+		}
+	}
+
+	//
+	// Export GTFS files from the merged dataset
+
+	await exportStopsFile(exportConfig);
+	await exportDatesFile(exportConfig);
+	await exportPeriodsFile(exportConfig);
+	await exportMunicipalitiesFile(exportConfig);
+	await exportRoutesFile(Object.values(routesMarkedForFinalExport), exportConfig);
+	await exportAgencyFile(Array.from(referencedAgencyIds), exportConfig);
+	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, exportConfig);
+
+	//
+	// Zip the exported GTFS files into a single archive.
+	// YAZL is used here for its focus on performance and low memory usage.
+
+	const zipTimer = new Timer();
+
+	const outputZip = new ZipFile();
+
+	await new Promise<void>((resolve) => {
+		// Read the working directory contents
+		const workdirDirContents = fs.readdirSync(exportConfig.workdir, { withFileTypes: true });
+		// Add each file to the zip
+		workdirDirContents.forEach(outputDirFile => outputZip.addFile(`${exportConfig.workdir}/${outputDirFile.name}`, outputDirFile.name));
+		// Setup a write stream to the final zip file
+		outputZip.outputStream
+			.pipe(fs.createWriteStream(`${exportConfig.workdir}/${exportConfig.version}.zip`))
+			.on('close', resolve);
+		// Finalize the zip creation, which triggers
+		// the piping and writing process.
+		outputZip.end();
+	});
+
+	Logger.success(`Zipped GTFS export in ${zipTimer.get()}.`);
+
+	//
+	// Upload the GTFS zip file to the Files collection,
+	// which handles storage and retrieval.
+
+	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
+
+	await storageProvider.replace(fileStream, {
+		_id: 'gtfs-cm-latest',
+		created_by: 'system',
+		name: `${exportConfig.version}.zip`,
+		resource_id: 'gtfs-cm-latest',
+		scope: 'plans',
+		size: fs.statSync(`${exportConfig.workdir}/${exportConfig.version}.zip`).size,
+		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${exportConfig.version}.zip`)),
+		updated_by: 'system',
+	});
+
+	//
+	// Finalize the export process
+
+	try {
+		fs.rmSync(exportConfig.workdir, { force: true, recursive: true });
+	} catch (error) {
+		Logger.error({ error, message: `Error removing export workdir "${exportConfig.workdir}".` });
+	}
+
+	Logger.terminate(`Run took ${globalTimer.get()}`);
+
+	//
+}

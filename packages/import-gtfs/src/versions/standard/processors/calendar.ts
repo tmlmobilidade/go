@@ -3,8 +3,8 @@
 import { type ImportGtfsContext } from '@/shared/init-context.js';
 import { parseCsvFile } from '@/shared/parse-csv.js';
 import { type GtfsSQLTables } from '@/versions/standard/types.js';
-import { type GtfsCalendar, GtfsCalendarSchema, type GtfsDate, GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
-import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { type GtfsCalendar, GtfsCalendarSchema } from '@tmlmobilidade/go-types-gtfs';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -38,7 +38,7 @@ export async function processGtfsCalendar(context: ImportGtfsContext<GtfsSQLTabl
 			// Setup an array to keep track of the valid operational dates for this service_id
 			// for the given start_date and end_date or single dates from the config.
 
-			const allDatesInRange = new Set<GtfsDate>();
+			const allDatesInRange = new Set<OperationalDateInt>();
 
 			//
 			// If the config is of date-range type, check if this service_id
@@ -56,7 +56,7 @@ export async function processGtfsCalendar(context: ImportGtfsContext<GtfsSQLTabl
 
 				const operationalDates = getOperationalDatesFromRange(OperationalDateIntSchema.parse(serviceIdStartDate), OperationalDateIntSchema.parse(serviceIdEndDate));
 
-				operationalDates.forEach(date => allDatesInRange.add(GtfsDateSchema.parse(date)));
+				operationalDates.forEach(date => allDatesInRange.add(OperationalDateIntSchema.parse(date)));
 			}
 
 			//
@@ -76,7 +76,7 @@ export async function processGtfsCalendar(context: ImportGtfsContext<GtfsSQLTabl
 			// For the configured weekly schedule, create the individual operational dates
 			// for each day of the week that is active.
 
-			const validOperationalDates = new Set<GtfsDate>();
+			const validOperationalDates = new Set<OperationalDateInt>();
 
 			for (const currentDate of allDatesInRange) {
 				const dayOfWeek = Dates.fromOperationalDateInt(currentDate, 'Europe/Lisbon').toFormat('c');

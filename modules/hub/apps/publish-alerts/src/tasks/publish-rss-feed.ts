@@ -1,9 +1,9 @@
 /* * */
 
 import { transformAlertIntoRssEntity } from '@/transform/rss/main.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
 import { Timer } from '@tmlmobilidade/timer';
@@ -29,12 +29,12 @@ export async function publishRssFeed() {
 			$and: [
 				{
 					$or: [
-						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
+						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_milliseconds } },
 						{ publish_end_date: null },
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
-					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
+					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_milliseconds },
 					publish_status: 'published',
 				},
 			],

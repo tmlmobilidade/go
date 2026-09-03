@@ -1,6 +1,6 @@
 'use client';
 
-import { type PublishStatus, PublishStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type PublishStatus, PublishStatusValues } from '@tmlmobilidade/go-types-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +31,7 @@ export function PublishStatusDisplay({ disabled, onChange, onClick, value }: Pub
 	//
 	// B. Transform data
 
-	const publishStatusOptions = PublishStatusSchema.options.map(value => ({
+	const publishStatusOptions = PublishStatusValues.map(value => ({
 		label: t(`shared:status.publish_status.${value}`),
 		value: value,
 	}));

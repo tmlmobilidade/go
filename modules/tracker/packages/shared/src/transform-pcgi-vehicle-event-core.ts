@@ -1,8 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEventPtTmlCm, RawVehicleEventPtTmlCmSchema } from '@tmlmobilidade/go-types-vehicle-events';
-import { Logger } from '@tmlmobilidade/logger';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import crypto from 'node:crypto';
 
 /* * */
@@ -48,7 +47,7 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlCm> = {
 			agency_id: matchingAgency.agency_id,
-			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
+			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_milliseconds,
 			entity_id: entity._id,
 			payload: {
 				header: {
@@ -73,11 +72,19 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 		const parsedDocument = RawVehicleEventPtTmlCmSchema.safeParse({
 			...hashableRawEvent,
 			_id: hashableRawEventId,
-			received_at: Dates.fromUnixTimestamp(pcgiVehicleEvent.millis).unix_timestamp,
+			received_at: Dates.fromUnixMilliseconds(pcgiVehicleEvent.millis).unix_milliseconds,
 		});
 
 		if (!parsedDocument.success) {
-			Logger.error({ error: parsedDocument.error, message: `Failed to insert document "${pcgiVehicleEvent._id}" -> ${parsedDocument.error.issues.map(issue => `${issue.path.join('.') || '<root>'}: ${issue.message}`).join('; ')}` });
+
+			// Skip if its a dead run
+			// We don't currently store them in labdb.
+			if(entity?.vehicle?.deadRunId) continue;
+
+			//
+			// Log the error
+			console.error(JSON.stringify(entity, null, 2));
+			console.error({ error: parsedDocument.error, message: `Failed to insert document "${pcgiVehicleEvent._id}" -> ${parsedDocument.error.issues.map(issue => `${issue.path.join('.') || '<root>'}: ${issue.message}`).join('; ')}` });
 			continue;
 		}
 

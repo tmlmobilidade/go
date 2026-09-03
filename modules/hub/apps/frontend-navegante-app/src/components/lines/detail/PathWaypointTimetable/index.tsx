@@ -5,7 +5,7 @@ import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.con
 import { TimetableDisplay } from '@/components/lines/detail/TimetableDisplay';
 import { createTimetable } from '@/utils/create-timetable';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type Timetable } from '@tmlmobilidade/go-types-public-info';
+import { type Timetable } from '@tmlmobilidade/go-types-hub';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

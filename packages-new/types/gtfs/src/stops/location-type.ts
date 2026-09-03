@@ -12,7 +12,10 @@ export const GtfsLocationTypeValues = [
 	'4', // Boarding area. A specific area within a stop or station where passengers can board a transit vehicle, such as a bus bay or train platform.
 ] as const;
 
-export const GtfsLocationTypeSchema = z.enum(GtfsLocationTypeValues);
+export const GtfsLocationTypeSchema = z
+	.union([z.string(), z.number()])
+	.transform(value => String(value))
+	.pipe(z.enum(GtfsLocationTypeValues));
 
 /**
  * Represents the type of location in the GTFS format.

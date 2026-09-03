@@ -12,11 +12,8 @@ export function createImportedStopResolver(agencyId?: string) {
 		if (cached) return cached;
 
 		const promise = (async () => {
-			const numericStopId = Number(normalizedStopId);
-			if (!Number.isNaN(numericStopId)) {
-				const stopById = await goDb.infrastructure.stops.findById(numericStopId);
-				if (stopById) return stopById;
-			}
+			const stopById = await goDb.infrastructure.stops.findById(normalizedStopId);
+			if (stopById) return stopById;
 
 			if (agencyId) {
 				const stopByAgencyFlag = await goDb.infrastructure.stops.findOne({

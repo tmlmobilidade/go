@@ -1,7 +1,8 @@
 /* * */
 
-import { GtfsRtOccupancyStatusSchema } from '@/shared/occupancy-status.js';
 import { z } from 'zod';
+
+import { GtfsRtOccupancyStatusSchema } from '../shared/occupancy-status.js';
 
 /* * */
 
