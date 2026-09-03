@@ -39,7 +39,9 @@
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/timer": "*",
+		"csv-parse": "7.0.2",
+		"unzipper": "0.12.5"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
