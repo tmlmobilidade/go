@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-export function PlanDetailSectionPlansFile() {
+export function PlanDetailSectionApexFile() {
 	//
 
 	//

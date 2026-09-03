@@ -4,7 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type GtfsStrictV30Agency, type GtfsStrictV30FeedInfo } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import { type CreateGtfsValidationDto, type GtfsValidation, GtfsValidationSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -59,8 +59,8 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 		agency_id: requestData.fields.agency_id['value'] as string,
 		created_at: Dates.now('utc').unix_milliseconds,
 		created_by: request.me._id,
-		gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsStrictV30Agency,
-		gtfs_feed_info: JSON.parse(requestData.fields.gtfs_feed_info['value'] as string) as GtfsStrictV30FeedInfo,
+		gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
+		gtfs_feed_info: JSON.parse(requestData.fields.gtfs_feed_info['value'] as string) as GtfsFeedInfo,
 		is_locked: false,
 		notification_sent: false,
 		processing_status: 'waiting',

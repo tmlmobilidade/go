@@ -2,10 +2,14 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HashablePlanMetadata, type Plan, type UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { calculateZipFileHash } from '@tmlmobilidade/go-utils-exec';
 import { createHash } from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * Updates an existing plan by ID
@@ -79,44 +83,39 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 			});
 		}
 
-		// //
-		// // Update the feed info dates in the operation file
-
-		// const updateDatesResult = await updateFeedInfoDates(
-		// 	foundPlan.operation_file_id,
-		// 	validatedFeedStartDate,
-		// 	validatedFeedEndDate,
-		// );
-
-		// //
-		// // Prepare the updated file metadata
-
-		// const updatedFileData: CreateAttachmentDto = {
-		// 	created_by: updateDatesResult.info.created_by,
-		// 	name: updateDatesResult.info.name,
-		// 	resource_id: updateDatesResult.info.resource_id,
-		// 	scope: updateDatesResult.info.scope,
-		// 	size: updateDatesResult.file.size,
-		// 	type: mimeTypes.zip,
-		// 	updated_by: 'system',
-		// };
-
-		// //
-		// // Upload updated file and store new file ID
-
-		// const updateFileResult = await storageProvider.upload(
-		// 	Buffer.from(await updateDatesResult.file.arrayBuffer()),
-		// 	updatedFileData,
-		// );
-
 		//
 		// Get a hash of all metadata to make it possible
 		// to keep track of changes to the plan
+
+		if (!foundPlan.operation_file_id) {
+			return sendErrorApiResponse(reply, {
+				error: `No Operation file ID found for plan ${foundPlan._id}`,
+				status_code: '400',
+			});
+		}
+
+		const operationFileData = await storageProvider.findById(foundPlan.operation_file_id);
+
+		if (!operationFileData?.url) {
+			return sendErrorApiResponse(reply, {
+				error: `Operation file "${foundPlan.operation_file_id}" not found in Storage`,
+				status_code: '400',
+			});
+		}
+
+		const temporaryDirectory = fs.mkdtempDisposableSync('calculate-zip-file-hash');
+		const downloadResponse = await fetch(operationFileData.url);
+		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
+		const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
+		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
+
+		const originalGtfsHash = await calculateZipFileHash(downloadFilePath);
 
 		const hashablePlanMetadata: HashablePlanMetadata = {
 			_id: foundPlan._id,
 			active_from: validatedFeedStartDate,
 			active_until: validatedFeedEndDate,
+			operation_file_hash: originalGtfsHash,
 			operation_file_id: foundPlan.operation_file_id,
 		};
 

@@ -47,7 +47,7 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 
 	const agencyData = await goDb.core.agencies.findById(foundPlan.agency_id);
 
-	if (!agencyData.apex.contact_emails.length) {
+	if (!agencyData.plans.apex_notification_emails.length) {
 		return sendErrorApiResponse(reply, {
 			error: 'No APEX contact emails found for this agency.',
 			status_code: '400',
@@ -91,7 +91,7 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 			planId: foundPlan._id,
 			startDate: foundPlan.active_from,
 		},
-		to: agencyData.apex.contact_emails ?? [],
+		to: agencyData.plans.apex_notification_emails ?? [],
 	});
 
 	//
