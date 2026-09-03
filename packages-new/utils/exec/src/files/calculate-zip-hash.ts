@@ -2,7 +2,10 @@
 
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
+import path from 'node:path';
 import unzipper from 'unzipper';
+
+import { getDirectoryFiles } from './get-directory-files.js';
 
 /**
  * Calculates a deterministic SHA-256 hash of the contents of a `.zip` file.
@@ -17,39 +20,48 @@ export async function calculateZipFileHash(filePath: string): Promise<string> {
 	//
 
 	//
+	// Initialize a new temporary directory and extract the ZIP file into it.
+
+	const temporaryDirectory = fs.mkdtempDisposableSync('calculate-zip-file-hash');
+
+	await fs
+		.createReadStream(filePath)
+		.pipe(unzipper.Extract({ path: temporaryDirectory.path }))
+		.promise();
+
+	//
+	// Find all extracted files.
+
+	const sortedExtractedFilePaths = await getDirectoryFiles(temporaryDirectory.path);
+
+	//
 	// Initialize the list of files to hash.
 
 	const foundFiles: { hash: string, path: string }[] = [];
 
-	//
-	// Create a read stream for the zip file.
-
-	const zipFileStream = fs
-		.createReadStream(filePath)
-		.pipe(unzipper.Parse());
-
-	//
-	// Parse the zip file and hash each entry.
-
-	for await (const entry of zipFileStream) {
-		// Skip directory entries (but still process files inside)
-		if (entry.type === 'Directory') {
-			entry.autodrain();
-			continue;
-		}
+	for (const absolutePath of sortedExtractedFilePaths) {
+		// Create a new hash for the file
+		const hash = createHash('sha256');
+		// Open a read stream for the file.
+		const stream = fs.createReadStream(absolutePath);
 		// Stream the file contents and calculate the SHA-256 hash.
-		const fileHash = createHash('sha256');
-		for await (const chunk of entry) {
-			fileHash.update(chunk);
+		for await (const chunk of stream) {
+			hash.update(chunk);
 		}
 		// Add the file to the list of files to hash.
-		foundFiles.push({ hash: fileHash.digest('hex'), path: entry.path });
+		const relativeFilePath = path.relative(temporaryDirectory.path, absolutePath);
+		foundFiles.push({ hash: hash.digest('hex'), path: relativeFilePath });
 	}
 
 	//
 	// Make the result independent of the order of entries in the zip file.
 
 	foundFiles.sort((a, b) => a.path.localeCompare(b.path));
+
+	//
+	// Clean up the temporary directory.
+
+	temporaryDirectory.remove();
 
 	//
 	// Calculate the final hash by concatenating the sorted list
