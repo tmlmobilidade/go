@@ -1,10 +1,11 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleUpdate } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useAlertsListData } from '../list/use-alerts-list-data';
@@ -37,6 +38,8 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 
 	const { data: alertData, isLoading: alertDataLoading, mutate: alertsDetailMutate } = useAlertsDetailData();
 
+	const router = useRouter();
+
 	//
 	// B. Setup form
 
@@ -64,6 +67,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 			unblock();
 			alertsDetailMutate(response);
 			alertsListMutate();
+			router.push(PAGE_ROUTES.operation.ALERTS_DETAIL(response.data._id));
 		},
 	});
 
