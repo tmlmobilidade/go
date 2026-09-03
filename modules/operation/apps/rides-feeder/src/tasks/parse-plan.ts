@@ -292,6 +292,7 @@ export async function parsePlanTask(planData: Plan) {
 					shape_id: currentTrip.shape_id,
 					start_time_observed: null,
 					start_time_scheduled: startTimeScheduledUnixMilliseconds,
+					timezone: agencyData.timezone,
 					trip_id: currentTrip.trip_id,
 					updated_at: Dates.now('utc').unix_milliseconds,
 					vehicle_ids: [],
