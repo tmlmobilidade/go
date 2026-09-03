@@ -15,6 +15,7 @@ export const PcgiVehicleEventSchema = z.object({
 					currentStatus: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']),
 					occupancyStatus: z.enum(['EMPTY', 'PARTIALLY_OCCUPIED', 'FULL']),
 					operationPlanId: z.string(),
+					deadRunId: z.string().optional(),
 					position: z.object({
 						bearing: z.number(),
 						latitude: z.number(),
