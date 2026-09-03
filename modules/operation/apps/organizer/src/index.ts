@@ -4,9 +4,7 @@ import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { removeOldGtfsValidationsTask } from './tasks/gtfs-validations/remove-old-gtfs-validations.js';
-import { releaseStuckPlansTask } from './tasks/rides/release-stuck-plans.js';
-import { removeOrphanRidesTask } from './tasks/rides/remove-orphan-rides.js';
+import { normalizePlansTask } from './tasks/plans/normalize-plans/task.js';
 
 /* * */
 
@@ -33,17 +31,19 @@ async function reprocessStuckRides() {
 	/* * */
 	/* GTFS VALIDATIONS */
 
-	await removeOldGtfsValidationsTask();
+	// await removeOldGtfsValidationsTask();
 
 	/* * */
 	/* PLANS */
 
+	await normalizePlansTask();
+
 	/* * */
 	/* RIDES */
 
-	await releaseStuckPlansTask();
+	// await releaseStuckPlansTask();
 	// await releaseStuckRidesTask();
-	await removeOrphanRidesTask();
+	// await removeOrphanRidesTask();
 	// await cleanupOrphanHashedTrips();
 	// await cleanupOrphanHashedShapes();
 

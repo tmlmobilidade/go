@@ -5,7 +5,7 @@ import { z } from 'zod';
 /* * */
 
 export const AgencyOpenDataSchema = z.object({
-	contacts: z.object({
+	details: z.object({
 		email: z.string().email(),
 		fare_url: z.string().url(),
 		name: z.string(),

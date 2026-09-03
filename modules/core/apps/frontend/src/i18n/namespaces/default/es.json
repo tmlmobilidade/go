@@ -96,17 +96,43 @@
 			"SectionOpenData": {
 				"description": "Configuración de los datos abiertos.",
 				"fields": {
-					"eta_enabled": {
-						"label": "Disponibilizar estimativas de llegada"
-					},
-					"gtfs_enabled": {
-						"label": "Disponibilizar GTFS unificado."
-					},
-					"positions_enabled": {
-						"label": "Disponibilizar posiciones de los vehículos"
-					},
-					"service_alerts_enabled": {
-						"label": "Disponibilizar alertas de servicio"
+					"fields": {
+						"details": {
+							"email": {
+								"label": "Email",
+								"placeholder": "email@example.com"
+							},
+							"fare_url": {
+								"label": "URL para información de tarifas",
+								"placeholder": "https://www.carrismetropolitana.pt/tarifas"
+							},
+							"name": {
+								"label": "Nome",
+								"placeholder": "Carris Metropolitana"
+							},
+							"phone": {
+								"label": "Teléfono",
+								"placeholder": "912345678"
+							},
+							"website_url": {
+								"label": "Sitio web",
+								"placeholder": "https://www.carrismetropolitana.pt"
+							}
+						},
+						"services": {
+							"eta_enabled": {
+								"label": "Disponibilizar estimativas de llegada"
+							},
+							"gtfs_enabled": {
+								"label": "Disponibilizar GTFS unificado"
+							},
+							"positions_enabled": {
+								"label": "Disponibilizar posiciones de los vehículos"
+							},
+							"service_alerts_enabled": {
+								"label": "Disponibilizar alertas de servicio"
+							}
+						}
 					}
 				},
 				"title": "Datos Abiertos"

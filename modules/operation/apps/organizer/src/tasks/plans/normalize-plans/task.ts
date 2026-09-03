@@ -29,7 +29,7 @@ export async function normalizePlansTask() {
 
 	const globalTimer = new Timer();
 
-	const allPlans = await goDb.operation.plans.findMany({ _id: '' });
+	const allPlans = await goDb.operation.plans.findMany({ _id: 'XS3H8' });
 
 	Logger.info({ message: `Found ${allPlans.length} plans.` });
 
@@ -165,7 +165,7 @@ export async function normalizePlansTask() {
 				_id: planData._id,
 				active_from: planData.active_from,
 				active_until: planData.active_until,
-				operation_file_id: updatedFileResult._id,
+				operation_file_id: ctx.attachmentId,
 			};
 
 			const hashValue = createHash('sha256')
