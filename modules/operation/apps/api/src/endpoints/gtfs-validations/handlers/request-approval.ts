@@ -79,7 +79,7 @@ export async function requestApprovalHandler(request: FastifyRequest<{ Params: {
 			requestedBy: request.me.first_name + ' ' + request.me.last_name,
 			startDate: validationData.gtfs_feed_info.feed_start_date,
 		},
-		to: agencyData.contact_emails_pta || [],
+		to: agencyData.plans.approval_request_emails || [],
 	});
 
 	//
