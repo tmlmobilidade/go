@@ -136,9 +136,6 @@ export async function normalizePlansTask() {
 		const originalGtfsHash = await calculateZipFileHash(`${workdirPath}/original-gtfs.zip`);
 		const newGtfsHash = await calculateZipFileHash(`${workdirPath}/new-gtfs.zip`);
 
-		console.log('hash_1', originalGtfsHash);
-		console.log('hash_2', newGtfsHash);
-
 		if (originalGtfsHash === newGtfsHash) {
 			Logger.info({ message: `[${planData._id}] No changes detected in the GTFS archive.` });
 			continue;

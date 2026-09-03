@@ -42,6 +42,8 @@ export const HashablePlanMetadataSchema = PlanSchema.pick({
 	active_from: true,
 	active_until: true,
 	operation_file_id: true,
+}).extend({
+	operation_file_hash: z.string(),
 });
 
 export type HashablePlanMetadata = z.infer<typeof HashablePlanMetadataSchema>;
