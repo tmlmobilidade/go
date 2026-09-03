@@ -2,10 +2,10 @@
 
 import { type Files } from '@tmlmobilidade/go-utils-files';
 import { parse as csvParser } from 'csv-parse';
+import { stringify as csvStringifier } from 'csv-stringify';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import { pipeline } from 'node:stream/promises';
-import Papa from 'papaparse';
 
 /* * */
 
@@ -26,67 +26,33 @@ const CSV_PARSER_OPTIONS = {
 	skip_empty_lines: true,
 };
 
-/**
- * Rows are encoded in batches to keep memory flat on feeds with millions of rows,
- * while still amortizing the cost of each unparse call.
- */
-const CSV_ENCODE_BATCH_SIZE = 10_000;
-
 /* * */
 
 /**
  * Streams a CSV entry of the zip archive through the given row mapper,
- * writing the encoded result to the given file path.
- * @returns The number of rows written.
+ * writing the encoded result to the given file path. The columns of the
+ * output are taken from the first mapped row.
  */
-async function rewriteCsvEntry(zipInstance: GtfsZipInstance, entryName: string, targetFilePath: string, rowMapper: (rowData: CsvRow) => CsvRow): Promise<number> {
+async function rewriteCsvEntry(zipInstance: GtfsZipInstance, entryName: string, targetFilePath: string, rowMapper: (rowData: CsvRow) => CsvRow): Promise<void> {
 	//
 
 	const zipEntry = zipInstance.file(entryName);
 
 	if (!zipEntry) throw new Error(`Entry "${entryName}" not found in the zip archive.`);
 
-	let rowCount = 0;
-
-	//
-	// Map each row as it comes out of the parser, and yield the encoded CSV
-	// in batches. The header is derived from the first mapped row.
-
-	const encodeRows = async function* (rowsIterable: AsyncIterable<CsvRow>) {
-		//
-
-		let columns: string[] = [];
-		let batch: CsvRow[] = [];
-
+	const mapRows = async function* (rowsIterable: AsyncIterable<CsvRow>) {
 		for await (const rowData of rowsIterable) {
-			//
-
-			const mappedRowData = rowMapper(rowData);
-
-			if (rowCount === 0) {
-				columns = Object.keys(mappedRowData);
-				yield `${Papa.unparse([columns])}\r\n`;
-			}
-
-			rowCount++;
-			batch.push(mappedRowData);
-
-			if (batch.length >= CSV_ENCODE_BATCH_SIZE) {
-				yield `${Papa.unparse(batch, { columns, header: false })}\r\n`;
-				batch = [];
-			}
-
-			//
+			yield rowMapper(rowData);
 		}
-
-		if (batch.length > 0) yield `${Papa.unparse(batch, { columns, header: false })}\r\n`;
-
-		//
 	};
 
-	await pipeline(zipEntry.nodeStream(), csvParser(CSV_PARSER_OPTIONS), encodeRows, fs.createWriteStream(targetFilePath));
-
-	return rowCount;
+	await pipeline(
+		zipEntry.nodeStream(),
+		csvParser(CSV_PARSER_OPTIONS),
+		mapRows,
+		csvStringifier({ header: true }),
+		fs.createWriteStream(targetFilePath),
+	);
 
 	//
 }

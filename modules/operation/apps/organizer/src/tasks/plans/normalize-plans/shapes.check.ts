@@ -66,8 +66,8 @@ async function run() {
 
 		const renamed = await readGeneratedEntries(renameWorkdirPath, renameZipInstance);
 
-		assert.equal(renamed.tripsCsvString, 'trip_id,pattern_id,shape_id\r\nT1,P1,P1\r\nT2,P2,P2\r\nT3,P2,P2\r\n');
-		assert.equal(renamed.shapesCsvString, 'shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence\r\nP1,38.7,-9.1,0\r\nP1,38.8,-9.2,1\r\nP2,38.9,-9.3,0\r\nS9,39.0,-9.4,0\r\n');
+		assert.equal(renamed.tripsCsvString, 'trip_id,pattern_id,shape_id\nT1,P1,P1\nT2,P2,P2\nT3,P2,P2\n');
+		assert.equal(renamed.shapesCsvString, 'shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence\nP1,38.7,-9.1,0\nP1,38.8,-9.2,1\nP2,38.9,-9.3,0\nS9,39.0,-9.4,0\n');
 
 		//
 		// A feed without the pattern_id extension column is left untouched.
@@ -102,7 +102,8 @@ async function run() {
 		assert.equal(await applyPatternIdsAsShapeIds(alignedZipInstance, alignedWorkdirPath), false, 'An already aligned feed should be a no-op');
 
 		//
-		// The rewrite streams in batches, so check a feed larger than one batch.
+		// The rewrite streams row by row, so check a feed large enough to span
+		// several stream chunks.
 
 		const largeWorkdirPath = join(rootWorkdirPath, 'large');
 		fs.mkdirSync(largeWorkdirPath);
@@ -119,11 +120,11 @@ async function run() {
 		assert.equal(await applyPatternIdsAsShapeIds(largeZipInstance, largeWorkdirPath), true);
 
 		const large = await readGeneratedEntries(largeWorkdirPath, largeZipInstance);
-		const largeTripsLines = large.tripsCsvString.trimEnd().split('\r\n');
-		const largeShapesLines = large.shapesCsvString.trimEnd().split('\r\n');
+		const largeTripsLines = large.tripsCsvString.trimEnd().split('\n');
+		const largeShapesLines = large.shapesCsvString.trimEnd().split('\n');
 
-		assert.equal(largeTripsLines.length, largeRowCount + 1, 'Every trip row should survive the batched encoding');
-		assert.equal(largeShapesLines.length, largeRowCount + 1, 'Every shape row should survive the batched encoding');
+		assert.equal(largeTripsLines.length, largeRowCount + 1, 'Every trip row should survive the streamed encoding');
+		assert.equal(largeShapesLines.length, largeRowCount + 1, 'Every shape row should survive the streamed encoding');
 		assert.equal(largeTripsLines.at(-1), `T${largeRowCount - 1},P${largeRowCount - 1},P${largeRowCount - 1}`);
 		assert.equal(largeShapesLines.at(-1), `P${largeRowCount - 1},38.7,-9.1,0`);
 

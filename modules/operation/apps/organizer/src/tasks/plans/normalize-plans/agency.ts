@@ -1,31 +1,42 @@
 /* * */
 
-import { type Agency } from '@tmlmobilidade/go-types-core';
-import { type GtfsStrictV30Agency } from '@tmlmobilidade/go-types-gtfs-strict';
-import Papa from 'papaparse';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type GtfsStrictV30Agency, GtfsStrictV30AgencySchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { stringify as csvStringify } from 'csv-stringify/sync';
 
 /**
  * Builds the contents of the agency.txt file from the given Agency document.
  */
-export function buildAgencyTxt(agencyData: Agency): string {
+export async function buildAgencyTxt(planData: Plan): Promise<string> {
 	//
 
-	const contacts = agencyData.open_data?.contacts;
+	//
+	// Fetch the agency data from the database.
 
-	if (!contacts) throw new Error(`Agency "${agencyData._id}" has no open_data.contacts.`);
+	const agencyData = await goDb.core.agencies.findById(planData.agency_id);
+
+	if (!agencyData) {
+		throw new Error(`Plan "${planData._id}" has no agency.`);
+	}
+
+	//
+	// Build and validate the agency row.
 
 	const agencyRow: GtfsStrictV30Agency = {
-		agency_email: contacts.email,
-		agency_fare_url: contacts.fare_url,
+		agency_email: agencyData.open_data?.contacts?.email,
+		agency_fare_url: agencyData.open_data?.contacts?.fare_url,
 		agency_id: agencyData._id,
 		agency_lang: agencyData.primary_language,
 		agency_name: agencyData.name,
-		agency_phone: contacts.phone,
+		agency_phone: agencyData.open_data?.contacts?.phone,
 		agency_timezone: agencyData.timezone,
-		agency_url: contacts.website_url,
+		agency_url: agencyData.open_data?.contacts?.website_url,
 	};
 
-	return Papa.unparse([agencyRow]);
+	const validatedAgencyRow = GtfsStrictV30AgencySchema.parse(agencyRow);
+
+	return csvStringify([validatedAgencyRow], { header: true });
 
 	//
 }
