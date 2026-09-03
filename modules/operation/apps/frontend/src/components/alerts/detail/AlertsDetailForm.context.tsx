@@ -1,10 +1,11 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { fetchApiData, useHandleUpdate } from '@tmlmobilidade/ui';
+import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useAlertsListData } from '../list/use-alerts-list-data';
@@ -37,6 +38,8 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 
 	const { data: alertData, isLoading: alertDataLoading, mutate: alertsDetailMutate } = useAlertsDetailData();
 
+	const router = useRouter();
+
 	//
 	// B. Setup form
 
@@ -48,12 +51,23 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	//
 	// C. Handle actions
 
-	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.operation.ALERTS_DETAIL(alertId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
 			alertsDetailMutate(response);
 			alertsListMutate();
+		},
+	});
+
+	const { action: handleDuplicate, isLoading: isDuplicating } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'POST', url: API_ROUTES.operation.ALERTS_DETAIL_DUPLICATE(alertId) }),
+		onSuccess: (response) => {
+			form.reset(response.data);
+			unblock();
+			alertsDetailMutate(response);
+			alertsListMutate();
+			router.push(PAGE_ROUTES.operation.ALERTS_DETAIL(response.data._id));
 		},
 	});
 
@@ -63,24 +77,45 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	const hasUpdatePermission = useMemo(() => {
 		const hasPermissionAgencyId = hasPermissionResource(meData?.permissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
-			requiredValue: alertData?._id,
+			requiredValue: alertData?.agency_id,
 			resourceKey: 'agency_ids',
 		});
 		const hasPermissionReferenceType = hasPermissionResource(meData?.permissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
-			requiredValue: alertData?._id,
+			requiredValue: alertData?.reference_type,
 			resourceKey: 'reference_types',
 		});
 		return hasPermissionAgencyId && hasPermissionReferenceType;
-	}, [alertData?._id, meData?.permissions]);
+	}, [alertData?.agency_id, alertData?.reference_type, meData?.permissions]);
 
-	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
+	const hasDuplicatePermission = useMemo(() => {
+		const hasPermissionAgencyId = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'create', scope: 'alerts' },
+			requiredValue: alertData?.agency_id,
+			resourceKey: 'agency_ids',
+		});
+		const hasPermissionReferenceType = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'create', scope: 'alerts' },
+			requiredValue: alertData?.reference_type,
+			resourceKey: 'reference_types',
+		});
+		return hasPermissionAgencyId && hasPermissionReferenceType;
+	}, [alertData?.agency_id, alertData?.reference_type, meData?.permissions]);
+
+	const { duplicateEnabled, editEnabled, updateEnabled } = useStandardFormCapabilities({
+		duplicate: {
+			hasPermission: hasDuplicatePermission,
+			isDuplicating: isDuplicating,
+		},
 		form: {
 			isDirty,
 			isValid,
 		},
 		loading: {
 			isLoading: alertDataLoading,
+		},
+		locked: {
+			isLocked: alertData?.is_locked,
 		},
 		update: {
 			hasPermission: hasUpdatePermission,
@@ -93,9 +128,11 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 
 	const stateValue: StandardFormContextValue<UpdateAlertDto> = useMemo(() => ({
 		actions: {
+			duplicate: handleDuplicate,
 			update: handleUpdate,
 		},
 		capabilities: {
+			duplicateEnabled,
 			editEnabled,
 			updateEnabled,
 		},

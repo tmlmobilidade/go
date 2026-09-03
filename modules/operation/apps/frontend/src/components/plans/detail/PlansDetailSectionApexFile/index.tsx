@@ -3,7 +3,7 @@
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, Collapsible, fetchApiData, FileItem, FileUpload, HasPermission, Label, Section, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
+import { Button, Collapsible, fetchApiData, FileItem, FileUpload, HasPermission, Label, Section, useHandleAction, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -53,7 +53,7 @@ export function PlanDetailSectionApexFile() {
 		}
 	};
 
-	const { action: handleSendApexNotification, isLoading: isSendingApexNotification } = useHandleUpdate({
+	const { action: handleSendApexNotification, isLoading: isSendingApexNotification } = useHandleAction({
 		fetchFn: async () => await fetchApiData<unknown>({ url: API_ROUTES.operation.PLANS_DETAIL_APEX_FILE_SEND_NOTIFICATION(planDetailContext.data.id) }),
 		onSuccess: () => {},
 	});

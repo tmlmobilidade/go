@@ -3,7 +3,7 @@
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Session } from '@tmlmobilidade/go-types-core';
-import { fetchApiData, PasswordInput, TextInput, useHandleUpdate, useQueryState, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, PasswordInput, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -25,7 +25,7 @@ export function LoginForm() {
 	//
 	// B. Handle actions
 
-	const { action: handleLogin, isLoading: isLoggingIn } = useHandleUpdate({
+	const { action: handleLogin, isLoading: isLoggingIn } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Session>({ body: { email: emailValue, password: passwordValue }, method: 'POST', url: API_ROUTES.core.AUTH_LOGIN }),
 		onError: (error) => {
 			useToast.error({

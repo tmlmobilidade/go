@@ -4,7 +4,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiMultipart, type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -72,7 +72,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 	//
 	// D. Handle actions
 
-	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE(organizationId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
@@ -81,7 +81,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_DELETE(organizationId) }),
 		onSuccess: () => {
 			organizationsListMutate();
@@ -89,7 +89,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Organization>({ method: 'PUT', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_LOCK(organizationId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
@@ -98,21 +98,21 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 		},
 	});
 
-	const { action: handleDeleteLightLogo, isLoading: isDeletingLightLogo } = useHandleUpdate({
+	const { action: handleDeleteLightLogo, isLoading: isDeletingLightLogo } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_DELETE_IMAGE_VAR(organizationId, 'light') }),
 		onSuccess: () => {
 			organizationsImageDetailLightMutate();
 		},
 	});
 
-	const { action: handleDeleteDarkLogo, isLoading: isDeletingDarkLogo } = useHandleUpdate({
+	const { action: handleDeleteDarkLogo, isLoading: isDeletingDarkLogo } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_DELETE_IMAGE_VAR(organizationId, 'dark') }),
 		onSuccess: () => {
 			organizationsImageDetailDarkMutate();
 		},
 	});
 
-	const { action: handleUpdateLightLogo, isLoading: isUpdatingLightLogo } = useHandleUpdate({
+	const { action: handleUpdateLightLogo, isLoading: isUpdatingLightLogo } = useHandleAction({
 		fetchFn: async (imageFile: File) => {
 			const formData = new FormData();
 			formData.append('light', imageFile);
@@ -123,7 +123,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 		},
 	});
 
-	const { action: handleUpdateDarkLogo, isLoading: isUpdatingDarkLogo } = useHandleUpdate({
+	const { action: handleUpdateDarkLogo, isLoading: isUpdatingDarkLogo } = useHandleAction({
 		fetchFn: async (imageFile: File) => {
 			const formData = new FormData();
 			formData.append('dark', imageFile);

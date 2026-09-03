@@ -3,7 +3,7 @@
 import { useAlertsListData } from '@/components/alerts/list/use-alerts-list-data';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Alert } from '@tmlmobilidade/go-types-operation';
-import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { useAlertsCreateFormContext } from './AlertsCreateForm.context';
@@ -30,7 +30,7 @@ export function useAlertsCreatePublish(): UseAlertsCreatePublishReturnType {
 	//
 	// B. Handle actions
 
-	const { action, isLoading } = useHandleUpdate({
+	const { action, isLoading } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'POST', url: API_ROUTES.operation.ALERTS_CREATE }),
 		onSuccess: ({ data }) => {
 			form.reset();

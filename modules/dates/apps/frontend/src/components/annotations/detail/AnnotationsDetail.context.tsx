@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Annotation, type UpdateAnnotationDto, UpdateAnnotationSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -57,7 +57,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 	//
 	// D. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Annotation>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
@@ -66,7 +66,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Annotation>({ method: 'DELETE', url: API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId) }),
 		onSuccess: () => {
 			form.resetDirty();
@@ -75,7 +75,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Annotation>({ url: API_ROUTES.dates.ANNOTATIONS_DETAIL_LOCK(annotationId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();

@@ -56,7 +56,7 @@ server.register(
 
 		instance.get('/:id/lock', { preHandler: authorizationMiddleware('alerts', ['lock']) }, lockAlertHandler);
 
-		instance.get('/:id/duplicate', { preHandler: authorizationMiddleware('alerts', ['create']) }, duplicateAlertHandler);
+		instance.post('/:id/duplicate', { preHandler: authorizationMiddleware('alerts', ['create']) }, duplicateAlertHandler);
 
 		instance.post('/compose', { preHandler: authorizationMiddleware('alerts', ['create']) }, composeAlertHandler);
 

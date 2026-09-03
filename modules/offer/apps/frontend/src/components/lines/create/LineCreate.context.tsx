@@ -3,7 +3,7 @@
 import { closeCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateLineDto, CreateLineSchema, type LineNormalized } from '@tmlmobilidade/go-types-offer';
-import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -57,7 +57,7 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// D. Handle actions
 
-	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<LineNormalized>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.LINES_LIST }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();

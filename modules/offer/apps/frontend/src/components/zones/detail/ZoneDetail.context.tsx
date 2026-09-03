@@ -4,7 +4,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type UpdateZoneDto, UpdateZoneSchema, type Zone } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -61,7 +61,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 	//
 	// D. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Zone>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.ZONES_DETAIL(zoneId) }),
 		onSuccess: (data) => {
 			form.resetDirty();
@@ -70,7 +70,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Zone>({ method: 'DELETE', url: API_ROUTES.offer.ZONES_DETAIL(zoneId) }),
 		onSuccess: () => {
 			form.resetDirty();
@@ -79,7 +79,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Zone>({ method: 'PUT', url: API_ROUTES.offer.ZONES_DETAIL_LOCK(zoneId) }),
 		onSuccess: (data) => {
 			form.resetDirty();

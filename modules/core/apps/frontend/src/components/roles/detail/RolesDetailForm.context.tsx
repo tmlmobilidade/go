@@ -4,7 +4,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -51,7 +51,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// D. Handle actions
 
-	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => {
 			const values = form.getValues();
 			const parsed = UpdateRoleSchema.safeParse(form.getValues());
@@ -65,7 +65,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Role>({ method: 'DELETE', url: API_ROUTES.core.ROLES_DELETE(roleId) }),
 		onSuccess: () => {
 			rolesListMutate();
@@ -73,7 +73,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Role>({ method: 'PUT', url: API_ROUTES.core.ROLES_DETAIL(roleId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);

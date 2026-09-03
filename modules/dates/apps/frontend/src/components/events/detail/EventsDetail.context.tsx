@@ -4,7 +4,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Event, EventRule, Line, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -79,7 +79,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	//
 	// D. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Event>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.dates.EVENTS_DETAIL(eventId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
@@ -88,7 +88,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Event>({ method: 'DELETE', url: API_ROUTES.dates.EVENTS_DETAIL(eventId) }),
 		onSuccess: () => {
 			form.resetDirty();
@@ -97,7 +97,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Event>({ url: API_ROUTES.dates.EVENTS_DETAIL_LOCK(eventId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();

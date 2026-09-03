@@ -154,13 +154,13 @@ Each module has its own scope and set of actions in `PermissionCatalog.all.[modu
 
 ## Mutations
 
-Wrap all mutations in `useHandleUpdate` from `@tmlmobilidade/ui`. It handles loading state and success/error callbacks consistently.
+Wrap all mutations in `useHandleAction` from `@tmlmobilidade/ui`. It handles loading state and success/error callbacks consistently.
 
 ```tsx
-import { useHandleUpdate } from '@tmlmobilidade/ui';
+import { useHandleAction } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 
-const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+const { action: handleSave, isLoading: isSaving } = useHandleAction({
   fetchFn: async () => await fetchData<Alert>(
     API_ROUTES.operation.ALERTS_DETAIL(alertId),
     'PUT',

@@ -4,7 +4,7 @@ import { closeCreateRouteModal } from '@/components/routes/create/RouteCreate.mo
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateRouteDto, CreateRouteSchema, type LineNormalized, type Route } from '@tmlmobilidade/go-types-offer';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -60,7 +60,7 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	//
 	// D. Handle actions
 
-	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.ROUTES_LIST }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();

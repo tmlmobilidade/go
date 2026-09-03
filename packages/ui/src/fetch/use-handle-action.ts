@@ -7,7 +7,7 @@ import { useToast } from '../hooks/toast';
 
 /* * */
 
-interface UseHandleUpdateProps<T, A = void> {
+interface UseHandleActionProps<T, A = void> {
 	fetchFn: (requestData: A) => Promise<ApiResponse<T>>
 	labels?: {
 		error_message?: string
@@ -19,17 +19,17 @@ interface UseHandleUpdateProps<T, A = void> {
 	onSuccess: (response: ApiResponse<T>) => void
 }
 
-interface UseHandleUpdateReturnType<A> {
+interface UseHandleActionReturnType<A> {
 	action: (requestData: A) => Promise<void>
 	isError: Error | undefined
 	isLoading: boolean
 }
 
 /**
- * Handles the update of an item.
- * @param params The parameters for the update operation.
+ * Handles an API action (create, update, delete, login, etc.).
+ * @param params The parameters for the action.
  */
-export function useHandleUpdate<T, A = void>({ fetchFn, labels, onError, onSuccess }: UseHandleUpdateProps<T, A>): UseHandleUpdateReturnType<A> {
+export function useHandleAction<T, A = void>({ fetchFn, labels, onError, onSuccess }: UseHandleActionProps<T, A>): UseHandleActionReturnType<A> {
 	//
 
 	//
@@ -76,8 +76,8 @@ export function useHandleUpdate<T, A = void>({ fetchFn, labels, onError, onSucce
 				return;
 			}
 			setIsLoading(false);
-			setIsError(new Error('Erro ao atualizar item'));
-			onErrorRef.current?.(new Error('Erro ao atualizar item'));
+			setIsError(new Error('Erro ao processar pedido'));
+			onErrorRef.current?.(new Error('Erro ao processar pedido'));
 			return;
 		}
 		setIsLoading(false);

@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { fetchApiData, useHandleUpdate } from '@tmlmobilidade/ui';
+import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useAgenciesListData } from '../list/use-agencies-list-data';
@@ -48,7 +48,7 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// C. Handle actions
 
-	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);

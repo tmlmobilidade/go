@@ -121,7 +121,7 @@ import {
 } from '@tmlmobilidade/ui';
 
 // Context utilities
-import { useHandleUpdate } from '@tmlmobilidade/ui';
+import { useHandleAction } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 
 // Types

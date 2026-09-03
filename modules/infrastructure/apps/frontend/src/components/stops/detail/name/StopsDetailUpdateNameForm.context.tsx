@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsUpdateNameRequest, StopsUpdateNameRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { type StandardFormContextValue, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { fetchApiData, useHandleUpdate } from '@tmlmobilidade/ui';
+import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useStopsListData } from '../../list/use-stops-list-data';
@@ -53,7 +53,7 @@ export function StopsDetailUpdateNameFormContextProvider({ children }: PropsWith
 	//
 	// C. Handle actions
 
-	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.infrastructure.STOPS_UPDATE_NAME(stopId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);

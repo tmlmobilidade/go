@@ -8,7 +8,7 @@ import { type PlanChangeItem, PlanChangeItemSchema, type ValidationListItem } fr
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, type StandardFormContextValue, useHandleUpdate, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -93,7 +93,7 @@ export function PlanChangeContextProvider({ children, planId }: PropsWithChildre
 	//
 	// E. Handle actions
 
-	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate<Plan>({
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction<Plan>({
 		fetchFn: async () => await fetchApiData<Plan>({
 			body: form.getValues(),
 			method: 'POST',

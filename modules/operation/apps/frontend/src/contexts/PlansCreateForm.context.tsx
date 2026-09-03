@@ -9,7 +9,7 @@ import { useValidationsDetailData } from '@/components/validations/detail/use-va
 import { useValidationsListData } from '@/components/validations/list/use-validations-list-data';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type GtfsValidation, type Plan } from '@tmlmobilidade/go-types-operation';
-import { closeModal, fetchApiData, useHandleUpdate } from '@tmlmobilidade/ui';
+import { closeModal, fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
@@ -60,7 +60,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 	//
 	// C. Handle actions
 
-	const { action: createPlan, isError: createPlanError, isLoading: isCreatingPlan } = useHandleUpdate<Plan>({
+	const { action: createPlan, isError: createPlanError, isLoading: isCreatingPlan } = useHandleAction<Plan>({
 		fetchFn: async () => await fetchApiData<Plan>({
 			body: { validation_id: validationId },
 			method: 'POST',
@@ -80,7 +80,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		},
 	});
 
-	const { action: requestApproval, isError: requestApprovalError, isLoading: isRequestingApproval } = useHandleUpdate<GtfsValidation>({
+	const { action: requestApproval, isError: requestApprovalError, isLoading: isRequestingApproval } = useHandleAction<GtfsValidation>({
 		fetchFn: async () => await fetchApiData<GtfsValidation>({
 			url: API_ROUTES.operation.GTFS_VALIDATIONS_DETAIL_REQUEST_APPROVAL(validationId),
 		}),

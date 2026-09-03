@@ -4,7 +4,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type LineNormalized, type Route, type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -64,7 +64,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	//
 	// D. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
 		onSuccess: (data) => {
 			form.resetDirty();
@@ -73,7 +73,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Route>({ body: routeData, method: 'DELETE', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
 		onSuccess: () => {
 			form.resetDirty();
@@ -82,7 +82,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Route>({ url: API_ROUTES.offer.ROUTES_DETAIL_LOCK(routeId) }),
 		onSuccess: (data) => {
 			form.resetDirty();

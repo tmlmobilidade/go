@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
 import { type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { fetchApiData, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -93,7 +93,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// E. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.infrastructure.STOPS_UPDATE(stopId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
@@ -102,7 +102,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Stop>({ method: 'DELETE', url: API_ROUTES.infrastructure.STOPS_DELETE(stopId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
@@ -111,7 +111,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Stop>({ method: 'PUT', url: API_ROUTES.infrastructure.STOPS_LOCK(stopId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();

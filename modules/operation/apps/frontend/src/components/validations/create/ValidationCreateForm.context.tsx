@@ -4,7 +4,7 @@ import { type WorkerMessage } from '@/types/worker';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ValidationCreateItem, ValidationCreateItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { fetchApiMultipart, keepUrlParams, type SelectDataItem, type StandardFormContextValue, useHandleUpdate, useStandardForm, useStandardFormCapabilities, useToast } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, keepUrlParams, type SelectDataItem, type StandardFormContextValue, useHandleAction, useStandardForm, useStandardFormCapabilities, useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -117,7 +117,7 @@ export function ValidationCreateContextProvider({ children }: PropsWithChildren)
 		);
 	}, [matchingAgencies]);
 
-	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate<GtfsValidation, CreateValidationRequest>({
+	const { action: handleCreate, isLoading: isCreating } = useHandleAction<GtfsValidation, CreateValidationRequest>({
 		fetchFn: async ({ agencyId, file, gtfsAgency, gtfsFeedInfo }) => {
 			const uploadFormData = new FormData();
 			uploadFormData.append('agency_id', agencyId);
