@@ -34,7 +34,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	//
 	// A. Setup variables
 
-	const { districtMap, localityMap, municipalityMap, parishMap } = useStopsLocationsData({
+	const { districtMap, isLoading: isLoadingLocations, localityMap, municipalityMap, parishMap } = useStopsLocationsData({
 		permissions: { actions: ['read'], scope: 'stops' },
 	});
 
@@ -90,7 +90,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	return useMemo(() => ({
 		data: searchResultsData,
 		error: error?.error,
-		isLoading,
+		isLoading: isLoading || isLoadingLocations,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
