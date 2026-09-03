@@ -1,63 +1,12 @@
 /* * */
 
-import { type Files } from '@tmlmobilidade/go-utils-files';
-import { parse as csvParser } from 'csv-parse';
-import { stringify as csvStringifier } from 'csv-stringify';
+import { GtfsStrictV30Shapes, GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { BatchWriter, streamCsvFile } from '@tmlmobilidade/go-utils-exec';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 import { join } from 'node:path';
-import { pipeline } from 'node:stream/promises';
-
-/* * */
-
-type CsvRow = Record<string, string>;
-
-type GtfsZipInstance = Awaited<ReturnType<typeof Files.unzip>>;
-
-/* * */
-
-/**
- * Parsing is lossless on purpose: no casting and no trimming, so that every
- * column other than `shape_id` is written back exactly as it was read.
- */
-const CSV_PARSER_OPTIONS = {
-	bom: true,
-	columns: true,
-	record_delimiter: ['\n', '\r', '\r\n'],
-	skip_empty_lines: true,
-};
-
-/* * */
-
-/**
- * Streams a CSV entry of the zip archive through the given row mapper,
- * writing the encoded result to the given file path. The columns of the
- * output are taken from the first mapped row.
- */
-async function rewriteCsvEntry(zipInstance: GtfsZipInstance, entryName: string, targetFilePath: string, rowMapper: (rowData: CsvRow) => CsvRow): Promise<void> {
-	//
-
-	const zipEntry = zipInstance.file(entryName);
-
-	if (!zipEntry) throw new Error(`Entry "${entryName}" not found in the zip archive.`);
-
-	const mapRows = async function* (rowsIterable: AsyncIterable<CsvRow>) {
-		for await (const rowData of rowsIterable) {
-			yield rowMapper(rowData);
-		}
-	};
-
-	await pipeline(
-		zipEntry.nodeStream(),
-		csvParser(CSV_PARSER_OPTIONS),
-		mapRows,
-		csvStringifier({ header: true }),
-		fs.createWriteStream(targetFilePath),
-	);
-
-	//
-}
-
-/* * */
+import Papa from 'papaparse';
 
 /**
  * Rewrites the `shape_id` values of trips.txt and shapes.txt to match the `pattern_id`
@@ -68,53 +17,114 @@ async function rewriteCsvEntry(zipInstance: GtfsZipInstance, entryName: string, 
  * must outlive the archive generation.
  * @returns True if the zip archive was updated.
  */
-export async function applyPatternIdsAsShapeIds(zipInstance: GtfsZipInstance, workdirPath: string): Promise<boolean> {
+export async function applyPatternIdsAsShapeIds(workdirPath: string): Promise<void> {
 	//
 
 	//
-	// Rewrite trips.txt, collecting the shape_id to pattern_id mapping
-	// that is needed to rewrite shapes.txt afterwards.
+	// Set up a map to collect the shape_id -> pattern_id relationships.
 
-	const patternIdByShapeId = new Map<string, string>();
+	const shapeIdToPatternIdMap = new Map<string, string>();
 
-	let hasChanges = false;
+	//
+	// Prepare the output directory.
 
-	const tripsFilePath = join(workdirPath, 'trips.txt');
+	const outputFilePath = join(workdirPath, 'output');
 
-	await rewriteCsvEntry(zipInstance, 'trips.txt', tripsFilePath, (tripRow) => {
-		//
+	try {
+		fs.rmSync(outputFilePath, { force: true, recursive: true });
+		fs.mkdirSync(outputFilePath, { recursive: true });
+		Logger.success(`Prepared output directory at "${outputFilePath}".`, 1);
+	} catch (error) {
+		Logger.error({ error, message: `Error preparing output path "${outputFilePath}".` });
+		process.exit(1);
+	}
 
-		const patternId = tripRow.pattern_id;
+	//
+	// Initialize the writers for the trips.txt and shapes.txt files.
 
-		if (!patternId) return tripRow;
-
-		if (tripRow.shape_id) patternIdByShapeId.set(tripRow.shape_id, patternId);
-		if (tripRow.shape_id !== patternId) hasChanges = true;
-
-		return { ...tripRow, shape_id: patternId };
-
-		//
+	const tripsWriter = new BatchWriter({
+		batch_size: 100_000,
+		insertFn: async (data) => {
+			const dirPath = `${outputFilePath}/trips.txt`;
+			const fileAlreadyExists = fs.existsSync(dirPath);
+			let csvData = Papa.unparse(data, { header: !fileAlreadyExists, newline: '\n', skipEmptyLines: 'greedy' });
+			if (fileAlreadyExists) csvData = '\n' + csvData;
+			fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
+		},
+		title: 'trips',
 	});
 
-	if (!hasChanges) return false;
-
-	//
-	// Rewrite shapes.txt with the mapping collected from trips.txt.
-
-	const shapesFilePath = join(workdirPath, 'shapes.txt');
-
-	await rewriteCsvEntry(zipInstance, 'shapes.txt', shapesFilePath, (shapesRow) => {
-		const patternId = patternIdByShapeId.get(shapesRow.shape_id);
-		return patternId ? { ...shapesRow, shape_id: patternId } : shapesRow;
+	const shapesWriter = new BatchWriter({
+		batch_size: 100_000,
+		insertFn: async (data) => {
+			const dirPath = `${outputFilePath}/shapes.txt`;
+			const fileAlreadyExists = fs.existsSync(dirPath);
+			let csvData = Papa.unparse(data, { header: !fileAlreadyExists, newline: '\n', skipEmptyLines: 'greedy' });
+			if (fileAlreadyExists) csvData = '\n' + csvData;
+			fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
+		},
+		title: 'shapes',
 	});
 
 	//
-	// Add both rewritten files back into the zip archive.
+	// Parse the trips.txt file, collecting the shape_id to pattern_id mapping.
 
-	zipInstance.file('trips.txt', fs.createReadStream(tripsFilePath));
-	zipInstance.file('shapes.txt', fs.createReadStream(shapesFilePath));
+	const tripsTimer = new Timer();
 
-	return true;
+	Logger.info({ message: 'Reading zip entry "trips.txt"...' });
+
+	const parseEachTripsRow = async (data: GtfsStrictV30Trips) => {
+		// Skip if this row does not have a pattern_id
+		if (!('pattern_id' in data && typeof data.pattern_id === 'string')) throw new Error('Row does not have a pattern_id');
+		// Get the current shape_id and pattern_id values
+		const currentShapeId = data.shape_id;
+		const currentPatternId = data.pattern_id;
+		// Check if the values are different
+		if (currentShapeId === currentPatternId) throw new Error(`Shape ID "${currentShapeId}" and pattern ID "${currentPatternId}" are already the same`);
+		// Update the map and write the row to the output file
+		shapeIdToPatternIdMap.set(currentShapeId, currentPatternId);
+		tripsWriter.write({ ...data, shape_id: currentPatternId });
+	};
+
+	await streamCsvFile(`${workdirPath}/trips.txt`, parseEachTripsRow);
+
+	tripsWriter.flush();
+
+	Logger.success(`Finished processing "trips.txt" in ${tripsTimer.get()}.`, 1);
+
+	//
+	// Parse the shapes.txt file, writing the rows to the output file.
+
+	const shapesTimer = new Timer();
+
+	Logger.info({ message: 'Reading zip entry "shapes.txt"...' });
+
+	const parseEachShapesRow = async (data: GtfsStrictV30Shapes) => {
+		// Get the current shape_id and pattern_id values
+		const currentShapeId = data.shape_id;
+		const currentPatternId = shapeIdToPatternIdMap.get(currentShapeId);
+		// Check if the values are different
+		if (currentShapeId === currentPatternId) throw new Error(`Shape ID "${currentShapeId}" and pattern ID "${currentPatternId}" are already the same`);
+		// Update the map and write the row to the output file
+		shapesWriter.write({ ...data, shape_id: currentPatternId });
+	};
+
+	await streamCsvFile(`${workdirPath}/shapes.txt`, parseEachShapesRow);
+
+	shapesWriter.flush();
+
+	Logger.success(`Finished processing "shapes.txt" in ${shapesTimer.get()}.`, 1);
+
+	//
+	// Replace the original trips.txt and shapes.txt files with the new ones.
+
+	fs.rmSync(`${workdirPath}/extracted/trips.txt`, { force: true });
+	fs.rmSync(`${workdirPath}/extracted/shapes.txt`, { force: true });
+
+	fs.renameSync(`${outputFilePath}/trips.txt`, `${workdirPath}/extracted/trips.txt`);
+	fs.renameSync(`${outputFilePath}/shapes.txt`, `${workdirPath}/extracted/shapes.txt`);
+
+	Logger.success(`Replaced original trips.txt and shapes.txt files with the new ones.`, 1);
 
 	//
 }

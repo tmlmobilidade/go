@@ -1,24 +1,14 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type GtfsStrictV30Agency, GtfsStrictV30AgencySchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { stringify as csvStringify } from 'csv-stringify/sync';
 
 /**
  * Builds the contents of the agency.txt file from the given Agency document.
  */
-export async function buildAgencyTxt(planData: Plan): Promise<string> {
+export function buildAgencyTxt(agencyData: Agency): string {
 	//
-
-	//
-	// Fetch the agency data from the database.
-
-	const agencyData = await goDb.core.agencies.findById(planData.agency_id);
-
-	if (!agencyData) {
-		throw new Error(`Plan "${planData._id}" has no agency.`);
-	}
 
 	//
 	// Build and validate the agency row.

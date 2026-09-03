@@ -32,7 +32,9 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"csv-parse": "7.0.2",
-		"csv-stringify": "6.8.3"
+		"csv-stringify": "6.8.3",
+		"papaparse": "5.7.0",
+		"yazl": "3.3.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

@@ -1,6 +1,6 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type GtfsStrictV30FeedInfo, GtfsStrictV30FeedInfoSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { stringify as csvStringify } from 'csv-stringify/sync';
@@ -8,17 +8,8 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 /**
  * Builds the contents of the feed_info.txt file from the given Plan and Agency documents.
  */
-export async function buildFeedInfoTxt(planData: Plan): Promise<string> {
+export function buildFeedInfoTxt(planData: Plan, agencyData: Agency): string {
 	//
-
-	//
-	// Fetch the agency data from the database.
-
-	const agencyData = await goDb.core.agencies.findById(planData.agency_id);
-
-	if (!agencyData) {
-		throw new Error(`Plan "${planData._id}" has no agency.`);
-	}
 
 	//
 	// Build and validate the feed info row.
