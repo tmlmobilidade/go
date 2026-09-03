@@ -6,7 +6,10 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type CreatePlanDto, type HashablePlanMetadata, type Plan } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { calculateZipFileHash } from '@tmlmobilidade/go-utils-exec';
 import { createHash } from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * Creates a new plan from a validation ID.
@@ -104,10 +107,23 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 				finalPlanData = null;
 			},
 			onSuccess: async (_ctx, result) => {
+				//
+
+				const operationFileData = await storageProvider.findById(result._id);
+
+				const temporaryDirectory = fs.mkdtempDisposableSync('calculate-zip-file-hash');
+				const downloadResponse = await fetch(operationFileData.url);
+				const downloadArrayBuffer = await downloadResponse.arrayBuffer();
+				const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
+				fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
+
+				const originalGtfsHash = await calculateZipFileHash(downloadFilePath);
+
 				const hashablePlanMetadata: HashablePlanMetadata = {
 					_id: planResult._id,
 					active_from: planResult.active_from,
 					active_until: planResult.active_until,
+					operation_file_hash: originalGtfsHash,
 					operation_file_id: result._id,
 				};
 
