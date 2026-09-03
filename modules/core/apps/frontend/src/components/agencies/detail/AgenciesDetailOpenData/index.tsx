@@ -26,7 +26,7 @@ export function AgenciesDetailOpenData() {
 			title={t('default:agencies.detail.SectionOpenData.title')}
 		>
 			<Section gap="lg">
-				<Grid columns="abc">
+				<Grid columns="abc" gap="md">
 					<StandardFormController
 						control={form.control}
 						name="open_data.details.name"
@@ -70,7 +70,7 @@ export function AgenciesDetailOpenData() {
 						)}
 					/>
 				</Grid>
-				<Grid columns="ab">
+				<Grid columns="ab" gap="md">
 					<StandardFormController
 						control={form.control}
 						name="open_data.details.website_url"

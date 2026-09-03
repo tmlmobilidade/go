@@ -4,7 +4,7 @@
 			"text": "Seleccione una agencia"
 		},
 		"detail": {
-			"SectionAlertsMap": {
+			"SectionAlerts": {
 				"description": "Mapeo de causas, efectos y tipos de referencia para alertas de servicio.",
 				"table": {
 					"header": {
@@ -12,17 +12,6 @@
 					}
 				},
 				"title": "Alertas"
-			},
-			"SectionApex": {
-				"description": "Configuración del sistema APEX para este operador.",
-				"fields": {
-					"contact_emails": {
-						"description": "Emails que serán notificados cuando se dispongan de nuevos archivos de configuración APEX.",
-						"label": "Emails de contacto APEX",
-						"placeholder": "email@example.com"
-					}
-				},
-				"title": "Configuración APEX"
 			},
 			"SectionBasicInfo": {
 				"description": "Nombre, email, teléfono, URL y zona horaria.",
@@ -136,6 +125,25 @@
 					}
 				},
 				"title": "Datos Abiertos"
+			},
+			"SectionPlans": {
+				"description": "Configuración para la aplicación de planos.",
+				"fields": {
+					"apex_notification_emails": {
+						"description": "Emails que serán notificados quando forem disponibilizados novos ficheiros de configuração APEX.",
+						"label": "Emails de contacto APEX",
+						"placeholder": "email@example.com"
+					},
+					"approval_notification_emails": {
+						"description": "Emails que serão notificados quando um plano for aprovado.",
+						"label": "Emails para notificação de aprovação de Planos"
+					},
+					"approval_request_emails": {
+						"description": "Emails que serão notificados quando um plano for solicitado para aprovação.",
+						"label": "Emails para pedidos de aprovação de Planos"
+					}
+				},
+				"title": "Planos"
 			},
 			"SectionValidationRules": {
 				"description": "Archivo de reglas de validación del GTFS",

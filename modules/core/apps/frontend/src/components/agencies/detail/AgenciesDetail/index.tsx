@@ -1,12 +1,11 @@
 'use client';
 
-import { AgenciesDetailAlertsMap } from '@/components/agencies/detail/AgenciesDetailAlertsMap';
-import { AgenciesDetailApex } from '@/components/agencies/detail/AgenciesDetailApex';
+import { AgenciesDetailAlerts } from '@/components/agencies/detail/AgenciesDetailAlerts';
 import { AgenciesDetailBasicInfo } from '@/components/agencies/detail/AgenciesDetailBasicInfo';
-import { AgenciesDetailContacts } from '@/components/agencies/detail/AgenciesDetailContacts';
 import { AgenciesDetailFinancials } from '@/components/agencies/detail/AgenciesDetailFinancials';
 import { AgenciesDetailHeader } from '@/components/agencies/detail/AgenciesDetailHeader';
 import { AgenciesDetailOpenData } from '@/components/agencies/detail/AgenciesDetailOpenData';
+import { AgenciesDetailPlans } from '@/components/agencies/detail/AgenciesDetailPlans';
 import { Pane } from '@tmlmobilidade/ui';
 
 import { useAgenciesDetailData } from '../use-agencies-detail-data';
@@ -25,11 +24,9 @@ export function AgenciesDetail() {
 		>
 			<AgenciesDetailBasicInfo />
 			<AgenciesDetailFinancials />
-			<AgenciesDetailContacts />
 			<AgenciesDetailOpenData />
-			<AgenciesDetailApex />
-			{/* <AgencySectionValidationRules /> */}
-			<AgenciesDetailAlertsMap />
+			<AgenciesDetailPlans />
+			<AgenciesDetailAlerts />
 		</Pane>
 	);
 }

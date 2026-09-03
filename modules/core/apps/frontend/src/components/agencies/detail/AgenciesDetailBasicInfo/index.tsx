@@ -28,7 +28,7 @@ export function AgenciesDetailBasicInfo() {
 			title={t('default:agencies.detail.SectionBasicInfo.title')}
 		>
 			<Section gap="lg">
-				<Grid columns="abcd" gap="lg">
+				<Grid columns="abc" gap="lg">
 					<StandardFormController
 						control={form.control}
 						name="name"
@@ -42,22 +42,6 @@ export function AgenciesDetailBasicInfo() {
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.name.placeholder')}
 								readOnly={!capabilities.editEnabled}
 								withAsterisk={!CreateAgencySchema.shape.name.isOptional()}
-							/>
-						)}
-					/>
-					<StandardFormController
-						control={form.control}
-						name="public_name"
-						render={({ field, fieldState }) => (
-							<TextInput
-								defaultValue={field.value}
-								error={fieldState.error?.message}
-								label={t('default:agencies.detail.SectionBasicInfo.fields.public_name.label')}
-								maxLength={CreateAgencySchema.shape.public_name.maxLength}
-								onChange={field.onChange}
-								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.public_name.placeholder')}
-								readOnly={!capabilities.editEnabled}
-								withAsterisk={!CreateAgencySchema.shape.public_name.isOptional()}
 							/>
 						)}
 					/>
@@ -94,75 +78,7 @@ export function AgenciesDetailBasicInfo() {
 						)}
 					/>
 				</Grid>
-				<Grid columns="abc" gap="lg">
-					<StandardFormController
-						control={form.control}
-						name="public_email"
-						render={({ field, fieldState }) => (
-							<TextInput
-								defaultValue={field.value}
-								error={fieldState.error?.message}
-								label={t('default:agencies.detail.SectionBasicInfo.fields.public_email.label')}
-								maxLength={CreateAgencySchema.shape.public_email.maxLength}
-								onChange={field.onChange}
-								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.public_email.placeholder')}
-								readOnly={!capabilities.editEnabled}
-								type="email"
-								withAsterisk={!CreateAgencySchema.shape.public_email.isOptional()}
-							/>
-						)}
-					/>
-					<StandardFormController
-						control={form.control}
-						name="phone"
-						render={({ field, fieldState }) => (
-							<TextInput
-								defaultValue={field.value}
-								error={fieldState.error?.message}
-								label={t('default:agencies.detail.SectionBasicInfo.fields.phone.label')}
-								maxLength={CreateAgencySchema.shape.phone.maxLength}
-								onChange={field.onChange}
-								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.phone.placeholder')}
-								readOnly={!capabilities.editEnabled}
-								type="tel"
-								withAsterisk={!CreateAgencySchema.shape.phone.isOptional()}
-							/>
-						)}
-					/>
-					<StandardFormController
-						control={form.control}
-						name="website_url"
-						render={({ field, fieldState }) => (
-							<TextInput
-								defaultValue={field.value}
-								error={fieldState.error?.message}
-								label={t('default:agencies.detail.SectionBasicInfo.fields.website_url.label')}
-								maxLength={CreateAgencySchema.shape.website_url.maxLength}
-								onChange={field.onChange}
-								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.website_url.placeholder')}
-								readOnly={!capabilities.editEnabled}
-								type="url"
-								withAsterisk={!CreateAgencySchema.shape.website_url.isOptional()}
-							/>
-						)}
-					/>
-					<StandardFormController
-						control={form.control}
-						name="fare_url"
-						render={({ field, fieldState }) => (
-							<TextInput
-								defaultValue={field.value}
-								error={fieldState.error?.message}
-								label={t('default:agencies.detail.SectionBasicInfo.fields.fare_url.label')}
-								maxLength={CreateAgencySchema.shape.fare_url.maxLength}
-								onChange={field.onChange}
-								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.fare_url.placeholder')}
-								readOnly={!capabilities.editEnabled}
-								type="url"
-								withAsterisk={!CreateAgencySchema.shape.fare_url.isOptional()}
-							/>
-						)}
-					/>
+				<Grid columns="ab" gap="lg">
 					<StandardFormController
 						control={form.control}
 						name="timezone"
