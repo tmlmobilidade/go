@@ -71,6 +71,8 @@
 		"dev:hub:publish-alerts": "npm run build:hub:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-alerts",
 		"dev:hub:publish-gtfs": "npm run build:hub:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-gtfs",
 		"dev:hub:publish-gtfs-cm": "npm run build:hub:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-gtfs-cm",
+		"dev:hub:publish-gtfs-cm:prd": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-gtfs-cm",
+		"dev:hub:publish-gtfs:prd": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-gtfs",
 		"dev:hub:publish-metrics": "npm run build:hub:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-metrics",
 		"dev:hub:publish-network": "npm run build:hub:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-network",
 		"dev:hub:publish-plans": "npm run build:hub:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-plans",

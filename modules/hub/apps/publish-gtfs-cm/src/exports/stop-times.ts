@@ -19,14 +19,15 @@ import { type ExportGtfsContext } from '../types/context.js';
 export async function exportStopTimesFile(context: ExportGtfsContext, planData: Plan, sqlTables: GtfsSQLTables) {
 	//
 
-	const allStopsList = await goDb.infrastructure.stops.findMany();
+	const allStopsList = await goDb.infrastructure.stops.findMany({ 'flags.agency_ids': { $in: [planData.agency_id] } });
 	const allStopsMap = new Map<string, string>();
 
 	allStopsList.forEach((stopData) => {
 		allStopsMap.set(stopData._id, stopData._id);
 		stopData.flags?.forEach((flag) => {
-			if (flag.is_harmonized) allStopsMap.set(flag.stop_id, stopData._id);
-			else allStopsMap.set(flag.stop_id, flag.stop_id);
+			if (flag.agency_ids?.includes(planData.agency_id)) {
+				allStopsMap.set(flag.stop_id, stopData._id);
+			}
 		});
 		stopData.legacy_ids?.forEach((legacyId) => {
 			allStopsMap.set(legacyId, stopData._id);
