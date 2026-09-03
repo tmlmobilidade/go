@@ -37,7 +37,6 @@
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
-		"@tmlmobilidade/go-types-gtfs-strict": "*",
 		"@tmlmobilidade/go-types-gtfs-validator": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"luxon": "3.7.2",
