@@ -22,7 +22,7 @@
 		"@fastify/multipart": "10.1.1",
 		"@fastify/websocket": "11.3.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-utils-files": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",

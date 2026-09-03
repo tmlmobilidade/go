@@ -20,7 +20,7 @@
 		"@fastify/multipart": "10.1.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-utils-files": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-dates-pckg-types": "*",

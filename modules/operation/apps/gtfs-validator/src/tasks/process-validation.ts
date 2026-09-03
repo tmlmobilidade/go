@@ -2,7 +2,7 @@
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
-import { getTmpWorkdirPath } from '@tmlmobilidade/files';
+import { getTmpWorkdirPath } from '@tmlmobilidade/go-utils-files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';

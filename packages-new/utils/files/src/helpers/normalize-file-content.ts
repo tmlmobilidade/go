@@ -1,6 +1,6 @@
 /* * */
 
-import { isBrowser } from '@/utils/is-browser.js';
+import { isBrowser } from './is-browser.js';
 
 /**
  * Converts the input file data into an ArrayBuffer or Uint8Array suitable for JSZip.

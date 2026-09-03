@@ -1,10 +1,11 @@
 /* * */
 
-import { isBrowser } from '@/utils/is-browser.js';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import fs from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
+import { isBrowser } from './is-browser.js';
 
 /**
  * Gets the temporary working directory path for a given ID.

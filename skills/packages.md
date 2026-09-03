@@ -247,7 +247,7 @@ Structured logging. Use this instead of `console.log` in production services.
 ### `@tmlmobilidade/timer`
 Timer and interval utilities for scheduled tasks.
 
-### `@tmlmobilidade/files`
+### `@tmlmobilidade/go-utils-files`
 File system utilities (reading, writing, path helpers).
 
 ### `@tmlmobilidade/go-clients-ssh`

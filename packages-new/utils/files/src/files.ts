@@ -1,12 +1,13 @@
 /* * */
 
-import { fetchZipFromUrl } from '@/utils/fetch-zip-from-url.js';
-import { isBrowser } from '@/utils/is-browser.js';
-import { normalizeFileContent } from '@/utils/normalize-file.content.js';
-import { readZipFromFile } from '@/utils/read-zip-from-file.js';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import JSZip from 'jszip';
 import papaparse, { type ParseConfig } from 'papaparse';
+
+import { fetchZipFromUrl } from './helpers/fetch-zip-from-url.js';
+import { isBrowser } from './helpers/is-browser.js';
+import { normalizeFileContent } from './helpers/normalize-file-content.js';
+import { readZipFromFile } from './helpers/read-zip-from-file.js';
 
 /* * */
 
@@ -40,7 +41,7 @@ export class Files {
 	 */
 	static getFileExtension(fileName: string): string {
 		// Extract the file extension from the file name.
-		const extension = fileName.split('.').pop().toLowerCase();
+		const extension = fileName.split('.').pop()?.toLowerCase();
 		// Throw an error if the file has no extension
 		// or if the extension is not supported.
 		if (!extension) throw new Error('File has no extension');
@@ -72,26 +73,6 @@ export class Files {
 	static getMimeTypeFromFileExtension(fileName: string): string {
 		const extension = Files.getFileExtension(fileName);
 		return mimeTypes[extension];
-	}
-
-	/**
-	 * Parses a CSV string into an array of objects using PapaParse.
-	 * @param csvString The CSV string to parse
-	 * @param options Parse configuration options
-	 * @param options.header Whether to interpret first row as field names. Defaults to true.
-	 * @param options.skipEmptyLines Whether to skip empty lines in the CSV. Defaults to true.
-	 * @param options.rest Additional PapaParse configuration options
-	 * @returns Promise resolving to array of parsed objects
-	 * @throws Error if parsing fails with details of parsing errors
-	 */
-	static async parseCsv<T>(csvString: string, { header = true, skipEmptyLines = true, ...options }: ParseConfig<T>): Promise<T[]> {
-		const parse = papaparse.parse<T>(csvString, { header, skipEmptyLines, ...options });
-
-		if (parse.errors.length > 0) {
-			throw new Error(`Failed to parse CSV: ${parse.errors.map(error => `${error.message} [${error.code}]`).join(', ')}`);
-		}
-
-		return parse.data;
 	}
 
 	/**
@@ -169,6 +150,26 @@ export class Files {
 		}
 
 		return csv;
+	}
+
+	/**
+	 * Parses a CSV string into an array of objects using PapaParse.
+	 * @param csvString The CSV string to parse
+	 * @param options Parse configuration options
+	 * @param options.header Whether to interpret first row as field names. Defaults to true.
+	 * @param options.skipEmptyLines Whether to skip empty lines in the CSV. Defaults to true.
+	 * @param options.rest Additional PapaParse configuration options
+	 * @returns Promise resolving to array of parsed objects
+	 * @throws Error if parsing fails with details of parsing errors
+	 */
+	static async parseCsv<T>(csvString: string, { header = true, skipEmptyLines = true, ...options }: ParseConfig<T>): Promise<T[]> {
+		const parse = papaparse.parse<T>(csvString, { header, skipEmptyLines, ...options });
+
+		if (parse.errors.length > 0) {
+			throw new Error(`Failed to parse CSV: ${parse.errors.map(error => `${error.message} [${error.code}]`).join(', ')}`);
+		}
+
+		return parse.data;
 	}
 
 	/**

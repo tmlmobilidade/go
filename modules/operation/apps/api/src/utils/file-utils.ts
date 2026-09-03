@@ -1,4 +1,4 @@
-import { Files } from '@tmlmobilidade/files';
+import { Files } from '@tmlmobilidade/go-utils-files';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Attachment } from '@tmlmobilidade/go-types-core';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';

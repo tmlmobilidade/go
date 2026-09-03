@@ -1,6 +1,6 @@
 /* * */
 
-import { isBrowser } from '@/utils/is-browser.js';
+import { isBrowser } from './is-browser.js';
 
 /**
  * Reads a ZIP file from the local filesystem and returns it as an ArrayBuffer.

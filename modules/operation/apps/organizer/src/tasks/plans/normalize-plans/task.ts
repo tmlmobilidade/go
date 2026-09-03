@@ -1,6 +1,6 @@
 /* * */
 
-import { Files } from '@tmlmobilidade/files';
+import { Files } from '@tmlmobilidade/go-utils-files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsStrictV30Agency, type GtfsStrictV30FeedInfo } from '@tmlmobilidade/go-types-gtfs-strict';

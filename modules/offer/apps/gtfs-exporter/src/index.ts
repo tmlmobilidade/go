@@ -1,6 +1,6 @@
 import { exportGtfsV29 } from '@/main.js';
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
-import { Files } from '@tmlmobilidade/files';
+import { Files } from '@tmlmobilidade/go-utils-files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type FileExport, type GtfsExportProperties } from '@tmlmobilidade/go-types-downloads';

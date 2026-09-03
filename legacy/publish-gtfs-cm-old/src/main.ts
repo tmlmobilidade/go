@@ -2,7 +2,7 @@
 
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { validatePlan } from '@/validate-plan.js';
-import { Files } from '@tmlmobilidade/files';
+import { Files } from '@tmlmobilidade/go-utils-files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
