@@ -11,9 +11,9 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
-import { buildAgencyTxt } from './agency.js';
-import { buildFeedInfoTxt } from './feed-info.js';
-import { applyPatternIdsAsShapeIds } from './shapes.js';
+import { getAgencyTxtContents } from './agency.js';
+import { getFeedInfoTxtContents } from './feed-info.js';
+import { rewriteShapeIdsToPatternIds } from './shapes.js';
 
 /**
  * This task makes sure the associated GTFS files of plan documents have the correct
@@ -82,7 +82,7 @@ export async function normalizePlansTask() {
 		// Prepare the output agency.txt file with cleaned data from the Agency
 		// collection. Update the agency.txt file in the zip archive.
 
-		const updatedAgencyTxtString = buildAgencyTxt(foundAgencyData);
+		const updatedAgencyTxtString = getAgencyTxtContents(foundAgencyData);
 		fs.writeFileSync(`${workdirPath}/extracted/agency.txt`, updatedAgencyTxtString);
 		Logger.info({ message: `[${planData._id}] agency.txt file updated.` });
 
@@ -90,7 +90,7 @@ export async function normalizePlansTask() {
 		// Prepare the output feed_info.txt file with cleaned data from the plan document
 		// and Agency collection. Update the feed_info.txt file in the zip archive.
 
-		const updatedFeedInfoTxtString = buildFeedInfoTxt(planData, foundAgencyData);
+		const updatedFeedInfoTxtString = getFeedInfoTxtContents(planData, foundAgencyData);
 		fs.writeFileSync(`${workdirPath}/extracted/feed_info.txt`, updatedFeedInfoTxtString);
 		Logger.info({ message: `[${planData._id}] feed_info.txt file updated.` });
 
@@ -99,7 +99,7 @@ export async function normalizePlansTask() {
 		// of each trip. Both files are streamed through a temporary working directory,
 		// which the zip archive reads from while it is being generated below.
 
-		await applyPatternIdsAsShapeIds(workdirPath);
+		await rewriteShapeIdsToPatternIds(workdirPath);
 
 		Logger.info({ message: `[${planData._id}] trips.txt and shapes.txt shape_id values aligned with pattern_id.` });
 

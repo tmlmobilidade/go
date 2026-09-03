@@ -8,7 +8,7 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 /**
  * Builds the contents of the feed_info.txt file from the given Plan and Agency documents.
  */
-export function buildFeedInfoTxt(planData: Plan, agencyData: Agency): string {
+export function getFeedInfoTxtContents(planData: Plan, agencyData: Agency): string {
 	//
 
 	//

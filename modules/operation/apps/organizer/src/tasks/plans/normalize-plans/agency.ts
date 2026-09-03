@@ -7,7 +7,7 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 /**
  * Builds the contents of the agency.txt file from the given Agency document.
  */
-export function buildAgencyTxt(agencyData: Agency): string {
+export function getAgencyTxtContents(agencyData: Agency): string {
 	//
 
 	//

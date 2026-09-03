@@ -17,7 +17,7 @@ import Papa from 'papaparse';
  * must outlive the archive generation.
  * @returns True if the zip archive was updated.
  */
-export async function applyPatternIdsAsShapeIds(workdirPath: string): Promise<void> {
+export async function rewriteShapeIdsToPatternIds(workdirPath: string): Promise<void> {
 	//
 
 	//
