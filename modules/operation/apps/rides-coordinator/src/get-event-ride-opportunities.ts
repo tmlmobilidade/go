@@ -50,7 +50,7 @@ export async function getEventRideOpportunities(): Promise<RidesCoordinatorEvent
 				FROM operation.event_ride_opportunities FINAL
 				WHERE processing_status = 'waiting'
 				ORDER BY window_start DESC
-				LIMIT 2000
+				LIMIT 750
 			`,
 		);
 
