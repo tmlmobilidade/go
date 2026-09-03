@@ -4,10 +4,10 @@ import { mimeTypes } from '@tmlmobilidade/consts';
 import JSZip from 'jszip';
 import papaparse, { type ParseConfig } from 'papaparse';
 
-import { fetchZipFromUrl } from './helpers-old/fetch-zip-from-url.js';
-import { isBrowser } from './helpers-old/is-browser.js';
-import { normalizeFileContent } from './helpers-old/normalize-file-content.js';
-import { readZipFromFile } from './helpers-old/read-zip-from-file.js';
+import { fetchZipFromUrl } from './helpers/fetch-zip-from-url.js';
+import { isBrowser } from './helpers/is-browser.js';
+import { normalizeFileContent } from './helpers/normalize-file-content.js';
+import { readZipFromFile } from './helpers/read-zip-from-file.js';
 
 /* * */
 
