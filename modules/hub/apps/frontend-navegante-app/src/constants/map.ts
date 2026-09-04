@@ -1,8 +1,3 @@
-import goMapStyle from '@/assets/map/go-map-styles.json' with { type: 'json' };
-import { type StyleSpecification } from 'maplibre-gl';
-
-/* * */
-
 /**
  * The default values for the map.
  */
@@ -27,7 +22,8 @@ export const mapDefaultValues = Object.freeze({
  */
 
 export const mapDefaultStyles = Object.freeze({
-	map: goMapStyle as StyleSpecification,
+	dark: 'https://maps.go.tmlmobilidade.pt/styles/dark/style.json',
+	light: 'https://maps.go.tmlmobilidade.pt/styles/default/style.json',
 	satellite: {
 		glyphs: '{fontstack}/{range}.pbf',
 		layers: [
@@ -69,8 +65,9 @@ export const mapDefaultConfig = Object.freeze({
 	maxZoom: mapDefaultValues.zoom_max,
 	minZoom: mapDefaultValues.zoom_min,
 	styles: {
-		default: mapDefaultStyles.map,
-		map: mapDefaultStyles.map,
+		dark: mapDefaultStyles.dark,
+		default: mapDefaultStyles.light,
+		light: mapDefaultStyles.light,
 		satellite: mapDefaultStyles.satellite,
 	},
 	viewport: {

@@ -2,6 +2,7 @@
 
 import { mapDefaultConfig } from '@/constants/map';
 import { useMapContext } from '@/contexts/Map.context';
+import { useColorScheme } from '@mantine/hooks';
 import { loadMapAssets, MAP_ASSETS_ALERTS, MAP_ASSETS_MISC, MAP_ASSETS_SHAPES, MAP_ASSETS_STOPS, MAP_ASSETS_VEHICLES } from '@tmlmobilidade/ui';
 import Map, { type MapLayerMouseEvent, type MapLayerTouchEvent, MapRef, useMap } from '@vis.gl/react-maplibre';
 import { type MapLibreEvent } from 'maplibre-gl';
@@ -50,8 +51,10 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 	// A. Setup variables
 
 	const allMaps = useMap();
+	const colorScheme = useColorScheme();
 
 	const mapContext = useMapContext();
+	const mapStyle = colorScheme === 'dark' ? mapDefaultConfig.styles.dark : mapDefaultConfig.styles.light;
 
 	const [cursor, setCursor] = useState<string>('auto');
 	const [areMapAssetsLoaded, setAreMapAssetsLoaded] = useState(false);
@@ -63,6 +66,10 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 		if (!id || !allMaps?.[id]) return;
 		mapContext.actions.setMap(allMaps[id]);
 	}, [allMaps, id, mapContext.actions]);
+
+	useEffect(() => {
+		setAreMapAssetsLoaded(false);
+	}, [mapStyle]);
 
 	//
 	// C. Handle actions
@@ -76,6 +83,11 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 			loadMapAssets(event.target, MAP_ASSETS_VEHICLES),
 		]);
 		setAreMapAssetsLoaded(true);
+	};
+
+	const handleOnStyleData = async (event: MapLibreEvent) => {
+		if (!event.target.isStyleLoaded()) return;
+		await handleOnLoad(event);
 	};
 
 	const handleOnMouseEnter = useCallback((event) => {
@@ -111,7 +123,7 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 				initialViewState={mapDefaultConfig.initialViewState}
 				interactive={interactiveLayerIds ? true : false}
 				interactiveLayerIds={interactiveLayerIds}
-				mapStyle={mapDefaultConfig.styles['map']}
+				mapStyle={mapStyle}
 				maxPitch={0}
 				maxZoom={mapDefaultConfig.maxZoom}
 				minPitch={0}
@@ -129,6 +141,7 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 				onMove={handleOnMoveStart}
 				onMoveEnd={handleOnMoveEnd}
 				onMoveStart={handleOnMoveStart}
+				onStyleData={handleOnStyleData}
 				onTouchCancel={onTouchCancel}
 				onTouchEnd={onTouchEnd}
 				onTouchMove={onTouchMove}
