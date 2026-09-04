@@ -4,8 +4,8 @@ export const findRidesForTrainQuery = `
 	WITH rides_latest AS (
 		SELECT
 			_id,
+			hashed_shape_id,
 			hashed_trip_id,
-			shape_polyline,
 			start_time_scheduled,
 			trip_id
 		FROM operation.rides
@@ -18,8 +18,8 @@ export const findRidesForTrainQuery = `
 	)
 	SELECT
 		_id,
+		hashed_shape_id,
 		hashed_trip_id,
-		shape_polyline,
 		trip_id
 	FROM rides_latest
 	ORDER BY start_time_scheduled
