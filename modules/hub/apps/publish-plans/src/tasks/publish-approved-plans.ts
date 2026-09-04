@@ -31,7 +31,9 @@ export async function publishApprovedPlans() {
 		allPlansData.map(async (planData) => {
 			const operationFile = await storageProvider.findById(planData.operation_file_id);
 			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
-			return { operationFile, planData };
+			const agencyData = await goDb.core.agencies.findById(planData.agency_id);
+			if (!agencyData) throw new Error(`Agency not found for plan ${planData._id}`);
+			return { agencyData, operationFile, planData };
 		}),
 	);
 
@@ -40,7 +42,7 @@ export async function publishApprovedPlans() {
 
 	const approvedPlans: HubPlan[] = [];
 
-	for (const { operationFile, planData } of plansWithOperationFiles) {
+	for (const { agencyData, operationFile, planData } of plansWithOperationFiles) {
 		try {
 			// Check if the operation file exists
 			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
@@ -50,15 +52,25 @@ export async function publishApprovedPlans() {
 			const nowIsBeforeEndDate = currentOperationalDate <= planData.active_until;
 			const isActive = nowIsAfterStartDate && nowIsBeforeEndDate;
 			// Parse the plan data
-			const parsedPlan = HubPlanSchema.safeParse({
-				...planData,
+			// Parse the plan data
+			const hubPlanData: HubPlan = {
+				_id: planData._id,
+				active_from: planData.active_from,
+				active_until: planData.active_until,
+				agency_code: agencyData.code,
 				agency_id: planData.agency_id,
+				agency_name: agencyData.name,
+				created_at: planData.created_at,
+				hash: planData.hash,
 				is_active: isActive,
+				operation_file_id: planData.operation_file_id,
 				operation_file_url: operationFile.url,
-			});
-			if (!parsedPlan.success) throw new Error(`Error parsing plan ${planData._id}: ${parsedPlan.error.message}`);
+				updated_at: planData.updated_at,
+			};
+			const validatedHubPlanData = HubPlanSchema.safeParse(hubPlanData);
+			if (!validatedHubPlanData.success) throw new Error(`Error parsing plan ${planData._id}: ${validatedHubPlanData.error.message}`);
 			// Add the plan to the list
-			approvedPlans.push(parsedPlan.data);
+			approvedPlans.push(validatedHubPlanData.data);
 		} catch (error) {
 			Logger.error({ message: `Error parsing plan ${planData._id}: ${(error as Error).message}` });
 		}
