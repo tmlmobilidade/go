@@ -11,9 +11,9 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
-import { getAgencyTxtContents } from './agency.js';
-import { getFeedInfoTxtContents } from './feed-info.js';
-import { rewriteShapeIdsToPatternIds } from './shapes.js';
+import { getAgencyTxtContents } from './steps/agency.js';
+import { getFeedInfoTxtContents } from './steps/feed-info.js';
+import { rewriteShapeIdsToPatternIds } from './steps/shapes.js';
 
 /**
  * This task makes sure the associated GTFS files of plan documents have the correct
@@ -29,9 +29,15 @@ export async function normalizePlansTask() {
 
 	const globalTimer = new Timer();
 
+	//
+	// Fetch all plans from the database
+
 	const allPlans = await goDb.operation.plans.findMany({ _id: 'XS3H8' });
 
 	Logger.info({ message: `Found ${allPlans.length} plans.` });
+
+	//
+	// Normalize each plan
 
 	for (const planData of allPlans) {
 		//
