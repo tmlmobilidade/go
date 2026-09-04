@@ -23,7 +23,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-utils-files": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",

@@ -22,7 +22,7 @@ function parseFeedInfo(
 			feed_end_date: OperationalDateIntSchema.parse(exportConfig.feed_end_date),
 			feed_lang: 'pt',
 			feed_publisher_name: agencyData.name || 'Carris Metropolitana',
-			feed_publisher_url: agencyData.website_url || 'https://www.carrismetropolitana.pt',
+			feed_publisher_url: agencyData.open_data?.details?.website_url || 'https://www.carrismetropolitana.pt',
 			feed_start_date: OperationalDateIntSchema.parse(exportConfig.feed_start_date),
 			feed_version: getCurrentTimestamp(),
 		};

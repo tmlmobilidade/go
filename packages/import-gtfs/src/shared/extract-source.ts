@@ -1,7 +1,7 @@
 /* * */
 
 import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { unzipFile } from '@/shared/unzip-file.js';
+import { unzipFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 

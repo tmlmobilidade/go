@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-utils-files": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-types-hub": "*",

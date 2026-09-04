@@ -2,12 +2,12 @@
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
-import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { getTmpWorkdirPath } from '@tmlmobilidade/go-utils-files';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
@@ -80,11 +80,11 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		const foundAgency = await goDb.core.agencies.findById(gtfsValidation.agency_id);
 		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.agency_id}`);
-		if (!foundAgency.validation_rules) throw new Error(`No validation rules found for agency: ${gtfsValidation.agency_id}`);
+		if (!foundAgency.plans?.validation_rules) throw new Error(`No validation rules found for agency: ${gtfsValidation.agency_id}`);
 
-		const rulesContent = typeof foundAgency.validation_rules === 'string'
-			? foundAgency.validation_rules
-			: JSON.stringify(foundAgency.validation_rules);
+		const rulesContent = typeof foundAgency.plans.validation_rules === 'string'
+			? foundAgency.plans.validation_rules
+			: JSON.stringify(foundAgency.plans.validation_rules);
 
 		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });
 

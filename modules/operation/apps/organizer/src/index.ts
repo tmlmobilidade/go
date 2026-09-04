@@ -4,22 +4,21 @@ import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { cleanOldValidations } from './tasks/clean-old-validations.js';
-import { ensureAlertsStructure } from './tasks/ensure-alerts-structure.js';
-import { ensureGtfsFiles } from './tasks/ensure-gtfs-files.js';
+import { normalizePlansTask } from './tasks/plans/normalize-plans/task.js';
 
 /* * */
 
-const main = async () => {
+async function reprocessStuckRides() {
 	//
 
+	//
 	// Initialize Sentry
 
 	try {
 		await initSentryNode();
-		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Plans Organizer initialized', module: 'plans', severity: 'info' });
+		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Organizer initialized', module: 'operation', severity: 'info' });
 	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Plans Organizer' });
+		Logger.error({ error, message: 'Error initializing Sentry Organizer' });
 	}
 
 	//
@@ -29,21 +28,32 @@ const main = async () => {
 
 	const globalTimer = new Timer();
 
-	//
-	// Run all tasks sequentially
+	/* * */
+	/* GTFS VALIDATIONS */
 
-	await cleanOldValidations();
-	await ensureGtfsFiles();
-	await ensureAlertsStructure();
+	// await removeOldGtfsValidationsTask();
 
-	//
-	// Log the total time taken for all tasks
+	/* * */
+	/* PLANS */
 
-	Logger.terminate(`Organization completed in ${globalTimer.get()}`);
+	await normalizePlansTask();
+
+	/* * */
+	/* RIDES */
+
+	// await releaseStuckPlansTask();
+	// await releaseStuckRidesTask();
+	// await removeOrphanRidesTask();
+	// await cleanupOrphanHashedTrips();
+	// await cleanupOrphanHashedShapes();
+
+	/* * */
+
+	Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 	//
 };
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '5m' });
+await runOnInterval(reprocessStuckRides, { intervalMs: '10s' });

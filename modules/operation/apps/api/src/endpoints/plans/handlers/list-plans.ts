@@ -4,7 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PlansListFilters, PlansListFiltersSchema, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
 
 import { getPlanTemporalStatus } from '../utils/get-plan-temporal-status.js';
 
@@ -19,11 +19,11 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 	//
 	// Apply permission filters to the request body
 
-	request.body.agency_ids = PermissionCatalog.filterPermissionResourceValues<string>({
-		action: PermissionCatalog.all.plans.actions.read,
+	request.body.agency_ids = filterPermissionResourceValues<string>({
+		action: 'read',
 		permissions: request.permissions,
 		resourceKey: 'agency_ids',
-		scope: PermissionCatalog.all.plans.scope,
+		scope: 'plans',
 		values: request.body.agency_ids,
 	});
 
@@ -41,7 +41,7 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
 			},
 		},
-		{ $sort: { 'gtfs_feed_info.feed_start_date': -1 } },
+		{ $sort: { active_from: -1 } },
 	];
 
 	const aggregationResult = await goDb.operation.plans.aggregate(pipeline);
@@ -62,7 +62,7 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 	const resultsWithTemporalStatus = aggregationResult.map((result: PlansListItem) => {
 		return {
 			...result,
-			temporal_status: getPlanTemporalStatus(result.gtfs_feed_info.feed_start_date, result.gtfs_feed_info.feed_end_date),
+			temporal_status: getPlanTemporalStatus(result.active_from, result.active_until),
 		};
 	});
 

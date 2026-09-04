@@ -44,7 +44,7 @@ export function AlertsDetailSectionReferences() {
 		// Map to the format needed for rendering the buttons
 		// and sort alphabetically by label.
 		return AlertReferenceTypeValues
-			.filter(referenceTypeValue => !!matchingAgencyData.alerts_map?.[causeValue]?.[effectValue]?.[referenceTypeValue])
+			.filter(referenceTypeValue => !!matchingAgencyData.alerts.catalog?.[causeValue]?.[effectValue]?.[referenceTypeValue])
 			.sort((a, b) => a.localeCompare(b));
 	}, [agenciesData, agencyIdValue, causeValue, effectValue]);
 

@@ -237,6 +237,7 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	shape_id: { type: 'LowCardinality(String)' },
 	start_time_observed: { type: 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)' },
 	start_time_scheduled: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	timezone: { type: 'LowCardinality(String)' },
 	trip_id: { type: 'LowCardinality(String)' },
 	updated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	vehicle_ids: { type: 'Array(LowCardinality(String))' },
@@ -247,10 +248,10 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 export const eventRideOpportunitiesTableSchema: ClickHouseTableSchema<EventRideOpportunity> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'LowCardinality(String)' },
-	trip_id: { type: 'LowCardinality(String)' },
-	window_start: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	window_end: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	operational_dates: { type: 'Array(UInt32) CODEC(ZSTD)' },
 	processing_status: { type: 'LowCardinality(String)' },
+	trip_id: { type: 'LowCardinality(String)' },
 	updated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	window_end: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	window_start: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 };

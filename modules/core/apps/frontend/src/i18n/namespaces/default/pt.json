@@ -4,7 +4,7 @@
 			"text": "Selecione uma Agência"
 		},
 		"detail": {
-			"SectionAlertsMap": {
+			"SectionAlerts": {
 				"description": "Mapeamento de causas, efeitos e tipos de referência para Alertas de Serviço.",
 				"table": {
 					"header": {
@@ -12,17 +12,6 @@
 					}
 				},
 				"title": "Alertas"
-			},
-			"SectionApex": {
-				"description": "Configurações do sistema APEX para este operador.",
-				"fields": {
-					"contact_emails": {
-						"description": "Emails que serão notificados quando forem disponibilizados novos ficheiros de configuração APEX.",
-						"label": "Emails de contacto APEX",
-						"placeholder": "email@example.com"
-					}
-				},
-				"title": "Configurações APEX"
 			},
 			"SectionBasicInfo": {
 				"description": "Nome, email, telefone, URL e fuso horário.",
@@ -69,20 +58,6 @@
 				},
 				"title": "Detalhes do Operador"
 			},
-			"SectionContacts": {
-				"description": "Notificações e Contactos",
-				"fields": {
-					"contact_emails_pta": {
-						"description": "Notificações serão enviadas para os emails de contacto da Autoridade.",
-						"label": "Emails de contacto da Autoridade"
-					},
-					"contact_emails_pto": {
-						"description": "Notificações serão enviadas para os seguintes emails de contacto do operador.",
-						"label": "Emails de contacto do Operador"
-					}
-				},
-				"title": "Contatos"
-			},
 			"SectionFinancials": {
 				"description": "Informação Financeira",
 				"fields": {
@@ -100,20 +75,63 @@
 			"SectionOpenData": {
 				"description": "Configurações dos dados abertos.",
 				"fields": {
-					"eta_enabled": {
-						"label": "Disponibilizar estimativas de chegada"
+					"details": {
+						"email": {
+							"label": "Email",
+							"placeholder": "email@example.com"
+						},
+						"fare_url": {
+							"label": "URL p/ informações de tarifas",
+							"placeholder": "https://www.carrismetropolitana.pt/tarifas"
+						},
+						"name": {
+							"label": "Nome",
+							"placeholder": "Carris Metropolitana"
+						},
+						"phone": {
+							"label": "Telefone",
+							"placeholder": "912345678"
+						},
+						"website_url": {
+							"label": "Website",
+							"placeholder": "https://www.carrismetropolitana.pt"
+						}
 					},
-					"gtfs_enabled": {
-						"label": "Disponibilizar GTFS unificado"
-					},
-					"positions_enabled": {
-						"label": "Disponibilizar posições dos veículos"
-					},
-					"service_alerts_enabled": {
-						"label": "Disponibilizar alertas de serviço"
+					"services": {
+						"eta_enabled": {
+							"label": "Disponibilizar estimativas de chegada"
+						},
+						"gtfs_enabled": {
+							"label": "Disponibilizar GTFS unificado"
+						},
+						"positions_enabled": {
+							"label": "Disponibilizar posições dos veículos"
+						},
+						"service_alerts_enabled": {
+							"label": "Disponibilizar alertas de serviço"
+						}
 					}
 				},
 				"title": "Dados Abertos"
+			},
+			"SectionPlans": {
+				"description": "Configurações para a aplicação de planos.",
+				"fields": {
+					"apex_notification_emails": {
+						"description": "Emails que serão notificados quando forem disponibilizados novos ficheiros de configuração APEX.",
+						"label": "Emails de contacto APEX",
+						"placeholder": "email@example.com"
+					},
+					"approval_notification_emails": {
+						"description": "Emails que serão notificados quando um plano for aprovado.",
+						"label": "Emails para notificação de aprovação de Planos"
+					},
+					"approval_request_emails": {
+						"description": "Emails que serão notificados quando um plano for solicitado para aprovação.",
+						"label": "Emails para pedidos de aprovação de Planos"
+					}
+				},
+				"title": "Planos"
 			},
 			"SectionValidationRules": {
 				"description": "Ficheiro de regras de validação do GTFS",

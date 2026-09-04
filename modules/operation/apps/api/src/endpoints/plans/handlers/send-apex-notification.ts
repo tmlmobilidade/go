@@ -4,7 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Sends a notification to the APEX contact emails.
@@ -29,12 +29,10 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 	//
 	// Check if the user has permission to send the APEX notification
 
-	const hasPermissionSendApexNotification = PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.plans.actions.send_apex_notification,
-		permissions: request.permissions,
-		resource_key: 'agency_ids',
-		scope: PermissionCatalog.all.plans.scope,
-		value: foundPlan.agency_id,
+	const hasPermissionSendApexNotification = hasPermissionResource(request.permissions, {
+		requiredPermission: { action: 'send_apex_notification', scope: 'plans' },
+		requiredValue: foundPlan.agency_id,
+		resourceKey: 'agency_ids',
 	});
 
 	if (!hasPermissionSendApexNotification) {
@@ -49,7 +47,7 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 
 	const agencyData = await goDb.core.agencies.findById(foundPlan.agency_id);
 
-	if (!agencyData.apex.contact_emails.length) {
+	if (!agencyData.plans.apex_notification_emails.length) {
 		return sendErrorApiResponse(reply, {
 			error: 'No APEX contact emails found for this agency.',
 			status_code: '400',
@@ -91,9 +89,9 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 		data: {
 			agencyName: agencyData.name,
 			planId: foundPlan._id,
-			startDate: foundPlan.gtfs_feed_info.feed_start_date,
+			startDate: foundPlan.active_from,
 		},
-		to: agencyData.apex.contact_emails ?? [],
+		to: agencyData.plans.apex_notification_emails ?? [],
 	});
 
 	//

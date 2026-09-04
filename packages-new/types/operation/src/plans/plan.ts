@@ -1,28 +1,29 @@
 /* * */
 
-import { PlanAppStatusSchema } from '@/plans/plan-app-status.js';
-import { PlanPcgiLegacySchema } from '@/plans/plan-pcgi-legacy.js';
-import { GtfsStrictV30AgencySchema, GtfsStrictV30FeedInfoSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { PlanAppHubPublishGtfsCmSchema } from './app-hub-publish-gtfs-cm.js';
+import { PlanAppHubPublishGtfsSchema } from './app-hub-publish-gtfs.js';
+import { PlanAppOrganizerSchema } from './app-organizer.js';
+import { PlanAppRidesFeederSchema } from './app-rides-feeder.js';
 
 /* * */
 
 export const PlanSchema = BaseDocumentSchema.extend({
+	active_from: OperationalDateIntSchema,
+	active_until: OperationalDateIntSchema,
 	agency_id: z.string(),
 	apex_file_id: z.string().nullable().default(null),
 	apps: z.object({
-		controller: PlanAppStatusSchema,
-		hub_gtfs: PlanAppStatusSchema,
-		hub_schedules: PlanAppStatusSchema,
-		merger: PlanAppStatusSchema,
+		hub_publish_gtfs: PlanAppHubPublishGtfsSchema,
+		hub_publish_gtfs_cm: PlanAppHubPublishGtfsCmSchema,
+		organizer: PlanAppOrganizerSchema,
+		rides_feeder: PlanAppRidesFeederSchema,
 	}).default({}),
-	gtfs_agency: GtfsStrictV30AgencySchema,
-	gtfs_feed_info: GtfsStrictV30FeedInfoSchema,
 	hash: z.string(),
 	is_locked: z.boolean().default(false),
 	operation_file_id: z.string().nullable().default(null),
-	pcgi_legacy: PlanPcgiLegacySchema,
 });
 
 export const CreatePlanSchema = PlanSchema.omit({ _id: true, updated_at: true });
@@ -36,9 +37,13 @@ export type UpdatePlanDto = z.infer<typeof UpdatePlanSchema>;
 
 /* * */
 
-export interface HashablePlanMetadata {
-	_id: Plan['_id']
-	gtfs_agency: Plan['gtfs_agency']
-	gtfs_feed_info: Plan['gtfs_feed_info']
-	operation_file_id: Plan['operation_file_id']
-}
+export const HashablePlanMetadataSchema = PlanSchema.pick({
+	_id: true,
+	active_from: true,
+	active_until: true,
+	operation_file_id: true,
+}).extend({
+	operation_file_hash: z.string(),
+});
+
+export type HashablePlanMetadata = z.infer<typeof HashablePlanMetadataSchema>;

@@ -1,9 +1,9 @@
 /* * */
 
 import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { parseCsvFile } from '@/shared/parse-csv.js';
 import { type GtfsStrictV29ExtSQLTables } from '@/versions/v29-ext/types.js';
 import { type GtfsStrictV29ExtShapes, GtfsStrictV29ExtShapesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -37,7 +37,7 @@ export async function processGtfsStrictV29ExtShapes(context: ImportGtfsContext<G
 		//
 		// Setup the CSV parsing operation
 
-		await parseCsvFile(`${context.workdir.extract_dir_path}/shapes.txt`, parseEachRow);
+		await streamCsvFile(`${context.workdir.extract_dir_path}/shapes.txt`, parseEachRow);
 
 		context.gtfs.shapes.flush();
 

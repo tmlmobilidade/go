@@ -1,9 +1,9 @@
 /* * */
 
 import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { parseCsvFile } from '@/shared/parse-csv.js';
 import { type GtfsStrictV29ExtSQLTables } from '@/versions/v29-ext/types.js';
 import { type GtfsStrictV29ExtStopTimes, GtfsStrictV29ExtStopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -42,7 +42,7 @@ export async function processGtfsStrictV29ExtStopTimes(context: ImportGtfsContex
 		//
 		// Setup the CSV parsing operation
 
-		await parseCsvFile(`${context.workdir.extract_dir_path}/stop_times.txt`, parseEachRow);
+		await streamCsvFile(`${context.workdir.extract_dir_path}/stop_times.txt`, parseEachRow);
 
 		context.gtfs.stop_times.flush();
 

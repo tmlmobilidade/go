@@ -12,7 +12,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  */
 export async function lockStopHandler(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 	// Get the stop from the database
-	const foundStop = await goDb.infrastructure.stops.findById(Number(request.params.id));
+	const foundStop = await goDb.infrastructure.stops.findById(request.params.id);
 	if (!foundStop) {
 		return sendErrorApiResponse(reply, {
 			error: 'Stop not found',

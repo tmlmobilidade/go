@@ -1,12 +1,12 @@
 /* * */
 
-import { Files } from '@tmlmobilidade/files';
 import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
 import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Files } from '@tmlmobilidade/go-utils-files';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -165,13 +165,13 @@ export async function main() {
 				},
 				time_range: {
 					date_range: {
-						end: OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date),
-						start: OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_start_date),
+						end: planData.active_until,
+						start: planData.active_from,
 					},
 				},
 			};
 
-			if (currentDate >= planData.gtfs_feed_info.feed_start_date && currentDate <= planData.gtfs_feed_info.feed_end_date) {
+			if (currentDate >= planData.active_from && currentDate <= planData.active_until) {
 				// If the plan is currently active, set the start date
 				// to a far past date to be able to provide a full year of data.
 				importConfig.time_range.date_range.start = OperationalDateIntSchema.parse('20010101');
@@ -230,8 +230,8 @@ export async function main() {
 
 			referencedAgencyIds.add(planData.agency_id);
 
-			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
-				? planData.gtfs_feed_info.feed_end_date
+			farthestDateFound = !farthestDateFound || planData.active_until > farthestDateFound
+				? planData.active_until
 				: farthestDateFound;
 
 			//

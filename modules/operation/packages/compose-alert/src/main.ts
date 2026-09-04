@@ -48,7 +48,7 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 	// dependning on the requested reference type
 
 	const agencyReferenceContext = validatedRequestData.reference_type === 'agency'
-		? foundAgency.public_name ? `Agency Name: ${foundAgency.public_name}` : `Agency Name: ${foundAgency.name}`
+		? foundAgency?.open_data?.details?.name ? `Agency Name: ${foundAgency.open_data.details.name}` : `Agency Name: ${foundAgency.name}`
 		: null;
 
 	const linesReferenceContext = validatedRequestData.reference_type === 'lines'
