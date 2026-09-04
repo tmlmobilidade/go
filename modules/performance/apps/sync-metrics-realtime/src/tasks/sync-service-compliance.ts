@@ -1,10 +1,11 @@
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { type RealtimeServiceCompliance } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -22,11 +23,11 @@ async function processRidesStream(stream, results, agencies, mode: 'last_week' |
 
 		const referenceNow = Dates.now('Europe/Lisbon');
 
-		const nowInUnixTimestamp = mode === 'now'
-			? referenceNow.unix_timestamp - 300_000 // 5 minutes ago
-			: referenceNow.minus({ days: 7 }).unix_timestamp - 300_000;
+		const nowInUnixMilliseconds = mode === 'now'
+			? referenceNow.unix_milliseconds - 300_000 // 5 minutes ago
+			: referenceNow.minus({ days: 7 }).unix_milliseconds - 300_000;
 
-		if (nowInUnixTimestamp - rideData.start_time_scheduled < 0) continue;
+		if (nowInUnixMilliseconds - rideData.start_time_scheduled < 0) continue;
 
 		//
 		// Scheduled rides
@@ -124,7 +125,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	const now = Dates.now('Europe/Lisbon');
 	const currentOperationalDate = now.operational_date;
 	const previousOperationalDate = now.minus({ days: 7 }).operational_date;
-	const previousUntilNowAsUnix = now.minus({ days: 7 }).unix_timestamp;
+	const previousUntilNowAsUnix = now.minus({ days: 7 }).unix_milliseconds;
 
 	//
 	// Initialize results object

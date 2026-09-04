@@ -4,7 +4,7 @@ import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypoint } from '@/components/lines/detail/PathWaypoint';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -91,7 +91,7 @@ export function LinesDetailPathList() {
 			for (const stopTime of trip.schedule) {
 				const stopKey = `${stopTime.stop_id}-${stopTime.stop_sequence}`;
 				const [hours, minutes, seconds = 0] = stopTime.arrival_time_24h.split(':').map(Number);
-				const unixTs = Dates.now('Europe/Lisbon').set({ hour: hours, millisecond: 0, minute: minutes, second: seconds }).unix_timestamp;
+				const unixTs = Dates.now('Europe/Lisbon').set({ hour: hours, millisecond: 0, minute: minutes, second: seconds }).unix_milliseconds;
 				if (!result.get(stopKey)) result.set(stopKey, []);
 				result.get(stopKey)?.push({ type: 'scheduled', unixTs });
 			}

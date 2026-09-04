@@ -1,7 +1,7 @@
 'use client';
 
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
+import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */

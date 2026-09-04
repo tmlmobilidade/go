@@ -2,7 +2,10 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Agency, type Annotation, type CalendarEvent, Event, Holiday, PermissionCatalog, type YearPeriod } from '@tmlmobilidade/types';
+import { type Agency } from '@tmlmobilidade/go-types-core';
+import { type Annotation, Event, Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type CalendarEvent } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -104,7 +107,7 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 		canReadEvents ? API_ROUTES.dates.EVENTS_LIST : null,
 	);
 
-	const { data: agenciesData } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
+	const { data: agenciesData } = useSWR<Agency[], Error>(API_ROUTES.core.AGENCIES_LIST);
 
 	//
 	// C. Handle errors and loading states
@@ -128,7 +131,7 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 			const currDate = Dates.fromOperationalDate(sortedDates[i], 'Europe/Lisbon');
 
 			// Check if dates are consecutive (1 day apart)
-			const daysDiff = Math.round((currDate.unix_timestamp - prevDate.unix_timestamp) / (1000 * 60 * 60 * 24));
+			const daysDiff = Math.round((currDate.unix_milliseconds - prevDate.unix_milliseconds) / (1000 * 60 * 60 * 24));
 
 			if (daysDiff === 1) {
 				// Dates are consecutive, add to current range

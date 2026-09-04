@@ -36,10 +36,10 @@
 -- its neighbours). Mid-route events are dropped before any distance maths.
 --
 -- Params:
---   {buffer_radius_m}        Float64 geofence radius in meters (e.g. 50)
---   {geohash_prefix_len}     UInt8   geohash prefix length for the candidate filter (e.g. 6)
---   {ride_window_pre_ms}     UInt64  ms before scheduled start to start scanning events
---   {ride_window_post_ms}    UInt64  ms after  scheduled start to stop  scanning events
+--   $buffer_radius_m        Float64 geofence radius in meters (e.g. 50)
+--   $geohash_prefix_len     UInt8   geohash prefix length for the candidate filter (e.g. 6)
+--   $ride_window_pre_ms     UInt64  ms before scheduled start to start scanning events
+--   $ride_window_post_ms    UInt64  ms after  scheduled start to stop  scanning events
 
 INSERT INTO eta._detect_hist_rides_values
 WITH
@@ -55,8 +55,8 @@ WITH
             hr.first_stop_coordinates.2  AS first_stop_lon,
             hr.last_stop_coordinates.1   AS last_stop_lat,
             hr.last_stop_coordinates.2   AS last_stop_lon,
-            substring(hr.first_stop_geohash, 1, {geohash_prefix_len}) AS first_stop_geohash_prefix,
-            substring(hr.last_stop_geohash,  1, {geohash_prefix_len}) AS last_stop_geohash_prefix
+            substring(hr.first_stop_geohash, 1, $geohash_prefix_len) AS first_stop_geohash_prefix,
+            substring(hr.last_stop_geohash,  1, $geohash_prefix_len) AS last_stop_geohash_prefix
         FROM eta.hist_rides AS hr
         INNER JOIN eta._detect_hist_rides_batch AS b
             ON hr._id = b._id
@@ -75,10 +75,10 @@ WITH
             ON sve.agency_id = r.agency_id
             AND sve.trip_id  = r.trip_id
         WHERE
-            sve.created_at >= (SELECT min(start_time_scheduled) - {ride_window_pre_ms} FROM rides)
-            AND sve.created_at <= (SELECT max(start_time_scheduled) + {ride_window_post_ms} FROM rides)
-            AND sve.created_at > (r.start_time_scheduled - {ride_window_pre_ms})
-            AND sve.created_at < (r.start_time_scheduled + {ride_window_post_ms})
+            sve.created_at >= (SELECT min(start_time_scheduled) - $ride_window_pre_ms FROM rides)
+            AND sve.created_at <= (SELECT max(start_time_scheduled) + $ride_window_post_ms FROM rides)
+            AND sve.created_at > (r.start_time_scheduled - $ride_window_pre_ms)
+            AND sve.created_at < (r.start_time_scheduled + $ride_window_post_ms)
             AND (
                 startsWith(sve.geohash, r.first_stop_geohash_prefix)
                 OR startsWith(sve.geohash, r.last_stop_geohash_prefix)
@@ -88,7 +88,7 @@ WITH
     departure AS (
         SELECT
             ride_id,
-            minIf(created_at, dist_first > {buffer_radius_m}) AS departure_time
+            minIf(created_at, dist_first > $buffer_radius_m) AS departure_time
         FROM candidates
         GROUP BY ride_id
     ),
@@ -97,8 +97,8 @@ WITH
     detected AS (  
         SELECT  
             c.ride_id AS ride_id,  
-            maxIf(c.created_at, c.dist_first <= {buffer_radius_m} AND d.departure_time > 0 AND c.created_at < d.departure_time) AS start_time_observed_new,  
-            minIf(c.created_at, c.dist_last  <= {buffer_radius_m} AND d.departure_time > 0 AND c.created_at > d.departure_time) AS end_time_observed_new  
+            maxIf(c.created_at, c.dist_first <= $buffer_radius_m AND d.departure_time > 0 AND c.created_at < d.departure_time) AS start_time_observed_new,  
+            minIf(c.created_at, c.dist_last  <= $buffer_radius_m AND d.departure_time > 0 AND c.created_at > d.departure_time) AS end_time_observed_new  
         FROM candidates AS c  
         INNER JOIN departure AS d  
             ON c.ride_id = d.ride_id  
@@ -117,10 +117,10 @@ WITH
             ON sve.agency_id = r.agency_id
             AND sve.trip_id  = r.trip_id
         WHERE  
-            sve.created_at >= (SELECT min(start_time_scheduled) - {ride_window_pre_ms} FROM rides)  
-            AND sve.created_at <= (SELECT max(start_time_scheduled) + {ride_window_post_ms} FROM rides)  
-            AND sve.created_at > (r.start_time_scheduled - {ride_window_pre_ms})  
-            AND sve.created_at < (r.start_time_scheduled + {ride_window_post_ms}) 
+            sve.created_at >= (SELECT min(start_time_scheduled) - $ride_window_pre_ms FROM rides)  
+            AND sve.created_at <= (SELECT max(start_time_scheduled) + $ride_window_post_ms FROM rides)  
+            AND sve.created_at > (r.start_time_scheduled - $ride_window_pre_ms)  
+            AND sve.created_at < (r.start_time_scheduled + $ride_window_post_ms) 
         GROUP BY r.ride_id
     )
 SELECT

@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseClient, ClickHouseDatabaseClient, queryFromFile, queryFromString } from '@tmlmobilidade/go-clients-clickhouse';
+import { ClickHouseClient, ClickHouseDatabaseClient, queryEachStatementFromFile, queryFromFile, queryFromString } from '@tmlmobilidade/go-clients-clickhouse';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 import { HubDatabase } from './databases/hub.js';
@@ -48,6 +48,17 @@ class LabDbClass {
 	}
 
 	/**
+     * It should be used for statements that do not have any output,
+     * when the format clause is not applicable, or when you are not interested in the response at all.
+     * The response stream is destroyed immediately as we do not expect useful information there.
+	 *
+	 * Examples of such statements are DDLs or custom inserts.
+     */
+	public async command(...args: Parameters<ClickHouseClient['command']>) {
+		return await this.clickhouseClient.command(...args);
+	}
+
+	/**
 	 * Returns the ClickHouse client.
 	 * @returns The ClickHouse client.
 	 * @deprecated Avoid using this method directly. Find alternative ways
@@ -65,6 +76,44 @@ class LabDbClass {
 			this.performance.init(),
 			this.simplifiedApex.init(),
 		]);
+	}
+
+	/**
+     * The primary method for data insertion. It is recommended to avoid arrays in case of large inserts
+     * to reduce application memory consumption and consider streaming for most of such use cases.
+     * As the insert operation does not provide any output, the response stream is immediately destroyed.
+     */
+	public async insert(...args: Parameters<ClickHouseClient['insert']>) {
+		return await this.clickhouseClient.insert(...args);
+	}
+
+	/**
+     * Used for most statements that can have a response, such as `SELECT`.
+     *
+     * The `FORMAT` clause should be specified separately via {@link QueryParams.format} (default is `JSON`);
+     * this method will always append `FORMAT <format>` to the end of {@link QueryParams.query}.
+     * If the query already contains a `FORMAT` clause, ClickHouse will return a syntax error due to a duplicate `FORMAT`.
+     * This is intended behavior.
+	 *
+     * Use {@link labDb.insert} for data insertion, {@link labDb.command} for DDLs.
+     */
+	public async query(...args: Parameters<ClickHouseClient['query']>) {
+		return await this.clickhouseClient.query(...args);
+	}
+
+	/**
+	 * Executes a query from a .sql file with optional parameter substitutions.
+	 * @param filePath Absolute or relative path to the .sql file.
+	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+	 * @returns Query result rows typed as `T`.
+	 * @example
+	 * const users = await labDb.queryEachStatementFromFile<User>('get_users.sql', {
+	 *   start_date: '2024-01-01',
+	 *   end_date: '2024-12-31',
+	 * });
+	*/
+	public async queryEachStatementFromFile<T>(filePath: string, params?: Record<string, number | string | string[]>): ReturnType<typeof queryEachStatementFromFile<T>> {
+		return await queryEachStatementFromFile<T>(this.clickhouseClient, filePath, params);
 	}
 
 	/**
@@ -96,7 +145,7 @@ class LabDbClass {
 	 *   { start_date: '2024-01-01', end_date: '2024-12-31' }
 	 * );
 	*/
-	public async queryFromString<T>(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
+	public async queryFromString<T>(query: string, params?: Record<string, number | string | string[]>): ReturnType<typeof queryFromString<T>> {
 		return await queryFromString<T>(this.clickhouseClient, query, params);
 	}
 }

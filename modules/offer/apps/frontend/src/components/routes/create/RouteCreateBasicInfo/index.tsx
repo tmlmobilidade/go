@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouteCreateContext } from '@/components/routes/create/RouteCreate.context';
-import { RouteSchema } from '@tmlmobilidade/types';
+import { RouteSchema } from '@tmlmobilidade/go-types-offer';
 import { Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

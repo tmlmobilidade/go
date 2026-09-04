@@ -1,9 +1,9 @@
 /* * */
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useTypologyDetailContext } from '@/components/typologies/detail/TypologyDetail.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, TypologySchema } from '@tmlmobilidade/types';
-import { Collapsible, MultiSelect, Section, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
+import { TypologySchema } from '@tmlmobilidade/go-types-offer';
+import { Collapsible, MultiSelect, Section, TextInput } from '@tmlmobilidade/ui';
 /* * */
 
 export function TypologyDetailSectionConfig() {
@@ -14,10 +14,7 @@ export function TypologyDetailSectionConfig() {
 
 	const typologyDetailContext = useTypologyDetailContext();
 
-	const { options: agencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
-		actions: [typologyDetailContext.flags.isReadOnly ? PermissionCatalog.all.typologies.actions.nav : PermissionCatalog.all.typologies.actions.update],
-		scope: PermissionCatalog.all.typologies.scope,
-	});
+	const { options: agencyOptions } = useAgenciesData();
 
 	//
 	// B. Render components
@@ -55,6 +52,4 @@ export function TypologyDetailSectionConfig() {
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }

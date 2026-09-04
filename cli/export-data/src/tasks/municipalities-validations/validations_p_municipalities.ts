@@ -1,10 +1,10 @@
 import { type ExportType, type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import fs from 'node:fs';
 import Papa from 'papaparse';
-import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -146,7 +146,7 @@ export async function exportValidationsPMunicipalities({
 			minute: 0,
 			second: 0,
 		})
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	const endTimestamp = Dates
 		.fromOperationalDate(context.dates.end, 'Europe/Lisbon')
@@ -157,7 +157,7 @@ export async function exportValidationsPMunicipalities({
 			minute: 0,
 			second: 0,
 		})
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	//
 	// Validations
@@ -281,9 +281,6 @@ export async function exportValidationsPMunicipalities({
 		},
 		title: 'municipalities_validations',
 	});
-
-
-
 
 	//
 	// Rows

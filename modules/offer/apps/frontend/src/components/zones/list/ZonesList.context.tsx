@@ -1,8 +1,11 @@
 'use client';
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, type Zone } from '@tmlmobilidade/types';
-import { useDataAgenciesNew, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { type Zone } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData, useFilterStateList, UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -15,7 +18,7 @@ interface ZonesListContextState {
 	}
 	filters: {
 		agencies: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		canCreate: boolean
@@ -45,28 +48,28 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { agencyIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.zones.actions.nav],
-		scope: PermissionCatalog.all.zones.scope,
-	});
+	const { ids: agenciesIds, options: agenciesOptions } = useAgenciesData();
 
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search');
-	const filterAgencies = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterSearch = useFilterStateText('search');
+	const filterAgencies = useFilterStateList('agency', agenciesIds, agenciesOptions);
 
 	//
 	// B. Fetch data
 
-	const { data: allZonesData, error: allZonesError, isLoading: allZonesLoading } = useSWR<Zone[], Error>(API_ROUTES.offer.ZONES_LIST, { refreshInterval: 5000 });
+	const { data: allZonesData, error: allZonesError, isLoading: allZonesLoading } = useSWR<ApiResponse<Zone[]>>(API_ROUTES.offer.ZONES_LIST, {
+		fetcher: async url => await fetchApiData<Zone[]>({ url }),
+		refreshInterval: 5000,
+	});
 
 	//
 	// C. Transform data
 
 	const searchResultsData = useSearch<Zone>({
 		accessors: ['_id', 'name', 'code', 'agency_ids'],
-		data: allZonesData ?? [],
+		data: allZonesData?.data ?? [],
 		query: filterSearch.value,
 	});
 
@@ -89,7 +92,7 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: ZonesListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allZonesData ?? [],
+			raw: allZonesData?.data ?? [],
 		},
 		filters: {
 			agencies: filterAgencies,

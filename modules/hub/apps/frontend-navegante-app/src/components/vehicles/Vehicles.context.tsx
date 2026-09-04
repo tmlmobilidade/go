@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
+import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -58,12 +58,12 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 		allVehiclesPositionsData?.forEach((vehicle) => {
 			// Skip if vehicle position is not from an allowed agency
 			if (![
-				'2IA2N9', // Metro de Lisboa
 				'7NTB1', // Fertagus
 				'A2L1N', // Alsa (CM)
 				'A3H3M', // TCB
 				'BNA17', // Rodoviária de Lisboa (CM)
 				'HF16N', // MobiCascais
+				'IA2N9', // Metro de Lisboa
 				'IA9T6', // Carris
 				'KB1F6', // Metro Transportes do Sul
 				'LA77N', // Viação Alvorada (CM)

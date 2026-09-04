@@ -5,8 +5,8 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { handleStreamRawVehicleEventIntoSimplifiedVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -15,7 +15,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	batch_timeout: 250,
 	idle_timeout: 250,
 	insertFn: async (data) => {
-		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
+		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
 	},
 	title: `es-crtm-aisa-rawdb-stream`,
 });

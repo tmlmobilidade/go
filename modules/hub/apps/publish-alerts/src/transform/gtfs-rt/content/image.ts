@@ -1,8 +1,9 @@
 /* * */
 
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type GtfsRtTranslatedImage } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type GtfsRtTranslatedImage } from '@tmlmobilidade/types';
 
 /* * */
 

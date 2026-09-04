@@ -2,7 +2,7 @@
 
 import { PathTableColumnStop } from '@/components/patterns/table/StopsTableColumnStop';
 import { StopsTableTableColumnZones } from '@/components/patterns/table/StopsTableColumnZones';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { Text } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';

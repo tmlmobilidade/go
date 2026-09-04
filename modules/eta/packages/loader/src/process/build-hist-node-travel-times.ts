@@ -1,26 +1,42 @@
 /* * */
 
-import { type AppConfig } from '@/lib/config.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { pipelinePath, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
+import { pipelinePath } from '@tmlmobilidade/go-eta-pckg-common';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { performInTimeChunks } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { UnixTimestamp } from '@tmlmobilidade/types';
-import { performInTimeChunks } from '@tmlmobilidade/utils';
 
 /* * */
 
-export async function buildHistNodeTravelTimes(clickhouseClient: Parameters<typeof queryEtaFromFile>[0], windowStart: UnixTimestamp, config: AppConfig) {
+const SQL_PATH = 'loader/build-hist-node-travel-times.sql';
+
+/* * */
+
+/**
+ * Snaps historical vehicle events to shape nodes and writes per-node travel
+ * times into `eta.hist_node_travel_times`, one day at a time.
+ *
+ * Each chunk runs `build-hist-node-travel-times.sql` over `{chunk_start, chunk_end}`.
+ *
+ * @param windowStart - Inclusive start of the processing window.
+ * @param windowEnd - Exclusive end of the processing window.
+ */
+export async function buildHistNodeTravelTimes(windowStart: UnixMilliseconds, windowEnd: UnixMilliseconds): Promise<void> {
 	await performInTimeChunks({
+		endDate: windowEnd,
+		intervalHrs: 24,
 		onChunk: async (chunk) => {
-			Logger.progress(
-				{ message: `[${chunk.index + 1}/${chunk.total}] 5a chunk ${Dates.fromUnixTimestamp(chunk.start).iso}[${chunk.start}] -> ${Dates.fromUnixTimestamp(chunk.end).iso}[${chunk.end}]` },
-			);
-			await queryEtaFromFile(clickhouseClient, pipelinePath('loader/2-build_hist_node_travel_times.sql'), {
-				chunk_end: chunk.end,
-				chunk_start: chunk.start,
+			const start = Dates.fromUnixMilliseconds(chunk.start);
+			const end = Dates.fromUnixMilliseconds(chunk.end);
+
+			Logger.progress({
+				message: `[${chunk.index + 1}/${chunk.total}] hist_node_travel_times ${start.iso} [${chunk.start}] → ${end.iso} [${chunk.end}]`,
 			});
+
+			await labDb.queryFromFile(pipelinePath(SQL_PATH), { chunk_end: chunk.end, chunk_start: chunk.start });
 		},
-		splitBy: { days: config.historicalTransformationChunkDays },
+		order: 'desc',
 		startDate: windowStart,
 	});
 }

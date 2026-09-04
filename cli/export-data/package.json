@@ -41,20 +41,20 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"papaparse": "5.5.4"
+		"papaparse": "5.7.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
 	}

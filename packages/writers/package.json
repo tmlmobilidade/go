@@ -36,12 +36,11 @@
 	"dependencies": {
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"papaparse": "5.5.4"
+		"papaparse": "5.7.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"

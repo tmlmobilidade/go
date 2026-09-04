@@ -1,7 +1,7 @@
 /* * */
 
 import { type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
-import { type Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 
 /* * */
 

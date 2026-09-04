@@ -2,8 +2,8 @@
 
 import { DateTimePicker as MantineDateTimePicker } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
-import { UnixTimestamp } from '@tmlmobilidade/types';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -48,7 +48,7 @@ export interface DateTimePickerProps {
 	 * Called when the value changes.
 	 * @param value The new value.
 	 */
-	onChange?: (value: null | UnixTimestamp) => void
+	onChange?: (value: null | UnixMilliseconds) => void
 
 	/**
 	 * Placeholder text for the input.
@@ -58,7 +58,7 @@ export interface DateTimePickerProps {
 	/**
 	 * The current value of the input.
 	 */
-	value?: null | UnixTimestamp
+	value?: null | UnixMilliseconds
 }
 
 /**
@@ -74,7 +74,7 @@ export function DateTimePicker({ clearable, description, disabled, fullWidth, la
 	const valueAsString = useMemo(() => {
 		if (!value) return null;
 		return Dates
-			.fromUnixTimestamp(value)
+			.fromUnixMilliseconds(value)
 			.setZone('Europe/Lisbon', 'offset_only')
 			.toFormat('yyyy-LL-dd HH:mm:ss');
 	}, [value]);
@@ -87,7 +87,7 @@ export function DateTimePicker({ clearable, description, disabled, fullWidth, la
 		if (!value) return onChange(null);
 		const parsedValue = Dates
 			.fromFormat(value, 'yyyy-LL-dd HH:mm:ss', 'Europe/Lisbon')
-			.unix_timestamp;
+			.unix_milliseconds;
 		onChange(parsedValue);
 	};
 

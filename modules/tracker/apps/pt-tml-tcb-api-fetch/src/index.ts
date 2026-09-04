@@ -1,12 +1,12 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlTcbV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import crypto from 'node:crypto';
 
 /* * */
@@ -62,7 +62,7 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlTcbV1> = {
 				agency_id: 'A3H3M',
-				created_at: Dates.fromSeconds(timestampSeconds).unix_timestamp,
+				created_at: Dates.fromSeconds(timestampSeconds).unix_milliseconds,
 				entity_id: entity.id,
 				payload: {
 					header: {
@@ -84,7 +84,7 @@ const main = async () => {
 				document: {
 					...hashableRawEvent,
 					_id: hashableRawEventId,
-					received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+					received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 				},
 			});
 

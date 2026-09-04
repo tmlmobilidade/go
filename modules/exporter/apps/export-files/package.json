@@ -18,25 +18,25 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/go-providers-locations": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.10",
+		"tsx": "4.23.12",
 		"typescript": "6.0.3"
 	}
 }

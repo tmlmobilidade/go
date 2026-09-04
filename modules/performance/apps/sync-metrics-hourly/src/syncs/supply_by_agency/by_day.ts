@@ -2,7 +2,7 @@
 
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromOperationalDate } from '@/utils/day-label.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
+import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics } from '@tmlmobilidade/interfaces';
@@ -119,11 +119,11 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	const allTimestampChunks: { operationalDate: string, start: number }[] = [];
 	let cursor = earliestDataNeeded;
-	while (cursor.unix_timestamp < latest.unix_timestamp) {
+	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ days: 1 });
 		allTimestampChunks.push({
 			operationalDate: cursor.operational_date,
-			start: cursor.unix_timestamp,
+			start: cursor.unix_milliseconds,
 		});
 		cursor = next;
 	}

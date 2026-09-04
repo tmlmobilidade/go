@@ -1,5 +1,9 @@
 /* * */
 
+/**
+ * A class that represents a HTTP response.
+ * @deprecated Use the `ApiResponse` type and the `sendApiResponse` function.
+ */
 export class HttpResponse<T> {
 	public readonly data: null | T;
 	public readonly error: null | string;

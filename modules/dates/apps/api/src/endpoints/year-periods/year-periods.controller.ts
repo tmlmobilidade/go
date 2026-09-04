@@ -2,10 +2,12 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateYearPeriodDto, OperationalDate, PermissionCatalog, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/types';
+import { type CreateYearPeriodDto, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -258,7 +260,7 @@ export class YearPeriodsController {
 		//
 		// Fetch year periods based on query filters
 
-		const allYearPeriods = await goDb.offer.yearPeriods.findMany(queryFilters, { sort: { start_date: -1 } });
+		const allYearPeriods = await goDb.offer.yearPeriods.findMany(queryFilters);
 		return reply.send({ data: allYearPeriods, error: null, statusCode: HTTP_STATUS.OK });
 
 		//

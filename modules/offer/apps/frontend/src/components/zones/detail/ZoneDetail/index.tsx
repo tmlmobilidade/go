@@ -1,11 +1,11 @@
 'use client';
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useZoneDetailContext } from '@/components/zones/detail/ZoneDetail.context';
 import { ZoneDetailHeader } from '@/components/zones/detail/ZoneDetailHeader';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { PermissionCatalog, ZoneSchema } from '@tmlmobilidade/types';
-import { Divider, ErrorDisplay, GeoJsonInput, Grid, LoadingOverlay, MapOverlayPolygon, MapOverlayPolygonDataProps, MapView, MultiSelect, Pane, Section, TextInput, useCssVariable, useDataAgenciesNew } from '@tmlmobilidade/ui';
+import { ZoneSchema } from '@tmlmobilidade/go-types-offer';
+import { Divider, ErrorDisplay, GeoJsonInput, Grid, LoadingOverlay, MapOverlayPolygon, MapOverlayPolygonDataProps, MapView, MultiSelect, Pane, Section, TextInput, useCssVariable } from '@tmlmobilidade/ui';
 import { Feature, type FeatureCollection, MultiPolygon, type Polygon } from 'geojson';
 import { useEffect, useState } from 'react';
 /* * */
@@ -24,10 +24,7 @@ export function ZoneDetail() {
 
 	const primaryColorHexValue = useCssVariable('--color-primary', '#000000');
 
-	const { options: agencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
-		actions: [zoneDetailContext.flags.isReadOnly ? PermissionCatalog.all.zones.actions.nav : PermissionCatalog.all.zones.actions.update],
-		scope: PermissionCatalog.all.zones.scope,
-	});
+	const { options: agencyOptions } = useAgenciesData();
 
 	//
 	// B. Handle actions

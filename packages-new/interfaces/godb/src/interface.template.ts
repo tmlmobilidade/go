@@ -3,12 +3,12 @@
 import type { AggregateOptions, AggregationCursor, BulkWriteOptions, Collection, Db, DeleteOptions, DeleteResult, Document, Filter, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from '@tmlmobilidade/go-clients-mongo';
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { type AggregationPipeline, CreateIndexesOptions, isSameIndex, prepareMongoIndexOptions, type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
-import { UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import z from 'zod';
+import { z } from 'zod';
 
 /* * */
 
@@ -120,7 +120,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @param options - The options for the insert operation
 	 * @returns A promise that resolves to the result of the insert operation
 	 */
-	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], { options, unsafe = false }: { options?: BulkWriteOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
+	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixMilliseconds, created_by?: string, updated_at?: UnixMilliseconds, updated_by?: string })[], { options, unsafe = false }: { options?: BulkWriteOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
 		const newDocuments: OptionalUnlessRequiredId<T>[] = [];
 		const usedIds = new Set<any>(
 			(await this.collection.find(
@@ -141,9 +141,9 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 			newDocuments.push({
 				...doc,
 				_id: id,
-				created_at: doc.created_at || Dates.now('utc').unix_timestamp,
+				created_at: doc.created_at || Dates.now('utc').unix_milliseconds,
 				created_by: doc.created_by || 'system',
-				updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
+				updated_at: doc.updated_at || Dates.now('utc').unix_milliseconds,
 				updated_by: doc.updated_by || 'system',
 			} as unknown as OptionalUnlessRequiredId<T>);
 		}
@@ -173,13 +173,13 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @param options The options for the insert operation.
 	 * @returns A promise that resolves to the result of the insert operation.
 	 */
-	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
+	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: T['_id'], created_at?: UnixMilliseconds, created_by?: string, updated_at?: UnixMilliseconds, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
 		// Setup a copy of the document to be inserted with defaults
 		let parsedDocument = {
 			...doc,
-			created_at: doc.created_at || Dates.now('utc').unix_timestamp,
+			created_at: doc.created_at || Dates.now('utc').unix_milliseconds,
 			created_by: doc.created_by || 'system',
-			updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
+			updated_at: doc.updated_at || Dates.now('utc').unix_milliseconds,
 			updated_by: doc.updated_by || 'system',
 		} as OptionalUnlessRequiredId<T>;
 
@@ -287,10 +287,10 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @param options - The options for the update operation
 	 * @returns A promise that resolves to the result of the update operation
 	 */
-	public async updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: TUpdate & { updated_at?: UnixTimestamp, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>> {
+	public async updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: TUpdate & { updated_at?: UnixMilliseconds, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>> {
 		let parsedUpdateFields = {
 			...updateFields,
-			updated_at: updateFields.updated_at || Dates.now('utc').unix_timestamp,
+			updated_at: updateFields.updated_at || Dates.now('utc').unix_milliseconds,
 			updated_by: updateFields.updated_by || 'system',
 		};
 
@@ -302,7 +302,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 			}
 		}
 
-		const result = await this.collection.updateMany(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
+		const result = await this.collection.updateMany(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_milliseconds } } as unknown as Partial<T>, options);
 
 		if (options?.returnResults === false) return result as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
 
@@ -343,7 +343,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 			}
 		}
 
-		const result = await this.collection.updateOne(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
+		const result = await this.collection.updateOne(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_milliseconds } } as unknown as Partial<T>, options);
 
 		if (options?.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
 

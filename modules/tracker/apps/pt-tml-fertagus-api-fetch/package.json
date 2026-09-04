@@ -17,23 +17,23 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/external": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-clients-ssh": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
+		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/ssh": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.10",
+		"tsx": "4.23.12",
 		"typescript": "6.0.3"
 	}
 }

@@ -1,13 +1,13 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { UnirVehicleLocationResponse } from '@tmlmobilidade/external/dist/clients/unir/types.js';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmpUnir } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import crypto from 'node:crypto';
 
 import { ut1Writer, ut2Writer, ut3Writer, ut4Writer, ut5Writer } from './writers.js';
@@ -88,7 +88,7 @@ const main = async () => {
 
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmpUnir> = {
 			agency_id: AGENCY_NAME_ID_MAP[event.nomeOperador].id,
-			created_at: Dates.fromFormat(event.recordedAtTime, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp,
+			created_at: Dates.fromFormat(event.recordedAtTime, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_milliseconds,
 			entity_id: hashableRawEventHash,
 			payload: event,
 			version: AGENCY_NAME_ID_MAP[event.nomeOperador].version,
@@ -104,7 +104,7 @@ const main = async () => {
 		const insertableDocument = {
 			...hashableRawEvent,
 			_id: hashableRawEventHash,
-			received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 		} as typeof insertableDocument[number];
 
 		if (collection === 'ptTmpUnirUt1') await ut1Writer.write(insertableDocument);

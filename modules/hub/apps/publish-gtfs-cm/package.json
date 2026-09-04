@@ -17,26 +17,35 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-locations": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/go-types-geo": "*",
+		"@tmlmobilidade/go-types-gtfs": "*",
+		"@tmlmobilidade/go-types-gtfs-strict": "*",
+		"@tmlmobilidade/go-types-hub": "*",
+		"@tmlmobilidade/go-types-infrastructure": "*",
+		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
+		"@tmlmobilidade/go-utils-files": "*",
 		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"gtfs-types": "5.1.0",
+		"papaparse": "5.7.0",
 		"yazl": "3.3.1"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
 		"@types/yazl": "3.3.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.10",
+		"tsx": "4.23.12",
 		"typescript": "6.0.3"
 	}
 }

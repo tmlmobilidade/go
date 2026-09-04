@@ -1,11 +1,10 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { usePeriodAssignContext } from '@/components/year-periods/calendar/PeriodAssign.context';
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { IconAlertTriangle, IconCalendar } from '@tabler/icons-react';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Alert, Button, ColorInput, ColorSwatch, Label, MultiSelect, Radio, Section, Select, Text, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { Alert, Button, ColorInput, ColorSwatch, Label, MultiSelect, Radio, Section, Select, Text, TextInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -23,10 +22,7 @@ export function PeriodAssignContent() {
 	const periodsListContext = usePeriodsListContext();
 	const periodAssignContext = usePeriodAssignContext();
 
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.year_periods.actions.update],
-		scope: PermissionCatalog.all.year_periods.scope,
-	});
+	const { options: agencyOptions } = useAnnotationsAgenciesData();
 
 	const agencyPeriods = useMemo(() => {
 		if (!periodAssignContext.data.form.values.agency_ids || periodAssignContext.data.form.values.agency_ids.length === 0) return [];

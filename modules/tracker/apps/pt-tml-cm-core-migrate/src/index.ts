@@ -3,9 +3,9 @@
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
+import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Timer } from '@tmlmobilidade/timer';
-import { getCurrentEnvironment } from '@tmlmobilidade/types';
-import { runOnInterval } from '@tmlmobilidade/utils';
 import { ObjectId } from 'mongodb';
 
 /* * */
@@ -80,7 +80,7 @@ async function main() {
 				// Skip if document has no trip_id
 				if (!parsedDocument.payload.vehicle?.trip?.tripId) continue;
 				// If the document created_at is before the earliest date, skip it
-				if (parsedDocument.created_at < earliestDate.unix_timestamp) continue;
+				if (parsedDocument.created_at < earliestDate.unix_milliseconds) continue;
 				// Write the document to the correct collection
 				if (parsedDocument.agency_id === 'LA77N') {
 					await rawDb.vehicleEvents.ptTmlCmVa.insertOne(parsedDocument);

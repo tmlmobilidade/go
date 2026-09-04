@@ -4,7 +4,7 @@ import { StackedLineBarChart } from '@/components/charts/StackedLineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
 import { buildMetricUrl, PieResult, RawMetricData, StackedResult, transformDemandMetric } from '@/utils/metrics';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { PieChart } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';

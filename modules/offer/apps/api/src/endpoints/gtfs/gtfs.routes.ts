@@ -2,8 +2,8 @@
 
 import { GtfsController } from '@/endpoints/gtfs/gtfs.controller.js';
 import { ExporterSharedController } from '@tmlmobilidade/controllers';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 

@@ -1,0 +1,9 @@
+{
+	"ListFilter": {
+		"toggle_all": "Selecionar tudo"
+	},
+	"TagFilter": {
+		"description": "Escreva e separe por vírgulas ou espaços.",
+		"placeholder": "Pesquisar..."
+	}
+}

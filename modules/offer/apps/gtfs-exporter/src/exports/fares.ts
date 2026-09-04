@@ -2,7 +2,9 @@
 /* * */
 
 import { type GtfsV29ExportConfig } from '@/types.js';
-import { Agency, Fare, GtfsTMLFareAttributes, GtfsTMLFareRules, Line, Route } from '@tmlmobilidade/types';
+import { type Agency } from '@tmlmobilidade/go-types-core';
+import { type Fare, type Line, type Route } from '@tmlmobilidade/go-types-offer';
+import { type GtfsTMLFareAttributes, type GtfsTMLFareRules } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -26,7 +28,7 @@ export function parseFareAttributes(
 			agency_id: agencyData.code,
 		};
 	} catch (error) {
-		throw new Error(`Error parsing fare attributes: ${error}`);
+		throw new Error(`Error parsing fare attributes: ${error}`, error);
 	}
 }
 
@@ -49,7 +51,7 @@ export function parseFareRules(
 			agency_id: agencyData.code,
 		};
 	} catch (error) {
-		throw new Error(`Error parsing fare rules: ${error}`);
+		throw new Error(`Error parsing fare rules: ${error}`, error);
 	}
 }
 

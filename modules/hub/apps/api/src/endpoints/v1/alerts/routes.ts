@@ -5,7 +5,7 @@ import { getGtfsRtJsonFeed } from '@/endpoints/v1/alerts/controllers/get-gtfs-rt
 import { getGtfsRtProtobufFeed } from '@/endpoints/v1/alerts/controllers/get-gtfs-rt-protobuf-feed.js';
 import { getJsonFeed } from '@/endpoints/v1/alerts/controllers/get-json-feed.js';
 import { getRssFeed } from '@/endpoints/v1/alerts/controllers/get-rss-feed.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

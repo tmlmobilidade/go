@@ -6,7 +6,7 @@ import { syncRealtimeServiceCompliance } from '@/tasks/sync-service-compliance.j
 import { runDemandByAgencyByOperationalDate } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 /* * */
 

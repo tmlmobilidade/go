@@ -17,23 +17,27 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
+		"@fastify/multipart": "10.1.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/fastify": "*",
-		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-utils-files": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
+		"@tmlmobilidade/go-dates-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-types-offer": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.10",
+		"tsx": "4.23.12",
 		"typescript": "6.0.3"
 	}
 }

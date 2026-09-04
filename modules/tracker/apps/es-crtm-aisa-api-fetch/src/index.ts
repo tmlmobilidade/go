@@ -1,12 +1,12 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventEsCrtmAisaV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import crypto from 'node:crypto';
 
 /* * */
@@ -64,7 +64,7 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventEsCrtmAisaV1> = {
 				agency_id: 'G8N1G',
-				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
+				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_milliseconds,
 				entity_id: entity.id,
 				payload: {
 					header: decodedMessage.header,
@@ -89,7 +89,7 @@ const main = async () => {
 			await rawDb.vehicleEvents.esCrtmAisa.insertOne({
 				...hashableRawEvent,
 				_id: hashableRawEventId,
-				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 			});
 
 			saveCount++;

@@ -8,11 +8,10 @@ import { cleanupHistoricalNodeTravelTimesAggregation } from '@/tasks/cleanup-his
 import { cleanupHistoricalNodeTravelTimes } from '@/tasks/cleanup-historical-node-travel-times.js';
 import { cleanupHistoricalRides } from '@/tasks/cleanup-historical-rides.js';
 import { cleanupHistoricalVehicleEvents } from '@/tasks/cleanup-historical-vehicle-events.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
 
 import { fetchHistoricalRidesForDayIndex } from './tasks/fetch-historical-rides-for-day-index.js';
 
@@ -67,19 +66,9 @@ export async function main() {
 	// Cleanup historical rides
 
 	if (AppConfig.pipelineSteps.cleanupHistoricalRides) {
-		//
-
-		Logger.info({ message: `Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: AppConfig.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}` });
-
-		// Fetch the same per-day windows the loader inserts so we can
+		// Fetch the same historical window the loader inserts so we can
 		// determine which hist_rides are still considered in-window.
-		const keepRideIds: string[] = [];
-		for (let index = 0; index < AppConfig.historicalDataDaysBack; index++) {
-			const dayRides = await fetchHistoricalRidesForDayIndex({}, index);
-			for (const ride of dayRides) {
-				keepRideIds.push(ride._id);
-			}
-		}
+		const keepRideIds = (await fetchHistoricalRidesForDayIndex()).map(ride => ride._id);
 		Logger.info({ message: `Found ${keepRideIds.length} historical rides in current window` });
 
 		await cleanupHistoricalRides(clickhouseClient, keepRideIds);

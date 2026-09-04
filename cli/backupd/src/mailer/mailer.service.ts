@@ -1,5 +1,5 @@
-import { Dates } from '@tmlmobilidade/dates';
-import { renderSystemErrorTemplate } from '@tmlmobilidade/emails';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { renderSystemErrorTemplate } from '@tmlmobilidade/go-providers-emails';
 import nodemailer, { Transporter } from 'nodemailer';
 
 export interface MailOptions {
@@ -37,7 +37,7 @@ export class MailerService {
 		const emailHtml = await renderSystemErrorTemplate({
 			errorMessage: error,
 			serviceName: this.config.mail_options.subject,
-			timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			timestamp: Dates.now('Europe/Lisbon').unix_milliseconds,
 		});
 
 		const mailOptions = {

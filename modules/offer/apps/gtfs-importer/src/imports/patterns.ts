@@ -2,8 +2,9 @@
 
 import { getStopByLegacyId } from '@/utils/stops.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { GtfsStrictV29StopTimes, GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type CreatePatternDto, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type CreatePatternDto, GtfsTMLStopTimes, GtfsTMLTrip, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/types';
 
 import {
 	normalizeGtfsDistance,
@@ -29,10 +30,10 @@ export async function buildPatternsForRoute(params: {
 	lineId: string
 	missingZoneCodes: Set<string>
 	routeDocsByCode: Map<string, { _id: string }>
-	routeTrips: GtfsTMLTrip[]
+	routeTrips: GtfsStrictV29Trips[]
 	shapesById: Map<string, Shape>
 	stopCache: Map<string, { _id: string, name: string }>
-	stopTimesByTrip: Map<string, GtfsTMLStopTimes[]>
+	stopTimesByTrip: Map<string, GtfsStrictV29StopTimes[]>
 	zoneIdByCode: Map<string, string>
 	zonesByPatternStop: Map<string, string[]>
 	zonesByStop: Map<string, string[]>
@@ -57,7 +58,7 @@ export async function buildPatternsForRoute(params: {
 	//
 	// A. Build patterns per direction
 
-	const patternsByDirection = new Map<string, Map<string, { patternKey: string, stopTimes: GtfsTMLStopTimes[], trip: GtfsTMLTrip }>>();
+	const patternsByDirection = new Map<string, Map<string, { patternKey: string, stopTimes: GtfsStrictV29StopTimes[], trip: GtfsStrictV29Trips }>>();
 	for (const trip of routeTrips) {
 		const directionId = patternDirectionMapper.fromGtfs(trip.direction_id ?? '0') as PatternDirection;
 		const stopTimes = stopTimesByTrip.get(trip.trip_id) ?? [];
@@ -92,7 +93,7 @@ export async function buildPatternsForRoute(params: {
 				continue;
 			}
 			const formattedPath: CreatePatternDto['path'] = [];
-			const parametersPath: { avg_speed: number, dwell_time: number, stop_id: number }[] = [];
+			const parametersPath: { avg_speed: number, dwell_time: number, stop_id: string }[] = [];
 			const pathMetrics: Array<{ arrivalSec: null | number, departureSec: null | number, distanceDelta: number, stopRefId: string }> = [];
 			let prevDistance: null | number = null;
 
@@ -134,7 +135,7 @@ export async function buildPatternsForRoute(params: {
 					allow_drop_off: parseInt(stopTime.drop_off_type) === 0,
 					allow_pickup: parseInt(stopTime.pickup_type) === 0,
 					distance_delta: distanceDelta,
-					stop_id: Number(stopRef._id),
+					stop_id: String(stopRef._id),
 					timepoint: parseInt(stopTime.timepoint) === 1,
 					zones,
 				});
@@ -165,7 +166,7 @@ export async function buildPatternsForRoute(params: {
 				parametersPath.push({
 					avg_speed: avgSpeed,
 					dwell_time: dwellTime,
-					stop_id: Number(current.stopRefId),
+					stop_id: String(current.stopRefId),
 				});
 			}
 

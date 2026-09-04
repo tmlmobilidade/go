@@ -6,7 +6,7 @@ import { DemandByProductVisualization } from '@/components/visualizations/Demand
 import { DemandVisualization } from '@/components/visualizations/Demand/DemandVisualization';
 import { AgencyType } from '@/constants';
 import { useNetworkContext } from '@/contexts/Network.context';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { DateInput, MonthPicker, MultiSelect, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 

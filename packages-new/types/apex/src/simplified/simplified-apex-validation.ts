@@ -3,7 +3,7 @@
 import { ApexEventTypeSchema } from '@/utils/event-type.js';
 import { ApexValidationCategorySchema } from '@/utils/validation-category.js';
 import { ApexValidationStatusSchema, ValidApexValidationStatusSchema } from '@/utils/validation-status.js';
-import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -15,7 +15,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	apex_version: z.string(),
 	card_serial_number: z.string().nullable().default(null),
 	category: ApexValidationCategorySchema.default('subscription'),
-	created_at: UnixTimestampSchema,
+	created_at: UnixMillisecondsSchema,
 	device_id: z.string(),
 	event_type: ApexEventTypeSchema,
 	is_ok: z.boolean(),
@@ -29,11 +29,11 @@ export const SimplifiedApexValidationSchema = z.object({
 	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string().nullable().default(null),
 	product_id: z.string().nullable().default(null),
-	received_at: UnixTimestampSchema,
+	received_at: UnixMillisecondsSchema,
 	stop_id: z.string().nullable().default(null),
 	trip_id: z.string().nullable().default(null),
 	units_qty: z.number().nullable().default(null),
-	updated_at: UnixTimestampSchema,
+	updated_at: UnixMillisecondsSchema,
 	validation_status: ApexValidationStatusSchema,
 	vehicle_id: z.string().nullable().default(null),
 }).transform((val) => {
@@ -64,7 +64,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	// Setup the individual conditions to consider
 	// this transaction as a valid passenger
 	const isValidValidationStatus = ValidApexValidationStatusSchema.safeParse(val.validation_status).success;
-	const isNotRefunded = val.on_board_refund_id == null;
+	const isNotRefunded = val.on_board_refund_id === null;
 	// Combine the individual conditions
 	const isPassenger = isValidValidationStatus && isNotRefunded;
 	// Return the transformed value

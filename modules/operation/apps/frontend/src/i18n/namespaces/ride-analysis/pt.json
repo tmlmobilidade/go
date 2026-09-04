@@ -1,0 +1,62 @@
+{
+	"at_least_one_vehicle_event_on_first_stop": {
+		"description": "Uma circulação deve ter pelo menos um evento na primeira paragem.",
+		"label": "Pelo menos um evento na primeira paragem"
+	},
+	"at_least_one_vehicle_event_on_last_stop": {
+		"description": "Uma circulação deve terminar na última paragem.",
+		"label": "Terminou na última paragem"
+	},
+	"expected_apex_validation_interval": {
+		"description": "O intervalo entre validações é orgânico e representa a variação natural dos tempos de validação dos passageiros.",
+		"label": "Intervalo de validações APEX"
+	},
+	"expected_driver_id_qty": {
+		"description": "Uma circulação pode ter no máximo dois IDs de motorista diferentes.",
+		"label": "No máximo dois motoristas"
+	},
+	"expected_start_time": {
+		"description": "Uma circulação deve começar depois da hora planeada e com um atraso inferior a 5 minutos.",
+		"label": "Início a horas"
+	},
+	"expected_vehicle_event_delay": {
+		"description": "Os eventos não devem ser entregues com mais de 10 segundos após a sua geração.",
+		"label": "Atraso excessivo na entrega dos eventos"
+	},
+	"expected_vehicle_event_interval": {
+		"description": "O intervalo médio entre eventos não deve exceder os 20 segundos.",
+		"label": "Intervalo médio entre eventos"
+	},
+	"expected_vehicle_event_qty": {
+		"description": "Uma circulação deve ter pelo menos 10 eventos de veículo.",
+		"label": "Menos de 10 eventos de veículo"
+	},
+	"expected_vehicle_id_qty": {
+		"description": "Uma circulação pode ter no máximo dois IDs de veículo diferentes.",
+		"label": "No máximo dois veículos"
+	},
+	"matching_apex_locations": {
+		"description": "As transações de localização devem corresponder aos eventos de veículo.",
+		"label": "Transações de localização correspondentes"
+	},
+	"matching_vehicle_ids": {
+		"description": "Os IDs do veículos recebidos nos Eventos devem corresponder ao ID das transações APEX.",
+		"label": "Vehicle IDs correspondentes"
+	},
+	"simple_one_apex_validation": {
+		"description": "Uma circulação deve ter pelo menos uma transação de validação.",
+		"label": "Pelo menos uma transação de validação"
+	},
+	"simple_one_vehicle_event_or_apex_validation": {
+		"description": "Uma circulação deve ter pelo menos um evento ou uma transação de validação.",
+		"label": "Pelo menos um evento ou uma transação de validação"
+	},
+	"simple_three_vehicle_events": {
+		"description": "Uma circulação deve ter pelo menos três eventos no início, meio e fim da viagem.",
+		"label": "Pelo menos três eventos"
+	},
+	"transaction_sequentiality": {
+		"description": "Todas as transações geradas pelo validador foram entregues.",
+		"label": "Sequencialidade das Transações APEX"
+	}
+}

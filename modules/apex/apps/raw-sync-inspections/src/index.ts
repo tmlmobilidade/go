@@ -2,9 +2,9 @@
 
 import { syncApexInspections } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
+import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -39,6 +39,7 @@ async function main() {
 		// and sync each one sequentially.
 
 		await performInTimeChunks({
+			intervalHrs: 2,
 			onChunk: async (chunk) => {
 				try {
 					await syncApexInspections(chunk);
@@ -52,16 +53,15 @@ async function main() {
 					// the current chunk into smaller chunks
 					await performInTimeChunks({
 						endDate: chunk.end,
-						onChunk: async (chunk) => {
-							await syncApexInspections(chunk);
-						},
-						splitBy: { minutes: 5 },
+						intervalHrs: 5 / 60, // 5 minutes
+						onChunk: async chunk => await syncApexInspections(chunk),
+						order: 'desc',
 						startDate: chunk.start,
 					});
 				}
 			},
-			splitBy: { hours: 2 },
-			startDate: earliestDate.unix_timestamp,
+			order: 'desc',
+			startDate: earliestDate.unix_milliseconds,
 		});
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);

@@ -1,7 +1,7 @@
 'use client';
 
 import { IconPlus } from '@tabler/icons-react';
-import { HHMM, HHMMSchema, normalizeOperationalHhmmInput, timeToMinutes } from '@tmlmobilidade/types';
+import { HHMM, HHMMSchema, normalizeOperationalHhmmInput, timeToMinutes } from '@tmlmobilidade/go-types-offer';
 import { Button, DayPeriodsTimepoints, Section, TextInput } from '@tmlmobilidade/ui';
 import { DragEvent, KeyboardEvent, useState } from 'react';
 

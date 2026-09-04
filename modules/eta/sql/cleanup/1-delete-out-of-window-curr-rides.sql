@@ -1,11 +1,11 @@
 -- Delete out-of-window rides from eta.curr_rides.
--- 
+--
 -- "Out-of-window" rides are those where `start_time_scheduled` is earlier than
 -- the lower window boundary: now (ms) - window_hours_before hours.
--- 
--- `start_time_scheduled` is Unix time in milliseconds (see UnixTimestampSchema).
+--
+-- `start_time_scheduled` is Unix time in milliseconds (see UnixMillisecondsSchema).
 -- Boundary uses toUnixTimestamp64Milli(now()) and hour offset as ms (× 60 × 60 × 1000).
--- 
+--
 -- Parameters:
 --   {window_hours_before:UInt32} = hours before now for window lower bound
 --

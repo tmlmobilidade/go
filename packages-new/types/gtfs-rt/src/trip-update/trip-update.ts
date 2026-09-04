@@ -1,10 +1,11 @@
 /* * */
 
-import { GtfsRtTripDescriptorSchema } from '@/shared/trip-descriptor.js';
-import { GtfsRtVehicleDescriptorSchema } from '@/shared/vehicle-descriptor.js';
-import { GtfsRtStopTimeUpdateSchema } from '@/trip-update/stop-time-update.js';
-import { GtfsRtTripPropertiesSchema } from '@/trip-update/trip-properties.js';
 import { z } from 'zod';
+
+import { GtfsRtTripDescriptorSchema } from '../shared/trip-descriptor.js';
+import { GtfsRtVehicleDescriptorSchema } from '../shared/vehicle-descriptor.js';
+import { GtfsRtStopTimeUpdateSchema } from './stop-time-update.js';
+import { GtfsRtTripPropertiesSchema } from './trip-properties.js';
 
 /* * */
 

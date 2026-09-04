@@ -5,7 +5,8 @@
 import { ShapeEditorStopsItem } from '@/components/patterns/shape/shape-editor/ShapeEditorStopsItem';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PopulatedPath, Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { DraggableList, Section, Text, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useState } from 'react';
@@ -63,7 +64,7 @@ export function StopsList() {
 		if (!stopId || addStopIndex === null) return;
 		setSelectedStopId(stopId);
 
-		const selectedStopResult = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
+		const selectedStopResult = await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_GET(stopId));
 		if (!selectedStopResult.isOk) {
 			useToast.error({ message: selectedStopResult.error, title: 'Erro ao carregar paragem' });
 			return;

@@ -1,9 +1,9 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -15,7 +15,7 @@ const PROCESSING_TIMEOUT_HOURS = 2;
 export async function markStuckProcessingExportsAsError() {
 	//
 
-	const cutoffTimestamp = Dates.now('local').minus({ hours: PROCESSING_TIMEOUT_HOURS }).unix_timestamp;
+	const cutoffTimestamp = Dates.now('local').minus({ hours: PROCESSING_TIMEOUT_HOURS }).unix_milliseconds;
 
 	const stuckExports = await goDb.core.exports.findMany({ created_at: { $lt: cutoffTimestamp }, processing_status: ProcessingStatusSchema.enum.processing });
 

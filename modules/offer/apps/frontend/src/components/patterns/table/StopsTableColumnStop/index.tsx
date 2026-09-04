@@ -1,7 +1,7 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { Text, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -22,7 +22,7 @@ export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
 
 	const handleOpenStop = () => {
 		if (pathItem.stop_id) {
-			window.open(PAGE_ROUTES.stops.STOPS_DETAIL(String(pathItem.stop_id)), '_blank', 'noopener,noreferrer');
+			window.open(PAGE_ROUTES.infrastructure.STOPS_DETAIL(String(pathItem.stop_id)), '_blank', 'noopener,noreferrer');
 		}
 	};
 

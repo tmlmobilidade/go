@@ -1,12 +1,12 @@
 'use client';
 
 import { transformAlertDataIntoGeoJsonFeature, useAlertsContext } from '@/components/alerts/Alerts.context';
-import { type AlertGroup } from '@/types/common/alert-group';
-import { Dates } from '@tmlmobilidade/dates';
+import { type AlertGroup } from '@/types/alerts/alert-group';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
+import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useFilterStateString, type UseFilterStateStringReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, type UseFilterStateStringReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -36,11 +36,11 @@ interface AlertsListContextState extends Omit<ListContextStateTemplate, 'flags'>
 		grouped: AlertGroup[]
 	}
 	filters: {
-		agency: UseFilterStateStringReturnType
+		agency: UseFilterStateTextReturnType
 		cause: AlertCause | null
 		effect: AlertEffect | null
 		line_id: null | string
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 		stop_id: null | string
 	}
 	flags: {
@@ -75,8 +75,8 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const { i18n, t } = useTranslation();
 
-	const filterSearch = useFilterStateString('search');
-	const filterAgency = useFilterStateString('agency');
+	const filterSearch = useFilterStateText('search');
+	const filterAgency = useFilterStateText('agency');
 
 	const [currentView, setCurrentView] = useLocalStorage<'current' | 'future' | 'map'>({ defaultValue: 'current', key: 'alerts-current-view' });
 	const [filterByLineIdState, setFilterByLineIdState] = useQueryState('line_id');
@@ -93,7 +93,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Transform data
 
-	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_timestamp, []);
+	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_milliseconds, []);
 
 	const searchResultsData = useSearch<HubAlert>({
 		accessors: ['title', 'description'],
@@ -173,7 +173,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			if (!alert.active_period_start_date) return result;
 
 			const alertStartDate = Dates
-				.fromUnixTimestamp(alert.active_period_start_date)
+				.fromUnixMilliseconds(alert.active_period_start_date)
 				.setZone('Europe/Lisbon', 'offset_only');
 			const alertStartDateString = alertStartDate.toFormat('yyyyMMdd');
 			const existingGroup = result.find(group => group.value === alertStartDateString);
@@ -186,15 +186,18 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			const alertStartDateCompare = alertStartDate.startOf('day');
 			const formattedDate = alertStartDate.toFormat('d LLLL yyyy', { locale: displayLocale });
 
-			const formattedGroupLabel = alertStartDateCompare.unix_timestamp === today.unix_timestamp
-				? t('default:alerts.AlertsListGroup.titles.today', '', { value: formattedDate })
-				: alertStartDateCompare.unix_timestamp === tomorrow.unix_timestamp
-					? t('default:alerts.AlertsListGroup.titles.tomorrow', '', { value: formattedDate })
-					: alertStartDateCompare.unix_timestamp === yesterday.unix_timestamp
-						? t('default:alerts.AlertsListGroup.titles.yesterday', '', { value: formattedDate })
-						: alertStartDateCompare.unix_timestamp < yesterday.unix_timestamp
-							? t('default:alerts.AlertsListGroup.titles.past', '', { value: formattedDate })
-							: t('default:alerts.AlertsListGroup.titles.future', '', { value: formattedDate });
+			let formattedGroupLabel: string;
+			if (alertStartDateCompare.unix_milliseconds === today.unix_milliseconds) {
+				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.today', '', { value: formattedDate });
+			} else if (alertStartDateCompare.unix_milliseconds === tomorrow.unix_milliseconds) {
+				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.tomorrow', '', { value: formattedDate });
+			} else if (alertStartDateCompare.unix_milliseconds === yesterday.unix_milliseconds) {
+				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.yesterday', '', { value: formattedDate });
+			} else if (alertStartDateCompare.unix_milliseconds < yesterday.unix_milliseconds) {
+				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.past', '', { value: formattedDate });
+			} else {
+				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.future', '', { value: formattedDate });
+			}
 
 			result.push({
 				items: [alert],

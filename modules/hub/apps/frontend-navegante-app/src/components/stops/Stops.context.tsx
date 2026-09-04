@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubStop } from '@tmlmobilidade/go-types-public-info';
+import { type HubStop } from '@tmlmobilidade/go-types-hub';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

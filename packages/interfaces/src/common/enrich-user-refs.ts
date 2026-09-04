@@ -1,5 +1,5 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type UserDisplay, UserDisplayFields } from '@tmlmobilidade/types';
+import { type UserDisplay, UserDisplayFields } from '@tmlmobilidade/go-types-core';
 import { FindOptions } from 'mongodb';
 
 type AnyDoc = Record<string, any>;

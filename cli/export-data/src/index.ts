@@ -13,16 +13,16 @@ import { promptHashedShapeIds } from '@/prompts/hashedshape-ids.js';
 import { promptValidationGroupFields } from '@/prompts/validation-group-fields.js';
 import { exportValidationsAggregated, type ValidationGroupField } from '@/tasks/apex-validations/validations-aggregated.js';
 import { exportValidationsRaw } from '@/tasks/apex-validations/validations-raw.js';
-import { exportHashedShapesGeoJSON } from '@/tasks/hashed-shapes/hashed-shapes-geojson.js';
-import { exportRidesRaw } from '@/tasks/rides/rides-raw.js';
+// import { exportHashedShapesGeoJSON } from '@/tasks/hashed-shapes/hashed-shapes-geojson.js';
+// import { exportRidesRaw } from '@/tasks/rides/rides-raw.js';
 import { exportSamsRaw } from '@/tasks/sams/sams-raw.js';
-import { exportVehicleEventsRaw } from '@/tasks/vehicle-events/vehicle-events-raw.js';
+// import { exportVehicleEventsRaw } from '@/tasks/vehicle-events/vehicle-events-raw.js';
 import { exportTypeLabels, exportTypesWithoutEntityFilters, exportTypesWithoutFilters } from '@/types.js';
 import { initExportContext } from '@/utils/init-context.js';
 import { intro, log, outro, tasks } from '@clack/prompts';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 
-import { exportExecutiveSummary } from './tasks/executive-summary-setup/index.js';
+// import { exportExecutiveSummary } from './tasks/executive-summary-setup/index.js';
 import { exportValidationsPMunicipalities } from './tasks/municipalities-validations/validations_p_municipalities.js';
 
 /* * */
@@ -117,34 +117,34 @@ await (async function main() {
 			title: exportTypeLabels['validations-aggregated'],
 		},
 
-		{
-			enabled: exportTypes.includes('rides-raw'),
-			task: async message => await exportRidesRaw({ context, message }),
-			title: exportTypeLabels['rides-raw'],
-		},
+		// {
+		// 	enabled: exportTypes.includes('rides-raw'),
+		// 	task: async message => await exportRidesRaw({ context, message }),
+		// 	title: exportTypeLabels['rides-raw'],
+		// },
 
-		{
-			enabled: exportTypes.includes('vehicle-events-raw'),
-			task: async message => await exportVehicleEventsRaw({ context, message }),
-			title: exportTypeLabels['vehicle-events-raw'],
-		},
+		// {
+		// 	enabled: exportTypes.includes('vehicle-events-raw'),
+		// 	task: async message => await exportVehicleEventsRaw({ context, message }),
+		// 	title: exportTypeLabels['vehicle-events-raw'],
+		// },
 
-		{
-			enabled: exportTypes.includes('hashed-shapes-geojson'),
-			task: async message => await exportHashedShapesGeoJSON({ context, hashedShapeIds, message }),
-			title: exportTypeLabels['hashed-shapes-geojson'],
-		},
+		// {
+		// 	enabled: exportTypes.includes('hashed-shapes-geojson'),
+		// 	task: async message => await exportHashedShapesGeoJSON({ context, hashedShapeIds, message }),
+		// 	title: exportTypeLabels['hashed-shapes-geojson'],
+		// },
 
 		{
 			enabled: exportTypes.includes('sams-raw'),
 			task: async message => await exportSamsRaw({ context, message }),
 			title: exportTypeLabels['sams-raw'],
 		},
-		{
-			enabled: exportTypes.includes('executive-summary'),
-			task: async message => await exportExecutiveSummary({ context, message }),
-			title: exportTypeLabels['executive-summary'],
-		},
+		// {
+		// 	enabled: exportTypes.includes('executive-summary'),
+		// 	task: async message => await exportExecutiveSummary({ context, message }),
+		// 	title: exportTypeLabels['executive-summary'],
+		// },
 		{
 			enabled: exportTypes.includes('validations-p-municipalities'),
 			task: async message => await exportValidationsPMunicipalities({ context, message }),

@@ -1,0 +1,50 @@
+{
+	"name": "@tmlmobilidade/go-infrastructure-frontend",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"private": true,
+	"scripts": {
+		"build": "next build",
+		"dev": "next dev -p 51003",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src",
+		"start": "next start"
+	},
+	"dependencies": {
+		"@tabler/icons-react": "3.46.0",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-infrastructure-pckg-utils": "*",
+		"@tmlmobilidade/go-infrastructure-pckg-types": "*",
+		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-downloads": "*",
+		"@tmlmobilidade/go-types-geo": "*",
+		"@tmlmobilidade/go-types-infrastructure": "*",
+		"@tmlmobilidade/go-types-locations": "*",
+		"@tmlmobilidade/go-types-offer": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/ui": "*",
+		"@tmlmobilidade/utils": "*",
+		"@turf/turf": "7.4.0",
+		"next": "16.3.3",
+		"react": "19.2.8",
+		"react-dom": "19.2.8",
+		"react-i18next": "17.0.12",
+		"swr": "2.5.1"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/geojson": "7946.0.16",
+		"@types/node": "26.4.0",
+		"@types/react": "19.2.18",
+		"@types/react-dom": "19.2.5",
+		"typescript": "6.0.3"
+	}
+}

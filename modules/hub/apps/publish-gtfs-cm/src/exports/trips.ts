@@ -1,51 +1,43 @@
-/* eslint-disable perfectionist/sort-objects */
-/* eslint-disable perfectionist/sort-interfaces */
+/* * */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { getQualifiedBlockId, getQualifiedRouteId, getQualifiedServiceId, getQualifiedShapeId, getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
+import { type HubGtfsExportTripsInput, HubGtfsExportTripsSchema } from '@tmlmobilidade/go-types-hub';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_Trip_Extended, type Plan } from '@tmlmobilidade/types';
 
-/* * */
+import { type ExportGtfsContext } from '../types/context.js';
 
-export interface ExportedTripsRow {
-	route_id: string
-	service_id: string
-	trip_id: string
-	pattern_id: string
-	trip_headsign: string
-	direction_id: 0 | 1
-	shape_id: string
-	wheelchair_accessible: 0 | 1 | 2
-	bikes_allowed: 0 | 1 | 2
-	cars_allowed: 0 | 1 | 2
-	calendar_desc: string
-}
-
-/* * */
-
-export async function exportTripsRows(planData: Plan, sqlTables: GtfsSQLTables, exportConfig: MergedGtfsExportConfig) {
+/**
+ * Export the trips.txt file.
+ * @param planData The plan data.
+ * @param sqlTables The SQL tables.
+ * @param context The export context.
+ */
+export async function exportTripsFile(context: ExportGtfsContext, planData: Plan, sqlTables: GtfsSQLTables) {
 	//
 
 	for await (const tripItem of sqlTables.trips.stream('ORDER BY trip_id ASC')) {
-		const tripData: GTFS_Trip_Extended = tripItem;
-		const parsedTripsRow: ExportedTripsRow = {
-			route_id: tripData.route_id,
-			service_id: `[${planData._id}]${tripData.service_id}`,
-			trip_id: `[${planData._id}]${tripData.trip_id}`,
-			pattern_id: tripData.pattern_id,
-			trip_headsign: tripData.trip_headsign,
+		const tripData: GtfsTrips = tripItem;
+		const parsedTripsRow: HubGtfsExportTripsInput = {
+			bikes_allowed: tripData.bikes_allowed,
+			block_id: getQualifiedBlockId(planData.agency_id, tripData.block_id),
+			cars_allowed: tripData.cars_allowed,
 			direction_id: tripData.direction_id,
-			shape_id: `[${planData._id}]${tripData.shape_id}`,
-			wheelchair_accessible: tripData.wheelchair_accessible ?? 0,
-			bikes_allowed: tripData.bikes_allowed ?? 0,
-			cars_allowed: 0,
-			calendar_desc: '',
+			route_id: getQualifiedRouteId(planData.agency_id, tripData.route_id),
+			service_id: getQualifiedServiceId(planData._id, planData.agency_id, tripData.service_id),
+			shape_id: getQualifiedShapeId(planData._id, planData.agency_id, tripData.shape_id),
+			trip_headsign: tripData.trip_headsign,
+			trip_id: getQualifiedTripId(planData._id, planData.agency_id, tripData.trip_id),
+			trip_short_name: tripData.trip_short_name,
+			wheelchair_accessible: tripData.wheelchair_accessible,
 		};
-		await exportConfig.writers.trips.write(parsedTripsRow);
+		const validatedTripsRow = HubGtfsExportTripsSchema.parse(parsedTripsRow);
+		await context.writers.trips.write(validatedTripsRow);
 	}
 
-	await exportConfig.writers.trips.flush();
+	await context.writers.trips.flush();
 
 	Logger.info({ message: 'Exported trip.txt file.' });
 }

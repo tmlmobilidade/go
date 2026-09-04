@@ -4,7 +4,7 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { MapViewOverlayStopsInteractiveLayerId } from '@/components/map/MapViewOverlayStops';
 import { useMapContext } from '@/contexts/Map.context';
 import { useDebouncedCallback } from '@mantine/hooks';
-import { type HubStop } from '@tmlmobilidade/go-types-public-info';
+import { type HubStop } from '@tmlmobilidade/go-types-hub';
 import { Marker } from '@vis.gl/react-maplibre';
 import { useState } from 'react';
 

@@ -1,63 +1,16 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Annotation, type CreateAnnotationDto, PermissionCatalog, type UpdateAnnotationDto } from '@tmlmobilidade/types';
+import { type Annotation, type UpdateAnnotationDto } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */;
 
 export class AnnotationsController {
 	//
-
-	/**
-	 * Creates a new annotation.
-	 * @param request Fastify request containing annotation data
-	 * @param reply Fastify reply
-	 */
-	static async create(request: FastifyRequest<{ Body: CreateAnnotationDto }>, reply: FastifyReply<Annotation>) {
-		//
-
-		//
-		// Get the resource permissions for annotations for the current user.
-
-		const userAnnotationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.create);
-
-		//
-		// If no permission found, deny access
-
-		if (!userAnnotationPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations');
-		}
-
-		//
-		// Validate that user has permission for ALL the specified agencies
-
-		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
-			action: PermissionCatalog.all.annotations.actions.create,
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.annotations.scope,
-			value: request.body.agency_ids,
-		});
-
-		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations for these agencies. You must have permission for all agencies involved.');
-		}
-
-		//
-		// Create the new annotation
-
-		const newAnnotation = await goDb.offer.annotations.insertOne(request.body);
-
-		//
-		// Send the response
-
-		reply.send({ data: newAnnotation, error: null, statusCode: HTTP_STATUS.OK });
-
-		//
-	}
 
 	/**
 	 * Deletes an annotation by ID
@@ -144,7 +97,7 @@ export class AnnotationsController {
 		//
 		// Fetch annotations based on query filters
 
-		const allAnnotations = await goDb.offer.annotations.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allAnnotations = await goDb.offer.annotations.findMany(queryFilters);
 
 		return reply.send({ data: allAnnotations, error: null, statusCode: HTTP_STATUS.OK });
 

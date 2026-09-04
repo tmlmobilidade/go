@@ -4,8 +4,9 @@ import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionLocationV30IntoSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { BatchWriter } from '@tmlmobilidade/utils';
+import { ZodError } from 'zod';
 
 /* * */
 
@@ -38,7 +39,10 @@ export async function processRawApexTransactionLocation(databaseOperation) {
 		if (!parseResult) return;
 		await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 	} catch (error) {
-		Logger.error({ message: `Error transforming APEX Location: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
+		const errorMessage = error instanceof ZodError
+			? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
+			: error instanceof Error ? error.message : String(error);
+		Logger.error({ message: `Error transforming APEX Location: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${errorMessage}` });
 	}
 
 	//

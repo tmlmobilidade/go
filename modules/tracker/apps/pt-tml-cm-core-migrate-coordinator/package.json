@@ -20,13 +20,13 @@
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/timer": "*",
-		"fastify": "5.11.2"
+		"fastify": "5.12.1"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.10",
+		"tsx": "4.23.12",
 		"typescript": "6.0.3"
 	}
 }

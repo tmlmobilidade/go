@@ -1,0 +1,146 @@
+/* * */
+
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type CreatePlanDto, type HashablePlanMetadata, type Plan } from '@tmlmobilidade/go-types-operation';
+import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { calculateZipFileHash } from '@tmlmobilidade/go-utils-exec';
+import { createHash } from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+
+/**
+ * Creates a new plan from a validation ID.
+ * @param request Fastify request containing plan data and operation plan file in multipart form
+ * @param reply Fastify reply
+ */
+export async function createPlanHandler(request: FastifyRequest<{ Body: { validation_id: string } }>, reply: FastifyReply<Plan>) {
+	//
+
+	//
+	// Get the validation data
+
+	const validationData = await goDb.operation.gtfsValidations.findById(request.body.validation_id);
+
+	//
+	// Check if have permissions to create the plan
+
+	const hasPermissionCreatePlan = hasPermissionResource(request.permissions, {
+		requiredPermission: { action: 'create', scope: 'plans' },
+		requiredValue: validationData.agency_id,
+		resourceKey: 'agency_ids',
+	});
+
+	if (!hasPermissionCreatePlan) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create this plan.',
+			status_code: '403',
+		});
+	}
+
+	//
+	// Create the new plan data
+
+	const newPlanData: CreatePlanDto = {
+		active_from: validationData.gtfs_feed_info.feed_start_date,
+		active_until: validationData.gtfs_feed_info.feed_end_date,
+		agency_id: validationData.agency_id,
+		apex_file_id: null,
+		apps: {
+			hub_publish_gtfs: {
+				last_hash: null,
+				message: null,
+				metadata_hash: null,
+				status: 'waiting',
+				timestamp: null,
+			},
+			hub_publish_gtfs_cm: {
+				last_hash: null,
+				message: null,
+				metadata_hash: null,
+				status: 'waiting',
+				timestamp: null,
+			},
+			organizer: {
+				last_hash: null,
+				message: null,
+				metadata_hash: null,
+				status: 'waiting',
+				timestamp: null,
+			},
+			rides_feeder: {
+				last_hash: null,
+				message: null,
+				status: 'waiting',
+				timestamp: null,
+			},
+		},
+		created_at: Dates.now('utc').unix_milliseconds,
+		created_by: request.me._id,
+		hash: '',
+		is_locked: false,
+		operation_file_id: null,
+	};
+
+	//
+	// Insert the new plan data
+
+	const planResult = await goDb.operation.plans.insertOne(newPlanData);
+
+	//
+	// Copy validation GTFS into the plan scope, then attach it to the plan.
+	// Failure modes (handled by storage saga + hooks):
+	// - copy fails → saga compensates blob/metadata; onRollback deletes the plan
+	// - plan update fails → onSuccess throws → onRollback deletes the plan → saga compensates the copy
+
+	let finalPlanData: null | Plan = null;
+
+	await storageProvider.copy(
+		validationData.file_id,
+		'plans',
+		planResult._id.toString(),
+		{
+			onRollback: async () => {
+				await goDb.operation.plans.deleteById(planResult._id);
+				finalPlanData = null;
+			},
+			onSuccess: async (_ctx, result) => {
+				//
+
+				const operationFileData = await storageProvider.findById(result._id);
+
+				const temporaryDirectory = fs.mkdtempDisposableSync('calculate-zip-file-hash');
+				const downloadResponse = await fetch(operationFileData.url);
+				const downloadArrayBuffer = await downloadResponse.arrayBuffer();
+				const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
+				fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
+
+				const originalGtfsHash = await calculateZipFileHash(downloadFilePath);
+
+				const hashablePlanMetadata: HashablePlanMetadata = {
+					_id: planResult._id,
+					active_from: planResult.active_from,
+					active_until: planResult.active_until,
+					operation_file_hash: originalGtfsHash,
+					operation_file_id: result._id,
+				};
+
+				const hashValue = createHash('sha256')
+					.update(JSON.stringify(hashablePlanMetadata))
+					.digest('hex');
+
+				finalPlanData = await goDb.operation.plans.updateById(
+					planResult._id,
+					{ hash: hashValue, operation_file_id: result._id },
+				);
+			},
+		},
+	);
+
+	//
+	// Return the success response
+
+	return sendSuccessApiResponse(reply, finalPlanData);
+}

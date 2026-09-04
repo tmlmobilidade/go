@@ -1,6 +1,6 @@
 // /* * */
 
-// import { Dates } from '@tmlmobilidade/dates';
+// import { Dates } from '@tmlmobilidade/go-utils-dates';
 // import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 // import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 // import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
@@ -14,9 +14,9 @@
 // const writer = new BatchWriter<SimplifiedVehicleEvent>({
 // 	batch_size: 10_000,
 // 	insertFn: async (data) => {
-// 		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
+// 		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
 // 	},
-// 	title: await labDb.operation.vehicleEvents.getTableName(),
+// 	title: await labDb.operation.simplifiedVehicleEvents.getTableName(),
 // });
 
 // /**
@@ -28,15 +28,15 @@
 // 	//
 
 // 	const chunkStartDate = Dates
-// 		.fromUnixTimestamp(timeChunk.start)
+// 		.fromUnixMilliseconds(timeChunk.start)
 // 		.setZone('Europe/Lisbon', 'offset_only');
 
 // 	const chunkEndDate = Dates
-// 		.fromUnixTimestamp(timeChunk.end)
+// 		.fromUnixMilliseconds(timeChunk.end)
 // 		.setZone('Europe/Lisbon', 'offset_only');
 
 // 	Logger.spacer(1);
-// 	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+// 	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_milliseconds}] › ${chunkStartDate.iso}[${chunkStartDate.unix_milliseconds}]`, 150);
 
 // 	//
 // 	// Prepare the RAWDB query to retrieve documents
@@ -44,8 +44,8 @@
 
 // 	const rawdbQuery = {
 // 		created_at: {
-// 			$gte: chunkStartDate.unix_timestamp,
-// 			$lte: chunkEndDate.unix_timestamp,
+// 			$gte: chunkStartDate.unix_milliseconds,
+// 			$lte: chunkEndDate.unix_milliseconds,
 // 		},
 // 	};
 
@@ -59,10 +59,10 @@
 // 	await replicate<RawVehicleEvent>({
 
 // 		countDestinationDbFn: async () => {
-// 			return await labDb.operation.vehicleEvents.count(
+// 			return await labDb.operation.simplifiedVehicleEvents.count(
 // 				'*',
 // 				'created_at >= $1 AND created_at <= $2',
-// 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+// 				{ 1: chunkStartDate.unix_milliseconds, 2: chunkEndDate.unix_milliseconds },
 // 			);
 // 		},
 
@@ -72,17 +72,17 @@
 // 		},
 
 // 		deleteDestinationDbFn: async (ids: string[]) => {
-// 			await labDb.operation.vehicleEvents.delete(
+// 			await labDb.operation.simplifiedVehicleEvents.delete(
 // 				'_id IN ($1)',
 // 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 // 			);
 // 		},
 
 // 		distinctDestinationDbFn: async () => {
-// 			return await labDb.operation.vehicleEvents.distinct(
+// 			return await labDb.operation.simplifiedVehicleEvents.distinct(
 // 				'_id',
 // 				'created_at >= $1 AND created_at <= $2',
-// 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+// 				{ 1: chunkStartDate.unix_milliseconds, 2: chunkEndDate.unix_milliseconds },
 // 			);
 // 		},
 

@@ -1,14 +1,14 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type Collection, type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/utils';
+import { ZodError } from 'zod';
 
 import { type SyncConfig, type VehicleEventsCollectionDocument } from './types.js';
 
@@ -17,9 +17,9 @@ import { type SyncConfig, type VehicleEventsCollectionDocument } from './types.j
 const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	batch_size: 10_000,
 	insertFn: async (data) => {
-		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
+		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
 	},
-	title: await labDb.operation.vehicleEvents.getTableName(),
+	title: await labDb.operation.simplifiedVehicleEvents.getTableName(),
 });
 
 /**
@@ -33,11 +33,11 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 	//
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
+		.fromUnixMilliseconds(timeChunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
+		.fromUnixMilliseconds(timeChunk.end)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
@@ -67,7 +67,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 	await replicate<VehicleEventsCollectionDocument<SyncConfig['collection']>>({
 
 		countDestinationDbFn: async () => {
-			return await labDb.operation.vehicleEvents.count(
+			return await labDb.operation.simplifiedVehicleEvents.count(
 				'*',
 				'created_at >= $1 AND created_at < $2 AND agency_id = $3',
 				{ 1: timeChunk.start, 2: timeChunk.end, 3: configItem.agency_id },
@@ -81,7 +81,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 
 		deleteDestinationDbFn: async (ids: string[]) => {
 			await performInChunks(ids, async (chunk) => {
-				await labDb.operation.vehicleEvents.delete(
+				await labDb.operation.simplifiedVehicleEvents.delete(
 					'_id IN $1',
 					{ 1: chunk },
 				);
@@ -89,7 +89,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await labDb.operation.vehicleEvents.distinct(
+			return await labDb.operation.simplifiedVehicleEvents.distinct(
 				'_id',
 				'created_at >= $1 AND created_at < $2 AND agency_id = $3',
 				{ 1: timeChunk.start, 2: timeChunk.end, 3: configItem.agency_id },
@@ -97,8 +97,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawdbCollection.distinct('_id', rawdbQuery);
-			return result.map(String);
+			return await rawdbCollection.distinct('_id', rawdbQuery);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
@@ -122,7 +121,10 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 				// Write the simplified vehicle event document to the destination database
 				await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
-				Logger.error({ message: `Error transforming RawVehicleEvent document: ${sourceDbDocument._id} Reason: ${error.message}` });
+				const errorMessage = error instanceof ZodError
+					? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
+					: error instanceof Error ? error.message : String(error);
+				Logger.info({ message: `=> Error transforming RawVehicleEvent document: [${sourceDbDocument.agency_id}] ${sourceDbDocument._id} Reason: ${errorMessage}` });
 			}
 		},
 

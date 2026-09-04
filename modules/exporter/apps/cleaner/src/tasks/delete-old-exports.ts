@@ -1,10 +1,10 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,7 +14,7 @@ const DELETION_TIMEOUT_HOURS = 4;
  * Deletes file exports and their associated files that are older than the threshold.
  */
 export async function deleteOldFileExports(): Promise<void> {
-	const cutoffTimestamp = Dates.now('local').minus({ hours: DELETION_TIMEOUT_HOURS }).unix_timestamp;
+	const cutoffTimestamp = Dates.now('local').minus({ hours: DELETION_TIMEOUT_HOURS }).unix_milliseconds;
 
 	const oldExports = await goDb.core.exports.findMany({
 		processing_status: { $in: [

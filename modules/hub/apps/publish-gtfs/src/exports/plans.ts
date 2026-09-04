@@ -1,37 +1,29 @@
-/* eslint-disable perfectionist/sort-objects */
-
-import { type ExportGtfsContext } from '@/types/context.js';
-import { Logger } from '@tmlmobilidade/logger';
-import { type OperationalDate, Plan } from '@tmlmobilidade/types';
-
 /* * */
 
-export interface ExportedPlansRow {
-	agency_id: string
-	plan_end_date: OperationalDate
-	plan_id: string
-	plan_start_date: OperationalDate
-}
+import { type HubGtfsExportPlansInput, HubGtfsExportPlansSchema } from '@tmlmobilidade/go-types-hub';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { Logger } from '@tmlmobilidade/logger';
+
+import { type ExportGtfsContext } from '../types/context.js';
 
 /**
  * Export the plans.txt file.
- * @param agencyId The agency ID.
- * @param planId The plan ID.
- * @param planStartDate The plan start date.
- * @param planEndDate The plan end date.
  * @param context The export context.
+ * @param planData The plan data.
  */
-export async function exportPlansFile(planData: Plan, context: ExportGtfsContext) {
+export async function exportPlansFile(context: ExportGtfsContext, planData: Plan) {
 	//
 
-	const parsedPlansRow: ExportedPlansRow = {
+	const parsedPlansRow: HubGtfsExportPlansInput = {
 		agency_id: planData.agency_id,
+		plan_end_date: planData.active_until,
 		plan_id: planData._id,
-		plan_end_date: planData.gtfs_feed_info.feed_end_date,
-		plan_start_date: planData.gtfs_feed_info.feed_start_date,
+		plan_start_date: planData.active_from,
 	};
 
-	await context.writers.plans.write(parsedPlansRow);
+	const validatedPlansRow = HubGtfsExportPlansSchema.parse(parsedPlansRow);
+
+	await context.writers.plans.write(validatedPlansRow);
 
 	await context.writers.plans.flush();
 

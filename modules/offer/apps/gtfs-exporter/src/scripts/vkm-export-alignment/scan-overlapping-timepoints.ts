@@ -24,9 +24,8 @@
  *   npm run rules:overlaps -- --agency 44 --json /tmp/overlaps-44.json --csv /tmp/overlaps-44.csv
  */
 
-import type { ManualRule, Pattern, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
-
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type ManualRule, type Pattern, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 

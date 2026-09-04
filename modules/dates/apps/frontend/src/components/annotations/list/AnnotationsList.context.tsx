@@ -2,11 +2,13 @@
 
 import { type AnnotationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Annotation } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Annotation, PermissionCatalog } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
+
+import { useAnnotationsAgenciesData } from '../shared/use-users-agencies-data';
 
 /* * */
 
@@ -18,7 +20,7 @@ interface AnnotationsListContextState {
 	filters: {
 		agency: UseFilterStateListReturnType
 		dates: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -46,18 +48,15 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Fetch data
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.annotations.actions.read],
-		scope: PermissionCatalog.all.annotations.scope,
-	});
+	const { ids: allAgencyIds, options: allAgencyOptions } = useAnnotationsAgenciesData();
 
 	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR<Annotation[], Error>(API_ROUTES.dates.ANNOTATIONS_LIST);
 
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search');
-	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterSearch = useFilterStateText('search');
+	const filterAgency = useFilterStateList('agency', allAgencyIds, allAgencyOptions);
 
 	// Get all unique dates from annotations for the dates filter
 	const allDatesOptions = useMemo(() => {

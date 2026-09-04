@@ -1,32 +1,30 @@
 /* * */
 
-import { initExportGtfsContext } from '@/utils/init-contex.js';
-import { validatePlan } from '@/validate-plan.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { Files } from '@tmlmobilidade/files';
+import { Files } from '@tmlmobilidade/go-utils-files';
+import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
+import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
-import { getPublicRouteId } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
-/* * */
-
-import { exportAgencyFile } from '@/exports/agency.js';
-import { exportCalendarDatesFile } from '@/exports/calendar-dates.js';
-import { exportFeedInfoFile } from '@/exports/feed-info.js';
-import { exportPlansFile } from '@/exports/plans.js';
-import { exportRoutesFile } from '@/exports/routes.js';
-import { exportShapesFile } from '@/exports/shapes.js';
-import { exportStopTimesFile } from '@/exports/stop-times.js';
-import { exportStopsFile } from '@/exports/stops.js';
-import { exportTripsFile } from '@/exports/trips.js';
-import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { evaluatePlan } from './evaluate-plan.js';
+import { exportAgencyFile } from './exports/agency.js';
+import { exportCalendarDatesFile } from './exports/calendar-dates.js';
+import { exportFeedInfoFile } from './exports/feed-info.js';
+import { exportPlansFile } from './exports/plans.js';
+import { exportRoutesFile } from './exports/routes.js';
+import { exportShapesFile } from './exports/shapes.js';
+import { exportStopTimesFile } from './exports/stop-times.js';
+import { exportStopsFile } from './exports/stops.js';
+import { exportTripsFile } from './exports/trips.js';
+import { initExportGtfsContext } from './utils/init-contex.js';
 
 /* * */
 
@@ -74,12 +72,12 @@ export async function main() {
 	//
 	// Setup the necessary variables for the export process.
 
-	let farthestDateFound: OperationalDate;
+	let farthestDateFound: OperationalDateInt;
 
 	const referencedAgencyIds = new Set<string>();
-	const routesMarkedForFinalExport: Record<string, GTFS_Route_Extended> = {};
+	const routesMarkedForFinalExport: Record<string, GtfsRoutes> = {};
 
-	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
+	const currentDate = Dates.now('Europe/Lisbon').operational_date_int;
 
 	//
 	// Retrieve all Plans from the database
@@ -87,7 +85,7 @@ export async function main() {
 
 	const plansCollection = await goDb.operation.plans.getCollection();
 
-	const allPlansData = await goDb.operation.plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await goDb.operation.plans.findMany();
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
@@ -111,10 +109,10 @@ export async function main() {
 	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
 
 	//
-	// Mark as plans as 'waiting' in the database.
+	// Mark plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
-		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'waiting', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'waiting', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 	}
 
 	//
@@ -135,15 +133,15 @@ export async function main() {
 			// and mark it as 'skipped' in the database.
 			// Otherwise, mark it as 'processing'.
 
-			const isValidPlan = await validatePlan(planData);
+			const isEligiblePlan = await evaluatePlan(planData);
 
-			if (!isValidPlan) {
-				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			if (!isEligiblePlan) {
+				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;
 			}
 
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'processing', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'processing', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 			//
 			// Get the operation file URL
@@ -158,22 +156,25 @@ export async function main() {
 
 			let thisIsAnActivePlan = false;
 
-			const importConfig: ImportGtfsToDatabaseConfig = {
+			const importConfig: ImportGtfsConfig = {
 				source: {
 					url: operationFileUrl,
 				},
+				sqlite_config: {
+					memory: true,
+				},
 				time_range: {
 					date_range: {
-						end: planData.gtfs_feed_info.feed_end_date,
-						start: planData.gtfs_feed_info.feed_start_date,
+						end: planData.active_until,
+						start: planData.active_from,
 					},
 				},
 			};
 
-			if (currentOperationalDate >= planData.gtfs_feed_info.feed_start_date && currentOperationalDate <= planData.gtfs_feed_info.feed_end_date) {
+			if (currentDate >= planData.active_from && currentDate <= planData.active_until) {
 				// If the plan is currently active, set the start date
 				// to a far past date to be able to provide a full year of data.
-				importConfig.time_range.date_range.start = validateOperationalDate('20010101');
+				importConfig.time_range.date_range.start = OperationalDateIntSchema.parse('20010101');
 				// Update the flag
 				thisIsAnActivePlan = true;
 			}
@@ -195,10 +196,10 @@ export async function main() {
 
 			const exportTimer = new Timer();
 
-			await exportTripsFile(planData, importedGtfsSql, context);
-			await exportStopTimesFile(planData, importedGtfsSql, context);
-			await exportShapesFile(planData, importedGtfsSql, context);
-			await exportCalendarDatesFile(planData, importedGtfsSql, context);
+			await exportTripsFile(context, planData, importedGtfsSql);
+			await exportStopTimesFile(context, planData, importedGtfsSql);
+			await exportShapesFile(context, planData, importedGtfsSql);
+			await exportCalendarDatesFile(context, planData, importedGtfsSql);
 
 			Logger.success(`Exported plan ${planData._id} files in ${exportTimer.get()}.`);
 
@@ -214,8 +215,8 @@ export async function main() {
 			// This block only determines which routes should be exported; no files are written here.
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
-				const routeData: GTFS_Route_Extended = routeItem;
-				const publicRouteId = getPublicRouteId(planData.agency_id, routeData.route_id);
+				const routeData: GtfsRoutes = routeItem;
+				const publicRouteId = getQualifiedRouteId(planData.agency_id, routeData.route_id);
 				if (thisIsAnActivePlan || !routesMarkedForFinalExport[publicRouteId]) {
 					routesMarkedForFinalExport[publicRouteId] = { ...routeData, agency_id: planData.agency_id };
 				}
@@ -229,19 +230,19 @@ export async function main() {
 
 			referencedAgencyIds.add(planData.agency_id);
 
-			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
-				? planData.gtfs_feed_info.feed_end_date
+			farthestDateFound = !farthestDateFound || planData.active_until > farthestDateFound
+				? planData.active_until
 				: farthestDateFound;
 
 			//
 			// Finally, write the plan entry into the plans.txt file.
 
-			await exportPlansFile(planData, context);
+			await exportPlansFile(context, planData);
 
 			//
 			// Mark the plan as complete in the database.
 
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'complete', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'complete', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
@@ -250,13 +251,13 @@ export async function main() {
 			// Since SQLite sets up memory using C-level allocations, it is not possible
 			// to rely on garbage collection alone to free up memory in a timely manner.
 
-			importedGtfsSql._db.close();
+			importedGtfsSql._db.cleanup();
 
 			Logger.divider();
 
 			//
 		} catch (error) {
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'error', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'error', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 			Logger.error({ error, message: `Error processing plan ${planData._id}` });
 			Logger.divider();
 		}
@@ -265,10 +266,10 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
-	await exportStopsFile(Array.from(referencedAgencyIds), context);
-	await exportAgencyFile(Array.from(referencedAgencyIds), context);
-	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, context);
+	await exportRoutesFile(context, Object.values(routesMarkedForFinalExport));
+	await exportStopsFile(context, Array.from(referencedAgencyIds));
+	await exportAgencyFile(context, Array.from(referencedAgencyIds));
+	await exportFeedInfoFile(context, currentDate, farthestDateFound);
 
 	//
 	// Zip the exported GTFS files into a single archive.

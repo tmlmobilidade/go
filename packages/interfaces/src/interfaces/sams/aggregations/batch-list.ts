@@ -3,7 +3,7 @@
 /* eslint-disable perfectionist/sort-objects -- MongoDB aggregation readability */
 
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
-import { type Sam, type SamTimelineSummary } from '@tmlmobilidade/types';
+import { type Sam, type SamTimelineSummary } from '@tmlmobilidade/go-types-operation';
 
 import {
 	samsAnalysisTimelineRowsExpr,

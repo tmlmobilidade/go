@@ -1,6 +1,6 @@
 /* * */
 
-import { type EventReplacementRule, type ScheduleRule } from '@tmlmobilidade/types';
+import { type EventReplacementRule, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 

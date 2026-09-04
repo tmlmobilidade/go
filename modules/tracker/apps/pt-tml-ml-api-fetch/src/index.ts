@@ -1,13 +1,13 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { type BaseResponse, type TempoEsperaRawItem } from '@tmlmobilidade/external/dist/clients/ml/types.js';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlMlV1 } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
 import { findRideForTrain } from './find-ride-for-train.js';
@@ -68,6 +68,7 @@ const main = async () => {
 		try {
 			response = await externalClients.ml.tempoEsperaLinha(line);
 		} catch (error) {
+			console.log(error);
 			Logger.error({ error, message: `[${ITERATION}] Error fetching Metro Lisboa data from API for line ${line}:` });
 			continue;
 		}
@@ -115,13 +116,13 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlMlV1> = {
 				agency_id: 'IA2N9',
-				created_at: now.unix_timestamp,
+				created_at: now.unix_milliseconds,
 				entity_id: `${line}_${trainId}_${destinationId}`,
 				payload: {
 					header: {
 						gtfs_realtime_version: '2.0',
 						incrementality: 'FULL_DATASET',
-						timestamp: now.unix_timestamp,
+						timestamp: now.unix_milliseconds,
 					},
 					vehicle: {
 						bearing: null,
@@ -132,7 +133,7 @@ const main = async () => {
 						},
 						speed: null,
 						stop_id: nextStop.stop_id,
-						timestamp: now.unix_timestamp,
+						timestamp: now.unix_milliseconds,
 						trip: {
 							trip_id: ride.trip_id,
 						},
@@ -160,7 +161,7 @@ const main = async () => {
 			await rawDb.vehicleEvents.ptTmlMl.insertOne({
 				...hashableRawEvent,
 				_id: hashableRawEventId,
-				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 			});
 
 			saveCount++;

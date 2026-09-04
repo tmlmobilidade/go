@@ -1,15 +1,15 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionValidationV20IntoSimplifiedApexValidation, parseRawApexTransactionValidationV30IntoSimplifiedApexValidation, parseRawApexTransactionValidationV40IntoSimplifiedApexValidation, parseRawApexTransactionValidationV50IntoSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/utils';
 import { type Filter } from 'mongodb';
+import { ZodError } from 'zod';
 
 /* * */
 
@@ -30,11 +30,11 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
+		.fromUnixMilliseconds(timeChunk.start)
 		.setZone('utc', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
+		.fromUnixMilliseconds(timeChunk.end)
 		.setZone('utc', 'offset_only');
 
 	Logger.spacer(1);
@@ -84,11 +84,12 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await labDb.simplifiedApex.validations.distinct(
-				'upper(toString(_id))',
+			const result = await labDb.simplifiedApex.validations.distinct(
+				'_id',
 				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
+			return result.map(id => String(id).toUpperCase());
 		},
 
 		distinctSourceDbFn: async () => {
@@ -115,7 +116,10 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 				if (!parseResult) return;
 				await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
-				Logger.error({ message: `Error transforming APEX Validation: ${sourceDbDocument._id} Reason: ${error.message}` });
+				const errorMessage = error instanceof ZodError
+					? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
+					: error instanceof Error ? error.message : String(error);
+				Logger.error({ message: `Error transforming APEX Validation: ${sourceDbDocument._id} Reason: ${errorMessage}` });
 			}
 		},
 

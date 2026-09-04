@@ -5,7 +5,7 @@
 import { AlertCauseIcon } from '@/components/alerts/common/AlertCauseIcon';
 import { Flex, Group, Select, type SelectProps } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
-import { AlertCause, AlertCauseSchema } from '@tmlmobilidade/types';
+import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +24,7 @@ export function SelectCause({ onChange, value, ...props }: SelectAlertCauseProps
 	const { t } = useTranslation();
 
 	const causeOptions = useMemo(
-		() => AlertCauseSchema.options.map(cause => ({
+		() => AlertCauseValues.map(cause => ({
 			label: t(`shared:alerts.causes.${cause}.title`),
 			value: cause,
 		})),

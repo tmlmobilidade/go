@@ -5,7 +5,7 @@
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
 import { Flex, Group, Select, type SelectProps } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
-import { AlertEffect, AlertEffectSchema } from '@tmlmobilidade/types';
+import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +24,7 @@ export function SelectEffect({ onChange, value, ...props }: SelectAlertEffectPro
 	const { t } = useTranslation();
 
 	const effectOptions = useMemo(
-		() => AlertEffectSchema.options.map(effect => ({
+		() => AlertEffectValues.map(effect => ({
 			label: t(`shared:alerts.effects.${effect}.title`),
 			value: effect,
 		})),

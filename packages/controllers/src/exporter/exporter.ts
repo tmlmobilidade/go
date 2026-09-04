@@ -1,11 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/go-types-downloads';
 import { Logger } from '@tmlmobilidade/logger';
-import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,7 +19,12 @@ export class ExporterSharedController {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static async create(request: FastifyRequest<{ Body: CreateFileExportDto<any> }>, reply: FastifyReply<FileExport>) {
-		const fileExportData = await goDb.core.exports.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
+		const fileExportData = await goDb.core.exports.insertOne({
+			...request.body,
+			created_by: request.me._id,
+			processing_status: 'waiting',
+			updated_by: request.me._id,
+		});
 		return reply.send({ data: fileExportData, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
@@ -75,7 +80,7 @@ export class ExporterSharedController {
 			created_by: request.me._id,
 		};
 
-		const allFileExport = await goDb.core.exports.findMany(filters, { sort: { created_at: 1 } });
+		const allFileExport = await goDb.core.exports.findMany(filters);
 		return reply.send({ data: allFileExport, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

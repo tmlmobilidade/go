@@ -1,11 +1,11 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /**
  * Retrieves the trip updates GTFS RT Protobuf data from the cache.

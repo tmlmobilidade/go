@@ -6,7 +6,7 @@ import { PathWaypointNextArrivals } from '@/components/lines/detail/PathWaypoint
 import { PathWaypointSpine } from '@/components/lines/detail/PathWaypointSpine';
 import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
-import { type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
+import { type HubWaypoint } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 

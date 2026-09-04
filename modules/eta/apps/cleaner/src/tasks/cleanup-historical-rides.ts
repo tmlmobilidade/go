@@ -10,8 +10,8 @@ interface CleanupRowsResult {
 
 /**
  * Removes rows from `eta.hist_rides` whose `_id` is not present in
- * `keepRideIds` — the set Mongo currently considers in-window across
- * `[0, historicalDataDaysBack)` days.
+ * `keepRideIds` — the set `operation.rides` currently considers in-window
+ * (same historical window the loader inserts).
  *
  * `keepRideIds` is staged into a dedicated table (`eta._cleaner_hist_rides_keep`)
  * rather than bound as `query_params`, because ClickHouse passes parameters

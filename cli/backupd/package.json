@@ -16,24 +16,23 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"@types/archiver": "8.0.0",
 		"archiver": "8.0.0",
-		"mongodb": "7.5.0",
-		"nodemailer": "9.0.4",
-		"pg": "8.22.0",
+		"mongodb": "7.6.0",
+		"nodemailer": "9.0.6",
+		"pg": "8.23.0",
 		"resolve-tspaths": "0.8.23",
 		"yaml": "2.9.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/archiver": "8.0.0",
+		"@types/node": "26.4.0",
 		"@types/nodemailer": "8.0.1",
 		"typescript": "6.0.3"
 	}

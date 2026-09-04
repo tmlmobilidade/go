@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema } from '@/documents/document.js';
+import { BaseDocumentSchema } from '@/documents/document.js';
 import { z } from 'zod';
 
 /* * */
@@ -23,7 +23,7 @@ export const FieldChangeSchema = z.object({
 
 /* * */
 
-export const NoteCommentSchema = DocumentSchema
+export const NoteCommentSchema = BaseDocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		message: z.string(),
@@ -31,7 +31,7 @@ export const NoteCommentSchema = DocumentSchema
 	})
 	.partial({ _id: true });
 
-export const FieldChangedCommentSchema = DocumentSchema
+export const FieldChangedCommentSchema = BaseDocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		curr_value: z.any(),
@@ -44,7 +44,7 @@ export const FieldChangedCommentSchema = DocumentSchema
 	})
 	.partial({ _id: true });
 
-export const CrudCommentSchema = DocumentSchema
+export const CrudCommentSchema = BaseDocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		action: CrudCommentSchemaActionSchema,

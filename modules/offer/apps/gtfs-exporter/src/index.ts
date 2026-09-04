@@ -1,11 +1,11 @@
 import { exportGtfsV29 } from '@/main.js';
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
-import { Files } from '@tmlmobilidade/files';
+import { Files } from '@tmlmobilidade/go-utils-files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type FileExport, type GtfsExportProperties } from '@tmlmobilidade/go-types-downloads';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { type FileExport, type GtfsExportProperties, ProcessingStatusSchema } from '@tmlmobilidade/types';
-import { runOnInterval } from '@tmlmobilidade/utils';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import AdmZip from 'adm-zip';
 import fs from 'node:fs';
@@ -134,7 +134,7 @@ async function main() {
 	Logger.init();
 
 	const waitingExports = await goDb.core.exports.findMany({
-		processing_status: ProcessingStatusSchema.enum.waiting,
+		processing_status: 'waiting',
 		type: 'gtfs',
 	});
 

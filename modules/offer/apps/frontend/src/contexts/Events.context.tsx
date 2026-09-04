@@ -1,7 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Event } from '@tmlmobilidade/types';
+import { type Event } from '@tmlmobilidade/go-types-offer';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,7 +35,9 @@ export const EventsContextProvider = ({ agencyId, children }: PropsWithChildren<
 	//
 	// A. Fetch data
 
-	const { data: eventsData } = useSWR<Event[]>(API_ROUTES.dates.EVENTS_LIST);
+	const { data: eventsData } = useSWR<ApiResponse<Event[]>>(API_ROUTES.dates.EVENTS_LIST, {
+		fetcher: async url => await fetchApiData<Event[]>({ url }),
+	});
 
 	//
 	// B. Define context value
@@ -41,7 +45,7 @@ export const EventsContextProvider = ({ agencyId, children }: PropsWithChildren<
 	const contextValue: EventsContextState = useMemo(() => ({
 
 		data: {
-			raw: eventsData?.filter(event => !agencyId || event.agency_ids.includes(agencyId)) || [],
+			raw: eventsData?.data?.filter(event => !agencyId || event.agency_ids.includes(agencyId)) || [],
 		},
 	}), [eventsData, agencyId]);
 

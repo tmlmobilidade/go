@@ -2,9 +2,8 @@
 
 import { closeCreateFareModal } from '@/components/fares/create/FareCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateFareDto, CreateFareSchema, Fare } from '@tmlmobilidade/types';
-import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type CreateFareDto, CreateFareSchema, type Fare } from '@tmlmobilidade/go-types-offer';
+import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -58,13 +57,13 @@ export const FareCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// D. Handle actions
 
-	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_LIST, 'POST', form.getValues()),
-		onSuccess: (createdItem) => {
+	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Fare>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.FARES_LIST }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			allFaresMutate();
 			closeCreateFareModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.FARES_DETAIL(createdItem._id)));
+			router.push(keepUrlParams(PAGE_ROUTES.offer.FARES_DETAIL(data._id)));
 		},
 	});
 

@@ -1,10 +1,10 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Plan } from '@tmlmobilidade/types';
 
 /**
  * Retrieves all plans that are approved together with the URL to the operation file

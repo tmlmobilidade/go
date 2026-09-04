@@ -1,10 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { CreateTypologyDto, PermissionCatalog, type PermissionResourceCheck, type Typology, type UpdateTypologyDto } from '@tmlmobilidade/types';
+import { type CreateTypologyDto, type Typology, type UpdateTypologyDto } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog, type PermissionResourceCheck } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 
@@ -57,7 +58,16 @@ export class TypologiesController {
 		//
 		// Create the new typology
 
-		const newTypology = await goDb.offer.typologies.insertOne(request.body);
+		const newTypology = await goDb.offer.typologies.insertOne({
+			color: request.body.color ?? '#000000',
+			created_by: request.me._id,
+			default_onboard_fare_ids: request.body.default_onboard_fare_ids ?? [],
+			default_prepaid_fare_id: request.body.default_prepaid_fare_id ?? null,
+			is_locked: false,
+			text_color: request.body.text_color ?? '#FFFFFF',
+			updated_by: request.me._id,
+			...request.body,
+		});
 
 		//
 		// Send the response

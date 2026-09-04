@@ -17,29 +17,31 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
+		"@tmlmobilidade/go-clients-ssh": "*",
 		"@tmlmobilidade/go-hub-pckg-sql": "*",
+		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
-		"@tmlmobilidade/go-types-public-info": "*",
+		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.10",
+		"tsx": "4.23.12",
 		"typescript": "6.0.3"
 	}
 }

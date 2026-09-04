@@ -1,6 +1,6 @@
 /* * */
 
-import { Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 
 /**
  * Returns the agency-specific stop_id from stop.flags,

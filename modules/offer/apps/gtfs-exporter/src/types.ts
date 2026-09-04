@@ -1,20 +1,9 @@
 /* eslint-disable perfectionist/sort-interfaces */
 /* * */
 
-import {
-	type GTFS_CalendarDate,
-	type GTFS_Shape,
-	type GTFS_StopTime,
-	type GTFS_Trip,
-	GtfsTMLAgency,
-	GtfsTMLFareAttributes,
-	GtfsTMLFareRules,
-	GtfsTMLFeedInfo,
-	GtfsTMLRoute,
-	GtfsTMLStop,
-	GtfsTMLTrip,
-	OperationalDate,
-} from '@tmlmobilidade/types';
+import { type GtfsStrictV29Agency, type GtfsStrictV29CalendarDates, type GtfsStrictV29FeedInfo, type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { GtfsTMLFareAttributes, GtfsTMLFareRules } from '@tmlmobilidade/types';
 import { type CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */
@@ -102,17 +91,17 @@ export interface GtfsV29ExportConfig {
  */
 export interface GtfsV29Writers {
 	afetacao: CsvWriter<ExportedAfetacaoRow>
-	agency: CsvWriter<GtfsTMLAgency>
+	agency: CsvWriter<GtfsStrictV29Agency>
 	calendar_dates: CsvWriter<ExportedCalendarDatesRow>
 	calendar_map?: CsvWriter<ExportedCalendarMapRow>
 	fare_attributes: CsvWriter<GtfsTMLFareAttributes>
 	fare_rules: CsvWriter<GtfsTMLFareRules>
-	feed_info: CsvWriter<GtfsTMLFeedInfo>
-	routes: CsvWriter<GtfsTMLRoute>
-	shapes: CsvWriter<GTFS_Shape>
-	stop_times: CsvWriter<GTFS_StopTime>
-	stops: CsvWriter<GtfsTMLStop>
-	trips: CsvWriter<GtfsTMLTrip>
+	feed_info: CsvWriter<GtfsStrictV29FeedInfo>
+	routes: CsvWriter<GtfsStrictV29Routes>
+	shapes: CsvWriter<GtfsStrictV29Shapes>
+	stop_times: CsvWriter<GtfsStrictV29StopTimes>
+	stops: CsvWriter<GtfsStrictV29Stops>
+	trips: CsvWriter<GtfsStrictV29Trips>
 }
 
 /* * */
@@ -155,11 +144,7 @@ export interface ExportedAfetacaoRow {
  * Extended calendar dates row for GTFS v29
  * Extends standard GTFS_CalendarDate with TML-specific fields
  */
-export interface ExportedCalendarDatesRow extends GTFS_CalendarDate {
-	period: string
-	holiday: 0 | 1
-	day_type: number
-}
+export type ExportedCalendarDatesRow = GtfsStrictV29CalendarDates;
 
 /**
  * Calendar map row for numeric calendar codes
@@ -174,7 +159,7 @@ export interface ExportedCalendarMapRow {
  * Extended trips row for GTFS v29
  * Extends standard GTFS_Trip with TML-specific fields
  */
-export interface ExportedTripsRow extends GTFS_Trip {
+export interface ExportedTripsRow extends GtfsStrictV29Trips {
 	pattern_id: string
 	pattern_short_name: string
 	calendar_desc: string

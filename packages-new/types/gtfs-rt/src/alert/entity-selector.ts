@@ -1,7 +1,8 @@
 /* * */
 
-import { GtfsRtTripDescriptorSchema } from '@/shared/trip-descriptor.js';
 import { z } from 'zod';
+
+import { GtfsRtTripDescriptorSchema } from '../shared/trip-descriptor.js';
 
 /* * */
 
