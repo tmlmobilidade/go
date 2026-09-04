@@ -1,53 +1,60 @@
+'use client';
+
 /* * */
 
 import { DashboardCard } from '@/components/common/DashboardCard';
+import { MetricText } from '@/components/common/MetricText';
 import { MetricTrend } from '@/components/common/MetricTrend';
-import { createCompactMetricValue, MetricValue } from '@/components/common/MetricValue';
+import { MetricValue } from '@/components/common/MetricValue';
+import { PerformanceCsvExportButton } from '@/components/common/PerformanceCsvExportButton';
 import { LineDemandChart } from '@/components/line-detail/demand/LineDemandChart';
-import { usePerformanceFormatters } from '@/hooks/usePerformanceFormatters';
-import { createMetricTrend } from '@/utils/metric-trend';
-import { type PassengerDemandComparison, type PassengerDemandOverTimePoint } from '@tmlmobilidade/go-types-performance';
 import { Alert, Skeleton, Surface } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
+import { useLineDemandEvolutionData } from './useLineDemandEvolutionData';
+
 /* * */
 
 interface LineDemandEvolutionProps {
-	comparison?: PassengerDemandComparison
-	comparisonLabel?: string
-	comparisonPoints?: PassengerDemandOverTimePoint[]
-	hasError?: boolean
-	isLoading: boolean
-	isSingleDay?: boolean
-	points: PassengerDemandOverTimePoint[]
-	total: null | number
 	withSummary?: boolean
 }
 
 /* * */
 
-export function LineDemandEvolution({ comparison, comparisonLabel, comparisonPoints = [], hasError = false, isLoading, isSingleDay = false, points, total, withSummary = true }: LineDemandEvolutionProps) {
+export function LineDemandEvolution({ withSummary = true }: LineDemandEvolutionProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation('default');
-	const formatters = usePerformanceFormatters();
+	const evolution = useLineDemandEvolutionData();
+	const { average, comparison, comparisonLabel, comparisonPoints, isSingleDay, line, points, total } = evolution.data;
+	const chartComparison = evolution.flags.has_comparison_series ? comparison : undefined;
+	const chartComparisonLabel = evolution.flags.has_comparison_series ? comparisonLabel : undefined;
+	const exportButton = (
+		<PerformanceCsvExportButton
+			disabled={evolution.flags.has_error || !points.length}
+			filenameParts={[line?.code]}
+			metadata={{ line_code: line?.code, line_id: line?._id }}
+			visualizationId="demand-evolution"
+			datasets={[
+				{ dimensions: { period_role: 'current' }, rows: points },
+				{ dimensions: { period_role: 'comparison' }, rows: comparisonPoints },
+			]}
+		/>
+	);
 
 	//
 	// B. Transform data
 
-	const difference = comparison?.difference_pct;
-	const averageDemand = total === null || points.length === 0 ? null : total / points.length;
-	const trend = createMetricTrend(difference, { formatValue: formatters.signedPercentage });
-	const chart = hasError ? <Alert color="red" variant="light">{t('lineDetail.demand.error')}</Alert> : points.length > 0 ? (
+	const chart = evolution.flags.has_error ? <Alert color="red" variant="light">{t('lineDetail.demand.error')}</Alert> : points.length > 0 ? (
 		<LineDemandChart
-			comparisonLabel={comparisonLabel}
+			comparisonLabel={chartComparisonLabel}
 			comparisonPoints={comparisonPoints}
-			comparisonValue={comparison ? formatters.compact(comparison.comparison_qty) : undefined}
+			comparisonValue={chartComparison?.comparison_qty}
 			isSingleDay={isSingleDay}
 			points={points}
 		/>
@@ -56,13 +63,14 @@ export function LineDemandEvolution({ comparison, comparisonLabel, comparisonPoi
 	//
 	// C. Render components
 
-	if (isLoading) {
+	if (evolution.flags.is_loading) {
 		return <Skeleton aria-label={t('lineDetail.demand.ariaLabel')} className={styles.loadingCard} />;
 	}
 
 	if (!withSummary) {
 		return (
 			<DashboardCard
+				action={exportButton}
 				description={t(isSingleDay ? 'lineDetail.demand.historySubtitleHourly' : 'lineDetail.demand.historySubtitlePeriod')}
 				title={t('lineDetail.demand.totalTitle')}
 			>
@@ -76,23 +84,28 @@ export function LineDemandEvolution({ comparison, comparisonLabel, comparisonPoi
 			<div aria-label={t('lineDetail.demand.ariaLabel')} className={styles.root} role="region">
 				<div className={styles.summary}>
 					<header>
-						<h2>{t('lineDetail.demand.totalTitle')}</h2>
-						<p>{t(isSingleDay ? 'lineDetail.demand.historySubtitleHourly' : 'lineDetail.demand.historySubtitlePeriod')}</p>
+						<div className={styles.summaryHeading}>
+							<div>
+								<h2>{t('lineDetail.demand.totalTitle')}</h2>
+								<p>{t(isSingleDay ? 'lineDetail.demand.historySubtitleHourly' : 'lineDetail.demand.historySubtitlePeriod')}</p>
+							</div>
+							{exportButton}
+						</div>
 					</header>
-					<MetricValue className={styles.value} value={total === null ? '—' : createCompactMetricValue(total)} />
-					{trend && (
-						<MetricTrend
-							comparisonLabel={comparisonLabel ?? t('lineDetail.demand.comparison')}
-							direction={trend.direction}
-							label={trend.label}
-							sentiment={trend.sentiment}
-						/>
-					)}
+
+					<MetricValue className={styles.value} format="compact" value={total} />
+
+					<MetricTrend
+						comparisonLabel={comparisonLabel ?? t('lineDetail.demand.comparison')}
+						format="percentage"
+						value={comparison?.difference_pct}
+					/>
+
 					<div className={styles.context}>
-						{averageDemand !== null && (
+						{average !== null && (
 							<div className={styles.average}>
 								<span>{t(isSingleDay ? 'lineDetail.demand.averageHourly' : 'lineDetail.demand.averageDaily')}</span>
-								<strong>{formatters.compact(averageDemand)}</strong>
+								<MetricText as="strong" format="compact" value={average} />
 							</div>
 						)}
 					</div>

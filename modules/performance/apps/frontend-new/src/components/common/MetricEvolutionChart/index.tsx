@@ -3,6 +3,7 @@
 /* * */
 
 import { usePerformanceFormatters } from '@/hooks/usePerformanceFormatters';
+import { formatPerformanceValue, type PerformanceNumberFormat } from '@/utils/performance-formatters';
 import { formatOverTimePeriodLabel, formatOverTimePeriodTooltipLabel } from '@/utils/performance-period-labels';
 import { AreaChart, type AreaChartSeries } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -19,16 +20,17 @@ interface MetricEvolutionChartProps {
 	ariaLabel: string
 	comparisonLabel?: string
 	comparisonPoints?: MetricEvolutionPoint[]
-	comparisonValue?: string
+	comparisonValue?: number
 	currentLabel: string
 	points: MetricEvolutionPoint[]
 	timeGrain: MetricEvolutionTimeGrain
+	valueFormat?: PerformanceNumberFormat
 	weeklyAggregationLabel: string
 }
 
 /* * */
 
-export function MetricEvolutionChart({ ariaLabel, comparisonLabel, comparisonPoints = [], comparisonValue, currentLabel, points, timeGrain, weeklyAggregationLabel }: MetricEvolutionChartProps) {
+export function MetricEvolutionChart({ ariaLabel, comparisonLabel, comparisonPoints = [], comparisonValue, currentLabel, points, timeGrain, valueFormat = 'compact', weeklyAggregationLabel }: MetricEvolutionChartProps) {
 	//
 
 	//
@@ -36,6 +38,7 @@ export function MetricEvolutionChart({ ariaLabel, comparisonLabel, comparisonPoi
 
 	const formatters = usePerformanceFormatters();
 	const shouldAggregate = timeGrain === 'day' && points.length > 45;
+	const formatValue = (value: number) => formatPerformanceValue(value, valueFormat, formatters);
 
 	//
 	// B. Transform data
@@ -65,7 +68,7 @@ export function MetricEvolutionChart({ ariaLabel, comparisonLabel, comparisonPoi
 		{ color: 'var(--color-primary)', label: currentLabel, name: 'current' },
 		...(comparisonChartPoints.length ? [{
 			color: 'var(--color-system-text-300)',
-			label: `${comparisonLabel ?? ''}${comparisonValue ? ` · ${comparisonValue}` : ''}`,
+			label: `${comparisonLabel ?? ''}${comparisonValue === undefined ? '' : ` · ${formatValue(comparisonValue)}`}`,
 			name: 'comparison',
 			strokeDasharray: '5 5',
 		}] : []),
@@ -87,9 +90,9 @@ export function MetricEvolutionChart({ ariaLabel, comparisonLabel, comparisonPoi
 				series={series}
 				tickLine="none"
 				tooltipProps={{ labelFormatter: (label, payload) => String(payload?.[0]?.payload?.tooltipPeriod ?? label) }}
-				valueFormatter={formatters.compact}
+				valueFormatter={formatValue}
 				xAxisProps={{ interval: 'preserveStartEnd', minTickGap: 70 }}
-				yAxisProps={{ tickFormatter: value => formatters.compact(Number(value)), width: 46 }}
+				yAxisProps={{ tickFormatter: value => formatValue(Number(value)), width: 46 }}
 				accessibilityLayer
 				withLegend
 				withTooltip

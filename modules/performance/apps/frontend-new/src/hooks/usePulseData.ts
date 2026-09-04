@@ -4,9 +4,10 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { usePerformanceFiltersContext } from '@/contexts/PerformanceFilters.context';
+import { usePassengerDemandBaseline } from '@/hooks/passenger-demand/usePassengerDemandBaseline';
 import { getCurrentPeriod } from '@/utils/performance-periods';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PassengerDemandBaselineComparison, type RidePerformanceBaselineComparison } from '@tmlmobilidade/go-types-performance';
+import { type RidePerformanceBaselineComparison } from '@tmlmobilidade/go-types-performance';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -29,23 +30,21 @@ export function usePulseData() {
 		() => selectedAgencies.flatMap(agency => agency.metric_ids),
 		[selectedAgencies],
 	);
-	const demandQuery = new URLSearchParams({
-		exclude_unknown: 'true',
-		operational_date: currentPeriod.startDate,
-	});
 	const ridePerformanceQuery = new URLSearchParams({
 		exclude_unknown: 'true',
 		operational_date: currentPeriod.startDate,
 	});
-	selectedMetricAgencyIds.forEach(agencyId => demandQuery.append('agency_ids', agencyId));
 	selectedMetricAgencyIds.forEach(agencyId => ridePerformanceQuery.append('agency_ids', agencyId));
 
 	//
 	// B. Fetch data
 
-	const demandRequest = useSWR<PassengerDemandBaselineComparison, Error>(
-		agenciesContext.flags.is_loading ? null : `${API_ROUTES.performance.PASSENGER_DEMAND_BASELINE_COMPARISON}?${demandQuery.toString()}`,
-	);
+	const demandRequest = usePassengerDemandBaseline({
+		agencyIds: selectedMetricAgencyIds,
+		enabled: !agenciesContext.flags.is_loading,
+		excludeUnknown: true,
+		operationalDate: currentPeriod.startDate,
+	});
 	const ridePerformanceRequest = useSWR<RidePerformanceBaselineComparison, Error>(
 		agenciesContext.flags.is_loading ? null : `${API_ROUTES.performance.RIDE_PERFORMANCE_BASELINE_COMPARISON}?${ridePerformanceQuery.toString()}`,
 	);

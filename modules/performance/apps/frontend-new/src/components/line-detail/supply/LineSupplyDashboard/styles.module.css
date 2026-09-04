@@ -15,10 +15,6 @@
 	color: var(--color-system-text-200); 
 }
 
-.loadingContent { 
-	height: 420px; 
-}
-
 .planningGrid {
 	display: grid;
 	grid-template-columns: minmax(0, 1040px) minmax(0, 1fr);

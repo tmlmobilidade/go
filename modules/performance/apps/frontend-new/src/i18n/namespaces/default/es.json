@@ -1,4 +1,20 @@
 {
+	"csvExport": {
+		"day": "Día",
+		"hour": "Hora",
+		"metadata": {
+			"comparison": "Comparación",
+			"lineCode": "Código de línea",
+			"lineId": "ID de línea",
+			"operatorIds": "IDs de operadores",
+			"periodEnd": "Fin del periodo",
+			"periodStart": "Inicio del periodo"
+		},
+		"period": "Periodo",
+		"validations": "Validaciones",
+		"value": "Valor",
+		"weekday": "Día de la semana"
+	},
 	"demoData": {
 		"active": "Datos de demostración · julio de 2026",
 		"disable": "Desactivar datos demo",

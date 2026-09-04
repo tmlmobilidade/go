@@ -6,11 +6,12 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useDemoDataContext } from '@/contexts/DemoData.context';
 import { usePerformanceFiltersContext } from '@/contexts/PerformanceFilters.context';
 import { createDemoNetworkLines } from '@/data/demo-performance';
+import { usePassengerDemandBreakdown } from '@/hooks/passenger-demand/usePassengerDemandBreakdown';
 import { createNetworkLineRequestUrls } from '@/utils/network-line-requests';
 import { composeNetworkLines } from '@/utils/network-lines';
 import { getPerformancePeriods } from '@/utils/performance-comparisons';
 import { getComparisonLabelKey } from '@/utils/performance-period-labels';
-import { type PassengerDemandByLineItem, type PerformanceNetworkLine, type RidePerformanceByLineItem } from '@tmlmobilidade/go-types-performance';
+import { type PerformanceNetworkLine, type RidePerformanceByLineItem } from '@tmlmobilidade/go-types-performance';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -45,12 +46,18 @@ export function useNetworkLinesData() {
 	const linesRequest = useSWR<PerformanceNetworkLine[], Error>(
 		agenciesContext.flags.is_loading || demoDataContext.flags.is_enabled ? null : requestUrls.lines,
 	);
-	const demandRequest = useSWR<PassengerDemandByLineItem[], Error>(
-		agenciesContext.flags.is_loading || demoDataContext.flags.is_enabled ? null : requestUrls.demand,
-	);
-	const comparisonDemandRequest = useSWR<PassengerDemandByLineItem[], Error>(
-		agenciesContext.flags.is_loading || demoDataContext.flags.is_enabled ? null : requestUrls.comparisonDemand,
-	);
+	const demandRequest = usePassengerDemandBreakdown({
+		dimension: 'line',
+		enabled: !agenciesContext.flags.is_loading && !demoDataContext.flags.is_enabled,
+		filters: { agencyIds: selectedMetricAgencyIds, endDate: periods.current.endDate, excludeUnknown: true, startDate: periods.current.startDate },
+		limit: 1_000,
+	});
+	const comparisonDemandRequest = usePassengerDemandBreakdown({
+		dimension: 'line',
+		enabled: !agenciesContext.flags.is_loading && !demoDataContext.flags.is_enabled,
+		filters: { agencyIds: selectedMetricAgencyIds, endDate: periods.comparison.endDate, excludeUnknown: true, startDate: periods.comparison.startDate },
+		limit: 1_000,
+	});
 	const ridePerformanceRequest = useSWR<RidePerformanceByLineItem[], Error>(
 		agenciesContext.flags.is_loading || demoDataContext.flags.is_enabled ? null : requestUrls.ridePerformance,
 	);
@@ -63,13 +70,13 @@ export function useNetworkLinesData() {
 		if (!linesRequest.data) return [];
 
 		return composeNetworkLines({
-			comparisonDemand: comparisonDemandRequest.data,
-			demand: demandRequest.data,
+			comparisonDemand: comparisonDemandRequest.data?.items,
+			demand: demandRequest.data?.items,
 			lines: linesRequest.data,
 			ridePerformance: ridePerformanceRequest.data,
 			selectedAgencies,
 		});
-	}, [comparisonDemandRequest.data, demandRequest.data, demoDataContext.data.refresh_index, demoDataContext.flags.is_enabled, linesRequest.data, periods, ridePerformanceRequest.data, selectedAgencies]);
+	}, [comparisonDemandRequest.data?.items, demandRequest.data?.items, demoDataContext.data.refresh_index, demoDataContext.flags.is_enabled, linesRequest.data, periods, ridePerformanceRequest.data, selectedAgencies]);
 
 	//
 	// D. Return data
@@ -77,7 +84,7 @@ export function useNetworkLinesData() {
 	return {
 		data: lines,
 		flags: {
-			has_real_demand: !!demandRequest.data?.length,
+			has_real_demand: !!demandRequest.data?.items.length,
 			has_real_lines: !!linesRequest.data,
 			has_real_operational: !!ridePerformanceRequest.data?.length,
 			is_demo: demoDataContext.flags.is_enabled,

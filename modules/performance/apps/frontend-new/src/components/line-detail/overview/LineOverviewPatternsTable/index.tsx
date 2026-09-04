@@ -2,9 +2,7 @@
 
 /* * */
 
-import { usePerformanceFormatters } from '@/hooks/usePerformanceFormatters';
-import { getPatternMetricValueByCode } from '@/utils/pattern-metrics';
-import { type PerformanceNetworkPattern, type RidePerformanceByPatternItem } from '@tmlmobilidade/go-types-performance';
+import { PerformanceCsvExportButton } from '@/components/common/PerformanceCsvExportButton';
 import { DataTableV2, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,46 +10,23 @@ import { useTranslation } from 'react-i18next';
 import styles from './styles.module.css';
 
 import { createLineOverviewPatternColumns } from './columns';
-import { type LineOverviewPatternTableRow } from './types';
+import { useLineOverviewPatternsTableData } from './useLineOverviewPatternsTableData';
 
 /* * */
 
-interface LineOverviewPatternsTableProps {
-	demandByPatternCode: Map<string, number>
-	hasDemandError: boolean
-	hasOperationalError: boolean
-	isLoading: boolean
-	operationalByPatternCode: Map<string, RidePerformanceByPatternItem>
-	patterns: PerformanceNetworkPattern[]
-}
-
-/* * */
-
-export function LineOverviewPatternsTable({ demandByPatternCode, hasDemandError, hasOperationalError, isLoading, operationalByPatternCode, patterns }: LineOverviewPatternsTableProps) {
+export function LineOverviewPatternsTable() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation('default');
-	const formatters = usePerformanceFormatters();
-	const columns = useMemo(() => createLineOverviewPatternColumns(t, formatters), [formatters, t]);
+	const patternsTable = useLineOverviewPatternsTableData();
+	const { exportRows, line, patterns, rows } = patternsTable.data;
+	const columns = useMemo(() => createLineOverviewPatternColumns(t), [t]);
 
 	//
-	// B. Transform data
-
-	const rows = useMemo<LineOverviewPatternTableRow[]>(() => patterns.map(pattern => ({
-		advances: operationalByPatternCode.get(pattern.code)?.advances_pct ?? null,
-		code: pattern.code,
-		delays: operationalByPatternCode.get(pattern.code)?.delays_pct ?? null,
-		id: pattern._id,
-		label: pattern.headsign || `${pattern.origin} → ${pattern.destination}`,
-		service: operationalByPatternCode.get(pattern.code)?.service_pct ?? null,
-		validations: getPatternMetricValueByCode(demandByPatternCode, pattern),
-	})), [demandByPatternCode, operationalByPatternCode, patterns]);
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Surface className={styles.root} height="full">
@@ -60,7 +35,16 @@ export function LineOverviewPatternsTable({ demandByPatternCode, hasDemandError,
 					<h2>{t('lineDetail.patternsTable.title')}</h2>
 					<p>{t('lineDetail.patternsTable.description')}</p>
 				</div>
-				<span>{t(hasDemandError || hasOperationalError ? 'lineDetail.patternsTable.identityOnly' : 'lineDetail.patternsTable.mixedData')}</span>
+				<div className={styles.headerActions}>
+					<span>{t(patternsTable.flags.has_demand_error || patternsTable.flags.has_operational_error ? 'lineDetail.patternsTable.identityOnly' : 'lineDetail.patternsTable.mixedData')}</span>
+					<PerformanceCsvExportButton
+						datasets={[{ rows: exportRows }]}
+						disabled={patternsTable.flags.is_loading || !rows.length}
+						filenameParts={[line?.code]}
+						metadata={{ line_code: line?.code, line_id: line?._id }}
+						visualizationId="patterns"
+					/>
+				</div>
 			</header>
 
 			<DataTableV2
@@ -69,7 +53,7 @@ export function LineOverviewPatternsTable({ demandByPatternCode, hasDemandError,
 				columns={columns}
 				emptyState={t('lineDetail.patternsTable.empty')}
 				getRowId={pattern => pattern.id}
-				isLoading={isLoading}
+				isLoading={patternsTable.flags.is_loading}
 				loadingRows={Math.max(patterns.length, 2)}
 				records={rows}
 			/>

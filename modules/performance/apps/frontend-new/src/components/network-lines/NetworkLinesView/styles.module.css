@@ -63,11 +63,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 14px 18px;
-}
-
-.tableHeader {
 	min-height: 62px;
+	padding: 14px 18px;
 }
 
 .tableHeader h2 {
@@ -77,16 +74,28 @@
 	color: var(--color-system-text-100);
 }
 
-.tableHeader > span {
-	margin: 3px 0 0;
-	font-size: var(--font-size-xs);
-	color: var(--color-system-text-200);
+.tableHeaderActions {
+	display: flex;
+	flex-shrink: 0;
+	gap: 8px;
+	align-items: center;
 }
 
-.tableHeader > span {
-	padding: 5px 9px;
+.tableHeaderActions > span {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	padding: 6px 10px;
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-medium);
+	line-height: 1.2;
+	color: var(--color-system-text-200);
 	background: var(--color-system-background-200);
 	border-radius: 999px;
+}
+
+.tableHeaderActions > * {
+	flex-shrink: 0;
 }
 
 @media (width <= 900px) {

@@ -12,23 +12,7 @@ interface CreateNetworkLineRequestUrlsOptions {
 
 /* * */
 
-function appendAgencyIds(query: URLSearchParams, agencyIds: string[]) {
-	agencyIds.forEach(agencyId => query.append('agency_ids', agencyId));
-}
-
 export function createNetworkLineRequestUrls({ metricAgencyIds, periods }: CreateNetworkLineRequestUrlsOptions) {
-	const demandQuery = new URLSearchParams({
-		end_date: periods.current.endDate,
-		exclude_unknown: 'true',
-		limit: '1000',
-		start_date: periods.current.startDate,
-	});
-	const comparisonDemandQuery = new URLSearchParams({
-		end_date: periods.comparison.endDate,
-		exclude_unknown: 'true',
-		limit: '1000',
-		start_date: periods.comparison.startDate,
-	});
 	const networkQuery = new URLSearchParams({
 		end_date: periods.current.endDate,
 		start_date: periods.current.startDate,
@@ -41,14 +25,12 @@ export function createNetworkLineRequestUrls({ metricAgencyIds, periods }: Creat
 		exclude_unknown: 'true',
 	});
 
-	appendAgencyIds(demandQuery, metricAgencyIds);
-	appendAgencyIds(comparisonDemandQuery, metricAgencyIds);
-	appendAgencyIds(networkQuery, metricAgencyIds);
-	appendAgencyIds(ridePerformanceQuery, metricAgencyIds);
+	metricAgencyIds.forEach((agencyId) => {
+		networkQuery.append('agency_ids', agencyId);
+		ridePerformanceQuery.append('agency_ids', agencyId);
+	});
 
 	return {
-		comparisonDemand: `${API_ROUTES.performance.PASSENGER_DEMAND_BY_LINE}?${comparisonDemandQuery.toString()}`,
-		demand: `${API_ROUTES.performance.PASSENGER_DEMAND_BY_LINE}?${demandQuery.toString()}`,
 		lines: `${API_ROUTES.performance.NETWORK_LINES}?${networkQuery.toString()}`,
 		ridePerformance: `${API_ROUTES.performance.RIDE_PERFORMANCE_BY_LINE}?${ridePerformanceQuery.toString()}`,
 	};

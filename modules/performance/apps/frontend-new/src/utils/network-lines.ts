@@ -1,13 +1,13 @@
 /* * */
 
 import { type NetworkLine } from '@/types/network-line';
-import { type PassengerDemandByLineItem, type PerformanceNetworkAgency, type PerformanceNetworkLine, type RidePerformanceByLineItem } from '@tmlmobilidade/go-types-performance';
+import { type PassengerDemandBreakdownItem, type PerformanceNetworkAgency, type PerformanceNetworkLine, type RidePerformanceByLineItem } from '@tmlmobilidade/go-types-performance';
 
 /* * */
 
 interface ComposeNetworkLinesOptions {
-	comparisonDemand?: PassengerDemandByLineItem[]
-	demand?: PassengerDemandByLineItem[]
+	comparisonDemand?: PassengerDemandBreakdownItem[]
+	demand?: PassengerDemandBreakdownItem[]
 	lines: PerformanceNetworkLine[]
 	ridePerformance?: RidePerformanceByLineItem[]
 	selectedAgencies: PerformanceNetworkAgency[]
@@ -29,8 +29,8 @@ export function composeNetworkLines({
 		[agency._id, agency.code, ...agency.metric_ids].map(id => [id, agency._id] as const)
 	)));
 	const getLineKey = (agencyId: string, lineId: string) => `${canonicalAgencyIdByAlias.get(agencyId) ?? agencyId}:${lineId}`;
-	const demandByLine = new Map(demand?.map(item => [getLineKey(item.agency_id, item.line_id), item.passenger_demand]));
-	const comparisonDemandByLine = new Map(comparisonDemand?.map(item => [getLineKey(item.agency_id, item.line_id), item.passenger_demand]));
+	const demandByLine = new Map(demand?.flatMap(item => item.agency_id ? [[getLineKey(item.agency_id, item.id), item.passenger_demand] as const] : []));
+	const comparisonDemandByLine = new Map(comparisonDemand?.flatMap(item => item.agency_id ? [[getLineKey(item.agency_id, item.id), item.passenger_demand] as const] : []));
 	const ridePerformanceByLine = new Map(ridePerformance?.map(item => [getLineKey(item.agency_id, item.line_id), item]));
 
 	return lines.map((line) => {

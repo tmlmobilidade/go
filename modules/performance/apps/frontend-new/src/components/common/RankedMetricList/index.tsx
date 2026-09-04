@@ -1,21 +1,28 @@
 /* * */
 
-import { type MetricTrendDirection } from '@/utils/metric-trend';
+import { MetricText } from '@/components/common/MetricText';
+import { getMetricTrendDirection } from '@/utils/metric-trend';
+import { type PerformanceValueFormat } from '@/utils/performance-formatters';
 import { Progress } from '@tmlmobilidade/ui';
+import { Fragment } from 'react';
 
 import styles from './styles.module.css';
 
 /* * */
 
+interface RankedMetricValue {
+	format: PerformanceValueFormat
+	signed?: boolean
+	suffix?: string
+	value: null | number | undefined
+}
+
 export interface RankedMetricListItem {
-	change: {
-		direction: MetricTrendDirection
-		label: string
-	}
+	change?: RankedMetricValue
 	id: string
 	label: string
 	progressValue: number
-	value: string
+	values: RankedMetricValue[]
 }
 
 interface RankedMetricListProps {
@@ -31,8 +38,17 @@ export function RankedMetricList({ items }: RankedMetricListProps) {
 				<div key={item.id} className={styles.item}>
 					<div className={styles.header}>
 						<strong title={item.label}>{item.label}</strong>
-						<span>{item.value}</span>
-						<small data-direction={item.change.direction}>{item.change.label}</small>
+						<span>
+							{item.values.map((value, index) => (
+								<Fragment key={`${value.format}-${index}`}>
+									{index > 0 && ' · '}
+									<MetricText format={value.format} signed={value.signed} suffix={value.suffix} value={value.value} />
+								</Fragment>
+							))}
+						</span>
+						{item.change
+							? <small data-direction={getMetricTrendDirection(item.change.value ?? 0)}><MetricText format={item.change.format} signed={item.change.signed} suffix={item.change.suffix} value={item.change.value} /></small>
+							: <small />}
 					</div>
 					<Progress
 						aria-label={item.label}

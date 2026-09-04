@@ -1,9 +1,8 @@
 /* * */
 
+import { MetricText } from '@/components/common/MetricText';
 import { MetricTrend } from '@/components/common/MetricTrend';
-import { type PerformanceFormatters } from '@/hooks/usePerformanceFormatters';
 import { type NetworkLine } from '@/types/network-line';
-import { createMetricTrend } from '@/utils/metric-trend';
 import { type DataTableV2Column, Tag } from '@tmlmobilidade/ui';
 import { type TFunction } from 'i18next';
 import Link from 'next/link';
@@ -12,7 +11,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function createLinePerformanceColumns(t: TFunction, getFilterHref: (pathname: string) => string, formatters: PerformanceFormatters): DataTableV2Column<NetworkLine>[] {
+export function createLinePerformanceColumns(t: TFunction, getFilterHref: (pathname: string) => string): DataTableV2Column<NetworkLine>[] {
 	return [
 		{
 			id: 'line',
@@ -39,22 +38,12 @@ export function createLinePerformanceColumns(t: TFunction, getFilterHref: (pathn
 		{
 			align: 'center',
 			id: 'validations',
-			render: (line) => {
-				const trend = createMetricTrend(line.validationsDelta, { formatValue: formatters.signedPercentage });
-				return (
-					<div className={styles.metric}>
-						<strong>{line.validations === null ? '—' : t('networkLines.table.thousands', { value: Math.round(line.validations / 1000) })}</strong>
-						{trend && (
-							<MetricTrend
-								direction={trend.direction}
-								label={trend.label}
-								sentiment={trend.sentiment}
-								size="sm"
-							/>
-						)}
-					</div>
-				);
-			},
+			render: line => (
+				<div className={styles.metric}>
+					<MetricText as="strong" format="compact" value={line.validations} />
+					<MetricTrend format="percentage" size="sm" value={line.validationsDelta} />
+				</div>
+			),
 			sortable: true,
 			sortValue: line => line.validations,
 			title: t('networkLines.table.validations'),
@@ -63,22 +52,12 @@ export function createLinePerformanceColumns(t: TFunction, getFilterHref: (pathn
 		{
 			align: 'center',
 			id: 'service',
-			render: (line) => {
-				const trend = createMetricTrend(line.serviceDelta, { formatValue: formatters.signedPercentagePoints });
-				return (
-					<div className={styles.metric} data-status={line.service !== null && line.service < 92 ? 'danger' : undefined}>
-						<strong>{line.service === null ? '—' : formatters.percentage(line.service)}</strong>
-						{trend && (
-							<MetricTrend
-								direction={trend.direction}
-								label={trend.label}
-								sentiment={trend.sentiment}
-								size="sm"
-							/>
-						)}
-					</div>
-				);
-			},
+			render: line => (
+				<div className={styles.metric} data-status={line.service !== null && line.service < 92 ? 'danger' : undefined}>
+					<MetricText as="strong" format="percentage" value={line.service} />
+					<MetricTrend format="percentage-points" size="sm" value={line.serviceDelta} />
+				</div>
+			),
 			sortable: true,
 			sortValue: line => line.service,
 			title: t('networkLines.table.service'),
@@ -87,22 +66,12 @@ export function createLinePerformanceColumns(t: TFunction, getFilterHref: (pathn
 		{
 			align: 'center',
 			id: 'delays',
-			render: (line) => {
-				const trend = createMetricTrend(line.delayDelta, { formatValue: formatters.signedPercentagePoints, positiveWhenIncreasing: false });
-				return (
-					<div className={styles.metric} data-status={line.delays !== null && line.delays >= 9 ? 'warning' : undefined}>
-						<strong>{line.delays === null ? '—' : formatters.percentage(line.delays)}</strong>
-						{trend && (
-							<MetricTrend
-								direction={trend.direction}
-								label={trend.label}
-								sentiment={trend.sentiment}
-								size="sm"
-							/>
-						)}
-					</div>
-				);
-			},
+			render: line => (
+				<div className={styles.metric} data-status={line.delays !== null && line.delays >= 9 ? 'warning' : undefined}>
+					<MetricText as="strong" format="percentage" value={line.delays} />
+					<MetricTrend format="percentage-points" positiveWhenIncreasing={false} size="sm" value={line.delayDelta} />
+				</div>
+			),
 			sortable: true,
 			sortValue: line => line.delays,
 			title: t('networkLines.table.delays'),
@@ -111,7 +80,7 @@ export function createLinePerformanceColumns(t: TFunction, getFilterHref: (pathn
 		{
 			align: 'center',
 			id: 'advances',
-			render: line => <strong>{line.advances === null ? '—' : formatters.percentage(line.advances)}</strong>,
+			render: line => <MetricText as="strong" format="percentage" value={line.advances} />,
 			sortable: true,
 			sortValue: line => line.advances,
 			title: t('networkLines.table.advances'),

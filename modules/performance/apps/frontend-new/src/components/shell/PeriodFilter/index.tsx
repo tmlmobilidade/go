@@ -2,8 +2,8 @@
 
 /* * */
 
-import { resolvePerformanceLocale } from '@/hooks/usePerformanceFormatters';
 import { operationalDateToUnixTimestamp, unixTimestampToOperationalDate } from '@/utils/operational-dates';
+import { resolvePerformanceLocale } from '@/utils/performance-formatters';
 import { formatPeriodRangeLabel } from '@/utils/performance-period-labels';
 import { getCurrentPeriod, type PerformancePeriodSelection, type PeriodPreset } from '@/utils/performance-periods';
 import { IconCalendar, IconCheck, IconChevronDown } from '@tabler/icons-react';

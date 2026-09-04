@@ -1,56 +1,75 @@
+'use client';
+
 /* * */
 
 import { DashboardCard } from '@/components/common/DashboardCard';
 import { MetricSummaryCard } from '@/components/common/MetricSummaryCard';
-import { usePerformanceFormatters } from '@/hooks/usePerformanceFormatters';
-import { calculateMetricDifferencePct, createMetricTrend } from '@/utils/metric-trend';
-import { type PassengerDemandProductivityMetrics } from '@tmlmobilidade/go-types-performance';
-import { Grid } from '@tmlmobilidade/ui';
+import { Alert, Grid, Skeleton } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-/* * */
-
-interface LineDemandProductivityProps {
-	comparison: PassengerDemandProductivityMetrics
-	current: PassengerDemandProductivityMetrics
-}
+import { useLineDemandProductivityData } from './useLineDemandProductivityData';
 
 /* * */
 
-export function LineDemandProductivity({ comparison, current }: LineDemandProductivityProps) {
+export function LineDemandProductivity() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation('default');
-	const formatters = usePerformanceFormatters();
-	const metrics = [
+	const productivityData = useLineDemandProductivityData();
+	const productivity = productivityData.data.productivity;
+	const comparison = productivity?.comparison;
+	const current = productivity?.current;
+	const differences = productivityData.data.differences;
+	const showComparison = productivityData.flags.has_comparison;
+	const metrics = current && comparison && differences ? [
 		{
-			comparison: comparison.validations_per_operated_ride,
+			differencePct: differences.validations_per_operated_ride,
+			format: 'decimal' as const,
 			label: t('lineDetail.demandDashboard.productivity.perRide'),
-			value: current.validations_per_operated_ride === null ? '—' : formatters.fixedDecimal(current.validations_per_operated_ride),
-			valueRaw: current.validations_per_operated_ride,
+			value: current.validations_per_operated_ride,
 		},
 		{
-			comparison: comparison.validations_per_delivered_vehicle_km,
+			differencePct: differences.validations_per_delivered_vehicle_km,
+			format: 'decimal' as const,
 			label: t('lineDetail.demandDashboard.productivity.perVehicleKm'),
-			value: current.validations_per_delivered_vehicle_km === null ? '—' : formatters.fixedDecimal(current.validations_per_delivered_vehicle_km),
-			valueRaw: current.validations_per_delivered_vehicle_km,
+			value: current.validations_per_delivered_vehicle_km,
 		},
 		{
-			comparison: comparison.operated_rides_qty,
+			differencePct: differences.operated_rides_qty,
+			format: 'compact' as const,
 			label: t('lineDetail.demandDashboard.productivity.operatedRides'),
-			value: formatters.compact(current.operated_rides_qty),
-			valueRaw: current.operated_rides_qty,
+			value: current.operated_rides_qty,
 		},
 		{
-			comparison: comparison.delivered_vehicle_km,
+			differencePct: differences.delivered_vehicle_km,
+			format: 'compact' as const,
 			label: t('lineDetail.demandDashboard.productivity.deliveredKm'),
-			value: formatters.compact(current.delivered_vehicle_km),
-			valueRaw: current.delivered_vehicle_km,
+			value: current.delivered_vehicle_km,
 		},
-	];
+	] : [];
+	const content = productivityData.flags.has_error
+		? <Alert color="red" variant="light">{t('lineDetail.demandDashboard.dashboardError')}</Alert>
+		: productivityData.flags.is_loading
+			? <Skeleton height={180} />
+			: (
+				<Grid columns="abcd" gap="sm">
+					{metrics.map(metric => (
+						<MetricSummaryCard
+							key={metric.label}
+							title={metric.label}
+							value={metric.value}
+							valueFormat={metric.format}
+							trend={showComparison ? {
+								format: 'percentage',
+								value: metric.differencePct,
+							} : undefined}
+						/>
+					))}
+				</Grid>
+			);
 
 	//
 	// B. Render components
@@ -60,19 +79,7 @@ export function LineDemandProductivity({ comparison, current }: LineDemandProduc
 			description={t('lineDetail.demandDashboard.productivity.description')}
 			title={t('lineDetail.demandDashboard.productivity.title')}
 		>
-			<Grid columns="abcd" gap="sm">
-				{metrics.map(metric => (
-					<MetricSummaryCard
-						key={metric.label}
-						title={metric.label}
-						value={metric.value}
-						trend={createMetricTrend(
-							calculateMetricDifferencePct(metric.valueRaw, metric.comparison),
-							{ formatValue: formatters.signedPercentage },
-						)}
-					/>
-				))}
-			</Grid>
+			{content}
 		</DashboardCard>
 	);
 

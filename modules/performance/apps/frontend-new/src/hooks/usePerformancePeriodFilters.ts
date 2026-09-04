@@ -2,9 +2,9 @@
 
 /* * */
 
-import { resolvePerformanceLocale } from '@/hooks/usePerformanceFormatters';
 import { getAvailableComparisons, normalizeComparison } from '@/utils/performance-comparisons';
 import { getDefaultPerformanceComparison, getDefaultPerformancePeriod, getPerformanceScreen, isLineDetailPath, isPerformanceComparison, isPeriodPreset } from '@/utils/performance-filter-policy';
+import { resolvePerformanceLocale } from '@/utils/performance-formatters';
 import { getComparisonContextLabel, getComparisonDescriptionKey, getComparisonLabelKey } from '@/utils/performance-period-labels';
 import { type PerformancePeriodSelection } from '@/utils/performance-periods';
 import { useQueryState } from '@tmlmobilidade/ui';

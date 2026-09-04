@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 interface LineDemandChartProps {
 	comparisonLabel?: string
 	comparisonPoints?: PassengerDemandOverTimePoint[]
-	comparisonValue?: string
+	comparisonValue?: number
 	isSingleDay: boolean
 	points: PassengerDemandOverTimePoint[]
 }

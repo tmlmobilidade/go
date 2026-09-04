@@ -1,6 +1,10 @@
+'use client';
+
 /* * */
 
-import { type MetricTrendDirection, type MetricTrendSentiment } from '@/utils/metric-trend';
+import { usePerformanceFormatters } from '@/hooks/usePerformanceFormatters';
+import { getMetricTrendDirection, getMetricTrendSentiment } from '@/utils/metric-trend';
+import { formatPerformanceValue, type PerformanceNumberFormat } from '@/utils/performance-formatters';
 import { IconArrowDownRight, IconArrowRight, IconArrowUpRight } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
@@ -9,18 +13,27 @@ import styles from './styles.module.css';
 
 export type { MetricTrendDirection, MetricTrendSentiment } from '@/utils/metric-trend';
 
-interface MetricTrendProps {
+export type MetricTrendFormat = Extract<PerformanceNumberFormat, 'compact' | 'percentage' | 'percentage-points'>;
+
+export interface MetricTrendProps {
 	className?: string
 	comparisonLabel?: string
-	direction: MetricTrendDirection
-	label: string
-	sentiment: MetricTrendSentiment
+	format: MetricTrendFormat
+	positiveWhenIncreasing?: boolean
 	size?: 'md' | 'sm'
+	value: null | number | undefined
 }
 
 /* * */
 
-export function MetricTrend({ className, comparisonLabel, direction, label, sentiment, size = 'md' }: MetricTrendProps) {
+export function MetricTrend({ className, comparisonLabel, format, positiveWhenIncreasing = true, size = 'md', value }: MetricTrendProps) {
+	const formatters = usePerformanceFormatters();
+
+	if (value === null || value === undefined) return null;
+
+	const direction = getMetricTrendDirection(value);
+	const sentiment = getMetricTrendSentiment(value, positiveWhenIncreasing);
+	const label = formatPerformanceValue(value, format, formatters, { signed: true });
 	const TrendIcon = direction === 'up' ? IconArrowUpRight : direction === 'down' ? IconArrowDownRight : IconArrowRight;
 	const iconSize = size === 'sm' ? 14 : 16;
 	const rootClassName = className ? `${styles.root} ${className}` : styles.root;

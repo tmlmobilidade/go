@@ -3,10 +3,8 @@
 /* * */
 
 import { MetricSummaryCard } from '@/components/common/MetricSummaryCard';
-import { createCompactMetricValue } from '@/components/common/MetricValue';
 import { usePerformanceFormatters } from '@/hooks/usePerformanceFormatters';
 import { usePulseData } from '@/hooks/usePulseData';
-import { createMetricTrend } from '@/utils/metric-trend';
 import { Skeleton } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -55,32 +53,30 @@ export function PulseView() {
 				<MetricSummaryCard
 					comparisonLabel={baselineFootnote}
 					title={t('pulse.demand.title')}
-					trend={createMetricTrend(demandDelta, { formatValue: formatters.signedCompact })}
-					value={createCompactMetricValue(pulse.data.demand?.current.passenger_demand ?? 0)}
+					trend={{ format: 'compact', value: demandDelta }}
+					value={pulse.data.demand?.current.passenger_demand ?? 0}
+					valueFormat="compact"
 				/>
 				<MetricSummaryCard
 					comparisonLabel={baselineFootnote}
 					title={t('pulse.operational.service')}
-					trend={createMetricTrend(serviceDelta, { formatValue: formatters.signedPercentagePoints })}
-					value={pulse.data.operational?.current.service_pct === null || pulse.data.operational?.current.service_pct === undefined
-						? '—'
-						: { decimalScale: 1, fixedDecimalScale: true, suffix: '%', value: pulse.data.operational.current.service_pct }}
+					trend={{ format: 'percentage-points', value: serviceDelta }}
+					value={pulse.data.operational?.current.service_pct}
+					valueFormat="percentage"
 				/>
 				<MetricSummaryCard
 					comparisonLabel={baselineFootnote}
 					title={t('pulse.operational.delays')}
-					trend={createMetricTrend(delaysDelta, { formatValue: formatters.signedPercentagePoints, positiveWhenIncreasing: false })}
-					value={pulse.data.operational?.current.delays_pct === null || pulse.data.operational?.current.delays_pct === undefined
-						? '—'
-						: { decimalScale: 1, fixedDecimalScale: true, suffix: '%', value: pulse.data.operational.current.delays_pct }}
+					trend={{ format: 'percentage-points', positiveWhenIncreasing: false, value: delaysDelta }}
+					value={pulse.data.operational?.current.delays_pct}
+					valueFormat="percentage"
 				/>
 				<MetricSummaryCard
 					comparisonLabel={baselineFootnote}
 					title={t('pulse.operational.advances')}
-					trend={createMetricTrend(advancesDelta, { formatValue: formatters.signedPercentagePoints, positiveWhenIncreasing: false })}
-					value={pulse.data.operational?.current.advances_pct === null || pulse.data.operational?.current.advances_pct === undefined
-						? '—'
-						: { decimalScale: 1, fixedDecimalScale: true, suffix: '%', value: pulse.data.operational.current.advances_pct }}
+					trend={{ format: 'percentage-points', positiveWhenIncreasing: false, value: advancesDelta }}
+					value={pulse.data.operational?.current.advances_pct}
+					valueFormat="percentage"
 				/>
 			</div>
 

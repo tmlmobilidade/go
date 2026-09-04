@@ -1,55 +1,51 @@
+'use client';
+
 /* * */
 
 import { MetricSummaryCard } from '@/components/common/MetricSummaryCard';
-import { createCompactMetricValue, type MetricRollingValue } from '@/components/common/MetricValue';
-import { usePerformanceFormatters } from '@/hooks/usePerformanceFormatters';
-import { calculateMetricDifferencePct, createMetricTrend } from '@/utils/metric-trend';
-import { type PlannedSupplyMetrics } from '@tmlmobilidade/go-types-performance';
-import { Grid } from '@tmlmobilidade/ui';
+import { Alert, Grid, Skeleton } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-/* * */
-
-interface LineSupplyKpisProps {
-	comparison: PlannedSupplyMetrics
-	comparisonLabel: string
-	current: PlannedSupplyMetrics
-}
+import { useLineSupplyKpisData } from './useLineSupplyKpisData';
 
 /* * */
 
-export function LineSupplyKpis({ comparison, comparisonLabel, current }: LineSupplyKpisProps) {
+export function LineSupplyKpis() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation('default');
-	const formatters = usePerformanceFormatters();
-	const metrics: { comparison: number, current: number, label: string, value: MetricRollingValue }[] = [
-		{ comparison: comparison.scheduled_rides_qty, current: current.scheduled_rides_qty, label: t('lineDetail.plannedSupply.summary.rides'), value: createCompactMetricValue(current.scheduled_rides_qty) },
-		{ comparison: comparison.scheduled_vehicle_km, current: current.scheduled_vehicle_km, label: t('lineDetail.plannedSupply.summary.vehicleKm'), value: createCompactMetricValue(current.scheduled_vehicle_km, ' km') },
-		{ comparison: comparison.rides_per_active_day, current: current.rides_per_active_day, label: t('lineDetail.plannedSupply.summary.ridesPerDay'), value: createCompactMetricValue(current.rides_per_active_day) },
-		{ comparison: comparison.vehicle_km_per_active_day, current: current.vehicle_km_per_active_day, label: t('lineDetail.plannedSupply.summary.kmPerDay'), value: createCompactMetricValue(current.vehicle_km_per_active_day, ' km') },
-	];
+	const kpis = useLineSupplyKpisData();
+	const { comparison, comparisonLabel, current, differences } = kpis.data;
 
 	//
 	// B. Render components
 
+	if (kpis.flags.is_loading) return <Skeleton height={112} />;
+	if (kpis.flags.has_error || !comparison || !current || !differences) return <Alert color="red" variant="light">{t('lineDetail.plannedSupply.dashboardError')}</Alert>;
+
+	const metrics: { current: number, differencePct: null | number, label: string, suffix?: string }[] = [
+		{ current: current.scheduled_rides_qty, differencePct: differences.scheduled_rides_qty, label: t('lineDetail.plannedSupply.summary.rides') },
+		{ current: current.scheduled_vehicle_km, differencePct: differences.scheduled_vehicle_km, label: t('lineDetail.plannedSupply.summary.vehicleKm'), suffix: ' km' },
+		{ current: current.rides_per_active_day, differencePct: differences.rides_per_active_day, label: t('lineDetail.plannedSupply.summary.ridesPerDay') },
+		{ current: current.vehicle_km_per_active_day, differencePct: differences.vehicle_km_per_active_day, label: t('lineDetail.plannedSupply.summary.kmPerDay'), suffix: ' km' },
+	];
+
 	return (
 		<Grid aria-label={t('lineDetail.plannedSupply.summary.ariaLabel')} columns="abcd" gap="sm" role="region">
-			{metrics.map((metric) => {
-				const difference = calculateMetricDifferencePct(metric.current, metric.comparison);
-				return (
-					<MetricSummaryCard
-						key={metric.label}
-						comparisonLabel={comparisonLabel}
-						title={metric.label}
-						trend={createMetricTrend(difference, { formatValue: formatters.signedPercentage })}
-						value={metric.value}
-					/>
-				);
-			})}
+			{metrics.map(metric => (
+				<MetricSummaryCard
+					key={metric.label}
+					comparisonLabel={comparisonLabel}
+					title={metric.label}
+					trend={{ format: 'percentage', value: metric.differencePct }}
+					value={metric.current}
+					valueFormat="compact"
+					valueSuffix={metric.suffix}
+				/>
+			))}
 		</Grid>
 	);
 

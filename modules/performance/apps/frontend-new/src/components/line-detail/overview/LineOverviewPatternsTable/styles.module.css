@@ -7,7 +7,7 @@
 
 .header {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: space-between;
 	gap: 16px;
 	padding: 16px;
@@ -27,14 +27,28 @@
 	color: var(--color-system-text-200);
 }
 
-.header > span {
+.headerActions {
+	display: flex;
+	flex-shrink: 0;
+	gap: 8px;
+	align-items: center;
+}
+
+.headerActions > span {
+	display: inline-flex;
 	flex: 0 0 auto;
+	align-items: center;
 	padding: 6px 10px;
 	font-size: var(--font-size-xs);
 	font-weight: var(--font-weight-medium);
+	line-height: 1.2;
 	color: var(--color-system-text-200);
 	background: var(--color-system-background-200);
 	border-radius: 999px;
+}
+
+.headerActions > * {
+	flex-shrink: 0;
 }
 
 .table th,

@@ -2,6 +2,7 @@
 
 /* * */
 
+import { PerformanceCsvExportButton } from '@/components/common/PerformanceCsvExportButton';
 import { LinePerformanceTable } from '@/components/network-lines/LinePerformanceTable';
 import { NetworkLinesSummary } from '@/components/network-lines/NetworkLinesSummary';
 import { useNetworkLinesData } from '@/hooks/useNetworkLinesData';
@@ -44,6 +45,20 @@ export function NetworkLinesView() {
 			return matchesView && searchText.includes(normalizedQuery);
 		});
 	}, [networkLines.data, query, view]);
+	const exportRows = useMemo(() => networkLines.data.map(line => ({
+		advances: line.advances,
+		coverage: line.coverage,
+		delays: line.delays,
+		delays_delta: line.delayDelta,
+		line_id: line.id,
+		line_name: line.name,
+		network_line_id: line._id,
+		operator: line.operator,
+		service: line.service,
+		service_delta: line.serviceDelta,
+		validations: line.validations,
+		validations_delta: line.validationsDelta,
+	})), [networkLines.data]);
 	const viewOptions = [
 		{ label: t('networkLines.filters.all'), value: 'all' },
 		{ label: t('networkLines.filters.attention'), value: 'attention' },
@@ -101,14 +116,22 @@ export function NetworkLinesView() {
 					<div>
 						<h2>{t('networkLines.table.title')}</h2>
 					</div>
-					<span>{networkLines.flags.is_demo
-						? t('demoData.active')
-						: networkLines.flags.is_loading
-							? t('networkLines.table.loading')
-							: networkLines.flags.has_real_lines && networkLines.flags.has_real_demand && networkLines.flags.has_real_operational
-								? t('networkLines.table.mixedData')
-								: t('networkLines.table.dataUnavailable')}
-					</span>
+					<div className={styles.tableHeaderActions}>
+						<span>{networkLines.flags.is_demo
+							? t('demoData.active')
+							: networkLines.flags.is_loading
+								? t('networkLines.table.loading')
+								: networkLines.flags.has_real_lines && networkLines.flags.has_real_demand && networkLines.flags.has_real_operational
+									? t('networkLines.table.mixedData')
+									: t('networkLines.table.dataUnavailable')}
+						</span>
+						<PerformanceCsvExportButton
+							datasets={[{ rows: exportRows }]}
+							disabled={networkLines.flags.is_loading || !networkLines.data.length}
+							scope="network-lines"
+							visualizationId="lines"
+						/>
+					</div>
 				</header>
 
 				<LinePerformanceTable getFilterHref={getFilterHref} isLoading={networkLines.flags.is_loading} lines={visibleLines} paginationResetKey={`${query}:${view}`} />

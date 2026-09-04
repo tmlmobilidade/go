@@ -27,6 +27,14 @@
 	color: var(--color-system-text-200);
 }
 
+.summaryHeading {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+}
+
 .value {
 	margin: 24px 0 8px;
 	font-size: 34px;

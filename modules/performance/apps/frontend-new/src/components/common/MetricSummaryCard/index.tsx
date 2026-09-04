@@ -1,7 +1,7 @@
 /* * */
 
-import { MetricTrend, type MetricTrendDirection, type MetricTrendSentiment } from '@/components/common/MetricTrend';
-import { type MetricRollingValue, MetricValue } from '@/components/common/MetricValue';
+import { MetricTrend, type MetricTrendFormat, type MetricTrendSentiment } from '@/components/common/MetricTrend';
+import { MetricValue, type MetricValueFormat } from '@/components/common/MetricValue';
 import { Progress, Section, Sparkline, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -9,11 +9,6 @@ import styles from './styles.module.css';
 /* * */
 
 export type MetricSparklineTone = 'accent' | 'primary' | 'success' | 'warning';
-
-export interface MetricSparklineDatum {
-	label: string
-	value: number
-}
 
 interface MetricSummaryCardProps {
 	className?: string
@@ -23,16 +18,18 @@ interface MetricSummaryCardProps {
 		sentiment?: MetricTrendSentiment
 		value: number
 	}
-	sparklineData?: MetricSparklineDatum[] | number[]
+	sparklineData?: number[]
 	sparklineTone?: MetricSparklineTone
 	supportingText?: string
 	title: string
 	trend?: {
-		direction: MetricTrendDirection
-		label: string
-		sentiment: MetricTrendSentiment
+		format: MetricTrendFormat
+		positiveWhenIncreasing?: boolean
+		value: null | number | undefined
 	}
-	value: MetricRollingValue | string
+	value: null | number | string | undefined
+	valueFormat: MetricValueFormat
+	valueSuffix?: string
 }
 
 /* * */
@@ -47,6 +44,8 @@ export function MetricSummaryCard({
 	title,
 	trend,
 	value,
+	valueFormat,
+	valueSuffix,
 }: MetricSummaryCardProps) {
 	//
 
@@ -55,7 +54,7 @@ export function MetricSummaryCard({
 
 	const safeProgressValue = progress ? Math.min(100, Math.max(0, progress.value)) : 0;
 	const hasSparkline = !!sparklineData?.length;
-	const sparklineValues = sparklineData?.map(item => typeof item === 'number' ? item : item.value) ?? [];
+	const sparklineValues = sparklineData ?? [];
 	const sparklineColor = {
 		accent: '#7c3aed',
 		primary: 'var(--color-primary)',
@@ -80,14 +79,14 @@ export function MetricSummaryCard({
 
 				<div className={styles.summary} data-with-sparkline={hasSparkline}>
 					<div className={styles.valueBlock}>
-						<MetricValue className={styles.value} value={value} />
+						<MetricValue className={styles.value} format={valueFormat} suffix={valueSuffix} value={value} />
 						{trend && (
 							<MetricTrend
 								className={styles.trend}
 								comparisonLabel={comparisonLabel}
-								direction={trend.direction}
-								label={trend.label}
-								sentiment={trend.sentiment}
+								format={trend.format}
+								positiveWhenIncreasing={trend.positiveWhenIncreasing}
+								value={trend.value}
 							/>
 						)}
 						{supportingText && <small className={styles.supportingText}>{supportingText}</small>}

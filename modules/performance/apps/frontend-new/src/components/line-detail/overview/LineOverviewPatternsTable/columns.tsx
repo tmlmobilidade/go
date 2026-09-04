@@ -1,6 +1,6 @@
 /* * */
 
-import { type PerformanceFormatters } from '@/hooks/usePerformanceFormatters';
+import { MetricText } from '@/components/common/MetricText';
 import { type DataTableV2Column, Label, Section, Tag } from '@tmlmobilidade/ui';
 import { type TFunction } from 'i18next';
 
@@ -8,7 +8,7 @@ import { type LineOverviewPatternTableRow } from './types';
 
 /* * */
 
-export function createLineOverviewPatternColumns(t: TFunction, formatters: PerformanceFormatters): DataTableV2Column<LineOverviewPatternTableRow>[] {
+export function createLineOverviewPatternColumns(t: TFunction): DataTableV2Column<LineOverviewPatternTableRow>[] {
 	return [
 		{
 			id: 'pattern',
@@ -27,7 +27,7 @@ export function createLineOverviewPatternColumns(t: TFunction, formatters: Perfo
 		{
 			align: 'center',
 			id: 'validations',
-			render: pattern => <strong>{pattern.validations === null ? '—' : formatters.compact(pattern.validations)}</strong>,
+			render: pattern => <MetricText as="strong" format="compact" value={pattern.validations} />,
 			sortable: true,
 			sortValue: pattern => pattern.validations,
 			title: t('lineDetail.patternsTable.columns.validations'),
@@ -36,7 +36,7 @@ export function createLineOverviewPatternColumns(t: TFunction, formatters: Perfo
 		{
 			align: 'center',
 			id: 'service',
-			render: pattern => <strong>{pattern.service === null ? '—' : formatters.percentage(pattern.service)}</strong>,
+			render: pattern => <MetricText as="strong" format="percentage" value={pattern.service} />,
 			sortable: true,
 			sortValue: pattern => pattern.service,
 			title: t('lineDetail.patternsTable.columns.service'),
@@ -45,7 +45,7 @@ export function createLineOverviewPatternColumns(t: TFunction, formatters: Perfo
 		{
 			align: 'center',
 			id: 'delays',
-			render: pattern => <strong>{pattern.delays === null ? '—' : formatters.percentage(pattern.delays)}</strong>,
+			render: pattern => <MetricText as="strong" format="percentage" value={pattern.delays} />,
 			sortable: true,
 			sortValue: pattern => pattern.delays,
 			title: t('lineDetail.patternsTable.columns.delays'),
@@ -54,7 +54,7 @@ export function createLineOverviewPatternColumns(t: TFunction, formatters: Perfo
 		{
 			align: 'center',
 			id: 'advances',
-			render: pattern => <strong>{pattern.advances === null ? '—' : formatters.percentage(pattern.advances)}</strong>,
+			render: pattern => <MetricText as="strong" format="percentage" value={pattern.advances} />,
 			sortable: true,
 			sortValue: pattern => pattern.advances,
 			title: t('lineDetail.patternsTable.columns.advances'),
