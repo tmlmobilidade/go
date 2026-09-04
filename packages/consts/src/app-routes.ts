@@ -447,17 +447,10 @@ export const API_ROUTES = Object.freeze({
 		// DATES
 		DATES_LIST: `${getModuleConfig('performance', 'api_url')}/dates`,
 
-		// METRICS
-		METRICS_DEMAND_BY_AGENCY: `${getModuleConfig('performance', 'api_url')}/metrics/demand_by_agency`,
-		METRICS_DEMAND_BY_LINE: `${getModuleConfig('performance', 'api_url')}/metrics/demand_by_line`,
-		METRICS_DEMAND_BY_PATTERN: `${getModuleConfig('performance', 'api_url')}/metrics/demand_by_pattern`,
-		METRICS_DETAIL: (id: string) => `${getModuleConfig('performance', 'api_url')}/metrics/${encodeURIComponent(id)}`,
-
 		// NETWORK
 		NETWORK_AGENCIES: `${getModuleConfig('performance', 'api_url')}/network/agencies`,
 		NETWORK_LINES: `${getModuleConfig('performance', 'api_url')}/network/lines`,
 		NETWORK_LINES_DETAIL: (lineId: string) => `${getModuleConfig('performance', 'api_url')}/network/lines/${encodeURIComponent(lineId)}`,
-		NETWORK_PATTERNS: `${getModuleConfig('performance', 'api_url')}/network/patterns`,
 
 		// PASSENGER-DEMAND
 		PASSENGER_DEMAND_BASELINE: `${getModuleConfig('performance', 'api_url')}/passenger-demand/baseline`,

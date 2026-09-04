@@ -1,6 +1,6 @@
 /* * */
 
-import { parseDateRange, parseIds } from '@/endpoints/metrics/utils/query-params.js';
+import { parseDateRange, parseIds } from '@/endpoints/utils/query-params.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { parsePerformanceNetworkLineId } from '@tmlmobilidade/go-types-performance';
 import { validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
@@ -47,4 +47,3 @@ export function parsePerformanceNetworkLineIdentity(value: string) {
 		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid network line ID');
 	}
 }
-
