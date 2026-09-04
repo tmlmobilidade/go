@@ -4,7 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { cacheDb, type CacheDbKey } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type HubLine, HubLineSchema, type HubStop, HubStopSchema, type PublicFeedback, PublicFeedbackSchema, type PublicFeedbackSubmission, PublicFeedbackSubmissionSchema } from '@tmlmobilidade/go-types-public-info';
+import { type HubLine, HubLineSchema, type HubStop, HubStopSchema, type PublicFeedback, PublicFeedbackSchema, type PublicFeedbackSubmission, PublicFeedbackSubmissionSchema } from '@tmlmobilidade/go-types-hub';
 import { createHash } from 'node:crypto';
 
 /* * */

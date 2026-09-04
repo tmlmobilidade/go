@@ -1,6 +1,6 @@
 /* * */
 
-import { getPublicFeedbackReasonCategoriesByEntity, getPublicFeedbackReasonValuesByCategory, type PublicFeedbackEntityType, type PublicFeedbackReason, type PublicFeedbackReasonCategory } from '@tmlmobilidade/go-types-public-info';
+import { getPublicFeedbackReasonCategoriesByEntity, getPublicFeedbackReasonValuesByCategory, type PublicFeedbackEntityType, type PublicFeedbackReason, type PublicFeedbackReasonCategory } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 

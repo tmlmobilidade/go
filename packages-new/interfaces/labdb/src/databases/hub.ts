@@ -3,7 +3,7 @@
 import { ClickHouseInterfaceTemplate } from '@/interface.template.js';
 import { publicFeedbackTableSchema } from '@/schemas/hub.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
-import { type PublicFeedback } from '@tmlmobilidade/go-types-public-info';
+import { type PublicFeedback } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 

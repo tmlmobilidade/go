@@ -1,7 +1,7 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { type PublicFeedback } from '@tmlmobilidade/go-types-public-info';
+import { type PublicFeedback } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 

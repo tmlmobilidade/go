@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { type PublicFeedbackEntityType, PublicFeedbackEntityTypeSchema } from './entity-type.js';
@@ -66,10 +66,10 @@ function validateReasonsForEntity(feedback: PublicFeedbackReasonSelection, conte
 export const PublicFeedbackSubmissionSchema = PublicFeedbackSubmissionUnionSchema.superRefine(validateReasonsForEntity);
 
 export const PublicFeedbackSchema = z.discriminatedUnion('entity_type', [
-	PublicLineFeedbackSubmissionSchema.extend({ created_at: UnixTimestampSchema }),
+	PublicLineFeedbackSubmissionSchema.extend({ created_at: UnixMillisecondsSchema }),
 	PublicStopFeedbackSubmissionSchema.omit({ agency_id: true }).extend({
 		agency_id: z.null(),
-		created_at: UnixTimestampSchema,
+		created_at: UnixMillisecondsSchema,
 	}),
 ])
 	.superRefine(validateReasonsForEntity);

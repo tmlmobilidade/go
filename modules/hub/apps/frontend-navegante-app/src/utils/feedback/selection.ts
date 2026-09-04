@@ -1,4 +1,4 @@
-import { PUBLIC_FEEDBACK_REASON_SELECTION_LIMIT, type PublicFeedbackReason } from '@tmlmobilidade/go-types-public-info';
+import { PUBLIC_FEEDBACK_REASON_SELECTION_LIMIT, type PublicFeedbackReason } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 

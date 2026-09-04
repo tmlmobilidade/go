@@ -1,4 +1,4 @@
-import { type PublicFeedbackEntityType } from '@tmlmobilidade/go-types-public-info';
+import { type PublicFeedbackEntityType } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 

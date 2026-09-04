@@ -2,7 +2,7 @@
 
 import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
 import { toggleFeedbackReason } from '@/utils/feedback/selection';
-import { type PublicFeedbackReason } from '@tmlmobilidade/go-types-public-info';
+import { type PublicFeedbackReason } from '@tmlmobilidade/go-types-hub';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

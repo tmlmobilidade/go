@@ -1,7 +1,7 @@
 'use client';
 
 import { getFeedbackCooldownEndsAt, getFeedbackCooldownKey, isFeedbackCooldownActive } from '@/utils/feedback/cooldown';
-import { type PublicFeedbackEntityType } from '@tmlmobilidade/go-types-public-info';
+import { type PublicFeedbackEntityType } from '@tmlmobilidade/go-types-hub';
 import { useEffect, useState } from 'react';
 
 /* * */

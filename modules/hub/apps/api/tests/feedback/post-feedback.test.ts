@@ -1,7 +1,6 @@
 import { createStoredFeedback, type PostFeedbackDependencies, isFeedbackEntityValid, postFeedback } from '@/endpoints/v1/feedback/controllers/post-feedback';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type PublicFeedback } from '@tmlmobilidade/go-types-public-info';
-import { PublicFeedbackSubmissionSchema } from '@tmlmobilidade/go-types-public-info';
+import { type PublicFeedback, PublicFeedbackSubmissionSchema } from '@tmlmobilidade/go-types-hub';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 

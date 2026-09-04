@@ -13,7 +13,7 @@ import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type FeedbackSheetView, getFeedbackBackTarget, getFeedbackReasonSelectionTarget, hasFeedbackTarget, shouldShowFeedbackTrigger } from '@/utils/feedback/navigation';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PublicFeedbackReason, type PublicFeedbackSubmission } from '@tmlmobilidade/go-types-public-info';
+import { type PublicFeedbackReason, type PublicFeedbackSubmission } from '@tmlmobilidade/go-types-hub';
 import { AlertMessage } from '@tmlmobilidade/ui';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
