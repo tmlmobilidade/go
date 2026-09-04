@@ -50,7 +50,7 @@ export async function updateStopNameHandler(request: FastifyRequest<{ Body: Stop
 	//
 	// Update the stop name and return the updated stop
 
-	const data = await goDb.infrastructure.stops.updateById(request.params.id, { name: validatedRequest.name });
+	const data = await goDb.infrastructure.stops.updateById(request.params.id, { name: validatedRequest.name, short_name: validatedRequest.short_name, tts_name: validatedRequest.tts_name });
 
 	return sendSuccessApiResponse(reply, data);
 }
