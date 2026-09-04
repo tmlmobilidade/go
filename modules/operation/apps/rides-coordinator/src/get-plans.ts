@@ -2,6 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RidesCoordinatorPlansResponse } from '@tmlmobilidade/go-operation-pckg-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -74,7 +75,9 @@ export async function getPlans(): Promise<RidesCoordinatorPlansResponse> {
 		const markTimer = new Timer();
 
 		const waitingPlan = await goDb.operation.plans.updateById(foundWaitingPlans[0]._id, {
+			'apps.rides_feeder.last_hash': null,
 			'apps.rides_feeder.status': 'processing',
+			'apps.rides_feeder.timestamp': Dates.now('utc').unix_milliseconds,
 		});
 
 		Logger.info({ message: `[${sessionId}] New plan: ${foundWaitingPlans[0]._id} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });

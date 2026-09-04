@@ -3,6 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { unzipFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -169,7 +170,9 @@ export async function normalizePlansTask() {
 		// Update the last hash of the organizer app for this plan.
 
 		await goDb.operation.plans.updateById(planData._id, {
-			'apps.organizer.last_hash': hashValue,
+			'apps.organizer.last_hash': '$hash',
+			'apps.organizer.status': 'complete',
+			'apps.organizer.timestamp': Dates.now('utc').unix_milliseconds,
 		});
 
 		Logger.success(`Updated last hash of organizer app for plan ${planData._id}.`, 1);
