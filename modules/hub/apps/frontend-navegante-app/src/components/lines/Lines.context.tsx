@@ -2,6 +2,8 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubLine, type HubRoute } from '@tmlmobilidade/go-types-hub';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -37,16 +39,20 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<HubLine[], Error>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_LINES });
-	const { data: allRoutesData, isLoading: allRoutesLoading } = useSWR<HubRoute[], Error>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_ROUTES });
+	const { data: allLinesResponse, isLoading: allLinesLoading } = useSWR<ApiResponse<HubLine[]>>(API_ROUTES.hub.NETWORK_LINES, {
+		fetcher: async url => await fetchApiData<HubLine[]>({ options: { credentials: 'omit' }, url }),
+	});
+	const { data: allRoutesResponse, isLoading: allRoutesLoading } = useSWR<ApiResponse<HubRoute[]>>(API_ROUTES.hub.NETWORK_ROUTES, {
+		fetcher: async url => await fetchApiData<HubRoute[]>({ options: { credentials: 'omit' }, url }),
+	});
 
 	const normalizedLinesData = useMemo(() => {
-		return Array.isArray(allLinesData) ? allLinesData : [];
-	}, [allLinesData]);
+		return allLinesResponse?.data ?? [];
+	}, [allLinesResponse?.data]);
 
 	const normalizedRoutesData = useMemo(() => {
-		return Array.isArray(allRoutesData) ? allRoutesData : [];
-	}, [allRoutesData]);
+		return allRoutesResponse?.data ?? [];
+	}, [allRoutesResponse?.data]);
 
 	//
 	// B. Define context value

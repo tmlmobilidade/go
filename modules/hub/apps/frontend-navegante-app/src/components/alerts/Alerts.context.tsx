@@ -3,6 +3,8 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -43,7 +45,10 @@ export function AlertsContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allAlertsData, isLoading: allAlertsLoading } = useSWR<HubAlert[]>({ credentials: 'omit', url: API_ROUTES.hub.ALERTS_LIST });
+	const { data: allAlertsResponse, isLoading: allAlertsLoading } = useSWR<ApiResponse<HubAlert[]>>(API_ROUTES.hub.ALERTS_LIST, {
+		fetcher: async url => await fetchApiData<HubAlert[]>({ options: { credentials: 'omit' }, url }),
+	});
+	const allAlertsData = allAlertsResponse?.data;
 
 	//
 	// B. Transform data

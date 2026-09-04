@@ -5,9 +5,10 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type HubPattern } from '@tmlmobilidade/go-types-hub';
-import { LineBadge, LineName, Section } from '@tmlmobilidade/ui';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { fetchApiData, LineBadge, LineName, Section } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,15 +32,18 @@ export function VehiclesDetailView() {
 	//
 	// B. Fetch data
 
-	const { data: activePatternData } = useSWR<HubPattern[]>(vehiclesDetailContext.data.vehicle?.pattern_id && {
-		credentials: 'omit',
-		url: API_ROUTES.hub.NETWORK_PATTERNS(vehiclesDetailContext.data.vehicle.pattern_id),
+	const activePatternId = vehiclesDetailContext.data.vehicle?.route_id && vehiclesDetailContext.data.vehicle.direction_id !== undefined
+		? `${vehiclesDetailContext.data.vehicle.route_id}_${vehiclesDetailContext.data.vehicle.direction_id}`
+		: null;
+	const { data: activePatternResponse } = useSWR<ApiResponse<HubPattern[]>>(activePatternId ? API_ROUTES.hub.NETWORK_PATTERNS(activePatternId) : null, {
+		fetcher: async url => await fetchApiData<HubPattern[]>({ options: { credentials: 'omit' }, url }),
 	});
+	const activePatternData = activePatternResponse?.data;
 
 	const activeLineData = useMemo(() => {
-		if (!vehiclesDetailContext.data.vehicle?.line_id) return;
-		return linesContext.data.lines.find(line => line._id === vehiclesDetailContext.data.vehicle?.line_id);
-	}, [linesContext.data.lines, vehiclesDetailContext.data.vehicle?.line_id]);
+		if (!vehiclesDetailContext.data.vehicle?.route_id) return;
+		return linesContext.data.lines.find(line => line._id === vehiclesDetailContext.data.vehicle?.route_id);
+	}, [linesContext.data.lines, vehiclesDetailContext.data.vehicle?.route_id]);
 
 	const differenceInSeconds = useMemo(() => {
 		if (!vehiclesDetailContext.data.vehicle?.created_at) return;

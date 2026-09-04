@@ -9,7 +9,8 @@ import { getRoutePlannerItineraryRouteDirections, getRoutePlannerItineraryRouteI
 import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner/planning/navigation';
 import { fetchPatterns } from '@/utils/transit/fetch-patterns';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
+import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-hub';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -54,7 +55,7 @@ export function useRoutePlannerMapData({ activeBottomSheet }: UseRoutePlannerMap
 
 	const { data: patternGroups } = useSWR<HubPattern[][]>(
 		patternIds.length > 0 ? ['route-planner-patterns', ...patternIds] : null,
-		() => fetchPatterns(patternIds),
+		{ fetcher: () => fetchPatterns(patternIds) },
 	);
 
 	const patterns = useMemo(() => {
@@ -76,17 +77,17 @@ export function useRoutePlannerMapData({ activeBottomSheet }: UseRoutePlannerMap
 
 	const { data: shapes } = useSWR<HubShape[]>(
 		shapeIds.length > 0 ? ['route-planner-shapes', ...shapeIds] : null,
-		async () => {
+		{ fetcher: async () => {
 			const shapePayloads = await Promise.all(shapeIds.map(async (shapeId) => {
-				const response = await fetch(API_ROUTES.hub.NETWORK_SHAPES(shapeId));
-				if (!response.ok) return null;
-
-				const payload: HubShape | { data?: HubShape } = await response.json();
-				return 'data' in payload ? payload.data ?? null : payload;
+				const response = await fetchApiData<HubShape>({
+					options: { credentials: 'omit' },
+					url: API_ROUTES.hub.NETWORK_SHAPES(shapeId),
+				});
+				return response.data;
 			}));
 
 			return shapePayloads.filter((shape): shape is HubShape => shape !== null);
-		},
+		} },
 	);
 
 	//

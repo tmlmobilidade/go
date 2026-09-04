@@ -2,6 +2,8 @@
 
 /* * */
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { pushArrayToMap } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
@@ -54,7 +56,11 @@ export const EtaContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// A. Setup variables
-	const { data: etaData, error: etaDataError, isLoading: etaDataLoading } = useSWR<PreparedTripUpdate[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_ETA }, { refreshInterval: 5_000 }); // 5 seconds
+	const { data: etaResponse, error: etaDataError, isLoading: etaDataLoading } = useSWR<ApiResponse<PreparedTripUpdate[]>, Error>(API_ROUTES.hub.REALTIME_ETA, {
+		fetcher: async url => await fetchApiData<PreparedTripUpdate[]>({ options: { credentials: 'omit' }, url }),
+		refreshInterval: 5_000,
+	}); // 5 seconds
+	const etaData = etaResponse?.data;
 
 	//
 	// B. Transform data

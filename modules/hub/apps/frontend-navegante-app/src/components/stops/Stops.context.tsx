@@ -3,6 +3,8 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -42,7 +44,10 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<HubStop[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_STOPS }); // 15 minutes
+	const { data: allStopsResponse, isLoading: allStopsLoading } = useSWR<ApiResponse<HubStop[]>>(API_ROUTES.hub.NETWORK_STOPS, {
+		fetcher: async url => await fetchApiData<HubStop[]>({ options: { credentials: 'omit' }, url }),
+	}); // 15 minutes
+	const allStopsData = allStopsResponse?.data;
 
 	//
 	// B. Transform data

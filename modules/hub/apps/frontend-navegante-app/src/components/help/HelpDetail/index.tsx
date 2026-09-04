@@ -33,7 +33,14 @@ export function HelpDetail() {
 	//
 	// B. Fetch data
 
-	const { data: allFaqsData, isLoading: allFaqsLoading } = useSWR<NaveganteFaq[], Error>({ credentials: 'omit', url: 'https://carrismetropolitana.pt/admin/public-api/faqs-navegante', useProperApiResponse: false }, { refreshInterval: 300_000 });
+	const { data: allFaqsData, isLoading: allFaqsLoading } = useSWR<NaveganteFaq[], Error>('https://carrismetropolitana.pt/admin/public-api/faqs-navegante', {
+		fetcher: async (url: string) => {
+			const response = await fetch(url, { credentials: 'omit' });
+			if (!response.ok) throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+			return await response.json() as NaveganteFaq[];
+		},
+		refreshInterval: 300_000,
+	});
 
 	//
 	// C. Render components

@@ -3,6 +3,8 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -48,7 +50,11 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allVehiclesPositionsData, isLoading: allVehiclesPositionsLoading } = useSWR<HubVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 5_000 }); // 5 seconds
+	const { data: allVehiclesPositionsResponse, isLoading: allVehiclesPositionsLoading } = useSWR<ApiResponse<HubVehiclePosition[]>>(API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS, {
+		fetcher: async url => await fetchApiData<HubVehiclePosition[]>({ options: { credentials: 'omit' }, url }),
+		refreshInterval: 5_000,
+	}); // 5 seconds
+	const allVehiclesPositionsData = allVehiclesPositionsResponse?.data;
 
 	//
 	// B. Transform data
