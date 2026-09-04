@@ -45,13 +45,13 @@ export async function getPlans(): Promise<RidesCoordinatorPlansResponse> {
 
 		const waitingPlans = await goDb.operation.plans.findMany(
 			{
-				'$expr': { $ne: ['$hash', '$apps.controller.last_hash'] },
-				'apps.controller.status': { $in: ['waiting'] },
+				'$expr': { $ne: ['$hash', '$apps.rides_feeder.last_hash'] },
+				'apps.rides_feeder.status': { $in: ['waiting'] },
 			},
 			{
 				limit: 1,
 				projection: { _id: 1 },
-				sort: { 'gtfs_feed_info.feed_start_date': -1 },
+				sort: { active_from: -1 },
 			},
 		);
 
