@@ -33,11 +33,11 @@ export async function main() {
 	//
 	// Run all tasks sequentially
 
-	await publishGtfsRtFeed();
-
 	await publishJsonFeed();
 
-	await publishRssFeed();
+	// await publishGtfsRtFeed();
+
+	// await publishRssFeed();
 
 	//
 	// Log the total time taken for all tasks

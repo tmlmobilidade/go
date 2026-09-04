@@ -1,9 +1,9 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type Alert, type AlertReference, type Ride } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type AlertReference } from '@tmlmobilidade/types';
-import { getPublicTripId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -36,16 +36,21 @@ export async function transformReferenceTypeRidesIntoJson(alertData: Alert): Pro
 		// Find the ride document by its ID
 		// and prepare the AlertReference object
 
-		const foundRide = await goDb.operation.rides.findById(reference.parent_id);
+		const foundRide = await labDb.queryFromString<Ride>(`
+			SELECT * FROM operation.rides
+			WHERE _id = '${reference.parent_id}'
+			ORDER BY updated_at DESC
+			LIMIT 1 BY _id
+		`);
 
-		if (!foundRide) {
+		if (!foundRide.length) {
 			Logger.error({ message: `[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.` });
 			continue;
 		}
 
 		const parsedAlertReference: AlertReference = {
 			child_ids: [],
-			parent_id: getPublicTripId(foundRide.plan_id, alertData.agency_id, foundRide.trip_id),
+			parent_id: getQualifiedTripId(foundRide[0].plan_id, alertData.agency_id, foundRide[0].trip_id),
 		};
 
 		result.push(parsedAlertReference);
