@@ -4,9 +4,8 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PlansListFilters, PlansListFiltersSchema, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
+import { getPlanTemporalStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
-
-import { getPlanTemporalStatus } from '../utils/get-plan-temporal-status.js';
 
 /**
  * Retrieves all plans.
