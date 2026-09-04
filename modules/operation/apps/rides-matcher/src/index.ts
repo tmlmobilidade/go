@@ -1,9 +1,9 @@
 /* * */
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type RidesCoordinatorEventRideOpportunitiesResponse } from '@tmlmobilidade/go-operation-pckg-types';
+import { type RidesCoordinatorRideMatchesResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { getCoordinatorUrl, ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
-import { type EventRideOpportunity } from '@tmlmobilidade/go-types-operation';
+import { type RideMatch } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -16,9 +16,9 @@ import { Timer } from '@tmlmobilidade/timer';
 
 try {
 	await initSentryNode();
-	Logger.startNodeLogs({ app: 'rides-resolver', message: 'Sentry Rides Resolver initialized', module: 'controller', severity: 'info' });
+	Logger.startNodeLogs({ app: 'rides-matcher', message: 'Sentry Rides Matcher initialized', module: 'controller', severity: 'info' });
 } catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Rides Resolver' });
+	Logger.error({ error, message: 'Error initializing Sentry Rides Matcher' });
 }
 
 async function main() {
@@ -30,35 +30,35 @@ async function main() {
 		const globalTimer = new Timer();
 
 		//
-		// Ask the coordinator for a new Plan ID to process
+		// Ask the coordinator for a new batch of ride matches to process
 
 		const fetchCoordinatorTimer = new Timer();
 
-		const eventRideOpportunitiesIds = await fetch(getCoordinatorUrl('event-ride-opportunities'))
+		const rideMatchIds = await fetch(getCoordinatorUrl('ride-matches'))
 			.then(response => response.json())
-			.then(data => data as RidesCoordinatorEventRideOpportunitiesResponse)
+			.then(data => data as RidesCoordinatorRideMatchesResponse)
 			.then(data => data.ids);
 
-		if (!eventRideOpportunitiesIds.length) {
-			console.log(`No event ride opportunities to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})`);
+		if (!rideMatchIds.length) {
+			console.log(`No ride matches to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})`);
 			return;
 		}
 
-		console.log(`Received event ride opportunities IDs from coordinator: ${eventRideOpportunitiesIds.join(', ')} (fetch: ${fetchCoordinatorTimer.get()})`);
+		console.log(`Received ride match IDs from coordinator: ${rideMatchIds.join(', ')} (fetch: ${fetchCoordinatorTimer.get()})`);
 
 		//
-		// Retrieve the event ride opportunities from the database
+		// Retrieve the ride matches from the database
 
 		const query = `
             WITH
-                event_ride_opportunities AS (
+                ride_matches AS (
                     SELECT *
-                    FROM operation.event_ride_opportunities FINAL
+                    FROM operation.ride_matches FINAL
                     WHERE _id IN $1
                 )
             SELECT r._id
             FROM operation.rides AS r FINAL
-            CROSS JOIN event_ride_opportunities AS e
+            CROSS JOIN ride_matches AS e
             WHERE
                 r.agency_id = e.agency_id
                 AND r.operational_date IN e.operational_dates
@@ -69,7 +69,7 @@ async function main() {
             LIMIT 1 BY r._id
         `;
 
-		const matchingRides = await labDb.queryFromString<{ _id: string }>(query, { 1: eventRideOpportunitiesIds });
+		const matchingRides = await labDb.queryFromString<{ _id: string }>(query, { 1: rideMatchIds });
 		const matchingRidesIds = matchingRides.map(ride => ride._id);
 
 		//
@@ -80,21 +80,21 @@ async function main() {
 		}
 
 		//
-		// Mark the Event Ride Opportunities as 'complete' by inserting new ReplacingMergeTree versions.
+		// Mark the Ride Matches as 'complete' by inserting new ReplacingMergeTree versions.
 
-		const eventRideOpportunities = await labDb.queryFromString<EventRideOpportunity>(
+		const rideMatches = await labDb.queryFromString<RideMatch>(
 			`
                 SELECT *
-                FROM operation.event_ride_opportunities FINAL
+                FROM operation.ride_matches FINAL
                 WHERE _id IN $1
             `,
-			{ 1: eventRideOpportunitiesIds },
+			{ 1: rideMatchIds },
 		);
 
-		if (eventRideOpportunities.length) {
-			await labDb.operation.eventRideOpportunities.insert(
+		if (rideMatches.length) {
+			await labDb.operation.rideMatches.insert(
 				'JSONEachRow',
-				eventRideOpportunities.map(item => ({
+				rideMatches.map(item => ({
 					...item,
 					processing_status: 'complete',
 					updated_at: Dates.now('utc').unix_milliseconds,
@@ -104,7 +104,7 @@ async function main() {
 
 		Logger.terminate(`Run took ${globalTimer.get()}`);
 	} catch (error) {
-		Logger.error({ error, message: 'Error resolving rides' });
+		Logger.error({ error, message: 'Error matching rides' });
 	}
 };
 

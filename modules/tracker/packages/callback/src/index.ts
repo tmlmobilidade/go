@@ -1,7 +1,7 @@
 /* * */
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { EventRideOpportunity } from '@tmlmobilidade/go-types-operation';
+import { RideMatch } from '@tmlmobilidade/go-types-operation';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -32,7 +32,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 		// Build processing windows for all Rides
 		// that are affected by the new data.
 
-		const callbackWindowsMap = new Map<string, EventRideOpportunity>();
+		const callbackWindowsMap = new Map<string, RideMatch>();
 
 		for (const item of data) {
 			if (!item.trip_id) continue;
@@ -48,7 +48,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 			const maxOperationalDate = Dates.fromUnixMilliseconds(windowEnd).operational_date_int;
 			const operationalDateRange = OperationalDateIntSchema.array().parse(Array.from({ length: maxOperationalDate - minOperationalDate + 1 }, (_, i) => minOperationalDate + i));
 
-			const window: EventRideOpportunity = {
+			const window: RideMatch = {
 				_id: item._id,
 				agency_id: item.agency_id,
 				operational_dates: operationalDateRange,
@@ -65,13 +65,13 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 			);
 		}
 
-		const callbackWindows: EventRideOpportunity[] = [...callbackWindowsMap.values()];
+		const callbackWindows: RideMatch[] = [...callbackWindowsMap.values()];
 
 		if (!callbackWindows.length) return;
 
 		//
 		// Insert values into ClickHouse.
-		await labDb.operation.eventRideOpportunities.insert('JSONEachRow', callbackWindows);
+		await labDb.operation.rideMatches.insert('JSONEachRow', callbackWindows);
 
 		Logger.info({
 			message: `Queued ${callbackWindows.length} Ride processing windows (${timer.get()})`,

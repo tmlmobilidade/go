@@ -1,7 +1,7 @@
 /* * */
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type RidesCoordinatorEventRideOpportunitiesResponse } from '@tmlmobilidade/go-operation-pckg-types';
+import { type RidesCoordinatorRideMatchesResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -12,7 +12,7 @@ let IS_BUSY = false;
 
 /* * */
 
-export async function getEventRideOpportunities(): Promise<RidesCoordinatorEventRideOpportunitiesResponse> {
+export async function getRideMatches(): Promise<RidesCoordinatorRideMatchesResponse> {
 	//
 
 	const timer = new Timer();
@@ -39,15 +39,15 @@ export async function getEventRideOpportunities(): Promise<RidesCoordinatorEvent
 		IS_BUSY = true;
 
 		//
-		// Find all Ride IDs that are waiting analysis and which started before the current time,
-		// sorted in descending order to prioritize the most recent Rides.
+		// Find all Ride Match IDs that are waiting and which started before the current time,
+		// sorted in descending order to prioritize the most recent matches.
 
 		const fetchTimer = new Timer();
 
-		const latestWaitingEventRideOpportunities = await labDb.operation.eventRideOpportunities.queryFromString(
+		const latestWaitingRideMatches = await labDb.operation.rideMatches.queryFromString(
 			`
 				SELECT *
-				FROM operation.event_ride_opportunities FINAL
+				FROM operation.ride_matches FINAL
 				WHERE processing_status = 'waiting'
 				ORDER BY window_start DESC
 				LIMIT 750
@@ -60,7 +60,7 @@ export async function getEventRideOpportunities(): Promise<RidesCoordinatorEvent
 
 		const fetchTimerResult = fetchTimer.get();
 
-		if (!latestWaitingEventRideOpportunities.length) {
+		if (!latestWaitingRideMatches.length) {
 			Logger.info({ message: `[${sessionId}] No documents waiting` });
 			IS_BUSY = false;
 			return { ids: [] };
@@ -72,22 +72,22 @@ export async function getEventRideOpportunities(): Promise<RidesCoordinatorEvent
 
 		const markTimer = new Timer();
 
-		const latestWaitingEventRideOpportunitiesIds = latestWaitingEventRideOpportunities.map(item => item._id);
+		const latestWaitingRideMatchIds = latestWaitingRideMatches.map(item => item._id);
 
-		await labDb.operation.eventRideOpportunities.insert(
+		await labDb.operation.rideMatches.insert(
 			'JSONEachRow',
-			latestWaitingEventRideOpportunities.map(item => ({
+			latestWaitingRideMatches.map(item => ({
 				...item,
 				processing_status: 'processing',
 				updated_at: Dates.now('utc').unix_milliseconds,
 			})),
 		);
 
-		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingEventRideOpportunitiesIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
+		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingRideMatchIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 
 		IS_BUSY = false;
 
-		return { ids: latestWaitingEventRideOpportunitiesIds };
+		return { ids: latestWaitingRideMatchIds };
 
 		//
 	} catch (error) {

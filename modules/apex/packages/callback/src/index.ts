@@ -2,7 +2,7 @@
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexBankingTap, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { type EventRideOpportunity } from '@tmlmobilidade/go-types-operation';
+import { type RideMatch } from '@tmlmobilidade/go-types-operation';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
@@ -44,7 +44,7 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 		// Build processing windows for all Rides
 		// that are affected by the new data.
 
-		const callbackWindowsMap = new Map<string, EventRideOpportunity>();
+		const callbackWindowsMap = new Map<string, RideMatch>();
 
 		for (const item of data) {
 			if (!item.trip_id) continue;
@@ -60,15 +60,15 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 			const maxOperationalDate = Dates.fromUnixMilliseconds(windowEnd).operational_date_int;
 			const operationalDateRange = OperationalDateIntSchema.array().parse(Array.from({ length: maxOperationalDate - minOperationalDate + 1 }, (_, i) => minOperationalDate + i));
 
-			const window: EventRideOpportunity = {
+			const window: RideMatch = {
 				_id: item._id,
 				agency_id: item.agency_id,
 				operational_dates: operationalDateRange,
+				processing_status: 'waiting',
 				trip_id: item.trip_id,
+				updated_at: Dates.now('utc').unix_milliseconds,
 				window_end: windowEnd,
 				window_start: windowStart,
-				updated_at: Dates.now('utc').unix_milliseconds,
-				processing_status: 'waiting',
 			};
 
 			callbackWindowsMap.set(
@@ -77,13 +77,13 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 			);
 		}
 
-		const callbackWindows: EventRideOpportunity[] = [...callbackWindowsMap.values()];
+		const callbackWindows: RideMatch[] = [...callbackWindowsMap.values()];
 
 		if (!callbackWindows.length) return;
 
 		//
 		// Insert values into ClickHouse.
-		await labDb.operation.eventRideOpportunities.insert('JSONEachRow', callbackWindows);
+		await labDb.operation.rideMatches.insert('JSONEachRow', callbackWindows);
 
 		Logger.info({
 			message: `Queued ${callbackWindows.length} Ride processing windows (${timer.get()})`,
