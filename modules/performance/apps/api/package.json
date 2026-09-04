@@ -18,6 +18,7 @@
 		"test:demand-by-agency": "node --import tsx ./src/endpoints/metrics/tests/get-demand-by-agency.ts",
 		"test:demand-metrics": "node --import tsx --test ./src/endpoints/metrics/tests/*.ts ./src/endpoints/passenger-demand/tests/*.ts",
 		"test:network": "node --import tsx --test ./src/endpoints/network/tests/*.ts",
+		"test:planned-supply": "node --import tsx --test ./src/endpoints/planned-supply/tests/*.ts",
 		"test:ride-performance": "node --import tsx --test ./src/endpoints/ride-performance/tests/*.ts"
 	},
 	"dependencies": {

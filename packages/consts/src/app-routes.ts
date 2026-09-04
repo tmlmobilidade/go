@@ -467,6 +467,13 @@ export const API_ROUTES = Object.freeze({
 		PASSENGER_DEMAND_SERIES: `${getModuleConfig('performance', 'api_url')}/passenger-demand/series`,
 		PASSENGER_DEMAND_SUMMARY: `${getModuleConfig('performance', 'api_url')}/passenger-demand/summary`,
 
+		// PLANNED-SUPPLY
+		PLANNED_SUPPLY_BREAKDOWN: `${getModuleConfig('performance', 'api_url')}/planned-supply/breakdown`,
+		PLANNED_SUPPLY_DAY_PROFILES: `${getModuleConfig('performance', 'api_url')}/planned-supply/day-profiles`,
+		PLANNED_SUPPLY_SERIES: `${getModuleConfig('performance', 'api_url')}/planned-supply/series`,
+		PLANNED_SUPPLY_SUMMARY: `${getModuleConfig('performance', 'api_url')}/planned-supply/summary`,
+		PLANNED_SUPPLY_TIME_PROFILE: `${getModuleConfig('performance', 'api_url')}/planned-supply/time-profile`,
+
 		// RIDE-PERFORMANCE
 		RIDE_PERFORMANCE_BASELINE_COMPARISON: `${getModuleConfig('performance', 'api_url')}/ride-performance/baseline-comparison`,
 		RIDE_PERFORMANCE_BY_LINE: `${getModuleConfig('performance', 'api_url')}/ride-performance/by-line`,
@@ -474,7 +481,6 @@ export const API_ROUTES = Object.freeze({
 		RIDE_PERFORMANCE_COMPARISON: `${getModuleConfig('performance', 'api_url')}/ride-performance/comparison`,
 		RIDE_PERFORMANCE_HEATMAP: `${getModuleConfig('performance', 'api_url')}/ride-performance/heatmap`,
 		RIDE_PERFORMANCE_OVER_TIME: `${getModuleConfig('performance', 'api_url')}/ride-performance/over-time`,
-		RIDE_PERFORMANCE_PLANNED_SUPPLY_LINE_DASHBOARD: `${getModuleConfig('performance', 'api_url')}/ride-performance/planned-supply-line-dashboard`,
 		RIDE_PERFORMANCE_TOTAL: `${getModuleConfig('performance', 'api_url')}/ride-performance/total`,
 	},
 

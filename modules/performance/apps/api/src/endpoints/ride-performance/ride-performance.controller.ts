@@ -1,10 +1,10 @@
 /* * */
 
-import { buildPlannedSupplyLineDashboardInput, buildRidePerformanceBaselineComparisonInput, buildRidePerformanceBreakdownInput, buildRidePerformanceComparisonInput, buildRidePerformanceFilters, buildRidePerformanceOverTimeInput, type PlannedSupplyLineDashboardHttpQuery, type RidePerformanceBaselineComparisonHttpQuery, type RidePerformanceBreakdownHttpQuery, type RidePerformanceComparisonHttpQuery, type RidePerformanceHttpFilters, type RidePerformanceOverTimeHttpQuery } from '@/endpoints/ride-performance/query-params.js';
+import { buildRidePerformanceBaselineComparisonInput, buildRidePerformanceBreakdownInput, buildRidePerformanceComparisonInput, buildRidePerformanceFilters, buildRidePerformanceOverTimeInput, type RidePerformanceBaselineComparisonHttpQuery, type RidePerformanceBreakdownHttpQuery, type RidePerformanceComparisonHttpQuery, type RidePerformanceHttpFilters, type RidePerformanceOverTimeHttpQuery } from '@/endpoints/ride-performance/query-params.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { queryPlannedSupplyLineDashboard, queryRidePerformanceBaselineComparison, queryRidePerformanceByLine, queryRidePerformanceByPattern, queryRidePerformanceComparison, queryRidePerformanceHeatmap, queryRidePerformanceOverTime, queryRidePerformanceTotal } from '@tmlmobilidade/go-performance-pckg-scripts';
-import { type PlannedSupplyLineDashboard, type RidePerformanceBaselineComparison, type RidePerformanceByLineItem, type RidePerformanceByPatternItem, type RidePerformanceComparison, type RidePerformanceHeatmapCell, type RidePerformanceMetrics, type RidePerformanceOverTimePoint } from '@tmlmobilidade/go-types-performance';
+import { queryRidePerformanceBaselineComparison, queryRidePerformanceByLine, queryRidePerformanceByPattern, queryRidePerformanceComparison, queryRidePerformanceHeatmap, queryRidePerformanceOverTime, queryRidePerformanceTotal } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { type RidePerformanceBaselineComparison, type RidePerformanceByLineItem, type RidePerformanceByPatternItem, type RidePerformanceComparison, type RidePerformanceHeatmapCell, type RidePerformanceMetrics, type RidePerformanceOverTimePoint } from '@tmlmobilidade/go-types-performance';
 
 /* * */
 
@@ -85,17 +85,6 @@ export class RidePerformanceController {
 		reply: FastifyReply<RidePerformanceHeatmapCell[]>,
 	) {
 		const data = await queryRidePerformanceHeatmap(buildRidePerformanceFilters(request.query));
-		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
-	}
-
-	/**
-	 * Returns the planned-supply dossier for one line and comparison period.
-	 */
-	static async getPlannedSupplyLineDashboard(
-		request: FastifyRequest<{ Querystring: PlannedSupplyLineDashboardHttpQuery }>,
-		reply: FastifyReply<PlannedSupplyLineDashboard>,
-	) {
-		const data = await queryPlannedSupplyLineDashboard(buildPlannedSupplyLineDashboardInput(request.query));
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

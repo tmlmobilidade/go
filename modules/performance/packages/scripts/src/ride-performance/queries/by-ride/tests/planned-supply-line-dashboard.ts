@@ -1,6 +1,7 @@
 /* * */
 
-import { normalizePlannedSupplyLineDashboard } from '@/ride-performance/queries/by-ride/planned-supply-line-dashboard.js';
+import { buildPlannedSupplyResourceQuery, normalizePlannedSupplyLineDashboard } from '@/ride-performance/queries/by-ride/planned-supply.js';
+import { PlannedSupplyQueryInputSchema } from '@tmlmobilidade/go-types-performance';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
@@ -34,4 +35,16 @@ test('preserves departures after midnight inside the operational day', () => {
 	], []);
 
 	assert.ok(result.heatmap.some(cell => cell.hour === 25));
+});
+
+test('builds one planned-supply period query for reusable resources', () => {
+	const result = buildPlannedSupplyResourceQuery(PlannedSupplyQueryInputSchema.parse({
+		agency_id: '41',
+		end_date: 20260831,
+		line_id: '4701',
+		start_date: 20260801,
+	}));
+
+	assert.match(result.query, /operational_date BETWEEN \$4 AND \$5/);
+	assert.deepEqual(result.params, { 1: 'ride-performance-v1', 2: '41', 3: '4701', 4: 20260801, 5: 20260831 });
 });

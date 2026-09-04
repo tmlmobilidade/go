@@ -18,7 +18,6 @@ const readAuthorization = authorizationMiddleware(
 
 server.register(
 	(instance, opts, next) => {
-		instance.get('/planned-supply-line-dashboard', { preHandler: readAuthorization }, RidePerformanceController.getPlannedSupplyLineDashboard);
 		instance.get('/total', { preHandler: readAuthorization }, RidePerformanceController.getTotal);
 		instance.get('/over-time', { preHandler: readAuthorization }, RidePerformanceController.getOverTime);
 		instance.get('/by-line', { preHandler: readAuthorization }, RidePerformanceController.getByLine);

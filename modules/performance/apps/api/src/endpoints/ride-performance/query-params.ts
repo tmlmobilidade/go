@@ -1,8 +1,8 @@
 /* * */
 
-import { parseDateBoundary, parseDateRange, parseIds } from '@/endpoints/metrics/utils/query-params.js';
+import { parseDateBoundary, parseDateRange, parseIds } from '@/endpoints/utils/query-params.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type PlannedSupplyLineDashboardQueryInput, PlannedSupplyLineDashboardQueryInputSchema, type RidePerformanceBaselineComparisonQueryInput, RidePerformanceBaselineComparisonQueryInputSchema, type RidePerformanceBreakdownQueryInput, RidePerformanceBreakdownQueryInputSchema, type RidePerformanceComparisonQueryInput, RidePerformanceComparisonQueryInputSchema, type RidePerformanceFilters, RidePerformanceFiltersSchema, type RidePerformanceOverTimeQueryInput, RidePerformanceOverTimeQueryInputSchema } from '@tmlmobilidade/go-types-performance';
+import { type RidePerformanceBaselineComparisonQueryInput, RidePerformanceBaselineComparisonQueryInputSchema, type RidePerformanceBreakdownQueryInput, RidePerformanceBreakdownQueryInputSchema, type RidePerformanceComparisonQueryInput, RidePerformanceComparisonQueryInputSchema, type RidePerformanceFilters, RidePerformanceFiltersSchema, type RidePerformanceOverTimeQueryInput, RidePerformanceOverTimeQueryInputSchema } from '@tmlmobilidade/go-types-performance';
 import { type z } from 'zod';
 
 /* * */
@@ -39,8 +39,6 @@ export interface RidePerformanceComparisonHttpQuery extends Omit<RidePerformance
 	current_end_date?: string
 	current_start_date?: string
 }
-
-export type PlannedSupplyLineDashboardHttpQuery = RidePerformanceComparisonHttpQuery;
 
 export interface RidePerformanceBaselineComparisonHttpQuery extends Omit<RidePerformanceHttpFilters, 'end_date' | 'start_date'> {
 	operational_date?: string
@@ -145,25 +143,6 @@ export function buildRidePerformanceComparisonInput(query: RidePerformanceCompar
 			end_date: parseRequiredDate(query.current_end_date, 'current_end_date', 'end'),
 			start_date: parseRequiredDate(query.current_start_date, 'current_start_date', 'start'),
 		},
-	});
-}
-
-export function buildPlannedSupplyLineDashboardInput(query: PlannedSupplyLineDashboardHttpQuery): PlannedSupplyLineDashboardQueryInput {
-	const agencyId = parseSingleValue(query.agency_id, 'agency_id');
-	const lineId = parseSingleValue(query.line_id, 'line_id');
-	if (typeof agencyId !== 'string' || !agencyId) badRequest('agency_id is required');
-	if (typeof lineId !== 'string' || !lineId) badRequest('line_id is required');
-	return parseWithSchema(PlannedSupplyLineDashboardQueryInputSchema, {
-		agency_id: agencyId,
-		comparison_period: {
-			end_date: parseRequiredDate(query.comparison_end_date, 'comparison_end_date', 'end'),
-			start_date: parseRequiredDate(query.comparison_start_date, 'comparison_start_date', 'start'),
-		},
-		current_period: {
-			end_date: parseRequiredDate(query.current_end_date, 'current_end_date', 'end'),
-			start_date: parseRequiredDate(query.current_start_date, 'current_start_date', 'start'),
-		},
-		line_id: lineId,
 	});
 }
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { buildPlannedSupplyLineDashboardInput, buildRidePerformanceBreakdownInput, buildRidePerformanceComparisonInput, buildRidePerformanceOverTimeInput } from '@/endpoints/ride-performance/query-params.js';
+import { buildRidePerformanceBreakdownInput, buildRidePerformanceComparisonInput, buildRidePerformanceOverTimeInput } from '@/endpoints/ride-performance/query-params.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
@@ -44,22 +44,6 @@ test('parses explicit ride-performance comparison periods', () => {
 		comparison_period: { end_date: 20260718, start_date: 20260701 },
 		current_period: { end_date: 20260818, start_date: 20260801 },
 		line_ids: ['4701'],
-	});
-});
-
-test('parses the line planned-supply dashboard scope', () => {
-	assert.deepEqual(buildPlannedSupplyLineDashboardInput({
-		agency_id: 'A2L1N',
-		comparison_end_date: '2026-06-30',
-		comparison_start_date: '2026-06-01',
-		current_end_date: '2026-07-31',
-		current_start_date: '2026-07-01',
-		line_id: '4701',
-	}), {
-		agency_id: 'A2L1N',
-		comparison_period: { end_date: 20260630, start_date: 20260601 },
-		current_period: { end_date: 20260731, start_date: 20260701 },
-		line_id: '4701',
 	});
 });
 

@@ -4,5 +4,5 @@ export * from './by-pattern.js';
 export * from './comparison.js';
 export * from './heatmap.js';
 export * from './over-time.js';
-export * from './planned-supply-line-dashboard.js';
+export * from './planned-supply.js';
 export * from './total.js';
