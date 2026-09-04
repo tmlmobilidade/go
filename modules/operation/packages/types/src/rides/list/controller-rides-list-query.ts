@@ -317,6 +317,7 @@ SELECT
 	shape_id,
 	start_time_observed,
 	start_time_scheduled,
+	timezone,
 	vehicle_ids,
 
 	operational_status,

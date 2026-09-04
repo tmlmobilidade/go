@@ -20,6 +20,7 @@ export const ControllerRidesListItemSchema = RideSchema
 		shape_id: true,
 		start_time_observed: true,
 		start_time_scheduled: true,
+		timezone: true,
 		vehicle_ids: true,
 	})
 	.extend({
