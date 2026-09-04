@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { calculateZipFileHash, unzipFile } from '@tmlmobilidade/go-utils-exec';
+import { unzipFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
@@ -32,7 +32,11 @@ export async function normalizePlansTask() {
 	//
 	// Fetch all plans from the database
 
-	const allPlans = await goDb.operation.plans.findMany({ _id: 'XS3H8' });
+	const allPlans = await goDb.operation.plans.findMany({
+		$expr: {
+			$ne: ['$hash', '$apps.organizer.last_hash'],
+		},
+	});
 
 	Logger.info({ message: `Found ${allPlans.length} plans.` });
 
@@ -124,18 +128,6 @@ export async function normalizePlansTask() {
 		Logger.success(`Zipped new GTFS archive in ${zipTimer.get()}.`);
 
 		//
-		// Hash the contents of the original and the new GTFS archives,
-		// and compare them to see if there are any changes.
-
-		const originalGtfsHash = await calculateZipFileHash(context.paths.original_operation_file_path);
-		const newGtfsHash = await calculateZipFileHash(context.paths.new_operation_file_path);
-
-		if (originalGtfsHash === newGtfsHash) {
-			Logger.info({ message: `[${planData._id}] No changes detected in the GTFS archive.` });
-			continue;
-		}
-
-		//
 		// If there are changes, upload the new GTFS archive to the storage provider.
 
 		const updatedOperationFileBuffer = fs.readFileSync(context.paths.new_operation_file_path);
@@ -172,6 +164,15 @@ export async function normalizePlansTask() {
 		context.paths.removeDir();
 
 		Logger.success(`Cleaned up working directory.`, 1);
+
+		//
+		// Update the last hash of the organizer app for this plan.
+
+		await goDb.operation.plans.updateById(planData._id, {
+			'apps.organizer.last_hash': hashValue,
+		});
+
+		Logger.success(`Updated last hash of organizer app for plan ${planData._id}.`, 1);
 
 		//
 	}
