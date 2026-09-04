@@ -6,6 +6,7 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/go-types-hub';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -182,17 +183,15 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		if (!dataAllPatternsState || !selectedOperationalDate) return;
 		const activePatterns: HubPattern[] = [];
 		for (const pattern of dataAllPatternsState) {
-			let closestDateSoFar: string = null;
-			let patternGroupWithClosestDate: HubPattern = null;
+			let closestDateSoFar: null | OperationalDateInt = null;
+			let patternGroupWithClosestDate: HubPattern | null = null;
 			for (const patternGroup of pattern) {
-				if (!selectedOperationalDate) return;
 				// Find the closest valid date
-				const closestDate = patternGroup.valid_on.reduce((acc, curr) => {
-					if (selectedOperationalDate <= curr && (acc === '' || curr < acc)) return curr;
-					return acc;
-				}, '');
-				if (!closestDateSoFar) closestDateSoFar = closestDate;
-				if (closestDate && closestDate <= closestDateSoFar) {
+				const closestDate = patternGroup.valid_on.reduce<null | OperationalDateInt>((currentClosestDate, currentDate) => {
+					if (selectedOperationalDate <= currentDate && (currentClosestDate === null || currentDate < currentClosestDate)) return currentDate;
+					return currentClosestDate;
+				}, null);
+				if (closestDate !== null && (closestDateSoFar === null || closestDate <= closestDateSoFar)) {
 					patternGroupWithClosestDate = patternGroup;
 					closestDateSoFar = closestDate;
 				}

@@ -27,17 +27,15 @@ export function SelectOperationalDate() {
 	// B. Transform data
 
 	const selectedOperationalDateDisplay = useMemo(() => {
-		if (!selectedOperationalDate) return '';
 		return Dates
-			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
+			.fromOperationalDateInt(selectedOperationalDate, 'Europe/Lisbon')
 			.set({ hour: 15 })
 			.toFormat('d MMM yy');
 	}, [selectedOperationalDate]);
 
 	const selectedOperationalDatePicker = useMemo(() => {
-		if (!selectedOperationalDate) return null;
 		return Dates
-			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
+			.fromOperationalDateInt(selectedOperationalDate, 'Europe/Lisbon')
 			.set({ hour: 15 })
 			.toFormat('yyyy-MM-dd');
 	}, [selectedOperationalDate]);

@@ -8,13 +8,14 @@ import { formatStopLocation } from '@/utils/transit/format-stop-location';
 import { ComboboxItem, ComboboxItemGroup, Flex, Group, Select, SelectProps, Text } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { type HubPattern } from '@tmlmobilidade/go-types-hub';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 export interface Props extends SelectProps {
-	date_filter?: string
+	date_filter?: OperationalDateInt
 	patterns: HubPattern[]
 }
 

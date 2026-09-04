@@ -7,7 +7,9 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { fetchPatterns } from '@/utils/transit/fetch-patterns';
 import { type HubAlert, type HubLine, type HubPattern, type HubStop } from '@tmlmobilidade/go-types-hub';
+import { OperationalTimeSchema, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { fromOperationalTimeAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -159,7 +161,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					// Set a unique and stable ID for this arrival data
 					const uniqueIdValueForArrivalData = `${operationalDate.selectedOperationalDate}-${patternData.version_id}-${tripData.version_id}-${stopTime.stop_id}-${stopTime.stop_sequence}-${stopTime.arrival_time}`;
 					// Convert GTFS time string to Unix Timestamp
-					const scheduledArrivalMs = convertGTFSTimeStringAndOperationalDateToUnixMilliseconds(stopTime.arrival_time, operationalDate.selectedOperationalDate);
+					const scheduledArrivalMs = fromOperationalTimeAndOperationalDateToUnixMilliseconds(OperationalTimeSchema.parse(stopTime.arrival_time), operationalDate.selectedOperationalDate);
 					// Fetch the trip update for this stop time
 					const tripUpdate = etaData?.find(eta => eta.trip_id.substring(eta.trip_id.indexOf(']') + 1) === tripData.trip_ids.find(tripId => tripId.substring(tripId.indexOf(']') + 1) === eta.trip_id.substring(eta.trip_id.indexOf(']') + 1))?.substring(eta.trip_id.indexOf(']') + 1)) ?? undefined;
 					// Extract the arrival time, delay and effective arrival time
@@ -202,7 +204,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		}
 		// Return the timetable data, sorted by scheduled arrival time
 		return timetableDataForSelectedDate.sort((a, b) => a.arrival_effective_ms - b.arrival_effective_ms);
-	}, [validPatternsData, operationalDate.selectedOperationalDate, operationalDate.isTodaySelected, etaContext.data.all, stopId]);
+	}, [validPatternsData, operationalDate.selectedOperationalDate, operationalDate.isTodaySelected, etaContext.actions, stopId]);
 
 	//
 	// D. Handle actions
