@@ -5,7 +5,6 @@ import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.c
 import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';
 import { PlanDetailSectionActiveDates } from '@/components/plans/detail/PlanDetailSectionActiveDates';
 import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetailSectionController';
-import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
 import { PlanDetailSectionApexFile } from '@/components/plans/detail/PlansDetailSectionApexFile';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
@@ -47,15 +46,6 @@ export function PlanDetail() {
 				value={planDetailContext.data.plan.agency_id}
 			>
 				<PlanDetailSectionApexFile />
-			</HasPermission>
-
-			<HasPermission
-				action={PermissionCatalog.all.plans.actions.read_pcgi_legacy}
-				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.plans.scope}
-				value={planDetailContext.data.plan.agency_id}
-			>
-				<PlanDetailSectionPcgiLegacy />
 			</HasPermission>
 
 			<HasPermission
