@@ -143,6 +143,9 @@ export function RideAnalysisMap() {
 	const scheduledShapeFC: FeatureCollection<LineString, MapOverlayScheduledPathLineDataProps> = useMemo(() => {
 		// Setup an empty feature collection
 		const featureCollection = getBaseGeoJsonFeatureCollection<LineString, MapOverlayScheduledPathLineDataProps>();
+		// If no ride data, return the empty feature collection
+		if (!rideData?._id) return featureCollection;
+		// If no hashed shape data, return the empty feature collection
 		// If no hashed shape data, return the empty feature collection
 		if (!hashedShapeData?.shape_polyline) return featureCollection;
 		// Decode the polyline
