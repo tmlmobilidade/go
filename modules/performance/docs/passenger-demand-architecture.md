@@ -139,35 +139,42 @@ historical baseline without creating a special `line-detail` fact.
 
 ## Performance API
 
-The five-minute read primitives are exposed under `/passenger-demand`:
+The public resource interface is exposed under `/passenger-demand`:
 
 | Endpoint | Result |
 | --- | --- |
-| `GET /passenger-demand/total` | One additive total |
-| `GET /passenger-demand/over-time` | Five-minute, hourly, or daily points |
-| `GET /passenger-demand/by-line` | Ranked line totals |
-| `GET /passenger-demand/by-pattern` | Ranked pattern totals |
-| `GET /passenger-demand/by-stop` | Ranked stop totals |
-| `GET /passenger-demand/comparison` | Current and comparison-period totals and difference |
+| `GET /passenger-demand/summary` | One additive total for a filtered period |
+| `GET /passenger-demand/series` | Chronological points plus their additive total |
+| `GET /passenger-demand/breakdown` | Ranked items for `agency`, `category`, `line`, `pattern`, `product`, or `stop` |
+| `GET /passenger-demand/baseline` | Comparable-weekday baseline for an operational date |
+| `GET /passenger-demand/records` | Best line-demand day for each day type |
+| `GET /passenger-demand/productivity` | Demand per operated ride and delivered vehicle-km |
 
-All endpoints require Performance read permission. The first five require
+All endpoints require Performance read permission. Period resources require
 `start_date` and `end_date`. They accept `YYYY`, `YYYY-MM`, or `YYYY-MM-DD` and
 convert them into inclusive operational-date boundaries.
 
 Common optional filters are `agency_id(s)`, `line_id(s)`, `pattern_id(s)`,
 `stop_id(s)`, `data_status(es)`, `exclude_unknown`, and the paired
 `hour_start`/`hour_end`. ID filters accept repeated or comma-separated query
-parameters. Breakdown endpoints also accept `limit`; over-time requires
-`time_grain=5_minutes|hour|day`.
+parameters. Breakdown accepts `dimension` and `limit`; series requires
+`time_grain=5_minutes|hour|day`. Category and product breakdowns use the daily fact and therefore
+reject data-status, hour, and stop filters. Records and productivity are line-scoped and require
+one `agency_id` and `line_id`.
 
-Comparison uses four explicit boundaries:
-`current_start_date`, `current_end_date`, `comparison_start_date`, and
-`comparison_end_date`. This keeps equivalent-day and median-baseline selection
-outside the low-level query primitive.
+Period comparison intentionally has no special endpoint: clients request the same resource for
+the current dates and the comparison dates, then compose the two bounded responses. Baseline is a
+separate resource because comparable-weekday selection is a server-owned policy rather than
+another arbitrary date range.
 
 Successful responses use the standard API envelope. An empty breakdown or
-series is a successful result with `data: []`; a zero total is not treated as a
+series is a successful result with empty `items` or `points`; a zero total is not treated as a
 missing resource.
+
+The former `/total`, `/over-time`, `/by-*`, `/comparison`, `/baseline-comparison`, and
+`/line-dashboard` routes are removed as part of the replacement frontend cutover. This branch
+defines the new Performance API surface and intentionally does not preserve compatibility aliases
+for the previous frontend.
 
 ## Current migration boundary
 

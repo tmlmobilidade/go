@@ -88,3 +88,17 @@ The table would contain one normalized row per ride and definition version, incl
 Recent operational-date partitions would be rebuilt through staging and partition replacement, with refreshes recorded in `performance.metric_refreshes`. Hub would continue to call the same Performance interface and would remain unaware of the storage change.
 
 This alternative improves query cost, reconciliation, backfills and definition versioning. Its costs are duplicated ride-grain storage, a refresh pipeline, possible projection staleness and additional operational ownership. Fixed 60- or 120-minute public buckets should not be the canonical table grain because that would make future interval changes and ride-level reconciliation harder.
+
+## Documentation
+
+### Metric architecture
+
+- [Passenger demand architecture](./docs/passenger-demand-architecture.md)
+- [Ride performance architecture](./docs/ride-performance-architecture.md)
+- [Performance V2 architecture refactor](./docs/performance-v2-architecture-refactor.md)
+
+### Frontend-new
+
+- [Visualization data map](./docs/frontend-new-data-map.md) — ClickHouse → refresh → API → client per widget
+- [Implementation plan](./docs/frontend-new-implementation-plan.md) — line scope context, endpoint consolidation
+- [frontend-new README](./apps/frontend-new/README.md) — app entry point
