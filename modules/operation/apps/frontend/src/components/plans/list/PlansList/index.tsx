@@ -5,8 +5,8 @@ import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { PlansListCellFeedDates } from '@/components/plans/list/table/PlansListCellFeedDates';
 import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agencies-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -49,7 +49,7 @@ export function PlansList() {
 			width: 180,
 		},
 		{
-			accessor: 'gtfs_feed_info',
+			accessor: 'active_dates',
 			render: item => (
 				<PlansListCellFeedDates
 					activeFrom={item.active_from}

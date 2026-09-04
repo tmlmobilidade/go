@@ -15,9 +15,9 @@ export async function setPlanStatus(planId: string, status: ProcessingStatus, ha
 		{ _id: { $eq: planId } },
 		{
 			$set: {
-				'apps.controller.last_hash': hash ?? null,
-				'apps.controller.status': status,
-				'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
+				'apps.rides_feeder.last_hash': hash ?? null,
+				'apps.rides_feeder.status': status,
+				'apps.rides_feeder.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
 			},
 		},
 	);

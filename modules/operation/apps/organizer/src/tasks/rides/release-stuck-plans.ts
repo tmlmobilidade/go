@@ -26,7 +26,7 @@ export async function releaseStuckPlansTask() {
 
 	const fetchTimer = new Timer();
 
-	const processingPlans = await goDb.operation.plans.findMany({ 'apps.controller.status': { $in: ['processing'] } });
+	const processingPlans = await goDb.operation.plans.findMany({ 'apps.rides_feeder.status': { $in: ['processing'] } });
 
 	const stuckPlanIds = processingPlans
 		.filter(plan => plan.apps.rides_feeder.timestamp < Dates.now('Europe/Lisbon').unix_milliseconds - STUCK_PLAN_TIMEOUT_MS)
@@ -53,9 +53,9 @@ export async function releaseStuckPlansTask() {
 		{ _id: { $in: stuckPlanIds } },
 		{
 			$set: {
-				'apps.controller.last_hash': null,
-				'apps.controller.status': 'waiting',
-				'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
+				'apps.rides_feeder.last_hash': null,
+				'apps.rides_feeder.status': 'waiting',
+				'apps.rides_feeder.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
 			},
 		},
 	);
