@@ -1,8 +1,8 @@
 /* * */
 
-import { parseDateBoundary, parseDateRange, parseIds } from '@/endpoints/metrics/utils/query-params.js';
+import { parseDateBoundary, parseDateRange, parseIds } from '@/endpoints/utils/query-params.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type PassengerDemandBaselineComparisonQueryInput, PassengerDemandBaselineComparisonQueryInputSchema, type PassengerDemandBreakdownQueryInput, PassengerDemandBreakdownQueryInputSchema, type PassengerDemandComparisonQueryInput, PassengerDemandComparisonQueryInputSchema, type PassengerDemandLineDashboardQueryInput, PassengerDemandLineDashboardQueryInputSchema, type PassengerDemandOverTimeQueryInput, PassengerDemandOverTimeQueryInputSchema, type PassengerDemandTotalQueryInput, PassengerDemandTotalQueryInputSchema } from '@tmlmobilidade/go-types-performance';
+import { type PassengerDemandBaselineComparisonQueryInput, PassengerDemandBaselineComparisonQueryInputSchema, type PassengerDemandBreakdownDimension, PassengerDemandBreakdownDimensionSchema, type PassengerDemandBreakdownQueryInput, PassengerDemandBreakdownQueryInputSchema, type PassengerDemandOverTimeQueryInput, PassengerDemandOverTimeQueryInputSchema, type PassengerDemandProductivityQueryInput, PassengerDemandProductivityQueryInputSchema, type PassengerDemandRecordsQueryInput, PassengerDemandRecordsQueryInputSchema, type PassengerDemandResourceBreakdownQueryInput, PassengerDemandResourceBreakdownQueryInputSchema, type PassengerDemandTotalQueryInput, PassengerDemandTotalQueryInputSchema } from '@tmlmobilidade/go-types-performance';
 import { type z } from 'zod';
 
 /* * */
@@ -28,6 +28,7 @@ export interface PassengerDemandHttpFilters {
 }
 
 export interface PassengerDemandBreakdownHttpQuery extends PassengerDemandHttpFilters {
+	dimension?: QueryValue
 	limit?: QueryValue
 }
 
@@ -35,27 +36,9 @@ export interface PassengerDemandOverTimeHttpQuery extends PassengerDemandHttpFil
 	time_grain?: QueryValue
 }
 
-export interface PassengerDemandComparisonHttpQuery extends Omit<PassengerDemandHttpFilters, 'end_date' | 'start_date'> {
-	comparison_end_date?: string
-	comparison_start_date?: string
-	current_end_date?: string
-	current_start_date?: string
-}
-
 export interface PassengerDemandBaselineComparisonHttpQuery extends Omit<PassengerDemandHttpFilters, 'end_date' | 'start_date'> {
 	operational_date?: string
 	sample_size?: QueryValue
-}
-
-export interface PassengerDemandLineDashboardHttpQuery {
-	agency_id?: QueryValue
-	comparison_end_date?: string
-	comparison_start_date?: string
-	current_end_date?: string
-	current_start_date?: string
-	line_id?: QueryValue
-	record_end_date?: string
-	record_start_date?: string
 }
 
 /* * */
@@ -181,20 +164,35 @@ export function buildPassengerDemandBreakdownQueryInput(
 	});
 }
 
-export function buildPassengerDemandComparisonQueryInput(
-	query: PassengerDemandComparisonHttpQuery,
-): PassengerDemandComparisonQueryInput {
-	return parseWithSchema(PassengerDemandComparisonQueryInputSchema, {
-		...buildCommonFilters(query),
-		comparison_period: {
-			end_date: parseRequiredDate(query.comparison_end_date, 'comparison_end_date', 'end'),
-			start_date: parseRequiredDate(query.comparison_start_date, 'comparison_start_date', 'start'),
-		},
-		current_period: {
-			end_date: parseRequiredDate(query.current_end_date, 'current_end_date', 'end'),
-			start_date: parseRequiredDate(query.current_start_date, 'current_start_date', 'start'),
-		},
+export function buildPassengerDemandResourceBreakdownQueryInput(
+	query: PassengerDemandBreakdownHttpQuery,
+): PassengerDemandResourceBreakdownQueryInput {
+	const dimension = PassengerDemandBreakdownDimensionSchema.safeParse(parseSingleValue(query.dimension, 'dimension'));
+	if (!dimension.success) badRequest('dimension must be one of agency, category, line, pattern, product, or stop');
+	const unsupportedDailyFilters = [query.data_status, query.data_statuses, query.hour_end, query.hour_start, query.stop_id, query.stop_ids];
+	if (['category', 'product'].includes(dimension.data) && unsupportedDailyFilters.some(value => value !== undefined)) {
+		badRequest(`${dimension.data} breakdown does not support data-status, hour, or stop filters`);
+	}
+	return parseWithSchema(PassengerDemandResourceBreakdownQueryInputSchema, {
+		...buildPassengerDemandBreakdownQueryInput(query),
+		dimension: dimension.data as PassengerDemandBreakdownDimension,
 	});
+}
+
+function buildPassengerDemandScopedPeriodInput(query: PassengerDemandHttpFilters) {
+	const agencyId = parseSingleValue(query.agency_id, 'agency_id');
+	const lineId = parseSingleValue(query.line_id, 'line_id');
+	if (typeof agencyId !== 'string' || !agencyId) badRequest('agency_id is required');
+	if (typeof lineId !== 'string' || !lineId) badRequest('line_id is required');
+	return { agency_id: agencyId, line_id: lineId, ...parseRequiredDateRange(query) };
+}
+
+export function buildPassengerDemandRecordsQueryInput(query: PassengerDemandHttpFilters): PassengerDemandRecordsQueryInput {
+	return parseWithSchema(PassengerDemandRecordsQueryInputSchema, buildPassengerDemandScopedPeriodInput(query));
+}
+
+export function buildPassengerDemandProductivityQueryInput(query: PassengerDemandHttpFilters): PassengerDemandProductivityQueryInput {
+	return parseWithSchema(PassengerDemandProductivityQueryInputSchema, buildPassengerDemandScopedPeriodInput(query));
 }
 
 export function buildPassengerDemandBaselineComparisonQueryInput(
@@ -204,32 +202,6 @@ export function buildPassengerDemandBaselineComparisonQueryInput(
 		...buildCommonFilters(query),
 		operational_date: parseRequiredDate(query.operational_date, 'operational_date', 'start'),
 		sample_size: parseOptionalInteger(query.sample_size, 'sample_size', { max: 8, min: 1 }),
-	});
-}
-
-export function buildPassengerDemandLineDashboardQueryInput(
-	query: PassengerDemandLineDashboardHttpQuery,
-): PassengerDemandLineDashboardQueryInput {
-	const agencyId = parseSingleValue(query.agency_id, 'agency_id');
-	const lineId = parseSingleValue(query.line_id, 'line_id');
-	if (typeof agencyId !== 'string' || !agencyId) badRequest('agency_id is required');
-	if (typeof lineId !== 'string' || !lineId) badRequest('line_id is required');
-
-	return parseWithSchema(PassengerDemandLineDashboardQueryInputSchema, {
-		agency_id: agencyId,
-		comparison_period: {
-			end_date: parseRequiredDate(query.comparison_end_date, 'comparison_end_date', 'end'),
-			start_date: parseRequiredDate(query.comparison_start_date, 'comparison_start_date', 'start'),
-		},
-		current_period: {
-			end_date: parseRequiredDate(query.current_end_date, 'current_end_date', 'end'),
-			start_date: parseRequiredDate(query.current_start_date, 'current_start_date', 'start'),
-		},
-		line_id: lineId,
-		record_period: {
-			end_date: parseRequiredDate(query.record_end_date, 'record_end_date', 'end'),
-			start_date: parseRequiredDate(query.record_start_date, 'record_start_date', 'start'),
-		},
 	});
 }
 

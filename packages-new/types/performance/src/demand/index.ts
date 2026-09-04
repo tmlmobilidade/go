@@ -8,3 +8,4 @@ export * from '@/demand/passenger-demand-by-dimensions-by-day.js';
 export * from '@/demand/passenger-demand-five-minute-query.js';
 export * from '@/demand/passenger-demand-line-dashboard.js';
 export * from '@/demand/passenger-demand-realtime.js';
+export * from '@/demand/passenger-demand-resources.js';

@@ -11,6 +11,7 @@ import { buildFiveMinutePassengerDemandByStopQuery } from '../demand-by-stop.js'
 import { buildFiveMinutePassengerDemandComparisonQuery, calculateFiveMinutePassengerDemandComparison } from '../demand-comparison.js';
 import { buildFiveMinutePassengerDemandOverTimeQuery } from '../demand-over-time.js';
 import { buildFiveMinutePassengerDemandTotalQuery } from '../demand-total.js';
+import { buildPassengerDemandResourceBreakdownQuery } from '../../resources.js';
 
 /* * */
 
@@ -117,6 +118,30 @@ test('builds and calculates an explicit period comparison', () => {
 		difference_pct: 25,
 		difference_qty: 20,
 	});
+});
+
+test('builds allowlisted reusable demand breakdowns with an untruncated total', () => {
+	const pattern = buildPassengerDemandResourceBreakdownQuery({
+		dimension: 'pattern',
+		end_date: DATE_20260807,
+		limit: 8,
+		line_ids: ['4701'],
+		start_date: DATE_20260801,
+	});
+	const product = buildPassengerDemandResourceBreakdownQuery({
+		agency_ids: ['41'],
+		dimension: 'product',
+		end_date: DATE_20260807,
+		start_date: DATE_20260801,
+	});
+
+	assert.equal(pattern.table, 'five-minute');
+	assert.match(pattern.query, /pattern_id AS id/);
+	assert.match(pattern.query, /sum\(sum\(accepted_validations_qty\)\) OVER \(\) AS total_passenger_demand/);
+	assert.match(pattern.query, /LIMIT 8/);
+	assert.equal(product.table, 'day');
+	assert.match(product.query, /product_id AS id/);
+	assert.match(product.query, /passenger_demand_by_dimensions_by_day/);
 });
 
 /* * */

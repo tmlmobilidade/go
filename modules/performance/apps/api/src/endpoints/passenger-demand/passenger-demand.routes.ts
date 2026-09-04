@@ -1,13 +1,11 @@
 /* * */
 
-import { getPassengerDemandBaselineComparison } from '@/endpoints/passenger-demand/controllers/get-demand-baseline-comparison.js';
-import { getPassengerDemandByLine } from '@/endpoints/passenger-demand/controllers/get-demand-by-line.js';
-import { getPassengerDemandByPattern } from '@/endpoints/passenger-demand/controllers/get-demand-by-pattern.js';
-import { getPassengerDemandByStop } from '@/endpoints/passenger-demand/controllers/get-demand-by-stop.js';
-import { getPassengerDemandComparison } from '@/endpoints/passenger-demand/controllers/get-demand-comparison.js';
-import { getPassengerDemandLineDashboard } from '@/endpoints/passenger-demand/controllers/get-demand-line-dashboard.js';
-import { getPassengerDemandOverTime } from '@/endpoints/passenger-demand/controllers/get-demand-over-time.js';
-import { getPassengerDemandTotal } from '@/endpoints/passenger-demand/controllers/get-demand-total.js';
+import { getPassengerDemandBaseline } from '@/endpoints/passenger-demand/controllers/get-demand-baseline.js';
+import { getPassengerDemandBreakdown } from '@/endpoints/passenger-demand/controllers/get-demand-breakdown.js';
+import { getPassengerDemandProductivity } from '@/endpoints/passenger-demand/controllers/get-demand-productivity.js';
+import { getPassengerDemandRecords } from '@/endpoints/passenger-demand/controllers/get-demand-records.js';
+import { getPassengerDemandSeries } from '@/endpoints/passenger-demand/controllers/get-demand-series.js';
+import { getPassengerDemandSummary } from '@/endpoints/passenger-demand/controllers/get-demand-summary.js';
 import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -25,14 +23,12 @@ const readAuthorization = authorizationMiddleware(
 
 server.register(
 	(instance, opts, next) => {
-		instance.get('/total', { preHandler: readAuthorization }, getPassengerDemandTotal);
-		instance.get('/over-time', { preHandler: readAuthorization }, getPassengerDemandOverTime);
-		instance.get('/by-line', { preHandler: readAuthorization }, getPassengerDemandByLine);
-		instance.get('/by-pattern', { preHandler: readAuthorization }, getPassengerDemandByPattern);
-		instance.get('/by-stop', { preHandler: readAuthorization }, getPassengerDemandByStop);
-		instance.get('/comparison', { preHandler: readAuthorization }, getPassengerDemandComparison);
-		instance.get('/baseline-comparison', { preHandler: readAuthorization }, getPassengerDemandBaselineComparison);
-		instance.get('/line-dashboard', { preHandler: readAuthorization }, getPassengerDemandLineDashboard);
+		instance.get('/summary', { preHandler: readAuthorization }, getPassengerDemandSummary);
+		instance.get('/series', { preHandler: readAuthorization }, getPassengerDemandSeries);
+		instance.get('/breakdown', { preHandler: readAuthorization }, getPassengerDemandBreakdown);
+		instance.get('/baseline', { preHandler: readAuthorization }, getPassengerDemandBaseline);
+		instance.get('/records', { preHandler: readAuthorization }, getPassengerDemandRecords);
+		instance.get('/productivity', { preHandler: readAuthorization }, getPassengerDemandProductivity);
 		next();
 	},
 	{ prefix: NAMESPACE },

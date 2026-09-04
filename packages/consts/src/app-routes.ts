@@ -460,14 +460,12 @@ export const API_ROUTES = Object.freeze({
 		NETWORK_PATTERNS: `${getModuleConfig('performance', 'api_url')}/network/patterns`,
 
 		// PASSENGER-DEMAND
-		PASSENGER_DEMAND_BASELINE_COMPARISON: `${getModuleConfig('performance', 'api_url')}/passenger-demand/baseline-comparison`,
-		PASSENGER_DEMAND_BY_LINE: `${getModuleConfig('performance', 'api_url')}/passenger-demand/by-line`,
-		PASSENGER_DEMAND_BY_PATTERN: `${getModuleConfig('performance', 'api_url')}/passenger-demand/by-pattern`,
-		PASSENGER_DEMAND_BY_STOP: `${getModuleConfig('performance', 'api_url')}/passenger-demand/by-stop`,
-		PASSENGER_DEMAND_COMPARISON: `${getModuleConfig('performance', 'api_url')}/passenger-demand/comparison`,
-		PASSENGER_DEMAND_LINE_DASHBOARD: `${getModuleConfig('performance', 'api_url')}/passenger-demand/line-dashboard`,
-		PASSENGER_DEMAND_OVER_TIME: `${getModuleConfig('performance', 'api_url')}/passenger-demand/over-time`,
-		PASSENGER_DEMAND_TOTAL: `${getModuleConfig('performance', 'api_url')}/passenger-demand/total`,
+		PASSENGER_DEMAND_BASELINE: `${getModuleConfig('performance', 'api_url')}/passenger-demand/baseline`,
+		PASSENGER_DEMAND_BREAKDOWN: `${getModuleConfig('performance', 'api_url')}/passenger-demand/breakdown`,
+		PASSENGER_DEMAND_PRODUCTIVITY: `${getModuleConfig('performance', 'api_url')}/passenger-demand/productivity`,
+		PASSENGER_DEMAND_RECORDS: `${getModuleConfig('performance', 'api_url')}/passenger-demand/records`,
+		PASSENGER_DEMAND_SERIES: `${getModuleConfig('performance', 'api_url')}/passenger-demand/series`,
+		PASSENGER_DEMAND_SUMMARY: `${getModuleConfig('performance', 'api_url')}/passenger-demand/summary`,
 
 		// RIDE-PERFORMANCE
 		RIDE_PERFORMANCE_BASELINE_COMPARISON: `${getModuleConfig('performance', 'api_url')}/ride-performance/baseline-comparison`,

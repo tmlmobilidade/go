@@ -1,6 +1,6 @@
 /* * */
 
-import { buildPassengerDemandBreakdownQueryInput, buildPassengerDemandComparisonQueryInput, buildPassengerDemandLineDashboardQueryInput, buildPassengerDemandOverTimeQueryInput, buildPassengerDemandTotalQueryInput } from '@/endpoints/passenger-demand/query-params.js';
+import { buildPassengerDemandBreakdownQueryInput, buildPassengerDemandOverTimeQueryInput, buildPassengerDemandProductivityQueryInput, buildPassengerDemandRecordsQueryInput, buildPassengerDemandResourceBreakdownQueryInput, buildPassengerDemandTotalQueryInput } from '@/endpoints/passenger-demand/query-params.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
@@ -53,37 +53,30 @@ test('parses over-time grain and breakdown limit', () => {
 	});
 });
 
-test('parses a line-dashboard query with current, comparison, and record periods', () => {
-	assert.deepEqual(buildPassengerDemandLineDashboardQueryInput({
-		agency_id: '41',
-		comparison_end_date: '2026-07-31',
-		comparison_start_date: '2026-07-01',
-		current_end_date: '2026-08-31',
-		current_start_date: '2026-08-01',
+test('parses reusable breakdown, records, and productivity queries', () => {
+	assert.deepEqual(buildPassengerDemandResourceBreakdownQueryInput({
+		dimension: 'product',
+		end_date: '2026-08-07',
+		limit: '25',
 		line_id: '4701',
-		record_end_date: '2026-08-31',
-		record_start_date: '2025-09-01',
+		start_date: '2026-08-01',
 	}), {
-		agency_id: '41',
-		comparison_period: { end_date: 20260731, start_date: 20260701 },
-		current_period: { end_date: 20260831, start_date: 20260801 },
-		line_id: '4701',
-		record_period: { end_date: 20260831, start_date: 20250901 },
-	});
-});
-
-test('parses explicit current and comparison periods', () => {
-	assert.deepEqual(buildPassengerDemandComparisonQueryInput({
-		comparison_end_date: '2026-07-31',
-		comparison_start_date: '2026-07-25',
-		current_end_date: '2026-08-07',
-		current_start_date: '2026-08-01',
-		line_id: '4701',
-	}), {
-		comparison_period: { end_date: 20260731, start_date: 20260725 },
-		current_period: { end_date: 20260807, start_date: 20260801 },
+		dimension: 'product',
+		end_date: 20260807,
+		limit: 25,
 		line_ids: ['4701'],
+		start_date: 20260801,
 	});
+
+	const scopedQuery = {
+		agency_id: '41',
+		end_date: '2026-08-07',
+		line_id: '4701',
+		start_date: '2026-08-01',
+	};
+	const expected = { agency_id: '41', end_date: 20260807, line_id: '4701', start_date: 20260801 };
+	assert.deepEqual(buildPassengerDemandRecordsQueryInput(scopedQuery), expected);
+	assert.deepEqual(buildPassengerDemandProductivityQueryInput(scopedQuery), expected);
 });
 
 test('rejects missing and invalid HTTP query parameters as bad requests', () => {
@@ -108,10 +101,17 @@ test('rejects missing and invalid HTTP query parameters as bad requests', () => 
 		time_grain: 'hour',
 	}), isBadRequest);
 
-	assert.throws(() => buildPassengerDemandComparisonQueryInput({
-		comparison_end_date: '2026-07-31',
-		current_end_date: '2026-08-07',
-		current_start_date: '2026-08-01',
+	assert.throws(() => buildPassengerDemandResourceBreakdownQueryInput({
+		dimension: 'dashboard',
+		end_date: '2026-08-07',
+		start_date: '2026-08-01',
+	}), isBadRequest);
+
+	assert.throws(() => buildPassengerDemandResourceBreakdownQueryInput({
+		dimension: 'product',
+		end_date: '2026-08-07',
+		hour_start: '6',
+		start_date: '2026-08-01',
 	}), isBadRequest);
 });
 
