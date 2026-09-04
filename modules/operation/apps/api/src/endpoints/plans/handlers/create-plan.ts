@@ -2,14 +2,11 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type CreatePlanDto, type HashablePlanMetadata, type Plan } from '@tmlmobilidade/go-types-operation';
+import { type CreatePlanDto, type Plan } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { calculateZipFileHash } from '@tmlmobilidade/go-utils-exec';
-import { createHash } from 'node:crypto';
-import fs from 'node:fs';
-import path from 'node:path';
 
 /**
  * Creates a new plan from a validation ID.
@@ -95,52 +92,38 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 	// - copy fails → saga compensates blob/metadata; onRollback deletes the plan
 	// - plan update fails → onSuccess throws → onRollback deletes the plan → saga compensates the copy
 
-	let finalPlanData: null | Plan = null;
-
-	await storageProvider.copy(
-		validationData.file_id,
-		'plans',
-		planResult._id.toString(),
-		{
-			onRollback: async () => {
-				await goDb.operation.plans.deleteById(planResult._id);
-				finalPlanData = null;
-			},
-			onSuccess: async (_ctx, result) => {
-				//
-
-				const operationFileData = await storageProvider.findById(result._id);
-
-				const temporaryDirectory = fs.mkdtempDisposableSync('calculate-zip-file-hash');
-				const downloadResponse = await fetch(operationFileData.url);
-				const downloadArrayBuffer = await downloadResponse.arrayBuffer();
-				const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
-				fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
-
-				const originalGtfsHash = await calculateZipFileHash(downloadFilePath);
-
-				const hashablePlanMetadata: HashablePlanMetadata = {
-					_id: planResult._id,
-					active_from: planResult.active_from,
-					active_until: planResult.active_until,
-					operation_file_hash: originalGtfsHash,
-					operation_file_id: result._id,
-				};
-
-				const hashValue = createHash('sha256')
-					.update(JSON.stringify(hashablePlanMetadata))
-					.digest('hex');
-
-				finalPlanData = await goDb.operation.plans.updateById(
-					planResult._id,
-					{ hash: hashValue, operation_file_id: result._id },
-				);
-			},
+	await storageProvider.copy(validationData.file_id, 'plans', planResult._id, {
+		onRollback: async () => {
+			await goDb.operation.plans.deleteById(planResult._id);
+			throw new Error('Failed to copy validation GTFS into the plan scope');
 		},
-	);
+		onSuccess: async (_ctx, result) => {
+			// Get a new hash for this plan
+			const hashValue = await getPlanHash({
+				activeFrom: planResult.active_from,
+				activeUntil: planResult.active_until,
+				operationFileId: result._id,
+				planId: planResult._id,
+			});
+			// Update the plan in the database
+			await goDb.operation.plans.updateById(planResult._id, {
+				hash: hashValue,
+				operation_file_id: result._id,
+			});
+		},
+	});
 
 	//
 	// Return the success response
 
-	return sendSuccessApiResponse(reply, finalPlanData);
+	const createdPlanData = await goDb.operation.plans.findById(planResult._id);
+
+	if (!createdPlanData) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID "${planResult._id}" not found after creating the plan.`,
+			status_code: '404',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, createdPlanData);
 }

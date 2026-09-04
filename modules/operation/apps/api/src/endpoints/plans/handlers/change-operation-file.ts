@@ -2,13 +2,10 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type HashablePlanMetadata, type Plan } from '@tmlmobilidade/go-types-operation';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { calculateZipFileHash } from '@tmlmobilidade/go-utils-exec';
-import { createHash } from 'node:crypto';
-import fs from 'node:fs';
-import path from 'node:path';
 
 /**
  * Change the GTFS file of a plan by its _id.
@@ -65,84 +62,36 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 	// - plan update fails → onSuccess throws → saga compensates the copy
 	// - old-file delete fails → onSuccess throws → onRollback restores plan → saga compensates the copy
 
-	let updatedPlanData: null | Plan;
-
-	const appsWaitingForReprocessing: Plan['apps'] = {
-		hub_publish_gtfs: {
-			last_hash: null,
-			message: null,
-			metadata_hash: null,
-			status: 'waiting',
-			timestamp: null,
+	await storageProvider.copy(validationData.file_id, 'plans', planData._id, {
+		onSuccess: async (_ctx, result) => {
+			// Get a new hash for this plan
+			const hashValue = await getPlanHash({
+				activeFrom: planData.active_from,
+				activeUntil: planData.active_until,
+				operationFileId: result._id,
+				planId: planData._id,
+			});
+			// Update the plan in the database
+			await goDb.operation.plans.updateById(planData._id, {
+				hash: hashValue,
+				operation_file_id: result._id,
+			});
+			// Delete the old operation file
+			await storageProvider.delete(planData.operation_file_id);
 		},
-		hub_publish_gtfs_cm: {
-			last_hash: null,
-			message: null,
-			metadata_hash: null,
-			status: 'waiting',
-			timestamp: null,
-		},
-		organizer: {
-			last_hash: null,
-			message: null,
-			metadata_hash: null,
-			status: 'waiting',
-			timestamp: null,
-		},
-		rides_feeder: {
-			last_hash: null,
-			message: null,
-			status: 'waiting',
-			timestamp: null,
-		},
-	};
-
-	await storageProvider.copy(
-		validationData.file_id,
-		'plans',
-		planData._id.toString(),
-		{
-			onSuccess: async (_ctx, result) => {
-				//
-
-				const operationFileData = await storageProvider.findById(result._id);
-
-				const temporaryDirectory = fs.mkdtempDisposableSync('calculate-zip-file-hash');
-				const downloadResponse = await fetch(operationFileData.url);
-				const downloadArrayBuffer = await downloadResponse.arrayBuffer();
-				const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
-				fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
-
-				const originalGtfsHash = await calculateZipFileHash(downloadFilePath);
-
-				const hashablePlanMetadata: HashablePlanMetadata = {
-					_id: planData._id,
-					active_from: planData.active_from,
-					active_until: planData.active_until,
-					operation_file_hash: originalGtfsHash,
-					operation_file_id: result._id,
-				};
-
-				const hashValue = createHash('sha256')
-					.update(JSON.stringify(hashablePlanMetadata))
-					.digest('hex');
-
-				updatedPlanData = await goDb.operation.plans.updateById(
-					planData._id,
-					{
-						apps: appsWaitingForReprocessing,
-						hash: hashValue,
-						operation_file_id: result._id,
-					},
-				);
-
-				await storageProvider.delete(planData.operation_file_id);
-			},
-		},
-	);
+	});
 
 	//
 	// Send the updated plan data as the response
+
+	const updatedPlanData = await goDb.operation.plans.findById(planData._id);
+
+	if (!updatedPlanData) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID "${planData._id}" not found after updating the operation file.`,
+			status_code: '404',
+		});
+	}
 
 	return sendSuccessApiResponse(reply, updatedPlanData);
 }

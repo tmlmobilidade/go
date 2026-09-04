@@ -16,9 +16,11 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
