@@ -8,7 +8,7 @@ import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-
 import { getCoordinatorUrl, ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
 import { type Ride, type RideAnalysesRegistry } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { runOnInterval, runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -71,9 +71,9 @@ export async function analyzeRides() {
 		const pendingRides: Ride[] = [];
 
 		//
-		// Process each Ride
+		// Process all Rides in parallel
 
-		for (const [rideIndex, rideData] of ridesBatch.entries()) {
+		const rideResults = await runWithConcurrency(ridesBatch, 25, async (rideData, rideIndex) => {
 			try {
 				//
 
@@ -111,12 +111,6 @@ export async function analyzeRides() {
 				const analyzeRideTime = analyzeRideTimer.get();
 
 				//
-				// Queue the Ride and RideAnalysis rows for a single flush per table.
-
-				pendingAnalyses.push(analyzeRideResults.analyses);
-				pendingRides.push({ ...augmentedRideData, processing_status: 'complete', updated_at: Dates.now('utc').unix_milliseconds });
-
-				//
 				// Log the results
 
 				Logger.info({ message: [
@@ -132,10 +126,20 @@ export async function analyzeRides() {
 					{ c: 12, t: `ERROR: ${analyzeRideResults.metrics.error.length} [${analyzeRideResults.metrics.error.join('|')}]` },
 				] });
 
+				return { analyses: analyzeRideResults.analyses, ride: { ...augmentedRideData, processing_status: 'complete', updated_at: Dates.now('utc').unix_milliseconds } as Ride };
+
 				//
 			} catch (error) {
 				await ridesProvider.updateRideById(rideData._id, { processing_status: 'error' });
 				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
+				return null;
+			}
+		});
+
+		for (const result of rideResults) {
+			if (result.status === 'fulfilled' && result.value) {
+				pendingAnalyses.push(result.value.analyses);
+				pendingRides.push(result.value.ride);
 			}
 		}
 
