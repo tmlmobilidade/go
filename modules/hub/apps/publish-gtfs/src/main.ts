@@ -1,12 +1,12 @@
 /* * */
 
-import { Files } from '@tmlmobilidade/go-utils-files';
 import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
 import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Files } from '@tmlmobilidade/go-utils-files';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -112,7 +112,7 @@ export async function main() {
 	// Mark plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
-		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'waiting', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'waiting', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 	}
 
 	//
@@ -136,12 +136,12 @@ export async function main() {
 			const isEligiblePlan = await evaluatePlan(planData);
 
 			if (!isEligiblePlan) {
-				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'skipped', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;
 			}
 
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'processing', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'processing', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 			//
 			// Get the operation file URL
@@ -242,7 +242,7 @@ export async function main() {
 			//
 			// Mark the plan as complete in the database.
 
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'complete', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'complete', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
@@ -257,7 +257,7 @@ export async function main() {
 
 			//
 		} catch (error) {
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'error', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'error', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 			Logger.error({ error, message: `Error processing plan ${planData._id}` });
 			Logger.divider();
 		}
