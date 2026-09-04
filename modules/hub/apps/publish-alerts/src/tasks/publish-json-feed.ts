@@ -1,9 +1,5 @@
 /* * */
 
-import { transformReferenceTypeAgencyIntoJson } from '@/transform/json/reference-types/agency.js';
-import { transformReferenceTypeLinesIntoJson } from '@/transform/json/reference-types/lines.js';
-import { transformReferenceTypeRidesIntoJson } from '@/transform/json/reference-types/rides.js';
-import { transformReferenceTypeStopsIntoJson } from '@/transform/json/reference-types/stops.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
@@ -12,6 +8,11 @@ import { AlertCauseToGtfsRtCauseMap, AlertEffectToGtfsRtEffectMap, type AlertRef
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { transformReferenceTypeAgencyIntoJson } from '../transform/json/reference-types/agency.js';
+import { transformReferenceTypeLinesIntoJson } from '../transform/json/reference-types/lines.js';
+import { transformReferenceTypeRidesIntoJson } from '../transform/json/reference-types/rides.js';
+import { transformReferenceTypeStopsIntoJson } from '../transform/json/reference-types/stops.js';
 
 /* * */
 

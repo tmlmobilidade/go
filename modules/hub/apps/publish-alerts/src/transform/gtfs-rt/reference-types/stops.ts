@@ -1,9 +1,13 @@
 /* * */
 
+import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type GtfsRtEntitySelector } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type Alert } from '@tmlmobilidade/go-types-operation';
+import { UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
-import { getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -23,10 +27,14 @@ export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): P
 		return;
 	}
 
-	if (!alertData.active_period_end_date) {
-		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_end_date is missing.` });
-		return;
-	}
+	//
+	// Set a default end date to one hour after the current time
+	// to limit the search for rides if active_period_end_date is not provided.
+
+	let activePeriodEndDate: UnixMilliseconds;
+
+	if (!alertData.active_period_end_date) activePeriodEndDate = Dates.now('Europe/Lisbon').plus({ hours: 1 }).unix_milliseconds;
+	else activePeriodEndDate = alertData.active_period_end_date;
 
 	//
 	// For each stop, add its corresponding
@@ -70,30 +78,29 @@ export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): P
 			// for rides matching the line ID,
 			// the agency ID, and the alert start time.
 
-			const foundRouteIds = await goDb.operation.rides.aggregate([
+			const foundRouteIds = await labDb.queryFromString<{ route_id: string }>(
+				`
+					SELECT DISTINCT route_id
+					FROM operation.rides
+					WHERE agency_id = $1
+					AND route_short_name = $2
+					AND start_time_scheduled >= $3
+					AND start_time_scheduled <= $4;
+				`,
 				{
-					$match: {
-						agency_id: alertData.agency_id,
-						line_id: childId,
-						start_time_scheduled: {
-							$gte: alertData.active_period_start_date,
-							$lte: alertData.active_period_end_date,
-						},
-					},
+					1: alertData.agency_id,
+					2: reference.parent_id,
+					3: alertData.active_period_start_date,
+					4: activePeriodEndDate,
 				},
-				{
-					$group: {
-						_id: '$route_id',
-					},
-				},
-			]);
+			);
 
 			if (!foundRouteIds?.length) {
 				Logger.error({ message: `[Alert ID: ${alertData._id}] No rides found for line ID ${childId} and start time ${alertData.active_period_start_date}.` });
 				continue;
 			}
 
-			const uniqueRouteIds = Array.from(new Set(foundRouteIds.map(item => item._id)));
+			const uniqueRouteIds = Array.from(new Set(foundRouteIds.map(item => item.route_id)));
 
 			//
 			// Generate an EntitySelector
@@ -102,7 +109,7 @@ export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): P
 			for (const routeId of uniqueRouteIds) {
 				result.push({
 					agency_id: alertData.agency_id,
-					route_id: getPublicRouteId(alertData.agency_id, routeId),
+					route_id: getQualifiedRouteId(alertData.agency_id, routeId),
 					stop_id: String(foundStopData._id),
 				});
 			}

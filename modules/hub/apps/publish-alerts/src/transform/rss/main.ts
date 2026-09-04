@@ -1,8 +1,8 @@
 /* * */
 
+import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import { type RssRawItem } from '@tmlmobilidade/rss/dist/types/feed.types.js';
-import { type Alert } from '@tmlmobilidade/types';
 
 /**
  * Transforms an Alert object into an RSS Feed Entity object.

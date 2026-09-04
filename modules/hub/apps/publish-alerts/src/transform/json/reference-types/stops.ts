@@ -1,9 +1,9 @@
 /* * */
 
+import { getQualifiedLineId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Alert, type AlertReference } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type AlertReference } from '@tmlmobilidade/types';
-import { getPublicLineId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -44,7 +44,7 @@ export async function transformReferenceTypeStopsIntoJson(alertData: Alert): Pro
 
 		const parsedAlertReference: AlertReference = {
 			child_ids: [],
-			parent_id: String(foundStopData._id),
+			parent_id: foundStopData._id,
 		};
 
 		if (!reference.child_ids?.length) {
@@ -58,7 +58,7 @@ export async function transformReferenceTypeStopsIntoJson(alertData: Alert): Pro
 		// add an AlertReference object for each line ID.
 
 		for (const childId of reference.child_ids) {
-			const publicLineId = getPublicLineId(alertData.agency_id, childId);
+			const publicLineId = getQualifiedLineId(alertData.agency_id, childId);
 			parsedAlertReference.child_ids.push(publicLineId);
 			result.push(parsedAlertReference);
 		}
