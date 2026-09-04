@@ -15,7 +15,7 @@ export async function removeCompleteRideOpportunities() {
 	Logger.spacer(1);
 	Logger.info({ message: `Starting removal of complete Ride Opportunities...` });
 
-	await labDb.operation.eventRideOpportunities.delete('processing_status = "complete"');
+	await labDb.operation.eventRideOpportunities.delete('processing_status = \'complete\'');
 
 	Logger.success(`Removed complete Ride Opportunities in ${timer.get()}.`);
 }
