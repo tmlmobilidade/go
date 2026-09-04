@@ -115,6 +115,7 @@
 		"dev:tracker:rawdb-sync": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-rawdb-sync",
 
 		"helper:dates:seed-periods": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-dates-helpers-seed-periods",
+		"helper:infrastructure:import-schools": "npm run repo:load-env-stg -- tsx --tsconfig ./modules/infrastructure/helpers/import-schools/tsconfig.json ./modules/infrastructure/helpers/import-schools/src/index.ts --",
 		"helper:infrastructure:migrate-stops": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-infrastructure-helpers-migrate-stops",
 		"helper:infrastructure:seed-stops": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-infrastructure-helpers-seed-stops",
 		"helper:offer:backfill-pattern-polylines": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-backfill-pattern-polylines",

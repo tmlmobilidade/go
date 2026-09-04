@@ -186,6 +186,20 @@ const stopActions: PermissionConfig = {
 	title: 'Permissões de Paragens',
 };
 
+const schoolActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver escolas', label: 'Ver', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma escola', label: 'Criar', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma escola', label: 'Editar', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma escola', label: 'Eliminar', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma escola', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'update_publish_status', description: 'Permite alterar o estado de publicação de uma escola', label: 'Alterar Estado de Publicação', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de escolas.',
+	scope: PermissionCatalog.all.schools.scope,
+	title: 'Permissões de Escolas',
+};
+
 const rideActions: PermissionConfig = {
 	actions: [
 		/* Análise */
@@ -357,6 +371,7 @@ export const permissionsConfig = [
 	gtfsValidationActions,
 	roleActions,
 	stopActions,
+	schoolActions,
 	rideActions,
 	performanceActions,
 	vehiclesActions,

@@ -1,0 +1,68 @@
+'use client';
+
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type SchoolsListFilters, type SchoolsListItem } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
+import useSWR from 'swr';
+
+import { useSchoolsListFilterCycle } from './filters/SchoolsListFilterCycle/use-schools-list-filter-cycle';
+import { useSchoolsListFilterGrouping } from './filters/SchoolsListFilterGrouping/use-schools-list-filter-grouping';
+import { useSchoolsListFilterMunicipality } from './filters/SchoolsListFilterMunicipality/use-schools-list-filter-municipality';
+import { useSchoolsListFilterSearch } from './filters/SchoolsListFilterSearch/use-schools-list-filter-search';
+
+/* * */
+
+interface UseSchoolsListDataReturnType {
+	data: SchoolsListItem[]
+	error: null | string
+	isLoading: boolean
+	isValidating: boolean
+	mutate: () => void
+	timestamp: null | UnixMilliseconds
+}
+
+/* * */
+
+export function useSchoolsListData(): UseSchoolsListDataReturnType {
+	//
+
+	//
+	// A. Setup variables
+
+	const filterCycle = useSchoolsListFilterCycle();
+	const filterGrouping = useSchoolsListFilterGrouping();
+	const filterMunicipality = useSchoolsListFilterMunicipality();
+	const filterSearch = useSchoolsListFilterSearch();
+
+	//
+	// B. Transform data
+
+	const query = useMemo<SchoolsListFilters>(() => ({
+		cycles: filterCycle.value,
+		groupings: filterGrouping.value,
+		municipality_ids: filterMunicipality.value,
+		search: filterSearch.value,
+	}), [filterCycle.value, filterGrouping.value, filterMunicipality.value, filterSearch.value]);
+
+	//
+	// C. Fetch data
+
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<SchoolsListItem[]>>([API_ROUTES.infrastructure.SCHOOLS_LIST, query], {
+		fetcher: async ([url, query]) => await fetchApiData<SchoolsListItem[]>({ body: query, method: 'POST', url }),
+		refreshInterval: 10_000, // 10 seconds
+	});
+
+	//
+	// D. Return data
+
+	return useMemo(() => ({
+		data: data?.data,
+		error: error?.error,
+		isLoading,
+		isValidating,
+		mutate,
+		timestamp: data?.timestamp,
+	}), [data, error, isLoading, isValidating, mutate]);
+};

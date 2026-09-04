@@ -2,7 +2,7 @@
 
 import { alertsIndexes, plansIndexes, rideAcceptancesIndexes, vehiclesIndexes } from '@/indexes/index.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { type Alert, AlertSchema, type GtfsValidation, GtfsValidationSchema, type Plan, PlanSchema, type RideAcceptance, RideAcceptanceSchema, type Sam, SamSchema, type Vehicle, vehicleSchema } from '@tmlmobilidade/go-types-operation';
+import { type Alert, AlertSchema, type GtfsValidation, GtfsValidationSchema, type Plan, PlanSchema, type RideAcceptance, RideAcceptanceSchema, type Sam, SamSchema, type School, SchoolSchema, type Vehicle, vehicleSchema } from '@tmlmobilidade/go-types-operation';
 
 import { createGoDbCollection } from '../factory/create-godb-collection.js';
 import { type GoDbCollection } from '../factory/types/godb-collection.type.js';
@@ -17,6 +17,7 @@ export class OperationDatabase {
 	public readonly plans: GoDbCollection<Plan>;
 	public readonly rideAcceptances: GoDbCollection<RideAcceptance>;
 	public readonly sams: GoDbCollection<Sam>;
+	public readonly schools: GoDbCollection<School>;
 	public readonly vehicles: GoDbCollection<Vehicle>;
 
 	private readonly database: Db;
@@ -31,6 +32,7 @@ export class OperationDatabase {
 		this.plans = createGoDbCollection<Plan>({ collectionName: 'plans', database: this.database, indexDescription: plansIndexes, schema: PlanSchema });
 		this.rideAcceptances = createGoDbCollection<RideAcceptance>({ collectionName: 'ride-acceptances', database: this.database, indexDescription: rideAcceptancesIndexes, schema: RideAcceptanceSchema });
 		this.sams = createGoDbCollection<Sam>({ collectionName: 'sams', database: this.database, indexDescription: null, schema: SamSchema });
+		this.schools = createGoDbCollection<School>({ collectionName: 'schools', database: this.database, indexDescription: null, schema: SchoolSchema });
 		this.vehicles = createGoDbCollection<Vehicle>({ collectionName: 'vehicles', database: this.database, indexDescription: vehiclesIndexes, schema: vehicleSchema });
 	}
 }

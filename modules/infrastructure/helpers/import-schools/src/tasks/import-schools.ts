@@ -1,0 +1,96 @@
+/* * */
+
+import { buildStopIdByFlagId, mapSchoolRow, parseSourceStopIds, type SourceSchoolRow } from '@/school-row.js';
+import { Files } from '@tmlmobilidade/files';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+
+/* * */
+
+const SCHOOLS_CSV_URL = 'https://raw.githubusercontent.com/carrismetropolitana/datasets/d56dc6124ef427ba7ca12d9f5b76d43f8d62cac2/facilities/schools/schools.csv';
+
+interface ImportSchoolsOptions {
+	write: boolean
+}
+
+/* * */
+
+async function fetchSchoolRows(): Promise<SourceSchoolRow[]> {
+	const response = await fetch(SCHOOLS_CSV_URL);
+	if (!response.ok) throw new Error(`Failed to fetch schools CSV: ${response.status} ${response.statusText}`);
+
+	return Files.parseCsv<SourceSchoolRow>(await response.text(), {
+		skipEmptyLines: 'greedy',
+		transformHeader: header => header.trim(),
+	});
+}
+
+/* * */
+
+export async function importSchools({ write }: ImportSchoolsOptions): Promise<void> {
+	const [rows, stops] = await Promise.all([
+		fetchSchoolRows(),
+		goDb.infrastructure.stops.findMany({}, {
+			projection: {
+				_id: 1,
+				flags: 1,
+			},
+		}),
+	]);
+
+	const sourceStopIds = new Set(rows.flatMap(row => parseSourceStopIds(row.stops)));
+	const stopIdByFlagId = buildStopIdByFlagId(stops, sourceStopIds);
+	const mappedRows = rows.map((row, index) => mapSchoolRow(row, stopIdByFlagId, index + 2));
+
+	const sourceCodes = new Set<string>();
+	const duplicateSourceCodes = new Set<string>();
+	for (const { data } of mappedRows) {
+		if (sourceCodes.has(data.code)) duplicateSourceCodes.add(data.code);
+		sourceCodes.add(data.code);
+	}
+	if (duplicateSourceCodes.size) {
+		throw new Error(`Duplicate school codes in source: ${Array.from(duplicateSourceCodes).join(', ')}`);
+	}
+
+	const existingSchools = await goDb.operation.schools.findMany(
+		{ code: { $in: Array.from(sourceCodes) } },
+		{ projection: { code: 1 } },
+	);
+	const existingCodes = new Set(existingSchools.map(school => school.code));
+	const newSchools = mappedRows.filter(({ data }) => !existingCodes.has(data.code));
+
+	const unresolvedStopIds = new Set(mappedRows.flatMap(row => row.unresolvedStopIds));
+	const emptyStopRows = mappedRows.filter(row => row.data.stops.length === 0 && row.unresolvedStopIds.length === 0).length;
+	const unassignedRows = mappedRows.filter(row => !row.data.agency_id).length;
+
+	console.log(`Mode: ${write ? 'WRITE' : 'DRY RUN'}`);
+	console.log(`Source schools: ${mappedRows.length}`);
+	console.log(`New schools: ${newSchools.length}`);
+	console.log(`Existing schools skipped: ${mappedRows.length - newSchools.length}`);
+	console.log(`Schools without agency: ${unassignedRows}`);
+	console.log(`Schools without source stops: ${emptyStopRows}`);
+	console.log(`Unresolved stop flag IDs: ${unresolvedStopIds.size}`);
+
+	if (unresolvedStopIds.size) {
+		console.log(`Unresolved stop flag ID sample: ${Array.from(unresolvedStopIds).slice(0, 20).join(', ')}`);
+		console.log('Unresolved stop references will be omitted.');
+	}
+
+	if (!write) {
+		console.log('Dry run complete. Run `npm run helper:infrastructure:import-schools -- --write` to import.');
+		return;
+	}
+
+	if (!newSchools.length) {
+		console.log('No schools to import.');
+		return;
+	}
+
+	// Rows were parsed by CreateSchoolSchema in mapSchoolRow. The shared insertMany
+	// helper adds IDs and timestamps, while this importer supplies the audit actor.
+	const result = await goDb.operation.schools.insertMany(newSchools.map(row => ({
+		...row.data,
+		created_by: 'system',
+		updated_by: 'system',
+	})));
+	console.log(`Imported schools: ${result.length}`);
+}
