@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} version={pjson.version}>
-			<AppProvider notificationsEnabled={false}>
+			<AppProvider>
 				<AppWrapper>
 					<AgenciesContextProvider>
 						<DemoDataContextProvider>
