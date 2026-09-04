@@ -1,6 +1,7 @@
 export * from './Button';
 export * from './CloseButton';
 export * from './CopyButton';
+export * from './CsvExportButton';
 export * from './DeleteButton';
 export * from './DuplicateButton';
 export * from './IconButton';

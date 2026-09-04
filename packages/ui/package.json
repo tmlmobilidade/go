@@ -49,6 +49,7 @@
 		"@tmlmobilidade/utils": "*",
 		"@vis.gl/react-maplibre": "8.1.2",
 		"clsx": "2.1.1",
+		"export-to-csv": "1.5.0",
 		"i18next": "26.3.6",
 		"i18next-icu": "2.4.4",
 		"intl-messageformat": "11.2.13",

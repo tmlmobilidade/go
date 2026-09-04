@@ -1,5 +1,9 @@
 {
 	"buttons": {
+		"CsvExportButton": {
+			"label": "Exportar CSV",
+			"tooltip": "Exportar datos en CSV"
+		},
 		"DuplicateButton": {
 			"label": "Duplicar",
 			"tooltip": "Crear una copia de este documento"
