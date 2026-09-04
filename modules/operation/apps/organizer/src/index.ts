@@ -4,7 +4,7 @@ import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { normalizePlansTask } from './tasks/plans/normalize-plans/task.js';
+import { normalizePlansTask } from './tasks/plans/normalize-plans/normalize-plans.js';
 
 /* * */
 
