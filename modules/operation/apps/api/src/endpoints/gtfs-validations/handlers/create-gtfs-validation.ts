@@ -114,7 +114,7 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 				updated_by: request.me.email,
 			},
 			{
-				onSuccess: async (_ctx, attachment, session) => {
+				onSuccess: async (_, attachment, session) => {
 					const validatedGtfsValidation = GtfsValidationSchema.parse({
 						...validationData,
 						_id: validationId,

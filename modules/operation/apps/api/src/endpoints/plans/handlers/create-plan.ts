@@ -97,7 +97,7 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 			await goDb.operation.plans.deleteById(planResult._id);
 			throw new Error('Failed to copy validation GTFS into the plan scope');
 		},
-		onSuccess: async (_ctx, result) => {
+		onSuccess: async (_, result) => {
 			// Get a new hash for this plan
 			const hashValue = await getPlanHash({
 				activeFrom: planResult.active_from,

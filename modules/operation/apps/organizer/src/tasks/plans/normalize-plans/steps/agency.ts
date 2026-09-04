@@ -1,32 +1,43 @@
 /* * */
 
-import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type GtfsStrictV30Agency, GtfsStrictV30AgencySchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { Logger } from '@tmlmobilidade/logger';
 import { stringify as csvStringify } from 'csv-stringify/sync';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import { type NormalizePlansTaskContext } from '../context/init-context.js';
 
 /**
  * Builds the contents of the agency.txt file from the given Agency document.
  */
-export function getAgencyTxtContents(agencyData: Agency): string {
+export function updateAgencyTxtContents(context: NormalizePlansTaskContext) {
 	//
 
 	//
 	// Build and validate the agency row.
 
 	const agencyRow: GtfsStrictV30Agency = {
-		agency_email: agencyData.open_data?.details?.email,
-		agency_fare_url: agencyData.open_data?.details?.fare_url,
-		agency_id: agencyData._id,
-		agency_lang: agencyData.primary_language,
-		agency_name: agencyData.name,
-		agency_phone: agencyData.open_data?.details?.phone,
-		agency_timezone: agencyData.timezone,
-		agency_url: agencyData.open_data?.details?.website_url,
+		agency_email: context.data.agency.open_data?.details?.email,
+		agency_fare_url: context.data.agency.open_data?.details?.fare_url,
+		agency_id: context.data.agency._id,
+		agency_lang: context.data.agency.primary_language,
+		agency_name: context.data.agency.name,
+		agency_phone: context.data.agency.open_data?.details?.phone,
+		agency_timezone: context.data.agency.timezone,
+		agency_url: context.data.agency.open_data?.details?.website_url,
 	};
 
 	const validatedAgencyRow = GtfsStrictV30AgencySchema.parse(agencyRow);
 
-	return csvStringify([validatedAgencyRow], { header: true });
+	const newAgencyTxtString = csvStringify([validatedAgencyRow], { header: true });
+
+	//
+	// Write the new agency.txt file to the extracted directory
+
+	fs.writeFileSync(path.join(context.paths.extracted_dir_path, 'agency.txt'), newAgencyTxtString);
+
+	Logger.info({ message: `[${context.data.plan._id}] agency.txt file updated.` });
 
 	//
 }

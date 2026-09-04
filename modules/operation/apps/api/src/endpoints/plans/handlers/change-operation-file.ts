@@ -63,7 +63,7 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 	// - old-file delete fails → onSuccess throws → onRollback restores plan → saga compensates the copy
 
 	await storageProvider.copy(validationData.file_id, 'plans', planData._id, {
-		onSuccess: async (_ctx, result) => {
+		onSuccess: async (_, result) => {
 			// Get a new hash for this plan
 			const hashValue = await getPlanHash({
 				activeFrom: planData.active_from,
