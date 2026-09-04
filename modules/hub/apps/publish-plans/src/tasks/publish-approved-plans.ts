@@ -52,7 +52,6 @@ export async function publishApprovedPlans() {
 			const nowIsBeforeEndDate = currentOperationalDate <= planData.active_until;
 			const isActive = nowIsAfterStartDate && nowIsBeforeEndDate;
 			// Parse the plan data
-			// Parse the plan data
 			const hubPlanData: HubPlan = {
 				_id: planData._id,
 				active_from: planData.active_from,
