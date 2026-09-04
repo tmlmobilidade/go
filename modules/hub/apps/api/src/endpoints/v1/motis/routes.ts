@@ -2,7 +2,7 @@
 
 import { getGeocode } from '@/endpoints/v1/motis/controllers/get-geocode.js';
 import { getPlan } from '@/endpoints/v1/motis/controllers/get-plan.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

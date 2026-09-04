@@ -1,7 +1,7 @@
 /* * */
 
 import { postFeedback, postFeedbackRouteOptions } from '@/endpoints/v1/feedback/controllers/post-feedback.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

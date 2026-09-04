@@ -2,7 +2,7 @@
 
 import { fetchMotisJson, type MotisQuery } from '@/endpoints/v1/motis/motis-client.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 
 /**
  * Proxies a route planning request to MOTIS.
