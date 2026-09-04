@@ -72,8 +72,14 @@ export async function syncStorage(config: StorageConfig): Promise<void> {
 	const sourcePath = `${config.remoteName}:${config.source}`;
 	const destPath = `${config.remoteName}:${config.dest}`;
 	const baseCmd = `rclone sync "${sourcePath}" "${destPath}" --config ${rcloneConfigFile}`;
+	const excludeFlags = config.exclude
+		.map((folder) => {
+			const pattern = folder.endsWith('/**') ? folder : `${folder.replace(/\/$/, '')}/**`;
+			return ` --exclude "${pattern}"`;
+		})
+		.join('');
 	const verboseFlags = logger.isVerbose() ? ' --progress --verbose' : '';
-	const syncCmd = `${baseCmd}${verboseFlags}`;
+	const syncCmd = `${baseCmd}${excludeFlags}${verboseFlags}`;
 
 	try {
 		// Use streaming execution to show rclone progress in real-time
