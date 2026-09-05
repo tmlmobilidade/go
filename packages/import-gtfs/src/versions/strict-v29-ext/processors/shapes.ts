@@ -1,11 +1,12 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { type GtfsStrictV29ExtSQLTables } from '@/versions/v29-ext/types.js';
 import { type GtfsStrictV29ExtShapes, GtfsStrictV29ExtShapesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { type ImportGtfsContext } from '../../../shared/init-context.js';
+import { type GtfsStrictV29ExtSQLTables } from '../types.js';
 
 /**
  * Processes the shapes.txt file from the GTFS dataset.

@@ -1,11 +1,12 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { type GtfsStrictV29SQLTables } from '@/versions/v29/types.js';
 import { type GtfsStrictV29Routes, GtfsStrictV29RoutesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { type ImportGtfsContext } from '../../../shared/init-context.js';
+import { type GtfsStrictV29SQLTables } from '../types.js';
 
 /**
  * Processes the routes.txt file from the GTFS dataset.

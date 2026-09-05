@@ -1,14 +1,15 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { type GtfsStrictV29ExtSQLTables } from '@/versions/v29-ext/types.js';
 import { type GtfsStrictV29ExtCalendar, GtfsStrictV29ExtCalendarSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
+
+import { type ImportGtfsContext } from '../../../shared/init-context.js';
+import { type GtfsStrictV29ExtSQLTables } from '../types.js';
 
 /**
  * Processes the calendar.txt file from the GTFS dataset.
