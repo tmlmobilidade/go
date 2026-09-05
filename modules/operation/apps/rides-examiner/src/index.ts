@@ -3,10 +3,9 @@
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
-import { insertAnalysisResults } from '@/utils/insert-analysis-results.js';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { getCoordinatorUrl, ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
-import { type Ride, type RideAnalysesRegistry } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval, runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -65,13 +64,7 @@ export async function analyzeRides() {
 		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
 		//
-		// Buffer Ride and RideAnalysis rows and flush once per table at the end of the batch.
-
-		const pendingAnalyses: RideAnalysesRegistry[] = [];
-		const pendingRides: Ride[] = [];
-
-		//
-		// Process all Rides in parallel
+		// Process each Ride
 
 		const rideResults = await runWithConcurrency(ridesBatch, 25, async (rideData, rideIndex) => {
 			try {
@@ -111,6 +104,34 @@ export async function analyzeRides() {
 				const analyzeRideTime = analyzeRideTimer.get();
 
 				//
+				// Insert new versions of the Ride and RideAnalysis documents in parallel
+
+				const insertTimer = new Timer();
+
+				const insertPromises = [
+					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnFirstStop.insert('JSONEachRow', [analyzeRideResults.analyses.at_least_one_vehicle_event_on_first_stop]),
+					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnLastStop.insert('JSONEachRow', [analyzeRideResults.analyses.at_least_one_vehicle_event_on_last_stop]),
+					labDb.operation.rideAnalysisExpectedApexValidationInterval.insert('JSONEachRow', [analyzeRideResults.analyses.expected_apex_validation_interval]),
+					labDb.operation.rideAnalysisExpectedDriverIdQty.insert('JSONEachRow', [analyzeRideResults.analyses.expected_driver_id_qty]),
+					labDb.operation.rideAnalysisExpectedStartTime.insert('JSONEachRow', [analyzeRideResults.analyses.expected_start_time]),
+					labDb.operation.rideAnalysisExpectedVehicleEventDelay.insert('JSONEachRow', [analyzeRideResults.analyses.expected_vehicle_event_delay]),
+					labDb.operation.rideAnalysisExpectedVehicleEventInterval.insert('JSONEachRow', [analyzeRideResults.analyses.expected_vehicle_event_interval]),
+					labDb.operation.rideAnalysisExpectedVehicleEventQty.insert('JSONEachRow', [analyzeRideResults.analyses.expected_vehicle_event_qty]),
+					labDb.operation.rideAnalysisExpectedVehicleIdQty.insert('JSONEachRow', [analyzeRideResults.analyses.expected_vehicle_id_qty]),
+					labDb.operation.rideAnalysisMatchingApexLocations.insert('JSONEachRow', [analyzeRideResults.analyses.matching_apex_locations]),
+					labDb.operation.rideAnalysisMatchingVehicleIds.insert('JSONEachRow', [analyzeRideResults.analyses.matching_vehicle_ids]),
+					labDb.operation.rideAnalysisSimpleOneApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simple_one_apex_validation]),
+					labDb.operation.rideAnalysisSimpleOneVehicleEventOrApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simple_one_vehicle_event_or_apex_validation]),
+					labDb.operation.rideAnalysisSimpleThreeVehicleEvents.insert('JSONEachRow', [analyzeRideResults.analyses.simple_three_vehicle_events]),
+					labDb.operation.rideAnalysisTransactionSequentiality.insert('JSONEachRow', [analyzeRideResults.analyses.transaction_sequentiality]),
+					labDb.operation.rides.insert('JSONEachRow', [{ ...augmentedRideData, processing_status: 'complete', updated_at: Dates.now('utc').unix_milliseconds }]),
+				];
+
+				await Promise.all(insertPromises);
+
+				const insertTime = insertTimer.get();
+
+				//
 				// Log the results
 
 				Logger.info({ message: [
@@ -118,6 +139,7 @@ export async function analyzeRides() {
 					' FET: ', { c: 5, t: fetchAnalysisDataTime },
 					' AUG: ', { c: 5, t: augmentRideTime },
 					' ANA: ', { c: 5, t: analyzeRideTime },
+					' INS: ', { c: 5, t: insertTime },
 					' TOT: ', { c: 7, t: rideAnalysisTimer.get() },
 					{ c: 50, t: rideData._id },
 					{ c: 10, t: `SKIP: ${analyzeRideResults.metrics.skip.length} ` },
@@ -132,23 +154,8 @@ export async function analyzeRides() {
 			} catch (error) {
 				await ridesProvider.updateRideById(rideData._id, { processing_status: 'error' });
 				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
-				return null;
-			}
-		});
-
-		for (const result of rideResults) {
-			if (result.status === 'fulfilled' && result.value) {
-				pendingAnalyses.push(result.value.analyses);
-				pendingRides.push(result.value.ride);
 			}
 		}
-
-		//
-		// Flush one insert per table for the whole batch.
-
-		const insertTimer = new Timer();
-		await insertAnalysisResults(pendingAnalyses, pendingRides);
-		Logger.info({ message: `Inserted ${pendingRides.length} rides in ${insertTimer.get()}.`, spacesAfterOrBefore: 1 });
 
 		//
 
