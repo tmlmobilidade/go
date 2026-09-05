@@ -1,6 +1,6 @@
 /* * */
 
-import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
+import { type AlertCause, type AlertEffect } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
