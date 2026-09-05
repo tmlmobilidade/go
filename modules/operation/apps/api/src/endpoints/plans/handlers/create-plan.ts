@@ -47,9 +47,7 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 		apex_file_id: null,
 		apps: {
 			hub_publish_gtfs: {
-				last_hash: null,
 				message: null,
-				metadata_hash: null,
 				status: 'waiting',
 				timestamp: null,
 			},
