@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiVehiclePosition, HubV1ApiVehiclePositionSchema } from '@tmlmobilidade/go-types-hub';
 import { toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -8,18 +8,18 @@ import { Logger } from '@tmlmobilidade/logger';
  * Validates vehicle positions already public-ID-formatted by SQL.
  * - Skips events without a `trip_id`.
  * - Adds `calendar_date` from `operational_date`.
- * - Validates with `HubVehiclePositionSchema`; logs and skips failures.
+ * - Validates with `HubV1ApiVehiclePositionSchema`; logs and skips failures.
  */
-export function parseVehiclePositions(vehiclePositions: HubVehiclePosition[]): HubVehiclePosition[] {
+export function parseVehiclePositions(vehiclePositions: HubV1ApiVehiclePosition[]): HubV1ApiVehiclePosition[] {
 	//
 
-	const parsedPositions: HubVehiclePosition[] = [];
+	const parsedPositions: HubV1ApiVehiclePosition[] = [];
 
 	for (const position of vehiclePositions) {
 		try {
 			if (!position.trip_id) continue;
 
-			const parsed = HubVehiclePositionSchema.safeParse({
+			const parsed = HubV1ApiVehiclePositionSchema.safeParse({
 				...position,
 				calendar_date: toCalendarDate(position.operational_date),
 			});

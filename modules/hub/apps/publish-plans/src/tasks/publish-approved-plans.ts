@@ -66,10 +66,10 @@ export async function publishApprovedPlans() {
 				operation_file_url: operationFile.url,
 				updated_at: planData.updated_at,
 			};
-			const validatedHubPlanData = HubV1ApiPlanSchema.safeParse(hubPlanData);
-			if (!validatedHubPlanData.success) throw new Error(`Error parsing plan ${planData._id}: ${validatedHubPlanData.error.message}`);
+			const validatedHubV1ApiPlanData = HubV1ApiPlanSchema.safeParse(hubPlanData);
+			if (!validatedHubV1ApiPlanData.success) throw new Error(`Error parsing plan ${planData._id}: ${validatedHubV1ApiPlanData.error.message}`);
 			// Add the plan to the list
-			approvedPlans.push(validatedHubPlanData.data);
+			approvedPlans.push(validatedHubV1ApiPlanData.data);
 		} catch (error) {
 			Logger.error({ message: `Error parsing plan ${planData._id}: ${(error as Error).message}` });
 		}

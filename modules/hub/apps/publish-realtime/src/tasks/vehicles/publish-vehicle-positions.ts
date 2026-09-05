@@ -2,7 +2,7 @@
 
 import { TTL_REALTIME } from '@/config.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubPlan } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPlan } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -25,7 +25,7 @@ export async function publishVehiclesPositions() {
 	const approvedPlans = await cacheDb.get('hub:v1:plans:approved:json');
 	if (!approvedPlans) throw new Error('No approved plans found in API Cache');
 
-	const approvedPlansData: HubPlan[] = JSON.parse(approvedPlans);
+	const approvedPlansData: HubV1ApiPlan[] = JSON.parse(approvedPlans);
 	const activePlansData = approvedPlansData.filter(plan => plan.is_active);
 	if (!activePlansData.length) throw new Error('No active plans found in API Cache');
 
