@@ -8,9 +8,15 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 /* * */
 
 export async function setPlanStatus(planId: string, appName: keyof Plan['apps'], status: ProcessingStatus, hash?: string) {
-	await goDb.operation.plans.updateById(planId, {
-		[`apps.${appName}.last_hash`]: hash ?? null,
-		[`apps.${appName}.status`]: status,
-		[`apps.${appName}.timestamp`]: Dates.now('utc').unix_milliseconds,
+	//
+
+	const plansCollection = await goDb.operation.plans.getCollection();
+
+	await plansCollection.updateOne({ _id: planId }, {
+		$set: {
+			[`apps.${appName}.last_hash`]: hash || null,
+			[`apps.${appName}.status`]: status,
+			[`apps.${appName}.timestamp`]: Dates.now('utc').unix_milliseconds,
+		},
 	});
 };
