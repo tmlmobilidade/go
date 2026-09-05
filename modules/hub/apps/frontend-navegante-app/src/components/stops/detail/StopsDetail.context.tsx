@@ -204,7 +204,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		}
 		// Return the timetable data, sorted by scheduled arrival time
 		return timetableDataForSelectedDate.sort((a, b) => a.arrival_effective_ms - b.arrival_effective_ms);
-	}, [validPatternsData, operationalDate.selectedOperationalDate, operationalDate.isTodaySelected, etaContext.data.all, stopId]);
+	}, [validPatternsData, operationalDate.selectedOperationalDate, operationalDate.isTodaySelected, etaContext.actions, stopId]);
 
 	//
 	// D. Handle actions
