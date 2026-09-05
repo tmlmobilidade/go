@@ -42,10 +42,12 @@ async function main() {
 			return;
 		}
 
-		console.log(`Received ride match IDs from coordinator: ${rideMatchIds.join(', ')} (fetch: ${fetchCoordinatorTimer.get()})`);
+		console.log(`Received #${rideMatchIds.length} Ride Match IDs from coordinator (fetch: ${fetchCoordinatorTimer.get()})`);
 
 		//
 		// Retrieve the ride matches from the database
+
+		const fetchMatchingRidesTimer = new Timer();
 
 		const query = `
 			WITH
@@ -72,12 +74,18 @@ async function main() {
 		const matchingRides = await labDb.queryFromString<{ _id: string }>(query, { 1: rideMatchIds });
 		const matchingRidesIds = matchingRides.map(ride => ride._id);
 
+		console.log(`Found #${matchingRidesIds.length} matching rides (fetch: ${fetchMatchingRidesTimer.get()})`);
+
 		//
 		// Update the Rides as 'waiting'
+
+		const updateRidesTimer = new Timer();
 
 		if (matchingRidesIds.length) {
 			await ridesProvider.updateRides({ _id: matchingRidesIds }, { processing_status: 'waiting' });
 		}
+
+		console.log(`Updated #${matchingRidesIds.length} rides to 'waiting' (update: ${updateRidesTimer.get()})`);
 
 		//
 		// Delete the Ride Matches
@@ -94,4 +102,4 @@ async function main() {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '10s' });
+await runOnInterval(main, { intervalMs: '1s' });
