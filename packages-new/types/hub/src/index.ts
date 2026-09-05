@@ -1,2 +1,1 @@
-export * from './api/index.js';
-export * from './gtfs/index.js';
+export * from './v1/index.js';
