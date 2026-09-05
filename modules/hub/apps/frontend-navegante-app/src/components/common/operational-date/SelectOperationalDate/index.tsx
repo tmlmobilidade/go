@@ -29,7 +29,7 @@ export function SelectOperationalDate() {
 	const selectedOperationalDateDisplay = useMemo(() => {
 		if (!selectedOperationalDate) return '';
 		return Dates
-			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
+			.fromOperationalDateInt(selectedOperationalDate, 'local')
 			.set({ hour: 15 })
 			.toFormat('d MMM yy');
 	}, [selectedOperationalDate]);
@@ -37,7 +37,7 @@ export function SelectOperationalDate() {
 	const selectedOperationalDatePicker = useMemo(() => {
 		if (!selectedOperationalDate) return null;
 		return Dates
-			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
+			.fromOperationalDateInt(selectedOperationalDate, 'local')
 			.set({ hour: 15 })
 			.toFormat('yyyy-MM-dd');
 	}, [selectedOperationalDate]);

@@ -48,11 +48,11 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 	});
 
 	const normalizedLinesData = useMemo(() => {
-		return Array.isArray(allLinesData) ? allLinesData : [];
+		return Array.isArray(allLinesData?.data) ? allLinesData.data : [];
 	}, [allLinesData]);
 
 	const normalizedRoutesData = useMemo(() => {
-		return Array.isArray(allRoutesData) ? allRoutesData : [];
+		return Array.isArray(allRoutesData?.data) ? allRoutesData.data : [];
 	}, [allRoutesData]);
 
 	//

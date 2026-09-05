@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubV1ApiPattern, type HubRoute, type Timetable } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPattern, type HubV1ApiRoute, type Timetable } from '@tmlmobilidade/go-types-hub';
 
 /**
  * This function creates a timetable for a set of patterns of a line, for a specific stop and date.
@@ -15,7 +15,7 @@ import { type HubV1ApiPattern, type HubRoute, type Timetable } from '@tmlmobilid
  * @returns The timetable for the given patterns and stop.
  */
 
-export function createTimetable(primaryPatternGroup: HubV1ApiPattern, secondaryPatternGroups: HubV1ApiPattern[], mentionedRoutes: HubRoute[], stopId: string, stopSequence: number, operationalDate: string): Timetable {
+export function createTimetable(primaryPatternGroup: HubV1ApiPattern, secondaryPatternGroups: HubV1ApiPattern[], mentionedRoutes: HubV1ApiRoute[], stopId: string, stopSequence: number, operationalDate: string): Timetable {
 //
 
 	// 1.

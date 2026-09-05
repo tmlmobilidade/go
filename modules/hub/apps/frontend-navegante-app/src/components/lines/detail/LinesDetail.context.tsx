@@ -5,7 +5,8 @@ import { useOperationalDate } from '@/components/common/operational-date/use-ope
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiPatternWaypoint, type HubV1ApiRoute } from '@tmlmobilidade/go-types-hub';
+import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -19,12 +20,11 @@ interface LinesDetailContextState {
 	data: {
 		active_alerts: HubV1ApiAlert[] | undefined
 		active_pattern: HubV1ApiPattern | null
-		active_shape: HubShape | null
-		active_waypoint: HubWaypoint | null
+		active_waypoint: HubV1ApiPatternWaypoint | null
 		all_patterns: HubV1ApiPattern[][] | null
 		highlighted_trip_ids: null | string[]
 		line: HubV1ApiLine | undefined
-		routes: HubRoute[]
+		routes: HubV1ApiRoute[]
 		valid_patterns: HubV1ApiPattern[] | undefined
 	}
 	filters: {
@@ -68,7 +68,6 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	const [dataValidPatternsState, setDataValidPatternsState] = useState<LinesDetailContextState['data']['valid_patterns']>();
 	const [dataActiveAlertsState, setDataActiveAlertsState] = useState<LinesDetailContextState['data']['active_alerts']>();
 	const [dataActivePatternState, setDataActivePatternState] = useState<LinesDetailContextState['data']['active_pattern']>(null);
-	const [dataActiveShapeState, setDataActiveShapeState] = useState<LinesDetailContextState['data']['active_shape']>(null);
 	const [dataActiveWaypointState, setDataActiveWaypointState] = useState<LinesDetailContextState['data']['active_waypoint']>(null);
 	const [dataHighlightedTripIdsState, setDataHighlightedTripIdsState] = useState<LinesDetailContextState['data']['highlighted_trip_ids']>([]);
 	const [filterActivePatternIdState, setFilterActivePatternIdState] = useState<null | string>(null);
@@ -117,35 +116,6 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		})();
 	}, [selectedLineData, stopsContext.actions, stopsContext.data.stops]);
 
-	/**
-	 * TASK: Fetch shape data for the active pattern.
-	 * WHEN: The `dataActivePatternState` changes.
-	 */
-	useEffect(() => {
-		if (!dataActivePatternState) return;
-		(async () => {
-			try {
-				const shapeUrl = API_ROUTES.hub.NETWORK_SHAPES(dataActivePatternState.shape_id);
-				const shapeData = await fetch(shapeUrl).then((response) => {
-					if (!response.ok) console.log({ message: `Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}` });
-					else return response.json();
-				}).then(shapePayload => shapePayload?.data ?? shapePayload);
-				if (shapeData) {
-					shapeData.geojson = {
-						...shapeData.geojson,
-						properties: {
-							color: dataActivePatternState.color,
-							text_color: dataActivePatternState.text_color,
-						},
-					};
-				}
-				setDataActiveShapeState(shapeData);
-			} catch (error) {
-				console.error({ error, message: 'Error fetching shape data:' });
-			}
-		})();
-	}, [dataActivePatternState]);
-
 	//
 	// C. Transform data
 
@@ -153,15 +123,15 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		if (!dataAllPatternsState || !selectedOperationalDate) return;
 		const activePatterns: HubV1ApiPattern[] = [];
 		for (const pattern of dataAllPatternsState) {
-			let closestDateSoFar: string = null;
+			let closestDateSoFar: OperationalDateInt = null;
 			let patternGroupWithClosestDate: HubV1ApiPattern = null;
 			for (const patternGroup of pattern) {
 				if (!selectedOperationalDate) return;
 				// Find the closest valid date
 				const closestDate = patternGroup.valid_on.reduce((acc, curr) => {
-					if (selectedOperationalDate <= curr && (acc === '' || curr < acc)) return curr;
+					if (selectedOperationalDate <= curr && (acc === null || curr < acc)) return curr;
 					return acc;
-				}, '');
+				}, null);
 				if (!closestDateSoFar) closestDateSoFar = closestDate;
 				if (closestDate && closestDate <= closestDateSoFar) {
 					patternGroupWithClosestDate = patternGroup;
@@ -344,7 +314,6 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		data: {
 			active_alerts: dataActiveAlertsState,
 			active_pattern: dataActivePatternState,
-			active_shape: dataActiveShapeState,
 			active_waypoint: dataActiveWaypointState,
 			all_patterns: dataAllPatternsState,
 			highlighted_trip_ids: dataHighlightedTripIdsState,

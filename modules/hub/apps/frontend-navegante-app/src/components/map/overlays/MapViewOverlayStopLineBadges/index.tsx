@@ -74,7 +74,7 @@ export function MapViewOverlayStopLineBadges({ limit = 4, visible }: MapViewOver
 				const lineData = linesContext.data.lines.find(line => line._id === lineId);
 				if (!lineData) return;
 				badges.push({
-					_id: `${String(stopFeature.properties._id)}-${lineId}`,
+					_id: `${stopFeature.properties._id}-${lineId}`,
 					color: lineData.color,
 					short_name: lineData.short_name,
 					text_color: lineData.text_color,
@@ -84,7 +84,7 @@ export function MapViewOverlayStopLineBadges({ limit = 4, visible }: MapViewOver
 				badges: badges.sort((a, b) => a.short_name.localeCompare(b.short_name, undefined, { numeric: true })),
 				latitude: properties.latitude,
 				longitude: properties.longitude,
-				stop_id: String(properties._id),
+				stop_id: properties._id,
 			});
 		});
 		setVisibleBadges(badgeGroups);
