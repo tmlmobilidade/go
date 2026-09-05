@@ -82,8 +82,6 @@ export async function rewriteShapeIdsToPatternIds(context: NormalizePlansTaskCon
 			// Get the current shape_id and pattern_id values
 			const currentShapeId = data.shape_id;
 			const currentPatternId = data.pattern_id;
-			// Check if the values are different
-			if (currentShapeId === currentPatternId) throw new Error(`Shape ID "${currentShapeId}" and pattern ID "${currentPatternId}" are already the same`);
 			// Update the map and write the row to the output file
 			shapeIdToPatternIdMap.set(currentShapeId, currentPatternId);
 			tripsWriter.write({ ...data, shape_id: currentPatternId });
