@@ -50,7 +50,7 @@ export async function getRideMatches(): Promise<RidesCoordinatorRideMatchesRespo
 				FROM operation.ride_matches FINAL
 				WHERE processing_status = 'waiting'
 				ORDER BY window_start DESC
-				LIMIT 750
+				LIMIT 100
 			`,
 		);
 
