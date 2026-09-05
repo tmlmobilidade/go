@@ -136,11 +136,11 @@ export async function analyzeRides() {
 
 				Logger.info({ message: [
 					'[', { a: 'right', c: 7, t: `${ridesBatch.length - rideIndex}/${ridesBatch.length}` }, ']',
-					' FET: ', { c: 5, t: fetchAnalysisDataTime },
-					' AUG: ', { c: 5, t: augmentRideTime },
-					' ANA: ', { c: 5, t: analyzeRideTime },
-					' INS: ', { c: 5, t: insertTime },
-					' TOT: ', { c: 7, t: rideAnalysisTimer.get() },
+					' FETCH: ', { c: 10, t: fetchAnalysisDataTime },
+					' AUGMENT: ', { c: 10, t: augmentRideTime },
+					' ANALYZE: ', { c: 10, t: analyzeRideTime },
+					' INSERT: ', { c: 10, t: insertTime },
+					' TOTAL: ', { c: 10, t: rideAnalysisTimer.get() },
 					{ c: 50, t: rideData._id },
 					{ c: 10, t: `SKIP: ${analyzeRideResults.metrics.skip.length} ` },
 					{ c: 10, t: `PASS: ${analyzeRideResults.metrics.pass.length} ` },
