@@ -11,9 +11,9 @@ import { Timer } from '@tmlmobilidade/timer';
 
 interface QueryResult extends HubV1GtfsStops {
 	agency_ids: string
-	line_ids: string
-	pattern_ids: string
 	route_ids: string
+	route_short_names: string
+	shape_ids: string
 }
 
 /* * */
@@ -25,25 +25,25 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	const globalTimer = new Timer();
 
 	//
-	// Aggregate stops with their associated routes, lines and patterns
+	// Aggregate stops with their associated routes, lines and shapes
 	// from the imported GTFS database
 
 	const allGtfsStops = importedGtfsSql.stops.query<QueryResult>(`
 		SELECT
 			s.*,
 			r.agency_ids,
-			r.line_ids,
+			r.route_short_names,
 			r.route_ids,
-			r.pattern_ids
+			r.shape_ids
 		FROM
 			stops s
 		LEFT JOIN (
 			SELECT
 				stop_id,
 				json_group_array(DISTINCT r.agency_id) AS agency_ids,
-				json_group_array(DISTINCT r.line_id) AS line_ids,
 				json_group_array(DISTINCT r.route_id) AS route_ids,
-				json_group_array(DISTINCT t.pattern_id) AS pattern_ids
+				json_group_array(DISTINCT r.route_short_name) AS route_short_names,
+				json_group_array(DISTINCT t.shape_id) AS shape_ids
 			FROM
 				stop_times st
 			JOIN
@@ -70,7 +70,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				continue;
 			}
 
-			if (!gtfsStop.line_ids?.length) {
+			if (!gtfsStop.route_short_names?.length) {
 				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no line IDs.` });
 				continue;
 			}
@@ -80,8 +80,8 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				continue;
 			}
 
-			if (!gtfsStop.pattern_ids?.length) {
-				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no pattern IDs.` });
+			if (!gtfsStop.shape_ids?.length) {
+				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no shape IDs.` });
 				continue;
 			}
 
@@ -102,7 +102,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				latitude: gtfsStop.stop_lat,
 				legacy_ids: gtfsStop.legacy_ids ? JSON.parse(gtfsStop.legacy_ids) : [],
 				lifecycle_status: gtfsStop.lifecycle_status,
-				line_ids: JSON.parse(gtfsStop.line_ids),
+				line_ids: JSON.parse(gtfsStop.route_short_names),
 				locality_id: gtfsStop.locality_id,
 				locality_name: gtfsStop.locality_name,
 				longitude: gtfsStop.stop_lon,
@@ -111,7 +111,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				name: gtfsStop.stop_name,
 				parish_id: gtfsStop.parish_id,
 				parish_name: gtfsStop.parish_name,
-				pattern_ids: JSON.parse(gtfsStop.pattern_ids),
+				pattern_ids: JSON.parse(gtfsStop.shape_ids),
 				route_ids: JSON.parse(gtfsStop.route_ids),
 				short_name: gtfsStop.stop_name,
 				tts_name: gtfsStop.tts_stop_name,
