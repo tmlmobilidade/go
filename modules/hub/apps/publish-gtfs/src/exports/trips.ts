@@ -2,7 +2,7 @@
 
 import { getQualifiedBlockId, getQualifiedRouteId, getQualifiedServiceId, getQualifiedShapeId, getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
-import { type HubGtfsExportTripsInput, HubGtfsExportTripsSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1GtfsTripsInput, HubV1GtfsTripsSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -20,7 +20,7 @@ export async function exportTripsFile(context: ExportGtfsContext, planData: Plan
 
 	for await (const tripItem of sqlTables.trips.stream('ORDER BY trip_id ASC')) {
 		const tripData: GtfsTrips = tripItem;
-		const parsedTripsRow: HubGtfsExportTripsInput = {
+		const parsedTripsRow: HubV1GtfsTripsInput = {
 			bikes_allowed: tripData.bikes_allowed,
 			block_id: getQualifiedBlockId(planData.agency_id, tripData.block_id),
 			cars_allowed: tripData.cars_allowed,
@@ -33,7 +33,7 @@ export async function exportTripsFile(context: ExportGtfsContext, planData: Plan
 			trip_short_name: tripData.trip_short_name,
 			wheelchair_accessible: tripData.wheelchair_accessible,
 		};
-		const validatedTripsRow = HubGtfsExportTripsSchema.parse(parsedTripsRow);
+		const validatedTripsRow = HubV1GtfsTripsSchema.parse(parsedTripsRow);
 		await context.writers.trips.write(validatedTripsRow);
 	}
 

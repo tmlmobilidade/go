@@ -3,7 +3,7 @@
 import { encodeStopFlags } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { type HubGtfsExportStopsInput, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1GtfsStopsInput, HubV1GtfsStopsSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -64,7 +64,7 @@ export async function exportStopsFile(context: ExportGtfsContext, agencyIds: str
 		const matchingParishName = allParishesMap.get(stopData.parish_id);
 		const matchingLocalityName = allLocalitiesMap.get(stopData.locality_id);
 
-		const parsedStopsRow: HubGtfsExportStopsInput = {
+		const parsedStopsRow: HubV1GtfsStopsInput = {
 			district_id: stopData.district_id,
 			district_name: matchingDistrictName,
 			flags: encodedStopFlags,
@@ -87,7 +87,7 @@ export async function exportStopsFile(context: ExportGtfsContext, agencyIds: str
 			wheelchair_boarding: '0',
 		};
 
-		const validatedStopsRow = HubGtfsExportStopsSchema.parse(parsedStopsRow);
+		const validatedStopsRow = HubV1GtfsStopsSchema.parse(parsedStopsRow);
 
 		await context.writers.stops.write(validatedStopsRow);
 	}

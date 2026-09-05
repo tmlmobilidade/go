@@ -1,7 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type HubGtfsExportAgencyInput, HubGtfsExportAgencySchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1GtfsAgencyInput, HubV1GtfsAgencySchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -25,7 +25,7 @@ export async function exportAgencyFile(context: ExportGtfsContext, agencyIds: st
 	const foundAgenciesData = await goDb.core.agencies.findMany({ _id: { $in: agencyIds } });
 
 	for (const agencyData of foundAgenciesData) {
-		const parsedAgencyRow: HubGtfsExportAgencyInput = {
+		const parsedAgencyRow: HubV1GtfsAgencyInput = {
 			agency_code: agencyData.code,
 			agency_email: agencyData.open_data?.details?.email,
 			agency_fare_url: agencyData.open_data?.details?.fare_url,
@@ -37,7 +37,7 @@ export async function exportAgencyFile(context: ExportGtfsContext, agencyIds: st
 			agency_url: agencyData.open_data?.details?.website_url,
 			cemv_support: '0',
 		};
-		const validatedAgencyRow = HubGtfsExportAgencySchema.parse(parsedAgencyRow);
+		const validatedAgencyRow = HubV1GtfsAgencySchema.parse(parsedAgencyRow);
 		await context.writers.agency.write(validatedAgencyRow);
 	}
 

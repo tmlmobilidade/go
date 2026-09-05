@@ -1,7 +1,7 @@
 /* * */
 
 import { getQualifiedServiceId } from '@tmlmobilidade/go-hub-pckg-utils';
-import { type HubGtfsExportCalendarDatesInput, HubGtfsExportCalendarDatesSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1GtfsCalendarDatesInput, HubV1GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -19,12 +19,12 @@ export async function exportCalendarDatesFile(context: ExportGtfsContext, planDa
 
 	for (const [serviceId, calendarDatesList] of Object.entries(sqlTables.calendar_dates)) {
 		for (const calendarDate of calendarDatesList.sort()) {
-			const parsedCalendarDatesRow: HubGtfsExportCalendarDatesInput = {
+			const parsedCalendarDatesRow: HubV1GtfsCalendarDatesInput = {
 				date: calendarDate,
 				exception_type: '1',
 				service_id: getQualifiedServiceId(planData._id, planData.agency_id, serviceId),
 			};
-			const validatedCalendarDatesRow = HubGtfsExportCalendarDatesSchema.parse(parsedCalendarDatesRow);
+			const validatedCalendarDatesRow = HubV1GtfsCalendarDatesSchema.parse(parsedCalendarDatesRow);
 			await context.writers.calendar_dates.write(validatedCalendarDatesRow);
 		}
 	}

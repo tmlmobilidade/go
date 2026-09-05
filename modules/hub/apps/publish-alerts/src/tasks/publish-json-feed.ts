@@ -3,7 +3,7 @@
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, HubV1ApiAlertSchema } from '@tmlmobilidade/go-types-hub';
 import { AlertCauseToGtfsRtCauseMap, AlertEffectToGtfsRtEffectMap, type AlertReference } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
@@ -51,7 +51,7 @@ export async function publishJsonFeed() {
 	//
 	// Transform alerts into GTFS-RT feed entities
 
-	const result: HubAlert[] = [];
+	const result: HubV1ApiAlert[] = [];
 
 	for (const alertData of findResult) {
 		try {
@@ -106,7 +106,7 @@ export async function publishJsonFeed() {
 			const mappedCause = AlertCauseToGtfsRtCauseMap[alertData.cause];
 			const mappedEffect = AlertEffectToGtfsRtEffectMap[alertData.effect];
 
-			const transformedAlert: HubAlert = {
+			const transformedAlert: HubV1ApiAlert = {
 				_id: alertData._id,
 				active_period_end_date: alertData.active_period_end_date,
 				active_period_start_date: alertData.active_period_start_date,
@@ -123,7 +123,7 @@ export async function publishJsonFeed() {
 				title: alertData.title,
 			};
 
-			const parsedAlert = HubAlertSchema.parse(transformedAlert);
+			const parsedAlert = HubV1ApiAlertSchema.parse(transformedAlert);
 
 			result.push(parsedAlert);
 		} catch (error) {
