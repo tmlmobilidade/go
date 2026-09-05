@@ -3,7 +3,7 @@
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type HubPlan, HubPlanSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPlan, HubV1ApiPlanSchema } from '@tmlmobilidade/go-types-hub';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -40,7 +40,7 @@ export async function publishApprovedPlans() {
 	//
 	// Parse the plans
 
-	const approvedPlans: HubPlan[] = [];
+	const approvedPlans: HubV1ApiPlan[] = [];
 
 	for (const { agencyData, operationFile, planData } of plansWithOperationFiles) {
 		try {
@@ -52,7 +52,7 @@ export async function publishApprovedPlans() {
 			const nowIsBeforeEndDate = currentOperationalDate <= planData.active_until;
 			const isActive = nowIsAfterStartDate && nowIsBeforeEndDate;
 			// Parse the plan data
-			const hubPlanData: HubPlan = {
+			const hubPlanData: HubV1ApiPlan = {
 				_id: planData._id,
 				active_from: planData.active_from,
 				active_until: planData.active_until,
@@ -66,7 +66,7 @@ export async function publishApprovedPlans() {
 				operation_file_url: operationFile.url,
 				updated_at: planData.updated_at,
 			};
-			const validatedHubPlanData = HubPlanSchema.safeParse(hubPlanData);
+			const validatedHubPlanData = HubV1ApiPlanSchema.safeParse(hubPlanData);
 			if (!validatedHubPlanData.success) throw new Error(`Error parsing plan ${planData._id}: ${validatedHubPlanData.error.message}`);
 			// Add the plan to the list
 			approvedPlans.push(validatedHubPlanData.data);

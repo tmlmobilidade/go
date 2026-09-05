@@ -3,7 +3,7 @@
 import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsStopTimes } from '@tmlmobilidade/go-types-gtfs';
-import { type HubGtfsExportStopTimesInput, HubGtfsExportStopTimesSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1GtfsStopTimesInput, HubV1GtfsStopTimesSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -38,7 +38,7 @@ export async function exportStopTimesFile(context: ExportGtfsContext, planData: 
 		try {
 			const stopTimeData: GtfsStopTimes = stopTimeItem;
 			const stopId = allStopsMap.get(stopTimeData.stop_id);
-			const parsedStopTimesRow: HubGtfsExportStopTimesInput = {
+			const parsedStopTimesRow: HubV1GtfsStopTimesInput = {
 				arrival_time: stopTimeData.arrival_time,
 				continuous_drop_off: '0',
 				continuous_pickup: '0',
@@ -51,7 +51,7 @@ export async function exportStopTimesFile(context: ExportGtfsContext, planData: 
 				timepoint: stopTimeData.timepoint ?? '0',
 				trip_id: getQualifiedTripId(planData._id, planData.agency_id, stopTimeData.trip_id),
 			};
-			const validatedStopTimesRow = HubGtfsExportStopTimesSchema.parse(parsedStopTimesRow);
+			const validatedStopTimesRow = HubV1GtfsStopTimesSchema.parse(parsedStopTimesRow);
 			await context.writers.stop_times.write(validatedStopTimesRow);
 		} catch (error) {
 			console.error(stopTimeItem);

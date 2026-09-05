@@ -4,13 +4,13 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { AlertDetailContent } from '@/components/alerts/detail/AlertDetailContent';
 import { AlertDetailViewHeader } from '@/components/alerts/detail/AlertDetailViewHeader';
 import { Space } from '@mantine/core';
-import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 import { LoadingSection, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface AlertsDetailViewProps {
-	alert: HubAlert
+	alert: HubV1ApiAlert
 }
 
 export function AlertsDetailView({ alert }: AlertsDetailViewProps) {

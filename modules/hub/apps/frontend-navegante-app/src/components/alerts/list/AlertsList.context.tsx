@@ -4,7 +4,7 @@ import { transformAlertDataIntoGeoJsonFeature, useAlertsContext } from '@/compon
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useFilterStateText, UseFilterStateTextReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -32,7 +32,7 @@ interface AlertsListContextState extends ListContextStateTemplate {
 	}
 	data: {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
-		filtered: HubAlert[]
+		filtered: HubV1ApiAlert[]
 		grouped: AlertGroup[]
 	}
 	filters: {
@@ -92,7 +92,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_milliseconds, []);
 
-	const searchResultsData = useSearch<HubAlert>({
+	const searchResultsData = useSearch<HubV1ApiAlert>({
 		accessors: ['title', 'description'],
 		data: alertsContext.data.alerts,
 		query: filterSearch.value,

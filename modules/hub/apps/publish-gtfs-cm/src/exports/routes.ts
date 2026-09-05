@@ -2,7 +2,7 @@
 
 import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
-import { type HubGtfsExportRoutesInput, HubGtfsExportRoutesSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1GtfsRoutesInput, HubV1GtfsRoutesSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -23,7 +23,7 @@ export async function exportRoutesFile(context: ExportGtfsContext, routesList: G
 	const sortedRoutesList = routesList.sort((a, b) => a.route_id.localeCompare(b.route_id));
 
 	for (const routeData of sortedRoutesList) {
-		const parsedRouteRow: HubGtfsExportRoutesInput = {
+		const parsedRouteRow: HubV1GtfsRoutesInput = {
 			agency_id: routeData.agency_id,
 			cemv_support: routeData.cemv_support,
 			continuous_drop_off: routeData.continuous_drop_off,
@@ -35,7 +35,7 @@ export async function exportRoutesFile(context: ExportGtfsContext, routesList: G
 			route_text_color: routeData.route_text_color,
 			route_type: routeData.route_type,
 		};
-		const validatedRouteRow = HubGtfsExportRoutesSchema.parse(parsedRouteRow);
+		const validatedRouteRow = HubV1GtfsRoutesSchema.parse(parsedRouteRow);
 		await context.writers.routes.write(validatedRouteRow);
 	}
 

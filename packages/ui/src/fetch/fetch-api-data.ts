@@ -14,6 +14,12 @@ interface FetchApiDataParams<K = unknown> {
 	body?: K
 
 	/**
+	 * The credentials mode of the request.
+	 * @default 'include'
+	 */
+	credentials?: RequestCredentials
+
+	/**
 	 * The headers of the request.
 	 * @default { 'Content-Type': 'application/json' }
 	 */
@@ -71,6 +77,7 @@ export async function fetchApiData<T, K = unknown>(params: FetchApiDataParams<K>
 	// by the user's options if provided
 
 	const validatedParams: FetchApiDataParams<K> = {
+		credentials: 'include',
 		headers: {},
 		method: 'GET',
 		options: {},
@@ -88,7 +95,7 @@ export async function fetchApiData<T, K = unknown>(params: FetchApiDataParams<K>
 	try {
 		const response = await fetch(validatedParams.url, {
 			body: validatedParams.body ? JSON.stringify(validatedParams.body) : undefined,
-			credentials: 'include',
+			credentials: validatedParams.credentials,
 			headers: validatedHeaders,
 			method: validatedParams.method,
 			...validatedParams.options,

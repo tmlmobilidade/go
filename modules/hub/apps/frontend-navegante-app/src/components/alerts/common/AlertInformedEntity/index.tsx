@@ -3,7 +3,7 @@
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { type HubLine, type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine, type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -30,11 +30,11 @@ export function AlertInformedEntity({ lineId, routeId, stopId }: Props) {
 	//
 	// B. Transform data
 
-	const lineData = useMemo<HubLine | undefined>(() => {
+	const lineData = useMemo<HubV1ApiLine | undefined>(() => {
 		return linesContext.data.lines?.find(line => line._id === lineId || line.route_ids.some(itemId => itemId === routeId));
 	}, [lineId, linesContext.data.lines, routeId]);
 
-	const stopData = useMemo<HubStop | undefined>(() => {
+	const stopData = useMemo<HubV1ApiStop | undefined>(() => {
 		return stopsContext.data.stops?.find(stop => String(stop._id) === String(stopId));
 	}, [stopId, stopsContext.data.stops]);
 

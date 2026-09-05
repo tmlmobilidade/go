@@ -6,7 +6,7 @@ import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesD
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type HubPattern } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { LineBadge, LineName, Section } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -31,7 +31,7 @@ export function VehiclesDetailView() {
 	//
 	// B. Fetch data
 
-	const { data: activePatternData } = useSWR<HubPattern[]>(vehiclesDetailContext.data.vehicle?.pattern_id && {
+	const { data: activePatternData } = useSWR<HubV1ApiPattern[]>(vehiclesDetailContext.data.vehicle?.pattern_id && {
 		credentials: 'omit',
 		url: API_ROUTES.hub.NETWORK_PATTERNS(vehiclesDetailContext.data.vehicle.pattern_id),
 	});

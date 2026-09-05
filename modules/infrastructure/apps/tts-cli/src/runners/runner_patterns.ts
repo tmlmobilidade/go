@@ -5,7 +5,7 @@ import { generateHash } from '@/utils/generateHash.js';
 import { makePattern } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine, type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -33,7 +33,7 @@ export async function runnerPatterns() {
 		return;
 	}
 
-	const allLinesData = JSON.parse(allLinesCachedData) as HubLine[];
+	const allLinesData = JSON.parse(allLinesCachedData) as HubV1ApiLine[];
 
 	Logger.title(`* Preparing ${allLinesData.length} lines...`);
 
@@ -53,7 +53,7 @@ export async function runnerPatterns() {
 				continue;
 			}
 
-			const patternGroup = JSON.parse(cachedData) as HubPattern[];
+			const patternGroup = JSON.parse(cachedData) as HubV1ApiPattern[];
 			const patternData = patternGroup.at(-1);
 
 			if (!patternData) continue;
