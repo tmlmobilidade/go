@@ -1,6 +1,6 @@
 /* * */
 
-import type { AggregateOptions, AggregationCursor, AggregationPipeline, Collection, DeleteResult, Document, Filter, UpdateFilter } from '@tmlmobilidade/go-clients-mongo';
+import type { AggregateOptions, AggregationCursor, AggregationPipeline, Collection, DeleteResult, Document, Filter } from '@tmlmobilidade/go-clients-mongo';
 
 import { type InsertableDocument } from './insertable-document.type.js';
 import { type MinimalOptions } from './minimal-options.type.js';
@@ -56,7 +56,7 @@ export interface GoDbCollection<T extends Document> {
 	 */
 	toggleLockById(id: string, options?: MinimalOptions): Promise<T>
 
-	updateById(_id: string, updateFields: UpdatableDocument<T> | UpdateFilter<UpdatableDocument<T>>, options?: MinimalOptions): Promise<T>
+	updateById(_id: string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T>
 
 	// updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: T & { updated_at?: UnixMilliseconds, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>>
 

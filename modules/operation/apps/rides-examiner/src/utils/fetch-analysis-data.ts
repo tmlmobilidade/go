@@ -3,7 +3,6 @@
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
-import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -18,23 +17,17 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 
 	const standardWindowInterval = Dates.fromUnixMilliseconds(rideData.start_time_scheduled).std_window;
 
-	const minOperationalDate = Dates.fromUnixMilliseconds(standardWindowInterval.start).operational_date_int;
-	const maxOperationalDate = Dates.fromUnixMilliseconds(standardWindowInterval.end).operational_date_int;
-	const operationalDateRange = OperationalDateIntSchema.array().parse(Array.from({ length: maxOperationalDate - minOperationalDate + 1 }, (_, i) => minOperationalDate + i));
-
 	//
 	// Fetch data from LabDB in parallel.
-	const dynamicWhere = `operational_date IN (${operationalDateRange.join(',')}) AND created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`;
-	const dynamicParams = { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id };
 
 	const hashedTripPromise = labDb.operation.hashedTrips.select('*', '_id = $1', { 1: rideData.hashed_trip_id });
 	const hashedShapePromise = labDb.operation.hashedShapes.select('*', '_id = $1', { 1: rideData.hashed_shape_id });
-	const simplifiedApexBankingTapsPromise = labDb.simplifiedApex.bankingTaps.select('*', dynamicWhere, dynamicParams);
-	const simplifiedApexLocationsPromise = labDb.simplifiedApex.locations.select('*', dynamicWhere, dynamicParams);
-	const simplifiedApexOnBoardRefundsPromise = labDb.simplifiedApex.refunds.select('*', dynamicWhere, dynamicParams);
-	const simplifiedApexOnBoardSalesPromise = labDb.simplifiedApex.sales.select('*', dynamicWhere, dynamicParams);
-	const simplifiedApexValidationsPromise = labDb.simplifiedApex.validations.select('*', dynamicWhere, dynamicParams);
-	const vehicleEventsPromise = labDb.operation.simplifiedVehicleEvents.select('*', `${dynamicWhere} AND extra_trip_id IS NULL`, dynamicParams);
+	const simplifiedApexBankingTapsPromise = labDb.simplifiedApex.bankingTaps.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
+	const simplifiedApexLocationsPromise = labDb.simplifiedApex.locations.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
+	const simplifiedApexOnBoardRefundsPromise = labDb.simplifiedApex.refunds.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
+	const simplifiedApexOnBoardSalesPromise = labDb.simplifiedApex.sales.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
+	const simplifiedApexValidationsPromise = labDb.simplifiedApex.validations.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
+	const vehicleEventsPromise = labDb.operation.simplifiedVehicleEvents.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4 AND extra_trip_id IS NULL`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
 
 	const [
 		hashedTripData,

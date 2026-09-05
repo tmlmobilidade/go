@@ -61,7 +61,7 @@ export function PlansList() {
 			width: 310,
 		},
 		{
-			accessor: 'apps',
+			accessor: 'apps.rides_feeder',
 			render: item => (
 				<ProcessingStatusDisplay
 					value={item.apps?.rides_feeder?.status}
@@ -71,11 +71,11 @@ export function PlansList() {
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
 			),
-			title: 'Monitorização',
+			title: 'Circulações',
 			width: 135,
 		},
 		{
-			accessor: 'apps',
+			accessor: 'apps.hub_publish_gtfs_cm',
 			render: item => (
 				<ProcessingStatusDisplay
 					value={item.apps?.hub_publish_gtfs_cm?.status}
@@ -89,7 +89,7 @@ export function PlansList() {
 			width: 135,
 		},
 		{
-			accessor: 'apps',
+			accessor: 'apps.hub_publish_gtfs',
 			render: item => (
 				<ProcessingStatusDisplay
 					value={item.apps?.hub_publish_gtfs?.status}
@@ -99,7 +99,21 @@ export function PlansList() {
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
 			),
-			title: 'Hub GTFS',
+			title: 'GTFS AML',
+			width: 135,
+		},
+		{
+			accessor: 'apps.organizer',
+			render: item => (
+				<ProcessingStatusDisplay
+					value={item.apps?.organizer?.status}
+					tooltip={item.apps?.organizer?.timestamp && Dates
+						.fromUnixMilliseconds(item.apps?.organizer?.timestamp)
+						.setZone('Europe/Lisbon', 'offset_only')
+						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
+				/>
+			),
+			title: 'Normalização',
 			width: 135,
 		},
 	];

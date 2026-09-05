@@ -22,7 +22,7 @@ export async function updatePlanHashesTask() {
 	//
 	// Fetch all plans from the database
 
-	const allPlans = await goDb.operation.plans.findMany();
+	const allPlans = await goDb.operation.plans.findMany({}, { sort: { active_from: -1 } });
 
 	Logger.info({ message: `Found ${allPlans.length} plans.` });
 
@@ -32,6 +32,8 @@ export async function updatePlanHashesTask() {
 	for (const [index, planData] of allPlans.entries()) {
 		try {
 			//
+
+			const timer = new Timer();
 
 			console.log(`[${allPlans.length - index}/${allPlans.length}] Processing plan ${planData._id}`);
 
@@ -45,6 +47,8 @@ export async function updatePlanHashesTask() {
 			await goDb.operation.plans.updateById(planData._id, {
 				hash: newHashValue,
 			});
+
+			Logger.success(`Updated hash for plan ${planData._id} in ${timer.get()}`);
 
 			//
 		} catch (error) {

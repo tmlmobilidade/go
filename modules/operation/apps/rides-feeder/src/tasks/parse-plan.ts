@@ -1,22 +1,21 @@
 /* * */
 
-import { toHashedShape } from '@/utils/to-hashed-shape.js';
-import { toHashedTrip } from '@/utils/to-hashed-trip.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HashedShape, type HashedTrip, type Plan, type Ride } from '@tmlmobilidade/go-types-operation';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
+import { BatchWriter, startHeartbeat } from '@tmlmobilidade/go-utils-exec';
 import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { fromOperationalTimeAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
-import { startPlanHeartbeat } from '../utils/heartbeat.js';
-import { setPlanStatus } from '../utils/set-plan-status.js';
+import { toHashedShape } from '../utils/to-hashed-shape.js';
+import { toHashedTrip } from '../utils/to-hashed-trip.js';
 
 /* * */
 
@@ -59,7 +58,7 @@ export async function parsePlanTask(planData: Plan) {
 
 	if (!planData.operation_file_id) {
 		console.error(`Skip processing: No operation file found. (plan: ${planData._id})`);
-		await setPlanStatus(planData._id, 'error');
+		await setPlanStatus(planData._id, 'rides_feeder', 'error');
 		return;
 	}
 
@@ -70,14 +69,17 @@ export async function parsePlanTask(planData: Plan) {
 
 	if (!agencyData) {
 		Logger.error({ message: `Agency not found: ${planData.agency_id}` });
-		await setPlanStatus(planData._id, 'error');
+		await setPlanStatus(planData._id, 'rides_feeder', 'error');
 		return;
 	}
 
 	//
 	// Start a heartbeat to indicate the plan is still being processed.
 
-	const heartbeat = startPlanHeartbeat(planData._id);
+	const heartbeat = startHeartbeat({
+		intervalMs: 30_000,
+		runFn: async () => await setPlanStatus(planData._id, 'rides_feeder', 'processing'),
+	});
 
 	Logger.success(`Processing started: feed_start_date: ${planData.active_from} | feed_end_date: ${planData.active_until}`);
 	Logger.spacer(1);
@@ -354,7 +356,7 @@ export async function parsePlanTask(planData: Plan) {
 
 	heartbeat.stop();
 
-	await setPlanStatus(planData._id, 'complete', planData.hash);
+	await setPlanStatus(planData._id, 'rides_feeder', 'complete', planData.hash);
 
 	Logger.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 
