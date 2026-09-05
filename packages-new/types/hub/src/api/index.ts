@@ -7,5 +7,3 @@ export * from './realtime/index.js';
 export * from './routes/index.js';
 export * from './shapes/index.js';
 export * from './stops/index.js';
-export * from './trips/index.js';
-export * from './waypoints/index.js';
