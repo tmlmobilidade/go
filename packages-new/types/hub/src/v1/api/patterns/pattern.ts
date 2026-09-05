@@ -4,12 +4,12 @@ import { EncodedPolylineSchema } from '@tmlmobilidade/go-types-geo';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
-import { HubPatternTripSchema } from './pattern-trip.js';
-import { HubPatternWaypointSchema } from './pattern-waypoint.js';
+import { HubV1ApiPatternTripSchema } from './pattern-trip.js';
+import { HubV1ApiPatternWaypointSchema } from './pattern-waypoint.js';
 
 /* * */
 
-export const HubPatternSchema = z.object({
+export const HubV1ApiPatternSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	color: HexColorSchema,
@@ -26,20 +26,20 @@ export const HubPatternSchema = z.object({
 	municipality_names: z.array(z.string()).default([]),
 	parish_ids: z.array(z.string()).default([]),
 	parish_names: z.array(z.string()).default([]),
-	path: z.array(HubPatternWaypointSchema),
+	path: z.array(HubV1ApiPatternWaypointSchema),
 	route_id: z.string(),
 	shape_extension: NonNegativeIntegerSchema,
 	shape_id: z.string(),
 	shape_polyline: EncodedPolylineSchema,
 	short_name: z.string(),
 	text_color: HexColorSchema,
-	trips: z.array(HubPatternTripSchema),
+	trips: z.array(HubV1ApiPatternTripSchema),
 	tts_headsign: z.string(),
 	valid_on: z.array(OperationalDateIntSchema).default([]),
 	version_id: z.string(),
 });
 
 /**
- * Publishable pattern data for the Hub Network API.
+ * Publishable pattern data for the Hub V1 Patterns API.
  */
-export type HubPattern = z.infer<typeof HubPatternSchema>;
+export type HubV1ApiPattern = z.infer<typeof HubV1ApiPatternSchema>;

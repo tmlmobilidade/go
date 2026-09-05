@@ -3,12 +3,12 @@
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
-import { HubScheduledArrivalSchema } from './scheduled-arrival.js';
+import { HubV1ApiScheduledArrivalSchema } from './scheduled-arrival.js';
 
 /* * */
 
-export const HubPatternTripSchema = z.object({
-	schedule: z.array(HubScheduledArrivalSchema),
+export const HubV1ApiPatternTripSchema = z.object({
+	schedule: z.array(HubV1ApiScheduledArrivalSchema),
 	service_ids: z.array(z.string()),
 	trip_ids: z.array(z.string()),
 	valid_on: z.array(OperationalDateIntSchema),
@@ -16,6 +16,6 @@ export const HubPatternTripSchema = z.object({
 });
 
 /**
- * Pattern trip data for the Hub Network API.
+ * Pattern trip data for the Hub V1 Patterns API.
  */
-export type HubPatternTrip = z.infer<typeof HubPatternTripSchema>;
+export type HubV1ApiPatternTrip = z.infer<typeof HubV1ApiPatternTripSchema>;

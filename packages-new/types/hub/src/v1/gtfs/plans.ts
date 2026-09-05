@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubGtfsExportPlansSchema = z.object({
+export const HubV1GtfsPlansSchema = z.object({
 	agency_id: z.string(),
 	plan_end_date: OperationalDateIntSchema,
 	plan_id: z.string(),
@@ -13,11 +13,11 @@ export const HubGtfsExportPlansSchema = z.object({
 });
 
 /**
- * Representation of a GTFS plan for the Hub GTFS export that is being created.
+ * Representation of a GTFS plan for the Hub V1 GTFS that is being created.
  */
-export type HubGtfsExportPlansInput = z.input<typeof HubGtfsExportPlansSchema>;
+export type HubV1GtfsPlansInput = z.input<typeof HubV1GtfsPlansSchema>;
 
 /**
- * Representation of a GTFS plan for the Hub GTFS export.
+ * Representation of a GTFS plan for the Hub V1 GTFS.
  */
-export type HubGtfsExportPlans = z.output<typeof HubGtfsExportPlansSchema>;
+export type HubV1GtfsPlans = z.output<typeof HubV1GtfsPlansSchema>;

@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubRouteSchema = z.object({
+export const HubV1ApiRouteSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	color: HexColorSchema,
@@ -28,6 +28,6 @@ export const HubRouteSchema = z.object({
 });
 
 /**
- * Route data for the Hub Network API.
+ * Route data for the Hub V1 Routes API.
  */
-export type HubRoute = z.infer<typeof HubRouteSchema>;
+export type HubV1ApiRoute = z.infer<typeof HubV1ApiRouteSchema>;

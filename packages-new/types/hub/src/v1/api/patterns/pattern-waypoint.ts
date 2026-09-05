@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubPatternWaypointSchema = z.object({
+export const HubV1ApiPatternWaypointSchema = z.object({
 	allow_drop_off: z.boolean(),
 	allow_pickup: z.boolean(),
 	distance: NonNegativeIntegerSchema,
@@ -15,6 +15,6 @@ export const HubPatternWaypointSchema = z.object({
 });
 
 /**
- * Pattern waypoint data for the Hub Network API.
+ * Pattern waypoint data for the Hub V1 Patterns API.
  */
-export type HubPatternWaypoint = z.infer<typeof HubPatternWaypointSchema>;
+export type HubV1ApiPatternWaypoint = z.infer<typeof HubV1ApiPatternWaypointSchema>;

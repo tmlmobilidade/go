@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubStopSchema = z.object({
+export const HubV1ApiStopSchema = z.object({
 	_id: z.string(),
 	agency_ids: z.array(z.string()),
 	district_id: z.string(),
@@ -31,7 +31,7 @@ export const HubStopSchema = z.object({
 });
 
 /**
- * Stop data for the Hub Network API.
+ * Stop data for the Hub V1 Stops API.
  */
-export type HubStop = z.infer<typeof HubStopSchema>;
+export type HubV1ApiStop = z.infer<typeof HubV1ApiStopSchema>;
 

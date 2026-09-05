@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubLineSchema = z.object({
+export const HubV1ApiLineSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	color: HexColorSchema,
@@ -28,6 +28,6 @@ export const HubLineSchema = z.object({
 });
 
 /**
- * Line data for the Hub Network API.
+ * Line data for the Hub V1 Lines API.
  */
-export type HubLine = z.infer<typeof HubLineSchema>;
+export type HubV1ApiLine = z.infer<typeof HubV1ApiLineSchema>;

@@ -5,14 +5,14 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubGtfsExportStopTimesSchema = GtfsStopTimesSchema;
+export const HubV1GtfsStopTimesSchema = GtfsStopTimesSchema;
 
 /**
- * Representation of a GTFS stop time for the Hub GTFS export that is being created.
+ * Representation of a GTFS stop time for the Hub V1 GTFS that is being created.
  */
-export type HubGtfsExportStopTimesInput = z.input<typeof HubGtfsExportStopTimesSchema>;
+export type HubV1GtfsStopTimesInput = z.input<typeof HubV1GtfsStopTimesSchema>;
 
 /**
- * Representation of a GTFS stop time for the Hub GTFS export.
+ * Representation of a GTFS stop time for the Hub V1 GTFS.
  */
-export type HubGtfsExportStopTimes = z.output<typeof HubGtfsExportStopTimesSchema>;
+export type HubV1GtfsStopTimes = z.output<typeof HubV1GtfsStopTimesSchema>;

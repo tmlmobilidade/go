@@ -5,14 +5,14 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubGtfsExportTripsSchema = GtfsTripsSchema;
+export const HubV1GtfsTripsSchema = GtfsTripsSchema;
 
 /**
- * Representation of a GTFS trip for the Hub GTFS export that is being created.
+ * Representation of a GTFS trip for the Hub V1 GTFS that is being created.
  */
-export type HubGtfsExportTripsInput = z.input<typeof HubGtfsExportTripsSchema>;
+export type HubV1GtfsTripsInput = z.input<typeof HubV1GtfsTripsSchema>;
 
 /**
- * Representation of a GTFS trip for the Hub GTFS export.
+ * Representation of a GTFS trip for the Hub V1 GTFS.
  */
-export type HubGtfsExportTrips = z.output<typeof HubGtfsExportTripsSchema>;
+export type HubV1GtfsTrips = z.output<typeof HubV1GtfsTripsSchema>;

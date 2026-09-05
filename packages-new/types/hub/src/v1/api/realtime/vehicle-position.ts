@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubVehiclePositionSchema = z.object({
+export const HubV1ApiVehiclePositionSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	bearing: NonNegativeIntegerSchema.nullable().default(null),
@@ -32,7 +32,7 @@ export const HubVehiclePositionSchema = z.object({
 });
 
 /**
- * Vehicle Position item for the Hub Realtime API.
+ * Vehicle Position item for the Hub V1 Realtime API.
  */
-export type HubVehiclePosition = z.infer<typeof HubVehiclePositionSchema>;
+export type HubV1ApiVehiclePosition = z.infer<typeof HubV1ApiVehiclePositionSchema>;
 

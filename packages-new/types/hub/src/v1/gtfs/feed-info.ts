@@ -5,14 +5,14 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubGtfsExportFeedInfoSchema = GtfsFeedInfoSchema;
+export const HubV1GtfsFeedInfoSchema = GtfsFeedInfoSchema;
 
 /**
- * Representation of a GTFS feed info for the Hub GTFS export that is being created.
+ * Representation of a GTFS feed info for the Hub V1 GTFS that is being created.
  */
-export type HubGtfsExportFeedInfoInput = z.input<typeof HubGtfsExportFeedInfoSchema>;
+export type HubV1GtfsFeedInfoInput = z.input<typeof HubV1GtfsFeedInfoSchema>;
 
 /**
- * Representation of a GTFS feed info for the Hub GTFS export.
+ * Representation of a GTFS feed info for the Hub V1 GTFS.
  */
-export type HubGtfsExportFeedInfo = z.output<typeof HubGtfsExportFeedInfoSchema>;
+export type HubV1GtfsFeedInfo = z.output<typeof HubV1GtfsFeedInfoSchema>;

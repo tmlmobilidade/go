@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubGtfsExportStopsSchema = GtfsStopsSchema.extend({
+export const HubV1GtfsStopsSchema = GtfsStopsSchema.extend({
 	district_id: z.string().default(''),
 	district_name: z.string().default(''),
 	flags: z.string().default(''),
@@ -21,11 +21,11 @@ export const HubGtfsExportStopsSchema = GtfsStopsSchema.extend({
 });
 
 /**
- * Representation of a GTFS stop for the Hub GTFS export that is being created.
+ * Representation of a GTFS stop for the Hub V1 GTFS that is being created.
  */
-export type HubGtfsExportStopsInput = z.input<typeof HubGtfsExportStopsSchema>;
+export type HubV1GtfsStopsInput = z.input<typeof HubV1GtfsStopsSchema>;
 
 /**
- * Representation of a GTFS stop for the Hub GTFS export.
+ * Representation of a GTFS stop for the Hub V1 GTFS.
  */
-export type HubGtfsExportStops = z.output<typeof HubGtfsExportStopsSchema>;
+export type HubV1GtfsStops = z.output<typeof HubV1GtfsStopsSchema>;

@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubAlertSchema = z.object({
+export const HubV1ApiAlertSchema = z.object({
 	_id: z.string(),
 	active_period_end_date: UnixMillisecondsSchema.nullable().default(null),
 	active_period_start_date: UnixMillisecondsSchema,
@@ -25,7 +25,7 @@ export const HubAlertSchema = z.object({
 });
 
 /**
- * Alert data for the Hub Alerts API.
+ * Alert data for the Hub V1 Alerts API.
  */
-export type HubAlert = z.infer<typeof HubAlertSchema>;
+export type HubV1ApiAlert = z.infer<typeof HubV1ApiAlertSchema>;
 

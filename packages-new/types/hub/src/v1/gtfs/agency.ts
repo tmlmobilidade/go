@@ -5,16 +5,16 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubGtfsExportAgencySchema = GtfsAgencySchema.extend({
+export const HubV1GtfsAgencySchema = GtfsAgencySchema.extend({
 	agency_code: z.string(),
 });
 
 /**
- * Representation of a GTFS agency for the Hub GTFS export that is being created.
+ * Representation of a GTFS agency for the Hub V1 GTFS that is being created.
  */
-export type HubGtfsExportAgencyInput = z.input<typeof HubGtfsExportAgencySchema>;
+export type HubV1GtfsAgencyInput = z.input<typeof HubV1GtfsAgencySchema>;
 
 /**
- * Representation of a GTFS agency for the Hub GTFS export.
+ * Representation of a GTFS agency for the Hub V1 GTFS.
  */
-export type HubGtfsExportAgency = z.output<typeof HubGtfsExportAgencySchema>;
+export type HubV1GtfsAgency = z.output<typeof HubV1GtfsAgencySchema>;

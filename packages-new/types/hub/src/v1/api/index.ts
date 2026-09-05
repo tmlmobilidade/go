@@ -4,5 +4,4 @@ export * from './patterns/index.js';
 export * from './plans/index.js';
 export * from './realtime/index.js';
 export * from './routes/index.js';
-export * from './shapes/index.js';
 export * from './stops/index.js';

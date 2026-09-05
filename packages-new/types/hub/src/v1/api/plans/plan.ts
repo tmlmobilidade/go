@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubPlanSchema = z.object({
+export const HubV1ApiPlanSchema = z.object({
 	_id: z.string(),
 	active_from: OperationalDateIntSchema,
 	active_until: OperationalDateIntSchema,
@@ -21,7 +21,7 @@ export const HubPlanSchema = z.object({
 });
 
 /**
- * Plan data for the Hub Plans API.
+ * Plan data for the Hub V1 Plans API.
  */
-export type HubPlan = z.infer<typeof HubPlanSchema>;
+export type HubV1ApiPlan = z.infer<typeof HubV1ApiPlanSchema>;
 

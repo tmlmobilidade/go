@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubScheduledArrivalSchema = z.object({
+export const HubV1ApiScheduledArrivalSchema = z.object({
 	arrival_time: z.string(),
 	arrival_time_24h: z.string(),
 	stop_id: z.string(),
@@ -13,6 +13,6 @@ export const HubScheduledArrivalSchema = z.object({
 });
 
 /**
- * Scheduled arrival data for the Hub Network API.
+ * Scheduled arrival data for the Hub V1 Patterns API.
  */
-export type HubScheduledArrival = z.infer<typeof HubScheduledArrivalSchema>;
+export type HubV1ApiScheduledArrival = z.infer<typeof HubV1ApiScheduledArrivalSchema>;
