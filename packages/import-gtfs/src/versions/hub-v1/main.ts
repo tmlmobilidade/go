@@ -16,7 +16,7 @@ import { initGtfsHubV1SqlTables } from './tables.js';
 import { type GtfsHubV1SQLTables } from './types.js';
 
 /**
- * Imports GTFS Strict v30 data into the database for a given plan.
+ * Imports GTFS Hub v1 data into the database for a given plan.
  * @param config The configuration for the import process.
  * @param customContext Optional existing context for the import process.
  * @returns The SQL tables containing the imported GTFS data.
@@ -51,13 +51,13 @@ export async function importGtfsHubV1ToDatabase(config: ImportGtfsConfig): Promi
 		await processGtfsHubV1Stops(context);
 		await processGtfsHubV1StopTimes(context);
 
-		Logger.success(`Finished importing GTFS Strict v30 to database in ${globalTimer.get()}.`);
+		Logger.success(`Finished importing GTFS Hub v1 to database in ${globalTimer.get()}.`);
 
 		return context.gtfs;
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error importing GTFS Strict v30 to database.' });
+		Logger.error({ error, message: 'Error importing GTFS Hub v1 to database.' });
 		throw error;
 	}
 }
