@@ -87,7 +87,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			//
 			// Parse the flags object
 
-			const parsedFlags = gtfsStop.flags ? JSON.parse(gtfsStop.flags) : [];
+			const decodedFlags = decodeStopFlags(gtfsStop.flags);
 
 			//
 			// Build the final stop object

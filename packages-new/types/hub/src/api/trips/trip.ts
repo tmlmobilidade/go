@@ -1,6 +1,6 @@
 /* * */
 
-import { HubScheduledArrivalSchema } from '@/api/network/scheduled-arrival.js';
+import { HubScheduledArrivalSchema } from '@/api/arrivals/scheduled-arrival.js';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 

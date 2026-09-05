@@ -1,18 +1,17 @@
 /* * */
 
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
-import { StopFlagSchema, StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const HubStopSchema = z.object({
-	_id: StopIdSchema,
+	_id: z.string(),
 	agency_ids: z.array(z.string()),
 	district_id: z.string(),
 	district_name: z.string(),
-	flags: z.array(StopFlagSchema),
+	flags: z.array(z.object({ agency_id: z.string(), stop_id: z.string() })),
 	latitude: LatitudeSchema,
 	legacy_ids: z.array(z.string()),
 	lifecycle_status: LifecycleStatusSchema,
