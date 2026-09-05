@@ -66,7 +66,7 @@ export async function analyzeRides() {
 		//
 		// Process each Ride
 
-		const rideResults = await runWithConcurrency(ridesBatch, 25, async (rideData, rideIndex) => {
+		await runWithConcurrency(ridesBatch, 25, async (rideData, rideIndex) => {
 			try {
 				//
 
@@ -148,16 +148,12 @@ export async function analyzeRides() {
 					{ c: 12, t: `ERROR: ${analyzeRideResults.metrics.error.length} [${analyzeRideResults.metrics.error.join('|')}]` },
 				] });
 
-				return { analyses: analyzeRideResults.analyses, ride: { ...augmentedRideData, processing_status: 'complete', updated_at: Dates.now('utc').unix_milliseconds } as Ride };
-
 				//
 			} catch (error) {
 				await ridesProvider.updateRideById(rideData._id, { processing_status: 'error' });
 				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
 			}
-		}
-
-		//
+		});
 
 		void fetch('https://status.carrismetropolitana.pt/api/push/B52rdR5Luo30Y1RAtCpHDrn4MF7vXCZb');
 
@@ -166,13 +162,7 @@ export async function analyzeRides() {
 		//
 	} catch (err) {
 		Logger.error({ error: err, message: `An error occurred. Halting execution: ${err.message}` });
-		Logger.error({ message: 'Retrying in 10 seconds...' });
-		setTimeout(() => {
-			process.exit(1); // End process
-		}, 10000); // after 10 seconds
 	}
-
-	//
 };
 
 /* * */
