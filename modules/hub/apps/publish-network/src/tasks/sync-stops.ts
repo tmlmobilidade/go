@@ -28,7 +28,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	// Aggregate stops with their associated routes, lines and patterns
 	// from the imported GTFS database
 
-	const allGtfsStops = importedGtfsSql.stops.query(`
+	const allGtfsStops = importedGtfsSql.stops.query<QueryResult>(`
 		SELECT
 			s.*,
 			r.agency_ids,
@@ -61,7 +61,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	const exportedStopsData: HubStop[] = [];
 	let updatedStopsCounter = 0;
 
-	for (const gtfsStop of allGtfsStops as QueryResult[]) {
+	for (const gtfsStop of allGtfsStops) {
 		try {
 			//
 

@@ -2,7 +2,8 @@
 
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { cacheDb, type CacheDbKey } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubShape, type HubShapePoint } from '@tmlmobilidade/go-types-hub';
+import { fromGeoJsonLineStringToEncodedPolyline, GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
+import { type HubShape, HubShapeSchema } from '@tmlmobilidade/go-types-hub';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -10,11 +11,9 @@ import * as turf from '@turf/turf';
 
 /* * */
 
-interface QueryResult extends HubGtfsExportStops {
-	agency_ids: string
-	line_ids: string
-	pattern_ids: string
-	route_ids: string
+interface QueryResult {
+	coordinates: string
+	shape_id: string
 }
 
 /* * */
@@ -30,41 +29,25 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 
 	const fetchRawDataTimer = new Timer();
 
-	const allShapesRaw = importedGtfsSql.shapes.query(`
+	const groupedShapesRaw = importedGtfsSql.shapes.query<QueryResult>(`
+		SELECT
+			shape_id,
+			json_group_array(
+				json_array(shape_pt_lon, shape_pt_lat)
+			) AS coordinates
+		FROM (
+			SELECT
+				shape_id,
+				shape_pt_lon,
+				shape_pt_lat,
+				shape_pt_sequence
+			FROM shapes
+			ORDER BY shape_id, shape_pt_sequence
+		)
+		GROUP BY shape_id
+	`);
 
-  SELECT
-
-    shape_id,
-
-    json_group_array(
-
-      json_array(shape_pt_lon, shape_pt_lat)
-
-    ) AS coordinates
-
-  FROM (
-
-    SELECT
-
-      shape_id,
-
-      shape_pt_lon,
-
-      shape_pt_lat,
-
-      shape_pt_sequence
-
-    FROM shapes
-
-    ORDER BY shape_id, shape_pt_sequence
-
-  )
-
-  GROUP BY shape_id
-
-`);
-
-	Logger.info({ message: `Fetched ${allShapesRaw.length} rows from GTFS (${fetchRawDataTimer.get()})` });
+	Logger.info({ message: `Fetched ${groupedShapesRaw.length} rows from GTFS (${fetchRawDataTimer.get()})` });
 
 	//
 	// Group all rows by shape_id
@@ -73,8 +56,24 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 
 	const allShapesData = new Map<string, HubShape>();
 
-	for (const shapeRaw of allShapesRaw) {
+	for (const shapeData of groupedShapesRaw) {
 		//
+
+		//
+		// Parse the shape coordinate into JSON
+
+		const shapeCoordinates: [number, number][] = JSON.parse(shapeData.coordinates);
+
+		//
+		// Transform the GTFS shape data into a GeoJSON LineString,
+		// and then encode it as a polyline string.
+
+		const shapeAsGeoJsonGeometry = GeoJsonLineStringGeometrySchema.parse({
+			coordinates: shapeCoordinates,
+			type: 'LineString',
+		});
+
+		const shapeAsEncodedPolyline = fromGeoJsonLineStringToEncodedPolyline(shapeAsGeoJsonGeometry);
 
 		//
 		// Use the cache key as the key for the Map,
@@ -85,7 +84,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		//
 		// Check if a shape object already exists, or create a new one.
 
-		let shapeData: HubShape;
+		// let shapeData: HubShape;
 
 		if (allShapesData.has(cacheKey)) {
 			shapeData = allShapesData.get(cacheKey);

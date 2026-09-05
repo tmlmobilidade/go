@@ -216,7 +216,7 @@ export class SQLiteTableInstance<T> {
 	 * @param params The parameters for the query.
 	 * @returns The result as an array of rows.
 	 */
-	query<R extends unknown[]>(sqlQuery = '', params: (boolean | number | string)[] = []) {
+	query<R>(sqlQuery = '', params: (boolean | number | string)[] = []) {
 		return this.databaseInstance.prepare(sqlQuery).all(...params) as R[];
 	}
 

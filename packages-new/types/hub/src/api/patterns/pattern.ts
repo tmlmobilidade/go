@@ -1,6 +1,7 @@
 /* * */
 
-import { HexColorSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { EncodedPolylineSchema } from '@tmlmobilidade/go-types-geo';
+import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { HubPatternTripSchema } from './pattern-trip.js';
@@ -27,7 +28,9 @@ export const HubPatternSchema = z.object({
 	parish_names: z.array(z.string()).default([]),
 	path: z.array(HubPatternWaypointSchema),
 	route_id: z.string(),
+	shape_extension: NonNegativeIntegerSchema,
 	shape_id: z.string(),
+	shape_polyline: EncodedPolylineSchema,
 	short_name: z.string(),
 	text_color: HexColorSchema,
 	trips: z.array(HubPatternTripSchema),

@@ -1,8 +1,8 @@
 /* * */
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type HubLine, type HubPattern, type HubRoute, type HubScheduledArrival, type HubStop, type HubTrip, type HubWaypoint } from '@tmlmobilidade/go-types-hub';
+import { type HubGtfsExportRoutes } from '@tmlmobilidade/go-types-hub';
+import { type HubLine, type HubPattern, type HubPatternTrip, type HubPatternWaypoint, type HubRoute, type HubScheduledArrival, type HubStop } from '@tmlmobilidade/go-types-hub';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -60,10 +60,10 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 	// For Routes
 	const allRoutesRaw = importedGtfsSql.routes.all();
-	const allRoutesRawMap = new Map<string, GtfsStrictV29Routes>(allRoutesRaw.map(item => [item.route_id, item]));
+	const allRoutesRawMap = new Map<string, HubGtfsExportRoutes>(allRoutesRaw.map(item => [item.route_id, item]));
 
 	// Get all distinct Pattern IDs from trips table
-	const allDistinctPatternIds = importedGtfsSql.trips.distinct('pattern_id');
+	const allDistinctPatternIds = importedGtfsSql.trips.distinct('shape_id');
 
 	Logger.info({ message: `Fetched ${allDistinctPatternIds.length} rows from GTFS (${fetchRawDataTimer.get()})` });
 
@@ -121,7 +121,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// a locality and a municipality ID. Instead of running these loops multiple times, we run it once and save all the necessary information immediately.
 
 			const stopTimesAsSimplifiedPath: { id: string, stop_sequence: number }[] = [];
-			const stopTimesAsCompletePath: HubWaypoint[] = [];
+			const stopTimesAsCompletePath: HubPatternWaypoint[] = [];
 
 			const stopTimesAsSimplifiedSchedule: { arrival_time: string, stop_id: string, stop_sequence: number }[] = [];
 			const stopTimesAsCompleteSchedule: HubScheduledArrival[] = [];
@@ -322,10 +322,10 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// Check if this trip group already exists, and create if it doesn't.
 			// The created trip group will have all the complete information not used to differentiate between groups.
 
-			const allTripGroupsForThisPattern = new Map<string, HubTrip>();
+			const allTripGroupsForThisPattern = new Map<string, HubPatternTrip>();
 			currentPatternObject.trips.forEach(item => allTripGroupsForThisPattern.set(item.version_id, item));
 
-			let currentTripGroupObject: HubTrip;
+			let currentTripGroupObject: HubPatternTrip;
 
 			if (allTripGroupsForThisPattern.has(currentTripGroupHash)) {
 				currentTripGroupObject = allTripGroupsForThisPattern.get(currentTripGroupHash);
