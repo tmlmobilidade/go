@@ -2,7 +2,7 @@
 
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { IconInfoTriangleFilled } from '@tabler/icons-react';
-import { type HubLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 
@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 interface LineBadgeProps {
 	agencyId?: string
 	color?: string
-	lineData?: HubLine
+	lineData?: HubV1ApiLine
 	lineId?: string
 	onClick?: () => void
 	shortName?: string

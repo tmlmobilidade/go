@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubGtfsExportFeedInfoInput, HubGtfsExportFeedInfoSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1GtfsFeedInfoInput, HubV1GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-hub';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -20,7 +20,7 @@ export async function exportFeedInfoFile(context: ExportGtfsContext, startDate: 
 
 	Logger.info({ message: 'Exporting feed_info.txt file...' });
 
-	const parsedFeedInfoRow: HubGtfsExportFeedInfoInput = {
+	const parsedFeedInfoRow: HubV1GtfsFeedInfoInput = {
 		default_lang: 'pt',
 		feed_contact_email: 'go@tmlmobilidade.pt',
 		feed_contact_url: 'https://go.tmlmobilidade.pt',
@@ -32,7 +32,7 @@ export async function exportFeedInfoFile(context: ExportGtfsContext, startDate: 
 		feed_version: context.run_id,
 	};
 
-	const validatedFeedInfoRow = HubGtfsExportFeedInfoSchema.parse(parsedFeedInfoRow);
+	const validatedFeedInfoRow = HubV1GtfsFeedInfoSchema.parse(parsedFeedInfoRow);
 
 	await context.writers.feed_info.write(validatedFeedInfoRow);
 

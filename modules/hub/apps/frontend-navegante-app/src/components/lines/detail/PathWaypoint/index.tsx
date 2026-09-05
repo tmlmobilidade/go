@@ -6,7 +6,7 @@ import { PathWaypointHeader } from '@/components/lines/detail/PathWaypointHeader
 import { PathWaypointNextArrivals } from '@/components/lines/detail/PathWaypointNextArrivals';
 import { PathWaypointSpine } from '@/components/lines/detail/PathWaypointSpine';
 import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
-import { type HubWaypoint } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPatternWaypoint } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 
@@ -18,7 +18,7 @@ interface Props {
 	isFirstStop?: boolean
 	isLastStop?: boolean
 	isSelected: boolean
-	waypointData: HubWaypoint
+	waypointData: HubV1ApiPatternWaypoint
 }
 
 /* * */

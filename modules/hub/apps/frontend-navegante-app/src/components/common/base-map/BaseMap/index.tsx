@@ -16,7 +16,7 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPattern, type HubShape } from '@tmlmobilidade/go-types-hub';
 import { type MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
@@ -47,7 +47,7 @@ export function BaseMap() {
 		return vehiclesContext.data.vehicles.find(vehicle => vehicle.vehicle_id === focusedVehicleId)?.pattern_id ?? null;
 	}, [focusedVehicleId, vehiclesContext.data.vehicles]);
 
-	const { data: patterns } = useSWR<HubPattern[]>(
+	const { data: patterns } = useSWR<HubV1ApiPattern[]>(
 		focusedVehiclePatternId ? { credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS(focusedVehiclePatternId) } : null,
 	);
 

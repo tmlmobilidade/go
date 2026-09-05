@@ -1,7 +1,7 @@
 /* * */
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubLine, type HubPattern, type HubScheduledArrival } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiScheduledArrival } from '@tmlmobilidade/go-types-hub';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -12,7 +12,7 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
  * Built from hub pattern cache; used to backfill stop sequences and scheduled
  * arrival times when converting GTFS-RT TripUpdates to simplified ETAs.
  */
-export type TripScheduleIndex = Map<string, { stops: Map<number, HubScheduledArrival>, validOn: string[] }[]>;
+export type TripScheduleIndex = Map<string, { stops: Map<number, HubV1ApiScheduledArrival>, validOn: string[] }[]>;
 
 /**
  * Parses a public/qualified trip ID of the form `[{planId}][{agencyId}]{tripId}`.
@@ -50,7 +50,7 @@ function gtfsArrivalTimeToUnixMs(operationalDate: string, arrivalTime: string): 
 };
 
 /** Indexes pattern groups into a {@link TripScheduleIndex} keyed by trip ID. */
-function indexPatterns(patternGroups: HubPattern[]): TripScheduleIndex {
+function indexPatterns(patternGroups: HubV1ApiPattern[]): TripScheduleIndex {
 	const index: TripScheduleIndex = new Map();
 
 	for (const patternGroup of patternGroups) {
@@ -82,14 +82,14 @@ export async function loadTripScheduleIndex(agencyId: string): Promise<TripSched
 	if (!linesRaw) return new Map();
 
 	const patternIds = [...new Set(
-		(JSON.parse(linesRaw) as HubLine[])
+		(JSON.parse(linesRaw) as HubV1ApiLine[])
 			.filter(line => line.agency_id === agencyId)
 			.flatMap(line => line.pattern_ids),
 	)];
 
 	const patternGroups = (await Promise.all(patternIds.map(async (patternId) => {
 		const raw = await cacheDb.get(`hub:v1:network:patterns:${patternId}`);
-		return raw ? JSON.parse(raw) as HubPattern[] : [];
+		return raw ? JSON.parse(raw) as HubV1ApiPattern[] : [];
 	}))).flat();
 
 	return indexPatterns(patternGroups);
@@ -101,7 +101,7 @@ export async function loadTripScheduleIndex(agencyId: string): Promise<TripSched
  * Prefers `stopSequence` when present in the index; otherwise falls back to
  * matching by `stopId`.
  *
- * @returns The matching {@link HubScheduledArrival}, or `undefined`
+ * @returns The matching {@link HubV1ApiScheduledArrival}, or `undefined`
  */
 export function getScheduledArrival(
 	scheduleIndex: TripScheduleIndex,
@@ -109,7 +109,7 @@ export function getScheduledArrival(
 	operationalDate: string,
 	stopSequence?: number,
 	stopId?: string,
-): HubScheduledArrival | undefined {
+): HubV1ApiScheduledArrival | undefined {
 	const entry = scheduleIndex.get(tripId)?.find(item => item.validOn.includes(operationalDate));
 	if (!entry) return undefined;
 

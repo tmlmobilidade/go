@@ -4,7 +4,7 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapViewOverlayVehiclesInteractiveLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { useDebouncedCallback } from '@mantine/hooks';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { Marker } from '@vis.gl/react-maplibre';
 import { useState } from 'react';
 
@@ -62,7 +62,7 @@ export function MapViewOverlayVehicleLineBadges({ visible }: MapViewOverlayVehic
 		// and create a badge group, sorting by short name
 		const badgeGroups: VehicleLineBadge[] = [];
 		vehiclesInViewport.forEach((vehicleFeature) => {
-			const properties = vehicleFeature.properties as HubVehiclePosition;
+			const properties = vehicleFeature.properties as HubV1ApiVehiclePosition;
 			const lineData = linesContext.data.lines.find(line => line._id === properties.line_id);
 			if (!lineData) return;
 			badgeGroups.push({

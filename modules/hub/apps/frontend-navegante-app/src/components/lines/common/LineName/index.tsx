@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { MantineHighlight } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 
 interface LineNameProps {
 	align?: 'center' | 'left' | 'right'
-	lineData?: HubLine
+	lineData?: HubV1ApiLine
 	longName?: string
 	searchQuery?: string
 	size?: 'lg' | 'md'

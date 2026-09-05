@@ -5,7 +5,7 @@
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { IconArrowLoopRight, IconSelector, IconX } from '@tabler/icons-react';
-import { type HubLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface SelectLineProps {
-	data: HubLine[]
+	data: HubV1ApiLine[]
 	label?: string
 	nothingFound?: string
 	onSelectLineId: (lineId: null | string) => void
@@ -43,7 +43,7 @@ export function SelectLine({ data = [], nothingFound, onSelectLineId, placeholde
 	//
 	// C. Search
 
-	const searchResultsData = useSearch<HubLine>({
+	const searchResultsData = useSearch<HubV1ApiLine>({
 		accessors: ['long_name', 'short_name', 'tts_name'],
 		data,
 		debounce: 200,

@@ -1,14 +1,14 @@
 'use client';
 
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
 interface VehiclesDetailContextState {
 	data: {
-		vehicle: HubVehiclePosition | null
+		vehicle: HubV1ApiVehiclePosition | null
 	}
 }
 

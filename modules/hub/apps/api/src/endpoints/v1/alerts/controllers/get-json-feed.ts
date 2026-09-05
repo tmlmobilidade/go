@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
@@ -11,7 +11,7 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getJsonFeed(request: FastifyRequest, reply: FastifyReply<HubAlert[]>) {
+export async function getJsonFeed(request: FastifyRequest, reply: FastifyReply<HubV1ApiAlert[]>) {
 	//
 
 	const cachedData = await cacheDb.get('hub:v1:alerts:published:json');

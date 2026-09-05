@@ -6,9 +6,9 @@ import { useEtaContext } from '@/components/eta/Eta.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { fetchPatterns } from '@/utils/fetch-patterns';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type HubAlert, type HubLine, type HubPattern, type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { convertGTFSTimeStringAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -44,12 +44,12 @@ interface StopsDetailContextState {
 		setActiveTripId: (tripId: string, stopSequence: number) => void
 	}
 	data: {
-		active_alerts: HubAlert[]
-		associated_lines: HubLine[]
-		highlighted_pattern: HubPattern
+		active_alerts: HubV1ApiAlert[]
+		associated_lines: HubV1ApiLine[]
+		highlighted_pattern: HubV1ApiPattern
 		highlighted_stop_sequence: number
 		highlighted_trip_id: string
-		stop: HubStop
+		stop: HubV1ApiStop
 		timetable: StopsDetailViewTimetableData[]
 	}
 	flags: {
@@ -85,9 +85,9 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const [associatedPatternsData, setAssociatedPatternsData] = useState<HubPattern[][]>();
+	const [associatedPatternsData, setAssociatedPatternsData] = useState<HubV1ApiPattern[][]>();
 
-	const [highlightedPattern, setHighlightedPattern] = useState<HubPattern>();
+	const [highlightedPattern, setHighlightedPattern] = useState<HubV1ApiPattern>();
 	const [highlightedTripId, setHighlightedTripId] = useState<string>();
 	const [highlightedStopSequence, setHighlightedStopSequence] = useState<number>();
 
@@ -204,7 +204,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		}
 		// Return the timetable data, sorted by scheduled arrival time
 		return timetableDataForSelectedDate.sort((a, b) => a.arrival_effective_ms - b.arrival_effective_ms);
-	}, [validPatternsData, operationalDate.selectedOperationalDate, operationalDate.isTodaySelected, etaContext.data.all, stopId]);
+	}, [validPatternsData, operationalDate.selectedOperationalDate, operationalDate.isTodaySelected, etaContext.actions, stopId]);
 
 	//
 	// D. Handle actions

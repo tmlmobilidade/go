@@ -2,7 +2,7 @@
 
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { type ListContextStateTemplate, type MapOverlayMultipleStopsDataProps, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -15,7 +15,7 @@ const CM_AGENCY_IDS = new Set(['A2L1N', 'BNA17', 'LA77N', 'YA15B']);
 interface StopsListContextState extends ListContextStateTemplate {
 	data: {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>
-		filtered: HubStop[]
+		filtered: HubV1ApiStop[]
 	}
 	filters: {
 		agency: UseFilterStateTextReturnType
@@ -51,7 +51,7 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Transform data
 
-	const searchResultsData = useSearch<HubStop>({
+	const searchResultsData = useSearch<HubV1ApiStop>({
 		accessors: ['name', 'short_name', 'tts_name'],
 		data: stopsContext.data.stops,
 		query: filterSearch.value,

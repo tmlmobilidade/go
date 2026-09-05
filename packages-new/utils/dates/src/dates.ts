@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { CALENDAR_DATE_FORMAT, type CalendarDate, DateFormat, OPERATIONAL_DATE_FORMAT, type OperationalDateInt, type TimezoneIdentified, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { CALENDAR_DATE_FORMAT, type CalendarDate, DateFormat, OPERATIONAL_DATE_FORMAT, type OperationalDateInt, OperationalDateIntSchema, type TimezoneIdentified, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
 
 import { DateFormatConfigMap } from './date-format.js';
@@ -106,8 +106,12 @@ export class Dates {
 	 * @returns A new Dates object created from the operational date.
 	 */
 	static fromOperationalDateInt(date: OperationalDateInt | string, timezone: 'local' | 'utc' | TimezoneIdentified): Dates {
+		// Validate the date
+		const validatedDate = OperationalDateIntSchema.safeParse(date);
+		if (!validatedDate.success) throw new Error(`Received an invalid operational date: ${date} - ${validatedDate.error.message}`);
+		// Create the date time object
 		const dateTime = DateTime
-			.fromFormat(String(date), OPERATIONAL_DATE_FORMAT)
+			.fromFormat(String(validatedDate.data), OPERATIONAL_DATE_FORMAT)
 			.setZone(timezone, { keepLocalTime: true })
 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 }); // Start of the operational date
 		return new Dates({

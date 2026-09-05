@@ -3,14 +3,14 @@
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
 import { Modal, ModalBody } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
-import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface AlertDetailModalProps {
-	alert: HubAlert
+	alert: HubV1ApiAlert
 	isOpen: boolean
 	onClose: () => void
 }

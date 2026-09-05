@@ -4,7 +4,7 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapViewOverlayStopsInteractiveLayerId } from '@/components/map/overlays/MapViewOverlayStops';
 import { useDebouncedCallback } from '@mantine/hooks';
-import { type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { Marker } from '@vis.gl/react-maplibre';
 import { useState } from 'react';
 
@@ -68,13 +68,13 @@ export function MapViewOverlayStopLineBadges({ limit = 4, visible }: MapViewOver
 		const badgeGroups: StopLineBadgeGroup[] = [];
 		stopsInViewport.forEach((stopFeature) => {
 			const lineIds = JSON.parse(stopFeature.properties.line_ids);
-			const properties = stopFeature.properties as HubStop;
+			const properties = stopFeature.properties as HubV1ApiStop;
 			const badges: StopLineBadge[] = [];
 			lineIds.forEach((lineId: string) => {
 				const lineData = linesContext.data.lines.find(line => line._id === lineId);
 				if (!lineData) return;
 				badges.push({
-					_id: `${String(stopFeature.properties._id)}-${lineId}`,
+					_id: `${stopFeature.properties._id}-${lineId}`,
 					color: lineData.color,
 					short_name: lineData.short_name,
 					text_color: lineData.text_color,
@@ -84,7 +84,7 @@ export function MapViewOverlayStopLineBadges({ limit = 4, visible }: MapViewOver
 				badges: badges.sort((a, b) => a.short_name.localeCompare(b.short_name, undefined, { numeric: true })),
 				latitude: properties.latitude,
 				longitude: properties.longitude,
-				stop_id: String(properties._id),
+				stop_id: properties._id,
 			});
 		});
 		setVisibleBadges(badgeGroups);
