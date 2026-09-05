@@ -5,8 +5,8 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { LineBadge, LineName, Section } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -31,15 +31,15 @@ export function VehiclesDetailView() {
 	//
 	// B. Fetch data
 
-	const { data: activePatternData } = useSWR<HubV1ApiPattern[]>(vehiclesDetailContext.data.vehicle?.pattern_id && {
+	const { data: activePatternData } = useSWR<HubV1ApiPattern[]>(vehiclesDetailContext.data.vehicle?.shape_id && {
 		credentials: 'omit',
-		url: API_ROUTES.hub.NETWORK_PATTERNS(vehiclesDetailContext.data.vehicle.pattern_id),
+		url: API_ROUTES.hub.NETWORK_PATTERNS(vehiclesDetailContext.data.vehicle.shape_id),
 	});
 
 	const activeLineData = useMemo(() => {
-		if (!vehiclesDetailContext.data.vehicle?.line_id) return;
-		return linesContext.data.lines.find(line => line._id === vehiclesDetailContext.data.vehicle?.line_id);
-	}, [linesContext.data.lines, vehiclesDetailContext.data.vehicle?.line_id]);
+		if (!vehiclesDetailContext.data.vehicle?.route_short_name) return;
+		return linesContext.data.lines.find(line => line.short_name === vehiclesDetailContext.data.vehicle?.route_short_name);
+	}, [linesContext.data.lines, vehiclesDetailContext.data.vehicle?.route_short_name]);
 
 	const differenceInSeconds = useMemo(() => {
 		if (!vehiclesDetailContext.data.vehicle?.created_at) return;

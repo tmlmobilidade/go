@@ -8,18 +8,19 @@ import { formatStopLocation } from '@/utils/format-stop-location';
 import { ComboboxItem, ComboboxItemGroup, Flex, Group, Select, SelectProps, Text } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
+import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 export interface Props extends SelectProps {
-	date_filter?: string
+	date_filter?: OperationalDateInt
 	patterns: HubV1ApiPattern[]
 }
 
 interface CustomComboboxItem extends ComboboxItem {
-	direction_id: number
+	direction_id: '0' | '1'
 	pattern_id: string
 }
 
@@ -91,7 +92,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 			}
 		});
 
-		data.forEach(group => group.items.sort((a, b) => a.direction_id - b.direction_id));
+		data.forEach(group => group.items.sort((a, b) => a.direction_id.localeCompare(b.direction_id, undefined, { numeric: true })));
 
 		// data.sort((a, b) => a.group.localeCompare(b.group));
 

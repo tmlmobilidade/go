@@ -63,7 +63,7 @@ export function MapViewOverlayVehicleLineBadges({ visible }: MapViewOverlayVehic
 		const badgeGroups: VehicleLineBadge[] = [];
 		vehiclesInViewport.forEach((vehicleFeature) => {
 			const properties = vehicleFeature.properties as HubV1ApiVehiclePosition;
-			const lineData = linesContext.data.lines.find(line => line._id === properties.line_id);
+			const lineData = linesContext.data.lines.find(line => line.short_name === properties.route_short_name);
 			if (!lineData) return;
 			badgeGroups.push({
 				_id: String(properties._id),
