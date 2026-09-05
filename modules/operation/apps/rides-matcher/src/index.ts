@@ -3,8 +3,6 @@
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RidesCoordinatorRideMatchesResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { getCoordinatorUrl, ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
-import { type RideMatch } from '@tmlmobilidade/go-types-operation';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -50,24 +48,26 @@ async function main() {
 		// Retrieve the ride matches from the database
 
 		const query = `
-            WITH
-                ride_matches AS (
-                    SELECT *
-                    FROM operation.ride_matches FINAL
-                    WHERE _id IN $1
-                )
-            SELECT r._id
-            FROM operation.rides AS r FINAL
-            CROSS JOIN ride_matches AS e
-            WHERE
-                r.agency_id = e.agency_id
-                AND r.operational_date IN e.operational_dates
-                AND r.trip_id = e.trip_id
-                AND r.start_time_scheduled >= e.window_start
-                AND r.start_time_scheduled <= e.window_end
-            ORDER BY r.updated_at DESC
-            LIMIT 1 BY r._id
-        `;
+			WITH
+				ride_matches AS (
+					SELECT *
+					FROM operation.ride_matches
+					WHERE _id IN $1
+					ORDER BY updated_at DESC
+					LIMIT 1 BY _id
+				)
+			SELECT r._id
+			FROM operation.rides AS r
+			CROSS JOIN ride_matches AS e
+			WHERE
+				r.agency_id = e.agency_id
+				AND r.operational_date IN e.operational_dates
+				AND r.trip_id = e.trip_id
+				AND r.start_time_scheduled >= e.window_start
+				AND r.start_time_scheduled <= e.window_end
+			ORDER BY r.updated_at DESC
+			LIMIT 1 BY r._id
+		`;
 
 		const matchingRides = await labDb.queryFromString<{ _id: string }>(query, { 1: rideMatchIds });
 		const matchingRidesIds = matchingRides.map(ride => ride._id);
@@ -80,29 +80,13 @@ async function main() {
 		}
 
 		//
-		// Mark the Ride Matches as 'complete' by inserting new ReplacingMergeTree versions.
+		// Delete the Ride Matches
 
-		const rideMatches = await labDb.queryFromString<RideMatch>(
-			`
-                SELECT *
-                FROM operation.ride_matches FINAL
-                WHERE _id IN $1
-            `,
-			{ 1: rideMatchIds },
-		);
-
-		if (rideMatches.length) {
-			await labDb.operation.rideMatches.insert(
-				'JSONEachRow',
-				rideMatches.map(item => ({
-					...item,
-					processing_status: 'complete',
-					updated_at: Dates.now('utc').unix_milliseconds,
-				})),
-			);
-		}
+		await labDb.operation.rideMatches.delete('_id IN $1', { 1: rideMatchIds });
 
 		Logger.terminate(`Run took ${globalTimer.get()}`);
+
+		//
 	} catch (error) {
 		Logger.error({ error, message: 'Error matching rides' });
 	}
