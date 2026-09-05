@@ -1,6 +1,6 @@
 /* * */
 
-import { getQualifiedBlockId, getQualifiedRouteId, getQualifiedServiceId, getQualifiedShapeId, getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { getQualifiedBlockId, getQualifiedPatternId, getQualifiedRouteId, getQualifiedServiceId, getQualifiedShapeId, getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
 import { type HubGtfsExportTripsInput, HubGtfsExportTripsSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
@@ -25,6 +25,7 @@ export async function exportTripsFile(context: ExportGtfsContext, planData: Plan
 			block_id: getQualifiedBlockId(planData.agency_id, tripData.block_id),
 			cars_allowed: tripData.cars_allowed,
 			direction_id: tripData.direction_id,
+			pattern_id: getQualifiedPatternId(planData.agency_id, tripData.shape_id),
 			route_id: getQualifiedRouteId(planData.agency_id, tripData.route_id),
 			service_id: getQualifiedServiceId(planData._id, planData.agency_id, tripData.service_id),
 			shape_id: getQualifiedShapeId(planData._id, planData.agency_id, tripData.shape_id),
