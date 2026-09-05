@@ -27,7 +27,7 @@ export async function importGtfsHubV1ToDatabase(config: ImportGtfsConfig): Promi
 
 		const globalTimer = new Timer();
 
-		Logger.info({ message: 'Starting GTFS Strict v30 import process...' });
+		Logger.info({ message: 'Starting GTFS Hub v1 import process...' });
 
 		//
 		// Initialize context for the import process.
