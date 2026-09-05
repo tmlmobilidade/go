@@ -4,9 +4,11 @@ import { GtfsStrictV30Shapes, GtfsStrictV30Trips } from '@tmlmobilidade/go-types
 import { BatchWriter, streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
-import { join } from 'node:path';
-import Papa from 'papaparse';
+import path, { join } from 'node:path';
+
+import { type NormalizePlansTaskContext } from '../context/init-context.js';
 
 /**
  * Rewrites the `shape_id` values of trips.txt and shapes.txt to match the `pattern_id`
@@ -17,7 +19,7 @@ import Papa from 'papaparse';
  * must outlive the archive generation.
  * @returns True if the zip archive was updated.
  */
-export async function rewriteShapeIdsToPatternIds(workdirPath: string): Promise<void> {
+export async function rewriteShapeIdsToPatternIds(context: NormalizePlansTaskContext): Promise<void> {
 	try {
 		//
 
@@ -29,7 +31,7 @@ export async function rewriteShapeIdsToPatternIds(workdirPath: string): Promise<
 		//
 		// Prepare the output directory.
 
-		const outputFilePath = join(workdirPath, 'output');
+		const outputFilePath = join(context.paths.base_dir_path, 'output');
 
 		try {
 			fs.rmSync(outputFilePath, { force: true, recursive: true });
@@ -48,7 +50,7 @@ export async function rewriteShapeIdsToPatternIds(workdirPath: string): Promise<
 			insertFn: async (data) => {
 				const dirPath = `${outputFilePath}/trips.txt`;
 				const fileAlreadyExists = fs.existsSync(dirPath);
-				let csvData = Papa.unparse(data, { header: !fileAlreadyExists, newline: '\n', skipEmptyLines: 'greedy' });
+				let csvData = csvStringify([data], { header: !fileAlreadyExists });
 				if (fileAlreadyExists) csvData = '\n' + csvData;
 				fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
 			},
@@ -60,7 +62,7 @@ export async function rewriteShapeIdsToPatternIds(workdirPath: string): Promise<
 			insertFn: async (data) => {
 				const dirPath = `${outputFilePath}/shapes.txt`;
 				const fileAlreadyExists = fs.existsSync(dirPath);
-				let csvData = Papa.unparse(data, { header: !fileAlreadyExists, newline: '\n', skipEmptyLines: 'greedy' });
+				let csvData = csvStringify([data], { header: !fileAlreadyExists });
 				if (fileAlreadyExists) csvData = '\n' + csvData;
 				fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
 			},
@@ -87,7 +89,7 @@ export async function rewriteShapeIdsToPatternIds(workdirPath: string): Promise<
 			tripsWriter.write({ ...data, shape_id: currentPatternId });
 		};
 
-		await streamCsvFile(`${workdirPath}/extracted/trips.txt`, parseEachTripsRow);
+		await streamCsvFile(path.join(context.paths.extracted_dir_path, 'trips.txt'), parseEachTripsRow);
 
 		tripsWriter.flush();
 
@@ -110,7 +112,7 @@ export async function rewriteShapeIdsToPatternIds(workdirPath: string): Promise<
 			shapesWriter.write({ ...data, shape_id: currentPatternId });
 		};
 
-		await streamCsvFile(`${workdirPath}/extracted/shapes.txt`, parseEachShapesRow);
+		await streamCsvFile(path.join(context.paths.extracted_dir_path, 'shapes.txt'), parseEachShapesRow);
 
 		shapesWriter.flush();
 
@@ -119,11 +121,11 @@ export async function rewriteShapeIdsToPatternIds(workdirPath: string): Promise<
 		//
 		// Replace the original trips.txt and shapes.txt files with the new ones.
 
-		fs.rmSync(`${workdirPath}/extracted/trips.txt`, { force: true });
-		fs.rmSync(`${workdirPath}/extracted/shapes.txt`, { force: true });
+		fs.rmSync(path.join(context.paths.extracted_dir_path, 'trips.txt'), { force: true });
+		fs.rmSync(path.join(context.paths.extracted_dir_path, 'shapes.txt'), { force: true });
 
-		fs.renameSync(`${outputFilePath}/trips.txt`, `${workdirPath}/extracted/trips.txt`);
-		fs.renameSync(`${outputFilePath}/shapes.txt`, `${workdirPath}/extracted/shapes.txt`);
+		fs.renameSync(path.join(outputFilePath, 'trips.txt'), path.join(context.paths.extracted_dir_path, 'trips.txt'));
+		fs.renameSync(path.join(outputFilePath, 'shapes.txt'), path.join(context.paths.extracted_dir_path, 'shapes.txt'));
 
 		Logger.success(`Replaced original trips.txt and shapes.txt files with the new ones.`, 1);
 

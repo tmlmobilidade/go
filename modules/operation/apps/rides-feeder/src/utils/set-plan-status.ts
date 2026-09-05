@@ -7,18 +7,9 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 /* * */
 
 export async function setPlanStatus(planId: string, status: ProcessingStatus, hash?: string) {
-	//
-
-	const plansCollection = await goDb.operation.plans.getCollection();
-
-	await plansCollection.updateOne(
-		{ _id: { $eq: planId } },
-		{
-			$set: {
-				'apps.rides_feeder.last_hash': hash ?? null,
-				'apps.rides_feeder.status': status,
-				'apps.rides_feeder.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
-			},
-		},
-	);
+	await goDb.operation.plans.updateById(planId, {
+		'apps.rides_feeder.last_hash': hash ?? null,
+		'apps.rides_feeder.status': status,
+		'apps.rides_feeder.timestamp': Dates.now('utc').unix_milliseconds,
+	});
 };

@@ -91,7 +91,7 @@ export async function updateApexFileHandler(request: FastifyRequest<{ Body: Upda
 				updated_by: request.me.email,
 			},
 			{
-				onSuccess: async (_ctx, attachment, session) => {
+				onSuccess: async (_, attachment, session) => {
 					updatedPlanData = await goDb.operation.plans.updateById(
 						foundPlan._id,
 						{ apex_file_id: attachment._id },

@@ -13,16 +13,16 @@ import { getDirectoryFiles } from './get-directory-files.js';
  * compression settings, and `.zip` file entry ordering.
  * Files are hashed individually in streaming mode, then the filenames and
  * individual hashes are sorted and combined into the final hash.
- * @param zipFilePath The path to the `.zip` file.
+ * @param filePath The path to the `.zip` file.
  * @returns The SHA-256 hash of the `.zip` file contents.
  */
-export async function calculateZipFileHash(filePath: string): Promise<string> {
+export async function getZipFileHash(filePath: string): Promise<string> {
 	//
 
 	//
 	// Initialize a new temporary directory and extract the ZIP file into it.
 
-	const temporaryDirectory = fs.mkdtempDisposableSync('calculate-zip-file-hash');
+	const temporaryDirectory = fs.mkdtempDisposableSync('get-zip-file-hash-');
 
 	await fs
 		.createReadStream(filePath)
