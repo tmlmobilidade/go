@@ -152,8 +152,9 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				// Get the stop data associated with the current stop_time
 
 				const stopParsedData: HubV1ApiStop = allStopsParsedMap.get(stopTimeRawData.stop_id);
+
 				if (!stopParsedData) {
-					Logger.error({ message: `Stop not found: ${stopTimeRawData.stop_id}` });
+					console.error(`Stop not found: ${stopTimeRawData.stop_id}`);
 					continue;
 				}
 

@@ -66,22 +66,22 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			//
 
 			if (!gtfsStop.agency_ids?.length) {
-				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no agency IDs.` });
+				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no agency IDs.`);
 				continue;
 			}
 
 			if (!gtfsStop.route_short_names?.length) {
-				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no line IDs.` });
+				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no line IDs.`);
 				continue;
 			}
 
 			if (!gtfsStop.route_ids?.length) {
-				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no route IDs.` });
+				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no route IDs.`);
 				continue;
 			}
 
 			if (!gtfsStop.shape_ids?.length) {
-				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no shape IDs.` });
+				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no shape IDs.`);
 				continue;
 			}
 
@@ -125,7 +125,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 
 			//
 		} catch (error) {
-			Logger.error({ error, message: `Error processing stop ${gtfsStop.stop_id}:` });
+			console.error(`Error processing stop ${gtfsStop.stop_id}:`, error);
 			console.log(gtfsStop);
 			continue;
 		}
