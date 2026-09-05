@@ -1,5 +1,6 @@
 /* * */
 
+import { encodeStopFlags } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type HubGtfsExportStopsInput, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-hub';
@@ -50,16 +51,10 @@ export async function exportStopsFile(context: ExportGtfsContext, agencyIds: str
 		//
 
 		//
-		// Format the stop flags to accomodate multiple IDs for each agency
+		// Encode the stop flags to accomodate
+		// multiple stop IDs for each agency
 
-		const formattedStopFlagsValue: string[] = [];
-
-		for (const flagData of stopData.flags) {
-			for (const agencyId of flagData.agency_ids) {
-				if (!agencyIds.includes(agencyId)) continue;
-				formattedStopFlagsValue.push(`${agencyId}-${flagData.stop_id}`);
-			}
-		}
+		const encodedStopFlags = encodeStopFlags(stopData.flags, agencyIds);
 
 		//
 		// Get the matching names for the stop's location entities
@@ -72,7 +67,7 @@ export async function exportStopsFile(context: ExportGtfsContext, agencyIds: str
 		const parsedStopsRow: HubGtfsExportStopsInput = {
 			district_id: stopData.district_id,
 			district_name: matchingDistrictName,
-			flags: formattedStopFlagsValue.join('|'),
+			flags: encodedStopFlags,
 			legacy_ids: stopData.legacy_ids.join('|'),
 			lifecycle_status: stopData.lifecycle_status,
 			locality_id: stopData.locality_id ?? '-',
