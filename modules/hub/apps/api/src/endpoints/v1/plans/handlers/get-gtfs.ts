@@ -9,7 +9,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getGtfs(request: FastifyRequest, reply: FastifyReply<string>) {
+export async function getGtfsHandler(request: FastifyRequest, reply: FastifyReply<string>) {
 	// Retrieve file data from database
 	const foundFileData = await storageProvider.findById('gtfs-latest');
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
