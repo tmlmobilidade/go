@@ -11,9 +11,9 @@ import { Timer } from '@tmlmobilidade/timer';
 
 interface QueryResult extends HubV1GtfsStops {
 	agency_ids: string
+	pattern_ids: string
 	route_ids: string
 	route_short_names: string
-	shape_ids: string
 }
 
 /* * */
@@ -32,18 +32,18 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 		SELECT
 			s.*,
 			r.agency_ids,
-			r.route_short_names,
+			r.pattern_ids,
 			r.route_ids,
-			r.shape_ids
+			r.route_short_names
 		FROM
 			stops s
 		LEFT JOIN (
 			SELECT
 				stop_id,
 				json_group_array(DISTINCT r.agency_id) AS agency_ids,
+				json_group_array(DISTINCT t.pattern_id) AS pattern_ids,
 				json_group_array(DISTINCT r.route_id) AS route_ids,
-				json_group_array(DISTINCT r.route_short_name) AS route_short_names,
-				json_group_array(DISTINCT t.shape_id) AS shape_ids
+				json_group_array(DISTINCT r.route_short_name) AS route_short_names
 			FROM
 				stop_times st
 			JOIN
@@ -80,8 +80,8 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				continue;
 			}
 
-			if (!gtfsStop.shape_ids?.length) {
-				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no shape IDs.`);
+			if (!gtfsStop.pattern_ids?.length) {
+				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no pattern IDs.`);
 				continue;
 			}
 
@@ -111,7 +111,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				name: gtfsStop.stop_name,
 				parish_id: gtfsStop.parish_id,
 				parish_name: gtfsStop.parish_name,
-				pattern_ids: JSON.parse(gtfsStop.shape_ids),
+				pattern_ids: JSON.parse(gtfsStop.pattern_ids),
 				route_ids: JSON.parse(gtfsStop.route_ids),
 				short_name: gtfsStop.stop_name,
 				tts_name: gtfsStop.tts_stop_name || gtfsStop.stop_name,

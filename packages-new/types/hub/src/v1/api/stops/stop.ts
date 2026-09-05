@@ -14,7 +14,7 @@ export const HubV1ApiStopSchema = z.object({
 	flags: z.array(z.object({ agency_id: z.string(), stop_id: z.string() })),
 	latitude: LatitudeSchema,
 	legacy_ids: z.array(z.string()),
-	lifecycle_status: LifecycleStatusSchema,
+	lifecycle_status: LifecycleStatusSchema.optional(),
 	line_ids: z.array(z.string()),
 	locality_id: z.string().nullable(),
 	locality_name: z.string().nullable(),
