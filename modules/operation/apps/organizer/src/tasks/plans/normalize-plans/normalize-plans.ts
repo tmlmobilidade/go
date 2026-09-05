@@ -1,9 +1,8 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
+import { getPlanHash, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { unzipFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -25,6 +24,14 @@ import { rewriteShapeIdsToPatternIds } from './steps/shapes.js';
  */
 export async function normalizePlansTask() {
 	//
+
+	process.on('uncaughtException', (error) => {
+		console.error('UNCAUGHT EXCEPTION:', error);
+	});
+
+	process.on('unhandledRejection', (error) => {
+		console.error('UNHANDLED REJECTION:', error);
+	});
 
 	Logger.init();
 
@@ -61,27 +68,20 @@ export async function normalizePlansTask() {
 			// Download the operation file from storage
 
 			if (!planData.operation_file_id) {
-				Logger.error({ message: `[${planData._id}] No Operation file ID found.` });
-				continue;
+				throw new Error(`[${planData._id}] No Operation file ID found.`);
 			}
 
 			const operationFileData = await storageProvider.findById(planData.operation_file_id);
 
 			if (!operationFileData?.url) {
-				Logger.error({ message: `[${planData._id}] Operation file "${planData.operation_file_id}" not found.` });
-				continue;
+				throw new Error(`[${planData._id}] Operation file "${planData.operation_file_id}" not found.`);
 			}
 
-			try {
-				Logger.info({ message: `Downloading GTFS file from URL: ${operationFileData.url}` });
-				const downloadResponse = await fetch(operationFileData.url);
-				const downloadArrayBuffer = await downloadResponse.arrayBuffer();
-				fs.writeFileSync(context.paths.original_operation_file_path, Buffer.from(downloadArrayBuffer));
-				Logger.success(`Downloaded GTFS file from URL: ${operationFileData.url}`);
-			} catch (error) {
-				Logger.error({ error, message: `Error downloading GTFS file from URL: ${operationFileData.url}` });
-				continue;
-			}
+			Logger.info({ message: `Downloading GTFS file from URL: ${operationFileData.url}` });
+			const downloadResponse = await fetch(operationFileData.url);
+			const downloadArrayBuffer = await downloadResponse.arrayBuffer();
+			fs.writeFileSync(context.paths.original_operation_file_path, Buffer.from(downloadArrayBuffer));
+			Logger.success(`Downloaded GTFS file from URL: ${operationFileData.url}`);
 
 			//
 			// Unzip the GTFS file.
@@ -117,21 +117,26 @@ export async function normalizePlansTask() {
 
 			const outputZip = new ZipFile();
 
-			await new Promise<void>((resolve) => {
-				// Read the working directory contents
-				const workdirDirContents = fs.readdirSync(context.paths.extracted_dir_path, { withFileTypes: true });
-				// Add each file to the zip
-				workdirDirContents.forEach((outputDirFile) => {
-					const filePath = path.join(context.paths.extracted_dir_path, outputDirFile.name);
-					outputZip.addFile(filePath, outputDirFile.name);
-				});
-				// Setup a write stream to the final zip file
-				outputZip.outputStream
-					.pipe(fs.createWriteStream(context.paths.new_operation_file_path))
-					.on('close', resolve);
-				// Finalize the zip creation, which triggers
-				// the piping and writing process.
-				outputZip.end();
+			await new Promise<void>((resolve, reject) => {
+				try {
+					// Read the working directory contents
+					const workdirDirContents = fs.readdirSync(context.paths.extracted_dir_path, { withFileTypes: true });
+					// Add each file to the zip
+					for (const outputDirFile of workdirDirContents) {
+						if (!outputDirFile.isFile()) continue;
+						const filePath = path.join(context.paths.extracted_dir_path, outputDirFile.name);
+						outputZip.addFile(filePath, outputDirFile.name);
+					}
+					// Setup a write stream to the final zip file
+					outputZip.outputStream
+						.pipe(fs.createWriteStream(context.paths.new_operation_file_path))
+						.on('close', resolve);
+					// Finalize the zip creation, which triggers
+					// the piping and writing process.
+					outputZip.end();
+				} catch (error) {
+					reject(error);
+				}
 			});
 
 			Logger.success(`Zipped new GTFS archive in ${zipTimer.get()}.`);
@@ -170,17 +175,14 @@ export async function normalizePlansTask() {
 			//
 			// Update the last hash of the organizer app for this plan.
 
-			await goDb.operation.plans.updateById(planData._id, {
-				'apps.organizer.last_hash': '$hash',
-				'apps.organizer.status': 'complete',
-				'apps.organizer.timestamp': Dates.now('utc').unix_milliseconds,
-			});
+			await setPlanStatus(planData._id, 'organizer', 'complete', '$hash');
 
 			Logger.success(`Updated last hash of organizer app for plan ${planData._id}.`, 1);
 
 			//
 		} catch (error) {
 			Logger.error({ error, message: `Error processing plan ${planData._id}:` });
+			await setPlanStatus(planData._id, 'organizer', 'error');
 		} finally {
 			// Cleanup the working directory.
 			context.paths.removeDir();
