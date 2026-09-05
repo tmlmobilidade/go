@@ -1,5 +1,4 @@
 export * from './alerts/index.js';
-export * from './arrivals/index.js';
 export * from './lines/index.js';
 export * from './patterns/index.js';
 export * from './plans/index.js';

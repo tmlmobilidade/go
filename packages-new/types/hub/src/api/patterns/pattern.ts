@@ -3,8 +3,8 @@
 import { HexColorSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
-import { HubTripSchema } from './trip.js';
-import { HubWaypointSchema } from './waypoint.js';
+import { HubPatternTripSchema } from './pattern-trip.js';
+import { HubPatternWaypointSchema } from './pattern-waypoint.js';
 
 /* * */
 
@@ -25,12 +25,12 @@ export const HubPatternSchema = z.object({
 	municipality_names: z.array(z.string()).default([]),
 	parish_ids: z.array(z.string()).default([]),
 	parish_names: z.array(z.string()).default([]),
-	path: z.array(HubWaypointSchema),
+	path: z.array(HubPatternWaypointSchema),
 	route_id: z.string(),
 	shape_id: z.string(),
 	short_name: z.string(),
 	text_color: HexColorSchema,
-	trips: z.array(HubTripSchema),
+	trips: z.array(HubPatternTripSchema),
 	tts_headsign: z.string(),
 	valid_on: z.array(OperationalDateIntSchema).default([]),
 	version_id: z.string(),
