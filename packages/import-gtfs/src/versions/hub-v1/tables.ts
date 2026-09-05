@@ -26,6 +26,7 @@ export function initGtfsHubV1SqlTables(): GtfsHubV1SQLTables {
 			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'service_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'shape_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'trip_headsign', not_null: true, type: 'TEXT' },
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_accessible', type: 'TEXT' },
