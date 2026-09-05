@@ -114,7 +114,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				pattern_ids: JSON.parse(gtfsStop.shape_ids),
 				route_ids: JSON.parse(gtfsStop.route_ids),
 				short_name: gtfsStop.stop_name,
-				tts_name: gtfsStop.tts_stop_name,
+				tts_name: gtfsStop.tts_stop_name || gtfsStop.stop_name,
 			};
 
 			const parsedStop = HubV1ApiStopSchema.parse(validatedStop);
@@ -127,6 +127,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 		} catch (error) {
 			console.error(`Error processing stop ${gtfsStop.stop_id}:`, error);
 			console.log(gtfsStop);
+			process.exit(1);
 			continue;
 		}
 	}
