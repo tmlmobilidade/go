@@ -1,30 +1,8 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { RideMatch, type HashedShape, type HashedTrip, type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisBase, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
+import { type HashedShape, type HashedTrip, type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisBase, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality, type RideMatch } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-
-/* * */
-
-export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
-	_id: { type: 'String' },
-	agency_id: { type: 'LowCardinality(String)' },
-	bearing: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
-	created_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	current_status: { type: 'LowCardinality(Nullable(String))' },
-	driver_id: { type: 'LowCardinality(Nullable(String))' },
-	extra_trip_id: { type: 'Nullable(String)' },
-	geohash: { materialized: 'geohashEncode(longitude, latitude, 7)', type: 'FixedString(7)' },
-	latitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
-	longitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
-	odometer: { type: 'Nullable(UInt32)' },
-	operational_date: { type: 'UInt32' },
-	received_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	speed: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
-	stop_id: { type: 'LowCardinality(Nullable(String))' },
-	trip_id: { type: 'String' },
-	vehicle_id: { type: 'LowCardinality(String)' },
-};
 
 /* * */
 
@@ -194,6 +172,19 @@ export const rideAnalysisTransactionSequentialityTableSchema: ClickHouseTableSch
 
 /* * */
 
+export const rideMatchesTableSchema: ClickHouseTableSchema<RideMatch> = {
+	_id: { type: 'String' },
+	agency_id: { type: 'LowCardinality(String)' },
+	operational_dates: { type: 'Array(UInt32) CODEC(ZSTD)' },
+	processing_status: { type: 'LowCardinality(String)' },
+	trip_id: { type: 'LowCardinality(String)' },
+	updated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	window_end: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	window_start: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+};
+
+/* * */
+
 export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	_id: { type: 'String' },
 	agency_code: { type: 'LowCardinality(String)' },
@@ -245,13 +236,22 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 
 /* * */
 
-export const rideMatchesTableSchema: ClickHouseTableSchema<RideMatch> = {
+export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'LowCardinality(String)' },
-	operational_dates: { type: 'Array(UInt32) CODEC(ZSTD)' },
-	processing_status: { type: 'LowCardinality(String)' },
-	trip_id: { type: 'LowCardinality(String)' },
-	updated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	window_end: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	window_start: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	bearing: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	created_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	current_status: { type: 'LowCardinality(Nullable(String))' },
+	driver_id: { type: 'LowCardinality(Nullable(String))' },
+	extra_trip_id: { type: 'Nullable(String)' },
+	geohash: { materialized: 'geohashEncode(longitude, latitude, 7)', type: 'FixedString(7)' },
+	latitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
+	longitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
+	odometer: { type: 'Nullable(UInt32)' },
+	operational_date: { type: 'UInt32' },
+	received_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	speed: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+	stop_id: { type: 'LowCardinality(Nullable(String))' },
+	trip_id: { type: 'String' },
+	vehicle_id: { type: 'LowCardinality(String)' },
 };
