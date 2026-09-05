@@ -167,4 +167,4 @@ export async function analyzeRides() {
 
 /* * */
 
-await runOnInterval(analyzeRides, { intervalMs: '10s' });
+await runOnInterval(analyzeRides, { intervalMs: '1s' });

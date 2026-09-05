@@ -5,20 +5,20 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-client
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
 /**
- * Download the latest GTFS CM merged file.
+ * Download the latest GTFS merged file.
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getGtfsCm(request: FastifyRequest, reply: FastifyReply<unknown>) {
+export async function getGtfsHandler(request: FastifyRequest, reply: FastifyReply<string>) {
 	// Retrieve file data from database
-	const foundFileData = await storageProvider.findById('gtfs-cm-latest');
+	const foundFileData = await storageProvider.findById('gtfs-latest');
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 	// Stream the file in the given URL to the client
 	const storageServiceResponse = await fetch(foundFileData.url);
 	if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
 	// Set headers and pipe the response body to the client
 	reply.header('access-control-allow-origin', '*');
-	reply.header('content-disposition', `attachment; filename="gtfs-cm-latest.zip"`);
+	reply.header('content-disposition', `attachment; filename="gtfs-latest.zip"`);
 	reply.header('content-type', 'application/zip');
 	reply.header('cache-control', 'no-store'); // Disable nginx and client caching
 	reply.header('X-Accel-Buffering', 'no'); // Disable nginx buffering to memory

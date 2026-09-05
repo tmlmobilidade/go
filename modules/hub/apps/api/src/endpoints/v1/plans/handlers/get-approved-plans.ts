@@ -12,7 +12,7 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getApprovedPlans(request: FastifyRequest, reply: FastifyReply<Plan[]>) {
+export async function getApprovedPlansHandler(request: FastifyRequest, reply: FastifyReply<Plan[]>) {
 	//
 
 	const cachedData = await cacheDb.get('hub:v1:plans:approved:json');

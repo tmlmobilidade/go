@@ -1,9 +1,10 @@
 /* * */
 
-import { getApprovedPlans } from '@/endpoints/v1/plans/controllers/get-approved-plans.js';
-import { getGtfsCm } from '@/endpoints/v1/plans/controllers/get-gtfs-cm.js';
-import { getGtfs } from '@/endpoints/v1/plans/controllers/get-gtfs.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+
+import { getApprovedPlansHandler } from './handlers/get-approved-plans.js';
+import { getGtfsCmHandler } from './handlers/get-gtfs-cm.js';
+import { getGtfsHandler } from './handlers/get-gtfs.js';
 
 /* * */
 
@@ -17,11 +18,11 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', getApprovedPlans);
+		instance.get('/', getApprovedPlansHandler);
 
-		instance.get('/gtfs', getGtfs);
+		instance.get('/gtfs', getGtfsHandler);
 
-		instance.get('/gtfs/cm', getGtfsCm);
+		instance.get('/gtfs/cm', getGtfsCmHandler);
 
 		next();
 	},
