@@ -1,7 +1,6 @@
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
+import { type ImportGtfsConfig, importGtfsHubV1ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -42,7 +41,7 @@ export async function main() {
 		},
 	};
 
-	const importedGtfsSql = await importGtfsToDatabase(importConfig);
+	const importedGtfsSql = await importGtfsHubV1ToDatabase(importConfig);
 
 	//
 	// Export GTFS files from the merged dataset

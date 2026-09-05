@@ -74,6 +74,14 @@ export function initGtfsHubV1SqlTables(): GtfsHubV1SQLTables {
 			{ indexed: false, name: 'stop_lon', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_boarding', type: 'TEXT' },
+			{ indexed: false, name: 'municipality_id', type: 'TEXT' },
+			{ indexed: false, name: 'municipality_name', type: 'TEXT' },
+			{ indexed: false, name: 'parish_id', type: 'TEXT' },
+			{ indexed: false, name: 'parish_name', type: 'TEXT' },
+			{ indexed: false, name: 'district_id', type: 'TEXT' },
+			{ indexed: false, name: 'district_name', type: 'TEXT' },
+			{ indexed: false, name: 'locality_id', type: 'TEXT' },
+			{ indexed: false, name: 'locality_name', type: 'TEXT' },
 		],
 	});
 
