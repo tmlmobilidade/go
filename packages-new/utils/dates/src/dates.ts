@@ -394,10 +394,11 @@ export class Dates {
 	private getStandardWindowInterval(isoDate: null | string): { end: UnixMilliseconds, start: UnixMilliseconds } {
 		if (!isoDate) throw new Error('ISO date is not set.');
 		const dateTime = DateTime.fromISO(isoDate, { setZone: true });
-		return {
-			end: dateTime.plus({ hours: Dates.standardWindowHours }).toMillis() as UnixMilliseconds,
-			start: dateTime.minus({ hours: Dates.standardWindowHours }).toMillis() as UnixMilliseconds,
-		};
+		// Get the start and end of the standard window interval
+		const startMs = dateTime.minus({ hours: Dates.standardWindowHours }).startOf('hour').toMillis();
+		const endMs = dateTime.plus({ hours: Dates.standardWindowHours }).endOf('hour').toMillis();
+		// Return the start and end of the standard window interval
+		return { end: endMs as UnixMilliseconds, start: startMs as UnixMilliseconds };
 	}
 
 	//
