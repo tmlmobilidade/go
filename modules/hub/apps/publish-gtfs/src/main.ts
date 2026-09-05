@@ -10,11 +10,9 @@ import { Files } from '@tmlmobilidade/go-utils-files';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
-import { evaluatePlan } from './evaluate-plan.js';
 import { exportAgencyFile } from './exports/agency.js';
 import { exportCalendarDatesFile } from './exports/calendar-dates.js';
 import { exportFeedInfoFile } from './exports/feed-info.js';
@@ -24,11 +22,8 @@ import { exportShapesFile } from './exports/shapes.js';
 import { exportStopTimesFile } from './exports/stop-times.js';
 import { exportStopsFile } from './exports/stops.js';
 import { exportTripsFile } from './exports/trips.js';
+import { getActivePlans } from './utils/get-active-plans.js';
 import { initExportGtfsContext } from './utils/init-contex.js';
-
-/* * */
-
-let PREVIOUS_PLANS_LIST_HASH: null | string = null;
 
 /* * */
 
@@ -58,18 +53,6 @@ export async function main() {
 	const context = initExportGtfsContext();
 
 	//
-	// Prepare the working directory.
-
-	try {
-		fs.rmSync(context.workdir.path, { force: true, recursive: true });
-		fs.mkdirSync(context.workdir.path, { recursive: true });
-		Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
-	} catch (error) {
-		Logger.error({ error, message: `Error preparing workdir path "${context.workdir.path}".` });
-		process.exit(1);
-	}
-
-	//
 	// Setup the necessary variables for the export process.
 
 	let farthestDateFound: OperationalDateInt;
@@ -85,61 +68,44 @@ export async function main() {
 
 	const plansCollection = await goDb.operation.plans.getCollection();
 
-	const allPlansData = await goDb.operation.plans.findMany();
-
-	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
-
-	Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
-
 	//
-	// Hash the allPlansData response and check if it differs
-	// from the last processed hash stored in memory. This way,
-	// if no Plans were changed/added/removed since the last export,
-	// we can skip the entire export process.
+	// Get the list of plans to export and mark them
+	// as 'waiting' in the database, and all the others
+	// as 'skipped' in the same operation.
 
-	const currentPlansListHash = crypto
-		.createHash('sha1')
-		.update(JSON.stringify(allPlansData.map(plan => plan.hash)))
-		.digest('hex');
+	const activePlans = await getActivePlans();
 
-	if (PREVIOUS_PLANS_LIST_HASH === currentPlansListHash) {
-		return Logger.terminate('No changes detected in Plans list since last export. Skipping this run...');
+	if (!activePlans?.length) {
+		return Logger.terminate('No active Plans found. Exiting...');
 	}
 
-	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
+	await plansCollection.updateMany({ _id: { $in: activePlans.map(plan => plan._id) } }, {
+		$set: {
+			'apps.hub_publish_gtfs.message': null,
+			'apps.hub_publish_gtfs.status': 'waiting',
+			'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
+		},
+	});
 
-	//
-	// Mark plans as 'waiting' in the database.
-
-	for (const planData of allPlansData) {
-		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'waiting', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
-	}
+	await plansCollection.updateMany({ _id: { $nin: activePlans.map(plan => plan._id) } }, {
+		$set: {
+			'apps.hub_publish_gtfs.message': null,
+			'apps.hub_publish_gtfs.status': 'skipped',
+			'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
+		},
+	});
 
 	//
 	// For each plan, validate it and import its GTFS into
 	// a database and cut it according to the plan's feed_info dates.
 
-	for (const [planIndex, planData] of allPlansData.entries()) {
+	for (const [planIndex, planData] of activePlans.entries()) {
 		try {
 			//
 
 			const planTimer = new Timer();
 
-			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.agency_id} - Plan ${planData._id}` });
-
-			//
-			// Validate the Plan data before processing.
-			// If the plan is invalid, skip to the next one
-			// and mark it as 'skipped' in the database.
-			// Otherwise, mark it as 'processing'.
-
-			const isEligiblePlan = await evaluatePlan(planData);
-
-			if (!isEligiblePlan) {
-				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'skipped', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
-				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
-				continue;
-			}
+			Logger.info({ message: `[${planIndex + 1}/${activePlans.length}] - Agency ${planData.agency_id} - Plan ${planData._id}` });
 
 			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'processing', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
@@ -257,7 +223,7 @@ export async function main() {
 
 			//
 		} catch (error) {
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'error', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.message': error.message, 'apps.hub_publish_gtfs.status': 'error', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 			Logger.error({ error, message: `Error processing plan ${planData._id}` });
 			Logger.divider();
 		}

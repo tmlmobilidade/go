@@ -9,6 +9,7 @@ export interface ExportGtfsContext {
 	run_id: string
 	workdir: {
 		path: string
+		remove: () => void
 	}
 	writers: {
 		agency: BatchWriter<HubGtfsExportAgency>
