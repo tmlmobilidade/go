@@ -310,7 +310,7 @@ export async function main() {
 		created_by: 'system',
 		name: `${context.run_id}.zip`,
 		resource_id: 'gtfs-latest',
-		scope: 'plans',
+		scope: 'hub',
 		size: fs.statSync(`${context.workdir.path}/${context.run_id}.zip`).size,
 		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${context.run_id}.zip`)),
 		updated_by: 'system',
