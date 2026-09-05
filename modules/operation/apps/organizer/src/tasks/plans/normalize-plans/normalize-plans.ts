@@ -25,14 +25,6 @@ import { rewriteShapeIdsToPatternIds } from './steps/shapes.js';
 export async function normalizePlansTask() {
 	//
 
-	process.on('uncaughtException', (error) => {
-		console.error('UNCAUGHT EXCEPTION:', error);
-	});
-
-	process.on('unhandledRejection', (error) => {
-		console.error('UNHANDLED REJECTION:', error);
-	});
-
 	Logger.init();
 
 	const globalTimer = new Timer();
@@ -55,6 +47,8 @@ export async function normalizePlansTask() {
 		//
 
 		Logger.info({ message: `[${allPlans.length - index}/${allPlans.length}] Processing plan ${planData._id}` });
+
+		await setPlanStatus(planData._id, 'organizer', 'processing');
 
 		//
 		// Initialize the context
