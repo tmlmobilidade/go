@@ -29,11 +29,11 @@ export async function updatePlanHashesTask() {
 	//
 	// Update the hash for each plan
 
-	for (const planData of allPlans) {
+	for (const [index, planData] of allPlans.entries()) {
 		try {
 			//
 
-			console.log(`Processing plan ${planData._id}`);
+			console.log(`[${allPlans.length - index}/${allPlans.length}] Processing plan ${planData._id}`);
 
 			const newHashValue = await getPlanHash({
 				activeFrom: planData.active_from,

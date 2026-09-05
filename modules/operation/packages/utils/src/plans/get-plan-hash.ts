@@ -3,7 +3,7 @@
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HashablePlanMetadata } from '@tmlmobilidade/go-types-operation';
 import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { calculateZipFileHash } from '@tmlmobilidade/go-utils-exec';
+import { getZipFileHash } from '@tmlmobilidade/go-utils-exec';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -56,7 +56,7 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 
 	fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
 
-	const operationFileHash = await calculateZipFileHash(downloadFilePath);
+	const operationFileHash = await getZipFileHash(downloadFilePath);
 
 	temporaryDirectory.remove();
 
