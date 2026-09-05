@@ -6,15 +6,14 @@ import { initImportGtfsContext } from '@/shared/init-context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { processGtfsStrictV30CalendarDates } from './processors/calendar-dates.js';
-import { processGtfsStrictV30Calendar } from './processors/calendar.js';
-import { processGtfsStrictV30Routes } from './processors/routes.js';
-import { processGtfsStrictV30Shapes } from './processors/shapes.js';
-import { processGtfsStrictV30StopTimes } from './processors/stop-times.js';
-import { processGtfsStrictV30Stops } from './processors/stops.js';
-import { processGtfsStrictV30Trips } from './processors/trips.js';
-import { initGtfsStrictV30SqlTables } from './tables.js';
-import { type GtfsStrictV30SQLTables } from './types.js';
+import { processGtfsHubV1CalendarDates } from './processors/calendar-dates.js';
+import { processGtfsHubV1Routes } from './processors/routes.js';
+import { processGtfsHubV1Shapes } from './processors/shapes.js';
+import { processGtfsHubV1StopTimes } from './processors/stop-times.js';
+import { processGtfsHubV1Stops } from './processors/stops.js';
+import { processGtfsHubV1Trips } from './processors/trips.js';
+import { initGtfsHubV1SqlTables } from './tables.js';
+import { type GtfsHubV1SQLTables } from './types.js';
 
 /**
  * Imports GTFS Strict v30 data into the database for a given plan.
@@ -22,7 +21,7 @@ import { type GtfsStrictV30SQLTables } from './types.js';
  * @param customContext Optional existing context for the import process.
  * @returns The SQL tables containing the imported GTFS data.
  */
-export async function importGtfsStrictV30ToDatabase(config: ImportGtfsConfig): Promise<GtfsStrictV30SQLTables> {
+export async function importGtfsHubV1ToDatabase(config: ImportGtfsConfig): Promise<GtfsHubV1SQLTables> {
 	try {
 		//
 
@@ -34,7 +33,7 @@ export async function importGtfsStrictV30ToDatabase(config: ImportGtfsConfig): P
 		// Initialize context for the import process.
 		// If an initial context is provided, use it, otherwise create a new one.
 
-		const sqlTables = initGtfsStrictV30SqlTables();
+		const sqlTables = initGtfsHubV1SqlTables();
 		const context = initImportGtfsContext(sqlTables, config);
 
 		//
@@ -45,13 +44,12 @@ export async function importGtfsStrictV30ToDatabase(config: ImportGtfsConfig): P
 		//
 		// Process GTFS files in the correct order
 
-		await processGtfsStrictV30Calendar(context);
-		await processGtfsStrictV30CalendarDates(context);
-		await processGtfsStrictV30Trips(context);
-		await processGtfsStrictV30Routes(context);
-		await processGtfsStrictV30Shapes(context);
-		await processGtfsStrictV30Stops(context);
-		await processGtfsStrictV30StopTimes(context);
+		await processGtfsHubV1CalendarDates(context);
+		await processGtfsHubV1Trips(context);
+		await processGtfsHubV1Routes(context);
+		await processGtfsHubV1Shapes(context);
+		await processGtfsHubV1Stops(context);
+		await processGtfsHubV1StopTimes(context);
 
 		Logger.success(`Finished importing GTFS Strict v30 to database in ${globalTimer.get()}.`);
 

@@ -1,18 +1,19 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { type GtfsStrictV30SQLTables } from '@/versions/v30/types.js';
-import { type GtfsStrictV30Trips, GtfsStrictV30TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type HubV1GtfsTrips, HubV1GtfsTripsSchema } from '@tmlmobilidade/go-types-hub';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { type ImportGtfsContext } from '../../../shared/init-context.js';
+import { type GtfsHubV1SQLTables } from '../types.js';
 
 /**
  * Processes the trips.txt file from the GTFS dataset.
  * It filters trips based on the previously saved calendar dates.
  * @param context The import GTFS context containing references to SQL tables and other metadata.
  */
-export async function processGtfsStrictV30Trips(context: ImportGtfsContext<GtfsStrictV30SQLTables>): Promise<void> {
+export async function processGtfsHubV1Trips(context: ImportGtfsContext<GtfsHubV1SQLTables>): Promise<void> {
 	try {
 		//
 
@@ -20,9 +21,9 @@ export async function processGtfsStrictV30Trips(context: ImportGtfsContext<GtfsS
 
 		Logger.info({ message: 'Reading zip entry "trips.txt"...' });
 
-		const parseEachRow = async (data: GtfsStrictV30Trips) => {
+		const parseEachRow = async (data: HubV1GtfsTrips) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsStrictV30TripsSchema.parse(data);
+			const validatedData = HubV1GtfsTripsSchema.parse(data);
 			// For each trip, check if the associated service_id was saved
 			// in the previous step or not. Include it if yes, skip otherwise.
 			if (!context.gtfs.calendar_dates[validatedData.service_id]) return;

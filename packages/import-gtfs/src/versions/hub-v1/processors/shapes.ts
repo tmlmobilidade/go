@@ -1,18 +1,19 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { type GtfsStrictV30SQLTables } from '@/versions/v30/types.js';
-import { type GtfsStrictV30Shapes, GtfsStrictV30ShapesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type HubV1GtfsShapes, HubV1GtfsShapesSchema } from '@tmlmobilidade/go-types-hub';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { type ImportGtfsContext } from '../../../shared/init-context.js';
+import { type GtfsHubV1SQLTables } from '../types.js';
 
 /**
  * Processes the shapes.txt file from the GTFS dataset.
  * Include only the shapes referenced by the previously saved trips.
  * @param context The import GTFS context containing references to SQL tables and other metadata.
  */
-export async function processGtfsStrictV30Shapes(context: ImportGtfsContext<GtfsStrictV30SQLTables>): Promise<void> {
+export async function processGtfsHubV1Shapes(context: ImportGtfsContext<GtfsHubV1SQLTables>): Promise<void> {
 	try {
 		//
 
@@ -20,9 +21,9 @@ export async function processGtfsStrictV30Shapes(context: ImportGtfsContext<Gtfs
 
 		Logger.info({ message: 'Reading zip entry "shapes.txt"...' });
 
-		const parseEachRow = async (data: GtfsStrictV30Shapes) => {
+		const parseEachRow = async (data: HubV1GtfsShapes) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsStrictV30ShapesSchema.parse(data);
+			const validatedData = HubV1GtfsShapesSchema.parse(data);
 			// For each route, only save the ones referenced
 			// by the previously saved trips.
 			if (!context.referenced_shape_ids.has(validatedData.shape_id)) return;

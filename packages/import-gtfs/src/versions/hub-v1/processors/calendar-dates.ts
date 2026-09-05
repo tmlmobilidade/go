@@ -1,12 +1,13 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { type GtfsStrictV30SQLTables } from '@/versions/v30/types.js';
-import { type GtfsStrictV30CalendarDates, GtfsStrictV30CalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type HubV1GtfsCalendarDates, HubV1GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-hub';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
+
+import { type ImportGtfsContext } from '../../../shared/init-context.js';
+import { type GtfsHubV1SQLTables } from '../types.js';
 
 /**
  * Processes the calendar_dates.txt file from the GTFS dataset.
@@ -16,7 +17,7 @@ import fs from 'node:fs';
  * @param startDate The start date of the range to filter service_ids.
  * @param endDate The end date of the range to filter service_ids.
  */
-export async function processGtfsStrictV30CalendarDates(context: ImportGtfsContext<GtfsStrictV30SQLTables>): Promise<void> {
+export async function processGtfsHubV1CalendarDates(context: ImportGtfsContext<GtfsHubV1SQLTables>): Promise<void> {
 	try {
 		//
 
@@ -24,13 +25,13 @@ export async function processGtfsStrictV30CalendarDates(context: ImportGtfsConte
 
 		Logger.info({ message: 'Reading zip entry "calendar_dates.txt"...' });
 
-		const parseEachRow = async (data: GtfsStrictV30CalendarDates) => {
+		const parseEachRow = async (data: HubV1GtfsCalendarDates) => {
 			//
 
 			//
 			// Validate the current row against the proper type
 
-			const validatedData = GtfsStrictV30CalendarDatesSchema.parse(data);
+			const validatedData = HubV1GtfsCalendarDatesSchema.parse(data);
 
 			//
 			// Skip if this row's date is not between the given start and end dates
