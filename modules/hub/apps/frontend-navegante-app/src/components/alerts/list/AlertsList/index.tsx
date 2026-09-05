@@ -3,8 +3,8 @@
 import { AlertsListContextProvider } from '@/components/alerts/list/AlertsList.context';
 import { AlertsListToolbar } from '@/components/alerts/list/AlertsListToolbar';
 import { AlertsListView } from '@/components/alerts/list/AlertsListView';
-import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useTranslation } from 'react-i18next';
 
 /* * */

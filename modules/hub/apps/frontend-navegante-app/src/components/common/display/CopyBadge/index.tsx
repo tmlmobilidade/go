@@ -1,6 +1,7 @@
 'use client';
 
 import { useClipboard } from '@mantine/hooks';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -22,6 +23,7 @@ export function CopyBadge({ label, size = 'md', value, withBorder }: CopyBadgePr
 	// A. Setup variables
 
 	const clipboard = useClipboard({ timeout: 600 });
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -40,7 +42,7 @@ export function CopyBadge({ label, size = 'md', value, withBorder }: CopyBadgePr
 			data-with-border={withBorder}
 			onClick={handleCopy}
 		>
-			{clipboard.copied ? 'Copied' : label ? label : value}
+			{clipboard.copied ? t('default:common.CopyBadge.copied') : label ? label : value}
 		</div>
 	);
 }

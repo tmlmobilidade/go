@@ -1,12 +1,13 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/go-types-hub';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -52,7 +53,7 @@ export function useLinesDetailContext() {
 
 /* * */
 
-export function LinesDetailContextProvider({ children, lineId }: PropsWithChildren<{ lineId: string }>) {
+export function LinesDetailContextProvider({ children, lineId }: PropsWithChildren<{ lineId: null | string }>) {
 	//
 
 	//
@@ -72,8 +73,8 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	const [dataActiveWaypointState, setDataActiveWaypointState] = useState<LinesDetailContextState['data']['active_waypoint']>(null);
 	const [dataHighlightedTripIdsState, setDataHighlightedTripIdsState] = useState<LinesDetailContextState['data']['highlighted_trip_ids']>([]);
 	const [filterActivePatternIdState, setFilterActivePatternIdState] = useState<null | string>(null);
-	const [filterActiveWaypointStopIdState, setFilterActiveWaypointStopIdState] = useState('active_waypoint_stop_id');
-	const [filterActiveWaypointStopSequenceState, setFilterActiveWaypointStopSequenceState] = useState('active_waypoint_stop_sequence');
+	const [filterActiveWaypointStopIdState, setFilterActiveWaypointStopIdState] = useState<null | string>(null);
+	const [filterActiveWaypointStopSequenceState, setFilterActiveWaypointStopSequenceState] = useState<null | string>(null);
 
 	const [flagIsInteractiveModeState, setFlagIsInteractiveModeState] = useState<LinesDetailContextState['flags']['is_interactive_mode']>(false);
 
@@ -91,12 +92,31 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	}, [linesContext.data.routes, selectedLineData?.route_ids]);
 
 	useEffect(() => {
+		setDataAllPatternsState(null);
+		setDataValidPatternsState(undefined);
+		setDataActiveAlertsState(undefined);
+		setDataActivePatternState(null);
+		setDataActiveShapeState(null);
+		setDataActiveWaypointState(null);
+		setDataHighlightedTripIdsState([]);
+		setFilterActivePatternIdState(null);
+		setFilterActiveWaypointStopIdState(null);
+		setFilterActiveWaypointStopSequenceState(null);
+		setFlagIsInteractiveModeState(false);
+	}, [lineId]);
+
+	useEffect(() => {
+		let isCancelled = false;
+
 		(async () => {
 			try {
 				if (!selectedLineData) return;
 				const fetchPromises = selectedLineData.pattern_ids.map((patternId) => {
 					return fetch(API_ROUTES.hub.NETWORK_PATTERNS(patternId))
-						.then(response => response.json())
+						.then((response) => {
+							if (!response.ok) throw new Error(`Failed to fetch pattern ${patternId}`);
+							return response.json();
+						})
 						.then((patternPayload) => {
 							const patternData = Array.isArray(patternPayload) ? patternPayload : patternPayload.data ?? [];
 							return patternData.map((patternGroup) => {
@@ -110,11 +130,15 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 						});
 				});
 				const resultData = await Promise.all(fetchPromises);
-				setDataAllPatternsState(resultData);
-			} catch (error) {
-				console.error({ error, message: 'Error fetching pattern data:' });
+				if (!isCancelled) setDataAllPatternsState(resultData);
+			} catch {
+				if (!isCancelled) setDataAllPatternsState([]);
 			}
 		})();
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [selectedLineData, stopsContext.actions, stopsContext.data.stops]);
 
 	/**
@@ -123,12 +147,14 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	 */
 	useEffect(() => {
 		if (!dataActivePatternState) return;
+		let isCancelled = false;
+
 		(async () => {
 			try {
 				const shapeUrl = API_ROUTES.hub.NETWORK_SHAPES(dataActivePatternState.shape_id);
 				const shapeData = await fetch(shapeUrl).then((response) => {
-					if (!response.ok) console.log({ message: `Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}` });
-					else return response.json();
+					if (!response.ok) throw new Error(`Failed to fetch shape ${dataActivePatternState.shape_id}`);
+					return response.json();
 				}).then(shapePayload => shapePayload?.data ?? shapePayload);
 				if (shapeData) {
 					shapeData.geojson = {
@@ -139,11 +165,15 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 						},
 					};
 				}
-				setDataActiveShapeState(shapeData);
-			} catch (error) {
-				console.error({ error, message: 'Error fetching shape data:' });
+				if (!isCancelled) setDataActiveShapeState(shapeData);
+			} catch {
+				if (!isCancelled) setDataActiveShapeState(null);
 			}
 		})();
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [dataActivePatternState]);
 
 	//
@@ -153,17 +183,15 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		if (!dataAllPatternsState || !selectedOperationalDate) return;
 		const activePatterns: HubPattern[] = [];
 		for (const pattern of dataAllPatternsState) {
-			let closestDateSoFar: string = null;
-			let patternGroupWithClosestDate: HubPattern = null;
+			let closestDateSoFar: null | OperationalDateInt = null;
+			let patternGroupWithClosestDate: HubPattern | null = null;
 			for (const patternGroup of pattern) {
-				if (!selectedOperationalDate) return;
 				// Find the closest valid date
-				const closestDate = patternGroup.valid_on.reduce((acc, curr) => {
-					if (selectedOperationalDate <= curr && (acc === '' || curr < acc)) return curr;
-					return acc;
-				}, '');
-				if (!closestDateSoFar) closestDateSoFar = closestDate;
-				if (closestDate && closestDate <= closestDateSoFar) {
+				const closestDate = patternGroup.valid_on.reduce<null | OperationalDateInt>((currentClosestDate, currentDate) => {
+					if (selectedOperationalDate <= currentDate && (currentClosestDate === null || currentDate < currentClosestDate)) return currentDate;
+					return currentClosestDate;
+				}, null);
+				if (closestDate !== null && (closestDateSoFar === null || closestDate <= closestDateSoFar)) {
 					patternGroupWithClosestDate = patternGroup;
 					closestDateSoFar = closestDate;
 				}
@@ -289,7 +317,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	 * @param patternVersionId
 	 * @returns
 	 */
-	const setActivePattern = (patternVersionId: string) => {
+	const setActivePattern = useCallback((patternVersionId: string) => {
 		// Return early if there are no valid patterns
 		if (!dataValidPatternsState) return;
 		// Find the pattern data that matches the pattern version id
@@ -299,7 +327,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			setFilterActivePatternIdState(foundPatternData._id);
 			setFlagIsInteractiveModeState(false);
 		}
-	};
+	}, [dataValidPatternsState]);
 
 	/**
 	 * Set the active waypoint based on the stop id and stop sequence.
@@ -309,7 +337,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	 * @param isInteractive
 	 * @returns
 	 */
-	const setActiveWaypoint = (stopId: string, stopSequence: number, isInteractive = true) => {
+	const setActiveWaypoint = useCallback((stopId: string, stopSequence: number, isInteractive = true) => {
 		// Return early if active waypoint is already selected
 		if (dataActiveWaypointState?.stop_id === stopId && dataActiveWaypointState?.stop_sequence === stopSequence) return;
 		// Find the waypoint in the active pattern that matches the stop id and stop sequence
@@ -320,22 +348,22 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			setFilterActiveWaypointStopSequenceState(String(foundWaypoint.stop_sequence));
 			setFlagIsInteractiveModeState(isInteractive);
 		}
-	};
+	}, [dataActivePatternState, dataActiveWaypointState]);
 
 	/**
 	 * Set the highlighted trip ids.
 	 * @param tripIds
 	 * @returns
 	 */
-	const setHighlightedTripIds = (tripIds: string[]) => {
+	const setHighlightedTripIds = useCallback((tripIds: string[]) => {
 		if (tripIds === dataHighlightedTripIdsState) setDataHighlightedTripIdsState(null);
 		else setDataHighlightedTripIdsState(tripIds);
-	};
+	}, [dataHighlightedTripIdsState]);
 
 	//
 	// E. Define context value
 
-	const contextValue: LinesDetailContextState = {
+	const contextValue = useMemo<LinesDetailContextState>(() => ({
 		actions: {
 			setActivePattern,
 			setActiveWaypoint,
@@ -359,9 +387,9 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		},
 		flags: {
 			is_interactive_mode: flagIsInteractiveModeState,
-			is_loading: linesContext.flags.isLoading || stopsContext.flags.isLoading || availableRoutesData === null || dataAllPatternsState === null,
+			is_loading: linesContext.flags.is_loading || stopsContext.flags.is_loading || availableRoutesData === null || dataAllPatternsState === null,
 		},
-	};
+	}), [availableRoutesData, dataActiveAlertsState, dataActivePatternState, dataActiveShapeState, dataActiveWaypointState, dataAllPatternsState, dataHighlightedTripIdsState, dataValidPatternsState, filterActivePatternIdState, filterActiveWaypointStopIdState, filterActiveWaypointStopSequenceState, flagIsInteractiveModeState, linesContext.flags.is_loading, selectedLineData, setActivePattern, setActiveWaypoint, setHighlightedTripIds, stopsContext.flags.is_loading]);
 
 	//
 	// F. Render components

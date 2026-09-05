@@ -1,0 +1,53 @@
+.badge {
+	position: relative;
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 999px;
+}
+
+.badge[data-size='sm'] {
+	min-width: 28px;
+	height: 22px;
+}
+
+.badge[data-size='md'] {
+	width: 32px;
+	height: 32px;
+}
+
+.badge[data-mode='bus'] {
+	color: var(--color-route-mode-bus-text);
+}
+
+.badge[data-mode='bike'],
+.badge[data-mode='scooter'] {
+	color: var(--color-route-mode-bike);
+}
+
+.badge[data-mode='car'] {
+	color: var(--color-route-mode-car-text);
+}
+
+.badge[data-mode='rail'],
+.badge[data-mode='subway'],
+.badge[data-mode='tram'] {
+	color: var(--color-route-mode-rail-text);
+}
+
+.badge[data-mode='ferry'] {
+	color: var(--color-route-mode-ferry-text);
+}
+
+.badge[data-mode='plane'] {
+	color: var(--color-route-mode-plane);
+}
+
+.badge[data-mode='elevator'],
+.badge[data-mode='transit'] {
+	color: var(--color-route-mode-transit);
+}

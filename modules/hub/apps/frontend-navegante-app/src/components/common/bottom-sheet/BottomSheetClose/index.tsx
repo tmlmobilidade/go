@@ -1,26 +1,32 @@
 'use client';
 
 import { IconX } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface BottomSheetCloseProps {
+	label?: string
 	onClick: () => void
-	ref?: React.RefObject<HTMLDivElement>
+	size?: 'default' | 'sm'
 }
 
-export function BottomSheetClose({ onClick, ref }: BottomSheetCloseProps) {
+/* * */
+
+export function BottomSheetClose({ label, onClick, size = 'default' }: BottomSheetCloseProps) {
+	const { t } = useTranslation();
+
 	return (
-		<div
-			ref={ref}
-			aria-label="Fechar"
+		<button
+			aria-label={label ?? t('default:common.BottomSheetClose.label')}
 			className={styles.button}
+			data-size={size}
 			onClick={onClick}
-			role="button"
+			type="button"
 		>
-			<IconX size={30} />
-		</div>
+			<IconX size={size === 'sm' ? 20 : 28} />
+		</button>
 	);
 }

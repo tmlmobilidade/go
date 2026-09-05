@@ -15,7 +15,7 @@ import styles from './styles.module.css';
 
 type SelectAlertCauseProps = SelectProps;
 
-export default function Component({ onChange, value, ...props }: SelectAlertCauseProps) {
+export function SelectCause({ onChange, value, ...props }: SelectAlertCauseProps) {
 	//
 
 	//

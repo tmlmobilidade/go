@@ -1,11 +1,12 @@
 'use client';
 
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { TimetableDisplay } from '@/components/lines/detail/TimetableDisplay';
-import { createTimetable } from '@/utils/create-timetable';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
+import { createTimetable } from '@/utils/transit/create-timetable';
 import { type Timetable } from '@tmlmobilidade/go-types-hub';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,26 +30,27 @@ export function PathWaypointTimetable() {
 	//
 	// B. Transform data
 
-	const timetableData = useMemo<null | string | Timetable>(() => {
+	const timetableData = useMemo<null | OperationalDateInt | Timetable>(() => {
 		// Setup variables
 		const activePatternGroup = linesDetailContext.data.active_pattern;
 		const secondaryPatternGroups = linesDetailContext.data.valid_patterns?.filter(patternGroup => patternGroup.version_id !== activePatternGroup?.version_id) || [];
 		const mentionedRoutes = linesDetailContext.data.routes;
 		const selectedStopId = linesDetailContext.data.active_waypoint?.stop_id;
 		const selectedStopSequence = linesDetailContext.data.active_waypoint?.stop_sequence;
-		const selectedOperationalDate = operationalDate.selectedOperationalDate;
+		const selectedOperationalDateRaw = operationalDate.selectedOperationalDate;
 		// Check if all these variables are defined
-		if (!activePatternGroup || !mentionedRoutes || !selectedStopId || selectedStopSequence === undefined || !selectedOperationalDate) {
+		if (!activePatternGroup || !mentionedRoutes || !selectedStopId || selectedStopSequence === undefined || !selectedOperationalDateRaw) {
 			return null;
 		}
+		const selectedOperationalDate = OperationalDateIntSchema.parse(selectedOperationalDateRaw);
 
 		// Check if there are schedules for the selected operational day
 		if (!activePatternGroup.valid_on.includes(selectedOperationalDate)) {
 			// Find the closest valid date
-			return activePatternGroup.valid_on.reduce((acc, curr) => {
-				if (selectedOperationalDate <= curr && (acc === '' || curr < acc)) return curr;
-				return acc;
-			}, '');
+			return activePatternGroup.valid_on.reduce<null | OperationalDateInt>((closestDate, currentDate) => {
+				if (selectedOperationalDate <= currentDate && (closestDate === null || currentDate < closestDate)) return currentDate;
+				return closestDate;
+			}, null);
 		}
 
 		// Check if the user has enabled complex schedules
@@ -77,8 +79,8 @@ export function PathWaypointTimetable() {
 		);
 	}
 
-	if (typeof timetableData === 'string') {
-		const nextDate = timetableData && Dates.fromOperationalDate(timetableData, 'Europe/Lisbon').js_date;
+	if (typeof timetableData === 'number') {
+		const nextDate = Dates.fromOperationalDateInt(timetableData, 'Europe/Lisbon').js_date;
 		return (
 			<div className={styles.container}>
 				<p className={styles.noData}>{t('default:lines.PathWaypointTimetable.no_data')}</p>

@@ -1,7 +1,6 @@
 'use client';
 
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -16,17 +15,9 @@ export function StopsDetailViewName() {
 	const stopsDetailContext = useStopsDetailContext();
 
 	//
-	// B. Render componentss
+	// B. Render components
 
 	return (
-		<Surface variant="plain">
-			<Section padding="sm">
-				<div className={styles.container}>
-					<div />
-					<p className={styles.name}>{stopsDetailContext.data.stop.name}</p>
-					<div />
-				</div>
-			</Section>
-		</Surface>
+		<h1 className={styles.name}>{stopsDetailContext.data.stop.name}</h1>
 	);
 }

@@ -20,7 +20,29 @@ export function PathWaypointNextArrivals({ realtimeArrivals, scheduledArrivals }
 	const now = Date.now();
 
 	//
-	// D. Render components
+	// B. Transform data
+
+	const formatDelta = (ms: number) => {
+		const seconds = Math.floor(ms / 1000);
+		const minutes = Math.floor(seconds / 60);
+		const hours = Math.floor(minutes / 60);
+
+		if (minutes <= 0) {
+			return t('default:lines.PathStopNextArrivals.arriving');
+		}
+
+		if (hours > 0) {
+			return [
+				t('default:lines.PathStopNextArrivals.hours', '', { count: hours }),
+				t('default:lines.PathStopNextArrivals.minutes', '', { count: minutes % 60 }),
+			].join(' ');
+		}
+
+		return t('default:lines.PathStopNextArrivals.minutes', '', { count: minutes });
+	};
+
+	//
+	// C. Render components
 
 	if (realtimeArrivals.length === 0 && scheduledArrivals.length === 0) {
 		return null;
@@ -60,24 +82,4 @@ export function PathWaypointNextArrivals({ realtimeArrivals, scheduledArrivals }
 	);
 
 	//
-}
-
-/* * */
-
-function formatDelta(ms: number) {
-	let toReturn = '';
-	const seconds = Math.floor(ms / 1000);
-	const minutes = Math.floor(seconds / 60);
-	const hours = Math.floor(minutes / 60);
-	if (minutes <= 0) {
-		return 'A chegar';
-	}
-
-	if (hours > 0) {
-		toReturn += `${hours} hora${hours > 1 ? 's' : ''} `;
-	}
-	if (minutes > 0) {
-		toReturn += `${minutes % 60} min`;
-	}
-	return toReturn;
 }

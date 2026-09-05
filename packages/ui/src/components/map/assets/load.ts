@@ -16,21 +16,20 @@ export interface MapAssetType {
  * @param mapObject The map object to load assets into.
  * @param mapAssets The map assets to load.
  */
-export function loadMapAssets(mapObject: MapLibreMap | null | undefined, mapAssets: MapAssetType[]) {
+export async function loadMapAssets(mapObject: MapLibreMap | null | undefined, mapAssets: MapAssetType[]) {
 	// Skip if no map object is provided
 	if (!mapObject) return;
-	// Load each map asset
-	for (const asset of mapAssets) {
+	// Load and register every asset before reporting that the map is ready
+	await Promise.all(mapAssets.map(async (asset) => {
 		// Skip if the asset already exists
-		if (mapObject.hasImage(asset.name)) continue;
+		if (mapObject.hasImage(asset.name)) return;
 		// Append the base path to the asset URL if it doesn't already have it
 		const fullAssetUrl = asset.url.startsWith('/') ? `${process.env.NEXT_PUBLIC_BASE_PATH}${asset.url}` : asset.url;
 		// Load the asset from the URL
-		mapObject.loadImage(fullAssetUrl).then((image) => {
-			// Re-check if the asset exists, and add it if it doesn't
-			if (mapObject.hasImage(asset.name)) return;
-			// Finally, add the asset to the map
-			mapObject.addImage(asset.name, image.data, { sdf: asset.sdf });
-		});
-	}
+		const image = await mapObject.loadImage(fullAssetUrl);
+		// Re-check if the asset exists, and add it if it doesn't
+		if (mapObject.hasImage(asset.name)) return;
+		// Finally, add the asset to the map
+		mapObject.addImage(asset.name, image.data, { sdf: asset.sdf });
+	}));
 }

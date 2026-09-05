@@ -1,10 +1,9 @@
 'use client';
 
-import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { StopsDetailContextProvider } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailView } from '@/components/stops/detail/StopsDetailView';
-import { useStopsContext } from '@/components/stops/Stops.context';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 
 /* * */
 
@@ -16,22 +15,23 @@ export function StopsDetail() {
 
 	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
 
-	const stopsContext = useStopsContext();
-	const foundStopData = stopsContext.actions.getStopById(activeBottomSheet?.entityId);
-
 	//
-	// B. Render componentss
+	// B. Render components
 
 	return (
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'stops-detail'}
-			size="full"
-			title={foundStopData?.name}
+			withOverlay={false}
+			mapAware
+			withCompactCloseButton
+			withHeaderBackground
 		>
-			<StopsDetailContextProvider stopId={activeBottomSheet?.entityId}>
-				<StopsDetailView />
-			</StopsDetailContextProvider>
+			{activeBottomSheet?.entityId && (
+				<StopsDetailContextProvider stopId={activeBottomSheet.entityId}>
+					<StopsDetailView />
+				</StopsDetailContextProvider>
+			)}
 		</BottomSheet>
 	);
 }

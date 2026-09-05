@@ -1,0 +1,28 @@
+.group {
+	display: grid;
+	gap: 0;
+	padding: 0.65rem 0 0;
+	margin: 0 -0.9rem;
+	background: var(--color-system-background-200, var(--mantine-color-gray-0));
+}
+
+.group h2 {
+	margin: 0.15rem 1.25rem 0.65rem;
+	font-size: 1rem;
+}
+
+.group[data-variant='top'] {
+	padding: 0 0.75rem;
+	background: var(--color-system-background-100, #fff);
+}
+
+.group[data-variant='top']:first-of-type {
+	padding-top: 0.5rem;
+	margin-top: 0.5rem;
+	border-radius: 16px 16px 0 0;
+}
+
+.group[data-variant='top']:last-of-type {
+	padding-bottom: 0.5rem;
+	border-radius: 0 0 16px 16px;
+}

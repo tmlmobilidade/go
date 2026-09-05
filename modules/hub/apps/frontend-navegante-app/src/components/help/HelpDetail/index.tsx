@@ -1,8 +1,8 @@
 'use client';
 
-import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { Accordion } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -33,7 +33,14 @@ export function HelpDetail() {
 	//
 	// B. Fetch data
 
-	const { data: allFaqsData, isLoading: allFaqsLoading } = useSWR<NaveganteFaq[], Error>({ credentials: 'omit', url: 'https://carrismetropolitana.pt/admin/public-api/faqs-navegante', useProperApiResponse: false }, { refreshInterval: 300_000 });
+	const { data: allFaqsData, isLoading: allFaqsLoading } = useSWR<NaveganteFaq[], Error>('https://carrismetropolitana.pt/admin/public-api/faqs-navegante', {
+		fetcher: async (url: string) => {
+			const response = await fetch(url, { credentials: 'omit' });
+			if (!response.ok) throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+			return await response.json() as NaveganteFaq[];
+		},
+		refreshInterval: 300_000,
+	});
 
 	//
 	// C. Render components

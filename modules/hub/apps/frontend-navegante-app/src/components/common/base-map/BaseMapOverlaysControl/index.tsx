@@ -1,70 +1,79 @@
 'use client';
 
-import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { useMapContext } from '@/components/map/Map.context';
-import { useStopsContext } from '@/components/stops/Stops.context';
-import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { IconAlertTriangle, IconAlertTriangleOff, IconBus, IconBusOff, IconFlag2, IconFlag2Off } from '@tabler/icons-react';
-import { Loader } from '@tmlmobilidade/ui';
+import { BaseMapFiltersSheet } from '@/components/common/base-map/BaseMapFiltersSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { useMapFloatingControlsLayout } from '@/hooks/base-map/useMapFloatingControlsLayout';
+import { IconStack2 } from '@tabler/icons-react';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function BaseMapOverlaysControl() {
+interface BaseMapOverlaysControlProps {
+	onOpenedChange: (opened: boolean) => void
+	opened: boolean
+}
+
+/* * */
+
+export function BaseMapOverlaysControl({ onOpenedChange, opened }: BaseMapOverlaysControlProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const stopsContext = useStopsContext();
-	const vehiclesContext = useVehiclesContext();
-	const alertsContext = useAlertsContext();
-
-	const { actions: { toggleBaseMapOverlay }, data: { activeBaseMapOverlays } } = useMapContext();
+	const { t } = useTranslation();
+	const controlsLayout = useMapFloatingControlsLayout();
 
 	//
-	// B. Render components
+	// B. Setup effects
+
+	useEffect(() => {
+		if (controlsLayout.layout === 'hidden') onOpenedChange(false);
+	}, [controlsLayout.layout, onOpenedChange]);
+
+	useEffect(() => {
+		if (!opened) return;
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') onOpenedChange(false);
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, [onOpenedChange, opened]);
+
+	//
+	// C. Render components
 
 	return (
-		<div className={styles.container} aria-hidden>
-
-			<div
-				className={styles.button}
-				data-enabled={activeBaseMapOverlays.includes('stops')}
-				onClick={() => toggleBaseMapOverlay('stops')}
-			>
-				{stopsContext.flags.isLoading ?
-					<Loader size="sm" /> :
-					activeBaseMapOverlays.includes('stops')
-						? <IconFlag2 size={24} />
-						: <IconFlag2Off size={24} />}
+		<>
+			<div className={styles.container} data-layout={controlsLayout.layout}>
+				<button
+					aria-expanded={opened}
+					aria-label={t('default:map.BaseMapOverlaysControl.trigger.label')}
+					className={styles.trigger}
+					data-open={opened}
+					onClick={() => onOpenedChange(true)}
+					type="button"
+				>
+					<IconStack2 size={24} />
+				</button>
 			</div>
 
-			<div
-				className={styles.button}
-				data-enabled={activeBaseMapOverlays.includes('alerts')}
-				onClick={() => toggleBaseMapOverlay('alerts')}
+			<BottomSheet
+				onClose={() => onOpenedChange(false)}
+				opened={opened}
+				size="fit"
+				syncSnapState={false}
+				title={t('default:map.BaseMapOverlaysControl.title')}
 			>
-				{alertsContext.flags.isLoading ?
-					<Loader size="sm" /> :
-					activeBaseMapOverlays.includes('alerts')
-						? <IconAlertTriangle size={24} />
-						: <IconAlertTriangleOff size={24} />}
-			</div>
-
-			<div
-				className={styles.button}
-				data-enabled={activeBaseMapOverlays.includes('vehicles')}
-				onClick={() => toggleBaseMapOverlay('vehicles')}
-			>
-				{vehiclesContext.flags.isLoading ?
-					<Loader size="sm" /> :
-					activeBaseMapOverlays.includes('vehicles')
-						? <IconBus size={24} />
-						: <IconBusOff size={24} />}
-			</div>
-
-		</div>
+				<BaseMapFiltersSheet />
+			</BottomSheet>
+		</>
 	);
+
+	//
 }

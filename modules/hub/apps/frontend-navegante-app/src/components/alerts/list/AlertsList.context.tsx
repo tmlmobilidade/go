@@ -2,12 +2,12 @@
 
 import { transformAlertDataIntoGeoJsonFeature, useAlertsContext } from '@/components/alerts/Alerts.context';
 import { type AlertGroup } from '@/types/alerts/alert-group';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useFilterStateText, UseFilterStateTextReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { type ListContextStateTemplate, type UseFilterStateStringReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -16,7 +16,7 @@ const CM_AGENCY_IDS = new Set(['A2L1N', 'BNA17', 'LA77N', 'YA15B']);
 
 /* * */
 
-interface AlertsListContextState extends ListContextStateTemplate {
+interface AlertsListContextState extends Omit<ListContextStateTemplate, 'flags'> {
 	actions: {
 		toggle: (view: 'current' | 'future' | 'map') => void
 		updateFilterByCause: (value: AlertCause | null) => void
@@ -42,6 +42,9 @@ interface AlertsListContextState extends ListContextStateTemplate {
 		line_id: null | string
 		search: UseFilterStateTextReturnType
 		stop_id: null | string
+	}
+	flags: {
+		is_loading: boolean
 	}
 	view: {
 		current: 'current' | 'future' | 'map'
@@ -211,26 +214,38 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Handle actions
 
-	const updateFilterByLineId = (value: AlertsListContextState['filters']['line_id']) => {
+	const updateFilterByLineId = useCallback((value: AlertsListContextState['filters']['line_id']) => {
 		setFilterByLineIdState(value);
-	};
+	}, [setFilterByLineIdState]);
 
-	const updateFilterByStopId = (value: AlertsListContextState['filters']['stop_id']) => {
+	const updateFilterByStopId = useCallback((value: AlertsListContextState['filters']['stop_id']) => {
 		setFilterByStopIdState(value);
-	};
+	}, [setFilterByStopIdState]);
 
-	const updateFilterByCause = (value: AlertsListContextState['filters']['cause']) => {
+	const updateFilterByCause = useCallback((value: AlertsListContextState['filters']['cause']) => {
 		setFilterByCauseState(value);
-	};
+	}, [setFilterByCauseState]);
 
-	const updateFilterByEffect = (value: AlertsListContextState['filters']['effect']) => {
+	const updateFilterByEffect = useCallback((value: AlertsListContextState['filters']['effect']) => {
 		setFilterByEffectState(value);
-	};
+	}, [setFilterByEffectState]);
+
+	const filterAgencyState = useMemo<UseFilterStateStringReturnType>(() => ({
+		isActive: filterAgency.isActive,
+		set: filterAgency.set,
+		value: filterAgency.value,
+	}), [filterAgency.isActive, filterAgency.set, filterAgency.value]);
+
+	const filterSearchState = useMemo<UseFilterStateStringReturnType>(() => ({
+		isActive: filterSearch.isActive,
+		set: filterSearch.set,
+		value: filterSearch.value,
+	}), [filterSearch.isActive, filterSearch.set, filterSearch.value]);
 
 	//
 	// D. Define context value
 
-	const contextValue: AlertsListContextState = {
+	const contextValue = useMemo<AlertsListContextState>(() => ({
 		actions: {
 			toggle: setCurrentView,
 			updateFilterByCause,
@@ -250,21 +265,20 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			grouped: groupedAlerts,
 		},
 		filters: {
-			agency: filterAgency,
+			agency: filterAgencyState,
 			cause: filterByCauseState,
 			effect: filterByEffectState,
 			line_id: filterByLineIdState,
-			search: filterSearch,
+			search: filterSearchState,
 			stop_id: filterByStopIdState,
 		},
 		flags: {
-			error: undefined,
-			isLoading: alertsContext.flags.isLoading,
+			is_loading: alertsContext.flags.is_loading,
 		},
 		view: {
 			current: currentView,
 		},
-	};
+	}), [alertsContext.flags.is_loading, currentView, currentWeekCount, dataFeatureCollection, filterAgencyState, filterByCauseState, filterByEffectState, filterByLineIdState, filterByStopIdState, filteredAlerts, filterSearchState, futureWeekCount, groupedAlerts, setCurrentView, updateFilterByCause, updateFilterByEffect, updateFilterByLineId, updateFilterByStopId]);
 
 	//
 	// D. Render components

@@ -1,0 +1,163 @@
+.card {
+	overflow: hidden;
+	cursor: pointer;
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-200);
+	border-radius: 10px;
+}
+
+.card[data-selected='true'] {
+	border-color: var(--color-route-status-info);
+	box-shadow: 0 0 0 1px var(--color-route-status-info);
+}
+
+.topRow,
+.bottomRow {
+	gap: 8px;
+	align-items: center;
+	min-width: 0;
+}
+
+.topRow {
+	display: flex;
+	padding: 9px 10px 6px;
+}
+
+.bottomRow {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	padding: 5px 10px 9px;
+}
+
+.duration {
+	flex: 0 0 auto;
+	min-width: 0;
+}
+
+.duration strong {
+	display: block;
+	font-size: 22px;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.timeRange {
+	display: flex;
+	flex: 0 1 auto;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+	overflow: hidden;
+	color: var(--color-system-text-200);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.primaryTime {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.primaryTime > strong {
+	overflow: hidden;
+	font-size: 13px;
+	font-weight: 900;
+	text-overflow: ellipsis;
+}
+
+.liveStatus {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+}
+
+.liveStatus > :first-child {
+	margin-inline: -5px;
+	transform: scale(0.65);
+}
+
+.timeRange[data-arrival-status='early'] .primaryTime > strong {
+	color: var(--color-status-success-primary);
+}
+
+.timeRange[data-arrival-status='late'] .primaryTime > strong {
+	color: var(--color-status-warning-primary);
+}
+
+.timeRange[data-realtime='true'][data-arrival-status='on-time'] .primaryTime > strong {
+	color: var(--color-status-active-primary);
+}
+
+.timeRange small {
+	overflow: hidden;
+	font-size: 10px;
+	font-weight: 700;
+	color: var(--color-system-text-200);
+	text-overflow: ellipsis;
+}
+
+.walkMetric {
+	display: inline-flex;
+	flex: 0 0 auto;
+	gap: 5px;
+	align-items: center;
+	margin-left: auto;
+	min-width: 0;
+	font-size: 13px;
+	font-weight: 800;
+	color: var(--color-system-text-200);
+	white-space: nowrap;
+}
+
+.alertBadge {
+	display: inline-flex;
+	gap: 4px;
+	align-items: center;
+	height: 20px;
+	max-width: 100%;
+	padding: 0 7px;
+	overflow: hidden;
+	font-size: 11px;
+	font-weight: 900;
+	line-height: 1;
+	color: var(--color-route-status-alert-text);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	background-color: var(--color-route-status-alert-background);
+	border: 1px solid var(--color-route-status-alert-border);
+	border-radius: 999px;
+}
+
+@media (width <= 420px) {
+	.topRow {
+		grid-template-columns: auto minmax(78px, 1fr) auto;
+	}
+
+	.walkMetric {
+		grid-column: auto;
+		justify-self: start;
+		font-size: 13px;
+	}
+
+	.bottomRow {
+		gap: 7px;
+		padding-inline: 10px;
+	}
+
+	.duration strong {
+		font-size: 21px;
+	}
+
+	.timeRange {
+		font-size: 13px;
+	}
+
+	.routeActionButton {
+		height: 26px;
+		padding: 0 8px 0 9px;
+		font-size: 10px;
+	}
+}

@@ -1,6 +1,6 @@
 /* * */
 
-import { getCauseSeverityLevel } from '@/utils/get-alert-severity-level';
+import { getCauseSeverityLevel } from '@/utils/alerts/get-alert-severity-level';
 import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
 import { AlertCauseIcons } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -12,12 +12,11 @@ import styles from './styles.module.css';
 interface AlertCauseIconProps {
 	cause?: AlertCause
 	className?: string
-	size?: 'lg' | 'md'
 	withText?: boolean
 }
 /* * */
 
-export function AlertCauseIcon({ cause, className, size, withText = false }: AlertCauseIconProps) {
+export function AlertCauseIcon({ cause, className, withText = false }: AlertCauseIconProps) {
 	//
 
 	//

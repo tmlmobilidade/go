@@ -4,6 +4,7 @@ const dynamicKey = () => 'use-for-dynamic-key';
 
 export const cacheDbKeyValues = [
 	'hub:v1:navegante:app-enabled',
+	`hub:v1:feedback:rate-limit:${dynamicKey()}`,
 	'hub:v1:alerts:published:json',
 	'hub:v1:alerts:published:json:cm',
 	'hub:v1:alerts:published:gtfs',

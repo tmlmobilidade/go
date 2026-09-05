@@ -1,6 +1,6 @@
 /* * */
 
-import { getEffectSeverityLevel } from '@/utils/get-alert-severity-level';
+import { getEffectSeverityLevel } from '@/utils/alerts/get-alert-severity-level';
 import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
 import { AlertEffectIcons } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -12,13 +12,12 @@ import styles from './styles.module.css';
 interface AlertEffectIconProps {
 	className?: string
 	effect?: AlertEffect
-	size?: 'lg' | 'md'
 	withText?: boolean
 }
 
 /* * */
 
-export function AlertEffectIcon({ className, effect, size, withText = false }: AlertEffectIconProps) {
+export function AlertEffectIcon({ className, effect, withText = false }: AlertEffectIconProps) {
 	//
 
 	//
