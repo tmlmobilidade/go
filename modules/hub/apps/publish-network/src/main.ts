@@ -37,7 +37,8 @@ export async function main() {
 
 	const importConfig: ImportGtfsConfig = {
 		source: {
-			url: API_ROUTES.hub.PLANS_GTFS,
+			// url: API_ROUTES.hub.PLANS_GTFS,
+			url: 'https://go.tmlmobilidade.pt/hub/api/v1/plans/gtfs',
 		},
 	};
 
