@@ -5,7 +5,7 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { removeOldGtfsValidationsTask } from './tasks/gtfs-validations/remove-old-gtfs-validations.js';
-import { normalizePlansTask } from './tasks/plans/normalize-plans/normalize-plans.js';
+// import { normalizePlansTask } from './tasks/plans/normalize-plans/normalize-plans.js';
 import { updatePlanHashesTask } from './tasks/plans/update-plan-hashes/update-plan-hashes.js';
 import { releaseStuckPlansTask } from './tasks/rides/release-stuck-plans.js';
 
@@ -39,8 +39,8 @@ async function reprocessStuckRides() {
 	/* * */
 	/* PLANS */
 
-	// await updatePlanHashesTask();
-	await normalizePlansTask();
+	await updatePlanHashesTask();
+	// await normalizePlansTask();
 
 	/* * */
 	/* RIDES */
@@ -60,4 +60,4 @@ async function reprocessStuckRides() {
 
 /* * */
 
-await runOnInterval(reprocessStuckRides, { intervalMs: '12h' });
+await runOnInterval(reprocessStuckRides, { intervalMs: '1h' });

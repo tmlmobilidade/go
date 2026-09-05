@@ -177,7 +177,6 @@ export async function normalizePlansTask() {
 		} catch (error) {
 			Logger.error({ error, message: `Error processing plan ${planData._id}:` });
 			await setPlanStatus(planData._id, 'organizer', 'error');
-			Logger.error({ error, message: `Marked organizer app plan status as error for plan ${planData._id}:` });
 		} finally {
 			// Cleanup the working directory.
 			context.paths.removeDir();
