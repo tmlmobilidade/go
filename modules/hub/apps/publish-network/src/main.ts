@@ -1,12 +1,12 @@
 /* * */
 
-import { generateLinesRoutesPatterns } from '@/tasks/sync-lines-routes-patterns.js';
-import { generateShapes } from '@/tasks/sync-shapes.js';
-import { generateStops } from '@/tasks/sync-stops.js';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { generateLinesRoutesPatterns } from './tasks/sync-lines-routes-patterns.js';
+import { generateStops } from './tasks/sync-stops.js';
 
 /* * */
 
@@ -47,8 +47,6 @@ export async function main() {
 	// Export GTFS files from the merged dataset
 
 	await generateStops(importedGtfsSql);
-
-	await generateShapes(importedGtfsSql);
 
 	await generateLinesRoutesPatterns(importedGtfsSql);
 

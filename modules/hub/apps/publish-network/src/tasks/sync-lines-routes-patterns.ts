@@ -1,8 +1,9 @@
 /* * */
 
+import { getEncodedPolyline } from '@/utils/get-encoded-polyline.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubGtfsExportRoutes } from '@tmlmobilidade/go-types-hub';
-import { type HubLine, type HubPattern, type HubPatternTrip, type HubPatternWaypoint, type HubRoute, type HubScheduledArrival, type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiPatternTrip, type HubV1ApiPatternWaypoint, type HubV1ApiRoute, type HubV1ApiScheduledArrival, type HubV1ApiStop, HubV1GtfsRoutes } from '@tmlmobilidade/go-types-hub';
+import { HexColorSchema } from '@tmlmobilidade/go-types-shared';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -55,17 +56,17 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 	// For Stops
 	const allStopsParsedTxt = await cacheDb.get('hub:v1:network:stops');
-	const allStopsParsedJson: HubStop[] = JSON.parse(allStopsParsedTxt);
+	const allStopsParsedJson: HubV1ApiStop[] = JSON.parse(allStopsParsedTxt);
 	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item._id, item]));
 
 	// For Routes
 	const allRoutesRaw = importedGtfsSql.routes.all();
-	const allRoutesRawMap = new Map<string, HubGtfsExportRoutes>(allRoutesRaw.map(item => [item.route_id, item]));
+	const allRoutesRawMap = new Map<string, HubV1GtfsRoutes>(allRoutesRaw.map(item => [item.route_id, item]));
 
-	// Get all distinct Pattern IDs from trips table
-	const allDistinctPatternIds = importedGtfsSql.trips.distinct('shape_id');
+	// Get all distinct Shape IDs from trips table
+	const allDistinctShapeIds = importedGtfsSql.trips.distinct('shape_id');
 
-	Logger.info({ message: `Fetched ${allDistinctPatternIds.length} rows from GTFS (${fetchRawDataTimer.get()})` });
+	Logger.info({ message: `Fetched ${allDistinctShapeIds.length} distinct shape IDs from GTFS (${fetchRawDataTimer.get()})` });
 
 	//
 	// For each distinct pattern_id, parse trips into patterns and schedules.
@@ -75,29 +76,34 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 	const processPatternsTimer = new Timer();
 
-	const allLinesParsed = new Map<string, HubLine>();
-	const allRoutesParsed = new Map<string, HubRoute>();
-	const updatedPatternKeys = new Set<string>();
+	const allLinesParsed = new Map<string, HubV1ApiLine>();
+	const allRoutesParsed = new Map<string, HubV1ApiRoute>();
+	const updatedShapeKeys = new Set<string>();
 
-	for (const patternId of allDistinctPatternIds) {
+	for (const shapeId of allDistinctShapeIds) {
 		//
 
 		//
-		// Get all trips that match the current pattern ID
+		// Get all trips that match the current shape ID
 
-		const allTripsForThisPatternRaw = importedGtfsSql.trips.all('WHERE pattern_id = ?', [patternId]);
+		const allTripsForThisShapeId = importedGtfsSql.trips.all('WHERE shape_id = ?', [shapeId]);
 
 		//
 		// Setup a variable to hold the parsed pattern groups
 
-		const parsedPatternsForThisPatternGroup = new Map<string, HubPattern>();
+		const parsedPatternsForThisPatternGroup = new Map<string, HubV1ApiPattern>();
 
 		//
-		// For each trip belonging to the current pattern ID,
+		// Get the encoded polyline for the current shape ID
+
+		const encodedPolyline = await getEncodedPolyline(importedGtfsSql, shapeId);
+
+		//
+		// For each trip belonging to the current shape ID,
 		// build the actual pattern groups, merge trips with the saved path and arrival times,
 		// and create the higher level route and line objects.
 
-		for (const tripRawData of allTripsForThisPatternRaw) {
+		for (const tripRawData of allTripsForThisShapeId) {
 			//
 
 			//
@@ -121,10 +127,10 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// a locality and a municipality ID. Instead of running these loops multiple times, we run it once and save all the necessary information immediately.
 
 			const stopTimesAsSimplifiedPath: { id: string, stop_sequence: number }[] = [];
-			const stopTimesAsCompletePath: HubPatternWaypoint[] = [];
+			const stopTimesAsCompletePath: HubV1ApiPatternWaypoint[] = [];
 
 			const stopTimesAsSimplifiedSchedule: { arrival_time: string, stop_id: string, stop_sequence: number }[] = [];
-			const stopTimesAsCompleteSchedule: HubScheduledArrival[] = [];
+			const stopTimesAsCompleteSchedule: HubV1ApiScheduledArrival[] = [];
 
 			const facilitiesList = new Set<string>();
 
@@ -145,7 +151,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				//
 				// Get the stop data associated with the current stop_time
 
-				const stopParsedData: HubStop = allStopsParsedMap.get(Number(stopTimeRawData.stop_id));
+				const stopParsedData: HubV1ApiStop = allStopsParsedMap.get(stopTimeRawData.stop_id);
 				if (!stopParsedData) {
 					Logger.error({ message: `Stop not found: ${stopTimeRawData.stop_id}` });
 					continue;
@@ -226,17 +232,17 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// This means that everytime any of these fields differs, a new pattern version will be created,
 			// and a different set of dates will be associated with it.
 
-			const currentPatternGroup: Partial<HubPattern> = {
-				_id: tripRawData.pattern_id,
+			const currentPatternGroup: Partial<HubV1ApiPattern> = {
+				_id: tripRawData.shape_id,
 				agency_id: routeRawData.agency_id,
-				color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
-				direction_id: Number(tripRawData.direction_id) as 0 | 1,
+				color: HexColorSchema.parse(routeRawData.route_color || '#000000'),
+				direction_id: tripRawData.direction_id,
 				headsign: tripRawData.trip_headsign,
-				line_id: String(routeRawData.line_id),
+				line_id: routeRawData.route_short_name,
 				route_id: routeRawData.route_id,
 				shape_id: tripRawData.shape_id,
 				short_name: routeRawData.route_short_name,
-				text_color: routeRawData.route_text_color,
+				text_color: HexColorSchema.parse(routeRawData.route_text_color || '#FFFFFF'),
 			};
 
 			//
@@ -248,35 +254,36 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// Check if this pattern version already exists, and create if it doesn't.
 			// The created pattern version will have all the complete information that was not used to differentiate between versions.
 
-			let currentPatternObject: HubPattern;
+			let currentPatternObject: HubV1ApiPattern;
 
 			if (parsedPatternsForThisPatternGroup.has(currentPatternVersionHash)) {
 				currentPatternObject = parsedPatternsForThisPatternGroup.get(currentPatternVersionHash);
 			} else {
 				currentPatternObject = {
-					_id: tripRawData.pattern_id,
+					_id: tripRawData.shape_id,
 					agency_id: routeRawData.agency_id,
-					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
-					direction_id: Number(tripRawData.direction_id) as 0 | 1,
+					color: HexColorSchema.parse(routeRawData.route_color || '#000000'),
+					direction_id: tripRawData.direction_id,
 					district_ids: [],
 					district_names: [],
 					facilities: [],
 					headsign: tripRawData.trip_headsign,
-					line_id: String(routeRawData.line_id),
+					line_id: routeRawData.route_short_name,
 					locality_ids: [],
 					locality_names: [],
-					long_name: routeRawData.line_long_name,
+					long_name: routeRawData.route_long_name,
 					municipality_ids: [],
 					municipality_names: [],
 					parish_ids: [],
 					parish_names: [],
 					path: stopTimesAsCompletePath,
 					route_id: routeRawData.route_id,
+					shape_extension: 0,
 					shape_id: tripRawData.shape_id,
-					short_name: routeRawData.line_short_name,
-					text_color: routeRawData.route_text_color ? `#${routeRawData.route_text_color}` : '#000000',
+					shape_polyline: encodedPolyline,
+					short_name: routeRawData.route_short_name,
+					text_color: HexColorSchema.parse(routeRawData.route_text_color || '#FFFFFF'),
 					trips: [],
-					tts_hash: '',
 					tts_headsign: '',
 					valid_on: [],
 					version_id: currentPatternVersionHash,
@@ -307,7 +314,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 			const simplifiedTripGroup = {
 				direction_id: tripRawData.direction_id,
-				id: tripRawData.pattern_id,
+				id: tripRawData.shape_id,
 				route_id: tripRawData.route_id,
 				simplified_schedule: stopTimesAsSimplifiedSchedule,
 				version_id: currentPatternVersionHash,
@@ -322,10 +329,10 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// Check if this trip group already exists, and create if it doesn't.
 			// The created trip group will have all the complete information not used to differentiate between groups.
 
-			const allTripGroupsForThisPattern = new Map<string, HubPatternTrip>();
+			const allTripGroupsForThisPattern = new Map<string, HubV1ApiPatternTrip>();
 			currentPatternObject.trips.forEach(item => allTripGroupsForThisPattern.set(item.version_id, item));
 
-			let currentTripGroupObject: HubPatternTrip;
+			let currentTripGroupObject: HubV1ApiPatternTrip;
 
 			if (allTripGroupsForThisPattern.has(currentTripGroupHash)) {
 				currentTripGroupObject = allTripGroupsForThisPattern.get(currentTripGroupHash);
@@ -354,7 +361,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// Create the route object if it doesn't exist yet. Notice we're not using hashes here
 			// because routes are supposed to be unique in the same GTFS file.
 
-			let currentRouteObject: HubRoute;
+			let currentRouteObject: HubV1ApiRoute;
 
 			if (allRoutesParsed.has(tripRawData.route_id)) {
 				currentRouteObject = allRoutesParsed.get(tripRawData.route_id);
@@ -362,11 +369,11 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				currentRouteObject = {
 					_id: routeRawData.route_id,
 					agency_id: routeRawData.agency_id,
-					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
+					color: HexColorSchema.parse(routeRawData.route_color || '#000000'),
 					district_ids: [],
 					district_names: [],
 					facilities: [],
-					line_id: String(routeRawData.line_id),
+					line_id: routeRawData.route_short_name,
 					locality_ids: [],
 					locality_names: [],
 					long_name: routeRawData.route_long_name,
@@ -377,7 +384,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 					pattern_ids: [],
 					short_name: routeRawData.route_short_name,
 					stop_ids: [],
-					text_color: routeRawData.route_text_color ? `#${routeRawData.route_text_color}` : '#FFFFFF',
+					text_color: HexColorSchema.parse(routeRawData.route_text_color || '#FFFFFF'),
 					tts_name: '',
 				};
 			}
@@ -385,7 +392,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			//
 			// Add to the current route (new or exising) the data retrieved from the current trip
 
-			currentRouteObject.pattern_ids = Array.from(new Set([tripRawData.pattern_id, ...currentRouteObject.pattern_ids]));
+			currentRouteObject.pattern_ids = Array.from(new Set([tripRawData.shape_id, ...currentRouteObject.pattern_ids]));
 
 			currentRouteObject.facilities = Array.from(new Set([...currentRouteObject.facilities, ...facilitiesList]));
 
@@ -401,21 +408,21 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			//
 			// Create the line object if it doesn't exist yet
 
-			let currentLineObject: HubLine;
+			let currentLineObject: HubV1ApiLine;
 
-			if (allLinesParsed.has(String(routeRawData.line_id))) {
-				currentLineObject = allLinesParsed.get(String(routeRawData.line_id));
+			if (allLinesParsed.has(routeRawData.route_short_name)) {
+				currentLineObject = allLinesParsed.get(routeRawData.route_short_name);
 			} else {
 				currentLineObject = {
-					_id: String(routeRawData.line_id),
+					_id: routeRawData.route_short_name,
 					agency_id: routeRawData.agency_id,
-					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
+					color: HexColorSchema.parse(routeRawData.route_color || '#000000'),
 					district_ids: [],
 					district_names: [],
 					facilities: [],
 					locality_ids: [],
 					locality_names: [],
-					long_name: routeRawData.line_long_name,
+					long_name: routeRawData.route_long_name,
 					municipality_ids: [],
 					municipality_names: [],
 					parish_ids: [],
@@ -424,7 +431,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 					route_ids: [],
 					short_name: routeRawData.route_short_name,
 					stop_ids: [],
-					text_color: routeRawData.route_text_color ? `#${routeRawData.route_text_color}` : '#FFFFFF',
+					text_color: HexColorSchema.parse(routeRawData.route_text_color || '#FFFFFF'),
 					tts_name: '',
 				};
 			}
@@ -433,7 +440,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// Add to the current line (new or exising) the data retrieved from the current trip
 
 			currentLineObject.route_ids = Array.from(new Set([tripRawData.route_id, ...currentLineObject.route_ids]));
-			currentLineObject.pattern_ids = Array.from(new Set([tripRawData.pattern_id, ...currentLineObject.pattern_ids]));
+			currentLineObject.pattern_ids = Array.from(new Set([tripRawData.shape_id, ...currentLineObject.pattern_ids]));
 
 			currentLineObject.facilities = Array.from(new Set([...currentLineObject.facilities, ...facilitiesList]));
 
@@ -449,7 +456,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			//
 			// Save the updated objects back to the maps
 
-			allLinesParsed.set(String(routeRawData.line_id), currentLineObject);
+			allLinesParsed.set(routeRawData.route_short_name, currentLineObject);
 			allRoutesParsed.set(routeRawData.route_id, currentRouteObject);
 			parsedPatternsForThisPatternGroup.set(currentPatternVersionHash, currentPatternObject);
 
@@ -461,18 +468,18 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 		// However, a small modification is required. The pattern group contains a trips map that should be converted
 		// to an array of trips. Also, the pattern groups themselves should be an array for the current pattern ID.
 
-		const finalizedPatternGroupsData: HubPattern[] = Array.from(parsedPatternsForThisPatternGroup.values()).map((item: HubPattern) => ({ ...item, trips: Object.values(item.trips) }));
+		const finalizedPatternGroupsData: HubV1ApiPattern[] = Array.from(parsedPatternsForThisPatternGroup.values()).map((item: HubV1ApiPattern) => ({ ...item, trips: Object.values(item.trips) }));
 
-		await cacheDb.set(`hub:v1:network:patterns:${patternId}`, JSON.stringify(finalizedPatternGroupsData));
-		// await SERVERDB.set(SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId), JSON.stringify(finalizedPatternGroupsData));
-		updatedPatternKeys.add(`hub:network:patterns:${patternId}`);
+		await cacheDb.set(`hub:v1:network:patterns:${shapeId}`, JSON.stringify(finalizedPatternGroupsData));
+		// await SERVERDB.set(SERVERDB_KEYS.NETWORK.PATTERNS.ID(shapeId), JSON.stringify(finalizedPatternGroupsData));
+		updatedShapeKeys.add(`hub:network:patterns:${shapeId}`);
 
 		// Logger.info({ message: `Updated pattern_id "${patternId}" (${intraPatternTimer.get()})` });
 
 		//
 	}
 
-	Logger.info({ message: `Updated ${updatedPatternKeys.size} Patterns (${processPatternsTimer.get()})` });
+	Logger.info({ message: `Updated ${updatedShapeKeys.size} Shapes (${processPatternsTimer.get()})` });
 
 	//
 	// Delete stale patterns
@@ -482,7 +489,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	Logger.info({ message: `Removing stale Patterns from cache...` });
 
 	const allPatternKeysInTheDatabase = await cacheDb.scan(`hub:network:patterns:*`);
-	const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
+	const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedShapeKeys.has(key));
 	if (stalePatternKeys.length) await cacheDb.deleteMany(stalePatternKeys);
 
 	Logger.info({ message: `Deleted ${stalePatternKeys.length} stale Patterns (${removeStalePatternsTimer.get()})` });
@@ -490,14 +497,14 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	//
 	// Save all routes to the database
 
-	const finalizedAllRoutesData: HubRoute[] = Array.from(allRoutesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
+	const finalizedAllRoutesData: HubV1ApiRoute[] = Array.from(allRoutesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
 	await cacheDb.set('hub:v1:network:routes', JSON.stringify(finalizedAllRoutesData));
 	Logger.info({ message: `Updated ${finalizedAllRoutesData.length} Routes` });
 
 	//
 	// Save all lines to the database
 
-	const finalizedAllLinesData: HubLine[] = Array.from(allLinesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
+	const finalizedAllLinesData: HubV1ApiLine[] = Array.from(allLinesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
 	await cacheDb.set('hub:v1:network:lines', JSON.stringify(finalizedAllLinesData));
 	Logger.info({ message: `Updated ${finalizedAllLinesData.length} Lines` });
 

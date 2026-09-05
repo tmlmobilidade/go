@@ -1,6 +1,7 @@
 /* * */
 
 import { EncodedPolylineSchema } from '@tmlmobilidade/go-types-geo';
+import { GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -13,7 +14,7 @@ export const HubV1ApiPatternSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	color: HexColorSchema,
-	direction_id: z.union([z.literal(0), z.literal(1)]),
+	direction_id: GtfsTripDirectionSchema,
 	district_ids: z.array(z.string()).default([]),
 	district_names: z.array(z.string()).default([]),
 	facilities: z.array(z.string()).default([]),

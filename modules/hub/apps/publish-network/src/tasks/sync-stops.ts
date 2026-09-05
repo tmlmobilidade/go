@@ -2,14 +2,14 @@
 
 import { decodeStopFlags } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubGtfsExportStops, type HubStop, HubStopSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiStop, HubV1ApiStopSchema, type HubV1GtfsStops } from '@tmlmobilidade/go-types-hub';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-interface QueryResult extends HubGtfsExportStops {
+interface QueryResult extends HubV1GtfsStops {
 	agency_ids: string
 	line_ids: string
 	pattern_ids: string
@@ -58,7 +58,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	//
 	// For each item, update its entry in the database
 
-	const exportedStopsData: HubStop[] = [];
+	const exportedStopsData: HubV1ApiStop[] = [];
 	let updatedStopsCounter = 0;
 
 	for (const gtfsStop of allGtfsStops) {
@@ -93,7 +93,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			//
 			// Build the final stop object
 
-			const validatedStop: HubStop = {
+			const validatedStop: HubV1ApiStop = {
 				_id: gtfsStop.stop_id,
 				agency_ids: JSON.parse(gtfsStop.agency_ids),
 				district_id: gtfsStop.district_id,
@@ -117,7 +117,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				tts_name: gtfsStop.tts_stop_name,
 			};
 
-			const parsedStop = HubStopSchema.parse(validatedStop);
+			const parsedStop = HubV1ApiStopSchema.parse(validatedStop);
 
 			exportedStopsData.push(parsedStop);
 
