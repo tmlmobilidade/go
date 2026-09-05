@@ -2,7 +2,8 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -10,12 +11,12 @@ import useSWR from 'swr';
 
 interface StopsContextState {
 	actions: {
-		getStopById: (stopId: string) => HubStop | undefined
+		getStopById: (stopId: string) => HubV1ApiStop | undefined
 		getStopByIdGeoJsonFC: (stopId: string) => GeoJSON.FeatureCollection | undefined
 	}
 	data: {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
-		stops: HubStop[]
+		stops: HubV1ApiStop[]
 	}
 	flags: {
 		error: Error | undefined
@@ -43,7 +44,9 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<HubStop[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_STOPS }); // 15 minutes
+	const { data: allStopsData, isLoading: allStopsLoading } = useSWR(API_ROUTES.hub.NETWORK_STOPS, {
+		fetcher: async (url: string) => await fetchApiData<HubV1ApiStop[]>({ credentials: 'omit', url }),
+	});
 
 	//
 	// B. Transform data
@@ -51,7 +54,7 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	const dataFeatureCollectionState = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection();
 		if (!allStopsData) return collection;
-		allStopsData.forEach((stop) => {
+		allStopsData.data?.forEach((stop) => {
 			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
 			if (stopFC) collection.features.push(stopFC);
 		});
@@ -61,8 +64,8 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Handle actions
 
-	const getStopById = (stopId: number | string): HubStop | undefined => {
-		return allStopsData?.find(stop => String(stop._id) === String(stopId));
+	const getStopById = (stopId: number | string): HubV1ApiStop | undefined => {
+		return allStopsData?.data?.find(stop => String(stop._id) === String(stopId));
 	};
 
 	const getStopByIdGeoJsonFC = (stopId: string): GeoJSON.FeatureCollection | undefined => {
@@ -84,7 +87,7 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 		},
 		data: {
 			fc: dataFeatureCollectionState,
-			stops: allStopsData ?? [],
+			stops: allStopsData?.data ?? [],
 		},
 		flags: {
 			error: undefined,
@@ -104,8 +107,8 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 
 /* * */
 
-export function transformStopDataIntoGeoJsonFeature(stopData: HubStop): GeoJSON.Feature<GeoJSON.Point, HubStop> {
-	const feature: GeoJSON.Feature<GeoJSON.Point, HubStop> = {
+export function transformStopDataIntoGeoJsonFeature(stopData: HubV1ApiStop): GeoJSON.Feature<GeoJSON.Point, HubV1ApiStop> {
+	const feature: GeoJSON.Feature<GeoJSON.Point, HubV1ApiStop> = {
 		geometry: {
 			coordinates: [stopData.longitude, stopData.latitude],
 			type: 'Point',

@@ -5,7 +5,7 @@
 import { StopDisplay } from '@/components/stops/common/StopDisplay';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { IconBusStop, IconSelector, IconX } from '@tabler/icons-react';
-import { type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface SelectStopProps {
-	data: HubStop[]
+	data: HubV1ApiStop[]
 	label?: string
 	nothingFound?: string
 	onSelectStopId: (stopId: null | string) => void
@@ -43,7 +43,7 @@ export function SelectStop({ data = [], label, nothingFound, onSelectStopId, pla
 	//
 	// C. Search
 
-	const searchResultsData = useSearch<HubStop>({
+	const searchResultsData = useSearch<HubV1ApiStop>({
 		accessors: ['name', 'short_name', 'tts_name'],
 		data,
 		debounce: 200,

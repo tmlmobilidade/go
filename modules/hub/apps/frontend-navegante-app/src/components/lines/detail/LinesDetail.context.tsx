@@ -5,7 +5,7 @@ import { useOperationalDate } from '@/components/common/operational-date/use-ope
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/go-types-hub';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -17,15 +17,15 @@ interface LinesDetailContextState {
 		setHighlightedTripIds: (tripIds: string[]) => void
 	}
 	data: {
-		active_alerts: HubAlert[] | undefined
-		active_pattern: HubPattern | null
+		active_alerts: HubV1ApiAlert[] | undefined
+		active_pattern: HubV1ApiPattern | null
 		active_shape: HubShape | null
 		active_waypoint: HubWaypoint | null
-		all_patterns: HubPattern[][] | null
+		all_patterns: HubV1ApiPattern[][] | null
 		highlighted_trip_ids: null | string[]
-		line: HubLine | undefined
+		line: HubV1ApiLine | undefined
 		routes: HubRoute[]
-		valid_patterns: HubPattern[] | undefined
+		valid_patterns: HubV1ApiPattern[] | undefined
 	}
 	filters: {
 		active_pattern_id: null | string
@@ -151,10 +151,10 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 
 	useEffect(() => {
 		if (!dataAllPatternsState || !selectedOperationalDate) return;
-		const activePatterns: HubPattern[] = [];
+		const activePatterns: HubV1ApiPattern[] = [];
 		for (const pattern of dataAllPatternsState) {
 			let closestDateSoFar: string = null;
-			let patternGroupWithClosestDate: HubPattern = null;
+			let patternGroupWithClosestDate: HubV1ApiPattern = null;
 			for (const patternGroup of pattern) {
 				if (!selectedOperationalDate) return;
 				// Find the closest valid date

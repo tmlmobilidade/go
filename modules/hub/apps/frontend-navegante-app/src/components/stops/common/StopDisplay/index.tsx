@@ -3,7 +3,7 @@
 import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
 import { StopDisplayName } from '@/components/stops/common/StopDisplayName';
 import { Skeleton } from '@mantine/core';
-import { type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 
@@ -13,7 +13,7 @@ interface StopDisplayProps {
 	searchQuery?: string
 	size?: 'lg' | 'md'
 	skeletonWidth?: number
-	stopData?: HubStop
+	stopData?: HubV1ApiStop
 }
 
 /* * */

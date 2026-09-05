@@ -3,14 +3,14 @@
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
-import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface AlertsCarouselSlideProps {
-	alert: HubAlert
+	alert: HubV1ApiAlert
 }
 
 export function AlertsCarouselSlide({ alert }: AlertsCarouselSlideProps) {
