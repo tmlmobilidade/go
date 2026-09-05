@@ -44,39 +44,45 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 	}
 
 	//
-	// Setup a disposable directory and download the operation file
-	// from the storage provider, calculate the hash of the operation file
-	// and clean up the temporary directory.
+	// Initialize a new temporary directory
 
 	const temporaryDirectory = fs.mkdtempDisposableSync('get-plan-hash-');
 
-	const downloadResponse = await fetch(operationFileData.url);
-	const downloadArrayBuffer = await downloadResponse.arrayBuffer();
-	const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
+	try {
+		//
+		// Download the operation file from the storage provider
+		// and calculate the hash of the operation file.
 
-	fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
+		const downloadResponse = await fetch(operationFileData.url);
+		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
+		const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
 
-	const operationFileHash = await getZipFileHash(downloadFilePath);
+		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
 
-	temporaryDirectory.remove();
+		const operationFileHash = await getZipFileHash(downloadFilePath);
 
-	//
-	// Create a hashable plan metadata object
+		//
+		// Create a hashable plan metadata object
 
-	const hashablePlanMetadata: HashablePlanMetadata = {
-		_id: planId,
-		active_from: activeFrom,
-		active_until: activeUntil,
-		operation_file_hash: operationFileHash,
-		operation_file_id: operationFileId,
-	};
+		const hashablePlanMetadata: HashablePlanMetadata = {
+			_id: planId,
+			active_from: activeFrom,
+			active_until: activeUntil,
+			operation_file_hash: operationFileHash,
+			operation_file_id: operationFileId,
+		};
 
-	//
-	// Create a SHA-256 hash of the hashable plan metadata object and return it
+		//
+		// Create a SHA-256 hash of the hashable plan metadata object and return it
 
-	const hashValue = createHash('sha256')
-		.update(JSON.stringify(hashablePlanMetadata))
-		.digest('hex');
+		const hashValue = createHash('sha256')
+			.update(JSON.stringify(hashablePlanMetadata))
+			.digest('hex');
 
-	return hashValue;
-};
+		return hashValue;
+
+		//
+	} finally {
+		temporaryDirectory.remove();
+	}
+}
