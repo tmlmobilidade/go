@@ -22,8 +22,11 @@ export function initExportGtfsContext(): ExportGtfsContext {
 	//
 	// Use the run ID to prepare the working directory.
 
+	const temporaryPath = fs.mkdtempDisposableSync(`export-gtfs-${runId}`);
+
 	const workdirContext: ExportGtfsContext['workdir'] = {
-		path: `/tmp/export-gtfs/${runId}`,
+		path: temporaryPath.path,
+		remove: temporaryPath.remove,
 	};
 
 	//
