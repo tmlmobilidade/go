@@ -47,10 +47,10 @@ export async function initNormalizePlansTaskContext(planData: Plan): Promise<Nor
 	// Create a temporary working directory
 	// and all the necessary paths
 
-	const temporaryDirectory = fs.mkdtempDisposableSync('normalize-plans-task-');
+	const temporaryDirectory = fs.mkdtempDisposableSync(`normalize-plans-task-${planData._id}-`);
 
 	const extractedDirPath = path.join(temporaryDirectory.path, 'extracted');
-	const operationFilePath = path.join(temporaryDirectory.path, 'operation-file.zip');
+	const operationFilePath = path.join(temporaryDirectory.path, `${planData._id}-${planData.operation_file_id}.zip`);
 	const newOperationFilePath = path.join(temporaryDirectory.path, 'new-operation-file.zip');
 
 	//
