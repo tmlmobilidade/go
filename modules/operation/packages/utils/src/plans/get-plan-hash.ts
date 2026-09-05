@@ -44,8 +44,9 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 	}
 
 	//
-	// Setup a disposable directory and download
-	// the operation file from the storage provider
+	// Setup a disposable directory and download the operation file
+	// from the storage provider, calculate the hash of the operation file
+	// and clean up the temporary directory.
 
 	const temporaryDirectory = fs.mkdtempDisposableSync('get-plan-hash-');
 
@@ -55,10 +56,9 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 
 	fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
 
-	//
-	// Calculate the hash of the operation file
-
 	const operationFileHash = await calculateZipFileHash(downloadFilePath);
+
+	temporaryDirectory.remove();
 
 	//
 	// Create a hashable plan metadata object
