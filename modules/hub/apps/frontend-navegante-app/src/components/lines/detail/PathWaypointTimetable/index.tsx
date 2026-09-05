@@ -4,8 +4,9 @@ import { useOperationalDate } from '@/components/common/operational-date/use-ope
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { TimetableDisplay } from '@/components/lines/detail/TimetableDisplay';
 import { createTimetable } from '@/utils/create-timetable';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type Timetable } from '@tmlmobilidade/go-types-hub';
+import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,7 +30,7 @@ export function PathWaypointTimetable() {
 	//
 	// B. Transform data
 
-	const timetableData = useMemo<null | string | Timetable>(() => {
+	const timetableData = useMemo<null | OperationalDateInt | Timetable>(() => {
 		// Setup variables
 		const activePatternGroup = linesDetailContext.data.active_pattern;
 		const secondaryPatternGroups = linesDetailContext.data.valid_patterns?.filter(patternGroup => patternGroup.version_id !== activePatternGroup?.version_id) || [];
@@ -46,9 +47,9 @@ export function PathWaypointTimetable() {
 		if (!activePatternGroup.valid_on.includes(selectedOperationalDate)) {
 			// Find the closest valid date
 			return activePatternGroup.valid_on.reduce((acc, curr) => {
-				if (selectedOperationalDate <= curr && (acc === '' || curr < acc)) return curr;
+				if (selectedOperationalDate <= curr && (acc === null || curr < acc)) return curr;
 				return acc;
-			}, '');
+			}, null);
 		}
 
 		// Check if the user has enabled complex schedules
@@ -77,8 +78,8 @@ export function PathWaypointTimetable() {
 		);
 	}
 
-	if (typeof timetableData === 'string') {
-		const nextDate = timetableData && Dates.fromOperationalDate(timetableData, 'Europe/Lisbon').js_date;
+	if (typeof timetableData === 'number') {
+		const nextDate = timetableData && Dates.fromOperationalDateInt(timetableData, 'Europe/Lisbon').js_date;
 		return (
 			<div className={styles.container}>
 				<p className={styles.noData}>{t('default:lines.PathWaypointTimetable.no_data')}</p>

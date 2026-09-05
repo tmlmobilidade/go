@@ -1,7 +1,7 @@
 /* * */
 
 import { getCauseSeverityLevel } from '@/utils/get-alert-severity-level';
-import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
+import { GtfsRtCause, GtfsRtCauseValues } from '@tmlmobilidade/go-types-gtfs-rt';
 import { AlertCauseIcons } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface AlertCauseIconProps {
-	cause?: AlertCause
+	cause?: GtfsRtCause
 	className?: string
 	size?: 'lg' | 'md'
 	withText?: boolean
@@ -35,7 +35,7 @@ export function AlertCauseIcon({ cause, className, size, withText = false }: Ale
 	//
 	// B. Transform data
 
-	const causesWithIcons = AlertCauseValues.map(cause => ({
+	const causesWithIcons = GtfsRtCauseValues.map(cause => ({
 		cause,
 		color: severityColor[getCauseSeverityLevel(cause)],
 		icon: AlertCauseIcons[cause],
@@ -50,7 +50,7 @@ export function AlertCauseIcon({ cause, className, size, withText = false }: Ale
 		return (
 			<div className={`${styles.container} ${className ?? ''} ${causeItem.color}`}>
 				{causeItem.icon}
-				<span className={styles.label}>{t(`shared:alerts.causes.${cause}.title`)}</span>
+				{/* <span className={styles.label}>{t(`shared:alerts.causes.${cause}.title`)}</span> */}
 			</div>
 		);
 	}

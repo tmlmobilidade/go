@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixMilliseconds } from '@tmlmobilidade/types';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

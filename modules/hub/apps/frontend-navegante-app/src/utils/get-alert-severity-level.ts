@@ -1,49 +1,46 @@
 /* * */
 
-import { type AlertCause, type AlertEffect } from '@tmlmobilidade/go-types-operation';
+import { GtfsRtCause, GtfsRtEffect } from '@tmlmobilidade/go-types-gtfs-rt';
 
 /* * */
 
 export type AlertSeverityLevel = 'high' | 'info' | 'low' | 'medium';
-const CAUSE_SEVERITY: Record<AlertCause, AlertSeverityLevel> = {
-	ABUSIVE_PARKING: 'medium',
+
+const CAUSE_SEVERITY: Record<GtfsRtCause, AlertSeverityLevel> = {
 	ACCIDENT: 'high',
 	CONSTRUCTION: 'high',
 	DEMONSTRATION: 'high',
-	DRIVER_ABSENCE: 'high',
-	DRIVER_ISSUE: 'high',
-	HIGH_PASSENGER_LOAD: 'high',
+	HOLIDAY: 'info',
+	MAINTENANCE: 'medium',
 	MEDICAL_EMERGENCY: 'high',
-	NETWORK_UPDATE: 'info',
+	OTHER_CAUSE: 'medium',
 	POLICE_ACTIVITY: 'high',
-	PUBLIC_DISORDER: 'high',
-	ROAD_ISSUE: 'high',
 	STRIKE: 'high',
 	TECHNICAL_ISSUE: 'high',
-	TRAFFIC_JAM: 'high',
-	VEHICLE_ISSUE: 'high',
+	UNKNOWN_CAUSE: 'medium',
 	WEATHER: 'high',
 };
 
-const EFFECT_SEVERITY: Record<AlertEffect, AlertSeverityLevel> = {
+const EFFECT_SEVERITY: Record<GtfsRtEffect, AlertSeverityLevel> = {
 	ACCESSIBILITY_ISSUE: 'low',
 	ADDITIONAL_SERVICE: 'info',
 	DETOUR: 'medium',
 	MODIFIED_SERVICE: 'low',
+	NO_EFFECT: 'info',
 	NO_SERVICE: 'high',
-	ON_BOARD_SALE_ISSUE: 'low',
-	REALTIME_INFO_ISSUE: 'low',
+	OTHER_EFFECT: 'medium',
 	REDUCED_SERVICE: 'low',
 	SIGNIFICANT_DELAYS: 'high',
 	STOP_MOVED: 'low',
+	UNKNOWN_EFFECT: 'medium',
 };
 
 /* * */
 
-export function getCauseSeverityLevel(cause: AlertCause): AlertSeverityLevel {
+export function getCauseSeverityLevel(cause: GtfsRtCause): AlertSeverityLevel {
 	return CAUSE_SEVERITY[cause];
 }
 
-export function getEffectSeverityLevel(effect: AlertEffect): AlertSeverityLevel {
+export function getEffectSeverityLevel(effect: GtfsRtEffect): AlertSeverityLevel {
 	return EFFECT_SEVERITY[effect];
 }

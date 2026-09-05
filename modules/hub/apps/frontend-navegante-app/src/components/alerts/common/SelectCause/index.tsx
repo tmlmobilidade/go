@@ -5,7 +5,7 @@
 import { AlertCauseIcon } from '@/components/alerts/common/AlertCauseIcon';
 import { Flex, Group, Select, type SelectProps } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
-import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
+import { GtfsRtCause, GtfsRtCauseValues } from '@tmlmobilidade/go-types-gtfs-rt';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,8 +24,8 @@ export default function Component({ onChange, value, ...props }: SelectAlertCaus
 	const { t } = useTranslation();
 
 	const causeOptions = useMemo(
-		() => AlertCauseValues.map(cause => ({
-			label: t(`shared:alerts.causes.${cause}.title`),
+		() => GtfsRtCauseValues.map(cause => ({
+			label: cause,
 			value: cause,
 		})),
 		[t],
@@ -38,7 +38,7 @@ export default function Component({ onChange, value, ...props }: SelectAlertCaus
 		return (
 			<Group gap={2}>
 				<Flex direction="column">
-					<AlertCauseIcon cause={option.value as AlertCause} className={styles.icon} withText />
+					<AlertCauseIcon cause={option.value as GtfsRtCause} className={styles.icon} withText />
 				</Flex>
 			</Group>
 		);
@@ -55,7 +55,7 @@ export default function Component({ onChange, value, ...props }: SelectAlertCaus
 			{...props}
 			leftSection={
 				value
-					? <AlertCauseIcon cause={value as AlertCause} />
+					? <AlertCauseIcon cause={value as GtfsRtCause} />
 					: <IconExclamationCircle size={20} />
 			}
 			clearable

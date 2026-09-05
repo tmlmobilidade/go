@@ -2,10 +2,10 @@
 
 import { transformAlertDataIntoGeoJsonFeature, useAlertsContext } from '@/components/alerts/Alerts.context';
 import { type AlertGroup } from '@/types/alerts/alert-group';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { GtfsRtCause, GtfsRtEffect } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
-import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type ListContextStateTemplate, useFilterStateText, UseFilterStateTextReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,8 +19,8 @@ const CM_AGENCY_IDS = new Set(['A2L1N', 'BNA17', 'LA77N', 'YA15B']);
 interface AlertsListContextState extends ListContextStateTemplate {
 	actions: {
 		toggle: (view: 'current' | 'future' | 'map') => void
-		updateFilterByCause: (value: AlertCause | null) => void
-		updateFilterByEffect: (value: AlertEffect | null) => void
+		updateFilterByCause: (value: GtfsRtCause | null) => void
+		updateFilterByEffect: (value: GtfsRtEffect | null) => void
 		updateFilterByLineId: (value: string) => void
 		updateFilterByStopId: (value: string) => void
 	}
@@ -37,8 +37,8 @@ interface AlertsListContextState extends ListContextStateTemplate {
 	}
 	filters: {
 		agency: UseFilterStateTextReturnType
-		cause: AlertCause | null
-		effect: AlertEffect | null
+		cause: GtfsRtCause | null
+		effect: GtfsRtEffect | null
 		line_id: null | string
 		search: UseFilterStateTextReturnType
 		stop_id: null | string
@@ -79,12 +79,12 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	const [filterByLineIdState, setFilterByLineIdState] = useQueryState('line_id');
 	const [filterByStopIdState, setFilterByStopIdState] = useQueryState('stop_id');
 	const [filterByCauseState, setFilterByCauseState] = useQueryState('cause', {
-		parse: (value: string) => value as AlertCause | null,
-		serialize: (value: AlertCause | null) => value as string,
+		parse: (value: string) => value as GtfsRtCause | null,
+		serialize: (value: GtfsRtCause | null) => value as string,
 	});
 	const [filterByEffectState, setFilterByEffectState] = useQueryState('effect', {
-		parse: (value: string) => value as AlertEffect | null,
-		serialize: (value: AlertEffect | null) => value as string,
+		parse: (value: string) => value as GtfsRtEffect | null,
+		serialize: (value: GtfsRtEffect | null) => value as string,
 	});
 
 	//

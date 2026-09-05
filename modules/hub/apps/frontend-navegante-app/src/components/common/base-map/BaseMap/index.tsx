@@ -86,7 +86,7 @@ export function BaseMap() {
 			type: 'Feature',
 		});
 		return collection;
-	}, [patternsData.data]);
+	}, [patternsData?.data]);
 
 	useEffect(() => {
 		if (!viewportMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;

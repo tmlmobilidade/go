@@ -5,7 +5,7 @@
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
 import { Flex, Group, Select, type SelectProps } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
-import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
+import { GtfsRtEffect, GtfsRtEffectValues } from '@tmlmobilidade/go-types-gtfs-rt';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,8 +24,8 @@ export default function Component({ onChange, value, ...props }: SelectAlertEffe
 	const { t } = useTranslation();
 
 	const effectOptions = useMemo(
-		() => AlertEffectValues.map(effect => ({
-			label: t(`shared:alerts.effects.${effect}.title`),
+		() => GtfsRtEffectValues.map(effect => ({
+			label: effect,
 			value: effect,
 		})),
 		[t],
@@ -38,7 +38,7 @@ export default function Component({ onChange, value, ...props }: SelectAlertEffe
 		return (
 			<Group gap={2}>
 				<Flex direction="column">
-					<AlertEffectIcon className={styles.icon} effect={option.value as AlertEffect} withText />
+					<AlertEffectIcon className={styles.icon} effect={option.value as GtfsRtEffect} withText />
 				</Flex>
 			</Group>
 		);
@@ -54,7 +54,7 @@ export default function Component({ onChange, value, ...props }: SelectAlertEffe
 			w="100%"
 			{...props}
 			leftSection={
-				value ? <AlertEffectIcon effect={value as AlertEffect} /> : <IconBolt size={20} />
+				value ? <AlertEffectIcon effect={value as GtfsRtEffect} /> : <IconBolt size={20} />
 			}
 			clearable
 		/>

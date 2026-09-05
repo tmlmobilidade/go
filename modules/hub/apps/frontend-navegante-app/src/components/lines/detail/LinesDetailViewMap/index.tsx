@@ -89,10 +89,10 @@ export function LinesDetailViewMap() {
 			if (!stopData) return;
 			moveMap(linesDetailMap, [stopData.longitude, stopData.latitude]);
 		} else {
-			if (!linesDetailContext.data.active_shape?.geojson) return;
-			centerMap(linesDetailMap, [linesDetailContext.data.active_shape.geojson], { padding: 60 });
+			// if (!linesDetailContext.data.active_shape?.geojson) return;
+			// centerMap(linesDetailMap, [linesDetailContext.data.active_shape.geojson], { padding: 60 });
 		}
-	}, [linesDetailMap, linesDetailContext.data.active_waypoint, linesDetailContext.data.active_shape, linesDetailContext.flags.is_interactive_mode, stopsContext.actions]);
+	}, [linesDetailMap, linesDetailContext.data.active_waypoint, linesDetailContext.data.active_pattern, linesDetailContext.flags.is_interactive_mode, stopsContext.actions]);
 
 	function handleLayerClick(event) {
 		if (!linesDetailMap) return;
@@ -107,8 +107,8 @@ export function LinesDetailViewMap() {
 	}
 
 	function handleCenterMap() {
-		if (!linesDetailContext.data.active_shape?.geojson) return;
-		centerMap(linesDetailMap, [linesDetailContext.data.active_shape.geojson], { padding: 60 });
+		// if (!linesDetailContext.data.active_shape?.geojson) return;
+		// centerMap(linesDetailMap, [linesDetailContext.data.active_shape.geojson], { padding: 60 });
 	}
 
 	//
@@ -140,11 +140,11 @@ export function LinesDetailViewMap() {
 					stopsData={activeStopFeatureCollection}
 				/>
 
-				<MapViewStylePath
+				{/* <MapViewStylePath
 					presentBeforeId={MapViewStyleActiveStopsPrimaryLayerId}
 					shapeData={linesDetailContext.data.active_shape?.geojson}
 					waypointsData={activePathFeatureCollection}
-				/>
+				/> */}
 
 			</MapView>
 		</div>
