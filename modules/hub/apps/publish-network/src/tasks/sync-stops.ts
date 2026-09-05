@@ -1,5 +1,6 @@
 /* * */
 
+import { decodeStopFlags } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubGtfsExportStops, type HubStop, HubStopSchema } from '@tmlmobilidade/go-types-hub';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
@@ -97,7 +98,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				agency_ids: JSON.parse(gtfsStop.agency_ids),
 				district_id: gtfsStop.district_id,
 				district_name: gtfsStop.district_name,
-				flags: gtfsStop.flags ? JSON.parse(gtfsStop.flags) : [],
+				flags: decodedFlags,
 				latitude: gtfsStop.stop_lat,
 				legacy_ids: gtfsStop.legacy_ids ? JSON.parse(gtfsStop.legacy_ids) : [],
 				lifecycle_status: gtfsStop.lifecycle_status,
@@ -136,6 +137,4 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	await cacheDb.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
 
 	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
-
-	//
 };

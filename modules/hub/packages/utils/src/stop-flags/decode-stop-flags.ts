@@ -1,9 +1,6 @@
 /* * */
 
-export interface DecodedStopFlag {
-	agency_id: string
-	stop_id: string
-}
+import { type HubStopFlag } from '@tmlmobilidade/go-types-hub';
 
 /**
  * Decodes the stop flags into an object in the format:
@@ -14,7 +11,7 @@ export interface DecodedStopFlag {
  * @param agencyIds The agency IDs to filter the flags by. If not provided, all flags will be decoded.
  * @returns The decoded stop flags.
  */
-export function decodeStopFlags(encodedFlags: string): DecodedStopFlag[] {
+export function decodeStopFlags(encodedFlags: string): HubStopFlag[] {
 	//
 
 	//
@@ -27,7 +24,7 @@ export function decodeStopFlags(encodedFlags: string): DecodedStopFlag[] {
 	//
 	// Decode the flags
 
-	const decodedStopFlags: DecodedStopFlag[] = [];
+	const decodedStopFlags: HubStopFlag[] = [];
 
 	for (const encodedFlag of encodedFlags.split('|')) {
 		const [agencyId, stopId] = encodedFlag.split('-');

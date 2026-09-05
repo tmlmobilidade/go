@@ -10,6 +10,15 @@ import * as turf from '@turf/turf';
 
 /* * */
 
+interface QueryResult extends HubGtfsExportStops {
+	agency_ids: string
+	line_ids: string
+	pattern_ids: string
+	route_ids: string
+}
+
+/* * */
+
 export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 	//
 
@@ -20,7 +29,41 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 	// Fetch all Shapes from NETWORKDB
 
 	const fetchRawDataTimer = new Timer();
-	const allShapesRaw = importedGtfsSql.shapes.all();
+
+	const allShapesRaw = importedGtfsSql.shapes.query(`
+
+  SELECT
+
+    shape_id,
+
+    json_group_array(
+
+      json_array(shape_pt_lon, shape_pt_lat)
+
+    ) AS coordinates
+
+  FROM (
+
+    SELECT
+
+      shape_id,
+
+      shape_pt_lon,
+
+      shape_pt_lat,
+
+      shape_pt_sequence
+
+    FROM shapes
+
+    ORDER BY shape_id, shape_pt_sequence
+
+  )
+
+  GROUP BY shape_id
+
+`);
+
 	Logger.info({ message: `Fetched ${allShapesRaw.length} rows from GTFS (${fetchRawDataTimer.get()})` });
 
 	//
