@@ -40,8 +40,6 @@ export async function getActivePlans(): Promise<Plan[]> {
 		return [];
 	}
 
-	Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
-
 	//
 	// Evaluate each plan to check if it should be included in the export
 
@@ -54,6 +52,8 @@ export async function getActivePlans(): Promise<Plan[]> {
 		if (plan.active_until < currentOperationalDate) return false;
 		return true;
 	});
+
+	Logger.info({ message: `Found ${plansToExport.length} Plans to export...` });
 
 	//
 	// Hash the list of enabled plans and check if it differs
