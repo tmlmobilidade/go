@@ -59,23 +59,20 @@ export async function analyzeRides() {
 
 		const fetchRideDocumentsTimer = new Timer();
 
-		const ridesBatch = await labDb.operation.rides.queryFromString(
-			`
-				SELECT *
-				FROM operation.rides
-				WHERE _id IN ($1)
-				ORDER BY updated_at DESC
-				LIMIT 1 BY _id
-			`,
-			{ 1: rideIdsBatch.join(',') },
-		);
+		const ridesBatch = await labDb.operation.rides.queryFromString(`
+			SELECT *
+			FROM operation.rides
+			WHERE _id IN (${rideIdsBatch.map(id => `'${id}'`).join(',')})
+			ORDER BY updated_at DESC
+			LIMIT 1 BY _id
+		`);
 
 		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
 		//
 		// Process each Ride
 
-		await runWithConcurrency(ridesBatch, 25, async (rideData, rideIndex) => {
+		await runWithConcurrency(ridesBatch, ridesBatch.length, async (rideData, rideIndex) => {
 			try {
 				//
 
