@@ -29,11 +29,11 @@ export async function publishApprovedPlans() {
 
 	const plansWithOperationFiles = await Promise.all(
 		allPlansData.map(async (planData) => {
-			const operationFile = await storageProvider.findById(planData.operation_file_id);
-			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
+			const attachmentData = await storageProvider.findById(planData.attachments.operation_gtfs_normalized);
+			if (!attachmentData) throw new Error(`Operation GTFS normalized attachment not found for plan ${planData._id}`);
 			const agencyData = await goDb.core.agencies.findById(planData.agency_id);
 			if (!agencyData) throw new Error(`Agency not found for plan ${planData._id}`);
-			return { agencyData, operationFile, planData };
+			return { agencyData, attachmentData, planData };
 		}),
 	);
 
@@ -42,10 +42,10 @@ export async function publishApprovedPlans() {
 
 	const approvedPlans: HubV1ApiPlan[] = [];
 
-	for (const { agencyData, operationFile, planData } of plansWithOperationFiles) {
+	for (const { agencyData, attachmentData, planData } of plansWithOperationFiles) {
 		try {
-			// Check if the operation file exists
-			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
+			// Check if the operation GTFS normalized attachment exists
+			if (!attachmentData) throw new Error(`Operation GTFS normalized attachment not found for plan ${planData._id}`);
 			// Check if the plans is active
 			const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
 			const nowIsAfterStartDate = currentOperationalDate >= planData.active_from;
@@ -62,8 +62,8 @@ export async function publishApprovedPlans() {
 				created_at: planData.created_at,
 				hash: planData.hash,
 				is_active: isActive,
-				operation_file_id: planData.operation_file_id,
-				operation_file_url: operationFile.url,
+				operation_gtfs_normalized_id: attachmentData._id,
+				operation_gtfs_normalized_url: attachmentData.url,
 				updated_at: planData.updated_at,
 			};
 			const validatedHubV1ApiPlanData = HubV1ApiPlanSchema.safeParse(hubPlanData);
@@ -83,6 +83,4 @@ export async function publishApprovedPlans() {
 	await cacheDb.set('hub:v1:plans:approved:json', JSON.stringify(approvedPlans));
 
 	Logger.success(`Finished publishing ${approvedPlans.length} approved plans JSON feed. (${globalTimer.get()})`);
-
-	//
 };
