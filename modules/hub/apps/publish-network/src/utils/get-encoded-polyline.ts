@@ -4,18 +4,30 @@ import { EncodedPolyline, GeoJsonLineStringGeometrySchema } from '@tmlmobilidade
 import { HubV1GtfsShapes } from '@tmlmobilidade/go-types-hub';
 import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
+const encodedPolylineCache = new Map<string, EncodedPolyline>();
+
+/**
+ * Retrieves an encoded polyline from the database.
+ * The encoded polyline is cached in memory to avoid unnecessary database queries.
+ * @param importedGtfsSql - The imported GTFS SQL tables.
+ * @param shapeId - The shape ID.
+ * @returns The encoded polyline.
+ */
 export async function getEncodedPolyline(importedGtfsSql: GtfsSQLTables, shapeId: string): Promise<EncodedPolyline> {
 	//
 
-	const timer = new Timer();
+	//
+	// Check if the encoded polyline is already cached
+
+	const cachedEncodedPolyline = encodedPolylineCache.get(shapeId);
+
+	if (cachedEncodedPolyline) return cachedEncodedPolyline;
 
 	//
-	// Fetch the current shape data from the database
+	// If not, fetch the encoded polyline from the database
 
 	const foundShapeData = importedGtfsSql.shapes.query<HubV1GtfsShapes>(`
 		SELECT *
@@ -38,9 +50,12 @@ export async function getEncodedPolyline(importedGtfsSql: GtfsSQLTables, shapeId
 	const shapeAsEncodedPolyline = fromGeoJsonLineStringToEncodedPolyline(shapeAsGeoJsonGeometry);
 
 	//
-	// Return the encoded polyline
+	// Cache the encoded polyline
 
-	Logger.info({ message: `Encoded polyline for shape ${shapeId} in ${timer.get()}` });
+	encodedPolylineCache.set(shapeId, shapeAsEncodedPolyline);
+
+	//
+	// Return the encoded polyline
 
 	return shapeAsEncodedPolyline;
 };
