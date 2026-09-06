@@ -1,13 +1,13 @@
 /* * */
 
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { type PickedSimplifiedVehicleEvent } from '../types/analysis-data.js';
 
 /**
  * Detect the first event in the vehicle events data.
  * @param vehicleEventsData The vehicle events data.
  * @returns The first event in the vehicle events data.
  */
-export function detectFirstEvent(vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
+export function detectFirstEvent(vehicleEventsData: PickedSimplifiedVehicleEvent[]): null | PickedSimplifiedVehicleEvent {
 	//
 
 	//

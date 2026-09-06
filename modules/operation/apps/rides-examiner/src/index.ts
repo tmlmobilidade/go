@@ -1,8 +1,5 @@
 /* * */
 
-import { analyzeRide } from '@/utils/analyze-ride.js';
-import { augmentRide } from '@/utils/augment-ride.js';
-import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { getCoordinatorUrl } from '@tmlmobilidade/go-operation-pckg-utils';
@@ -10,6 +7,10 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval, runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { analyzeRide } from './utils/analyze-ride.js';
+import { augmentRide } from './utils/augment-ride.js';
+import { fetchAnalysisData } from './utils/fetch-analysis-data.js';
 
 /* * */
 

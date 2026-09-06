@@ -1,9 +1,8 @@
 /* * */
 
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { chunkLineStringByDistance, cutLineStringAtLength, fromEncodedPolylineToGeoJsonLineString, getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
 
-import { type PickedHashedShape } from '../types/analysis-data.js';
+import { type PickedHashedShape, type PickedSimplifiedVehicleEvent } from '../types/analysis-data.js';
 
 /* * */
 
@@ -18,7 +17,7 @@ const ENDING_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param vehicleEventsData The vehicle events data.
  * @returns The event which ends the trip.
  */
-export function detectEndEvent(hashedShapeData: null | PickedHashedShape, vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
+export function detectEndEvent(hashedShapeData: null | PickedHashedShape, vehicleEventsData: PickedSimplifiedVehicleEvent[]): null | PickedSimplifiedVehicleEvent {
 	//
 
 	//
@@ -47,7 +46,7 @@ export function detectEndEvent(hashedShapeData: null | PickedHashedShape, vehicl
 	// Detect the last event that is inside
 	// the geofence of the ending segment of the shape.
 
-	let lastEventInsideEndingSegment: null | SimplifiedVehicleEvent = null;
+	let lastEventInsideEndingSegment: null | PickedSimplifiedVehicleEvent = null;
 
 	for (const vehicleEvent of sortedVehicleEvents) {
 		// Check if the current vehicle event has any point that is
