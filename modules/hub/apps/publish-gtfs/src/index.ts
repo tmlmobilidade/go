@@ -5,4 +5,4 @@ import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '1h', throwOnError: false });
+await runOnInterval(main, { intervalMs: '10s', throwOnError: false });
