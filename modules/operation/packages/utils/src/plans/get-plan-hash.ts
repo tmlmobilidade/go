@@ -13,7 +13,8 @@ import path from 'node:path';
 interface GetPlanHashParams {
 	activeFrom: OperationalDateInt
 	activeUntil: OperationalDateInt
-	operationFileId: string
+	operationAttachmentId: string
+	operationNormalizedAttachmentId: string
 	planId: string
 }
 
@@ -22,7 +23,7 @@ interface GetPlanHashParams {
  * @param params - The parameters for the function
  * @returns The hash of the plan
  */
-export async function getPlanHash({ activeFrom, activeUntil, operationFileId, planId }: GetPlanHashParams): Promise<string> {
+export async function getPlanHash({ activeFrom, activeUntil, operationAttachmentId, operationNormalizedAttachmentId, planId }: GetPlanHashParams): Promise<string> {
 	//
 
 	//
@@ -32,15 +33,23 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 
 	if (!activeUntil) throw new Error(`[getPlanHash()] No active_until date received for plan ${planId}`);
 
-	if (!operationFileId) throw new Error(`[getPlanHash()] No Operation file ID received for plan ${planId}`);
+	if (!operationAttachmentId) throw new Error(`[getPlanHash()] No Operation attachment ID received for plan ${planId}`);
+
+	if (!operationNormalizedAttachmentId) throw new Error(`[getPlanHash()] No Operation normalized attachment ID received for plan ${planId}`);
 
 	//
-	// Retrieve the operation file data from the storage provider
+	// Retrieve the operation and the normalized operation attachments from the storage provider
 
-	const operationFileData = await storageProvider.findById(operationFileId);
+	const operationAttachmentData = await storageProvider.findById(operationAttachmentId);
 
-	if (!operationFileData?.url) {
-		throw new Error(`[getPlanHash()] Operation file "${operationFileId}" not found in Storage for plan ${planId}`);
+	if (!operationAttachmentData?.url) {
+		throw new Error(`[getPlanHash()] Operation attachment "${operationAttachmentId}" not found in Storage for plan ${planId}`);
+	}
+
+	const operationNormalizedAttachmentData = await storageProvider.findById(operationNormalizedAttachmentId);
+
+	if (!operationNormalizedAttachmentData?.url) {
+		throw new Error(`[getPlanHash()] Operation normalized attachment "${operationNormalizedAttachmentId}" not found in Storage for plan ${planId}`);
 	}
 
 	//
@@ -53,13 +62,25 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 		// Download the operation file from the storage provider
 		// and calculate the hash of the operation file.
 
-		const downloadResponse = await fetch(operationFileData.url);
+		const downloadResponse = await fetch(operationAttachmentData.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
 
 		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
 
-		const operationFileHash = await getZipFileHash(downloadFilePath);
+		const operationAttachmentHash = await getZipFileHash(downloadFilePath);
+
+		//
+		// Download the normalized operation attachment from the storage provider
+		// and calculate the hash of the normalized operation file.
+
+		const downloadNormalizedResponse = await fetch(operationNormalizedAttachmentData.url);
+		const downloadNormalizedArrayBuffer = await downloadNormalizedResponse.arrayBuffer();
+		const downloadNormalizedFilePath = path.join(temporaryDirectory.path, 'gtfs-normalized.zip');
+
+		fs.writeFileSync(downloadNormalizedFilePath, Buffer.from(downloadNormalizedArrayBuffer));
+
+		const operationNormalizedAttachmentHash = await getZipFileHash(downloadNormalizedFilePath);
 
 		//
 		// Create a hashable plan metadata object
@@ -68,8 +89,8 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 			_id: planId,
 			active_from: activeFrom,
 			active_until: activeUntil,
-			operation_file_hash: operationFileHash,
-			operation_file_id: operationFileId,
+			operation_attachment_hash: operationAttachmentHash,
+			operation_normalized_attachment_hash: operationNormalizedAttachmentHash,
 		};
 
 		//
