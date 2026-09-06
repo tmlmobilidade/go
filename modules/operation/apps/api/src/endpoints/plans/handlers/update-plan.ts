@@ -86,7 +86,8 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 		const hashValue = await getPlanHash({
 			activeFrom: validatedFeedStartDate,
 			activeUntil: validatedFeedEndDate,
-			operationFileId: foundPlan.operation_file_id,
+			operationGtfsAttachmentId: foundPlan.attachments.operation_gtfs,
+			operationGtfsNormalizedAttachmentId: foundPlan.attachments.operation_gtfs_normalized,
 			planId: foundPlan._id,
 		});
 
@@ -97,7 +98,6 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 			active_from: validatedFeedStartDate,
 			active_until: validatedFeedEndDate,
 			hash: hashValue,
-			operation_file_id: foundPlan.operation_file_id,
 		});
 
 		//
