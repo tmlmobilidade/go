@@ -17,7 +17,7 @@ export async function findRideById(rideId: string): Promise<Ride> {
 	// Fetch the ride data from the database
 
 	const selectResult = await labDb.operation.rides.queryFromString(
-		`SELECT * FROM operation.rides FINAL WHERE _id = $1`,
+		`SELECT * FROM operation.rides WHERE _id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id`,
 		{ 1: rideId },
 	);
 
