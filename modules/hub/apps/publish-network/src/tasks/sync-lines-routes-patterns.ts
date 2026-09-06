@@ -234,14 +234,13 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 			// and a different set of dates will be associated with it.
 
 			const currentPatternGroup: Partial<HubV1ApiPattern> = {
-				_id: tripRawData.shape_id,
+				_id: tripRawData.pattern_id,
 				agency_id: routeRawData.agency_id,
 				color: HexColorSchema.parse(routeRawData.route_color || '#000000'),
 				direction_id: tripRawData.direction_id,
 				headsign: tripRawData.trip_headsign,
 				line_id: routeRawData.route_short_name,
 				route_id: routeRawData.route_id,
-				shape_id: tripRawData.shape_id,
 				short_name: routeRawData.route_short_name,
 				text_color: HexColorSchema.parse(routeRawData.route_text_color || '#FFFFFF'),
 			};
