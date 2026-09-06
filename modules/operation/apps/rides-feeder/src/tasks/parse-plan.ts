@@ -56,8 +56,8 @@ export async function parsePlanTask(planData: Plan) {
 	//
 	// Mark the plan as 'error' if it does not have an associated operation file
 
-	if (!planData.operation_file_id) {
-		console.error(`Skip processing: No operation file found. (plan: ${planData._id})`);
+	if (!planData.attachments.operation_gtfs_normalized) {
+		console.error(`Skip processing: No operation GTFS normalized found. (plan: ${planData._id})`);
 		await setPlanStatus(planData._id, 'rides_feeder', 'error');
 		return;
 	}
@@ -89,7 +89,7 @@ export async function parsePlanTask(planData: Plan) {
 
 	const importTimer = new Timer();
 
-	const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
+	const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.attachments.operation_gtfs_normalized });
 
 	const importConfig: ImportGtfsConfig = {
 		source: {
