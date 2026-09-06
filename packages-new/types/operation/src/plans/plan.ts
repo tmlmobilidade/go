@@ -16,9 +16,6 @@ export const PlanSchema = BaseDocumentSchema.extend({
 	attachments: PlanAttachmentsSchema,
 	hash: z.string(),
 	is_locked: z.boolean().default(false),
-	// @deprecated
-	// apex_file_id: z.string().nullable().default(null),
-	// operation_file_id: z.string().nullable().default(null),
 });
 
 export const CreatePlanSchema = PlanSchema.omit({ _id: true, updated_at: true });
