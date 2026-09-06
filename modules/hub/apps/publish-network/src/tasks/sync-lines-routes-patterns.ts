@@ -4,14 +4,14 @@ import { getEncodedPolyline } from '@/utils/get-encoded-polyline.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiPatternTrip, type HubV1ApiPatternWaypoint, type HubV1ApiRoute, type HubV1ApiScheduledArrival, type HubV1ApiStop, HubV1GtfsRoutes } from '@tmlmobilidade/go-types-hub';
 import { HexColorSchema } from '@tmlmobilidade/go-types-shared';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsHubV1SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import crypto from 'node:crypto';
 
 /* * */
 
-export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables) {
+export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTables) {
 	//
 
 	/* * *
@@ -261,7 +261,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				currentPatternObject = parsedPatternsForThisPatternGroup.get(currentPatternVersionHash);
 			} else {
 				currentPatternObject = {
-					_id: tripRawData.shape_id,
+					_id: tripRawData.pattern_id,
 					agency_id: routeRawData.agency_id,
 					color: HexColorSchema.parse(routeRawData.route_color || '#000000'),
 					direction_id: tripRawData.direction_id,
