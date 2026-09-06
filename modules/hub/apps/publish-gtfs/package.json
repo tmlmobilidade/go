@@ -36,8 +36,8 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
+		"csv-stringify": "6.8.3",
 		"gtfs-types": "5.1.0",
-		"papaparse": "5.7.0",
 		"yazl": "3.3.1"
 	},
 	"devDependencies": {
