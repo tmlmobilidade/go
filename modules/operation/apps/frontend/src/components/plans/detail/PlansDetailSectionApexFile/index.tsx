@@ -44,7 +44,7 @@ export function PlanDetailSectionApexFile() {
 	const handleDownload = async () => {
 		try {
 			// Open file.url in a new window
-			window.open(API_ROUTES.operation.PLANS_DETAIL_APEX_FILE_DOWNLOAD(planDetailContext.data.id), '_blank');
+			window.open(API_ROUTES.operation.PLANS_DETAIL_APEX_CONFIG_DOWNLOAD(planDetailContext.data.id), '_blank');
 		} catch (error) {
 			useToast.error({
 				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
@@ -54,7 +54,7 @@ export function PlanDetailSectionApexFile() {
 	};
 
 	const { action: handleSendApexNotification, isLoading: isSendingApexNotification } = useHandleAction({
-		fetchFn: async () => await fetchApiData<unknown>({ url: API_ROUTES.operation.PLANS_DETAIL_APEX_FILE_SEND_NOTIFICATION(planDetailContext.data.id) }),
+		fetchFn: async () => await fetchApiData<unknown>({ url: API_ROUTES.operation.PLANS_DETAIL_APEX_CONFIG_SEND_NOTIFICATION(planDetailContext.data.id) }),
 		onSuccess: () => {},
 	});
 

@@ -20,7 +20,7 @@ export function PlanDetailSectionOperationFile() {
 	const handleDownload = async () => {
 		try {
 			// Open file.url in a new window
-			window.open(API_ROUTES.operation.PLANS_DETAIL_OPERATION_FILE_DOWNLOAD(planDetailContext.data.id), '_blank');
+			window.open(API_ROUTES.operation.PLANS_DETAIL_OPERATION_GTFS_DOWNLOAD(planDetailContext.data.id), '_blank');
 		} catch (error) {
 			useToast.error({
 				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',

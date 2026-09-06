@@ -73,11 +73,11 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: operationFileResponse, error: operationFileSwrError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.operation.PLANS_DETAIL_OPERATION_FILE(planId), {
+	const { data: operationGtfsResponse, error: operationGtfsSwrError, isLoading: operationGtfsLoading, mutate: operationGtfsMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.operation.PLANS_DETAIL_OPERATION_GTFS(planId), {
 		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
 	});
 
-	const { data: apexFileResponse, mutate: apexFileMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.operation.PLANS_DETAIL_APEX_FILE(planId), {
+	const { data: apexFileResponse, mutate: apexFileMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.operation.PLANS_DETAIL_APEX_CONFIG(planId), {
 		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
 	});
 
@@ -85,9 +85,9 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 		fetcher: async (url: string) => await fetchApiData<User>({ url }),
 	});
 
-	const operationFileData = operationFileResponse?.data ?? null;
+	const operationGtfsData = operationGtfsResponse?.data ?? null;
 
-	const operationFileError = operationFileResponse?.error ?? (operationFileSwrError instanceof Error ? operationFileSwrError.message : null);
+	const operationGtfsError = operationGtfsResponse?.error ?? (operationGtfsSwrError instanceof Error ? operationGtfsSwrError.message : null);
 
 	const apexFileData = apexFileResponse?.data ?? null;
 
@@ -103,14 +103,14 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => {
-			if (apexFileUpload) await uploadFile(API_ROUTES.operation.PLANS_DETAIL_APEX_FILE(planId), apexFileUpload);
+			if (apexFileUpload) await uploadFile(API_ROUTES.operation.PLANS_DETAIL_APEX_CONFIG(planId), apexFileUpload);
 			return await fetchApiData<Plan>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.operation.PLANS_DETAIL(planId) });
 		},
 		onSuccess: () => {
 			setApexFileUpload(null);
 			form.resetDirty();
 			planMutate();
-			operationFileMutate();
+			operationGtfsMutate();
 			apexFileMutate();
 			plansListMutate();
 		},
@@ -130,7 +130,7 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 		onSuccess: () => {
 			form.resetDirty();
 			planMutate();
-			operationFileMutate();
+			operationGtfsMutate();
 			plansListMutate();
 		},
 	});
@@ -140,13 +140,13 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 		onSuccess: () => {
 			form.resetDirty();
 			planMutate();
-			operationFileMutate();
+			operationGtfsMutate();
 			plansListMutate();
 		},
 	});
 
 	const { action: handleDeleteApexFile, isLoading: isDeletingApexFile } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Attachment>({ method: 'DELETE', url: API_ROUTES.operation.PLANS_DETAIL_APEX_FILE(planId) }),
+		fetchFn: async () => await fetchApiData<Attachment>({ method: 'DELETE', url: API_ROUTES.operation.PLANS_DETAIL_APEX_CONFIG(planId) }),
 		onSuccess: () => {
 			setApexFileUpload(null);
 			apexFileMutate();
@@ -248,7 +248,7 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 			apex_file: apexFileData,
 			form,
 			id: planId,
-			operation_file: operationFileData,
+			operation_file: operationGtfsData,
 			plan: planData,
 			user: userData,
 		},
@@ -257,9 +257,9 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 			canDelete,
 			canLock,
 			canSave,
-			error: planError || operationFileError ? new Error(planError || operationFileError || 'Failed to load plan') : undefined,
+			error: planError || operationGtfsError ? new Error(planError || operationGtfsError || 'Failed to load plan') : undefined,
 			isDeleting,
-			isLoading: planLoading || operationFileLoading,
+			isLoading: planLoading || operationGtfsLoading,
 			isLocking,
 			isReadOnly,
 			isSaving: isSaving || isReprocessing,
@@ -272,12 +272,12 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 		canLock,
 		canSave,
 		canChangePlan,
-		operationFileError,
+		operationGtfsError,
 		planError,
-		operationFileLoading,
+		operationGtfsLoading,
 		apexFileData,
 		isDeleting,
-		operationFileData,
+		operationGtfsData,
 		isReprocessing,
 		planLoading,
 		isLocking,
