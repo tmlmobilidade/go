@@ -1,8 +1,9 @@
 /* * */
 
-import { type HashedShape, type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { chunkLineStringByDistance, cutLineStringAtLength, fromEncodedPolylineToGeoJsonLineString, getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
+
+import { type PickedHashedShape } from '../types/analysis-data.js';
 
 /* * */
 
@@ -17,7 +18,7 @@ const ENDING_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param vehicleEventsData The vehicle events data.
  * @returns The event which ends the trip.
  */
-export function detectEndEvent(rideData: Ride, hashedShapeData: HashedShape | null, vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
+export function detectEndEvent(hashedShapeData: null | PickedHashedShape, vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
 	//
 
 	//
