@@ -282,7 +282,6 @@ export const API_ROUTES = Object.freeze({
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
 		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${encodeURIComponent(id)}`,
 		NETWORK_ROUTES: `${getModuleConfig('hub', 'api_url')}/v1/network/routes`,
-		NETWORK_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/shapes/${encodeURIComponent(id)}`,
 		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
 
 		// PLANS
@@ -425,15 +424,16 @@ export const API_ROUTES = Object.freeze({
 		// PLANS
 		PLANS_CREATE: `${getModuleConfig('operation', 'api_url')}/plans/create`,
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}`,
-		PLANS_DETAIL_APEX_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file`,
-		PLANS_DETAIL_APEX_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/download`,
-		PLANS_DETAIL_APEX_FILE_SEND_NOTIFICATION: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/send-notification`,
+		PLANS_DETAIL_APEX_CONFIG: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-config`,
+		PLANS_DETAIL_APEX_CONFIG_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-config/download`,
+		PLANS_DETAIL_APEX_CONFIG_SEND_NOTIFICATION: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-config/send-notification`,
 		PLANS_DETAIL_CHANGE_GTFS: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/change-gtfs`,
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/controller-reprocess`,
 		PLANS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/lock`,
-		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file`,
-		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file/download`,
-		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
+		PLANS_DETAIL_OPERATION_GTFS: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-gtfs`,
+		PLANS_DETAIL_OPERATION_GTFS_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-gtfs/download`,
+		PLANS_DETAIL_OPERATION_GTFS_NORMALIZED: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-gtfs-normalized`,
+		PLANS_DETAIL_OPERATION_GTFS_NORMALIZED_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-gtfs-normalized/download`,
 		PLANS_LIST: `${getModuleConfig('operation', 'api_url')}/plans/list`,
 		PLANS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/plans/list-agencies`,
 

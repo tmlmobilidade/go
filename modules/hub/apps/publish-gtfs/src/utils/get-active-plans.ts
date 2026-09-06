@@ -46,7 +46,7 @@ export async function getActivePlans(): Promise<Plan[]> {
 	const currentOperationalDate = Dates.now('utc').operational_date_int;
 
 	const plansToExport = allPlansData.filter((plan) => {
-		if (!plan.operation_file_id) return false;
+		if (!plan.attachments.operation_gtfs_normalized) return false;
 		if (!plan.active_from) return false;
 		if (!plan.active_until) return false;
 		if (plan.active_until < currentOperationalDate) return false;

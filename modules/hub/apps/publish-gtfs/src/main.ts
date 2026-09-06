@@ -110,9 +110,9 @@ export async function main() {
 			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_publish_gtfs.last_hash': null, 'apps.hub_publish_gtfs.status': 'processing', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 			//
-			// Get the operation file URL
+			// Get the operation GTFS normalized attachment URL
 
-			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
+			const operationGtfsNormalizedAttachmentUrl = await storageProvider.getSignedUrl({ fileId: planData.attachments.operation_gtfs_normalized });
 
 			//
 			// Find out if this plan is a currently active plan.
@@ -124,7 +124,7 @@ export async function main() {
 
 			const importConfig: ImportGtfsConfig = {
 				source: {
-					url: operationFileUrl,
+					url: operationGtfsNormalizedAttachmentUrl,
 				},
 				sqlite_config: {
 					memory: true,

@@ -44,7 +44,6 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 		active_from: validationData.gtfs_feed_info.feed_start_date,
 		active_until: validationData.gtfs_feed_info.feed_end_date,
 		agency_id: validationData.agency_id,
-		apex_file_id: null,
 		apps: {
 			hub_publish_gtfs: {
 				message: null,
@@ -72,11 +71,15 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 				timestamp: null,
 			},
 		},
+		attachments: {
+			apex_config: null,
+			operation_gtfs: null,
+			operation_gtfs_normalized: null,
+		},
 		created_at: Dates.now('utc').unix_milliseconds,
 		created_by: request.me._id,
 		hash: '',
 		is_locked: false,
-		operation_file_id: null,
 	};
 
 	//
@@ -100,13 +103,17 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 			const hashValue = await getPlanHash({
 				activeFrom: planResult.active_from,
 				activeUntil: planResult.active_until,
-				operationFileId: result._id,
+				operationGtfsAttachmentId: planResult.attachments.operation_gtfs,
+				operationGtfsNormalizedAttachmentId: planResult.attachments.operation_gtfs_normalized,
 				planId: planResult._id,
 			});
 			// Update the plan in the database
-			await goDb.operation.plans.updateById(planResult._id, {
-				hash: hashValue,
-				operation_file_id: result._id,
+			const plansCollection = await goDb.operation.plans.getCollection();
+			await plansCollection.updateOne({ _id: planResult._id }, {
+				$set: {
+					'attachments.operation_gtfs': result._id,
+					'hash': hashValue,
+				},
 			});
 		},
 	});

@@ -38,7 +38,7 @@ export async function normalizePlansTask() {
 		},
 	});
 
-	Logger.info({ message: `Found ${allPlans.length} plans.` });
+	Logger.info({ message: `Found ${allPlans.length} plans to normalize.` });
 
 	//
 	// Normalize each plan
@@ -61,28 +61,24 @@ export async function normalizePlansTask() {
 			//
 			// Download the operation file from storage
 
-			if (!planData.operation_file_id) {
-				throw new Error(`[${planData._id}] No Operation file ID found.`);
+			const operationGtfsAttachmentData = await storageProvider.findById(planData.attachments.operation_gtfs);
+
+			if (!operationGtfsAttachmentData?.url) {
+				throw new Error(`[${planData._id}] Operation GTFS attachment "${planData.attachments.operation_gtfs}" not found.`);
 			}
 
-			const operationFileData = await storageProvider.findById(planData.operation_file_id);
-
-			if (!operationFileData?.url) {
-				throw new Error(`[${planData._id}] Operation file "${planData.operation_file_id}" not found.`);
-			}
-
-			Logger.info({ message: `Downloading GTFS file from URL: ${operationFileData.url}` });
-			const downloadResponse = await fetch(operationFileData.url);
+			Logger.info({ message: `Downloading GTFS file from URL: ${operationGtfsAttachmentData.url}` });
+			const downloadResponse = await fetch(operationGtfsAttachmentData.url);
 			const downloadArrayBuffer = await downloadResponse.arrayBuffer();
-			fs.writeFileSync(context.paths.original_operation_file_path, Buffer.from(downloadArrayBuffer));
-			Logger.success(`Downloaded GTFS file from URL: ${operationFileData.url}`);
+			fs.writeFileSync(context.paths.operation_gtfs_file_path, Buffer.from(downloadArrayBuffer));
+			Logger.success(`Downloaded GTFS file from URL: ${operationGtfsAttachmentData.url}`);
 
 			//
 			// Unzip the GTFS file.
 
 			Logger.info({ message: 'Unzipping GTFS file...' });
-			await unzipFile(context.paths.original_operation_file_path, context.paths.extracted_dir_path);
-			Logger.success(`Unzipped GTFS file from "${context.paths.original_operation_file_path}" to "${context.paths.extracted_dir_path}".`, 1);
+			await unzipFile(context.paths.operation_gtfs_file_path, context.paths.extracted_dir_path);
+			Logger.success(`Unzipped GTFS file from "${context.paths.operation_gtfs_file_path}" to "${context.paths.extracted_dir_path}".`, 1);
 
 			//
 			// Update the agency.txt and feed_info.txt files
@@ -123,7 +119,7 @@ export async function normalizePlansTask() {
 					}
 					// Setup a write stream to the final zip file
 					outputZip.outputStream
-						.pipe(fs.createWriteStream(context.paths.new_operation_file_path))
+						.pipe(fs.createWriteStream(context.paths.operation_gtfs_normalized_file_path))
 						.on('close', resolve);
 					// Finalize the zip creation, which triggers
 					// the piping and writing process.
@@ -136,40 +132,60 @@ export async function normalizePlansTask() {
 			Logger.success(`Zipped new GTFS archive in ${zipTimer.get()}.`);
 
 			//
-			// If there are changes, upload the new GTFS archive to the storage provider.
+			// Upload the new GTFS archive to the storage provider.
 
-			const updatedOperationFileBuffer = fs.readFileSync(context.paths.new_operation_file_path);
+			const updatedOperationGtfsNormalizedBuffer = fs.readFileSync(context.paths.operation_gtfs_normalized_file_path);
 
-			const updatedFileResult = await storageProvider.replace(
-				updatedOperationFileBuffer,
+			const updatedFileResult = await storageProvider.upload(
+				updatedOperationGtfsNormalizedBuffer,
 				{
-					...operationFileData,
-					size: updatedOperationFileBuffer.byteLength,
+					created_by: 'system',
+					name: `plan-${planData._id}-normalized.zip`,
+					resource_id: planData._id,
+					scope: 'plans',
+					size: updatedOperationGtfsNormalizedBuffer.byteLength,
+					type: 'application/zip',
+					updated_by: 'system',
 				},
 				{
-					onSuccess: async (_, result) => {
-					// Get a new hash for this plan
-						const hashValue = await getPlanHash({
-							activeFrom: planData.active_from,
-							activeUntil: planData.active_until,
-							operationFileId: result._id,
-							planId: planData._id,
-						});
-						// Update the plan in the database
-						await goDb.operation.plans.updateById(planData._id, {
-							hash: hashValue,
-							operation_file_id: result._id,
-						});
+					onSuccess: async (_, result, session) => {
+						const plansCollection = await goDb.operation.plans.getCollection();
+						await plansCollection.updateOne(
+							{ _id: planData._id },
+							{ $set: { 'attachments.operation_gtfs_normalized': result._id } },
+							{ session },
+						);
 					},
 				},
 			);
 
-			Logger.info({ message: `[${planData._id}] Operation file updated: ${updatedFileResult.size}` });
+			//
+			// Delete previous operation GTFS normalized attachment if it exists
+
+			if (planData.attachments.operation_gtfs_normalized) {
+				const foundPrevAttachmentData = await storageProvider.findById(planData.attachments.operation_gtfs_normalized);
+				if (foundPrevAttachmentData) await storageProvider.delete(foundPrevAttachmentData._id);
+			}
+
+			Logger.info({ message: `[${planData._id}] Operation GTFS normalized updated: ${updatedFileResult.size}` });
 
 			//
 			// Update the last hash of the organizer app for this plan.
 
-			await setPlanStatus(planData._id, 'organizer', 'complete', '$hash');
+			//
+			// Get a new hash for this plan
+
+			const newHashValue = await getPlanHash({
+				activeFrom: planData.active_from,
+				activeUntil: planData.active_until,
+				operationGtfsAttachmentId: planData.attachments.operation_gtfs,
+				operationGtfsNormalizedAttachmentId: updatedFileResult._id,
+				planId: planData._id,
+			});
+
+			await goDb.operation.plans.updateById(planData._id, { hash: newHashValue });
+
+			await setPlanStatus(planData._id, 'organizer', 'complete', newHashValue);
 
 			Logger.success(`Updated last hash of organizer app for plan ${planData._id}.`, 1);
 
@@ -178,7 +194,7 @@ export async function normalizePlansTask() {
 			Logger.error({ error, message: `Error processing plan ${planData._id}:` });
 			await setPlanStatus(planData._id, 'organizer', 'error');
 		} finally {
-			// Cleanup the working directory.
+			// Cleanup the working directory
 			context.paths.removeDir();
 			Logger.success(`Cleaned up working directory.`, 1);
 		}

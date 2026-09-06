@@ -8,11 +8,11 @@ import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Change the GTFS file of a plan by its _id.
+ * Change the operation GTFS of a plan from a given validation ID.
  * @param request Fastify request containing plan ID in params and update data in body
  * @param reply Fastify reply
  */
-export async function changeOperationFileHandler(request: FastifyRequest<{ Body: { validation_id: string }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function changeOperationGtfsHandler(request: FastifyRequest<{ Body: { validation_id: string }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
 	//
@@ -68,16 +68,20 @@ export async function changeOperationFileHandler(request: FastifyRequest<{ Body:
 			const hashValue = await getPlanHash({
 				activeFrom: planData.active_from,
 				activeUntil: planData.active_until,
-				operationFileId: result._id,
+				operationGtfsAttachmentId: planData.attachments.operation_gtfs,
+				operationGtfsNormalizedAttachmentId: planData.attachments.operation_gtfs_normalized,
 				planId: planData._id,
 			});
 			// Update the plan in the database
-			await goDb.operation.plans.updateById(planData._id, {
-				hash: hashValue,
-				operation_file_id: result._id,
+			const plansCollection = await goDb.operation.plans.getCollection();
+			await plansCollection.updateOne({ _id: planData._id }, {
+				$set: {
+					'attachments.operation_gtfs': result._id,
+					'hash': hashValue,
+				},
 			});
-			// Delete the old operation file
-			await storageProvider.delete(planData.operation_file_id);
+			// Delete the old operation GTFS file
+			await storageProvider.delete(planData.attachments.operation_gtfs);
 		},
 	});
 

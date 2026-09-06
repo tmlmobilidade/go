@@ -6,11 +6,11 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Download the operation file associated with a plan by ID.
+ * Download the operation GTFS normalized file associated with a plan by ID.
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function downloadOperationFileHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+export async function downloadOperationGtfsNormalizedHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
 	//
 
 	//
@@ -44,39 +44,40 @@ export async function downloadOperationFileHandler(request: FastifyRequest<{ Par
 	}
 
 	//
-	// Fetch the file associated with the plan
+	// Fetch the attachment associated with the plan
 
-	const foundFileData = await storageProvider.findById(planData.operation_file_id);
+	const foundAttachmentData = await storageProvider.findById(planData.attachments.operation_gtfs_normalized);
 
-	if (!foundFileData) {
+	if (!foundAttachmentData) {
 		return sendErrorApiResponse(reply, {
-			error: 'Plan operation file not found',
+			error: 'Plan operation GTFS normalized attachment not found',
 			status_code: '404',
 		});
 	}
 
 	//
-	// Stream the file in the given URL to the client
+	// Stream the attachment in the given URL to the client
 
-	const storageServiceResponse = await fetch(foundFileData.url);
+	const storageServiceResponse = await fetch(foundAttachmentData.url);
 
 	if (!storageServiceResponse.ok || !storageServiceResponse.body) {
 		return sendErrorApiResponse(reply, {
-			error: 'Could not fetch file',
+			error: 'Could not fetch attachment',
 			status_code: '500',
 		});
 	}
 
 	//
-	// Set headers and pipe the response body to the client
+	// Set headers and pipe the attachment body to the client
 
-	reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
 	reply.header('Content-Type', 'application/zip');
+	reply.header('Content-Disposition', `attachment; filename="${foundAttachmentData.name}"`);
 
 	//
 	// Set content length if available
 
 	const contentLength = storageServiceResponse.headers.get('Content-Length');
+
 	if (contentLength) reply.header('Content-Length', contentLength);
 
 	//

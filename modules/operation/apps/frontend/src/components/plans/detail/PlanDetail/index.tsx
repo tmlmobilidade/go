@@ -5,11 +5,11 @@ import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.c
 import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';
 import { PlanDetailSectionActiveDates } from '@/components/plans/detail/PlanDetailSectionActiveDates';
 import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetailSectionController';
-import { PlanDetailSectionApexFile } from '@/components/plans/detail/PlansDetailSectionApexFile';
+import { PlansDetailSectionApexConfig } from '@/components/plans/detail/PlansDetailSectionApexConfig';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
-import { PlanDetailSectionOperationFile } from '../PlansDetailSectionOperationFile';
+import { PlansDetailSectionOperationGtfs } from '../PlansDetailSectionOperationGtfs';
 import { usePlansDetailData } from '../use-plans-detail-data';
 
 /* * */
@@ -37,7 +37,7 @@ export function PlanDetail() {
 			{planDetailContext.flags.error && <ErrorDisplay message={planDetailContext.flags.error.message} />}
 
 			<PlanDetailSectionActiveDates />
-			<PlanDetailSectionOperationFile />
+			<PlansDetailSectionOperationGtfs />
 
 			<HasPermission
 				action={PermissionCatalog.all.plans.actions.read_apex_file}
@@ -45,7 +45,7 @@ export function PlanDetail() {
 				scope={PermissionCatalog.all.plans.scope}
 				value={planDetailContext.data.plan.agency_id}
 			>
-				<PlanDetailSectionApexFile />
+				<PlansDetailSectionApexConfig />
 			</HasPermission>
 
 			<HasPermission

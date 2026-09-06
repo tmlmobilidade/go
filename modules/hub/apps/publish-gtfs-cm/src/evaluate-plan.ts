@@ -20,10 +20,10 @@ export async function evaluatePlan(planData: Plan): Promise<boolean> {
 	}
 
 	//
-	// Return false if it does not have an associated operation file
+	// Return false if it does not have an associated operation GTFS normalized attachment
 
-	if (!planData.operation_file_id) {
-		throw new Error(`Plan ${planData._id} has no operation file`);
+	if (!planData.attachments.operation_gtfs_normalized) {
+		throw new Error(`Plan ${planData._id} has no operation GTFS normalized attachment`);
 	}
 
 	//

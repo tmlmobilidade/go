@@ -2,8 +2,8 @@
 
 import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Reprocesses a plan by ID.
@@ -16,20 +16,12 @@ export async function controllerReprocessPlanHandler(request: FastifyRequest<{ P
 	//
 	// Update the plan data
 
-	const plansCollection = await goDb.operation.plans.getCollection();
+	await setPlanStatus(request.params.id, 'rides_feeder', 'waiting');
 
-	const updateResult = await plansCollection.findOneAndUpdate(
-		{ _id: { $eq: request.params.id } },
-		{
-			$set: {
-				'apps.rides_feeder.last_hash': null,
-				'apps.rides_feeder.status': 'waiting',
-				'apps.rides_feeder.timestamp': Dates.now('utc').unix_milliseconds,
-			},
-		});
+	const updatedPlan = await goDb.operation.plans.findById(request.params.id);
 
 	//
 	// Return the success response
 
-	return sendSuccessApiResponse(reply, updateResult);
+	return sendSuccessApiResponse(reply, updatedPlan);
 }

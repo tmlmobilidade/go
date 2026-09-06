@@ -7,22 +7,15 @@ import { Plan } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Deletes an apex file by plan ID
+ * Deletes an apex config by plan ID
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function deleteApexFileHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function deleteApexConfigHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
 	//
-	// Check if the plan ID is provided
-
-	if (!request.params?.id) {
-		return sendErrorApiResponse(reply, {
-			error: 'Missing Plan ID in request params.',
-			status_code: '400',
-		});
-	}
+	// Check if the plan exists
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
@@ -34,7 +27,7 @@ export async function deleteApexFileHandler(request: FastifyRequest<{ Params: { 
 	}
 
 	//
-	// Check if the user has permission to delete an apex file
+	// Check if the user has permission to delete an apex config
 
 	if (!PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.plans.actions.delete_apex_file,
@@ -50,30 +43,41 @@ export async function deleteApexFileHandler(request: FastifyRequest<{ Params: { 
 	}
 
 	//
-	// Fetch the file associated with the plan
+	// Fetch the attachment associated with the plan
 
-	const foundFileData = await storageProvider.findById(foundPlan.apex_file_id);
+	const foundAttachmentData = await storageProvider.findById(foundPlan.attachments.apex_config);
 
-	if (!foundFileData) {
+	if (!foundAttachmentData) {
 		return sendErrorApiResponse(reply, {
-			error: 'Plan APEX file not found',
+			error: 'Plan APEX config not found',
 			status_code: '404',
 		});
 	}
 
-	let updatedPlan: null | Plan = null;
-	await storageProvider.delete(foundFileData._id, {
+	await storageProvider.delete(foundAttachmentData._id, {
 		onRollback: async (_, error) => {
-			await goDb.operation.plans.updateById(request.params.id, { apex_file_id: foundPlan.apex_file_id });
+			const plansCollection = await goDb.operation.plans.getCollection();
+			await plansCollection.updateOne({ _id: request.params.id }, {
+				$set: {
+					'attachments.apex_config': foundPlan.attachments.apex_config,
+				},
+			});
 			throw error;
 		},
 		onSuccess: async () => {
-			updatedPlan = await goDb.operation.plans.updateById(request.params.id, { apex_file_id: null });
+			const plansCollection = await goDb.operation.plans.getCollection();
+			await plansCollection.updateOne({ _id: request.params.id }, {
+				$set: {
+					'attachments.apex_config': null,
+				},
+			});
 		},
 	});
 
 	//
-	// Update the plan to remove the apex file ID
+	// Return the success response
+
+	const updatedPlan = await goDb.operation.plans.findById(request.params.id);
 
 	return sendSuccessApiResponse(reply, updatedPlan);
 }

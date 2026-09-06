@@ -20,7 +20,7 @@ export function updateAgencyTxtContents(context: NormalizePlansTaskContext) {
 	const agencyRow: GtfsStrictV30Agency = {
 		agency_email: context.data.agency.open_data?.details?.email,
 		agency_fare_url: context.data.agency.open_data?.details?.fare_url,
-		agency_id: context.data.agency._id,
+		agency_id: context.data.agency.code,
 		agency_lang: context.data.agency.primary_language,
 		agency_name: context.data.agency.name,
 		agency_phone: context.data.agency.open_data?.details?.phone,

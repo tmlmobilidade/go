@@ -1,6 +1,7 @@
 /* * */
 
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
 import { type HashablePlanMetadata } from '@tmlmobilidade/go-types-operation';
 import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { getZipFileHash } from '@tmlmobilidade/go-utils-exec';
@@ -13,7 +14,8 @@ import path from 'node:path';
 interface GetPlanHashParams {
 	activeFrom: OperationalDateInt
 	activeUntil: OperationalDateInt
-	operationFileId: string
+	operationGtfsAttachmentId: string
+	operationGtfsNormalizedAttachmentId?: string
 	planId: string
 }
 
@@ -22,7 +24,7 @@ interface GetPlanHashParams {
  * @param params - The parameters for the function
  * @returns The hash of the plan
  */
-export async function getPlanHash({ activeFrom, activeUntil, operationFileId, planId }: GetPlanHashParams): Promise<string> {
+export async function getPlanHash({ activeFrom, activeUntil, operationGtfsAttachmentId, operationGtfsNormalizedAttachmentId, planId }: GetPlanHashParams): Promise<string> {
 	//
 
 	//
@@ -32,15 +34,28 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 
 	if (!activeUntil) throw new Error(`[getPlanHash()] No active_until date received for plan ${planId}`);
 
-	if (!operationFileId) throw new Error(`[getPlanHash()] No Operation file ID received for plan ${planId}`);
+	if (!operationGtfsAttachmentId) throw new Error(`[getPlanHash()] No Operation GTFS attachment ID received for plan ${planId}`);
 
 	//
-	// Retrieve the operation file data from the storage provider
+	// Retrieve the Operation GTFS attachment from the storage provider
 
-	const operationFileData = await storageProvider.findById(operationFileId);
+	const operationGtfsAttachmentData = await storageProvider.findById(operationGtfsAttachmentId);
 
-	if (!operationFileData?.url) {
-		throw new Error(`[getPlanHash()] Operation file "${operationFileId}" not found in Storage for plan ${planId}`);
+	if (!operationGtfsAttachmentData?.url) {
+		throw new Error(`[getPlanHash()] Operation GTFS attachment "${operationGtfsAttachmentId}" not found in Storage for plan ${planId}`);
+	}
+
+	//
+	// If available, retrieve the Operation GTFS normalized attachment from the storage provider
+
+	let operationGtfsNormalizedAttachmentData: Attachment | null = null;
+
+	if (operationGtfsNormalizedAttachmentId) {
+		operationGtfsNormalizedAttachmentData = await storageProvider.findById(operationGtfsNormalizedAttachmentId);
+	}
+
+	if (!operationGtfsNormalizedAttachmentData?.url) {
+		console.error(`[getPlanHash()] Operation GTFS normalized attachment "${operationGtfsNormalizedAttachmentId}" not found in Storage for plan ${planId}`);
 	}
 
 	//
@@ -50,16 +65,30 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 
 	try {
 		//
-		// Download the operation file from the storage provider
-		// and calculate the hash of the operation file.
+		// Download the operation GTFS file from the storage provider
+		// and calculate the hash of the operation GTFS file.
 
-		const downloadResponse = await fetch(operationFileData.url);
+		const downloadResponse = await fetch(operationGtfsAttachmentData.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
 
 		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
 
-		const operationFileHash = await getZipFileHash(downloadFilePath);
+		const operationGtfsAttachmentHash = await getZipFileHash(downloadFilePath);
+
+		//
+		// Download the normalized operation GTFS file from the storage provider
+		// and calculate the hash of the normalized operation GTFS file.
+
+		let operationGtfsNormalizedAttachmentHash: null | string = null;
+
+		if (operationGtfsNormalizedAttachmentData?.url) {
+			const downloadNormalizedResponse = await fetch(operationGtfsNormalizedAttachmentData.url);
+			const downloadNormalizedArrayBuffer = await downloadNormalizedResponse.arrayBuffer();
+			const downloadNormalizedFilePath = path.join(temporaryDirectory.path, 'gtfs-normalized.zip');
+			fs.writeFileSync(downloadNormalizedFilePath, Buffer.from(downloadNormalizedArrayBuffer));
+			operationGtfsNormalizedAttachmentHash = await getZipFileHash(downloadNormalizedFilePath);
+		}
 
 		//
 		// Create a hashable plan metadata object
@@ -68,8 +97,8 @@ export async function getPlanHash({ activeFrom, activeUntil, operationFileId, pl
 			_id: planId,
 			active_from: activeFrom,
 			active_until: activeUntil,
-			operation_file_hash: operationFileHash,
-			operation_file_id: operationFileId,
+			operation_gtfs_hash: operationGtfsAttachmentHash,
+			operation_gtfs_normalized_hash: operationGtfsNormalizedAttachmentHash,
 		};
 
 		//
