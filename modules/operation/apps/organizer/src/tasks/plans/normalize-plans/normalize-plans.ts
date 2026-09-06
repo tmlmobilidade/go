@@ -140,7 +140,7 @@ export async function normalizePlansTask() {
 				updatedOperationGtfsNormalizedBuffer,
 				{
 					created_by: 'system',
-					name: `${planData._id}-operation-gtfs-normalized.zip`,
+					name: `plan-${planData._id}-normalized.zip`,
 					resource_id: planData._id,
 					scope: 'plans',
 					size: updatedOperationGtfsNormalizedBuffer.byteLength,
@@ -149,24 +149,10 @@ export async function normalizePlansTask() {
 				},
 				{
 					onSuccess: async (_, result, session) => {
-						// Get a new hash for this plan
-						const hashValue = await getPlanHash({
-							activeFrom: planData.active_from,
-							activeUntil: planData.active_until,
-							operationGtfsAttachmentId: planData.attachments.operation_gtfs,
-							operationGtfsNormalizedAttachmentId: result._id,
-							planId: planData._id,
-						});
-						// Update the plan in the database
 						const plansCollection = await goDb.operation.plans.getCollection();
 						await plansCollection.updateOne(
 							{ _id: planData._id },
-							{
-								$set: {
-									'attachments.operation_gtfs_normalized': result._id,
-									'hash': hashValue,
-								},
-							},
+							{ $set: { 'attachments.operation_gtfs_normalized': result._id } },
 							{ session },
 						);
 					},
@@ -186,7 +172,20 @@ export async function normalizePlansTask() {
 			//
 			// Update the last hash of the organizer app for this plan.
 
-			await setPlanStatus(planData._id, 'organizer', 'complete', '$hash');
+			//
+			// Get a new hash for this plan
+
+			const newHashValue = await getPlanHash({
+				activeFrom: planData.active_from,
+				activeUntil: planData.active_until,
+				operationGtfsAttachmentId: planData.attachments.operation_gtfs,
+				operationGtfsNormalizedAttachmentId: updatedFileResult._id,
+				planId: planData._id,
+			});
+
+			await goDb.operation.plans.updateById(planData._id, { hash: newHashValue });
+
+			await setPlanStatus(planData._id, 'organizer', 'complete', newHashValue);
 
 			Logger.success(`Updated last hash of organizer app for plan ${planData._id}.`, 1);
 
