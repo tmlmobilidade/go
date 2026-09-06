@@ -7,11 +7,11 @@ import { Attachment } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Retrieves the APEX file associated with a plan by ID
+ * Retrieves the operation GTFS normalized file associated with a plan by ID
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function getApexFileHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
+export async function getOperationGtfsNormalizedHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 	//
 
 	//
@@ -30,7 +30,7 @@ export async function getApexFileHandler(request: FastifyRequest<{ Params: { id:
 	// Check if the user has permission to read the Plan
 
 	const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.plans.actions.read_apex_file,
+		action: PermissionCatalog.all.plans.actions.read,
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
@@ -45,29 +45,18 @@ export async function getApexFileHandler(request: FastifyRequest<{ Params: { id:
 	}
 
 	//
-	// Check if there is an APEX file associated with the plan
+	// Fetch the attachment associated with the plan
 
-	if (!planData.apex_file_id) {
+	const foundAttachmentData = await storageProvider.findById(planData.attachments.operation_gtfs_normalized);
+
+	if (!foundAttachmentData) {
 		return sendErrorApiResponse(reply, {
-			error: 'No APEX file associated with this plan',
+			error: 'Plan operation GTFS normalized attachment not found',
 			status_code: '404',
 		});
 	}
 
-	//
-	// Fetch the file associated with the plan
-
-	const foundFileData = await storageProvider.findById(planData.apex_file_id);
-
-	if (!foundFileData) {
-		return sendErrorApiResponse(reply, {
-			error: 'APEX file not found for this plan',
-			status_code: '404',
-		});
-	}
+	return sendSuccessApiResponse(reply, foundAttachmentData);
 
 	//
-	// Return the file
-
-	return sendSuccessApiResponse(reply, foundFileData);
 }

@@ -14,19 +14,9 @@ export async function deletePlanHandler(request: FastifyRequest<{ Params: { id: 
 	//
 
 	//
-	// Check if the plan ID is provided
-
-	if (!request.params?.id) {
-		return sendErrorApiResponse(reply, {
-			error: 'Missing Plan ID in request params.',
-			status_code: '400',
-		});
-	}
+	// Check if the plan exists
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
-
-	//
-	// Check if the plan exists
 
 	if (!foundPlan) {
 		return sendErrorApiResponse(reply, {

@@ -57,16 +57,16 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 	//
 	// Fetch the APEX file data
 
-	const foundFileData = await storageProvider.findById(foundPlan.apex_file_id);
+	const foundAttachmentData = await storageProvider.findById(foundPlan.attachments.apex_config);
 
-	if (!foundFileData) {
+	if (!foundAttachmentData) {
 		return sendErrorApiResponse(reply, {
-			error: 'APEX file not found for this plan',
+			error: 'APEX config not found for this plan',
 			status_code: '404',
 		});
 	}
 
-	const storageServiceResponse = await fetch(foundFileData.url);
+	const storageServiceResponse = await fetch(foundAttachmentData.url);
 
 	if (!storageServiceResponse.ok || !storageServiceResponse.body) {
 		return sendErrorApiResponse(reply, {
@@ -84,7 +84,7 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 		attachments: [{
 			content: apexFileBuffer,
 			contentType: 'application/xml',
-			filename: foundFileData.name,
+			filename: foundAttachmentData.name,
 		}],
 		data: {
 			agencyName: agencyData.name,
