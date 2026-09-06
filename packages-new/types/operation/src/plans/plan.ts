@@ -35,7 +35,7 @@ export const HashablePlanMetadataSchema = PlanSchema.pick({
 	active_until: true,
 }).extend({
 	operation_gtfs_hash: z.string(),
-	operation_gtfs_normalized_hash: z.string(),
+	operation_gtfs_normalized_hash: z.string().nullable().default(null),
 });
 
 export type HashablePlanMetadata = z.infer<typeof HashablePlanMetadataSchema>;
