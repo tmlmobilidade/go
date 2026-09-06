@@ -76,14 +76,21 @@ export async function rewriteShapeIdsToPatternIds(context: NormalizePlansTaskCon
 	Logger.info({ message: 'Reading zip entry "trips.txt"...' });
 
 	const parseEachTripsRow = async (data: GtfsStrictV30Trips) => {
-		// Skip if this row does not have a pattern_id
-		if (!('pattern_id' in data && typeof data.pattern_id === 'string')) throw new Error('Row does not have a pattern_id');
-		// Get the current shape_id and pattern_id values
-		const currentShapeId = data.shape_id;
-		const currentPatternId = data.pattern_id;
+		// Setup the new value for the
+		// pattern_id and shape_id columns
+		let newIdValue: string;
+		// If this row does not have a pattern_id,
+		// then it should match the value of shape_id
+		if (!('pattern_id' in data && typeof data.pattern_id === 'string')) {
+			newIdValue = data.shape_id;
+		} else {
+			// Otherwise, shape_id should match the value
+			// of the existing pattern_id column
+			newIdValue = data.pattern_id;
+		}
 		// Update the map and write the row to the output file
-		shapeIdToPatternIdMap.set(currentShapeId, currentPatternId);
-		await tripsWriter.write({ ...data, shape_id: currentPatternId });
+		shapeIdToPatternIdMap.set(data.shape_id, newIdValue);
+		await tripsWriter.write({ ...data, pattern_id: newIdValue, shape_id: newIdValue });
 	};
 
 	await streamCsvFile(path.join(context.paths.extracted_dir_path, 'trips.txt'), parseEachTripsRow);
