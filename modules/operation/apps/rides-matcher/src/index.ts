@@ -2,7 +2,8 @@
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RidesCoordinatorRideMatchesResponse } from '@tmlmobilidade/go-operation-pckg-types';
-import { getCoordinatorUrl, ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
+import { getCoordinatorUrl } from '@tmlmobilidade/go-operation-pckg-utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -82,7 +83,21 @@ async function main() {
 		const updateRidesTimer = new Timer();
 
 		if (matchingRidesIds.length) {
-			await ridesProvider.updateRides({ _id: matchingRidesIds }, { processing_status: 'waiting' });
+			const ridesBatch = await labDb.operation.rides.queryFromString(
+				`
+					SELECT *
+					FROM operation.rides
+					WHERE _id IN ($1)
+					ORDER BY updated_at DESC
+					LIMIT 1 BY _id
+				`,
+				{ 1: matchingRidesIds.join(',') },
+			);
+			await labDb.operation.rides.insert('JSONEachRow', ridesBatch.map(item => ({
+				...item,
+				processing_status: 'processing',
+				updated_at: Dates.now('utc').unix_milliseconds,
+			})));
 		}
 
 		console.log(`Updated #${matchingRidesIds.length} rides to 'waiting' (update: ${updateRidesTimer.get()})`);

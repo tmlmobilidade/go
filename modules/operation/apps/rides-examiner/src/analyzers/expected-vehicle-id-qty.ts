@@ -1,8 +1,9 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.js';
 import { type RideAnalysisExpectedVehicleIdQty, RideAnalysisExpectedVehicleIdQtySchema } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+
+import { type AnalysisData } from '../types/analysis-data.js';
 
 /* * */
 

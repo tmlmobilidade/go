@@ -1,16 +1,16 @@
 /* * */
 
-import { analyzeRide } from '@/utils/analyze-ride.js';
-import { augmentRide } from '@/utils/augment-ride.js';
-import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
-import { getCoordinatorUrl, ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { getCoordinatorUrl } from '@tmlmobilidade/go-operation-pckg-utils';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval, runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { analyzeRide } from './utils/analyze-ride.js';
+import { augmentRide } from './utils/augment-ride.js';
+import { fetchAnalysisData } from './utils/fetch-analysis-data.js';
 
 /* * */
 
@@ -60,23 +60,20 @@ export async function analyzeRides() {
 
 		const fetchRideDocumentsTimer = new Timer();
 
-		const ridesBatch = await labDb.queryFromString<Ride>(
-			`
-				SELECT *
-				FROM operation.rides
-				WHERE _id IN ($1)
-				ORDER BY updated_at DESC
-				LIMIT 1 BY _id
-			`,
-			{ 1: rideIdsBatch.join(',') },
-		);
+		const ridesBatch = await labDb.operation.rides.queryFromString(`
+			SELECT *
+			FROM operation.rides
+			WHERE _id IN (${rideIdsBatch.map(id => `'${id}'`).join(',')})
+			ORDER BY updated_at DESC
+			LIMIT 1 BY _id
+		`);
 
 		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
 		//
 		// Process each Ride
 
-		await runWithConcurrency(ridesBatch, 25, async (rideData, rideIndex) => {
+		await runWithConcurrency(ridesBatch, ridesBatch.length, async (rideData, rideIndex) => {
 			try {
 				//
 
@@ -160,7 +157,7 @@ export async function analyzeRides() {
 
 				//
 			} catch (error) {
-				await ridesProvider.updateRideById(rideData._id, { processing_status: 'error' });
+				await labDb.operation.rides.insert('JSONEachRow', [{ ...rideData, processing_status: 'error', updated_at: Dates.now('utc').unix_milliseconds }]);
 				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
 			}
 		});

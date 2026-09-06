@@ -1,9 +1,9 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.js';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { type RideAnalysisExpectedApexValidationInterval, RideAnalysisExpectedApexValidationIntervalSchema } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+
+import { type AnalysisData, type PickedSimplifiedApexValidation } from '../types/analysis-data.js';
 
 /* * */
 
@@ -56,7 +56,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		// Group validations by SAM Serial Number
 		// and sort them by created_at timestamp
 
-		const validationsBySamSerialNumber: Record<number, SimplifiedApexValidation[]> = {};
+		const validationsBySamSerialNumber: Record<number, PickedSimplifiedApexValidation[]> = {};
 
 		for (const validation of analysisData.apex_validations) {
 			// Skip if the SAM Serial Number is not available

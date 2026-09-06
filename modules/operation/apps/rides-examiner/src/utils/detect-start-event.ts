@@ -1,9 +1,9 @@
 /* * */
 
 import { type GeoJson2dPosition } from '@tmlmobilidade/go-types-geo';
-import { type HashedShape, type HashedTrip, type Ride } from '@tmlmobilidade/go-types-operation';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { chunkLineStringByDistance, cutLineStringAtLength, fromEncodedPolylineToGeoJsonLineString, getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
+
+import { type PickedHashedShape, type PickedHashedTrip, type PickedSimplifiedVehicleEvent } from '../types/analysis-data.js';
 
 /* * */
 
@@ -17,7 +17,7 @@ const INITIAL_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param analysisData The analysis data containing the vehicle events, hashed trip, and hashed shape.
  * @returns The event which starts the trip.
  */
-export function detectStartEvent(rideData: Ride, hashedTripData: HashedTrip[], hashedShapeData: HashedShape | null, vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
+export function detectStartEvent(hashedTripData: PickedHashedTrip[], hashedShapeData: null | PickedHashedShape, vehicleEventsData: PickedSimplifiedVehicleEvent[]): null | PickedSimplifiedVehicleEvent {
 	//
 
 	//
@@ -55,9 +55,9 @@ export function detectStartEvent(rideData: Ride, hashedTripData: HashedTrip[], h
 	// Detect the last event that is inside
 	// the geofence of the initial segment of the shape.
 
-	let lastEventInsideInitialSegment: null | SimplifiedVehicleEvent = null;
-	let firstEventInsideInitialSegment: null | SimplifiedVehicleEvent = null;
-	let lastEventInsideFirstStop: null | SimplifiedVehicleEvent = null;
+	let lastEventInsideInitialSegment: null | PickedSimplifiedVehicleEvent = null;
+	let firstEventInsideInitialSegment: null | PickedSimplifiedVehicleEvent = null;
+	let lastEventInsideFirstStop: null | PickedSimplifiedVehicleEvent = null;
 
 	for (const vehicleEvent of sortedVehicleEvents) {
 		//
