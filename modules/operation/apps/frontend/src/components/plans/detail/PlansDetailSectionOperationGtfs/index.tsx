@@ -21,6 +21,10 @@ export function PlansDetailSectionOperationGtfs() {
 		window.open(API_ROUTES.operation.PLANS_DETAIL_OPERATION_GTFS_DOWNLOAD(planDetailContext.data.id), '_blank');
 	};
 
+	const handleDownloadOperationGtfsNormalized = async () => {
+		window.open(API_ROUTES.operation.PLANS_DETAIL_OPERATION_GTFS_NORMALIZED_DOWNLOAD(planDetailContext.data.id), '_blank');
+	};
+
 	//
 	// C. Render components
 
@@ -51,7 +55,7 @@ export function PlansDetailSectionOperationGtfs() {
 							<FileItem
 								fileName={planDetailContext.data.operation_gtfs_normalized.name}
 								fileType={planDetailContext.data.operation_gtfs_normalized.type}
-								onDownload={handleDownloadOperationGtfs}
+								onDownload={handleDownloadOperationGtfsNormalized}
 							/>
 						) : (
 							<NoDataLabel text="Nenhum ficheiro disponível" />
