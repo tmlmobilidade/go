@@ -50,7 +50,13 @@ export async function getRides(): Promise<RidesCoordinatorRidesResponse> {
 		const latestWaitingRides = await labDb.operation.rides.queryFromString(
 			`
 				SELECT *
-				FROM operation.rides FINAL
+				FROM
+				(
+					SELECT *
+					FROM operation.rides
+					ORDER BY updated_at DESC
+					LIMIT 1 BY _id
+				)
 				WHERE processing_status = 'waiting'
 				AND start_time_scheduled <= $1
 				ORDER BY start_time_scheduled DESC
