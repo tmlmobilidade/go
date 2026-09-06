@@ -29,7 +29,8 @@ interface PlanDetailContextState extends DetailContextStateTemplate {
 		apex_file: Attachment | null
 		form: UseFormReturnType<UpdatePlanDto>
 		id: string
-		operation_file: Attachment | null
+		operation_gtfs: Attachment | null
+		operation_gtfs_normalized: Attachment | null
 		plan: null | Plan
 		user: null | User
 	}
@@ -73,7 +74,11 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: operationGtfsResponse, error: operationGtfsSwrError, isLoading: operationGtfsLoading, mutate: operationGtfsMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.operation.PLANS_DETAIL_OPERATION_GTFS(planId), {
+	const { data: operationGtfsResponse, isLoading: operationGtfsLoading, mutate: operationGtfsMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.operation.PLANS_DETAIL_OPERATION_GTFS(planId), {
+		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
+	});
+
+	const { data: operationGtfsNormalizedResponse, isLoading: operationGtfsNormalizedLoading, mutate: operationGtfsNormalizedMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.operation.PLANS_DETAIL_OPERATION_GTFS_NORMALIZED(planId), {
 		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
 	});
 
@@ -84,12 +89,6 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 	const { data: userResponse } = useSWR<ApiResponse<User>>(planData?.created_by ? API_ROUTES.core.USERS_DETAIL(planData.created_by) : null, {
 		fetcher: async (url: string) => await fetchApiData<User>({ url }),
 	});
-
-	const operationGtfsData = operationGtfsResponse?.data ?? null;
-
-	const operationGtfsError = operationGtfsResponse?.error ?? (operationGtfsSwrError instanceof Error ? operationGtfsSwrError.message : null);
-
-	const apexFileData = apexFileResponse?.data ?? null;
 
 	const userData = userResponse?.data ?? null;
 
@@ -111,6 +110,7 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 			form.resetDirty();
 			planMutate();
 			operationGtfsMutate();
+			operationGtfsNormalizedMutate();
 			apexFileMutate();
 			plansListMutate();
 		},
@@ -131,6 +131,7 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 			form.resetDirty();
 			planMutate();
 			operationGtfsMutate();
+			operationGtfsNormalizedMutate();
 			plansListMutate();
 		},
 	});
@@ -141,6 +142,7 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 			form.resetDirty();
 			planMutate();
 			operationGtfsMutate();
+			operationGtfsNormalizedMutate();
 			plansListMutate();
 		},
 	});
@@ -245,10 +247,11 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 			setApexFileUpload,
 		},
 		data: {
-			apex_file: apexFileData,
+			apex_file: apexFileResponse?.data,
 			form,
 			id: planId,
-			operation_file: operationGtfsData,
+			operation_gtfs: operationGtfsResponse?.data,
+			operation_gtfs_normalized: operationGtfsNormalizedResponse?.data,
 			plan: planData,
 			user: userData,
 		},
@@ -257,9 +260,9 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 			canDelete,
 			canLock,
 			canSave,
-			error: planError || operationGtfsError ? new Error(planError || operationGtfsError || 'Failed to load plan') : undefined,
+			error: planError && new Error(planError || 'Failed to load plan'),
 			isDeleting,
-			isLoading: planLoading || operationGtfsLoading,
+			isLoading: planLoading || operationGtfsLoading || operationGtfsNormalizedLoading,
 			isLocking,
 			isReadOnly,
 			isSaving: isSaving || isReprocessing,
@@ -269,15 +272,15 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 		planId,
 		planData,
 		canDelete,
+		operationGtfsNormalizedResponse,
 		canLock,
 		canSave,
 		canChangePlan,
-		operationGtfsError,
 		planError,
 		operationGtfsLoading,
-		apexFileData,
+		apexFileResponse,
 		isDeleting,
-		operationGtfsData,
+		operationGtfsNormalizedResponse,
 		isReprocessing,
 		planLoading,
 		isLocking,
