@@ -3,7 +3,7 @@
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, Collapsible, fetchApiData, FileItem, FileUpload, HasPermission, Label, Section, useHandleAction, useMeContext, useToast } from '@tmlmobilidade/ui';
+import { Button, Collapsible, fetchApiData, FileItem, FileUpload, HasPermission, NoDataLabel, Section, useHandleAction, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -42,15 +42,7 @@ export function PlanDetailSectionApexFile() {
 	// C. Handle actions
 
 	const handleDownload = async () => {
-		try {
-			// Open file.url in a new window
-			window.open(API_ROUTES.operation.PLANS_DETAIL_APEX_CONFIG_DOWNLOAD(planDetailContext.data.id), '_blank');
-		} catch (error) {
-			useToast.error({
-				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
-				title: 'Erro ao transferir ficheiro',
-			});
-		}
+		window.open(API_ROUTES.operation.PLANS_DETAIL_APEX_CONFIG_DOWNLOAD(planDetailContext.data.id), '_blank');
 	};
 
 	const { action: handleSendApexNotification, isLoading: isSendingApexNotification } = useHandleAction({
@@ -98,9 +90,7 @@ export function PlanDetailSectionApexFile() {
 							onFileChange={planDetailContext.actions.setApexFileUpload}
 						/>
 					) : (
-						<Label variant="muted">
-							Nenhum ficheiro de configuração APEX associado a este plano.
-						</Label>
+						<NoDataLabel text="Nenhum ficheiro de configuração APEX associado a este plano." />
 					)
 				)}
 
