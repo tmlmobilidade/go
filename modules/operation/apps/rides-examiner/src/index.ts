@@ -6,6 +6,7 @@ import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { getCoordinatorUrl, ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval, runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -59,7 +60,16 @@ export async function analyzeRides() {
 
 		const fetchRideDocumentsTimer = new Timer();
 
-		const ridesBatch = await ridesProvider.findRides({ _id: rideIdsBatch });
+		const ridesBatch = await labDb.queryFromString<Ride>(
+			`
+				SELECT *
+				FROM operation.rides
+				WHERE _id IN ($1)
+				ORDER BY updated_at DESC
+				LIMIT 1 BY _id
+			`,
+			{ 1: rideIdsBatch.join(',') },
+		);
 
 		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
