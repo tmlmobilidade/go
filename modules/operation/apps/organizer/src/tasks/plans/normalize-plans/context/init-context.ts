@@ -16,8 +16,8 @@ export interface NormalizePlansTaskContext {
 	paths: {
 		base_dir_path: string
 		extracted_dir_path: string
-		new_operation_file_path: string
-		original_operation_file_path: string
+		operation_gtfs_file_path: string
+		operation_gtfs_normalized_file_path: string
 		removeDir: () => void
 	}
 }
@@ -50,8 +50,8 @@ export async function initNormalizePlansTaskContext(planData: Plan): Promise<Nor
 	const temporaryDirectory = fs.mkdtempDisposableSync(`normalize-plans-task-${planData._id}-`);
 
 	const extractedDirPath = path.join(temporaryDirectory.path, 'extracted');
-	const operationFilePath = path.join(temporaryDirectory.path, `${planData._id}-${planData.operation_file_id}.zip`);
-	const newOperationFilePath = path.join(temporaryDirectory.path, 'new-operation-file.zip');
+	const operationGtfsFilePath = path.join(temporaryDirectory.path, `${planData._id}-${planData.attachments.operation_gtfs}.zip`);
+	const operationGtfsNormalizedFilePath = path.join(temporaryDirectory.path, `${planData._id}-gtfs-normalized.zip`);
 
 	//
 	// Return the context
@@ -64,8 +64,8 @@ export async function initNormalizePlansTaskContext(planData: Plan): Promise<Nor
 		paths: {
 			base_dir_path: temporaryDirectory.path,
 			extracted_dir_path: extractedDirPath,
-			new_operation_file_path: newOperationFilePath,
-			original_operation_file_path: operationFilePath,
+			operation_gtfs_file_path: operationGtfsFilePath,
+			operation_gtfs_normalized_file_path: operationGtfsNormalizedFilePath,
 			removeDir: temporaryDirectory.remove,
 		},
 	};
