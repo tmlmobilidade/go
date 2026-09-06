@@ -173,6 +173,14 @@ export async function normalizePlansTask() {
 				},
 			);
 
+			//
+			// Delete previous operation GTFS normalized attachment if it exists
+
+			if (planData.attachments.operation_gtfs_normalized) {
+				const foundPrevAttachmentData = await storageProvider.findById(planData.attachments.operation_gtfs_normalized);
+				if (foundPrevAttachmentData) await storageProvider.delete(foundPrevAttachmentData._id);
+			}
+
 			Logger.info({ message: `[${planData._id}] Operation GTFS normalized updated: ${updatedFileResult.size}` });
 
 			//
