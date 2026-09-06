@@ -5,8 +5,7 @@ import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
-import { getCoordinatorUrl, ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { getCoordinatorUrl } from '@tmlmobilidade/go-operation-pckg-utils';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval, runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -60,7 +59,7 @@ export async function analyzeRides() {
 
 		const fetchRideDocumentsTimer = new Timer();
 
-		const ridesBatch = await labDb.queryFromString<Ride>(
+		const ridesBatch = await labDb.operation.rides.queryFromString(
 			`
 				SELECT *
 				FROM operation.rides
@@ -160,7 +159,7 @@ export async function analyzeRides() {
 
 				//
 			} catch (error) {
-				await ridesProvider.updateRideById(rideData._id, { processing_status: 'error' });
+				await labDb.operation.rides.insert('JSONEachRow', [{ ...rideData, processing_status: 'error', updated_at: Dates.now('utc').unix_milliseconds }]);
 				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
 			}
 		});

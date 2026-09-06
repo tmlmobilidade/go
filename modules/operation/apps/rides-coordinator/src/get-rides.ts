@@ -2,7 +2,6 @@
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
-import { ridesProvider } from '@tmlmobilidade/go-operation-pckg-utils';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -85,7 +84,11 @@ export async function getRides(): Promise<RidesCoordinatorRidesResponse> {
 
 		const latestWaitingRidesIds = latestWaitingRides.map(item => item._id);
 
-		await ridesProvider.updateRides({ _id: latestWaitingRidesIds }, { processing_status: 'processing' });
+		await labDb.operation.rides.insert('JSONEachRow', latestWaitingRides.map(item => ({
+			...item,
+			processing_status: 'processing',
+			updated_at: Dates.now('utc').unix_milliseconds,
+		})));
 
 		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingRidesIds.length} | operational_date: ${latestWaitingRides[latestWaitingRides.length - 1].operational_date} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 
