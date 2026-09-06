@@ -56,7 +56,11 @@ export async function deletePlanHandler(request: FastifyRequest<{ Params: { id: 
 	//
 	// Actually delete the plan
 
-	await storageProvider.delete(foundPlan.operation_file_id, {
+	await storageProvider.batchDelete([
+		foundPlan.attachments.apex_config,
+		foundPlan.attachments.operation_gtfs,
+		foundPlan.attachments.operation_gtfs_normalized,
+	], {
 		onRollback: async (_, error) => {
 			throw error;
 		},

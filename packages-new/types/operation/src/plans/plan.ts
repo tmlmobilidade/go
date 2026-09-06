@@ -17,8 +17,8 @@ export const PlanSchema = BaseDocumentSchema.extend({
 	hash: z.string(),
 	is_locked: z.boolean().default(false),
 	// @deprecated
-	apex_file_id: z.string().nullable().default(null),
-	operation_file_id: z.string().nullable().default(null),
+	// apex_file_id: z.string().nullable().default(null),
+	// operation_file_id: z.string().nullable().default(null),
 });
 
 export const CreatePlanSchema = PlanSchema.omit({ _id: true, updated_at: true });
@@ -37,8 +37,8 @@ export const HashablePlanMetadataSchema = PlanSchema.pick({
 	active_from: true,
 	active_until: true,
 }).extend({
-	operation_attachment_hash: z.string(),
-	operation_normalized_attachment_hash: z.string(),
+	operation_gtfs_hash: z.string(),
+	operation_gtfs_normalized_hash: z.string(),
 });
 
 export type HashablePlanMetadata = z.infer<typeof HashablePlanMetadataSchema>;

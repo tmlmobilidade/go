@@ -13,8 +13,8 @@ import path from 'node:path';
 interface GetPlanHashParams {
 	activeFrom: OperationalDateInt
 	activeUntil: OperationalDateInt
-	operationAttachmentId: string
-	operationNormalizedAttachmentId: string
+	operationGtfsAttachmentId: string
+	operationGtfsNormalizedAttachmentId: string
 	planId: string
 }
 
@@ -23,7 +23,7 @@ interface GetPlanHashParams {
  * @param params - The parameters for the function
  * @returns The hash of the plan
  */
-export async function getPlanHash({ activeFrom, activeUntil, operationAttachmentId, operationNormalizedAttachmentId, planId }: GetPlanHashParams): Promise<string> {
+export async function getPlanHash({ activeFrom, activeUntil, operationGtfsAttachmentId, operationGtfsNormalizedAttachmentId, planId }: GetPlanHashParams): Promise<string> {
 	//
 
 	//
@@ -33,23 +33,23 @@ export async function getPlanHash({ activeFrom, activeUntil, operationAttachment
 
 	if (!activeUntil) throw new Error(`[getPlanHash()] No active_until date received for plan ${planId}`);
 
-	if (!operationAttachmentId) throw new Error(`[getPlanHash()] No Operation attachment ID received for plan ${planId}`);
+	if (!operationGtfsAttachmentId) throw new Error(`[getPlanHash()] No Operation GTFS attachment ID received for plan ${planId}`);
 
-	if (!operationNormalizedAttachmentId) throw new Error(`[getPlanHash()] No Operation normalized attachment ID received for plan ${planId}`);
+	if (!operationGtfsNormalizedAttachmentId) throw new Error(`[getPlanHash()] No Operation GTFS normalized attachment ID received for plan ${planId}`);
 
 	//
 	// Retrieve the operation and the normalized operation attachments from the storage provider
 
-	const operationAttachmentData = await storageProvider.findById(operationAttachmentId);
+	const operationGtfsAttachmentData = await storageProvider.findById(operationGtfsAttachmentId);
 
-	if (!operationAttachmentData?.url) {
-		throw new Error(`[getPlanHash()] Operation attachment "${operationAttachmentId}" not found in Storage for plan ${planId}`);
+	if (!operationGtfsAttachmentData?.url) {
+		throw new Error(`[getPlanHash()] Operation GTFS attachment "${operationGtfsAttachmentId}" not found in Storage for plan ${planId}`);
 	}
 
-	const operationNormalizedAttachmentData = await storageProvider.findById(operationNormalizedAttachmentId);
+	const operationGtfsNormalizedAttachmentData = await storageProvider.findById(operationGtfsNormalizedAttachmentId);
 
-	if (!operationNormalizedAttachmentData?.url) {
-		throw new Error(`[getPlanHash()] Operation normalized attachment "${operationNormalizedAttachmentId}" not found in Storage for plan ${planId}`);
+	if (!operationGtfsNormalizedAttachmentData?.url) {
+		throw new Error(`[getPlanHash()] Operation GTFS normalized attachment "${operationGtfsNormalizedAttachmentId}" not found in Storage for plan ${planId}`);
 	}
 
 	//
@@ -59,28 +59,28 @@ export async function getPlanHash({ activeFrom, activeUntil, operationAttachment
 
 	try {
 		//
-		// Download the operation file from the storage provider
-		// and calculate the hash of the operation file.
+		// Download the operation GTFS file from the storage provider
+		// and calculate the hash of the operation GTFS file.
 
-		const downloadResponse = await fetch(operationAttachmentData.url);
+		const downloadResponse = await fetch(operationGtfsAttachmentData.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		const downloadFilePath = path.join(temporaryDirectory.path, 'gtfs.zip');
 
 		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
 
-		const operationAttachmentHash = await getZipFileHash(downloadFilePath);
+		const operationGtfsAttachmentHash = await getZipFileHash(downloadFilePath);
 
 		//
-		// Download the normalized operation attachment from the storage provider
-		// and calculate the hash of the normalized operation file.
+		// Download the normalized operation GTFS file from the storage provider
+		// and calculate the hash of the normalized operation GTFS file.
 
-		const downloadNormalizedResponse = await fetch(operationNormalizedAttachmentData.url);
+		const downloadNormalizedResponse = await fetch(operationGtfsNormalizedAttachmentData.url);
 		const downloadNormalizedArrayBuffer = await downloadNormalizedResponse.arrayBuffer();
 		const downloadNormalizedFilePath = path.join(temporaryDirectory.path, 'gtfs-normalized.zip');
 
 		fs.writeFileSync(downloadNormalizedFilePath, Buffer.from(downloadNormalizedArrayBuffer));
 
-		const operationNormalizedAttachmentHash = await getZipFileHash(downloadNormalizedFilePath);
+		const operationGtfsNormalizedAttachmentHash = await getZipFileHash(downloadNormalizedFilePath);
 
 		//
 		// Create a hashable plan metadata object
@@ -89,8 +89,8 @@ export async function getPlanHash({ activeFrom, activeUntil, operationAttachment
 			_id: planId,
 			active_from: activeFrom,
 			active_until: activeUntil,
-			operation_attachment_hash: operationAttachmentHash,
-			operation_normalized_attachment_hash: operationNormalizedAttachmentHash,
+			operation_gtfs_hash: operationGtfsAttachmentHash,
+			operation_gtfs_normalized_hash: operationGtfsNormalizedAttachmentHash,
 		};
 
 		//

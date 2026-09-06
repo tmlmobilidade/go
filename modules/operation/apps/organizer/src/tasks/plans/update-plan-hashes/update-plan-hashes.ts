@@ -40,7 +40,8 @@ export async function updatePlanHashesTask() {
 			const newHashValue = await getPlanHash({
 				activeFrom: planData.active_from,
 				activeUntil: planData.active_until,
-				operationFileId: planData.operation_file_id,
+				operationGtfsAttachmentId: planData.attachments.operation_gtfs,
+				operationGtfsNormalizedAttachmentId: planData.attachments.operation_gtfs_normalized,
 				planId: planData._id,
 			});
 

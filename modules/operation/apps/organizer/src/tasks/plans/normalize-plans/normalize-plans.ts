@@ -148,11 +148,12 @@ export async function normalizePlansTask() {
 				},
 				{
 					onSuccess: async (_, result) => {
-					// Get a new hash for this plan
+						// Get a new hash for this plan
 						const hashValue = await getPlanHash({
 							activeFrom: planData.active_from,
 							activeUntil: planData.active_until,
-							operationFileId: result._id,
+							operationGtfsAttachmentId: planData.attachments.operation_gtfs,
+							operationGtfsNormalizedAttachmentId: planData.attachments.operation_gtfs_normalized,
 							planId: planData._id,
 						});
 						// Update the plan in the database

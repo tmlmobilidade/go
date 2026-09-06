@@ -52,7 +52,7 @@ export async function deleteApexFileHandler(request: FastifyRequest<{ Params: { 
 	//
 	// Fetch the file associated with the plan
 
-	const foundFileData = await storageProvider.findById(foundPlan.apex_file_id);
+	const foundFileData = await storageProvider.findById(foundPlan.attachments.apex_config);
 
 	if (!foundFileData) {
 		return sendErrorApiResponse(reply, {
@@ -61,19 +61,30 @@ export async function deleteApexFileHandler(request: FastifyRequest<{ Params: { 
 		});
 	}
 
-	let updatedPlan: null | Plan = null;
 	await storageProvider.delete(foundFileData._id, {
 		onRollback: async (_, error) => {
-			await goDb.operation.plans.updateById(request.params.id, { apex_file_id: foundPlan.apex_file_id });
+			const plansCollection = await goDb.operation.plans.getCollection();
+			await plansCollection.updateOne({ _id: request.params.id }, {
+				$set: {
+					'attachments.apex_config': foundPlan.attachments.apex_config,
+				},
+			});
 			throw error;
 		},
 		onSuccess: async () => {
-			updatedPlan = await goDb.operation.plans.updateById(request.params.id, { apex_file_id: null });
+			const plansCollection = await goDb.operation.plans.getCollection();
+			await plansCollection.updateOne({ _id: request.params.id }, {
+				$set: {
+					'attachments.apex_config': null,
+				},
+			});
 		},
 	});
 
 	//
-	// Update the plan to remove the apex file ID
+	// Return the success response
+
+	const updatedPlan = await goDb.operation.plans.findById(request.params.id);
 
 	return sendSuccessApiResponse(reply, updatedPlan);
 }
