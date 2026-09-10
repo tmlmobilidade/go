@@ -4,9 +4,10 @@ import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.con
 import { useStopsMapData } from '@/components/stops/use-stops-map-data';
 import { useVehiclesData } from '@/components/vehicles/use-vehicles-data';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { buildPatternShapeFeature } from '@/utils/map/pattern-shape';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-hub';
+import { type HubPattern } from '@tmlmobilidade/go-types-hub';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -31,7 +32,7 @@ export function useBaseMapFocusedEntities({ activeBottomSheet }: UseBaseMapFocus
 	const { data: vehicles } = useVehiclesData();
 
 	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail' ? activeBottomSheet.entityId : null;
-	const focusedLineShape = activeBottomSheet?.view === 'lines-detail' ? linesDetailContext.data.active_shape?.geojson : null;
+	const focusedLineShape = activeBottomSheet?.view === 'lines-detail' ? linesDetailContext.data.active_shape : null;
 	const focusedStopId = activeBottomSheet?.view === 'stops-detail' ? activeBottomSheet.entityId : null;
 	const focusedVehicleId = activeBottomSheet?.view === 'vehicles-detail' ? activeBottomSheet.entityId : null;
 
@@ -49,11 +50,6 @@ export function useBaseMapFocusedEntities({ activeBottomSheet }: UseBaseMapFocus
 		fetcher: async url => await fetchApiData<HubPattern[]>({ options: { credentials: 'omit' }, url }),
 	});
 	const pattern = patternsResponse?.data?.[0];
-
-	const { data: shapeResponse } = useSWR<ApiResponse<HubShape>>(pattern?.shape_id ? API_ROUTES.hub.NETWORK_SHAPES(pattern.shape_id) : null, {
-		fetcher: async url => await fetchApiData<HubShape>({ options: { credentials: 'omit' }, url }),
-	});
-	const shape = shapeResponse?.data;
 
 	//
 	// C. Transform data
@@ -81,6 +77,8 @@ export function useBaseMapFocusedEntities({ activeBottomSheet }: UseBaseMapFocus
 		};
 	}, [focusedStopId, stopsFeatureCollection]);
 
+	const focusedVehicleShape = useMemo(() => buildPatternShapeFeature(pattern), [pattern]);
+
 	//
 	// D. Return data
 
@@ -90,8 +88,8 @@ export function useBaseMapFocusedEntities({ activeBottomSheet }: UseBaseMapFocus
 		focusedStop,
 		focusedStopMapData,
 		focusedVehicleId,
+		focusedVehicleShape,
 		pattern,
-		shape,
 		stopsMapData,
 	};
 

@@ -2,7 +2,7 @@
 
 import { useLineDetailData } from '@/components/lines/detail/use-line-detail-data';
 import { useLineDetailShapeData } from '@/components/lines/detail/use-line-detail-shape-data';
-import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/go-types-hub';
+import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubWaypoint } from '@tmlmobilidade/go-types-hub';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -16,7 +16,7 @@ interface LinesDetailContextState {
 	data: {
 		active_alerts: HubAlert[]
 		active_pattern: HubPattern | null
-		active_shape: HubShape | null
+		active_shape: GeoJSON.Feature<GeoJSON.LineString> | null
 		active_waypoint: HubWaypoint | null
 		all_patterns: HubPattern[][] | null
 		highlighted_trip_ids: null | string[]

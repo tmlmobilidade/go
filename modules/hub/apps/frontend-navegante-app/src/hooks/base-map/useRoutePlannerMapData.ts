@@ -4,13 +4,12 @@ import { useLinesData } from '@/components/lines/use-lines-data';
 import { useRoutesData } from '@/components/lines/use-routes-data';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { buildPatternShapeFeature } from '@/utils/map/pattern-shape';
 import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/itinerary/alerts';
 import { getRoutePlannerItineraryRouteDirections, getRoutePlannerItineraryRouteIds, getRoutePlannerRouteDirectionKey, getRoutePlannerRouteIdKey } from '@/utils/route-planner/itinerary/vehicles';
 import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner/planning/navigation';
 import { fetchPatterns } from '@/utils/transit/fetch-patterns';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubAlert, type HubPattern, type HubShape } from '@tmlmobilidade/go-types-hub';
-import { fetchApiData } from '@tmlmobilidade/ui';
+import { type HubAlert, type HubPattern } from '@tmlmobilidade/go-types-hub';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -73,25 +72,6 @@ export function useRoutePlannerMapData({ activeBottomSheet, alerts: allAlerts, a
 		return Array.from(new Map(matchingPatterns.map(candidate => [candidate.shape_id, candidate])).values());
 	}, [patternGroups, vehicleRouteDirections]);
 
-	const shapeIds = useMemo(() => {
-		return patterns.map(candidate => candidate.shape_id);
-	}, [patterns]);
-
-	const { data: shapes } = useSWR<HubShape[]>(
-		shapeIds.length > 0 ? ['route-planner-shapes', ...shapeIds] : null,
-		{ fetcher: async () => {
-			const shapePayloads = await Promise.all(shapeIds.map(async (shapeId) => {
-				const response = await fetchApiData<HubShape>({
-					options: { credentials: 'omit' },
-					url: API_ROUTES.hub.NETWORK_SHAPES(shapeId),
-				});
-				return response.data;
-			}));
-
-			return shapePayloads.filter((shape): shape is HubShape => shape !== null);
-		} },
-	);
-
 	//
 	// C. Transform data
 
@@ -109,25 +89,15 @@ export function useRoutePlannerMapData({ activeBottomSheet, alerts: allAlerts, a
 	}, [alertFilters, alerts, alertsFeatureCollection, lines, routePlannerContext.data.route_map_data]);
 
 	const contextShapeData = useMemo<GeoJSON.FeatureCollection<GeoJSON.LineString>>(() => {
-		const shapesById = new Map(shapes?.map(candidate => [candidate._id, candidate]) ?? []);
-
 		return {
 			features: patterns.flatMap((pattern) => {
-				const shape = shapesById.get(pattern.shape_id);
+				const shape = buildPatternShapeFeature(pattern);
 				if (!shape) return [];
-
-				return [{
-					...shape.geojson,
-					properties: {
-						...shape.geojson.properties,
-						color: pattern.color,
-						text_color: pattern.text_color,
-					},
-				}];
+				return [shape];
 			}),
 			type: 'FeatureCollection',
 		};
-	}, [patterns, shapes]);
+	}, [patterns]);
 
 	const fitFeatures = useMemo(() => {
 		return getRoutePlannerMapFitFeatures(routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode);

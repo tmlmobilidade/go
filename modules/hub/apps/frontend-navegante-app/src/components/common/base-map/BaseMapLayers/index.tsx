@@ -64,16 +64,10 @@ export function BaseMapLayers(props: BaseMapLayersProps) {
 				/>
 			)}
 
-			{props.focusedEntities.shape?.geojson && props.focusedEntities.pattern && (
+			{props.focusedEntities.focusedVehicleShape && (
 				<MapViewStylePath
 					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
-					shapeData={{
-						...props.focusedEntities.shape.geojson,
-						properties: {
-							color: props.focusedEntities.pattern.color,
-							text_color: props.focusedEntities.pattern.text_color,
-						},
-					}}
+					shapeData={props.focusedEntities.focusedVehicleShape}
 				/>
 			)}
 
