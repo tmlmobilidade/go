@@ -6,8 +6,6 @@ import { DatePicker, Modal, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './styles.module.css';
-
 /* * */
 
 export function SelectOperationalDate() {
@@ -39,11 +37,15 @@ export function SelectOperationalDate() {
 			.toFormat('yyyy-MM-dd');
 	}, [selectedOperationalDate]);
 
-	const segementedControlOptions = useMemo(() => [
+	const customDateOptionLabel = isTodaySelected || isTomorrowSelected
+		? t('default:lines.SelectOperationalDate.other_date')
+		: selectedOperationalDateDisplay;
+
+	const segmentedControlOptions = useMemo(() => [
 		{ label: t('default:lines.SelectOperationalDate.today'), value: 'today' },
 		{ label: t('default:lines.SelectOperationalDate.tomorrow'), value: 'tomorrow' },
-		{ label: <span onClick={() => setModalIsOpen(true)}>{selectedOperationalDateDisplay}</span>, value: 'custom_date' },
-	], [selectedOperationalDateDisplay, t]);
+		{ label: <span onClick={() => setModalIsOpen(true)}>{customDateOptionLabel}</span>, value: 'custom_date' },
+	], [customDateOptionLabel, t]);
 
 	const selectedSegmentedControlOption = useMemo(() => {
 		if (isTodaySelected) return 'today';
@@ -87,15 +89,11 @@ export function SelectOperationalDate() {
 			</Modal>
 
 			<SegmentedControl
-				data={segementedControlOptions}
+				data={segmentedControlOptions}
 				onChange={handleSegmentedControlChange}
 				size="md"
 				value={selectedSegmentedControlOption}
-				w="100%"
-				classNames={{
-					control: styles.segmentedControlDateInputOverrideControl,
-					label: styles.segmentedControlDateInputOverrideLabel,
-				}}
+				fullWidth
 			/>
 
 		</>

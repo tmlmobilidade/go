@@ -153,6 +153,7 @@
 			"placeholder": "Selecionar percurso/destino..."
 		},
 		"SelectOperationalDate": {
+			"other_date": "Outra data",
 			"today": "Hoje",
 			"tomorrow": "Amanhã"
 		},
