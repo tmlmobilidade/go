@@ -36,6 +36,13 @@ export async function createStopHandler(request: FastifyRequest<{ Body: StopsCre
 	const foundParish = await locationsProvider.findParishByGeo(validatedRequest.latitude, validatedRequest.longitude);
 	const foundLocality = await locationsProvider.findLocalityByGeo(validatedRequest.latitude, validatedRequest.longitude);
 
+	if (!foundMunicipality?._id) {
+		return sendErrorApiResponse(reply, {
+			error: 'No municipality found for the given coordinates.',
+			status_code: '400',
+		});
+	}
+
 	//
 	// Check if the user has permission to read this stop
 

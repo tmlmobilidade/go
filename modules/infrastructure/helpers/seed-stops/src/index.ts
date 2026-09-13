@@ -1,18 +1,18 @@
-/* * */
+// /* * */
 
-import { seedFromTmp } from '@/tasks/seed-from-tmp.js';
+// import { seedFromTmp } from '@/tasks/seed-from-tmp.js';
 
-/* * */
+// /* * */
 
-await (async function main() {
-	//
+// await (async function main() {
+// 	//
 
-	//
-	// Run tasks
+// 	//
+// 	// Run tasks
 
-	await seedFromTmp();
+// 	await seedFromTmp();
 
-	console.log('Done');
+// 	console.log('Done');
 
-	//
-})();
+// 	//
+// })();
