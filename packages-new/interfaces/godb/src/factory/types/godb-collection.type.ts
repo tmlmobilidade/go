@@ -27,8 +27,6 @@ export interface GoDbCollection<T extends Document> {
 
 	exists<Key extends keyof T>(key: Key, value: T[Key], options?: MinimalOptions): Promise<boolean>
 
-	// existsById(id: string): Promise<boolean>
-
 	findById(_id: string, options?: MinimalOptions): Promise<null | T>
 
 	findMany(filter?: Filter<T>, options?: MinimalOptions): Promise<T[]>
@@ -44,17 +42,6 @@ export interface GoDbCollection<T extends Document> {
 	insertOne(doc: InsertableDocument<T>, options?: MinimalOptions): Promise<T>
 
 	insertOneUnsafe(doc: T, options?: MinimalOptions): Promise<T>
-
-	/**
-	 * Toggles the lock status of a document by its ID.
-	 * @param _id The ID of the document to toggle the lock status of.
-	 * @returns A promise that resolves to the result of the toggle operation.
-	 */
-	toggleLockById(id: string, options?: MinimalOptions): Promise<T>
-
-	// isLocked(filter: Filter<T>): Promise<boolean>
-
-	// isLockedById(id: string): Promise<boolean>
 
 	updateById(_id: string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T>
 
