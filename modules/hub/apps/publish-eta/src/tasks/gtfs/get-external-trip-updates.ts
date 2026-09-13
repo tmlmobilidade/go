@@ -3,7 +3,7 @@
 import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
+import { GtfsRtStopTimeUpdate, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubV1ApiPlan } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -63,7 +63,7 @@ export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<
 			const externalTripId = tripUpdate?.trip?.trip_id;
 			if (!tripUpdate || !externalTripId) continue;
 
-			const stopTimeUpdates = [];
+			const stopTimeUpdates: GtfsRtStopTimeUpdate[] = [];
 
 			for (const stopTimeUpdate of tripUpdate.stop_time_update ?? []) {
 				if (!stopTimeUpdate.stop_id) continue;
