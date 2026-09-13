@@ -43,11 +43,14 @@ export interface GoDbCollection<T extends Document> {
 
 	insertOneUnsafe(doc: T, options?: MinimalOptions): Promise<T>
 
+	/**
+	 * @deprecated Use `updateOne` instead.
+	 */
 	updateById(_id: string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T>
 
-	upsertManyUnsafe(docs: T[], options?: MinimalOptions): Promise<BulkWriteResult>
+	updateOne(filter: Filter<T>, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T>
 
 	// updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: T & { updated_at?: UnixMilliseconds, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>>
 
-	// updateOne<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: T, options?: UpdateOptions & { forceIfLocked?: boolean, returnResult?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T> : UpdateResult<T>>
+	upsertManyUnsafe(docs: T[], options?: MinimalOptions): Promise<BulkWriteResult>
 }

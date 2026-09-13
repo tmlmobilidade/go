@@ -43,7 +43,7 @@ export async function lockExtractionHandler(request: FastifyRequest<{ Params: { 
 	//
 	// Toggle lock status
 
-	await goDb.core.extractions.toggleLockById(request.params.id);
+	await goDb.core.extractions.updateOne({ _id: request.params.id }, { is_locked: !foundExtraction.is_locked });
 
 	//
 	// Retrieve all extractions for the current user

@@ -18,6 +18,7 @@ import { insertMany } from './methods/insert-many.js';
 import { insertOneUnsafe } from './methods/insert-one-unsafe.js';
 import { insertOne } from './methods/insert-one.js';
 import { updateById } from './methods/update-by-id.js';
+import { updateOne } from './methods/update-one.js';
 import { upsertManyUnsafe } from './methods/upsert-many-unsafe.js';
 import { type GoDbCollectionContext } from './types/godb-collection-context.type.js';
 import { type GoDbCollection } from './types/godb-collection.type.js';
@@ -89,6 +90,6 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		// updateMany: (filter, updateFields, options) => updateMany(context, filter, updateFields, options),
 
-		// updateOne: (filter, updateFields, options) => updateOne(context, filter, updateFields, options),
+		updateOne: (filter, updateFields, clientSession) => updateOne<T>(context, filter, updateFields, clientSession),
 	};
 }
