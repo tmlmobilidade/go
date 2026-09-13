@@ -115,7 +115,7 @@ export async function publishJsonFeed() {
 				coordinates: alertData.coordinates,
 				description: alertData.description,
 				effect: mappedEffect,
-				image_url: imageUrl,
+				image_url: imageUrl ?? null,
 				info_url: alertData.info_url,
 				municipality_ids: alertData.municipality_ids,
 				reference_type: alertData.reference_type,
