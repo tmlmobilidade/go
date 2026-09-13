@@ -58,12 +58,13 @@ export function DataTableRow<T = Record<string, unknown>>({ columns, isSelected,
 			onClick={() => onRowClick?.(record)}
 			onContextMenu={() => onRowContextMenu?.(record)}
 			onDoubleClick={() => onRowDoubleClick?.(record)}
+			style={{ gridTemplateColumns: columns.map(column => column.width === 'fill' ? '1fr' : `${column.width}px`).join(' ') }}
 		>
 			{columns.map((column, colIndex) => (
 				<div
 					key={colIndex}
-					className={`${styles.cell} ${column.center ? styles.center : ''}`}
-					style={{ maxWidth: column.width, minWidth: column.width, width: column.width }}
+					className={styles.cell}
+					data-center={column.center}
 				>
 					{column.render
 						? column.render(record)

@@ -118,7 +118,7 @@ export interface DataTableColumn<T> {
 	/**
 	 * The width of the column in pixels.
 	 */
-	width: number
+	width: 'fill' | number
 
 }
 

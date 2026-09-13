@@ -23,7 +23,7 @@ export function ExtractionsListFilterProcessingStatus() {
 	return (
 		<ListFilter
 			active={filterRole.isActive}
-			label={t('shared:extractions.ExtractionsListFilterProcessingStatus.label')}
+			label={t('shared:extractions.components.ExtractionsListFilterProcessingStatus.label')}
 			onChange={filterRole.set}
 			options={filterRole.options}
 			isMultiple

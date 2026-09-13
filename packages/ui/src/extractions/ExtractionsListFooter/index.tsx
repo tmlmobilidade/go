@@ -9,7 +9,7 @@ import { useExtractionsListData } from '../use-extractions-list-data';
 
 /* * */
 
-export function ExtractionsListHeader() {
+export function ExtractionsListFooter() {
 	//
 
 	//
@@ -17,18 +17,13 @@ export function ExtractionsListHeader() {
 
 	const { t } = useTranslation();
 
-	const { isLoading, isValidating, timestamp } = useExtractionsListData();
-
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeExtractionsListModal} type="close" />
-			<Label size="lg" caps singleLine>{t('shared:extractions.components.ExtractionsListHeader.title')}</Label>
-			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
-			<ExtractionsListFilterSearch />
 		</Toolbar>
 	);
 }

@@ -23,7 +23,7 @@ export function ExtractionsListFilterScope() {
 	return (
 		<ListFilter
 			active={filterScope.isActive}
-			label={t('shared:extractions.ExtractionsListFilterScope.label')}
+			label={t('shared:extractions.components.ExtractionsListFilterScope.label')}
 			onChange={filterScope.set}
 			options={filterScope.options}
 			isMultiple

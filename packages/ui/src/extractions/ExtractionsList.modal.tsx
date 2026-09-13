@@ -19,7 +19,7 @@ export const openExtractionsListModal = () => {
 		closeOnEscape: false,
 		modalId: MODAL_ID,
 		padding: 0,
-		size: 'xl',
+		size: '75%',
 		withCloseButton: false,
 	});
 };
