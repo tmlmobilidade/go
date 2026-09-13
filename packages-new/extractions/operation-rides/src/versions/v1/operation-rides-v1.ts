@@ -10,6 +10,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { getSqlAndParams } from './apply-query.js';
+import { toOutputRow } from './transform.js';
+import { OperationRidesV1QueryRow } from './types.js';
 
 /**
  * Exports a batch of stops to a CSV file.
@@ -87,7 +89,8 @@ export async function operationRidesV1Extraction(context: ExtractionTaskContext,
 	});
 
 	for await (const chunk of queryResult.stream()) {
-		await writer.write(chunk);
+		const rows = chunk.map(row => toOutputRow(row as unknown as OperationRidesV1QueryRow));
+		await writer.write(rows);
 	}
 
 	await writer.flush();

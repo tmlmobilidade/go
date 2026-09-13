@@ -2,7 +2,7 @@
 
 import { type OperationRidesV1ExtractionProperties } from '@tmlmobilidade/go-types-extractions';
 
-import { operationRidesV1Query } from './query.js';
+import { operationRidesV1ExtractionQuery } from './query.js';
 
 export function getSqlAndParams(validatedFilters: OperationRidesV1ExtractionProperties): { params: Record<string, number | string>, sql: string } {
 //
@@ -154,7 +154,7 @@ export function getSqlAndParams(validatedFilters: OperationRidesV1ExtractionProp
 		? `\n\tAND ${conditions.join('\n\tAND ')}`
 		: '';
 
-	const sql = operationRidesV1Query.replace('--DYNAMIC FILTERS HERE--', where);
+	const sql = operationRidesV1ExtractionQuery.replace('--DYNAMIC FILTERS HERE--', where);
 
 	return { params, sql };
 }

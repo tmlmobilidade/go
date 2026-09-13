@@ -1,43 +1,10 @@
-export const operationRidesV1Query = `
+export const operationRidesV1ExtractionQuery = `
 WITH
 
 	/*
-	 * Capture the current time once so all derived statuses use exactly
-	 * the same timestamp.
-	 */
-	toUnixTimestamp64Milli(now64(3)) AS now_ms,
-
-	/*
 	 * -----------------------------------------------------------------------
-	 * Exact Ride version
+	 * Latest rides in the requested scheduled-start range
 	 * -----------------------------------------------------------------------
-	 *
-	 * Select the exact ride version explicitly by its ID using
-	 * text search parameter $3.
-	 */
-	exact_ride AS
-	(
-		SELECT
-			*
-		FROM operation.rides
-		WHERE
-			_id = $3
-		ORDER BY
-			updated_at DESC
-		LIMIT 1 BY _id
-	),
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Latest Ride version
-	 * -----------------------------------------------------------------------
-	 *
-	 * Rides use ReplacingMergeTree(updated_at).
-	 *
-	 * Select the latest physical version explicitly instead of using FINAL.
-	 *
-	 * The scheduled start time range is applied before LIMIT BY so that
-	 * ClickHouse can discard irrelevant data as early as possible.
 	 */
 	rides_latest AS
 	(
@@ -54,60 +21,173 @@ WITH
 
 	/*
 	 * -----------------------------------------------------------------------
-	 * Rides available to this query
+	 * Latest analysis records
 	 * -----------------------------------------------------------------------
 	 *
-	 * The exact Ride is added to the normal date-filtered set.
-	 *
-	 * DISTINCT prevents the exact Ride from appearing twice when it already
-	 * belongs to the requested date range.
-	 */
-	rides_for_query AS
-	(
-		SELECT *
-		FROM rides_latest
-		UNION DISTINCT
-		SELECT *
-		FROM exact_ride
-	),
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Latest analysis versions
-	 * -----------------------------------------------------------------------
-	 *
-	 * Each analysis table uses ReplacingMergeTree(updated_at).
-	 *
-	 * argMax() returns the grade from the latest version without requiring
-	 * FINAL.
-	 *
-	 * Only rides in the selected date range are considered.
+	 * The operational_date restriction keeps analysis reads limited to dates
+	 * that are actually present in the selected rides.
 	 */
 
-	analysis_at_least_one_vehicle_event_on_last_stop AS
+	analysis_at_least_one_vehicle_event_on_first_stop AS
 	(
 		SELECT
 			ride_id,
-			argMax(grade_status, updated_at) AS grade_status
-		FROM operation.ride_analysis_at_least_one_vehicle_event_on_last_stop
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason,
+			argMax(vehicle_events_on_first_stop_qty, updated_at)
+				AS vehicle_events_on_first_stop_qty
+		FROM operation.ride_analysis_at_least_one_vehicle_event_on_first_stop
 		WHERE operational_date IN
 		(
 			SELECT DISTINCT operational_date
-			FROM rides_for_query
+			FROM rides_latest
 		)
 		GROUP BY ride_id
 	),
 
-	analysis_expected_apex_validation_interval AS
+	analysis_expected_driver_id_qty AS
 	(
 		SELECT
 			ride_id,
-			argMax(grade_status, updated_at) AS grade_status
-		FROM operation.ride_analysis_expected_apex_validation_interval
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason,
+			argMax(observed_driver_ids_qty, updated_at)
+				AS observed_driver_ids_qty
+		FROM operation.ride_analysis_expected_driver_id_qty
 		WHERE operational_date IN
 		(
 			SELECT DISTINCT operational_date
-			FROM rides_for_query
+			FROM rides_latest
+		)
+		GROUP BY ride_id
+	),
+
+	analysis_expected_start_time AS
+	(
+		SELECT
+			ride_id,
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason,
+			argMax(observed_start_time, updated_at)
+				AS observed_start_time
+		FROM operation.ride_analysis_expected_start_time
+		WHERE operational_date IN
+		(
+			SELECT DISTINCT operational_date
+			FROM rides_latest
+		)
+		GROUP BY ride_id
+	),
+
+	analysis_expected_vehicle_event_delay AS
+	(
+		SELECT
+			ride_id,
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason,
+			argMax(vehicle_events_with_delay_qty, updated_at)
+				AS vehicle_events_with_delay_qty
+		FROM operation.ride_analysis_expected_vehicle_event_delay
+		WHERE operational_date IN
+		(
+			SELECT DISTINCT operational_date
+			FROM rides_latest
+		)
+		GROUP BY ride_id
+	),
+
+	analysis_expected_vehicle_event_interval AS
+	(
+		SELECT
+			ride_id,
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason,
+			argMax(observed_average_interval, updated_at)
+				AS observed_average_interval
+		FROM operation.ride_analysis_expected_vehicle_event_interval
+		WHERE operational_date IN
+		(
+			SELECT DISTINCT operational_date
+			FROM rides_latest
+		)
+		GROUP BY ride_id
+	),
+
+	analysis_expected_vehicle_event_qty AS
+	(
+		SELECT
+			ride_id,
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason,
+			argMax(observed_vehicle_events_qty, updated_at)
+				AS observed_vehicle_events_qty
+		FROM operation.ride_analysis_expected_vehicle_event_qty
+		WHERE operational_date IN
+		(
+			SELECT DISTINCT operational_date
+			FROM rides_latest
+		)
+		GROUP BY ride_id
+	),
+
+	analysis_expected_vehicle_id_qty AS
+	(
+		SELECT
+			ride_id,
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason,
+			argMax(observed_vehicle_ids_qty, updated_at)
+				AS observed_vehicle_ids_qty
+		FROM operation.ride_analysis_expected_vehicle_id_qty
+		WHERE operational_date IN
+		(
+			SELECT DISTINCT operational_date
+			FROM rides_latest
+		)
+		GROUP BY ride_id
+	),
+
+	analysis_matching_apex_locations AS
+	(
+		SELECT
+			ride_id,
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason
+		FROM operation.ride_analysis_matching_apex_locations
+		WHERE operational_date IN
+		(
+			SELECT DISTINCT operational_date
+			FROM rides_latest
+		)
+		GROUP BY ride_id
+	),
+
+	analysis_simple_one_apex_validation AS
+	(
+		SELECT
+			ride_id,
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason
+		FROM operation.ride_analysis_simple_one_apex_validation
+		WHERE operational_date IN
+		(
+			SELECT DISTINCT operational_date
+			FROM rides_latest
+		)
+		GROUP BY ride_id
+	),
+
+	analysis_simple_one_vehicle_event_or_apex_validation AS
+	(
+		SELECT
+			ride_id,
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason
+		FROM operation.ride_analysis_simple_one_vehicle_event_or_apex_validation
+		WHERE operational_date IN
+		(
+			SELECT DISTINCT operational_date
+			FROM rides_latest
 		)
 		GROUP BY ride_id
 	),
@@ -116,12 +196,13 @@ WITH
 	(
 		SELECT
 			ride_id,
-			argMax(grade_status, updated_at) AS grade_status
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason
 		FROM operation.ride_analysis_simple_three_vehicle_events
 		WHERE operational_date IN
 		(
 			SELECT DISTINCT operational_date
-			FROM rides_for_query
+			FROM rides_latest
 		)
 		GROUP BY ride_id
 	),
@@ -130,211 +211,201 @@ WITH
 	(
 		SELECT
 			ride_id,
-			argMax(grade_status, updated_at) AS grade_status
+			argMax(grade_status, updated_at) AS grade_status,
+			argMax(reason, updated_at) AS reason
 		FROM operation.ride_analysis_transaction_sequentiality
 		WHERE operational_date IN
 		(
 			SELECT DISTINCT operational_date
-			FROM rides_for_query
+			FROM rides_latest
 		)
 		GROUP BY ride_id
-	),
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Join the latest Ride with the latest analysis results.
-	 * -----------------------------------------------------------------------
-	 */
-	ride_with_analyses AS
-	(
-		SELECT
-			r.*,
-
-			analysis_at_least_one_vehicle_event_on_last_stop.grade_status
-				AS _analysis_at_least_one_vehicle_event_on_last_stop_grade,
-
-			analysis_expected_apex_validation_interval.grade_status
-				AS _analysis_expected_apex_validation_interval_grade,
-
-			analysis_simple_three_vehicle_events.grade_status
-				AS _analysis_simple_three_vehicle_events_grade,
-
-			analysis_transaction_sequentiality.grade_status
-				AS _analysis_transaction_sequentiality_grade
-
-		FROM rides_for_query AS r
-
-		LEFT JOIN analysis_at_least_one_vehicle_event_on_last_stop
-			ON analysis_at_least_one_vehicle_event_on_last_stop.ride_id = r._id
-
-		LEFT JOIN analysis_expected_apex_validation_interval
-			ON analysis_expected_apex_validation_interval.ride_id = r._id
-
-		LEFT JOIN analysis_simple_three_vehicle_events
-			ON analysis_simple_three_vehicle_events.ride_id = r._id
-
-		LEFT JOIN analysis_transaction_sequentiality
-			ON analysis_transaction_sequentiality.ride_id = r._id
-	),
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Calculate derived statuses.
-	 * -----------------------------------------------------------------------
-	 */
-	ride_with_statuses AS
-	(
-		SELECT
-			*,
-
-			/*
-			 * Operational status
-			 */
-			CASE
-				WHEN
-					seen_last_at IS NULL
-					AND now_ms - start_time_scheduled <= 600000
-				THEN 'scheduled'
-
-				WHEN
-					seen_last_at IS NULL
-					AND now_ms - start_time_scheduled > 600000
-				THEN 'missed'
-
-				WHEN
-					seen_last_at IS NOT NULL
-					AND now_ms - seen_last_at <= 600000
-				THEN 'running'
-
-				ELSE 'ended'
-			END AS operational_status,
-
-			/*
-			 * Seen status
-			 */
-			CASE
-				WHEN seen_last_at IS NULL
-				THEN 'unseen'
-
-				WHEN now_ms - seen_last_at <= 30000
-				THEN 'seen'
-
-				ELSE 'gone'
-			END AS seen_status,
-
-			/*
-			 * Start delay status
-			 */
-			CASE
-				WHEN start_time_observed IS NULL
-				THEN NULL
-
-				WHEN start_time_observed - start_time_scheduled > 300000
-				THEN 'delayed'
-
-				WHEN start_time_observed - start_time_scheduled < -60000
-				THEN 'early'
-
-				ELSE 'ontime'
-			END AS start_delay_status,
-
-			/*
-			 * End delay status
-			 */
-			CASE
-				WHEN end_time_observed IS NULL
-				THEN NULL
-
-				WHEN end_time_observed - end_time_scheduled > 300000
-				THEN 'delayed'
-
-				WHEN end_time_observed - end_time_scheduled < -60000
-				THEN 'early'
-
-				ELSE 'ontime'
-			END AS end_delay_status
-
-		FROM ride_with_analyses
-	),
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Calculate the effective analysis grades.
-	 * -----------------------------------------------------------------------
-	 *
-	 * Analysis is not applicable while a ride is scheduled or running.
-	 * Therefore those states intentionally produce NULL.
-	 *
-	 * For missed/ended rides:
-	 *
-	 *   analysis exists     -> its grade
-	 *   analysis unavailable -> NULL
-	 */
-	ride_view AS
-	(
-		SELECT
-			*,
-
-			CASE
-				WHEN operational_status IN ('scheduled', 'running')
-				THEN NULL
-				ELSE _analysis_at_least_one_vehicle_event_on_last_stop_grade
-			END AS analysis_at_least_one_vehicle_event_on_last_stop_grade,
-
-			CASE
-				WHEN operational_status IN ('scheduled', 'running')
-				THEN NULL
-				ELSE _analysis_expected_apex_validation_interval_grade
-			END AS analysis_expected_apex_validation_interval_grade,
-
-			CASE
-				WHEN operational_status IN ('scheduled', 'running')
-				THEN NULL
-				ELSE _analysis_simple_three_vehicle_events_grade
-			END AS analysis_simple_three_vehicle_events_grade,
-
-			CASE
-				WHEN operational_status IN ('scheduled', 'running')
-				THEN NULL
-				ELSE _analysis_transaction_sequentiality_grade
-			END AS analysis_transaction_sequentiality_grade
-
-		FROM ride_with_statuses
 	)
 
 SELECT
-	_id,
-	agency_id,
-	driver_ids,
-	end_time_observed,
-	end_time_scheduled,
-	headsign,
-	operational_date,
-	passengers_observed,
-	seen_last_at,
-	shape_id,
-	start_time_observed,
-	start_time_scheduled,
-	timezone,
-	vehicle_ids,
+	/*
+	 * -----------------------------------------------------------------------
+	 * Ride
+	 * -----------------------------------------------------------------------
+	 */
 
-	operational_status,
-	seen_status,
-	start_delay_status,
-	end_delay_status,
+	r._id,
+	r.agency_id,
+	r.driver_ids,
+	r.end_time_observed,
+	r.end_time_scheduled,
+	r.extension_observed,
+	r.extension_scheduled,
+	r.headsign,
+	r.operational_date,
+	r.passengers_estimated,
+	r.plan_id,
+	r.route_id,
+	r.route_short_name,
+	r.seen_first_at,
+	r.seen_last_at,
+	r.shape_id,
+	r.start_time_observed,
+	r.start_time_scheduled,
+	r.processing_status,
+	r.trip_id,
+	r.apex_validations_qty,
+	r.vehicle_ids,
 
-	analysis_at_least_one_vehicle_event_on_last_stop_grade,
-	analysis_expected_apex_validation_interval_grade,
-	analysis_simple_three_vehicle_events_grade,
-	analysis_transaction_sequentiality_grade
+	/*
+	 * -----------------------------------------------------------------------
+	 * Analyses
+	 * -----------------------------------------------------------------------
+	 */
 
-FROM ride_view
+	analysis_at_least_one_vehicle_event_on_first_stop.grade_status
+		AS analysis_at_least_one_vehicle_event_on_first_stop_grade_status,
+
+	analysis_at_least_one_vehicle_event_on_first_stop.reason
+		AS analysis_at_least_one_vehicle_event_on_first_stop_reason,
+
+	analysis_at_least_one_vehicle_event_on_first_stop.vehicle_events_on_first_stop_qty
+		AS analysis_at_least_one_vehicle_event_on_first_stop_qty,
+
+
+	analysis_expected_driver_id_qty.grade_status
+		AS analysis_expected_driver_id_qty_grade_status,
+
+	analysis_expected_driver_id_qty.reason
+		AS analysis_expected_driver_id_qty_reason,
+
+	analysis_expected_driver_id_qty.observed_driver_ids_qty
+		AS analysis_expected_driver_id_qty_observed_driver_ids_qty,
+
+
+	analysis_expected_start_time.grade_status
+		AS analysis_expected_start_time_grade_status,
+
+	analysis_expected_start_time.reason
+		AS analysis_expected_start_time_reason,
+
+	analysis_expected_start_time.observed_start_time
+		AS analysis_expected_start_time_observed_start_time,
+
+
+	analysis_expected_vehicle_event_delay.grade_status
+		AS analysis_expected_vehicle_event_delay_grade_status,
+
+	analysis_expected_vehicle_event_delay.reason
+		AS analysis_expected_vehicle_event_delay_reason,
+
+	analysis_expected_vehicle_event_delay.vehicle_events_with_delay_qty
+		AS analysis_expected_vehicle_event_delay_vehicle_events_with_delay_qty,
+
+
+	analysis_expected_vehicle_event_interval.grade_status
+		AS analysis_expected_vehicle_event_interval_grade_status,
+
+	analysis_expected_vehicle_event_interval.reason
+		AS analysis_expected_vehicle_event_interval_reason,
+
+	analysis_expected_vehicle_event_interval.observed_average_interval
+		AS analysis_expected_vehicle_event_interval_observed_average_interval,
+
+
+	analysis_expected_vehicle_event_qty.grade_status
+		AS analysis_expected_vehicle_event_qty_grade_status,
+
+	analysis_expected_vehicle_event_qty.reason
+		AS analysis_expected_vehicle_event_qty_reason,
+
+	analysis_expected_vehicle_event_qty.observed_vehicle_events_qty
+		AS analysis_expected_vehicle_event_qty_observed_vehicle_events_qty,
+
+
+	analysis_expected_vehicle_id_qty.grade_status
+		AS analysis_expected_vehicle_id_qty_grade_status,
+
+	analysis_expected_vehicle_id_qty.reason
+		AS analysis_expected_vehicle_id_qty_reason,
+
+	analysis_expected_vehicle_id_qty.observed_vehicle_ids_qty
+		AS analysis_expected_vehicle_id_qty_observed_vehicle_ids_qty,
+
+
+	analysis_matching_apex_locations.grade_status
+		AS analysis_matching_apex_locations_grade_status,
+
+	analysis_matching_apex_locations.reason
+		AS analysis_matching_apex_locations_reason,
+
+
+	analysis_simple_one_apex_validation.grade_status
+		AS analysis_simple_one_apex_validation_grade_status,
+
+	analysis_simple_one_apex_validation.reason
+		AS analysis_simple_one_apex_validation_reason,
+
+
+	analysis_simple_one_vehicle_event_or_apex_validation.grade_status
+		AS analysis_simple_one_vehicle_event_or_apex_validation_grade_status,
+
+	analysis_simple_one_vehicle_event_or_apex_validation.reason
+		AS analysis_simple_one_vehicle_event_or_apex_validation_reason,
+
+
+	analysis_simple_three_vehicle_events.grade_status
+		AS analysis_simple_three_vehicle_events_grade_status,
+
+	analysis_simple_three_vehicle_events.reason
+		AS analysis_simple_three_vehicle_events_reason,
+
+
+	analysis_transaction_sequentiality.grade_status
+		AS analysis_transaction_sequentiality_grade_status,
+
+	analysis_transaction_sequentiality.reason
+		AS analysis_transaction_sequentiality_reason
+
+FROM rides_latest AS r
+
+LEFT JOIN analysis_at_least_one_vehicle_event_on_first_stop
+	ON analysis_at_least_one_vehicle_event_on_first_stop.ride_id = r._id
+
+LEFT JOIN analysis_expected_driver_id_qty
+	ON analysis_expected_driver_id_qty.ride_id = r._id
+
+LEFT JOIN analysis_expected_start_time
+	ON analysis_expected_start_time.ride_id = r._id
+
+LEFT JOIN analysis_expected_vehicle_event_delay
+	ON analysis_expected_vehicle_event_delay.ride_id = r._id
+
+LEFT JOIN analysis_expected_vehicle_event_interval
+	ON analysis_expected_vehicle_event_interval.ride_id = r._id
+
+LEFT JOIN analysis_expected_vehicle_event_qty
+	ON analysis_expected_vehicle_event_qty.ride_id = r._id
+
+LEFT JOIN analysis_expected_vehicle_id_qty
+	ON analysis_expected_vehicle_id_qty.ride_id = r._id
+
+LEFT JOIN analysis_matching_apex_locations
+	ON analysis_matching_apex_locations.ride_id = r._id
+
+LEFT JOIN analysis_simple_one_apex_validation
+	ON analysis_simple_one_apex_validation.ride_id = r._id
+
+LEFT JOIN analysis_simple_one_vehicle_event_or_apex_validation
+	ON analysis_simple_one_vehicle_event_or_apex_validation.ride_id = r._id
+
+LEFT JOIN analysis_simple_three_vehicle_events
+	ON analysis_simple_three_vehicle_events.ride_id = r._id
+
+LEFT JOIN analysis_transaction_sequentiality
+	ON analysis_transaction_sequentiality.ride_id = r._id
 
 WHERE
 	1 = 1
+
 	--DYNAMIC FILTERS HERE--
 
 ORDER BY
-	start_time_scheduled ASC,
-	_id ASC
+	r.start_time_scheduled ASC,
+	r._id ASC
 `;
