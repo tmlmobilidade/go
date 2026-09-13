@@ -4,6 +4,7 @@ import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clien
 
 import { createExtractionHandler } from './handlers/create-extraction.js';
 import { deleteExtractionHandler } from './handlers/delete-extraction.js';
+import { downloadExtractionHandler } from './handlers/download-extraction.js';
 import { listExtractionsHandler } from './handlers/list-extractions.js';
 import { lockExtractionHandler } from './handlers/lock-extraction.js';
 
@@ -26,6 +27,8 @@ server.register(
 		instance.get('/lock/:id', { preHandler: authorizationMiddleware() }, lockExtractionHandler);
 
 		instance.delete('/delete/:id', { preHandler: authorizationMiddleware() }, deleteExtractionHandler);
+
+		instance.get('/download/:id', { preHandler: authorizationMiddleware() }, downloadExtractionHandler);
 
 		next();
 	},

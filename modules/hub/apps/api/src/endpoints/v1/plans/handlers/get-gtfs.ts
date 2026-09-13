@@ -12,7 +12,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 export async function getGtfsHandler(request: FastifyRequest, reply: FastifyReply<string>) {
 	// Retrieve file data from database
 	const foundFileData = await storageProvider.findById('gtfs-latest');
-	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+	if (!foundFileData?.url) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 	// Stream the file in the given URL to the client
 	const storageServiceResponse = await fetch(foundFileData.url);
 	if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
