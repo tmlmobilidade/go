@@ -47,7 +47,6 @@ export async function operationRidesV1Extraction(context: ExtractionTaskContext,
 	const writer = new BatchWriter({
 		batch_size: 100_000,
 		insertFn: async (data) => {
-			console.log('writer data', data);
 			const filePath = path.join(context.output_path, fileName);
 			const fileAlreadyExists = fs.existsSync(filePath);
 			const csvData = csvStringify(data, { header: !fileAlreadyExists });
@@ -72,8 +71,6 @@ export async function operationRidesV1Extraction(context: ExtractionTaskContext,
 	const stream = queryResult.stream<OperationRidesV1QueryRow>();
 
 	for await (const chunk of stream) {
-		console.log('chunk', chunk);
-		console.log('chunk.map(row => row.json())', chunk.map(row => row.json()));
 		const rows = chunk.map(row => toOutputRow(row.json()));
 		await writer.write(rows);
 	}
@@ -83,7 +80,5 @@ export async function operationRidesV1Extraction(context: ExtractionTaskContext,
 	//
 	// Export the stops to a CSV file
 
-	return {
-		attachment_name: fileName,
-	};
+	return;
 }

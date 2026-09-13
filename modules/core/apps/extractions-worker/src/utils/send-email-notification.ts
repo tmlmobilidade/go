@@ -6,7 +6,6 @@ import { Timer } from '@tmlmobilidade/timer';
 /* * */
 
 interface SendEmailNotificationParams {
-	attachment_name: string
 	extraction_id: string
 	user_id: null | string | undefined
 }

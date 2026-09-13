@@ -77,9 +77,8 @@ async function main() {
 
 	const temporaryDirectory = fs.mkdtempDisposableSync(`extraction-${extractionId}-`);
 
-	const zipFilePath = path.join(temporaryDirectory.path, `${extractionId}.zip`);
-
 	const context: ExtractionTaskContext = {
+		attachment_name: `extraction-${extractionId}.zip`,
 		output_path: temporaryDirectory.path,
 	};
 
@@ -94,7 +93,7 @@ async function main() {
 		const taskRunner = VERSIONS_MAP[currentExtraction.version];
 		if (!taskRunner) throw new Error(`No task runner found for version: ${currentExtraction.version}`);
 
-		const taskResult = await taskRunner(context, currentExtraction);
+		await taskRunner(context, currentExtraction);
 
 		Logger.success(`Ran extraction "${extractionId}" task in ${taskTimer.get()}.`);
 
@@ -102,6 +101,8 @@ async function main() {
 		// Zip the extracted directory with the extraction files
 
 		const zipTimer = new Timer();
+
+		const zipFilePath = path.join(temporaryDirectory.path, context.attachment_name);
 
 		await zipDirectory(temporaryDirectory.path, zipFilePath);
 
@@ -111,7 +112,7 @@ async function main() {
 		// Upload the new extraction zip file to the storage provider.
 
 		const uploadResult = await uploadTaskResult({
-			attachment_name: taskResult.attachment_name,
+			attachment_name: context.attachment_name,
 			created_by: currentExtraction.created_by,
 			extraction_id: extractionId,
 			updated_by: currentExtraction.updated_by,
@@ -123,7 +124,6 @@ async function main() {
 
 		if (currentExtraction.send_email_notification) {
 			await sendEmailNotification({
-				attachment_name: taskResult.attachment_name,
 				extraction_id: extractionId,
 				user_id: currentExtraction.created_by as string,
 			});

@@ -45,7 +45,5 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 	//
 	// Export the stops to a CSV file
 
-	return {
-		attachment_name: 'stops.csv',
-	};
+	return;
 }
