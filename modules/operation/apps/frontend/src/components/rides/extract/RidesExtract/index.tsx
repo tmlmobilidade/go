@@ -37,7 +37,7 @@ export function RidesExtract() {
 			</Section>
 
 			{selectedVersion === 'operation-rides-v1' && <RidesExtractV1 />}
-			{selectedVersion === 'operation-rides-v1' && <p>Por implementar</p>}
+			{selectedVersion === 'operation-rides-v2' && <p>Por implementar</p>}
 
 		</Pane>
 	);

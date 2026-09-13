@@ -16,7 +16,7 @@ export function RidesListHeaderMenu() {
 
 	const menuActions = useMemo(() => {
 		const actions = [];
-		if (hasPermission(meData.permissions, { action: 'export', scope: 'rides' })) {
+		if (hasPermission(meData.permissions, { action: 'analysis_read', scope: 'rides' })) {
 			actions.push({
 				icon: <IconFileDownload />,
 				label: 'Exportar Circulações',

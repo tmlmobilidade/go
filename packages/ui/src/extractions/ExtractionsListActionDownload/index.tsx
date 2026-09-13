@@ -32,7 +32,7 @@ export function ExtractionsListActionDownload({ extractionItem }: ExtractionsLis
 	// C. Render components
 
 	if (extractionItem.processing_status !== 'complete') {
-		<Label singleLine>{t(`shared:extractions.versions.${extractionItem.version}.title`)}</Label>;
+		return <Label singleLine>{t(`shared:extractions.versions.${extractionItem.version}.title`)}</Label>;
 	}
 
 	return (

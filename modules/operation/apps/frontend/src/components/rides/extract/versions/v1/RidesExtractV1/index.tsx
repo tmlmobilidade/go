@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OperationRidesV1ExtractionCreate } from '@tmlmobilidade/go-types-extractions';
-import { Button, fetchApiData, Section, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
+import { Button, fetchApiData, openExtractionsListModal, Section, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
 
 import { useRidesListFilterAgency } from '../../../../list/filters/RidesListFilterAgency/use-rides-list-filter-agency';
 import { useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop } from '../../../../list/filters/RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop/use-rides-list-filter-analysis-at-least-one-vehicle-event-on-last-stop';
@@ -16,6 +16,7 @@ import { useRidesListFilterOperationalStatus } from '../../../../list/filters/Ri
 import { useRidesListFilterSearch } from '../../../../list/filters/RidesListFilterSearch/use-rides-list-filter-search';
 import { useRidesListFilterStartDelayStatus } from '../../../../list/filters/RidesListFilterStartDelayStatus/use-rides-list-filter-start-delay-status';
 import { useRidesListFilterVehicle } from '../../../../list/filters/RidesListFilterVehicle/use-rides-list-filter-vehicle';
+import { closeRidesExtractModal } from '../../../RidesExtract.modal';
 
 /* * */
 
@@ -43,7 +44,7 @@ export function RidesExtractV1() {
 	//
 	// B. Handle actions
 
-	const { action: handleExtract } = useHandleAction({
+	const { action: handleExtract, isLoading } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Extraction[], OperationRidesV1ExtractionCreate>({
 			body: {
 				properties: {
@@ -71,6 +72,8 @@ export function RidesExtractV1() {
 		}),
 		onSuccess: (response) => {
 			mutate(response);
+			closeRidesExtractModal();
+			openExtractionsListModal();
 		},
 	});
 
@@ -79,7 +82,11 @@ export function RidesExtractV1() {
 
 	return (
 		<Section>
-			<Button label="Extract" onClick={handleExtract} />
+			<Button
+				label="Extract"
+				loading={isLoading}
+				onClick={handleExtract}
+			/>
 		</Section>
 	);
 }
