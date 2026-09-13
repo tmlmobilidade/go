@@ -39,7 +39,7 @@ export async function lockStopHandler(request: FastifyRequest<{ Params: { id: St
 	}
 
 	// If authorized, toggle the lock status of the stop
-	await goDb.infrastructure.stops.toggleLockById(foundStop._id);
+	await goDb.infrastructure.stops.updateOne({ _id: foundStop._id }, { is_locked: !foundStop.is_locked });
 
 	return sendSuccessApiResponse(reply, foundStop);
 }
