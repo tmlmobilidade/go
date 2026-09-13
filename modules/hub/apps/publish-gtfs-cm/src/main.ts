@@ -72,7 +72,7 @@ export async function main() {
 	//
 	// Setup the necessary variables for the export process.
 
-	let farthestDateFound: OperationalDateInt;
+	let farthestDateFound: null | OperationalDateInt = null;
 
 	const referencedAgencyIds = new Set<string>();
 	const routesMarkedForFinalExport: Record<string, GtfsRoutes> = {};
@@ -146,6 +146,10 @@ export async function main() {
 			//
 			// Get the operation GTFS normalized attachment URL
 
+			if (!planData.attachments.operation_gtfs_normalized) {
+				throw new Error(`Plan ${planData._id} has no operation GTFS normalized attachment.`);
+			}
+
 			const operationGtfsNormalizedAttachmentUrl = await storageProvider.getSignedUrl({ fileId: planData.attachments.operation_gtfs_normalized });
 
 			//
@@ -156,7 +160,7 @@ export async function main() {
 
 			let thisIsAnActivePlan = false;
 
-			const importConfig: ImportGtfsConfig = {
+			const importConfig = {
 				source: {
 					url: operationGtfsNormalizedAttachmentUrl,
 				},
@@ -169,7 +173,7 @@ export async function main() {
 						start: planData.active_from,
 					},
 				},
-			};
+			} satisfies ImportGtfsConfig;
 
 			if (currentDate >= planData.active_from && currentDate <= planData.active_until) {
 				// If the plan is currently active, set the start date
@@ -269,7 +273,7 @@ export async function main() {
 	await exportRoutesFile(context, Object.values(routesMarkedForFinalExport));
 	await exportStopsFile(context, Array.from(referencedAgencyIds));
 	await exportAgencyFile(context, Array.from(referencedAgencyIds));
-	await exportFeedInfoFile(context, currentDate, farthestDateFound);
+	await exportFeedInfoFile(context, currentDate, farthestDateFound ?? currentDate);
 
 	//
 	// Zip the exported GTFS files into a single archive.
