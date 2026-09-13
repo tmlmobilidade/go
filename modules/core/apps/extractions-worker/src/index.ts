@@ -68,7 +68,7 @@ async function main() {
 	const heartbeat = startHeartbeat({
 		intervalMs: 30_000,
 		runFn: async () => {
-			await goDb.core.extractions.updateById(extractionId, { processing_status: 'processing' });
+			await goDb.core.extractions.updateOne({ _id: extractionId }, { processing_status: 'processing' });
 		},
 	});
 
@@ -137,7 +137,7 @@ async function main() {
 
 		heartbeat.stop();
 
-		await goDb.core.extractions.updateById(extractionId, {
+		await goDb.core.extractions.updateOne({ _id: extractionId }, {
 			attachment_id: uploadResult._id,
 			processing_status: 'complete',
 			retries: currentExtraction.retries + 1,
@@ -148,7 +148,7 @@ async function main() {
 		//
 	} catch (error) {
 		heartbeat.stop();
-		await goDb.core.extractions.updateById(extractionId, { processing_status: 'error' });
+		await goDb.core.extractions.updateOne({ _id: extractionId }, { processing_status: 'error' });
 		Logger.error({ error, message: `Error processing extraction ${extractionId}` });
 		Logger.divider();
 	}

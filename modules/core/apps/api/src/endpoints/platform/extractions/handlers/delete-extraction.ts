@@ -26,6 +26,21 @@ export async function deleteExtractionHandler(request: FastifyRequest<{ Params: 
 	}
 
 	//
+	// Delete the extraction from the database
+
+	const deleteResult = await goDb.core.extractions.deleteOne({
+		_id: request.params.id,
+		created_by: request.me._id,
+	});
+
+	if (!deleteResult.deletedCount) {
+		return sendErrorApiResponse(reply, {
+			error: 'Extraction not found or not owned by the current user',
+			status_code: '404',
+		});
+	}
+
+	//
 	// Retrieve extractions for the current user
 
 	const foundExtractions = await goDb.core.extractions.findMany({ created_by: request.me._id });
