@@ -41,6 +41,18 @@ interface DataTableRowProps<T = Record<string, unknown>> {
 	onRowDoubleClick?: (record: T) => void
 
 	/**
+	 * Callback function to handle row mouse enter events.
+	 * @param record The data record for the hovered row.
+	 */
+	onRowMouseEnter?: (record: T) => void
+
+	/**
+	 * Callback function to handle row mouse leave events.
+	 * @param record The data record for the row where the mouse left.
+	 */
+	onRowMouseLeave?: (record: T) => void
+
+	/**
 	 * The data record for the row.
 	 */
 	record: T
@@ -49,7 +61,7 @@ interface DataTableRowProps<T = Record<string, unknown>> {
 
 /* * */
 
-export function DataTableRow<T = Record<string, unknown>>({ columns, isSelected, onRowClick, onRowContextMenu, onRowDoubleClick, record }: DataTableRowProps<T>) {
+export function DataTableRow<T = Record<string, unknown>>({ columns, isSelected, onRowClick, onRowContextMenu, onRowDoubleClick, onRowMouseEnter, onRowMouseLeave, record }: DataTableRowProps<T>) {
 	return (
 		<div
 			className={styles.row}
@@ -58,6 +70,8 @@ export function DataTableRow<T = Record<string, unknown>>({ columns, isSelected,
 			onClick={() => onRowClick?.(record)}
 			onContextMenu={() => onRowContextMenu?.(record)}
 			onDoubleClick={() => onRowDoubleClick?.(record)}
+			onMouseEnter={() => onRowMouseEnter?.(record)}
+			onMouseLeave={() => onRowMouseLeave?.(record)}
 			style={{ gridTemplateColumns: columns.map(column => column.width === 'fill' ? '1fr' : `${column.width}px`).join(' ') }}
 		>
 			{columns.map((column, colIndex) => (

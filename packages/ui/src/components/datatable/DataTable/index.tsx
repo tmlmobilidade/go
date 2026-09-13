@@ -43,6 +43,18 @@ export interface DataTableProps<T> {
 	onRowDoubleClick?: (record: T) => void
 
 	/**
+	 * Callback function to handle row mouse enter events.
+	 * @param record The data record for the hovered row.
+	 */
+	onRowMouseEnter?: (record: T) => void
+
+	/**
+	 * Callback function to handle row mouse leave events.
+	 * @param record The data record for the row where the mouse left.
+	 */
+	onRowMouseLeave?: (record: T) => void
+
+	/**
 	 * The data to be displayed in the table.
 	 */
 	records: T[]

@@ -1,10 +1,11 @@
 'use client';
 
 import { type Extraction } from '@tmlmobilidade/go-types-extractions';
-import { DataTable, type DataTableColumn, DataTableScroller, ErrorDisplay, IdTag, Label, Pane, ProcessingStatusDisplay, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, DataTableScroller, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { ExtractionsListActionDelete } from '../ExtractionsListActionDelete';
+import { ExtractionsListActionDownload } from '../ExtractionsListActionDownload';
 import { ExtractionsListActionLock } from '../ExtractionsListActionLock';
 import { ExtractionsListFooter } from '../ExtractionsListFooter';
 import { ExtractionsListHeader } from '../ExtractionsListHeader';
@@ -50,7 +51,7 @@ export function ExtractionsList() {
 		},
 		{
 			accessor: 'version',
-			render: item => <Label>{t(`shared:extractions.versions.${item.version}.title`)}</Label>,
+			render: item => <ExtractionsListActionDownload extractionItem={item} />,
 			title: t('shared:extractions.components.ExtractionsList.table.columns.version.title'),
 			width: 'fill',
 		},
@@ -79,7 +80,6 @@ export function ExtractionsList() {
 					<DataTable
 						columns={columns}
 						isLoading={isLoading}
-						// onRowClick={handleRowClick}
 						records={data}
 						rowIdAccessor="_id"
 					/>

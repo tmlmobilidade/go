@@ -18,11 +18,16 @@
 				}
 			}
 		},
+		"ExtractionsListActionDownload": {
+			"button": {
+				"label": "Descargar"
+			}
+		},
 		"ExtractionsListFilterProcessingStatus": {
 			"label": "Estado"
 		},
-		"ExtractionsListFilterScope": {
-			"label": "Grupo"
+		"ExtractionsListFilterVersion": {
+			"label": "Versión"
 		},
 		"ExtractionsListHeader": {
 			"title": "Exportaciones"

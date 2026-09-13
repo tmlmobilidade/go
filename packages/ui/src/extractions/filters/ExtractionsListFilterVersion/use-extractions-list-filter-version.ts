@@ -8,20 +8,20 @@ import { useTranslation } from 'react-i18next';
  * Hook to manage the organization IDs filter for the users list filter bar.
  * @returns The filter state management object.
  */
-export function useExtractionsListFilterScope(): UseFilterStateListReturnType {
+export function useExtractionsListFilterVersion(): UseFilterStateListReturnType {
 	//
 
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() =>
 		[].map(item => ({
-			label: t(`reference_types:${item}`),
+			label: t(`shared:extractions.versions.${item}.title`),
 			value: item,
 		})),
 	[t]);
 
 	return useFilterStateList(
-		'scope',
+		'version',
 		[],
 		selectOptions,
 	);

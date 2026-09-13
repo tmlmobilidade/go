@@ -183,6 +183,7 @@ export const API_ROUTES = Object.freeze({
 		// EXTRACTIONS
 		EXTRACTIONS_CREATE: `${getModuleConfig('core', 'api_url')}/platform/extractions/create`,
 		EXTRACTIONS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/delete/${encodeURIComponent(id)}`,
+		EXTRACTIONS_DOWNLOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/download/${encodeURIComponent(id)}`,
 		EXTRACTIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/extractions/list`,
 		EXTRACTIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/lock/${encodeURIComponent(id)}`,
 
