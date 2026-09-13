@@ -17,7 +17,7 @@ export async function getVehiclePositionsJson(request: FastifyRequest, reply: Fa
 
 	reply.header('access-control-allow-origin', '*');
 
-	if (!cachedData.data) {
+	if (!cachedData?.data) {
 		Logger.error({ message: '[hub/v1/realtime:getVehiclePositionsJson()] No cached data found for vehicles positions' });
 		return sendErrorApiResponse(reply, {
 			error: 'No cached data found for vehicles positions',
