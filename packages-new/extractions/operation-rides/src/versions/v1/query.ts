@@ -11,33 +11,30 @@ WITH rides_latest AS
 	ORDER BY
 		updated_at DESC
 	LIMIT 1 BY _id
-)
+),
+
+analysis_simple_three_vehicle_events AS
+(
+	SELECT
+		* AS data
+	FROM operation.ride_analysis_simple_three_vehicle_events
+	WHERE operational_date IN (
+		SELECT DISTINCT operational_date
+		FROM rides_latest
+	)
+	LIMIT 1 BY ride_id
+),
 
 SELECT
-	r._id,
-	r.agency_id,
-	r.driver_ids,
-	r.end_time_observed,
-	r.end_time_scheduled,
-	r.extension_observed,
-	r.extension_scheduled,
-	r.headsign,
-	r.operational_date,
-	r.passengers_estimated,
-	r.plan_id,
-	r.route_id,
-	r.route_short_name,
-	r.seen_first_at,
-	r.seen_last_at,
-	r.shape_id,
-	r.start_time_observed,
-	r.start_time_scheduled,
-	r.processing_status,
-	r.trip_id,
-	r.apex_validations_qty,
-	r.vehicle_ids
+	r.*,
+
+	analysis_simple_three_vehicle_events.data
+		AS analysis_simple_three_vehicle_events
 
 FROM rides_latest AS r
+
+LEFT JOIN analysis_simple_three_vehicle_events
+	ON analysis_simple_three_vehicle_events.ride_id = r._id
 
 ORDER BY
 	r.start_time_scheduled ASC,
