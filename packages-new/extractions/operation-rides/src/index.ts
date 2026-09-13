@@ -1,1 +1,1 @@
-export * from './versions/v1/extract-stops-v1.js';
+export * from './versions/v1/operation-rides-v1.js';
