@@ -16,7 +16,7 @@ export function useExtractionsListFilterProcessingStatus(): UseFilterStateListRe
 
 	const selectOptions = useMemo(() =>
 		ProcessingStatusValues.map(item => ({
-			label: t(`shared:status.processing_status:${item}`),
+			label: t(`shared:status.processing_status.${item}`),
 			value: item,
 		})),
 	[t]);

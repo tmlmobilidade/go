@@ -1,5 +1,6 @@
 'use client';
 
+import { ExtractionVersionValues } from '@tmlmobilidade/go-types-extractions';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +15,7 @@ export function useExtractionsListFilterVersion(): UseFilterStateListReturnType 
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() =>
-		[].map(item => ({
+		ExtractionVersionValues.map(item => ({
 			label: t(`shared:extractions.versions.${item}.title`),
 			value: item,
 		})),
@@ -22,7 +23,7 @@ export function useExtractionsListFilterVersion(): UseFilterStateListReturnType 
 
 	return useFilterStateList(
 		'version',
-		[],
+		[...ExtractionVersionValues],
 		selectOptions,
 	);
 }
