@@ -12,7 +12,7 @@ import { Timer } from '@tmlmobilidade/timer';
  * which will trigger the necessary reprocessing in the system.
  * @param data An array of SimplifiedVehicleEvent documents that have been inserted or updated.
  */
-export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
+export async function setRidesAsWaiting(data?: SimplifiedVehicleEvent[]) {
 	try {
 		//
 

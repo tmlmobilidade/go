@@ -25,7 +25,7 @@ type AnySimplifiedApexDocument =
  * which will trigger the necessary reprocessing in the system.
  * @param data An array of SimplifiedApex documents that have been inserted or updated.
  */
-export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
+export async function setRidesAsWaiting(data?: AnySimplifiedApexDocument[]) {
 	try {
 		//
 
