@@ -72,19 +72,19 @@ async function main() {
 		},
 	});
 
+	//
+	// Initialize the extraction context
+
+	const temporaryDirectory = fs.mkdtempDisposableSync(`extraction-${extractionId}-`);
+
+	const zipFilePath = path.join(temporaryDirectory.path, `${extractionId}.zip`);
+
+	const context: ExtractionTaskContext = {
+		output_path: temporaryDirectory.path,
+	};
+
 	try {
 		//
-
-		//
-		// Initialize the extraction context
-
-		const temporaryDirectory = fs.mkdtempDisposableSync(`extraction-${extractionId}-`);
-
-		const zipFilePath = path.join(temporaryDirectory.path, `${extractionId}.zip`);
-
-		const context: ExtractionTaskContext = {
-			output_path: temporaryDirectory.path,
-		};
 
 		//
 		// Based on the extraction version, run the appropriate task.
@@ -130,12 +130,16 @@ async function main() {
 		}
 
 		//
-		// Update the extraction in the database.
-		// Stop the heartbeat before the update to avoid race conditions.
-
-		const updateExtractionTimer = new Timer();
+		// Perform workspace cleanup by stopping the heartbeat
+		// and deleting the temporary directory
 
 		heartbeat.stop();
+		temporaryDirectory.remove();
+
+		//
+		// Update the extraction in the database.
+
+		const updateExtractionTimer = new Timer();
 
 		await goDb.core.extractions.updateOne({ _id: extractionId }, {
 			attachment_id: uploadResult._id,
@@ -148,6 +152,7 @@ async function main() {
 		//
 	} catch (error) {
 		heartbeat.stop();
+		temporaryDirectory.remove();
 		await goDb.core.extractions.updateOne({ _id: extractionId }, { processing_status: 'error' });
 		Logger.error({ error, message: `Error processing extraction ${extractionId}` });
 		Logger.divider();
