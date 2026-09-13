@@ -7,7 +7,9 @@ import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
+import { useExtractionsListFilterProcessingStatus } from './filters/ExtractionsListFilterProcessingStatus/use-extractions-list-filter-processing-status';
 import { useExtractionsListFilterSearch } from './filters/ExtractionsListFilterSearch/use-extractions-list-filter-search';
+import { useExtractionsListFilterVersion } from './filters/ExtractionsListFilterVersion/use-extractions-list-filter-version';
 
 /* * */
 
@@ -29,6 +31,8 @@ export function useExtractionsListData(): UseExtractionsListDataReturnType {
 	// A. Setup variables
 
 	const filterSearch = useExtractionsListFilterSearch();
+	const filterVersion = useExtractionsListFilterVersion();
+	const filterProcessingStatus = useExtractionsListFilterProcessingStatus();
 
 	//
 	// B. Fetch data
@@ -47,15 +51,22 @@ export function useExtractionsListData(): UseExtractionsListDataReturnType {
 		query: filterSearch.value,
 	});
 
+	const filteredData = useMemo(() => {
+		if (!searchResultsData?.length) return [];
+		return searchResultsData
+			.filter(item => filterVersion.value.includes(item.version))
+			.filter(item => filterProcessingStatus.value.includes(item.processing_status));
+	}, [searchResultsData, filterVersion.value, filterProcessingStatus.value]);
+
 	//
 	// D. Return data
 
 	return useMemo(() => ({
-		data: searchResultsData,
+		data: filteredData,
 		error: error?.error,
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [searchResultsData, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [filteredData, data?.timestamp, error, isLoading, isValidating, mutate]);
 };
