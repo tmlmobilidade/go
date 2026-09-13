@@ -38,15 +38,14 @@ export async function toggleLockById<T extends Document>(context: GoDbCollection
 	};
 
 	//
-	// Validate the document against the schema
-
-	const validatedDocument = context.schema.parse(updatableDocument);
-
-	//
 	// Attempt to update the document in the collection
 	// and check if the update operation was acknowledged
 
-	const updateResult = await context.collection.updateOne({ _id: { $eq: _id as Filter<T>['_id'] } }, validatedDocument, { session: options?.session });
+	const updateResult = await context.collection.updateOne(
+		{ _id: { $eq: _id as Filter<T>['_id'] } },
+		{ $set: { is_locked: !existingDocument.is_locked, updated_at: Dates.now('utc').unix_milliseconds } },
+		{ session: options?.session },
+	);
 
 	if (!updateResult.acknowledged) {
 		throw new Error(`Failed to update document into ${context.collectionName} collection. The update operation was not acknowledged.`);

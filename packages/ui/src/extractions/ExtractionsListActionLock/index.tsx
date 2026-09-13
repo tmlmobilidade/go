@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction } from '@tmlmobilidade/go-types-extractions';
-import { fetchApiData, LockButton, useHandleAction } from '@tmlmobilidade/ui';
+import { fetchApiData, LockButton, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,15 +18,20 @@ export function ExtractionsListActionLock({ extractionItem }: ExtractionsListAct
 	//
 
 	//
-	// A. Handle actions
+	// A. Setup variables
+
+	const { mutate } = useExtractionsListData();
+
+	//
+	// B. Handle actions
 
 	const { action: handleLock } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Extraction[]>({ url: API_ROUTES.core.PLATFORM_EXTRACTIONS }),
-		onSuccess: () => {},
+		fetchFn: async () => await fetchApiData<Extraction[]>({ url: API_ROUTES.core.EXTRACTIONS_LOCK(extractionItem._id) }),
+		onSuccess: response => mutate(response),
 	});
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<LockButton isLocked={extractionItem?.is_locked} onClick={handleLock} />

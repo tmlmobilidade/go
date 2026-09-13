@@ -26,7 +26,7 @@ export function StopsExtract() {
 				version: 'infrastructure-stops-v1',
 			},
 			method: 'POST',
-			url: API_ROUTES.core.PLATFORM_EXTRACTIONS_CREATE,
+			url: API_ROUTES.core.EXTRACTIONS_CREATE,
 		}),
 		onSuccess: (response) => {
 			mutate(response);

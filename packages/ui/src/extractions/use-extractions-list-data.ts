@@ -33,7 +33,7 @@ export function useExtractionsListData(): UseExtractionsListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR(API_ROUTES.core.PLATFORM_EXTRACTIONS, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR(API_ROUTES.core.EXTRACTIONS_LIST, {
 		fetcher: async (url: string) => await fetchApiData<Extraction[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

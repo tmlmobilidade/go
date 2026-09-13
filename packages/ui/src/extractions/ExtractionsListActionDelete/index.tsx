@@ -1,7 +1,8 @@
 'use client';
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction } from '@tmlmobilidade/go-types-extractions';
-import { DeleteButton } from '@tmlmobilidade/ui';
+import { DeleteButton, fetchApiData, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,10 +18,20 @@ export function ExtractionsListActionDelete({ extractionItem }: ExtractionsListA
 	//
 	// A. Setup variables
 
+	const { mutate } = useExtractionsListData();
+
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const { action: handleDelete } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Extraction[]>({ method: 'DELETE', url: API_ROUTES.core.EXTRACTIONS_DELETE(extractionItem._id) }),
+		onSuccess: response => mutate(response),
+	});
+
+	//
+	// C. Render components
 
 	return (
-		<DeleteButton isDisabled={extractionItem?.is_locked ?? true} onDelete={() => {}} />
+		<DeleteButton isDisabled={extractionItem?.is_locked ?? true} onDelete={handleDelete} />
 	);
 }

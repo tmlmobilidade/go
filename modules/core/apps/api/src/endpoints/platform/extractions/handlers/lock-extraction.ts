@@ -26,7 +26,27 @@ export async function lockExtractionHandler(request: FastifyRequest<{ Params: { 
 	}
 
 	//
-	// Retrieve extractions for the current user
+	// Retrieve extraction for the current user
+
+	const foundExtraction = await goDb.core.extractions.findOne({
+		_id: request.params.id,
+		created_by: request.me._id,
+	});
+
+	if (!foundExtraction) {
+		return sendErrorApiResponse(reply, {
+			error: 'Extraction not found or not owned by the current user',
+			status_code: '404',
+		});
+	}
+
+	//
+	// Toggle lock status
+
+	await goDb.core.extractions.toggleLockById(request.params.id);
+
+	//
+	// Retrieve all extractions for the current user
 
 	const foundExtractions = await goDb.core.extractions.findMany({ created_by: request.me._id });
 

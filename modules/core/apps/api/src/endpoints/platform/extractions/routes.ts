@@ -23,7 +23,7 @@ server.register(
 
 		instance.post('/create', { preHandler: authorizationMiddleware() }, createExtractionHandler);
 
-		instance.put('/lock/:id', { preHandler: authorizationMiddleware() }, lockExtractionHandler);
+		instance.get('/lock/:id', { preHandler: authorizationMiddleware() }, lockExtractionHandler);
 
 		instance.delete('/delete/:id', { preHandler: authorizationMiddleware() }, deleteExtractionHandler);
 
