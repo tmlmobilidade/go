@@ -138,7 +138,7 @@ export interface DataTableColumn<T> {
 
 export function DataTable<T>({ records, ...props }: DataTableProps<T>) {
 	return (
-		<DataTableContextProvider columns={props.columns} records={records}>
+		<DataTableContextProvider records={records}>
 			<DataTableContent {...props} />
 		</DataTableContextProvider>
 	);
