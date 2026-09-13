@@ -25,7 +25,7 @@ export function ExtractionsListActionLock({ extractionItem }: ExtractionsListAct
 	//
 	// B. Handle actions
 
-	const { action: handleLock } = useHandleAction({
+	const { action: handleLock, isLoading } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Extraction[]>({ url: API_ROUTES.core.EXTRACTIONS_LOCK(extractionItem._id) }),
 		onSuccess: response => mutate(response),
 	});
@@ -34,6 +34,10 @@ export function ExtractionsListActionLock({ extractionItem }: ExtractionsListAct
 	// C. Render components
 
 	return (
-		<LockButton isLocked={extractionItem?.is_locked} onClick={handleLock} />
+		<LockButton
+			isLoading={isLoading}
+			isLocked={extractionItem?.is_locked}
+			onClick={handleLock}
+		/>
 	);
 }
