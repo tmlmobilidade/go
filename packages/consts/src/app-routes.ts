@@ -180,8 +180,21 @@ export const API_ROUTES = Object.freeze({
 		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
+		// EXTRACTIONS
+		EXTRACTIONS_CREATE: `${getModuleConfig('core', 'api_url')}/platform/extractions/create`,
+		EXTRACTIONS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/delete/${encodeURIComponent(id)}`,
+		EXTRACTIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/extractions/list`,
+		EXTRACTIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/lock/${encodeURIComponent(id)}`,
+
 		// HOME
 		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
+
+		// ME
+		ME_LIST: `${getModuleConfig('core', 'api_url')}/platform/me/list`,
+		ME_UPDATE_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/me/update-preferences`,
+
+		// NOTIFICATIONS
+		NOTIFICATIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/notifications/list`,
 
 		// ORGANIZATIONS
 		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,
@@ -194,13 +207,6 @@ export const API_ROUTES = Object.freeze({
 		ORGANIZATIONS_DETAIL_UPDATE_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/update/image`,
 		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations/list`,
 
-		// PLATFORM
-		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
-		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
-		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
-		PLATFORM_SIDEBAR_LOGO: `${getModuleConfig('core', 'api_url')}/platform/sidebar-logo`,
-		PLATFORM_UPDATE_ME_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/update-me-preferences`,
-
 		// ROLES
 		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,
 		ROLES_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/delete/${encodeURIComponent(id)}`,
@@ -210,6 +216,9 @@ export const API_ROUTES = Object.freeze({
 		ROLES_LIST_MUNICIPALITIES: `${getModuleConfig('core', 'api_url')}/roles/list-municipalities`,
 		ROLES_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/lock/${encodeURIComponent(id)}`,
 		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
+
+		// SIDEBAR
+		SIDEBAR_LOGO: `${getModuleConfig('core', 'api_url')}/platform/sidebar/logo`,
 
 		// USERS
 		USERS_CREATE: `${getModuleConfig('core', 'api_url')}/users/create`,
@@ -323,22 +332,6 @@ export const API_ROUTES = Object.freeze({
 		STOPS_UPDATE: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update/${encodeURIComponent(id)}`,
 		STOPS_UPDATE_COORDINATES: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update-coordinates/${encodeURIComponent(id)}`,
 		STOPS_UPDATE_NAME: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update-name/${encodeURIComponent(id)}`,
-	},
-
-	locations: {
-		// BASE
-		BASE: `${getModuleConfig('locations', 'api_url')}`,
-
-		// LOCATIONS
-		LOCATIONS_DISTRICTS: `${getModuleConfig('locations', 'api_url')}/locations/districts`,
-		LOCATIONS_DISTRICTS_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/districts/${encodeURIComponent(id)}`,
-		LOCATIONS_LOCALITIES: `${getModuleConfig('locations', 'api_url')}/locations/localities`,
-		LOCATIONS_LOCALITIES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/localities/${encodeURIComponent(id)}`,
-		LOCATIONS_LOCATION: `${getModuleConfig('locations', 'api_url')}/locations/location`,
-		LOCATIONS_MUNICIPALITIES: `${getModuleConfig('locations', 'api_url')}/locations/municipalities`,
-		LOCATIONS_MUNICIPALITIES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/municipalities/${encodeURIComponent(id)}`,
-		LOCATIONS_PARISHES: `${getModuleConfig('locations', 'api_url')}/locations/parishes`,
-		LOCATIONS_PARISHES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/parishes/${encodeURIComponent(id)}`,
 	},
 
 	offer: {

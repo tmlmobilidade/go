@@ -2,9 +2,7 @@
 /* ROW */
 
 .row {
-	display: flex;
-	width: min-content;
-	min-width: 100%;
+	display: grid;
 	background-color: var(--color-system-background-100);
 	border-bottom: 1px solid var(--color-system-border-100);
 }
@@ -35,6 +33,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
+	width: 100%;
 	padding: var(--size-spacing-md);
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -44,6 +43,6 @@
 	color: var(--color-system-text-100);
 }
 
-.center {
+.cell[data-center='true'] {
 	justify-content: center;
 }

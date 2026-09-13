@@ -1,0 +1,36 @@
+{
+	"components": {
+		"ExtractionsList": {
+			"table": {
+				"columns": {
+					"_id": {
+						"title": "#ID"
+					},
+					"created_at": {
+						"title": "Data de Geração"
+					},
+					"processing_status": {
+						"title": "Estado"
+					},
+					"version": {
+						"title": "Versão"
+					}
+				}
+			}
+		},
+		"ExtractionsListFilterProcessingStatus": {
+			"label": "Estado"
+		},
+		"ExtractionsListFilterScope": {
+			"label": "Grupo"
+		},
+		"ExtractionsListHeader": {
+			"title": "Exportações"
+		}
+	},
+	"versions": {
+		"infrastructure-stops-v1": {
+			"title": "Paragens (v1)"
+		}
+	}
+}
