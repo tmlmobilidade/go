@@ -40,26 +40,6 @@ export async function operationRidesV1Extraction(context: ExtractionTaskContext,
 	});
 
 	//
-	// If any of the required properties are empty arrays,
-	// then there is no data to return, so return an empty array.
-
-	const hasEmptyFilter = [
-		validatedProperties.agency_ids,
-		validatedProperties.acceptance_statuses,
-		validatedProperties.analysis_at_least_one_vehicle_event_on_last_stop_grades,
-		validatedProperties.analysis_expected_apex_validation_interval_grades,
-		validatedProperties.analysis_simple_three_vehicle_events_grades,
-		validatedProperties.analysis_transaction_sequentiality_grades,
-		validatedProperties.start_delay_statuses,
-		validatedProperties.end_delay_statuses,
-		validatedProperties.operational_statuses,
-		validatedProperties.route_short_names,
-		validatedProperties.ticketing_statuses,
-	].some(value => Array.isArray(value) && value.length === 0);
-
-	if (hasEmptyFilter) throw new Error('Some required properties are empty');
-
-	//
 	// Setup a temporary directory and a batch writer
 
 	const fileName = `operation-rides-v1-${extraction._id}.csv`;
@@ -67,6 +47,7 @@ export async function operationRidesV1Extraction(context: ExtractionTaskContext,
 	const writer = new BatchWriter({
 		batch_size: 100_000,
 		insertFn: async (data) => {
+			console.log('writer data', data);
 			const filePath = path.join(context.output_path, fileName);
 			const fileAlreadyExists = fs.existsSync(filePath);
 			const csvData = csvStringify(data, { header: !fileAlreadyExists });
@@ -88,8 +69,12 @@ export async function operationRidesV1Extraction(context: ExtractionTaskContext,
 		query_params: params,
 	});
 
-	for await (const chunk of queryResult.stream()) {
-		const rows = chunk.map(row => toOutputRow(row as unknown as OperationRidesV1QueryRow));
+	const stream = queryResult.stream<OperationRidesV1QueryRow>();
+
+	for await (const chunk of stream) {
+		console.log('chunk', chunk);
+		console.log('chunk.map(row => row.json())', chunk.map(row => row.json()));
+		const rows = chunk.map(row => toOutputRow(row.json()));
 		await writer.write(rows);
 	}
 

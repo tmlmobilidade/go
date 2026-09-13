@@ -55,7 +55,8 @@ export function useExtractionsListData(): UseExtractionsListDataReturnType {
 		if (!searchResultsData?.length) return [];
 		return searchResultsData
 			.filter(item => filterVersion.value.includes(item.version))
-			.filter(item => filterProcessingStatus.value.includes(item.processing_status));
+			.filter(item => filterProcessingStatus.value.includes(item.processing_status))
+			.sort((a, b) => b.created_at - a.created_at);
 	}, [searchResultsData, filterVersion.value, filterProcessingStatus.value]);
 
 	//

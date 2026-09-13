@@ -28,15 +28,20 @@ export async function zipDirectory(inputDir: string, outputZipFilePath: string) 
 			//
 
 			//
-			// Read the working directory contents
+			// Read the working directory contents and filter
+			// to keep only files. Throw an error if there are no files,
+			// as it would produce an invalid zip file.
 
 			const inputDirContents = fs.readdirSync(inputDir, { withFileTypes: true });
+
+			const inputDirFiles = inputDirContents.filter(file => file.isFile());
+
+			if (!inputDirFiles.length) throw new Error('No files found in input directory');
 
 			//
 			// Add each file to the zip
 
-			for (const inputDirFile of inputDirContents) {
-				if (!inputDirFile.isFile()) continue;
+			for (const inputDirFile of inputDirFiles) {
 				const filePath = path.join(inputDir, inputDirFile.name);
 				outputZip.addFile(filePath, inputDirFile.name, { compress: true });
 			}
