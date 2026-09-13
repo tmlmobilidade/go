@@ -23,7 +23,7 @@ export function ExtractionsListActionDelete({ extractionItem }: ExtractionsListA
 	//
 	// B. Handle actions
 
-	const { action: handleDelete } = useHandleAction({
+	const { action: handleDelete, isLoading } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Extraction[]>({ method: 'DELETE', url: API_ROUTES.core.EXTRACTIONS_DELETE(extractionItem._id) }),
 		onSuccess: response => mutate(response),
 	});
@@ -32,6 +32,10 @@ export function ExtractionsListActionDelete({ extractionItem }: ExtractionsListA
 	// C. Render components
 
 	return (
-		<DeleteButton isDisabled={extractionItem?.is_locked ?? true} onDelete={handleDelete} />
+		<DeleteButton
+			isDisabled={extractionItem?.is_locked ?? true}
+			isLoading={isLoading}
+			onDelete={handleDelete}
+		/>
 	);
 }
