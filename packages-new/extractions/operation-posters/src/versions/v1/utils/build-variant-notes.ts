@@ -1,8 +1,9 @@
 /* * */
 
+import { type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
+
 import { getLetterIndex } from './get-letter-index.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
-import { type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
 
 /* * */
 

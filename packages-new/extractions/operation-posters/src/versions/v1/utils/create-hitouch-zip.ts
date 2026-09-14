@@ -1,7 +1,9 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '../types.js';
 import { Logger } from '@tmlmobilidade/logger';
+
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
+
 import fs from 'node:fs';
 import path from 'node:path';
 import { ZipFile } from 'yazl';
@@ -16,7 +18,7 @@ const ZIP_TIMEOUT_MS = 2 * 60_000;
 /**
  * Creates the HiTouch ZIP archive with all supported TXT files at the archive root.
  */
-export async function createHitouchZip(exportConfig: ExportToHitouchConfig): Promise<string> {
+export async function createHitouchZip(exportConfig: ExportHitouchConfig): Promise<string> {
 	//
 
 	const outputPath = path.resolve(exportConfig.workdir, exportConfig.output);
