@@ -1,6 +1,6 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '@/types.js';
+import { type ExportToHitouchConfig } from '../types.js';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 import path from 'node:path';

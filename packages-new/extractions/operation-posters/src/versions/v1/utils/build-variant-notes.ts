@@ -1,7 +1,7 @@
 /* * */
 
-import { getLetterIndex } from '@/utils/get-letter-index.js';
-import { getPosterRouteId } from '@/utils/get-poster-route-id.js';
+import { getLetterIndex } from './get-letter-index.js';
+import { getPosterRouteId } from './get-poster-route-id.js';
 import { type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
 
 /* * */
