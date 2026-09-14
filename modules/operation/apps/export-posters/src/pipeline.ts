@@ -48,7 +48,7 @@ export async function generatePlanPostersDownloadUrl(planData: Plan, exportId: s
 				throw new Error(`PDF job ${pdfId} failed.`);
 			}
 
-			Logger.info({ message: `ZPHERES PDF job ${pdfId} is ${pdfStatus.status}; checking again in 60 seconds.` });
+			Logger.info({ message: `ZPHERES PDF job ${pdfId} is ${pdfStatus.status}.` });
 			await waitForNextStatusCheck();
 			pdfStatus = await postersController.getPDFStatus(pdfId);
 		}
