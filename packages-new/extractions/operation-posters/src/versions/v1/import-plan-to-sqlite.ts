@@ -1,15 +1,5 @@
-import { exportAgencyFile } from './exports/agency.js';
-import { exportCalendarFiles } from './exports/calendars.js';
-import { exportDayTypesFile } from './exports/day_types.js';
-import { exportRoutesFile } from './exports/routes.js';
-import { exportShapesFiles } from './exports/shapes.js';
-import { exportStopTimesFile } from './exports/stop-times.js';
-import { exportStopsFile } from './exports/stops.js';
-import { exportTripsFile } from './exports/trips.js';
-import { type ExportToHitouchConfig } from './types.js';
-import { buildDatesMap } from './utils/build-dates-map.js';
-import { createHitouchZip } from './utils/create-hitouch-zip.js';
-import { yieldToEventLoop } from './utils/yield-to-event-loop.js';
+/* * */
+
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
@@ -19,11 +9,25 @@ import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { type ImportGtfsConfig, importGtfsStrictV29ExtToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { exportAgencyFile } from './exports/agency.js';
+import { exportCalendarFiles } from './exports/calendars.js';
+import { exportDayTypesFile } from './exports/day_types.js';
+import { exportRoutesFile } from './exports/routes.js';
+import { exportShapesFiles } from './exports/shapes.js';
+import { exportStopTimesFile } from './exports/stop-times.js';
+import { exportStopsFile } from './exports/stops.js';
+import { exportTripsFile } from './exports/trips.js';
+import { type ExportHitouchConfig } from './types/ExportHitouchConfig.js';
+import { buildDatesMap } from './utils/build-dates-map.js';
+import { createHitouchZip } from './utils/create-hitouch-zip.js';
+import { yieldToEventLoop } from './utils/yield-to-event-loop.js';
+
 import fs from 'node:fs';
 
 /* * */
 
-export async function importPlanToSqlite(planData: Plan, options?: { canvas_profile?: ExportToHitouchConfig['canvas_profile'], content_mode?: PlanPostersContentMode, line_codes?: string[], lines_mode?: LinesMode, stop_ids?: string[], stops_mode?: PlanPostersFilterMode, workdir?: string }): Promise<ExportToHitouchConfig> {
+export async function importPlanToSqlite(planData: Plan, options?: { canvas_profile?: ExportHitouchConfig['canvas_profile'], content_mode?: PlanPostersContentMode, line_codes?: string[], lines_mode?: LinesMode, stop_ids?: string[], stops_mode?: PlanPostersFilterMode, workdir?: string }): Promise<ExportHitouchConfig> {
 	//
 
 	//
@@ -68,7 +72,7 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 	//
 	// Setup the export config
 
-	const exportConfig: ExportToHitouchConfig = {
+	const exportConfig: ExportHitouchConfig = {
 		canvas_profile: options?.canvas_profile ?? '0Master.C',
 		content_mode: options?.content_mode ?? 'all',
 		date_range: {

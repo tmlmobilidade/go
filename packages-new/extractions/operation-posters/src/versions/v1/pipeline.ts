@@ -1,12 +1,14 @@
 /* * */
 
-import { PostersController } from './controller/poster.js';	
-import { importPlanToSqlite } from './import-plan-to-sqlite.js';
-import { type ExportToHitouchConfig } from './types.js';
 import { FileExportDownloadUrlSchema, type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
+
+import { type ExportHitouchConfig } from './types/ExportHitouchConfig.js';
+import { PostersController } from './controller/poster.js';	
+import { importPlanToSqlite } from './import-plan-to-sqlite.js';
+
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -22,9 +24,9 @@ function waitForNextStatusCheck(): Promise<void> {
 
 /* * */
 
-export async function generatePlanPostersDownloadUrl(planData: Plan, exportId: string, options?: { canvas_profile?: ExportToHitouchConfig['canvas_profile'], content_mode?: PlanPostersContentMode, line_codes?: string[], lines_mode?: LinesMode, stop_ids?: string[], stops_mode?: PlanPostersFilterMode }): Promise<string> {
+export async function generatePlanPostersDownloadUrl(planData: Plan, exportId: string, options?: { canvas_profile?: ExportHitouchConfig['canvas_profile'], content_mode?: PlanPostersContentMode, line_codes?: string[], lines_mode?: LinesMode, stop_ids?: string[], stops_mode?: PlanPostersFilterMode }): Promise<string> {
 	const postersController = new PostersController();
-	let exportConfig: ExportToHitouchConfig | undefined;
+	let exportConfig: ExportHitouchConfig | undefined;
 
 	try {
 		Logger.info({ message: `Preparing GTFS files for poster export ${exportId} (Plan ${planData._id}).` });
