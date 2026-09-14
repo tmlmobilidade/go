@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const PlanPostersContentModeSchema = z.enum(['all', 'lines', 'stops']);
+export const PlanPostersContentModeSchema = z.enum(['all', 'lines', 'stops', 'lines_stops']);
 export const PlanPostersFilterModeSchema = z.enum(['exclude', 'include']);
 
 /* PROPERTIES SCHEMA */

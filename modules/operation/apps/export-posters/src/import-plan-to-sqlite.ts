@@ -59,42 +59,6 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 
 	const sqlGtfs = await importGtfsStrictV29ExtToDatabase(importConfig);
 
-	// ! Line filtering is temporarily disabled while PDF exports use stop filters only.
-	// if (options?.content_mode === 'lines' && options.line_codes?.length) {
-	// 	const lineIdMatchExpression = options.line_codes
-	// 		.map(() => '(CAST(line_id AS TEXT) = ? OR CAST(line_id AS TEXT) GLOB ?)')
-	// 		.join(' OR ');
-	// 	const lineIdMatchParameters = options.line_codes.flatMap(lineCode => [lineCode, `${lineCode}_*`]);
-	// 	const matchingRoutes = sqlGtfs.routes.all(`WHERE ${lineIdMatchExpression}`, lineIdMatchParameters);
-	// 	if (!matchingRoutes.length) {
-	// 		throw new Error(`None of the selected lines exist in Plan ${planData._id}.`);
-	// 	}
-	// 	const matchingRouteLineIds = matchingRoutes.map(route => String(route.line_id));
-	// 	const missingLineCodes = options.line_codes.filter(lineCode => !matchingRouteLineIds.some(routeLineId => routeLineId === lineCode || routeLineId.startsWith(`${lineCode}_`)));
-	// 	if (missingLineCodes.length) {
-	// 		throw new Error(`Lines ${missingLineCodes.join(', ')} do not exist in Plan ${planData._id}.`);
-	// 	}
-	// 	const selectedRoutes = options.lines_mode === 'exclude'
-	// 		? sqlGtfs.routes.all(`WHERE NOT (${lineIdMatchExpression})`, lineIdMatchParameters)
-	// 		: matchingRoutes;
-	// 	if (!selectedRoutes.length) {
-	// 		throw new Error(`The selected line filter removes every route from Plan ${planData._id}.`);
-	// 	}
-	// }
-
-	if (options?.content_mode === 'stops' && options.stop_ids?.length) {
-		const stopPlaceholders = options.stop_ids.map(() => '?').join(', ');
-		const matchingStopIds = sqlGtfs.stop_times
-			.all(`WHERE stop_id IN (${stopPlaceholders})`, options.stop_ids)
-			.map(stopTime => stopTime.stop_id);
-		const matchingStopIdSet = new Set(matchingStopIds);
-		const missingStopIds = options.stop_ids.filter(stopId => !matchingStopIdSet.has(stopId));
-
-		if (missingStopIds.length) {
-			throw new Error(`Stops ${missingStopIds.join(', ')} do not exist in Plan ${planData._id}.`);
-		}
-	}
-
 	const sourceHasCalendar = true;
 	const [agencyHolidays, agencyYearPeriods] = await Promise.all([
 		goDb.offer.holidays.findMany({ agency_ids: { $in: [agencyId] } }),
@@ -112,11 +76,11 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 			start: validateOperationalDate(String(planData.active_from)),
 		},
 		line_codes: options?.line_codes ?? [],
-		lines_mode: options?.content_mode === 'lines' ? options.lines_mode ?? 'include' : undefined,
+		lines_mode: (options?.content_mode === 'lines' || options?.content_mode === 'lines_stops') ? options.lines_mode ?? 'include' : undefined,
 		output: options?.workdir ? `${planData._id}-hitouch-posters.zip` : `../${planData._id}-hitouch-posters.zip`,
 		source_has_calendar: sourceHasCalendar,
 		stop_ids: options?.stop_ids ?? [],
-		stops_mode: options?.content_mode === 'stops' ? options.stops_mode ?? 'include' : undefined,
+		stops_mode: (options?.content_mode === 'stops' || options?.content_mode === 'lines_stops') ? options.stops_mode ?? 'include' : undefined,
 		workdir: options?.workdir ?? `/tmp/hitouch/${planData._id}`,
 	};
 

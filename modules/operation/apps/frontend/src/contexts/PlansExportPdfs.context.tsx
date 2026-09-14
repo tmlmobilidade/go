@@ -80,9 +80,9 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	//
 	// B. Derived state
 
-	const hasSelectedLines = contentMode === 'lines' && lineIds.length > 0;
-	const hasSelectedStops = contentMode === 'stops' && stopIds.length > 0;
-	const hasSelectedContent = contentMode === 'all' || hasSelectedLines || hasSelectedStops;
+	const hasSelectedLines = (contentMode === 'lines' || contentMode === 'lines_stops') && lineIds.length > 0;
+	const hasSelectedStops = (contentMode === 'stops' || contentMode === 'lines_stops') && stopIds.length > 0;
+	const hasSelectedContent = contentMode === 'all' || (contentMode === 'lines_stops' ? hasSelectedLines && hasSelectedStops : hasSelectedLines || hasSelectedStops);
 	const canSave = !!agencyId && !!planId && hasSelectedContent && (contentMode === 'all' || !!canvasProfile);
 
 	//
@@ -131,8 +131,8 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	const exportPosters = useCallback(async () => {
 		if (loading) return;
 		if (!agencyId || !planId) return;
-		if (contentMode === 'lines' && (!canvasProfile || !lineIds.length)) return;
-		if (contentMode === 'stops' && (!canvasProfile || !stopIds.length)) return;
+		if ((contentMode === 'lines' || contentMode === 'lines_stops') && (!canvasProfile || !lineIds.length)) return;
+		if ((contentMode === 'stops' || contentMode === 'lines_stops') && (!canvasProfile || !stopIds.length)) return;
 
 		const selectedPlan = plansData.data.find(plan => plan._id === planId && plan.agency_id === agencyId);
 		if (!selectedPlan?.attachments.operation_gtfs) return;
@@ -146,11 +146,11 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 				agency_id: agencyId,
 				canvas_profile: contentMode === 'all' ? '0Master.C' : canvasProfile,
 				content_mode: contentMode,
-				line_ids: contentMode === 'lines' ? lineIds : undefined,
-				lines_mode: contentMode === 'lines' ? filterMode : undefined,
+				line_ids: (contentMode === 'lines' || contentMode === 'lines_stops') ? lineIds : undefined,
+				lines_mode: (contentMode === 'lines' || contentMode === 'lines_stops') ? filterMode : undefined,
 				plan_id: planId,
-				stop_ids: contentMode === 'stops' ? stopIds : undefined,
-				stops_mode: contentMode === 'stops' ? filterMode : undefined,
+				stop_ids: (contentMode === 'stops' || contentMode === 'lines_stops') ? stopIds : undefined,
+				stops_mode: (contentMode === 'stops' || contentMode === 'lines_stops') ? filterMode : undefined,
 			},
 			type: 'plan_posters',
 		};

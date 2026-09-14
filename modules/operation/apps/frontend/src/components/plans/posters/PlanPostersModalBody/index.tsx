@@ -82,13 +82,14 @@ export function PlanPostersExportModalBody() {
 							{ label: 'Tudo', value: 'all' },
 							{ label: 'Linhas', value: 'lines' },
 							{ label: 'Paragens', value: 'stops' },
+							{ label: t('default:posterExport.linesAndStops'), value: 'lines_stops' },
 						]}
 					/>
 
 					{context.data.contentMode !== 'all' && (
 						<SegmentedControl
 							fullWidth={true}
-							label={context.data.contentMode === 'lines' ? 'Filtro de linhas' : 'Filtro de paragens'}
+							label={context.data.contentMode === 'lines_stops' ? t('default:posterExport.combinedFilter') : context.data.contentMode === 'lines' ? 'Filtro de linhas' : 'Filtro de paragens'}
 							onChange={value => context.actions.setFilterMode(value as PlanPostersFilterMode)}
 							value={context.data.filterMode}
 							data={[
@@ -98,7 +99,7 @@ export function PlanPostersExportModalBody() {
 						/>
 					)}
 
-					{context.data.contentMode === 'lines' && (
+					{(context.data.contentMode === 'lines' || context.data.contentMode === 'lines_stops') && (
 						<TagsInput
 							description={t('shared:filters.TagFilter.description')}
 							label={context.data.filterMode === 'include' ? 'IDs das linhas a exportar' : 'IDs das linhas a excluir'}
@@ -110,7 +111,7 @@ export function PlanPostersExportModalBody() {
 						/>
 					)}
 
-					{context.data.contentMode === 'stops' && (
+					{(context.data.contentMode === 'stops' || context.data.contentMode === 'lines_stops') && (
 						<TagsInput
 							description={t('shared:filters.TagFilter.description')}
 							label={context.data.filterMode === 'include' ? 'IDs das paragens a exportar' : 'IDs das paragens a excluir'}

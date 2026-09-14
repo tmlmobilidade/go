@@ -47,20 +47,12 @@ export async function exportStopsFile(sqlTables: GtfsStrictV29ExtSQLTables, expo
 
 	const stopsToCanvasExtFields: (keyof StopsToCanvasExt)[] = ['stop_id', 'canvas_profile', 'direction_id'];
 	const stopPlaceholders = exportConfig.stop_ids.map(() => '?').join(', ');
-	const isStopExport = exportConfig.content_mode === 'stops' && exportConfig.stop_ids.length > 0;
+	const isStopExport = (exportConfig.content_mode === 'stops' || exportConfig.content_mode === 'lines_stops') && exportConfig.stop_ids.length > 0;
 	const canvasFilter = isStopExport
 		? `WHERE stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${stopPlaceholders})`
 		: '';
 	const canvasFilterParameters = isStopExport ? exportConfig.stop_ids : [];
 
-	// Line filtering is temporarily disabled while PDF exports use stop filters only.
-	// const lineIdMatchExpression = exportConfig.line_codes
-	// 	.map(() => '(CAST(routes.line_id AS TEXT) = ? OR CAST(routes.line_id AS TEXT) GLOB ?)')
-	// 	.join(' OR ');
-	// const lineIdMatchParameters = exportConfig.line_codes.flatMap(lineCode => [lineCode, `${lineCode}_*`]);
-	// const isLineExport = exportConfig.content_mode === 'lines' && exportConfig.line_codes.length > 0;
-	// const lineJoin = isLineExport ? 'INNER JOIN routes ON routes.route_id = trips.route_id' : '';
-	// const lineFilter = isLineExport ? `WHERE ${exportConfig.lines_mode === 'exclude' ? 'NOT' : ''} (${lineIdMatchExpression})` : '';
 	const stopsToCanvasExtRows = sqlTables._db.databaseInstance.prepare(
 		` SELECT DISTINCT stop_times.stop_id, trips.direction_id
 		FROM stop_times
@@ -77,7 +69,7 @@ export async function exportStopsFile(sqlTables: GtfsStrictV29ExtSQLTables, expo
 	// If no stop directions were found, skip the export
 
 	if (!stopsToCanvasExtRows.length) {
-		if (exportConfig.content_mode === 'stops') {
+		if (exportConfig.content_mode === 'stops' || exportConfig.content_mode === 'lines_stops') {
 			throw new Error('The selected stop filter removes every stop poster target.');
 		}
 		return Logger.info({ message: 'Skipped stopsToCanvasExt.txt file because no stop directions were found.' });
