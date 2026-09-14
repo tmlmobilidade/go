@@ -23,10 +23,16 @@ export async function cleanupOrphanRidesForPlan(planId: string, savedRideIds: Se
 	//
 	// Setup a stream for all Ride IDs that are in use by Rides
 
-	const existingRideIds = await goDb.operation.rides.distinct('_id', { plan_id: planId });
+	const ridesCollection = await goDb.operation.rides.getCollection();
+
+	const existingRideIdsStream = ridesCollection.find({ plan_id: planId }).project({ _id: 1 }).stream();
+
+	//
+	// Iterate over the stream and collect the ride IDs
+
 	const staleRideIds = new Set<string>();
 
-	for (const rideId of existingRideIds) {
+	for await (const rideId of existingRideIdsStream) {
 		// Skip if this ride is still in use
 		if (savedRideIds.has(rideId)) continue;
 		// Mark it as stale otherwise
