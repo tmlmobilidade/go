@@ -1,11 +1,12 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '@/types.js';
-import { yieldToEventLoop } from '@/utils/yield-to-event-loop.js';
 import { GtfsTripsSchema } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
+
+import { type ExportToHitouchConfig } from '../types.js';
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 

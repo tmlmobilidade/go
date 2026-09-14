@@ -1,9 +1,5 @@
 /* * */
 
-import { DAY_TYPES } from '@/day-types.js';
-import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
-import { type CalendarAssignmentsExt, type CalendarExt, type DayTypeConfig, type ExportToHitouchConfig, type GtfsDate } from '@/types.js';
-import { yieldToEventLoop } from '@/utils/yield-to-event-loop.js';
 import { type GtfsCalendar, type GtfsCalendarDates } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29ExtStopTimes, type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
@@ -12,6 +8,12 @@ import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CsvWriter } from '@tmlmobilidade/writers';
+
+import { DAY_TYPES } from '../day-types.js';
+import { getFormattedDates, getPeriodName, getWeekdayNames } from '../get-names.js';
+import { type CalendarAssignmentsExt, type CalendarExt, type DayTypeConfig, type ExportToHitouchConfig, type GtfsDate } from '../types.js';
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
+
 import fs from 'node:fs';
 import Papa from 'papaparse';
 

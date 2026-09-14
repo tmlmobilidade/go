@@ -1,11 +1,12 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '@/types.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { GtfsAgencySchema } from '@tmlmobilidade/go-types-gtfs';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
+
+import { type ExportToHitouchConfig } from '../types.js';
 
 /* * */
 

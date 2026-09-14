@@ -1,12 +1,14 @@
 /* * */
 
-import { type ExportToHitouchConfig, type RoutesToCanvasExt } from '@/types.js';
-import { getPosterRouteId } from '@/utils/get-poster-route-id.js';
 import { GtfsRoutesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29ExtRoutes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
+
+import { type ExportToHitouchConfig, type RoutesToCanvasExt } from '../types.js';
+import { getPosterRouteId } from '../utils/get-poster-route-id.js';
+
 import fs from 'node:fs';
 import Papa from 'papaparse';
 

@@ -1,8 +1,10 @@
 /* * */
 
-import { DAY_TYPES } from '@/day-types.js';
-import { DayTypesExt, type ExportToHitouchConfig } from '@/types.js';
 import { Logger } from '@tmlmobilidade/logger';
+
+import { DAY_TYPES } from '../day-types.js';
+import { DayTypesExt, type ExportToHitouchConfig } from '../types.js';
+
 import fs from 'node:fs';
 import Papa from 'papaparse';
 

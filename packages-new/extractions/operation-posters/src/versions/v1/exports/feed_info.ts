@@ -1,9 +1,10 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '@/types.js';
 import { type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
+
+import { type ExportToHitouchConfig } from '../types.js';
 
 /* * */
 

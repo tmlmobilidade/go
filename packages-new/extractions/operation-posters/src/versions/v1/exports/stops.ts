@@ -1,11 +1,13 @@
 /* * */
 
-import { type ExportToHitouchConfig, type StopsToCanvasExt } from '@/types.js';
-import { yieldToEventLoop } from '@/utils/yield-to-event-loop.js';
 import { type GtfsStrictV29ExtStops } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
+
+import { type ExportToHitouchConfig, type StopsToCanvasExt } from '../types.js';
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
+
 import fs from 'node:fs';
 import Papa from 'papaparse';
 
