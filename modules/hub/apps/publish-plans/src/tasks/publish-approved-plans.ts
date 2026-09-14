@@ -29,6 +29,7 @@ export async function publishApprovedPlans() {
 
 	const plansWithOperationFiles = await Promise.all(
 		allPlansData.map(async (planData) => {
+			if (!planData.attachments.operation_gtfs_normalized) throw new Error(`Operation GTFS normalized attachment not found for plan ${planData._id}`);
 			const attachmentData = await storageProvider.findById(planData.attachments.operation_gtfs_normalized);
 			if (!attachmentData) throw new Error(`Operation GTFS normalized attachment not found for plan ${planData._id}`);
 			const agencyData = await goDb.core.agencies.findById(planData.agency_id);
@@ -45,7 +46,7 @@ export async function publishApprovedPlans() {
 	for (const { agencyData, attachmentData, planData } of plansWithOperationFiles) {
 		try {
 			// Check if the operation GTFS normalized attachment exists
-			if (!attachmentData) throw new Error(`Operation GTFS normalized attachment not found for plan ${planData._id}`);
+			if (!attachmentData?.url) throw new Error(`Operation GTFS normalized attachment not found for plan ${planData._id}`);
 			// Check if the plans is active
 			const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
 			const nowIsAfterStartDate = currentOperationalDate >= planData.active_from;

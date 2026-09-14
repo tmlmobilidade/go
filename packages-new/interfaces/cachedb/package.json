@@ -35,9 +35,9 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-redis": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/utils": "*",
-		"zod": "3.25.76"
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

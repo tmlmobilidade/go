@@ -4,6 +4,8 @@ import { GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema, ProcessingStatusSchema, TimezoneIdentifiedSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
+import { RideHashSchema } from './ride-hash.js';
+
 /* * */
 
 export const RideIdentitySchema = z.object({
@@ -11,6 +13,7 @@ export const RideIdentitySchema = z.object({
 	agency_code: z.string(),
 	agency_id: z.string(),
 	direction_id: GtfsTripDirectionSchema,
+	hash: RideHashSchema,
 	hashed_shape_id: z.string(),
 	hashed_trip_id: z.string(),
 	headsign: z.string(),

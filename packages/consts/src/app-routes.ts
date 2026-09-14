@@ -180,8 +180,22 @@ export const API_ROUTES = Object.freeze({
 		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
+		// EXTRACTIONS
+		EXTRACTIONS_CREATE: `${getModuleConfig('core', 'api_url')}/platform/extractions/create`,
+		EXTRACTIONS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/delete/${encodeURIComponent(id)}`,
+		EXTRACTIONS_DOWNLOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/download/${encodeURIComponent(id)}`,
+		EXTRACTIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/extractions/list`,
+		EXTRACTIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/lock/${encodeURIComponent(id)}`,
+
 		// HOME
 		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
+
+		// ME
+		ME_LIST: `${getModuleConfig('core', 'api_url')}/platform/me/list`,
+		ME_UPDATE_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/me/update-preferences`,
+
+		// NOTIFICATIONS
+		NOTIFICATIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/notifications/list`,
 
 		// ORGANIZATIONS
 		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,
@@ -194,13 +208,6 @@ export const API_ROUTES = Object.freeze({
 		ORGANIZATIONS_DETAIL_UPDATE_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/update/image`,
 		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations/list`,
 
-		// PLATFORM
-		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
-		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
-		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
-		PLATFORM_SIDEBAR_LOGO: `${getModuleConfig('core', 'api_url')}/platform/sidebar-logo`,
-		PLATFORM_UPDATE_ME_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/update-me-preferences`,
-
 		// ROLES
 		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,
 		ROLES_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/delete/${encodeURIComponent(id)}`,
@@ -210,6 +217,9 @@ export const API_ROUTES = Object.freeze({
 		ROLES_LIST_MUNICIPALITIES: `${getModuleConfig('core', 'api_url')}/roles/list-municipalities`,
 		ROLES_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/lock/${encodeURIComponent(id)}`,
 		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
+
+		// SIDEBAR
+		SIDEBAR_LOGO: `${getModuleConfig('core', 'api_url')}/platform/sidebar/logo`,
 
 		// USERS
 		USERS_CREATE: `${getModuleConfig('core', 'api_url')}/users/create`,
@@ -325,22 +335,6 @@ export const API_ROUTES = Object.freeze({
 		STOPS_UPDATE_NAME: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update-name/${encodeURIComponent(id)}`,
 	},
 
-	locations: {
-		// BASE
-		BASE: `${getModuleConfig('locations', 'api_url')}`,
-
-		// LOCATIONS
-		LOCATIONS_DISTRICTS: `${getModuleConfig('locations', 'api_url')}/locations/districts`,
-		LOCATIONS_DISTRICTS_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/districts/${encodeURIComponent(id)}`,
-		LOCATIONS_LOCALITIES: `${getModuleConfig('locations', 'api_url')}/locations/localities`,
-		LOCATIONS_LOCALITIES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/localities/${encodeURIComponent(id)}`,
-		LOCATIONS_LOCATION: `${getModuleConfig('locations', 'api_url')}/locations/location`,
-		LOCATIONS_MUNICIPALITIES: `${getModuleConfig('locations', 'api_url')}/locations/municipalities`,
-		LOCATIONS_MUNICIPALITIES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/municipalities/${encodeURIComponent(id)}`,
-		LOCATIONS_PARISHES: `${getModuleConfig('locations', 'api_url')}/locations/parishes`,
-		LOCATIONS_PARISHES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/parishes/${encodeURIComponent(id)}`,
-	},
-
 	offer: {
 		// BASE
 		BASE: `${getModuleConfig('offer', 'api_url')}`,
@@ -370,6 +364,7 @@ export const API_ROUTES = Object.freeze({
 		PATTERNS_LIST: `${getModuleConfig('offer', 'api_url')}/patterns`,
 		PATTERNS_SHAPES: `${getModuleConfig('offer', 'api_url')}/patterns/shapes`,
 		PATTERNS_STOPS: `${getModuleConfig('offer', 'api_url')}/patterns/stops`,
+		PATTERNS_STOPS_DETAIL: (stopId: string) => `${getModuleConfig('offer', 'api_url')}/patterns/stops/${encodeURIComponent(stopId)}`,
 
 		// ROUTES
 		ROUTES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/routes/${encodeURIComponent(id)}`,
@@ -413,6 +408,7 @@ export const API_ROUTES = Object.freeze({
 		// GTFS-VALIDATIONS
 		GTFS_VALIDATIONS_CREATE: `${getModuleConfig('operation', 'api_url')}/gtfs-validations/create`,
 		GTFS_VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}`,
+		GTFS_VALIDATIONS_DETAIL_APPROVE: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/approve`,
 		GTFS_VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/file`,
 		GTFS_VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/file/download`,
 		GTFS_VALIDATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/lock`,
@@ -422,7 +418,6 @@ export const API_ROUTES = Object.freeze({
 		GTFS_VALIDATIONS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/gtfs-validations/list-agencies`,
 
 		// PLANS
-		PLANS_CREATE: `${getModuleConfig('operation', 'api_url')}/plans/create`,
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}`,
 		PLANS_DETAIL_APEX_CONFIG: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-config`,
 		PLANS_DETAIL_APEX_CONFIG_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-config/download`,
@@ -453,7 +448,7 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_APEX_VALIDATIONS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/apex-validations`,
 		RIDES_DETAIL_HASHED_SHAPE: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-shape`,
 		RIDES_DETAIL_HASHED_TRIP: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-trip`,
-		RIDES_DETAIL_REPROCESS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/reprocess`,
+		RIDES_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/processing-status`,
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/ride`,
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/vehicle-events`,
 		RIDES_FAVORITES: `${getModuleConfig('operation', 'api_url')}/rides/favorites`,

@@ -56,7 +56,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 
 	// For Stops
 	const allStopsParsedTxt = await cacheDb.get('hub:v1:network:stops');
-	const allStopsParsedJson: HubV1ApiStop[] = JSON.parse(allStopsParsedTxt);
+	const allStopsParsedJson: HubV1ApiStop[] = allStopsParsedTxt ? JSON.parse(allStopsParsedTxt) : [];
 	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item._id, item]));
 
 	// For Routes
@@ -148,7 +148,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 				//
 				// Get the stop data associated with the current stop_time
 
-				const stopParsedData: HubV1ApiStop = allStopsParsedMap.get(stopTimeRawData.stop_id);
+				const stopParsedData = allStopsParsedMap.get(stopTimeRawData.stop_id);
 
 				if (!stopParsedData) {
 					console.error(`Stop not found: ${stopTimeRawData.stop_id}`);
@@ -223,6 +223,11 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 
 			const routeRawData = allRoutesRawMap.get(tripRawData.route_id);
 
+			if (!routeRawData) {
+				console.error(`Route not found: ${tripRawData.route_id}`);
+				continue;
+			}
+
 			//
 			// Get the encoded polyline for the current shape ID
 
@@ -259,8 +264,10 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 
 			let currentPatternObject: HubV1ApiPattern;
 
-			if (parsedPatternsForThisPatternGroup.has(currentPatternVersionHash)) {
-				currentPatternObject = parsedPatternsForThisPatternGroup.get(currentPatternVersionHash);
+			const parsedPatternObject = parsedPatternsForThisPatternGroup.get(currentPatternVersionHash);
+
+			if (parsedPatternObject) {
+				currentPatternObject = parsedPatternObject;
 			} else {
 				currentPatternObject = {
 					_id: tripRawData.pattern_id,
@@ -337,8 +344,10 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 
 			let currentTripGroupObject: HubV1ApiPatternTrip;
 
-			if (allTripGroupsForThisPattern.has(currentTripGroupHash)) {
-				currentTripGroupObject = allTripGroupsForThisPattern.get(currentTripGroupHash);
+			const parsedTripGroupObject = allTripGroupsForThisPattern.get(currentTripGroupHash);
+
+			if (parsedTripGroupObject) {
+				currentTripGroupObject = parsedTripGroupObject;
 			} else {
 				currentTripGroupObject = {
 					schedule: stopTimesAsCompleteSchedule,
@@ -366,8 +375,10 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 
 			let currentRouteObject: HubV1ApiRoute;
 
-			if (allRoutesParsed.has(tripRawData.route_id)) {
-				currentRouteObject = allRoutesParsed.get(tripRawData.route_id);
+			const parsedRouteObject = allRoutesParsed.get(tripRawData.route_id);
+
+			if (parsedRouteObject) {
+				currentRouteObject = parsedRouteObject;
 			} else {
 				currentRouteObject = {
 					_id: routeRawData.route_id,
@@ -413,8 +424,10 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 
 			let currentLineObject: HubV1ApiLine;
 
-			if (allLinesParsed.has(routeRawData.route_short_name)) {
-				currentLineObject = allLinesParsed.get(routeRawData.route_short_name);
+			const parsedLineObject = allLinesParsed.get(routeRawData.route_short_name);
+
+			if (parsedLineObject) {
+				currentLineObject = parsedLineObject;
 			} else {
 				currentLineObject = {
 					_id: routeRawData.route_short_name,
@@ -459,7 +472,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 			//
 			// Save the updated objects back to the maps
 
-			allLinesParsed.set(routeRawData.route_short_name, currentLineObject);
+			allLinesParsed.set(routeRawData?.route_short_name, currentLineObject);
 			allRoutesParsed.set(routeRawData.route_id, currentRouteObject);
 			parsedPatternsForThisPatternGroup.set(currentPatternVersionHash, currentPatternObject);
 

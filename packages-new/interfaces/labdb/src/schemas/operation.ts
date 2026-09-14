@@ -1,7 +1,7 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { type HashedShape, type HashedTrip, type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisBase, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality, type RideMatch } from '@tmlmobilidade/go-types-operation';
+import { type HashedShape, type HashedTrip, type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisBase, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventCoverageGeo, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
@@ -83,6 +83,16 @@ export const rideAnalysisExpectedStartTimeTableSchema: ClickHouseTableSchema<Rid
 	...rideAnalysisBaseTableSchema,
 	observed_start_time: { type: 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)' },
 	observed_start_time_delta: { type: 'Nullable(Int16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisExpectedVehicleEventCoverageGeoTableSchema: ClickHouseTableSchema<RideAnalysisExpectedVehicleEventCoverageGeo> = {
+	...rideAnalysisBaseTableSchema,
+	stops_covered_absolute: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	stops_covered_percentage: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+	stops_not_covered_ids: { type: 'Array(LowCardinality(String))' },
+	stops_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 };
 
 /* * */
@@ -172,19 +182,6 @@ export const rideAnalysisTransactionSequentialityTableSchema: ClickHouseTableSch
 
 /* * */
 
-export const rideMatchesTableSchema: ClickHouseTableSchema<RideMatch> = {
-	_id: { type: 'String' },
-	agency_id: { type: 'LowCardinality(String)' },
-	operational_dates: { type: 'Array(UInt32) CODEC(ZSTD)' },
-	processing_status: { type: 'LowCardinality(String)' },
-	trip_id: { type: 'LowCardinality(String)' },
-	updated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	window_end: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	window_start: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-};
-
-/* * */
-
 export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	_id: { type: 'String' },
 	agency_code: { type: 'LowCardinality(String)' },
@@ -203,6 +200,7 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	end_time_scheduled: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	extension_observed: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
 	extension_scheduled: { type: 'UInt32 CODEC(T64, ZSTD)' },
+	hash: { type: 'String' },
 	hashed_shape_id: { type: 'LowCardinality(String)' },
 	hashed_trip_id: { type: 'LowCardinality(String)' },
 	headsign: { type: 'LowCardinality(String)' },

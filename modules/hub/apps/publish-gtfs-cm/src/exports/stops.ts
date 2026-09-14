@@ -61,8 +61,8 @@ export async function exportStopsFile(context: ExportGtfsContext, agencyIds: str
 
 		const matchingDistrictName = allDistrictsMap.get(stopData.district_id);
 		const matchingMunicipalityName = allMunicipalitiesMap.get(stopData.municipality_id);
-		const matchingParishName = allParishesMap.get(stopData.parish_id);
-		const matchingLocalityName = allLocalitiesMap.get(stopData.locality_id);
+		const matchingParishName = stopData.parish_id ? allParishesMap.get(stopData.parish_id) : '-';
+		const matchingLocalityName = stopData.locality_id ? allLocalitiesMap.get(stopData.locality_id) : '-';
 
 		const parsedStopsRow: HubV1GtfsStopsInput = {
 			district_id: stopData.district_id,
@@ -83,7 +83,7 @@ export async function exportStopsFile(context: ExportGtfsContext, agencyIds: str
 			stop_lat: stopData.latitude,
 			stop_lon: stopData.longitude,
 			stop_name: stopData.name,
-			tts_stop_name: stopData.tts_name,
+			tts_stop_name: stopData.tts_name ?? '-',
 			wheelchair_boarding: '0',
 		};
 

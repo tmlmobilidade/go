@@ -4,6 +4,7 @@ import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { RidesListFilterSearch } from '../filters/RidesListFilterSearch';
+import { RidesListHeaderMenu } from '../RidesListHeaderMenu';
 import { useRidesListData } from '../use-rides-list-data';
 
 /* * */
@@ -27,6 +28,7 @@ export function RidesListHeader() {
 			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer shrink />
 			<RidesListFilterSearch />
+			<RidesListHeaderMenu />
 		</Toolbar>
 	);
 }

@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const BaseDocumentSchema = z.object({
 	_id: z.string(),
 	created_at: UnixMillisecondsSchema,
-	created_by: z.string().nullable().default(null),
+	created_by: z.string(),
 	is_locked: z.boolean().default(false),
 	updated_at: UnixMillisecondsSchema,
 	updated_by: z.string().optional(),

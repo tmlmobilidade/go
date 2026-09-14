@@ -1,7 +1,7 @@
 /* * */
 
 import { ClickHouseClient, ClickHouseDatabaseClient, queryEachStatementFromFile, queryFromFile, queryFromString } from '@tmlmobilidade/go-clients-clickhouse';
-import { asyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
 import { OperationDatabase } from './databases/operation.js';
 import { PerformanceDatabase } from './databases/performance.js';
@@ -125,7 +125,7 @@ class LabDbClass {
 	 *   end_date: '2024-12-31',
 	 * });
 	*/
-	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
+	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string | string[]>): ReturnType<typeof queryFromFile<T>> {
 		return await queryFromFile<T>(this.clickhouseClient, filePath, params);
 	}
 
