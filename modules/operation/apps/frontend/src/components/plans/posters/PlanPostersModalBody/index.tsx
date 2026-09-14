@@ -3,8 +3,9 @@
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
 import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Divider, Section, SegmentedControl, Select, TagFilter } from '@tmlmobilidade/ui';
+import { Divider, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -24,6 +25,7 @@ export function PlanPostersExportModalBody() {
 	// A. Setup variables
 
 	const context = usePlansExportPdfsContext();
+	const { t } = useTranslation();
 
 	const plansOptions = useMemo(() => context.data.plans
 		.filter(plan => plan.agency_id === context.data.agencyId)
@@ -97,20 +99,26 @@ export function PlanPostersExportModalBody() {
 					)}
 
 					{context.data.contentMode === 'lines' && (
-						<TagFilter
-							active={context.data.lineIds.length > 0}
+						<TagsInput
+							description={t('shared:filters.TagFilter.description')}
 							label={context.data.filterMode === 'include' ? 'IDs das linhas a exportar' : 'IDs das linhas a excluir'}
 							onChange={context.actions.setLineIds}
+							placeholder={t('shared:filters.TagFilter.placeholder')}
+							splitChars={[' ', ',', ';', '|']}
 							value={context.data.lineIds}
+							w="100%"
 						/>
 					)}
 
 					{context.data.contentMode === 'stops' && (
-						<TagFilter
-							active={context.data.stopIds.length > 0}
+						<TagsInput
+							description={t('shared:filters.TagFilter.description')}
 							label={context.data.filterMode === 'include' ? 'IDs das paragens a exportar' : 'IDs das paragens a excluir'}
 							onChange={context.actions.setStopIds}
+							placeholder={t('shared:filters.TagFilter.placeholder')}
+							splitChars={[' ', ',', ';', '|']}
 							value={context.data.stopIds}
+							w="100%"
 						/>
 					)}
 
