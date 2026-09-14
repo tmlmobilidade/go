@@ -1,8 +1,10 @@
 /* * */
 
-import parametersConfig from '@/parameters.json' with { type: 'json' };
-import { type ExportToHitouchConfig } from '@/types.js';
 import { Logger } from '@tmlmobilidade/logger';
+
+import parametersConfig from '../parameters.json' with { type: 'json' };
+import { type ExportToHitouchConfig } from '../types.js';
+
 import fs from 'node:fs';
 import path from 'node:path';
 
