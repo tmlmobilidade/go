@@ -22,31 +22,15 @@ export async function removeOrphanAnalysesTask() {
 		.map(table => `operation.ride_analysis_${table}`);
 
 	await runWithConcurrency(rideAnalysisTables, rideAnalysisTables.length, async (table) => {
-		//
-
-		const foundOperationalDates = await labDb.queryFromString<{ operational_date: number }>(`
-			SELECT DISTINCT operational_date
-			FROM ${table}
-			ORDER BY operational_date ASC
-		`);
-
-		Logger.info({ message: `Found ${foundOperationalDates.length} operational dates for ${table}` });
-
-		await runWithConcurrency(foundOperationalDates, 10, async (item) => {
-			await labDb.command({
-				query: `
-					ALTER TABLE ${table}
-					DELETE WHERE operational_date = ${item.operational_date}
-					AND ride_id NOT IN (
-						SELECT _id
-						FROM operation.rides
-						WHERE operational_date = ${item.operational_date}
-					);
-				`,
-			});
+		await labDb.command({
+			query: `
+				ALTER TABLE ${table}
+				DELETE WHERE ride_id NOT IN (
+					SELECT _id
+					FROM operation.rides
+				);
+			`,
 		});
-
-		Logger.info({ message: `Deleted orphan Ride Analyses from ${table}.` });
 	});
 
 	Logger.success(`Deleted orphan Ride Analyses. (${timer.get()})`);
