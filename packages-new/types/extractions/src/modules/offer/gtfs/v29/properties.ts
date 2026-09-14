@@ -1,6 +1,5 @@
 /* * */
 
-import { LinesModeSchema } from '@tmlmobilidade/go-types-offer';
 import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -22,7 +21,7 @@ export const OfferGtfsV29ExtractionPropertiesSchema = z.object({
 
 	lines_include: z.array(z.string()).default([]),
 
-	lines_mode: LinesModeSchema.default('all'),
+	lines_mode: z.enum(['all', 'exclude', 'include']).default('all'),
 
 	numeric_calendar_codes: z.boolean().default(false),
 
