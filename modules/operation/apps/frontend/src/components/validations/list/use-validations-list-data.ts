@@ -50,7 +50,7 @@ export function useValidationsListData(): UseValidationsListDataReturnType {
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<ValidationListItem[]>>([API_ROUTES.operation.GTFS_VALIDATIONS_LIST, query], {
 		fetcher: async ([url, query]) => await fetchApiData<ValidationListItem[]>({ body: query, method: 'POST', url }),
-		refreshInterval: 10_000,
+		refreshInterval: 30_000, // 30 seconds
 	});
 
 	const searchResultData = useSearch<ValidationListItem>({

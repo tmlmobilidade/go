@@ -43,7 +43,7 @@ export function useAlertsLinesData(): UseAlertsLinesDataReturnType {
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsLinesItem[]>>([API_ROUTES.operation.ALERTS_LIST_LINES, query], {
 		fetcher: async ([url, query]) => await fetchApiData<AlertsLinesItem[]>({ body: query, method: 'POST', url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 300_000, // 5 minutes
 	});
 
 	//
