@@ -25,18 +25,21 @@ export async function cleanupOrphanRidesForPlan(planId: string, savedRideIds: Se
 
 	const ridesCollection = await goDb.operation.rides.getCollection();
 
-	const existingRideIdsStream = ridesCollection.find({ plan_id: planId }).project({ _id: 1 }).stream();
+	const existingRideIdsStream: AsyncIterable<{ _id: string }> = ridesCollection
+		.find({ plan_id: planId })
+		.project({ _id: 1 })
+		.stream();
 
 	//
 	// Iterate over the stream and collect the ride IDs
 
 	const staleRideIds = new Set<string>();
 
-	for await (const rideId of existingRideIdsStream) {
+	for await (const item of existingRideIdsStream) {
 		// Skip if this ride is still in use
-		if (savedRideIds.has(rideId)) continue;
+		if (savedRideIds.has(item._id)) continue;
 		// Mark it as stale otherwise
-		staleRideIds.add(rideId);
+		staleRideIds.add(item._id);
 	}
 
 	Logger.info({ message: `Will delete ${staleRideIds.size} stale rides for plan "${planId}". (${timer.get()})` });
