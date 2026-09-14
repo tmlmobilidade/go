@@ -3,11 +3,8 @@
 import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/posters/PlanPostersModal/constants';
 import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agencies-data';
 import { usePlansExportListData } from '@/components/plans/shared/use-plans-export-list-data';
-import { usePlansLines } from '@/components/plans/shared/use-plans-lines-data';
-import { usePlansStops } from '@/components/plans/shared/use-plans-stops-data';
 import { type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type CreateFileExportDto, type PlanPostersContentMode, type PlanPostersExportProperties, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { closeModal, type SelectDataItem, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -31,11 +28,9 @@ interface PlansExportPdfsContextState {
 		contentMode: PlanPostersContentMode
 		filterMode: PlanPostersFilterMode
 		lineIds: string[]
-		lineOptions: SelectDataItem[]
 		planId: null | string
 		plans: PlansListItem[]
 		stopIds: string[]
-		stopOptions: SelectDataItem[]
 	}
 	flags: {
 		canSave: boolean
@@ -79,22 +74,6 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	const [loading, setLoading] = useState(false);
 
 	const { options: agencyOptions } = usePlansAgenciesData();
-
-	const plansLines = usePlansLines(agencyId && contentMode === 'lines' ? {
-		agency_id: agencyId,
-		permissions: {
-			actions: [PermissionCatalog.all.plans.actions.generate_pdf_posters],
-			scope: PermissionCatalog.all.plans.scope,
-		},
-	} : null);
-
-	const plansStops = usePlansStops(agencyId && contentMode === 'stops' ? {
-		agency_id: agencyId,
-		permissions: {
-			actions: [PermissionCatalog.all.plans.actions.generate_pdf_posters],
-			scope: PermissionCatalog.all.plans.scope,
-		},
-	} : null);
 
 	const plansData = usePlansExportListData(agencyId);
 
@@ -210,18 +189,16 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 			contentMode,
 			filterMode,
 			lineIds,
-			lineOptions: plansLines.options,
 			planId,
 			plans: plansData.data,
 			stopIds,
-			stopOptions: plansStops.options,
 		},
 		flags: {
 			canSave,
-			has_error: !!plansData.error || !!plansLines.error || !!plansStops.error,
+			has_error: !!plansData.error,
 			loading,
 		},
-	}), [agencyId, agencyOptions, canSave, canvasProfile, contentMode, exportPosters, filterMode, lineIds, loading, planId, plansData.data, plansData.error, plansLines.error, plansLines.options, plansStops.error, plansStops.options, selectAgencyId, selectContentMode, selectFilterMode, selectPlanId, stopIds]);
+	}), [agencyId, agencyOptions, canSave, canvasProfile, contentMode, exportPosters, filterMode, lineIds, loading, planId, plansData.data, plansData.error, selectAgencyId, selectContentMode, selectFilterMode, selectPlanId, stopIds]);
 
 	//
 	// E. Render components

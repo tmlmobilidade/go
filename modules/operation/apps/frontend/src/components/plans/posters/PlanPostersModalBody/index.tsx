@@ -3,7 +3,7 @@
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
 import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Divider, MultiSelect, Section, SegmentedControl, Select } from '@tmlmobilidade/ui';
+import { Divider, Section, SegmentedControl, Select, TagFilter } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -96,28 +96,21 @@ export function PlanPostersExportModalBody() {
 						/>
 					)}
 
-					{/* TODO: Check if make sense to have this filter */}
-					{/* {context.data.contentMode === 'lines' && (
-						<MultiSelect
-							key={`${context.data.agencyId}-lines-${context.data.filterMode}`}
-							data={context.data.lineOptions}
-							description={context.data.filterMode === 'include' ? 'Apenas estas linhas serão exportadas.' : 'Todas as linhas serão exportadas, exceto estas.'}
+					{context.data.contentMode === 'lines' && (
+						<TagFilter
+							active={context.data.lineIds.length > 0}
+							label={context.data.filterMode === 'include' ? 'IDs das linhas a exportar' : 'IDs das linhas a excluir'}
 							onChange={context.actions.setLineIds}
-							placeholder="Selecionar linhas"
 							value={context.data.lineIds}
-							w="100%"
 						/>
-					)} */}
+					)}
 
 					{context.data.contentMode === 'stops' && (
-						<MultiSelect
-							key={`${context.data.agencyId}-stops-${context.data.filterMode}`}
-							data={context.data.stopOptions}
-							description={context.data.filterMode === 'include' ? 'Apenas estas paragens serão exportadas.' : 'Todas as paragens serão exportadas, exceto estas.'}
+						<TagFilter
+							active={context.data.stopIds.length > 0}
+							label={context.data.filterMode === 'include' ? 'IDs das paragens a exportar' : 'IDs das paragens a excluir'}
 							onChange={context.actions.setStopIds}
-							placeholder="Selecionar paragens"
 							value={context.data.stopIds}
-							w="100%"
 						/>
 					)}
 
