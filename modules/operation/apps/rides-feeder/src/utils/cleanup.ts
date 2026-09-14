@@ -23,7 +23,7 @@ export async function cleanupOrphanRidesForPlan(planId: string, savedRideIds: Se
 	//
 	// Setup a stream for all Ride IDs that are in use by Rides
 
-	const existingRideIds = await goDb.operation.rides.distinct('_id', { planId: planId });
+	const existingRideIds = await goDb.operation.rides.distinct('_id', { plan_id: planId });
 	const staleRideIds = new Set<string>();
 
 	for (const rideId of existingRideIds) {
