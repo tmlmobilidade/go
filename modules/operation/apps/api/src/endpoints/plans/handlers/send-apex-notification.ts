@@ -47,7 +47,7 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 
 	const agencyData = await goDb.core.agencies.findById(foundPlan.agency_id);
 
-	if (!agencyData.plans.apex_notification_emails.length) {
+	if (!agencyData?.plans.apex_notification_emails?.length) {
 		return sendErrorApiResponse(reply, {
 			error: 'No APEX contact emails found for this agency.',
 			status_code: '400',
@@ -57,9 +57,16 @@ export async function sendApexNotificationHandler(request: FastifyRequest<{ Para
 	//
 	// Fetch the APEX file data
 
+	if (!foundPlan.attachments.apex_config) {
+		return sendErrorApiResponse(reply, {
+			error: 'APEX config not found for this plan',
+			status_code: '404',
+		});
+	}
+
 	const foundAttachmentData = await storageProvider.findById(foundPlan.attachments.apex_config);
 
-	if (!foundAttachmentData) {
+	if (!foundAttachmentData?.url) {
 		return sendErrorApiResponse(reply, {
 			error: 'APEX config not found for this plan',
 			status_code: '404',

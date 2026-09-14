@@ -4,7 +4,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type CreateFileExportDto, type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
@@ -44,7 +44,6 @@ export const SamsExportContextProvider = ({ children, favoritesEnabled, initialE
 	//
 	// A. Setup variables
 
-	const exports = useExportsContext();
 	const [loading, setLoading] = useState(false);
 
 	//
@@ -97,13 +96,7 @@ export const SamsExportContextProvider = ({ children, favoritesEnabled, initialE
 		} finally {
 			setLoading(false);
 		}
-	}, [
-		exports.actions,
-		favoritesEnabled,
-		initialExportProperties,
-		loading,
-		samIds,
-	]);
+	}, [favoritesEnabled, initialExportProperties, loading, samIds]);
 
 	//
 	// C. Define context value

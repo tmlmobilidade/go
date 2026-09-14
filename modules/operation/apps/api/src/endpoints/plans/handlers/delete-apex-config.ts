@@ -45,6 +45,13 @@ export async function deleteApexConfigHandler(request: FastifyRequest<{ Params: 
 	//
 	// Fetch the attachment associated with the plan
 
+	if (!foundPlan.attachments.apex_config) {
+		return sendErrorApiResponse(reply, {
+			error: 'Plan APEX configuration attachment not found',
+			status_code: '404',
+		});
+	}
+
 	const foundAttachmentData = await storageProvider.findById(foundPlan.attachments.apex_config);
 
 	if (!foundAttachmentData) {

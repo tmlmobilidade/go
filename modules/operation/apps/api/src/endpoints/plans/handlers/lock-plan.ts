@@ -46,19 +46,14 @@ export async function lockPlanHandler(request: FastifyRequest<{ Params: { id: st
 	//
 	// If authorized, toggle the lock status of the plan
 
-	await goDb.operation.plans.toggleLockById(request.params.id);
+	const updateResult = await goDb.operation.plans.updateOne({ _id: request.params.id }, { is_locked: !planData.is_locked });
 
-	const foundPlan = await goDb.operation.plans.findById(request.params.id);
-
-	if (!foundPlan) {
+	if (!updateResult) {
 		return sendErrorApiResponse(reply, {
-			error: `Plan with ID ${request.params.id} not found`,
-			status_code: '404',
+			error: 'Failed to toggle lock status for plan',
+			status_code: '500',
 		});
 	}
 
-	//
-	// Return the success response
-
-	return sendSuccessApiResponse(reply, foundPlan);
+	return sendSuccessApiResponse(reply, updateResult);
 }

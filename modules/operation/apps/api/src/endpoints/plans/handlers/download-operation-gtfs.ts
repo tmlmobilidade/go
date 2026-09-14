@@ -46,6 +46,13 @@ export async function downloadOperationGtfsHandler(request: FastifyRequest<{ Par
 	//
 	// Fetch the attachment associated with the plan
 
+	if (!planData.attachments.operation_gtfs) {
+		return sendErrorApiResponse(reply, {
+			error: 'Plan operation GTFS attachment not found',
+			status_code: '404',
+		});
+	}
+
 	const foundAttachmentData = await storageProvider.findById(planData.attachments.operation_gtfs);
 
 	if (!foundAttachmentData) {
@@ -57,6 +64,13 @@ export async function downloadOperationGtfsHandler(request: FastifyRequest<{ Par
 
 	//
 	// Stream the attachment in the given URL to the client
+
+	if (!foundAttachmentData?.url) {
+		return sendErrorApiResponse(reply, {
+			error: 'Plan operation GTFS attachment not found',
+			status_code: '404',
+		});
+	}
 
 	const storageServiceResponse = await fetch(foundAttachmentData.url);
 

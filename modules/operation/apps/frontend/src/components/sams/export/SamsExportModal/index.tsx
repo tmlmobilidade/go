@@ -9,7 +9,7 @@ import { IconFileDownload } from '@tabler/icons-react';
 import { type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { type SystemStatus, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Button, CloseButton, closeModal, Divider, ExportsContextProvider, Label, MeContextProvider, openModal, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, closeModal, Divider, Label, MeContextProvider, openModal, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -104,16 +104,14 @@ export const openSamExportModal = (payload: SamsExportModalPayload) => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<ExportsContextProvider>
-					<SamsExportContextProvider
-						favoritesEnabled={normalizedPayload.favoritesEnabled}
-						initialExportProperties={normalizedPayload.exportProperties}
-						initialSummaryFilters={normalizedPayload.summaryFilters}
-						samIds={normalizedPayload.samIds}
-					>
-						<SamsExportModal />
-					</SamsExportContextProvider>
-				</ExportsContextProvider>
+				<SamsExportContextProvider
+					favoritesEnabled={normalizedPayload.favoritesEnabled}
+					initialExportProperties={normalizedPayload.exportProperties}
+					initialSummaryFilters={normalizedPayload.summaryFilters}
+					samIds={normalizedPayload.samIds}
+				>
+					<SamsExportModal />
+				</SamsExportContextProvider>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,

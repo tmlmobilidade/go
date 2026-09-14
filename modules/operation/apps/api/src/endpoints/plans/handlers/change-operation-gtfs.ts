@@ -62,28 +62,34 @@ export async function changeOperationGtfsHandler(request: FastifyRequest<{ Body:
 	// - plan update fails → onSuccess throws → saga compensates the copy
 	// - old-file delete fails → onSuccess throws → onRollback restores plan → saga compensates the copy
 
-	await storageProvider.copy(validationData.file_id, 'plans', planData._id, {
-		onSuccess: async (_, result) => {
-			// Get a new hash for this plan
-			const hashValue = await getPlanHash({
-				activeFrom: planData.active_from,
-				activeUntil: planData.active_until,
-				operationGtfsAttachmentId: planData.attachments.operation_gtfs,
-				operationGtfsNormalizedAttachmentId: planData.attachments.operation_gtfs_normalized,
-				planId: planData._id,
-			});
-			// Update the plan in the database
-			const plansCollection = await goDb.operation.plans.getCollection();
-			await plansCollection.updateOne({ _id: planData._id }, {
-				$set: {
-					'attachments.operation_gtfs': result._id,
-					'hash': hashValue,
-				},
-			});
-			// Delete the old operation GTFS file
-			await storageProvider.delete(planData.attachments.operation_gtfs);
+	const copyResult = await storageProvider.copy(validationData.file_id, 'plans', planData._id);
+
+	// Get a new hash for this plan
+	const hashValue = await getPlanHash({
+		activeFrom: planData.active_from,
+		activeUntil: planData.active_until,
+		operationGtfsAttachmentId: copyResult._id,
+		operationGtfsNormalizedAttachmentId: null,
+		planId: planData._id,
+	});
+
+	//
+	// Update the plan in the database
+
+	const plansCollection = await goDb.operation.plans.getCollection();
+
+	await plansCollection.updateOne({ _id: planData._id }, {
+		$set: {
+			'attachments.operation_gtfs': copyResult._id,
+			'hash': hashValue,
 		},
 	});
+
+	// Delete the old operation GTFS file
+
+	if (planData.attachments.operation_gtfs) {
+		await storageProvider.delete(planData.attachments.operation_gtfs);
+	}
 
 	//
 	// Send the updated plan data as the response

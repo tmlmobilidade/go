@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RideAcceptance, type UpdateRideAcceptanceDto } from '@tmlmobilidade/go-types-operation';
 
@@ -11,6 +11,13 @@ import { type RideAcceptance, type UpdateRideAcceptanceDto } from '@tmlmobilidad
 export async function lockRideAcceptance(request: FastifyRequest<{ Body: { is_locked: UpdateRideAcceptanceDto['is_locked'] }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
 	const oldJustificationData = await goDb.operation.rideAcceptances.findById(request.params.id);
+
+	if (!oldJustificationData) {
+		return sendErrorApiResponse(reply, {
+			error: 'Ride Acceptance not found',
+			status_code: '404',
+		});
+	}
 
 	if (oldJustificationData.is_locked === request.body.is_locked) {
 		return reply.send({
