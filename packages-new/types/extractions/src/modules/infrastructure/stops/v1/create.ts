@@ -3,8 +3,8 @@
 import { z } from 'zod';
 
 import { ExtractionBaseCreateSchema } from '../../../../shared/base-create.js';
-import { InfrastructureStopsV1ExtractionVersionSchema } from '../../index.js';
 import { InfrastructureStopsV1ExtractionPropertiesSchema } from './properties.js';
+import { InfrastructureStopsV1ExtractionVersionSchema } from './version.js';
 
 /* * */
 
