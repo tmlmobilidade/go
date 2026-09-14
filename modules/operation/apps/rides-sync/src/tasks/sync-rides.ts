@@ -78,7 +78,7 @@ export async function syncRides(timeChunk: PerformInTimeChunksItem) {
 					'hash IN $1',
 					{ 1: chunk },
 				);
-			}, 1_000);
+			}, 250);
 		},
 
 		distinctDestinationDbFn: async () => {
