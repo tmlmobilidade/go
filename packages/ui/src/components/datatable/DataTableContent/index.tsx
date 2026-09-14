@@ -18,7 +18,7 @@ type DataTableContentProps<T> = Omit<DataTableProps<T>, 'records'>;
 
 /* * */
 
-export function DataTableContent<T>({ columns, isLoading, onRowClick, onRowContextMenu, onRowDoubleClick, rowIdAccessor, selectedId, selectedIds, withTopBorder }: DataTableContentProps<T>) {
+export function DataTableContent<T>({ columns, isLoading, onRowClick, onRowContextMenu, onRowDoubleClick, onRowMouseEnter, onRowMouseLeave, rowIdAccessor, selectedId, selectedIds, withTopBorder }: DataTableContentProps<T>) {
 	//
 
 	//
@@ -62,6 +62,8 @@ export function DataTableContent<T>({ columns, isLoading, onRowClick, onRowConte
 						onRowClick={onRowClick}
 						onRowContextMenu={onRowContextMenu}
 						onRowDoubleClick={onRowDoubleClick}
+						onRowMouseEnter={onRowMouseEnter}
+						onRowMouseLeave={onRowMouseLeave}
 						record={record}
 					/>
 				)}

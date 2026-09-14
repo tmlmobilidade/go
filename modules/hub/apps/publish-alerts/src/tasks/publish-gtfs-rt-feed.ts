@@ -43,7 +43,7 @@ export async function publishGtfsRtFeed() {
 
 	const transformedItems = await Promise.all(findResult.map(transformAlertIntoGtfsRtEntity));
 
-	const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
+	const transformResult: GtfsRtFeedEntity[] = transformedItems.filter((item): item is GtfsRtFeedEntity => item !== undefined);
 
 	Logger.info({ message: `Transformed ${transformResult.length} alerts into GTFS-RT feed entities (${globalTimer.get()})` });
 

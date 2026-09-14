@@ -32,7 +32,7 @@ export function useSidebarHeaderLogo(): UseSidebarHeaderLogoReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR([API_ROUTES.core.PLATFORM_SIDEBAR_LOGO, currentThemeMode], {
+	const { data, error, isLoading, isValidating, mutate } = useSWR([API_ROUTES.core.SIDEBAR_LOGO, currentThemeMode], {
 		fetcher: async ([url, themeMode]) => await fetchApiData<SidebarLogoPlatformResponse>({ body: { theme_mode: themeMode }, method: 'POST', url }),
 		refreshInterval: 600_000, // 10 minutes
 	});

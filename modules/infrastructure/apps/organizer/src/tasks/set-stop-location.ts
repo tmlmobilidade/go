@@ -57,10 +57,10 @@ export async function setStopLocationTask() {
 					}
 
 					await goDb.infrastructure.stops.updateById(stopData._id, {
-						district_id: matchingLocation.district?._id || null,
-						locality_id: matchingLocation.locality?._id || null,
+						district_id: matchingLocation.district?._id ?? undefined,
+						locality_id: matchingLocation.locality?._id ?? undefined,
 						municipality_id: matchingLocation.municipality._id,
-						parish_id: matchingLocation.parish?._id || null,
+						parish_id: matchingLocation.parish?._id ?? undefined,
 					});
 
 					console.log(`[${stopData._id}] Location set for coordinates [${stopData.latitude}, ${stopData.longitude}]: district [${matchingLocation.district?._id}] ${matchingLocation.district?.name} | municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name} | parish [${matchingLocation.parish?._id}] ${matchingLocation.parish?.name} | locality [${matchingLocation.locality?._id}] ${matchingLocation.locality?.name}`);

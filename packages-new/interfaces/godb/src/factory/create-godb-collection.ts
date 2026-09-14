@@ -17,8 +17,8 @@ import { getCollection } from './methods/get-collection.js';
 import { insertMany } from './methods/insert-many.js';
 import { insertOneUnsafe } from './methods/insert-one-unsafe.js';
 import { insertOne } from './methods/insert-one.js';
-import { toggleLockById } from './methods/toggle-lock-by-id.js';
 import { updateById } from './methods/update-by-id.js';
+import { updateOne } from './methods/update-one.js';
 import { upsertManyUnsafe } from './methods/upsert-many-unsafe.js';
 import { type GoDbCollectionContext } from './types/godb-collection-context.type.js';
 import { type GoDbCollection } from './types/godb-collection.type.js';
@@ -84,18 +84,12 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		insertOneUnsafe: (doc, clientSession) => insertOneUnsafe<T>(context, doc, clientSession),
 
-		upsertManyUnsafe: (docs, options) => upsertManyUnsafe(context, docs, options),
-
-		// isLocked: filter => isLocked(context, filter),
-
-		// isLockedById: id => isLockedById(context, id),
-
-		toggleLockById: (_id, clientSession) => toggleLockById<T>(context, _id, clientSession),
-
 		updateById: (_id, updateFields, clientSession) => updateById<T>(context, _id, updateFields, clientSession),
+
+		upsertManyUnsafe: (docs, options) => upsertManyUnsafe(context, docs, options),
 
 		// updateMany: (filter, updateFields, options) => updateMany(context, filter, updateFields, options),
 
-		// updateOne: (filter, updateFields, options) => updateOne(context, filter, updateFields, options),
+		updateOne: (filter, updateFields, clientSession) => updateOne<T>(context, filter, updateFields, clientSession),
 	};
 }

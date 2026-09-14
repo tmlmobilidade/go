@@ -25,7 +25,7 @@ type AnySimplifiedApexDocument =
  * which will trigger the necessary reprocessing in the system.
  * @param data An array of SimplifiedApex documents that have been inserted or updated.
  */
-export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
+export async function setRidesAsWaiting(data?: AnySimplifiedApexDocument[]) {
 	try {
 		//
 
@@ -43,7 +43,7 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 		const updateRidesOps = data
 			// Filter out documents that don't have a trip_id,
 			// as they can't be associated with a Ride.
-			.filter(item => !!item.trip_id)
+			.filter(item => item.trip_id)
 			// Map each document to a query that will match
 			// Rides that are affected by the new data.
 			.map((item: AnySimplifiedApexDocument) => {
@@ -56,7 +56,7 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 						$gte: standardWindowInterval.start,
 						$lte: standardWindowInterval.end,
 					},
-					trip_id: item.trip_id,
+					trip_id: item.trip_id ?? undefined,
 				};
 			});
 

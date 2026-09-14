@@ -253,7 +253,7 @@ export class HolidaysController {
 		}
 
 		// If authorized, toggle the lock status of the holiday
-		await goDb.offer.holidays.toggleLockById(request.params.id);
+		await goDb.offer.holidays.updateOne({ _id: request.params.id }, { is_locked: !holidayData?.is_locked });
 		const foundHoliday = await goDb.offer.holidays.findById(request.params.id);
 		if (!foundHoliday) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');

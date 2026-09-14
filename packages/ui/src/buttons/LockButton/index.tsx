@@ -60,11 +60,10 @@ export function LockButton({ isDisabled, isLoading, isLocked, onClick }: LockBut
 			withArrow
 		>
 			<ActionIcon
-				color="var(--color-primary)"
 				disabled={isDisabled}
 				loading={isLoading}
 				onClick={handleClick}
-				variant="subtle"
+				variant="default"
 			>
 				<IconLockOpen2 />
 			</ActionIcon>

@@ -89,9 +89,9 @@ class CacheDbClass {
 	 * or `null` if not found.
 	 * @throws Will throw an error if the retrieval process fails.
 	 */
-	public async getNew<T>(key: CacheDbKey): Promise<CachedData<T> | null> {
+	public async getNew<T>(key: CacheDbKey): Promise<CachedData<T> | undefined> {
 		const result = await this.client.get(key);
-		if (typeof result !== 'string') return null;
+		if (typeof result !== 'string') return;
 		return JSON.parse(result) as CachedData<T>;
 	}
 

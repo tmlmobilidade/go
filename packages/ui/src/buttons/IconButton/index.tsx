@@ -24,12 +24,12 @@ type IconButtonProps = (ButtonProps | LinkProps) & {
 	isReadOnly?: boolean
 	tooltip?: string
 	tooltipOrienation?: FloatingPosition
-	variant?: 'danger' | 'disabled' | 'muted' | 'primary' | 'secondary' | 'subtle'
+	variant?: 'danger' | 'default' | 'disabled' | 'muted' | 'primary' | 'secondary' | 'subtle'
 };
 
 /* * */
 
-export function IconButton({ color, icon, isDisabled, isLoading, isReadOnly, tooltip, tooltipOrienation, variant = 'subtle', ...props }: IconButtonProps) {
+export function IconButton({ color, icon, isDisabled, isLoading, isReadOnly, tooltip, tooltipOrienation, variant = 'default', ...props }: IconButtonProps) {
 	//
 
 	//
@@ -57,7 +57,7 @@ export function IconButton({ color, icon, isDisabled, isLoading, isReadOnly, too
 	const renderButton = () => {
 		return (
 			<ActionIcon
-				color={color ?? 'var(--color-primary)'}
+				color={color}
 				component={isLink ? 'a' : 'button'}
 				disabled={isDisabled}
 				href={isLink ? (props as LinkProps).href : undefined}
