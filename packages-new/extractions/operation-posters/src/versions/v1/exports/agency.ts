@@ -6,11 +6,11 @@ import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
-import { type ExportToHitouchConfig } from '../types.js';
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 
 /* * */
 
-export async function exportAgencyFile(planData: Plan, exportConfig: ExportToHitouchConfig) {
+export async function exportAgencyFile(planData: Plan, exportConfig: ExportHitouchConfig) {
 	//
 	// Export agency file
 

@@ -5,12 +5,12 @@ import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
-import { type ExportToHitouchConfig } from '../types.js';
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportTripsFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig, routeIds: ReadonlyMap<string, string>) {
+export async function exportTripsFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig, routeIds: ReadonlyMap<string, string>) {
 	//
 	// Export trips.txt
 

@@ -11,15 +11,19 @@ import { CsvWriter } from '@tmlmobilidade/writers';
 
 import { DAY_TYPES } from '../day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '../get-names.js';
-import { type CalendarAssignmentsExt, type CalendarExt, type DayTypeConfig, type ExportToHitouchConfig, type GtfsDate } from '../types.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
+import { type CalendarAssignmentsExt } from '../types/CalendarAssignmentsExt.js';
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
+import { type CalendarExt } from '../types/CalendarExt.js';
+import { type DayTypeConfig } from '../types/dayTypeConfig.js';
+import { type GtfsDate } from '../types/GtfsDate.js';
 
 import fs from 'node:fs';
 import Papa from 'papaparse';
 
 /* * */
 
-export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
+export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
 	//
 
 	//

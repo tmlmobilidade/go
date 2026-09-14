@@ -6,7 +6,8 @@ import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
-import { type ExportToHitouchConfig, type RoutesToCanvasExt } from '../types.js';
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
+import { type RoutesToCanvasExt } from '../types/RoutesToCanvasExt.js';
 import { getPosterRouteId } from '../utils/get-poster-route-id.js';
 
 import fs from 'node:fs';
@@ -14,7 +15,7 @@ import Papa from 'papaparse';
 
 /* * */
 
-export async function exportRoutesFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig): Promise<Map<string, string>> {
+export async function exportRoutesFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig): Promise<Map<string, string>> {
 	//
 	// Export routes.txt
 

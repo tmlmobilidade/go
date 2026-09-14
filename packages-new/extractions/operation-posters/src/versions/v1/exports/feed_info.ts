@@ -4,11 +4,11 @@ import { type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
-import { type ExportToHitouchConfig } from '../types.js';
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 
 /* * */
 
-export async function exportFeedInfoFile(feedInfo: GtfsFeedInfo, exportConfig: ExportToHitouchConfig) {
+export async function exportFeedInfoFile(feedInfo: GtfsFeedInfo, exportConfig: ExportHitouchConfig) {
 	//
 	// Export feed_info.txt file
 

@@ -5,13 +5,13 @@ import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
-import { type ExportToHitouchConfig } from '../types.js';
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 import { buildVariantNotes } from '../utils/build-variant-notes.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportStopTimesFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportStopTimesFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig) {
 	//
 	// Export stop times and annotations using the final trip IDs from calendar processing.
 

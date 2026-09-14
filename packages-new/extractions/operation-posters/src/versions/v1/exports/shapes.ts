@@ -5,7 +5,7 @@ import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
-import { type ExportToHitouchConfig } from '../types.js';
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 import { buildVariantNotes } from '../utils/build-variant-notes.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
@@ -16,7 +16,7 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
  * @param sqlTables - The SQL tables to export from.
  * @param exportConfig - The export configuration.
  */
-export async function exportShapesFiles(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportShapesFiles(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig) {
 	//
 
 	//
