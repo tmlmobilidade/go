@@ -37,6 +37,9 @@
 		"infrastructure-stops-v1": {
 			"title": "Paragens (v1)"
 		},
+		"offer-gtfs-v29": {
+			"title": "GTFS (v29)"
+		},
 		"operation-rides-v1": {
 			"title": "Circulações (GO v1)"
 		},

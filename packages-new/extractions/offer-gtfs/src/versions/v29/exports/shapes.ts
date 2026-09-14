@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* * */
 
-import { type GtfsV29ExportConfig } from '@/versions/v1/types.js';
+import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { type GtfsStrictV29Shapes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Shape } from '@tmlmobilidade/go-types-offer';

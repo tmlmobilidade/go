@@ -1,9 +1,9 @@
 /* * */
 
-import { exportAgencyFile, exportCalendarDates, exportCalendarMap, exportFareAttributes, exportFareForRoute, exportRoute, exportShape, exportStop, exportStopTimesForPattern, exportTripsForPattern, exportZoning } from '@/versions/v1/exports/index.js';
-import { type ExportProgress, type GtfsV29ExportConfig } from '@/versions/v1/types.js';
-import { rewriteServiceIds, rewriteTripIds } from '@/versions/v1/utils/rewrite-service-ids.js';
-import { ServiceRegistry } from '@/versions/v1/utils/service-registry.js';
+import { exportAgencyFile, exportCalendarDates, exportCalendarMap, exportFareAttributes, exportFareForRoute, exportRoute, exportShape, exportStop, exportStopTimesForPattern, exportTripsForPattern, exportZoning } from '@/versions/v29/exports/index.js';
+import { type ExportProgress, type GtfsV29ExportConfig } from '@/versions/v29/types.js';
+import { rewriteServiceIds, rewriteTripIds } from '@/versions/v29/utils/rewrite-service-ids.js';
+import { ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';

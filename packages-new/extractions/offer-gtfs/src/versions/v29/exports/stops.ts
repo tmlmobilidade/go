@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* * */
 
-import { type GtfsV29ExportConfig } from '@/versions/v1/types.js';
+import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { type GtfsStrictV29Stops } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { type Municipality } from '@tmlmobilidade/go-types-locations';

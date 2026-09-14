@@ -1,8 +1,8 @@
 /* eslint-disable perfectionist/sort-objects */
 /* * */
 
-import { ExportedAfetacaoRow, GtfsV29ExportConfig } from '@/versions/v1/types.js';
-import { getAgencyStopId } from '@/versions/v1/utils/get-agency-stop-id.js';
+import { ExportedAfetacaoRow, GtfsV29ExportConfig } from '@/versions/v29/types.js';
+import { getAgencyStopId } from '@/versions/v29/utils/get-agency-stop-id.js';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { type Fare, type Line, type Pattern, type Typology, type Zone } from '@tmlmobilidade/go-types-offer';

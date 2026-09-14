@@ -78,7 +78,6 @@ async function parseArgs(argv: string[]) {
 	let gtfsDir = flag('--gtfs');
 
 	if (!agency || !start || !gtfsDir) {
-		// @ts-expect-error: @afonsomgesteves fix this
 		const rl = createInterface({ input: process.stdin, output: process.stdout });
 		const today = new Date();
 		const defaultStart = `${today.getFullYear()}0101`;

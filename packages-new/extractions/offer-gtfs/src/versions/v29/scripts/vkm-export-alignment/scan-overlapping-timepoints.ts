@@ -70,7 +70,6 @@ async function parseArgs(argv: string[]) {
 
 	let agency = flag('--agency');
 	if (!agency) {
-		// @ts-expect-error: @afonsomgesteves fix this
 		const rl = createInterface({ input: process.stdin, output: process.stdout });
 		agency = await rl.question('Agency ID: ');
 		rl.close();

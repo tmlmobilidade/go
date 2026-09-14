@@ -1,10 +1,9 @@
 /* * */
 
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
-import { ExtractionTaskContext, ExtractionTaskResult, OfferGtfsV29Extraction, OfferGtfsV29ExtractionPropertiesSchema, OfferGtfsV29ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
+import { ExtractionTaskContext, ExtractionTaskResult, OfferGtfsV29Extraction, OfferGtfsV29ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
 import { CsvWriter } from '@tmlmobilidade/writers';
-import fs from 'node:fs';
 
 import { exportGtfsV29 } from './main.js';
 
@@ -13,7 +12,7 @@ import { exportGtfsV29 } from './main.js';
  * @param fileExport - The file export object.
  * @returns The path to the exported file.
  */
-export async function extractOfferGtfsV1(context: ExtractionTaskContext, extraction: OfferGtfsV29Extraction): Promise<ExtractionTaskResult> {
+export async function extractOfferGtfsV29(context: ExtractionTaskContext, extraction: OfferGtfsV29Extraction): Promise<ExtractionTaskResult> {
 	//
 
 	//
@@ -37,13 +36,11 @@ export async function extractOfferGtfsV1(context: ExtractionTaskContext, extract
 	//
 	// Setup a temporary directory and a batch writer
 
-	const temporaryDirectory = fs.mkdtempDisposableSync(`${OfferGtfsV29ExtractionVersionValue}-`);
-
 	await exportGtfsV29({
 		_id: extraction._id,
 		progress_current: 0,
 		progress_total: 0,
-		workdir: temporaryDirectory.path,
+		workdir: context.output_path,
 	}, {
 		agency_ids: validatedProperties.agency_ids,
 		calendars_clip_end_date: validatedProperties.calendars_clip_end_date,
@@ -57,19 +54,19 @@ export async function extractOfferGtfsV1(context: ExtractionTaskContext, extract
 		stop_sequence_start: validatedProperties.stop_sequence_start,
 		stops_export_all: validatedProperties.stops_export_all,
 		version: new Date().toISOString().replace(/[-:T]/g, '').slice(0, 13),
-		workdir: temporaryDirectory.path,
+		workdir: context.output_path,
 		writers: {
-			afetacao: new CsvWriter('afetacao.csv', `${temporaryDirectory.path}/afetacao.csv`),
-			agency: new CsvWriter('agency.txt', `${temporaryDirectory.path}/agency.txt`),
-			calendar_dates: new CsvWriter('calendar_dates.txt', `${temporaryDirectory.path}/calendar_dates.txt`),
-			fare_attributes: new CsvWriter('fare_attributes.txt', `${temporaryDirectory.path}/fare_attributes.txt`),
-			fare_rules: new CsvWriter('fare_rules.txt', `${temporaryDirectory.path}/fare_rules.txt`),
-			feed_info: new CsvWriter('feed_info.txt', `${temporaryDirectory.path}/feed_info.txt`),
-			routes: new CsvWriter('routes.txt', `${temporaryDirectory.path}/routes.txt`),
-			shapes: new CsvWriter('shapes.txt', `${temporaryDirectory.path}/shapes.txt`),
-			stop_times: new CsvWriter('stop_times.txt', `${temporaryDirectory.path}/stop_times.txt`),
-			stops: new CsvWriter('stops.txt', `${temporaryDirectory.path}/stops.txt`),
-			trips: new CsvWriter('trips.txt', `${temporaryDirectory.path}/trips.txt`),
+			afetacao: new CsvWriter('afetacao.csv', `${context.output_path}/afetacao.csv`),
+			agency: new CsvWriter('agency.txt', `${context.output_path}/agency.txt`),
+			calendar_dates: new CsvWriter('calendar_dates.txt', `${context.output_path}/calendar_dates.txt`),
+			fare_attributes: new CsvWriter('fare_attributes.txt', `${context.output_path}/fare_attributes.txt`),
+			fare_rules: new CsvWriter('fare_rules.txt', `${context.output_path}/fare_rules.txt`),
+			feed_info: new CsvWriter('feed_info.txt', `${context.output_path}/feed_info.txt`),
+			routes: new CsvWriter('routes.txt', `${context.output_path}/routes.txt`),
+			shapes: new CsvWriter('shapes.txt', `${context.output_path}/shapes.txt`),
+			stop_times: new CsvWriter('stop_times.txt', `${context.output_path}/stop_times.txt`),
+			stops: new CsvWriter('stops.txt', `${context.output_path}/stops.txt`),
+			trips: new CsvWriter('trips.txt', `${context.output_path}/trips.txt`),
 		},
 	});
 

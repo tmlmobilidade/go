@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* * */
 
-import { type GtfsV29ExportConfig } from '@/versions/v1/types.js';
+import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type Fare, type Line, type Route } from '@tmlmobilidade/go-types-offer';
 import { type GtfsTMLFareAttributes, type GtfsTMLFareRules } from '@tmlmobilidade/types';

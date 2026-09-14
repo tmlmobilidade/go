@@ -1,5 +1,5 @@
-import { type GtfsV29ExportConfig } from '@/versions/v1/types.js';
-import { type ServiceId, type ServiceRegistry } from '@/versions/v1/utils/service-registry.js';
+import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
+import { type ServiceId, type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { buildOperationalDateRange, buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, Dates, getActivePeriodId, getTimepointsRemovedByEventRestriction, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap, yyyymmddToKey } from '@tmlmobilidade/dates';
 import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { DayPeriod, type Event, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
