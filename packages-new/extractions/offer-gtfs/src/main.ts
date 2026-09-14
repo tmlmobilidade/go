@@ -67,10 +67,7 @@ async function updateProgress(
  * @param progress - The export progress tracking document
  * @param exportConfig - The export configuration options
  */
-export async function exportGtfsV29(
-	progress: ExportProgress,
-	exportConfig: GtfsV29ExportConfig,
-) {
+export async function exportGtfsV29(progress: ExportProgress, exportConfig: GtfsV29ExportConfig) {
 	try {
 		//
 		// Initialize Sentry
