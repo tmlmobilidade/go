@@ -15,7 +15,7 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 import { type CalendarAssignmentsExt } from '../types/CalendarAssignmentsExt.js';
 import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 import { type CalendarExt } from '../types/CalendarExt.js';
-import { type DayTypeConfig } from '../types/dayTypeConfig.js';
+import { type DayTypeConfig } from '../types/DayTypeConfig.js';
 import { type GtfsDate } from '../types/GtfsDate.js';
 
 import fs from 'node:fs';
@@ -430,15 +430,15 @@ export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, 
 		//
 		// Output the calendar assignments file
 
-		for (const dayTypeConfig of dayTypesConfig) {
+		for (const DayTypeConfig of dayTypesConfig) {
 			// Check if this service operates on the same day_type
 			// and period for this day_type.
-			const matchedDayType = serviceIdData.day_type === dayTypeConfig.day_type;
-			const matchedPeriod = serviceIdData.period === dayTypeConfig.period;
+			const matchedDayType = serviceIdData.day_type === DayTypeConfig.day_type;
+			const matchedPeriod = serviceIdData.period === DayTypeConfig.period;
 			if (!matchedDayType || !matchedPeriod) continue;
 			// If it matches, create an assignment
 			const assignment: CalendarAssignmentsExt = {
-				day_type_id: dayTypeConfig._id,
+				day_type_id: DayTypeConfig._id,
 				service_id: serviceIdData._id,
 			};
 			calendarAssignmentsExtRows.push(assignment);
