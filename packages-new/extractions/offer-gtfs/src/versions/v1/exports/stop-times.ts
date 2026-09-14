@@ -1,0 +1,128 @@
+/* * */
+
+import { type TripSchedule } from '@/versions/v1/exports/trips.js';
+import { type GtfsV29ExportConfig } from '@/versions/v1/types.js';
+import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
+import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/go-types-offer';
+import { OperationalTimeSchema } from '@tmlmobilidade/go-types-shared';
+import { Logger } from '@tmlmobilidade/logger';
+import { metersToGtfsKm } from '@tmlmobilidade/types';
+
+import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
+
+/* * */
+
+function resolveActiveParameter(
+	parameters: StopsParameter[] | undefined,
+	tripSchedule: TripSchedule,
+	fallbackPath: Path[],
+): StopsParameter {
+	const defaultParameter = parameters?.find(p => p.kind === 'default');
+	const overrides = (parameters?.filter(p => p.kind === 'override') || []) as StopsParameterOverride[];
+
+	if (overrides.length > 0) {
+		for (const override of overrides) {
+			const weekdayMatch = tripSchedule.weekdays.some(w => override.weekdays.includes(w));
+			const periodMatch = tripSchedule.period_ids.some(p => override.year_period_ids.includes(p));
+			const dayPeriodMatch = !override.day_periods?.length || override.day_periods.includes(tripSchedule.day_period);
+
+			if (weekdayMatch && periodMatch && dayPeriodMatch) {
+				return override;
+			}
+		}
+	}
+
+	if (defaultParameter) return defaultParameter;
+
+	return {
+		kind: 'default',
+		path: fallbackPath.map(p => ({
+			avg_speed: 0,
+			dwell_time: 0,
+			stop_id: p.stop_id,
+		})),
+	};
+}
+
+function timepointToSeconds(timepoint: HHMM): number {
+	const [hours, minutes] = timepoint.split(':').map(Number);
+	return hours * 3600 + minutes * 60;
+}
+
+function formatGtfsTime(totalSeconds: number): string {
+	const safeSeconds = Math.max(0, Math.round(totalSeconds));
+	const hours = Math.floor(safeSeconds / 3600);
+	const minutes = Math.floor((safeSeconds % 3600) / 60);
+	const seconds = safeSeconds % 60;
+
+	const hh = String(hours).padStart(2, '0');
+	const mm = String(minutes).padStart(2, '0');
+	const ss = String(seconds).padStart(2, '0');
+
+	return `${hh}:${mm}:${ss}`;
+}
+
+/* * */
+
+export async function exportStopTimesForPattern(
+	stopsData: Stop[],
+	patternData: Pattern,
+	tripSchedules: TripSchedule[],
+	exportConfig: GtfsV29ExportConfig,
+	agencyId: string,
+) {
+	try {
+		if (!patternData.path?.length) return;
+		if (tripSchedules.length === 0) return;
+
+		for (const tripSchedule of tripSchedules) {
+			const activeParameter = resolveActiveParameter(patternData.parameters, tripSchedule, patternData.path);
+			const mergedPath = getMergedPath(patternData.path, activeParameter.path);
+			const travelTimes = computeSegmentTravelTimes(mergedPath);
+			const segmentTravelSeconds = travelTimes.segmentTravelSeconds.raw;
+			const stopDwellSeconds = travelTimes.stopDwellSeconds.raw;
+
+			let currentSeconds = timepointToSeconds(tripSchedule.timepoint);
+			let cumulativeDistanceMeters = 0;
+
+			for (let i = 0; i < mergedPath.length; i++) {
+				const pathItem = mergedPath[i];
+				const segmentSeconds = segmentTravelSeconds[i] ?? 0;
+				const dwellSeconds = stopDwellSeconds[i] ?? 0;
+
+				const arrivalSeconds = i === 0 ? currentSeconds : currentSeconds + segmentSeconds;
+				const departureSeconds = arrivalSeconds + dwellSeconds;
+				currentSeconds = departureSeconds;
+
+				if (i > 0) {
+					cumulativeDistanceMeters += pathItem.distance_delta ?? 0;
+				}
+
+				// If pathItem.stop is present, use agency-specific stop_id; else fallback to pathItem.stop_id
+				const currentStopData = stopsData.find(s => s._id === pathItem.stop_id);
+				const stopId = currentStopData ? getAgencyStopId(currentStopData, agencyId) : String(pathItem.stop_id);
+
+				const stopTimeRow: GtfsStrictV29StopTimes = {
+					arrival_time: OperationalTimeSchema.parse(formatGtfsTime(arrivalSeconds)),
+					// continuous_drop_off: '0',
+					// continuous_pickup: '0',
+					departure_time: OperationalTimeSchema.parse(formatGtfsTime(departureSeconds)),
+					drop_off_type: pathItem.allow_drop_off ? '0' : '1',
+					pickup_type: pathItem.allow_pickup ? '0' : '1',
+					shape_dist_traveled: metersToGtfsKm(cumulativeDistanceMeters),
+					stop_id: stopId,
+					stop_sequence: exportConfig.stop_sequence_start + i,
+					timepoint: pathItem.timepoint ? '1' : '0',
+					trip_id: tripSchedule.trip_id,
+				};
+
+				await exportConfig.writers.stop_times.write(stopTimeRow);
+			}
+		}
+	} catch (error) {
+		Logger.error({ error, message: `Error exporting stop_times for pattern ${patternData.code}` });
+		throw new Error(`Error exporting stop_times for pattern ${patternData.code}: ${error}`, error);
+	}
+}
