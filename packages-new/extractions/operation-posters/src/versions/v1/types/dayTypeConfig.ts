@@ -4,7 +4,7 @@ import { type OperationalDate } from '@tmlmobilidade/go-types-shared'
 
 /* * */
 
-export interface dayTypeConfig {
+export interface DayTypeConfig {
 	_id: string
 	dates: OperationalDate[]
 	day_type: '1' | '2' | '3'

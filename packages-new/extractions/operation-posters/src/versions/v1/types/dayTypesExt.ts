@@ -1,6 +1,6 @@
 /* * */
 
-export interface dayTypesExt {
+export interface DayTypesExt {
 	day_type_id: string
 	friday: string
 	monday: string
