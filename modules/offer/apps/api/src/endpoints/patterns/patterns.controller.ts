@@ -452,7 +452,7 @@ export class PatternsController {
 		}
 
 		// If authorized, toggle the lock status of the pattern
-		await goDb.offer.patterns.toggleLockById(request.params.id);
+		await goDb.offer.patterns.updateOne({ _id: request.params.id }, { is_locked: !patternData.is_locked });
 		const foundPattern = await goDb.offer.patterns.findById(request.params.id);
 		if (!foundPattern) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');

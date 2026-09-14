@@ -259,7 +259,7 @@ export class LinesController {
 		}
 
 		// If authorized, toggle the lock status of the line
-		await goDb.offer.lines.toggleLockById(request.params.id);
+		await goDb.offer.lines.updateOne({ _id: request.params.id }, { is_locked: !lineData.is_locked });
 		const foundLine = await goDb.offer.lines.findById(request.params.id);
 		if (!foundLine) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
