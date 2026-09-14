@@ -10,7 +10,7 @@ import { claimPosterExport } from './processing.js';
 
 /* * */
 
-async function operationPostersV1Extraction(): Promise<void> {
+export async function operationPostersV1Extraction(): Promise<void> {
 	Logger.init();
 
 	const globalTimer = new Timer();

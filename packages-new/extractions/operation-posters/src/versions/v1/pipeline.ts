@@ -1,8 +1,8 @@
 /* * */
 
-import { PostersController } from '@/controller/poster.js';
-import { importPlanToSqlite } from '@/import-plan-to-sqlite.js';
-import { type ExportToHitouchConfig } from '@/types.js';
+import { PostersController } from './controller/poster.js';	
+import { importPlanToSqlite } from './import-plan-to-sqlite.js';
+import { type ExportToHitouchConfig } from './types.js';
 import { FileExportDownloadUrlSchema, type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { type Plan } from '@tmlmobilidade/go-types-operation';

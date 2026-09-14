@@ -14,7 +14,7 @@ export async function claimPosterExport(id: string) {
 	//
 	// Get the collection.
 
-	const collection = await goDb.core.exports.getCollection();
+	const collection = await goDb.core.extractions.getCollection();
 	let updatedAt = UnixMillisecondsSchema.parse(Date.now());
 	const claimed = await collection.findOneAndUpdate({ _id: id, processing_status: 'waiting', type: 'plan_posters' }, {
 		$set: { processing_status: 'processing', updated_at: updatedAt },
