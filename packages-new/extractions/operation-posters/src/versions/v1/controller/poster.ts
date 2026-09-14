@@ -3,7 +3,7 @@
 import { Logger } from '@tmlmobilidade/logger';
 
 import parametersConfig from '../parameters.json' with { type: 'json' };
-import { type ExportToHitouchConfig } from '../types.js';
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -100,7 +100,7 @@ export class PostersController {
 	/**
 	 * Creates a new poster in the API.
 	 */
-	async generatePDF(exportConfig: ExportToHitouchConfig): Promise<string> {
+	async generatePDF(exportConfig: ExportHitouchConfig): Promise<string> {
 		//
 
 		//
