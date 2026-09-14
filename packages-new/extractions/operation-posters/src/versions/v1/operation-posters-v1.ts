@@ -14,7 +14,7 @@ export async function operationPostersV1Extraction(): Promise<void> {
 	Logger.init();
 
 	const globalTimer = new Timer();
-	const waitingExports = await goDb.core.exports.findMany({
+	const waitingExports = await goDb.core.extractions.findMany({
 		processing_status: 'waiting',
 		type: 'plan_posters',
 	});
@@ -53,4 +53,4 @@ try {
 
 Logger.info({ message: `Poster worker ${process.pid} started; checking for abandoned exports.` });
 
-await runOnInterval(processWaitingExports, { intervalMs: '5s' });
+await runOnInterval(operationPostersV1Extraction, { intervalMs: '5s' });
