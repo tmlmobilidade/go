@@ -1,42 +1,80 @@
 /* * */
 
-import { DAY_TYPES } from '@/day-types.js';
-import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
-import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig } from '@/types.js';
+import { type GtfsCalendarDates } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29ExtStopTimes, type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type GtfsCalendarDates, type GtfsStopTimes, type GtfsTrips, validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29CalendarDates } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import Papa from 'papaparse';
+
+import { type CalendarAssignmentsExt, type CalendarExt, type DatesFileEntry, type DayTypeConfig, type ExportToHitouchConfig } from '../types.js';
+import { DAY_TYPES } from '../utils/day-types.js';
+import { getFormattedDates, getPeriodName, getWeekdayNames } from '../utils/get-names.js';
 
 /* * */
 
-export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+const DATES_FILE_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dates.txt');
+
+/* * */
+
+interface ServiceIdData {
+	_id: string
+	dates: OperationalDate[]
+	day_type: string
+	exceptions: string[]
+	period: string
+}
+
+interface EqualTripsData {
+	sample_stop_times: GtfsStrictV29ExtStopTimes[]
+	sample_trip: GtfsStrictV29ExtTrips
+	service_ids: string[]
+	start_time: string
+	trip_ids: string[]
+}
+
+interface WeekdayData {
+	dates_expected: OperationalDate[]
+	dates_found: OperationalDate[]
+	dates_missing: OperationalDate[]
+	is_regular: boolean
+}
+
+/* * */
+
+/**
+ * Merges services with identical trips into consolidated calendars, detects the
+ * exceptions to the standard day types and exports the calendar-related files
+ * (calendar_dates.txt, calendar_assignmentsExt.txt and calendarExt.txt).
+ * @param sqlTables The imported GTFS SQL tables.
+ * @param exportConfig The export configuration.
+ */
+export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 
 	//
 	// Import the dates.txt file into a map of date strings and their associated categorizations
 
-	if (!fs.existsSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt')) {
-		Logger.error({ message: `Missing dates.txt file in ${process.cwd()}` });
+	if (!fs.existsSync(DATES_FILE_PATH)) {
+		Logger.error({ message: `Missing dates.txt file in ${DATES_FILE_PATH}` });
 	}
 
-	const datesCat = Papa.parse<GtfsStrictV29CalendarDates>(fs.readFileSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt', 'utf-8'), {
+	const datesCat = Papa.parse<DatesFileEntry>(fs.readFileSync(DATES_FILE_PATH, 'utf-8'), {
 		header: true,
 		skipEmptyLines: true,
 	});
 
-	const datesMap = new Map<string, GtfsStrictV29CalendarDates>();
+	const datesMap = new Map<string, DatesFileEntry>();
 	const dayTypesConfig: DayTypeConfig[] = DAY_TYPES;
 
 	datesCat.data.forEach((d) => {
 		// Ignore dates outside the export range
-		// if (d.date.localeCompare(exportConfig.date_range.start) > 0) console.log(d.date);
 		const operationalDate = validateOperationalDate(d.date);
 		if (operationalDate < exportConfig.date_range.start || operationalDate > exportConfig.date_range.end) return;
 		// Add this date to the corresponding day_type_id
@@ -54,7 +92,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 	Logger.info({ message: `Found ${allUniquePatternIds.length} unique pattern IDs in trips.` });
 
-	const updatedServiceIds: Record<string, { _id: string, dates: OperationalDate[], day_type: string, exceptions: string[], period: string }> = {};
+	const updatedServiceIds: Record<string, ServiceIdData> = {};
 
 	//
 	// Loop through each pattern_id and find trips associated with it
@@ -72,7 +110,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		//
 		// Group trips that have the same stop_times
 
-		const equalTrips: Record<string, { sample_stop_times: GtfsStopTimes[], sample_trip: GtfsTrips, service_ids: string[], start_time: string, trip_ids: string[] }> = {};
+		const equalTrips: Record<string, EqualTripsData> = {};
 
 		for (const tripData of allTripsForThisPatternId) {
 			// Get stop_times for this trip
@@ -112,7 +150,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 			for (const serviceId of equalTripsData.service_ids) {
 				// Get all dates for this service_id
-				const serviceDates = sqlTables.calendar_dates[serviceId];
+				const serviceDates = sqlTables.calendar_dates[serviceId].map(date => validateOperationalDate(String(date)));
 				if (!serviceDates.length) continue;
 				// Categorize each date
 				serviceDates.forEach((date) => {
@@ -180,9 +218,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 				const newTripId = `${equalTripsData.sample_trip.shape_id}||${equalTripsData.start_time}|${combinedDatesData.period}|${combinedDatesData.day_type}|${updatedServiceIds[serviceIdKey]._id}`;
 
-				// @ts-expect-error - TODO: fix this
 				sqlTables.trips.write({ ...equalTripsData.sample_trip, service_id: updatedServiceIds[serviceIdKey]._id, trip_id: newTripId });
-				// @ts-expect-error - TODO: fix this
 				equalTripsData.sample_stop_times.forEach(st => sqlTables.stop_times.write({ ...st, trip_id: newTripId }));
 
 				//
@@ -248,7 +284,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} not found in dates.txt` });
 			// Get the weekday code for this date
 			let weekdayCode = Dates
-				.fromOperationalDate(date, 'Europe/Lisbon')
+				.fromOperationalDateInt(date, 'Europe/Lisbon')
 				.toFormat('c'); // '1' (Mon) to '7' (Sun)
 			// Treat holidays as Sundays
 			if (matchingDateEntry.holiday === '1') weekdayCode = '7';
@@ -267,7 +303,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} not found in dates.txt` });
 			// Get the weekday code for this date
 			let weekdayCode = Dates
-				.fromOperationalDate(date, 'Europe/Lisbon')
+				.fromOperationalDateInt(date, 'Europe/Lisbon')
 				.toFormat('c'); // '1' (Mon) to '7' (Sun)
 			// Treat holidays as Sundays
 			if (matchingDateEntry.holiday === '1') weekdayCode = '7';
@@ -278,7 +314,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			matchedDayTypeWeekdaysMap[weekdayCode].dates.push(date);
 		}
 
-		const weekdaysMap: Record<string, { dates_expected: OperationalDate[], dates_found: OperationalDate[], dates_missing: OperationalDate[], is_regular: boolean }> = {};
+		const weekdaysMap: Record<string, WeekdayData> = {};
 
 		for (const [weekdayCode, serviceWeekdayData] of Object.entries(serviceIdWeekdaysMap)) {
 			// Save the expected count from the matched day type configuration
@@ -428,7 +464,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		const sortedDates = serviceIdData.dates.sort();
 		for (const operationalDate of sortedDates) {
 			const data: GtfsCalendarDates = {
-				date: validateGtfsDate(operationalDate),
+				date: OperationalDateIntSchema.parse(operationalDate),
 				exception_type: '1',
 				service_id: serviceIdData._id,
 			};

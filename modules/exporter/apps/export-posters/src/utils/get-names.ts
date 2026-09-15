@@ -1,6 +1,8 @@
 /* * */
 
-import { OperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+
+/* * */
 
 /**
  * Get weekday names in Portuguese from weekday indexes.
@@ -23,9 +25,9 @@ export function getWeekdayNames(weekdayIndexes: string[]): string[] {
 }
 
 /**
- * Get period names in Portuguese from period indexes.
- * @param periodIndexes Array of period indexes (1=School Period, 2=School Holidays, 3=Summer Period)
- * @returns Array of period names in Portuguese.
+ * Get the period name in Portuguese from a period index.
+ * @param period The period index (1=School Period, 2=School Holidays, 3=Summer Period)
+ * @returns The period name in Portuguese.
  */
 export function getPeriodName(period: string): string {
 	switch (period) {
@@ -44,12 +46,20 @@ export function getPeriodName(period: string): string {
  * - Only 2 consecutive days: "4 e 5 Fev. 2025"
  * - Consecutive + non-consecutive, or mixed with 2-day range: treat all as non-consecutive → "1, 7, 8 e 14 Dez. 2025"
  * - Only non-consecutive: "12, 14 e 22 Fev. 2025"
+ * @param dates The operational dates to format.
+ * @returns The formatted dates, one group per month separated by semicolons.
  */
 export function getFormattedDates(dates: OperationalDate[]): string {
+	//
+
+	//
 	// Sort and deduplicate
+
 	const sortedDates = Array.from(new Set(dates)).sort();
 
+	//
 	// Group by month and year
+
 	const groupedDates: Record<string, number[]> = {};
 	for (const date of sortedDates) {
 		const monthYear = date.slice(0, 6); // YYYYMM
@@ -58,8 +68,13 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 		groupedDates[monthYear].push(day);
 	}
 
+	//
 	// Month names in Portuguese
+
 	const monthNames = ['Jan.', 'Fev.', 'Mar.', 'Abr.', 'Mai.', 'Jun.', 'Jul.', 'Ago.', 'Set.', 'Out.', 'Nov.', 'Dez.'];
+
+	//
+	// Format each month group
 
 	const formattedGroups = Object.entries(groupedDates).map(([monthYear, days]) => {
 		const year = monthYear.slice(0, 4);
@@ -75,8 +90,7 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 		for (let i = 1; i < days.length; i++) {
 			if (days[i] === prev + 1) {
 				prev = days[i];
-			}
-			else {
+			} else {
 				ranges.push([start, prev]);
 				start = days[i];
 				prev = days[i];
@@ -88,23 +102,23 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 		const hasTwoDayRange = ranges.some(([a, b]) => b === a + 1);
 		const hasLongRange = ranges.some(([a, b]) => b > a + 1);
 
-		let formatted = '';
-
 		// Helper to format a range properly
 		const formatRange = ([a, b]: [number, number]) => (b === a + 1 ? `${a} e ${b}` : `de ${a} a ${b}`);
 
 		// Case 1: Only consecutive (>=3)
 		if (hasLongRange && !hasNonConsecutive && !hasTwoDayRange) {
 			const [a, b] = ranges.find(([a, b]) => b > a + 1);
-			formatted = `${formatRange([a, b])} ${monthNames[month - 1]} ${year}`;
+			return `${formatRange([a, b])} ${monthNames[month - 1]} ${year}`;
 		}
+
 		// Case 2: Only one 2-day range
-		else if (hasTwoDayRange && !hasNonConsecutive && !hasLongRange && ranges.length === 1) {
+		if (hasTwoDayRange && !hasNonConsecutive && !hasLongRange && ranges.length === 1) {
 			const [a, b] = ranges[0];
-			formatted = `${formatRange([a, b])} ${monthNames[month - 1]} ${year}`;
+			return `${formatRange([a, b])} ${monthNames[month - 1]} ${year}`;
 		}
+
 		// Case 3: Mix of long ranges + non-consecutive
-		else if (hasLongRange && hasNonConsecutive) {
+		if (hasLongRange && hasNonConsecutive) {
 			const rangeParts = ranges
 				.filter(([a, b]) => b > a + 1)
 				.map(formatRange)
@@ -119,29 +133,29 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 					? `${nonConsecDays.slice(0, -1).join(', ')} e ${nonConsecDays.at(-1)}`
 					: `${nonConsecDays[0]}`;
 
-			formatted = `${rangeParts} ${monthNames[month - 1]} e ${nonConsecList} ${monthNames[month - 1]} ${year}`;
+			return `${rangeParts} ${monthNames[month - 1]} e ${nonConsecList} ${monthNames[month - 1]} ${year}`;
 		}
+
 		// Case 4: Only non-consecutive or mix with 2-day pairs → treat all as non-consecutive
-		else {
-			const allDays = ranges.flatMap(([a, b]) => {
-				if (b === a) return [a];
-				if (b === a + 1) return [a, b]; // expand 2-day range
-				const expanded: number[] = [];
-				for (let d = a; d <= b; d++) expanded.push(d);
-				return expanded;
-			});
+		const allDays = ranges.flatMap(([a, b]) => {
+			if (b === a) return [a];
+			if (b === a + 1) return [a, b]; // expand 2-day range
+			const expanded: number[] = [];
+			for (let d = a; d <= b; d++) expanded.push(d);
+			return expanded;
+		});
 
-			allDays.sort((a, b) => a - b);
+		allDays.sort((a, b) => a - b);
 
-			const list
-				= allDays.length > 1
-					? `${allDays.slice(0, -1).join(', ')} e ${allDays.at(-1)}`
-					: `${allDays[0]}`;
-			formatted = `${list} ${monthNames[month - 1]} ${year}`;
-		}
+		const list
+			= allDays.length > 1
+				? `${allDays.slice(0, -1).join(', ')} e ${allDays.at(-1)}`
+				: `${allDays[0]}`;
 
-		return formatted;
+		return `${list} ${monthNames[month - 1]} ${year}`;
 	});
 
 	return formattedGroups.join('; ');
+
+	//
 }

@@ -1,4 +1,8 @@
-import { type Vehicle } from '@tmlmobilidade/types';
+/* * */
+
+import { type Vehicle } from '@tmlmobilidade/go-types-operation';
+
+/* * */
 
 export type VehicleExportCsvData = Vehicle;
 
@@ -52,6 +56,11 @@ interface ParseVehicleRow {
 	vehicle: Vehicle
 }
 
+/**
+ * Reorders the CSV data keys to match the ordered fields.
+ * @param source The unordered CSV data.
+ * @returns The CSV data with keys in the export order.
+ */
 function toOrderedCsvData(source: VehicleExportCsvData): VehicleExportCsvData {
 	const orderedEntries = VEHICLE_EXPORT_ORDERED_FIELDS.map(field => [field, source[field]] as const);
 	return Object.fromEntries(orderedEntries) as VehicleExportCsvData;
@@ -59,6 +68,11 @@ function toOrderedCsvData(source: VehicleExportCsvData): VehicleExportCsvData {
 
 /* * */
 
+/**
+ * Flattens a vehicle into a CSV row.
+ * @param row The vehicle to export.
+ * @returns The flat vehicle row.
+ */
 export function parseVehicles(row: ParseVehicleRow): VehicleExportCsvData {
 	const { vehicle } = row;
 

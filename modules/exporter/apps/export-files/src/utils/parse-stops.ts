@@ -1,5 +1,9 @@
+/* * */
+
 import { type StopExportData } from '@tmlmobilidade/go-types-downloads';
-import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { type Stop, type StopId } from '@tmlmobilidade/go-types-infrastructure';
+
+/* * */
 
 export type StopExportCsvData = Omit<StopExportData, 'flags'> & {
 	municipality_name: null | string
@@ -71,11 +75,16 @@ export const STOP_EXPORT_ORDERED_FIELDS = [
 /* * */
 
 interface ParseStopRow {
-	_id?: null | number
+	_id?: null | StopId
 	municipality_name: null | string
 	stop: Stop
 }
 
+/**
+ * Reorders the CSV data keys to match the ordered fields.
+ * @param source The unordered CSV data.
+ * @returns The CSV data with keys in the export order.
+ */
 function toOrderedCsvData(source: StopExportCsvData): StopExportCsvData {
 	const orderedEntries = STOP_EXPORT_ORDERED_FIELDS.map(field => [field, source[field]] as const);
 	return Object.fromEntries(orderedEntries) as StopExportCsvData;
@@ -83,6 +92,11 @@ function toOrderedCsvData(source: StopExportCsvData): StopExportCsvData {
 
 /* * */
 
+/**
+ * Flattens a stop and its municipality name into a CSV row.
+ * @param row The stop, its ID and its municipality name.
+ * @returns The flat stop row.
+ */
 export function parseStops(row: ParseStopRow): StopExportCsvData {
 	const { _id, municipality_name: municipalityName, stop } = row;
 

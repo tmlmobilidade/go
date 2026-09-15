@@ -1,6 +1,6 @@
 /* * */
 
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -46,10 +46,13 @@ export interface DayTypeConfig {
 	index: number
 	name: string
 	period: '1' | '2' | '3'
-
 }
 
-export interface GTFS_Date {
+/**
+ * A row of the dates.txt file that categorizes
+ * each operational date by period, day type and holiday.
+ */
+export interface DatesFileEntry {
 	date: OperationalDate
 	day_type: '1' | '2' | '3'
 	holiday: '0' | '1'

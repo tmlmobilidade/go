@@ -1,21 +1,33 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '@/types.js';
-import { type GtfsStops } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsStrictV29ExtStops } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
+import { type ExportToHitouchConfig } from '../types.js';
+
 /* * */
 
-export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+type StopsFileRow = Pick<GtfsStrictV29ExtStops, 'location_type' | 'parent_station' | 'platform_code' | 'stop_code' | 'stop_desc' | 'stop_id' | 'stop_lat' | 'stop_lon' | 'stop_name' | 'stop_timezone' | 'stop_url' | 'wheelchair_boarding'>;
+
+/* * */
+
+/**
+ * Exports the stops.txt file.
+ * @param sqlTables The imported GTFS SQL tables.
+ * @param exportConfig The export configuration.
+ */
+export async function exportStopsFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
-	// Export calendar-related files
+
+	//
+	// Export stops file
 
 	const stopsCsv = new CsvWriter('stops.txt', `${exportConfig.workdir}/stops.txt`, { batch_size: 100000 });
 
 	for await (const stopData of sqlTables.stops.stream()) {
-		const data: GtfsStops = {
+		const data: StopsFileRow = {
 			location_type: stopData.location_type,
 			parent_station: stopData.parent_station,
 			platform_code: stopData.platform_code,
@@ -35,4 +47,6 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 	await stopsCsv.flush();
 
 	Logger.info({ message: 'Exported stops.txt file.' });
+
+	//
 }

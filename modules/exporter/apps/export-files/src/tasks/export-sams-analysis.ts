@@ -2,24 +2,24 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type FileExport, type FlatSamsAnalysisExportAnalysis, type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { buildSamsMatch, sams, samsAnalysisExportAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { type Sam, type SamAnalysis } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { buildSamsMatch, samsAnalysisExportAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
-import { PermissionCatalog, type Sam, type SamAnalysis } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
-import os from 'os';
-import path from 'path';
+import os from 'node:os';
+import path from 'node:path';
 
-import { parseAnalysis } from './lib/parse-analysis.js';
+import { parseAnalysis } from '../utils/parse-analysis.js';
 
 /* * */
 
 /**
  * Exports SAM analysis records to a CSV file.
  * One row per `analysis` entry of the matching SAM documents.
- *
- * @param fileExport - The file export object.
+ * @param fileExport The file export object.
  * @returns The path to the exported file.
  */
 export async function exportSamsAnalysisFile(fileExport: FileExport): Promise<string> {
@@ -31,14 +31,17 @@ export async function exportSamsAnalysisFile(fileExport: FileExport): Promise<st
 
 	//
 	// Setup a timer to track the execution time
+	// and mark the file export as being processed
+
 	const timer = new Timer();
 
 	await goDb.core.exports.updateById(fileExport._id, { processing_status: 'processing' });
 
 	//
-	// Build the pipeline from stored properties.
-	const properties = fileExport.properties as SamsAnalysisExportProperties['properties'];
+	// Build the pipeline from the stored properties.
 	// Backward compatible: accept both legacy `_id` and current `sam_ids`.
+
+	const properties = fileExport.properties as SamsAnalysisExportProperties['properties'];
 	const samIds = properties.sam_ids ?? properties._id ?? undefined;
 	const query = {
 		agency_ids: properties.agency_ids ?? [PermissionCatalog.ALLOW_ALL_FLAG],
@@ -65,12 +68,14 @@ export async function exportSamsAnalysisFile(fileExport: FileExport): Promise<st
 	});
 
 	//
-	// Stream matching analysis rows
-	const samsCollection = await sams.getCollection();
+	// Stream the matching analysis rows
+
+	const samsCollection = await goDb.operation.sams.getCollection();
 	const analysisCursor = samsCollection.aggregate(pipeline, { cursor: { batchSize: 5000 } });
 
 	//
 	// Write the analysis rows to the file
+
 	const tempFilePath = path.join(os.tmpdir(), `${fileExport.file_name}_${generateRandomString()}.csv`);
 	const csvWriter = new CsvWriter<FlatSamsAnalysisExportAnalysis>(fileExport.file_name, tempFilePath, { batch_size: 10000, include_bom: true });
 
@@ -93,4 +98,6 @@ export async function exportSamsAnalysisFile(fileExport: FileExport): Promise<st
 	Logger.spacer(1);
 
 	return tempFilePath;
+
+	//
 }
