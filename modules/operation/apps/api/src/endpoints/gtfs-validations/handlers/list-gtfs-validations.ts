@@ -29,7 +29,7 @@ export async function listGtfsValidationsHandler(request: FastifyRequest<{ Body:
 	//
 	// Validate the filters
 
-	const validatedFilters = ValidationListFiltersSchema.parse(request.body); ;
+	const validatedFilters = ValidationListFiltersSchema.parse(request.body);
 
 	//
 	// Build aggregation pipeline

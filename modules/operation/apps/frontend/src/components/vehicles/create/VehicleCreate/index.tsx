@@ -9,7 +9,7 @@ import { VehicleCreateInfos } from '../VehicleCreateInfos';
 
 export function VehicleCreate() {
 	return (
-		<Pane header={[<VehicleCreateModalHeader />]}>
+		<Pane header={[<VehicleCreateModalHeader key="header" />]}>
 			<VehicleCreateInfos />
 		</Pane>
 	);

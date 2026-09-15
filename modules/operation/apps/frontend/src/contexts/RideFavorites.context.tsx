@@ -1,6 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { useUserPreference } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
@@ -9,11 +10,11 @@ import useSWR, { useSWRConfig } from 'swr';
 
 interface RideFavoritesContextState {
 	actions: {
-		mutateFavoriteRides: () => Promise<any[] | undefined>
+		mutateFavoriteRides: () => Promise<Ride[] | undefined>
 		toggleFavorite: (rideId: string) => Promise<void>
 	}
 	data: {
-		favoriteRides: any[]
+		favoriteRides: Ride[]
 		favorites: string[]
 	}
 	flags: {
@@ -46,7 +47,7 @@ export const RideFavoritesContextProvider = ({ children }: PropsWithChildren) =>
 	const getFavoriteRidesSWRKey = (favoriteIds: string[]) => favoriteIds.length ? `${API_ROUTES.operation.RIDES_FAVORITES}?ids=${favoriteIds.join(',')}` : null;
 	const favoritesIdsQuery = useMemo(() => favorites.join(','), [favorites]);
 	const favoriteRidesKey = favorites.length ? `${API_ROUTES.operation.RIDES_FAVORITES}?ids=${favoritesIdsQuery}` : null;
-	const { data: favoriteRidesData, error: favoriteRidesError, isLoading: favoriteRidesLoading, mutate: mutateFavoriteRides } = useSWR<any[], Error>(favoriteRidesKey);
+	const { data: favoriteRidesData, error: favoriteRidesError, isLoading: favoriteRidesLoading, mutate: mutateFavoriteRides } = useSWR<Ride[], Error>(favoriteRidesKey);
 
 	//
 	// B. Handle actions

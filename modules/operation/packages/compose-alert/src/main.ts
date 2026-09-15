@@ -143,16 +143,10 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 
 		const finalPrompt = getFinalPrompt(promptContext);
 
-		console.log('finalPrompt', finalPrompt);
-
 		const aiResult = await ociGenerativeAIProvider.run(finalPrompt, { temperature: 0.3 });
-
-		console.log('aiResult', aiResult);
 
 		result[i18nCode] = parseAiResult(aiResult);
 	}
-
-	console.log('result', result);
 
 	return result;
 }

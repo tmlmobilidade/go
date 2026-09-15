@@ -5,9 +5,8 @@ import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam } from '@tmlmobilidade/go-types-operation';
 import { type SystemStatus, SystemStatusValues, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateDateRange, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
@@ -89,8 +88,11 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		filterStatusOptions,
 	);
 
-	const [filterSeenFirstAt, setFilterSeenFirstAt] = useQueryState<number>('seen_first_at', parseAsInteger);
-	const [filterSeenLastAt, setFilterSeenLastAt] = useQueryState<number>('seen_last_at', parseAsInteger);
+	const filterSeenAt = useFilterStateDateRange('seen_at', null, null);
+	const filterSeenFirstAt = filterSeenAt.value_start ?? null;
+	const filterSeenLastAt = filterSeenAt.value_end ?? null;
+	const setFilterSeenFirstAt = filterSeenAt.setStart;
+	const setFilterSeenLastAt = filterSeenAt.setEnd;
 
 	const normalizeApexVersion = useCallback(
 		(value: null | string | undefined): null | string => {
@@ -247,8 +249,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 					next[row._id] = row.timeline_summary ?? { months: [] };
 				return next;
 			});
-		} catch (error) {
-			console.error('[SamsList] Failed to fetch timeline summary.', { error, samIdsCount: samIds.length });
+		} catch {
 			// Keep already-rendered rows; missing timeline can retry on later visibility events.
 		} finally {
 			for (const samId of samIds)
@@ -322,8 +323,8 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		() => ({
 			actions: {
 				setFavoritesEnabled: () => setFavoritesEnabled(!favoritesEnabled),
-				setFilterSeenFirstAt: value => setFilterSeenFirstAt(value as null | number),
-				setFilterSeenLastAt: value => setFilterSeenLastAt(value as null | number),
+				setFilterSeenFirstAt,
+				setFilterSeenLastAt,
 				trackVisibleSamIds,
 			},
 			data: {
@@ -335,8 +336,8 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 				agency: filterAgency,
 				apex_version: filterApexVersion,
 				search: filterSearch,
-				seen_first_at: (filterSeenFirstAt ?? null) as null | UnixMilliseconds,
-				seen_last_at: (filterSeenLastAt ?? null) as null | UnixMilliseconds,
+				seen_first_at: filterSeenFirstAt,
+				seen_last_at: filterSeenLastAt,
 				status: filterStatus,
 			},
 			flags: {

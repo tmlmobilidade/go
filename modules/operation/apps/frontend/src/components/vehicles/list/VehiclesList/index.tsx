@@ -1,15 +1,15 @@
 'use client';
 
+import { useVehiclesDetailVehicleId } from '@/components/vehicles/detail/use-vehicles-detail-vehicle-id';
 import { VehiclesListFiltersBar } from '@/components/vehicles/list/VehiclesListFiltersBar';
 import { VehiclesListHeader } from '@/components/vehicles/list/VehiclesListHeader';
 import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
 import { VehicleNormalized } from '@/types/normalized';
-import { FormatlLicensePlate } from '@/utils/formatLicencePlate';
+import { formatLicensePlate } from '@/utils/formatLicencePlate';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, OperationalDateDisplay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, LoadingOverlay, OperationalDateDisplay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 
 /* * */
 
@@ -20,7 +20,7 @@ export function VehiclesList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
+	const { vehicleId } = useVehiclesDetailVehicleId();
 
 	const vehiclesListContext = useVehiclesListContext();
 	const agenciesContext = useAgenciesContext();
@@ -40,7 +40,7 @@ export function VehiclesList() {
 		},
 		{
 			accessor: 'license_plate',
-			render: item => <Tag label={FormatlLicensePlate(item.license_plate)} />,
+			render: item => <Tag label={formatLicensePlate(item.license_plate)} />,
 			title: 'Matrícula',
 			width: 200,
 		},
@@ -81,7 +81,7 @@ export function VehiclesList() {
 				onRowClick={handleRowClick}
 				records={vehiclesListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={vehicleId}
 			/>
 		</Pane>
 	);

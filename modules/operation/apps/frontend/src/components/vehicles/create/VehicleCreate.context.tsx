@@ -6,7 +6,7 @@ import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmo
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -62,7 +62,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// D. Handle actions
 
-	const handleCreateVehicle = async () => {
+	const handleCreateVehicle = useCallback(async () => {
 		setIsError(null);
 		setIsSaving(true);
 		const response = await fetchData<Vehicle>(API_ROUTES.operation.VEHICLES_LIST, 'POST', form.getValues());
@@ -86,7 +86,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 		closeCreateVehicleModal();
 		useToast.success({ message: 'Veículo criado com sucesso', title: 'Sucesso' });
 		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.operation.VEHICLES_DETAIL(response.data._id)));
-	};
+	}, [allVehiclesMutate, form, router]);
 
 	//
 	// E. Define context value
@@ -106,6 +106,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 		};
 	}, [
 		form,
+		handleCreateVehicle,
 		isError,
 		isSaving,
 	]);

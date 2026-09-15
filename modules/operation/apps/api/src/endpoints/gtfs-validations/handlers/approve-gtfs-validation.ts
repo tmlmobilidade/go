@@ -5,7 +5,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type CreatePlanDto, type Plan } from '@tmlmobilidade/go-types-operation';
-import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
@@ -31,10 +31,12 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 	//
 	// Check if have permissions to create the plan
 
-	const hasPermissionCreatePlan = hasPermissionResource(request.permissions, {
-		requiredPermission: { action: 'create', scope: 'plans' },
-		requiredValue: validationData.agency_id,
-		resourceKey: 'agency_ids',
+	const hasPermissionCreatePlan = PermissionCatalog.hasPermissionResource({
+		action: PermissionCatalog.all.plans.actions.create,
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.plans.scope,
+		value: validationData.agency_id,
 	});
 
 	if (!hasPermissionCreatePlan) {
@@ -94,8 +96,6 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 
 	const insertPlanResult = await goDb.operation.plans.insertOne(newPlanData);
 
-	console.log(`[approveGtfsValidationHandler()] Inserted plan with ID "${insertPlanResult._id}"`);
-
 	//
 	// Download the validation GTFS file from the storage provider and copy it into the plan scope.
 
@@ -111,7 +111,7 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 	const downloadResponse = await fetch(findGtfsValidationAttachmentResult.url);
 	const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 
-	const updatedFileResult = await storageProvider.upload(
+	await storageProvider.upload(
 		Buffer.from(downloadArrayBuffer),
 		{
 			created_by: 'system',
@@ -134,8 +134,6 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 		},
 	);
 
-	console.log(`[approveGtfsValidationHandler()] Uploaded a copy of the validation GTFS file into the plan scope. Attachment ID: ${updatedFileResult._id}`);
-
 	//
 	// Get a new hash for this plan
 
@@ -155,8 +153,6 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 		});
 	}
 
-	console.log(`[approveGtfsValidationHandler()] Found the created plan with ID "${createdPlanData._id}" and operation GTFS attachment ID "${createdPlanData.attachments.operation_gtfs}"`);
-
 	const hashValue = await getPlanHash({
 		activeFrom: createdPlanData.active_from,
 		activeUntil: createdPlanData.active_until,
@@ -166,8 +162,6 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 	});
 
 	const updatePlanHashResult = await goDb.operation.plans.updateById(createdPlanData._id, { hash: hashValue });
-
-	console.log(`[approveGtfsValidationHandler()] Updated the plan hash with value "${hashValue}"`);
 
 	//
 	// Return the success response

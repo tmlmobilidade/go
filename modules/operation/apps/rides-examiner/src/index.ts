@@ -16,7 +16,7 @@ import { writers } from './utils/writers.js';
 
 try {
 	await initSentryNode();
-	Logger.startNodeLogs({ app: 'rides-examiner', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
+	Logger.startNodeLogs({ app: 'rides-examiner', message: 'Sentry Rides Examiner initialized', module: 'operation', severity: 'info' });
 } catch (error) {
 	Logger.error({ error, message: 'Error initializing Sentry Rides Examiner' });
 }

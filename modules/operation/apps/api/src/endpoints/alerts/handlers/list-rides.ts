@@ -12,7 +12,7 @@ import { readFile } from 'node:fs/promises';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listRides(request: FastifyRequest<{ Body: AlertsRidesFilters }>, reply: FastifyReply<AlertsRidesItem[]>) {
+export async function listRidesHandler(request: FastifyRequest<{ Body: AlertsRidesFilters }>, reply: FastifyReply<AlertsRidesItem[]>) {
 	//
 
 	//

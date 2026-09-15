@@ -19,7 +19,6 @@ self.addEventListener('message', async (event) => {
 			const filesNotFound: string[] = [];
 			if (!feedInfo) filesNotFound.push('feed_info.txt');
 			if (!agency) filesNotFound.push('agency.txt');
-			console.log(filesNotFound);
 			throw new Error(`${filesNotFound.join(', ')} not found in the GTFS zip file`);
 		}
 
@@ -42,7 +41,7 @@ self.addEventListener('message', async (event) => {
 			feed_info: emptyToUndefined(feedInfoData.data[0]),
 		});
 	} catch (error) {
-		console.error('Error parsing GTFS file:', error);
+		// Surface the error to the caller through the message payload
 		self.postMessage({ error: error instanceof Error ? error : new Error('Unknown error') });
 	}
 });

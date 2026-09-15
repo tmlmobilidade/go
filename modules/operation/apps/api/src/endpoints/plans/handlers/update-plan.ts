@@ -4,7 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
 import { type Plan, type UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
-import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 
 /**
@@ -30,10 +30,12 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 	//
 	// Check if the user has permission to update the Plan
 
-	const hasPermissionUpdatePlan = hasPermissionResource(request.permissions, {
-		requiredPermission: { action: 'update', scope: 'plans' },
-		requiredValue: foundPlan.agency_id,
-		resourceKey: 'agency_ids',
+	const hasPermissionUpdatePlan = PermissionCatalog.hasPermissionResource({
+		action: PermissionCatalog.all.plans.actions.update,
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.plans.scope,
+		value: foundPlan.agency_id,
 	});
 
 	if (!hasPermissionUpdatePlan) {
@@ -66,10 +68,12 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 		//
 		// Check if the user has permission to update the feed info dates
 
-		const hasPermissionUpdateFeedInfoDates = hasPermissionResource(request.permissions, {
-			requiredPermission: { action: 'update_feed_info_dates', scope: 'plans' },
-			requiredValue: foundPlan.agency_id,
-			resourceKey: 'agency_ids',
+		const hasPermissionUpdateFeedInfoDates = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.update_feed_info_dates,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: foundPlan.agency_id,
 		});
 
 		if (!hasPermissionUpdateFeedInfoDates) {

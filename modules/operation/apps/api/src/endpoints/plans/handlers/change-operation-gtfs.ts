@@ -5,7 +5,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
-import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Change the operation GTFS of a plan from a given validation ID.
@@ -30,10 +30,12 @@ export async function changeOperationGtfsHandler(request: FastifyRequest<{ Body:
 	//
 	// Check if the user has permission to change the GTFS of the Plan
 
-	const hasPermissionChangeGtfsPlan = hasPermissionResource(request.permissions, {
-		requiredPermission: { action: 'update_gtfs_plan', scope: 'plans' },
-		requiredValue: planData.agency_id,
-		resourceKey: 'agency_ids',
+	const hasPermissionChangeGtfsPlan = PermissionCatalog.hasPermissionResource({
+		action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.plans.scope,
+		value: planData.agency_id,
 	});
 
 	if (!hasPermissionChangeGtfsPlan) {

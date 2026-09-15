@@ -1,5 +1,6 @@
 'use client';
 
+import { usePlansDetailPlanId } from '@/components/plans/detail/use-plans-detail-plan-id';
 import { PlansListFiltersBar } from '@/components/plans/list/filters/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { PlansListCellFeedDates } from '@/components/plans/list/table/PlansListCellFeedDates';
@@ -7,9 +8,8 @@ import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agenci
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 
 import { usePlansListData } from '../use-plans-list-data';
 
@@ -22,7 +22,7 @@ export function PlansList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
+	const { planId } = usePlansDetailPlanId();
 
 	const plansData = usePlansListData();
 
@@ -141,7 +141,7 @@ export function PlansList() {
 				onRowClick={handleRowClick}
 				records={plansData.data}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={planId}
 			/>
 		</Pane>
 	);

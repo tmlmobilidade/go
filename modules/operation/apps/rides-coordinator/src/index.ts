@@ -13,7 +13,7 @@ import { getRidesHandler } from './handlers/get-rides.js';
 
 try {
 	await initSentryNode();
-	Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
+	Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'operation', severity: 'info' });
 } catch (error) {
 	Logger.error({ error, message: 'Error initializing Sentry Coordinator' });
 }
@@ -38,7 +38,7 @@ await (async function init() {
 
 	fastify.listen({ host: '::0', port: 5050 }, (err, address) => {
 		if (err) {
-			console.log(err);
+			Logger.error({ error: err, message: 'Error starting the coordinator server' });
 			process.exit(1);
 		}
 		Logger.info({ message: `Server listening at ${address}` });

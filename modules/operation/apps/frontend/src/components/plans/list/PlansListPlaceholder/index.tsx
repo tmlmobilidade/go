@@ -1,0 +1,50 @@
+'use client';
+
+import { IconFileCertificate } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
+
+/* * */
+
+export function PlansListPlaceholder() {
+	//
+
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Render components
+
+	return (
+		<div className={styles.container}>
+			<IconFileCertificate size={100} />
+			<h2>{t('default:plans.list.Placeholder.title')}</h2>
+			<ol>
+				<li>
+					<h3>{t('default:plans.list.Placeholder.steps.validate.title')}</h3>
+					{t('default:plans.list.Placeholder.steps.validate.description_before')}
+					<a href={PAGE_ROUTES.operation.GTFS_VALIDATIONS_LIST}>{t('default:plans.list.Placeholder.steps.validate.link')}</a>
+					{t('default:plans.list.Placeholder.steps.validate.description_after')}
+				</li>
+				<li>
+					<h3>{t('default:plans.list.Placeholder.steps.wait.title')}</h3>
+					{t('default:plans.list.Placeholder.steps.wait.description_before')}
+					<strong>{t('default:plans.list.Placeholder.steps.wait.valid')}</strong>
+					{t('default:plans.list.Placeholder.steps.wait.description_middle')}
+					<strong>{t('default:plans.list.Placeholder.steps.wait.errors')}</strong>
+					{t('default:plans.list.Placeholder.steps.wait.description_after')}
+				</li>
+				<li>
+					<h3>{t('default:plans.list.Placeholder.steps.convert.title')}</h3>
+					{t('default:plans.list.Placeholder.steps.convert.description_before')}
+					<strong>{t('default:plans.list.Placeholder.steps.convert.success')}</strong>
+					{t('default:plans.list.Placeholder.steps.convert.description_after')}
+				</li>
+			</ol>
+		</div>
+	);
+}

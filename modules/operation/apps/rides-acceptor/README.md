@@ -46,7 +46,7 @@ Operations need a durable acceptance record per ride — whether analysis passed
 
 ## Ride acceptance rules
 
-Rules are evaluated in `testRide()` (`src/test-ride.ts`). Only one analysis is required today:
+Rules are evaluated in `testRide()` (`src/utils/test-ride.ts`). Only one analysis is required today:
 
 ```ts
 REQUIRED_ANALYSES = ['simple_three_vehicle_events']
@@ -307,11 +307,11 @@ Newly created acceptances in `justification_required` also skip alert justificat
 | File | Responsibility |
 |---|---|
 | `src/index.ts` | Interval loop, `performInTimeChunks` orchestration |
-| `src/process.ts` | Per-chunk: fetch rides/analyses + acceptances, create/update/alert loop |
-| `src/create-ride-acceptance.ts` | Insert new acceptance (with operational status gate) |
-| `src/update-ride-acceptance.ts` | Update acceptance when analysis summary changes |
-| `src/alert-justification.ts` | Alert lookup and auto-justification |
-| `src/test-ride.ts` | `testRide()` — evaluate required analyses |
+| `src/tasks/process-ride-acceptance-chunk.ts` | Per-chunk: fetch rides/analyses + acceptances, create/update/alert loop |
+| `src/tasks/create-ride-acceptance.ts` | Insert new acceptance (with operational status gate) |
+| `src/tasks/update-ride-acceptance.ts` | Update acceptance when analysis summary changes |
+| `src/tasks/alert-justification.ts` | Alert lookup and auto-justification |
+| `src/utils/test-ride.ts` | `testRide()` — evaluate required analyses |
 | `src/types/ride-with-analyses.ts` | `RideWithAnalyses`, `REQUIRED_ANALYSES` |
 | `src/queries/build-rides-with-analyses-query.ts` | Builds ClickHouse SQL joining rides + analysis tables |
 | `src/queries/rides-with-analyses-query.ts` | Compiled query for the current `REQUIRED_ANALYSES` |
@@ -372,7 +372,7 @@ All constants are hard-coded — **no environment variables** in this app (Sentr
 | Run interval | 10 minutes | `runOnInterval(..., { intervalMs: '10m' })` |
 | Chunk size | 2 hours | `performInTimeChunks({ intervalHrs: 2 })` |
 | Upper bound offset | 30 seconds before now | avoids very recent rides |
-| Alert lookback | 2 days | `alert-justification.ts` |
+| Alert lookback | 2 days | `tasks/alert-justification.ts` |
 | Required analyses | `simple_three_vehicle_events` | `types/ride-with-analyses.ts` |
 | Timezone | `Europe/Lisbon` | chunk boundaries and alert filter |
 

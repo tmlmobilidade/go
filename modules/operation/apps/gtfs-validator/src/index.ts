@@ -6,23 +6,24 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendSystemErrorEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import pjson from 'pjson' with { type: 'json' };
 
 /* * */
 
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'gtfs-validator', message: 'Sentry GTFS Validator initialized', module: 'operation', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry GTFS Validator' });
+}
+
 async function main() {
 	//
-
-	// // Initialize Sentry
-
-	// try {
-	// 	await initSentryNode();
-	// 	Logger.startNodeLogs({ app: 'validator', message: 'Sentry Plans Validator initialized', module: 'plans', severity: 'info' });
-	// } catch (error) {
-	// 	Logger.error({ error, message: 'Error initializing Sentry Plans Validator' });
-	// }
 
 	//
 	// Initialize the logger

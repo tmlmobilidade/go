@@ -1,14 +1,14 @@
 'use client';
 
+import { useValidationsDetailValidationId } from '@/components/validations/detail/use-validations-detail-validation-id';
 import { ValidationsListFiltersBar } from '@/components/validations/list/filters/ValidationsListFiltersBar';
 import { ValidationsListCellDate } from '@/components/validations/list/shared/ValidationsListCellCreatedAt';
 import { ValidationsListHeader } from '@/components/validations/list/shared/ValidationsListHeader';
 import { useGtfsValidationsAgenciesData } from '@/components/validations/shared/use-gtfs-validations-agencies-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ValidationListItem } from '@tmlmobilidade/go-operation-pckg-types';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay, ValidityStatusDisplay } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, ProcessingStatusDisplay, ValidityStatusDisplay } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 
 import { useValidationsListData } from '../../use-validations-list-data';
 
@@ -21,7 +21,7 @@ export function ValidationsList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
+	const { validationId } = useValidationsDetailValidationId();
 
 	const { data: agenciesData } = useGtfsValidationsAgenciesData({
 		permissions: { actions: ['read'], scope: 'gtfs_validations' },
@@ -92,7 +92,7 @@ export function ValidationsList() {
 				onRowClick={handleRowClick}
 				records={validationsData.data}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={validationId}
 			/>
 		</Pane>
 	);

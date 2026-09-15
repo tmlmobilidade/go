@@ -32,7 +32,7 @@ const monthKeyFromDayKey = (dayKey: string): null | string => {
 
 const toSquareAccent = (accent: DayAccent): 'green' | 'orange' | 'red' | 'white' => accent;
 
-export function AnalysisCalendar({ analyses, className, onDayClick, rangeEndTs, rangeStartTs }: AnalysisCalendarProps) {
+export function AnalysisCalendar({ analyses, onDayClick, rangeEndTs, rangeStartTs }: AnalysisCalendarProps) {
 	const sections = useMemo(() => buildMonthSections(analyses ?? [], { rangeEndTs, rangeStartTs }), [analyses, rangeEndTs, rangeStartTs]);
 	const allDaySections = useMemo(() => buildSections(analyses ?? [], { rangeEndTs, rangeStartTs }), [analyses, rangeEndTs, rangeStartTs]);
 	const monthDaySectionsByKey = useMemo(() => {

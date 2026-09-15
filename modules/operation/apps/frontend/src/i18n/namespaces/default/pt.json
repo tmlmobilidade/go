@@ -106,6 +106,35 @@
 			"title": "Circulações"
 		}
 	},
+	"plans": {
+		"list": {
+			"Placeholder": {
+				"steps": {
+					"convert": {
+						"description_after": ", será possível converter a validação num plano.",
+						"description_before": "Após uma ",
+						"success": "validação bem-sucedida",
+						"title": "Converter GTFS em plano"
+					},
+					"validate": {
+						"description_after": " e faça o upload do seu ficheiro GTFS para iniciar a validação.",
+						"description_before": "Aceda a este ",
+						"link": "link",
+						"title": "Validar o ficheiro GTFS"
+					},
+					"wait": {
+						"description_after": ".",
+						"description_before": "O sistema analisará o ficheiro e indicará se está ",
+						"description_middle": " ou se existem ",
+						"errors": "erros a corrigir",
+						"title": "Aguardar o resultado da validação",
+						"valid": "válido"
+					}
+				},
+				"title": "Como criar um plano GTFS"
+			}
+		}
+	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {
@@ -716,6 +745,9 @@
 			}
 		},
 		"list": {
+			"Placeholder": {
+				"text": "Selecione um SAM na lista."
+			},
 			"SamsFiltersApexVersion": {
 				"label": "Versão APEX"
 			},
@@ -745,6 +777,37 @@
 				"failed": "Falhou",
 				"processing": "Em processamento",
 				"waiting": "Aguardando"
+			}
+		}
+	},
+	"validations": {
+		"list": {
+			"Placeholder": {
+				"steps": {
+					"convert": {
+						"description_after": ".",
+						"description_before": "Após uma ",
+						"description_middle": ", será possível converter a validação num ",
+						"link": "plano",
+						"success": "validação bem-sucedida",
+						"title": "Converter GTFS em plano"
+					},
+					"validate": {
+						"button": "Nova validação",
+						"description_after": " para iniciar a carregar um plano GTFS.",
+						"description_before": "Clique no botão ",
+						"title": "Validar o ficheiro GTFS"
+					},
+					"wait": {
+						"description_after": ".",
+						"description_before": "O sistema analisará o ficheiro e indicará se está ",
+						"description_middle": " ou se existem ",
+						"errors": "erros a corrigir",
+						"title": "Aguardar o resultado da validação",
+						"valid": "válido"
+					}
+				},
+				"title": "Validar um plano GTFS"
 			}
 		}
 	}

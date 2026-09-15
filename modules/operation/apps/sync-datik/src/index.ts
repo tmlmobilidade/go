@@ -12,28 +12,25 @@ import { type ServiceAlertResponse } from '@tmlmobilidade/types';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const __filename = fileURLToPath(import.meta.url);
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const __dirname = path.dirname(__filename);
-
 /* * */
 
 const DatikServiceAlertsUrl = 'https://api.control.optibus.co/opendata/v1/gtfs-rt/alerts?uid=c-06821148';
-const ProtobufPath = path.resolve(__dirname, './gtfs-realtime.proto');
+const ProtobufPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), './gtfs-realtime.proto');
+
+/* * */
+
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'sync-datik', message: 'Sentry Sync Datik initialized', module: 'operation', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Sync Datik' });
+}
 
 async function main() {
 	//
-
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Alerts Sync Datik' });
-	}
 
 	//
 	// Initialize the logger

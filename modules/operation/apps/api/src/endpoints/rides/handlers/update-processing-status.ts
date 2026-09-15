@@ -4,7 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
-import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ProcessingStatus } from '@tmlmobilidade/go-types-shared';
 
 /**
@@ -30,10 +30,12 @@ export async function updateProcessingStatusHandler(request: FastifyRequest<{ Bo
 	//
 	// Check if the user has permissions to update the processing status of the ride
 
-	const hasPermissionUpdateProcessingStatus = hasPermissionResource(request.permissions, {
-		requiredPermission: { action: 'analysis_reprocess', scope: 'rides' },
-		requiredValue: rideData.agency_id,
-		resourceKey: 'agency_ids',
+	const hasPermissionUpdateProcessingStatus = PermissionCatalog.hasPermissionResource({
+		action: PermissionCatalog.all.rides.actions.analysis_reprocess,
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.rides.scope,
+		value: rideData.agency_id,
 	});
 
 	if (!hasPermissionUpdateProcessingStatus) {

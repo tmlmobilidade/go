@@ -3,7 +3,7 @@
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, Collapsible, fetchApiData, FileItem, FileUpload, HasPermission, NoDataLabel, Section, useHandleAction, useMeContext } from '@tmlmobilidade/ui';
+import { Button, Collapsible, fetchApiData, FileItem, FileUpload, HasPermission, NoDataLabel, Section, useHandleAction, useMeData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -14,29 +14,31 @@ export function PlansDetailSectionApexConfig() {
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 	const planDetailContext = usePlanDetailContext();
 
 	//
 	// B. Transform data
 
 	const hasPermissionUpdateApexFile = useMemo(() => {
-		return meContext.actions.hasPermissionResource({
+		return PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.update_apex_file,
+			permissions: meData?.permissions ?? [],
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
 			value: planDetailContext.data.plan?.agency_id ?? '',
 		});
-	}, [meContext.actions, planDetailContext.data.plan?.agency_id]);
+	}, [meData?.permissions, planDetailContext.data.plan?.agency_id]);
 
 	const hasPermissionDeleteApexFile = useMemo(() => {
-		return meContext.actions.hasPermissionResource({
+		return PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.delete_apex_file,
+			permissions: meData?.permissions ?? [],
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
 			value: planDetailContext.data.plan?.agency_id ?? '',
 		});
-	}, [meContext.actions, planDetailContext.data.plan?.agency_id]);
+	}, [meData?.permissions, planDetailContext.data.plan?.agency_id]);
 
 	//
 	// C. Handle actions

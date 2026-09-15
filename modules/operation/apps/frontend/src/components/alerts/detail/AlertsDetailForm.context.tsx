@@ -3,8 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -67,7 +66,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 			unblock();
 			alertsDetailMutate(response);
 			alertsListMutate();
-			router.push(PAGE_ROUTES.operation.ALERTS_DETAIL(response.data._id));
+			router.push(keepUrlParams(PAGE_ROUTES.operation.ALERTS_DETAIL(response.data._id)));
 		},
 	});
 
@@ -76,7 +75,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 		onSuccess: () => {
 			unblock();
 			alertsListMutate();
-			router.push(PAGE_ROUTES.operation.ALERTS_LIST);
+			router.push(keepUrlParams(PAGE_ROUTES.operation.ALERTS_LIST));
 		},
 	});
 

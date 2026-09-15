@@ -2,7 +2,7 @@
 
 import { RideAcceptance } from '@tmlmobilidade/go-types-operation';
 
-import { REQUIRED_ANALYSES, type RideWithAnalyses } from './types/ride-with-analyses.js';
+import { REQUIRED_ANALYSES, type RideWithAnalyses } from '../types/ride-with-analyses.js';
 
 /* * */
 

@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertCause, type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -50,7 +50,7 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 	//
 	// B. Handle actions
 
-	async function addComment(comment: RideAcceptance['comments'][number]) {
+	const addComment = useCallback(async (comment: RideAcceptance['comments'][number]) => {
 		try {
 			const res = await fetchData(API_ROUTES.operation.RIDE_ACCEPTANCES_COMMENT(rideId), 'POST', comment);
 
@@ -63,9 +63,9 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 		} catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao adicionar comentário' });
 		}
-	}
+	}, [acceptanceMutate, rideId]);
 
-	async function changeStatus(status: RideAcceptance['acceptance_status']) {
+	const changeStatus = useCallback(async (status: RideAcceptance['acceptance_status']) => {
 		try {
 			const statusResponse = await fetchData(API_ROUTES.operation.RIDE_ACCEPTANCES_CHANGE_STATUS(rideId), 'PUT', { acceptance_status: status });
 
@@ -78,25 +78,25 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 		} catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao alterar status' });
 		}
-	}
+	}, [acceptanceMutate, rideId]);
 
-	async function justify(message: string, cause: AlertCause, manual_trip_id?: string) {
+	const justify = useCallback(async (message: string, cause: AlertCause, manual_trip_id?: string) => {
 		const response = await fetchData(API_ROUTES.operation.RIDE_ACCEPTANCES_JUSTIFY(rideId), 'PUT', { justification_cause: cause, manual_trip_id, pto_message: message });
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao justificar' });
 			return;
 		}
 		acceptanceMutate();
-	}
+	}, [acceptanceMutate, rideId]);
 
-	async function toggleLock(is_locked: RideAcceptance['is_locked']) {
+	const toggleLock = useCallback(async (is_locked: RideAcceptance['is_locked']) => {
 		const response = await fetchData(API_ROUTES.operation.RIDE_ACCEPTANCES_LOCK(rideId), 'PUT', { is_locked });
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao bloquear justificação' });
 			return;
 		}
 		acceptanceMutate();
-	}
+	}, [acceptanceMutate, rideId]);
 
 	//
 	// C. Define context value
@@ -119,6 +119,10 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 		acceptanceData,
 		acceptanceError,
 		acceptanceLoading,
+		addComment,
+		changeStatus,
+		justify,
+		toggleLock,
 	]);
 
 	//

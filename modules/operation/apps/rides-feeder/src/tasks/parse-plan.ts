@@ -31,7 +31,7 @@ export async function parsePlanTask(planData: Plan) {
 	// Mark the plan as 'error' if it does not have an associated operation file
 
 	if (!planData.attachments.operation_gtfs_normalized) {
-		console.error(`Skip processing: No operation GTFS normalized found. (plan: ${planData._id})`);
+		Logger.error({ message: `Skip processing: No operation GTFS normalized found. (plan: ${planData._id})` });
 		await setPlanStatus(planData._id, 'rides_feeder', 'error');
 		return;
 	}

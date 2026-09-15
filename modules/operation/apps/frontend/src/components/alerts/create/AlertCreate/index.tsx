@@ -1,7 +1,7 @@
 'use client';
 
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { NoDataLabel, Pane, Surface, useMeContext } from '@tmlmobilidade/ui';
+import { NoDataLabel, Pane, Surface, useMeData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { AlertCreateFooter } from '../../create/AlertCreateFooter';
@@ -18,11 +18,11 @@ export function AlertCreate() {
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 
 	const hasPermissionCreate = useMemo(() => {
-		return meContext?.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
-	}, [meContext]);
+		return PermissionCatalog.hasPermission(meData?.permissions ?? [], PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+	}, [meData?.permissions]);
 
 	//
 	// B. Render components

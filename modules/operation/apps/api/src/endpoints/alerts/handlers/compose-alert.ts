@@ -10,6 +10,12 @@ import { type AlertsComposeRequest, type AlertsComposeResponse } from '@tmlmobil
  * @param reply Fastify reply.
  */
 export async function composeAlertHandler(request: FastifyRequest<{ Body: AlertsComposeRequest }>, reply: FastifyReply<AlertsComposeResponse>) {
+	//
+
+	//
+	// Compose the alert title and description
+
 	const result = await composeAlertTitleAndDescription(request.body);
-	sendSuccessApiResponse(reply, result);
+
+	return sendSuccessApiResponse(reply, result);
 }

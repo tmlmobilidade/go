@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
@@ -11,23 +10,34 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param reply Fastify reply
  */
 export async function deleteVehicleHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-	const { id } = request.params;
-	const vehicle = await goDb.operation.vehicles.findById(id);
+	//
+
+	//
+	// Get the Vehicle from the database
+
+	const vehicle = await goDb.operation.vehicles.findById(request.params.id);
 
 	if (!vehicle) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Vehicle not found',
+			status_code: '404',
+		});
 	}
 
 	//
 	// Check if the user has permission to delete vehicles
 
 	if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.delete)) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete vehicles');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to delete vehicles',
+			status_code: '403',
+		});
 	}
 
 	//
+	// Delete the vehicle
 
-	await goDb.operation.vehicles.deleteById(id);
+	await goDb.operation.vehicles.deleteById(request.params.id);
 
-	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, undefined);
 }

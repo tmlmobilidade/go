@@ -1,28 +1,34 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type AlertCause, type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
+import { type AlertCause, type RideAcceptance, RideAcceptanceStatusSchema, UpdateRideAcceptanceSchema } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Justifies a ride acceptance by ride ID
+ * @param request Fastify request containing ride ID in params and the justification in body
+ * @param reply Fastify reply
  */
-export async function justifyRide(request: FastifyRequest<{ Body: { justification_cause: AlertCause, manual_trip_id?: string, pto_message: string }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
+export async function justifyRideHandler(request: FastifyRequest<{ Body: { justification_cause: AlertCause, manual_trip_id?: string, pto_message: string }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
+
+	//
+	// Get the Ride Acceptance from the database
 
 	const oldJustificationData = await goDb.operation.rideAcceptances.findById(request.params.id);
 
 	if (!oldJustificationData) {
-		return reply.status(HTTP_STATUS.NOT_FOUND).send({
-			data: null,
+		return sendErrorApiResponse(reply, {
 			error: 'Ride acceptance not found.',
-			statusCode: HTTP_STATUS.NOT_FOUND,
+			status_code: '404',
 		});
 	}
 
-	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, {
+	//
+	// Validate the updated document
+
+	const validatedRideAcceptance = UpdateRideAcceptanceSchema.safeParse({
 		...oldJustificationData,
 		acceptance_status: RideAcceptanceStatusSchema.Values.under_review,
 		justification: {
@@ -38,9 +44,17 @@ export async function justifyRide(request: FastifyRequest<{ Body: { justificatio
 		updated_by: request.me._id,
 	});
 
-	return reply.send({
-		data: updateResult,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	if (!validatedRideAcceptance.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedRideAcceptance.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
+	// Update the Ride Acceptance in the database
+
+	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, validatedRideAcceptance.data);
+
+	return sendSuccessApiResponse(reply, updateResult);
 }

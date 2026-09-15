@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 
@@ -18,9 +17,10 @@ export async function listVehiclesHandler(request: FastifyRequest, reply: Fastif
 
 	const allVehicles = await goDb.operation.vehicles.findMany();
 
-	return reply
-		.header('Access-Control-Allow-Origin', '*')
-		.send({ data: allVehicles, error: null, statusCode: HTTP_STATUS.OK });
-
 	//
+	// Send the vehicles back to the client
+
+	reply.header('Access-Control-Allow-Origin', '*');
+
+	return sendSuccessApiResponse(reply, allVehicles);
 }

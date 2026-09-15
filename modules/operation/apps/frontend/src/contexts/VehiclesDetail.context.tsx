@@ -6,7 +6,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -72,12 +72,12 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	useEffect(() => {
 		if (!vehicleError) return;
 		useToast.error({ message: vehicleError.message, title: 'Erro ao abrir veículo' });
-	}, [vehicleLoading]);
+	}, [vehicleError, vehicleLoading]);
 
 	//
 	// E. Handle actions
 
-	const handleSaveVehicle = async () => {
+	const handleSaveVehicle = useCallback(async () => {
 		setIsSaving(true);
 
 		const toastId = useToast.loading({
@@ -114,11 +114,11 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			vehiclesListMutate();
 			setIsSaving(false);
 		}
-	};
+	}, [form, vehicleId, vehicleMutate, vehiclesListMutate]);
 
 	//
 
-	const handleDeleteVehicle = async () => {
+	const handleDeleteVehicle = useCallback(async () => {
 		try {
 			const response = await fetchData<Vehicle>(API_ROUTES.operation.VEHICLES_DETAIL(vehicleId), 'DELETE', vehicleData);
 			if (response.error) {
@@ -140,11 +140,11 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 		} finally {
 			vehiclesListMutate();
 		}
-	};
+	}, [router, vehicleData, vehicleId, vehiclesListMutate]);
 
 	//
 
-	const handleToggleLock = async () => {
+	const handleToggleLock = useCallback(async () => {
 		try {
 			const response = await fetchData<Vehicle>(API_ROUTES.operation.VEHICLES_DETAIL_LOCK(vehicleId));
 			if (response.error) {
@@ -162,7 +162,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			vehicleMutate();
 			vehiclesListMutate();
 		}
-	};
+	}, [vehicleId, vehicleMutate, vehiclesListMutate]);
 
 	//
 	// F. Define context value
@@ -185,7 +185,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			read_only: vehicleData?.is_locked || vehicleLoading || isSaving,
 			saving: isSaving,
 		},
-	}), [form, vehicleId, vehiclePositions, vehicleData, vehicleError, vehicleLoading, isSaving]);
+	}), [form, handleDeleteVehicle, handleSaveVehicle, handleToggleLock, vehicleId, vehiclePositions, vehicleData, vehicleError, vehicleLoading, isSaving]);
 
 	//
 	// G. Render components

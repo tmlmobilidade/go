@@ -1,7 +1,7 @@
 'use client';
 
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useMeContext, useSessionStorage } from '@tmlmobilidade/ui';
+import { type ActionsOf, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { useMeData, useSessionStorage } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -16,7 +16,7 @@ type RidesDetailCurrentView = (typeof RidesDetailCurrentViewValues)[number];
 
 /* * */
 
-const currentViewPermissionsMap: Record<RidesDetailCurrentView, string> = {
+const currentViewPermissionsMap: Record<RidesDetailCurrentView, ActionsOf<'rides'>> = {
 	acceptance: PermissionCatalog.all.rides.actions.acceptance_read,
 	analysis: PermissionCatalog.all.rides.actions.analysis_read,
 	audit: PermissionCatalog.all.rides.actions.audit_read,
@@ -38,7 +38,7 @@ export function useRidesDetailCurrentView(): UseRidesDetailCurrentViewReturnType
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 
 	const [currentView, setCurrentView] = useSessionStorage<RidesDetailCurrentView>({
 		defaultValue: 'analysis',
@@ -47,9 +47,9 @@ export function useRidesDetailCurrentView(): UseRidesDetailCurrentViewReturnType
 
 	const availableViews = useMemo(() => {
 		return RidesDetailCurrentViewValues.filter((item) => {
-			return meContext.actions.hasPermission(PermissionCatalog.all.rides.scope, currentViewPermissionsMap[item]);
+			return PermissionCatalog.hasPermission(meData?.permissions ?? [], PermissionCatalog.all.rides.scope, currentViewPermissionsMap[item]);
 		});
-	}, [meContext.data.user.permissions]);
+	}, [meData?.permissions]);
 
 	//
 	// B. Return data

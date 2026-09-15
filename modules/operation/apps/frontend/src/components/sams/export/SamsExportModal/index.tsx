@@ -125,7 +125,7 @@ export const openSamExportModal = (payload: SamsExportModalPayload) => {
 
 /* * */
 
-export default function SamsExportModal() {
+export function SamsExportModal() {
 	//
 
 	//

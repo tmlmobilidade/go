@@ -1,4 +1,5 @@
-// utils/TickManager.ts
+/* * */
+
 type TickCallback = () => void;
 
 export const FLAP_ANIMATION_DURATION = 100; // milliseconds
@@ -8,13 +9,10 @@ class TickManager {
 
 	private fps = 60;
 	private fpsEstimateInterval = 300000; // Recalculate every 5 minutes
-
 	private frameCounter = 0;
 	private frameId: null | number = null;
-
 	private framesPerTick = 1;
 	private lastFpsEstimateTime = 0;
-
 	private targetFPS = 60;
 	private tickCallbacks = new Set<TickCallback>();
 
@@ -56,10 +54,8 @@ class TickManager {
 				frames++;
 				if (now - start >= sampleDuration) {
 					const fps = (frames * 1000) / (now - start);
-					console.log('Estimated FPS:', Math.round(fps));
 					resolve(Math.round(fps));
-				}
-				else {
+				} else {
 					requestAnimationFrame(measure);
 				}
 			};
@@ -113,7 +109,6 @@ class TickManager {
 		// Assuming you want 10 ticks/sec
 		const desiredTickRate = 10;
 		this.framesPerTick = Math.max(1, Math.round(this.targetFPS / desiredTickRate));
-		// console.log('Frames per tick:', this.framesPerTick);
 	}
 }
 

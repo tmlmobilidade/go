@@ -25,8 +25,8 @@ export function FeedInfoDisplay({ data }: FeedInfoDisplayProps) {
 			return Dates
 				.fromOperationalDateInt(data?.feed_start_date, 'Europe/Lisbon')
 				.toFormat('yyyy-LL-dd');
-		} catch (error) {
-			console.log(error);
+		} catch {
+			// Invalid operational date, nothing to display
 			return null;
 		}
 	}, [data?.feed_start_date]);
@@ -37,8 +37,8 @@ export function FeedInfoDisplay({ data }: FeedInfoDisplayProps) {
 			return Dates
 				.fromOperationalDateInt(data?.feed_end_date, 'Europe/Lisbon')
 				.toFormat('yyyy-LL-dd');
-		} catch (error) {
-			console.log(error);
+		} catch {
+			// Invalid operational date, nothing to display
 			return null;
 		}
 	}, [data?.feed_end_date]);

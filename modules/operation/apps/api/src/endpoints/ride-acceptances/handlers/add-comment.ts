@@ -1,35 +1,50 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
+import { type RideAcceptance, UpdateRideAcceptanceSchema } from '@tmlmobilidade/go-types-operation';
 import { type NoteComment } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Adds a comment to a ride acceptance by ride ID
+ * @param request Fastify request containing ride ID in params and the comment in body
+ * @param reply Fastify reply
  */
-export async function addComment(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
+export async function addCommentHandler(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
+
+	//
+	// Get the Ride Acceptance from the database
 
 	const rideAcceptanceData = await goDb.operation.rideAcceptances.findOne({ _id: request.params.id });
 
 	if (!rideAcceptanceData) {
-		return reply.status(HTTP_STATUS.NOT_FOUND).send({
-			data: null,
+		return sendErrorApiResponse(reply, {
 			error: 'Ride acceptance not found.',
-			statusCode: HTTP_STATUS.NOT_FOUND,
+			status_code: '404',
 		});
 	}
 
-	const updateResult = await goDb.operation.rideAcceptances.updateById(
-		request.params.id,
-		{ ...rideAcceptanceData, comments: [...rideAcceptanceData.comments, { ...request.body, created_by: request.me._id, updated_by: request.me._id }], updated_by: request.me._id },
-	);
+	//
+	// Validate the updated document
 
-	return reply.send({
-		data: updateResult,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
+	const validatedRideAcceptance = UpdateRideAcceptanceSchema.safeParse({
+		...rideAcceptanceData,
+		comments: [...rideAcceptanceData.comments, { ...request.body, created_by: request.me._id, updated_by: request.me._id }],
+		updated_by: request.me._id,
 	});
+
+	if (!validatedRideAcceptance.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedRideAcceptance.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
+	// Update the Ride Acceptance in the database
+
+	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, validatedRideAcceptance.data);
+
+	return sendSuccessApiResponse(reply, updateResult);
 }

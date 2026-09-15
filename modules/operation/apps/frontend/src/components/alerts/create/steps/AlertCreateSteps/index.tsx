@@ -8,7 +8,7 @@ import { AlertCreateStepEffect } from '@/components/alerts/create/steps/AlertCre
 import { AlertCreateStepReferences } from '@/components/alerts/create/steps/AlertCreateStepReferences';
 import { AlertCreateStepSummary } from '@/components/alerts/create/steps/AlertCreateStepSummary';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { NoDataLabel, Surface, useMeContext } from '@tmlmobilidade/ui';
+import { NoDataLabel, Surface, useMeData } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,10 +18,10 @@ export function AlertCreateSteps() {
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 	const { progress: alertsCreateFormStepsProgress } = useAlertsCreateFormStepsContext();
 
-	const hasPermissionCreate = meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+	const hasPermissionCreate = PermissionCatalog.hasPermission(meData?.permissions ?? [], PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
 
 	//
 	// B. Render components
