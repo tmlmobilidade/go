@@ -49,9 +49,9 @@ async function reprocessStuckRides() {
 	/* RIDES */
 
 	await removeOrphanRidesTask();
-	await removeOrphanHashedShapesTask();
-	await removeOrphanHashedTripsTask();
-	await removeOrphanAnalysesTask();
+	// await removeOrphanHashedShapesTask();
+	// await removeOrphanHashedTripsTask();
+	// await removeOrphanAnalysesTask();
 
 	/* * */
 
