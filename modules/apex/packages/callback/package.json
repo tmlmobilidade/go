@@ -12,6 +12,8 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {

@@ -1,24 +1,25 @@
 /* * */
 
-import { syncApexSales } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { syncApexSales } from './tasks/sync-apex-sales.js';
+
 /* * */
 
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'raw-sync-sales', message: 'Sentry APEX Raw Sync Sales initialized', module: 'apex', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Sales' });
+}
+
 async function main() {
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'raw-sync-sales', message: 'Sentry APEX Raw Sync Sales initialized', module: 'apex', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Sales' });
-	}
-
 	//
 
 	try {
@@ -68,7 +69,7 @@ async function main() {
 
 		//
 	} catch (err) {
-		console.log('An error occurred. Halting execution.', err);
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 

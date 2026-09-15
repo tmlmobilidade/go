@@ -1,14 +1,15 @@
 /* * */
 
-import { processRawApexTransactionBankingTap } from '@/tasks/banking-taps.js';
-import { processRawApexTransactionInspectionDecision } from '@/tasks/inspection-decisions.js';
-import { processRawApexTransactionInspection } from '@/tasks/inspections.js';
-import { processRawApexTransactionLocation } from '@/tasks/locations.js';
-import { processRawApexTransactionRefund } from '@/tasks/refunds.js';
-import { processRawApexTransactionSale } from '@/tasks/sales.js';
-import { processRawApexTransactionValidation } from '@/tasks/validations.js';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+
+import { processRawApexTransactionBankingTap } from './tasks/banking-taps.js';
+import { processRawApexTransactionInspectionDecision } from './tasks/inspection-decisions.js';
+import { processRawApexTransactionInspection } from './tasks/inspections.js';
+import { processRawApexTransactionLocation } from './tasks/locations.js';
+import { processRawApexTransactionRefund } from './tasks/refunds.js';
+import { processRawApexTransactionSale } from './tasks/sales.js';
+import { processRawApexTransactionValidation } from './tasks/validations.js';
 
 /* * */
 

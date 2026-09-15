@@ -2,9 +2,10 @@
 
 import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
-import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
+import { type PcgiTransactionEntity, type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
+import { type ChangeStreamDocument } from 'mongodb';
 
 /* * */
 
@@ -25,13 +26,12 @@ const writer = new BatchWriter<RawApexTransaction>({
 });
 
 /**
- * Process the APEX Location database operation by validating the operation type,
- * transforming the document, and writing it to the SimplifiedApexLocations collection.
- * Additionally, publish heartbeats for each agency after processing the document.
- * @param databaseOperation The database operation containing the APEX Location document to be processed.
- * @returns A promise that resolves when the APEX Location document has been processed.
+ * Process the PCGI Transaction Entity database operation by validating the operation type,
+ * transforming the document, and writing it to the RawApexTransactions collection.
+ * @param databaseOperation The database operation containing the PCGI Transaction Entity document to be processed.
+ * @returns A promise that resolves when the PCGI Transaction Entity document has been processed.
  */
-export async function processPcgiTransactionEntity(databaseOperation) {
+export async function processPcgiTransactionEntity(databaseOperation: ChangeStreamDocument<PcgiTransactionEntity>) {
 	//
 
 	//
@@ -50,7 +50,7 @@ export async function processPcgiTransactionEntity(databaseOperation) {
 		const parsedDocument = parsePcgiTransactionEntityIntoRawApexTransaction(databaseOperation.fullDocument);
 		await writer.write(parsedDocument);
 	} catch (error) {
-		Logger.error({ message: `Error transforming APEX Transaction: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
+		Logger.error({ message: `Error transforming APEX Transaction: ${databaseOperation.fullDocument.transactionId}: Reason: ${error.message}` });
 	}
 
 	//
