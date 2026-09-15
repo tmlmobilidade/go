@@ -1,25 +1,27 @@
 /* * */
 
-import { syncPcgiTransactionEntities } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { syncPcgiTransactionEntities } from './tasks/sync-pcgi-transaction-entities.js';
+
 /* * */
+
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'pcgi-sync', message: 'Sentry APEX PCGI Sync initialized', module: 'apex', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry APEX PCGI Sync' });
+}
 
 async function main() {
 	//
-	// Initialize Sentry
 
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pcgi-sync', message: 'Sentry APEX PCGI Sync initialized', module: 'apex', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry APEX PCGI Sync' });
-	}
-
-	//
 	try {
 		//
 
@@ -67,7 +69,7 @@ async function main() {
 
 		//
 	} catch (err) {
-		console.log('An error occurred. Halting execution.', err);
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 

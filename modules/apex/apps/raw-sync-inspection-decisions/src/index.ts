@@ -1,25 +1,27 @@
 /* * */
 
-import { syncApexInspectionDecisions } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { syncApexInspectionDecisions } from './tasks/sync-apex-inspection-decisions.js';
+
 /* * */
+
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'raw-sync-inspection-decisions', message: 'Sentry APEX Raw Sync Inspection Decisions initialized', module: 'apex', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Inspection Decisions' });
+}
 
 async function main() {
 	//
-	// Initialize Sentry
 
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'raw-sync-inspection-decisions', message: 'Sentry APEX Raw Sync Inspection Decisions initialized', module: 'apex', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Inspection Decisions' });
-	}
-
-	//
 	try {
 		//
 
@@ -67,7 +69,7 @@ async function main() {
 
 		//
 	} catch (err) {
-		console.log('An error occurred. Halting execution.', err);
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 

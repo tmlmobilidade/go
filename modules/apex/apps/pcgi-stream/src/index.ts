@@ -1,8 +1,9 @@
 /* * */
 
-import { processPcgiTransactionEntity } from '@/task.js';
 import { pcgiFileManager } from '@tmlmobilidade/go-interfaces-pcgi-file-manager';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+
+import { processPcgiTransactionEntity } from './tasks/process-pcgi-transaction-entity.js';
 
 /* * */
 

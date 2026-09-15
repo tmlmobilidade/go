@@ -3,9 +3,10 @@
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
+import { type RawApexTransaction, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
+import { type ChangeStreamDocument } from 'mongodb';
 import { ZodError } from 'zod';
 
 /* * */
@@ -26,8 +27,14 @@ const writer = new BatchWriter<SimplifiedApexOnBoardRefund>({
  * @param databaseOperation The database operation containing the APEX Refund document to be processed.
  * @returns A promise that resolves when the APEX Refund document has been processed.
  */
-export async function processRawApexTransactionRefund(databaseOperation) {
+export async function processRawApexTransactionRefund(databaseOperation: ChangeStreamDocument<RawApexTransaction>) {
 	//
+
+	//
+	// Validate that the operation carries a full document.
+	// Only insert operations are expected to occur in this collection.
+
+	if (!('fullDocument' in databaseOperation) || !databaseOperation.fullDocument) return;
 
 	//
 	// Transform the APEX Refund document into a SimplifiedApexOnBoardRefund
@@ -42,7 +49,7 @@ export async function processRawApexTransactionRefund(databaseOperation) {
 		const errorMessage = error instanceof ZodError
 			? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
 			: error instanceof Error ? error.message : String(error);
-		Logger.error({ message: `Error transforming APEX Refund: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${errorMessage}` });
+		Logger.error({ message: `Error transforming APEX Refund: ${databaseOperation.fullDocument._id}: Reason: ${errorMessage}` });
 	}
 
 	//
