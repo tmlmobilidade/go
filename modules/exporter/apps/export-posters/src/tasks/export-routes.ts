@@ -1,33 +1,56 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '@/types.js';
-import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsStrictV29ExtRoutes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
+import { type ExportToHitouchConfig } from '../types.js';
+
 /* * */
 
-export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+/**
+ * The columns of the exported routes.txt file.
+ * The strict v29 ext routes table does not carry `route_url`,
+ * so the column is kept in the file but left empty.
+ */
+interface RoutesFileRow extends Pick<GtfsStrictV29ExtRoutes, 'agency_id' | 'route_color' | 'route_desc' | 'route_id' | 'route_long_name' | 'route_short_name' | 'route_text_color' | 'route_type'> {
+	route_url?: string
+}
+
+/* * */
+
+/**
+ * Exports the routes.txt file, suffixing the short name
+ * of lines that have more than one route.
+ * @param sqlTables The imported GTFS SQL tables.
+ * @param exportConfig The export configuration.
+ */
+export async function exportRoutesFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
-	// Export calendar-related files
+
+	//
+	// Setup the routes file writer
 
 	const routesCsv = new CsvWriter('routes.txt', `${exportConfig.workdir}/routes.txt`, { batch_size: 100000 });
 
 	//
 	// Get all routes and group them by line_id
 
-	const routesByLineId: Record<string, GtfsRoutes[]> = {};
+	const routesByLineId: Record<string, GtfsStrictV29ExtRoutes[]> = {};
 
 	sqlTables.routes.all().forEach((route) => {
 		if (!routesByLineId[route.line_id]) routesByLineId[route.line_id] = [];
 		routesByLineId[route.line_id].push(route);
 	});
 
+	//
+	// Write each routes group to the file
+
 	for (const routesGroup of Object.values(routesByLineId)) {
 		// If this line only has one route, export it as is
 		if (routesGroup.length === 1) {
-			const data: GtfsRoutes = {
+			const data: RoutesFileRow = {
 				agency_id: routesGroup[0].agency_id,
 				route_color: routesGroup[0].route_color,
 				route_desc: routesGroup[0].route_desc,
@@ -36,7 +59,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 				route_short_name: routesGroup[0].route_short_name,
 				route_text_color: routesGroup[0].route_text_color,
 				route_type: routesGroup[0].route_type,
-				route_url: routesGroup[0].route_url,
+				route_url: undefined,
 			};
 			await routesCsv.write(data);
 			continue;
@@ -46,7 +69,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 		// to differentiate between them.
 		routesGroup.sort((a, b) => (a.route_id < b.route_id ? -1 : 1));
 		for (let i = 0; i < routesGroup.length; i++) {
-			const data: GtfsRoutes = {
+			const data: RoutesFileRow = {
 				agency_id: routesGroup[i].agency_id,
 				route_color: routesGroup[i].route_color,
 				route_desc: routesGroup[i].route_desc,
@@ -55,7 +78,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 				route_short_name: `${routesGroup[i].route_short_name}${String.fromCharCode(65 + i)}`, // 65 is 'A' in ASCII
 				route_text_color: routesGroup[i].route_text_color,
 				route_type: routesGroup[i].route_type,
-				route_url: routesGroup[i].route_url,
+				route_url: undefined,
 			};
 			await routesCsv.write(data);
 		}
@@ -64,4 +87,6 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 	await routesCsv.flush();
 
 	Logger.info({ message: 'Exported routes.txt file.' });
+
+	//
 }

@@ -1,87 +1,80 @@
 /* * */
 
-import { exportAgencyFile } from '@/exports/agency.js';
-import { exportCalendarFiles } from '@/exports/calendars.js';
-import { exportDayTypesFile } from '@/exports/day_types.js';
-import { exportFeedInfoFile } from '@/exports/feed_info.js';
-import { exportRoutesFile } from '@/exports/routes.js';
-import { exportStopTimesFile } from '@/exports/stop-times.js';
-import { exportStopsFile } from '@/exports/stops.js';
-import { exportTripsFile } from '@/exports/trips.js';
-import { type ExportToHitouchConfig } from '@/types.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type ImportGtfsConfig, importGtfsStrictV29ExtToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 
-// import { getFormattedDates } from './get-names.js';
+import { exportAgencyFile } from './tasks/export-agency.js';
+import { exportCalendarFiles } from './tasks/export-calendars.js';
+import { exportDayTypesFile } from './tasks/export-day-types.js';
+import { exportFeedInfoFile } from './tasks/export-feed-info.js';
+import { exportRoutesFile } from './tasks/export-routes.js';
+import { exportStopTimesFile } from './tasks/export-stop-times.js';
+import { exportStopsFile } from './tasks/export-stops.js';
+import { exportTripsFile } from './tasks/export-trips.js';
+import { type ExportToHitouchConfig } from './types.js';
 
 /* * */
 
-await (async function main() {
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'export-posters', message: 'Sentry Exporter Posters initialized', module: 'exporter', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Exporter Posters' });
+}
+
+async function main() {
+	//
+
 	try {
 		//
-
-		//
-		// Initialize Sentry
-
-		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'export-posters', message: 'Sentry Exporter Posters initialized', module: 'exporter', severity: 'info' });
-		} catch (error) {
-			Logger.error({ error, message: 'Error initializing Sentry Exporter Posters' });
-		}
-
-		//
-		// Initialize the logger
 
 		Logger.init();
 
 		const globalTimer = new Timer();
 
-		// console.log(getFormattedDates(['20250204', '20250205']));
-		// console.log(getFormattedDates(['20250204', '20250205', '20250206', '20250207']));
-		// console.log(getFormattedDates(['20250212', '20250214', '20250222']));
-		// console.log(getFormattedDates(['20251201', '20251202', '20251207', '20251208', '20251214']));
-		// console.log(getFormattedDates(['20250204', '20250205', '20250206', '20250207', '20250212', '20250214', '20250222']));
-
-		// process.exit(0);
-
 		//
-		// Get single plan to process
+		// Get the single plan to process
 
-		// const planData = await plans.findById('P1LDS'); // Teste Simples
-		// const planData = await plans.findById('FPTD0'); // 41 Viação Alvorada
-		// const planData = await plans.findById('LA4CI'); // 42 Rodoviária de Lisboa
+		// const planData = await goDb.operation.plans.findById('P1LDS'); // Teste Simples
+		// const planData = await goDb.operation.plans.findById('FPTD0'); // 41 Viação Alvorada
+		// const planData = await goDb.operation.plans.findById('LA4CI'); // 42 Rodoviária de Lisboa
 		const planData = await goDb.operation.plans.findById('BYBGK'); // 43 Transportes Sul do Tejo
-		// const planData = await plans.findById('N8TKT'); // 44 Alsa Todi
-
-		Logger.info({ message: `Found Plan to process: ${planData._id}` });
+		// const planData = await goDb.operation.plans.findById('N8TKT'); // 44 Alsa Todi
 
 		if (!planData) {
 			Logger.info({ message: 'Plan not found. Exiting...' });
 			return;
 		}
 
+		Logger.info({ message: `Found Plan to process: ${planData._id}` });
+
 		//
 		// Import the Plan into a local SQLite database
 
-		const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
+		const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.attachments.operation_gtfs });
 
-		const importConfig: ImportGtfsToDatabaseConfig = {
+		const importConfig: ImportGtfsConfig = {
 			source: {
 				url: operationFileUrl,
 			},
 		};
 
-		const sqlGtfs = await importGtfsToDatabase(importConfig);
+		const sqlGtfs = await importGtfsStrictV29ExtToDatabase(importConfig);
 
 		//
 		// Setup the export config
 
-		const existingPlanDates = Array.from(new Set(Object.values(sqlGtfs.calendar_dates).flat())).sort();
+		const existingPlanDates = Array.from(new Set(Object.values(sqlGtfs.calendar_dates).flat()))
+			.map(date => validateOperationalDate(String(date)))
+			.sort();
 
 		const exportConfig: ExportToHitouchConfig = {
 			date_range: {
@@ -124,4 +117,8 @@ await (async function main() {
 		Logger.error(error);
 		throw error;
 	}
-})();
+}
+
+/* * */
+
+await main();

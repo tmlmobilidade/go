@@ -1,13 +1,21 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '@/types.js';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Plan } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
+
+import { type ExportToHitouchConfig } from '../types.js';
 
 /* * */
 
+/**
+ * Exports the feed_info.txt file from the plan data.
+ * @param planData The plan being exported.
+ * @param exportConfig The export configuration.
+ */
 export async function exportFeedInfoFile(planData: Plan, exportConfig: ExportToHitouchConfig) {
+	//
+
 	//
 	// Export feed_info.txt file
 
@@ -18,4 +26,6 @@ export async function exportFeedInfoFile(planData: Plan, exportConfig: ExportToH
 	await feedInfoCsv.flush();
 
 	Logger.info({ message: 'Exported feed_info.txt file.' });
+
+	//
 }

@@ -1,13 +1,21 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '@/types.js';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Plan } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
+
+import { type ExportToHitouchConfig } from '../types.js';
 
 /* * */
 
+/**
+ * Exports the agency.txt file from the plan data.
+ * @param planData The plan being exported.
+ * @param exportConfig The export configuration.
+ */
 export async function exportAgencyFile(planData: Plan, exportConfig: ExportToHitouchConfig) {
+	//
+
 	//
 	// Export agency file
 
@@ -18,4 +26,6 @@ export async function exportAgencyFile(planData: Plan, exportConfig: ExportToHit
 	await agencyCsv.flush();
 
 	Logger.info({ message: 'Exported agency.txt file.' });
+
+	//
 }

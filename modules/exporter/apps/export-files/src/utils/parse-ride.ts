@@ -1,15 +1,33 @@
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type RideExportData } from '@tmlmobilidade/go-types-downloads';
-import { type RideAcceptance, type RideNormalized, type UnixMilliseconds } from '@tmlmobilidade/types';
+/* * */
 
+import { type RideExportData } from '@tmlmobilidade/go-types-downloads';
+import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type RideNormalized } from '@tmlmobilidade/types';
+
+/* * */
+
+/**
+ * Formats a timestamp as a local time string (Europe/Lisbon).
+ * @param time The timestamp to format.
+ * @returns The formatted time, or null when the timestamp is missing.
+ */
 function parseTime(time: null | UnixMilliseconds): null | string {
 	if (!time) {
 		return null;
 	}
 
-	return Dates.fromUnixMilliseconds(time).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt-Pt');
+	return Dates.fromUnixMilliseconds(time).setZone('Europe/Lisbon', 'offset_only').toLocaleString('only_time', 'pt-Pt');
 }
 
+/* * */
+
+/**
+ * Flattens a normalized ride and its acceptance into a CSV row.
+ * @param ride The normalized ride with its acceptance.
+ * @returns The flat ride row.
+ */
 export function parseRide(ride: RideNormalized & { acceptance: null | RideAcceptance }): RideExportData {
 	return {
 		/* META */

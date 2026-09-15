@@ -1,7 +1,24 @@
-import { type FlatSamsAnalysisExportAnalysis } from '@tmlmobilidade/go-types-downloads';
-import { type SamAnalysis } from '@tmlmobilidade/types';
+/* * */
 
-export function parseAnalysis(row: { _id?: null | number, agency_id?: null | string, analysis: SamAnalysis }): FlatSamsAnalysisExportAnalysis {
+import { type FlatSamsAnalysisExportAnalysis } from '@tmlmobilidade/go-types-downloads';
+import { type SamAnalysis } from '@tmlmobilidade/go-types-operation';
+
+/* * */
+
+interface ParseAnalysisRow {
+	_id?: null | number
+	agency_id?: null | string
+	analysis: SamAnalysis
+}
+
+/* * */
+
+/**
+ * Flattens a SAM analysis entry into a CSV row.
+ * @param row The SAM identifiers and the analysis entry.
+ * @returns The flat analysis row.
+ */
+export function parseAnalysis(row: ParseAnalysisRow): FlatSamsAnalysisExportAnalysis {
 	const { _id, agency_id: agencyId, analysis } = row;
 
 	return {

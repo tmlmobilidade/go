@@ -6,13 +6,18 @@ import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { CsvWriter } from '@tmlmobilidade/writers';
-import os from 'os';
-import path from 'path';
+import os from 'node:os';
+import path from 'node:path';
 
-import { parseVehicles, type VehicleExportCsvData } from './lib/parse-vehicles.js';
+import { parseVehicles, type VehicleExportCsvData } from '../utils/parse-vehicles.js';
 
 /* * */
 
+/**
+ * Extracts the unique vehicle IDs from the export properties.
+ * @param properties The vehicle export properties.
+ * @returns The unique vehicle IDs to export.
+ */
 function getVehicleIdsFromExportProperties(properties: VehicleExportProperties['properties']): string[] {
 	const vehicleIds = properties.vehicle_ids ?? [];
 	return [...new Set(vehicleIds.filter(Boolean))];
@@ -34,12 +39,15 @@ export async function exportVehiclesFile(fileExport: FileExport): Promise<string
 
 	//
 	// Setup a timer to track the execution time
+	// and mark the file export as being processed
+
 	const timer = new Timer();
 
 	await goDb.core.exports.updateById(fileExport._id, { processing_status: 'processing' });
 
 	//
-	// Build vehicle ids from export properties
+	// Build the vehicle IDs from the export properties
+
 	const properties = fileExport.properties as VehicleExportProperties['properties'];
 	const vehicleIds = getVehicleIdsFromExportProperties(properties);
 
@@ -48,6 +56,7 @@ export async function exportVehiclesFile(fileExport: FileExport): Promise<string
 
 	//
 	// Write the vehicles batch to the file
+
 	const tempFilePath = path.join(os.tmpdir(), `${fileExport.file_name}_${generateRandomString()}.csv`);
 	const csvWriter = new CsvWriter<VehicleExportCsvData>(fileExport.file_name, tempFilePath, { batch_size: 10000, include_bom: true });
 
@@ -64,4 +73,6 @@ export async function exportVehiclesFile(fileExport: FileExport): Promise<string
 	Logger.spacer(1);
 
 	return tempFilePath;
+
+	//
 }
