@@ -2,15 +2,15 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsLocationRequest, type StopsLocationResponse } from '@tmlmobilidade/go-infrastructure-pckg-types';
-import { District, Locality, Municipality, Parish } from '@tmlmobilidade/go-types-locations';
+import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/go-types-locations';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
+import { fetchApiData, type SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWRImmutable from 'swr/immutable';
 
 /* * */
 
-interface StopsLocationsDataReturnType {
+interface UseStopsLocationsDataReturnType {
 	data: StopsLocationResponse
 	districtIds: string[]
 	districtMap: Map<string, District>
@@ -30,22 +30,24 @@ interface StopsLocationsDataReturnType {
 }
 
 /**
- * Hook to fetch municipalities data. Useful for supplying data
+ * Hook to fetch the locations (districts, municipalities, parishes and localities)
+ * the user has access to for the given permissions. Useful for supplying data
  * to filters or select components.
- * @returns An object containing the municipalities data.
+ * @param request The permissions registry to filter the locations by.
+ * @returns An object containing the locations data.
  */
-export function useStopsLocationsData(request: StopsLocationRequest): StopsLocationsDataReturnType {
+export function useStopsLocationsData(request: StopsLocationRequest): UseStopsLocationsDataReturnType {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWRImmutable<ApiResponse<StopsLocationResponse>>([API_ROUTES.infrastructure.STOPS_LIST_LOCATIONS, request], {
-		fetcher: async ([url, request]) => await fetchApiData<StopsLocationResponse>({ body: request, method: 'POST', url: url }),
+	const { data, error, isLoading } = useSWRImmutable<ApiResponse<StopsLocationResponse>>([API_ROUTES.infrastructure.STOPS_LIST_LOCATIONS, request], {
+		fetcher: async ([url, request]: [string, StopsLocationRequest]) => await fetchApiData<StopsLocationResponse>({ body: request, method: 'POST', url }),
 	});
 
 	//
-	// C. Transform data
+	// B. Transform data
 
 	const districtIdsData = useMemo(() => {
 		// Skip if no data is available
@@ -140,7 +142,7 @@ export function useStopsLocationsData(request: StopsLocationRequest): StopsLocat
 	}, [data?.data?.localities]);
 
 	//
-	// D. Return value
+	// C. Return data
 
 	return useMemo(() => ({
 		data: data?.data,
@@ -159,5 +161,5 @@ export function useStopsLocationsData(request: StopsLocationRequest): StopsLocat
 		parishMap: parishMapData,
 		parishOptions: parishOptionsData,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, error?.error, districtIdsData, districtMapData, districtOptionsData, municipalityIdsData, municipalityMapData, municipalityOptionsData, parishIdsData, parishMapData, parishOptionsData, localityIdsData, localityMapData, localityOptionsData, isLoading, isValidating, data?.timestamp]);
+	}), [data?.data, error?.error, districtIdsData, districtMapData, districtOptionsData, municipalityIdsData, municipalityMapData, municipalityOptionsData, parishIdsData, parishMapData, parishOptionsData, localityIdsData, localityMapData, localityOptionsData, isLoading, data?.timestamp]);
 };

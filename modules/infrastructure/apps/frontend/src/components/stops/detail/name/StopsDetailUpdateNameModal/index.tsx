@@ -3,6 +3,7 @@
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
 import { Divider, Pane, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsDetailUpdateNameFormContext } from '../StopsDetailUpdateNameForm.context';
 import { StopsDetailUpdateNameModalHeader } from '../StopsDetailUpdateNameModalHeader';
@@ -14,6 +15,8 @@ export function StopsDetailUpdateNameModal() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const { form } = useStopsDetailUpdateNameFormContext();
 
@@ -33,7 +36,7 @@ export function StopsDetailUpdateNameModal() {
 	}, [nameValue]);
 
 	//
-	// C. Sync automatic values into form so they are submitted
+	// C. Sync automatic values into the form so they are submitted
 
 	useEffect(() => {
 		form.setValue('short_name', automaticShortName, { shouldDirty: true });
@@ -52,10 +55,10 @@ export function StopsDetailUpdateNameModal() {
 					name="name"
 					render={({ field, fieldState }) => (
 						<TextInput
-							description="Este é o nome principal e será apresentado nos canais digitais."
+							description={t('default:stops.detail.UpdateNameModal.fields.name.description')}
 							disabled={field.disabled}
 							error={fieldState.error?.message}
-							label="Designação Completa da Paragem"
+							label={t('default:stops.detail.UpdateNameModal.fields.name.label')}
 							onChange={field.onChange}
 							value={field.value ?? ''}
 							w="100%"
@@ -70,15 +73,15 @@ export function StopsDetailUpdateNameModal() {
 
 			<Section gap="sm">
 				<TextInput
-					description="Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos."
-					label="Nome Curto (automático)"
+					description={t('default:stops.detail.UpdateNameModal.fields.short_name.description')}
+					label={t('default:stops.detail.UpdateNameModal.fields.short_name.label')}
 					value={automaticShortName}
 					w="100%"
 					readOnly
 				/>
 				<TextInput
-					description="O nome a ser utilizado pelo sistema de TTS (Text-to-Speech)."
-					label="Nome TTS (automático)"
+					description={t('default:stops.detail.UpdateNameModal.fields.tts_name.description')}
+					label={t('default:stops.detail.UpdateNameModal.fields.tts_name.label')}
 					value={automaticTtsName}
 					w="100%"
 					readOnly

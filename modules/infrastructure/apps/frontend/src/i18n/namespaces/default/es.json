@@ -1,0 +1,266 @@
+{
+	"stops": {
+		"create": {
+			"Controls": {
+				"BackButton": {
+					"label": "Volver"
+				},
+				"CancelButton": {
+					"label": "Cancelar"
+				},
+				"CreateButton": {
+					"label": "Crear Parada"
+				},
+				"NextButton": {
+					"label": "Avanzar"
+				}
+			},
+			"Header": {
+				"step": "Paso {{current}} de {{total}}",
+				"title": "Nueva parada"
+			},
+			"StepLocationDetails": {
+				"fields": {
+					"district": {
+						"label": "Distrito"
+					},
+					"locality": {
+						"label": "Localidad"
+					},
+					"municipality": {
+						"label": "Municipio"
+					},
+					"parish": {
+						"label": "Parroquia"
+					}
+				}
+			},
+			"StepNames": {
+				"fields": {
+					"name": {
+						"description": "Este es el nombre principal y se mostrará en los canales digitales.",
+						"label": "Denominación Completa de la Parada"
+					},
+					"short_name": {
+						"description": "Esta versión abreviada automáticamente se utilizará en soportes con limitaciones de espacio, como postes y horarios impresos.",
+						"label": "Nombre Corto (automático)"
+					},
+					"tts_name": {
+						"description": "El nombre que utilizará el sistema de TTS (Text-to-Speech).",
+						"label": "Nombre TTS (automático)"
+					}
+				}
+			},
+			"StepSummary": {
+				"fields": {
+					"short_name": {
+						"label": "Nombre corto"
+					},
+					"tts_name": {
+						"label": "Nombre tts"
+					}
+				}
+			},
+			"steps": {
+				"location": {
+					"label": "Ubicación"
+				},
+				"names": {
+					"label": "Nombres"
+				},
+				"summary": {
+					"label": "Resumen"
+				}
+			}
+		},
+		"detail": {
+			"Header": {
+				"DeleteButton": {
+					"confirm_message": "¿Está seguro de que desea eliminar esta parada? La parada quedará indisponible para uso futuro.",
+					"confirm_title": "Eliminar Parada"
+				},
+				"DeletedTag": {
+					"label": "Parada Eliminada"
+				}
+			},
+			"SectionFlagItem": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"is_harmonized": {
+						"label": "Poste alineado con los identificadores únicos"
+					},
+					"short_name": {
+						"label": "Nombre Actual del Operador",
+						"placeholder": "Nombre Actual del Operador"
+					},
+					"stop_id": {
+						"label": "ID Actual del Operador",
+						"placeholder": "ID Actual del Operador"
+					}
+				}
+			},
+			"SectionFlags": {
+				"AddFlagButton": {
+					"label": "Añadir Nuevo Poste"
+				},
+				"description": "Gestión de IDs de esta parada.",
+				"fields": {
+					"legacy_ids": {
+						"label": "Otros IDs (Antiguos)"
+					},
+					"unique_id": {
+						"label": "Código Único de la Parada"
+					}
+				},
+				"title": "Identificadores y Postes"
+			},
+			"SectionGeneral": {
+				"description": "Información general sobre esta parada.",
+				"title": "Detalles de esta Parada"
+			},
+			"UpdateCoordinates": {
+				"EditLink": {
+					"label": "Editar"
+				},
+				"label": "Coordenadas"
+			},
+			"UpdateCoordinatesModal": {
+				"Header": {
+					"UpdateButton": {
+						"label": "Cambiar coordenadas"
+					},
+					"title": "Cambiar coordenadas de la parada"
+				},
+				"fields": {
+					"latitude": {
+						"label": "Latitud"
+					},
+					"longitude": {
+						"label": "Longitud"
+					}
+				}
+			},
+			"UpdateName": {
+				"EditLink": {
+					"label": "Editar"
+				},
+				"label": "Nombre Único de la Parada"
+			},
+			"UpdateNameModal": {
+				"Header": {
+					"UpdateButton": {
+						"label": "Cambiar nombre"
+					},
+					"title": "Cambiar nombre de la parada"
+				},
+				"fields": {
+					"name": {
+						"description": "Este es el nombre principal y se mostrará en los canales digitales.",
+						"label": "Denominación Completa de la Parada"
+					},
+					"short_name": {
+						"description": "Esta versión abreviada automáticamente se utilizará en soportes con limitaciones de espacio, como postes y horarios impresos.",
+						"label": "Nombre Corto (automático)"
+					},
+					"tts_name": {
+						"description": "El nombre que utilizará el sistema de TTS (Text-to-Speech).",
+						"label": "Nombre TTS (automático)"
+					}
+				}
+			}
+		},
+		"extract": {
+			"ExtractButton": {
+				"label": "Exportar"
+			},
+			"Header": {
+				"title": "Exportar paradas"
+			}
+		},
+		"list": {
+			"FilterAgency": {
+				"label": "Operador"
+			},
+			"FilterConnections": {
+				"label": "Conexiones"
+			},
+			"FilterDistrict": {
+				"label": "Distrito"
+			},
+			"FilterEquipment": {
+				"label": "Equipamientos"
+			},
+			"FilterFacilities": {
+				"label": "Servicios"
+			},
+			"FilterLifecycleStatus": {
+				"label": "Estado"
+			},
+			"FilterLocality": {
+				"label": "Localidad"
+			},
+			"FilterMunicipality": {
+				"label": "Municipio"
+			},
+			"FilterParish": {
+				"label": "Parroquia"
+			},
+			"Header": {
+				"title": "Paradas"
+			},
+			"HeaderMenu": {
+				"ExtractStopsButton": {
+					"label": "Exportar Paradas"
+				},
+				"NewStopButton": {
+					"label": "Nueva Parada"
+				}
+			},
+			"Table": {
+				"columns": {
+					"district_name": "Distrito",
+					"id": "#ID",
+					"latitude": "Latitud",
+					"locality_name": "Localidad",
+					"longitude": "Longitud",
+					"municipality_name": "Municipio",
+					"name": "Nombre de la Parada",
+					"parish_name": "Parroquia"
+				}
+			}
+		},
+		"shared": {
+			"not_available": "N/A",
+			"stop_connection": {
+				"airport": "Aeropuerto",
+				"bike_parking": "Aparcamiento de bicicletas",
+				"bike_sharing": "Sistema de bicicletas públicas",
+				"boat": "Barco",
+				"car_parking": "Aparcamiento",
+				"ferry": "Ferry",
+				"light_rail": "Metro ligero",
+				"subway": "Metro",
+				"train": "Tren"
+			},
+			"stop_equipment": {
+				"mini_pip": "Mini PIP",
+				"mupi": "MUPI",
+				"pip": "PIP"
+			},
+			"stop_facility": {
+				"beach": "Playa",
+				"fire_station": "Bomberos",
+				"health_clinic": "Clínica",
+				"historic_building": "Edificio Histórico",
+				"hospital": "Hospital",
+				"police_station": "Comisaría",
+				"school": "Escuela",
+				"shopping": "Zona Comercial",
+				"transit_office": "Espaço navegante®",
+				"university": "Universidad"
+			}
+		}
+	}
+}

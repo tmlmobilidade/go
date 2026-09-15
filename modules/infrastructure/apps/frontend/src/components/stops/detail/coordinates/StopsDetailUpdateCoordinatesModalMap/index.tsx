@@ -1,8 +1,8 @@
 'use client';
 
-import { MapOverlayPins, MapOverlayPinsPointDataProps, MapOverlayPolygon, MapView } from '@tmlmobilidade/ui';
+import { MapOverlayPins, type MapOverlayPinsPointDataProps, MapOverlayPolygon, MapView } from '@tmlmobilidade/ui';
 import * as turf from '@turf/turf';
-import { FeatureCollection, Point } from 'geojson';
+import { type FeatureCollection, type Point } from 'geojson';
 import { useMemo } from 'react';
 
 import { useStopsDetailData } from '../../use-stops-detail-data';
@@ -57,7 +57,7 @@ export function StopsDetailUpdateCoordinatesModalMap() {
 	}, [data?.longitude, data?.latitude]);
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<MapView height={200} id="editStopCoordinatesMap">

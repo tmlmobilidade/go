@@ -2,6 +2,7 @@
 
 import { Button, Collapsible, Grid, Section, useStandardFormWatch, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
 import { useStopsDetailData } from '../../use-stops-detail-data';
@@ -14,6 +15,8 @@ export function StopsDetailSectionFlags() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const { data } = useStopsDetailData();
 
@@ -56,8 +59,8 @@ export function StopsDetailSectionFlags() {
 
 	return (
 		<Collapsible
-			description="Gestão de IDs desta paragem."
-			title="Identificadores e Postaletes"
+			description={t('default:stops.detail.SectionFlags.description')}
+			title={t('default:stops.detail.SectionFlags.title')}
 			defaultOpen
 		>
 
@@ -65,15 +68,15 @@ export function StopsDetailSectionFlags() {
 
 				<Grid columns="abb" gap="md">
 					<ValueDisplay
-						label="Código Único da Paragem"
-						value={data?._id ?? 'N/A'}
+						label={t('default:stops.detail.SectionFlags.fields.unique_id.label')}
+						value={data?._id ?? t('default:stops.shared.not_available')}
 						variant="primary"
 						elevated
 						strong
 					/>
 					<ValueDisplay
-						label="Outros IDs (Antigos)"
-						value={allNonUniqueIds.length > 0 ? allNonUniqueIds.join(', ') : 'N/A'}
+						label={t('default:stops.detail.SectionFlags.fields.legacy_ids.label')}
+						value={allNonUniqueIds.length > 0 ? allNonUniqueIds.join(', ') : t('default:stops.shared.not_available')}
 					/>
 				</Grid>
 
@@ -81,7 +84,7 @@ export function StopsDetailSectionFlags() {
 					<StopsDetailSectionFlagItem key={`flag-${index}`} index={index} />
 				))}
 
-				<Button label="Adicionar Novo Postalete" onClick={handleAddLegacyId} />
+				<Button label={t('default:stops.detail.SectionFlags.AddFlagButton.label')} onClick={handleAddLegacyId} />
 
 			</Section>
 

@@ -1,8 +1,9 @@
-/* * */
+'use client';
 
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
 import { Divider, Section, useStandardFormWatch, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -18,11 +19,24 @@ export function StopsCreateStepSummary() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const { form } = useStopsCreateFormContext();
 
 	const latitudeValue = useStandardFormWatch({ control: form.control, name: 'latitude' });
 	const longitudeValue = useStandardFormWatch({ control: form.control, name: 'longitude' });
 	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
+
+	//
+	// B. Fetch data
+
+	const { data: locationData } = useStopsGetLocationData({
+		latitude: latitudeValue,
+		longitude: longitudeValue,
+	});
+
+	//
+	// C. Transform data
 
 	const automaticShortName = useMemo(() => {
 		if (!nameValue) return '';
@@ -33,11 +47,6 @@ export function StopsCreateStepSummary() {
 		if (!nameValue) return '';
 		return getStopTtsName(nameValue);
 	}, [nameValue]);
-
-	const { data: locationData } = useStopsGetLocationData({
-		latitude: latitudeValue,
-		longitude: longitudeValue,
-	});
 
 	const locationDisplay = useMemo(() => {
 		// Extract the locality and municipality names
@@ -50,7 +59,7 @@ export function StopsCreateStepSummary() {
 	}, [locationData?.locality?.name, locationData?.municipality?.name]);
 
 	//
-	// B. Render components
+	// D. Render components
 
 	return (
 		<>
@@ -65,8 +74,8 @@ export function StopsCreateStepSummary() {
 			<Divider />
 
 			<Section>
-				<ValueDisplay label="Nome curto" value={automaticShortName} variant="plain" />
-				<ValueDisplay label="Nome tts" value={automaticTtsName} variant="plain" />
+				<ValueDisplay label={t('default:stops.create.StepSummary.fields.short_name.label')} value={automaticShortName} variant="plain" />
+				<ValueDisplay label={t('default:stops.create.StepSummary.fields.tts_name.label')} value={automaticTtsName} variant="plain" />
 			</Section>
 
 			<Divider />

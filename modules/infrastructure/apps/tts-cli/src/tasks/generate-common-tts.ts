@@ -1,28 +1,40 @@
 /* * */
 
-import { generatePiperTtsAudio } from '@/services/piperTtsApi.js';
-import TIMETRACKER from '@helperkits/timer';
+import { generatePiperTtsAudio } from '@/services/piper-tts-api.js';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import pLimit from 'p-limit';
 
 /* * */
 
 const RUNNER_CONCURRENCY = Number(process.env.TTS_RUNNER_CONCURRENCY ?? 5);
 
-const allCommonData = [
+const ALL_COMMON_DATA = [
 	{ id: 'next_stop', text: 'Seguinte' },
 	{ id: 'last_stop', text: 'Fim de Percurso. ( Obrigado por viajar ) com a Carris Metropolitana!' },
 	{ id: 'no_dropoff', text: 'Apenas permitido embarque.' },
 ];
 
+/* * */
+
+/**
+ * Deletes a legacy TTS file from storage, if it exists.
+ * @param fileId The ID of the file to delete.
+ */
 async function deleteLegacyTtsFile(fileId: string) {
 	const fileData = await storageProvider.findById(fileId);
 	if (!fileData) return;
 	await storageProvider.delete(fileId);
 }
 
-async function processCommon(commonIndex: number, total: number, commonData: typeof allCommonData[number]) {
+/**
+ * Generates the TTS audio for a single common saying and stores it.
+ * @param commonIndex The index of the saying in the list.
+ * @param total The total number of sayings.
+ * @param commonData The saying to generate.
+ */
+async function processCommon(commonIndex: number, total: number, commonData: typeof ALL_COMMON_DATA[number]) {
 	Logger.info({
 		message: `[${commonIndex + 1}/${total}] Generating | ${commonData.id} | ${commonData.text}`,
 	});
@@ -51,30 +63,34 @@ async function processCommon(commonIndex: number, total: number, commonData: typ
 
 /* * */
 
-export async function runnerCommon() {
+/**
+ * Generates the TTS audio files for the common sayings
+ * (next stop, last stop, no dropoff) and stores them.
+ */
+export async function generateCommonTtsTask() {
 	//
 
-	Logger.title(`TTS COMMON`);
-	const globalTimer = new TIMETRACKER();
+	Logger.title('TTS COMMON');
 
-	console.log(`* Preparing ${allCommonData.length} common sayings (${RUNNER_CONCURRENCY} concurrent)...`);
-	console.log();
+	const globalTimer = new Timer();
+
+	Logger.info({ message: `Preparing ${ALL_COMMON_DATA.length} common sayings (${RUNNER_CONCURRENCY} concurrent)...` });
 
 	const limit = pLimit(RUNNER_CONCURRENCY);
 
 	await Promise.all(
-		allCommonData.map((commonData, commonIndex) => limit(async () => {
+		ALL_COMMON_DATA.map((commonData, commonIndex) => limit(async () => {
 			try {
-				await processCommon(commonIndex, allCommonData.length, commonData);
+				await processCommon(commonIndex, ALL_COMMON_DATA.length, commonData);
 			} catch (error) {
 				Logger.error({
-					message: `[${commonIndex + 1}/${allCommonData.length}] Failed ${commonData.id}: ${error instanceof Error ? error.message : String(error)}`,
+					message: `[${commonIndex + 1}/${ALL_COMMON_DATA.length}] Failed ${commonData.id}: ${error instanceof Error ? error.message : String(error)}`,
 				});
 			}
 		})),
 	);
 
-	Logger.success(`Processed ${allCommonData.length} "common" items (${globalTimer.get()}).`);
+	Logger.success(`Processed ${ALL_COMMON_DATA.length} "common" items (${globalTimer.get()}).`);
 
 	//
 };

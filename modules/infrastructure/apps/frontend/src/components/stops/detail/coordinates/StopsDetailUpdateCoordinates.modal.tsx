@@ -7,7 +7,7 @@ import { StopsDetailUpdateCoordinatesModal } from './StopsDetailUpdateCoordinate
 
 /* * */
 
-const MODAL_ID = 'stops-detail-edit-name-modal';
+const MODAL_ID = 'stops-detail-update-coordinates-modal';
 
 /* * */
 

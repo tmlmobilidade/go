@@ -1,0 +1,266 @@
+{
+	"stops": {
+		"create": {
+			"Controls": {
+				"BackButton": {
+					"label": "Voltar"
+				},
+				"CancelButton": {
+					"label": "Cancelar"
+				},
+				"CreateButton": {
+					"label": "Criar Paragem"
+				},
+				"NextButton": {
+					"label": "Avançar"
+				}
+			},
+			"Header": {
+				"step": "Passo {{current}} de {{total}}",
+				"title": "Nova paragem"
+			},
+			"StepLocationDetails": {
+				"fields": {
+					"district": {
+						"label": "Distrito"
+					},
+					"locality": {
+						"label": "Localidade"
+					},
+					"municipality": {
+						"label": "Município"
+					},
+					"parish": {
+						"label": "Freguesia"
+					}
+				}
+			},
+			"StepNames": {
+				"fields": {
+					"name": {
+						"description": "Este é o nome principal e será apresentado nos canais digitais.",
+						"label": "Designação Completa da Paragem"
+					},
+					"short_name": {
+						"description": "Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos.",
+						"label": "Nome Curto (automático)"
+					},
+					"tts_name": {
+						"description": "O nome a ser utilizado pelo sistema de TTS (Text-to-Speech).",
+						"label": "Nome TTS (automático)"
+					}
+				}
+			},
+			"StepSummary": {
+				"fields": {
+					"short_name": {
+						"label": "Nome curto"
+					},
+					"tts_name": {
+						"label": "Nome tts"
+					}
+				}
+			},
+			"steps": {
+				"location": {
+					"label": "Localização"
+				},
+				"names": {
+					"label": "Nomes"
+				},
+				"summary": {
+					"label": "Resumo"
+				}
+			}
+		},
+		"detail": {
+			"Header": {
+				"DeleteButton": {
+					"confirm_message": "Tem a certeza que pretende eliminar esta paragem? A paragem ficará indisponível para utilização futura.",
+					"confirm_title": "Eliminar Paragem"
+				},
+				"DeletedTag": {
+					"label": "Paragem Eliminada"
+				}
+			},
+			"SectionFlagItem": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"is_harmonized": {
+						"label": "Postalete alinhado com os identificadores únicos"
+					},
+					"short_name": {
+						"label": "Nome Atual do Operador",
+						"placeholder": "Nome Atual do Operador"
+					},
+					"stop_id": {
+						"label": "ID Atual do Operador",
+						"placeholder": "ID Atual do Operador"
+					}
+				}
+			},
+			"SectionFlags": {
+				"AddFlagButton": {
+					"label": "Adicionar Novo Postalete"
+				},
+				"description": "Gestão de IDs desta paragem.",
+				"fields": {
+					"legacy_ids": {
+						"label": "Outros IDs (Antigos)"
+					},
+					"unique_id": {
+						"label": "Código Único da Paragem"
+					}
+				},
+				"title": "Identificadores e Postaletes"
+			},
+			"SectionGeneral": {
+				"description": "Informações gerais sobre esta paragem.",
+				"title": "Detalhes desta Paragem"
+			},
+			"UpdateCoordinates": {
+				"EditLink": {
+					"label": "Editar"
+				},
+				"label": "Coordenadas"
+			},
+			"UpdateCoordinatesModal": {
+				"Header": {
+					"UpdateButton": {
+						"label": "Alterar coordenadas"
+					},
+					"title": "Alterar coordenadas da paragem"
+				},
+				"fields": {
+					"latitude": {
+						"label": "Latitude"
+					},
+					"longitude": {
+						"label": "Longitude"
+					}
+				}
+			},
+			"UpdateName": {
+				"EditLink": {
+					"label": "Editar"
+				},
+				"label": "Nome Único da Paragem"
+			},
+			"UpdateNameModal": {
+				"Header": {
+					"UpdateButton": {
+						"label": "Alterar nome"
+					},
+					"title": "Alterar nome da paragem"
+				},
+				"fields": {
+					"name": {
+						"description": "Este é o nome principal e será apresentado nos canais digitais.",
+						"label": "Designação Completa da Paragem"
+					},
+					"short_name": {
+						"description": "Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos.",
+						"label": "Nome Curto (automático)"
+					},
+					"tts_name": {
+						"description": "O nome a ser utilizado pelo sistema de TTS (Text-to-Speech).",
+						"label": "Nome TTS (automático)"
+					}
+				}
+			}
+		},
+		"extract": {
+			"ExtractButton": {
+				"label": "Exportar"
+			},
+			"Header": {
+				"title": "Exportar paragens"
+			}
+		},
+		"list": {
+			"FilterAgency": {
+				"label": "Operador"
+			},
+			"FilterConnections": {
+				"label": "Conexões"
+			},
+			"FilterDistrict": {
+				"label": "Distrito"
+			},
+			"FilterEquipment": {
+				"label": "Equipamentos"
+			},
+			"FilterFacilities": {
+				"label": "Serviços"
+			},
+			"FilterLifecycleStatus": {
+				"label": "Estado"
+			},
+			"FilterLocality": {
+				"label": "Localidade"
+			},
+			"FilterMunicipality": {
+				"label": "Município"
+			},
+			"FilterParish": {
+				"label": "Freguesia"
+			},
+			"Header": {
+				"title": "Paragens"
+			},
+			"HeaderMenu": {
+				"ExtractStopsButton": {
+					"label": "Exportar Paragens"
+				},
+				"NewStopButton": {
+					"label": "Nova Paragem"
+				}
+			},
+			"Table": {
+				"columns": {
+					"district_name": "Distrito",
+					"id": "#ID",
+					"latitude": "Latitude",
+					"locality_name": "Localidade",
+					"longitude": "Longitude",
+					"municipality_name": "Município",
+					"name": "Nome da Paragem",
+					"parish_name": "Freguesia"
+				}
+			}
+		},
+		"shared": {
+			"not_available": "N/A",
+			"stop_connection": {
+				"airport": "Aeroporto",
+				"bike_parking": "Estacionamento de bicicletas",
+				"bike_sharing": "Sistema de bicicletas públicas",
+				"boat": "Barco",
+				"car_parking": "Parque de estacionamento",
+				"ferry": "Balsa",
+				"light_rail": "Metro terrestre",
+				"subway": "Metro",
+				"train": "Comboio"
+			},
+			"stop_equipment": {
+				"mini_pip": "Mini PIP",
+				"mupi": "MUPI",
+				"pip": "PIP"
+			},
+			"stop_facility": {
+				"beach": "Praia",
+				"fire_station": "Bombeiros",
+				"health_clinic": "Clínica",
+				"historic_building": "Edifício Histórico",
+				"hospital": "Hospital",
+				"police_station": "Esquadra",
+				"school": "Escola",
+				"shopping": "Zona Comercial",
+				"transit_office": "Espaço navegante®",
+				"university": "Universidade"
+			}
+		}
+	}
+}

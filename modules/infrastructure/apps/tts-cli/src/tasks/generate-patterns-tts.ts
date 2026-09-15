@@ -1,21 +1,25 @@
 /* * */
 
-import { piperTtsApi } from '@/services/piperTtsApi.js';
-import { generateHash } from '@/utils/generateHash.js';
-import { makePattern } from '@/utils/makeText.js';
-import TIMETRACKER from '@helperkits/timer';
+import { piperTtsApi } from '@/services/piper-tts-api.js';
+import { generateHash } from '@/utils/generate-hash.js';
+import { makePattern } from '@/utils/make-text.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiLine, type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-export async function runnerPatterns() {
+/**
+ * Generates the TTS audio files for every pattern headsign
+ * of every line found in the cache, and updates the cached pattern hashes.
+ */
+export async function generatePatternsTtsTask() {
 	//
 
-	Logger.title(`TTS PATTERNS`);
+	Logger.title('TTS PATTERNS');
 
-	const globalTimer = new TIMETRACKER();
+	const globalTimer = new Timer();
 
 	Logger.title('* Fetching all lines from cache...');
 

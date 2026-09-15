@@ -6,7 +6,7 @@ import { StopsExtract } from './StopsExtract';
 
 /* * */
 
-const MODAL_ID = 'stops-create-modal';
+const MODAL_ID = 'stops-extract-modal';
 
 /* * */
 
