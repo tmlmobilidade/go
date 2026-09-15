@@ -1,8 +1,8 @@
 /* * */
 
-import { PlanPostersContentMode, PlanPostersFilterMode } from "@tmlmobilidade/go-types-downloads"
-import { type LinesMode } from "@tmlmobilidade/go-types-offer"
-import { type OperationalDate } from "@tmlmobilidade/go-types-shared"
+import { PlanPostersContentMode, PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
+import { type LinesMode } from '@tmlmobilidade/go-types-offer';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 

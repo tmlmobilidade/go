@@ -9,6 +9,7 @@ import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { type ImportGtfsConfig, importGtfsStrictV29ExtToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import fs from 'node:fs';
 
 import { exportAgencyFile } from './exports/agency.js';
 import { exportCalendarFiles } from './exports/calendars.js';
@@ -22,8 +23,6 @@ import { type ExportHitouchConfig } from './types/ExportHitouchConfig.js';
 import { buildDatesMap } from './utils/build-dates-map.js';
 import { createHitouchZip } from './utils/create-hitouch-zip.js';
 import { yieldToEventLoop } from './utils/yield-to-event-loop.js';
-
-import fs from 'node:fs';
 
 /* * */
 

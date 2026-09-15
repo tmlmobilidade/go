@@ -8,18 +8,17 @@ import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CsvWriter } from '@tmlmobilidade/writers';
+import fs from 'node:fs';
+import Papa from 'papaparse';
 
 import { DAY_TYPES } from '../day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '../get-names.js';
-import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 import { type CalendarAssignmentsExt } from '../types/CalendarAssignmentsExt.js';
-import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 import { type CalendarExt } from '../types/CalendarExt.js';
 import { type DayTypeConfig } from '../types/DayTypeConfig.js';
+import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 import { type GtfsDate } from '../types/GtfsDate.js';
-
-import fs from 'node:fs';
-import Papa from 'papaparse';
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
@@ -430,15 +429,15 @@ export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, 
 		//
 		// Output the calendar assignments file
 
-		for (const DayTypeConfig of dayTypesConfig) {
+		for (const dayTypeConfig of dayTypesConfig) {
 			// Check if this service operates on the same day_type
 			// and period for this day_type.
-			const matchedDayType = serviceIdData.day_type === DayTypeConfig.day_type;
-			const matchedPeriod = serviceIdData.period === DayTypeConfig.period;
+			const matchedDayType = serviceIdData.day_type === dayTypeConfig.day_type;
+			const matchedPeriod = serviceIdData.period === dayTypeConfig.period;
 			if (!matchedDayType || !matchedPeriod) continue;
 			// If it matches, create an assignment
 			const assignment: CalendarAssignmentsExt = {
-				day_type_id: DayTypeConfig._id,
+				day_type_id: dayTypeConfig._id,
 				service_id: serviceIdData._id,
 			};
 			calendarAssignmentsExtRows.push(assignment);
