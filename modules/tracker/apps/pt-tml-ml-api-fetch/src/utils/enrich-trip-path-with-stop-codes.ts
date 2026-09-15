@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
 
-import { ML_AGENCY_ID, type TripPathWaypoint } from './types.js';
+import { ML_AGENCY_ID, type TripPathWaypoint } from '../types.js';
 
 /* * */
 

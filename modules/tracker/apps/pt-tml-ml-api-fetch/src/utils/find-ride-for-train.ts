@@ -5,8 +5,8 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Dates } from '@tmlmobilidade/go-utils-dates';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 
+import { type AggregationResult, ML_AGENCY_ID } from '../types.js';
 import { enrichTripPathWithStopCodes } from './enrich-trip-path-with-stop-codes.js';
-import { type AggregationResult, ML_AGENCY_ID } from './types.js';
 
 /* * */
 

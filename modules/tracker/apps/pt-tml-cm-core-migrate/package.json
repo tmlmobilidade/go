@@ -13,15 +13,15 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix"
+		"lint": "eslint ./src --fix && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
-		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"mongodb": "7.6.0"
 	},

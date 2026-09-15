@@ -60,4 +60,4 @@ export async function handleStreamRawVehicleEventIntoSimplifiedVehicleEvent({ ba
 	} catch (error) {
 		Logger.error({ error, message: `Parsing failed: _id="${databaseOperation.fullDocument._id}" version="${databaseOperation.fullDocument.version}"` });
 	}
-};
+}

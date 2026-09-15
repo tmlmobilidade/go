@@ -13,10 +13,11 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix"
+		"lint": "eslint ./src --fix && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-tracker-pckg-callback": "*",

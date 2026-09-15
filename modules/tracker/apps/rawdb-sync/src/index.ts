@@ -7,12 +7,12 @@ import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { syncVehicleEvents } from './task.js';
-import { SyncConfig } from './types.js';
+import { syncVehicleEvents } from './tasks/sync-vehicle-events.js';
+import { type SyncConfig } from './types.js';
 
 /* * */
 
-export const syncConfig = [
+const SYNC_CONFIG = [
 	{ agency_id: 'G8N1G', collection: rawDb.vehicleEvents.esCrtmAisa },
 	{ agency_id: 'DFS5M', collection: rawDb.vehicleEvents.esCrtmLaVeloz },
 	{ agency_id: 'IA9T6', collection: rawDb.vehicleEvents.ptTmlCcfl },
@@ -36,19 +36,17 @@ export const syncConfig = [
 
 /* * */
 
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'rawdb-sync', message: 'Sentry Tracker RawDb Sync initialized', module: 'tracker', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Tracker RawDb Sync' });
+}
+
 async function main() {
-	//
-
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'raw-sync-banking-taps', message: 'Sentry APEX Raw Sync Banking Taps initialized', module: 'apex', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Banking Taps' });
-	}
-
 	//
 
 	try {
@@ -72,7 +70,7 @@ async function main() {
 			endDate: Dates.now('utc').minus({ minutes: 10 }).unix_milliseconds,
 			intervalHrs: 2,
 			onChunk: async (chunk) => {
-				for (const configItem of syncConfig) {
+				for (const configItem of SYNC_CONFIG) {
 					try {
 						await syncVehicleEvents(chunk, configItem);
 					} catch (error) {
@@ -100,8 +98,8 @@ async function main() {
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
-	} catch (err) {
-		console.log('An error occurred. Halting execution.', err);
+	} catch (error) {
+		Logger.error({ error, message: 'An error occurred. Halting execution.' });
 	}
 }
 

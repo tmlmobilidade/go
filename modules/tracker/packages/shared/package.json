@@ -12,11 +12,15 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
+		"lint": "eslint ./src --fix && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
-		"@tmlmobilidade/go-utils-dates": "*"
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/logger": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

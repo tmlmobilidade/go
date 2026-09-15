@@ -1,6 +1,6 @@
 /* * */
 
-import { type AggregationResult, type TrainNextStop, type TripStopWaypoint } from './types.js';
+import { type AggregationResult, type TrainNextStop, type TripStopWaypoint } from '../types.js';
 
 const gtfsTimeToSeconds = (time: string): number => {
 	const [hours, minutes, seconds] = time.split(':').map(Number);

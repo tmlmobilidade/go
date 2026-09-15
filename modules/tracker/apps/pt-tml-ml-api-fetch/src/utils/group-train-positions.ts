@@ -2,7 +2,7 @@
 
 import { DESTINATION_MAP, type TempoEsperaRawItem } from '@tmlmobilidade/external/dist/clients/ml/types.js';
 
-import { type TrainPositionsMap } from './types.js';
+import { type TrainPositionsMap } from '../types.js';
 
 /**
  * Groups platform waiting-time items by train, keeping the earliest next-stop arrival per train.

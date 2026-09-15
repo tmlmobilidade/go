@@ -11,7 +11,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { ZodError } from 'zod';
 
-import { type SyncConfig, type VehicleEventsCollectionDocument } from './types.js';
+import { type SyncConfig, type VehicleEventsCollectionDocument } from '../types.js';
 
 /* * */
 
