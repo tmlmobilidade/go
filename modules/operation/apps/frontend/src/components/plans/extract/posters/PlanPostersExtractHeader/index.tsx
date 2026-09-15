@@ -1,31 +1,27 @@
 'use client';
 
-import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
+import { usePlanPostersExtractFormContext } from '@/components/plans/extract/posters/PlanPostersExtractForm.context';
 import { IconFileTypePdf } from '@tabler/icons-react';
 import { Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
-/* * */
-
-interface PlanPostersExportModalHeaderProps {
-	onClose: () => void
-}
+import { closePlanPostersExtractModal } from '../PlanPostersExtract.modal';
 
 /* * */
 
-export function PlanPostersExportModalHeader({ onClose }: PlanPostersExportModalHeaderProps) {
+export function PlanPostersExtractHeader() {
 	//
 
 	//
 	// A. Setup variables
 
-	const context = usePlansExportPdfsContext();
+	const context = usePlanPostersExtractFormContext();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<CloseButton onClick={onClose} type="close" />
+			<CloseButton onClick={closePlanPostersExtractModal} type="close" />
 			<Label size="lg" caps singleLine>Gerar PDFs</Label>
 			<Spacer />
 			<Button

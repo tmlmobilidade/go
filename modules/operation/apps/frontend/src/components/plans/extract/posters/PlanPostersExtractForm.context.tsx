@@ -1,16 +1,16 @@
 'use client';
 
-import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/posters/PlanPostersModal/constants';
 import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agencies-data';
 import { usePlansExportListData } from '@/components/plans/shared/use-plans-export-list-data';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
-import { type CreateFileExportDto, type PlanPostersContentMode, type PlanPostersExportProperties, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
-import { closeModal, type SelectDataItem, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { type CreateFileExportDto, FileExport, type PlanPostersContentMode, type PlanPostersExportProperties, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
+import { closeModal, type SelectDataItem, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
-interface PlansExportPdfsContextState {
+interface PlanPostersExtractFormContextState {
 	actions: {
 		exportPosters: () => Promise<void>
 		setAgencyId: (value: null | string) => void
@@ -45,25 +45,24 @@ type CanvasProfile = NonNullable<PlanPostersExportProperties['properties']['canv
 
 /* * */
 
-const PlansExportPdfsContext = createContext<PlansExportPdfsContextState | undefined>(undefined);
+const PlanPostersExtractFormContext = createContext<PlanPostersExtractFormContextState | undefined>(undefined);
 
-export function usePlansExportPdfsContext() {
-	const context = useContext(PlansExportPdfsContext);
+export function usePlanPostersExtractFormContext() {
+	const context = useContext(PlanPostersExtractFormContext);
 	if (!context) {
-		throw new Error('usePlansExportPdfsContext must be used within a PlansExportPdfsModalContextProvider');
+		throw new Error('usePlanPostersExtractFormContext must be used within a PlanPostersExtractFormContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChildren) => {
+export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
 	// A. Setup variables
 
-	const exports = useExportsContext();
 	const [agencyId, setAgencyId] = useState<null | string>(null);
 	const [canvasProfile, setCanvasProfile] = useState<CanvasProfile | null>('0Master.C');
 	const [contentMode, setContentMode] = useState<PlanPostersContentMode>('all');
@@ -157,10 +156,10 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 
 		try {
 			setLoading(true);
-			const fileExport = await exports.actions.create(createFileExportDto);
-			if (!fileExport) return;
+			// const fileExport = await goDb.core.extractions.insertOne(createFileExportDto as InsertableDocument<FileExport>);
+			// if (!fileExport) return;
 			useToast.success({ message: 'A exportação dos PDFs foi iniciada', title: 'Sucesso' });
-			closeModal(PLAN_POSTERS_EXPORT_MODAL_ID);
+			// closeModal(PLAN_POSTERS_EXTRACT_MODAL_ID);
 		} catch (error) {
 			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao iniciar a exportação dos PDFs', title: 'Erro' });
 		} finally {
@@ -171,7 +170,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	//
 	// D. Define context value
 
-	const contextValue: PlansExportPdfsContextState = useMemo(() => ({
+	const contextValue: PlanPostersExtractFormContextState = useMemo(() => ({
 		actions: {
 			exportPosters,
 			setAgencyId: selectAgencyId,
@@ -204,9 +203,9 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	// E. Render components
 
 	return (
-		<PlansExportPdfsContext.Provider value={contextValue}>
+		<PlanPostersExtractFormContext.Provider value={contextValue}>
 			{children}
-		</PlansExportPdfsContext.Provider>
+		</PlanPostersExtractFormContext.Provider>
 	);
 
 	//

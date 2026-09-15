@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
+import { usePlanPostersExtractFormContext } from '@/components/plans/extract/posters/PlanPostersExtractForm.context';
 import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Divider, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
@@ -18,13 +18,13 @@ const canvasProfileOptions = [
 
 /* * */
 
-export function PlanPostersExportModalBody() {
+export function PlanPostersExtractBody() {
 	//
 
 	//
 	// A. Setup variables
 
-	const context = usePlansExportPdfsContext();
+	const context = usePlanPostersExtractFormContext();
 	const { t } = useTranslation();
 
 	const plansOptions = useMemo(() => context.data.plans

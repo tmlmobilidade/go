@@ -62,7 +62,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: fileExportsData, mutate: fileExportsMutate } = useSWR<FileExport[]>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
+	const { data: fileExportsData, mutate: fileExportsMutate } = useSWR<FileExport[]>(API_ROUTES.core.EXTRACTIONS_LIST, { refreshInterval: 5_000 });
 
 	//
 	// C. Handle actions

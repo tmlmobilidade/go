@@ -262,15 +262,6 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},
 
-	exporter: {
-		// BASE
-		BASE: `${getModuleConfig('exporter', 'api_url')}`,
-
-		// EXPORTER
-		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getModuleConfig('exporter', 'api_url')}/exporter/${encodeURIComponent(id)}/download`,
-		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter`,
-	},
-
 	hub: {
 		// BASE
 		BASE: `${getModuleConfig('hub', 'api_url')}`,
@@ -348,7 +339,6 @@ export const API_ROUTES = Object.freeze({
 		FARES_LIST: `${getModuleConfig('offer', 'api_url')}/fares`,
 
 		// GTFS
-		GTFS_CREATE_EXPORT: `${getModuleConfig('offer', 'api_url')}/gtfs/create-export`,
 		GTFS_PARSE: `${getModuleConfig('offer', 'api_url')}/gtfs/parse`,
 
 		// LINES
