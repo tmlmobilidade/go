@@ -1,52 +1,37 @@
 'use client';
 
+import { closeOrganizationsDetailQuickLinksFormModal } from '@/components/organizations/detail/OrganizationsDetailQuickLinksForm.modal';
+import { OrganizationsDetailQuickLinksIconChooser } from '@/components/organizations/detail/OrganizationsDetailQuickLinksIconChooser';
 import { type HomeQuickLink } from '@tmlmobilidade/go-types-core';
 import { isUrl } from '@tmlmobilidade/strings';
-import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
+import { Button, Divider, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { OrganizationDetailQuickLinksIconChooser } from '../OrganizationDetailQuickLinksIconChooser';
-
 /* * */
 
-export const QUICK_LINKS_MODAL_ID = 'quick-links-modal';
+/**
+ * A quick link being created or edited. New links have no order yet;
+ * the order is assigned when the link is appended to the list.
+ */
+export type OrganizationsDetailQuickLinksFormValue = Omit<HomeQuickLink, 'order'> & Partial<Pick<HomeQuickLink, 'order'>>;
 
-/* * */
-
-export interface QuickLinksModalProps {
-	handleSubmit?: (link: HomeQuickLink) => void
+interface OrganizationsDetailQuickLinksFormProps {
 	link?: HomeQuickLink
+	onSubmit: (link: OrganizationsDetailQuickLinksFormValue) => void
 }
 
 /* * */
 
-export const openOrganizationQuickLinksModal = ({ handleSubmit, link }: QuickLinksModalProps) => {
-	openModal({
-		children: (
-			<QuickLinksModal handleSubmit={handleSubmit} link={link} />
-		),
-		closeOnClickOutside: false,
-		modalId: QUICK_LINKS_MODAL_ID,
-		padding: 0,
-		size: 'xl',
-		styles: { content: { overflow: 'unset' } },
-		withCloseButton: false,
-	});
-};
-
-/* * */
-
-export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?: (link: Omit<HomeQuickLink, 'order'>) => void, link?: HomeQuickLink }) {
+export function OrganizationsDetailQuickLinksForm({ link, onSubmit }: OrganizationsDetailQuickLinksFormProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const [newLink, setNewLink] = useState<Omit<HomeQuickLink, 'order'>>(link || { href: '', icon: '', title: '' });
-	const [selectedIcon, setSelectedIcon] = useState<'' | string>(link?.icon || '');
-
 	const { t } = useTranslation();
+
+	const [newLink, setNewLink] = useState<OrganizationsDetailQuickLinksFormValue>(link || { href: '', icon: '', title: '' });
 
 	//
 	// B. Handle actions
@@ -54,17 +39,21 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 	const handleSave = () => {
 		if (!newLink.title || !newLink.href || !newLink.icon) alert(t('default:organizations.detail.QuickLinksModal.Error.message'));
 		if (!newLink.href) return alert(t('default:organizations.detail.QuickLinksModal.Error.title'));
-		closeModal(QUICK_LINKS_MODAL_ID);
-		handleSubmit(newLink);
+		closeOrganizationsDetailQuickLinksFormModal();
+		onSubmit(newLink);
 	};
 
-	const handleIconChange = (icon) => {
-		newLink.icon = icon;
-		setSelectedIcon(icon);
+	const handleIconChange = (icon: string) => {
+		setNewLink(prev => ({ ...prev, icon }));
 	};
 
 	//
-	// C. Render components
+	// C. Setup flags
+
+	const isSaveDisabled = !newLink.title || !newLink.href || !newLink.icon || !isUrl(newLink.href);
+
+	//
+	// D. Render components
 
 	return (
 		<Section flexDirection="column" gap="sm" padding="lg">
@@ -83,20 +72,20 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 				value={newLink.href}
 				required
 			/>
-			<OrganizationDetailQuickLinksIconChooser
-				selectedIcon={selectedIcon}
-				setSelectedIcon={handleIconChange}
+			<OrganizationsDetailQuickLinksIconChooser
+				onChange={handleIconChange}
+				value={newLink.icon}
 			/>
 			<Divider />
 			<Grid columns="ab" gap="sm">
 				<Button
 					label={t('default:organizations.detail.QuickLinksModal.Fields.cancel.label')}
-					onClick={() => closeModal(QUICK_LINKS_MODAL_ID)}
+					onClick={closeOrganizationsDetailQuickLinksFormModal}
 					variant="secondary"
 					fullWidth
 				/>
 				<Button
-					disabled={!newLink.title || !newLink.href || !newLink.icon || isUrl(newLink.href) === false}
+					disabled={isSaveDisabled}
 					label={t('default:organizations.detail.QuickLinksModal.Fields.save.label')}
 					onClick={handleSave}
 					variant="primary"

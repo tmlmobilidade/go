@@ -5,17 +5,17 @@ import { IconFileInfo } from '@tabler/icons-react';
 import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { useQuickLinksData } from '../use-quick-links-data';
+import { useHomeQuickLinksData } from '../use-home-quick-links-data';
 
 /* * */
 
-export function QuickLinks() {
+export function HomeQuickLinks() {
 	//
 
 	//
 	// A. Setup variables
 
-	const { data } = useQuickLinksData();
+	const { data } = useHomeQuickLinksData();
 
 	//
 	// B. Transform data

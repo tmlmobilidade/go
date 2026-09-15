@@ -7,7 +7,7 @@ import { type User } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
- * Get the current user from the session token.
+ * Returns the current user from the session token.
  * @param request The request object
  * @param reply The reply object
  */

@@ -17,29 +17,29 @@ try {
 	Logger.error({ error, message: 'Error initializing Sentry Extractions Coordinator' });
 }
 
-await (async function init() {
+async function main() {
 	//
 
 	//
-	// Setup variables
+	// Setup the coordinator server
 
 	const fastify = Fastify({ logger: false });
 
 	//
-	// Setup the API services
+	// Setup the coordinator handlers
 
 	fastify.get('/extractions', getExtractionsHandler);
 
 	//
-	// Start the API service
+	// Start the coordinator server
 
-	fastify.listen({ host: '::0', port: 5050 }, (err, address) => {
-		if (err) {
-			console.log(err);
-			process.exit(1);
-		}
-		Logger.info({ message: `Server listening at ${address}` });
-	});
+	const address = await fastify.listen({ host: '::0', port: 5050 });
+
+	Logger.info({ message: `Server listening at ${address}` });
 
 	//
-})();
+}
+
+/* * */
+
+await main();

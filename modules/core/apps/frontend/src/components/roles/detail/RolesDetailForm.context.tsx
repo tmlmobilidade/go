@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/go-types-core';
-import { hasPermission } from '@tmlmobilidade/go-types-permissions';
+import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -49,15 +49,10 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	//
-	// D. Handle actions
+	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
-		fetchFn: async () => {
-			const values = form.getValues();
-			const parsed = UpdateRoleSchema.safeParse(form.getValues());
-			console.log(values.permissions[118]);
-			return await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(roleId) });
-		},
+		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(roleId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
 			rolesDetailMutate(response);
@@ -83,19 +78,19 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	//
-	// C. Setup flags
+	// D. Setup flags
 
 	const hasDeletePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
-			action: 'delete',
-			scope: 'roles',
+			action: PermissionCatalog.all.roles.actions.delete,
+			scope: PermissionCatalog.all.roles.scope,
 		});
 	}, [meData?.permissions]);
 
 	const hasUpdatePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
-			action: 'update',
-			scope: 'roles',
+			action: PermissionCatalog.all.roles.actions.update,
+			scope: PermissionCatalog.all.roles.scope,
 		});
 	}, [meData?.permissions]);
 

@@ -6,7 +6,7 @@ import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { type Extraction } from '@tmlmobilidade/go-types-extractions';
 
 /**
- * Delete an extraction for the current user.
+ * Deletes an Extraction of the current user.
  * @param request The request object
  * @param reply The reply object
  */
@@ -45,5 +45,5 @@ export async function deleteExtractionHandler(request: FastifyRequest<{ Params: 
 
 	const foundExtractions = await goDb.core.extractions.findMany({ created_by: request.me._id });
 
-	sendSuccessApiResponse(reply, foundExtractions ?? []);
+	return sendSuccessApiResponse(reply, foundExtractions ?? []);
 }

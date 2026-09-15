@@ -21,7 +21,6 @@ export async function updateAgencyHandler(request: FastifyRequest<{ Body: Update
 	});
 
 	if (!validatedAgency.success) {
-		console.log(validatedAgency.error.message);
 		return sendErrorApiResponse(reply, {
 			error: validatedAgency.error.message,
 			status_code: '400',

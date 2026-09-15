@@ -33,22 +33,12 @@ export async function listMunicipalitiesHandler(request: FastifyRequest, reply: 
 	}
 
 	//
-	// Transform the result into a list of StopsMunicipalityItem
+	// Transform the result into a list of UsersMunicipalityItem
 
 	const usersMunicipalityItems: UsersMunicipalityItem[] = aggregationResult.map(feature => ({
 		_id: feature._id,
 		...feature.properties,
 	}));
-
-	//
-	// Parse and return the result
-
-	if (!usersMunicipalityItems?.length) {
-		return sendErrorApiResponse(reply, {
-			error: 'No stops municipalities found for this user.',
-			status_code: '404',
-		});
-	}
 
 	return sendSuccessApiResponse(reply, usersMunicipalityItems);
 }

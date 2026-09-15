@@ -1,14 +1,14 @@
 'use client';
 
 import { iconMap } from '@/lib/icons';
-import { HomeQuickLink } from '@tmlmobilidade/go-types-core';
-import { Button, Collapsible, DataTable, DataTableColumn, DataTableScroller, DeleteButton, EditButton, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { type HomeQuickLink } from '@tmlmobilidade/go-types-core';
+import { Button, Collapsible, DataTable, type DataTableColumn, DataTableScroller, DeleteButton, EditButton, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useCallback } from 'react';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { openOrganizationQuickLinksModal } from '../OrganizationDetailQuickLinksModal';
 import { useOrganizationsDetailFormContext } from '../OrganizationsDetailForm.context';
+import { type OrganizationsDetailQuickLinksFormValue } from '../OrganizationsDetailQuickLinksForm';
+import { openOrganizationsDetailQuickLinksFormModal } from '../OrganizationsDetailQuickLinksForm.modal';
 
 /* * */
 
@@ -58,17 +58,17 @@ export function OrganizationsDetailQuickLinks() {
 	//
 	// B. Handle actions
 
-	const handleSubmit = useCallback((link: HomeQuickLink) => {
+	const handleSubmit = useCallback((link: OrganizationsDetailQuickLinksFormValue) => {
 		// Get the index of the link with the same order
 		const existingIndex = homeLinksValue.findIndex(l => l.order === link.order);
 		// If the link does not exist, add it to the end of the list
 		if (existingIndex === -1) {
-			link.order = homeLinksValue.length;
-			form.setValue('home_links', [...homeLinksValue, link], { shouldDirty: true });
-		} else {
-			const updatedLinks = homeLinksValue.map((l, idx) => idx === existingIndex ? link : l);
-			form.setValue('home_links', updatedLinks, { shouldDirty: true });
+			form.setValue('home_links', [...homeLinksValue, { ...link, order: homeLinksValue.length }], { shouldDirty: true });
+			return;
 		}
+		// Otherwise replace the existing link
+		const updatedLinks = homeLinksValue.map((l, idx) => idx === existingIndex ? { ...l, ...link } : l);
+		form.setValue('home_links', updatedLinks, { shouldDirty: true });
 	}, [form, homeLinksValue]);
 
 	const handleDelete = useCallback((link: HomeQuickLink) => {
@@ -77,7 +77,7 @@ export function OrganizationsDetailQuickLinks() {
 	}, [form, homeLinksValue]);
 
 	const handleEdit = useCallback((link: HomeQuickLink) => {
-		openOrganizationQuickLinksModal({ handleSubmit: handleSubmit, link });
+		openOrganizationsDetailQuickLinksFormModal({ link, onSubmit: handleSubmit });
 	}, [handleSubmit]);
 
 	//
@@ -98,7 +98,7 @@ export function OrganizationsDetailQuickLinks() {
 			<Section gap="lg">
 				<Button
 					label={t('default:organizations.detail.QuickLinks.AddQuickLinkButton.label')}
-					onClick={() => openOrganizationQuickLinksModal({ handleSubmit: handleSubmit })}
+					onClick={() => openOrganizationsDetailQuickLinksFormModal({ onSubmit: handleSubmit })}
 					variant="primary"
 				/>
 			</Section>

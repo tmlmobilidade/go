@@ -2,8 +2,8 @@
 
 import { RolesListHeader } from '@/components/roles/list/RolesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { RolesListItem } from '@tmlmobilidade/go-core-pckg-types';
-import { DataTable, DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, TagGroup } from '@tmlmobilidade/ui';
+import { type RolesListItem } from '@tmlmobilidade/go-core-pckg-types';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 

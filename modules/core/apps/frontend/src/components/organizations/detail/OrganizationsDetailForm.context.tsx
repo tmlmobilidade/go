@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { hasPermission } from '@tmlmobilidade/go-types-permissions';
+import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiMultipart, type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -70,7 +70,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 	});
 
 	//
-	// D. Handle actions
+	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE(organizationId) }),
@@ -135,19 +135,19 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 	});
 
 	//
-	// C. Setup flags
+	// D. Setup flags
 
 	const hasDeletePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
-			action: 'delete',
-			scope: 'organizations',
+			action: PermissionCatalog.all.organizations.actions.delete,
+			scope: PermissionCatalog.all.organizations.scope,
 		});
 	}, [meData?.permissions]);
 
 	const hasUpdatePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
-			action: 'update',
-			scope: 'organizations',
+			action: PermissionCatalog.all.organizations.actions.update,
+			scope: PermissionCatalog.all.organizations.scope,
 		});
 	}, [meData?.permissions]);
 

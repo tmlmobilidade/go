@@ -6,9 +6,9 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Organization } from '@tmlmobilidade/go-types-core';
 
 /**
- * Delete an organization logo from the database and storage.
- * @param request The request object containing the organization ID in the params.
- * @param reply The reply object used to send the response.
+ * Deletes an Organization logo from the database and storage.
+ * @param request The request object
+ * @param reply The reply object
  */
 export async function deleteImageHandler(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<Organization>) {
 	//
@@ -43,7 +43,7 @@ export async function deleteImageHandler(request: FastifyRequest<{ Params: { id:
 	try {
 		await storageProvider.delete(fileIdForTheme);
 	} catch (error) {
-		console.error(error);
+		request.log.error({ err: error }, `Failed to delete ${request.params.theme} logo file ${fileIdForTheme}`);
 	}
 
 	//

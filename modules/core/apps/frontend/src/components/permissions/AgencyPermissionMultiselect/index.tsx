@@ -1,8 +1,9 @@
-/* * */
+'use client';
 
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 import { MultiSelect, type SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,16 +20,21 @@ export function AgencyPermissionMultiselect({ disabled, onChange, options, value
 	//
 
 	//
-	// A. Transform data
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Transform data
 
 	const optionsWithAllowAll = useMemo(() => {
 		const copyOfOptions = [...options];
-		copyOfOptions.unshift({ label: 'Todas as agências', value: AllowAllFlagValue });
+		copyOfOptions.unshift({ label: t('default:permissions.AgencyPermissionMultiselect.all'), value: AllowAllFlagValue });
 		return copyOfOptions;
-	}, [options]);
+	}, [options, t]);
 
 	//
-	// B. Handle actions
+	// C. Handle actions
 
 	const handleChange = (newValue: string[]) => {
 		// Handle "select all" logic
@@ -47,14 +53,14 @@ export function AgencyPermissionMultiselect({ disabled, onChange, options, value
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<MultiSelect
 			data={optionsWithAllowAll}
-			description="Operadores ao qual o utilizador tem acesso para esta acção."
+			description={t('default:permissions.AgencyPermissionMultiselect.description')}
 			disabled={disabled}
-			label="Operadores"
+			label={t('default:permissions.AgencyPermissionMultiselect.label')}
 			onChange={handleChange}
 			value={value}
 		/>

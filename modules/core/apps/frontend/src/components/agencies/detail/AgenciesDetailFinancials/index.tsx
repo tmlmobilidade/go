@@ -18,8 +18,18 @@ export function AgenciesDetailFinancials() {
 	const { capabilities, form } = useAgenciesDetailFormContext();
 
 	const months = [
-		'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-		'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+		t('default:agencies.detail.SectionFinancials.months.january'),
+		t('default:agencies.detail.SectionFinancials.months.february'),
+		t('default:agencies.detail.SectionFinancials.months.march'),
+		t('default:agencies.detail.SectionFinancials.months.april'),
+		t('default:agencies.detail.SectionFinancials.months.may'),
+		t('default:agencies.detail.SectionFinancials.months.june'),
+		t('default:agencies.detail.SectionFinancials.months.july'),
+		t('default:agencies.detail.SectionFinancials.months.august'),
+		t('default:agencies.detail.SectionFinancials.months.september'),
+		t('default:agencies.detail.SectionFinancials.months.october'),
+		t('default:agencies.detail.SectionFinancials.months.november'),
+		t('default:agencies.detail.SectionFinancials.months.december'),
 	];
 
 	//
@@ -64,7 +74,7 @@ export function AgenciesDetailFinancials() {
 
 				<Divider />
 
-				<Text weight="bold">Total de kms em</Text>
+				<Text weight="bold">{t('default:agencies.detail.SectionFinancials.fields.vkm_per_month.label')}</Text>
 
 				<Grid columns="ab" gap="lg">
 					{months.map((month, index) => (
@@ -77,7 +87,7 @@ export function AgenciesDetailFinancials() {
 									error={fieldState.error?.message}
 									label={month}
 									onChange={field.onChange}
-									placeholder="100000"
+									placeholder={t('default:agencies.detail.SectionFinancials.fields.vkm_per_month.placeholder')}
 									readOnly={!capabilities.editEnabled}
 									step={1}
 									value={field.value}

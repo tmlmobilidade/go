@@ -1,10 +1,10 @@
 'use client';
 
-import { QuickLinks } from '@/components/home/QuickLinks';
-import { WelcomeMessage } from '@/components/home/WelcomeMessage';
+import { HomeQuickLinks } from '@/components/home/HomeQuickLinks';
+import { HomeWelcomeMessage } from '@/components/home/HomeWelcomeMessage';
 import { LoadingSection, Pane } from '@tmlmobilidade/ui';
 
-import { useQuickLinksData } from '../use-quick-links-data';
+import { useHomeQuickLinksData } from '../use-home-quick-links-data';
 
 /* * */
 
@@ -14,10 +14,10 @@ export function HomePage() {
 	//
 	// A. Setup variables
 
-	const { data, isLoading } = useQuickLinksData();
+	const { data, isLoading } = useHomeQuickLinksData();
 
 	//
-	// C. Render components
+	// B. Render components
 
 	if (isLoading) {
 		return (
@@ -26,12 +26,12 @@ export function HomePage() {
 	}
 
 	if (!data.length) {
-		return <WelcomeMessage />;
+		return <HomeWelcomeMessage />;
 	}
 
 	return (
 		<Pane>
-			<QuickLinks />
+			<HomeQuickLinks />
 		</Pane>
 	);
 }

@@ -6,7 +6,7 @@ import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { type Extraction } from '@tmlmobilidade/go-types-extractions';
 
 /**
- * Lock an extraction for the current user.
+ * Toggles the lock status of an Extraction of the current user.
  * @param request The request object
  * @param reply The reply object
  */
@@ -50,5 +50,5 @@ export async function lockExtractionHandler(request: FastifyRequest<{ Params: { 
 
 	const foundExtractions = await goDb.core.extractions.findMany({ created_by: request.me._id });
 
-	sendSuccessApiResponse(reply, foundExtractions ?? []);
+	return sendSuccessApiResponse(reply, foundExtractions ?? []);
 }

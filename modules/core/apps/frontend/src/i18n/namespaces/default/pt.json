@@ -68,7 +68,25 @@
 					"total_vkm_per_year": {
 						"label": "Total de km por ano",
 						"placeholder": "1000000"
+					},
+					"vkm_per_month": {
+						"label": "Total de kms em",
+						"placeholder": "100000"
 					}
+				},
+				"months": {
+					"april": "Abril",
+					"august": "Agosto",
+					"december": "Dezembro",
+					"february": "Fevereiro",
+					"january": "Janeiro",
+					"july": "Julho",
+					"june": "Junho",
+					"march": "Março",
+					"may": "Maio",
+					"november": "Novembro",
+					"october": "Outubro",
+					"september": "Setembro"
 				},
 				"title": "Informação financeira da agência"
 			},
@@ -157,7 +175,6 @@
 						"title": "Regras de validação do GTFS"
 					}
 				},
-
 				"toasts": {
 					"error": {
 						"message": "Não foi possível ler o ficheiro JSON. Verifique o conteúdo.",
@@ -366,7 +383,6 @@
 			"all": "Todas as agências",
 			"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
 			"label": "Operadores"
-
 		},
 		"AlertReferenceTypePermissionMultiselect": {
 			"alertReferenceTypeOptionsWithAllowAll": {
@@ -378,6 +394,11 @@
 			"all": "Todo o tipo de referências",
 			"description": "Selecione os tipos de referência que este utilizador poderá utilizar.",
 			"label": "Tipos de referência"
+		},
+		"MunicipalityPermissionMultiselect": {
+			"all": "Todos os municípios",
+			"description": "Municípios ao qual o utilizador tem acesso para esta acção.",
+			"label": "Municípios"
 		},
 		"SectionItems": {
 			"label": "Permissão Herdada pelo grupo de permissões"
@@ -437,6 +458,10 @@
 				"toggleLockAnnotations": "Bloquear/desbloquear",
 				"updateAnnotations": "Editar anotação"
 			}
+		},
+		"errors": {
+			"add_permission": "Erro ao adicionar permissão",
+			"permission_not_found": "Permissão não encontrada na lista de permissões"
 		},
 		"gtfsValidationActions": {
 			"description": "As ações que o utilizador pode realizar na gestão de validações GTFS.",
@@ -644,6 +669,9 @@
 		}
 	},
 	"roles": {
+		"NoDataLabel": {
+			"text": "Selecione um Grupo de Permissões"
+		},
 		"create": {
 			"BasicInfo": {
 				"fields": {
@@ -702,6 +730,9 @@
 		}
 	},
 	"users": {
+		"NoDataLabel": {
+			"text": "Selecione um Utilizador"
+		},
 		"create": {
 			"BasicInfo": {
 				"fields": {
@@ -807,9 +838,6 @@
 					"label": "Novo Utilizador"
 				},
 				"title": "Utilizadores"
-			},
-			"Idle": {
-				"text": "Selecione um Utilizador"
 			},
 			"Table": {
 				"columns": {

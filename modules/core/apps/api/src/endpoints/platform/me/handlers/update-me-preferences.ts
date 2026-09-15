@@ -6,17 +6,24 @@ import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-provid
 import { type MePreferencesPlatformRequest, MePreferencesPlatformRequestSchema, type User } from '@tmlmobilidade/go-types-core';
 
 /**
- * Update the user preferences.
- * @param request The request object.
- * @param reply The reply object.
-*/
+ * Updates the preferences of the current user.
+ * @param request The request object
+ * @param reply The reply object
+ */
 export async function updateMePreferencesHandler(request: FastifyRequest<{ Body: MePreferencesPlatformRequest }>, reply: FastifyReply<User>) {
 	//
 
 	//
 	// Validate request body
 
-	const validatedRequest = MePreferencesPlatformRequestSchema.parse(request.body);
+	const validatedRequest = MePreferencesPlatformRequestSchema.safeParse(request.body);
+
+	if (!validatedRequest.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedRequest.error.message,
+			status_code: '400',
+		});
+	}
 
 	//
 	// Get the user data from the session token
@@ -33,9 +40,9 @@ export async function updateMePreferencesHandler(request: FastifyRequest<{ Body:
 	// Merge current with updated preferences
 
 	const currentPreferences = userData.preferences ?? {};
-	const currentScope = currentPreferences[validatedRequest.scope] ?? {};
-	const updatedScope = { ...currentScope, [validatedRequest.key]: validatedRequest.value };
-	const updatedPreferences = { ...currentPreferences, [validatedRequest.scope]: updatedScope };
+	const currentScope = currentPreferences[validatedRequest.data.scope] ?? {};
+	const updatedScope = { ...currentScope, [validatedRequest.data.key]: validatedRequest.data.value };
+	const updatedPreferences = { ...currentPreferences, [validatedRequest.data.scope]: updatedScope };
 
 	//
 	// Update the user preferences

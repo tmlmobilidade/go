@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
-import { type UsersMunicipalityItem } from '@tmlmobilidade/go-core-pckg-types';
+import { type RolesMunicipalityItem } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type MunicipalityFeature } from '@tmlmobilidade/go-types-locations';
 
@@ -11,7 +11,7 @@ import { type MunicipalityFeature } from '@tmlmobilidade/go-types-locations';
  * @param request The request object
  * @param reply The reply object
  */
-export async function listMunicipalitiesHandler(request: FastifyRequest, reply: FastifyReply<UsersMunicipalityItem[]>) {
+export async function listMunicipalitiesHandler(request: FastifyRequest, reply: FastifyReply<RolesMunicipalityItem[]>) {
 	//
 
 	//
@@ -33,22 +33,12 @@ export async function listMunicipalitiesHandler(request: FastifyRequest, reply: 
 	}
 
 	//
-	// Transform the result into a list of StopsMunicipalityItem
+	// Transform the result into a list of RolesMunicipalityItem
 
-	const rolesMunicipalityItems: UsersMunicipalityItem[] = aggregationResult.map(feature => ({
+	const rolesMunicipalityItems: RolesMunicipalityItem[] = aggregationResult.map(feature => ({
 		_id: feature._id,
 		...feature.properties,
 	}));
-
-	//
-	// Parse and return the result
-
-	if (!rolesMunicipalityItems?.length) {
-		return sendErrorApiResponse(reply, {
-			error: 'No stops municipalities found for this user.',
-			status_code: '404',
-		});
-	}
 
 	return sendSuccessApiResponse(reply, rolesMunicipalityItems);
 }

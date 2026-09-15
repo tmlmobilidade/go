@@ -2,8 +2,7 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
-import { CloseButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -79,7 +78,7 @@ export function UsersDetailHeader() {
 					isDisabled={!capabilities.deleteEnabled}
 					isLoading={status.isDeleting}
 					onDelete={actions.delete}
-					showConfirmation={true}
+					showConfirmation
 				/>
 			</HasPermission>
 

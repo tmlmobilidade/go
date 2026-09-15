@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { HomeQuickLink } from '@tmlmobilidade/go-types-core';
+import { type HomeQuickLink } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -9,7 +9,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface UseQuickLinksDataReturnType {
+interface UseHomeQuickLinksDataReturnType {
 	data: HomeQuickLink[]
 	error: null | string
 	isLoading: boolean
@@ -20,7 +20,7 @@ interface UseQuickLinksDataReturnType {
 
 /* * */
 
-export function useQuickLinksData(): UseQuickLinksDataReturnType {
+export function useHomeQuickLinksData(): UseHomeQuickLinksDataReturnType {
 	//
 
 	//

@@ -1,8 +1,8 @@
 'use client';
 
+import { OrganizationsDetailBasicInfo } from '@/components/organizations/detail/OrganizationsDetailBasicInfo';
 import { OrganizationsDetailHeader } from '@/components/organizations/detail/OrganizationsDetailHeader';
-import { OrganizationsDetailBasicInfo } from '@/components/organizations/detail/OrganizationSectionBasicInfo';
-import { OrganizationsDetailQuickLinks } from '@/components/organizations/detail/OrganizationSectionQuickLinks';
+import { OrganizationsDetailQuickLinks } from '@/components/organizations/detail/OrganizationsDetailQuickLinks';
 import { Pane } from '@tmlmobilidade/ui';
 
 import { useOrganizationsDetailData } from '../use-organizations-detail-data';

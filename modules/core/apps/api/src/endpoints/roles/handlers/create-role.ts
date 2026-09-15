@@ -1,12 +1,11 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateRoleDto, type Role } from '@tmlmobilidade/go-types-core';
+import { type CreateRoleDto, CreateRoleSchema, type Role } from '@tmlmobilidade/go-types-core';
 
 /**
- * Create a new role in the database.
+ * Inserts a new Role into the database.
  * @param request The request object
  * @param reply The reply object
  */
@@ -14,16 +13,32 @@ export async function createRoleHandler(request: FastifyRequest<{ Body: CreateRo
 	//
 
 	//
-	// Set the created_by and updated_by fields to the current user's id
+	// Validate the request body
 
-	request.body.created_by = request.me._id;
-	request.body.updated_by = request.me._id;
+	const validatedRole = CreateRoleSchema.safeParse({
+		...request.body,
+		created_by: request.me._id,
+		updated_by: request.me._id,
+	});
 
-	const role = await goDb.core.roles.insertOne(request.body);
-
-	if (!role) {
-		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating role');
+	if (!validatedRole.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedRole.error.message,
+			status_code: '400',
+		});
 	}
 
-	reply.send({ data: role, error: null, statusCode: HTTP_STATUS.CREATED });
+	//
+	// Insert the role into the database
+
+	const insertResult = await goDb.core.roles.insertOne(validatedRole.data);
+
+	if (!insertResult) {
+		return sendErrorApiResponse(reply, {
+			error: 'Error creating role',
+			status_code: '500',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, insertResult, { status_code: '201' });
 }

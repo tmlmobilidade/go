@@ -3,7 +3,7 @@
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
-import { quickLinksHandler } from './handlers/quick-links.js';
+import { listQuickLinksHandler } from './handlers/list-quick-links.js';
 
 /* * */
 
@@ -20,7 +20,8 @@ server.register(
 		instance.get(
 			'/quick-links',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.home.scope, [PermissionCatalog.all.home.actions.read_links]) },
-			quickLinksHandler);
+			listQuickLinksHandler,
+		);
 
 		next();
 	},

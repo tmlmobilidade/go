@@ -1,7 +1,7 @@
 'use client';
 
 import { PermissionSectionItem } from '@/components/permissions/PermissionSectionItem';
-import { PermissionConfigAction } from '@/lib/permissions';
+import { type PermissionConfigAction } from '@/lib/permissions';
 import { type Role } from '@tmlmobilidade/go-types-core';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Collapsible, Grid, Section, type SelectDataItem } from '@tmlmobilidade/ui';

@@ -6,10 +6,10 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type SidebarLogoPlatformRequest, SidebarLogoPlatformRequestSchema, type SidebarLogoPlatformResponse } from '@tmlmobilidade/go-types-core';
 
 /**
- * Get the current user from the session token.
- * @param request The request object.
- * @param reply The reply object.
-*/
+ * Returns the sidebar logo URL of the current user's organization for the given theme mode.
+ * @param request The request object
+ * @param reply The reply object
+ */
 export async function getSidebarLogoHandler(request: FastifyRequest<{ Body: SidebarLogoPlatformRequest }>, reply: FastifyReply<SidebarLogoPlatformResponse>) {
 	//
 
@@ -38,9 +38,16 @@ export async function getSidebarLogoHandler(request: FastifyRequest<{ Body: Side
 	//
 	// Validate the request parameters and get the corresponding file URL
 
-	const validatedParams = SidebarLogoPlatformRequestSchema.parse(request.body);
+	const validatedParams = SidebarLogoPlatformRequestSchema.safeParse(request.body);
 
-	const fileId = validatedParams.theme_mode === 'light'
+	if (!validatedParams.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedParams.error.message,
+			status_code: '400',
+		});
+	}
+
+	const fileId = validatedParams.data.theme_mode === 'light'
 		? foundOrganization.logo_light
 		: foundOrganization.logo_dark;
 

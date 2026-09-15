@@ -6,13 +6,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface QuickLinkButtonProps {
+interface HomeQuickLinkButtonProps {
 	item: HomeQuickLink
 }
 
 /* * */
 
-export function QuickLinkButton({ item }: QuickLinkButtonProps) {
+export function HomeQuickLinkButton({ item }: HomeQuickLinkButtonProps) {
 	return (
 		<a className={styles.container} href={item.href} target="_blank">
 			{item.icon}
