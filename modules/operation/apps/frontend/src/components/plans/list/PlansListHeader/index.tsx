@@ -1,6 +1,6 @@
 /* * */
 
-import { openPlanExportModal } from '@/components/plans/exporter/PlanExportModalOpen';
+import { openPlanExportModal } from '@/components/plans/extract/PlanExportModalOpen';
 import { PlansListFilterSearch } from '@/components/plans/list/filters/PlansListFilterSearch';
 import { openPlanPostersExportModal } from '@/components/plans/posters/PlanPostersModalOpen';
 import { IconDots, IconFileDownload, IconFileTypePdf } from '@tabler/icons-react';

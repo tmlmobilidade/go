@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlanExportModalContext } from '@/components/plans/exporter/PlanExportForm.context';
+import { usePlanExportModalContext } from '@/components/plans/extract/PlanExportForm.context';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Divider, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

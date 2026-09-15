@@ -1,7 +1,7 @@
 'use client';
 
-import { PlanExportModalBody } from '@/components/plans/exporter/PlanExportModalBody';
-import { PlanExportModalHeader } from '@/components/plans/exporter/PlanExportModalHeader';
+import { PlanExportModalBody } from '@/components/plans/extract/PlanExportModalBody';
+import { PlanExportModalHeader } from '@/components/plans/extract/PlanExportModalHeader';
 import { closeModal } from '@tmlmobilidade/ui';
 
 import { PLAN_EXPORT_MODAL_ID } from './constants';
