@@ -1,19 +1,20 @@
 'use client';
 
-import { usePlanPostersExtractFormContext } from '@/components/plans/extract/posters/PlanPostersExtractForm.context';
 import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Divider, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { usePlanPostersExtractFormContext } from '../PlanPostersExtract.context';
+
 /* * */
 
 const canvasProfileOptions = [
-	{ label: '0Master.A', value: '0Master.A' },
-	{ label: '0Master.B', value: '0Master.B' },
-	{ label: '0Master.C', value: '0Master.C' },
-	{ label: '0Master.F', value: '0Master.F' },
+	{ label: 'Canvas A', value: '0Master.A' },
+	{ label: 'Canvas B', value: '0Master.B' },
+	{ label: 'Canvas C', value: '0Master.C' },
+	{ label: 'Canvas F', value: '0Master.F' },
 ];
 
 /* * */

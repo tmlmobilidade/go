@@ -1,9 +1,9 @@
 'use client';
 
-import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
+import { closeModal, openModal } from '@tmlmobilidade/ui';
 
 import { PlanPostersExtract } from './PlanPostersExtract';
-import { PlanPostersExtractFormContextProvider } from './PlanPostersExtractForm.context';
+import { PlanPostersExtractFormContextProvider } from './PlanPostersExtract.context';
 
 /* * */
 
@@ -14,11 +14,9 @@ const MODAL_ID = 'plan-posters-extract-modal';
 export const openPlanPostersExtractModal = () => {
 	openModal({
 		children: (
-			<MeContextProvider>
-				<PlanPostersExtractFormContextProvider>
-					<PlanPostersExtract />
-				</PlanPostersExtractFormContextProvider>
-			</MeContextProvider>
+			<PlanPostersExtractFormContextProvider>
+				<PlanPostersExtract />
+			</PlanPostersExtractFormContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,

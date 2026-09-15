@@ -9,7 +9,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface UsePlansExportListDataReturnType {
+interface UsePlansExtractListDataReturnType {
 	data: PlansListItem[]
 	error: null | string
 	isLoading: boolean
@@ -18,9 +18,9 @@ interface UsePlansExportListDataReturnType {
 }
 
 /**
- * Fetch plans available to an export flow for the selected agency.
+ * Fetch plans available to an extract flow for the selected agency.
  */
-export function usePlansExportListData(agencyId: null | string): UsePlansExportListDataReturnType {
+export function usePlansExtractListData(agencyId: null | string): UsePlansExtractListDataReturnType {
 	//
 
 	//
@@ -28,6 +28,7 @@ export function usePlansExportListData(agencyId: null | string): UsePlansExportL
 
 	const query = useMemo<null | PlansListFilters>(() => agencyId ? ({
 		agency_ids: [agencyId],
+		temporal_statuses: ['active', 'expired', 'upcoming'],
 	}) : null, [agencyId]);
 
 	//

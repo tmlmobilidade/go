@@ -1,9 +1,9 @@
 'use client';
 
-import { usePlanPostersExtractFormContext } from '@/components/plans/extract/posters/PlanPostersExtractForm.context';
 import { IconFileTypePdf } from '@tabler/icons-react';
 import { Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
+import { usePlanPostersExtractFormContext } from '../PlanPostersExtract.context';
 import { closePlanPostersExtractModal } from '../PlanPostersExtract.modal';
 
 /* * */
