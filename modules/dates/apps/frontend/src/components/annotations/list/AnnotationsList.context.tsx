@@ -4,7 +4,7 @@ import { type AnnotationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Annotation } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -50,7 +50,9 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 
 	const { ids: allAgencyIds, options: allAgencyOptions } = useAnnotationsAgenciesData();
 
-	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR<Annotation[], Error>(API_ROUTES.dates.ANNOTATIONS_LIST);
+	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR(API_ROUTES.dates.ANNOTATIONS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Annotation[]>({ url }),
+	});
 
 	//
 	// B. Setup filters
@@ -62,7 +64,7 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	const allDatesOptions = useMemo(() => {
 		if (!allAnnotationsData) return [];
 		const uniqueDates = new Set<string>();
-		allAnnotationsData.forEach((annotation) => {
+		allAnnotationsData.data?.forEach((annotation) => {
 			annotation.dates.forEach(date => uniqueDates.add(String(date)));
 		});
 		return Array.from(uniqueDates).sort().map(date => ({
@@ -82,7 +84,7 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 		// Skip if no data is available
 		if (!allAnnotationsData) return [];
 		// Normalize record fields
-		return allAnnotationsData.map((item) => {
+		return allAnnotationsData.data?.map((item) => {
 			// Get agency IDs for normalization
 			const agencyIds = item.agency_ids.join(', ');
 
@@ -132,7 +134,7 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	const contextValue: AnnotationsListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allAnnotationsData ?? [],
+			raw: allAnnotationsData?.data ?? [],
 		},
 		filters: {
 			agency: filterAgency,

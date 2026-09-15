@@ -46,22 +46,26 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 	//
 	// B. Fetch data
 
-	const { mutate: holidaysListMutate } = useSWR<Holiday[]>(API_ROUTES.dates.HOLIDAYS_LIST);
-	const { data: holidayData, error: holidayError, isLoading: holidayLoading, mutate: holidayMutate } = useSWR<Holiday>(API_ROUTES.dates.HOLIDAYS_DETAIL(holidayId));
+	const { mutate: holidaysListMutate } = useSWR(API_ROUTES.dates.HOLIDAYS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Holiday[]>({ url }),
+	});
+	const { data: holidayData, error: holidayError, isLoading: holidayLoading, mutate: holidayMutate } = useSWR(API_ROUTES.dates.HOLIDAYS_DETAIL(holidayId), {
+		fetcher: async (url: string) => await fetchApiData<Holiday>({ url }),
+	});
 
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateHolidayDto>(UpdateHolidaySchema, holidayData);
+	const { form } = useTypicalForm<UpdateHolidayDto>(UpdateHolidaySchema, holidayData?.data ?? null);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Holiday>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.dates.HOLIDAYS_DETAIL(holidayId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (response) => {
 			form.resetDirty();
-			holidayMutate(data);
+			holidayMutate(response);
 			holidaysListMutate();
 		},
 	});
@@ -77,9 +81,9 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 
 	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Holiday>({ url: API_ROUTES.dates.HOLIDAYS_DETAIL_LOCK(holidayId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (response) => {
 			form.resetDirty();
-			holidayMutate(data);
+			holidayMutate(response);
 			holidaysListMutate();
 		},
 	});
@@ -93,7 +97,7 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: holidayData?.agency_ids ?? [],
+			value: holidayData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.holidays.scope,
 	});
@@ -104,7 +108,7 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 		resource: {
 			key: 'agency_ids',
 			requireAll: true,
-			value: holidayData?.agency_ids ?? [],
+			value: holidayData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.holidays.scope,
 	});
@@ -122,7 +126,7 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: holidayLoading,
-		isLocked: holidayData?.is_locked,
+		isLocked: holidayData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -145,7 +149,7 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 		},
 		data: {
 			form,
-			holiday: holidayData,
+			holiday: holidayData?.data ?? null,
 			id: holidayId,
 		},
 		flags: {

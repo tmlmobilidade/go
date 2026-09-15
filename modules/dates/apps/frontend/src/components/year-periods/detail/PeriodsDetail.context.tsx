@@ -46,22 +46,26 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 	//
 	// B. Fetch data
 
-	const { mutate: periodsListMutate } = useSWR<YearPeriod[]>(API_ROUTES.dates.YEAR_PERIODS_LIST);
-	const { data: periodData, error: periodError, isLoading: periodLoading, mutate: periodMutate } = useSWR<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId));
+	const { mutate: periodsListMutate } = useSWR(API_ROUTES.dates.YEAR_PERIODS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<YearPeriod[]>({ url }),
+	});
+	const { data: periodData, error: periodError, isLoading: periodLoading, mutate: periodMutate } = useSWR(API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId), {
+		fetcher: async (url: string) => await fetchApiData<YearPeriod>({ url }),
+	});
 
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateYearPeriodDto>(UpdateYearPeriodSchema, periodData);
+	const { form } = useTypicalForm<UpdateYearPeriodDto>(UpdateYearPeriodSchema, periodData?.data ?? null);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<YearPeriod>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (response) => {
 			form.resetDirty();
-			periodMutate(data);
+			periodMutate(response);
 			periodsListMutate();
 		},
 	});
@@ -77,9 +81,9 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 
 	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<YearPeriod>({ url: API_ROUTES.dates.YEAR_PERIODS_DETAIL_LOCK(yearPeriodId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (response) => {
 			form.resetDirty();
-			periodMutate(data);
+			periodMutate(response);
 			periodsListMutate();
 		},
 	});
@@ -93,7 +97,7 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: periodData?.agency_ids ?? [],
+			value: periodData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.year_periods.scope,
 	});
@@ -104,7 +108,7 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 		resource: {
 			key: 'agency_ids',
 			requireAll: true,
-			value: periodData?.agency_ids ?? [],
+			value: periodData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.year_periods.scope,
 	});
@@ -122,7 +126,7 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: periodLoading,
-		isLocked: periodData?.is_locked,
+		isLocked: periodData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -146,7 +150,7 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 		data: {
 			form,
 			id: yearPeriodId,
-			period: periodData,
+			period: periodData?.data ?? null,
 		},
 		flags: {
 			canDelete,

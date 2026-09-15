@@ -5,7 +5,7 @@ import { type HolidayNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Holiday } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -49,7 +49,9 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 
 	const { ids: allAgencyIds, options: allAgencyOptions } = useAnnotationsAgenciesData();
 
-	const { data: allHolidaysData, error: allHolidaysError, isLoading: allHolidaysLoading } = useSWR<Holiday[], Error>(API_ROUTES.dates.HOLIDAYS_LIST);
+	const { data: allHolidaysData, error: allHolidaysError, isLoading: allHolidaysLoading } = useSWR(API_ROUTES.dates.HOLIDAYS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Holiday[]>({ url }),
+	});
 
 	//
 	// B. Setup filters
@@ -61,7 +63,7 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 	const allDatesOptions = useMemo(() => {
 		if (!allHolidaysData) return [];
 		const uniqueDates = new Set<string>();
-		allHolidaysData.forEach((holiday) => {
+		allHolidaysData.data?.forEach((holiday) => {
 			holiday.dates.forEach(date => uniqueDates.add(String(date)));
 		});
 		return Array.from(uniqueDates).sort().map(date => ({
@@ -81,7 +83,7 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 		// Skip if no data is available
 		if (!allHolidaysData) return [];
 		// Normalize record fields
-		return allHolidaysData.map((item) => {
+		return allHolidaysData.data?.map((item) => {
 			// Get agency IDs for normalization
 			const agencyIds = item.agency_ids.join(', ');
 
@@ -131,7 +133,7 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 	const contextValue: HolidaysListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allHolidaysData ?? [],
+			raw: allHolidaysData?.data ?? [],
 		},
 		filters: {
 			agency: filterAgency,
