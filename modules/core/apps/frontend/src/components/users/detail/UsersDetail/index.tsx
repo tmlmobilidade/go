@@ -7,6 +7,7 @@ import { UsersDetailOrganizationAndRoles } from '@/components/users/detail/Users
 import { permissionsConfig } from '@/lib/permissions';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import { useUsersAgenciesData } from '../../shared/use-users-agencies-data';
 import { useUsersMunicipalitiesData } from '../../shared/use-users-municipalities-data';
@@ -21,6 +22,8 @@ export function UsersDetail() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const { data: userData, isLoading } = useUsersDetailData();
 
@@ -47,7 +50,7 @@ export function UsersDetail() {
 		}
 		// If it doesn't exist, add a new permission entry and validate it
 		const validatedPermission = PermissionSchema.safeParse(permission);
-		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
+		if (!validatedPermission.success) return alert(`${t('default:permissions.errors.add_permission')}: ${JSON.stringify(validatedPermission.error)}`);
 		form.setValue('permissions', [...latestValues.permissions ?? [], validatedPermission.data], { shouldDirty: true });
 	};
 
@@ -56,10 +59,10 @@ export function UsersDetail() {
 		const latestValues = form.getValues();
 		// Validate the permission
 		const validatedPermission = PermissionSchema.safeParse(permission);
-		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
+		if (!validatedPermission.success) return alert(`${t('default:permissions.errors.add_permission')}: ${JSON.stringify(validatedPermission.error)}`);
 		// Find the permission in the form values
 		const permissionIndex = latestValues.permissions?.findIndex(p => p.scope === permission.scope && p.action === permission.action);
-		if (permissionIndex === -1) return alert('Permissão não encontrada na lista de permissões');
+		if (permissionIndex === -1) return alert(t('default:permissions.errors.permission_not_found'));
 		// Update the permission with the new resources
 		const updatedPermissions = [
 			...latestValues.permissions.slice(0, permissionIndex),

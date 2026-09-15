@@ -1,7 +1,8 @@
 /* * */
 
-import { getBannerHandler } from '@/endpoints/app-configs/handlers/get-banner.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+
+import { getBannerHandler } from './handlers/get-banner.js';
 
 /* * */
 

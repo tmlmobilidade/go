@@ -56,7 +56,6 @@ export function Background2() {
 			gl.shaderSource(shader, source);
 			gl.compileShader(shader);
 			if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-				console.error('Shader error:', gl.getShaderInfoLog(shader));
 				return null;
 			}
 			return shader;
@@ -73,7 +72,6 @@ export function Background2() {
 		gl.attachShader(program, fragmentShader);
 		gl.linkProgram(program);
 		if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-			console.error('Program error:', gl.getProgramInfoLog(program));
 			return;
 		}
 		programRef.current = program;

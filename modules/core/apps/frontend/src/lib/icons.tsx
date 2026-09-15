@@ -1,7 +1,7 @@
 /* * */
 
 import { IconAffiliate, IconBriefcase, IconBuilding, IconBuildingBank, IconBuildingFactory, IconBuildingSkyscraper, IconBuildingStore, IconBuildingWarehouse, IconCalendar, IconCalendarEvent, IconCalendarStats, IconCash, IconChartArea, IconChartBar, IconChartBubble, IconChartDonut, IconChartLine, IconChartPie, IconClipboard, IconClipboardCheck, IconClipboardList, IconCoin, IconCoins, IconCreditCard, IconDeviceDesktop, IconEaseOutControlPointFilled, IconFileCertificate, IconFileDescription, IconFileDollar, IconFileInfo, IconFileInvoice, IconFileSpreadsheet, IconFileText, IconFileTypeSql, IconFlag, IconHierarchy, IconId, IconIdBadge, IconListNumbers, IconMail, IconMailOpened, IconMessageUser, IconNetwork, IconPhone, IconPlant2, IconPrinter, IconReport, IconReportAnalytics, IconReportMoney, IconRubberStamp, IconSignature, IconTicket, IconTransferIn, IconUmbrella, IconUser, IconUserCheck, IconUserDollar, IconUserPlus, IconUsers, IconUserStar, IconWallet } from '@tabler/icons-react';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 /* * */
 

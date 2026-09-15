@@ -2,7 +2,7 @@
 
 import { OrganizationsListHeader } from '@/components/organizations/list/OrganizationsListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { OrganizationsListItem } from '@tmlmobilidade/go-core-pckg-types';
+import { type OrganizationsListItem } from '@tmlmobilidade/go-core-pckg-types';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';

@@ -1,8 +1,8 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateUserDto, CreateUserSchema, User } from '@tmlmobilidade/go-types-core';
-import { hasPermission } from '@tmlmobilidade/go-types-permissions';
+import { type CreateUserDto, CreateUserSchema, type User } from '@tmlmobilidade/go-types-core';
+import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -57,12 +57,12 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	//
-	// C. Setup flags
+	// D. Setup flags
 
 	const hasCreatePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
-			action: 'create',
-			scope: 'users',
+			action: PermissionCatalog.all.users.actions.create,
+			scope: PermissionCatalog.all.users.scope,
 		});
 	}, [meData?.permissions]);
 
@@ -78,7 +78,7 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	//
-	// D. Return context value
+	// E. Return state
 
 	const stateValue: StandardFormContextValue<CreateUserDto> = useMemo(() => ({
 		actions: {

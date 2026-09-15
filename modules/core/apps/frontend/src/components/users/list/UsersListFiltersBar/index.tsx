@@ -6,7 +6,7 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function UsersListFilterBar() {
+export function UsersListFiltersBar() {
 	return (
 		<FiltersBar>
 			<UsersListFilterOrganization />

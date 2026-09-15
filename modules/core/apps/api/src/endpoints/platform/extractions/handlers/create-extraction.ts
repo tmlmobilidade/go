@@ -6,7 +6,7 @@ import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { type Extraction, type ExtractionCreate, ExtractionCreateSchema } from '@tmlmobilidade/go-types-extractions';
 
 /**
- * Create a new extraction for the current user.
+ * Creates a new Extraction for the current user.
  * @param request The request object
  * @param reply The reply object
  */
@@ -28,13 +28,20 @@ export async function createExtractionHandler(request: FastifyRequest<{ Body: Ex
 	//
 	// Validate the request body
 
-	const validatedRequestBody = ExtractionCreateSchema.parse(request.body);
+	const validatedExtraction = ExtractionCreateSchema.safeParse(request.body);
+
+	if (!validatedExtraction.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedExtraction.error.message,
+			status_code: '400',
+		});
+	}
 
 	//
 	// Insert a new extraction into the database
 
 	await goDb.core.extractions.insertOne({
-		...validatedRequestBody,
+		...validatedExtraction.data,
 		attachment_id: null,
 		created_by: request.me._id,
 		downloaded_at: null,
@@ -49,5 +56,5 @@ export async function createExtractionHandler(request: FastifyRequest<{ Body: Ex
 
 	const foundExtractions = await goDb.core.extractions.findMany({ created_by: request.me._id });
 
-	sendSuccessApiResponse(reply, foundExtractions ?? []);
+	return sendSuccessApiResponse(reply, foundExtractions ?? []);
 }

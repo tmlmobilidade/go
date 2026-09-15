@@ -5,9 +5,11 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type HomeQuickLink } from '@tmlmobilidade/go-types-core';
 
 /**
- * Send an email to the user with a password reset link.
+ * Returns the quick links of the current user's organization.
+ * @param request The request object
+ * @param reply The reply object
  */
-export async function quickLinksHandler(request: FastifyRequest, reply: FastifyReply<HomeQuickLink[]>) {
+export async function listQuickLinksHandler(request: FastifyRequest, reply: FastifyReply<HomeQuickLink[]>) {
 	//
 
 	//

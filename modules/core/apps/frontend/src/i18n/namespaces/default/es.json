@@ -32,6 +32,10 @@
 						"label": "Contacto telefónico",
 						"placeholder": "912345678"
 					},
+					"pta_name": {
+						"label": "Nombre de la autoridad",
+						"placeholder": "CIM..."
+					},
 					"public_email": {
 						"label": "Email público",
 						"placeholder": "email@example.com"
@@ -54,20 +58,6 @@
 				},
 				"title": "Detalles del operador"
 			},
-			"SectionContacts": {
-				"description": "Notificaciones y contactos",
-				"fields": {
-					"contact_emails_pta": {
-						"description": "Las notificaciones se enviarán a los emails de contacto de la autoridad.",
-						"label": "Emails de contacto de la autoridad"
-					},
-					"contact_emails_pto": {
-						"description": "Las notificaciones se enviarán a los siguientes emails de contacto del operador.",
-						"label": "Emails de contacto del operador"
-					}
-				},
-				"title": "Contactos"
-			},
 			"SectionFinancials": {
 				"description": "Información financiera",
 				"fields": {
@@ -78,49 +68,65 @@
 					"total_vkm_per_year": {
 						"label": "Total de km por año",
 						"placeholder": "1000000"
+					},
+					"vkm_per_month": {
+						"label": "Total de kms en",
+						"placeholder": "100000"
 					}
+				},
+				"months": {
+					"april": "Abril",
+					"august": "Agosto",
+					"december": "Diciembre",
+					"february": "Febrero",
+					"january": "Enero",
+					"july": "Julio",
+					"june": "Junio",
+					"march": "Marzo",
+					"may": "Mayo",
+					"november": "Noviembre",
+					"october": "Octubre",
+					"september": "Septiembre"
 				},
 				"title": "Información financiera de la agencia"
 			},
 			"SectionOpenData": {
 				"description": "Configuración de los datos abiertos.",
 				"fields": {
-					"fields": {
-						"details": {
-							"email": {
-								"label": "Email",
-								"placeholder": "email@example.com"
-							},
-							"fare_url": {
-								"label": "URL para información de tarifas",
-								"placeholder": "https://www.carrismetropolitana.pt/tarifas"
-							},
-							"name": {
-								"label": "Nome",
-								"placeholder": "Carris Metropolitana"
-							},
-							"phone": {
-								"label": "Teléfono",
-								"placeholder": "912345678"
-							},
-							"website_url": {
-								"label": "Sitio web",
-								"placeholder": "https://www.carrismetropolitana.pt"
-							}
+					"details": {
+						"email": {
+							"label": "Email",
+							"placeholder": "email@example.com"
 						},
-						"services": {
-							"eta_enabled": {
-								"label": "Disponibilizar estimativas de llegada"
-							},
-							"gtfs_enabled": {
-								"label": "Disponibilizar GTFS unificado"
-							},
-							"positions_enabled": {
-								"label": "Disponibilizar posiciones de los vehículos"
-							},
-							"service_alerts_enabled": {
-								"label": "Disponibilizar alertas de servicio"
-							}
+						"fare_url": {
+							"label": "URL para información de tarifas",
+							"placeholder": "https://www.carrismetropolitana.pt/tarifas"
+						},
+						"name": {
+							"label": "Nome",
+							"placeholder": "Carris Metropolitana"
+						},
+						"phone": {
+							"label": "Teléfono",
+							"placeholder": "912345678"
+						},
+						"website_url": {
+							"label": "Sitio web",
+							"placeholder": "https://www.carrismetropolitana.pt"
+						}
+					},
+					"services": {
+						"eta_enabled": {
+							"label": "Disponibilizar estimativas de llegada"
+						},
+						"gtfs_enabled": {
+							"label": "Disponibilizar GTFS unificado"
+						},
+						"positions_enabled": {
+							"label": "Disponibilizar posiciones de los vehículos"
+						},
+						"service_alerts_enabled": {
+							"label": "Disponibilizar alertas de servicio"
 						}
 					}
 				},
@@ -148,6 +154,12 @@
 			"SectionValidationRules": {
 				"description": "Archivo de reglas de validación del GTFS",
 				"fields": {
+					"Rules": {
+						"label": "Reglas"
+					},
+					"Severity": {
+						"label": "Severidad"
+					},
 					"file": {
 						"button": "Cargar reglas",
 						"label": "Insertar reglas de validación del GTFS"
@@ -158,7 +170,11 @@
 						"no_content": "No hay reglas de validación definidas"
 					}
 				},
-				"title": "Reglas de validación del GTFS",
+				"title": {
+					"GTFS_validation_rules": {
+						"title": "Reglas de validación del GTFS"
+					}
+				},
 				"toasts": {
 					"error": {
 						"message": "No fue posible leer el archivo JSON. Verifique el contenido.",
@@ -367,7 +383,6 @@
 			"all": "Todas las agencias",
 			"description": "Operadores a los que el usuario tiene acceso para esta acción.",
 			"label": "Operadores"
-
 		},
 		"AlertReferenceTypePermissionMultiselect": {
 			"alertReferenceTypeOptionsWithAllowAll": {
@@ -379,6 +394,11 @@
 			"all": "Todo tipo de referencias",
 			"description": "Seleccione los tipos de referencia que este usuario podrá utilizar.",
 			"label": "Tipos de referencia"
+		},
+		"MunicipalityPermissionMultiselect": {
+			"all": "Todos los municipios",
+			"description": "Municipios a los que el usuario tiene acceso para esta acción.",
+			"label": "Municipios"
 		},
 		"SectionItems": {
 			"label": "Permiso heredado del grupo de permisos"
@@ -438,6 +458,10 @@
 				"toggleLockAnnotations": "Bloquear/desbloquear",
 				"updateAnnotations": "Editar anotación"
 			}
+		},
+		"errors": {
+			"add_permission": "Error al añadir permiso",
+			"permission_not_found": "Permiso no encontrado en la lista de permisos"
 		},
 		"gtfsValidationActions": {
 			"description": "Las acciones que el usuario puede realizar en la gestión de validaciones GTFS.",
@@ -645,6 +669,9 @@
 		}
 	},
 	"roles": {
+		"NoDataLabel": {
+			"text": "Seleccione un Grupo de Permisos"
+		},
 		"create": {
 			"BasicInfo": {
 				"fields": {
@@ -703,6 +730,9 @@
 		}
 	},
 	"users": {
+		"NoDataLabel": {
+			"text": "Seleccione un Usuario"
+		},
 		"create": {
 			"BasicInfo": {
 				"fields": {
@@ -808,9 +838,6 @@
 					"label": "Nuevo usuario"
 				},
 				"title": "Usuarios"
-			},
-			"Idle": {
-				"text": "Seleccione un usuario"
 			},
 			"Table": {
 				"columns": {

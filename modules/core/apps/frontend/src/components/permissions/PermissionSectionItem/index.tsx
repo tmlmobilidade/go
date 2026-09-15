@@ -1,11 +1,12 @@
 'use client';
 
 import { hasRolePermission } from '@/lib/permission-helpers';
-import { PermissionConfigAction } from '@/lib/permissions';
+import { type PermissionConfigAction } from '@/lib/permissions';
 import { type Role } from '@tmlmobilidade/go-types-core';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { Grid, type SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { AgencyPermissionMultiselect } from '../AgencyPermissionMultiselect';
 import { AlertReferenceTypePermissionMultiselect } from '../AlertReferenceTypePermissionMultiselect';
@@ -23,7 +24,7 @@ interface PermissionSectionItemProps {
 	municipalitiesOptions: SelectDataItem[]
 	onResourceToggle: (permission: Permission) => void
 	onToggle: (permission: Permission) => void
-	rolesData: Role	[]
+	rolesData: Role[]
 	scope: string
 }
 
@@ -33,7 +34,12 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 	//
 
 	//
-	// A. Transform data
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Transform data
 
 	const currentPermissionEntry = enabledPermissions?.find(p => p.scope === scope && p.action === configAction.action);
 
@@ -67,14 +73,14 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 	const handleToggle = () => {
 		if (hasPermissionFromRole) return;
 		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, resources: {}, scope });
-		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
+		if (!validatedPermission.success) return alert(`${t('default:permissions.errors.add_permission')}: ${JSON.stringify(validatedPermission.error)}`);
 		onToggle(validatedPermission.data);
 	};
 
 	const handleResourceToggle = (resource: Record<string, unknown>) => {
 		const currentResourceValues = 'resources' in currentPermissionEntry ? currentPermissionEntry?.resources : {};
 		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, resources: { ...currentResourceValues, ...resource }, scope });
-		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
+		if (!validatedPermission.success) return alert(`${t('default:permissions.errors.add_permission')}: ${JSON.stringify(validatedPermission.error)}`);
 		onResourceToggle(validatedPermission.data);
 	};
 
@@ -86,7 +92,7 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 			checked={!!currentPermissionEntry || hasPermissionFromRole}
 			description={configAction.description}
 			disabled={disabled || hasPermissionFromRole}
-			footnote={hasPermissionFromRole && 'Permissão Herdada pelo grupo de permissões'}
+			footnote={hasPermissionFromRole ? t('default:permissions.SectionItems.label') : undefined}
 			label={configAction.label}
 			onChange={handleToggle}
 		>

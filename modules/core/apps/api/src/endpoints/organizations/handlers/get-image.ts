@@ -5,9 +5,9 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
 /**
- * Gets organization logo from the database.
- * @param request The request object containing the organization ID in the params.
- * @param reply The reply object used to send the response.
+ * Returns the URL of an Organization logo for the given theme.
+ * @param request The request object
+ * @param reply The reply object
  */
 export async function getImageHandler(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<string>) {
 	//

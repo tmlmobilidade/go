@@ -6,7 +6,7 @@ import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
 /**
- * Download an extraction for the current user.
+ * Streams the attachment file of an Extraction of the current user.
  * @param request The request object
  * @param reply The reply object
  */

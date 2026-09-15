@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type SimplifiedUser } from '@tmlmobilidade/go-types-core';
 
@@ -11,27 +10,43 @@ import { type SimplifiedUser } from '@tmlmobilidade/go-types-core';
  * @param reply The reply object
  */
 export async function getUserSimplifiedHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedUser>) {
-	// Find the user by ID
-	const userData = await goDb.core.users.findById(request.params.id);
-	if (!userData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+	//
+
+	//
+	// Get the user data
+
+	const foundUser = await goDb.core.users.findById(request.params.id);
+
+	if (!foundUser) {
+		return sendErrorApiResponse(reply, {
+			error: `User with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
 	}
 
-	// Find the organization data associated with the user
-	const organizationData = await goDb.core.organizations.findById(userData.organization_id);
-	if (!organizationData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+	//
+	// Get the organization data associated with the user
+
+	const foundOrganization = await goDb.core.organizations.findById(foundUser.organization_id);
+
+	if (!foundOrganization) {
+		return sendErrorApiResponse(reply, {
+			error: `Organization with ID ${foundUser.organization_id} not found`,
+			status_code: '404',
+		});
 	}
 
+	//
 	// Simplify the user data by selecting only specific fields
+
 	const simplifiedUserData: SimplifiedUser = {
-		_id: userData._id,
-		first_name: userData.first_name,
-		last_name: userData.last_name,
-		organization_id: userData.organization_id,
-		organization_name: organizationData.long_name,
-		seen_last_at: userData.seen_last_at,
+		_id: foundUser._id,
+		first_name: foundUser.first_name,
+		last_name: foundUser.last_name,
+		organization_id: foundUser.organization_id,
+		organization_name: foundOrganization.long_name,
+		seen_last_at: foundUser.seen_last_at,
 	};
-		// Send the simplified user data in the response
-	reply.send({ data: simplifiedUserData, error: null, statusCode: HTTP_STATUS.OK });
+
+	return sendSuccessApiResponse(reply, simplifiedUserData);
 }

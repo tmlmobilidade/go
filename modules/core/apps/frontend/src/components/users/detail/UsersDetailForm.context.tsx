@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/go-types-core';
-import { hasPermission } from '@tmlmobilidade/go-types-permissions';
+import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -49,7 +49,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	//
-	// D. Handle actions
+	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<User>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.USERS_UPDATE(userId) }),
@@ -78,19 +78,19 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	//
-	// C. Setup flags
+	// D. Setup flags
 
 	const hasDeletePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
-			action: 'delete',
-			scope: 'users',
+			action: PermissionCatalog.all.users.actions.delete,
+			scope: PermissionCatalog.all.users.scope,
 		});
 	}, [meData?.permissions]);
 
 	const hasUpdatePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
-			action: 'update',
-			scope: 'users',
+			action: PermissionCatalog.all.users.actions.update,
+			scope: PermissionCatalog.all.users.scope,
 		});
 	}, [meData?.permissions]);
 

@@ -6,7 +6,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function WelcomeMessage() {
+export function HomeWelcomeMessage() {
 	return (
 		<div className={styles.root}>
 			<NoDataLabel text="GO" />

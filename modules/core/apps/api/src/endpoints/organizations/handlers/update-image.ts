@@ -3,12 +3,12 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Organization } from '@tmlmobilidade/go-types-core';
+import { type Organization } from '@tmlmobilidade/go-types-core';
 
 /**
- * Update organization logos.
- * @param request The request object containing the organization ID in the params and the image files in the body
- * @param reply The reply object used to send the response
+ * Updates the Organization logos from the uploaded multipart files.
+ * @param request The request object
+ * @param reply The reply object
  */
 export async function updateImageHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<boolean>) {
 	//
@@ -52,7 +52,7 @@ export async function updateImageHandler(request: FastifyRequest<{ Params: { id:
 				try {
 					await storageProvider.delete(foundOrganization.logo_light);
 				} catch (error) {
-					console.info('Failed to delete old light logo', error);
+					request.log.error({ err: error }, 'Failed to delete old light logo');
 				}
 			}
 			// Update the organization with the new logo ID
@@ -67,7 +67,7 @@ export async function updateImageHandler(request: FastifyRequest<{ Params: { id:
 				try {
 					await storageProvider.delete(foundOrganization.logo_dark);
 				} catch (error) {
-					console.info('Failed to delete old dark logo', error);
+					request.log.error({ err: error }, 'Failed to delete old dark logo');
 				}
 			}
 			// Update the organization with the new logo ID

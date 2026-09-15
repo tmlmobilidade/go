@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Organization } from '@tmlmobilidade/go-types-core';
 
@@ -11,9 +10,19 @@ import { type Organization } from '@tmlmobilidade/go-types-core';
  * @param reply The reply object
  */
 export async function getOrganizationHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
-	const organizationData = await goDb.core.organizations.findById(request.params.id);
-	if (!organizationData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+	//
+
+	//
+	// Get the organization data
+
+	const foundOrganization = await goDb.core.organizations.findById(request.params.id);
+
+	if (!foundOrganization) {
+		return sendErrorApiResponse(reply, {
+			error: `Organization with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
 	}
-	reply.send({ data: organizationData, error: null, statusCode: HTTP_STATUS.OK });
+
+	return sendSuccessApiResponse(reply, foundOrganization);
 }
