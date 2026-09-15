@@ -1,6 +1,5 @@
 /* * */
 
-import { getGtfsRtJsonFeedCm } from '@/endpoints/v1/alerts/controllers/get-gtfs-rt-json-feed-cm.js';
 import { getGtfsRtJsonFeed } from '@/endpoints/v1/alerts/controllers/get-gtfs-rt-json-feed.js';
 import { getGtfsRtProtobufFeed } from '@/endpoints/v1/alerts/controllers/get-gtfs-rt-protobuf-feed.js';
 import { getJsonFeed } from '@/endpoints/v1/alerts/controllers/get-json-feed.js';
@@ -22,8 +21,6 @@ server.register(
 		instance.get('/', getJsonFeed);
 
 		instance.get('/gtfs', getGtfsRtJsonFeed);
-
-		instance.get('/gtfs-cm', getGtfsRtJsonFeedCm);
 
 		instance.get('/gtfs.pb', getGtfsRtProtobufFeed);
 
