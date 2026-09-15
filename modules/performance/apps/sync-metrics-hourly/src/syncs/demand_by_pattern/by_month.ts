@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { DemandByPatternByDay, Metric } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { DemandByPatternByDay, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,13 +14,13 @@ export const syncDemandByPatternByMonth = async () => {
 	Logger.title(`Sync Demand Metrics by Pattern by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_pattern_by_month';
+	const metricKey = 'demand_by_pattern_by_month';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -41,20 +41,20 @@ export const syncDemandByPatternByMonth = async () => {
 	const patternMap = new Map<string, Metric>();
 
 	for (const dailyMetric of dailyMetrics) {
-		const pattern_id = dailyMetric.properties.pattern_id;
+		const patternId = dailyMetric.properties.pattern_id;
 
 		// Initialize pattern if not exists
-		if (!patternMap.has(pattern_id)) {
-			patternMap.set(pattern_id, {
+		let patternDoc = patternMap.get(patternId);
+		if (!patternDoc) {
+			patternDoc = {
 				data: {} as Record<string, { qty: number }>,
-				description: `Aggregated passenger demand for pattern ${pattern_id}`,
+				description: `Aggregated passenger demand for pattern ${patternId}`,
 				generated_at: new Date(),
-				metric: METRIC,
-				properties: { pattern_id },
-			} as Metric);
+				metric: metricKey,
+				properties: { pattern_id: patternId },
+			} as Metric;
+			patternMap.set(patternId, patternDoc);
 		}
-
-		const patternDoc = patternMap.get(pattern_id);
 
 		// Aggregate daily data into months
 		for (const [dayKey, dayData] of Object.entries(dailyMetric.data)) {
@@ -81,7 +81,7 @@ export const syncDemandByPatternByMonth = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Aggregate from by_day metrics', key: 'aggregate_from_daily' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 1, // Only 1 query to fetch daily metrics
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

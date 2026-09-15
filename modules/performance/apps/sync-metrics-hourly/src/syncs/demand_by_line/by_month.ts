@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { DemandByLineByDay, Metric } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { DemandByLineByDay, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,13 +14,13 @@ export const syncDemandByLineByMonth = async () => {
 	Logger.title(`Sync Demand Metrics by Line by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_line_by_month';
+	const metricKey = 'demand_by_line_by_month';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -41,20 +41,20 @@ export const syncDemandByLineByMonth = async () => {
 	const lineMap = new Map<string, Metric>();
 
 	for (const dailyMetric of dailyMetrics) {
-		const line_id = dailyMetric.properties.line_id;
+		const lineId = dailyMetric.properties.line_id;
 
 		// Initialize line if not exists
-		if (!lineMap.has(line_id)) {
-			lineMap.set(line_id, {
+		let lineDoc = lineMap.get(lineId);
+		if (!lineDoc) {
+			lineDoc = {
 				data: {} as Record<string, { qty: number }>,
-				description: `Aggregated passenger demand for line ${line_id}`,
+				description: `Aggregated passenger demand for line ${lineId}`,
 				generated_at: new Date(),
-				metric: METRIC,
-				properties: { line_id },
-			} as Metric);
+				metric: metricKey,
+				properties: { line_id: lineId },
+			} as Metric;
+			lineMap.set(lineId, lineDoc);
 		}
-
-		const lineDoc = lineMap.get(line_id);
 
 		// Aggregate daily data into months
 		for (const [dayKey, dayData] of Object.entries(dailyMetric.data)) {
@@ -81,7 +81,7 @@ export const syncDemandByLineByMonth = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Aggregate from by_day metrics', key: 'aggregate_from_daily' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 1, // Only 1 query to fetch daily metrics
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

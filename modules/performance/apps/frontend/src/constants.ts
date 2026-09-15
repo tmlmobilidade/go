@@ -1,11 +1,15 @@
 /* * */
 
 import { IconBuildingFactory, IconBus, IconCheckupList, IconCurrencyEuro, IconLeaf, IconMapPin, IconMoodSmile, IconShieldCheck, IconUsers } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+
+/* * */
 
 export interface DashboardDefinition {
 	description?: string
 	key: string
 	label: string
+	route?: string
 	visible?: boolean
 }
 
@@ -16,8 +20,11 @@ export interface TopicDefinition {
 	icon?: React.ComponentType
 	key: string
 	label: string
+	route?: string
 	visible?: boolean
 }
+
+/* * */
 
 export const TOPICS = {
 	COVERAGE_AVAILABILITY: 'coverage-availability',
@@ -37,6 +44,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 			{
 				key: 'demand-by',
 				label: 'Procura por...',
+				route: PAGE_ROUTES.performance.DEMAND_DEMAND_BY_LIST,
 				visible: true,
 			},
 			{
@@ -68,6 +76,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 		icon: IconUsers,
 		key: TOPICS.DEMAND,
 		label: 'Procura',
+		route: PAGE_ROUTES.performance.DEMAND_LIST,
 		visible: true,
 	},
 	{
@@ -81,6 +90,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 		icon: IconBus,
 		key: TOPICS.SUPPLY,
 		label: 'Oferta',
+		route: PAGE_ROUTES.performance.SUPPLY_LIST,
 		visible: true,
 	},
 	{
@@ -165,6 +175,8 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 		label: 'Receita',
 	},
 ];
+
+/* * */
 
 export const AGENCIES = {
 	AREA_1: 'LA77N',

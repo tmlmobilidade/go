@@ -1,8 +1,10 @@
+'use client';
+
 /* * */
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useHomeContext } from '@/contexts/Home.context';
-import { StatusInfo } from '@/utils/systemStatus';
+import { type StatusInfo } from '@/utils/systemStatus';
 import { Skeleton, Tooltip } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 
@@ -10,7 +12,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export default function SystemStatus({ agency }: { agency?: string }) {
+export function SystemStatus({ agency }: { agency?: string }) {
 	//
 
 	//

@@ -1,15 +1,17 @@
 /* * */
 
-import { DatesController } from '@/endpoints/dates/dates.controller.js';
-import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
-/* * */
-
-const server: FastifyInstance = FastifyService.getInstance().server;
-const namespace = '/dates';
+import { listDatesHandler } from './handlers/list-dates.js';
 
 /* * */
+
+const NAMESPACE = '/dates';
+
+/* * */
+
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
@@ -18,10 +20,10 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
-			DatesController.getCalendar,
+			listDatesHandler,
 		);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

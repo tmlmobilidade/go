@@ -1,12 +1,13 @@
 /* * */
 
 import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
+import { buildCalendarMap, fetchCalendarData } from '@/utils/fetch-calendar-data.js';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByProductByPatternByDay } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByProductByPatternByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -17,14 +18,14 @@ export const syncDemandByProductByPatternByDay = async () => {
 	Logger.title(`Sync Demand Metrics by Product by Pattern by Day`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_product_by_pattern_by_day';
+	const metricKey = 'demand_by_product_by_pattern_by_day';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_line_by_day' });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey as 'demand_by_product_by_line_by_day' });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -35,18 +36,12 @@ export const syncDemandByProductByPatternByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarJson = await Dates.fetchCalendarData();
+	const calendarJson = await fetchCalendarData();
 
 	//
 	// Build a map for fast lookup
 
-	const calendarMap = new Map<string, CalendarEntry>();
-	for (const day of calendarJson) {
-		const dayString = day.date.toString();
-		// convert date to YYYY-MM-DD format
-		const formattedDate = `${dayString.slice(0, 4)}-${dayString.slice(4, 6)}-${dayString.slice(6, 8)}`;
-		calendarMap.set(formattedDate, day);
-	}
+	const calendarMap = buildCalendarMap(calendarJson);
 
 	//
 	// Define daily chunks
@@ -67,9 +62,9 @@ export const syncDemandByProductByPatternByDay = async () => {
 		const next = cursor.plus({ days: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -78,8 +73,8 @@ export const syncDemandByProductByPatternByDay = async () => {
 	// Set max concurrent queries and batch processing
 
 	const limit = pLimit(5); // Reduce concurrent queries
-	const BATCH_SIZE = 50; // Process chunks in smaller batches
-	const FLUSH_THRESHOLD = 10000; // Flush to DB when we have this many combinations
+	const batchSize = 50; // Process chunks in smaller batches
+	const flushThreshold = 10000; // Flush to DB when we have this many combinations
 
 	//
 	// Process chunks in batches to avoid memory issues
@@ -87,10 +82,10 @@ export const syncDemandByProductByPatternByDay = async () => {
 	const productMap = new Map<string, DemandByProductByPatternByDay>();
 	let totalProcessed = 0;
 
-	for (let i = 0; i < allTimestampChunks.length; i += BATCH_SIZE) {
-		const batchChunks = allTimestampChunks.slice(i, i + BATCH_SIZE);
+	for (let i = 0; i < allTimestampChunks.length; i += batchSize) {
+		const batchChunks = allTimestampChunks.slice(i, i + batchSize);
 
-		Logger.info({ message: `Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allTimestampChunks.length / BATCH_SIZE)} (chunks ${i + 1}-${Math.min(i + BATCH_SIZE, allTimestampChunks.length)})` });
+		Logger.info({ message: `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(allTimestampChunks.length / batchSize)} (chunks ${i + 1}-${Math.min(i + batchSize, allTimestampChunks.length)})` });
 
 		const batchPromises = batchChunks.map((chunkData, batchIndex) =>
 			limit(async () => {
@@ -134,27 +129,27 @@ export const syncDemandByProductByPatternByDay = async () => {
 
 		for (const validationsAgg of batchResults) {
 			for (const validation of validationsAgg) {
-				const product_id = validation.product_id ?? 'unknown-product';
-				const pattern_id = validation.pattern_id ?? 'no-pattern';
+				const productId = validation.product_id ?? 'unknown-product';
+				const patternId = validation.pattern_id ?? 'no-pattern';
 
 				// Create unique key for each product-pattern combination
-				const productPatternKey = `${product_id}:${pattern_id}`;
+				const productPatternKey = `${productId}:${patternId}`;
 
 				// Create or get product-pattern document
-				if (!productMap.has(productPatternKey)) {
-					productMap.set(productPatternKey, {
+				let productPatternDoc = productMap.get(productPatternKey);
+				if (!productPatternDoc) {
+					productPatternDoc = {
 						data: {},
-						description: `Aggregated passengers for product ${product_id} on pattern ${pattern_id}`,
+						description: `Aggregated passengers for product ${productId} on pattern ${patternId}`,
 						generated_at: new Date(),
-						metric: METRIC,
+						metric: metricKey,
 						properties: {
-							pattern_id,
-							product_id,
+							pattern_id: patternId,
+							product_id: productId,
 						},
-					});
+					};
+					productMap.set(productPatternKey, productPatternDoc);
 				}
-
-				const productPatternDoc = productMap.get(productPatternKey);
 				const calendarProps = calendarMap.get(validation.day);
 
 				// Update individual product-pattern data
@@ -171,7 +166,7 @@ export const syncDemandByProductByPatternByDay = async () => {
 		totalProcessed += batchResults.reduce((sum, batch) => sum + batch.length, 0);
 
 		// Flush to database periodically to avoid memory issues
-		if (productMap.size >= FLUSH_THRESHOLD) {
+		if (productMap.size >= flushThreshold) {
 			const flushTimer = new Timer();
 			const results = Array.from(productMap.values());
 
@@ -194,7 +189,7 @@ export const syncDemandByProductByPatternByDay = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by day, aggregate on mongo (batched)', key: 'loop_day_batched' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

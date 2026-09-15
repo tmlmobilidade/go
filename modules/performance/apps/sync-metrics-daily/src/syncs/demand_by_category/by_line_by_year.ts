@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByCategoryByLineByYear } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByCategoryByLineByYear } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -16,14 +16,14 @@ export const syncDemandByCategoryByLineByYear = async () => {
 	Logger.title(`Sync Demand Metrics by Category by Line by Year`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_category_by_line_by_year';
+	const metricKey = 'demand_by_category_by_line_by_year';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_line_by_year' });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey as 'demand_by_product_by_line_by_year' });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -51,9 +51,9 @@ export const syncDemandByCategoryByLineByYear = async () => {
 		const next = cursor.plus({ years: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -127,26 +127,26 @@ export const syncDemandByCategoryByLineByYear = async () => {
 	for (const yearlyAgg of allChunksResults) {
 		for (const yearData of yearlyAgg) {
 			const category = yearData.category ?? 'prepaid';
-			const line_id = yearData.line_id ?? 'no-line';
+			const lineId = yearData.line_id ?? 'no-line';
 
 			// Create unique key for each category-line combination
-			const categoryLineKey = `${category}:${line_id}`;
+			const categoryLineKey = `${category}:${lineId}`;
 
 			// Create or get category-line document
-			if (!categoryMap.has(categoryLineKey)) {
-				categoryMap.set(categoryLineKey, {
+			let categoryLineDoc = categoryMap.get(categoryLineKey);
+			if (!categoryLineDoc) {
+				categoryLineDoc = {
 					data: {},
-					description: `Aggregated passengers for category ${category} in line ${line_id}`,
+					description: `Aggregated passengers for category ${category} in line ${lineId}`,
 					generated_at: new Date(),
-					metric: METRIC,
+					metric: metricKey,
 					properties: {
 						category,
-						line_id,
+						line_id: lineId,
 					},
-				});
+				};
+				categoryMap.set(categoryLineKey, categoryLineDoc);
 			}
-
-			const categoryLineDoc = categoryMap.get(categoryLineKey);
 
 			// Update individual category-line data for this year
 			categoryLineDoc.data[yearData.year] = {
@@ -164,7 +164,7 @@ export const syncDemandByCategoryByLineByYear = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by year, aggregate from monthly metrics (parallel)', key: 'loop_year_parallel' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

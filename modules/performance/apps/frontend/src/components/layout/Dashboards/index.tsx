@@ -1,24 +1,30 @@
+'use client';
+
 /* * */
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { DashboardDefinition, TopicDefinition } from '@/constants';
-import { Grid } from '@tmlmobilidade/ui';
-import { usePathname, useRouter } from 'next/navigation';
+import { type DashboardDefinition, type TopicDefinition } from '@/constants';
+import { Grid, keepUrlParams } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 
 import styles from './styles.module.css';
 
-export default function Dashboards({ topic }: { topic: TopicDefinition }) {
+/* * */
+
+export function Dashboards({ topic }: { topic: TopicDefinition }) {
 	//
 
+	//
 	// A. Setup variables
+
 	const router = useRouter();
-	const pathname = usePathname();
 
 	//
 	// B. Handle actions
 
 	const handleDashboardClick = (dashboard: DashboardDefinition) => {
-		router.push(`${pathname}/${dashboard.key}`);
+		if (!dashboard.route) return;
+		router.push(keepUrlParams(dashboard.route));
 	};
 
 	// C. Render components

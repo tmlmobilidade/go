@@ -1,3 +1,5 @@
+/* * */
+
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useTranslations } from 'next-intl';
 
@@ -11,8 +13,8 @@ export interface DayInfo {
 /**
  * Base function to parse and format a date string.
  */
-function parseAndFormatDate(day_group: string, t: ReturnType<typeof useTranslations>) {
-	const dt = Dates.fromISO(day_group);
+function parseAndFormatDate(dayGroup: string, t: ReturnType<typeof useTranslations>) {
+	const dt = Dates.fromISO(dayGroup);
 	const formatted = t('dates.formatted', { date: dt.js_date });
 	return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }

@@ -1,8 +1,8 @@
 'use client';
 
-import { AGENCIES, AgencyType, AgencyTypeWithAll } from '@/constants';
 /* * */
 
+import { AGENCIES, type AgencyType, type AgencyTypeWithAll } from '@/constants';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 /* * */

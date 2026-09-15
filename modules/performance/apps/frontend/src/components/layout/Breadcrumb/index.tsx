@@ -4,7 +4,9 @@ import { Breadcrumbs } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
-export default function Breadcrumb({ items }: { items: { href: string, title: string }[] }) {
+/* * */
+
+export function Breadcrumb({ items }: { items: { href: string, title: string }[] }) {
 	//
 
 	// A. Setup variables

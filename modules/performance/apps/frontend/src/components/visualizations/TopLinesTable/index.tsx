@@ -1,21 +1,23 @@
+'use client';
+
 /* * */
 
 import { LiveIcon } from '@/components/layout/LiveIcon';
 import { TrendChip } from '@/components/layout/TrendChip';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
-import { Routes } from '@/routes';
-import { Center, Skeleton, Table, Text } from '@mantine/core';
-import { type TopLines30DayPerformance } from '@tmlmobilidade/types';
-import { Section } from '@tmlmobilidade/ui';
+import { useTopLinesPerformanceData } from '@/hooks/use-top-lines-performance-data';
+import { Section, Skeleton, Table, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
-export default function TopLinesTable() {
+/* * */
+
+export function TopLinesTable() {
 	//
 
-	// A. Setup variables
+	//
+	// A. Fetch data
 
-	const { data: topLinesArray, isLoading } = useSWR<TopLines30DayPerformance[]>(Routes.TOP_LINES_30DAY_PERFORMANCE);
+	const { data: topLinesArray, isLoading } = useTopLinesPerformanceData();
 
 	//
 	// B. Transform data
@@ -46,18 +48,15 @@ export default function TopLinesTable() {
 		return [...topPerformersArray, ...worstPerformersArray];
 	}, [topLinesArray]);
 
-	//
-	// C. Helper functions
+	const topPerformers = tableData.filter(row => row.isTopPerformer);
+	const worstPerformers = tableData.filter(row => !row.isTopPerformer);
 
 	const formatNumber = (num: number) => {
 		return new Intl.NumberFormat('pt-PT').format(Math.round(num));
 	};
 
 	//
-	// E. Render table
-
-	const topPerformers = tableData.filter(row => row.isTopPerformer);
-	const worstPerformers = tableData.filter(row => !row.isTopPerformer);
+	// C. Render components
 
 	const renderTableRows = (data: typeof tableData, isTopSection: boolean) => {
 		return data.map(row => (
@@ -118,9 +117,7 @@ export default function TopLinesTable() {
 							{/* Separator */}
 							<Table.Tr>
 								<Table.Td colSpan={6}>
-									<Center>
-										<Text c="dimmed" size="sm">• • •</Text>
-									</Center>
+									<Text c="dimmed" size="sm" ta="center">• • •</Text>
 								</Table.Td>
 							</Table.Tr>
 
@@ -132,6 +129,6 @@ export default function TopLinesTable() {
 			</Section>
 		</VisualizationWrapper>
 	);
-}
 
-//
+	//
+}

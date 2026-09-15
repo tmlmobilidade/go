@@ -1,27 +1,30 @@
+'use client';
+
 /* * */
 
-import AgenciesStatus from '@/components/layout/AgenciesStatus';
-import SystemStatus from '@/components/layout/SystemStatus';
-import Topics from '@/components/layout/Topics';
+import { AgenciesStatus } from '@/components/layout/AgenciesStatus';
+import { SystemStatus } from '@/components/layout/SystemStatus';
+import { Topics } from '@/components/layout/Topics';
 import { Widget } from '@/components/layout/Widget';
 import { RealtimeDemand } from '@/components/visualizations/RealtimeDemand';
 import { ServiceCompliance } from '@/components/visualizations/ServiceCompliance';
-import { Divider, Grid, useMeContext } from '@tmlmobilidade/ui';
+import { Divider, Grid, useMeData } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
-export default function Home() {
+/* * */
+
+export function HomePage() {
 	//
 
+	//
 	// A. Setup variables
 
-	const me = useMeContext();
-	const userName = me.data.user.first_name;
+	const { data: meData } = useMeData();
+	const userName = meData?.first_name;
 
 	//
-	// B. Transform data
-
-	// C. Render components
+	// B. Render components
 
 	return (
 		<div className={styles.container}>
@@ -46,6 +49,6 @@ export default function Home() {
 			<Topics />
 		</div>
 	);
-}
 
-//
+	//
+}

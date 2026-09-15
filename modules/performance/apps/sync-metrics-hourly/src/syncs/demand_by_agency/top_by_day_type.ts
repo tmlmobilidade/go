@@ -1,8 +1,10 @@
+/* * */
+
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { Metric } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { Metric } from '@tmlmobilidade/types';
 
 export const computeTopDemandByAgencyByDayType = async () => {
 	//
@@ -10,13 +12,13 @@ export const computeTopDemandByAgencyByDayType = async () => {
 	Logger.title('Compute Top Demand By Agency by Day Type');
 	const globalTimer = new Timer();
 
-	const METRIC = 'top_demand_by_agency_by_day_type';
+	const metricKey = 'top_demand_by_agency_by_day_type';
 
 	//
 	// Delete existing metrics
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -118,14 +120,14 @@ export const computeTopDemandByAgencyByDayType = async () => {
 	};
 
 	for (const doc of agencyResults) {
-		const { agency_id, day_type } = doc._id;
-		const key = `day_type_${day_type}`;
+		const { agency_id: agencyId, day_type: dayType } = doc._id;
+		const key = `day_type_${dayType}`;
 
-		if (!data.agencies[agency_id]) data.agencies[agency_id] = {};
-		if (!data.agencies[agency_id][key]) data.agencies[agency_id][key] = {};
+		if (!data.agencies[agencyId]) data.agencies[agencyId] = {};
+		if (!data.agencies[agencyId][key]) data.agencies[agencyId][key] = {};
 
 		doc.topDays.forEach(({ date, qty }) => {
-			data.agencies[agency_id][key][date] = qty;
+			data.agencies[agencyId][key][date] = qty;
 		});
 	}
 
@@ -144,7 +146,7 @@ export const computeTopDemandByAgencyByDayType = async () => {
 		data,
 		description: 'Top 5 days with highest passenger counts per agency and per day type (useful days, saturdays, sundays/holidays)',
 		generated_at: new Date(),
-		metric: METRIC,
+		metric: metricKey,
 	} as Metric;
 
 	//
@@ -156,11 +158,11 @@ export const computeTopDemandByAgencyByDayType = async () => {
 			description: 'Aggregate top 5 demand days per agency and day type (from demand_by_agency_by_day)',
 			key: 'aggregate_top_demand_by_agency_by_day_type',
 		},
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 2,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
 	});
 
-	Logger.terminate(`Metric '${METRIC}' computed and inserted in ${globalTimer.get()}`);
+	Logger.terminate(`Metric '${metricKey}' computed and inserted in ${globalTimer.get()}`);
 };

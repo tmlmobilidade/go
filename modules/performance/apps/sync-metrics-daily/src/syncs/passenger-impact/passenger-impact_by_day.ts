@@ -1,10 +1,19 @@
+/* * */
+
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AggregationPipeline, metrics } from '@tmlmobilidade/interfaces';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type OperationalDate, type Ride } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
+import { type Document } from 'mongodb';
+
+/* * */
+
+/** Ride document as read by this sync, including the legacy `pattern_id` field. */
+type RideDocument = Ride & { pattern_id?: string };
 
 type AgencyId = string;
 type PatternHour = string;
@@ -33,7 +42,7 @@ function median(values: number[]): number {
 }
 
 export async function syncPassengerImpactServiceFailuresByDay(): Promise<
-	Map<OperationalDate, Map<AgencyId, AgencyDayStats>>
+	Map<OperationalDateInt, Map<AgencyId, AgencyDayStats>>
 > {
 	// Target interval (operational cut-off at 04:00)
 	const startDate = Dates.now('Europe/Lisbon')
@@ -48,11 +57,11 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	const allDaysChunks = Interval
 		.fromISO(`${Dates.fromUnixMilliseconds(startDate).iso}/${Dates.fromUnixMilliseconds(endDate).iso}`)
 		.splitBy({ day: 1 })
-		.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }));
+		.map(interval => ({ end: interval.end?.toMillis() ?? 0, start: interval.start?.toMillis() ?? 0 }));
 
 	// 1) Failed rides in the target interval -> operationalDayMap[opDate][agency] = Set(patternHour)
 	const ridesCollection = await goDb.operation.rides.getCollection();
-	const ridesPipeline: AggregationPipeline<Ride> = [
+	const ridesPipeline: Document[] = [
 		{
 			$match: {
 				'agency_id': { $in: [...GO_CM_AGENCY_IDS] },
@@ -64,12 +73,12 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	];
 
 	Logger.info({ message: `Fetching failed rides in the target interval...` });
-	const ridesCursor = ridesCollection.aggregate<Ride>(ridesPipeline).batchSize(100_000);
-	const ridesCount = await ridesCollection.countDocuments(ridesPipeline[0]['$match']);
+	const ridesCursor = ridesCollection.aggregate<RideDocument>(ridesPipeline).batchSize(100_000);
+	const ridesCount = await ridesCollection.countDocuments(ridesPipeline[0].$match);
 
 	Logger.info({ message: `Found ${ridesCount} failed rides in the target interval.` });
 
-	const operationalDayMap = new Map<OperationalDate, Map<AgencyId, Set<PatternHour>>>();
+	const operationalDayMap = new Map<OperationalDateInt, Map<AgencyId, Set<PatternHour>>>();
 
 	let ridesProcessed = 0;
 	for await (const ride of ridesCursor) {
@@ -78,7 +87,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 			Logger.info({ message: `Processed ${ridesProcessed} failed rides...` });
 		}
 
-		const operationalDate: OperationalDate = ride.operational_date;
+		const operationalDate: OperationalDateInt = ride.operational_date;
 		const agencyId: AgencyId = String(ride.agency_id);
 
 		const date = new Date(ride.start_time_scheduled);
@@ -91,17 +100,19 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 
 		const patternHour: PatternHour = `${String(ride.pattern_id)}_${time}`;
 
-		if (!operationalDayMap.has(operationalDate)) {
-			operationalDayMap.set(operationalDate, new Map<AgencyId, Set<PatternHour>>());
+		let agencyMap = operationalDayMap.get(operationalDate);
+		if (!agencyMap) {
+			agencyMap = new Map<AgencyId, Set<PatternHour>>();
+			operationalDayMap.set(operationalDate, agencyMap);
 		}
 
-		const agencyMap = operationalDayMap.get(operationalDate);
-
-		if (!agencyMap.has(agencyId)) {
-			agencyMap.set(agencyId, new Set<PatternHour>());
+		let agencyPatternHours = agencyMap.get(agencyId);
+		if (!agencyPatternHours) {
+			agencyPatternHours = new Set<PatternHour>();
+			agencyMap.set(agencyId, agencyPatternHours);
 		}
 
-		agencyMap.get(agencyId).add(patternHour);
+		agencyPatternHours.add(patternHour);
 	}
 
 	// Global union of failed patternHours (used to restrict the median query)
@@ -116,12 +127,12 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	Logger.info({ message: `Found ${failedPatternHoursSet.size} failed patternHours.` });
 	const failedPatternHours = [...failedPatternHoursSet];
 	if (failedPatternHours.length === 0) {
-		console.log('No failed patternHours in the selected interval.');
-		return new Map<OperationalDate, Map<AgencyId, AgencyDayStats>>();
+		Logger.info({ message: 'No failed patternHours in the selected interval.' });
+		return new Map<OperationalDateInt, Map<AgencyId, AgencyDayStats>>();
 	}
 
 	Logger.info({ message: 'Calculating passenger impact for each day...' });
-	const out = new Map<OperationalDate, Map<AgencyId, AgencyDayStats>>();
+	const out = new Map<OperationalDateInt, Map<AgencyId, AgencyDayStats>>();
 
 	for (const dayChunk of allDaysChunks) {
 		const start30dTs = Dates.fromUnixMilliseconds(dayChunk.start)
@@ -136,11 +147,11 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 			.unix_milliseconds;
 
 		Logger.info(
-			{ message: `Calculating passenger impact for day ${Dates.fromUnixMilliseconds(start30dTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}...${Dates.fromUnixMilliseconds(endTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}` },
+			{ message: `Calculating passenger impact for day ${Dates.fromUnixMilliseconds(start30dTs).toLocaleString('full')}...${Dates.fromUnixMilliseconds(endTs).toLocaleString('full')}` },
 		);
 
 		// 2) Median passengers_observed per (agency_id, patternHour) over the last 30 days
-		const passengersPipeline: AggregationPipeline<Ride> = [
+		const passengersPipeline: Document[] = [
 			{
 				$match: {
 					agency_id: { $in: [...GO_CM_AGENCY_IDS] },
@@ -196,18 +207,20 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 				.map((v: number) => Number(v))
 				.filter((v: number) => Number.isFinite(v));
 
-			if (!medianByAgencyPH.has(agencyId)) {
-				medianByAgencyPH.set(agencyId, new Map<PatternHour, number>());
+			let agencyMedians = medianByAgencyPH.get(agencyId);
+			if (!agencyMedians) {
+				agencyMedians = new Map<PatternHour, number>();
+				medianByAgencyPH.set(agencyId, agencyMedians);
 			}
 
-			medianByAgencyPH.get(agencyId).set(patternHour, median(values));
+			agencyMedians.set(patternHour, median(values));
 		}
 
 		// 3) Aggregate ONLY for the current dayChunk's operational day
-		const operationalDateForChunk: OperationalDate = Dates
-			.fromUnixMilliseconds(dayChunk.start) // NOTE: assumes Dates.fromUnixMilliseconds accepts ms here (same as your current usage)
+		const operationalDateForChunk: OperationalDateInt = Dates
+			.fromUnixMilliseconds(dayChunk.start)
 			.setZone('Europe/Lisbon', 'rebase_utc')
-			.operational_date;
+			.operational_date_int;
 
 		// If there were no failed rides for this operational date, skip
 		const agencyMapForDay = operationalDayMap.get(operationalDateForChunk);

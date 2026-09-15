@@ -1,3 +1,5 @@
+/* * */
+
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
@@ -9,12 +11,28 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-// Helper function to process a rides stream
-async function processRidesStream(stream, results, agencies, mode: 'last_week' | 'now') {
-	for await (const currentRide of stream) {
+/** Ride document as read by this sync, including the legacy embedded `analysis` field. */
+type RideDocument = Ride & {
+	analysis?: null | {
+		EXPECTED_START_TIME: { value: number }
+		SIMPLE_THREE_VEHICLE_EVENTS?: { grade: string }
+	}
+};
+
+/* * */
+
+/**
+ * Accumulates the service compliance counters of every ride in the stream
+ * into the results object, for the given comparison mode.
+ * @param stream The rides stream
+ * @param results The results object to update
+ * @param agencies The agency IDs to consider
+ * @param mode Whether the stream refers to the current period or the previous week
+ */
+async function processRidesStream(stream: AsyncIterable<RideDocument>, results: RealtimeServiceCompliance['data'], agencies: readonly string[], mode: 'last_week' | 'now') {
+	for await (const rideData of stream) {
 		//
 
-		const rideData: Ride = currentRide as Ride;
 		const agency = rideData.agency_id;
 		if (!agencies.includes(agency)) continue;
 
@@ -38,7 +56,7 @@ async function processRidesStream(stream, results, agencies, mode: 'last_week' |
 		//
 		// Rides with sales
 
-		if (rideData.passengers_observed > 0) {
+		if ((rideData.passengers_observed ?? 0) > 0) {
 			results.agencies[agency].rides_with_sales[mode]++;
 			results.total.rides_with_sales[mode]++;
 		}
@@ -51,14 +69,14 @@ async function processRidesStream(stream, results, agencies, mode: 'last_week' |
 		//
 		// Accomplished rides - rides with sales or valid rides
 
-		if (rideData.passengers_observed > 0 || isRideValid) {
+		if ((rideData.passengers_observed ?? 0) > 0 || isRideValid) {
 			results.agencies[agency].accomplished_rides[mode]++;
 			results.total.accomplished_rides[mode]++;
 		}
 
 		// Skip trips not valid (3 moments check)
 
-		if (rideData.analysis === null || !isRideValid) continue;
+		if (!rideData.analysis || !isRideValid) continue;
 
 		//
 		// Valid rides
@@ -169,7 +187,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	const todayTimer = new Timer();
 
 	const todayStream = ridesCollection
-		.find({
+		.find<RideDocument>({
 			agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 			operational_date: currentOperationalDate,
 			system_status: 'complete',
@@ -185,7 +203,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	Logger.info({ message: `Processing rides for last week's operational date: ${previousOperationalDate}` });
 	const lastWeekTimer = new Timer();
 
-	const lastWeekStream = ridesCollection.find({
+	const lastWeekStream = ridesCollection.find<RideDocument>({
 		agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 		operational_date: previousOperationalDate,
 		start_time_observed: { $lte: previousUntilNowAsUnix },

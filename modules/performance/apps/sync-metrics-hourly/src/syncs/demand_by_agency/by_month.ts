@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { DemandByAgencyByDay, Metric } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { DemandByAgencyByDay, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,13 +14,13 @@ export const syncDemandByAgencyByMonth = async () => {
 	Logger.title(`Sync Demand Metrics by Agency by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_agency_by_month';
+	const metricKey = 'demand_by_agency_by_month';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -41,20 +41,20 @@ export const syncDemandByAgencyByMonth = async () => {
 	const agencyMap = new Map<string, Metric>();
 
 	for (const dailyMetric of dailyMetrics) {
-		const agency_id = dailyMetric.properties.agency_id;
+		const agencyId = dailyMetric.properties.agency_id;
 
 		// Initialize agency if not exists
-		if (!agencyMap.has(agency_id)) {
-			agencyMap.set(agency_id, {
+		let agencyDoc = agencyMap.get(agencyId);
+		if (!agencyDoc) {
+			agencyDoc = {
 				data: {} as Record<string, { qty: number }>,
-				description: `Aggregated passenger demand for agency ${agency_id}`,
+				description: `Aggregated passenger demand for agency ${agencyId}`,
 				generated_at: new Date(),
-				metric: METRIC,
-				properties: { agency_id },
-			} as Metric);
+				metric: metricKey,
+				properties: { agency_id: agencyId },
+			} as Metric;
+			agencyMap.set(agencyId, agencyDoc);
 		}
-
-		const agencyDoc = agencyMap.get(agency_id);
 
 		// Aggregate daily data into months
 		for (const [dayKey, dayData] of Object.entries(dailyMetric.data)) {
@@ -81,7 +81,7 @@ export const syncDemandByAgencyByMonth = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Aggregate from by_day metrics', key: 'aggregate_from_daily' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 1, // Only 1 query to fetch daily metrics
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

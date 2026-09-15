@@ -1,12 +1,12 @@
 /* * */
 
-import { SystemStatusType } from '@/constants';
+import { type SystemStatusType } from '@/constants';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export default function StatusCircle({ status }: { status: SystemStatusType }) {
+export function StatusCircle({ status }: { status: SystemStatusType }) {
 	//
 
 	// A. Render components

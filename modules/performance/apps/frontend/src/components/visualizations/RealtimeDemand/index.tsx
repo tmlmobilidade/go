@@ -3,15 +3,12 @@
 import { MetricCard } from '@/components/layout/MetricCard';
 import { DemandVisualization } from '@/components/visualizations/Demand/DemandVisualization';
 import { RecordDemand } from '@/components/visualizations/RecordDemand';
-import { AgencyType } from '@/constants';
+import { type AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
-import { MetricsRoutes } from '@/routes';
+import { useRealtimeDemandData } from '@/hooks/use-realtime-demand-data';
 import { getMetricAgencyData } from '@/utils/agencies';
 import { IconUser } from '@tabler/icons-react';
-import { type RealtimeDemand } from '@tmlmobilidade/types';
-import { Spacer } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
@@ -20,6 +17,7 @@ import styles from './styles.module.css';
 export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 	//
 
+	//
 	// A. Setup variables
 
 	const homeContext = useHomeContext();
@@ -28,7 +26,7 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 	//
 	// B. Fetch data
 
-	const { data, isLoading } = useSWR<RealtimeDemand[]>(MetricsRoutes.REALTIME_DEMAND);
+	const { data, isLoading } = useRealtimeDemandData();
 
 	//
 	// C. Transform data

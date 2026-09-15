@@ -1,15 +1,19 @@
+'use client';
+
 /* * */
 
 import { RecordCard } from '@/components/layout/RecordCard';
-import { AgencyType } from '@/constants';
+import { type AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { useMetricData } from '@/hooks/use-metric-data';
 import { filterDataByAgencies } from '@/utils/metrics/handlers/ChartTransformers';
 import { buildMetricUrl } from '@/utils/metrics/handlers/MetricRouteResolver';
-import { RawMetricData } from '@/utils/metrics/types/metricData';
+import { type RawMetricData } from '@/utils/metrics/types/metricData';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Grid, Section, Skeleton, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import useSWR from 'swr';
+
+/* * */
 
 interface Filters {
 	agencyIds?: AgencyType[]
@@ -21,7 +25,9 @@ interface Filters {
 	patternIds?: string[]
 }
 
-export default function RecordSupply({ filters, timeView }: { filters: Filters, timeView: 'annual' | 'daily' | 'monthly' }) {
+/* * */
+
+export function RecordVkms({ filters, timeView }: { filters: Filters, timeView: 'annual' | 'daily' | 'monthly' }) {
 	//
 
 	//
@@ -47,7 +53,7 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 		return buildMetricUrl(baseConfig, metricFilters);
 	}, [timeView, filters]);
 
-	const { data, isLoading } = useSWR<RawMetricData[]>(metricUrl);
+	const { data, isLoading } = useMetricData<RawMetricData>(metricUrl);
 
 	//
 	// C. Transform data
@@ -89,7 +95,7 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 	}, [agenciesContext.data.agencies, filters?.agencyIds]);
 
 	//
-	// E. Render components
+	// D. Render components
 
 	if (isLoading) {
 		return (

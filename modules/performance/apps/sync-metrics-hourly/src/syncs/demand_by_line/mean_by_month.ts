@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type Metric } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -22,7 +22,7 @@ export const computeMeanDemandByLineByMonth = async () => {
 	Logger.title(`Compute Mean Demand by Line by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'mean_demand_by_line_by_month' as const;
+	const metricKey = 'mean_demand_by_line_by_month' as const;
 
 	const metricsCollection = await metrics.getCollection();
 
@@ -30,8 +30,8 @@ export const computeMeanDemandByLineByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing ${METRIC} metrics...` });
-	await metricsCollection.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing ${metricKey} metrics...` });
+	await metricsCollection.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics (${deleteTimer.get()})` });
 
 	//
@@ -50,11 +50,11 @@ export const computeMeanDemandByLineByMonth = async () => {
 			Record<string, { avg?: number, count: number, qty: number }>
 		> = {};
 
-		for (const [dateStr, { day_type, qty }] of Object.entries(lineDoc.data)) {
+		for (const [dateStr, { day_type: dayType, qty }] of Object.entries(lineDoc.data)) {
 			const month = dateStr.slice(0, 7);
 			monthly[month] = monthly[month] || {};
 
-			const dayTypeName = dayTypeMap[day_type.toString()] || `unknown_${day_type}`;
+			const dayTypeName = dayTypeMap[dayType.toString()] || `unknown_${dayType}`;
 
 			const cur = monthly[month][dayTypeName] ?? { count: 0, qty: 0 };
 			cur.qty += qty;
@@ -88,7 +88,7 @@ export const computeMeanDemandByLineByMonth = async () => {
 			data: monthly,
 			description: `Mean passengers per day type per month for line ${lineId}`,
 			generated_at: new Date(),
-			metric: METRIC,
+			metric: metricKey,
 			properties: { line_id: lineId },
 		} as Metric);
 	}
@@ -100,7 +100,7 @@ export const computeMeanDemandByLineByMonth = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Iterate demand_by_line_by_day', key: 'iterate_demand_by_line_by_day' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 1,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

@@ -1,6 +1,6 @@
 'use client';
 
-import StatusCircle from '@/components/layout/StatusCircle';
+import { StatusCircle } from '@/components/layout/StatusCircle';
 import { Tooltip } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -37,15 +37,12 @@ export function IndicatorChip({ goal, targetRange, targetValue, totalValue, valu
 
 		if (adjustedDelta < adjustedMin) {
 			status = 'negative';
-		}
-		else if (adjustedDelta > adjustedMax) {
+		} else if (adjustedDelta > adjustedMax) {
 			status = 'positive';
-		}
-		else {
+		} else {
 			status = 'warning';
 		}
-	}
-	else {
+	} else {
 		const meetsTarget = isInverted ? delta <= targetValue : delta >= targetValue;
 		status = meetsTarget ? 'positive' : 'negative';
 	}

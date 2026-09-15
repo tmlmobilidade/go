@@ -1,6 +1,6 @@
 /* * */
 
-import { SystemStatusType } from '@/constants';
+import { type SystemStatusType } from '@/constants';
 
 import config from './systemStatusConfig.json';
 
@@ -29,12 +29,32 @@ export interface StatusInfo {
 	value: number
 }
 
+type TranslateFn = (key: string, values?: Record<string, string>) => string;
+
+interface MetricScoreDetail {
+	changePct: number
+	comparison_to: null | string
+	finalMetricScore: number
+	goal: 'decrease' | 'increase'
+	last_week: number
+	metric: string
+	now: number
+	target: (number | undefined)[]
+	targetScore: number
+	targetWeight: number
+	trendScore: number
+	trendWeight: number
+	useTrendOnly: boolean
+	weight: number
+	weightedScore: number
+}
+
 /**
  * Compute a friendly status info (color, label, status) based on a system health value.
  * @param globalIndex Value between 0–100 or 0–1
  * @param t Translation function
  */
-export function getSystemStatusInfo(globalIndex: number, t): StatusInfo {
+export function getSystemStatusInfo(globalIndex: number, t: TranslateFn): StatusInfo {
 	const formattedHealth = globalIndex > 1 ? globalIndex : globalIndex * 100;
 	const healthPct = formattedHealth.toFixed(1);
 
@@ -45,16 +65,14 @@ export function getSystemStatusInfo(globalIndex: number, t): StatusInfo {
 			status: 'negative',
 			value: formattedHealth,
 		};
-	}
-	else if (formattedHealth < 90) {
+	} else if (formattedHealth < 90) {
 		return {
 			color: 'var(--color-status-warning-primary)',
 			label: t('systemStatus.warning', { value: `${healthPct}%` }),
 			status: 'warning',
 			value: formattedHealth,
 		};
-	}
-	else {
+	} else {
 		return {
 			color: 'var(--color-status-success-primary)',
 			label: t('systemStatus.positive', { value: `${healthPct}%` }),
@@ -89,26 +107,21 @@ function calculateTargetScore(baseNow: number, target: number | number[], goal: 
 		if (baseNow < targetMin) {
 			// Below target: penalize proportionally
 			return Math.max(0, baseNow / targetMin * 0.7); // 0–0.7
-		}
-		else if (baseNow >= targetMin && baseNow <= targetMax) {
+		} else if (baseNow >= targetMin && baseNow <= targetMax) {
 			// Inside target: moderate score 0.7–1
 			return 0.7 + ((baseNow - targetMin) / (targetMax - targetMin)) * 0.3;
-		}
-		else {
+		} else {
 			// Above target: full score
 			return 1;
 		}
-	}
-	else { // decrease
+	} else { // decrease
 		if (baseNow > targetMax) {
 			// Above target: penalize proportionally
 			return Math.max(0, (targetMax / baseNow) * 0.7);
-		}
-		else if (baseNow >= targetMin && baseNow <= targetMax) {
+		} else if (baseNow >= targetMin && baseNow <= targetMax) {
 			// Inside target: moderate score 0.7–1
 			return 0.7 + ((targetMax - baseNow) / (targetMax - targetMin)) * 0.3;
-		}
-		else {
+		} else {
 			// Below target: full score
 			return 1;
 		}
@@ -130,29 +143,27 @@ function calculateTargetScore(baseNow: number, target: number | number[], goal: 
  * 5. **Global index:** Weighted average of all metric scores, where total weight = 1.
  *
  * @param {MetricsData} metrics - Object with metric values.
- * @param {Object} options - Optional settings.
- * @param {boolean} options.verbose - Whether to log detailed calculation steps.
  * @returns {Object} Object containing breakdown and globalIndex.
  */
-export function calculateSystemHealthIndex(metrics: MetricsData, { verbose = false } = {}) {
+export function calculateSystemHealthIndex(metrics: MetricsData) {
 	let totalWeight = 0;
 	let totalScore = 0;
-	const breakdown = [];
+	const breakdown: MetricScoreDetail[] = [];
 
 	for (const [metric, conf] of Object.entries(config as Record<string, MetricsConfig>)) {
 		const data = metrics[metric];
 		if (!data) continue;
 
-		const { last_week, now } = data;
+		const { last_week: lastWeek, now } = data;
 		const comparisonMetric = conf.comparison_to ? metrics[conf.comparison_to] : null;
 
 		// --- Handle relative metrics (percentage-based if comparison exists)
 		let baseNow = now;
-		let baseLastWeek = last_week;
+		let baseLastWeek = lastWeek;
 
 		if (comparisonMetric) {
 			baseNow = (now / (comparisonMetric.now || 1));
-			baseLastWeek = (last_week / (comparisonMetric.last_week || 1));
+			baseLastWeek = (lastWeek / (comparisonMetric.last_week || 1));
 		}
 
 		const isIncrease = conf.goal === 'increase';
@@ -178,8 +189,7 @@ export function calculateSystemHealthIndex(metrics: MetricsData, { verbose = fal
 		let trendScore;
 		if (isIncrease) {
 			trendScore = change > 0 ? 1 : 1 + changePct / 100;
-		}
-		else {
+		} else {
 			trendScore = change < 0 ? 1 : 1 - changePct / 100;
 		}
 		trendScore = Math.min(1, Math.max(0, trendScore)); // clamp 0–1
@@ -192,44 +202,26 @@ export function calculateSystemHealthIndex(metrics: MetricsData, { verbose = fal
 		totalScore += weightedScore;
 		totalWeight += conf.weight;
 
-		// Disable lint ordering for this object for clarity
-
-		const detail: Record<string, boolean | number | number[] | string> = {};
-
-		detail.metric = metric;
-		detail.goal = conf.goal;
-		detail.comparison_to = conf.comparison_to || null;
-
-		detail.now = Number(baseNow.toFixed(2));
-		detail.last_week = Number(baseLastWeek.toFixed(2));
-		detail.changePct = Number(changePct.toFixed(2));
-
-		detail.target = [targetMin, targetMax];
-		detail.useTrendOnly = useTrendOnly;
-
-		detail.trendScore = Number((trendScore * 100).toFixed(3));
-		detail.trendWeight = trendWeight;
-		detail.targetScore = Number((targetScore * 100).toFixed(3));
-		detail.targetWeight = 1 - trendWeight;
-		detail.weight = conf.weight;
-		detail.finalMetricScore = Number((finalMetricScore * 100).toFixed(3));
-		detail.weightedScore = Number((weightedScore * 100).toFixed(3));
-
-		breakdown.push(detail);
+		breakdown.push({
+			changePct: Number(changePct.toFixed(2)),
+			comparison_to: conf.comparison_to || null,
+			finalMetricScore: Number((finalMetricScore * 100).toFixed(3)),
+			goal: conf.goal,
+			last_week: Number(baseLastWeek.toFixed(2)),
+			metric,
+			now: Number(baseNow.toFixed(2)),
+			target: [targetMin, targetMax],
+			targetScore: Number((targetScore * 100).toFixed(3)),
+			targetWeight: 1 - trendWeight,
+			trendScore: Number((trendScore * 100).toFixed(3)),
+			trendWeight,
+			useTrendOnly,
+			weight: conf.weight,
+			weightedScore: Number((weightedScore * 100).toFixed(3)),
+		});
 	}
 
 	const globalIndex = totalWeight > 0 ? totalScore / totalWeight : 0;
-
-	if (verbose) {
-		console.group('🔍 System Health Index Calculation Log');
-		breakdown.forEach((b) => {
-			console.group(`📊 ${b.metric}`);
-			console.table(b);
-			console.groupEnd();
-		});
-		console.log('⚙️ Final Global Index:', (globalIndex * 100).toFixed(2) + '%');
-		console.groupEnd();
-	}
 
 	return {
 		breakdown,

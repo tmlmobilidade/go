@@ -39,7 +39,7 @@ export function LiveIcon({ className, color = 'var(--color-primary)', updatedAt 
 
 		const diffInMinutes = Math.floor(now.diff(updated, 'minutes').minutes);
 
-		let relativeText = '';
+		let relativeText: string;
 
 		if (diffInMinutes < 1) relativeText = t('just_now'); // “Just now”
 		else if (diffInMinutes < 60) relativeText = t('minutes', { count: diffInMinutes }); // “X minutes ago”

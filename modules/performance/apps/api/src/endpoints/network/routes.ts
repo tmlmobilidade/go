@@ -1,8 +1,10 @@
 /* * */
 
-import { NetworkController } from '@/endpoints/network/network.controller.js';
-import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { listLinesHandler } from './handlers/list-lines.js';
+import { listPatternsHandler } from './handlers/list-patterns.js';
 
 /* * */
 
@@ -10,7 +12,7 @@ const NAMESPACE = '/network';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
@@ -19,13 +21,13 @@ server.register(
 		instance.get(
 			'/lines',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
-			NetworkController.getUniqueLineIds,
+			listLinesHandler,
 		);
 
 		instance.get(
 			'/patterns',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
-			NetworkController.getUniquePatternIds,
+			listPatternsHandler,
 		);
 
 		next();

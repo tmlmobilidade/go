@@ -12,17 +12,16 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"calculate-runtime": "node src/calculate-total-runtime.js",
-		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix",
-		"test": "tsx ./src/tests/index.ts"
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix"
+	},
+	"dependencies": {
+		"@tmlmobilidade/logger": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
-		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"
 	}
 }

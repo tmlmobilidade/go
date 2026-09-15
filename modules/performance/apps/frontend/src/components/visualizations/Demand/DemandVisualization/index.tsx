@@ -2,13 +2,13 @@
 
 import { LineBarChart } from '@/components/charts/LineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
-import { AgencyType } from '@/constants';
+import { type AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
+import { useMetricData } from '@/hooks/use-metric-data';
 import { buildMetricUrl, RawMetricData, TimeSeriesResult, transformDemandMetric } from '@/utils/metrics';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
 /* * */
 
@@ -73,7 +73,7 @@ export function DemandVisualization({
 		return buildMetricUrl(baseConfig, metricFilters);
 	}, [groupBy, timeView, endDate, startDate, filters]);
 
-	const { data } = useSWR<RawMetricData[]>(metricUrl);
+	const { data } = useMetricData<RawMetricData>(metricUrl);
 
 	//
 	// C. Transform data
@@ -87,7 +87,7 @@ export function DemandVisualization({
 			t,
 			timeView,
 		});
-	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t]);
+	}, [data, groupBy, selectedAgencies, t, timeView]);
 
 	const chartData = formattedData.all.chart as TimeSeriesResult['chart'];
 

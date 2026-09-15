@@ -1,8 +1,10 @@
+/* * */
+
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { Metric } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { Metric } from '@tmlmobilidade/types';
 
 export const computeTopDemandByAgency = async () => {
 	//
@@ -10,14 +12,14 @@ export const computeTopDemandByAgency = async () => {
 	Logger.title('Compute Top Demand By Agency');
 	const globalTimer = new Timer();
 
-	const METRIC = 'top_demand_by_agency';
+	const metricKey = 'top_demand_by_agency';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -152,7 +154,7 @@ export const computeTopDemandByAgency = async () => {
 		data: { agencies, total },
 		description: 'Top day and month with highest passenger count overall and per agency',
 		generated_at: new Date(),
-		metric: METRIC,
+		metric: metricKey,
 	} as Metric;
 
 	//
@@ -162,7 +164,7 @@ export const computeTopDemandByAgency = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Aggregate metric demand_by_agency_by_day', key: 'aggregate_demand_by_agency_by_day' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 2,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
