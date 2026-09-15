@@ -17,16 +17,16 @@ export function RidesExtract() {
 
 	const { t } = useTranslation();
 
-	const [selectedVersion, setSelectedVersion] = useState<string>();
+	const [selectedVersion, setSelectedVersion] = useState<string>('operation-rides-v1');
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Pane header={[<RidesExtractHeader key="header" />]}>
 			<Section>
 				<Select
-					label="Versão"
+					label={t('default:rides.extract.RidesExtract.fields.version.label')}
 					onChange={setSelectedVersion}
 					value={selectedVersion}
 					data={[

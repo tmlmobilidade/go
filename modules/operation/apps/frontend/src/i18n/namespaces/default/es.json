@@ -515,24 +515,35 @@
 				"under_review": "En revisión"
 			}
 		},
-		"export": {
-			"RidesExportModal": {
-				"CancelButton": {
-					"label": "Cancelar"
-				},
-				"ExportButton": {
-					"label": "Exportar circulaciones"
-				},
-				"description": "Seleccione el intervalo de fechas para la exportación de las circulaciones.",
+		"extract": {
+			"RidesExtract": {
 				"fields": {
-					"end_date": {
-						"placeholder": "Fecha fin"
-					},
-					"start_date": {
-						"placeholder": "Fecha inicio"
+					"version": {
+						"label": "Versión"
 					}
-				},
+				}
+			},
+			"RidesExtractHeader": {
 				"title": "Exportar circulaciones"
+			},
+			"RidesExtractV1Footer": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"RidesExtractV1Properties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Seleccione uno o más operadores..."
+					},
+					"start_time_scheduled_end": {
+						"label": "Fecha de fin"
+					},
+					"start_time_scheduled_start": {
+						"label": "Fecha de inicio"
+					}
+				}
 			}
 		}
 	},
