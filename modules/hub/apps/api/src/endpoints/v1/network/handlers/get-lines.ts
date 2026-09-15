@@ -13,15 +13,21 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getLinesHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiLine[]>) {
 	//
 
+	//
+	// Get the published lines from the cache
+
 	const cachedData = await cacheDb.get('hub:v1:network:lines');
 
 	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/network:getLines()] No cached data found for lines' });
+		Logger.error({ message: '[hub/v1/network:getLinesHandler()] No cached data found for lines' });
 		return sendErrorApiResponse(reply, {
-			error: '[hub/v1/network:getLines()] No cached data found for lines',
+			error: '[hub/v1/network:getLinesHandler()] No cached data found for lines',
 			status_code: '404',
 		});
-	};
+	}
+
+	//
+	// Return the parsed lines
 
 	return sendSuccessApiResponse(reply, JSON.parse(cachedData), {
 		max_age: '1h',

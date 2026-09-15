@@ -18,7 +18,7 @@ interface QueryResult extends HubV1GtfsStops {
 
 /* * */
 
-export async function generateStops(importedGtfsSql: GtfsSQLTables) {
+export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 	//
 
 	Logger.title(`Sync Stops`);
@@ -66,22 +66,22 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			//
 
 			if (!gtfsStop.agency_ids?.length) {
-				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no agency IDs.`);
+				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no agency IDs.` });
 				continue;
 			}
 
 			if (!gtfsStop.route_short_names?.length) {
-				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no line IDs.`);
+				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no line IDs.` });
 				continue;
 			}
 
 			if (!gtfsStop.route_ids?.length) {
-				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no route IDs.`);
+				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no route IDs.` });
 				continue;
 			}
 
 			if (!gtfsStop.pattern_ids?.length) {
-				console.error(`Skip processing: stop ${gtfsStop.stop_id} has no pattern IDs.`);
+				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no pattern IDs.` });
 				continue;
 			}
 
@@ -127,8 +127,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 
 			//
 		} catch (error) {
-			console.error(`Error processing stop ${gtfsStop.stop_id}:`, error);
-			console.log(gtfsStop);
+			Logger.error({ error, message: `Error processing stop ${gtfsStop.stop_id}: ${JSON.stringify(gtfsStop)}` });
 			process.exit(1);
 			continue;
 		}

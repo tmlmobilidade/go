@@ -1,30 +1,31 @@
 /* * */
 
-import { publishDemandByAgencyByOperationalDate } from '@/tasks/demand-by-agency-by-operational-date.js';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+
+import { publishDemandByAgencyByOperationalDate } from './tasks/publish-demand-by-agency-by-operational-date.js';
 
 /* * */
 
-const main = async () => {
-	//
+//
+// Initialize Sentry
 
-	//
-	// Initialize Sentry
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'publish-metrics', message: 'Sentry Hub Publish Metrics initialized', module: 'hub', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Hub Publish Metrics' });
+}
 
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-metrics', message: 'Sentry Hub Publish Metrics initialized', module: 'hub', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Metrics' });
-	}
+async function main() {
+	//
 
 	//
 	// Initialize the logger
 
 	Logger.init();
-	Logger.title(`Starting metrics data publishing...`);
+	Logger.title('Starting metrics data publishing...');
 
 	const globalTimer = new Timer();
 
@@ -39,7 +40,7 @@ const main = async () => {
 	Logger.terminate(`Finished publishing metrics data (${globalTimer.get()})`);
 
 	//
-};
+}
 
 /* * */
 

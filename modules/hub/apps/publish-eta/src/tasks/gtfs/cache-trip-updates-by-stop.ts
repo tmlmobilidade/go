@@ -1,9 +1,10 @@
 /* * */
 
-import { TTL_REALTIME } from '@/config.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type GtfsRtFeedMessage, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
+
+import { TTL_REALTIME } from '../../config.js';
 
 /* * */
 

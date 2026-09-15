@@ -1,38 +1,39 @@
 /* * */
 
-import { AppConfig } from '@/lib/config.js';
-import { cleanupCurrentRides } from '@/tasks/cleanup-current-rides.js';
-import { cleanupCurrentVehicleEvents } from '@/tasks/cleanup-current-vehicle-events.js';
-import { cleanupCurrentWaypoints } from '@/tasks/cleanup-current-waypoints.js';
-import { cleanupHistoricalNodeTravelTimesAggregation } from '@/tasks/cleanup-historical-node-travel-times-aggregation.js';
-import { cleanupHistoricalNodeTravelTimes } from '@/tasks/cleanup-historical-node-travel-times.js';
-import { cleanupHistoricalRides } from '@/tasks/cleanup-historical-rides.js';
-import { cleanupHistoricalVehicleEvents } from '@/tasks/cleanup-historical-vehicle-events.js';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { AppConfig } from './config.js';
+import { cleanupCurrentRides } from './tasks/cleanup-current-rides.js';
+import { cleanupCurrentVehicleEvents } from './tasks/cleanup-current-vehicle-events.js';
+import { cleanupCurrentWaypoints } from './tasks/cleanup-current-waypoints.js';
+import { cleanupHistoricalNodeTravelTimesAggregation } from './tasks/cleanup-historical-node-travel-times-aggregation.js';
+import { cleanupHistoricalNodeTravelTimes } from './tasks/cleanup-historical-node-travel-times.js';
+import { cleanupHistoricalRides } from './tasks/cleanup-historical-rides.js';
+import { cleanupHistoricalVehicleEvents } from './tasks/cleanup-historical-vehicle-events.js';
 import { fetchHistoricalRidesForDayIndex } from './tasks/fetch-historical-rides-for-day-index.js';
 
 /* * */
 
-export async function main() {
-	//
+//
+// Initialize Sentry
 
-	//
-	// Initialize Sentry
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'eta-cleaner', message: 'Sentry Hub ETA Cleaner initialized', module: 'hub', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Hub ETA Cleaner' });
+}
 
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'cleaner', message: 'Sentry ETA Cleaner initialized', module: 'eta', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry ETA Cleaner' });
-	}
+async function main() {
+	//
 
 	//
 	// Initialize the logger
 
 	Logger.init();
+
 	const globalTimer = new Timer();
 
 	//
@@ -89,9 +90,11 @@ export async function main() {
 		await cleanupHistoricalNodeTravelTimesAggregation();
 	}
 
-	Logger.success(`Cleaner completed in ${globalTimer.get()} seconds`);
+	Logger.terminate(`Cleaner completed in ${globalTimer.get()}`);
+
+	//
 }
 
 /* * */
 
-runOnInterval(main, { intervalMs: AppConfig.interval });
+await runOnInterval(main, { intervalMs: AppConfig.interval });

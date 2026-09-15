@@ -18,6 +18,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.3.4",

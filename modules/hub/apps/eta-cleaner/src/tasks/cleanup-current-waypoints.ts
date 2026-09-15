@@ -1,6 +1,10 @@
+/* * */
+
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { Logger } from '@tmlmobilidade/logger';
+
+/* * */
 
 const CLEANUP_CURRENT_WAYPOINTS_SQL = sqlPath('hub', 'eta/cleanup/3-delete-orphan-curr-waypoints.sql');
 
@@ -9,6 +13,8 @@ interface CleanupRowsResult {
 }
 
 export async function cleanupCurrentWaypoints() {
+	//
+
 	Logger.title('2. Cleanup current window waypoints');
 
 	const result = await labDb.queryEachStatementFromFile<CleanupRowsResult>(
