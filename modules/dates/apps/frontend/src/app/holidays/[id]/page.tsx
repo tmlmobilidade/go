@@ -1,15 +1,14 @@
 /* * */
 
 import { HolidaysDetail } from '@/components/holidays/detail/HolidaysDetail';
-import { HolidaysDetailContextProvider } from '@/components/holidays/detail/HolidaysDetail.context';
+import { HolidaysDetailFormContextProvider } from '@/components/holidays/detail/HolidaysDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<HolidaysDetailContextProvider holidayId={id}>
+		<HolidaysDetailFormContextProvider>
 			<HolidaysDetail />
-		</HolidaysDetailContextProvider>
+		</HolidaysDetailFormContextProvider>
 	);
 }

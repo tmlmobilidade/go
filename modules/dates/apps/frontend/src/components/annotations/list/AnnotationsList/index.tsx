@@ -1,15 +1,16 @@
 'use client';
 
-import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
-import { AnnotationsListCellAgencies } from '@/components/annotations/list/AnnotationsListCellAgencies';
-import { AnnotationsListCellDates } from '@/components/annotations/list/AnnotationsListCellDates';
-import { AnnotationsListFiltersBar } from '@/components/annotations/list/AnnotationsListFiltersBar';
 import { AnnotationsListHeader } from '@/components/annotations/list/AnnotationsListHeader';
+import { AnnotationsListFiltersBar } from '@/components/annotations/list/filters/AnnotationsListFiltersBar';
+import { AnnotationsListCellAgencies } from '@/components/annotations/list/table/AnnotationsListCellAgencies';
+import { AnnotationsListCellDates } from '@/components/annotations/list/table/AnnotationsListCellDates';
 import { type AnnotationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
+
+import { useAnnotationsDetailAnnotationId } from '../../detail/use-annotations-detail-annotation-id';
+import { useAnnotationsListData } from '../use-annotations-list-data';
 
 /* * */
 
@@ -20,9 +21,10 @@ export function AnnotationsList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
 
-	const annotationsListContext = useAnnotationsListContext();
+	const { annotationId } = useAnnotationsDetailAnnotationId();
+
+	const annotationsData = useAnnotationsListData();
 
 	const columns: DataTableColumn<AnnotationNormalized>[] = [
 		{
@@ -38,13 +40,13 @@ export function AnnotationsList() {
 		},
 		{
 			accessor: 'agency_ids_normalized',
-			render: item => <AnnotationsListCellAgencies agencyIds={item.agency_ids} />,
+			render: item => <AnnotationsListCellAgencies value={item.agency_ids} />,
 			title: 'Operadores',
 			width: 200,
 		},
 		{
 			accessor: 'dates',
-			render: item => <AnnotationsListCellDates dates={item.dates} />,
+			render: item => <AnnotationsListCellDates value={item.dates} />,
 			title: 'Datas',
 			width: 500,
 		},
@@ -60,29 +62,17 @@ export function AnnotationsList() {
 	//
 	// C. Render components
 
-	if (annotationsListContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
-
-	if (annotationsListContext.flags.error) {
-		return <ErrorDisplay message={annotationsListContext.flags.error.message} />;
-	}
-
 	return (
-		<Pane header={[
-			<AnnotationsListHeader key="header" />,
-			<AnnotationsListFiltersBar key="filters" />,
-		]}
-		>
+		<Pane header={[<AnnotationsListHeader key="header" />, <AnnotationsListFiltersBar key="filters" />]}>
+			{annotationsData.error && <ErrorDisplay message={annotationsData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={annotationsData.isLoading}
 				onRowClick={handleRowClick}
-				records={annotationsListContext.data.filtered}
+				records={annotationsData.data}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={annotationId}
 			/>
 		</Pane>
 	);
-
-	//
 }

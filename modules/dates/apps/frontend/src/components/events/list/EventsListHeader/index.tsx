@@ -1,10 +1,12 @@
-/* * */
+'use client';
 
-import { openCreateEventModal } from '@/components/events/create/EventCreate.modal';
-import { useEventsListContext } from '@/components/events/list/EventsList.context';
+import { openEventsCreateModal } from '@/components/events/create/EventsCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, HasPermission, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
+
+import { EventsListFilterSearch } from '../filters/EventsListFilterSearch';
+import { useEventsListData } from '../use-events-list-data';
 
 /* * */
 
@@ -14,7 +16,7 @@ export function EventsListHeader() {
 	//
 	// A. Setup variables
 
-	const eventsListContext = useEventsListContext();
+	const { isLoading, isValidating, timestamp } = useEventsListData();
 
 	//
 	// B. Render components
@@ -22,13 +24,16 @@ export function EventsListHeader() {
 	return (
 		<Toolbar>
 			<Label size="lg" caps singleLine>Eventos</Label>
+			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
-			<SearchField onChange={eventsListContext.filters.search.set} value={eventsListContext.filters.search.value} />
+			<EventsListFilterSearch />
 			<HasPermission action={PermissionCatalog.all.events.actions.create} scope={PermissionCatalog.all.events.scope}>
-				<Button label="Novo Evento" leftSection={<IconPlus />} onClick={openCreateEventModal} />
+				<Button
+					icon={<IconPlus size={20} />}
+					label="Novo Evento"
+					onClick={openEventsCreateModal}
+				/>
 			</HasPermission>
 		</Toolbar>
 	);
-
-	//
 }

@@ -1,15 +1,16 @@
 'use client';
 
-import { useEventsListContext } from '@/components/events/list/EventsList.context';
-import { EventsListCellAgencies } from '@/components/events/list/EventsListCellAgencies';
-import { EventsListCellDates } from '@/components/events/list/EventsListCellDates';
-import { EventsListFiltersBar } from '@/components/events/list/EventsListFiltersBar';
 import { EventsListHeader } from '@/components/events/list/EventsListHeader';
+import { EventsListFiltersBar } from '@/components/events/list/filters/EventsListFiltersBar';
+import { EventsListCellAgencies } from '@/components/events/list/table/EventsListCellAgencies';
+import { EventsListCellDates } from '@/components/events/list/table/EventsListCellDates';
 import { type EventNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
+
+import { useEventsDetailEventId } from '../../detail/use-events-detail-event-id';
+import { useEventsListData } from '../use-events-list-data';
 
 /* * */
 
@@ -20,9 +21,10 @@ export function EventsList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
 
-	const eventsListContext = useEventsListContext();
+	const { eventId } = useEventsDetailEventId();
+
+	const eventsData = useEventsListData();
 
 	const columns: DataTableColumn<EventNormalized>[] = [
 		{
@@ -38,13 +40,13 @@ export function EventsList() {
 		},
 		{
 			accessor: 'agency_ids_normalized',
-			render: item => <EventsListCellAgencies agencyIds={item.agency_ids} />,
+			render: item => <EventsListCellAgencies value={item.agency_ids} />,
 			title: 'Operadores',
 			width: 200,
 		},
 		{
 			accessor: 'dates',
-			render: item => <EventsListCellDates dates={item.dates} />,
+			render: item => <EventsListCellDates value={item.dates} />,
 			title: 'Datas',
 			width: 500,
 		},
@@ -60,29 +62,17 @@ export function EventsList() {
 	//
 	// C. Render components
 
-	if (eventsListContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
-
-	if (eventsListContext.flags.error) {
-		return <ErrorDisplay message={eventsListContext.flags.error.message} />;
-	}
-
 	return (
-		<Pane header={[
-			<EventsListHeader key="header" />,
-			<EventsListFiltersBar key="filters" />,
-		]}
-		>
+		<Pane header={[<EventsListHeader key="header" />, <EventsListFiltersBar key="filters" />]}>
+			{eventsData.error && <ErrorDisplay message={eventsData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={eventsData.isLoading}
 				onRowClick={handleRowClick}
-				records={eventsListContext.data.filtered}
+				records={eventsData.data}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={eventId}
 			/>
 		</Pane>
 	);
-
-	//
 }

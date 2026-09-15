@@ -1,7 +1,6 @@
 /* * */
 
 import pjson from '#/package.json';
-import { DataProviders } from '@/providers/data-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { type PropsWithChildren } from 'react';
@@ -20,9 +19,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 		<BaseProvider version={pjson.version}>
 			<AppProvider>
 				<AppWrapper>
-					<DataProviders>
-						{children}
-					</DataProviders>
+					{children}
 				</AppWrapper>
 			</AppProvider>
 		</BaseProvider>

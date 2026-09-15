@@ -1,49 +1,35 @@
 'use client';
 
+import { EventsDetailPatternsMenuItem } from '@/components/events/detail/EventsDetailPatternsMenuItem';
 import { IconEye, IconRouteOff } from '@tabler/icons-react';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Event } from '@tmlmobilidade/go-types-offer';
-import { Menu, MenuItem, MenuList, MenuNoContent } from '@tmlmobilidade/ui';
+import { Menu, MenuList, MenuNoContent } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface EventsDetailPatternsMenuProps {
-	patterns?: Event['associated_patterns']
+	value: Event['associated_patterns']
 }
 
 /* * */
 
-function EventsDetailPatternsMenuItem({ item: pattern }: { item: Event['associated_patterns'][number] }) {
-	return (
-		<MenuItem
-			description={pattern.headsign}
-			href={PAGE_ROUTES.offer.PATTERN_DETAIL(pattern.line_id, pattern._id, pattern.route_id)}
-			rel="noopener noreferrer"
-			target="_blank"
-			title={pattern.code}
-		/>
-	);
-}
-
-/* * */
-
-export function EventsDetailPatternsMenu({ patterns = [] }: EventsDetailPatternsMenuProps) {
+export function EventsDetailPatternsMenu({ value }: EventsDetailPatternsMenuProps) {
 	return (
 		<Menu
-			counter={patterns.length}
+			counter={value.length}
 			icon={IconEye}
 			label="Ver patterns associados"
 			variant="primary"
 			width={320}
 		>
-			{patterns.length === 0 ? (
+			{value.length === 0 ? (
 				<MenuNoContent
 					icon={IconRouteOff}
 					text="Sem patterns associados"
 				/>
 			) : (
 				<MenuList
-					data={patterns}
+					data={value}
 					getItemKey={pattern => pattern._id}
 					itemComponent={EventsDetailPatternsMenuItem}
 					maxHeight={500}
