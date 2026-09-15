@@ -1,5 +1,5 @@
 import { PlanExportModalContextProvider } from '@/components/plans/exporter/PlanExportForm.context';
-import { ExportsContextProvider, MeContextProvider, openModal } from '@tmlmobilidade/ui';
+import { MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 import { PlanExportModal } from '../PlanExportModal';
 import { PLAN_EXPORT_MODAL_ID } from '../PlanExportModal/constants';
@@ -12,11 +12,9 @@ export const openPlanExportModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<ExportsContextProvider>
-					<PlanExportModalContextProvider>
-						<PlanExportModal />
-					</PlanExportModalContextProvider>
-				</ExportsContextProvider>
+				<PlanExportModalContextProvider>
+					<PlanExportModal />
+				</PlanExportModalContextProvider>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,

@@ -2,9 +2,10 @@
 
 import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agencies-data';
 import { usePlansExportListData } from '@/components/plans/shared/use-plans-export-list-data';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type CreateFileExportDto, type PlanExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { closeModal, type SelectDataItem, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { closeModal, type SelectDataItem, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { PLAN_EXPORT_MODAL_ID } from './PlanExportModal/constants';
@@ -49,7 +50,6 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Setup variables
 
-	const exports = useExportsContext();
 	const [agencyId, setAgencyId] = useState<null | string>(null);
 	const [planId, setPlanId] = useState<null | string>(null);
 	const [loading, setLoading] = useState(false);
@@ -118,7 +118,7 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 
 		try {
 			setLoading(true);
-			const fileExport = await exports.actions.create(createFileExportDto);
+			const fileExport = await goDb.core.extractions.insertOne(createFileExportDto as InsertableDocument<FileExport>);
 			if (!fileExport) return;
 			useToast.success({ message: 'A exportação do plano foi iniciada', title: 'Sucesso' });
 			closeModal(PLAN_EXPORT_MODAL_ID);
@@ -127,7 +127,7 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 		} finally {
 			setLoading(false);
 		}
-	}, [agencyId, exports.actions, loading, planId, plansData.data]);
+	}, [agencyId, loading, planId, plansData.data]);
 
 	//
 	// D. Define context value

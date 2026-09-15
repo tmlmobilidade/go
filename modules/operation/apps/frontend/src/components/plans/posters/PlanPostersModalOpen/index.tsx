@@ -1,7 +1,7 @@
 import { PlanPostersExportModal } from '@/components/plans/posters/PlanPostersModal';
 import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/posters/PlanPostersModal/constants';
 import { PlansExportPdfsModalContextProvider } from '@/contexts/PlansExportPdfs.context';
-import { ExportsContextProvider, MeContextProvider, openModal } from '@tmlmobilidade/ui';
+import { MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -9,11 +9,9 @@ export const openPlanPostersExportModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<ExportsContextProvider>
-					<PlansExportPdfsModalContextProvider>
-						<PlanPostersExportModal />
-					</PlansExportPdfsModalContextProvider>
-				</ExportsContextProvider>
+				<PlansExportPdfsModalContextProvider>
+					<PlanPostersExportModal />
+				</PlansExportPdfsModalContextProvider>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
