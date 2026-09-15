@@ -35,11 +35,11 @@ export function EventsDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<IdTag id={eventsDetailContext.data.event._id} copyOnClick />
+			<IdTag id={eventsDetailContext.data.event?._id ?? ''} copyOnClick />
 
 			<Spacer />
 
-			<EventsDetailPatternsMenu patterns={eventsDetailContext.data.event.associated_patterns} />
+			<EventsDetailPatternsMenu patterns={eventsDetailContext.data.event?.associated_patterns ?? []} />
 
 			<LockButton
 				isDisabled={!eventsDetailContext.flags.canLock}
