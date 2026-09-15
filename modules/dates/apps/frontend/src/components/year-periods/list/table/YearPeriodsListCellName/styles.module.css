@@ -1,0 +1,8 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-xs);
+}

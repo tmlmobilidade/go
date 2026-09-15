@@ -1,9 +1,8 @@
 /* * */
 
 import { HolidaysList } from '@/components/holidays/list/HolidaysList';
-import { HolidaysListContextProvider } from '@/components/holidays/list/HolidaysList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
-import { type PropsWithChildren } from 'react';
+import { Fragment, type PropsWithChildren } from 'react';
 
 /* * */
 
@@ -12,10 +11,8 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="holidays"
 			panes={[
-				<HolidaysListContextProvider>
-					<HolidaysList />
-				</HolidaysListContextProvider>,
-				children,
+				<HolidaysList key="list" />,
+				<Fragment key="children">{children}</Fragment>,
 			]}
 		/>
 	);

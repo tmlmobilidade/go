@@ -1,13 +1,14 @@
 'use client';
 
-import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
-import { IconUpload } from '@tabler/icons-react';
+import { EventsDetailPatternsMenu } from '@/components/events/detail/EventsDetailPatternsMenu';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
-import { EventsDetailPatternsMenu } from '../EventsDetailPatternsMenu';
+import { useEventsDetailFormContext } from '../EventsDetailForm.context';
+import { useEventsDetailData } from '../use-events-detail-data';
+import { useEventsDetailEventId } from '../use-events-detail-event-id';
 
 /* * */
 
@@ -18,7 +19,14 @@ export function EventsDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const eventsDetailContext = useEventsDetailContext();
+
+	const { eventId } = useEventsDetailEventId();
+
+	const { data: eventData } = useEventsDetailData();
+
+	const { actions, capabilities, form, status } = useEventsDetailFormContext();
+
+	const titleValue = useStandardFormWatch({ control: form.control, name: 'title' });
 
 	//
 	// B. Handle actions
@@ -34,38 +42,41 @@ export function EventsDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-
-			<IdTag id={eventsDetailContext.data.event?._id ?? ''} copyOnClick />
+			<IdTag id={eventId} copyOnClick />
+			<Label size="lg" singleLine>{titleValue}</Label>
 
 			<Spacer />
 
-			<EventsDetailPatternsMenu patterns={eventsDetailContext.data.event?.associated_patterns ?? []} />
+			<EventsDetailPatternsMenu value={eventData?.associated_patterns ?? []} />
 
-			<LockButton
-				isDisabled={!eventsDetailContext.flags.canLock}
-				isLocked={eventsDetailContext.data.event.is_locked}
-				onClick={eventsDetailContext.actions.lock}
-			/>
+			<HasPermission action={PermissionCatalog.all.events.actions.update} scope={PermissionCatalog.all.events.scope}>
+				<UpdateButton
+					isDisabled={!capabilities.updateEnabled}
+					isLoading={status.isUpdating}
+					onClick={actions.update}
+				/>
+			</HasPermission>
 
-			<Button
-				disabled={!eventsDetailContext.flags.canSave}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={eventsDetailContext.flags.isSaving}
-				onClick={eventsDetailContext.actions.save}
-				variant="primary"
-			/>
+			<HasPermission action={PermissionCatalog.all.events.actions.lock} scope={PermissionCatalog.all.events.scope}>
+				<LockButton
+					isDisabled={!capabilities.lockEnabled}
+					isLoading={status.isLocking}
+					isLocked={status.isLocked ?? false}
+					onClick={actions.lock}
+				/>
+			</HasPermission>
 
-			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Evento"
-				isDisabled={!eventsDetailContext.flags.canDelete}
-				onDelete={eventsDetailContext.actions.delete}
-				showConfirmation
-			/>
+			<HasPermission action={PermissionCatalog.all.events.actions.delete} scope={PermissionCatalog.all.events.scope}>
+				<DeleteButton
+					confirmMessage="Tem a certeza que deseja apagar este evento? Esta ação não pode ser revertida."
+					confirmTitle="Apagar Evento"
+					isDisabled={!capabilities.deleteEnabled}
+					isLoading={status.isDeleting}
+					onDelete={actions.delete}
+					showConfirmation
+				/>
+			</HasPermission>
 
 		</Toolbar>
 	);
-
-	//
 }

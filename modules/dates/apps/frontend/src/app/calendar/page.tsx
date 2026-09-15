@@ -1,17 +1,9 @@
-'use client';
+/* * */
 
-import { EventsCalendar, EventsCalendarProvider, Pane, Section } from '@tmlmobilidade/ui';
+import { CalendarView } from '@/components/calendar/CalendarView';
 
 /* * */
 
-export default function Page() {
-	return (
-		<EventsCalendarProvider>
-			<Pane>
-				<Section flexDirection="row" height="100%">
-					<EventsCalendar />
-				</Section>
-			</Pane>
-		</EventsCalendarProvider>
-	);
+export default async function Page() {
+	return <CalendarView />;
 }

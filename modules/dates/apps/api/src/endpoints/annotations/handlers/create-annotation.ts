@@ -2,29 +2,42 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Annotation } from '@tmlmobilidade/go-types-offer';
-import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Inserts a new annotation into the database.
- * @param request The request object containing the annotation data in the body.
- * @param reply The reply object used to send the response.
+ * Creates a new Annotation in the database.
+ * @param request The request object
+ * @param reply The reply object
  */
-export async function createAnnotationHandler(request: FastifyRequest<{ Body: Omit<Annotation, '_id' | 'created_at' | 'created_by' | 'updated_at' | 'updated_by'> }>, reply: FastifyReply<Annotation>) {
+export async function createAnnotationHandler(request: FastifyRequest<{ Body: CreateAnnotationDto }>, reply: FastifyReply<Annotation>) {
 	//
 
 	//
-	// Check if the user has permission for ALL the specified agencies
+	// Validate the request body
 
-	const hasPermissionForAllAgencies = request.body.agency_ids.every((agencyId) => {
-		return hasPermissionResource(request.permissions, {
-			requiredPermission: {
-				action: 'create',
-				scope: 'annotations',
-			},
-			requiredValue: agencyId,
-			resourceKey: 'agency_ids',
+	const validatedAnnotation = CreateAnnotationSchema.safeParse({
+		...request.body,
+		created_by: request.me._id,
+		updated_by: request.me._id,
+	});
+
+	if (!validatedAnnotation.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedAnnotation.error.message,
+			status_code: '400',
 		});
+	}
+
+	//
+	// Check if the user has permission for all the specified agencies
+
+	const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+		action: PermissionCatalog.all.annotations.actions.create,
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.annotations.scope,
+		value: validatedAnnotation.data.agency_ids,
 	});
 
 	if (!hasPermissionForAllAgencies) {
@@ -35,13 +48,9 @@ export async function createAnnotationHandler(request: FastifyRequest<{ Body: Om
 	}
 
 	//
-	// Insert the new annotation
+	// Insert the new annotation in the database
 
-	const insertResult = await goDb.offer.annotations.insertOne({
-		...request.body,
-		created_by: request.me._id,
-		updated_by: request.me._id,
-	});
+	const createdAnnotation = await goDb.offer.annotations.insertOne(validatedAnnotation.data);
 
-	return sendSuccessApiResponse(reply, insertResult);
+	return sendSuccessApiResponse(reply, createdAnnotation);
 }

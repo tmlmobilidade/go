@@ -1,10 +1,12 @@
-/* * */
+'use client';
 
-import { openCreateHolidayModal } from '@/components/holidays/create/HolidayCreate.modal';
-import { useHolidaysListContext } from '@/components/holidays/list/HolidaysList.context';
+import { openHolidaysCreateModal } from '@/components/holidays/create/HolidaysCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, HasPermission, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
+
+import { HolidaysListFilterSearch } from '../filters/HolidaysListFilterSearch';
+import { useHolidaysListData } from '../use-holidays-list-data';
 
 /* * */
 
@@ -14,7 +16,7 @@ export function HolidaysListHeader() {
 	//
 	// A. Setup variables
 
-	const holidaysListContext = useHolidaysListContext();
+	const { isLoading, isValidating, timestamp } = useHolidaysListData();
 
 	//
 	// B. Render components
@@ -22,13 +24,16 @@ export function HolidaysListHeader() {
 	return (
 		<Toolbar>
 			<Label size="lg" caps singleLine>Feriados</Label>
+			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
-			<SearchField onChange={holidaysListContext.filters.search.set} value={holidaysListContext.filters.search.value} />
+			<HolidaysListFilterSearch />
 			<HasPermission action={PermissionCatalog.all.holidays.actions.create} scope={PermissionCatalog.all.holidays.scope}>
-				<Button label="Novo Feriado" leftSection={<IconPlus />} onClick={openCreateHolidayModal} />
+				<Button
+					icon={<IconPlus size={20} />}
+					label="Novo Feriado"
+					onClick={openHolidaysCreateModal}
+				/>
 			</HasPermission>
 		</Toolbar>
 	);
-
-	//
 }

@@ -1,4 +1,4 @@
-import '@/endpoints/annotations/routes.js';
-import '@/endpoints/year-periods/year-periods.routes.js';
-import '@/endpoints/holidays/holidays.routes.js';
-import '@/endpoints/events/events.routes.js';
+import './annotations/routes.js';
+import './events/routes.js';
+import './holidays/routes.js';
+import './year-periods/routes.js';
