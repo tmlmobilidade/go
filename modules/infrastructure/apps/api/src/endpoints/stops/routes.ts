@@ -1,6 +1,7 @@
 /* * */
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { createStopHandler } from './handlers/create-stop.js';
 import { deleteStopHandler } from './handlers/delete-stop.js';
@@ -28,31 +29,83 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.post('/list', { preHandler: authorizationMiddleware('stops', ['read']) }, listStopsHandler);
+		instance.post(
+			'/list',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
+			listStopsHandler,
+		);
 
-		instance.post('/list-agencies', { preHandler: authorizationMiddleware('stops', ['read']) }, listAgenciesHandler);
+		instance.post(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
+			listAgenciesHandler,
+		);
 
-		instance.post('/list-locations', { preHandler: authorizationMiddleware('stops', ['read']) }, listLocationsHandler);
+		instance.post(
+			'/list-locations',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
+			listLocationsHandler,
+		);
 
-		instance.post('/get-stop-location', { preHandler: authorizationMiddleware('stops', ['read']) }, getStopLocationHandler);
+		instance.post(
+			'/get-stop-location',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
+			getStopLocationHandler,
+		);
 
-		instance.get('/get/valid-id', { preHandler: authorizationMiddleware('stops', ['read']) }, getValidIdHandler);
+		instance.get(
+			'/get/valid-id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
+			getValidIdHandler,
+		);
 
-		instance.get('/get/:id', { preHandler: authorizationMiddleware('stops', ['read']) }, getStopHandler);
+		instance.get(
+			'/get/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
+			getStopHandler,
+		);
 
-		instance.post('/create', { preHandler: authorizationMiddleware('stops', ['create']) }, createStopHandler);
+		instance.get(
+			'/get/tts/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
+			getTtsHandler,
+		);
 
-		instance.put('/update/:id', { preHandler: authorizationMiddleware('stops', ['update']) }, updateStopHandler);
+		instance.post(
+			'/create',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.create]) },
+			createStopHandler,
+		);
 
-		instance.put('/update-name/:id', { preHandler: authorizationMiddleware('stops', ['edit_name']) }, updateStopNameHandler);
+		instance.put(
+			'/update/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.update]) },
+			updateStopHandler,
+		);
 
-		instance.put('/update-coordinates/:id', { preHandler: authorizationMiddleware('stops', ['edit_coordinates']) }, updateStopCoordinatesHandler);
+		instance.put(
+			'/update-name/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.edit_name]) },
+			updateStopNameHandler,
+		);
 
-		instance.get('/get/tts/:id', { preHandler: authorizationMiddleware('stops', ['read']) }, getTtsHandler);
+		instance.put(
+			'/update-coordinates/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.edit_coordinates]) },
+			updateStopCoordinatesHandler,
+		);
 
-		instance.get('/lock/:id', { preHandler: authorizationMiddleware('stops', ['lock']) }, lockStopHandler);
+		instance.get(
+			'/lock/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.lock]) },
+			lockStopHandler,
+		);
 
-		instance.delete('/delete/:id', { preHandler: authorizationMiddleware('stops', ['delete']) }, deleteStopHandler);
+		instance.delete(
+			'/delete/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.delete]) },
+			deleteStopHandler,
+		);
 
 		next();
 	},

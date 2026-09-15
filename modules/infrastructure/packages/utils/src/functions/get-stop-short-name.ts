@@ -25,7 +25,6 @@ export function getStopShortName(name: string): string {
 		const escaped = rule.phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 		const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
 		shortenedName = shortenedName.replace(regex, (match) => {
-			console.log('Match:', match, 'Replacement:', rule.replacement);
 			if (match[0] === match[0].toUpperCase()) {
 				return rule.replacement.charAt(0).toUpperCase() + rule.replacement.slice(1);
 			}

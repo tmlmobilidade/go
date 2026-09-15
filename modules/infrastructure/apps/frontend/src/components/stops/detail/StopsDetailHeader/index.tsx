@@ -4,6 +4,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, Spacer, Tag, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsDetailFormContext } from '../StopsDetailForm.context';
 import { useStopsDetailData } from '../use-stops-detail-data';
@@ -17,9 +18,12 @@ export function StopsDetailHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const router = useRouter();
 
 	const { stopId } = useStopsDetailStopId();
+
 	const { data } = useStopsDetailData();
 
 	const { actions, capabilities, status } = useStopsDetailFormContext();
@@ -40,11 +44,9 @@ export function StopsDetailHeader() {
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={stopId} copyOnClick />
 
-			{data?.is_deleted && <Tag label="Paragem Eliminada" variant="danger" />}
+			{data?.is_deleted && <Tag label={t('default:stops.detail.Header.DeletedTag.label')} variant="danger" />}
 
 			<Spacer />
-
-			{/* <StopDetailPatternsMenu patterns={stopDetailContext.data.stop?.associated_patterns} /> */}
 
 			<HasPermission
 				action={PermissionCatalog.all.stops.actions.update}
@@ -80,14 +82,14 @@ export function StopsDetailHeader() {
 				value={data?.municipality_id}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que pretende eliminar esta paragem? A paragem ficará indisponível para utilização futura."
-					confirmTitle="Eliminar Paragem"
+					confirmMessage={t('default:stops.detail.Header.DeleteButton.confirm_message')}
+					confirmTitle={t('default:stops.detail.Header.DeleteButton.confirm_title')}
 					isDeleted={data?.is_deleted}
 					isDisabled={!capabilities.deleteEnabled}
 					isLoading={status.isDeleting}
 					onDelete={actions.delete}
 					onRestore={actions.delete}
-					showConfirmation={true}
+					showConfirmation
 				/>
 			</HasPermission>
 

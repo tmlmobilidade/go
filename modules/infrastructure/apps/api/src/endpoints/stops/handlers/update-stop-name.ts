@@ -4,12 +4,12 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { type StopsUpdateNameRequest, StopsUpdateNameRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Stop, type StopId } from '@tmlmobilidade/go-types-infrastructure';
-import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Updates an existing stop by ID
- * @param request Fastify request containing stop ID in params and update data in body
- * @param reply Fastify reply
+ * Updates the name, short name and TTS name of a Stop by ID.
+ * @param request The request object containing the stop ID in the params and the names in the body
+ * @param reply The reply object
  */
 export async function updateStopNameHandler(request: FastifyRequest<{ Body: StopsUpdateNameRequest, Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 	//
@@ -17,10 +17,17 @@ export async function updateStopNameHandler(request: FastifyRequest<{ Body: Stop
 	//
 	// Validate the request body
 
-	const validatedRequest = StopsUpdateNameRequestSchema.parse(request.body);
+	const validatedRequest = StopsUpdateNameRequestSchema.safeParse(request.body);
+
+	if (!validatedRequest.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedRequest.error.message,
+			status_code: '400',
+		});
+	}
 
 	//
-	// Fetch the stop from the database
+	// Get the stop from the database
 
 	const foundStop = await goDb.infrastructure.stops.findById(request.params.id);
 
@@ -34,10 +41,12 @@ export async function updateStopNameHandler(request: FastifyRequest<{ Body: Stop
 	//
 	// Check if the user has permission to run this action
 
-	const hasPermission = hasPermissionResource(request.permissions, {
-		requiredPermission: { action: 'edit_name', scope: 'stops' },
-		requiredValue: foundStop.municipality_id,
-		resourceKey: 'municipality_ids',
+	const hasPermission = PermissionCatalog.hasPermissionResource({
+		action: PermissionCatalog.all.stops.actions.edit_name,
+		permissions: request.permissions,
+		resource_key: 'municipality_ids',
+		scope: PermissionCatalog.all.stops.scope,
+		value: foundStop.municipality_id,
 	});
 
 	if (!hasPermission) {
@@ -48,9 +57,13 @@ export async function updateStopNameHandler(request: FastifyRequest<{ Body: Stop
 	}
 
 	//
-	// Update the stop name and return the updated stop
+	// Update the stop names and return the updated stop
 
-	const data = await goDb.infrastructure.stops.updateById(request.params.id, { name: validatedRequest.name, short_name: validatedRequest.short_name, tts_name: validatedRequest.tts_name });
+	const updatedStop = await goDb.infrastructure.stops.updateById(request.params.id, {
+		name: validatedRequest.data.name,
+		short_name: validatedRequest.data.short_name,
+		tts_name: validatedRequest.data.tts_name,
+	});
 
-	return sendSuccessApiResponse(reply, data);
+	return sendSuccessApiResponse(reply, updatedStop);
 }

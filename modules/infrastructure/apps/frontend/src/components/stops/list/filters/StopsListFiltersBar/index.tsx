@@ -14,7 +14,7 @@ import { StopsListFilterParish } from '../StopsListFilterParish';
 
 /* * */
 
-export function StopsListFilterBar() {
+export function StopsListFiltersBar() {
 	return (
 		<FiltersBar>
 			<StopsListFilterAgency />

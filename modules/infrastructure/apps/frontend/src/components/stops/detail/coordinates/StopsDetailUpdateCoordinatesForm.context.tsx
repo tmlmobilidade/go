@@ -3,8 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsUpdateCoordinatesRequest, StopsUpdateCoordinatesRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { type StandardFormContextValue, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
+import { fetchApiData, type StandardFormContextValue, useHandleAction, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useStopsListData } from '../../list/use-stops-list-data';

@@ -1,6 +1,7 @@
 'use client';
 
 import { Grid, Pane, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsDetailUpdateCoordinatesFormContext } from '../StopsDetailUpdateCoordinatesForm.context';
 import { StopsDetailUpdateCoordinatesModalHeader } from '../StopsDetailUpdateCoordinatesModalHeader';
@@ -13,6 +14,8 @@ export function StopsDetailUpdateCoordinatesModal() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const { form } = useStopsDetailUpdateCoordinatesFormContext();
 
@@ -31,7 +34,7 @@ export function StopsDetailUpdateCoordinatesModal() {
 							<TextInput
 								disabled={field.disabled}
 								error={fieldState.error?.message}
-								label="Latitude"
+								label={t('default:stops.detail.UpdateCoordinatesModal.fields.latitude.label')}
 								onChange={event => field.onChange(event.target.value)}
 								value={field.value ?? ''}
 								variant="bordered"
@@ -46,7 +49,7 @@ export function StopsDetailUpdateCoordinatesModal() {
 							<TextInput
 								disabled={field.disabled}
 								error={fieldState.error?.message}
-								label="Longitude"
+								label={t('default:stops.detail.UpdateCoordinatesModal.fields.longitude.label')}
 								onChange={event => field.onChange(event.target.value)}
 								value={field.value ?? ''}
 								variant="bordered"
