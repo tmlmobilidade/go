@@ -3,7 +3,7 @@
 import { chunkLineByDistanceV2, lineFeatureFromEncodedPolyline, lineSlice, nearestPointOnLine, point } from '@tmlmobilidade/geo';
 import { type Feature, type LineString, type Point } from 'geojson';
 
-import { type AggregationResult, type TrainNextStop, type TripStopWaypoint } from './types.js';
+import { type AggregationResult, type TrainNextStop, type TripStopWaypoint } from '../types.js';
 
 /* * */
 

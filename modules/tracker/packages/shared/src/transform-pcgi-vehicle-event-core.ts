@@ -2,7 +2,9 @@
 
 import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEventPtTmlCm, RawVehicleEventPtTmlCmSchema } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import crypto from 'node:crypto';
+import { Logger } from '@tmlmobilidade/logger';
+
+import { hashRawVehicleEvent } from './hash-raw-vehicle-event.js';
 
 /* * */
 
@@ -60,10 +62,7 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 			version: matchingAgency.version,
 		};
 
-		const hashableRawEventId = crypto
-			.createHash('sha256')
-			.update(JSON.stringify(hashableRawEvent))
-			.digest('hex');
+		const hashableRawEventId = hashRawVehicleEvent(hashableRawEvent);
 
 		//
 		// Write the new vehicle event document
@@ -76,15 +75,19 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 		});
 
 		if (!parsedDocument.success) {
+			//
 
-			// Skip if its a dead run
+			//
+			// Skip if its a dead run.
 			// We don't currently store them in labdb.
-			if(entity?.vehicle?.deadRunId) continue;
+
+			if (entity.vehicle.deadRunId) continue;
 
 			//
 			// Log the error
-			console.error(JSON.stringify(entity, null, 2));
-			console.error({ error: parsedDocument.error, message: `Failed to insert document "${pcgiVehicleEvent._id}" -> ${parsedDocument.error.issues.map(issue => `${issue.path.join('.') || '<root>'}: ${issue.message}`).join('; ')}` });
+
+			Logger.error({ error: parsedDocument.error, message: `Failed to insert document "${pcgiVehicleEvent._id}" -> ${parsedDocument.error.issues.map(issue => `${issue.path.join('.') || '<root>'}: ${issue.message}`).join('; ')} | entity: ${JSON.stringify(entity)}` });
+
 			continue;
 		}
 
@@ -96,4 +99,4 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 	return result;
 
 	//
-};
+}

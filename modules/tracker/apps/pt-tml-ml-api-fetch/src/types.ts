@@ -1,5 +1,9 @@
+/* * */
+
 import { type EncodedPolyline } from '@tmlmobilidade/go-types-geo';
 import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
+
+/* * */
 
 export type TripPathWaypoint = HashedTrip & { stop_codes: string[] };
 

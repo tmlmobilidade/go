@@ -1,19 +1,19 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { externalClients } from '@tmlmobilidade/external';
-import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
-import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlMobiV1 } from '@tmlmobilidade/go-types-vehicle-events';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import crypto from 'node:crypto';
+
+import { fetchVehicleEvents } from './tasks/fetch-vehicle-events.js';
 
 /* * */
 
 let ITERATION = 0;
 
 /* * */
+
+//
+// Initialize Sentry
 
 try {
 	await initSentryNode();
@@ -22,91 +22,23 @@ try {
 	Logger.error({ error, message: 'Error initializing Sentry Tracker MOBI Fetch' });
 }
 
-const main = async () => {
+async function main() {
 	//
-
-	//
-	// Initialize the timer
 
 	const timer = new Timer();
 
-	let saveCount = 0;
-
 	//
-	// Fetch the MOBI Vehicle Events data from the API and decode it
+	// Fetch the MOBI Vehicle Events from the API
+	// and save the new ones to the RawVehicleEvents collection
 
-	Logger.info({ message: `[${ITERATION}] Fetching MOBI data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
-
-	const decodedMessage = await externalClients.mobi.vehiclePositions();
-
-	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the MOBI data.` });
-
-	//
-	// Transform each message into a RawVehicleEvent
-
-	for (const entity of decodedMessage.entity ?? []) {
-		//
-
-		//
-		// Skip entities that do not have a vehicle field,
-		// as they are not relevant for our use case.
-
-		if (!entity.vehicle) continue;
-
-		//
-		// Skip entities that do not have a trip field,
-		// as they are not relevant for our use case.
-
-		if (!entity.vehicle.trip) continue;
-
-		//
-		// Hash the relevant fields of the vehicle event
-		// to create a unique identifier for the event.
-		// This allows us to identify duplicate events
-		// and avoid storing them multiple times in the database.
-
-		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlMobiV1> = {
-			agency_id: 'HF16N',
-			created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_milliseconds,
-			entity_id: entity.id,
-			payload: {
-				header: decodedMessage.header,
-				vehicle: entity.vehicle,
-
-			},
-			version: 'pt-tml-mobi-v1',
-		};
-
-		const hashableRawEventId = crypto
-			.createHash('sha256')
-			.update(JSON.stringify(hashableRawEvent))
-			.digest('hex');
-
-		//
-		// Write the new vehicle event document
-		// to the RawVehicleEvents collection
-
-		const alreadyExists = await rawDb.vehicleEvents.ptTmlMobi.findOne({ _id: hashableRawEventId });
-
-		if (alreadyExists) continue;
-
-		await rawDb.vehicleEvents.ptTmlMobi.insertOne({
-			...hashableRawEvent,
-			_id: hashableRawEventId,
-			received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
-		});
-
-		saveCount++;
-
-		//
-	}
+	const saveCount = await fetchVehicleEvents(ITERATION);
 
 	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from MOBI data in ${timer.get()}.` });
 
 	ITERATION++;
 
 	//
-};
+}
 
 /* * */
 

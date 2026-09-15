@@ -13,12 +13,13 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix"
+		"lint": "eslint ./src --fix && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
 		"@tmlmobilidade/external": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
+		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
