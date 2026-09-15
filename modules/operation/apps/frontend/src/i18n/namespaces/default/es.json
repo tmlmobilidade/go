@@ -103,6 +103,10 @@
 			"just_now": "Ahora mismo"
 		}
 	},
+	"posterExport": {
+		"combinedFilter": "Filtro de líneas y paradas",
+		"linesAndStops": "Líneas y paradas"
+	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {
