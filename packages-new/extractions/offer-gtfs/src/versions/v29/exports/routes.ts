@@ -1,9 +1,8 @@
 /* eslint-disable perfectionist/sort-objects */
 /* * */
 
-import { getTypologyDetails } from '@/fetchers/typology.js';
-import { type GtfsV29ExportConfig } from '@/types.js';
-import { getLineType } from '@/utils.js';
+import { getTypologyDetails } from '@/versions/v29/fetchers/typology.js';
+import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Line, pathTypeMapper, Pattern, Route, transportTypeMapper, Typology } from '@tmlmobilidade/go-types-offer';

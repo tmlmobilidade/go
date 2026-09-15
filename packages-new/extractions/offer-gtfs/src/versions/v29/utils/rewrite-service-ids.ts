@@ -29,7 +29,7 @@ export function rewriteServiceIds(filePath: string, mapping: Map<string, string>
 		const original = cols[serviceIdIdx];
 
 		if (original !== undefined && mapping.has(original)) {
-			cols[serviceIdIdx] = mapping.get(original);
+			cols[serviceIdIdx] = mapping.get(original) ?? '';
 		}
 
 		return cols.join(',');
@@ -66,7 +66,7 @@ export function rewriteTripIds(filePath: string, mapping: Map<string, string>): 
 			const parts = tripId.split('|');
 			// Format: PATTERN|TOKEN|HHMM — replace index 1
 			if (parts.length === 3 && mapping.has(parts[1])) {
-				parts[1] = mapping.get(parts[1]);
+				parts[1] = mapping.get(parts[1]) ?? '';
 				cols[tripIdIdx] = parts.join('|');
 			}
 		}

@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* * */
 
-import { type GtfsV29ExportConfig } from '@/types.js';
+import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { type GtfsStrictV29Stops } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { type Municipality } from '@tmlmobilidade/go-types-locations';
@@ -21,7 +21,7 @@ interface ExportsStopTemporaryWorkaround {
 	has_stop_sign: 0 | 1
 	has_tariffs_information: 0 | 1
 	level_id: string
-	location_type: '0' | number
+	location_type: '0' | null | number
 	municipality: string
 	network_map: ''
 	observations: ''
@@ -47,7 +47,7 @@ interface ExportsStopTemporaryWorkaround {
 	stop_timezone: string
 	stop_url: string
 	tariff: ''
-	wheelchair_boarding: '0'
+	wheelchair_boarding: '0' | null
 	zone_id: string
 	zone_shift: ''
 }

@@ -107,11 +107,11 @@ export class ServiceRegistry {
 
 		const tokenMap = this.serviceRuleTokens.get(serviceId);
 
-		if (!tokenMap.has(ruleToken)) {
-			tokenMap.set(ruleToken, new Set());
+		if (!tokenMap?.has(ruleToken)) {
+			tokenMap?.set(ruleToken, new Set());
 		}
 
-		tokenMap.get(ruleToken).add(patternCode);
+		tokenMap?.get(ruleToken)?.add(patternCode);
 	}
 
 	/**

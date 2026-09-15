@@ -1,9 +1,9 @@
 /* * */
 
-import { exportAgencyFile, exportCalendarDates, exportCalendarMap, exportFareAttributes, exportFareForRoute, exportRoute, exportShape, exportStop, exportStopTimesForPattern, exportTripsForPattern, exportZoning } from '@/exports/index.js';
-import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
-import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.js';
-import { ServiceRegistry } from '@/utils/service-registry.js';
+import { exportAgencyFile, exportCalendarDates, exportCalendarMap, exportFareAttributes, exportFareForRoute, exportRoute, exportShape, exportStop, exportStopTimesForPattern, exportTripsForPattern, exportZoning } from '@/versions/v29/exports/index.js';
+import { type ExportProgress, type GtfsV29ExportConfig } from '@/versions/v29/types.js';
+import { rewriteServiceIds, rewriteTripIds } from '@/versions/v29/utils/rewrite-service-ids.js';
+import { ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -234,7 +234,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 				}
 
 				// Check if at least one pattern has a valid shape and path
-				const hasValidPatterns = routePatterns.some(pattern => pattern.shape?.geojson?.geometry?.coordinates?.length > 0 && pattern.path?.length > 0);
+				const hasValidPatterns = routePatterns.some(pattern => pattern.shape?.geojson?.geometry?.coordinates?.length && pattern.path?.length);
 
 				if (!hasValidPatterns) {
 					Logger.info({ message: `  Skipping route ${routeId}: no valid patterns with shape and path` });
@@ -315,6 +315,11 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 				? allMunicipalitiesMap.get(stopData.municipality_id)
 				: undefined;
 
+			if (!municipalityData) {
+				Logger.error({ message: `Stop ${stopData._id} has no municipality data` });
+				continue;
+			}
+
 			await exportStop(stopData, municipalityData, exportConfig);
 		}
 
@@ -371,7 +376,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 			Logger.success('Rewrote trip_id in stop_times.txt to numeric codes');
 
 			await exportCalendarMap(numericMapping, exportConfig);
-			await exportConfig.writers.calendar_map.flush();
+			await exportConfig.writers.calendar_map?.flush();
 			Logger.success('Exported calendar_map.txt');
 		}
 

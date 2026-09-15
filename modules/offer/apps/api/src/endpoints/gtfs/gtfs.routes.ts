@@ -1,7 +1,6 @@
 /* * */
 
 import { GtfsController } from '@/endpoints/gtfs/gtfs.controller.js';
-import { ExporterSharedController } from '@tmlmobilidade/controllers';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
@@ -21,12 +20,6 @@ server.register(
 			'/parse',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
 			GtfsController.parse,
-		);
-
-		instance.post(
-			'/create-export',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
-			ExporterSharedController.create,
 		);
 
 		next();

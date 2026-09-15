@@ -34,11 +34,6 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types-core": "*",
-		"@tmlmobilidade/go-types-hub": "*",
-		"@tmlmobilidade/go-types-infrastructure": "*",
-		"@tmlmobilidade/go-types-offer": "*",
-		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"zod": "3.25.76"
 	},

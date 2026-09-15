@@ -1,5 +1,5 @@
-import { GtfsV29ExportConfig } from '@/types.js';
-import { getCurrentTimestamp } from '@/utils.js';
+import { GtfsV29ExportConfig } from '@/versions/v29/types.js';
+import { getCurrentTimestamp } from '@/versions/v29/utils.js';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type GtfsStrictV29FeedInfo } from '@tmlmobilidade/go-types-gtfs-strict';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';

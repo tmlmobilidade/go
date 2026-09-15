@@ -1,6 +1,6 @@
 /* * */
 
-import { type ExportedCalendarMapRow, type GtfsV29ExportConfig } from '@/types.js';
+import { type ExportedCalendarMapRow, type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -23,7 +23,7 @@ export async function exportCalendarMap(
 
 		for (const [serviceLabel, serviceId] of sorted) {
 			const row: ExportedCalendarMapRow = { service_id: serviceId, service_label: serviceLabel };
-			await exportConfig.writers.calendar_map.write(row);
+			await exportConfig.writers?.calendar_map?.write(row);
 		}
 
 		Logger.success(`Exported ${sorted.length} entries to calendar_map.txt`);

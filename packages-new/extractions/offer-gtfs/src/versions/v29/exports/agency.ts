@@ -1,7 +1,7 @@
 /* * */
 /* eslint-disable perfectionist/sort-objects */
 
-import { type GtfsV29ExportConfig } from '@/types.js';
+import { GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { GtfsStrictV29Agency } from '@tmlmobilidade/go-types-gtfs-strict';
 
