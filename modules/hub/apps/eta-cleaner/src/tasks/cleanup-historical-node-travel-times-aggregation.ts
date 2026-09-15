@@ -1,7 +1,12 @@
-import { AppConfig } from '@/lib/config.js';
+/* * */
+
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { Logger } from '@tmlmobilidade/logger';
+
+import { AppConfig } from '../config.js';
+
+/* * */
 
 const CLEANUP_HIST_NODE_TRAVEL_TIMES_AGG_SQL = sqlPath('hub', 'eta/cleanup/7-delete-out-of-window-hist-node-travel-times-aggregation.sql');
 
@@ -17,6 +22,8 @@ interface CleanupRowsResult {
  * without bound.
  */
 export async function cleanupHistoricalNodeTravelTimesAggregation() {
+	//
+
 	Logger.title('7. Cleanup out-of-window historical node travel times aggregation');
 
 	const result = await labDb.queryEachStatementFromFile<CleanupRowsResult>(

@@ -6,8 +6,8 @@ import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { TTL_REALTIME } from '../../config.js';
 import { type ClickHouseEtaKeyValue } from '../types.js';
-import { TTL_REALTIME } from '@/config.js';
 
 /* * */
 

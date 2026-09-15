@@ -1,6 +1,10 @@
+/* * */
+
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { Logger } from '@tmlmobilidade/logger';
+
+/* * */
 
 const CLEANUP_HIST_VEHICLE_EVENTS_SQL = sqlPath('hub', 'eta/cleanup/5-delete-orphan-hist-vehicle-events.sql');
 
@@ -15,6 +19,8 @@ interface CleanupRowsResult {
  * evaluated against the pruned ride set.
  */
 export async function cleanupHistoricalVehicleEvents() {
+	//
+
 	Logger.title('5. Cleanup orphan historical vehicle events');
 
 	const result = await labDb.queryEachStatementFromFile<CleanupRowsResult>(

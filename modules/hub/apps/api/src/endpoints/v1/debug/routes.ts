@@ -1,23 +1,24 @@
 /* * */
 
-import { getTime } from '@/endpoints/v1/debug/controllers/get-time.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
+
+import { getTimeHandler } from './handlers/get-time.js';
 
 /* * */
 
-const namespace = '/v1/debug';
+const NAMESPACE = '/v1/debug';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/time', getTime);
+		instance.get('/time', getTimeHandler);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

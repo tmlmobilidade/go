@@ -1,9 +1,10 @@
 /* * */
 
-import { AppConfig } from '@/lib/config.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
+
+import { AppConfig } from '../config.js';
 
 /* * */
 
@@ -12,6 +13,8 @@ import { Logger } from '@tmlmobilidade/logger';
  * Matches the loader's historical window: `[now − daysBack − standardWindowHours, now − standardWindowHours]`.
  */
 export async function fetchHistoricalRidesForDayIndex() {
+	//
+
 	const end = Dates.now('Europe/Lisbon').minus({ hours: Dates.standardWindowHours });
 	const start = Dates.now('Europe/Lisbon').minus({
 		days: AppConfig.historicalDataDaysBack,

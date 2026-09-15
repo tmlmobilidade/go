@@ -1,9 +1,10 @@
 'use client';
 
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
-import { Modal, SegmentedControl } from '@mantine/core';
+import { SegmentedControl } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Modal } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

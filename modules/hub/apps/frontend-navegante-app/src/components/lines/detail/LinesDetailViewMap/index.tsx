@@ -4,15 +4,17 @@ import { useOperationalDate } from '@/components/common/operational-date/use-ope
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayVehicles, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
-import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from '@/components/map/overlays/MapViewStyleActiveStops';
-import { MapViewStylePath, MapViewStylePathInteractiveLayerId } from '@/components/map/overlays/MapViewStylePath';
+import { MapViewStyleActiveStops } from '@/components/map/overlays/MapViewStyleActiveStops';
+import { MapViewStylePathInteractiveLayerId } from '@/components/map/overlays/MapViewStylePath';
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { centerMap, moveMap } from '@/utils/map.utils';
+import { moveMap } from '@/utils/map.utils';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 import { useMap } from '@vis.gl/react-maplibre';
+import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -23,6 +25,8 @@ export function LinesDetailViewMap() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const stopsContext = useStopsContext();
 	const vehiclesContext = useVehiclesContext();
@@ -38,24 +42,6 @@ export function LinesDetailViewMap() {
 		if (!linesDetailContext.data.active_pattern?._id) return;
 		return vehiclesContext.actions.getVehiclesByPatternIdGeoJsonFC(linesDetailContext.data.active_pattern?._id);
 	}, [linesDetailContext.data.active_pattern?._id, vehiclesContext.actions]);
-
-	const activePathFeatureCollection = useMemo(() => {
-		if (!linesDetailContext.data.active_pattern?.path) return;
-		const collection = getBaseGeoJsonFeatureCollection();
-		linesDetailContext.data.active_pattern.path.forEach((pathStop) => {
-			const stopData = stopsContext.actions.getStopById(pathStop.stop_id);
-			if (!stopData) return;
-			const result = transformStopDataIntoGeoJsonFeature(stopData);
-			result.properties = {
-				...result.properties,
-				// color: linesDetailContext.data.active_pattern?.color,
-				// sequence: pathStop.stop_sequence,
-				// text_color: linesDetailContext.data.active_pattern?.text_color,
-			};
-			collection.features.push(result);
-		});
-		return collection;
-	}, [linesDetailContext.data.active_pattern?.path, stopsContext.actions]);
 
 	const activeStopFeatureCollection = useMemo(() => {
 		// Exit early if there is no active pattern or active waypoint
@@ -94,7 +80,7 @@ export function LinesDetailViewMap() {
 		}
 	}, [linesDetailMap, linesDetailContext.data.active_waypoint, linesDetailContext.data.active_pattern, linesDetailContext.flags.is_interactive_mode, stopsContext.actions]);
 
-	function handleLayerClick(event) {
+	function handleLayerClick(event: MapLayerMouseEvent) {
 		if (!linesDetailMap) return;
 		const pathFeatures = linesDetailMap.queryRenderedFeatures(event.point, { layers: [MapViewStylePathInteractiveLayerId] });
 		if (!pathFeatures.length) return;
@@ -117,7 +103,7 @@ export function LinesDetailViewMap() {
 	if (!linesDetailContext.data.active_pattern || !operationalDate.selectedOperationalDate) {
 		return (
 			<Surface>
-				<NoDataLabel text="No data" />
+				<NoDataLabel text={t('default:layout.NoDataLabel.no_data')} />
 			</Surface>
 		);
 	}

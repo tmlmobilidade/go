@@ -1,5 +1,6 @@
 /* * */
 
+import { type TimeSlot } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -37,5 +38,5 @@ export const AppConfig = Object.freeze({
 		_6_calculateNodeTravelTimes: true,
 		_7_loadCurrentWaypoints: true,
 	},
-	syncInterval: '15m',
+	syncInterval: '15m' as TimeSlot,
 });

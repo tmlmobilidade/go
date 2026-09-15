@@ -1,9 +1,10 @@
 /* * */
 
-import { getVehiclesMetadataMap } from '@/utils/get-vehicles-metadata-map.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { getVehiclesMetadataMap } from '../utils/get-vehicles-metadata-map.js';
 
 /* * */
 

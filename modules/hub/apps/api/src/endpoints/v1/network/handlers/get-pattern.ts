@@ -13,15 +13,21 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getPatternHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubV1ApiPattern[]>) {
 	//
 
+	//
+	// Get the published pattern from the cache
+
 	const cachedData = await cacheDb.getNew<HubV1ApiPattern[]>(`hub:v1:network:patterns:${request.params.id}`);
 
 	if (!cachedData) {
-		Logger.error({ message: `[hub/v1/network:getPatterns(${request.params.id})] No cached data found for pattern ${request.params.id}` });
+		Logger.error({ message: `[hub/v1/network:getPatternHandler(${request.params.id})] No cached data found for pattern ${request.params.id}` });
 		return sendErrorApiResponse(reply, {
-			error: `[hub/v1/network:getPatterns(${request.params.id})] No cached data found for pattern ${request.params.id}`,
+			error: `[hub/v1/network:getPatternHandler(${request.params.id})] No cached data found for pattern ${request.params.id}`,
 			status_code: '404',
 		});
-	};
+	}
+
+	//
+	// Return the cached pattern
 
 	return sendSuccessApiResponse(reply, cachedData.data, {
 		max_age: '1h',

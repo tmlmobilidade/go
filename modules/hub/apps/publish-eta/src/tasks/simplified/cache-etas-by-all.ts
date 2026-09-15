@@ -2,8 +2,8 @@
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 
+import { TTL_REALTIME } from '../../config.js';
 import { type TripStopEta } from '../types.js';
-import { TTL_REALTIME } from '@/config.js';
 
 /* * */
 

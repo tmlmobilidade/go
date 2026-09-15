@@ -3,20 +3,11 @@
 import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
+import { useHelpDetailData } from '@/components/help/use-help-detail-data';
 import { Accordion } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-import useSWR from 'swr';
 
 import styles from './styles.module.css';
-
-/* * */
-
-export interface NaveganteFaq {
-	_order: string
-	answer: string
-	id: string
-	question: string
-}
 
 /* * */
 
@@ -33,7 +24,7 @@ export function HelpDetail() {
 	//
 	// B. Fetch data
 
-	const { data: allFaqsData, isLoading: allFaqsLoading } = useSWR<NaveganteFaq[], Error>({ credentials: 'omit', url: 'https://carrismetropolitana.pt/admin/public-api/faqs-navegante', useProperApiResponse: false }, { refreshInterval: 300_000 });
+	const { data: allFaqsData, isLoading: allFaqsLoading } = useHelpDetailData();
 
 	//
 	// C. Render components

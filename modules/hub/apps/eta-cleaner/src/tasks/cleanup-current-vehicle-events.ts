@@ -1,7 +1,12 @@
-import { AppConfig } from '@/lib/config.js';
+/* * */
+
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { Logger } from '@tmlmobilidade/logger';
+
+import { AppConfig } from '../config.js';
+
+/* * */
 
 const CLEANUP_CURRENT_VEHICLE_EVENTS_SQL = sqlPath('hub', 'eta/cleanup/2-delete-out-of-window-curr-vehicle-events.sql');
 
@@ -10,6 +15,8 @@ interface CleanupRowsResult {
 }
 
 export async function cleanupCurrentVehicleEvents() {
+	//
+
 	Logger.title('3. Cleanup current window vehicle events');
 
 	const result = await labDb.queryEachStatementFromFile<CleanupRowsResult>(

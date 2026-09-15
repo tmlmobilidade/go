@@ -1,6 +1,10 @@
+/* * */
+
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { Logger } from '@tmlmobilidade/logger';
+
+/* * */
 
 const CLEANUP_HIST_NODE_TRAVEL_TIMES_SQL = sqlPath('hub', 'eta/cleanup/6-delete-orphan-hist-node-travel-times.sql');
 
@@ -15,6 +19,8 @@ interface CleanupRowsResult {
  * is evaluated against the pruned ride set.
  */
 export async function cleanupHistoricalNodeTravelTimes() {
+	//
+
 	Logger.title('6. Cleanup orphan historical node travel times');
 
 	const result = await labDb.queryEachStatementFromFile<CleanupRowsResult>(
