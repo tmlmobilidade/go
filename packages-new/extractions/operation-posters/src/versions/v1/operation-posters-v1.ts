@@ -10,8 +10,11 @@ import { exportPlanPostersFile } from './export-plan-posters.js';
 
 export async function operationPostersV1Extraction(context: ExtractionTaskContext, extraction: OperationPostersV1Extraction): Promise<ExtractionTaskResult> {
 	const properties = OperationPostersV1ExtractionPropertiesSchema.parse(extraction.properties);
-	const plans = await goDb.operation.plans.findMany({ agency_id: { in: properties.agency_ids } });
-	if (!plans.length) throw new Error('No plans found for the selected agencies.');
+	const plans = await goDb.operation.plans.findMany({
+		_id: { $in: properties.plan_ids },
+		agency_id: { $in: properties.agency_ids },
+	});
+	if (!plans.length) throw new Error('No selected plans found for the selected agencies.');
 
 	context.attachment_name = `posters-v1-${extraction._id}.zip`;
 
