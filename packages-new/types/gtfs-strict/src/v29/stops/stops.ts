@@ -1,6 +1,5 @@
 /* * */
 
-import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { GtfsLocationTypeSchema, GtfsTernarySchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
@@ -14,8 +13,8 @@ export const GtfsStrictV29StopsSchema = z.object({
 	stop_code: z.string(),
 	stop_desc: z.string().optional(),
 	stop_id: z.string(),
-	stop_lat: LatitudeSchema,
-	stop_lon: LongitudeSchema,
+	stop_lat: z.number(),
+	stop_lon: z.number(),
 	stop_name: z.string(),
 	stop_timezone: z.string().optional(),
 	stop_url: z.string().optional(),
