@@ -1,7 +1,7 @@
 /* * */
 
-import { type GtfsCalendar, type GtfsCalendarDates } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationPostersV1CalendarDates, type OperationPostersV1Calendars } from '@tmlmobilidade/go-types-operation';
 import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
@@ -405,7 +405,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 			//
 			// Output the calendar data
 
-			const calendarData: GtfsCalendar = {
+			const calendarData: OperationPostersV1Calendars = {
 				end_date: OperationalDateIntSchema.parse(sortedDates.at(-1) ?? exportConfig.date_range.end),
 				friday: '0',
 				monday: '0',
@@ -454,7 +454,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 		// Output all dates for this service_id
 
 		for (const operationalDate of sortedDates) {
-			const data: GtfsCalendarDates = {
+			const data: OperationPostersV1CalendarDates = {
 				date: OperationalDateIntSchema.parse(operationalDate),
 				exception_type: '1',
 				service_id: serviceIdData._id,

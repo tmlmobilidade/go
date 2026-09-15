@@ -1,7 +1,7 @@
 /* * */
 
-import { GtfsRoutesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV30Routes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { OperationPostersV1RoutesSchema } from '@tmlmobilidade/go-types-operation';
 import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -33,7 +33,7 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 	}
 
 	for (const [routeId, route] of mainRoutes) {
-		const data = GtfsRoutesSchema.parse({
+		const data = OperationPostersV1RoutesSchema.parse({
 			agency_id: route.agency_id,
 			route_color: route.route_color,
 			route_id: routeId,

@@ -1,20 +1,19 @@
 /* * */
 
-import { GtfsStopsSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
 export const OperationPostersV1StopsSchema = z.object({
-	location_type: GtfsStopsSchema.shape.location_type,
-	parent_station: GtfsStopsSchema.shape.parent_station,
-	platform_code: GtfsStopsSchema.shape.platform_code,
-	stop_code: GtfsStopsSchema.shape.stop_code,
-	stop_id: GtfsStopsSchema.shape.stop_id,
-	stop_lat: GtfsStopsSchema.shape.stop_lat,
-	stop_lon: GtfsStopsSchema.shape.stop_lon,
-	stop_name: GtfsStopsSchema.shape.stop_name,
-	wheelchair_boarding: GtfsStopsSchema.shape.wheelchair_boarding,
+	location_type: z.union([z.string(), z.number()]).default('0').transform(value => value === '' ? '0' : String(value)).pipe(z.enum(['0', '1', '2', '3', '4'])),
+	parent_station: z.string().default(''),
+	platform_code: z.string().default(''),
+	stop_code: z.string(),
+	stop_id: z.string(),
+	stop_lat: z.number().min(-90).max(90),
+	stop_lon: z.number().min(-180).max(180),
+	stop_name: z.string(),
+	wheelchair_boarding: z.union([z.string(), z.number()]).transform(String).pipe(z.enum(['0', '1', '2'])).optional(),
 });
 
 export type OperationPostersV1Stops = z.output<typeof OperationPostersV1StopsSchema>;

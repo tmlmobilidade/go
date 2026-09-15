@@ -1,3 +1,5 @@
+// Poster V1 owns its output fields; keep these schemas independent of the shared GTFS row schemas.
+
 export * from './agency/index.js';
 export * from './calendars/index.js';
 export * from './day-types/index.js';

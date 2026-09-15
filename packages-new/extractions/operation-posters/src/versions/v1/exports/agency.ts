@@ -1,8 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { GtfsStrictV30AgencySchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { OperationPostersV1AgencySchema, type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 
 import { type OperationPostersV1Context } from '../types/context.js';
@@ -17,7 +16,7 @@ export async function exportAgencyFile(context: OperationPostersV1Context, planD
 	const agency = await goDb.core.agencies.findById(planData.agency_id);
 	if (!agency) throw new Error(`Agency ${planData.agency_id} not found for poster export.`);
 
-	const data = GtfsStrictV30AgencySchema.parse({
+	const data = OperationPostersV1AgencySchema.parse({
 		agency_email: agency.open_data?.details?.email,
 		agency_fare_url: agency.open_data?.details?.fare_url,
 		agency_id: agency.code,
@@ -27,7 +26,7 @@ export async function exportAgencyFile(context: OperationPostersV1Context, planD
 		agency_timezone: agency.timezone,
 		agency_url: agency.open_data?.details?.website_url,
 	});
-	await context.writers.agency.write({ ...data, agency_code: agency.code });
+	await context.writers.agency.write(data);
 
 	await context.writers.agency.flush();
 	await yieldToEventLoop();

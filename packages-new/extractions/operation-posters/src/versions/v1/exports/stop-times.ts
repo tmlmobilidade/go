@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsStopTimesSchema } from '@tmlmobilidade/go-types-gtfs';
+import { OperationPostersV1StopTimesSchema } from '@tmlmobilidade/go-types-operation';
 import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -26,7 +26,7 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 			routeStopSequence = 0;
 		}
 		routeStopSequence++;
-		const data = GtfsStopTimesSchema.parse({
+		const data = OperationPostersV1StopTimesSchema.parse({
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,
 			drop_off_type: stopTimeData.drop_off_type,

@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsShapesSchema } from '@tmlmobilidade/go-types-gtfs';
+import { OperationPostersV1ShapesSchema } from '@tmlmobilidade/go-types-operation';
 import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -34,7 +34,7 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 
 		const sequence = shapeSequences.get(shapeData.shape_id);
 		if (!sequence) continue;
-		await context.writers.shapes.write(GtfsShapesSchema.parse(shapeData));
+		await context.writers.shapes.write(OperationPostersV1ShapesSchema.parse(shapeData));
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
 

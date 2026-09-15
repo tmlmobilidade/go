@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsTripsSchema } from '@tmlmobilidade/go-types-gtfs';
+import { OperationPostersV1TripsSchema } from '@tmlmobilidade/go-types-operation';
 import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -19,7 +19,7 @@ export async function exportTripsFile(context: OperationPostersV1Context, sqlTab
 		const routeId = routeIds.get(tripData.route_id);
 		if (!routeId) throw new Error(`Cannot export trip ${tripData.trip_id}: route ${tripData.route_id} was not exported.`);
 
-		const data = GtfsTripsSchema.parse({
+		const data = OperationPostersV1TripsSchema.parse({
 			direction_id: tripData.direction_id,
 			route_id: routeId,
 			service_id: tripData.service_id,
