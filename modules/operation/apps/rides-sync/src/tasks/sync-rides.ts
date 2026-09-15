@@ -83,7 +83,7 @@ export async function syncRides(timeChunk: PerformInTimeChunksItem) {
 						DELETE WHERE hash IN (${chunk.map(hash => `'${hash}'`).join(',')})
 					`,
 				});
-				Logger.info({ message: `Deleted ${chunk.length} rides in ${deleteTimer.get()}.` });
+				Logger.info({ message: `Deleted ${chunk.length} documents from the destination database in ${deleteTimer.get()}.` });
 			}, 250);
 		},
 
