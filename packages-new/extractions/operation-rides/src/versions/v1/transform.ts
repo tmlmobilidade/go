@@ -3,6 +3,7 @@
 import { OperationRidesV1OutputRowType, OperationRidesV1QueryRow } from './types.js';
 
 export const toOutputRow = (row: OperationRidesV1QueryRow): OperationRidesV1OutputRowType => {
+	console.log('original row', row);
 	return {
 
 		'_id': row._id,
