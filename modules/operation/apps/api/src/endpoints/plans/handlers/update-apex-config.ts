@@ -3,8 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Plan } from '@tmlmobilidade/go-types-operation';
-import { UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
+import { type Plan, type UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { createWriteStream } from 'fs';
 import fs from 'node:fs';

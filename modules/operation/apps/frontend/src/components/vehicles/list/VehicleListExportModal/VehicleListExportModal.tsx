@@ -1,6 +1,7 @@
 'use client';
 
 import { useVehicleListExportContext, VehicleListExportContextProvider } from '@/contexts/VehicleExport.context';
+import { type VehicleListContextState } from '@/contexts/VehiclesList.context';
 import { DataProviders } from '@/providers/data-providers';
 import { Button, closeModal, Divider, Grid, Label, openModal, Pane, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 
@@ -61,7 +62,7 @@ export function VehicleListExportModal() {
 
 /* * */
 
-export const openVehicleListExportModal = (vehiclesListContext: any) => {
+export const openVehicleListExportModal = (vehiclesListContext: VehicleListContextState) => {
 	openModal({
 		children: (
 			<DataProviders>

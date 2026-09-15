@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ProcessingStatus } from '@tmlmobilidade/go-types-shared';
-import { AgencyTag, Button, CloseButton, HasPermission, IdTag, ProcessingStatusDisplay, Spacer, Toolbar, useMeContext, ValidityStatusDisplay } from '@tmlmobilidade/ui';
+import { AgencyTag, Button, CloseButton, HasPermission, IdTag, ProcessingStatusDisplay, Spacer, Toolbar, useMeData, ValidityStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -23,7 +22,7 @@ export function ValidationsDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 	const validationsDetailContext = useValidationsDetailContext();
 
 	const { data: agenciesData } = useGtfsValidationsAgenciesData({
@@ -36,16 +35,15 @@ export function ValidationsDetailHeader() {
 	const hasPermissionToChangeProcessingStatus = useMemo(() => {
 		// User can change processing status if they have permission
 		// for the agency and reference type.
-		return meContext.actions.hasPermissionResource([
-			{
-				action: PermissionCatalog.all.gtfs_validations.actions.update_processing_status,
-				resource_key: 'agency_ids',
-				scope: PermissionCatalog.all.gtfs_validations.scope,
-				value: validationsDetailContext.data.validation.agency_id,
-			},
-		]);
+		return PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.update_processing_status,
+			permissions: meData?.permissions ?? [],
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+			value: validationsDetailContext.data.validation.agency_id,
+		});
 	}, [
-		meContext.data.user?.permissions,
+		meData?.permissions,
 		validationsDetailContext.data.validation.agency_id,
 	]);
 

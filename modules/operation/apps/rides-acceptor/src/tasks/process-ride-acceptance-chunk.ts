@@ -8,10 +8,10 @@ import { PerformInTimeChunksItem } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { ridesWithAnalysesQuery } from '../queries/rides-with-analyses-query.js';
+import { type RideWithAnalyses } from '../types/ride-with-analyses.js';
 import { alertJustification } from './alert-justification.js';
 import { createRideAcceptance } from './create-ride-acceptance.js';
-import { ridesWithAnalysesQuery } from './queries/rides-with-analyses-query.js';
-import { type RideWithAnalyses } from './types/ride-with-analyses.js';
 import { updateRideAcceptance } from './update-ride-acceptance.js';
 
 /* * */

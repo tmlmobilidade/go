@@ -2,9 +2,9 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
-import { type RidesAgencyItem, RidesAgencyItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
+import { type RidesAgencyItem, RidesAgencyItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
+import { AllowAllFlagValue, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Get agencies platform data.
@@ -18,7 +18,7 @@ export async function listAgenciesHandler(request: FastifyRequest, reply: Fastif
 	// Get the agency IDs this user has access to
 
 	const resourceAgencyIds = request.permissions
-		.filter(permission => permission.scope === 'rides' && permission.action === 'analysis_read')
+		.filter(permission => permission.scope === PermissionCatalog.all.rides.scope && permission.action === PermissionCatalog.all.rides.actions.analysis_read)
 		.flatMap(permission => 'resources' in permission ? permission.resources.agency_ids ?? [] : []) ?? [];
 
 	//

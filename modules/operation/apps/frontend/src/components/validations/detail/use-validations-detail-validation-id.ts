@@ -18,7 +18,7 @@ export function useValidationsDetailValidationId(): UseValidationsDetailValidati
 	// A. Setup variables
 
 	const params = useParams<{ id: string }>();
-	const validationId = decodeURIComponent(params.id);
+	const validationId = decodeURIComponent(params.id ?? '');
 
 	//
 	// B. Return data

@@ -16,7 +16,7 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
 		"@fastify/multipart": "10.1.1",

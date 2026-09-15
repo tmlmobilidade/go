@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
@@ -7,7 +6,7 @@ import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type UpdatePlanDto, UpdatePlanSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleAction, useMeData, useTypicalForm } from '@tmlmobilidade/ui';
 import { uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -61,7 +60,7 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 
 	const router = useRouter();
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 
 	const { planId } = usePlansDetailPlanId();
 
@@ -160,8 +159,9 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 	// E. Setup flags
 
 	const { isReadOnly } = useFlagReadOnly({
-		hasPermission: meContext.actions.hasPermissionResource({
+		hasPermission: PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.update,
+			permissions: meData?.permissions ?? [],
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData?.agency_id ?? '',
@@ -174,8 +174,9 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	const { canSave } = useFlagCanSave({
-		hasPermission: meContext.actions.hasPermissionResource({
+		hasPermission: PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.update,
+			permissions: meData?.permissions ?? [],
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData?.agency_id ?? '',
@@ -189,8 +190,9 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	const { canLock } = useFlagCanLock({
-		hasPermission: meContext.actions.hasPermissionResource({
+		hasPermission: PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.lock,
+			permissions: meData?.permissions ?? [],
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData?.agency_id ?? '',
@@ -203,8 +205,9 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	const { canDelete } = useFlagCanDelete({
-		hasPermission: meContext.actions.hasPermissionResource({
+		hasPermission: PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.delete,
+			permissions: meData?.permissions ?? [],
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData?.agency_id ?? '',
@@ -226,8 +229,9 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 		!isReprocessing,
 		!planLoading,
 		!isSaving,
-		meContext.actions.hasPermissionResource({
+		PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
+			permissions: meData?.permissions ?? [],
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData?.agency_id ?? '',
@@ -268,24 +272,30 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 			isSaving: isSaving || isReprocessing,
 		},
 	}), [
-		form,
-		planId,
-		planData,
+		apexFileResponse,
+		canChangePlan,
 		canDelete,
-		operationGtfsNormalizedResponse,
 		canLock,
 		canSave,
-		canChangePlan,
-		planError,
-		operationGtfsLoading,
-		apexFileResponse,
+		form,
+		handleControllerReprocessPlan,
+		handleDelete,
+		handleDeleteApexFile,
+		handleLock,
+		handleSave,
 		isDeleting,
-		operationGtfsNormalizedResponse,
-		isReprocessing,
-		planLoading,
 		isLocking,
 		isReadOnly,
+		isReprocessing,
 		isSaving,
+		operationGtfsLoading,
+		operationGtfsNormalizedLoading,
+		operationGtfsNormalizedResponse,
+		operationGtfsResponse,
+		planData,
+		planError,
+		planId,
+		planLoading,
 		userData,
 	]);
 

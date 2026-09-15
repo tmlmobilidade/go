@@ -5,8 +5,8 @@ import { RideAcceptance, RideAcceptanceSchema } from '@tmlmobilidade/go-types-op
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 
-import { testRide } from './test-ride.js';
-import { type RideWithAnalyses } from './types/ride-with-analyses.js';
+import { type RideWithAnalyses } from '../types/ride-with-analyses.js';
+import { testRide } from '../utils/test-ride.js';
 
 /* * */
 

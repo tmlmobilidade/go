@@ -15,9 +15,19 @@ export async function createAlertHandler(request: FastifyRequest<{ Body: CreateA
 	//
 	// Validate the request body
 
-	const validatedAlert = CreateAlertSchema.parse(request.body);
+	const validatedAlert = CreateAlertSchema.safeParse(request.body);
 
-	const insertResult = await goDb.operation.alerts.insertOne({ ...validatedAlert, created_by: request.me._id, updated_by: request.me._id });
+	if (!validatedAlert.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedAlert.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
+	// Insert the alert into the database
+
+	const insertResult = await goDb.operation.alerts.insertOne({ ...validatedAlert.data, created_by: request.me._id, updated_by: request.me._id });
 
 	if (!insertResult) {
 		return sendErrorApiResponse(reply, {

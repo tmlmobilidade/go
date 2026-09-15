@@ -2,7 +2,7 @@
 
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CoordinatesInput, Grid, Section, StandardFormController, Textarea, TextInput, useMeContext, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CoordinatesInput, Grid, Section, StandardFormController, Textarea, TextInput, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
@@ -17,7 +17,7 @@ export function AlertCreateStepSummaryFinal() {
 
 	const { t } = useTranslation();
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
@@ -27,7 +27,7 @@ export function AlertCreateStepSummaryFinal() {
 	//
 	// B. Transform data
 
-	const hasPermissionToUpdateTexts = meContext.actions.hasPermissionResource([
+	const hasPermissionToUpdateTexts = !!meData?.permissions && [
 		{
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'agency_ids',
@@ -40,7 +40,7 @@ export function AlertCreateStepSummaryFinal() {
 			scope: PermissionCatalog.all.alerts.scope,
 			value: referenceTypeValue,
 		},
-	]);
+	].every(check => PermissionCatalog.hasPermissionResource({ ...check, permissions: meData.permissions }));
 
 	//
 	// C. Render components

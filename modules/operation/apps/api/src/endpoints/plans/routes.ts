@@ -1,6 +1,7 @@
 /* * */
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { changeOperationGtfsHandler } from './handlers/change-operation-gtfs.js';
 import { controllerReprocessPlanHandler } from './handlers/controller-reprocess-plan.js';
@@ -32,48 +33,116 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.post('/list', { preHandler: authorizationMiddleware('plans', ['read']) }, listPlansHandler);
+		instance.post(
+			'/list',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			listPlansHandler,
+		);
 
-		instance.get('/list-agencies', { preHandler: authorizationMiddleware('plans', ['read']) }, listAgenciesHandler);
+		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			listAgenciesHandler,
+		);
 
-		instance.get('/:id', { preHandler: authorizationMiddleware('plans', ['read']) }, getPlanHandler);
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			getPlanHandler,
+		);
 
-		instance.put('/:id', { preHandler: authorizationMiddleware('plans', ['update']) }, updatePlanHandler);
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update]) },
+			updatePlanHandler,
+		);
 
-		instance.get('/:id/lock', { preHandler: authorizationMiddleware('plans', ['lock']) }, lockPlanHandler);
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.lock]) },
+			lockPlanHandler,
+		);
 
-		instance.get('/:id/controller-reprocess', { preHandler: authorizationMiddleware('plans', ['update_controller']) }, controllerReprocessPlanHandler);
+		instance.get(
+			'/:id/controller-reprocess',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_controller]) },
+			controllerReprocessPlanHandler,
+		);
 
-		instance.delete('/:id', { preHandler: authorizationMiddleware('plans', ['delete']) }, deletePlanHandler);
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.delete]) },
+			deletePlanHandler,
+		);
 
-		instance.post('/:id/change-gtfs', { preHandler: authorizationMiddleware('plans', ['update_gtfs_plan']) }, changeOperationGtfsHandler);
+		instance.post(
+			'/:id/change-gtfs',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_gtfs_plan]) },
+			changeOperationGtfsHandler,
+		);
 
 		//
 		// APEX Config
 
-		instance.post('/:id/apex-config', { preHandler: authorizationMiddleware('plans', ['update_apex_file']) }, updateApexConfigHandler);
+		instance.post(
+			'/:id/apex-config',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_apex_file]) },
+			updateApexConfigHandler,
+		);
 
-		instance.get('/:id/apex-config', { preHandler: authorizationMiddleware('plans', ['read_apex_file']) }, getApexConfigHandler);
+		instance.get(
+			'/:id/apex-config',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read_apex_file]) },
+			getApexConfigHandler,
+		);
 
-		instance.get('/:id/apex-config/download', { preHandler: authorizationMiddleware('plans', ['read_apex_file']) }, downloadApexConfigHandler);
+		instance.get(
+			'/:id/apex-config/download',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read_apex_file]) },
+			downloadApexConfigHandler,
+		);
 
-		instance.get('/:id/apex-config/send-notification', { preHandler: authorizationMiddleware('plans', ['send_apex_notification']) }, sendApexNotificationHandler);
+		instance.get(
+			'/:id/apex-config/send-notification',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.send_apex_notification]) },
+			sendApexNotificationHandler,
+		);
 
-		instance.delete('/:id/apex-config', { preHandler: authorizationMiddleware('plans', ['delete_apex_file']) }, deleteApexConfigHandler);
+		instance.delete(
+			'/:id/apex-config',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.delete_apex_file]) },
+			deleteApexConfigHandler,
+		);
 
 		//
 		// Operation GTFS
 
-		instance.get('/:id/operation-gtfs', { preHandler: authorizationMiddleware('plans', ['read']) }, getOperationGtfsHandler);
+		instance.get(
+			'/:id/operation-gtfs',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			getOperationGtfsHandler,
+		);
 
-		instance.get('/:id/operation-gtfs/download', { preHandler: authorizationMiddleware('plans', ['read']) }, downloadOperationGtfsHandler);
+		instance.get(
+			'/:id/operation-gtfs/download',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			downloadOperationGtfsHandler,
+		);
 
 		//
 		// Operation GTFS Normalized
 
-		instance.get('/:id/operation-gtfs-normalized', { preHandler: authorizationMiddleware('plans', ['read']) }, getOperationGtfsNormalizedHandler);
+		instance.get(
+			'/:id/operation-gtfs-normalized',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			getOperationGtfsNormalizedHandler,
+		);
 
-		instance.get('/:id/operation-gtfs-normalized/download', { preHandler: authorizationMiddleware('plans', ['read']) }, downloadOperationGtfsNormalizedHandler);
+		instance.get(
+			'/:id/operation-gtfs-normalized/download',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			downloadOperationGtfsNormalizedHandler,
+		);
 
 		next();
 	},

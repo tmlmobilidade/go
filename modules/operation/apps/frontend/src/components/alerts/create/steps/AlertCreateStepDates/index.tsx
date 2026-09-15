@@ -1,7 +1,7 @@
 'use client';
 
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DateTimeInput, Divider, Grid, Label, Section, StandardFormController, Text, useMeContext, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { DateTimeInput, Divider, Grid, Label, Section, StandardFormController, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
@@ -16,7 +16,7 @@ export function AlertCreateStepDates() {
 
 	const { t } = useTranslation();
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
 	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
@@ -25,7 +25,7 @@ export function AlertCreateStepDates() {
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = meContext.actions.hasPermissionResource([
+	const hasPermissionToEdit = !!meData?.permissions && [
 		{
 			action: PermissionCatalog.all.alerts.actions.update_dates,
 			resource_key: 'agency_ids',
@@ -38,7 +38,7 @@ export function AlertCreateStepDates() {
 			scope: PermissionCatalog.all.alerts.scope,
 			value: referenceTypeValue,
 		},
-	]);
+	].every(check => PermissionCatalog.hasPermissionResource({ ...check, permissions: meData.permissions }));
 
 	//
 	// C. Render components

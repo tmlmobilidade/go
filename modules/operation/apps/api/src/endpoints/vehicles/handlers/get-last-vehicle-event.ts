@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
@@ -13,8 +12,17 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 export async function getLastVehicleEventHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent>) {
 	//
 
+	//
+	// Validate the request parameters
+
 	const [agencyId, vehicleId] = request.params.id.split('-');
-	if (!vehicleId || !agencyId) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid vehicle ID');
+
+	if (!vehicleId || !agencyId) {
+		return sendErrorApiResponse(reply, {
+			error: 'Invalid vehicle ID',
+			status_code: '400',
+		});
+	}
 
 	//
 	// Fetch the last event for the vehicle
@@ -28,9 +36,16 @@ export async function getLastVehicleEventHandler(request: FastifyRequest<{ Param
 		`;
 
 	const lastEvent = await labDb.operation.simplifiedVehicleEvents.queryFromString(query);
-	if (!lastEvent || lastEvent.length === 0) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No last event found for vehicle');
+
+	if (!lastEvent || lastEvent.length === 0) {
+		return sendErrorApiResponse(reply, {
+			error: 'No last event found for vehicle',
+			status_code: '404',
+		});
+	}
 
 	//
 	// Send the last event for the vehicle back to the client
-	reply.send({ data: lastEvent[0], error: null, statusCode: HTTP_STATUS.OK });
+
+	return sendSuccessApiResponse(reply, lastEvent[0]);
 }

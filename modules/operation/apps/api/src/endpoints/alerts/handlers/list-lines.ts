@@ -11,7 +11,7 @@ import { sqlPath } from '@tmlmobilidade/go-utils-sql';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listLines(request: FastifyRequest<{ Body: AlertsLinesFilters }>, reply: FastifyReply<AlertsLinesItem[]>) {
+export async function listLinesHandler(request: FastifyRequest<{ Body: AlertsLinesFilters }>, reply: FastifyReply<AlertsLinesItem[]>) {
 	//
 
 	//

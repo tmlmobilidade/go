@@ -1,6 +1,5 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
@@ -107,13 +106,16 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 		await finished(writeStream);
 		buffer = readFileSync(tempFilePath);
 		size = buffer.length;
-	} catch (streamError) {
+	} catch {
 		try {
 			unlinkSync(tempFilePath);
-		} catch (cleanupError) {
-			console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
+		} catch {
+			// Ignore cleanup failures of the temporary file
 		}
-		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
+		return sendErrorApiResponse(reply, {
+			error: 'Error processing file stream',
+			status_code: '500',
+		});
 	}
 
 	//
@@ -151,8 +153,8 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 	} finally {
 		try {
 			unlinkSync(tempFilePath);
-		} catch (cleanupError) {
-			console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
+		} catch {
+			// Ignore cleanup failures of the temporary file
 		}
 	}
 

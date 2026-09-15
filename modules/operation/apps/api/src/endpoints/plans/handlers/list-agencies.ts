@@ -4,7 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PlansAgencyItem, PlansAgencyItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
-import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
+import { AllowAllFlagValue, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Get agencies platform data.
@@ -18,7 +18,7 @@ export async function listAgenciesHandler(request: FastifyRequest, reply: Fastif
 	// Get the agency IDs this user has access to
 
 	const resourceAgencyIds = request.permissions
-		.filter(permission => permission.scope === 'plans' && permission.action === 'read')
+		.filter(permission => permission.scope === PermissionCatalog.all.plans.scope && permission.action === PermissionCatalog.all.plans.actions.read)
 		.flatMap(permission => 'resources' in permission ? permission.resources.agency_ids ?? [] : []) ?? [];
 
 	//

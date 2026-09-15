@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /* * */
 
 import { mapDefaultValues } from '@/settings/map.settings';
@@ -13,12 +11,23 @@ interface CenterMapOptions {
 }
 
 /**
+ * The subset of the map instance API used by the helpers below.
+ */
+interface MapObject {
+	easeTo: (options: { center: GeoJSON.Position, duration: number, zoom: number }) => void
+	fitBounds: (bounds: [number, number, number, number], options: { padding: number }) => void
+	flyTo: (options: { center: GeoJSON.Position, duration: number, zoom: number }) => void
+	getBounds: () => { toArray: () => [[number, number], [number, number]] }
+	getZoom: () => number
+}
+
+/**
  *
  * @param mapObject The map that should be manipulated
  * @param features The features to center the map on
  * @param options Optional settings to customize the centering
  */
-export const centerMap = (mapObject: any, features: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>[], options?: CenterMapOptions) => {
+export const centerMap = (mapObject: MapObject | null | undefined, features: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>[], options?: CenterMapOptions) => {
 	//
 
 	//
@@ -33,7 +42,7 @@ export const centerMap = (mapObject: any, features: GeoJSON.Feature<GeoJSON.Geom
 
 	const tFeatureCollection = featureCollection(features);
 	const featureCollectionEnvelope = turf.envelope(tFeatureCollection);
-	if (!featureCollectionEnvelope || !featureCollectionEnvelope.bbox) return;
+	if (!featureCollectionEnvelope?.bbox) return;
 
 	//
 	// Validate if the envelope is valid
@@ -68,14 +77,14 @@ export const centerMap = (mapObject: any, features: GeoJSON.Feature<GeoJSON.Geom
  * @param coordinates The destination coordinates to move the map to
  * @param options Optional settings to customize the movement
  */
-export const moveMap = (mapObject: any, coordinates: GeoJSON.Position) => {
+export const moveMap = (mapObject: MapObject | null | undefined, coordinates: GeoJSON.Position) => {
 	//
 
 	//
 	// Validate the input parameters
 
 	if (!mapObject) return;
-	if (!coordinates || !coordinates.length) return;
+	if (!coordinates?.length) return;
 
 	//
 	// Get map current zoom level
@@ -96,8 +105,7 @@ export const moveMap = (mapObject: any, coordinates: GeoJSON.Position) => {
 	if (isInside && currentZoomWithMargin > (thresholdZoomWithMargin * 1.15)) {
 		// ...then simply ease to it.
 		mapObject.easeTo({ center: coordinates, duration: mapDefaultValues.speed * 0.25, zoom: currentZoom });
-	}
-	else {
+	} else {
 		// If the zoom is too far, or the given coordinates are not visible, then fly to it
 		mapObject.flyTo({ center: coordinates, duration: mapDefaultValues.speed, zoom: thresholdZoomWithMargin });
 	}

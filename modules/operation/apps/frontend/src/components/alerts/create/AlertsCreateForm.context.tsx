@@ -3,7 +3,7 @@
 import { AlertReferenceTypeValues, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { ErrorDisplay, useMeContext, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { ErrorDisplay, useMeData, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 
 import { useAlertsAgenciesData } from '../shared/use-alerts-agencies-data';
@@ -26,7 +26,7 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 
 	//
 	// B. Setup form
@@ -100,8 +100,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 		if (agencyIdValue) return;
 		// Auto-select "agency_id"
 		form.setValue('agency_id', agenciesData[0]._id, { shouldDirty: false });
-		// eslint-disable-next-line no-console
-		console.log('[Form] Auto-selected "agency_id" based on available agencies data.');
 	}, [agenciesData, agencyIdValue, form]);
 
 	/**
@@ -109,8 +107,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	 */
 	useEffect(() => {
 		form.setValue('cause', undefined, { shouldDirty: false });
-		// eslint-disable-next-line no-console
-		console.log(`[Form] Unset "cause" because "agency_id" changed -> agency_id: "${agencyIdValue}"`);
 	}, [agencyIdValue, form]);
 
 	/**
@@ -118,8 +114,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	 */
 	useEffect(() => {
 		form.setValue('effect', undefined, { shouldDirty: false });
-		// eslint-disable-next-line no-console
-		console.log(`[Form] Unset "effect" because "cause" changed -> cause: "${causeValue}"`);
 	}, [causeValue, form]);
 
 	/**
@@ -131,8 +125,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 		// Restore default end dates when active_period_end_date is cleared.
 		form.setValue('active_period_end_date', Dates.now('local').plus({ hours: 4 }).unix_milliseconds);
 		form.setValue('publish_end_date', Dates.now('local').endOf('day').unix_milliseconds);
-		// eslint-disable-next-line no-console
-		console.log(`[Form] Restored default end dates because "active_period_end_date" was cleared -> active_period_end_date: "${activePeriodEndDateValue}"`);
 	}, [activePeriodEndDateValue, form]);
 
 	/**
@@ -140,8 +132,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	 */
 	useEffect(() => {
 		form.setValue('reference_type', undefined, { shouldDirty: false });
-		// eslint-disable-next-line no-console
-		console.log(`[Form] Unset "reference_type" because "effect" changed -> effect: "${effectValue}"`);
 	}, [effectValue, form]);
 
 	/**
@@ -149,8 +139,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	 */
 	useEffect(() => {
 		form.setValue('references', [], { shouldDirty: false });
-		// eslint-disable-next-line no-console
-		console.log(`[Form] Unset "references" because "reference_type" changed -> reference_type: "${referenceTypeValue}"`);
 	}, [form, referenceTypeValue]);
 
 	/**
@@ -161,8 +149,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 		if (autoTextsValue !== true) return;
 		form.setValue('title', '', { shouldDirty: false });
 		form.setValue('description', '', { shouldDirty: false });
-		// eslint-disable-next-line no-console
-		console.log(`[Form] Unset "title" and "description" because "references" changed -> auto_texts: "${autoTextsValue}", references: "${referencesValue}"`);
 	}, [autoTextsValue, form, referencesValue]);
 
 	/**
@@ -183,7 +169,7 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 		const enabledTypes = AlertReferenceTypeValues.filter(referenceTypeValue => !!matchingAgencyData.alerts.catalog?.[causeValue]?.[effectValue]?.[referenceTypeValue]);
 		if (!enabledTypes.length) return;
 		// Get user's permissions for alert creation to determine which reference types they can select.
-		const permissions = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+		const permissions = PermissionCatalog.get(meData?.permissions ?? [], PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
 		const allowAllReferenceTypes = permissions?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 		const allowedReferenceTypes = permissions?.resources.reference_types ?? [];
 		// Auto-select the best reference_type based on permissions.
@@ -191,11 +177,7 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 		else if (enabledTypes.includes('stops') && (allowAllReferenceTypes || allowedReferenceTypes.includes('stops'))) form.setValue('reference_type', 'stops');
 		else if (enabledTypes.includes('rides') && (allowAllReferenceTypes || allowedReferenceTypes.includes('rides'))) form.setValue('reference_type', 'rides');
 		else if (enabledTypes.includes('agency') && (allowAllReferenceTypes || allowedReferenceTypes.includes('agency'))) form.setValue('reference_type', 'agency');
-		// eslint-disable-next-line no-console
-		else console.log(`[Form] No enabled "reference_type" options available to set as default -> cause: "${causeValue}", effect: "${effectValue}"`);
-		// eslint-disable-next-line no-console
-		console.log(`[Form] Auto-selected "reference_type" options based on "cause"/"effect" change and user permissions -> cause: "${causeValue}", effect: "${effectValue}"`);
-	}, [agenciesData, agencyIdValue, causeValue, effectValue, form, meContext.data.user.permissions, referenceTypeValue]);
+	}, [agenciesData, agencyIdValue, causeValue, effectValue, form, meData?.permissions, referenceTypeValue]);
 
 	/**
 	 * Auto-select "references" when "reference_type"
@@ -207,8 +189,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 		// When reference_type is 'agency' or agency_id changes to non-empty,
 		// set references to the selected agency.
 		form.setValue('references', [{ child_ids: [], parent_id: agencyIdValue }], { shouldDirty: false });
-		// eslint-disable-next-line no-console
-		console.log(`[Form] Auto-selected "references" based on "reference_type" = "agency" selection -> reference_type: "${referenceTypeValue}", agency_id: "${agencyIdValue}"`);
 	}, [form, referenceTypeValue, agencyIdValue]);
 
 	//

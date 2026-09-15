@@ -1,12 +1,7 @@
 'use client';
 
-import { RideAcceptanceCommentList } from '@/components/rides/detail/acceptance/RideAcceptanceCommentList';
-import { RideAcceptanceJustification } from '@/components/rides/detail/acceptance/RideAcceptanceJustification';
-// import { RideAnalysisAnalyses, RideAnalysisResult } from '@/components/rides/detail/analysis/RideAnalysisAnalyses';
-import { RideAcceptanceContextProvider, useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
-import { Divider, ErrorDisplay, Grid, LoadingOverlay, Section } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { RideAcceptanceContextProvider } from '@/contexts/RideAcceptance.context';
+import { Divider, Grid, Section } from '@tmlmobilidade/ui';
 
 import { useRidesDetailRideId } from '../../shared/use-rides-detail-ride-id';
 

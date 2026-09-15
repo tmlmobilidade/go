@@ -4,7 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type AlertsListFilters, AlertsListFiltersSchema, type AlertsListItem, AlertsListItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
-import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Get rides by query.
@@ -17,11 +17,11 @@ export async function listAlertsHandler(request: FastifyRequest<{ Body: AlertsLi
 	//
 	// Apply permission filters to the request body
 
-	request.body.agency_ids = filterPermissionResourceValues<string>({
-		action: 'read',
+	request.body.agency_ids = PermissionCatalog.filterPermissionResourceValues<string>({
+		action: PermissionCatalog.all.alerts.actions.read,
 		permissions: request.permissions,
 		resourceKey: 'agency_ids',
-		scope: 'alerts',
+		scope: PermissionCatalog.all.alerts.scope,
 		values: request.body.agency_ids,
 	});
 

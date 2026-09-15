@@ -5,7 +5,7 @@ import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PlansListFilters, PlansListFiltersSchema, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { getPlanTemporalStatus } from '@tmlmobilidade/go-operation-pckg-utils';
-import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Retrieves all plans.
@@ -18,11 +18,11 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 	//
 	// Apply permission filters to the request body
 
-	request.body.agency_ids = filterPermissionResourceValues<string>({
-		action: 'read',
+	request.body.agency_ids = PermissionCatalog.filterPermissionResourceValues<string>({
+		action: PermissionCatalog.all.plans.actions.read,
 		permissions: request.permissions,
 		resourceKey: 'agency_ids',
-		scope: 'plans',
+		scope: PermissionCatalog.all.plans.scope,
 		values: request.body.agency_ids,
 	});
 

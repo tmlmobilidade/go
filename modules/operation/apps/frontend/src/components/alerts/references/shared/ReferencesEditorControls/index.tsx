@@ -2,7 +2,7 @@
 
 import { AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Divider, Grid, Section, SegmentedControl, useMeContext } from '@tmlmobilidade/ui';
+import { Divider, Grid, Section, SegmentedControl, useMeData } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useReferencesEditorContext } from '../../shared/ReferencesEditor.context';
@@ -17,7 +17,7 @@ export function ReferencesEditorControls() {
 
 	const { t } = useTranslation();
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 	const referencesEditorContext = useReferencesEditorContext();
 
 	//
@@ -25,8 +25,9 @@ export function ReferencesEditorControls() {
 
 	const availableReferenceTypeOptions = AlertReferenceTypeValues
 		.filter(value => referencesEditorContext.data.enabled_reference_types.includes(value))
-		.filter(value => meContext.actions.hasPermissionResource({
+		.filter(value => PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.alerts.actions.create,
+			permissions: meData?.permissions ?? [],
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: value,

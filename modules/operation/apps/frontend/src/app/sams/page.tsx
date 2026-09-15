@@ -1,15 +1,9 @@
-'use client';
+/* * */
+
+import { SamsListPlaceholder } from '@/components/sams/list/SamsListPlaceholder';
 
 /* * */
 
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
-
-/* * */
-
-export default function Page() {
-	return (
-		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione um SAM na lista." />
-		</Surface>
-	);
+export default async function Page() {
+	return <SamsListPlaceholder />;
 }

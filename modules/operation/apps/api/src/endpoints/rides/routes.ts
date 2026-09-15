@@ -1,7 +1,8 @@
 /* * */
 
 import { fastifyWebsocket } from '@fastify/websocket';
-import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { getSimplifiedApexBankingTapsHandler } from './handlers/get-apex-banking-taps.js';
 import { getSimplifiedApexLocationsHandler } from './handlers/get-apex-locations.js';
@@ -19,11 +20,11 @@ import { updateProcessingStatusHandler } from './handlers/update-processing-stat
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const NAMESPACE = '/rides';
 
 /* * */
 
-const NAMESPACE = '/rides';
+const server = FastifyService.getInstance().server;
 
 server.register(
 	async (instance) => {
@@ -31,33 +32,83 @@ server.register(
 
 		await instance.register(fastifyWebsocket);
 
-		instance.post('/list', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, listRidesHandler);
+		instance.post(
+			'/list',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			listRidesHandler,
+		);
 
-		instance.get('/list-agencies', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, listAgenciesHandler);
+		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			listAgenciesHandler,
+		);
 
-		instance.get('/:id/ride', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getRideHandler);
+		instance.get(
+			'/:id/ride',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getRideHandler,
+		);
 
-		instance.get('/:id/hashed-shape', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getHashedShapeHandler);
+		instance.get(
+			'/:id/hashed-shape',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getHashedShapeHandler,
+		);
 
-		instance.get('/:id/hashed-trip', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getHashedTripHandler);
+		instance.get(
+			'/:id/hashed-trip',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getHashedTripHandler,
+		);
 
-		instance.get('/:id/analyses', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getRideAnalysesHandler);
+		instance.get(
+			'/:id/analyses',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getRideAnalysesHandler,
+		);
 
-		instance.get('/:id/vehicle-events', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getSimplifiedVehicleEventsHandler);
+		instance.get(
+			'/:id/vehicle-events',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getSimplifiedVehicleEventsHandler,
+		);
 
-		instance.get('/:id/apex-banking-taps', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getSimplifiedApexBankingTapsHandler);
+		instance.get(
+			'/:id/apex-banking-taps',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getSimplifiedApexBankingTapsHandler,
+		);
 
-		instance.get('/:id/apex-locations', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getSimplifiedApexLocationsHandler);
+		instance.get(
+			'/:id/apex-locations',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getSimplifiedApexLocationsHandler,
+		);
 
-		instance.get('/:id/apex-validations', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getSimplifiedApexValidationsHandler);
+		instance.get(
+			'/:id/apex-validations',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getSimplifiedApexValidationsHandler,
+		);
 
-		instance.get('/:id/apex-sales', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getSimplifiedApexOnBoardSalesHandler);
+		instance.get(
+			'/:id/apex-sales',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getSimplifiedApexOnBoardSalesHandler,
+		);
 
-		instance.get('/:id/apex-refunds', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, getSimplifiedApexOnBoardRefundsHandler);
+		instance.get(
+			'/:id/apex-refunds',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getSimplifiedApexOnBoardRefundsHandler,
+		);
 
-		instance.put('/:id/processing-status', { preHandler: authorizationMiddleware('rides', ['analysis_reprocess']) }, updateProcessingStatusHandler);
-
-		// instance.get('/favorites', { preHandler: authorizationMiddleware('rides', ['analysis_read']) }, (request: FastifyRequest<{ Querystring: { ids: string } }>, reply: FastifyReply<RideNormalized[]>) => RidesSharedController.getRideByIds(request, reply, 'rides', 'analysis_read'));
+		instance.put(
+			'/:id/processing-status',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_reprocess]) },
+			updateProcessingStatusHandler,
+		);
 
 		//
 	},

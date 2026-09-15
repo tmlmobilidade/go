@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -15,17 +14,31 @@ export async function updateVehicleHandler(request: FastifyRequest<{ Body: Updat
 	//
 
 	//
-	// Get the Vehicle from the database
+	// Update multiple vehicles when a list of IDs is given
+
 	if (Array.isArray(request.params.id)) {
+		//
+
+		//
+		// Get the Vehicles from the database
+
 		const vehicleData = await goDb.operation.vehicles.findMany({ _id: { $in: request.params.id } });
 
-		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicles not found');
+		if (!vehicleData) {
+			return sendErrorApiResponse(reply, {
+				error: 'Vehicles not found',
+				status_code: '404',
+			});
+		}
 
 		//
 		// Check if the user has permission to update vehicles
 
 		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
+			return sendErrorApiResponse(reply, {
+				error: 'You are not authorized to update vehicles',
+				status_code: '403',
+			});
 		}
 
 		//
@@ -35,40 +48,35 @@ export async function updateVehicleHandler(request: FastifyRequest<{ Body: Updat
 			await goDb.operation.vehicles.updateById(vehicle._id, vehicle);
 		}
 
-		//
-		// Send the updated vehicles data as the response
+		return sendSuccessApiResponse(reply, null);
+	}
 
-		return reply.send({
-			data: null,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
-		});
-	} else {
-		const vehicleData = await goDb.operation.vehicles.findById(request.params.id);
+	//
+	// Get the Vehicle from the database
 
-		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+	const vehicleData = await goDb.operation.vehicles.findById(request.params.id);
 
-		//
-		// Check if the user has permission to update vehicles
-
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
-		}
-
-		//
-		// Update the vehicle
-
-		const updatedVehicle = await goDb.operation.vehicles.updateById(vehicleData._id, vehicleData);
-
-		//
-		// Send the updated vehicle data as the response
-
-		return reply.send({
-			data: updatedVehicle,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
+	if (!vehicleData) {
+		return sendErrorApiResponse(reply, {
+			error: 'Vehicle not found',
+			status_code: '404',
 		});
 	}
 
 	//
+	// Check if the user has permission to update vehicles
+
+	if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update vehicles',
+			status_code: '403',
+		});
+	}
+
+	//
+	// Update the vehicle
+
+	const updatedVehicle = await goDb.operation.vehicles.updateById(vehicleData._id, vehicleData);
+
+	return sendSuccessApiResponse(reply, updatedVehicle);
 }

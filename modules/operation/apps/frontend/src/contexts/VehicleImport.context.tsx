@@ -55,8 +55,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const [isloading, setIsloading] = useState(false);
 
 	const [importPreview, setImportPreview] = useState<VehicleImportPreview[]>([]);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [existingVehicles, setExistingVehicles] = useState<Vehicle[]>([]);
+	const [, setExistingVehicles] = useState<Vehicle[]>([]);
 	const [createdCount, setCreatedCount] = useState(0);
 	const [updatedCount, setUpdatedCount] = useState(0);
 

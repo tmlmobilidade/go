@@ -1,6 +1,7 @@
 /* * */
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { createVehicleHandler } from './handlers/create-vehicle.js';
 import { deleteVehicleHandler } from './handlers/delete-vehicle.js';
@@ -22,19 +23,47 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', { preHandler: authorizationMiddleware('vehicles', ['read']) }, listVehiclesHandler);
+		instance.get(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
+			listVehiclesHandler,
+		);
 
-		instance.get('/:id', { preHandler: authorizationMiddleware('vehicles', ['read']) }, getVehicleHandler);
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
+			getVehicleHandler,
+		);
 
-		instance.post('/', { preHandler: authorizationMiddleware('vehicles', ['create']) }, createVehicleHandler);
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.create]) },
+			createVehicleHandler,
+		);
 
-		instance.put('/:id', { preHandler: authorizationMiddleware('vehicles', ['update']) }, updateVehicleHandler);
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.update]) },
+			updateVehicleHandler,
+		);
 
-		instance.get('/:id/lock', { preHandler: authorizationMiddleware('vehicles', ['lock']) }, lockVehicleHandler);
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.lock]) },
+			lockVehicleHandler,
+		);
 
-		instance.delete('/:id', { preHandler: authorizationMiddleware('vehicles', ['delete']) }, deleteVehicleHandler);
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.delete]) },
+			deleteVehicleHandler,
+		);
 
-		instance.get('/:id/last-event', { preHandler: authorizationMiddleware('vehicles', ['read']) }, getLastVehicleEventHandler);
+		instance.get(
+			'/:id/last-event',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
+			getLastVehicleEventHandler,
+		);
 
 		next();
 	},
