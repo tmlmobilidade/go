@@ -51,7 +51,7 @@ export async function main(config: AppConfig) {
 		Logger.title('2. Loading current rides');
 		await labDb.queryFromFile(sqlPath('hub', 'eta/loader/load-rides.sql'), {
 			agency_ids: config.agencyIds.join(','),
-			// line_ids: undefined,
+			line_ids: '',
 			table_name: 'curr_rides',
 			time_end: config.processing.currentRidesEndTime,
 			time_start: config.processing.currentRidesStartTime,
@@ -67,7 +67,7 @@ export async function main(config: AppConfig) {
 		Logger.title('3. Loading historical rides');
 		await labDb.queryFromFile(sqlPath('hub', 'eta/loader/load-rides.sql'), {
 			agency_ids: config.agencyIds.join(','),
-			// line_ids: undefined,
+			line_ids: '',
 			table_name: 'hist_rides',
 			time_end: config.processing.historicalRidesEndTime,
 			time_start: config.processing.historicalRidesStartTime,
