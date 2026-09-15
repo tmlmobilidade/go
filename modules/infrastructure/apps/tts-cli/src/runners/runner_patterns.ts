@@ -39,10 +39,10 @@ export async function runnerPatterns() {
 
 	for (const [lineIndex, lineData] of allLinesData.entries()) {
 		for (const [patternIndex, patternId] of lineData.pattern_ids.entries()) {
-			let cachedData: null | string;
+			let cachedData;
 
 			try {
-				cachedData = await cacheDb.get(`hub:v1:network:patterns:${patternId}`);
+				cachedData = await cacheDb.getNew<HubV1ApiPattern[]>(`hub:v1:network:patterns:${patternId}`);
 			} catch (error) {
 				Logger.error({ error, message: `[hub/v1/network:getPatterns(${patternId})] Cache read failed` });
 				continue;
@@ -53,7 +53,7 @@ export async function runnerPatterns() {
 				continue;
 			}
 
-			const patternGroup = JSON.parse(cachedData) as HubV1ApiPattern[];
+			const patternGroup = cachedData.data;
 			const patternData = patternGroup.at(-1);
 
 			if (!patternData) continue;
@@ -79,7 +79,7 @@ export async function runnerPatterns() {
 				const updatedPatternGroup = patternGroup.map(patternData => ({ ...patternData, tts_hash: hash }));
 
 				try {
-					await cacheDb.set(`hub:v1:network:patterns:${patternId}`, JSON.stringify(updatedPatternGroup));
+					await cacheDb.setNew(`hub:v1:network:patterns:${patternId}`, updatedPatternGroup);
 					Logger.success(`[hub/v1/network:getPatterns(${patternId})] Cached data updated for pattern ${patternId}`);
 				} catch (error) {
 					Logger.error({ error, message: `[hub/v1/network:getPatterns(${patternId})] Error updating cached data for pattern ${patternId}` });

@@ -13,7 +13,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getPatternHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubV1ApiPattern[]>) {
 	//
 
-	const cachedData = await cacheDb.get(`hub:v1:network:patterns:${request.params.id}`);
+	const cachedData = await cacheDb.getNew<HubV1ApiPattern[]>(`hub:v1:network:patterns:${request.params.id}`);
 
 	if (!cachedData) {
 		Logger.error({ message: `[hub/v1/network:getPatterns(${request.params.id})] No cached data found for pattern ${request.params.id}` });
@@ -23,7 +23,7 @@ export async function getPatternHandler(request: FastifyRequest<{ Params: { id: 
 		});
 	};
 
-	return sendSuccessApiResponse(reply, JSON.parse(cachedData), {
+	return sendSuccessApiResponse(reply, cachedData.data, {
 		max_age: '1h',
 	});
 }

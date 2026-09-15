@@ -119,6 +119,8 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 
 			const parsedStop = HubV1ApiStopSchema.parse(validatedStop);
 
+			await cacheDb.setNew(`hub:v1:network:stops:${gtfsStop.stop_id}`, parsedStop);
+
 			exportedStopsData.push(parsedStop);
 
 			updatedStopsCounter++;
