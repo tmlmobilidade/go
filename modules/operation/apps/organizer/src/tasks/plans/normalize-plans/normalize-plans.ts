@@ -45,6 +45,10 @@ export async function normalizePlansTask() {
 	for (const [index, planData] of allPlans.entries()) {
 		//
 
+		if (!planData.attachments.operation_gtfs) {
+			throw new Error(`[${planData._id}] Operation GTFS attachment not found.`);
+		}
+
 		Logger.info({ message: `[${allPlans.length - index}/${allPlans.length}] Processing plan ${planData._id}` });
 
 		await setPlanStatus(planData._id, 'organizer', 'processing');

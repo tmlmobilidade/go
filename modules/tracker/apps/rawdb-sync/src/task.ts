@@ -85,7 +85,8 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 					'_id IN $1',
 					{ 1: chunk },
 				);
-			}, 1_000);
+				Logger.info({ message: `Deleted ${chunk.length} documents from the destination database.` });
+			}, 250);
 		},
 
 		distinctDestinationDbFn: async () => {

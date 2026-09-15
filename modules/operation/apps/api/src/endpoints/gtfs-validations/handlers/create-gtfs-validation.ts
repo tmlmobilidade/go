@@ -27,9 +27,31 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 	// Get the request data
 
 	const requestData = await request.file();
+
 	if (!requestData) {
 		return sendErrorApiResponse(reply, {
 			error: 'No file provided',
+			status_code: '400',
+		});
+	}
+
+	if (!requestData.fields.agency_id) {
+		return sendErrorApiResponse(reply, {
+			error: 'Agency ID is required',
+			status_code: '400',
+		});
+	}
+
+	if (!requestData.fields.gtfs_agency) {
+		return sendErrorApiResponse(reply, {
+			error: 'GTFS Agency is required',
+			status_code: '400',
+		});
+	}
+
+	if (!requestData.fields.gtfs_feed_info) {
+		return sendErrorApiResponse(reply, {
+			error: 'GTFS Feed Info is required',
 			status_code: '400',
 		});
 	}

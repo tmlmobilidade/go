@@ -1,6 +1,5 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/go-types-locations';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';

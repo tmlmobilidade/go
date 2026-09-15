@@ -44,6 +44,10 @@ async function main() {
 			sort: { start_time_scheduled: -1 },
 		});
 
+		if (!earliestRide || !latestRide) {
+			throw new Error('No rides found');
+		}
+
 		Logger.title(`Running sync from ${Dates.fromUnixMilliseconds(earliestRide.start_time_scheduled).toLocaleString('full', 'UTC')} to ${Dates.fromUnixMilliseconds(latestRide.start_time_scheduled).toLocaleString('full', 'UTC')}`);
 
 		//

@@ -21,6 +21,13 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 
 	const validationData = await goDb.operation.gtfsValidations.findById(request.params.id);
 
+	if (!validationData) {
+		return sendErrorApiResponse(reply, {
+			error: 'GTFS Validation not found',
+			status_code: '404',
+		});
+	}
+
 	//
 	// Check if have permissions to create the plan
 
@@ -94,6 +101,13 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 
 	const findGtfsValidationAttachmentResult = await storageProvider.findById(validationData.file_id);
 
+	if (!findGtfsValidationAttachmentResult?.url) {
+		return sendErrorApiResponse(reply, {
+			error: 'GTFS Validation attachment not found',
+			status_code: '404',
+		});
+	}
+
 	const downloadResponse = await fetch(findGtfsValidationAttachmentResult.url);
 	const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 
@@ -130,6 +144,13 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 	if (!createdPlanData) {
 		return sendErrorApiResponse(reply, {
 			error: `Plan with ID "${insertPlanResult._id}" not found after creating the plan.`,
+			status_code: '404',
+		});
+	}
+
+	if (!createdPlanData.attachments.operation_gtfs) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID "${createdPlanData._id}" does not have an operation GTFS attachment.`,
 			status_code: '404',
 		});
 	}

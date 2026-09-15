@@ -81,7 +81,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<ControllerRidesListItem[]>>([API_ROUTES.operation.RIDES_LIST, query], {
 		fetcher: async ([url, query]: [string, ControllerRidesListFilters]) => await fetchApiData<ControllerRidesListItem[]>({ body: query, method: 'POST', url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 30_000, // 30 seconds
 	});
 
 	//

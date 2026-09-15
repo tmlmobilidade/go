@@ -245,7 +245,7 @@ export class TypologiesController {
 		}
 
 		// If authorized, toggle the lock status of the typology
-		await goDb.offer.typologies.toggleLockById(request.params.id);
+		await goDb.offer.typologies.updateOne({ _id: request.params.id }, { is_locked: !typologyData.is_locked });
 		const foundTypology = await goDb.offer.typologies.findById(request.params.id);
 		if (!foundTypology) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');

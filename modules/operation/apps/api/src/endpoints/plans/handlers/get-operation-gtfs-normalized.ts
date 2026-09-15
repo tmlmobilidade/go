@@ -47,6 +47,13 @@ export async function getOperationGtfsNormalizedHandler(request: FastifyRequest<
 	//
 	// Fetch the attachment associated with the plan
 
+	if (!planData.attachments.operation_gtfs_normalized) {
+		return sendErrorApiResponse(reply, {
+			error: 'Operation GTFS normalized attachment not found',
+			status_code: '404',
+		});
+	}
+
 	const foundAttachmentData = await storageProvider.findById(planData.attachments.operation_gtfs_normalized);
 
 	if (!foundAttachmentData) {

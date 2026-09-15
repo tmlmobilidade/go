@@ -59,7 +59,7 @@ const main = async () => {
 				agency_id: '7NTB1',
 				created_at: Dates.fromISO(event.date).unix_milliseconds,
 				entity_id: `${event.date}-${event.train_id ?? ''}`,
-				payload: event,
+				payload: result.data,
 				version: 'pt-tml-fertagus-v1',
 			};
 

@@ -46,19 +46,17 @@ export async function lockGtfsValidationHandler(request: FastifyRequest<{ Params
 	//
 	// If authorized, toggle the lock status of the validation
 
-	await goDb.operation.gtfsValidations.toggleLockById(request.params.id);
+	const updateResult = await goDb.operation.gtfsValidations.updateOne({ _id: request.params.id }, { is_locked: !foundValidation.is_locked });
 
-	const updatedValidation = await goDb.operation.gtfsValidations.findById(request.params.id);
-
-	if (!updatedValidation) {
+	if (!updateResult) {
 		return sendErrorApiResponse(reply, {
-			error: 'Validation not found',
-			status_code: '404',
+			error: 'Failed to toggle lock status for validation',
+			status_code: '500',
 		});
 	}
 
 	//
 	// Return the updated Validation
 
-	return sendSuccessApiResponse(reply, updatedValidation);
+	return sendSuccessApiResponse(reply, updateResult);
 }

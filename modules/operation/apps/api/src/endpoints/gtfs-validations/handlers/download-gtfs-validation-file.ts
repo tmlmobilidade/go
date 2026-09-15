@@ -47,9 +47,9 @@ export async function downloadGtfsValidationFileHandler(request: FastifyRequest<
 
 	const foundFileData = await storageProvider.findById(foundValidation.file_id);
 
-	if (!foundFileData) {
+	if (!foundFileData?.url) {
 		return sendErrorApiResponse(reply, {
-			error: 'Validation file not found',
+			error: 'GTFS Validation file not found',
 			status_code: '404',
 		});
 	}

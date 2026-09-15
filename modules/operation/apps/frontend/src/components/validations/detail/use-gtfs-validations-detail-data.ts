@@ -35,7 +35,7 @@ export function useGtfsValidationsDetailData(): UseGtfsValidationsDetailDataRetu
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<GtfsValidation>>(API_ROUTES.operation.GTFS_VALIDATIONS_DETAIL(validationId), {
 		fetcher: async (url: string) => await fetchApiData<GtfsValidation>({ url }),
-		refreshInterval: 3_000,
+		refreshInterval: 15_000, // 15 seconds
 	});
 
 	//

@@ -37,6 +37,10 @@ export async function updatePlanHashesTask() {
 
 			console.log(`[${allPlans.length - index}/${allPlans.length}] Processing plan ${planData._id}`);
 
+			if (!planData.attachments.operation_gtfs) {
+				throw new Error(`[${planData._id}] Operation GTFS attachment not found.`);
+			}
+
 			const newHashValue = await getPlanHash({
 				activeFrom: planData.active_from,
 				activeUntil: planData.active_until,

@@ -239,7 +239,7 @@ export class FaresController {
 		}
 
 		// If authorized, toggle the lock status of the fare
-		await goDb.offer.fares.toggleLockById(request.params.id);
+		await goDb.offer.fares.updateOne({ _id: request.params.id }, { is_locked: !fareData.is_locked });
 		const foundFare = await goDb.offer.fares.findById(request.params.id);
 		if (!foundFare) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');

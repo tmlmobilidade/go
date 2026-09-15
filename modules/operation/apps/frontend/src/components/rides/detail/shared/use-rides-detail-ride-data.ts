@@ -35,7 +35,7 @@ export function useRidesDetailRideData(): UseRidesDetailRideDataReturnType {
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<ControllerRidesDetailRideItem>>(rideId && API_ROUTES.operation.RIDES_DETAIL_RIDE(rideId), {
 		fetcher: async (url: string) => await fetchApiData<ControllerRidesDetailRideItem>({ url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 15_000, // 15 seconds
 	});
 
 	//

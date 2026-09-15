@@ -34,7 +34,7 @@ export function useRidesDetailVehicleEventsData(): UseRidesDetailVehicleEventsDa
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedVehicleEvent[]>>(rideId && API_ROUTES.operation.RIDES_DETAIL_VEHICLE_EVENTS(rideId), {
 		fetcher: async (url: string) => await fetchApiData<SimplifiedVehicleEvent[]>({ url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 15_000, // 15 seconds
 	});
 
 	//

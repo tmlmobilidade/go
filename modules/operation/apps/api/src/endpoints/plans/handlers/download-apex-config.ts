@@ -46,6 +46,13 @@ export async function downloadApexConfigHandler(request: FastifyRequest<{ Params
 	//
 	// Fetch the attachment associated with the plan
 
+	if (!planData.attachments.apex_config) {
+		return sendErrorApiResponse(reply, {
+			error: 'Plan APEX configuration attachment not found',
+			status_code: '404',
+		});
+	}
+
 	const foundAttachmentData = await storageProvider.findById(planData.attachments.apex_config);
 
 	if (!foundAttachmentData) {
@@ -57,6 +64,13 @@ export async function downloadApexConfigHandler(request: FastifyRequest<{ Params
 
 	//
 	// Stream the attachment in the given URL to the client
+
+	if (!foundAttachmentData?.url) {
+		return sendErrorApiResponse(reply, {
+			error: 'Plan APEX configuration attachment not found',
+			status_code: '404',
+		});
+	}
 
 	const storageServiceResponse = await fetch(foundAttachmentData.url);
 

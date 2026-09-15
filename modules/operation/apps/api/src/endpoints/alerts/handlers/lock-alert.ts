@@ -12,12 +12,23 @@ import { type Alert } from '@tmlmobilidade/go-types-operation';
 export async function lockAlertHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
 	//
 
-	const toggleResult = await goDb.operation.alerts.toggleLockById(request.params.id);
+	const foundAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
 
-	if (!toggleResult) return sendErrorApiResponse(reply, {
-		error: 'Failed to toggle lock status for alert',
-		status_code: '500',
-	});
+	if (!foundAlert) {
+		return sendErrorApiResponse(reply, {
+			error: 'Alert not found',
+			status_code: '404',
+		});
+	}
 
-	return sendSuccessApiResponse(reply, toggleResult);
+	const updateResult = await goDb.operation.alerts.updateOne({ _id: request.params.id }, { is_locked: !foundAlert.is_locked });
+
+	if (!updateResult) {
+		return sendErrorApiResponse(reply, {
+			error: 'Failed to toggle lock status for alert',
+			status_code: '500',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, updateResult);
 }

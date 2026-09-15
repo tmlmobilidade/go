@@ -182,6 +182,8 @@ export async function parsePlanTask(planData: Plan) {
 				const uniqueIdValueForHashedShape = processedShapeIds.get(currentTrip.shape_id)?._id;
 				const extensionScheduledInMeters = processedShapeIds.get(currentTrip.shape_id)?.extension;
 
+				if (!uniqueIdValueForHashedShape) throw new Error(`[${planData._id}] Hashed shape not found for trip "${currentTrip.trip_id}".`);
+
 				/* * */
 				/* HASHED TRIP */
 
@@ -203,6 +205,8 @@ export async function parsePlanTask(planData: Plan) {
 				}
 
 				const uniqueIdValueForHashedTrip = processedTripIds.get(keyForHashedTrip)?.[0]._id;
+
+				if (!uniqueIdValueForHashedTrip) throw new Error(`[${planData._id}] Hashed trip not found for trip "${currentTrip.trip_id}".`);
 
 				/* * */
 				/* RIDES */
@@ -245,7 +249,7 @@ export async function parsePlanTask(planData: Plan) {
 						end_time_observed: null,
 						end_time_scheduled: endTimeScheduledUnixMilliseconds,
 						extension_observed: null,
-						extension_scheduled: NonNegativeIntegerSchema.parse(Math.round(extensionScheduledInMeters)),
+						extension_scheduled: NonNegativeIntegerSchema.parse(extensionScheduledInMeters),
 						hashed_shape_id: uniqueIdValueForHashedShape,
 						hashed_trip_id: uniqueIdValueForHashedTrip,
 						headsign: currentTrip.trip_headsign,

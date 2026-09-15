@@ -83,6 +83,13 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 		// Get a hash of all metadata to make it possible
 		// to keep track of changes to the plan
 
+		if (!foundPlan.attachments.operation_gtfs) {
+			return sendErrorApiResponse(reply, {
+				error: 'Operation GTFS attachment not found',
+				status_code: '404',
+			});
+		}
+
 		const hashValue = await getPlanHash({
 			activeFrom: validatedFeedStartDate,
 			activeUntil: validatedFeedEndDate,
