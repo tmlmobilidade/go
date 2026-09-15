@@ -1,11 +1,14 @@
+/* * */
+
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
+import { buildCalendarMap, fetchCalendarData } from '@/utils/fetch-calendar-data.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { Metric } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { Metric } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -34,17 +37,12 @@ export const syncDemandByPatternHourByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarJson = await Dates.fetchCalendarData();
+	const calendarJson = await fetchCalendarData();
 
 	//
 	// Build a map for fast lookup
 
-	const calendarMap = new Map<string, CalendarEntry>();
-	for (const day of calendarJson) {
-		// convert date to YYYY-MM-DD format
-		const formattedDate = `${day.date.slice(0, 4)}-${day.date.slice(4, 6)}-${day.date.slice(6, 8)}`;
-		calendarMap.set(formattedDate, day);
-	}
+	const calendarMap = buildCalendarMap(calendarJson);
 
 	//
 	// Define operational daily chunks (04:00 → 04:00)
@@ -64,9 +62,9 @@ export const syncDemandByPatternHourByDay = async () => {
 		const next = cursor.plus({ days: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -140,8 +138,9 @@ export const syncDemandByPatternHourByDay = async () => {
 		for (const { dayLabel, ridesAgg } of batchResults) {
 			for (const ride of ridesAgg) {
 				const key = `${ride.pattern_id}_${ride.hour}_${ride.minute}`;
-				if (!patternHourMap.has(key)) {
-					patternHourMap.set(key, {
+				let metric = patternHourMap.get(key);
+				if (!metric) {
+					metric = {
 						data: {} as Record<string, { qty: number }>,
 						description: `Aggregated passengers for pattern ${ride.pattern_id} at ${ride.hour}:${ride.minute
 							.toString()
@@ -150,15 +149,18 @@ export const syncDemandByPatternHourByDay = async () => {
 						metric: metricKey,
 						properties: {
 							hour: ride.hour,
-							line_id: ride.line_id.toString(),
+							line_id: ride.lineId.toString(),
 							minute: ride.minute,
 							pattern_id: ride.pattern_id,
 						},
-					} as Metric);
+					} as Metric;
+					patternHourMap.set(key, metric);
 				}
-
-				const metric = patternHourMap.get(key);
 				const calendarProps = calendarMap.get(dayLabel);
+
+				if (!calendarProps) {
+					throw new Error(`No calendar entry for ${dayLabel}`);
+				}
 
 				metric.data[dayLabel] = {
 					day_type: calendarProps.day_type,

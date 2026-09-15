@@ -1,19 +1,15 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
+/* * */
+
+import { type CalendarEntry, useDatesData } from '@/hooks/use-dates-data';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useTranslations } from 'next-intl';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
 /* * */
 
-export interface CalendarEntry {
-	date: string // e.g. "20250101"
-	day_type: '1' | '2' | '3'
-	holiday: '0' | '1'
-	notes: string
-	period: '1' | '2' | '3'
-}
+export type { CalendarEntry } from '@/hooks/use-dates-data';
 
 export interface DayInfo {
 	day_group: string
@@ -26,7 +22,7 @@ export interface DayInfo {
 
 interface DatesContextState {
 	actions: {
-		refreshCalendar: () => Promise<void>
+		refreshCalendar: () => void
 	}
 	data: {
 		calendar: CalendarEntry[]
@@ -56,74 +52,47 @@ export function useDatesContext() {
 
 /* * */
 
-export const DatesContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const DatesContextProvider = ({ children }: PropsWithChildren) => {
 	//
-	// A. Setup state
+
+	//
+	// A. Setup variables
 
 	const t = useTranslations();
-	const [calendar, setCalendar] = useState<CalendarEntry[]>([]);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [isError, setIsError] = useState<boolean>(false);
 
 	//
-	// B. Fetch calendar data
+	// B. Fetch data
 
-	const fetchCalendarData = async (): Promise<CalendarEntry[]> => {
-		try {
-			const response = await fetch(API_ROUTES.performance.DATES_LIST, { credentials: 'include' });
-			if (!response.ok) return [];
-			const body = await response.json();
-			return (body?.data ?? body) as CalendarEntry[];
-		} catch (error) {
-			console.error({ error, message: `Error fetching calendar data` });
-			return [];
-		}
-	};
+	const { data: calendarData, error: calendarError, isLoading, mutate } = useDatesData();
 
-	const refreshCalendar = async () => {
-		setIsLoading(true);
-		setIsError(false);
-		try {
-			const data = await fetchCalendarData();
-			setCalendar(data);
-		} catch {
-			setIsError(true);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	useEffect(() => {
-		refreshCalendar();
-	}, []);
+	const calendar = useMemo(() => calendarData ?? [], [calendarData]);
 
 	//
-	// C. Utils
+	// C. Transform data
 
-	const buildCalendarMap = (calendarJson: CalendarEntry[]): Map<string, CalendarEntry> => {
-		const calendarMap = new Map<string, CalendarEntry>();
-		for (const entry of calendarJson) {
+	const calendarMap = useMemo(() => {
+		const map = new Map<string, CalendarEntry>();
+		for (const entry of calendar) {
 			const dateStr = entry.date.toString();
 			if (dateStr.length !== 8) continue;
 			const formatted = `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}`;
-			calendarMap.set(formatted, entry);
+			map.set(formatted, entry);
 		}
-		return calendarMap;
-	};
+		return map;
+	}, [calendar]);
 
-	const getDayDetails = (isoDate: string): CalendarEntry | null => {
+	const getDayDetails = useCallback((isoDate: string): CalendarEntry | null => {
 		if (!calendar.length) return null;
-		const map = buildCalendarMap(calendar);
-		return map.get(isoDate.slice(0, 10)) ?? null;
-	};
+		return calendarMap.get(isoDate.slice(0, 10)) ?? null;
+	}, [calendar, calendarMap]);
 
-	const parseAndFormatDate = (iso: string) => {
+	const parseAndFormatDate = useCallback((iso: string) => {
 		const dt = Dates.fromISO(iso);
 		const formatted = t('dates.formatted', { date: dt.js_date });
 		return formatted.charAt(0).toUpperCase() + formatted.slice(1);
-	};
+	}, [t]);
 
-	const getDayLabel = (day: DayInfo | string, withDetails = true): string => {
+	const getDayLabel = useCallback((day: DayInfo | string, withDetails = true): string => {
 		let info: DayInfo;
 
 		if (typeof day === 'string') {
@@ -149,9 +118,9 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 		}
 
 		return base;
-	};
+	}, [getDayDetails, parseAndFormatDate, t]);
 
-	const getDayShort = (day: DayInfo | string): string => {
+	const getDayShort = useCallback((day: DayInfo | string): string => {
 		const iso = typeof day === 'string' ? day : day.day_group;
 		if (!iso) return '';
 		const dt = Dates.fromISO(iso);
@@ -160,9 +129,9 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 			month: '2-digit',
 			weekday: 'short',
 		});
-	};
+	}, []);
 
-	const getShortLabelFromDetailed = (detailed: string) => {
+	const getShortLabelFromDetailed = useCallback((detailed: string) => {
 		if (!detailed) return '';
 		const label = detailed.replace(/\s*\(.*\)$/, '');
 		const match = label.match(/(\d{2})\s+de\s+([^\s]+)/i);
@@ -179,24 +148,26 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 		const weekdayMatch = label.match(/^([^\s,]+)/);
 		const weekday = weekdayMatch ? weekdayMatch[1].slice(0, 3) : '';
 		return `${weekday} ${day}/${month}`;
-	};
+	}, []);
 
 	//
-	// D. Compose context value
+	// D. Define context value
 
 	const contextValue: DatesContextState = useMemo(() => ({
-		actions: { refreshCalendar },
+		actions: { refreshCalendar: mutate },
 		data: { calendar },
-		flags: { is_error: isError, is_loading: isLoading },
+		flags: { is_error: !!calendarError, is_loading: isLoading },
 		utils: { getDayLabel, getDayShort, getShortLabelFromDetailed },
-	}), [calendar, isLoading, isError, t]);
+	}), [calendar, calendarError, getDayLabel, getDayShort, getShortLabelFromDetailed, isLoading, mutate]);
 
 	//
-	// E. Render provider
+	// E. Render components
 
 	return (
 		<DatesContext.Provider value={contextValue}>
 			{children}
 		</DatesContext.Provider>
 	);
+
+	//
 };

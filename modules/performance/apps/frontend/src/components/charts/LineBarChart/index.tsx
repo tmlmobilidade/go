@@ -36,12 +36,10 @@ export function LineBarChart({ data, endDate, height, startDate, timeView, yAxis
 		if (timeView === 'daily') {
 			const daysInRange = Math.abs(endDate.diff(startDate, 'day'));
 			return daysInRange > 30 ? 'line' : 'bar'; // More than 30 days = line chart
-		}
-		else if (timeView === 'monthly') {
+		} else if (timeView === 'monthly') {
 			const monthsInRange = Math.abs(endDate.diff(startDate, 'month'));
 			return monthsInRange > 12 ? 'line' : 'bar'; // More than 12 months = line chart
-		}
-		else if (timeView === 'annual') {
+		} else if (timeView === 'annual') {
 			return 'bar'; // Always use bar chart for yearly data
 		}
 	}, [timeView, startDate, endDate]);
@@ -72,7 +70,7 @@ export function LineBarChart({ data, endDate, height, startDate, timeView, yAxis
 			label: yAxisLabel,
 			name: 'qty',
 		},
-	], []);
+	], [yAxisLabel]);
 
 	//
 	// D. Render components

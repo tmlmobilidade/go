@@ -24,6 +24,11 @@ interface WeatherData {
 
 /* * */
 
+const LISBON_LAT = 38.7223;
+const LISBON_LON = -9.1393;
+
+/* * */
+
 const getIconForWeatherCode = (code: number) => {
 	if ([0].includes(code)) return <IconSun size={24} />;
 	if ([1, 2, 3].includes(code)) return <IconCloud size={24} />;
@@ -44,9 +49,6 @@ export function Widget() {
 	const [seconds, setSeconds] = useState('--');
 
 	const [areaWeather, setAreaWeather] = useState<WeatherData>();
-
-	const LISBON_LAT = 38.7223;
-	const LISBON_LON = -9.1393;
 
 	//
 	// A. Time updater

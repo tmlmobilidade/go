@@ -4,15 +4,13 @@ import { IndicatorChip } from '@/components/layout/IndicatorChip';
 import { MetricCard } from '@/components/layout/MetricCard';
 import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
 import { TrendChip } from '@/components/layout/TrendChip';
-import { AgencyType } from '@/constants';
+import { type AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
-import { MetricsRoutes } from '@/routes';
+import { useRealtimeServiceComplianceData } from '@/hooks/use-realtime-service-compliance-data';
 import { getMetricAgencyData } from '@/utils/agencies';
 import { IconBus } from '@tabler/icons-react';
-import { RealtimeServiceCompliance } from '@tmlmobilidade/types';
 import { Grid, SemiCircleProgress } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
@@ -21,14 +19,16 @@ import styles from './styles.module.css';
 export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 	//
 
+	//
 	// A. Setup variables
 
 	const homeContext = useHomeContext();
 	const selectedAgency = agency || homeContext.data.selected_agency;
 
+	//
 	// B. Fetch data
 
-	const { data, isLoading } = useSWR<RealtimeServiceCompliance[]>(MetricsRoutes.REALTIME_SERVICE_COMPLIANCE);
+	const { data, isLoading } = useRealtimeServiceComplianceData();
 
 	//
 	// C. Transform data

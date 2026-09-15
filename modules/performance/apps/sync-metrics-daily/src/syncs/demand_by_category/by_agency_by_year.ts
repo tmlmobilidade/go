@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByCategoryByAgencyByYear } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByCategoryByAgencyByYear } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -16,14 +16,14 @@ export const syncDemandByCategoryByAgencyByYear = async () => {
 	Logger.title(`Sync Demand Metrics by Category by Agency by Year`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_category_by_agency_by_year';
+	const metricKey = 'demand_by_category_by_agency_by_year';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_agency_by_year' });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey as 'demand_by_product_by_agency_by_year' });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -51,9 +51,9 @@ export const syncDemandByCategoryByAgencyByYear = async () => {
 		const next = cursor.plus({ years: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -127,26 +127,26 @@ export const syncDemandByCategoryByAgencyByYear = async () => {
 	for (const yearlyAgg of allChunksResults) {
 		for (const yearData of yearlyAgg) {
 			const category = yearData.category ?? 'prepaid';
-			const agency_id = yearData.agency_id ?? 'no-agency';
+			const agencyId = yearData.agency_id ?? 'no-agency';
 
 			// Create unique key for each category-agency combination
-			const categoryAgencyKey = `${category}:${agency_id}`;
+			const categoryAgencyKey = `${category}:${agencyId}`;
 
 			// Create or get category-agency document
-			if (!categoryMap.has(categoryAgencyKey)) {
-				categoryMap.set(categoryAgencyKey, {
+			let categoryAgencyDoc = categoryMap.get(categoryAgencyKey);
+			if (!categoryAgencyDoc) {
+				categoryAgencyDoc = {
 					data: {},
-					description: `Aggregated passengers for category ${category} in agency ${agency_id}`,
+					description: `Aggregated passengers for category ${category} in agency ${agencyId}`,
 					generated_at: new Date(),
-					metric: METRIC,
+					metric: metricKey,
 					properties: {
-						agency_id,
+						agency_id: agencyId,
 						category,
 					},
-				});
+				};
+				categoryMap.set(categoryAgencyKey, categoryAgencyDoc);
 			}
-
-			const categoryAgencyDoc = categoryMap.get(categoryAgencyKey);
 
 			// Update individual category-agency data for this year
 			categoryAgencyDoc.data[yearData.year] = {
@@ -164,7 +164,7 @@ export const syncDemandByCategoryByAgencyByYear = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by year, aggregate from monthly metrics (parallel)', key: 'loop_year_parallel' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

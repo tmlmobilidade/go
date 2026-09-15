@@ -1,38 +1,36 @@
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByProductByAgencyByDay, type DemandByProductByAgencyByMonth } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByProductByAgencyByMonth } from '@tmlmobilidade/types';
 
 /* * */
 
-const processBatch = (batch: DemandByProductByAgencyByMonth[], productMap: Map<string, DemandByProductByAgencyByMonth>) => {
+const processBatch = (batch: DemandByProductByAgencyByDay[], productMap: Map<string, DemandByProductByAgencyByMonth>) => {
 	for (const dailyMetric of batch) {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const { agency_id, product_id } = (dailyMetric as any).properties;
-		const key = `${product_id}:${agency_id}`;
+		const { agency_id: agencyId, product_id: productId } = dailyMetric.properties;
+		const key = `${productId}:${agencyId}`;
 
 		// Initialize product-agency if not exists
-		if (!productMap.has(key)) {
-			productMap.set(key, {
+		let productDoc = productMap.get(key);
+		if (!productDoc) {
+			productDoc = {
 				data: {} as Record<string, { qty: number }>,
-				description: `Aggregated passengers for product ${product_id} in agency ${agency_id}`,
+				description: `Aggregated passengers for product ${productId} in agency ${agencyId}`,
 				generated_at: new Date(),
 				metric: 'demand_by_product_by_agency_by_month',
 				properties: {
-					agency_id,
-					product_id,
+					agency_id: agencyId,
+					product_id: productId,
 				},
-			});
+			};
+			productMap.set(key, productDoc);
 		}
 
-		const productDoc = productMap.get(key);
-
 		// Aggregate daily data into months
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		for (const [dayKey, dayData] of Object.entries((dailyMetric as any).data)) {
+		for (const [dayKey, dayData] of Object.entries(dailyMetric.data)) {
 			const monthKey = dayKey.slice(0, 7); // Extract YYYY-MM from YYYY-MM-DD
 
 			// Initialize month if not exists
@@ -41,8 +39,7 @@ const processBatch = (batch: DemandByProductByAgencyByMonth[], productMap: Map<s
 			}
 
 			// Sum daily quantity into monthly total
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			productDoc.data[monthKey].qty += (dayData as any).qty;
+			productDoc.data[monthKey].qty += dayData.qty;
 		}
 	}
 };
@@ -55,13 +52,13 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 	Logger.title(`Sync Demand Metrics by Product by Agency by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_product_by_agency_by_month';
+	const metricKey = 'demand_by_product_by_agency_by_month';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -73,19 +70,19 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 	const productMap = new Map<string, DemandByProductByAgencyByMonth>();
 
 	// Use batched approach - process in chunks to balance memory usage and performance
-	const BATCH_SIZE = 1000;
+	const batchSize = 1000;
 	const cursor = metricsCollection.find({
 		metric: 'demand_by_product_by_agency_by_day',
 	});
 
 	let processedCount = 0;
-	let batch: DemandByProductByAgencyByMonth[] = [];
+	let batch: DemandByProductByAgencyByDay[] = [];
 
 	for await (const dailyMetric of cursor) {
-		batch.push(dailyMetric as DemandByProductByAgencyByMonth);
+		batch.push(dailyMetric as DemandByProductByAgencyByDay);
 
 		// Process batch when it reaches the target size
-		if (batch.length >= BATCH_SIZE) {
+		if (batch.length >= batchSize) {
 			processBatch(batch, productMap);
 			processedCount += batch.length;
 			Logger.info({ message: `Processed ${processedCount} daily metrics...` });
@@ -99,7 +96,7 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 		processedCount += batch.length;
 	}
 
-	Logger.info({ message: `Streamed and processed ${processedCount} daily metrics in batches of ${BATCH_SIZE} (${streamTimer.get()})` });
+	Logger.info({ message: `Streamed and processed ${processedCount} daily metrics in batches of ${batchSize} (${streamTimer.get()})` });
 
 	const results = Array.from(productMap.values());
 
@@ -112,7 +109,7 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Stream daily metrics in batches and aggregate', key: 'batched_stream_aggregate' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 1, // Only 1 cursor query
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

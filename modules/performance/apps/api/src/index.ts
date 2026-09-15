@@ -1,4 +1,4 @@
 /* * */
 
-import '@/main.js';
-import '@/endpoints/index.js';
+import './main.js';
+import './endpoints/index.js';

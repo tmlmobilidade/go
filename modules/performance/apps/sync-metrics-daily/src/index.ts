@@ -1,26 +1,29 @@
 /* * */
 
-import { syncCategoryMetrics } from '@/tasks/sync-category-metrics.js';
-import { syncPassengerImpactMetrics } from '@/tasks/sync-passenger-impact.js';
-import { syncPatternHourMetrics } from '@/tasks/sync-pattern-hour-metrics.js';
-import { syncProductMetrics } from '@/tasks/sync-product-metrics.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+
+import { syncCategoryMetrics } from './tasks/sync-category-metrics.js';
+import { syncPassengerImpactMetrics } from './tasks/sync-passenger-impact.js';
+import { syncPatternHourMetrics } from './tasks/sync-pattern-hour-metrics.js';
+import { syncProductMetrics } from './tasks/sync-product-metrics.js';
 
 /* * */
 
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'sync-metrics-daily', message: 'Sentry Performance Sync Metrics Daily initialized', module: 'performance', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Performance Sync Metrics Daily' });
+}
+
 async function main() {
 	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'sync-metrics-daily', message: 'Sentry Performance Sync Metrics Daily initialized', module: 'performance', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Performance Sync Metrics Daily' });
-	}
 
 	const globalTimer = new Timer();
 
@@ -28,6 +31,8 @@ async function main() {
 	Logger.divider();
 
 	try {
+		//
+
 		await syncPatternHourMetrics();
 		await syncProductMetrics();
 		await syncCategoryMetrics();
@@ -38,9 +43,10 @@ async function main() {
 		Logger.divider();
 		Logger.terminate(`Finished All Metrics Sync (${globalTimer.get()})`);
 		Logger.divider();
+
+		//
 	} catch (error) {
-		Logger.error({ message: 'Failed to sync metrics' });
-		Logger.error(error);
+		Logger.error({ error, message: 'Failed to sync metrics' });
 		Logger.divider();
 	}
 

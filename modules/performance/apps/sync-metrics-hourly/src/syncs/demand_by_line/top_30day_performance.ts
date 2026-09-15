@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { DemandByLineByDay, Metric } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { DemandByLineByDay, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -29,14 +29,14 @@ export const computeTop30DayPerformanceByLine = async () => {
 	Logger.title(`Compute Top 30-Day Performance by Line`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'top_lines_30day_performance';
+	const metricKey = 'top_lines_30day_performance';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -46,9 +46,9 @@ export const computeTop30DayPerformanceByLine = async () => {
 	const thirtyDaysAgo = now.minus({ days: 30 });
 	const oneYearAgo = now.minus({ years: 1 });
 
-	const last30DaysStart = thirtyDaysAgo.iso.slice(0, 10);
-	const last30DaysEnd = now.iso.slice(0, 10);
-	const yearAgoDate = oneYearAgo.iso.slice(0, 10);
+	const last30DaysStart = (thirtyDaysAgo.iso ?? '').slice(0, 10);
+	const last30DaysEnd = (now.iso ?? '').slice(0, 10);
+	const yearAgoDate = (oneYearAgo.iso ?? '').slice(0, 10);
 
 	Logger.info({ message: `Analyzing period: ${last30DaysStart} to ${last30DaysEnd}` });
 	Logger.info({ message: `Rolling year baseline: ${yearAgoDate} to ${last30DaysEnd}` });
@@ -81,7 +81,7 @@ export const computeTop30DayPerformanceByLine = async () => {
 	}[] = [];
 
 	for (const lineMetric of dailyMetrics) {
-		const { line_id } = (lineMetric as DemandByLineByDay).properties;
+		const { line_id: lineId } = (lineMetric as DemandByLineByDay).properties;
 		const dailyData = (lineMetric as DemandByLineByDay).data;
 
 		let last30DaysTotal = 0;
@@ -140,7 +140,7 @@ export const computeTop30DayPerformanceByLine = async () => {
 				day_type_3: last30DaysByDayType.day_type_3,
 			},
 			last_30_days_total: last30DaysTotal,
-			line_id,
+			line_id: lineId,
 			ytd_avg: Math.round(yearAvg),
 		});
 	}
@@ -207,7 +207,7 @@ export const computeTop30DayPerformanceByLine = async () => {
 		},
 		description: `Top 10 best and worst performing lines in last 30 days vs rolling 365-day average (${last30DaysStart} to ${last30DaysEnd})`,
 		generated_at: new Date(),
-		metric: METRIC,
+		metric: metricKey,
 	} as Metric;
 
 	//
@@ -217,13 +217,13 @@ export const computeTop30DayPerformanceByLine = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Analyze last 30 days vs rolling 365-day average from daily metrics', key: 'last_30_days_vs_rolling_year' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 1,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
 	});
 
-	Logger.terminate(`Computed ${METRIC} with ${topPerformers.length} top and ${worstPerformers.length} worst performers (${globalTimer.get()})`);
+	Logger.terminate(`Computed ${metricKey} with ${topPerformers.length} top and ${worstPerformers.length} worst performers (${globalTimer.get()})`);
 };
 
 //

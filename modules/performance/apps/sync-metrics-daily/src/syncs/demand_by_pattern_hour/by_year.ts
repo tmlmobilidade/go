@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { DemandByPatternHourByMonth, Metric } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { DemandByPatternHourByMonth, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,14 +14,14 @@ export const syncDemandByPatternHourByYear = async () => {
 	Logger.title(`Sync Demand Metrics by Pattern Hour by Year`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_pattern_hour_by_year';
+	const metricKey = 'demand_by_pattern_hour_by_year';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -47,7 +47,7 @@ export const syncDemandByPatternHourByYear = async () => {
 	const yearlyMap = new Map<string, Metric>();
 
 	for (const monthlyMetric of monthlyMetrics) {
-		const { hour, line_id, minute, pattern_id } = monthlyMetric.properties;
+		const { hour, line_id: lineId, minute, pattern_id: patternId } = monthlyMetric.properties;
 
 		// Group monthly data by year
 		const yearlyData: Record<string, { qty: number }> = {};
@@ -61,24 +61,23 @@ export const syncDemandByPatternHourByYear = async () => {
 		}
 
 		// Create or update yearly metric
-		const key = `${pattern_id}_${hour}_${minute}`;
-		if (!yearlyMap.has(key)) {
+		const key = `${patternId}_${hour}_${minute}`;
+		const existingMetric = yearlyMap.get(key);
+		if (!existingMetric) {
 			yearlyMap.set(key, {
 				data: yearlyData,
-				description: `Aggregated passenger demand for pattern ${pattern_id} at ${hour}:${minute.toString().padStart(2, '0')}`,
+				description: `Aggregated passenger demand for pattern ${patternId} at ${hour}:${minute.toString().padStart(2, '0')}`,
 				generated_at: new Date(),
-				metric: METRIC,
+				metric: metricKey,
 				properties: {
 					hour,
-					line_id,
+					line_id: lineId,
 					minute,
-					pattern_id,
+					pattern_id: patternId,
 				},
 			} as Metric);
-		}
-		else {
+		} else {
 			// Merge yearly data if somehow we have duplicates
-			const existingMetric = yearlyMap.get(key);
 			for (const [year, data] of Object.entries(yearlyData)) {
 				if (!existingMetric.data[year]) {
 					existingMetric.data[year] = { qty: 0 };
@@ -100,7 +99,7 @@ export const syncDemandByPatternHourByYear = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Cascade from monthly metrics (single query)', key: 'cascade_from_monthly' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 1,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

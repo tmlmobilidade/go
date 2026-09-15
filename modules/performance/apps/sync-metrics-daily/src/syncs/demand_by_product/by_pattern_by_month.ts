@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByProductByPatternByMonth } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByProductByPatternByMonth } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -16,14 +16,14 @@ export const syncDemandByProductByPatternByMonth = async () => {
 	Logger.title(`Sync Demand Metrics by Product by Pattern by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_product_by_pattern_by_month';
+	const metricKey = 'demand_by_product_by_pattern_by_month';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_line_by_month' });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey as 'demand_by_product_by_line_by_month' });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -51,9 +51,9 @@ export const syncDemandByProductByPatternByMonth = async () => {
 		const next = cursor.plus({ months: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -125,27 +125,27 @@ export const syncDemandByProductByPatternByMonth = async () => {
 
 	for (const monthlyAgg of allChunksResults) {
 		for (const monthData of monthlyAgg) {
-			const product_id = monthData.product_id ?? 'unknown-product';
-			const pattern_id = monthData.pattern_id ?? 'no-pattern';
+			const productId = monthData.product_id ?? 'unknown-product';
+			const patternId = monthData.pattern_id ?? 'no-pattern';
 
 			// Create unique key for each product-pattern combination
-			const productPatternKey = `${product_id}:${pattern_id}`;
+			const productPatternKey = `${productId}:${patternId}`;
 
 			// Create or get product-pattern document
-			if (!productMap.has(productPatternKey)) {
-				productMap.set(productPatternKey, {
+			let productPatternDoc = productMap.get(productPatternKey);
+			if (!productPatternDoc) {
+				productPatternDoc = {
 					data: {},
-					description: `Aggregated passengers for product ${product_id} on pattern ${pattern_id}`,
+					description: `Aggregated passengers for product ${productId} on pattern ${patternId}`,
 					generated_at: new Date(),
-					metric: METRIC,
+					metric: metricKey,
 					properties: {
-						pattern_id,
-						product_id,
+						pattern_id: patternId,
+						product_id: productId,
 					},
-				});
+				};
+				productMap.set(productPatternKey, productPatternDoc);
 			}
-
-			const productPatternDoc = productMap.get(productPatternKey);
 
 			// Update individual product-pattern data for this month
 			productPatternDoc.data[monthData.month_year] = {
@@ -163,7 +163,7 @@ export const syncDemandByProductByPatternByMonth = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by month, aggregate from daily metrics (parallel)', key: 'loop_month_parallel' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

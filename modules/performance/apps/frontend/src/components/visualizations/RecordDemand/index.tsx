@@ -2,14 +2,13 @@
 
 import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
-import { AgencyTypeWithAll } from '@/constants';
+import { type AgencyTypeWithAll } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
-import { MetricsRoutes } from '@/routes';
-import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/types';
+import { useRealtimeDemandData } from '@/hooks/use-realtime-demand-data';
+import { useTopDemandByAgencyData } from '@/hooks/use-top-demand-by-agency-data';
 import { Progress, Tooltip } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
@@ -18,16 +17,18 @@ import styles from './styles.module.css';
 export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 	//
 
+	//
 	// A. Setup variables
 
 	const t = useTranslations();
 	const homeContext = useHomeContext();
 	const selectedAgency = agency || homeContext.data.selected_agency;
 
+	//
 	// B. Fetch data
 
-	const { data: realtimeDemand } = useSWR<RealtimeDemand[]>(MetricsRoutes.REALTIME_DEMAND);
-	const { data: topDemandByAgency } = useSWR<TopDemandByAgency[]>(MetricsRoutes.TOP_DEMAND_BY_AGENCY);
+	const { data: realtimeDemand } = useRealtimeDemandData();
+	const { data: topDemandByAgency } = useTopDemandByAgencyData();
 
 	//
 	// C. Transform data
@@ -82,7 +83,9 @@ export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 		};
 	}, [realtimeDemand, topDemandByAgency, selectedAgency]);
 
+	//
 	// D. Render components
+
 	if (!formattedData) {
 		return <MetricCardSkeleton height={100} />;
 	}

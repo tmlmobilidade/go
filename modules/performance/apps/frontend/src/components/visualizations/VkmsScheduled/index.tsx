@@ -2,15 +2,15 @@
 
 import { ProgressBarChart } from '@/components/charts/ProgressBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
-import { AgencyType } from '@/constants';
+import { type AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useHomeContext } from '@/contexts/Home.context';
+import { useMetricData } from '@/hooks/use-metric-data';
 import { buildMetricUrl, RawMetricData, transformDemandMetric } from '@/utils/metrics';
 import { ProgressBarResult } from '@/utils/metrics/types/chartResults';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useTranslations } from 'next-intl';
-import { useMemo } from 'react';
-import useSWR from 'swr';
+import { useCallback, useMemo } from 'react';
 
 /* * */
 
@@ -76,7 +76,7 @@ export function VmksScheduled({
 		return buildMetricUrl(baseConfig, metricFilters);
 	}, [groupBy, timeView, endDate, startDate, filters]);
 
-	const { data } = useSWR<RawMetricData[]>(metricUrl);
+	const { data } = useMetricData<RawMetricData>(metricUrl);
 
 	//
 	// C. Transform data
@@ -87,12 +87,12 @@ export function VmksScheduled({
 			: agenciesContext.data.agencies.filter(agency => selectedAgencies.includes(agency.id));
 	}, [agenciesContext.data.agencies, selectedAgencies]);
 
-	const getContractedVkmsForMonth = (monthIndex: number) => {
+	const getContractedVkmsForMonth = useCallback((monthIndex: number) => {
 		return filteredAgencies.reduce((total, agency) => {
 			const monthVkms = agency.financials?.vkm_per_month?.[monthIndex] || 0;
 			return total + monthVkms;
 		}, 0);
-	};
+	}, [filteredAgencies]);
 
 	const formattedData = useMemo(() => {
 		if (!data) return { all: { chart: [], series: [], sum: 0 }, lastUpdated: null };
@@ -121,7 +121,7 @@ export function VmksScheduled({
 		});
 
 		return transformedData;
-	}, [data, groupBy, selectedAgencies, t, timeView, filteredAgencies]);
+	}, [data, getContractedVkmsForMonth, groupBy, selectedAgencies, t, timeView]);
 
 	const chartData = formattedData.all;
 

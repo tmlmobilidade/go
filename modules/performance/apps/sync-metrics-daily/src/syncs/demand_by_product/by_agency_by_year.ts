@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByProductByAgencyByMonth, type DemandByProductByAgencyByYear } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByProductByAgencyByMonth, type DemandByProductByAgencyByYear } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,13 +14,13 @@ export const syncDemandByProductByAgencyByYear = async () => {
 	Logger.title(`Sync Demand Metrics by Product by Agency by Year`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_product_by_agency_by_year';
+	const metricKey = 'demand_by_product_by_agency_by_year';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -41,29 +41,27 @@ export const syncDemandByProductByAgencyByYear = async () => {
 	const productMap = new Map<string, DemandByProductByAgencyByYear>();
 
 	for (const monthlyMetric of monthlyMetrics) {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const { agency_id, product_id } = (monthlyMetric as any).properties;
-		const key = `${product_id}:${agency_id}`;
+		const { agency_id: agencyId, product_id: productId } = monthlyMetric.properties;
+		const key = `${productId}:${agencyId}`;
 
 		// Initialize product-agency if not exists
-		if (!productMap.has(key)) {
-			productMap.set(key, {
+		let productDoc = productMap.get(key);
+		if (!productDoc) {
+			productDoc = {
 				data: {} as Record<string, { qty: number }>,
-				description: `Aggregated passengers for product ${product_id} in agency ${agency_id}`,
+				description: `Aggregated passengers for product ${productId} in agency ${agencyId}`,
 				generated_at: new Date(),
-				metric: METRIC,
+				metric: metricKey,
 				properties: {
-					agency_id,
-					product_id,
+					agency_id: agencyId,
+					product_id: productId,
 				},
-			});
+			};
+			productMap.set(key, productDoc);
 		}
 
-		const productDoc = productMap.get(key);
-
 		// Aggregate monthly data into years
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		for (const [monthKey, monthData] of Object.entries((monthlyMetric as any).data)) {
+		for (const [monthKey, monthData] of Object.entries(monthlyMetric.data)) {
 			const yearKey = monthKey.slice(0, 4); // Extract YYYY from YYYY-MM
 
 			// Initialize year if not exists
@@ -72,8 +70,7 @@ export const syncDemandByProductByAgencyByYear = async () => {
 			}
 
 			// Sum monthly quantity into yearly total
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			productDoc.data[yearKey].qty += (monthData as any).qty;
+			productDoc.data[yearKey].qty += monthData.qty;
 		}
 	}
 
@@ -88,7 +85,7 @@ export const syncDemandByProductByAgencyByYear = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Aggregate from by_month metrics', key: 'aggregate_from_monthly' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: 1, // Only 1 query to fetch monthly metrics
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

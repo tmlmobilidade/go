@@ -1,23 +1,30 @@
+'use client';
+
 /* * */
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { TopicDefinition, TOPICS_REGISTRY } from '@/constants';
-import { Grid } from '@tmlmobilidade/ui';
+import { type TopicDefinition, TOPICS_REGISTRY } from '@/constants';
+import { Grid, keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import styles from './styles.module.css';
 
-export default function Topics() {
+/* * */
+
+export function Topics() {
 	//
 
+	//
 	// A. Setup variables
+
 	const router = useRouter();
 
 	//
 	// B. Handle actions
 
 	const handleTopicClick = (topic: TopicDefinition) => {
-		router.push(`/${topic.key}`);
+		if (!topic.route) return;
+		router.push(keepUrlParams(topic.route));
 	};
 
 	// C. Render components

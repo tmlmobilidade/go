@@ -1,17 +1,10 @@
-'use client';
+/* * */
 
-import AreasHome from '@/components/layout/AreasHome';
+import { AreasHomeGroup } from '@/components/layout/AreasHomeGroup';
 import { AGENCIES } from '@/constants';
-
-import styles from './styles.module.css';
 
 /* * */
 
-export default function Page() {
-	return (
-		<div className={styles.container}>
-			<AreasHome agency={AGENCIES.AREA_3} />
-			<AreasHome agency={AGENCIES.AREA_4} />
-		</div>
-	);
+export default async function Page() {
+	return <AreasHomeGroup agencies={[AGENCIES.AREA_3, AGENCIES.AREA_4]} />;
 }

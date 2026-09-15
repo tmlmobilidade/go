@@ -1,14 +1,16 @@
 'use client';
 
+/* * */
+
 import { AGENCY_IDS_BY_AREA, type AgencyType } from '@/constants';
-import { MetricsRoutes } from '@/routes';
+import { useAgenciesData } from '@/hooks/use-agencies-data';
+import { useRealtimeDemandData } from '@/hooks/use-realtime-demand-data';
+import { useRealtimeServiceComplianceData } from '@/hooks/use-realtime-service-compliance-data';
 import { getMetricAgencyData } from '@/utils/agencies';
 import { calculateSystemHealthIndex, getSystemStatusInfo, type StatusInfo } from '@/utils/systemStatus';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Agency as APIAgency, type RealtimeDemand, type RealtimeServiceCompliance } from '@tmlmobilidade/types';
+import { type Agency as APIAgency } from '@tmlmobilidade/go-types-core';
 import { useTranslations } from 'next-intl';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
-import useSWR from 'swr';
 
 /* * */
 
@@ -24,7 +26,7 @@ interface AgenciesContextState {
 		systemStatuses: Record<string, StatusInfo>
 	}
 	flags: {
-		error: Error | undefined
+		error: null | string | undefined
 		loading: boolean
 		statusLoading: boolean
 	}
@@ -49,7 +51,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
-	// A. Setup state and translations
+	// A. Setup variables
 
 	const t = useTranslations();
 	const [systemStatuses, setSystemStatuses] = useState<Record<string, StatusInfo>>({});
@@ -57,12 +59,12 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<APIAgency[], Error>(API_ROUTES.core.AGENCIES_LIST);
-	const { data: serviceComplianceData, error: serviceComplianceError, isLoading: serviceComplianceLoading } = useSWR<RealtimeServiceCompliance[]>(MetricsRoutes.REALTIME_SERVICE_COMPLIANCE);
-	const { data: demandData, error: demandError, isLoading: demandLoading } = useSWR<RealtimeDemand[]>(MetricsRoutes.REALTIME_DEMAND);
+	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useAgenciesData();
+	const { data: serviceComplianceData, error: serviceComplianceError, isLoading: serviceComplianceLoading } = useRealtimeServiceComplianceData();
+	const { data: demandData, error: demandError, isLoading: demandLoading } = useRealtimeDemandData();
 
 	//
-	// C. Calculate system statuses
+	// C. Transform data
 
 	useEffect(() => {
 		if (!serviceComplianceData?.length || !demandData?.length) return;
@@ -105,9 +107,6 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 		setSystemStatuses(statuses);
 	}, [serviceComplianceData, demandData, t]);
 
-	//
-	// D. Process agencies data (filtered from API)
-
 	const agencies = useMemo(() => {
 		if (!allAgenciesData) return [];
 
@@ -120,9 +119,6 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 			}))
 			.sort((a, b) => AGENCY_IDS_BY_AREA.indexOf(a.id) - AGENCY_IDS_BY_AREA.indexOf(b.id));
 	}, [allAgenciesData, t]);
-
-	//
-	// E. Process agencies with "all" option
 
 	const agenciesWithAll = useMemo(() => {
 		// Only include agencies that have system status calculated
@@ -143,7 +139,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	}, [agencies, systemStatuses, t]);
 
 	//
-	// F. Define context value
+	// D. Define context value
 
 	const contextValue: AgenciesContextState = useMemo(() => ({
 		data: {
@@ -169,7 +165,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	]);
 
 	//
-	// G. Render components
+	// E. Render components
 
 	return (
 		<AgenciesContext.Provider value={contextValue}>

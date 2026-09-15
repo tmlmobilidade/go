@@ -1,23 +1,57 @@
+'use client';
+
 /* * */
 
 import { AgenciesSelector } from '@/components/layout/AgenciesSelector';
 import { LiveIcon } from '@/components/layout/LiveIcon';
 import { RecordCard } from '@/components/layout/RecordCard';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
-import { AgencyType } from '@/constants';
+import { type AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useDatesContext } from '@/contexts/Dates.context';
-import { Routes } from '@/routes';
+import { useTopDemandByAgencyByDayTypeData } from '@/hooks/use-top-demand-by-agency-by-day-type-data';
 import { getMetricAgencyData } from '@/utils/agencies';
-import { TopDemandByAgencyByDayType } from '@tmlmobilidade/types';
 import { BarChart, Grid, MetricsSkeleton, Section, Skeleton, Surface } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
-import useSWR from 'swr';
 
-export default function RecordDemandByDayType() {
+/* * */
+
+interface RecordPoint {
+	date: string
+	detailed_date: string
+	qty: number
+}
+
+/* * */
+
+/**
+ * Computes the Y axis domain so that the smallest bar stays visible.
+ * @param points The chart points
+ */
+function getDomain(points: RecordPoint[]): [number, number] {
+	const ys = points.map(p => p.qty);
+	const min = Math.min(...ys);
+	const max = Math.max(...ys);
+
+	if (min === max) return [min - 1000, max + 1000]; // edge case
+
+	const range = max - min;
+	const padding = Math.max(range * 0.3, 5000); // add more gap
+
+	// Shift the window to center around mean but ensure the min bar is visible
+	const lower = Math.floor((min - padding) / 1000) * 1000;
+	const upper = Math.ceil((max + padding / 2) / 1000) * 1000;
+
+	return [lower, upper];
+}
+
+/* * */
+
+export function RecordDemandByDayType() {
 	//
 
+	//
 	// A. Setup variables
 
 	const t = useTranslations();
@@ -28,12 +62,12 @@ export default function RecordDemandByDayType() {
 	//
 	// B. Fetch data
 
-	const { data: recordDemandByDayType, isLoading } = useSWR<TopDemandByAgencyByDayType[]>(Routes.TOP_DEMAND_BY_AGENCY_BY_DAY_TYPE);
+	const { data: recordDemandByDayType, isLoading } = useTopDemandByAgencyByDayTypeData();
 
 	//
 	// C. Transform data
 
-	const transformedRecordData: Record<string, { date: string, qty: number }[]> = useMemo(() => {
+	const transformedRecordData: Record<string, RecordPoint[]> = useMemo(() => {
 		if (!recordDemandByDayType?.length) return {};
 
 		const data = recordDemandByDayType[0].data;
@@ -49,7 +83,7 @@ export default function RecordDemandByDayType() {
 
 		if (!agencyData) return {};
 
-		const result = {};
+		const result: Record<string, RecordPoint[]> = {};
 
 		Object.entries(agencyData).forEach(([dayTypeKey, values]) => {
 			const points = Object.entries(values).map(([date, qty]) => ({
@@ -64,26 +98,8 @@ export default function RecordDemandByDayType() {
 		return result;
 	}, [recordDemandByDayType, selectedAgencies, agencies, utils]);
 
-	// D. Utils - extract this to a helper later
-
-	const getDomain = (points) => {
-		const ys = points.map(p => p.qty ?? p.y);
-		const min = Math.min(...ys);
-		const max = Math.max(...ys);
-
-		if (min === max) return [min - 1000, max + 1000]; // edge case
-
-		const range = max - min;
-		const padding = Math.max(range * 0.3, 5000); // add more gap
-
-		// Shift the window to center around mean but ensure the min bar is visible
-		const lower = Math.floor((min - padding) / 1000) * 1000;
-		const upper = Math.ceil((max + padding / 2) / 1000) * 1000;
-
-		return [lower, upper];
-	};
-
-	// E. Render components
+	//
+	// D. Render components
 
 	if (isLoading) {
 		return (
@@ -164,6 +180,6 @@ export default function RecordDemandByDayType() {
 			</Grid>
 		</VisualizationWrapper>
 	);
-}
 
-//
+	//
+}

@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByCategoryByLineByMonth } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByCategoryByLineByMonth } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -16,14 +16,14 @@ export const syncDemandByCategoryByLineByMonth = async () => {
 	Logger.title(`Sync Demand Metrics by Category by Line by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_category_by_line_by_month';
+	const metricKey = 'demand_by_category_by_line_by_month';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_line_by_month' });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey as 'demand_by_product_by_line_by_month' });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -51,9 +51,9 @@ export const syncDemandByCategoryByLineByMonth = async () => {
 		const next = cursor.plus({ months: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -126,26 +126,26 @@ export const syncDemandByCategoryByLineByMonth = async () => {
 	for (const monthlyAgg of allChunksResults) {
 		for (const monthData of monthlyAgg) {
 			const category = monthData.category ?? 'prepaid';
-			const line_id = monthData.line_id ?? 'no-line';
+			const lineId = monthData.line_id ?? 'no-line';
 
 			// Create unique key for each category-line combination
-			const categoryLineKey = `${category}:${line_id}`;
+			const categoryLineKey = `${category}:${lineId}`;
 
 			// Create or get category-line document
-			if (!categoryMap.has(categoryLineKey)) {
-				categoryMap.set(categoryLineKey, {
+			let categoryLineDoc = categoryMap.get(categoryLineKey);
+			if (!categoryLineDoc) {
+				categoryLineDoc = {
 					data: {},
-					description: `Aggregated passengers for category ${category} in line ${line_id}`,
+					description: `Aggregated passengers for category ${category} in line ${lineId}`,
 					generated_at: new Date(),
-					metric: METRIC,
+					metric: metricKey,
 					properties: {
 						category,
-						line_id,
+						line_id: lineId,
 					},
-				});
+				};
+				categoryMap.set(categoryLineKey, categoryLineDoc);
 			}
-
-			const categoryLineDoc = categoryMap.get(categoryLineKey);
 
 			// Update individual category-line data for this month
 			categoryLineDoc.data[monthData.month_year] = {
@@ -163,7 +163,7 @@ export const syncDemandByCategoryByLineByMonth = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by month, aggregate on mongo (parallel)', key: 'loop_month_parallel' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

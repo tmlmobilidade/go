@@ -3,7 +3,7 @@
 import { availableFormats, DEFAULT_LOCALE_CODE, defaultLocale, enabledLocales, getMatchingLocale, LOCALE_STORAGE_KEY } from '@/i18n/config';
 import { useLocalStorage, useQueryState } from '@tmlmobilidade/ui';
 import { NextIntlClientProvider } from 'next-intl';
-import { createContext, useContext, useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 
 /* * */
 
@@ -30,7 +30,7 @@ export function useLocaleContext() {
 
 /* * */
 
-export const LocaleContextProvider = ({ children }) => {
+export const LocaleContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
@@ -59,23 +59,20 @@ export const LocaleContextProvider = ({ children }) => {
 		const matchingLocale = getMatchingLocale(currentLocale);
 		// Exit if a match is found
 		if (matchingLocale) return;
-		// If no match is found, log a warning and set the default locale
-		console.warn(`Invalid locale: ${currentLocale}. Setting to default locale: ${defaultLocale._id}`);
+		// If no match is found, set the default locale
 		setCurrentLocale(defaultLocale._id);
-	}, [currentLocale]);
+	}, [currentLocale, setCurrentLocale]);
 
 	useEffect(() => {
 		// Exit if no query param is set
 		if (!currentLocaleQueryParam) return;
 		// Try to match the query param value with an enabled locale
 		const matchingLocale = getMatchingLocale(currentLocaleQueryParam);
-		// If no match is found, log a warning and set the locale to the default
-		if (!matchingLocale) console.warn(`Invalid locale query param: ${currentLocaleQueryParam}`);
 		// If a match is found, set the current locale to the query param value
-		else setCurrentLocale(currentLocaleQueryParam);
+		if (matchingLocale) setCurrentLocale(currentLocaleQueryParam);
 		// Clear the query param to avoid infinite loop
 		setCurrentLocaleQueryParam(null);
-	}, [currentLocaleQueryParam]);
+	}, [currentLocaleQueryParam, setCurrentLocale, setCurrentLocaleQueryParam]);
 
 	//
 	// D. Define context value

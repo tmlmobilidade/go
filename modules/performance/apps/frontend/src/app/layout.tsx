@@ -6,7 +6,6 @@ import { DatesContextProvider } from '@/contexts/Dates.context';
 import { HomeContextProvider } from '@/contexts/Home.context';
 import { LocaleContextProvider } from '@/contexts/Locale.context';
 import { NetworkContextProvider } from '@/contexts/Network.context';
-import { ThemeProviders } from '@/providers/theme-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { type PropsWithChildren } from 'react';
@@ -25,19 +24,17 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 		<BaseProvider version={pjson.version}>
 			<AppProvider>
 				<AppWrapper>
-					<ThemeProviders>
-						<LocaleContextProvider>
-							<NetworkContextProvider>
-								<AgenciesContextProvider>
-									<DatesContextProvider>
-										<HomeContextProvider>
-											{children}
-										</HomeContextProvider>
-									</DatesContextProvider>
-								</AgenciesContextProvider>
-							</NetworkContextProvider>
-						</LocaleContextProvider>
-					</ThemeProviders>
+					<LocaleContextProvider>
+						<NetworkContextProvider>
+							<AgenciesContextProvider>
+								<DatesContextProvider>
+									<HomeContextProvider>
+										{children}
+									</HomeContextProvider>
+								</DatesContextProvider>
+							</AgenciesContextProvider>
+						</NetworkContextProvider>
+					</LocaleContextProvider>
 				</AppWrapper>
 			</AppProvider>
 		</BaseProvider>

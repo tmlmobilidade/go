@@ -2,12 +2,13 @@
 
 import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromStartIso } from '@/utils/day-label.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
+import { buildCalendarMap, fetchCalendarData } from '@/utils/fetch-calendar-data.js';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByPatternByDay } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByPatternByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -18,14 +19,14 @@ export const syncDemandByPatternByDay = async () => {
 	Logger.title(`Sync Demand Metrics by Pattern by Day`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_pattern_by_day';
+	const metricKey = 'demand_by_pattern_by_day';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -36,7 +37,7 @@ export const syncDemandByPatternByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarJson = await Dates.fetchCalendarData();
+	const calendarJson = await fetchCalendarData();
 
 	if (!calendarJson.length) {
 		throw new Error('Calendar data unavailable — cannot build demand_by_pattern_by_day metrics');
@@ -45,13 +46,7 @@ export const syncDemandByPatternByDay = async () => {
 	//
 	// Build a map for fast lookup
 
-	const calendarMap = new Map<string, CalendarEntry>();
-	for (const day of calendarJson) {
-		const dayString = day.date.toString();
-		// convert date to YYYY-MM-DD format
-		const formattedDate = `${dayString.slice(0, 4)}-${dayString.slice(4, 6)}-${dayString.slice(6, 8)}`;
-		calendarMap.set(formattedDate, day);
-	}
+	const calendarMap = buildCalendarMap(calendarJson);
 
 	//
 	// Define daily chunks
@@ -69,9 +64,9 @@ export const syncDemandByPatternByDay = async () => {
 		const next = cursor.plus({ days: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -125,18 +120,19 @@ export const syncDemandByPatternByDay = async () => {
 		}
 
 		for (const validation of validationsAgg) {
-			const pattern_id = validation._id ?? 'no-pattern';
+			const patternId = validation._id ?? 'no-pattern';
 
-			if (!patternMap.has(pattern_id)) {
-				patternMap.set(pattern_id, {
+			let patternDoc = patternMap.get(patternId);
+			if (!patternDoc) {
+				patternDoc = {
 					data: {},
-					description: `Aggregated passengers for the pattern ${pattern_id}`,
+					description: `Aggregated passengers for the pattern ${patternId}`,
 					generated_at: new Date(),
-					metric: METRIC,
-					properties: { pattern_id },
-				});
+					metric: metricKey,
+					properties: { pattern_id: patternId },
+				};
+				patternMap.set(patternId, patternDoc);
 			}
-			const patternDoc = patternMap.get(pattern_id);
 
 			patternDoc.data[dayLabel] = {
 				day_type: calendarProps.day_type,
@@ -161,7 +157,7 @@ export const syncDemandByPatternByDay = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by day, aggregate on mongo (parallel)', key: 'loop_day_parallel' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

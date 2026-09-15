@@ -1,15 +1,9 @@
-'use client';
+/* * */
 
-import TopicsWrapper from '@/components/layout/TopicsWrapper';
-import DemandTopic from '@/components/topics/Demand';
-import { TOPICS, TOPICS_REGISTRY } from '@/constants';
+import { DemandTopic } from '@/components/topics/DemandTopic';
 
 /* * */
 
-export default function Page() {
-	return (
-		<TopicsWrapper topic={TOPICS_REGISTRY.find(t => t.key === TOPICS.DEMAND)}>
-			<DemandTopic />
-		</TopicsWrapper>
-	);
+export default async function Page() {
+	return <DemandTopic />;
 }

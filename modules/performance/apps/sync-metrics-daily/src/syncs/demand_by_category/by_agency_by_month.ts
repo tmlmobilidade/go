@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByCategoryByAgencyByMonth } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByCategoryByAgencyByMonth } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -16,14 +16,14 @@ export const syncDemandByCategoryByAgencyByMonth = async () => {
 	Logger.title(`Sync Demand Metrics by Category by Agency by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_category_by_agency_by_month';
+	const metricKey = 'demand_by_category_by_agency_by_month';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_agency_by_month' });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey as 'demand_by_product_by_agency_by_month' });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -51,9 +51,9 @@ export const syncDemandByCategoryByAgencyByMonth = async () => {
 		const next = cursor.plus({ months: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -126,26 +126,26 @@ export const syncDemandByCategoryByAgencyByMonth = async () => {
 	for (const monthlyAgg of allChunksResults) {
 		for (const monthData of monthlyAgg) {
 			const category = monthData.category ?? 'prepaid';
-			const agency_id = monthData.agency_id ?? 'no-agency';
+			const agencyId = monthData.agency_id ?? 'no-agency';
 
 			// Create unique key for each category-agency combination
-			const categoryAgencyKey = `${category}:${agency_id}`;
+			const categoryAgencyKey = `${category}:${agencyId}`;
 
 			// Create or get category-agency document
-			if (!categoryMap.has(categoryAgencyKey)) {
-				categoryMap.set(categoryAgencyKey, {
+			let categoryAgencyDoc = categoryMap.get(categoryAgencyKey);
+			if (!categoryAgencyDoc) {
+				categoryAgencyDoc = {
 					data: {},
-					description: `Aggregated passengers for category ${category} in agency ${agency_id}`,
+					description: `Aggregated passengers for category ${category} in agency ${agencyId}`,
 					generated_at: new Date(),
-					metric: METRIC,
+					metric: metricKey,
 					properties: {
-						agency_id,
+						agency_id: agencyId,
 						category,
 					},
-				});
+				};
+				categoryMap.set(categoryAgencyKey, categoryAgencyDoc);
 			}
-
-			const categoryAgencyDoc = categoryMap.get(categoryAgencyKey);
 
 			// Update individual category-agency data for this month
 			categoryAgencyDoc.data[monthData.month_year] = {
@@ -163,7 +163,7 @@ export const syncDemandByCategoryByAgencyByMonth = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by month, aggregate on mongo (parallel)', key: 'loop_month_parallel' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

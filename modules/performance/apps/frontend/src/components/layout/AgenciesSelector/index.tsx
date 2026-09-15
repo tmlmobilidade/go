@@ -1,6 +1,8 @@
+'use client';
+
 /* * */
 
-import { AgencyType } from '@/constants';
+import { type AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { ListFilter } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';

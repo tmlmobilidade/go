@@ -1,10 +1,10 @@
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { Metric } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -72,7 +72,7 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 
 	const globalTimer = new Timer();
 
-	const METRIC = 'top_mean_demand_by_line_by_month' as const;
+	const metricKey = 'top_mean_demand_by_line_by_month' as const;
 
 	//
 	// Delete existing metrics
@@ -80,8 +80,8 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 	const metricsCollection = await metrics.getCollection();
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metricsCollection.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metricsCollection.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics (${deleteTimer.get()})` });
 
 	Logger.divider();
@@ -90,18 +90,18 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 	// Get all months present in 'mean_demand_by_line_by_month' metrics
 	const allMonths = await getAllMonthsFromMetrics('mean_demand_by_line_by_month');
 	for (const month of allMonths) {
-		await topMeanDemandByLineForMonth(month, METRIC);
+		await topMeanDemandByLineForMonth(month, metricKey);
 	}
 
 	logMetricToFile({
 		approach: { description: 'Iterate mean_demand_by_line_by_month for every month', key: 'iterate_mean_demand_by_line_by_month' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allMonths.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
 	});
 
-	Logger.terminate(`Processed all months (${allMonths.length}) for ${METRIC} (${globalTimer.get()})`);
+	Logger.terminate(`Processed all months (${allMonths.length}) for ${metricKey} (${globalTimer.get()})`);
 };
 
 /* * */
@@ -119,10 +119,10 @@ export const computeTopMeanDemandByLineByMonth = async () => {
  * - Builds and inserts a new metric document summarizing the results.
  *
  * @param yearMonth - The year and month to analyze, in the format 'YYYY-MM'.
- * @param METRIC - The metric name to use for the resulting document.
+ * @param metricKey - The metric name to use for the resulting document.
  * @throws {Error} If `yearMonth` is not in the correct format or contains an invalid month.
  */
-const topMeanDemandByLineForMonth = async (yearMonth: string, METRIC: string) => {
+const topMeanDemandByLineForMonth = async (yearMonth: string, metricKey: string) => {
 	//
 
 	const globalTimer = new Timer();
@@ -203,11 +203,11 @@ const topMeanDemandByLineForMonth = async (yearMonth: string, METRIC: string) =>
 	// Build Metric object
 
 	const data: Record<string, { increase_pct: number, qty: number, year_avg: number }> = {};
-	for (const { increase_pct, line_id, qty, year_avg } of top10) {
-		data[line_id] = {
-			increase_pct: parseFloat(increase_pct.toFixed(2)),
+	for (const { increase_pct: increasePct, line_id: lineId, qty, year_avg: yearAvg } of top10) {
+		data[lineId] = {
+			increase_pct: parseFloat(increasePct.toFixed(2)),
 			qty: Math.round(qty),
-			year_avg: Math.round(year_avg),
+			year_avg: Math.round(yearAvg),
 		};
 	}
 
@@ -215,7 +215,7 @@ const topMeanDemandByLineForMonth = async (yearMonth: string, METRIC: string) =>
 		data,
 		description: `Top 10 lines with mean demand above the yearly average for month ${month}-${year}`,
 		generated_at: new Date(),
-		metric: METRIC,
+		metric: metricKey,
 		properties: { year_month: yearMonth },
 	} as Metric;
 

@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByCategoryByPatternByMonth } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByCategoryByPatternByMonth } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -16,14 +16,14 @@ export const syncDemandByCategoryByPatternByMonth = async () => {
 	Logger.title(`Sync Demand Metrics by Category by Pattern by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_category_by_pattern_by_month';
+	const metricKey = 'demand_by_category_by_pattern_by_month';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_pattern_by_month' });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey as 'demand_by_product_by_pattern_by_month' });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -51,9 +51,9 @@ export const syncDemandByCategoryByPatternByMonth = async () => {
 		const next = cursor.plus({ months: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -126,26 +126,26 @@ export const syncDemandByCategoryByPatternByMonth = async () => {
 	for (const monthlyAgg of allChunksResults) {
 		for (const monthData of monthlyAgg) {
 			const category = monthData.category ?? 'prepaid';
-			const pattern_id = monthData.pattern_id ?? 'no-pattern';
+			const patternId = monthData.pattern_id ?? 'no-pattern';
 
 			// Create unique key for each category-pattern combination
-			const categoryPatternKey = `${category}:${pattern_id}`;
+			const categoryPatternKey = `${category}:${patternId}`;
 
 			// Create or get category-pattern document
-			if (!categoryMap.has(categoryPatternKey)) {
-				categoryMap.set(categoryPatternKey, {
+			let categoryPatternDoc = categoryMap.get(categoryPatternKey);
+			if (!categoryPatternDoc) {
+				categoryPatternDoc = {
 					data: {},
-					description: `Aggregated passengers for category ${category} in pattern ${pattern_id}`,
+					description: `Aggregated passengers for category ${category} in pattern ${patternId}`,
 					generated_at: new Date(),
-					metric: METRIC,
+					metric: metricKey,
 					properties: {
 						category,
-						pattern_id,
+						pattern_id: patternId,
 					},
-				});
+				};
+				categoryMap.set(categoryPatternKey, categoryPatternDoc);
 			}
-
-			const categoryPatternDoc = categoryMap.get(categoryPatternKey);
 
 			// Update individual category-pattern data for this month
 			categoryPatternDoc.data[monthData.month_year] = {
@@ -163,7 +163,7 @@ export const syncDemandByCategoryByPatternByMonth = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by month, aggregate on mongo (parallel)', key: 'loop_month_parallel' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

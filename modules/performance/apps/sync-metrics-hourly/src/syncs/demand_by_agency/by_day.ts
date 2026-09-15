@@ -2,12 +2,13 @@
 
 import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromStartIso } from '@/utils/day-label.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
+import { buildCalendarMap, fetchCalendarData } from '@/utils/fetch-calendar-data.js';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { type DemandByAgencyByDay } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -18,14 +19,14 @@ export const syncDemandByAgencyByDay = async () => {
 	Logger.title(`Sync Demand Metrics by Agency by Day`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_agency_by_day';
+	const metricKey = 'demand_by_agency_by_day';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -36,7 +37,7 @@ export const syncDemandByAgencyByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarJson = await Dates.fetchCalendarData();
+	const calendarJson = await fetchCalendarData();
 
 	if (!calendarJson.length) {
 		throw new Error('Calendar data unavailable — cannot build demand_by_agency_by_day metrics');
@@ -45,13 +46,7 @@ export const syncDemandByAgencyByDay = async () => {
 	//
 	// Build a map for fast lookup
 
-	const calendarMap = new Map<string, CalendarEntry>();
-	for (const day of calendarJson) {
-		const dayString = day.date.toString();
-		// convert date to YYYY-MM-DD format
-		const formattedDate = `${dayString.slice(0, 4)}-${dayString.slice(4, 6)}-${dayString.slice(6, 8)}`;
-		calendarMap.set(formattedDate, day);
-	}
+	const calendarMap = buildCalendarMap(calendarJson);
 
 	//
 	// Define daily chunks
@@ -72,9 +67,9 @@ export const syncDemandByAgencyByDay = async () => {
 		const next = cursor.plus({ days: 1 });
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
-			endIso: next.iso,
+			endIso: next.iso ?? '',
 			start: cursor.unix_milliseconds,
-			startIso: cursor.iso,
+			startIso: cursor.iso ?? '',
 		});
 		cursor = next;
 	}
@@ -130,20 +125,20 @@ export const syncDemandByAgencyByDay = async () => {
 		}
 
 		for (const validation of validationsAgg) {
-			const agency_id = validation._id ?? 'no-agency';
+			const agencyId = validation._id ?? 'no-agency';
 
 			// Create or get agency document
-			if (!agencyMap.has(agency_id)) {
-				agencyMap.set(agency_id, {
+			let agencyDoc = agencyMap.get(agencyId);
+			if (!agencyDoc) {
+				agencyDoc = {
 					data: {},
-					description: `Aggregated passengers for the agency ${agency_id}`,
+					description: `Aggregated passengers for the agency ${agencyId}`,
 					generated_at: new Date(),
-					metric: METRIC,
-					properties: { agency_id },
-				});
+					metric: metricKey,
+					properties: { agency_id: agencyId },
+				};
+				agencyMap.set(agencyId, agencyDoc);
 			}
-
-			const agencyDoc = agencyMap.get(agency_id);
 
 			// Update individual agency data
 			agencyDoc.data[dayLabel] = {
@@ -169,7 +164,7 @@ export const syncDemandByAgencyByDay = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by day, aggregate on mongo (parallel)', key: 'loop_day_parallel' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

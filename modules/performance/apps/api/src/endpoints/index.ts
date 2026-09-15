@@ -1,3 +1,3 @@
-import '@/endpoints/dates/dates.routes.js';
-import '@/endpoints/metrics/metrics.routes.js';
-import '@/endpoints/network/network.routes.js';
+import './dates/routes.js';
+import './metrics/routes.js';
+import './network/routes.js';

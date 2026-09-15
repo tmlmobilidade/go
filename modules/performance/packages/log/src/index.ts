@@ -1,2 +1,2 @@
-export * from '@/generateSummary.js';
-export * from '@/logMetricToFile.js';
+export * from './generate-summary.js';
+export * from './log-metric-to-file.js';

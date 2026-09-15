@@ -2,13 +2,13 @@
 
 import { StackedLineBarChart } from '@/components/charts/StackedLineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
-import { AgencyType } from '@/constants';
+import { type AgencyType } from '@/constants';
+import { useMetricData } from '@/hooks/use-metric-data';
 import { buildMetricUrl, PieResult, RawMetricData, StackedResult, transformDemandMetric } from '@/utils/metrics';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { PieChart } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
@@ -63,9 +63,9 @@ export function DemandByProductVisualization({ filters, groupBy, height, isInsid
 		};
 
 		return buildMetricUrl(baseConfig, metricFilters);
-	}, [groupBy, timeView, selectedAgencies, filters]);
+	}, [groupBy, timeView, endDate, startDate, filters]);
 
-	const { data } = useSWR<RawMetricData[]>(metricUrl);
+	const { data } = useMetricData<RawMetricData>(metricUrl);
 
 	//
 	// C. Transform data
@@ -81,7 +81,7 @@ export function DemandByProductVisualization({ filters, groupBy, height, isInsid
 			timeView,
 			topN: 4,
 		});
-	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t, timeView]);
+	}, [data, groupBy, selectedAgencies, t, timeView]);
 
 	const formattedPieData = useMemo(() => {
 		if (!data) return { all: { chart: [] }, lastUpdated: null };
@@ -94,7 +94,7 @@ export function DemandByProductVisualization({ filters, groupBy, height, isInsid
 			timeView,
 			topN: 4,
 		});
-	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t, timeView]);
+	}, [data, groupBy, selectedAgencies, t, timeView]);
 
 	const pieChartData = formattedPieData.all.chart as PieResult['chart'];
 

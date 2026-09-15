@@ -1,14 +1,18 @@
+'use client';
+
 /* * */
 
-import SystemStatus from '@/components/layout/SystemStatus';
+import { SystemStatus } from '@/components/layout/SystemStatus';
 import { RealtimeDemand } from '@/components/visualizations/RealtimeDemand';
 import { ServiceCompliance } from '@/components/visualizations/ServiceCompliance';
-import { AgencyType } from '@/constants';
+import { type AgencyType } from '@/constants';
 import { useTranslations } from 'next-intl';
 
 import styles from './styles.module.css';
 
-export default function AreasHome({ agency }: { agency: AgencyType }) {
+/* * */
+
+export function AreasHome({ agency }: { agency: AgencyType }) {
 	//
 
 	// A. Setup variables

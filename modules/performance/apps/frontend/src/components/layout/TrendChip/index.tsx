@@ -35,8 +35,7 @@ export function TrendChip({ comparisonLabel = 'vs semana passada', comparisonPre
 		delta = percentage;
 		isPositive = delta >= 0;
 		label = `${isPositive ? '+' : ''}${delta.toFixed(1)}%`;
-	}
-	else if (value !== undefined && previousValue !== undefined) {
+	} else if (value !== undefined && previousValue !== undefined) {
 		// Calculate delta from values
 		let currentRatio = value;
 		let previousRatio = previousValue;
@@ -49,10 +48,8 @@ export function TrendChip({ comparisonLabel = 'vs semana passada', comparisonPre
 		delta = previousRatio === 0 ? 0 : ((currentRatio - previousRatio) / previousRatio) * 100;
 		isPositive = delta >= 0;
 		label = `${isPositive ? '+' : ''}${delta.toFixed(1)}%`;
-	}
-	else {
+	} else {
 		// Fallback for missing data
-		delta = 0;
 		isPositive = true;
 		label = '0.0%';
 	}

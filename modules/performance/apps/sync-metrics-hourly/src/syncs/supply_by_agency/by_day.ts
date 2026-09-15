@@ -2,13 +2,16 @@
 
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromOperationalDate } from '@/utils/day-label.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
+import { buildCalendarMap, fetchCalendarData } from '@/utils/fetch-calendar-data.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
+import { SupplyByAgencyByDay } from '@tmlmobilidade/go-types-performance';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { SupplyByAgencyByDay } from '@tmlmobilidade/types';
+import { type Document } from 'mongodb';
 import pLimit from 'p-limit';
 
 /* * */
@@ -66,7 +69,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	// Load calendar JSON
 
-	const calendarJson = await Dates.fetchCalendarData();
+	const calendarJson = await fetchCalendarData();
 
 	if (!calendarJson.length) {
 		throw new Error('Calendar data unavailable — cannot build supply_by_agency_by_day metrics');
@@ -75,12 +78,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	//
 	// Build a map for fast lookup
 
-	const calendarMap = new Map<string, CalendarEntry>();
-	for (const day of calendarJson) {
-		const dayString = day.date.toString();
-		const formattedDate = `${dayString.slice(0, 4)}-${dayString.slice(4, 6)}-${dayString.slice(6, 8)}`;
-		calendarMap.set(formattedDate, day);
-	}
+	const calendarMap = buildCalendarMap(calendarJson);
 
 	//
 	// Define daily chunks
@@ -95,11 +93,13 @@ export const syncSupplyByAgencyByDay = async () => {
 		year: 2024,
 	});
 
+	const latestRideFilter: Document = {
+		agency_id: { $in: [...GO_CM_AGENCY_IDS] },
+		operational_date: { $exists: true, $ne: null },
+	};
+
 	const latestRide = await ridesCollection.findOne(
-		{
-			agency_id: { $in: [...GO_CM_AGENCY_IDS] },
-			operational_date: { $exists: true, $ne: null },
-		},
+		latestRideFilter,
 		{ projection: { operational_date: 1 }, sort: { operational_date: -1 } },
 	);
 
@@ -110,26 +110,26 @@ export const syncSupplyByAgencyByDay = async () => {
 	}
 
 	const latest = latestOperationalData
-		? Dates.fromOperationalDate(latestOperationalData, 'Europe/Lisbon')
+		? Dates.fromOperationalDateInt(latestOperationalData, 'Europe/Lisbon')
 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
 			.plus({ days: 1 })
 		: Dates.now('Europe/Lisbon')
 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
 			.plus({ days: 1 });
 
-	const allTimestampChunks: { operationalDate: string, start: number }[] = [];
+	const allTimestampChunks: { operationalDate: OperationalDateInt, start: number }[] = [];
 	let cursor = earliestDataNeeded;
 	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ days: 1 });
 		allTimestampChunks.push({
-			operationalDate: cursor.operational_date,
+			operationalDate: cursor.operational_date_int,
 			start: cursor.unix_milliseconds,
 		});
 		cursor = next;
 	}
 
 	Logger.info({ message: [
-		`Date range: ${earliestDataNeeded.operational_date} → ${latestOperationalData ?? 'today'}`,
+		`Date range: ${earliestDataNeeded.operational_date_int} → ${latestOperationalData ?? 'today'}`,
 		`Total chunks: ${allTimestampChunks.length}`,
 		`CM agencies: ${GO_CM_AGENCY_IDS.join(', ')}`,
 	] });
@@ -147,7 +147,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
 		limit(async () => {
 			const chunkTimer = new Timer();
-			const dayLabel = dayLabelFromOperationalDate(chunkData.operationalDate);
+			const dayLabel = dayLabelFromOperationalDate(String(chunkData.operationalDate));
 			const chunkLabel = `${chunkIndex + 1}/${allTimestampChunks.length}`;
 
 			Logger.info({ message: `Chunk ${chunkLabel} START operational_date=${chunkData.operationalDate} (${dayLabel})` });
@@ -264,17 +264,17 @@ export const syncSupplyByAgencyByDay = async () => {
 				continue;
 			}
 
-			if (!agencyMap.has(agencyId)) {
-				agencyMap.set(agencyId, {
+			let agencyDoc = agencyMap.get(agencyId);
+			if (!agencyDoc) {
+				agencyDoc = {
 					data: {},
 					description: `Aggregated supply for agency ${agencyId}`,
 					generated_at: new Date(),
 					metric: metricKey,
 					properties: { agency_id: agencyId },
-				});
+				};
+				agencyMap.set(agencyId, agencyDoc);
 			}
-
-			const agencyDoc = agencyMap.get(agencyId);
 
 			const pricePerKm = pricePerKmByAgency.get(agencyId) ?? 0;
 

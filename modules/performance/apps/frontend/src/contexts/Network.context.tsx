@@ -1,8 +1,10 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { createContext, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+/* * */
+
+import { useNetworkLinesData } from '@/hooks/use-network-lines-data';
+import { useNetworkPatternsData } from '@/hooks/use-network-patterns-data';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
@@ -30,20 +32,17 @@ export function useNetworkContext() {
 
 /* * */
 
-export const NetworkContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const NetworkContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<string[]>(API_ROUTES.performance.NETWORK_LINES);
-	const { data: allPatternsData, isLoading: allPatternsLoading } = useSWR<string[]>(API_ROUTES.performance.NETWORK_PATTERNS);
+	const { data: allLinesData, isLoading: allLinesLoading } = useNetworkLinesData();
+	const { data: allPatternsData, isLoading: allPatternsLoading } = useNetworkPatternsData();
 
 	//
-	// B. Handle actions
-
-	//
-	// C. Define context value
+	// B. Define context value
 
 	const contextValue: NetworkContextState = useMemo(() => ({
 		data: {
@@ -61,7 +60,7 @@ export const NetworkContextProvider = ({ children }: { children: React.ReactNode
 	]);
 
 	//
-	// D. Render components
+	// C. Render components
 
 	return (
 		<NetworkContext.Provider value={contextValue}>

@@ -14,14 +14,14 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
+		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
-		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*"
+		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

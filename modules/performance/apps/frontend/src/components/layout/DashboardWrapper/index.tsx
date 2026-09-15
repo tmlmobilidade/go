@@ -1,19 +1,22 @@
 /* * */
 
-import Breadcrumb from '@/components/layout/Breadcrumb';
-import { DashboardDefinition, TopicDefinition } from '@/constants';
+import { Breadcrumb } from '@/components/layout/Breadcrumb';
+import { type DashboardDefinition, type TopicDefinition } from '@/constants';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 import styles from './styles.module.css';
 
-export default function DashboardWrapper({ children, dashboard, topic }: { children?: React.ReactNode, dashboard: DashboardDefinition, topic: TopicDefinition }) {
+/* * */
+
+export function DashboardWrapper({ children, dashboard, topic }: { children?: React.ReactNode, dashboard: DashboardDefinition, topic: TopicDefinition }) {
 	//
 
 	// A. Setup variables
 
 	const breadcrumbsData = [
-		{ href: '/performance', title: 'Performance' },
-		{ href: `/performance/${topic.key}`, title: topic.label },
-		{ href: `/performance/${topic.key}/${dashboard.key}`, title: dashboard.label },
+		{ href: PAGE_ROUTES.performance.BASE, title: 'Performance' },
+		{ href: topic.route ?? '', title: topic.label },
+		{ href: dashboard.route ?? '', title: dashboard.label },
 	];
 
 	// B. Render components
