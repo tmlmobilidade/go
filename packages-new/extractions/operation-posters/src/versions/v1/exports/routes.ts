@@ -1,31 +1,27 @@
 /* * */
 
 import { GtfsRoutesSchema } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29ExtRoutes } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsStrictV30Routes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { CsvWriter } from '@tmlmobilidade/writers';
 
+import { type OperationPostersV1Context } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 import { type RoutesToCanvasExt } from '../types/RoutesToCanvasExt.js';
 import { getPosterRouteId } from '../utils/get-poster-route-id.js';
-
-import fs from 'node:fs';
-import Papa from 'papaparse';
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportRoutesFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig): Promise<Map<string, string>> {
+export async function exportRoutesFile(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables, exportConfig: ExportHitouchConfig): Promise<Map<string, string>> {
 	//
 	// Export routes.txt
-
-	const routesCsv = new CsvWriter('routes.txt', `${exportConfig.workdir}/routes.txt`, { batch_size: 100000 });
 
 	//
 	// Keep one route per base ID, preferring the main (_0) route's metadata.
 	// Sorting gives a stable fallback when a family has no _0 route.
 
-	const mainRoutes = new Map<string, GtfsStrictV29ExtRoutes>();
+	const mainRoutes = new Map<string, GtfsStrictV30Routes>();
 	const routeIds = new Map<string, string>();
 
 	for (const route of sqlTables.routes.all('ORDER BY route_id ASC')) {
@@ -40,24 +36,21 @@ export async function exportRoutesFile(sqlTables: GtfsStrictV29ExtSQLTables, exp
 		const data = GtfsRoutesSchema.parse({
 			agency_id: route.agency_id,
 			route_color: route.route_color,
-			route_desc: route.route_desc ?? '',
 			route_id: routeId,
 			route_long_name: route.route_long_name,
 			route_short_name: route.route_short_name,
 			route_text_color: route.route_text_color,
 			route_type: route.route_type,
 		});
-		await routesCsv.write(data);
+		await context.writers.routes.write(data);
 	}
 
-	await routesCsv.flush();
+	await context.writers.routes.flush();
 
 	Logger.info({ message: 'Exported routes.txt file.' });
 
 	//
 	// Export route canvas profiles by route and direction.
-
-	const routesToCanvasExtFields: (keyof RoutesToCanvasExt)[] = ['route_id', 'canvas_profile', 'direction_id'];
 
 	const isLineExport = exportConfig.content_mode === 'lines' || exportConfig.content_mode === 'lines_stops';
 	if (isLineExport && !exportConfig.line_codes.length) {
@@ -102,15 +95,9 @@ export async function exportRoutesFile(sqlTables: GtfsStrictV29ExtSQLTables, exp
 	//
 	// Output the routes to canvas ext data
 
-	const routesToCanvasExtCsvData = '\uFEFF' + Papa.unparse(
-		{ data: uniqueRoutesToCanvasExtRows, fields: routesToCanvasExtFields },
-		{ newline: '\r\n' },
-	);
-
-	//
-	// Output the routes to canvas ext file
-
-	fs.writeFileSync(`${exportConfig.workdir}/routesToCanvasExt.txt`, routesToCanvasExtCsvData, { encoding: 'utf-8', flush: true });
+	await context.writers.routes_to_canvas_ext.write(uniqueRoutesToCanvasExtRows);
+	await context.writers.routes_to_canvas_ext.flush();
+	await yieldToEventLoop();
 
 	Logger.info({ message: 'Exported routesToCanvasExt.txt file.' });
 

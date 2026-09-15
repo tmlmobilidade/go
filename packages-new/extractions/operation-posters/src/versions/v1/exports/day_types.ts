@@ -1,20 +1,17 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import fs from 'node:fs';
-import Papa from 'papaparse';
 
 import { DAY_TYPES } from '../day-types.js';
+import { type OperationPostersV1Context } from '../types/context.js';
 import { type DayTypesExt } from '../types/DayTypesExt.js';
-import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 
 /* * */
 
-export async function exportDayTypesFile(exportConfig: ExportHitouchConfig) {
+export async function exportDayTypesFile(context: OperationPostersV1Context) {
 	//
 	// Export day types file
 
-	const dayTypesExtFields: (keyof DayTypesExt)[] = ['day_type_id', 'name', 'sequence_number', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 	const dayTypesExtRows: DayTypesExt[] = DAY_TYPES.map((dayType) => {
 		return {
 			day_type_id: dayType._id,
@@ -30,16 +27,8 @@ export async function exportDayTypesFile(exportConfig: ExportHitouchConfig) {
 		};
 	});
 
-	const dayTypesExtCsvData = Papa.unparse(
-		{ data: dayTypesExtRows, fields: dayTypesExtFields },
-		{
-			newline: '\n',
-			quotes: (value, columnIndex) => columnIndex < 2 && !dayTypesExtFields.includes(value),
-		},
-	);
-
-	if (!fs.existsSync(exportConfig.workdir)) fs.mkdirSync(exportConfig.workdir, { recursive: true });
-	fs.writeFileSync(`${exportConfig.workdir}/day_typesExt.txt`, dayTypesExtCsvData, { encoding: 'utf-8', flush: true });
+	await context.writers.day_types_ext.write(dayTypesExtRows);
+	await context.writers.day_types_ext.flush();
 
 	Logger.info({ message: 'Exported day_typesExt.txt file.' });
 }

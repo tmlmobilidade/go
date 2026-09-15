@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 
 import { getLetterIndex } from './get-letter-index.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
@@ -22,13 +22,13 @@ export interface VariantNote {
  * @param trips - The trips to build variant notes for.
  * @returns A map of shape sequences and a map of trip notes.
  */
-export function buildVariantNotes(trips: GtfsStrictV29ExtTrips[]): { shapeSequences: Map<string, number>, tripNotes: Map<string, VariantNote> } {
+export function buildVariantNotes(trips: GtfsStrictV30Trips[]): { shapeSequences: Map<string, number>, tripNotes: Map<string, VariantNote> } {
 	//
 
 	//
 	// Group trips by route and direction.
 
-	const groups = new Map<string, GtfsStrictV29ExtTrips[]>();
+	const groups = new Map<string, GtfsStrictV30Trips[]>();
 
 	for (const trip of trips) {
 		//
@@ -55,23 +55,23 @@ export function buildVariantNotes(trips: GtfsStrictV29ExtTrips[]): { shapeSequen
 	const shapeSequences = new Map<string, number>();
 	for (const group of groups.values()) {
 		//
-		// Sort trips by pattern and trip IDs.
+		// Sort trips by shape and trip IDs.
 
-		const sortedTrips = [...group].sort((a, b) => a.pattern_id.localeCompare(b.pattern_id) || a.trip_id.localeCompare(b.trip_id));
+		const sortedTrips = [...group].sort((a, b) => a.shape_id.localeCompare(b.shape_id) || a.trip_id.localeCompare(b.trip_id));
 
 		//
 		// Find the main trip.
 
 		const baseRouteId = getPosterRouteId(sortedTrips[0].route_id);
-		const mainTrip = sortedTrips.find(trip => trip.route_id === `${baseRouteId}_0` || trip.pattern_id.startsWith(`${baseRouteId}_0_`)) ?? sortedTrips[0];
-		const patternIds = [mainTrip.pattern_id, ...new Set(sortedTrips.filter(trip => trip.pattern_id !== mainTrip.pattern_id).map(trip => trip.pattern_id))];
-		const sequences = new Map(patternIds.map((patternId, index) => [patternId, index + 1]));
+		const mainTrip = sortedTrips.find(trip => trip.route_id === `${baseRouteId}_0` || trip.shape_id.startsWith(`${baseRouteId}_0_`)) ?? sortedTrips[0];
+		const shapeIds = [mainTrip.shape_id, ...new Set(sortedTrips.filter(trip => trip.shape_id !== mainTrip.shape_id).map(trip => trip.shape_id))];
+		const sequences = new Map(shapeIds.map((shapeId, index) => [shapeId, index + 1]));
 
 		//
 		// Build shape sequences and variant notes.
 
 		for (const trip of sortedTrips) {
-			const sequence = sequences.get(trip.pattern_id);
+			const sequence = sequences.get(trip.shape_id);
 			if (!sequence) continue;
 			const existingSequence = shapeSequences.get(trip.shape_id);
 			if (existingSequence && existingSequence !== sequence) throw new Error(`Shape ${trip.shape_id} has conflicting variant orders.`);

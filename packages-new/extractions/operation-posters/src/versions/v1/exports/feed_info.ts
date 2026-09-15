@@ -2,21 +2,18 @@
 
 import { type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { CsvWriter } from '@tmlmobilidade/writers';
 
-import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
+import { type OperationPostersV1Context } from '../types/context.js';
 
 /* * */
 
-export async function exportFeedInfoFile(feedInfo: GtfsFeedInfo, exportConfig: ExportHitouchConfig) {
+export async function exportFeedInfoFile(context: OperationPostersV1Context, feedInfo: GtfsFeedInfo) {
 	//
 	// Export feed_info.txt file
 
-	const feedInfoCsv = new CsvWriter('feed_info.txt', `${exportConfig.workdir}/feed_info.txt`, { batch_size: 10000 });
+	await context.writers.feed_info.write(feedInfo);
 
-	await feedInfoCsv.write(feedInfo);
-
-	await feedInfoCsv.flush();
+	await context.writers.feed_info.flush();
 
 	Logger.info({ message: 'Exported feed_info.txt file.' });
 }

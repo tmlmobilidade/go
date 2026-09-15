@@ -1,11 +1,10 @@
 /* * */
 
 import { GtfsShapesSchema } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
+import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { CsvWriter } from '@tmlmobilidade/writers';
 
-import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
+import { type OperationPostersV1Context } from '../types/context.js';
 import { buildVariantNotes } from '../utils/build-variant-notes.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
@@ -13,19 +12,16 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /**
  * Export geometry and explicit pattern ordering to match the letters in stop-time notes.
+ * @param context - The export context and file writers.
  * @param sqlTables - The SQL tables to export from.
- * @param exportConfig - The export configuration.
  */
-export async function exportShapesFiles(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig) {
+export async function exportShapesFiles(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables) {
 	//
 
 	//
 	// Export shapes.txt and shapesExt.txt
 
 	const { shapeSequences } = buildVariantNotes(sqlTables.trips.all());
-	const shapesCsv = new CsvWriter('shapes.txt', `${exportConfig.workdir}/shapes.txt`, { batch_size: 10000 });
-	const shapesExtCsv = new CsvWriter('shapesExt.txt', `${exportConfig.workdir}/shapesExt.txt`, { batch_size: 10000, include_bom: true, new_line_character: '\r\n' });
-	const extensionFields = ['shape_id', 'sequence_number', 'priority_number', 'note', 'direction_description', 'via_text'] as const;
 	const exportedShapeIds = new Set<string>();
 	let exportedRows = 0;
 
@@ -38,9 +34,10 @@ export async function exportShapesFiles(sqlTables: GtfsStrictV29ExtSQLTables, ex
 
 		const sequence = shapeSequences.get(shapeData.shape_id);
 		if (!sequence) continue;
-		await shapesCsv.write(GtfsShapesSchema.parse(shapeData));
+		await context.writers.shapes.write(GtfsShapesSchema.parse(shapeData));
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
+
 		if (exportedShapeIds.has(shapeData.shape_id)) continue;
 
 		//
@@ -54,14 +51,15 @@ export async function exportShapesFiles(sqlTables: GtfsStrictV29ExtSQLTables, ex
 			shape_id: shapeData.shape_id,
 			via_text: '',
 		};
-		await shapesExtCsv.write(Object.fromEntries(extensionFields.map(field => [field, extension[field]])));
+		await context.writers.shapes_ext.write(extension);
 		exportedShapeIds.add(shapeData.shape_id);
 	}
 
 	//
 	// Flush and Log
 
-	await shapesCsv.flush();
-	await shapesExtCsv.flush();
+	await context.writers.shapes.flush();
+	await context.writers.shapes_ext.flush();
+
 	Logger.info({ message: `Exported shapes.txt and shapesExt.txt for ${exportedShapeIds.size} patterns.` });
 }

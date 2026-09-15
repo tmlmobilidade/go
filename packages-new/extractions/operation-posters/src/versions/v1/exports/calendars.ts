@@ -1,20 +1,18 @@
 /* * */
 
 import { type GtfsCalendar, type GtfsCalendarDates } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29ExtStopTimes, type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
+import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { CsvWriter } from '@tmlmobilidade/writers';
-import fs from 'node:fs';
-import Papa from 'papaparse';
 
 import { DAY_TYPES } from '../day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '../get-names.js';
 import { type CalendarAssignmentsExt } from '../types/CalendarAssignmentsExt.js';
 import { type CalendarExt } from '../types/CalendarExt.js';
+import { type OperationPostersV1Context } from '../types/context.js';
 import { type DayTypeConfig } from '../types/DayTypeConfig.js';
 import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 import { type GtfsDate } from '../types/GtfsDate.js';
@@ -22,7 +20,7 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
+export async function exportCalendarFiles(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables, exportConfig: ExportHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
 	//
 
 	//
@@ -39,38 +37,38 @@ export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, 
 	//
 	// Get all unique Pattern IDs from trips
 
-	const allPatternIds = sqlTables.trips.all().map(trip => trip.pattern_id).sort();
-	const allUniquePatternIds = Array.from(new Set(allPatternIds));
+	const allShapeIds = sqlTables.trips.all().map(trip => trip.shape_id).sort();
+	const allUniqueShapeIds = Array.from(new Set(allShapeIds));
 
-	Logger.info({ message: `Found ${allUniquePatternIds.length} unique pattern IDs in trips.` });
+	Logger.info({ message: `Found ${allUniqueShapeIds.length} unique shape IDs in trips.` });
 
 	const updatedServiceIds: Record<string, { _id: string, dates: OperationalDate[], day_type: string, exceptions: string[], period: string }> = {};
 
 	//
 	// Loop through each pattern_id and find trips associated with it
 
-	for (const patternId of allUniquePatternIds) {
+	for (const shapeId of allUniqueShapeIds) {
 		//
 
 		//
-		// Get all trips with this pattern_id
+		// Get all trips with this shape_id
 
-		const allTripsForThisPatternId = sqlTables.trips.all('WHERE pattern_id = ?', [patternId]);
+		const allTripsForThisShapeId = sqlTables.trips.all('WHERE shape_id = ?', [shapeId]);
 
-		if (!allTripsForThisPatternId?.length) continue;
+		if (!allTripsForThisShapeId?.length) continue;
 
 		//
 		// Group trips that have the same stop_times
 
-		const equalTrips: Record<string, { sample_stop_times: GtfsStrictV29ExtStopTimes[], sample_trip: GtfsStrictV29ExtTrips, service_ids: string[], start_time: string, trip_ids: string[] }> = {};
+		const equalTrips: Record<string, { sample_stop_times: GtfsStrictV30StopTimes[], sample_trip: GtfsStrictV30Trips, service_ids: string[], start_time: string, trip_ids: string[] }> = {};
 
-		for (const tripData of allTripsForThisPatternId) {
+		for (const tripData of allTripsForThisShapeId) {
 			// Get stop_times for this trip
 			const stopTimesForTrip = sqlTables.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [tripData.trip_id]);
 			if (!stopTimesForTrip?.length) continue;
 			// Stringify stop_times to use as a key.
 			// This ignores trip_id to group trips with same stop_times but different trip_ids,
-			// essentially grouping trips with same pattern and timings but different service_ids.
+			// essentially grouping trips with same shape and timings but different service_ids.
 			// Save the arrival_time of the first stop as start_time for later reference,
 			// as well as the list of service_ids associated with these trips.
 			const stopTimesKey = stopTimesForTrip.map(st => JSON.stringify({ ...st, trip_id: null })).join('|');
@@ -387,11 +385,7 @@ export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, 
 	// Output the calendar assignments file with the new service_ids,
 	// and the calendar exceptions file with the detected exceptions.
 
-	const calendarCsv = exportConfig.source_has_calendar ? new CsvWriter('calendar.txt', `${exportConfig.workdir}/calendar.txt`, { batch_size: 100000 }) : undefined;
-	const calendarDatesCsv = new CsvWriter('calendar_dates.txt', `${exportConfig.workdir}/calendar_dates.txt`, { batch_size: 100000 });
-	const calendarAssignmentsExtFields: (keyof CalendarAssignmentsExt)[] = ['day_type_id', 'service_id'];
 	const calendarAssignmentsExtRows: CalendarAssignmentsExt[] = [];
-	const calendarExtFields: (keyof CalendarExt)[] = ['service_id', 'index', 'comment'];
 	const calendarExtRows: CalendarExt[] = [];
 	let exportedDates = 0;
 
@@ -407,7 +401,7 @@ export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, 
 		//
 		// Output the calendar file
 
-		if (calendarCsv) {
+		if (exportConfig.source_has_calendar) {
 			//
 			// Output the calendar data
 
@@ -423,7 +417,7 @@ export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, 
 				tuesday: '0',
 				wednesday: '0',
 			};
-			await calendarCsv.write(calendarData);
+			await context.writers.calendars.write(calendarData);
 		}
 
 		//
@@ -465,7 +459,7 @@ export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, 
 				exception_type: '1',
 				service_id: serviceIdData._id,
 			};
-			await calendarDatesCsv.write(data);
+			await context.writers.calendar_dates.write(data);
 			exportedDates++;
 			await yieldToEventLoop(exportedDates);
 		}
@@ -474,8 +468,8 @@ export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, 
 	//
 	// Flush the calendar files
 
-	await calendarCsv?.flush();
-	await calendarDatesCsv.flush();
+	await context.writers.calendars.flush();
+	await context.writers.calendar_dates.flush();
 
 	//
 	// Output the calendar assignments file
@@ -484,35 +478,23 @@ export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, 
 		//
 		// Output the calendar assignments data
 
-		const calendarAssignmentsExtCsvData = Papa.unparse(
-			{ data: calendarAssignmentsExtRows, fields: calendarAssignmentsExtFields },
-			{
-				newline: '\n',
-				quotes: value => !calendarAssignmentsExtFields.includes(value as keyof CalendarAssignmentsExt),
-			},
-		);
-		fs.writeFileSync(`${exportConfig.workdir}/calendar_assignmentsExt.txt`, calendarAssignmentsExtCsvData, { encoding: 'utf-8', flush: true });
+		await context.writers.calendar_assignments_ext.write(calendarAssignmentsExtRows);
+		await context.writers.calendar_assignments_ext.flush();
 	}
 
 	if (calendarExtRows.length) {
 		//
 		// Output the calendar exceptions data
 
-		const calendarExtCsvData = Papa.unparse(
-			{ data: calendarExtRows, fields: calendarExtFields },
-			{
-				newline: '\n',
-				quotes: value => !calendarExtFields.includes(value as keyof CalendarExt),
-			},
-		);
-		fs.writeFileSync(`${exportConfig.workdir}/calendarExt.txt`, calendarExtCsvData, { encoding: 'utf-8', flush: true });
+		await context.writers.calendar_ext.write(calendarExtRows);
+		await context.writers.calendar_ext.flush();
 	}
 
 	//
 	// Log the exported calendar files
 
 	const exportedCalendarFiles = [
-		...(calendarCsv ? ['calendar.txt'] : []),
+		...(exportConfig.source_has_calendar ? ['calendar.txt'] : []),
 		'calendar_dates.txt',
 		...(calendarAssignmentsExtRows.length ? ['calendar_assignmentsExt.txt'] : []),
 		...(calendarExtRows.length ? ['calendarExt.txt'] : []),

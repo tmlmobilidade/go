@@ -1,20 +1,18 @@
 /* * */
 
 import { GtfsTripsSchema } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
+import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { CsvWriter } from '@tmlmobilidade/writers';
 
-import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
+import { type OperationPostersV1Context } from '../types/context.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportTripsFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig, routeIds: ReadonlyMap<string, string>) {
+export async function exportTripsFile(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables, routeIds: ReadonlyMap<string, string>) {
 	//
 	// Export trips.txt
 
-	const tripsCsv = new CsvWriter('trips.txt', `${exportConfig.workdir}/trips.txt`, { batch_size: 10000 });
 	let exportedRows = 0;
 
 	for (const tripData of sqlTables.trips.all('ORDER BY trip_id ASC')) {
@@ -30,12 +28,12 @@ export async function exportTripsFile(sqlTables: GtfsStrictV29ExtSQLTables, expo
 			trip_id: tripData.trip_id,
 			wheelchair_accessible: tripData.wheelchair_accessible ?? '0',
 		});
-		await tripsCsv.write(data);
+		await context.writers.trips.write(data);
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
 	}
 
-	await tripsCsv.flush();
+	await context.writers.trips.flush();
 
 	Logger.info({ message: 'Exported trips.txt file.' });
 }

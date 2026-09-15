@@ -1,53 +1,46 @@
 /* * */
 
-import { type GtfsStrictV29ExtStops } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
+import { OperationPostersV1Stops } from '@tmlmobilidade/go-types-operation';
+import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { CsvWriter } from '@tmlmobilidade/writers';
-import fs from 'node:fs';
-import Papa from 'papaparse';
 
+import { type OperationPostersV1Context } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
 import { type StopsToCanvasExt } from '../types/StopsToCanvasExt.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportStopsFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportHitouchConfig) {
+export async function exportStopsFile(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables, exportConfig: ExportHitouchConfig) {
 	//
 	// Export stops.txt
 
-	const stopsCsv = new CsvWriter('stops.txt', `${exportConfig.workdir}/stops.txt`, { batch_size: 100000 });
 	let exportedRows = 0;
 
 	for (const stopData of sqlTables.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times)')) {
-		const data: GtfsStrictV29ExtStops = {
+		const data: OperationPostersV1Stops = {
 			location_type: stopData.location_type,
 			parent_station: stopData.parent_station,
 			platform_code: stopData.platform_code,
 			stop_code: stopData.stop_code,
-			stop_desc: stopData.stop_desc,
 			stop_id: stopData.stop_id,
 			stop_lat: stopData.stop_lat,
 			stop_lon: stopData.stop_lon,
 			stop_name: stopData.stop_name,
-			stop_timezone: stopData.stop_timezone,
-			stop_url: stopData.stop_url,
 			wheelchair_boarding: stopData.wheelchair_boarding,
 		};
-		await stopsCsv.write(data);
+		await context.writers.stops.write(data);
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
 	}
 
-	await stopsCsv.flush();
+	await context.writers.stops.flush();
 
 	Logger.info({ message: 'Exported stops.txt file.' });
 
 	//
 	// Export stop canvas profiles by stop and direction.
 
-	const stopsToCanvasExtFields: (keyof StopsToCanvasExt)[] = ['stop_id', 'canvas_profile', 'direction_id'];
 	const stopPlaceholders = exportConfig.stop_ids.map(() => '?').join(', ');
 	const isStopExport = (exportConfig.content_mode === 'stops' || exportConfig.content_mode === 'lines_stops') && exportConfig.stop_ids.length > 0;
 	const canvasFilter = isStopExport
@@ -80,18 +73,8 @@ export async function exportStopsFile(sqlTables: GtfsStrictV29ExtSQLTables, expo
 	//
 	// Output the stops to canvas ext data
 
-	const stopsToCanvasExtCsvData = '\uFEFF' + Papa.unparse(
-		{ data: stopsToCanvasExtRows, fields: stopsToCanvasExtFields },
-		{
-			newline: '\r\n',
-			quotes: (value, columnIndex) => columnIndex === 0 && !stopsToCanvasExtFields.includes(value as keyof StopsToCanvasExt),
-		},
-	);
-
-	//
-	// Output the stops to canvas ext file
-
-	fs.writeFileSync(`${exportConfig.workdir}/stopsToCanvasExt.txt`, stopsToCanvasExtCsvData, { encoding: 'utf-8', flush: true });
+	await context.writers.stops_to_canvas_ext.write(stopsToCanvasExtRows);
+	await context.writers.stops_to_canvas_ext.flush();
 
 	Logger.info({ message: 'Exported stopsToCanvasExt.txt file.' });
 
