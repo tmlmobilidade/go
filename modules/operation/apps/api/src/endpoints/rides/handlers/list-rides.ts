@@ -1,9 +1,9 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type ControllerRidesListFilters, ControllerRidesListFiltersSchema, type ControllerRidesListItem } from '@tmlmobilidade/go-operation-pckg-types';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { readFile } from 'node:fs/promises';
 
@@ -18,11 +18,11 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	//
 	// Apply permission filters to the request body
 
-	request.body.agency_ids = PermissionCatalog.filterPermissionResourceValues<string>({
-		action: PermissionCatalog.all.rides.actions.analysis_read,
+	request.body.agency_ids = filterPermissionResourceValues<string>({
+		action: 'analysis_read',
 		permissions: request.permissions,
 		resourceKey: 'agency_ids',
-		scope: PermissionCatalog.all.rides.scope,
+		scope: 'rides',
 		values: request.body.agency_ids,
 	});
 
@@ -223,14 +223,7 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	const queryResult = await labDb.queryFromString<ControllerRidesListItem>(sql, params);
 
 	//
-	// Parse and return the result
-
-	if (!queryResult?.length) {
-		return sendErrorApiResponse(reply, {
-			error: 'No rides found matching the filters',
-			status_code: '404',
-		});
-	}
+	// Return the results
 
 	return sendSuccessApiResponse(reply, queryResult);
 }

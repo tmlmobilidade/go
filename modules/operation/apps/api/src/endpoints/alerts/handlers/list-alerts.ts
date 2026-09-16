@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type AlertsListFilters, AlertsListFiltersSchema, type AlertsListItem, AlertsListItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
@@ -55,14 +55,7 @@ export async function listAlertsHandler(request: FastifyRequest<{ Body: AlertsLi
 	const aggregationResult = await goDb.operation.alerts.aggregate(pipeline);
 
 	//
-	// Parse and return the result
-
-	if (!aggregationResult?.length) {
-		return sendErrorApiResponse(reply, {
-			error: 'No alerts found matching the filters',
-			status_code: '404',
-		});
-	}
+	// Return the results
 
 	return sendSuccessApiResponse(reply, aggregationResult);
 }

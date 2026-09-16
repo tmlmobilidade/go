@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PlansListFilters, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
-import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -46,7 +46,7 @@ export function usePlansListData(): UsePlansListDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<PlansListItem[]>>([API_ROUTES.operation.PLANS_LIST, query], {
+	const { data, error, isLoading, isValidating, mutate } = useSWR([API_ROUTES.operation.PLANS_LIST, query], {
 		fetcher: async ([url, query]) => await fetchApiData<PlansListItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 30_000, // 30 seconds
 	});

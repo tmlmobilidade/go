@@ -23,7 +23,7 @@ export function ValidationsList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const { data: agenciesData } = useGtfsValidationsAgenciesData({
+	const { data: agenciesData, isLoading: agenciesLoading } = useGtfsValidationsAgenciesData({
 		permissions: { actions: ['read'], scope: 'gtfs_validations' },
 	});
 
@@ -88,7 +88,7 @@ export function ValidationsList() {
 			{validationsData.error && <ErrorDisplay message={validationsData.error} />}
 			<DataTable
 				columns={columns}
-				isLoading={validationsData.isLoading}
+				isLoading={validationsData.isLoading || agenciesLoading}
 				onRowClick={handleRowClick}
 				records={validationsData.data}
 				rowIdAccessor="_id"

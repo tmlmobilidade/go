@@ -27,7 +27,7 @@ export function AlertsList() {
 
 	const { alertId } = useAlertsDetailAlertId();
 
-	const { data: agenciesData } = useAlertsAgenciesData({
+	const { data: agenciesData, isLoading: agenciesLoading } = useAlertsAgenciesData({
 		permissions: {
 			actions: [PermissionCatalog.all.alerts.actions.read],
 			scope: PermissionCatalog.all.alerts.scope,
@@ -109,7 +109,7 @@ export function AlertsList() {
 			{alertsData.error && <ErrorDisplay message={alertsData.error} />}
 			<DataTable
 				columns={columns}
-				isLoading={alertsData.isLoading}
+				isLoading={alertsData.isLoading || agenciesLoading}
 				onRowClick={handleRowClick}
 				records={alertsData.data}
 				rowIdAccessor="_id"
