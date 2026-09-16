@@ -5,12 +5,11 @@ import { getRideHash, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-uti
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HashableRide, type HashedShape, type HashedTrip, type Plan, RideSchema } from '@tmlmobilidade/go-types-operation';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { startHeartbeat } from '@tmlmobilidade/go-utils-exec';
 import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { fromOperationalTimeAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
 import { toHashedShape } from '../utils/to-hashed-shape.js';
@@ -224,10 +223,18 @@ export async function parsePlanTask(planData: Plan) {
 					const uniqueIdValueForRide = `${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`;
 
 					const startTimeScheduledString = stopTimesData[0].arrival_time;
-					const startTimeScheduledUnixMilliseconds = fromOperationalTimeAndOperationalDateToUnixMilliseconds(startTimeScheduledString, calendarDate);
+					const startTimeScheduledUnixMilliseconds = fromOperationalDateTimeToUnixMilliseconds({
+						operational_date: calendarDate,
+						operational_time: startTimeScheduledString,
+						timezone: agencyData.timezone,
+					});
 
 					const endTimeScheduledString = stopTimesData[stopTimesData.length - 1].arrival_time;
-					const endTimeScheduledUnixMilliseconds = fromOperationalTimeAndOperationalDateToUnixMilliseconds(endTimeScheduledString, calendarDate);
+					const endTimeScheduledUnixMilliseconds = fromOperationalDateTimeToUnixMilliseconds({
+						operational_date: calendarDate,
+						operational_time: endTimeScheduledString,
+						timezone: agencyData.timezone,
+					});
 
 					//
 					// Build the final Ride objects
