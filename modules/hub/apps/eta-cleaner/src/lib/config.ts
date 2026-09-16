@@ -11,7 +11,6 @@ export const AppConfig = Object.freeze({
 		cleanupHistoricalNodeTravelTimesAggregation: true,
 		cleanupHistoricalRides: true,
 		cleanupHistoricalShapes: true,
-		cleanupHistoricalVehicleEvents: true,
 	},
 	windowHoursBefore: 1,
 });

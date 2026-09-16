@@ -1,20 +1,22 @@
--- Delete orphan rows from eta.hist_node_travel_times.
+-- Out-of-window partitions of eta.hist_node_travel_times.
 --
--- An "orphan" row is any record whose `ride_id` no longer exists in
--- eta.hist_rides. Once the historical rides cleanup has pruned stale
--- rides, every hist_node_travel_times row referencing one of those
--- gone rides becomes an orphan and should be removed.
+-- The table is partitioned by the UTC day of `created_at` (YYYYMMDD), so
+-- ageing data out is a partition drop, not a mutation. This file only lists the
+-- partitions to drop; the cleaner task issues one
+-- `ALTER TABLE eta.hist_node_travel_times DROP PARTITION <id>` per row.
+-- A table TTL of 35 days is the safety net if the cleaner is not running.
 --
--- Preview the number of orphan rows that will be deleted:
+-- Parameters:
+--   {historical_data_days_back:UInt32} = days kept relative to today (UTC)
 
-SELECT count() AS rows_to_delete FROM eta.hist_node_travel_times
-WHERE ride_id NOT IN (
-    SELECT DISTINCT _id FROM eta.hist_rides
-);
-
--- Delete all orphan rows from eta.hist_node_travel_times:
-
-ALTER TABLE eta.hist_node_travel_times
-DELETE WHERE ride_id NOT IN (
-    SELECT DISTINCT _id FROM eta.hist_rides
-);
+SELECT
+    partition AS partition_id,
+    sum(rows) AS rows
+FROM system.parts
+WHERE
+    database = 'eta'
+    AND table = 'hist_node_travel_times'
+    AND active
+    AND toUInt32(partition) < toYYYYMMDD(subtractDays(today(), {historical_data_days_back:UInt32}))
+GROUP BY partition
+ORDER BY partition;

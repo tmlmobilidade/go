@@ -7,7 +7,6 @@ import { cleanupCurrentWaypoints } from '@/tasks/cleanup-current-waypoints.js';
 import { cleanupHistoricalNodeTravelTimesAggregation } from '@/tasks/cleanup-historical-node-travel-times-aggregation.js';
 import { cleanupHistoricalNodeTravelTimes } from '@/tasks/cleanup-historical-node-travel-times.js';
 import { cleanupHistoricalRides } from '@/tasks/cleanup-historical-rides.js';
-import { cleanupHistoricalVehicleEvents } from '@/tasks/cleanup-historical-vehicle-events.js';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -68,12 +67,9 @@ export async function main() {
 		await cleanupHistoricalRides(keepRideIds);
 	}
 
-	//
-	// Cleanup historical vehicle events
-
-	if (AppConfig.pipelineSteps.cleanupHistoricalVehicleEvents) {
-		await cleanupHistoricalVehicleEvents();
-	}
+	// Historical vehicle events are no longer deleted here: eta.hist_vehicle_events
+	// only ever receives events of pass-grade rides in the window and ages them
+	// out with a table TTL, so there is nothing left to prune by mutation.
 
 	//
 	// Cleanup historical node travel times

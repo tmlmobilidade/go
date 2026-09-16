@@ -4,10 +4,9 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { EncodedPolyline } from '@tmlmobilidade/go-types-geo';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { chunkLineStringByDistance, fromEncodedPolylineToGeoJsonLineString, geohashEncode } from '@tmlmobilidade/go-utils-geo';
+import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
-
-/** Matches snap-join precision in build-hist-node-travel-times.sql (`geohashesInBox(..., 6)`). */
 
 const BATCH_SIZE = 10_000;
 const TABLE = 'eta.hist_shape_nodes';
@@ -30,21 +29,38 @@ interface HistShapeNode {
 /* * */
 
 /**
- * Densifies distinct historical ride shapes into equidistant nodes and
- * inserts them into `eta.hist_shape_nodes` for spatial snapping.
+ * Densifies the shapes referenced by `eta.hist_rides` into equidistant nodes
+ * and inserts them into `eta.hist_shape_nodes` for spatial snapping.
  *
- * For each unique `(hashed_shape_id, shape_polyline)` in `eta.hist_rides`:
+ * Only shapes that are not in the table yet are processed: a shape's node
+ * geometry is immutable (it is keyed by the hash of the polyline), so once
+ * loaded it never needs to be sent again. On a steady-state run this is a
+ * handful of new shapes, not the whole network.
+ *
+ * For each missing `(hashed_shape_id, shape_polyline)` from `operation.hashed_shapes`:
  * 1. Decode the encoded polyline to a GeoJSON LineString.
- * 2. Resample it every `chunkLengthMeters` along the path.
- * 3. Write each node with lat/lon and a geohash-7 cell (bloom-filter lookups).
+ * 2. Resample it every `chunkLengthMeters` along the path (first vertex,
+ *    equidistant nodes, last vertex; no raw vertices in between).
+ * 3. Write each node with lat/lon and its geohash cell at `geohashPrefixLength`,
+ *    which must match the precision used by the snap joins.
  *
  * @param chunkLengthMeters - Target spacing between consecutive shape nodes.
+ * @param geohashPrefixLength - Geohash precision of the `geohash` column.
  */
 export async function loadHistoricalShapeNodes(chunkLengthMeters: number, geohashPrefixLength: number): Promise<void> {
 	const shapes = await labDb.queryFromString<HistShapeRow>(`
-		SELECT DISTINCT hashed_shape_id, shape_polyline
-		FROM eta.hist_rides
+		SELECT _id AS hashed_shape_id, shape_polyline
+		FROM operation.hashed_shapes FINAL
+		WHERE _id IN (SELECT DISTINCT hashed_shape_id FROM eta.hist_rides)
+		  AND _id NOT IN (SELECT DISTINCT hashed_shape_id FROM ${TABLE})
 	`);
+
+	if (shapes.length === 0) {
+		Logger.info({ message: 'hist_shape_nodes already covers every historical shape; nothing to load' });
+		return;
+	}
+
+	Logger.info({ message: `Densifying ${shapes.length} new shapes into ${TABLE}` });
 
 	const client = await labDb.getClient();
 	const writer = new BatchWriter<HistShapeNode>({

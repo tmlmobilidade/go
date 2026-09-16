@@ -2,41 +2,48 @@
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { performInTimeChunks } from '@tmlmobilidade/go-utils-exec';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { Logger } from '@tmlmobilidade/logger';
+
+import { type DayChunk, utcDayChunksNeedingWork } from './day-coverage.js';
 
 /* * */
 
 const SQL_PATH = sqlPath('hub', 'eta/loader/build-hist-node-travel-times.sql');
+const TABLE = 'eta.hist_node_travel_times';
 
 /* * */
 
 /**
  * Snaps historical vehicle events to shape nodes and writes per-node travel
- * times into `eta.hist_node_travel_times`, one day at a time.
+ * times into `eta.hist_node_travel_times`, one UTC day at a time.
  *
- * Each chunk runs `build-hist-node-travel-times.sql` over `{chunk_start, chunk_end}`.
+ * Only days that need work are processed (see `utcDayChunksNeedingWork`): the
+ * newest two days always, plus any day inside the window with no rows yet.
+ * The table is partitioned by UTC day, so a day is rebuilt by dropping its
+ * partition and inserting again; re-running is idempotent and never leaves
+ * duplicates behind.
  *
- * @param windowStart - Inclusive start of the processing window.
- * @param windowEnd - Exclusive end of the processing window.
+ * @param windowStart - Inclusive start of the historical window.
+ * @param windowEnd - Exclusive end of the historical window.
+ * @returns The chunks that were (re)built, newest first.
  */
-export async function buildHistNodeTravelTimes(windowStart: UnixMilliseconds, windowEnd: UnixMilliseconds): Promise<void> {
-	await performInTimeChunks({
-		endDate: windowEnd,
-		intervalHrs: 24,
-		onChunk: async (chunk) => {
-			const start = Dates.fromUnixMilliseconds(chunk.start);
-			const end = Dates.fromUnixMilliseconds(chunk.end);
+export async function buildHistNodeTravelTimes(windowStart: UnixMilliseconds, windowEnd: UnixMilliseconds): Promise<DayChunk[]> {
+	const chunks = await utcDayChunksNeedingWork(TABLE, windowStart, windowEnd);
 
-			Logger.progress({
-				message: `[${chunk.index + 1}/${chunk.total}] hist_node_travel_times ${start.iso} [${chunk.start}] → ${end.iso} [${chunk.end}]`,
-			});
+	if (chunks.length === 0) {
+		Logger.info({ message: 'hist_node_travel_times is up to date; nothing to build' });
+		return [];
+	}
 
-			await labDb.queryFromFile(SQL_PATH, { chunk_end: chunk.end, chunk_start: chunk.start });
-		},
-		order: 'desc',
-		startDate: windowStart,
-	});
+	for (const [index, chunk] of chunks.entries()) {
+		Logger.progress({
+			message: `[${index + 1}/${chunks.length}] hist_node_travel_times ${chunk.yyyymmdd} [${chunk.start} → ${chunk.end})`,
+		});
+
+		await labDb.command({ query: `ALTER TABLE ${TABLE} DROP PARTITION ${chunk.yyyymmdd}` });
+		await labDb.queryFromFile(SQL_PATH, { chunk_end: chunk.end, chunk_start: chunk.start });
+	}
+
+	return chunks;
 }
