@@ -55,17 +55,17 @@ export function MapOverlayObservedPathPopup({ data, latitude, longitude, totalCo
 				<Section gap="md">
 					<Section alignItems="center" flexDirection="row" gap="md" justifyContent="space-between" padding="none">
 						<IdTag displayId={shortenedVehicleEventId} id="" copyOnClick />
-						<Label variant="muted" singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.position', { index_position: data.index_position, total_count: totalCount })}</Label>
+						<Label variant="muted" singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.position', '', { index_position: data.index_position, total_count: totalCount })}</Label>
 					</Section>
 					<UnixMillisecondsDisplay value={data.created_at} showDate showSeconds showTime />
 				</Section>
 				<Divider />
 				<Section gap="md">
-					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.vehicle_id', { vehicle_id: data.vehicle_id })}</Label>
-					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.driver_id', { driver_id: data.driver_id ?? '-' })}</Label>
-					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.speed', { speed: data.speed ?? '-' })}</Label>
-					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.bearing', { bearing: data.bearing ?? '-' })}</Label>
-					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.stop_id', { stop_id: data.stop_id ?? '-' })}</Label>
+					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.vehicle_id', '', { vehicle_id: data.vehicle_id })}</Label>
+					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.driver_id', '', { driver_id: data.driver_id ?? '-' })}</Label>
+					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.speed', '', { speed: data.speed ?? '-' })}</Label>
+					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.bearing', '', { bearing: data.bearing ?? '-' })}</Label>
+					<Label singleLine>{t('shared:map.overlays.MapOverlayObservedPathPopup.stop_id', '', { stop_id: data.stop_id ?? '-' })}</Label>
 				</Section>
 			</Surface>
 		</Popup>
