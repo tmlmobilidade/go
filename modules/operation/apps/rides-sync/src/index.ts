@@ -59,6 +59,22 @@ async function main() {
 			intervalHrs: 12,
 			onChunk: async (chunk) => {
 				try {
+					// For rides syncing, we need to avoid adding and deleting rides
+					// for the present moment, as other streaming workers are already
+					// handling them. Performing this sync at the same time would cause
+					// conflicts and inconsistencies.
+					const presentMomentStart = Dates.now('utc').minus({ hours: 2 }).unix_milliseconds;
+					const presentMomentEnd = Dates.now('utc').plus({ hours: 2 }).unix_milliseconds;
+					// Check if the chunk is within the present moment
+					if (chunk.start >= presentMomentStart && chunk.start <= presentMomentEnd) {
+						Logger.info({ message: `Skipping chunk ${chunk.start} as it starts within the present moment.` });
+						return;
+					}
+					if (chunk.end >= presentMomentStart && chunk.end <= presentMomentEnd) {
+						Logger.info({ message: `Skipping chunk ${chunk.end} as it ends within the present moment.` });
+						return;
+					}
+					// If the chunk is not within the present moment, sync it
 					await syncRides(chunk);
 				} catch (error) {
 					// Verify if the error is related to
