@@ -1,13 +1,13 @@
 /* * */
 
 import { type GtfsStrictV30Routes } from '@tmlmobilidade/go-types-gtfs-strict';
-import { OperationPostersV1RoutesSchema } from '@tmlmobilidade/go-types-operation';
+import { OperationPostersV1RoutesSchema, type OperationPostersV1RoutesToCanvasExt } from '@tmlmobilidade/go-types-operation';
 import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 
 import { type OperationPostersV1Context } from '../types/context.js';
-import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
-import { type RoutesToCanvasExt } from '../types/RoutesToCanvasExt.js';
+import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
+import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
 import { getPosterRouteId } from '../utils/get-poster-route-id.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
@@ -53,22 +53,15 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 	// Export route canvas profiles by route and direction.
 
 	const isLineExport = exportConfig.content_mode === 'lines' || exportConfig.content_mode === 'lines_stops';
-	if (isLineExport && !exportConfig.line_codes.length) {
-		throw new Error('Selected lines are required for route poster targets.');
-	}
-	const lineIdMatchExpression = exportConfig.line_codes
-		.map(() => '(CAST(routes.line_id AS TEXT) = ? OR CAST(routes.line_id AS TEXT) GLOB ?)')
-		.join(' OR ');
-	const lineFilter = isLineExport ? `WHERE ${exportConfig.lines_mode === 'exclude' ? 'NOT' : ''} (${lineIdMatchExpression})` : '';
-	const lineFilterParameters = isLineExport ? exportConfig.line_codes.flatMap(lineCode => [lineCode, `${lineCode}_*`]) : [];
+	const { clause, parameters } = getCanvasLineFilter([...routeIds.keys()], exportConfig);
+	const lineFilter = clause ? `WHERE ${clause}` : '';
 
 	const routesToCanvasExtRows = sqlTables._db.databaseInstance.prepare(
 		` SELECT DISTINCT trips.route_id, trips.direction_id
 		FROM trips
-		INNER JOIN routes ON routes.route_id = trips.route_id
 		${lineFilter}
 		ORDER BY trips.route_id ASC, trips.direction_id ASC `,
-	).all(...lineFilterParameters).map((row: { direction_id: number, route_id: string }): RoutesToCanvasExt => {
+	).all(...parameters).map((row: { direction_id: number, route_id: string }): OperationPostersV1RoutesToCanvasExt => {
 		const routeId = routeIds.get(row.route_id);
 		if (!routeId) throw new Error(`Cannot export canvas target: route ${row.route_id} was not exported.`);
 		return {

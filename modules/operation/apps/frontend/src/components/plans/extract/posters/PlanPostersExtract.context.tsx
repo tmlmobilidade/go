@@ -122,7 +122,7 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	const hasSelectedLines = (contentMode === 'lines' || contentMode === 'lines_stops') && lineIds.length > 0;
 	const hasSelectedStops = (contentMode === 'stops' || contentMode === 'lines_stops') && stopIds.length > 0;
 	const hasSelectedContent = contentMode === 'all' || (contentMode === 'lines_stops' ? hasSelectedLines && hasSelectedStops : hasSelectedLines || hasSelectedStops);
-	const canSave = !!selectedPlan?.attachments.operation_gtfs && hasSelectedContent && (contentMode === 'all' || !!canvasProfile);
+	const canSave = !!selectedPlan?.attachments.operation_gtfs_normalized && hasSelectedContent && (contentMode === 'all' || !!canvasProfile);
 
 	//
 	// E. Handle extraction

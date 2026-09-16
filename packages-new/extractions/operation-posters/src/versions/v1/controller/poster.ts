@@ -1,12 +1,11 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-
-import parametersConfig from '../parameters.json' with { type: 'json' };
-import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
-
 import fs from 'node:fs';
 import path from 'node:path';
+
+import parametersConfig from '../parameters.json' with { type: 'json' };
+import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
 
 interface TokenResponse {
 	access_token: string
@@ -14,6 +13,7 @@ interface TokenResponse {
 }
 
 export interface PDFStatus {
+	[key: string]: unknown
 	downloadLink?: string
 	status: string
 }
@@ -211,6 +211,7 @@ export class PostersController {
 		}
 
 		return {
+			...responseData,
 			downloadLink: typeof downloadLink === 'string' ? downloadLink : undefined,
 			status,
 		};

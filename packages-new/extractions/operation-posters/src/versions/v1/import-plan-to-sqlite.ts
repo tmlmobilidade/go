@@ -2,8 +2,6 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
-import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
@@ -19,20 +17,20 @@ import { exportShapesFiles } from './exports/shapes.js';
 import { exportStopTimesFile } from './exports/stop-times.js';
 import { exportStopsFile } from './exports/stops.js';
 import { exportTripsFile } from './exports/trips.js';
-import { type ExportHitouchConfig } from './types/ExportHitouchConfig.js';
+import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
 import { buildDatesMap } from './utils/build-dates-map.js';
 import { createHitouchZip } from './utils/create-hitouch-zip.js';
 import { initOperationPostersV1Context } from './utils/init-context.js';
 
 /* * */
 
-export async function importPlanToSqlite(planData: Plan, options?: { canvas_profile?: ExportHitouchConfig['canvas_profile'], content_mode?: PlanPostersContentMode, line_codes?: string[], lines_mode?: LinesMode, stop_ids?: string[], stops_mode?: PlanPostersFilterMode, workdir?: string }): Promise<ExportHitouchConfig> {
+export async function importPlanToSqlite(planData: Plan, options?: ExportHitouchOptions & { workdir?: string }): Promise<ExportHitouchConfig> {
 	//
 
 	//
 	// Import the Plan into a local SQLite database
 
-	const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.attachments.operation_gtfs });
+	const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.attachments.operation_gtfs_normalized });
 	const agencyId = planData.agency_id;
 
 	//
@@ -106,7 +104,7 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 	await exportTripsFile(context, sqlGtfs, routeIds);
 	await exportStopTimesFile(context, sqlGtfs);
 	await exportShapesFiles(context, sqlGtfs);
-	await exportStopsFile(context, sqlGtfs, exportConfig);
+	await exportStopsFile(context, sqlGtfs, exportConfig, routeIds);
 	await exportAgencyFile(context, planData);
 	// feed_info.txt is intentionally excluded because HiTouch does not support it.
 	await exportDayTypesFile(context);

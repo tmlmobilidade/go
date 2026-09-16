@@ -1,16 +1,15 @@
 /* * */
 
 import { OperationPostersV1StopTimesSchema } from '@tmlmobilidade/go-types-operation';
-import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 
-import { type OperationPostersV1Context } from '../types/context.js';
+import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { buildVariantNotes } from '../utils/build-variant-notes.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportStopTimesFile(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables) {
+export async function exportStopTimesFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables) {
 	//
 	// Export stop times and annotations using the final trip IDs from calendar processing.
 
@@ -42,7 +41,10 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 		await yieldToEventLoop(exportedRows);
 
 		const annotation = variantNotes.get(stopTimeData.trip_id);
-		if (!annotation) continue;
+
+		//
+		// HiTouch requires one extension row per stop time, including rows without notes.
+
 		const extension = {
 			stop_id: stopTimeData.stop_id,
 			stop_sequence: stopTimeData.stop_sequence,
@@ -50,17 +52,17 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 			// Leave billboard selection/alignment to the canvas; this file adds annotations only.
 			billboard_alignment_id: '',
 			billboard_importance: '',
-			index: annotation.index,
-			note: annotation.note,
+			index: annotation?.index ?? '',
+			note: annotation?.note ?? '',
 			route_stop_sequence: routeStopSequence,
 		};
 		await context.writers.stop_times_ext.write(extension);
-		annotationsCount++;
+		if (annotation) annotationsCount++;
 	}
 
 	await context.writers.stop_times.flush();
 	await context.writers.stop_times_ext.flush();
 
 	Logger.info({ message: 'Exported stop_times.txt file.' });
-	Logger.info({ message: annotationsCount ? `Exported ${annotationsCount} variant annotations in stop_timesExt.txt.` : 'Skipped stop_timesExt.txt because no variant annotations were found.' });
+	Logger.info({ message: `Exported ${exportedRows} rows in stop_timesExt.txt with ${annotationsCount} variant annotations.` });
 }

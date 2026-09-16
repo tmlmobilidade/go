@@ -4,7 +4,7 @@ import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
 
-import { type GtfsDate } from '../types/GtfsDate.js';
+import { type GtfsDate } from '../types/gtfs-date.js';
 
 /* * */
 

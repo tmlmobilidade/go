@@ -21,3 +21,6 @@ export interface ExportHitouchConfig {
 	stops_mode?: PlanPostersFilterMode
 	workdir: string
 }
+
+/** Optional selection settings accepted before the export workspace is initialized. */
+export type ExportHitouchOptions = Partial<Pick<ExportHitouchConfig, 'canvas_profile' | 'content_mode' | 'line_codes' | 'lines_mode' | 'stop_ids' | 'stops_mode'>>;

@@ -19,8 +19,11 @@ import {
 	type OperationPostersV1Trips,
 } from '@tmlmobilidade/go-types-operation';
 import { type BatchWriter } from '@tmlmobilidade/go-utils-exec';
+import { type GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 
 /* * */
+
+export type OperationPostersV1Tables = GtfsStrictV30SQLTables;
 
 export interface OperationPostersV1Context {
 	run_id: string

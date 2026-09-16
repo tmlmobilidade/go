@@ -19,7 +19,7 @@ export async function operationPostersV1Extraction(context: ExtractionTaskContex
 	context.attachment_name = `posters-v1-${extraction._id}.zip`;
 
 	for (const plan of plans) {
-		await exportPlanPostersFile(context, plan, extraction._id);
+		await exportPlanPostersFile(context, plan, extraction._id, properties);
 
 		Logger.success(`Downloaded poster ZIP for plan ${plan._id} in extraction ${extraction._id}.`);
 	}

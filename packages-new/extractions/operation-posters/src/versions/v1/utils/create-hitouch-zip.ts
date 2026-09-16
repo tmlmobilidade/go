@@ -1,12 +1,11 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-
-import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
-
 import fs from 'node:fs';
 import path from 'node:path';
 import { ZipFile } from 'yazl';
+
+import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
 
 /* * */
 

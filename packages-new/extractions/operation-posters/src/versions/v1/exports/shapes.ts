@@ -1,10 +1,9 @@
 /* * */
 
 import { OperationPostersV1ShapesSchema } from '@tmlmobilidade/go-types-operation';
-import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 
-import { type OperationPostersV1Context } from '../types/context.js';
+import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { buildVariantNotes } from '../utils/build-variant-notes.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
@@ -15,7 +14,7 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
  * @param context - The export context and file writers.
  * @param sqlTables - The SQL tables to export from.
  */
-export async function exportShapesFiles(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables) {
+export async function exportShapesFiles(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables) {
 	//
 
 	//

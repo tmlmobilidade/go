@@ -1,15 +1,14 @@
 /* * */
 
 import { OperationPostersV1TripsSchema } from '@tmlmobilidade/go-types-operation';
-import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 
-import { type OperationPostersV1Context } from '../types/context.js';
+import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportTripsFile(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables, routeIds: ReadonlyMap<string, string>) {
+export async function exportTripsFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, routeIds: ReadonlyMap<string, string>) {
 	//
 	// Export trips.txt
 

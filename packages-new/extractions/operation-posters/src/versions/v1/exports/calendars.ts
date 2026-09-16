@@ -1,26 +1,23 @@
 /* * */
 
 import { type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type OperationPostersV1CalendarDates, type OperationPostersV1Calendars } from '@tmlmobilidade/go-types-operation';
+import { type OperationPostersV1CalendarAssignmentsExt, type OperationPostersV1CalendarDates, type OperationPostersV1CalendarExt, type OperationPostersV1Calendars } from '@tmlmobilidade/go-types-operation';
 import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 import { DAY_TYPES } from '../day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '../get-names.js';
-import { type CalendarAssignmentsExt } from '../types/CalendarAssignmentsExt.js';
-import { type CalendarExt } from '../types/CalendarExt.js';
-import { type OperationPostersV1Context } from '../types/context.js';
-import { type DayTypeConfig } from '../types/DayTypeConfig.js';
-import { type ExportHitouchConfig } from '../types/ExportHitouchConfig.js';
-import { type GtfsDate } from '../types/GtfsDate.js';
+import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
+import { type DayTypeConfig } from '../types/day-type-config.js';
+import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
+import { type GtfsDate } from '../types/gtfs-date.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportCalendarFiles(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables, exportConfig: ExportHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
+export async function exportCalendarFiles(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
 	//
 
 	//
@@ -35,7 +32,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 	}
 
 	//
-	// Get all unique Pattern IDs from trips
+	// Get all unique Shape IDs from trips
 
 	const allShapeIds = sqlTables.trips.all().map(trip => trip.shape_id).sort();
 	const allUniqueShapeIds = Array.from(new Set(allShapeIds));
@@ -45,7 +42,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 	const updatedServiceIds: Record<string, { _id: string, dates: OperationalDate[], day_type: string, exceptions: string[], period: string }> = {};
 
 	//
-	// Loop through each pattern_id and find trips associated with it
+	// Loop through each shape_id and find trips associated with it
 
 	for (const shapeId of allUniqueShapeIds) {
 		//
@@ -385,8 +382,8 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 	// Output the calendar assignments file with the new service_ids,
 	// and the calendar exceptions file with the detected exceptions.
 
-	const calendarAssignmentsExtRows: CalendarAssignmentsExt[] = [];
-	const calendarExtRows: CalendarExt[] = [];
+	const calendarAssignmentsExtRows: OperationPostersV1CalendarAssignmentsExt[] = [];
+	const calendarExtRows: OperationPostersV1CalendarExt[] = [];
 	let exportedDates = 0;
 
 	//
@@ -430,7 +427,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 			const matchedPeriod = serviceIdData.period === dayTypeConfig.period;
 			if (!matchedDayType || !matchedPeriod) continue;
 			// If it matches, create an assignment
-			const assignment: CalendarAssignmentsExt = {
+			const assignment: OperationPostersV1CalendarAssignmentsExt = {
 				day_type_id: dayTypeConfig._id,
 				service_id: serviceIdData._id,
 			};
@@ -442,7 +439,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 
 		serviceIdData.exceptions = Array.from(new Set(serviceIdData.exceptions));
 		for (const exceptionData of serviceIdData.exceptions) {
-			const calendarException: CalendarExt = {
+			const calendarException: OperationPostersV1CalendarExt = {
 				comment: exceptionData,
 				index: uniqueExceptionsMap[exceptionData].index,
 				service_id: serviceIdData._id,

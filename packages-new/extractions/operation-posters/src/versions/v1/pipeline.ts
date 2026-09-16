@@ -1,16 +1,14 @@
 /* * */
 
-import { FileExportDownloadUrlSchema, type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
-import { type LinesMode } from '@tmlmobilidade/go-types-offer';
+import { FileExportDownloadUrlSchema } from '@tmlmobilidade/go-types-downloads';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-
-import { type ExportHitouchConfig } from './types/ExportHitouchConfig.js';
-import { PostersController } from './controller/poster.js';	
-import { importPlanToSqlite } from './import-plan-to-sqlite.js';
-
 import fs from 'node:fs';
 import path from 'node:path';
+
+import { PostersController } from './controller/poster.js';
+import { importPlanToSqlite } from './import-plan-to-sqlite.js';
+import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
 
 /* * */
 
@@ -24,7 +22,7 @@ function waitForNextStatusCheck(): Promise<void> {
 
 /* * */
 
-export async function generatePlanPostersDownloadUrl(planData: Plan, exportId: string, options?: { canvas_profile?: ExportHitouchConfig['canvas_profile'], content_mode?: PlanPostersContentMode, line_codes?: string[], lines_mode?: LinesMode, stop_ids?: string[], stops_mode?: PlanPostersFilterMode }): Promise<string> {
+export async function generatePlanPostersDownloadUrl(planData: Plan, exportId: string, options?: ExportHitouchOptions): Promise<string> {
 	const postersController = new PostersController();
 	let exportConfig: ExportHitouchConfig | undefined;
 
@@ -47,7 +45,7 @@ export async function generatePlanPostersDownloadUrl(planData: Plan, exportId: s
 
 		while (pdfStatus.status !== 'done') {
 			if (pdfStatus.status === 'error' || pdfStatus.status === 'failed') {
-				throw new Error(`PDF job ${pdfId} failed.`);
+				throw new Error(`PDF job ${pdfId} failed: ${JSON.stringify(pdfStatus).slice(0, 4_000)}. Request ZIP: ${preservedRequestZipPath}`);
 			}
 
 			Logger.info({ message: `ZPHERES PDF job ${pdfId} is ${pdfStatus.status}.` });
