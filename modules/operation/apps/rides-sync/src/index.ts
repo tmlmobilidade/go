@@ -91,4 +91,4 @@ async function main() {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '1m' });
+await runOnInterval(main, { intervalMs: '1h' });
