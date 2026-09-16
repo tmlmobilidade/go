@@ -85,6 +85,7 @@ export async function syncRides(timeChunk: PerformInTimeChunksItem) {
 				});
 				Logger.info({ message: `Deleted ${chunk.length} documents from the destination database in ${deleteTimer.get()}.` });
 			}, 500);
+			await new Promise(resolve => setTimeout(resolve, 30_000));
 		},
 
 		distinctDestinationDbFn: async () => {
