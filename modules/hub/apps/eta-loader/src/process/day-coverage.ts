@@ -60,8 +60,8 @@ export async function utcDayChunksNeedingWork(table: string, windowStart: UnixMi
 	const rows = await labDb.queryFromString<{ yyyymmdd: number | string }>(`
 		SELECT DISTINCT toYYYYMMDD(toDateTime(intDiv(created_at, 1000), 'UTC')) AS yyyymmdd
 		FROM ${table}
-		WHERE created_at >= {window_start:Int64} AND created_at < {window_end:Int64}
-	`, { window_end: windowEnd, window_start: windowStart });
+		WHERE created_at >= $1 AND created_at < $2
+	`, { 1: windowStart, 2: windowEnd });
 
 	const covered = new Set(rows.map(r => Number(r.yyyymmdd)));
 	const redoFrom = utcDayStart(windowEnd) - (alwaysRedoDays - 1) * DAY_MS;
