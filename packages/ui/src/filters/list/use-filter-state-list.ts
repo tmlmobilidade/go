@@ -37,10 +37,15 @@ export function useFilterStateList<T extends string>(key: string, defaults: T[],
 	//
 	// B. Transform data
 
+	// Callers build `defaults` inline, so this tracks its contents and not its
+	// identity. Otherwise the returned value would be a new array on every render,
+	// which retriggers anything that depends on it, such as a form reset.
+	const defaultsKey = defaults.join(',');
+
 	const effectiveValue = useMemo(() => {
 		if (!urlValue) return defaults;
 		return urlValue as T[];
-	}, [urlValue, defaults]);
+	}, [urlValue, defaultsKey]);
 
 	const parsedOptions = useMemo(() => {
 		// Skip if no options are provided
