@@ -1,5 +1,5 @@
 -- One-off migration for databases bootstrapped before the September 2026
--- eta-loader fixes (branch feat/eta-loader-p0). Run once with
+-- ETA app fixes (branch feat/eta-loader-p0). Run once with
 -- queryEachStatementFromFile, then re-run the three mv-*.sql files so the
 -- views pick up their new definitions.
 --
@@ -40,3 +40,9 @@ TRUNCATE TABLE eta.curr_waypoints;
 TRUNCATE TABLE eta.curr_waypoints_snapped;
 
 TRUNCATE TABLE eta.curr_vehicle_events;
+
+ALTER TABLE eta.curr_vehicle_events
+MODIFY TTL toDateTime(intDiv(created_at, 1000), 'UTC') + INTERVAL 2 HOUR;
+
+-- The cleaner's keep-list staging table is no longer used.
+DROP TABLE IF EXISTS eta._cleaner_hist_rides_keep;

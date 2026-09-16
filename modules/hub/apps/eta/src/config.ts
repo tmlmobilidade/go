@@ -36,6 +36,7 @@ export const AppConfig = Object.freeze({
 		_5_loadHistoricalVehicleEvents: true,
 		_6_calculateNodeTravelTimes: true,
 		_7_loadCurrentWaypoints: true,
+		_8_cleanup: true,
 	},
 	syncInterval: '15m',
 });

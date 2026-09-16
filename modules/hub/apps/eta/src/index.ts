@@ -12,9 +12,9 @@ import { main } from './main.js';
 
 try {
 	await initSentryNode();
-	Logger.startNodeLogs({ app: 'loader', message: 'Sentry ETA Loader initialized', module: 'eta', severity: 'info' });
+	Logger.startNodeLogs({ app: 'eta', message: 'Sentry ETA initialized', module: 'eta', severity: 'info' });
 } catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry ETA Loader' });
+	Logger.error({ error, message: 'Error initializing Sentry ETA' });
 }
 
 await runOnInterval(() => main(AppConfig), { intervalMs: AppConfig.syncInterval });

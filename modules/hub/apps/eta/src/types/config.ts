@@ -33,6 +33,7 @@ export interface AppConfig {
 		_5_loadHistoricalVehicleEvents: boolean
 		_6_calculateNodeTravelTimes: boolean
 		_7_loadCurrentWaypoints: boolean
+		_8_cleanup: boolean
 	}
 	syncInterval: TimeSlot
 }

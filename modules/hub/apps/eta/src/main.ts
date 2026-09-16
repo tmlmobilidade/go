@@ -5,6 +5,7 @@ import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { cleanup } from './cleanup/cleanup.js';
 import { aggregateHistNodeTravelTimes } from './process/aggregate-hist-node-travel-times.js';
 import { buildHistNodeTravelTimes } from './process/build-hist-node-travel-times.js';
 import { utcDayChunksNeedingWork } from './process/day-coverage.js';
@@ -14,12 +15,14 @@ import { AppConfig } from './types/config.js';
 /* * */
 
 /**
- * Loads the ETA data into clickhouse.
+ * Loads the ETA data into clickhouse and ages out what left the windows.
  *
  * Every stage is incremental: rides, shapes and events already present are not
  * re-inserted, and node travel times are (re)built only for the UTC days that
  * need it (the newest two, plus any day still missing inside the window).
- * A run on a warm database therefore touches one or two days of data.
+ * A run on a warm database therefore touches one or two days of data. The
+ * cleanup stage at the end uses the very same windows, so the two can never
+ * disagree about what is in scope.
  *
  * @param config - The configuration for the loader.
  * @returns A promise that resolves when the data is loaded.
@@ -149,7 +152,7 @@ export async function main(config: AppConfig) {
 	}
 
 	//
-	// 7. Current waypoints
+	// 7. Current waypoints (trips not yet present only; stops never change per hashed trip)
 
 	if (config.stages._7_loadCurrentWaypoints) {
 		Logger.title('7. Loading and snapping current waypoints');
@@ -159,6 +162,14 @@ export async function main(config: AppConfig) {
 
 		await labDb.queryFromFile(sqlPath('hub', 'eta/loader/snap-waypoints.sql'));
 		Logger.progress({ message: 'Snapped waypoints: curr_waypoints_snapped' });
+	}
+
+	//
+	// 8. Cleanup: age every table out of the windows used above.
+
+	if (config.stages._8_cleanup) {
+		Logger.title('8. Cleaning up out-of-window data');
+		await cleanup(config);
 	}
 
 	Logger.success(`ETA loaded in ${globalTimer.get()}.`);

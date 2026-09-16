@@ -17,7 +17,10 @@ CREATE TABLE IF NOT EXISTS eta.curr_vehicle_events
     received_at Int64
 )
 ENGINE = ReplacingMergeTree()
-ORDER BY (created_at, vehicle_id, trip_id, _id);
+ORDER BY (created_at, vehicle_id, trip_id, _id)
+-- The ETA view only looks 30 minutes back; keep a small margin and let the
+-- engine age rows out instead of deleting them by mutation every cycle.
+TTL toDateTime(intDiv(created_at, 1000), 'UTC') + INTERVAL 2 HOUR;
 
 -- Snaps each ingested vehicle event to the closest shape node of its trip's
 -- shape (trip -> shape from curr_rides).
