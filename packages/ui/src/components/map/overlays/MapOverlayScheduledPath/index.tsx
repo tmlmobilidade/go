@@ -153,7 +153,7 @@ export function MapOverlayScheduledPath({ id, lineData, pointsData, visible = tr
 						'visibility': visible ? 'visible' : 'none',
 					}}
 					paint={{
-						'line-color': '#000000', // primaryColorHexValue,
+						'line-color': '#000000',
 						'line-width': [
 							'interpolate',
 							['linear'],
@@ -254,6 +254,4 @@ export function MapOverlayScheduledPath({ id, lineData, pointsData, visible = tr
 
 		</>
 	);
-
-	//
 }
