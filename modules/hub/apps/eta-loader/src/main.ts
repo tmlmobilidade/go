@@ -131,6 +131,21 @@ export async function main(config: AppConfig) {
 
 		Logger.info({ message: `Aggregating hist_node_travel_times for ${rebuilt.length} rebuilt day(s)` });
 		await aggregateHistNodeTravelTimes(rebuilt);
+
+		//
+		// The prediction view refreshes every 15 minutes on its own; trigger it now
+		// so fresh aggregates reach eta.pred_node_etas (and, 30 s later, the stop
+		// ETAs) without waiting for the next scheduled refresh. Stop ETAs read as 0
+		// while pred_node_etas is empty, so on a first run this matters.
+
+		if (rebuilt.length > 0) {
+			try {
+				await labDb.command({ query: 'SYSTEM REFRESH VIEW eta.mv_pred_node_etas' });
+				Logger.progress({ message: 'Triggered refresh of mv_pred_node_etas' });
+			} catch (error) {
+				Logger.error({ error, message: 'Could not trigger mv_pred_node_etas refresh; it will run on its 15-minute schedule' });
+			}
+		}
 	}
 
 	//
