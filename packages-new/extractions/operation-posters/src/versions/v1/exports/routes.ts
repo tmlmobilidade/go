@@ -53,13 +53,20 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 	// Export route canvas profiles by route and direction.
 
 	const isLineExport = exportConfig.content_mode === 'lines' || exportConfig.content_mode === 'lines_stops';
-	const { clause, parameters } = getCanvasLineFilter([...routeIds.keys()], exportConfig);
-	const lineFilter = clause ? `WHERE ${clause}` : '';
+	const isStopExport = exportConfig.content_mode === 'stops';
+	let { clause, parameters } = getCanvasLineFilter([...routeIds.keys()], exportConfig);
+	if (isStopExport && exportConfig.stop_ids.length) {
+		const stopPlaceholders = exportConfig.stop_ids.map(() => '?').join(', ');
+		clause = `stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${stopPlaceholders})`;
+		parameters = exportConfig.stop_ids;
+	}
+	const canvasFilter = clause ? `WHERE ${clause}` : '';
 
 	const routesToCanvasExtRows = sqlTables._db.databaseInstance.prepare(
 		` SELECT DISTINCT trips.route_id, trips.direction_id
 		FROM trips
-		${lineFilter}
+		${isStopExport ? 'INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id' : ''}
+		${canvasFilter}
 		ORDER BY trips.route_id ASC, trips.direction_id ASC `,
 	).all(...parameters).map((row: { direction_id: number, route_id: string }): OperationPostersV1RoutesToCanvasExt => {
 		const routeId = routeIds.get(row.route_id);
@@ -80,6 +87,9 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 	if (!routesToCanvasExtRows.length) {
 		if (isLineExport) {
 			throw new Error('The selected line filter removes every route poster target.');
+		}
+		if (isStopExport) {
+			throw new Error('The selected stop filter removes every route poster target.');
 		}
 		Logger.info({ message: 'Skipped routesToCanvasExt.txt file because no route directions were found.' });
 		return routeIds;
