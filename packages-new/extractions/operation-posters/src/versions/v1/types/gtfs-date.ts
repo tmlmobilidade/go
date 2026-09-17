@@ -11,3 +11,8 @@ export interface GtfsDate {
 	notes?: string
 	period: '1' | '2' | '3'
 }
+
+export interface GtfsCalendar {
+	dates: Map<OperationalDate, GtfsDate>
+	plan_id: string
+}

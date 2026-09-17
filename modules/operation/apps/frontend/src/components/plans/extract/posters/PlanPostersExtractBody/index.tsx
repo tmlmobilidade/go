@@ -2,7 +2,7 @@
 
 import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Divider, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
+import { Divider, MultiSelect, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,17 +28,21 @@ export function PlanPostersExtractBody() {
 	const context = usePlanPostersExtractFormContext();
 	const { t } = useTranslation();
 
-	const plansOptions = useMemo(() => context.data.plans
-		.filter(plan => plan.agency_id === context.data.agencyId)
-		.map((plan) => {
+	const plansOptions = useMemo(() => context.data.agencyIds.map(agencyId => ({
+		agencyId,
+		agencyLabel: context.data.agencyOptions.find(option => option.value === agencyId)?.label ?? agencyId,
+		options: context.data.plans.filter(plan => plan.agency_id === agencyId).map((plan) => {
 			const startDate = Dates.fromOperationalDateInt(plan.active_from, 'Europe/Lisbon').toFormat('dd-MM-yyyy');
 			const endDate = Dates.fromOperationalDateInt(plan.active_until, 'Europe/Lisbon').toFormat('dd-MM-yyyy');
 
 			return {
+				disabled: !plan.attachments.operation_gtfs_normalized,
 				label: `#${plan._id} · ${startDate} - ${endDate}`,
 				value: plan._id,
 			};
-		}), [context.data.agencyId, context.data.plans]);
+		}),
+		value: context.data.plans.find(plan => plan.agency_id === agencyId && context.data.planIds.includes(plan._id))?._id ?? null,
+	})), [context.data.agencyIds, context.data.agencyOptions, context.data.planIds, context.data.plans]);
 
 	//
 	// D. Render components
@@ -48,31 +52,37 @@ export function PlanPostersExtractBody() {
 			<Divider />
 
 			<Section gap="md">
-				<Select
+				<MultiSelect
 					data={context.data.agencyOptions}
-					description="Os planos e as opções de exportação são apresentados para este operador"
-					label="Selecionar operador"
-					onChange={context.actions.setAgencyId}
-					value={context.data.agencyId}
+					description={t('default:posterExport.agenciesDescription')}
+					label={t('default:posterExport.agenciesLabel')}
+					onChange={context.actions.setAgencyIds}
+					value={context.data.agencyIds}
 					w="100%"
 				/>
 			</Section>
 			<Divider />
 
-			<Section gap="md">
-				<Select
-					data={plansOptions}
-					description="Selecione um plano"
-					disabled={!context.data.agencyId}
-					label="Selecionar plano"
-					onChange={context.actions.setPlanId}
-					value={context.data.planId}
-					w="100%"
-				/>
-			</Section>
-			<Divider />
+			{plansOptions.length > 0 && (
+				<>
+					<Section gap="md">
+						{plansOptions.map(({ agencyId, agencyLabel, options, value }) => (
+							<Select
+								key={agencyId}
+								data={options}
+								description={t('default:posterExport.planDescription')}
+								label={`${t('default:posterExport.planLabel')} · ${agencyLabel}`}
+								onChange={value => context.actions.setPlanId(agencyId, value)}
+								value={value}
+								w="100%"
+							/>
+						))}
+					</Section>
+					<Divider />
+				</>
+			)}
 
-			{context.data.planId && (
+			{context.data.planIds.length > 0 && (
 				<Section gap="md">
 					<SegmentedControl
 						fullWidth={true}

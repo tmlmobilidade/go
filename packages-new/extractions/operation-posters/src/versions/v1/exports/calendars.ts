@@ -12,23 +12,25 @@ import { getFormattedDates, getPeriodName, getWeekdayNames } from '../get-names.
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { type DayTypeConfig } from '../types/day-type-config.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
-import { type GtfsDate } from '../types/gtfs-date.js';
+import { type GtfsCalendar } from '../types/gtfs-date.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportCalendarFiles(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
+export async function exportCalendarFiles(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig, calendarsByService: Map<string, GtfsCalendar>) {
 	//
 
 	//
 	// Build the day-type date lists from the generated GTFS date metadata.
 
-	const dayTypesConfig: DayTypeConfig[] = DAY_TYPES.map(dayType => ({ ...dayType, dates: [] }));
-
-	for (const d of datesMap.values()) {
-		// Add this date to the corresponding day_type_id
-		const dayTypeTable = dayTypesConfig.find(dt => dt.period === d.period && dt.day_type === d.day_type);
-		if (dayTypeTable) dayTypeTable.dates.push(d.date);
+	const dayTypesByPlan = new Map<string, DayTypeConfig[]>();
+	for (const calendar of new Set(calendarsByService.values())) {
+		const dayTypesConfig: DayTypeConfig[] = DAY_TYPES.map(dayType => ({ ...dayType, dates: [] }));
+		for (const date of calendar.dates.values()) {
+			const dayTypeTable = dayTypesConfig.find(dt => dt.period === date.period && dt.day_type === date.day_type);
+			if (dayTypeTable) dayTypeTable.dates.push(date.date);
+		}
+		dayTypesByPlan.set(calendar.plan_id, dayTypesConfig);
 	}
 
 	//
@@ -39,7 +41,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 
 	Logger.info({ message: `Found ${allUniqueShapeIds.length} unique shape IDs in trips.` });
 
-	const updatedServiceIds: Record<string, { _id: string, dates: OperationalDate[], day_type: string, exceptions: string[], period: string }> = {};
+	const updatedServiceIds: Record<string, { _id: string, calendar: GtfsCalendar, dates: OperationalDate[], day_type: string, exceptions: string[], period: string }> = {};
 
 	//
 	// Loop through each shape_id and find trips associated with it
@@ -53,6 +55,15 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 		const allTripsForThisShapeId = sqlTables.trips.all('WHERE shape_id = ?', [shapeId]);
 
 		if (!allTripsForThisShapeId?.length) continue;
+
+		//
+
+		//
+		// Get the calendar for the first trip
+
+		const calendar = calendarsByService.get(allTripsForThisShapeId[0].service_id);
+		if (!calendar) throw new Error(`No plan calendar found for shape ${shapeId}.`);
+		const datesMap = calendar.dates;
 
 		//
 		// Group trips that have the same stop_times
@@ -137,11 +148,12 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 
 				const sortedDates = Array.from(combinedDatesData.dates).sort();
 
-				const serviceIdKey = sortedDates.join('|');
+				const serviceIdKey = `${calendar.plan_id}|${combinedDatesData.period}|${combinedDatesData.day_type}|${sortedDates.join('|')}`;
 
 				if (!updatedServiceIds[serviceIdKey]) {
 					updatedServiceIds[serviceIdKey] = {
 						_id: generateRandomString(),
+						calendar,
 						dates: sortedDates,
 						day_type: combinedDatesData.day_type,
 						exceptions: [],
@@ -204,6 +216,8 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 	// CASE 5 — IRREGULAR SERVICE (ADDED DATES)
 
 	for (const [serviceIdKey, serviceIdData] of Object.entries(updatedServiceIds)) {
+		const datesMap = serviceIdData.calendar.dates;
+		const dayTypesConfig = dayTypesByPlan.get(serviceIdData.calendar.plan_id);
 		//
 
 		//
@@ -420,7 +434,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 		//
 		// Output the calendar assignments file
 
-		for (const dayTypeConfig of dayTypesConfig) {
+		for (const dayTypeConfig of dayTypesByPlan.get(serviceIdData.calendar.plan_id)) {
 			// Check if this service operates on the same day_type
 			// and period for this day_type.
 			const matchedDayType = serviceIdData.day_type === dayTypeConfig.day_type;

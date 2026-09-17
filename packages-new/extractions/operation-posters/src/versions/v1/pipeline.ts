@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { PostersController } from './controller/poster.js';
-import { importPlanToSqlite } from './import-plan-to-sqlite.js';
+import { importPlansToSqlite } from './import-plan-to-sqlite.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
 
 /* * */
@@ -22,13 +22,13 @@ function waitForNextStatusCheck(): Promise<void> {
 
 /* * */
 
-export async function generatePlanPostersDownloadUrl(planData: Plan, exportId: string, options?: ExportHitouchOptions): Promise<string> {
+export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: string, options?: ExportHitouchOptions): Promise<string> {
 	const postersController = new PostersController();
 	let exportConfig: ExportHitouchConfig | undefined;
 
 	try {
-		Logger.info({ message: `Preparing GTFS files for poster export ${exportId} (Plan ${planData._id}).` });
-		exportConfig = await importPlanToSqlite(planData, { ...options, workdir: `/tmp/hitouch/export-${exportId}` });
+		Logger.info({ message: `Preparing combined GTFS files for poster export ${exportId} (${plans.length} plans).` });
+		exportConfig = await importPlansToSqlite(plans, { ...options, workdir: `/tmp/hitouch/export-${exportId}` });
 
 		const requestZipPath = path.resolve(exportConfig.workdir, exportConfig.output);
 		const preservedRequestZipPath = `/tmp/hitouch/export-${exportId}-request.zip`;

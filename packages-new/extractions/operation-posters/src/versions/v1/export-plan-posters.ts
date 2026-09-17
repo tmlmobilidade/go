@@ -7,19 +7,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
 
-import { generatePlanPostersDownloadUrl } from './pipeline.js';
+import { generatePlansPostersDownloadUrl } from './pipeline.js';
 
 /* * */
 
-export async function exportPlanPostersFile(context: ExtractionTaskContext, plan: Plan, extractionId: string, properties: OperationPostersV1ExtractionProperties): Promise<void> {
-	if (!plan.attachments.operation_gtfs_normalized) {
-		throw new Error(`Plan ${plan._id} has no normalized operation GTFS attachment for poster export`);
+export async function exportPlansPostersFile(context: ExtractionTaskContext, plans: Plan[], extractionId: string, properties: OperationPostersV1ExtractionProperties): Promise<void> {
+	for (const plan of plans) {
+		if (!plan.attachments.operation_gtfs_normalized) {
+			throw new Error(`Plan ${plan._id} has no normalized operation GTFS attachment for poster export`);
+		}
 	}
 
 	const canvasProfile = properties.content_mode === 'all'
 		? '0Master.C'
 		: PlanPostersExportPropertiesSchema.shape.properties.shape.canvas_profile.parse(properties.canvas_profile);
-	const downloadUrl = await generatePlanPostersDownloadUrl(plan, `${extractionId}-${plan._id}`, {
+	const downloadUrl = await generatePlansPostersDownloadUrl(plans, extractionId, {
 		canvas_profile: canvasProfile,
 		content_mode: properties.content_mode,
 		line_codes: properties.line_ids ?? [],
@@ -27,7 +29,7 @@ export async function exportPlanPostersFile(context: ExtractionTaskContext, plan
 		stop_ids: properties.stop_ids ?? [],
 		stops_mode: properties.stops_mode,
 	});
-	const outputFile = path.join(context.output_path, `posters-${plan._id}.zip`);
+	const outputFile = path.join(context.output_path, `posters-${extractionId}.zip`);
 
 	const response = await fetch(downloadUrl, { signal: AbortSignal.timeout(300_000) });
 	if (!response.ok) throw new Error(`Poster ZIP download failed: HTTP ${response.status}.`);

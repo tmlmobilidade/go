@@ -18,18 +18,18 @@ interface UsePlansExtractListDataReturnType {
 }
 
 /**
- * Fetch plans available to an extract flow for the selected agency.
+ * Fetch plans available to an extract flow for the selected agencies.
  */
-export function usePlansExtractListData(agencyId: null | string): UsePlansExtractListDataReturnType {
+export function usePlansExtractListData(agencyIds: string[]): UsePlansExtractListDataReturnType {
 	//
 
 	//
 	// A. Setup query
 
-	const query = useMemo<null | PlansListFilters>(() => agencyId ? ({
-		agency_ids: [agencyId],
+	const query = useMemo<null | PlansListFilters>(() => agencyIds.length ? ({
+		agency_ids: agencyIds,
 		temporal_statuses: ['active', 'expired', 'upcoming'],
-	}) : null, [agencyId]);
+	}) : null, [agencyIds]);
 
 	//
 	// B. Fetch data
@@ -38,6 +38,7 @@ export function usePlansExtractListData(agencyId: null | string): UsePlansExtrac
 		query ? [API_ROUTES.operation.PLANS_LIST, query] : null,
 		{
 			fetcher: async ([url, request]: [string, PlansListFilters]) => await fetchApiData<PlansListItem[]>({ body: request, method: 'POST', url }),
+			keepPreviousData: true,
 			refreshInterval: 10_000,
 		},
 	);

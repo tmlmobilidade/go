@@ -4,7 +4,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type ExtractionTaskContext, type ExtractionTaskResult, type OperationPostersV1Extraction, OperationPostersV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { Logger } from '@tmlmobilidade/logger';
 
-import { exportPlanPostersFile } from './export-plan-posters.js';
+import { exportPlansPostersFile } from './export-plan-posters.js';
 
 /* * */
 
@@ -15,12 +15,14 @@ export async function operationPostersV1Extraction(context: ExtractionTaskContex
 		agency_id: { $in: properties.agency_ids },
 	});
 	if (!plans.length) throw new Error('No selected plans found for the selected agencies.');
+	if (plans.length !== properties.plan_ids.length) throw new Error('Some selected plans were not found for the selected agencies.');
+	if (new Set(plans.map(plan => plan.agency_id)).size !== plans.length) {
+		throw new Error('Only one plan per agency can be selected for poster export.');
+	}
 
 	context.attachment_name = `posters-v1-${extraction._id}.zip`;
 
-	for (const plan of plans) {
-		await exportPlanPostersFile(context, plan, extraction._id, properties);
+	await exportPlansPostersFile(context, plans, extraction._id, properties);
 
-		Logger.success(`Downloaded poster ZIP for plan ${plan._id} in extraction ${extraction._id}.`);
-	}
+	Logger.success(`Downloaded combined poster ZIP for ${plans.length} plans in extraction ${extraction._id}.`);
 }

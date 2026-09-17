@@ -4,7 +4,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
-import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
+import { importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
@@ -17,109 +17,117 @@ import { exportShapesFiles } from './exports/shapes.js';
 import { exportStopTimesFile } from './exports/stop-times.js';
 import { exportStopsFile } from './exports/stops.js';
 import { exportTripsFile } from './exports/trips.js';
+import { type OperationPostersV1Tables } from './types/context.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
+import { type GtfsCalendar } from './types/gtfs-date.js';
 import { buildDatesMap } from './utils/build-dates-map.js';
 import { createHitouchZip } from './utils/create-hitouch-zip.js';
 import { initOperationPostersV1Context } from './utils/init-context.js';
+import { mergeGtfsTables } from './utils/merge-gtfs-tables.js';
 
 /* * */
 
-export async function importPlanToSqlite(planData: Plan, options?: ExportHitouchOptions & { workdir?: string }): Promise<ExportHitouchConfig> {
+export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouchOptions & { workdir?: string }): Promise<ExportHitouchConfig> {
 	//
+	// A. Validate every plan before importing any GTFS
 
-	//
-	// Import the Plan into a local SQLite database
-
-	const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.attachments.operation_gtfs_normalized });
-	const agencyId = planData.agency_id;
-
-	//
-	// Check the plan's active date range
-
-	if (!planData.active_from || !planData.active_until || planData.active_from > planData.active_until) {
-		throw new Error(`Plan ${planData._id} has missing or invalid active_from / active_until dates.`);
+	if (!plans.length) throw new Error('At least one plan is required for poster export.');
+	for (const plan of plans) {
+		if (!plan.active_from || !plan.active_until || plan.active_from > plan.active_until) {
+			throw new Error(`Plan ${plan._id} has missing or invalid active_from / active_until dates.`);
+		}
+		if (!plan.attachments.operation_gtfs_normalized) {
+			throw new Error(`Plan ${plan._id} has no normalized operation GTFS attachment for poster export.`);
+		}
 	}
 
 	//
-	// Import the GTFS feed into a local SQLite database
+	// B. Setup one output directory for the combined export
 
-	const importConfig: ImportGtfsConfig = {
-		source: {
-			url: operationFileUrl,
-		},
-		time_range: {
-			date_range: {
-				end: planData.active_until,
-				start: planData.active_from,
-			},
-		},
-	};
-
-	//
-	// Import the GTFS feed into a local SQLite database
-
-	const sqlGtfs = await importGtfsStrictV30ToDatabase(importConfig);
-
-	const sourceHasCalendar = true;
-	const [agencyHolidays, agencyYearPeriods] = await Promise.all([
-		goDb.offer.holidays.findMany({ agency_ids: { $in: [agencyId] } }),
-		goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [agencyId] } }),
-	]);
-
-	//
-	// Setup the export config
-
+	const runId = plans.map(plan => plan._id).join('-');
 	const exportConfig: ExportHitouchConfig = {
 		canvas_profile: options?.canvas_profile ?? '0Master.C',
 		content_mode: options?.content_mode ?? 'all',
 		date_range: {
-			end: validateOperationalDate(String(planData.active_until)),
-			start: validateOperationalDate(String(planData.active_from)),
+			end: validateOperationalDate(String(Math.max(...plans.map(plan => plan.active_until)))),
+			start: validateOperationalDate(String(Math.min(...plans.map(plan => plan.active_from)))),
 		},
 		line_codes: options?.line_codes ?? [],
 		lines_mode: (options?.content_mode === 'lines' || options?.content_mode === 'lines_stops') ? options.lines_mode ?? 'include' : undefined,
-		output: options?.workdir ? `${planData._id}-hitouch-posters.zip` : `../${planData._id}-hitouch-posters.zip`,
-		source_has_calendar: sourceHasCalendar,
+		output: 'hitouch-posters.zip',
+		source_has_calendar: true,
 		stop_ids: options?.stop_ids ?? [],
 		stops_mode: (options?.content_mode === 'stops' || options?.content_mode === 'lines_stops') ? options.stops_mode ?? 'include' : undefined,
-		workdir: options?.workdir ?? `/tmp/hitouch/${planData._id}`,
+		workdir: options?.workdir ?? `/tmp/hitouch/${runId}`,
 	};
 
 	if (fs.existsSync(exportConfig.workdir)) {
 		fs.rmSync(exportConfig.workdir, { recursive: true });
 	}
-	const context = initOperationPostersV1Context(planData._id, exportConfig.workdir);
+	const context = initOperationPostersV1Context(runId, exportConfig.workdir);
+	const calendarsByService = new Map<string, GtfsCalendar>();
+	let sqlGtfs: OperationPostersV1Tables | undefined;
 
-	//
-	// Export the files required by the API
+	try {
+		//
+		// C. Import every selected GTFS before exporting any content
 
-	Logger.info({ message: `Exporting Plan ${planData._id} to HiTouch GTFS...` });
+		for (const plan of plans) {
+			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: plan.attachments.operation_gtfs_normalized });
+			const importedGtfs = await importGtfsStrictV30ToDatabase({
+				source: { url: operationFileUrl },
+				time_range: { date_range: { end: plan.active_until, start: plan.active_from } },
+			});
+			try {
+				const [agencyHolidays, agencyYearPeriods] = await Promise.all([
+					goDb.offer.holidays.findMany({ agency_ids: { $in: [plan.agency_id] } }),
+					goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [plan.agency_id] } }),
+				]);
+				const calendar: GtfsCalendar = {
+					dates: buildDatesMap({
+						end: validateOperationalDate(String(plan.active_until)),
+						start: validateOperationalDate(String(plan.active_from)),
+					}, agencyHolidays, agencyYearPeriods),
+					plan_id: plan._id,
+				};
 
-	const exportTimer = new Timer();
+				sqlGtfs = mergeGtfsTables(sqlGtfs, importedGtfs, plan._id, plans.length > 1);
+				for (const serviceId of Object.keys(importedGtfs.calendar_dates)) {
+					calendarsByService.set(serviceId, calendar);
+				}
+				Logger.info({ message: `Imported plan ${plan._id} into the combined poster database.` });
+			} finally {
+				if (importedGtfs !== sqlGtfs) importedGtfs._db.cleanup();
+			}
+		}
 
-	const datesMap = buildDatesMap(exportConfig.date_range, agencyHolidays, agencyYearPeriods);
+		//
+		// D. Export the combined database once
 
-	await exportCalendarFiles(context, sqlGtfs, exportConfig, datesMap);
-	const routeIds = await exportRoutesFile(context, sqlGtfs, exportConfig);
-	await exportTripsFile(context, sqlGtfs, routeIds);
-	await exportStopTimesFile(context, sqlGtfs);
-	await exportShapesFiles(context, sqlGtfs);
-	await exportStopsFile(context, sqlGtfs, exportConfig, routeIds);
-	await exportAgencyFile(context, planData);
-	// await exportFeedInfoFile(context); // feed_info.txt is intentionally excluded because HiTouch does not need it.
-	await exportDayTypesFile(context);
+		Logger.info({ message: `Exporting ${plans.length} plans to one HiTouch GTFS...` });
+		const exportTimer = new Timer();
 
-	Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
+		await exportCalendarFiles(context, sqlGtfs, exportConfig, calendarsByService);
+		const routeIds = await exportRoutesFile(context, sqlGtfs, exportConfig);
+		await exportTripsFile(context, sqlGtfs, routeIds);
+		await exportStopTimesFile(context, sqlGtfs);
+		await exportShapesFiles(context, sqlGtfs);
+		await exportStopsFile(context, sqlGtfs, exportConfig, routeIds);
+		for (const plan of plans) await exportAgencyFile(context, plan);
+		await exportDayTypesFile(context);
 
-	//
-	// Package all exported TXT files into the ZIP archive
+		Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
 
-	Logger.info({ message: `Creating HiTouch ZIP for Plan ${planData._id}...` });
-	const zipTimer = new Timer();
-	const outputPath = await createHitouchZip(exportConfig);
-	const outputSize = fs.statSync(outputPath).size;
+		//
+		// E. Package all exported TXT files into one ZIP archive
 
-	Logger.info({ message: `Created ${outputPath} (${outputSize} bytes) in ${zipTimer.get()}` });
-
-	return exportConfig;
+		const outputPath = await createHitouchZip(exportConfig);
+		Logger.info({ message: `Created combined HiTouch ZIP at ${outputPath} (${fs.statSync(outputPath).size} bytes).` });
+		return exportConfig;
+	} catch (error) {
+		context.workdir.remove();
+		throw error;
+	} finally {
+		sqlGtfs?._db.cleanup();
+	}
 }

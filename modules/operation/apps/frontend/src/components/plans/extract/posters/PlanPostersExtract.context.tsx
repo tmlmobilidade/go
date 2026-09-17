@@ -15,23 +15,23 @@ import { closePlanPostersExtractModal } from './PlanPostersExtract.modal';
 interface PlanPostersExtractFormContextState {
 	actions: {
 		exportPosters: () => Promise<void>
-		setAgencyId: (value: null | string) => void
+		setAgencyIds: (value: string[]) => void
 		setCanvasProfile: (value: null | string) => void
 		setContentMode: (value: OperationPostersV1ExtractionProperties['content_mode']) => void
 		setFilterMode: (value: NonNullable<OperationPostersV1ExtractionProperties['lines_mode']>) => void
 		setLineIds: (value: string[]) => void
-		setPlanId: (value: null | string) => void
+		setPlanId: (agencyId: string, value: null | string) => void
 		setStopIds: (value: string[]) => void
 	}
 	data: {
-		agencyId: null | string
+		agencyIds: string[]
 		agencyOptions: SelectDataItem[]
 		canvasProfile: string
 		contentMode: OperationPostersV1ExtractionProperties['content_mode']
 		filterMode: NonNullable<OperationPostersV1ExtractionProperties['lines_mode']>
 		form: UseFormReturnType<OperationPostersV1ExtractionProperties>
 		lineIds: string[]
-		planId: null | string
+		planIds: string[]
 		plans: PlansListItem[]
 		stopIds: string[]
 	}
@@ -73,26 +73,37 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	});
 	const { setFieldValue, setValues } = form;
 	const { agency_ids: agencyIds, canvas_profile: canvasProfile, content_mode: contentMode, line_ids: lineIds = [], lines_mode: filterMode = 'include', plan_ids: planIds, stop_ids: stopIds = [] } = form.values;
-	const agencyId = agencyIds[0] ?? null;
-	const planId = planIds[0] ?? null;
 
 	//
 	// B. Fetch data
 
 	const { options: agencyOptions } = usePlansAgenciesData();
-	const plansData = usePlansExtractListData(agencyId);
+	const plansData = usePlansExtractListData(agencyIds);
 
 	//
 	// C. Handle selections
 
-	const setAgencyId = useCallback((value: null | string) => {
-		setValues({ agency_ids: value ? [value] : [], line_ids: [], plan_ids: [], stop_ids: [] });
-	}, [setValues]);
+	const setAgencyIds = useCallback((value: string[]) => {
+		setValues(current => ({
+			agency_ids: value,
+			line_ids: [],
+			plan_ids: current.plan_ids.filter(id => plansData.data.some(plan => plan._id === id && value.includes(plan.agency_id))),
+			stop_ids: [],
+		}));
+	}, [plansData.data, setValues]);
 
-	const setPlanId = useCallback((value: null | string) => {
+	const setPlanId = useCallback((agencyId: string, value: null | string) => {
+		if (!agencyIds.includes(agencyId)) return;
 		const selectedPlan = plansData.data.find(plan => plan._id === value && plan.agency_id === agencyId);
-		setValues({ line_ids: [], plan_ids: selectedPlan ? [selectedPlan._id] : [], stop_ids: [] });
-	}, [agencyId, plansData.data, setValues]);
+		setValues(current => ({
+			line_ids: [],
+			plan_ids: [
+				...current.plan_ids.filter(id => plansData.data.some(plan => plan._id === id && plan.agency_id !== agencyId && agencyIds.includes(plan.agency_id))),
+				...(selectedPlan ? [selectedPlan._id] : []),
+			],
+			stop_ids: [],
+		}));
+	}, [agencyIds, plansData.data, setValues]);
 
 	const setContentMode = useCallback((value: OperationPostersV1ExtractionProperties['content_mode']) => {
 		setValues({ content_mode: value, line_ids: [], lines_mode: 'include', stop_ids: [], stops_mode: 'include' });
@@ -107,22 +118,24 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	const setStopIds = useCallback((value: string[]) => setFieldValue('stop_ids', value), [setFieldValue]);
 
 	useEffect(() => {
-		const selectedAgencyIsAvailable = agencyOptions.some(option => option.value === agencyId);
-		if (agencyOptions.length === 1 && agencyId !== agencyOptions[0].value) {
-			setAgencyId(agencyOptions[0].value);
-		} else if (agencyOptions.length > 1 && agencyId && !selectedAgencyIsAvailable) {
-			setAgencyId(null);
+		const availableAgencyIds = agencyIds.filter(id => agencyOptions.some(option => option.value === id));
+		if (agencyOptions.length === 1 && (agencyIds.length !== 1 || agencyIds[0] !== agencyOptions[0].value)) {
+			setAgencyIds([agencyOptions[0].value]);
+		} else if (agencyOptions.length > 1 && availableAgencyIds.length !== agencyIds.length) {
+			setAgencyIds(availableAgencyIds);
 		}
-	}, [agencyId, agencyOptions, setAgencyId]);
+	}, [agencyIds, agencyOptions, setAgencyIds]);
 
 	//
 	// D. Setup flags
 
-	const selectedPlan = plansData.data.find(plan => plan._id === planId && plan.agency_id === agencyId);
+	const selectedPlans = plansData.data.filter(plan => planIds.includes(plan._id) && agencyIds.includes(plan.agency_id));
+	const hasOnePlanPerAgency = new Set(selectedPlans.map(plan => plan.agency_id)).size === agencyIds.length && planIds.length === agencyIds.length;
+	const hasSelectedPlans = agencyIds.length > 0 && selectedPlans.length === planIds.length && hasOnePlanPerAgency && selectedPlans.every(plan => !!plan.attachments.operation_gtfs_normalized);
 	const hasSelectedLines = (contentMode === 'lines' || contentMode === 'lines_stops') && lineIds.length > 0;
 	const hasSelectedStops = (contentMode === 'stops' || contentMode === 'lines_stops') && stopIds.length > 0;
 	const hasSelectedContent = contentMode === 'all' || (contentMode === 'lines_stops' ? hasSelectedLines && hasSelectedStops : hasSelectedLines || hasSelectedStops);
-	const canSave = !!selectedPlan?.attachments.operation_gtfs_normalized && hasSelectedContent && (contentMode === 'all' || !!canvasProfile);
+	const canSave = !plansData.isLoading && !plansData.error && hasSelectedPlans && hasSelectedContent && (contentMode === 'all' || !!canvasProfile);
 
 	//
 	// E. Handle extraction
@@ -177,21 +190,21 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	// F. Define context value
 
 	const contextValue: PlanPostersExtractFormContextState = useMemo(() => ({
-		actions: { exportPosters, setAgencyId, setCanvasProfile, setContentMode, setFilterMode, setLineIds, setPlanId, setStopIds },
+		actions: { exportPosters, setAgencyIds, setCanvasProfile, setContentMode, setFilterMode, setLineIds, setPlanId, setStopIds },
 		data: {
-			agencyId,
+			agencyIds,
 			agencyOptions,
 			canvasProfile,
 			contentMode,
 			filterMode,
 			form,
 			lineIds,
-			planId,
+			planIds,
 			plans: plansData.data,
 			stopIds,
 		},
 		flags: { canSave, has_error: !!plansData.error, loading },
-	}), [agencyId, agencyOptions, canSave, canvasProfile, contentMode, exportPosters, filterMode, form, lineIds, loading, planId, plansData.data, plansData.error, setAgencyId, setCanvasProfile, setContentMode, setFilterMode, setLineIds, setPlanId, setStopIds, stopIds]);
+	}), [agencyIds, agencyOptions, canSave, canvasProfile, contentMode, exportPosters, filterMode, form, lineIds, loading, planIds, plansData.data, plansData.error, setAgencyIds, setCanvasProfile, setContentMode, setFilterMode, setLineIds, setPlanId, setStopIds, stopIds]);
 
 	//
 	// G. Render components
