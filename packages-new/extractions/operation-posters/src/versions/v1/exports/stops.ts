@@ -40,9 +40,13 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 
 	//
 	// Export stop canvas profiles by stop and direction.
-	// When lines are selected, scope the stops to those lines' trips as well.
+	// When lines and stops are selected, scope the stops to those lines' trips as well.
 
-	const isLineExport = exportConfig.content_mode === 'lines' || exportConfig.content_mode === 'lines_stops';
+	if (exportConfig.content_mode === 'lines') {
+		return Logger.info({ message: 'Skipped stopsToCanvasExt.txt file for line poster export.' });
+	}
+
+	const isLineExport = exportConfig.content_mode === 'lines_stops';
 	const isStopExport = (exportConfig.content_mode === 'stops' || exportConfig.content_mode === 'lines_stops') && exportConfig.stop_ids.length > 0;
 
 	const canvasFilterClauses: string[] = [];
@@ -80,9 +84,6 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 	if (!stopsToCanvasExtRows.length) {
 		if (exportConfig.content_mode === 'lines_stops') {
 			throw new Error('The selected line and stop filters remove every stop poster target.');
-		}
-		if (exportConfig.content_mode === 'lines') {
-			throw new Error('The selected line filter removes every stop poster target.');
 		}
 		if (exportConfig.content_mode === 'stops') {
 			throw new Error('The selected stop filter removes every stop poster target.');

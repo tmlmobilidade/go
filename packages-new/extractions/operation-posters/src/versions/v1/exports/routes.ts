@@ -98,6 +98,11 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 	//
 	// Output the routes to canvas ext data
 
+	if (isStopExport) {
+		Logger.info({ message: 'Skipped routesToCanvasExt.txt file for stop poster export.' });
+		return routeIds;
+	}
+
 	await context.writers.routes_to_canvas_ext.write(uniqueRoutesToCanvasExtRows);
 	await context.writers.routes_to_canvas_ext.flush();
 	await yieldToEventLoop();
