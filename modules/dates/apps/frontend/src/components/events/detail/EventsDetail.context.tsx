@@ -178,12 +178,12 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 		scope: PermissionCatalog.all.events.scope,
 	});
 
-	// For update/delete/lock permissions, user needs access to ALL agencies (requireAll: true)
+	// For update/delete/lock permissions, user needs access to ANY agency (requireAll: false)
 	const editPermissions = meContext.actions.getScopePermissions({
 		actions: PermissionCatalog.all.events.actions,
 		resource: {
 			key: 'agency_ids',
-			requireAll: true,
+			requireAll: false,
 			value: eventData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.events.scope,
