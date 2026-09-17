@@ -46,22 +46,26 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 	//
 	// B. Fetch data
 
-	const { mutate: annotationsListMutate } = useSWR<Annotation[]>(API_ROUTES.dates.ANNOTATIONS_LIST);
-	const { data: annotationData, error: annotationError, isLoading: annotationLoading, mutate: annotationMutate } = useSWR<Annotation>(API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId));
+	const { mutate: annotationsListMutate } = useSWR(API_ROUTES.dates.ANNOTATIONS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Annotation[]>({ url }),
+	});
+	const { data: annotationData, error: annotationError, isLoading: annotationLoading, mutate: annotationMutate } = useSWR(API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId), {
+		fetcher: async (url: string) => await fetchApiData<Annotation>({ url }),
+	});
 
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateAnnotationDto>(UpdateAnnotationSchema, annotationData);
+	const { form } = useTypicalForm<UpdateAnnotationDto>(UpdateAnnotationSchema, annotationData?.data ?? null);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Annotation>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (response) => {
 			form.resetDirty();
-			annotationMutate(data);
+			annotationMutate(response);
 			annotationsListMutate();
 		},
 	});
@@ -77,9 +81,9 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 
 	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Annotation>({ url: API_ROUTES.dates.ANNOTATIONS_DETAIL_LOCK(annotationId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (response) => {
 			form.resetDirty();
-			annotationMutate(data);
+			annotationMutate(response);
 			annotationsListMutate();
 		},
 	});
@@ -93,7 +97,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: annotationData?.agency_ids ?? [],
+			value: annotationData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.annotations.scope,
 	});
@@ -104,7 +108,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 		resource: {
 			key: 'agency_ids',
 			requireAll: true,
-			value: annotationData?.agency_ids ?? [],
+			value: annotationData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.annotations.scope,
 	});
@@ -122,7 +126,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: annotationLoading,
-		isLocked: annotationData?.is_locked,
+		isLocked: annotationData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -144,7 +148,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 			save: handleSave,
 		},
 		data: {
-			annotation: annotationData,
+			annotation: annotationData?.data ?? null,
 			form,
 			id: annotationId,
 		},

@@ -88,8 +88,8 @@ export async function loadTripScheduleIndex(agencyId: string): Promise<TripSched
 	)];
 
 	const patternGroups = (await Promise.all(patternIds.map(async (patternId) => {
-		const raw = await cacheDb.get(`hub:v1:network:patterns:${patternId}`);
-		return raw ? JSON.parse(raw) as HubV1ApiPattern[] : [];
+		const cached = await cacheDb.getNew<HubV1ApiPattern[]>(`hub:v1:network:patterns:${patternId}`);
+		return cached?.data ?? [];
 	}))).flat();
 
 	return indexPatterns(patternGroups);

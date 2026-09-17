@@ -1,10 +1,15 @@
--- Current window rides: operation.rides + hashed_shapes + hashed_trips first/last stops → eta.curr_rides.
+-- Rides for a time window: operation.rides + hashed_trips first/last stops → eta.{table_name}.
 -- first/last geohash columns use table DEFAULTs (omit from insert column list).
 --
 -- Params:
 --   agency_ids            comma-separated agency_id list
 --   line_ids              comma-separated route_short_name list (empty = no line filter)
 --   time_start/time_end   unix ms bounds on start_time_scheduled
+--   require_pass          1 = keep only rides whose vehicle-event coverage grade is 'pass'
+--                         (historical window); 0 = keep every ride (current window)
+--   skip_existing         1 = do not re-insert rides already present in the target table
+--                         (historical window, rides there are final); 0 = insert all
+--                         (current window, rides are still changing)
 
 INSERT INTO eta.{table_name:Identifier} (
     _id,
@@ -24,7 +29,6 @@ INSERT INTO eta.{table_name:Identifier} (
     seen_first_at,
     seen_last_at,
     shape_id,
-    shape_polyline,
     start_time_observed,
     start_time_scheduled,
     trip_id,
@@ -75,9 +79,15 @@ WITH
                 AND ($line_ids = '' OR has(splitByChar(',', $line_ids), route_short_name))
                 AND start_time_scheduled >= $time_start
                 AND start_time_scheduled <= $time_end
+                -- Rides without a known shape cannot be snapped; skip them here
+                -- rather than carrying the polyline around per ride.
+                AND hashed_shape_id IN (SELECT _id FROM operation.hashed_shapes)
+                AND (
+                    {skip_existing:UInt8} = 0
+                    OR _id NOT IN (SELECT _id FROM eta.{table_name:Identifier})
+                )
         )
         WHERE rn = 1
-       
     ),
     analysis_expected_vehicle_event_coverage_geo AS (
         SELECT
@@ -101,13 +111,6 @@ WITH
         FROM operation.hashed_trips FINAL
         WHERE _id IN (SELECT hashed_trip_id FROM matched_rides)
         GROUP BY _id
-    ),
-    hashed_shapes AS (
-        SELECT
-            _id AS hashed_shape_id,
-            shape_polyline
-        FROM operation.hashed_shapes FINAL
-        WHERE _id IN (SELECT hashed_shape_id FROM matched_rides)
     )
 SELECT
     r._id,
@@ -127,7 +130,6 @@ SELECT
     r.seen_first_at,
     r.seen_last_at,
     r.shape_id,
-    s.shape_polyline,
     r.start_time_observed,
     r.start_time_scheduled,
     r.trip_id,
@@ -143,5 +145,5 @@ SELECT
     if(a.grade_status != '', a.grade_status, null) AS analysis_expected_vehicle_event_coverage_geo_grade
 FROM matched_rides AS r
 INNER JOIN trip_stops AS t ON r.hashed_trip_id = t.hashed_trip_id
-INNER JOIN hashed_shapes AS s ON r.hashed_shape_id = s.hashed_shape_id
-LEFT JOIN analysis_expected_vehicle_event_coverage_geo AS a ON a.ride_id = r._id;
+LEFT JOIN analysis_expected_vehicle_event_coverage_geo AS a ON a.ride_id = r._id
+WHERE {require_pass:UInt8} = 0 OR a.grade_status = 'pass';

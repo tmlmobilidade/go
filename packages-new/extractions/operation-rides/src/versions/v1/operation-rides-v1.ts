@@ -72,7 +72,6 @@ export async function operationRidesV1Extraction(context: ExtractionTaskContext,
 
 	for await (const chunk of stream) {
 		const rows = chunk.map(row => toOutputRow(row.json()));
-		console.log('rows', rows);
 		await writer.write(rows);
 	}
 

@@ -486,7 +486,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 
 		const finalizedPatternGroupsData: HubV1ApiPattern[] = Array.from(parsedPatternsForThisPatternGroup.values()).map((item: HubV1ApiPattern) => ({ ...item, trips: Object.values(item.trips) }));
 
-		await cacheDb.set(`hub:v1:network:patterns:${patternId}`, JSON.stringify(finalizedPatternGroupsData));
+		await cacheDb.setNew(`hub:v1:network:patterns:${patternId}`, finalizedPatternGroupsData);
 		updatedPatternKeys.add(`hub:v1:network:patterns:${patternId}`);
 
 		Logger.info({ message: `Updated pattern_id "${patternId}" (${intraPatternTimer.get()})` });
@@ -513,6 +513,9 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 	// Save all routes to the database
 
 	const finalizedAllRoutesData: HubV1ApiRoute[] = Array.from(allRoutesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
+	for (const route of finalizedAllRoutesData) {
+		await cacheDb.setNew(`hub:v1:network:routes:${route._id}`, route);
+	}
 	await cacheDb.set('hub:v1:network:routes', JSON.stringify(finalizedAllRoutesData));
 	Logger.info({ message: `Updated ${finalizedAllRoutesData.length} Routes` });
 
@@ -520,6 +523,9 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 	// Save all lines to the database
 
 	const finalizedAllLinesData: HubV1ApiLine[] = Array.from(allLinesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
+	for (const line of finalizedAllLinesData) {
+		await cacheDb.setNew(`hub:v1:network:lines:${line._id}`, line);
+	}
 	await cacheDb.set('hub:v1:network:lines', JSON.stringify(finalizedAllLinesData));
 	Logger.info({ message: `Updated ${finalizedAllLinesData.length} Lines` });
 

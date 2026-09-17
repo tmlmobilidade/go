@@ -1,0 +1,17 @@
+{
+	"overlays": {
+		"MapOverlayObservedPathPopup": {
+			"bearing": "Bússola: {bearing}º",
+			"driver_id": "Motorista: {driver_id}",
+			"position": "Seq. {index_position} de {total_count}",
+			"speed": "Velocidade: {speed} km/h",
+			"stop_id": "Paragem: {stop_id}",
+			"vehicle_id": "Veículo: {vehicle_id}"
+		},
+		"MapOverlayScheduledPathPopup": {
+			"arrival_time": "Hora planeada: {arrival_time}",
+			"passengers_observed": "Entradas: {passengers_observed}",
+			"stop_sequence": "Seq. {stop_sequence} de {path_length}"
+		}
+	}
+}

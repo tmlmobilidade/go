@@ -623,24 +623,35 @@
 				}
 			}
 		},
-		"export": {
-			"RidesExportModal": {
-				"CancelButton": {
-					"label": "Cancelar"
-				},
-				"ExportButton": {
-					"label": "Exportar Circulações"
-				},
-				"description": "Selecione o intervalo de datas para a exportação das circulações.",
+		"extract": {
+			"RidesExtract": {
 				"fields": {
-					"end_date": {
-						"placeholder": "Data Fim"
-					},
-					"start_date": {
-						"placeholder": "Data Início"
+					"version": {
+						"label": "Versão"
 					}
-				},
-				"title": "Exportar Circulações"
+				}
+			},
+			"RidesExtractHeader": {
+				"title": "Exportar circulações"
+			},
+			"RidesExtractV1Footer": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"RidesExtractV1Properties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Selecione um ou mais operadores..."
+					},
+					"start_time_scheduled_end": {
+						"label": "Data de fim"
+					},
+					"start_time_scheduled_start": {
+						"label": "Data de início"
+					}
+				}
 			}
 		}
 	},

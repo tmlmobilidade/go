@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
@@ -18,24 +17,13 @@ export async function getJsonFeed(request: FastifyRequest, reply: FastifyReply<H
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/alerts:getJsonFeed()] No JSON feed found in cache. Returning empty array.' });
-		return reply
-			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=20')
-			.code(HTTP_STATUS.NO_CONTENT)
-			.send({
-				data: [],
-				error: null,
-				status_code: HTTP_STATUS.NO_CONTENT,
-			});
+		return sendErrorApiResponse(reply, {
+			error: 'No JSON feed found in cache.',
+			status_code: '404',
+		});
 	};
 
-	return reply
-		.header('access-control-allow-origin', '*')
-		.header('cache-control', 'public, max-age=20')
-		.code(HTTP_STATUS.OK)
-		.send({
-			data: JSON.parse(cachedData),
-			error: null,
-			status_code: HTTP_STATUS.OK,
-		});
+	return sendSuccessApiResponse(reply, JSON.parse(cachedData), {
+		max_age: '30s',
+	});
 }

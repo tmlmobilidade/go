@@ -3,6 +3,7 @@
 import { OperationRidesV1OutputRowType, OperationRidesV1QueryRow } from './types.js';
 
 export const toOutputRow = (row: OperationRidesV1QueryRow): OperationRidesV1OutputRowType => {
+	console.log('original row', row);
 	return {
 
 		'_id': row._id,
@@ -74,7 +75,7 @@ export const toOutputRow = (row: OperationRidesV1QueryRow): OperationRidesV1Outp
 		'ONTIME_START-message': null,
 		'ONTIME_START-reason': row.analysis_expected_start_time_reason,
 		'ONTIME_START-unit': null,
-		'ONTIME_START-value': row.start_time_observed,
+		'ONTIME_START-value': row.analysis_expected_start_time_observed_start_time_delta,
 
 		'SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION-grade': row.analysis_simple_one_vehicle_event_or_apex_validation_grade_status,
 		'SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION-message': null,

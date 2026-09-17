@@ -25,7 +25,7 @@ export function EventsDetail() {
 	//
 	// B. Render components
 
-	if (eventsDetailContext.flags.isLoading) {
+	if (eventsDetailContext.flags.isLoading || !eventsDetailContext.data.event) {
 		return <LoadingOverlay />;
 	}
 

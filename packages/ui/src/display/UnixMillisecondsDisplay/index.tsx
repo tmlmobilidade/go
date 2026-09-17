@@ -56,7 +56,10 @@ export function UnixMillisecondsDisplay({ showDate = false, showSeconds = false,
 		if (!value) return;
 		if (value === Infinity || value === -Infinity) return;
 		// Format the timestamp
-		return Dates.fromUnixMilliseconds(value).toFormat(format);
+		return Dates
+			.fromUnixMilliseconds(value)
+			.setZone('local', 'offset_only')
+			.toFormat(format);
 	}, [value, format]);
 
 	//
