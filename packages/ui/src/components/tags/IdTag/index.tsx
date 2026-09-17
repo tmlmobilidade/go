@@ -11,23 +11,30 @@ import styles from './styles.module.css';
 
 export interface IdTagProps {
 	copyOnClick?: boolean
+	displayId?: string
 	id?: string
 }
 
 /* * */
 
-const IdTagBody = forwardRef<HTMLDivElement, IdTagProps & { onClick?: (e: React.MouseEvent<HTMLDivElement>) => void }>((props, ref) => (
-	<div
-		ref={ref}
-		className={styles.idTag}
-		data-clickable={!!props.onClick}
-		onClick={props.onClick}
-	>
-		{props.id !== null && props.id !== undefined && String(props.id).split('').map((char, index) => (
-			<span key={index} className={styles.char}>{char}</span>
-		))}
-	</div>
-));
+const IdTagBody = forwardRef<HTMLDivElement, IdTagProps & { onClick?: (e: React.MouseEvent<HTMLDivElement>) => void }>((props, ref) => {
+	//
+
+	const idValue = props.displayId ?? props.id;
+
+	return (
+		<div
+			ref={ref}
+			className={styles.idTag}
+			data-clickable={!!props.onClick}
+			onClick={props.onClick}
+		>
+			{idValue !== null && idValue !== undefined && String(idValue).split('').map((char, index) => (
+				<span key={index} className={styles.char}>{char}</span>
+			))}
+		</div>
+	);
+});
 
 /**
  * A tag component that should be used to display an ID.

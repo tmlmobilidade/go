@@ -7,9 +7,8 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
-import { OperationalDate, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { convertGTFSTimeStringAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
+import { type OperationalTime, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -161,7 +160,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					// Set a unique and stable ID for this arrival data
 					const uniqueIdValueForArrivalData = `${operationalDate.selectedOperationalDate}-${patternData.version_id}-${tripData.version_id}-${stopTime.stop_id}-${stopTime.stop_sequence}-${stopTime.arrival_time}`;
 					// Convert GTFS time string to Unix Timestamp
-					const scheduledArrivalMs = convertGTFSTimeStringAndOperationalDateToUnixMilliseconds(stopTime.arrival_time, String(operationalDate.selectedOperationalDate) as OperationalDate);
+					const scheduledArrivalMs = fromOperationalDateTimeToUnixMilliseconds({ operational_date: operationalDate.selectedOperationalDate, operational_time: stopTime.arrival_time as OperationalTime, timezone: 'Europe/Lisbon' });
 					// Fetch the trip update for this stop time
 					const tripUpdate = etaData?.find(eta => eta.trip_id.substring(eta.trip_id.indexOf(']') + 1) === tripData.trip_ids.find(tripId => tripId.substring(tripId.indexOf(']') + 1) === eta.trip_id.substring(eta.trip_id.indexOf(']') + 1))?.substring(eta.trip_id.indexOf(']') + 1)) ?? undefined;
 					// Extract the arrival time, delay and effective arrival time
