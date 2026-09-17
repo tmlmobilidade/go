@@ -106,7 +106,7 @@ export async function importPlanToSqlite(planData: Plan, options?: ExportHitouch
 	await exportShapesFiles(context, sqlGtfs);
 	await exportStopsFile(context, sqlGtfs, exportConfig, routeIds);
 	await exportAgencyFile(context, planData);
-	// feed_info.txt is intentionally excluded because HiTouch does not support it.
+	// await exportFeedInfoFile(context); // feed_info.txt is intentionally excluded because HiTouch does not need it.
 	await exportDayTypesFile(context);
 
 	Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
