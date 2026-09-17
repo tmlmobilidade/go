@@ -5,7 +5,7 @@ import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { Logger } from '@tmlmobilidade/logger';
 
-import { type DayChunk, utcDayChunksNeedingWork } from './day-coverage.js';
+import { type DayChunk, utcDayChunksNeedingWork } from '../utils/day-coverage.js';
 
 /* * */
 
@@ -37,10 +37,7 @@ export async function buildHistNodeTravelTimes(windowStart: UnixMilliseconds, wi
 	}
 
 	for (const [index, chunk] of chunks.entries()) {
-		Logger.progress({
-			message: `[${index + 1}/${chunks.length}] hist_node_travel_times ${chunk.yyyymmdd} [${chunk.start} → ${chunk.end})`,
-		});
-
+		Logger.progress({ message: `[${index + 1}/${chunks.length}] hist_node_travel_times ${chunk.yyyymmdd} [${chunk.start} → ${chunk.end})` });
 		await labDb.command({ query: `ALTER TABLE ${TABLE} DROP PARTITION ${chunk.yyyymmdd}` });
 		await labDb.queryFromFile(SQL_PATH, { chunk_end: chunk.end, chunk_start: chunk.start });
 	}

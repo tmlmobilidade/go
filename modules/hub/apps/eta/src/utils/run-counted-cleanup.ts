@@ -7,7 +7,13 @@ import { readFile } from 'node:fs/promises';
 
 /* * */
 
-type Params = Record<string, number | string | string[]>;
+type QueryParams = Record<string, number | string | string[]>;
+
+interface PreviewRow {
+	rows_to_delete: number | string
+}
+
+/* * */
 
 /**
  * Runs a "counted" cleanup file: statement 1 is a `SELECT count() AS rows_to_delete`
@@ -22,16 +28,18 @@ type Params = Record<string, number | string | string[]>;
  * @param params - Named query params used by the statements.
  * @returns The preview count (rows scheduled for deletion).
  */
-export async function runCountedCleanup(filePath: string, params: Params = {}): Promise<number> {
+export async function runCountedCleanup(filePath: string, params: QueryParams = {}): Promise<number> {
 	const sql = await readFile(filePath, { encoding: 'utf-8' });
 	const [preview, ...mutations] = splitClickHouseStatements(sql);
 
-	if (!preview) throw new Error(`Cleanup file has no statements: ${filePath}`);
+	if (!preview) {
+		throw new Error(`Cleanup file has no statements: ${filePath}`);
+	}
 
 	const previewQuery = prepareNamedQueryParams(preview, params, filePath);
-	const result = await labDb.query({ format: 'JSONEachRow', query: previewQuery.query, query_params: previewQuery.queryParams });
-	const [row] = (await result.json<{ rows_to_delete: number | string }>()) as { rows_to_delete: number | string }[];
-	const rowsToDelete = Number(row?.rows_to_delete ?? 0);
+	const previewResult = await labDb.query({ format: 'JSONEachRow', query: previewQuery.query, query_params: previewQuery.queryParams });
+	const [previewRow] = (await previewResult.json<PreviewRow>()) as PreviewRow[];
+	const rowsToDelete = Number(previewRow?.rows_to_delete ?? 0);
 
 	if (rowsToDelete === 0) {
 		Logger.progress({ message: 'Nothing to delete' });
@@ -39,8 +47,8 @@ export async function runCountedCleanup(filePath: string, params: Params = {}): 
 	}
 
 	for (const mutation of mutations) {
-		const prepared = prepareNamedQueryParams(mutation, params, filePath);
-		await labDb.command({ query: prepared.query, query_params: prepared.queryParams });
+		const mutationQuery = prepareNamedQueryParams(mutation, params, filePath);
+		await labDb.command({ query: mutationQuery.query, query_params: mutationQuery.queryParams });
 	}
 
 	Logger.progress({ message: `Deleted ${rowsToDelete} rows` });

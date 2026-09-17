@@ -1,7 +1,7 @@
 /* * */
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { EncodedPolyline } from '@tmlmobilidade/go-types-geo';
+import { type EncodedPolyline } from '@tmlmobilidade/go-types-geo';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { chunkLineStringByDistance, fromEncodedPolylineToGeoJsonLineString, geohashEncode } from '@tmlmobilidade/go-utils-geo';
 import { Logger } from '@tmlmobilidade/logger';
@@ -62,15 +62,10 @@ export async function loadHistoricalShapeNodes(chunkLengthMeters: number, geohas
 
 	Logger.info({ message: `Densifying ${shapes.length} new shapes into ${TABLE}` });
 
-	const client = await labDb.getClient();
 	const writer = new BatchWriter<HistShapeNode>({
 		batch_size: BATCH_SIZE,
 		insertFn: async (values) => {
-			await client.insert({
-				format: 'JSONEachRow',
-				table: TABLE,
-				values,
-			});
+			await labDb.insert({ format: 'JSONEachRow', table: TABLE, values });
 		},
 		title: TABLE,
 	});
