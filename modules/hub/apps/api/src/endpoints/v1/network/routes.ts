@@ -5,6 +5,7 @@ import { getLinesHandler } from '@/endpoints/v1/network/handlers/get-lines.js';
 import { getPatternHandler } from '@/endpoints/v1/network/handlers/get-pattern.js';
 import { getRouteHandler } from '@/endpoints/v1/network/handlers/get-route.js';
 import { getRoutesHandler } from '@/endpoints/v1/network/handlers/get-routes.js';
+import { getShapeHandler } from '@/endpoints/v1/network/handlers/get-shape.js';
 import { getStopHandler } from '@/endpoints/v1/network/handlers/get-stop.js';
 import { getStopsHandler } from '@/endpoints/v1/network/handlers/get-stops.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
@@ -31,6 +32,8 @@ server.register(
 		instance.get('/routes/:id', getRouteHandler);
 
 		instance.get('/patterns/:id', getPatternHandler);
+
+		instance.get('/shapes/:id', getShapeHandler);
 
 		next();
 	},
