@@ -262,22 +262,12 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},
 
-	exporter: {
-		// BASE
-		BASE: `${getModuleConfig('exporter', 'api_url')}`,
-
-		// EXPORTER
-		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getModuleConfig('exporter', 'api_url')}/exporter/${encodeURIComponent(id)}/download`,
-		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter`,
-	},
-
 	hub: {
 		// BASE
 		BASE: `${getModuleConfig('hub', 'api_url')}`,
 
 		// ALERTS
 		ALERTS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs`,
-		ALERTS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs-cm`,
 		ALERTS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs.pb`,
 		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
@@ -290,9 +280,13 @@ export const API_ROUTES = Object.freeze({
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
+		NETWORK_LINES_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/lines/${encodeURIComponent(id)}`,
 		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${encodeURIComponent(id)}`,
 		NETWORK_ROUTES: `${getModuleConfig('hub', 'api_url')}/v1/network/routes`,
+		NETWORK_ROUTES_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/routes/${encodeURIComponent(id)}`,
+		NETWORK_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/shapes/${encodeURIComponent(id)}`,
 		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
+		NETWORK_STOPS_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/stops/${encodeURIComponent(id)}`,
 
 		// PLANS
 		PLANS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs`,
@@ -348,7 +342,6 @@ export const API_ROUTES = Object.freeze({
 		FARES_LIST: `${getModuleConfig('offer', 'api_url')}/fares`,
 
 		// GTFS
-		GTFS_CREATE_EXPORT: `${getModuleConfig('offer', 'api_url')}/gtfs/create-export`,
 		GTFS_PARSE: `${getModuleConfig('offer', 'api_url')}/gtfs/parse`,
 
 		// LINES

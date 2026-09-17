@@ -106,6 +106,14 @@
 			"title": "Circulações"
 		}
 	},
+	"posterExport": {
+		"agenciesDescription": "Selecione os operadores e escolha um plano por operador.",
+		"agenciesLabel": "Selecionar operadores",
+		"combinedFilter": "Filtro de linhas e paragens",
+		"linesAndStops": "Linhas e paragens",
+		"planDescription": "Selecione um único plano para este operador.",
+		"planLabel": "Selecionar plano"
+	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {

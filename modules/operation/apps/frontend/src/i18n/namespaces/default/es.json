@@ -103,6 +103,14 @@
 			"just_now": "Ahora mismo"
 		}
 	},
+	"posterExport": {
+		"agenciesDescription": "Seleccione los operadores y elija un plan por operador.",
+		"agenciesLabel": "Seleccionar operadores",
+		"combinedFilter": "Filtro de líneas y paradas",
+		"linesAndStops": "Líneas y paradas",
+		"planDescription": "Seleccione un único plan para este operador.",
+		"planLabel": "Seleccionar plan"
+	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {
