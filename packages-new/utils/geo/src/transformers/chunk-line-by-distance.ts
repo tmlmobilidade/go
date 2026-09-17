@@ -6,11 +6,17 @@ import { type GeoJsonLineStringGeometry, GeoJsonLineStringGeometrySchema, type G
 
 /**
  * Resamples a GeoJSON LineString into equidistant points by walking the full
- * cumulative distance of the polyline. This function accumulates distance from
- * the start of the line to each vertex, and places nodes at exact `segmentLength` intervals,
- * interpolating between vertices. This means that on long "straight" segments, the output will have
- * more points than on curves, and on short "curved" segments, the output will have fewer points,
- * maintaining the same overall length of the line and of each chunked segment.
+ * cumulative distance of the polyline. Distance is accumulated from the start of
+ * the line to each vertex and a node is placed every `segmentLength` metres,
+ * interpolating between the original vertices. The output starts at the first
+ * vertex of the input and ends at its last vertex, so the resampled line covers
+ * the same extent as the original; every interior node is exactly
+ * `segmentLength` metres from the previous one along the path, and the final
+ * node is the remainder (0 < remainder <= segmentLength).
+ *
+ * The original vertices are NOT part of the output (other than the first and
+ * last): consumers index nodes by position (`node_index`) and rely on
+ * `node_index * segmentLength` being the distance along the path.
  * @param inputLineString The LineString to resample.
  * @param segmentLength The target distance between consecutive output points, in meters.
  * @returns A GeoJSON LineString with equidistant coordinates along the original path.
@@ -36,7 +42,10 @@ export function chunkLineStringByDistance(inputLineString: GeoJsonLineStringGeom
 
 	if (totalLength === 0) return inputLineString;
 
-	const result: GeoJsonPosition[] = inputLineString.coordinates;
+	// Start from the first vertex only. Seeding the result with the whole input
+	// array would emit every raw vertex before the resampled nodes and make the
+	// node index walk the route twice.
+	const result: GeoJsonPosition[] = [inputLineString.coordinates[0]];
 
 	//
 	// Walk the polyline placing a node every segmentLength meters
@@ -58,6 +67,13 @@ export function chunkLineStringByDistance(inputLineString: GeoJsonLineStringGeom
 		const ratio = segEnd > segStart ? (targetDist - segStart) / (segEnd - segStart) : 0;
 		// Interpolate the position of the node between the start and end of the segment
 		result.push(interpolatePositions(inputLineString.coordinates[segmentIndex], inputLineString.coordinates[segmentIndex + 1], ratio));
+	}
+
+	//
+	// Close the line at its real end so the last partial segment is not lost.
+
+	if (totalLength > nodeCount * segmentLength) {
+		result.push(inputLineString.coordinates[inputLineString.coordinates.length - 1]);
 	}
 
 	return GeoJsonLineStringGeometrySchema.parse({

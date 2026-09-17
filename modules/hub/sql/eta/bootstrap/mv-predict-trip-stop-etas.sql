@@ -1,6 +1,6 @@
 -- Live ETA per stop + refreshable MV.
--- Depends: eta.live_vehicle_positions, eta.curr_rides, eta.curr_waypoints_snapped,
---          eta.node_predictions (02-node-predictions-mv.sql),
+-- Depends: eta.curr_vehicle_events, eta.curr_rides, eta.curr_waypoints_snapped,
+--          eta.pred_node_etas (mv-predict-node-etas.sql),
 --          infrastructure.stops (MongoDB engine; agency stop_id → GO _id via flags).
 
 CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (trip_id, vehicle_id, stop_sequence);
 
-CREATE MATERIALIZED VIEW IF NOT EXISTS eta.mv_pred_trip_stop_etas
+CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND
 TO eta.pred_trip_stop_etas
 AS
@@ -79,7 +79,8 @@ WITH
             cn.latitude                 AS current_node_latitude,
             cn.longitude                AS current_node_longitude,
             lp.position_created_at      AS position_created_at,
-            fromUnixTimestamp64Milli(lp.position_created_at) AS pos_dt
+            -- Local time: period_of_day / weekday must match the aggregation's Europe/Lisbon buckets.
+            fromUnixTimestamp64Milli(lp.position_created_at, 'Europe/Lisbon') AS pos_dt
         FROM latest_pos AS lp
         INNER JOIN eta.curr_rides AS d ON lp.trip_id = d.trip_id
         LEFT JOIN eta.hist_shape_nodes AS cn

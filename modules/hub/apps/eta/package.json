@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-hub-eta-loader",
+	"name": "@tmlmobilidade/go-hub-eta",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -19,6 +19,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-clients-clickhouse": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-shared": "*",

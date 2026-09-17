@@ -3,21 +3,23 @@
 -- Source: eta.hist_node_travel_times
 -- Target: eta.hist_node_travel_times_aggregation
 --
--- Processes ONE operational day per run ($chunk_date). The loader iterates the
--- historical window day by day, so aggregation state stays bounded to a single
--- day's groups instead of the whole window (which previously exceeded the query
--- memory limit during the final GROUP BY merge).
+-- Processes ONE operational day per run ($chunk_date). The loader calls this for
+-- every operational day touched by the UTC-day partitions it just rebuilt, so
+-- the aggregation state stays bounded to a single day's groups.
 --
--- $scan_start/$scan_end (ms epoch) bound the created_at scan generously
--- around the operational day (timezone-agnostic padding); the exact row
--- selection is done by the operational_date = $chunk_date filter, so chunk
--- boundaries can never split an aggregation group.
+-- $scan_start/$scan_end (ms epoch) bound the created_at scan generously around
+-- the operational day; the source table is partitioned by UTC day of created_at
+-- so this prunes to 2-3 partitions. The exact row selection is done by the
+-- operational_date = $chunk_date filter, so chunk boundaries can never split an
+-- aggregation group.
 --
--- Dimensions produced:
---   - operational_date : service date (pre-4h events shifted to previous day)
---   - period_of_day             : time-of-day bucket based on event hour
---   - weekday                   : day name
---   - day_type                  : Weekday | Weekend
+-- All wall-clock derivations use Europe/Lisbon (the server runs in UTC):
+--   - operational_date : service date, events before 04:00 local belong to the previous day
+--   - period_of_day    : time-of-day bucket based on the local event hour
+--   - weekday/day_type : from the operational date
+--
+-- The target is ReplacingMergeTree(inserted_at) keyed by the group columns, so
+-- re-aggregating a day supersedes the previous rows (readers use FINAL).
 -- =============================================================================
 
 INSERT INTO eta.hist_node_travel_times_aggregation (
@@ -35,54 +37,36 @@ INSERT INTO eta.hist_node_travel_times_aggregation (
 )
 WITH
 
--- -----------------------------------------------------------------------------
--- Step 1: Parse raw timestamps and compute the operational service day.
---
--- Transit services before 04:00 belong to the previous service day
--- (e.g. a 01:30 trip on Tuesday is logically Monday's schedule).
--- created_at is stored as milliseconds-since-epoch.
--- -----------------------------------------------------------------------------
 parsed_timestamps AS (
     SELECT
         hashed_shape_id,
         node_index,
         travel_time_seconds,
-        fromUnixTimestamp64Milli(toInt64(created_at)) AS event_ts,
+        fromUnixTimestamp64Milli(created_at, 'Europe/Lisbon') AS event_ts,
         if(
-            toHour(fromUnixTimestamp64Milli(toInt64(created_at))) < 4,
-            fromUnixTimestamp64Milli(toInt64(created_at)) - INTERVAL 1 DAY,
-            fromUnixTimestamp64Milli(toInt64(created_at))
+            toHour(fromUnixTimestamp64Milli(created_at, 'Europe/Lisbon')) < 4,
+            fromUnixTimestamp64Milli(created_at, 'Europe/Lisbon') - INTERVAL 1 DAY,
+            fromUnixTimestamp64Milli(created_at, 'Europe/Lisbon')
         ) AS operational_ts
     FROM eta.hist_node_travel_times
     WHERE
-        travel_time_seconds > 0  -- discard zero/null samples (GPS noise, missing segments)
+        travel_time_seconds > 0
         AND created_at >= $scan_start
         AND created_at < $scan_end
 ),
 
--- -----------------------------------------------------------------------------
--- Step 2: Derive date and time fields used for grouping and classification,
---         and keep only rows belonging to this chunk's operational day.
--- -----------------------------------------------------------------------------
 derived_fields AS (
     SELECT
         hashed_shape_id,
         node_index,
         travel_time_seconds,
         toUInt32(formatDateTime(operational_ts, '%Y%m%d')) AS operational_date,
-        toHour(event_ts)             AS event_hour,        -- raw wall-clock hour for period_of_day
+        toHour(event_ts)             AS event_hour,
         toDayOfWeek(operational_ts)  AS operational_weekday -- 1=Mon … 7=Sun
     FROM parsed_timestamps
     WHERE toUInt32(formatDateTime(operational_ts, '%Y%m%d')) = $chunk_date
 ),
 
--- -----------------------------------------------------------------------------
--- Step 3: Classify each sample into time-of-day segments.
---
--- period_of_day: uses raw event_hour (not the shifted operational date) so that
---                a 23:50 trip correctly falls into 'Off Peak', not the next day's AM.
--- weekday/day_type: derived from operational_ts so they respect the pre-4h shift.
--- -----------------------------------------------------------------------------
 classified AS (
     SELECT
         hashed_shape_id,
@@ -112,11 +96,8 @@ classified AS (
     FROM derived_fields
 )
 
--- -----------------------------------------------------------------------------
--- Final: Aggregate per shape/node/date/segment combination.
--- quantile (reservoir sampling) instead of quantileExact: bounded memory per
--- group; for small-integer travel times the difference is negligible.
--- -----------------------------------------------------------------------------
+-- No rounding: per-node samples are a few seconds, so integer medians would
+-- carry a 30%+ quantization error that compounds over hundreds of nodes.
 SELECT
     hashed_shape_id,
     node_index,
@@ -124,11 +105,11 @@ SELECT
     period_of_day,
     weekday,
     day_type,
-    round(avg(travel_time_seconds))           AS avg_travel_time_seconds,
-    round(min(travel_time_seconds))           AS min_travel_time_seconds,
-    round(max(travel_time_seconds))           AS max_travel_time_seconds,
-    round(quantile(0.5)(travel_time_seconds)) AS median_travel_time_seconds,
-    now()                                     AS inserted_at
+    avg(travel_time_seconds)           AS avg_travel_time_seconds,
+    min(travel_time_seconds)           AS min_travel_time_seconds,
+    max(travel_time_seconds)           AS max_travel_time_seconds,
+    quantile(0.5)(travel_time_seconds) AS median_travel_time_seconds,
+    now()                              AS inserted_at
 FROM classified
 GROUP BY
     hashed_shape_id,
@@ -136,5 +117,4 @@ GROUP BY
     operational_date,
     period_of_day,
     weekday,
-    day_type
-SETTINGS max_bytes_before_external_group_by = 4000000000;
+    day_type;
