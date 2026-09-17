@@ -44,6 +44,12 @@ interface HistShapeNode {
  * 3. Write each node with lat/lon and its geohash cell at `geohashPrefixLength`,
  *    which must match the precision used by the snap joins.
  *
+ * Because existing shapes are never re-sent, a change in the densifier does
+ * not propagate to shapes loaded before it: the table (and everything keyed by
+ * node_index) must then be rebuilt with a migration. The spacing invariant is
+ * checked at the end of every run so such a mismatch is reported instead of
+ * silently producing wrong ETAs.
+ *
  * @param chunkLengthMeters - Target spacing between consecutive shape nodes.
  * @param geohashPrefixLength - Geohash precision of the `geohash` column.
  */
@@ -57,6 +63,7 @@ export async function loadHistoricalShapeNodes(chunkLengthMeters: number, geohas
 
 	if (shapes.length === 0) {
 		Logger.info({ message: 'hist_shape_nodes already covers every historical shape; nothing to load' });
+		await checkShapeNodeSpacing(chunkLengthMeters);
 		return;
 	}
 
@@ -88,4 +95,43 @@ export async function loadHistoricalShapeNodes(chunkLengthMeters: number, geohas
 	}
 
 	await writer.flush();
+	await checkShapeNodeSpacing(chunkLengthMeters);
+}
+
+/**
+ * Verifies the geometry invariant every consumer of `node_index` relies on:
+ * consecutive nodes of a shape are at most `chunkLengthMeters` apart. The
+ * densifier interpolates along the path, so no gap can exceed the spacing
+ * (10% covers great-circle vs. planar rounding). A shape that violates it was
+ * densified by a different algorithm, and the travel times, aggregates and
+ * snapped waypoints built on top of it are wrong too, so this only reports
+ * and points at the rebuild migration instead of patching the table in place.
+ */
+async function checkShapeNodeSpacing(chunkLengthMeters: number): Promise<void> {
+	const rows = await labDb.queryFromString<{ bad_shapes: number | string }>(`
+		SELECT count() AS bad_shapes
+		FROM (
+			SELECT hashed_shape_id, max(gap) AS max_gap
+			FROM (
+				SELECT
+					hashed_shape_id,
+					node_index,
+					greatCircleDistance(lagInFrame(longitude) OVER w, lagInFrame(latitude) OVER w, longitude, latitude) AS gap
+				FROM ${TABLE} FINAL
+				WINDOW w AS (PARTITION BY hashed_shape_id ORDER BY node_index)
+			)
+			WHERE node_index > 0
+			GROUP BY hashed_shape_id
+		)
+		WHERE max_gap > $1
+	`, { 1: chunkLengthMeters * 1.1 });
+
+	const badShapes = Number(rows[0]?.bad_shapes ?? 0);
+
+	if (badShapes > 0) {
+		Logger.error({
+			error: new Error(`${badShapes} shape(s) in ${TABLE} have consecutive nodes further apart than ${chunkLengthMeters} m`),
+			message: `${TABLE} was densified by a different algorithm; every node_index consumer is wrong. Run eta/bootstrap/migrate-2026-09-17-rebuild-shape-nodes.sql to rebuild.`,
+		});
+	}
 }
