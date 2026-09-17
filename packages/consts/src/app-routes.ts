@@ -268,7 +268,6 @@ export const API_ROUTES = Object.freeze({
 
 		// ALERTS
 		ALERTS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs`,
-		ALERTS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs-cm`,
 		ALERTS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs.pb`,
 		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
@@ -281,9 +280,13 @@ export const API_ROUTES = Object.freeze({
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
+		NETWORK_LINES_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/lines/${encodeURIComponent(id)}`,
 		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${encodeURIComponent(id)}`,
 		NETWORK_ROUTES: `${getModuleConfig('hub', 'api_url')}/v1/network/routes`,
+		NETWORK_ROUTES_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/routes/${encodeURIComponent(id)}`,
+		NETWORK_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/shapes/${encodeURIComponent(id)}`,
 		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
+		NETWORK_STOPS_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/stops/${encodeURIComponent(id)}`,
 
 		// PLANS
 		PLANS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs`,
