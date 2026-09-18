@@ -75,6 +75,8 @@ ${ANALYSES.map(({ name }) => analysisCte(name)).join(',\n')}
 
 SELECT
 	r.*,
+	r.operational_date AS operational_date,
+	r.agency_id AS agency_id,
 
 ${ANALYSES.map(analysis => analysisColumns(analysis)).join(',\n\n')}
 
