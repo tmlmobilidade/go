@@ -20,15 +20,15 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/eta', getEtaAllHandler);
+		instance.get('/', getEtaAllHandler);
 
-		instance.get('/eta/gtfs', getEtaGtfsRtJsonHandler);
+		instance.get('/gtfs', getEtaGtfsRtJsonHandler);
 
-		instance.get('/eta/gtfs.pb', getEtaGtfsRtProtobufHandler);
+		instance.get('/gtfs.pb', getEtaGtfsRtProtobufHandler);
 
-		instance.get('/eta/by-trip/:id', getEtaByTripIdHandler);
+		instance.get('/by-trip/:id', getEtaByTripIdHandler);
 
-		instance.get('/eta/by-stop/:id', getEtaByStopIdHandler);
+		instance.get('/by-stop/:id', getEtaByStopIdHandler);
 
 		next();
 	},
