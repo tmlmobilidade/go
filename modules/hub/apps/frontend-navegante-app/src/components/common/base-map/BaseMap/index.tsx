@@ -151,17 +151,17 @@ export function BaseMap() {
 				visible={activeBaseMapOverlays.includes('stops')}
 			/>
 
-			{shapeFc && (
+			<MapViewOverlayVehicles
+				vehiclesData={vehiclesMapData}
+				visible={activeBaseMapOverlays.includes('vehicles')}
+			/>
+
+			{shapeFc.features.length > 0 && (
 				<MapViewStylePath
 					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
 					shapeData={shapeFc}
 				/>
 			)}
-
-			<MapViewOverlayVehicles
-				vehiclesData={vehiclesMapData}
-				visible={activeBaseMapOverlays.includes('vehicles')}
-			/>
 			{/* <MapViewOverlayVehicleLineBadges
 				visible={activeBaseMapOverlays.includes('vehicles')}
 			/> */}
