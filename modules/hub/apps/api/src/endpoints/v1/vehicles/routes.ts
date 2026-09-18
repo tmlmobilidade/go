@@ -19,13 +19,13 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/vehicles/metadata', getVehicleMetadataJsonHandler);
+		instance.get('/metadata', getVehicleMetadataJsonHandler);
 
-		instance.get('/vehicles/positions', getVehiclePositionsJsonHandler);
+		instance.get('/positions', getVehiclePositionsJsonHandler);
 
-		instance.get('/vehicles/positions/gtfs', getVehiclePositionsGtfsRtJsonHandler);
+		instance.get('/positions/gtfs', getVehiclePositionsGtfsRtJsonHandler);
 
-		instance.get('/vehicles/positions/gtfs.pb', getVehiclePositionsGtfsRtProtobufHandler);
+		instance.get('/positions/gtfs.pb', getVehiclePositionsGtfsRtProtobufHandler);
 
 		next();
 	},
