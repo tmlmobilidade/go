@@ -300,26 +300,11 @@ export const API_ROUTES = Object.freeze({
 		PLANS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs/cm`,
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 
-		// REALTIME
-		REALTIME_ETA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta`,
-		REALTIME_ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}`,
-		REALTIME_ETA_BY_STOP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs`,
-		REALTIME_ETA_BY_STOP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs.pb`,
-		REALTIME_ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}`,
-		REALTIME_ETA_BY_TRIP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs`,
-		REALTIME_ETA_BY_TRIP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs.pb`,
-		REALTIME_ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs`,
-		REALTIME_ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs.pb`,
-		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
-		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
-		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
-		REALTIME_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs.pb`,
-
 		// VEHICLES
-		VEHICLES_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/vehicles/metadata`,
-		VEHICLES_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/vehicles/positions`,
-		VEHICLES_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/vehicles/positions/gtfs`,
-		VEHICLES_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/vehicles/positions/gtfs.pb`,
+		VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/metadata`,
+		VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/positions`,
+		VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/positions/gtfs`,
+		VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/positions/gtfs.pb`,
 	},
 
 	infrastructure: {
