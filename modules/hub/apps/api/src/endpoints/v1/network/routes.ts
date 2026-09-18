@@ -7,6 +7,7 @@ import { getLinesHandler } from './handlers/get-lines.js';
 import { getPatternHandler } from './handlers/get-pattern.js';
 import { getRouteHandler } from './handlers/get-route.js';
 import { getRoutesHandler } from './handlers/get-routes.js';
+import { getShapeHandler } from './handlers/get-shape.js';
 import { getStopHandler } from './handlers/get-stop.js';
 import { getStopsHandler } from './handlers/get-stops.js';
 
