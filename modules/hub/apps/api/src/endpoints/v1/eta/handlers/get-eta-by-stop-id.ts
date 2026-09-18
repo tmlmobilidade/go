@@ -3,6 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { HubV1ApiTripStopEta } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
@@ -10,7 +11,7 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getEtaByStopIdHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<unknown>) {
+export async function getEtaByStopIdHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubV1ApiTripStopEta[]>) {
 	//
 
 	//
