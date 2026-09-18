@@ -1,8 +1,8 @@
 /* * */
 
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
-/* * */
 /* * */
 
 import { type TimeSlot, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
@@ -56,10 +56,11 @@ export const SYNC_INTERVAL: AppConfig['syncInterval'] = '15m';
  *
  * @returns The configuration for the current run.
  */
-export function getAppConfig(): AppConfig {
+export async function getAppConfig(): Promise<AppConfig> {
 	const now = Dates.now('local');
+	const agencyIds = await goDb.core.agencies.findMany({ 'open_data.services.eta_enabled': true }, { projection: { _id: 1 } });
 	return {
-		agencyIds: ['IA9T6', 'A3H3M', 'HF16N', 'LA77N', 'BNA17', 'YA15B', 'A2L1N'],
+		agencyIds: agencyIds.map(agency => agency._id),
 		processing: {
 			currentRidesEndTime: now.plus({ hours: Dates.standardWindowHours }).unix_milliseconds,
 			currentRidesStartTime: now.minus({ hours: Dates.standardWindowHours }).unix_milliseconds,

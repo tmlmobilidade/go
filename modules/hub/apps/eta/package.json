@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-clickhouse": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-shared": "*",

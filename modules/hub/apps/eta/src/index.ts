@@ -50,7 +50,7 @@ async function main() {
 
 	const globalTimer = new Timer();
 
-	const config = getAppConfig();
+	const config = await getAppConfig();
 	const { agencyIds, processing, stages } = config;
 
 	//
