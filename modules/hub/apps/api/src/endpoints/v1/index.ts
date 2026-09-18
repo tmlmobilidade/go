@@ -5,3 +5,4 @@ import './network/routes.js';
 import './plans/routes.js';
 import './realtime/routes.js';
 import './vehicles/routes.js';
+import './eta/routes.js';
