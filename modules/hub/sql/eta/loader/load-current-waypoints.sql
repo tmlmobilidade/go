@@ -1,4 +1,6 @@
 -- Current window waypoints: operation.hashed_trips for trips in eta.curr_rides → eta.curr_waypoints.
+-- Waypoints are immutable per hashed trip id, so only trips not yet present are inserted;
+-- trips that leave the window are removed by the cleanup stage.
 
 INSERT INTO eta.curr_waypoints (
     _id,
@@ -34,4 +36,5 @@ SELECT
     h.timepoint,
     h.updated_at
 FROM operation.hashed_trips AS h FINAL
-INNER JOIN eta.curr_rides AS r ON h._id = r.hashed_trip_id;
+INNER JOIN eta.curr_rides AS r ON h._id = r.hashed_trip_id
+WHERE h._id NOT IN (SELECT DISTINCT _id FROM eta.curr_waypoints);

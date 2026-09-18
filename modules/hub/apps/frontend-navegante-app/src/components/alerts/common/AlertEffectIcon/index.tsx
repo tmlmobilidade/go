@@ -3,7 +3,6 @@
 import { getEffectSeverityLevel } from '@/utils/get-alert-severity-level';
 import { GtfsRtEffect, GtfsRtEffectValues } from '@tmlmobilidade/go-types-gtfs-rt';
 import { AlertEffectIcons } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -18,13 +17,11 @@ interface AlertEffectIconProps {
 
 /* * */
 
-export function AlertEffectIcon({ className, effect, size, withText = false }: AlertEffectIconProps) {
+export function AlertEffectIcon({ className, effect, withText = false }: AlertEffectIconProps) {
 	//
 
 	//
 	// A. Setup variables
-
-	const { t } = useTranslation();
 
 	const severityColor = {
 		high: styles.severityLevel_high,

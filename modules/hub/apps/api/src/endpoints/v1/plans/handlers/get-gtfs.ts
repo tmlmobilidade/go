@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
 /**
@@ -10,21 +9,47 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
  * @param reply The reply object.
  */
 export async function getGtfsHandler(request: FastifyRequest, reply: FastifyReply<string>) {
-	// Retrieve file data from database
+	//
+
+	//
+	// Retrieve the file data from the storage provider
+
 	const foundFileData = await storageProvider.findById('gtfs-latest');
-	if (!foundFileData?.url) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
-	// Stream the file in the given URL to the client
+
+	if (!foundFileData?.url) {
+		return sendErrorApiResponse(reply, {
+			error: 'File not found',
+			status_code: '404',
+		});
+	}
+
+	//
+	// Fetch the file from the storage service URL
+
 	const storageServiceResponse = await fetch(foundFileData.url);
-	if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
-	// Set headers and pipe the response body to the client
+
+	if (!storageServiceResponse.ok || !storageServiceResponse.body) {
+		return sendErrorApiResponse(reply, {
+			error: 'Could not fetch file.',
+			status_code: '500',
+		});
+	}
+
+	//
+	// Set the download headers, disabling nginx and client caching
+	// and nginx buffering to memory
+
 	reply.header('access-control-allow-origin', '*');
-	reply.header('content-disposition', `attachment; filename="gtfs-latest.zip"`);
+	reply.header('content-disposition', 'attachment; filename="gtfs-latest.zip"');
 	reply.header('content-type', 'application/zip');
-	reply.header('cache-control', 'no-store'); // Disable nginx and client caching
-	reply.header('X-Accel-Buffering', 'no'); // Disable nginx buffering to memory
-	// Set content length if available
+	reply.header('cache-control', 'no-store');
+	reply.header('X-Accel-Buffering', 'no');
+
 	const contentLength = storageServiceResponse.headers.get('content-length');
 	if (contentLength) reply.header('content-length', contentLength);
+
+	//
 	// Pipe the response body to the client
+
 	return reply.send(storageServiceResponse.body);
 }

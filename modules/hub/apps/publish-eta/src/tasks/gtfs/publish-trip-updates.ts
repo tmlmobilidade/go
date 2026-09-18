@@ -1,12 +1,12 @@
 /* * */
 
-import { TTL_REALTIME } from '@/config.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { TTL_REALTIME } from '../../config.js';
 import { EXTERNAL_FEEDS } from '../external-feeds.js';
 import { cacheEtasFromClickHouseByStop } from './cache-etas-from-clickhouse-by-stop.js';
 import { cacheEtasFromClickHouseByTrip } from './cache-etas-from-clickhouse-by-trip.js';

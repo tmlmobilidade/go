@@ -117,13 +117,10 @@ export function transformStopDataIntoGeoJsonFeature(stopData: HubV1ApiStop): Geo
 		type: 'Feature',
 	};
 
-	// Filter out falsy properties
-	Object.keys(feature.properties).forEach((key) => {
-		if (feature.properties[key as keyof typeof feature.properties] === undefined || feature.properties[key as keyof typeof feature.properties] === null) {
-			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-			delete feature.properties[key as keyof typeof feature.properties];
-		}
-	});
+	// Filter out null and undefined properties
+	feature.properties = Object.fromEntries(
+		Object.entries(feature.properties).filter(([, value]) => value !== undefined && value !== null),
+	) as HubV1ApiStop;
 
 	return feature;
 }

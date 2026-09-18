@@ -17,6 +17,8 @@ export const HubV1ApiPlanSchema = z.object({
 	is_active: z.boolean().default(false),
 	operation_gtfs_normalized_id: z.string(),
 	operation_gtfs_normalized_url: z.string().url(),
+	operation_gtfs_original_id: z.string(),
+	operation_gtfs_original_url: z.string().url(),
 	updated_at: UnixMillisecondsSchema,
 });
 

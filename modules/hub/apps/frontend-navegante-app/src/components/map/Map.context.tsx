@@ -1,8 +1,7 @@
 'use client';
 
 import { useUserLocation } from '@/components/map/use-user-location';
-import { useSessionStorage } from '@mantine/hooks';
-import { moveMapView } from '@tmlmobilidade/ui';
+import { moveMapView, useSessionStorage } from '@tmlmobilidade/ui';
 import { type MapRef } from '@vis.gl/react-maplibre';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 

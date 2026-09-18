@@ -158,8 +158,6 @@ export async function publishVehiclesPositions() {
 
 		if (!hubV1Json.success) throw new Error(`Failed to parse Hub V1 API Vehicle Position: ${hubV1Json.error.message}`);
 
-		if (currentPosition.vehicle_id === '2031') console.log(hubV1Json.data);
-
 		hubVehiclePositionsJson.push(hubV1Json.data);
 
 		//

@@ -1,21 +1,23 @@
 'use client';
 
-import { useRidesDetailRideId } from '@/components/rides/detail/shared/use-rides-detail-ride-id';
-import { RidesListFiltersBar } from '@/components/rides/list/filters/RidesListFiltersBar';
-import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
-import { RidesListCellDrivers } from '@/components/rides/list/table/RidesListCellDrivers';
-import { RidesListCellDurationObserved } from '@/components/rides/list/table/RidesListCellDurationObserved';
-import { RidesListCellDurationScheduled } from '@/components/rides/list/table/RidesListCellDurationScheduled';
-import { RidesListCellPassengers } from '@/components/rides/list/table/RidesListCellPassengers';
-import { RidesListCellTimeObserved } from '@/components/rides/list/table/RidesListCellTimeObserved';
-import { RidesListCellVehicles } from '@/components/rides/list/table/RidesListCellVehicles';
-import { useRidesListData } from '@/components/rides/list/use-rides-list-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { DataTable, DataTableColumn, displayUnixMilliseconds, ErrorDisplay, GradeStatusDisplay, Label, OperationalDateDisplay, OperationalStatusDisplay, Pane, Section, SeenStatusDisplay, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesDetailRideId } from '../../detail/shared/use-rides-detail-ride-id';
+import { useRidesAgenciesData } from '../../shared/use-rides-agencies-data';
+import { RidesListFiltersBar } from '../filters/RidesListFiltersBar';
+import { RidesListHeader } from '../RidesListHeader';
+import { RidesListCellDrivers } from '../table/RidesListCellDrivers';
+import { RidesListCellDurationObserved } from '../table/RidesListCellDurationObserved';
+import { RidesListCellDurationScheduled } from '../table/RidesListCellDurationScheduled';
+import { RidesListCellPassengers } from '../table/RidesListCellPassengers';
+import { RidesListCellTimeObserved } from '../table/RidesListCellTimeObserved';
+import { RidesListCellVehicles } from '../table/RidesListCellVehicles';
+import { useRidesListData } from '../use-rides-list-data';
 
 /* * */
 
@@ -28,6 +30,8 @@ export function RidesList() {
 	const { t } = useTranslation();
 
 	const { rideId } = useRidesDetailRideId();
+
+	const { isLoading: agenciesLoading } = useRidesAgenciesData();
 
 	const router = useRouter();
 
@@ -188,7 +192,7 @@ export function RidesList() {
 			{ridesData.error && <ErrorDisplay message={ridesData.error} />}
 			<DataTable
 				columns={columns}
-				isLoading={ridesData.isLoading}
+				isLoading={ridesData.isLoading || agenciesLoading}
 				onRowClick={handleRowClick}
 				records={ridesData.data}
 				rowIdAccessor="_id"

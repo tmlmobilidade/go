@@ -17,26 +17,64 @@ CREATE TABLE IF NOT EXISTS eta.curr_vehicle_events
     received_at Int64
 )
 ENGINE = ReplacingMergeTree()
-ORDER BY (created_at, vehicle_id, trip_id, _id);
+ORDER BY (created_at, vehicle_id, trip_id, _id)
+-- The ETA view only looks 30 minutes back; keep a small margin and let the
+-- engine age rows out instead of deleting them by mutation every cycle.
+TTL toDateTime(intDiv(created_at, 1000), 'UTC') + INTERVAL 2 HOUR;
 
--- Snaps each ingested vehicle event to the closest shape node per trip (trip->shape from daily_rides).
+-- Snaps each ingested vehicle event to the closest shape node of its trip's
+-- shape (trip -> shape from curr_rides).
 --
--- Refreshable (batched) instead of an insert-triggered MV: the tracker streams
--- flush ~6 small inserts/s, and an insert-triggered MV rebuilds the join hash
--- tables for curr_rides and hist_shape_nodes on every one of them. Batching
--- every 5s builds them once per batch.
+-- Refreshable (batched) instead of insert-triggered: the tracker streams flush
+-- ~6 small inserts/s and an insert-triggered MV would rebuild the join hash
+-- tables on each one. 15 s keeps the batch cheap and still well inside the
+-- 30 s cadence of the ETA view that consumes this table.
+--
+-- The snap uses the same geohash-6 bucketing as the historical build: a ping is
+-- compared only with nodes of its shape inside the cells its ±0.001° bbox
+-- touches (~30 candidates instead of ~700 per shape). Pings more than ~110 m
+-- from their shape therefore get no node and are not ingested; they were never
+-- usable for an ETA anyway.
 --
 -- Each refresh takes events received after the newest one already snapped,
--- minus a 60s overlap: the 20 tracker streams insert independently, so an
--- event can land in ClickHouse after a newer one was already processed. The
--- overlap is deduped on _id. The 10-minute floor bounds the catch-up work
--- after a bootstrap or a refresh outage.
+-- minus a 60 s overlap (the tracker streams insert independently, so an event
+-- can land after a newer one was already processed). The overlap is deduped on
+-- _id. The 10-minute floor bounds the catch-up work after a bootstrap or a
+-- refresh outage.
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_curr_vehicle_events
-REFRESH EVERY 5 SECOND APPEND TO eta.curr_vehicle_events AS
+REFRESH EVERY 15 SECOND APPEND TO eta.curr_vehicle_events AS
 WITH
+    0.001 AS bbox_deg,
     since AS (
         SELECT greatest(max(received_at), toUnixTimestamp64Milli(now64(3)) - 10 * 60 * 1000) - 60 * 1000 AS ms
         FROM eta.curr_vehicle_events
+    ),
+    fresh_events AS (
+        SELECT
+            _id,
+            agency_id,
+            trip_id,
+            vehicle_id,
+            latitude,
+            longitude,
+            speed,
+            bearing,
+            created_at,
+            received_at,
+            arrayJoin(
+                geohashesInBox(
+                    toFloat32(longitude - bbox_deg),
+                    toFloat32(latitude  - bbox_deg),
+                    toFloat32(longitude + bbox_deg),
+                    toFloat32(latitude  + bbox_deg),
+                    6
+                )
+            ) AS cell
+        FROM operation.simplified_vehicle_events
+        -- operational_date is in the partition/primary key: prunes the scan to the current day(s).
+        WHERE operational_date >= toYYYYMMDD(today() - 1)
+          AND received_at > (SELECT ms FROM since)
+          AND _id NOT IN (SELECT _id FROM eta.curr_vehicle_events WHERE received_at > (SELECT ms FROM since))
     )
 SELECT
     s._id AS _id,
@@ -51,13 +89,13 @@ SELECT
     s.bearing AS bearing,
     s.created_at AS created_at,
     s.received_at AS received_at
-FROM operation.simplified_vehicle_events AS s
+FROM fresh_events AS s
 INNER JOIN eta.curr_rides AS d ON s.trip_id = d.trip_id
-INNER JOIN eta.hist_shape_nodes AS n ON d.hashed_shape_id = n.hashed_shape_id
--- operational_date is in the partition/primary key: prunes the scan to the current day(s).
-WHERE s.operational_date >= toYYYYMMDD(today() - 1)
-  AND s.received_at > (SELECT ms FROM since)
-  AND s._id NOT IN (SELECT _id FROM eta.curr_vehicle_events WHERE received_at > (SELECT ms FROM since))
+INNER JOIN eta.hist_shape_nodes AS n
+    ON  d.hashed_shape_id = n.hashed_shape_id
+    AND s.cell            = n.geohash
+    AND n.latitude  BETWEEN s.latitude  - bbox_deg AND s.latitude  + bbox_deg
+    AND n.longitude BETWEEN s.longitude - bbox_deg AND s.longitude + bbox_deg
 GROUP BY
     s._id,
     s.agency_id,

@@ -13,15 +13,21 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getLineHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubV1ApiLine>) {
 	//
 
+	//
+	// Get the published line from the cache
+
 	const cachedData = await cacheDb.getNew<HubV1ApiLine>(`hub:v1:network:lines:${request.params.id}`);
 
 	if (!cachedData) {
-		Logger.error({ message: `[hub/v1/network:getLine(${request.params.id})] No cached data found for line ${request.params.id}` });
+		Logger.error({ message: `[hub/v1/network:getLineHandler(${request.params.id})] No cached data found for line ${request.params.id}` });
 		return sendErrorApiResponse(reply, {
-			error: `[hub/v1/network:getLine(${request.params.id})] No cached data found for line ${request.params.id}`,
+			error: `[hub/v1/network:getLineHandler(${request.params.id})] No cached data found for line ${request.params.id}`,
 			status_code: '404',
 		});
-	};
+	}
+
+	//
+	// Return the cached line
 
 	return sendSuccessApiResponse(reply, cachedData.data, {
 		max_age: '1h',
