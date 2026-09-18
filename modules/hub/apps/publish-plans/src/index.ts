@@ -4,6 +4,7 @@ import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { publishAgencies } from './tasks/publish-agencies.js';
 import { publishApprovedPlans } from './tasks/publish-approved-plans.js';
 
 /* * */
@@ -30,6 +31,8 @@ async function main() {
 
 	//
 	// Run all tasks sequentially
+
+	await publishAgencies();
 
 	await publishApprovedPlans();
 

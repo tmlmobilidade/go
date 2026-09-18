@@ -85,8 +85,8 @@ class CacheDbClass {
 	/**
 	 * Retrieves a cache entry by its key.
 	 * @param key The key of the cache entry to retrieve.
-	 * @returns A promise that resolves with the cache entry value,
-	 * or `null` if not found.
+	 * @returns A promise that resolves with the JSON parsed cache entry value,
+	 * or `undefined` if not found.
 	 * @throws Will throw an error if the retrieval process fails.
 	 */
 	public async getNew<T>(key: CacheDbKey): Promise<CachedData<T> | undefined> {
@@ -126,7 +126,7 @@ class CacheDbClass {
 	}
 
 	/**
-	 * Saves a cache entry with an optional time-to-live (TTL).
+	 * Saves a JSON cache entry with an optional time-to-live (TTL).
 	 * @param key The key of the cache entry to save.
 	 * @param value The value of the cache entry to save. Must be a string.
 	 * @param ttl Optional time-to-live (TTL) in seconds. Omit when not needed.
