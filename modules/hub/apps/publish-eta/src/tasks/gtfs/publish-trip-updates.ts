@@ -8,10 +8,6 @@ import { Timer } from '@tmlmobilidade/timer';
 
 import { TTL_REALTIME } from '../../config.js';
 import { EXTERNAL_FEEDS } from '../external-feeds.js';
-import { cacheEtasFromClickHouseByStop } from './cache-etas-from-clickhouse-by-stop.js';
-import { cacheEtasFromClickHouseByTrip } from './cache-etas-from-clickhouse-by-trip.js';
-import { cacheTripUpdatesByStop } from './cache-trip-updates-by-stop.js';
-import { cacheTripUpdatesByTrip } from './cache-trip-updates-by-trip.js';
 import { getClickHouseTripUpdates } from './get-clickhouse-trip-updates.js';
 import { getExternalTripUpdates } from './get-external-trip-updates.js';
 
@@ -37,16 +33,11 @@ export async function publishTripUpdates() {
 	// Get Clickhouse TripUpdates
 	const clickhouseTripUpdates = await getClickHouseTripUpdates();
 	clickhouseTripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
-	// Rebuild per-trip / per-stop ETA cache from ClickHouse SQL aggregations
-	await cacheEtasFromClickHouseByTrip();
-	await cacheEtasFromClickHouseByStop();
 
 	for (const feed of EXTERNAL_FEEDS) {
 		Logger.info({ message: `Retrieving TripUpdates from ${feed.label} API...` });
 		const tripUpdates = await getExternalTripUpdates(feed);
 		tripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
-		await cacheTripUpdatesByTrip(tripUpdates);
-		await cacheTripUpdatesByStop(tripUpdates);
 	}
 
 	//
