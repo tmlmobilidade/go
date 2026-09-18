@@ -17,7 +17,7 @@ export async function getClickHouseTripUpdates(): Promise<GtfsRtTripUpdate[]> {
 
 	Logger.info({ message: 'Retrieving Estimated Time of Arrivals from ClickHouse...' });
 
-	const allTripUpdates = await labDb.queryFromFile<ClickHouseEtaGtfsResponse>(sqlPath('hub', 'publish-realtime/select-eta-gtfs.sql'));
+	const allTripUpdates = await labDb.queryFromFile<ClickHouseEtaGtfsResponse>(sqlPath('hub', 'publish-eta/select-eta-gtfs.sql'));
 
 	const tripUpdates: GtfsRtTripUpdate[] = allTripUpdates.map(row => JSON.parse(row.trip_update));
 

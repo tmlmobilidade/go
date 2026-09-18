@@ -30,7 +30,7 @@ export async function cacheEtasFromClickHouseByStop() {
 
 	Logger.info({ message: 'Retrieving GTFS-RT TripUpdates grouped by stop from ClickHouse...' });
 
-	const tripUpdatesByStop = await labDb.queryFromFile<{ key: string, value: string }>(sqlPath('hub', 'publish-realtime/select-eta-by-stop-gtfs.sql'));
+	const tripUpdatesByStop = await labDb.queryFromFile<{ key: string, value: string }>(sqlPath('hub', 'publish-eta/select-eta-by-stop-gtfs.sql'));
 
 	await Promise.all(tripUpdatesByStop.map((row) => {
 		const tripUpdates = JSON.parse(row.value) as GtfsRtTripUpdate[];

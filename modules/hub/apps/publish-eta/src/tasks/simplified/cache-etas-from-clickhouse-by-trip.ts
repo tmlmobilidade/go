@@ -29,7 +29,7 @@ export async function cacheEtasFromClickHouseByTrip() {
 
 	Logger.info({ message: 'Retrieving trip stop ETAs grouped by trip from ClickHouse...' });
 
-	const etasByTrip = await labDb.queryFromFile<ClickHouseEtaKeyValue>(sqlPath('hub', 'publish-realtime/select-eta-by-trip.sql'));
+	const etasByTrip = await labDb.queryFromFile<ClickHouseEtaKeyValue>(sqlPath('hub', 'publish-eta/select-eta-by-trip.sql'));
 
 	await Promise.all(etasByTrip.map(row => cacheDb.set(`hub:v1:realtime:eta:by-trip:${row.key}`, row.value, TTL_REALTIME)));
 
