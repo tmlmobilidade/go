@@ -91,7 +91,7 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 					plan_id: plan._id,
 				};
 
-				sqlGtfs = mergeGtfsTables(sqlGtfs, importedGtfs, plan._id, plans.length > 1);
+				sqlGtfs = mergeGtfsTables(sqlGtfs, importedGtfs);
 				for (const serviceId of Object.keys(importedGtfs.calendar_dates)) {
 					calendarsByService.set(serviceId, calendar);
 				}

@@ -6,21 +6,9 @@ import { getPosterRouteId } from './get-poster-route-id.js';
 /* * */
 
 /**
- * Merge an imported plan into the combined database, keeping shared stop IDs.
- * Feed-local trip, service and shape IDs are isolated when combining plans.
+ * Merge an imported plan into the combined database, preserving the original IDs.
  */
-export function mergeGtfsTables(target: OperationPostersV1Tables | undefined, source: OperationPostersV1Tables, planId: string, namespaceIds: boolean): OperationPostersV1Tables {
-	const sourceDb = source._db.databaseInstance;
-
-	if (namespaceIds) {
-		sourceDb.transaction(() => {
-			sourceDb.prepare('UPDATE trips SET trip_id = ? || trip_id, service_id = ? || service_id, shape_id = shape_id || ?').run(`${planId}:`, `${planId}:`, `@${planId}`);
-			sourceDb.prepare('UPDATE stop_times SET trip_id = ? || trip_id').run(`${planId}:`);
-			sourceDb.prepare('UPDATE shapes SET shape_id = shape_id || ?').run(`@${planId}`);
-		})();
-		source.calendar_dates = Object.fromEntries(Object.entries(source.calendar_dates).map(([id, dates]) => [`${planId}:${id}`, dates]));
-	}
-
+export function mergeGtfsTables(target: OperationPostersV1Tables | undefined, source: OperationPostersV1Tables): OperationPostersV1Tables {
 	if (!target) return source;
 
 	const existingRouteIds = new Set(target.routes.all().map(route => getPosterRouteId(route.route_id)));
@@ -30,6 +18,7 @@ export function mergeGtfsTables(target: OperationPostersV1Tables | undefined, so
 		}
 	}
 
+	const sourceDb = source._db.databaseInstance;
 	const targetDb = target._db.databaseInstance;
 	targetDb.prepare('ATTACH DATABASE ? AS imported_plan').run(sourceDb.name);
 	try {
