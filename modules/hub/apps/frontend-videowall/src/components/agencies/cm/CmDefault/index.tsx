@@ -2,14 +2,13 @@
 
 /* * */
 
+import { useAgenciesDemandData } from '@/components/agencies/shared/use-agencies-demand-data';
 import { CardDefault } from '@/components/CardDefault';
 import { Grid } from '@/components/Grid';
 import { IconCreditCardPay } from '@tabler/icons-react';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
 import { useMemo } from 'react';
-import useSWR from 'swr';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,12 +16,17 @@ export function CmDefault() {
 	//
 
 	//
-	// A. Fetch data
+	// A. Setup variables
 
-	const { data: demandByAgencyByOperationalDateData, isLoading: demandByAgencyByOperationalDateLoading, isValidating: demandByAgencyByOperationalDateValidating } = useSWR<DemandByAgencyByOperationalDate[]>({ credentials: 'omit', url: API_ROUTES.hub.METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE });
+	const { t } = useTranslation();
 
 	//
-	// B. Transform data
+	// B. Fetch data
+
+	const { data: demandByAgencyByOperationalDateData, isLoading: demandByAgencyByOperationalDateLoading, isValidating: demandByAgencyByOperationalDateValidating } = useAgenciesDemandData();
+
+	//
+	// C. Transform data
 
 	const cmDemandToday = useMemo(() => {
 		const todayOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
@@ -35,7 +39,7 @@ export function CmDefault() {
 	}, [demandByAgencyByOperationalDateData]);
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Grid
@@ -47,11 +51,13 @@ export function CmDefault() {
 					isLoading={demandByAgencyByOperationalDateLoading}
 					isValidating={demandByAgencyByOperationalDateValidating}
 					sentiment="good"
-					title="CM / Passageiros transportados hoje, até agora"
+					title={t('default:agencies.CmDefault.title')}
 					valuePrimary={Intl.NumberFormat('pt-PT', { style: 'decimal' }).format(cmDemandToday)}
 					valueSecondary={1}
 				/>,
 			]}
 		/>
 	);
+
+	//
 }

@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getApprovedPlansHandler } from './handlers/get-approved-plans.js';
 import { getGtfsCmHandler } from './handlers/get-gtfs-cm.js';
@@ -8,11 +8,11 @@ import { getGtfsHandler } from './handlers/get-gtfs.js';
 
 /* * */
 
-const namespace = '/v1/plans';
+const NAMESPACE = '/v1/plans';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
@@ -26,5 +26,5 @@ server.register(
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

@@ -1,32 +1,33 @@
 /* * */
 
-import { getGtfsRtJsonFeed } from '@/endpoints/v1/alerts/controllers/get-gtfs-rt-json-feed.js';
-import { getGtfsRtProtobufFeed } from '@/endpoints/v1/alerts/controllers/get-gtfs-rt-protobuf-feed.js';
-import { getJsonFeed } from '@/endpoints/v1/alerts/controllers/get-json-feed.js';
-import { getRssFeed } from '@/endpoints/v1/alerts/controllers/get-rss-feed.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
+
+import { getGtfsRtJsonFeedHandler } from './handlers/get-gtfs-rt-json-feed.js';
+import { getGtfsRtProtobufFeedHandler } from './handlers/get-gtfs-rt-protobuf-feed.js';
+import { getJsonFeedHandler } from './handlers/get-json-feed.js';
+import { getRssFeedHandler } from './handlers/get-rss-feed.js';
 
 /* * */
 
-const namespace = '/v1/alerts';
+const NAMESPACE = '/v1/alerts';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', getJsonFeed);
+		instance.get('/', getJsonFeedHandler);
 
-		instance.get('/gtfs', getGtfsRtJsonFeed);
+		instance.get('/gtfs', getGtfsRtJsonFeedHandler);
 
-		instance.get('/gtfs.pb', getGtfsRtProtobufFeed);
+		instance.get('/gtfs.pb', getGtfsRtProtobufFeedHandler);
 
-		instance.get('.rss', getRssFeed);
+		instance.get('.rss', getRssFeedHandler);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

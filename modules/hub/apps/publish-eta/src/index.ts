@@ -16,12 +16,12 @@ let ITERATION = 0;
 
 try {
 	await initSentryNode();
-	Logger.startNodeLogs({ app: 'publish-realtime', message: 'Sentry Hub Publish Realtime initialized', module: 'hub', severity: 'info' });
+	Logger.startNodeLogs({ app: 'publish-eta', message: 'Sentry Hub Publish ETA initialized', module: 'hub', severity: 'info' });
 } catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Hub Publish Realtime' });
+	Logger.error({ error, message: 'Error initializing Sentry Hub Publish ETA' });
 }
 
-const main = async () => {
+async function main() {
 	//
 
 	//
@@ -50,7 +50,7 @@ const main = async () => {
 	Logger.terminate(`[${ITERATION}] Publish realtime data completed in ${globalTimer.get()}`);
 
 	//
-};
+}
 
 /* * */
 

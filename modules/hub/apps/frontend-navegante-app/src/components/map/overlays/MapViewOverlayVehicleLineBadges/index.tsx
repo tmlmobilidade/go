@@ -3,8 +3,8 @@
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapViewOverlayVehiclesInteractiveLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
-import { useDebouncedCallback } from '@mantine/hooks';
 import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { useDebouncedCallback } from '@tmlmobilidade/ui';
 import { Marker } from '@vis.gl/react-maplibre';
 import { useState } from 'react';
 

@@ -7,6 +7,7 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiPatternWaypoint, type HubV1ApiRoute } from '@tmlmobilidade/go-types-hub';
 import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -91,28 +92,23 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 
 	useEffect(() => {
 		(async () => {
-			try {
-				if (!selectedLineData) return;
-				const fetchPromises = selectedLineData.pattern_ids.map((patternId) => {
-					return fetch(API_ROUTES.hub.NETWORK_PATTERNS(patternId))
-						.then(response => response.json())
-						.then((patternPayload) => {
-							const patternData = Array.isArray(patternPayload) ? patternPayload : patternPayload.data ?? [];
-							return patternData.map((patternGroup) => {
-								patternGroup.path = patternGroup.path.map((waypoint) => {
-									const stopData = stopsContext.actions.getStopById(waypoint.stop_id);
-									if (!stopData) return waypoint;
-									return { ...waypoint, stop: stopData };
-								});
-								return patternGroup;
-							});
-						});
+			if (!selectedLineData) return;
+			const fetchPromises = selectedLineData.pattern_ids.map(async (patternId) => {
+				const response = await fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS(patternId) });
+				if (response.error) return null;
+				return (response.data ?? []).map((patternGroup) => {
+					patternGroup.path = patternGroup.path.map((waypoint) => {
+						const stopData = stopsContext.actions.getStopById(waypoint.stop_id);
+						if (!stopData) return waypoint;
+						return { ...waypoint, stop: stopData };
+					});
+					return patternGroup;
 				});
-				const resultData = await Promise.all(fetchPromises);
-				setDataAllPatternsState(resultData);
-			} catch (error) {
-				console.error({ error, message: 'Error fetching pattern data:' });
-			}
+			});
+			const resultData = await Promise.all(fetchPromises);
+			// Keep the previous state if any pattern request failed
+			if (resultData.some(patternGroups => patternGroups === null)) return;
+			setDataAllPatternsState(resultData);
 		})();
 	}, [selectedLineData, stopsContext.actions, stopsContext.data.stops]);
 

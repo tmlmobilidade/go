@@ -199,6 +199,7 @@
 			"placeholder": "Selecionar percurso/destino..."
 		},
 		"SelectActivePatternGroupExplainer": {
+			"title": "Explicação",
 			"toggle": "O que é o percurso/destino de uma linha?"
 		},
 		"SelectOperationalDate": {
@@ -299,6 +300,8 @@
 			"title": "Veículo"
 		},
 		"VehiclesDetailView": {
+			"headsign": "Destino: {headsign}",
+			"headsign_unknown": "desconhecido",
 			"seen_seconds_ago": "Visto há {count, plural, one {# segundo} other {# segundos}}"
 		},
 		"VehiclesListDetails": {
