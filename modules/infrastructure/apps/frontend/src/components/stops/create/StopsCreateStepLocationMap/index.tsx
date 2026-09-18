@@ -3,11 +3,15 @@
 import { useStopsListData } from '@/components/stops/list/use-stops-list-data';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
-import { MapOverlayMultipleStops, MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { type Point } from 'geojson';
-import { useMemo } from 'react';
+import { type ComponentProps, useMemo } from 'react';
 
 import { useStopsCreateFormContext } from '../StopsCreateForm.context';
+
+/* * */
+
+type MapViewClickEvent = Parameters<NonNullable<ComponentProps<typeof MapView>['onClick']>>[0];
 
 /* * */
 
@@ -30,7 +34,7 @@ export function StopsCreateStepLocationMap() {
 	const allStopsMapData = useMemo(() => {
 		// Generate a base GeoJSON feature collection
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayMultipleStopsDataProps>();
-		// Add the selected coordinates to the base GeoJSON feature collection
+		// Add every stop to the base GeoJSON feature collection
 		baseGeoJson.features = allStopsData?.map(item => ({
 			geometry: {
 				coordinates: [item.longitude, item.latitude],
@@ -43,7 +47,6 @@ export function StopsCreateStepLocationMap() {
 			type: 'Feature',
 		}));
 		// Return the base GeoJSON feature collection
-		// with the selected coordinates
 		return baseGeoJson;
 	}, [allStopsData]);
 
@@ -73,7 +76,7 @@ export function StopsCreateStepLocationMap() {
 	//
 	// C. Handle actions
 
-	const handleMapClick = (event) => {
+	const handleMapClick = (event: MapViewClickEvent) => {
 		const validatedLatitude = LatitudeSchema.safeParse(event.lngLat.lat);
 		const validatedLongitude = LongitudeSchema.safeParse(event.lngLat.lng);
 		if (!validatedLatitude.success || !validatedLongitude.success) return;

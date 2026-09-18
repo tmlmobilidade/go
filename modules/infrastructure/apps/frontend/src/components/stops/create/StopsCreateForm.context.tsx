@@ -1,8 +1,8 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { StopsCreateRequest, StopsCreateRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
-import { Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { type StopsCreateRequest, StopsCreateRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -25,9 +25,12 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 	//
 
 	//
-	// A. Setup form
+	// A. Setup variables
 
 	const router = useRouter();
+
+	//
+	// B. Setup form
 
 	const formDefaultValues = useMemo<StopsCreateRequest>(() => ({
 		latitude: undefined,

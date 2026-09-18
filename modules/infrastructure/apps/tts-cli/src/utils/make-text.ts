@@ -1,4 +1,6 @@
-function titleCase(str) {
+/* * */
+
+function titleCase(str: string): string {
 	const splitStr = str.toLowerCase().split(' ');
 	for (let i = 0; i < splitStr.length; i++) {
 		// You do not need to check if i is larger than splitStr length, as your for does that for you
@@ -9,14 +11,14 @@ function titleCase(str) {
 	return splitStr.join(' ').trim();
 }
 
-function addTransfer(p, modes) {
-	const numTr = Object.values(modes).reduce((total: number, x: number) => total + (x === 1 ? 1 : 0), 0);
+function addTransfer(p: string, modes: Record<string, boolean | number>): string {
+	const numTr = Object.values(modes).reduce<number>((total, x) => total + (x === 1 ? 1 : 0), 0);
 	let addedTr = 0;
 	if (numTr === 0) {
 		return p;
 	}
 
-	function needsAnd(numTr, addedTr) {
+	function needsAnd(numTr: number, addedTr: number) {
 		return numTr > 1 && addedTr === numTr - 1;
 	}
 
@@ -42,16 +44,14 @@ function addTransfer(p, modes) {
 		addedTr += 1;
 	}
 	if (modes.airport === 1) {
-		p
-			= p + (needsAnd(numTr, addedTr) ? ' e o ' : ' o') + 'aéroporto (air port)';
-		addedTr += 1;
+		p = p + (needsAnd(numTr, addedTr) ? ' e o ' : ' o') + 'aéroporto (air port)';
 	}
 	return p;
 }
 
 /* * */
 
-function createPhoneticText(p) {
+function createPhoneticText(p: string): string {
 	let thisString = p;
 	/* Uniformize crossing to (X), add spaces around crossing */
 	let regex = /\(X\)/giu;
@@ -1271,9 +1271,9 @@ function createPhoneticText(p) {
 
 /* * */
 
-function numericShortName(lineShortName) {
+function numericShortName(lineShortName: string): string {
 	// If line is not numeric, return as-is
-	if (isNaN(lineShortName)) return lineShortName;
+	if (isNaN(Number(lineShortName))) return lineShortName;
 
 	// If line is numeric, and has 4 digits
 	if (lineShortName.length === 4) {
@@ -1299,7 +1299,7 @@ function numericShortName(lineShortName) {
 
 /* * */
 
-export const makeStop = (stopString, transferModes = {}) => {
+export const makeStop = (stopString: string, transferModes: Record<string, boolean | number> = {}): string => {
 	let thisString = stopString;
 	thisString = createPhoneticText(thisString);
 	thisString = addTransfer(thisString, transferModes);
@@ -1311,7 +1311,7 @@ export const makeStop = (stopString, transferModes = {}) => {
 
 /* * */
 
-export const makeLine = (lineShortName, lineLongName) => {
+export const makeLine = (lineShortName: string, lineLongName: string): string => {
 	const lineShortNameTts = numericShortName(lineShortName);
 	const headsignTts = createPhoneticText(lineLongName);
 	let thisString = `Linha ${lineShortNameTts} com percurso ${headsignTts}`;
@@ -1323,7 +1323,7 @@ export const makeLine = (lineShortName, lineLongName) => {
 
 /* * */
 
-export const makeRoute = (lineShortName, routeLongName) => {
+export const makeRoute = (lineShortName: string, routeLongName: string): string => {
 	const lineShortNameTts = numericShortName(lineShortName);
 	const headsignTts = createPhoneticText(routeLongName);
 	let thisString = `Linha ${lineShortNameTts} com percurso ${headsignTts}`;
@@ -1335,7 +1335,7 @@ export const makeRoute = (lineShortName, routeLongName) => {
 
 /* * */
 
-export const makePattern = (lineShortName, patternHeadsign) => {
+export const makePattern = (lineShortName: string, patternHeadsign: string): string => {
 	const lineShortNameTts = numericShortName(lineShortName);
 	const headsignTts = createPhoneticText(patternHeadsign);
 	let thisString = `Linha ${lineShortNameTts} com destino a ${headsignTts}`;

@@ -48,5 +48,5 @@ export function useStopsDetailData(): UseStopsDetailDataReturnType {
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [data, error, isLoading, isValidating]);
+	}), [data?.data, data?.timestamp, error, isLoading, isValidating, mutate]);
 };

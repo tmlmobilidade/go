@@ -1,8 +1,9 @@
-/* * */
+'use client';
 
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
 import { Divider, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsCreateFormContext } from '../StopsCreateForm.context';
 
@@ -13,6 +14,8 @@ export function StopsCreateStepNames() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const { form } = useStopsCreateFormContext();
 
@@ -32,7 +35,7 @@ export function StopsCreateStepNames() {
 	}, [nameValue]);
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<>
@@ -43,9 +46,9 @@ export function StopsCreateStepNames() {
 					name="name"
 					render={({ field, fieldState }) => (
 						<TextInput
-							description="Este é o nome principal e será apresentado nos canais digitais."
+							description={t('default:stops.create.StepNames.fields.name.description')}
 							error={fieldState.error?.message}
-							label="Designação Completa da Paragem"
+							label={t('default:stops.create.StepNames.fields.name.label')}
 							onChange={field.onChange}
 							value={field.value ?? ''}
 							w="100%"
@@ -60,15 +63,15 @@ export function StopsCreateStepNames() {
 
 			<Section gap="sm">
 				<TextInput
-					description="Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos."
-					label="Nome Curto (automático)"
+					description={t('default:stops.create.StepNames.fields.short_name.description')}
+					label={t('default:stops.create.StepNames.fields.short_name.label')}
 					value={automaticShortName}
 					w="100%"
 					readOnly
 				/>
 				<TextInput
-					description="O nome a ser utilizado pelo sistema de TTS (Text-to-Speech)."
-					label="Nome TTS (automático)"
+					description={t('default:stops.create.StepNames.fields.tts_name.description')}
+					label={t('default:stops.create.StepNames.fields.tts_name.label')}
 					value={automaticTtsName}
 					w="100%"
 					readOnly

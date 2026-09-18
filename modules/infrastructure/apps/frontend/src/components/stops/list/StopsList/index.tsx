@@ -1,12 +1,12 @@
 'use client';
 
-import { StopsListFilterBar } from '@/components/stops/list/filters/StopsListFilterBar';
+import { StopsListFiltersBar } from '@/components/stops/list/filters/StopsListFiltersBar';
 import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsListItem } from '@tmlmobilidade/go-infrastructure-pckg-types';
-import { DataTable, DataTableColumn, ErrorDisplay, IdTag, Pane } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsDetailStopId } from '../../detail/use-stops-detail-stop-id';
 import { useStopsListData } from '../use-stops-list-data';
@@ -19,52 +19,54 @@ export function StopsList() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const router = useRouter();
 
 	const { stopId } = useStopsDetailStopId();
 
-	const { data, error, isLoading } = useStopsListData();
+	const stopsData = useStopsListData();
 
 	const columns: DataTableColumn<StopsListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
-			title: '#ID',
+			title: t('default:stops.list.Table.columns.id'),
 			width: 100,
 		},
 		{
 			accessor: 'name',
-			title: 'nome da paragem',
+			title: t('default:stops.list.Table.columns.name'),
 			width: 500,
 		},
 		{
 			accessor: 'latitude',
-			title: 'latitude',
+			title: t('default:stops.list.Table.columns.latitude'),
 			width: 150,
 		},
 		{
 			accessor: 'longitude',
-			title: 'longitude',
+			title: t('default:stops.list.Table.columns.longitude'),
 			width: 150,
 		},
 		{
 			accessor: 'district_name',
-			title: 'Distrito',
+			title: t('default:stops.list.Table.columns.district_name'),
 			width: 250,
 		},
 		{
 			accessor: 'municipality_name',
-			title: 'Município',
+			title: t('default:stops.list.Table.columns.municipality_name'),
 			width: 250,
 		},
 		{
 			accessor: 'parish_name',
-			title: 'Freguesia',
+			title: t('default:stops.list.Table.columns.parish_name'),
 			width: 400,
 		},
 		{
 			accessor: 'locality_name',
-			title: 'Localidade',
+			title: t('default:stops.list.Table.columns.locality_name'),
 			width: 250,
 		},
 	];
@@ -80,17 +82,13 @@ export function StopsList() {
 	// C. Render components
 
 	return (
-		<Pane header={[
-			<StopsListHeader key="header" />,
-			<StopsListFilterBar key="filters" />,
-		]}
-		>
-			{error && <ErrorDisplay message={error} />}
+		<Pane header={[<StopsListHeader key="header" />, <StopsListFiltersBar key="filters" />]}>
+			{stopsData.error && <ErrorDisplay message={stopsData.error} />}
 			<DataTable
 				columns={columns}
-				isLoading={isLoading}
+				isLoading={stopsData.isLoading}
 				onRowClick={handleRowClick}
-				records={data}
+				records={stopsData.data}
 				rowIdAccessor="_id"
 				selectedId={stopId}
 			/>

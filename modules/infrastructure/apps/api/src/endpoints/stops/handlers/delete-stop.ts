@@ -6,9 +6,9 @@ import { type Stop, type StopId } from '@tmlmobilidade/go-types-infrastructure';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Toggles the deleted status of a stop by ID.
- * @param request Fastify request containing stop ID in params
- * @param reply Fastify reply
+ * Toggles the deleted status of a Stop by ID.
+ * @param request The request object containing the stop ID in the params
+ * @param reply The reply object
  */
 export async function deleteStopHandler(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 	//
@@ -25,8 +25,11 @@ export async function deleteStopHandler(request: FastifyRequest<{ Params: { id: 
 		});
 	}
 
+	//
+	// Check if the user has permission to run this action
+	// for the agencies referenced by the flags of this stop
+
 	if (foundStop.flags.length !== 0) {
-		// Check if the user has permission to run this action
 		const hasPermission = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.stops.actions.delete,
 			permissions: request.permissions,
@@ -44,7 +47,7 @@ export async function deleteStopHandler(request: FastifyRequest<{ Params: { id: 
 	}
 
 	//
-	// If authorized, toggle the deleted status of the stop
+	// Toggle the deleted status of the stop
 
 	const updatedStop = await goDb.infrastructure.stops.updateById(request.params.id, { is_deleted: !foundStop.is_deleted });
 

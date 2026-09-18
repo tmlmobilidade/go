@@ -1,7 +1,7 @@
 'use client';
 
-import { Translations } from '@/lib/translations';
 import { ListFilter } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsListFilterConnections } from './use-stops-list-filter-connections';
 
@@ -13,6 +13,8 @@ export function StopsListFilterConnections() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const filterConnections = useStopsListFilterConnections();
 
 	//
@@ -21,16 +23,11 @@ export function StopsListFilterConnections() {
 	return (
 		<ListFilter
 			active={filterConnections.isActive}
-			label="Conexões"
+			label={t('default:stops.list.FilterConnections.label')}
 			onChange={filterConnections.set}
-			options={filterConnections.options.map(option => ({
-				...option,
-				label: Translations.CONNECTIONS[option.value as keyof typeof Translations.CONNECTIONS],
-			}))}
+			options={filterConnections.options}
 			isMultiple
 			withToggleAll
 		/>
 	);
-
-	//
 }

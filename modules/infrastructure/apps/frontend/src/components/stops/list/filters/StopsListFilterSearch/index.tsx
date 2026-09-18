@@ -1,4 +1,4 @@
-/* * */
+'use client';
 
 import { SearchField } from '@tmlmobilidade/ui';
 

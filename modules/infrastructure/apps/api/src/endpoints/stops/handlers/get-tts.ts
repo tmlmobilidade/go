@@ -5,15 +5,15 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Attachment } from '@tmlmobilidade/go-types-core';
 
 /**
- * Gets organization logo from the database.
- * @param request The request object containing the organization ID in the params.
- * @param reply The reply object used to send the response.
+ * Returns the TTS audio file attachment of a Stop.
+ * @param request The request object containing the file ID in the params
+ * @param reply The reply object
  */
 export async function getTtsHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 	//
 
 	//
-	// Get the organization logo from the database
+	// Get the file from storage
 
 	const fileData = await storageProvider.findById(request.params.id);
 

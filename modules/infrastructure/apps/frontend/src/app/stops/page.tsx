@@ -4,6 +4,6 @@ import { StopsListMap } from '@/components/stops/list/StopsListMap';
 
 /* * */
 
-export default function Page() {
+export default async function Page() {
 	return <StopsListMap />;
 }

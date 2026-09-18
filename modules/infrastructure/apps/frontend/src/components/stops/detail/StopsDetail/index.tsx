@@ -22,18 +22,9 @@ export function StopsDetail() {
 
 	return (
 		<Pane header={[<StopsDetailHeader key="header" />]} isLoading={isLoading}>
-			{/* <StopDetailsSectionMap /> */}
 			<Divider />
 			<StopsDetailSectionGeneral />
 			<StopsDetailSectionFlags />
-			{/* <StopDetailsSectionAdministrative /> */}
-			{/* <StopDetailsSectionShelter /> */}
-			{/* <StopDetailsSectionInfrastructure /> */}
-			{/* <StopDetailsSectionPublicInformation /> */}
-			{/* <StopDetailsSectionEquipment /> */}
-			{/* <StopDetailsSectionConnections /> */}
-			{/* <StopDetailsSectionImages /> */}
-			{/* <StopDetailsSectionNotes /> */}
 		</Pane>
 	);
 }

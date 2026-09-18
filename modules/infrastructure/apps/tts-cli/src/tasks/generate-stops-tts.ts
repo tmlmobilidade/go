@@ -1,18 +1,30 @@
 /* * */
 
-import { generatePiperTtsAudio } from '@/services/piperTtsApi.js';
-import { deleteOldTtsFile } from '@/utils/deleteOldTTSFile.js';
-import { generateHash } from '@/utils/generateHash.js';
-import { makeStop } from '@/utils/makeText.js';
-import TIMETRACKER from '@helperkits/timer';
+import { generatePiperTtsAudio } from '@/services/piper-tts-api.js';
+import { deleteOldTtsFile } from '@/utils/delete-old-tts-file.js';
+import { generateHash } from '@/utils/generate-hash.js';
+import { makeStop } from '@/utils/make-text.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import pLimit from 'p-limit';
 
 /* * */
 
-async function processStop(stopIndex: number, total: number, stopData: Awaited<ReturnType<typeof goDb.infrastructure.stops.findMany>>[number]) {
+const RUNNER_CONCURRENCY = Number(process.env.TTS_RUNNER_CONCURRENCY ?? 5);
+
+/* * */
+
+/**
+ * Generates the TTS audio for a single stop, stores it
+ * and saves the resulting hash in the stop document.
+ * @param stopIndex The index of the stop in the list.
+ * @param total The total number of stops.
+ * @param stopData The stop to generate.
+ */
+async function processStop(stopIndex: number, total: number, stopData: Stop) {
 	const stopTts = makeStop(stopData.name, {
 		airport: stopData.flags.some(flag => flag.short_name === 'airport'),
 		bike_parking: stopData.flags.some(flag => flag.short_name === 'bike_parking'),
@@ -66,20 +78,25 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 
 /* * */
 
-export async function runnerStops() {
+/**
+ * Generates the TTS audio files for every non-deleted stop
+ * in the database and stores them.
+ */
+export async function generateStopsTtsTask() {
 	//
 
-	Logger.title(`TTS STOPS`);
-	const globalTimer = new TIMETRACKER();
+	Logger.title('TTS STOPS');
 
-	console.log('* Fetching all stops from database...');
+	const globalTimer = new Timer();
+
+	Logger.info({ message: 'Fetching all stops from database...' });
+
 	const allStopsData = await goDb.infrastructure.stops.findMany();
 	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted);
 
-	const concurrency = Number(process.env.TTS_RUNNER_CONCURRENCY ?? 5);
-	console.log('* Preparing ' + stopsToProcess.length + ' stops (' + concurrency + ' concurrent)...');
+	Logger.info({ message: `Preparing ${stopsToProcess.length} stops (${RUNNER_CONCURRENCY} concurrent)...` });
 
-	const limit = pLimit(concurrency);
+	const limit = pLimit(RUNNER_CONCURRENCY);
 
 	await Promise.all(
 		stopsToProcess.map((stopData, stopIndex) => limit(async () => {
