@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { RidesExtractHeader } from '../RidesExtractHeader';
 import { RidesExtractV1 } from '../versions/v1/RidesExtractV1';
+import { RidesExtractV2 } from '../versions/v2/RidesExtractV2';
 
 /* * */
 
@@ -37,7 +38,7 @@ export function RidesExtract() {
 			</Section>
 
 			{selectedVersion === 'operation-rides-v1' && <RidesExtractV1 />}
-			{selectedVersion === 'operation-rides-v2' && <p>Por implementar</p>}
+			{selectedVersion === 'operation-rides-v2' && <RidesExtractV2 />}
 
 		</Pane>
 	);
