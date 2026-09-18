@@ -275,6 +275,13 @@ export const API_ROUTES = Object.freeze({
 		// DEBUG
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
+		// ETA
+		ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-stop/${encodeURIComponent(id)}`,
+		ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-trip/${encodeURIComponent(id)}`,
+		ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/eta/gtfs`,
+		ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/eta/gtfs.pb`,
+		ETA_LIST: `${getModuleConfig('hub', 'api_url')}/v1/eta`,
+
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
 
@@ -307,6 +314,12 @@ export const API_ROUTES = Object.freeze({
 		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
 		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
 		REALTIME_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs.pb`,
+
+		// VEHICLES
+		VEHICLES_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/vehicles/metadata`,
+		VEHICLES_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/vehicles/positions`,
+		VEHICLES_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/vehicles/positions/gtfs`,
+		VEHICLES_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/vehicles/positions/gtfs.pb`,
 	},
 
 	infrastructure: {

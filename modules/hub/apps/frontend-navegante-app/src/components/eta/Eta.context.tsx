@@ -56,7 +56,7 @@ export const EtaContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const { data: allEtasData, error: allEtasDataError, isLoading: allEtasDataLoading } = useSWR(API_ROUTES.hub.REALTIME_ETA, {
+	const { data: allEtasData, error: allEtasDataError, isLoading: allEtasDataLoading } = useSWR(API_ROUTES.hub.ETA_LIST, {
 		fetcher: async (url: string) => await fetchApiData<PreparedTripUpdate[]>({ credentials: 'omit', url }),
 	});
 
