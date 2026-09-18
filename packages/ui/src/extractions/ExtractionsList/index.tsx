@@ -33,7 +33,7 @@ export function ExtractionsList() {
 		},
 		{
 			accessor: '_id',
-			render: item => <IdTag id={item._id} />,
+			render: item => <IdTag id={item._id} copyOnClick />,
 			title: t('shared:extractions.components.ExtractionsList.table.columns._id.title'),
 			width: 80,
 		},

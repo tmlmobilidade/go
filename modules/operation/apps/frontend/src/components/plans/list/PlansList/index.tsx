@@ -26,7 +26,7 @@ export function PlansList() {
 
 	const plansData = usePlansListData();
 
-	const { data: agenciesData } = usePlansAgenciesData();
+	const { data: agenciesData, isLoading: agenciesLoading } = usePlansAgenciesData();
 
 	const columns: DataTableColumn<PlansListItem>[] = [
 		{
@@ -137,7 +137,7 @@ export function PlansList() {
 			{plansData.error && <ErrorDisplay message={plansData.error} />}
 			<DataTable
 				columns={columns}
-				isLoading={plansData.isLoading}
+				isLoading={plansData.isLoading || agenciesLoading}
 				onRowClick={handleRowClick}
 				records={plansData.data}
 				rowIdAccessor="_id"

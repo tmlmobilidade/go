@@ -36,6 +36,8 @@ server.register(
 
 		instance.get('/patterns/:id', getPatternHandler);
 
+		instance.get('/shapes/:id', getShapeHandler);
+
 		next();
 	},
 	{ prefix: NAMESPACE },
