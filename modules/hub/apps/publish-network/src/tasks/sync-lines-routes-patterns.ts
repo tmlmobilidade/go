@@ -282,7 +282,6 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 					line_id: routeRawData.route_short_name,
 					locality_ids: [],
 					locality_names: [],
-					long_name: routeRawData.route_long_name,
 					municipality_ids: [],
 					municipality_names: [],
 					parish_ids: [],

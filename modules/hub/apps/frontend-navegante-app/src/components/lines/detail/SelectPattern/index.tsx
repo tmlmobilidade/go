@@ -31,7 +31,7 @@ function getPatternTitle(pattern: HubV1ApiPattern, routeLongName?: string) {
 		return pattern.headsign;
 	}
 
-	return pattern.long_name || routeLongName || pattern.headsign;
+	return routeLongName || pattern.headsign;
 }
 
 /* * */
