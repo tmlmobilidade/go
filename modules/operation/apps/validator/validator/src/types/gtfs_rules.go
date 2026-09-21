@@ -327,7 +327,8 @@ type RiderCategoriesRules struct {
 	EligibilityUrl        RuleConfig `json:"eligibility_url_valid_http_url"`
 }
 
-// RuleIDGtfsFeedFilePresenceAndIntegrity is the rule_id emitted by validations/files.
+// RuleIDGtfsFeedFilePresenceAndIntegrity is the rule_id for forbidden-file checks.
+// Missing-file checks emit <table>_file_missing instead.
 const RuleIDGtfsFeedFilePresenceAndIntegrity = "gtfs_feed_file_presence_and_integrity_rule"
 
 // RuleIDFeedInfoValuesParse is the rule_id for feed_info row parsing errors.

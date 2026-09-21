@@ -6,6 +6,7 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
+	"strings"
 )
 
 type FileValidation struct {
@@ -49,14 +50,15 @@ func (v *FileValidation) addError(file, msg string) {
 	})
 }
 
-func (v *FileValidation) addWarning(file, msg string) {
+// Missing files have a stable rule ID per file, regardless of required/recommended severity.
+func (v *FileValidation) addMissingFile(file, msg string, severity types.Severity) {
 	services.AppMessageService.AddMessage(types.Message{
 		Field:    "N/A",
 		Rows:     []int{},
 		FileName: file,
 		Message:  msg,
-		Severity: types.SEVERITY_WARNING,
-		RuleID:   types.RuleIDGtfsFeedFilePresenceAndIntegrity,
+		Severity: severity,
+		RuleID:   strings.TrimSuffix(file, ".txt") + "_file_missing",
 	})
 }
 
@@ -77,7 +79,7 @@ func (v *FileValidation) checkWarningFiles(gtfs types.Gtfs, rules *types.GtfsRul
 	for _, file := range warningFromRules {
 		tableName := file[:len(file)-4]
 		if !gtfs.HasTable(tableName) {
-			v.addWarning(file, fmt.Sprintf(i18n.AppTranslator.Get("file_validations.warning"), file))
+			v.addMissingFile(file, fmt.Sprintf(i18n.AppTranslator.Get("file_validations.warning"), file), types.SEVERITY_WARNING)
 		}
 	}
 }
@@ -91,7 +93,7 @@ func (v *FileValidation) checkRequiredFiles(gtfs types.Gtfs, rules *types.GtfsRu
 	for _, file := range mergedRequired {
 		tableName := file[:len(file)-4]
 		if !gtfs.HasTable(tableName) {
-			v.addError(file, fmt.Sprintf(i18n.AppTranslator.Get("file_validations.required"), file))
+			v.addMissingFile(file, fmt.Sprintf(i18n.AppTranslator.Get("file_validations.required"), file), types.SEVERITY_ERROR)
 		}
 	}
 }
@@ -99,7 +101,7 @@ func (v *FileValidation) checkRequiredFiles(gtfs types.Gtfs, rules *types.GtfsRu
 func (v *FileValidation) checkStopsConditional(gtfs types.Gtfs) {
 	if !gtfs.HasTable("locations") {
 		if !gtfs.HasTable("stops") {
-			v.addError("stops.txt", i18n.AppTranslator.Get("file_validations.stops_required_when_locations_missing"))
+			v.addMissingFile("stops.txt", i18n.AppTranslator.Get("file_validations.stops_required_when_locations_missing"), types.SEVERITY_ERROR)
 		}
 	}
 }
@@ -109,7 +111,7 @@ func (v *FileValidation) checkCalendarFiles(gtfs types.Gtfs) {
 	hasDates := gtfs.HasTable("calendar_dates")
 
 	if !hasCalendar && !hasDates {
-		v.addError("calendar.txt", i18n.AppTranslator.Get("file_validations.calendar_files_required"))
+		v.addMissingFile("calendar.txt", i18n.AppTranslator.Get("file_validations.calendar_files_required"), types.SEVERITY_ERROR)
 	}
 }
 
@@ -128,7 +130,7 @@ func (v *FileValidation) checkLevelsIfElevator(gtfs types.Gtfs) {
 		return nil
 	})
 	if err != nil && err.Error() == "levels required" {
-		v.addError("levels.txt", i18n.AppTranslator.Get("file_validations.levels_required_when_elevator"))
+		v.addMissingFile("levels.txt", i18n.AppTranslator.Get("file_validations.levels_required_when_elevator"), types.SEVERITY_ERROR)
 	}
 }
 
@@ -139,7 +141,7 @@ func (v *FileValidation) checkFeedInfoWithTranslations(gtfs types.Gtfs) {
 	}
 	feedInfoCount, err := gtfs.GetTableCount("feed_info")
 	if err != nil || feedInfoCount == 0 {
-		v.addError("feed_info.txt", i18n.AppTranslator.Get("file_validations.feed_info_required_when_translations"))
+		v.addMissingFile("feed_info.txt", i18n.AppTranslator.Get("file_validations.feed_info_required_when_translations"), types.SEVERITY_ERROR)
 	}
 }
 

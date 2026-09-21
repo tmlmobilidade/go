@@ -582,8 +582,12 @@ func TestFileValidation(t *testing.T) {
 			}
 
 			for _, msg := range summary.Messages {
-				if msg.RuleID != types.RuleIDGtfsFeedFilePresenceAndIntegrity {
-					t.Errorf("[%v] FileValidation.Validate() got message with rule_id %v, want %v", tt.name, msg.RuleID, types.RuleIDGtfsFeedFilePresenceAndIntegrity)
+				wantRuleID := strings.TrimSuffix(msg.FileName, ".txt") + "_file_missing"
+				if strings.Contains(tt.name, "forbidden") {
+					wantRuleID = types.RuleIDGtfsFeedFilePresenceAndIntegrity
+				}
+				if msg.RuleID != wantRuleID {
+					t.Errorf("[%v] FileValidation.Validate() got message with rule_id %v, want %v", tt.name, msg.RuleID, wantRuleID)
 				}
 			}
 
@@ -794,8 +798,9 @@ func TestCheckWarningFiles(t *testing.T) {
 				if msg.Severity != types.SEVERITY_WARNING {
 					t.Errorf("[%v] FileValidation.checkWarningFiles() got message with severity %v, want %v", tt.name, msg.Severity, types.SEVERITY_WARNING)
 				}
-				if msg.RuleID != types.RuleIDGtfsFeedFilePresenceAndIntegrity {
-					t.Errorf("[%v] FileValidation.checkWarningFiles() got message with rule_id %v, want %v", tt.name, msg.RuleID, types.RuleIDGtfsFeedFilePresenceAndIntegrity)
+				wantRuleID := strings.TrimSuffix(msg.FileName, ".txt") + "_file_missing"
+				if msg.RuleID != wantRuleID {
+					t.Errorf("[%v] FileValidation.checkWarningFiles() got message with rule_id %v, want %v", tt.name, msg.RuleID, wantRuleID)
 				}
 			}
 
