@@ -1,5 +1,6 @@
 /* * */
 
+import { getRequestLogContext } from '@/hooks/request-log-context.js';
 import { IS_DEV } from '@/logger/is-dev.js';
 import { type FastifyInstance } from '@/types.js';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -12,13 +13,7 @@ export function setupLogCompletedRequestHook(server: FastifyInstance, getModuleN
 
 	server.addHook('onResponse', (request, reply, done) => {
 		Logger.info({
-			contextOrSpacesAfter: {
-				method: request.method,
-				module: getModuleName(),
-				path: request.url,
-				reqId: request.id,
-				status: reply.statusCode,
-			},
+			contextOrSpacesAfter: getRequestLogContext(request, { module: getModuleName(), status: reply.statusCode }),
 			message: 'request completed',
 		});
 		done();

@@ -1,5 +1,6 @@
 /* * */
 
+import { getRequestLogContext } from '@/hooks/request-log-context.js';
 import { sendErrorApiResponse } from '@/response/error-response.js';
 import { type FastifyInstance } from '@/types.js';
 import { HttpException } from '@tmlmobilidade/consts';
@@ -11,12 +12,9 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 export function setupErrorHandler(server: FastifyInstance, getModuleName: () => string | undefined): void {
 	server.setErrorHandler((error, request, reply) => {
 		Logger.error({
-			contextOrErrorOrSpacesAfter: {
-				method: request.method,
+			contextOrErrorOrSpacesAfter: getRequestLogContext(request, {
 				module: getModuleName(),
-				path: request.url,
-				reqId: request.id,
-			},
+			}),
 			error: error instanceof Error ? error : undefined,
 			message: error instanceof Error ? error.message : 'Unhandled error',
 		});
