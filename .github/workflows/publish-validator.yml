@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - prd
+      - go-695-passar-o-validador-para-o-go
     paths:
       - '.github/workflows/publish-validator.yaml'
       - 'modules/plans/apps/validator/compile.sh'
