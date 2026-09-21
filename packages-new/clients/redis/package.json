@@ -35,7 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-ssh": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"redis": "6.2.1"
 	},
 	"devDependencies": {

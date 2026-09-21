@@ -3,7 +3,7 @@
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { RideAnalysesRegistrySchema } from '@tmlmobilidade/go-types-operation';
 import { runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 
 /**

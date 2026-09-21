@@ -2,7 +2,7 @@
 
 import { type GtfsStrictV30Routes, GtfsStrictV30RoutesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';

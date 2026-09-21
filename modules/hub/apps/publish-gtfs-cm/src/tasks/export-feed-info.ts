@@ -2,7 +2,7 @@
 
 import { type HubV1GtfsFeedInfoInput, HubV1GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-hub';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { type ExportGtfsContext } from '../types/context.js';

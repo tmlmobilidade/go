@@ -4,8 +4,7 @@ import { getEarliestDate } from '@tmlmobilidade/consts';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { syncVehicleEvents } from './task.js';
 import { SyncConfig } from './types.js';
@@ -40,20 +39,9 @@ async function main() {
 	//
 
 	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'raw-sync-banking-taps', message: 'Sentry APEX Raw Sync Banking Taps initialized', module: 'apex', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Banking Taps' });
-	}
-
-	//
 
 	try {
 		//
-
 		Logger.init();
 
 		const globalTimer = new Timer();

@@ -4,7 +4,7 @@
 // import { Dates } from '@tmlmobilidade/go-utils-dates';
 // import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-apex-pckg-parse';
 // import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-// import { Logger } from '@tmlmobilidade/logger';
+// import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 // import { Timer } from '@tmlmobilidade/timer';
 
 // /* * */

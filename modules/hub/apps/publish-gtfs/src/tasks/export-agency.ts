@@ -2,7 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type HubV1GtfsAgencyInput, HubV1GtfsAgencySchema } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { type ExportGtfsContext } from '../types/context.js';

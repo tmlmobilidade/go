@@ -1,22 +1,12 @@
 /* * */
 
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import Fastify from 'fastify';
 
 import { getPlansHandler } from './handlers/get-plans.js';
 import { getRidesHandler } from './handlers/get-rides.js';
 
 /* * */
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Coordinator' });
-}
 
 await (async function init() {
 	//

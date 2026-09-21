@@ -2,7 +2,7 @@
 
 import { type HubV1GtfsCalendarDates, HubV1GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-hub';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 

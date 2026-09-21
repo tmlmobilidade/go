@@ -1,7 +1,7 @@
 /* * */
 
 import { type Alert } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { type RssRawItem } from '@tmlmobilidade/rss';
 
 /**

@@ -4,22 +4,12 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { getCoordinatorUrl } from '@tmlmobilidade/go-operation-pckg-utils';
 import { runOnInterval, runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { analyzeRide } from './tasks/analyze-ride.js';
 import { augmentRide } from './tasks/augment-ride.js';
 import { fetchAnalysisData } from './utils/fetch-analysis-data.js';
 import { writers } from './utils/writers.js';
-
-/* * */
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'rides-examiner', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Rides Examiner' });
-}
 
 /* * */
 

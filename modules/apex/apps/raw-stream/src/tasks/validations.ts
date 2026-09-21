@@ -5,7 +5,7 @@ import { parseRawApexTransactionValidationV20IntoSimplifiedApexValidation, parse
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { ZodError } from 'zod';
 
 /* * */

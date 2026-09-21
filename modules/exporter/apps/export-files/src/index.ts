@@ -1,12 +1,12 @@
 // /* * */
 
-import { Files } from '@tmlmobilidade/go-utils-files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Files } from '@tmlmobilidade/go-utils-files';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import fs from 'fs';
 
 import { exportRidesFile } from './export-rides.js';
@@ -18,16 +18,6 @@ import { exportVehiclesFile } from './export-vehicles.js';
 
 async function main() {
 	//
-
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'export-files', message: 'Sentry Exporter Files initialized', module: 'exporter', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Exporter Files' });
-	}
 
 	//
 	// Initialize the logger

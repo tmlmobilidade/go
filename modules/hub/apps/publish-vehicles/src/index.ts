@@ -1,7 +1,7 @@
 /* * */
 
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { publishVehiclesPositions } from './tasks/publish-vehicle-positions.js';
@@ -10,16 +10,6 @@ import { publishVehiclesMetadata } from './tasks/publish-vehicles-metadata.js';
 /* * */
 
 let ITERATION = 0;
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'publish-vehicles', message: 'Sentry Hub Publish Vehicles initialized', module: 'hub', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Hub Publish Vehicles' });
-}
 
 async function main() {
 	//

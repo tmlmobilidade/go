@@ -5,7 +5,7 @@ import { parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund } from 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { ZodError } from 'zod';
 
 /* * */

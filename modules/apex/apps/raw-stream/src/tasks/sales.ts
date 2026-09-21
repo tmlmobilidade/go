@@ -5,7 +5,7 @@ import { parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale } from '@tm
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { ZodError } from 'zod';
 
 /* * */

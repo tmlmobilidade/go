@@ -4,7 +4,7 @@ import { getQualifiedRouteId, getQualifiedTripId } from '@tmlmobilidade/go-hub-p
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type GtfsRtEntitySelector } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type Alert, type Ride } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

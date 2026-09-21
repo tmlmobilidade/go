@@ -1,7 +1,7 @@
 /* * */
 
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { getAppConfig, SYNC_INTERVAL } from './config.js';
@@ -14,18 +14,6 @@ import { loadHistoricalShapeNodes } from './tasks/load-historical-shape-nodes.js
 import { loadHistoricalVehicleEvents } from './tasks/load-historical-vehicle-events.js';
 import { loadRides } from './tasks/load-rides.js';
 import { refreshNodePredictions } from './tasks/refresh-node-predictions.js';
-
-/* * */
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'eta', message: 'Sentry Hub ETA initialized', module: 'hub', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Hub ETA' });
-}
 
 /* * */
 

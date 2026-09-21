@@ -3,7 +3,7 @@
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { lisbonYyyymmdd, utcYyyymmdd } from '../utils/day-coverage.js';
 import { runCountedCleanup } from '../utils/run-counted-cleanup.js';

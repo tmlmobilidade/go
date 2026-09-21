@@ -4,8 +4,7 @@
 // import { type AggregationResultItem } from '@/types.js';
 // import { Dates } from '@tmlmobilidade/go-utils-dates';
 // import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-// import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-// import { Timer } from '@tmlmobilidade/timer';
+// import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 // import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 // /* * */
@@ -13,16 +12,6 @@
 // async function main() {
 // 	try {
 // 		//
-
-// 		//
-// 		// Initialize Sentry
-
-// 		try {
-// 			await initSentryNode();
-// 			Logger.startNodeLogs({ app: 'sams-feeder', message: 'Sentry Sams Feeder initialized', module: 'controller', severity: 'info' });
-// 		} catch (error) {
-// 			Logger.error({ error, message: 'Error initializing Sentry Sams Feeder' });
-// 		}
 
 // 		//
 // 		// Initialize the logger

@@ -5,7 +5,7 @@ import { type GtfsShapes } from '@tmlmobilidade/go-types-gtfs';
 import { type HubV1GtfsShapesInput, HubV1GtfsShapesSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ExportGtfsContext } from '../types/context.js';
 
