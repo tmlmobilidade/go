@@ -2,7 +2,7 @@
 
 import { useAlertsData } from '@/components/alerts/use-alerts-data';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 
@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 
 interface UseAlertsMapDataReturnType {
 	data: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
-	entities: HubAlert[]
+	entities: HubV1ApiAlert[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -20,7 +20,7 @@ interface UseAlertsMapDataReturnType {
 
 /* * */
 
-function buildAlertsFeatureCollection(alerts: HubAlert[]): GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties> {
+function buildAlertsFeatureCollection(alerts: HubV1ApiAlert[]): GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties> {
 	const collection = getBaseGeoJsonFeatureCollection();
 
 	for (const alert of alerts) {
@@ -31,7 +31,7 @@ function buildAlertsFeatureCollection(alerts: HubAlert[]): GeoJSON.FeatureCollec
 	return collection;
 }
 
-function transformAlertDataIntoGeoJsonFeature(alert: HubAlert): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> | null {
+function transformAlertDataIntoGeoJsonFeature(alert: HubV1ApiAlert): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> | null {
 	if (!alert.coordinates?.length) return null;
 
 	return {

@@ -7,7 +7,7 @@ import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { buildPatternShapeFeature } from '@/utils/map/pattern-shape';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubPattern } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -46,8 +46,8 @@ export function useBaseMapFocusedEntities({ activeBottomSheet }: UseBaseMapFocus
 		return `${vehicle.route_id}_${vehicle.direction_id}`;
 	}, [focusedVehicleId, vehicles]);
 
-	const { data: patternsResponse } = useSWR<ApiResponse<HubPattern[]>>(focusedVehiclePatternId ? API_ROUTES.hub.NETWORK_PATTERNS(focusedVehiclePatternId) : null, {
-		fetcher: async url => await fetchApiData<HubPattern[]>({ options: { credentials: 'omit' }, url }),
+	const { data: patternsResponse } = useSWR<ApiResponse<HubV1ApiPattern[]>>(focusedVehiclePatternId ? API_ROUTES.hub.NETWORK_PATTERNS(focusedVehiclePatternId) : null, {
+		fetcher: async url => await fetchApiData<HubV1ApiPattern[]>({ options: { credentials: 'omit' }, url }),
 	});
 	const pattern = patternsResponse?.data?.[0];
 

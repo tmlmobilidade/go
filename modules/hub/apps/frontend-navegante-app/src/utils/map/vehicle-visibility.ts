@@ -1,5 +1,5 @@
 import { AGENCY_IDS, getAgencyInfo } from '@/lib/agency-catalog';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { type DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 
 /* * */
@@ -16,7 +16,7 @@ export const VEHICLE_MAP_ICON_EXPRESSION = [
 
 /* * */
 
-export function isVehicleIncludedInMap(vehicle: HubVehiclePosition) {
+export function isVehicleIncludedInMap(vehicle: HubV1ApiVehiclePosition) {
 	if (!getAgencyInfo(vehicle.agency_id)) return false;
 	if (!vehicle.trip_id || !vehicle.route_id) return false;
 	return vehicle.direction_id !== undefined && vehicle.direction_id !== null;

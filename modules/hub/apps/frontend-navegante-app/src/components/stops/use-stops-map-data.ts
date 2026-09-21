@@ -2,15 +2,15 @@
 
 import { useStopsData } from '@/components/stops/use-stops-data';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 
 /* * */
 
 interface UseStopsMapDataReturnType {
-	data: GeoJSON.FeatureCollection<GeoJSON.Point, HubStop>
-	entities: HubStop[]
+	data: GeoJSON.FeatureCollection<GeoJSON.Point, HubV1ApiStop>
+	entities: HubV1ApiStop[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -20,14 +20,14 @@ interface UseStopsMapDataReturnType {
 
 /* * */
 
-function buildStopsFeatureCollection(stops: HubStop[]): GeoJSON.FeatureCollection<GeoJSON.Point, HubStop> {
-	const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubStop>();
+function buildStopsFeatureCollection(stops: HubV1ApiStop[]): GeoJSON.FeatureCollection<GeoJSON.Point, HubV1ApiStop> {
+	const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubV1ApiStop>();
 	for (const stop of stops) collection.features.push(transformStopDataIntoGeoJsonFeature(stop));
 	return collection;
 }
 
-function transformStopDataIntoGeoJsonFeature(stop: HubStop): GeoJSON.Feature<GeoJSON.Point, HubStop> {
-	const properties = Object.fromEntries(Object.entries(stop).filter(([, value]) => value !== undefined && value !== null)) as HubStop;
+function transformStopDataIntoGeoJsonFeature(stop: HubV1ApiStop): GeoJSON.Feature<GeoJSON.Point, HubV1ApiStop> {
+	const properties = Object.fromEntries(Object.entries(stop).filter(([, value]) => value !== undefined && value !== null)) as HubV1ApiStop;
 
 	return {
 		geometry: {

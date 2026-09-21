@@ -1,6 +1,6 @@
 import { type MotisItinerary } from '@/types/route-planner/models';
 import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 
@@ -31,7 +31,7 @@ export function getRoutePlannerItineraryRouteIds(itinerary: MotisItinerary | nul
 }
 
 export function filterVehicleFeatureCollectionByRouteDirections(
-	vehiclesData: GeoJSON.FeatureCollection<GeoJSON.Point, HubVehiclePosition>,
+	vehiclesData: GeoJSON.FeatureCollection<GeoJSON.Point, HubV1ApiVehiclePosition>,
 	routeDirections: null | Set<string>,
 ) {
 	if (!routeDirections) return vehiclesData;
@@ -45,7 +45,7 @@ export function filterVehicleFeatureCollectionByRouteDirections(
 	};
 }
 
-export function isVehicleInRouteDirections(vehicle: HubVehiclePosition, routeDirections: null | Set<string>) {
+export function isVehicleInRouteDirections(vehicle: HubV1ApiVehiclePosition, routeDirections: null | Set<string>) {
 	if (!routeDirections) return true;
 
 	const routeDirection = getRoutePlannerRouteDirectionKey(vehicle.route_id, vehicle.direction_id, vehicle.agency_id);

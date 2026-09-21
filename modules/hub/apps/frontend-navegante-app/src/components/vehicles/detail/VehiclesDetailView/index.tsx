@@ -5,7 +5,7 @@ import { useLinesData } from '@/components/lines/use-lines-data';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { getAgencyLogo } from '@/lib/agency-catalog';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubPattern } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { fetchApiData, LineBadge, LineName, Section } from '@tmlmobilidade/ui';
@@ -38,8 +38,8 @@ export function VehiclesDetailView() {
 		? `${vehiclesDetailContext.data.vehicle.route_id}_${vehiclesDetailContext.data.vehicle.direction_id}`
 		: null;
 
-	const { data: activePatternResponse } = useSWR<ApiResponse<HubPattern[]>>(activePatternId ? API_ROUTES.hub.NETWORK_PATTERNS(activePatternId) : null, {
-		fetcher: async url => await fetchApiData<HubPattern[]>({ options: { credentials: 'omit' }, url }),
+	const { data: activePatternResponse } = useSWR<ApiResponse<HubV1ApiPattern[]>>(activePatternId ? API_ROUTES.hub.NETWORK_PATTERNS(activePatternId) : null, {
+		fetcher: async url => await fetchApiData<HubV1ApiPattern[]>({ options: { credentials: 'omit' }, url }),
 	});
 
 	const activePatternData = activePatternResponse?.data;

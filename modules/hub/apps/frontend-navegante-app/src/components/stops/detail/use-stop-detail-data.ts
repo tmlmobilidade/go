@@ -6,10 +6,9 @@ import { useStopsData } from '@/components/stops/use-stops-data';
 import { useStopEtaData } from '@/hooks/transit/use-stop-eta-data';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { fetchPatterns } from '@/utils/transit/fetch-patterns';
-import { type HubAlert, type HubLine, type HubPattern, type HubStop } from '@tmlmobilidade/go-types-hub';
+import { HubV1ApiAlert, HubV1ApiLine, HubV1ApiPattern, HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { type OperationalDateInt, OperationalTimeSchema, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { fromOperationalTimeAndOperationalDateToUnixMilliseconds } from '@tmlmobilidade/utils';
+import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -40,10 +39,10 @@ export interface StopsDetailViewTimetableData {
 }
 
 interface UseStopDetailDataReturnType {
-	activeAlerts: HubAlert[]
-	associatedLines: HubLine[]
+	activeAlerts: HubV1ApiAlert[]
+	associatedLines: HubV1ApiLine[]
 	isLoading: boolean
-	stop: HubStop | undefined
+	stop: HubV1ApiStop | undefined
 	timetable: StopsDetailViewTimetableData[]
 }
 
@@ -62,7 +61,7 @@ export function useStopDetailData(stopId: string): UseStopDetailDataReturnType {
 
 	const stop = useMemo(() => stops.find(candidate => String(candidate._id) === String(stopId)), [stopId, stops]);
 	const patternIds = stop?.pattern_ids ?? [];
-	const { data: associatedPatterns, isLoading: isPatternsLoading } = useSWR<HubPattern[][]>(stop ? ['stop-patterns', ...patternIds] : null, async () => await fetchPatterns(patternIds));
+	const { data: associatedPatterns, isLoading: isPatternsLoading } = useSWR<HubV1ApiPattern[][]>(stop ? ['stop-patterns', ...patternIds] : null, async () => await fetchPatterns(patternIds));
 
 	//
 	// B. Transform data
@@ -88,7 +87,7 @@ export function useStopDetailData(stopId: string): UseStopDetailDataReturnType {
 
 /* * */
 
-function getStopAlerts(alerts: HubAlert[], stop: HubStop | undefined): HubAlert[] {
+function getStopAlerts(alerts: HubV1ApiAlert[], stop: HubV1ApiStop | undefined): HubV1ApiAlert[] {
 	if (!stop) return [];
 
 	return alerts.filter((alert) => {
@@ -104,7 +103,7 @@ function buildStopTimetable({ isTodaySelected, selectedOperationalDate, stopEtas
 	selectedOperationalDate: null | OperationalDateInt
 	stopEtas: ReturnType<typeof useStopEtaData>['data']
 	stopId: string
-	validPatterns: HubPattern[] | undefined
+	validPatterns: HubV1ApiPattern[] | undefined
 }): StopsDetailViewTimetableData[] {
 	if (!validPatterns || !selectedOperationalDate) return [];
 
@@ -117,7 +116,7 @@ function buildStopTimetable({ isTodaySelected, selectedOperationalDate, stopEtas
 				if (String(stopTime.stop_id) !== String(stopId)) continue;
 
 				const tripUpdate = stopEtas.find(eta => eta.trip_id.substring(eta.trip_id.indexOf(']') + 1) === trip.trip_ids.find(tripId => tripId.substring(tripId.indexOf(']') + 1) === eta.trip_id.substring(eta.trip_id.indexOf(']') + 1))?.substring(eta.trip_id.indexOf(']') + 1));
-				const arrivalScheduledMs = fromOperationalTimeAndOperationalDateToUnixMilliseconds(OperationalTimeSchema.parse(stopTime.arrival_time), selectedOperationalDate);
+				const arrivalScheduledMs = fromOperationalDateTimeToUnixMilliseconds({ operational_date: selectedOperationalDate, operational_time: OperationalTimeSchema.parse(stopTime.arrival_time), timezone: 'Europe/Lisbon' });
 				const arrivalEstimatedMs: null | UnixMilliseconds = tripUpdate?.eta_at ? Number(tripUpdate.eta_at) as UnixMilliseconds : null;
 				const arrivalDelayMs = tripUpdate ? tripUpdate.eta_seconds * 1000 : 0;
 				const arrivalEffectiveMs: UnixMilliseconds = arrivalEstimatedMs ?? arrivalScheduledMs;

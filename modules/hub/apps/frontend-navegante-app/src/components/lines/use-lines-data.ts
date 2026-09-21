@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -10,7 +10,7 @@ import useSWR from 'swr';
 /* * */
 
 interface UseLinesDataReturnType {
-	data: HubLine[]
+	data: HubV1ApiLine[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -26,8 +26,8 @@ export function useLinesData(): UseLinesDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubLine[]>>(API_ROUTES.hub.NETWORK_LINES, {
-		fetcher: async url => await fetchApiData<HubLine[]>({ options: { credentials: 'omit' }, url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiLine[]>>(API_ROUTES.hub.NETWORK_LINES, {
+		fetcher: async url => await fetchApiData<HubV1ApiLine[]>({ options: { credentials: 'omit' }, url }),
 	});
 
 	//

@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -10,7 +10,7 @@ import useSWR from 'swr';
 /* * */
 
 interface UseStopsDataReturnType {
-	data: HubStop[]
+	data: HubV1ApiStop[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -26,8 +26,8 @@ export function useStopsData(): UseStopsDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubStop[]>>(API_ROUTES.hub.NETWORK_STOPS, {
-		fetcher: async url => await fetchApiData<HubStop[]>({ options: { credentials: 'omit' }, url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiStop[]>>(API_ROUTES.hub.NETWORK_STOPS, {
+		fetcher: async url => await fetchApiData<HubV1ApiStop[]>({ options: { credentials: 'omit' }, url }),
 	});
 
 	//

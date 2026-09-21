@@ -35,7 +35,7 @@ export function useEtaData(): UseEtaDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<PreparedTripUpdate[]>>(API_ROUTES.hub.REALTIME_ETA, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<PreparedTripUpdate[]>>(API_ROUTES.hub.ETA_LIST, {
 		fetcher: async url => await fetchApiData<PreparedTripUpdate[]>({ options: { credentials: 'omit' }, url }),
 		refreshInterval: 5_000,
 	});

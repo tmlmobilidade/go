@@ -16,6 +16,7 @@ interface LinesDetailContextState {
 	data: {
 		active_alerts: HubV1ApiAlert[] | undefined
 		active_pattern: HubV1ApiPattern | null
+		active_shape: GeoJSON.Feature<GeoJSON.LineString> | null
 		active_waypoint: HubV1ApiPatternWaypoint | null
 		all_patterns: HubV1ApiPattern[][] | null
 		highlighted_trip_ids: null | string[]

@@ -6,7 +6,7 @@ import { type MotisPlanLeg } from '@/types/route-planner/models';
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
 import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconWalk } from '@tabler/icons-react';
-import { type HubLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 
@@ -14,7 +14,7 @@ import styles from './styles.module.css';
 
 interface RoutePlannerLegStripItemProps {
 	leg: MotisPlanLeg
-	lineByShortName: Map<string, HubLine>
+	lineByShortName: Map<string, HubV1ApiLine>
 	showConnector: boolean
 }
 

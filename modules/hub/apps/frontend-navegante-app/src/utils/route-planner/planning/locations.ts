@@ -1,5 +1,5 @@
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
-import { type HubStop } from '@tmlmobilidade/go-types-hub';
+import { HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 
@@ -30,7 +30,7 @@ export function createRoutePlannerCurrentLocation(params: CreateRoutePlannerCurr
 
 /* * */
 
-export function mapHubStopToRoutePlannerLocation(stop: HubStop, options?: MapHubStopToRoutePlannerLocationOptions): RoutePlannerLocation {
+export function mapHubStopToRoutePlannerLocation(stop: HubV1ApiStop, options?: MapHubStopToRoutePlannerLocationOptions): RoutePlannerLocation {
 	const stopId = String(stop._id);
 
 	return {

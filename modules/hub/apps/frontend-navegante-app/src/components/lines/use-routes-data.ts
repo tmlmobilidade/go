@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubRoute } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiRoute } from '@tmlmobilidade/go-types-hub';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -10,7 +10,7 @@ import useSWR from 'swr';
 /* * */
 
 interface UseRoutesDataReturnType {
-	data: HubRoute[]
+	data: HubV1ApiRoute[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -26,8 +26,8 @@ export function useRoutesData(): UseRoutesDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubRoute[]>>(API_ROUTES.hub.NETWORK_ROUTES, {
-		fetcher: async url => await fetchApiData<HubRoute[]>({ options: { credentials: 'omit' }, url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiRoute[]>>(API_ROUTES.hub.NETWORK_ROUTES, {
+		fetcher: async url => await fetchApiData<HubV1ApiRoute[]>({ options: { credentials: 'omit' }, url }),
 	});
 
 	//

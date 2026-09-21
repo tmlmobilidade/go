@@ -7,7 +7,7 @@ import { useStopsData } from '@/components/stops/use-stops-data';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { fetchPatterns } from '@/utils/transit/fetch-patterns';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiRoute, type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -15,12 +15,12 @@ import useSWR from 'swr';
 /* * */
 
 interface UseLineDetailDataReturnType {
-	activeAlerts: HubAlert[]
-	allPatterns: HubPattern[][] | null
+	activeAlerts: HubV1ApiAlert[]
+	allPatterns: HubV1ApiPattern[][] | null
 	isLoading: boolean
-	line: HubLine | undefined
-	routes: HubRoute[]
-	validPatterns: HubPattern[] | undefined
+	line: HubV1ApiLine | undefined
+	routes: HubV1ApiRoute[]
+	validPatterns: HubV1ApiPattern[] | undefined
 }
 
 /* * */
@@ -40,7 +40,7 @@ export function useLineDetailData(lineId: null | string): UseLineDetailDataRetur
 	const line = useMemo(() => lines.find(item => item._id === lineId), [lineId, lines]);
 	const patternIds = line?.pattern_ids ?? [];
 	const patternsKey = line ? [API_ROUTES.hub.NETWORK_PATTERNS(line._id), ...patternIds] : null;
-	const { data: fetchedPatterns, isLoading: isPatternsLoading } = useSWR<HubPattern[][]>(patternsKey, async () => await fetchPatterns(patternIds));
+	const { data: fetchedPatterns, isLoading: isPatternsLoading } = useSWR<HubV1ApiPattern[][]>(patternsKey, async () => await fetchPatterns(patternIds));
 
 	//
 	// B. Transform data
@@ -67,7 +67,7 @@ export function useLineDetailData(lineId: null | string): UseLineDetailDataRetur
 
 /* * */
 
-function enrichPatternsWithStops(patterns: HubPattern[][] | undefined, stops: HubStop[]): HubPattern[][] | null {
+function enrichPatternsWithStops(patterns: HubV1ApiPattern[][] | undefined, stops: HubV1ApiStop[]): HubV1ApiPattern[][] | null {
 	if (!patterns) return null;
 
 	return patterns.map(patternGroups => patternGroups.map(patternGroup => ({
@@ -81,13 +81,13 @@ function enrichPatternsWithStops(patterns: HubPattern[][] | undefined, stops: Hu
 
 /* * */
 
-function selectPatternsForOperationalDate(allPatterns: HubPattern[][] | null, selectedOperationalDate: null | OperationalDateInt): HubPattern[] | undefined {
+function selectPatternsForOperationalDate(allPatterns: HubV1ApiPattern[][] | null, selectedOperationalDate: null | OperationalDateInt): HubV1ApiPattern[] | undefined {
 	if (!allPatterns || !selectedOperationalDate) return;
 
-	const activePatterns: HubPattern[] = [];
+	const activePatterns: HubV1ApiPattern[] = [];
 	for (const patternGroups of allPatterns) {
 		let closestDateSoFar: null | OperationalDateInt = null;
-		let patternWithClosestDate: HubPattern | null = null;
+		let patternWithClosestDate: HubV1ApiPattern | null = null;
 
 		for (const patternGroup of patternGroups) {
 			const closestDate = patternGroup.valid_on.reduce<null | OperationalDateInt>((currentClosestDate, currentDate) => {
@@ -109,7 +109,7 @@ function selectPatternsForOperationalDate(allPatterns: HubPattern[][] | null, se
 	return activePatterns.sort((a, b) => a._id.localeCompare(b._id));
 }
 
-function filterAlertsForLine(alerts: HubAlert[], line: HubLine | undefined, lineId: null | string): HubAlert[] {
+function filterAlertsForLine(alerts: HubV1ApiAlert[], line: HubV1ApiLine | undefined, lineId: null | string): HubV1ApiAlert[] {
 	return alerts.filter((alert) => {
 		if (!alert.active_period_start_date && alert.active_period_end_date) return false;
 

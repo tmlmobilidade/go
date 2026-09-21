@@ -9,7 +9,7 @@ import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItin
 import { getRoutePlannerItineraryRouteDirections, getRoutePlannerItineraryRouteIds, getRoutePlannerRouteDirectionKey, getRoutePlannerRouteIdKey } from '@/utils/route-planner/itinerary/vehicles';
 import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner/planning/navigation';
 import { fetchPatterns } from '@/utils/transit/fetch-patterns';
-import { type HubAlert, type HubPattern } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -17,7 +17,7 @@ import useSWR from 'swr';
 
 interface UseRoutePlannerMapDataParams {
 	activeBottomSheet: ReturnType<typeof useBottomSheet>['activeBottomSheet']
-	alerts: HubAlert[]
+	alerts: HubV1ApiAlert[]
 	alertsFeatureCollection: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 }
 
@@ -54,7 +54,7 @@ export function useRoutePlannerMapData({ activeBottomSheet, alerts: allAlerts, a
 		));
 	}, [routeIds, routes]);
 
-	const { data: patternGroups } = useSWR<HubPattern[][]>(
+	const { data: patternGroups } = useSWR<HubV1ApiPattern[][]>(
 		patternIds.length > 0 ? ['route-planner-patterns', ...patternIds] : null,
 		{ fetcher: () => fetchPatterns(patternIds) },
 	);

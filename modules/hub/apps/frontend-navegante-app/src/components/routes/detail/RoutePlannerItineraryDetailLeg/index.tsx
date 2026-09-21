@@ -9,7 +9,7 @@ import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerLegRealti
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
 import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconAlertTriangle, IconChevronDown, IconNavigationTop } from '@tabler/icons-react';
-import { type HubAlert, type HubLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,10 +18,10 @@ import styles from './styles.module.css';
 /* * */
 
 interface RoutePlannerItineraryDetailLegProps {
-	alerts: HubAlert[]
+	alerts: HubV1ApiAlert[]
 	isActive: boolean
 	leg: MotisPlanLeg
-	lineByShortName: Map<string, HubLine>
+	lineByShortName: Map<string, HubV1ApiLine>
 	routeDestinationLabel: string
 	routeOriginLabel: string
 }

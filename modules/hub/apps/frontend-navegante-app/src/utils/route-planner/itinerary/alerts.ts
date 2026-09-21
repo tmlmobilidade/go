@@ -1,6 +1,6 @@
 import { type MotisItinerary, type MotisPlanIntermediateStop, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerItineraryMapData } from '@/types/route-planner/models';
 import { getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
-import { type HubAlert, type HubLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 
@@ -65,7 +65,7 @@ function getLineStringMidpoint(feature: GeoJSON.Feature<GeoJSON.LineString>) {
 	return feature.geometry.coordinates[Math.floor(feature.geometry.coordinates.length / 2)] ?? null;
 }
 
-function getAlertMatchingLineIds(alert: HubAlert) {
+function getAlertMatchingLineIds(alert: HubV1ApiAlert) {
 	const lineIds = new Set<string>();
 
 	if (alert.reference_type === 'lines') {
@@ -81,7 +81,7 @@ function getAlertMatchingLineIds(alert: HubAlert) {
 	return lineIds;
 }
 
-function getRoutePlannerAlertCoordinate(alert: HubAlert, routeMapData: RoutePlannerItineraryMapData, lines: HubLine[]) {
+function getRoutePlannerAlertCoordinate(alert: HubV1ApiAlert, routeMapData: RoutePlannerItineraryMapData, lines: HubV1ApiLine[]) {
 	const alertLineIds = getAlertMatchingLineIds(alert);
 	const matchingRouteLabels = new Set(
 		lines
@@ -101,7 +101,7 @@ function getRoutePlannerAlertCoordinate(alert: HubAlert, routeMapData: RoutePlan
 	return getLineStringMidpoint(matchingFeature);
 }
 
-function buildRoutePlannerAlertFeature(alert: HubAlert, coordinates: GeoJSON.Position): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
+function buildRoutePlannerAlertFeature(alert: HubV1ApiAlert, coordinates: GeoJSON.Position): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
 	return {
 		geometry: {
 			coordinates,
@@ -121,7 +121,7 @@ function buildRoutePlannerAlertFeature(alert: HubAlert, coordinates: GeoJSON.Pos
 
 /* * */
 
-export function getRoutePlannerItineraryAlertFilters(itinerary: null | RoutePlannerAlertItinerary, lines: HubLine[]): null | RoutePlannerAlertFilters {
+export function getRoutePlannerItineraryAlertFilters(itinerary: null | RoutePlannerAlertItinerary, lines: HubV1ApiLine[]): null | RoutePlannerAlertFilters {
 	if (!itinerary) return null;
 
 	const transitLegs = Array.isArray(itinerary.legs) ? itinerary.legs.filter(leg => !isMotisWalkingLeg(leg)) : [];
@@ -166,7 +166,7 @@ export function getRoutePlannerItineraryAlertFilters(itinerary: null | RoutePlan
 	};
 }
 
-export function filterAlertsByRoutePlannerItinerary(alerts: HubAlert[], filters: null | RoutePlannerAlertFilters) {
+export function filterAlertsByRoutePlannerItinerary(alerts: HubV1ApiAlert[], filters: null | RoutePlannerAlertFilters) {
 	if (!filters) return alerts;
 
 	return alerts.filter((alert) => {
@@ -215,9 +215,9 @@ export function filterAlertFeatureCollectionByAlertIds(
 
 export function buildRoutePlannerAlertFeatureCollection(
 	alertsData: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>,
-	alerts: HubAlert[],
+	alerts: HubV1ApiAlert[],
 	routeMapData: RoutePlannerItineraryMapData,
-	lines: HubLine[],
+	lines: HubV1ApiLine[],
 ) {
 	const alertIds = new Set(alerts.map(alert => alert._id));
 	const collection = filterAlertFeatureCollectionByAlertIds(alertsData, alertIds);

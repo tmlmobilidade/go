@@ -3,15 +3,15 @@
 import { useVehiclesData } from '@/components/vehicles/use-vehicles-data';
 import { isVehicleIncludedInMap } from '@/utils/map/vehicle-visibility';
 import { getBaseGeoJsonFeatureCollection, transformVehicleDataIntoGeoJsonFeature } from '@tmlmobilidade/geo';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 
 /* * */
 
 interface UseVehiclesMapDataReturnType {
-	data: GeoJSON.FeatureCollection<GeoJSON.Point, HubVehiclePosition>
-	entities: HubVehiclePosition[]
+	data: GeoJSON.FeatureCollection<GeoJSON.Point, HubV1ApiVehiclePosition>
+	entities: HubV1ApiVehiclePosition[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -21,8 +21,8 @@ interface UseVehiclesMapDataReturnType {
 
 /* * */
 
-function buildVehiclesFeatureCollection(vehicles: HubVehiclePosition[]): GeoJSON.FeatureCollection<GeoJSON.Point, HubVehiclePosition> {
-	const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubVehiclePosition>();
+function buildVehiclesFeatureCollection(vehicles: HubV1ApiVehiclePosition[]): GeoJSON.FeatureCollection<GeoJSON.Point, HubV1ApiVehiclePosition> {
+	const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubV1ApiVehiclePosition>();
 
 	for (const vehicle of vehicles) {
 		if (!isVehicleIncludedInMap(vehicle)) continue;

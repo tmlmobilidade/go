@@ -2,7 +2,7 @@ import { type MotisGeocodeResult, type RoutePlannerLocation } from '@/types/rout
 import { createRoutePlannerCurrentLocation, mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/planning/locations';
 import { formatMotisLocationDetail } from '@/utils/route-planner/presentation/format';
 import { getMotisPlaceParam, mapMotisGeocodeResultToLocation, parseRoutePlannerCoordinate, routePlannerCoordinateToLocation } from '@/utils/search/motis-geocode';
-import { HubStopSchema } from '@tmlmobilidade/go-types-hub';
+import { HubV1ApiStopSchema } from '@tmlmobilidade/go-types-hub';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 
@@ -114,7 +114,7 @@ describe('route-planner stop and coordinate locations', () => {
 	});
 
 	it('maps Hub stops while preserving each search path stop-ID convention', () => {
-		const stop = HubStopSchema.parse({
+		const stop = HubV1ApiStopSchema.parse({
 			_id: '600001',
 			agency_ids: ['41'],
 			district_id: '11',

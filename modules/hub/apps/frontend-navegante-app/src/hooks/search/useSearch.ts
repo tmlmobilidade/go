@@ -8,7 +8,7 @@ import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
 import { type SearchGroup, type SearchResult } from '@/types/common/search';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { normalizeSearchText } from '@/utils/search/normalize';
-import { type HubAlert, type HubLine, type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -79,13 +79,13 @@ export function useSearch(query: string): UseSearchResult {
 
 /* * */
 
-function toResult<T extends HubAlert | HubLine | HubStop | RoutePlannerLocation>(type: SearchResult['type'], entity: T, searchableText: string, query: string): null | SearchResult {
+function toResult<T extends HubV1ApiAlert | HubV1ApiLine | HubV1ApiStop | RoutePlannerLocation>(type: SearchResult['type'], entity: T, searchableText: string, query: string): null | SearchResult {
 	const score = getMatchScore(searchableText, query);
 	if (score === 0) return null;
 
-	if (type === 'alert') return { entity: entity as HubAlert, id: (entity as HubAlert)._id, label: (entity as HubAlert).title, score, type };
-	if (type === 'line') return { entity: entity as HubLine, id: (entity as HubLine)._id, label: (entity as HubLine).long_name, score, type };
-	if (type === 'stop') return { entity: entity as HubStop, id: String((entity as HubStop)._id), label: (entity as HubStop).name, score, type };
+	if (type === 'alert') return { entity: entity as HubV1ApiAlert, id: (entity as HubV1ApiAlert)._id, label: (entity as HubV1ApiAlert).title, score, type };
+	if (type === 'line') return { entity: entity as HubV1ApiLine, id: (entity as HubV1ApiLine)._id, label: (entity as HubV1ApiLine).long_name, score, type };
+	if (type === 'stop') return { entity: entity as HubV1ApiStop, id: String((entity as HubV1ApiStop)._id), label: (entity as HubV1ApiStop).name, score, type };
 	return { entity: entity as RoutePlannerLocation, id: (entity as RoutePlannerLocation).id ?? (entity as RoutePlannerLocation).label, label: (entity as RoutePlannerLocation).label, score, type: 'poi' };
 }
 
@@ -102,7 +102,7 @@ function toPoiResult(location: RoutePlannerLocation, query: string): Extract<Sea
 	};
 }
 
-function getAgencyAlertGroup(alerts: HubAlert[]): SearchGroup[] {
+function getAgencyAlertGroup(alerts: HubV1ApiAlert[]): SearchGroup[] {
 	const now = Date.now() / 1000;
 	const agencyAlerts = alerts
 		.filter(alert => alert.reference_type === 'agency' && (!alert.active_period_start_date || alert.active_period_start_date <= now) && (!alert.active_period_end_date || alert.active_period_end_date >= now));
