@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"main/lib"
+	ruleset "main/lib/rules"
 	"main/types"
 	"os"
 	"reflect"
@@ -272,6 +273,15 @@ func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
 		validateRuleConfig(rules.FareMedia.FareMediaId, "fare_media.fare_media_id_unique")
 		validateRuleConfig(rules.FareMedia.FareMediaName, "fare_media.fare_media_name_non_empty")
 		validateRuleConfig(rules.FareMedia.FareMediaType, "fare_media.fare_media_type_valid")
+	}
+
+	// Validate depends_on in every file section: ids must exist in the same section, no cycles
+	sections := reflect.ValueOf(rules).Elem()
+	for i := range sections.NumField() {
+		sectionName := sections.Type().Field(i).Tag.Get("json")
+		if err := ruleset.ValidateSection(sections.Field(i).Interface()); err != nil {
+			validationErrors = append(validationErrors, fmt.Sprintf("Invalid depends_on in '%s': %v", sectionName, err))
+		}
 	}
 
 	// Return validation errors if any

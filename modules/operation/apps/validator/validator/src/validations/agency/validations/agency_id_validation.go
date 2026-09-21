@@ -28,7 +28,7 @@ Conditionally Required:
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyIdValidation(agency *types.Agency, row int, gtfs types.Gtfs, rules *types.AgencyRules) {
+func AgencyIdValidation(agency *types.Agency, row int, gtfs types.Gtfs, rules *types.AgencyRules) lib.RuleStatus {
 	ctx := lib.NewValidationContext("agency_id", "agency.txt", "agency_id_unique", row, services.AppMessageService)
 	if rules != nil && rules.AgencyId.Severity != "" {
 		ctx.WithSeverity(rules.AgencyId.Severity)
@@ -41,16 +41,16 @@ func AgencyIdValidation(agency *types.Agency, row int, gtfs types.Gtfs, rules *t
 		agencyCount, _ := gtfs.GetTableCount("agency")
 		if agencyCount > 1 {
 			ctx.AddError(ctx.GetTranslatedMessage("agency_id_validation.required"))
-			return
+			return ctx.Status()
 		}
 
 		if ctx.ShouldSkip() {
-			return
+			return ctx.Status()
 		}
 
 		message := ctx.GetRequiredMessage("agency_id_validation.required", "agency_id_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return
+		return ctx.Status()
 	}
 
 	if agency.AgencyId != nil {
@@ -63,13 +63,15 @@ func AgencyIdValidation(agency *types.Agency, row int, gtfs types.Gtfs, rules *t
 		// Validate rules
 		if rules != nil && rules.AgencyId.Options != nil {
 			if slices.Contains(*rules.AgencyId.Options, types.ALL_OPTIONS) {
-				return
+				return ctx.Status()
 			}
 
 			if !slices.Contains(*rules.AgencyId.Options, *agency.AgencyId) {
 				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_id_validation.not_allowed", *agency.AgencyId))
-				return
+				return ctx.Status()
 			}
 		}
 	}
+
+	return ctx.Status()
 }

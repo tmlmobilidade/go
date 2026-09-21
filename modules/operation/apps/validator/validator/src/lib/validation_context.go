@@ -2,6 +2,7 @@ package lib
 
 import (
 	"main/i18n"
+	"main/lib/rules"
 	"main/types"
 )
 
@@ -33,6 +34,9 @@ type ValidationContext struct {
 
 	// Message adder for adding messages (avoids import cycle)
 	MessageAdder MessageAdder
+
+	// failed is set once an error-severity message is added
+	failed bool
 }
 
 // NewValidationContext creates a new ValidationContext with default severity
@@ -84,6 +88,9 @@ func (vc *ValidationContext) AddWarning(message string, ruleID ...string) {
 // AddMessage adds a message with the specified severity. If ruleID is passed,
 // it is used as rule_id; otherwise the context RuleID is used.
 func (vc *ValidationContext) AddMessage(message string, severity types.Severity, ruleID ...string) {
+	if severity == types.SEVERITY_ERROR {
+		vc.failed = true
+	}
 	rid := vc.RuleID
 	if len(ruleID) > 0 {
 		rid = ruleID[0]
@@ -96,6 +103,18 @@ func (vc *ValidationContext) AddMessage(message string, severity types.Severity,
 		Severity: severity,
 		RuleID:   rid,
 	})
+}
+
+// RuleStatus is the rules manager status, aliased here so validation functions
+// whose parameter is named "rules" can still name the type
+type RuleStatus = rules.Status
+
+// Status reports the rule outcome for the rules manager: Failed if an error was added
+func (vc *ValidationContext) Status() rules.Status {
+	if vc.failed {
+		return rules.Failed
+	}
+	return rules.Passed
 }
 
 // AddMessageWithSeverity adds a message using the context's severity. Optional

@@ -21,28 +21,30 @@ URL of the transit agency.
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyUrlValidation(agency *types.Agency, row int, rules *types.AgencyRules) {
+func AgencyUrlValidation(agency *types.Agency, row int, rules *types.AgencyRules) lib.RuleStatus {
 	ctx := lib.NewValidationContext("agency_url", "agency.txt", "agency_url_valid_url", row, services.AppMessageService)
 
 	if agency.AgencyUrl == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_url_validation.required"))
-		return
+		return ctx.Status()
 	}
 
 	if !lib.ValidateUrl(*agency.AgencyUrl) {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_url_validation.invalid"))
-		return
+		return ctx.Status()
 	}
 
 	// Validate rules
 	if rules != nil && rules.AgencyUrl.Options != nil {
 		if slices.Contains(*rules.AgencyUrl.Options, types.ALL_OPTIONS) {
-			return
+			return ctx.Status()
 		}
 
 		if !slices.Contains(*rules.AgencyUrl.Options, *agency.AgencyUrl) {
 			ctx.AddError(ctx.GetTranslatedMessage("agency_url_validation.not_allowed", *agency.AgencyUrl))
-			return
+			return ctx.Status()
 		}
 	}
+
+	return ctx.Status()
 }

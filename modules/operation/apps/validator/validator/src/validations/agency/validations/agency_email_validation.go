@@ -23,7 +23,7 @@ This email address should be a direct contact point where transit riders can rea
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
 
-func AgencyEmailValidation(agency *types.Agency, row int, rules *types.AgencyRules) {
+func AgencyEmailValidation(agency *types.Agency, row int, rules *types.AgencyRules) lib.RuleStatus {
 	ctx := lib.NewValidationContext("agency_email", "agency.txt", "agency_email_valid_address", row, services.AppMessageService)
 	if rules != nil && rules.AgencyEmail.Severity != "" {
 		ctx.WithSeverity(rules.AgencyEmail.Severity)
@@ -32,34 +32,36 @@ func AgencyEmailValidation(agency *types.Agency, row int, rules *types.AgencyRul
 	// Check if agency_email is required
 	if agency.AgencyEmail == nil {
 		if ctx.ShouldSkip() {
-			return
+			return ctx.Status()
 		}
 
 		message := ctx.GetRequiredMessage("agency_email_validation.required", "agency_email_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return
+		return ctx.Status()
 	}
 
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_email_validation.forbidden"))
-		return
+		return ctx.Status()
 	}
 
 	// Check if agency_email is valid
 	if !lib.ValidateEmail(*agency.AgencyEmail) {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_email_validation.invalid"))
-		return
+		return ctx.Status()
 	}
 
 	// Validate rules
 	if rules != nil && rules.AgencyEmail.Options != nil {
 		if slices.Contains(*rules.AgencyEmail.Options, types.ALL_OPTIONS) {
-			return
+			return ctx.Status()
 		}
 
 		if !slices.Contains(*rules.AgencyEmail.Options, *agency.AgencyEmail) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_email_validation.not_allowed", *agency.AgencyEmail))
-			return
+			return ctx.Status()
 		}
 	}
+
+	return ctx.Status()
 }

@@ -21,7 +21,7 @@ URL of a web page where a rider can purchase tickets or other fare instruments f
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyFareUrlValidation(agency *types.Agency, row int, rules *types.AgencyRules) {
+func AgencyFareUrlValidation(agency *types.Agency, row int, rules *types.AgencyRules) lib.RuleStatus {
 	ctx := lib.NewValidationContext("agency_fare_url", "agency.txt", "agency_fare_url_valid_url", row, services.AppMessageService)
 	if rules != nil && rules.AgencyFare.Severity != "" {
 		ctx.WithSeverity(rules.AgencyFare.Severity)
@@ -31,29 +31,31 @@ func AgencyFareUrlValidation(agency *types.Agency, row int, rules *types.AgencyR
 	if agency.AgencyFareUrl == nil && !ctx.ShouldIgnore() {
 		message := ctx.GetRequiredMessage("agency_fare_url_validation.required", "agency_fare_url_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return
+		return ctx.Status()
 	}
 
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_fare_url_validation.forbidden"))
-		return
+		return ctx.Status()
 	}
 
 	// Check if agency_fare_url is valid
 	if agency.AgencyFareUrl != nil && !lib.ValidateUrl(*agency.AgencyFareUrl) {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_fare_url_validation.invalid"))
-		return
+		return ctx.Status()
 	}
 
 	// Validate rules
 	if rules != nil && rules.AgencyFare.Options != nil {
 		if slices.Contains(*rules.AgencyFare.Options, types.ALL_OPTIONS) {
-			return
+			return ctx.Status()
 		}
 
 		if !slices.Contains(*rules.AgencyFare.Options, *agency.AgencyFareUrl) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_fare_url_validation.not_allowed", *agency.AgencyFareUrl))
-			return
+			return ctx.Status()
 		}
 	}
+
+	return ctx.Status()
 }

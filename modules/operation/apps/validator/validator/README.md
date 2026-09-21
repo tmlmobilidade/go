@@ -207,6 +207,7 @@ The rules file is a JSON structure that defines validation severity levels for e
 - **Severity**: ERROR, WARNING, IGNORE, or FORBIDDEN
 - **Options**: Allowed values for the field
 - **Compare**: Comparison rules for cross-field validation
+- **Depends on**: Rule ids from the same file that must pass before this rule runs
 
 ## Performance Considerations
 
