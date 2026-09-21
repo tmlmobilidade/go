@@ -12,8 +12,10 @@ import { useEffect, useRef } from 'react';
 /* * */
 
 interface UseBaseMapCameraSyncParams {
+	focusedAlert: ReturnType<typeof useBaseMapDerivedData>['focusedAlert']
 	focusedLineShape: ReturnType<typeof useBaseMapFocusedEntities>['focusedLineShape']
 	focusedStop: ReturnType<typeof useBaseMapFocusedEntities>['focusedStop']
+	focusedVehicle: ReturnType<typeof useBaseMapDerivedData>['focusedVehicle']
 	placeDestination: ReturnType<typeof useBaseMapDerivedData>['placeDestination']
 	routePlannerMapFitFeatures: ReturnType<typeof useBaseMapDerivedData>['routePlannerMapFitFeatures']
 }
@@ -31,9 +33,23 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
 	const { mapPadding, shouldFitMap } = useMapBottomSheet();
 	const { 'base-map': baseMap } = useMap();
 	const lastRouteMapFitKeyRef = useRef<null | string>(null);
+	const focusedPoint = params.focusedAlert ?? params.focusedVehicle;
 
 	//
 	// B. Synchronize camera
+
+	useEffect(() => {
+		if (!baseMap || focusedPoint?.geometry.type !== 'Point' || !shouldFitMap) return;
+		const [longitude, latitude] = focusedPoint.geometry.coordinates;
+		if (!Number.isFinite(longitude) || !Number.isFinite(latitude)) return;
+
+		baseMap.flyTo({
+			center: [longitude, latitude],
+			duration: 650,
+			offset: [0, Math.round((mapPadding.top - mapPadding.bottom) / 2)],
+			zoom: 14,
+		});
+	}, [activeBottomSheetSnap.snapPoint, baseMap, focusedPoint, mapPadding, shouldFitMap]);
 
 	useEffect(() => {
 		if (!baseMap || !params.focusedLineShape || !shouldFitMap) return;

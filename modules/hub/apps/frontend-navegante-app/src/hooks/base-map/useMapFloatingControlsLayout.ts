@@ -51,7 +51,7 @@ export function useMapFloatingControlsLayout(): MapFloatingControlsLayout {
 
 	const isRouteSheet = activeBottomSheet.view === 'routes';
 	const isRouteSearch = isRouteSheet && routePlannerContext.data.view_mode === 'destination-search';
-	const isMapAwareDetailSheet = activeBottomSheet.view === 'lines-detail' || activeBottomSheet.view === 'stops-detail';
+	const isMapAwareDetailSheet = activeBottomSheet.view === 'alerts-detail' || activeBottomSheet.view === 'lines-detail' || activeBottomSheet.view === 'stops-detail' || activeBottomSheet.view === 'vehicles-detail';
 	const isMapAwareSheet = isMapAwareDetailSheet || (isRouteSheet && !isRouteSearch);
 
 	if (!isMapAwareSheet) return { bottomOffsetPx: 0, layout: 'hidden' };

@@ -30,6 +30,10 @@ export function AlertsDetail() {
 			onClose={pop}
 			opened={isOpen}
 			title={t('default:alerts.AlertsDetail.title')}
+			withOverlay={false}
+			mapAware
+			withCompactCloseButton
+			withHeaderBackground
 		>
 			{activeAlertId && alert && (
 				<AlertsDetailView alert={alert} />

@@ -60,11 +60,15 @@ export function MapViewStyleAlerts({ data = baseGeoJsonFeatureCollection, presen
 						'interpolate',
 						['linear'],
 						['zoom'],
-						10, 0.15,
-						20, 0.3,
+						10, ['case', ['boolean', ['get', 'is_focused'], false], 0.225, 0.15],
+						20, ['case', ['boolean', ['get', 'is_focused'], false], 0.45, 0.3],
 					],
 					'symbol-placement': 'point',
+					'symbol-sort-key': ['case', ['boolean', ['get', 'is_focused'], false], 1, 0],
 					'visibility': visible ? 'visible' : 'none',
+				}}
+				paint={{
+					'icon-opacity': ['case', ['boolean', ['get', 'is_dimmed'], false], 0.55, 1],
 				}}
 			/>
 		</Source>

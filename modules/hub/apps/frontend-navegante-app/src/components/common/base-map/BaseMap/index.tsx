@@ -32,8 +32,10 @@ export function BaseMap() {
 	});
 
 	useBaseMapCameraSync({
+		focusedAlert: derivedData.focusedAlert,
 		focusedLineShape: focusedEntities.focusedLineShape,
 		focusedStop: focusedEntities.focusedStop,
+		focusedVehicle: derivedData.focusedVehicle,
 		placeDestination: derivedData.placeDestination,
 		routePlannerMapFitFeatures: derivedData.routePlannerMapFitFeatures,
 	});

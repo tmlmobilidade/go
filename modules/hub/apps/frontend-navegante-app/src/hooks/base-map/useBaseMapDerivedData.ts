@@ -29,11 +29,7 @@ export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
 	const { data: alertsFeatureCollection, entities: alerts } = useAlertsMapData();
 	const linesDetailContext = useLinesDetailContext();
 	const { data: vehiclesFeatureCollection } = useVehiclesMapData();
-	const routePlannerMapData = useRoutePlannerMapData({
-		activeBottomSheet: params.activeBottomSheet,
-		alerts,
-		alertsFeatureCollection,
-	});
+	const routePlannerMapData = useRoutePlannerMapData({ activeBottomSheet: params.activeBottomSheet, alerts, alertsFeatureCollection });
 
 	//
 	// B. Transform data
@@ -54,6 +50,11 @@ export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
 		});
 	}, [alerts, alertsFeatureCollection, params.excludedOperatorIds, params.focusedAlertId, routePlannerMapData.alertsMapData]);
 
+	const focusedAlert = useMemo(() => {
+		if (!params.focusedAlertId) return null;
+		return alertsMapData.features.find(feature => feature.properties?.is_focused === true) ?? null;
+	}, [alertsMapData.features, params.focusedAlertId]);
+
 	const vehiclesMapData = useMemo(() => {
 		return getBaseMapVehiclesMapData({
 			excludedOperatorIds: params.excludedOperatorIds,
@@ -64,6 +65,11 @@ export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
 		});
 	}, [lineDetailVehicleShapeIds, params.excludedOperatorIds, params.focusedVehicleId, routePlannerMapData.vehicleRouteDirections, vehiclesFeatureCollection]);
 
+	const focusedVehicle = useMemo(() => {
+		if (!params.focusedVehicleId) return null;
+		return vehiclesMapData.features.find(feature => feature.properties?.is_focused === true) ?? null;
+	}, [params.focusedVehicleId, vehiclesMapData.features]);
+
 	const shouldAlwaysShowFilteredVehicles = routePlannerMapData.vehicleRouteDirections !== null || lineDetailVehicleShapeIds !== null;
 
 	//
@@ -71,6 +77,8 @@ export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
 
 	return {
 		alertsMapData,
+		focusedAlert,
+		focusedVehicle,
 		placeDestination: routePlannerMapData.placeDestination,
 		routePlannerContextShapeData: routePlannerMapData.contextShapeData,
 		routePlannerMapFitFeatures: routePlannerMapData.fitFeatures,

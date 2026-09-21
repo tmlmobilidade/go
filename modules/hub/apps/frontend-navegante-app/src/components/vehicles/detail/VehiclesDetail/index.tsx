@@ -24,8 +24,10 @@ export function VehiclesDetail() {
 		<BottomSheet
 			onClose={pop}
 			opened={isOpen}
-			size="fit"
 			withOverlay={false}
+			mapAware
+			withCompactCloseButton
+			withHeaderBackground
 		>
 			{activeVehicleId && (
 				<VehiclesDetailContextProvider vehicleId={activeVehicleId}>

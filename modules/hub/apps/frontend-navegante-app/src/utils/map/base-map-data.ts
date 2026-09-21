@@ -39,28 +39,44 @@ function getAlertFeatureId(feature: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.Ge
 	return feature.properties?.id ?? feature.properties?._id;
 }
 
+function getVehicleFeatureId(feature: GeoJSON.Feature<GeoJSON.Point, BaseMapVehicleProperties>) {
+	return feature.properties?.vehicle_id;
+}
+
 /* * */
 
 export function getBaseMapAlertsMapData(params: GetBaseMapAlertsMapDataParams) {
-	const selectedAlertsData = params.focusedAlertId
-		? {
-			...params.alertsData,
-			features: params.alertsData.features.filter(feature => getAlertFeatureId(feature) === params.focusedAlertId),
-		}
-		: params.routePlannerAlertsData;
+	const features = [...params.routePlannerAlertsData.features];
+	const focusedAlertFeature = params.focusedAlertId
+		? params.alertsData.features.find(feature => getAlertFeatureId(feature) === params.focusedAlertId)
+		: undefined;
+
+	if (focusedAlertFeature && !features.some(feature => getAlertFeatureId(feature) === params.focusedAlertId)) {
+		features.push(focusedAlertFeature);
+	}
 
 	const visibleAlertIds = new Set(
 		params.alerts
 			.filter(alert => isBaseMapAgencyVisible(alert.agency_id, params.excludedOperatorIds))
 			.map(alert => alert._id),
 	);
+	if (params.focusedAlertId) visibleAlertIds.add(params.focusedAlertId);
 
 	return {
-		...selectedAlertsData,
-		features: selectedAlertsData.features.filter((feature) => {
-			const featureId = getAlertFeatureId(feature);
-			return visibleAlertIds.has(String(featureId));
-		}),
+		...params.routePlannerAlertsData,
+		features: features
+			.filter(feature => visibleAlertIds.has(String(getAlertFeatureId(feature))))
+			.map((feature) => {
+				const isFocused = getAlertFeatureId(feature) === params.focusedAlertId;
+				return {
+					...feature,
+					properties: {
+						...feature.properties,
+						is_dimmed: Boolean(params.focusedAlertId) && !isFocused,
+						is_focused: isFocused,
+					},
+				};
+			}),
 	};
 }
 
@@ -86,17 +102,31 @@ export function getBaseMapVehiclesMapData<TProperties extends BaseMapVehicleProp
 		}
 		: routePlannerVehiclesData;
 
-	const focusedVehiclesData = params.focusedVehicleId
-		? {
-			...params.vehiclesData,
-			features: params.vehiclesData.features.filter(feature => feature.properties?.vehicle_id === params.focusedVehicleId),
-		}
-		: lineDetailVehiclesData;
+	const features = [...lineDetailVehiclesData.features];
+	const focusedVehicleFeature = params.focusedVehicleId
+		? params.vehiclesData.features.find(feature => getVehicleFeatureId(feature) === params.focusedVehicleId)
+		: undefined;
+
+	if (focusedVehicleFeature && !features.some(feature => getVehicleFeatureId(feature) === params.focusedVehicleId)) {
+		features.push(focusedVehicleFeature);
+	}
 
 	return {
-		...focusedVehiclesData,
-		features: focusedVehiclesData.features.filter((feature) => {
-			return isBaseMapAgencyVisible(feature.properties?.agency_id ?? '', params.excludedOperatorIds);
-		}),
+		...lineDetailVehiclesData,
+		features: features
+			.filter((feature) => {
+				return getVehicleFeatureId(feature) === params.focusedVehicleId || isBaseMapAgencyVisible(feature.properties?.agency_id ?? '', params.excludedOperatorIds);
+			})
+			.map((feature) => {
+				const isFocused = getVehicleFeatureId(feature) === params.focusedVehicleId;
+				return {
+					...feature,
+					properties: {
+						...feature.properties,
+						is_dimmed: Boolean(params.focusedVehicleId) && !isFocused,
+						is_focused: isFocused,
+					},
+				};
+			}),
 	};
 }

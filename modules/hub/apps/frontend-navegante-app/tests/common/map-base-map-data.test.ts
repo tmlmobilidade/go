@@ -55,7 +55,7 @@ describe('base-map alert filtering order', () => {
 		assert.deepEqual(getFeatureIds(result), ['route-alert', 'cm-alert']);
 	});
 
-	it('lets a focused alert override the selected itinerary collection', () => {
+	it('keeps itinerary alerts visible and adds the focused alert', () => {
 		const result = getBaseMapAlertsMapData({
 			alerts,
 			alertsData,
@@ -64,10 +64,18 @@ describe('base-map alert filtering order', () => {
 			routePlannerAlertsData,
 		});
 
-		assert.deepEqual(getFeatureIds(result), ['focused-alert']);
+		assert.deepEqual(getFeatureIds(result), ['route-alert', 'cm-alert', 'focused-alert']);
+		assert.deepEqual(
+			result.features.map(feature => feature.properties?.is_focused),
+			[false, false, true],
+		);
+		assert.deepEqual(
+			result.features.map(feature => feature.properties?.is_dimmed),
+			[true, true, false],
+		);
 	});
 
-	it('applies operator visibility after the focused-alert override', () => {
+	it('applies operator visibility while preserving the focused alert marker', () => {
 		const result = getBaseMapAlertsMapData({
 			alerts,
 			alertsData,
@@ -76,7 +84,11 @@ describe('base-map alert filtering order', () => {
 			routePlannerAlertsData,
 		});
 
-		assert.deepEqual(getFeatureIds(result), []);
+		assert.deepEqual(getFeatureIds(result), ['route-alert', 'cm-alert']);
+		assert.deepEqual(
+			result.features.map(feature => feature.properties?.is_focused),
+			[false, true],
+		);
 	});
 });
 
@@ -114,7 +126,7 @@ describe('base-map vehicle filtering order', () => {
 		assert.deepEqual(getVehicleIds(result), ['line-vehicle']);
 	});
 
-	it('lets a focused vehicle override line and itinerary filtering', () => {
+	it('keeps line vehicles visible and adds the focused vehicle', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: [],
 			focusedVehicleId: 'focused-vehicle',
@@ -123,7 +135,15 @@ describe('base-map vehicle filtering order', () => {
 			vehiclesData,
 		});
 
-		assert.deepEqual(getVehicleIds(result), ['focused-vehicle']);
+		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'focused-vehicle']);
+		assert.deepEqual(
+			result.features.map(feature => feature.properties.is_focused),
+			[false, true],
+		);
+		assert.deepEqual(
+			result.features.map(feature => feature.properties.is_dimmed),
+			[true, false],
+		);
 	});
 
 	it('applies grouped operator visibility last and keeps unknown agencies visible', () => {
@@ -138,7 +158,7 @@ describe('base-map vehicle filtering order', () => {
 		assert.deepEqual(getVehicleIds(result), ['route-vehicle', 'line-vehicle', 'focused-vehicle', 'unknown-vehicle']);
 	});
 
-	it('allows operator visibility to hide an otherwise focused vehicle', () => {
+	it('applies operator visibility while preserving the focused vehicle marker', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: ['IA9T6'],
 			focusedVehicleId: 'focused-vehicle',
@@ -147,7 +167,7 @@ describe('base-map vehicle filtering order', () => {
 			vehiclesData,
 		});
 
-		assert.deepEqual(getVehicleIds(result), []);
+		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'focused-vehicle']);
 	});
 });
 
@@ -167,6 +187,8 @@ function createAlertCollection(alertIds: string[]): GeoJSON.FeatureCollection<Ge
 interface VehicleProperties {
 	agency_id: string
 	direction_id: number
+	is_dimmed?: boolean
+	is_focused?: boolean
 	route_id: string
 	shape_id: string
 	vehicle_id: string

@@ -116,21 +116,16 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 	const previousDataRef = useRef<GeoJSON.FeatureCollection>(vehiclesData);
 	const animationStart = useRef<null | number>(null);
 	const animationFrame = useRef<null | number>(null);
-	const iconOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles ? ['coalesce', ['get', 'opacity'], 1] : [
-		'interpolate',
-		['linear'],
-		['zoom'],
-		12,
-		0,
-		13,
-		1,
-	];
+	const focusOpacity: DataDrivenPropertyValueSpecification<number> = ['case', ['boolean', ['get', 'is_dimmed'], false], 0.55, 1];
+	const iconOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles
+		? ['*', ['coalesce', ['get', 'opacity'], 1], focusOpacity]
+		: ['interpolate', ['linear'], ['zoom'], 12, 0, 13, focusOpacity];
 	const circleOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles ? 0 : [
 		'interpolate',
 		['linear'],
 		['zoom'],
 		12,
-		1,
+		focusOpacity,
 		13,
 		0,
 	];
@@ -211,11 +206,12 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 						['linear'],
 						['zoom'],
 						10,
-						0.05,
+						['case', ['boolean', ['get', 'is_focused'], false], 0.075, 0.05],
 						30,
-						0.5,
+						['case', ['boolean', ['get', 'is_focused'], false], 0.75, 0.5],
 					],
 					'symbol-placement': 'point',
+					'symbol-sort-key': ['case', ['boolean', ['get', 'is_focused'], false], 1, 0],
 					'visibility': visible ? 'visible' : 'none',
 
 				}}
