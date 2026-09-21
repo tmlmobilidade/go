@@ -51,7 +51,7 @@ export function usePlansAgenciesData(): PlansAgenciesDataReturnType {
 		return data.data.map((item): SelectDataItem => ({
 			checked: false,
 			disabled: false,
-			label: `[${item._id}] ${item.code} - ${item.name}`,
+			label: `${item.code} - ${item.name}`,
 			value: item._id,
 		}));
 	}, [data?.data]);

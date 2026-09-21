@@ -147,7 +147,7 @@ async function main() {
 			retries: currentExtraction.retries + 1,
 		});
 
-		Logger.success(`Updated extraction "${extractionId}" in the database and stopped heartbeat in ${updateExtractionTimer.get()}.`);
+		Logger.success(`Updated extraction "${extractionId}" in the database and in ${updateExtractionTimer.get()}.`);
 
 		//
 	} catch (error) {
