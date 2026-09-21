@@ -7,4 +7,5 @@ export * from './plans/index.js';
 export * from './routes/index.js';
 export * from './stops/index.js';
 export * from './timetables.js';
+export * from './feedback/index.js';
 export * from './vehicles/index.js';

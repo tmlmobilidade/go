@@ -4,7 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb, type CacheDbKey } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type HubLine, HubLineSchema, type HubStop, HubStopSchema, type PublicFeedback, PublicFeedbackSchema, type PublicFeedbackSubmission, PublicFeedbackSubmissionSchema } from '@tmlmobilidade/go-types-hub';
+import { HubV1ApiLine, HubV1ApiLineSchema, HubV1ApiStop, HubV1ApiStopSchema, type PublicFeedback, PublicFeedbackSchema, type PublicFeedbackSubmission, PublicFeedbackSubmissionSchema } from '@tmlmobilidade/go-types-hub';
 import { createHash } from 'node:crypto';
 
 /* * */
@@ -14,8 +14,8 @@ const FEEDBACK_RATE_LIMIT_MAX_REQUESTS = 10;
 const FEEDBACK_RATE_LIMIT_WINDOW_SECONDS = 10 * 60;
 
 interface FeedbackNetwork {
-	lines?: Pick<HubLine, '_id' | 'agency_id'>[]
-	stops?: Pick<HubStop, '_id'>[]
+	lines?: Pick<HubV1ApiLine, '_id' | 'agency_id'>[]
+	stops?: Pick<HubV1ApiStop, '_id'>[]
 }
 
 export interface PostFeedbackDependencies {
@@ -118,10 +118,10 @@ async function loadFeedbackNetwork(entityType: PublicFeedbackSubmission['entity_
 		const networkData: unknown = JSON.parse(rawNetwork);
 
 		if (entityType === 'line') {
-			return { lines: HubLineSchema.array().parse(networkData) };
+			return { lines: HubV1ApiLineSchema.array().parse(networkData) };
 		}
 
-		return { stops: HubStopSchema.array().parse(networkData) };
+		return { stops: HubV1ApiStopSchema.array().parse(networkData) };
 	} catch (error) {
 		throw new HttpException(HTTP_STATUS.SERVICE_UNAVAILABLE, 'Feedback is temporarily unavailable.', error);
 	}
