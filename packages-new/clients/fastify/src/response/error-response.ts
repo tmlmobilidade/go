@@ -1,8 +1,8 @@
 /* * */
 
-import { type FastifyReply } from '@/fastify-service.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type FastifyReply } from '@/types.js';
 import { type ApiResponseError } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { type ApiResponseOptions, getCacheControlHeader } from './response-options.js';
 

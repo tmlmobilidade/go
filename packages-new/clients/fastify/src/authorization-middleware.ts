@@ -1,6 +1,6 @@
 /* * */
 
-import { FastifyReply, type FastifyRequest } from '@/fastify-service.js';
+import { FastifyReply, type FastifyRequest } from '@/types.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type Organization, type User } from '@tmlmobilidade/go-types-core';
