@@ -6,8 +6,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HubV1ApiAlert, HubV1ApiAlertSchema } from '@tmlmobilidade/go-types-hub';
 import { AlertCauseToGtfsRtCauseMap, AlertEffectToGtfsRtEffectMap, type AlertReference } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { transformReferenceTypeAgencyIntoJson } from '../transform/json/reference-types/agency.js';
 import { transformReferenceTypeLinesIntoJson } from '../transform/json/reference-types/lines.js';

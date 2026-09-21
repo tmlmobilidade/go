@@ -1,7 +1,6 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

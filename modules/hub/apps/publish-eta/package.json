@@ -31,10 +31,9 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-sql": "*",
-		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {

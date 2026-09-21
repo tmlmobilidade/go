@@ -2,8 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { performInChunks } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Remove rides that were previously parsed from this plan but which should not be included anymore.

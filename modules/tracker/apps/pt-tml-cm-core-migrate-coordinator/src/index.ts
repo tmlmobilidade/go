@@ -1,7 +1,7 @@
 /* * */
 
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
-import { Timer } from '@tmlmobilidade/timer';
+import { Timer } from '@tmlmobilidade/go-utils-telemetry';
 import Fastify from 'fastify';
 import { type FastifyRequest } from 'fastify';
 

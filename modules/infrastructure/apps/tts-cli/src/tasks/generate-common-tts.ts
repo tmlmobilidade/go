@@ -2,8 +2,7 @@
 
 import { generatePiperTtsAudio } from '@/services/piper-tts-api.js';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import pLimit from 'p-limit';
 
 /* * */

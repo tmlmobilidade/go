@@ -2,8 +2,7 @@
 
 import { GtfsStrictV30Shapes, GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { BatchWriter, streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path, { join } from 'node:path';

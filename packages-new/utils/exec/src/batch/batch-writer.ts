@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-classes */
 /* * */
 
-import { Timer } from '@tmlmobilidade/timer';
+import { Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

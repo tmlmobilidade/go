@@ -2,8 +2,7 @@
 
 import { type GtfsStops, GtfsStopsSchema } from '@tmlmobilidade/go-types-gtfs';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';
 import { type GtfsSQLTables } from '../types.js';

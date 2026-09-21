@@ -1,8 +1,7 @@
 /* * */
 
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { publishTripUpdates } from './tasks/gtfs/publish-trip-updates.js';
 import { publishEtas } from './tasks/simplified/publish-etas.js';

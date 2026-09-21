@@ -28,9 +28,8 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-files": "*",
-		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/import-gtfs": "*",
 		"papaparse": "5.7.0",
 		"yazl": "3.3.1"
 	},

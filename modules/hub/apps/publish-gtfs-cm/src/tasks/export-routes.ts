@@ -3,8 +3,7 @@
 import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
 import { type HubV1GtfsRoutesInput, HubV1GtfsRoutesSchema } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ExportGtfsContext } from '../types/context.js';
 

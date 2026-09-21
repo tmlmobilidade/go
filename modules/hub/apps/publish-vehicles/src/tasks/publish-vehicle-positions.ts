@@ -11,8 +11,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { calculateBearingInDegrees, getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { getVehiclesMetadataMap } from '../utils/get-vehicles-metadata-map.js';
 

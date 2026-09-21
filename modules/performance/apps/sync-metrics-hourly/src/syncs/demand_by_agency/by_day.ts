@@ -5,8 +5,7 @@ import { dayLabelFromStartIso } from '@/utils/day-label.js';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 

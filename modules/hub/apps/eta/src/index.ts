@@ -1,8 +1,7 @@
 /* * */
 
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { getAppConfig, SYNC_INTERVAL } from './config.js';
 import { aggregateHistNodeTravelTimes } from './tasks/aggregate-hist-node-travel-times.js';

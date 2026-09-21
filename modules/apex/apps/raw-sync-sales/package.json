@@ -26,7 +26,6 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/timer": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {

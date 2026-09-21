@@ -2,8 +2,7 @@
 
 import { type GtfsStrictV30CalendarDates, GtfsStrictV30CalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';

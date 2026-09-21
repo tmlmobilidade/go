@@ -23,10 +23,9 @@
 		"@tmlmobilidade/go-types-gtfs-strict": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
+		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/strings": "*",
-		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/writers": "*",
 		"papaparse": "5.7.0"
 	},

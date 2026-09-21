@@ -5,9 +5,8 @@ import { getExtractionsCoordinatorUrl } from '@tmlmobilidade/go-core-pckg-utils'
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type ExtractionTaskContext } from '@tmlmobilidade/go-types-extractions';
 import { runOnInterval, startHeartbeat } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { zipDirectory } from '@tmlmobilidade/go-utils-zip';
-import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 import path from 'node:path';
 

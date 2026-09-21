@@ -1,6 +1,6 @@
 /* * */
 
-import { Timer } from '@tmlmobilidade/timer';
+import { Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

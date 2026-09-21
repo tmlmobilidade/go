@@ -3,8 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Callback function to set Rides as 'waiting' based on new SimplifiedVehicleEvent data.

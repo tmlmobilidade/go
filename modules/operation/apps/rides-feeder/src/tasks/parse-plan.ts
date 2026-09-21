@@ -8,8 +8,7 @@ import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } fr
 import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { startHeartbeat } from '@tmlmobilidade/go-utils-exec';
 import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
 import { toHashedShape } from '../utils/to-hashed-shape.js';

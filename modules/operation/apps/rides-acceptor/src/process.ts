@@ -5,8 +5,7 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { RideAcceptance } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { PerformInTimeChunksItem } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { alertJustification } from './alert-justification.js';
 import { createRideAcceptance } from './create-ride-acceptance.js';

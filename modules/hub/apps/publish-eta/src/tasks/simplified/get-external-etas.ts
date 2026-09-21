@@ -1,8 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ExternalFeedConfig } from '../external-feeds.js';
 import { getExternalTripUpdates } from '../gtfs/get-external-trip-updates.js';

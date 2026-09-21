@@ -3,8 +3,7 @@
 import { syncDemandByPatternHourByDay } from '@/syncs/demand_by_pattern_hour/by_day.js';
 import { syncDemandByPatternHourByMonth } from '@/syncs/demand_by_pattern_hour/by_month.js';
 import { syncDemandByPatternHourByYear } from '@/syncs/demand_by_pattern_hour/by_year.js';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

@@ -1,9 +1,8 @@
 /* * */
 
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type ImportGtfsConfig, importGtfsHubV1ToDatabase } from '@tmlmobilidade/import-gtfs';
-import { Timer } from '@tmlmobilidade/timer';
 
 import { syncLinesRoutesPatterns } from './tasks/sync-lines-routes-patterns.js';
 import { syncStops } from './tasks/sync-stops.js';
