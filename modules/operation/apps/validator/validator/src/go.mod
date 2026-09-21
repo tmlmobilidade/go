@@ -10,6 +10,7 @@ require (
 	main/database v1.0.0
 )
 
+// TODO: Remove this once the packages are published
 replace main/types => ../../../../../packages-new/types/gtfs-validator/src/validation
 
 replace main/database => ../../../../../packages-new/interfaces/validator-db/src/
