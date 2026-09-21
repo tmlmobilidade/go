@@ -20,8 +20,11 @@ export function setupErrorHandler(server: FastifyInstance, getModuleName: () => 
 		});
 
 		if (error instanceof HttpException) {
-			reply.status(error.statusCode).send({ data: undefined, error: error.message, statusCode: error.statusCode });
-			return;
+			return sendErrorApiResponse(reply, {
+				error: error.message,
+				// @ts-expect-error - statusCode is a number temp solution
+				status_code: error.statusCode.toString(),
+			});
 		}
 
 		return sendErrorApiResponse(reply, { error: 'Internal server error', status_code: '500' });
