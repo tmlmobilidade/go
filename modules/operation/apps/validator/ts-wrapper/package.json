@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/gtfs-validator",
+	"name": "@tmlmobilidade/operation-validator",
 	"description": "A GTFS Validator",
 	"version": "1.0.0",
 	"author": {
