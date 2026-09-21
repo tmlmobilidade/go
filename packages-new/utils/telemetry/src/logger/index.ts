@@ -15,7 +15,7 @@ const IS_DEV = process.env.ENVIRONMENT === 'dev';
  * Application logger. Uses human-readable output in development and
  * OpenTelemetry-compatible JSON in production.
  */
-class Logger implements DevLoggerContract, StructuredLoggerContract {
+class LoggerClass implements DevLoggerContract, StructuredLoggerContract {
 	debug: DevLoggerContract['debug'];
 	divider: DevLoggerContract['divider'];
 	error: DevLoggerContract['error'];
@@ -37,7 +37,7 @@ class Logger implements DevLoggerContract, StructuredLoggerContract {
 /* * */
 
 /** Shared application logger. */
-export const logger = new Logger();
+export const Logger = new LoggerClass();
 
 export type { DevLogger } from './types/dev-logger.js';
 export type { LogValue } from './types/log.js';
