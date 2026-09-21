@@ -1,8 +1,9 @@
 /* * */
-import { buildLogRecord } from '@/logger/build-log-record.js';
-import { extractAttributes } from '@/logger/extract-attributes.js';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+
+import { buildLogRecord } from '../src/logger/build-log-record.js';
+import { extractAttributes } from '../src/logger/extract-attributes.js';
 
 /* * */
 

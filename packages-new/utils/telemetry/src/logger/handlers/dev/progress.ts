@@ -1,6 +1,6 @@
 import { formatMessage } from '../../format-message.js';
 import { type ProgressArgs } from '../../types/message.js';
-import { spacer } from '../spacer.js';
+import { spacer } from './spacer.js';
 
 /**
  * Logs a progress message in the local console format.

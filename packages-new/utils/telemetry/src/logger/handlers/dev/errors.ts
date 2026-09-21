@@ -1,7 +1,7 @@
 import { formatMessage } from '../../format-message.js';
 import { getError, getErrorContext } from '../../parse-arguments.js';
 import { type ErrorArgs } from '../../types/message.js';
-import { spacer } from '../spacer.js';
+import { spacer } from './spacer.js';
 
 /**
  * Logs an error and stack trace in the local console format.

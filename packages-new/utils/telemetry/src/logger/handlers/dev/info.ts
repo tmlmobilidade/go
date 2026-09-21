@@ -1,7 +1,7 @@
 /* * */
 
 import { formatMessage } from '@/logger/format-message.js';
-import { spacer } from '@/logger/handlers/spacer.js';
+import { spacer } from '@/logger/handlers/dev/spacer.js';
 import { getContext } from '@/logger/parse-arguments.js';
 import { type InfoArgs } from '@/logger/types/message.js';
 
