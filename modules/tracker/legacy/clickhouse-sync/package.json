@@ -26,7 +26,6 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {

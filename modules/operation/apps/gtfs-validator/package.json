@@ -26,8 +26,7 @@
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-files": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/gtfs-validator": "20260803.96.36",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/gtfs-validator": "20260803.96.36"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

@@ -33,8 +33,7 @@
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-geo": "*",
 		"@tmlmobilidade/import-gtfs": "*",
-		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

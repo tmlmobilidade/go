@@ -22,7 +22,6 @@
 		"@tmlmobilidade/go-operation-pckg-compose-alert": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/timer": "*",
 		"protobufjs": "8.8.0"
 	},
 	"devDependencies": {
