@@ -7,6 +7,6 @@
 		},
 		"rootDir": "src"
 	},
-	"include": ["src"],
+	"include": ["src", "tests"],
 	"exclude": ["node_modules", "dist"]
 }
