@@ -1,4 +1,4 @@
-export interface Log {
+export interface LogValue {
 	attributes?: Record<string, unknown>
 	body: string
 	severity_number: number

@@ -8,7 +8,7 @@ import { spacer } from './handlers/spacer.js';
 //
 // Check if the environment is development
 // Used to disable logger functions in non local environments
-const IS_DEV = process.env.ENVIROMENT === 'dev';
+const IS_DEV = process.env.ENVIRONMENT === 'dev';
 
 /* * */
 
