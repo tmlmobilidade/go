@@ -1,6 +1,6 @@
 /* * */
 
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import Fastify from 'fastify';
 
 import { getExtractionsHandler } from './handlers/get-extractions.js';
@@ -8,15 +8,6 @@ import { getExtractionsHandler } from './handlers/get-extractions.js';
 /* * */
 
 //
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'extractions-coordinator', message: 'Sentry Extractions Coordinator initialized', module: 'core', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Extractions Coordinator' });
-}
-
 await (async function init() {
 	//
 

@@ -2,7 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 
 /**

@@ -4,23 +4,13 @@ import { cleanExpiredSessions } from '@/tasks/clean-sessions.js';
 import { cleanExpiredVerificationTokens } from '@/tasks/clean-verification-tokens.js';
 import { sanitizePermissions } from '@/tasks/sanitize-permissions.js';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
 async function main() {
 	//
-
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'cleaner', message: 'Sentry Auth Cleaner initialized', module: 'core', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Auth Cleaner' });
-	}
 
 	// Only run in production environment
 	if (process.env.ENVIRONMENT !== 'prd') {

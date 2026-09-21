@@ -22,7 +22,7 @@
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {

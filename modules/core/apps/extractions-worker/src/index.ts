@@ -5,8 +5,8 @@ import { getExtractionsCoordinatorUrl } from '@tmlmobilidade/go-core-pckg-utils'
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type ExtractionTaskContext } from '@tmlmobilidade/go-types-extractions';
 import { runOnInterval, startHeartbeat } from '@tmlmobilidade/go-utils-exec';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { zipDirectory } from '@tmlmobilidade/go-utils-zip';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -19,13 +19,6 @@ import { VERSIONS_MAP } from './versions.js';
 
 //
 // Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
-}
 
 async function main() {
 	//
