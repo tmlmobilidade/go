@@ -16,12 +16,12 @@ let ITERATION = 0;
 
 try {
 	await initSentryNode();
-	Logger.startNodeLogs({ app: 'publish-realtime', message: 'Sentry Hub Publish Realtime initialized', module: 'hub', severity: 'info' });
+	Logger.startNodeLogs({ app: 'publish-vehicles', message: 'Sentry Hub Publish Vehicles initialized', module: 'hub', severity: 'info' });
 } catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Hub Publish Realtime' });
+	Logger.error({ error, message: 'Error initializing Sentry Hub Publish Vehicles' });
 }
 
-const main = async () => {
+async function main() {
 	//
 
 	//
@@ -37,7 +37,7 @@ const main = async () => {
 
 	await publishVehiclesPositions();
 
-	if (ITERATION % 100 === 0) await publishVehiclesMetadata(); // Every 15 iterations * 1s + execution time ≈ 30 seconds
+	if (ITERATION % 100 === 0) await publishVehiclesMetadata(); // Every 100 iterations * 1s + execution time
 
 	ITERATION++;
 
@@ -47,7 +47,7 @@ const main = async () => {
 	Logger.terminate(`[${ITERATION}] Publish realtime data completed in ${globalTimer.get()}`);
 
 	//
-};
+}
 
 /* * */
 

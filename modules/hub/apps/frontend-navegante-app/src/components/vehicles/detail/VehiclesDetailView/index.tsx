@@ -2,16 +2,14 @@
 
 import { CopyBadge } from '@/components/common/display/CopyBadge';
 import { useLinesContext } from '@/components/lines/Lines.context';
+import { useVehiclesDetailPatternData } from '@/components/vehicles/detail/use-vehicles-detail-pattern-data';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { getAgencyLogo } from '@/lib/agency-logos-map';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { fetchApiData, LineBadge, LineName, Section } from '@tmlmobilidade/ui';
+import { LineBadge, LineName, Section } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
@@ -33,15 +31,11 @@ export function VehiclesDetailView() {
 	//
 	// B. Fetch data
 
-	const { data: activePatternData } = useSWR(vehiclesDetailContext.data.vehicle?.pattern_id && API_ROUTES.hub.NETWORK_PATTERNS(vehiclesDetailContext.data.vehicle.pattern_id), {
-		fetcher: async (url: string) => await fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url }),
-		refreshInterval: 5_000, // 5 seconds
-	});
+	const { data: activePatternData } = useVehiclesDetailPatternData(vehiclesDetailContext.data.vehicle?.pattern_id);
 
 	const activeHeadsign = useMemo(() => {
-		if (!activePatternData) return 'desconhecido';
-		return activePatternData.data?.[0]?.headsign ?? 'desconhecido';
-	}, [activePatternData]);
+		return activePatternData?.[0]?.headsign ?? t('default:vehicles.VehiclesDetailView.headsign_unknown');
+	}, [activePatternData, t]);
 
 	const activeLineData = useMemo(() => {
 		if (!vehiclesDetailContext.data.vehicle?.route_short_name) return;
@@ -72,7 +66,7 @@ export function VehiclesDetailView() {
 					<Image alt="" height={40} src={getAgencyLogo(vehiclesDetailContext.data.vehicle?.agency_id, '180x120', 'light')} width={60} />
 				</div>
 
-				<LineName align="center" longName={`Destino: ${activeHeadsign}`} />
+				<LineName align="center" longName={t('default:vehicles.VehiclesDetailView.headsign', '', { headsign: activeHeadsign })} />
 
 				<CopyBadge value={vehiclesDetailContext.data.vehicle?.vehicle_id} />
 

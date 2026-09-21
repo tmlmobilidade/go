@@ -1,1 +1,1 @@
-import '@/endpoints/stops/routes.js';
+import './stops/routes.js';

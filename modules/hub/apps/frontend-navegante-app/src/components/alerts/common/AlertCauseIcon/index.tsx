@@ -3,7 +3,6 @@
 import { getCauseSeverityLevel } from '@/utils/get-alert-severity-level';
 import { GtfsRtCause, GtfsRtCauseValues } from '@tmlmobilidade/go-types-gtfs-rt';
 import { AlertCauseIcons } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -17,13 +16,11 @@ interface AlertCauseIconProps {
 }
 /* * */
 
-export function AlertCauseIcon({ cause, className, size, withText = false }: AlertCauseIconProps) {
+export function AlertCauseIcon({ cause, className, withText = false }: AlertCauseIconProps) {
 	//
 
 	//
 	// A. Setup variables
-
-	const { t } = useTranslation();
 
 	const severityColor = {
 		high: styles.severityLevel_high,

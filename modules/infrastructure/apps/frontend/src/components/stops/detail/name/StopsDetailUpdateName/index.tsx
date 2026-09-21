@@ -1,8 +1,9 @@
 'use client';
 
-import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Inline, useMeData, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
 import { useStopsDetailData } from '../../use-stops-detail-data';
@@ -16,6 +17,8 @@ export function StopsDetailUpdateName() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const { data } = useStopsDetailData();
 
 	const { data: meData } = useMeData();
@@ -23,13 +26,15 @@ export function StopsDetailUpdateName() {
 	const { capabilities } = useStopsDetailFormContext();
 
 	//
-	// B. Transform data
+	// B. Setup flags
 
 	const canUpdateName = useMemo(() => {
-		const hasPermission = hasPermissionResource(meData?.permissions, {
-			requiredPermission: { action: 'edit_name', scope: 'stops' },
-			requiredValue: data?.municipality_id,
-			resourceKey: 'municipality_ids',
+		const hasPermission = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.stops.actions.edit_name,
+			permissions: meData?.permissions,
+			resource_key: 'municipality_ids',
+			scope: PermissionCatalog.all.stops.scope,
+			value: data?.municipality_id,
 		});
 		return hasPermission && !capabilities.updateEnabled;
 	}, [data?.municipality_id, meData?.permissions, capabilities.updateEnabled]);
@@ -39,9 +44,9 @@ export function StopsDetailUpdateName() {
 
 	return (
 		<ValueDisplay
-			footer={canUpdateName && <Inline onClick={openStopsDetailUpdateNameModal} dotted>Editar</Inline>}
-			label="Nome Único da Paragem"
-			value={data?.name ?? 'N/A'}
+			footer={canUpdateName && <Inline onClick={openStopsDetailUpdateNameModal} dotted>{t('default:stops.detail.UpdateName.EditLink.label')}</Inline>}
+			label={t('default:stops.detail.UpdateName.label')}
+			value={data?.name ?? t('default:stops.shared.not_available')}
 			variant="bordered"
 		/>
 	);

@@ -22,7 +22,6 @@ export const HubV1ApiPatternSchema = z.object({
 	line_id: z.string(),
 	locality_ids: z.array(z.string()).default([]),
 	locality_names: z.array(z.string()).default([]),
-	long_name: z.string(),
 	municipality_ids: z.array(z.string()).default([]),
 	municipality_names: z.array(z.string()).default([]),
 	parish_ids: z.array(z.string()).default([]),

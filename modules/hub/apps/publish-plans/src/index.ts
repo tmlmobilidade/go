@@ -4,22 +4,23 @@ import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { publishAgencies } from './tasks/publish-agencies.js';
 import { publishApprovedPlans } from './tasks/publish-approved-plans.js';
 
 /* * */
 
-const main = async () => {
-	//
+//
+// Initialize Sentry
 
-	//
-	// Initialize Sentry
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'publish-plans', message: 'Sentry Hub Publish Plans initialized', module: 'hub', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Hub Publish Plans' });
+}
 
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-plans', message: 'Sentry Hub Publish Plans initialized', module: 'hub', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Plans' });
-	}
+async function main() {
+	//
 
 	//
 	// Initialize the logger
@@ -31,6 +32,8 @@ const main = async () => {
 	//
 	// Run all tasks sequentially
 
+	await publishAgencies();
+
 	await publishApprovedPlans();
 
 	//
@@ -39,7 +42,7 @@ const main = async () => {
 	Logger.terminate(`Publish plans data completed in ${globalTimer.get()}`);
 
 	//
-};
+}
 
 /* * */
 

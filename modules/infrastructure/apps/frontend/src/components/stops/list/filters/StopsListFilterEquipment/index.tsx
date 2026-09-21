@@ -1,7 +1,7 @@
 'use client';
 
-import { Translations } from '@/lib/translations';
 import { ListFilter } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsListFilterEquipment } from './use-stops-list-filter-equipment';
 
@@ -13,6 +13,8 @@ export function StopsListFilterEquipment() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const filterEquipment = useStopsListFilterEquipment();
 
 	//
@@ -21,16 +23,11 @@ export function StopsListFilterEquipment() {
 	return (
 		<ListFilter
 			active={filterEquipment.isActive}
-			label="Equipamentos"
+			label={t('default:stops.list.FilterEquipment.label')}
 			onChange={filterEquipment.set}
-			options={filterEquipment.options.map(option => ({
-				...option,
-				label: Translations.EQUIPMENT[option.value as keyof typeof Translations.EQUIPMENT],
-			}))}
+			options={filterEquipment.options}
 			isMultiple
 			withToggleAll
 		/>
 	);
-
-	//
 }

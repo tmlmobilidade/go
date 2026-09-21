@@ -34,7 +34,7 @@ export function useVehiclePositionContext() {
 /* * */
 
 export const VehiclePositionContextProvider = ({ children }: PropsWithChildren) => {
-	const { data: fetchedVehiclePositionData, error, isLoading } = useSWR<HubV1ApiVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 5_000 });
+	const { data: fetchedVehiclePositionData, error, isLoading } = useSWR<HubV1ApiVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.VEHICLES_VEHICLES_POSITIONS }, { refreshInterval: 5_000 });
 
 	const vehiclesGeoJsonFeatureCollection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> | undefined = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>();

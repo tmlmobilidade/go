@@ -2,6 +2,7 @@
 
 /* * */
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { pushArrayToMap } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
@@ -54,19 +55,22 @@ export const EtaContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// A. Setup variables
-	const { data: etaData, error: etaDataError, isLoading: etaDataLoading } = useSWR<PreparedTripUpdate[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_ETA }, { refreshInterval: 5_000 }); // 5 seconds
+
+	const { data: allEtasData, error: allEtasDataError, isLoading: allEtasDataLoading } = useSWR(API_ROUTES.hub.ETA_LIST, {
+		fetcher: async (url: string) => await fetchApiData<PreparedTripUpdate[]>({ credentials: 'omit', url }),
+	});
 
 	//
 	// B. Transform data
 	useEffect(() => {
 		byStopMap.clear();
 		byTripMap.clear();
-		if (!etaData?.length) return;
-		for (const item of etaData) {
+		if (!allEtasData?.data?.length) return;
+		for (const item of allEtasData?.data ?? []) {
 			pushArrayToMap(byStopMap, item.stop_id, item);
 			pushArrayToMap(byTripMap, item.trip_id, item);
 		}
-	}, [etaData]);
+	}, [allEtasData]);
 
 	//
 	// D. Define context value
@@ -78,14 +82,14 @@ export const EtaContextProvider = ({ children }: PropsWithChildren) => {
 				getEtasByTrip: (tripId: string) => byTripMap.get(tripId) ?? [],
 			},
 			data: {
-				all: etaData ?? [],
+				all: allEtasData?.data ?? [],
 			},
 			flags: {
-				error: etaDataError,
-				loading: etaDataLoading,
+				error: allEtasDataError,
+				loading: allEtasDataLoading,
 			},
 		};
-	}, [etaData, etaDataError, etaDataLoading]);
+	}, [allEtasData, allEtasDataError, allEtasDataLoading]);
 
 	//
 	// E. Render components

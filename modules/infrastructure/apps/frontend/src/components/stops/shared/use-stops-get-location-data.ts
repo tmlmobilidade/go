@@ -9,7 +9,7 @@ import useSWRImmutable from 'swr/immutable';
 
 /* * */
 
-interface StopsGetLocationDataReturnType {
+interface UseStopsGetLocationDataReturnType {
 	data: StopsGetLocationResponse
 	error: null | string
 	isLoading: boolean
@@ -17,27 +17,27 @@ interface StopsGetLocationDataReturnType {
 }
 
 /**
- * Hook to fetch stop location data. Useful for supplying data
- * to filters or select components.
- * @returns An object containing the stop location data.
+ * Hook to fetch the administrative location for a pair of coordinates.
+ * @param request The latitude and longitude to resolve.
+ * @returns An object containing the location data.
  */
-export function useStopsGetLocationData(request: StopsGetLocationRequest): StopsGetLocationDataReturnType {
+export function useStopsGetLocationData(request: StopsGetLocationRequest): UseStopsGetLocationDataReturnType {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWRImmutable<ApiResponse<StopsGetLocationResponse>>([API_ROUTES.infrastructure.STOPS_GET_STOP_LOCATION, request], {
-		fetcher: async ([url, request]) => await fetchApiData<StopsGetLocationResponse>({ body: request, method: 'POST', url: url }),
+	const { data, error, isLoading } = useSWRImmutable<ApiResponse<StopsGetLocationResponse>>([API_ROUTES.infrastructure.STOPS_GET_STOP_LOCATION, request], {
+		fetcher: async ([url, request]: [string, StopsGetLocationRequest]) => await fetchApiData<StopsGetLocationResponse>({ body: request, method: 'POST', url }),
 	});
 
 	//
-	// B. Return value
+	// B. Return data
 
 	return useMemo(() => ({
 		data: data?.data,
 		error: error?.error,
 		isLoading,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, error?.error, isLoading, isValidating, data?.timestamp]);
+	}), [data?.data, error?.error, isLoading, data?.timestamp]);
 };

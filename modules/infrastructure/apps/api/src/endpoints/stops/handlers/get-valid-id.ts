@@ -5,13 +5,16 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { type StopId } from '@tmlmobilidade/go-types-infrastructure';
 
 /**
- * Generates and retrieves a new unique Stop ID
+ * Generates and returns a new unique Stop ID
  * that does not conflict with existing IDs or deleted CM Stops.
- * @param request Fastify request
- * @param reply Fastify reply
+ * @param request The request object
+ * @param reply The reply object
  */
 export async function getValidIdHandler(request: FastifyRequest, reply: FastifyReply<StopId>) {
 	//
+
+	//
+	// Generate a new stop ID
 
 	const newStopId = await generateStopId();
 

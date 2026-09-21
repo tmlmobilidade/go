@@ -4,9 +4,9 @@ import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { TTL_REALTIME } from '../../config.js';
 import { type TripStopEta } from '../types.js';
 import { getClickHouseEtas } from './get-clickhouse-etas.js';
-import { TTL_REALTIME } from '@/config.js';
 
 /* * */
 

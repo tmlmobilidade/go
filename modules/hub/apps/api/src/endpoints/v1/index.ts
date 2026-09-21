@@ -1,6 +1,9 @@
-import '@/endpoints/v1/alerts/routes.js';
-import '@/endpoints/v1/debug/routes.js';
-import '@/endpoints/v1/network/routes.js';
-import '@/endpoints/v1/plans/routes.js';
-import '@/endpoints/v1/realtime/routes.js';
-import '@/endpoints/v1/metrics/routes.js';
+import './agencies/routes.js';
+import './alerts/routes.js';
+import './debug/routes.js';
+import './eta/routes.js';
+import './metrics/routes.js';
+import './network/routes.js';
+import './plans/routes.js';
+import './realtime/routes.js';
+import './vehicles/routes.js';

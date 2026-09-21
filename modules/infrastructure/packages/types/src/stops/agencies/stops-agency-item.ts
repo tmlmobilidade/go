@@ -13,7 +13,7 @@ export const StopsAgencyItemSchema = AgencySchema.pick({
 });
 
 /**
- * The item schema for listing plans agencies.
- * It is intended for use in the plans module.
+ * The item schema for listing stops agencies.
+ * It is intended for use in the infrastructure module.
  */
 export type StopsAgencyItem = z.infer<typeof StopsAgencyItemSchema>;

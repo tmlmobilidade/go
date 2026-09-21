@@ -3,6 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type InfrastructureStopsV1ExtractionCreate } from '@tmlmobilidade/go-types-extractions';
 import { Button, fetchApiData, Pane, Section, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import { StopsExtractHeader } from '../StopsExtractHeader';
 
@@ -14,7 +15,12 @@ export function StopsExtract() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const { mutate } = useExtractionsListData();
+
+	//
+	// B. Handle actions
 
 	const { action: handleExtract } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Extraction[], InfrastructureStopsV1ExtractionCreate>({
@@ -34,12 +40,12 @@ export function StopsExtract() {
 	});
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Pane header={[<StopsExtractHeader key="header" />]}>
 			<Section>
-				<Button label="Extract" onClick={handleExtract} />
+				<Button label={t('default:stops.extract.ExtractButton.label')} onClick={handleExtract} />
 			</Section>
 		</Pane>
 	);

@@ -1,6 +1,5 @@
 /* * */
 
-import { getEncodedPolyline } from '@/utils/get-encoded-polyline.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiPatternTrip, type HubV1ApiPatternWaypoint, type HubV1ApiRoute, type HubV1ApiScheduledArrival, type HubV1ApiStop, HubV1GtfsRoutes } from '@tmlmobilidade/go-types-hub';
 import { HexColorSchema } from '@tmlmobilidade/go-types-shared';
@@ -9,9 +8,11 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import crypto from 'node:crypto';
 
+import { getEncodedPolyline } from '../utils/get-encoded-polyline.js';
+
 /* * */
 
-export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTables) {
+export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTables) {
 	//
 
 	/* * *
@@ -151,7 +152,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 				const stopParsedData = allStopsParsedMap.get(stopTimeRawData.stop_id);
 
 				if (!stopParsedData) {
-					console.error(`Stop not found: ${stopTimeRawData.stop_id}`);
+					Logger.error({ message: `Stop not found: ${stopTimeRawData.stop_id}` });
 					continue;
 				}
 
@@ -224,7 +225,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 			const routeRawData = allRoutesRawMap.get(tripRawData.route_id);
 
 			if (!routeRawData) {
-				console.error(`Route not found: ${tripRawData.route_id}`);
+				Logger.error({ message: `Route not found: ${tripRawData.route_id}` });
 				continue;
 			}
 
@@ -281,7 +282,6 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLT
 					line_id: routeRawData.route_short_name,
 					locality_ids: [],
 					locality_names: [],
-					long_name: routeRawData.route_long_name,
 					municipality_ids: [],
 					municipality_names: [],
 					parish_ids: [],
