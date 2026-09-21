@@ -3,8 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd -- "$SCRIPT_DIR" && pwd)"
-BIN_DIR="$REPO_ROOT/bin"
+BIN_DIR="$SCRIPT_DIR/../ts-wrapper/bin"
 cd "$SCRIPT_DIR"
 
 mkdir -p "$BIN_DIR"

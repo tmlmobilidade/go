@@ -24,7 +24,6 @@ const BINARY_DISTRIBUTIONS_FILES: Record<string, string> = {
 const WRAPPER_ROOT = existsSync(join(__dirname, '..', 'package.json'))
 	? join(__dirname, '..')
 	: join(__dirname, '..', '..');
-const DEV_BIN_PATH = join(WRAPPER_ROOT, '..', 'validator', 'bin');
 const BUNDLED_BIN_PATH = join(WRAPPER_ROOT, 'bin');
 const LOCAL_BIN_PATH = join(__dirname, '..', 'bin');
 
@@ -151,7 +150,7 @@ async function main(): Promise<void> {
 		return;
 	}
 
-	const binaryDistributionFilePath = [DEV_BIN_PATH, BUNDLED_BIN_PATH, LOCAL_BIN_PATH]
+	const binaryDistributionFilePath = [BUNDLED_BIN_PATH, LOCAL_BIN_PATH]
 		.map(binPath => join(binPath, binaryDistributionFile))
 		.find(binaryPath => existsSync(binaryPath));
 

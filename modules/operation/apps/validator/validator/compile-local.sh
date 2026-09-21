@@ -3,7 +3,6 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd -- "$SCRIPT_DIR" && pwd)"
 
 case "$(uname -s)" in
 	Darwin) GOOS="darwin" ;;
@@ -29,12 +28,9 @@ case "$(uname -m)" in
 		;;
 esac
 
-BIN_DIR="$REPO_ROOT/bin"
+BIN_DIR="$SCRIPT_DIR/../ts-wrapper/bin"
 BINARY_PATH="$BIN_DIR/validator-$GOOS-$BINARY_ARCH"
 VALIDATOR_GO_CACHE_DIR="${TMPDIR:-/tmp}/go-plans-validator-cache"
-
-echo "Removing old local GTFS validator binaries"
-rm -rf -- "$BIN_DIR"
 
 mkdir -p "$BIN_DIR"
 mkdir -p "$VALIDATOR_GO_CACHE_DIR"
