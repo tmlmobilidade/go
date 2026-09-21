@@ -21,7 +21,11 @@ const BINARY_DISTRIBUTIONS_FILES: Record<string, string> = {
 	'windows-x64': 'validator.exe', // Alias for win32-x64
 } as const;
 
-const DEV_BIN_PATH = join(__dirname, '..', '..', 'bin');
+const WRAPPER_ROOT = existsSync(join(__dirname, '..', 'package.json'))
+	? join(__dirname, '..')
+	: join(__dirname, '..', '..');
+const DEV_BIN_PATH = join(WRAPPER_ROOT, '..', 'validator', 'bin');
+const BUNDLED_BIN_PATH = join(WRAPPER_ROOT, 'bin');
 const LOCAL_BIN_PATH = join(__dirname, '..', 'bin');
 
 /**
@@ -57,7 +61,7 @@ function getCurrentPlatform(): string {
  *
  * @throws {Error} If the binary file is not found or copy fails
  */
-function buildDevEnvironment(): void {
+function buildDevEnvironment(sourcePath: string): void {
 	const platform = getCurrentPlatform();
 	const binaryDistributionFile = BINARY_DISTRIBUTIONS_FILES[platform];
 
@@ -65,7 +69,6 @@ function buildDevEnvironment(): void {
 		throw new Error(`No binary distribution file found for platform: ${platform}`);
 	}
 
-	const sourcePath = join(DEV_BIN_PATH, binaryDistributionFile);
 	if (!existsSync(sourcePath)) {
 		throw new Error(`Source binary not found: ${sourcePath}`);
 	}
@@ -76,7 +79,9 @@ function buildDevEnvironment(): void {
 	}
 
 	const destPath = join(LOCAL_BIN_PATH, binaryDistributionFile);
-	copyFileSync(sourcePath, destPath);
+	if (path.resolve(sourcePath) !== path.resolve(destPath)) {
+		copyFileSync(sourcePath, destPath);
+	}
 
 	// Make executable on Unix-like systems
 	if (process.platform !== 'win32') {
@@ -146,20 +151,22 @@ async function main(): Promise<void> {
 		return;
 	}
 
-	const binaryDistributionFilePath = join(DEV_BIN_PATH, binaryDistributionFile);
+	const binaryDistributionFilePath = [DEV_BIN_PATH, BUNDLED_BIN_PATH, LOCAL_BIN_PATH]
+		.map(binPath => join(binPath, binaryDistributionFile))
+		.find(binaryPath => existsSync(binaryPath));
 
 	// Check if the file exists locally (development environment)
-	if (existsSync(binaryDistributionFilePath)) {
+	if (binaryDistributionFilePath) {
 		try {
-			buildDevEnvironment();
-			console.log(`✓ Binary copied from dev environment: ${binaryDistributionFile}`);
+			buildDevEnvironment(binaryDistributionFilePath);
+			console.log(`✓ Local binary ready: ${binaryDistributionFile}`);
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : String(error);
 			console.error(`✗ Error building dev environment: ${errorMessage}`);
 			process.exitCode = 1;
 		}
 	} else {
-		console.info(`Local file not found: ${binaryDistributionFilePath}`);
+		console.info(`Local binary not found: ${binaryDistributionFile}`);
 		console.info(`Downloading binary from ${getRemoteBinPath()}...`);
 
 		try {
