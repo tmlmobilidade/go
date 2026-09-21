@@ -1,0 +1,43 @@
+name: 'Build & Publish GTFS Validator'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - prd
+    paths:
+      - '.github/workflows/publish-validator.yaml'
+      - 'modules/plans/apps/validator/compile.sh'
+      - 'modules/plans/apps/validator/src/**'
+      - 'packages-new/interfaces/validator-db/src/**'
+      - 'packages-new/types/gtfs-validator/src/validation/**'
+      - '!modules/plans/apps/validator/bin/**'
+
+permissions:
+  contents: write
+
+jobs:
+  release-validator:
+    name: Release Validator Binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Build binaries
+        shell: bash
+        run: bash modules/plans/apps/validator/compile.sh
+
+      - name: Create GitHub release with binaries
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_TAG="validator-build-${GITHUB_RUN_NUMBER}"
+          gh release create "$RELEASE_TAG" \
+            --target "$GITHUB_SHA" \
+            --title "Validator build ${GITHUB_RUN_NUMBER}" \
+            --notes "Validator binaries built from commit ${GITHUB_SHA}." \
+            modules/plans/apps/validator/bin/validator-linux-amd64 \
+            modules/plans/apps/validator/bin/validator-linux-arm64 \
+            modules/plans/apps/validator/bin/validator-darwin-amd64 \
+            modules/plans/apps/validator/bin/validator-darwin-arm64
