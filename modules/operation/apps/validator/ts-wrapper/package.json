@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/operation-validator",
+	"name": "@tmlmobilidade/go-operation-validator",
 	"description": "A GTFS Validator",
 	"version": "1.0.0",
 	"author": {
@@ -30,7 +30,7 @@
 		}
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.json && resolve-tspaths",
+		"build": "tsc -p tsconfig.json && resolve-tspaths && node ./dist/scripts/postinstall.js",
 		"lint": "eslint ./src && tsc -p tsconfig.json --noEmit --noEmit",
 		"lint:fix": "eslint --fix ./src",
 		"postinstall": "if [ ! -d dist ]; then tsx ./scripts/postinstall.ts; else node ./dist/scripts/postinstall.js; fi",

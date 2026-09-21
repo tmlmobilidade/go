@@ -207,7 +207,7 @@
 		"@parcel/watcher": true,
 		"@sentry/cli": true,
 		"@swc/core": true,
-		"@tmlmobilidade/gtfs-validator": true,
+		"@tmlmobilidade/go-operation-validator": true,
 		"better-sqlite3": true,
 		"cpu-features": true,
 		"esbuild": true,
