@@ -26,6 +26,12 @@
 		},
 		"AlertsDetail": {
 			"title": "Alerta"
+		},
+		"SelectCause": {
+			"placeholder": "Filtrar por causa"
+		},
+		"SelectEffect": {
+			"placeholder": "Filtrar por efeito"
 		}
 	},
 	"common": {
