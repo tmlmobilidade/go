@@ -2,6 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Line } from '@tmlmobilidade/go-types-offer';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -37,14 +38,16 @@ export const LinesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useSWR<Line[], Error>(API_ROUTES.offer.LINES_LIST);
+	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useSWR(API_ROUTES.offer.LINES_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Line[]>({ url }),
+	});
 
 	//
 	// B. Define context value
 
 	const contextValue: LinesContextState = useMemo(() => ({
 		data: {
-			raw: allLinesData?.sort((a, b) => a.code.localeCompare(b.code)) ?? [],
+			raw: allLinesData?.data?.sort((a, b) => a.code.localeCompare(b.code)) ?? [],
 		},
 		flags: {
 			error: allLinesError,

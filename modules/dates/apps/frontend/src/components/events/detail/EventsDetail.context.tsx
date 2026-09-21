@@ -55,16 +55,22 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	//
 	// B. Fetch data
 
-	const { mutate: eventsListMutate } = useSWR<Event[]>(API_ROUTES.dates.EVENTS_LIST);
-	const { data: eventData, error: eventError, isLoading: eventLoading, mutate: eventMutate } = useSWR<Event>(API_ROUTES.dates.EVENTS_DETAIL(eventId));
-	const { data: allLinesData } = useSWR<Line[], Error>(API_ROUTES.offer.LINES_LIST);
+	const { mutate: eventsListMutate } = useSWR(API_ROUTES.dates.EVENTS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Event[]>({ url }),
+	});
+	const { data: eventData, error: eventError, isLoading: eventLoading, mutate: eventMutate } = useSWR(API_ROUTES.dates.EVENTS_DETAIL(eventId), {
+		fetcher: async (url: string) => await fetchApiData<Event>({ url }),
+	});
+	const { data: allLinesData } = useSWR(API_ROUTES.offer.LINES_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Line[]>({ url }),
+	});
 
 	//
 	// C. Setup form
 
 	const { form } = useTypicalForm<UpdateEventDto>(
 		UpdateEventSchema,
-		eventData,
+		eventData?.data ?? null,
 		{
 			agency_ids: [],
 			code: '',
@@ -81,9 +87,9 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Event>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.dates.EVENTS_DETAIL(eventId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (response) => {
 			form.resetDirty();
-			eventMutate(data);
+			eventMutate(response);
 			eventsListMutate();
 		},
 	});
@@ -99,9 +105,9 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 
 	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Event>({ url: API_ROUTES.dates.EVENTS_DETAIL_LOCK(eventId) }),
-		onSuccess: ({ data }) => {
+		onSuccess: (response) => {
 			form.resetDirty();
-			eventMutate(data);
+			eventMutate(response);
 			eventsListMutate();
 		},
 	});
@@ -167,18 +173,18 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: eventData?.agency_ids ?? [],
+			value: eventData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.events.scope,
 	});
 
-	// For update/delete/lock permissions, user needs access to ALL agencies (requireAll: true)
+	// For update/delete/lock permissions, user needs access to ANY agency (requireAll: false)
 	const editPermissions = meContext.actions.getScopePermissions({
 		actions: PermissionCatalog.all.events.actions,
 		resource: {
 			key: 'agency_ids',
-			requireAll: true,
-			value: eventData?.agency_ids ?? [],
+			requireAll: false,
+			value: eventData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.events.scope,
 	});
@@ -196,7 +202,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: eventLoading,
-		isLocked: eventData?.is_locked,
+		isLocked: eventData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -215,7 +221,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	const filteredLines = useMemo(() => {
 		if (!allLinesData || !form.values.agency_ids?.length) return [];
 		const agencyIdsSet = new Set(form.values.agency_ids);
-		return allLinesData.filter(line => agencyIdsSet.has(line.agency_id));
+		return allLinesData.data?.filter(line => agencyIdsSet.has(line.agency_id)) ?? [];
 	}, [allLinesData, form.values.agency_ids]);
 
 	const contextValue: EventsDetailContextState = useMemo(() => ({
@@ -229,7 +235,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 			save: handleSave,
 		},
 		data: {
-			event: eventData,
+			event: eventData?.data ?? null,
 			form,
 			id: eventId,
 			lines: filteredLines,

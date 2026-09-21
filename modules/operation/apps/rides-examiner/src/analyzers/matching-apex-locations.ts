@@ -1,8 +1,9 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.js';
 import { type RideAnalysisMatchingApexLocations, RideAnalysisMatchingApexLocationsSchema } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+
+import { type AnalysisData } from '../types/analysis-data.js';
 
 /**
  * This analyzer tests if there are Location Transactions for all stops of the trip.

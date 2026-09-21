@@ -2,7 +2,7 @@
 
 /* * */
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
-import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 import { Image, Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface AlertDetailContentProps {
-	alert: HubAlert
+	alert: HubV1ApiAlert
 }
 
 /* * */

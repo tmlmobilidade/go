@@ -1,0 +1,48 @@
+/* * */
+
+import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type HubV1ApiPlan } from '@tmlmobilidade/go-types-hub';
+import { Logger } from '@tmlmobilidade/logger';
+
+/**
+ * Retrieves all plans that are approved together with the URL to the operation file.
+ * This method is used to fetch plans that are ready for use in the system.
+ * @param request The request object.
+ * @param reply The reply object.
+ */
+export async function getApprovedPlansHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiPlan[]>) {
+	//
+
+	//
+	// Get the published plans from the cache
+
+	const cachedData = await cacheDb.get('hub:v1:plans:approved:json');
+
+	if (!cachedData) {
+		Logger.error({ message: '[hub/v1/plans:getApprovedPlansHandler()] No cached data found for approved plans' });
+		return reply
+			.header('access-control-allow-origin', '*')
+			.header('cache-control', 'public, max-age=300')
+			.code(HTTP_STATUS.NO_CONTENT)
+			.send({
+				data: [],
+				error: null,
+				status_code: HTTP_STATUS.NO_CONTENT,
+			});
+	}
+
+	//
+	// Return the parsed plans
+
+	return reply
+		.header('access-control-allow-origin', '*')
+		.header('cache-control', 'public, max-age=300')
+		.code(HTTP_STATUS.OK)
+		.send({
+			data: JSON.parse(cachedData),
+			error: null,
+			status_code: HTTP_STATUS.OK,
+		});
+}

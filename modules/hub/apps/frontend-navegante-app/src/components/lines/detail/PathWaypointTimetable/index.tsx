@@ -80,7 +80,7 @@ export function PathWaypointTimetable() {
 	}
 
 	if (typeof timetableData === 'number') {
-		const nextDate = Dates.fromOperationalDateInt(timetableData, 'Europe/Lisbon').js_date;
+		const nextDate = timetableData && Dates.fromOperationalDateInt(timetableData, 'Europe/Lisbon').js_date;
 		return (
 			<div className={styles.container}>
 				<p className={styles.noData}>{t('default:lines.PathWaypointTimetable.no_data')}</p>

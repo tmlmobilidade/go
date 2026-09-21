@@ -1,13 +1,13 @@
 'use client';
 
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
-import { type HubAlert } from '@tmlmobilidade/go-types-hub';
+import { GtfsRtEffect } from '@tmlmobilidade/go-types-gtfs-rt';
 import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 interface AlertDetailViewHeaderProps {
-	effect: HubAlert['effect']
+	effect: GtfsRtEffect
 	title: string
 }
 

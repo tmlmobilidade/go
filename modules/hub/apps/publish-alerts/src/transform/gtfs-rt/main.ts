@@ -1,7 +1,8 @@
 /* * */
 
-import { GtfsRtAlert, type GtfsRtFeedEntity } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type GtfsRtAlert, GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
+import { UnixSecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 
 import { transformCause } from './cause-effect/cause.js';
@@ -47,9 +48,12 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 		// Prepare the active_period value. GTFS-RT expects active_period to be
 		// an array of objects with start and end properties in seconds since the epoch.
 
+		const activePeriodStartDate = UnixSecondsSchema.parse(alertData.active_period_start_date / 1_000);
+		const activePeriodEndDate = UnixSecondsSchema.parse(alertData.active_period_end_date ? alertData.active_period_end_date / 1_000 : undefined);
+
 		const activePeriodValues: GtfsRtAlert['active_period'] = [{
-			end: alertData.active_period_end_date ? alertData.active_period_end_date / 1_000 : undefined,
-			start: alertData.active_period_start_date / 1_000,
+			end: activePeriodEndDate,
+			start: activePeriodStartDate,
 		}];
 
 		//

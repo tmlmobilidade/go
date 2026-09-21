@@ -13,6 +13,8 @@ export interface MongoConfig {
 export interface StorageConfig {
 	compartment: string
 	dest: string
+	/** Folder paths to exclude from rclone sync (relative to source root) */
+	exclude: string[]
 	fingerprint: string
 	keyFile: string
 	namespace: string
@@ -126,6 +128,9 @@ export function loadConfig(envFilePath?: string): SyncConfig {
 		storage: {
 			//
 			dest: parseEnvValue(envVars.STORAGE_DEST),
+			exclude: parseEnvValue(envVars.STORAGE_EXCLUDE, '')
+				.split(/\s+/)
+				.filter(f => f.length > 0),
 			remoteName: parseEnvValue(envVars.STORAGE_REMOTE_NAME),
 			source: parseEnvValue(envVars.STORAGE_SOURCE),
 			type: parseEnvValue(envVars.STORAGE_TYPE),

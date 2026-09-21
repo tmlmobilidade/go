@@ -8,6 +8,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { ZodError } from 'zod';
 
 import { type SyncConfig, type VehicleEventsCollectionDocument } from './types.js';
@@ -81,11 +82,17 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 
 		deleteDestinationDbFn: async (ids: string[]) => {
 			await performInChunks(ids, async (chunk) => {
-				await labDb.operation.simplifiedVehicleEvents.delete(
-					'_id IN $1',
-					{ 1: chunk },
-				);
-			}, 1_000);
+				const deleteTimer = new Timer();
+				const labDbClient = await labDb.getClient();
+				await labDbClient.command({
+					query: `
+						ALTER TABLE operation.simplified_vehicle_events
+						DELETE WHERE _id IN (${chunk.map(id => `'${id}'`).join(',')})
+					`,
+				});
+				Logger.info({ message: `Deleted ${chunk.length} documents from the destination database in ${deleteTimer.get()}.` });
+			}, 500);
+			await new Promise(resolve => setTimeout(resolve, 10_000));
 		},
 
 		distinctDestinationDbFn: async () => {
@@ -116,7 +123,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 				const parser = PARSER_MAP[sourceDbDocument.version];
 				if (!parser) throw new Error(`No parser found for version ${sourceDbDocument.version}. Skipping document with _id "${sourceDbDocument._id}"...`);
 				// Parse the vehicle event into a simplified vehicle event
-				const newSimplifiedVehicleEventDocument = parser(sourceDbDocument);
+				const newSimplifiedVehicleEventDocument = await parser(sourceDbDocument);
 				if (!newSimplifiedVehicleEventDocument) throw new Error(`Failed to parse document with _id "${sourceDbDocument._id}". Skipping...`);
 				// Write the simplified vehicle event document to the destination database
 				await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });

@@ -4,7 +4,7 @@ import { ScrollChips } from '@/components/common/lists/ScrollChips';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { getAgencyDisplayInfo, getAgencyLogo, getAgencyMapOperatorId } from '@/lib/agency-catalog';
-import { type HubLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,7 @@ export function StopsDetailViewHeaderAssociatedLines() {
 
 	const linesByAgencyId = useMemo(() => {
 		// Group lines by agency ID
-		const groups: Record<string, { agency_id: string, lines: HubLine[] }> = {};
+		const groups: Record<string, { agency_id: string, lines: HubV1ApiLine[] }> = {};
 		stopsDetailContext.data.associated_lines?.forEach((line) => {
 			// Merge CM agencies into a single agency
 			const agencyId = getAgencyMapOperatorId(line.agency_id) ?? line.agency_id;

@@ -2,8 +2,10 @@
 
 import { useStopsAgenciesData } from '@/components/stops/shared/use-stops-agencies-data';
 import { IconEqual, IconEqualNot } from '@tabler/icons-react';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Checkbox, DeleteButton, Grid, MultiSelect, Section, StandardFormController, Surface, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
 import { useStopsDetailData } from '../../use-stops-detail-data';
@@ -22,16 +24,19 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const { form } = useStopsDetailFormContext();
+
 	const { data } = useStopsDetailData();
 
 	const flagsValues = useStandardFormWatch({ control: form.control, name: 'flags' });
 
 	//
-	// B. Transform data
+	// B. Fetch data
 
 	const { options: agenciesOptions } = useStopsAgenciesData({
-		permissions: { actions: ['read', 'update'], scope: 'stops' },
+		permissions: { actions: [PermissionCatalog.all.stops.actions.read, PermissionCatalog.all.stops.actions.update], scope: PermissionCatalog.all.stops.scope },
 	});
 
 	//
@@ -54,7 +59,7 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 	}, [flagsValues, index, data?.short_name]);
 
 	//
-	// C. Handle actions
+	// D. Handle actions
 
 	const handleDeleteFlagItem = () => {
 		const latestValues = form.getValues('flags');
@@ -62,7 +67,7 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 	};
 
 	//
-	// D. Render components
+	// E. Render components
 
 	return (
 		<Surface variant="bordered">
@@ -76,7 +81,7 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 							data={agenciesOptions}
 							disabled={field.disabled || flagIsHarmonized}
 							error={fieldState.error?.message}
-							label="Operadores"
+							label={t('default:stops.detail.SectionFlagItem.fields.agency_ids.label')}
 							onChange={values => field.onChange(values)}
 							value={field.value ?? []}
 							w="100%"
@@ -92,10 +97,10 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 							<TextInput
 								disabled={field.disabled || flagIsHarmonized}
 								error={fieldState.error?.message}
-								label="ID Atual do Operador"
+								label={t('default:stops.detail.SectionFlagItem.fields.stop_id.label')}
 								leftSection={flagIdMatchesStopId ? <IconEqual color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
 								onChange={event => field.onChange(event.target.value)}
-								placeholder="ID Atual do Operador"
+								placeholder={t('default:stops.detail.SectionFlagItem.fields.stop_id.placeholder')}
 								value={field.value ?? ''}
 								w="100%"
 							/>
@@ -108,10 +113,10 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 							<TextInput
 								disabled={field.disabled || flagIsHarmonized}
 								error={fieldState.error?.message}
-								label="Nome Atual do Operador"
+								label={t('default:stops.detail.SectionFlagItem.fields.short_name.label')}
 								leftSection={flagShortNameMatchesStopName ? <IconEqual color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
 								onChange={event => field.onChange(event.target.value)}
-								placeholder="Nome Atual do Operador"
+								placeholder={t('default:stops.detail.SectionFlagItem.fields.short_name.placeholder')}
 								value={field.value ?? ''}
 								w="100%"
 							/>
@@ -127,7 +132,7 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 							<Checkbox
 								checked={field.value ?? false}
 								error={fieldState.error?.message}
-								label="Postalete alinhado com os identificadores únicos"
+								label={t('default:stops.detail.SectionFlagItem.fields.is_harmonized.label')}
 								onChange={event => field.onChange(event.target.checked)}
 							/>
 						)}
@@ -138,6 +143,4 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 			</Section>
 		</Surface>
 	);
-
-	//
 }

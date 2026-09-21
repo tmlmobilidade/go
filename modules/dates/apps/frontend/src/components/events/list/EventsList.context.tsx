@@ -5,7 +5,7 @@ import { type EventNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Event } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -49,7 +49,9 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { ids: allAgencyIds, options: allAgencyOptions } = useAnnotationsAgenciesData();
 
-	const { data: allEventsData, error: allEventsError, isLoading: allEventsLoading } = useSWR<Event[], Error>(API_ROUTES.dates.EVENTS_LIST);
+	const { data: allEventsData, error: allEventsError, isLoading: allEventsLoading } = useSWR(API_ROUTES.dates.EVENTS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Event[]>({ url }),
+	});
 
 	//
 	// B. Setup filters
@@ -61,7 +63,7 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 	const allDatesOptions = useMemo(() => {
 		if (!allEventsData) return [];
 		const uniqueDates = new Set<string>();
-		allEventsData.forEach((event) => {
+		allEventsData.data?.forEach((event) => {
 			event.dates.forEach(date => uniqueDates.add(String(date)));
 		});
 		return Array.from(uniqueDates).sort().map(date => ({
@@ -81,7 +83,7 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 		// Skip if no data is available
 		if (!allEventsData) return [];
 		// Normalize record fields
-		return allEventsData.map((item) => {
+		return allEventsData.data?.map((item) => {
 			// Get agency IDs for normalization
 			const agencyIds = item.agency_ids.join(', ');
 
@@ -131,7 +133,7 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: EventsListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allEventsData ?? [],
+			raw: allEventsData?.data ?? [],
 		},
 		filters: {
 			agency: filterAgency,

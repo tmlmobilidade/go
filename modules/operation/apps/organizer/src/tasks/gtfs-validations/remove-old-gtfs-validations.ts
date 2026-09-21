@@ -2,8 +2,6 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -22,59 +20,24 @@ export async function removeOldGtfsValidationsTask() {
 	//
 	// Get all GTFS Validation documents from the database
 
-	const allValidations = await goDb.operation.gtfsValidations.findMany();
+	const allExpiredValidations = await goDb.operation.gtfsValidations.findMany({
+		created_at: { $lt: Dates.now('utc').minus({ days: 30 }).unix_milliseconds },
+	});
 
-	Logger.info({ message: `Found ${allValidations.length} validations.` });
-
-	//
-	// Set the threshold for deletion (30 days)
-
-	const thresholdsByProcessingStatus: Record<GtfsValidation['processing_status'], number> = {
-
-		complete: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
-
-		error: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-
-		processing: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-
-		skipped: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-
-		waiting: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-
-	};
+	Logger.info({ message: `Found ${allExpiredValidations.length} expired validations.` });
 
 	//
-	// Loop through all validations and filter out, for each status,
-	// those that are older than the threshold
+	// Loop through all expired validations and delete both the database document
+	// as well as the associated file from storage.
 
-	for (const validation of allValidations) {
+	for (const validationData of allExpiredValidations) {
 		//
 
 		//
 		// Check that the validation has the required properties
 
-		if (!validation.file_id) {
-			Logger.error({ message: `Validation ${validation._id} does not have a file_id. Skipping.` });
-			continue;
-		}
-
-		//
-		// Set the cutoff date based on the validation status
-
-		const thresholdValue = thresholdsByProcessingStatus[validation.processing_status];
-
-		if (!thresholdValue) {
-			Logger.error({ message: `No threshold defined for status ${validation.processing_status}. Skipping validation ${validation._id}.` });
-			continue;
-		}
-
-		const cutoffUnixMilliseconds = Dates.now('Europe/Lisbon').unix_milliseconds - thresholdValue as UnixMilliseconds;
-
-		//
-		// Check if the validation is older than the cutoff date
-
-		if (validation.created_at > cutoffUnixMilliseconds) {
-			Logger.info({ message: `Validation ${validation._id} is not old enough. Skipping.` });
+		if (!validationData.file_id) {
+			Logger.error({ message: `Validation ${validationData._id} does not have a file_id. Skipping.` });
 			continue;
 		}
 
@@ -84,18 +47,16 @@ export async function removeOldGtfsValidationsTask() {
 
 		const fileDeletionTimer = new Timer();
 
-		try {
-			await goDb.operation.gtfsValidations.deleteById(validation._id);
-			await storageProvider.delete(validation.file_id);
-			Logger.success(`Deleted validation ${validation._id} and its associated file ${validation.file_id} in ${fileDeletionTimer.get()}.`);
-		} catch (error) {
-			Logger.error({ error, message: `Failed to delete validation ${validation._id} or its associated file ${validation.file_id}:` });
-		}
+		await storageProvider.delete(validationData.file_id, {
+			onSuccess: async () => {
+				await goDb.operation.gtfsValidations.deleteById(validationData._id);
+			},
+		});
+
+		Logger.success(`Deleted validation ${validationData._id} and its associated file ${validationData.file_id} in ${fileDeletionTimer.get()}.`);
 
 		//
 	}
 
 	Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
-
-	//
 }

@@ -6,6 +6,7 @@ import { type CSSProperties, type PropsWithChildren, useCallback, useMemo } from
 import styles from './styles.module.css';
 
 import { useMapContext } from '../../../../contexts';
+import { useCurrentThemeMode } from '../../../../layout';
 import { MAP_STYLES, MAP_VIEWPORT } from '../../configs';
 import { MapOverlayPins } from '../../overlays';
 import { MapViewAttribution } from '../MapViewAttribution';
@@ -63,6 +64,8 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 	const mapContext = useMapContext();
 	const mapViewContext = useMapViewContext();
 
+	const currentThemeMode = useCurrentThemeMode();
+
 	//
 	// B. Transform data
 
@@ -71,6 +74,12 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 		if (currentMapStyle) return currentMapStyle;
 		return MAP_STYLES.map;
 	}, [mapContext.flags.style]);
+
+	const currentMapStyleConfigValue = useMemo(() => {
+		if (!('dark' in currentMapStyleConfig.value)) return currentMapStyleConfig.value;
+		if (currentThemeMode === 'dark') return currentMapStyleConfig.value.dark;
+		return currentMapStyleConfig.value.light;
+	}, [currentMapStyleConfig.value, currentThemeMode]);
 
 	//
 	// C. Handle actions
@@ -118,7 +127,7 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 			initialViewState={MAP_VIEWPORT}
 			interactive={true}
 			interactiveLayerIds={interactiveLayerIds}
-			mapStyle={currentMapStyleConfig.value}
+			mapStyle={currentMapStyleConfigValue}
 			maxZoom={currentMapStyleConfig.max_zoom}
 			minZoom={currentMapStyleConfig.min_zoom}
 			onClick={onClick}

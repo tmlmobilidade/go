@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 
@@ -11,8 +10,25 @@ import { type Vehicle } from '@tmlmobilidade/go-types-operation';
  * @param reply Fastify reply.
  */
 export async function lockVehicleHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
-	await goDb.operation.vehicles.toggleLockById(request.params.id);
+	//
+
 	const foundVehicle = await goDb.operation.vehicles.findById(request.params.id);
-	if (!foundVehicle) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
-	reply.send({ data: foundVehicle, error: null, statusCode: HTTP_STATUS.OK });
+
+	if (!foundVehicle) {
+		return sendErrorApiResponse(reply, {
+			error: 'Vehicle not found',
+			status_code: '404',
+		});
+	}
+
+	const updateResult = await goDb.operation.vehicles.updateOne({ _id: request.params.id }, { is_locked: !foundVehicle.is_locked });
+
+	if (!updateResult) {
+		return sendErrorApiResponse(reply, {
+			error: 'Failed to toggle lock status for vehicle',
+			status_code: '500',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, updateResult);
 }

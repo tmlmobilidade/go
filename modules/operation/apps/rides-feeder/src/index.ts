@@ -2,28 +2,27 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RidesCoordinatorPlansResponse } from '@tmlmobilidade/go-operation-pckg-types';
-import { getCoordinatorUrl } from '@tmlmobilidade/go-operation-pckg-utils';
+import { getCoordinatorUrl, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { parsePlanTask } from './tasks/parse-plan.js';
-import { setPlanStatus } from './utils/set-plan-status.js';
 
 /* * */
 
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
+}
+
 async function main() {
 	//
-
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
-	}
 
 	Logger.init();
 
@@ -62,7 +61,7 @@ async function main() {
 	try {
 		await parsePlanTask(currentPlan);
 	} catch (error) {
-		await setPlanStatus(currentPlan._id, 'error');
+		await setPlanStatus(currentPlan._id, 'rides_feeder', 'error');
 		Logger.error({ error, message: `Error processing plan ${currentPlan._id}` });
 		Logger.divider();
 	}

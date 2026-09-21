@@ -170,6 +170,21 @@
 			}
 		},
 		"analysis": {
+			"RideAnalysisAnalyses": {
+				"table": {
+					"columns": {
+						"grade_status": {
+							"label": "Estado"
+						},
+						"id": {
+							"label": "ID"
+						},
+						"reason": {
+							"label": "Motivo"
+						}
+					}
+				}
+			},
 			"RideAnalysisApexBankingTaps": {
 				"description": "Taps bancários associados a esta circulação.",
 				"table": {
@@ -604,24 +619,87 @@
 				}
 			}
 		},
-		"export": {
-			"RidesExportModal": {
-				"CancelButton": {
-					"label": "Cancelar"
-				},
-				"ExportButton": {
-					"label": "Exportar Circulações"
-				},
-				"description": "Selecione o intervalo de datas para a exportação das circulações.",
+		"extract": {
+			"RidesExtract": {
 				"fields": {
-					"end_date": {
-						"placeholder": "Data Fim"
-					},
-					"start_date": {
-						"placeholder": "Data Início"
+					"version": {
+						"label": "Versão"
 					}
-				},
-				"title": "Exportar Circulações"
+				}
+			},
+			"RidesExtractHeader": {
+				"title": "Exportar circulações"
+			},
+			"RidesExtractV1Footer": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"RidesExtractV1Properties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Selecione um ou mais operadores..."
+					},
+					"start_time_scheduled_end": {
+						"label": "Data de fim"
+					},
+					"start_time_scheduled_start": {
+						"label": "Data de início"
+					}
+				}
+			},
+			"RidesExtractV2Footer": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"RidesExtractV2Properties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Selecione um ou mais operadores..."
+					},
+					"analysis_at_least_one_vehicle_event_on_last_stop_grades": {
+						"label": "Fim na Última Paragem"
+					},
+					"analysis_expected_apex_validation_interval_grades": {
+						"label": "Intervalo Validações"
+					},
+					"analysis_simple_three_vehicle_events_grades": {
+						"label": "3 Momentos"
+					},
+					"analysis_transaction_sequentiality_grades": {
+						"label": "Sequencialidade APEX"
+					},
+					"driver_ids": {
+						"label": "Motorista",
+						"placeholder": "Adicione um ou mais motoristas..."
+					},
+					"end_delay_statuses": {
+						"label": "Atraso à Chegada"
+					},
+					"operational_statuses": {
+						"label": "Estado"
+					},
+					"search": {
+						"label": "Pesquisa",
+						"placeholder": "ID da circulação ou destino..."
+					},
+					"start_delay_statuses": {
+						"label": "Atraso à Partida"
+					},
+					"start_time_scheduled_end": {
+						"label": "Data de fim"
+					},
+					"start_time_scheduled_start": {
+						"label": "Data de início"
+					},
+					"vehicle_ids": {
+						"label": "Veículo",
+						"placeholder": "Adicione um ou mais veículos..."
+					}
+				}
 			}
 		}
 	},

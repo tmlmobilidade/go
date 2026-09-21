@@ -156,7 +156,7 @@ export class RoutesController {
 		}
 
 		// If authorized, toggle the lock status of the route
-		await goDb.offer.routes.toggleLockById(request.params.id);
+		await goDb.offer.routes.updateOne({ _id: request.params.id }, { is_locked: !routeData.is_locked });
 		const foundRoute = await goDb.offer.routes.findById(request.params.id);
 		if (!foundRoute) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');

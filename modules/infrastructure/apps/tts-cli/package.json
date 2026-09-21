@@ -15,20 +15,17 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix"
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@helperkits/timer": "20240627.34.23",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
-		"@tmlmobilidade/go-infrastructure-pckg-utils": "*",
 		"@tmlmobilidade/go-types-hub": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"adm-zip": "0.6.0",
 		"p-limit": "7.3.1"
 	},
 	"devDependencies": {

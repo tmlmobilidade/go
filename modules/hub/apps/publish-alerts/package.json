@@ -13,8 +13,8 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix"
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-hub-pckg-utils": "*",
@@ -26,12 +26,12 @@
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

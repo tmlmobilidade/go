@@ -8,9 +8,10 @@ import { type District, type DistrictFeature, type Locality, type LocalityFeatur
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Get locations data for a given set of permissions.
- * @param request The Fastify request object.
- * @param reply The Fastify reply object.
+ * Returns the Locations (districts, municipalities, parishes and localities)
+ * the user has access to for the given permissions.
+ * @param request The request object containing the permissions registry in the body
+ * @param reply The reply object
  */
 export async function listLocationsHandler(request: FastifyRequest<{ Body: StopsLocationRequest }>, reply: FastifyReply<StopsLocationResponse>) {
 	//
@@ -18,13 +19,20 @@ export async function listLocationsHandler(request: FastifyRequest<{ Body: Stops
 	//
 	// Validate the filters
 
-	const validatedFilters = StopsLocationRequestSchema.parse(request.body);
+	const validatedFilters = StopsLocationRequestSchema.safeParse(request.body);
+
+	if (!validatedFilters.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedFilters.error.message,
+			status_code: '400',
+		});
+	}
 
 	//
 	// Get the municipality IDs from the permissions
 
-	const resourceMunicipalityIds = validatedFilters.permissions.actions?.flatMap(action => request.permissions
-		.filter(permission => permission.scope === validatedFilters.permissions.scope && permission.action === action)
+	const resourceMunicipalityIds = validatedFilters.data.permissions.actions?.flatMap(action => request.permissions
+		.filter(permission => permission.scope === validatedFilters.data.permissions.scope && permission.action === action)
 		.flatMap(permission => 'resources' in permission && 'municipality_ids' in permission.resources ? permission.resources.municipality_ids ?? [] : []),
 	) ?? [];
 
@@ -123,4 +131,3 @@ export async function listLocationsHandler(request: FastifyRequest<{ Body: Stops
 		parishes: parsedParishes,
 	});
 }
-

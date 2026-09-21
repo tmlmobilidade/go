@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubPattern, type HubRoute, type Timetable } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPattern, type HubV1ApiRoute, type Timetable } from '@tmlmobilidade/go-types-hub';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 /**
@@ -16,7 +16,7 @@ import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
  * @returns The timetable for the given patterns and stop.
  */
 
-export function createTimetable(primaryPatternGroup: HubPattern, secondaryPatternGroups: HubPattern[], mentionedRoutes: HubRoute[], stopId: string, stopSequence: number, operationalDate: OperationalDateInt): Timetable {
+export function createTimetable(primaryPatternGroup: HubV1ApiPattern, secondaryPatternGroups: HubV1ApiPattern[], mentionedRoutes: HubV1ApiRoute[], stopId: string, stopSequence: number, operationalDate: OperationalDateInt): Timetable {
 //
 
 	// 1.
@@ -31,7 +31,7 @@ export function createTimetable(primaryPatternGroup: HubPattern, secondaryPatter
 	// 2.
 	// Extract the currently valid Pattern Group from the primary and secondary patterns.
 	// To check if a pattern is valid for the given date, we need to check if the date is included in the pattern's dates array.
-	const validSecondaryPatternGroups: HubPattern[] = secondaryPatternGroups.flat().filter(patternGroup => patternGroup.valid_on.includes(operationalDate) && patternGroup.direction_id === primaryPatternGroup.direction_id);
+	const validSecondaryPatternGroups: HubV1ApiPattern[] = secondaryPatternGroups.flat().filter(patternGroup => patternGroup.valid_on.includes(operationalDate) && patternGroup.direction_id === primaryPatternGroup.direction_id);
 
 	// 3.
 	// Create the timetable for the primary pattern first

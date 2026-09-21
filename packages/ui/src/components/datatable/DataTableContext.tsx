@@ -3,20 +3,16 @@
 'use client';
 
 import { getValueAtPath } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, type RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, type PropsWithChildren, type RefObject, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { type ViewportListRef } from 'react-viewport-list';
-
-import { type DataTableColumn } from './DataTable';
 
 /* * */
 
 interface DataTableContextState<T> {
 	actions: {
 		handleSort: (accessor: string) => void
-		handleUpdateColumnWidth: (column: string, width: number) => void
 	}
 	data: {
-		column_widths?: Record<string, number>
 		records: T[]
 	}
 	filters: {
@@ -29,7 +25,6 @@ interface DataTableContextState<T> {
 
 // Define the props for the provider component
 interface DataTableProviderProps<T> {
-	columns: DataTableColumn<T>[]
 	records: T[]
 }
 
@@ -55,7 +50,7 @@ export function useDataTableContext<T>(): DataTableContextState<T> {
 
 /* * */
 
-export function DataTableContextProvider<T>({ children, columns, records }: PropsWithChildren<DataTableProviderProps<T>>) {
+export function DataTableContextProvider<T>({ children, records }: PropsWithChildren<DataTableProviderProps<T>>) {
 	//
 
 	//
@@ -64,7 +59,6 @@ export function DataTableContextProvider<T>({ children, columns, records }: Prop
 	const listRef = useRef<null | ViewportListRef>(null);
 
 	const [sortState, setSortState] = useState<DataTableContextState<T>['filters']['sort_state']>(null);
-	const [columnWidths, setColumnWidths] = useState<DataTableContextState<T>['data']['column_widths']>({});
 
 	//
 	// B. Transform data
@@ -94,17 +88,6 @@ export function DataTableContextProvider<T>({ children, columns, records }: Prop
 		});
 	}, [records, sortState]);
 
-	useEffect(() => {
-		// Set initial column widths
-		const initialWidths: Record<string, number> = {};
-		columns.forEach((column) => {
-			if (column.width) {
-				initialWidths[String(column.accessor)] = column.width;
-			}
-		});
-		setColumnWidths(initialWidths);
-	}, [columns]);
-
 	//
 	// C. Handle actions
 
@@ -117,23 +100,14 @@ export function DataTableContextProvider<T>({ children, columns, records }: Prop
 		}
 	}, [sortState]);
 
-	const handleUpdateColumnWidth = useCallback((column: string, width: number) => {
-		setColumnWidths(prev => ({
-			...prev,
-			[column]: width,
-		}));
-	}, []);
-
 	//
 	// D. Define context value
 
 	const contextValue: DataTableContextState<T> = useMemo(() => ({
 		actions: {
 			handleSort,
-			handleUpdateColumnWidth,
 		},
 		data: {
-			column_widths: columnWidths,
 			records: sortedRecords ?? [],
 		},
 		filters: {
@@ -142,12 +116,7 @@ export function DataTableContextProvider<T>({ children, columns, records }: Prop
 		refs: {
 			list: listRef,
 		},
-	}), [
-		listRef,
-		columnWidths,
-		sortedRecords,
-		sortState,
-	]);
+	}), [handleSort, sortedRecords, sortState]);
 
 	//
 	// E. Render components

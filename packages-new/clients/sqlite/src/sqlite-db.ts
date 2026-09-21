@@ -157,7 +157,8 @@ export class SQLiteTableInstance<T> {
 	 */
 	distinct<K extends keyof T>(col: K): T[K][] {
 		const sql = `SELECT DISTINCT ${String(col)} FROM ${this.tableName}`;
-		return this.databaseInstance.prepare(sql).all().map(row => row[String(col)]);
+		const rows = this.databaseInstance.prepare(sql).all() as T[K][];
+		return rows.map(row => row[String(col)]);
 	}
 
 	/**
@@ -210,8 +211,14 @@ export class SQLiteTableInstance<T> {
 		return !!this.databaseInstance.prepare(sql).get(value);
 	}
 
-	query(sqlQuery = '', params: (boolean | number | string)[] = []) {
-		return this.databaseInstance.prepare(sqlQuery).all(...params);
+	/**
+	 * Execute a query and return the result as an array of rows.
+	 * @param sqlQuery The SQL query to execute.
+	 * @param params The parameters for the query.
+	 * @returns The result as an array of rows.
+	 */
+	query<R>(sqlQuery = '', params: (boolean | number | string)[] = []) {
+		return this.databaseInstance.prepare(sqlQuery).all(...params) as R[];
 	}
 
 	/**
@@ -233,6 +240,13 @@ export class SQLiteTableInstance<T> {
 		});
 	}
 
+	/**
+	 * Update one or more rows in the table.
+	 * @param whereClause The WHERE clause to filter the rows to update.
+	 * @param newData The data to update the rows with.
+	 * @param params The parameters for the WHERE clause.
+	 * @returns The updated rows.
+	 */
 	update(whereClause = '', newData: Partial<T>, params: (boolean | number | string)[] = []): T[] {
 		const sql = `UPDATE ${this.tableName} SET ${Object.keys(newData).map(key => `${key} = ?`).join(', ')} WHERE ${whereClause}`;
 		return this.databaseInstance.prepare(sql).all(...params) as T[];

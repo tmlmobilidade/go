@@ -1,7 +1,7 @@
 /* * */
 
+import { type Alert, type AlertReference } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, AlertReference } from '@tmlmobilidade/types';
 
 /* * */
 

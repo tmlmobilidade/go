@@ -1,8 +1,9 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.js';
 import { type RideAnalysisExpectedVehicleEventQty, RideAnalysisExpectedVehicleEventQtySchema } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+
+import { type AnalysisData } from '../types/analysis-data.js';
 
 /**
  * This analyzer tests if at the trip has less than ten Vehicle Events.

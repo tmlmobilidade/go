@@ -1,12 +1,13 @@
 /* * */
 
-import { transformAlertIntoRssEntity } from '@/transform/rss/main.js';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { transformAlertIntoRssEntity } from '../transform/rss/main.js';
 
 /* * */
 
@@ -51,7 +52,7 @@ export async function publishRssFeed() {
 
 	const transformedItems = await Promise.all(findResult.map(alert => transformAlertIntoRssEntity(alert, RSS_FEED_URL)));
 
-	const transformResult: RssRawItem[] = transformedItems.filter(Boolean);
+	const transformResult: RssRawItem[] = transformedItems.filter((item): item is RssRawItem => item !== undefined);
 
 	Logger.info({ message: `Transformed ${transformResult.length} alerts into RSS feed entities (${globalTimer.get()})` });
 

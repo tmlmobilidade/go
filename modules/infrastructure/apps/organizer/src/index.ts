@@ -8,18 +8,20 @@ import { setStopLocationTask } from './tasks/set-stop-location.js';
 
 /* * */
 
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Stops Organizer initialized', module: 'stops', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Stops Organizer' });
+}
+
+/* * */
+
 async function main() {
 	//
-
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Stops Organizer initialized', module: 'stops', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Stops Organizer' });
-	}
 
 	//
 	// Initialize the logger

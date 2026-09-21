@@ -3,8 +3,7 @@
 import { useUserLocation } from '@/contexts/UserLocation.context';
 import { type BaseMapOperatorId } from '@/lib/agency-catalog';
 import { type BaseMapOverlayType } from '@/types/common/map';
-import { useSessionStorage } from '@tmlmobilidade/ui';
-import { moveMapView } from '@tmlmobilidade/ui';
+import { moveMapView, useSessionStorage } from '@tmlmobilidade/ui';
 import { type MapRef } from '@vis.gl/react-maplibre';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 

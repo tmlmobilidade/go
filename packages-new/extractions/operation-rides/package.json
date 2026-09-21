@@ -1,0 +1,43 @@
+{
+	"name": "@tmlmobilidade/go-extractions-operation-rides",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix",
+		"start": "node dist/index.js",
+		"test": "node --import tsx --test tests/*.test.ts"
+	},
+	"dependencies": {
+		"@tmlmobilidade/go-clients-clickhouse": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-providers-auth": "*",
+		"@tmlmobilidade/go-types-extractions": "*",
+		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
+		"csv-stringify": "6.8.3"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.23.12",
+		"typescript": "6.0.3"
+	}
+}

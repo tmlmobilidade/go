@@ -3,7 +3,7 @@
 /* * */
 
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
-import { Carousel } from '@tmlmobilidade/ui';
+import { Carousel as MantineCarousel } from '@tmlmobilidade/ui';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import React from 'react';
 
@@ -25,9 +25,9 @@ interface SlideItemProps {
 
 /* * */
 
-export function CarouselDisplay({ skeletonComponent, skeletonQty = 3, slides = [], slideSize = 300 }: CarouselProps) {
+export function Carousel({ skeletonComponent, skeletonQty = 3, slides = [], slideSize = 300 }: CarouselProps) {
 	return (
-		<Carousel
+		<MantineCarousel
 			classNames={{ container: styles.container, control: styles.control, controls: styles.controlsWrapper }}
 			emblaOptions={{ align: 'start', dragFree: true }}
 			height="100%"
@@ -40,18 +40,18 @@ export function CarouselDisplay({ skeletonComponent, skeletonQty = 3, slides = [
 			withControls={slides.length > 0}
 		>
 			{slides.length > 0 ? slides.map(slideItem => (
-				<Carousel.Slide key={slideItem._id}>
+				<MantineCarousel.Slide key={slideItem._id}>
 					<div className={styles.slideWrapper}>
 						{slideItem.component}
 					</div>
-				</Carousel.Slide>
+				</MantineCarousel.Slide>
 			)) : Array.from({ length: skeletonQty }).map((_, index) => (
-				<Carousel.Slide key={index}>
+				<MantineCarousel.Slide key={index}>
 					<div className={styles.slideWrapper}>
 						{skeletonComponent}
 					</div>
-				</Carousel.Slide>
+				</MantineCarousel.Slide>
 			))}
-		</Carousel>
+		</MantineCarousel>
 	);
 }

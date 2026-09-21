@@ -236,7 +236,7 @@ export class ZonesController {
 		}
 
 		// If authorized, toggle the lock status of the zone
-		await goDb.offer.zones.toggleLockById(request.params.id);
+		await goDb.offer.zones.updateOne({ _id: request.params.id }, { is_locked: !zoneData.is_locked });
 		const foundZone = await goDb.offer.zones.findById(request.params.id);
 		if (!foundZone) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');

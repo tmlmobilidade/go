@@ -6,7 +6,7 @@ import { useRoutesData } from '@/components/lines/use-routes-data';
 import { useStopsData } from '@/components/stops/use-stops-data';
 import { formatStopLocation } from '@/utils/transit/format-stop-location';
 import { IconAlertTriangle } from '@tabler/icons-react';
-import { type HubPattern } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { type ComboboxItem, type ComboboxItemGroup, Flex, Group, Select, type SelectProps, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -16,22 +16,22 @@ import { useTranslation } from 'react-i18next';
 
 export interface Props extends SelectProps {
 	date_filter?: OperationalDateInt
-	patterns: HubPattern[]
+	patterns: HubV1ApiPattern[]
 }
 
 interface CustomComboboxItem extends ComboboxItem {
-	direction_id: number
+	direction_id: '0' | '1'
 	pattern_id: string
 }
 
 const PLACEHOLDER_HEADSIGN = 'HeadSign to be defined';
 
-function getPatternTitle(pattern: HubPattern, routeLongName?: string) {
+function getPatternTitle(pattern: HubV1ApiPattern, routeLongName?: string) {
 	if (pattern.headsign && pattern.headsign !== PLACEHOLDER_HEADSIGN) {
 		return pattern.headsign;
 	}
 
-	return pattern.long_name || routeLongName || pattern.headsign;
+	return routeLongName || pattern.headsign;
 }
 
 /* * */
@@ -92,7 +92,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 			}
 		});
 
-		data.forEach(group => group.items.sort((a, b) => a.direction_id - b.direction_id));
+		data.forEach(group => group.items.sort((a, b) => a.direction_id.localeCompare(b.direction_id, undefined, { numeric: true })));
 
 		// data.sort((a, b) => a.group.localeCompare(b.group));
 

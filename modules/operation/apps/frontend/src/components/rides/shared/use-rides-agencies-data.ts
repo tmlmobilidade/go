@@ -31,7 +31,7 @@ export function useRidesAgenciesData(): UseRidesAgenciesDataReturnType {
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<RidesAgencyItem[]>>(API_ROUTES.operation.RIDES_LIST_AGENCIES, {
 		fetcher: async (url: string) => await fetchApiData<RidesAgencyItem[]>({ method: 'GET', url: url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 300_000, // 5 minutes
 	});
 
 	//

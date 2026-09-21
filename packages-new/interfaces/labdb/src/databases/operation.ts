@@ -1,10 +1,9 @@
 /* * */
 
 import { ClickHouseInterfaceTemplate } from '@/interface.template.js';
-import { eventRideOpportunitiesTableSchema, hashedShapeTableSchema, hashedTripTableSchema, rideAnalysisAtLeastOneVehicleEventOnFirstStopTableSchema, rideAnalysisAtLeastOneVehicleEventOnLastStopTableSchema, rideAnalysisExpectedApexValidationIntervalTableSchema, rideAnalysisExpectedDriverIdQtyTableSchema, rideAnalysisExpectedStartTimeTableSchema, rideAnalysisExpectedVehicleEventDelayTableSchema, rideAnalysisExpectedVehicleEventIntervalTableSchema, rideAnalysisExpectedVehicleEventQtyTableSchema, rideAnalysisExpectedVehicleIdQtyTableSchema, rideAnalysisMatchingApexLocationsTableSchema, rideAnalysisMatchingVehicleIdsTableSchema, rideAnalysisSimpleOneApexValidationTableSchema, rideAnalysisSimpleOneVehicleEventOrApexValidationTableSchema, rideAnalysisSimpleThreeVehicleEventsTableSchema, rideAnalysisTransactionSequentialityTableSchema, ridesTableSchema, simplifiedVehicleEventTableSchema } from '@/schemas/operation.js';
+import { hashedShapeTableSchema, hashedTripTableSchema, rideAnalysisAtLeastOneVehicleEventOnFirstStopTableSchema, rideAnalysisAtLeastOneVehicleEventOnLastStopTableSchema, rideAnalysisExpectedApexValidationIntervalTableSchema, rideAnalysisExpectedDriverIdQtyTableSchema, rideAnalysisExpectedStartTimeTableSchema, rideAnalysisExpectedVehicleEventCoverageGeoTableSchema, rideAnalysisExpectedVehicleEventDelayTableSchema, rideAnalysisExpectedVehicleEventIntervalTableSchema, rideAnalysisExpectedVehicleEventQtyTableSchema, rideAnalysisExpectedVehicleIdQtyTableSchema, rideAnalysisMatchingApexLocationsTableSchema, rideAnalysisMatchingVehicleIdsTableSchema, rideAnalysisSimpleOneApexValidationTableSchema, rideAnalysisSimpleOneVehicleEventOrApexValidationTableSchema, rideAnalysisSimpleThreeVehicleEventsTableSchema, rideAnalysisTransactionSequentialityTableSchema, ridesTableSchema, simplifiedVehicleEventTableSchema } from '@/schemas/operation.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
-import { HashedShape, EventRideOpportunity, type HashedTrip, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { type HashedShape, type HashedTrip, type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventCoverageGeo, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
@@ -19,6 +18,7 @@ export class OperationDatabase {
 	public readonly rideAnalysisExpectedApexValidationInterval: ClickHouseInterfaceTemplate<RideAnalysisExpectedApexValidationInterval>;
 	public readonly rideAnalysisExpectedDriverIdQty: ClickHouseInterfaceTemplate<RideAnalysisExpectedDriverIdQty>;
 	public readonly rideAnalysisExpectedStartTime: ClickHouseInterfaceTemplate<RideAnalysisExpectedStartTime>;
+	public readonly rideAnalysisExpectedVehicleEventCoverageGeo: ClickHouseInterfaceTemplate<RideAnalysisExpectedVehicleEventCoverageGeo>;
 	public readonly rideAnalysisExpectedVehicleEventDelay: ClickHouseInterfaceTemplate<RideAnalysisExpectedVehicleEventDelay>;
 	public readonly rideAnalysisExpectedVehicleEventInterval: ClickHouseInterfaceTemplate<RideAnalysisExpectedVehicleEventInterval>;
 	public readonly rideAnalysisExpectedVehicleEventQty: ClickHouseInterfaceTemplate<RideAnalysisExpectedVehicleEventQty>;
@@ -29,7 +29,6 @@ export class OperationDatabase {
 	public readonly rideAnalysisSimpleOneVehicleEventOrApexValidation: ClickHouseInterfaceTemplate<RideAnalysisSimpleOneVehicleEventOrApexValidation>;
 	public readonly rideAnalysisSimpleThreeVehicleEvents: ClickHouseInterfaceTemplate<RideAnalysisSimpleThreeVehicleEvents>;
 	public readonly rideAnalysisTransactionSequentiality: ClickHouseInterfaceTemplate<RideAnalysisTransactionSequentiality>;
-	public readonly eventRideOpportunities: ClickHouseInterfaceTemplate<EventRideOpportunity>;
 	public readonly rides: ClickHouseInterfaceTemplate<Ride>;
 	public readonly simplifiedVehicleEvents: ClickHouseInterfaceTemplate<SimplifiedVehicleEvent>;
 
@@ -67,6 +66,11 @@ export class OperationDatabase {
 			partitionBy: 'intDiv(operational_date, 100)',
 		});
 		this.rideAnalysisExpectedStartTime = new ClickHouseInterfaceTemplate<RideAnalysisExpectedStartTime>(instance, this.databaseName, 'ride_analysis_expected_start_time', rideAnalysisExpectedStartTimeTableSchema, {
+			engine: 'ReplacingMergeTree(updated_at)',
+			orderBy: ['ride_id'],
+			partitionBy: 'intDiv(operational_date, 100)',
+		});
+		this.rideAnalysisExpectedVehicleEventCoverageGeo = new ClickHouseInterfaceTemplate<RideAnalysisExpectedVehicleEventCoverageGeo>(instance, this.databaseName, 'ride_analysis_expected_vehicle_event_coverage_geo', rideAnalysisExpectedVehicleEventCoverageGeoTableSchema, {
 			engine: 'ReplacingMergeTree(updated_at)',
 			orderBy: ['ride_id'],
 			partitionBy: 'intDiv(operational_date, 100)',
@@ -121,10 +125,6 @@ export class OperationDatabase {
 			orderBy: ['ride_id'],
 			partitionBy: 'intDiv(operational_date, 100)',
 		});
-		this.eventRideOpportunities = new ClickHouseInterfaceTemplate<EventRideOpportunity>(instance, this.databaseName, 'event_ride_opportunities', eventRideOpportunitiesTableSchema, {
-			engine: 'ReplacingMergeTree(updated_at)',
-			orderBy: ['agency_id', 'trip_id', 'window_start', 'window_end'],
-		});
 		this.rides = new ClickHouseInterfaceTemplate<Ride>(instance, this.databaseName, 'rides', ridesTableSchema, {
 			engine: 'ReplacingMergeTree(updated_at)',
 			orderBy: ['agency_id', 'operational_date', 'route_short_name', 'shape_id', 'start_time_scheduled', '_id'],
@@ -145,6 +145,7 @@ export class OperationDatabase {
 		await this.rideAnalysisExpectedApexValidationInterval.init();
 		await this.rideAnalysisExpectedDriverIdQty.init();
 		await this.rideAnalysisExpectedStartTime.init();
+		await this.rideAnalysisExpectedVehicleEventCoverageGeo.init();
 		await this.rideAnalysisExpectedVehicleEventDelay.init();
 		await this.rideAnalysisExpectedVehicleEventInterval.init();
 		await this.rideAnalysisExpectedVehicleEventQty.init();
@@ -155,7 +156,6 @@ export class OperationDatabase {
 		await this.rideAnalysisSimpleOneVehicleEventOrApexValidation.init();
 		await this.rideAnalysisSimpleThreeVehicleEvents.init();
 		await this.rideAnalysisTransactionSequentiality.init();
-		await this.eventRideOpportunities.init();
 		await this.rides.init();
 		await this.simplifiedVehicleEvents.init();
 	}

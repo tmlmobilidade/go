@@ -207,10 +207,8 @@ export class EventsController {
 		const associatedPatterns: Pick<Pattern, '_id' | 'code' | 'headsign' | 'line_id' | 'route_id'>[] = await goDb.offer.patterns.aggregate([
 			{
 				$match: {
-					$elemMatch: {
-						event_id: request.params.id,
-						kind: 'manual',
-					},
+					event_id: request.params.id,
+					kind: 'manual',
 				},
 			},
 			{
@@ -285,7 +283,7 @@ export class EventsController {
 		}
 
 		// If authorized, toggle the lock status of the event
-		await goDb.offer.events.toggleLockById(request.params.id);
+		await goDb.offer.events.updateOne({ _id: request.params.id }, { is_locked: !eventData?.is_locked });
 		const foundEvent = await goDb.offer.events.findById(request.params.id);
 		if (!foundEvent) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');

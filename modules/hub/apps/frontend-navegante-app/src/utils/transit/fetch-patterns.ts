@@ -1,7 +1,9 @@
 'use client';
 
+/* * */
+
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubPattern } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { fetchApiData } from '@tmlmobilidade/ui';
 
 /**
@@ -9,13 +11,10 @@ import { fetchApiData } from '@tmlmobilidade/ui';
  * @param patternIds The IDs of the patterns to fetch.
  * @returns An array of patterns.
  */
-export async function fetchPatterns(patternIds: string[]): Promise<HubPattern[][]> {
+export async function fetchPatterns(patternIds: string[]): Promise<HubV1ApiPattern[][]> {
 	const fetchPromises = patternIds.map(async (patternId) => {
-		const response = await fetchApiData<HubPattern[]>({
-			options: { credentials: 'omit' },
-			url: API_ROUTES.hub.NETWORK_PATTERNS(patternId),
-		});
-		return response.data ?? [];
+		const response = await fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS(patternId) });
+		return response.data;
 	});
 	return await Promise.all(fetchPromises);
 }

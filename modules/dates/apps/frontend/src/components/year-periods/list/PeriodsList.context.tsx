@@ -5,7 +5,7 @@ import { type PeriodNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -48,7 +48,9 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allPeriodsData, error: allPeriodsError, isLoading: allPeriodsLoading } = useSWR<YearPeriod[], Error>(API_ROUTES.dates.YEAR_PERIODS_LIST);
+	const { data: allPeriodsData, error: allPeriodsError, isLoading: allPeriodsLoading } = useSWR(API_ROUTES.dates.YEAR_PERIODS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<YearPeriod[]>({ url }),
+	});
 
 	const { ids: filteredAgencyIds, options: filteredAgencyOptions } = useAnnotationsAgenciesData();
 
@@ -65,7 +67,7 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 		// Skip if no data is available
 		if (!allPeriodsData) return [];
 		// Normalize record fields
-		return allPeriodsData.map((item) => {
+		return allPeriodsData.data?.map((item) => {
 			const agencyIds = item.agency_ids.join(', ');
 
 			return {
@@ -108,7 +110,7 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: PeriodsListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allPeriodsData ?? [],
+			raw: allPeriodsData?.data ?? [],
 		},
 		filters: {
 			agency: filterAgency,

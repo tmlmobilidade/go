@@ -1,6 +1,7 @@
 /* * */
 
 import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type GtfsRtEntitySelector } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
@@ -49,32 +50,29 @@ export async function transformReferenceTypeLinesIntoGtfsRt(alertData: Alert): P
 		// for rides matching the line ID,
 		// the agency ID, and the alert start time.
 
-		// const foundRouteIds = await labDb.operation.rides.aggregate([
-		// 	{
-		// 		$match: {
-		// 			agency_id: alertData.agency_id,
-		// 			line_id: reference.parent_id,
-		// 			start_time_scheduled: {
-		// 				$gte: alertData.active_period_start_date,
-		// 				$lte: activePeriodEndDate,
-		// 			},
-		// 		},
-		// 	},
-		// 	{
-		// 		$group: {
-		// 			_id: '$route_id',
-		// 		},
-		// 	},
-		// ]);
-
-		const foundRouteIds = [];
+		const foundRouteIds = await labDb.queryFromString<{ route_id: string }>(
+			`
+				SELECT DISTINCT route_id
+				FROM operation.rides
+				WHERE agency_id = $1
+				AND route_short_name = $2
+				AND start_time_scheduled >= $3
+				AND start_time_scheduled <= $4;
+			`,
+			{
+				1: alertData.agency_id,
+				2: reference.parent_id,
+				3: alertData.active_period_start_date,
+				4: activePeriodEndDate,
+			},
+		);
 
 		if (!foundRouteIds?.length) {
 			Logger.error({ message: `[Alert ID: ${alertData._id}] No rides found for line ID ${reference.parent_id} and start time ${alertData.active_period_start_date}.` });
 			continue;
 		}
 
-		const uniqueRouteIds = Array.from(new Set(foundRouteIds.map(item => item._id)));
+		const uniqueRouteIds = Array.from(new Set(foundRouteIds.map(item => item.route_id)));
 
 		//
 		// Generate an EntitySelector
@@ -109,7 +107,7 @@ export async function transformReferenceTypeLinesIntoGtfsRt(alertData: Alert): P
 				}
 				result.push({
 					...parsedEntitySelector,
-					stop_id: String(foundStopData._id),
+					stop_id: foundStopData._id,
 				});
 			}
 

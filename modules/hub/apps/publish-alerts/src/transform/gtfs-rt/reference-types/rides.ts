@@ -1,10 +1,10 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { getQualifiedRouteId, getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type GtfsRtEntitySelector } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type Alert, type Ride } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
-import { getPublicRouteId, getPublicTripId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -43,9 +43,14 @@ export async function transformReferenceTypeRidesIntoGtfsRt(alertData: Alert): P
 		// for rides matching the ride ID,
 		// the agency ID, and the alert start time.
 
-		const foundRide = await goDb.operation.rides.findById(reference.parent_id);
+		const foundRide = await labDb.queryFromString<Ride>(`
+			SELECT * FROM operation.rides
+			WHERE _id = '${reference.parent_id}'
+			ORDER BY updated_at DESC
+			LIMIT 1 BY _id
+		`);
 
-		if (!foundRide) {
+		if (!foundRide?.length) {
 			Logger.error({ message: `[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.` });
 			continue;
 		}
@@ -53,10 +58,10 @@ export async function transformReferenceTypeRidesIntoGtfsRt(alertData: Alert): P
 		const parsedEntitySelector: GtfsRtEntitySelector = {
 			agency_id: alertData.agency_id,
 			trip: {
-				route_id: getPublicRouteId(alertData.agency_id, foundRide.route_id),
+				route_id: getQualifiedRouteId(alertData.agency_id, foundRide[0].route_id),
 				schedule_relationship: 'SCHEDULED',
-				start_date: validateGtfsDate(foundRide.operational_date),
-				trip_id: getPublicTripId(foundRide.plan_id, alertData.agency_id, foundRide.trip_id),
+				start_date: foundRide[0].operational_date,
+				trip_id: getQualifiedTripId(foundRide[0].plan_id, alertData.agency_id, foundRide[0].trip_id),
 			},
 		};
 

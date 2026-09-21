@@ -180,8 +180,22 @@ export const API_ROUTES = Object.freeze({
 		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
+		// EXTRACTIONS
+		EXTRACTIONS_CREATE: `${getModuleConfig('core', 'api_url')}/platform/extractions/create`,
+		EXTRACTIONS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/delete/${encodeURIComponent(id)}`,
+		EXTRACTIONS_DOWNLOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/download/${encodeURIComponent(id)}`,
+		EXTRACTIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/extractions/list`,
+		EXTRACTIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/lock/${encodeURIComponent(id)}`,
+
 		// HOME
 		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
+
+		// ME
+		ME_LIST: `${getModuleConfig('core', 'api_url')}/platform/me/list`,
+		ME_UPDATE_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/me/update-preferences`,
+
+		// NOTIFICATIONS
+		NOTIFICATIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/notifications/list`,
 
 		// ORGANIZATIONS
 		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,
@@ -194,13 +208,6 @@ export const API_ROUTES = Object.freeze({
 		ORGANIZATIONS_DETAIL_UPDATE_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/update/image`,
 		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations/list`,
 
-		// PLATFORM
-		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
-		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
-		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
-		PLATFORM_SIDEBAR_LOGO: `${getModuleConfig('core', 'api_url')}/platform/sidebar-logo`,
-		PLATFORM_UPDATE_ME_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/update-me-preferences`,
-
 		// ROLES
 		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,
 		ROLES_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/delete/${encodeURIComponent(id)}`,
@@ -210,6 +217,9 @@ export const API_ROUTES = Object.freeze({
 		ROLES_LIST_MUNICIPALITIES: `${getModuleConfig('core', 'api_url')}/roles/list-municipalities`,
 		ROLES_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/lock/${encodeURIComponent(id)}`,
 		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
+
+		// SIDEBAR
+		SIDEBAR_LOGO: `${getModuleConfig('core', 'api_url')}/platform/sidebar/logo`,
 
 		// USERS
 		USERS_CREATE: `${getModuleConfig('core', 'api_url')}/users/create`,
@@ -252,22 +262,12 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},
 
-	exporter: {
-		// BASE
-		BASE: `${getModuleConfig('exporter', 'api_url')}`,
-
-		// EXPORTER
-		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getModuleConfig('exporter', 'api_url')}/exporter/${encodeURIComponent(id)}/download`,
-		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter`,
-	},
-
 	hub: {
 		// BASE
 		BASE: `${getModuleConfig('hub', 'api_url')}`,
 
 		// ALERTS
 		ALERTS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs`,
-		ALERTS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs-cm`,
 		ALERTS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs.pb`,
 		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
@@ -277,6 +277,14 @@ export const API_ROUTES = Object.freeze({
 
 		// FEEDBACK
 		FEEDBACK_LIST: `${getModuleConfig('hub', 'api_url')}/v1/feedback`,
+
+		// ETA
+		ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-stop/${encodeURIComponent(id)}`,
+		ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-trip/${encodeURIComponent(id)}`,
+		ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/eta/gtfs`,
+		ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/eta/gtfs.pb`,
+		ETA_LIST: `${getModuleConfig('hub', 'api_url')}/v1/eta`,
+
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
 
@@ -286,30 +294,24 @@ export const API_ROUTES = Object.freeze({
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
+		NETWORK_LINES_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/lines/${encodeURIComponent(id)}`,
 		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${encodeURIComponent(id)}`,
 		NETWORK_ROUTES: `${getModuleConfig('hub', 'api_url')}/v1/network/routes`,
+		NETWORK_ROUTES_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/routes/${encodeURIComponent(id)}`,
 		NETWORK_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/shapes/${encodeURIComponent(id)}`,
 		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
+		NETWORK_STOPS_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/stops/${encodeURIComponent(id)}`,
 
 		// PLANS
 		PLANS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs`,
 		PLANS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs/cm`,
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 
-		// REALTIME
-		REALTIME_ETA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta`,
-		REALTIME_ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}`,
-		REALTIME_ETA_BY_STOP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs`,
-		REALTIME_ETA_BY_STOP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs.pb`,
-		REALTIME_ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}`,
-		REALTIME_ETA_BY_TRIP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs`,
-		REALTIME_ETA_BY_TRIP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs.pb`,
-		REALTIME_ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs`,
-		REALTIME_ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs.pb`,
-		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
-		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
-		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
-		REALTIME_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs.pb`,
+		// VEHICLES
+		VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/metadata`,
+		VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/positions`,
+		VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/positions/gtfs`,
+		VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/positions/gtfs.pb`,
 	},
 
 	infrastructure: {
@@ -332,22 +334,6 @@ export const API_ROUTES = Object.freeze({
 		STOPS_UPDATE_NAME: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/update-name/${encodeURIComponent(id)}`,
 	},
 
-	locations: {
-		// BASE
-		BASE: `${getModuleConfig('locations', 'api_url')}`,
-
-		// LOCATIONS
-		LOCATIONS_DISTRICTS: `${getModuleConfig('locations', 'api_url')}/locations/districts`,
-		LOCATIONS_DISTRICTS_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/districts/${encodeURIComponent(id)}`,
-		LOCATIONS_LOCALITIES: `${getModuleConfig('locations', 'api_url')}/locations/localities`,
-		LOCATIONS_LOCALITIES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/localities/${encodeURIComponent(id)}`,
-		LOCATIONS_LOCATION: `${getModuleConfig('locations', 'api_url')}/locations/location`,
-		LOCATIONS_MUNICIPALITIES: `${getModuleConfig('locations', 'api_url')}/locations/municipalities`,
-		LOCATIONS_MUNICIPALITIES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/municipalities/${encodeURIComponent(id)}`,
-		LOCATIONS_PARISHES: `${getModuleConfig('locations', 'api_url')}/locations/parishes`,
-		LOCATIONS_PARISHES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/parishes/${encodeURIComponent(id)}`,
-	},
-
 	offer: {
 		// BASE
 		BASE: `${getModuleConfig('offer', 'api_url')}`,
@@ -361,7 +347,6 @@ export const API_ROUTES = Object.freeze({
 		FARES_LIST: `${getModuleConfig('offer', 'api_url')}/fares`,
 
 		// GTFS
-		GTFS_CREATE_EXPORT: `${getModuleConfig('offer', 'api_url')}/gtfs/create-export`,
 		GTFS_PARSE: `${getModuleConfig('offer', 'api_url')}/gtfs/parse`,
 
 		// LINES
@@ -377,6 +362,7 @@ export const API_ROUTES = Object.freeze({
 		PATTERNS_LIST: `${getModuleConfig('offer', 'api_url')}/patterns`,
 		PATTERNS_SHAPES: `${getModuleConfig('offer', 'api_url')}/patterns/shapes`,
 		PATTERNS_STOPS: `${getModuleConfig('offer', 'api_url')}/patterns/stops`,
+		PATTERNS_STOPS_DETAIL: (stopId: string) => `${getModuleConfig('offer', 'api_url')}/patterns/stops/${encodeURIComponent(stopId)}`,
 
 		// ROUTES
 		ROUTES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/routes/${encodeURIComponent(id)}`,
@@ -420,6 +406,7 @@ export const API_ROUTES = Object.freeze({
 		// GTFS-VALIDATIONS
 		GTFS_VALIDATIONS_CREATE: `${getModuleConfig('operation', 'api_url')}/gtfs-validations/create`,
 		GTFS_VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}`,
+		GTFS_VALIDATIONS_DETAIL_APPROVE: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/approve`,
 		GTFS_VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/file`,
 		GTFS_VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/file/download`,
 		GTFS_VALIDATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/gtfs-validations/${encodeURIComponent(id)}/lock`,
@@ -429,17 +416,17 @@ export const API_ROUTES = Object.freeze({
 		GTFS_VALIDATIONS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/gtfs-validations/list-agencies`,
 
 		// PLANS
-		PLANS_CREATE: `${getModuleConfig('operation', 'api_url')}/plans/create`,
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}`,
-		PLANS_DETAIL_APEX_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file`,
-		PLANS_DETAIL_APEX_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/download`,
-		PLANS_DETAIL_APEX_FILE_SEND_NOTIFICATION: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/send-notification`,
+		PLANS_DETAIL_APEX_CONFIG: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-config`,
+		PLANS_DETAIL_APEX_CONFIG_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-config/download`,
+		PLANS_DETAIL_APEX_CONFIG_SEND_NOTIFICATION: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/apex-config/send-notification`,
 		PLANS_DETAIL_CHANGE_GTFS: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/change-gtfs`,
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/controller-reprocess`,
 		PLANS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/lock`,
-		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file`,
-		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file/download`,
-		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
+		PLANS_DETAIL_OPERATION_GTFS: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-gtfs`,
+		PLANS_DETAIL_OPERATION_GTFS_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-gtfs/download`,
+		PLANS_DETAIL_OPERATION_GTFS_NORMALIZED: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-gtfs-normalized`,
+		PLANS_DETAIL_OPERATION_GTFS_NORMALIZED_DOWNLOAD: (id: string) => `${getModuleConfig('operation', 'api_url')}/plans/${encodeURIComponent(id)}/operation-gtfs-normalized/download`,
 		PLANS_LIST: `${getModuleConfig('operation', 'api_url')}/plans/list`,
 		PLANS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/plans/list-agencies`,
 
@@ -459,7 +446,7 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_APEX_VALIDATIONS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/apex-validations`,
 		RIDES_DETAIL_HASHED_SHAPE: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-shape`,
 		RIDES_DETAIL_HASHED_TRIP: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-trip`,
-		RIDES_DETAIL_REPROCESS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/reprocess`,
+		RIDES_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/processing-status`,
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/ride`,
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getModuleConfig('operation', 'api_url')}/rides/${encodeURIComponent(id)}/vehicle-events`,
 		RIDES_FAVORITES: `${getModuleConfig('operation', 'api_url')}/rides/favorites`,

@@ -1,8 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type Organization } from '@tmlmobilidade/go-types-core';
 
 /**
@@ -11,10 +9,8 @@ import { type Organization } from '@tmlmobilidade/go-types-core';
  * @param reply Fastify reply.
  */
 export async function lockOrganizationHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
-	await goDb.core.organizations.toggleLockById(request.params.id);
-	const foundOrganization = await goDb.core.organizations.findById(request.params.id);
-	if (!foundOrganization) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-	}
-	reply.send({ data: foundOrganization, error: null, statusCode: HTTP_STATUS.OK });
+	return sendErrorApiResponse(reply, {
+		error: 'Not implemented',
+		status_code: '500',
+	});
 }

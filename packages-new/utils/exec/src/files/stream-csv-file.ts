@@ -10,6 +10,17 @@ import fs from 'fs';
  * @returns A promise that resolves when the stream is closed.
  */
 export async function streamCsvFile<T>(filePath: string, rowParser: (rowData: T) => Promise<void>) {
+	//
+
+	//
+	// Check if the file exists,
+	// throw an error if it doesn't.
+
+	await fs.promises.access(filePath);
+
+	//
+	// Initialize the CSV parser.
+
 	const parser = csvParser({
 		bom: true,
 		cast: value => value === '' ? undefined : value,
@@ -19,8 +30,14 @@ export async function streamCsvFile<T>(filePath: string, rowParser: (rowData: T)
 		skipRecordsWithEmptyValues: true,
 		trim: true,
 	});
+
+	//
+	// Open the file stream and pipe it to the parser,
+	// calling the row parser for each row.
+
 	const fileStream = fs.createReadStream(filePath);
 	const stream = fileStream.pipe(parser);
+
 	for await (const rowData of stream) {
 		await rowParser(rowData);
 	}

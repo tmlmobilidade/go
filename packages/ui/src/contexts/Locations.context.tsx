@@ -1,6 +1,5 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/go-types-locations';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -57,10 +56,10 @@ async function loadLocations(): Promise<LocationsData> {
 	loadLocationsPromise = (async () => {
 		// Loads all locations data from the API at once.
 		const [districts, municipalities, parishes, localities] = await Promise.all([
-			fetchData<District[]>(API_ROUTES.locations.LOCATIONS_DISTRICTS),
-			fetchData<Municipality[]>(API_ROUTES.locations.LOCATIONS_MUNICIPALITIES),
-			fetchData<Parish[]>(API_ROUTES.locations.LOCATIONS_PARISHES),
-			fetchData<Locality[]>(API_ROUTES.locations.LOCATIONS_LOCALITIES),
+			fetchData<District[]>('API_ROUTES.locations.LOCATIONS_DISTRICTS'),
+			fetchData<Municipality[]>('API_ROUTES.locations.LOCATIONS_MUNICIPALITIES'),
+			fetchData<Parish[]>('API_ROUTES.locations.LOCATIONS_PARISHES'),
+			fetchData<Locality[]>('API_ROUTES.locations.LOCATIONS_LOCALITIES'),
 		]);
 
 		// Cache the locations data.
@@ -88,6 +87,9 @@ async function loadLocations(): Promise<LocationsData> {
 
 const LocationsContext = createContext<LocationsContextState | undefined>(undefined);
 
+/**
+ * @deprecated Use an app/module specific hook with corresponding api route instead. See the core module for examples.
+ */
 export function useLocationsContext() {
 	const context = useContext(LocationsContext);
 	if (!context) {
@@ -145,7 +147,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	const getMunicipality = useCallback((id: Municipality['_id']): Municipality | undefined => municipalitiesMap.get(id), [municipalitiesMap]);
 	const getParish = useCallback((id: Parish['_id']): Parish | undefined => parishesMap.get(id), [parishesMap]);
 	const queryLocation = useCallback(async (latitude: number, longitude: number) => {
-		const response = await fetchData<Location>(`${API_ROUTES.locations.LOCATIONS_LOCATION}?lat=${latitude}&lon=${longitude}`);
+		const response = await fetchData<Location>(`${'API_ROUTES.locations.LOCATIONS_LOCATION'}?lat=${latitude}&lon=${longitude}`);
 		return response.data ?? null;
 	}, []);
 

@@ -2,10 +2,8 @@
 
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type User, type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
-import { type FileExport } from '@tmlmobilidade/go-types-downloads';
 import { type ActionsOf, type GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions } from '@tmlmobilidade/go-types-permissions';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
 
 import { useMeData } from '../auth';
 import { ErrorDisplay } from '../components/display/ErrorDisplay';
@@ -24,7 +22,6 @@ interface MeContextState {
 		updatePreference: (scope: string, key: string, value: undefined | UserPreferenceValue) => Promise<void>
 	}
 	data: {
-		fileExports: FileExport[]
 		user: undefined | User
 	}
 	flags: {
@@ -32,7 +29,6 @@ interface MeContextState {
 		loading: boolean
 	}
 	mutate: {
-		fileExports: () => void
 		me: () => void
 	}
 }
@@ -58,11 +54,6 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
 	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useMeData();
-
-	//
-	// B. Fetch data
-
-	const { data: fileExportsData, mutate: fileExportsMutate } = useSWR<FileExport[]>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
 
 	//
 	// C. Handle actions
@@ -125,7 +116,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
-		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.PLATFORM_ME });
+		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.ME_LIST });
 	};
 
 	//
@@ -141,7 +132,6 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			updatePreference,
 		},
 		data: {
-			fileExports: fileExportsData || [],
 			user: meData,
 		},
 		flags: {
@@ -149,7 +139,6 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			loading: meLoading || isLoggingOut,
 		},
 		mutate: {
-			fileExports: fileExportsMutate,
 			me: meMutate,
 		},
 	};

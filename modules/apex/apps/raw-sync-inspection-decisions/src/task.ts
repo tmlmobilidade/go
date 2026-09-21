@@ -79,7 +79,7 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 					'_id IN $1',
 					{ 1: chunk },
 				);
-			}, 1_000);
+			}, 250);
 		},
 
 		distinctDestinationDbFn: async () => {

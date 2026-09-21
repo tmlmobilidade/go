@@ -3,7 +3,7 @@
 /* * */
 
 import { type CreateFileExportDto, type VehicleExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { closeModal, useAgenciesContext, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { closeModal, useAgenciesContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 import { VehicleListContextState } from './VehiclesList.context';
@@ -47,7 +47,6 @@ export const VehicleListExportContextProvider = ({ children, vehiclesListContext
 
 	const agenciesContext = useAgenciesContext();
 
-	const exports = useExportsContext();
 	const [loading, setLoading] = useState(false);
 
 	//
@@ -121,7 +120,7 @@ export const VehicleListExportContextProvider = ({ children, vehiclesListContext
 		} finally {
 			setLoading(false);
 		}
-	}, [exportProperties, exports.actions, loading]);
+	}, [exportProperties, loading]);
 
 	//
 	// D. Define context value

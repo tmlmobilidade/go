@@ -515,24 +515,87 @@
 				"under_review": "En revisión"
 			}
 		},
-		"export": {
-			"RidesExportModal": {
-				"CancelButton": {
-					"label": "Cancelar"
-				},
-				"ExportButton": {
-					"label": "Exportar circulaciones"
-				},
-				"description": "Seleccione el intervalo de fechas para la exportación de las circulaciones.",
+		"extract": {
+			"RidesExtract": {
 				"fields": {
-					"end_date": {
-						"placeholder": "Fecha fin"
-					},
-					"start_date": {
-						"placeholder": "Fecha inicio"
+					"version": {
+						"label": "Versión"
 					}
-				},
+				}
+			},
+			"RidesExtractHeader": {
 				"title": "Exportar circulaciones"
+			},
+			"RidesExtractV1Footer": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"RidesExtractV1Properties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Seleccione uno o más operadores..."
+					},
+					"start_time_scheduled_end": {
+						"label": "Fecha de fin"
+					},
+					"start_time_scheduled_start": {
+						"label": "Fecha de inicio"
+					}
+				}
+			},
+			"RidesExtractV2Footer": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"RidesExtractV2Properties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Seleccione uno o más operadores..."
+					},
+					"analysis_at_least_one_vehicle_event_on_last_stop_grades": {
+						"label": "Fin en la última parada"
+					},
+					"analysis_expected_apex_validation_interval_grades": {
+						"label": "Intervalo de validaciones"
+					},
+					"analysis_simple_three_vehicle_events_grades": {
+						"label": "3 momentos"
+					},
+					"analysis_transaction_sequentiality_grades": {
+						"label": "Secuencialidad APEX"
+					},
+					"driver_ids": {
+						"label": "Conductor",
+						"placeholder": "Añada uno o más conductores..."
+					},
+					"end_delay_statuses": {
+						"label": "Retraso a la llegada"
+					},
+					"operational_statuses": {
+						"label": "Estado"
+					},
+					"search": {
+						"label": "Búsqueda",
+						"placeholder": "ID de la circulación o destino..."
+					},
+					"start_delay_statuses": {
+						"label": "Retraso a la salida"
+					},
+					"start_time_scheduled_end": {
+						"label": "Fecha de fin"
+					},
+					"start_time_scheduled_start": {
+						"label": "Fecha de inicio"
+					},
+					"vehicle_ids": {
+						"label": "Vehículo",
+						"placeholder": "Añada uno o más vehículos..."
+					}
+				}
 			}
 		}
 	},

@@ -2,7 +2,7 @@
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { LineName } from '@/components/lines/common/LineName';
-import { type HubLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { Skeleton } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -12,7 +12,7 @@ import styles from './styles.module.css';
 interface LineDisplayProps {
 	agencyId?: string
 	color?: string
-	lineData?: HubLine
+	lineData?: HubV1ApiLine
 	longName?: string
 	searchQuery?: string
 	shortName?: string

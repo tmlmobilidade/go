@@ -1,0 +1,14 @@
+/* * */
+/* POPUP */
+
+.popup {
+	width: 500px;
+	min-width: 500px;
+	max-width: 500px;
+	padding: 0;
+}
+
+.popup > div {
+	padding: 0;
+	border: none;
+}

@@ -12,8 +12,6 @@ import { type StopId, StopIdSchema } from '@tmlmobilidade/go-types-infrastructur
 export async function generateStopId(): Promise<StopId> {
 	//
 
-	let newStopId: StopId;
-
 	//
 	// Generate a new unique Stop ID that does not conflict
 	// with existing IDs or deleted CM Stops.
@@ -35,8 +33,8 @@ export async function generateStopId(): Promise<StopId> {
 		// is not a deleted CM Stop, and has a valid structure, it is valid.
 		isValid = !isExistingId && !isExistingLegacyId && !isDeletedCmStop && isValidStructure;
 		// If the generated Stop ID is valid, set it as the new Stop ID
-		if (isValid) newStopId = StopIdSchema.parse(randomId);
+		if (isValid) return StopIdSchema.parse(randomId);
 	}
 
-	return newStopId;
+	throw new Error('Failed to generate a new unique Stop ID');
 }

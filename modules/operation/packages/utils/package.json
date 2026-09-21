@@ -15,11 +15,13 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
-		"zod": "3.25.76"
+		"@tmlmobilidade/go-utils-exec": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

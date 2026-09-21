@@ -1,10 +1,10 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { ValidationListFilters, ValidationListFiltersSchema, ValidationListItem, ValidationListItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Lists GTFS Validation objects, filtered
@@ -18,11 +18,11 @@ export async function listGtfsValidationsHandler(request: FastifyRequest<{ Body:
 	//
 	// Apply permission filters to the request body
 
-	request.body.agency_ids = PermissionCatalog.filterPermissionResourceValues<string>({
-		action: PermissionCatalog.all.gtfs_validations.actions.read,
+	request.body.agency_ids = filterPermissionResourceValues<string>({
+		action: 'read',
 		permissions: request.permissions,
 		resourceKey: 'agency_ids',
-		scope: PermissionCatalog.all.gtfs_validations.scope,
+		scope: 'gtfs_validations',
 		values: request.body.agency_ids,
 	});
 
@@ -46,22 +46,10 @@ export async function listGtfsValidationsHandler(request: FastifyRequest<{ Body:
 		{ $sort: { created_at: -1 } },
 	];
 
-	//
-	// Execute the aggregation pipeline
-
 	const aggregationResult = await goDb.operation.gtfsValidations.aggregate(pipeline);
 
 	//
-	// Parse and return the results
-
-	if (!aggregationResult?.length) {
-		return sendErrorApiResponse(reply, {
-			error: 'No GTFS validations found matching the filters',
-			status_code: '404',
-		});
-	}
+	// Return the results
 
 	return sendSuccessApiResponse(reply, aggregationResult);
-
-	//
 }

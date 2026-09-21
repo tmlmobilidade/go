@@ -1,30 +1,8 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { EventRideOpportunity, type HashedShape, type HashedTrip, type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisBase, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
+import { type HashedShape, type HashedTrip, type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisBase, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventCoverageGeo, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-
-/* * */
-
-export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
-	_id: { type: 'String' },
-	agency_id: { type: 'LowCardinality(String)' },
-	bearing: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
-	created_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	current_status: { type: 'LowCardinality(Nullable(String))' },
-	driver_id: { type: 'LowCardinality(Nullable(String))' },
-	extra_trip_id: { type: 'Nullable(String)' },
-	geohash: { materialized: 'geohashEncode(longitude, latitude, 7)', type: 'FixedString(7)' },
-	latitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
-	longitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
-	odometer: { type: 'Nullable(UInt32)' },
-	operational_date: { type: 'UInt32' },
-	received_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	speed: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
-	stop_id: { type: 'LowCardinality(Nullable(String))' },
-	trip_id: { type: 'String' },
-	vehicle_id: { type: 'LowCardinality(String)' },
-};
 
 /* * */
 
@@ -105,6 +83,16 @@ export const rideAnalysisExpectedStartTimeTableSchema: ClickHouseTableSchema<Rid
 	...rideAnalysisBaseTableSchema,
 	observed_start_time: { type: 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)' },
 	observed_start_time_delta: { type: 'Nullable(Int16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisExpectedVehicleEventCoverageGeoTableSchema: ClickHouseTableSchema<RideAnalysisExpectedVehicleEventCoverageGeo> = {
+	...rideAnalysisBaseTableSchema,
+	stops_covered_absolute: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	stops_covered_percentage: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+	stops_not_covered_ids: { type: 'Array(LowCardinality(String))' },
+	stops_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 };
 
 /* * */
@@ -212,6 +200,7 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	end_time_scheduled: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	extension_observed: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
 	extension_scheduled: { type: 'UInt32 CODEC(T64, ZSTD)' },
+	hash: { type: 'String' },
 	hashed_shape_id: { type: 'LowCardinality(String)' },
 	hashed_trip_id: { type: 'LowCardinality(String)' },
 	headsign: { type: 'LowCardinality(String)' },
@@ -245,13 +234,22 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 
 /* * */
 
-export const eventRideOpportunitiesTableSchema: ClickHouseTableSchema<EventRideOpportunity> = {
+export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'LowCardinality(String)' },
-	operational_dates: { type: 'Array(UInt32) CODEC(ZSTD)' },
-	processing_status: { type: 'LowCardinality(String)' },
-	trip_id: { type: 'LowCardinality(String)' },
-	updated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	window_end: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	window_start: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	bearing: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	created_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	current_status: { type: 'LowCardinality(Nullable(String))' },
+	driver_id: { type: 'LowCardinality(Nullable(String))' },
+	extra_trip_id: { type: 'Nullable(String)' },
+	geohash: { materialized: 'geohashEncode(longitude, latitude, 7)', type: 'FixedString(7)' },
+	latitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
+	longitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
+	odometer: { type: 'Nullable(UInt32)' },
+	operational_date: { type: 'UInt32' },
+	received_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	speed: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+	stop_id: { type: 'LowCardinality(Nullable(String))' },
+	trip_id: { type: 'String' },
+	vehicle_id: { type: 'LowCardinality(String)' },
 };

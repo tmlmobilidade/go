@@ -205,7 +205,7 @@ export class AnnotationsController {
 		}
 
 		// If authorized, toggle the lock status of the annotation
-		await goDb.offer.annotations.toggleLockById(request.params.id);
+		await goDb.offer.annotations.updateOne({ _id: request.params.id }, { is_locked: !annotationData?.is_locked });
 		const foundAnnotation = await goDb.offer.annotations.findById(request.params.id);
 		if (!foundAnnotation) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');

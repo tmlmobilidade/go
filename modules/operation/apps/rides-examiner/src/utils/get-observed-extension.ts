@@ -1,6 +1,8 @@
 /* * */
 
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { type NonNegativeInteger, NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
+
+import { type PickedSimplifiedVehicleEvent } from '../types/analysis-data.js';
 
 /**
  * The observed extension is the distance between the odomoter values of the first and last events.
@@ -8,7 +10,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
  * @param endEvent The detected vehicle event that represents the end of the ride.
  * @returns The observed extension in meters, measured by the odometer value of each vehicle event
  */
-export function getObservedExtension(startEvent: null | SimplifiedVehicleEvent, endEvent: null | SimplifiedVehicleEvent): null | number {
+export function getObservedExtension(startEvent: null | PickedSimplifiedVehicleEvent, endEvent: null | PickedSimplifiedVehicleEvent): NonNegativeInteger | null {
 	//
 
 	if (!startEvent?.odometer) return null;
@@ -19,5 +21,5 @@ export function getObservedExtension(startEvent: null | SimplifiedVehicleEvent, 
 
 	if (observedExtension < 0) return null;
 
-	return observedExtension;
+	return NonNegativeIntegerSchema.parse(observedExtension);
 }

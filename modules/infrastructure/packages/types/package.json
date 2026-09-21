@@ -12,6 +12,7 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
+		"lint": "eslint ./src && tsc --noEmit",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
@@ -19,7 +20,6 @@
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-types-locations": "*",
-		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"zod": "3.25.76"

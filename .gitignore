@@ -43,6 +43,7 @@ build
 .source
 coverage
 .output
+.claude
 
 # OS
 .DS_Store

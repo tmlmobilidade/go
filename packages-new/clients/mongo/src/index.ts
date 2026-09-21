@@ -37,6 +37,7 @@ export type {
 	Sort,
 	TransactionOptions,
 	UpdateDescription,
+	UpdateFilter,
 	UpdateOptions,
 	UpdateResult,
 	WithId,

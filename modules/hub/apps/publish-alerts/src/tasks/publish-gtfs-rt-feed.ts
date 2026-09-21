@@ -43,7 +43,7 @@ export async function publishGtfsRtFeed() {
 
 	const transformedItems = await Promise.all(findResult.map(transformAlertIntoGtfsRtEntity));
 
-	const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
+	const transformResult: GtfsRtFeedEntity[] = transformedItems.filter((item): item is GtfsRtFeedEntity => item !== undefined);
 
 	Logger.info({ message: `Transformed ${transformResult.length} alerts into GTFS-RT feed entities (${globalTimer.get()})` });
 
@@ -55,7 +55,7 @@ export async function publishGtfsRtFeed() {
 		header: {
 			gtfs_realtime_version: '2.0',
 			incrementality: 'FULL_DATASET',
-			timestamp: Dates.now('Europe/Lisbon').unix_milliseconds,
+			timestamp: Dates.now('Europe/Lisbon').unix_seconds,
 		},
 	};
 

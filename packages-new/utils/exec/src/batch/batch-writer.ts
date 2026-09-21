@@ -65,17 +65,12 @@ export class BatchWriter<T> {
 
 	private params: BatchWriterParams<T>;
 
-	private dataBucketAlwaysAvailable: T[] = [];
-	private dataBucketFlushOps: T[] = [];
+	private dataBucket: T[] = [];
+	private flushInProgress: null | Promise<void> = null;
 
 	private batchTimeoutTimer: NodeJS.Timeout | null = null;
 	private idleTimeoutTimer: NodeJS.Timeout | null = null;
 	private sessionTimer = new Timer();
-
-	// ponytail: single in-flight guard, not a queue. Serializes overlapping
-	// flushes (timer-triggered vs batch-full) so inserts never run concurrently
-	// and callers applying backpressure await the same promise.
-	private flushInProgress: null | Promise<void> = null;
 
 	constructor(params: BatchWriterParams<T>) {
 		if (!params.title) throw new Error('BATCHWRITER: Title is required.');
@@ -115,66 +110,46 @@ export class BatchWriter<T> {
 	 */
 	private async drain(callback?: (data?: T[]) => Promise<void>) {
 		await this.flush(callback);
-		if (this.dataBucketAlwaysAvailable.length > 0 && !this.idleTimeoutTimer && !this.batchTimeoutTimer && !this.flushInProgress) {
+		if (this.dataBucket.length > 0 && !this.idleTimeoutTimer && !this.batchTimeoutTimer && !this.flushInProgress) {
 			await this.flush(callback);
 		}
 	}
 
 	private async runFlush(callback?: (data?: T[]) => Promise<void>) {
+		//
+
+		//
+		// Invalidate all timers since a flush operation is being performed
+
+		if (this.idleTimeoutTimer) {
+			clearTimeout(this.idleTimeoutTimer);
+			this.idleTimeoutTimer = null;
+		}
+
+		if (this.batchTimeoutTimer) {
+			clearTimeout(this.batchTimeoutTimer);
+			this.batchTimeoutTimer = null;
+		}
+
+		//
+		// Skip if there is no data to flush
+
+		if (this.dataBucket.length === 0) return;
+
+		// Transfer ownership of the current batch.
+
+		const batch = this.dataBucket;
+		this.dataBucket = [];
+
 		try {
-			//
-
 			const flushTimer = new Timer();
-			const sessionTimerResult = this.sessionTimer.get();
-
-			//
-			// Invalidate all timers since a flush operation is being performed
-
-			if (this.idleTimeoutTimer) {
-				clearTimeout(this.idleTimeoutTimer);
-				this.idleTimeoutTimer = null;
-			}
-
-			if (this.batchTimeoutTimer) {
-				clearTimeout(this.batchTimeoutTimer);
-				this.batchTimeoutTimer = null;
-			}
-
-			//
-			// Skip if there is no data to flush
-
-			if (this.dataBucketAlwaysAvailable.length === 0) return;
-
-			//
-			// Copy everything in dataBucketAlwaysAvailable to dataBucketFlushOps
-			// to prevent any new incoming data to be added to the batch. This is to ensure
-			// that the batch is not modified while it is being processed.
-
-			this.dataBucketFlushOps = [...this.dataBucketFlushOps, ...this.dataBucketAlwaysAvailable];
-
-			this.dataBucketAlwaysAvailable = [];
-
-			//
-			// Process the data for batch insert
-
-			try {
-				// Call the insert function provided in the params to perform the actual database insertion.
-				if (!this.params.insertFn) throw new Error('BATCHWRITER: No insert function provided in params');
-				await this.insertWithRetry(this.dataBucketFlushOps);
-				console.info(`BATCHWRITER [${this.params.title}]: Flush | Length: ${this.dataBucketFlushOps.length} (session: ${sessionTimerResult}) (flush: ${flushTimer.get()})`);
-				// Call the flush callback, if provided
-				if (callback) await callback(this.dataBucketFlushOps);
-				// Reset the flush bucket
-				this.dataBucketFlushOps = [];
-			} catch (error) {
-				console.error(`BATCHWRITER [${this.params.title}]: Error @ flush().insert(): ${(error as Error).message}`);
-				throw error; // Re-throw to allow retry logic at higher level
-			}
-
-			//
+			await this.insertWithRetry(batch);
+			console.info(`BATCHWRITER [${this.params.title}]: Flush | Length: ${batch.length} (session: ${this.sessionTimer.get()}) (flush: ${flushTimer.get()})`);
+			// Call the flush callback, if provided
+			if (callback) await callback(batch);
 		} catch (error) {
 			console.error(`BATCHWRITER [${this.params.title}]: Error @ flush(): ${(error as Error).message}`);
-			throw error; // Re-throw to allow retry logic at higher level
+			throw error;
 		}
 	}
 
@@ -188,12 +163,13 @@ export class BatchWriter<T> {
 	 */
 	private async insertWithRetry(data: T[]) {
 		const maxRetries = this.params.max_retries ?? 3;
-		const retryBaseDelayMs = this.params.retry_base_delay_ms ?? 1000;
+		const retryBaseDelayMs = this.params.retry_base_delay_ms ?? 1_000;
 		for (let attempt = 0; attempt <= maxRetries; attempt++) {
 			try {
 				await this.params.insertFn(data);
 				return;
 			} catch (error) {
+				if (attempt === maxRetries) throw error;
 				const parsedError = error as Error & { code?: string };
 				const nextAttempt = attempt + 1;
 				const delayMs = retryBaseDelayMs * (2 ** attempt);
@@ -226,7 +202,8 @@ export class BatchWriter<T> {
 		// Check if the batch is full
 
 		const batchSize = this.params.batch_size ?? 10_000;
-		if (this.dataBucketAlwaysAvailable.length >= batchSize) {
+
+		if (this.dataBucket.length >= batchSize) {
 			console.info(`BATCHWRITER [${this.params.title}]: Batch full. Flushing data...`);
 			await this.flush(flushCallback);
 		}
@@ -234,7 +211,7 @@ export class BatchWriter<T> {
 		//
 		// Reset the session timer (for logging purposes)
 
-		if (this.dataBucketAlwaysAvailable.length === 0) {
+		if (this.dataBucket.length === 0) {
 			this.sessionTimer.reset();
 		}
 
@@ -242,10 +219,11 @@ export class BatchWriter<T> {
 		// Add the current data to the batch
 
 		if (Array.isArray(data)) {
-			const combinedDataWithOptions = data.map(item => item);
-			this.dataBucketAlwaysAvailable = [...this.dataBucketAlwaysAvailable, ...combinedDataWithOptions];
+			for (const item of data) {
+				this.dataBucket.push(item);
+			}
 		} else {
-			this.dataBucketAlwaysAvailable.push(data);
+			this.dataBucket.push(data);
 		}
 
 		//

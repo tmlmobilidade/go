@@ -1,11 +1,12 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { type GtfsSQLTables } from '@/versions/standard/types.js';
 import { type GtfsStopTimes, GtfsStopTimesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+
+import { type ImportGtfsContext } from '../../../shared/init-context.js';
+import { type GtfsSQLTables } from '../types.js';
 
 /**
  * Processes the stop_times.txt file from the GTFS dataset.

@@ -1,9 +1,11 @@
 /* * */
 
 import { type RedisClientType, RedisDatabaseClient } from '@tmlmobilidade/go-clients-redis';
-import { asyncSingletonProxy } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
 import { type CacheDbKey } from './keys.js';
+import { CachedData } from './types.js';
 
 /* * */
 
@@ -98,6 +100,19 @@ class CacheDbClass {
 	}
 
 	/**
+	 * Retrieves a cache entry by its key.
+	 * @param key The key of the cache entry to retrieve.
+	 * @returns A promise that resolves with the JSON parsed cache entry value,
+	 * or `undefined` if not found.
+	 * @throws Will throw an error if the retrieval process fails.
+	 */
+	public async getNew<T>(key: CacheDbKey): Promise<CachedData<T> | undefined> {
+		const result = await this.client.get(key);
+		if (typeof result !== 'string') return;
+		return JSON.parse(result) as CachedData<T>;
+	}
+
+	/**
 	 * Scans cache keys by pattern.
 	 * @param pattern The redis pattern to match.
 	 * @returns A promise resolving with all matching keys.
@@ -125,6 +140,23 @@ class CacheDbClass {
 		// Set cache with optional TTL
 		if (ttl) await this.client.set(key, value, { expiration: { type: 'EX', value: ttl } });
 		else await this.client.set(key, value);
+	}
+
+	/**
+	 * Saves a JSON cache entry with an optional time-to-live (TTL).
+	 * @param key The key of the cache entry to save.
+	 * @param value The value of the cache entry to save. Must be a string.
+	 * @param ttl Optional time-to-live (TTL) in seconds. Omit when not needed.
+	 */
+	public async setNew<T>(key: CacheDbKey, value: T, ttl?: number) {
+		// Add the value to the CachedData object
+		const cachedData: CachedData<T> = {
+			data: value,
+			timestamp: Dates.now('utc').unix_milliseconds,
+		};
+		// Set cache with optional TTL
+		if (ttl) await this.client.set(key, JSON.stringify(cachedData), { expiration: { type: 'EX', value: ttl } });
+		else await this.client.set(key, JSON.stringify(cachedData));
 	}
 
 	protected connectToClient() {

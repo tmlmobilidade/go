@@ -2,7 +2,7 @@
 
 import { useLineDetailData } from '@/components/lines/detail/use-line-detail-data';
 import { useLineDetailShapeData } from '@/components/lines/detail/use-line-detail-shape-data';
-import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubWaypoint } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiPatternWaypoint, type HubV1ApiRoute } from '@tmlmobilidade/go-types-hub';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -14,15 +14,14 @@ interface LinesDetailContextState {
 		setHighlightedTripIds: (tripIds: string[]) => void
 	}
 	data: {
-		active_alerts: HubAlert[]
-		active_pattern: HubPattern | null
-		active_shape: GeoJSON.Feature<GeoJSON.LineString> | null
-		active_waypoint: HubWaypoint | null
-		all_patterns: HubPattern[][] | null
+		active_alerts: HubV1ApiAlert[] | undefined
+		active_pattern: HubV1ApiPattern | null
+		active_waypoint: HubV1ApiPatternWaypoint | null
+		all_patterns: HubV1ApiPattern[][] | null
 		highlighted_trip_ids: null | string[]
-		line: HubLine | undefined
-		routes: HubRoute[]
-		valid_patterns: HubPattern[] | undefined
+		line: HubV1ApiLine | undefined
+		routes: HubV1ApiRoute[]
+		valid_patterns: HubV1ApiPattern[] | undefined
 	}
 	filters: {
 		active_pattern_id: null | string

@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type StopsListFilters, type StopsListItem, StopsListResponse } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type StopsListFilters, type StopsListItem, type StopsListResponse } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -35,7 +36,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	// A. Setup variables
 
 	const { districtMap, isLoading: isLoadingLocations, localityMap, municipalityMap, parishMap } = useStopsLocationsData({
-		permissions: { actions: ['read'], scope: 'stops' },
+		permissions: { actions: [PermissionCatalog.all.stops.actions.read], scope: PermissionCatalog.all.stops.scope },
 	});
 
 	const filterAgency = useStopsListFilterAgency();
@@ -61,7 +62,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	// C. Fetch data
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<StopsListResponse[]>>([API_ROUTES.infrastructure.STOPS_LIST, query], {
-		fetcher: async ([url, query]) => await fetchApiData<StopsListResponse[]>({ body: query, method: 'POST', url }),
+		fetcher: async ([url, query]: [string, StopsListFilters]) => await fetchApiData<StopsListResponse[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 600_000, // 10 minutes
 	});
 
@@ -94,5 +95,5 @@ export function useStopsListData(): UseStopsListDataReturnType {
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [searchResultsData, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [searchResultsData, data?.timestamp, error, isLoading, isLoadingLocations, isValidating, mutate]);
 };

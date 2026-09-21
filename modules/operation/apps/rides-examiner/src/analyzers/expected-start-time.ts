@@ -1,8 +1,9 @@
 /* * */
 
-import { type AnalysisData } from '@/types/analysis-data.js';
 import { type RideAnalysisExpectedStartTime, RideAnalysisExpectedStartTimeSchema } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+
+import { type AnalysisData } from '../types/analysis-data.js';
 
 /**
  * This analyzer tests if there is an excess delay starting the trip using geographic data.

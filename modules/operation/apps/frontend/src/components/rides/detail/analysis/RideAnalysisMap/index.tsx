@@ -3,7 +3,7 @@
 import { ReplayEvents } from '@/components/common/ReplayEvents';
 import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { fromEncodedPolylineToGeoJsonLineString } from '@tmlmobilidade/go-utils-geo';
 import { Collapsible, Divider, getCssVariableValue, MapOverlayGeofences, type MapOverlayGeofencesPolygonDataProps, MapOverlayObservedPath, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, MapOverlayScheduledPath, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps, MapView, Section, Switch } from '@tmlmobilidade/ui';
 import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
@@ -36,7 +36,6 @@ export function RideAnalysisMap() {
 
 	const showReplay = rideData?.operational_status === 'ended' && vehicleEventsData?.length > 0;
 
-	const rideId = rideData?._id;
 	const prevRideIdRef = useRef<string | undefined>(undefined);
 
 	//
@@ -57,14 +56,17 @@ export function RideAnalysisMap() {
 					type: 'Point',
 				},
 				properties: {
-					id: vehicleEvent._id,
+					_id: vehicleEvent._id,
+					bearing: vehicleEvent.bearing,
+					created_at: vehicleEvent.created_at,
+					driver_id: vehicleEvent.driver_id,
+					index_position: index,
+					received_at: vehicleEvent.received_at,
 					sequence: index,
+					speed: vehicleEvent.speed,
 					stop_id: vehicleEvent.stop_id,
-					timestamp: Dates
-						.fromUnixMilliseconds(vehicleEvent.created_at)
-						.setZone('local', 'offset_only')
-						.toFormat('dd/MM/yyyy HH:mm:ss'),
 					trigger_door: '-',
+					vehicle_id: vehicleEvent.vehicle_id,
 				},
 				type: 'Feature',
 			}));
@@ -109,7 +111,10 @@ export function RideAnalysisMap() {
 					type: 'Point',
 				},
 				properties: {
-					arrival_time: waypoint.arrival_time,
+					arrival_time: Dates
+						.fromUnixMilliseconds(fromOperationalDateTimeToUnixMilliseconds({ operational_date: rideData?.operational_date, operational_time: waypoint.arrival_time, timezone: rideData?.timezone }))
+						.setZone('local', 'offset_only')
+						.toFormat('dd/MM/yyyy HH:mm:ss'),
 					id: waypoint.stop_id,
 					name: waypoint.stop_name,
 					passengers_observed: validationsByStopId[waypoint.stop_id]?.length || 0,
@@ -118,7 +123,7 @@ export function RideAnalysisMap() {
 				type: 'Feature',
 			}));
 		return featureCollection;
-	}, [hashedTripData, apexValidationsData]);
+	}, [hashedTripData, apexValidationsData, rideData?.operational_date, rideData?.timezone]);
 
 	const scheduledPathGeofencesFC: FeatureCollection<Polygon, MapOverlayGeofencesPolygonDataProps> = useMemo(() => {
 		// Setup an empty feature collection
@@ -143,6 +148,9 @@ export function RideAnalysisMap() {
 	const scheduledShapeFC: FeatureCollection<LineString, MapOverlayScheduledPathLineDataProps> = useMemo(() => {
 		// Setup an empty feature collection
 		const featureCollection = getBaseGeoJsonFeatureCollection<LineString, MapOverlayScheduledPathLineDataProps>();
+		// If no ride data, return the empty feature collection
+		if (!rideData?._id) return featureCollection;
+		// If no hashed shape data, return the empty feature collection
 		// If no hashed shape data, return the empty feature collection
 		if (!hashedShapeData?.shape_polyline) return featureCollection;
 		// Decode the polyline
@@ -163,13 +171,13 @@ export function RideAnalysisMap() {
 			setReplayIndex(0);
 			return;
 		}
-		if (prevRideIdRef.current !== rideId) {
-			prevRideIdRef.current = rideId;
+		if (prevRideIdRef.current !== rideData?._id) {
+			prevRideIdRef.current = rideData?._id;
 			setReplayIndex(cap);
 			return;
 		}
 		setReplayIndex(prev => Math.min(prev, cap));
-	}, [observedEventsFC.features.length, rideId]);
+	}, [observedEventsFC.features.length, rideData?._id]);
 
 	const observedPointsData = useMemo(() => {
 		if (!showReplay) return observedEventsFC;
@@ -216,6 +224,7 @@ export function RideAnalysisMap() {
 		<Collapsible
 			description={t('default:rides.analysis.RideAnalysisMap.description')}
 			title={t('default:rides.analysis.RideAnalysisMap.title')}
+			defaultOpen
 		>
 			<div className={styles.mapWrapper}>
 				<MapView id="RideAnalysisMap">

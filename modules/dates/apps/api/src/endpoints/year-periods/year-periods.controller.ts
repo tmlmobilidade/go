@@ -369,7 +369,7 @@ export class YearPeriodsController {
 		//
 		// Toggle the lock status of the period
 
-		await goDb.offer.yearPeriods.toggleLockById(request.params.id);
+		await goDb.offer.yearPeriods.updateOne({ _id: request.params.id }, { is_locked: !periodData?.is_locked });
 		const updatedPeriod = await goDb.offer.yearPeriods.findById(request.params.id);
 		if (!updatedPeriod) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');

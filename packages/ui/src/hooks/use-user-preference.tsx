@@ -43,7 +43,7 @@ export function useUserPreference<T extends UserPreferenceValue>(scope: string, 
 	const savePreferenceValueDebounced = useDebouncedCallback((value: T) => {
 		const valueFromUserData = meData?.preferences?.[scope]?.[key];
 		if (JSON.stringify(value) === JSON.stringify(valueFromUserData)) return;
-		fetchApiData({ body: { key, scope, value }, method: 'PUT', url: API_ROUTES.core.PLATFORM_UPDATE_ME_PREFERENCES });
+		fetchApiData({ body: { key, scope, value }, method: 'PUT', url: API_ROUTES.core.ME_UPDATE_PREFERENCES });
 	}, 500);
 
 	useEffect(() => {

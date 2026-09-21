@@ -32,6 +32,10 @@
 						"label": "Contacto telefónico",
 						"placeholder": "912345678"
 					},
+					"primary_language": {
+						"label": "Idioma principal",
+						"placeholder": "es"
+					},
 					"public_email": {
 						"label": "Email público",
 						"placeholder": "email@example.com"

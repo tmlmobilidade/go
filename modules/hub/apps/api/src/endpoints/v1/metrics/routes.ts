@@ -1,23 +1,24 @@
 /* * */
 
-import { getDemandByAgencyByOperationalDate } from '@/endpoints/v1/metrics/controllers/get-demand-by-agency-by-operational-date.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
+
+import { getDemandByAgencyByOperationalDateHandler } from './handlers/get-demand-by-agency-by-operational-date.js';
 
 /* * */
 
-const namespace = '/v1/metrics';
+const NAMESPACE = '/v1/metrics';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/demand-by-agency-by-operational-date', getDemandByAgencyByOperationalDate);
+		instance.get('/demand-by-agency-by-operational-date', getDemandByAgencyByOperationalDateHandler);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

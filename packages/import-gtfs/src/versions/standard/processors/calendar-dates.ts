@@ -1,12 +1,13 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { type GtfsSQLTables } from '@/versions/standard/types.js';
 import { type GtfsCalendarDates, GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
+
+import { type ImportGtfsContext } from '../../../shared/init-context.js';
+import { type GtfsSQLTables } from '../types.js';
 
 /**
  * Processes the calendar_dates.txt file from the GTFS dataset.

@@ -3,7 +3,7 @@
 import { useStopsData } from '@/components/stops/use-stops-data';
 import { formatStopLocation } from '@/utils/transit/format-stop-location';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
-import { type HubWaypoint } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiPatternWaypoint } from '@tmlmobilidade/go-types-hub';
 import { useClipboard } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +15,7 @@ interface Props {
 	isFirstStop?: boolean
 	isLastStop?: boolean
 	isSelected: boolean
-	waypointData: HubWaypoint
+	waypointData: HubV1ApiPatternWaypoint
 }
 
 /* * */

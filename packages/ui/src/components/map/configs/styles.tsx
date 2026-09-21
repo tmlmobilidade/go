@@ -10,7 +10,7 @@ interface MapStyleConfig {
 	label: string
 	max_zoom: number
 	min_zoom: number
-	value: string | StyleSpecification
+	value: StyleSpecification | { dark: string, light: string }
 }
 
 /* * */
@@ -20,8 +20,11 @@ export const MAP_STYLES: Record<MapStyle, MapStyleConfig> = {
 	map: {
 		label: 'Mapa',
 		max_zoom: 18,
-		min_zoom: 5,
-		value: 'https://maps.carrismetropolitana.pt/styles/default/style.json',
+		min_zoom: 1,
+		value: {
+			dark: 'https://maps.go.tmlmobilidade.pt/styles/dark/style.json',
+			light: 'https://maps.go.tmlmobilidade.pt/styles/default/style.json',
+		},
 	},
 
 	satellite: {

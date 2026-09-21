@@ -1,16 +1,16 @@
 'use client';
 
 import { useStopDetailData } from '@/components/stops/detail/use-stop-detail-data';
-import { type HubAlert, type HubLine, type HubStop } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
 interface StopsDetailContextState {
 	data: {
-		active_alerts: HubAlert[]
-		associated_lines: HubLine[]
-		stop: HubStop | undefined
+		active_alerts: HubV1ApiAlert[]
+		associated_lines: HubV1ApiLine[]
+		stop: HubV1ApiStop | undefined
 		timetable: ReturnType<typeof useStopDetailData>['timetable']
 	}
 	flags: {

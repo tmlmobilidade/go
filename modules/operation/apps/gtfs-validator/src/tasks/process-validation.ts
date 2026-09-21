@@ -41,7 +41,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// Setup temporary directory paths for this validation process
 		// to avoid any conflicts with other concurrent validations.
 
-		const tempWorkdirPath = getTmpWorkdirPath(null, true);
+		const tempWorkdirPath = getTmpWorkdirPath(undefined, true);
 
 		const gtfsFilePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.zip`);
 		const gtfsValidationRulesPath = join(tempWorkdirPath, `rules_${gtfsValidation._id}.json`);
@@ -68,6 +68,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		const gtfsFile = await storageProvider.findById(gtfsValidation.file_id);
 		if (!gtfsFile) throw new Error(`File not found: ${gtfsValidation.file_id}`);
+		if (!gtfsFile.url) throw new Error(`File URL not found: ${gtfsValidation.file_id}`);
 
 		const fileBuffer = await fetch(gtfsFile.url).then(res => res.arrayBuffer());
 

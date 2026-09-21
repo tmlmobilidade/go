@@ -1,12 +1,11 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PlansListFilters, PlansListFiltersSchema, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
+import { getPlanTemporalStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
-
-import { getPlanTemporalStatus } from '../utils/get-plan-temporal-status.js';
 
 /**
  * Retrieves all plans.
@@ -45,16 +44,6 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 	];
 
 	const aggregationResult = await goDb.operation.plans.aggregate(pipeline);
-
-	//
-	// Parse and return the results
-
-	if (!aggregationResult?.length) {
-		return sendErrorApiResponse(reply, {
-			error: 'No plans found matching the filters',
-			status_code: '404',
-		});
-	}
 
 	//
 	// Add temporal status to the results and filter by its value

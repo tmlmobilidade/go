@@ -1,8 +1,8 @@
 /* * */
 
 import { fetchProtobuf } from '@/protobuf.js';
-import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-operation-pckg-compose-alert';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-operation-pckg-compose-alert';
 import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
@@ -45,6 +45,10 @@ async function main() {
 	// Fetch the data from the URL
 	const serviceAlertResponse = await fetchProtobuf<ServiceAlertResponse>(DatikServiceAlertsUrl, ProtobufPath, 'transit_realtime.FeedMessage');
 
+	if (!serviceAlertResponse) {
+		throw new Error('No service alert response');
+	}
+
 	for (const serviceAlert of serviceAlertResponse.entity) {
 		const alert = await goDb.operation.alerts.findOne({ external_id: serviceAlert.id });
 		if (alert) {
@@ -60,8 +64,8 @@ async function main() {
 
 			//
 			const alertDescribeResult = await composeAlertTitleAndDescription({
-				active_period_end_date: serviceAlert.alert.active_period[0].end as UnixMilliseconds,
-				active_period_start_date: serviceAlert.alert.active_period[0].start as UnixMilliseconds,
+				active_period_end_date: serviceAlert.alert.active_period?.[0]?.end as UnixMilliseconds,
+				active_period_start_date: serviceAlert.alert.active_period?.[0]?.start as UnixMilliseconds,
 				agency_id: '43',
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
 				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
@@ -73,34 +77,34 @@ async function main() {
 				user_instructions: '',
 			});
 
-			const alertRealtime = await goDb.operation.alerts.insertOne({
-				active_period_end_date: null,
-				active_period_start_date: undefined,
-				agency_id: '43',
-				auto_texts: true,
-				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
-				coordinates: null,
-				created_by: 'sync-datik',
-				description: alertDescribeResult.pt.description,
-				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
-				external_id: serviceAlert.id,
-				file_id: null,
-				info_url: null,
-				is_locked: false,
-				municipality_ids: [],
-				publish_end_date: null,
-				publish_start_date: undefined,
-				publish_status: 'published',
-				reference_type: 'rides',
-				references: serviceAlert.alert.informed_entity.map(entity => ({
-					child_ids: [],
-					parent_id: entity.trip?.trip_id ?? '',
-				})),
-				title: alertDescribeResult.pt.title,
-				user_instructions: '',
-			});
+			// const alertRealtime = await goDb.operation.alerts.insertOne({
+			// 	active_period_end_date: null,
+			// 	active_period_start_date: undefined,
+			// 	agency_id: '43',
+			// 	auto_texts: true,
+			// 	cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
+			// 	coordinates: null,
+			// 	created_by: 'sync-datik',
+			// 	description: alertDescribeResult.pt.description,
+			// 	effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
+			// 	external_id: serviceAlert.id,
+			// 	file_id: null,
+			// 	info_url: null,
+			// 	is_locked: false,
+			// 	municipality_ids: [],
+			// 	publish_end_date: null,
+			// 	publish_start_date: undefined,
+			// 	publish_status: 'published',
+			// 	reference_type: 'rides',
+			// 	references: serviceAlert.alert.informed_entity.map(entity => ({
+			// 		child_ids: [],
+			// 		parent_id: entity.trip?.trip_id ?? '',
+			// 	})),
+			// 	title: alertDescribeResult.pt.title,
+			// 	user_instructions: '',
+			// });
 
-			Logger.info({ message: `Alert created | Internal ID: ${alertRealtime._id}, External ID: ${alertRealtime.external_id}` });
+			// Logger.info({ message: `Alert created | Internal ID: ${alertRealtime._id}, External ID: ${alertRealtime.external_id}` });
 		}
 	}
 

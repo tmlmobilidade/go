@@ -7,20 +7,19 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
+const BATCH_SIZE = 25;
+
+/**
+ * Sets the administrative location (district, municipality, parish and locality)
+ * of every stop in the database, based on its coordinates.
+ */
 export async function setStopLocationTask() {
 	//
-
-	//
-	// Initialize the logger
-
-	Logger.init();
 
 	const globalTimer = new Timer();
 
 	//
 	// Get Stop documents from the database in batches, sorted by _id
-
-	const batchSize = 25;
 
 	let lastId: null | string = null;
 
@@ -34,7 +33,7 @@ export async function setStopLocationTask() {
 		const findQuery = lastId ? { _id: { $gt: lastId } } : {};
 
 		const stops = await goDb.infrastructure.stops.findMany(findQuery, {
-			limit: batchSize,
+			limit: BATCH_SIZE,
 			projection: { _id: 1, latitude: 1, longitude: 1 },
 			sort: { _id: 1 },
 		});
@@ -57,15 +56,15 @@ export async function setStopLocationTask() {
 					}
 
 					await goDb.infrastructure.stops.updateById(stopData._id, {
-						district_id: matchingLocation.district?._id || null,
-						locality_id: matchingLocation.locality?._id || null,
+						district_id: matchingLocation.district?._id ?? undefined,
+						locality_id: matchingLocation.locality?._id ?? undefined,
 						municipality_id: matchingLocation.municipality._id,
-						parish_id: matchingLocation.parish?._id || null,
+						parish_id: matchingLocation.parish?._id ?? undefined,
 					});
 
-					console.log(`[${stopData._id}] Location set for coordinates [${stopData.latitude}, ${stopData.longitude}]: district [${matchingLocation.district?._id}] ${matchingLocation.district?.name} | municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name} | parish [${matchingLocation.parish?._id}] ${matchingLocation.parish?.name} | locality [${matchingLocation.locality?._id}] ${matchingLocation.locality?.name}`);
+					Logger.info({ message: `[${stopData._id}] Location set for coordinates [${stopData.latitude}, ${stopData.longitude}]: district [${matchingLocation.district?._id}] ${matchingLocation.district?.name} | municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name} | parish [${matchingLocation.parish?._id}] ${matchingLocation.parish?.name} | locality [${matchingLocation.locality?._id}] ${matchingLocation.locality?.name}` });
 				} catch (error) {
-					console.error(`[${stopData._id}] Error setting location: ${error}`);
+					Logger.error({ error, message: `[${stopData._id}] Error setting location` });
 				}
 			}),
 		);
@@ -76,5 +75,5 @@ export async function setStopLocationTask() {
 		lastId = stops[stops.length - 1]._id;
 	}
 
-	Logger.terminate(`Stop locations set in ${globalTimer.get()}`);
+	Logger.info({ message: `Stop locations set in ${globalTimer.get()}` });
 }

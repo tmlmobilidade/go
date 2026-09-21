@@ -10,18 +10,18 @@ import { publishRssFeed } from './tasks/publish-rss-feed.js';
 
 /* * */
 
-export async function main() {
-	//
+//
+// Initialize Sentry
 
-	//
-	// Initialize Sentry
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'publish-alerts', message: 'Sentry Hub Publish Alerts initialized', module: 'hub', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Hub Publish Alerts' });
+}
 
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-alerts', message: 'Sentry Hub Publish Alerts initialized', module: 'hub', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Alerts' });
-	}
+async function main() {
+	//
 
 	//
 	// Initialize the logger
@@ -45,7 +45,7 @@ export async function main() {
 	Logger.terminate(`Publish alerts completed in ${globalTimer.get()}`);
 
 	//
-};
+}
 
 /* * */
 

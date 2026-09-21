@@ -34,7 +34,7 @@ export function useRidesDetailRideAnalysesData(): UseRidesDetailRideAnalysesData
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<RideAnalysesRegistry>>(rideId && API_ROUTES.operation.RIDES_DETAIL_ANALYSES(rideId), {
 		fetcher: async (url: string) => await fetchApiData<RideAnalysesRegistry>({ url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 30_000, // 30 seconds
 	});
 
 	//

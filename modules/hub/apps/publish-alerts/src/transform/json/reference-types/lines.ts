@@ -1,9 +1,9 @@
 /* * */
 
+import { getQualifiedLineId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Alert, type AlertReference } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type AlertReference } from '@tmlmobilidade/types';
-import { getPublicLineId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -34,7 +34,7 @@ export async function transformReferenceTypeLinesIntoJson(alertData: Alert): Pro
 
 		const parsedAlertReference: AlertReference = {
 			child_ids: [],
-			parent_id: getPublicLineId(alertData.agency_id, reference.parent_id),
+			parent_id: getQualifiedLineId(alertData.agency_id, reference.parent_id),
 		};
 
 		if (!reference.child_ids?.length) {
@@ -56,9 +56,7 @@ export async function transformReferenceTypeLinesIntoJson(alertData: Alert): Pro
 				Logger.error({ message: `[Alert ID: ${alertData._id}] Stop ID ${childId} not found for agency ID ${alertData.agency_id}.` });
 				continue;
 			}
-
-			parsedAlertReference.child_ids.push(String(foundStopData._id));
-
+			parsedAlertReference.child_ids.push(foundStopData._id);
 			result.push(parsedAlertReference);
 		}
 
@@ -70,6 +68,4 @@ export async function transformReferenceTypeLinesIntoJson(alertData: Alert): Pro
 	// of AlertReference objects
 
 	return result;
-
-	//
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateAgencySchema } from '@tmlmobilidade/go-types-core';
-import { TimezoneIdentifiedValues } from '@tmlmobilidade/go-types-shared';
+import { LanguageTagValues, TimezoneIdentifiedValues } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -78,7 +78,7 @@ export function AgenciesDetailBasicInfo() {
 						)}
 					/>
 				</Grid>
-				<Grid columns="ab" gap="lg">
+				<Grid columns="abc" gap="lg">
 					<StandardFormController
 						control={form.control}
 						name="timezone"
@@ -92,6 +92,22 @@ export function AgenciesDetailBasicInfo() {
 								readOnly={!capabilities.editEnabled}
 								value={field.value}
 								withAsterisk={!CreateAgencySchema.shape.timezone.isOptional()}
+							/>
+						)}
+					/>
+					<StandardFormController
+						control={form.control}
+						name="primary_language"
+						render={({ field, fieldState }) => (
+							<Select
+								data={LanguageTagValues.map(lt => ({ label: lt, value: lt }))}
+								defaultValue={field.value}
+								error={fieldState.error?.message}
+								label={t('default:agencies.detail.SectionBasicInfo.fields.primary_language.label')}
+								onChange={field.onChange}
+								readOnly={!capabilities.editEnabled}
+								value={field.value}
+								withAsterisk={!CreateAgencySchema.shape.primary_language.isOptional()}
 							/>
 						)}
 					/>

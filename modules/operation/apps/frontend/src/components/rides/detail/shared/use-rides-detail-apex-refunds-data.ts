@@ -34,7 +34,7 @@ export function useRidesDetailApexRefundsData(): UseRidesDetailApexRefundsDataRe
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedApexOnBoardRefund[]>>(rideId && API_ROUTES.operation.RIDES_DETAIL_APEX_REFUNDS(rideId), {
 		fetcher: async (url: string) => await fetchApiData<SimplifiedApexOnBoardRefund[]>({ url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 30_000, // 30 seconds
 	});
 
 	//

@@ -45,7 +45,7 @@ export function BaseMap() {
 	});
 
 	//
-	// B. Render components
+	// E. Render components
 
 	return (
 		<MapView
