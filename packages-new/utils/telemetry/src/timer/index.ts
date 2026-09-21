@@ -2,7 +2,7 @@
  * Timer class for tracking elapsed time.
  * Provides methods to get formatted time strings and raw time values.
  */
-class TimerClass {
+export class Timer {
 	private startTime: number;
 
 	constructor() {
@@ -89,14 +89,3 @@ class TimerClass {
 		return parts.join(' ');
 	}
 }
-
-/**
- * Singleton Timer instance for tracking time.
- * @example
- * ```ts
- * Timer.reset();
- * // ... do work ...
- * console.log(Timer.get()); // "1s 234ms"
- * ```
- */
-export { TimerClass as Timer };
