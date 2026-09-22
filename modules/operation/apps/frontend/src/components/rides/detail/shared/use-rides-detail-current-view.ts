@@ -9,7 +9,6 @@ import { useMemo } from 'react';
 export const RidesDetailCurrentViewValues = [
 	'acceptance',
 	'analysis',
-	'audit',
 ] as const;
 
 type RidesDetailCurrentView = (typeof RidesDetailCurrentViewValues)[number];
@@ -19,7 +18,6 @@ type RidesDetailCurrentView = (typeof RidesDetailCurrentViewValues)[number];
 const currentViewPermissionsMap: Record<RidesDetailCurrentView, string> = {
 	acceptance: PermissionCatalog.all.rides.actions.acceptance_read,
 	analysis: PermissionCatalog.all.rides.actions.analysis_read,
-	audit: PermissionCatalog.all.rides.actions.audit_read,
 };
 
 /* * */
