@@ -299,6 +299,7 @@
 	},
 	"search": {
 		"Search": {
+			"clear": "Limpar pesquisa",
 			"empty": "Nenhum resultado encontrado.",
 			"error": "Erro ao pesquisar locais",
 			"groups": {

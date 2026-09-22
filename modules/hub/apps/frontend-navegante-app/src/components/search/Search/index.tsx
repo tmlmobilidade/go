@@ -8,7 +8,8 @@ import { type SearchResult } from '@/types/common/search';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/planning/locations';
 import { getSearchDraft, setSearchDraft, subscribeToSearchDraft } from '@/utils/search/search-draft';
-import { IconSearch } from '@tabler/icons-react';
+import { IconX } from '@tabler/icons-react';
+import { SearchInput } from '@tmlmobilidade/ui';
 import { type RefObject, useRef, useState, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -72,10 +73,20 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 
 	return (
 		<div className={styles.container} data-variant={variant}>
-			<label className={styles.inputWrapper}>
-				<IconSearch size={20} />
-				<input ref={inputRef} autoFocus={variant === 'sheet'} onChange={event => handleQueryChange(event.currentTarget.value)} placeholder={placeholder ?? t('default:search.Search.placeholder')} type="search" value={query} />
-			</label>
+			<SearchInput
+				ref={inputRef}
+				autoFocus={variant === 'sheet'}
+				classNames={{ input: styles.input, wrapper: styles.inputWrapper }}
+				onChange={handleQueryChange}
+				placeholder={placeholder ?? t('default:search.Search.placeholder')}
+				rightSectionWidth={48}
+				value={query}
+				clearButton={onClear => (
+					<button aria-label={t('default:search.Search.clear')} className={styles.clearButton} onClick={onClear} type="button">
+						<IconX size={20} />
+					</button>
+				)}
+			/>
 
 			{visibleGroups.map(group => (
 				<SearchGroup key={group.key} group={group} onSelect={handleSelect} variant={variant} />
