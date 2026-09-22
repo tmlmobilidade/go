@@ -121,6 +121,7 @@ export function RoutePlanner() {
 		>
 			{routePlannerContext.data.view_mode === 'destination-search' && (
 				<Search
+					key={routePlannerContext.data.location_search_target}
 					onLocationSelect={handleLocationSelect}
 					placeholder={routePlannerContext.data.location_search_target === 'origin'
 						? t('default:routes.RoutePlannerSearch.origin_placeholder')

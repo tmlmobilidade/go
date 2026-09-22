@@ -35,9 +35,10 @@ export function RoutePlannerPlaceDetail() {
 			<div className={styles.itineraries}>
 				{routePlannerContext.data.itineraries.map((itinerary, index) => (
 					<RoutePlannerItineraryCard
-						key={`${itinerary.startTime || index}-${itinerary.endTime || index}`}
+						key={index}
 						itinerary={itinerary}
 						onSelect={() => routePlannerContext.actions.selectItinerary(index)}
+						onStartTrip={() => routePlannerContext.actions.startItinerary(index)}
 					/>
 				))}
 			</div>

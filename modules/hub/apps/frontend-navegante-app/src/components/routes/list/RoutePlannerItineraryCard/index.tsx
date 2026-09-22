@@ -22,7 +22,7 @@ interface RoutePlannerItineraryCardProps {
 	isSelected?: boolean
 	itinerary: MotisItinerary
 	onSelect?: () => void
-	onStartTrip?: () => void
+	onStartTrip: () => void
 }
 
 /* * */
@@ -71,7 +71,7 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 
 	const handleStartTripClick = (event: MouseEvent<HTMLButtonElement>) => {
 		event.stopPropagation();
-		onStartTrip?.();
+		onStartTrip();
 	};
 
 	//

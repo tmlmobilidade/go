@@ -99,7 +99,7 @@ export function RoutePlannerResults() {
 
 					{visibleItineraries.map(({ index, itinerary }) => (
 						<RoutePlannerItineraryCard
-							key={`${itinerary.startTime || index}-${itinerary.endTime || index}`}
+							key={index}
 							isSelected={routePlannerContext.data.selected_itinerary_index === index}
 							itinerary={itinerary}
 							onSelect={() => routePlannerContext.actions.selectItinerary(index)}
