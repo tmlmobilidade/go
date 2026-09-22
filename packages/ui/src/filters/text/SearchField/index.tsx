@@ -103,7 +103,8 @@ export function SearchField({ onChange, placeholder, size = 'sm', tagPrefixes, v
 
 		if (event.key === 'Backspace' && draft === '' && tags.length > 0) {
 			event.preventDefault();
-			emit(tags.slice(0, -1), '');
+			const lastTag = tags[tags.length - 1];
+			emit(tags.slice(0, -1), lastTag);
 		}
 	};
 
