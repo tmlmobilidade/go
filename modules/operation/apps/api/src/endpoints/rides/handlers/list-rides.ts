@@ -109,7 +109,7 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	}
 
 	//
-	// Route short names (filter UI + `r:` search tag)
+	// Route short names (filter UI + `l:` search tag)
 
 	const routeShortNames = [
 		...(validatedFilters.route_short_names ?? []),
