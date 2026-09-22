@@ -79,8 +79,14 @@
 		"RidesListFilterDateRange": {
 			"label": "Intervalo de fechas"
 		},
+		"RidesListFilterDriver": {
+			"label": "Conductor"
+		},
 		"RidesListFilterEndDelayStatus": {
 			"label": "Retraso a la llegada"
+		},
+		"RidesListFilterLine": {
+			"label": "Línea"
 		},
 		"RidesListFilterOperationalStatus": {
 			"label": "Estado"
@@ -94,6 +100,9 @@
 				"has_ticketing": "Con billeteo",
 				"no_ticketing": "Sin billeteo"
 			}
+		},
+		"RidesListFilterVehicle": {
+			"label": "Vehículo"
 		},
 		"RidesListHeader": {
 			"export": "Exportar circulaciones",

@@ -49,7 +49,6 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 		validatedFilters.start_delay_statuses,
 		validatedFilters.end_delay_statuses,
 		validatedFilters.operational_statuses,
-		validatedFilters.route_short_names,
 		validatedFilters.ticketing_statuses,
 	].some(value => Array.isArray(value) && value.length === 0);
 

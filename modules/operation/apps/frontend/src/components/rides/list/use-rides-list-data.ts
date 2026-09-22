@@ -18,6 +18,7 @@ import { useRidesListFilterDateRange } from './filters/RidesListFilterDateRange/
 import { useRidesListFilterDriver } from './filters/RidesListFilterDriver/use-rides-list-filter-driver';
 import { useRidesListFilterEndDelayStatus } from './filters/RidesListFilterEndDelayStatus/use-rides-list-filter-end-delay-status';
 import { useRidesListFilterFavorites } from './filters/RidesListFilterFavorites/use-rides-list-filter-favorites';
+import { useRidesListFilterLine } from './filters/RidesListFilterLine/use-rides-list-filter-line';
 import { useRidesListFilterOperationalStatus } from './filters/RidesListFilterOperationalStatus/use-rides-list-filter-operational-status';
 import { useRidesListFilterSearch } from './filters/RidesListFilterSearch/use-rides-list-filter-search';
 import { useRidesListFilterStartDelayStatus } from './filters/RidesListFilterStartDelayStatus/use-rides-list-filter-start-delay-status';
@@ -50,6 +51,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	const filterAnalysisTransactionSequentiality = useRidesListFilterAnalysisTransactionSequentiality();
 	const filterDateRange = useRidesListFilterDateRange();
 	const filterFavorites = useRidesListFilterFavorites();
+	const filterLine = useRidesListFilterLine();
 	const filterVehicle = useRidesListFilterVehicle();
 	const filterDriver = useRidesListFilterDriver();
 	const filterStartDelayStatus = useRidesListFilterStartDelayStatus();
@@ -73,13 +75,14 @@ export function useRidesListData(): UseRidesListDataReturnType {
 		driver_ids: filterDriver.value,
 		end_delay_statuses: filterEndDelayStatus.value,
 		operational_statuses: filterOperationalStatus.value,
+		route_short_names: filterLine.value,
 		search: filterSearch.value,
 		start_delay_statuses: filterStartDelayStatus.value,
 		start_time_scheduled_end: filterDateRange.value_end,
 		start_time_scheduled_start: filterDateRange.value_start,
 		vehicle_ids: filterVehicle.value,
 		// ticketing_statuses: filterTicketingStatus.value,
-	}), [filterAcceptanceStatus.value, filterDriver.value, filterVehicle.value, filterAgency.value, filterAnalysisAtLeastOneVehicleEventOnLastStop.value, filterAnalysisExpectedApexValidationInterval.value, filterAnalysisSimpleThreeEvents.value, filterAnalysisTransactionSequentiality.value, filterStartDelayStatus.value, filterEndDelayStatus.value, filterOperationalStatus.value, filterSearch.value, filterDateRange.value_end, filterDateRange.value_start, filterTicketingStatus.value]);
+	}), [filterAcceptanceStatus.value, filterDriver.value, filterLine.value, filterVehicle.value, filterAgency.value, filterAnalysisAtLeastOneVehicleEventOnLastStop.value, filterAnalysisExpectedApexValidationInterval.value, filterAnalysisSimpleThreeEvents.value, filterAnalysisTransactionSequentiality.value, filterStartDelayStatus.value, filterEndDelayStatus.value, filterOperationalStatus.value, filterSearch.value, filterDateRange.value_end, filterDateRange.value_start, filterTicketingStatus.value]);
 
 	//
 	// C. Fetch data

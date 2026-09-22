@@ -85,6 +85,9 @@
 		"RidesListFilterEndDelayStatus": {
 			"label": "Atraso à Chegada"
 		},
+		"RidesListFilterLine": {
+			"label": "Linha"
+		},
 		"RidesListFilterOperationalStatus": {
 			"label": "Estado"
 		},
