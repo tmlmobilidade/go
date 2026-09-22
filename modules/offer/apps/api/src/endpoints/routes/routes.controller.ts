@@ -34,7 +34,10 @@ export class RoutesController {
 		//
 		// Create the new route
 
-		const newRoute = await goDb.offer.routes.insertOne(request.body);
+		const newRoute = await goDb.offer.routes.insertOne({
+			...request.body,
+			created_by: request.me._id,
+		});
 
 		//
 		// Send the response
@@ -199,7 +202,10 @@ export class RoutesController {
 		//
 		// Update the route
 
-		const updatedRoute = await goDb.offer.routes.updateById(routeData._id, request.body);
+		const updatedRoute = await goDb.offer.routes.updateById(routeData._id, {
+			...request.body,
+			updated_by: request.me._id,
+		});
 
 		//
 		// Send the updated route data as the response
