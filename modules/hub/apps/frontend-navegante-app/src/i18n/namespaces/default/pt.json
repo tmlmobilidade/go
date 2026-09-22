@@ -24,9 +24,6 @@
 		"AlertActivePeriod": {
 			"start": "Início: {value, date, dayShort}"
 		},
-		"AlertsDetail": {
-			"title": "Alerta"
-		},
 		"SelectCause": {
 			"placeholder": "Filtrar por causa"
 		},
