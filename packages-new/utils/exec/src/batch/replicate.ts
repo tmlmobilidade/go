@@ -1,6 +1,6 @@
 /* * */
 
-import { Timer } from '@tmlmobilidade/go-utils-telemetry';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -108,11 +108,11 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	const destinationDbCount = await countDestinationDbFn();
 
 	if (sourceDbCount === destinationDbCount) {
-		console.info(`MATCH: Found the same number of documents in both databases: ${sourceDbCount} Source = ${destinationDbCount} Destination (${countStepTimer.get()})`);
+		Logger.info({ message: `MATCH: Found the same number of documents in both databases: ${sourceDbCount} Source = ${destinationDbCount} Destination (${countStepTimer.get()})` });
 		return;
 	}
 
-	console.info(`MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})`);
+	Logger.info({ message: `MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})` });
 
 	//
 	// If the document count was different, then check which documents are missing.
@@ -132,7 +132,7 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 
 	const extraDocumentIds = destinationDbDocIds.filter(doc => !sourceDbDocIdsUnique.has(doc));
 
-	console.info(`Source Total: ${sourceDbCount} | Source Unique: ${sourceDbDocIdsUnique.size} | Source ▲: ${sourceDbCount - sourceDbDocIdsUnique.size} | Destination Total: ${destinationDbCount} | Destination Unique: ${destinationDbDocIdsUnique.size} | Destination ▲: ${destinationDbCount - destinationDbDocIdsUnique.size} | Destination Missing: ${missingDocumentIds.length} | Destination Extra: ${extraDocumentIds.length} (${distinctStepTimer.get()})`);
+	Logger.info({ message: `Source Total: ${sourceDbCount} | Source Unique: ${sourceDbDocIdsUnique.size} | Source ▲: ${sourceDbCount - sourceDbDocIdsUnique.size} | Destination Total: ${destinationDbCount} | Destination Unique: ${destinationDbDocIdsUnique.size} | Destination ▲: ${destinationDbCount - destinationDbDocIdsUnique.size} | Destination Missing: ${missingDocumentIds.length} | Destination Extra: ${extraDocumentIds.length} (${distinctStepTimer.get()})` });
 
 	//
 	// If there are missing documents, then they are synced.
@@ -142,11 +142,11 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	const missingStepTimer = new Timer();
 
 	if (missingDocumentIds.length > 0) {
-		console.info(`Syncing ${missingDocumentIds.length} missing documents to the Destination database...`);
+		Logger.info({ message: `Syncing ${missingDocumentIds.length} missing documents to the Destination database...` });
 		for await (const sourceDbDocument of missingDocumentsSourceDbAsyncIterator(missingDocumentIds)) {
 			await writeSourceDocumentToDestinationDbFn(sourceDbDocument);
 		}
-		console.info(`Synced ${missingDocumentIds.length} missing documents to the Destination database. (${missingStepTimer.get()})`);
+		Logger.info({ message: `Synced ${missingDocumentIds.length} missing documents to the Destination database. (${missingStepTimer.get()})` });
 	}
 
 	//
@@ -156,9 +156,9 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	const deleteStepTimer = new Timer();
 
 	if (extraDocumentIds.length > 0 && deleteDestinationDbFn) {
-		console.info(`Deleting ${extraDocumentIds.length} extra documents in the Destination database...`);
+		Logger.info({ message: `Deleting ${extraDocumentIds.length} extra documents in the Destination database...` });
 		await deleteDestinationDbFn(extraDocumentIds);
-		console.info(`Deleted ${extraDocumentIds.length} extra documents in the Destination database. (${deleteStepTimer.get()})`);
+		Logger.info({ message: `Deleted ${extraDocumentIds.length} extra documents in the Destination database. (${deleteStepTimer.get()})` });
 	}
 
 	//
@@ -166,11 +166,11 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	// run the onComplete callback function if provided.
 
 	if (onCompleteCallbackFn) {
-		console.info(`Running onComplete callback function...`);
+		Logger.info({ message: 'Running onComplete callback function...' });
 		await onCompleteCallbackFn();
 	}
 
-	console.info(`Replication complete (${globalTimer.get()})`);
+	Logger.info({ message: `Replication complete (${globalTimer.get()})` });
 
 	//
 }

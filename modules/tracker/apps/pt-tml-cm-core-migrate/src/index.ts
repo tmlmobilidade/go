@@ -5,7 +5,7 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { Timer } from '@tmlmobilidade/go-utils-telemetry';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { ObjectId } from 'mongodb';
 
 /* * */
@@ -17,7 +17,7 @@ const PROCESS_ID = `${process.pid}-${Math.random().toString(36).substring(2, 10)
 async function main() {
 	//
 
-	console.log(`[${PROCESS_ID}] Starting...`);
+	Logger.info({ message: `[${PROCESS_ID}] Starting...` });
 
 	//
 
@@ -33,20 +33,20 @@ async function main() {
 	if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/core-vehicle-events`;
 	else coordinatorUrl = `http://${currentEnvironment}-tracker-pt-tml-cm-core-migrate-coordinator.${currentEnvironment}-tracker.svc.cluster.local/core-vehicle-events`;
 
-	console.log(`[${PROCESS_ID}] Fetching core vehicle events session ID from coordinator: ${coordinatorUrl}/${PROCESS_ID}`);
+	Logger.info({ message: `[${PROCESS_ID}] Fetching core vehicle events session ID from coordinator: ${coordinatorUrl}/${PROCESS_ID}` });
 	const coreVehicleEventsSessionId = await fetch(`${coordinatorUrl}/${PROCESS_ID}`)
 		.then(response => response.text())
 		.catch((error) => {
-			console.error(`[${PROCESS_ID}] Failed to fetch core vehicle events session ID from coordinator: ${error}`);
+			Logger.error({ attributes: { error }, message: `[${PROCESS_ID}] Failed to fetch core vehicle events session ID from coordinator` });
 			return null;
 		});
 
 	if (!coreVehicleEventsSessionId) {
-		console.error(`[${PROCESS_ID}] No core vehicle events session ID received.`);
+		Logger.error({ message: `[${PROCESS_ID}] No core vehicle events session ID received.` });
 		return;
 	}
 
-	console.log(`[${PROCESS_ID}] Fetched core vehicle events session ID from coordinator: ${coreVehicleEventsSessionId} (fetch: ${fetchCoordinatorTimer.get()})`);
+	Logger.info({ message: `[${PROCESS_ID}] Fetched core vehicle events session ID from coordinator: ${coreVehicleEventsSessionId} (fetch: ${fetchCoordinatorTimer.get()})` });
 
 	//
 	// Get the earliest date from which we have data to sync,
@@ -110,14 +110,14 @@ async function main() {
 			if (error.message.startsWith('E11000')) {
 				// Logger.error({ message: `Duplicate document "${document._id}" found in source database. Deleting it from source database.` });
 				const deleteResult = await vehicleEventsCollection.deleteOne({ _id: new ObjectId(document._id) as unknown as string });
-				console.error(`[${PROCESS_ID}] Deleted duplicate document "${document._id}" from source database (deleted: ${deleteResult.deletedCount})`);
+				Logger.error({ attributes: { deleted_count: deleteResult.deletedCount, document_id: document._id }, error, message: `[${PROCESS_ID}] Deleted duplicate document "${document._id}" from source database` });
 			} else {
-				console.error(`[${PROCESS_ID}] !-> Failed to migrate document "${document._id}": ${error.message}`);
+				Logger.error({ attributes: { document_id: document._id }, error, message: `[${PROCESS_ID}] Failed to migrate document "${document._id}"` });
 			}
 		}
 	}
 
-	console.log(`[${PROCESS_ID}] => Run took ${globalTimer.get()}. Migrated ${insertedCount} documents.`);
+	Logger.info({ message: `[${PROCESS_ID}] => Run took ${globalTimer.get()}. Migrated ${insertedCount} documents.` });
 }
 
 /* * */

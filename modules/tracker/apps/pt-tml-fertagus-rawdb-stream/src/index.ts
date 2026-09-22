@@ -47,7 +47,6 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 
 				await writer.write(simplified, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
-				console.error(error);
 				Logger.error({ error, message: `[pt-tml-fertagus-rawdb-stream] Failed to transform document _id="${change.fullDocument._id}"` });
 			}
 		});

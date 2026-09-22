@@ -60,8 +60,7 @@ const main = async () => {
 		try {
 			response = await externalClients.ml.tempoEsperaLinha(line);
 		} catch (error) {
-			console.log(error);
-			Logger.error({ error, message: `[${ITERATION}] Error fetching Metro Lisboa data from API for line ${line}:` });
+			Logger.error({ error, message: `[${ITERATION}] Error fetching Metro Lisboa data from API for line ${line}` });
 			continue;
 		}
 

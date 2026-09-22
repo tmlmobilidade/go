@@ -4,6 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Organization } from '@tmlmobilidade/go-types-core';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Update organization logos.
@@ -52,7 +53,7 @@ export async function updateImageHandler(request: FastifyRequest<{ Params: { id:
 				try {
 					await storageProvider.delete(foundOrganization.logo_light);
 				} catch (error) {
-					console.info('Failed to delete old light logo', error);
+					Logger.error({ error, message: 'Failed to delete old light logo' });
 				}
 			}
 			// Update the organization with the new logo ID
@@ -67,7 +68,7 @@ export async function updateImageHandler(request: FastifyRequest<{ Params: { id:
 				try {
 					await storageProvider.delete(foundOrganization.logo_dark);
 				} catch (error) {
-					console.info('Failed to delete old dark logo', error);
+					Logger.error({ error, message: 'Failed to delete old dark logo' });
 				}
 			}
 			// Update the organization with the new logo ID

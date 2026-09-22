@@ -7,8 +7,8 @@ import { type HashableRide, type HashedShape, type HashedTrip, type Plan, RideSc
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { startHeartbeat } from '@tmlmobilidade/go-utils-exec';
-import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
 import { toHashedShape } from '../utils/to-hashed-shape.js';
@@ -29,7 +29,7 @@ export async function parsePlanTask(planData: Plan) {
 	// Mark the plan as 'error' if it does not have an associated operation file
 
 	if (!planData.attachments.operation_gtfs_normalized) {
-		console.error(`Skip processing: No operation GTFS normalized found. (plan: ${planData._id})`);
+		Logger.warning({ attributes: { plan_id: planData._id }, message: 'Skip processing: No operation GTFS normalized found.' });
 		await setPlanStatus(planData._id, 'rides_feeder', 'error');
 		return;
 	}
@@ -40,7 +40,7 @@ export async function parsePlanTask(planData: Plan) {
 	const agencyData = await goDb.core.agencies.findById(planData.agency_id);
 
 	if (!agencyData) {
-		Logger.error({ message: `Agency not found: ${planData.agency_id}` });
+		Logger.error({ attributes: { agency_id: planData.agency_id }, message: 'Agency not found' });
 		await setPlanStatus(planData._id, 'rides_feeder', 'error');
 		return;
 	}

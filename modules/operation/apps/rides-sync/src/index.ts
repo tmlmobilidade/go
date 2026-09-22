@@ -90,7 +90,7 @@ async function main() {
 
 		//
 	} catch (err) {
-		console.log('An error occurred. Halting execution.', err);
+		Logger.critical({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 

@@ -35,7 +35,7 @@ async function main() {
 					// the distinct query being too big
 					const keywords = ['distinct', 'too', 'big'];
 					if (!keywords.some(keyword => error.message?.toLowerCase().includes(keyword))) throw error;
-					Logger.info({ message: `Distinct query too big — splitting chunk into smaller chunks... (${error.message})` });
+					Logger.warning({ error, message: 'Distinct query too big — splitting chunk into smaller chunks...' });
 					// If it is, we need to repeat the process by splitting
 					// the current chunk into smaller chunks
 					await performInTimeChunks({
@@ -55,7 +55,7 @@ async function main() {
 
 		//
 	} catch (err) {
-		console.log('An error occurred. Halting execution.', err);
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 

@@ -37,11 +37,11 @@ async function main() {
 		.then(data => data.extraction_id);
 
 	if (!extractionId) {
-		console.log(`No extraction to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})`);
+		Logger.warning({ message: `No extraction to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})` });
 		return;
 	}
 
-	console.log(`Received extraction ID from coordinator: ${extractionId} (fetch: ${fetchCoordinatorTimer.get()})`);
+	Logger.info({ message: `Received extraction ID from coordinator: ${extractionId} (fetch: ${fetchCoordinatorTimer.get()})` });
 
 	//
 	// Retrieve the extraction from the database

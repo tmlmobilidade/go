@@ -28,7 +28,7 @@ await (async function init() {
 
 	fastify.listen({ host: '::0', port: 5050 }, (err, address) => {
 		if (err) {
-			console.log(err);
+			Logger.critical({ error: err, message: 'Error starting the API service' });
 			process.exit(1);
 		}
 		Logger.info({ message: `Server listening at ${address}` });

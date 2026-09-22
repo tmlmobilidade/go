@@ -1,5 +1,7 @@
 /* * */
 
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+
 export const WARNING = {
 	INVALID_DEPARTURE_TIME: 'invalid-departure-time',
 	MISSING_ROUTE: 'missing-route',
@@ -24,7 +26,7 @@ export function warn(type: WarningType, info?: Record<string, unknown>): void {
 		if (!details.has(type)) details.set(type, []);
 		details.get(type)!.push(info);
 	}
-	console.warn(`[gtfs-importer] ${type}`, info ?? '');
+	Logger.warning({ attributes: { info }, message: `[gtfs-importer] ${type}` });
 }
 
 export function printWarningSummary(): void {
@@ -43,7 +45,7 @@ export function printWarningSummary(): void {
 		})
 		.join('\n');
 
-	console.warn(`[gtfs-importer] Finished with ${total} warning(s):\n${lines}`);
+	Logger.warning({ attributes: { lines, total }, message: '[gtfs-importer] Finished with warning(s)' });
 }
 
 export function resetWarnings(): void {
