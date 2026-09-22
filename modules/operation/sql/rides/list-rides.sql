@@ -37,10 +37,11 @@ WITH
 	 *
 	 * The RIDE FILTERS marker receives the filters on attributes that are
 	 * identical across every version of a ride (agency, route, search on
-	 * id/headsign). Applying them before LIMIT BY lets the primary key
-	 * (agency_id first) prune the read and keeps the sort small. Filters on
-	 * attributes that change between versions (driver_ids, vehicle_ids and
-	 * every derived status/grade) must stay in the final WHERE.
+	 * id/headsign, or trip_id pattern with %%). Applying them before LIMIT BY
+	 * lets the primary key (agency_id first) prune the read and keeps the sort
+	 * small. Filters on attributes that change between versions (driver_ids,
+	 * vehicle_ids — including search tags v:/d: — and every derived
+	 * status/grade) must stay in the final WHERE.
 	 *
 	 * The exact-ride branch is only present when a search term is given.
 	 * It adds the ride whose id is exactly the search term even when it is
