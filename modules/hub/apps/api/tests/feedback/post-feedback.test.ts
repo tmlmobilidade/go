@@ -46,8 +46,11 @@ describe('post feedback', () => {
 		assert.deepEqual(response.payload, {
 			data: null,
 			error: null,
-			statusCode: HTTP_STATUS.CREATED,
+			generated_at: null,
+			status_code: '201',
+			timestamp: response.timestamp,
 		});
+		assert.equal(typeof response.timestamp, 'number');
 		assert.deepEqual(insertedFeedback, [{
 			...lineSubmission,
 			created_at: 1_700_000_000_000,
@@ -57,7 +60,7 @@ describe('post feedback', () => {
 	it('inserts stop feedback without agency attribution', async () => {
 		const insertedFeedback: PublicFeedback[] = [];
 		const dependencies: PostFeedbackDependencies = {
-			getCacheValue: async () => JSON.stringify([createHubStop(100_001)]),
+			getCacheValue: async () => JSON.stringify([createHubStop('100001')]),
 			incrementRateLimit: async () => 1,
 			insertFeedback: async feedback => void insertedFeedback.push(feedback),
 			now: () => 1_700_000_000_000,
@@ -177,8 +180,8 @@ describe('post feedback', () => {
 	});
 
 	it('validates stops without agency attribution', () => {
-		assert.equal(isFeedbackEntityValid(stopSubmission, { stops: [{ _id: 100_001 }] }), true);
-		assert.equal(isFeedbackEntityValid(stopSubmission, { stops: [{ _id: 100_002 }] }), false);
+		assert.equal(isFeedbackEntityValid(stopSubmission, { stops: [{ _id: '100001' }] }), true);
+		assert.equal(isFeedbackEntityValid(stopSubmission, { stops: [{ _id: '100002' }] }), false);
 	});
 
 	it('stores a null agency for stop feedback', () => {
@@ -210,7 +213,7 @@ function createHubLine(id: string, agencyId: string) {
 
 /* * */
 
-function createHubStop(id: number) {
+function createHubStop(id: string) {
 	return {
 		_id: id,
 		agency_ids: [],
@@ -243,7 +246,7 @@ function createTestReply() {
 	let statusCode: number | undefined;
 	const headers = new Map<string, number | string>();
 	const reply = {
-		code(code: number) {
+		status(code: number) {
 			statusCode = code;
 			return reply;
 		},
@@ -265,6 +268,10 @@ function createTestReply() {
 		reply: reply as unknown as Parameters<typeof postFeedback>[1],
 		get statusCode() {
 			return statusCode;
+		},
+		get timestamp() {
+			if (!payload || typeof payload !== 'object' || !('timestamp' in payload)) return undefined;
+			return payload.timestamp;
 		},
 	};
 }

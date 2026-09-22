@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb, type CacheDbKey } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { HubV1ApiLine, HubV1ApiLineSchema, HubV1ApiStop, HubV1ApiStopSchema, type PublicFeedback, PublicFeedbackSchema, type PublicFeedbackSubmission, PublicFeedbackSubmissionSchema } from '@tmlmobilidade/go-types-hub';
@@ -68,11 +68,7 @@ export async function postFeedback(request: FastifyRequest, reply: FastifyReply<
 		throw new HttpException(HTTP_STATUS.SERVICE_UNAVAILABLE, 'Feedback is temporarily unavailable.', error);
 	}
 
-	return reply.code(HTTP_STATUS.CREATED).send({
-		data: null,
-		error: null,
-		statusCode: HTTP_STATUS.CREATED,
-	});
+	return sendSuccessApiResponse(reply, null, { status_code: '201' });
 }
 
 /* * */
