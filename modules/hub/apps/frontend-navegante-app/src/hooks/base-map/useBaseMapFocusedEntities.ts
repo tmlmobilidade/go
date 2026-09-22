@@ -2,16 +2,13 @@
 
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { useStopsMapData } from '@/components/stops/use-stops-map-data';
+import { useVehiclePatternData } from '@/components/vehicles/use-vehicle-pattern-data';
 import { useVehiclesData } from '@/components/vehicles/use-vehicles-data';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { buildPatternShapeFeature } from '@/utils/map/pattern-shape';
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { getVehiclePatternId } from '@/utils/transit/vehicle-detail';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import useSWR from 'swr';
 
 /* * */
 
@@ -39,17 +36,14 @@ export function useBaseMapFocusedEntities({ activeBottomSheet }: UseBaseMapFocus
 	//
 	// B. Fetch data
 
-	const focusedVehiclePatternId = useMemo(() => {
+	const focusedVehicle = useMemo(() => {
 		if (!focusedVehicleId) return null;
-		const vehicle = vehicles.find(candidate => candidate.vehicle_id === focusedVehicleId);
-		if (!vehicle?.route_id || vehicle.direction_id === undefined) return null;
-		return `${vehicle.route_id}_${vehicle.direction_id}`;
+		return vehicles.find(candidate => candidate.vehicle_id === focusedVehicleId) ?? null;
 	}, [focusedVehicleId, vehicles]);
 
-	const { data: patternsResponse } = useSWR<ApiResponse<HubV1ApiPattern[]>>(focusedVehiclePatternId ? API_ROUTES.hub.NETWORK_PATTERNS(focusedVehiclePatternId) : null, {
-		fetcher: async url => await fetchApiData<HubV1ApiPattern[]>({ options: { credentials: 'omit' }, url }),
-	});
-	const pattern = patternsResponse?.data?.[0];
+	const focusedVehiclePatternId = getVehiclePatternId(focusedVehicle);
+	const { data: patterns } = useVehiclePatternData(focusedVehiclePatternId);
+	const pattern = patterns?.[0];
 
 	//
 	// C. Transform data
