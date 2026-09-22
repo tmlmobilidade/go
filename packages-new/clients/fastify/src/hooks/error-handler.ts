@@ -12,7 +12,7 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 export function setupErrorHandler(server: FastifyInstance, getModuleName: () => string | undefined): void {
 	server.setErrorHandler((error, request, reply) => {
 		Logger.error({
-			contextOrErrorOrSpacesAfter: getRequestLogContext(request, {
+			attributes: getRequestLogContext(request, {
 				module: getModuleName(),
 			}),
 			error: error instanceof Error ? error : undefined,

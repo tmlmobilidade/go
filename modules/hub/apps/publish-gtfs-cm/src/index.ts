@@ -53,7 +53,7 @@ async function main() {
 	try {
 		fs.rmSync(context.workdir.path, { force: true, recursive: true });
 		fs.mkdirSync(context.workdir.path, { recursive: true });
-		Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
+		Logger.success({ message: `Prepared working directory at "${context.workdir.path}".`, spacesAfter: 1 });
 	} catch (error) {
 		Logger.error({ error, message: `Error preparing workdir path "${context.workdir.path}".` });
 		process.exit(1);

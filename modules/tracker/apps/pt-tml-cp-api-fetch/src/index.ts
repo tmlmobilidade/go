@@ -26,7 +26,7 @@ const main = async () => {
 	//
 	// Fetch the CP Vehicle Events data from API and decode it.
 
-	Logger.info({ message: `[${ITERATION}] Fetching CP data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching CP data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.cp.vehiclePositions();
 

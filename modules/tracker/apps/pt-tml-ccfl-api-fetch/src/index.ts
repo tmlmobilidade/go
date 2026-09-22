@@ -24,7 +24,7 @@ const main = async () => {
 	//
 	// Fetch the CCFL Vehicle Events data from the API and decode it
 
-	Logger.info({ message: `[${ITERATION}] Fetching CCFL data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching CCFL data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.ccfl.vehiclePositions();
 

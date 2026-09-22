@@ -78,12 +78,12 @@ export class FastifyService {
 				port: this.options.port,
 			});
 
-			Logger.info({ contextOrSpacesAfter: { module: this.options.module }, message: `Server is running at ${serverUrl}` });
+			Logger.info({ attributes: { module: this.options.module }, message: `Server is running at ${serverUrl}` });
 
 			return serverUrl;
 		} catch (error) {
 			Logger.error({
-				contextOrErrorOrSpacesAfter: { module: this.options.module },
+				attributes: { module: this.options.module },
 				error: error instanceof Error ? error : undefined,
 				message: 'Error starting server.',
 			});
@@ -98,10 +98,10 @@ export class FastifyService {
 	async stop() {
 		try {
 			await this.server.close();
-			Logger.info({ contextOrSpacesAfter: { module: this.options.module }, message: 'Fastify server stopped.' });
+			Logger.info({ attributes: { module: this.options.module }, message: 'Fastify server stopped.' });
 		} catch (error) {
 			Logger.error({
-				contextOrErrorOrSpacesAfter: { module: this.options.module },
+				attributes: { module: this.options.module },
 				error: error instanceof Error ? error : undefined,
 				message: error instanceof Error ? error.message : 'Error stopping server',
 			});

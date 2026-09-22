@@ -76,7 +76,7 @@
 // 			samsForLocationsCounter++;
 // 		}
 
-// 		Logger.success(`Added ${samsForLocationsCounter} Unique SAMs from Simplified APEX Locations. (${samsForLocationsTimer.get()})`, 1);
+// 		Logger.success({ message: `Added ${samsForLocationsCounter} Unique SAMs from Simplified APEX Locations. (${samsForLocationsTimer.get()})`, spacesAfter: 1 });
 
 // 		/* * */
 // 		/* SIMPLIFIED APEX ON BOARD REFUNDS */
@@ -110,7 +110,7 @@
 // 			samsForOnBoardRefundsCounter++;
 // 		}
 
-// 		Logger.success(`Added ${samsForOnBoardRefundsCounter} Unique SAMs from Simplified APEX OnBoardRefunds. (${samsForOnBoardRefundsTimer.get()})`, 1);
+// 		Logger.success({ message: `Added ${samsForOnBoardRefundsCounter} Unique SAMs from Simplified APEX OnBoardRefunds. (${samsForOnBoardRefundsTimer.get()})`, spacesAfter: 1 });
 
 // 		/* * */
 // 		/* SIMPLIFIED APEX ON BOARD SALES */
@@ -144,7 +144,7 @@
 // 			samsForOnBoardSalesCounter++;
 // 		}
 
-// 		Logger.success(`Added ${samsForOnBoardSalesCounter} Unique SAMs from Simplified APEX OnBoardSales. (${samsForOnBoardSalesTimer.get()})`, 1);
+// 		Logger.success({ message: `Added ${samsForOnBoardSalesCounter} Unique SAMs from Simplified APEX OnBoardSales. (${samsForOnBoardSalesTimer.get()})`, spacesAfter: 1 });
 
 // 		/* * */
 // 		/* SIMPLIFIED APEX VALIDATIONS */
@@ -178,7 +178,7 @@
 // 			samsForValidationsCounter++;
 // 		}
 
-// 		Logger.success(`Added ${samsForValidationsCounter} SAMs from Simplified APEX Validations. (${samsForValidationsTimer.get()})`, 1);
+// 		Logger.success({ message: `Added ${samsForValidationsCounter} SAMs from Simplified APEX Validations. (${samsForValidationsTimer.get()})`, spacesAfter: 1 });
 
 // 		//
 

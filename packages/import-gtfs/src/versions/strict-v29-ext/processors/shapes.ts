@@ -41,7 +41,7 @@ export async function processGtfsStrictV29ExtShapes(context: ImportGtfsContext<G
 
 		context.gtfs.shapes.flush();
 
-		Logger.success(`Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
+		Logger.success({ message: `Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, spacesAfter: 1 });
 
 		//
 	} catch (error) {

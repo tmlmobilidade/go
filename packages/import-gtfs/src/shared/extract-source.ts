@@ -18,7 +18,7 @@ export async function extractGtfsSource<T>(context: ImportGtfsContext<T>) {
 
 	fs.rmSync(context.workdir.path, { force: true, recursive: true });
 	fs.mkdirSync(context.workdir.path, { recursive: true });
-	Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
+	Logger.success({ message: `Prepared working directory at "${context.workdir.path}".`, spacesAfter: 1 });
 
 	//
 	// If source is a URL, download the GTFS file from the given URL,
@@ -45,5 +45,5 @@ export async function extractGtfsSource<T>(context: ImportGtfsContext<T>) {
 
 	Logger.info({ message: 'Unzipping GTFS file...' });
 	await unzipFile(context.workdir.download_file_path, context.workdir.extract_dir_path);
-	Logger.success(`Unzipped GTFS file from "${context.workdir.download_file_path}" to "${context.workdir.extract_dir_path}".`, 1);
+	Logger.success({ message: `Unzipped GTFS file from "${context.workdir.download_file_path}" to "${context.workdir.extract_dir_path}".`, spacesAfter: 1 });
 }

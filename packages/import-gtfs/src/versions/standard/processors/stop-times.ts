@@ -46,7 +46,7 @@ export async function processGtfsStopTimes(context: ImportGtfsContext<GtfsSQLTab
 
 		context.gtfs.stop_times.flush();
 
-		Logger.success(`Finished processing "stop_times.txt": ${context.counters.stop_times} rows saved in ${stopTimesParseTimer.get()}.`, 1);
+		Logger.success({ message: `Finished processing "stop_times.txt": ${context.counters.stop_times} rows saved in ${stopTimesParseTimer.get()}.`, spacesAfter: 1 });
 
 		//
 	} catch (error) {

@@ -32,7 +32,7 @@ export async function cacheEtasFromClickHouseByStop() {
 
 	await Promise.all(etasByStop.map(row => cacheDb.set(`hub:v1:realtime:eta:by-stop:${row.key}`, row.value, TTL_REALTIME)));
 
-	Logger.info({ message: `Cached ${etasByStop.length} stop ETA groups in ${timer.get()}`, spacesAfterOrBefore: 1 });
+	Logger.info({ message: `Cached ${etasByStop.length} stop ETA groups in ${timer.get()}`, spacesAfter: 1 });
 
 	//
 };

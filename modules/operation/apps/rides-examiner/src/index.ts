@@ -42,7 +42,7 @@ export async function main() {
 
 	const ridesBatch = await goDb.operation.rides.findMany({ _id: { $in: rideIdsBatch || [] } });
 
-	Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
+	Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfter: 1 });
 
 	//
 	// Process each Ride in parallel
@@ -107,17 +107,17 @@ export async function main() {
 			// Log the results of the analysis.
 
 			Logger.info({ message: [
-				'[', { a: 'right', c: 7, t: `${ridesBatch.length - index}/${ridesBatch.length}` }, ']',
-				' FETCH: ', { c: 10, t: fetchAnalysisDataTime },
-				' AUGMENT: ', { c: 10, t: augmentRideTime },
-				' ANALYZE: ', { c: 10, t: analyzeRideTime },
-				' TOTAL: ', { c: 10, t: rideAnalysisTimer.get() },
-				{ c: 50, t: rideData._id },
-				{ c: 10, t: `SKIP: ${analysesResult.skip.length} ` },
-				{ c: 10, t: `PASS: ${analysesResult.pass.length} ` },
-				{ c: 10, t: `FAIL: ${analysesResult.fail.length} ` },
-				{ c: 12, t: `ERROR: ${analysesResult.error.length} [${analysesResult.error.join('|')}]` },
-			] });
+				`[${`${ridesBatch.length - index}/${ridesBatch.length}`.padStart(7)}]`,
+				` FETCH: ${fetchAnalysisDataTime.padEnd(10)}`,
+				` AUGMENT: ${augmentRideTime.padEnd(10)}`,
+				` ANALYZE: ${analyzeRideTime.padEnd(10)}`,
+				` TOTAL: ${rideAnalysisTimer.get().padEnd(10)}`,
+				rideData._id.padEnd(50),
+				`SKIP: ${analysesResult.skip.length} `.padEnd(10),
+				`PASS: ${analysesResult.pass.length} `.padEnd(10),
+				`FAIL: ${analysesResult.fail.length} `.padEnd(10),
+				`ERROR: ${analysesResult.error.length} [${analysesResult.error.join('|')}]`.padEnd(12),
+			].join('') });
 
 			//
 		} catch (error) {

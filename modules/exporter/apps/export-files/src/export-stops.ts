@@ -69,7 +69,7 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 
 	await csvWriter.flush();
 
-	Logger.success(`Exported ${count} stops in ${timer.get()}`, 1);
+	Logger.success({ message: `Exported ${count} stops in ${timer.get()}`, spacesAfter: 1 });
 	Logger.info({ message: `File path: ${tempFilePath}` });
 	Logger.spacer(1);
 

@@ -37,7 +37,7 @@ export async function processGtfsStrictV30Stops(context: ImportGtfsContext<GtfsS
 
 		context.gtfs.stops.flush();
 
-		Logger.success(`Finished processing "stops.txt": ${context.gtfs.stops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
+		Logger.success({ message: `Finished processing "stops.txt": ${context.gtfs.stops.size} rows saved in ${stopsParseTimer.get()}.`, spacesAfter: 1 });
 
 		//
 	} catch (error) {

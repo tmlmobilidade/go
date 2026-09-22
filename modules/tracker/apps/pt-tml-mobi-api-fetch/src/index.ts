@@ -27,7 +27,7 @@ const main = async () => {
 	//
 	// Fetch the MOBI Vehicle Events data from the API and decode it
 
-	Logger.info({ message: `[${ITERATION}] Fetching MOBI data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching MOBI data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.mobi.vehiclePositions();
 

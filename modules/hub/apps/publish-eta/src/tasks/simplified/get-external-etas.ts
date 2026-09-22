@@ -57,7 +57,7 @@ export async function getExternalEtas(feed: ExternalFeedConfig): Promise<TripSto
 	const stopNames = await getStopNames(stopIds);
 	const etas = tripUpdatesToEtas(tripUpdates, stopNames, scheduleIndex);
 
-	Logger.info({ message: `Found ${etas.length} ${feed.label} trip stop ETAs in ${timer.get()}`, spacesAfterOrBefore: 1 });
+	Logger.info({ message: `Found ${etas.length} ${feed.label} trip stop ETAs in ${timer.get()}`, spacesAfter: 1 });
 
 	return etas;
 

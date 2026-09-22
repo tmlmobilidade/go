@@ -105,7 +105,7 @@ async function main() {
 			}
 			// Delete the document from the source database
 			const deleteResult = await vehicleEventsCollection.deleteOne({ _id: new ObjectId(document._id) as unknown as string });
-			// Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${currentInsertedDocumentIds.length}) [ ${currentInsertedDocumentIds.join(' | ')} ] (deleted: ${deleteResult.deletedCount})`, 1);
+			// Logger.success({ message: `PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${currentInsertedDocumentIds.length}) [ ${currentInsertedDocumentIds.join(' | ')} ] (deleted: ${deleteResult.deletedCount})`, spacesAfter: 1 });
 		} catch (error) {
 			if (error.message.startsWith('E11000')) {
 				// Logger.error({ message: `Duplicate document "${document._id}" found in source database. Deleting it from source database.` });

@@ -97,7 +97,7 @@ export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<
 			});
 		}
 
-		Logger.info({ message: `Found ${tripUpdates.length} ${feed.label} trip updates in ${timer.get()}`, spacesAfterOrBefore: 1 });
+		Logger.info({ message: `Found ${tripUpdates.length} ${feed.label} trip updates in ${timer.get()}`, spacesAfter: 1 });
 
 		return tripUpdates;
 	} catch (error) {

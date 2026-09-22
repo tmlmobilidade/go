@@ -22,7 +22,7 @@ export async function getClickHouseEtas(): Promise<TripStopEta[]> {
 
 	const etas = await labDb.queryFromFile<TripStopEta>(sqlPath('hub', 'publish-eta/select-eta.sql'));
 
-	Logger.info({ message: `Found ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfterOrBefore: 1 });
+	Logger.info({ message: `Found ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfter: 1 });
 
 	return etas;
 

@@ -29,7 +29,7 @@ const main = async () => {
 	// train as-is. Ride matching and simplification happen downstream
 	// in pt-tml-fertagus-rawdb-stream.
 
-	Logger.info({ message: `[${ITERATION}] Fetching Fertagus data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching Fertagus data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	let response: null | TrainsResponse;
 	try {

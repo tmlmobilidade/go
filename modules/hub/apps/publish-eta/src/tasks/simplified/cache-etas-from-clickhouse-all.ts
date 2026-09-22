@@ -30,7 +30,7 @@ export async function cacheAllEtasFromClickHouse(): Promise<TripStopEta[]> {
 
 	await cacheDb.set('hub:v1:realtime:eta:all', JSON.stringify(etas), TTL_REALTIME);
 
-	Logger.info({ message: `Cached ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfterOrBefore: 1 });
+	Logger.info({ message: `Cached ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfter: 1 });
 
 	return etas;
 

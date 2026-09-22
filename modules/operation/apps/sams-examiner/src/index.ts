@@ -421,7 +421,7 @@
 
 // 				await sams.updateById(samData._id, updatedSamData);
 
-// 				Logger.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, 1);
+// 				Logger.success({ message: `Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, spacesAfter: 1 });
 
 // 			//
 // 			} catch (error) {

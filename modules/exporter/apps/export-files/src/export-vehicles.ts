@@ -59,7 +59,7 @@ export async function exportVehiclesFile(fileExport: FileExport): Promise<string
 
 	await csvWriter.flush();
 
-	Logger.success(`Exported ${count} vehicles in ${timer.get()}`, 1);
+	Logger.success({ message: `Exported ${count} vehicles in ${timer.get()}`, spacesAfter: 1 });
 	Logger.info({ message: `File path: ${tempFilePath}` });
 	Logger.spacer(1);
 

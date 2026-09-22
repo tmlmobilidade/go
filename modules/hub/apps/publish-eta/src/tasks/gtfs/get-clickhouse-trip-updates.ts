@@ -20,7 +20,7 @@ export async function getClickHouseTripUpdates(): Promise<GtfsRtTripUpdate[]> {
 
 	const tripUpdates: GtfsRtTripUpdate[] = allTripUpdates.map(row => JSON.parse(row.trip_update));
 
-	Logger.info({ message: `Found ${allTripUpdates.length} trip updates in ${timer.get()}`, spacesAfterOrBefore: 1 });
+	Logger.info({ message: `Found ${allTripUpdates.length} trip updates in ${timer.get()}`, spacesAfter: 1 });
 
 	//
 

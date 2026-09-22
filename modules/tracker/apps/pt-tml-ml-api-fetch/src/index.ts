@@ -40,7 +40,7 @@ const main = async () => {
 	//
 	// Fetch the Metro Lisboa Vehicle Events data from API and decode it.
 
-	Logger.info({ message: `[${ITERATION}] Fetching Metro Lisboa data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching Metro Lisboa data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	const lines = ['Amarela', 'Azul', 'Verde', 'Vermelha'];
 

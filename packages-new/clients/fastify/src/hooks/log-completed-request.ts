@@ -13,7 +13,7 @@ export function setupLogCompletedRequestHook(server: FastifyInstance, getModuleN
 
 	server.addHook('onResponse', (request, reply, done) => {
 		Logger.info({
-			contextOrSpacesAfter: getRequestLogContext(request, { module: getModuleName(), status: reply.statusCode }),
+			attributes: getRequestLogContext(request, { module: getModuleName(), status: reply.statusCode }),
 			message: 'request completed',
 		});
 		done();

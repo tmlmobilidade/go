@@ -44,7 +44,7 @@ export async function processGtfsTrips(context: ImportGtfsContext<GtfsSQLTables>
 
 		context.gtfs.trips.flush();
 
-		Logger.success(`Finished processing "trips.txt": ${context.gtfs.trips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
+		Logger.success({ message: `Finished processing "trips.txt": ${context.gtfs.trips.size} rows saved in ${tripsParseTimer.get()}.`, spacesAfter: 1 });
 
 		//
 	} catch (error) {

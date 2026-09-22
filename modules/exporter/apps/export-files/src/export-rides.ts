@@ -87,7 +87,7 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 
 	await csvWriter.flush();
 
-	Logger.success(`Exported ${count} rides in ${timer.get()}`, 1);
+	Logger.success({ message: `Exported ${count} rides in ${timer.get()}`, spacesAfter: 1 });
 	Logger.info({ message: `File path: ${tempFilePath}` });
 	Logger.spacer(1);
 

@@ -85,7 +85,7 @@ export async function processGtfsCalendarDates(context: ImportGtfsContext<GtfsSQ
 
 		if (fs.existsSync(`${context.workdir.extract_dir_path}/calendar_dates.txt`)) {
 			await streamCsvFile(`${context.workdir.extract_dir_path}/calendar_dates.txt`, parseEachRow);
-			Logger.success(`Finished processing "calendar_dates.txt": ${Object.keys(context.gtfs.calendar_dates).length} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
+			Logger.success({ message: `Finished processing "calendar_dates.txt": ${Object.keys(context.gtfs.calendar_dates).length} rows saved in ${calendarDatesParseTimer.get()}.`, spacesAfter: 1 });
 		} else {
 			Logger.info({ message: 'Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...' });
 		}

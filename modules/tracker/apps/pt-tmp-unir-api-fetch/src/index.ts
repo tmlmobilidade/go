@@ -58,7 +58,7 @@ const main = async () => {
 
 	//
 
-	Logger.info({ message: `[${ITERATION}] Fetching TMP UNIR data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching TMP UNIR data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	let response: UnirVehicleLocationResponse;
 	try {
