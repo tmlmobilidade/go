@@ -380,9 +380,6 @@
 					"passengers": {
 						"label": "Pasajeros"
 					},
-					"pattern_id": {
-						"label": "ID del patrón"
-					},
 					"prepaid_validations": {
 						"label": "Validaciones prepago"
 					},
@@ -391,6 +388,9 @@
 					},
 					"scheduled_start_time": {
 						"label": "Hora de inicio planificada"
+					},
+					"shape_id": {
+						"label": "ID del recorrido"
 					},
 					"start_delay": {
 						"label": "Retraso a la salida"

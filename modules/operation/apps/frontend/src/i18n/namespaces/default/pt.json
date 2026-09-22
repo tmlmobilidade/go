@@ -435,9 +435,6 @@
 					"passengers": {
 						"label": "Passageiros"
 					},
-					"pattern_id": {
-						"label": "ID do Padrão"
-					},
 					"prepaid_validations": {
 						"label": "Validações Pré-Pago"
 					},
@@ -446,6 +443,9 @@
 					},
 					"scheduled_start_time": {
 						"label": "Hora de Início Planeada"
+					},
+					"shape_id": {
+						"label": "ID da Shape"
 					},
 					"start_delay": {
 						"label": "Atraso à Partida"
