@@ -3,8 +3,7 @@
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { RideAnalysesRegistrySchema } from '@tmlmobilidade/go-types-operation';
 import { runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Delete all Ride Analyses from Rides that do not exist anymore.

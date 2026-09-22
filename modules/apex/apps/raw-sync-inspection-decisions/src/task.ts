@@ -6,7 +6,7 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction, type SimplifiedApexInspectionDecision } from '@tmlmobilidade/go-types-apex';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { type Filter } from 'mongodb';
 import { ZodError } from 'zod';
 

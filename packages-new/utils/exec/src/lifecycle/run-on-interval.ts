@@ -1,6 +1,7 @@
 /* * */
 
 import { type TimeSlot, TimeSlotMap } from '@tmlmobilidade/go-types-shared';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -47,7 +48,7 @@ export async function runOnInterval(fn: () => Promise<void>, options: RunOnInter
 		try {
 			await fn();
 		} catch (error) {
-			console.error('Error in runOnInterval:', error);
+			Logger.error({ error, message: 'Error in runOnInterval' });
 			if (options.throwOnError) throw error;
 		} finally {
 			setTimeout(runner, intervalMs);

@@ -1,8 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Delete all Rides from Plans that do not exist anymore.

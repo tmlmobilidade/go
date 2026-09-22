@@ -5,8 +5,7 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Ride, RideHash } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type Filter } from 'mongodb';
 
 /* * */

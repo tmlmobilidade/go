@@ -2,24 +2,13 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type ImportGtfsConfig, importGtfsHubV1ToDatabase } from '@tmlmobilidade/import-gtfs';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 
 import { syncLinesRoutesPatterns } from './tasks/sync-lines-routes-patterns.js';
 import { syncStops } from './tasks/sync-stops.js';
 
 /* * */
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'publish-network', message: 'Sentry Hub Publish Network initialized', module: 'hub', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Hub Publish Network' });
-}
 
 async function main() {
 	//

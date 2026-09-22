@@ -2,8 +2,7 @@
 
 import { type HubV1GtfsRoutes, HubV1GtfsRoutesSchema } from '@tmlmobilidade/go-types-hub';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';
 import { type GtfsHubV1SQLTables } from '../types.js';
@@ -38,7 +37,7 @@ export async function processGtfsHubV1Routes(context: ImportGtfsContext<GtfsHubV
 
 		context.gtfs.routes.flush();
 
-		Logger.success(`Finished processing "routes.txt": ${context.gtfs.routes.size} rows saved in ${routesParseTimer.get()}.`, 1);
+		Logger.success({ message: `Finished processing "routes.txt": ${context.gtfs.routes.size} rows saved in ${routesParseTimer.get()}.`, spacesAfter: 1 });
 
 		//
 	} catch (error) {

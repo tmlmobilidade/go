@@ -8,7 +8,7 @@ import { type RawApexTransaction, SimplifiedApexBankingTap } from '@tmlmobilidad
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { type Filter } from 'mongodb';
 import { ZodError } from 'zod';
 

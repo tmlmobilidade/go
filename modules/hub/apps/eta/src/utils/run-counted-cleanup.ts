@@ -2,7 +2,7 @@
 
 import { prepareNamedQueryParams, splitClickHouseStatements } from '@tmlmobilidade/go-clients-clickhouse';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { readFile } from 'node:fs/promises';
 
 /* * */

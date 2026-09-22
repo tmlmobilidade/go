@@ -2,6 +2,7 @@
 
 import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEventPtTmlCm, RawVehicleEventPtTmlCmSchema } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import crypto from 'node:crypto';
 
 /* * */
@@ -76,15 +77,13 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 		});
 
 		if (!parsedDocument.success) {
-
 			// Skip if its a dead run
 			// We don't currently store them in labdb.
-			if(entity?.vehicle?.deadRunId) continue;
+			if (entity?.vehicle?.deadRunId) continue;
 
 			//
 			// Log the error
-			console.error(JSON.stringify(entity, null, 2));
-			console.error({ error: parsedDocument.error, message: `Failed to insert document "${pcgiVehicleEvent._id}" -> ${parsedDocument.error.issues.map(issue => `${issue.path.join('.') || '<root>'}: ${issue.message}`).join('; ')}` });
+			Logger.error({ error: parsedDocument.error, message: `Failed to insert document "${pcgiVehicleEvent._id}" -> ${parsedDocument.error.issues.map(issue => `${issue.path.join('.') || '<root>'}: ${issue.message}`).join('; ')}` });
 			continue;
 		}
 

@@ -4,8 +4,7 @@ import { type GtfsStrictV29ExtCalendar, GtfsStrictV29ExtCalendarSchema } from '@
 import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';
@@ -105,7 +104,7 @@ export async function processGtfsStrictV29ExtCalendar(context: ImportGtfsContext
 
 		if (fs.existsSync(`${context.workdir.extract_dir_path}/calendar.txt`)) {
 			await streamCsvFile(`${context.workdir.extract_dir_path}/calendar.txt`, parseEachRow);
-			Logger.success(`Finished processing "calendar.txt": ${context.gtfs.calendar_dates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
+			Logger.success({ message: `Finished processing "calendar.txt": ${context.gtfs.calendar_dates.size} rows saved in ${calendarParseTimer.get()}.`, spacesAfter: 1 });
 		} else {
 			Logger.info({ message: 'Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...' });
 		}

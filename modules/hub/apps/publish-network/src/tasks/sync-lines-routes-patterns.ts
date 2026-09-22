@@ -4,8 +4,7 @@ import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiPatternTrip, type HubV1ApiPatternWaypoint, type HubV1ApiRoute, type HubV1ApiScheduledArrival, type HubV1ApiStop, HubV1GtfsRoutes } from '@tmlmobilidade/go-types-hub';
 import { HexColorSchema } from '@tmlmobilidade/go-types-shared';
 import { type GtfsHubV1SQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import crypto from 'node:crypto';
 
 import { getEncodedPolyline } from '../utils/get-encoded-polyline.js';

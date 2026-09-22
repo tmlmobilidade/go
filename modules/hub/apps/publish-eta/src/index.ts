@@ -1,8 +1,7 @@
 /* * */
 
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { publishTripUpdates } from './tasks/gtfs/publish-trip-updates.js';
 import { publishEtas } from './tasks/simplified/publish-etas.js';
@@ -10,16 +9,6 @@ import { publishEtas } from './tasks/simplified/publish-etas.js';
 /* * */
 
 let ITERATION = 0;
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'publish-eta', message: 'Sentry Hub Publish ETA initialized', module: 'hub', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Hub Publish ETA' });
-}
 
 async function main() {
 	//

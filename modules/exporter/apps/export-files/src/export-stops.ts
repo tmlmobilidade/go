@@ -2,7 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type FileExport, type StopExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { CsvWriter } from '@tmlmobilidade/writers';
@@ -69,7 +69,7 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 
 	await csvWriter.flush();
 
-	Logger.success(`Exported ${count} stops in ${timer.get()}`, 1);
+	Logger.success({ message: `Exported ${count} stops in ${timer.get()}`, spacesAfter: 1 });
 	Logger.info({ message: `File path: ${tempFilePath}` });
 	Logger.spacer(1);
 

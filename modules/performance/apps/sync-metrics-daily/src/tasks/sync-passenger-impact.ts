@@ -1,8 +1,7 @@
 /* * */
 
 import { syncPassengerImpactServiceFailuresByDay } from '@/syncs/passenger-impact/passenger-impact_by_day.js';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

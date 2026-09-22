@@ -1,6 +1,6 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { type AddressInfo, type Server } from 'node:net';
 import { createTunnel, type ForwardOptions, type ServerOptions, type SshOptions, type TunnelOptions } from 'tunnel-ssh';
 
@@ -52,7 +52,7 @@ export class SshTunnel {
 		try {
 			if (this._server) {
 				// If the server is already connected, return it
-				console.log(`⤷ SSH Tunnel already connected.`);
+				Logger.info({ message: 'SSH Tunnel already connected.' });
 				return this._server;
 			}
 
@@ -96,9 +96,9 @@ export class SshTunnel {
 			this._server?.close();
 			this._server = undefined;
 			this.onDisconnect?.();
-			console.log(`⤷ SSH Tunnel disconnected.`);
+			Logger.info({ message: 'SSH Tunnel disconnected.' });
 		} catch (error) {
-			console.log(`⤷ ERROR: Failed to disconnect from SSH Tunnel.`, error);
+			Logger.error({ error, message: 'Failed to disconnect from SSH Tunnel.' });
 		}
 	}
 

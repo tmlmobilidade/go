@@ -20,8 +20,7 @@
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

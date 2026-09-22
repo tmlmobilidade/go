@@ -3,7 +3,7 @@
 import { type ChangeStreamInsertDocument } from '@tmlmobilidade/go-clients-mongo';
 import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { type BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { PARSER_MAP } from './parsers.js';
 

@@ -4,7 +4,7 @@ import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

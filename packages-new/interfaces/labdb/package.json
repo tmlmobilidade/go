@@ -40,7 +40,7 @@
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/logger": "*"
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

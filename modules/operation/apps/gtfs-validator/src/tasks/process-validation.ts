@@ -9,7 +9,7 @@ import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getTmpWorkdirPath } from '@tmlmobilidade/go-utils-files';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };

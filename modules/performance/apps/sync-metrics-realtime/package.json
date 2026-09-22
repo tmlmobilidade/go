@@ -25,8 +25,7 @@
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

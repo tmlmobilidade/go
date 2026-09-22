@@ -6,8 +6,7 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, type PerformInTimeChunksItem } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

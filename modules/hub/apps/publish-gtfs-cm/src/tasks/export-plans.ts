@@ -2,7 +2,7 @@
 
 import { type HubV1GtfsPlansInput, HubV1GtfsPlansSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ExportGtfsContext } from '../types/context.js';
 

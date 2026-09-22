@@ -3,6 +3,7 @@
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Shape } from '@tmlmobilidade/go-types-offer';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { fetchTypologiesByAgencyIds } from './fetchers/typology.js';
 import { type ImportOptions } from './types.js';
@@ -46,9 +47,9 @@ export async function buildImportContext(options: ImportOptions): Promise<Import
 	let afetacaoRows: Awaited<ReturnType<typeof loadAfectacao>> = [];
 	try {
 		afetacaoRows = await loadAfectacao(options.gtfsPath);
-		console.log('[gtfs-importer] Loaded afetacao', { rows: afetacaoRows.length });
+		Logger.info({ message: `[gtfs-importer] Loaded afetacao (rows: ${afetacaoRows.length})` });
 	} catch (error) {
-		console.warn(`[gtfs-importer] Missing afetacao.csv or failed to parse: ${error instanceof Error ? error.message : String(error)}`);
+		Logger.warning({ error, message: '[gtfs-importer] Missing afetacao.csv or failed to parse' });
 	}
 
 	//
@@ -64,24 +65,15 @@ export async function buildImportContext(options: ImportOptions): Promise<Import
 	const gtfsStopTimes = gtfsStopTimesAll.filter(stopTime => tripIdSet.has(stopTime.trip_id));
 	const gtfsShapes = gtfsShapesAll;
 
-	console.log('[gtfs-importer] Loaded GTFS data', {
-		routes: gtfsRoutes.length,
-		shapes: gtfsShapes.length,
-		stopTimes: gtfsStopTimes.length,
-		trips: gtfsTrips.length,
-	});
-
-	console.log('[gtfs-importer] Resolved agency IDs', { agencyIds });
+	Logger.info({ message: `[gtfs-importer] Loaded GTFS data (routes: ${gtfsRoutes.length}, shapes: ${gtfsShapes.length}, stopTimes: ${gtfsStopTimes.length}, trips: ${gtfsTrips.length})` });
+	Logger.info({ attributes: { agencyIds }, message: `[gtfs-importer] Resolved agency IDs (${agencyIds.join(', ')})` });
 
 	//
 	// C. Load typologies + zones
 
 	const typologies = await fetchTypologiesByAgencyIds(agencyIds);
 	const typologyMap = buildTypologyColorMap(typologies);
-	console.log('[gtfs-importer] Loaded typologies', {
-		count: typologies.length,
-		mappedColors: typologyMap.size,
-	});
+	Logger.info({ message: `[gtfs-importer] Loaded typologies (count: ${typologies.length}, mappedColors: ${typologyMap.size})` });
 
 	const zoneDocs = await goDb.offer.zones.findMany({});
 	const zoneIdByCode = new Map<string, string>();
@@ -89,7 +81,7 @@ export async function buildImportContext(options: ImportOptions): Promise<Import
 		if (!zone.code) continue;
 		zoneIdByCode.set(String(zone.code).trim(), zone._id);
 	}
-	console.log('[gtfs-importer] Loaded zones', { count: zoneIdByCode.size });
+	Logger.info({ message: `[gtfs-importer] Loaded zones (count: ${zoneIdByCode.size})` });
 
 	//
 	// D. Build indexes for quick access

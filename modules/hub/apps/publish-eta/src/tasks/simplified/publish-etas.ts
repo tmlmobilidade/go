@@ -1,7 +1,6 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { EXTERNAL_FEEDS } from '../external-feeds.js';
 import { cacheEtasByAll } from './cache-etas-by-all.js';

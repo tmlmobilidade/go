@@ -3,22 +3,11 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
 const SYNC_DAYS_BACK = 90;
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'rides-locker', message: 'Sentry Rides Locker initialized', module: 'controller', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Rides Locker' });
-}
 
 async function main() {
 	try {

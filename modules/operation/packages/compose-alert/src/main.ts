@@ -5,6 +5,7 @@ import { type AlertsComposeRequest, AlertsComposeRequestSchema, type AlertsCompo
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/go-providers-ai';
 import { LanguageTagValues } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { addToPromptContext, getFinalPrompt } from './context/index.js';
 import { fetchLinesReferenceContext } from './data/lines/fetch-lines-reference-context.js';
@@ -143,16 +144,16 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 
 		const finalPrompt = getFinalPrompt(promptContext);
 
-		console.log('finalPrompt', finalPrompt);
+		Logger.info({ message: `[composeAlertTitleAndDescription()] finalPrompt: ${finalPrompt}` });
 
 		const aiResult = await ociGenerativeAIProvider.run(finalPrompt, { temperature: 0.3 });
 
-		console.log('aiResult', aiResult);
+		Logger.info({ message: `[composeAlertTitleAndDescription()] aiResult: ${aiResult}` });
 
 		result[i18nCode] = parseAiResult(aiResult);
 	}
 
-	console.log('result', result);
+	Logger.info({ message: `[composeAlertTitleAndDescription()] result: ${JSON.stringify(result)}` });
 
 	return result;
 }

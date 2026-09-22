@@ -8,9 +8,8 @@ import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Files } from '@tmlmobilidade/go-utils-files';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
@@ -27,16 +26,6 @@ import { getActivePlans } from './utils/get-active-plans.js';
 import { initExportGtfsContext } from './utils/init-context.js';
 
 /* * */
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'publish-gtfs', message: 'Sentry Hub Publish GTFS initialized', module: 'hub', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS' });
-}
 
 async function main() {
 	//

@@ -4,8 +4,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getPlanHash, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { unzipFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ZipFile } from 'yazl';
@@ -81,7 +80,7 @@ export async function normalizePlansTask() {
 
 			Logger.info({ message: 'Unzipping GTFS file...' });
 			await unzipFile(context.paths.operation_gtfs_file_path, context.paths.extracted_dir_path);
-			Logger.success(`Unzipped GTFS file from "${context.paths.operation_gtfs_file_path}" to "${context.paths.extracted_dir_path}".`, 1);
+			Logger.success({ message: `Unzipped GTFS file from "${context.paths.operation_gtfs_file_path}" to "${context.paths.extracted_dir_path}".`, spacesAfter: 1 });
 
 			//
 			// Update the agency.txt and feed_info.txt files
@@ -190,7 +189,7 @@ export async function normalizePlansTask() {
 
 			await setPlanStatus(planData._id, 'organizer', 'complete', newHashValue);
 
-			Logger.success(`Updated last hash of organizer app for plan ${planData._id}.`, 1);
+			Logger.success({ message: `Updated last hash of organizer app for plan ${planData._id}.`, spacesAfter: 1 });
 
 			//
 		} catch (error) {
@@ -199,7 +198,7 @@ export async function normalizePlansTask() {
 		} finally {
 			// Cleanup the working directory
 			context.paths.removeDir();
-			Logger.success(`Cleaned up working directory.`, 1);
+			Logger.success({ message: `Cleaned up working directory.`, spacesAfter: 1 });
 		}
 	}
 

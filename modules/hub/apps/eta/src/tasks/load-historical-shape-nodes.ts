@@ -4,7 +4,7 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type EncodedPolyline } from '@tmlmobilidade/go-types-geo';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { chunkLineStringByDistance, fromEncodedPolylineToGeoJsonLineString, geohashEncode } from '@tmlmobilidade/go-utils-geo';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
