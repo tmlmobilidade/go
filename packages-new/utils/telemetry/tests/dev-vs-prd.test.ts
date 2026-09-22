@@ -14,27 +14,25 @@ afterEach(() => {
  */
 async function loadLogger(environment: string) {
 	process.env.ENVIRONMENT = environment;
-	return import(`../src/logger/index.js?environment=${environment}`);
+	const module: typeof import('../src/logger/index.js') = await import(`../src/logger/index.js?environment=${environment}`);
+	return module.Logger;
+}
+
+function captureConsole(method: 'error' | 'log'): string[] {
+	const lines: string[] = [];
+	mock.method(console, method, (value?: unknown) => {
+		lines.push(String(value ?? ''));
+	});
+	return lines;
 }
 
 describe('dev vs production logging', () => {
 	it('info is pretty in development and JSON in production', async () => {
-		const lines: string[] = [];
-		mock.method(console, 'log', (value?: unknown) => {
-			lines.push(String(value ?? ''));
-		});
+		const lines = captureConsole('log');
 
-		const { logger: loggerDev } = await loadLogger('dev');
-		loggerDev.info({
-			contextOrSpacesAfter: { agency_id: 'CARRIS', ride_id: 'ride-1' },
-			message: 'Ride processed successfully',
-		});
-
-		const { logger: loggerPrd } = await loadLogger('prd');
-		loggerPrd.info({
-			contextOrSpacesAfter: { agency_id: 'CARRIS', ride_id: 'ride-1' },
-			message: 'Ride processed successfully',
-		});
+		const entry = { attributes: { agency_id: 'CARRIS', ride_id: 'ride-1' }, message: 'Ride processed successfully' };
+		(await loadLogger('dev')).info(entry);
+		(await loadLogger('prd')).info(entry);
 
 		assert.equal(lines[0], '→ Ride processed successfully');
 
@@ -46,38 +44,42 @@ describe('dev vs production logging', () => {
 		assert.match(record.timestamp, /^\d{4}-\d{2}-\d{2}T/);
 	});
 
-	it('success is pretty in development and JSON in production', async () => {
-		const lines: string[] = [];
-		mock.method(console, 'log', (value?: unknown) => {
-			lines.push(String(value ?? ''));
-		});
+	it('success accepts a bare string in both environments', async () => {
+		const lines = captureConsole('log');
 
-		const { logger: loggerDev } = await loadLogger('dev');
-		loggerDev.success('Done');
-
-		const { logger: loggerPrd } = await loadLogger('prd');
-		loggerPrd.success('Done');
+		(await loadLogger('dev')).success('Done');
+		(await loadLogger('prd')).success('Done');
 
 		assert.equal(lines[0], '✓ Done');
 
 		const record = JSON.parse(lines[1]);
 		assert.equal(record.body, 'Done');
 		assert.equal(record.severity_text, 'INFO');
-		assert.equal(record.severity_number, 9);
 	});
 
-	it('divider prints in development and is a no-op in production', async () => {
-		const lines: string[] = [];
-		mock.method(console, 'log', (value?: unknown) => {
-			lines.push(String(value ?? ''));
-		});
+	it('error accepts a bare Error and keeps its stack', async () => {
+		const lines = captureConsole('error');
+		const error = new RangeError('Out of range');
 
-		const { logger: loggerDev } = await loadLogger('dev');
-		loggerDev.divider('Section', 20);
-		assert.deepEqual(lines, ['', '- Section -----------', '']);
+		(await loadLogger('dev')).error(error);
+		(await loadLogger('prd')).error(error);
 
-		const { logger: loggerPrd } = await loadLogger('prd');
-		loggerPrd.divider('Section', 20);
-		assert.equal(lines.length, 3);
+		assert.equal(lines[0], '✘ Out of range');
+		assert.match(lines[1], /^RangeError: Out of range/);
+
+		const record = JSON.parse(lines[2]);
+		assert.equal(record.body, 'Out of range');
+		assert.equal(record.severity_text, 'ERROR');
+		assert.equal(record.attributes['exception.type'], 'RangeError');
+		assert.match(record.attributes['exception.stacktrace'], /RangeError: Out of range/);
+	});
+
+	it('divider prints the same in both environments', async () => {
+		const lines = captureConsole('log');
+
+		(await loadLogger('dev')).divider('Section', 20);
+		(await loadLogger('prd')).divider('Section', 20);
+
+		assert.deepEqual(lines, ['', '- Section -----------', '', '', '- Section -----------', '']);
 	});
 });
