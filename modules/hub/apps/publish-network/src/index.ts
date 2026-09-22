@@ -1,5 +1,6 @@
 /* * */
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type ImportGtfsConfig, importGtfsHubV1ToDatabase } from '@tmlmobilidade/import-gtfs';
@@ -26,8 +27,10 @@ async function main() {
 
 	const importConfig: ImportGtfsConfig = {
 		source: {
-			// url: API_ROUTES.hub.PLANS_GTFS,
-			url: 'https://go.tmlmobilidade.pt/hub/api/v1/plans/gtfs',
+			url: API_ROUTES.hub.PLANS_GTFS,
+		},
+		sqlite_config: {
+			memory: true,
 		},
 	};
 

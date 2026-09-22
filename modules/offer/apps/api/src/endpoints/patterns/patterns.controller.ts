@@ -82,6 +82,7 @@ export class PatternsController {
 
 		const newPattern = await goDb.offer.patterns.insertOne({
 			...request.body,
+			created_by: request.me._id,
 			parameters: [defaultParameter],
 		});
 
@@ -512,6 +513,7 @@ export class PatternsController {
 				...(patternData.comments || []),
 				...patternComments,
 			],
+			updated_by: request.me._id,
 		};
 
 		//

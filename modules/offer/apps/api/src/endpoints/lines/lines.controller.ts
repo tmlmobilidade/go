@@ -51,7 +51,10 @@ export class LinesController {
 		//
 		// Create the new line
 
-		const newLine = await goDb.offer.lines.insertOne(request.body);
+		const newLine = await goDb.offer.lines.insertOne({
+			...request.body,
+			created_by: request.me._id,
+		});
 		const populatedLine = await populateLine(newLine);
 
 		//
@@ -319,7 +322,10 @@ export class LinesController {
 		//
 		// Update the line
 
-		const updatedLine = await goDb.offer.lines.updateById(lineData._id, request.body);
+		const updatedLine = await goDb.offer.lines.updateById(lineData._id, {
+			...request.body,
+			updated_by: request.me._id,
+		});
 		const populatedLine = await populateLine(updatedLine);
 
 		//
