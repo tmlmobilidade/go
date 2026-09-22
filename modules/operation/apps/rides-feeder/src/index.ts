@@ -28,11 +28,11 @@ async function main() {
 		.then(data => data.plan_id);
 
 	if (!planId) {
-		console.log(`No plan to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})`);
+		Logger.info({ message: `No plan to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})` });
 		return;
 	}
 
-	console.log(`Received plan ID from coordinator: ${planId} (fetch: ${fetchCoordinatorTimer.get()})`);
+	Logger.info({ message: `Received plan ID from coordinator: ${planId} (fetch: ${fetchCoordinatorTimer.get()})` });
 
 	//
 	// Retrieve the plan from the database
