@@ -17,7 +17,9 @@ import useSWR from 'swr';
 interface UseLineDetailDataReturnType {
 	activeAlerts: HubV1ApiAlert[]
 	allPatterns: HubV1ApiPattern[][] | null
+	hasError: boolean
 	isLoading: boolean
+	isNotFound: boolean
 	line: HubV1ApiLine | undefined
 	routes: HubV1ApiRoute[]
 	validPatterns: HubV1ApiPattern[] | undefined
@@ -32,15 +34,15 @@ export function useLineDetailData(lineId: null | string): UseLineDetailDataRetur
 	// A. Fetch data
 
 	const { data: alerts } = useAlertsData();
-	const { data: lines, isLoading: isLinesLoading } = useLinesData();
-	const { data: routes, isLoading: isRoutesLoading } = useRoutesData();
-	const { data: stops, isLoading: isStopsLoading } = useStopsData();
+	const { data: lines, error: linesError, isLoading: isLinesLoading } = useLinesData();
+	const { data: routes, error: routesError, isLoading: isRoutesLoading } = useRoutesData();
+	const { data: stops, error: stopsError, isLoading: isStopsLoading } = useStopsData();
 	const { selectedOperationalDate } = useOperationalDate();
 
 	const line = useMemo(() => lines.find(item => item._id === lineId), [lineId, lines]);
 	const patternIds = line?.pattern_ids ?? [];
 	const patternsKey = line ? [API_ROUTES.hub.NETWORK_PATTERNS(line._id), ...patternIds] : null;
-	const { data: fetchedPatterns, isLoading: isPatternsLoading } = useSWR<HubV1ApiPattern[][]>(patternsKey, async () => await fetchPatterns(patternIds));
+	const { data: fetchedPatterns, error: patternsError, isLoading: isPatternsLoading } = useSWR<HubV1ApiPattern[][]>(patternsKey, async () => await fetchPatterns(patternIds));
 
 	//
 	// B. Transform data
@@ -56,11 +58,13 @@ export function useLineDetailData(lineId: null | string): UseLineDetailDataRetur
 	return useMemo(() => ({
 		activeAlerts,
 		allPatterns,
-		isLoading: isLinesLoading || isPatternsLoading || isRoutesLoading || isStopsLoading || (lineId !== null && !line),
+		hasError: Boolean(linesError || patternsError || routesError || stopsError),
+		isLoading: isLinesLoading || isPatternsLoading || isRoutesLoading || isStopsLoading,
+		isNotFound: lineId !== null && !isLinesLoading && !linesError && !line,
 		line,
 		routes: lineRoutes,
 		validPatterns,
-	}), [activeAlerts, allPatterns, isLinesLoading, isPatternsLoading, isRoutesLoading, isStopsLoading, line, lineId, lineRoutes, validPatterns]);
+	}), [activeAlerts, allPatterns, isLinesLoading, isPatternsLoading, isRoutesLoading, isStopsLoading, line, lineId, lineRoutes, linesError, patternsError, routesError, stopsError, validPatterns]);
 
 	//
 }

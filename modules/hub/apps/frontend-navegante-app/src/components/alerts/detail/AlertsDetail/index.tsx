@@ -3,7 +3,9 @@
 import { AlertsDetailView } from '@/components/alerts/detail/AlertsDetailView';
 import { useAlertsData } from '@/components/alerts/use-alerts-data';
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { DetailUnavailable } from '@/components/common/display/DetailUnavailable';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { LoadingSection } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,7 +16,7 @@ export function AlertsDetail() {
 	// A. Setup variables
 
 	const { activeBottomSheet, pop } = useBottomSheet();
-	const { data: alerts } = useAlertsData();
+	const { data: alerts, error, isLoading } = useAlertsData();
 	const isOpen = activeBottomSheet?.view === 'alerts-detail';
 	const activeAlertId = isOpen ? activeBottomSheet?.entityId : null;
 
@@ -32,9 +34,10 @@ export function AlertsDetail() {
 			withCompactCloseButton
 			withHeaderBackground
 		>
-			{activeAlertId && alert && (
-				<AlertsDetailView alert={alert} />
-			)}
+			{activeAlertId && isLoading && <LoadingSection fullHeight />}
+			{activeAlertId && !isLoading && error && <DetailUnavailable reason="error" />}
+			{activeAlertId && !isLoading && !error && !alert && <DetailUnavailable reason="not-found" />}
+			{activeAlertId && !isLoading && !error && alert && <AlertsDetailView alert={alert} />}
 		</BottomSheet>
 	);
 

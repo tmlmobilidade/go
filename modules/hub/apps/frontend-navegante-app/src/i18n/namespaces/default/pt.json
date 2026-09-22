@@ -41,6 +41,10 @@
 		"CopyBadge": {
 			"copied": "Copiado"
 		},
+		"DetailUnavailable": {
+			"error": "Não foi possível carregar esta informação.",
+			"not_found": "Esta informação já não está disponível."
+		},
 		"locations": {
 			"coordinates": "Coordenadas",
 			"unnamed": "Local sem nome"
@@ -301,7 +305,7 @@
 		"Search": {
 			"clear": "Limpar pesquisa",
 			"empty": "Nenhum resultado encontrado.",
-			"error": "Erro ao pesquisar locais",
+			"error": "Não foi possível carregar todos os resultados.",
 			"groups": {
 				"alert": "Alertas",
 				"line": "Linhas",
@@ -344,6 +348,7 @@
 			"headsign": "Destino: {headsign}",
 			"headsign_unknown": "desconhecido",
 			"seen_seconds_ago": "Visto há {count, plural, one {# segundo} other {# segundos}}",
+			"stale": "A mostrar a última informação disponível.",
 			"unknown_destination": "desconhecido"
 		},
 		"VehiclesListDetails": {

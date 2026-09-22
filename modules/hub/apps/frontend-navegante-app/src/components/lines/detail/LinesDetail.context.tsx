@@ -30,8 +30,10 @@ interface LinesDetailContextState {
 		active_waypoint_stop_sequence: null | string
 	}
 	flags: {
+		has_error: boolean
 		is_interactive_mode: boolean
 		is_loading: boolean
+		is_not_found: boolean
 	}
 }
 
@@ -64,7 +66,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	//
 	// B. Fetch data
 
-	const { activeAlerts, allPatterns, isLoading, line, routes, validPatterns } = useLineDetailData(lineId);
+	const { activeAlerts, allPatterns, hasError, isLoading, isNotFound, line, routes, validPatterns } = useLineDetailData(lineId);
 
 	//
 	// C. Transform data
@@ -166,10 +168,12 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			active_waypoint_stop_sequence: activeWaypointStopSequence,
 		},
 		flags: {
+			has_error: hasError,
 			is_interactive_mode: isInteractiveMode,
 			is_loading: isLoading,
+			is_not_found: isNotFound,
 		},
-	}), [activeAlerts, activePattern, activePatternId, activeShape, activeWaypoint, activeWaypointStopId, activeWaypointStopSequence, allPatterns, highlightedTripIds, isInteractiveMode, isLoading, line, routes, setActivePattern, setActiveWaypoint, setHighlightedTripIds, validPatterns]);
+	}), [activeAlerts, activePattern, activePatternId, activeShape, activeWaypoint, activeWaypointStopId, activeWaypointStopSequence, allPatterns, hasError, highlightedTripIds, isInteractiveMode, isLoading, isNotFound, line, routes, setActivePattern, setActiveWaypoint, setHighlightedTripIds, validPatterns]);
 
 	//
 	// G. Render components

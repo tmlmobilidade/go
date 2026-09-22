@@ -39,9 +39,9 @@ export function useSearch(query: string): UseSearchResult {
 
 	// A. Setup variables
 
-	const { data: alerts } = useAlertsData();
-	const { data: lines } = useLinesData();
-	const { data: stops } = useStopsData();
+	const { data: alerts, error: alertsError, isLoading: isAlertsLoading } = useAlertsData();
+	const { data: lines, error: linesError, isLoading: isLinesLoading } = useLinesData();
+	const { data: stops, error: stopsError, isLoading: isStopsLoading } = useStopsData();
 	const userLocationContext = useUserLocation();
 	const { t } = useTranslation();
 	const userCoordinates = useMemo(() => getSearchCoordinates(userLocationContext.data.location), [userLocationContext.data.location?.latitude, userLocationContext.data.location?.longitude]);
@@ -74,7 +74,11 @@ export function useSearch(query: string): UseSearchResult {
 		return groupResults(results);
 	}, [alerts, lines, motisSearch.data, normalizedQuery, stops]);
 
-	return { error: motisSearch.error, groups, isLoading: motisSearch.isLoading };
+	const hasLocalDataError = Boolean(alertsError || linesError || stopsError);
+	const error = motisSearch.error || (hasLocalDataError ? t('default:search.Search.error') : null);
+	const isLoading = motisSearch.isLoading || isAlertsLoading || isLinesLoading || isStopsLoading;
+
+	return { error, groups, isLoading };
 }
 
 /* * */

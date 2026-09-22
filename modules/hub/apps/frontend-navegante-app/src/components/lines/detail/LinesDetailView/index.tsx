@@ -1,5 +1,6 @@
 'use client';
 
+import { DetailUnavailable } from '@/components/common/display/DetailUnavailable';
 import { FeedbackForm } from '@/components/feedback';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailAlerts } from '@/components/lines/detail/LinesDetailAlerts';
@@ -28,6 +29,10 @@ export function LinesDetailView() {
 				<LoadingSection />
 			</>
 		);
+	}
+
+	if (linesDetailContext.flags.has_error || linesDetailContext.flags.is_not_found) {
+		return <DetailUnavailable reason={linesDetailContext.flags.has_error ? 'error' : 'not-found'} />;
 	}
 
 	return (

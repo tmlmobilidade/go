@@ -36,12 +36,12 @@ export function useVehiclesData(): UseVehiclesDataReturnType {
 
 	return useMemo(() => ({
 		data: data?.data ?? [],
-		error: error?.error ?? null,
+		error: data?.error ?? (error instanceof Error ? error.message : null),
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, data?.timestamp, error?.error, isLoading, isValidating, mutate]);
+	}), [data?.data, data?.error, data?.timestamp, error, isLoading, isValidating, mutate]);
 
 	//
 }
