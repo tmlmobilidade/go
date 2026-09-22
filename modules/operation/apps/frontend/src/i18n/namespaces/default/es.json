@@ -134,7 +134,8 @@
 				},
 				"summary": {
 					"performed": "Se realizó un nuevo análisis del viaje"
-				}
+				},
+				"system": "Sistema"
 			},
 			"RideAcceptanceJustification": {
 				"SubmitButton": {
@@ -164,6 +165,14 @@
 					}
 				},
 				"title": "Justificación"
+			},
+			"RideAcceptanceStatus": {
+				"confirm": {
+					"aria_label": "Confirmar nuevo estado"
+				},
+				"edit": {
+					"aria_label": "Editar estado"
+				}
 			}
 		},
 		"analysis": {
