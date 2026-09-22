@@ -615,7 +615,12 @@
 				"rejected": "Rejeitada",
 				"under_review": "Em Revisão"
 			},
-
+			"RidesDetailHeader": {
+				"favorites": {
+					"add": "Adicionar aos favoritos",
+					"remove": "Remover dos favoritos"
+				}
+			},
 			"RidesDetailViewNavigation": {
 				"acceptance": {
 					"label": "Aceitação"

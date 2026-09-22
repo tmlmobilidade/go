@@ -522,6 +522,23 @@
 				"justification_required": "Justificación necesaria",
 				"rejected": "Rechazada",
 				"under_review": "En revisión"
+			},
+			"RidesDetailHeader": {
+				"favorites": {
+					"add": "Añadir a favoritos",
+					"remove": "Quitar de favoritos"
+				}
+			},
+			"RidesDetailViewNavigation": {
+				"acceptance": {
+					"label": "Aceptación"
+				},
+				"analysis": {
+					"label": "Análisis"
+				},
+				"audit": {
+					"label": "Auditoría"
+				}
 			}
 		},
 		"extract": {
