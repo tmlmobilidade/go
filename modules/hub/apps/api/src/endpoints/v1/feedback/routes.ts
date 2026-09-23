@@ -1,23 +1,24 @@
 /* * */
 
-import { postFeedback, postFeedbackRouteOptions } from '@/endpoints/v1/feedback/controllers/post-feedback.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
+
+import { postFeedbackHandler, postFeedbackRouteOptions } from './handlers/post-feedback.js';
 
 /* * */
 
-const namespace = '/v1/feedback';
+const NAMESPACE = '/v1/feedback';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.post('/', postFeedbackRouteOptions, postFeedback);
+		instance.post('/', postFeedbackRouteOptions, postFeedbackHandler);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

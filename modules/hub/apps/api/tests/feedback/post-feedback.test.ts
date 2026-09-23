@@ -1,5 +1,4 @@
-import { createStoredFeedback, type PostFeedbackDependencies, isFeedbackEntityValid, postFeedback } from '@/endpoints/v1/feedback/controllers/post-feedback';
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { createStoredFeedback, type PostFeedbackDependencies, isFeedbackEntityValid, postFeedbackHandler } from '@/endpoints/v1/feedback/handlers/post-feedback';
 import { type PublicFeedback, PublicFeedbackSubmissionSchema } from '@tmlmobilidade/go-types-hub';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
@@ -36,13 +35,13 @@ describe('post feedback', () => {
 		};
 		const response = createTestReply();
 
-		await postFeedback({
+		await postFeedbackHandler({
 			body: lineSubmission,
 			headers: { 'content-type': 'application/json' },
 			ip: '127.0.0.1',
-		} as Parameters<typeof postFeedback>[0], response.reply, dependencies);
+		} as Parameters<typeof postFeedbackHandler>[0], response.reply, dependencies);
 
-		assert.equal(response.statusCode, HTTP_STATUS.CREATED);
+		assert.equal(response.statusCode, 201);
 		assert.deepEqual(response.payload, {
 			data: null,
 			error: null,
@@ -67,11 +66,11 @@ describe('post feedback', () => {
 		};
 		const response = createTestReply();
 
-		await postFeedback({
+		await postFeedbackHandler({
 			body: stopSubmission,
 			headers: { 'content-type': 'application/json; charset=utf-8' },
 			ip: '127.0.0.1',
-		} as Parameters<typeof postFeedback>[0], response.reply, dependencies);
+		} as Parameters<typeof postFeedbackHandler>[0], response.reply, dependencies);
 
 		assert.deepEqual(insertedFeedback, [{
 			agency_id: null,
@@ -94,14 +93,13 @@ describe('post feedback', () => {
 		};
 		const response = createTestReply();
 
-		await assert.rejects(
-			postFeedback({
-				body: lineSubmission,
-				headers: { 'content-type': 'application/json' },
-				ip: '127.0.0.1',
-			} as Parameters<typeof postFeedback>[0], response.reply, dependencies),
-			(error: unknown) => error instanceof HttpException && error.statusCode === HTTP_STATUS.BAD_REQUEST,
-		);
+		await postFeedbackHandler({
+			body: lineSubmission,
+			headers: { 'content-type': 'application/json' },
+			ip: '127.0.0.1',
+		} as Parameters<typeof postFeedbackHandler>[0], response.reply, dependencies);
+
+		assert.equal(response.statusCode, 400);
 		assert.equal(insertCount, 0);
 	});
 
@@ -115,14 +113,13 @@ describe('post feedback', () => {
 		};
 		const response = createTestReply();
 
-		await assert.rejects(
-			postFeedback({
-				body: lineSubmission,
-				headers: { 'content-type': 'text/plain' },
-				ip: '127.0.0.1',
-			} as Parameters<typeof postFeedback>[0], response.reply, dependencies),
-			(error: unknown) => error instanceof HttpException && error.statusCode === HTTP_STATUS.UNSUPPORTED_MEDIA_TYPE,
-		);
+		await postFeedbackHandler({
+			body: lineSubmission,
+			headers: { 'content-type': 'text/plain' },
+			ip: '127.0.0.1',
+		} as Parameters<typeof postFeedbackHandler>[0], response.reply, dependencies);
+
+		assert.equal(response.statusCode, 415);
 		assert.equal(infrastructureCallCount, 0);
 	});
 
@@ -135,14 +132,13 @@ describe('post feedback', () => {
 		};
 		const response = createTestReply();
 
-		await assert.rejects(
-			postFeedback({
-				body: lineSubmission,
-				headers: { 'content-type': 'application/json' },
-				ip: '127.0.0.1',
-			} as Parameters<typeof postFeedback>[0], response.reply, dependencies),
-			(error: unknown) => error instanceof HttpException && error.statusCode === HTTP_STATUS.TOO_MANY_REQUESTS,
-		);
+		await postFeedbackHandler({
+			body: lineSubmission,
+			headers: { 'content-type': 'application/json' },
+			ip: '127.0.0.1',
+		} as Parameters<typeof postFeedbackHandler>[0], response.reply, dependencies);
+
+		assert.equal(response.statusCode, 429);
 		assert.equal(response.headers.get('retry-after'), 600);
 	});
 
@@ -157,14 +153,13 @@ describe('post feedback', () => {
 		};
 		const response = createTestReply();
 
-		await assert.rejects(
-			postFeedback({
-				body: lineSubmission,
-				headers: { 'content-type': 'application/json' },
-				ip: '127.0.0.1',
-			} as Parameters<typeof postFeedback>[0], response.reply, dependencies),
-			(error: unknown) => error instanceof HttpException && error.statusCode === HTTP_STATUS.SERVICE_UNAVAILABLE,
-		);
+		await postFeedbackHandler({
+			body: lineSubmission,
+			headers: { 'content-type': 'application/json' },
+			ip: '127.0.0.1',
+		} as Parameters<typeof postFeedbackHandler>[0], response.reply, dependencies);
+
+		assert.equal(response.statusCode, 503);
 	});
 
 	it('validates line IDs together with their agency attribution', () => {
@@ -265,7 +260,7 @@ function createTestReply() {
 		get payload() {
 			return payload;
 		},
-		reply: reply as unknown as Parameters<typeof postFeedback>[1],
+		reply: reply as unknown as Parameters<typeof postFeedbackHandler>[1],
 		get statusCode() {
 			return statusCode;
 		},
