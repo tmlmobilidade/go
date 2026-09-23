@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
 	registry "main/validations"
 	validations "main/validations/stops/validations"
@@ -15,6 +16,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.StopsRules
+	if rules != nil {
+		section = &rules.Stops
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running Validations for stops.txt")
 
 	// stopsData := BuildStopsDataCache()
@@ -42,97 +52,38 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate stop_id
 		// validations.StopIdValidation(&stop, row, &gtfs, stopRules, stopsData)
-		validations.StopIdValidation(&stop, row, &gtfs, stopRules)
-
-		// Validate stop_code
-		validations.StopCodeValidation(&stop, row, &gtfs, stopRules)
-
-		// Validate stop_name
-		// validations.StopNameValidation(&stop, row, stopRules, stopsData)
-		validations.StopNameValidation(&stop, row, stopRules)
-
-		// Validate tts_stop_name
-		validations.TtsStopNameValidation(&stop, row, stopRules)
-
-		// Validate stop_desc
-		validations.StopDescValidation(&stop, row, stopRules)
-
-		// Validate stop_lat
-		// validations.StopLatValidation(&stop, row, stopRules, stopsData)
-		validations.StopLatValidation(&stop, row, stopRules)
-
-		// Validate stop_lon
-		// validations.StopLonValidation(&stop, row, stopRules, stopsData)
-		validations.StopLonValidation(&stop, row, stopRules)
-
-		// Validate zone_id
-		validations.ZoneIdValidation(&stop, row, stopRules)
-
-		// Validate location_type
-		validations.LocationTypeValidation(&stop, row, stopRules)
-
-		// Validate parent_station
-		validations.ParentStationValidation(&stop, row, gtfs, stopRules)
-
-		// Validate stop_timezone
-		validations.StopTimezoneValidation(&stop, row, stopRules)
-
-		// Validate wheelchair_boarding
-		validations.WheelchairBoardingValidation(&stop, row, stopRules)
-
-		// Validate level_id
-		validations.LevelIdValidation(&stop, row, gtfs, stopRules)
-
-		// Validate platform_code
-		validations.PlatformCodeValidation(&stop, row, stopRules)
-
-		// Validate region_id
-		validations.RegionIdValidation(&stop, row, stopRules)
-
-		// Validate public_visible
-		validations.PublicVisibleValidation(&stop, row, stopRules)
-
-		// Validate shelter_code
-		validations.ShelterCodeValidation(&stop, row, stopRules)
-
-		// Validate shelter_maintainer
-		validations.ShelterMaintainerValidation(&stop, row, stopRules)
-
-		// Validate stop_short_name
-		validations.StopShortNameValidation(&stop, row, stopRules)
-
-		// Validate stop_url
-		validations.StopUrlValidation(&stop, row, stopRules)
-
-		// Validate municipality_id
-		validations.MunicipalityIdValidation(&stop, row, stopRules)
-
-		// Validate parish_id
-		validations.ParishIdValidation(&stop, row, stopRules)
-
-		// Validate has_bench
-		validations.HasBenchValidation(&stop, row, stopRules)
-
-		// Validate has_network_map
-		validations.HasNetworkMapValidation(&stop, row, stopRules)
-
-		// Validate has_pip_real_time
-		validations.HasPipRealTimeValidation(&stop, row, stopRules)
-
-		// Validate has_schedules
-		validations.HasSchedulesValidation(&stop, row, stopRules)
-
-		// Validate has_shelter
-		validations.HasShelterValidation(&stop, row, stopRules)
-
-		// Validate has_stop_sign
-		validations.HasStopSignValidation(&stop, row, stopRules)
-
-		// Validate has_tariffs_information
-		validations.HasTariffsInformationValidation(&stop, row, stopRules)
-
-		// Validate stop_access
-		validations.StopAccessValidation(&stop, row, &gtfs, stopRules)
+		runner.Run(services.RuleActions{
+			"stop_id_unique":                             func() { validations.StopIdValidation(&stop, row, &gtfs, stopRules) },
+			"stop_code_valid":                            func() { validations.StopCodeValidation(&stop, row, &gtfs, stopRules) },
+			"stop_name_required_by_location_type":        func() { validations.StopNameValidation(&stop, row, stopRules) },
+			"tts_stop_name_valid":                        func() { validations.TtsStopNameValidation(&stop, row, stopRules) },
+			"stop_desc_valid":                            func() { validations.StopDescValidation(&stop, row, stopRules) },
+			"stop_lat_valid_latitude_range":              func() { validations.StopLatValidation(&stop, row, stopRules) },
+			"stop_lon_valid_longitude_range":             func() { validations.StopLonValidation(&stop, row, stopRules) },
+			"zone_id_valid":                              func() { validations.ZoneIdValidation(&stop, row, stopRules) },
+			"location_type_valid_enum":                   func() { validations.LocationTypeValidation(&stop, row, stopRules) },
+			"parent_station_id_valid_for_stop_hierarchy": func() { validations.ParentStationValidation(&stop, row, gtfs, stopRules) },
+			"stop_timezone_valid":                        func() { validations.StopTimezoneValidation(&stop, row, stopRules) },
+			"wheelchair_boarding_valid_enum":             func() { validations.WheelchairBoardingValidation(&stop, row, stopRules) },
+			"level_id_valid_id":                          func() { validations.LevelIdValidation(&stop, row, gtfs, stopRules) },
+			"platform_code_valid":                        func() { validations.PlatformCodeValidation(&stop, row, stopRules) },
+			"region_id_valid":                            func() { validations.RegionIdValidation(&stop, row, stopRules) },
+			"public_visible_valid_enum":                  func() { validations.PublicVisibleValidation(&stop, row, stopRules) },
+			"shelter_code_valid":                         func() { validations.ShelterCodeValidation(&stop, row, stopRules) },
+			"shelter_maintainer_valid":                   func() { validations.ShelterMaintainerValidation(&stop, row, stopRules) },
+			"stop_short_name_valid":                      func() { validations.StopShortNameValidation(&stop, row, stopRules) },
+			"stop_url_valid_url":                         func() { validations.StopUrlValidation(&stop, row, stopRules) },
+			"municipality_id_valid":                      func() { validations.MunicipalityIdValidation(&stop, row, stopRules) },
+			"parish_id_valid":                            func() { validations.ParishIdValidation(&stop, row, stopRules) },
+			"has_bench_valid_enum":                       func() { validations.HasBenchValidation(&stop, row, stopRules) },
+			"has_network_map_valid_enum":                 func() { validations.HasNetworkMapValidation(&stop, row, stopRules) },
+			"has_pip_real_time_valid_enum":               func() { validations.HasPipRealTimeValidation(&stop, row, stopRules) },
+			"has_schedules_valid_enum":                   func() { validations.HasSchedulesValidation(&stop, row, stopRules) },
+			"has_shelter_valid_enum":                     func() { validations.HasShelterValidation(&stop, row, stopRules) },
+			"has_stop_sign_valid_enum":                   func() { validations.HasStopSignValidation(&stop, row, stopRules) },
+			"has_tariffs_information_valid_enum":         func() { validations.HasTariffsInformationValidation(&stop, row, stopRules) },
+			"stop_access":                                func() { validations.StopAccessValidation(&stop, row, &gtfs, stopRules) },
+		}, nil)
 
 		return nil
 	})

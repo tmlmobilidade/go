@@ -19,6 +19,10 @@ import (
 Validates if trips with the same pattern_id have the same route_id, trip_headsign, direction_id, shape_id and the same stop sequence.
 */
 func PatternIdGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, gtfs *types.Gtfs, rules *types.TripsRules) {
+	PatternIdGroupRuleValidation(tripsGroupedByPattern, gtfs, rules, "")
+}
+
+func PatternIdGroupRuleValidation(tripsGroupedByPattern types.TripGroupedByPattern, gtfs *types.Gtfs, rules *types.TripsRules, ruleID string) {
 	// Group trips by pattern_id and validate the group
 	for patternId, group := range tripsGroupedByPattern {
 		if len(group.Trips) == 0 {
@@ -26,6 +30,9 @@ func PatternIdGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, 
 		}
 
 		for _, trip := range group.Trips {
+			if ruleID != "" && ruleID != "pattern_id_trip_has_required_fields_for_grouping" {
+				break
+			}
 			ctx := lib.NewValidationContext("pattern_id", "trips.txt", "pattern_id_trip_has_required_fields_for_grouping", trip.Row, services.AppMessageService)
 			if rules != nil && rules.PatternIdTripHasRequiredFieldsForGrouping.Severity != "" {
 				ctx.WithSeverity(rules.PatternIdTripHasRequiredFieldsForGrouping.Severity)
@@ -54,7 +61,7 @@ func PatternIdGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, 
 			}
 		}
 
-		if len(group.Hash) > 1 {
+		if len(group.Hash) > 1 && (ruleID == "" || ruleID == "pattern_id_single_trip_signature_per_pattern") {
 			row := group.Trips[0].Row
 			ctx := lib.NewValidationContext("pattern_id", "trips.txt", "pattern_id_single_trip_signature_per_pattern", row, services.AppMessageService)
 			if rules != nil && rules.PatternIdSingleTripSignaturePerPattern.Severity != "" {

@@ -38,8 +38,8 @@ func TestAgencySeverityControlsMessagesAndDependencies(t *testing.T) {
 	service := NewMessageService()
 	context := lib.NewValidationContext("trip_id", "trips.txt", "trip_id_unique", 0, service)
 	context.AddError("bad trip")
-	if context.Status() != ruleset.Passed || service.TotalErrors() != 0 || service.TotalWarnings() != 1 {
-		t.Fatal("warning still failed dependency")
+	if context.Status() != ruleset.Failed || service.TotalErrors() != 0 || service.TotalWarnings() != 1 {
+		t.Fatal("warning did not fail dependency")
 	}
 	service.AddMessage(types.Message{FileName: "shapes.txt", RuleID: "shape_id_required", Severity: types.SEVERITY_ERROR, Message: "shape id missing"})
 	if len(service.GetSummary().Messages) != 1 {

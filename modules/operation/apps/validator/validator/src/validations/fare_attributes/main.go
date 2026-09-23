@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
-	validations "main/validations/fare_attributes/validations"
 	registry "main/validations"
+	validations "main/validations/fare_attributes/validations"
 )
 
 func init() {
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.FareAttributesRules
+	if rules != nil {
+		section = &rules.FareAttributes
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running Fare Attributes Validations...")
 
 	// Create progress tracker
@@ -33,25 +43,15 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// Validate fare_id
-		validations.FareIdValidation(&fareAttribute, i, &gtfs)
-
-		// Validate price
-		validations.PriceValidation(&fareAttribute, i)
-
-		// Validate currency_type
-		validations.CurrencyTypeValidation(&fareAttribute, i)
-
-		// Validate payment_method
-		validations.PaymentMethodValidation(&fareAttribute, i)
-
-		// Validate transfers
-		validations.TransfersValidation(&fareAttribute, i, &gtfs)
-
-		// Validate agency_id
-		validations.AgencyIdValidation(&fareAttribute, i, &gtfs, fareAttributesRules)
-
-		// Validate transfer_duration
-		validations.TransferDurationValidation(&fareAttribute, i, &gtfs, fareAttributesRules)
+		runner.Run(services.RuleActions{
+			"fare_id_unique":                                    func() { validations.FareIdValidation(&fareAttribute, i, &gtfs) },
+			"fare_price_valid_non_negative_decimal":             func() { validations.PriceValidation(&fareAttribute, i) },
+			"currency_type_valid":                               func() { validations.CurrencyTypeValidation(&fareAttribute, i) },
+			"payment_method_valid_gtfs_enum":                    func() { validations.PaymentMethodValidation(&fareAttribute, i) },
+			"transfers_valid_gtfs_enum":                         func() { validations.TransfersValidation(&fareAttribute, i, &gtfs) },
+			"fare_attributes_agency_id_references_agency_table": func() { validations.AgencyIdValidation(&fareAttribute, i, &gtfs, fareAttributesRules) },
+			"transfer_duration_valid_seconds_range":             func() { validations.TransferDurationValidation(&fareAttribute, i, &gtfs, fareAttributesRules) },
+		}, nil)
 
 		return nil
 	})

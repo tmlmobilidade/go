@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
 	registry "main/validations"
 	validations "main/validations/fare_media/validations"
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.FareMediaRules
+	if rules != nil {
+		section = &rules.FareMedia
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running FareMedia Validations...")
 
 	// Create progress tracker
@@ -34,13 +44,11 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// Validate fare_media_id
-		validations.FareMediaIdValidation(&fareMedia, i, &gtfs, fareMediaRules)
-
-		// Validate fare_media_name
-		validations.FareMediaNameValidation(&fareMedia, i, &gtfs, fareMediaRules)
-
-		// Validate fare_media_type
-		validations.FareMediaTypeValidation(&fareMedia, i, &gtfs, fareMediaRules)
+		runner.Run(services.RuleActions{
+			"fare_media_id_unique":      func() { validations.FareMediaIdValidation(&fareMedia, i, &gtfs, fareMediaRules) },
+			"fare_media_name_non_empty": func() { validations.FareMediaNameValidation(&fareMedia, i, &gtfs, fareMediaRules) },
+			"fare_media_type_valid":     func() { validations.FareMediaTypeValidation(&fareMedia, i, &gtfs, fareMediaRules) },
+		}, nil)
 
 		return nil
 	})

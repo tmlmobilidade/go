@@ -56,6 +56,9 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 	violations := []distancesViolation{}
 
 	for i, shape := range shapes {
+		if shape.Row != nil {
+			i = *shape.Row
+		}
 
 		if shape.ShapeId == nil || *shape.ShapeId == "" {
 			continue

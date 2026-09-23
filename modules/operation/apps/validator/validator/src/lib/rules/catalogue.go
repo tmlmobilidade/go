@@ -11,6 +11,7 @@ var Severities = []types.Severity{types.SEVERITY_ERROR, types.SEVERITY_WARNING, 
 
 // CatalogueEntry maps an output rule to its stored agency configuration.
 type CatalogueEntry struct {
+	DependsOn    []string         `json:"depends_on,omitempty"`
 	OutputIDs    []string         `json:"output_ids,omitempty"`
 	MessageField string           `json:"message_field,omitempty"`
 	Severities   []types.Severity `json:"severities,omitempty"`
@@ -32,7 +33,7 @@ func Catalogue() []CatalogueEntry {
 			field := group.Type.Field(j)
 			key := field.Tag.Get("json")
 			if field.Type == ruleConfigType {
-				entry := CatalogueEntry{Group: name, ID: key, ConfigKey: key, Editable: true}
+				entry := CatalogueEntry{Group: name, ID: key, ConfigKey: key, Editable: true, DependsOn: DefaultDependencies(name, key)}
 				if id, ok := outputRuleIDs[name+"."+key]; ok {
 					entry.ID = id
 				}
@@ -77,7 +78,7 @@ func DefaultConfig() types.GtfsRules {
 		for j := range group.NumField() {
 			field := group.Field(j)
 			if field.Type() == ruleConfigType {
-				field.Set(reflect.ValueOf(types.RuleConfig{Severity: types.SEVERITY_IGNORE}))
+				field.Set(reflect.ValueOf(types.RuleConfig{Severity: types.SEVERITY_IGNORE, DependsOn: DefaultDependencies(groups.Type().Field(i).Tag.Get("json"), group.Type().Field(j).Tag.Get("json"))}))
 			} else if field.Type() == reflect.TypeOf(types.Severity("")) {
 				field.SetString(string(types.SEVERITY_IGNORE))
 			}

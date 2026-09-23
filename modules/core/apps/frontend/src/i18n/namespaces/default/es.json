@@ -150,7 +150,7 @@
 				"title": "Planos"
 			},
 			"ValidationRules": {
-				"description": "Las reglas usan las severidades guardadas para esta agencia. Las reglas sin severidad guardada se tratan como Ignorar y solo se guardan al cambiarlas.",
+				"description": "Lista de reglas que serán aplicadas a la validación del GTFS.",
 				"group": "Archivo",
 				"invalid": "No se pueden guardar las reglas:",
 				"rule": "Regla",

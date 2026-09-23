@@ -122,6 +122,9 @@ func main() {
 	}
 
 	// 0.3 Parse Rules
+	if err := ruleset.ValidateDependencyContract(); err != nil {
+		log.Fatalf("Invalid dependency contract: %v", err)
+	}
 	rules, err := services.NewRulesParser(services.AppCLI.Options.RulesPath).ParseRules()
 	if err != nil {
 		log.Fatalf("Error parsing rules: %v", err)
@@ -153,12 +156,8 @@ func main() {
 	//
 	// 2. Check File Requirements
 	// File validations add messages directly to AppMessageService
-	// Only exit early if there are errors (warnings are ok to continue)
-	if hasErrors := file_validation.NewFileValidation().Validate(gtfs, rules); hasErrors {
-		outputSummary()
-		lib.AppLogger.Error("File validations found errors. Exiting.")
-		return
-	}
+	// Missing files block their own DAGs; independent available files still run.
+	file_validation.NewFileValidation().Validate(gtfs, rules)
 
 	//
 	// 3. Run Validations for each file

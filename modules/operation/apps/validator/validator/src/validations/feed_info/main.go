@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
-	validations "main/validations/feed_info/validations"
 	registry "main/validations"
+	validations "main/validations/feed_info/validations"
 )
 
 func init() {
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.FeedInfoRules
+	if rules != nil {
+		section = &rules.FeedInfo
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running FeedInfo Validations...")
 
 	// Create progress tracker
@@ -28,31 +38,17 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// Validate feed_lang
-		validations.FeedLangValidation(&feedInfoParsed, i)
-
-		// Validate feed_publisher_name
-		validations.FeedPublisherNameValidation(&feedInfoParsed, i)
-
-		// Validate feed_publisher_url
-		validations.FeedPublisherUrlValidation(&feedInfoParsed, i)
-		
-		// Validate feed_contact_email
-		validations.FeedContactEmailValidation(nil, &feedInfoParsed, i)
-
-		// Validate feed_contact_url
-		validations.FeedContactUrlValidation(nil, &feedInfoParsed, i)
-
-		// Validate feed_end_date
-		validations.FeedEndDateValidation(nil, &feedInfoParsed, i)
-
-		// Validate feed_start_date
-		validations.FeedStartDateValidation(nil, &feedInfoParsed, i)
-
-		// Validate feed_version
-		validations.FeedVersionValidation(nil, &feedInfoParsed, i)
-
-		// Validate default_lang
-		validations.DefaultLangValidation(nil, &feedInfoParsed, i)
+		runner.Run(services.RuleActions{
+			"feed_lang_valid_tag":                           func() { validations.FeedLangValidation(&feedInfoParsed, i) },
+			"feed_publisher_name_non_empty":                 func() { validations.FeedPublisherNameValidation(&feedInfoParsed, i) },
+			"feed_publisher_url_valid_http_url":             func() { validations.FeedPublisherUrlValidation(&feedInfoParsed, i) },
+			"feed_contact_email_valid_address":              func() { validations.FeedContactEmailValidation(nil, &feedInfoParsed, i) },
+			"feed_contact_url_valid_http_url":               func() { validations.FeedContactUrlValidation(nil, &feedInfoParsed, i) },
+			"feed_end_date_valid_yyyymmdd_not_before_start": func() { validations.FeedEndDateValidation(nil, &feedInfoParsed, i) },
+			"feed_start_date_valid_yyyymmdd":                func() { validations.FeedStartDateValidation(nil, &feedInfoParsed, i) },
+			"feed_version_valid_identifier":                 func() { validations.FeedVersionValidation(nil, &feedInfoParsed, i) },
+			"default_lang_matches_feed_lang_when_present":   func() { validations.DefaultLangValidation(nil, &feedInfoParsed, i) },
+		}, nil)
 
 		return nil
 	})

@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
-	validations "main/validations/fare_rules/validations"
 	registry "main/validations"
+	validations "main/validations/fare_rules/validations"
 )
 
 func init() {
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.FareRulesRules
+	if rules != nil {
+		section = &rules.FareRules
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running FareRules Validations...")
 
 	// Create progress tracker
@@ -34,19 +44,13 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// validate contains_id
-		validations.ContainsIdValidation(&fareRule, i, &gtfs, fareRulesRules)
-
-		// validate destination_id
-		validations.DestinationIdValidation(&fareRule, i, &gtfs, fareRulesRules)
-
-		// validate origin_id
-		validations.OriginIdValidation(&fareRule, i, &gtfs, fareRulesRules)
-
-		// validate fare_id
-		validations.FareIdValidation(&fareRule, i, &gtfs, fareRulesRules)
-
-		// validate route_id
-		validations.RouteIdValidation(&fareRule, i, &gtfs, fareRulesRules)
+		runner.Run(services.RuleActions{
+			"fare_rule_contains_id_references_zones_stops":    func() { validations.ContainsIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
+			"fare_rule_destination_id_references_zones_stops": func() { validations.DestinationIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
+			"fare_rule_origin_id_references_zones_stops":      func() { validations.OriginIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
+			"fare_rule_fare_id_references_fare_attributes":    func() { validations.FareIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
+			"fare_rule_route_id_references_routes":            func() { validations.RouteIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
+		}, nil)
 
 		return nil
 	})

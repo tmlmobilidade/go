@@ -34,6 +34,24 @@ The generated types are compile-time only. `normalizeValidationRules` is the run
 
 A stored config key can differ from the emitted rule id. For example, `frequencies.trip_id` emits `frequencies_trip_id_references_trips_table`. Catalogue entries carry both `config_key` and `id`, and `setRuleSeverity` always writes under `config_key`.
 
+### Rule dependencies
+
+The structural DAG is declared in `modules/operation/apps/validator/validator/src/lib/rules/dependencies.json` and embedded in the Go binary. Every configurable rule has an entry. The generated catalogue exposes its direct prerequisites as `depends_on`.
+
+Basic rules depend on the synthetic `<section>_file_present` node. This tests whether the file was imported, independently of the agency's `_file` severity. Compound rules depend on the checks whose results they need; file availability is inherited transitively:
+
+```text
+agency_file_present
+  ├─ agency_id_unique ────┐
+  └─ agency_name_present ┴─ agency_id_matched_with_agency_name
+```
+
+Agency settings may add `depends_on` edges using configuration keys from the same section, or that section's file-presence node. They do not remove structural prerequisites. Unknown dependencies and cycles are rejected before validation. Grouped checks declare their scope (`trip`, `pattern`, or `shape`) in the JSON contract; a row check cannot depend on a later grouped check, and dependencies between different group scopes are rejected.
+
+The shared runner sorts the DAG once per file and evaluates it independently for each row. Warnings and errors both fail a prerequisite. Ignored, unavailable, or blocked rules are skipped, and their dependents are skipped too. Independent rules and rows continue. Group checks use only the prerequisite outcomes of their own members, preserving the original source row numbers. Missing-file errors are reported without stopping validation of other available files.
+
+The contract also includes existing configuration keys whose checks have not yet been implemented (for example, the placeholder translations and attributions validators). A missing implementation never counts as a passed prerequisite. Technical parsing notices remain fixed and outside the configurable rule DAG.
+
 ### Removed exports
 
 These exports from earlier releases were removed. There are no compatibility wrappers.

@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
-	validations "main/validations/calendar/validations"
 	registry "main/validations"
+	validations "main/validations/calendar/validations"
 )
 
 func init() {
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.CalendarRules
+	if rules != nil {
+		section = &rules.Calendar
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running Calendar Validations...")
 
 	// Create progress tracker
@@ -28,11 +38,11 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// Validate service_id
-		validations.ServiceIdValidation(&calendar, i, &gtfs)
-
-		// Validate service dates
-		validations.DateValidation(calendar.StartDate, "start_date", i)
-		validations.DateValidation(calendar.EndDate, "end_date", i)
+		runner.Run(services.RuleActions{
+			"calendar_service_id_unique_non_empty": func() { validations.ServiceIdValidation(&calendar, i, &gtfs) },
+			"calendar_start_date_valid_yyyymmdd":   func() { validations.DateValidation(calendar.StartDate, "start_date", i) },
+			"calendar_end_date_valid_yyyymmdd":     func() { validations.DateValidation(calendar.EndDate, "end_date", i) },
+		}, nil)
 
 		return nil
 	})

@@ -20,10 +20,17 @@ Validate the shape sequence, based on shape_pt_sequence and shape_dist_traveled.
 https://gtfs.org/schedule/reference/#shapestxt
 */
 func ShapeSequenceValidation(shapes []types.Shape, rules *types.ShapesRules) {
+	ShapeSequenceRuleValidation(shapes, rules, "")
+}
+
+func ShapeSequenceRuleValidation(shapes []types.Shape, rules *types.ShapesRules, ruleID string) {
 	// Group shapes by shape_id
 	shapeGroups := make(map[string][]ShapePtSequenceGroup)
 
 	for i, shape := range shapes {
+		if shape.Row != nil {
+			i = *shape.Row
+		}
 		ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", "shape_id_and_point_sequence_required", i, services.AppMessageService)
 		ctx.WithSeverity(types.SEVERITY_ERROR)
 		if rules != nil && rules.ShapeIdAndPointSequenceRequired.Severity != "" {
@@ -31,6 +38,9 @@ func ShapeSequenceValidation(shapes []types.Shape, rules *types.ShapesRules) {
 		}
 
 		if shape.ShapeId == nil || shape.ShapePtSequence == nil {
+			if ruleID != "" && ruleID != "shape_id_and_point_sequence_required" {
+				continue
+			}
 			if ctx.ShouldSkip() {
 				return
 			}
@@ -66,13 +76,13 @@ func ShapeSequenceValidation(shapes []types.Shape, rules *types.ShapesRules) {
 				if rules != nil && rules.ShapePtSequenceStrictlyIncreasing.Severity != "" {
 					ctx.WithSeverity(rules.ShapePtSequenceStrictlyIncreasing.Severity)
 				}
-				if shape.sequence <= shapeGroup[i-1].sequence {
+				if shape.sequence <= shapeGroup[i-1].sequence && (ruleID == "" || ruleID == "shape_pt_sequence_strictly_increasing") {
 					if !ctx.ShouldSkip() {
 						ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_pt_sequence_validation.not_increasing", shape.shapeId))
 					}
 				}
 				// Only check dist if both current and previous are present
-				if shape.dist >= 0 && shapeGroup[i-1].dist >= 0 {
+				if shape.dist >= 0 && shapeGroup[i-1].dist >= 0 && (ruleID == "" || ruleID == "shape_dist_traveled_non_decreasing_with_sequence") {
 					if shape.dist < shapeGroup[i-1].dist {
 						ctxDist := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", "shape_dist_traveled_non_decreasing_with_sequence", shape.row, services.AppMessageService)
 						ctxDist.WithSeverity(types.SEVERITY_ERROR)

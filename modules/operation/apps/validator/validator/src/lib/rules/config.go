@@ -1,8 +1,10 @@
 package rules
 
 import (
+	"fmt"
 	"main/types"
 	"reflect"
+	"slices"
 	"strings"
 )
 
@@ -18,13 +20,17 @@ func RuleIDs(section any) []string {
 	return ids
 }
 
-// DependenciesFrom reads depends_on from every rule of a rules section
-// (e.g. types.AgencyRules) and returns them keyed by rule id
+// DependenciesFrom combines structural prerequisites from dependencies.json
+// with additional depends_on edges saved in the file's rule configuration.
 func DependenciesFrom(section any) map[string][]string {
 	deps := map[string][]string{}
+	group := SectionName(section)
 	forEachRuleConfig(section, func(id string, config types.RuleConfig) {
-		if len(config.DependsOn) > 0 {
-			deps[id] = config.DependsOn
+		deps[id] = DefaultDependencies(group, id)
+		for _, dependency := range config.DependsOn {
+			if !slices.Contains(deps[id], dependency) {
+				deps[id] = append(deps[id], dependency)
+			}
 		}
 	})
 	return deps
@@ -43,10 +49,20 @@ func WithDependencies[T any](list []Rule[T], deps map[string][]string) []Rule[T]
 }
 
 // ValidateSection checks that every depends_on in a rules section points to a rule
-// of the same section and that there are no cycles
+// of the same section (or its file-presence node) and that there are no cycles
 func ValidateSection(section any) error {
 	deps := DependenciesFrom(section)
-	list := []Rule[struct{}]{}
+	group := SectionName(section)
+	for id, prerequisites := range deps {
+		scope := defaultDependencies[group][id].Scope
+		for _, prerequisite := range prerequisites {
+			prerequisiteScope := defaultDependencies[group][prerequisite].Scope
+			if prerequisiteScope != "" && scope != prerequisiteScope {
+				return fmt.Errorf("rule %q cannot depend on %q in %s scope", id, prerequisite, prerequisiteScope)
+			}
+		}
+	}
+	list := []Rule[struct{}]{{ID: FileNode(SectionName(section))}}
 	for _, id := range RuleIDs(section) {
 		list = append(list, Rule[struct{}]{ID: id, DependsOn: deps[id]})
 	}
@@ -57,7 +73,11 @@ func ValidateSection(section any) error {
 func forEachRuleConfig(section any, fn func(id string, config types.RuleConfig)) {
 	v := reflect.ValueOf(section)
 	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
+		if v.IsNil() {
+			v = reflect.Zero(v.Type().Elem())
+		} else {
+			v = v.Elem()
+		}
 	}
 	if v.Kind() != reflect.Struct {
 		return

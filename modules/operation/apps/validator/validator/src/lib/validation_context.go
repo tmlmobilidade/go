@@ -35,7 +35,7 @@ type ValidationContext struct {
 	// Message adder for adding messages (avoids import cycle)
 	MessageAdder MessageAdder
 
-	// failed is set once an error-severity message is added
+	// failed is set once a warning or error is reported
 	failed bool
 }
 
@@ -98,7 +98,7 @@ func (vc *ValidationContext) AddMessage(message string, severity types.Severity,
 		}
 		severity = override
 	}
-	if severity == types.SEVERITY_ERROR {
+	if severity == types.SEVERITY_ERROR || severity == types.SEVERITY_WARNING || severity == types.SEVERITY_FORBIDDEN {
 		vc.failed = true
 	}
 	vc.MessageAdder.AddMessage(types.Message{
@@ -115,7 +115,7 @@ func (vc *ValidationContext) AddMessage(message string, severity types.Severity,
 // whose parameter is named "rules" can still name the type
 type RuleStatus = rules.Status
 
-// Status reports the rule outcome for the rules manager: Failed if an error was added
+// Status reports the rule outcome for the rules manager: Failed if a warning or error was added
 func (vc *ValidationContext) Status() rules.Status {
 	if vc.failed {
 		return rules.Failed

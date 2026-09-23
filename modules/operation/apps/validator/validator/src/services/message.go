@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 
 	"main/config"
 
@@ -30,6 +31,8 @@ type MessageServiceInterface interface {
 
 // MessageService implements MessageServiceInterface
 type MessageService struct {
+	mu           sync.RWMutex
+	issues       map[string]uint64
 	errorCount   int
 	warningCount int
 	messages     []types.Message
@@ -38,6 +41,7 @@ type MessageService struct {
 func NewMessageService() *MessageService {
 	return &MessageService{
 		messages: []types.Message{},
+		issues:   make(map[string]uint64),
 	}
 }
 
@@ -53,6 +57,15 @@ func (ms *MessageService) AddMessage(message types.Message) {
 			return
 		}
 		message.Severity = severity
+	}
+
+	ms.mu.Lock()
+	if message.Severity != types.SEVERITY_IGNORE {
+		if ms.issues == nil {
+			ms.issues = make(map[string]uint64)
+		}
+		ms.issues[message.RuleID]++
+		ms.issues[message.RuleID+"/"+message.Field]++
 	}
 
 	// Add +2 to each row in the message.Rows
@@ -71,6 +84,7 @@ func (ms *MessageService) AddMessage(message types.Message) {
 				newRows = append(newRows[:limit], lastRow)
 			}
 			ms.messages[i].Rows = newRows
+			ms.mu.Unlock()
 			return
 		}
 	}
@@ -86,8 +100,11 @@ func (ms *MessageService) AddMessage(message types.Message) {
 		ms.warningCount++
 	}
 
+	totalIssues := ms.errorCount + ms.warningCount
+	ms.mu.Unlock()
+
 	// Exit if total errors + warnings exceeds TotalIssuesLimit
-	if ms.errorCount+ms.warningCount >= config.TotalIssuesLimit {
+	if totalIssues >= config.TotalIssuesLimit {
 		lib.AppLogger.Error("Too many issues (errors + warnings > " + strconv.Itoa(config.TotalIssuesLimit) + "). Exiting.")
 		if AppCLI.Options.OutputPath != "" {
 			if err := ms.WriteToFile(AppCLI.Options.OutputPath); err != nil {
@@ -102,7 +119,13 @@ func (ms *MessageService) AddMessage(message types.Message) {
 }
 
 func (ms *MessageService) GetSummary() types.Summary {
-	messages := sortedMessages(ms.messages)
+	ms.mu.RLock()
+	defer ms.mu.RUnlock()
+	messages := slices.Clone(ms.messages)
+	for i := range messages {
+		messages[i].Rows = slices.Clone(messages[i].Rows)
+	}
+	messages = sortedMessages(messages)
 
 	return types.Summary{
 		Messages:      messages,
@@ -112,10 +135,14 @@ func (ms *MessageService) GetSummary() types.Summary {
 }
 
 func (ms *MessageService) TotalErrors() int {
+	ms.mu.RLock()
+	defer ms.mu.RUnlock()
 	return ms.errorCount
 }
 
 func (ms *MessageService) TotalWarnings() int {
+	ms.mu.RLock()
+	defer ms.mu.RUnlock()
 	return ms.warningCount
 }
 
@@ -155,7 +182,7 @@ func (ms *MessageService) PrintTable() {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Validation ID", "Message", "Severity", "Field", "File Name", "Row"})
 	table.SetRowSeparator("-")
-	table.SetFooter([]string{"", "", "Errors: " + strconv.Itoa(ms.errorCount), "Warnings: " + strconv.Itoa(ms.warningCount), "Total: " + strconv.Itoa(ms.errorCount+ms.warningCount), ""})
+	table.SetFooter([]string{"", "", "Errors: " + strconv.Itoa(summary.TotalErrors), "Warnings: " + strconv.Itoa(summary.TotalWarnings), "Total: " + strconv.Itoa(summary.TotalErrors+summary.TotalWarnings), ""})
 	for _, message := range summary.Messages {
 		rows := make([]string, len(message.Rows))
 		for i, row := range message.Rows {
@@ -194,9 +221,30 @@ func (ms *MessageService) WriteToFile(filename string) error {
 }
 
 func (ms *MessageService) Clear() {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	ms.issues = make(map[string]uint64)
 	ms.messages = []types.Message{}
 	ms.errorCount = 0
 	ms.warningCount = 0
 }
 
 var AppMessageService = NewMessageService()
+
+// RuleIssueCount counts emissions before message deduplication. Counting only
+// summary messages would miss a failing prerequisite on a subsequent row.
+func (ms *MessageService) RuleIssueCount(entry ruleset.CatalogueEntry) uint64 {
+	ms.mu.RLock()
+	defer ms.mu.RUnlock()
+	count := ms.issues[entry.ID]
+	for _, id := range entry.OutputIDs {
+		if id == entry.ID {
+			continue
+		}
+		if entry.MessageField != "" {
+			id += "/" + entry.MessageField
+		}
+		count += ms.issues[id]
+	}
+	return count
+}

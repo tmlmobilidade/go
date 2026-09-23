@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
 	registry "main/validations"
 	validations "main/validations/pathways/validations"
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.PathwaysRules
+	if rules != nil {
+		section = &rules.Pathways
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running Pathways Validations...")
 
 	// Create progress tracker
@@ -33,40 +43,20 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			pathwaysRules = &rules.Pathways
 		}
 		// Validate pathway_id
-		validations.PathwayIdValidation(&pathways, row, &gtfs, pathwaysRules)
-
-		// Validate pathway_mode
-		validations.PathwayModeValidation(&pathways, row, pathwaysRules)
-
-		// Validate is_bidirectional
-		validations.IsBidirectionalValidation(&pathways, row, pathwaysRules)
-
-		// Validate traversal_time
-		validations.TraversalTimeValidation(&pathways, row, pathwaysRules)
-
-		// Validate from_stop_id
-		validations.FromStopIdValidation(&pathways, row, &gtfs, pathwaysRules)
-
-		// Validate to_stop_id
-		validations.ToStopIdValidation(&pathways, row, &gtfs, pathwaysRules)
-
-		// Validate length
-		validations.LengthValidation(&pathways, row, pathwaysRules)
-
-		// Validate max_slope
-		validations.MaxSlopeValidation(&pathways, row, pathwaysRules)
-
-		// Validate min_width
-		validations.MinWidthValidation(&pathways, row, pathwaysRules)
-
-		// Validate stair_count
-		validations.StairCountValidation(&pathways, row, pathwaysRules)
-
-		// Validate signposted_as
-		validations.SignpostedAsValidation(&pathways, row, pathwaysRules)
-
-		// Validate reversed_signposted_as
-		validations.ReversedSignpostedAsValidation(&pathways, row, pathwaysRules)
+		runner.Run(services.RuleActions{
+			"pathway_id_unique":                           func() { validations.PathwayIdValidation(&pathways, row, &gtfs, pathwaysRules) },
+			"pathway_mode_valid_gtfs_enum":                func() { validations.PathwayModeValidation(&pathways, row, pathwaysRules) },
+			"pathway_is_bidirectional_valid_gtfs_enum":    func() { validations.IsBidirectionalValidation(&pathways, row, pathwaysRules) },
+			"pathway_traversal_time_non_negative_seconds": func() { validations.TraversalTimeValidation(&pathways, row, pathwaysRules) },
+			"pathway_from_stop_id_references_stops_table": func() { validations.FromStopIdValidation(&pathways, row, &gtfs, pathwaysRules) },
+			"pathway_to_stop_id_references_stops_table":   func() { validations.ToStopIdValidation(&pathways, row, &gtfs, pathwaysRules) },
+			"pathway_length_non_negative":                 func() { validations.LengthValidation(&pathways, row, pathwaysRules) },
+			"pathway_max_slope_allowed_for_pathway_mode":  func() { validations.MaxSlopeValidation(&pathways, row, pathwaysRules) },
+			"pathway_min_width_positive":                  func() { validations.MinWidthValidation(&pathways, row, pathwaysRules) },
+			"pathway_stair_count":                         func() { validations.StairCountValidation(&pathways, row, pathwaysRules) },
+			"pathway_signposted_as":                       func() { validations.SignpostedAsValidation(&pathways, row, pathwaysRules) },
+			"pathway_reversed_signposted_as":              func() { validations.ReversedSignpostedAsValidation(&pathways, row, pathwaysRules) },
+		}, nil)
 
 		return nil
 	})

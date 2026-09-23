@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
 	registry "main/validations"
 	validations "main/validations/rider_categories/validations"
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.RiderCategoriesRules
+	if rules != nil {
+		section = &rules.RiderCategories
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running RiderCategories Validations...")
 
 	lib.AppLogger.Debug("Pre-computing rider_categories data...")
@@ -43,16 +53,12 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// Validate rider_category_id
-		validations.RiderCategoryIdValidation(&riderCategory, i, &gtfs, &rules.RiderCategories)
-
-		// Validate rider_category_name
-		validations.RiderCategoryNameValidation(&riderCategory, i, &rules.RiderCategories)
-
-		// Validate is_default_fare_category
-		validations.IsDefaultFareCategoryValidation(&riderCategory, i, &rules.RiderCategories)
-
-		// Validate eligibility_url
-		validations.EligibilityUrlValidation(&riderCategory, i, &rules.RiderCategories)
+		runner.Run(services.RuleActions{
+			"rider_category_id_unique":          func() { validations.RiderCategoryIdValidation(&riderCategory, i, &gtfs, &rules.RiderCategories) },
+			"rider_category_name_non_empty":     func() { validations.RiderCategoryNameValidation(&riderCategory, i, &rules.RiderCategories) },
+			"at_most_one_default_fare_category": func() { validations.IsDefaultFareCategoryValidation(&riderCategory, i, &rules.RiderCategories) },
+			"eligibility_url_valid_http_url":    func() { validations.EligibilityUrlValidation(&riderCategory, i, &rules.RiderCategories) },
+		}, nil)
 
 		return nil
 	})

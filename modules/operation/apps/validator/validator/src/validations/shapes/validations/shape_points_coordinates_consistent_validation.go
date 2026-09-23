@@ -74,6 +74,9 @@ func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *typ
 	violations := []pointsCoordinatesConsistentViolation{}
 
 	for i, shape := range shapes {
+		if shape.Row != nil {
+			i = *shape.Row
+		}
 		if shape.ShapeId == nil || *shape.ShapeId == "" {
 			continue
 		}

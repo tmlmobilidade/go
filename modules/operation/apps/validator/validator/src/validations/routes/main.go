@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
 	registry "main/validations"
 	validations "main/validations/routes/validations"
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.RoutesRules
+	if rules != nil {
+		section = &rules.Routes
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running Routes Validations...")
 
 	// Pre-compute trip_id -> route_id mapping for performance
@@ -70,55 +80,25 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// Validate route_id
-		validations.RouteIdValidation(&route, i, &gtfs)
-
-		// Validate line_id
-		validations.LineIdValidation(&route, i, &gtfs, routeRules)
-
-		// Validate line_short_name
-		validations.LineShortNameValidation(&route, i, &gtfs, routeRules)
-
-		// Validate line_long_name
-		validations.LineLongNameValidation(&route, i, &gtfs, routeRules)
-
-		// Validate agency_id
-		validations.AgencyIdValidation(&route, i, gtfs, routeRules)
-
-		// Validate route_short_name
-		validations.RouteShortNameValidation(&route, i, routeRules)
-
-		// Validate route_long_name
-		validations.RouteLongNameValidation(&route, i, routeRules)
-
-		// Validate route_desc
-		validations.RouteDescValidation(&route, i, routeRules)
-
-		// Validate route_type
-		validations.RouteTypeValidation(&route, i, routeRules)
-
-		// Validate route_url
-		validations.RouteUrlValidation(&route, i, &gtfs, routeRules)
-
-		// Validate route_color
-		validations.RouteColorValidation(&route, i, routeRules)
-
-		// Validate route_text_color
-		validations.RouteTextColorValidation(&route, i, routeRules)
-
-		// Validate route_sort_order
-		validations.RouteSortOrderValidation(&route, i, routeRules)
-
-		// Validate continuous_drop_off (using pre-computed cache)
-		validations.ContinuousDropOffValidation(&route, i, &gtfs, routeRules, routesWithWindows)
-
-		// Validate continuous_pickup (using pre-computed cache)
-		validations.ContinuousPickupValidation(&route, i, &gtfs, routeRules, routesWithWindows)
-
-		// Validate network_id
-		validations.NetworkIdValidation(&route, i, &gtfs, routeRules)
-
-		// [CUSTOM VALIDATION] Validate path_type
-		validations.PathTypeValidation(&route, i, routeRules)
+		runner.Run(services.RuleActions{
+			"route_id_unique":  func() { validations.RouteIdValidation(&route, i, &gtfs) },
+			"line_id_required": func() { validations.LineIdValidation(&route, i, &gtfs, routeRules) },
+			"line_short_name_present_when_line_id_present": func() { validations.LineShortNameValidation(&route, i, &gtfs, routeRules) },
+			"line_long_name_present_when_line_id_present":  func() { validations.LineLongNameValidation(&route, i, &gtfs, routeRules) },
+			"route_agency_id_references_agency_table":      func() { validations.AgencyIdValidation(&route, i, gtfs, routeRules) },
+			"route_short_name_or_long_name_present":        func() { validations.RouteShortNameValidation(&route, i, routeRules) },
+			"route_long_name_or_short_name_present":        func() { validations.RouteLongNameValidation(&route, i, routeRules) },
+			"route_desc_per_severity_and_content_rules":    func() { validations.RouteDescValidation(&route, i, routeRules) },
+			"route_type_valid_gtfs_enum":                   func() { validations.RouteTypeValidation(&route, i, routeRules) },
+			"route_url_valid_http_url":                     func() { validations.RouteUrlValidation(&route, i, &gtfs, routeRules) },
+			"route_color_valid_hex_string":                 func() { validations.RouteColorValidation(&route, i, routeRules) },
+			"route_text_color_valid_hex_contrast":          func() { validations.RouteTextColorValidation(&route, i, routeRules) },
+			"route_sort_order_non_negative_integer":        func() { validations.RouteSortOrderValidation(&route, i, routeRules) },
+			"continuous_drop_off_valid_gtfs_enum":          func() { validations.ContinuousDropOffValidation(&route, i, &gtfs, routeRules, routesWithWindows) },
+			"continuous_pickup_valid_gtfs_enum":            func() { validations.ContinuousPickupValidation(&route, i, &gtfs, routeRules, routesWithWindows) },
+			"network_id_references_networks_table":         func() { validations.NetworkIdValidation(&route, i, &gtfs, routeRules) },
+			"path_type_valid_enum":                         func() { validations.PathTypeValidation(&route, i, routeRules) },
+		}, nil)
 
 		return nil
 	})

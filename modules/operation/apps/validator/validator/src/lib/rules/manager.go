@@ -9,9 +9,9 @@ import (
 type Status int
 
 const (
-	// Passed means the rule ran and emitted no error (warnings still count as passed)
+	// Passed means the rule ran without a warning or error
 	Passed Status = iota
-	// Failed means the rule emitted at least one error-severity message
+	// Failed means the rule emitted at least one warning or error
 	Failed
 	// Skipped means at least one dependency did not pass, so the rule did not run
 	Skipped
@@ -128,7 +128,7 @@ func (m *Manager[T]) RunRow(row T) map[string]Status {
 	for _, r := range m.ordered {
 		blocked := false
 		for _, dep := range r.DependsOn {
-			if status[dep] != Passed {
+			if outcome, exists := status[dep]; !exists || outcome != Passed {
 				blocked = true
 				break
 			}

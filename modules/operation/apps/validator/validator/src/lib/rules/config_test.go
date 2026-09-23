@@ -11,7 +11,7 @@ func TestDependenciesFromReadsDependsOn(t *testing.T) {
 		AgencyNameIdMatch: types.RuleConfig{DependsOn: []string{"agency_id_unique", "agency_name_present"}},
 	}
 	deps := DependenciesFrom(section)
-	if len(deps) != 1 || !slices.Equal(deps["agency_id_matched_with_agency_name"], []string{"agency_id_unique", "agency_name_present"}) {
+	if len(deps) != len(RuleIDs(section)) || !slices.Equal(deps["agency_id_matched_with_agency_name"], []string{"agency_id_unique", "agency_name_present"}) {
 		t.Fatalf("deps = %v", deps)
 	}
 }

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	ruleset "main/lib/rules"
+	"main/services"
 	"main/types"
 	registry "main/validations"
 	validations "main/validations/shapes/validations"
@@ -14,6 +16,16 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.ShapesRules
+	if rules != nil {
+		section = &rules.Shapes
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
+	groupStatuses := map[string]map[string]ruleset.Status{}
 	lib.AppLogger.Debug("Running Shapes Validations...")
 
 	// Create progress tracker
@@ -34,19 +46,17 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// Validate shape_id
-		validations.ShapeIdValidation(&shape, row)
+		statuses := runner.Run(services.RuleActions{
+			"shape_id_required":                           func() { validations.ShapeIdValidation(&shape, row) },
+			"shape_pt_lat_valid_latitude":                 func() { validations.ShapePtLatValidation(&shape, row) },
+			"shape_pt_lon_valid_longitude":                func() { validations.ShapePtLonValidation(&shape, row) },
+			"shape_pt_sequence_not_repeated_within_shape": func() { validations.ShapePtSequenceValidation(&shape, row) },
+			"shape_dist_traveled_non_negative_monotonic":  func() { validations.ShapeDistTraveledValidation(&shape, row, shapesRules) },
+		}, nil)
 
-		// Validate shape_pt_lat
-		validations.ShapePtLatValidation(&shape, row)
-
-		// Validate shape_pt_lon
-		validations.ShapePtLonValidation(&shape, row)
-
-		// Validate shape_pt_sequence
-		validations.ShapePtSequenceValidation(&shape, row)
-
-		// Validate shape_dist_traveled
-		validations.ShapeDistTraveledValidation(&shape, row, shapesRules)
+		if shape.ShapeId != nil {
+			groupStatuses[*shape.ShapeId] = services.MergeRuleStatuses(groupStatuses[*shape.ShapeId], statuses)
+		}
 
 		// Add shape to all shapes
 		allShapes = append(allShapes, shape)
@@ -59,16 +69,26 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		lib.AppLogger.Info(fmt.Sprintf("Completed shapes.txt validation: %d rows processed", tracker.GetProcessedCount()))
 	}
 
-	// Group-level validation: shape_pt_sequence must increase for each shape_id
-	validations.ShapeSequenceValidation(allShapes, shapesRules)
-
-	// Validate shape coordinates consistency
-	validations.ShapePointsCoordinatesConsistentValidation(allShapes, shapesRules)
-
-	// Validate shape coordinates distances
-	validations.ShapePointsCoordinatesDistancesValidation(allShapes, shapesRules)
-
-	// Validate shape all points distances
-	validations.ShapeDistancesValidation(allShapes, shapesRules)
-
+	shapeGroups := map[string][]types.Shape{}
+	for _, shape := range allShapes {
+		if shape.ShapeId != nil {
+			shapeGroups[*shape.ShapeId] = append(shapeGroups[*shape.ShapeId], shape)
+		}
+	}
+	for shapeID, points := range shapeGroups {
+		runner.Run(services.RuleActions{
+			"shape_id_and_point_sequence_required": func() {
+				validations.ShapeSequenceRuleValidation(points, shapesRules, "shape_id_and_point_sequence_required")
+			},
+			"shape_pt_sequence_strictly_increasing": func() {
+				validations.ShapeSequenceRuleValidation(points, shapesRules, "shape_pt_sequence_strictly_increasing")
+			},
+			"shape_dist_traveled_non_decreasing_with_sequence": func() {
+				validations.ShapeSequenceRuleValidation(points, shapesRules, "shape_dist_traveled_non_decreasing_with_sequence")
+			},
+			"shape_sequence_position_mismatches_cumulative_traveled_distance": func() { validations.ShapePointsCoordinatesConsistentValidation(points, shapesRules) },
+			"shape_dist_traveled_delta_mismatches_haversine_segment":          func() { validations.ShapePointsCoordinatesDistancesValidation(points, shapesRules) },
+			"shape_dist_traveled_delta_mismatches_haversine_block":            func() { validations.ShapeDistancesValidation(points, shapesRules) },
+		}, groupStatuses[shapeID])
+	}
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
 	registry "main/validations"
 	validations "main/validations/levels/validations"
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.LevelsRules
+	if rules != nil {
+		section = &rules.Levels
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running Validations for levels.txt")
 
 	// Create progress tracker
@@ -32,9 +42,11 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			levelRules = &rules.Levels
 		}
 
-		validations.LevelIdValidation(&level, row, gtfs, levelRules)
-		validations.LevelIndexValidation(&level, row, levelRules)
-		validations.LevelNameValidation(&level, row, levelRules)
+		runner.Run(services.RuleActions{
+			"level_id_unique":      func() { validations.LevelIdValidation(&level, row, gtfs, levelRules) },
+			"level_index_required": func() { validations.LevelIndexValidation(&level, row, levelRules) },
+			"level_name":           func() { validations.LevelNameValidation(&level, row, levelRules) },
+		}, nil)
 		return nil
 	})
 	if err != nil {

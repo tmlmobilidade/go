@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
 	registry "main/validations"
 	validations "main/validations/transfers/validations"
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.TransfersRules
+	if rules != nil {
+		section = &rules.Transfers
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running Transfers Validations...")
 
 	// Create progress tracker
@@ -28,28 +38,16 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// Validate from_stop_id
-		validations.FromStopIdValidation(transfer, row, gtfs, &rules.Transfers)
-
-		// Validate to_stop_id
-		validations.ToStopIdValidation(transfer, row, gtfs, &rules.Transfers)
-
-		// Validate from_route_id
-		validations.FromRouteIdValidation(transfer, row, gtfs, &rules.Transfers)
-
-		// Validate to_route_id
-		validations.ToRouteIdValidation(transfer, row, gtfs, &rules.Transfers)
-
-		// Validate from_trip_id
-		validations.FromTripIdValidation(transfer, row, gtfs, &rules.Transfers)
-
-		// Validate to_trip_id
-		validations.ToTripIdValidation(transfer, row, gtfs, &rules.Transfers)
-
-		// Validate transfer_type
-		validations.TransferTypeValidation(transfer, row, &rules.Transfers)
-
-		// Validate min_transfer_time
-		validations.MinTransferTimeValidation(transfer, row, &rules.Transfers)
+		runner.Run(services.RuleActions{
+			"transfer_from_stop_id_references_stops_table":   func() { validations.FromStopIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_to_stop_id_references_stops_table":     func() { validations.ToStopIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_from_route_id_references_routes_table": func() { validations.FromRouteIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_to_route_id_references_routes_table":   func() { validations.ToRouteIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_from_trip_id_references_trips_table":   func() { validations.FromTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_to_trip_id_references_trips_table":     func() { validations.ToTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_type_valid_gtfs_enum":                  func() { validations.TransferTypeValidation(transfer, row, &rules.Transfers) },
+			"min_transfer_time_non_negative_seconds":         func() { validations.MinTransferTimeValidation(transfer, row, &rules.Transfers) },
+		}, nil)
 
 		return nil
 	})

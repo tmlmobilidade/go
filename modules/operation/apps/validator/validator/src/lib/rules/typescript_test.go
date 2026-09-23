@@ -34,7 +34,7 @@ func TestTypeScriptContainsTheGoContract(t *testing.T) {
 	for _, want := range []string{
 		"export const ruleSeverities = ['error', 'warning', 'ignore', 'forbidden'] as const;",
 		// Legacy stored key mapped to its emitted id.
-		"\t\tconfig_key: 'trip_id',\n\t\teditable: true,\n\t\tgroup: 'frequencies',\n\t\tid: 'frequencies_trip_id_references_trips_table',\n",
+		"\t\tconfig_key: 'trip_id',\n\t\tdepends_on: ['frequencies_file_present'],\n\t\teditable: true,\n\t\tgroup: 'frequencies',\n\t\tid: 'frequencies_trip_id_references_trips_table',\n",
 		// Calendar message-field mapping.
 		"\t\tid: 'calendar_start_date_valid_yyyymmdd',\n\t\tmessage_field: 'start_date',\n\t\toutput_ids: ['calendar_start_end_dates_valid_yyyymmdd_order'],\n",
 		// _file settings and fixed technical severities.

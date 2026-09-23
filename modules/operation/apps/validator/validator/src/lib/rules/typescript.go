@@ -30,6 +30,9 @@ var severityType = reflect.TypeOf(types.Severity(""))
 
 // TypeScript renders the shared TypeScript contract for the validation rules.
 func TypeScript() ([]byte, error) {
+	if err := ValidateDependencyContract(); err != nil {
+		return nil, err
+	}
 	return renderTypeScript(reflect.TypeOf(types.GtfsRules{}), Catalogue())
 }
 
@@ -472,6 +475,7 @@ func (w *tsWriter) writeCatalogueTypes() {
 	w.line("\t\t\tid: RuleId")
 	w.line("\t\t\tmessage_field?: string")
 	w.line("\t\t\toutput_ids?: readonly RuleOutputId[]")
+	w.line("\t\t\tdepends_on?: readonly string[]")
 	w.line("\t\t\tseverities?: never")
 	w.line("\t\t\tseverity?: never")
 	w.line("\t\t}")
@@ -505,6 +509,13 @@ func (w *tsWriter) writeCatalogue(catalogue []CatalogueEntry) {
 		w.line("\t{")
 		if entry.ConfigKey != "" {
 			w.line("\t\tconfig_key: %s,", quote(entry.ConfigKey))
+		}
+		if len(entry.DependsOn) > 0 {
+			quoted := make([]string, len(entry.DependsOn))
+			for i, id := range entry.DependsOn {
+				quoted[i] = quote(id)
+			}
+			w.line("\t\tdepends_on: [%s],", strings.Join(quoted, ", "))
 		}
 		w.line("\t\teditable: %t,", entry.Editable)
 		w.line("\t\tgroup: %s,", quote(entry.Group))

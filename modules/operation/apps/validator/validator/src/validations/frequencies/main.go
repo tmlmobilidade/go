@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
+	"main/services"
 	"main/types"
 	registry "main/validations"
 	validations "main/validations/frequencies/validations"
@@ -14,6 +15,15 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	var section *types.FrequenciesRules
+	if rules != nil {
+		section = &rules.Frequencies
+	}
+	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	if dagErr != nil {
+		lib.AppLogger.Error(dagErr.Error())
+		return
+	}
 	lib.AppLogger.Debug("Running Frequencies Validations...")
 
 	// Pre-compute frequencies per trip_id for performance
@@ -47,19 +57,13 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		}
 
 		// Validate trip_id
-		validations.TripIdValidation(parsedFrequency, i, &gtfs, frequenciesRules)
-
-		// Validate end_time
-		validations.EndTimeValidation(parsedFrequency, i, frequenciesRules)
-
-		// Validate start_time
-		validations.StartTimeValidation(parsedFrequency, i, frequenciesRules)
-
-		// Validate headway_secs
-		validations.HeadwaySecsValidation(parsedFrequency, i, frequenciesRules)
-
-		// Validate exact_times
-		validations.ExactTimesValidation(parsedFrequency, i, frequenciesRules)
+		runner.Run(services.RuleActions{
+			"trip_id":      func() { validations.TripIdValidation(parsedFrequency, i, &gtfs, frequenciesRules) },
+			"end_time":     func() { validations.EndTimeValidation(parsedFrequency, i, frequenciesRules) },
+			"start_time":   func() { validations.StartTimeValidation(parsedFrequency, i, frequenciesRules) },
+			"headway_secs": func() { validations.HeadwaySecsValidation(parsedFrequency, i, frequenciesRules) },
+			"exact_times":  func() { validations.ExactTimesValidation(parsedFrequency, i, frequenciesRules) },
+		}, nil)
 
 		return nil
 	})

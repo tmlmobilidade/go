@@ -65,6 +65,7 @@ func ParseShape(rawShape types.ShapeRaw, row int) types.Shape {
 	}
 
 	// Assign fields
+	shape.Row = &row
 	shape.ShapeId = lib.IfThenElse(shapeId != "", &shapeId, nil)
 	shape.ShapePtLat = lib.IfThenElse(rawShape.ShapePtLat != "", &shapePtLat, nil)
 	shape.ShapePtLon = lib.IfThenElse(rawShape.ShapePtLon != "", &shapePtLon, nil)
