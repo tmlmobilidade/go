@@ -42,7 +42,7 @@ export async function processRawApexTransactionSale(databaseOperation) {
 		const errorMessage = error instanceof ZodError
 			? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
 			: error instanceof Error ? error.message : String(error);
-		Logger.error({ message: `Error transforming APEX Sale: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${errorMessage}` });
+		Logger.error({ attributes: { document: databaseOperation.fullDocument }, error, message: `Error transforming APEX Sale: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${errorMessage}` });
 	}
 
 	//
