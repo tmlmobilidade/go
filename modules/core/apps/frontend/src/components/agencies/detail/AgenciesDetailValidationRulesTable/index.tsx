@@ -1,6 +1,6 @@
 'use client';
 
-import { getRuleSeverity, ruleCatalogue, type RuleCatalogueEntry, type RuleGroup, ruleSeverities, type RuleSeverity, setRuleSeverity, type ValidationRulesInput } from '@tmlmobilidade/go-types-gtfs-validator';
+import { getRuleSeverity, getSavedRuleSeverity, ruleCatalogue, type RuleCatalogueEntry, type RuleGroup, ruleSeverities, type RuleSeverity, setRuleSeverity, type ValidationRulesInput } from '@tmlmobilidade/go-types-gtfs-validator';
 import { Divider, Grid, Inline, Label, SearchField, Section, SegmentedControl, Surface, Table } from '@tmlmobilidade/ui';
 import { Fragment, type ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -44,9 +44,10 @@ export function AgenciesDetailValidationRulesTable({ onChange, readOnly, rules }
 		return Array.from(result.entries());
 	}, [matchingEntries]);
 
-	// Editable rules still resolving to Ignore, listed apart so they are not missed.
+	// Editable rules with nothing saved yet, listed apart so they are not missed.
+	// A rule deliberately set to Ignore is configured, so it stays out of here.
 	const unconfiguredEntries = useMemo(() => {
-		return matchingEntries.filter(entry => entry.editable && getRuleSeverity(rules, entry) === 'ignore');
+		return matchingEntries.filter(entry => entry.editable && getSavedRuleSeverity(rules, entry) === undefined);
 	}, [matchingEntries, rules]);
 
 	//
@@ -65,6 +66,8 @@ export function AgenciesDetailValidationRulesTable({ onChange, readOnly, rules }
 	//
 	// D. Render components
 
+	// A rule with no saved severity has no segment selected: an unmatched value
+	// leaves every segment inactive, so it does not read as a deliberate Ignore.
 	const renderSeverity = (entry: RuleCatalogueEntry) => entry.editable ? (
 		<SegmentedControl
 			aria-label={`${entry.id}: ${t('default:agencies.detail.ValidationRules.severity')}`}
@@ -72,7 +75,7 @@ export function AgenciesDetailValidationRulesTable({ onChange, readOnly, rules }
 			onChange={value => onChange(setRuleSeverity(rules, entry, value as RuleSeverity))}
 			readOnly={readOnly}
 			size="xs"
-			value={getRuleSeverity(rules, entry)}
+			value={getSavedRuleSeverity(rules, entry) ?? ''}
 		/>
 	) : (
 		<Label>{(entry.severities ?? [entry.severity]).map(value => t(`default:agencies.detail.ValidationRules.severities.${value}`)).join(' / ')}</Label>
