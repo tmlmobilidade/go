@@ -22,8 +22,17 @@ export function SearchDetail() {
 	//
 	// B. Handle actions
 
+	const focusInput = () => {
+		window.requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
+	};
+
+	const handleOpenStart = () => {
+		setIsMounted(true);
+		focusInput();
+	};
+
 	const handleOpenEnd = () => {
-		inputRef.current?.focus({ preventScroll: true });
+		focusInput();
 	};
 
 	const handleClose = () => {
@@ -43,7 +52,7 @@ export function SearchDetail() {
 			onClose={handleClose}
 			onCloseEnd={() => setIsMounted(false)}
 			onOpenEnd={handleOpenEnd}
-			onOpenStart={() => setIsMounted(true)}
+			onOpenStart={handleOpenStart}
 			opened={isOpen}
 			size="full"
 			withCompactCloseButton
