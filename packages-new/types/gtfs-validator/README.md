@@ -4,14 +4,23 @@ Types and helpers shared by the GTFS validator, the Core API, the Core frontend 
 
 ## Validation rules
 
-The Go validator is the source of truth for validation rules. Its rule structs and catalogue generate `src/rules/rules.generated.ts`, which is committed. Do not edit that file by hand.
+The Go validator is the source of truth for validation rules. Its rule structs and catalogue generate these committed files under `src/rules/`:
+
+- `rules-inputs.ts`: accepted input types (`ValidationRulesInput`, `RuleConfigInput`, and section inputs).
+- `rules-config.ts`: decoded configuration types (`ValidationRules`, `RuleConfig`, and sections).
+- `rules-catalogue.ts`: `ruleCatalogue` and catalogue entry types.
+- `rules-groups.ts`: groups and stored configuration keys.
+- `rules-ids.ts`: rule IDs and output IDs.
+- `rules-severities.ts`: severity values and their type.
+
+These files have ordinary `.ts` names and a generation header. Do not edit them by hand. Helpers remain in separate, manually maintained files; `index.ts` re-exports the full public API.
 
 ```sh
 npm run repo:validator-rules        # regenerate (requires Go)
-npm run repo:validator-rules:check  # fail if the committed file is missing or stale
+npm run repo:validator-rules:check  # fail if a committed file is missing or stale
 ```
 
-Package and Docker builds use the committed file and do not need Go. CI runs the check and the Go rule tests on pull requests and on pushes to `prd`.
+Package and Docker builds use the committed files and do not need Go. CI runs the check and the Go rule tests on pull requests and on pushes to `prd`.
 
 ### Exports
 

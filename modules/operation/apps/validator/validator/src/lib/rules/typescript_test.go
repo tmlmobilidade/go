@@ -17,11 +17,37 @@ func TestTypeScriptIsDeterministic(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !bytes.Equal(first, second) {
+	if len(first) != len(second) {
 		t.Fatal("two runs produced different output")
 	}
-	if !bytes.HasPrefix(first, []byte(TypeScriptHeader)) {
-		t.Fatal("output does not start with the regeneration header")
+	wantFiles := map[string]string{
+		"rules-severities.ts": "export const ruleSeverities",
+		"rules-groups.ts":     "export const ruleConfigKeys",
+		"rules-ids.ts":        "export const ruleIds",
+		"rules-config.ts":     "export interface ValidationRules {",
+		"rules-inputs.ts":     "export interface ValidationRulesInput {",
+		"rules-catalogue.ts":  "export const ruleCatalogue",
+	}
+	if len(first) != len(wantFiles) {
+		t.Fatalf("got %d files, want %d", len(first), len(wantFiles))
+	}
+	for name, declaration := range wantFiles {
+		if !bytes.Contains(first[name], []byte(declaration)) {
+			t.Errorf("%s is missing %s", name, declaration)
+		}
+		for otherName, content := range first {
+			if otherName != name && bytes.Contains(content, []byte(declaration)) {
+				t.Errorf("%s also appears in %s", declaration, otherName)
+			}
+		}
+	}
+	for name, content := range first {
+		if !bytes.Equal(content, second[name]) {
+			t.Errorf("two runs produced different output for %s", name)
+		}
+		if !bytes.HasPrefix(content, []byte(TypeScriptHeader)) {
+			t.Errorf("%s does not start with the regeneration header", name)
+		}
 	}
 }
 
@@ -30,7 +56,11 @@ func TestTypeScriptContainsTheGoContract(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	text := string(output)
+	var combined strings.Builder
+	for _, content := range output {
+		combined.Write(content)
+	}
+	text := combined.String()
 	for _, want := range []string{
 		"export const ruleSeverities = ['error', 'warning', 'ignore', 'forbidden'] as const;",
 		// Legacy stored key mapped to its emitted id.

@@ -1,4 +1,4 @@
-import { ruleSeverities, type RuleSeverity } from './rules.generated.js';
+import { ruleSeverities, type RuleSeverity } from './rules-severities.js';
 
 /* * */
 

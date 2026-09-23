@@ -1,5 +1,7 @@
 import { isRecord } from './is-record.js';
-import { type RuleCatalogueEntry, type RuleSeverity, type ValidationRulesInput } from './rules.generated.js';
+import { type RuleCatalogueEntry } from './rules-catalogue.js';
+import { type ValidationRulesInput } from './rules-inputs.js';
+import { type RuleSeverity } from './rules-severities.js';
 import { isRuleSeverity } from './severity.js';
 
 /* * */

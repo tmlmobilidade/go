@@ -29,7 +29,7 @@ const TypeScriptHeader = `/**
 var severityType = reflect.TypeOf(types.Severity(""))
 
 // TypeScript renders the shared TypeScript contract for the validation rules.
-func TypeScript() ([]byte, error) {
+func TypeScript() (map[string][]byte, error) {
 	if err := ValidateDependencyContract(); err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (w *tsWriter) line(format string, args ...any) {
 	w.buf.WriteByte('\n')
 }
 
-func renderTypeScript(root reflect.Type, catalogue []CatalogueEntry) ([]byte, error) {
+func renderTypeScript(root reflect.Type, catalogue []CatalogueEntry) (map[string][]byte, error) {
 	if root.Kind() != reflect.Struct {
 		return nil, fmt.Errorf("rules root %s is not a struct", root)
 	}
@@ -82,22 +82,60 @@ func renderTypeScript(root reflect.Type, catalogue []CatalogueEntry) ([]byte, er
 		}
 	}
 
-	w.buf.WriteString(TypeScriptHeader)
-	w.line("")
-	w.line("/* * */")
-	w.line("")
+	files := map[string][]byte{}
+	startFile := func(imports ...string) {
+		w.buf.Reset()
+		w.buf.WriteString(TypeScriptHeader)
+		w.line("")
+		for _, declaration := range imports {
+			w.line("%s", declaration)
+		}
+		if len(imports) > 0 {
+			w.line("")
+		}
+		w.line("/* * */")
+		w.line("")
+	}
+	saveFile := func(name string) {
+		files[name] = []byte(strings.TrimSpace(w.buf.String()) + "\n")
+	}
+
+	startFile()
 	w.writeSeverities()
+	saveFile("rules-severities.ts")
+
+	startFile()
 	w.writeGroups(groups)
+	saveFile("rules-groups.ts")
+
+	startFile()
 	w.writeIDs(catalogue)
-	if err := w.writeStructs(); err != nil {
-		return nil, err
+	saveFile("rules-ids.ts")
+
+	for _, input := range []bool{false, true} {
+		startFile("import { type RuleSeverity } from './rules-severities.js';")
+		if err := w.writeStructs(input); err != nil {
+			return nil, err
+		}
+		if err := w.writeGroupTypes(root, groups, input); err != nil {
+			return nil, err
+		}
+		if input {
+			saveFile("rules-inputs.ts")
+		} else {
+			saveFile("rules-config.ts")
+		}
 	}
-	if err := w.writeGroupTypes(root, groups); err != nil {
-		return nil, err
-	}
+
+	startFile(
+		"import { type RuleConfigKey, type RuleGroup } from './rules-groups.js';",
+		"import { type RuleId, type RuleOutputId } from './rules-ids.js';",
+		"import { type RuleSeverity } from './rules-severities.js';",
+	)
 	w.writeCatalogueTypes()
 	w.writeCatalogue(catalogue)
-	return w.buf.Bytes(), nil
+	saveFile("rules-catalogue.ts")
+	return files, nil
 }
 
 // collectGroups reads the file sections of the root struct, keeping the Go
@@ -381,81 +419,75 @@ func member(key, value string, optional, isNullable bool) string {
 	return key + ": " + value
 }
 
-func (w *tsWriter) writeStructs() error {
+func (w *tsWriter) writeStructs(input bool) error {
 	names := make([]string, 0, len(w.structs))
 	for name := range w.structs {
 		names = append(names, name)
 	}
 	sort.Strings(names)
-	for _, input := range []bool{false, true} {
-		for _, name := range names {
-			t := w.structs[name]
-			members := []string{}
-			for i := range t.NumField() {
-				field := t.Field(i)
-				key, omitEmpty, err := jsonName(field)
-				if err != nil {
-					return err
-				}
-				value, err := tsType(field.Type, input)
-				if err != nil {
-					return fmt.Errorf("%s.%s: %w", name, key, err)
-				}
-				members = append(members, member(key, value, input || omitEmpty, nullable(field.Type, omitEmpty, input)))
+	for _, name := range names {
+		t := w.structs[name]
+		members := []string{}
+		for i := range t.NumField() {
+			field := t.Field(i)
+			key, omitEmpty, err := jsonName(field)
+			if err != nil {
+				return err
 			}
-			typeName := name
-			if input {
-				typeName += "Input"
+			value, err := tsType(field.Type, input)
+			if err != nil {
+				return fmt.Errorf("%s.%s: %w", name, key, err)
 			}
-			w.writeInterface(typeName, members)
+			members = append(members, member(key, value, input || omitEmpty, nullable(field.Type, omitEmpty, input)))
 		}
+		typeName := name
+		if input {
+			typeName += "Input"
+		}
+		w.writeInterface(typeName, members)
 	}
 	w.line("/* * */")
 	w.line("")
 	return nil
 }
 
-func (w *tsWriter) writeGroupTypes(root reflect.Type, groups []tsGroup) error {
-	for _, input := range []bool{false, true} {
-		for _, group := range groups {
-			members := []string{}
-			for _, field := range group.fields {
-				value, err := tsType(field.fieldType, input)
-				if err != nil {
-					return fmt.Errorf("%s.%s: %w", group.name, field.name, err)
-				}
-				members = append(members, member(field.name, value, input || field.omitEmpty, false))
-			}
-			typeName := group.typeName
-			if input {
-				typeName += "Input"
-			}
-			w.writeInterface(typeName, members)
-		}
-	}
-	for _, input := range []bool{false, true} {
+func (w *tsWriter) writeGroupTypes(root reflect.Type, groups []tsGroup, input bool) error {
+	for _, group := range groups {
 		members := []string{}
-		for _, group := range groups {
-			typeName := group.typeName
-			if input {
-				typeName += "Input"
+		for _, field := range group.fields {
+			value, err := tsType(field.fieldType, input)
+			if err != nil {
+				return fmt.Errorf("%s.%s: %w", group.name, field.name, err)
 			}
-			members = append(members, member(group.name, typeName, input, false))
+			members = append(members, member(field.name, value, input || field.omitEmpty, false))
 		}
-		name := "ValidationRules"
+		typeName := group.typeName
 		if input {
-			w.line("/**")
-			w.line(" * Rules as saved for an agency and accepted by the Go validator.")
-			w.line(" */")
-			name += "Input"
-		} else {
-			w.line("/**")
-			w.line(" * Rules after the Go validator filled every omitted setting.")
-			w.line(" * Source: %s", root.String())
-			w.line(" */")
+			typeName += "Input"
 		}
-		w.writeInterface(name, members)
+		w.writeInterface(typeName, members)
 	}
+	members := []string{}
+	for _, group := range groups {
+		typeName := group.typeName
+		if input {
+			typeName += "Input"
+		}
+		members = append(members, member(group.name, typeName, input, false))
+	}
+	name := "ValidationRules"
+	if input {
+		w.line("/**")
+		w.line(" * Rules as saved for an agency and accepted by the Go validator.")
+		w.line(" */")
+		name += "Input"
+	} else {
+		w.line("/**")
+		w.line(" * Rules after the Go validator filled every omitted setting.")
+		w.line(" * Source: %s", root.String())
+		w.line(" */")
+	}
+	w.writeInterface(name, members)
 	w.line("/* * */")
 	w.line("")
 	return nil
@@ -470,12 +502,12 @@ func (w *tsWriter) writeCatalogueTypes() {
 	w.line("\t[G in RuleGroup]: {")
 	w.line("\t\t[K in RuleConfigKey<G>]: {")
 	w.line("\t\t\tconfig_key: K")
+	w.line("\t\t\tdepends_on?: readonly string[]")
 	w.line("\t\t\teditable: true")
 	w.line("\t\t\tgroup: G")
 	w.line("\t\t\tid: RuleId")
 	w.line("\t\t\tmessage_field?: string")
 	w.line("\t\t\toutput_ids?: readonly RuleOutputId[]")
-	w.line("\t\t\tdepends_on?: readonly string[]")
 	w.line("\t\t\tseverities?: never")
 	w.line("\t\t\tseverity?: never")
 	w.line("\t\t}")

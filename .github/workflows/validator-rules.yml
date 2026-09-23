@@ -1,7 +1,7 @@
 name: 'Validator Rules'
 
 # Keeps the committed TypeScript rule contract in sync with the Go validator.
-# Package and Docker builds use the committed file and never need Go.
+# Package and Docker builds use the committed files and never need Go.
 
 on:
   pull_request:
