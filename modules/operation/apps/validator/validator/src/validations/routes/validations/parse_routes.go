@@ -8,12 +8,12 @@ import (
 
 func ParseRoutes(rawRoute types.RouteRaw, row int) types.Route {
 	var (
-		route                                                                                                                                   types.Route = types.Route{}
-		routeId                                                                                                                                 string
-		routeType                                                                                                                               int
-		agencyId, continuousDropOff, continuousPickup, routeColor, routeDesc, routeLongName, routeShortName, routeTextColor, routeUrl, pathType string
-		routeSortOrder                                                                                                                          int
-		messages                                                                                                                                []types.Message
+		route                                                                                                                                                                        types.Route = types.Route{}
+		routeId                                                                                                                                                                      string
+		routeType                                                                                                                                                                    int
+		agencyId, continuousDropOff, continuousPickup, lineId, lineShortName, lineLongName, routeColor, routeDesc, routeLongName, routeShortName, routeTextColor, routeUrl, pathType string
+		routeSortOrder                                                                                                                                                               int
+		messages                                                                                                                                                                     []types.Message
 	)
 
 	stringFields := map[string]*string{
@@ -21,6 +21,9 @@ func ParseRoutes(rawRoute types.RouteRaw, row int) types.Route {
 		"agency_id":           &agencyId,
 		"continuous_drop_off": &continuousDropOff,
 		"continuous_pickup":   &continuousPickup,
+		"line_id":             &lineId,
+		"line_short_name":     &lineShortName,
+		"line_long_name":      &lineLongName,
 		"route_color":         &routeColor,
 		"route_desc":          &routeDesc,
 		"route_long_name":     &routeLongName,
@@ -68,6 +71,9 @@ func ParseRoutes(rawRoute types.RouteRaw, row int) types.Route {
 	route.AgencyId = lib.IfThenElse(rawRoute.AgencyId != "", &agencyId, nil)
 	route.ContinuousDropOff = lib.IfThenElse(rawRoute.ContinuousDropOff != "", &continuousDropOff, nil)
 	route.ContinuousPickup = lib.IfThenElse(rawRoute.ContinuousPickup != "", &continuousPickup, nil)
+	route.LineId = lib.IfThenElse(rawRoute.LineId != "", &lineId, nil)
+	route.LineShortName = lib.IfThenElse(rawRoute.LineShortName != "", &lineShortName, nil)
+	route.LineLongName = lib.IfThenElse(rawRoute.LineLongName != "", &lineLongName, nil)
 	route.RouteColor = lib.IfThenElse(rawRoute.RouteColor != "", &routeColor, nil)
 	route.RouteDesc = lib.IfThenElse(rawRoute.RouteDesc != "", &routeDesc, nil)
 	route.RouteLongName = lib.IfThenElse(rawRoute.RouteLongName != "", &routeLongName, nil)
