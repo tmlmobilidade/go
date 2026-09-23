@@ -20,7 +20,7 @@ const ANALYSES: { extra: string[], name: string }[] = [
 	{ extra: [], name: 'simple_one_vehicle_event_or_apex_validation' },
 	{ extra: ['reason', 'stop_ids_first', 'stop_ids_last', 'stop_ids_middle'], name: 'simple_three_vehicle_events' },
 	{ extra: ['expected_transactions_qty', 'found_transactions_qty', 'missing_transactions_qty'], name: 'transaction_sequentiality' },
-	{ extra: ['expected_transactions_qty', 'found_transactions_qty', 'missing_transactions_qty'], name: 'expected_vehicle_event_coverage_geo' },
+	{ extra: ['stops_covered_absolute', 'stops_covered_percentage', 'stops_not_covered_ids', 'stops_qty'], name: 'expected_vehicle_event_coverage_geo' },
 ];
 
 /**
