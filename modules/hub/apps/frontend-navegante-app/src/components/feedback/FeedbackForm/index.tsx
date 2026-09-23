@@ -14,7 +14,7 @@ import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type FeedbackSheetView, getFeedbackBackTarget, getFeedbackReasonSelectionTarget, hasFeedbackTarget, shouldShowFeedbackTrigger } from '@/utils/feedback/navigation';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PublicFeedbackReason, type PublicFeedbackSubmission } from '@tmlmobilidade/go-types-hub';
-import { AlertMessage } from '@tmlmobilidade/ui';
+import { AlertMessage, fetchApiData } from '@tmlmobilidade/ui';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -135,25 +135,21 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		setHasSubmissionError(false);
 		setIsSubmitting(true);
 
-		try {
-			const response = await fetch(FEEDBACK_ENDPOINT, {
-				body: JSON.stringify(payload),
-				headers: { 'Content-Type': 'application/json' },
-				method: 'POST',
-			});
+		const response = await fetchApiData<null, PublicFeedbackSubmission>({
+			body: payload,
+			credentials: 'omit',
+			method: 'POST',
+			url: FEEDBACK_ENDPOINT,
+		});
 
-			if (!response.ok) {
-				setHasSubmissionError(true);
-				return;
-			}
-
+		if (response.error) {
+			setHasSubmissionError(true);
+		} else {
 			feedbackCooldown.startCooldown();
 			setActiveView('thank-you');
-		} catch {
-			setHasSubmissionError(true);
-		} finally {
-			setIsSubmitting(false);
 		}
+
+		setIsSubmitting(false);
 	};
 
 	//
