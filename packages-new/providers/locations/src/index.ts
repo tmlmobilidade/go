@@ -1,1 +1,1 @@
-export * from './provider.js';
+export * from './provider2.js';

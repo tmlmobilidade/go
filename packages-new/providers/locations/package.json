@@ -34,9 +34,8 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/go-types-locations": "*"
+		"@tmlmobilidade/go-types-geo": "*",
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
