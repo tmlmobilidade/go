@@ -1,7 +1,7 @@
 'use client';
 
 import { DetailUnavailable } from '@/components/common/display/DetailUnavailable';
-import { FeedbackForm } from '@/components/feedback';
+import { FeedbackForm } from '@/components/feedback/FeedbackForm';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailAlerts } from '@/components/lines/detail/LinesDetailAlerts';
 import { LinesDetailPath } from '@/components/lines/detail/LinesDetailPath';
