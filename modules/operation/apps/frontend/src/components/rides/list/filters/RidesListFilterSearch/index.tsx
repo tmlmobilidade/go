@@ -6,6 +6,10 @@ import { useRidesListFilterSearch } from './use-rides-list-filter-search';
 
 /* * */
 
+const RIDES_SEARCH_TAG_PREFIXES = ['v:', 'd:', 'l:'];
+
+/* * */
+
 export function RidesListFilterSearch() {
 	//
 
@@ -20,6 +24,7 @@ export function RidesListFilterSearch() {
 	return (
 		<SearchField
 			onChange={filterSearch.set}
+			tagPrefixes={RIDES_SEARCH_TAG_PREFIXES}
 			value={filterSearch.value}
 		/>
 	);

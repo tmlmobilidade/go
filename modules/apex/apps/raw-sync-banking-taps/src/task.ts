@@ -118,7 +118,7 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 				const errorMessage = error instanceof ZodError
 					? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
 					: error instanceof Error ? error.message : String(error);
-				Logger.error({ message: `Error transforming APEX Banking Tap: ${sourceDbDocument._id} Reason: ${errorMessage}` });
+				Logger.error({ attributes: { document: sourceDbDocument }, error, message: `Error transforming APEX Banking Tap: ${sourceDbDocument._id} Reason: ${errorMessage}` });
 			}
 		},
 

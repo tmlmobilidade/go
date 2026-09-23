@@ -1,5 +1,6 @@
 'use client';
 
+import { useRidesFavoritesData } from '@/components/rides/shared/use-rides-favorites-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListFilters, type ControllerRidesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
@@ -16,6 +17,8 @@ import { useRidesListFilterAnalysisTransactionSequentiality } from './filters/Ri
 import { useRidesListFilterDateRange } from './filters/RidesListFilterDateRange/use-rides-list-filter-date-range';
 import { useRidesListFilterDriver } from './filters/RidesListFilterDriver/use-rides-list-filter-driver';
 import { useRidesListFilterEndDelayStatus } from './filters/RidesListFilterEndDelayStatus/use-rides-list-filter-end-delay-status';
+import { useRidesListFilterFavorites } from './filters/RidesListFilterFavorites/use-rides-list-filter-favorites';
+import { useRidesListFilterLine } from './filters/RidesListFilterLine/use-rides-list-filter-line';
 import { useRidesListFilterOperationalStatus } from './filters/RidesListFilterOperationalStatus/use-rides-list-filter-operational-status';
 import { useRidesListFilterSearch } from './filters/RidesListFilterSearch/use-rides-list-filter-search';
 import { useRidesListFilterStartDelayStatus } from './filters/RidesListFilterStartDelayStatus/use-rides-list-filter-start-delay-status';
@@ -47,6 +50,8 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	const filterAnalysisSimpleThreeEvents = useRidesListFilterAnalysisSimpleThreeEvents();
 	const filterAnalysisTransactionSequentiality = useRidesListFilterAnalysisTransactionSequentiality();
 	const filterDateRange = useRidesListFilterDateRange();
+	const filterFavorites = useRidesListFilterFavorites();
+	const filterLine = useRidesListFilterLine();
 	const filterVehicle = useRidesListFilterVehicle();
 	const filterDriver = useRidesListFilterDriver();
 	const filterStartDelayStatus = useRidesListFilterStartDelayStatus();
@@ -54,6 +59,8 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	const filterOperationalStatus = useRidesListFilterOperationalStatus();
 	const filterSearch = useRidesListFilterSearch();
 	const filterTicketingStatus = useRidesListFilterTicketingStatus();
+
+	const { data: favoriteRideIds } = useRidesFavoritesData();
 
 	//
 	// B. Transform data
@@ -68,13 +75,14 @@ export function useRidesListData(): UseRidesListDataReturnType {
 		driver_ids: filterDriver.value,
 		end_delay_statuses: filterEndDelayStatus.value,
 		operational_statuses: filterOperationalStatus.value,
+		route_short_names: filterLine.value,
 		search: filterSearch.value,
 		start_delay_statuses: filterStartDelayStatus.value,
 		start_time_scheduled_end: filterDateRange.value_end,
 		start_time_scheduled_start: filterDateRange.value_start,
 		vehicle_ids: filterVehicle.value,
 		// ticketing_statuses: filterTicketingStatus.value,
-	}), [filterAcceptanceStatus.value, filterDriver.value, filterVehicle.value, filterAgency.value, filterAnalysisAtLeastOneVehicleEventOnLastStop.value, filterAnalysisExpectedApexValidationInterval.value, filterAnalysisSimpleThreeEvents.value, filterAnalysisTransactionSequentiality.value, filterStartDelayStatus.value, filterEndDelayStatus.value, filterOperationalStatus.value, filterSearch.value, filterDateRange.value_end, filterDateRange.value_start, filterTicketingStatus.value]);
+	}), [filterAcceptanceStatus.value, filterDriver.value, filterLine.value, filterVehicle.value, filterAgency.value, filterAnalysisAtLeastOneVehicleEventOnLastStop.value, filterAnalysisExpectedApexValidationInterval.value, filterAnalysisSimpleThreeEvents.value, filterAnalysisTransactionSequentiality.value, filterStartDelayStatus.value, filterEndDelayStatus.value, filterOperationalStatus.value, filterSearch.value, filterDateRange.value_end, filterDateRange.value_start, filterTicketingStatus.value]);
 
 	//
 	// C. Fetch data
@@ -85,13 +93,23 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	});
 
 	//
-	// D. Return data
+	// D. Transform data
+
+	const ridesData = useMemo(() => {
+		if (!data?.data) return data?.data;
+		if (!filterFavorites.value) return data.data;
+		const favoriteIds = new Set(favoriteRideIds);
+		return data.data.filter(ride => favoriteIds.has(ride._id));
+	}, [data?.data, favoriteRideIds, filterFavorites.value]);
+
+	//
+	// E. Return data
 
 	return useMemo(() => ({
-		data: data?.data,
+		data: ridesData,
 		error: error?.error,
 		isLoading,
 		isValidating,
 		timestamp: data?.timestamp,
-	}), [data, error, isLoading, isValidating]);
+	}), [data?.timestamp, error, isLoading, isValidating, ridesData]);
 };

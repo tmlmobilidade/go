@@ -45,6 +45,6 @@ export async function createRideAcceptance(ride: RideWithAnalyses) {
 
 		Logger.info({ message: `Created acceptance for ride ${ride._id} with status ${pass ? 'accepted' : 'justification_required'}.` });
 	} catch (err) {
-		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.critical({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
