@@ -61,7 +61,7 @@ async function main() {
 
 		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });
 	} catch (err) {
-		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.critical({ error: err, message: 'An error occurred. Halting execution.' });
 		Logger.info({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
