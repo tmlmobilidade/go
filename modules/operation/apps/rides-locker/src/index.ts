@@ -46,7 +46,7 @@ async function main() {
 				for (const rideAcceptance of foundRides) {
 					totalRides++;
 					if (rideAcceptance.is_locked) continue;
-					await goDb.operation.rideAcceptances.updateById(rideAcceptance._id, { ...rideAcceptance, is_locked: true, updated_by: 'system' });
+					await goDb.operation.rideAcceptances.updateOne({ _id: rideAcceptance._id }, { is_locked: true, updated_by: 'system' });
 					Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance._id}.` });
 				}
 
