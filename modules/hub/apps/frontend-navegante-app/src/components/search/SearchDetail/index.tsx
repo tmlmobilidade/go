@@ -46,7 +46,6 @@ export function SearchDetail() {
 			onOpenStart={() => setIsMounted(true)}
 			opened={isOpen}
 			size="full"
-			snapPoints={[0, 1]}
 			withCompactCloseButton
 		>
 			<Search inputRef={inputRef} />

@@ -1,5 +1,5 @@
 import { MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
-import { getBottomSheetSnapState, getMapInteractionCollapseTarget } from '@/utils/bottom-sheet/behavior';
+import { getBottomSheetSnapState, getMapInteractionCollapseTarget, shouldShowBottomSheetOverlay } from '@/utils/bottom-sheet/behavior';
 import { reduceBottomSheetNavigation } from '@/utils/bottom-sheet/navigation';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
@@ -22,16 +22,38 @@ describe('map-aware bottom-sheet collapse behavior', () => {
 });
 
 describe('bottom-sheet snap publication', () => {
-	it('keeps the full-open snap required by react-modal-sheet', () => {
-		assert.equal(MAP_BOTTOM_SHEET_SNAP_POINTS.at(-2), 0.95);
+	it('keeps the terminal snap required by react-modal-sheet', () => {
 		assert.equal(MAP_BOTTOM_SHEET_SNAP_POINTS.at(-1), 1);
 	});
 
 	it('publishes the snap point represented by the selected index', () => {
-		assert.deepEqual(getBottomSheetSnapState([0, 0.28, 0.64, 0.95, 1], 2), {
+		assert.deepEqual(getBottomSheetSnapState(MAP_BOTTOM_SHEET_SNAP_POINTS, 2), {
 			snapIndex: 2,
 			snapPoint: 0.64,
 		});
+	});
+});
+
+describe('bottom-sheet overlay behavior', () => {
+	it('shows an overlay at the terminal snap even when the sheet disables its persistent overlay', () => {
+		assert.equal(shouldShowBottomSheetOverlay({
+			snapIndex: MAP_BOTTOM_SHEET_SNAP_POINTS.length - 1,
+			snapPoints: MAP_BOTTOM_SHEET_SNAP_POINTS,
+			withOverlay: false,
+		}), true);
+	});
+
+	it('keeps a non-modal partial sheet clear and preserves explicitly requested overlays', () => {
+		assert.equal(shouldShowBottomSheetOverlay({
+			snapIndex: 1,
+			snapPoints: MAP_BOTTOM_SHEET_SNAP_POINTS,
+			withOverlay: false,
+		}), false);
+		assert.equal(shouldShowBottomSheetOverlay({
+			snapIndex: 1,
+			snapPoints: MAP_BOTTOM_SHEET_SNAP_POINTS,
+			withOverlay: true,
+		}), true);
 	});
 });
 

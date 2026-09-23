@@ -6,7 +6,7 @@ import { RoutePlannerPlaceDetail } from '@/components/routes/detail/RoutePlanner
 import { RoutePlannerResults } from '@/components/routes/list/RoutePlannerResults';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { Search } from '@/components/search/Search';
-import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
+import { MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { getRoutePlannerBackAction, getRoutePlannerDismissAction, getRoutePlannerItineraryDetailInitialSnap } from '@/utils/route-planner/planning/navigation';
@@ -38,8 +38,8 @@ interface RoutePlannerSheetTitles {
 // force this otherwise), and treats `snapTo(0)` as an alias for closing the sheet rather than
 // animating to it. So index 0 is always "closed" here, and the smallest *visible* snap is index 1.
 const ROUTE_PLANNER_SHEET_SNAP_POINTS = {
-	destinationSearch: [0, 0.72, 0.95, 1],
-	itineraryDetail: [0, 0.14, MAP_BOTTOM_SHEET_SNAP_POINTS[MAP_BOTTOM_SHEET_INITIAL_SNAP], 0.64, 0.95, 1],
+	destinationSearch: [0, 1],
+	itineraryDetail: MAP_BOTTOM_SHEET_SNAP_POINTS,
 };
 
 /* * */
