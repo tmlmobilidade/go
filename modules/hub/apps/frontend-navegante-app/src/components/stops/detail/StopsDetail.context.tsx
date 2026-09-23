@@ -14,7 +14,9 @@ interface StopsDetailContextState {
 		timetable: ReturnType<typeof useStopDetailData>['timetable']
 	}
 	flags: {
+		has_error: boolean
 		is_loading: boolean
+		is_not_found: boolean
 	}
 }
 
@@ -38,7 +40,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 	//
 	// A. Fetch data
 
-	const { activeAlerts, associatedLines, isLoading, stop, timetable } = useStopDetailData(stopId);
+	const { activeAlerts, associatedLines, hasError, isLoading, isNotFound, stop, timetable } = useStopDetailData(stopId);
 
 	//
 	// B. Define context value
@@ -51,9 +53,11 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 			timetable,
 		},
 		flags: {
+			has_error: hasError,
 			is_loading: isLoading,
+			is_not_found: isNotFound,
 		},
-	}), [activeAlerts, associatedLines, isLoading, stop, timetable]);
+	}), [activeAlerts, associatedLines, hasError, isLoading, isNotFound, stop, timetable]);
 
 	//
 	// C. Render components

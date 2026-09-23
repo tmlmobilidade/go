@@ -41,7 +41,9 @@ export interface StopsDetailViewTimetableData {
 interface UseStopDetailDataReturnType {
 	activeAlerts: HubV1ApiAlert[]
 	associatedLines: HubV1ApiLine[]
+	hasError: boolean
 	isLoading: boolean
+	isNotFound: boolean
 	stop: HubV1ApiStop | undefined
 	timetable: StopsDetailViewTimetableData[]
 }
@@ -54,14 +56,14 @@ export function useStopDetailData(stopId: string): UseStopDetailDataReturnType {
 	// A. Fetch data
 
 	const { data: alerts } = useAlertsData();
-	const { data: lines, isLoading: isLinesLoading } = useLinesData();
-	const { data: stops, isLoading: isStopsLoading } = useStopsData();
+	const { data: lines, error: linesError, isLoading: isLinesLoading } = useLinesData();
+	const { data: stops, error: stopsError, isLoading: isStopsLoading } = useStopsData();
 	const { data: stopEtas } = useStopEtaData(stopId);
 	const { isTodaySelected, selectedOperationalDate } = useOperationalDate();
 
 	const stop = useMemo(() => stops.find(candidate => String(candidate._id) === String(stopId)), [stopId, stops]);
 	const patternIds = stop?.pattern_ids ?? [];
-	const { data: associatedPatterns, isLoading: isPatternsLoading } = useSWR<HubV1ApiPattern[][]>(stop ? ['stop-patterns', ...patternIds] : null, async () => await fetchPatterns(patternIds));
+	const { data: associatedPatterns, error: patternsError, isLoading: isPatternsLoading } = useSWR<HubV1ApiPattern[][]>(stop ? ['stop-patterns', ...patternIds] : null, async () => await fetchPatterns(patternIds));
 
 	//
 	// B. Transform data
@@ -77,10 +79,12 @@ export function useStopDetailData(stopId: string): UseStopDetailDataReturnType {
 	return useMemo(() => ({
 		activeAlerts,
 		associatedLines,
+		hasError: Boolean(linesError || patternsError || stopsError),
 		isLoading: isLinesLoading || isPatternsLoading || isStopsLoading,
+		isNotFound: !isStopsLoading && !stopsError && !stop,
 		stop,
 		timetable,
-	}), [activeAlerts, associatedLines, isLinesLoading, isPatternsLoading, isStopsLoading, stop, timetable]);
+	}), [activeAlerts, associatedLines, isLinesLoading, isPatternsLoading, isStopsLoading, linesError, patternsError, stop, stopsError, timetable]);
 
 	//
 }
