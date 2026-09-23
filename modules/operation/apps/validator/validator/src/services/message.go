@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"main/lib"
+	ruleset "main/lib/rules"
 	"main/types"
 	"os"
 	"slices"
@@ -47,6 +48,12 @@ func (ms *MessageService) AddMessages(messages []types.Message) {
 }
 
 func (ms *MessageService) AddMessage(message types.Message) {
+	if severity, configured := ruleset.MessageSeverityOverride(message.FileName, message.RuleID, message.Field); configured {
+		if severity == types.SEVERITY_IGNORE {
+			return
+		}
+		message.Severity = severity
+	}
 
 	// Add +2 to each row in the message.Rows
 	// 1 for the header and 1 for the 0 based index
@@ -55,7 +62,7 @@ func (ms *MessageService) AddMessage(message types.Message) {
 	}
 
 	for i, m := range ms.messages {
-		if m.Message == message.Message {
+		if m.Message == message.Message && m.FileName == message.FileName && m.RuleID == message.RuleID && m.Severity == message.Severity {
 			// Only keep up to 100 rows, keeping the latest row
 			newRows := append(m.Rows, message.Rows...)
 			if len(newRows) > 100 {

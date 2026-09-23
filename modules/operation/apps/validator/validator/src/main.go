@@ -6,6 +6,7 @@ import (
 	"main/config"
 	"main/i18n"
 	"main/lib"
+	ruleset "main/lib/rules"
 	"main/services"
 	"main/types"
 	"main/validations"
@@ -125,6 +126,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error parsing rules: %v", err)
 	}
+
+	ruleset.ConfigureMessageSeverities(rules)
 
 	//
 	// lib.AppLogger.Clear()

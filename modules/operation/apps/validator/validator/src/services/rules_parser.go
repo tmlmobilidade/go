@@ -1,7 +1,6 @@
 package services
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"main/lib"
@@ -9,6 +8,7 @@ import (
 	"main/types"
 	"os"
 	"reflect"
+	"slices"
 )
 
 // RulesParser handles parsing of GTFS validation rules from JSON files
@@ -47,8 +47,8 @@ func (rp *RulesParser) ParseRules() (*types.GtfsRules, error) {
 	}
 
 	// Parse JSON into GtfsRules structure
-	var rules types.GtfsRules
-	if err := json.Unmarshal(data, &rules); err != nil {
+	rules, err := ruleset.DecodeConfig(data)
+	if err != nil {
 		return nil, fmt.Errorf("failed to parse rules JSON: %w", err)
 	}
 
@@ -294,12 +294,7 @@ func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
 
 // isValidSeverity checks if the given severity is valid
 func isValidSeverity(severity types.Severity) bool {
-	switch severity {
-	case types.SEVERITY_IGNORE, types.SEVERITY_ERROR, types.SEVERITY_WARNING, types.SEVERITY_FORBIDDEN:
-		return true
-	default:
-		return false
-	}
+	return slices.Contains(ruleset.Severities, severity)
 }
 
 // ParseRulesFromFile is a convenience function to parse rules from a file path

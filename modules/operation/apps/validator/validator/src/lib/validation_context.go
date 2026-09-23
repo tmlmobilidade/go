@@ -88,12 +88,18 @@ func (vc *ValidationContext) AddWarning(message string, ruleID ...string) {
 // AddMessage adds a message with the specified severity. If ruleID is passed,
 // it is used as rule_id; otherwise the context RuleID is used.
 func (vc *ValidationContext) AddMessage(message string, severity types.Severity, ruleID ...string) {
-	if severity == types.SEVERITY_ERROR {
-		vc.failed = true
-	}
 	rid := vc.RuleID
 	if len(ruleID) > 0 {
 		rid = ruleID[0]
+	}
+	if override, configured := rules.MessageSeverityOverride(vc.FileName, rid, vc.Field); configured {
+		if override == types.SEVERITY_IGNORE {
+			return
+		}
+		severity = override
+	}
+	if severity == types.SEVERITY_ERROR {
+		vc.failed = true
 	}
 	vc.MessageAdder.AddMessage(types.Message{
 		Field:    vc.Field,
