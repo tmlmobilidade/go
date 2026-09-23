@@ -46,7 +46,7 @@ export function StopsDetailViewHeaderAssociatedLines() {
 	}, [stopsDetailContext.data.associated_lines]);
 
 	//
-	// B. Render componentss
+	// C. Render components
 
 	return linesByAgencyId.map((group) => {
 		const agency = getAgencyDisplayInfo(group.agency_id);

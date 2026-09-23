@@ -116,46 +116,47 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 	return (
 		<div className={styles.container}>
 
-			<Map
-				attributionControl={false}
-				cursor={cursor}
-				id={id || 'map'}
-				initialViewState={mapDefaultConfig.initialViewState}
-				interactive={interactiveLayerIds ? true : false}
-				interactiveLayerIds={interactiveLayerIds}
-				mapStyle={mapStyle}
-				maxPitch={0}
-				maxZoom={mapDefaultConfig.maxZoom}
-				minPitch={0}
-				minZoom={mapDefaultConfig.minZoom}
-				onClick={onClick}
-				onDrag={onDrag}
-				onLoad={handleOnLoad}
-				onMouseDown={onMouseDown}
-				onMouseEnter={handleOnMouseEnter}
-				onMouseLeave={handleOnMouseLeave}
-				onMouseMove={onMouseMove}
-				onMouseOut={onMouseOut}
-				onMouseOver={onMouseOver}
-				onMouseUp={onMouseUp}
-				onMove={handleOnMoveStart}
-				onMoveEnd={handleOnMoveEnd}
-				onMoveStart={handleOnMoveStart}
-				onStyleData={handleOnStyleData}
-				onTouchCancel={onTouchCancel}
-				onTouchEnd={onTouchEnd}
-				onTouchMove={onTouchMove}
-				onTouchStart={onTouchStart}
-				onZoom={onZoom}
-				scrollZoom={scrollZoom}
-				style={{ height: '100%', width: '100%' }}
-			>
+			<div className={styles.map}>
+				<Map
+					attributionControl={false}
+					cursor={cursor}
+					id={id || 'map'}
+					initialViewState={mapDefaultConfig.initialViewState}
+					interactive={interactiveLayerIds ? true : false}
+					interactiveLayerIds={interactiveLayerIds}
+					mapStyle={mapStyle}
+					maxPitch={0}
+					maxZoom={mapDefaultConfig.maxZoom}
+					minPitch={0}
+					minZoom={mapDefaultConfig.minZoom}
+					onClick={onClick}
+					onDrag={onDrag}
+					onLoad={handleOnLoad}
+					onMouseDown={onMouseDown}
+					onMouseEnter={handleOnMouseEnter}
+					onMouseLeave={handleOnMouseLeave}
+					onMouseMove={onMouseMove}
+					onMouseOut={onMouseOut}
+					onMouseOver={onMouseOver}
+					onMouseUp={onMouseUp}
+					onMove={handleOnMoveStart}
+					onMoveEnd={handleOnMoveEnd}
+					onMoveStart={handleOnMoveStart}
+					onStyleData={handleOnStyleData}
+					onTouchCancel={onTouchCancel}
+					onTouchEnd={onTouchEnd}
+					onTouchMove={onTouchMove}
+					onTouchStart={onTouchStart}
+					onZoom={onZoom}
+					scrollZoom={scrollZoom}
+				>
 
-				<div className={styles.childrenWrapper}>
-					{areMapAssetsLoaded && children}
-				</div>
+					<div className={styles.childrenWrapper}>
+						{areMapAssetsLoaded && children}
+					</div>
 
-			</Map>
+				</Map>
+			</div>
 
 			<div className={styles.attributionWrapper}>
 				<a href="https://maplibre.org/" target="_blank">MapLibre</a>

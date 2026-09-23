@@ -45,7 +45,7 @@ export function StopsDetailViewHeader() {
 
 	return (
 		<Surface variant="plain">
-			<Section gap="sm">
+			<Section className={styles.section} gap="sm">
 				<StopsDetailViewName />
 				<StopsDetailViewHeaderMetadata />
 				<button className={styles.directionsButton} onClick={handleGetDirections} type="button">

@@ -69,7 +69,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 	};
 
 	//
-	// D. Render components
+	// C. Render components
 
 	return (
 		<div className={styles.container} data-variant={variant}>

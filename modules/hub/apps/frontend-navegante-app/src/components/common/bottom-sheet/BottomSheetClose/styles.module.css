@@ -21,7 +21,7 @@
 .button[data-size='sm'] {
 	width: 36px;
 	height: 36px;
-	background-color: rgb(245 245 245);
+	background-color: var(--color-system-background-100);
 	border: 0;
 	box-shadow: none;
 }

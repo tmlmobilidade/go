@@ -71,7 +71,7 @@
 	justify-self: center;
 	width: 44px;
 	height: 5px;
-	background-color: rgb(0 0 0 / 18%);
+	background-color: var(--color-system-text-400);
 	border-radius: 999px;
 }
 

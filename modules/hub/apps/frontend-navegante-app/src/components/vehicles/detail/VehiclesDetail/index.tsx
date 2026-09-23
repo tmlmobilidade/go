@@ -18,7 +18,7 @@ export function VehiclesDetail() {
 	const activeVehicleId = isOpen ? activeBottomSheet?.entityId : null;
 
 	//
-	// B. Render componentss
+	// B. Render components
 
 	return (
 		<BottomSheet

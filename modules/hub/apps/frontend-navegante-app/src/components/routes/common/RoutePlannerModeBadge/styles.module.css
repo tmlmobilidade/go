@@ -51,3 +51,7 @@
 .badge[data-mode='transit'] {
 	color: var(--color-route-mode-transit);
 }
+
+:root[data-mode='dark'] .badge {
+	color: var(--color-system-text-200);
+}

@@ -20,7 +20,7 @@ export function LinesDetailView() {
 	const linesDetailContext = useLinesDetailContext();
 
 	//
-	// B. Render componentss
+	// B. Render components
 
 	if (linesDetailContext.flags.is_loading) {
 		return (

@@ -1,3 +1,7 @@
+.section[data-padding] {
+	padding-top: 0;
+}
+
 .directionsButton {
 	display: inline-flex;
 	gap: 9px;

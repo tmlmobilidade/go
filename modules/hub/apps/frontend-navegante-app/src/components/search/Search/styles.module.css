@@ -14,7 +14,7 @@
 }
 
 .container .inputWrapper {
-	--input-bg: var(--mantine-color-gray-1);
+	--input-bg: var(--color-system-background-100);
 	background-color: var(--input-bg);
 	border: 0;
 	border-radius: 0.85rem;

@@ -65,14 +65,14 @@ export function StopsDetailViewTimetable() {
 	}, [stopsDetailContext.data.timetable]);
 
 	//
-	// C. Render components
+	// C. Handle actions
 
 	const toggleShowPastArrivals = () => {
 		setShowPastArrivals(prev => !prev);
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	if (!stopsDetailContext.data.timetable?.length) {
 		return <NoDataLabel text={t('default:stops.StopsDetailViewTimetable.no_service')} withMinHeight />;

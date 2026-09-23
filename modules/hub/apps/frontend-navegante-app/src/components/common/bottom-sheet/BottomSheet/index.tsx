@@ -102,6 +102,8 @@ export function BottomSheet({
 			return;
 		}
 
+		sheetRef.current?.snapTo(selectedInitialSnap);
+
 		if (syncSnapState) {
 			setActiveBottomSheetSnap({
 				snapIndex: selectedInitialSnap,

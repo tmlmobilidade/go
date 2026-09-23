@@ -20,11 +20,11 @@ export function LinesDetailViewHeader() {
 	const agencyLogo = getAgencyLogo(linesDetailContext.data.line.agency_id, '180x120', 'light');
 
 	//
-	// B. Render componentss
+	// B. Render components
 
 	return (
 		<Surface variant="plain">
-			<Section gap="sm">
+			<Section className={styles.section} gap="sm">
 				<div aria-hidden={true} className={styles.row}>
 					<LineBadge lineData={linesDetailContext.data.line} size="lg" />
 					{agencyLogo && <Image alt="" height={40} src={agencyLogo} width={60} />}
