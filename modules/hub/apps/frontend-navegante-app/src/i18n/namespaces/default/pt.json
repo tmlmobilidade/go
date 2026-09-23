@@ -347,6 +347,7 @@
 			"destination": "Destino: {destination}",
 			"headsign": "Destino: {headsign}",
 			"headsign_unknown": "desconhecido",
+			"open_line_details": "Abrir detalhes da linha {line}",
 			"seen_seconds_ago": "Visto há {count, plural, one {# segundo} other {# segundos}}",
 			"stale": "A mostrar a última informação disponível.",
 			"unknown_destination": "desconhecido"

@@ -5,12 +5,13 @@ import { DetailUnavailable } from '@/components/common/display/DetailUnavailable
 import { useLinesData } from '@/components/lines/use-lines-data';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { useVehiclePatternData } from '@/components/vehicles/use-vehicle-pattern-data';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { getAgencyLogo } from '@/lib/agency-catalog';
 import { findVehicleLine, getVehiclePatternId } from '@/utils/transit/vehicle-detail';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { LineBadge, LineName, LoadingSection, Section, Skeleton } from '@tmlmobilidade/ui';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { type KeyboardEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -26,6 +27,7 @@ export function VehiclesDetailView() {
 	const { t } = useTranslation();
 
 	const { data: lines } = useLinesData();
+	const { push } = useBottomSheet();
 	const vehiclesDetailContext = useVehiclesDetailContext();
 
 	const [differenceInSeconds, setDifferenceInSeconds] = useState<number | undefined>(undefined);
@@ -63,7 +65,21 @@ export function VehiclesDetailView() {
 	}, [vehiclesDetailContext.data.vehicle?.created_at]);
 
 	//
-	// C. Render components
+	// C. Handle actions
+
+	const handleLineDetailsOpen = () => {
+		if (!activeLineData) return;
+		push({ entityId: activeLineData._id, view: 'lines-detail' });
+	};
+
+	const handleLineBadgeKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+		if (event.key !== 'Enter' && event.key !== ' ') return;
+		event.preventDefault();
+		handleLineDetailsOpen();
+	};
+
+	//
+	// D. Render components
 
 	if (vehiclesDetailContext.flags.is_loading) return <LoadingSection fullHeight />;
 
@@ -76,7 +92,20 @@ export function VehiclesDetailView() {
 			<div className={styles.vehicleInfoWrapper}>
 
 				<div className={styles.lineInfoWrapper}>
-					<LineBadge color={activeLineData?.color} shortName={activeLineData?.short_name || vehiclesDetailContext.data.vehicle?.route_short_name} size="full-width" textColor={activeLineData?.text_color} />
+					{activeLineData ? (
+						<div
+							aria-label={t('default:vehicles.VehiclesDetailView.open_line_details', '', { line: activeLineData.short_name })}
+							className={styles.lineBadgeButton}
+							onClick={handleLineDetailsOpen}
+							onKeyDown={handleLineBadgeKeyDown}
+							role="button"
+							tabIndex={0}
+						>
+							<LineBadge color={activeLineData.color} shortName={activeLineData.short_name} size="full-width" textColor={activeLineData.text_color} />
+						</div>
+					) : (
+						<LineBadge shortName={vehiclesDetailContext.data.vehicle?.route_short_name} size="full-width" />
+					)}
 					<Image alt="" height={40} src={getAgencyLogo(vehiclesDetailContext.data.vehicle?.agency_id, '180x120', 'light')} width={60} />
 				</div>
 
