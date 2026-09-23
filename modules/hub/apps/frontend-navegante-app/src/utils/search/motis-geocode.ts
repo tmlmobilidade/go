@@ -1,5 +1,6 @@
-import { type MotisGeocodeResult, type RoutePlannerLocation } from '@/types/route-planner/models';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { formatMotisLocationDetail } from '@/utils/route-planner/presentation/format';
+import { type MotisGeocodeResult } from '@tmlmobilidade/go-types-motis';
 
 /* * */
 

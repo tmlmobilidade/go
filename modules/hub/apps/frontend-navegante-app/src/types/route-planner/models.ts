@@ -1,5 +1,3 @@
-import type { Area as MotisApiArea, GeocodeResponse as MotisApiGeocodeResponse, Itinerary as MotisApiItinerary, Leg as MotisApiLeg, Place as MotisApiPlace, PlanResponse as MotisApiPlanResponse } from '@/types/motis-api';
-
 /* * */
 
 export type RoutePlannerTravelTimeMode = 'arrival' | 'departure' | 'now';
@@ -10,12 +8,12 @@ export type RoutePlannerViewMode = 'destination-search' | 'itinerary-detail' | R
 
 export type MotisLegModeKind = 'bike' | 'bus' | 'car' | 'elevator' | 'ferry' | 'plane' | 'rail' | 'scooter' | 'subway' | 'tram' | 'transit' | 'walk';
 
-export type MotisGeocodeArea = Partial<MotisApiArea>;
-
-export type MotisGeocodeResult = MotisApiGeocodeResponse[number];
+export interface RoutePlannerLocationArea {
+	name?: string
+}
 
 export interface RoutePlannerLocation {
-	areas?: MotisGeocodeArea[]
+	areas?: RoutePlannerLocationArea[]
 	category?: string
 	country?: string
 	detail: string
@@ -30,12 +28,6 @@ export interface RoutePlannerLocation {
 	type: string
 	zip?: string
 }
-
-export type MotisPlanPlace = MotisApiPlace;
-export type MotisPlanIntermediateStop = MotisApiPlace;
-export type MotisPlanLeg = MotisApiLeg;
-export type MotisItinerary = MotisApiItinerary;
-export type MotisPlanResponse = MotisApiPlanResponse;
 
 export interface RoutePlannerTravelTime {
 	date: Date

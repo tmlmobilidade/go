@@ -1,5 +1,5 @@
-import { type MotisPlanLeg } from '@/types/route-planner/models';
 import { getMotisLegDisplayLabel, getMotisLegRouteLabel, getMotisModeKind } from '@/utils/route-planner/presentation/modes';
+import { type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

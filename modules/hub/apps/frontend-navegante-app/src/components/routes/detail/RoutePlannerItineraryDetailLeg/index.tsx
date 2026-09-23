@@ -3,13 +3,13 @@
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { RoutePlannerTime } from '@/components/routes/common/RoutePlannerTime';
-import { type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/types/route-planner/models';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/itinerary/alerts';
 import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerLegRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
 import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconAlertTriangle, IconChevronDown, IconNavigationTop } from '@tabler/icons-react';
 import { type HubV1ApiAlert, type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
+import { type MotisPlanLeg, type MotisPlanPlace } from '@tmlmobilidade/go-types-motis';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -174,6 +174,6 @@ function getIntermediateStops(leg: MotisPlanLeg) {
 	return (leg.intermediateStops ?? []).filter(stop => getStopName(stop));
 }
 
-function getStopName(stop: MotisPlanIntermediateStop) {
+function getStopName(stop: MotisPlanPlace) {
 	return stop.name || '';
 }

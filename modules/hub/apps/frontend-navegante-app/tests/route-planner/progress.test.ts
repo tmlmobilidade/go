@@ -1,7 +1,8 @@
-import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerLocation } from '@/types/route-planner/models';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner/itinerary/geometry';
 import { getMotisItineraryActiveLegIndex, getMotisLegRemainingDistanceMeters, getMotisLegRemainingSeconds, getRoutePlannerActiveLegProgress } from '@/utils/route-planner/itinerary/progress';
 import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner/planning/navigation';
+import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace } from '@tmlmobilidade/go-types-motis';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

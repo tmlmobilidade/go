@@ -1,4 +1,5 @@
-import { type MotisGeocodeArea, type MotisGeocodeResult, type MotisPlanLeg, type RoutePlannerLocation } from '@/types/route-planner/models';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
+import { type MotisGeocodeResult, type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 
 /* * */
 
@@ -73,7 +74,7 @@ export function getMotisLegDetail(leg: MotisPlanLeg, fallbackOrigin: string, fal
 
 /* * */
 
-function getMotisAreaNames(areas: MotisGeocodeArea[] | undefined, excludedValues: Array<string | undefined>) {
+function getMotisAreaNames(areas: Array<{ name?: string }> | undefined, excludedValues: Array<string | undefined>) {
 	const excluded = new Set(excludedValues.map(normalizeLocationPart).filter(Boolean));
 	const result: string[] = [];
 	const seen = new Set<string>();

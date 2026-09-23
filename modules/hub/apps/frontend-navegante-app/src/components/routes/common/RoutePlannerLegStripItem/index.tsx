@@ -2,11 +2,11 @@
 
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
-import { type MotisPlanLeg } from '@/types/route-planner/models';
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
 import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconWalk } from '@tabler/icons-react';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
+import { type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 
 import styles from './styles.module.css';
 

@@ -1,7 +1,8 @@
-import { type MotisItinerary, type MotisPlanLeg, type RoutePlannerLocation } from '@/types/route-planner/models';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { getMotisLegPathPositions, getMotisPlanPlacePosition } from '@/utils/route-planner/itinerary/geometry';
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
 import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
+import { type MotisItinerary, type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 
 /* * */
 

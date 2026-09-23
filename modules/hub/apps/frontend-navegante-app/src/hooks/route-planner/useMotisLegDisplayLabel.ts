@@ -1,7 +1,7 @@
 'use client';
 
-import { type MotisPlanLeg } from '@/types/route-planner/models';
 import { getMotisLegDisplayLabel } from '@/utils/route-planner/presentation/modes';
+import { type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 

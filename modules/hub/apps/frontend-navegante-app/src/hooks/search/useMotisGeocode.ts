@@ -1,8 +1,10 @@
 'use client';
 
-import { type MotisGeocodeResult, type RoutePlannerLocation } from '@/types/route-planner/models';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { mapMotisGeocodeResultToLocation } from '@/utils/search/motis-geocode';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type HubV1ApiMotisGeocodeResponse } from '@tmlmobilidade/go-types-hub';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useEffect, useState } from 'react';
 
 /* * */
@@ -72,28 +74,22 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 			setIsLoading(true);
 			setError(null);
 
-			try {
-				const response = await fetch(`${API_ROUTES.hub.MOTIS_GEOCODE}?${params.toString()}`, {
-					signal: abortController.signal,
-				});
+			const response = await fetchApiData<HubV1ApiMotisGeocodeResponse>({
+				credentials: 'omit',
+				options: { signal: abortController.signal },
+				url: `${API_ROUTES.hub.MOTIS_GEOCODE}?${params.toString()}`,
+			});
 
-				if (!response.ok) throw new Error(`MOTIS geocode returned HTTP ${response.status}`);
+			if (abortController.signal.aborted) return;
 
-				const payload: { data: unknown } = await response.json();
-				const mappedResults = Array.isArray(payload.data)
-					? payload.data.map((result: MotisGeocodeResult) => mapMotisGeocodeResultToLocation(result, options.unnamedLocationLabel))
-					: [];
-
-				setData(mappedResults);
-			} catch (caughtError) {
-				if (caughtError instanceof DOMException && caughtError.name === 'AbortError') return;
-				// eslint-disable-next-line no-console
-				console.error(caughtError);
+			if (response.error) {
 				setData([]);
 				setError(options.errorMessage);
-			} finally {
-				if (!abortController.signal.aborted) setIsLoading(false);
+			} else {
+				setData(response.data.map(result => mapMotisGeocodeResultToLocation(result, options.unnamedLocationLabel)));
 			}
+
+			setIsLoading(false);
 		}, 260);
 
 		return () => {

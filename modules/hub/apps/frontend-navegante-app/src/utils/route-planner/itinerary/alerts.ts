@@ -1,6 +1,7 @@
-import { type MotisItinerary, type MotisPlanIntermediateStop, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerItineraryMapData } from '@/types/route-planner/models';
+import { type RoutePlannerItineraryMapData } from '@/types/route-planner/models';
 import { getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { type HubV1ApiAlert, type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
+import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace } from '@tmlmobilidade/go-types-motis';
 
 /* * */
 
@@ -15,7 +16,7 @@ interface RoutePlannerAlertItinerary {
 	legs: MotisItinerary['legs']
 }
 
-interface MotisStopIdCandidate extends MotisPlanIntermediateStop {
+interface MotisStopIdCandidate extends MotisPlanPlace {
 	stopCode?: string
 	stopId?: string
 }
@@ -35,7 +36,7 @@ function addStopIdVariant(stopIds: Set<string>, value: string | undefined) {
 	stopIds.add(`GTFS_${value}`);
 }
 
-function getIntermediateStopIds(stop: MotisPlanIntermediateStop) {
+function getIntermediateStopIds(stop: MotisPlanPlace) {
 	const candidate = stop as MotisStopIdCandidate;
 	return [
 		candidate.stopId,
@@ -47,7 +48,7 @@ function getMotisLegTripIds(leg: MotisPlanLeg) {
 	return typeof leg.tripId === 'string' && leg.tripId.length > 0 ? [leg.tripId] : [];
 }
 
-function getMotisPlanPlaceStopId(place: MotisPlanIntermediateStop | MotisPlanPlace | undefined) {
+function getMotisPlanPlaceStopId(place: MotisPlanPlace | undefined) {
 	return place?.stopId || place?.stopCode;
 }
 

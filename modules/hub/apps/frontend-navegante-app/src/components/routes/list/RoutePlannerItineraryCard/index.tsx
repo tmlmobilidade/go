@@ -5,12 +5,12 @@ import { LiveIcon } from '@/components/common/display/LiveIcon';
 import { useLinesData } from '@/components/lines/use-lines-data';
 import { RoutePlannerItineraryLegStrip } from '@/components/routes/common/RoutePlannerItineraryLegStrip';
 import { RoutePlannerGoButton } from '@/components/routes/navigation/RoutePlannerGoButton';
-import { type MotisItinerary } from '@/types/route-planner/models';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/itinerary/alerts';
 import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
 import { getItineraryWalkMinutes } from '@/utils/route-planner/planning/results';
 import { formatMotisPlanDuration, formatMotisPlanTime } from '@/utils/route-planner/presentation/format';
 import { IconAlertTriangle, IconWalk } from '@tabler/icons-react';
+import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
 import { type MouseEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

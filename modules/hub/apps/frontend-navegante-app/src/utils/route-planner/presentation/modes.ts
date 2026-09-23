@@ -1,4 +1,5 @@
-import { type MotisLegModeKind, type MotisPlanLeg } from '@/types/route-planner/models';
+import { type MotisLegModeKind } from '@/types/route-planner/models';
+import { type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 
 /* * */
 

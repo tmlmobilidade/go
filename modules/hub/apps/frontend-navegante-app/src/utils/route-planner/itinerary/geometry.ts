@@ -1,5 +1,6 @@
-import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerItineraryMapData, type RoutePlannerItineraryMapDataOptions, type RoutePlannerLocation } from '@/types/route-planner/models';
+import { type RoutePlannerItineraryMapData, type RoutePlannerItineraryMapDataOptions, type RoutePlannerLocation } from '@/types/route-planner/models';
 import { getMotisLegModeKind, getMotisLegRouteLabel } from '@/utils/route-planner/presentation/modes';
+import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace } from '@tmlmobilidade/go-types-motis';
 
 /* * */
 

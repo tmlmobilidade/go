@@ -1,5 +1,5 @@
-import { type MotisItinerary, type MotisPlanLeg } from '@/types/route-planner/models';
 import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, type RoutePlannerModeFilter, type RoutePlannerVisibleItinerary, sortVisibleItineraries, toggleRoutePlannerMode } from '@/utils/route-planner/planning/results';
+import { type MotisItinerary, type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

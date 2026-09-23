@@ -1,8 +1,11 @@
 'use client';
 
-import { type MotisItinerary, type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerTravelTime } from '@/types/route-planner/models';
+import { type RoutePlannerLocation, type RoutePlannerTravelTime } from '@/types/route-planner/models';
 import { buildMotisPlanParams } from '@/utils/route-planner/planning/motis-plan-request';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type HubV1ApiMotisPlanResponse } from '@tmlmobilidade/go-types-hub';
+import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useMemo } from 'react';
 import useSWRMutation from 'swr/mutation';
 
@@ -17,7 +20,7 @@ interface RoutePlanRequest {
 interface UseRoutePlannerPlanDataReturnType {
 	isLoading: boolean
 	itineraries: MotisItinerary[]
-	requestPlan: (request: RoutePlanRequest) => Promise<MotisPlanResponse>
+	requestPlan: (request: RoutePlanRequest) => Promise<HubV1ApiMotisPlanResponse>
 	reset: () => void
 }
 
@@ -25,14 +28,16 @@ interface UseRoutePlannerPlanDataReturnType {
 
 const ROUTE_PLAN_KEY = 'route-planner/plan';
 
-async function requestRoutePlan(_key: string, { arg }: { arg: RoutePlanRequest }): Promise<MotisPlanResponse> {
+async function requestRoutePlan(_key: string, { arg }: { arg: RoutePlanRequest }): Promise<HubV1ApiMotisPlanResponse> {
 	const params = buildMotisPlanParams(arg.origin, arg.destination, arg.travelTime);
-	const response = await fetch(`${API_ROUTES.hub.MOTIS_PLAN}?${params.toString()}`);
+	const response = await fetchApiData<HubV1ApiMotisPlanResponse>({
+		credentials: 'omit',
+		url: `${API_ROUTES.hub.MOTIS_PLAN}?${params.toString()}`,
+	});
 
-	if (!response.ok) throw new Error(`MOTIS plan returned HTTP ${response.status}`);
+	if (response.error || !response.data) throw new Error(response.error ?? 'MOTIS plan returned no data');
 
-	const payload: { data: MotisPlanResponse } = await response.json();
-	return payload.data;
+	return response.data;
 }
 
 /* * */
@@ -42,7 +47,7 @@ export function useRoutePlannerPlanData(): UseRoutePlannerPlanDataReturnType {
 
 	// A. Fetch data
 
-	const { data, isMutating, reset, trigger } = useSWRMutation<MotisPlanResponse, Error, string, RoutePlanRequest>(ROUTE_PLAN_KEY, requestRoutePlan, { throwOnError: true });
+	const { data, isMutating, reset, trigger } = useSWRMutation<HubV1ApiMotisPlanResponse, Error, string, RoutePlanRequest>(ROUTE_PLAN_KEY, requestRoutePlan, { throwOnError: true });
 
 	// Reset mutation data when the route planner is unmounted.
 	useEffect(() => () => reset(), [reset]);

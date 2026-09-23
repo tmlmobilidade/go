@@ -4,10 +4,11 @@ import { useLinesData } from '@/components/lines/use-lines-data';
 import { useRoutePlannerOrigin } from '@/components/routes/use-route-planner-origin';
 import { useRoutePlannerPlanData } from '@/components/routes/use-route-planner-plan-data';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
-import { type MotisItinerary, type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerLocationSearchReturnView, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner/models';
+import { type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerLocationSearchReturnView, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner/models';
 import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner/itinerary/geometry';
 import { getRoutePlannerTravelTimeModeTransition } from '@/utils/route-planner/planning/navigation';
 import { clearSearchDraft } from '@/utils/search/search-draft';
+import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

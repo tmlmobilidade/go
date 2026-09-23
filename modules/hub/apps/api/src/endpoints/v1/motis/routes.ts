@@ -1,26 +1,27 @@
 /* * */
 
-import { getGeocode } from '@/endpoints/v1/motis/controllers/get-geocode.js';
-import { getPlan } from '@/endpoints/v1/motis/controllers/get-plan.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
+
+import { getGeocodeHandler } from './handlers/get-geocode.js';
+import { getPlanHandler } from './handlers/get-plan.js';
 
 /* * */
 
-const namespace = '/v1/motis';
+const NAMESPACE = '/v1/motis';
 
 /* * */
 
-const server: FastifyInstance = FastifyService.getInstance().server;
+const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/geocode', getGeocode);
+		instance.get('/geocode', getGeocodeHandler);
 
-		instance.get('/plan', getPlan);
+		instance.get('/plan', getPlanHandler);
 
 		next();
 	},
-	{ prefix: namespace },
+	{ prefix: NAMESPACE },
 );

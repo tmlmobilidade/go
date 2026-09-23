@@ -1,4 +1,4 @@
-import { type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/types/route-planner/models';
+import { type MotisPlanLeg, type MotisPlanPlace } from '@tmlmobilidade/go-types-motis';
 
 /* * */
 
@@ -43,7 +43,7 @@ export function getRoutePlannerLegRealtimeStatus(leg: MotisPlanLeg): RoutePlanne
 	};
 }
 
-export function getRoutePlannerIntermediateStopRealtimeStatus(stop: MotisPlanIntermediateStop, isRealtime: boolean): RoutePlannerTimeStatus {
+export function getRoutePlannerIntermediateStopRealtimeStatus(stop: MotisPlanPlace, isRealtime: boolean): RoutePlannerTimeStatus {
 	const realtimeTime = stop.departure ?? stop.arrival;
 	const plannedTime = stop.scheduledDeparture ?? stop.scheduledArrival;
 

@@ -1,5 +1,5 @@
-import { type MotisItinerary } from '@/types/route-planner/models';
 import { getMotisLegModeKind, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
+import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
 
 /* * */
 

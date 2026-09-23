@@ -1,6 +1,6 @@
-import { type MotisItinerary } from '@/types/route-planner/models';
 import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
 
 /* * */
 
