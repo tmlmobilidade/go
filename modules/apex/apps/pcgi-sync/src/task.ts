@@ -97,7 +97,7 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 			const parsedDocument = parsePcgiTransactionEntityIntoRawApexTransaction(document);
 			await writer.write(parsedDocument);
 		} catch (error) {
-			Logger.error({ message: `Error transforming APEX Transaction: ${document.transactionId}: Reason: ${error.message}` });
+			Logger.error({ attributes: { document }, error, message: `Error transforming APEX Transaction: ${document.transactionId}: Reason: ${error.message}` });
 		}
 	}
 
