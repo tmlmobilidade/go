@@ -282,8 +282,10 @@
 			"swap": "Trocar partida e destino",
 			"time": {
 				"arrival": "Chegar até",
+				"arrival_short": "Chegar",
 				"datetime_label": "Data e hora",
 				"departure": "Partida às",
+				"departure_short": "Sair",
 				"now": "Agora"
 			}
 		},

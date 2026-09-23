@@ -3,10 +3,8 @@
 	flex-direction: column;
 	gap: 9px;
 	min-width: 0;
-	padding: 9px;
+	padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
 	background-color: var(--color-system-background-100);
-	border: 1px solid var(--color-system-border-100);
-	border-radius: 10px;
 }
 
 .filterSection {
@@ -25,13 +23,8 @@
 
 .filterGroup {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 5px;
 	align-items: center;
 	min-width: 0;
-	overflow: auto hidden;
-	scrollbar-width: none;
-}
-
-.filterGroup::-webkit-scrollbar {
-	display: none;
 }

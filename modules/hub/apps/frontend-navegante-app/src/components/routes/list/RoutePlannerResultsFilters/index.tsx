@@ -1,5 +1,6 @@
 'use client';
 
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { RoutePlannerFilterButton } from '@/components/routes/list/RoutePlannerFilterButton';
 import { RoutePlannerModeFilter } from '@/components/routes/list/RoutePlannerModeFilter';
 import { RoutePlannerSortFilter } from '@/components/routes/list/RoutePlannerSortFilter';
@@ -39,6 +40,7 @@ export function RoutePlannerResultsFilters({ availableModes, disabledModesCount,
 	const { t } = useTranslation();
 	const routePlannerContext = useRoutePlannerContext();
 	const hasItineraries = routePlannerContext.data.itineraries.length > 0;
+	const sheetTitle = getFilterSheetTitle(openFilter, t);
 
 	//
 	// B. Render components
@@ -82,39 +84,64 @@ export function RoutePlannerResultsFilters({ availableModes, disabledModesCount,
 				)}
 			</div>
 
-			{openFilter === 'sort' && hasItineraries && (
-				<RoutePlannerSortFilter onSortModeChange={onSortModeChange} sortMode={sortMode} />
-			)}
+			<BottomSheet
+				layer="foreground"
+				onClose={() => onOpenFilterChange(null)}
+				opened={openFilter !== null}
+				size="fit"
+				syncSnapState={false}
+				title={sheetTitle}
+			>
+				{openFilter === 'sort' && hasItineraries && (
+					<RoutePlannerSortFilter onSortModeChange={onSortModeChange} sortMode={sortMode} />
+				)}
 
-			{openFilter === 'time' && <RoutePlannerTimeFilter onClose={() => onOpenFilterChange(null)} />}
+				{openFilter === 'time' && <RoutePlannerTimeFilter onClose={() => onOpenFilterChange(null)} />}
 
-			{openFilter === 'modes' && hasItineraries && (
-				<RoutePlannerModeFilter
-					availableModes={availableModes}
-					enabledModes={enabledModes}
-					onModeToggle={onModeToggle}
-				/>
-			)}
+				{openFilter === 'modes' && hasItineraries && (
+					<RoutePlannerModeFilter
+						availableModes={availableModes}
+						enabledModes={enabledModes}
+						onModeToggle={onModeToggle}
+					/>
+				)}
+			</BottomSheet>
 		</>
 	);
 
 	//
 }
 
+function getFilterSheetTitle(openFilter: null | RoutePlannerOpenFilter, t: TFunction) {
+	if (openFilter === 'time') return t('default:routes.RoutePlannerInput.time.datetime_label');
+	if (openFilter === 'sort') return t('default:routes.RoutePlanner.results.sort.label');
+	if (openFilter === 'modes') return t('default:routes.RoutePlanner.results.modes.label');
+	return '';
+}
+
 function formatTravelTimeFilterLabel(travelTime: RoutePlannerTravelTime, t: TFunction) {
 	if (travelTime.mode === 'now') return t('default:routes.RoutePlannerInput.time.now');
 
-	const date = new Intl.DateTimeFormat(undefined, {
-		day: '2-digit',
+	const time = new Intl.DateTimeFormat('pt-PT', {
 		hour: '2-digit',
 		hour12: false,
 		minute: '2-digit',
-		month: '2-digit',
 	}).format(travelTime.date);
 
 	const modeLabel = travelTime.mode === 'arrival'
-		? t('default:routes.RoutePlannerInput.time.arrival')
-		: t('default:routes.RoutePlannerInput.time.departure');
+		? t('default:routes.RoutePlannerInput.time.arrival_short')
+		: t('default:routes.RoutePlannerInput.time.departure_short');
 
-	return `${modeLabel} ${date}`;
+	if (isSameLocalDay(travelTime.date, new Date())) return `${modeLabel} ${time}`;
+
+	const date = new Intl.DateTimeFormat('pt-PT', {
+		day: '2-digit',
+		month: '2-digit',
+	}).format(travelTime.date);
+
+	return `${modeLabel} ${date} · ${time}`;
+}
+
+function isSameLocalDay(firstDate: Date, secondDate: Date) {
+	return firstDate.toDateString() === secondDate.toDateString();
 }
