@@ -2,8 +2,7 @@
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type TripStopEta } from '../types.js';
 
@@ -23,7 +22,7 @@ export async function getClickHouseEtas(): Promise<TripStopEta[]> {
 
 	const etas = await labDb.queryFromFile<TripStopEta>(sqlPath('hub', 'publish-eta/select-eta.sql'));
 
-	Logger.info({ message: `Found ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfterOrBefore: 1 });
+	Logger.info({ message: `Found ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfter: 1 });
 
 	return etas;
 

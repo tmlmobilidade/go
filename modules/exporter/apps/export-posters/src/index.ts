@@ -11,8 +11,8 @@ import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 
@@ -22,18 +22,6 @@ import fs from 'node:fs';
 
 await (async function main() {
 	try {
-		//
-
-		//
-		// Initialize Sentry
-
-		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'export-posters', message: 'Sentry Exporter Posters initialized', module: 'exporter', severity: 'info' });
-		} catch (error) {
-			Logger.error({ error, message: 'Error initializing Sentry Exporter Posters' });
-		}
-
 		//
 		// Initialize the logger
 

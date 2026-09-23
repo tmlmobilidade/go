@@ -4,7 +4,7 @@ import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -50,7 +50,7 @@ export async function processPcgiTransactionEntity(databaseOperation) {
 		const parsedDocument = parsePcgiTransactionEntityIntoRawApexTransaction(databaseOperation.fullDocument);
 		await writer.write(parsedDocument);
 	} catch (error) {
-		Logger.error({ message: `Error transforming APEX Transaction: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
+		Logger.error({ attributes: { document: databaseOperation.fullDocument }, error, message: `Error transforming APEX Transaction: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}
 
 	//

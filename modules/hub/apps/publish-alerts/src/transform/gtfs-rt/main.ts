@@ -3,7 +3,7 @@
 import { type GtfsRtAlert, GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { UnixSecondsSchema } from '@tmlmobilidade/go-types-shared';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { transformCause } from './cause-effect/cause.js';
 import { transformEffect } from './cause-effect/effect.js';

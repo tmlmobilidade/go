@@ -5,23 +5,13 @@ import { syncLineMetrics } from '@/tasks/sync-line-metrics.js';
 import { syncPatternMetrics } from '@/tasks/sync-pattern-metrics.js';
 import { MetricSyncRunner } from '@/utils/run-metric.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
 async function main() {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'sync-metrics-hourly', message: 'Sentry Performance Sync Metrics Hourly initialized', module: 'performance', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Performance Sync Metrics Hourly' });
-	}
 
 	const globalTimer = new Timer();
 	const runner = new MetricSyncRunner('Metrics sync');

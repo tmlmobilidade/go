@@ -4,6 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Organization } from '@tmlmobilidade/go-types-core';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Delete an organization logo from the database and storage.
@@ -43,7 +44,7 @@ export async function deleteImageHandler(request: FastifyRequest<{ Params: { id:
 	try {
 		await storageProvider.delete(fileIdForTheme);
 	} catch (error) {
-		console.error(error);
+		Logger.error({ error, message: 'Error deleting logo file from storage' });
 	}
 
 	//

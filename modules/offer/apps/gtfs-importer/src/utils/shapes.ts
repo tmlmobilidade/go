@@ -2,6 +2,7 @@
 
 import { parseCsv, readGtfsFile } from '@/helpers/index.js';
 import { GtfsStrictV29Shapes, GtfsStrictV29ShapesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -14,7 +15,7 @@ export async function loadGtfsShapes(gtfsPath: string) {
 		try {
 			shapes.push(GtfsStrictV29ShapesSchema.parse(raw));
 		} catch (error) {
-			console.warn(`Skipping shape due to validation error: ${error instanceof Error ? error.message : String(error)}`);
+			Logger.warning({ error, message: 'Skipping shape due to validation error' });
 		}
 	}
 

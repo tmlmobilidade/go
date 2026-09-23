@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Deletes a scheduled Alert image from the database.
@@ -11,7 +11,7 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param reply The reply object.
  */
 export async function deleteImageHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-	console.log('===> Deleting image for alert ID:', request.params.id);
+	Logger.info({ message: `===> Deleting image for alert ID: ${request.params.id}` });
 	// Ensure the alert exists and has an image
 	const foundAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
 	// If the alert does not exist, return an error

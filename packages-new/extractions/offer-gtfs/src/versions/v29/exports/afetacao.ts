@@ -6,7 +6,7 @@ import { getAgencyStopId } from '@/versions/v29/utils/get-agency-stop-id.js';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { type Fare, type Line, type Pattern, type Typology, type Zone } from '@tmlmobilidade/go-types-offer';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

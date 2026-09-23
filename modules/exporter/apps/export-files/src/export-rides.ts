@@ -3,8 +3,8 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type FileExport } from '@tmlmobilidade/go-types-downloads';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { PermissionCatalog, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
@@ -87,7 +87,7 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 
 	await csvWriter.flush();
 
-	Logger.success(`Exported ${count} rides in ${timer.get()}`, 1);
+	Logger.success({ message: `Exported ${count} rides in ${timer.get()}`, spacesAfter: 1 });
 	Logger.info({ message: `File path: ${tempFilePath}` });
 	Logger.spacer(1);
 

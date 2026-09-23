@@ -3,8 +3,7 @@
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ClickHouseEtaGtfsResponse } from '../types.js';
 
@@ -21,7 +20,7 @@ export async function getClickHouseTripUpdates(): Promise<GtfsRtTripUpdate[]> {
 
 	const tripUpdates: GtfsRtTripUpdate[] = allTripUpdates.map(row => JSON.parse(row.trip_update));
 
-	Logger.info({ message: `Found ${allTripUpdates.length} trip updates in ${timer.get()}`, spacesAfterOrBefore: 1 });
+	Logger.info({ message: `Found ${allTripUpdates.length} trip updates in ${timer.get()}`, spacesAfter: 1 });
 
 	//
 

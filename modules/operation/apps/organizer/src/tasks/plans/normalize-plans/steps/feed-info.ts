@@ -1,7 +1,7 @@
 /* * */
 
 import { type GtfsStrictV30FeedInfo, GtfsStrictV30FeedInfoSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';

@@ -3,8 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RidesCoordinatorRidesResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

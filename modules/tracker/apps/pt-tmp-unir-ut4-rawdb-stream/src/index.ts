@@ -6,7 +6,7 @@ import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { handleStreamRawVehicleEventIntoSimplifiedVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -24,15 +24,6 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 
 (async function init() {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pt-tmp-unir-ut4-rawdb-stream', message: 'Sentry Tracker CRTM AISA LabDb Stream initialized', module: 'tracker', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker CRTM AISA LabDb Stream' });
-	}
 
 	//
 	// Watch for changes to the rawVehicleEventsNew collection

@@ -2,6 +2,7 @@
 
 import { parseCsv, readGtfsFile, toNumberOrNull } from '@/helpers/index.js';
 import { GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -22,7 +23,7 @@ export async function loadGtfsStopTimes(gtfsPath: string) {
 			} as GtfsStrictV29StopTimes;
 			stopTimes.push(GtfsStrictV29StopTimesSchema.parse(normalized));
 		} catch (error) {
-			console.warn(`Skipping stop_time due to validation error: ${error instanceof Error ? error.message : String(error)}`);
+			Logger.warning({ error, message: 'Skipping stop_time due to validation error' });
 		}
 	}
 

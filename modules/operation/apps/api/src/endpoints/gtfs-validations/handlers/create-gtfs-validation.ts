@@ -8,6 +8,7 @@ import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs
 import { type CreateGtfsValidationDto, type GtfsValidation, GtfsValidationSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
@@ -111,7 +112,7 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 		try {
 			unlinkSync(tempFilePath);
 		} catch (cleanupError) {
-			console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
+			Logger.warning({ attributes: { cleanupError, tempFilePath }, message: 'Failed to cleanup temporary file' });
 		}
 		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
 	}
@@ -152,7 +153,7 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 		try {
 			unlinkSync(tempFilePath);
 		} catch (cleanupError) {
-			console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
+			Logger.warning({ attributes: { cleanupError, tempFilePath }, message: 'Failed to cleanup temporary file' });
 		}
 	}
 

@@ -73,13 +73,13 @@ A worker is any app that is neither the frontend nor the API. Its name says what
 
 ```
 src/
-├── index.ts        ← Sentry init, main(), then the run mode
+├── index.ts        ← main(), then the run mode
 ├── tasks/          ← one file per unit of work (sync-rides.ts)
 ├── handlers/       ← coordinators only: one file per HTTP handler
 └── utils/          ← app-local helpers
 ```
 
-`index.ts` opens by initialising Sentry through `initSentryNode()` and `Logger.startNodeLogs({ app, module })`, both from `@tmlmobilidade/logger`, then defines `main()` and picks a run mode from `@tmlmobilidade/go-utils-exec`:
+`index.ts` opens by defining `main()` and picks a run mode from `@tmlmobilidade/go-utils-exec`:
 
 - **Interval**: `await runOnInterval(main, { intervalMs })`. The common shape for cleaners, feeders, examiners, publishers and organizers.
 - **Batch**: `main()` walks a range with `performInTimeChunks` or `performInChunks` and exits. Used for backfills and syncs.
@@ -121,4 +121,4 @@ Inside `main()`, a `Timer` from `@tmlmobilidade/timer` measures the run and `Log
 - **No hardcoded ports, hosts or URLs.** `getModuleConfig(module, key)` and the generated routes resolve them per environment.
 - **No secrets or `.env` files in code or git.** Runtime configuration comes from `environments/<env>/` through the dev scripts, and from the container environment in deployment.
 - **No relative imports that climb out of `src`.** A workspace package is imported by its name.
-- **No worker without Sentry init, `Logger.startNodeLogs` and a run mode from `go-utils-exec`.** Every deployable reports the same way.
+- **No worker without a run mode from `go-utils-exec`.** Every deployable reports the same way.

@@ -4,8 +4,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { type RealtimeServiceCompliance } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

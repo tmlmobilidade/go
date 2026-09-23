@@ -2,8 +2,7 @@
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type Metric } from '@tmlmobilidade/types';
 
 /* * */

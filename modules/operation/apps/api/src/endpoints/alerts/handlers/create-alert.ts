@@ -17,7 +17,11 @@ export async function createAlertHandler(request: FastifyRequest<{ Body: CreateA
 
 	const validatedAlert = CreateAlertSchema.parse(request.body);
 
-	const insertResult = await goDb.operation.alerts.insertOne({ ...validatedAlert, created_by: request.me._id, updated_by: request.me._id });
+	const insertResult = await goDb.operation.alerts.insertOne({
+		...validatedAlert,
+		created_by: request.me._id,
+		updated_by: request.me._id,
+	});
 
 	if (!insertResult) {
 		return sendErrorApiResponse(reply, {

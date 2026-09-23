@@ -3,8 +3,7 @@
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { TTL_REALTIME } from '../../config.js';
 import { type ClickHouseEtaKeyValue } from '../types.js';
@@ -33,7 +32,7 @@ export async function cacheEtasFromClickHouseByStop() {
 
 	await Promise.all(etasByStop.map(row => cacheDb.set(`hub:v1:realtime:eta:by-stop:${row.key}`, row.value, TTL_REALTIME)));
 
-	Logger.info({ message: `Cached ${etasByStop.length} stop ETA groups in ${timer.get()}`, spacesAfterOrBefore: 1 });
+	Logger.info({ message: `Cached ${etasByStop.length} stop ETA groups in ${timer.get()}`, spacesAfter: 1 });
 
 	//
 };

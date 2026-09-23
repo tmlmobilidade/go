@@ -4,8 +4,7 @@
 // import { type AggregationResultItem } from '@/types.js';
 // import { Dates } from '@tmlmobilidade/go-utils-dates';
 // import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-// import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-// import { Timer } from '@tmlmobilidade/timer';
+// import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 // import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 // /* * */
@@ -13,16 +12,6 @@
 // async function main() {
 // 	try {
 // 		//
-
-// 		//
-// 		// Initialize Sentry
-
-// 		try {
-// 			await initSentryNode();
-// 			Logger.startNodeLogs({ app: 'sams-feeder', message: 'Sentry Sams Feeder initialized', module: 'controller', severity: 'info' });
-// 		} catch (error) {
-// 			Logger.error({ error, message: 'Error initializing Sentry Sams Feeder' });
-// 		}
 
 // 		//
 // 		// Initialize the logger
@@ -87,7 +76,7 @@
 // 			samsForLocationsCounter++;
 // 		}
 
-// 		Logger.success(`Added ${samsForLocationsCounter} Unique SAMs from Simplified APEX Locations. (${samsForLocationsTimer.get()})`, 1);
+// 		Logger.success({ message: `Added ${samsForLocationsCounter} Unique SAMs from Simplified APEX Locations. (${samsForLocationsTimer.get()})`, spacesAfter: 1 });
 
 // 		/* * */
 // 		/* SIMPLIFIED APEX ON BOARD REFUNDS */
@@ -121,7 +110,7 @@
 // 			samsForOnBoardRefundsCounter++;
 // 		}
 
-// 		Logger.success(`Added ${samsForOnBoardRefundsCounter} Unique SAMs from Simplified APEX OnBoardRefunds. (${samsForOnBoardRefundsTimer.get()})`, 1);
+// 		Logger.success({ message: `Added ${samsForOnBoardRefundsCounter} Unique SAMs from Simplified APEX OnBoardRefunds. (${samsForOnBoardRefundsTimer.get()})`, spacesAfter: 1 });
 
 // 		/* * */
 // 		/* SIMPLIFIED APEX ON BOARD SALES */
@@ -155,7 +144,7 @@
 // 			samsForOnBoardSalesCounter++;
 // 		}
 
-// 		Logger.success(`Added ${samsForOnBoardSalesCounter} Unique SAMs from Simplified APEX OnBoardSales. (${samsForOnBoardSalesTimer.get()})`, 1);
+// 		Logger.success({ message: `Added ${samsForOnBoardSalesCounter} Unique SAMs from Simplified APEX OnBoardSales. (${samsForOnBoardSalesTimer.get()})`, spacesAfter: 1 });
 
 // 		/* * */
 // 		/* SIMPLIFIED APEX VALIDATIONS */
@@ -189,7 +178,7 @@
 // 			samsForValidationsCounter++;
 // 		}
 
-// 		Logger.success(`Added ${samsForValidationsCounter} SAMs from Simplified APEX Validations. (${samsForValidationsTimer.get()})`, 1);
+// 		Logger.success({ message: `Added ${samsForValidationsCounter} SAMs from Simplified APEX Validations. (${samsForValidationsTimer.get()})`, spacesAfter: 1 });
 
 // 		//
 

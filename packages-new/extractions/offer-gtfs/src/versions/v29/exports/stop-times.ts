@@ -7,7 +7,7 @@ import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/go-types-offer';
 import { OperationalTimeSchema } from '@tmlmobilidade/go-types-shared';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { metersToGtfsKm } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';

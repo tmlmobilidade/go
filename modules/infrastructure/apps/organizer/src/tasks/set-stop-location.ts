@@ -2,8 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

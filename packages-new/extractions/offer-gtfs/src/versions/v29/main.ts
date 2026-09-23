@@ -6,7 +6,7 @@ import { rewriteServiceIds, rewriteTripIds } from '@/versions/v29/utils/rewrite-
 import { ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 
 import { exportFeedInfoFile } from './exports/feedInfo.js';
@@ -69,16 +69,6 @@ async function updateProgress(
  */
 export async function exportGtfsV29(progress: ExportProgress, exportConfig: GtfsV29ExportConfig) {
 	try {
-		//
-		// Initialize Sentry
-
-		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'gtfs-exporter', message: 'Sentry Offer GTFS Exporter initialized', module: 'offer', severity: 'info' });
-		} catch (error) {
-			Logger.error({ error, message: 'Error initializing Sentry Offer GTFS Exporter' });
-		}
-
 		//
 
 		Logger.info({ message: '* * *' });
