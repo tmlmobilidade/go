@@ -6,6 +6,7 @@ import { AgenciesDetailFinancials } from '@/components/agencies/detail/AgenciesD
 import { AgenciesDetailHeader } from '@/components/agencies/detail/AgenciesDetailHeader';
 import { AgenciesDetailOpenData } from '@/components/agencies/detail/AgenciesDetailOpenData';
 import { AgenciesDetailPlans } from '@/components/agencies/detail/AgenciesDetailPlans';
+import { AgenciesDetailValidationRules } from '@/components/agencies/detail/AgenciesDetailValidationRules';
 import { Pane } from '@tmlmobilidade/ui';
 
 import { useAgenciesDetailData } from '../use-agencies-detail-data';
@@ -26,6 +27,7 @@ export function AgenciesDetail() {
 			<AgenciesDetailFinancials />
 			<AgenciesDetailOpenData />
 			<AgenciesDetailPlans />
+			<AgenciesDetailValidationRules />
 			<AgenciesDetailAlerts />
 		</Pane>
 	);

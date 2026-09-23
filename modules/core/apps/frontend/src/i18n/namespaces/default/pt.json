@@ -137,52 +137,22 @@
 				},
 				"title": "Planos"
 			},
-			"SectionValidationRules": {
-				"description": "Ficheiro de regras de validação do GTFS",
-				"fields": {
-					"Rules": {
-						"label": "Regras"
-					},
-					"Severity": {
-						"label": "Severidade"
-					},
-					"file": {
-						"button": "Carregar regras",
-						"label": "Inserir regras de validação do GTFS"
-					},
-					"file_content": {
-						"button": "Transferir regras",
-						"label": "Download regras de validação do GTFS",
-						"no_content": "Nenhuma regra de validação definida"
-					}
+			"ValidationRules": {
+				"description": "As regras usam as severidades guardadas para esta agência. Regras sem severidade guardada são tratadas como Ignorar e só ficam guardadas depois de as alterar.",
+				"group": "Ficheiro",
+				"invalid": "Não é possível guardar as regras:",
+				"rule": "Regra",
+				"search": "Pesquisar ficheiro ou regra...",
+				"severities": {
+					"error": "Erro",
+					"forbidden": "Proibido",
+					"ignore": "Ignorar",
+					"warning": "Aviso"
 				},
-				"title": {
-					"GTFS_validation_rules": {
-						"title": "Regras de validação do GTFS"
-					}
-				},
-
-				"toasts": {
-					"error": {
-						"message": "Não foi possível ler o ficheiro JSON. Verifique o conteúdo.",
-						"title": "Erro ao processar ficheiro."
-					},
-					"file_type": {
-						"message": "O ficheiro submetido excede o limite permitido.",
-						"title": "Tipo de ficheiro inválido."
-					},
-					"max_size": {
-						"message": "O ficheiro submetido excede o limite permitido.",
-						"title": "Ficheiro demasiado grande."
-					},
-					"read_only": {
-						"message": "O documento está em modo de visualização.",
-						"title": "Não é possível atualizar as regras de validação."
-					},
-					"success": {
-						"message": "O ficheiro submetido foi aceite. Guarde as alterações para ativar.",
-						"title": "Regras carregadas."
-					}
+				"severity": "Severidade",
+				"title": "Regras de validação do GTFS",
+				"unconfigured": {
+					"title": "Regras sem severidade definida"
 				}
 			},
 			"header": {

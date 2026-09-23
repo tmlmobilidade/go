@@ -149,41 +149,22 @@
 				},
 				"title": "Planos"
 			},
-			"SectionValidationRules": {
-				"description": "Archivo de reglas de validación del GTFS",
-				"fields": {
-					"file": {
-						"button": "Cargar reglas",
-						"label": "Insertar reglas de validación del GTFS"
-					},
-					"file_content": {
-						"button": "Descargar reglas",
-						"label": "Descargar reglas de validación del GTFS",
-						"no_content": "No hay reglas de validación definidas"
-					}
+			"ValidationRules": {
+				"description": "Las reglas usan las severidades guardadas para esta agencia. Las reglas sin severidad guardada se tratan como Ignorar y solo se guardan al cambiarlas.",
+				"group": "Archivo",
+				"invalid": "No se pueden guardar las reglas:",
+				"rule": "Regla",
+				"search": "Buscar archivo o regla...",
+				"severities": {
+					"error": "Error",
+					"forbidden": "Prohibido",
+					"ignore": "Ignorar",
+					"warning": "Aviso"
 				},
+				"severity": "Severidad",
 				"title": "Reglas de validación del GTFS",
-				"toasts": {
-					"error": {
-						"message": "No fue posible leer el archivo JSON. Verifique el contenido.",
-						"title": "Error al procesar el archivo."
-					},
-					"file_type": {
-						"message": "El archivo enviado excede el límite permitido.",
-						"title": "Tipo de archivo inválido."
-					},
-					"max_size": {
-						"message": "El archivo enviado excede el límite permitido.",
-						"title": "Archivo demasiado grande."
-					},
-					"read_only": {
-						"message": "El documento está en modo de visualización.",
-						"title": "No es posible actualizar las reglas de validación."
-					},
-					"success": {
-						"message": "El archivo enviado fue aceptado. Guarde los cambios para activar.",
-						"title": "Reglas cargadas."
-					}
+				"unconfigured": {
+					"title": "Reglas sin severidad definida"
 				}
 			},
 			"header": {
