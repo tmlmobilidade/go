@@ -2,10 +2,12 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency } from '@tmlmobilidade/go-types-core';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 import { SelectDataItem } from '../components/inputs/Select';
+import { fetchApiData } from '../fetch/fetch-api-data';
 
 /* * */
 
@@ -43,7 +45,11 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(API_ROUTES.core.AGENCIES_LIST);
+	const { data, error, isLoading } = useSWR<ApiResponse<Agency[]>>(API_ROUTES.core.AGENCIES_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Agency[]>({ url }),
+	});
+
+	const allAgenciesData = data?.data;
 
 	//
 	// B. Transform data
@@ -64,14 +70,15 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 			raw: allAgenciesData ?? [],
 		},
 		flags: {
-			error: allAgenciesError,
-			loading: allAgenciesLoading,
+			error: error ?? (data?.error ? new Error(data.error) : undefined),
+			loading: isLoading,
 		},
 	}), [
 		asOptionsData,
 		allAgenciesData,
-		allAgenciesError,
-		allAgenciesLoading,
+		data?.error,
+		error,
+		isLoading,
 	]);
 
 	//

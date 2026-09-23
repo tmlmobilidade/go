@@ -1,15 +1,14 @@
 /* * */
 
-import { VehicleDetails } from '@/components/vehicles/detail/VehicleDetails';
-import { VehiclesDetailContextProvider } from '@/contexts/VehiclesDetail.context';
+import { VehiclesDetail } from '@/components/vehicles/detail/VehiclesDetail';
+import { VehiclesDetailFormContextProvider } from '@/components/vehicles/detail/VehiclesDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<VehiclesDetailContextProvider vehicleId={id}>
-			<VehicleDetails />
-		</VehiclesDetailContextProvider>
+		<VehiclesDetailFormContextProvider>
+			<VehiclesDetail />
+		</VehiclesDetailFormContextProvider>
 	);
 }

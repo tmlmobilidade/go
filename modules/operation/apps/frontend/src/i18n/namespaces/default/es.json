@@ -782,5 +782,287 @@
 				"waiting": "En espera"
 			}
 		}
+	},
+	"vehicles": {
+		"NoDataLabel": {
+			"text": "Seleccione un Vehículo"
+		},
+		"create": {
+			"VehiclesCreateHeader": {
+				"title": "Nuevo Vehículo"
+			},
+			"VehiclesCreateInfos": {
+				"fields": {
+					"_id": {
+						"label": "ID del vehículo",
+						"placeholder": "Introduzca el ID del vehículo"
+					},
+					"agency_id": {
+						"label": "Operador del vehículo"
+					},
+					"available_seats": {
+						"label": "Capacidad de asientos",
+						"placeholder": "Introduzca la capacidad de asientos"
+					},
+					"available_standing": {
+						"label": "Capacidad de pie",
+						"placeholder": "Introduzca la capacidad de pie"
+					},
+					"emission": {
+						"label": "Clase de emisión",
+						"placeholder": "Seleccione la clase de emisión del vehículo"
+					},
+					"license_plate": {
+						"label": "Matrícula del vehículo",
+						"placeholder": "AA00AA"
+					},
+					"make": {
+						"label": "Marca del vehículo",
+						"placeholder": "Introduzca la marca del vehículo"
+					},
+					"model": {
+						"label": "Modelo del vehículo",
+						"placeholder": "Introduzca el modelo del vehículo"
+					},
+					"owner": {
+						"label": "Propietario del vehículo",
+						"placeholder": "Introduzca el propietario del vehículo"
+					},
+					"propulsion": {
+						"label": "Propulsión",
+						"placeholder": "Seleccione la propulsión del vehículo"
+					},
+					"registration_date": {
+						"label": "Fecha de registro del vehículo"
+					},
+					"start_date": {
+						"label": "Fecha de inicio de operación"
+					},
+					"typology": {
+						"label": "Tipología",
+						"placeholder": "Seleccione la tipología del vehículo"
+					}
+				}
+			}
+		},
+		"detail": {
+			"VehiclesDetailFunctionalities": {
+				"description": "Funcionalidades del vehículo, como aceptación de bicicletas, pago contactless, conteo de pasajeros, etc...",
+				"fields": {
+					"bicycles": {
+						"label": "Acepta bicicletas"
+					},
+					"climatization": {
+						"label": "Posee climatización"
+					},
+					"consumption_meter": {
+						"label": "Medición de consumo"
+					},
+					"contactless": {
+						"label": "Acepta pago por aproximación"
+					},
+					"corridor": {
+						"label": "Posee pasillo"
+					},
+					"external_sound": {
+						"label": "Sonido externo"
+					},
+					"folding_system": {
+						"label": "Sistema de plegado"
+					},
+					"front_display": {
+						"label": "Display frontal"
+					},
+					"internal_sound": {
+						"label": "Sonido interno"
+					},
+					"kneeling": {
+						"label": "Kneeling"
+					},
+					"lowered_floor": {
+						"label": "Piso rebajado"
+					},
+					"onboard_monitor": {
+						"label": "Monitor a bordo"
+					},
+					"passenger_counting": {
+						"label": "Conteo de pasajeros activo"
+					},
+					"ramp": {
+						"label": "Posee rampa"
+					},
+					"rear_display": {
+						"label": "Display trasero"
+					},
+					"side_display": {
+						"label": "Display lateral"
+					},
+					"static_information": {
+						"label": "Información estática"
+					},
+					"wheelchair": {
+						"label": "Accesible para sillas de ruedas"
+					}
+				},
+				"title": "Funcionalidades"
+			},
+			"VehiclesDetailHeader": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "¿Está seguro de que desea eliminar este vehículo? Esta acción no se puede revertir.",
+						"title": "Eliminar Vehículo"
+					}
+				}
+			},
+			"VehiclesDetailIdentification": {
+				"description": "Identificadores del vehículo, propietario y operador.",
+				"fields": {
+					"_id": {
+						"label": "ID del vehículo"
+					},
+					"agency_id": {
+						"label": "Operador del vehículo"
+					},
+					"license_plate": {
+						"label": "Matrícula del vehículo"
+					},
+					"owner": {
+						"label": "Propietario del vehículo"
+					},
+					"registration_date": {
+						"label": "Fecha de registro del vehículo"
+					},
+					"start_date": {
+						"label": "Fecha de inicio de operación"
+					}
+				},
+				"title": "Identificación"
+			},
+			"VehiclesDetailMap": {
+				"description": "Última posición reportada del vehículo.",
+				"title": "Mapa de la posición actual"
+			},
+			"VehiclesDetailSpecifications": {
+				"description": "Especificaciones del vehículo, como marca, modelo, capacidad de asientos, etc...",
+				"fields": {
+					"available_seats": {
+						"label": "Capacidad de asientos"
+					},
+					"available_standing": {
+						"label": "Capacidad de pie"
+					},
+					"emission": {
+						"label": "Clase de emisión"
+					},
+					"make": {
+						"label": "Marca del vehículo"
+					},
+					"model": {
+						"label": "Modelo del vehículo"
+					},
+					"propulsion": {
+						"label": "Propulsión"
+					},
+					"typology": {
+						"label": "Tipología"
+					}
+				},
+				"title": "Especificaciones"
+			}
+		},
+		"import": {
+			"VehiclesImportFile": {
+				"cancel": "Cancelar",
+				"fileLabel": "Seleccione un archivo válido para crear o actualizar un vehículo",
+				"submit": "Crear vehículos",
+				"unknownError": "Error desconocido.",
+				"uploadLabel": "Archivo de importación de vehículos"
+			},
+			"VehiclesImportHeader": {
+				"title": "Importar Vehículo"
+			}
+		},
+		"list": {
+			"VehiclesList": {
+				"columns": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"id": {
+						"label": "#ID"
+					},
+					"license_plate": {
+						"label": "Matrícula"
+					},
+					"registration_date": {
+						"label": "Fecha de registro"
+					}
+				}
+			},
+			"VehiclesListExport": {
+				"activeFilters": "Filtros activos en la lista",
+				"cancel": "Cancelar",
+				"filters": {
+					"agency": "Operadores",
+					"search": "Búsqueda"
+				},
+				"noFilters": "Sin filtros activos. La exportación usará todos los vehículos de la lista actual.",
+				"submit": "Exportar",
+				"title": "Exportar vehículos",
+				"toast": {
+					"error": {
+						"message": "Error al iniciar la exportación",
+						"title": "Error"
+					},
+					"success": {
+						"message": "La exportación ha sido iniciada",
+						"title": "Éxito"
+					}
+				}
+			},
+			"VehiclesListFilterAgency": {
+				"label": "Operadores"
+			},
+			"VehiclesListHeader": {
+				"title": "Vehículos"
+			},
+			"VehiclesListHeaderMenu": {
+				"create": "Nuevo vehículo",
+				"export": "Exportar vehículos",
+				"import": "Importar vehículo"
+			}
+		},
+		"shared": {
+			"emission": {
+				"EURO_I": "Euro 1",
+				"EURO_II": "Euro 2",
+				"EURO_III": "Euro 3",
+				"EURO_IV": "Euro 4",
+				"EURO_V": "Euro 5",
+				"EURO_VI": "Euro 6"
+			},
+			"propulsion": {
+				"biodiesel": "Biodiésel",
+				"diesel": "Diésel",
+				"electricity": "Electricidad",
+				"gasoline": "Gasolina",
+				"hybrid": "Híbrido",
+				"lpg_auto": "GLP (Gas Licuado de Petróleo)",
+				"mixture": "Mezcla",
+				"natural_gas": "Gas Natural"
+			},
+			"typology": {
+				"bus": "Autobús",
+				"cable car": "Teleférico",
+				"cable_tram": "Tranvía de cable",
+				"ferry": "Ferry",
+				"funicular": "Funicular",
+				"monorail": "Monorraíl",
+				"rail": "Tren",
+				"subway": "Metro",
+				"tram": "Tranvía",
+				"trolleybus": "Trolebús"
+			}
+		}
 	}
 }

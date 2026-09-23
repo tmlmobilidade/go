@@ -1,11 +1,11 @@
-import { useVehicleImportContext } from '@/contexts/VehicleImport.context';
+import { useVehiclesImportContext } from '@/components/vehicles/import/VehiclesImport.context';
 import { translateFormValue } from '@/utils/translateFormValue';
 import { Divider, Grid, Label, Section, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function ImportPreview() {
-	const { data } = useVehicleImportContext();
+	const { data } = useVehiclesImportContext();
 
 	if (!data.importPreview || data.importPreview.length === 0) {
 		return null;

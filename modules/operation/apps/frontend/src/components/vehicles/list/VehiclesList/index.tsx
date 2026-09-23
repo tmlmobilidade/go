@@ -1,15 +1,18 @@
 'use client';
 
 import { useVehiclesDetailVehicleId } from '@/components/vehicles/detail/use-vehicles-detail-vehicle-id';
-import { VehiclesListFiltersBar } from '@/components/vehicles/list/VehiclesListFiltersBar';
-import { VehiclesListHeader } from '@/components/vehicles/list/VehiclesListHeader';
-import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
-import { VehicleNormalized } from '@/types/normalized';
-import { formatLicensePlate } from '@/utils/formatLicencePlate';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, LoadingOverlay, OperationalDateDisplay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, OperationalDateDisplay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+
+import { VehiclesListFiltersBar } from '../filters/VehiclesListFiltersBar';
+import { VehiclesListCellAgency } from '../table/VehiclesListCellAgency';
+import { VehiclesListCellLicensePlate } from '../table/VehiclesListCellLicensePlate';
+import { useVehiclesListData } from '../use-vehicles-list-data';
+import { VehiclesListHeader } from '../VehiclesListHeader';
 
 /* * */
 
@@ -19,35 +22,37 @@ export function VehiclesList() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const router = useRouter();
+
 	const { vehicleId } = useVehiclesDetailVehicleId();
 
-	const vehiclesListContext = useVehiclesListContext();
-	const agenciesContext = useAgenciesContext();
+	const vehiclesData = useVehiclesListData();
 
-	const columns: DataTableColumn<VehicleNormalized>[] = [
+	const columns: DataTableColumn<Vehicle>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
-			title: '#ID',
+			title: t('default:vehicles.list.VehiclesList.columns.id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'agency_id',
-			render: item => <Tag label={agenciesContext.data.as_options.find(option => option.value === item.agency_id)?.label ?? ''} />,
-			title: 'Operador',
+			render: item => <VehiclesListCellAgency value={item.agency_id} />,
+			title: t('default:vehicles.list.VehiclesList.columns.agency_id.label'),
 			width: 350,
 		},
 		{
 			accessor: 'license_plate',
-			render: item => <Tag label={formatLicensePlate(item.license_plate)} />,
-			title: 'Matrícula',
+			render: item => <VehiclesListCellLicensePlate value={item.license_plate} />,
+			title: t('default:vehicles.list.VehiclesList.columns.license_plate.label'),
 			width: 200,
 		},
 		{
 			accessor: 'registration_date',
 			render: item => <OperationalDateDisplay value={Number(item.registration_date) as OperationalDateInt} />,
-			title: 'Data de Registo',
+			title: t('default:vehicles.list.VehiclesList.columns.registration_date.label'),
 			width: 300,
 		},
 	];
@@ -55,20 +60,12 @@ export function VehiclesList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: VehicleNormalized) => {
+	const handleRowClick = (item: Vehicle) => {
 		router.push(keepUrlParams(PAGE_ROUTES.operation.VEHICLES_DETAIL(item._id)));
 	};
 
 	//
 	// C. Render components
-
-	if (vehiclesListContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
-
-	if (vehiclesListContext.flags.error) {
-		return <ErrorDisplay message={vehiclesListContext.flags.error.message} />;
-	}
 
 	return (
 		<Pane header={[
@@ -76,15 +73,15 @@ export function VehiclesList() {
 			<VehiclesListFiltersBar key="filters" />,
 		]}
 		>
+			{vehiclesData.error && <ErrorDisplay message={vehiclesData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={vehiclesData.isLoading}
 				onRowClick={handleRowClick}
-				records={vehiclesListContext.data.filtered}
+				records={vehiclesData.data}
 				rowIdAccessor="_id"
 				selectedId={vehicleId}
 			/>
 		</Pane>
 	);
-
-	//
 }
