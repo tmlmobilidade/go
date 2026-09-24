@@ -7,6 +7,7 @@ import { PathWaypointSpine } from '@/components/lines/detail/PathWaypointSpine';
 import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { type HubV1ApiPatternWaypoint } from '@tmlmobilidade/go-types-hub';
+import { useId } from 'react';
 
 import styles from './styles.module.css';
 
@@ -31,6 +32,7 @@ export function PathWaypoint({ arrivals, id, isFirstStop, isLastStop, isSelected
 
 	const linesDetailContext = useLinesDetailContext();
 	const operationalDate = useOperationalDate();
+	const panelId = useId();
 
 	const now = Date.now();
 
@@ -44,16 +46,15 @@ export function PathWaypoint({ arrivals, id, isFirstStop, isLastStop, isSelected
 	//
 	// C. Handle actions
 
-	const handleToggleStop = (event: React.MouseEvent<HTMLDivElement>) => {
+	const handleToggleStop = () => {
 		linesDetailContext.actions.setActiveWaypoint(waypointData.stop_id, waypointData.stop_sequence);
-		event.stopPropagation();
 	};
 
 	//
 	// D. Render components
 
 	return (
-		<div className={`${styles.container} ${isFirstStop && styles.isFirstStop} ${isLastStop && styles.isLastStop} ${isSelected && styles.isSelected}`} id={id} onClick={handleToggleStop}>
+		<div className={`${styles.container} ${isFirstStop && styles.isFirstStop} ${isLastStop && styles.isLastStop} ${isSelected && styles.isSelected}`} id={id}>
 			<PathWaypointSpine
 				backgroundColor={linesDetailContext.data.active_pattern?.color}
 				foregroundColor={linesDetailContext.data.active_pattern?.text_color}
@@ -65,21 +66,24 @@ export function PathWaypoint({ arrivals, id, isFirstStop, isLastStop, isSelected
 			/>
 			<div className={styles.detailsWrapper}>
 				<PathWaypointHeader
+					controlsId={panelId}
 					isFirstStop={isFirstStop}
 					isLastStop={isLastStop}
 					isSelected={isSelected}
+					onToggle={handleToggleStop}
 					waypointData={waypointData}
 				/>
 
-				{isSelected && operationalDate.isTodaySelected && (
-					<PathWaypointNextArrivals
-						realtimeArrivals={realtimeArrivals}
-						scheduledArrivals={scheduledArrivals}
-					/>
-				)}
-
 				{isSelected && (
-					<PathWaypointTimetable />
+					<div className={styles.panel} id={panelId}>
+						{operationalDate.isTodaySelected && (
+							<PathWaypointNextArrivals
+								realtimeArrivals={realtimeArrivals}
+								scheduledArrivals={scheduledArrivals}
+							/>
+						)}
+						<PathWaypointTimetable />
+					</div>
 				)}
 			</div>
 		</div>

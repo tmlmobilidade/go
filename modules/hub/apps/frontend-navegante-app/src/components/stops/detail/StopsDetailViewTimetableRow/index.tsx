@@ -63,10 +63,23 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 				data-is-past={data.is_past}
 				data-is-selected={isSelected}
 				data-with-clock={withClock}
-				onClick={handleClick}
 			>
+				<button
+					aria-pressed={isSelected}
+					className={styles.action}
+					onClick={handleClick}
+					type="button"
+				>
+					<span className={styles.actionLabel}>
+						{t('default:stops.StopsDetailViewTimetableRow.select', '', {
+							destination: data.headsign,
+							line: data.short_name,
+						})}
+						{data.locality_names?.length > 0 && `. ${t('default:stops.StopsDetailViewTimetableRow.localities', '', { localities: data.locality_names.join(', ') })}`}
+					</span>
+				</button>
 
-				<div className={styles.summary}>
+				<div aria-hidden="true" className={styles.summary}>
 					<LineDisplay
 						agencyId={data.agency_id}
 						color={data.color}
@@ -78,7 +91,7 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 				</div>
 
 				{data.locality_names?.length > 0 && (
-					<div className={styles.details}>
+					<div aria-hidden="true" className={styles.details}>
 						<p className={styles.localitiesList}>{t('default:stops.StopsDetailViewTimetableRow.localities', '', { localities: data.locality_names.join(', ') })}</p>
 					</div>
 				)}

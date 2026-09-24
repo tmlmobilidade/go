@@ -93,15 +93,18 @@ function TimetableSchedulesMinute({ hourData, isHighlighted, minuteData, onClick
 	// C. Render components
 
 	return (
-		<p
+		<button
 			key={minuteData.minute_value}
 			aria-label={t('default:lines.TimetableSchedules.timestamp', '', { hour: hourData.hour_label, minute: minuteData.minute_label })}
+			aria-pressed={isHighlighted}
 			className={`${styles.minute} ${minuteData.exception_ids.length > 0 && styles.withException} ${isSelected && styles.isSelected} ${!isSelected && selectedExceptionIds.length > 0 && styles.isOthersSelected} ${isHighlighted && styles.isHighlighted}`}
 			data-is-dark={isDark === 'dark' ? 'true' : 'false'}
+			onBlur={handleMouseOutException}
 			onClick={onClick}
+			onFocus={handleMouseOverException}
 			onMouseOut={handleMouseOutException}
 			onMouseOver={handleMouseOverException}
-			role="text"
+			type="button"
 		>
 			{minuteData.minute_label}
 			{minuteData.exception_ids.length > 0 && minuteData.exception_ids.map(exceptionId => (
@@ -109,7 +112,7 @@ function TimetableSchedulesMinute({ hourData, isHighlighted, minuteData, onClick
 					{exceptionId}
 				</span>
 			))}
-		</p>
+		</button>
 	);
 
 	//

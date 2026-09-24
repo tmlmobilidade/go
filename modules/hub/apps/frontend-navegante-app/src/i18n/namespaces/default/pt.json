@@ -366,7 +366,8 @@
 			}
 		},
 		"StopsDetailViewTimetableRow": {
-			"localities": "Passa por: {localities}"
+			"localities": "Passa por: {localities}",
+			"select": "Selecionar {line}, {destination}"
 		}
 	},
 	"vehicles": {

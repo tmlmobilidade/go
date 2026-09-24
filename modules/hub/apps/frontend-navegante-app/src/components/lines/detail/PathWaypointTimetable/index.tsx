@@ -84,7 +84,11 @@ export function PathWaypointTimetable() {
 		return (
 			<div className={styles.container}>
 				<p className={styles.noData}>{t('default:lines.PathWaypointTimetable.no_data')}</p>
-				{nextDate && <p className={styles.nextDate} onClick={() => handleNextDateClick(nextDate)}>{t('lines.PathWaypointTimetable.next_date', '', { value: nextDate })}</p>}
+				{nextDate && (
+					<button className={styles.nextDate} onClick={() => handleNextDateClick(nextDate)} type="button">
+						{t('lines.PathWaypointTimetable.next_date', '', { value: nextDate })}
+					</button>
+				)}
 			</div>
 		);
 	}
