@@ -236,11 +236,11 @@ type ShapesRules struct {
 
 type FrequenciesRules struct {
 	File        Severity   `json:"_file"`
-	TripId      RuleConfig `json:"trip_id"`
-	StartTime   RuleConfig `json:"start_time"`
-	EndTime     RuleConfig `json:"end_time"`
-	HeadwaySecs RuleConfig `json:"headway_secs"`
-	ExactTimes  RuleConfig `json:"exact_times"`
+	TripId      RuleConfig `json:"frequencies_trip_id_references_trips_table"`
+	StartTime   RuleConfig `json:"frequency_start_time_valid"`
+	EndTime     RuleConfig `json:"frequency_end_time_valid"`
+	HeadwaySecs RuleConfig `json:"headway_secs_positive_and_aligns_trip"`
+	ExactTimes  RuleConfig `json:"exact_times_zero_when_timed_trip_uses_frequencies"`
 }
 
 type TransfersRules struct {
@@ -293,31 +293,31 @@ type FeedInfoRules struct {
 	FeedContactUrl    RuleConfig `json:"feed_contact_url_valid_http_url"`
 }
 
-type TranslationsRules struct {
-	File        Severity   `json:"_file"`
-	TableName   RuleConfig `json:"table_name"`
-	FieldName   RuleConfig `json:"field_name"`
-	Language    RuleConfig `json:"language"`
-	Translation RuleConfig `json:"translation"`
-	RecordId    RuleConfig `json:"record_id"`
-	RecordSubId RuleConfig `json:"record_sub_id"`
-	FieldValue  RuleConfig `json:"field_value"`
-}
+// type TranslationsRules struct {
+	// File        Severity   `json:"_file"`
+	// TableName   RuleConfig `json:"table_name"`
+	// FieldName   RuleConfig `json:"field_name"`
+	// Language    RuleConfig `json:"language"`
+	// Translation RuleConfig `json:"translation"`
+	// RecordId    RuleConfig `json:"record_id"`
+	// RecordSubId RuleConfig `json:"record_sub_id"`
+	// FieldValue  RuleConfig `json:"field_value"`
+// }
 
-type AttributionsRules struct {
-	File             Severity   `json:"_file"`
-	AttributionId    RuleConfig `json:"attribution_id"`
-	AgencyId         RuleConfig `json:"agency_id"`
-	RouteId          RuleConfig `json:"route_id"`
-	TripId           RuleConfig `json:"trip_id"`
-	OrganizationName RuleConfig `json:"organization_name"`
-	IsProducer       RuleConfig `json:"is_producer"`
-	IsOperator       RuleConfig `json:"is_operator"`
-	IsAuthority      RuleConfig `json:"is_authority"`
-	AttributionUrl   RuleConfig `json:"attribution_url"`
-	AttributionEmail RuleConfig `json:"attribution_email"`
-	AttributionPhone RuleConfig `json:"attribution_phone"`
-}
+// type AttributionsRules struct {
+	// File             Severity   `json:"_file"`
+	// AttributionId    RuleConfig `json:"attribution_id"`
+	// AgencyId         RuleConfig `json:"agency_id"`
+	// RouteId          RuleConfig `json:"route_id"`
+	// TripId           RuleConfig `json:"trip_id"`
+	// OrganizationName RuleConfig `json:"organization_name"`
+	// IsProducer       RuleConfig `json:"is_producer"`
+	// IsOperator       RuleConfig `json:"is_operator"`
+	// IsAuthority      RuleConfig `json:"is_authority"`
+	// AttributionUrl   RuleConfig `json:"attribution_url"`
+	// AttributionEmail RuleConfig `json:"attribution_email"`
+	// AttributionPhone RuleConfig `json:"attribution_phone"`
+// }
 
 type RiderCategoriesRules struct {
 	File                  Severity   `json:"_file"`
@@ -358,7 +358,7 @@ type GtfsRules struct {
 	Pathways        PathwaysRules        `json:"pathways"`
 	Levels          LevelsRules          `json:"levels"`
 	FeedInfo        FeedInfoRules        `json:"feed_info"`
-	Translations    TranslationsRules    `json:"translations"`
-	Attributions    AttributionsRules    `json:"attributions"`
+	// Translations    TranslationsRules    `json:"translations"`
+	// Attributions    AttributionsRules    `json:"attributions"`
 	FareMedia       FareMediaRules       `json:"fare_media"`
 }
