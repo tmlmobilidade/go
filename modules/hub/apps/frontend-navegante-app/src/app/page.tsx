@@ -8,6 +8,7 @@ import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetail.context';
 import { RoutePlannerVehiclesCounter } from '@/components/routes/common/RoutePlannerVehiclesCounter';
 import { RoutePlannerTopSearch } from '@/components/routes/input/RoutePlannerTopSearch';
+import { RoutePlannerAnnouncerProvider } from '@/components/routes/navigation/RoutePlannerAnnouncer';
 import { RoutePlannerLiveBar } from '@/components/routes/navigation/RoutePlannerLiveBar';
 import { RoutePlanner } from '@/components/routes/planner/RoutePlanner';
 import { RoutePlannerContextProvider } from '@/components/routes/RoutePlanner.context';
@@ -46,18 +47,20 @@ export default function Page() {
 	return (
 		<LinesDetailContextProvider lineId={activeLineId}>
 			<RoutePlannerContextProvider>
-				<BaseMap />
-				<RoutePlannerTopSearch />
-				<BaseMapOverlaysControl onOpenedChange={setIsMapFiltersOpen} opened={isMapFiltersOpen} />
-				{!isMapFiltersOpen && <ActionBar />}
-				<VehiclesDetail />
-				<LinesDetail />
-				<StopsDetail />
-				<AlertsDetail />
-				<SearchDetail />
-				<RoutePlanner />
-				<RoutePlannerLiveBar />
-				{!isMapFiltersOpen && <RoutePlannerVehiclesCounter />}
+				<RoutePlannerAnnouncerProvider>
+					<BaseMap />
+					<RoutePlannerTopSearch />
+					<BaseMapOverlaysControl onOpenedChange={setIsMapFiltersOpen} opened={isMapFiltersOpen} />
+					{!isMapFiltersOpen && <ActionBar />}
+					<VehiclesDetail />
+					<LinesDetail />
+					<StopsDetail />
+					<AlertsDetail />
+					<SearchDetail />
+					<RoutePlanner />
+					<RoutePlannerLiveBar />
+					{!isMapFiltersOpen && <RoutePlannerVehiclesCounter />}
+				</RoutePlannerAnnouncerProvider>
 			</RoutePlannerContextProvider>
 		</LinesDetailContextProvider>
 	);

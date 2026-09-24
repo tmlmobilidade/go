@@ -230,6 +230,7 @@
 				"title": "Detalhes do local"
 			},
 			"results": {
+				"active_leg": "Etapa atual, {step}",
 				"alerts": "{count, plural, one {# alerta} other {# alertas}}",
 				"arrival_time_prefix": "Chegada às",
 				"at_time": "às {time}",
@@ -239,6 +240,7 @@
 				"duration_unavailable": "Duração indisponível",
 				"early": "{count} min adiantado",
 				"end_trip": "Terminar",
+				"filtered_no_results": "Nenhum percurso com estes transportes.",
 				"intermediate_stops": "{count, plural, one {# paragem intermédia} other {# paragens intermédias}}",
 				"leg_duration": "{count, plural, one {# min} other {# min}}",
 				"mode_labels": {
@@ -267,11 +269,13 @@
 				"next_step_at": "{step} às {time}",
 				"origin": "Origem",
 				"realtime": "Tempo real",
+				"result_count": "{count, plural, one {# percurso encontrado} other {# percursos encontrados}}",
 				"ride_between": "Viajar de {from} até {to}",
 				"route_options": "Opções de percurso",
 				"route_summary": "Resumo da rota",
 				"scheduled_at": "Previsto às {time}",
 				"select_itinerary_aria_label": "Selecionar percurso, {summary}",
+				"selected_itinerary_status": "Percurso selecionado, {summary}",
 				"sort": {
 					"best": "Melhor",
 					"fastest": "Rápida",

@@ -31,7 +31,7 @@ export function RoutePlannerPlaceDetail() {
 			<h3>{t('default:routes.RoutePlanner.place_detail.how_to_get_here')}</h3>
 			{!origin && <p className={styles.status}>{t('default:routes.RoutePlanner.place_detail.select_origin')}</p>}
 			{routePlannerContext.flags.is_planning && <p>{t('default:routes.RoutePlanner.actions.planning')}</p>}
-			{routePlannerContext.data.plan_error && <p className={styles.error}>{routePlannerContext.data.plan_error}</p>}
+			{routePlannerContext.data.plan_error && <p className={styles.error} role="alert">{routePlannerContext.data.plan_error}</p>}
 			<ul className={styles.itineraries}>
 				{routePlannerContext.data.itineraries.map((itinerary, index) => (
 					<li key={index}>

@@ -1,6 +1,7 @@
 'use client';
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
+import { useRoutePlannerAnnouncer } from '@/components/routes/navigation/RoutePlannerAnnouncer';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
@@ -9,7 +10,7 @@ import { useRoutePlannerActiveLeg } from '@/hooks/route-planner/useRoutePlannerA
 import { formatMotisPlanDistance, formatMotisPlanTime } from '@/utils/route-planner/presentation/format';
 import { getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconWalk } from '@tabler/icons-react';
-import { type MouseEvent, useMemo } from 'react';
+import { type MouseEvent, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -27,6 +28,7 @@ export function RoutePlannerLiveBar() {
 	const lineByShortName = useLinesByShortName();
 	const getLegDisplayLabel = useMotisLegDisplayLabel();
 	const routePlannerContext = useRoutePlannerContext();
+	const announce = useRoutePlannerAnnouncer();
 	const { activeLeg, activeLegIndex, remainingDistanceMeters, remainingMinutes } = useRoutePlannerActiveLeg();
 
 	//
@@ -94,6 +96,11 @@ export function RoutePlannerLiveBar() {
 	//
 	// C. Handle actions
 
+	useEffect(() => {
+		if (!isNavigating || !activeLeg) return;
+		announce(t('default:routes.RoutePlanner.results.active_leg', '', { step: nextStepLabel }));
+	}, [activeLeg, announce, isNavigating, nextStepLabel, t]);
+
 	const handleOpenDetail = () => {
 		routePlannerContext.actions.openActiveTripDetail();
 	};
@@ -110,11 +117,11 @@ export function RoutePlannerLiveBar() {
 
 	return (
 		<div className={styles.container}>
-			<button className={styles.main} onClick={handleOpenDetail} type="button">
+			<button aria-label={nextStepLabel} className={styles.main} onClick={handleOpenDetail} type="button">
 				<div className={styles.lead}>
 					{activeLeg && isMotisWalkingLeg(activeLeg) ? (
 						<span className={styles.walkIcon}>
-							<IconWalk size={18} />
+							<IconWalk aria-hidden="true" size={18} />
 						</span>
 					) : activeStepLine ? (
 						<LineBadge lineData={activeStepLine} size="sm" />
