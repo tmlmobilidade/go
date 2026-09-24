@@ -27,7 +27,7 @@ Valid options are:
 */
 
 func OnboardMonitorValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("onboard_monitor", "vehicles.txt", "onboard_monitor_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("onboard_monitor", "vehicles.txt", "vehicles_onboard_monitor_valid_enum", row, services.AppMessageService)
 	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.OnboardMonitor.Severity != "" {
 		ctx.WithSeverity(rules.OnboardMonitor.Severity)

@@ -21,7 +21,7 @@ The min_transfer_time should be sufficient to permit a typical rider to move bet
 [transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
 */
 func MinTransferTimeValidation(transfer *types.Transfers, row int, rules *types.TransfersRules) {
-	ctx := lib.NewValidationContext("min_transfer_time", "transfers.txt", "min_transfer_time_non_negative_seconds", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("min_transfer_time", "transfers.txt", "transfers_min_transfer_time_non_negative_seconds", row, services.AppMessageService)
 	if rules != nil && rules.MinTransferTime.Severity != "" {
 		ctx.WithSeverity(rules.MinTransferTime.Severity)
 	}

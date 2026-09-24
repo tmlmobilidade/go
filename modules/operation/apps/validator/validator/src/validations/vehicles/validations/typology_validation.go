@@ -46,7 +46,7 @@ Valid options are:
 */
 
 func TypologyValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("typology", "vehicles.txt", "typology_in_allowed_vehicle_types", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("typology", "vehicles.txt", "vehicles_typology_in_allowed_vehicle_types", row, services.AppMessageService)
 	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.Typology.Severity != "" {
 		ctx.WithSeverity(rules.Typology.Severity)

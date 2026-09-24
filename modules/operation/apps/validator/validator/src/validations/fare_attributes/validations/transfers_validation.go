@@ -37,7 +37,7 @@ For a particular holiday, the [calendar_dates.txt] file could be used to add the
 [calendar_dates.txt]: https://gtfs.org/schedule/reference/#calendar_datestxt
 */
 func TransfersValidation(fareAttribute *types.FareAttribute, row int, gtfs *types.Gtfs) {
-	ctx := lib.NewValidationContext("transfers", "fare_attributes.txt", "transfers_valid_gtfs_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("transfers", "fare_attributes.txt", "fare_attributes_transfers_valid_gtfs_enum", row, services.AppMessageService)
 
 	// TODO: The header is required, but the content is optional.
 	if fareAttribute.Transfers == nil {

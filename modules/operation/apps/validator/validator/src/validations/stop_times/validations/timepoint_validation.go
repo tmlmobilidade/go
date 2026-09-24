@@ -30,7 +30,7 @@ All records of [stop_times.txt] with defined arrival or departure times should h
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func TimepointValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("timepoint", "stop_times.txt", "timepoint_valid_gtfs_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("timepoint", "stop_times.txt", "stop_times_timepoint_valid_gtfs_enum", row, services.AppMessageService)
 	if rules != nil && rules.Timepoint.Severity != "" {
 		ctx.WithSeverity(rules.Timepoint.Severity)
 	}

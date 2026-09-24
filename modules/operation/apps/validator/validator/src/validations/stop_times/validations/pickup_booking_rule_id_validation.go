@@ -24,7 +24,7 @@ Recommended when pickup_type=2.
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func PickupBookingRuleIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("pickup_booking_rule_id", "stop_times.txt", "pickup_booking_rule_id_references_booking_rules", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("pickup_booking_rule_id", "stop_times.txt", "stop_times_pickup_booking_rule_id_references_booking_rules", row, services.AppMessageService)
 	if rules != nil && rules.PickupBookingRuleId.Severity != "" {
 		ctx.WithSeverity(rules.PickupBookingRuleId.Severity)
 	}

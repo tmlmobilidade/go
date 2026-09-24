@@ -25,7 +25,7 @@ Valid options are:
   - 1 - Yes
 */
 func ConsumptionMeterValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("consumption_meter", "vehicles.txt", "consumption_meter_valid_format", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("consumption_meter", "vehicles.txt", "vehicles_consumption_meter_valid_format", row, services.AppMessageService)
 	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.ConsumptionMeter.Severity != "" {
 		ctx.WithSeverity(rules.ConsumptionMeter.Severity)

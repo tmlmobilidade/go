@@ -28,7 +28,7 @@ Valid options are:
 */
 
 func KneelingValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("kneeling", "vehicles.txt", "kneeling_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("kneeling", "vehicles.txt", "vehicles_kneeling_valid_enum", row, services.AppMessageService)
 	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.Kneeling.Severity != "" {
 		ctx.WithSeverity(rules.Kneeling.Severity)

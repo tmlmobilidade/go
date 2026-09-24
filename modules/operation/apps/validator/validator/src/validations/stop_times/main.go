@@ -99,22 +99,22 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate trip_id (using IdMap cache - no database query)
 		statuses := runner.Run(services.RuleActions{
-			"stop_times_trip_id_references_trips_table":                  func() { validations.TripIdValidation(&stopTime, i, &gtfs) },
-			"arrival_time_ordering_with_departure_and_frequencies":       func() { validations.ArrivalTimeValidation(&stopTime, i, &gtfs, stopTimesRules, tripStopSequences) },
-			"departure_time_ordering_with_arrival_and_timepoint":         func() { validations.DepartureTimeValidation(&stopTime, i, &gtfs, stopTimesRules) },
-			"stop_times_stop_id_references_stops_table":                  func() { validations.StopIdValidation(&stopTime, i, &gtfs, stopLocationTypeCache) },
-			"location_group_id_consistent_with_trip_id_and_stops":        func() { validations.LocationGroupIdValidation(&stopTime, i, &gtfs) },
-			"start_pickup_drop_off_window_valid":                         func() { validations.StartPickupDropOffWindowValidation(&stopTime, i, stopTimesRules) },
-			"end_pickup_drop_off_window_valid":                           func() { validations.EndPickupDropOffWindowValidation(&stopTime, i, stopTimesRules) },
-			"pickup_type_valid_gtfs_enum":                                func() { validations.PickupTypeValidation(&stopTime, i, stopTimesRules) },
-			"stop_headsign_present":                                      func() { validations.StopHeadsignValidation(&stopTime, i, stopTimesRules) },
-			"stop_times_continuous_drop_off_valid_gtfs_enum":             func() { validations.ContinuousDropOffValidation(&stopTime, i, stopTimesRules) },
-			"stop_times_continuous_pickup_valid_gtfs_enum":               func() { validations.ContinuousPickupValidation(&stopTime, i, stopTimesRules) },
-			"drop_off_type_valid_gtfs_enum":                              func() { validations.DropOffTypeValidation(&stopTime, i, stopTimesRules) },
-			"stop_times_shape_dist_traveled_non_decreasing_on_trip":      func() { validations.ShapeDistTraveledValidation(&stopTime, i, stopTimesRules) },
-			"timepoint_valid_gtfs_enum":                                  func() { validations.TimepointValidation(&stopTime, i, stopTimesRules) },
-			"pickup_booking_rule_id_references_booking_rules":            func() { validations.PickupBookingRuleIdValidation(&stopTime, i, &gtfs, stopTimesRules) },
-			"drop_off_booking_rule_id_references_booking_rules_or_empty": func() { validations.DropOffBookingRuleIdValidation(&stopTime, i, &gtfs, stopTimesRules) },
+			"stop_times_trip_id_references_trips_table":                             func() { validations.TripIdValidation(&stopTime, i, &gtfs) },
+			"stop_times_arrival_time_ordering_with_departure_and_frequencies":       func() { validations.ArrivalTimeValidation(&stopTime, i, &gtfs, stopTimesRules, tripStopSequences) },
+			"stop_times_departure_time_ordering_with_arrival_and_timepoint":         func() { validations.DepartureTimeValidation(&stopTime, i, &gtfs, stopTimesRules) },
+			"stop_times_stop_id_references_stops_table":                             func() { validations.StopIdValidation(&stopTime, i, &gtfs, stopLocationTypeCache) },
+			"stop_times_location_group_id_consistent_with_trip_id_and_stops":        func() { validations.LocationGroupIdValidation(&stopTime, i, &gtfs) },
+			"stop_times_start_pickup_drop_off_window_valid":                         func() { validations.StartPickupDropOffWindowValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_end_pickup_drop_off_window_valid":                           func() { validations.EndPickupDropOffWindowValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_pickup_type_valid_gtfs_enum":                                func() { validations.PickupTypeValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_stop_headsign_present":                                      func() { validations.StopHeadsignValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_continuous_drop_off_valid_gtfs_enum":                        func() { validations.ContinuousDropOffValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_continuous_pickup_valid_gtfs_enum":                          func() { validations.ContinuousPickupValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_drop_off_type_valid_gtfs_enum":                              func() { validations.DropOffTypeValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_shape_dist_traveled_non_decreasing_on_trip":                 func() { validations.ShapeDistTraveledValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_timepoint_valid_gtfs_enum":                                  func() { validations.TimepointValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_pickup_booking_rule_id_references_booking_rules":            func() { validations.PickupBookingRuleIdValidation(&stopTime, i, &gtfs, stopTimesRules) },
+			"stop_times_drop_off_booking_rule_id_references_booking_rules_or_empty": func() { validations.DropOffBookingRuleIdValidation(&stopTime, i, &gtfs, stopTimesRules) },
 		}, nil)
 
 		if stopTime.TripId != nil {
@@ -130,7 +130,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		// Need be run ArrivalDepartureTimeSequenceValidation here because it needs to be run after all rows are processed
 		for tripID, times := range tripStopTimes {
 			runner.Run(services.RuleActions{
-				"arrival_departure_time_non_decreasing_by_stop_sequence": func() {
+				"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence": func() {
 					validations.ArrivalDepartureTimeSequenceValidation(map[string][]stopTimesTypes.TimeSequenceStop{tripID: times}, stopTimesRules)
 				},
 			}, groupStatuses[tripID])

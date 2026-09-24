@@ -26,7 +26,7 @@ Describes if the stop is visible to the public.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func PublicVisibleValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("public_visible", "stops.txt", "public_visible_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("public_visible", "stops.txt", "stops_public_visible_valid_enum", row, services.AppMessageService)
 	if rules != nil && rules.PublicVisible.Severity != "" {
 		ctx.WithSeverity(rules.PublicVisible.Severity)
 	}

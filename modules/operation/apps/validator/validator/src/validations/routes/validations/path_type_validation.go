@@ -28,7 +28,7 @@ Valid options are:
 This is a TML-specific extension to the GTFS standard.
 */
 func PathTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("path_type", "routes.txt", "path_type_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("path_type", "routes.txt", "routes_path_type_valid_enum", row, services.AppMessageService)
 	if rules != nil && rules.PathType.Severity != types.SEVERITY_IGNORE {
 		ctx.WithSeverity(rules.PathType.Severity)
 	}

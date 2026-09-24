@@ -22,7 +22,7 @@ Parish identifier for a stop.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func ParishIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("parish_id", "stops.txt", "parish_id_valid", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("parish_id", "stops.txt", "stops_parish_id_valid", row, services.AppMessageService)
 	if rules != nil && rules.ParishId.Severity != "" {
 		ctx.WithSeverity(rules.ParishId.Severity)
 	}

@@ -34,9 +34,6 @@ func Catalogue() []CatalogueEntry {
 			key := field.Tag.Get("json")
 			if field.Type == ruleConfigType {
 				entry := CatalogueEntry{Group: name, ID: key, ConfigKey: key, Editable: true, DependsOn: DefaultDependencies(name, key)}
-				if id, ok := outputRuleIDs[name+"."+key]; ok {
-					entry.ID = id
-				}
 				if name == "calendar" && (key == "calendar_start_date_valid_yyyymmdd" || key == "calendar_end_date_valid_yyyymmdd") {
 					entry.OutputIDs = []string{"calendar_start_end_dates_valid_yyyymmdd_order"}
 					if key == "calendar_start_date_valid_yyyymmdd" {
@@ -98,15 +95,4 @@ func FileSeverity(config *types.GtfsRules, groupName string) types.Severity {
 		}
 	}
 	return types.SEVERITY_IGNORE
-}
-
-// A few legacy JSON keys differ from the emitted rule IDs. Keep stored keys
-// compatible while exposing the actual validator output IDs in the editor.
-var outputRuleIDs = map[string]string{
-	"frequencies.trip_id":      "frequencies_trip_id_references_trips_table",
-	"frequencies.start_time":   "frequency_start_time_valid",
-	"frequencies.end_time":     "frequency_end_time_valid",
-	"frequencies.headway_secs": "headway_secs_positive_and_aligns_trip",
-	"frequencies.exact_times":  "exact_times_zero_when_timed_trip_uses_frequencies",
-	"stops.stop_access":        "stop_access_validation",
 }

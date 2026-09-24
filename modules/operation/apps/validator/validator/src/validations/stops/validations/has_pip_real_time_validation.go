@@ -27,7 +27,7 @@ Describes if the stop has a network map.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func HasPipRealTimeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("has_pip_real_time", "stops.txt", "has_pip_real_time_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("has_pip_real_time", "stops.txt", "stops_has_pip_real_time_valid_enum", row, services.AppMessageService)
 	if rules != nil && rules.HasPipRealTime.Severity != "" {
 		ctx.WithSeverity(rules.HasPipRealTime.Severity)
 	}

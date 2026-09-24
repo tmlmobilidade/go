@@ -51,7 +51,7 @@ func DirectionIdGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern
 			parts[i] = fmt.Sprintf("%d", id)
 		}
 		row := group.Trips[0].Row
-		ctx := lib.NewValidationContext("direction_id", "trips.txt", "direction_id_consistent_for_all_patterns_in_trips", row, services.AppMessageService)
+		ctx := lib.NewValidationContext("direction_id", "trips.txt", "trips_direction_id_consistent_for_all_patterns_in_trips", row, services.AppMessageService)
 		if rules != nil && rules.DirectionIdGroup.Severity != "" {
 			ctx.WithSeverity(rules.DirectionIdGroup.Severity)
 		}

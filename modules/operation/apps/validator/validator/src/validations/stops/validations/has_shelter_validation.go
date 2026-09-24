@@ -28,7 +28,7 @@ Describes if the stop has a shelter.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func HasShelterValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("has_shelter", "stops.txt", "has_shelter_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("has_shelter", "stops.txt", "stops_has_shelter_valid_enum", row, services.AppMessageService)
 	if rules != nil && rules.HasShelter.Severity != "" {
 		ctx.WithSeverity(rules.HasShelter.Severity)
 	}

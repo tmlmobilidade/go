@@ -40,7 +40,7 @@ func ArrivalDepartureTimeSequenceValidation(stopTimesByTrip map[string][]stopTim
 }
 
 func validateStopTimePair(tripId string, previous stopTimesTypes.TimeSequenceStop, current stopTimesTypes.TimeSequenceStop, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("arrival_time", "stop_times.txt", "arrival_departure_time_non_decreasing_by_stop_sequence", current.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("arrival_time", "stop_times.txt", "stop_times_arrival_departure_time_non_decreasing_by_stop_sequence", current.Row, services.AppMessageService)
 	if rules != nil && rules.ArrivalDepartureSequence.Severity != "" {
 		ctx.WithSeverity(rules.ArrivalDepartureSequence.Severity)
 	}

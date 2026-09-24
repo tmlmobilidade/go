@@ -46,7 +46,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			"transfer_from_trip_id_references_trips_table":   func() { validations.FromTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
 			"transfer_to_trip_id_references_trips_table":     func() { validations.ToTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
 			"transfer_type_valid_gtfs_enum":                  func() { validations.TransferTypeValidation(transfer, row, &rules.Transfers) },
-			"min_transfer_time_non_negative_seconds":         func() { validations.MinTransferTimeValidation(transfer, row, &rules.Transfers) },
+			"transfers_min_transfer_time_non_negative_seconds":         func() { validations.MinTransferTimeValidation(transfer, row, &rules.Transfers) },
 		}, nil)
 
 		return nil

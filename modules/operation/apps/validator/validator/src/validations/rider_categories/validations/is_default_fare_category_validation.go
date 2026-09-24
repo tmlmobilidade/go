@@ -31,7 +31,7 @@ When multiple rider categories are eligible for a single fare product specified 
 */
 
 func IsDefaultFareCategoryValidation(riderCategory *types.RiderCategory, row int, rules *types.RiderCategoriesRules) {
-	ctx := lib.NewValidationContext("is_default_fare_category", "rider_categories.txt", "at_most_one_default_fare_category", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("is_default_fare_category", "rider_categories.txt", "rider_categories_at_most_one_default_fare_category", row, services.AppMessageService)
 	if rules != nil && rules.IsDefaultFareCategory.Severity != "" {
 		ctx.WithSeverity(rules.IsDefaultFareCategory.Severity)
 	} else {

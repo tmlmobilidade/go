@@ -2,11 +2,38 @@ package rules
 
 import (
 	"main/types"
+	"strings"
 	"testing"
 )
 
+func TestRuleIDsIdentifyTheirDomainWithoutRedundantPrefixes(t *testing.T) {
+	aliases := map[string]string{
+		"vehicles": "vehicle", "trips": "trip", "stops": "stop",
+		"shapes": "shape", "routes": "route", "frequencies": "frequency",
+		"transfers": "transfer", "pathways": "pathway", "levels": "level",
+		"rider_categories": "rider_category", "fare_rules": "fare_rule",
+		"fare_attributes": "fare", "feed_info": "feed", "file_validation": "file",
+	}
+	for _, entry := range Catalogue() {
+		alias := aliases[entry.Group]
+		identified := entry.ID == entry.Group || strings.HasPrefix(entry.ID, entry.Group+"_")
+		if alias != "" {
+			identified = identified || strings.HasPrefix(entry.ID, alias+"_")
+			if strings.HasPrefix(entry.ID, entry.Group+"_"+alias+"_") {
+				t.Errorf("%s has a redundant domain prefix", entry.ID)
+			}
+		}
+		if !identified {
+			t.Errorf("%s rule ID lacks its group prefix: %s", entry.Group, entry.ID)
+		}
+		if entry.Editable && entry.ConfigKey != "_file" && entry.ConfigKey != entry.ID {
+			t.Errorf("%s configuration key differs from its rule ID: %s", entry.ID, entry.ConfigKey)
+		}
+	}
+}
+
 func TestDecodeConfigPreservesSavedSettingsAndDefaultsMissing(t *testing.T) {
-	config, err := DecodeConfig([]byte(`{"trips":{"_file":"warning","trip_id_unique":{"severity":"error","options":["T1"],"depends_on":["pattern_id_present_and_references_consistent"]}}}`))
+	config, err := DecodeConfig([]byte(`{"trips":{"_file":"warning","trip_id_unique":{"severity":"error","options":["T1"],"depends_on":["trips_pattern_id_present_and_references_consistent"]}}}`))
 	if err != nil {
 		t.Fatal(err)
 	}

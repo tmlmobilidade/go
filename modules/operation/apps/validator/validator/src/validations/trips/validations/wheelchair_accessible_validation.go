@@ -27,7 +27,7 @@ Indicates wheelchair accessibility. Valid options are:
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func WheelchairAccessibleValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ctx := lib.NewValidationContext("wheelchair_accessible", "trips.txt", "wheelchair_accessible_valid_gtfs_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("wheelchair_accessible", "trips.txt", "trips_wheelchair_accessible_valid_gtfs_enum", row, services.AppMessageService)
 	if rules != nil && rules.WheelchairAccessible.Severity != "" {
 		ctx.WithSeverity(rules.WheelchairAccessible.Severity)
 	}

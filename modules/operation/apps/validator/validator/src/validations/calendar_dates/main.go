@@ -44,9 +44,9 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate service_id
 		runner.Run(services.RuleActions{
-			"calendar_dates_service_id_references_calendar": func() { validations.ServiceIdValidation(&calendarDate, i) },
-			"exception_date_valid_yyyymmdd":                 func() { validations.DateValidation(&calendarDate, i) },
-			"exception_type_add_or_remove_service":          func() { validations.ExceptionTypeValidation(&calendarDate, i, &calendarDatesRules) },
+			"calendar_dates_service_id_references_calendar":       func() { validations.ServiceIdValidation(&calendarDate, i) },
+			"calendar_dates_exception_date_valid_yyyymmdd":        func() { validations.DateValidation(&calendarDate, i) },
+			"calendar_dates_exception_type_add_or_remove_service": func() { validations.ExceptionTypeValidation(&calendarDate, i, &calendarDatesRules) },
 		}, nil)
 
 		return nil

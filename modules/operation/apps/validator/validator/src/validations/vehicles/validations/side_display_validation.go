@@ -27,7 +27,7 @@ Valid options are:
 */
 
 func SideDisplayValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("side_display", "vehicles.txt", "side_display_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("side_display", "vehicles.txt", "vehicles_side_display_valid_enum", row, services.AppMessageService)
 	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.SideDisplay.Severity != "" {
 		ctx.WithSeverity(rules.SideDisplay.Severity)

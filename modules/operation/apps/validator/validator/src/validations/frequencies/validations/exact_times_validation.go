@@ -28,7 +28,7 @@ Valid options are:
 [frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
 */
 func ExactTimesValidation(frequency *types.Frequencies, row int, rules *types.FrequenciesRules) {
-	ctx := lib.NewValidationContext("exact_times", "frequencies.txt", "exact_times_zero_when_timed_trip_uses_frequencies", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("exact_times", "frequencies.txt", "frequencies_exact_times_zero_when_timed_trip_uses_frequencies", row, services.AppMessageService)
 	if rules != nil && rules.ExactTimes.Severity != "" {
 		ctx.WithSeverity(rules.ExactTimes.Severity)
 	}

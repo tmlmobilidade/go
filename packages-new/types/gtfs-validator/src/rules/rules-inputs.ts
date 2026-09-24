@@ -46,36 +46,36 @@ export interface AgencyRulesInput {
 export interface CalendarRulesInput {
 	_file?: RuleSeverity
 	calendar_end_date_valid_yyyymmdd?: RuleConfigInput
+	calendar_friday?: RuleConfigInput
+	calendar_monday?: RuleConfigInput
+	calendar_saturday?: RuleConfigInput
 	calendar_service_id_unique_non_empty?: RuleConfigInput
 	calendar_start_date_valid_yyyymmdd?: RuleConfigInput
-	friday?: RuleConfigInput
-	monday?: RuleConfigInput
-	saturday?: RuleConfigInput
-	sunday?: RuleConfigInput
-	thursday?: RuleConfigInput
-	tuesday?: RuleConfigInput
-	wednesday?: RuleConfigInput
+	calendar_sunday?: RuleConfigInput
+	calendar_thursday?: RuleConfigInput
+	calendar_tuesday?: RuleConfigInput
+	calendar_wednesday?: RuleConfigInput
 }
 
 export interface CalendarDatesRulesInput {
 	_file?: RuleSeverity
+	calendar_dates_day_type?: RuleConfigInput
+	calendar_dates_exception_date_valid_yyyymmdd?: RuleConfigInput
+	calendar_dates_exception_type_add_or_remove_service?: RuleConfigInput
+	calendar_dates_holiday?: RuleConfigInput
+	calendar_dates_period?: RuleConfigInput
 	calendar_dates_service_id_references_calendar?: RuleConfigInput
-	day_type?: RuleConfigInput
-	exception_date_valid_yyyymmdd?: RuleConfigInput
-	exception_type_add_or_remove_service?: RuleConfigInput
-	holiday?: RuleConfigInput
-	period?: RuleConfigInput
 }
 
 export interface FareAttributesRulesInput {
 	_file?: RuleSeverity
-	currency_type_valid?: RuleConfigInput
 	fare_attributes_agency_id_references_agency_table?: RuleConfigInput
+	fare_attributes_currency_type_valid?: RuleConfigInput
+	fare_attributes_payment_method_valid_gtfs_enum?: RuleConfigInput
+	fare_attributes_transfer_duration_valid_seconds_range?: RuleConfigInput
+	fare_attributes_transfers_valid_gtfs_enum?: RuleConfigInput
 	fare_id_unique?: RuleConfigInput
 	fare_price_valid_non_negative_decimal?: RuleConfigInput
-	payment_method_valid_gtfs_enum?: RuleConfigInput
-	transfer_duration_valid_seconds_range?: RuleConfigInput
-	transfers_valid_gtfs_enum?: RuleConfigInput
 }
 
 export interface FareMediaRulesInput {
@@ -96,10 +96,10 @@ export interface FareRulesRulesInput {
 
 export interface FeedInfoRulesInput {
 	_file?: RuleSeverity
-	default_lang_matches_feed_lang_when_present?: RuleConfigInput
 	feed_contact_email_valid_address?: RuleConfigInput
 	feed_contact_url_valid_http_url?: RuleConfigInput
 	feed_end_date_valid_yyyymmdd_not_before_start?: RuleConfigInput
+	feed_info_default_lang_matches_feed_lang_when_present?: RuleConfigInput
 	feed_lang_valid_tag?: RuleConfigInput
 	feed_publisher_name_non_empty?: RuleConfigInput
 	feed_publisher_url_valid_http_url?: RuleConfigInput
@@ -111,16 +111,16 @@ export interface FeedInfoRulesInput {
 
 export interface FileValidationRulesInput {
 	_file?: RuleSeverity
-	gtfs_feed_file_presence_and_integrity_rule?: RuleConfigInput
+	file_validation_gtfs_feed_file_presence_and_integrity_rule?: RuleConfigInput
 }
 
 export interface FrequenciesRulesInput {
 	_file?: RuleSeverity
-	exact_times_zero_when_timed_trip_uses_frequencies?: RuleConfigInput
+	frequencies_exact_times_zero_when_timed_trip_uses_frequencies?: RuleConfigInput
+	frequencies_headway_secs_positive_and_aligns_trip?: RuleConfigInput
 	frequencies_trip_id_references_trips_table?: RuleConfigInput
 	frequency_end_time_valid?: RuleConfigInput
 	frequency_start_time_valid?: RuleConfigInput
-	headway_secs_positive_and_aligns_trip?: RuleConfigInput
 }
 
 export interface LevelsRulesInput {
@@ -148,22 +148,14 @@ export interface PathwaysRulesInput {
 
 export interface RiderCategoriesRulesInput {
 	_file?: RuleSeverity
-	at_most_one_default_fare_category?: RuleConfigInput
-	eligibility_url_valid_http_url?: RuleConfigInput
+	rider_categories_at_most_one_default_fare_category?: RuleConfigInput
+	rider_categories_eligibility_url_valid_http_url?: RuleConfigInput
 	rider_category_id_unique?: RuleConfigInput
 	rider_category_name_non_empty?: RuleConfigInput
 }
 
 export interface RoutesRulesInput {
 	_file?: RuleSeverity
-	circular?: RuleConfigInput
-	continuous_drop_off_valid_gtfs_enum?: RuleConfigInput
-	continuous_pickup_valid_gtfs_enum?: RuleConfigInput
-	line_id_required?: RuleConfigInput
-	line_long_name_present_when_line_id_present?: RuleConfigInput
-	line_short_name_present_when_line_id_present?: RuleConfigInput
-	network_id_references_networks_table?: RuleConfigInput
-	path_type_valid_enum?: RuleConfigInput
 	route_agency_id_references_agency_table?: RuleConfigInput
 	route_color_valid_hex_string?: RuleConfigInput
 	route_desc_per_severity_and_content_rules?: RuleConfigInput
@@ -175,7 +167,15 @@ export interface RoutesRulesInput {
 	route_text_color_valid_hex_contrast?: RuleConfigInput
 	route_type_valid_gtfs_enum?: RuleConfigInput
 	route_url_valid_http_url?: RuleConfigInput
-	school?: RuleConfigInput
+	routes_circular?: RuleConfigInput
+	routes_continuous_drop_off_valid_gtfs_enum?: RuleConfigInput
+	routes_continuous_pickup_valid_gtfs_enum?: RuleConfigInput
+	routes_line_id_required?: RuleConfigInput
+	routes_line_long_name_present_when_line_id_present?: RuleConfigInput
+	routes_line_short_name_present_when_line_id_present?: RuleConfigInput
+	routes_network_id_references_networks_table?: RuleConfigInput
+	routes_path_type_valid_enum?: RuleConfigInput
+	routes_school?: RuleConfigInput
 }
 
 export interface ShapesRulesInput {
@@ -196,45 +196,28 @@ export interface ShapesRulesInput {
 
 export interface StopTimesRulesInput {
 	_file?: RuleSeverity
-	arrival_departure_time_non_decreasing_by_stop_sequence?: RuleConfigInput
-	arrival_time_ordering_with_departure_and_frequencies?: RuleConfigInput
-	departure_time_ordering_with_arrival_and_timepoint?: RuleConfigInput
-	drop_off_booking_rule_id_references_booking_rules_or_empty?: RuleConfigInput
-	drop_off_type_valid_gtfs_enum?: RuleConfigInput
-	end_pickup_drop_off_window_valid?: RuleConfigInput
-	location_group_id_consistent_with_trip_id_and_stops?: RuleConfigInput
-	pickup_booking_rule_id_references_booking_rules?: RuleConfigInput
-	pickup_type_valid_gtfs_enum?: RuleConfigInput
-	start_pickup_drop_off_window_valid?: RuleConfigInput
-	stop_headsign_present?: RuleConfigInput
+	stop_times_arrival_departure_time_non_decreasing_by_stop_sequence?: RuleConfigInput
+	stop_times_arrival_time_ordering_with_departure_and_frequencies?: RuleConfigInput
 	stop_times_continuous_drop_off_valid_gtfs_enum?: RuleConfigInput
 	stop_times_continuous_pickup_valid_gtfs_enum?: RuleConfigInput
+	stop_times_departure_time_ordering_with_arrival_and_timepoint?: RuleConfigInput
+	stop_times_drop_off_booking_rule_id_references_booking_rules_or_empty?: RuleConfigInput
+	stop_times_drop_off_type_valid_gtfs_enum?: RuleConfigInput
+	stop_times_end_pickup_drop_off_window_valid?: RuleConfigInput
+	stop_times_location_group_id_consistent_with_trip_id_and_stops?: RuleConfigInput
+	stop_times_pickup_booking_rule_id_references_booking_rules?: RuleConfigInput
+	stop_times_pickup_type_valid_gtfs_enum?: RuleConfigInput
 	stop_times_shape_dist_traveled_non_decreasing_on_trip?: RuleConfigInput
+	stop_times_start_pickup_drop_off_window_valid?: RuleConfigInput
+	stop_times_stop_headsign_present?: RuleConfigInput
 	stop_times_stop_id_references_stops_table?: RuleConfigInput
+	stop_times_timepoint_valid_gtfs_enum?: RuleConfigInput
 	stop_times_trip_id_references_trips_table?: RuleConfigInput
-	timepoint_valid_gtfs_enum?: RuleConfigInput
 }
 
 export interface StopsRulesInput {
 	_file?: RuleSeverity
-	has_bench_valid_enum?: RuleConfigInput
-	has_network_map_valid_enum?: RuleConfigInput
-	has_pip_real_time_valid_enum?: RuleConfigInput
-	has_schedules_valid_enum?: RuleConfigInput
-	has_shelter_valid_enum?: RuleConfigInput
-	has_stop_sign_valid_enum?: RuleConfigInput
-	has_tariffs_information_valid_enum?: RuleConfigInput
-	level_id_valid_id?: RuleConfigInput
-	location_type_valid_enum?: RuleConfigInput
-	municipality_id_valid?: RuleConfigInput
-	parent_station_id_valid_for_stop_hierarchy?: RuleConfigInput
-	parish_id_valid?: RuleConfigInput
-	platform_code_valid?: RuleConfigInput
-	public_visible_valid_enum?: RuleConfigInput
-	region_id_valid?: RuleConfigInput
-	shelter_code_valid?: RuleConfigInput
-	shelter_maintainer_valid?: RuleConfigInput
-	stop_access?: RuleConfigInput
+	stop_access_validation?: RuleConfigInput
 	stop_code_valid?: RuleConfigInput
 	stop_desc_valid?: RuleConfigInput
 	stop_id_unique?: RuleConfigInput
@@ -244,14 +227,30 @@ export interface StopsRulesInput {
 	stop_short_name_valid?: RuleConfigInput
 	stop_timezone_valid?: RuleConfigInput
 	stop_url_valid_url?: RuleConfigInput
-	tts_stop_name_valid?: RuleConfigInput
-	wheelchair_boarding_valid_enum?: RuleConfigInput
-	zone_id_valid?: RuleConfigInput
+	stops_has_bench_valid_enum?: RuleConfigInput
+	stops_has_network_map_valid_enum?: RuleConfigInput
+	stops_has_pip_real_time_valid_enum?: RuleConfigInput
+	stops_has_schedules_valid_enum?: RuleConfigInput
+	stops_has_shelter_valid_enum?: RuleConfigInput
+	stops_has_stop_sign_valid_enum?: RuleConfigInput
+	stops_has_tariffs_information_valid_enum?: RuleConfigInput
+	stops_level_id_valid_id?: RuleConfigInput
+	stops_location_type_valid_enum?: RuleConfigInput
+	stops_municipality_id_valid?: RuleConfigInput
+	stops_parent_station_id_valid_for_stop_hierarchy?: RuleConfigInput
+	stops_parish_id_valid?: RuleConfigInput
+	stops_platform_code_valid?: RuleConfigInput
+	stops_public_visible_valid_enum?: RuleConfigInput
+	stops_region_id_valid?: RuleConfigInput
+	stops_shelter_code_valid?: RuleConfigInput
+	stops_shelter_maintainer_valid?: RuleConfigInput
+	stops_tts_stop_name_valid?: RuleConfigInput
+	stops_wheelchair_boarding_valid_enum?: RuleConfigInput
+	stops_zone_id_valid?: RuleConfigInput
 }
 
 export interface TransfersRulesInput {
 	_file?: RuleSeverity
-	min_transfer_time_non_negative_seconds?: RuleConfigInput
 	transfer_from_route_id_references_routes_table?: RuleConfigInput
 	transfer_from_stop_id_references_stops_table?: RuleConfigInput
 	transfer_from_trip_id_references_trips_table?: RuleConfigInput
@@ -259,66 +258,67 @@ export interface TransfersRulesInput {
 	transfer_to_stop_id_references_stops_table?: RuleConfigInput
 	transfer_to_trip_id_references_trips_table?: RuleConfigInput
 	transfer_type_valid_gtfs_enum?: RuleConfigInput
+	transfers_min_transfer_time_non_negative_seconds?: RuleConfigInput
 }
 
 export interface TripsRulesInput {
 	_file?: RuleSeverity
-	bikes_allowed_valid_gtfs_enum?: RuleConfigInput
-	block_id_in_allowed_set?: RuleConfigInput
-	direction_id_consistent_for_all_patterns_in_trips?: RuleConfigInput
-	direction_id_matches_feed_pattern_direction?: RuleConfigInput
-	direction_id_valid_enum?: RuleConfigInput
-	one_pattern_id_per_shape_id_group?: RuleConfigInput
-	one_shape_id_per_pattern_id_group?: RuleConfigInput
-	pattern_id_matches_feed_pattern_id_syntax?: RuleConfigInput
-	pattern_id_present_and_references_consistent?: RuleConfigInput
-	pattern_id_single_trip_signature_per_pattern?: RuleConfigInput
-	pattern_id_trip_has_required_fields_for_grouping?: RuleConfigInput
-	route_id_consistent_for_all_patterns_in_trips?: RuleConfigInput
-	route_id_references_routes_table?: RuleConfigInput
-	service_id_references_calendar_service?: RuleConfigInput
-	shape_id_needs_to_be_the_same_as_pattern_id?: RuleConfigInput
-	shape_id_references_shapes_table_when_present?: RuleConfigInput
-	stop_sequence_increasing_by_one_along_trip?: RuleConfigInput
 	trip_headsign_consistent_for_all_patterns_in_trips?: RuleConfigInput
 	trip_headsign_present_when_short_name_absent?: RuleConfigInput
 	trip_id_limit_max_length?: RuleConfigInput
 	trip_id_unique?: RuleConfigInput
 	trip_path_stop_coordinates_referenced_from_stops?: RuleConfigInput
 	trip_short_name_exclusivity?: RuleConfigInput
-	wheelchair_accessible_valid_gtfs_enum?: RuleConfigInput
+	trips_bikes_allowed_valid_gtfs_enum?: RuleConfigInput
+	trips_block_id_in_allowed_set?: RuleConfigInput
+	trips_direction_id_consistent_for_all_patterns_in_trips?: RuleConfigInput
+	trips_direction_id_matches_feed_pattern_direction?: RuleConfigInput
+	trips_direction_id_valid_enum?: RuleConfigInput
+	trips_one_pattern_id_per_shape_id_group?: RuleConfigInput
+	trips_one_shape_id_per_pattern_id_group?: RuleConfigInput
+	trips_pattern_id_matches_feed_pattern_id_syntax?: RuleConfigInput
+	trips_pattern_id_present_and_references_consistent?: RuleConfigInput
+	trips_pattern_id_single_trip_signature_per_pattern?: RuleConfigInput
+	trips_pattern_id_trip_has_required_fields_for_grouping?: RuleConfigInput
+	trips_route_id_consistent_for_all_patterns_in_trips?: RuleConfigInput
+	trips_route_id_references_routes_table?: RuleConfigInput
+	trips_service_id_references_calendar_service?: RuleConfigInput
+	trips_shape_id_needs_to_be_the_same_as_pattern_id?: RuleConfigInput
+	trips_shape_id_references_shapes_table_when_present?: RuleConfigInput
+	trips_stop_sequence_increasing_by_one_along_trip?: RuleConfigInput
+	trips_wheelchair_accessible_valid_gtfs_enum?: RuleConfigInput
 }
 
 export interface VehiclesRulesInput {
 	_file?: RuleSeverity
-	available_seats_non_negative?: RuleConfigInput
-	available_standing_non_negative?: RuleConfigInput
-	bicycles_rack_count_non_negative?: RuleConfigInput
-	climatization_valid_enum?: RuleConfigInput
-	consumption_meter_valid_format?: RuleConfigInput
-	emission_code_valid_for_propulsion_type?: RuleConfigInput
-	external_sound_valid_enum?: RuleConfigInput
-	front_display_valid_enum?: RuleConfigInput
-	internal_sound_level_valid_enum?: RuleConfigInput
-	kneeling_valid_enum?: RuleConfigInput
-	license_plate_format_per_market_rules?: RuleConfigInput
-	lowered_floor_valid_enum?: RuleConfigInput
-	onboard_monitor_valid_enum?: RuleConfigInput
-	passenger_counting_valid_enum?: RuleConfigInput
-	propulsion_type_valid_enum?: RuleConfigInput
-	ramp_valid_enum?: RuleConfigInput
-	rear_display_valid_enum?: RuleConfigInput
-	registration_date_valid_day_granularity?: RuleConfigInput
-	side_display_valid_enum?: RuleConfigInput
-	static_information_valid_enum?: RuleConfigInput
-	typology_in_allowed_vehicle_types?: RuleConfigInput
 	vehicle_agency_id_references_agency_table?: RuleConfigInput
 	vehicle_id_unique?: RuleConfigInput
 	vehicle_make_required?: RuleConfigInput
 	vehicle_model_required?: RuleConfigInput
 	vehicle_owner_required?: RuleConfigInput
-	video_surveillance_valid_enum?: RuleConfigInput
-	wheelchair_spots_valid_enum?: RuleConfigInput
+	vehicles_available_seats_non_negative?: RuleConfigInput
+	vehicles_available_standing_non_negative?: RuleConfigInput
+	vehicles_bicycles_rack_count_non_negative?: RuleConfigInput
+	vehicles_climatization_valid_enum?: RuleConfigInput
+	vehicles_consumption_meter_valid_format?: RuleConfigInput
+	vehicles_emission_code_valid_for_propulsion_type?: RuleConfigInput
+	vehicles_external_sound_valid_enum?: RuleConfigInput
+	vehicles_front_display_valid_enum?: RuleConfigInput
+	vehicles_internal_sound_level_valid_enum?: RuleConfigInput
+	vehicles_kneeling_valid_enum?: RuleConfigInput
+	vehicles_license_plate_format_per_market_rules?: RuleConfigInput
+	vehicles_lowered_floor_valid_enum?: RuleConfigInput
+	vehicles_onboard_monitor_valid_enum?: RuleConfigInput
+	vehicles_passenger_counting_valid_enum?: RuleConfigInput
+	vehicles_propulsion_type_valid_enum?: RuleConfigInput
+	vehicles_ramp_valid_enum?: RuleConfigInput
+	vehicles_rear_display_valid_enum?: RuleConfigInput
+	vehicles_registration_date_valid_day_granularity?: RuleConfigInput
+	vehicles_side_display_valid_enum?: RuleConfigInput
+	vehicles_static_information_valid_enum?: RuleConfigInput
+	vehicles_typology_in_allowed_vehicle_types?: RuleConfigInput
+	vehicles_video_surveillance_valid_enum?: RuleConfigInput
+	vehicles_wheelchair_spots_valid_enum?: RuleConfigInput
 }
 
 /**

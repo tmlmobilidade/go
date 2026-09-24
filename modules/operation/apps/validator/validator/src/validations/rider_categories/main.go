@@ -56,8 +56,8 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		runner.Run(services.RuleActions{
 			"rider_category_id_unique":          func() { validations.RiderCategoryIdValidation(&riderCategory, i, &gtfs, &rules.RiderCategories) },
 			"rider_category_name_non_empty":     func() { validations.RiderCategoryNameValidation(&riderCategory, i, &rules.RiderCategories) },
-			"at_most_one_default_fare_category": func() { validations.IsDefaultFareCategoryValidation(&riderCategory, i, &rules.RiderCategories) },
-			"eligibility_url_valid_http_url":    func() { validations.EligibilityUrlValidation(&riderCategory, i, &rules.RiderCategories) },
+			"rider_categories_at_most_one_default_fare_category": func() { validations.IsDefaultFareCategoryValidation(&riderCategory, i, &rules.RiderCategories) },
+			"rider_categories_eligibility_url_valid_http_url":    func() { validations.EligibilityUrlValidation(&riderCategory, i, &rules.RiderCategories) },
 		}, nil)
 
 		return nil

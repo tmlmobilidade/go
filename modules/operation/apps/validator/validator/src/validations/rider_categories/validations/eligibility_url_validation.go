@@ -22,7 +22,7 @@ URL of a web page, usually from the operating agency, that provides detailed inf
 */
 
 func EligibilityUrlValidation(riderCategory *types.RiderCategory, row int, rules *types.RiderCategoriesRules) {
-	ctx := lib.NewValidationContext("eligibility_url", "rider_categories.txt", "eligibility_url_valid_http_url", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("eligibility_url", "rider_categories.txt", "rider_categories_eligibility_url_valid_http_url", row, services.AppMessageService)
 	if rules != nil && rules.EligibilityUrl.Severity != "" {
 		ctx.WithSeverity(rules.EligibilityUrl.Severity)
 	}

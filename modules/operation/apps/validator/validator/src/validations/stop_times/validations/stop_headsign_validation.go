@@ -30,7 +30,7 @@ If you want to override the `trip_headsign` for multiple `stop_times` in the sam
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func StopHeadsignValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("stop_headsign", "stop_times.txt", "stop_headsign_present", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("stop_headsign", "stop_times.txt", "stop_times_stop_headsign_present", row, services.AppMessageService)
 	if rules != nil && rules.StopHeadsign.Severity != "" {
 		ctx.WithSeverity(rules.StopHeadsign.Severity)
 	}

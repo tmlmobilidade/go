@@ -22,7 +22,7 @@ Level of the location. The same level may be used by multiple unlinked stations.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func LevelIdValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("level_id", "stops.txt", "level_id_valid_id", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("level_id", "stops.txt", "stops_level_id_valid_id", row, services.AppMessageService)
 	if rules != nil && rules.LevelId.Severity != "" {
 		ctx.WithSeverity(rules.LevelId.Severity)
 	}

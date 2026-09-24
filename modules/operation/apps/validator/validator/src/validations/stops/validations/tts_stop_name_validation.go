@@ -23,7 +23,7 @@ Readable version of the stop_name. See "Text-to-speech field" in the [Term Defin
 [Term Definitions]: https://gtfs.org/schedule/reference/#term-definitions
 */
 func TtsStopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("tts_stop_name", "stops.txt", "tts_stop_name_valid", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("tts_stop_name", "stops.txt", "stops_tts_stop_name_valid", row, services.AppMessageService)
 	if rules != nil && rules.TtsStopName.Severity != "" {
 		ctx.WithSeverity(rules.TtsStopName.Severity)
 	}

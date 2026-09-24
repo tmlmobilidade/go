@@ -29,7 +29,7 @@ Valid options are:
 */
 
 func RampValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("ramp", "vehicles.txt", "ramp_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("ramp", "vehicles.txt", "vehicles_ramp_valid_enum", row, services.AppMessageService)
 	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.Ramp.Severity != "" {
 		ctx.WithSeverity(rules.Ramp.Severity)

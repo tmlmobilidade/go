@@ -19,7 +19,7 @@ Date of the first registration.
 */
 
 func RegistrationDateValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("registration_date", "vehicles.txt", "registration_date_valid_day_granularity", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("registration_date", "vehicles.txt", "vehicles_registration_date_valid_day_granularity", row, services.AppMessageService)
 	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.RegistrationDate.Severity != "" {
 		ctx.WithSeverity(rules.RegistrationDate.Severity)

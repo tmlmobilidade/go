@@ -36,7 +36,7 @@ Conditionally Required:
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func ArrivalTimeValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, rules *types.StopTimesRules, tripStopSequences map[string]types.TripStopSequence) {
-	ctx := lib.NewValidationContext("arrival_time", "stop_times.txt", "arrival_time_ordering_with_departure_and_frequencies", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("arrival_time", "stop_times.txt", "stop_times_arrival_time_ordering_with_departure_and_frequencies", row, services.AppMessageService)
 	if rules != nil && rules.ArrivalTime.Severity != "" {
 		ctx.WithSeverity(rules.ArrivalTime.Severity)
 	}
@@ -49,7 +49,7 @@ func ArrivalTimeValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, 
 
 	// Forbidden when start_pickup_drop_off_window or end_pickup_drop_off_window are defined
 	if (stopTime.StartPickupDropOffWindow != nil || stopTime.EndPickupDropOffWindow != nil) && stopTime.ArrivalTime != nil {
-		ctx.AddError(ctx.GetTranslatedMessage("arrival_time_validation.forbidden_with_window"))
+		ctx.AddError(ctx.GetTranslatedMessage("arrival_time_validation.forbidden_pickup_dropoff"))
 		return
 	}
 
@@ -115,7 +115,7 @@ func ArrivalTimeValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, 
 	// Validate time
 	if stopTime.ArrivalTime != nil {
 		if !lib.ValidateTime(*stopTime.ArrivalTime) {
-			ctx.AddError(ctx.GetTranslatedMessage("arrival_time_validation.invalid_time"))
+			ctx.AddError(ctx.GetTranslatedMessage("arrival_time_validation.invalid", *stopTime.ArrivalTime))
 			return
 		}
 	}

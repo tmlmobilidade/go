@@ -32,7 +32,7 @@ Valid options are:
 */
 
 func EmissionValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("emission", "vehicles.txt", "emission_code_valid_for_propulsion_type", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("emission", "vehicles.txt", "vehicles_emission_code_valid_for_propulsion_type", row, services.AppMessageService)
 	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.Emission.Severity != "" {
 		ctx.WithSeverity(rules.Emission.Severity)

@@ -25,7 +25,7 @@ This allows feed consumers to more easily internationalize and localize the plat
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func PlatformCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("platform_code", "stops.txt", "platform_code_valid", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("platform_code", "stops.txt", "stops_platform_code_valid", row, services.AppMessageService)
 	if rules != nil && rules.PlatformCode.Severity != "" {
 		ctx.WithSeverity(rules.PlatformCode.Severity)
 	}

@@ -47,7 +47,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			"feed_end_date_valid_yyyymmdd_not_before_start": func() { validations.FeedEndDateValidation(nil, &feedInfoParsed, i) },
 			"feed_start_date_valid_yyyymmdd":                func() { validations.FeedStartDateValidation(nil, &feedInfoParsed, i) },
 			"feed_version_valid_identifier":                 func() { validations.FeedVersionValidation(nil, &feedInfoParsed, i) },
-			"default_lang_matches_feed_lang_when_present":   func() { validations.DefaultLangValidation(nil, &feedInfoParsed, i) },
+			"feed_info_default_lang_matches_feed_lang_when_present":   func() { validations.DefaultLangValidation(nil, &feedInfoParsed, i) },
 		}, nil)
 
 		return nil

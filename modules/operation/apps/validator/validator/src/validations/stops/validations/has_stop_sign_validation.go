@@ -28,7 +28,7 @@ Describes if the stop has a stop sign.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func HasStopSignValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("has_stop_sign", "stops.txt", "has_stop_sign_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("has_stop_sign", "stops.txt", "stops_has_stop_sign_valid_enum", row, services.AppMessageService)
 	if rules != nil && rules.HasStopSign.Severity != "" {
 		ctx.WithSeverity(rules.HasStopSign.Severity)
 	}

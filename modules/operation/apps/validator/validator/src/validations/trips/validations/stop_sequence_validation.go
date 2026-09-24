@@ -40,7 +40,7 @@ stop_id,stop_sequence
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules, tripStopTimesCache map[string][]types.StopTimeRaw) (stopSequenceHash string) {
-	ctx := lib.NewValidationContext("stop_sequence", "stop_times.txt", "stop_sequence_increasing_by_one_along_trip", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("stop_sequence", "stop_times.txt", "trips_stop_sequence_increasing_by_one_along_trip", row, services.AppMessageService)
 	if rules != nil && rules.StopSequence.Severity != "" {
 		ctx.WithSeverity(rules.StopSequence.Severity)
 	}

@@ -28,7 +28,7 @@ Describes if the stop has tariffs information.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func HasTariffsInformationValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("has_tariffs_information", "stops.txt", "has_tariffs_information_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("has_tariffs_information", "stops.txt", "stops_has_tariffs_information_valid_enum", row, services.AppMessageService)
 	if rules != nil && rules.HasTariffsInformation.Severity != "" {
 		ctx.WithSeverity(rules.HasTariffsInformation.Severity)
 	}

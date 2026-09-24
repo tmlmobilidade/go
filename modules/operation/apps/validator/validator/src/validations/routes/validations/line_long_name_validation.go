@@ -25,7 +25,7 @@ Conditionally Required:
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func LineLongNameValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("line_long_name", "routes.txt", "line_long_name_present_when_line_id_present", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("line_long_name", "routes.txt", "routes_line_long_name_present_when_line_id_present", row, services.AppMessageService)
 	if rules != nil && rules.LineLongName.Severity != "" {
 		ctx.WithSeverity(rules.LineLongName.Severity)
 	}

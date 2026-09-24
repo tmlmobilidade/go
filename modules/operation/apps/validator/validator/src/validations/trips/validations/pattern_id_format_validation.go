@@ -43,7 +43,7 @@ func toPatternIDDisplayFormat(formatRegex string) string {
 }
 
 func PatternIdFormatValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ctx := lib.NewValidationContext("pattern_id", "trips.txt", "pattern_id_matches_feed_pattern_id_syntax", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("pattern_id", "trips.txt", "trips_pattern_id_matches_feed_pattern_id_syntax", row, services.AppMessageService)
 	if rules != nil && rules.PatternIdFormat.Severity != "" {
 		ctx.WithSeverity(rules.PatternIdFormat.Severity)
 	}

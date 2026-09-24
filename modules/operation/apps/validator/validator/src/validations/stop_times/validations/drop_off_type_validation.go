@@ -35,7 +35,7 @@ Conditionally Forbidden:
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func DropOffTypeValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("drop_off_type", "stop_times.txt", "drop_off_type_valid_gtfs_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("drop_off_type", "stop_times.txt", "stop_times_drop_off_type_valid_gtfs_enum", row, services.AppMessageService)
 	if rules != nil && rules.DropOffType.Severity != "" {
 		ctx.WithSeverity(rules.DropOffType.Severity)
 	}

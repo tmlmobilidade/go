@@ -44,13 +44,13 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate fare_id
 		runner.Run(services.RuleActions{
-			"fare_id_unique":                                    func() { validations.FareIdValidation(&fareAttribute, i, &gtfs) },
-			"fare_price_valid_non_negative_decimal":             func() { validations.PriceValidation(&fareAttribute, i) },
-			"currency_type_valid":                               func() { validations.CurrencyTypeValidation(&fareAttribute, i) },
-			"payment_method_valid_gtfs_enum":                    func() { validations.PaymentMethodValidation(&fareAttribute, i) },
-			"transfers_valid_gtfs_enum":                         func() { validations.TransfersValidation(&fareAttribute, i, &gtfs) },
-			"fare_attributes_agency_id_references_agency_table": func() { validations.AgencyIdValidation(&fareAttribute, i, &gtfs, fareAttributesRules) },
-			"transfer_duration_valid_seconds_range":             func() { validations.TransferDurationValidation(&fareAttribute, i, &gtfs, fareAttributesRules) },
+			"fare_id_unique":                        func() { validations.FareIdValidation(&fareAttribute, i, &gtfs) },
+			"fare_price_valid_non_negative_decimal": func() { validations.PriceValidation(&fareAttribute, i) },
+			"fare_attributes_currency_type_valid":                   func() { validations.CurrencyTypeValidation(&fareAttribute, i) },
+			"fare_attributes_payment_method_valid_gtfs_enum":        func() { validations.PaymentMethodValidation(&fareAttribute, i) },
+			"fare_attributes_transfers_valid_gtfs_enum":             func() { validations.TransfersValidation(&fareAttribute, i, &gtfs) },
+			"fare_attributes_agency_id_references_agency_table":     func() { validations.AgencyIdValidation(&fareAttribute, i, &gtfs, fareAttributesRules) },
+			"fare_attributes_transfer_duration_valid_seconds_range": func() { validations.TransferDurationValidation(&fareAttribute, i, &gtfs, fareAttributesRules) },
 		}, nil)
 
 		return nil

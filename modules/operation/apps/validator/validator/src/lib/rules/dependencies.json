@@ -53,6 +53,21 @@
 				"calendar_file_present"
 			]
 		},
+		"calendar_friday": {
+			"depends_on": [
+				"calendar_file_present"
+			]
+		},
+		"calendar_monday": {
+			"depends_on": [
+				"calendar_file_present"
+			]
+		},
+		"calendar_saturday": {
+			"depends_on": [
+				"calendar_file_present"
+			]
+		},
 		"calendar_service_id_unique_non_empty": {
 			"depends_on": [
 				"calendar_file_present"
@@ -63,82 +78,82 @@
 				"calendar_file_present"
 			]
 		},
-		"friday": {
+		"calendar_sunday": {
 			"depends_on": [
 				"calendar_file_present"
 			]
 		},
-		"monday": {
+		"calendar_thursday": {
 			"depends_on": [
 				"calendar_file_present"
 			]
 		},
-		"saturday": {
+		"calendar_tuesday": {
 			"depends_on": [
 				"calendar_file_present"
 			]
 		},
-		"sunday": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
-		"thursday": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
-		"tuesday": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
-		"wednesday": {
+		"calendar_wednesday": {
 			"depends_on": [
 				"calendar_file_present"
 			]
 		}
 	},
 	"calendar_dates": {
-		"calendar_dates_service_id_references_calendar": {
+		"calendar_dates_day_type": {
 			"depends_on": [
 				"calendar_dates_file_present"
 			]
 		},
-		"day_type": {
+		"calendar_dates_exception_date_valid_yyyymmdd": {
 			"depends_on": [
 				"calendar_dates_file_present"
 			]
 		},
-		"exception_date_valid_yyyymmdd": {
-			"depends_on": [
-				"calendar_dates_file_present"
-			]
-		},
-		"exception_type_add_or_remove_service": {
+		"calendar_dates_exception_type_add_or_remove_service": {
 			"depends_on": [
 				"calendar_dates_service_id_references_calendar",
-				"exception_date_valid_yyyymmdd"
+				"calendar_dates_exception_date_valid_yyyymmdd"
 			]
 		},
-		"holiday": {
+		"calendar_dates_holiday": {
 			"depends_on": [
 				"calendar_dates_file_present"
 			]
 		},
-		"period": {
+		"calendar_dates_period": {
+			"depends_on": [
+				"calendar_dates_file_present"
+			]
+		},
+		"calendar_dates_service_id_references_calendar": {
 			"depends_on": [
 				"calendar_dates_file_present"
 			]
 		}
 	},
 	"fare_attributes": {
-		"currency_type_valid": {
+		"fare_attributes_agency_id_references_agency_table": {
 			"depends_on": [
 				"fare_attributes_file_present"
 			]
 		},
-		"fare_attributes_agency_id_references_agency_table": {
+		"fare_attributes_currency_type_valid": {
+			"depends_on": [
+				"fare_attributes_file_present"
+			]
+		},
+		"fare_attributes_payment_method_valid_gtfs_enum": {
+			"depends_on": [
+				"fare_attributes_file_present"
+			]
+		},
+		"fare_attributes_transfer_duration_valid_seconds_range": {
+			"depends_on": [
+				"fare_attributes_transfers_valid_gtfs_enum"
+			]
+		},
+		"fare_attributes_transfers_valid_gtfs_enum": {
 			"depends_on": [
 				"fare_attributes_file_present"
 			]
@@ -149,21 +164,6 @@
 			]
 		},
 		"fare_price_valid_non_negative_decimal": {
-			"depends_on": [
-				"fare_attributes_file_present"
-			]
-		},
-		"payment_method_valid_gtfs_enum": {
-			"depends_on": [
-				"fare_attributes_file_present"
-			]
-		},
-		"transfer_duration_valid_seconds_range": {
-			"depends_on": [
-				"transfers_valid_gtfs_enum"
-			]
-		},
-		"transfers_valid_gtfs_enum": {
 			"depends_on": [
 				"fare_attributes_file_present"
 			]
@@ -214,11 +214,6 @@
 		}
 	},
 	"feed_info": {
-		"default_lang_matches_feed_lang_when_present": {
-			"depends_on": [
-				"feed_lang_valid_tag"
-			]
-		},
 		"feed_contact_email_valid_address": {
 			"depends_on": [
 				"feed_info_file_present"
@@ -232,6 +227,11 @@
 		"feed_end_date_valid_yyyymmdd_not_before_start": {
 			"depends_on": [
 				"feed_start_date_valid_yyyymmdd"
+			]
+		},
+		"feed_info_default_lang_matches_feed_lang_when_present": {
+			"depends_on": [
+				"feed_lang_valid_tag"
 			]
 		},
 		"feed_lang_valid_tag": {
@@ -271,14 +271,21 @@
 		}
 	},
 	"file_validation": {
-		"gtfs_feed_file_presence_and_integrity_rule": {
+		"file_validation_gtfs_feed_file_presence_and_integrity_rule": {
 			"depends_on": []
 		}
 	},
 	"frequencies": {
-		"exact_times_zero_when_timed_trip_uses_frequencies": {
+		"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": {
 			"depends_on": [
 				"frequencies_trip_id_references_trips_table"
+			]
+		},
+		"frequencies_headway_secs_positive_and_aligns_trip": {
+			"depends_on": [
+				"frequencies_trip_id_references_trips_table",
+				"frequency_start_time_valid",
+				"frequency_end_time_valid"
 			]
 		},
 		"frequencies_trip_id_references_trips_table": {
@@ -294,13 +301,6 @@
 		"frequency_start_time_valid": {
 			"depends_on": [
 				"frequencies_file_present"
-			]
-		},
-		"headway_secs_positive_and_aligns_trip": {
-			"depends_on": [
-				"frequencies_trip_id_references_trips_table",
-				"frequency_start_time_valid",
-				"frequency_end_time_valid"
 			]
 		}
 	},
@@ -384,12 +384,12 @@
 		}
 	},
 	"rider_categories": {
-		"at_most_one_default_fare_category": {
+		"rider_categories_at_most_one_default_fare_category": {
 			"depends_on": [
 				"rider_categories_file_present"
 			]
 		},
-		"eligibility_url_valid_http_url": {
+		"rider_categories_eligibility_url_valid_http_url": {
 			"depends_on": [
 				"rider_categories_file_present"
 			]
@@ -406,46 +406,6 @@
 		}
 	},
 	"routes": {
-		"circular": {
-			"depends_on": [
-				"routes_file_present"
-			]
-		},
-		"continuous_drop_off_valid_gtfs_enum": {
-			"depends_on": [
-				"route_id_unique"
-			]
-		},
-		"continuous_pickup_valid_gtfs_enum": {
-			"depends_on": [
-				"route_id_unique"
-			]
-		},
-		"line_id_required": {
-			"depends_on": [
-				"routes_file_present"
-			]
-		},
-		"line_long_name_present_when_line_id_present": {
-			"depends_on": [
-				"line_id_required"
-			]
-		},
-		"line_short_name_present_when_line_id_present": {
-			"depends_on": [
-				"line_id_required"
-			]
-		},
-		"network_id_references_networks_table": {
-			"depends_on": [
-				"routes_file_present"
-			]
-		},
-		"path_type_valid_enum": {
-			"depends_on": [
-				"routes_file_present"
-			]
-		},
 		"route_agency_id_references_agency_table": {
 			"depends_on": [
 				"routes_file_present"
@@ -502,7 +462,47 @@
 				"routes_file_present"
 			]
 		},
-		"school": {
+		"routes_circular": {
+			"depends_on": [
+				"routes_file_present"
+			]
+		},
+		"routes_continuous_drop_off_valid_gtfs_enum": {
+			"depends_on": [
+				"route_id_unique"
+			]
+		},
+		"routes_continuous_pickup_valid_gtfs_enum": {
+			"depends_on": [
+				"route_id_unique"
+			]
+		},
+		"routes_line_id_required": {
+			"depends_on": [
+				"routes_file_present"
+			]
+		},
+		"routes_line_long_name_present_when_line_id_present": {
+			"depends_on": [
+				"routes_line_id_required"
+			]
+		},
+		"routes_line_short_name_present_when_line_id_present": {
+			"depends_on": [
+				"routes_line_id_required"
+			]
+		},
+		"routes_network_id_references_networks_table": {
+			"depends_on": [
+				"routes_file_present"
+			]
+		},
+		"routes_path_type_valid_enum": {
+			"depends_on": [
+				"routes_file_present"
+			]
+		},
+		"routes_school": {
 			"depends_on": [
 				"routes_file_present"
 			]
@@ -589,63 +589,17 @@
 		}
 	},
 	"stop_times": {
-		"arrival_departure_time_non_decreasing_by_stop_sequence": {
+		"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence": {
 			"depends_on": [
-				"arrival_time_ordering_with_departure_and_frequencies",
-				"departure_time_ordering_with_arrival_and_timepoint"
+				"stop_times_arrival_time_ordering_with_departure_and_frequencies",
+				"stop_times_departure_time_ordering_with_arrival_and_timepoint"
 			],
 			"scope": "trip"
 		},
-		"arrival_time_ordering_with_departure_and_frequencies": {
+		"stop_times_arrival_time_ordering_with_departure_and_frequencies": {
 			"depends_on": [
 				"stop_times_trip_id_references_trips_table",
-				"timepoint_valid_gtfs_enum"
-			]
-		},
-		"departure_time_ordering_with_arrival_and_timepoint": {
-			"depends_on": [
-				"stop_times_trip_id_references_trips_table",
-				"timepoint_valid_gtfs_enum"
-			]
-		},
-		"drop_off_booking_rule_id_references_booking_rules_or_empty": {
-			"depends_on": [
-				"stop_times_file_present"
-			]
-		},
-		"drop_off_type_valid_gtfs_enum": {
-			"depends_on": [
-				"stop_times_file_present"
-			]
-		},
-		"end_pickup_drop_off_window_valid": {
-			"depends_on": [
-				"start_pickup_drop_off_window_valid"
-			]
-		},
-		"location_group_id_consistent_with_trip_id_and_stops": {
-			"depends_on": [
-				"stop_times_file_present"
-			]
-		},
-		"pickup_booking_rule_id_references_booking_rules": {
-			"depends_on": [
-				"stop_times_file_present"
-			]
-		},
-		"pickup_type_valid_gtfs_enum": {
-			"depends_on": [
-				"stop_times_file_present"
-			]
-		},
-		"start_pickup_drop_off_window_valid": {
-			"depends_on": [
-				"stop_times_file_present"
-			]
-		},
-		"stop_headsign_present": {
-			"depends_on": [
-				"stop_times_file_present"
+				"stop_times_timepoint_valid_gtfs_enum"
 			]
 		},
 		"stop_times_continuous_drop_off_valid_gtfs_enum": {
@@ -658,7 +612,53 @@
 				"stop_times_file_present"
 			]
 		},
+		"stop_times_departure_time_ordering_with_arrival_and_timepoint": {
+			"depends_on": [
+				"stop_times_trip_id_references_trips_table",
+				"stop_times_timepoint_valid_gtfs_enum"
+			]
+		},
+		"stop_times_drop_off_booking_rule_id_references_booking_rules_or_empty": {
+			"depends_on": [
+				"stop_times_file_present"
+			]
+		},
+		"stop_times_drop_off_type_valid_gtfs_enum": {
+			"depends_on": [
+				"stop_times_file_present"
+			]
+		},
+		"stop_times_end_pickup_drop_off_window_valid": {
+			"depends_on": [
+				"stop_times_start_pickup_drop_off_window_valid"
+			]
+		},
+		"stop_times_location_group_id_consistent_with_trip_id_and_stops": {
+			"depends_on": [
+				"stop_times_file_present"
+			]
+		},
+		"stop_times_pickup_booking_rule_id_references_booking_rules": {
+			"depends_on": [
+				"stop_times_file_present"
+			]
+		},
+		"stop_times_pickup_type_valid_gtfs_enum": {
+			"depends_on": [
+				"stop_times_file_present"
+			]
+		},
 		"stop_times_shape_dist_traveled_non_decreasing_on_trip": {
+			"depends_on": [
+				"stop_times_file_present"
+			]
+		},
+		"stop_times_start_pickup_drop_off_window_valid": {
+			"depends_on": [
+				"stop_times_file_present"
+			]
+		},
+		"stop_times_stop_headsign_present": {
 			"depends_on": [
 				"stop_times_file_present"
 			]
@@ -668,107 +668,21 @@
 				"stop_times_file_present"
 			]
 		},
-		"stop_times_trip_id_references_trips_table": {
+		"stop_times_timepoint_valid_gtfs_enum": {
 			"depends_on": [
 				"stop_times_file_present"
 			]
 		},
-		"timepoint_valid_gtfs_enum": {
+		"stop_times_trip_id_references_trips_table": {
 			"depends_on": [
 				"stop_times_file_present"
 			]
 		}
 	},
 	"stops": {
-		"has_bench_valid_enum": {
+		"stop_access_validation": {
 			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"has_network_map_valid_enum": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"has_pip_real_time_valid_enum": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"has_schedules_valid_enum": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"has_shelter_valid_enum": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"has_stop_sign_valid_enum": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"has_tariffs_information_valid_enum": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"level_id_valid_id": {
-			"depends_on": [
-				"location_type_valid_enum"
-			]
-		},
-		"location_type_valid_enum": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"municipality_id_valid": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"parent_station_id_valid_for_stop_hierarchy": {
-			"depends_on": [
-				"location_type_valid_enum",
-				"stop_id_unique"
-			]
-		},
-		"parish_id_valid": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"platform_code_valid": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"public_visible_valid_enum": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"region_id_valid": {
-			"depends_on": [
-				"stops_file_present"
-			]
-		},
-		"shelter_code_valid": {
-			"depends_on": [
-				"has_shelter_valid_enum"
-			]
-		},
-		"shelter_maintainer_valid": {
-			"depends_on": [
-				"has_shelter_valid_enum"
-			]
-		},
-		"stop_access": {
-			"depends_on": [
-				"parent_station_id_valid_for_stop_hierarchy"
+				"stops_parent_station_id_valid_for_stop_hierarchy"
 			]
 		},
 		"stop_code_valid": {
@@ -788,17 +702,17 @@
 		},
 		"stop_lat_valid_latitude_range": {
 			"depends_on": [
-				"location_type_valid_enum"
+				"stops_location_type_valid_enum"
 			]
 		},
 		"stop_lon_valid_longitude_range": {
 			"depends_on": [
-				"location_type_valid_enum"
+				"stops_location_type_valid_enum"
 			]
 		},
 		"stop_name_required_by_location_type": {
 			"depends_on": [
-				"location_type_valid_enum"
+				"stops_location_type_valid_enum"
 			]
 		},
 		"stop_short_name_valid": {
@@ -816,28 +730,109 @@
 				"stops_file_present"
 			]
 		},
-		"tts_stop_name_valid": {
+		"stops_has_bench_valid_enum": {
 			"depends_on": [
 				"stops_file_present"
 			]
 		},
-		"wheelchair_boarding_valid_enum": {
+		"stops_has_network_map_valid_enum": {
 			"depends_on": [
-				"location_type_valid_enum"
+				"stops_file_present"
 			]
 		},
-		"zone_id_valid": {
+		"stops_has_pip_real_time_valid_enum": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_has_schedules_valid_enum": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_has_shelter_valid_enum": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_has_stop_sign_valid_enum": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_has_tariffs_information_valid_enum": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_level_id_valid_id": {
+			"depends_on": [
+				"stops_location_type_valid_enum"
+			]
+		},
+		"stops_location_type_valid_enum": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_municipality_id_valid": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_parent_station_id_valid_for_stop_hierarchy": {
+			"depends_on": [
+				"stops_location_type_valid_enum",
+				"stop_id_unique"
+			]
+		},
+		"stops_parish_id_valid": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_platform_code_valid": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_public_visible_valid_enum": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_region_id_valid": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_shelter_code_valid": {
+			"depends_on": [
+				"stops_has_shelter_valid_enum"
+			]
+		},
+		"stops_shelter_maintainer_valid": {
+			"depends_on": [
+				"stops_has_shelter_valid_enum"
+			]
+		},
+		"stops_tts_stop_name_valid": {
+			"depends_on": [
+				"stops_file_present"
+			]
+		},
+		"stops_wheelchair_boarding_valid_enum": {
+			"depends_on": [
+				"stops_location_type_valid_enum"
+			]
+		},
+		"stops_zone_id_valid": {
 			"depends_on": [
 				"stops_file_present"
 			]
 		}
 	},
 	"transfers": {
-		"min_transfer_time_non_negative_seconds": {
-			"depends_on": [
-				"transfers_file_present"
-			]
-		},
 		"transfer_from_route_id_references_routes_table": {
 			"depends_on": [
 				"transfers_file_present"
@@ -874,110 +869,17 @@
 			"depends_on": [
 				"transfers_file_present"
 			]
+		},
+		"transfers_min_transfer_time_non_negative_seconds": {
+			"depends_on": [
+				"transfers_file_present"
+			]
 		}
 	},
 	"trips": {
-		"bikes_allowed_valid_gtfs_enum": {
-			"depends_on": [
-				"trips_file_present"
-			]
-		},
-		"block_id_in_allowed_set": {
-			"depends_on": [
-				"trips_file_present"
-			]
-		},
-		"direction_id_consistent_for_all_patterns_in_trips": {
-			"depends_on": [
-				"pattern_id_trip_has_required_fields_for_grouping",
-				"direction_id_valid_enum"
-			],
-			"scope": "pattern"
-		},
-		"direction_id_matches_feed_pattern_direction": {
-			"depends_on": [
-				"pattern_id_matches_feed_pattern_id_syntax",
-				"direction_id_valid_enum"
-			]
-		},
-		"direction_id_valid_enum": {
-			"depends_on": [
-				"trips_file_present"
-			]
-		},
-		"one_pattern_id_per_shape_id_group": {
-			"depends_on": [
-				"pattern_id_matches_feed_pattern_id_syntax",
-				"shape_id_references_shapes_table_when_present"
-			],
-			"scope": "shape"
-		},
-		"one_shape_id_per_pattern_id_group": {
-			"depends_on": [
-				"pattern_id_trip_has_required_fields_for_grouping",
-				"shape_id_references_shapes_table_when_present"
-			],
-			"scope": "pattern"
-		},
-		"pattern_id_matches_feed_pattern_id_syntax": {
-			"depends_on": [
-				"pattern_id_present_and_references_consistent"
-			]
-		},
-		"pattern_id_present_and_references_consistent": {
-			"depends_on": [
-				"trips_file_present"
-			]
-		},
-		"pattern_id_single_trip_signature_per_pattern": {
-			"depends_on": [
-				"pattern_id_trip_has_required_fields_for_grouping",
-				"stop_sequence_increasing_by_one_along_trip"
-			],
-			"scope": "pattern"
-		},
-		"pattern_id_trip_has_required_fields_for_grouping": {
-			"depends_on": [
-				"pattern_id_matches_feed_pattern_id_syntax"
-			],
-			"scope": "pattern"
-		},
-		"route_id_consistent_for_all_patterns_in_trips": {
-			"depends_on": [
-				"pattern_id_trip_has_required_fields_for_grouping",
-				"route_id_references_routes_table"
-			],
-			"scope": "pattern"
-		},
-		"route_id_references_routes_table": {
-			"depends_on": [
-				"trips_file_present"
-			]
-		},
-		"service_id_references_calendar_service": {
-			"depends_on": [
-				"trips_file_present"
-			]
-		},
-		"shape_id_needs_to_be_the_same_as_pattern_id": {
-			"depends_on": [
-				"shape_id_references_shapes_table_when_present",
-				"pattern_id_matches_feed_pattern_id_syntax"
-			]
-		},
-		"shape_id_references_shapes_table_when_present": {
-			"depends_on": [
-				"trips_file_present"
-			]
-		},
-		"stop_sequence_increasing_by_one_along_trip": {
-			"depends_on": [
-				"trip_id_unique"
-			]
-		},
 		"trip_headsign_consistent_for_all_patterns_in_trips": {
 			"depends_on": [
-				"pattern_id_trip_has_required_fields_for_grouping",
+				"trips_pattern_id_trip_has_required_fields_for_grouping",
 				"trip_headsign_present_when_short_name_absent"
 			],
 			"scope": "pattern"
@@ -999,8 +901,8 @@
 		},
 		"trip_path_stop_coordinates_referenced_from_stops": {
 			"depends_on": [
-				"shape_id_references_shapes_table_when_present",
-				"stop_sequence_increasing_by_one_along_trip"
+				"trips_shape_id_references_shapes_table_when_present",
+				"trips_stop_sequence_increasing_by_one_along_trip"
 			]
 		},
 		"trip_short_name_exclusivity": {
@@ -1008,118 +910,111 @@
 				"trips_file_present"
 			]
 		},
-		"wheelchair_accessible_valid_gtfs_enum": {
+		"trips_bikes_allowed_valid_gtfs_enum": {
+			"depends_on": [
+				"trips_file_present"
+			]
+		},
+		"trips_block_id_in_allowed_set": {
+			"depends_on": [
+				"trips_file_present"
+			]
+		},
+		"trips_direction_id_consistent_for_all_patterns_in_trips": {
+			"depends_on": [
+				"trips_pattern_id_trip_has_required_fields_for_grouping",
+				"trips_direction_id_valid_enum"
+			],
+			"scope": "pattern"
+		},
+		"trips_direction_id_matches_feed_pattern_direction": {
+			"depends_on": [
+				"trips_pattern_id_matches_feed_pattern_id_syntax",
+				"trips_direction_id_valid_enum"
+			]
+		},
+		"trips_direction_id_valid_enum": {
+			"depends_on": [
+				"trips_file_present"
+			]
+		},
+		"trips_one_pattern_id_per_shape_id_group": {
+			"depends_on": [
+				"trips_pattern_id_matches_feed_pattern_id_syntax",
+				"trips_shape_id_references_shapes_table_when_present"
+			],
+			"scope": "shape"
+		},
+		"trips_one_shape_id_per_pattern_id_group": {
+			"depends_on": [
+				"trips_pattern_id_trip_has_required_fields_for_grouping",
+				"trips_shape_id_references_shapes_table_when_present"
+			],
+			"scope": "pattern"
+		},
+		"trips_pattern_id_matches_feed_pattern_id_syntax": {
+			"depends_on": [
+				"trips_pattern_id_present_and_references_consistent"
+			]
+		},
+		"trips_pattern_id_present_and_references_consistent": {
+			"depends_on": [
+				"trips_file_present"
+			]
+		},
+		"trips_pattern_id_single_trip_signature_per_pattern": {
+			"depends_on": [
+				"trips_pattern_id_trip_has_required_fields_for_grouping",
+				"trips_stop_sequence_increasing_by_one_along_trip"
+			],
+			"scope": "pattern"
+		},
+		"trips_pattern_id_trip_has_required_fields_for_grouping": {
+			"depends_on": [
+				"trips_pattern_id_matches_feed_pattern_id_syntax"
+			],
+			"scope": "pattern"
+		},
+		"trips_route_id_consistent_for_all_patterns_in_trips": {
+			"depends_on": [
+				"trips_pattern_id_trip_has_required_fields_for_grouping",
+				"trips_route_id_references_routes_table"
+			],
+			"scope": "pattern"
+		},
+		"trips_route_id_references_routes_table": {
+			"depends_on": [
+				"trips_file_present"
+			]
+		},
+		"trips_service_id_references_calendar_service": {
+			"depends_on": [
+				"trips_file_present"
+			]
+		},
+		"trips_shape_id_needs_to_be_the_same_as_pattern_id": {
+			"depends_on": [
+				"trips_shape_id_references_shapes_table_when_present",
+				"trips_pattern_id_matches_feed_pattern_id_syntax"
+			]
+		},
+		"trips_shape_id_references_shapes_table_when_present": {
+			"depends_on": [
+				"trips_file_present"
+			]
+		},
+		"trips_stop_sequence_increasing_by_one_along_trip": {
+			"depends_on": [
+				"trip_id_unique"
+			]
+		},
+		"trips_wheelchair_accessible_valid_gtfs_enum": {
 			"depends_on": [
 				"trips_file_present"
 			]
 		}
 	},
 	"vehicles": {
-		"available_seats_non_negative": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"available_standing_non_negative": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"bicycles_rack_count_non_negative": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"climatization_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"consumption_meter_valid_format": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"emission_code_valid_for_propulsion_type": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"external_sound_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"front_display_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"internal_sound_level_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"kneeling_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"license_plate_format_per_market_rules": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"lowered_floor_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"onboard_monitor_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"passenger_counting_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"propulsion_type_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"ramp_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"rear_display_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"registration_date_valid_day_granularity": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"side_display_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"static_information_valid_enum": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
-		"typology_in_allowed_vehicle_types": {
-			"depends_on": [
-				"vehicles_file_present"
-			]
-		},
 		"vehicle_agency_id_references_agency_table": {
 			"depends_on": [
 				"vehicles_file_present"
@@ -1145,12 +1040,117 @@
 				"vehicles_file_present"
 			]
 		},
-		"video_surveillance_valid_enum": {
+		"vehicles_available_seats_non_negative": {
 			"depends_on": [
 				"vehicles_file_present"
 			]
 		},
-		"wheelchair_spots_valid_enum": {
+		"vehicles_available_standing_non_negative": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_bicycles_rack_count_non_negative": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_climatization_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_consumption_meter_valid_format": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_emission_code_valid_for_propulsion_type": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_external_sound_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_front_display_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_internal_sound_level_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_kneeling_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_license_plate_format_per_market_rules": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_lowered_floor_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_onboard_monitor_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_passenger_counting_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_propulsion_type_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_ramp_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_rear_display_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_registration_date_valid_day_granularity": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_side_display_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_static_information_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_typology_in_allowed_vehicle_types": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_video_surveillance_valid_enum": {
+			"depends_on": [
+				"vehicles_file_present"
+			]
+		},
+		"vehicles_wheelchair_spots_valid_enum": {
 			"depends_on": [
 				"vehicles_file_present"
 			]

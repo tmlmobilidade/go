@@ -27,7 +27,7 @@ Valid options are:
 */
 
 func RearDisplayValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("rear_display", "vehicles.txt", "rear_display_valid_enum", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("rear_display", "vehicles.txt", "vehicles_rear_display_valid_enum", row, services.AppMessageService)
 	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.RearDisplay.Severity != "" {
 		ctx.WithSeverity(rules.RearDisplay.Severity)

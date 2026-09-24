@@ -35,7 +35,7 @@ For a particular holiday, the [calendar_dates.txt] file could be used to add the
 [calendar_dates.txt]: https://gtfs.org/schedule/reference/#calendar_datestxt
 */
 func ExceptionTypeValidation(calendarDate *types.CalendarDates, row int, rules *types.CalendarDatesRules) {
-	ctx := lib.NewValidationContext("exception_type", "calendar_dates.txt", "exception_type_add_or_remove_service", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("exception_type", "calendar_dates.txt", "calendar_dates_exception_type_add_or_remove_service", row, services.AppMessageService)
 	if rules != nil && rules.ExceptionType.Severity != types.SEVERITY_IGNORE {
 		ctx.WithSeverity(rules.ExceptionType.Severity)
 	}

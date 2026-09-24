@@ -24,7 +24,7 @@ Identifies the fare zone for a stop. If this record represents a station or stat
 
 // ZoneIdValidation validates the zone_id field in stops.txt
 func ZoneIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("zone_id", "stops.txt", "zone_id_valid", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("zone_id", "stops.txt", "stops_zone_id_valid", row, services.AppMessageService)
 	if rules != nil && rules.ZoneId.Severity != "" {
 		ctx.WithSeverity(rules.ZoneId.Severity)
 	}

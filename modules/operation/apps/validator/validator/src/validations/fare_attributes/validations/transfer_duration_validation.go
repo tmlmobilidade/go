@@ -20,7 +20,7 @@ Length of time in seconds before a transfer expires. When transfers=0 this field
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
 func TransferDurationValidation(fareAttribute *types.FareAttribute, row int, gtfs *types.Gtfs, rules *types.FareAttributesRules) {
-	ctx := lib.NewValidationContext("transfer_duration", "fare_attributes.txt", "transfer_duration_valid_seconds_range", row, services.AppMessageService)
+	ctx := lib.NewValidationContext("transfer_duration", "fare_attributes.txt", "fare_attributes_transfer_duration_valid_seconds_range", row, services.AppMessageService)
 	if rules != nil && rules.TransferDuration.Severity != "" {
 		ctx.WithSeverity(rules.TransferDuration.Severity)
 	}

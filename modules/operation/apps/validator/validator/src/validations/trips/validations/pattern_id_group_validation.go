@@ -30,10 +30,10 @@ func PatternIdGroupRuleValidation(tripsGroupedByPattern types.TripGroupedByPatte
 		}
 
 		for _, trip := range group.Trips {
-			if ruleID != "" && ruleID != "pattern_id_trip_has_required_fields_for_grouping" {
+			if ruleID != "" && ruleID != "trips_pattern_id_trip_has_required_fields_for_grouping" {
 				break
 			}
-			ctx := lib.NewValidationContext("pattern_id", "trips.txt", "pattern_id_trip_has_required_fields_for_grouping", trip.Row, services.AppMessageService)
+			ctx := lib.NewValidationContext("pattern_id", "trips.txt", "trips_pattern_id_trip_has_required_fields_for_grouping", trip.Row, services.AppMessageService)
 			if rules != nil && rules.PatternIdTripHasRequiredFieldsForGrouping.Severity != "" {
 				ctx.WithSeverity(rules.PatternIdTripHasRequiredFieldsForGrouping.Severity)
 			}
@@ -61,9 +61,9 @@ func PatternIdGroupRuleValidation(tripsGroupedByPattern types.TripGroupedByPatte
 			}
 		}
 
-		if len(group.Hash) > 1 && (ruleID == "" || ruleID == "pattern_id_single_trip_signature_per_pattern") {
+		if len(group.Hash) > 1 && (ruleID == "" || ruleID == "trips_pattern_id_single_trip_signature_per_pattern") {
 			row := group.Trips[0].Row
-			ctx := lib.NewValidationContext("pattern_id", "trips.txt", "pattern_id_single_trip_signature_per_pattern", row, services.AppMessageService)
+			ctx := lib.NewValidationContext("pattern_id", "trips.txt", "trips_pattern_id_single_trip_signature_per_pattern", row, services.AppMessageService)
 			if rules != nil && rules.PatternIdSingleTripSignaturePerPattern.Severity != "" {
 				ctx.WithSeverity(rules.PatternIdSingleTripSignaturePerPattern.Severity)
 			}
