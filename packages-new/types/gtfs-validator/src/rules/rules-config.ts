@@ -59,11 +59,8 @@ export interface CalendarRules {
 
 export interface CalendarDatesRules {
 	_file: RuleSeverity
-	calendar_dates_day_type: RuleConfig
 	calendar_dates_exception_date_valid_yyyymmdd: RuleConfig
 	calendar_dates_exception_type_add_or_remove_service: RuleConfig
-	calendar_dates_holiday: RuleConfig
-	calendar_dates_period: RuleConfig
 	calendar_dates_service_id_references_calendar: RuleConfig
 }
 

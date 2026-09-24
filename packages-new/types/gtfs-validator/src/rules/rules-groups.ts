@@ -49,9 +49,6 @@ export const ruleConfigKeys = {
 		'calendar_dates_service_id_references_calendar',
 		'calendar_dates_exception_date_valid_yyyymmdd',
 		'calendar_dates_exception_type_add_or_remove_service',
-		'calendar_dates_day_type',
-		'calendar_dates_holiday',
-		'calendar_dates_period',
 	],
 	fare_attributes: [
 		'_file',

@@ -58,11 +58,11 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate trip_id
 		runner.Run(services.RuleActions{
-			"trip_id":      func() { validations.TripIdValidation(parsedFrequency, i, &gtfs, frequenciesRules) },
-			"end_time":     func() { validations.EndTimeValidation(parsedFrequency, i, frequenciesRules) },
-			"start_time":   func() { validations.StartTimeValidation(parsedFrequency, i, frequenciesRules) },
-			"headway_secs": func() { validations.HeadwaySecsValidation(parsedFrequency, i, frequenciesRules) },
-			"exact_times":  func() { validations.ExactTimesValidation(parsedFrequency, i, frequenciesRules) },
+			"frequencies_trip_id_references_trips_table":                    func() { validations.TripIdValidation(parsedFrequency, i, &gtfs, frequenciesRules) },
+			"frequency_end_time_valid":                                      func() { validations.EndTimeValidation(parsedFrequency, i, frequenciesRules) },
+			"frequency_start_time_valid":                                    func() { validations.StartTimeValidation(parsedFrequency, i, frequenciesRules) },
+			"frequencies_headway_secs_positive_and_aligns_trip":             func() { validations.HeadwaySecsValidation(parsedFrequency, i, frequenciesRules) },
+			"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": func() { validations.ExactTimesValidation(parsedFrequency, i, frequenciesRules) },
 		}, nil)
 
 		return nil

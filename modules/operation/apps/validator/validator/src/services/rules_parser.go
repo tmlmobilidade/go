@@ -232,9 +232,9 @@ func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
 		validateRuleConfig(rules.CalendarDates.ServiceId, "calendar_dates.calendar_dates_service_id_references_calendar")
 		validateRuleConfig(rules.CalendarDates.Date, "calendar_dates.calendar_dates_exception_date_valid_yyyymmdd")
 		validateRuleConfig(rules.CalendarDates.ExceptionType, "calendar_dates.calendar_dates_exception_type_add_or_remove_service")
-		validateRuleConfig(rules.CalendarDates.DayType, "calendar_dates.calendar_dates_day_type")
-		validateRuleConfig(rules.CalendarDates.Holiday, "calendar_dates.calendar_dates_holiday")
-		validateRuleConfig(rules.CalendarDates.Period, "calendar_dates.calendar_dates_period")
+		// validateRuleConfig(rules.CalendarDates.DayType, "calendar_dates.calendar_dates_day_type")
+		// validateRuleConfig(rules.CalendarDates.Holiday, "calendar_dates.calendar_dates_holiday")
+		// validateRuleConfig(rules.CalendarDates.Period, "calendar_dates.calendar_dates_period")
 	}
 
 	if rules.FeedInfo.File != types.SEVERITY_FORBIDDEN {

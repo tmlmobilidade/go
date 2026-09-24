@@ -154,9 +154,9 @@ type CalendarDatesRules struct {
 	ServiceId     RuleConfig `json:"calendar_dates_service_id_references_calendar"`
 	Date          RuleConfig `json:"calendar_dates_exception_date_valid_yyyymmdd"`
 	ExceptionType RuleConfig `json:"calendar_dates_exception_type_add_or_remove_service"`
-	DayType       RuleConfig `json:"calendar_dates_day_type"`
-	Holiday       RuleConfig `json:"calendar_dates_holiday"`
-	Period        RuleConfig `json:"calendar_dates_period"`
+	// DayType       RuleConfig `json:"calendar_dates_day_type"`
+	// Holiday       RuleConfig `json:"calendar_dates_holiday"`
+	// Period        RuleConfig `json:"calendar_dates_period"`
 }
 
 type VehiclesRules struct {

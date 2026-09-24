@@ -100,11 +100,6 @@
 		}
 	},
 	"calendar_dates": {
-		"calendar_dates_day_type": {
-			"depends_on": [
-				"calendar_dates_file_present"
-			]
-		},
 		"calendar_dates_exception_date_valid_yyyymmdd": {
 			"depends_on": [
 				"calendar_dates_file_present"
@@ -114,16 +109,6 @@
 			"depends_on": [
 				"calendar_dates_service_id_references_calendar",
 				"calendar_dates_exception_date_valid_yyyymmdd"
-			]
-		},
-		"calendar_dates_holiday": {
-			"depends_on": [
-				"calendar_dates_file_present"
-			]
-		},
-		"calendar_dates_period": {
-			"depends_on": [
-				"calendar_dates_file_present"
 			]
 		},
 		"calendar_dates_service_id_references_calendar": {

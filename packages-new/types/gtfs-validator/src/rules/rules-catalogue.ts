@@ -219,13 +219,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'calendar_wednesday',
 	},
 	{
-		config_key: 'calendar_dates_day_type',
-		depends_on: ['calendar_dates_file_present'],
-		editable: true,
-		group: 'calendar_dates',
-		id: 'calendar_dates_day_type',
-	},
-	{
 		config_key: 'calendar_dates_exception_date_valid_yyyymmdd',
 		depends_on: ['calendar_dates_file_present'],
 		editable: true,
@@ -244,20 +237,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'calendar_dates',
 		id: 'calendar_dates_file_missing',
-	},
-	{
-		config_key: 'calendar_dates_holiday',
-		depends_on: ['calendar_dates_file_present'],
-		editable: true,
-		group: 'calendar_dates',
-		id: 'calendar_dates_holiday',
-	},
-	{
-		config_key: 'calendar_dates_period',
-		depends_on: ['calendar_dates_file_present'],
-		editable: true,
-		group: 'calendar_dates',
-		id: 'calendar_dates_period',
 	},
 	{
 		config_key: 'calendar_dates_service_id_references_calendar',

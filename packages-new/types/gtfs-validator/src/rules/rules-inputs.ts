@@ -59,11 +59,8 @@ export interface CalendarRulesInput {
 
 export interface CalendarDatesRulesInput {
 	_file?: RuleSeverity
-	calendar_dates_day_type?: RuleConfigInput
 	calendar_dates_exception_date_valid_yyyymmdd?: RuleConfigInput
 	calendar_dates_exception_type_add_or_remove_service?: RuleConfigInput
-	calendar_dates_holiday?: RuleConfigInput
-	calendar_dates_period?: RuleConfigInput
 	calendar_dates_service_id_references_calendar?: RuleConfigInput
 }
 
