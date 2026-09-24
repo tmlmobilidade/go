@@ -1,0 +1,178 @@
+{
+	"entries": [
+		{
+			"count": 1,
+			"file": "src/components/common/display/CopyBadge/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "COMMON-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/common/display/CopyBadge/index.tsx",
+			"rule": "jsx-a11y/no-static-element-interactions",
+			"task": "COMMON-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/common/lists/RegularListItem/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "ROUTE-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/common/lists/RegularListItem/index.tsx",
+			"rule": "jsx-a11y/interactive-supports-focus",
+			"task": "ROUTE-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/common/operational-date/SelectOperationalDate/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "COMMON-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/common/operational-date/SelectOperationalDate/index.tsx",
+			"rule": "jsx-a11y/no-static-element-interactions",
+			"task": "COMMON-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/common/AlertsCarouselSlide/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "COMMON-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/common/AlertsCarouselSlide/index.tsx",
+			"rule": "jsx-a11y/no-noninteractive-element-interactions",
+			"task": "COMMON-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/common/LineBadge/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/common/LineBadge/index.tsx",
+			"rule": "jsx-a11y/no-static-element-interactions",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/PathWaypoint/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/PathWaypoint/index.tsx",
+			"rule": "jsx-a11y/no-static-element-interactions",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/PathWaypointHeader/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/PathWaypointHeader/index.tsx",
+			"rule": "jsx-a11y/no-noninteractive-element-interactions",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/PathWaypointTimetable/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/PathWaypointTimetable/index.tsx",
+			"rule": "jsx-a11y/no-noninteractive-element-interactions",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/TimetableExceptionsLink/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 2,
+			"file": "src/components/lines/detail/TimetableExceptionsLink/index.tsx",
+			"rule": "jsx-a11y/mouse-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/TimetableExceptionsLink/index.tsx",
+			"rule": "jsx-a11y/no-static-element-interactions",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/TimetableSchedules/index.tsx",
+			"rule": "jsx-a11y/aria-role",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/TimetableSchedules/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 2,
+			"file": "src/components/lines/detail/TimetableSchedules/index.tsx",
+			"rule": "jsx-a11y/mouse-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/lines/detail/TimetableSchedules/index.tsx",
+			"rule": "jsx-a11y/no-noninteractive-element-interactions",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/routes/list/RoutePlannerItineraryCard/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "ROUTE-02"
+		},
+		{
+			"count": 1,
+			"file": "src/components/routes/list/RoutePlannerItineraryCard/index.tsx",
+			"rule": "jsx-a11y/no-noninteractive-element-interactions",
+			"task": "ROUTE-02"
+		},
+		{
+			"count": 1,
+			"file": "src/components/stops/detail/StopsDetailViewTimetable/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/stops/detail/StopsDetailViewTimetable/index.tsx",
+			"rule": "jsx-a11y/no-noninteractive-element-interactions",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/stops/detail/StopsDetailViewTimetableRow/index.tsx",
+			"rule": "jsx-a11y/click-events-have-key-events",
+			"task": "TRANSIT-01"
+		},
+		{
+			"count": 1,
+			"file": "src/components/stops/detail/StopsDetailViewTimetableRow/index.tsx",
+			"rule": "jsx-a11y/no-static-element-interactions",
+			"task": "TRANSIT-01"
+		}
+	]
+}

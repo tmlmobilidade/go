@@ -10,9 +10,11 @@
 	"scripts": {
 		"build": "next build",
 		"dev": "next dev -p 51101",
-		"lint": "eslint ./src && tsc --noEmit",
+		"lint": "eslint ./src --quiet && npm run lint:accessibility && tsc --noEmit",
+		"lint:accessibility": "node scripts/check-accessibility-lint.mjs",
 		"lint:fix": "eslint --fix ./src",
-		"test": "node --import tsx --test tests/*/*.test.ts"
+		"test": "node --import tsx --test tests/*/*.test.ts",
+		"test:accessibility": "playwright test"
 	},
 	"dependencies": {
 		"@amplitude/analytics-browser": "2.45.8",
@@ -51,12 +53,15 @@
 		"swr": "2.5.1"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "4.13.0",
+		"@playwright/test": "1.63.0",
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/node": "26.4.0",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.5",
+		"eslint-plugin-jsx-a11y": "6.10.2",
 		"typescript": "6.0.3"
 	}
 }
