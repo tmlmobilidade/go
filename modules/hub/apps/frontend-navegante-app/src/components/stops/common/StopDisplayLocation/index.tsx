@@ -1,6 +1,6 @@
 'use client';
 
-import { formatStopLocation } from '@/utils/format-stop-location';
+import { formatStopLocation } from '@/utils/transit/format-stop-location';
 
 import styles from './styles.module.css';
 

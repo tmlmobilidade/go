@@ -50,3 +50,9 @@
 		transform: scale(1);
 	}
 }
+
+@media (prefers-reduced-motion: reduce) {
+	.ripple {
+		display: none;
+	}
+}

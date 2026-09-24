@@ -1,14 +1,10 @@
 'use client';
 
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
-import { SegmentedControl } from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Modal } from '@tmlmobilidade/ui';
-import { useMemo, useState } from 'react';
+import { DatePicker, Modal, SegmentedControl } from '@tmlmobilidade/ui';
+import { type MouseEvent, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -28,7 +24,6 @@ export function SelectOperationalDate() {
 	// B. Transform data
 
 	const selectedOperationalDateDisplay = useMemo(() => {
-		if (!selectedOperationalDate) return '';
 		return Dates
 			.fromOperationalDateInt(selectedOperationalDate, 'local')
 			.set({ hour: 15 })
@@ -36,18 +31,21 @@ export function SelectOperationalDate() {
 	}, [selectedOperationalDate]);
 
 	const selectedOperationalDatePicker = useMemo(() => {
-		if (!selectedOperationalDate) return null;
 		return Dates
 			.fromOperationalDateInt(selectedOperationalDate, 'local')
 			.set({ hour: 15 })
 			.toFormat('yyyy-MM-dd');
 	}, [selectedOperationalDate]);
 
-	const segementedControlOptions = useMemo(() => [
+	const customDateOptionLabel = isTodaySelected || isTomorrowSelected
+		? t('default:lines.SelectOperationalDate.other_date')
+		: selectedOperationalDateDisplay;
+
+	const segmentedControlOptions = useMemo(() => [
 		{ label: t('default:lines.SelectOperationalDate.today'), value: 'today' },
 		{ label: t('default:lines.SelectOperationalDate.tomorrow'), value: 'tomorrow' },
-		{ label: <span onClick={() => setModalIsOpen(true)}>{selectedOperationalDateDisplay}</span>, value: 'custom_date' },
-	], [selectedOperationalDateDisplay, t]);
+		{ label: customDateOptionLabel, value: 'custom_date' },
+	], [customDateOptionLabel, t]);
 
 	const selectedSegmentedControlOption = useMemo(() => {
 		if (isTodaySelected) return 'today';
@@ -58,6 +56,21 @@ export function SelectOperationalDate() {
 
 	//
 	// C. Handle actions
+
+	const handleSegmentedControlClick = (event: MouseEvent<HTMLDivElement>) => {
+		if (!(event.target instanceof Element)) return;
+
+		const label = event.target.closest('label');
+		const input = label?.htmlFor
+			? document.getElementById(label.htmlFor)
+			: event.target instanceof HTMLInputElement
+				? event.target
+				: event.target.parentElement?.querySelector('input');
+
+		if (!(input instanceof HTMLInputElement) || input.value !== 'custom_date') return;
+
+		setModalIsOpen(true);
+	};
 
 	const handleSegmentedControlChange = (value: string) => {
 		if (value === 'today') setOperationalDateToToday();
@@ -91,15 +104,12 @@ export function SelectOperationalDate() {
 			</Modal>
 
 			<SegmentedControl
-				data={segementedControlOptions}
+				data={segmentedControlOptions}
 				onChange={handleSegmentedControlChange}
+				onClick={handleSegmentedControlClick}
 				size="md"
 				value={selectedSegmentedControlOption}
-				w="100%"
-				classNames={{
-					control: styles.segmentedControlDateInputOverrideControl,
-					label: styles.segmentedControlDateInputOverrideLabel,
-				}}
+				fullWidth
 			/>
 
 		</>

@@ -1,8 +1,15 @@
 /* * */
-/* LINE NAME */
+/* HEADER SECTION */
+
+.section[data-padding] {
+	padding-top: 0;
+}
+
+/* * */
+/* ALERT TITLE */
 
 .alertTitle {
-	font-size: 20px;
+	font-size: 18px;
 	font-weight: var(--font-weight-bold);
 	color: var(--color-system-text-100);
 }

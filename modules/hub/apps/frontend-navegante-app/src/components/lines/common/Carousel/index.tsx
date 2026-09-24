@@ -2,8 +2,8 @@
 
 /* * */
 
-import { Carousel as MantineCarousel } from '@mantine/carousel';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
+import { Carousel as MantineCarousel } from '@tmlmobilidade/ui';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import React from 'react';
 

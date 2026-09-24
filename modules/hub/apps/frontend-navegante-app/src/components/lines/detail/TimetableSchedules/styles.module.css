@@ -60,11 +60,9 @@
 	border-bottom-right-radius: 999px;
 }
 
-@media (prefers-color-scheme: dark) {
-	.hour {
-		color: var(--color-system-text-200);
-		background-color: var(--color-system-border-200);
-	}
+:root[data-mode='dark'] .hour {
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-border-200);
 }
 
 /* * */
@@ -88,7 +86,10 @@
 	font-size: 14px;
 	font-weight: var(--font-weight-semibold);
 	line-height: 1;
+	color: inherit;
 	cursor: pointer;
+	background: transparent;
+	border: 0;
 	transition: all 0.1s ease-in-out;
 
 	&:hover {

@@ -18,6 +18,46 @@
 	/* STATUS / LIVE */
 	--color-status-live-primary: #00CD32;
 
+	/* * */
+	/* ROUTE PLANNER / BRAND */
+	--color-route-brand-background: #FFD400;
+	--color-route-on-accent: #FFF;
+	--color-route-on-brand: #111;
+	--color-route-on-bus: #111;
+
+	/* ROUTE PLANNER / STATUS */
+	--color-route-status-info: #1677FF;
+	--color-route-status-info-background: #EEF5FF;
+	--color-route-status-realtime-background: #E8F2FF;
+	--color-route-status-origin: #2DC76D;
+	--color-route-status-danger: #E53E3E;
+	--color-route-status-error-text: #B42318;
+	--color-route-status-error-background: rgb(229 62 62 / 8%);
+	--color-route-status-late-text: #8A4B00;
+	--color-route-status-late-background: #FFF3D5;
+	--color-route-status-late-border: #F4D08A;
+	--color-route-status-early-text: #14532D;
+	--color-route-status-early-background: #DCFCE7;
+	--color-route-status-early-border: #86EFAC;
+	--color-route-status-alert-text: #9F1239;
+	--color-route-status-alert-background: #FFE4E6;
+	--color-route-status-alert-border: #FECDD3;
+
+	/* ROUTE PLANNER / MODES */
+	--color-route-mode-bus-text: #303640;
+	--color-route-mode-bus-background: #3BD33B;
+	--color-route-mode-bike: #15803D;
+	--color-route-mode-car-text: #475569;
+	--color-route-mode-car-background: #64748B;
+	--color-route-mode-rail-text: #0D168F;
+	--color-route-mode-rail-background: #08138F;
+	--color-route-mode-subway-background: #7F35D8;
+	--color-route-mode-tram-background: #F0A000;
+	--color-route-mode-ferry-text: #1273C4;
+	--color-route-mode-ferry-background: #0B76C5;
+	--color-route-mode-plane: #0F766E;
+	--color-route-mode-transit: #6B7280;
+
 }
 
 :root[data-mode="light"] {

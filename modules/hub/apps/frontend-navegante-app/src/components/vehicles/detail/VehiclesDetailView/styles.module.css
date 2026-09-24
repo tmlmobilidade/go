@@ -20,3 +20,18 @@
 	align-items: center;
 	justify-content: center;
 }
+
+.lineBadgeButton {
+	cursor: pointer;
+	border-radius: 999px;
+	transition: transform 150ms ease;
+}
+
+.lineBadgeButton:active {
+	transform: scale(0.96);
+}
+
+.lineBadgeButton:focus-visible {
+	outline: 3px solid var(--color-status-active-primary);
+	outline-offset: 3px;
+}

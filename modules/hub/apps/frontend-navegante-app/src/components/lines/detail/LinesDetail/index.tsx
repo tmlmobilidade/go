@@ -1,10 +1,9 @@
 'use client';
 
-import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetail.context';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { LinesDetailView } from '@/components/lines/detail/LinesDetailView';
-import { useLinesContext } from '@/components/lines/Lines.context';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,26 +13,25 @@ export function LinesDetail() {
 	//
 	// A. Setup variables
 
-	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
+	const { activeBottomSheet, pop } = useBottomSheet();
+	const { t } = useTranslation();
+	const isOpen = activeBottomSheet?.view === 'lines-detail';
+	const activeLineId = isOpen ? activeBottomSheet?.entityId : null;
 
-	const linesContext = useLinesContext();
-	const foundLineData = linesContext.data.lines.find(line => line._id === activeBottomSheet?.entityId);
-
-	//
-	// B. Render componentss
+	// B. Render components
 
 	return (
 		<BottomSheet
-			onClose={closeActiveBottomSheet}
-			opened={activeBottomSheet?.view === 'lines-detail'}
-			size="full"
-			title={foundLineData?.long_name}
+			accessibleTitle={t('default:lines.LinesDetail.title')}
+			modality="non-modal"
+			onClose={pop}
+			opened={isOpen}
+			withOverlay={false}
+			mapAware
+			withCompactCloseButton
+			withHeaderBackground
 		>
-			{activeBottomSheet?.entityId && (
-				<LinesDetailContextProvider lineId={activeBottomSheet.entityId}>
-					<LinesDetailView />
-				</LinesDetailContextProvider>
-			)}
+			{activeLineId && <LinesDetailView />}
 		</BottomSheet>
 	);
 }

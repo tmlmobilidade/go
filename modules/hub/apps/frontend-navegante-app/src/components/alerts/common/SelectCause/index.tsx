@@ -3,9 +3,9 @@
 /* * */
 
 import { AlertCauseIcon } from '@/components/alerts/common/AlertCauseIcon';
-import { Flex, Group, Select, type SelectProps } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import { GtfsRtCause, GtfsRtCauseValues } from '@tmlmobilidade/go-types-gtfs-rt';
+import { Flex, Group, Select, type SelectProps } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

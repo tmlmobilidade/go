@@ -3,13 +3,19 @@
 
 .container {
 	position: fixed;
-	right: 0;
-	bottom: 0;
-	z-index: 10;
+	right: 15px;
+	bottom: 20px;
+	/* Above the mapAware bottom sheet's container (z-index: 100) so it never renders hidden
+	   behind the sheet, even if the sheet's measured height and this offset briefly disagree
+	   (e.g. during a mobile browser's dynamic viewport resize). */
+	z-index: 101;
 	display: flex;
-	flex-direction: column;
-	gap: 15px;
-	height: 100%;
-	padding: 15px;
 	pointer-events: none;
+	transition: opacity 180ms ease;
+}
+
+.container[data-layout='hidden'] {
+	visibility: hidden;
+	pointer-events: none;
+	opacity: 0;
 }
