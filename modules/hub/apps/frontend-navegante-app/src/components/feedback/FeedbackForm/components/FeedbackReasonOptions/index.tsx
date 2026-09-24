@@ -3,6 +3,7 @@
 import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
 import { toggleFeedbackReason } from '@/utils/feedback/selection';
 import { type PublicFeedbackReason } from '@tmlmobilidade/go-types-hub';
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -25,6 +26,7 @@ export function FeedbackReasonOptions({ category, entityType, onChange, selected
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const reasonOptionsId = useId();
 	const reasonGroup = getFeedbackReasonGroups(
 		entityType,
 		reasonCategory => t(`default:feedback.categories.${reasonCategory}`),
@@ -50,11 +52,13 @@ export function FeedbackReasonOptions({ category, entityType, onChange, selected
 			<div className={styles.options}>
 				{reasonGroup.options.map((option) => {
 					const isSelected = selectedValues.includes(option.value);
+					const optionId = `${reasonOptionsId}-${option.value}`;
 
 					return (
-						<label key={option.value} className={styles.option} data-selected={isSelected}>
+						<label key={option.value} className={styles.option} data-selected={isSelected} htmlFor={optionId}>
 							<input
 								checked={isSelected}
+								id={optionId}
 								onChange={() => handleToggleReason(option.value)}
 								type="checkbox"
 								value={option.value}
