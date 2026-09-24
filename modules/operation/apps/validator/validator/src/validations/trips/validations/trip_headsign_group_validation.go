@@ -12,7 +12,7 @@ import (
 # Attributes
   - File: [trips.txt]
   - Field: trip_headsign
-  - Presence: Optional (Required for "Transportes Metropolitanos de Lisboa" when pattern_id is set)
+  - Presence: Required
   - Type: Text
 
 # Description
