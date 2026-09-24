@@ -1,3 +1,31 @@
+.dateTimeField {
+	display: grid;
+	gap: 6px;
+}
+
+.dateTimeLabel {
+	display: grid;
+}
+
+.dateTimeError {
+	margin: 0;
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--color-route-status-error-text);
+}
+
+.visuallyHidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	white-space: nowrap;
+	border: 0;
+	clip-path: inset(50%);
+}
+
 .timeInput {
 	width: 100%;
 	height: 38px;

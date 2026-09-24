@@ -1,4 +1,5 @@
 .filterButton {
+	position: relative;
 	display: inline-flex;
 	flex: 0 0 auto;
 	gap: 4px;
@@ -28,4 +29,22 @@
 	color: var(--color-route-status-info);
 	background-color: var(--color-route-status-info-background);
 	border-color: var(--color-route-status-info);
+}
+
+.filterButton:focus-visible,
+.filterButton:has(:focus-visible) {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 2px;
+}
+
+.nativeControl {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	white-space: nowrap;
+	border: 0;
+	clip-path: inset(50%);
 }

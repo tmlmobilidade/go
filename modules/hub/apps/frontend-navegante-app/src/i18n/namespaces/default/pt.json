@@ -301,6 +301,7 @@
 			"time": {
 				"arrival": "Chegar até",
 				"arrival_short": "Chegar",
+				"datetime_invalid": "Indica uma data e hora válidas.",
 				"datetime_label": "Data e hora",
 				"departure": "Partida às",
 				"departure_short": "Sair",

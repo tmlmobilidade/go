@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 interface RoutePlannerSortFilterProps {
+	id?: string
 	onSortModeChange: (mode: RoutePlannerSortMode) => void
 	sortMode: RoutePlannerSortMode
 }
@@ -27,7 +28,7 @@ const SORT_OPTIONS: RoutePlannerSortFilterOption[] = [
 
 /* * */
 
-export function RoutePlannerSortFilter({ onSortModeChange, sortMode }: RoutePlannerSortFilterProps) {
+export function RoutePlannerSortFilter({ id, onSortModeChange, sortMode }: RoutePlannerSortFilterProps) {
 	//
 
 	//
@@ -39,7 +40,7 @@ export function RoutePlannerSortFilter({ onSortModeChange, sortMode }: RoutePlan
 	// B. Render components
 
 	return (
-		<RoutePlannerFilterPanel label={t('default:routes.RoutePlanner.results.sort.label')}>
+		<RoutePlannerFilterPanel id={id} label={t('default:routes.RoutePlanner.results.sort.label')} selection="single">
 			{SORT_OPTIONS.map((option) => {
 				const FilterIcon = option.icon;
 
@@ -47,9 +48,12 @@ export function RoutePlannerSortFilter({ onSortModeChange, sortMode }: RoutePlan
 					<RoutePlannerFilterButton
 						key={option.value}
 						isActive={sortMode === option.value}
+						name="route-planner-sort"
 						onClick={() => onSortModeChange(option.value)}
+						selection="radio"
+						value={option.value}
 					>
-						<FilterIcon size={14} />
+						<FilterIcon aria-hidden="true" size={14} />
 						{t(`default:routes.RoutePlanner.results.sort.${option.value}`)}
 					</RoutePlannerFilterButton>
 				);

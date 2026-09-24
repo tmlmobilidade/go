@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 interface RoutePlannerModeFilterProps {
 	availableModes: Set<RoutePlannerModeFilter>
 	enabledModes: Set<RoutePlannerModeFilter>
+	id?: string
 	onModeToggle: (mode: RoutePlannerModeFilter) => void
 }
 
@@ -28,7 +29,7 @@ const MODE_FILTER_OPTIONS: RoutePlannerModeFilterOption[] = [
 	{ icon: IconRoute, value: 'transit' },
 ];
 
-export function RoutePlannerModeFilter({ availableModes, enabledModes, onModeToggle }: RoutePlannerModeFilterProps) {
+export function RoutePlannerModeFilter({ availableModes, enabledModes, id, onModeToggle }: RoutePlannerModeFilterProps) {
 	//
 
 	//
@@ -40,7 +41,7 @@ export function RoutePlannerModeFilter({ availableModes, enabledModes, onModeTog
 	// B. Render components
 
 	return (
-		<RoutePlannerFilterPanel label={t('default:routes.RoutePlanner.results.modes.label')}>
+		<RoutePlannerFilterPanel id={id} label={t('default:routes.RoutePlanner.results.modes.label')} selection="multiple">
 			{MODE_FILTER_OPTIONS.filter(option => availableModes.has(option.value)).map((option) => {
 				const FilterIcon = option.icon;
 
@@ -48,9 +49,12 @@ export function RoutePlannerModeFilter({ availableModes, enabledModes, onModeTog
 					<RoutePlannerFilterButton
 						key={option.value}
 						isActive={enabledModes.has(option.value)}
+						name="route-planner-modes"
 						onClick={() => onModeToggle(option.value)}
+						selection="checkbox"
+						value={option.value}
 					>
-						<FilterIcon size={14} />
+						<FilterIcon aria-hidden="true" size={14} />
 						{t(`default:routes.RoutePlanner.results.modes.${option.value}`)}
 					</RoutePlannerFilterButton>
 				);

@@ -10,6 +10,7 @@ import { type RoutePlannerTravelTime } from '@/types/route-planner/models';
 import { type RoutePlannerModeFilter as RoutePlannerModeFilterValue, type RoutePlannerSortMode } from '@/utils/route-planner/planning/results';
 import { IconClock, IconRoute, IconSortAscending } from '@tabler/icons-react';
 import { type TFunction } from 'i18next';
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -39,6 +40,7 @@ export function RoutePlannerResultsFilters({ availableModes, disabledModesCount,
 
 	const { t } = useTranslation();
 	const routePlannerContext = useRoutePlannerContext();
+	const filterPanelId = useId();
 	const hasItineraries = routePlannerContext.data.itineraries.length > 0;
 	const sheetTitle = getFilterSheetTitle(openFilter, t);
 
@@ -49,34 +51,37 @@ export function RoutePlannerResultsFilters({ availableModes, disabledModesCount,
 		<>
 			<div className={styles.filterToggles}>
 				<RoutePlannerFilterButton
+					ariaControls={openFilter === 'time' ? filterPanelId : undefined}
 					ariaExpanded={openFilter === 'time'}
 					isActive={routePlannerContext.data.travel_time.mode !== 'now' || openFilter === 'time'}
 					onClick={() => onOpenFilterChange(openFilter === 'time' ? null : 'time')}
 					variant="trigger"
 				>
-					<IconClock size={15} />
+					<IconClock aria-hidden="true" size={15} />
 					{formatTravelTimeFilterLabel(routePlannerContext.data.travel_time, t)}
 				</RoutePlannerFilterButton>
 
 				{hasItineraries && (
 					<>
 						<RoutePlannerFilterButton
+							ariaControls={openFilter === 'sort' ? filterPanelId : undefined}
 							ariaExpanded={openFilter === 'sort'}
 							isActive={sortMode !== 'best' || openFilter === 'sort'}
 							onClick={() => onOpenFilterChange(openFilter === 'sort' ? null : 'sort')}
 							variant="trigger"
 						>
-							<IconSortAscending size={15} />
+							<IconSortAscending aria-hidden="true" size={15} />
 							{t(`default:routes.RoutePlanner.results.sort.${sortMode}`)}
 						</RoutePlannerFilterButton>
 
 						<RoutePlannerFilterButton
+							ariaControls={openFilter === 'modes' ? filterPanelId : undefined}
 							ariaExpanded={openFilter === 'modes'}
 							isActive={disabledModesCount > 0 || openFilter === 'modes'}
 							onClick={() => onOpenFilterChange(openFilter === 'modes' ? null : 'modes')}
 							variant="trigger"
 						>
-							<IconRoute size={15} />
+							<IconRoute aria-hidden="true" size={15} />
 							{t('default:routes.RoutePlanner.results.modes.label')}
 							{disabledModesCount > 0 && <span className={styles.filterCount}>{disabledModesCount}</span>}
 						</RoutePlannerFilterButton>
@@ -95,15 +100,18 @@ export function RoutePlannerResultsFilters({ availableModes, disabledModesCount,
 				title={sheetTitle}
 			>
 				{openFilter === 'sort' && hasItineraries && (
-					<RoutePlannerSortFilter onSortModeChange={onSortModeChange} sortMode={sortMode} />
+					<RoutePlannerSortFilter id={filterPanelId} onSortModeChange={onSortModeChange} sortMode={sortMode} />
 				)}
 
-				{openFilter === 'time' && <RoutePlannerTimeFilter onClose={() => onOpenFilterChange(null)} />}
+				{openFilter === 'time' && (
+					<RoutePlannerTimeFilter id={filterPanelId} onClose={() => onOpenFilterChange(null)} />
+				)}
 
 				{openFilter === 'modes' && hasItineraries && (
 					<RoutePlannerModeFilter
 						availableModes={availableModes}
 						enabledModes={enabledModes}
+						id={filterPanelId}
 						onModeToggle={onModeToggle}
 					/>
 				)}
