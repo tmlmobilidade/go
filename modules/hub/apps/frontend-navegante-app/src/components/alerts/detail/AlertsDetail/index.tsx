@@ -6,6 +6,7 @@ import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { DetailUnavailable } from '@/components/common/display/DetailUnavailable';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { LoadingSection } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function AlertsDetail() {
 	// A. Setup variables
 
 	const { activeBottomSheet, pop } = useBottomSheet();
+	const { t } = useTranslation();
 	const { data: alerts, error, isLoading } = useAlertsData();
 	const isOpen = activeBottomSheet?.view === 'alerts-detail';
 	const activeAlertId = isOpen ? activeBottomSheet?.entityId : null;
@@ -27,6 +29,8 @@ export function AlertsDetail() {
 
 	return (
 		<BottomSheet
+			accessibleTitle={alert?.title ?? t('default:alerts.AlertsDetail.title')}
+			modality="non-modal"
 			onClose={pop}
 			opened={isOpen}
 			withOverlay={false}

@@ -2,12 +2,15 @@
 
 /* * */
 
+import { BottomSheetAccessibility } from '@/components/common/bottom-sheet/BottomSheetAccessibility';
 import { BottomSheetBack } from '@/components/common/bottom-sheet/BottomSheetBack';
 import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetClose';
 import { ACTIVE_MAP_BOTTOM_SHEET_HEIGHT_CSS_PROPERTY, MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { registerActiveBottomSheetSnapController, useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { getBottomSheetSnapState, shouldShowBottomSheetOverlay } from '@/utils/bottom-sheet/behavior';
-import { type PropsWithChildren, type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { type PropsWithChildren, type ReactNode, type RefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { ModalProvider } from 'react-aria';
+import { useTranslation } from 'react-i18next';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import styles from './styles.module.css';
@@ -19,13 +22,16 @@ type BottomSheetLayer = 'default' | 'foreground';
 type BottomSheetSize = 'fit' | 'full' | 'half' | 'short';
 
 interface BottomSheetProps {
+	accessibleTitle: string
 	avoidKeyboard?: boolean
 	disableDismiss?: boolean
 	footer?: ReactNode
 	headerMode?: BottomSheetHeaderMode
+	initialFocusRef?: RefObject<HTMLElement | null>
 	initialSnap?: number
 	layer?: BottomSheetLayer
 	mapAware?: boolean
+	modality: 'modal' | 'non-modal'
 	onBack?: () => void
 	onClose: () => void
 	onCloseEnd?: () => void
@@ -61,14 +67,17 @@ const SHEET_INITIAL_SNAP_BY_SIZE: Record<BottomSheetSize, number> = {
 /* * */
 
 export function BottomSheet({
+	accessibleTitle,
 	avoidKeyboard = true,
 	children,
 	disableDismiss = false,
 	footer,
 	headerMode,
+	initialFocusRef,
 	initialSnap,
 	layer = 'default',
 	mapAware = false,
+	modality,
 	onBack,
 	onClose,
 	onCloseEnd,
@@ -89,7 +98,8 @@ export function BottomSheet({
 	//
 	// A. Setup variables
 
-	const titleId = useId();
+	const { t } = useTranslation();
+	const contentId = useId();
 	const isSheetOpenRef = useRef(false);
 	const sheetRef = useRef<SheetRef>(null);
 	const { setActiveBottomSheetSnap } = useBottomSheet();
@@ -103,8 +113,12 @@ export function BottomSheet({
 			: SHEET_INITIAL_SNAP_BY_SIZE[size]);
 	const selectedInitialSnapPoint = snapPoints[selectedInitialSnap] ?? null;
 	const selectedHeaderMode = headerMode ?? (title ? 'default' : 'handle');
-	const withTitle = selectedHeaderMode === 'default' && !!title;
 	const [activeSnapIndex, setActiveSnapIndex] = useState(selectedInitialSnap);
+	const [snapAnnouncement, setSnapAnnouncement] = useState('');
+	const fullSnapIndex = snapPoints.length - 1;
+	const compactSnapIndex = snapPoints.findIndex((snapPoint, snapIndex) => snapIndex > 0 && snapPoint > 0);
+	const hasMultipleVisibleSnapPoints = compactSnapIndex > 0 && compactSnapIndex < fullSnapIndex;
+	const isFullyExpanded = activeSnapIndex === fullSnapIndex;
 	const showOverlay = shouldShowBottomSheetOverlay({
 		snapIndex: activeSnapIndex,
 		snapPoints,
@@ -177,18 +191,35 @@ export function BottomSheet({
 
 	const handleSnap = (snapIndex: number) => {
 		setActiveSnapIndex(snapIndex);
+		if (isSheetOpenRef.current && snapIndex > 0) {
+			setSnapAnnouncement(t(snapIndex === fullSnapIndex
+				? 'default:common.BottomSheet.expanded'
+				: 'default:common.BottomSheet.collapsed'));
+		}
 		if (!syncSnapState) return;
 		setActiveBottomSheetSnap(getBottomSheetSnapState(snapPoints, snapIndex));
+	};
+
+	const handleSnapToggle = () => {
+		if (!hasMultipleVisibleSnapPoints) return;
+		void sheetRef.current?.snapTo(isFullyExpanded ? compactSnapIndex : fullSnapIndex);
+	};
+
+	const handleContentFocus = () => {
+		if (!mapAware || isFullyExpanded) return;
+		void sheetRef.current?.snapTo(fullSnapIndex);
 	};
 
 	const handleCloseEnd = () => {
 		isSheetOpenRef.current = false;
 		setActiveSnapIndex(selectedInitialSnap);
+		setSnapAnnouncement('');
 		onCloseEnd?.();
 	};
 
 	const handleOpenEnd = () => {
 		isSheetOpenRef.current = true;
+		initialFocusRef?.current?.focus({ preventScroll: true });
 		onOpenEnd?.();
 	};
 
@@ -218,51 +249,86 @@ export function BottomSheet({
 			onSnap={handleSnap}
 			snapPoints={snapPoints}
 		>
-			<Sheet.Container
-				aria-labelledby={withTitle ? titleId : undefined}
-				aria-modal={true}
-				className={styles.container}
-				data-detent={detent}
-				role="dialog"
-			>
-				<Sheet.Header
-					className={styles.header}
-					data-mode={selectedHeaderMode}
-					data-with-background={withHeaderBackground}
-				>
-					<div className={styles.headerLeft}>
-						{onBack && <BottomSheetBack onClick={onBack} />}
-					</div>
+			<ModalProvider>
+				<BottomSheetAccessibility initialFocusRef={initialFocusRef} modality={modality} onClose={onClose}>
+					{({ containerProps, containerRef, titleProps }) => (
+						<>
+							<Sheet.Container
+								{...containerProps}
+								ref={containerRef}
+								className={styles.container}
+								data-detent={detent}
+							>
+								<Sheet.Header
+									className={styles.header}
+									data-mode={selectedHeaderMode}
+									data-with-background={withHeaderBackground}
+								>
+									<div className={styles.headerLeft}>
+										{onBack && <BottomSheetBack onClick={onBack} />}
+									</div>
 
-					{selectedHeaderMode === 'handle' ? (
-						<div aria-hidden="true" className={styles.handle} />
-					) : (
-						<h1 className={styles.title} id={titleId}>
-							{title ?? ''}
-						</h1>
+									{selectedHeaderMode === 'handle' ? (
+										<>
+											{hasMultipleVisibleSnapPoints ? (
+												<button
+													aria-controls={contentId}
+													aria-expanded={isFullyExpanded}
+													className={styles.handleButton}
+													onClick={handleSnapToggle}
+													type="button"
+													aria-label={t(isFullyExpanded
+														? 'default:common.BottomSheet.collapse'
+														: 'default:common.BottomSheet.expand')}
+												>
+													<span aria-hidden="true" className={styles.handle} />
+												</button>
+											) : (
+												<div aria-hidden="true" className={styles.handle} />
+											)}
+											<h1 {...titleProps} className={styles.visuallyHidden}>{accessibleTitle}</h1>
+										</>
+									) : (
+										<h1 {...titleProps} className={styles.title}>
+											{title ?? accessibleTitle}
+										</h1>
+									)}
+
+									<div className={styles.headerRight}>
+										{withCloseButton && (
+											<BottomSheetClose
+												onClick={onClose}
+												size={withCompactCloseButton ? 'sm' : 'default'}
+											/>
+										)}
+									</div>
+								</Sheet.Header>
+
+								<Sheet.Content
+									className={styles.content}
+									disableScroll={({ currentSnap }) => mapAware && currentSnap !== snapPoints.length - 1}
+									id={contentId}
+									onFocusCapture={handleContentFocus}
+								>
+									{children}
+								</Sheet.Content>
+
+								{footer && <div className={styles.footer}>{footer}</div>}
+								<div aria-live="polite" className={styles.visuallyHidden} role="status">{snapAnnouncement}</div>
+							</Sheet.Container>
+
+							{showOverlay && (
+								<Sheet.Backdrop
+									aria-hidden="true"
+									className={styles.backdrop}
+									onTap={onClose}
+									tabIndex={-1}
+								/>
+							)}
+						</>
 					)}
-
-					<div className={styles.headerRight}>
-						{withCloseButton && (
-							<BottomSheetClose
-								onClick={onClose}
-								size={withCompactCloseButton ? 'sm' : 'default'}
-							/>
-						)}
-					</div>
-				</Sheet.Header>
-
-				<Sheet.Content
-					className={styles.content}
-					disableScroll={({ currentSnap }) => mapAware && currentSnap !== snapPoints.length - 1}
-				>
-					{children}
-				</Sheet.Content>
-
-				{footer && <div className={styles.footer}>{footer}</div>}
-			</Sheet.Container>
-
-			{showOverlay && <Sheet.Backdrop className={styles.backdrop} onTap={onClose} />}
+				</BottomSheetAccessibility>
+			</ModalProvider>
 		</Sheet>
 	);
 

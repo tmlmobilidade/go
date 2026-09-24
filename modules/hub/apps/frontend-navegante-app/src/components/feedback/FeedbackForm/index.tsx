@@ -182,7 +182,9 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			)}
 
 			<BottomSheet
+				accessibleTitle={sheetTitle}
 				layer="foreground"
+				modality="modal"
 				onBack={canNavigateBack ? handleBack : undefined}
 				onClose={resetFeedbackForm}
 				opened={isFeedbackSheetOpen}

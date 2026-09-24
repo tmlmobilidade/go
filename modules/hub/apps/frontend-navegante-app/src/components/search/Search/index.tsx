@@ -75,7 +75,6 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 		<div className={styles.container} data-variant={variant}>
 			<SearchInput
 				ref={inputRef}
-				autoFocus={variant === 'sheet'}
 				classNames={{ input: styles.input, wrapper: styles.inputWrapper }}
 				onChange={handleQueryChange}
 				placeholder={placeholder ?? t('default:search.Search.placeholder')}

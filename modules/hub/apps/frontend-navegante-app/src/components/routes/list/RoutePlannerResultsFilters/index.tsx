@@ -85,7 +85,9 @@ export function RoutePlannerResultsFilters({ availableModes, disabledModesCount,
 			</div>
 
 			<BottomSheet
+				accessibleTitle={sheetTitle}
 				layer="foreground"
+				modality="modal"
 				onClose={() => onOpenFilterChange(null)}
 				opened={openFilter !== null}
 				size="fit"

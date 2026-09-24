@@ -26,6 +26,7 @@ export function BaseMapOverlaysControl({ onOpenedChange, opened }: BaseMapOverla
 
 	const { t } = useTranslation();
 	const controlsLayout = useMapFloatingControlsLayout();
+	const sheetTitle = t('default:map.BaseMapOverlaysControl.title');
 
 	//
 	// B. Setup effects
@@ -64,11 +65,13 @@ export function BaseMapOverlaysControl({ onOpenedChange, opened }: BaseMapOverla
 			</div>
 
 			<BottomSheet
+				accessibleTitle={sheetTitle}
+				modality="modal"
 				onClose={() => onOpenedChange(false)}
 				opened={opened}
 				size="fit"
 				syncSnapState={false}
-				title={t('default:map.BaseMapOverlaysControl.title')}
+				title={sheetTitle}
 			>
 				<BaseMapFiltersSheet />
 			</BottomSheet>

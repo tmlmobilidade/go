@@ -24,6 +24,9 @@
 		"AlertActivePeriod": {
 			"start": "Início: {value, date, dayShort}"
 		},
+		"AlertsDetail": {
+			"title": "Detalhes do alerta"
+		},
 		"SelectCause": {
 			"placeholder": "Filtrar por causa"
 		},
@@ -32,6 +35,12 @@
 		}
 	},
 	"common": {
+		"BottomSheet": {
+			"collapse": "Recolher painel",
+			"collapsed": "Painel recolhido",
+			"expand": "Expandir painel",
+			"expanded": "Painel expandido"
+		},
 		"BottomSheetBack": {
 			"label": "Voltar"
 		},
@@ -137,6 +146,9 @@
 		}
 	},
 	"lines": {
+		"LinesDetail": {
+			"title": "Detalhes da linha"
+		},
 		"LinesDetailPath": {
 			"no_data": "Selecione um Percurso / Destino",
 			"stop_details_name": "{index}ª paragem: {stop_name}"
@@ -214,7 +226,8 @@
 			},
 			"place_detail": {
 				"how_to_get_here": "Como chegar aqui",
-				"select_origin": "Escolha uma partida para ver alternativas."
+				"select_origin": "Escolha uma partida para ver alternativas.",
+				"title": "Detalhes do local"
 			},
 			"results": {
 				"arrival_time_prefix": "Chegada às",
@@ -254,6 +267,7 @@
 				"origin": "Origem",
 				"realtime": "Tempo real",
 				"ride_between": "Viajar de {from} até {to}",
+				"route_options": "Opções de percurso",
 				"route_summary": "Resumo da rota",
 				"scheduled_at": "Previsto às {time}",
 				"sort": {
@@ -315,7 +329,8 @@
 				"stop": "Paragens"
 			},
 			"loading": "A pesquisar...",
-			"placeholder": "Pesquisar linhas, paragens, alertas e locais"
+			"placeholder": "Pesquisar linhas, paragens, alertas e locais",
+			"title": "Pesquisa"
 		}
 	},
 	"stops": {
@@ -327,7 +342,8 @@
 		"StopsDetail": {
 			"actions": {
 				"get_directions": "Como chegar"
-			}
+			},
+			"title": "Detalhes da paragem"
 		},
 		"StopsDetailViewTimetable": {
 			"end_of_day": "Fim do Dia",
@@ -344,6 +360,9 @@
 	"vehicles": {
 		"VehiclesCounter": {
 			"label": "{count, plural, zero {Nenhum veículo em movimento} one {# veículo em movimento} other {# veículos em movimento}}"
+		},
+		"VehiclesDetail": {
+			"title": "Detalhes do veículo"
 		},
 		"VehiclesDetailView": {
 			"destination": "Destino: {destination}",

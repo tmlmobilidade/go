@@ -5,6 +5,7 @@ import { Search } from '@/components/search/Search';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { clearSearchDraft } from '@/utils/search/search-draft';
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function SearchDetail() {
 	// A. Setup variables
 
 	const { activeBottomSheet, pop } = useBottomSheet();
+	const { t } = useTranslation();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const isOpen = activeBottomSheet?.view === 'search';
 	const [isMounted, setIsMounted] = useState(isOpen);
@@ -22,17 +24,8 @@ export function SearchDetail() {
 	//
 	// B. Handle actions
 
-	const focusInput = () => {
-		window.requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
-	};
-
 	const handleOpenStart = () => {
 		setIsMounted(true);
-		focusInput();
-	};
-
-	const handleOpenEnd = () => {
-		focusInput();
 	};
 
 	const handleClose = () => {
@@ -47,11 +40,13 @@ export function SearchDetail() {
 
 	return (
 		<BottomSheet
+			accessibleTitle={t('default:search.Search.title')}
 			avoidKeyboard={false}
 			headerMode="handle"
+			initialFocusRef={inputRef}
+			modality="modal"
 			onClose={handleClose}
 			onCloseEnd={() => setIsMounted(false)}
-			onOpenEnd={handleOpenEnd}
 			onOpenStart={handleOpenStart}
 			opened={isOpen}
 			size="full"

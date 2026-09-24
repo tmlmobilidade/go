@@ -10,15 +10,20 @@ import { MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { getRoutePlannerBackAction, getRoutePlannerDismissAction, getRoutePlannerItineraryDetailInitialSnap } from '@/utils/route-planner/planning/navigation';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 /* * */
 
 interface RoutePlannerSheetConfig {
+	accessibleTitle: string
 	disableDismiss: boolean
 	headerMode: 'default' | 'handle'
 	initialSnap: number
 	mapAware: boolean
+	modality: 'modal' | 'non-modal'
 	snapPoints?: number[]
 	title?: string
 	withCloseButton: boolean
@@ -30,6 +35,8 @@ interface RoutePlannerSheetTitles {
 	destinationSearch: string
 	itineraryDetail: string
 	originSearch: string
+	placeDetail: string
+	routeOptions: string
 }
 
 /* * */
@@ -54,6 +61,9 @@ export function RoutePlanner() {
 
 	const { activeBottomSheet, pop } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
+	const searchInputRef = useRef<HTMLInputElement>(null);
+	const viewFocusRef = useRef<HTMLElement>(null);
+	const previousViewModeRef = useRef(routePlannerContext.data.view_mode);
 
 	//
 	// B. Transform data
@@ -64,6 +74,8 @@ export function RoutePlanner() {
 			destinationSearch: t('default:routes.RoutePlannerSearch.destination_title'),
 			itineraryDetail: t('default:routes.RoutePlanner.results.route_summary'),
 			originSearch: t('default:routes.RoutePlannerSearch.origin_title'),
+			placeDetail: t('default:routes.RoutePlanner.place_detail.title'),
+			routeOptions: t('default:routes.RoutePlanner.results.route_options'),
 		},
 		routePlannerContext.data.location_search_target,
 		routePlannerContext.flags.is_navigating,
@@ -75,6 +87,24 @@ export function RoutePlanner() {
 		viewMode: routePlannerContext.data.view_mode,
 		wasOpenedFromPlace: routePlannerContext.data.was_opened_from_place,
 	});
+
+	useEffect(() => {
+		const previousViewMode = previousViewModeRef.current;
+		previousViewModeRef.current = routePlannerContext.data.view_mode;
+
+		if (previousViewMode === routePlannerContext.data.view_mode || activeBottomSheet?.view !== 'routes') return;
+
+		const animationFrameId = window.requestAnimationFrame(() => {
+			if (routePlannerContext.data.view_mode === 'destination-search') {
+				searchInputRef.current?.focus({ preventScroll: true });
+				return;
+			}
+
+			viewFocusRef.current?.focus({ preventScroll: true });
+		});
+
+		return () => window.cancelAnimationFrame(animationFrameId);
+	}, [activeBottomSheet?.view, routePlannerContext.data.view_mode]);
 
 	//
 	// C. Handle actions
@@ -106,10 +136,13 @@ export function RoutePlanner() {
 
 	return (
 		<BottomSheet
+			accessibleTitle={sheetConfig.accessibleTitle}
 			disableDismiss={sheetConfig.disableDismiss}
 			headerMode={sheetConfig.headerMode}
+			initialFocusRef={routePlannerContext.data.view_mode === 'destination-search' ? searchInputRef : undefined}
 			initialSnap={sheetConfig.initialSnap}
 			mapAware={sheetConfig.mapAware}
+			modality={sheetConfig.modality}
 			onBack={backAction ? handleBack : undefined}
 			onClose={handleClose}
 			opened={activeBottomSheet?.view === 'routes'}
@@ -122,6 +155,7 @@ export function RoutePlanner() {
 			{routePlannerContext.data.view_mode === 'destination-search' && (
 				<Search
 					key={routePlannerContext.data.location_search_target}
+					inputRef={searchInputRef}
 					onLocationSelect={handleLocationSelect}
 					placeholder={routePlannerContext.data.location_search_target === 'origin'
 						? t('default:routes.RoutePlannerSearch.origin_placeholder')
@@ -130,11 +164,15 @@ export function RoutePlanner() {
 				/>
 			)}
 
-			{routePlannerContext.data.view_mode === 'results' && <RoutePlannerResults />}
+			{routePlannerContext.data.view_mode !== 'destination-search' && (
+				<section ref={viewFocusRef} aria-label={sheetConfig.accessibleTitle} className={styles.view} tabIndex={-1}>
+					{routePlannerContext.data.view_mode === 'results' && <RoutePlannerResults />}
 
-			{routePlannerContext.data.view_mode === 'place-detail' && <RoutePlannerPlaceDetail />}
+					{routePlannerContext.data.view_mode === 'place-detail' && <RoutePlannerPlaceDetail />}
 
-			{routePlannerContext.data.view_mode === 'itinerary-detail' && <RoutePlannerItineraryDetail />}
+					{routePlannerContext.data.view_mode === 'itinerary-detail' && <RoutePlannerItineraryDetail />}
+				</section>
+			)}
 		</BottomSheet>
 	);
 
@@ -150,13 +188,17 @@ function getRoutePlannerSheetConfig(
 	isNavigating: boolean,
 ): RoutePlannerSheetConfig {
 	if (viewMode === 'destination-search') {
+		const title = searchTarget === 'origin' ? titles.originSearch : titles.destinationSearch;
+
 		return {
+			accessibleTitle: title,
 			disableDismiss: false,
 			headerMode: 'default',
 			initialSnap: 1,
 			mapAware: false,
+			modality: 'modal',
 			snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.destinationSearch,
-			title: searchTarget === 'origin' ? titles.originSearch : titles.destinationSearch,
+			title,
 			withCloseButton: false,
 			withCompactCloseButton: false,
 			withOverlay: true,
@@ -165,10 +207,12 @@ function getRoutePlannerSheetConfig(
 
 	if (viewMode === 'itinerary-detail') {
 		return {
+			accessibleTitle: titles.itineraryDetail,
 			disableDismiss: true,
 			headerMode: 'handle',
 			initialSnap: getRoutePlannerItineraryDetailInitialSnap(isNavigating),
 			mapAware: true,
+			modality: 'non-modal',
 			snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.itineraryDetail,
 			withCloseButton: true,
 			withCompactCloseButton: true,
@@ -178,10 +222,12 @@ function getRoutePlannerSheetConfig(
 
 	if (viewMode === 'place-detail') {
 		return {
+			accessibleTitle: titles.placeDetail,
 			disableDismiss: false,
 			headerMode: 'handle',
 			initialSnap: 1,
 			mapAware: true,
+			modality: 'non-modal',
 			withCloseButton: true,
 			withCompactCloseButton: true,
 			withOverlay: false,
@@ -189,10 +235,12 @@ function getRoutePlannerSheetConfig(
 	}
 
 	return {
+		accessibleTitle: titles.routeOptions,
 		disableDismiss: false,
 		headerMode: 'handle',
 		initialSnap: 1,
 		mapAware: true,
+		modality: 'non-modal',
 		withCloseButton: true,
 		withCompactCloseButton: true,
 		withOverlay: false,
