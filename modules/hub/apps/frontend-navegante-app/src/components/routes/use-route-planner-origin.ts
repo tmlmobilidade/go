@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 interface UseRoutePlannerOriginReturnType {
+	cachedOrigin: null | RoutePlannerLocation
 	resolveOrigin: (origin: null | RoutePlannerLocation) => Promise<null | RoutePlannerLocation>
 }
 
@@ -20,7 +21,7 @@ export function useRoutePlannerOrigin(): UseRoutePlannerOriginReturnType {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { actions: { requestCurrentLocation }, data: { location: userLocation } } = useUserLocation();
+	const { data: { location: userLocation } } = useUserLocation();
 
 	//
 	// B. Handle actions
@@ -34,22 +35,17 @@ export function useRoutePlannerOrigin(): UseRoutePlannerOriginReturnType {
 		});
 	}, [t]);
 
+	const cachedOrigin = userLocation ? createCurrentLocation(userLocation.latitude, userLocation.longitude) : null;
+
 	const resolveOrigin = useCallback(async (origin: null | RoutePlannerLocation) => {
 		if (origin) return origin;
-
-		const cachedOrigin = userLocation ? createCurrentLocation(userLocation.latitude, userLocation.longitude) : null;
-		if (cachedOrigin) return cachedOrigin;
-
-		const currentLocation = await requestCurrentLocation();
-		if (!currentLocation) return null;
-
-		return createCurrentLocation(currentLocation.latitude, currentLocation.longitude);
-	}, [createCurrentLocation, requestCurrentLocation, userLocation]);
+		return cachedOrigin;
+	}, [cachedOrigin]);
 
 	//
 	// C. Return data
 
-	return useMemo(() => ({ resolveOrigin }), [resolveOrigin]);
+	return useMemo(() => ({ cachedOrigin, resolveOrigin }), [cachedOrigin, resolveOrigin]);
 
 	//
 }

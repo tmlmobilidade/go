@@ -88,7 +88,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	const { t } = useTranslation();
 	const { activeBottomSheet, clear, push, replaceActive } = useBottomSheet();
 	const { data: lines } = useLinesData();
-	const { resolveOrigin } = useRoutePlannerOrigin();
+	const { cachedOrigin, resolveOrigin } = useRoutePlannerOrigin();
 	const { isLoading: isPlanning, itineraries, requestPlan, reset: resetPlanRequest } = useRoutePlannerPlanData();
 
 	const [destination, setDestinationState] = useState<null | RoutePlannerLocation>(null);
@@ -261,10 +261,21 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	}, [invalidatePlanResult, locationSearchReturnView, origin, planRoute, resolveOrigin, viewMode]);
 
 	const openDirectionsTo = useCallback(async (location: RoutePlannerLocation) => {
+		if (!origin && !cachedOrigin) {
+			invalidatePlanResult();
+			setDestinationState(location);
+			setWasOpenedFromPlace(false);
+			setLocationSearchReturnView('results');
+			setLocationSearchTarget('origin');
+			setViewMode('destination-search');
+			openRouteSheet();
+			return;
+		}
+
 		setViewMode('results');
 		openRouteSheet();
 		await selectDestination(location);
-	}, [openRouteSheet, selectDestination]);
+	}, [cachedOrigin, invalidatePlanResult, openRouteSheet, origin, selectDestination]);
 
 	const selectOrigin = useCallback(async (location: RoutePlannerLocation) => {
 		const nextViewMode = viewMode === 'destination-search' ? locationSearchReturnView : 'results';
