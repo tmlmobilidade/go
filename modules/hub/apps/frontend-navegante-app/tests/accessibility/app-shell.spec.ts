@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 /* * */
 
@@ -11,6 +11,8 @@ const APP_SHELL_KNOWN_VIOLATIONS = new Map([
 const SEARCH_SHEET_KNOWN_VIOLATIONS = new Map([
 	['color-contrast', 'VISUAL-02'],
 ]);
+
+const SEARCH_RESULTS_KNOWN_VIOLATIONS = new Map<string, string>();
 
 /* * */
 
@@ -59,6 +61,32 @@ test('modal search sheet manages focus and hides the app from assistive technolo
 	await expect(searchTrigger).toBeFocused();
 });
 
+test('search results are semantic lists with keyboard-operable choices', async ({ page }) => {
+	await mockSearchData(page);
+	await page.goto('/hub/navegante-app');
+	await page.getByRole('button', { name: 'Pesquisar' }).click();
+
+	const searchInput = page.getByRole('textbox', { name: 'Pesquisar linhas, paragens, alertas e locais' });
+	await searchInput.fill('circular');
+
+	const lineGroup = page.getByRole('region', { name: 'Linhas' });
+	await expect(lineGroup.getByRole('list')).toBeVisible();
+	const lineResult = lineGroup.getByRole('button', { name: /Circular de teste/ });
+	await expect(lineResult).toBeVisible();
+	await expect(page.getByRole('status').filter({ hasText: '1 resultado encontrado' })).toBeAttached();
+
+	const scan = await new AxeBuilder({ page })
+		.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
+		.analyze();
+
+	expectNoUnexpectedViolations(scan.violations, SEARCH_RESULTS_KNOWN_VIOLATIONS);
+
+	await lineResult.focus();
+	await expect(lineResult).toBeFocused();
+	await page.keyboard.press('Enter');
+	await expect(page.getByRole('dialog', { name: 'Detalhes da linha' })).toBeVisible();
+});
+
 /* * */
 
 function expectNoUnexpectedViolations(violations: Awaited<ReturnType<AxeBuilder['analyze']>>['violations'], knownViolations: Map<string, string>) {
@@ -76,4 +104,39 @@ function formatViolations(violations: Awaited<ReturnType<AxeBuilder['analyze']>>
 	return violations
 		.map(violation => `${violation.id}: ${violation.help}\n${violation.nodes.map(node => `  ${node.target.join(' ')}`).join('\n')}`)
 		.join('\n\n');
+}
+
+async function mockSearchData(page: Page) {
+	const emptyResponse = { data: [], error: null, timestamp: Date.now() };
+
+	await page.route('**/v1/alerts', async route => await route.fulfill({ json: emptyResponse }));
+	await page.route('**/v1/network/stops', async route => await route.fulfill({ json: emptyResponse }));
+	await page.route('**/v1/motis/geocode?**', async route => await route.fulfill({ json: emptyResponse }));
+	await page.route('**/v1/network/lines', async route => await route.fulfill({
+		json: {
+			data: [{
+				_id: 'line-test',
+				agency_id: 'test-agency',
+				color: '#0055AA',
+				district_ids: [],
+				district_names: [],
+				facilities: [],
+				locality_ids: [],
+				locality_names: [],
+				long_name: 'Circular de teste',
+				municipality_ids: [],
+				municipality_names: [],
+				parish_ids: [],
+				parish_names: [],
+				pattern_ids: [],
+				route_ids: [],
+				short_name: '999',
+				stop_ids: [],
+				text_color: '#FFFFFF',
+				tts_name: 'Linha 999, Circular de teste',
+			}],
+			error: null,
+			timestamp: Date.now(),
+		},
+	}));
 }

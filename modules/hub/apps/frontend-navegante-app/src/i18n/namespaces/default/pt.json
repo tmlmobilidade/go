@@ -328,8 +328,10 @@
 				"poi": "Locais",
 				"stop": "Paragens"
 			},
+			"input_label": "Pesquisar linhas, paragens, alertas e locais",
 			"loading": "A pesquisar...",
 			"placeholder": "Pesquisar linhas, paragens, alertas e locais",
+			"results": "{count, plural, one {# resultado encontrado} other {# resultados encontrados}}",
 			"title": "Pesquisa"
 		}
 	},

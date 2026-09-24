@@ -2,6 +2,7 @@
 
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { SearchGroup } from '@/components/search/SearchGroup';
+import { SearchStatus } from '@/components/search/SearchStatus';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useSearch } from '@/hooks/search/useSearch';
 import { type SearchResult } from '@/types/common/search';
@@ -42,6 +43,8 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 	const visibleGroups = locationPicker
 		? search.groups.filter(group => group.key === 'poi' || group.key === 'stop')
 		: search.groups;
+	const resultCount = visibleGroups.reduce((total, group) => total + group.results.length, 0);
+	const inputLabel = placeholder ?? t('default:search.Search.input_label');
 
 	//
 	// B. Handle actions
@@ -75,6 +78,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 		<div className={styles.container} data-variant={variant}>
 			<SearchInput
 				ref={inputRef}
+				aria-label={inputLabel}
 				classNames={{ input: styles.input, wrapper: styles.inputWrapper }}
 				onChange={handleQueryChange}
 				placeholder={placeholder ?? t('default:search.Search.placeholder')}
@@ -91,9 +95,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 				<SearchGroup key={group.key} group={group} onSelect={handleSelect} variant={variant} />
 			))}
 
-			{search.isLoading && <p className={styles.status}>{t('default:search.Search.loading')}</p>}
-			{search.error && <p className={styles.status}>{search.error}</p>}
-			{query.trim().length >= 2 && !search.isLoading && !search.error && visibleGroups.length === 0 && <p className={styles.status}>{t('default:search.Search.empty')}</p>}
+			<SearchStatus error={search.error} isLoading={search.isLoading} query={query} resultCount={resultCount} />
 		</div>
 	);
 }

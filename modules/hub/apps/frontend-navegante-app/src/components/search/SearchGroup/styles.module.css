@@ -11,6 +11,12 @@
 	font-size: 1rem;
 }
 
+.group ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
 .group[data-variant='top'] {
 	padding: 0 0.75rem;
 	background: var(--color-system-background-100, #fff);

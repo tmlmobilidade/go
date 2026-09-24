@@ -72,9 +72,3 @@
 .clearButton:hover {
 	color: var(--color-system-text-100);
 }
-
-.status {
-	margin: 1rem 0;
-	color: var(--mantine-color-dimmed);
-	text-align: center;
-}
