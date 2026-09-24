@@ -31,20 +31,6 @@ export const ruleConfigKeys = {
 		'agency_fare_url_valid_url',
 		'agency_email_valid_address',
 	],
-	attributions: [
-		'_file',
-		'attribution_id',
-		'agency_id',
-		'route_id',
-		'trip_id',
-		'organization_name',
-		'is_producer',
-		'is_operator',
-		'is_authority',
-		'attribution_url',
-		'attribution_email',
-		'attribution_phone',
-	],
 	calendar: [
 		'_file',
 		'calendar_service_id_unique_non_empty',
@@ -111,11 +97,11 @@ export const ruleConfigKeys = {
 	],
 	frequencies: [
 		'_file',
-		'trip_id',
-		'start_time',
-		'end_time',
-		'headway_secs',
-		'exact_times',
+		'frequencies_trip_id_references_trips_table',
+		'frequency_start_time_valid',
+		'frequency_end_time_valid',
+		'headway_secs_positive_and_aligns_trip',
+		'exact_times_zero_when_timed_trip_uses_frequencies',
 	],
 	levels: [
 		'_file',
@@ -247,16 +233,6 @@ export const ruleConfigKeys = {
 		'transfer_type_valid_gtfs_enum',
 		'min_transfer_time_non_negative_seconds',
 	],
-	translations: [
-		'_file',
-		'table_name',
-		'field_name',
-		'language',
-		'translation',
-		'record_id',
-		'record_sub_id',
-		'field_value',
-	],
 	trips: [
 		'_file',
 		'route_id_references_routes_table',
@@ -323,7 +299,6 @@ export type RuleConfigKey<G extends RuleGroup = RuleGroup> = typeof ruleConfigKe
 
 export const ruleGroups = [
 	'agency',
-	'attributions',
 	'calendar',
 	'calendar_dates',
 	'fare_attributes',
@@ -340,7 +315,6 @@ export const ruleGroups = [
 	'stop_times',
 	'stops',
 	'transfers',
-	'translations',
 	'trips',
 	'vehicles',
 ] as const satisfies readonly RuleGroup[];

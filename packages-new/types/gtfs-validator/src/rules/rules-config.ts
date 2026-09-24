@@ -43,21 +43,6 @@ export interface AgencyRules {
 	agency_url_valid_url: RuleConfig
 }
 
-export interface AttributionsRules {
-	_file: RuleSeverity
-	agency_id: RuleConfig
-	attribution_email: RuleConfig
-	attribution_id: RuleConfig
-	attribution_phone: RuleConfig
-	attribution_url: RuleConfig
-	is_authority: RuleConfig
-	is_operator: RuleConfig
-	is_producer: RuleConfig
-	organization_name: RuleConfig
-	route_id: RuleConfig
-	trip_id: RuleConfig
-}
-
 export interface CalendarRules {
 	_file: RuleSeverity
 	calendar_end_date_valid_yyyymmdd: RuleConfig
@@ -131,11 +116,11 @@ export interface FileValidationRules {
 
 export interface FrequenciesRules {
 	_file: RuleSeverity
-	end_time: RuleConfig
-	exact_times: RuleConfig
-	headway_secs: RuleConfig
-	start_time: RuleConfig
-	trip_id: RuleConfig
+	exact_times_zero_when_timed_trip_uses_frequencies: RuleConfig
+	frequencies_trip_id_references_trips_table: RuleConfig
+	frequency_end_time_valid: RuleConfig
+	frequency_start_time_valid: RuleConfig
+	headway_secs_positive_and_aligns_trip: RuleConfig
 }
 
 export interface LevelsRules {
@@ -276,17 +261,6 @@ export interface TransfersRules {
 	transfer_type_valid_gtfs_enum: RuleConfig
 }
 
-export interface TranslationsRules {
-	_file: RuleSeverity
-	field_name: RuleConfig
-	field_value: RuleConfig
-	language: RuleConfig
-	record_id: RuleConfig
-	record_sub_id: RuleConfig
-	table_name: RuleConfig
-	translation: RuleConfig
-}
-
 export interface TripsRules {
 	_file: RuleSeverity
 	bikes_allowed_valid_gtfs_enum: RuleConfig
@@ -353,7 +327,6 @@ export interface VehiclesRules {
  */
 export interface ValidationRules {
 	agency: AgencyRules
-	attributions: AttributionsRules
 	calendar: CalendarRules
 	calendar_dates: CalendarDatesRules
 	fare_attributes: FareAttributesRules
@@ -370,7 +343,6 @@ export interface ValidationRules {
 	stop_times: StopTimesRules
 	stops: StopsRules
 	transfers: TransfersRules
-	translations: TranslationsRules
 	trips: TripsRules
 	vehicles: VehiclesRules
 }

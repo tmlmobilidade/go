@@ -43,21 +43,6 @@ export interface AgencyRulesInput {
 	agency_url_valid_url?: RuleConfigInput
 }
 
-export interface AttributionsRulesInput {
-	_file?: RuleSeverity
-	agency_id?: RuleConfigInput
-	attribution_email?: RuleConfigInput
-	attribution_id?: RuleConfigInput
-	attribution_phone?: RuleConfigInput
-	attribution_url?: RuleConfigInput
-	is_authority?: RuleConfigInput
-	is_operator?: RuleConfigInput
-	is_producer?: RuleConfigInput
-	organization_name?: RuleConfigInput
-	route_id?: RuleConfigInput
-	trip_id?: RuleConfigInput
-}
-
 export interface CalendarRulesInput {
 	_file?: RuleSeverity
 	calendar_end_date_valid_yyyymmdd?: RuleConfigInput
@@ -131,11 +116,11 @@ export interface FileValidationRulesInput {
 
 export interface FrequenciesRulesInput {
 	_file?: RuleSeverity
-	end_time?: RuleConfigInput
-	exact_times?: RuleConfigInput
-	headway_secs?: RuleConfigInput
-	start_time?: RuleConfigInput
-	trip_id?: RuleConfigInput
+	exact_times_zero_when_timed_trip_uses_frequencies?: RuleConfigInput
+	frequencies_trip_id_references_trips_table?: RuleConfigInput
+	frequency_end_time_valid?: RuleConfigInput
+	frequency_start_time_valid?: RuleConfigInput
+	headway_secs_positive_and_aligns_trip?: RuleConfigInput
 }
 
 export interface LevelsRulesInput {
@@ -276,17 +261,6 @@ export interface TransfersRulesInput {
 	transfer_type_valid_gtfs_enum?: RuleConfigInput
 }
 
-export interface TranslationsRulesInput {
-	_file?: RuleSeverity
-	field_name?: RuleConfigInput
-	field_value?: RuleConfigInput
-	language?: RuleConfigInput
-	record_id?: RuleConfigInput
-	record_sub_id?: RuleConfigInput
-	table_name?: RuleConfigInput
-	translation?: RuleConfigInput
-}
-
 export interface TripsRulesInput {
 	_file?: RuleSeverity
 	bikes_allowed_valid_gtfs_enum?: RuleConfigInput
@@ -352,7 +326,6 @@ export interface VehiclesRulesInput {
  */
 export interface ValidationRulesInput {
 	agency?: AgencyRulesInput
-	attributions?: AttributionsRulesInput
 	calendar?: CalendarRulesInput
 	calendar_dates?: CalendarDatesRulesInput
 	fare_attributes?: FareAttributesRulesInput
@@ -369,7 +342,6 @@ export interface ValidationRulesInput {
 	stop_times?: StopTimesRulesInput
 	stops?: StopsRulesInput
 	transfers?: TransfersRulesInput
-	translations?: TranslationsRulesInput
 	trips?: TripsRulesInput
 	vehicles?: VehiclesRulesInput
 }
