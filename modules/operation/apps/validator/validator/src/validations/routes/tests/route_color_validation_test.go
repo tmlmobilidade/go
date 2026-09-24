@@ -10,6 +10,12 @@ import (
 
 func TestAllRouteColorValidationTestCases(t *testing.T) {
 	for _, tc := range test_helpers.GetGenericColorTestCases("route_color") {
+		expectedErrors := tc.ExpectedErrors
+		// route_color is required: missing is an error
+		if tc.Name == "Nil_Color_Optional" {
+			expectedErrors = 1
+		}
+
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 
@@ -21,13 +27,9 @@ func TestAllRouteColorValidationTestCases(t *testing.T) {
 				severity = types.SEVERITY_ERROR
 			}
 
-			if tc.Name == "Nil_Color_Optional" {
-				rules = nil
-			} else {
-				rules = &types.RoutesRules{RouteColor: types.RuleConfig{Severity: severity}}
-			}
+			rules = &types.RoutesRules{RouteColor: types.RuleConfig{Severity: severity}}
 			validations.RouteColorValidation(&types.Route{RouteColor: tc.Color}, tc.Row, rules)
-			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, expectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
 	}

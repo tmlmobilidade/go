@@ -12,7 +12,7 @@ import (
 
 - File: [routes.txt]
 - Field: continuous_pickup
-- Presence: Conditionally Forbidden
+- Presence: Optional
 - Type: Enum
 
 # Description
@@ -40,18 +40,8 @@ func ContinuousPickupValidation(route *types.Route, row int, gtfs *types.Gtfs, r
 		ctx.WithSeverity(rules.ContinuousPickup.Severity)
 	}
 
-	// If continuous_pickup is "1", it's valid and we can return early
-	if route.ContinuousPickup != nil && *route.ContinuousPickup == "1" {
-		return
-	}
-
-	if route.ContinuousPickup == nil || *route.ContinuousPickup == "" {
-		if ctx.ShouldSkip() {
-			return
-		}
-
-		message := ctx.GetRequiredMessage("continuous_pickup_validation.required", "continuous_pickup_validation.recommended")
-		ctx.AddMessageWithSeverity(message)
+	// continuous_pickup is optional: empty or "1" (no continuous stopping pickup) is valid
+	if route.ContinuousPickup == nil || *route.ContinuousPickup == "" || *route.ContinuousPickup == "1" {
 		return
 	}
 

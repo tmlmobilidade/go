@@ -12,7 +12,7 @@ import (
 
 - File: [routes.txt]
 - Field: continuous_drop_off
-- Presence: Conditionally Forbidden
+- Presence: Optional
 - Type: Enum
 
 # Description
@@ -40,18 +40,8 @@ func ContinuousDropOffValidation(route *types.Route, row int, gtfs *types.Gtfs, 
 		ctx.WithSeverity(rules.ContinuousDropOff.Severity)
 	}
 
-	// If continuous_drop_off is "1", it's valid and we can return early
-	if route.ContinuousDropOff != nil && *route.ContinuousDropOff == "1" {
-		return
-	}
-
-	if route.ContinuousDropOff == nil || *route.ContinuousDropOff == "" {
-		if ctx.ShouldSkip() {
-			return
-		}
-
-		message := ctx.GetRequiredMessage("continuous_drop_off_validation.required", "continuous_drop_off_validation.recommended")
-		ctx.AddMessageWithSeverity(message)
+	// continuous_drop_off is optional: empty or "1" (no continuous stopping drop off) is valid
+	if route.ContinuousDropOff == nil || *route.ContinuousDropOff == "" || *route.ContinuousDropOff == "1" {
 		return
 	}
 

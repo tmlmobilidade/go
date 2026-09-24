@@ -11,7 +11,7 @@ import (
 
 - File: [routes.txt]
 - Field: route_sort_order
-- Presence: Optional
+- Presence: Recommended
 - Type: Non-negative integer
 
 # Description

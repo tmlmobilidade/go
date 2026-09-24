@@ -14,12 +14,12 @@ import (
 
 - File: [routes.txt]
 - Field: route_text_color
-- Presence: Optional
+- Presence: Required
 - Type: Color
 
 # Description
 
-Route color designation that matches public facing material. Defaults to white (FFFFFF) when omitted or left empty. The color difference between route_text_color and route_text_color should provide sufficient contrast when viewed on a black and white screen.
+Route color designation that matches public facing material. The color difference between route_text_color and route_text_color should provide sufficient contrast when viewed on a black and white screen.
 
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
@@ -30,12 +30,7 @@ func RouteTextColorValidation(route *types.Route, row int, rules *types.RoutesRu
 	}
 
 	if route.RouteTextColor == nil || *route.RouteTextColor == "" {
-		if ctx.ShouldSkip() {
-			return
-		}
-
-		message := ctx.GetRequiredMessage("route_text_color_validation.required", "route_text_color_validation.recommended")
-		ctx.AddMessageWithSeverity(message)
+		ctx.AddError(ctx.GetTranslatedMessage("route_text_color_validation.required"))
 		return
 	}
 

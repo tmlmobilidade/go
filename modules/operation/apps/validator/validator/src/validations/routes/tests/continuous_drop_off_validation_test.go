@@ -48,8 +48,13 @@ func TestAllContinuousDropOffValidationTestCases(t *testing.T) {
 				},
 				routesWithWindows,
 			)
-			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
-			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
+			expectedErrors, expectedWarnings := tc.ExpectedErrors, tc.ExpectedWarnings
+			// continuous_drop_off is optional: missing never produces a message
+			if continuousDropOff == nil {
+				expectedErrors, expectedWarnings = 0, 0
+			}
+			test_helpers.AssertMessageCount(t, services.AppMessageService, expectedErrors, tc.Name, types.SEVERITY_ERROR)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, expectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
 	}
 
@@ -77,8 +82,13 @@ func TestAllContinuousDropOffValidationTestCases(t *testing.T) {
 				},
 				routesWithWindows,
 			)
-			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
-			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
+			expectedErrors, expectedWarnings := tc.ExpectedErrors, tc.ExpectedWarnings
+			// continuous_drop_off is optional: missing never produces a message
+			if continuousDropOff == nil {
+				expectedErrors, expectedWarnings = 0, 0
+			}
+			test_helpers.AssertMessageCount(t, services.AppMessageService, expectedErrors, tc.Name, types.SEVERITY_ERROR)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, expectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
 	}
 	t.Run("Forbidden_WithStartWindow", func(t *testing.T) {

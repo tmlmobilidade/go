@@ -54,13 +54,13 @@ func TestAllRouteShortNameValidationTestCases(t *testing.T) {
 	t.Run("TestShortNameMissing_LongNamePresent", func(t *testing.T) {
 		services.AppMessageService.Clear()
 		validations.RouteShortNameValidation(&types.Route{RouteShortName: nil, RouteLongName: lib.Ptr("Long Route Name")}, 1, nil)
-		test_helpers.AssertMessageCount(t, services.AppMessageService, 0, "TestShortNameMissing_LongNamePresent should not error", types.SEVERITY_ERROR)
+		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "TestShortNameMissing_LongNamePresent should error", types.SEVERITY_ERROR)
 	})
 
 	t.Run("TestShortNameEmpty_LongNamePresent", func(t *testing.T) {
 		services.AppMessageService.Clear()
 		validations.RouteShortNameValidation(&types.Route{RouteShortName: lib.Ptr(""), RouteLongName: lib.Ptr("Long Route Name")}, 1, nil)
-		test_helpers.AssertMessageCount(t, services.AppMessageService, 0, "TestShortNameEmpty_LongNamePresent should not error", types.SEVERITY_ERROR)
+		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "TestShortNameEmpty_LongNamePresent should error", types.SEVERITY_ERROR)
 	})
 
 	t.Run("TestWithOptions_NotAllowed", func(t *testing.T) {
