@@ -139,12 +139,9 @@ func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
 		validateRuleConfig(rules.Routes.RouteLongName, "routes.route_long_name_or_short_name_present")
 		validateRuleConfig(rules.Routes.RouteDesc, "routes.route_desc_per_severity_and_content_rules")
 		validateRuleConfig(rules.Routes.RouteSortOrder, "routes.route_sort_order_non_negative_integer")
-		validateRuleConfig(rules.Routes.RouteRemarks, "routes.route_remarks")
 		validateRuleConfig(rules.Routes.NetworkId, "routes.routes_network_id_references_networks_table")
 		validateRuleConfig(rules.Routes.RouteType, "routes.route_type_valid_gtfs_enum")
 		validateRuleConfig(rules.Routes.PathType, "routes.routes_path_type_valid_enum")
-		validateRuleConfig(rules.Routes.Circular, "routes.routes_circular")
-		validateRuleConfig(rules.Routes.School, "routes.routes_school")
 		validateRuleConfig(rules.Routes.RouteUrl, "routes.route_url_valid_http_url")
 		validateRuleConfig(rules.Routes.RouteColor, "routes.route_color_valid_hex_string")
 		validateRuleConfig(rules.Routes.RouteTextColor, "routes.route_text_color_valid_hex_contrast")
@@ -211,19 +208,11 @@ func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
 		validateRuleConfig(rules.Shapes.ShapeDistTraveledNonDecreasingWithSequence, "shapes.shape_dist_traveled_non_decreasing_with_sequence")
 		validateRuleConfig(rules.Shapes.ShapePointsCoordinatesConsistent, "shapes.shape_sequence_position_mismatches_cumulative_traveled_distance")
 		validateRuleConfig(rules.Shapes.ShapePointsCoordinatesDistances, "shapes.shape_dist_traveled_delta_mismatches_haversine_segment")
-		validateRuleConfig(rules.Shapes.ShapeBlockDistanceRowsAggregated, "shapes.shape_block_distance_rows_aggregated")
 		validateRuleConfig(rules.Shapes.ShapeDistTraveledDeltaMismatchesHaversineBlock, "shapes.shape_dist_traveled_delta_mismatches_haversine_block")
 	}
 
 	if rules.Calendar.File != types.SEVERITY_FORBIDDEN {
 		validateRuleConfig(rules.Calendar.ServiceId, "calendar.calendar_service_id_unique_non_empty")
-		validateRuleConfig(rules.Calendar.Monday, "calendar.calendar_monday")
-		validateRuleConfig(rules.Calendar.Tuesday, "calendar.calendar_tuesday")
-		validateRuleConfig(rules.Calendar.Wednesday, "calendar.calendar_wednesday")
-		validateRuleConfig(rules.Calendar.Thursday, "calendar.calendar_thursday")
-		validateRuleConfig(rules.Calendar.Friday, "calendar.calendar_friday")
-		validateRuleConfig(rules.Calendar.Saturday, "calendar.calendar_saturday")
-		validateRuleConfig(rules.Calendar.Sunday, "calendar.calendar_sunday")
 		validateRuleConfig(rules.Calendar.StartDate, "calendar.calendar_start_date_valid_yyyymmdd")
 		validateRuleConfig(rules.Calendar.EndDate, "calendar.calendar_end_date_valid_yyyymmdd")
 	}
@@ -232,13 +221,9 @@ func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
 		validateRuleConfig(rules.CalendarDates.ServiceId, "calendar_dates.calendar_dates_service_id_references_calendar")
 		validateRuleConfig(rules.CalendarDates.Date, "calendar_dates.calendar_dates_exception_date_valid_yyyymmdd")
 		validateRuleConfig(rules.CalendarDates.ExceptionType, "calendar_dates.calendar_dates_exception_type_add_or_remove_service")
-		// validateRuleConfig(rules.CalendarDates.DayType, "calendar_dates.calendar_dates_day_type")
-		// validateRuleConfig(rules.CalendarDates.Holiday, "calendar_dates.calendar_dates_holiday")
-		// validateRuleConfig(rules.CalendarDates.Period, "calendar_dates.calendar_dates_period")
 	}
 
 	if rules.FeedInfo.File != types.SEVERITY_FORBIDDEN {
-		validateRuleConfig(rules.FeedInfo.FeedType, "feed_info.feed_type")
 		validateRuleConfig(rules.FeedInfo.FeedPublisherName, "feed_info.feed_publisher_name_non_empty")
 		validateRuleConfig(rules.FeedInfo.FeedPublisherUrl, "feed_info.feed_publisher_url_valid_http_url")
 		validateRuleConfig(rules.FeedInfo.FeedLang, "feed_info.feed_lang_valid_tag")
@@ -246,7 +231,6 @@ func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
 		validateRuleConfig(rules.FeedInfo.FeedStartDate, "feed_info.feed_start_date_valid_yyyymmdd")
 		validateRuleConfig(rules.FeedInfo.FeedEndDate, "feed_info.feed_end_date_valid_yyyymmdd_not_before_start")
 		validateRuleConfig(rules.FeedInfo.FeedVersion, "feed_info.feed_version_valid_identifier")
-		validateRuleConfig(rules.FeedInfo.FeedRemarks, "feed_info.feed_remarks")
 		validateRuleConfig(rules.FeedInfo.FeedContactEmail, "feed_info.feed_contact_email_valid_address")
 		validateRuleConfig(rules.FeedInfo.FeedContactUrl, "feed_info.feed_contact_url_valid_http_url")
 	}

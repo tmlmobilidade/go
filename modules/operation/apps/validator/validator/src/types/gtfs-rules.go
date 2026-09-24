@@ -73,12 +73,9 @@ type RoutesRules struct {
 	RouteLongName     RuleConfig `json:"route_long_name_or_short_name_present"`
 	RouteDesc         RuleConfig `json:"route_desc_per_severity_and_content_rules"`
 	RouteSortOrder    RuleConfig `json:"route_sort_order_non_negative_integer"`
-	RouteRemarks      RuleConfig `json:"route_remarks"`
 	NetworkId         RuleConfig `json:"routes_network_id_references_networks_table"`
 	RouteType         RuleConfig `json:"route_type_valid_gtfs_enum"`
 	PathType          RuleConfig `json:"routes_path_type_valid_enum"`
-	Circular          RuleConfig `json:"routes_circular"`
-	School            RuleConfig `json:"routes_school"`
 	RouteUrl          RuleConfig `json:"route_url_valid_http_url"`
 	RouteColor        RuleConfig `json:"route_color_valid_hex_string"`
 	RouteTextColor    RuleConfig `json:"route_text_color_valid_hex_contrast"`
@@ -138,13 +135,6 @@ type StopTimesRules struct {
 type CalendarRules struct {
 	File      Severity   `json:"_file"`
 	ServiceId RuleConfig `json:"calendar_service_id_unique_non_empty"`
-	Monday    RuleConfig `json:"calendar_monday"`
-	Tuesday   RuleConfig `json:"calendar_tuesday"`
-	Wednesday RuleConfig `json:"calendar_wednesday"`
-	Thursday  RuleConfig `json:"calendar_thursday"`
-	Friday    RuleConfig `json:"calendar_friday"`
-	Saturday  RuleConfig `json:"calendar_saturday"`
-	Sunday    RuleConfig `json:"calendar_sunday"`
 	StartDate RuleConfig `json:"calendar_start_date_valid_yyyymmdd"`
 	EndDate   RuleConfig `json:"calendar_end_date_valid_yyyymmdd"`
 }
@@ -154,9 +144,6 @@ type CalendarDatesRules struct {
 	ServiceId     RuleConfig `json:"calendar_dates_service_id_references_calendar"`
 	Date          RuleConfig `json:"calendar_dates_exception_date_valid_yyyymmdd"`
 	ExceptionType RuleConfig `json:"calendar_dates_exception_type_add_or_remove_service"`
-	// DayType       RuleConfig `json:"calendar_dates_day_type"`
-	// Holiday       RuleConfig `json:"calendar_dates_holiday"`
-	// Period        RuleConfig `json:"calendar_dates_period"`
 }
 
 type VehiclesRules struct {
@@ -230,7 +217,6 @@ type ShapesRules struct {
 	ShapeDistTraveledNonDecreasingWithSequence     RuleConfig `json:"shape_dist_traveled_non_decreasing_with_sequence"`
 	ShapePointsCoordinatesConsistent               RuleConfig `json:"shape_sequence_position_mismatches_cumulative_traveled_distance"`
 	ShapePointsCoordinatesDistances                RuleConfig `json:"shape_dist_traveled_delta_mismatches_haversine_segment"`
-	ShapeBlockDistanceRowsAggregated               RuleConfig `json:"shape_block_distance_rows_aggregated"`
 	ShapeDistTraveledDeltaMismatchesHaversineBlock RuleConfig `json:"shape_dist_traveled_delta_mismatches_haversine_block"`
 }
 
@@ -280,7 +266,6 @@ type LevelsRules struct {
 
 type FeedInfoRules struct {
 	File              Severity   `json:"_file"`
-	FeedType          RuleConfig `json:"feed_type"`
 	FeedPublisherName RuleConfig `json:"feed_publisher_name_non_empty"`
 	FeedPublisherUrl  RuleConfig `json:"feed_publisher_url_valid_http_url"`
 	FeedLang          RuleConfig `json:"feed_lang_valid_tag"`
@@ -288,36 +273,9 @@ type FeedInfoRules struct {
 	FeedStartDate     RuleConfig `json:"feed_start_date_valid_yyyymmdd"`
 	FeedEndDate       RuleConfig `json:"feed_end_date_valid_yyyymmdd_not_before_start"`
 	FeedVersion       RuleConfig `json:"feed_version_valid_identifier"`
-	FeedRemarks       RuleConfig `json:"feed_remarks"`
 	FeedContactEmail  RuleConfig `json:"feed_contact_email_valid_address"`
 	FeedContactUrl    RuleConfig `json:"feed_contact_url_valid_http_url"`
 }
-
-// type TranslationsRules struct {
-	// File        Severity   `json:"_file"`
-	// TableName   RuleConfig `json:"table_name"`
-	// FieldName   RuleConfig `json:"field_name"`
-	// Language    RuleConfig `json:"language"`
-	// Translation RuleConfig `json:"translation"`
-	// RecordId    RuleConfig `json:"record_id"`
-	// RecordSubId RuleConfig `json:"record_sub_id"`
-	// FieldValue  RuleConfig `json:"field_value"`
-// }
-
-// type AttributionsRules struct {
-	// File             Severity   `json:"_file"`
-	// AttributionId    RuleConfig `json:"attribution_id"`
-	// AgencyId         RuleConfig `json:"agency_id"`
-	// RouteId          RuleConfig `json:"route_id"`
-	// TripId           RuleConfig `json:"trip_id"`
-	// OrganizationName RuleConfig `json:"organization_name"`
-	// IsProducer       RuleConfig `json:"is_producer"`
-	// IsOperator       RuleConfig `json:"is_operator"`
-	// IsAuthority      RuleConfig `json:"is_authority"`
-	// AttributionUrl   RuleConfig `json:"attribution_url"`
-	// AttributionEmail RuleConfig `json:"attribution_email"`
-	// AttributionPhone RuleConfig `json:"attribution_phone"`
-// }
 
 type RiderCategoriesRules struct {
 	File                  Severity   `json:"_file"`
@@ -358,7 +316,5 @@ type GtfsRules struct {
 	Pathways        PathwaysRules        `json:"pathways"`
 	Levels          LevelsRules          `json:"levels"`
 	FeedInfo        FeedInfoRules        `json:"feed_info"`
-	// Translations    TranslationsRules    `json:"translations"`
-	// Attributions    AttributionsRules    `json:"attributions"`
 	FareMedia       FareMediaRules       `json:"fare_media"`
 }

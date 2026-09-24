@@ -46,15 +46,8 @@ export interface AgencyRules {
 export interface CalendarRules {
 	_file: RuleSeverity
 	calendar_end_date_valid_yyyymmdd: RuleConfig
-	calendar_friday: RuleConfig
-	calendar_monday: RuleConfig
-	calendar_saturday: RuleConfig
 	calendar_service_id_unique_non_empty: RuleConfig
 	calendar_start_date_valid_yyyymmdd: RuleConfig
-	calendar_sunday: RuleConfig
-	calendar_thursday: RuleConfig
-	calendar_tuesday: RuleConfig
-	calendar_wednesday: RuleConfig
 }
 
 export interface CalendarDatesRules {
@@ -100,9 +93,7 @@ export interface FeedInfoRules {
 	feed_lang_valid_tag: RuleConfig
 	feed_publisher_name_non_empty: RuleConfig
 	feed_publisher_url_valid_http_url: RuleConfig
-	feed_remarks: RuleConfig
 	feed_start_date_valid_yyyymmdd: RuleConfig
-	feed_type: RuleConfig
 	feed_version_valid_identifier: RuleConfig
 }
 
@@ -158,13 +149,11 @@ export interface RoutesRules {
 	route_desc_per_severity_and_content_rules: RuleConfig
 	route_id_unique: RuleConfig
 	route_long_name_or_short_name_present: RuleConfig
-	route_remarks: RuleConfig
 	route_short_name_or_long_name_present: RuleConfig
 	route_sort_order_non_negative_integer: RuleConfig
 	route_text_color_valid_hex_contrast: RuleConfig
 	route_type_valid_gtfs_enum: RuleConfig
 	route_url_valid_http_url: RuleConfig
-	routes_circular: RuleConfig
 	routes_continuous_drop_off_valid_gtfs_enum: RuleConfig
 	routes_continuous_pickup_valid_gtfs_enum: RuleConfig
 	routes_line_id_required: RuleConfig
@@ -172,12 +161,10 @@ export interface RoutesRules {
 	routes_line_short_name_present_when_line_id_present: RuleConfig
 	routes_network_id_references_networks_table: RuleConfig
 	routes_path_type_valid_enum: RuleConfig
-	routes_school: RuleConfig
 }
 
 export interface ShapesRules {
 	_file: RuleSeverity
-	shape_block_distance_rows_aggregated: RuleConfig
 	shape_dist_traveled_delta_mismatches_haversine_block: RuleConfig
 	shape_dist_traveled_delta_mismatches_haversine_segment: RuleConfig
 	shape_dist_traveled_non_decreasing_with_sequence: RuleConfig

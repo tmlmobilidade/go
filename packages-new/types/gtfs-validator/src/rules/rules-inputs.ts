@@ -46,15 +46,8 @@ export interface AgencyRulesInput {
 export interface CalendarRulesInput {
 	_file?: RuleSeverity
 	calendar_end_date_valid_yyyymmdd?: RuleConfigInput
-	calendar_friday?: RuleConfigInput
-	calendar_monday?: RuleConfigInput
-	calendar_saturday?: RuleConfigInput
 	calendar_service_id_unique_non_empty?: RuleConfigInput
 	calendar_start_date_valid_yyyymmdd?: RuleConfigInput
-	calendar_sunday?: RuleConfigInput
-	calendar_thursday?: RuleConfigInput
-	calendar_tuesday?: RuleConfigInput
-	calendar_wednesday?: RuleConfigInput
 }
 
 export interface CalendarDatesRulesInput {
@@ -100,9 +93,7 @@ export interface FeedInfoRulesInput {
 	feed_lang_valid_tag?: RuleConfigInput
 	feed_publisher_name_non_empty?: RuleConfigInput
 	feed_publisher_url_valid_http_url?: RuleConfigInput
-	feed_remarks?: RuleConfigInput
 	feed_start_date_valid_yyyymmdd?: RuleConfigInput
-	feed_type?: RuleConfigInput
 	feed_version_valid_identifier?: RuleConfigInput
 }
 
@@ -158,13 +149,11 @@ export interface RoutesRulesInput {
 	route_desc_per_severity_and_content_rules?: RuleConfigInput
 	route_id_unique?: RuleConfigInput
 	route_long_name_or_short_name_present?: RuleConfigInput
-	route_remarks?: RuleConfigInput
 	route_short_name_or_long_name_present?: RuleConfigInput
 	route_sort_order_non_negative_integer?: RuleConfigInput
 	route_text_color_valid_hex_contrast?: RuleConfigInput
 	route_type_valid_gtfs_enum?: RuleConfigInput
 	route_url_valid_http_url?: RuleConfigInput
-	routes_circular?: RuleConfigInput
 	routes_continuous_drop_off_valid_gtfs_enum?: RuleConfigInput
 	routes_continuous_pickup_valid_gtfs_enum?: RuleConfigInput
 	routes_line_id_required?: RuleConfigInput
@@ -172,12 +161,10 @@ export interface RoutesRulesInput {
 	routes_line_short_name_present_when_line_id_present?: RuleConfigInput
 	routes_network_id_references_networks_table?: RuleConfigInput
 	routes_path_type_valid_enum?: RuleConfigInput
-	routes_school?: RuleConfigInput
 }
 
 export interface ShapesRulesInput {
 	_file?: RuleSeverity
-	shape_block_distance_rows_aggregated?: RuleConfigInput
 	shape_dist_traveled_delta_mismatches_haversine_block?: RuleConfigInput
 	shape_dist_traveled_delta_mismatches_haversine_segment?: RuleConfigInput
 	shape_dist_traveled_non_decreasing_with_sequence?: RuleConfigInput

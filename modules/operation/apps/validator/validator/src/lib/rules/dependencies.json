@@ -53,47 +53,12 @@
 				"calendar_file_present"
 			]
 		},
-		"calendar_friday": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
-		"calendar_monday": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
-		"calendar_saturday": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
 		"calendar_service_id_unique_non_empty": {
 			"depends_on": [
 				"calendar_file_present"
 			]
 		},
 		"calendar_start_date_valid_yyyymmdd": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
-		"calendar_sunday": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
-		"calendar_thursday": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
-		"calendar_tuesday": {
-			"depends_on": [
-				"calendar_file_present"
-			]
-		},
-		"calendar_wednesday": {
 			"depends_on": [
 				"calendar_file_present"
 			]
@@ -234,17 +199,7 @@
 				"feed_info_file_present"
 			]
 		},
-		"feed_remarks": {
-			"depends_on": [
-				"feed_info_file_present"
-			]
-		},
 		"feed_start_date_valid_yyyymmdd": {
-			"depends_on": [
-				"feed_info_file_present"
-			]
-		},
-		"feed_type": {
 			"depends_on": [
 				"feed_info_file_present"
 			]
@@ -417,11 +372,6 @@
 				"routes_file_present"
 			]
 		},
-		"route_remarks": {
-			"depends_on": [
-				"routes_file_present"
-			]
-		},
 		"route_short_name_or_long_name_present": {
 			"depends_on": [
 				"routes_file_present"
@@ -443,11 +393,6 @@
 			]
 		},
 		"route_url_valid_http_url": {
-			"depends_on": [
-				"routes_file_present"
-			]
-		},
-		"routes_circular": {
 			"depends_on": [
 				"routes_file_present"
 			]
@@ -486,20 +431,9 @@
 			"depends_on": [
 				"routes_file_present"
 			]
-		},
-		"routes_school": {
-			"depends_on": [
-				"routes_file_present"
-			]
 		}
 	},
 	"shapes": {
-		"shape_block_distance_rows_aggregated": {
-			"depends_on": [
-				"shape_dist_traveled_delta_mismatches_haversine_block"
-			],
-			"scope": "shape"
-		},
 		"shape_dist_traveled_delta_mismatches_haversine_block": {
 			"depends_on": [
 				"shape_pt_sequence_strictly_increasing",
