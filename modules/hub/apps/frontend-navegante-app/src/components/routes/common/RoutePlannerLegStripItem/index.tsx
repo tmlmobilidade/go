@@ -3,10 +3,11 @@
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
-import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
+import { getRoutePlannerTransitLegLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconWalk } from '@tabler/icons-react';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -24,27 +25,41 @@ export function RoutePlannerLegStripItem({ leg, lineByShortName, showConnector }
 	//
 
 	//
-	// A. Transform data
+	// A. Setup variables
 
-	const durationMinutes = getDurationMinutes(leg.duration);
+	const { t } = useTranslation();
 
 	//
-	// B. Render components
+	// B. Transform data
+
+	const durationMinutes = getDurationMinutes(leg.duration);
+	const isWalkingLeg = isMotisWalkingLeg(leg);
+	const accessibleLabel = isWalkingLeg
+		? durationMinutes === null
+			? t('default:routes.RoutePlanner.results.walk_label')
+			: t('default:routes.RoutePlanner.results.walking_time', '', { count: durationMinutes })
+		: getRoutePlannerTransitLegLabel(leg, mode => t(`default:routes.RoutePlanner.results.mode_labels.${mode}`));
+
+	//
+	// C. Render components
 
 	return (
 		<div className={styles.stripItem}>
-			{isMotisWalkingLeg(leg) ? (
-				<div className={styles.walkPill}>
-					<IconWalk size={15} />
-					{durationMinutes ? `${durationMinutes}'` : null}
-				</div>
-			) : (
-				<>
-					<RoutePlannerModeBadge leg={leg} size="sm" />
-					<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} />
-				</>
-			)}
-			{showConnector && <span className={styles.connector}>•••</span>}
+			<span className={styles.visuallyHidden}>{accessibleLabel}</span>
+			<div aria-hidden="true" className={styles.visual}>
+				{isWalkingLeg ? (
+					<div className={styles.walkPill}>
+						<IconWalk size={15} />
+						{durationMinutes ? `${durationMinutes}'` : null}
+					</div>
+				) : (
+					<>
+						<RoutePlannerModeBadge leg={leg} size="sm" />
+						<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} />
+					</>
+				)}
+				{showConnector && <span className={styles.connector}>•••</span>}
+			</div>
 		</div>
 	);
 

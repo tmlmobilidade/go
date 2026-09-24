@@ -27,3 +27,12 @@
 	flex-direction: column;
 	gap: 8px;
 }
+
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}

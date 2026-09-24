@@ -23,6 +23,9 @@
 .itineraries {
     display: grid;
     gap: 12px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
 
 .status {

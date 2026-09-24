@@ -32,16 +32,18 @@ export function RoutePlannerPlaceDetail() {
 			{!origin && <p className={styles.status}>{t('default:routes.RoutePlanner.place_detail.select_origin')}</p>}
 			{routePlannerContext.flags.is_planning && <p>{t('default:routes.RoutePlanner.actions.planning')}</p>}
 			{routePlannerContext.data.plan_error && <p className={styles.error}>{routePlannerContext.data.plan_error}</p>}
-			<div className={styles.itineraries}>
+			<ul className={styles.itineraries}>
 				{routePlannerContext.data.itineraries.map((itinerary, index) => (
-					<RoutePlannerItineraryCard
-						key={index}
-						itinerary={itinerary}
-						onSelect={() => routePlannerContext.actions.selectItinerary(index)}
-						onStartTrip={() => routePlannerContext.actions.startItinerary(index)}
-					/>
+					<li key={index}>
+						<RoutePlannerItineraryCard
+							isSelected={routePlannerContext.data.selected_itinerary_index === index}
+							itinerary={itinerary}
+							onSelect={() => routePlannerContext.actions.selectItinerary(index)}
+							onStartTrip={() => routePlannerContext.actions.startItinerary(index)}
+						/>
+					</li>
 				))}
-			</div>
+			</ul>
 		</div>
 	);
 }

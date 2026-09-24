@@ -63,6 +63,7 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, le
 	return (
 		<li aria-current={isActive ? 'step' : undefined} className={styles.leg}>
 			<RoutePlannerModeBadge
+				labelled={!isMotisWalkingLeg(leg)}
 				leg={leg}
 				size="md"
 				marker={isActive && (

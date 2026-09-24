@@ -9,9 +9,10 @@ import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilte
 import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
 import { getItineraryWalkMinutes } from '@/utils/route-planner/planning/results';
 import { formatMotisPlanDuration, formatMotisPlanTime } from '@/utils/route-planner/presentation/format';
+import { getRoutePlannerTransitLegLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconAlertTriangle, IconWalk } from '@tabler/icons-react';
 import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
-import { type MouseEvent, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -21,7 +22,7 @@ import styles from './styles.module.css';
 interface RoutePlannerItineraryCardProps {
 	isSelected?: boolean
 	itinerary: MotisItinerary
-	onSelect?: () => void
+	onSelect: () => void
 	onStartTrip: () => void
 }
 
@@ -49,37 +50,53 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 	const realtimeStatus = useMemo(() => {
 		return getRoutePlannerItineraryRealtimeStatus(legs);
 	}, [legs]);
-	const effectiveStart = realtimeStatus.start_time?.effective_time ?? start;
-	const effectiveEnd = realtimeStatus.end_time?.effective_time ?? end;
-	const plannedEnd = realtimeStatus.end_time?.planned_time ?? end;
-	const hasRealtimeRange = realtimeStatus.is_realtime;
-	const effectiveEndLabel = formatMotisPlanTime(effectiveEnd);
-	const plannedEndLabel = formatMotisPlanTime(plannedEnd);
-	const hasChangedArrival = hasRealtimeRange && effectiveEndLabel !== plannedEndLabel;
-	const arrivalStatus = getArrivalStatus(realtimeStatus.arrival_delay_seconds, hasChangedArrival);
-
 	const itineraryAlertFilters = useMemo(() => {
 		return getRoutePlannerItineraryAlertFilters(itinerary, lines);
 	}, [itinerary, lines]);
-
 	const itineraryAlerts = useMemo(() => {
 		return filterAlertsByRoutePlannerItinerary(alerts, itineraryAlertFilters);
 	}, [alerts, itineraryAlertFilters]);
 
-	//
-	// C. Handle actions
+	const effectiveStart = realtimeStatus.start_time?.effective_time ?? start;
+	const effectiveEnd = realtimeStatus.end_time?.effective_time ?? end;
+	const plannedEnd = realtimeStatus.end_time?.planned_time ?? end;
+	const hasRealtimeRange = realtimeStatus.is_realtime;
+	const effectiveStartLabel = formatMotisPlanTime(effectiveStart);
+	const effectiveEndLabel = formatMotisPlanTime(effectiveEnd);
+	const plannedEndLabel = formatMotisPlanTime(plannedEnd);
+	const hasChangedArrival = hasRealtimeRange && effectiveEndLabel !== plannedEndLabel;
+	const arrivalStatus = getArrivalStatus(realtimeStatus.arrival_delay_seconds, hasChangedArrival);
+	const modeLabels = legs
+		.filter(leg => !isMotisWalkingLeg(leg))
+		.map(leg => getRoutePlannerTransitLegLabel(leg, mode => t(`default:routes.RoutePlanner.results.mode_labels.${mode}`)))
+		.join(', ');
+	const itinerarySummary = [
+		t('default:routes.RoutePlanner.results.time_range', '', { end: effectiveEndLabel, start: effectiveStartLabel }),
+		duration || t('default:routes.RoutePlanner.results.duration_unavailable'),
+		modeLabels || t('default:routes.RoutePlanner.results.walk_label'),
+		t('default:routes.RoutePlanner.results.transfers', '', { count: itinerary.transfers }),
+		t('default:routes.RoutePlanner.results.walking_time', '', { count: walkingMinutes }),
+		hasRealtimeRange ? t('default:routes.RoutePlanner.results.realtime') : null,
+		hasChangedArrival ? t('default:routes.RoutePlanner.results.scheduled_at', '', { time: plannedEndLabel }) : null,
+		itineraryAlerts.length > 0 ? t('default:routes.RoutePlanner.results.alerts', '', { count: itineraryAlerts.length }) : null,
+	].filter(Boolean).join(', ');
+	const selectItineraryLabel = t('default:routes.RoutePlanner.results.select_itinerary_aria_label', '', { summary: itinerarySummary });
 
-	const handleStartTripClick = (event: MouseEvent<HTMLButtonElement>) => {
-		event.stopPropagation();
-		onStartTrip();
-	};
-
 	//
-	// D. Render components
+	// C. Render components
 
 	return (
-		<article className={styles.card} data-selected={isSelected} onClick={onSelect}>
-			<div className={styles.topRow}>
+		<article className={styles.card} data-selected={isSelected}>
+			<button
+				aria-pressed={isSelected}
+				className={styles.selectButton}
+				onClick={onSelect}
+				type="button"
+			>
+				<span className={styles.visuallyHidden}>{selectItineraryLabel}</span>
+			</button>
+
+			<div aria-hidden="true" className={styles.topRow}>
 				<div className={styles.duration}>
 					<strong>{duration || t('default:routes.RoutePlanner.results.duration_unavailable')}</strong>
 				</div>
@@ -88,7 +105,7 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 					<div className={styles.primaryTime}>
 						<strong>{formatTimeRange(effectiveStart, effectiveEnd)}</strong>
 						{hasRealtimeRange && (
-							<span aria-label={t('default:routes.RoutePlanner.results.realtime')} className={styles.liveStatus}>
+							<span className={styles.liveStatus}>
 								<LiveIcon color={getLiveIndicatorColor(arrivalStatus)} />
 							</span>
 						)}
@@ -113,13 +130,16 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 			</div>
 
 			<div className={styles.bottomRow}>
-				<RoutePlannerItineraryLegStrip itinerary={itinerary} />
-				<RoutePlannerGoButton
-					ariaLabel={t('default:routes.RoutePlanner.results.start_route_aria_label')}
-					onClick={handleStartTripClick}
-				/>
+				<div aria-hidden="true" className={styles.strip}>
+					<RoutePlannerItineraryLegStrip itinerary={itinerary} />
+				</div>
+				<div className={styles.goAction}>
+					<RoutePlannerGoButton
+						ariaLabel={t('default:routes.RoutePlanner.results.start_route_aria_label')}
+						onClick={onStartTrip}
+					/>
+				</div>
 			</div>
-
 		</article>
 	);
 

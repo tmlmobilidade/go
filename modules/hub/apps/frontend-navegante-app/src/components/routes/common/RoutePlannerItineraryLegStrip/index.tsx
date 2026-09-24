@@ -37,19 +37,20 @@ export function RoutePlannerItineraryLegStrip({ itinerary }: RoutePlannerItinera
 	// C. Render components
 
 	return (
-		<div
+		<ul
 			aria-label={t('default:routes.RoutePlanner.results.route_summary')}
 			className={styles.routeStrip}
 		>
 			{legs.map((leg, legIndex) => (
-				<RoutePlannerLegStripItem
-					key={`${getMotisLegMode(leg)}-${legIndex}`}
-					leg={leg}
-					lineByShortName={lineByShortName}
-					showConnector={legIndex < legs.length - 1}
-				/>
+				<li key={`${getMotisLegMode(leg)}-${legIndex}`}>
+					<RoutePlannerLegStripItem
+						leg={leg}
+						lineByShortName={lineByShortName}
+						showConnector={legIndex < legs.length - 1}
+					/>
+				</li>
 			))}
-		</div>
+		</ul>
 	);
 
 	//

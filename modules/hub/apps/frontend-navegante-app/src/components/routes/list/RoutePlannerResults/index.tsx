@@ -97,15 +97,18 @@ export function RoutePlannerResults() {
 						sortMode={sortMode}
 					/>
 
-					{visibleItineraries.map(({ index, itinerary }) => (
-						<RoutePlannerItineraryCard
-							key={index}
-							isSelected={routePlannerContext.data.selected_itinerary_index === index}
-							itinerary={itinerary}
-							onSelect={() => routePlannerContext.actions.selectItinerary(index)}
-							onStartTrip={() => routePlannerContext.actions.startItinerary(index)}
-						/>
-					))}
+					<ul className={styles.list}>
+						{visibleItineraries.map(({ index, itinerary }) => (
+							<li key={index}>
+								<RoutePlannerItineraryCard
+									isSelected={routePlannerContext.data.selected_itinerary_index === index}
+									itinerary={itinerary}
+									onSelect={() => routePlannerContext.actions.selectItinerary(index)}
+									onStartTrip={() => routePlannerContext.actions.startItinerary(index)}
+								/>
+							</li>
+						))}
+					</ul>
 				</div>
 			)}
 		</div>

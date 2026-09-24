@@ -1,4 +1,4 @@
-import { getMotisLegDisplayLabel, getMotisLegRouteLabel, getMotisModeKind } from '@/utils/route-planner/presentation/modes';
+import { getMotisLegDisplayLabel, getMotisLegRouteLabel, getMotisModeKind, getRoutePlannerTransitLegLabel } from '@/utils/route-planner/presentation/modes';
 import { type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
@@ -53,5 +53,14 @@ describe('MOTIS route labels', () => {
 
 		assert.equal(getMotisLegRouteLabel(leg), '728');
 		assert.equal(getMotisLegDisplayLabel(leg, mode => mode), '728');
+	});
+
+	it('names a transit leg with its mode and route when both exist', () => {
+		const bus = { mode: 'BUS', routeShortName: '728' } as MotisPlanLeg;
+		const walk = { mode: 'WALK' } as MotisPlanLeg;
+		const getModeLabel = (mode: string) => mode === 'bus' ? 'Autocarro' : mode;
+
+		assert.equal(getRoutePlannerTransitLegLabel(bus, getModeLabel), 'Autocarro 728');
+		assert.equal(getRoutePlannerTransitLegLabel(walk, getModeLabel), 'walk');
 	});
 });

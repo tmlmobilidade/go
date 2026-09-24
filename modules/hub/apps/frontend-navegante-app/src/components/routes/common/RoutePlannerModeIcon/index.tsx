@@ -31,5 +31,5 @@ const MODE_ICONS = {
 
 export function RoutePlannerModeIcon({ leg, size }: RoutePlannerModeIconProps) {
 	const Icon = MODE_ICONS[getMotisLegModeKind(leg)];
-	return <Icon size={size} />;
+	return <Icon aria-hidden="true" size={size} />;
 }

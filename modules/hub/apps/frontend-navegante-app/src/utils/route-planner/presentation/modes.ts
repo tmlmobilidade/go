@@ -41,6 +41,12 @@ export function getMotisLegDisplayLabel(leg: MotisPlanLeg, getModeLabel: (mode: 
 	return getModeLabel(getMotisLegModeKind(leg));
 }
 
+export function getRoutePlannerTransitLegLabel(leg: MotisPlanLeg, getModeLabel: (mode: MotisLegModeKind) => string) {
+	const modeLabel = getModeLabel(getMotisLegModeKind(leg));
+	if (!leg.routeShortName) return modeLabel;
+	return `${modeLabel} ${leg.routeShortName}`;
+}
+
 export function getMotisLegTitle(leg: MotisPlanLeg) {
 	const mode = leg.mode;
 	const route = leg.routeShortName || '';

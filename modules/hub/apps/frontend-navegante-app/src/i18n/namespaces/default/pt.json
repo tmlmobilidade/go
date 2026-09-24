@@ -230,6 +230,7 @@
 				"title": "Detalhes do local"
 			},
 			"results": {
+				"alerts": "{count, plural, one {# alerta} other {# alertas}}",
 				"arrival_time_prefix": "Chegada às",
 				"at_time": "às {time}",
 				"current_step": "Etapa atual",
@@ -270,6 +271,7 @@
 				"route_options": "Opções de percurso",
 				"route_summary": "Resumo da rota",
 				"scheduled_at": "Previsto às {time}",
+				"select_itinerary_aria_label": "Selecionar percurso, {summary}",
 				"sort": {
 					"best": "Melhor",
 					"fastest": "Rápida",
@@ -279,6 +281,8 @@
 				},
 				"start_route": "Ir",
 				"start_route_aria_label": "Iniciar viagem com este percurso",
+				"time_range": "{start} até {end}",
+				"transfers": "{count, plural, =0 {Sem trocas} one {# troca} other {# trocas}}",
 				"walk_between": "Caminhar até {to}",
 				"walk_label": "A pé",
 				"walking_time": "{count, plural, =0 {Sem caminhada} one {# min a pé} other {# min a pé}}"
