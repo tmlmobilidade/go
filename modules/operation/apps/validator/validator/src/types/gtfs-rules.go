@@ -180,7 +180,7 @@ type VehiclesRules struct {
 
 type FareAttributesRules struct {
 	File             Severity   `json:"_file"`
-	FareId           RuleConfig `json:"fare_id_unique"`
+	FareId           RuleConfig `json:"fare_attributes_id_unique"`
 	Price            RuleConfig `json:"fare_price_valid_non_negative_decimal"`
 	CurrencyType     RuleConfig `json:"fare_attributes_currency_type_valid"`
 	PaymentMethod    RuleConfig `json:"fare_attributes_payment_method_valid_gtfs_enum"`

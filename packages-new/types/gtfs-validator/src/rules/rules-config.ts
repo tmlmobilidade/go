@@ -61,10 +61,10 @@ export interface FareAttributesRules {
 	_file: RuleSeverity
 	fare_attributes_agency_id_references_agency_table: RuleConfig
 	fare_attributes_currency_type_valid: RuleConfig
+	fare_attributes_id_unique: RuleConfig
 	fare_attributes_payment_method_valid_gtfs_enum: RuleConfig
 	fare_attributes_transfer_duration_valid_seconds_range: RuleConfig
 	fare_attributes_transfers_valid_gtfs_enum: RuleConfig
-	fare_id_unique: RuleConfig
 	fare_price_valid_non_negative_decimal: RuleConfig
 }
 

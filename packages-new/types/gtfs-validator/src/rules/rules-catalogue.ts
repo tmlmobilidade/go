@@ -223,6 +223,13 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'fare_attributes_file_missing',
 	},
 	{
+		config_key: 'fare_attributes_id_unique',
+		depends_on: ['fare_attributes_file_present'],
+		editable: true,
+		group: 'fare_attributes',
+		id: 'fare_attributes_id_unique',
+	},
+	{
 		config_key: 'fare_attributes_payment_method_valid_gtfs_enum',
 		depends_on: ['fare_attributes_file_present'],
 		editable: true,
@@ -248,13 +255,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		group: 'fare_attributes',
 		id: 'fare_attributes_values_parse',
 		severity: 'error',
-	},
-	{
-		config_key: 'fare_id_unique',
-		depends_on: ['fare_attributes_file_present'],
-		editable: true,
-		group: 'fare_attributes',
-		id: 'fare_id_unique',
 	},
 	{
 		config_key: 'fare_price_valid_non_negative_decimal',

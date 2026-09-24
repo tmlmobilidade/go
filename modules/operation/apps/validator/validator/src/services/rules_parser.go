@@ -236,7 +236,7 @@ func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
 	}
 
 	if rules.FareAttributes.File != types.SEVERITY_FORBIDDEN {
-		validateRuleConfig(rules.FareAttributes.FareId, "fare_attributes.fare_id_unique")
+		validateRuleConfig(rules.FareAttributes.FareId, "fare_attributes.fare_attributes_id_unique")
 		validateRuleConfig(rules.FareAttributes.Price, "fare_attributes.fare_price_valid_non_negative_decimal")
 		validateRuleConfig(rules.FareAttributes.CurrencyType, "fare_attributes.fare_attributes_currency_type_valid")
 		validateRuleConfig(rules.FareAttributes.PaymentMethod, "fare_attributes.fare_attributes_payment_method_valid_gtfs_enum")

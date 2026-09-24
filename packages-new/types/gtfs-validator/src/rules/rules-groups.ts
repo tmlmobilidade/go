@@ -45,7 +45,7 @@ export const ruleConfigKeys = {
 	],
 	fare_attributes: [
 		'_file',
-		'fare_id_unique',
+		'fare_attributes_id_unique',
 		'fare_price_valid_non_negative_decimal',
 		'fare_attributes_currency_type_valid',
 		'fare_attributes_payment_method_valid_gtfs_enum',

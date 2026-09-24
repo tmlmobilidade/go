@@ -93,6 +93,11 @@
 				"fare_attributes_file_present"
 			]
 		},
+		"fare_attributes_id_unique": {
+			"depends_on": [
+				"fare_attributes_file_present"
+			]
+		},
 		"fare_attributes_payment_method_valid_gtfs_enum": {
 			"depends_on": [
 				"fare_attributes_file_present"
@@ -104,11 +109,6 @@
 			]
 		},
 		"fare_attributes_transfers_valid_gtfs_enum": {
-			"depends_on": [
-				"fare_attributes_file_present"
-			]
-		},
-		"fare_id_unique": {
 			"depends_on": [
 				"fare_attributes_file_present"
 			]
