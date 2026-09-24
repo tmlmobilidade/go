@@ -3,6 +3,9 @@
 import { type Pool, PostgresDatabaseClient, type QueryResult, type QueryResultRow } from '@tmlmobilidade/go-clients-postgres';
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
+import { FIND_LOCATIONS_AT_POINT, FIND_LOCATIONS_BY_ADMIN_LEVEL } from './queries.js';
+import { type Location, type LocationWithGeojson } from './types.js';
+
 /* * */
 
 class LocationsDbClass {
@@ -29,11 +32,27 @@ class LocationsDbClass {
 	}
 
 	/**
-	 * Returns the underlying PostgreSQL pool.
-	 * @deprecated Prefer {@link query} for typed data access.
+	 * Finds locations whose geometry covers a WGS84 point.
+	 * Typically returns nested levels (country, district, municipality, parish).
 	 */
-	public getClient(): Pool {
-		return this.postgresClient;
+	public async findLocationsAtPoint(longitude: number, latitude: number): Promise<Location[]> {
+		const result = await this.postgresClient.query<Location>(
+			FIND_LOCATIONS_AT_POINT,
+			[longitude, latitude],
+		);
+		return result.rows;
+	}
+
+	/**
+	 * Lists locations for a given OSM admin_level, including GeoJSON geometry.
+	 * @param adminLevel OSM admin_level (e.g. `"7"` for municipalities, `"8"` for parishes).
+	 */
+	public async findLocationsByAdminLevel(adminLevel: number | string): Promise<LocationWithGeojson[]> {
+		const result = await this.postgresClient.query<LocationWithGeojson>(
+			FIND_LOCATIONS_BY_ADMIN_LEVEL,
+			[String(adminLevel)],
+		);
+		return result.rows;
 	}
 
 	/**
