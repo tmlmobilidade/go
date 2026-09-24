@@ -2,7 +2,7 @@
 
 import { useVehiclesDetailVehicleId } from '@/components/vehicles/detail/use-vehicles-detail-vehicle-id';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Vehicle } from '@tmlmobilidade/go-types-operation';
+import { type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, OperationalDateDisplay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -30,7 +30,7 @@ export function VehiclesList() {
 
 	const vehiclesData = useVehiclesListData();
 
-	const columns: DataTableColumn<Vehicle>[] = [
+	const columns: DataTableColumn<VehiclesListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -60,7 +60,7 @@ export function VehiclesList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: Vehicle) => {
+	const handleRowClick = (item: VehiclesListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.operation.VEHICLES_DETAIL(item._id)));
 	};
 

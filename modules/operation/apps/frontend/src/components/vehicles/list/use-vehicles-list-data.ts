@@ -1,8 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Vehicle } from '@tmlmobilidade/go-types-operation';
-import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { type VehiclesListFilters, type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -13,7 +13,7 @@ import { useVehiclesListFilterSearch } from './filters/VehiclesListFilterSearch/
 /* * */
 
 interface UseVehiclesListDataReturnType {
-	data: Vehicle[]
+	data: VehiclesListItem[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -33,40 +33,38 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 	const filterSearch = useVehiclesListFilterSearch();
 
 	//
-	// B. Fetch data
+	// B. Transform data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Vehicle[]>>(API_ROUTES.operation.VEHICLES_LIST, {
-		fetcher: async (url: string) => await fetchApiData<Vehicle[]>({ body: {
-			agency_id: filterAgency.value,
-			search: filterSearch.value,
-		}, method: 'POST', url }),
+	const query = useMemo<VehiclesListFilters>(() => ({
+		agency_ids: filterAgency.value,
+	}), [filterAgency.value]);
+
+	//
+	// C. Fetch data
+
+	const { data, error, isLoading, isValidating, mutate } = useSWR([API_ROUTES.operation.VEHICLES_LIST, query], {
+		fetcher: async ([url, body]: [string, VehiclesListFilters]) => await fetchApiData<VehiclesListItem[]>({ body, method: 'POST', url }),
 		refreshInterval: 5_000,
 	});
 
 	//
-	// C. Transform data
+	// D. Transform data
 
-	const searchResultsData = useSearch<Vehicle>({
+	const searchResultsData = useSearch<VehiclesListItem>({
 		accessors: ['_id', 'agency_id', 'license_plate'],
 		data: data?.data,
 		query: filterSearch.value,
 	});
 
-	const filteredData = useMemo(() => {
-		if (!searchResultsData) return [];
-		if (filterAgency.value.length === 0) return searchResultsData;
-		return searchResultsData.filter(vehicle => filterAgency.value.includes(vehicle.agency_id));
-	}, [filterAgency.value, searchResultsData]);
-
 	//
-	// D. Return data
+	// E. Return data
 
 	return useMemo(() => ({
-		data: filteredData,
+		data: searchResultsData,
 		error: error?.error,
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [data?.timestamp, error, filteredData, isLoading, isValidating, mutate]);
+	}), [data?.timestamp, error, isLoading, isValidating, mutate, searchResultsData]);
 };

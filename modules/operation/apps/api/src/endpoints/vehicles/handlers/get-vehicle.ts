@@ -1,34 +1,28 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 
 /**
- * Retrieves a single vehicle by ID
- * @param request Fastify request containing vehicle ID in params
- * @param reply Fastify reply
+ * Returns a Vehicle by ID.
+ * @param request The request object
+ * @param reply The reply object
  */
 export async function getVehicleHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
 	//
 
 	//
-	// Get the Vehicle from the database
+	// Get the vehicle data
 
-	const vehicleData = await goDb.operation.vehicles.findById(request.params.id);
+	const foundVehicle = await goDb.operation.vehicles.findById(request.params.id);
 
-	if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
-	//
-	// Fetch the vehicle data
-
-	return reply
-		.header('Access-Control-Allow-Origin', '*')
-		.send({
-			data: vehicleData,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
+	if (!foundVehicle) {
+		return sendErrorApiResponse(reply, {
+			error: `Vehicle with ID ${request.params.id} not found`,
+			status_code: '404',
 		});
+	}
 
-	//
+	return sendSuccessApiResponse(reply, foundVehicle);
 }

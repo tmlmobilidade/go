@@ -45,7 +45,7 @@ export function VehiclesCreateFormContextProvider({ children }: PropsWithChildre
 	// C. Handle actions
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Vehicle>({ body: form.getValues(), method: 'POST', url: API_ROUTES.operation.VEHICLES_LIST }),
+		fetchFn: async () => await fetchApiData<Vehicle>({ body: form.getValues(), method: 'POST', url: API_ROUTES.operation.VEHICLES_CREATE }),
 		onSuccess: ({ data }) => {
 			closeVehiclesCreateModal();
 			form.reset();

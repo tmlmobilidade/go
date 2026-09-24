@@ -4,6 +4,7 @@ import { closeVehiclesImportModal } from '@/components/vehicles/import/VehiclesI
 import { type VehicleImportPreview } from '@/types/preview';
 import { parseTxtFile } from '@/utils/parseTxtFile';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type CreateVehicleDto, type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, useMeData, useToast } from '@tmlmobilidade/ui';
@@ -76,13 +77,13 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 		});
 	}, [meData?.permissions]);
 
-	const diffVehicle = useCallback((existing: Vehicle, incoming: CreateVehicleDto) => {
+	const diffVehicle = useCallback((existing: VehiclesListItem, incoming: CreateVehicleDto) => {
 		const changes: VehicleImportPreview['changes'] = {};
 		for (const key of Object.keys(incoming) as (keyof CreateVehicleDto)[]) {
-			if (incoming[key] !== existing[key]) {
+			if (key in existing && incoming[key] !== existing[key as keyof VehiclesListItem]) {
 				changes[key] = {
 					newValue: incoming[key],
-					oldValue: existing[key],
+					oldValue: existing[key as keyof VehiclesListItem],
 				};
 			}
 		}
@@ -100,7 +101,11 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 
 		try {
 			const vehiclesFromFile = await parseTxtFile(file);
-			const existingResponse = await fetchApiData<Vehicle[]>({ method: 'GET', url: API_ROUTES.operation.VEHICLES_LIST });
+			const existingResponse = await fetchApiData<VehiclesListItem[]>({
+				body: { agency_ids: agenciesData?.map(agency => agency._id) ?? [] },
+				method: 'POST',
+				url: API_ROUTES.operation.VEHICLES_LIST,
+			});
 
 			if (vehiclesFromFile.length === 0) {
 				setError(new Error('Invalid or empty file'));
@@ -182,27 +187,30 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 				.filter(item => item.mode === 'UPDATE')
 				.map(item => item.vehicle);
 
-			if (vehiclesToCreate.length > 0) {
-				const response = await fetchApiData<Vehicle[]>({ body: vehiclesToCreate, method: 'POST', url: API_ROUTES.operation.VEHICLES_LIST });
+			for (const vehicle of vehiclesToCreate) {
+				const response = await fetchApiData<Vehicle>({ body: vehicle, method: 'POST', url: API_ROUTES.operation.VEHICLES_CREATE });
 				if (response.error) {
 					setError(new Error(response.error));
 					return;
 				}
-				vehiclesListMutate();
+			}
+
+			if (vehiclesToCreate.length > 0) {
 				useToast.success({
 					message: `${vehiclesToCreate.length} created`,
 					title: 'Success',
 				});
 			}
 
-			if (vehiclesToUpdate.length > 0) {
-				const vehicleIds = vehiclesToUpdate.map(vehicle => vehicle._id).join(',');
-				const response = await fetchApiData<Vehicle[]>({ body: vehiclesToUpdate, method: 'PUT', url: API_ROUTES.operation.VEHICLES_DETAIL(vehicleIds) });
+			for (const vehicle of vehiclesToUpdate) {
+				const response = await fetchApiData<Vehicle>({ body: vehicle, method: 'PUT', url: API_ROUTES.operation.VEHICLES_DETAIL(vehicle._id) });
 				if (response.error) {
 					setError(new Error(response.error));
 					return;
 				}
-				vehiclesListMutate();
+			}
+
+			if (vehiclesToUpdate.length > 0) {
 				useToast.success({
 					message: `${vehiclesToUpdate.length} updated`,
 					title: 'Success',
