@@ -11,7 +11,7 @@ import (
 
 - File: [feed_info.txt]
 - Field: feed_publisher_url
-- Presence: Required
+- Presence: Optional
 - Type: URL
 
 # Description
@@ -24,7 +24,11 @@ func FeedPublisherUrlValidation(feedInfo *types.FeedInfo, row int) {
 	ctx := lib.NewValidationContext("feed_publisher_url", "feed_info.txt", "feed_publisher_url_valid_http_url", row, services.AppMessageService)
 
 	if feedInfo.FeedPublisherUrl == nil || *feedInfo.FeedPublisherUrl == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_publisher_url_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		ctx.AddMessageWithSeverity("feed_publisher_url_validation.required", "feed_publisher_url_validation.recommended")
 		return
 	}
 

@@ -11,14 +11,12 @@ import (
 
 - File: [feed_info.txt]
 - Field: feed_end_date
-- Presence: Recommended
+- Presence: Required
 - Type: Date
 
 # Description
 
 The dataset provides complete and reliable schedule information for service in the period from the beginning of the feed_start_date day to the end of the feed_end_date day.
-
-Both days may be left empty if unavailable.
 
 The feed_end_date date must not precede the feed_start_date date if both are given.
 
@@ -36,20 +34,14 @@ func FeedEndDateValidation(severity *types.Severity, feedInfo *types.FeedInfo, r
 		ctx.WithSeverity(types.SEVERITY_WARNING)
 	}
 
-	if feedInfo.FeedEndDate == nil {
-		if ctx.ShouldSkip() {
-			return
-		}
-
-		message := ctx.GetRequiredMessage("feed_end_date_validation.required", "feed_end_date_validation.recommended")
-		ctx.AddMessageWithSeverity(message)
+	// feed_end_date is required
+	if feedInfo.FeedEndDate == nil || *feedInfo.FeedEndDate == "" {
+		ctx.AddError(ctx.GetTranslatedMessage("feed_end_date_validation.required"))
 		return
 	}
 
-	if feedInfo.FeedEndDate != nil && *feedInfo.FeedEndDate != "" {
-		if !lib.IsValidServiceDate(*feedInfo.FeedEndDate) {
-			ctx.AddError(ctx.GetTranslatedMessage("feed_end_date_validation.invalid"))
-			return
-		}
+	if !lib.IsValidServiceDate(*feedInfo.FeedEndDate) {
+		ctx.AddError(ctx.GetTranslatedMessage("feed_end_date_validation.invalid"))
+		return
 	}
 }

@@ -11,7 +11,7 @@ import (
 
 - File: [feed_info.txt]
 - Field: feed_publisher_name
-- Presence: Required
+- Presence: Optional
 - Type: String
 
 # Description
@@ -23,8 +23,14 @@ Full name of the organization that publishes the dataset. This may be the same a
 func FeedPublisherNameValidation(feedInfo *types.FeedInfo, row int) {
 	ctx := lib.NewValidationContext("feed_publisher_name", "feed_info.txt", "feed_publisher_name_non_empty", row, services.AppMessageService)
 
+	// feed_publisher_name is optional
 	if feedInfo.FeedPublisherName == nil || *feedInfo.FeedPublisherName == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_publisher_name_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("feed_publisher_name_validation.required", "feed_publisher_name_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 }
