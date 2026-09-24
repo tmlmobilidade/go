@@ -3,7 +3,7 @@
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { DatePicker, Modal, SegmentedControl } from '@tmlmobilidade/ui';
-import { useMemo, useState } from 'react';
+import { type MouseEvent, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -44,7 +44,7 @@ export function SelectOperationalDate() {
 	const segmentedControlOptions = useMemo(() => [
 		{ label: t('default:lines.SelectOperationalDate.today'), value: 'today' },
 		{ label: t('default:lines.SelectOperationalDate.tomorrow'), value: 'tomorrow' },
-		{ label: <span onClick={() => setModalIsOpen(true)}>{customDateOptionLabel}</span>, value: 'custom_date' },
+		{ label: customDateOptionLabel, value: 'custom_date' },
 	], [customDateOptionLabel, t]);
 
 	const selectedSegmentedControlOption = useMemo(() => {
@@ -56,6 +56,21 @@ export function SelectOperationalDate() {
 
 	//
 	// C. Handle actions
+
+	const handleSegmentedControlClick = (event: MouseEvent<HTMLDivElement>) => {
+		if (!(event.target instanceof Element)) return;
+
+		const label = event.target.closest('label');
+		const input = label?.htmlFor
+			? document.getElementById(label.htmlFor)
+			: event.target instanceof HTMLInputElement
+				? event.target
+				: event.target.parentElement?.querySelector('input');
+
+		if (!(input instanceof HTMLInputElement) || input.value !== 'custom_date') return;
+
+		setModalIsOpen(true);
+	};
 
 	const handleSegmentedControlChange = (value: string) => {
 		if (value === 'today') setOperationalDateToToday();
@@ -91,6 +106,7 @@ export function SelectOperationalDate() {
 			<SegmentedControl
 				data={segmentedControlOptions}
 				onChange={handleSegmentedControlChange}
+				onClick={handleSegmentedControlClick}
 				size="md"
 				value={selectedSegmentedControlOption}
 				fullWidth

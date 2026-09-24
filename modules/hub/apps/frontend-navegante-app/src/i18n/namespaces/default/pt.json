@@ -48,7 +48,8 @@
 			"label": "Fechar"
 		},
 		"CopyBadge": {
-			"copied": "Copiado"
+			"copied": "Copiado",
+			"copy": "Copiar {value}"
 		},
 		"DetailUnavailable": {
 			"error": "Não foi possível carregar esta informação.",

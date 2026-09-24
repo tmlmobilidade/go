@@ -35,14 +35,20 @@ export function CopyBadge({ label, size = 'md', value, withBorder }: CopyBadgePr
 	//
 	// C. Render components
 
+	const visibleLabel = clipboard.copied ? t('default:common.CopyBadge.copied') : label ? label : value;
+
 	return (
-		<div
+		<button
 			className={styles.container}
 			data-size={size}
 			data-with-border={withBorder}
 			onClick={handleCopy}
+			type="button"
+			aria-label={clipboard.copied
+				? t('default:common.CopyBadge.copied')
+				: t('default:common.CopyBadge.copy', '', { value: visibleLabel })}
 		>
-			{clipboard.copied ? t('default:common.CopyBadge.copied') : label ? label : value}
-		</div>
+			{visibleLabel}
+		</button>
 	);
 }

@@ -34,10 +34,10 @@ export function AlertsCarouselSlide({ alert }: AlertsCarouselSlideProps) {
 	return (
 		<div className={styles.container}>
 			<AlertActivePeriodStart date={alert.active_period_start_date} size="sm" />
-			<p className={styles.title} onClick={handleClick}>
+			<button className={styles.title} onClick={handleClick} type="button">
 				{alert.title}
-				<IconCircleArrowRightFilled className={styles.icon} size={16} />
-			</p>
+				<IconCircleArrowRightFilled aria-hidden="true" className={styles.icon} size={16} />
+			</button>
 		</div>
 	);
 }
