@@ -36,7 +36,10 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 	// B. Fetch data
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Vehicle[]>>(API_ROUTES.operation.VEHICLES_LIST, {
-		fetcher: async (url: string) => await fetchApiData<Vehicle[]>({ url }),
+		fetcher: async (url: string) => await fetchApiData<Vehicle[]>({ body: {
+			agency_id: filterAgency.value,
+			search: filterSearch.value,
+		}, method: 'POST', url }),
 		refreshInterval: 5_000,
 	});
 
