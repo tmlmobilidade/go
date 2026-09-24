@@ -11,7 +11,7 @@ import (
 
   - File: [trips.txt]
   - Field: trip_headsign
-  - Presence: Optional
+  - Presence: Required
   - Type: Text
 
 # Description

@@ -12,7 +12,7 @@ import (
 
   - File: [agency.txt]
   - Field: agency_timezone
-  - Presence: Required
+  - Presence: optional
   - Type: Timezone
 
 # Description
@@ -24,8 +24,14 @@ If multiple agencies are specified in the dataset, each must have the same 'agen
 */
 func AgencyTimezoneValidation(agency *types.Agency, row int, rules *types.AgencyRules) lib.RuleStatus {
 	ctx := lib.NewValidationContext("agency_timezone", "agency.txt", "agency_timezone_valid_id", row, services.AppMessageService)
+	if rules != nil {
+		ctx.WithSeverity(rules.AgencyTimezone.Severity)
+	}
+
+	//
+	// agency_timezone is optional
+
 	if agency.AgencyTimezone == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("agency_timezone_validation.required"))
 		return ctx.Status()
 	}
 

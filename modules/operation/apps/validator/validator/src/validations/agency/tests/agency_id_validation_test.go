@@ -43,6 +43,6 @@ func TestAgencyIdValidation(t *testing.T) {
 		}
 		defer cleanup()
 		validations.AgencyIdValidation(&types.Agency{AgencyId: nil}, 1, *gtfs, &types.AgencyRules{AgencyId: types.RuleConfig{Severity: types.SEVERITY_WARNING}})
-		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "TableCountEqual1", types.SEVERITY_WARNING)
+		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "TableCountEqual1", types.SEVERITY_ERROR)
 	})
 }

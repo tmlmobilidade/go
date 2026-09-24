@@ -11,7 +11,7 @@ import (
 
   - File: [agency.txt]
   - Field: agency_name_id_match
-  - Presence: Optional
+  - Presence: required
   - Type: String
 
 # Description
@@ -26,14 +26,13 @@ func AgencyNameIdMatchValidation(agency *types.Agency, row int, rules *types.Age
 		ctx.WithSeverity(rules.AgencyNameIdMatch.Severity)
 	}
 
-	if ctx.ShouldSkip() {
+	// agency_id and agency_name are required
+	if agency.AgencyId == nil || agency.AgencyName == nil {
+		ctx.AddError(ctx.GetTranslatedMessage("agency_name_id_match_validation.required"))
 		return ctx.Status()
 	}
 
-	// Check if agency_id matches agency_name
-	if agency.AgencyId == nil || agency.AgencyName == nil {
-		message := ctx.GetRequiredMessage("agency_name_id_match_validation.required", "agency_name_id_match_validation.recommended")
-		ctx.AddMessageWithSeverity(message)
+	if ctx.ShouldSkip() {
 		return ctx.Status()
 	}
 
