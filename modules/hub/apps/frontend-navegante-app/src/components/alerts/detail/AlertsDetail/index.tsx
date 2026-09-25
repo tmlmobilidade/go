@@ -3,9 +3,9 @@
 import { AlertsDetailView } from '@/components/alerts/detail/AlertsDetailView';
 import { useAlertsData } from '@/components/alerts/use-alerts-data';
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { BusyStatus } from '@/components/common/display/BusyStatus';
 import { DetailUnavailable } from '@/components/common/display/DetailUnavailable';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
-import { LoadingSection } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -38,7 +38,7 @@ export function AlertsDetail() {
 			withCompactCloseButton
 			withHeaderBackground
 		>
-			{activeAlertId && isLoading && <LoadingSection fullHeight />}
+			{activeAlertId && isLoading && <BusyStatus fullHeight />}
 			{activeAlertId && !isLoading && error && <DetailUnavailable reason="error" />}
 			{activeAlertId && !isLoading && !error && !alert && <DetailUnavailable reason="not-found" />}
 			{activeAlertId && !isLoading && !error && alert && <AlertsDetailView alert={alert} />}

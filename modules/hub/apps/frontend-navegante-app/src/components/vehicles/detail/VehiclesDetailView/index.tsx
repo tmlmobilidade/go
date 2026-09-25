@@ -1,5 +1,6 @@
 'use client';
 
+import { BusyStatus } from '@/components/common/display/BusyStatus';
 import { CopyBadge } from '@/components/common/display/CopyBadge';
 import { DetailUnavailable } from '@/components/common/display/DetailUnavailable';
 import { useLinesData } from '@/components/lines/use-lines-data';
@@ -9,7 +10,7 @@ import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { getAgencyLogo } from '@/lib/agency-catalog';
 import { findVehicleLine, getVehiclePatternId } from '@/utils/transit/vehicle-detail';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { LineBadge, LineName, LoadingSection, Section, Skeleton } from '@tmlmobilidade/ui';
+import { LineBadge, LineName, Section, Skeleton } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import { type KeyboardEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -81,7 +82,7 @@ export function VehiclesDetailView() {
 	//
 	// D. Render components
 
-	if (vehiclesDetailContext.flags.is_loading) return <LoadingSection fullHeight />;
+	if (vehiclesDetailContext.flags.is_loading) return <BusyStatus fullHeight />;
 
 	if (vehiclesDetailContext.flags.has_error || vehiclesDetailContext.flags.is_not_found) {
 		return <DetailUnavailable reason={vehiclesDetailContext.flags.has_error ? 'error' : 'not-found'} />;

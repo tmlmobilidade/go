@@ -159,16 +159,6 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		setTriggerPortalRoot(document.body);
 	}, []);
 
-	useEffect(() => {
-		if (activeView !== 'thank-you') return;
-
-		const timeout = window.setTimeout(() => {
-			resetFeedbackForm();
-		}, 2000);
-
-		return () => window.clearTimeout(timeout);
-	}, [activeView]);
-
 	//
 	// D. Render components
 

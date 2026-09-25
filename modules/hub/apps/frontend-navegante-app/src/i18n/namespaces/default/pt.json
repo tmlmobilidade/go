@@ -55,6 +55,9 @@
 			"error": "Não foi possível carregar esta informação.",
 			"not_found": "Esta informação já não está disponível."
 		},
+		"Loading": {
+			"label": "A carregar"
+		},
 		"locations": {
 			"coordinates": "Coordenadas",
 			"unnamed": "Local sem nome"
