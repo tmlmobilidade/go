@@ -39,7 +39,7 @@ Package and Docker builds use the committed files and do not need Go. CI runs th
 | `normalizeValidationRules` | Parse and check saved rules against the editor's policy. |
 | `isRuleSeverity`, `parseRuleSeverity` | Runtime severity checks. |
 
-The generated types are compile-time only. `normalizeValidationRules` is the runtime check, and it is intentionally stricter than the Go decoder: a rule that is present must have a valid severity.
+The generated types are compile-time only. `normalizeValidationRules` removes saved rules whose group/key is no longer in the generated configuration, while preserving `_file` settings and the options and metadata of retained rules. Missing rules stay absent. It is intentionally stricter than the Go decoder: a retained rule must have a valid severity.
 
 A stored config key can differ from the emitted rule id. For example, `frequencies.trip_id` emits `frequencies_trip_id_references_trips_table`. Catalogue entries carry both `config_key` and `id`, and `setRuleSeverity` always writes under `config_key`.
 
