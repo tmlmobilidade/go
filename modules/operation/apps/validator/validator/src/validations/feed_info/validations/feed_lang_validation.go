@@ -11,7 +11,7 @@ import (
 
 - File: [feed_info.txt]
 - Field: feed_lang
-- Presence: Required
+- Presence: Optional
 - Type: Language Code
 
 # Description
@@ -32,12 +32,17 @@ func FeedLangValidation(severity *types.Severity, feedInfo *types.FeedInfo, row 
 		ctx.WithSeverity(*severity)
 	}
 
-	if feedInfo.FeedLang == nil || *feedInfo.FeedLang == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_lang_validation.required"))
+	if feedInfo.FeedLang == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("feed_lang_validation.required", "feed_lang_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	if *feedInfo.FeedLang != "mul" {
+	if *feedInfo.FeedLang != "mul" && *feedInfo.FeedLang != "" {
 		if valid := lib.ValidateLanguage(*feedInfo.FeedLang); !valid {
 			ctx.AddError(ctx.GetTranslatedMessage("feed_lang_validation.invalid"))
 			return

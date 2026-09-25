@@ -11,7 +11,7 @@ import (
 
 - File: [feed_info.txt]
 - Field: feed_version
-- Presence: Recommended
+- Presence: Optional
 - Type: String
 
 # Description
@@ -24,11 +24,9 @@ func FeedVersionValidation(severity *types.Severity, feedInfo *types.FeedInfo, r
 	ctx := lib.NewValidationContext("feed_version", "feed_info.txt", "feed_version_valid_identifier", row, services.AppMessageService)
 	if severity != nil {
 		ctx.WithSeverity(*severity)
-	} else {
-		ctx.WithSeverity(types.SEVERITY_WARNING)
 	}
 
-	if feedInfo.FeedVersion == nil || *feedInfo.FeedVersion == "" {
+	if feedInfo.FeedVersion == nil {
 		if ctx.ShouldSkip() {
 			return
 		}

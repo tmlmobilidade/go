@@ -25,8 +25,6 @@ func FeedContactUrlValidation(severity *types.Severity, feedInfo *types.FeedInfo
 	ctx := lib.NewValidationContext("feed_contact_url", "feed_info.txt", "feed_contact_url_valid_http_url", row, services.AppMessageService)
 	if severity != nil {
 		ctx.WithSeverity(*severity)
-	} else {
-		ctx.WithSeverity(types.SEVERITY_WARNING)
 	}
 
 	if feedInfo.FeedContactUrl == nil {

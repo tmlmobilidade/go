@@ -65,9 +65,9 @@
 	"arrival_time_validation": {
 		"forbidden": "O campo \"arrival_time\" é proibido",
 		"forbidden_pickup_dropoff": "O campo \"arrival_time\" é proibido quando start_pickup_drop_off_window ou end_pickup_drop_off_window estão definidos",
-		"invalid_trip_id": "Não foi possível encontrar as paragens da viagem ao validar arrival_time",
-		"invalid_stop_sequence": "O campo \"stop_sequence\" deve ser um número inteiro válido para validar arrival_time",
 		"invalid": "O campo \"arrival_time\" deve ser uma hora válida, formato esperado: HH:MM:SS, recebido: %s",
+		"invalid_stop_sequence": "O campo \"stop_sequence\" deve ser um número inteiro válido para validar arrival_time",
+		"invalid_trip_id": "Não foi possível encontrar as paragens da viagem ao validar arrival_time",
 		"recommended": "O campo \"arrival_time\" é recomendado",
 		"required": "O campo \"arrival_time\" é obrigatório",
 		"required_first_stop": "O campo \"arrival_time\" é obrigatório para a primeira paragem numa viagem",

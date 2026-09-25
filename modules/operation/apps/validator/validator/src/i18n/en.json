@@ -65,9 +65,9 @@
 	"arrival_time_validation": {
 		"forbidden": "Field \"arrival_time\" is forbidden",
 		"forbidden_pickup_dropoff": "Field \"arrival_time\" is forbidden when start_pickup_drop_off_window or end_pickup_drop_off_window are defined",
-		"invalid_trip_id": "Could not find stop times for the trip while validating arrival_time",
-		"invalid_stop_sequence": "Field \"stop_sequence\" must be a valid integer to validate arrival_time",
 		"invalid": "Field \"arrival_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
+		"invalid_stop_sequence": "Field \"stop_sequence\" must be a valid integer to validate arrival_time",
+		"invalid_trip_id": "Could not find stop times for the trip while validating arrival_time",
 		"recommended": "Field \"arrival_time\" is recommended",
 		"required": "Field \"arrival_time\" is required",
 		"required_first_stop": "Field \"arrival_time\" is required for the first stop in a trip",
