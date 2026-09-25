@@ -29,9 +29,9 @@ export function LinesDetailViewHeader() {
 					<LineBadge lineData={linesDetailContext.data.line} size="lg" />
 					{agencyLogo && <Image alt="" height={40} src={agencyLogo} width={60} />}
 				</div>
-				<h1 aria-hidden={true} className={styles.lineName}>
+				<h2 className={styles.lineName}>
 					{linesDetailContext.data.line.long_name}
-				</h1>
+				</h2>
 			</Section>
 		</Surface>
 	);

@@ -156,7 +156,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	// C. Setup effects
 
 	useEffect(() => {
-		setTriggerPortalRoot(document.body);
+		setTriggerPortalRoot(document.querySelector('main') ?? document.body);
 	}, []);
 
 	//

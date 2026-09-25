@@ -9,6 +9,7 @@
 /* ALERT TITLE */
 
 .alertTitle {
+	margin: 0;
 	font-size: 18px;
 	font-weight: var(--font-weight-bold);
 	color: var(--color-system-text-100);

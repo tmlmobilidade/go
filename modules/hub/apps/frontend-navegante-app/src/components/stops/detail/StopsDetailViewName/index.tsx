@@ -18,6 +18,6 @@ export function StopsDetailViewName() {
 	// B. Render components
 
 	return (
-		<h1 className={styles.name}>{stopsDetailContext.data.stop.name}</h1>
+		<h2 className={styles.name}>{stopsDetailContext.data.stop.name}</h2>
 	);
 }

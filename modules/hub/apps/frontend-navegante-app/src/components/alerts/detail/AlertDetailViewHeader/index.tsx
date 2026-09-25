@@ -24,9 +24,9 @@ export function AlertDetailViewHeader({ effect, title }: AlertDetailViewHeaderPr
 			<Section className={styles.section} gap="sm">
 				<div className={styles.row}>
 					<AlertEffectIcon effect={effect} />
-					<h1 className={styles.alertTitle}>
+					<p className={styles.alertTitle}>
 						{title}
-					</h1>
+					</p>
 				</div>
 			</Section>
 		</Surface>

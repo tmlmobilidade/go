@@ -5,7 +5,6 @@ import { expect, type Page, test } from '@playwright/test';
 
 const APP_SHELL_KNOWN_VIOLATIONS = new Map([
 	['color-contrast', 'VISUAL-02'],
-	['region', 'STRUCTURE-01'],
 ]);
 
 const SEARCH_SHEET_KNOWN_VIOLATIONS = new Map([

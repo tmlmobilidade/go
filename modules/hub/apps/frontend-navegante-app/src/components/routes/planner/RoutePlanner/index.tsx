@@ -62,7 +62,7 @@ export function RoutePlanner() {
 	const { activeBottomSheet, pop } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
 	const searchInputRef = useRef<HTMLInputElement>(null);
-	const viewFocusRef = useRef<HTMLElement>(null);
+	const viewFocusRef = useRef<HTMLDivElement>(null);
 	const previousViewModeRef = useRef(routePlannerContext.data.view_mode);
 
 	//
@@ -165,13 +165,13 @@ export function RoutePlanner() {
 			)}
 
 			{routePlannerContext.data.view_mode !== 'destination-search' && (
-				<section ref={viewFocusRef} aria-label={sheetConfig.accessibleTitle} className={styles.view} tabIndex={-1}>
+				<div ref={viewFocusRef} className={styles.view} tabIndex={-1}>
 					{routePlannerContext.data.view_mode === 'results' && <RoutePlannerResults />}
 
 					{routePlannerContext.data.view_mode === 'place-detail' && <RoutePlannerPlaceDetail />}
 
 					{routePlannerContext.data.view_mode === 'itinerary-detail' && <RoutePlannerItineraryDetail />}
-				</section>
+				</div>
 			)}
 		</BottomSheet>
 	);

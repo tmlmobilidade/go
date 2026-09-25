@@ -18,6 +18,7 @@
 /* LINE NAME */
 
 .lineName {
+	margin: 0;
 	font-size: 20px;
 	font-weight: var(--font-weight-bold);
 	color: var(--color-system-text-100);
