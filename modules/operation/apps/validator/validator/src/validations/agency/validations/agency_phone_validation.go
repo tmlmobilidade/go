@@ -24,7 +24,7 @@ Dialable text (for example, TriMet's "503-238-RIDE") is permitted, but the field
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyPhoneValidation(agency *types.Agency, row int, rules *types.AgencyRules) lib.RuleStatus {
+func AgencyPhoneValidation(agency *types.Agency, row int, rules *types.AgencyRules) {
 	ctx := lib.NewValidationContext("agency_phone", "agency.txt", "agency_phone_valid_phone_number", row, services.AppMessageService)
 	if rules != nil && rules.AgencyPhone.Severity != "" {
 		ctx.WithSeverity(rules.AgencyPhone.Severity)
@@ -33,35 +33,35 @@ func AgencyPhoneValidation(agency *types.Agency, row int, rules *types.AgencyRul
 	// Check if agency_phone is required
 	if agency.AgencyPhone == nil {
 		if ctx.ShouldSkip() {
-			return ctx.Status()
+			return 
 		}
 
 		message := ctx.GetRequiredMessage("agency_phone_validation.required", "agency_phone_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return ctx.Status()
+		return 
 	}
 
+	// Check if agency_phone is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_phone_validation.forbidden"))
-		return ctx.Status()
+		return 
 	}
 
+	// Check if agency_phone is valid
 	if !lib.ValidatePhone(*agency.AgencyPhone) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_phone_validation.invalid", *agency.AgencyPhone))
-		return ctx.Status()
+		ctx.AddError(ctx.GetTranslatedMessage("agency_phone_validation.invalid", *agency.AgencyPhone))
+		return 
 	}
 
 	// Validate rules
 	if rules != nil && rules.AgencyPhone.Options != nil {
 		if slices.Contains(*rules.AgencyPhone.Options, types.ALL_OPTIONS) {
-			return ctx.Status()
+			return 
 		}
 
 		if !slices.Contains(*rules.AgencyPhone.Options, *agency.AgencyPhone) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_phone_validation.not_allowed", *agency.AgencyPhone))
-			return ctx.Status()
+			return 
 		}
 	}
-
-	return ctx.Status()
 }

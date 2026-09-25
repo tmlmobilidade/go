@@ -50,6 +50,7 @@
 		"forbidden": "Field \"agency_timezone\" is forbidden",
 		"invalid": "Field \"agency_timezone\" \"%s\" is not a valid timezone",
 		"not_allowed": "Field \"agency_timezone\" \"%s\" is not allowed",
+		"recommended": "Field \"agency_timezone\" is recommended",
 		"required": "Field \"agency_timezone\" is required"
 	},
 	"agency_url_validation": {

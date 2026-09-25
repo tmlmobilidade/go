@@ -50,6 +50,7 @@
 		"forbidden": "O campo \"agency_timezone\" é proibido",
 		"invalid": "O campo \"agency_timezone\" \"%s\" não é um fuso horário válido",
 		"not_allowed": "O campo \"agency_timezone\" \"%s\" não é permitido",
+		"recommended": "O campo \"agency_timezone\" é recomendado",
 		"required": "O campo \"agency_timezone\" é obrigatório"
 	},
 	"agency_url_validation": {

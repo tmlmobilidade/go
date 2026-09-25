@@ -22,41 +22,45 @@ Should be provided to help GTFS consumers choose capitalization rules and other 
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyLangValidation(agency *types.Agency, row int, rules *types.AgencyRules) lib.RuleStatus {
+func AgencyLangValidation(agency *types.Agency, row int, rules *types.AgencyRules) {
 	ctx := lib.NewValidationContext("agency_lang", "agency.txt", "agency_lang_valid_language_tag", row, services.AppMessageService)
 	if rules != nil && rules.AgencyLang.Severity != "" {
 		ctx.WithSeverity(rules.AgencyLang.Severity)
 	}
 
 	// Check if agency_lang is required
-	if agency.AgencyLang == nil && !ctx.ShouldIgnore() {
+	if agency.AgencyLang == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
 		message := ctx.GetRequiredMessage("agency_lang_validation.required", "agency_lang_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return ctx.Status()
+		return 
 	}
 
+	// Check if agency_lang is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_lang_validation.forbidden"))
-		return ctx.Status()
+		return 
 	}
 
 	// Check if agency_lang is valid
 	if agency.AgencyLang != nil && !lib.ValidateLanguage(*agency.AgencyLang) {
-		ctx.AddError(ctx.GetTranslatedMessage("agency_lang_validation.invalid"))
-		return ctx.Status()
+		ctx.AddError(ctx.GetTranslatedMessage("agency_lang_validation.invalid", *agency.AgencyLang))
+		return 
 	}
 
 	// Validate rules
 	if rules != nil && rules.AgencyLang.Options != nil {
 		if slices.Contains(*rules.AgencyLang.Options, types.ALL_OPTIONS) {
-			return ctx.Status()
+			return 
 		}
 
 		if !slices.Contains(*rules.AgencyLang.Options, *agency.AgencyLang) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_lang_validation.not_allowed", *agency.AgencyLang))
-			return ctx.Status()
+			return 
 		}
 	}
 
-	return ctx.Status()
 }

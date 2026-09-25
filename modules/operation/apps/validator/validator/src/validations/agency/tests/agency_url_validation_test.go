@@ -16,7 +16,7 @@ func TestAllAgencyUrlValidationTestCases(t *testing.T) {
 			services.AppMessageService.Clear()
 
 			var severity types.Severity
-			if tc.Name == "Required" {
+			if tc.Name == "Required_Missing" {
 				severity = types.SEVERITY_ERROR
 			} else {
 				severity = types.SEVERITY_WARNING

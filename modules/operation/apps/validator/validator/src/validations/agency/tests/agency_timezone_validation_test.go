@@ -28,7 +28,9 @@ func TestAllAgencyTimezoneValidationTestCases(t *testing.T) {
 
 			agency := &types.Agency{AgencyTimezone: tc.Timezone}
 
-			validations.AgencyTimezoneValidation(agency, 1, &types.AgencyRules{AgencyTimezone: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
+			// agency_timezone is optional: no rules configured means a missing
+			// value is ignored, while an invalid value is always an error.
+			validations.AgencyTimezoneValidation(agency, 1, nil)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}

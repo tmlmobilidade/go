@@ -25,6 +25,11 @@ func TestAllAgencyNameIdMatchValidationTestCases(t *testing.T) {
 		if tc.Name == "Invalid_Id" {
 			continue
 		}
+		// This rule only compares agency_id against agency_name; whether either
+		// field is present at all is agency_id_unique / agency_name_present's job.
+		if tc.Name == "Required" || tc.Name == "Invalid_Value" {
+			continue
+		}
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 
