@@ -26,17 +26,18 @@ func FeedPublisherUrlValidation(severity *types.Severity, feedInfo *types.FeedIn
 		ctx.WithSeverity(*severity)
 	}
 
-	if feedInfo.FeedPublisherUrl == nil || *feedInfo.FeedPublisherUrl == "" {
+	if feedInfo.FeedPublisherUrl == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
 
-		ctx.AddMessageWithSeverity("feed_publisher_url_validation.required", "feed_publisher_url_validation.recommended")
+		message := ctx.GetRequiredMessage("feed_publisher_url_validation.required", "feed_publisher_url_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	if valid := lib.ValidateUrl(*feedInfo.FeedPublisherUrl); !valid {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_publisher_url_validation.invalid"))
+	if !lib.ValidateUrl(*feedInfo.FeedPublisherUrl) {
+		ctx.AddError(ctx.GetTranslatedMessage("feed_publisher_url_validation.invalid", *feedInfo.FeedPublisherUrl))
 		return
 	}
 }

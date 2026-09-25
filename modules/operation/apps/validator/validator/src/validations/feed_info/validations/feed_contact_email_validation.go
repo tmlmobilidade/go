@@ -37,14 +37,9 @@ func FeedContactEmailValidation(severity *types.Severity, feedInfo *types.FeedIn
 		return
 	}
 
-	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_contact_email_validation.forbidden"))
-		return
-	}
-
 	if feedInfo.FeedContactEmail != nil && *feedInfo.FeedContactEmail != "" {
-		if valid := lib.ValidateEmail(*feedInfo.FeedContactEmail); !valid {
-			ctx.AddError(ctx.GetTranslatedMessage("feed_contact_email_validation.invalid"))
+		if !lib.ValidateEmail(*feedInfo.FeedContactEmail) {
+			ctx.AddError(ctx.GetTranslatedMessage("feed_contact_email_validation.invalid", *feedInfo.FeedContactEmail))
 			return
 		}
 	}

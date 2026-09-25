@@ -262,6 +262,12 @@
 		"recommended": "O campo \"feed_contact_url\" é recomendado",
 		"required": "O campo \"feed_contact_url\" é obrigatório"
 	},
+	"feed_end_date_validation": {
+		"forbidden": "O campo \"feed_end_date\" é proibido",
+		"invalid": "O campo \"feed_end_date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
+		"recommended": "O campo \"feed_end_date\" é recomendado",
+		"required": "O campo \"feed_end_date\" é obrigatório"
+	},
 	"feed_lang_validation": {
 		"forbidden": "O campo \"feed_lang\" é proibido",
 		"invalid": "O campo \"feed_lang\" \"%s\" não é um código de idioma válido",
@@ -271,6 +277,7 @@
 	"feed_publisher_name_validation": {
 		"forbidden": "O campo \"feed_publisher_name\" é proibido",
 		"not_allowed": "O campo \"feed_publisher_name\" \"%s\" não é permitido",
+		"recommended": "O campo \"feed_publisher_name\" é recomendado",
 		"required": "O campo \"feed_publisher_name\" é obrigatório"
 	},
 	"feed_publisher_url_validation": {
@@ -280,14 +287,15 @@
 		"required": "O campo \"feed_publisher_url\" é obrigatório"
 	},
 	"feed_start_date_validation": {
-		"forbidden": "O campo \"feed_end_date\" é proibido",
-		"invalid": "O campo \"feed_end_date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
-		"recommended": "O campo \"feed_end_date\" é recomendado",
-		"required": "O campo \"feed_end_date\" é obrigatório"
+		"forbidden": "O campo \"feed_start_date\" é proibido",
+		"invalid": "O campo \"feed_start_date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
+		"recommended": "O campo \"feed_start_date\" é recomendado",
+		"required": "O campo \"feed_start_date\" é obrigatório"
 	},
 	"feed_version_validation": {
 		"forbidden": "O campo \"feed_version\" é proibido",
 		"invalid": "O campo \"feed_version\" \"%s\" não é uma versão válida",
+		"recommended": "O campo \"feed_version\" é recomendado",
 		"required": "O campo \"feed_version\" é obrigatório"
 	},
 	"file_validations": {

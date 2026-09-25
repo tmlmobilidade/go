@@ -43,8 +43,8 @@ func FeedLangValidation(severity *types.Severity, feedInfo *types.FeedInfo, row 
 	}
 
 	if *feedInfo.FeedLang != "mul" && *feedInfo.FeedLang != "" {
-		if valid := lib.ValidateLanguage(*feedInfo.FeedLang); !valid {
-			ctx.AddError(ctx.GetTranslatedMessage("feed_lang_validation.invalid"))
+		if !lib.ValidateLanguage(*feedInfo.FeedLang) {
+			ctx.AddError(ctx.GetTranslatedMessage("feed_lang_validation.invalid", *feedInfo.FeedLang))
 			return
 		}
 	}

@@ -26,7 +26,7 @@ func FeedPublisherNameValidation(severity *types.Severity, feedInfo *types.FeedI
 		ctx.WithSeverity(*severity)
 	} 
 
-	if feedInfo.FeedPublisherName == nil || *feedInfo.FeedPublisherName == "" {
+	if feedInfo.FeedPublisherName == nil {
 		if ctx.ShouldSkip() {
 			return
 		}

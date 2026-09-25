@@ -32,13 +32,13 @@ func FeedEndDateValidation(severity *types.Severity, feedInfo *types.FeedInfo, r
 		ctx.WithSeverity(*severity)
 	} 
 
-	if feedInfo.FeedEndDate == nil || *feedInfo.FeedEndDate == "" {
+	if feedInfo.FeedEndDate == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("feed_end_date_validation.required"))
 		return
 	}
 
 	if !lib.IsValidServiceDate(*feedInfo.FeedEndDate) {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_end_date_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("feed_end_date_validation.invalid", *feedInfo.FeedEndDate))
 		return
 	}
 }

@@ -37,14 +37,9 @@ func FeedContactUrlValidation(severity *types.Severity, feedInfo *types.FeedInfo
 		return
 	}
 
-	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_contact_url_validation.forbidden"))
-		return
-	}
-
 	if feedInfo.FeedContactUrl != nil && *feedInfo.FeedContactUrl != "" {
-		if valid := lib.ValidateUrl(*feedInfo.FeedContactUrl); !valid {
-			ctx.AddError(ctx.GetTranslatedMessage("feed_contact_url_validation.invalid"))
+		if !lib.ValidateUrl(*feedInfo.FeedContactUrl) {
+			ctx.AddError(ctx.GetTranslatedMessage("feed_contact_url_validation.invalid", *feedInfo.FeedContactUrl))
 			return
 		}
 	}

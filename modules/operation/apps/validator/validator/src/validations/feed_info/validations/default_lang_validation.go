@@ -36,14 +36,9 @@ func DefaultLangValidation(severity *types.Severity, feedInfo *types.FeedInfo, r
 		return
 	}
 
-	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("default_lang_validation.forbidden"))
-		return
-	}
-
 	if feedInfo.DefaultLang != nil && *feedInfo.DefaultLang != "" {
-		if valid := lib.ValidateLanguage(*feedInfo.DefaultLang); !valid {
-			ctx.AddError(ctx.GetTranslatedMessage("default_lang_validation.invalid"))
+		if !lib.ValidateLanguage(*feedInfo.DefaultLang) {
+			ctx.AddError(ctx.GetTranslatedMessage("default_lang_validation.invalid", *feedInfo.DefaultLang))
 			return
 		}
 	}
