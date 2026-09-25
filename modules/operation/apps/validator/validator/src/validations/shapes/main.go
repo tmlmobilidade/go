@@ -77,13 +77,13 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 	}
 	for shapeID, points := range shapeGroups {
 		runner.Run(services.RuleActions{
-			"shape_id_and_point_sequence_required": func() {
+			"shape_id_and_point_sequence_required":                            func() {
 				validations.ShapeSequenceRuleValidation(points, shapesRules, "shape_id_and_point_sequence_required")
 			},
-			"shape_pt_sequence_strictly_increasing": func() {
+			"shape_pt_sequence_strictly_increasing":                           func() {
 				validations.ShapeSequenceRuleValidation(points, shapesRules, "shape_pt_sequence_strictly_increasing")
 			},
-			"shape_dist_traveled_non_decreasing_with_sequence": func() {
+			"shape_dist_traveled_non_decreasing_with_sequence":                func() {
 				validations.ShapeSequenceRuleValidation(points, shapesRules, "shape_dist_traveled_non_decreasing_with_sequence")
 			},
 			"shape_sequence_position_mismatches_cumulative_traveled_distance": func() { validations.ShapePointsCoordinatesConsistentValidation(points, shapesRules) },

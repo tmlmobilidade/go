@@ -44,8 +44,8 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate fare_id
 		runner.Run(services.RuleActions{
-			"fare_attributes_id_unique":                        func() { validations.FareIdValidation(&fareAttribute, i, &gtfs) },
-			"fare_price_valid_non_negative_decimal": func() { validations.PriceValidation(&fareAttribute, i) },
+			"fare_attributes_id_unique":                             func() { validations.FareIdValidation(&fareAttribute, i, &gtfs) },
+			"fare_price_valid_non_negative_decimal":                 func() { validations.PriceValidation(&fareAttribute, i) },
 			"fare_attributes_currency_type_valid":                   func() { validations.CurrencyTypeValidation(&fareAttribute, i) },
 			"fare_attributes_payment_method_valid_gtfs_enum":        func() { validations.PaymentMethodValidation(&fareAttribute, i) },
 			"fare_attributes_transfers_valid_gtfs_enum":             func() { validations.TransfersValidation(&fareAttribute, i, &gtfs) },

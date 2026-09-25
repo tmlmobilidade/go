@@ -39,14 +39,14 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate from_stop_id
 		runner.Run(services.RuleActions{
-			"transfer_from_stop_id_references_stops_table":   func() { validations.FromStopIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_to_stop_id_references_stops_table":     func() { validations.ToStopIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_from_route_id_references_routes_table": func() { validations.FromRouteIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_to_route_id_references_routes_table":   func() { validations.ToRouteIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_from_trip_id_references_trips_table":   func() { validations.FromTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_to_trip_id_references_trips_table":     func() { validations.ToTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_type_valid_gtfs_enum":                  func() { validations.TransferTypeValidation(transfer, row, &rules.Transfers) },
-			"transfers_min_transfer_time_non_negative_seconds":         func() { validations.MinTransferTimeValidation(transfer, row, &rules.Transfers) },
+			"transfer_from_stop_id_references_stops_table":     func() { validations.FromStopIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_to_stop_id_references_stops_table":       func() { validations.ToStopIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_from_route_id_references_routes_table":   func() { validations.FromRouteIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_to_route_id_references_routes_table":     func() { validations.ToRouteIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_from_trip_id_references_trips_table":     func() { validations.FromTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_to_trip_id_references_trips_table":       func() { validations.ToTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
+			"transfer_type_valid_gtfs_enum":                    func() { validations.TransferTypeValidation(transfer, row, &rules.Transfers) },
+			"transfers_min_transfer_time_non_negative_seconds": func() { validations.MinTransferTimeValidation(transfer, row, &rules.Transfers) },
 		}, nil)
 
 		return nil
