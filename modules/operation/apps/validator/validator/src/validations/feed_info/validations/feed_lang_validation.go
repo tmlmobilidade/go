@@ -26,10 +26,10 @@ Consider a dataset from a multilingual country like Switzerland, with the origin
 
 [feed_info.txt]: https://gtfs.org/schedule/reference/#feed_infotxt
 */
-func FeedLangValidation(severity *types.Severity, feedInfo *types.FeedInfo, row int) {
+func FeedLangValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfoRules) {
 	ctx := lib.NewValidationContext("feed_lang", "feed_info.txt", "feed_lang_valid_tag", row, services.AppMessageService)
-	if severity != nil {
-		ctx.WithSeverity(*severity)
+	if rules != nil && rules.FeedLang.Severity != "" {
+		ctx.WithSeverity(rules.FeedLang.Severity)
 	}
 
 	if feedInfo.FeedLang == nil {

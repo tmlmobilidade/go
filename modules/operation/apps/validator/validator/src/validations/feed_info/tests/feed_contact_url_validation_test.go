@@ -19,7 +19,7 @@ func TestAllFeedContactUrlValidationTestCases(t *testing.T) {
 				severity = types.SEVERITY_ERROR
 			}
 			feedInfo := &types.FeedInfo{FeedContactUrl: tc.Url}
-			validations.FeedContactUrlValidation(&severity, feedInfo, tc.Row)
+			validations.FeedContactUrlValidation(feedInfo, tc.Row, &types.FeedInfoRules{FeedContactUrl: types.RuleConfig{Severity: severity}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

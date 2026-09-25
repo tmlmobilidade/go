@@ -32,7 +32,7 @@ func TestAllFeedLangValidationTestCases(t *testing.T) {
 			} else {
 				feedLang = nil
 			}
-			validations.FeedLangValidation(&severity, &types.FeedInfo{FeedLang: feedLang}, tc.Row)
+			validations.FeedLangValidation(&types.FeedInfo{FeedLang: feedLang}, tc.Row, &types.FeedInfoRules{FeedLang: types.RuleConfig{Severity: severity}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

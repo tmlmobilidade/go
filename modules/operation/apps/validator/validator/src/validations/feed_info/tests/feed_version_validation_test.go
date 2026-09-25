@@ -19,7 +19,7 @@ func TestAllFeedVersionValidationTestCases(t *testing.T) {
 				severity = types.SEVERITY_ERROR
 			}
 
-			validations.FeedVersionValidation(&severity, &types.FeedInfo{FeedVersion: tc.Value}, tc.Row)
+			validations.FeedVersionValidation(&types.FeedInfo{FeedVersion: tc.Value}, tc.Row, &types.FeedInfoRules{FeedVersion: types.RuleConfig{Severity: severity}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
@@ -30,7 +30,7 @@ func TestAllFeedVersionValidationTestCases(t *testing.T) {
 		}
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
-			validations.FeedVersionValidation(&tc.Severity, &types.FeedInfo{FeedVersion: nil}, tc.Row)
+			validations.FeedVersionValidation(&types.FeedInfo{FeedVersion: nil}, tc.Row, &types.FeedInfoRules{FeedVersion: types.RuleConfig{Severity: tc.Severity}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

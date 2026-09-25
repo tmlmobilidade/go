@@ -30,7 +30,7 @@ func TestAllDefaultLangValidationTestCases(t *testing.T) {
 				defaultLang = nil
 			}
 
-			validations.DefaultLangValidation(&severity, &types.FeedInfo{DefaultLang: defaultLang}, tc.Row)
+			validations.DefaultLangValidation(&types.FeedInfo{DefaultLang: defaultLang}, tc.Row, &types.FeedInfoRules{DefaultLang: types.RuleConfig{Severity: severity}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
@@ -41,7 +41,7 @@ func TestAllDefaultLangValidationTestCases(t *testing.T) {
 		}
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
-			validations.DefaultLangValidation(&tc.Severity, &types.FeedInfo{DefaultLang: nil}, tc.Row)
+			validations.DefaultLangValidation(&types.FeedInfo{DefaultLang: nil}, tc.Row, &types.FeedInfoRules{DefaultLang: types.RuleConfig{Severity: tc.Severity}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

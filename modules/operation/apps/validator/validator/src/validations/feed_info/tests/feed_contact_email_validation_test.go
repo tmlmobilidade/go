@@ -36,7 +36,7 @@ func TestAllFeedContactEmailValidationTestCases(t *testing.T) {
 				feedInfo = &types.FeedInfo{}
 			}
 
-			validations.FeedContactEmailValidation(&severity, feedInfo, tc.Row)
+			validations.FeedContactEmailValidation(feedInfo, tc.Row, &types.FeedInfoRules{FeedContactEmail: types.RuleConfig{Severity: severity}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

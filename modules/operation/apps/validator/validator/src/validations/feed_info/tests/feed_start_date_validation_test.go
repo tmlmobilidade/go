@@ -33,7 +33,7 @@ func TestAllFeedStartDateValidationTestCases(t *testing.T) {
 				feedStartDate = lib.Ptr("2023-01-01")
 			}
 			feedInfo := &types.FeedInfo{FeedStartDate: feedStartDate}
-			validations.FeedStartDateValidation(&severity, feedInfo, tc.Row)
+			validations.FeedStartDateValidation(feedInfo, tc.Row, &types.FeedInfoRules{FeedStartDate: types.RuleConfig{Severity: severity}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
@@ -45,7 +45,7 @@ func TestAllFeedStartDateValidationTestCases(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 			feedInfo := &types.FeedInfo{FeedStartDate: nil}
-			validations.FeedStartDateValidation(&tc.Severity, feedInfo, tc.Row)
+			validations.FeedStartDateValidation(feedInfo, tc.Row, &types.FeedInfoRules{FeedStartDate: types.RuleConfig{Severity: tc.Severity}})
 			// feed_start_date is required: missing is an error even when the rule is ignored
 			test_helpers.AssertMessageCount(t, services.AppMessageService, 1, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, 0, tc.Name, types.SEVERITY_WARNING)

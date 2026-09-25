@@ -21,10 +21,10 @@ Email address for communication regarding the GTFS dataset and data publishing p
 [feed_info.txt]: https://gtfs.org/schedule/reference/#feed_infotxt
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func FeedContactEmailValidation(severity *types.Severity, feedInfo *types.FeedInfo, row int) {
+func FeedContactEmailValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfoRules) {
 	ctx := lib.NewValidationContext("feed_contact_email", "feed_info.txt", "feed_contact_email_valid_address", row, services.AppMessageService)
-	if severity != nil {
-		ctx.WithSeverity(*severity)
+	if rules != nil && rules.FeedContactEmail.Severity != "" {
+		ctx.WithSeverity(rules.FeedContactEmail.Severity)
 	}
 
 	if feedInfo.FeedContactEmail == nil {
