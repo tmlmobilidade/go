@@ -32,7 +32,6 @@ func FeedEndDateValidation(severity *types.Severity, feedInfo *types.FeedInfo, r
 		ctx.WithSeverity(*severity)
 	} 
 
-	// feed_end_date is required
 	if feedInfo.FeedEndDate == nil || *feedInfo.FeedEndDate == "" {
 		ctx.AddError(ctx.GetTranslatedMessage("feed_end_date_validation.required"))
 		return
