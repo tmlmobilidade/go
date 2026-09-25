@@ -3,6 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
+import { normalizeValidationRules } from '@tmlmobilidade/go-types-gtfs-validator';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
@@ -27,6 +28,14 @@ export async function updateAgencyHandler(request: FastifyRequest<{ Body: Update
 			error: validatedAgency.error.message,
 			status_code: '400',
 		});
+	}
+
+	if (validatedAgency.data.plans) {
+		try {
+			validatedAgency.data.plans.validation_rules = normalizeValidationRules(validatedAgency.data.plans.validation_rules);
+		} catch (error) {
+			return sendErrorApiResponse(reply, { error: error instanceof Error ? error.message : String(error), status_code: '400' });
+		}
 	}
 
 	//

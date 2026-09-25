@@ -1,0 +1,320 @@
+package types
+
+const ALL_OPTIONS = "all_options"
+
+type Compare struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+type RuleConfig struct {
+	Severity Severity   `json:"severity"`
+	Options  *[]string  `json:"options,omitempty"`
+	Compare  *[]Compare `json:"compare,omitempty"`
+	// DependsOn lists rule ids (from the same file section) that must pass before this rule runs
+	DependsOn []string `json:"depends_on,omitempty"`
+}
+
+type AgencyRules struct {
+	File              Severity   `json:"_file"`
+	AgencyId          RuleConfig `json:"agency_id_unique"`
+	AgencyNameIdMatch RuleConfig `json:"agency_id_matched_with_agency_name"`
+	AgencyName        RuleConfig `json:"agency_name_present"`
+	AgencyUrl         RuleConfig `json:"agency_url_valid_url"`
+	AgencyTimezone    RuleConfig `json:"agency_timezone_valid_id"`
+	AgencyLang        RuleConfig `json:"agency_lang_valid_language_tag"`
+	AgencyPhone       RuleConfig `json:"agency_phone_valid_phone_number"`
+	AgencyFare        RuleConfig `json:"agency_fare_url_valid_url"`
+	AgencyEmail       RuleConfig `json:"agency_email_valid_address"`
+}
+
+type StopsRules struct {
+	File                  Severity   `json:"_file"`
+	StopId                RuleConfig `json:"stop_id_unique"`
+	StopCode              RuleConfig `json:"stop_code_valid"`
+	StopName              RuleConfig `json:"stop_name_required_by_location_type"`
+	StopShortName         RuleConfig `json:"stop_short_name_valid"`
+	TtsStopName           RuleConfig `json:"stops_tts_stop_name_valid"`
+	StopDesc              RuleConfig `json:"stop_desc_valid"`
+	StopLat               RuleConfig `json:"stop_lat_valid_latitude_range"`
+	StopLon               RuleConfig `json:"stop_lon_valid_longitude_range"`
+	ZoneId                RuleConfig `json:"stops_zone_id_valid"`
+	StopUrl               RuleConfig `json:"stop_url_valid_url"`
+	LocationType          RuleConfig `json:"stops_location_type_valid_enum"`
+	ParentStation         RuleConfig `json:"stops_parent_station_id_valid_for_stop_hierarchy"`
+	StopTimezone          RuleConfig `json:"stop_timezone_valid"`
+	WheelchairBoarding    RuleConfig `json:"stops_wheelchair_boarding_valid_enum"`
+	LevelId               RuleConfig `json:"stops_level_id_valid_id"`
+	PlatformCode          RuleConfig `json:"stops_platform_code_valid"`
+	PublicVisible         RuleConfig `json:"stops_public_visible_valid_enum"`
+	HasStopSign           RuleConfig `json:"stops_has_stop_sign_valid_enum"`
+	HasShelter            RuleConfig `json:"stops_has_shelter_valid_enum"`
+	ShelterCode           RuleConfig `json:"stops_shelter_code_valid"`
+	ShelterMaintainer     RuleConfig `json:"stops_shelter_maintainer_valid"`
+	HasBench              RuleConfig `json:"stops_has_bench_valid_enum"`
+	HasNetworkMap         RuleConfig `json:"stops_has_network_map_valid_enum"`
+	HasSchedules          RuleConfig `json:"stops_has_schedules_valid_enum"`
+	HasPipRealTime        RuleConfig `json:"stops_has_pip_real_time_valid_enum"`
+	HasTariffsInformation RuleConfig `json:"stops_has_tariffs_information_valid_enum"`
+	RegionId              RuleConfig `json:"stops_region_id_valid"`
+	MunicipalityId        RuleConfig `json:"stops_municipality_id_valid"`
+	ParishId              RuleConfig `json:"stops_parish_id_valid"`
+	StopAccess            RuleConfig `json:"stop_access_validation"`
+}
+
+type RoutesRules struct {
+	File              Severity   `json:"_file"`
+	LineId            RuleConfig `json:"routes_line_id_required"`
+	LineShortName     RuleConfig `json:"routes_line_short_name_present_when_line_id_present"`
+	LineLongName      RuleConfig `json:"routes_line_long_name_present_when_line_id_present"`
+	RouteId           RuleConfig `json:"route_id_unique"`
+	AgencyId          RuleConfig `json:"route_agency_id_references_agency_table"`
+	RouteShortName    RuleConfig `json:"route_short_name_or_long_name_present"`
+	RouteLongName     RuleConfig `json:"route_long_name_or_short_name_present"`
+	RouteDesc         RuleConfig `json:"route_desc_per_severity_and_content_rules"`
+	RouteSortOrder    RuleConfig `json:"route_sort_order_non_negative_integer"`
+	NetworkId         RuleConfig `json:"routes_network_id_references_networks_table"`
+	RouteType         RuleConfig `json:"route_type_valid_gtfs_enum"`
+	PathType          RuleConfig `json:"routes_path_type_valid_enum"`
+	RouteUrl          RuleConfig `json:"route_url_valid_http_url"`
+	RouteColor        RuleConfig `json:"route_color_valid_hex_string"`
+	RouteTextColor    RuleConfig `json:"route_text_color_valid_hex_contrast"`
+	ContinuousPickup  RuleConfig `json:"routes_continuous_pickup_valid_gtfs_enum"`
+	ContinuousDropOff RuleConfig `json:"routes_continuous_drop_off_valid_gtfs_enum"`
+}
+
+type TripsRules struct {
+	File                                      Severity   `json:"_file"`
+	RouteId                                   RuleConfig `json:"trips_route_id_references_routes_table"`
+	PatternId                                 RuleConfig `json:"trips_pattern_id_present_and_references_consistent"`
+	ServiceId                                 RuleConfig `json:"trips_service_id_references_calendar_service"`
+	TripId                                    RuleConfig `json:"trip_id_unique"`
+	TripHeadsign                              RuleConfig `json:"trip_headsign_present_when_short_name_absent"`
+	TripShortName                             RuleConfig `json:"trip_short_name_exclusivity"`
+	DirectionId                               RuleConfig `json:"trips_direction_id_valid_enum"`
+	BlockId                                   RuleConfig `json:"trips_block_id_in_allowed_set"`
+	ShapeId                                   RuleConfig `json:"trips_shape_id_references_shapes_table_when_present"`
+	WheelchairAccessible                      RuleConfig `json:"trips_wheelchair_accessible_valid_gtfs_enum"`
+	BikesAllowed                              RuleConfig `json:"trips_bikes_allowed_valid_gtfs_enum"`
+	StopSequence                              RuleConfig `json:"trips_stop_sequence_increasing_by_one_along_trip"`
+	DirectionPatternIdMatch                   RuleConfig `json:"trips_direction_id_matches_feed_pattern_direction"`
+	TripIdLimitCharacters                     RuleConfig `json:"trip_id_limit_max_length"`
+	PatternIdFormat                           RuleConfig `json:"trips_pattern_id_matches_feed_pattern_id_syntax"`
+	StopCoordinatesByTripId                   RuleConfig `json:"trip_path_stop_coordinates_referenced_from_stops"`
+	PatternIdTripHasRequiredFieldsForGrouping RuleConfig `json:"trips_pattern_id_trip_has_required_fields_for_grouping"`
+	PatternIdSingleTripSignaturePerPattern    RuleConfig `json:"trips_pattern_id_single_trip_signature_per_pattern"`
+	RouteIdGroup                              RuleConfig `json:"trips_route_id_consistent_for_all_patterns_in_trips"`
+	DirectionIdGroup                          RuleConfig `json:"trips_direction_id_consistent_for_all_patterns_in_trips"`
+	OneShapeIdPerPatternIdGroup               RuleConfig `json:"trips_one_shape_id_per_pattern_id_group"`
+	OnePatternIdPerShapeIdGroup               RuleConfig `json:"trips_one_pattern_id_per_shape_id_group"`
+	TripHeadsignGroup                         RuleConfig `json:"trip_headsign_consistent_for_all_patterns_in_trips"`
+	ShapeIdSamePatternId                      RuleConfig `json:"trips_shape_id_needs_to_be_the_same_as_pattern_id"`
+}
+
+type StopTimesRules struct {
+	File                     Severity   `json:"_file"`
+	TripId                   RuleConfig `json:"stop_times_trip_id_references_trips_table"`
+	ArrivalTime              RuleConfig `json:"stop_times_arrival_time_ordering_with_departure_and_frequencies"`
+	DepartureTime            RuleConfig `json:"stop_times_departure_time_ordering_with_arrival_and_timepoint"`
+	ArrivalDepartureSequence RuleConfig `json:"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence"`
+	StopId                   RuleConfig `json:"stop_times_stop_id_references_stops_table"`
+	StopHeadsign             RuleConfig `json:"stop_times_stop_headsign_present"`
+	PickupType               RuleConfig `json:"stop_times_pickup_type_valid_gtfs_enum"`
+	DropOffType              RuleConfig `json:"stop_times_drop_off_type_valid_gtfs_enum"`
+	ContinuousPickup         RuleConfig `json:"stop_times_continuous_pickup_valid_gtfs_enum"`
+	ContinuousDropOff        RuleConfig `json:"stop_times_continuous_drop_off_valid_gtfs_enum"`
+	ShapeDistTraveled        RuleConfig `json:"stop_times_shape_dist_traveled_non_decreasing_on_trip"`
+	StartPickupDropOffWindow RuleConfig `json:"stop_times_start_pickup_drop_off_window_valid"`
+	EndPickupDropOffWindow   RuleConfig `json:"stop_times_end_pickup_drop_off_window_valid"`
+	Timepoint                RuleConfig `json:"stop_times_timepoint_valid_gtfs_enum"`
+	PickupBookingRuleId      RuleConfig `json:"stop_times_pickup_booking_rule_id_references_booking_rules"`
+	DropOffBookingRuleId     RuleConfig `json:"stop_times_drop_off_booking_rule_id_references_booking_rules_or_empty"`
+	LocationGroupId          RuleConfig `json:"stop_times_location_group_id_consistent_with_trip_id_and_stops"`
+}
+
+type CalendarRules struct {
+	File      Severity   `json:"_file"`
+	ServiceId RuleConfig `json:"calendar_service_id_unique_non_empty"`
+	StartDate RuleConfig `json:"calendar_start_date_valid_yyyymmdd"`
+	EndDate   RuleConfig `json:"calendar_end_date_valid_yyyymmdd"`
+}
+
+type CalendarDatesRules struct {
+	File          Severity   `json:"_file"`
+	ServiceId     RuleConfig `json:"calendar_dates_service_id_references_calendar"`
+	Date          RuleConfig `json:"calendar_dates_exception_date_valid_yyyymmdd"`
+	ExceptionType RuleConfig `json:"calendar_dates_exception_type_add_or_remove_service"`
+}
+
+type VehiclesRules struct {
+	File              Severity   `json:"_file"`
+	VehicleId         RuleConfig `json:"vehicle_id_unique"`
+	AgencyId          RuleConfig `json:"vehicle_agency_id_references_agency_table"`
+	LicensePlate      RuleConfig `json:"vehicles_license_plate_format_per_market_rules"`
+	Make              RuleConfig `json:"vehicle_make_required"`
+	Model             RuleConfig `json:"vehicle_model_required"`
+	Owner             RuleConfig `json:"vehicle_owner_required"`
+	RegistrationDate  RuleConfig `json:"vehicles_registration_date_valid_day_granularity"`
+	AvailableSeats    RuleConfig `json:"vehicles_available_seats_non_negative"`
+	AvailableStanding RuleConfig `json:"vehicles_available_standing_non_negative"`
+	Typology          RuleConfig `json:"vehicles_typology_in_allowed_vehicle_types"`
+	Propulsion        RuleConfig `json:"vehicles_propulsion_type_valid_enum"`
+	Emission          RuleConfig `json:"vehicles_emission_code_valid_for_propulsion_type"`
+	Climatization     RuleConfig `json:"vehicles_climatization_valid_enum"`
+	Wheelchair        RuleConfig `json:"vehicles_wheelchair_spots_valid_enum"`
+	LoweredFloor      RuleConfig `json:"vehicles_lowered_floor_valid_enum"`
+	Ramp              RuleConfig `json:"vehicles_ramp_valid_enum"`
+	Kneeling          RuleConfig `json:"vehicles_kneeling_valid_enum"`
+	StaticInformation RuleConfig `json:"vehicles_static_information_valid_enum"`
+	OnboardMonitor    RuleConfig `json:"vehicles_onboard_monitor_valid_enum"`
+	FrontDisplay      RuleConfig `json:"vehicles_front_display_valid_enum"`
+	RearDisplay       RuleConfig `json:"vehicles_rear_display_valid_enum"`
+	SideDisplay       RuleConfig `json:"vehicles_side_display_valid_enum"`
+	InternalSound     RuleConfig `json:"vehicles_internal_sound_level_valid_enum"`
+	ExternalSound     RuleConfig `json:"vehicles_external_sound_valid_enum"`
+	ConsumptionMeter  RuleConfig `json:"vehicles_consumption_meter_valid_format"`
+	Bicycles          RuleConfig `json:"vehicles_bicycles_rack_count_non_negative"`
+	PassengerCounting RuleConfig `json:"vehicles_passenger_counting_valid_enum"`
+	VideoSurveillance RuleConfig `json:"vehicles_video_surveillance_valid_enum"`
+}
+
+type FareAttributesRules struct {
+	File             Severity   `json:"_file"`
+	FareId           RuleConfig `json:"fare_attributes_id_unique"`
+	Price            RuleConfig `json:"fare_price_valid_non_negative_decimal"`
+	CurrencyType     RuleConfig `json:"fare_attributes_currency_type_valid"`
+	PaymentMethod    RuleConfig `json:"fare_attributes_payment_method_valid_gtfs_enum"`
+	Transfers        RuleConfig `json:"fare_attributes_transfers_valid_gtfs_enum"`
+	AgencyId         RuleConfig `json:"fare_attributes_agency_id_references_agency_table"`
+	TransferDuration RuleConfig `json:"fare_attributes_transfer_duration_valid_seconds_range"`
+}
+
+type FareRulesRules struct {
+	File          Severity   `json:"_file"`
+	FareId        RuleConfig `json:"fare_rule_fare_id_references_fare_attributes"`
+	RouteId       RuleConfig `json:"fare_rule_route_id_references_routes"`
+	OriginId      RuleConfig `json:"fare_rule_origin_id_references_zones_stops"`
+	DestinationId RuleConfig `json:"fare_rule_destination_id_references_zones_stops"`
+	ContainsId    RuleConfig `json:"fare_rule_contains_id_references_zones_stops"`
+}
+
+type FareMediaRules struct {
+	File          Severity   `json:"_file"`
+	FareMediaId   RuleConfig `json:"fare_media_id_unique"`
+	FareMediaName RuleConfig `json:"fare_media_name_non_empty"`
+	FareMediaType RuleConfig `json:"fare_media_type_valid"`
+}
+
+type ShapesRules struct {
+	File                                           Severity   `json:"_file"`
+	ShapeId                                        RuleConfig `json:"shape_id_required"`
+	ShapePtLat                                     RuleConfig `json:"shape_pt_lat_valid_latitude"`
+	ShapePtLon                                     RuleConfig `json:"shape_pt_lon_valid_longitude"`
+	ShapePtSequence                                RuleConfig `json:"shape_pt_sequence_not_repeated_within_shape"`
+	ShapeDistTraveled                              RuleConfig `json:"shape_dist_traveled_non_negative_monotonic"`
+	ShapeIdAndPointSequenceRequired                RuleConfig `json:"shape_id_and_point_sequence_required"`
+	ShapePtSequenceStrictlyIncreasing              RuleConfig `json:"shape_pt_sequence_strictly_increasing"`
+	ShapeDistTraveledNonDecreasingWithSequence     RuleConfig `json:"shape_dist_traveled_non_decreasing_with_sequence"`
+	ShapePointsCoordinatesConsistent               RuleConfig `json:"shape_sequence_position_mismatches_cumulative_traveled_distance"`
+	ShapePointsCoordinatesDistances                RuleConfig `json:"shape_dist_traveled_delta_mismatches_haversine_segment"`
+	ShapeDistTraveledDeltaMismatchesHaversineBlock RuleConfig `json:"shape_dist_traveled_delta_mismatches_haversine_block"`
+}
+
+type FrequenciesRules struct {
+	File        Severity   `json:"_file"`
+	TripId      RuleConfig `json:"frequencies_trip_id_references_trips_table"`
+	StartTime   RuleConfig `json:"frequency_start_time_valid"`
+	EndTime     RuleConfig `json:"frequency_end_time_valid"`
+	HeadwaySecs RuleConfig `json:"frequencies_headway_secs_positive_and_aligns_trip"`
+	ExactTimes  RuleConfig `json:"frequencies_exact_times_zero_when_timed_trip_uses_frequencies"`
+}
+
+type TransfersRules struct {
+	File            Severity   `json:"_file"`
+	FromStopId      RuleConfig `json:"transfer_from_stop_id_references_stops_table"`
+	FromRouteId     RuleConfig `json:"transfer_from_route_id_references_routes_table"`
+	FromTripId      RuleConfig `json:"transfer_from_trip_id_references_trips_table"`
+	ToRouteId       RuleConfig `json:"transfer_to_route_id_references_routes_table"`
+	ToStopId        RuleConfig `json:"transfer_to_stop_id_references_stops_table"`
+	ToTripId        RuleConfig `json:"transfer_to_trip_id_references_trips_table"`
+	TransferType    RuleConfig `json:"transfer_type_valid_gtfs_enum"`
+	MinTransferTime RuleConfig `json:"transfers_min_transfer_time_non_negative_seconds"`
+}
+
+type PathwaysRules struct {
+	File                 Severity   `json:"_file"`
+	PathwayId            RuleConfig `json:"pathway_id_unique"`
+	FromStopId           RuleConfig `json:"pathway_from_stop_id_references_stops_table"`
+	ToStopId             RuleConfig `json:"pathway_to_stop_id_references_stops_table"`
+	PathwayMode          RuleConfig `json:"pathway_mode_valid_gtfs_enum"`
+	IsBidirectional      RuleConfig `json:"pathway_is_bidirectional_valid_gtfs_enum"`
+	Length               RuleConfig `json:"pathway_length_non_negative"`
+	TraversalTime        RuleConfig `json:"pathway_traversal_time_non_negative_seconds"`
+	StairCount           RuleConfig `json:"pathway_stair_count"`
+	MaxSlope             RuleConfig `json:"pathway_max_slope_allowed_for_pathway_mode"`
+	MinWidth             RuleConfig `json:"pathway_min_width_positive"`
+	SignpostedAs         RuleConfig `json:"pathway_signposted_as"`
+	ReversedSignpostedAs RuleConfig `json:"pathway_reversed_signposted_as"`
+}
+
+type LevelsRules struct {
+	File       Severity   `json:"_file"`
+	LevelId    RuleConfig `json:"level_id_unique"`
+	LevelIndex RuleConfig `json:"level_index_required"`
+	LevelName  RuleConfig `json:"level_name"`
+}
+
+type FeedInfoRules struct {
+	File              Severity   `json:"_file"`
+	FeedPublisherName RuleConfig `json:"feed_publisher_name_non_empty"`
+	FeedPublisherUrl  RuleConfig `json:"feed_publisher_url_valid_http_url"`
+	FeedLang          RuleConfig `json:"feed_lang_valid_tag"`
+	DefaultLang       RuleConfig `json:"feed_info_default_lang_matches_feed_lang_when_present"`
+	FeedStartDate     RuleConfig `json:"feed_start_date_valid_yyyymmdd"`
+	FeedEndDate       RuleConfig `json:"feed_end_date_valid_yyyymmdd_not_before_start"`
+	FeedVersion       RuleConfig `json:"feed_version_valid_identifier"`
+	FeedContactEmail  RuleConfig `json:"feed_contact_email_valid_address"`
+	FeedContactUrl    RuleConfig `json:"feed_contact_url_valid_http_url"`
+}
+
+type RiderCategoriesRules struct {
+	File                  Severity   `json:"_file"`
+	RiderCategoryId       RuleConfig `json:"rider_category_id_unique"`
+	RiderCategoryName     RuleConfig `json:"rider_category_name_non_empty"`
+	IsDefaultFareCategory RuleConfig `json:"rider_categories_at_most_one_default_fare_category"`
+	EligibilityUrl        RuleConfig `json:"rider_categories_eligibility_url_valid_http_url"`
+}
+
+// RuleIDGtfsFeedFilePresenceAndIntegrity is the rule_id for forbidden-file checks.
+// Missing-file checks emit <table>_file_missing instead.
+const RuleIDGtfsFeedFilePresenceAndIntegrity = "file_validation_gtfs_feed_file_presence_and_integrity_rule"
+
+// RuleIDFeedInfoValuesParse is the rule_id for feed_info row parsing errors.
+const RuleIDFeedInfoValuesParse = "feed_info_values_parse"
+
+type FileValidationRules struct {
+	File                             Severity   `json:"_file"`
+	GtfsFeedFilePresenceAndIntegrity RuleConfig `json:"file_validation_gtfs_feed_file_presence_and_integrity_rule"`
+}
+
+type GtfsRules struct {
+	Agency          AgencyRules          `json:"agency"`
+	FileValidation  FileValidationRules  `json:"file_validation"`
+	RiderCategories RiderCategoriesRules `json:"rider_categories"`
+	Stops           StopsRules           `json:"stops"`
+	Routes          RoutesRules          `json:"routes"`
+	Trips           TripsRules           `json:"trips"`
+	StopTimes       StopTimesRules       `json:"stop_times"`
+	Calendar        CalendarRules        `json:"calendar"`
+	CalendarDates   CalendarDatesRules   `json:"calendar_dates"`
+	Vehicles        VehiclesRules        `json:"vehicles"`
+	FareAttributes  FareAttributesRules  `json:"fare_attributes"`
+	FareRules       FareRulesRules       `json:"fare_rules"`
+	Shapes          ShapesRules          `json:"shapes"`
+	Frequencies     FrequenciesRules     `json:"frequencies"`
+	Transfers       TransfersRules       `json:"transfers"`
+	Pathways        PathwaysRules        `json:"pathways"`
+	Levels          LevelsRules          `json:"levels"`
+	FeedInfo        FeedInfoRules        `json:"feed_info"`
+	FareMedia       FareMediaRules       `json:"fare_media"`
+}

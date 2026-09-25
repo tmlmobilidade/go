@@ -7,6 +7,12 @@
 		"editor.defaultFormatter": "vscode.css-language-features"
 	},
 
+	"[go]": {
+		"editor.defaultFormatter": "golang.go",
+		"editor.formatOnSave": true,
+		"editor.formatOnSaveMode": "file"
+	},
+
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "vscode.typescript-language-features"
 	},
@@ -41,11 +47,10 @@
 	"eslint.workingDirectories": [{ "mode": "auto" }],
 	"files.eol": "\n",
 
-	"github.copilot.chat.commitMessageGeneration.instructions": [
-		{
-			"text": "Follow the TML conventional commit format exactly: type(scope): description. Types: feat, fix, refactor, perf, test, docs, chore, ci, style, revert, wip. Type and scope must be lowercase. Subject must use imperative mood, max 72 characters, and no trailing period. Add a blank line before body or footer if present. Prefer scopes defined in the repo's commitlint.config.cjs; do not invent scopes when a listed scope fits."
-		}
-	],
+	"go.alternateTools": {
+		"customFormatter": "${workspaceFolder}/scripts/format-go.sh"
+	},
+	"go.formatTool": "custom",
 
 	"less.validate": false,
 	// Disable the default formatter, use eslint instead

@@ -1,0 +1,58 @@
+# SECRETS
+.env
+.env.*
+!.env.example
+
+.key
+.pem
+.cert
+
+secrets/**/*.json
+!secrets/**/*.example.*
+!secrets/**/*.example
+
+# NODE_MODULES
+node_modules
+
+# PACKAGE-LOCK
+# pnpm-lock.yaml
+
+# BUILD & CACHE
+dist
+out
+build
+.next
+.turbo
+.eslintcache
+
+# generated content
+.contentlayer
+.content-collections
+.source
+coverage
+
+# OS
+.DS_Store
+
+# Binaries for programs and plugins
+*.dll
+*.so
+*.dylib
+
+*.test
+
+*.out
+
+# Go workspace file
+go.work
+go.work.sum
+
+# env file
+.env
+
+# data files
+data/**
+
+# ts-wrapper
+ts-wrapper/bin
+ts-wrapper/node_modules

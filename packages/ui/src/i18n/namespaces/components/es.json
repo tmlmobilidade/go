@@ -27,6 +27,34 @@
 			}
 		}
 	},
+	"gtfsValidationRules": {
+		"compare": {
+			"description": "Pares clave / valor esperado que la regla comprueba.",
+			"label": "Comparaciones",
+			"value": "Valor esperado"
+		},
+		"group": "Archivo",
+		"options": {
+			"description": "Valores usados por la regla. Vacío usa las opciones predeterminadas.",
+			"label": "Opciones",
+			"placeholder": "Escriba y separe por comas o espacios."
+		},
+		"rule": "Regla",
+		"search": "Buscar archivo o regla...",
+		"settings": {
+			"remove": "Eliminar configuración"
+		},
+		"severities": {
+			"error": "Error",
+			"forbidden": "Prohibido",
+			"ignore": "Ignorar",
+			"warning": "Aviso"
+		},
+		"severity": "Severidad",
+		"unconfigured": {
+			"title": "Reglas sin severidad definida"
+		}
+	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {
@@ -35,6 +63,12 @@
 			"longitude": {
 				"placeholder": "Longitud (-180 a 180)"
 			}
+		},
+		"KeyValueListInput": {
+			"add": "Añadir par",
+			"key": "Clave",
+			"remove": "Eliminar par",
+			"value": "Valor"
 		},
 		"SearchField": {
 			"placeholder": "Buscar...",
