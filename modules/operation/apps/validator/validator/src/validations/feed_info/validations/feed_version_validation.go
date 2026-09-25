@@ -26,7 +26,7 @@ func FeedVersionValidation(severity *types.Severity, feedInfo *types.FeedInfo, r
 		ctx.WithSeverity(*severity)
 	}
 
-	if feedInfo.FeedVersion == nil {
+	if feedInfo.FeedVersion == nil || *feedInfo.FeedVersion == "" {
 		if ctx.ShouldSkip() {
 			return
 		}
