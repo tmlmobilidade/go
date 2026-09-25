@@ -12,7 +12,7 @@ import (
 
 - File: [routes.txt]
 - Field: path_type
-- Presence: Optional (TML-specific)
+- Presence: Optional
 - Type: Enum
 
 # Description
@@ -29,12 +29,12 @@ This is a TML-specific extension to the GTFS standard.
 */
 func PathTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
 	ctx := lib.NewValidationContext("path_type", "routes.txt", "routes_path_type_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.PathType.Severity != types.SEVERITY_IGNORE {
+	if rules != nil && rules.PathType.Severity != "" {
 		ctx.WithSeverity(rules.PathType.Severity)
 	}
 
 	// Check Required
-	if route.PathType == nil || *route.PathType == "" {
+	if route.PathType == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -44,7 +44,7 @@ func PathTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
 		return
 	}
 
-	// Check if field is forbidden - if present, it's an error
+	// Check if path_type is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("path_type_validation.forbidden"))
 		return

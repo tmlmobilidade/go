@@ -31,15 +31,24 @@ func LineShortNameValidation(route *types.Route, row int, gtfs *types.Gtfs, rule
 	}
 
 	// Check if line_id is present
-	if route.LineId == nil || *route.LineId == "" {
+	if route.LineId == nil {
 		return
 	}
 
 	// Check if line_short_name is present
-	if route.LineShortName == nil || *route.LineShortName == "" {
-		if !ctx.ShouldSkip() {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_short_name_validation.required"))
+	if route.LineShortName == nil {
+		if ctx.ShouldSkip() {
+			return
 		}
+
+		message := ctx.GetRequiredMessage("line_short_name_validation.required", "line_short_name_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// Check if line_short_name is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_short_name_validation.forbidden"))
 		return
 	}
 

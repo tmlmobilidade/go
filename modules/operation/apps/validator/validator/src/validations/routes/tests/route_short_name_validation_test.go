@@ -11,12 +11,13 @@ import (
 
 func TestAllRouteShortNameValidationTestCases(t *testing.T) {
 	for _, tc := range test_helpers.GetGenericRequiredFieldTestCases("route_short_name") {
+		if tc.Name == "Recommended_Missing" {
+			// route_short_name is unconditionally required (no ShouldSkip/recommended path)
+			continue
+		}
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 			route := &types.Route{RouteShortName: tc.Value}
-			if tc.Name == "Recommended_Missing" {
-				route.RouteShortName = lib.Ptr("Long Route Name")
-			}
 
 			if tc.Name == "Invalid_Value" {
 				route.RouteShortName = lib.Ptr("")

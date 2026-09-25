@@ -26,6 +26,7 @@ func RouteSortOrderValidation(route *types.Route, row int, rules *types.RoutesRu
 		ctx.WithSeverity(rules.RouteSortOrder.Severity)
 	}
 
+	// Check if route_sort_order is required
 	if route.RouteSortOrder == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -36,13 +37,15 @@ func RouteSortOrderValidation(route *types.Route, row int, rules *types.RoutesRu
 		return
 	}
 
+	// Check if route_sort_order is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_sort_order_validation.forbidden"))
 		return
 	}
 
+	// Check if route_sort_order is valid
 	if *route.RouteSortOrder < 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("route_sort_order_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("route_sort_order_validation.invalid", *route.RouteSortOrder))
 		return
 	}
 }

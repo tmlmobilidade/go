@@ -6,6 +6,7 @@ import (
 	"main/types"
 	"slices"
 	"strconv"
+	"strings"
 )
 
 /*
@@ -41,17 +42,24 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		ctx.WithSeverity(rules.RouteType.Severity)
 	}
 
-	validTypes := map[int]struct{}{
-		0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 11: {}, 12: {},
+	// Valid route_type options
+	validTypes := []int{
+		0, 1, 2, 3, 4, 5, 6, 7, 11, 12,
 	}
 
+	// Check if route_type is required
 	if route.RouteType == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("route_type_validation.required"))
 		return
 	}
 
-	if _, ok := validTypes[*route.RouteType]; !ok {
-		ctx.AddError(ctx.GetTranslatedMessage("route_type_validation.invalid"))
+	// Check if route_type is valid
+	if !slices.Contains(validTypes, *route.RouteType) {
+		validTypeStrings := make([]string, len(validTypes))
+		for i, validType := range validTypes {
+			validTypeStrings[i] = strconv.Itoa(validType)
+		}
+		ctx.AddError(ctx.GetTranslatedMessage("route_type_validation.invalid", *route.RouteType, strings.Join(validTypeStrings, ", ")))
 		return
 	}
 
@@ -62,7 +70,7 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		}
 
 		if !slices.Contains(*rules.RouteType.Options, strconv.Itoa(*route.RouteType)) {
-			ctx.AddError(ctx.GetTranslatedMessage("route_type_validation.not_allowed", map[string]any{"value": *route.RouteType}))
+			ctx.AddError(ctx.GetTranslatedMessage("route_type_validation.not_allowed", *route.RouteType))
 			return
 		}
 	}

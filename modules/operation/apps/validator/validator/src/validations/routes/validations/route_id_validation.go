@@ -23,7 +23,8 @@ Identifies a route.
 func RouteIdValidation(route *types.Route, row int, gtfs *types.Gtfs) {
 	ctx := lib.NewValidationContext("route_id", "routes.txt", "route_id_unique", row, services.AppMessageService)
 
-	if route.RouteId == nil || *route.RouteId == "" {
+	// Check if route_id is required
+	if route.RouteId == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("route_id_validation.required"))
 		return
 	}

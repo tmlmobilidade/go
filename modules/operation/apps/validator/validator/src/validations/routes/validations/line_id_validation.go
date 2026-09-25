@@ -31,10 +31,19 @@ func LineIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *type
 	}
 
 	// If line_id is present.
-	if route.LineId == nil || *route.LineId == "" {
-		if !ctx.ShouldSkip() {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_id_required.required"))
+	if route.LineId == nil {
+		if ctx.ShouldSkip() {
+			return
 		}
+
+		message := ctx.GetRequiredMessage("line_id_required.required", "line_id_required.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// Check if line_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_id_required.forbidden"))
 		return
 	}
 

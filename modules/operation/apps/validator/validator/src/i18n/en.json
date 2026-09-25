@@ -18,7 +18,7 @@
 		"forbidden": "Field \"agency_id\" is forbidden",
 		"invalid": "Field \"agency_id\" \"%s\" is not a valid agency_id from agency.txt",
 		"not_allowed": "Field \"agency_id\" \"%s\" is not allowed",
-		"not_found": "Field \"agency_id\" does not exist in agencies.txt",
+		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt",
 		"recommended": "Field \"agency_id\" is recommended when there is only one agency",
 		"required": "Field \"agency_id\" is required when there is more than one agency"
 	},
@@ -121,6 +121,7 @@
 	},
 	"continuous_drop_off_validation": {
 		"forbidden": "Field \"continuous_drop_off\" is forbidden",
+		"forbidden_with_window": "Field \"continuous_drop_off\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
 		"invalid": "Field \"continuous_drop_off\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
 		"not_allowed": "Field \"continuous_drop_off\" \"%s\" is not allowed",
 		"recommended": "Field \"continuous_drop_off\" is recommended",
@@ -128,6 +129,7 @@
 	},
 	"continuous_pickup_validation": {
 		"forbidden": "Field \"continuous_pickup\" is forbidden",
+		"forbidden_with_window": "Field \"continuous_pickup\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
 		"invalid": "Field \"continuous_pickup\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
 		"not_allowed": "Field \"continuous_pickup\" \"%s\" is not allowed",
 		"recommended": "Field \"continuous_pickup\" is recommended",
@@ -455,14 +457,18 @@
 		"required": "Field \"license_plate\" is required"
 	},
 	"line_id_required": {
+		"forbidden": "Field \"line_id\" is forbidden",
 		"not_equal_to_route_short_name": "Field \"line_id\" \"%s\" should be the same as \"route_short_name\" \"%s\"",
 		"recommended": "Field \"line_id\" is recommended",
 		"required": "Field \"line_id\" is required"
 	},
 	"line_long_name_validation": {
+		"forbidden": "Field \"line_long_name\" is forbidden",
+		"recommended": "Field \"line_long_name\" is recommended",
 		"required": "Field \"line_long_name\" is required"
 	},
 	"line_short_name_validation": {
+		"forbidden": "Field \"line_short_name\" is forbidden",
 		"not_equal_to_route_short_name": "Field \"line_short_name\" \"%s\" should be the same as \"route_short_name\" \"%s\"",
 		"recommended": "Field \"line_short_name\" is recommended",
 		"required": "Field \"line_short_name\" is required"
@@ -521,7 +527,7 @@
 	},
 	"network_id_validation": {
 		"forbidden": "Field \"network_id\" is forbidden",
-		"forbidden_when_route_networks_exists": "Field \"network_id\" is forbidden if route_networks.txt exists",
+		"forbidden_when_route_networks_exists": "Field \"network_id\" \"%s\" is forbidden if route_networks.txt exists",
 		"not_allowed": "Field \"network_id\" \"%s\" is not allowed",
 		"recommended": "Field \"network_id\" is recommended",
 		"required": "Field \"network_id\" is required"
@@ -683,7 +689,7 @@
 	},
 	"route_color_validation": {
 		"forbidden": "Field \"route_color\" is forbidden",
-		"invalid": "Field \"route_color\" must be a valid 6-character hexadecimal color (e.g., FFFFFF)",
+		"invalid": "Field \"route_color\" \"%s\" is not a valid 6-character hexadecimal color (e.g., FFFFFF)",
 		"not_allowed": "Field \"route_color\" \"%s\" is not allowed",
 		"recommended": "Field \"route_color\" is recommended",
 		"required": "Field \"route_color\" is required"
@@ -691,6 +697,8 @@
 	"route_desc_validation": {
 		"duplicate": "Field \"route_desc\" \"%s\" should not duplicate route_short_name",
 		"duplicate_long": "Field \"route_desc\" \"%s\" should not duplicate route_long_name",
+		"duplicate_long_name": "Field \"route_desc\" should not duplicate route_long_name",
+		"duplicate_short_name": "Field \"route_desc\" should not duplicate route_short_name",
 		"forbidden": "Field \"route_desc\" is forbidden",
 		"not_allowed": "Field \"route_desc\" \"%s\" is not allowed",
 		"recommended": "Field \"route_desc\" is recommended",
@@ -722,29 +730,31 @@
 	},
 	"route_sort_order_validation": {
 		"forbidden": "Field \"route_sort_order\" is forbidden",
-		"invalid": "Field \"route_sort_order\" must be a non-negative integer",
+		"invalid": "Field \"route_sort_order\" \"%d\" must be a non-negative integer",
 		"recommended": "Field \"route_sort_order\" is recommended",
 		"required": "Field \"route_sort_order\" is required"
 	},
 	"route_text_color_validation": {
 		"forbidden": "Field \"route_text_color\" is forbidden",
-		"invalid": "Field \"route_text_color\" must be a valid 6-character hexadecimal color (e.g., FFFFFF)",
+		"invalid": "Field \"route_text_color\" \"%s\" is not a valid 6-character hexadecimal color (e.g., FFFFFF)",
 		"not_allowed": "Field \"route_text_color\" \"%s\" is not allowed",
 		"recommended": "Field \"route_text_color\" is recommended",
 		"required": "Field \"route_text_color\" is required"
 	},
 	"route_type_validation": {
 		"forbidden": "Field \"route_type\" is forbidden",
-		"invalid": "Field \"route_type\" must be one of the valid GTFS enum values (0,1,2,3,4,5,6,7,11,12)",
-		"not_allowed": "Field \"route_type\" \"%s\" is not allowed",
+		"invalid": "Field \"route_type\" \"%d\" must be one of the valid GTFS enum values (%s)",
+		"not_allowed": "Field \"route_type\" \"%d\" is not allowed",
 		"required": "Field \"route_type\" is required"
 	},
 	"route_url_validation": {
+		"duplicate": "Field \"route_url\" could not be checked against \"agency_url\": more than one agency.txt row matches this route's agency_id",
 		"forbidden": "Field \"route_url\" is forbidden",
 		"invalid": "Field \"route_url\" \"%s\" is not a valid URL",
 		"not_allowed": "Field \"route_url\" \"%s\" is not allowed",
 		"recommended": "Field \"route_url\" is recommended",
-		"required": "Field \"route_url\" is required"
+		"required": "Field \"route_url\" is required",
+		"same_as_agency_url": "Field \"route_url\" should be different from the agency's \"agency_url\""
 	},
 	"service_id_validation": {
 		"duplicate": "Duplicate field \"service_id\" \"%s\" found. Field \"service_id\" must be unique",

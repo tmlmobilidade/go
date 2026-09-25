@@ -27,7 +27,8 @@ func RouteUrlValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *ty
 		ctx.WithSeverity(rules.RouteUrl.Severity)
 	}
 
-	if route.RouteUrl == nil || *route.RouteUrl == "" {
+	// Check if route_url is required
+	if route.RouteUrl == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -37,17 +38,19 @@ func RouteUrlValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *ty
 		return
 	}
 
+	// Check if route_url is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_url_validation.forbidden"))
 		return
 	}
 
-	if valid := lib.ValidateUrl(*route.RouteUrl); !valid {
-		ctx.AddError(ctx.GetTranslatedMessage("route_url_validation.invalid"))
+	// Check if route_url is valid
+	if !lib.ValidateUrl(*route.RouteUrl) {
+		ctx.AddError(ctx.GetTranslatedMessage("route_url_validation.invalid", *route.RouteUrl))
 		return
 	}
 
-	// Check if route_url is the same as agency_url
+	// Check if route_url is the same as agency.agency_url
 	if route.AgencyId != nil {
 		agencyId := *route.AgencyId
 		agencyRows, err := gtfs.GetRowsById("agency", agencyId)
@@ -58,7 +61,7 @@ func RouteUrlValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *ty
 
 		agencyRaw, err := gtfs.GetAgency(agencyRows[0])
 		if err == nil && agencyRaw.AgencyUrl != "" && *route.RouteUrl == agencyRaw.AgencyUrl {
-			ctx.AddWarning(ctx.GetTranslatedMessage("route_url_validation.same_as_agency_url"))
+			ctx.AddError(ctx.GetTranslatedMessage("route_url_validation.same_as_agency_url"))
 		}
 	}
 
@@ -69,7 +72,7 @@ func RouteUrlValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *ty
 		}
 
 		if !slices.Contains(*rules.RouteUrl.Options, *route.RouteUrl) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_url_validation.not_allowed", map[string]any{"value": *route.RouteUrl}))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_url_validation.not_allowed", *route.RouteUrl))
 			return
 		}
 	}

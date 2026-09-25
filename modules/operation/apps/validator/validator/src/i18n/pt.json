@@ -18,7 +18,7 @@
 		"forbidden": "O campo \"agency_id\" é proibido",
 		"invalid": "O campo \"agency_id\" \"%s\" não é um agency_id válido de agency.txt",
 		"not_allowed": "O campo \"agency_id\" \"%s\" não é permitido",
-		"not_found": "O campo \"agency_id\" não existe em agencies.txt",
+		"not_found": "O campo \"agency_id\" \"%s\" não existe em agency.txt",
 		"recommended": "O campo \"agency_id\" é recomendado quando existe apenas uma agência",
 		"required": "O campo \"agency_id\" é obrigatório quando existe mais do que uma agência"
 	},
@@ -120,6 +120,7 @@
 	},
 	"continuous_drop_off_validation": {
 		"forbidden": "O campo \"continuous_drop_off\" é proibido",
+		"forbidden_with_window": "O campo \"continuous_drop_off\" deve ser 1 ou vazio se start_pickup_drop_off_window ou end_pickup_drop_off_window estiver definido",
 		"invalid": "O campo \"continuous_drop_off\" deve ser 1 ou vazio se start_pickup_drop_off_window ou end_pickup_drop_off_window estiver definido",
 		"not_allowed": "O campo \"continuous_drop_off\" \"%s\" não é permitido",
 		"recommended": "O campo \"continuous_drop_off\" é recomendado",
@@ -127,6 +128,7 @@
 	},
 	"continuous_pickup_validation": {
 		"forbidden": "O campo \"continuous_pickup\" é proibido",
+		"forbidden_with_window": "O campo \"continuous_pickup\" deve ser 1 ou vazio se start_pickup_drop_off_window ou end_pickup_drop_off_window estiver definido",
 		"invalid": "O campo \"continuous_pickup\" deve ser 1 ou vazio se start_pickup_drop_off_window ou end_pickup_drop_off_window estiver definido",
 		"not_allowed": "O campo \"continuous_pickup\" \"%s\" não é permitido",
 		"recommended": "O campo \"continuous_pickup\" é recomendado",
@@ -454,14 +456,18 @@
 		"required": "O campo \"license_plate\" é obrigatório"
 	},
 	"line_id_required": {
+		"forbidden": "O campo \"line_id\" é proibido",
 		"not_equal_to_route_short_name": "O campo \"line_id\" \"%s\" deve ser igual do campo \"route_short_name\" \"%s\"",
 		"recommended": "O campo \"line_id\" é recomendado",
 		"required": "O campo \"line_id\" é obrigatório"
 	},
 	"line_long_name_validation": {
+		"forbidden": "O campo \"line_long_name\" é proibido",
+		"recommended": "O campo \"line_long_name\" é recomendado",
 		"required": "O campo \"line_long_name\" é obrigatório"
 	},
 	"line_short_name_validation": {
+		"forbidden": "O campo \"line_short_name\" é proibido",
 		"not_equal_to_route_short_name": "O campo \"line_short_name\" \"%s\" deve ser igual ao campo \"route_short_name\" \"%s\"",
 		"recommended": "O campo \"line_short_name\" é recomendado",
 		"required": "O campo \"line_short_name\" é obrigatório"
@@ -520,7 +526,7 @@
 	},
 	"network_id_validation": {
 		"forbidden": "O campo \"network_id\" é proibido",
-		"forbidden_when_route_networks_exists": "O campo \"network_id\" é proibido se route_networks.txt existir",
+		"forbidden_when_route_networks_exists": "O campo \"network_id\" \"%s\" é proibido se route_networks.txt existir",
 		"not_allowed": "O campo \"network_id\" \"%s\" não é permitido",
 		"recommended": "O campo \"network_id\" é recomendado",
 		"required": "O campo \"network_id\" é obrigatório"
@@ -581,8 +587,7 @@
 		"invalid": "O campo \"path_type\" deve ser um dos valores válidos (1, 2 ou 3). Recebido: \"%s\"",
 		"not_allowed": "O campo \"path_type\" \"%s\" não é permitido",
 		"recommended": "O campo \"path_type\" é recomendado",
-		"required": "O campo \"path_type\" é obrigatório",
-		"too_long": "O campo \"path_type\" \"%s\" é demasiado longo, deve ter menos de 12 caracteres"
+		"required": "O campo \"path_type\" é obrigatório"
 	},
 	"pathway_id_validation": {
 		"duplicate": "Campo \"pathway_id\" \"%s\" duplicado encontrado. O campo \"pathway_id\" deve ser único",
@@ -692,7 +697,7 @@
 	},
 	"route_color_validation": {
 		"forbidden": "O campo \"route_color\" é proibido",
-		"invalid": "O campo \"route_color\" deve ser uma cor hexadecimal de 6 caracteres válida (ex: FFFFFF)",
+		"invalid": "O campo \"route_color\" \"%s\" não é uma cor hexadecimal de 6 carateres válida (ex: FFFFFF)",
 		"not_allowed": "O campo \"route_color\" \"%s\" não é permitido",
 		"recommended": "O campo \"route_color\" é recomendado",
 		"required": "O campo \"route_color\" é obrigatório"
@@ -700,6 +705,8 @@
 	"route_desc_validation": {
 		"duplicate": "O campo \"route_desc\" \"%s\" não deve duplicar o route_short_name",
 		"duplicate_long": "O campo \"route_desc\" \"%s\" não deve duplicar o route_long_name",
+		"duplicate_long_name": "O campo \"route_desc\" não deve duplicar o route_long_name",
+		"duplicate_short_name": "O campo \"route_desc\" não deve duplicar o route_short_name",
 		"forbidden": "O campo \"route_desc\" é proibido",
 		"not_allowed": "O campo \"route_desc\" \"%s\" não é permitido",
 		"recommended": "O campo \"route_desc\" é recomendado",
@@ -726,33 +733,36 @@
 		"forbidden": "O campo \"route_short_name\" é proibido",
 		"not_allowed": "O campo \"route_short_name\" \"%s\" não é permitido",
 		"recommended": "O campo \"route_short_name\" é recomendado",
-		"required": "O campo \"route_short_name\" é obrigatório"
+		"required": "O campo \"route_short_name\" é obrigatório",
+		"too_long": "O campo \"route_short_name\" \"%s\" é demasiado longo, deve ter menos de 12 carateres"
 	},
 	"route_sort_order_validation": {
 		"forbidden": "O campo \"route_sort_order\" é proibido",
-		"invalid": "O campo \"route_sort_order\" deve ser um número inteiro não negativo",
+		"invalid": "O campo \"route_sort_order\" \"%d\" deve ser um número inteiro não negativo",
 		"recommended": "O campo \"route_sort_order\" é recomendado",
 		"required": "O campo \"route_sort_order\" é obrigatório"
 	},
 	"route_text_color_validation": {
 		"forbidden": "O campo \"route_text_color\" é proibido",
-		"invalid": "O campo \"route_text_color\" deve ser uma cor hexadecimal de 6 caracteres válida (ex: FFFFFF)",
+		"invalid": "O campo \"route_text_color\" \"%s\" não é uma cor hexadecimal de 6 carateres válida (ex: FFFFFF)",
 		"not_allowed": "O campo \"route_text_color\" \"%s\" não é permitido",
 		"recommended": "O campo \"route_text_color\" é recomendado",
 		"required": "O campo \"route_text_color\" é obrigatório"
 	},
 	"route_type_validation": {
 		"forbidden": "O campo \"route_type\" é proibido",
-		"invalid": "O campo \"route_type\" deve ser um dos valores enum GTFS válidos (0,1,2,3,4,5,6,7,11,12)",
-		"not_allowed": "O campo \"route_type\" \"%s\" não é permitido",
+		"invalid": "O campo \"route_type\" \"%d\" deve ser um dos valores enum GTFS válidos (%s)",
+		"not_allowed": "O campo \"route_type\" \"%d\" não é permitido",
 		"required": "O campo \"route_type\" é obrigatório"
 	},
 	"route_url_validation": {
+		"duplicate": "O campo \"route_url\" não pôde ser comparado com o \"agency_url\": há mais do que uma linha em agency.txt com o agency_id desta rota",
 		"forbidden": "O campo \"route_url\" é proibido",
 		"invalid": "O campo \"route_url\" \"%s\" não é um URL válido",
 		"not_allowed": "O campo \"route_url\" \"%s\" não é permitido",
 		"recommended": "O campo \"route_url\" é recomendado",
-		"required": "O campo \"route_url\" é obrigatório"
+		"required": "O campo \"route_url\" é obrigatório",
+		"same_as_agency_url": "O campo \"route_url\" deve ser diferente do \"agency_url\" do operador"
 	},
 	"service_id_validation": {
 		"duplicate": "Campo \"service_id\" \"%s\" duplicado encontrado. O campo \"service_id\" deve ser único",

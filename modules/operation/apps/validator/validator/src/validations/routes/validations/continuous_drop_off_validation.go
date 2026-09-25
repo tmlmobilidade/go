@@ -61,7 +61,7 @@ func ContinuousDropOffValidation(route *types.Route, row int, gtfs *types.Gtfs, 
 		}
 
 		if !slices.Contains(*rules.ContinuousDropOff.Options, *route.ContinuousDropOff) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_drop_off_validation.not_allowed", map[string]any{"value": *route.ContinuousDropOff}))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_drop_off_validation.not_allowed", *route.ContinuousDropOff))
 			return
 		}
 	}

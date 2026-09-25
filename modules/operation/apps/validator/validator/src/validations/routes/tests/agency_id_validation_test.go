@@ -37,7 +37,7 @@ func TestAllAgencyIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.AgencyIdValidation(&types.Route{AgencyId: nil}, 1, *gtfs, &types.RoutesRules{AgencyId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
+			validations.AgencyIdValidation(&types.Route{AgencyId: nil}, 1, *gtfs, nil)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, 0, "Optional_Missing", types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, 0, "Optional_Missing", types.SEVERITY_WARNING)
 		})
