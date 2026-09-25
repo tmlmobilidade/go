@@ -1,3 +1,4 @@
+export * from './get-rule-config.js';
 export * from './get-rule-severity.js';
 export * from './normalize-validation-rules.js';
 export * from './rules-catalogue.js';
@@ -6,5 +7,6 @@ export * from './rules-groups.js';
 export * from './rules-ids.js';
 export * from './rules-inputs.js';
 export * from './rules-severities.js';
+export * from './set-rule-config.js';
 export * from './set-rule-severity.js';
 export * from './severity.js';

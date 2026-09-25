@@ -151,21 +151,8 @@
 			},
 			"ValidationRules": {
 				"description": "Lista de reglas que serán aplicadas a la validación del GTFS.",
-				"group": "Archivo",
 				"invalid": "No se pueden guardar las reglas:",
-				"rule": "Regla",
-				"search": "Buscar archivo o regla...",
-				"severities": {
-					"error": "Error",
-					"forbidden": "Prohibido",
-					"ignore": "Ignorar",
-					"warning": "Aviso"
-				},
-				"severity": "Severidad",
-				"title": "Reglas de validación del GTFS",
-				"unconfigured": {
-					"title": "Reglas sin severidad definida"
-				}
+				"title": "Reglas de validación del GTFS"
 			},
 			"header": {
 				"save": "Guardar"

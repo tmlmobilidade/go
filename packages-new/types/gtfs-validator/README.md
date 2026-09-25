@@ -35,6 +35,7 @@ Package and Docker builds use the committed files and do not need Go. CI runs th
 | `ValidationRulesInput`, `AgencyRulesInput`, `RuleConfigInput`, ... | The configuration as saved and accepted by Go, where keys may be omitted. |
 | `ruleCatalogue`, `RuleCatalogueEntry` | Editor metadata: editable rules and fixed technical notices. |
 | `getRuleSeverity`, `setRuleSeverity` | Read and change one catalogue entry's severity in saved rules. |
+| `getRuleConfig`, `setRuleConfig` | Read a rule's configuration and change its optional `options` or `compare` settings while preserving severity and metadata. Setting a field to `null` removes it. |
 | `getSavedRuleSeverity` | The stored severity, or `undefined` when the rule was never configured. |
 | `normalizeValidationRules` | Parse and check saved rules against the editor's policy. |
 | `isRuleSeverity`, `parseRuleSeverity` | Runtime severity checks. |

@@ -1,11 +1,10 @@
 'use client';
 
 import { type ValidationRulesInput } from '@tmlmobilidade/go-types-gtfs-validator';
-import { Collapsible, ErrorDisplay, Section } from '@tmlmobilidade/ui';
+import { Collapsible, ErrorDisplay, GtfsValidationRulesEditor, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
-import { AgenciesDetailValidationRulesTable } from '../AgenciesDetailValidationRulesTable';
 
 export function AgenciesDetailValidationRules() {
 	//
@@ -34,7 +33,7 @@ export function AgenciesDetailValidationRules() {
 			<Section gap="lg">
 				{validationRulesError && <ErrorDisplay message={`${t('default:agencies.detail.ValidationRules.invalid')} ${validationRulesError}`} />}
 				{validationRules && (
-					<AgenciesDetailValidationRulesTable onChange={handleChange} readOnly={!capabilities.editEnabled} rules={validationRules} />
+					<GtfsValidationRulesEditor onChange={handleChange} readOnly={!capabilities.editEnabled} rules={validationRules} />
 				)}
 			</Section>
 		</Collapsible>
