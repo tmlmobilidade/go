@@ -16,7 +16,10 @@ export type MetricsRegistry = {
 };
 
 function normalizePrefix(name: string): string {
-	const trimmed = name.trim().replace(/_+$/u, '');
+	let trimmed = name.trim();
+	while (trimmed.endsWith('_')) {
+		trimmed = trimmed.slice(0, -1);
+	}
 	return trimmed ? `${trimmed}_` : '';
 }
 
