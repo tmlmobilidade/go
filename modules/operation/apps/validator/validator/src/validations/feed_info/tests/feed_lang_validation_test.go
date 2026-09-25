@@ -15,6 +15,13 @@ func TestAllFeedLangValidationTestCases(t *testing.T) {
 		if tc.Name == "Recommended_Missing" {
 			continue
 		}
+		var severity types.Severity
+		if tc.ExpectedWarnings > 0 {
+			severity = types.SEVERITY_WARNING
+		} else {
+			severity = types.SEVERITY_ERROR
+		}
+		
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 			var feedLang *string
@@ -25,7 +32,7 @@ func TestAllFeedLangValidationTestCases(t *testing.T) {
 			} else {
 				feedLang = nil
 			}
-			validations.FeedLangValidation(&types.FeedInfo{FeedLang: feedLang}, tc.Row)
+			validations.FeedLangValidation(&severity, &types.FeedInfo{FeedLang: feedLang}, tc.Row)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

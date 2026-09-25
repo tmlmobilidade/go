@@ -39,9 +39,9 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate feed_lang
 		runner.Run(services.RuleActions{
-			"feed_lang_valid_tag":                           func() { validations.FeedLangValidation(&feedInfoParsed, i) },
-			"feed_publisher_name_non_empty":                 func() { validations.FeedPublisherNameValidation(&feedInfoParsed, i) },
-			"feed_publisher_url_valid_http_url":             func() { validations.FeedPublisherUrlValidation(&feedInfoParsed, i) },
+			"feed_lang_valid_tag":                           func() { validations.FeedLangValidation(nil, &feedInfoParsed, i) },
+			"feed_publisher_name_non_empty":                 func() { validations.FeedPublisherNameValidation(nil, &feedInfoParsed, i) },
+			"feed_publisher_url_valid_http_url":             func() { validations.FeedPublisherUrlValidation(nil, &feedInfoParsed, i) },
 			"feed_contact_email_valid_address":              func() { validations.FeedContactEmailValidation(nil, &feedInfoParsed, i) },
 			"feed_contact_url_valid_http_url":               func() { validations.FeedContactUrlValidation(nil, &feedInfoParsed, i) },
 			"feed_end_date_valid_yyyymmdd_not_before_start": func() { validations.FeedEndDateValidation(nil, &feedInfoParsed, i) },
