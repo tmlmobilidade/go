@@ -6,7 +6,8 @@ import { useColorScheme } from '@tmlmobilidade/ui';
 import { loadMapAssets, MAP_ASSETS_ALERTS, MAP_ASSETS_MISC, MAP_ASSETS_SHAPES, MAP_ASSETS_STOPS, MAP_ASSETS_VEHICLES } from '@tmlmobilidade/ui';
 import Map, { type MapLayerMouseEvent, type MapLayerTouchEvent, MapRef, useMap } from '@vis.gl/react-maplibre';
 import { type MapLibreEvent } from 'maplibre-gl';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -52,6 +53,9 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 
 	const allMaps = useMap();
 	const colorScheme = useColorScheme();
+	const { t } = useTranslation();
+	const instructionsId = useId();
+	const mapName = t('default:map.MapView.name');
 
 	const mapContext = useMapContext();
 	const mapStyle = colorScheme === 'dark' ? mapDefaultConfig.styles.dark : mapDefaultConfig.styles.light;
@@ -74,7 +78,27 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 	//
 	// C. Handle actions
 
+	const applyCanvasName = useCallback((map: MapLibreEvent['target']) => {
+		const canvas = map.getCanvas();
+		canvas.setAttribute('aria-label', mapName);
+		canvas.setAttribute('aria-describedby', instructionsId);
+	}, [mapName, instructionsId]);
+
+	useEffect(() => {
+		const map = allMaps[id || 'map'];
+		if (!map) return;
+
+		const apply = () => applyCanvasName(map.getMap());
+		apply();
+		map.on('idle', apply);
+		return () => {
+			map.off('idle', apply);
+		};
+	}, [allMaps, applyCanvasName, id, instructionsId, mapName]);
+
 	const handleOnLoad = async (event: MapLibreEvent) => {
+		applyCanvasName(event.target);
+
 		await Promise.all([
 			loadMapAssets(event.target, MAP_ASSETS_ALERTS),
 			loadMapAssets(event.target, MAP_ASSETS_MISC),
@@ -83,6 +107,7 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 			loadMapAssets(event.target, MAP_ASSETS_VEHICLES),
 		]);
 		setAreMapAssetsLoaded(true);
+		applyCanvasName(event.target);
 	};
 
 	const handleOnStyleData = async (event: MapLibreEvent) => {
@@ -115,6 +140,7 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 
 	return (
 		<div className={styles.container}>
+			<p className={styles.visuallyHidden} id={instructionsId}>{t('default:map.MapView.instructions')}</p>
 
 			<div className={styles.map}>
 				<Map

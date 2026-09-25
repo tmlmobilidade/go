@@ -216,6 +216,10 @@
 		"MapLocationPin": {
 			"get_directions": "Como chegar",
 			"selected_location": "Local selecionado"
+		},
+		"MapView": {
+			"instructions": "Pesquise paragens, alertas e locais.",
+			"name": "Mapa de transportes"
 		}
 	},
 	"routes": {

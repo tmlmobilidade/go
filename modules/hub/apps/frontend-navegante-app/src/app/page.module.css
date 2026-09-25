@@ -1,3 +1,7 @@
+.main {
+	height: 100%;
+}
+
 .visuallyHidden {
 	position: absolute;
 	width: 1px;

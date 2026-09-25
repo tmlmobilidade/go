@@ -52,7 +52,7 @@ export default function Page() {
 		<LinesDetailContextProvider lineId={activeLineId}>
 			<RoutePlannerContextProvider>
 				<RoutePlannerAnnouncerProvider>
-					<main>
+					<main className={styles.main}>
 						<h1 className={styles.visuallyHidden}>{t('default:layout.metadata.title')}</h1>
 						<BaseMap />
 						<RoutePlannerTopSearch />
