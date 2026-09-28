@@ -79,6 +79,7 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 		return Array.from(modes);
 	}, [deviceOrientationError, userLocationError]);
 	const isTrackingUserLocation = userLocationTrackingMode !== 'idle';
+	const shouldWatchUserLocation = isTrackingUserLocation || userLocation !== null;
 
 	//
 	// C. Handle actions
@@ -203,7 +204,8 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 	// D. Synchronize browser state
 
 	useEffect(() => {
-		if (!isTrackingUserLocation) return;
+		// Idle releases the camera, while an enabled location keeps the marker and trip progress current.
+		if (!shouldWatchUserLocation) return;
 
 		if (typeof navigator === 'undefined' || !navigator.geolocation) {
 			setUserLocationError({
@@ -222,7 +224,7 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 		return () => {
 			navigator.geolocation.clearWatch(watchId);
 		};
-	}, [handleUserLocationError, handleUserLocationSuccess, isTrackingUserLocation]);
+	}, [handleUserLocationError, handleUserLocationSuccess, shouldWatchUserLocation]);
 
 	useEffect(() => {
 		if (userLocationTrackingMode !== 'follow-bearing') return;

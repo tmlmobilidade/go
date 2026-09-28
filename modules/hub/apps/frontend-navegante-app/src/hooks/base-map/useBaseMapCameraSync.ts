@@ -1,6 +1,7 @@
 'use client';
 
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useBaseMapDerivedData } from '@/hooks/base-map/useBaseMapDerivedData';
 import { useBaseMapFocusedEntities } from '@/hooks/base-map/useBaseMapFocusedEntities';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
@@ -29,6 +30,7 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
 	// A. Setup variables
 
 	const routePlannerContext = useRoutePlannerContext();
+	const { actions: { setTrackingMode } } = useUserLocation();
 	const { activeBottomSheet, activeBottomSheetSnap } = useBottomSheet();
 	const { mapPadding, shouldFitMap } = useMapBottomSheet();
 	const { 'base-map': baseMap } = useMap();
@@ -96,10 +98,13 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
 		if (lastRouteMapFitKeyRef.current === routeMapFitKey) return;
 		lastRouteMapFitKeyRef.current = routeMapFitKey;
 
+		// Previewing an itinerary takes camera control, just like dragging the map.
+		// The location button can explicitly resume following afterwards.
+		if (!routePlannerContext.flags.is_navigating) setTrackingMode('idle');
 		centerMap(baseMap, params.routePlannerMapFitFeatures, {
 			padding: mapPadding,
 		});
-	}, [activeBottomSheet?.view, activeBottomSheetSnap.snapPoint, baseMap, mapPadding, params.routePlannerMapFitFeatures, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.view_mode, routePlannerContext.flags.is_navigating, shouldFitMap]);
+	}, [activeBottomSheet?.view, activeBottomSheetSnap.snapPoint, baseMap, mapPadding, params.routePlannerMapFitFeatures, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.view_mode, routePlannerContext.flags.is_navigating, setTrackingMode, shouldFitMap]);
 
 	//
 }
