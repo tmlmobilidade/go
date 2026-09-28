@@ -1,6 +1,6 @@
 /* * */
 
-import { RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
+import { RideAcceptanceStatusFilterSchema } from '@tmlmobilidade/go-types-operation';
 import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, TicketingStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -9,7 +9,7 @@ import { z } from 'zod';
 export const ControllerRidesListFiltersSchema = z.object({
 
 	acceptance_statuses: z
-		.array(z.union([RideAcceptanceStatusSchema, z.literal('none')]))
+		.array(RideAcceptanceStatusFilterSchema)
 		.optional(),
 
 	agency_ids: z

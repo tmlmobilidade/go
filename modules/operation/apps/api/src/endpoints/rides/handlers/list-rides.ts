@@ -1,6 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type ControllerRidesListFilters, ControllerRidesListFiltersSchema, type ControllerRidesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
@@ -254,7 +255,32 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 		.replaceAll('--RIDE FILTERS HERE--', joinConditions(rideConditions))
 		.replace('--DERIVED FILTERS HERE--', joinConditions(conditions));
 
-	const queryResult = await labDb.queryFromString<ControllerRidesListItem>(sql, params);
+	let queryResult = await labDb.queryFromString<ControllerRidesListItem>(sql, params);
+
+	//
+	// Acceptance status lives in MongoDB (`ride-acceptances`), not ClickHouse.
+	// Enrich and filter after the rides query. `none` means no acceptance document.
+
+	if (validatedFilters.acceptance_statuses?.length) {
+		const acceptances = await goDb.operation.rideAcceptances.findMany(
+			{ _id: { $in: queryResult.map(ride => ride._id) } },
+			{ projection: { acceptance_status: 1 } },
+		);
+		const statusByRideId = new Map(acceptances.map(acceptance => [acceptance._id, acceptance.acceptance_status]));
+
+		const statuses = validatedFilters.acceptance_statuses.filter(status => status !== 'none');
+		const includesNone = validatedFilters.acceptance_statuses.includes('none');
+
+		queryResult = queryResult
+			.map(ride => ({
+				...ride,
+				acceptance_status: statusByRideId.get(ride._id) ?? null,
+			}))
+			.filter((ride) => {
+				if (ride.acceptance_status === null) return includesNone;
+				return statuses.includes(ride.acceptance_status);
+			});
+	}
 
 	//
 	// Return the results

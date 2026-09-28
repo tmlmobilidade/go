@@ -66,7 +66,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	// B. Transform data
 
 	const query = useMemo<ControllerRidesListFilters>(() => ({
-		// acceptance_statuses: filterAcceptanceStatus.value,
+		acceptance_statuses: filterAcceptanceStatus.value,
 		agency_ids: filterAgency.value,
 		analysis_at_least_one_vehicle_event_on_last_stop_grades: filterAnalysisAtLeastOneVehicleEventOnLastStop.value,
 		analysis_expected_apex_validation_interval_grades: filterAnalysisExpectedApexValidationInterval.value,
