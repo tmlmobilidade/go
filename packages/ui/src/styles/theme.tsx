@@ -25,7 +25,7 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, ColorInput, createTheme, FileInput, Input, InputClearButton, MantineThemeOverride, Menu, MultiSelect, PasswordInput, Pill, PillGroup, Popover, Radio, SegmentedControl, Select, Skeleton, Slider, Stepper, Switch, TagsInput, Text, Textarea } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, ColorInput, createTheme, FileInput, Input, InputClearButton, MantineThemeOverride, Menu, MultiSelect, PasswordInput, Pill, PillGroup, Popover, Radio, SegmentedControl, Select, Skeleton, Slider, Stepper, Switch, TagsInput, Text, Textarea, TreeSelect } from '@mantine/core';
 import { TimePicker } from '@mantine/dates';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
@@ -266,6 +266,12 @@ export const themeData: MantineThemeOverride = createTheme({
 			classNames: {
 				...DropdownBase,
 				...TimePickerOverride,
+			},
+		}),
+
+		TreeSelect: TreeSelect.extend({
+			classNames: {
+				...DropdownBase,
 			},
 		}),
 

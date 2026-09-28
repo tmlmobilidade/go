@@ -12,3 +12,4 @@ export * from './Select';
 export * from './TagsInput';
 export * from './Textarea';
 export * from './TextInput';
+export * from './TreeSelect';
