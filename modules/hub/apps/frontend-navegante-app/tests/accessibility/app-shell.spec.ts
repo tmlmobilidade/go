@@ -18,6 +18,31 @@ const SEARCH_RESULTS_KNOWN_VIOLATIONS = new Map<string, string>();
 test('app shell exposes its language and no untracked axe violations', async ({ page }) => {
 	await page.goto('/hub/navegante-app');
 	await expect(page.locator('html')).toHaveAttribute('lang', 'pt');
+	await expect(page.locator('html')).toHaveCSS('touch-action', 'auto');
+	await expect(page.locator('h1')).toHaveCSS('user-select', 'text');
+
+	const mapTouchAction = await page.locator('canvas').evaluate(canvas => {
+		let surface = canvas.parentElement;
+		while (surface && getComputedStyle(surface).touchAction !== 'none') surface = surface.parentElement;
+		return surface ? getComputedStyle(surface).touchAction : '';
+	});
+	expect(mapTouchAction).toBe('none');
+
+	let focusedButton = false;
+	for (let step = 0; step < 12; step++) {
+		await page.keyboard.press('Tab');
+		const tagName = await page.evaluate(() => document.activeElement?.tagName);
+		if (tagName === 'BUTTON') {
+			focusedButton = true;
+			break;
+		}
+	}
+	expect(focusedButton).toBe(true);
+	const focusOutline = await page.evaluate(() => {
+		const style = getComputedStyle(document.activeElement as Element);
+		return { color: style.outlineColor, style: style.outlineStyle, width: style.outlineWidth };
+	});
+	expect(focusOutline).toEqual({ color: 'rgb(90, 90, 100)', style: 'solid', width: '2px' });
 
 	const scan = await new AxeBuilder({ page })
 		.withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])

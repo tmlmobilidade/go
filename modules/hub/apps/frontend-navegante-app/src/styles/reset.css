@@ -2,16 +2,30 @@
 
 :root {
 	-webkit-tap-highlight-color: transparent;
-	-webkit-touch-callout: none;
-	user-select: none;
 }
 
-div {
-	touch-action: pan-y;
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+canvas:focus-visible,
+[role='button']:focus-visible {
+	outline: 2px solid var(--color-system-text-200) !important;
+	outline-offset: 2px;
 }
 
-html, body {
-	touch-action: none;
+@media (forced-colors: active) {
+	button:focus-visible,
+	a:focus-visible,
+	input:focus-visible,
+	textarea:focus-visible,
+	select:focus-visible,
+	canvas:focus-visible,
+	[role='button']:focus-visible {
+		outline: 2px solid CanvasText !important;
+		box-shadow: none;
+	}
 }
 
 [data-overlay-container] {
