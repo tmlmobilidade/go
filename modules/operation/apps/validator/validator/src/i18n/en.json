@@ -797,7 +797,6 @@
 		"not_matching": "Field \"shape_id\" \"%s\" is different from the field \"pattern_id\" \"%s\", they need to be the same"
 	},
 	"shape_id_validation": {
-		"continuous_pickup_dropoff": "Field \"shape_id\" is required when a continuous pickup or drop-off behavior is defined either in routes.txt or in stop_times.txt",
 		"different_from_pattern_id": "Field \"shape_id\" \"%s\" is different from field \"pattern_id\" \"%s\"",
 		"forbidden": "Field \"shape_id\" is forbidden",
 		"invalid": "Field \"shape_id\" \"%s\" is not a valid shape_id from shapes.txt",

@@ -30,6 +30,7 @@ func DirectionIdGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern
 			panic("trips is empty")
 		}
 
+		// 1. Validate direction_id is present
 		directionIds := make(map[int]bool)
 		for _, trip := range group.Trips {
 			if trip.DirectionId != nil {
@@ -37,10 +38,12 @@ func DirectionIdGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern
 			}
 		}
 
+		// 2. Validate direction_id is unique
 		if len(directionIds) <= 1 {
 			continue
 		}
 
+		// 3. Validate direction_id is valid
 		ids := make([]int, 0, len(directionIds))
 		for id := range directionIds {
 			ids = append(ids, id)

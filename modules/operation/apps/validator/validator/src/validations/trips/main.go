@@ -64,7 +64,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		var groupHash string
 		statuses := runner.Run(services.RuleActions{
 			"trip_id_unique": func() { validations.TripIdValidation(&trip, i, &gtfs) },
-			"trips_shape_id_references_shapes_table_when_present": func() { validations.ShapeIdValidation(&trip, i, &gtfs, tripRules, tripStopTimesCache, routeRowsCache) },
+			"trips_shape_id_references_shapes_table_when_present": func() { validations.ShapeIdValidation(&trip, i, &gtfs, tripRules) },
 			"trips_route_id_references_routes_table":              func() { validations.RouteIdValidation(&trip, i, &gtfs, routeRowsCache) },
 			"trips_service_id_references_calendar_service":        func() { validations.ServiceIdValidation(&trip, i, &gtfs, calendarRowsCache, calendarDatesRowsCache) },
 			"trip_headsign_present_when_short_name_absent":        func() { validations.TripHeadsignValidation(&trip, i, &gtfs, tripRules) },
@@ -124,26 +124,5 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 	validations.ValidateRouteGroups(tripsGroupedByRouteId, &gtfs, tripsRules, runner, groupStatuses)
 
-	for patternID, group := range tripsGroupedByPattern {
-		patterns := types.TripGroupedByPattern{patternID: group}
-		runner.Run(services.RuleActions{
-			"trips_pattern_id_trip_has_required_fields_for_grouping": func() {
-				validations.PatternIdGroupRuleValidation(patterns, &gtfs, tripsRules, "trips_pattern_id_trip_has_required_fields_for_grouping")
-			},
-			"trips_pattern_id_single_trip_signature_per_pattern": func() {
-				validations.PatternIdGroupRuleValidation(patterns, &gtfs, tripsRules, "trips_pattern_id_single_trip_signature_per_pattern")
-			},
-			"trips_route_id_consistent_for_all_patterns_in_trips":     func() { validations.RouteIdGroupValidation(patterns, &gtfs, tripsRules) },
-			"trips_direction_id_consistent_for_all_patterns_in_trips": func() { validations.DirectionIdGroupValidation(patterns, &gtfs, tripsRules) },
-			"trips_one_shape_id_per_pattern_id_group":                 func() { validations.ShapeIdGroupValidation(patterns, nil, &gtfs, tripsRules) },
-			"trip_headsign_consistent_for_all_patterns_in_trips":      func() { validations.TripHeadsignGroupValidation(patterns, &gtfs, tripsRules) },
-		}, groupStatuses["pattern/"+patternID])
-	}
-	for shapeID, group := range tripsGroupedByShapeId {
-		runner.Run(services.RuleActions{
-			"trips_one_pattern_id_per_shape_id_group": func() {
-				validations.ShapeIdGroupValidation(nil, types.TripGroupedByShapeId{shapeID: group}, &gtfs, tripsRules)
-			},
-		}, groupStatuses["shape/"+shapeID])
-	}
+	validations.ValidatePatternGroups(tripsGroupedByPattern, tripsGroupedByShapeId, &gtfs, tripsRules, runner, groupStatuses)
 }

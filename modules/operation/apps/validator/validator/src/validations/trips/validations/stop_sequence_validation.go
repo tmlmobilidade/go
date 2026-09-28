@@ -45,24 +45,24 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		ctx.WithSeverity(rules.StopSequence.Severity)
 	}
 
+	// 1. Validate rule are skipped
 	if ctx.ShouldSkip() {
 		return
 	}
 
+	// 2. Validate trip_id is required
 	if trip.TripId == nil {
 		return
 	}
 
-	// Check each trip's stop times for pickup/dropoff windows
-	// Use cached stop_times data instead of querying database
-
+	// 3. Check each trip's stop times for pickup/dropoff windows
 	stopSequences := make([]types.StopTime, 0)
 	hash := ""
 
-	// Use cached stop_times data if available
+	// 4. Use cached stop_times data if available
 	stopTimesRaw, exists := tripStopTimesCache[*trip.TripId]
 	if !exists {
-		// Fallback to database query if not in cache (shouldn't happen)
+		// 5. Fallback to database query if not in cache (shouldn't happen)
 		stopTimes, err := gtfs.GetRowsById("stop_times", *trip.TripId)
 		if err != nil {
 			return
@@ -76,7 +76,7 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		}
 	}
 
-	// Process cached stop_times data
+	// 6. Process cached stop_times data
 	for _, stopTimeRaw := range stopTimesRaw {
 		stopSequence, err := strconv.Atoi(stopTimeRaw.StopSequence)
 		if err != nil {
@@ -102,15 +102,18 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		})
 	}
 
+	// 7. Remove duplicates and sort by stop_sequence
 	stopSequences = lib.RemoveDuplicates(stopSequences)
 	sort.Slice(stopSequences, func(i, j int) bool {
 		return *stopSequences[i].StopSequence < *stopSequences[j].StopSequence
 	})
 
+	// 8. Generate a hash of the stop_sequences
 	for _, stopSequence := range stopSequences {
 		hash += fmt.Sprintf("%s-%v-%v", *stopSequence.StopId, *stopSequence.ShapeDistTraveled, *stopSequence.StopSequence)
 	}
 
+	// 9. Validate the stop_sequences are increasing
 	for i, stopSequence := range stopSequences {
 		if i > 0 {
 			if *stopSequence.StopSequence <= *stopSequences[i-1].StopSequence {
@@ -125,7 +128,7 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 				}
 			}
 
-			// Check for consecutive stop_ids (when ordered by stop_sequence)
+			// 10. Check for consecutive stop_ids (when ordered by stop_sequence)
 			// Skip if stop_id is not defined (using location_group_id or location_id instead)
 			if stopSequence.StopId != nil && *stopSequence.StopId != "" &&
 				stopSequences[i-1].StopId != nil && *stopSequences[i-1].StopId != "" {
@@ -137,6 +140,7 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		}
 	}
 
+	// 11. Generate a hash of the stop_sequences
 	stopSequenceHash = lib.Hash(hash)
 	return
 }

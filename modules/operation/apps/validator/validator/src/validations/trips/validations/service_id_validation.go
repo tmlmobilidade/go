@@ -23,12 +23,13 @@ Identifies a service.
 func ServiceIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, calendarRowsCache, calendarDatesRowsCache map[string][]int) {
 	ctx := lib.NewValidationContext("service_id", "trips.txt", "trips_service_id_references_calendar_service", row, services.AppMessageService)
 
+	// 1. Validate service_id is required
 	if trip.ServiceId == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("service_id_validation.required"))
 		return
 	}
 
-	// Check in calendar or calendar_dates (use cache to avoid repeated queries)
+	// 2. Validate service_id is Foreign Key referencing calendar.service_id or calendar_dates.service_id (use cache to avoid repeated queries)
 	calendarRows, err := gtfs.GetCachedRowsById(calendarRowsCache, "calendar", *trip.ServiceId)
 	if err == nil && len(calendarRows) > 0 {
 		return

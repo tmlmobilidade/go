@@ -44,22 +44,11 @@ func DirectionIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *t
 
 	// 1. Validate direction_id is required
 	if trip.DirectionId == nil {
-		if ctx.ShouldSkip() {
-			return
-		}
-
-		message := ctx.GetRequiredMessage("direction_id_validation.required", "direction_id_validation.recommended")
-		ctx.AddMessageWithSeverity(message)
+		ctx.AddError(ctx.GetTranslatedMessage("direction_id_validation.required"))
 		return
 	}
 
-	// 2. Validate direction_id is forbidden
-	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("direction_id_validation.forbidden"))
-		return
-	}
-
-	// 3. Validate direction_id is 0 or 1 if it exists
+	// 2. Validate direction_id is 0 or 1 if it exists
 	if trip.DirectionId != nil {
 		validDirectionIds := map[int]bool{0: true, 1: true}
 		if !validDirectionIds[*trip.DirectionId] {
@@ -68,7 +57,7 @@ func DirectionIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *t
 		}
 	}
 
-	// 4. Validate Rule Options
+	// 3. Validate Rule Options
 	if rules != nil && rules.DirectionId.Options != nil {
 		if slices.Contains(*rules.DirectionId.Options, types.ALL_OPTIONS) {
 			return

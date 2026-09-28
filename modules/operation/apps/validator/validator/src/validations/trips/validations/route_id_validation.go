@@ -23,12 +23,13 @@ Identifies a route.
 func RouteIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, routeRowsCache map[string][]int) {
 	ctx := lib.NewValidationContext("route_id", "trips.txt", "trips_route_id_references_routes_table", row, services.AppMessageService)
 
+	// 1. Validate route_id is required
 	if trip.RouteId == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("route_id_validation.required"))
 		return
 	}
 
-	// Check if route_id is Foreign Key referencing routes.route_id (use cache to avoid repeated queries)
+	// 2. Validate route_id is Foreign Key referencing routes.route_id (use cache to avoid repeated queries)
 	rows, err := gtfs.GetCachedRowsById(routeRowsCache, "routes", *trip.RouteId)
 	if err != nil || len(rows) == 0 {
 		ctx.AddError(ctx.GetTranslatedMessage("route_id_validation.not_found", *trip.RouteId))

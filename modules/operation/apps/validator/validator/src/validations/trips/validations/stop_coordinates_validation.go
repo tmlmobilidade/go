@@ -13,11 +13,14 @@ import (
 # Attributes
   - File: [trips.txt]
   - Rule ID: trip_path_stop_coordinates_referenced_from_stops
-  - Presence: optional
+  - Presence: Recommended
   - Type: coordinates
 
 # Description
-Validate if the stop_lat and stop_lon are valid.
+Validate that every stop served by a trip (via stop_times.txt) lies within
+MAX_STOP_DISTANCE_TO_CLOSEST_SHAPE_POINT_METERS of the trip's shape (shape_id
+in trips.txt, geometry in shapes.txt). Distance is measured to the closest
+point along the shape's densified line, not just its original points.
 */
 
 func StopCoordinatesByTripIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, tripStopTimesCache map[string][]types.StopTimeRaw, stopsCache map[string]types.StopCoordinatesValidation, stopClosestShapePointsCache map[string]types.StopClosestShapePointsInfo, rules *types.TripsRules) []types.StopCoordinatesValidation {
@@ -26,6 +29,7 @@ func StopCoordinatesByTripIdValidation(trip *types.Trip, row int, gtfs *types.Gt
 		ctx.WithSeverity(rules.StopCoordinatesByTripId.Severity)
 	}
 
+	// 1. Load the trip's stop_times, falling back to a direct query if the pre-built cache missed it
 	stopTimesRaw, exists := tripStopTimesCache[*trip.TripId]
 	if !exists {
 		stopTimes, err := gtfs.GetRowsById("stop_times", *trip.TripId)
@@ -41,14 +45,17 @@ func StopCoordinatesByTripIdValidation(trip *types.Trip, row int, gtfs *types.Gt
 		}
 	}
 
-	if ctx.ShouldSkip() {
-		return []types.StopCoordinatesValidation{}
-	}
-
+	// 2. Without a shape there is no path to compare stop coordinates against
 	if trip.ShapeId == nil || *trip.ShapeId == "" {
 		return []types.StopCoordinatesValidation{}
 	}
 
+	// 3. Respect rule configuration (ignored/forbidden severities skip the check entirely)
+	if ctx.ShouldSkip() {
+		return []types.StopCoordinatesValidation{}
+	}
+
+	// 4. Resolve each stop_time to its stop coordinates, once per distinct stop_id on this trip
 	stopCoordinates := make([]types.StopCoordinatesValidation, 0)
 	seenStops := make(map[string]struct{})
 
@@ -65,7 +72,8 @@ func StopCoordinatesByTripIdValidation(trip *types.Trip, row int, gtfs *types.Gt
 		stopCoordinates = append(stopCoordinates, stop)
 	}
 
-	// Look up precomputed violations from cache (keyed by "stop_id|shape_id")
+	// 5. Look up precomputed violations from cache (keyed by "stop_id|shape_id"); a hit means
+	// that stop's distance to this shape already exceeded the allowed threshold
 	for _, stop := range stopCoordinates {
 		key := stops_coordinates.StopShapeCacheKey(stop.StopId, *trip.ShapeId)
 		if info, ok := stopClosestShapePointsCache[key]; ok {

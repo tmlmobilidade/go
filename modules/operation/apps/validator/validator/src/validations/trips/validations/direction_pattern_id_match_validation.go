@@ -25,17 +25,20 @@ func DirectionPatternIdMatchValidation(trip *types.Trip, row int, gtfs *types.Gt
 		ctx.WithSeverity(rules.DirectionPatternIdMatch.Severity)
 	}
 
-	
 	// 1. Validate pattern_id and direction_id are required
 	if trip.PatternId == nil || trip.DirectionId == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("direction_pattern_id_match.required"))
 		return
 	}
-	
+
 	// 2. Validate pattern_id and direction_id are skipped
 	if ctx.ShouldSkip() {
 		return
 	}
-
 
 	// 3. Validate pattern_id and direction_id are valid
 	//

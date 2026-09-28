@@ -29,6 +29,7 @@ func PatternIdGroupRuleValidation(tripsGroupedByPattern types.TripGroupedByPatte
 			panic("trips is empty")
 		}
 
+		// 1. Validate pattern_id is required
 		for _, trip := range group.Trips {
 			if ruleID != "" && ruleID != "trips_pattern_id_trip_has_required_fields_for_grouping" {
 				break
@@ -61,6 +62,7 @@ func PatternIdGroupRuleValidation(tripsGroupedByPattern types.TripGroupedByPatte
 			}
 		}
 
+		// 2. Validate pattern_id has only one trip signature
 		if len(group.Hash) > 1 && (ruleID == "" || ruleID == "trips_pattern_id_single_trip_signature_per_pattern") {
 			row := group.Trips[0].Row
 			ctx := lib.NewValidationContext("pattern_id", "trips.txt", "trips_pattern_id_single_trip_signature_per_pattern", row, services.AppMessageService)

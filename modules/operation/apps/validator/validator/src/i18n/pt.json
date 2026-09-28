@@ -805,7 +805,6 @@
 		"not_matching": "O campo \"shape_id\" \"%s\" é diferente do campo \"pattern_id\" \"%s\", devem ser iguais."
 	},
 	"shape_id_validation": {
-		"continuous_pickup_dropoff": "O campo \"shape_id\" é obrigatório quando um comportamento de embarque ou desembarque contínuo é definido em routes.txt ou em stop_times.txt",
 		"different_from_pattern_id": "O campo \"shape_id\" \"%s\" é diferente do campo \"pattern_id\" \"%s\"",
 		"forbidden": "O campo \"shape_id\" é proibido",
 		"invalid": "O campo \"shape_id\" \"%s\" não é um shape_id válido de shapes.txt",

@@ -48,10 +48,17 @@ func PatternIdFormatValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rule
 		ctx.WithSeverity(rules.PatternIdFormat.Severity)
 	}
 
+	// 1. Validate pattern_id is required
 	if trip.PatternId == nil {
 		return
 	}
 
+	// 2. Validate pattern_id is skipped
+	if ctx.ShouldSkip() {
+		return
+	}
+
+	// 3. Validate pattern_id is valid
 	expectedFormat := defaultPatternIDFormat
 	allowedRegexes := []*regexp.Regexp{regexp.MustCompile(defaultPatternIDRegex)}
 
@@ -75,6 +82,7 @@ func PatternIdFormatValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rule
 		}
 	}
 
+	// 4. Validate pattern_id is valid
 	isValidFormat := false
 	for _, allowedRegex := range allowedRegexes {
 		if allowedRegex.MatchString(*trip.PatternId) {
@@ -83,6 +91,7 @@ func PatternIdFormatValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rule
 		}
 	}
 
+	// 5. Validate pattern_id is invalid
 	if !isValidFormat {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pattern_id_format_validation.invalid", expectedFormat, *trip.PatternId))
 		return

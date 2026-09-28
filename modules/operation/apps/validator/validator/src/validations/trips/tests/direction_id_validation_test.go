@@ -34,8 +34,10 @@ func TestAllDirectionIdValidationTestCases(t *testing.T) {
 		})
 	}
 
-	for _, tc := range test_helpers.GetGenericSeverityTestCases("direction_id") {
-		t.Run(tc.Name, func(t *testing.T) {
+	// direction_id is unconditionally required: missing it is always an error,
+	// regardless of what severity is configured for the rule.
+	for _, severity := range []types.Severity{types.SEVERITY_ERROR, types.SEVERITY_WARNING, types.SEVERITY_IGNORE, types.SEVERITY_FORBIDDEN, ""} {
+		t.Run("Required_Missing_"+string(severity), func(t *testing.T) {
 			services.AppMessageService.Clear()
 			trip := &types.Trip{DirectionId: nil}
 			gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{"routes": {"MY_ROUTE_ID": []int{1}}}}.ToGtfsWithDB()
@@ -43,8 +45,12 @@ func TestAllDirectionIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.DirectionIdValidation(trip, tc.Row, gtfs, &types.TripsRules{DirectionId: types.RuleConfig{Severity: tc.Severity}})
-			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
+			var rules *types.TripsRules
+			if severity != "" {
+				rules = &types.TripsRules{DirectionId: types.RuleConfig{Severity: severity}}
+			}
+			validations.DirectionIdValidation(trip, 1, gtfs, rules)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Required_Missing", types.SEVERITY_ERROR)
 		})
 	}
 }

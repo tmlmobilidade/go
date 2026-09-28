@@ -12,7 +12,7 @@ import (
 
   - File: [trips.txt]
   - Field: shape_id
-  - Presence: Recommended (internal and external operators)
+  - Presence: Recommended
   - Type: Foreign ID referencing shapes.shape_id
 
 # Description
@@ -38,13 +38,13 @@ func ShapeIdRouteDirectionMatchValidation(trip *types.Trip, row int, gtfs *types
 	if rules != nil {
 		ctx.WithSeverity(rules.ShapeIdRouteDirectionMatch.Severity)
 	}
-	// 1. Validate shape_id composition is skipped
-	if ctx.ShouldSkip() {
+	// 1. Validate shape_id, route_id and direction_id are required
+	if trip.ShapeId == nil || trip.RouteId == nil || trip.DirectionId == nil {
 		return
 	}
 
-	// 2. Validate shape_id and the fields it is composed from are present
-	if trip.ShapeId == nil || trip.RouteId == nil || trip.DirectionId == nil {
+	// 2. Validate shape_id composition is skipped
+	if ctx.ShouldSkip() {
 		return
 	}
 
