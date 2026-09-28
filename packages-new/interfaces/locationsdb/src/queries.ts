@@ -28,13 +28,13 @@ SELECT
 	) AS geojson
 FROM planet_osm_polygon p
 WHERE p.boundary = 'administrative'
-  AND p.admin_level = $admin_level
+  AND p.admin_level = $1
   AND p.way && (
       SELECT c.way
       FROM planet_osm_polygon c
       WHERE c.boundary = 'administrative'
         AND c.admin_level = '2'
-        AND c.tags->>'ISO3166-1' = $country_code
+        AND c.tags->>'ISO3166-1' = $2
       LIMIT 1
   )
   AND ST_Within(
@@ -44,7 +44,7 @@ WHERE p.boundary = 'administrative'
           FROM planet_osm_polygon c
           WHERE c.boundary = 'administrative'
             AND c.admin_level = '2'
-            AND c.tags->>'ISO3166-1' = $country_code
+            AND c.tags->>'ISO3166-1' = $2
           LIMIT 1
       )
   )

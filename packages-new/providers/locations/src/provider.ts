@@ -5,7 +5,8 @@ import * as localities from '@/localities/index.js';
 import * as location from '@/location/index.js';
 import * as municipalities from '@/municipalities/index.js';
 import * as parishes from '@/parishes/index.js';
-import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/go-types-locations';
+import * as tree from '@/tree/index.js';
+import { type District, type Locality, type LocationTreeNode, type Municipality, type Parish } from '@tmlmobilidade/go-types-locations';
 
 /* * */
 
@@ -137,6 +138,14 @@ class LocationsProviderClass {
 	 */
 	async findParishes({ districtIds, municipalityIds }: { districtIds?: string[], municipalityIds?: string[], parishIds?: string[] } = {}): Promise<Parish[]> {
 		return parishes.findMany({ districtIds, municipalityIds });
+	}
+
+	/**
+	 * Builds the administrative location tree (country → 3 nested levels) for every configured country.
+	 * @returns Country root nodes with their nested locations, sourced from the locations (OSM) database.
+	 */
+	async findTree(): Promise<LocationTreeNode[]> {
+		return tree.findTree();
 	}
 }
 
