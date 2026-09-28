@@ -1,20 +1,12 @@
 /* * */
 
+import { LOCATION_LEVELS, LOCATION_SLOTS, SUPPORTED_COUNTRIES, type SupportedCountryCode } from '@/levels.js';
 import { bbox, booleanPointInPolygon, featureCollection, pointOnFeature } from '@tmlmobilidade/geo';
-import { type CountryCode, type LocationProperties, locationsDb, type LocationWithGeojson } from '@tmlmobilidade/go-interfaces-locationsdb';
+import { type LocationProperties, locationsDb, type LocationWithGeojson } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { type LocationTreeNode } from '@tmlmobilidade/go-types-locations';
 import { type Feature, type MultiPolygon, type Point, type Polygon } from 'geojson';
 
 /* * */
-
-/**
- * OSM admin_levels shown per country, from the country down to the finest level.
- * PT: Country, District, Municipality, Parish. ES: Country, Autonomous Community, Province, Municipality.
- */
-export const LOCATION_TREE_LEVELS: [CountryCode, number[]][] = [
-	['PT', [2, 6, 7, 8]],
-	['ES', [2, 4, 6, 8]],
-];
 
 type LocationPolygon = Feature<MultiPolygon | Polygon, LocationProperties>;
 
@@ -40,8 +32,9 @@ function contains(parent: TreeEntry, point: Feature<Point>): boolean {
 	return parent.polygons.some(polygon => booleanPointInPolygon(point, polygon));
 }
 
-async function buildCountryTree(countryCode: CountryCode, adminLevels: number[]): Promise<LocationTreeNode[]> {
-	const rowsPerLevel = await Promise.all(adminLevels.map(adminLevel => locationsDb.findLocationsByCountryAndAdminLevel(countryCode, adminLevel)));
+async function buildCountryTree(countryCode: SupportedCountryCode): Promise<LocationTreeNode[]> {
+	const adminLevels = LOCATION_SLOTS.map(slot => LOCATION_LEVELS[countryCode][slot]);
+	const rowsPerLevel = await Promise.all(adminLevels.map(adminLevel => locationsDb.findLocationsWithGeojsonByCountryAndAdminLevel(countryCode, adminLevel)));
 	const entriesPerLevel = rowsPerLevel.map(rows => rows.map(toEntry).sort((a, b) => a.node.name.localeCompare(b.node.name)));
 	for (let level = 1; level < entriesPerLevel.length; level++) {
 		for (const child of entriesPerLevel[level]) {
@@ -58,16 +51,14 @@ async function buildCountryTree(countryCode: CountryCode, adminLevels: number[])
 }
 
 /**
- * Builds the administrative location tree for every configured country,
+ * Builds the administrative location tree for every supported country,
  * nesting each level inside the parent whose geometry contains it.
- * @returns Country root nodes, each with `LOCATION_TREE_LEVELS` nested below.
+ * @returns Country root nodes, each with the `LOCATION_LEVELS` slots nested below.
  */
 export function findTree(): Promise<LocationTreeNode[]> {
 	// ponytail: process-lifetime cache. The first call pulls every geometry (~160 MB, a few seconds);
 	// boundaries change rarely, so a restart is the refresh. Upgrade path: cachedb with a TTL.
-	cache.tree ??= Promise.all(
-		LOCATION_TREE_LEVELS.map(([countryCode, adminLevels]) => buildCountryTree(countryCode, adminLevels)),
-	).then(trees => trees.flat()).catch((error) => {
+	cache.tree ??= Promise.all(SUPPORTED_COUNTRIES.map(buildCountryTree)).then(trees => trees.flat()).catch((error) => {
 		cache.tree = null;
 		throw error;
 	});
