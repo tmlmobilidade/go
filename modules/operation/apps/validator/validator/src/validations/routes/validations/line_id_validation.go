@@ -11,7 +11,7 @@ import (
 
 - File: [routes.txt]
 - Field: line_id
-- Presence: Required
+- Presence: Optional
 - Type: string
 
 # Description
@@ -32,17 +32,22 @@ func LineIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *type
 
 	// 1. Validate line_id is present
 	if route.LineId == nil {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_id_required.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("line_id_required.required", "line_id_required.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Check if line_id is forbidden
+	// 2. Validate line_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_id_required.forbidden"))
 		return
 	}
 
-	// Check if line_id is the same as route_short_name
+	// 3. Validate line_id is the same as route_short_name
 	if route.RouteShortName != nil && *route.LineId != *route.RouteShortName {
 		ctx.AddError(ctx.GetTranslatedMessage("line_id_required.not_equal_to_route_short_name", *route.LineId, *route.RouteShortName))
 	}
