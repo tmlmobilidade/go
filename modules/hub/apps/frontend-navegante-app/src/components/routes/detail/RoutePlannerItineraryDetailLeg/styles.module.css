@@ -107,16 +107,10 @@
 	white-space: nowrap;
 }
 
-.warningItem[data-kind='late'] {
+.warningItem[data-kind='departure'] {
 	color: var(--color-route-status-late-text);
 	background-color: var(--color-route-status-late-background);
 	border: 1px solid var(--color-route-status-late-border);
-}
-
-.warningItem[data-kind='early'] {
-	color: var(--color-route-status-early-text);
-	background-color: var(--color-route-status-early-background);
-	border: 1px solid var(--color-route-status-early-border);
 }
 
 .warningItem[data-kind='alert'] {

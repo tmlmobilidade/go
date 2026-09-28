@@ -15,6 +15,7 @@ export interface RoutePlannerTimeStatus {
 
 export interface RoutePlannerLegRealtimeStatus {
 	delay_seconds: number
+	departure_delay_seconds: number
 	from_time: RoutePlannerTimeStatus
 	to_time: RoutePlannerTimeStatus
 }
@@ -38,6 +39,7 @@ export function getRoutePlannerLegRealtimeStatus(leg: MotisPlanLeg): RoutePlanne
 			getTimeDelaySeconds(fromTime),
 			getTimeDelaySeconds(toTime),
 		]),
+		departure_delay_seconds: getTimeDelaySeconds(fromTime),
 		from_time: fromTime,
 		to_time: toTime,
 	};

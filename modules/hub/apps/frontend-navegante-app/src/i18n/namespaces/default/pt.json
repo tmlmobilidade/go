@@ -244,6 +244,8 @@
 				"at_time": "às {time}",
 				"current_step": "Etapa atual",
 				"delay": "Atraso de {count} min",
+				"departure_delay": "Parte {count} min depois do horário",
+				"departure_early": "Parte {count} min antes do horário",
 				"destination": "Destino",
 				"duration_unavailable": "Duração indisponível",
 				"early": "{count} min adiantado",

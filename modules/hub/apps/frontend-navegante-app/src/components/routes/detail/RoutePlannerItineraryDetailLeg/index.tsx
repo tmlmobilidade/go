@@ -46,7 +46,7 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, le
 	const intermediateStops = getIntermediateStops(leg);
 	const hasIntermediateStops = intermediateStops.length > 0;
 	const realtimeStatus = getRoutePlannerLegRealtimeStatus(leg);
-	const delaySeconds = realtimeStatus.delay_seconds;
+	const departureDelaySeconds = isMotisWalkingLeg(leg) ? 0 : realtimeStatus.departure_delay_seconds;
 	const legAlertFilters = useMemo(() => {
 		if (isMotisWalkingLeg(leg)) return null;
 		return getRoutePlannerItineraryAlertFilters({ legs: [leg] }, Array.from(lineByShortName.values()));
@@ -102,24 +102,23 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, le
 
 				<div className={styles.legEndpoints}>
 					<span><RoutePlannerTime time={realtimeStatus.from_time} /> · {from}</span>
+					{departureDelaySeconds !== 0 && (
+						<div className={styles.warningItem} data-kind="departure">
+							<IconAlertTriangle size={15} />
+							<span>
+								{t(departureDelaySeconds > 0
+									? 'default:routes.RoutePlanner.results.departure_delay'
+									: 'default:routes.RoutePlanner.results.departure_early', '', {
+									count: Math.max(1, Math.round(Math.abs(departureDelaySeconds) / 60)),
+								})}
+							</span>
+						</div>
+					)}
 					<span><RoutePlannerTime time={realtimeStatus.to_time} /> · {to}</span>
 				</div>
 
-				{(delaySeconds !== 0 || alerts.length > 0) && (
+				{alerts.length > 0 && (
 					<div className={styles.warningList}>
-						{delaySeconds !== 0 && (
-							<div className={styles.warningItem} data-kind={delaySeconds > 0 ? 'late' : 'early'}>
-								<IconAlertTriangle size={15} />
-								<span>
-									{t(delaySeconds > 0
-										? 'default:routes.RoutePlanner.results.delay'
-										: 'default:routes.RoutePlanner.results.early', '', {
-										count: Math.max(1, Math.round(Math.abs(delaySeconds) / 60)),
-									})}
-								</span>
-							</div>
-						)}
-
 						{alerts.slice(0, 3).map(alert => (
 							<div key={alert._id} className={styles.warningItem} data-kind="alert">
 								<IconAlertTriangle size={15} />
