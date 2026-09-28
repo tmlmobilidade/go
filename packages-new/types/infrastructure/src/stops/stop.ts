@@ -7,8 +7,8 @@ import { StopFlagSchema } from '@/stops/flag.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
 import { StopRoadTypeSchema } from '@/stops/road-type.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
-import { StopLocationSchema } from '@/stops/stop-location.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
+import { LocationSchema } from '@tmlmobilidade/go-types-locations';
 import { AvailabilityStatusSchema, BaseDocumentSchema, CommentSchema, ConditionStatusSchema, LifecycleStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -37,7 +37,7 @@ export const StopSchema = BaseDocumentSchema.extend({
 	// Location
 
 	latitude: LatitudeSchema,
-	location: StopLocationSchema,
+	location: LocationSchema,
 	longitude: LongitudeSchema,
 
 	//
