@@ -7,6 +7,7 @@ import { StopFlagSchema } from '@/stops/flag.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
 import { StopRoadTypeSchema } from '@/stops/road-type.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
+import { StopLocationSchema } from '@/stops/stop-location.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { AvailabilityStatusSchema, BaseDocumentSchema, CommentSchema, ConditionStatusSchema, LifecycleStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
@@ -35,12 +36,9 @@ export const StopSchema = BaseDocumentSchema.extend({
 	//
 	// Location
 
-	district_id: z.string(),
 	latitude: LatitudeSchema,
-	locality_id: z.string().nullable().default(null),
+	location: StopLocationSchema,
 	longitude: LongitudeSchema,
-	municipality_id: z.string(),
-	parish_id: z.string().nullable().default(null),
 
 	//
 	// Infrastructure
