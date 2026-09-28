@@ -23,14 +23,16 @@ Identifies a trip.
 func TripIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs) {
 	ctx := lib.NewValidationContext("trip_id", "trips.txt", "trip_id_unique", row, services.AppMessageService)
 
+	// 1. Validate trip_id is present
 	if trip.TripId == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("trip_id_validation.required"))
 		return
 	}
 
+	// 2. Validate trip_id is unique
 	rows, err := gtfs.GetRowsById("trips", *trip.TripId)
 	if err == nil && len(rows) > 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("trip_id_validation.duplicate", map[string]any{"trip_id": *trip.TripId}))
+		ctx.AddError(ctx.GetTranslatedMessage("trip_id_validation.duplicate", *trip.TripId))
 		return
 	}
 }

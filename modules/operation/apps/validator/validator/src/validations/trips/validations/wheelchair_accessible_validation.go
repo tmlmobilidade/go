@@ -32,14 +32,8 @@ func WheelchairAccessibleValidation(trip *types.Trip, row int, gtfs *types.Gtfs,
 		ctx.WithSeverity(rules.WheelchairAccessible.Severity)
 	}
 
-	// 1. Validate wheelchair_accessible is required
+	// 1. Empty is valid: no accessibility information is available.
 	if trip.WheelchairAccessible == nil {
-		if ctx.ShouldSkip() {
-			return
-		}
-
-		message := ctx.GetRequiredMessage("wheelchair_accessible_validation.required", "wheelchair_accessible_validation.recommended")
-		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
@@ -49,23 +43,23 @@ func WheelchairAccessibleValidation(trip *types.Trip, row int, gtfs *types.Gtfs,
 		return
 	}
 
-	// 3. Validate wheelchair_accessible is 0 or 1 if it exists
+	// 3. Validate wheelchair_accessible is 0, 1 or 2 if it exists
 	if trip.WheelchairAccessible != nil {
-		validWheelchairAccessible := map[int]bool{0: true, 1: true, 2: true}
-		if !validWheelchairAccessible[*trip.WheelchairAccessible] {
+		validWheelchairAccessible := []int{0, 1, 2}
+		if !slices.Contains(validWheelchairAccessible, *trip.WheelchairAccessible) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.invalid"))
 			return
 		}
 	}
 
-	// Validate Rule Options
+	// 4. Validate Rule Options
 	if rules != nil && rules.WheelchairAccessible.Options != nil {
 		if slices.Contains(*rules.WheelchairAccessible.Options, types.ALL_OPTIONS) {
 			return
 		}
 
 		if !slices.Contains(*rules.WheelchairAccessible.Options, fmt.Sprintf("%d", *trip.WheelchairAccessible)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.not_allowed", map[string]any{"value": *trip.WheelchairAccessible}))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.not_allowed", *trip.WheelchairAccessible))
 			return
 		}
 	}

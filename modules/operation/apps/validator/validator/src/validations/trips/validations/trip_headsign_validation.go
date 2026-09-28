@@ -29,6 +29,7 @@ func TripHeadsignValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		ctx.WithSeverity(rules.TripHeadsign.Severity)
 	}
 
+	// 1. Validate trip_headsign is present
 	if trip.TripHeadsign == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -39,6 +40,7 @@ func TripHeadsignValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		return
 	}
 
+	// 2. Validate trip_headsign is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("trip_headsign_validation.forbidden"))
 		return
