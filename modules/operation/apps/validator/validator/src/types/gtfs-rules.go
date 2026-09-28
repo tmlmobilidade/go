@@ -109,6 +109,10 @@ type TripsRules struct {
 	OnePatternIdPerShapeIdGroup               RuleConfig `json:"trips_one_pattern_id_per_shape_id_group"`
 	TripHeadsignGroup                         RuleConfig `json:"trip_headsign_consistent_for_all_patterns_in_trips"`
 	ShapeIdSamePatternId                      RuleConfig `json:"trips_shape_id_needs_to_be_the_same_as_pattern_id"`
+	ShapeIdMaxTwoPerRoute                     RuleConfig `json:"trips_shape_id_max_two_per_route"`
+	TripHeadsignMaxTwoPerRoute                RuleConfig `json:"trip_headsign_max_two_per_route"`
+	ShapeIdConsistentPerRouteDirection        RuleConfig `json:"trips_shape_id_consistent_per_route_direction"`
+	TripHeadsignConsistentPerRouteDirection   RuleConfig `json:"trip_headsign_consistent_per_route_direction"`
 }
 
 type StopTimesRules struct {

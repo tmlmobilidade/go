@@ -704,6 +704,10 @@
 		"recommended": "Field \"route_desc\" is recommended",
 		"required": "Field \"route_desc\" is required"
 	},
+	"route_associations_validation": {
+		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s",
+		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s"
+	},
 	"route_id_group_validation": {
 		"different_route_ids_in_pattern": "pattern_id %s has trips with different route_ids: %s. All trips with the same pattern_id must have the same route_id"
 	},

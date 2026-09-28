@@ -248,6 +248,8 @@ export interface TransfersRules {
 export interface TripsRules {
 	_file: RuleSeverity
 	trip_headsign_consistent_for_all_patterns_in_trips: RuleConfig
+	trip_headsign_consistent_per_route_direction: RuleConfig
+	trip_headsign_max_two_per_route: RuleConfig
 	trip_headsign_present_when_short_name_absent: RuleConfig
 	trip_id_limit_max_length: RuleConfig
 	trip_id_unique: RuleConfig
@@ -267,6 +269,8 @@ export interface TripsRules {
 	trips_route_id_consistent_for_all_patterns_in_trips: RuleConfig
 	trips_route_id_references_routes_table: RuleConfig
 	trips_service_id_references_calendar_service: RuleConfig
+	trips_shape_id_consistent_per_route_direction: RuleConfig
+	trips_shape_id_max_two_per_route: RuleConfig
 	trips_shape_id_needs_to_be_the_same_as_pattern_id: RuleConfig
 	trips_shape_id_references_shapes_table_when_present: RuleConfig
 	trips_stop_sequence_increasing_by_one_along_trip: RuleConfig

@@ -45,6 +45,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 	tracker := lib.CreateProgressTracker(gtfs, "trips", config.ProgressThresholdLarge)
 	var tripsGroupedByPattern types.TripGroupedByPattern = make(types.TripGroupedByPattern)
 	var tripsGroupedByShapeId types.TripGroupedByShapeId = make(types.TripGroupedByShapeId)
+	tripsGroupedByRouteId := make(types.TripGroupedByRouteId)
 
 	err := gtfs.IterateTrips(func(i int, rawTrips types.TripRaw) error {
 		tracker.Track()
@@ -62,7 +63,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		// Validate trip_id
 		var groupHash string
 		statuses := runner.Run(services.RuleActions{
-			"trip_id_unique":                                      func() { validations.TripIdValidation(&trip, i, &gtfs) },
+			"trip_id_unique": func() { validations.TripIdValidation(&trip, i, &gtfs) },
 			"trips_shape_id_references_shapes_table_when_present": func() { validations.ShapeIdValidation(&trip, i, &gtfs, tripRules, tripStopTimesCache, routeRowsCache) },
 			"trips_route_id_references_routes_table":              func() { validations.RouteIdValidation(&trip, i, &gtfs, routeRowsCache) },
 			"trips_service_id_references_calendar_service":        func() { validations.ServiceIdValidation(&trip, i, &gtfs, calendarRowsCache, calendarDatesRowsCache) },
@@ -72,16 +73,23 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			"trips_block_id_in_allowed_set":                       func() { validations.BlockIdValidation(&trip, i, &gtfs, tripRules) },
 			"trips_wheelchair_accessible_valid_gtfs_enum":         func() { validations.WheelchairAccessibleValidation(&trip, i, &gtfs, tripRules) },
 			"trips_bikes_allowed_valid_gtfs_enum":                 func() { validations.BikesAllowedValidation(&trip, i, &gtfs, tripRules) },
-			"trip_path_stop_coordinates_referenced_from_stops":    func() {
+			"trip_path_stop_coordinates_referenced_from_stops": func() {
 				validations.StopCoordinatesByTripIdValidation(&trip, i, &gtfs, tripStopTimesCache, stopsCache, stopClosestShapePointsCache, tripRules)
 			},
-			"trips_direction_id_matches_feed_pattern_direction":   func() { validations.DirectionPatternIdMatchValidation(&trip, i, &gtfs, tripRules) },
-			"trip_id_limit_max_length":                            func() { validations.TripIdLimitCharactersValidation(&trip, i, &gtfs, tripRules) },
-			"trips_pattern_id_matches_feed_pattern_id_syntax":     func() { validations.PatternIdFormatValidation(&trip, i, &gtfs, tripRules) },
-			"trips_shape_id_needs_to_be_the_same_as_pattern_id":   func() { validations.ShapeIdSamePatternIdValidation(&trip, i, &gtfs, tripRules) },
-			"trips_stop_sequence_increasing_by_one_along_trip":    func() { groupHash = validations.StopSequenceValidation(&trip, i, &gtfs, tripRules, tripStopTimesCache) },
-			"trips_pattern_id_present_and_references_consistent":  func() { validations.PatternIdValidation(&trip, i, &gtfs, tripRules) },
+			"trips_direction_id_matches_feed_pattern_direction":  func() { validations.DirectionPatternIdMatchValidation(&trip, i, &gtfs, tripRules) },
+			"trip_id_limit_max_length":                           func() { validations.TripIdLimitCharactersValidation(&trip, i, &gtfs, tripRules) },
+			"trips_pattern_id_matches_feed_pattern_id_syntax":    func() { validations.PatternIdFormatValidation(&trip, i, &gtfs, tripRules) },
+			"trips_shape_id_needs_to_be_the_same_as_pattern_id":  func() { validations.ShapeIdSamePatternIdValidation(&trip, i, &gtfs, tripRules) },
+			"trips_stop_sequence_increasing_by_one_along_trip":   func() { groupHash = validations.StopSequenceValidation(&trip, i, &gtfs, tripRules, tripStopTimesCache) },
+			"trips_pattern_id_present_and_references_consistent": func() { validations.PatternIdValidation(&trip, i, &gtfs, tripRules) },
 		}, nil)
+
+		if trip.RouteId != nil {
+			group := tripsGroupedByRouteId[*trip.RouteId]
+			group.Trips = append(group.Trips, trip)
+			tripsGroupedByRouteId[*trip.RouteId] = group
+			groupStatuses["route/"+*trip.RouteId] = services.MergeRuleStatuses(groupStatuses["route/"+*trip.RouteId], statuses)
+		}
 
 		if trip.PatternId != nil {
 			group := tripsGroupedByPattern[*trip.PatternId]
@@ -113,13 +121,15 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		tripsRules = &rules.Trips
 	}
 
+	validations.ValidateRouteGroups(tripsGroupedByRouteId, &gtfs, tripsRules, runner, groupStatuses)
+
 	for patternID, group := range tripsGroupedByPattern {
 		patterns := types.TripGroupedByPattern{patternID: group}
 		runner.Run(services.RuleActions{
-			"trips_pattern_id_trip_has_required_fields_for_grouping":  func() {
+			"trips_pattern_id_trip_has_required_fields_for_grouping": func() {
 				validations.PatternIdGroupRuleValidation(patterns, &gtfs, tripsRules, "trips_pattern_id_trip_has_required_fields_for_grouping")
 			},
-			"trips_pattern_id_single_trip_signature_per_pattern":      func() {
+			"trips_pattern_id_single_trip_signature_per_pattern": func() {
 				validations.PatternIdGroupRuleValidation(patterns, &gtfs, tripsRules, "trips_pattern_id_single_trip_signature_per_pattern")
 			},
 			"trips_route_id_consistent_for_all_patterns_in_trips":     func() { validations.RouteIdGroupValidation(patterns, &gtfs, tripsRules) },

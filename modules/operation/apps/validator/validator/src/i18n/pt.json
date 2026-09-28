@@ -712,6 +712,10 @@
 		"recommended": "O campo \"route_desc\" é recomendado",
 		"required": "O campo \"route_desc\" é obrigatório"
 	},
+	"route_associations_validation": {
+		"max_two": "O route_id \"%s\" deve ter no máximo dois valores distintos de \"%s\"; encontrados %d: %s",
+		"inconsistent_direction": "O route_id \"%s\" com direction_id %d deve ter um único valor de \"%s\"; encontrados: %s"
+	},
 	"route_id_group_validation": {
 		"different_route_ids_in_pattern": "pattern_id %s tem viagens com route_ids diferentes: %s. Todas as viagens com o mesmo pattern_id devem ter o mesmo route_id"
 	},

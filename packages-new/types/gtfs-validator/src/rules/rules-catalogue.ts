@@ -1301,6 +1301,20 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'trip_headsign_consistent_for_all_patterns_in_trips',
 	},
 	{
+		config_key: 'trip_headsign_consistent_per_route_direction',
+		depends_on: ['trips_route_id_references_routes_table', 'trip_headsign_present_when_short_name_absent', 'trips_direction_id_valid_enum'],
+		editable: true,
+		group: 'trips',
+		id: 'trip_headsign_consistent_per_route_direction',
+	},
+	{
+		config_key: 'trip_headsign_max_two_per_route',
+		depends_on: ['trips_route_id_references_routes_table', 'trip_headsign_present_when_short_name_absent'],
+		editable: true,
+		group: 'trips',
+		id: 'trip_headsign_max_two_per_route',
+	},
+	{
 		config_key: 'trip_headsign_present_when_short_name_absent',
 		depends_on: ['trips_file_present'],
 		editable: true,
@@ -1438,6 +1452,20 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'trips',
 		id: 'trips_service_id_references_calendar_service',
+	},
+	{
+		config_key: 'trips_shape_id_consistent_per_route_direction',
+		depends_on: ['trips_route_id_references_routes_table', 'trips_shape_id_references_shapes_table_when_present', 'trips_direction_id_valid_enum'],
+		editable: true,
+		group: 'trips',
+		id: 'trips_shape_id_consistent_per_route_direction',
+	},
+	{
+		config_key: 'trips_shape_id_max_two_per_route',
+		depends_on: ['trips_route_id_references_routes_table', 'trips_shape_id_references_shapes_table_when_present'],
+		editable: true,
+		group: 'trips',
+		id: 'trips_shape_id_max_two_per_route',
 	},
 	{
 		config_key: 'trips_shape_id_needs_to_be_the_same_as_pattern_id',
