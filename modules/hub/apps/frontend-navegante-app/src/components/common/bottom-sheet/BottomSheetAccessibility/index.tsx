@@ -19,6 +19,7 @@ interface BottomSheetAccessibilityRenderProps {
 
 interface BottomSheetAccessibilityProps {
 	children: (props: BottomSheetAccessibilityRenderProps) => ReactNode
+	containerRef?: RefObject<HTMLDivElement | null>
 	initialFocusRef?: RefObject<HTMLElement | null>
 	modality: 'modal' | 'non-modal'
 	onClose: () => void
@@ -26,13 +27,14 @@ interface BottomSheetAccessibilityProps {
 
 /* * */
 
-export function BottomSheetAccessibility({ children, initialFocusRef, modality, onClose }: BottomSheetAccessibilityProps) {
+export function BottomSheetAccessibility({ children, containerRef: suppliedContainerRef, initialFocusRef, modality, onClose }: BottomSheetAccessibilityProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const containerRef = useRef<HTMLDivElement>(null);
+	const fallbackContainerRef = useRef<HTMLDivElement>(null);
+	const containerRef = suppliedContainerRef ?? fallbackContainerRef;
 	const isModal = modality === 'modal';
 	const dialog = useDialog({}, containerRef);
 	const overlay = useOverlay({ isDismissable: false, isOpen: true, onClose }, containerRef);

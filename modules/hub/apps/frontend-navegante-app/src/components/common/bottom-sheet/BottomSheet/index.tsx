@@ -106,6 +106,7 @@ export function BottomSheet({
 	const contentId = useId();
 	const isSheetOpenRef = useRef(false);
 	const sheetRef = useRef<SheetRef>(null);
+	const dialogRef = useRef<HTMLDivElement>(null);
 	const { setActiveBottomSheetSnap } = useBottomSheet();
 	const snapPoints = customSnapPoints ?? (mapAware ? MAP_BOTTOM_SHEET_SNAP_POINTS : SHEET_SNAP_POINTS_BY_SIZE[size]);
 	const snapPointsKey = useMemo(() => snapPoints.join('|'), [snapPoints]);
@@ -227,6 +228,10 @@ export function BottomSheet({
 	const handleOpenEnd = () => {
 		isSheetOpenRef.current = true;
 		initialFocusRef?.current?.focus({ preventScroll: true });
+		// Auto-focus may run while the animated sheet is still outside the viewport.
+		if (modality === 'modal' && !dialogRef.current?.contains(document.activeElement)) {
+			dialogRef.current?.focus({ preventScroll: true });
+		}
 		onOpenEnd?.();
 	};
 
@@ -257,7 +262,7 @@ export function BottomSheet({
 			snapPoints={snapPoints}
 		>
 			<ModalProvider>
-				<BottomSheetAccessibility initialFocusRef={initialFocusRef} modality={modality} onClose={onClose}>
+				<BottomSheetAccessibility containerRef={dialogRef} initialFocusRef={initialFocusRef} modality={modality} onClose={onClose}>
 					{({ containerProps, containerRef, titleProps }) => (
 						<>
 							<Sheet.Container
