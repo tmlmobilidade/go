@@ -674,6 +674,13 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'route_desc_per_severity_and_content_rules',
 	},
 	{
+		config_key: 'route_id_composed_of_short_name_and_sort_order',
+		depends_on: ['route_id_unique', 'route_short_name_or_long_name_present', 'route_sort_order_non_negative_integer'],
+		editable: true,
+		group: 'routes',
+		id: 'route_id_composed_of_short_name_and_sort_order',
+	},
+	{
 		config_key: 'route_id_unique',
 		depends_on: ['routes_file_present'],
 		editable: true,

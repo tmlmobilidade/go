@@ -130,6 +130,7 @@ export const ruleConfigKeys = {
 		'route_long_name_or_short_name_present',
 		'route_desc_per_severity_and_content_rules',
 		'route_sort_order_non_negative_integer',
+		'route_id_composed_of_short_name_and_sort_order',
 		'routes_network_id_references_networks_table',
 		'route_type_valid_gtfs_enum',
 		'routes_path_type_valid_enum',

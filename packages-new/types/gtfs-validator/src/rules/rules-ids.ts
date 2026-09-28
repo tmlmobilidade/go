@@ -109,6 +109,7 @@ export const ruleIds = [
 	'route_agency_id_references_agency_table',
 	'route_color_valid_hex_string',
 	'route_desc_per_severity_and_content_rules',
+	'route_id_composed_of_short_name_and_sort_order',
 	'route_id_unique',
 	'route_long_name_or_short_name_present',
 	'route_short_name_or_long_name_present',

@@ -147,6 +147,7 @@ export interface RoutesRulesInput {
 	route_agency_id_references_agency_table?: RuleConfigInput
 	route_color_valid_hex_string?: RuleConfigInput
 	route_desc_per_severity_and_content_rules?: RuleConfigInput
+	route_id_composed_of_short_name_and_sort_order?: RuleConfigInput
 	route_id_unique?: RuleConfigInput
 	route_long_name_or_short_name_present?: RuleConfigInput
 	route_short_name_or_long_name_present?: RuleConfigInput

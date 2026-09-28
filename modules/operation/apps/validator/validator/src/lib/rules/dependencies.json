@@ -407,6 +407,13 @@
 				"route_id_unique"
 			]
 		},
+		"route_id_composed_of_short_name_and_sort_order": {
+			"depends_on": [
+				"route_id_unique",
+				"route_short_name_or_long_name_present",
+				"route_sort_order_non_negative_integer"
+			]
+		},
 		"routes_line_id_required": {
 			"depends_on": [
 				"routes_file_present"

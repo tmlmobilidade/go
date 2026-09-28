@@ -81,8 +81,8 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate route_id
 		runner.Run(services.RuleActions{
-			"route_id_unique":                                     func() { validations.RouteIdValidation(&route, i, &gtfs) },
-			"routes_line_id_required":                             func() { validations.LineIdValidation(&route, i, &gtfs, routeRules) },
+			"route_id_unique":         func() { validations.RouteIdValidation(&route, i, &gtfs) },
+			"routes_line_id_required": func() { validations.LineIdValidation(&route, i, &gtfs, routeRules) },
 			"routes_line_short_name_present_when_line_id_present": func() { validations.LineShortNameValidation(&route, i, &gtfs, routeRules) },
 			"routes_line_long_name_present_when_line_id_present":  func() { validations.LineLongNameValidation(&route, i, &gtfs, routeRules) },
 			"route_agency_id_references_agency_table":             func() { validations.AgencyIdValidation(&route, i, gtfs, routeRules) },
@@ -94,6 +94,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			"route_color_valid_hex_string":                        func() { validations.RouteColorValidation(&route, i, routeRules) },
 			"route_text_color_valid_hex_contrast":                 func() { validations.RouteTextColorValidation(&route, i, routeRules) },
 			"route_sort_order_non_negative_integer":               func() { validations.RouteSortOrderValidation(&route, i, routeRules) },
+			"route_id_composed_of_short_name_and_sort_order":      func() { validations.RouteIdCompositionValidation(&route, i, routeRules) },
 			"routes_continuous_drop_off_valid_gtfs_enum":          func() { validations.ContinuousDropOffValidation(&route, i, &gtfs, routeRules, routesWithWindows) },
 			"routes_continuous_pickup_valid_gtfs_enum":            func() { validations.ContinuousPickupValidation(&route, i, &gtfs, routeRules, routesWithWindows) },
 			"routes_network_id_references_networks_table":         func() { validations.NetworkIdValidation(&route, i, &gtfs, routeRules) },
