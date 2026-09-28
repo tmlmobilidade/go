@@ -716,7 +716,7 @@
 		"recommended": "O campo \"route_desc\" é recomendado",
 		"required": "O campo \"route_desc\" é obrigatório"
 	},
-	"route_id_composition_validation": {
+	"route_id_format_validation": {
 		"invalid": "O campo \"route_id\" \"%s\" devia ser \"%s\", composto a partir do route_short_name \"%s\" e do route_sort_order %d"
 	},
 	"route_id_group_validation": {

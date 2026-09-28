@@ -63,25 +63,25 @@ type StopsRules struct {
 }
 
 type RoutesRules struct {
-	File               Severity   `json:"_file"`
-	LineId             RuleConfig `json:"routes_line_id_required"`
-	LineShortName      RuleConfig `json:"routes_line_short_name_present_when_line_id_present"`
-	LineLongName       RuleConfig `json:"routes_line_long_name_present_when_line_id_present"`
-	RouteId            RuleConfig `json:"route_id_unique"`
-	AgencyId           RuleConfig `json:"route_agency_id_references_agency_table"`
-	RouteShortName     RuleConfig `json:"route_short_name_or_long_name_present"`
-	RouteLongName      RuleConfig `json:"route_long_name_or_short_name_present"`
-	RouteDesc          RuleConfig `json:"route_desc_per_severity_and_content_rules"`
-	RouteSortOrder     RuleConfig `json:"route_sort_order_non_negative_integer"`
-	RouteIdComposition RuleConfig `json:"route_id_composed_of_short_name_and_sort_order"`
-	NetworkId          RuleConfig `json:"routes_network_id_references_networks_table"`
-	RouteType          RuleConfig `json:"route_type_valid_gtfs_enum"`
-	PathType           RuleConfig `json:"routes_path_type_valid_enum"`
-	RouteUrl           RuleConfig `json:"route_url_valid_http_url"`
-	RouteColor         RuleConfig `json:"route_color_valid_hex_string"`
-	RouteTextColor     RuleConfig `json:"route_text_color_valid_hex_contrast"`
-	ContinuousPickup   RuleConfig `json:"routes_continuous_pickup_valid_gtfs_enum"`
-	ContinuousDropOff  RuleConfig `json:"routes_continuous_drop_off_valid_gtfs_enum"`
+	File              Severity   `json:"_file"`
+	LineId            RuleConfig `json:"routes_line_id_required"`
+	LineShortName     RuleConfig `json:"routes_line_short_name_present_when_line_id_present"`
+	LineLongName      RuleConfig `json:"routes_line_long_name_present_when_line_id_present"`
+	RouteId           RuleConfig `json:"route_id_unique"`
+	AgencyId          RuleConfig `json:"route_agency_id_references_agency_table"`
+	RouteShortName    RuleConfig `json:"route_short_name_or_long_name_present"`
+	RouteLongName     RuleConfig `json:"route_long_name_or_short_name_present"`
+	RouteDesc         RuleConfig `json:"route_desc_per_severity_and_content_rules"`
+	RouteSortOrder    RuleConfig `json:"route_sort_order_non_negative_integer"`
+	RouteIdFormat     RuleConfig `json:"route_id_composed_of_short_name_and_sort_order"`
+	NetworkId         RuleConfig `json:"routes_network_id_references_networks_table"`
+	RouteType         RuleConfig `json:"route_type_valid_gtfs_enum"`
+	PathType          RuleConfig `json:"routes_path_type_valid_enum"`
+	RouteUrl          RuleConfig `json:"route_url_valid_http_url"`
+	RouteColor        RuleConfig `json:"route_color_valid_hex_string"`
+	RouteTextColor    RuleConfig `json:"route_text_color_valid_hex_contrast"`
+	ContinuousPickup  RuleConfig `json:"routes_continuous_pickup_valid_gtfs_enum"`
+	ContinuousDropOff RuleConfig `json:"routes_continuous_drop_off_valid_gtfs_enum"`
 }
 
 type TripsRules struct {

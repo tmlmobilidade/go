@@ -9,8 +9,8 @@ import (
 	"testing"
 )
 
-func TestRouteIdCompositionValidation(t *testing.T) {
-	rules := &types.RoutesRules{RouteIdComposition: types.RuleConfig{Severity: types.SEVERITY_WARNING}}
+func TestRouteIdFormatValidation(t *testing.T) {
+	rules := &types.RoutesRules{RouteIdFormat: types.RuleConfig{Severity: types.SEVERITY_WARNING}}
 
 	testCases := []struct {
 		name             string
@@ -18,52 +18,52 @@ func TestRouteIdCompositionValidation(t *testing.T) {
 		expectedWarnings int
 	}{
 		{
-			name:             "Composed_Valid",
+			name:             "Valid_Format",
 			route:            types.Route{RouteId: lib.Ptr("1001_0"), RouteShortName: lib.Ptr("1001"), RouteSortOrder: lib.Ptr(0)},
 			expectedWarnings: 0,
 		},
 		{
-			name:             "ComposedWithMultiDigitSortOrder_Valid",
+			name:             "Valid_Format_With_Multi_Digit_Sort_Order",
 			route:            types.Route{RouteId: lib.Ptr("1001_12"), RouteShortName: lib.Ptr("1001"), RouteSortOrder: lib.Ptr(12)},
 			expectedWarnings: 0,
 		},
 		{
-			name:             "MissingSortOrderSuffix_Invalid",
+			name:             "Invalid_Format_Missing_Sort_Order_Suffix",
 			route:            types.Route{RouteId: lib.Ptr("1001"), RouteShortName: lib.Ptr("1001"), RouteSortOrder: lib.Ptr(0)},
 			expectedWarnings: 1,
 		},
 		{
-			name:             "WrongSortOrder_Invalid",
+			name:             "Invalid_Format_Wrong_Sort_Order",
 			route:            types.Route{RouteId: lib.Ptr("1001_1"), RouteShortName: lib.Ptr("1001"), RouteSortOrder: lib.Ptr(0)},
 			expectedWarnings: 1,
 		},
 		{
-			name:             "WrongShortName_Invalid",
+			name:             "Invalid_Format_Wrong_Short_Name",
 			route:            types.Route{RouteId: lib.Ptr("1002_0"), RouteShortName: lib.Ptr("1001"), RouteSortOrder: lib.Ptr(0)},
 			expectedWarnings: 1,
 		},
 		{
-			name:             "WrongSeparator_Invalid",
+			name:             "Invalid_Format_Wrong_Separator",
 			route:            types.Route{RouteId: lib.Ptr("1001-0"), RouteShortName: lib.Ptr("1001"), RouteSortOrder: lib.Ptr(0)},
 			expectedWarnings: 1,
 		},
 		{
-			name:             "MissingShortName_Skipped",
+			name:             "Skipped_Missing_Short_Name",
 			route:            types.Route{RouteId: lib.Ptr("1001_0"), RouteSortOrder: lib.Ptr(0)},
 			expectedWarnings: 0,
 		},
 		{
-			name:             "EmptyShortName_Skipped",
+			name:             "Skipped_Empty_Short_Name",
 			route:            types.Route{RouteId: lib.Ptr("1001_0"), RouteShortName: lib.Ptr(""), RouteSortOrder: lib.Ptr(0)},
 			expectedWarnings: 0,
 		},
 		{
-			name:             "MissingSortOrder_Skipped",
+			name:             "Skipped_Missing_Sort_Order",
 			route:            types.Route{RouteId: lib.Ptr("1001_0"), RouteShortName: lib.Ptr("1001")},
 			expectedWarnings: 0,
 		},
 		{
-			name:             "MissingRouteId_Skipped",
+			name:             "Skipped_Missing_Route_Id",
 			route:            types.Route{RouteShortName: lib.Ptr("1001"), RouteSortOrder: lib.Ptr(0)},
 			expectedWarnings: 0,
 		},
@@ -72,15 +72,15 @@ func TestRouteIdCompositionValidation(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			services.AppMessageService.Clear()
-			validations.RouteIdCompositionValidation(&tc.route, 1, rules)
+			validations.RouteIdFormatValidation(&tc.route, 1, rules)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.expectedWarnings, tc.name, types.SEVERITY_WARNING)
 		})
 	}
 }
 
-func TestRouteIdCompositionValidationIgnoredByDefault(t *testing.T) {
+func TestRouteIdFormatValidationIgnoredByDefault(t *testing.T) {
 	services.AppMessageService.Clear()
 	route := types.Route{RouteId: lib.Ptr("wrong"), RouteShortName: lib.Ptr("1001"), RouteSortOrder: lib.Ptr(0)}
-	validations.RouteIdCompositionValidation(&route, 1, nil)
+	validations.RouteIdFormatValidation(&route, 1, nil)
 	test_helpers.AssertMessageCount(t, services.AppMessageService, 0, "IgnoredByDefault", types.SEVERITY_WARNING)
 }

@@ -708,7 +708,7 @@
 		"recommended": "Field \"route_desc\" is recommended",
 		"required": "Field \"route_desc\" is required"
 	},
-	"route_id_composition_validation": {
+	"route_id_format_validation": {
 		"invalid": "Field \"route_id\" \"%s\" should be \"%s\", built from route_short_name \"%s\" and route_sort_order %d"
 	},
 	"route_id_group_validation": {

@@ -11,7 +11,7 @@ import (
 
 - File: [routes.txt]
 - Field: line_id
-- Presence: Optional
+- Presence: Required
 - Type: string
 
 # Description
@@ -30,14 +30,9 @@ func LineIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *type
 		ctx.WithSeverity(rules.LineId.Severity)
 	}
 
-	// If line_id is present.
+	// 1. Validate line_id is present
 	if route.LineId == nil {
-		if ctx.ShouldSkip() {
-			return
-		}
-
-		message := ctx.GetRequiredMessage("line_id_required.required", "line_id_required.recommended")
-		ctx.AddMessageWithSeverity(message)
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_id_required.required"))
 		return
 	}
 

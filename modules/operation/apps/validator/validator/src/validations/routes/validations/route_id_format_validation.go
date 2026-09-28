@@ -33,13 +33,13 @@ The two directions of line 1001 are published as two routes, ordered by `route_s
 
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
-func RouteIdCompositionValidation(route *types.Route, row int, rules *types.RoutesRules) {
+func RouteIdFormatValidation(route *types.Route, row int, rules *types.RoutesRules) {
 	ctx := lib.NewValidationContext("route_id", "routes.txt", "route_id_composed_of_short_name_and_sort_order", row, services.AppMessageService)
-	if rules != nil && rules.RouteIdComposition.Severity != "" {
-		ctx.WithSeverity(rules.RouteIdComposition.Severity)
+	if rules != nil && rules.RouteIdFormat.Severity != "" {
+		ctx.WithSeverity(rules.RouteIdFormat.Severity)
 	}
 
-	// 1. Validate route_id composition is skipped
+	// 1. Validate route_id format is skipped
 	if ctx.ShouldSkip() {
 		return
 	}
@@ -52,7 +52,7 @@ func RouteIdCompositionValidation(route *types.Route, row int, rules *types.Rout
 	// 3. Validate route_id is route_short_name and route_sort_order joined by an underscore
 	expected := fmt.Sprintf("%s_%d", *route.RouteShortName, *route.RouteSortOrder)
 	if *route.RouteId != expected {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_id_composition_validation.invalid", *route.RouteId, expected, *route.RouteShortName, *route.RouteSortOrder))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_id_format_validation.invalid", *route.RouteId, expected, *route.RouteShortName, *route.RouteSortOrder))
 		return
 	}
 }
