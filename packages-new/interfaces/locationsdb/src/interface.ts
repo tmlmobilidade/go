@@ -3,7 +3,7 @@
 import { type Pool, PostgresDatabaseClient, type QueryResult, type QueryResultRow } from '@tmlmobilidade/go-clients-postgres';
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
-import { FIND_LOCATIONS_AT_POINT, FIND_LOCATIONS_BY_COUNTRY_AND_ADMIN_LEVEL } from './queries.js';
+import { FIND_LOCATIONS_AT_POINT, FIND_LOCATIONS_BY_COUNTRY_AND_ADMIN_LEVEL, FIND_LOCATIONS_WITH_GEOJSON_BY_COUNTRY_AND_ADMIN_LEVEL, FIND_NEAREST_LOCALITY } from './queries.js';
 import { CountryCode, type Location, type LocationWithGeojson } from './types.js';
 
 /* * */
@@ -44,16 +44,42 @@ class LocationsDbClass {
 	}
 
 	/**
-	 * Lists locations for a given OSM admin_level, including GeoJSON geometry.
+	 * Lists locations for a given OSM admin_level inside a country, sorted by name, without geometry.
 	 * @param countryCode ISO 3166-1 alpha-2 country code.
-	 * @param adminLevel OSM admin_level (e.g. `"7"` for municipalities, `"8"` for parishes).
+	 * @param adminLevel OSM admin_level (e.g. `"7"` for Portuguese municipalities).
 	 */
-	public async findLocationsByCountryAndAdminLevel(countryCode: CountryCode, adminLevel: number | string): Promise<LocationWithGeojson[]> {
-		const result = await this.postgresClient.query<LocationWithGeojson>(
+	public async findLocationsByCountryAndAdminLevel(countryCode: CountryCode, adminLevel: number | string): Promise<Location[]> {
+		const result = await this.postgresClient.query<Location>(
 			FIND_LOCATIONS_BY_COUNTRY_AND_ADMIN_LEVEL,
 			[String(adminLevel), countryCode],
 		);
 		return result.rows;
+	}
+
+	/**
+	 * Lists locations for a given OSM admin_level inside a country, including GeoJSON geometry.
+	 * @param countryCode ISO 3166-1 alpha-2 country code.
+	 * @param adminLevel OSM admin_level (e.g. `"7"` for Portuguese municipalities).
+	 */
+	public async findLocationsWithGeojsonByCountryAndAdminLevel(countryCode: CountryCode, adminLevel: number | string): Promise<LocationWithGeojson[]> {
+		const result = await this.postgresClient.query<LocationWithGeojson>(
+			FIND_LOCATIONS_WITH_GEOJSON_BY_COUNTRY_AND_ADMIN_LEVEL,
+			[String(adminLevel), countryCode],
+		);
+		return result.rows;
+	}
+
+	/**
+	 * Finds the nearest `place=locality` point within a radius of a WGS84 point.
+	 * The returned row has `admin_level = "locality"`.
+	 * @param maxDistanceMeters Search radius in metres.
+	 */
+	public async findNearestLocality(longitude: number, latitude: number, maxDistanceMeters: number): Promise<Location | null> {
+		const result = await this.postgresClient.query<Location>(
+			FIND_NEAREST_LOCALITY,
+			[longitude, latitude, maxDistanceMeters],
+		);
+		return result.rows[0] ?? null;
 	}
 
 	/**
