@@ -1,19 +1,18 @@
 'use client';
 
-import { TreeSelect as MantineTreeSelect, type TreeSelectProps as MantineTreeSelectProps } from '@mantine/core';
+import { TreeSelect as MantineTreeSelect, type TreeSelectProps as MantineTreeSelectProps, type TreeSelectMode } from '@mantine/core';
 
 /* * */
 
 export interface TreeSelectDataItem {
-	checked?: boolean
-	disabled?: boolean
+	children?: TreeSelectDataItem[]
 	label: string
 	value: string
 };
 
 /* * */
 
-export interface TreeSelectProps extends Omit<MantineTreeSelectProps, 'allowDeTreeselect' | 'data'> {
+export interface TreeSelectProps<Mode extends TreeSelectMode = 'single'> extends Omit<MantineTreeSelectProps<Mode>, 'data'> {
 
 	/**
 	 * The data items to be displayed in the TreeSelect component.
@@ -26,7 +25,7 @@ export interface TreeSelectProps extends Omit<MantineTreeSelectProps, 'allowDeTr
 /**
  * Renders a TreeSelect component with customized default props.
  */
-export function TreeSelect(props: TreeSelectProps) {
+export function TreeSelect<Mode extends TreeSelectMode = 'single'>(props: TreeSelectProps<Mode>) {
 	return (
 		<MantineTreeSelect
 			allowDeselect={props.clearable ?? true}
