@@ -4,7 +4,7 @@
 export const FIND_LOCATIONS_BY_COUNTRY_AND_ADMIN_LEVEL = `
 SELECT
     abs(p.osm_id) AS id,
-    p.name,
+    COALESCE(p.tags->>'int_name', p.name) AS name,
     p.admin_level,
     p.tags->>'ref:ine' AS code,
     p.tags,
@@ -55,7 +55,7 @@ GROUP BY id, name, admin_level, code, tags;
 export const FIND_LOCATIONS_AT_POINT = `
 SELECT
 	abs(osm_id) AS id,
-	name,
+	COALESCE(tags->>'int_name', name) AS name,
 	admin_level,
 	tags->>'ref:ine' AS code,
 	tags
