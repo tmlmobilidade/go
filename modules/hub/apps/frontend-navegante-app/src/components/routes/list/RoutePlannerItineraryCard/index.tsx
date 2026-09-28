@@ -4,7 +4,6 @@ import { useAlertsData } from '@/components/alerts/use-alerts-data';
 import { LiveIcon } from '@/components/common/display/LiveIcon';
 import { useLinesData } from '@/components/lines/use-lines-data';
 import { RoutePlannerItineraryLegStrip } from '@/components/routes/common/RoutePlannerItineraryLegStrip';
-import { RoutePlannerGoButton } from '@/components/routes/navigation/RoutePlannerGoButton';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/itinerary/alerts';
 import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
 import { getItineraryWalkMinutes } from '@/utils/route-planner/planning/results';
@@ -23,12 +22,11 @@ interface RoutePlannerItineraryCardProps {
 	isSelected?: boolean
 	itinerary: MotisItinerary
 	onSelect: () => void
-	onStartTrip: () => void
 }
 
 /* * */
 
-export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSelect, onStartTrip }: RoutePlannerItineraryCardProps) {
+export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSelect }: RoutePlannerItineraryCardProps) {
 	//
 
 	//
@@ -132,12 +130,6 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 			<div className={styles.bottomRow}>
 				<div aria-hidden="true" className={styles.strip}>
 					<RoutePlannerItineraryLegStrip itinerary={itinerary} />
-				</div>
-				<div className={styles.goAction}>
-					<RoutePlannerGoButton
-						ariaLabel={t('default:routes.RoutePlanner.results.start_route_aria_label')}
-						onClick={onStartTrip}
-					/>
 				</div>
 			</div>
 		</article>

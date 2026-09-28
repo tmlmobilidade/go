@@ -6,11 +6,12 @@ import { RoutePlannerPlaceDetail } from '@/components/routes/detail/RoutePlanner
 import { RoutePlannerResults } from '@/components/routes/list/RoutePlannerResults';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { Search } from '@/components/search/Search';
-import { MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
+import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { getRoutePlannerBackAction, getRoutePlannerDismissAction, getRoutePlannerItineraryDetailInitialSnap } from '@/utils/route-planner/planning/navigation';
-import { useEffect, useRef } from 'react';
+import { ROUTE_PLANNER_MODE_FILTERS, type RoutePlannerModeFilter, type RoutePlannerSortMode, toggleRoutePlannerMode } from '@/utils/route-planner/planning/results';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -59,10 +60,15 @@ export function RoutePlanner() {
 
 	const { t } = useTranslation();
 
-	const { activeBottomSheet, pop } = useBottomSheet();
+	const { activeBottomSheet, pop, snapActiveBottomSheet } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
+	const [enabledModes, setEnabledModes] = useState<Set<RoutePlannerModeFilter>>(() => new Set(ROUTE_PLANNER_MODE_FILTERS));
+	const [sortMode, setSortMode] = useState<RoutePlannerSortMode>('best');
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const viewFocusRef = useRef<HTMLDivElement>(null);
+	const scrollRef = useRef<HTMLDivElement>(null);
+	const resultsScrollTopRef = useRef(0);
+	const shouldRestoreResultsScrollRef = useRef(false);
 	const previousViewModeRef = useRef(routePlannerContext.data.view_mode);
 
 	//
@@ -79,6 +85,7 @@ export function RoutePlanner() {
 		},
 		routePlannerContext.data.location_search_target,
 		routePlannerContext.flags.is_navigating,
+		routePlannerContext.data.results_initial_snap,
 	);
 	const backAction = getRoutePlannerBackAction({
 		hasRouteContext: !!routePlannerContext.data.origin && !!routePlannerContext.data.destination,
@@ -95,6 +102,7 @@ export function RoutePlanner() {
 		if (previousViewMode === routePlannerContext.data.view_mode || activeBottomSheet?.view !== 'routes') return;
 
 		const animationFrameId = window.requestAnimationFrame(() => {
+			if (scrollRef.current && routePlannerContext.data.view_mode !== 'results') scrollRef.current.scrollTop = 0;
 			if (routePlannerContext.data.view_mode === 'destination-search') {
 				searchInputRef.current?.focus({ preventScroll: true });
 				return;
@@ -110,10 +118,10 @@ export function RoutePlanner() {
 	// C. Handle actions
 
 	const handleClose = () => {
+		if (backAction) return handleBack();
 		const dismissAction = getRoutePlannerDismissAction({ isNavigating: routePlannerContext.flags.is_navigating });
 		if (dismissAction === 'dismiss-trip-sheets') return routePlannerContext.actions.dismissTripSheets();
 
-		routePlannerContext.actions.clearRoute();
 		pop();
 	};
 
@@ -131,6 +139,22 @@ export function RoutePlanner() {
 		void routePlannerContext.actions.selectDestination(location);
 	};
 
+	const handlePreviewItinerary = (index: number) => {
+		resultsScrollTopRef.current = scrollRef.current?.scrollTop ?? 0;
+		shouldRestoreResultsScrollRef.current = true;
+		routePlannerContext.actions.previewItinerary(index);
+		snapActiveBottomSheet(MAP_BOTTOM_SHEET_INITIAL_SNAP);
+	};
+
+	const handleSnap = (snapIndex: number) => {
+		if (!shouldRestoreResultsScrollRef.current || routePlannerContext.data.view_mode !== 'results' || snapIndex !== MAP_BOTTOM_SHEET_SNAP_POINTS.length - 1) return;
+		// Restore after the expanded sheet enables its scroller; compact sheets use overflow: clip.
+		window.requestAnimationFrame(() => {
+			if (scrollRef.current) scrollRef.current.scrollTop = resultsScrollTopRef.current;
+			shouldRestoreResultsScrollRef.current = false;
+		});
+	};
+
 	//
 	// D. Render components
 
@@ -145,7 +169,9 @@ export function RoutePlanner() {
 			modality={sheetConfig.modality}
 			onBack={backAction ? handleBack : undefined}
 			onClose={handleClose}
+			onSnap={handleSnap}
 			opened={activeBottomSheet?.view === 'routes'}
+			scrollRef={scrollRef}
 			snapPoints={sheetConfig.snapPoints}
 			title={sheetConfig.title}
 			withCloseButton={sheetConfig.withCloseButton}
@@ -164,15 +190,22 @@ export function RoutePlanner() {
 				/>
 			)}
 
-			{routePlannerContext.data.view_mode !== 'destination-search' && (
-				<div ref={viewFocusRef} className={styles.view} tabIndex={-1}>
-					{routePlannerContext.data.view_mode === 'results' && <RoutePlannerResults />}
-
-					{routePlannerContext.data.view_mode === 'place-detail' && <RoutePlannerPlaceDetail />}
-
-					{routePlannerContext.data.view_mode === 'itinerary-detail' && <RoutePlannerItineraryDetail />}
+			<div ref={viewFocusRef} className={styles.view} hidden={routePlannerContext.data.view_mode === 'destination-search'} tabIndex={-1}>
+				<div hidden={routePlannerContext.data.view_mode !== 'results'}>
+					<RoutePlannerResults
+						enabledModes={enabledModes}
+						isActive={routePlannerContext.data.view_mode === 'results'}
+						onModeToggle={mode => setEnabledModes(current => toggleRoutePlannerMode(current, mode))}
+						onPreviewItinerary={handlePreviewItinerary}
+						onSortModeChange={setSortMode}
+						sortMode={sortMode}
+					/>
 				</div>
-			)}
+
+				{routePlannerContext.data.view_mode === 'place-detail' && <RoutePlannerPlaceDetail onPreviewItinerary={handlePreviewItinerary} />}
+
+				{routePlannerContext.data.view_mode === 'itinerary-detail' && <RoutePlannerItineraryDetail />}
+			</div>
 		</BottomSheet>
 	);
 
@@ -186,6 +219,7 @@ function getRoutePlannerSheetConfig(
 	titles: RoutePlannerSheetTitles,
 	searchTarget: ReturnType<typeof useRoutePlannerContext>['data']['location_search_target'],
 	isNavigating: boolean,
+	resultsInitialSnap: number,
 ): RoutePlannerSheetConfig {
 	if (viewMode === 'destination-search') {
 		const title = searchTarget === 'origin' ? titles.originSearch : titles.destinationSearch;
@@ -238,7 +272,7 @@ function getRoutePlannerSheetConfig(
 		accessibleTitle: titles.routeOptions,
 		disableDismiss: false,
 		headerMode: 'handle',
-		initialSnap: 1,
+		initialSnap: resultsInitialSnap,
 		mapAware: true,
 		modality: 'non-modal',
 		withCloseButton: true,

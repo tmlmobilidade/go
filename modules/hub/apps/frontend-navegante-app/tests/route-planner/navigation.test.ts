@@ -75,8 +75,8 @@ describe('route-planner navigation actions', () => {
 		}), null);
 	});
 
-	it('clears a non-navigation route when its sheet is dismissed', () => {
-		assert.equal(getRoutePlannerDismissAction({ isNavigating: false }), 'clear-route');
+	it('returns to the previous sheet without clearing a non-navigation route', () => {
+		assert.equal(getRoutePlannerDismissAction({ isNavigating: false }), 'pop-sheet');
 	});
 
 	it('only hides the sheet when an active trip is dismissed', () => {
@@ -109,11 +109,16 @@ describe('active itinerary presentation', () => {
 		assert.equal(getRoutePlannerItineraryDetailInitialSnap(true), 1);
 	});
 
+	it('opens a selected itinerary preview at the minimum visible position', () => {
+		assert.equal(getRoutePlannerItineraryDetailInitialSnap(false), 1);
+	});
+
 	it('fits the map to the first leg trajectory in itinerary detail', () => {
 		const firstLeg = createLineFeature([[0, 0], [1, 1]]);
 		const secondLeg = createLineFeature([[1, 1], [2, 2]]);
 
-		assert.deepEqual(getRoutePlannerMapFitFeatures([firstLeg, secondLeg], 'itinerary-detail'), [firstLeg]);
+		assert.deepEqual(getRoutePlannerMapFitFeatures([firstLeg, secondLeg], 'itinerary-detail', true), [firstLeg]);
+		assert.deepEqual(getRoutePlannerMapFitFeatures([firstLeg, secondLeg], 'itinerary-detail', false), [firstLeg, secondLeg]);
 	});
 });
 

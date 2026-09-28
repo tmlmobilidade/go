@@ -66,6 +66,25 @@ describe('bottom-sheet navigation operations', () => {
 		assert.deepEqual(reduceBottomSheetNavigation([search], { entry: stop, type: 'push' }), [search, stop]);
 	});
 
+	it('returns from map detail to route results when the detail is closed', () => {
+		const stack = reduceBottomSheetNavigation([search, routes], { entry: stop, type: 'push' });
+		assert.deepEqual(reduceBottomSheetNavigation(stack, { type: 'pop' }), [search, routes]);
+	});
+
+	it('does not add another history entry when reopening the same sheet', () => {
+		const stack = [search, stop];
+		assert.equal(reduceBottomSheetNavigation(stack, { entry: stop, type: 'push' }), stack);
+	});
+
+	it('restores pre-trip results and their previous sheet after trip sheets were cleared', () => {
+		const beforeTrip = [search, routes];
+		const duringTrip = reduceBottomSheetNavigation(beforeTrip, { type: 'clear' });
+		const restored = reduceBottomSheetNavigation(duringTrip, { entries: beforeTrip, type: 'restore' });
+		assert.deepEqual(restored, beforeTrip);
+		assert.deepEqual(reduceBottomSheetNavigation(restored, { type: 'pop' }), [search]);
+		assert.deepEqual(beforeTrip, [search, routes]);
+	});
+
 	it('replaces only the active sheet', () => {
 		assert.deepEqual(reduceBottomSheetNavigation([search, stop], { entry: routes, type: 'replace-active' }), [search, routes]);
 		assert.deepEqual(reduceBottomSheetNavigation([], { entry: routes, type: 'replace-active' }), [routes]);

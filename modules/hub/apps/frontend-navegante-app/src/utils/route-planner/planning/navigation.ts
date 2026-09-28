@@ -7,13 +7,13 @@ import { type RoutePlannerLocationSearchReturnView, type RoutePlannerTravelTime,
 // snap point is index 1.
 export const ROUTE_PLANNER_ITINERARY_DETAIL_SNAP = {
 	compact: 1,
-	full: 4,
-	medium: 3,
-	preview: 2,
+	full: 3,
+	medium: 2,
+	preview: 1,
 };
 
 export type RoutePlannerBackAction = 'open-place-detail' | 'open-results';
-export type RoutePlannerDismissAction = 'clear-route' | 'dismiss-trip-sheets';
+export type RoutePlannerDismissAction = 'dismiss-trip-sheets' | 'pop-sheet';
 
 interface GetRoutePlannerBackActionOptions {
 	hasRouteContext: boolean
@@ -35,7 +35,7 @@ export function getRoutePlannerBackAction({ hasRouteContext, isNavigating, locat
 }
 
 export function getRoutePlannerDismissAction({ isNavigating }: { isNavigating: boolean }): RoutePlannerDismissAction {
-	return isNavigating ? 'dismiss-trip-sheets' : 'clear-route';
+	return isNavigating ? 'dismiss-trip-sheets' : 'pop-sheet';
 }
 
 export function getRoutePlannerTravelTimeModeTransition(current: RoutePlannerTravelTime, mode: RoutePlannerTravelTimeMode, currentDate = new Date()): RoutePlannerTravelTime {
@@ -49,8 +49,8 @@ export function getRoutePlannerItineraryDetailInitialSnap(isNavigating: boolean)
 	return isNavigating ? ROUTE_PLANNER_ITINERARY_DETAIL_SNAP.compact : ROUTE_PLANNER_ITINERARY_DETAIL_SNAP.preview;
 }
 
-export function getRoutePlannerMapFitFeatures(features: GeoJSON.Feature<GeoJSON.LineString>[], viewMode: RoutePlannerViewMode) {
-	if (viewMode !== 'itinerary-detail') return features;
+export function getRoutePlannerMapFitFeatures(features: GeoJSON.Feature<GeoJSON.LineString>[], viewMode: RoutePlannerViewMode, isNavigating = false) {
+	if (viewMode !== 'itinerary-detail' || !isNavigating) return features;
 
 	return features.slice(0, 1);
 }

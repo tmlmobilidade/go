@@ -8,7 +8,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function RoutePlannerPlaceDetail() {
+interface RoutePlannerPlaceDetailProps {
+	onPreviewItinerary: (index: number) => void
+}
+
+/* * */
+
+export function RoutePlannerPlaceDetail({ onPreviewItinerary }: RoutePlannerPlaceDetailProps) {
 	//
 
 	// A. Setup variables
@@ -38,8 +44,7 @@ export function RoutePlannerPlaceDetail() {
 						<RoutePlannerItineraryCard
 							isSelected={routePlannerContext.data.selected_itinerary_index === index}
 							itinerary={itinerary}
-							onSelect={() => routePlannerContext.actions.selectItinerary(index)}
-							onStartTrip={() => routePlannerContext.actions.startItinerary(index)}
+							onSelect={() => onPreviewItinerary(index)}
 						/>
 					</li>
 				))}

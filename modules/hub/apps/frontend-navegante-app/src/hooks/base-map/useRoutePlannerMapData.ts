@@ -100,8 +100,8 @@ export function useRoutePlannerMapData({ activeBottomSheet, alerts: allAlerts, a
 	}, [patterns]);
 
 	const fitFeatures = useMemo(() => {
-		return getRoutePlannerMapFitFeatures(routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode);
-	}, [routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode]);
+		return getRoutePlannerMapFitFeatures(routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode, routePlannerContext.flags.is_navigating);
+	}, [routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode, routePlannerContext.flags.is_navigating]);
 
 	const placeDestination = activeBottomSheet?.view === 'routes' && routePlannerContext.data.view_mode === 'place-detail'
 		? routePlannerContext.data.destination

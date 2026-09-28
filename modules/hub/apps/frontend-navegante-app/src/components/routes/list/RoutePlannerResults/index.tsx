@@ -5,7 +5,7 @@ import { type RoutePlannerOpenFilter, RoutePlannerResultsFilters } from '@/compo
 import { useRoutePlannerAnnouncer } from '@/components/routes/navigation/RoutePlannerAnnouncer';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { getRoutePlannerItineraryStatusSummary, getRoutePlannerResultsStatus } from '@/utils/route-planner/planning/announcements';
-import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, ROUTE_PLANNER_MODE_FILTERS, type RoutePlannerModeFilter, type RoutePlannerSortMode, type RoutePlannerVisibleItinerary, sortVisibleItineraries, toggleRoutePlannerMode } from '@/utils/route-planner/planning/results';
+import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, type RoutePlannerModeFilter, type RoutePlannerSortMode, type RoutePlannerVisibleItinerary, sortVisibleItineraries } from '@/utils/route-planner/planning/results';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,7 +13,18 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function RoutePlannerResults() {
+interface RoutePlannerResultsProps {
+	enabledModes: Set<RoutePlannerModeFilter>
+	isActive: boolean
+	onModeToggle: (mode: RoutePlannerModeFilter) => void
+	onPreviewItinerary: (index: number) => void
+	onSortModeChange: (mode: RoutePlannerSortMode) => void
+	sortMode: RoutePlannerSortMode
+}
+
+/* * */
+
+export function RoutePlannerResults({ enabledModes, isActive, onModeToggle, onPreviewItinerary, onSortModeChange, sortMode }: RoutePlannerResultsProps) {
 	//
 
 	//
@@ -21,11 +32,7 @@ export function RoutePlannerResults() {
 
 	const { t } = useTranslation();
 	const routePlannerContext = useRoutePlannerContext();
-	const [enabledModes, setEnabledModes] = useState<Set<RoutePlannerModeFilter>>(() => {
-		return new Set(ROUTE_PLANNER_MODE_FILTERS);
-	});
 	const [openFilter, setOpenFilter] = useState<null | RoutePlannerOpenFilter>(null);
-	const [sortMode, setSortMode] = useState<RoutePlannerSortMode>('best');
 	const announce = useRoutePlannerAnnouncer();
 	const previousSelectedIndexRef = useRef<null | number>(null);
 	const previousVisibleCountRef = useRef<null | number>(null);
@@ -61,6 +68,7 @@ export function RoutePlannerResults() {
 	// C. Handle effects
 
 	useEffect(() => {
+		if (!isActive) return;
 		const firstVisibleItinerary = visibleItineraries[0];
 		if (!firstVisibleItinerary) return;
 
@@ -70,9 +78,10 @@ export function RoutePlannerResults() {
 
 		if (isSelectedItineraryVisible) return;
 		routePlannerContext.actions.selectItinerary(firstVisibleItinerary.index);
-	}, [routePlannerContext.actions, routePlannerContext.data.selected_itinerary_index, visibleItineraries]);
+	}, [isActive, routePlannerContext.actions, routePlannerContext.data.selected_itinerary_index, visibleItineraries]);
 
 	useEffect(() => {
+		if (!isActive) return;
 		const status = getRoutePlannerResultsStatus({
 			hasEndpoints: Boolean(routePlannerContext.data.origin && routePlannerContext.data.destination),
 			isPlanning: routePlannerContext.flags.is_planning,
@@ -99,22 +108,18 @@ export function RoutePlannerResults() {
 		if (status.type === 'no_results') announce(t('default:routes.RoutePlanner.results.filtered_no_results'));
 		if (status.type === 'result_count') announce(t('default:routes.RoutePlanner.results.result_count', '', { count: status.count }));
 		if (status.type === 'selected') announce(t('default:routes.RoutePlanner.results.selected_itinerary_status', '', { summary: status.summary }));
-	}, [announce, routePlannerContext.data.destination, routePlannerContext.data.origin, routePlannerContext.data.plan_error, routePlannerContext.data.selected_itinerary_index, routePlannerContext.flags.is_planning, selectedSummary, t, visibleItineraries.length]);
+	}, [announce, isActive, routePlannerContext.data.destination, routePlannerContext.data.origin, routePlannerContext.data.plan_error, routePlannerContext.data.selected_itinerary_index, routePlannerContext.flags.is_planning, selectedSummary, t, visibleItineraries.length]);
 
 	//
 	// D. Handle actions
 
 	const handleSelectItinerary = (index: number) => {
 		userSelectedItineraryRef.current = true;
-		routePlannerContext.actions.selectItinerary(index);
-	};
-
-	const handleModeToggle = (mode: RoutePlannerModeFilter) => {
-		setEnabledModes(current => toggleRoutePlannerMode(current, mode));
+		onPreviewItinerary(index);
 	};
 
 	const handleSortModeChange = (mode: RoutePlannerSortMode) => {
-		setSortMode(mode);
+		onSortModeChange(mode);
 		setOpenFilter(null);
 	};
 
@@ -137,7 +142,7 @@ export function RoutePlannerResults() {
 						availableModes={availableModes}
 						disabledModesCount={disabledModesCount}
 						enabledModes={enabledModes}
-						onModeToggle={handleModeToggle}
+						onModeToggle={onModeToggle}
 						onOpenFilterChange={setOpenFilter}
 						onSortModeChange={handleSortModeChange}
 						openFilter={openFilter}
@@ -151,7 +156,6 @@ export function RoutePlannerResults() {
 									isSelected={routePlannerContext.data.selected_itinerary_index === index}
 									itinerary={itinerary}
 									onSelect={() => handleSelectItinerary(index)}
-									onStartTrip={() => routePlannerContext.actions.startItinerary(index)}
 								/>
 							</li>
 						))}

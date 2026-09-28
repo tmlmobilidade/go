@@ -8,7 +8,7 @@ import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetCl
 import { ACTIVE_MAP_BOTTOM_SHEET_HEIGHT_CSS_PROPERTY, MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { registerActiveBottomSheetSnapController, useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { getBottomSheetSnapState, shouldShowBottomSheetOverlay } from '@/utils/bottom-sheet/behavior';
-import { type PropsWithChildren, type ReactNode, type RefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { type FocusEvent, type PropsWithChildren, type ReactNode, type RefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ModalProvider } from 'react-aria';
 import { useTranslation } from 'react-i18next';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
@@ -37,7 +37,9 @@ interface BottomSheetProps {
 	onCloseEnd?: () => void
 	onOpenEnd?: () => void
 	onOpenStart?: () => void
+	onSnap?: (snapIndex: number) => void
 	opened: boolean
+	scrollRef?: RefObject<HTMLDivElement | null>
 	size?: BottomSheetSize
 	snapPoints?: number[]
 	syncSnapState?: boolean
@@ -83,7 +85,9 @@ export function BottomSheet({
 	onCloseEnd,
 	onOpenEnd,
 	onOpenStart,
+	onSnap,
 	opened,
+	scrollRef,
 	size = 'fit',
 	snapPoints: customSnapPoints,
 	syncSnapState = true,
@@ -191,6 +195,7 @@ export function BottomSheet({
 
 	const handleSnap = (snapIndex: number) => {
 		setActiveSnapIndex(snapIndex);
+		onSnap?.(snapIndex);
 		if (isSheetOpenRef.current && snapIndex > 0) {
 			setSnapAnnouncement(t(snapIndex === fullSnapIndex
 				? 'default:common.BottomSheet.expanded'
@@ -205,8 +210,10 @@ export function BottomSheet({
 		void sheetRef.current?.snapTo(isFullyExpanded ? compactSnapIndex : fullSnapIndex);
 	};
 
-	const handleContentFocus = () => {
+	const handleContentFocus = (event: FocusEvent<HTMLElement>) => {
 		if (!mapAware || isFullyExpanded) return;
+		// Pointer selection and programmatic focus of a view should preserve its preview height.
+		if (!event.target.matches(':focus-visible') || event.target.tabIndex < 0) return;
 		void sheetRef.current?.snapTo(fullSnapIndex);
 	};
 
@@ -309,6 +316,7 @@ export function BottomSheet({
 									disableScroll={({ currentSnap }) => mapAware && currentSnap !== snapPoints.length - 1}
 									id={contentId}
 									onFocusCapture={handleContentFocus}
+									scrollRef={scrollRef}
 								>
 									{children}
 								</Sheet.Content>

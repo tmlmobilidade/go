@@ -16,3 +16,11 @@
 	border: 1px solid var(--color-route-status-info);
 	border-radius: 999px;
 }
+
+.button[data-size='md'] {
+	gap: 8px;
+	min-width: 88px;
+	height: 44px;
+	padding: 0 20px;
+	font-size: 16px;
+}

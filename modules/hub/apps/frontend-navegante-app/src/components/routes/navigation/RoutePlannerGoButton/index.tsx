@@ -11,11 +11,12 @@ import styles from './styles.module.css';
 interface Props {
 	ariaLabel: string
 	onClick: MouseEventHandler<HTMLButtonElement>
+	size?: 'md' | 'sm'
 }
 
 /* * */
 
-export function RoutePlannerGoButton({ ariaLabel, onClick }: Props) {
+export function RoutePlannerGoButton({ ariaLabel, onClick, size = 'sm' }: Props) {
 	//
 
 	//
@@ -27,7 +28,7 @@ export function RoutePlannerGoButton({ ariaLabel, onClick }: Props) {
 	// B. Render components
 
 	return (
-		<button aria-label={ariaLabel} className={styles.button} onClick={onClick} type="button">
+		<button aria-label={ariaLabel} className={styles.button} data-size={size} onClick={onClick} type="button">
 			{t('default:routes.RoutePlanner.results.start_route')}
 			<IconArrowRight size={15} />
 		</button>

@@ -13,8 +13,10 @@ interface UseBottomSheetReturnType {
 	pop: () => void
 	push: (value: BottomSheetNavigationEntry) => void
 	replaceActive: (value: BottomSheetNavigationEntry) => void
+	restore: (entries: BottomSheetNavigationEntry[]) => void
 	setActiveBottomSheetSnap: (value: BottomSheetSnapState) => void
 	snapActiveBottomSheet: (snapIndex: number) => boolean
+	suspend: () => BottomSheetNavigationEntry[]
 }
 
 /* * */
@@ -129,6 +131,16 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 		setBottomSheetNavigationStore(reduceBottomSheetNavigation(BOTTOM_SHEET_NAVIGATION_STORE, { type: 'clear' }));
 	}, []);
 
+	const suspend = useCallback(() => {
+		const previousSheets = BOTTOM_SHEET_NAVIGATION_STORE;
+		setBottomSheetNavigationStore(reduceBottomSheetNavigation(previousSheets, { type: 'clear' }));
+		return previousSheets;
+	}, []);
+
+	const restore = useCallback((entries: BottomSheetNavigationEntry[]) => {
+		setBottomSheetNavigationStore(reduceBottomSheetNavigation(BOTTOM_SHEET_NAVIGATION_STORE, { entries, type: 'restore' }));
+	}, []);
+
 	//
 	// D. Return data
 
@@ -139,7 +151,9 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 		pop,
 		push,
 		replaceActive,
+		restore,
 		setActiveBottomSheetSnap,
 		snapActiveBottomSheet,
+		suspend,
 	};
 }

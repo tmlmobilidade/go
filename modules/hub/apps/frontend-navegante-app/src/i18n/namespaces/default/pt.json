@@ -297,6 +297,7 @@
 				"start_route_aria_label": "Iniciar viagem com este percurso",
 				"time_range": "{start} até {end}",
 				"transfers": "{count, plural, =0 {Sem trocas} one {# troca} other {# trocas}}",
+				"view_alternatives": "Ver alternativas",
 				"walk_between": "Caminhar até {to}",
 				"walk_label": "A pé",
 				"walking_time": "{count, plural, =0 {Sem caminhada} one {# min a pé} other {# min a pé}}"

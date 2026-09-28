@@ -109,11 +109,12 @@ describe('itinerary geometry presentation', () => {
 		assert.deepEqual(mapData.shapeData.features[0]?.geometry.coordinates, [[-9.2, 38.7], [-9.1, 38.8]]);
 	});
 
-	it('fits itinerary detail to the first leg only', () => {
+	it('fits active navigation to the first leg and previews to the whole itinerary', () => {
 		const firstLeg = createLineFeature([[0, 0], [1, 1]]);
 		const secondLeg = createLineFeature([[1, 1], [2, 2]]);
 
-		assert.deepEqual(getRoutePlannerMapFitFeatures([firstLeg, secondLeg], 'itinerary-detail'), [firstLeg]);
+		assert.deepEqual(getRoutePlannerMapFitFeatures([firstLeg, secondLeg], 'itinerary-detail', true), [firstLeg]);
+		assert.deepEqual(getRoutePlannerMapFitFeatures([firstLeg, secondLeg], 'itinerary-detail'), [firstLeg, secondLeg]);
 		assert.deepEqual(getRoutePlannerMapFitFeatures([firstLeg, secondLeg], 'results'), [firstLeg, secondLeg]);
 	});
 });

@@ -3,13 +3,15 @@
 import { useLinesData } from '@/components/lines/use-lines-data';
 import { useRoutePlannerOrigin } from '@/components/routes/use-route-planner-origin';
 import { useRoutePlannerPlanData } from '@/components/routes/use-route-planner-plan-data';
+import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { type BottomSheetNavigationEntry } from '@/types/common/bottom-sheet';
 import { type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerLocationSearchReturnView, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner/models';
 import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner/itinerary/geometry';
 import { getRoutePlannerTravelTimeModeTransition } from '@/utils/route-planner/planning/navigation';
 import { clearSearchDraft } from '@/utils/search/search-draft';
 import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
-import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -35,6 +37,7 @@ interface RoutePlannerContextState {
 		openPlaceDetail: () => void
 		openResults: () => void
 		planRoute: (options?: RoutePlannerPlanOptions) => Promise<void>
+		previewItinerary: (index: number) => void
 		selectDestination: (location: RoutePlannerLocation) => Promise<void>
 		selectItinerary: (index: number) => void
 		selectOrigin: (location: RoutePlannerLocation) => Promise<void>
@@ -50,6 +53,7 @@ interface RoutePlannerContextState {
 		location_search_target: RoutePlannerLocationSearchTarget
 		origin: null | RoutePlannerLocation
 		plan_error: null | string
+		results_initial_snap: number
 		route_map_data: RoutePlannerItineraryMapData
 		selected_itinerary: MotisItinerary | null
 		selected_itinerary_index: null | number
@@ -86,7 +90,8 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { activeBottomSheet, clear, push, replaceActive } = useBottomSheet();
+	const { activeBottomSheet, pop, push, replaceActive, restore, suspend } = useBottomSheet();
+	const tripSheetHistoryRef = useRef<BottomSheetNavigationEntry[]>([]);
 	const { data: lines } = useLinesData();
 	const { cachedOrigin, resolveOrigin } = useRoutePlannerOrigin();
 	const { isLoading: isPlanning, itineraries, requestPlan, reset: resetPlanRequest } = useRoutePlannerPlanData();
@@ -97,6 +102,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	const [selectedItineraryIndex, setSelectedItineraryIndex] = useState<null | number>(0);
 	const [travelTime, setTravelTimeState] = useState<RoutePlannerTravelTime>(() => ({ date: new Date(), mode: 'now' }));
 	const [viewMode, setViewMode] = useState<RoutePlannerViewMode>('destination-search');
+	const [resultsInitialSnap, setResultsInitialSnap] = useState(MAP_BOTTOM_SHEET_INITIAL_SNAP);
 	const [locationSearchReturnView, setLocationSearchReturnView] = useState<RoutePlannerLocationSearchReturnView>('results');
 	const [locationSearchTarget, setLocationSearchTarget] = useState<RoutePlannerLocationSearchTarget>('destination');
 	const [wasOpenedFromPlace, setWasOpenedFromPlace] = useState(false);
@@ -165,6 +171,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setPlanError(null);
 		setIsNavigating(false);
 		setSelectedItineraryIndex(nextViewMode === 'place-detail' ? null : 0);
+		setResultsInitialSnap(MAP_BOTTOM_SHEET_INITIAL_SNAP);
 		setViewMode(nextViewMode);
 
 		try {
@@ -185,23 +192,25 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setSelectedItineraryIndex(index);
 		setIsNavigating(true);
 		setViewMode('itinerary-detail');
-		clear();
-	}, [clear]);
+		tripSheetHistoryRef.current = suspend();
+	}, [suspend]);
 
 	const endActiveTrip = useCallback(() => {
-		clearRoute();
-		clearSearchDraft();
-		clear();
-	}, [clear, clearRoute]);
+		setIsNavigating(false);
+		setResultsInitialSnap(MAP_BOTTOM_SHEET_SNAP_POINTS.length - 1);
+		setViewMode('results');
+		restore(tripSheetHistoryRef.current.length > 0 ? tripSheetHistoryRef.current : [{ view: 'routes' }]);
+		tripSheetHistoryRef.current = [];
+	}, [restore]);
 
 	const dismissTripSheets = useCallback(() => {
-		clear();
-	}, [clear]);
+		pop();
+	}, [pop]);
 
 	const openActiveTripDetail = useCallback(() => {
 		setViewMode('itinerary-detail');
-		replaceActive({ view: 'routes' });
-	}, [replaceActive]);
+		openRouteSheet();
+	}, [openRouteSheet]);
 
 	const openLocationSearch = useCallback((target: RoutePlannerLocationSearchTarget) => {
 		setLocationSearchTarget(target);
@@ -209,11 +218,12 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 			setLocationSearchReturnView(viewMode === 'place-detail' ? 'place-detail' : 'results');
 		}
 		setViewMode('destination-search');
-		replaceActive({ view: 'routes' });
-	}, [replaceActive, viewMode]);
+		openRouteSheet();
+	}, [openRouteSheet, viewMode]);
 
 	const openResults = useCallback(() => {
 		setIsNavigating(false);
+		setResultsInitialSnap(MAP_BOTTOM_SHEET_SNAP_POINTS.length - 1);
 		setViewMode('results');
 	}, []);
 
@@ -261,6 +271,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	}, [invalidatePlanResult, locationSearchReturnView, origin, planRoute, resolveOrigin, viewMode]);
 
 	const openDirectionsTo = useCallback(async (location: RoutePlannerLocation) => {
+		setResultsInitialSnap(MAP_BOTTOM_SHEET_INITIAL_SNAP);
 		if (!origin && !cachedOrigin) {
 			invalidatePlanResult();
 			setDestinationState(location);
@@ -298,6 +309,11 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		if (viewMode === 'place-detail') setViewMode('results');
 	}, [viewMode]);
 
+	const previewItinerary = useCallback((index: number) => {
+		setSelectedItineraryIndex(index);
+		setViewMode('itinerary-detail');
+	}, []);
+
 	const setTravelTime = useCallback((date: Date) => {
 		invalidatePlanResult();
 		setTravelTimeState(current => ({ ...current, date }));
@@ -328,7 +344,17 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	}, [destination, invalidatePlanResult, origin, planRoute]);
 
 	//
-	// D. Define context value
+	// D. Reset preview when returning to the map
+
+	useEffect(() => {
+		if (activeBottomSheet?.view || isNavigating) return;
+		clearSearchDraft();
+		if (!origin && !destination && itineraries.length === 0 && !planError && viewMode === 'destination-search') return;
+		clearRoute();
+	}, [activeBottomSheet?.view, clearRoute, destination, isNavigating, itineraries.length, origin, planError, viewMode]);
+
+	//
+	// E. Define context value
 
 	const contextValue = useMemo<RoutePlannerContextState>(() => ({
 		actions: {
@@ -342,6 +368,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 			openPlaceDetail,
 			openResults,
 			planRoute,
+			previewItinerary,
 			selectDestination,
 			selectItinerary,
 			selectOrigin,
@@ -357,6 +384,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 			location_search_target: locationSearchTarget,
 			origin,
 			plan_error: planError,
+			results_initial_snap: resultsInitialSnap,
 			route_map_data: routeMapData,
 			selected_itinerary: selectedItinerary,
 			selected_itinerary_index: selectedItineraryIndex,
@@ -368,10 +396,10 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 			is_navigating: isNavigating,
 			is_planning: isPlanning,
 		},
-	}), [clearRoute, destination, dismissTripSheets, endActiveTrip, isNavigating, isPlanning, itineraries, locationSearchReturnView, locationSearchTarget, openActiveTripDetail, openDirectionsTo, openLocationSearch, openPlace, openPlaceDetail, openResults, origin, planError, planRoute, routeMapData, selectDestination, selectedItinerary, selectedItineraryIndex, selectItinerary, selectOrigin, setTravelTime, setTravelTimeMode, startItinerary, swapLocations, travelTime, viewMode, wasOpenedFromPlace]);
+	}), [clearRoute, destination, dismissTripSheets, endActiveTrip, isNavigating, isPlanning, itineraries, locationSearchReturnView, locationSearchTarget, openActiveTripDetail, openDirectionsTo, openLocationSearch, openPlace, openPlaceDetail, openResults, origin, planError, planRoute, previewItinerary, resultsInitialSnap, routeMapData, selectDestination, selectedItinerary, selectedItineraryIndex, selectItinerary, selectOrigin, setTravelTime, setTravelTimeMode, startItinerary, swapLocations, travelTime, viewMode, wasOpenedFromPlace]);
 
 	//
-	// E. Render components
+	// F. Render components
 
 	return (
 		<RoutePlannerContext.Provider value={contextValue}>
