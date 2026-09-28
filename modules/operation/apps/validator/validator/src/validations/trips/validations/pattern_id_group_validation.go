@@ -11,7 +11,7 @@ import (
 
   - File: trips.txt
   - Field: pattern_id
-  - Presence: Optional (Required for "Transportes Metropolitanos de Lisboa")
+  - Presence: Required
   - Type: ID
 
 # Description

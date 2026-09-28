@@ -13,7 +13,7 @@ import (
 
   - File: [trips.txt]
   - Field: direction_id
-  - Presence: Optional
+  - Presence: Required
   - Type: Enum
 
 # Description
@@ -53,12 +53,13 @@ func DirectionIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *t
 		return
 	}
 
+	// 2. Validate direction_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("direction_id_validation.forbidden"))
 		return
 	}
 
-	// 2. Validate direction_id is 0 or 1 if it exists
+	// 3. Validate direction_id is 0 or 1 if it exists
 	if trip.DirectionId != nil {
 		validDirectionIds := map[int]bool{0: true, 1: true}
 		if !validDirectionIds[*trip.DirectionId] {
@@ -67,7 +68,7 @@ func DirectionIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *t
 		}
 	}
 
-	// Validate Rule Options
+	// 4. Validate Rule Options
 	if rules != nil && rules.DirectionId.Options != nil {
 		if slices.Contains(*rules.DirectionId.Options, types.ALL_OPTIONS) {
 			return

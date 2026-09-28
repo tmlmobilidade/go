@@ -45,12 +45,13 @@ func BikesAllowedValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		return
 	}
 
+	// 2. Validate bikes_allowed is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("bikes_allowed_validation.forbidden"))
 		return
 	}
 
-	// 2. Validate bikes_allowed is 0 or 1 if it exists
+	// 3. Validate bikes_allowed is 0 or 1 if it exists
 	if trip.BikesAllowed != nil {
 		validBikesAllowed := map[int]bool{0: true, 1: true, 2: true}
 		if !validBikesAllowed[*trip.BikesAllowed] {
@@ -59,7 +60,7 @@ func BikesAllowedValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		}
 	}
 
-	// 3. Validate Rule Options
+	// 4. Validate Rule Options
 	if rules != nil && rules.BikesAllowed.Options != nil {
 		if slices.Contains(*rules.BikesAllowed.Options, types.ALL_OPTIONS) {
 			return

@@ -13,7 +13,7 @@ import (
 # Attributes
   - File: [trips.txt]
   - Field: direction_id
-  - Presence: Optional (Required for "Transportes Metropolitanos de Lisboa")
+  - Presence: Optional
   - Type: Enum
 
 # Description

@@ -47,6 +47,7 @@ func BlockIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types
 		ctx.WithSeverity(rules.BlockId.Severity)
 	}
 
+	// 1. Validate block_id is required
 	if trip.BlockId == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -57,6 +58,7 @@ func BlockIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types
 		return
 	}
 
+	// 2. Validate block_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("block_id_validation.forbidden"))
 		return

@@ -12,7 +12,7 @@ import (
 # Attributes
   - File: [trips.txt]
   - Field: pattern_id
-  - Presence: optional (Required for "Transportes Metropolitanos de Lisboa")
+  - Presence: optional
   - Type: Foreigh Key referencing patterns.pattern_id
 
 # Description

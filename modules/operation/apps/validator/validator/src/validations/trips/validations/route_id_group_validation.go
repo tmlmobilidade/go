@@ -12,7 +12,7 @@ import (
 # Attributes
   - File: [trips.txt]
   - Field: route_id
-  - Presence: Optional (Required for "Transportes Metropolitanos de Lisboa")
+  - Presence: Optional
   - Type: ID
 
 # Description

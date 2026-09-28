@@ -25,16 +25,20 @@ func DirectionPatternIdMatchValidation(trip *types.Trip, row int, gtfs *types.Gt
 		ctx.WithSeverity(rules.DirectionPatternIdMatch.Severity)
 	}
 
+	
+	// 1. Validate pattern_id and direction_id are required
+	if trip.PatternId == nil || trip.DirectionId == nil {
+		return
+	}
+	
+	// 2. Validate pattern_id and direction_id are skipped
 	if ctx.ShouldSkip() {
 		return
 	}
 
-	// Handle required fields
-	if trip.PatternId == nil || trip.DirectionId == nil {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("direction_pattern_id_match.required"))
-		return
-	}
 
+	// 3. Validate pattern_id and direction_id are valid
+	//
 	// Split the pattern_id using underscore
 	// Must have three parts: routeId, directionId, variant
 	patternIdParts := strings.Split(*trip.PatternId, "_")

@@ -61,7 +61,6 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate trip_id
 		var groupHash string
-		var hasPatternId bool
 		statuses := runner.Run(services.RuleActions{
 			"trip_id_unique":                                      func() { validations.TripIdValidation(&trip, i, &gtfs) },
 			"trips_shape_id_references_shapes_table_when_present": func() { validations.ShapeIdValidation(&trip, i, &gtfs, tripRules, tripStopTimesCache, routeRowsCache) },
@@ -81,10 +80,10 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			"trips_pattern_id_matches_feed_pattern_id_syntax":     func() { validations.PatternIdFormatValidation(&trip, i, &gtfs, tripRules) },
 			"trips_shape_id_needs_to_be_the_same_as_pattern_id":   func() { validations.ShapeIdSamePatternIdValidation(&trip, i, &gtfs, tripRules) },
 			"trips_stop_sequence_increasing_by_one_along_trip":    func() { groupHash = validations.StopSequenceValidation(&trip, i, &gtfs, tripRules, tripStopTimesCache) },
-			"trips_pattern_id_present_and_references_consistent":  func() { hasPatternId = validations.PatternIdValidation(&trip, i, &gtfs, tripRules) },
+			"trips_pattern_id_present_and_references_consistent":  func() { validations.PatternIdValidation(&trip, i, &gtfs, tripRules) },
 		}, nil)
 
-		if hasPatternId && trip.PatternId != nil {
+		if trip.PatternId != nil {
 			group := tripsGroupedByPattern[*trip.PatternId]
 			group.Trips = append(group.Trips, trip)
 			if !slices.Contains(group.Hash, groupHash) {
