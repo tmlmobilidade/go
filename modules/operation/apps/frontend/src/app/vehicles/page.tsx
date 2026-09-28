@@ -1,15 +1,9 @@
-'use client';
-import { useVehiclePositionContext } from '@/contexts/VehiclePosition.context';
-import { MapOverlayVehicles, MapView } from '@tmlmobilidade/ui';
+/* * */
+
+import { VehiclesListMap } from '@/components/vehicles/list/VehiclesListMap';
 
 /* * */
 
-export default function Page() {
-	const vehiclePositionContext = useVehiclePositionContext();
-
-	return (
-		<MapView id="PositionsMap" layers={{ scale: false }} toolbar={false}>
-			<MapOverlayVehicles showCounter="always" vehiclesData={vehiclePositionContext.data.vehiclePositionGeoJson} />
-		</MapView>
-	);
+export default async function Page() {
+	return <VehiclesListMap />;
 }

@@ -12,14 +12,20 @@ import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 export async function lockVehicleHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
 	//
 
+	//
+	// Get the vehicle data
+
 	const foundVehicle = await goDb.operation.vehicles.findById(request.params.id);
 
 	if (!foundVehicle) {
 		return sendErrorApiResponse(reply, {
-			error: 'Vehicle not found',
+			error: `Vehicle with ID ${request.params.id} not found`,
 			status_code: '404',
 		});
 	}
+
+	//
+	// Toggle the lock status
 
 	const updateResult = await goDb.operation.vehicles.updateOne({ _id: request.params.id }, { is_locked: !foundVehicle.is_locked });
 

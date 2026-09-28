@@ -474,10 +474,11 @@ export const API_ROUTES = Object.freeze({
 		SAMS_TIMELINE_SUMMARY: `${getModuleConfig('operation', 'api_url')}/sams/timeline-summary`,
 
 		// VEHICLES
+		VEHICLES_CREATE: `${getModuleConfig('operation', 'api_url')}/vehicles/create`,
 		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/vehicles/${encodeURIComponent(id)}`,
 		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getModuleConfig('operation', 'api_url')}/vehicles/${encodeURIComponent(id)}/last-event`,
 		VEHICLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/vehicles/${encodeURIComponent(id)}/lock`,
-		VEHICLES_LIST: `${getModuleConfig('operation', 'api_url')}/vehicles`,
+		VEHICLES_LIST: `${getModuleConfig('operation', 'api_url')}/vehicles/list`,
 	},
 
 	performance: {

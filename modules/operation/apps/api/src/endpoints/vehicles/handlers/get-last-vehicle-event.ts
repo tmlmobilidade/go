@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
@@ -13,24 +12,38 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 export async function getLastVehicleEventHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent>) {
 	//
 
+	//
+	// Parse the composite vehicle ID
+
 	const [agencyId, vehicleId] = request.params.id.split('-');
-	if (!vehicleId || !agencyId) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid vehicle ID');
+
+	if (!vehicleId || !agencyId) {
+		return sendErrorApiResponse(reply, {
+			error: 'Invalid vehicle ID',
+			status_code: '400',
+		});
+	}
 
 	//
 	// Fetch the last event for the vehicle
 
-	const query = `
+	const lastEvent = await labDb.operation.simplifiedVehicleEvents.queryFromString(
+		`
 			SELECT *
-			WHERE vehicle_id = '${vehicleId}'
-			AND agency_id = '${agencyId}'
+			WHERE vehicle_id = $1
+			AND agency_id = $2
 			ORDER BY created_at DESC
 			LIMIT 1
-		`;
+		`,
+		{ 1: vehicleId, 2: agencyId },
+	);
 
-	const lastEvent = await labDb.operation.simplifiedVehicleEvents.queryFromString(query);
-	if (!lastEvent || lastEvent.length === 0) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No last event found for vehicle');
+	if (!lastEvent?.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'No last event found for vehicle',
+			status_code: '404',
+		});
+	}
 
-	//
-	// Send the last event for the vehicle back to the client
-	reply.send({ data: lastEvent[0], error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, lastEvent[0]);
 }

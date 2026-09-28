@@ -45,6 +45,9 @@
 		},
 		"operation-rides-v2": {
 			"title": "Circulações (v2)"
+		},
+		"operation-rides-v3": {
+			"title": "Circulações (v3)"
 		}
 	}
 }
