@@ -1,21 +1,21 @@
 /* * */
 
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
-import { MultiSelect, type SelectDataItem } from '@tmlmobilidade/ui';
+import { TreeSelect, type TreeSelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-interface MunicipalityPermissionMultiselectProps {
+interface LocationPermissionTreeSelectProps {
 	disabled?: boolean
 	onChange: (value: string[]) => void
-	options: SelectDataItem[]
+	options: TreeSelectDataItem[]
 	value: string[]
 }
 
 /* * */
 
-export function MunicipalityPermissionMultiselect({ disabled, onChange, options, value }: MunicipalityPermissionMultiselectProps) {
+export function LocationPermissionTreeSelect({ disabled, onChange, options, value }: LocationPermissionTreeSelectProps) {
 	//
 
 	//
@@ -23,7 +23,7 @@ export function MunicipalityPermissionMultiselect({ disabled, onChange, options,
 
 	const optionsWithAllowAll = useMemo(() => {
 		const copyOfOptions = [...options];
-		copyOfOptions.unshift({ label: 'Todas os municípios', value: AllowAllFlagValue });
+		copyOfOptions.unshift({ label: 'Todas as localizações', value: AllowAllFlagValue });
 		return copyOfOptions;
 	}, [options]);
 
@@ -50,12 +50,14 @@ export function MunicipalityPermissionMultiselect({ disabled, onChange, options,
 	// C. Render components
 
 	return (
-		<MultiSelect
+		<TreeSelect
 			data={optionsWithAllowAll}
-			description="Municípios ao qual o utilizador tem acesso para esta acção."
+			description="Localizações às quais o utilizador tem acesso para esta acção."
 			disabled={disabled}
-			label="Municípios"
+			label="Localizações"
+			mode="multiple"
 			onChange={handleChange}
+			placeholder="Selecione uma ou mais localizações..."
 			value={value}
 		/>
 	);
