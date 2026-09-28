@@ -37,8 +37,17 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	const validatedFilters = ControllerRidesListFiltersSchema.parse(request.body);
 
 	//
+	// Parse search tags (`v:`, `d:`, `l:`) and optional trip_id pattern (`%%`)
+
+	const parsedSearch = parseRidesListSearch(validatedFilters.search);
+	const search = parsedSearch.text;
+	const isTripIdPattern = search?.includes('%%') ?? false;
+	const exactRideSearch = search && !isTripIdPattern ? search : null;
+
+	//
 	// If any of the required filters are empty arrays,
-	// then there is no data to return, so return an empty array.
+	// then there is no data to return — unless we have an exact-ride
+	// search, which bypasses every UI filter except agency permissions.
 
 	const hasEmptyFilter = [
 		validatedFilters.agency_ids,
@@ -53,15 +62,8 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 		validatedFilters.ticketing_statuses,
 	].some(value => Array.isArray(value) && value.length === 0);
 
-	if (hasEmptyFilter) return [];
-
-	//
-	// Parse search tags (`v:`, `d:`) and optional trip_id pattern (`%%`)
-
-	const parsedSearch = parseRidesListSearch(validatedFilters.search);
-	const search = parsedSearch.text;
-	const isTripIdPattern = search?.includes('%%') ?? false;
-	const exactRideSearch = search && !isTripIdPattern ? search : null;
+	if (hasEmptyFilter && !exactRideSearch) return [];
+	if (hasEmptyFilter && !validatedFilters.agency_ids.length) return [];
 
 	//
 	// Build query parameters
@@ -85,27 +87,35 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	//
 	// Build WHERE conditions
 	//
-	// The SQL template has three injection points:
+	// The SQL template has these injection points:
 	//
-	//   --RIDE FILTERS HERE--      inside the read of operation.rides, before the latest
-	//                              version is selected. Only attributes that are identical
-	//                              across every version of a ride may go here (agency, route,
-	//                              id/headsign/trip_id search), so the primary key can prune
-	//                              the read.
-	//   --ANALYSIS FILTERS HERE--  inside each analysis read (agency only).
-	//   --DERIVED FILTERS HERE--   after deduplication and status derivation, for attributes
-	//                              that change between versions (driver/vehicle ids) and for
-	//                              every derived status or grade.
+	//   --RIDE FILTERS HERE--         inside the dated read of operation.rides, before the
+	//                                 latest version is selected. Only attributes that are
+	//                                 identical across every version of a ride may go here
+	//                                 (agency, route, id/headsign/trip_id search).
+	//   --EXACT RIDE FILTERS HERE--   agency only — an exact `_id` hit bypasses every other
+	//                                 UI filter; permissions still hold.
+	//   --DERIVED FILTERS HERE--      after deduplication and status derivation, for attributes
+	//                                 that change between versions (driver/vehicle ids) and for
+	//                                 every derived status or grade.
+	//   --EXACT RIDE BYPASS--         `_id = $3 OR (…)` so the exact hit skips derived filters.
 
 	const rideConditions: string[] = [];
+	const exactRideConditions: string[] = [];
 	const conditions: string[] = [];
+
+	// Empty UI filters normally mean "match nothing". With an exact-ride search we still
+	// want that one ride, so disable the dated branch and let the exact branch do the work.
+	if (hasEmptyFilter) rideConditions.push('1 = 0');
 
 	//
 	// Agency IDs
 
 	if (validatedFilters.agency_ids.length) {
 		const placeholders = validatedFilters.agency_ids.map(addParam);
-		rideConditions.push(`agency_id IN (${placeholders.join(', ')})`);
+		const agencyCondition = `agency_id IN (${placeholders.join(', ')})`;
+		rideConditions.push(agencyCondition);
+		exactRideConditions.push(agencyCondition);
 	}
 
 	//
@@ -243,8 +253,8 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	// The exact-ride branch (a UNION ALL that adds the ride whose id is exactly the search
 	// term, even outside the date range) is a scan of every part of operation.rides because
 	// _id is the last column of the sorting key. It is only kept when there is a plain
-	// (non-pattern) search term. The ride filters are applied to that branch as well, so
-	// permission filters still hold.
+	// (non-pattern) search term. Only the agency filter is applied there so permissions
+	// still hold while every other UI filter is bypassed.
 
 	const joinConditions = (items: string[]): string => (items.length ? `\n\t\t\t\tAND ${items.join('\n\t\t\t\tAND ')}` : '');
 
@@ -252,7 +262,9 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 
 	const sql = queryTemplate
 		.replace(/--EXACT RIDE BRANCH START--([\s\S]*?)--EXACT RIDE BRANCH END--/, (_, branch: string) => (exactRideSearch ? branch : ''))
+		.replace(/--EXACT RIDE BYPASS START--([\s\S]*?)--EXACT RIDE BYPASS END--/, (_, bypass: string) => (exactRideSearch ? bypass : ''))
 		.replaceAll('--RIDE FILTERS HERE--', joinConditions(rideConditions))
+		.replace('--EXACT RIDE FILTERS HERE--', joinConditions(exactRideConditions))
 		.replace('--DERIVED FILTERS HERE--', joinConditions(conditions));
 
 	let queryResult = await labDb.queryFromString<ControllerRidesListItem>(sql, params);
@@ -260,6 +272,7 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	//
 	// Acceptance status lives in MongoDB (`ride-acceptances`), not ClickHouse.
 	// Enrich and filter after the rides query. `none` means no acceptance document.
+	// An exact `_id` search bypasses this filter too.
 
 	if (validatedFilters.acceptance_statuses?.length) {
 		const acceptances = await goDb.operation.rideAcceptances.findMany(
@@ -277,6 +290,7 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 				acceptance_status: statusByRideId.get(ride._id) ?? null,
 			}))
 			.filter((ride) => {
+				if (exactRideSearch && ride._id === exactRideSearch) return true;
 				if (ride.acceptance_status === null) return includesNone;
 				return statuses.includes(ride.acceptance_status);
 			});
