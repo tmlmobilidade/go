@@ -1,14 +1,14 @@
 /* * */
 
 /** List locations at a given admin_level, with GeoJSON geometry. */
-export const FIND_LOCATIONS_BY_ADMIN_LEVEL = `
+export const FIND_LOCATIONS_BY_COUNTRY_AND_ADMIN_LEVEL = `
 SELECT
-	abs(osm_id) AS id,
-	name,
-	admin_level,
-	tags->>'ref:ine' AS code,
-	tags,
-	json_build_object(
+    abs(p.osm_id) AS id,
+    p.name,
+    p.admin_level,
+    p.tags->>'ref:ine' AS code,
+    p.tags,
+    json_build_object(
 		'type', 'FeatureCollection',
 		'features', json_agg(
 			json_build_object(
@@ -26,9 +26,28 @@ SELECT
 			)
 		)
 	) AS geojson
-FROM planet_osm_polygon
-WHERE boundary = 'administrative'
-	AND admin_level = $1
+FROM planet_osm_polygon p
+WHERE p.boundary = 'administrative'
+  AND p.admin_level = $admin_level
+  AND p.way && (
+      SELECT c.way
+      FROM planet_osm_polygon c
+      WHERE c.boundary = 'administrative'
+        AND c.admin_level = '2'
+        AND c.tags->>'ISO3166-1' = $country_code
+      LIMIT 1
+  )
+  AND ST_Within(
+      p.way,
+      (
+          SELECT c.way
+          FROM planet_osm_polygon c
+          WHERE c.boundary = 'administrative'
+            AND c.admin_level = '2'
+            AND c.tags->>'ISO3166-1' = $country_code
+          LIMIT 1
+      )
+  )
 GROUP BY id, name, admin_level, code, tags;
 `;
 

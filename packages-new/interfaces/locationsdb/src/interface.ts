@@ -3,8 +3,8 @@
 import { type Pool, PostgresDatabaseClient, type QueryResult, type QueryResultRow } from '@tmlmobilidade/go-clients-postgres';
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
-import { FIND_LOCATIONS_AT_POINT, FIND_LOCATIONS_BY_ADMIN_LEVEL } from './queries.js';
-import { type Location, type LocationWithGeojson } from './types.js';
+import { FIND_LOCATIONS_AT_POINT, FIND_LOCATIONS_BY_COUNTRY_AND_ADMIN_LEVEL } from './queries.js';
+import { CountryCode, type Location, type LocationWithGeojson } from './types.js';
 
 /* * */
 
@@ -45,12 +45,13 @@ class LocationsDbClass {
 
 	/**
 	 * Lists locations for a given OSM admin_level, including GeoJSON geometry.
+	 * @param countryCode ISO 3166-1 alpha-2 country code.
 	 * @param adminLevel OSM admin_level (e.g. `"7"` for municipalities, `"8"` for parishes).
 	 */
-	public async findLocationsByAdminLevel(adminLevel: number | string): Promise<LocationWithGeojson[]> {
+	public async findLocationsByCountryAndAdminLevel(countryCode: CountryCode, adminLevel: number | string): Promise<LocationWithGeojson[]> {
 		const result = await this.postgresClient.query<LocationWithGeojson>(
-			FIND_LOCATIONS_BY_ADMIN_LEVEL,
-			[String(adminLevel)],
+			FIND_LOCATIONS_BY_COUNTRY_AND_ADMIN_LEVEL,
+			[String(adminLevel), countryCode],
 		);
 		return result.rows;
 	}
