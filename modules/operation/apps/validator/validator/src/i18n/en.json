@@ -687,6 +687,10 @@
 	"rider_category_name_validation": {
 		"required": "Field \"rider_category_name\" is required"
 	},
+	"route_associations_validation": {
+		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s",
+		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
+	},
 	"route_color_validation": {
 		"forbidden": "Field \"route_color\" is forbidden",
 		"invalid": "Field \"route_color\" \"%s\" is not a valid 6-character hexadecimal color (e.g., FFFFFF)",
@@ -703,10 +707,6 @@
 		"not_allowed": "Field \"route_desc\" \"%s\" is not allowed",
 		"recommended": "Field \"route_desc\" is recommended",
 		"required": "Field \"route_desc\" is required"
-	},
-	"route_associations_validation": {
-		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s",
-		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s"
 	},
 	"route_id_composition_validation": {
 		"invalid": "Field \"route_id\" \"%s\" should be \"%s\", built from route_short_name \"%s\" and route_sort_order %d"
@@ -789,6 +789,9 @@
 		"multiple_shape_id_in_unique_pattern_id": "Field \"shape_id\" \"%s\" is used in multiple pattern_ids",
 		"pattern_id_not_found": "Field \"pattern_id\" is required",
 		"shape_id_not_found": "Field \"shape_id\" is required"
+	},
+	"shape_id_route_direction_match": {
+		"not_matching": "Field \"shape_id\" \"%s\" should be \"%s\", combining route_id \"%s\" and direction_id %d"
 	},
 	"shape_id_same_pattern_id": {
 		"not_matching": "Field \"shape_id\" \"%s\" is different from the field \"pattern_id\" \"%s\", they need to be the same"

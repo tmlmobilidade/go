@@ -40,3 +40,17 @@ The example below is valid, with distinct blocks every day of the week.
 
 - On Friday into Saturday morning, for example, a single vehicle operates trip_1, trip_2, and trip_3 (10:00 PM through 12:55 AM). Note that the last trip occurs on Saturday, 12:00 AM to 12:55 AM, but is part of the Friday “service day” because the times are 24:00:00 to 24:55:00.
 - On Monday, Tuesday, Wednesday, and Thursday, a single vehicle operates trip_1, trip_4, and trip_5 in a block from 8:00 PM to 10:55 PM.
+
+## Shape ID built from route and direction
+
+`trips_shape_id_matches_route_id_and_direction_id` checks that each trip has
+`shape_id = route_id + "_" + direction_id`. For example, route `1001` in direction
+`0` should use shape `1001_0`; direction `1` should use `1001_1`.
+
+Recommended severity: `warning`, for both internal and external operators.
+Configure the rule under `trips` with `{ "severity": "warning" }`. Like other
+configurable checks, it remains ignored when omitted from the agency settings.
+Its prerequisites are `trips_route_id_references_routes_table`,
+`trips_direction_id_valid_enum`, and
+`trips_shape_id_references_shapes_table_when_present`; they must be enabled and
+pass before this check runs. Missing fields are handled by those rules.

@@ -1468,6 +1468,13 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'trips_shape_id_consistent_per_route_direction',
 	},
 	{
+		config_key: 'trips_shape_id_matches_route_id_and_direction_id',
+		depends_on: ['trips_route_id_references_routes_table', 'trips_direction_id_valid_enum', 'trips_shape_id_references_shapes_table_when_present'],
+		editable: true,
+		group: 'trips',
+		id: 'trips_shape_id_matches_route_id_and_direction_id',
+	},
+	{
 		config_key: 'trips_shape_id_max_two_per_route',
 		depends_on: ['trips_route_id_references_routes_table', 'trips_shape_id_references_shapes_table_when_present'],
 		editable: true,

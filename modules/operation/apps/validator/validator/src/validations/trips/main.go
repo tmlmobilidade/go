@@ -80,6 +80,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			"trip_id_limit_max_length":                           func() { validations.TripIdLimitCharactersValidation(&trip, i, &gtfs, tripRules) },
 			"trips_pattern_id_matches_feed_pattern_id_syntax":    func() { validations.PatternIdFormatValidation(&trip, i, &gtfs, tripRules) },
 			"trips_shape_id_needs_to_be_the_same_as_pattern_id":  func() { validations.ShapeIdSamePatternIdValidation(&trip, i, &gtfs, tripRules) },
+			"trips_shape_id_matches_route_id_and_direction_id":   func() { validations.ShapeIdRouteDirectionMatchValidation(&trip, i, &gtfs, tripRules) },
 			"trips_stop_sequence_increasing_by_one_along_trip":   func() { groupHash = validations.StopSequenceValidation(&trip, i, &gtfs, tripRules, tripStopTimesCache) },
 			"trips_pattern_id_present_and_references_consistent": func() { validations.PatternIdValidation(&trip, i, &gtfs, tripRules) },
 		}, nil)
