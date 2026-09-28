@@ -29,15 +29,15 @@ both, and run the pattern_id side first, or the suppression has nothing to read.
 
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
-func ShapeIdGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, tripsGroupedByShapeId types.TripGroupedByShapeId, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ShapeIdGroupRuleValidation(tripsGroupedByPattern, tripsGroupedByShapeId, gtfs, rules, "", nil)
+func ShapeIdPatternGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, tripsGroupedByShapeId types.TripGroupedByShapeId, gtfs *types.Gtfs, rules *types.TripsRules) {
+	ShapeIdPatternGroupRuleValidation(tripsGroupedByPattern, tripsGroupedByShapeId, gtfs, rules, "", nil)
 }
 
-// ShapeIdGroupRuleValidation runs one of the two rules, or both when ruleID is
+// ShapeIdPatternGroupRuleValidation runs one of the two rules, or both when ruleID is
 // empty. reportedPairs carries the suppression state between the two rules and
 // is allocated per call when nil, which only makes sense for a single call that
 // receives both groupings.
-func ShapeIdGroupRuleValidation(
+func ShapeIdPatternGroupRuleValidation(
 	tripsGroupedByPattern types.TripGroupedByPattern,
 	tripsGroupedByShapeId types.TripGroupedByShapeId,
 	gtfs *types.Gtfs,

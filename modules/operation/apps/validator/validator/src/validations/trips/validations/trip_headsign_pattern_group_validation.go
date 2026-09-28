@@ -28,7 +28,7 @@ func tripHeadsignKey(trip types.Trip) string {
 	return ""
 }
 
-func TripHeadsignGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, gtfs *types.Gtfs, rules *types.TripsRules) {
+func TripHeadsignPatternGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, gtfs *types.Gtfs, rules *types.TripsRules) {
 
 	// 1) All trips with the same pattern_id must have the same trip_headsign
 	for patternId, group := range tripsGroupedByPattern {

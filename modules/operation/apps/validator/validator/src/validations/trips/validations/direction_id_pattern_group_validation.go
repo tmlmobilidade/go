@@ -23,7 +23,7 @@ All trips with the same pattern_id must have the same direction_id.
 If a pattern_id has trips with different direction_ids, report error.
 */
 
-func DirectionIdGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, gtfs *types.Gtfs, rules *types.TripsRules) {
+func DirectionIdPatternGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, gtfs *types.Gtfs, rules *types.TripsRules) {
 	// Group trips by pattern_id and validate direction_id
 	for patternId, group := range tripsGroupedByPattern {
 		if len(group.Trips) == 0 {

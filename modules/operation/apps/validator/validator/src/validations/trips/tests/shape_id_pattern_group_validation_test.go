@@ -29,7 +29,7 @@ func brokenPairing() (types.TripGroupedByPattern, types.TripGroupedByShapeId) {
 
 // The orchestrator drives one rule per call and shares reportedPairs between
 // them, so the pairing is reported on the pattern_id and not again on the shape_id.
-func TestShapeIdGroupRuleValidationReportsPairingOnce(t *testing.T) {
+func TestShapeIdPatternGroupRuleValidationReportsPairingOnce(t *testing.T) {
 	services.AppMessageService.Clear()
 	patterns, shapes := brokenPairing()
 	rules := &types.TripsRules{
@@ -40,11 +40,11 @@ func TestShapeIdGroupRuleValidationReportsPairingOnce(t *testing.T) {
 
 	for patternId, group := range patterns {
 		single := types.TripGroupedByPattern{patternId: group}
-		validations.ShapeIdGroupRuleValidation(single, nil, nil, rules, "trips_one_shape_id_per_pattern_id_group", reportedPairs)
+		validations.ShapeIdPatternGroupRuleValidation(single, nil, nil, rules, "trips_one_shape_id_per_pattern_id_group", reportedPairs)
 	}
 	for shapeId, group := range shapes {
 		single := types.TripGroupedByShapeId{shapeId: group}
-		validations.ShapeIdGroupRuleValidation(nil, single, nil, rules, "trips_one_pattern_id_per_shape_id_group", reportedPairs)
+		validations.ShapeIdPatternGroupRuleValidation(nil, single, nil, rules, "trips_one_pattern_id_per_shape_id_group", reportedPairs)
 	}
 
 	test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "ReportsPairingOnce", types.SEVERITY_ERROR)
@@ -52,7 +52,7 @@ func TestShapeIdGroupRuleValidationReportsPairingOnce(t *testing.T) {
 
 // Without the shared map each call starts blank, so the same pairing is reported
 // from both sides. This is the behaviour the orchestrator must not fall back into.
-func TestShapeIdGroupRuleValidationWithoutSharedStateReportsTwice(t *testing.T) {
+func TestShapeIdPatternGroupRuleValidationWithoutSharedStateReportsTwice(t *testing.T) {
 	services.AppMessageService.Clear()
 	patterns, shapes := brokenPairing()
 	rules := &types.TripsRules{
@@ -62,11 +62,11 @@ func TestShapeIdGroupRuleValidationWithoutSharedStateReportsTwice(t *testing.T) 
 
 	for patternId, group := range patterns {
 		single := types.TripGroupedByPattern{patternId: group}
-		validations.ShapeIdGroupRuleValidation(single, nil, nil, rules, "trips_one_shape_id_per_pattern_id_group", nil)
+		validations.ShapeIdPatternGroupRuleValidation(single, nil, nil, rules, "trips_one_shape_id_per_pattern_id_group", nil)
 	}
 	for shapeId, group := range shapes {
 		single := types.TripGroupedByShapeId{shapeId: group}
-		validations.ShapeIdGroupRuleValidation(nil, single, nil, rules, "trips_one_pattern_id_per_shape_id_group", nil)
+		validations.ShapeIdPatternGroupRuleValidation(nil, single, nil, rules, "trips_one_pattern_id_per_shape_id_group", nil)
 	}
 
 	test_helpers.AssertMessageCount(t, services.AppMessageService, 2, "WithoutSharedState", types.SEVERITY_ERROR)
@@ -74,7 +74,7 @@ func TestShapeIdGroupRuleValidationWithoutSharedStateReportsTwice(t *testing.T) 
 
 // An ignored pattern_id rule reports nothing, so it suppresses nothing: the
 // shape_id side must still speak up.
-func TestShapeIdGroupRuleValidationIgnoredPatternRuleSuppressesNothing(t *testing.T) {
+func TestShapeIdPatternGroupRuleValidationIgnoredPatternRuleSuppressesNothing(t *testing.T) {
 	services.AppMessageService.Clear()
 	patterns, shapes := brokenPairing()
 	rules := &types.TripsRules{
@@ -85,18 +85,18 @@ func TestShapeIdGroupRuleValidationIgnoredPatternRuleSuppressesNothing(t *testin
 
 	for patternId, group := range patterns {
 		single := types.TripGroupedByPattern{patternId: group}
-		validations.ShapeIdGroupRuleValidation(single, nil, nil, rules, "trips_one_shape_id_per_pattern_id_group", reportedPairs)
+		validations.ShapeIdPatternGroupRuleValidation(single, nil, nil, rules, "trips_one_shape_id_per_pattern_id_group", reportedPairs)
 	}
 	for shapeId, group := range shapes {
 		single := types.TripGroupedByShapeId{shapeId: group}
-		validations.ShapeIdGroupRuleValidation(nil, single, nil, rules, "trips_one_pattern_id_per_shape_id_group", reportedPairs)
+		validations.ShapeIdPatternGroupRuleValidation(nil, single, nil, rules, "trips_one_pattern_id_per_shape_id_group", reportedPairs)
 	}
 
 	test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "IgnoredPatternRule", types.SEVERITY_ERROR)
 }
 
 // The single-call wrapper keeps working: both rules, one shared map, one message.
-func TestShapeIdGroupValidationWrapperReportsPairingOnce(t *testing.T) {
+func TestShapeIdPatternGroupValidationWrapperReportsPairingOnce(t *testing.T) {
 	services.AppMessageService.Clear()
 	patterns, shapes := brokenPairing()
 	rules := &types.TripsRules{
@@ -104,7 +104,7 @@ func TestShapeIdGroupValidationWrapperReportsPairingOnce(t *testing.T) {
 		OnePatternIdPerShapeIdGroup: types.RuleConfig{Severity: types.SEVERITY_ERROR},
 	}
 
-	validations.ShapeIdGroupValidation(patterns, shapes, nil, rules)
+	validations.ShapeIdPatternGroupValidation(patterns, shapes, nil, rules)
 
 	test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "WrapperReportsPairingOnce", types.SEVERITY_ERROR)
 }

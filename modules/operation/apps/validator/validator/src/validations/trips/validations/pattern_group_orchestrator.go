@@ -34,22 +34,22 @@ func ValidatePatternGroups(
 		patterns := types.TripGroupedByPattern{patternId: group}
 		runner.Run(services.RuleActions{
 			"trips_pattern_id_trip_has_required_fields_for_grouping": func() {
-				PatternIdGroupRuleValidation(patterns, gtfs, rules, "trips_pattern_id_trip_has_required_fields_for_grouping")
+				PatternIdPatternGroupRuleValidation(patterns, gtfs, rules, "trips_pattern_id_trip_has_required_fields_for_grouping")
 			},
 			"trips_pattern_id_single_trip_signature_per_pattern": func() {
-				PatternIdGroupRuleValidation(patterns, gtfs, rules, "trips_pattern_id_single_trip_signature_per_pattern")
+				PatternIdPatternGroupRuleValidation(patterns, gtfs, rules, "trips_pattern_id_single_trip_signature_per_pattern")
 			},
 			"trips_route_id_consistent_for_all_patterns_in_trips": func() {
-				RouteIdGroupValidation(patterns, gtfs, rules)
+				RouteIdPatternGroupValidation(patterns, gtfs, rules)
 			},
 			"trips_direction_id_consistent_for_all_patterns_in_trips": func() {
-				DirectionIdGroupValidation(patterns, gtfs, rules)
+				DirectionIdPatternGroupValidation(patterns, gtfs, rules)
 			},
 			"trips_one_shape_id_per_pattern_id_group": func() {
-				ShapeIdGroupRuleValidation(patterns, nil, gtfs, rules, "trips_one_shape_id_per_pattern_id_group", reportedPairs)
+				ShapeIdPatternGroupRuleValidation(patterns, nil, gtfs, rules, "trips_one_shape_id_per_pattern_id_group", reportedPairs)
 			},
 			"trip_headsign_consistent_for_all_patterns_in_trips": func() {
-				TripHeadsignGroupValidation(patterns, gtfs, rules)
+				TripHeadsignPatternGroupValidation(patterns, gtfs, rules)
 			},
 		}, groupStatuses["pattern/"+patternId])
 	}
@@ -60,7 +60,7 @@ func ValidatePatternGroups(
 		shapes := types.TripGroupedByShapeId{shapeId: group}
 		runner.Run(services.RuleActions{
 			"trips_one_pattern_id_per_shape_id_group": func() {
-				ShapeIdGroupRuleValidation(nil, shapes, gtfs, rules, "trips_one_pattern_id_per_shape_id_group", reportedPairs)
+				ShapeIdPatternGroupRuleValidation(nil, shapes, gtfs, rules, "trips_one_pattern_id_per_shape_id_group", reportedPairs)
 			},
 		}, groupStatuses["shape/"+shapeId])
 	}

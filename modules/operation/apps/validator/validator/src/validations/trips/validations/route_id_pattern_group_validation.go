@@ -22,7 +22,7 @@ All trips with the same pattern_id must have the same route_id.
 If a pattern_id has trips with different route_ids, report error.
 */
 
-func RouteIdGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, gtfs *types.Gtfs, rules *types.TripsRules) {
+func RouteIdPatternGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, gtfs *types.Gtfs, rules *types.TripsRules) {
 	// Group trips by pattern_id and validate route_id
 	for patternId, group := range tripsGroupedByPattern {
 		if len(group.Trips) == 0 {
