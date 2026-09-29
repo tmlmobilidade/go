@@ -17,7 +17,11 @@ func TestAllServiceIdValidationTestCases(t *testing.T) {
 				serviceId = *tc.Id
 			}
 			calendar := &types.Calendar{ServiceId: serviceId}
-			gtfs := &types.Gtfs{IdMap: map[string]map[string][]int{"calendar": tc.ExistingIds}}
+			gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{"calendar": tc.ExistingIds}}.ToGtfsWithDB()
+			if err != nil {
+				t.Fatalf("failed to create mock gtfs: %v", err)
+			}
+			defer cleanup()
 			validations.ServiceIdValidation(calendar, tc.Row, gtfs)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})

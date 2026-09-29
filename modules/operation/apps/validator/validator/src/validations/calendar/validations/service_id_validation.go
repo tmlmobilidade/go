@@ -1,7 +1,7 @@
-package trips
+package calendar
 
 import (
-	"main/i18n"
+	"main/lib"
 	"main/services"
 	"main/types"
 )
@@ -21,26 +21,17 @@ Identifies a set of dates when service is available for one or more routes.
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
 func ServiceIdValidation(calendar *types.Calendar, row int, gtfs *types.Gtfs) {
+	ctx := lib.NewValidationContext("service_id", "calendar.txt", "calendar_service_id_unique_non_empty", row, services.AppMessageService)
 
-	message := types.Message{
-		Field:    "service_id",
-		FileName: "calendar.txt",
-		Message:  "Service ID is required",
-		Rows:     []int{row},
-		Severity: types.SEVERITY_ERROR,
-		RuleID:   "calendar_service_id_unique_non_empty",
-	}
-
-	if calendar.ServiceId != "" {
-		// Check if service_id is Unique ID
-		if gtfs.IdMap["calendar"] != nil && len(gtfs.IdMap["calendar"][calendar.ServiceId]) > 1 {
-			message.Message = i18n.AppTranslator.Get("service_id_validation.duplicate", calendar.ServiceId)
-			message.Severity = types.SEVERITY_ERROR
-			services.AppMessageService.AddMessage(message)
-		}
-
+	// 1. Validate service_id is present
+	if calendar.ServiceId == "" {
+		ctx.AddError(ctx.GetTranslatedMessage("service_id_validation.required"))
 		return
 	}
 
-	services.AppMessageService.AddMessage(message)
+	// 2. Validate service_id is unique
+	rows, err := gtfs.GetRowsById("calendar", calendar.ServiceId)
+	if err == nil && len(rows) > 1 {
+		ctx.AddError(ctx.GetTranslatedMessage("service_id_validation.duplicate", calendar.ServiceId))
+	}
 }

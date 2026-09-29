@@ -1,4 +1,4 @@
-package trips
+package calendar
 
 import (
 	"main/lib"
