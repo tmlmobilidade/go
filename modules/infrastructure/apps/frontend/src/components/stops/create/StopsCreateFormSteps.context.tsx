@@ -49,16 +49,16 @@ export function StopsCreateFormStepsContextProvider({ children }: PropsWithChild
 
 	const hasCreateStopsPermission = useMemo(() => {
 		// Return false if municipality is not available
-		if (!locationData?.municipality?._id) return false;
+		if (!locationData?.secondary.osm_id) return false;
 		// Check if the user is allowed to create stops in the municipality
 		return PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.stops.actions.create,
 			permissions: meData?.permissions,
 			resource_key: 'municipality_ids',
 			scope: PermissionCatalog.all.stops.scope,
-			value: locationData.municipality._id,
+			value: String(locationData.secondary.osm_id),
 		});
-	}, [locationData?.municipality?._id, meData?.permissions]);
+	}, [locationData?.secondary.osm_id, meData?.permissions]);
 
 	//
 	// D. Setup steps
