@@ -52,7 +52,7 @@ export function StopsDetailHeader() {
 				action={PermissionCatalog.all.stops.actions.update}
 				resourceKey="municipality_ids"
 				scope={PermissionCatalog.all.stops.scope}
-				value={data?.municipality_id}
+				value={data?.location.secondary.osm_id.toString()}
 			>
 				<UpdateButton
 					isDisabled={!capabilities.updateEnabled}
@@ -65,7 +65,7 @@ export function StopsDetailHeader() {
 				action={PermissionCatalog.all.stops.actions.lock}
 				resourceKey="municipality_ids"
 				scope={PermissionCatalog.all.stops.scope}
-				value={data?.municipality_id}
+				value={data?.location.secondary.osm_id.toString()}
 			>
 				<LockButton
 					isDisabled={!capabilities.lockEnabled}
@@ -79,7 +79,7 @@ export function StopsDetailHeader() {
 				action={PermissionCatalog.all.stops.actions.delete}
 				resourceKey="municipality_ids"
 				scope={PermissionCatalog.all.stops.scope}
-				value={data?.municipality_id}
+				value={data?.location.secondary.osm_id.toString()}
 			>
 				<DeleteButton
 					confirmMessage={t('default:stops.detail.Header.DeleteButton.confirm_message')}

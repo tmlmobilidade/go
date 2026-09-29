@@ -34,10 +34,10 @@ export function StopsDetailUpdateCoordinates() {
 			permissions: meData?.permissions,
 			resource_key: 'municipality_ids',
 			scope: PermissionCatalog.all.stops.scope,
-			value: data?.municipality_id,
+			value: data?.location.secondary.osm_id.toString(),
 		});
 		return hasPermission && !capabilities.updateEnabled;
-	}, [data?.municipality_id, meData?.permissions, capabilities.updateEnabled]);
+	}, [data?.location.secondary.osm_id, meData?.permissions, capabilities.updateEnabled]);
 
 	//
 	// C. Render components

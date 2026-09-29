@@ -65,9 +65,9 @@ export function StopsDetailFormContextProvider({ children }: PropsWithChildren) 
 			permissions: meData?.permissions,
 			resource_key: 'municipality_ids',
 			scope: PermissionCatalog.all.stops.scope,
-			value: stopData?.municipality_id,
+			value: stopData?.location.secondary.osm_id.toString(),
 		});
-	}, [meData?.permissions, stopData?.municipality_id]);
+	}, [meData?.permissions, stopData?.location.secondary.osm_id]);
 
 	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
 		form: {
