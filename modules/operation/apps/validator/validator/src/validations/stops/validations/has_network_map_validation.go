@@ -33,6 +33,7 @@ func HasNetworkMapValidation(stop *types.Stop, row int, rules *types.StopsRules)
 		ctx.WithSeverity(rules.HasNetworkMap.Severity)
 	}
 
+	// 1. Validate has_network_map is present
 	if stop.HasNetworkMap == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -43,19 +44,20 @@ func HasNetworkMapValidation(stop *types.Stop, row int, rules *types.StopsRules)
 		return
 	}
 
+	// 2. Validate has_network_map is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_network_map_validation.forbidden"))
 		return
 	}
 
-	// Validate value
+	// 3. Validate has_network_map is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasNetworkMap) {
 		ctx.AddError(ctx.GetTranslatedMessage("has_network_map_validation.invalid", *stop.HasNetworkMap))
 		return
 	}
 
-	// Validate Rule options
+	// 4. Validate Rule options
 	if rules != nil && rules.HasNetworkMap.Options != nil {
 		if slices.Contains(*rules.HasNetworkMap.Options, types.ALL_OPTIONS) {
 			return

@@ -32,6 +32,7 @@ func HasPipRealTimeValidation(stop *types.Stop, row int, rules *types.StopsRules
 		ctx.WithSeverity(rules.HasPipRealTime.Severity)
 	}
 
+	// 1. Validate has_pip_real_time is present
 	if stop.HasPipRealTime == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -42,19 +43,20 @@ func HasPipRealTimeValidation(stop *types.Stop, row int, rules *types.StopsRules
 		return
 	}
 
+	// 2. Validate has_pip_real_time is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_pip_real_time_validation.forbidden"))
 		return
 	}
 
-	// Validate value
+	// 3. Validate has_pip_real_time is a valid value
 	validValues := []int{0, 1, 2}
 	if !slices.Contains(validValues, *stop.HasPipRealTime) {
 		ctx.AddError(ctx.GetTranslatedMessage("has_pip_real_time_validation.invalid", *stop.HasPipRealTime))
 		return
 	}
 
-	// Validate Rule options
+	// 4. Validate Rule options
 	if rules != nil && rules.HasPipRealTime.Options != nil {
 		if slices.Contains(*rules.HasPipRealTime.Options, types.ALL_OPTIONS) {
 			return

@@ -33,6 +33,7 @@ func HasTariffsInformationValidation(stop *types.Stop, row int, rules *types.Sto
 		ctx.WithSeverity(rules.HasTariffsInformation.Severity)
 	}
 
+	// 1. Validate has_tariffs_information is present
 	if stop.HasTariffsInformation == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -43,19 +44,20 @@ func HasTariffsInformationValidation(stop *types.Stop, row int, rules *types.Sto
 		return
 	}
 
+	// 2. Validate has_tariffs_information is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_tariffs_information_validation.forbidden"))
 		return
 	}
 
-	// Validate value
+	// 3. Validate has_tariffs_information is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasTariffsInformation) {
 		ctx.AddError(ctx.GetTranslatedMessage("has_tariffs_information_validation.invalid", *stop.HasTariffsInformation))
 		return
 	}
 
-	// Validate value based on rules
+	// 4. Validate Rule options
 	if rules != nil && rules.HasTariffsInformation.Options != nil {
 		if slices.Contains(*rules.HasTariffsInformation.Options, types.ALL_OPTIONS) {
 			return

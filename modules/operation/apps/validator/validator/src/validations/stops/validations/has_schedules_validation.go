@@ -33,6 +33,7 @@ func HasSchedulesValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 		ctx.WithSeverity(rules.HasSchedules.Severity)
 	}
 
+	// 1. Validate has_schedules is present
 	if stop.HasSchedules == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -43,19 +44,20 @@ func HasSchedulesValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 		return
 	}
 
+	// 2. Validate has_schedules is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_schedules_validation.forbidden"))
 		return
 	}
 
-	// Validate value
+	// 3. Validate has_schedules is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasSchedules) {
 		ctx.AddError(ctx.GetTranslatedMessage("has_schedules_validation.invalid", *stop.HasSchedules))
 		return
 	}
 
-	// Validate Rule options
+	// 4. Validate Rule options
 	if rules != nil && rules.HasSchedules.Options != nil {
 		if slices.Contains(*rules.HasSchedules.Options, types.ALL_OPTIONS) {
 			return

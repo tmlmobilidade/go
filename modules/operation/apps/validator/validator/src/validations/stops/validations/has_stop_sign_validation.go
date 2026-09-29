@@ -33,6 +33,7 @@ func HasStopSignValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.HasStopSign.Severity)
 	}
 
+	// 1. Validate has_stop_sign is present
 	if stop.HasStopSign == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -43,19 +44,20 @@ func HasStopSignValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
+	// 2. Validate has_stop_sign is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_stop_sign_validation.forbidden"))
 		return
 	}
 
-	// Validate value
+	// 3. Validate has_stop_sign is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasStopSign) {
 		ctx.AddError(ctx.GetTranslatedMessage("has_stop_sign_validation.invalid", *stop.HasStopSign))
 		return
 	}
 
-	// Validate Rule options
+	// 4. Validate Rule options
 	if rules != nil && rules.HasStopSign.Options != nil {
 		if slices.Contains(*rules.HasStopSign.Options, types.ALL_OPTIONS) {
 			return

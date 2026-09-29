@@ -27,7 +27,8 @@ func MunicipalityIdValidation(stop *types.Stop, row int, rules *types.StopsRules
 		ctx.WithSeverity(rules.MunicipalityId.Severity)
 	}
 
-	if stop.MunicipalityId == nil || *stop.MunicipalityId == "" {
+	// 1. Validate municipality_id is present
+	if stop.MunicipalityId == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -37,12 +38,13 @@ func MunicipalityIdValidation(stop *types.Stop, row int, rules *types.StopsRules
 		return
 	}
 
+	// 2. Validate municipality_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("municipality_id_validation.forbidden"))
 		return
 	}
 
-	// Validate rules
+	// 3. Validate Rule options
 	if rules != nil && rules.MunicipalityId.Options != nil {
 		if slices.Contains(*rules.MunicipalityId.Options, types.ALL_OPTIONS) {
 			return

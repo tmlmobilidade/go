@@ -33,6 +33,7 @@ func HasShelterValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.HasShelter.Severity)
 	}
 
+	// 1. Validate has_shelter is present
 	if stop.HasShelter == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -43,19 +44,20 @@ func HasShelterValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
+	// 2. Validate has_shelter is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_shelter_validation.forbidden"))
 		return
 	}
 
-	// Validate value
+	// 3. Validate has_shelter is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasShelter) {
 		ctx.AddError(ctx.GetTranslatedMessage("has_shelter_validation.invalid", *stop.HasShelter))
 		return
 	}
 
-	// Validate value based on rules
+	// 4. Validate Rule options
 	if rules != nil && rules.HasShelter.Options != nil {
 		if slices.Contains(*rules.HasShelter.Options, types.ALL_OPTIONS) {
 			return

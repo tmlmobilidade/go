@@ -33,6 +33,7 @@ func HasBenchValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.HasBench.Severity)
 	}
 
+	// 1. Validate has_bench is present
 	if stop.HasBench == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -43,19 +44,20 @@ func HasBenchValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
+	// 2. Validate has_bench is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_bench_validation.forbidden"))
 		return
 	}
 
-	// Validate value
+	// 3. Validate has_bench is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasBench) {
 		ctx.AddError(ctx.GetTranslatedMessage("has_bench_validation.invalid", *stop.HasBench))
 		return
 	}
 
-	// Validate Rule options
+	// 4. Validate Rule options
 	if rules != nil && rules.HasBench.Options != nil {
 		if slices.Contains(*rules.HasBench.Options, types.ALL_OPTIONS) {
 			return
