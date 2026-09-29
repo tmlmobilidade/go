@@ -28,6 +28,7 @@ func DropOffBookingRuleIdValidation(stopTime *types.StopTime, row int, gtfs *typ
 		ctx.WithSeverity(rules.DropOffBookingRuleId.Severity)
 	}
 
+	// 1. Check if drop_off_booking_rule_id is present
 	if stopTime.DropOffBookingRuleId == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -37,12 +38,13 @@ func DropOffBookingRuleIdValidation(stopTime *types.StopTime, row int, gtfs *typ
 		return
 	}
 
+	// 2. Check if drop_off_booking_rule_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("drop_off_booking_rule_id_validation.forbidden"))
 		return
 	}
 
-	// Foreign key check: must reference a valid booking_rule_id from booking_rules.txt
+	// 3. Check if drop_off_booking_rule_id is Foreign Key referencing booking_rules.booking_rule_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "booking_rules", *stopTime.DropOffBookingRuleId) {
 		ctx.AddError(ctx.GetTranslatedMessage("drop_off_booking_rule_id_validation.not_found", *stopTime.DropOffBookingRuleId))
 		return

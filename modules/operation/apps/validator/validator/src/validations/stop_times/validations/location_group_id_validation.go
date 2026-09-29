@@ -26,23 +26,34 @@ Conditionally Forbidden:
 
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
-func LocationGroupIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs) {
+func LocationGroupIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, rules *types.StopTimesRules) {
 	ctx := lib.NewValidationContext("location_group_id", "stop_times.txt", "stop_times_location_group_id_consistent_with_trip_id_and_stops", row, services.AppMessageService)
+	if rules != nil && rules.LocationGroupId.Severity != "" {
+		ctx.WithSeverity(rules.LocationGroupId.Severity)
+	}
 
-	// Forbidden if stop_id or location_id are defined
+	// Conditionally Forbidden: forbidden if stop_id or location_id are defined
 	if (stopTime.StopId != nil && *stopTime.StopId != "") || (stopTime.LocationId != nil && *stopTime.LocationId != "") {
 		if stopTime.LocationGroupId != nil && *stopTime.LocationGroupId != "" {
-			ctx.AddError(ctx.GetTranslatedMessage("location_group_id_validation.forbidden_with_other_ids"))
+			ctx.AddError(ctx.GetTranslatedMessage("location_group_id_validation.forbidden_stop_location"))
 		}
 		return
 	}
 
-	// If location_group_id is present, check foreign key
-	if stopTime.LocationGroupId != nil && *stopTime.LocationGroupId != "" {
-		// Check Foreign Key
-		if !lib.GtfsIdMapKeyExists(gtfs, "location_groups", *stopTime.LocationGroupId) {
-			ctx.AddError(ctx.GetTranslatedMessage("location_group_id_validation.not_found", *stopTime.LocationGroupId))
-			return
-		}
+	// 1. location_group_id is optional: nothing to check when absent
+	if stopTime.LocationGroupId == nil || *stopTime.LocationGroupId == "" {
+		return
+	}
+
+	// 2. Check if location_group_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("location_group_id_validation.forbidden"))
+		return
+	}
+
+	// 3. Check if location_group_id is Foreign Key referencing location_groups.location_group_id
+	if !lib.GtfsIdMapKeyExists(gtfs, "location_groups", *stopTime.LocationGroupId) {
+		ctx.AddError(ctx.GetTranslatedMessage("location_group_id_validation.not_found", *stopTime.LocationGroupId))
+		return
 	}
 }

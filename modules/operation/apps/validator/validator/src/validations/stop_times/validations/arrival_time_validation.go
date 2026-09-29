@@ -41,19 +41,25 @@ func ArrivalTimeValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, 
 		ctx.WithSeverity(rules.ArrivalTime.Severity)
 	}
 
-	// Required for timepoint=1
+	// 1. Check if arrival_time is required: required when timepoint is 1
 	if stopTime.Timepoint != nil && *stopTime.Timepoint == 1 && stopTime.ArrivalTime == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("arrival_time_validation.required_timepoint"))
 		return
 	}
 
-	// Forbidden when start_pickup_drop_off_window or end_pickup_drop_off_window are defined
+	// 2. Check if arrival_time is forbidden: forbidden when start_pickup_drop_off_window or end_pickup_drop_off_window are defined
 	if (stopTime.StartPickupDropOffWindow != nil || stopTime.EndPickupDropOffWindow != nil) && stopTime.ArrivalTime != nil {
 		ctx.AddError(ctx.GetTranslatedMessage("arrival_time_validation.forbidden_pickup_dropoff"))
 		return
 	}
 
-	// Required for the first and last stop in a trip
+	// 3. Check if arrival_time is forbidden
+	if stopTime.ArrivalTime != nil && ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("arrival_time_validation.forbidden"))
+		return
+	}
+
+	// 4. Check if arrival_time is required: required for the first and last stop in a trip
 	if stopTime.StopSequence != nil && stopTime.TripId != nil {
 		// Use cached trip stop sequences instead of querying database
 		seq, exists := tripStopSequences[*stopTime.TripId]
@@ -112,7 +118,7 @@ func ArrivalTimeValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, 
 		}
 	}
 
-	// Validate time
+	// 5. Check if arrival_time is a valid time
 	if stopTime.ArrivalTime != nil {
 		if !lib.ValidateTime(*stopTime.ArrivalTime) {
 			ctx.AddError(ctx.GetTranslatedMessage("arrival_time_validation.invalid", *stopTime.ArrivalTime))
@@ -120,7 +126,7 @@ func ArrivalTimeValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, 
 		}
 	}
 
-	// Optional
+	// 6. Check if arrival_time is present
 	if stopTime.ArrivalTime == nil && !ctx.ShouldIgnore() {
 		message := ctx.GetRequiredMessage("arrival_time_validation.required", "arrival_time_validation.recommended")
 		ctx.AddMessageWithSeverity(message)

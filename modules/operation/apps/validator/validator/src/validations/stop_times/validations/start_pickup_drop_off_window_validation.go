@@ -33,7 +33,7 @@ func StartPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules
 		ctx.WithSeverity(rules.StartPickupDropOffWindow.Severity)
 	}
 
-	// Forbidden if arrival_time or departure_time are defined
+	// 1. Check if start_pickup_drop_off_window is forbidden: forbidden if arrival_time or departure_time are defined
 	if (stopTime.ArrivalTime != nil && *stopTime.ArrivalTime != "") || (stopTime.DepartureTime != nil && *stopTime.DepartureTime != "") {
 		if stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "" {
 			ctx.AddError(ctx.GetTranslatedMessage("start_pickup_drop_off_window_validation.forbidden_with_time"))
@@ -41,6 +41,13 @@ func StartPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules
 		return
 	}
 
+	// 2. Check if start_pickup_drop_off_window is forbidden
+	if stopTime.StartPickupDropOffWindow != nil && ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("start_pickup_drop_off_window_validation.forbidden"))
+		return
+	}
+
+	// 3. Check if start_pickup_drop_off_window is conditionally required
 	required := false
 	// Required if location_group_id or location_id is defined
 	if (stopTime.LocationGroupId != nil && *stopTime.LocationGroupId != "") || (stopTime.LocationId != nil && *stopTime.LocationId != "") {
@@ -58,7 +65,7 @@ func StartPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules
 		}
 	}
 
-	// Validate time format if present
+	// 4. Check if start_pickup_drop_off_window is a valid time
 	if stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "" {
 		if !lib.ValidateTime(*stopTime.StartPickupDropOffWindow) {
 			ctx.AddError(ctx.GetTranslatedMessage("start_pickup_drop_off_window_validation.invalid_time"))
@@ -66,7 +73,7 @@ func StartPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules
 		}
 	}
 
-	// Optional
+	// 5. Check if start_pickup_drop_off_window is present
 	if stopTime.StartPickupDropOffWindow == nil && !ctx.ShouldIgnore() {
 		message := ctx.GetRequiredMessage("start_pickup_drop_off_window_validation.required", "start_pickup_drop_off_window_validation.recommended")
 		ctx.AddMessageWithSeverity(message)

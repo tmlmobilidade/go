@@ -41,7 +41,7 @@ func PickupTypeValidation(stopTime *types.StopTime, row int, rules *types.StopTi
 		ctx.WithSeverity(rules.PickupType.Severity)
 	}
 
-	// Validate presence
+	// 1. Check if pickup_type is present
 	if stopTime.PickupType == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -52,20 +52,26 @@ func PickupTypeValidation(stopTime *types.StopTime, row int, rules *types.StopTi
 		return
 	}
 
-	// Validate values
+	// 2. Check if pickup_type is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pickup_type_validation.forbidden"))
+		return
+	}
+
+	// 3. Check if pickup_type is between 0 and 3
 	pt := *stopTime.PickupType
 	if pt < 0 || pt > 3 {
 		ctx.AddError(ctx.GetTranslatedMessage("pickup_type_validation.invalid"))
 		return
 	}
 
-	// pickup_type=0 or 3 forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined
+	// 4. Check if pickup_type is forbidden with a window: 0 or 3 are forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined
 	if (pt == 0 || pt == 3) && ((stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "") || (stopTime.EndPickupDropOffWindow != nil && *stopTime.EndPickupDropOffWindow != "")) {
 		ctx.AddError(ctx.GetTranslatedMessage("pickup_type_validation.forbidden_with_window"))
 		return
 	}
 
-	// Validate Rule Options
+	// 5. Validate rule options
 	if rules != nil && rules.PickupType.Options != nil {
 		if slices.Contains(*rules.PickupType.Options, types.ALL_OPTIONS) {
 			return

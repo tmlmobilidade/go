@@ -34,7 +34,7 @@ func TestAllLocationGroupIdValidationTestCases(t *testing.T) {
 				}
 				defer cleanup()
 			}
-			validations.LocationGroupIdValidation(stopTime, tc.Row, gtfs)
+			validations.LocationGroupIdValidation(stopTime, tc.Row, gtfs, &types.StopTimesRules{LocationGroupId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}
@@ -49,7 +49,7 @@ func TestAllLocationGroupIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.LocationGroupIdValidation(&types.StopTime{}, tc.Row, gtfs)
+			validations.LocationGroupIdValidation(&types.StopTime{}, tc.Row, gtfs, &types.StopTimesRules{LocationGroupId: types.RuleConfig{Severity: tc.Severity}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}
@@ -62,7 +62,7 @@ func TestAllLocationGroupIdValidationTestCases(t *testing.T) {
 			t.Fatalf("failed to create mock gtfs: %v", err)
 		}
 		defer cleanup()
-		validations.LocationGroupIdValidation(stopTime, 1, gtfs)
+		validations.LocationGroupIdValidation(stopTime, 1, gtfs, &types.StopTimesRules{LocationGroupId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 0, "Missing_LocationGroupsIndex", types.SEVERITY_ERROR)
 	})
 }

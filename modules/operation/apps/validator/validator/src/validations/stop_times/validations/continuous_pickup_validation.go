@@ -42,7 +42,7 @@ func ContinuousPickupValidation(stopTime *types.StopTime, row int, rules *types.
 		ctx.WithSeverity(rules.ContinuousPickup.Severity)
 	}
 
-	// If not present, it's optional unless severity is set
+	// 1. Check if continuous_pickup is present
 	if stopTime.ContinuousPickup == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -52,19 +52,26 @@ func ContinuousPickupValidation(stopTime *types.StopTime, row int, rules *types.
 		return
 	}
 
+	// 2. Check if continuous_pickup is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_pickup_validation.forbidden"))
+		return
+	}
+
+	// 3. Check if continuous_pickup is between 0 and 3
 	cp := *stopTime.ContinuousPickup
 	if cp < 0 || cp > 3 {
 		ctx.AddError(ctx.GetTranslatedMessage("continuous_pickup_validation.invalid"))
 		return
 	}
 
-	// Forbidden: Any value other than 1 or empty if start/end_pickup_drop_off_window are defined
+	// 4. Check if continuous_pickup is forbidden with a window: any value other than 1 or empty if start/end_pickup_drop_off_window are defined
 	if ((stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "") || (stopTime.EndPickupDropOffWindow != nil && *stopTime.EndPickupDropOffWindow != "")) && (cp != 1) {
 		ctx.AddError(ctx.GetTranslatedMessage("continuous_pickup_validation.forbidden_with_window"))
 		return
 	}
 
-	// Validate Rule Options
+	// 5. Validate rule options
 	if rules != nil && rules.ContinuousPickup.Options != nil {
 		if slices.Contains(*rules.ContinuousPickup.Options, types.ALL_OPTIONS) {
 			return

@@ -25,7 +25,7 @@ func TestAllStopIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.StopIdValidation(stopTime, tc.Row, gtfs, nil)
+			validations.StopIdValidation(stopTime, tc.Row, gtfs, nil, &types.StopTimesRules{StopId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}
@@ -42,7 +42,7 @@ func TestAllStopIdValidationTestCases(t *testing.T) {
 			t.Fatalf("failed to create mock gtfs: %v", err)
 		}
 		defer cleanup()
-		validations.StopIdValidation(stopTime, 5, gtfs, map[string]string{"S2": "1"})
+		validations.StopIdValidation(stopTime, 5, gtfs, map[string]string{"S2": "1"}, &types.StopTimesRules{StopId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "stop_id with invalid location_type should error", types.SEVERITY_ERROR)
 	})
 }

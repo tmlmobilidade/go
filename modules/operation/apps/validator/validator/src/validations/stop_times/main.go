@@ -99,11 +99,11 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate trip_id (using IdMap cache - no database query)
 		statuses := runner.Run(services.RuleActions{
-			"stop_times_trip_id_references_trips_table":                             func() { validations.TripIdValidation(&stopTime, i, &gtfs) },
+			"stop_times_trip_id_references_trips_table":                             func() { validations.TripIdValidation(&stopTime, i, &gtfs, stopTimesRules) },
 			"stop_times_arrival_time_ordering_with_departure_and_frequencies":       func() { validations.ArrivalTimeValidation(&stopTime, i, &gtfs, stopTimesRules, tripStopSequences) },
 			"stop_times_departure_time_ordering_with_arrival_and_timepoint":         func() { validations.DepartureTimeValidation(&stopTime, i, &gtfs, stopTimesRules) },
-			"stop_times_stop_id_references_stops_table":                             func() { validations.StopIdValidation(&stopTime, i, &gtfs, stopLocationTypeCache) },
-			"stop_times_location_group_id_consistent_with_trip_id_and_stops":        func() { validations.LocationGroupIdValidation(&stopTime, i, &gtfs) },
+			"stop_times_stop_id_references_stops_table":                             func() { validations.StopIdValidation(&stopTime, i, &gtfs, stopLocationTypeCache, stopTimesRules) },
+			"stop_times_location_group_id_consistent_with_trip_id_and_stops":        func() { validations.LocationGroupIdValidation(&stopTime, i, &gtfs, stopTimesRules) },
 			"stop_times_start_pickup_drop_off_window_valid":                         func() { validations.StartPickupDropOffWindowValidation(&stopTime, i, stopTimesRules) },
 			"stop_times_end_pickup_drop_off_window_valid":                           func() { validations.EndPickupDropOffWindowValidation(&stopTime, i, stopTimesRules) },
 			"stop_times_pickup_type_valid_gtfs_enum":                                func() { validations.PickupTypeValidation(&stopTime, i, stopTimesRules) },

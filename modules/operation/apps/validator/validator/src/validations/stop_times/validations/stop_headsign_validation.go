@@ -35,6 +35,7 @@ func StopHeadsignValidation(stopTime *types.StopTime, row int, rules *types.Stop
 		ctx.WithSeverity(rules.StopHeadsign.Severity)
 	}
 
+	// 1. Check if stop_headsign is present
 	if stopTime.StopHeadsign == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -45,12 +46,13 @@ func StopHeadsignValidation(stopTime *types.StopTime, row int, rules *types.Stop
 		return
 	}
 
+	// 2. Check if stop_headsign is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_headsign_validation.forbidden"))
 		return
 	}
 
-	// Validate Rule Options
+	// 3. Validate rule options
 	if rules != nil && rules.StopHeadsign.Options != nil {
 		if slices.Contains(*rules.StopHeadsign.Options, types.ALL_OPTIONS) {
 			return

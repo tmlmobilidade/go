@@ -34,7 +34,7 @@ func TestAllTripIdValidationTestCases(t *testing.T) {
 				defer cleanup()
 			}
 
-			validations.TripIdValidation(stopTime, tc.Row, gtfs)
+			validations.TripIdValidation(stopTime, tc.Row, gtfs, &types.StopTimesRules{TripId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}
@@ -46,7 +46,7 @@ func TestAllTripIdValidationTestCases(t *testing.T) {
 			t.Fatalf("failed to create mock gtfs: %v", err)
 		}
 		defer cleanup()
-		validations.TripIdValidation(stopTime, 1, gtfs)
+		validations.TripIdValidation(stopTime, 1, gtfs, &types.StopTimesRules{TripId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 0, "Missing_TripsIndex", types.SEVERITY_ERROR)
 	})
 	t.Run("Empty_TripId", func(t *testing.T) {
@@ -57,7 +57,7 @@ func TestAllTripIdValidationTestCases(t *testing.T) {
 			t.Fatalf("failed to create mock gtfs: %v", err)
 		}
 		defer cleanup()
-		validations.TripIdValidation(stopTime, 1, gtfs)
+		validations.TripIdValidation(stopTime, 1, gtfs, &types.StopTimesRules{TripId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Empty_TripId", types.SEVERITY_ERROR)
 	})
 }

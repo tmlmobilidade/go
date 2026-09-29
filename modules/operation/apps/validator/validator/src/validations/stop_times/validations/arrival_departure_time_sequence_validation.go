@@ -49,6 +49,7 @@ func validateStopTimePair(tripId string, previous stopTimesTypes.TimeSequenceSto
 		return
 	}
 
+	// 1. Resolve the last time of the previous stop and the first time of the current stop
 	previousTime, previousTimeLabel, ok := stopTimesLib.LastStopTime(previous)
 	if !ok {
 		return
@@ -59,6 +60,7 @@ func validateStopTimePair(tripId string, previous stopTimesTypes.TimeSequenceSto
 		return
 	}
 
+	// 2. Check if the times are non-decreasing along the stop sequence
 	if currentTime < previousTime {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage(
 			"arrival_departure_time_sequence_validation.decreasing",

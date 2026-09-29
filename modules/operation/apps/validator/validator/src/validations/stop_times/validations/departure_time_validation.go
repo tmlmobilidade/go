@@ -39,19 +39,25 @@ func DepartureTimeValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs
 		ctx.WithSeverity(rules.DepartureTime.Severity)
 	}
 
-	// Required for timepoint=1
+	// 1. Check if departure_time is required: required when timepoint is 1
 	if stopTime.Timepoint != nil && *stopTime.Timepoint == 1 && stopTime.DepartureTime == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.required_timepoint"))
 		return
 	}
 
-	// Forbidden when start_pickup_drop_off_window or end_pickup_drop_off_window are defined
+	// 2. Check if departure_time is forbidden: forbidden when start_pickup_drop_off_window or end_pickup_drop_off_window are defined
 	if (stopTime.StartPickupDropOffWindow != nil || stopTime.EndPickupDropOffWindow != nil) && stopTime.DepartureTime != nil {
 		ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.forbidden_with_window"))
 		return
 	}
 
-	// Validate time
+	// 3. Check if departure_time is forbidden
+	if stopTime.DepartureTime != nil && ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("departure_time_validation.forbidden"))
+		return
+	}
+
+	// 4. Check if departure_time is a valid time
 	if stopTime.DepartureTime != nil {
 		if !lib.ValidateTime(*stopTime.DepartureTime) {
 			ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.invalid_time"))
@@ -59,7 +65,7 @@ func DepartureTimeValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs
 		}
 	}
 
-	// Optional
+	// 5. Check if departure_time is present
 	if stopTime.DepartureTime == nil && !ctx.ShouldIgnore() {
 		message := ctx.GetRequiredMessage("departure_time_validation.required", "departure_time_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
