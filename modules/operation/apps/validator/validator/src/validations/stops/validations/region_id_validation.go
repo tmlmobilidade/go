@@ -27,6 +27,7 @@ func RegionIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.RegionId.Severity)
 	}
 
+	// 1. Validate region_id is present
 	if stop.RegionId == nil || *stop.RegionId == "" {
 		if ctx.ShouldSkip() {
 			return
@@ -37,12 +38,13 @@ func RegionIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
+	// 2. Validate region_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("region_id_validation.forbidden"))
 		return
 	}
 
-	// Validate rules
+	// 3. Validate Rule options
 	if rules != nil && rules.RegionId.Options != nil {
 		if slices.Contains(*rules.RegionId.Options, types.ALL_OPTIONS) {
 			return

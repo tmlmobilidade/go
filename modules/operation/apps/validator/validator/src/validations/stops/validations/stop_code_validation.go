@@ -12,7 +12,7 @@ import (
 
   - File: [stops.txt]
   - Field: stop_code
-  - Presence: Optional
+  - Presence: Required
   - Type: String
 
 # Description
@@ -33,7 +33,8 @@ func StopCodeValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *type
 		ctx.WithSeverity(rules.StopCode.Severity)
 	}
 
-	if stop.StopCode == nil || *stop.StopCode == "" {
+	// 1. Validate stop_code is present
+	if stop.StopCode == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -43,12 +44,13 @@ func StopCodeValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *type
 		return
 	}
 
+	// 2. Validate stop_code is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_code_validation.forbidden"))
 		return
 	}
 
-	// Check if stop_code is unique
+	// 3. Validate stop_code is unique
 	if stop.StopCode != nil {
 		rows, err := gtfs.GetRowsById("stops", *stop.StopCode)
 		if err != nil {
@@ -62,7 +64,7 @@ func StopCodeValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *type
 		}
 	}
 
-	// Validate rules
+	// 4. Validate Rule options
 	if rules != nil && rules.StopCode.Options != nil {
 		if slices.Contains(*rules.StopCode.Options, types.ALL_OPTIONS) {
 			return

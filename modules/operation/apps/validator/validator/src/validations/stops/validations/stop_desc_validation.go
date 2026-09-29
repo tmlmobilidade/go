@@ -27,7 +27,8 @@ func StopDescValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.StopDesc.Severity)
 	}
 
-	if stop.StopDesc == nil || *stop.StopDesc == "" {
+	// 1. Validate stop_desc is present
+	if stop.StopDesc == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -37,17 +38,19 @@ func StopDescValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
+	// 2. Validate stop_desc is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_desc_validation.forbidden"))
 		return
 	}
 
+	// 3. Validate stop_desc is not a duplicate of stop_name
 	if stop.StopName != nil && *stop.StopName == *stop.StopDesc {
 		ctx.AddWarning(ctx.GetTranslatedMessage("stop_desc_validation.duplicate", *stop.StopDesc, *stop.StopName))
 		return
 	}
 
-	// Validate rules
+	// 4. Validate Rule options
 	if rules != nil && rules.StopDesc.Options != nil {
 		if slices.Contains(*rules.StopDesc.Options, types.ALL_OPTIONS) {
 			return

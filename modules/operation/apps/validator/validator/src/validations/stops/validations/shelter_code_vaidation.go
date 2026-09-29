@@ -27,7 +27,8 @@ func ShelterCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.ShelterCode.Severity)
 	}
 
-	if stop.ShelterCode == nil || *stop.ShelterCode == "" {
+	// 1. Validate shelter_code is present
+	if stop.ShelterCode == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -37,12 +38,13 @@ func ShelterCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
+	// 2. Validate shelter_code is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shelter_code_validation.forbidden"))
 		return
 	}
 
-	// Validate rules
+	// 3. Validate Rule options
 	if rules != nil && rules.ShelterCode.Options != nil {
 		if slices.Contains(*rules.ShelterCode.Options, types.ALL_OPTIONS) {
 			return

@@ -27,7 +27,8 @@ func ShelterMaintainerValidation(stop *types.Stop, row int, rules *types.StopsRu
 		ctx.WithSeverity(rules.ShelterMaintainer.Severity)
 	}
 
-	if stop.ShelterMaintainer == nil || *stop.ShelterMaintainer == "" {
+	// 1. Validate shelter_maintainer is present
+	if stop.ShelterMaintainer == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -37,12 +38,13 @@ func ShelterMaintainerValidation(stop *types.Stop, row int, rules *types.StopsRu
 		return
 	}
 
+	// 2. Validate shelter_maintainer is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shelter_maintainer_validation.forbidden"))
 		return
 	}
 
-	// Validate rules
+	// 3. Validate Rule options
 	if rules != nil && rules.ShelterMaintainer.Options != nil {
 		if slices.Contains(*rules.ShelterMaintainer.Options, types.ALL_OPTIONS) {
 			return

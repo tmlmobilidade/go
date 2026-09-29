@@ -3,7 +3,7 @@
 
  - File: [stops.txt]
  - Field: stop_name
- - Presence: Conditionally Required
+ - Presence: Required
  - Type: String
 
 # Description
@@ -11,11 +11,6 @@
 Name of the location. The stop_name should match the agency's rider-facing name for the location as printed on a timetable, published online, or represented on signage. For translations into other languages, use [translations.txt].
 
 When the location is a boarding area (location_type=4), the stop_name should contains the name of the boarding area as displayed by the agency. It could be just one letter (like on some European intercity railway stations), or text like "Wheelchair boarding area" (NYC's Subway) or "Head of short trains" (Paris' RER).
-
-Conditionally Required:
-
-  - Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).
-  - Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).
 
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 [translations.txt]: https://gtfs.org/schedule/reference/#translationstxt
@@ -38,28 +33,24 @@ func StopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.StopName.Severity)
 	}
 
-	isPresent := stop.StopName != nil && *stop.StopName != ""
-
-	if !isPresent {
-		locationType := -1
-		if stop.LocationType != nil {
-			locationType = *stop.LocationType
-		}
-
-		if locationType == 0 || locationType == 1 || locationType == 2 {
-			ctx.AddError(ctx.GetTranslatedMessage("stop_short_name_validation.required_location_type"))
+	// 1. Validate stop_name is present
+	if stop.StopName == nil {
+		if ctx.ShouldSkip() {
 			return
 		}
 
-		if !ctx.ShouldIgnore() {
-			message := ctx.GetRequiredMessage("stop_short_name_validation.required", "stop_short_name_validation.recommended")
-			ctx.AddMessageWithSeverity(message)
-			return
-		}
-
+		message := ctx.GetRequiredMessage("stop_name_validation.required", "stop_name_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Validate stop_name is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_name_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate stop_name is a valid value
 	if rules != nil && rules.StopName.Options != nil {
 		if slices.Contains(*rules.StopName.Options, types.ALL_OPTIONS) {
 			return

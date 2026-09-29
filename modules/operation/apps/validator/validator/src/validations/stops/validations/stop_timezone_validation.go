@@ -35,7 +35,8 @@ func StopTimezoneValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 		ctx.WithSeverity(rules.StopTimezone.Severity)
 	}
 
-	if stop.StopTimezone == nil || *stop.StopTimezone == "" {
+	// 1. Validate stop_timezone is present
+	if stop.StopTimezone == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -44,17 +45,19 @@ func StopTimezoneValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 		return
 	}
 
+	// 2. Validate stop_timezone is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_timezone_validation.forbidden"))
 		return
 	}
 
+	// 3. Validate stop_timezone is a valid timezone
 	if !lib.ValidateTimezone(*stop.StopTimezone) {
 		ctx.AddError(ctx.GetTranslatedMessage("stop_timezone_validation.invalid", *stop.StopTimezone))
 		return
 	}
 
-	// Validate rules
+	// 4. Validate Rule options
 	if rules != nil && rules.StopTimezone.Options != nil {
 		if slices.Contains(*rules.StopTimezone.Options, types.ALL_OPTIONS) {
 			return

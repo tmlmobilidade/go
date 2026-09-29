@@ -28,7 +28,8 @@ func TtsStopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.TtsStopName.Severity)
 	}
 
-	if stop.TtsStopName == nil || *stop.TtsStopName == "" {
+	// 1. Validate tts_stop_name is present
+	if stop.TtsStopName == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -38,12 +39,13 @@ func TtsStopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
+	// 2. Validate tts_stop_name is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("tts_stop_name_validation.forbidden"))
 		return
 	}
 
-	// Validate rules
+	// 3. Validate Rule options
 	if rules != nil && rules.TtsStopName.Options != nil {
 		if slices.Contains(*rules.TtsStopName.Options, types.ALL_OPTIONS) {
 			return

@@ -13,7 +13,7 @@ import (
 
   - File: [stops.txt]
   - Field: wheelchair_boarding
-  - Presence: Optional
+  - Presence: Required
   - Type: Enum
 
 # Description
@@ -48,7 +48,7 @@ func WheelchairBoardingValidation(stop *types.Stop, row int, rules *types.StopsR
 		ctx.WithSeverity(rules.WheelchairBoarding.Severity)
 	}
 
-	// Validate presence
+	// 1. Validate wheelchair_boarding is present
 	if stop.WheelchairBoarding == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -59,19 +59,20 @@ func WheelchairBoardingValidation(stop *types.Stop, row int, rules *types.StopsR
 		return
 	}
 
+	// 2. Validate wheelchair_boarding is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_boarding_validation.forbidden"))
 		return
 	}
 
-	// Validate value
+	// 3. Validate wheelchair_boarding is a valid value
 	validValues := []int{0, 1, 2}
 	if !slices.Contains(validValues, *stop.WheelchairBoarding) {
 		ctx.AddError(ctx.GetTranslatedMessage("wheelchair_boarding_validation.invalid", *stop.WheelchairBoarding))
 		return
 	}
 
-	// Validate rules
+	// 4. Validate Rule options
 	if rules != nil && rules.WheelchairBoarding.Options != nil {
 		if slices.Contains(*rules.WheelchairBoarding.Options, types.ALL_OPTIONS) {
 			return

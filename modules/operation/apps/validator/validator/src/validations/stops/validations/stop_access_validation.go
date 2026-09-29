@@ -39,6 +39,7 @@ func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *ty
 		ctx.WithSeverity(rules.StopAccess.Severity)
 	}
 
+	// 1. Validate stop_access is present
 	if stop.StopAccess == nil {
 		if ctx.ShouldIgnore() {
 			return
@@ -49,18 +50,19 @@ func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *ty
 		return
 	}
 
+	// 2. Validate stop_access is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_access_validation.forbidden"))
 		return
 	}
 
-	// check if parent_station is empty
+	// 3. Validate parent_station is present
 	if stop.ParentStation == nil || *stop.ParentStation == "" {
 		ctx.AddError(ctx.GetTranslatedMessage("stop_access_validation.forbidden_parent_station_empty"))
 		return
 	}
 
-	// Get the stop to check location_type
+	// 4. Validate location_type is present
 	if stop.LocationType == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -73,13 +75,14 @@ func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *ty
 		return
 	}
 
+	// 5. Validate stop_access is a valid value
 	validOptions := []int{0, 1}
 	if !slices.Contains(validOptions, *stop.StopAccess) {
 		ctx.AddError(ctx.GetTranslatedMessage("stop_access_validation.invalid", *stop.StopAccess))
 		return
 	}
 
-	// Validate Rule options
+	// 6. Validate Rule options
 	if rules != nil && rules.StopAccess.Options != nil {
 		if slices.Contains(*rules.StopAccess.Options, types.ALL_OPTIONS) {
 			return

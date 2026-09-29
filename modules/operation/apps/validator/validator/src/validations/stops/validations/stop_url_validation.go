@@ -27,6 +27,7 @@ func StopUrlValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.StopUrl.Severity)
 	}
 
+	// 1. Validate stop_url is present
 	if stop.StopUrl == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -37,17 +38,19 @@ func StopUrlValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
+	// 2. Validate stop_url is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_url_validation.forbidden"))
 		return
 	}
 
+	// 3. Validate stop_url is a valid url
 	if !lib.ValidateUrl(*stop.StopUrl) {
 		ctx.AddError(ctx.GetTranslatedMessage("stop_url_validation.invalid", *stop.StopUrl))
 		return
 	}
 
-	// Validate rules
+	// 4. Validate Rule options
 	if rules != nil && rules.StopUrl.Options != nil {
 		if slices.Contains(*rules.StopUrl.Options, types.ALL_OPTIONS) {
 			return

@@ -29,7 +29,8 @@ func ZoneIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.ZoneId.Severity)
 	}
 
-	if stop.ZoneId == nil || *stop.ZoneId == "" {
+	// 1. Validate zone_id is present
+	if stop.ZoneId == nil {
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -39,12 +40,13 @@ func ZoneIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
+	// 2. Validate zone_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("zone_id_validation.forbidden"))
 		return
 	}
 
-	// Validate rules
+	// 3. Validate Rule options
 	if rules != nil && rules.ZoneId.Options != nil {
 		if slices.Contains(*rules.ZoneId.Options, types.ALL_OPTIONS) {
 			return

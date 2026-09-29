@@ -30,7 +30,7 @@ func StopShortNameValidation(stop *types.Stop, row int, rules *types.StopsRules)
 		ctx.WithSeverity(rules.StopShortName.Severity)
 	}
 
-	// 1. Check presence of stop_short_name based on severity
+	// 1. Validate stop_short_name is present
 	if stop.StopShortName == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -41,12 +41,13 @@ func StopShortNameValidation(stop *types.Stop, row int, rules *types.StopsRules)
 		return
 	}
 
+	// 2. Validate stop_short_name is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_short_name_validation.forbidden"))
 		return
 	}
 
-	// 2. Validate rules
+	// 3. Validate Rule options
 	if rules != nil && rules.StopShortName.Options != nil {
 		if slices.Contains(*rules.StopShortName.Options, types.ALL_OPTIONS) {
 			return

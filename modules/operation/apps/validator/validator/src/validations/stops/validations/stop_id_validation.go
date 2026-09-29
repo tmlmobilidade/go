@@ -29,12 +29,24 @@ ID must be unique across all stops.stop_id, locations.geojson id, and location_g
 func StopIdValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *types.StopsRules) {
 	ctx := lib.NewValidationContext("stop_id", "stops.txt", "stop_id_unique", row, services.AppMessageService)
 
-	// Check if stop_id is missing
-	if stop.StopId == nil || *stop.StopId == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_id_validation.required"))
+	// 1. Validate stop_id is present
+	if stop.StopId == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("stop_id_validation.required", "stop_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
 	}
 
-	// Check if stop_id is unique
+	// 2. Validate stop_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_id_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate stop_id is unique
 	if stop.StopId != nil {
 		rows, err := gtfs.GetRowsById("stops", *stop.StopId)
 		if err != nil {
@@ -48,7 +60,7 @@ func StopIdValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *types.
 		}
 	}
 
-	// Validate rules
+	// 4. Validate Rule options
 	if rules != nil && rules.StopId.Options != nil {
 		if slices.Contains(*rules.StopId.Options, types.ALL_OPTIONS) {
 			return

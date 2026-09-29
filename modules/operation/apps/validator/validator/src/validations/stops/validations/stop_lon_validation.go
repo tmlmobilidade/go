@@ -11,7 +11,7 @@ import (
 
   - File: [stops.txt]
   - Field: stop_lon
-  - Presence: Conditionally Required
+  - Presence: Required
   - Type: Lonitude
 
 # Description
@@ -19,10 +19,6 @@ import (
 Longitude of the location.
 
 For stops/platforms (location_type=0) and boarding area (location_type=4), the coordinates must be the ones of the bus pole — if exists — and otherwise of where the travelers are boarding the vehicle (on the sidewalk or the platform, and not on the roadway or the track where the vehicle stops).
-
-Conditionally Required:
-  - Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).
-  - Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).
 
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
@@ -33,19 +29,8 @@ func StopLonValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		ctx.WithSeverity(rules.StopLon.Severity)
 	}
 
-	locationType := -1
-	if stop.LocationType != nil {
-		locationType = *stop.LocationType
-	}
-
-	isRequired := locationType == 0 || locationType == 1 || locationType == 2
-
+	// 1. Validate stop_lon is present
 	if stop.StopLon == nil {
-		if isRequired {
-			ctx.AddError(ctx.GetTranslatedMessage("stop_lon_validation.required_location_type"))
-			return
-		}
-
 		if ctx.ShouldSkip() {
 			return
 		}
@@ -55,7 +40,14 @@ func StopLonValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		return
 	}
 
-	if !lib.ValidateLongitude(*stop.StopLon) {
+	// 2. Validate stop_lon is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_lon_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate stop_lon is a valid longitude
+		if !lib.ValidateLongitude(*stop.StopLon) {
 		ctx.AddError(ctx.GetTranslatedMessage("stop_lon_validation.invalid", *stop.StopLon))
 		return
 	}

@@ -31,6 +31,7 @@ func PublicVisibleValidation(stop *types.Stop, row int, rules *types.StopsRules)
 		ctx.WithSeverity(rules.PublicVisible.Severity)
 	}
 
+	// 1. Validate public_visible is present
 	if stop.PublicVisible == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -41,19 +42,20 @@ func PublicVisibleValidation(stop *types.Stop, row int, rules *types.StopsRules)
 		return
 	}
 
+	// 2. Validate public_visible is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("public_visible_validation.forbidden"))
 		return
 	}
 
-	// Validate value
+	// 3. Validate public_visible is a valid value
 	validValues := []int{0, 1}
 	if !slices.Contains(validValues, *stop.PublicVisible) {
 		ctx.AddError(ctx.GetTranslatedMessage("public_visible_validation.invalid", *stop.PublicVisible))
 		return
 	}
 
-	// Validate Rule options
+	// 4. Validate Rule options
 	if rules != nil && rules.PublicVisible.Options != nil {
 		if slices.Contains(*rules.PublicVisible.Options, types.ALL_OPTIONS) {
 			return
