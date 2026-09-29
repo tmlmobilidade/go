@@ -73,6 +73,7 @@ func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *typ
 	toleranceMeters := getShapePointsCoordinatesConsistentToleranceMeters(rules)
 	violations := []pointsCoordinatesConsistentViolation{}
 
+	// 1. Group by shape_id the points that carry a sequence and coordinates
 	for i, shape := range shapes {
 		if shape.Row != nil {
 			i = *shape.Row
@@ -93,6 +94,7 @@ func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *typ
 		})
 	}
 
+	// 2. Order each shape's points and collect consecutive pairs further apart than the tolerance
 	for _, shapeGroup := range shapeGroups {
 		sort.Slice(shapeGroup, func(i, j int) bool {
 			return shapeGroup[i].sequence < shapeGroup[j].sequence
@@ -125,6 +127,7 @@ func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *typ
 		}
 	}
 
+	// 3. Report one collapsed message per row when a shape is broken beyond a useful point
 	if len(violations) > 100 {
 		rows := make([]int, 0, len(violations))
 		for _, violation := range violations {

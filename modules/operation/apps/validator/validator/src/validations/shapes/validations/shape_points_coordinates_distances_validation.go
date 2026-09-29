@@ -70,6 +70,7 @@ func ShapePointsCoordinatesDistancesValidation(shapes []types.Shape, rules *type
 	toleranceMeters := getShapePointsCoordinatesDistancesToleranceMeters(rules)
 	violations := []distanceViolation{}
 
+	// 1. Group by shape_id the points that carry a sequence and coordinates
 	for i, shape := range shapes {
 		if shape.Row != nil {
 			i = *shape.Row
@@ -91,6 +92,7 @@ func ShapePointsCoordinatesDistancesValidation(shapes []types.Shape, rules *type
 		})
 	}
 
+	// 2. Order each shape's points and compare each segment's shape_dist_traveled delta with its real distance
 	for _, shapeGroup := range shapeGroups {
 		sort.Slice(shapeGroup, func(i, j int) bool {
 			return shapeGroup[i].sequence < shapeGroup[j].sequence
@@ -144,6 +146,7 @@ func ShapePointsCoordinatesDistancesValidation(shapes []types.Shape, rules *type
 		}
 	}
 
+	// 3. Report one collapsed message per row when a shape is broken beyond a useful point
 	if len(violations) > 100 {
 		rows := make([]int, 0, len(violations))
 		for _, violation := range violations {

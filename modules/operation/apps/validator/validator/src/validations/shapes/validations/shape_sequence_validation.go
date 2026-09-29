@@ -24,7 +24,7 @@ func ShapeSequenceValidation(shapes []types.Shape, rules *types.ShapesRules) {
 }
 
 func ShapeSequenceRuleValidation(shapes []types.Shape, rules *types.ShapesRules, ruleID string) {
-	// Group shapes by shape_id
+	// 1. Group the points by shape_id, requiring shape_id and shape_pt_sequence on each one
 	shapeGroups := make(map[string][]ShapePtSequenceGroup)
 
 	for i, shape := range shapes {
@@ -62,13 +62,14 @@ func ShapeSequenceRuleValidation(shapes []types.Shape, rules *types.ShapesRules,
 		shapeGroups[*shape.ShapeId] = append(shapeGroups[*shape.ShapeId], group)
 	}
 
-	// Sort shapeGroups by sequence
+	// 2. Order each shape's points by shape_pt_sequence
 	for _, shapeGroup := range shapeGroups {
 		sort.Slice(shapeGroup, func(i, j int) bool {
 			return shapeGroup[i].sequence < shapeGroup[j].sequence
 		})
 
-		// Check if the shape_pt_sequence values are increasing
+		// 3. Check that shape_pt_sequence strictly increases, and that
+		// shape_dist_traveled does not decrease along with it
 		for i, shape := range shapeGroup {
 			if i > 0 {
 				ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", "shape_pt_sequence_strictly_increasing", shape.row, services.AppMessageService)

@@ -55,6 +55,7 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 	toleranceMeters := getDistanceToleranceMeters(rules)
 	violations := []distancesViolation{}
 
+	// 1. Group by shape_id the points that carry a sequence and coordinates
 	for i, shape := range shapes {
 		if shape.Row != nil {
 			i = *shape.Row
@@ -77,6 +78,7 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 		})
 	}
 
+	// 2. Order each shape's points and compare its travelled distance with the real geometry
 	for _, shapeGroup := range shapeGroups {
 		sort.Slice(shapeGroup, func(i, j int) bool {
 			return shapeGroup[i].sequence < shapeGroup[j].sequence
@@ -165,6 +167,7 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 		}
 	}
 
+	// 3. Report every block whose travelled distance does not match its geometry
 	for _, violation := range violations {
 		ctx := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", "shape_dist_traveled_delta_mismatches_haversine_block", violation.row, services.AppMessageService)
 		ctx.WithSeverity(severity)
