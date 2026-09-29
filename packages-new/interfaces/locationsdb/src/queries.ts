@@ -62,7 +62,7 @@ GROUP BY id, name, admin_level, code, tags;
 
 /**
  * Find the administrative locations that cover a WGS84 point ($1 lon, $2 lat), plus the nearest
- * `place=locality` point within $3 metres (returned with `admin_level = 'locality'`), in one round-trip.
+ * `place=locality` point within $3 metres (returned with `admin_level = 'neighbourhood'`), in one round-trip.
  * The point is transformed once, up front, so both spatial predicates can use the `way` indexes.
  * ponytail: `way` is Web Mercator, whose metres stretch by 1/cos(lat); dividing the radius by
  * cos(lat) corrects the cap while keeping the index usable. Upgrade path: geography cast.
@@ -85,11 +85,11 @@ UNION ALL
 	SELECT
 		abs(p.osm_id),
 		COALESCE(p.tags->>'int_name', p.name),
-		'locality',
+		'neighbourhood',
 		NULL,
 		p.tags
 	FROM planet_osm_point p, pt
-	WHERE p.place = 'locality'
+	WHERE p.place = 'neighbourhood'
 		AND p.name IS NOT NULL
 		AND ST_DWithin(p.way::geography, pt.way::geography, $3)
 	ORDER BY p.way::geography <-> pt.way::geography

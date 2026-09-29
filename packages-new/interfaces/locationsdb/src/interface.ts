@@ -34,7 +34,7 @@ class LocationsDbClass {
 	/**
 	 * Finds the administrative locations whose geometry covers a WGS84 point (typically country,
 	 * district, municipality, parish), plus the nearest `place=locality` point within the given
-	 * radius, returned with `admin_level = "locality"`.
+	 * radius, returned with `admin_level = "neighbourhood"`.
 	 * @param localityMaxDistanceMeters Search radius for the locality point.
 	 */
 	public async findLocationsAtPoint(longitude: number, latitude: number, localityMaxDistanceMeters: number): Promise<Location[]> {

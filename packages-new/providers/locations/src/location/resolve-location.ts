@@ -9,12 +9,12 @@ import { type Location, type LocationItem, type LocationSlot } from '@tmlmobilid
 /**
  * Maps the administrative divisions covering a point onto the country-agnostic slots.
  * @param rows Divisions covering the point (any admin_level) and, optionally, the nearest
- * `place=locality` point (`admin_level = "locality"`), from the locations database.
+ * `place=locality` point (`admin_level = "neighbourhood"`), from the locations database.
  * @param position Coordinates, for error messages only.
  * @throws When the country is unsupported or a required slot has no covering division.
  */
 export function resolveLocation(rows: LocationRow[], position: [lat: number, lon: number]): Location {
-	const locality = rows.find(row => row.admin_level === 'locality');
+	const neighbourhood = rows.find(row => row.admin_level === 'neighbourhood');
 	const countryCode = rows.find(row => row.admin_level === '2')?.tags['ISO3166-1'];
 	if (!isSupportedCountry(countryCode)) throw new Error(`Unsupported country "${countryCode}" for coordinates [${position}]`);
 
@@ -26,5 +26,5 @@ export function resolveLocation(rows: LocationRow[], position: [lat: number, lon
 		slots[slot] = toLocationItem(row);
 	}
 
-	return locality ? { ...slots, neighbourhood: toLocationItem(locality) } : slots;
+	return neighbourhood ? { ...slots, neighbourhood: toLocationItem(neighbourhood) } : slots;
 }

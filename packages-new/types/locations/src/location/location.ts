@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /** One administrative division, sourced from OpenStreetMap. */
 export const LocationItemSchema = z.object({
-	/** OSM admin_level, or `"locality"` for a neighbourhood (a `place=locality` point). */
+	/** OSM admin_level, or `"neighbourhood"` for a neighbourhood (a `place=locality` point). */
 	admin_level: z.string(),
 	/** National statistics code (`ref:ine`), when the source has one. */
 	code: z.string().optional(),

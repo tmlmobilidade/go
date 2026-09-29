@@ -16,14 +16,14 @@ const lisbon = [
 	row('4', '8', 'Arroios'),
 ];
 
-const locality = row('99', 'locality', 'Anjos');
+const neighbourhood = row('99', 'neighbourhood', 'Anjos');
 
 describe('resolveLocation', () => {
 	it('maps PT admin levels onto slots and keeps the neighbourhood', () => {
-		const location = resolveLocation([...lisbon, locality], [38.72, -9.13]);
+		const location = resolveLocation([...lisbon, neighbourhood], [38.72, -9.13]);
 		assert.deepEqual(location, {
 			country: { admin_level: '2', name: 'Portugal', osm_id: 295480 },
-			neighbourhood: { admin_level: 'locality', name: 'Anjos', osm_id: 99 },
+			neighbourhood: { admin_level: 'neighbourhood', name: 'Anjos', osm_id: 99 },
 			primary: { admin_level: '6', name: 'Lisboa', osm_id: 2 },
 			secondary: { admin_level: '7', name: 'Lisboa', osm_id: 3 },
 			tertiary: { admin_level: '8', name: 'Arroios', osm_id: 4 },
