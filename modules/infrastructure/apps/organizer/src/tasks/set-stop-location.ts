@@ -6,10 +6,11 @@ import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
-const BATCH_SIZE = 25;
+// Each stop is one heavy PostGIS lookup; keep the batch below the locations database pool size (20).
+const BATCH_SIZE = 10;
 
 /**
- * Sets the administrative location (district, municipality, parish and locality)
+ * Sets the administrative location (country, primary, secondary, tertiary and neighbourhood)
  * of every stop in the database, based on its coordinates.
  */
 export async function setStopLocationTask() {
@@ -48,20 +49,12 @@ export async function setStopLocationTask() {
 				try {
 					//
 
-					const matchingLocation = await locationsProvider.findLocationByGeo(stopData.latitude, stopData.longitude);
+					const location = await locationsProvider.findLocationByGeo(stopData.latitude, stopData.longitude);
 
-					if (!matchingLocation.municipality?._id) {
-						throw new Error(`No municipality found for coordinates [${stopData.latitude}, ${stopData.longitude}], skipping...`);
-					}
+					await goDb.infrastructure.stops.updateById(stopData._id, { location });
 
-					await goDb.infrastructure.stops.updateById(stopData._id, {
-						district_id: matchingLocation.district?._id ?? undefined,
-						locality_id: matchingLocation.locality?._id ?? undefined,
-						municipality_id: matchingLocation.municipality._id,
-						parish_id: matchingLocation.parish?._id ?? undefined,
-					});
-
-					Logger.info({ message: `[${stopData._id}] Location set for coordinates [${stopData.latitude}, ${stopData.longitude}]: district [${matchingLocation.district?._id}] ${matchingLocation.district?.name} | municipality [${matchingLocation.municipality._id}] ${matchingLocation.municipality.name} | parish [${matchingLocation.parish?._id}] ${matchingLocation.parish?.name} | locality [${matchingLocation.locality?._id}] ${matchingLocation.locality?.name}` });
+					const summary = Object.entries(location).map(([slot, item]) => `${slot} [${item.osm_id}] ${item.name}`).join(' | ');
+					Logger.info({ message: `[${stopData._id}] Location set for coordinates [${stopData.latitude}, ${stopData.longitude}]: ${summary}` });
 				} catch (error) {
 					Logger.error({ error, message: `[${stopData._id}] Error setting location` });
 				}
