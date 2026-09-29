@@ -1,6 +1,7 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, Spacer, Tag, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -52,7 +53,7 @@ export function StopsDetailHeader() {
 				action={PermissionCatalog.all.stops.actions.update}
 				resourceKey="municipality_ids"
 				scope={PermissionCatalog.all.stops.scope}
-				value={data?.location.secondary.osm_id.toString()}
+				value={data?.location ? locationSlotOsmIds(data.location) : ''}
 			>
 				<UpdateButton
 					isDisabled={!capabilities.updateEnabled}
@@ -65,7 +66,7 @@ export function StopsDetailHeader() {
 				action={PermissionCatalog.all.stops.actions.lock}
 				resourceKey="municipality_ids"
 				scope={PermissionCatalog.all.stops.scope}
-				value={data?.location.secondary.osm_id.toString()}
+				value={data?.location ? locationSlotOsmIds(data.location) : ''}
 			>
 				<LockButton
 					isDisabled={!capabilities.lockEnabled}
@@ -79,7 +80,7 @@ export function StopsDetailHeader() {
 				action={PermissionCatalog.all.stops.actions.delete}
 				resourceKey="municipality_ids"
 				scope={PermissionCatalog.all.stops.scope}
-				value={data?.location.secondary.osm_id.toString()}
+				value={data?.location ? locationSlotOsmIds(data.location) : ''}
 			>
 				<DeleteButton
 					confirmMessage={t('default:stops.detail.Header.DeleteButton.confirm_message')}

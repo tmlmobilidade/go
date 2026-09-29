@@ -1,5 +1,6 @@
 'use client';
 
+import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Inline, useMeData, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -29,15 +30,16 @@ export function StopsDetailUpdateName() {
 	// B. Setup flags
 
 	const canUpdateName = useMemo(() => {
+		if (!data?.location) return false;
 		const hasPermission = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.stops.actions.edit_name,
 			permissions: meData?.permissions,
-			resource_key: 'municipality_ids',
+			resource_key: 'location_ids',
 			scope: PermissionCatalog.all.stops.scope,
-			value: data?.location.secondary.osm_id.toString(),
+			value: locationSlotOsmIds(data.location),
 		});
 		return hasPermission && !capabilities.updateEnabled;
-	}, [data?.location.secondary.osm_id, meData?.permissions, capabilities.updateEnabled]);
+	}, [data?.location, meData?.permissions, capabilities.updateEnabled]);
 
 	//
 	// C. Render components

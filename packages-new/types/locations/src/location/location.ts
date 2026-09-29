@@ -34,3 +34,11 @@ export const LocationSchema = z.object({
 export type LocationItem = z.infer<typeof LocationItemSchema>;
 export type LocationSlot = z.infer<typeof LocationSlotSchema>;
 export type Location = z.infer<typeof LocationSchema>;
+
+/** Slots checked against `municipality_ids` stop permissions. */
+export const LOCATION_PERMISSION_SLOTS = ['primary', 'secondary', 'tertiary'] as const;
+
+/** OSM ids of the primary/secondary/tertiary slots for permission checks. */
+export function locationSlotOsmIds(location: Pick<Location, 'primary' | 'secondary' | 'tertiary'>): string[] {
+	return LOCATION_PERMISSION_SLOTS.map(slot => String(location[slot].osm_id));
+}

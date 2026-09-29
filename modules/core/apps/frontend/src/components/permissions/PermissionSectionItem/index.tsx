@@ -52,8 +52,7 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 	const selectedLocationIds = (() => {
 		if (!currentPermissionEntry) return [];
 		if (!('resources' in currentPermissionEntry)) return [];
-		// `municipality_ids` is the persisted resource key in StopsPermissionResourcesSchema; renaming it is a data migration.
-		return currentPermissionEntry.resources['municipality_ids'] || [];
+		return currentPermissionEntry.resources['location_ids'] || [];
 	})();
 
 	const selectedAlertReferenceTypeIds = (() => {
@@ -113,7 +112,7 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 				{onResourceToggle && configAction.resources?.includes('LOCATIONS') && (
 					<LocationPermissionTreeSelect
 						disabled={disabled || hasPermissionFromRole}
-						onChange={(inputValue: string[]) => handleResourceToggle({ municipality_ids: inputValue })}
+						onChange={(inputValue: string[]) => handleResourceToggle({ location_ids: inputValue })}
 						options={locationsOptions}
 						value={selectedLocationIds}
 					/>

@@ -1,5 +1,6 @@
 /* * */
 
+import { locationPermissionMatch } from '@/utils/location-permission-match.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type StopsLocationRequest, StopsLocationRequestSchema, type StopsLocationResponse } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
@@ -39,11 +40,11 @@ export async function listLocationsHandler(request: FastifyRequest<{ Body: Stops
 	}
 
 	//
-	// Get the allowed secondary division IDs from the permissions
+	// Get the allowed location IDs from the permissions
 
-	const allowedSecondaryIds = validatedFilters.data.permissions.actions?.flatMap(action => request.permissions
+	const allowedLocationIds = validatedFilters.data.permissions.actions?.flatMap(action => request.permissions
 		.filter(permission => permission.scope === validatedFilters.data.permissions.scope && permission.action === action)
-		.flatMap(permission => 'resources' in permission && 'municipality_ids' in permission.resources ? permission.resources.municipality_ids ?? [] : []),
+		.flatMap(permission => 'resources' in permission && 'location_ids' in permission.resources ? permission.resources.location_ids ?? [] : []),
 	) ?? [];
 
 	//
@@ -53,7 +54,7 @@ export async function listLocationsHandler(request: FastifyRequest<{ Body: Stops
 	const stopsCollection = await goDb.infrastructure.stops.getCollection();
 
 	const result = await stopsCollection.aggregate<StopsLocationResponse>([
-		{ $match: allowedSecondaryIds.includes(AllowAllFlagValue) ? {} : { 'location.secondary.osm_id': { $in: allowedSecondaryIds.map(Number) } } },
+		{ $match: allowedLocationIds.includes(AllowAllFlagValue) ? {} : locationPermissionMatch(allowedLocationIds) },
 		{ $facet: { neighbourhood: slotFacet('neighbourhood'), primary: slotFacet('primary'), secondary: slotFacet('secondary'), tertiary: slotFacet('tertiary') } },
 	]).next();
 

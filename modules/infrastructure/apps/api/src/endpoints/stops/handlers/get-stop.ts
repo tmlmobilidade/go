@@ -3,6 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Stop, type StopId } from '@tmlmobilidade/go-types-infrastructure';
+import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -31,9 +32,9 @@ export async function getStopHandler(request: FastifyRequest<{ Params: { id: Sto
 	const hasPermission = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.stops.actions.read,
 		permissions: request.permissions,
-		resource_key: 'municipality_ids',
+		resource_key: 'location_ids',
 		scope: PermissionCatalog.all.stops.scope,
-		value: String(foundStop.location.secondary.osm_id),
+		value: locationSlotOsmIds(foundStop.location),
 	});
 
 	if (!hasPermission) {

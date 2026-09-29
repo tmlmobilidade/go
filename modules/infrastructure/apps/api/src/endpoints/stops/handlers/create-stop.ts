@@ -7,7 +7,7 @@ import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructu
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type Stop, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
-import { type Location } from '@tmlmobilidade/go-types-locations';
+import { type Location, locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
@@ -56,9 +56,9 @@ export async function createStopHandler(request: FastifyRequest<{ Body: StopsCre
 	const hasPermission = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.stops.actions.create,
 		permissions: request.permissions,
-		resource_key: 'municipality_ids',
+		resource_key: 'location_ids',
 		scope: PermissionCatalog.all.stops.scope,
-		value: String(foundLocation.secondary.osm_id),
+		value: locationSlotOsmIds(foundLocation),
 	});
 
 	if (!hasPermission) {
