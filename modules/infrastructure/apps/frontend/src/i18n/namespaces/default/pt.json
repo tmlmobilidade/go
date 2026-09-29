@@ -21,16 +21,16 @@
 			},
 			"StepLocationDetails": {
 				"fields": {
-					"district": {
-						"label": "Distrito"
-					},
-					"locality": {
+					"location_neighbourhood": {
 						"label": "Localidade"
 					},
-					"municipality": {
+					"location_primary": {
+						"label": "Distrito"
+					},
+					"location_secondary": {
 						"label": "Município"
 					},
-					"parish": {
+					"location_tertiary": {
 						"label": "Freguesia"
 					}
 				}
@@ -186,9 +186,6 @@
 			"FilterConnections": {
 				"label": "Conexões"
 			},
-			"FilterDistrict": {
-				"label": "Distrito"
-			},
 			"FilterEquipment": {
 				"label": "Equipamentos"
 			},
@@ -198,13 +195,16 @@
 			"FilterLifecycleStatus": {
 				"label": "Estado"
 			},
-			"FilterLocality": {
+			"FilterLocationNeighbourhood": {
 				"label": "Localidade"
 			},
-			"FilterMunicipality": {
+			"FilterLocationPrimary": {
+				"label": "Distrito"
+			},
+			"FilterLocationSecondary": {
 				"label": "Município"
 			},
-			"FilterParish": {
+			"FilterLocationTertiary": {
 				"label": "Freguesia"
 			},
 			"Header": {
@@ -220,14 +220,14 @@
 			},
 			"Table": {
 				"columns": {
-					"district_name": "Distrito",
 					"id": "#ID",
 					"latitude": "Latitude",
-					"locality_name": "Localidade",
+					"location_neighbourhood_name": "Localidade",
+					"location_primary_name": "Distrito",
+					"location_secondary_name": "Município",
+					"location_tertiary_name": "Freguesia",
 					"longitude": "Longitude",
-					"municipality_name": "Município",
-					"name": "Nome da Paragem",
-					"parish_name": "Freguesia"
+					"name": "Nome da Paragem"
 				}
 			}
 		},

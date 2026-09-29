@@ -21,17 +21,17 @@
 			},
 			"StepLocationDetails": {
 				"fields": {
-					"district": {
-						"label": "Distrito"
-					},
-					"locality": {
+					"location_neighbourhood": {
 						"label": "Localidad"
 					},
-					"municipality": {
-						"label": "Municipio"
+					"location_primary": {
+						"label": "Comunidad"
 					},
-					"parish": {
-						"label": "Parroquia"
+					"location_secondary": {
+						"label": "Provincia"
+					},
+					"location_tertiary": {
+						"label": "Municipio"
 					}
 				}
 			},
@@ -186,9 +186,6 @@
 			"FilterConnections": {
 				"label": "Conexiones"
 			},
-			"FilterDistrict": {
-				"label": "Distrito"
-			},
 			"FilterEquipment": {
 				"label": "Equipamientos"
 			},
@@ -198,14 +195,17 @@
 			"FilterLifecycleStatus": {
 				"label": "Estado"
 			},
-			"FilterLocality": {
+			"FilterLocationNeighbourhood": {
 				"label": "Localidad"
 			},
-			"FilterMunicipality": {
-				"label": "Municipio"
+			"FilterLocationPrimary": {
+				"label": "Comunidad"
 			},
-			"FilterParish": {
-				"label": "Parroquia"
+			"FilterLocationSecondary": {
+				"label": "Provincia"
+			},
+			"FilterLocationTertiary": {
+				"label": "Municipio"
 			},
 			"Header": {
 				"title": "Paradas"
@@ -220,14 +220,14 @@
 			},
 			"Table": {
 				"columns": {
-					"district_name": "Distrito",
 					"id": "#ID",
 					"latitude": "Latitud",
-					"locality_name": "Localidad",
+					"location_neighbourhood_name": "Localidad",
+					"location_primary_name": "Comunidad",
+					"location_secondary_name": "Provincia",
+					"location_tertiary_name": "Municipio",
 					"longitude": "Longitud",
-					"municipality_name": "Municipio",
-					"name": "Nombre de la Parada",
-					"parish_name": "Parroquia"
+					"name": "Nombre de la Parada"
 				}
 			}
 		},
