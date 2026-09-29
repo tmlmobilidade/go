@@ -2,7 +2,6 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsLocationRequest, type StopsLocationResponse } from '@tmlmobilidade/go-infrastructure-pckg-types';
-import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/go-types-locations';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, type SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -10,27 +9,23 @@ import useSWRImmutable from 'swr/immutable';
 
 /* * */
 
+type Slot = keyof StopsLocationResponse;
+
 interface UseStopsLocationsDataReturnType {
-	data: StopsLocationResponse
-	districtIds: string[]
-	districtMap: Map<string, District>
-	districtOptions: SelectDataItem[]
+	data: StopsLocationResponse | undefined
 	error: null | string
+	/** Per slot, the OSM ids (as strings) of every division the user can access. */
+	ids: Record<Slot, string[]>
 	isLoading: boolean
-	localityIds: string[]
-	localityMap: Map<string, Locality>
-	localityOptions: SelectDataItem[]
-	municipalityIds: string[]
-	municipalityMap: Map<string, Municipality>
-	municipalityOptions: SelectDataItem[]
-	parishIds: string[]
-	parishMap: Map<string, Parish>
-	parishOptions: SelectDataItem[]
+	/** Per slot, the divisions as select options, labelled `[osm_id] name`. */
+	options: Record<Slot, SelectDataItem[]>
 	timestamp: null | UnixMilliseconds
 }
 
+const SLOTS: Slot[] = ['neighbourhood', 'primary', 'secondary', 'tertiary'];
+
 /**
- * Hook to fetch the locations (districts, municipalities, parishes and localities)
+ * Hook to fetch, per location slot, the divisions that have at least one stop
  * the user has access to for the given permissions. Useful for supplying data
  * to filters or select components.
  * @param request The permissions registry to filter the locations by.
@@ -49,117 +44,24 @@ export function useStopsLocationsData(request: StopsLocationRequest): UseStopsLo
 	//
 	// B. Transform data
 
-	const districtIdsData = useMemo(() => {
-		// Skip if no data is available
-		if (!data?.data?.districts?.length) return [];
-		// Map data to array of IDs
-		return data.data.districts.map(item => item._id);
-	}, [data?.data?.districts]);
+	const ids = useMemo(() => Object.fromEntries(SLOTS.map(slot => [slot, data?.data?.[slot].map(item => String(item.osm_id)) ?? []])) as Record<Slot, string[]>, [data?.data]);
 
-	const districtOptionsData = useMemo(() => {
-		// Skip if no data is available
-		if (!data?.data?.districts?.length) return [];
-		// Map data to SelectDataItem format
-		return data.data.districts.map((item): SelectDataItem => ({
-			checked: false,
-			disabled: false,
-			label: `[${item._id}] ${item.name}`,
-			value: item._id,
-		}));
-	}, [data?.data?.districts]);
-
-	const districtMapData = useMemo(() => {
-		return new Map(data?.data?.districts.map(item => [item._id, item]));
-	}, [data?.data?.districts]);
-
-	const municipalityIdsData = useMemo(() => {
-		// Skip if no data is available
-		if (!data?.data?.municipalities?.length) return [];
-		// Map data to array of IDs
-		return data.data.municipalities.map(item => item._id);
-	}, [data?.data?.municipalities]);
-
-	const municipalityOptionsData = useMemo(() => {
-		// Skip if no data is available
-		if (!data?.data?.municipalities?.length) return [];
-		// Map data to SelectDataItem format
-		return data.data.municipalities.map((item): SelectDataItem => ({
-			checked: false,
-			disabled: false,
-			label: `[${item._id}] ${item.name}`,
-			value: item._id,
-		}));
-	}, [data?.data?.municipalities]);
-
-	const municipalityMapData = useMemo(() => {
-		return new Map(data?.data?.municipalities.map(item => [item._id, item]));
-	}, [data?.data?.municipalities]);
-
-	const parishIdsData = useMemo(() => {
-		// Skip if no data is available
-		if (!data?.data?.parishes?.length) return [];
-		// Map data to array of IDs
-		return data.data.parishes.map(item => item._id);
-	}, [data?.data?.parishes]);
-
-	const parishOptionsData = useMemo(() => {
-		// Skip if no data is available
-		if (!data?.data?.parishes?.length) return [];
-		// Map data to SelectDataItem format
-		return data.data.parishes.map((item): SelectDataItem => ({
-			checked: false,
-			disabled: false,
-			label: `[${item._id}] ${item.name}`,
-			value: item._id,
-		}));
-	}, [data?.data?.parishes]);
-
-	const parishMapData = useMemo(() => {
-		return new Map(data?.data?.parishes.map(item => [item._id, item]));
-	}, [data?.data?.parishes]);
-
-	const localityIdsData = useMemo(() => {
-		// Skip if no data is available
-		if (!data?.data?.localities?.length) return [];
-		// Map data to array of IDs
-		return data.data.localities.map(item => item._id);
-	}, [data?.data?.localities]);
-
-	const localityOptionsData = useMemo(() => {
-		// Skip if no data is available
-		if (!data?.data?.localities?.length) return [];
-		// Map data to SelectDataItem format
-		return data.data.localities.map((item): SelectDataItem => ({
-			checked: false,
-			disabled: false,
-			label: `[${item._id}] ${item.name}`,
-			value: item._id,
-		}));
-	}, [data?.data?.localities]);
-
-	const localityMapData = useMemo(() => {
-		return new Map(data?.data?.localities.map(item => [item._id, item]));
-	}, [data?.data?.localities]);
+	const options = useMemo(() => Object.fromEntries(SLOTS.map(slot => [slot, data?.data?.[slot].map((item): SelectDataItem => ({
+		checked: false,
+		disabled: false,
+		label: `[${item.osm_id}] ${item.name}`,
+		value: String(item.osm_id),
+	})) ?? []])) as Record<Slot, SelectDataItem[]>, [data?.data]);
 
 	//
 	// C. Return data
 
 	return useMemo(() => ({
 		data: data?.data,
-		districtIds: districtIdsData,
-		districtMap: districtMapData,
-		districtOptions: districtOptionsData,
 		error: error?.error,
+		ids,
 		isLoading,
-		localityIds: localityIdsData,
-		localityMap: localityMapData,
-		localityOptions: localityOptionsData,
-		municipalityIds: municipalityIdsData,
-		municipalityMap: municipalityMapData,
-		municipalityOptions: municipalityOptionsData,
-		parishIds: parishIdsData,
-		parishMap: parishMapData,
-		parishOptions: parishOptionsData,
+		options,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, error?.error, districtIdsData, districtMapData, districtOptionsData, municipalityIdsData, municipalityMapData, municipalityOptionsData, parishIdsData, parishMapData, parishOptionsData, localityIdsData, localityMapData, localityOptionsData, isLoading, data?.timestamp]);
+	}), [data?.data, error?.error, ids, options, isLoading, data?.timestamp]);
 };
