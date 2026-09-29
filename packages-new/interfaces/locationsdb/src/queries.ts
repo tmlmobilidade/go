@@ -69,7 +69,7 @@ GROUP BY id, name, admin_level, code, tags;
  */
 export const FIND_LOCATIONS_AT_POINT = `
 WITH pt AS (
-	SELECT ST_Transform(ST_SetSRID(ST_MakePoint($1, $2), 4326), Find_SRID('public', 'planet_osm_polygon', 'way')) AS way
+	SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326) AS way
 )
 SELECT
 	abs(p.osm_id) AS id,
@@ -91,8 +91,8 @@ UNION ALL
 	FROM planet_osm_point p, pt
 	WHERE p.place = 'locality'
 		AND p.name IS NOT NULL
-		AND ST_DWithin(p.way, pt.way, $3 / cos(radians($2)))
-	ORDER BY p.way <-> pt.way
-	LIMIT 1
+		AND ST_DWithin(p.way::geography, pt.way::geography, $3)
+	ORDER BY p.way::geography <-> pt.way::geography
 );
 `;
+
