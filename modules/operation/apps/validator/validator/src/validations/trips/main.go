@@ -63,16 +63,18 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		// Validate trip_id
 		var groupHash string
 		statuses := runner.Run(services.RuleActions{
-			"trip_id_unique": func() { validations.TripIdValidation(&trip, i, &gtfs) },
+			"trip_id_unique": func() { validations.TripIdValidation(&trip, i, &gtfs, tripRules) },
 			"trips_shape_id_references_shapes_table_when_present": func() { validations.ShapeIdValidation(&trip, i, &gtfs, tripRules) },
-			"trips_route_id_references_routes_table":              func() { validations.RouteIdValidation(&trip, i, &gtfs, routeRowsCache) },
-			"trips_service_id_references_calendar_service":        func() { validations.ServiceIdValidation(&trip, i, &gtfs, calendarRowsCache, calendarDatesRowsCache) },
-			"trip_headsign_present_when_short_name_absent":        func() { validations.TripHeadsignValidation(&trip, i, &gtfs, tripRules) },
-			"trip_short_name_exclusivity":                         func() { validations.TripShortNameValidation(&trip, i, &gtfs, tripRules) },
-			"trips_direction_id_valid_enum":                       func() { validations.DirectionIdValidation(&trip, i, &gtfs, tripRules) },
-			"trips_block_id_in_allowed_set":                       func() { validations.BlockIdValidation(&trip, i, &gtfs, tripRules) },
-			"trips_wheelchair_accessible_valid_gtfs_enum":         func() { validations.WheelchairAccessibleValidation(&trip, i, &gtfs, tripRules) },
-			"trips_bikes_allowed_valid_gtfs_enum":                 func() { validations.BikesAllowedValidation(&trip, i, &gtfs, tripRules) },
+			"trips_route_id_references_routes_table":              func() { validations.RouteIdValidation(&trip, i, &gtfs, routeRowsCache, tripRules) },
+			"trips_service_id_references_calendar_service": func() {
+				validations.ServiceIdValidation(&trip, i, &gtfs, calendarRowsCache, calendarDatesRowsCache, tripRules)
+			},
+			"trip_headsign_present_when_short_name_absent": func() { validations.TripHeadsignValidation(&trip, i, &gtfs, tripRules) },
+			"trip_short_name_exclusivity":                  func() { validations.TripShortNameValidation(&trip, i, &gtfs, tripRules) },
+			"trips_direction_id_valid_enum":                func() { validations.DirectionIdValidation(&trip, i, &gtfs, tripRules) },
+			"trips_block_id_in_allowed_set":                func() { validations.BlockIdValidation(&trip, i, &gtfs, tripRules) },
+			"trips_wheelchair_accessible_valid_gtfs_enum":  func() { validations.WheelchairAccessibleValidation(&trip, i, &gtfs, tripRules) },
+			"trips_bikes_allowed_valid_gtfs_enum":          func() { validations.BikesAllowedValidation(&trip, i, &gtfs, tripRules) },
 			"trip_path_stop_coordinates_referenced_from_stops": func() {
 				validations.StopCoordinatesByTripIdValidation(&trip, i, &gtfs, tripStopTimesCache, stopsCache, stopClosestShapePointsCache, tripRules)
 			},

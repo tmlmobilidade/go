@@ -18,7 +18,7 @@ func TestAllTripIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.TripIdValidation(trip, tc.Row, gtfs)
+			validations.TripIdValidation(trip, tc.Row, gtfs, &types.TripsRules{TripId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}

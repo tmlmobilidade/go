@@ -29,13 +29,24 @@ func RouteLongNameValidation(route *types.Route, row int, rules *types.RoutesRul
 		ctx.WithSeverity(rules.RouteLongName.Severity)
 	}
 
-	// route_long_name is required
+	// 1. Check if route_long_name is present
 	if route.RouteLongName == nil || *route.RouteLongName == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("route_long_name_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("route_long_name_validation.required", "route_long_name_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Validate rules
+	// 2. Check if route_long_name is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_long_name_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate rules
 	if rules != nil && rules.RouteLongName.Options != nil {
 		if slices.Contains(*rules.RouteLongName.Options, types.ALL_OPTIONS) {
 			return

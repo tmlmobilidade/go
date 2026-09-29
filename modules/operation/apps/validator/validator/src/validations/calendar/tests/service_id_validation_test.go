@@ -22,7 +22,7 @@ func TestAllServiceIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.ServiceIdValidation(calendar, tc.Row, gtfs)
+			validations.ServiceIdValidation(calendar, tc.Row, gtfs, &types.CalendarRules{ServiceId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}

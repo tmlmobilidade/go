@@ -25,7 +25,7 @@ func TestAllShapePtSequenceValidationTestCases(t *testing.T) {
 			} else {
 				shapePtSequence = nil
 			}
-			validations.ShapePtSequenceValidation(&types.Shape{ShapePtSequence: shapePtSequence}, tc.Row)
+			validations.ShapePtSequenceValidation(&types.Shape{ShapePtSequence: shapePtSequence}, tc.Row, &types.ShapesRules{ShapePtSequence: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

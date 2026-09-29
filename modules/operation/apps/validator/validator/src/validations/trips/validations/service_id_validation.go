@@ -20,16 +20,30 @@ Identifies a service.
 
 [trips.txt]: https://gtfs.org/schedule/reference/#trips
 */
-func ServiceIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, calendarRowsCache, calendarDatesRowsCache map[string][]int) {
+func ServiceIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, calendarRowsCache, calendarDatesRowsCache map[string][]int, rules *types.TripsRules) {
 	ctx := lib.NewValidationContext("service_id", "trips.txt", "trips_service_id_references_calendar_service", row, services.AppMessageService)
+	if rules != nil && rules.ServiceId.Severity != "" {
+		ctx.WithSeverity(rules.ServiceId.Severity)
+	}
 
-	// 1. Validate service_id is required
+	// 1. Validate service_id is present
 	if trip.ServiceId == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("service_id_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("service_id_validation.required", "service_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// 2. Validate service_id is Foreign Key referencing calendar.service_id or calendar_dates.service_id (use cache to avoid repeated queries)
+	// 2. Validate service_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("service_id_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate service_id is Foreign Key referencing calendar.service_id or calendar_dates.service_id (use cache to avoid repeated queries)
 	calendarRows, err := gtfs.GetCachedRowsById(calendarRowsCache, "calendar", *trip.ServiceId)
 	if err == nil && len(calendarRows) > 0 {
 		return

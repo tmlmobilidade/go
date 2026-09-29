@@ -26,7 +26,7 @@ func TestAllShapePtLatValidationTestCases(t *testing.T) {
 			} else {
 				shapePtLat = nil
 			}
-			validations.ShapePtLatValidation(&types.Shape{ShapePtLat: shapePtLat}, tc.Row)
+			validations.ShapePtLatValidation(&types.Shape{ShapePtLat: shapePtLat}, tc.Row, &types.ShapesRules{ShapePtLat: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

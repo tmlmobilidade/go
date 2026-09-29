@@ -1,7 +1,7 @@
 package shapes
 
 import (
-	"main/i18n"
+	"main/lib"
 	"main/services"
 	"main/types"
 )
@@ -20,16 +20,26 @@ Identifies a shape.
 
 [shapes.txt]: https://gtfs.org/schedule/reference/#shapestxt
 */
-func ShapeIdValidation(shape *types.Shape, row int) {
+func ShapeIdValidation(shape *types.Shape, row int, rules *types.ShapesRules) {
+	ctx := lib.NewValidationContext("shape_id", "shapes.txt", "shape_id_required", row, services.AppMessageService)
+	if rules != nil && rules.ShapeId.Severity != "" {
+		ctx.WithSeverity(rules.ShapeId.Severity)
+	}
+
+	// 1. Validate shape_id is present
 	if shape.ShapeId == nil || *shape.ShapeId == "" {
-		message := types.Message{
-			Field:    "shape_id",
-			FileName: "shapes.txt",
-			Rows:     []int{row},
-			Message:  i18n.AppTranslator.Get("shape_id_validation.required"),
-			Severity: types.SEVERITY_ERROR,
-			RuleID:   "shape_id_required",
+		if ctx.ShouldSkip() {
+			return
 		}
-		services.AppMessageService.AddMessage(message)
+
+		message := ctx.GetRequiredMessage("shape_id_validation.required", "shape_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate shape_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_id_validation.forbidden"))
+		return
 	}
 }

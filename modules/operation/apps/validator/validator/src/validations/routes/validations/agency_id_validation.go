@@ -26,7 +26,7 @@ func AgencyIdValidation(route *types.Route, row int, gtfs types.Gtfs, rules *typ
 		ctx.WithSeverity(rules.AgencyId.Severity)
 	}
 
-	// Check if agency_id is required
+	// 1. Check if agency_id is present
 	if route.AgencyId == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -37,13 +37,13 @@ func AgencyIdValidation(route *types.Route, row int, gtfs types.Gtfs, rules *typ
 		return
 	}
 
-	// Check if agency_id is forbidden
+	// 2. Check if agency_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_id_validation.forbidden"))
 		return
 	}
 
-	// Check if agency_id is valid
+	// 3. Check if agency_id is valid
 	if route.AgencyId != nil && *route.AgencyId != "" {
 		if !lib.GtfsIdMapKeyExists(&gtfs, "agency", *route.AgencyId) {
 			ctx.AddError(ctx.GetTranslatedMessage("agency_id_validation.not_found", *route.AgencyId))

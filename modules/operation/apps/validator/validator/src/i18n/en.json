@@ -143,6 +143,7 @@
 	"date_validation": {
 		"forbidden": "Field \"service_date\" is forbidden",
 		"invalid": "Field \"service_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
+		"recommended": "Field \"service_date\" is recommended",
 		"required": "Field \"service_date\" is required"
 	},
 	"default_lang_validation": {
@@ -718,6 +719,7 @@
 		"duplicate": "Duplicate field \"route_id\" \"%s\" found. Field \"route_id\" must be unique",
 		"forbidden": "Field \"route_id\" is forbidden",
 		"invalid": "Field \"route_id\" \"%s\" is not a valid route_id from routes.txt",
+		"recommended": "Field \"route_id\" is recommended",
 		"required": "Field \"route_id\" is required"
 	},
 	"route_long_name_validation": {
@@ -752,6 +754,7 @@
 		"forbidden": "Field \"route_type\" is forbidden",
 		"invalid": "Field \"route_type\" \"%d\" must be one of the valid GTFS enum values (%s)",
 		"not_allowed": "Field \"route_type\" \"%d\" is not allowed",
+		"recommended": "Field \"route_type\" is recommended",
 		"required": "Field \"route_type\" is required"
 	},
 	"route_url_validation": {
@@ -768,6 +771,7 @@
 		"forbidden": "Field \"service_id\" is forbidden",
 		"invalid": "Field \"service_id\" \"%s\" is not a valid service_id from calendar.txt or calendar_dates.txt",
 		"not_found": "Field \"service_id\" \"%s\" does not exist in calendar.txt or calendar_dates.txt",
+		"recommended": "Field \"service_id\" is recommended",
 		"required": "Field \"service_id\" is required"
 	},
 	"shape_dist_traveled_validation": {
@@ -1044,6 +1048,7 @@
 		"duplicate": "Duplicate field \"trip_id\" \"%s\" found. Field \"trip_id\" must be unique",
 		"forbidden": "Field \"trip_id\" is forbidden",
 		"not_found": "Field \"trip_id\" \"%s\" does not exist in trips.txt",
+		"recommended": "Field \"trip_id\" is recommended",
 		"required": "Field \"trip_id\" is required"
 	},
 	"trip_short_name_validation": {

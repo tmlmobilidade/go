@@ -28,13 +28,24 @@ func RouteShortNameValidation(route *types.Route, row int, rules *types.RoutesRu
 		ctx.WithSeverity(rules.RouteShortName.Severity)
 	}
 
-	// route_short_name is required
+	// 1. Check if route_short_name is present
 	if route.RouteShortName == nil || *route.RouteShortName == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("route_short_name_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("route_short_name_validation.required", "route_short_name_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Validate length
+	// 2. Check if route_short_name is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_short_name_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate length
 	if len(*route.RouteShortName) > 12 {
 		ctx.AddWarning(ctx.GetTranslatedMessage("route_short_name_validation.too_long", *route.RouteShortName))
 	}

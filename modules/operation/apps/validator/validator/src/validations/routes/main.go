@@ -81,7 +81,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate route_id
 		runner.Run(services.RuleActions{
-			"route_id_unique":         func() { validations.RouteIdValidation(&route, i, &gtfs) },
+			"route_id_unique":         func() { validations.RouteIdValidation(&route, i, &gtfs, routeRules) },
 			"routes_line_id_required": func() { validations.LineIdValidation(&route, i, &gtfs, routeRules) },
 			"routes_line_short_name_present_when_line_id_present": func() { validations.LineShortNameValidation(&route, i, &gtfs, routeRules) },
 			"routes_line_long_name_present_when_line_id_present":  func() { validations.LineLongNameValidation(&route, i, &gtfs, routeRules) },

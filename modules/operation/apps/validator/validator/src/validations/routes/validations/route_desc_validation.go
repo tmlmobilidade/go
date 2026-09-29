@@ -35,32 +35,29 @@ func RouteDescValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		ctx.WithSeverity(rules.RouteDesc.Severity)
 	}
 
-	// Check if route_short_name is empty - if so, route_desc is required
-	isRouteShortNameEmpty := route.RouteShortName == nil
-	isRouteDescEmpty := route.RouteDesc == nil || *route.RouteDesc == ""
-
-	// Conditionally Required: Required if routes.route_short_name is empty
-	if isRouteShortNameEmpty && isRouteDescEmpty {
-		ctx.AddError(ctx.GetTranslatedMessage("route_desc_validation.required"))
-		return
-	}
-
-	// If route_desc is empty but route_short_name is present, it's optional - no error
-	if isRouteDescEmpty {
-		if !isRouteShortNameEmpty {
+	// 1. Check if route_desc is present
+	// Conditionally Required: required only when route_short_name is empty
+	if route.RouteDesc == nil || *route.RouteDesc == "" {
+		if route.RouteShortName != nil {
 			return
 		}
-		ctx.AddError(ctx.GetTranslatedMessage("route_desc_validation.required"))
+
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("route_desc_validation.required", "route_desc_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Check if route_desc is forbidden
+	// 2. Check if route_desc is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_desc_validation.forbidden"))
 		return
 	}
 
-	// Check if route_desc is a duplicate of route_short_name or route_long_name
+	// 3. Check if route_desc is a duplicate of route_short_name or route_long_name
 	if route.RouteShortName != nil && *route.RouteDesc == *route.RouteShortName {
 		ctx.AddWarning(ctx.GetTranslatedMessage("route_desc_validation.duplicate_short_name"))
 	}
@@ -68,7 +65,7 @@ func RouteDescValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		ctx.AddWarning(ctx.GetTranslatedMessage("route_desc_validation.duplicate_long_name"))
 	}
 
-	// Validate rules
+	// 4. Validate rules
 	if rules != nil && rules.RouteDesc.Options != nil {
 		if slices.Contains(*rules.RouteDesc.Options, types.ALL_OPTIONS) {
 			return

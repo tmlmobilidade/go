@@ -47,13 +47,24 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		0, 1, 2, 3, 4, 5, 6, 7, 11, 12,
 	}
 
-	// Check if route_type is required
+	// 1. Check if route_type is present
 	if route.RouteType == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("route_type_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("route_type_validation.required", "route_type_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Check if route_type is valid
+	// 2. Check if route_type is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_type_validation.forbidden"))
+		return
+	}
+
+	// 3. Check if route_type is valid
 	if !slices.Contains(validTypes, *route.RouteType) {
 		validTypeStrings := make([]string, len(validTypes))
 		for i, validType := range validTypes {

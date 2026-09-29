@@ -34,7 +34,7 @@ func TestAllRouteLongNameValidationTestCases(t *testing.T) {
 	}
 	t.Run("Required_When_ShortName_Empty", func(t *testing.T) {
 		services.AppMessageService.Clear()
-		validations.RouteLongNameValidation(&types.Route{RouteLongName: nil, RouteShortName: nil}, 1, nil)
+		validations.RouteLongNameValidation(&types.Route{RouteLongName: nil, RouteShortName: nil}, 1, &types.RoutesRules{RouteLongName: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Required when short name is empty should error", types.SEVERITY_ERROR)
 	})
 }

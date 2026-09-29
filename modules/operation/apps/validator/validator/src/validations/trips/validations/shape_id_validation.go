@@ -25,13 +25,24 @@ func ShapeIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types
 		ctx.WithSeverity(rules.ShapeId.Severity)
 	}
 
-	// 1. Validate shape_id is required
+	// 1. Validate shape_id is present
 	if trip.ShapeId == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("shape_id_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("shape_id_validation.required", "shape_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// 2. Validate shape_id is Foreign Key referencing shapes.shape_id
+	// 2. Validate shape_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_id_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate shape_id is Foreign Key referencing shapes.shape_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "shapes", *trip.ShapeId) {
 		ctx.AddError(ctx.GetTranslatedMessage("shape_id_validation.not_found", map[string]any{"shape_id": *trip.ShapeId}))
 		return

@@ -47,10 +47,10 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate shape_id
 		statuses := runner.Run(services.RuleActions{
-			"shape_id_required":                           func() { validations.ShapeIdValidation(&shape, row) },
-			"shape_pt_lat_valid_latitude":                 func() { validations.ShapePtLatValidation(&shape, row) },
-			"shape_pt_lon_valid_longitude":                func() { validations.ShapePtLonValidation(&shape, row) },
-			"shape_pt_sequence_not_repeated_within_shape": func() { validations.ShapePtSequenceValidation(&shape, row) },
+			"shape_id_required":                           func() { validations.ShapeIdValidation(&shape, row, shapesRules) },
+			"shape_pt_lat_valid_latitude":                 func() { validations.ShapePtLatValidation(&shape, row, shapesRules) },
+			"shape_pt_lon_valid_longitude":                func() { validations.ShapePtLonValidation(&shape, row, shapesRules) },
+			"shape_pt_sequence_not_repeated_within_shape": func() { validations.ShapePtSequenceValidation(&shape, row, shapesRules) },
 			"shape_dist_traveled_non_negative_monotonic":  func() { validations.ShapeDistTraveledValidation(&shape, row, shapesRules) },
 		}, nil)
 
@@ -77,13 +77,13 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 	}
 	for shapeID, points := range shapeGroups {
 		runner.Run(services.RuleActions{
-			"shape_id_and_point_sequence_required":                            func() {
+			"shape_id_and_point_sequence_required": func() {
 				validations.ShapeSequenceRuleValidation(points, shapesRules, "shape_id_and_point_sequence_required")
 			},
-			"shape_pt_sequence_strictly_increasing":                           func() {
+			"shape_pt_sequence_strictly_increasing": func() {
 				validations.ShapeSequenceRuleValidation(points, shapesRules, "shape_pt_sequence_strictly_increasing")
 			},
-			"shape_dist_traveled_non_decreasing_with_sequence":                func() {
+			"shape_dist_traveled_non_decreasing_with_sequence": func() {
 				validations.ShapeSequenceRuleValidation(points, shapesRules, "shape_dist_traveled_non_decreasing_with_sequence")
 			},
 			"shape_sequence_position_mismatches_cumulative_traveled_distance": func() { validations.ShapePointsCoordinatesConsistentValidation(points, shapesRules) },

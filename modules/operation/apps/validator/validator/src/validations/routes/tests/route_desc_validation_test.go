@@ -20,7 +20,7 @@ func TestAllRouteDescValidationTestCases(t *testing.T) {
 				routeDesc = tc.Value
 			}
 
-			validations.RouteDescValidation(&types.Route{RouteDesc: routeDesc}, tc.Row, nil)
+			validations.RouteDescValidation(&types.Route{RouteDesc: routeDesc}, tc.Row, &types.RoutesRules{RouteDesc: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}
@@ -81,7 +81,7 @@ func TestAllRouteDescValidationTestCases(t *testing.T) {
 			RouteDesc:      nil,
 			RouteShortName: nil,
 		}
-		validations.RouteDescValidation(route, 1, nil)
+		validations.RouteDescValidation(route, 1, &types.RoutesRules{RouteDesc: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Required when short name is empty should error", types.SEVERITY_ERROR)
 	})
 

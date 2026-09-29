@@ -40,10 +40,20 @@ func TestAllShapeIdValidationTestCases(t *testing.T) {
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}
-	// shape_id is unconditionally required: missing it is always an error,
-	// regardless of what severity is configured for the rule.
-	for _, severity := range []types.Severity{types.SEVERITY_ERROR, types.SEVERITY_WARNING, types.SEVERITY_IGNORE, types.SEVERITY_FORBIDDEN, ""} {
-		t.Run("Required_Missing_"+string(severity), func(t *testing.T) {
+	// Missing shape_id is reported at the configured severity; ignore,
+	// forbidden and unset stay silent.
+	for _, tc := range []struct {
+		severity         types.Severity
+		expectedErrors   int
+		expectedWarnings int
+	}{
+		{types.SEVERITY_ERROR, 1, 0},
+		{types.SEVERITY_WARNING, 0, 1},
+		{types.SEVERITY_IGNORE, 0, 0},
+		{types.SEVERITY_FORBIDDEN, 0, 0},
+		{"", 0, 0},
+	} {
+		t.Run("Required_Missing_"+string(tc.severity), func(t *testing.T) {
 			services.AppMessageService.Clear()
 			trip := &types.Trip{RouteId: lib.Ptr("route1"), TripId: lib.Ptr("trip1"), ShapeId: nil}
 			gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{"routes": {"route1": {1}}}}.ToGtfsWithDB()
@@ -52,23 +62,12 @@ func TestAllShapeIdValidationTestCases(t *testing.T) {
 			}
 			defer cleanup()
 			var rules *types.TripsRules
-			if severity != "" {
-				rules = &types.TripsRules{ShapeId: types.RuleConfig{Severity: severity}}
+			if tc.severity != "" {
+				rules = &types.TripsRules{ShapeId: types.RuleConfig{Severity: tc.severity}}
 			}
 			validations.ShapeIdValidation(trip, 1, gtfs, rules)
-			test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Required_Missing", types.SEVERITY_ERROR)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.expectedErrors, "Required_Missing", types.SEVERITY_ERROR)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.expectedWarnings, "Required_Missing", types.SEVERITY_WARNING)
 		})
 	}
-
-	t.Run("NilRules_MissingRouteId_StillRequiresShapeId", func(t *testing.T) {
-		services.AppMessageService.Clear()
-		trip := &types.Trip{TripId: lib.Ptr("trip1"), ShapeId: nil}
-		gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{}}.ToGtfsWithDB()
-		if err != nil {
-			t.Fatalf("failed to create mock gtfs: %v", err)
-		}
-		defer cleanup()
-		validations.ShapeIdValidation(trip, 1, gtfs, nil)
-		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "NilRules_MissingRouteId", types.SEVERITY_ERROR)
-	})
 }

@@ -19,7 +19,7 @@ func TestAllRouteIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.RouteIdValidation(&types.Route{RouteId: tc.Id}, tc.Row, gtfs)
+			validations.RouteIdValidation(&types.Route{RouteId: tc.Id}, tc.Row, gtfs, &types.RoutesRules{RouteId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}
@@ -45,8 +45,9 @@ func TestAllRouteIdValidationTestCases(t *testing.T) {
 			}
 			defer cleanup()
 
-			validations.RouteIdValidation(&types.Route{RouteId: routeId}, tc.Row, gtfs)
-			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, tc.Severity)
+			validations.RouteIdValidation(&types.Route{RouteId: routeId}, tc.Row, gtfs, &types.RoutesRules{RouteId: types.RuleConfig{Severity: tc.Severity}})
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
 	}
 }

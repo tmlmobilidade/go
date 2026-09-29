@@ -39,9 +39,9 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate service_id
 		runner.Run(services.RuleActions{
-			"calendar_service_id_unique_non_empty": func() { validations.ServiceIdValidation(&calendar, i, &gtfs) },
-			"calendar_start_date_valid_yyyymmdd":   func() { validations.DateValidation(calendar.StartDate, "start_date", i) },
-			"calendar_end_date_valid_yyyymmdd":     func() { validations.DateValidation(calendar.EndDate, "end_date", i) },
+			"calendar_service_id_unique_non_empty": func() { validations.ServiceIdValidation(&calendar, i, &gtfs, section) },
+			"calendar_start_date_valid_yyyymmdd":   func() { validations.DateValidation(calendar.StartDate, "start_date", i, section) },
+			"calendar_end_date_valid_yyyymmdd":     func() { validations.DateValidation(calendar.EndDate, "end_date", i, section) },
 		}, nil)
 
 		return nil

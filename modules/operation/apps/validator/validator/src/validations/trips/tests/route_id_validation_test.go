@@ -26,7 +26,7 @@ func TestAllRouteIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.RouteIdValidation(trip, tc.Row, gtfs, make(map[string][]int))
+			validations.RouteIdValidation(trip, tc.Row, gtfs, make(map[string][]int), &types.TripsRules{RouteId: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}

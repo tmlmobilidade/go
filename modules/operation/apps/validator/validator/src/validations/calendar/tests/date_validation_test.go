@@ -27,7 +27,7 @@ func TestAllDateValidationTestCases(t *testing.T) {
 				date = ""
 			}
 
-			validations.DateValidation(date, "start_date", tc.Row)
+			validations.DateValidation(date, "start_date", tc.Row, &types.CalendarRules{StartDate: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

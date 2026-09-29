@@ -29,13 +29,24 @@ func RouteColorValidation(route *types.Route, row int, rules *types.RoutesRules)
 		ctx.WithSeverity(rules.RouteColor.Severity)
 	}
 
-	// Check if route_color is required
+	// 1. Check if route_color is present
 	if route.RouteColor == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("route_color_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("route_color_validation.required", "route_color_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Check if route_color is valid
+	// 2. Check if route_color is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_color_validation.forbidden"))
+		return
+	}
+
+	// 3. Check if route_color is valid
 	color := strings.ToUpper(*route.RouteColor)
 	matched, _ := regexp.MatchString(`^[0-9A-F]{6}$`, color)
 	if !matched {

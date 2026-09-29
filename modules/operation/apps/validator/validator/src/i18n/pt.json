@@ -142,6 +142,7 @@
 	"date_validation": {
 		"forbidden": "O campo \"service_date\" é proibido",
 		"invalid": "O campo \"service_date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
+		"recommended": "O campo \"service_date\" é recomendado",
 		"required": "O campo \"service_date\" é obrigatório"
 	},
 	"default_lang_validation": {
@@ -726,6 +727,7 @@
 		"duplicate": "Campo \"route_id\" \"%s\" duplicado encontrado. O campo \"route_id\" deve ser único",
 		"forbidden": "O campo \"route_id\" é proibido",
 		"invalid": "O campo \"route_id\" \"%s\" não é um route_id válido de routes.txt",
+		"recommended": "O campo \"route_id\" é recomendado",
 		"required": "O campo \"route_id\" é obrigatório"
 	},
 	"route_long_name_validation": {
@@ -760,6 +762,7 @@
 		"forbidden": "O campo \"route_type\" é proibido",
 		"invalid": "O campo \"route_type\" \"%d\" deve ser um dos valores enum GTFS válidos (%s)",
 		"not_allowed": "O campo \"route_type\" \"%d\" não é permitido",
+		"recommended": "O campo \"route_type\" é recomendado",
 		"required": "O campo \"route_type\" é obrigatório"
 	},
 	"route_url_validation": {
@@ -776,6 +779,7 @@
 		"forbidden": "O campo \"service_id\" é proibido",
 		"invalid": "O campo \"service_id\" \"%s\" não é um service_id válido de calendar.txt ou calendar_dates.txt",
 		"not_found": "O campo \"service_id\" \"%s\" não existe em calendar.txt ou calendar_dates.txt",
+		"recommended": "O campo \"service_id\" é recomendado",
 		"required": "O campo \"service_id\" é obrigatório"
 	},
 	"shape_dist_traveled_validation": {
@@ -1052,6 +1056,7 @@
 		"duplicate": "Campo \"trip_id\" \"%s\" duplicado encontrado. O campo \"trip_id\" deve ser único",
 		"forbidden": "O campo \"trip_id\" é proibido",
 		"not_found": "O campo \"trip_id\" \"%s\" não existe em trips.txt",
+		"recommended": "O campo \"trip_id\" é recomendado",
 		"required": "O campo \"trip_id\" é obrigatório"
 	},
 	"trip_short_name_validation": {
