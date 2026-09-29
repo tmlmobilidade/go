@@ -24,11 +24,13 @@ func DateValidation(calendarDate *types.CalendarDates, row int) {
 
 	date := calendarDate.Date
 
+	// 1. Validate date is present
 	if date == "" {
 		ctx.AddError(ctx.GetTranslatedMessage("date_validation.required"))
 		return
 	}
 
+	// 2. Validate date is a valid service date
 	if !lib.IsValidServiceDate(date) {
 		ctx.AddError(ctx.GetTranslatedMessage("date_validation.invalid", date))
 		return

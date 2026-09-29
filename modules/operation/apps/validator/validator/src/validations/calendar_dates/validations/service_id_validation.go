@@ -27,6 +27,7 @@ func ServiceIdValidation(calendarDate *types.CalendarDates, row int) {
 
 	serviceId := calendarDate.ServiceId
 
+	// 1. Validate service_id is present
 	if serviceId == "" {
 		ctx.AddError(ctx.GetTranslatedMessage("service_id_validation.required"))
 		return
