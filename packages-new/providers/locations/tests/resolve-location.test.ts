@@ -20,7 +20,7 @@ const locality = row('99', 'locality', 'Anjos');
 
 describe('resolveLocation', () => {
 	it('maps PT admin levels onto slots and keeps the neighbourhood', () => {
-		const location = resolveLocation(lisbon, locality, [38.72, -9.13]);
+		const location = resolveLocation([...lisbon, locality], [38.72, -9.13]);
 		assert.deepEqual(location, {
 			country: { admin_level: '2', name: 'Portugal', osm_id: 295480 },
 			neighbourhood: { admin_level: 'locality', name: 'Anjos', osm_id: 99 },
@@ -31,7 +31,7 @@ describe('resolveLocation', () => {
 	});
 
 	it('omits the neighbourhood when no locality is near', () => {
-		assert.equal('neighbourhood' in resolveLocation(lisbon, null, [0, 0]), false);
+		assert.equal('neighbourhood' in resolveLocation(lisbon, [0, 0]), false);
 	});
 
 	it('uses the country-specific levels (ES: 2 / 4 / 6 / 8)', () => {
@@ -41,13 +41,13 @@ describe('resolveLocation', () => {
 			row('11', '6', 'Madrid'),
 			row('12', '8', 'Madrid'),
 		];
-		const location = resolveLocation(madrid, null, [40.4, -3.7]);
+		const location = resolveLocation(madrid, [40.4, -3.7]);
 		assert.equal(location.primary.name, 'Comunidad de Madrid');
 		assert.equal(location.secondary.osm_id, 11);
 	});
 
 	it('throws when a required slot is missing or the country is unsupported', () => {
-		assert.throws(() => resolveLocation(lisbon.filter(r => r.admin_level !== '8'), null, [0, 0]), /No tertiary division/);
-		assert.throws(() => resolveLocation([row('1', '2', 'France', { 'ISO3166-1': 'FR' })], null, [0, 0]), /Unsupported country "FR"/);
+		assert.throws(() => resolveLocation(lisbon.filter(r => r.admin_level !== '8'), [0, 0]), /No tertiary division/);
+		assert.throws(() => resolveLocation([row('1', '2', 'France', { 'ISO3166-1': 'FR' })], [0, 0]), /Unsupported country "FR"/);
 	});
 });

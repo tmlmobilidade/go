@@ -15,9 +15,6 @@ export const NEIGHBOURHOOD_MAX_DISTANCE_METERS = 5_000;
  * @throws When the point is outside a supported country or any required slot has no covering division.
  */
 export async function findByGeo(lat: number, lon: number): Promise<Location> {
-	const [rows, locality] = await Promise.all([
-		locationsDb.findLocationsAtPoint(lon, lat),
-		locationsDb.findNearestLocality(lon, lat, NEIGHBOURHOOD_MAX_DISTANCE_METERS),
-	]);
-	return resolveLocation(rows, locality, [lat, lon]);
+	const rows = await locationsDb.findLocationsAtPoint(lon, lat, NEIGHBOURHOOD_MAX_DISTANCE_METERS);
+	return resolveLocation(rows, [lat, lon]);
 }

@@ -3,7 +3,7 @@
 import { type Pool, PostgresDatabaseClient, type QueryResult, type QueryResultRow } from '@tmlmobilidade/go-clients-postgres';
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
-import { FIND_LOCATIONS_AT_POINT, FIND_LOCATIONS_BY_COUNTRY_AND_ADMIN_LEVEL, FIND_LOCATIONS_WITH_GEOJSON_BY_COUNTRY_AND_ADMIN_LEVEL, FIND_NEAREST_LOCALITY } from './queries.js';
+import { FIND_LOCATIONS_AT_POINT, FIND_LOCATIONS_BY_COUNTRY_AND_ADMIN_LEVEL, FIND_LOCATIONS_WITH_GEOJSON_BY_COUNTRY_AND_ADMIN_LEVEL } from './queries.js';
 import { CountryCode, type Location, type LocationWithGeojson } from './types.js';
 
 /* * */
@@ -32,13 +32,15 @@ class LocationsDbClass {
 	}
 
 	/**
-	 * Finds locations whose geometry covers a WGS84 point.
-	 * Typically returns nested levels (country, district, municipality, parish).
+	 * Finds the administrative locations whose geometry covers a WGS84 point (typically country,
+	 * district, municipality, parish), plus the nearest `place=locality` point within the given
+	 * radius, returned with `admin_level = "locality"`.
+	 * @param localityMaxDistanceMeters Search radius for the locality point.
 	 */
-	public async findLocationsAtPoint(longitude: number, latitude: number): Promise<Location[]> {
+	public async findLocationsAtPoint(longitude: number, latitude: number, localityMaxDistanceMeters: number): Promise<Location[]> {
 		const result = await this.postgresClient.query<Location>(
 			FIND_LOCATIONS_AT_POINT,
-			[longitude, latitude],
+			[longitude, latitude, localityMaxDistanceMeters],
 		);
 		return result.rows;
 	}
@@ -67,19 +69,6 @@ class LocationsDbClass {
 			[String(adminLevel), countryCode],
 		);
 		return result.rows;
-	}
-
-	/**
-	 * Finds the nearest `place=locality` point within a radius of a WGS84 point.
-	 * The returned row has `admin_level = "locality"`.
-	 * @param maxDistanceMeters Search radius in metres.
-	 */
-	public async findNearestLocality(longitude: number, latitude: number, maxDistanceMeters: number): Promise<Location | null> {
-		const result = await this.postgresClient.query<Location>(
-			FIND_NEAREST_LOCALITY,
-			[longitude, latitude, maxDistanceMeters],
-		);
-		return result.rows[0] ?? null;
 	}
 
 	/**
