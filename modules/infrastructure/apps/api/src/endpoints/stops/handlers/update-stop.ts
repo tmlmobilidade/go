@@ -46,7 +46,7 @@ export async function updateStopHandler(request: FastifyRequest<{ Body: StopsUpd
 		permissions: request.permissions,
 		resource_key: 'municipality_ids',
 		scope: PermissionCatalog.all.stops.scope,
-		value: foundStop.municipality_id,
+		value: String(foundStop.location.secondary.osm_id),
 	});
 
 	if (!hasPermission) {

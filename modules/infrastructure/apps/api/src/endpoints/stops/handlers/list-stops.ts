@@ -25,12 +25,13 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 		values: request.body.agency_ids,
 	});
 
-	request.body.municipality_ids = PermissionCatalog.filterPermissionResourceValues<string>({
+	// TODO: Change for any filter
+	request.body.location_secondary_ids = PermissionCatalog.filterPermissionResourceValues<string>({
 		action: PermissionCatalog.all.stops.actions.read,
 		permissions: request.permissions,
 		resourceKey: 'municipality_ids',
 		scope: PermissionCatalog.all.stops.scope,
-		values: request.body.municipality_ids,
+		values: request.body.location_secondary_ids,
 	});
 
 	//
@@ -51,11 +52,11 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 	const pipeline: AggregationPipeline<StopsListResponse> = [
 		{
 			$match: {
-				'district_id': { $in: validatedFilters.data.district_ids ?? [] },
 				'flags.agency_ids': { $in: validatedFilters.data.agency_ids ?? [] },
-				'locality_id': { $in: validatedFilters.data.locality_ids ?? [] },
-				'municipality_id': { $in: validatedFilters.data.municipality_ids ?? [] },
-				'parish_id': { $in: validatedFilters.data.parish_ids ?? [] },
+				'location.neighbourhood.osm_id': { $in: validatedFilters.data.location_neighbourhood_ids.map(Number) },
+				'location.primary.osm_id': { $in: validatedFilters.data.location_primary_ids.map(Number) },
+				'location.secondary.osm_id': { $in: validatedFilters.data.location_secondary_ids.map(Number) },
+				'location.tertiary.osm_id': { $in: validatedFilters.data.location_tertiary_ids.map(Number) },
 			},
 		},
 		{ $project: Object.fromEntries(Object.keys(StopsListResponseSchema.shape).map(key => [key, 1])) },
