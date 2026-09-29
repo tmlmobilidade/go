@@ -13,7 +13,7 @@ import (
 
   - File: [stop_times.txt]
   - Field: pickup_type
-  - Presence: Conditionally Required
+  - Presence: Required
   - Type: Enum
 
 # Description

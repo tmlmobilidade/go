@@ -13,7 +13,7 @@ import (
 
   - File: [stop_times.txt]
   - Field: drop_off_type
-  - Presence: Conditionally Forbidden
+  - Presence: Required
   - Type: Enum
 
 # Description
@@ -22,15 +22,10 @@ Indicates drop off method.
 
 Valid options are:
 
-  - 0 or empty - Regularly scheduled drop off.
+  - 0 - Regularly scheduled drop off.
   - 1 - No drop off available.
   - 2 - Must phone agency to arrange drop off.
   - 3 - Must coordinate with driver to arrange drop off.
-
-Conditionally Forbidden:
-
-  - drop_off_type=0 forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined.
-  - Optional otherwise.
 
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */

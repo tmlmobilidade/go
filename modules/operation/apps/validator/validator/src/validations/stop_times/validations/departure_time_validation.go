@@ -11,7 +11,7 @@ import (
 
   - File: [stop_times.txt]
   - Field: departure_time
-  - Presence: Conditionally Required
+  - Presence: Required
   - Type: Time
 
 # Description
@@ -24,51 +24,34 @@ For times occurring after midnight on the service day, enter the time as a value
 
 If exact arrival and departure times (timepoint=1) are not available, estimated or interpolated arrival and departure times (timepoint=0) should be provided.
 
-Conditionally Required:
-
-  - Required for the first and last stop in a trip (defined by `stop_times.stop_sequence`).
-  - Required for `timepoint=1`.
-  - Forbidden when `start_pickup_drop_off_window` or `end_pickup_drop_off_window` are defined.
-  - Optional otherwise.
-
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
-func DepartureTimeValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, rules *types.StopTimesRules) {
+func DepartureTimeValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
 	ctx := lib.NewValidationContext("departure_time", "stop_times.txt", "stop_times_departure_time_ordering_with_arrival_and_timepoint", row, services.AppMessageService)
 	if rules != nil && rules.DepartureTime.Severity != "" {
 		ctx.WithSeverity(rules.DepartureTime.Severity)
 	}
 
-	// 1. Check if departure_time is required: required when timepoint is 1
-	if stopTime.Timepoint != nil && *stopTime.Timepoint == 1 && stopTime.DepartureTime == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.required_timepoint"))
+	// 1. Check if departure_time is present
+	if stopTime.DepartureTime == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("departure_time_validation.required", "departure_time_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// 2. Check if departure_time is forbidden: forbidden when start_pickup_drop_off_window or end_pickup_drop_off_window are defined
-	if (stopTime.StartPickupDropOffWindow != nil || stopTime.EndPickupDropOffWindow != nil) && stopTime.DepartureTime != nil {
-		ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.forbidden_with_window"))
-		return
-	}
-
-	// 3. Check if departure_time is forbidden
-	if stopTime.DepartureTime != nil && ctx.IsForbidden() {
+	// 2. Check if departure_time is forbidden
+	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("departure_time_validation.forbidden"))
 		return
 	}
 
-	// 4. Check if departure_time is a valid time
-	if stopTime.DepartureTime != nil {
-		if !lib.ValidateTime(*stopTime.DepartureTime) {
-			ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.invalid_time"))
-			return
-		}
-	}
-
-	// 5. Check if departure_time is present
-	if stopTime.DepartureTime == nil && !ctx.ShouldIgnore() {
-		message := ctx.GetRequiredMessage("departure_time_validation.required", "departure_time_validation.recommended")
-		ctx.AddMessageWithSeverity(message)
+	// 3. Check if departure_time is a valid time
+	if !lib.ValidateTime(*stopTime.DepartureTime) {
+		ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.invalid_time"))
 		return
 	}
 }

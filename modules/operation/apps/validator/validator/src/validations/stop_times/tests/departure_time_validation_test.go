@@ -31,47 +31,41 @@ func TestAllDepartureTimeValidationTestCases(t *testing.T) {
 				rules = &types.StopTimesRules{DepartureTime: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
 			}
 
-			gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{"stop_times": map[string][]int{"trip_id": []int{1}}}}.ToGtfsWithDB()
-			if err != nil {
-				t.Fatalf("failed to create mock gtfs: %v", err)
-			}
-			defer cleanup()
-			validations.DepartureTimeValidation(&types.StopTime{DepartureTime: departureTime}, tc.Row, gtfs, rules)
+			validations.DepartureTimeValidation(&types.StopTime{DepartureTime: departureTime}, tc.Row, rules)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
 	}
-	t.Run("Required_Timepoint1", func(t *testing.T) {
-		services.AppMessageService.Clear()
-		gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{"stop_times": map[string][]int{"trip_id": []int{1}}}}.ToGtfsWithDB()
-		if err != nil {
-			t.Fatalf("failed to create mock gtfs: %v", err)
-		}
-		defer cleanup()
-		validations.DepartureTimeValidation(&types.StopTime{DepartureTime: nil, Timepoint: lib.Ptr(1)}, 1, gtfs, nil)
-		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Missing departure_time for timepoint=1 should error", types.SEVERITY_ERROR)
-	})
 
-	t.Run("Forbidden_WithStartWindow", func(t *testing.T) {
-		services.AppMessageService.Clear()
-		gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{"stop_times": map[string][]int{"trip_id": []int{1}}}}.ToGtfsWithDB()
-		if err != nil {
-			t.Fatalf("failed to create mock gtfs: %v", err)
-		}
-		defer cleanup()
-		validations.DepartureTimeValidation(&types.StopTime{DepartureTime: lib.Ptr("07:00:00"), StartPickupDropOffWindow: lib.Ptr("07:00:00")}, 3, gtfs, nil)
-		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Forbidden_WithStartWindow", types.SEVERITY_ERROR)
-	})
+	// Missing departure_time is reported at the configured severity; ignore,
+	// forbidden and unset stay silent.
+	for _, tc := range []struct {
+		severity         types.Severity
+		expectedErrors   int
+		expectedWarnings int
+	}{
+		{types.SEVERITY_ERROR, 1, 0},
+		{types.SEVERITY_WARNING, 0, 1},
+		{types.SEVERITY_IGNORE, 0, 0},
+		{types.SEVERITY_FORBIDDEN, 0, 0},
+		{"", 0, 0},
+	} {
+		t.Run("Required_Missing_"+string(tc.severity), func(t *testing.T) {
+			services.AppMessageService.Clear()
+			var rules *types.StopTimesRules
+			if tc.severity != "" {
+				rules = &types.StopTimesRules{DepartureTime: types.RuleConfig{Severity: tc.severity}}
+			}
+			validations.DepartureTimeValidation(&types.StopTime{DepartureTime: nil}, 1, rules)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.expectedErrors, "Required_Missing", types.SEVERITY_ERROR)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.expectedWarnings, "Required_Missing", types.SEVERITY_WARNING)
+		})
+	}
 
-	t.Run("Forbidden_WithEndWindow", func(t *testing.T) {
+	t.Run("Forbidden_Present", func(t *testing.T) {
 		services.AppMessageService.Clear()
-		gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{"stop_times": map[string][]int{"trip_id": []int{1}}}}.ToGtfsWithDB()
-		if err != nil {
-			t.Fatalf("failed to create mock gtfs: %v", err)
-		}
-		defer cleanup()
-		validations.DepartureTimeValidation(&types.StopTime{DepartureTime: lib.Ptr("07:00:00"), EndPickupDropOffWindow: lib.Ptr("07:00:00")}, 3, gtfs, nil)
-		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Forbidden_WithEndWindow", types.SEVERITY_ERROR)
+		rules := &types.StopTimesRules{DepartureTime: types.RuleConfig{Severity: types.SEVERITY_FORBIDDEN}}
+		validations.DepartureTimeValidation(&types.StopTime{DepartureTime: lib.Ptr("07:00:00")}, 1, rules)
+		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Forbidden_Present", types.SEVERITY_ERROR)
 	})
-
 }

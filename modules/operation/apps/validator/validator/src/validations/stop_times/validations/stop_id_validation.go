@@ -11,7 +11,7 @@ import (
 
   - File: [stop_times.txt]
   - Field: stop_id
-  - Presence: Conditionally Required
+  - Presence: Required
   - Type: Foreign ID referencing stops.stop_id
 
 # Description

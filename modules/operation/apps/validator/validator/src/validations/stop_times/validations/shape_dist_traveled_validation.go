@@ -11,7 +11,7 @@ import (
 
   - File: [stop_times.txt]
   - Field: shape_dist_traveled
-  - Presence: Optional
+  - Presence: Required
   - Type: Non-negative Float
 
 # Description

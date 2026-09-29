@@ -10,7 +10,6 @@ import (
 	stopTimesTypes "main/types/stop_times"
 	registry "main/validations"
 	validations "main/validations/stop_times/validations"
-	"strconv"
 )
 
 func init() {
@@ -48,9 +47,6 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 	// Create progress tracker
 	tracker := lib.CreateProgressTracker(gtfs, "stop_times", config.ProgressThresholdLarge)
 
-	// Pre-compute min/max stop sequences per trip_id for performance
-	// This avoids N+1 queries in arrival_time validation
-	tripStopSequences := make(map[string]types.TripStopSequence)
 	tripStopTimes := make(map[string][]stopTimesTypes.TimeSequenceStop)
 
 	var stopTimesRules *types.StopTimesRules
@@ -61,25 +57,6 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 	// Single iteration: combine pre-computation and validation
 	err = gtfs.IterateStopTimes(func(i int, rawStopTime types.StopTimeRaw) error {
 		tracker.Track()
-
-		// Pre-compute trip stop sequences
-		if rawStopTime.TripId != "" && rawStopTime.StopSequence != "" {
-			tripId := rawStopTime.TripId
-			stopSeq, err := strconv.Atoi(rawStopTime.StopSequence)
-			if err == nil {
-				if seq, exists := tripStopSequences[tripId]; exists {
-					if stopSeq < seq.Min {
-						seq.Min = stopSeq
-					}
-					if stopSeq > seq.Max {
-						seq.Max = stopSeq
-					}
-					tripStopSequences[tripId] = seq
-				} else {
-					tripStopSequences[tripId] = types.TripStopSequence{Min: stopSeq, Max: stopSeq}
-				}
-			}
-		}
 
 		// Parse and validate stop time
 		stopTime := validations.ParseStopTimes(rawStopTime, i)
@@ -100,8 +77,8 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		// Validate trip_id (using IdMap cache - no database query)
 		statuses := runner.Run(services.RuleActions{
 			"stop_times_trip_id_references_trips_table":                             func() { validations.TripIdValidation(&stopTime, i, &gtfs, stopTimesRules) },
-			"stop_times_arrival_time_ordering_with_departure_and_frequencies":       func() { validations.ArrivalTimeValidation(&stopTime, i, &gtfs, stopTimesRules, tripStopSequences) },
-			"stop_times_departure_time_ordering_with_arrival_and_timepoint":         func() { validations.DepartureTimeValidation(&stopTime, i, &gtfs, stopTimesRules) },
+			"stop_times_arrival_time_ordering_with_departure_and_frequencies":       func() { validations.ArrivalTimeValidation(&stopTime, i, stopTimesRules) },
+			"stop_times_departure_time_ordering_with_arrival_and_timepoint":         func() { validations.DepartureTimeValidation(&stopTime, i, stopTimesRules) },
 			"stop_times_stop_id_references_stops_table":                             func() { validations.StopIdValidation(&stopTime, i, &gtfs, stopLocationTypeCache, stopTimesRules) },
 			"stop_times_location_group_id_consistent_with_trip_id_and_stops":        func() { validations.LocationGroupIdValidation(&stopTime, i, &gtfs, stopTimesRules) },
 			"stop_times_start_pickup_drop_off_window_valid":                         func() { validations.StartPickupDropOffWindowValidation(&stopTime, i, stopTimesRules) },
