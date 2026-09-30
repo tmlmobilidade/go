@@ -20,7 +20,7 @@ interface UseRolesLocationsDataReturnType {
 function toTreeSelectData(nodes: LocationTreeNode[]): TreeSelectDataItem[] {
 	return nodes.map(node => ({
 		children: node.children.length ? toTreeSelectData(node.children) : undefined,
-		label: node.name,
+		label: node.admin_level !== 'neigberhood' ? `[${node.admin_level}] ${node.name}` : node.name,
 		value: node.id,
 	}));
 }
