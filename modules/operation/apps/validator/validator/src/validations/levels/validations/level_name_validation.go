@@ -27,6 +27,7 @@ func LevelNameValidation(level *types.Levels, row int, rules *types.LevelsRules)
 		ctx.WithSeverity(rules.LevelName.Severity)
 	}
 
+	// 1. Validate level_name is present
 	if level.LevelName == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -35,6 +36,7 @@ func LevelNameValidation(level *types.Levels, row int, rules *types.LevelsRules)
 		ctx.AddMessageWithSeverity(message)
 	}
 
+	// 2. Validate level_name is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_name_validation.forbidden"))
 		return

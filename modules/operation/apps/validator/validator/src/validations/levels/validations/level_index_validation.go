@@ -4,6 +4,7 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
+	"strconv"
 )
 
 /*
@@ -12,7 +13,7 @@ import (
 - File: [levels.txt]
 - Field: level_index
 - Presence: Required
-- Type: float
+- Type: Non-negative float
 
 # Description
 
@@ -22,13 +23,30 @@ Numeric index of the level that indicates relative position of this level in rel
 */
 func LevelIndexValidation(level *types.Levels, row int, rules *types.LevelsRules) {
 	ctx := lib.NewValidationContext("level_index", "levels.txt", "level_index_required", row, services.AppMessageService)
-	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.LevelIndex.Severity != "" {
 		ctx.WithSeverity(rules.LevelIndex.Severity)
 	}
 
+	// 1. Validate level_index is present
 	if level.LevelIndex == nil {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_index_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("level_index_validation.required", "level_index_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate level_index is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_index_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate level_index is a valid level_index
+	if *level.LevelIndex < 0 {
+		ctx.AddError(ctx.GetTranslatedMessage("level_index_validation.invalid", strconv.FormatFloat(float64(*level.LevelIndex), 'f', -1, 32)))
 		return
 	}
 }
