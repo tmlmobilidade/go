@@ -49,9 +49,10 @@ func TestAllContinuousDropOffValidationTestCases(t *testing.T) {
 				routesWithWindows,
 			)
 			expectedErrors, expectedWarnings := tc.ExpectedErrors, tc.ExpectedWarnings
-			// continuous_drop_off is optional: missing never produces a message
-			if continuousDropOff == nil {
-				expectedErrors, expectedWarnings = 0, 0
+			// "1" is the field's own "no continuous stopping" default, so the
+			// validation treats it the same as a missing value (step 1).
+			if tc.Name == "Valid_Option_1" {
+				expectedErrors = 1
 			}
 			test_helpers.AssertMessageCount(t, services.AppMessageService, expectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, expectedWarnings, tc.Name, types.SEVERITY_WARNING)
@@ -82,27 +83,24 @@ func TestAllContinuousDropOffValidationTestCases(t *testing.T) {
 				},
 				routesWithWindows,
 			)
-			expectedErrors, expectedWarnings := tc.ExpectedErrors, tc.ExpectedWarnings
-			// continuous_drop_off is optional: missing never produces a message
-			if continuousDropOff == nil {
-				expectedErrors, expectedWarnings = 0, 0
-			}
-			test_helpers.AssertMessageCount(t, services.AppMessageService, expectedErrors, tc.Name, types.SEVERITY_ERROR)
-			test_helpers.AssertMessageCount(t, services.AppMessageService, expectedWarnings, tc.Name, types.SEVERITY_WARNING)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
 	}
 	t.Run("Forbidden_WithStartWindow", func(t *testing.T) {
 		services.AppMessageService.Clear()
 		routeId := "ROUTE1"
 		routesWithWindows := map[string]bool{routeId: true}
-		validations.ContinuousDropOffValidation(&types.Route{RouteId: &routeId, ContinuousDropOff: lib.Ptr("0")}, 3, &types.Gtfs{}, nil, routesWithWindows)
+		rules := &types.RoutesRules{ContinuousDropOff: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
+		validations.ContinuousDropOffValidation(&types.Route{RouteId: &routeId, ContinuousDropOff: lib.Ptr("0")}, 3, &types.Gtfs{}, rules, routesWithWindows)
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Forbidden_WithStartWindow", types.SEVERITY_ERROR)
 	})
 	t.Run("Forbidden_WithEndWindow", func(t *testing.T) {
 		services.AppMessageService.Clear()
 		routeId := "ROUTE1"
 		routesWithWindows := map[string]bool{routeId: true}
-		validations.ContinuousDropOffValidation(&types.Route{RouteId: &routeId, ContinuousDropOff: lib.Ptr("2")}, 4, &types.Gtfs{}, nil, routesWithWindows)
+		rules := &types.RoutesRules{ContinuousDropOff: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
+		validations.ContinuousDropOffValidation(&types.Route{RouteId: &routeId, ContinuousDropOff: lib.Ptr("2")}, 4, &types.Gtfs{}, rules, routesWithWindows)
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Forbidden_WithEndWindow", types.SEVERITY_ERROR)
 	})
 	t.Run("Allowed_WithStartWindowIfOne", func(t *testing.T) {

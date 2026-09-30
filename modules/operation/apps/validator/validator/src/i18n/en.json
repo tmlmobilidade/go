@@ -503,6 +503,12 @@
 		"recommended": "Field \"line_id\" is recommended",
 		"required": "Field \"line_id\" is required"
 	},
+	"line_id_validation": {
+		"forbidden": "Field \"line_id\" is forbidden",
+		"not_equal_to_route_short_name": "Field \"line_id\" \"%s\" should be the same as \"route_short_name\" \"%s\"",
+		"recommended": "Field \"line_id\" is recommended",
+		"required": "Field \"line_id\" is required"
+	},
 	"line_long_name_validation": {
 		"forbidden": "Field \"line_long_name\" is forbidden",
 		"recommended": "Field \"line_long_name\" is recommended",

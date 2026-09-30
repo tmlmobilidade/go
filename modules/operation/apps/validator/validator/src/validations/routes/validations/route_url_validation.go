@@ -27,7 +27,7 @@ func RouteUrlValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *ty
 		ctx.WithSeverity(rules.RouteUrl.Severity)
 	}
 
-	// Check if route_url is required
+	// 1. Validate route_url is present
 	if route.RouteUrl == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -38,19 +38,19 @@ func RouteUrlValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *ty
 		return
 	}
 
-	// Check if route_url is forbidden
+	// 2. Validate route_url is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_url_validation.forbidden"))
 		return
 	}
 
-	// Check if route_url is valid
+	// 3. Validate route_url is valid
 	if !lib.ValidateUrl(*route.RouteUrl) {
 		ctx.AddError(ctx.GetTranslatedMessage("route_url_validation.invalid", *route.RouteUrl))
 		return
 	}
 
-	// Check if route_url is the same as agency.agency_url
+	// 4. Validate route_url is the same as agency.agency_url
 	if route.AgencyId != nil {
 		agencyId := *route.AgencyId
 		agencyRows, err := gtfs.GetRowsById("agency", agencyId)
@@ -65,7 +65,7 @@ func RouteUrlValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *ty
 		}
 	}
 
-	// Validate rules
+	// 5. Validate Rule Options
 	if rules != nil && rules.RouteUrl.Options != nil {
 		if slices.Contains(*rules.RouteUrl.Options, types.ALL_OPTIONS) {
 			return

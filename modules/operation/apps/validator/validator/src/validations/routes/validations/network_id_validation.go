@@ -32,7 +32,7 @@ func NetworkIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *t
 		ctx.WithSeverity(rules.NetworkId.Severity)
 	}
 
-	// Check if network_id is required
+	// 1. Validate network_id is present
 	if route.NetworkId == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -43,24 +43,24 @@ func NetworkIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *t
 		return
 	}
 
-	// Check if network_id is forbidden
+	// 2. Validate network_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("network_id_validation.forbidden"))
 		return
 	}
 
-	// Check if network_id is valid
+	// 3. Validate network_id is valid
 	routeNetworkCount, err := gtfs.GetTableCount("route_networks")
 	// Fallback to in-memory data if database is not available
 	if err != nil {
 		routeNetworkCount = len(gtfs.RouteNetwork)
 	}
 	if routeNetworkCount > 0 && route.NetworkId != nil {
-		ctx.AddError(ctx.GetTranslatedMessage("network_id_validation.forbidden_when_route_networks_exists", *route.NetworkId))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("network_id_validation.forbidden_when_route_networks_exists", *route.NetworkId))
 		return
 	}
 
-	// Validate rules
+	// 4. Validate Rule Options
 	if rules != nil && rules.NetworkId.Options != nil {
 		if slices.Contains(*rules.NetworkId.Options, types.ALL_OPTIONS) {
 			return

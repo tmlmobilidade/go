@@ -28,7 +28,7 @@ func RouteShortNameValidation(route *types.Route, row int, rules *types.RoutesRu
 		ctx.WithSeverity(rules.RouteShortName.Severity)
 	}
 
-	// 1. Check if route_short_name is present
+	// 1. Validate route_short_name is present
 	if route.RouteShortName == nil || *route.RouteShortName == "" {
 		if ctx.ShouldSkip() {
 			return
@@ -39,18 +39,18 @@ func RouteShortNameValidation(route *types.Route, row int, rules *types.RoutesRu
 		return
 	}
 
-	// 2. Check if route_short_name is forbidden
+	// 2. Validate route_short_name is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_short_name_validation.forbidden"))
 		return
 	}
 
-	// 3. Validate length
+	// 3. Validate route_short_name length
 	if len(*route.RouteShortName) > 12 {
 		ctx.AddWarning(ctx.GetTranslatedMessage("route_short_name_validation.too_long", *route.RouteShortName))
 	}
 
-	// Validate rules
+	// 4. Validate Rule Options
 	if rules != nil && rules.RouteShortName.Options != nil {
 		if slices.Contains(*rules.RouteShortName.Options, types.ALL_OPTIONS) {
 			return

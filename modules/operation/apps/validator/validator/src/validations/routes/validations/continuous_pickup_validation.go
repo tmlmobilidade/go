@@ -40,21 +40,32 @@ func ContinuousPickupValidation(route *types.Route, row int, gtfs *types.Gtfs, r
 		ctx.WithSeverity(rules.ContinuousPickup.Severity)
 	}
 
-	// continuous_pickup is optional: empty or "1" (no continuous stopping pickup) is valid
+	// 1. Validate continuous_pickup is present
 	if route.ContinuousPickup == nil || *route.ContinuousPickup == "" || *route.ContinuousPickup == "1" {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("continuous_pickup_validation.required", "continuous_pickup_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Check if this route has trips with pickup/dropoff windows using pre-computed cache
+	// 2. Validate continuous_pickup is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_pickup_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate continuous_pickup is a valid continuous_pickup
 	if route.RouteId != nil {
 		if routesWithWindows[*route.RouteId] {
-			lib.AppLogger.Accent("route.ContinuousPickup", *route.ContinuousPickup)
-			ctx.AddError(ctx.GetTranslatedMessage("continuous_pickup_validation.forbidden_with_window"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_pickup_validation.forbidden_with_window"))
 			return
 		}
 	}
 
-	// Validate rules
+	// 4. Validate Rule Options
 	if rules != nil && rules.ContinuousPickup.Options != nil {
 		if slices.Contains(*rules.ContinuousPickup.Options, types.ALL_OPTIONS) {
 			return

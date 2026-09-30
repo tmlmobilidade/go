@@ -42,12 +42,7 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		ctx.WithSeverity(rules.RouteType.Severity)
 	}
 
-	// Valid route_type options
-	validTypes := []int{
-		0, 1, 2, 3, 4, 5, 6, 7, 11, 12,
-	}
-
-	// 1. Check if route_type is present
+	// 1. Validate route_type is present
 	if route.RouteType == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -58,13 +53,14 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		return
 	}
 
-	// 2. Check if route_type is forbidden
+	// 2. Validate route_type is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_type_validation.forbidden"))
 		return
 	}
 
-	// 3. Check if route_type is valid
+	// 3. Validate route_type is valid
+	validTypes := []int{0, 1, 2, 3, 4, 5, 6, 7, 11, 12}
 	if !slices.Contains(validTypes, *route.RouteType) {
 		validTypeStrings := make([]string, len(validTypes))
 		for i, validType := range validTypes {
@@ -74,7 +70,7 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		return
 	}
 
-	// Validate rules
+	// 4. Validate Rule Options
 	if rules != nil && rules.RouteType.Options != nil {
 		if slices.Contains(*rules.RouteType.Options, types.ALL_OPTIONS) {
 			return

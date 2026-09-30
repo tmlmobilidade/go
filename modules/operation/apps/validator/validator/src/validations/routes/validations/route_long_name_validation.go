@@ -29,7 +29,7 @@ func RouteLongNameValidation(route *types.Route, row int, rules *types.RoutesRul
 		ctx.WithSeverity(rules.RouteLongName.Severity)
 	}
 
-	// 1. Check if route_long_name is present
+	// 1. Validate route_long_name is present
 	if route.RouteLongName == nil || *route.RouteLongName == "" {
 		if ctx.ShouldSkip() {
 			return
@@ -40,13 +40,13 @@ func RouteLongNameValidation(route *types.Route, row int, rules *types.RoutesRul
 		return
 	}
 
-	// 2. Check if route_long_name is forbidden
+	// 2. Validate route_long_name is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_long_name_validation.forbidden"))
 		return
 	}
 
-	// 3. Validate rules
+	// 3. Validate Rule Options
 	if rules != nil && rules.RouteLongName.Options != nil {
 		if slices.Contains(*rules.RouteLongName.Options, types.ALL_OPTIONS) {
 			return

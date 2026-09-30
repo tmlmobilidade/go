@@ -502,6 +502,12 @@
 		"recommended": "O campo \"line_id\" é recomendado",
 		"required": "O campo \"line_id\" é obrigatório"
 	},
+	"line_id_validation": {
+		"forbidden": "O campo \"line_id\" é proibido",
+		"not_equal_to_route_short_name": "O campo \"line_id\" \"%s\" deve ser igual ao campo \"route_short_name\" \"%s\"",
+		"recommended": "O campo \"line_id\" é recomendado",
+		"required": "O campo \"line_id\" é obrigatório"
+	},
 	"line_long_name_validation": {
 		"forbidden": "O campo \"line_long_name\" é proibido",
 		"recommended": "O campo \"line_long_name\" é recomendado",

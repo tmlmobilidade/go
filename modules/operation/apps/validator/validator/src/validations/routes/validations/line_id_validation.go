@@ -36,19 +36,20 @@ func LineIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *type
 			return
 		}
 
-		message := ctx.GetRequiredMessage("line_id_required.required", "line_id_required.recommended")
+		message := ctx.GetRequiredMessage("line_id_validation.required", "line_id_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate line_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_id_required.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_id_validation.forbidden"))
 		return
 	}
 
 	// 3. Validate line_id is the same as route_short_name
 	if route.RouteShortName != nil && *route.LineId != *route.RouteShortName {
-		ctx.AddError(ctx.GetTranslatedMessage("line_id_required.not_equal_to_route_short_name", *route.LineId, *route.RouteShortName))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_id_validation.not_equal_to_route_short_name", *route.LineId, *route.RouteShortName))
+		return
 	}
 }

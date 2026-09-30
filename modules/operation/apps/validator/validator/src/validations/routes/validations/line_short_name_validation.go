@@ -30,12 +30,12 @@ func LineShortNameValidation(route *types.Route, row int, gtfs *types.Gtfs, rule
 		ctx.WithSeverity(rules.LineShortName.Severity)
 	}
 
-	// Check if line_id is present
+	// 1. Validate line_id is present
 	if route.LineId == nil {
 		return
 	}
 
-	// Check if line_short_name is present
+	// 2. Validate line_short_name is present
 	if route.LineShortName == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -46,14 +46,15 @@ func LineShortNameValidation(route *types.Route, row int, gtfs *types.Gtfs, rule
 		return
 	}
 
-	// Check if line_short_name is forbidden
+	// 3. Validate line_short_name is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_short_name_validation.forbidden"))
 		return
 	}
 
-	// Validate line_short_name matches route_short_name
+	// 4. Validate line_short_name matches route_short_name
 	if route.RouteShortName != nil && *route.RouteShortName != *route.LineShortName {
-		ctx.AddError(ctx.GetTranslatedMessage("line_short_name_validation.not_equal_to_route_short_name", *route.LineShortName, *route.RouteShortName))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_short_name_validation.not_equal_to_route_short_name", *route.LineShortName, *route.RouteShortName))
+		return
 	}
 }

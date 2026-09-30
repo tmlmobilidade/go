@@ -40,21 +40,32 @@ func ContinuousDropOffValidation(route *types.Route, row int, gtfs *types.Gtfs, 
 		ctx.WithSeverity(rules.ContinuousDropOff.Severity)
 	}
 
-	// continuous_drop_off is optional: empty or "1" (no continuous stopping drop off) is valid
+	// 1. Validate continuous_drop_off is present
 	if route.ContinuousDropOff == nil || *route.ContinuousDropOff == "" || *route.ContinuousDropOff == "1" {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("continuous_drop_off_validation.required", "continuous_drop_off_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Check if this route has trips with pickup/dropoff windows using pre-computed cache
+	// 2. Validate continuous_drop_off is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_drop_off_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate continuous_drop_off is a valid continuous_drop_off
 	if route.RouteId != nil {
 		if routesWithWindows[*route.RouteId] {
-			lib.AppLogger.Accent("route.ContinuousDropOff", *route.ContinuousDropOff)
-			ctx.AddError(ctx.GetTranslatedMessage("continuous_drop_off_validation.forbidden_with_window"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_drop_off_validation.forbidden_with_window"))
 			return
 		}
 	}
 
-	// Validate rules
+	// 4. Validate Rule Options
 	if rules != nil && rules.ContinuousDropOff.Options != nil {
 		if slices.Contains(*rules.ContinuousDropOff.Options, types.ALL_OPTIONS) {
 			return

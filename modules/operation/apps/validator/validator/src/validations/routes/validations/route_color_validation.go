@@ -29,7 +29,7 @@ func RouteColorValidation(route *types.Route, row int, rules *types.RoutesRules)
 		ctx.WithSeverity(rules.RouteColor.Severity)
 	}
 
-	// 1. Check if route_color is present
+	// 1. Validate route_color is present
 	if route.RouteColor == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -40,13 +40,13 @@ func RouteColorValidation(route *types.Route, row int, rules *types.RoutesRules)
 		return
 	}
 
-	// 2. Check if route_color is forbidden
+	// 2. Validate route_color is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_color_validation.forbidden"))
 		return
 	}
 
-	// 3. Check if route_color is valid
+	// 3. Validate route_color is valid
 	color := strings.ToUpper(*route.RouteColor)
 	matched, _ := regexp.MatchString(`^[0-9A-F]{6}$`, color)
 	if !matched {
@@ -54,7 +54,7 @@ func RouteColorValidation(route *types.Route, row int, rules *types.RoutesRules)
 		return
 	}
 
-	// Validate rules
+	// 4. Validate Rule Options
 	if rules != nil && rules.RouteColor.Options != nil {
 		if slices.Contains(*rules.RouteColor.Options, types.ALL_OPTIONS) {
 			return

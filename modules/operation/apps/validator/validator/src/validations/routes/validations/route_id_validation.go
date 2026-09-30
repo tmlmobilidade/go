@@ -26,7 +26,7 @@ func RouteIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *typ
 		ctx.WithSeverity(rules.RouteId.Severity)
 	}
 
-	// 1. Check if route_id is present
+	// 1. Validate route_id is present
 	if route.RouteId == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -37,13 +37,13 @@ func RouteIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *typ
 		return
 	}
 
-	// 2. Check if route_id is forbidden
+	// 2. Validate route_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_id_validation.forbidden"))
 		return
 	}
 
-	// 3. Check if route_id is Unique ID
+	// 3. Validate route_id is Unique ID
 	rows, err := gtfs.GetRowsById("routes", *route.RouteId)
 	if err == nil && len(rows) > 1 {
 		ctx.AddError(ctx.GetTranslatedMessage("route_id_validation.duplicate", *route.RouteId))

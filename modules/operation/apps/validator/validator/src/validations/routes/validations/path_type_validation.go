@@ -33,7 +33,7 @@ func PathTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
 		ctx.WithSeverity(rules.PathType.Severity)
 	}
 
-	// Check Required
+	// 1. Validate path_type is present
 	if route.PathType == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -44,13 +44,13 @@ func PathTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
 		return
 	}
 
-	// Check if path_type is forbidden
+	// 2. Validate path_type is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("path_type_validation.forbidden"))
 		return
 	}
 
-	// Validate Rule Options
+	// 3. Validate Rule Options
 	if rules != nil && rules.PathType.Options != nil {
 		if slices.Contains(*rules.PathType.Options, types.ALL_OPTIONS) {
 			return

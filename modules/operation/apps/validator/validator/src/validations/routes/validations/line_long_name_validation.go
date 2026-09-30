@@ -30,12 +30,12 @@ func LineLongNameValidation(route *types.Route, row int, gtfs *types.Gtfs, rules
 		ctx.WithSeverity(rules.LineLongName.Severity)
 	}
 
-	// Check if line_id is present
+	// 1. Validate line_id is present
 	if route.LineId == nil {
 		return
 	}
 
-	// Check if line_long_name is present
+	// 2. Validate line_long_name is present
 	if route.LineLongName == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -46,7 +46,7 @@ func LineLongNameValidation(route *types.Route, row int, gtfs *types.Gtfs, rules
 		return
 	}
 
-	// Check if line_long_name is forbidden
+	// 3. Validate line_long_name is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_long_name_validation.forbidden"))
 		return
