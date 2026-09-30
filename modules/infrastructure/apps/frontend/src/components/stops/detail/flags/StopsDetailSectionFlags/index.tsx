@@ -61,7 +61,6 @@ export function StopsDetailSectionFlags() {
 		<Collapsible
 			description={t('default:stops.detail.SectionFlags.description')}
 			title={t('default:stops.detail.SectionFlags.title')}
-			defaultOpen
 		>
 
 			<Section gap="md">

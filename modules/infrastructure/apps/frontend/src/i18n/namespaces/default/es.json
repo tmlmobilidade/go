@@ -83,39 +83,6 @@
 					"label": "Parada Eliminada"
 				}
 			},
-			"SectionFlagItem": {
-				"fields": {
-					"agency_ids": {
-						"label": "Operadores"
-					},
-					"is_harmonized": {
-						"label": "Poste alineado con los identificadores únicos"
-					},
-					"short_name": {
-						"label": "Nombre Actual del Operador",
-						"placeholder": "Nombre Actual del Operador"
-					},
-					"stop_id": {
-						"label": "ID Actual del Operador",
-						"placeholder": "ID Actual del Operador"
-					}
-				}
-			},
-			"SectionFlags": {
-				"AddFlagButton": {
-					"label": "Añadir Nuevo Poste"
-				},
-				"description": "Gestión de IDs de esta parada.",
-				"fields": {
-					"legacy_ids": {
-						"label": "Otros IDs (Antiguos)"
-					},
-					"unique_id": {
-						"label": "Código Único de la Parada"
-					}
-				},
-				"title": "Identificadores y Postes"
-			},
 			"SectionAmenities": {
 				"description": "Equipamientos y elementos presentes en esta parada.",
 				"fields": {
@@ -158,6 +125,39 @@
 				},
 				"title": "Verificaciones"
 			},
+			"SectionFlagItem": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"is_harmonized": {
+						"label": "Poste alineado con los identificadores únicos"
+					},
+					"short_name": {
+						"label": "Nombre Actual del Operador",
+						"placeholder": "Nombre Actual del Operador"
+					},
+					"stop_id": {
+						"label": "ID Actual del Operador",
+						"placeholder": "ID Actual del Operador"
+					}
+				}
+			},
+			"SectionFlags": {
+				"AddFlagButton": {
+					"label": "Añadir Nuevo Poste"
+				},
+				"description": "Gestión de IDs de esta parada.",
+				"fields": {
+					"legacy_ids": {
+						"label": "Otros IDs (Antiguos)"
+					},
+					"unique_id": {
+						"label": "Código Único de la Parada"
+					}
+				},
+				"title": "Identificadores y Postes"
+			},
 			"SectionGeneral": {
 				"description": "Información general sobre esta parada.",
 				"title": "Detalles de esta Parada"
@@ -179,6 +179,10 @@
 					}
 				},
 				"title": "Infraestructura"
+			},
+			"SectionMap": {
+				"description": "Localización de la parada.",
+				"title": "Vista Geográfica"
 			},
 			"SectionShelter": {
 				"description": "Información relacionada con el refugio.",

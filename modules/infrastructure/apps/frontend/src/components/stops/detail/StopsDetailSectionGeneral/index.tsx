@@ -1,9 +1,6 @@
 'use client';
 
-import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
-import { LifecycleStatusValues } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, Grid, Section, SegmentedControl, StandardFormController } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { StopsDetailUpdateCoordinates } from '../coordinates/StopsDetailUpdateCoordinates';
@@ -19,18 +16,8 @@ export function StopsDetailSectionGeneral() {
 
 	const { t } = useTranslation();
 
-	const { capabilities, form } = useStopsDetailFormContext();
-
 	//
-	// B. Transform data
-
-	const lifecycleStatusItems = useMemo(() => LifecycleStatusValues.map(value => ({
-		label: t(`shared:status.lifecycle_status.${value}`),
-		value: value,
-	})), [t]);
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Collapsible
@@ -42,24 +29,6 @@ export function StopsDetailSectionGeneral() {
 				<Grid columns="ab" gap="md" placeItems="start">
 					<StopsDetailUpdateCoordinates />
 					<StopsDetailUpdateName />
-				</Grid>
-			</Section>
-
-			<Section>
-				<Grid>
-					<StandardFormController
-						control={form.control}
-						name="lifecycle_status"
-						render={({ field }) => (
-							<SegmentedControl
-								data={lifecycleStatusItems}
-								disabled={field.disabled}
-								onChange={field.onChange}
-								readOnly={!capabilities.editEnabled}
-								value={field.value}
-							/>
-						)}
-					/>
 				</Grid>
 			</Section>
 

@@ -83,39 +83,6 @@
 					"label": "Paragem Eliminada"
 				}
 			},
-			"SectionFlagItem": {
-				"fields": {
-					"agency_ids": {
-						"label": "Operadores"
-					},
-					"is_harmonized": {
-						"label": "Postalete alinhado com os identificadores únicos"
-					},
-					"short_name": {
-						"label": "Nome Atual do Operador",
-						"placeholder": "Nome Atual do Operador"
-					},
-					"stop_id": {
-						"label": "ID Atual do Operador",
-						"placeholder": "ID Atual do Operador"
-					}
-				}
-			},
-			"SectionFlags": {
-				"AddFlagButton": {
-					"label": "Adicionar Novo Postalete"
-				},
-				"description": "Gestão de IDs desta paragem.",
-				"fields": {
-					"legacy_ids": {
-						"label": "Outros IDs (Antigos)"
-					},
-					"unique_id": {
-						"label": "Código Único da Paragem"
-					}
-				},
-				"title": "Identificadores e Postaletes"
-			},
 			"SectionAmenities": {
 				"description": "Equipamentos e elementos presentes nesta paragem.",
 				"fields": {
@@ -158,6 +125,39 @@
 				},
 				"title": "Verificações"
 			},
+			"SectionFlagItem": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"is_harmonized": {
+						"label": "Postalete alinhado com os identificadores únicos"
+					},
+					"short_name": {
+						"label": "Nome Atual do Operador",
+						"placeholder": "Nome Atual do Operador"
+					},
+					"stop_id": {
+						"label": "ID Atual do Operador",
+						"placeholder": "ID Atual do Operador"
+					}
+				}
+			},
+			"SectionFlags": {
+				"AddFlagButton": {
+					"label": "Adicionar Novo Postalete"
+				},
+				"description": "Gestão de IDs desta paragem.",
+				"fields": {
+					"legacy_ids": {
+						"label": "Outros IDs (Antigos)"
+					},
+					"unique_id": {
+						"label": "Código Único da Paragem"
+					}
+				},
+				"title": "Identificadores e Postaletes"
+			},
 			"SectionGeneral": {
 				"description": "Informações gerais sobre esta paragem.",
 				"title": "Detalhes desta Paragem"
@@ -179,6 +179,10 @@
 					}
 				},
 				"title": "Infraestrutura"
+			},
+			"SectionMap": {
+				"description": "Localização da paragem.",
+				"title": "Visão Geográfica"
 			},
 			"SectionShelter": {
 				"description": "Informações relacionadas com o abrigo.",
