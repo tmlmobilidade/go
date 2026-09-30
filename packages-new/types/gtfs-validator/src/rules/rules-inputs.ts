@@ -285,30 +285,15 @@ export interface VehiclesRulesInput {
 	vehicle_id_unique?: RuleConfigInput
 	vehicle_make_required?: RuleConfigInput
 	vehicle_model_required?: RuleConfigInput
-	vehicle_owner_required?: RuleConfigInput
-	vehicles_available_seats_non_negative?: RuleConfigInput
-	vehicles_available_standing_non_negative?: RuleConfigInput
 	vehicles_bicycles_rack_count_non_negative?: RuleConfigInput
-	vehicles_climatization_valid_enum?: RuleConfigInput
-	vehicles_consumption_meter_valid_format?: RuleConfigInput
-	vehicles_emission_code_valid_for_propulsion_type?: RuleConfigInput
-	vehicles_external_sound_valid_enum?: RuleConfigInput
-	vehicles_front_display_valid_enum?: RuleConfigInput
-	vehicles_internal_sound_level_valid_enum?: RuleConfigInput
-	vehicles_kneeling_valid_enum?: RuleConfigInput
+	vehicles_car_capacity_non_negative?: RuleConfigInput
+	vehicles_emission_valid_enum?: RuleConfigInput
 	vehicles_license_plate_format_per_market_rules?: RuleConfigInput
-	vehicles_lowered_floor_valid_enum?: RuleConfigInput
-	vehicles_onboard_monitor_valid_enum?: RuleConfigInput
-	vehicles_passenger_counting_valid_enum?: RuleConfigInput
-	vehicles_propulsion_type_valid_enum?: RuleConfigInput
-	vehicles_ramp_valid_enum?: RuleConfigInput
-	vehicles_rear_display_valid_enum?: RuleConfigInput
+	vehicles_propulsion_valid_enum?: RuleConfigInput
 	vehicles_registration_date_valid_day_granularity?: RuleConfigInput
-	vehicles_side_display_valid_enum?: RuleConfigInput
-	vehicles_static_information_valid_enum?: RuleConfigInput
-	vehicles_typology_in_allowed_vehicle_types?: RuleConfigInput
-	vehicles_video_surveillance_valid_enum?: RuleConfigInput
-	vehicles_wheelchair_spots_valid_enum?: RuleConfigInput
+	vehicles_total_capacity_non_negative?: RuleConfigInput
+	vehicles_vehicle_type_valid_enum?: RuleConfigInput
+	vehicles_wheelchair_accessible_valid_gtfs_enum?: RuleConfigInput
 }
 
 /**
