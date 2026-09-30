@@ -32,18 +32,30 @@ func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rul
 		ctx.WithSeverity(rules.ToStopId.Severity)
 	}
 
+	// 1. Validate to_stop_id is present
 	if pathways.ToStopId == nil {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("to_stop_id_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("to_stop_id_validation.required", "to_stop_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Check Foreign Key
+	// 2. Validate to_stop_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("to_stop_id_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate to_stop_id is a valid to_stop_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *pathways.ToStopId) {
-		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.not_found", map[string]any{"to_stop_id": *pathways.ToStopId}))
+		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.not_found", *pathways.ToStopId))
 		return
 	}
 
-	// Get the stop to check location_type
+	// 4. Get the stop to check location_type
 	stopRows, err := gtfs.GetRowsById("stops", *pathways.ToStopId)
 	if err != nil || len(stopRows) == 0 {
 		return // Already handled by foreign key check above
@@ -54,7 +66,7 @@ func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rul
 		return
 	}
 
-	// Parse location_type
+	// 5. Parse location_type
 	var locationType int
 	locationTypeStr := stop.LocationType
 	if locationTypeStr == "" {
@@ -66,7 +78,7 @@ func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rul
 		}
 	}
 
-	// Validate location_type
+	// 6. Validate location_type
 	// Allowed: platform (0 or empty), entrance/exit (2), generic node (3), boarding area (4)
 	// Forbidden: station (1)
 	if locationType == 1 {
@@ -79,7 +91,7 @@ func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rul
 		return
 	}
 
-	// Check stop_access only for platforms/stops (location_type=0 or empty)
+	// 7. Check stop_access only for platforms/stops (location_type=0 or empty)
 	// According to the spec: "stops (location_type=0 or empty) with stop_access=1, are forbidden"
 	if locationType == 0 {
 		var stopAccess int

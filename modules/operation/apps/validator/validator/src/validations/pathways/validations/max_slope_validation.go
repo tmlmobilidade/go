@@ -4,6 +4,7 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
+	"strconv"
 )
 
 /*
@@ -30,6 +31,7 @@ func MaxSlopeValidation(pathways *types.Pathways, row int, rules *types.Pathways
 		ctx.WithSeverity(rules.MaxSlope.Severity)
 	}
 
+	// 1. Validate max_slope is present
 	if pathways.MaxSlope == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -45,17 +47,19 @@ func MaxSlopeValidation(pathways *types.Pathways, row int, rules *types.Pathways
 		return
 	}
 
+	// 2. Validate max_slope is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("max_slope_validation.forbidden"))
 		return
 	}
 
+	// 3. Validate max_slope is a valid max_slope
 	if *pathways.PathwayMode != 1 && *pathways.PathwayMode != 3 {
 		if *pathways.MaxSlope == "0" {
 			return
 		}
 
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("max_slope_validation.not_allowed_pathway_mode", *pathways.PathwayMode))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("max_slope_validation.not_allowed_pathway_mode", strconv.Itoa(*pathways.PathwayMode)))
 		return
 	}
 }

@@ -25,16 +25,28 @@ Example: When two escalators are side-by-side in opposite directions, or when a 
 */
 func PathwayIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rules *types.PathwaysRules) {
 	ctx := lib.NewValidationContext("pathway_id", "pathways.txt", "pathway_id_unique", row, services.AppMessageService)
-	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.PathwayId.Severity != "" {
 		ctx.WithSeverity(rules.PathwayId.Severity)
 	}
 
+	// 1. Validate pathway_id is present
 	if pathways.PathwayId == nil {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_id_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("pathway_id_validation.required", "pathway_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Validate pathway_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_id_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate pathway_id is a valid pathway_id
 	rows, err := gtfs.GetRowsById("pathways", *pathways.PathwayId)
 	if err == nil && len(rows) > 1 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_id_validation.duplicate", *pathways.PathwayId))

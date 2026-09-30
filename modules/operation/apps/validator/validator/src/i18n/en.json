@@ -635,10 +635,12 @@
 	},
 	"pathway_id_validation": {
 		"duplicate": "Duplicate field \"pathway_id\" \"%s\" found. Field \"pathway_id\" must be unique",
+		"forbidden": "Field \"pathway_id\" is forbidden",
 		"recommended": "Field \"pathway_id\" is recommended",
 		"required": "Field \"pathway_id\" is required"
 	},
 	"pathway_mode_validation": {
+		"forbidden": "Field \"pathway_mode\" is forbidden",
 		"invalid": "Field \"pathway_mode\" must be 0, 1, 2, 3, 4, or 5, received: %s",
 		"not_allowed": "Field \"pathway_mode\" \"%s\" is not allowed",
 		"recommended": "Field \"pathway_mode\" is recommended",
@@ -1056,6 +1058,7 @@
 		"trip_must_belong_to_route": "When both to_trip_id and to_route_id are defined, to_trip_id \"%s\" must belong to to_route_id \"%s\". Trip references route \"%s\""
 	},
 	"to_stop_id_validation": {
+		"forbidden": "Field \"to_stop_id\" is forbidden",
 		"forbidden_stop_access_1": "Field \"to_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
 		"invalid_location_type": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
 		"invalid_location_type_pathway": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",

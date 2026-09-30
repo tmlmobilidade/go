@@ -27,6 +27,7 @@ func TraversalTimeValidation(pathways *types.Pathways, row int, rules *types.Pat
 		ctx.WithSeverity(rules.TraversalTime.Severity)
 	}
 
+	// 1. Validate traversal_time is present
 	if pathways.TraversalTime == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -37,11 +38,13 @@ func TraversalTimeValidation(pathways *types.Pathways, row int, rules *types.Pat
 		return
 	}
 
+	// 2. Validate traversal_time is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("traversal_time_validation.forbidden"))
 		return
 	}
 
+	// 3. Validate traversal_time is a valid traversal_time
 	if *pathways.TraversalTime < 0 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("traversal_time_validation.negative", strconv.Itoa(*pathways.TraversalTime)))
 		return

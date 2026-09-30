@@ -26,6 +26,7 @@ func StairCountValidation(pathways *types.Pathways, row int, rules *types.Pathwa
 		ctx.WithSeverity(rules.StairCount.Severity)
 	}
 
+	// 1. Validate stair_count is present
 	if pathways.StairCount == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -36,6 +37,7 @@ func StairCountValidation(pathways *types.Pathways, row int, rules *types.Pathwa
 		return
 	}
 
+	// 2. Validate stair_count is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stair_count_validation.forbidden"))
 		return

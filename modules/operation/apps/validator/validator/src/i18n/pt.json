@@ -635,10 +635,12 @@
 	},
 	"pathway_id_validation": {
 		"duplicate": "Campo \"pathway_id\" \"%s\" duplicado encontrado. O campo \"pathway_id\" deve ser único",
+		"forbidden": "O campo \"pathway_id\" é proibido",
 		"recommended": "O campo \"pathway_id\" é recomendado",
 		"required": "O campo \"pathway_id\" é obrigatório"
 	},
 	"pathway_mode_validation": {
+		"forbidden": "O campo \"pathway_mode\" é proibido",
 		"invalid": "O campo \"pathway_mode\" deve ser 0, 1, 2, 3, 4 ou 5, recebido: %s",
 		"not_allowed": "O campo \"pathway_mode\" \"%s\" não é permitido",
 		"recommended": "O campo \"pathway_mode\" é recomendado",
@@ -1057,6 +1059,7 @@
 		"trip_must_belong_to_route": "Quando to_trip_id e to_route_id estão definidos, to_trip_id \"%s\" deve pertencer a to_route_id \"%s\". A viagem referencia a rota \"%s\""
 	},
 	"to_stop_id_validation": {
+		"forbidden": "O campo \"to_stop_id\" é proibido",
 		"forbidden_stop_access_1": "O campo \"to_stop_id\" \"%s\" referencia uma paragem (location_type=0 ou vazio) com stop_access=1. Paragens com stop_access=1 são proibidas para pathways",
 		"invalid_location_type": "O campo \"to_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser uma paragem (location_type=0) ou estação (location_type=1)",
 		"invalid_location_type_pathway": "O campo \"to_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser plataforma (0 ou vazio), entrada/saída (2), nó genérico (3) ou área de embarque (4)",

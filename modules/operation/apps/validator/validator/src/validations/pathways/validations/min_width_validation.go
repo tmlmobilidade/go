@@ -28,6 +28,7 @@ func MinWidthValidation(pathways *types.Pathways, row int, rules *types.Pathways
 		ctx.WithSeverity(rules.MinWidth.Severity)
 	}
 
+	// 1. Validate min_width is present
 	if pathways.MinWidth == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -38,22 +39,26 @@ func MinWidthValidation(pathways *types.Pathways, row int, rules *types.Pathways
 		return
 	}
 
+	// 2. Validate min_width is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("min_width_validation.forbidden"))
 		return
 	}
 
+	// 3. Validate min_width is a valid min_width
 	minWidthFloat, err := strconv.ParseFloat(*pathways.MinWidth, 64)
 	if err != nil {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("min_width_validation.invalid", *pathways.MinWidth))
 		return
 	}
 
+	// 4. Validate min_width is a valid min_width
 	if minWidthFloat < 0 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("min_width_validation.negative"))
 		return
 	}
 
+	// 5. Validate min_width is recommended
 	if minWidthFloat < 1 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("min_width_validation.recommended"))
 		return

@@ -25,6 +25,7 @@ func ReversedSignpostedAsValidation(pathways *types.Pathways, row int, rules *ty
 		ctx.WithSeverity(rules.ReversedSignpostedAs.Severity)
 	}
 
+	// 1. Validate reversed_signposted_as is present
 	if pathways.ReversedSignpostedAs == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -35,6 +36,7 @@ func ReversedSignpostedAsValidation(pathways *types.Pathways, row int, rules *ty
 		return
 	}
 
+	// 2. Validate reversed_signposted_as is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("reversed_signposted_as_validation.forbidden"))
 		return

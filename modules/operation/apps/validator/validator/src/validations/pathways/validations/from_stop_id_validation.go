@@ -26,27 +26,33 @@ Values for stop_id that identify stations (location_type=1), or stops (location_
 */
 func FromStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rules *types.PathwaysRules) {
 	ctx := lib.NewValidationContext("from_stop_id", "pathways.txt", "pathway_from_stop_id_references_stops_table", row, services.AppMessageService)
-
 	if rules != nil && rules.FromStopId.Severity != "" {
 		ctx.WithSeverity(rules.FromStopId.Severity)
 	}
 
-	// Required check
+	// 1. Validate from_stop_id is present
 	if pathways.FromStopId == nil {
-		ctx.AddMessageWithSeverity(
-			ctx.GetTranslatedMessage("from_stop_id_validation.required"),
-		)
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("from_stop_id_validation.required", "from_stop_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate from_stop_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("from_stop_id_validation.forbidden"))
 		return
 	}
 
 	stopID := *pathways.FromStopId
 
-	// Foreign key check
+	// 3. Validate from_stop_id is a valid from_stop_id
 	stopRows, err := gtfs.GetRowsById("stops", stopID)
 	if err != nil || len(stopRows) == 0 {
-		ctx.AddError(
-			ctx.GetTranslatedMessage("from_stop_id_validation.not_found", stopID),
-		)
+		ctx.AddError(ctx.GetTranslatedMessage("from_stop_id_validation.not_found", stopID))
 		return
 	}
 
@@ -58,18 +64,14 @@ func FromStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, r
 	locationType := 0 // Default when empty
 	if stop.LocationType != "" {
 		if errMsg := lib.ParseStringToPrimitive(stop.LocationType, &locationType); errMsg != "" {
-			ctx.AddError(
-				ctx.GetTranslatedMessage("from_stop_id_validation.invalid_location_type_format", stopID),
-			)
+			ctx.AddError(ctx.GetTranslatedMessage("from_stop_id_validation.invalid_location_type_format", stopID))
 			return
 		}
 	}
 
 	// Forbidden: station (1)
 	if locationType == 1 {
-		ctx.AddError(
-			ctx.GetTranslatedMessage("from_stop_id_validation.invalid_location_type_station", stopID),
-		)
+		ctx.AddError(ctx.GetTranslatedMessage("from_stop_id_validation.invalid_location_type_station", stopID))
 		return
 	}
 
@@ -77,9 +79,7 @@ func FromStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, r
 	allowedLocationTypes := map[int]struct{}{0: {}, 2: {}, 3: {}, 4: {}}
 
 	if _, ok := allowedLocationTypes[locationType]; !ok {
-		ctx.AddError(
-			ctx.GetTranslatedMessage("from_stop_id_validation.invalid_location_type_pathway", stopID, locationType),
-		)
+		ctx.AddError(ctx.GetTranslatedMessage("from_stop_id_validation.invalid_location_type_pathway", stopID, locationType))
 		return
 	}
 
@@ -89,17 +89,13 @@ func FromStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, r
 
 		if stop.StopAccess != "" {
 			if errMsg := lib.ParseStringToPrimitive(stop.StopAccess, &stopAccess); errMsg != "" {
-				ctx.AddError(
-					ctx.GetTranslatedMessage("from_stop_id_validation.invalid_stop_access_format", stopID),
-				)
+				ctx.AddError(ctx.GetTranslatedMessage("from_stop_id_validation.invalid_stop_access_format", stopID))
 				return
 			}
 		}
 
 		if stopAccess == 1 {
-			ctx.AddError(
-				ctx.GetTranslatedMessage("from_stop_id_validation.forbidden_stop_access_1", stopID),
-			)
+			ctx.AddError(ctx.GetTranslatedMessage("from_stop_id_validation.forbidden_stop_access_1", stopID))
 			return
 		}
 	}

@@ -30,6 +30,7 @@ func SignpostedAsValidation(pathways *types.Pathways, row int, rules *types.Path
 		ctx.WithSeverity(rules.SignpostedAs.Severity)
 	}
 
+	// 1. Validate signposted_as is present
 	if pathways.SignpostedAs == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -40,6 +41,7 @@ func SignpostedAsValidation(pathways *types.Pathways, row int, rules *types.Path
 		return
 	}
 
+	// 2. Validate signposted_as is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("signposted_as_validation.forbidden"))
 		return
