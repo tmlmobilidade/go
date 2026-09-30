@@ -126,7 +126,7 @@
 	},
 	"contains_id_validation": {
 		"forbidden": "O campo \"contains_id\" é proibido",
-		"invalid": "O campo \"contains_id\" deve ser um ID válido de stops.txt",
+		"invalid": "O campo \"contains_id\" \"%s\" deve ser um ID válido de stops.txt",
 		"not_allowed": "O campo \"contains_id\" \"%s\" não é permitido",
 		"recommended": "O campo \"contains_id\" é recomendado",
 		"required": "O campo \"contains_id\" é obrigatório"
@@ -175,7 +175,7 @@
 	},
 	"destination_id_validation": {
 		"forbidden": "O campo \"destination_id\" é proibido",
-		"invalid": "O campo \"destination_id\" deve ser um ID válido de stops.txt",
+		"invalid": "O campo \"destination_id\" \"%s\" deve ser um ID válido de stops.txt",
 		"not_allowed": "O campo \"destination_id\" \"%s\" não é permitido",
 		"recommended": "O campo \"destination_id\" é recomendado",
 		"required": "O campo \"destination_id\" é obrigatório"
@@ -258,6 +258,7 @@
 	"fare_id_validation": {
 		"duplicate": "Campo \"fare_id\" \"%s\" duplicado encontrado. O campo \"fare_id\" deve ser único",
 		"forbidden": "O campo \"fare_id\" é proibido",
+		"invalid": "O campo \"fare_id\" \"%s\" não é um fare_id válido de fare_attributes.txt",
 		"not_found": "O campo \"fare_id\" \"%s\" não existe em fare_attributes.txt",
 		"recommended": "O campo \"fare_id\" é recomendado",
 		"required": "O campo \"fare_id\" é obrigatório"
@@ -577,7 +578,7 @@
 	},
 	"origin_id_validation": {
 		"forbidden": "O campo \"origin_id\" é proibido",
-		"invalid": "O campo \"origin_id\" deve ser um ID válido de stops.txt",
+		"invalid": "O campo \"origin_id\" \"%s\" deve ser um ID válido de stops.txt",
 		"not_allowed": "O campo \"origin_id\" \"%s\" não é permitido",
 		"recommended": "O campo \"origin_id\" é recomendado",
 		"required": "O campo \"origin_id\" é obrigatório"

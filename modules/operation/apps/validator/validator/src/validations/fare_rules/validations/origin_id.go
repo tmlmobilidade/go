@@ -1,7 +1,6 @@
 package fare_rules
 
 import (
-	"main/i18n"
 	"main/lib"
 	"main/services"
 	"main/types"
@@ -31,41 +30,31 @@ If fare class "b" is valid for all travel originating from either zone "2" or zo
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func OriginIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
-	s := types.SEVERITY_IGNORE
+	ctx := lib.NewValidationContext("origin_id", "fare_rules.txt", "fare_rule_origin_id_references_zones_stops", row, services.AppMessageService)
 	if rules != nil && rules.OriginId.Severity != "" {
-		s = rules.OriginId.Severity
+		ctx.WithSeverity(rules.OriginId.Severity)
 	}
 
-	addMessage := func(msg string, severity types.Severity) {
-		services.AppMessageService.AddMessage(types.Message{
-			Field:    "origin_id",
-			FileName: "fare_rules.txt",
-			Rows:     []int{row},
-			Message:  msg,
-			Severity: severity,
-			RuleID:   "fare_rule_origin_id_references_zones_stops",
-		})
-	}
-
+	// 1. Validate origin_id is present
 	if fareRule.OriginId == nil {
-
-		if s == types.SEVERITY_IGNORE || s == types.SEVERITY_FORBIDDEN {
+		if ctx.ShouldSkip() {
 			return
 		}
 
-		warn := lib.IfThenElse(s == types.SEVERITY_WARNING, i18n.AppTranslator.Get("origin_id_validation.recommended"), i18n.AppTranslator.Get("origin_id_validation.required"))
-		addMessage(warn, s)
+		message := ctx.GetRequiredMessage("origin_id_validation.required", "origin_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	if s == types.SEVERITY_FORBIDDEN {
-		addMessage(i18n.AppTranslator.Get("origin_id_validation.forbidden"), s)
+	// 2. Validate origin_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("origin_id_validation.forbidden"))
 		return
 	}
 
-	// Check Foreign Key
+	// 3. Validate origin_id is a valid origin_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *fareRule.OriginId) {
-		addMessage(i18n.AppTranslator.Get("origin_id_validation.invalid"), types.SEVERITY_ERROR)
+		ctx.AddError(ctx.GetTranslatedMessage("origin_id_validation.invalid", *fareRule.OriginId))
 		return
 	}
 }

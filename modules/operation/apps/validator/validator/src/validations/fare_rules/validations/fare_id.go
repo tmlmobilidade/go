@@ -1,7 +1,6 @@
 package fare_rules
 
 import (
-	"main/i18n"
 	"main/lib"
 	"main/services"
 	"main/types"
@@ -23,26 +22,31 @@ Identifies a fare class.
 [fare_attributes.fare_id]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
 func FareIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
-
-	addMessage := func(msg string) {
-		services.AppMessageService.AddMessage(types.Message{
-			Field:    "fare_id",
-			FileName: "fare_rules.txt",
-			Rows:     []int{row},
-			Message:  msg,
-			Severity: types.SEVERITY_ERROR,
-			RuleID:   "fare_rule_fare_id_references_fare_attributes",
-		})
+	ctx := lib.NewValidationContext("fare_id", "fare_rules.txt", "fare_rule_fare_id_references_fare_attributes", row, services.AppMessageService)
+	if rules != nil && rules.FareId.Severity != "" {
+		ctx.WithSeverity(rules.FareId.Severity)
 	}
 
+	// 1. Validate fare_id is present
 	if fareRule.FareId == nil {
-		addMessage(i18n.AppTranslator.Get("fare_id_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("fare_id_validation.required", "fare_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Check Foreign Key
+	// 2. Validate fare_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("fare_id_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate fare_id is a valid fare_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "fare_attributes", *fareRule.FareId) {
-		addMessage(i18n.AppTranslator.Get("fare_id_validation.not_found", *fareRule.FareId))
+		ctx.AddError(ctx.GetTranslatedMessage("fare_id_validation.invalid", *fareRule.FareId))
 		return
 	}
 }

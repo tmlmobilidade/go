@@ -1,7 +1,6 @@
 package fare_rules
 
 import (
-	"main/i18n"
 	"main/lib"
 	"main/services"
 	"main/types"
@@ -32,35 +31,30 @@ If fare class "b" is valid on route "TSW" and "TSE", the fare_rules.txt file wou
 [routes.route_id]: https://gtfs.org/schedule/reference/#routestxt
 */
 func RouteIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
-	s := types.SEVERITY_IGNORE
+	ctx := lib.NewValidationContext("route_id", "fare_rules.txt", "fare_rule_route_id_references_routes", row, services.AppMessageService)
 	if rules != nil && rules.RouteId.Severity != "" {
-		s = rules.RouteId.Severity
+		ctx.WithSeverity(rules.RouteId.Severity)
 	}
 
 	if fareRule.RouteId == nil {
-		// route_id is optional, so nothing to validate if not present
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("route_id_validation.required", "route_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	addMessage := func(msg string, severity types.Severity) {
-		services.AppMessageService.AddMessage(types.Message{
-			Field:    "route_id",
-			FileName: "fare_rules.txt",
-			Rows:     []int{row},
-			Message:  msg,
-			Severity: severity,
-			RuleID:   "fare_rule_route_id_references_routes",
-		})
-	}
-
-	if s == types.SEVERITY_FORBIDDEN {
-		addMessage(i18n.AppTranslator.Get("route_id_validation.forbidden"), s)
+	// 2. Validate route_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_id_validation.forbidden"))
 		return
 	}
 
-	// Check Foreign Key
+	// 3. Validate route_id is a valid route_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "routes", *fareRule.RouteId) {
-		addMessage(i18n.AppTranslator.Get("route_id_validation.invalid", *fareRule.RouteId), types.SEVERITY_ERROR)
+		ctx.AddError(ctx.GetTranslatedMessage("route_id_validation.invalid", *fareRule.RouteId))
 		return
 	}
 }

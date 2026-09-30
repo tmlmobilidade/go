@@ -1,7 +1,6 @@
 package fare_rules
 
 import (
-	"main/i18n"
 	"main/lib"
 	"main/services"
 	"main/types"
@@ -34,40 +33,32 @@ Because all contains_id zones must be matched for the fare to apply, an itinerar
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func ContainsIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
-	s := types.SEVERITY_IGNORE
+	ctx := lib.NewValidationContext("contains_id", "fare_rules.txt", "fare_rule_contains_id_references_zones_stops", row, services.AppMessageService)
 	if rules != nil && rules.ContainsId.Severity != "" {
-		s = rules.ContainsId.Severity
+		ctx.WithSeverity(rules.ContainsId.Severity)
 	}
 
-	addMessage := func(msg string, severity types.Severity) {
-		services.AppMessageService.AddMessage(types.Message{
-			Field:    "contains_id",
-			FileName: "fare_rules.txt",
-			Rows:     []int{row},
-			Message:  msg,
-			Severity: severity,
-			RuleID:   "fare_rule_contains_id_references_zones_stops",
-		})
-	}
-
+	// 1. Validate contains_id is present
 	if fareRule.ContainsId == nil {
-		if s == types.SEVERITY_IGNORE || s == types.SEVERITY_FORBIDDEN {
+		if ctx.ShouldSkip() {
 			return
 		}
 
-		warn := lib.IfThenElse(s == types.SEVERITY_WARNING, i18n.AppTranslator.Get("contains_id_validation.recommended"), i18n.AppTranslator.Get("contains_id_validation.required"))
-		addMessage(warn, s)
+		message := ctx.GetRequiredMessage("contains_id_validation.required", "contains_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	if s == types.SEVERITY_FORBIDDEN {
-		addMessage(i18n.AppTranslator.Get("contains_id_validation.forbidden"), s)
+	// 2. Validate contains_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("contains_id_validation.forbidden"))
 		return
 	}
 
-	// Check Foreign Key
+	// 3. Validate contains_id is a valid contains_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *fareRule.ContainsId) {
-		addMessage(i18n.AppTranslator.Get("contains_id_validation.invalid"), types.SEVERITY_ERROR)
+		ctx.AddError(ctx.GetTranslatedMessage("contains_id_validation.invalid", *fareRule.ContainsId))
 		return
 	}
+
 }

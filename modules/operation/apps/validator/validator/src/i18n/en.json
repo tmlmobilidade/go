@@ -127,7 +127,7 @@
 	},
 	"contains_id_validation": {
 		"forbidden": "Field \"contains_id\" is forbidden",
-		"invalid": "Field \"contains_id\" must be a valid ID from stops.txt",
+		"invalid": "Field \"contains_id\" \"%s\" must be a valid ID from stops.txt",
 		"not_allowed": "Field \"contains_id\" \"%s\" is not allowed",
 		"recommended": "Field \"contains_id\" is recommended",
 		"required": "Field \"contains_id\" is required"
@@ -176,7 +176,7 @@
 	},
 	"destination_id_validation": {
 		"forbidden": "Field \"destination_id\" is forbidden",
-		"invalid": "Field \"destination_id\" must be a valid ID from stops.txt",
+		"invalid": "Field \"destination_id\" \"%s\" must be a valid ID from stops.txt",
 		"not_allowed": "Field \"destination_id\" \"%s\" is not allowed",
 		"recommended": "Field \"destination_id\" is recommended",
 		"required": "Field \"destination_id\" is required"
@@ -259,6 +259,7 @@
 	"fare_id_validation": {
 		"duplicate": "Duplicate field \"fare_id\" \"%s\" found. Field \"fare_id\" must be unique",
 		"forbidden": "Field \"fare_id\" is forbidden",
+		"invalid": "Field \"fare_id\" \"%s\" is not a valid fare_id from fare_attributes.txt",
 		"not_found": "Field \"fare_id\" \"%s\" does not exist in fare_attributes.txt",
 		"recommended": "Field \"fare_id\" is recommended",
 		"required": "Field \"fare_id\" is required"
@@ -578,7 +579,7 @@
 	},
 	"origin_id_validation": {
 		"forbidden": "Field \"origin_id\" is forbidden",
-		"invalid": "Field \"origin_id\" must be a valid ID from stops.txt",
+		"invalid": "Field \"origin_id\" \"%s\" must be a valid ID from stops.txt",
 		"not_allowed": "Field \"origin_id\" \"%s\" is not allowed",
 		"recommended": "Field \"origin_id\" is recommended",
 		"required": "Field \"origin_id\" is required"

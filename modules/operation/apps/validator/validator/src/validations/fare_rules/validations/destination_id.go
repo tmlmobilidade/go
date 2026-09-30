@@ -1,7 +1,6 @@
 package fare_rules
 
 import (
-	"main/i18n"
 	"main/lib"
 	"main/services"
 	"main/types"
@@ -31,41 +30,31 @@ The destination_id and destination_id fields could be used together to specify t
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func DestinationIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
-	s := types.SEVERITY_IGNORE
+	ctx := lib.NewValidationContext("destination_id", "fare_rules.txt", "fare_rule_destination_id_references_zones_stops", row, services.AppMessageService)
 	if rules != nil && rules.DestinationId.Severity != "" {
-		s = rules.DestinationId.Severity
+		ctx.WithSeverity(rules.DestinationId.Severity)
 	}
 
-	addMessage := func(msg string, severity types.Severity) {
-		services.AppMessageService.AddMessage(types.Message{
-			Field:    "destination_id",
-			FileName: "fare_rules.txt",
-			Rows:     []int{row},
-			Message:  msg,
-			Severity: severity,
-			RuleID:   "fare_rule_destination_id_references_zones_stops",
-		})
-	}
-
+	// 1. Validate destination_id is present
 	if fareRule.DestinationId == nil {
-
-		if s == types.SEVERITY_IGNORE || s == types.SEVERITY_FORBIDDEN {
+		if ctx.ShouldSkip() {
 			return
 		}
 
-		warn := lib.IfThenElse(s == types.SEVERITY_WARNING, i18n.AppTranslator.Get("destination_id_validation.recommended"), i18n.AppTranslator.Get("destination_id_validation.required"))
-		addMessage(warn, s)
+		message := ctx.GetRequiredMessage("destination_id_validation.required", "destination_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	if s == types.SEVERITY_FORBIDDEN {
-		addMessage(i18n.AppTranslator.Get("destination_id_validation.forbidden"), s)
+	// 2. Validate destination_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("destination_id_validation.forbidden"))
 		return
 	}
 
-	// Check Foreign Key
+	// 3. Validate destination_id is a valid destination_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *fareRule.DestinationId) {
-		addMessage(i18n.AppTranslator.Get("destination_id_validation.invalid"), types.SEVERITY_ERROR)
+		ctx.AddError(ctx.GetTranslatedMessage("destination_id_validation.invalid", *fareRule.DestinationId))
 		return
 	}
 }
