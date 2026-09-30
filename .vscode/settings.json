@@ -47,10 +47,7 @@
 	"eslint.workingDirectories": [{ "mode": "auto" }],
 	"files.eol": "\n",
 
-	"go.alternateTools": {
-		"customFormatter": "${workspaceFolder}/scripts/format-go.sh"
-	},
-	"go.formatTool": "custom",
+	"go.formatTool": "gofmt",
 
 	"less.validate": false,
 	// Disable the default formatter, use eslint instead
