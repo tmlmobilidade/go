@@ -26,7 +26,8 @@ func TestAllCurrencyTypeValidationTestCases(t *testing.T) {
 			}
 
 			fareAttribute := &types.FareAttribute{CurrencyType: currencyType}
-			validations.CurrencyTypeValidation(fareAttribute, tc.Row)
+			rules := &types.FareAttributesRules{CurrencyType: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
+			validations.CurrencyTypeValidation(fareAttribute, tc.Row, rules)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

@@ -25,18 +25,24 @@ func TransferDurationValidation(fareAttribute *types.FareAttribute, row int, gtf
 		ctx.WithSeverity(rules.TransferDuration.Severity)
 	}
 
+	// 1. Validate transfer_duration is present
 	if fareAttribute.TransferDuration == nil {
-		if !ctx.ShouldIgnore() {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("transfers_validation.required"))
+		if ctx.ShouldSkip() {
+			return
 		}
+
+		message := ctx.GetRequiredMessage("transfer_duration_validation.required", "transfer_duration_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Validate transfer_duration is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("transfer_duration_validation.forbidden"))
 		return
 	}
 
+	// 3. Validate transfer_duration is a valid transfer duration
 	if *fareAttribute.TransferDuration < 0 {
 		ctx.AddError(ctx.GetTranslatedMessage("transfers_validation.invalid", *fareAttribute.TransferDuration))
 	}

@@ -151,6 +151,7 @@
 	"currency_type_validation": {
 		"forbidden": "Field \"currency_type\" is forbidden",
 		"invalid": "Field \"currency_type\" \"%s\" is not a valid ISO 4217 currency code, see https://en.wikipedia.org/wiki/ISO_4217",
+		"recommended": "Field \"currency_type\" is recommended",
 		"required": "Field \"currency_type\" is required"
 	},
 	"date_validation": {
@@ -259,6 +260,7 @@
 		"duplicate": "Duplicate field \"fare_id\" \"%s\" found. Field \"fare_id\" must be unique",
 		"forbidden": "Field \"fare_id\" is forbidden",
 		"not_found": "Field \"fare_id\" \"%s\" does not exist in fare_attributes.txt",
+		"recommended": "Field \"fare_id\" is recommended",
 		"required": "Field \"fare_id\" is required"
 	},
 	"fare_media_id_validation": {
@@ -659,6 +661,7 @@
 	"payment_method_validation": {
 		"forbidden": "Field \"payment_method\" is forbidden",
 		"invalid": "Field \"payment_method\" must be 0 or 1. Got \"%s\"",
+		"recommended": "Field \"payment_method\" is recommended",
 		"required": "Field \"payment_method\" is required"
 	},
 	"pickup_booking_rule_id_validation": {
@@ -686,6 +689,7 @@
 	"price_validation": {
 		"forbidden": "Field \"price\" is forbidden",
 		"invalid": "Field \"price\" must be non-negative. Got \"%s\"",
+		"recommended": "Field \"price\" is recommended",
 		"required": "Field \"price\" is required"
 	},
 	"propulsion_validation": {
@@ -1072,7 +1076,9 @@
 		"required": "Field \"total_capacity\" is required"
 	},
 	"transfer_duration_validation": {
-		"forbidden": "Field \"transfer_duration\" is forbidden"
+		"forbidden": "Field \"transfer_duration\" is forbidden",
+		"recommended": "Field \"transfer_duration\" is recommended",
+		"required": "Field \"transfer_duration\" is required"
 	},
 	"transfer_type_validation": {
 		"forbidden": "Field \"transfer_type\" is forbidden",

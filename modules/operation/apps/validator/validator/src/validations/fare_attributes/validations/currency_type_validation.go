@@ -20,14 +20,30 @@ Currency used to pay the fare.
 
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
-func CurrencyTypeValidation(fareAttribute *types.FareAttribute, row int) {
+func CurrencyTypeValidation(fareAttribute *types.FareAttribute, row int, rules *types.FareAttributesRules) {
 	ctx := lib.NewValidationContext("currency_type", "fare_attributes.txt", "fare_attributes_currency_type_valid", row, services.AppMessageService)
+	if rules != nil && rules.CurrencyType.Severity != "" {
+		ctx.WithSeverity(rules.CurrencyType.Severity)
+	}
 
+	// 1. Validate currency_type is present
 	if fareAttribute.CurrencyType == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("currency_type_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("currency_type_validation.required", "currency_type_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Validate currency_type is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("currency_type_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate currency_type is a valid currency type
 	if !lib.ValidateCurrencyType(*fareAttribute.CurrencyType) {
 		ctx.AddError(ctx.GetTranslatedMessage("currency_type_validation.invalid", *fareAttribute.CurrencyType))
 		return

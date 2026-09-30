@@ -26,7 +26,7 @@ func TestAllTransfersValidationTestCases(t *testing.T) {
 				// Expected errors should be 0 because if the value is missing come empty and this is considered
 				tc.ExpectedErrors = 0
 			}
-			validations.TransfersValidation(&types.FareAttribute{Transfers: transfers}, tc.Row, nil)
+			validations.TransfersValidation(&types.FareAttribute{Transfers: transfers}, tc.Row, nil, nil)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

@@ -150,6 +150,7 @@
 	"currency_type_validation": {
 		"forbidden": "O campo \"currency_type\" é proibido",
 		"invalid": "O campo \"currency_type\" \"%s\" não é um código de moeda ISO 4217 válido, consulte https://en.wikipedia.org/wiki/ISO_4217",
+		"recommended": "O campo \"currency_type\" é recomendado",
 		"required": "O campo \"currency_type\" é obrigatório"
 	},
 	"date_validation": {
@@ -258,6 +259,7 @@
 		"duplicate": "Campo \"fare_id\" \"%s\" duplicado encontrado. O campo \"fare_id\" deve ser único",
 		"forbidden": "O campo \"fare_id\" é proibido",
 		"not_found": "O campo \"fare_id\" \"%s\" não existe em fare_attributes.txt",
+		"recommended": "O campo \"fare_id\" é recomendado",
 		"required": "O campo \"fare_id\" é obrigatório"
 	},
 	"fare_media_id_validation": {
@@ -660,6 +662,7 @@
 	"payment_method_validation": {
 		"forbidden": "O campo \"payment_method\" é proibido",
 		"invalid": "O campo \"payment_method\" deve ser 0 ou 1. Recebido: \"%s\"",
+		"recommended": "O campo \"payment_method\" é recomendado",
 		"required": "O campo \"payment_method\" é obrigatório"
 	},
 	"pickup_booking_rule_id_validation": {
@@ -687,6 +690,7 @@
 	"price_validation": {
 		"forbidden": "O campo \"price\" é proibido",
 		"invalid": "O campo \"price\" não pode ser negativo. Recebido: \"%s\"",
+		"recommended": "O campo \"price\" é recomendado",
 		"required": "O campo \"price\" é obrigatório"
 	},
 	"propulsion_validation": {
@@ -1073,7 +1077,9 @@
 		"required": "O campo \"total_capacity\" é obrigatório"
 	},
 	"transfer_duration_validation": {
-		"forbidden": "O campo \"transfer_duration\" é proibido"
+		"forbidden": "O campo \"transfer_duration\" é proibido",
+		"recommended": "O campo \"transfer_duration\" é recomendado",
+		"required": "O campo \"transfer_duration\" é obrigatório"
 	},
 	"transfer_type_validation": {
 		"forbidden": "O campo \"transfer_type\" é proibido",

@@ -28,7 +28,8 @@ func TestAllPriceValidationTestCases(t *testing.T) {
 				price = nil
 			}
 			fareAttribute := &types.FareAttribute{Price: price}
-			validations.PriceValidation(fareAttribute, tc.Row)
+			rules := &types.FareAttributesRules{Price: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
+			validations.PriceValidation(fareAttribute, tc.Row, rules)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

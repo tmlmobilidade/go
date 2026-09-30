@@ -18,7 +18,8 @@ func TestAllFareIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.FareIdValidation(fareAttribute, tc.Row, gtfs)
+			rules := &types.FareAttributesRules{FareId: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
+			validations.FareIdValidation(fareAttribute, tc.Row, gtfs, rules)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}
@@ -58,7 +59,8 @@ func TestFareIdUniquenessUsesFareAttributesOnly(t *testing.T) {
 			}
 			t.Cleanup(cleanup)
 			fareID := "F1"
-			validations.FareIdValidation(&types.FareAttribute{FareId: &fareID}, 1, gtfs)
+			rules := &types.FareAttributesRules{FareId: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
+			validations.FareIdValidation(&types.FareAttribute{FareId: &fareID}, 1, gtfs, rules)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.expectedErrors, tc.name, types.SEVERITY_ERROR)
 		})
 	}
