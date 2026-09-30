@@ -6,8 +6,6 @@ import { Point } from 'geojson';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './styles.module.css';
-
 import { StopsDetailUpdateCoordinates } from '../coordinates/StopsDetailUpdateCoordinates';
 import { StopsDetailLocation } from '../location/StopsDetailLocation';
 import { StopsDetailUpdateName } from '../name/StopsDetailUpdateName';
@@ -63,16 +61,13 @@ export function StopsDetailSectionGeneral() {
 
 			<Section>
 				<Grid columns="ab" gap="md" placeItems="start">
-
-					<div className={styles.mapWrapper}>
-						<MapView id="stop-detail-map" toolbar={true}>
-							<MapOverlayMultipleStops
-								data={stopMapData}
-								id="stop-map"
-								visible
-							/>
-						</MapView>
-					</div>
+					<MapView id="stop-detail-map" toolbar={false}>
+						<MapOverlayMultipleStops
+							data={stopMapData}
+							id="stop-map"
+							visible
+						/>
+					</MapView>
 					<Section gap="md" padding="none">
 						<StopsDetailUpdateCoordinates />
 						<StopsDetailLocation />
