@@ -1,11 +1,10 @@
 'use client';
 
+import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
 import { ConditionStatusValues } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, DateTimeInput, Grid, NumberInput, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
 
 /* * */
 
@@ -125,6 +124,8 @@ export function StopsDetailSectionShelter() {
 								<NumberInput
 									error={fieldState.error?.message}
 									label={t('default:stops.detail.SectionShelter.fields.shelter_frame_size_width.label')}
+									readOnly={!capabilities.editEnabled}
+									value={field.value?.[0] ?? undefined}
 									onChange={(value) => {
 										const height = field.value?.[1] ?? null;
 										if (value === '' || value == null) {
@@ -133,12 +134,12 @@ export function StopsDetailSectionShelter() {
 										}
 										field.onChange([Number(value), height ?? 0]);
 									}}
-									readOnly={!capabilities.editEnabled}
-									value={field.value?.[0] ?? undefined}
 								/>
 								<NumberInput
 									error={fieldState.error?.message}
 									label={t('default:stops.detail.SectionShelter.fields.shelter_frame_size_height.label')}
+									readOnly={!capabilities.editEnabled}
+									value={field.value?.[1] ?? undefined}
 									onChange={(value) => {
 										const width = field.value?.[0] ?? null;
 										if (value === '' || value == null) {
@@ -147,8 +148,6 @@ export function StopsDetailSectionShelter() {
 										}
 										field.onChange([width ?? 0, Number(value)]);
 									}}
-									readOnly={!capabilities.editEnabled}
-									value={field.value?.[1] ?? undefined}
 								/>
 							</>
 						)}

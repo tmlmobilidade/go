@@ -1,11 +1,10 @@
 'use client';
 
+import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
 import { AvailabilityStatusValues } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, Grid, Section, Select, StandardFormController } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
 
 /* * */
 

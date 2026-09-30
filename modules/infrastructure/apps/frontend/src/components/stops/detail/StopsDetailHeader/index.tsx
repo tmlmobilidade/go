@@ -1,15 +1,14 @@
 'use client';
 
+import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
+import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-data';
+import { useStopsDetailStopId } from '@/components/stops/detail/use-stops-detail-stop-id';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, Spacer, Tag, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-
-import { useStopsDetailFormContext } from '../StopsDetailForm.context';
-import { useStopsDetailData } from '../use-stops-detail-data';
-import { useStopsDetailStopId } from '../use-stops-detail-stop-id';
 
 /* * */
 

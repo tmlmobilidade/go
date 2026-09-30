@@ -1,15 +1,15 @@
 'use client';
 
+import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-data';
 import { Divider, Pane } from '@tmlmobilidade/ui';
 
-import { StopsDetailSectionAmenities } from '../amenities/StopsDetailSectionAmenities';
-import { StopsDetailSectionChecks } from '../checks/StopsDetailSectionChecks';
 import { StopsDetailSectionFlags } from '../flags/StopsDetailSectionFlags';
-import { StopsDetailSectionGeneral } from '../general/StopsDetailSectionGeneral';
-import { StopsDetailSectionInfrastructure } from '../infrastructure/StopsDetailSectionInfrastructure';
-import { StopsDetailSectionShelter } from '../shelter/StopsDetailSectionShelter';
 import { StopsDetailHeader } from '../StopsDetailHeader';
-import { useStopsDetailData } from '../use-stops-detail-data';
+import { StopsDetailSectionAmenities } from '../StopsDetailSectionAmenities';
+import { StopsDetailSectionChecks } from '../StopsDetailSectionChecks';
+import { StopsDetailSectionGeneral } from '../StopsDetailSectionGeneral';
+import { StopsDetailSectionInfrastructure } from '../StopsDetailSectionInfrastructure';
+import { StopsDetailSectionShelter } from '../StopsDetailSectionShelter';
 
 /* * */
 

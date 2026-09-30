@@ -1,9 +1,8 @@
 'use client';
 
+import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
 import { Collapsible, DateTimeInput, Grid, Section, StandardFormController } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
-
-import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
 
 /* * */
 

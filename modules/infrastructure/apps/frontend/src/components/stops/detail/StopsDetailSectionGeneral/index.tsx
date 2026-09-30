@@ -1,13 +1,13 @@
 'use client';
 
+import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
 import { LifecycleStatusValues } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, Grid, Section, SegmentedControl, StandardFormController } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { StopsDetailUpdateCoordinates } from '../../coordinates/StopsDetailUpdateCoordinates';
-import { StopsDetailUpdateName } from '../../name/StopsDetailUpdateName';
-import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
+import { StopsDetailUpdateCoordinates } from '../coordinates/StopsDetailUpdateCoordinates';
+import { StopsDetailUpdateName } from '../name/StopsDetailUpdateName';
 
 /* * */
 
