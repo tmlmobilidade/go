@@ -428,7 +428,7 @@
 	},
 	"headway_secs_validation": {
 		"forbidden": "O campo \"headway_secs\" é proibido",
-		"invalid": "O campo \"headway_secs\" deve ser um número inteiro positivo",
+		"invalid": "O campo \"headway_secs\" deve ser um número inteiro positivo, recebido: %s",
 		"not_allowed": "O campo \"headway_secs\" \"%s\" não é permitido",
 		"recommended": "O campo \"headway_secs\" é recomendado",
 		"required": "O campo \"headway_secs\" é obrigatório"

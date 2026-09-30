@@ -13,10 +13,9 @@ func TestAllTripIdValidationTestCases(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 			frequency := &types.Frequencies{TripId: tc.Id}
-			if tc.Name == "ForeignKey_Invalid" {
-				frequency = &types.Frequencies{}
-			}
-			gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{"trips": {*tc.Id: {1}}}}.ToGtfsWithDB()
+			// The mock only registers "present_id" as a known trip, so
+			// ForeignKey_Invalid's "invalid_id" genuinely fails the FK check.
+			gtfs, cleanup, err := test_helpers.MockGtfs{IdMapData: types.GtfsIdMap{"trips": {"present_id": {1}}}}.ToGtfsWithDB()
 			if err != nil {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
@@ -33,7 +32,8 @@ func TestAllTripIdValidationTestCases(t *testing.T) {
 			t.Fatalf("failed to create mock gtfs: %v", err)
 		}
 		defer cleanup()
-		validations.TripIdValidation(frequency, 1, gtfs, nil)
+		rules := &types.FrequenciesRules{TripId: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
+		validations.TripIdValidation(frequency, 1, gtfs, rules)
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Trip ID is required", types.SEVERITY_ERROR)
 	})
 	t.Run("Forbidden_Present", func(t *testing.T) {

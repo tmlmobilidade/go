@@ -429,7 +429,7 @@
 	},
 	"headway_secs_validation": {
 		"forbidden": "Field \"headway_secs\" is forbidden",
-		"invalid": "Field \"headway_secs\" must be a positive integer",
+		"invalid": "Field \"headway_secs\" must be a positive integer, received: %s",
 		"not_allowed": "Field \"headway_secs\" \"%s\" is not allowed",
 		"recommended": "Field \"headway_secs\" is recommended",
 		"required": "Field \"headway_secs\" is required"

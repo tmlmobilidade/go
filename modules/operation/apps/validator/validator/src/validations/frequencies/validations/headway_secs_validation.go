@@ -4,6 +4,7 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
+	"strconv"
 )
 
 /*
@@ -26,13 +27,26 @@ func HeadwaySecsValidation(frequency *types.Frequencies, row int, rules *types.F
 		ctx.WithSeverity(rules.HeadwaySecs.Severity)
 	}
 
+	// 1. Validate headway_secs is present
 	if frequency.HeadwaySecs == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("headway_secs_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("headway_secs_validation.required", "headway_secs_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Validate headway_secs is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("headway_secs_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate headway_secs is a valid headway_secs
 	if *frequency.HeadwaySecs <= 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("headway_secs_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("headway_secs_validation.invalid", strconv.Itoa(*frequency.HeadwaySecs)))
 		return
 	}
 }

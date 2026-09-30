@@ -26,11 +26,24 @@ func EndTimeValidation(frequency *types.Frequencies, row int, rules *types.Frequ
 		ctx.WithSeverity(rules.EndTime.Severity)
 	}
 
+	// 1. Validate end_time is present
 	if frequency.EndTime == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("end_time_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("end_time_validation.required", "end_time_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Validate end_time is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("end_time_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate end_time is a valid end_time
 	if !lib.ValidateTime(*frequency.EndTime) {
 		ctx.AddError(ctx.GetTranslatedMessage("end_time_validation.invalid", *frequency.EndTime))
 		return

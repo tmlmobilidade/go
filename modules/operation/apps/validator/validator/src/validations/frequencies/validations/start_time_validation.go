@@ -26,13 +26,26 @@ func StartTimeValidation(frequency *types.Frequencies, row int, rules *types.Fre
 		ctx.WithSeverity(rules.StartTime.Severity)
 	}
 
+	// 1. Validate start_time is present
 	if frequency.StartTime == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("start_time_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("start_time_validation.required", "start_time_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Validate start_time is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("start_time_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate start_time is a valid start_time
 	if !lib.ValidateTime(*frequency.StartTime) {
-		ctx.AddError(ctx.GetTranslatedMessage("start_time_validation.invalid", frequency.StartTime))
+		ctx.AddError(ctx.GetTranslatedMessage("start_time_validation.invalid", *frequency.StartTime))
 		return
 	}
 }

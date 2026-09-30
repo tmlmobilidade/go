@@ -33,15 +33,9 @@ func ExactTimesValidation(frequency *types.Frequencies, row int, rules *types.Fr
 		ctx.WithSeverity(rules.ExactTimes.Severity)
 	}
 
-	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("exact_times_validation.forbidden"))
-		return
-	}
-
-	validOptions := []int{0, 1}
-
+	// 1. Validate exact_times is present
 	if frequency.ExactTimes == nil {
-		if ctx.ShouldIgnore() {
+		if ctx.ShouldSkip() {
 			return
 		}
 
@@ -50,12 +44,20 @@ func ExactTimesValidation(frequency *types.Frequencies, row int, rules *types.Fr
 		return
 	}
 
+	// 2. Validate exact_times is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("exact_times_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate exact_times is a valid exact_times
+	validOptions := []int{0, 1}
 	if !slices.Contains(validOptions, *frequency.ExactTimes) {
 		ctx.AddError(ctx.GetTranslatedMessage("exact_times_validation.invalid", strconv.Itoa(*frequency.ExactTimes)))
 		return
 	}
 
-	// Validate rules
+	// 4. Validate rules
 	if rules != nil && rules.ExactTimes.Options != nil {
 		if slices.Contains(*rules.ExactTimes.Options, types.ALL_OPTIONS) {
 			return
