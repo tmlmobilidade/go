@@ -49,7 +49,7 @@ export function useStopsLocationsData(request: StopsLocationRequest): UseStopsLo
 	const options = useMemo(() => Object.fromEntries(SLOTS.map(slot => [slot, data?.data?.[slot].map((item): SelectDataItem => ({
 		checked: false,
 		disabled: false,
-		label: `[${item.osm_id}] ${item.name}`,
+		label: item.name,
 		value: String(item.osm_id),
 	})) ?? []])) as Record<Slot, SelectDataItem[]>, [data?.data]);
 
