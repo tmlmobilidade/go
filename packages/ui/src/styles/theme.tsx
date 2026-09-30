@@ -272,6 +272,7 @@ export const themeData: MantineThemeOverride = createTheme({
 		TreeSelect: TreeSelect.extend({
 			classNames: {
 				...DropdownBase,
+				...MultiSelectBase,
 			},
 		}),
 
