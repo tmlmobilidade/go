@@ -27,21 +27,32 @@ func AgencyNameValidation(agency *types.Agency, row int, rules *types.AgencyRule
 		ctx.WithSeverity(rules.AgencyName.Severity)
 	}
 
-	// Check if agency_name is required
+	// 1. Check if agency_name is required
 	if agency.AgencyName == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("agency_name_validation.required"))
-		return 
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("agency_name_validation.required", "agency_name_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
 	}
 
-	// Validate rules
+	// 2. Check if agency_name is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_name_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate rules
 	if rules != nil && rules.AgencyName.Options != nil {
 		if slices.Contains(*rules.AgencyName.Options, types.ALL_OPTIONS) {
-			return 
+			return
 		}
 
 		if !slices.Contains(*rules.AgencyName.Options, *agency.AgencyName) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_name_validation.not_allowed", *agency.AgencyName))
-			return 
+			return
 		}
 	}
 

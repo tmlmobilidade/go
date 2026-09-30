@@ -28,7 +28,7 @@ func AgencyTimezoneValidation(agency *types.Agency, row int, rules *types.Agency
 		ctx.WithSeverity(rules.AgencyTimezone.Severity)
 	}
 
-	// Check if agency_timezone is required
+	// 1. Check if agency_timezone is required
 	if agency.AgencyTimezone == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -36,30 +36,30 @@ func AgencyTimezoneValidation(agency *types.Agency, row int, rules *types.Agency
 
 		message := ctx.GetRequiredMessage("agency_timezone_validation.required", "agency_timezone_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return 
+		return
 	}
 
-	// Check if agency_timezone is forbidden
+	// 2. Check if agency_timezone is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_timezone_validation.forbidden"))
-		return 
+		return
 	}
 
-	// Check if agency_timezone is valid
+	// 3. Check if agency_timezone is valid
 	if !lib.ValidateTimezone(*agency.AgencyTimezone) {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_timezone_validation.invalid", *agency.AgencyTimezone))
-		return 
+		return
 	}
 
-	// Validate rules
+	// 4. Validate rules
 	if rules != nil && rules.AgencyTimezone.Options != nil {
 		if slices.Contains(*rules.AgencyTimezone.Options, types.ALL_OPTIONS) {
-			return 
+			return
 		}
 
 		if !slices.Contains(*rules.AgencyTimezone.Options, *agency.AgencyTimezone) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_timezone_validation.not_allowed", *agency.AgencyTimezone))
-			return 
+			return
 		}
 	}
 }

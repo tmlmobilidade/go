@@ -11,7 +11,7 @@ import (
 # Attributes
 
   - File: [agency.txt]
-  - Field: agency_phone
+  - Field: agency_fare_url
   - Presence: Optional
   - Type: URL
 
@@ -27,7 +27,7 @@ func AgencyFareUrlValidation(agency *types.Agency, row int, rules *types.AgencyR
 		ctx.WithSeverity(rules.AgencyFare.Severity)
 	}
 
-	// Check if agency_fare_url is required
+	// 1. Check if agency_fare_url is required
 	if agency.AgencyFareUrl == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -35,30 +35,30 @@ func AgencyFareUrlValidation(agency *types.Agency, row int, rules *types.AgencyR
 
 		message := ctx.GetRequiredMessage("agency_fare_url_validation.required", "agency_fare_url_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return 
+		return
 	}
 
-	// Check if agency_fare_url is forbidden
+	// 2. Check if agency_fare_url is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_fare_url_validation.forbidden"))
-		return 
+		return
 	}
 
-	// Check if agency_fare_url is valid
+	// 3. Check if agency_fare_url is valid
 	if agency.AgencyFareUrl != nil && !lib.ValidateUrl(*agency.AgencyFareUrl) {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_fare_url_validation.invalid", *agency.AgencyFareUrl))
-		return 
+		return
 	}
 
-	// Validate rules
+	// 4. Validate rules
 	if rules != nil && rules.AgencyFare.Options != nil {
 		if slices.Contains(*rules.AgencyFare.Options, types.ALL_OPTIONS) {
-			return 
+			return
 		}
 
 		if !slices.Contains(*rules.AgencyFare.Options, *agency.AgencyFareUrl) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_fare_url_validation.not_allowed", *agency.AgencyFareUrl))
-			return 
+			return
 		}
 	}
 }

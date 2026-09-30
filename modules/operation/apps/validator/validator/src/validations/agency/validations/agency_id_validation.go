@@ -30,27 +30,38 @@ func AgencyIdValidation(agency *types.Agency, row int, gtfs types.Gtfs, rules *t
 		ctx.WithSeverity(rules.AgencyId.Severity)
 	}
 
-	// agency_id is required
+	// 1. Check if agency_id is required
 	if agency.AgencyId == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("agency_id_validation.required"))
-		return 
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("agency_id_validation.required", "agency_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
 	}
 
-	// Check if agency_id is Unique ID
+	// 2. Check if agency_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_id_validation.forbidden"))
+		return
+	}
+
+	// 3. Check if agency_id is Unique ID
 	rows, err := gtfs.GetRowsById("agency", *agency.AgencyId)
 	if err == nil && len(rows) > 1 {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_id_validation.duplicate", *agency.AgencyId))
 	}
 
-	// Validate rules
+	// 3. Validate rules
 	if rules != nil && rules.AgencyId.Options != nil {
 		if slices.Contains(*rules.AgencyId.Options, types.ALL_OPTIONS) {
-			return 
+			return
 		}
 
 		if !slices.Contains(*rules.AgencyId.Options, *agency.AgencyId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_id_validation.not_allowed", *agency.AgencyId))
-			return 
+			return
 		}
 	}
 }

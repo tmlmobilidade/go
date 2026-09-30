@@ -29,7 +29,7 @@ func AgencyEmailValidation(agency *types.Agency, row int, rules *types.AgencyRul
 		ctx.WithSeverity(rules.AgencyEmail.Severity)
 	}
 
-	// Check if agency_email is required
+	// 1. Check if agency_email is required
 	if agency.AgencyEmail == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -37,30 +37,30 @@ func AgencyEmailValidation(agency *types.Agency, row int, rules *types.AgencyRul
 
 		message := ctx.GetRequiredMessage("agency_email_validation.required", "agency_email_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return 
+		return
 	}
 
-	// Check if agency_email is forbidden
+	// 2. Check if agency_email is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_email_validation.forbidden"))
-		return 
+		return
 	}
 
-	// Check if agency_email is valid
+	// 3. Check if agency_email is valid
 	if !lib.ValidateEmail(*agency.AgencyEmail) {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_email_validation.invalid", *agency.AgencyEmail))
-		return 
+		return
 	}
 
-	// Validate rules
+	// 4. Validate rules
 	if rules != nil && rules.AgencyEmail.Options != nil {
 		if slices.Contains(*rules.AgencyEmail.Options, types.ALL_OPTIONS) {
-			return 
+			return
 		}
 
 		if !slices.Contains(*rules.AgencyEmail.Options, *agency.AgencyEmail) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_email_validation.not_allowed", *agency.AgencyEmail))
-			return 
+			return
 		}
 	}
 }

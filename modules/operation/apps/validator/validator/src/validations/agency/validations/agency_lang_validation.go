@@ -28,7 +28,7 @@ func AgencyLangValidation(agency *types.Agency, row int, rules *types.AgencyRule
 		ctx.WithSeverity(rules.AgencyLang.Severity)
 	}
 
-	// Check if agency_lang is required
+	// 1. Check if agency_lang is required
 	if agency.AgencyLang == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -36,30 +36,30 @@ func AgencyLangValidation(agency *types.Agency, row int, rules *types.AgencyRule
 
 		message := ctx.GetRequiredMessage("agency_lang_validation.required", "agency_lang_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return 
+		return
 	}
 
-	// Check if agency_lang is forbidden
+	// 2. Check if agency_lang is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_lang_validation.forbidden"))
-		return 
+		return
 	}
 
-	// Check if agency_lang is valid
+	// 3. Check if agency_lang is valid
 	if agency.AgencyLang != nil && !lib.ValidateLanguage(*agency.AgencyLang) {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_lang_validation.invalid", *agency.AgencyLang))
-		return 
+		return
 	}
 
-	// Validate rules
+	// 4. Validate rules
 	if rules != nil && rules.AgencyLang.Options != nil {
 		if slices.Contains(*rules.AgencyLang.Options, types.ALL_OPTIONS) {
-			return 
+			return
 		}
 
 		if !slices.Contains(*rules.AgencyLang.Options, *agency.AgencyLang) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_lang_validation.not_allowed", *agency.AgencyLang))
-			return 
+			return
 		}
 	}
 

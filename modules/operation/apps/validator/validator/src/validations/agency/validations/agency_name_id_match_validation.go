@@ -26,23 +26,23 @@ func AgencyNameIdMatchValidation(agency *types.Agency, row int, rules *types.Age
 		ctx.WithSeverity(rules.AgencyNameIdMatch.Severity)
 	}
 
-	// agency_id and agency_name are required
+	// 1. Check if agency_id and agency_name are required
 	if agency.AgencyId == nil || agency.AgencyName == nil {
-		return 
+		return
 	}
 
-	// Check if agency_name_id_match should be skipped
+	// 2. Check if agency_name_id_match should be skipped
 	if ctx.ShouldSkip() {
-		return 
+		return
 	}
 
-	// Validate rules
+	// 3. Validate rules
 	if rules != nil && rules.AgencyNameIdMatch.Compare != nil {
 		// Find the matching key and value
 		validName := ""
 		for _, compare := range *rules.AgencyNameIdMatch.Compare {
 			if compare.Key == *agency.AgencyId && compare.Value == *agency.AgencyName {
-				return 
+				return
 			}
 			if compare.Key == *agency.AgencyId {
 				validName = compare.Value
@@ -50,6 +50,6 @@ func AgencyNameIdMatchValidation(agency *types.Agency, row int, rules *types.Age
 		}
 
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_name_id_match_validation.no_match", *agency.AgencyId, *agency.AgencyName, *agency.AgencyId, validName))
-		return 
+		return
 	}
 }

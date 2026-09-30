@@ -30,38 +30,38 @@ func AgencyPhoneValidation(agency *types.Agency, row int, rules *types.AgencyRul
 		ctx.WithSeverity(rules.AgencyPhone.Severity)
 	}
 
-	// Check if agency_phone is required
+	// 1. Check if agency_phone is required
 	if agency.AgencyPhone == nil {
 		if ctx.ShouldSkip() {
-			return 
+			return
 		}
 
 		message := ctx.GetRequiredMessage("agency_phone_validation.required", "agency_phone_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
-		return 
+		return
 	}
 
-	// Check if agency_phone is forbidden
+	// 2. Check if agency_phone is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_phone_validation.forbidden"))
-		return 
+		return
 	}
 
-	// Check if agency_phone is valid
+	// 3. Check if agency_phone is valid
 	if !lib.ValidatePhone(*agency.AgencyPhone) {
 		ctx.AddError(ctx.GetTranslatedMessage("agency_phone_validation.invalid", *agency.AgencyPhone))
-		return 
+		return
 	}
 
-	// Validate rules
+	// 4. Validate rules
 	if rules != nil && rules.AgencyPhone.Options != nil {
 		if slices.Contains(*rules.AgencyPhone.Options, types.ALL_OPTIONS) {
-			return 
+			return
 		}
 
 		if !slices.Contains(*rules.AgencyPhone.Options, *agency.AgencyPhone) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_phone_validation.not_allowed", *agency.AgencyPhone))
-			return 
+			return
 		}
 	}
 }

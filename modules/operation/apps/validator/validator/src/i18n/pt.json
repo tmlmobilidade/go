@@ -37,6 +37,7 @@
 	"agency_name_validation": {
 		"forbidden": "O campo \"agency_name\" é proibido",
 		"not_allowed": "O campo \"agency_name\" \"%s\" não é permitido",
+		"recommended": "O campo \"agency_name\" é recomendado",
 		"required": "O campo \"agency_name\" é obrigatório"
 	},
 	"agency_phone_validation": {
