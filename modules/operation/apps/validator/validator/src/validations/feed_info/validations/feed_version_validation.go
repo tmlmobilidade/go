@@ -26,6 +26,7 @@ func FeedVersionValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedI
 		ctx.WithSeverity(rules.FeedVersion.Severity)
 	}
 
+	// 1. Validate feed_version is present
 	if feedInfo.FeedVersion == nil || *feedInfo.FeedVersion == "" {
 		if ctx.ShouldSkip() {
 			return
@@ -33,6 +34,12 @@ func FeedVersionValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedI
 
 		message := ctx.GetRequiredMessage("feed_version_validation.required", "feed_version_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate feed_version is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_version_validation.forbidden"))
 		return
 	}
 }

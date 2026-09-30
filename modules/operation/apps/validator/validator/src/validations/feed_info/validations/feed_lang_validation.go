@@ -32,6 +32,7 @@ func FeedLangValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfo
 		ctx.WithSeverity(rules.FeedLang.Severity)
 	}
 
+	// 1. Validate feed_lang is present
 	if feedInfo.FeedLang == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -42,10 +43,15 @@ func FeedLangValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfo
 		return
 	}
 
-	if *feedInfo.FeedLang != "mul" && *feedInfo.FeedLang != "" {
-		if !lib.ValidateLanguage(*feedInfo.FeedLang) {
-			ctx.AddError(ctx.GetTranslatedMessage("feed_lang_validation.invalid", *feedInfo.FeedLang))
-			return
-		}
+	// 2. Validate feed_lang is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_lang_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate feed_lang is a valid feed_lang
+	if !lib.ValidateLanguage(*feedInfo.FeedLang) {
+		ctx.AddError(ctx.GetTranslatedMessage("feed_lang_validation.invalid", *feedInfo.FeedLang))
+		return
 	}
 }

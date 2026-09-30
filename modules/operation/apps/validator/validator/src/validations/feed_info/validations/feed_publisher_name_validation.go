@@ -26,6 +26,7 @@ func FeedPublisherNameValidation(feedInfo *types.FeedInfo, row int, rules *types
 		ctx.WithSeverity(rules.FeedPublisherName.Severity)
 	}
 
+	// 1. Validate feed_publisher_name is present
 	if feedInfo.FeedPublisherName == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -33,6 +34,12 @@ func FeedPublisherNameValidation(feedInfo *types.FeedInfo, row int, rules *types
 
 		message := ctx.GetRequiredMessage("feed_publisher_name_validation.required", "feed_publisher_name_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate feed_publisher_name is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_publisher_name_validation.forbidden"))
 		return
 	}
 }

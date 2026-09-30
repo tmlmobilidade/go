@@ -28,12 +28,28 @@ If feed_start_date or feed_end_date extend beyond the active calendar dates defi
 */
 func FeedStartDateValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfoRules) {
 	ctx := lib.NewValidationContext("feed_start_date", "feed_info.txt", "feed_start_date_valid_yyyymmdd", row, services.AppMessageService)
+	if rules != nil && rules.FeedStartDate.Severity != "" {
+		ctx.WithSeverity(rules.FeedStartDate.Severity)
+	}
 
+	// 1. Validate feed_start_date is present
 	if feedInfo.FeedStartDate == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_start_date_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("feed_start_date_validation.required", "feed_start_date_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Validate feed_start_date is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_start_date_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate feed_start_date is a valid feed_start_date
 	if !lib.IsValidServiceDate(*feedInfo.FeedStartDate) {
 		ctx.AddError(ctx.GetTranslatedMessage("feed_start_date_validation.invalid", *feedInfo.FeedStartDate))
 		return

@@ -26,6 +26,7 @@ func FeedPublisherUrlValidation(feedInfo *types.FeedInfo, row int, rules *types.
 		ctx.WithSeverity(rules.FeedPublisherUrl.Severity)
 	}
 
+	// 1. Validate feed_publisher_url is present
 	if feedInfo.FeedPublisherUrl == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -36,6 +37,13 @@ func FeedPublisherUrlValidation(feedInfo *types.FeedInfo, row int, rules *types.
 		return
 	}
 
+	// 2. Validate feed_publisher_url is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_publisher_url_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate feed_publisher_url is a valid feed_publisher_url
 	if !lib.ValidateUrl(*feedInfo.FeedPublisherUrl) {
 		ctx.AddError(ctx.GetTranslatedMessage("feed_publisher_url_validation.invalid", *feedInfo.FeedPublisherUrl))
 		return

@@ -27,6 +27,7 @@ func FeedContactEmailValidation(feedInfo *types.FeedInfo, row int, rules *types.
 		ctx.WithSeverity(rules.FeedContactEmail.Severity)
 	}
 
+	// 1. Validate feed_contact_email is present
 	if feedInfo.FeedContactEmail == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -37,10 +38,15 @@ func FeedContactEmailValidation(feedInfo *types.FeedInfo, row int, rules *types.
 		return
 	}
 
-	if feedInfo.FeedContactEmail != nil && *feedInfo.FeedContactEmail != "" {
-		if !lib.ValidateEmail(*feedInfo.FeedContactEmail) {
-			ctx.AddError(ctx.GetTranslatedMessage("feed_contact_email_validation.invalid", *feedInfo.FeedContactEmail))
-			return
-		}
+	// 2. Validate feed_contact_email is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_contact_email_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate feed_contact_email is a valid feed_contact_email
+	if !lib.ValidateEmail(*feedInfo.FeedContactEmail) {
+		ctx.AddError(ctx.GetTranslatedMessage("feed_contact_email_validation.invalid", *feedInfo.FeedContactEmail))
+		return
 	}
 }

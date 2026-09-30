@@ -46,8 +46,8 @@ func TestAllFeedStartDateValidationTestCases(t *testing.T) {
 			services.AppMessageService.Clear()
 			feedInfo := &types.FeedInfo{FeedStartDate: nil}
 			validations.FeedStartDateValidation(feedInfo, tc.Row, &types.FeedInfoRules{FeedStartDate: types.RuleConfig{Severity: tc.Severity}})
-			// feed_start_date is required: missing is an error even when the rule is ignored
-			test_helpers.AssertMessageCount(t, services.AppMessageService, 1, tc.Name, types.SEVERITY_ERROR)
+			// severity "ignore" skips the presence check entirely, like every other configurable field
+			test_helpers.AssertMessageCount(t, services.AppMessageService, 0, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, 0, tc.Name, types.SEVERITY_WARNING)
 		})
 	}

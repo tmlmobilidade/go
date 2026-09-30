@@ -26,6 +26,7 @@ func DefaultLangValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedI
 		ctx.WithSeverity(rules.DefaultLang.Severity)
 	}
 
+	// 1. Validate default_lang is present
 	if feedInfo.DefaultLang == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -36,6 +37,13 @@ func DefaultLangValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedI
 		return
 	}
 
+	// 2. Validate default_lang is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("default_lang_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate default_lang is a valid default_lang
 	if feedInfo.DefaultLang != nil && *feedInfo.DefaultLang != "" {
 		if !lib.ValidateLanguage(*feedInfo.DefaultLang) {
 			ctx.AddError(ctx.GetTranslatedMessage("default_lang_validation.invalid", *feedInfo.DefaultLang))
