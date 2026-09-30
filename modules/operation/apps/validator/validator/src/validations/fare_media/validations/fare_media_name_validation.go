@@ -29,11 +29,7 @@ func FareMediaNameValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gt
 		ctx.WithSeverity(rules.FareMediaName.Severity)
 	}
 
-	if fareMedia.FareMediaName != nil && ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("fare_media_name_validation.forbidden"))
-		return
-	}
-
+	// 1. Validate fare_media_name is present
 	if fareMedia.FareMediaName == nil {
 		if fareMedia.FareMediaType != nil && (*fareMedia.FareMediaType == 2 || *fareMedia.FareMediaType == 4) {
 			ctx.AddWarning(ctx.GetTranslatedMessage("fare_media_name_validation.warning"))
@@ -47,4 +43,11 @@ func FareMediaNameValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gt
 		message := ctx.GetRequiredMessage("fare_media_name_validation.required", "fare_media_name_validation.recommended")
 		ctx.AddMessageWithSeverity(message)
 	}
+
+	// 2. Validate fare_media_name is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("fare_media_name_validation.forbidden"))
+		return
+	}
+
 }

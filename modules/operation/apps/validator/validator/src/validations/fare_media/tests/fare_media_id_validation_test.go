@@ -18,7 +18,8 @@ func TestAllFareIdValidationTestCases(t *testing.T) {
 				t.Fatalf("failed to create mock gtfs: %v", err)
 			}
 			defer cleanup()
-			validations.FareMediaIdValidation(fareMedia, tc.Row, gtfs, nil)
+			rules := &types.FareMediaRules{FareMediaId: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
+			validations.FareMediaIdValidation(fareMedia, tc.Row, gtfs, rules)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}

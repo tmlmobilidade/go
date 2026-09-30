@@ -35,20 +35,31 @@ func FareMediaTypeValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gt
 		ctx.WithSeverity(rules.FareMediaType.Severity)
 	}
 
-	// Validate presence
+	// 1. Validate fare_media_type is present
 	if fareMedia.FareMediaType == nil || strconv.Itoa(*fareMedia.FareMediaType) == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("fare_media_type_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("fare_media_type_validation.required", "fare_media_type_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Validate fare_media_type is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("fare_media_type_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate fare_media_type is a valid fare media type
 	validTypeOptions := []int{0, 1, 2, 3, 4}
-	// Validate that fareMedia.FareMediaType is in the valid options
 	if !slices.Contains(validTypeOptions, *fareMedia.FareMediaType) {
 		ctx.AddError(ctx.GetTranslatedMessage("fare_media_type_validation.invalid", strconv.Itoa(*fareMedia.FareMediaType)))
 		return
 	}
 
-	// Validate Rule Options
+	// 4. Validate Rule Options
 	if rules != nil && rules.FareMediaType.Options != nil {
 		if slices.Contains(*rules.FareMediaType.Options, types.ALL_OPTIONS) {
 			return

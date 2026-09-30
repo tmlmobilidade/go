@@ -264,6 +264,8 @@
 	},
 	"fare_media_id_validation": {
 		"duplicate": "Campo \"fare_media_id\" \"%s\" duplicado encontrado. O campo \"fare_media_id\" deve ser único",
+		"forbidden": "O campo \"fare_media_id\" é proibido",
+		"recommended": "O campo \"fare_media_id\" é recomendado",
 		"required": "O campo \"fare_media_id\" é obrigatório"
 	},
 	"fare_media_name_validation": {
@@ -273,8 +275,10 @@
 		"warning": "O campo \"fare_media_name\" é recomendado para fare media de tipo 2 (transit cards) ou 4 (mobile apps)"
 	},
 	"fare_media_type_validation": {
+		"forbidden": "O campo \"fare_media_type\" é proibido",
 		"invalid": "O campo \"fare_media_type\" deve ser 0, 1, 2, 3 ou 4, recebido: %s",
 		"not_allowed": "O campo \"fare_media_type\" \"%s\" não é permitido",
+		"recommended": "O campo \"fare_media_type\" é recomendado",
 		"required": "O campo \"fare_media_type\" é obrigatório"
 	},
 	"feed_contact_email_validation": {
