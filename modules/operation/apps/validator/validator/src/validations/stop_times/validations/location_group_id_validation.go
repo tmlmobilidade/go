@@ -32,7 +32,7 @@ func LocationGroupIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gt
 		ctx.WithSeverity(rules.LocationGroupId.Severity)
 	}
 
-	// Conditionally Forbidden: forbidden if stop_id or location_id are defined
+	// 1. Validate location_group_id is forbidden if stop_id or location_id are defined
 	if (stopTime.StopId != nil && *stopTime.StopId != "") || (stopTime.LocationId != nil && *stopTime.LocationId != "") {
 		if stopTime.LocationGroupId != nil && *stopTime.LocationGroupId != "" {
 			ctx.AddError(ctx.GetTranslatedMessage("location_group_id_validation.forbidden_stop_location"))
@@ -40,18 +40,18 @@ func LocationGroupIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gt
 		return
 	}
 
-	// 1. location_group_id is optional: nothing to check when absent
+	// 2. Validate location_group_id is optional: nothing to check when absent
 	if stopTime.LocationGroupId == nil || *stopTime.LocationGroupId == "" {
 		return
 	}
 
-	// 2. Check if location_group_id is forbidden
+	// 3. Validate location_group_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("location_group_id_validation.forbidden"))
 		return
 	}
 
-	// 3. Check if location_group_id is Foreign Key referencing location_groups.location_group_id
+	// 4. Validate location_group_id is Foreign Key referencing location_groups.location_group_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "location_groups", *stopTime.LocationGroupId) {
 		ctx.AddError(ctx.GetTranslatedMessage("location_group_id_validation.not_found", *stopTime.LocationGroupId))
 		return

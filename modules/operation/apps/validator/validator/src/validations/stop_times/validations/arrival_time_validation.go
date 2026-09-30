@@ -32,7 +32,7 @@ func ArrivalTimeValidation(stopTime *types.StopTime, row int, rules *types.StopT
 		ctx.WithSeverity(rules.ArrivalTime.Severity)
 	}
 
-	// 1. Check if arrival_time is present
+	// 1. Validate arrival_time is present
 	if stopTime.ArrivalTime == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -43,13 +43,13 @@ func ArrivalTimeValidation(stopTime *types.StopTime, row int, rules *types.StopT
 		return
 	}
 
-	// 2. Check if arrival_time is forbidden
+	// 2. Validate arrival_time is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("arrival_time_validation.forbidden"))
 		return
 	}
 
-	// 3. Check if arrival_time is a valid time
+	// 3. Validate arrival_time is a valid time
 	if !lib.ValidateTime(*stopTime.ArrivalTime) {
 		ctx.AddError(ctx.GetTranslatedMessage("arrival_time_validation.invalid", *stopTime.ArrivalTime))
 		return

@@ -37,7 +37,7 @@ func StopIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, stopL
 		ctx.WithSeverity(rules.StopId.Severity)
 	}
 
-	// Conditionally Forbidden: forbidden if location_group_id or location_id are defined
+	// 1. Validate stop_id is forbidden if location_group_id or location_id are defined
 	if (stopTime.LocationGroupId != nil && *stopTime.LocationGroupId != "") || (stopTime.LocationId != nil && *stopTime.LocationId != "") {
 		if stopTime.StopId != nil && *stopTime.StopId != "" {
 			ctx.AddError(ctx.GetTranslatedMessage("stop_id_validation.forbidden_location_group_id_location_id"))
@@ -45,7 +45,7 @@ func StopIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, stopL
 		return
 	}
 
-	// 1. Check if stop_id is present (required, since location_group_id and location_id are both absent here)
+	// 2. Validate stop_id is present (required, since location_group_id and location_id are both absent here)
 	if stopTime.StopId == nil || *stopTime.StopId == "" {
 		if ctx.ShouldSkip() {
 			return
@@ -56,20 +56,20 @@ func StopIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, stopL
 		return
 	}
 
-	// 2. Check if stop_id is forbidden
+	// 3. Validate stop_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_id_validation.forbidden"))
 		return
 	}
 
-	// 3. Check if stop_id is Foreign Key referencing stops.stop_id
+	// 4. Validate stop_id is Foreign Key referencing stops.stop_id
 	// Use IdMap cache instead of database query for performance
 	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *stopTime.StopId) {
 		ctx.AddError(ctx.GetTranslatedMessage("stop_id_validation.does_not_exist", *stopTime.StopId))
 		return
 	}
 
-	// 4. Check location_type is 0 or empty using cache
+	// 5. Validate location_type is 0 or empty using cache
 	locationTypeStr, exists := stopLocationTypeCache[*stopTime.StopId]
 	if exists && locationTypeStr != "" && locationTypeStr != "0" {
 		ctx.AddError(ctx.GetTranslatedMessage("stop_id_validation.invalid_location_type"))

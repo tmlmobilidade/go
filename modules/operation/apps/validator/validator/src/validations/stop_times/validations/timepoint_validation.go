@@ -35,7 +35,7 @@ func TimepointValidation(stopTime *types.StopTime, row int, rules *types.StopTim
 		ctx.WithSeverity(rules.Timepoint.Severity)
 	}
 
-	// 1. Check if timepoint is present
+	// 1. Validate timepoint is present
 	if stopTime.Timepoint == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -45,13 +45,13 @@ func TimepointValidation(stopTime *types.StopTime, row int, rules *types.StopTim
 		return
 	}
 
-	// 2. Check if timepoint is forbidden
+	// 2. Validate timepoint is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("timepoint_validation.forbidden"))
 		return
 	}
 
-	// 3. Check if timepoint is 0 or 1
+	// 3. Validate timepoint is 0 or 1
 	tp := *stopTime.Timepoint
 	if tp != 0 && tp != 1 {
 		ctx.AddError(ctx.GetTranslatedMessage("timepoint_validation.invalid"))

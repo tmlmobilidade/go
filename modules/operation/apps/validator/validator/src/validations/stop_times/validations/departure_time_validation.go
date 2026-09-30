@@ -32,7 +32,7 @@ func DepartureTimeValidation(stopTime *types.StopTime, row int, rules *types.Sto
 		ctx.WithSeverity(rules.DepartureTime.Severity)
 	}
 
-	// 1. Check if departure_time is present
+	// 1. Validate departure_time is present
 	if stopTime.DepartureTime == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -43,13 +43,13 @@ func DepartureTimeValidation(stopTime *types.StopTime, row int, rules *types.Sto
 		return
 	}
 
-	// 2. Check if departure_time is forbidden
+	// 2. Validate departure_time is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("departure_time_validation.forbidden"))
 		return
 	}
 
-	// 3. Check if departure_time is a valid time
+	// 3. Validate departure_time is a valid time
 	if !lib.ValidateTime(*stopTime.DepartureTime) {
 		ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.invalid", *stopTime.DepartureTime))
 		return
