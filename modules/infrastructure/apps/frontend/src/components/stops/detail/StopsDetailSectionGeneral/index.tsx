@@ -72,7 +72,7 @@ export function StopsDetailSectionGeneral() {
 							/>
 						</MapView>
 					</div>
-					<Section padding="none">
+					<Section gap="md" padding="none">
 						<StopsDetailUpdateCoordinates />
 						<StopsDetailUpdateName />
 					</Section>

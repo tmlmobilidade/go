@@ -159,8 +159,14 @@
 				"title": "Identificadores e Postaletes"
 			},
 			"SectionGeneral": {
+				"coordinates": "Coordenadas",
 				"description": "Informações gerais sobre esta paragem.",
-				"title": "Detalhes desta Paragem"
+				"edit_link": "Editar",
+				"open_in_google_maps": "Abrir no Google Maps",
+				"short_name": "Nome Curto",
+				"stop_name": "Nome da Paragem",
+				"title": "Detalhes desta Paragem",
+				"tts_name": "Nome TTS"
 			},
 			"SectionInfrastructure": {
 				"description": "Informações relacionadas com os equipamentos da paragem e envolvente.",
@@ -217,6 +223,9 @@
 			"UpdateCoordinates": {
 				"EditLink": {
 					"label": "Editar"
+				},
+				"OpenInGoogleMaps": {
+					"label": "Google Maps"
 				},
 				"label": "Coordenadas"
 			},
