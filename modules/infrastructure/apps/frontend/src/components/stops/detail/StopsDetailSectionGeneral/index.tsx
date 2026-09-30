@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './styles.module.css';
 
 import { StopsDetailUpdateCoordinates } from '../coordinates/StopsDetailUpdateCoordinates';
+import { StopsDetailLocation } from '../location/StopsDetailLocation';
 import { StopsDetailUpdateName } from '../name/StopsDetailUpdateName';
 import { useStopsDetailFormContext } from '../StopsDetailForm.context';
 import { useStopsDetailStopId } from '../use-stops-detail-stop-id';
@@ -74,6 +75,7 @@ export function StopsDetailSectionGeneral() {
 					</div>
 					<Section gap="md" padding="none">
 						<StopsDetailUpdateCoordinates />
+						<StopsDetailLocation />
 						<StopsDetailUpdateName />
 					</Section>
 				</Grid>

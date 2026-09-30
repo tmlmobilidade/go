@@ -5,7 +5,7 @@ import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-d
 import { IconBrandGoogleMaps, IconMapPin, IconPencil } from '@tabler/icons-react';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, Label, Section, Surface, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Button, IconButton, Label, Section, Spacer, Surface, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -77,23 +77,21 @@ export function StopsDetailUpdateCoordinates() {
 						<Text size="base" weight="semibold">{coordinatesDisplay}</Text>
 					</Section>
 				</Section>
-				<Section alignItems="flex-end" flexDirection="column" flexWrap="nowrap" gap="md" padding="none">
-					<Button
-						disabled={!canUpdateCoordinates}
+				<Spacer />
+				<Section alignItems="flex-end" flexDirection="row" flexWrap="nowrap" padding="none">
+					<IconButton
 						icon={<IconPencil size={18} stroke={1.5} />}
-						label={t('default:stops.detail.UpdateCoordinates.EditLink.label')}
+						isDisabled={!canUpdateCoordinates}
 						onClick={openStopsDetailUpdateCoordinatesModal}
-						variant="secondary"
+						tooltip={t('default:stops.detail.SectionGeneral.edit_link')}
+						variant="subtle"
 					/>
-					{googleMapsHref && (
-						<Button
-							href={googleMapsHref}
-							icon={<IconBrandGoogleMaps size={18} stroke={1.5} />}
-							label={t('default:stops.detail.SectionGeneral.open_in_google_maps')}
-							target="_blank"
-							variant="transparent"
-						/>
-					)}
+					<IconButton
+						icon={<IconBrandGoogleMaps size={18} stroke={1.5} />}
+						onClick={() => window.open(googleMapsHref, '_blank')}
+						tooltip={t('default:stops.detail.SectionGeneral.open_in_google_maps')}
+						variant="subtle"
+					/>
 				</Section>
 			</Section>
 		</Surface>

@@ -5,7 +5,7 @@ import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-d
 import { IconBus, IconPencil } from '@tabler/icons-react';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, Divider, Grid, Label, Section, Surface, Text, useMeData, useStandardFormWatch, ValueDisplay } from '@tmlmobilidade/ui';
+import { Divider, IconButton, Label, Section, Surface, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -54,7 +54,7 @@ export function StopsDetailUpdateName() {
 	return (
 		<Section gap="md" padding="none">
 			<Surface variant="bordered" withBackground>
-				<Section alignItems="center" flexDirection="row" gap="md" justifyContent="space-between" padding="md">
+				<Section alignItems="flex-start" flexDirection="row" gap="md" justifyContent="space-between" padding="md">
 					<Section alignItems="flex-start" flexDirection="row" gap="md" padding="none">
 						<div className={styles.iconWrapper} aria-hidden>
 							<IconBus size={22} stroke={1.5} />
@@ -81,12 +81,11 @@ export function StopsDetailUpdateName() {
 							</Section>
 						</Section>
 					</Section>
-					<Button
-						disabled={!canUpdateName}
+					<IconButton
 						icon={<IconPencil size={18} stroke={1.5} />}
-						label={t('default:stops.detail.SectionGeneral.edit_link')}
+						isDisabled={!canUpdateName}
 						onClick={openStopsDetailUpdateNameModal}
-						variant="secondary"
+						variant="subtle"
 					/>
 				</Section>
 			</Surface>
