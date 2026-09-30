@@ -45,11 +45,25 @@ export function StopsDetailUpdateName() {
 	// C. Render components
 
 	return (
-		<ValueDisplay
-			footer={canUpdateName && <Inline onClick={openStopsDetailUpdateNameModal} dotted>{t('default:stops.detail.UpdateName.EditLink.label')}</Inline>}
-			label={t('default:stops.detail.UpdateName.label')}
-			value={data?.name ?? t('default:stops.shared.not_available')}
-			variant="bordered"
-		/>
+		<>
+			<ValueDisplay
+				footer={canUpdateName && <Inline onClick={openStopsDetailUpdateNameModal} dotted>{t('default:stops.detail.UpdateName.EditLink.label')}</Inline>}
+				label={t('default:stops.detail.UpdateName.label')}
+				value={data?.name ?? t('default:stops.shared.not_available')}
+				variant="bordered"
+			/>
+			<ValueDisplay
+				footer={canUpdateName && <Inline onClick={openStopsDetailUpdateNameModal} dotted>{t('default:stops.detail.UpdateName.EditLink.label')}</Inline>}
+				label={t('default:stops.detail.UpdateName.label')}
+				value={data?.short_name ?? t('default:stops.shared.not_available')}
+				variant="bordered"
+			/>
+			<ValueDisplay
+				footer={canUpdateName && <Inline onClick={openStopsDetailUpdateNameModal} dotted>{t('default:stops.detail.UpdateName.EditLink.label')}</Inline>}
+				label={t('default:stops.detail.UpdateName.label')}
+				value={data?.tts_name ?? t('default:stops.shared.not_available')}
+				variant="bordered"
+			/>
+		</>
 	);
 }

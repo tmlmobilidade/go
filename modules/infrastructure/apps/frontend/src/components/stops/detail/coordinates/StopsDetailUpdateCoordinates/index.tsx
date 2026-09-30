@@ -49,7 +49,7 @@ export function StopsDetailUpdateCoordinates() {
 			footer={canUpdateCoordinates && <Inline onClick={openStopsDetailUpdateCoordinatesModal} dotted>{t('default:stops.detail.UpdateCoordinates.EditLink.label')}</Inline>}
 			label={t('default:stops.detail.UpdateCoordinates.label')}
 			value={`${data?.latitude ?? t('default:stops.shared.not_available')}, ${data?.longitude ?? t('default:stops.shared.not_available')}`}
-			variant="bordered"
+			variant="transparent"
 		/>
 	);
 }

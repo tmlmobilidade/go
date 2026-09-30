@@ -9,7 +9,6 @@ import { StopsDetailSectionAmenities } from '../StopsDetailSectionAmenities';
 import { StopsDetailSectionChecks } from '../StopsDetailSectionChecks';
 import { StopsDetailSectionGeneral } from '../StopsDetailSectionGeneral';
 import { StopsDetailSectionInfrastructure } from '../StopsDetailSectionInfrastructure';
-import { StopsDetailSectionMap } from '../StopsDetailSectionMap';
 import { StopsDetailSectionShelter } from '../StopsDetailSectionShelter';
 
 /* * */
@@ -28,7 +27,6 @@ export function StopsDetail() {
 	return (
 		<Pane header={[<StopsDetailHeader key="header" />]} isLoading={isLoading}>
 			<Divider />
-			<StopsDetailSectionMap />
 			<StopsDetailSectionGeneral />
 			<StopsDetailSectionFlags />
 			<StopsDetailSectionInfrastructure />
