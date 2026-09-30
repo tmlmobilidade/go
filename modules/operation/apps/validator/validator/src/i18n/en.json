@@ -247,6 +247,7 @@
 		"forbidden": "ield \"exception_type\" must forbidden",
 		"invalid": "Field \"exception_type\" must be 1 or 2. Got \"%s\"",
 		"not_allowed": "Field \"exception_type\" \"%s\" is not allowed",
+		"recommended": "Field \"exception_type\" is recommended",
 		"required": "Field \"exception_type\" is required"
 	},
 	"external_sound_validation": {

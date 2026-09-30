@@ -246,6 +246,7 @@
 		"forbidden": "campo \"exception_type\" deve proibido",
 		"invalid": "O campo \"exception_type\" deve ser 1 ou 2. Recebido: \"%s\"",
 		"not_allowed": "O campo \"exception_type\" \"%s\" não é permitido",
+		"recommended": "O campo \"exception_type\" é recomendado",
 		"required": "O campo \"exception_type\" é obrigatório"
 	},
 	"external_sound_validation": {

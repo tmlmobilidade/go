@@ -44,17 +44,28 @@ func ExceptionTypeValidation(calendarDate *types.CalendarDates, row int, rules *
 
 	// 1. Validate exception_type is present
 	if calendarDate.ExceptionType == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("exception_type_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("exception_type_validation.required", "exception_type_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// 2. Validate exception_type is a valid exception type
+	// 2. Validate exception_type is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("exception_type_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate exception_type is a valid exception type
 	if !slices.Contains(validExceptionTypes, *calendarDate.ExceptionType) {
 		ctx.AddError(ctx.GetTranslatedMessage("exception_type_validation.invalid", *calendarDate.ExceptionType))
 		return
 	}
 
-	// Validate Rule Options
+	// 4. Validate Rule Options
 	if rules != nil && rules.ExceptionType.Options != nil {
 		if slices.Contains(*rules.ExceptionType.Options, types.ALL_OPTIONS) {
 			return

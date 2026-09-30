@@ -26,11 +26,22 @@ func DateValidation(calendarDate *types.CalendarDates, row int) {
 
 	// 1. Validate date is present
 	if date == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("date_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("date_validation.required", "date_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// 2. Validate date is a valid service date
+	// 2. Validate date is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("date_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate date is a valid service date
 	if !lib.IsValidServiceDate(date) {
 		ctx.AddError(ctx.GetTranslatedMessage("date_validation.invalid", date))
 		return

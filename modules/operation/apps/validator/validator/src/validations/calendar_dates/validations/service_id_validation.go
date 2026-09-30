@@ -29,7 +29,18 @@ func ServiceIdValidation(calendarDate *types.CalendarDates, row int) {
 
 	// 1. Validate service_id is present
 	if serviceId == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("service_id_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("service_id_validation.required", "service_id_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate service_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("service_id_validation.forbidden"))
 		return
 	}
 }
