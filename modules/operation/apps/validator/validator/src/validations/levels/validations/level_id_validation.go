@@ -37,7 +37,7 @@ func LevelIdValidation(level *types.Levels, row int, gtfs types.Gtfs, rules *typ
 
 	rows, err := gtfs.GetRowsById("levels", *level.LevelId)
 	if err == nil && len(rows) > 1 {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_id_validation.duplicate", map[string]interface{}{"level_id": *level.LevelId}))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_id_validation.duplicate", *level.LevelId))
 		return
 	}
 }

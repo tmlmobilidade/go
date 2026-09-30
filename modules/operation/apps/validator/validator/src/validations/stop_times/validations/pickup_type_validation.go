@@ -67,7 +67,7 @@ func PickupTypeValidation(stopTime *types.StopTime, row int, rules *types.StopTi
 
 	// 4. Check if pickup_type is forbidden with a window: 0 or 3 are forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined
 	if (pt == 0 || pt == 3) && ((stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "") || (stopTime.EndPickupDropOffWindow != nil && *stopTime.EndPickupDropOffWindow != "")) {
-		ctx.AddError(ctx.GetTranslatedMessage("pickup_type_validation.forbidden_with_window"))
+		ctx.AddError(ctx.GetTranslatedMessage("pickup_type_validation.forbidden_pickup_dropoff"))
 		return
 	}
 

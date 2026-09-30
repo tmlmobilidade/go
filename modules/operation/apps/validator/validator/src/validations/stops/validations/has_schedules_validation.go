@@ -53,7 +53,7 @@ func HasSchedulesValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 	// 3. Validate has_schedules is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasSchedules) {
-		ctx.AddError(ctx.GetTranslatedMessage("has_schedules_validation.invalid", *stop.HasSchedules))
+		ctx.AddError(ctx.GetTranslatedMessage("has_schedules_validation.invalid", strconv.Itoa(*stop.HasSchedules)))
 		return
 	}
 

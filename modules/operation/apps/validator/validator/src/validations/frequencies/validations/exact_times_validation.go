@@ -51,7 +51,7 @@ func ExactTimesValidation(frequency *types.Frequencies, row int, rules *types.Fr
 	}
 
 	if !slices.Contains(validOptions, *frequency.ExactTimes) {
-		ctx.AddError(ctx.GetTranslatedMessage("exact_times_validation.invalid", *frequency.ExactTimes))
+		ctx.AddError(ctx.GetTranslatedMessage("exact_times_validation.invalid", strconv.Itoa(*frequency.ExactTimes)))
 		return
 	}
 

@@ -42,7 +42,7 @@ func FareIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules
 
 	// Check Foreign Key
 	if !lib.GtfsIdMapKeyExists(gtfs, "fare_attributes", *fareRule.FareId) {
-		addMessage(i18n.AppTranslator.Get("fare_id_validation.invalid"))
+		addMessage(i18n.AppTranslator.Get("fare_id_validation.not_found", *fareRule.FareId))
 		return
 	}
 }

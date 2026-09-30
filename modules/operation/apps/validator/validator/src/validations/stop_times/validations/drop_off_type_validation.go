@@ -60,7 +60,7 @@ func DropOffTypeValidation(stopTime *types.StopTime, row int, rules *types.StopT
 
 	// 4. Check if drop_off_type is forbidden with a window: 0 is forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined
 	if dt == 0 && ((stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "") || (stopTime.EndPickupDropOffWindow != nil && *stopTime.EndPickupDropOffWindow != "")) {
-		ctx.AddError(ctx.GetTranslatedMessage("drop_off_type_validation.forbidden_zero_with_window"))
+		ctx.AddError(ctx.GetTranslatedMessage("drop_off_type_validation.forbidden_pickup_dropoff"))
 		return
 	}
 

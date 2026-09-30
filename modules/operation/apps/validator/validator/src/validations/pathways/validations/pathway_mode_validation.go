@@ -47,7 +47,7 @@ func PathwayModeValidation(pathways *types.Pathways, row int, rules *types.Pathw
 	validOptions := []int{1, 2, 3, 4, 5, 6, 7}
 	// Check Enum
 	if !slices.Contains(validOptions, *pathways.PathwayMode) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_mode_validation.invalid", *pathways.PathwayMode))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_mode_validation.invalid", strconv.Itoa(*pathways.PathwayMode)))
 		return
 	}
 

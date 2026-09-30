@@ -68,7 +68,7 @@ func WheelchairBoardingValidation(stop *types.Stop, row int, rules *types.StopsR
 	// 3. Validate wheelchair_boarding is a valid value
 	validValues := []int{0, 1, 2}
 	if !slices.Contains(validValues, *stop.WheelchairBoarding) {
-		ctx.AddError(ctx.GetTranslatedMessage("wheelchair_boarding_validation.invalid", *stop.WheelchairBoarding))
+		ctx.AddError(ctx.GetTranslatedMessage("wheelchair_boarding_validation.invalid", strconv.Itoa(*stop.WheelchairBoarding)))
 		return
 	}
 

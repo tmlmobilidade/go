@@ -45,6 +45,6 @@ func ShapePtLonValidation(shape *types.Shape, row int, rules *types.ShapesRules)
 
 	// 3. Validate shape_pt_lon is a valid longitude
 	if !lib.ValidateLongitude(*shape.ShapePtLon) {
-		ctx.AddError(ctx.GetTranslatedMessage("shape_pt_lon_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("shape_pt_lon_validation.invalid", *shape.ShapePtLon))
 	}
 }

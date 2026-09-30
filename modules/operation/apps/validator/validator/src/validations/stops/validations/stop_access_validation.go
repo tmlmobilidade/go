@@ -78,7 +78,7 @@ func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *ty
 	// 5. Validate stop_access is a valid value
 	validOptions := []int{0, 1}
 	if !slices.Contains(validOptions, *stop.StopAccess) {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_access_validation.invalid", *stop.StopAccess))
+		ctx.AddError(ctx.GetTranslatedMessage("stop_access_validation.invalid", strconv.Itoa(*stop.StopAccess)))
 		return
 	}
 

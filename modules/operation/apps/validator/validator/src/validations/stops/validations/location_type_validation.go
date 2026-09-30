@@ -40,12 +40,12 @@ func LocationTypeValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 	if stop.LocationType == nil {
 		ctx.AddError(ctx.GetTranslatedMessage("location_type_validation.required"))
 		return
-	}	
+	}
 
 	// 2. Validate location_type is a valid value
 	validValues := []int{0, 1, 2, 3, 4}
 	if !slices.Contains(validValues, *stop.LocationType) {
-		ctx.AddError(ctx.GetTranslatedMessage("location_type_validation.invalid", *stop.LocationType))
+		ctx.AddError(ctx.GetTranslatedMessage("location_type_validation.invalid", strconv.Itoa(*stop.LocationType)))
 		return
 	}
 

@@ -51,7 +51,7 @@ func PublicVisibleValidation(stop *types.Stop, row int, rules *types.StopsRules)
 	// 3. Validate public_visible is a valid value
 	validValues := []int{0, 1}
 	if !slices.Contains(validValues, *stop.PublicVisible) {
-		ctx.AddError(ctx.GetTranslatedMessage("public_visible_validation.invalid", *stop.PublicVisible))
+		ctx.AddError(ctx.GetTranslatedMessage("public_visible_validation.invalid", strconv.Itoa(*stop.PublicVisible)))
 		return
 	}
 

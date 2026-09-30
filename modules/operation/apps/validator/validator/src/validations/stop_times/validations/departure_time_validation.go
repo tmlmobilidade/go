@@ -51,7 +51,7 @@ func DepartureTimeValidation(stopTime *types.StopTime, row int, rules *types.Sto
 
 	// 3. Check if departure_time is a valid time
 	if !lib.ValidateTime(*stopTime.DepartureTime) {
-		ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.invalid_time"))
+		ctx.AddError(ctx.GetTranslatedMessage("departure_time_validation.invalid", *stopTime.DepartureTime))
 		return
 	}
 }

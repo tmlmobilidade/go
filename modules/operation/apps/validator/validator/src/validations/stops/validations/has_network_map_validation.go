@@ -53,7 +53,7 @@ func HasNetworkMapValidation(stop *types.Stop, row int, rules *types.StopsRules)
 	// 3. Validate has_network_map is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasNetworkMap) {
-		ctx.AddError(ctx.GetTranslatedMessage("has_network_map_validation.invalid", *stop.HasNetworkMap))
+		ctx.AddError(ctx.GetTranslatedMessage("has_network_map_validation.invalid", strconv.Itoa(*stop.HasNetworkMap)))
 		return
 	}
 

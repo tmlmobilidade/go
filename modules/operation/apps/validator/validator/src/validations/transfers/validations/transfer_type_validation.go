@@ -6,6 +6,7 @@ import (
 	"main/services"
 	"main/types"
 	"slices"
+	"strconv"
 )
 
 /*
@@ -45,7 +46,7 @@ func TransferTypeValidation(transfer *types.Transfers, row int, rules *types.Tra
 
 	validTransferTypes := []int{0, 1, 2, 3, 4, 5}
 	if !slices.Contains(validTransferTypes, *transfer.TransferType) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("transfer_type_validation.invalid", *transfer.TransferType))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("transfer_type_validation.invalid", strconv.Itoa(*transfer.TransferType)))
 		return
 	}
 

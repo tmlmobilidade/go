@@ -59,7 +59,7 @@ func ShapeDistTraveledValidation(stopTime *types.StopTime, row int, rules *types
 
 	// 3. Check if shape_dist_traveled is non-negative
 	if *stopTime.ShapeDistTraveled < 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("shape_dist_traveled_validation.negative"))
+		ctx.AddError(ctx.GetTranslatedMessage("shape_dist_traveled_validation.invalid"))
 		return
 	}
 }

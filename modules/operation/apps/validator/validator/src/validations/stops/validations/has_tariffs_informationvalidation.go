@@ -53,7 +53,7 @@ func HasTariffsInformationValidation(stop *types.Stop, row int, rules *types.Sto
 	// 3. Validate has_tariffs_information is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasTariffsInformation) {
-		ctx.AddError(ctx.GetTranslatedMessage("has_tariffs_information_validation.invalid", *stop.HasTariffsInformation))
+		ctx.AddError(ctx.GetTranslatedMessage("has_tariffs_information_validation.invalid", strconv.Itoa(*stop.HasTariffsInformation)))
 		return
 	}
 

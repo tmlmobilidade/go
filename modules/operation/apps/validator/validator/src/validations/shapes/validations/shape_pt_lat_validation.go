@@ -45,6 +45,6 @@ func ShapePtLatValidation(shape *types.Shape, row int, rules *types.ShapesRules)
 
 	// 3. Validate shape_pt_lat is a valid latitude
 	if !lib.ValidateLatitude(*shape.ShapePtLat) {
-		ctx.AddError(ctx.GetTranslatedMessage("shape_pt_lat_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("shape_pt_lat_validation.invalid", *shape.ShapePtLat))
 	}
 }

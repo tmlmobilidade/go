@@ -52,7 +52,7 @@ func HasPipRealTimeValidation(stop *types.Stop, row int, rules *types.StopsRules
 	// 3. Validate has_pip_real_time is a valid value
 	validValues := []int{0, 1, 2}
 	if !slices.Contains(validValues, *stop.HasPipRealTime) {
-		ctx.AddError(ctx.GetTranslatedMessage("has_pip_real_time_validation.invalid", *stop.HasPipRealTime))
+		ctx.AddError(ctx.GetTranslatedMessage("has_pip_real_time_validation.invalid", strconv.Itoa(*stop.HasPipRealTime)))
 		return
 	}
 

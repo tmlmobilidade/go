@@ -48,7 +48,7 @@ func AgencyIdValidation(fareAttribute *types.FareAttribute, row int, gtfs *types
 
 	// Check Foreign Key
 	if !lib.GtfsIdMapKeyExists(gtfs, "agency", *fareAttribute.AgencyId) {
-		ctx.AddError(ctx.GetTranslatedMessage("agency_id_validation.not_found"))
+		ctx.AddError(ctx.GetTranslatedMessage("agency_id_validation.not_found", *fareAttribute.AgencyId))
 		return
 	}
 }

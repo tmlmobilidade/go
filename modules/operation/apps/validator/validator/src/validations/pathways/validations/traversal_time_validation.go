@@ -4,6 +4,7 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
+	"strconv"
 )
 
 /*
@@ -42,7 +43,7 @@ func TraversalTimeValidation(pathways *types.Pathways, row int, rules *types.Pat
 	}
 
 	if *pathways.TraversalTime < 0 {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("traversal_time_validation.negative", *pathways.TraversalTime))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("traversal_time_validation.negative", strconv.Itoa(*pathways.TraversalTime)))
 		return
 	}
 }

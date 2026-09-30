@@ -68,7 +68,7 @@ func FromStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, r
 	// Forbidden: station (1)
 	if locationType == 1 {
 		ctx.AddError(
-			ctx.GetTranslatedMessage("from_stop_id_validation.invalid_location_type_station", stopID, locationType),
+			ctx.GetTranslatedMessage("from_stop_id_validation.invalid_location_type_station", stopID),
 		)
 		return
 	}

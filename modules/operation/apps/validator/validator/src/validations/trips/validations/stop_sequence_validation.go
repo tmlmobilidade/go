@@ -80,7 +80,7 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 	for _, stopTimeRaw := range stopTimesRaw {
 		stopSequence, err := strconv.Atoi(stopTimeRaw.StopSequence)
 		if err != nil {
-			ctx.AddError(ctx.GetTranslatedMessage("stop_sequence_validation.invalid_sequence"))
+			ctx.AddError(ctx.GetTranslatedMessage("stop_sequence_validation.invalid"))
 			return
 		}
 

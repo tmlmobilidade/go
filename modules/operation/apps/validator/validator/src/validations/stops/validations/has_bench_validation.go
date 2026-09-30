@@ -53,7 +53,7 @@ func HasBenchValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	// 3. Validate has_bench is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasBench) {
-		ctx.AddError(ctx.GetTranslatedMessage("has_bench_validation.invalid", *stop.HasBench))
+		ctx.AddError(ctx.GetTranslatedMessage("has_bench_validation.invalid", strconv.Itoa(*stop.HasBench)))
 		return
 	}
 

@@ -70,7 +70,7 @@ func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rul
 	// Allowed: platform (0 or empty), entrance/exit (2), generic node (3), boarding area (4)
 	// Forbidden: station (1)
 	if locationType == 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.invalid_location_type_station", *pathways.ToStopId, locationType))
+		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.invalid_location_type_station", *pathways.ToStopId))
 		return
 	}
 

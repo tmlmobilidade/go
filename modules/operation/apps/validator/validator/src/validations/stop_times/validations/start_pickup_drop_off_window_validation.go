@@ -36,7 +36,7 @@ func StartPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules
 	// 1. Check if start_pickup_drop_off_window is forbidden: forbidden if arrival_time or departure_time are defined
 	if (stopTime.ArrivalTime != nil && *stopTime.ArrivalTime != "") || (stopTime.DepartureTime != nil && *stopTime.DepartureTime != "") {
 		if stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "" {
-			ctx.AddError(ctx.GetTranslatedMessage("start_pickup_drop_off_window_validation.forbidden_with_time"))
+			ctx.AddError(ctx.GetTranslatedMessage("start_pickup_drop_off_window_validation.forbidden_arrival_departure"))
 		}
 		return
 	}
@@ -60,7 +60,7 @@ func StartPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules
 
 	if required {
 		if stopTime.StartPickupDropOffWindow == nil || *stopTime.StartPickupDropOffWindow == "" {
-			ctx.AddError(ctx.GetTranslatedMessage("start_pickup_drop_off_window_validation.required_conditional"))
+			ctx.AddError(ctx.GetTranslatedMessage("start_pickup_drop_off_window_validation.required_location_group_id_start_pickup_dropoff"))
 			return
 		}
 	}
@@ -68,7 +68,7 @@ func StartPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules
 	// 4. Check if start_pickup_drop_off_window is a valid time
 	if stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "" {
 		if !lib.ValidateTime(*stopTime.StartPickupDropOffWindow) {
-			ctx.AddError(ctx.GetTranslatedMessage("start_pickup_drop_off_window_validation.invalid_time"))
+			ctx.AddError(ctx.GetTranslatedMessage("start_pickup_drop_off_window_validation.invalid", *stopTime.StartPickupDropOffWindow))
 			return
 		}
 	}

@@ -6,6 +6,7 @@ import (
 	"main/services"
 	"main/types"
 	"slices"
+	"strconv"
 )
 
 /*
@@ -47,7 +48,7 @@ func WheelchairAccessibleValidation(trip *types.Trip, row int, gtfs *types.Gtfs,
 	if trip.WheelchairAccessible != nil {
 		validWheelchairAccessible := []int{0, 1, 2}
 		if !slices.Contains(validWheelchairAccessible, *trip.WheelchairAccessible) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.invalid"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.invalid", strconv.Itoa(*trip.WheelchairAccessible)))
 			return
 		}
 	}

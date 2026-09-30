@@ -60,7 +60,7 @@ func RouteIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rule
 
 	// Check Foreign Key
 	if !lib.GtfsIdMapKeyExists(gtfs, "routes", *fareRule.RouteId) {
-		addMessage(i18n.AppTranslator.Get("route_id_validation.invalid"), types.SEVERITY_ERROR)
+		addMessage(i18n.AppTranslator.Get("route_id_validation.invalid", *fareRule.RouteId), types.SEVERITY_ERROR)
 		return
 	}
 }

@@ -43,7 +43,7 @@ func IsBidirectionalValidation(pathways *types.Pathways, row int, rules *types.P
 
 	validOptions := []int{0, 1}
 	if !slices.Contains(validOptions, *pathways.IsBidirectional) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("is_bidirectional_validation.invalid", *pathways.IsBidirectional))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("is_bidirectional_validation.invalid", strconv.Itoa(*pathways.IsBidirectional)))
 		return
 	}
 

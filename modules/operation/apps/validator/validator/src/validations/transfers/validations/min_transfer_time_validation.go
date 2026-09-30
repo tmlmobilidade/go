@@ -28,7 +28,7 @@ func MinTransferTimeValidation(transfer *types.Transfers, row int, rules *types.
 
 	if transfer.MinTransferTime == nil {
 		if !ctx.ShouldSkip() {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("min_transfer_time_validation.required", "min_transfer_time_validation.recommended"))
+			ctx.AddMessageWithSeverity(ctx.GetRequiredMessage("min_transfer_time_validation.required", "min_transfer_time_validation.recommended"))
 		}
 		return
 	}
