@@ -20,7 +20,8 @@ func TestAllIsDefaultFareCategoryValidationTests(t *testing.T) {
 					isDefaultFareCategory = ptr
 				}
 			}
-			validations.IsDefaultFareCategoryValidation(&types.RiderCategory{IsDefaultFareCategory: isDefaultFareCategory}, tc.Row, nil)
+			rules := &types.RiderCategoriesRules{IsDefaultFareCategory: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
+			validations.IsDefaultFareCategoryValidation(&types.RiderCategory{IsDefaultFareCategory: isDefaultFareCategory}, tc.Row, rules)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}

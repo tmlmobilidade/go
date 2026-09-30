@@ -213,7 +213,10 @@
 		"required": "Field \"drop_off_type\" is required"
 	},
 	"eligibility_url_validation": {
-		"invalid": "Field \"eligibility_url\" must be a valid URL"
+		"forbidden": "Field \"eligibility_url\" is forbidden",
+		"invalid": "Field \"eligibility_url\" must be a valid URL",
+		"recommended": "Field \"eligibility_url\" is recommended",
+		"required": "Field \"eligibility_url\" is required"
 	},
 	"emission_validation": {
 		"forbidden": "Field \"emission\" is forbidden",
@@ -447,8 +450,10 @@
 		"required": "Field \"is_bidirectional\" is required"
 	},
 	"is_default_fare_category_validation": {
+		"forbidden": "Field \"is_default_fare_category\" is forbidden",
 		"invalid": "Field \"is_default_fare_category\" must be 0 or 1",
 		"not_allowed": "Field \"is_default_fare_category\" \"%s\" is not allowed",
+		"recommended": "Field \"is_default_fare_category\" is recommended",
 		"required": "Field \"is_default_fare_category\" is required"
 	},
 	"kneeling_validation": {
@@ -743,9 +748,13 @@
 	},
 	"rider_category_id_validation": {
 		"duplicate": "Duplicate field \"rider_category_id\" \"%s\" found. Field \"rider_category_id\" must be unique",
+		"forbidden": "Field \"rider_category_id\" is forbidden",
+		"recommended": "Field \"rider_category_id\" is recommended",
 		"required": "Field \"rider_category_id\" is required"
 	},
 	"rider_category_name_validation": {
+		"forbidden": "Field \"rider_category_name\" is forbidden",
+		"recommended": "Field \"rider_category_name\" is recommended",
 		"required": "Field \"rider_category_name\" is required"
 	},
 	"route_associations_validation": {

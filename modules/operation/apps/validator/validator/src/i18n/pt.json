@@ -212,7 +212,10 @@
 		"required": "O campo \"drop_off_type\" é obrigatório"
 	},
 	"eligibility_url_validation": {
-		"invalid": "O campo \"eligibility_url\" deve ser um URL válido"
+		"forbidden": "O campo \"eligibility_url\" é proibido",
+		"invalid": "O campo \"eligibility_url\" deve ser um URL válido",
+		"recommended": "O campo \"eligibility_url\" é recomendado",
+		"required": "O campo \"eligibility_url\" é obrigatório"
 	},
 	"emission_validation": {
 		"forbidden": "O campo \"emission\" é proibido",
@@ -446,8 +449,10 @@
 		"required": "O campo \"is_bidirectional\" é obrigatório"
 	},
 	"is_default_fare_category_validation": {
+		"forbidden": "O campo \"is_default_fare_category\" é proibido",
 		"invalid": "O campo \"is_default_fare_category\" deve ser 0 ou 1",
 		"not_allowed": "O campo \"is_default_fare_category\" \"%s\" não é permitido",
+		"recommended": "O campo \"is_default_fare_category\" é recomendado",
 		"required": "O campo \"is_default_fare_category\" é obrigatório"
 	},
 	"kneeling_validation": {
@@ -744,9 +749,13 @@
 	},
 	"rider_category_id_validation": {
 		"duplicate": "Campo \"rider_category_id\" \"%s\" duplicado encontrado. O campo \"rider_category_id\" deve ser único",
+		"forbidden": "O campo \"rider_category_id\" é proibido",
+		"recommended": "O campo \"rider_category_id\" é recomendado",
 		"required": "O campo \"rider_category_id\" é obrigatório"
 	},
 	"rider_category_name_validation": {
+		"forbidden": "O campo \"rider_category_name\" é proibido",
+		"recommended": "O campo \"rider_category_name\" é recomendado",
 		"required": "O campo \"rider_category_name\" é obrigatório"
 	},
 	"route_associations_validation": {

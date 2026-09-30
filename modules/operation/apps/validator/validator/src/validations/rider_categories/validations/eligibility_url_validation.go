@@ -27,12 +27,24 @@ func EligibilityUrlValidation(riderCategory *types.RiderCategory, row int, rules
 		ctx.WithSeverity(rules.EligibilityUrl.Severity)
 	}
 
-	// Validate presence - optional field, so nil is valid
+	// 1. Validate eligibility_url is present
 	if riderCategory.EligibilityUrl == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("eligibility_url_validation.required", "eligibility_url_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Validate URL
+	// 2. Validate eligibility_url is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("eligibility_url_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate eligibility_url is a valid eligibility_url
 	if !lib.ValidateUrl(*riderCategory.EligibilityUrl) {
 		ctx.AddError(ctx.GetTranslatedMessage("eligibility_url_validation.invalid"))
 		return

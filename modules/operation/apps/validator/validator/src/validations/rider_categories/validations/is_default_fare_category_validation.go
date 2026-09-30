@@ -34,31 +34,40 @@ func IsDefaultFareCategoryValidation(riderCategory *types.RiderCategory, row int
 	ctx := lib.NewValidationContext("is_default_fare_category", "rider_categories.txt", "rider_categories_at_most_one_default_fare_category", row, services.AppMessageService)
 	if rules != nil && rules.IsDefaultFareCategory.Severity != "" {
 		ctx.WithSeverity(rules.IsDefaultFareCategory.Severity)
-	} else {
-		ctx.WithSeverity(types.SEVERITY_WARNING)
 	}
 
-	// Validate presence
+	// 1. Validate is_default_fare_category is present
 	if riderCategory.IsDefaultFareCategory == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("is_default_fare_category_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("is_default_fare_category_validation.required", "is_default_fare_category_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
-	// Validate enum
+	// 2. Validate is_default_fare_category is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("is_default_fare_category_validation.forbidden"))
+		return
+	}
+
+	// 3. Validate is_default_fare_category is a valid is_default_fare_category
 	validOptions := []int{0, 1}
 	if !slices.Contains(validOptions, *riderCategory.IsDefaultFareCategory) {
 		ctx.AddError(ctx.GetTranslatedMessage("is_default_fare_category_validation.invalid"))
 		return
 	}
 
-	// Validate rules
+	// 4. Validate Rule Options
 	if rules != nil && rules.IsDefaultFareCategory.Options != nil {
 		if slices.Contains(*rules.IsDefaultFareCategory.Options, types.ALL_OPTIONS) {
 			return
 		}
 
 		if !slices.Contains(*rules.IsDefaultFareCategory.Options, strconv.Itoa(*riderCategory.IsDefaultFareCategory)) {
-			ctx.AddError(ctx.GetTranslatedMessage("is_default_fare_category_validation.not_allowed", *riderCategory.IsDefaultFareCategory))
+			ctx.AddError(ctx.GetTranslatedMessage("is_default_fare_category_validation.not_allowed", strconv.Itoa(*riderCategory.IsDefaultFareCategory)))
 			return
 		}
 	}

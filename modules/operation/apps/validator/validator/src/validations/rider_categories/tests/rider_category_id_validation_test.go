@@ -1,6 +1,7 @@
 package rider_categories_test
 
 import (
+	"main/lib"
 	"main/lib/test_helpers"
 	"main/services"
 	"main/types"
@@ -28,7 +29,7 @@ func TestAllRiderCategoryIdValidationTests(t *testing.T) {
 			services.AppMessageService.Clear()
 			riderCategory := &types.RiderCategory{RiderCategoryId: nil}
 			validations.RiderCategoryIdValidation(riderCategory, tc.Row, nil, &types.RiderCategoriesRules{RiderCategoryId: types.RuleConfig{Severity: tc.Severity}})
-			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, tc.Severity)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, lib.IfThenElse(tc.Severity == types.SEVERITY_ERROR, tc.ExpectedErrors, tc.ExpectedWarnings), tc.Name, tc.Severity)
 		})
 	}
 }

@@ -27,9 +27,20 @@ func RiderCategoryNameValidation(riderCategory *types.RiderCategory, row int, ru
 		ctx.WithSeverity(rules.RiderCategoryName.Severity)
 	}
 
-	// Validate presence
+	// 1. Validate rider_category_name is present
 	if riderCategory.RiderCategoryName == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("rider_category_name_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("rider_category_name_validation.required", "rider_category_name_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate rider_category_name is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("rider_category_name_validation.forbidden"))
 		return
 	}
 }
