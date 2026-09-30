@@ -5,7 +5,7 @@ import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-d
 import { IconBrandGoogleMaps, IconMapPin, IconPencil } from '@tabler/icons-react';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, IconButton, Label, Section, Spacer, Surface, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { IconButton, Label, Section, Surface, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -67,7 +67,7 @@ export function StopsDetailUpdateCoordinates() {
 
 	return (
 		<Surface variant="bordered" withBackground>
-			<Section alignItems="flex-start" flexDirection="row" gap="md" justifyContent="space-between" padding="md">
+			<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="md">
 				<Section alignItems="flex-start" flexDirection="row" gap="md" padding="none">
 					<div className={styles.iconWrapper} aria-hidden>
 						<IconMapPin size={22} stroke={1.5} />
@@ -77,8 +77,7 @@ export function StopsDetailUpdateCoordinates() {
 						<Text size="base" weight="semibold">{coordinatesDisplay}</Text>
 					</Section>
 				</Section>
-				<Spacer />
-				<Section alignItems="flex-end" flexDirection="row" flexWrap="nowrap" padding="none">
+				<Section alignItems="flex-end" flexDirection="row" flexWrap="nowrap" padding="none" width="fit-content">
 					<IconButton
 						icon={<IconPencil size={18} stroke={1.5} />}
 						isDisabled={!canUpdateCoordinates}
