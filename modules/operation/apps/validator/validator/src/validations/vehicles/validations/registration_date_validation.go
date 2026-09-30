@@ -15,21 +15,35 @@ import (
 
 # Description
 
-Date of the first registration.
+Date the vehicle was first registered, in any location.
+It is often used to determine the vehicle's age. In the numeric format yyyymmdd.
+
 */
 
 func RegistrationDateValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
 	ctx := lib.NewValidationContext("registration_date", "vehicles.txt", "vehicles_registration_date_valid_day_granularity", row, services.AppMessageService)
-	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.RegistrationDate.Severity != "" {
 		ctx.WithSeverity(rules.RegistrationDate.Severity)
 	}
 
+	// 1. Check if registration_date is required
 	if vehicle.RegistrationDate == nil {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("registration_date_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("registration_date_validation.required", "registration_date_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
+	// 2. Check if registration_date is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("registration_date_validation.forbidden"))
+		return
+	}
+
+	// 3. Check if registration_date is valid
 	if !lib.IsValidServiceDate(*vehicle.RegistrationDate) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("registration_date_validation.invalid", *vehicle.RegistrationDate))
 		return

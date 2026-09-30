@@ -416,34 +416,19 @@ type PeriodRaw struct {
 
 /* VEHICLE */
 type VehicleRaw struct {
-	VehicleId         string `gtfs:"vehicle_id"`
-	AgencyId          string `gtfs:"agency_id"`
-	LicensePlate      string `gtfs:"license_plate"`
-	Make              string `gtfs:"make"`
-	Model             string `gtfs:"model"`
-	Owner             string `gtfs:"owner"`
-	RegistrationDate  string `gtfs:"registration_date"`
-	AvailableSeats    string `gtfs:"available_seats"`
-	AvailableStanding string `gtfs:"available_standing"`
-	Typology          string `gtfs:"typology"`
-	Propulsion        string `gtfs:"propulsion"`
-	Emission          string `gtfs:"emission"`
-	Climatization     string `gtfs:"climatization"`
-	Wheelchair        string `gtfs:"wheelchair"`
-	LoweredFloor      string `gtfs:"lowered_floor"`
-	Ramp              string `gtfs:"ramp"`
-	Kneeling          string `gtfs:"kneeling"`
-	StaticInformation string `gtfs:"static_information"`
-	OnboardMonitor    string `gtfs:"onboard_monitor"`
-	FrontDisplay      string `gtfs:"front_display"`
-	RearDisplay       string `gtfs:"rear_display"`
-	SideDisplay       string `gtfs:"side_display"`
-	InternalSound     string `gtfs:"internal_sound"`
-	ExternalSound     string `gtfs:"external_sound"`
-	ConsumptionMeter  string `gtfs:"consumption_meter"`
-	Bicycles          string `gtfs:"bicycles"`
-	PassengerCounting string `gtfs:"passenger_counting"`
-	VideoSurveillance string `gtfs:"video_surveillance"`
+	VehicleId            string `gtfs:"vehicle_id"`
+	AgencyId             string `gtfs:"agency_id"`
+	LicensePlate         string `gtfs:"license_plate"`
+	Make                 string `gtfs:"make"`
+	Model                string `gtfs:"model"`
+	RegistrationDate     string `gtfs:"registration_date"`
+	VehicleType          string `gtfs:"vehicle_type"`
+	Emission             string `gtfs:"emission"`
+	Propulsion           string `gtfs:"propulsion"`
+	WheelchairAccessible string `gtfs:"wheelchair_accessible"`
+	BicyclesCapacity     string `gtfs:"bicycles_capacity"`
+	TotalCapacity        string `gtfs:"total_capacity"`
+	CarCapacity          string `gtfs:"car_capacity"`
 }
 
 // Gtfs represents a collection of parsed GTFS data files where the key is the filename (without  extension)

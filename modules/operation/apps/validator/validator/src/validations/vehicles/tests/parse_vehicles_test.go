@@ -1,94 +1,142 @@
-package tests
+package vehicles
 
 import (
-	"main/lib"
 	"main/services"
 	"main/types"
 	validations "main/validations/vehicles/validations"
 	"testing"
 )
 
-func TestParseVehicles_Valid(t *testing.T) {
+func TestParseVehicles_ValidInput(t *testing.T) {
 	services.AppMessageService.Clear()
 
 	raw := types.VehicleRaw{
-		VehicleId:         "V1",
-		AgencyId:          "A1",
-		LicensePlate:      "AA-00-BB",
-		Make:              "Make",
-		Model:             "Model",
-		Owner:             "Owner",
-		RegistrationDate:  "2025-01-01",
-		AvailableSeats:    "10",
-		AvailableStanding: "20",
-		Typology:          "bus",
-		Propulsion:        "1",
-		Emission:          "2",
-		Climatization:     "1",
-		Wheelchair:        "1",
-		LoweredFloor:      "1",
-		Ramp:              "1",
-		Kneeling:          "0",
-		StaticInformation: "1",
-		OnboardMonitor:    "1",
-		FrontDisplay:      "1",
-		RearDisplay:       "1",
-		SideDisplay:       "1",
-		InternalSound:     "1",
-		ExternalSound:     "1",
-		ConsumptionMeter:  "1",
-		Bicycles:          "1",
-		PassengerCounting: "1",
-		VideoSurveillance: "1",
+		VehicleId:            "V1",
+		AgencyId:             "A1",
+		LicensePlate:         "AA-00-BB",
+		Make:                 "Mercedes",
+		Model:                "Citaro",
+		RegistrationDate:     "20240101",
+		VehicleType:          "3",
+		Emission:             "Euro VI",
+		Propulsion:           "2",
+		WheelchairAccessible: "1",
+		BicyclesCapacity:     "4",
+		TotalCapacity:        "80",
+		CarCapacity:          "0",
 	}
 
 	vehicle := validations.ParseVehicles(raw, 1)
 
-	assertion := lib.AssertionMessage{
-		Expected: 0,
-		Actual:   services.AppMessageService.GetSummary().TotalErrors,
-		Message:  "Valid vehicle input should not produce errors",
-	}
+	assertStringField(t, "VehicleId", vehicle.VehicleId, "V1")
+	assertStringField(t, "AgencyId", vehicle.AgencyId, "A1")
+	assertStringField(t, "LicensePlate", vehicle.LicensePlate, "AA-00-BB")
+	assertStringField(t, "Make", vehicle.Make, "Mercedes")
+	assertStringField(t, "Model", vehicle.Model, "Citaro")
+	assertStringField(t, "RegistrationDate", vehicle.RegistrationDate, "20240101")
+	assertStringField(t, "Emission", vehicle.Emission, "Euro VI")
 
-	if assert := lib.Assert(assertion); assert != "" {
-		t.Error(assert)
-	}
+	assertIntField(t, "VehicleType", vehicle.VehicleType, 3)
+	assertIntField(t, "Propulsion", vehicle.Propulsion, 2)
+	assertIntField(t, "WheelchairAccessible", vehicle.WheelchairAccessible, 1)
+	assertIntField(t, "BicyclesCapacity", vehicle.BicyclesCapacity, 4)
+	assertIntField(t, "TotalCapacity", vehicle.TotalCapacity, 80)
+	assertIntField(t, "CarCapacity", vehicle.CarCapacity, 0)
 
-	if vehicle.VehicleId == nil || *vehicle.VehicleId != "V1" {
-		t.Errorf("expected VehicleId 'V1', got '%v'", vehicle.VehicleId)
-	}
-
-	if vehicle.LicensePlate == nil || *vehicle.LicensePlate != "AA-00-BB" {
-		t.Errorf("expected LicensePlate 'AA-00-BB', got '%v'", vehicle.LicensePlate)
-	}
-
-	if vehicle.AvailableSeats == nil || *vehicle.AvailableSeats != 10 {
-		t.Errorf("expected AvailableSeats 10, got '%v'", vehicle.AvailableSeats)
-	}
-
-	if vehicle.Propulsion == nil || *vehicle.Propulsion != 1 {
-		t.Errorf("expected Propulsion 1, got '%v'", vehicle.Propulsion)
+	if summary := services.AppMessageService.GetSummary(); summary.TotalErrors != 0 {
+		t.Errorf("Expected no parse errors, got %d", summary.TotalErrors)
 	}
 }
 
-func TestParseVehicles_InvalidIntField(t *testing.T) {
+func TestParseVehicles_EmptyFieldsAreNil(t *testing.T) {
+	services.AppMessageService.Clear()
+
+	vehicle := validations.ParseVehicles(types.VehicleRaw{VehicleId: "V1"}, 1)
+
+	if vehicle.VehicleId == nil || *vehicle.VehicleId != "V1" {
+		t.Fatalf("Expected VehicleId 'V1', got '%v'", vehicle.VehicleId)
+	}
+
+	nilFields := map[string]bool{
+		"AgencyId":             vehicle.AgencyId == nil,
+		"LicensePlate":         vehicle.LicensePlate == nil,
+		"Make":                 vehicle.Make == nil,
+		"Model":                vehicle.Model == nil,
+		"RegistrationDate":     vehicle.RegistrationDate == nil,
+		"VehicleType":          vehicle.VehicleType == nil,
+		"Emission":             vehicle.Emission == nil,
+		"Propulsion":           vehicle.Propulsion == nil,
+		"WheelchairAccessible": vehicle.WheelchairAccessible == nil,
+		"BicyclesCapacity":     vehicle.BicyclesCapacity == nil,
+		"TotalCapacity":        vehicle.TotalCapacity == nil,
+		"CarCapacity":          vehicle.CarCapacity == nil,
+	}
+	for field, isNil := range nilFields {
+		if !isNil {
+			t.Errorf("Expected %s to be nil when the raw value is empty", field)
+		}
+	}
+}
+
+func TestParseVehicles_ZeroValuesAreKept(t *testing.T) {
 	services.AppMessageService.Clear()
 
 	raw := types.VehicleRaw{
-		VehicleId:      "V1",
-		AgencyId:       "A1",
-		AvailableSeats: "not_an_int",
+		VehicleId:            "V1",
+		VehicleType:          "0",
+		Propulsion:           "0",
+		WheelchairAccessible: "0",
+		BicyclesCapacity:     "0",
+		TotalCapacity:        "0",
+		CarCapacity:          "0",
 	}
 
-	_ = validations.ParseVehicles(raw, 1)
+	vehicle := validations.ParseVehicles(raw, 1)
 
-	assertion := lib.AssertionMessage{
-		Expected: 1,
-		Actual:   services.AppMessageService.GetSummary().TotalErrors,
-		Message:  "Invalid available_seats should produce one error",
+	assertIntField(t, "VehicleType", vehicle.VehicleType, 0)
+	assertIntField(t, "Propulsion", vehicle.Propulsion, 0)
+	assertIntField(t, "WheelchairAccessible", vehicle.WheelchairAccessible, 0)
+	assertIntField(t, "BicyclesCapacity", vehicle.BicyclesCapacity, 0)
+	assertIntField(t, "TotalCapacity", vehicle.TotalCapacity, 0)
+	assertIntField(t, "CarCapacity", vehicle.CarCapacity, 0)
+}
+
+func TestParseVehicles_InvalidIntReturnsEmptyVehicle(t *testing.T) {
+	services.AppMessageService.Clear()
+
+	raw := types.VehicleRaw{
+		VehicleId:  "V1",
+		Propulsion: "not-a-number",
 	}
 
-	if assert := lib.Assert(assertion); assert != "" {
-		t.Error(assert)
+	vehicle := validations.ParseVehicles(raw, 1)
+
+	if vehicle != (types.Vehicle{}) {
+		t.Errorf("Expected an empty vehicle when a field fails to parse, got %+v", vehicle)
+	}
+	if summary := services.AppMessageService.GetSummary(); summary.TotalErrors != 1 {
+		t.Errorf("Expected 1 parse error, got %d", summary.TotalErrors)
+	}
+}
+
+func assertStringField(t *testing.T, name string, got *string, want string) {
+	t.Helper()
+	if got == nil {
+		t.Errorf("Expected %s '%s', got nil", name, want)
+		return
+	}
+	if *got != want {
+		t.Errorf("Expected %s '%s', got '%s'", name, want, *got)
+	}
+}
+
+func assertIntField(t *testing.T, name string, got *int, want int) {
+	t.Helper()
+	if got == nil {
+		t.Errorf("Expected %s '%d', got nil", name, want)
+		return
+	}
+	if *got != want {
+		t.Errorf("Expected %s '%d', got '%d'", name, want, *got)
 	}
 }

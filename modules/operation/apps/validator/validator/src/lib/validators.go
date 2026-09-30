@@ -149,6 +149,8 @@ func ValidateTime(t string) bool {
 
 var plateRegex = regexp.MustCompile(`^(?:[A-Z]{2}\d{2}[A-Z]{2}|\d{2}[A-Z]{2}\d{2}|\d{4}[A-Z]{2}|[A-Z]{2}\d{4})$`)
 
+var mmsiRegex = regexp.MustCompile(`^[2-7]\d{8}$`)
+
 func normalizeLicensePlate(licensePlate string) string {
 	s := strings.ToUpper(strings.TrimSpace(licensePlate))
 	var b strings.Builder
@@ -164,7 +166,21 @@ func normalizeLicensePlate(licensePlate string) string {
 	return b.String()
 }
 
+// ValidateMMSI checks a Maritime Mobile Service Identity, used to identify the
+// vehicle unit when the transport mode is ferry. A ship station MMSI is 9
+// digits whose MID (the first three digits) starts with 2-7.
+func ValidateMMSI(mmsi string) bool {
+	mmsi = strings.TrimSpace(mmsi)
+	return mmsiRegex.MatchString(mmsi)
+}
+
+// ValidateLicensePlate checks the license plate of the vehicle unit. For the
+// ferry transport mode the MMSI is used instead, so both formats are accepted.
 func ValidateLicensePlate(licensePlate string) bool {
+	if ValidateMMSI(licensePlate) {
+		return true
+	}
+
 	licensePlate = normalizeLicensePlate(licensePlate)
 
 	if len(licensePlate) != 6 {

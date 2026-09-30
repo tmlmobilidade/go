@@ -20,13 +20,24 @@ The model of the vehicle.
 */
 func ModelValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
 	ctx := lib.NewValidationContext("model", "vehicles.txt", "vehicle_model_required", row, services.AppMessageService)
-	ctx.Severity = types.SEVERITY_ERROR
 	if rules != nil && rules.Model.Severity != "" {
 		ctx.WithSeverity(rules.Model.Severity)
 	}
 
+	// 1. Check if model is required
 	if vehicle.Model == nil {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("model_validation.required"))
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("model_validation.required", "model_validation.recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Check if model is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("model_validation.forbidden"))
 		return
 	}
 }

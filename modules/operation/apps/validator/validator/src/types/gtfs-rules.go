@@ -153,35 +153,20 @@ type CalendarDatesRules struct {
 }
 
 type VehiclesRules struct {
-	File              Severity   `json:"_file"`
-	VehicleId         RuleConfig `json:"vehicle_id_unique"`
-	AgencyId          RuleConfig `json:"vehicle_agency_id_references_agency_table"`
-	LicensePlate      RuleConfig `json:"vehicles_license_plate_format_per_market_rules"`
-	Make              RuleConfig `json:"vehicle_make_required"`
-	Model             RuleConfig `json:"vehicle_model_required"`
-	Owner             RuleConfig `json:"vehicle_owner_required"`
-	RegistrationDate  RuleConfig `json:"vehicles_registration_date_valid_day_granularity"`
-	AvailableSeats    RuleConfig `json:"vehicles_available_seats_non_negative"`
-	AvailableStanding RuleConfig `json:"vehicles_available_standing_non_negative"`
-	Typology          RuleConfig `json:"vehicles_typology_in_allowed_vehicle_types"`
-	Propulsion        RuleConfig `json:"vehicles_propulsion_type_valid_enum"`
-	Emission          RuleConfig `json:"vehicles_emission_code_valid_for_propulsion_type"`
-	Climatization     RuleConfig `json:"vehicles_climatization_valid_enum"`
-	Wheelchair        RuleConfig `json:"vehicles_wheelchair_spots_valid_enum"`
-	LoweredFloor      RuleConfig `json:"vehicles_lowered_floor_valid_enum"`
-	Ramp              RuleConfig `json:"vehicles_ramp_valid_enum"`
-	Kneeling          RuleConfig `json:"vehicles_kneeling_valid_enum"`
-	StaticInformation RuleConfig `json:"vehicles_static_information_valid_enum"`
-	OnboardMonitor    RuleConfig `json:"vehicles_onboard_monitor_valid_enum"`
-	FrontDisplay      RuleConfig `json:"vehicles_front_display_valid_enum"`
-	RearDisplay       RuleConfig `json:"vehicles_rear_display_valid_enum"`
-	SideDisplay       RuleConfig `json:"vehicles_side_display_valid_enum"`
-	InternalSound     RuleConfig `json:"vehicles_internal_sound_level_valid_enum"`
-	ExternalSound     RuleConfig `json:"vehicles_external_sound_valid_enum"`
-	ConsumptionMeter  RuleConfig `json:"vehicles_consumption_meter_valid_format"`
-	Bicycles          RuleConfig `json:"vehicles_bicycles_rack_count_non_negative"`
-	PassengerCounting RuleConfig `json:"vehicles_passenger_counting_valid_enum"`
-	VideoSurveillance RuleConfig `json:"vehicles_video_surveillance_valid_enum"`
+	File                 Severity   `json:"_file"`
+	VehicleId            RuleConfig `json:"vehicle_id_unique"`
+	AgencyId             RuleConfig `json:"vehicle_agency_id_references_agency_table"`
+	LicensePlate         RuleConfig `json:"vehicles_license_plate_format_per_market_rules"`
+	Make                 RuleConfig `json:"vehicle_make_required"`
+	Model                RuleConfig `json:"vehicle_model_required"`
+	RegistrationDate     RuleConfig `json:"vehicles_registration_date_valid_day_granularity"`
+	VehicleType          RuleConfig `json:"vehicles_vehicle_type_valid_enum"`
+	Emission             RuleConfig `json:"vehicles_emission_valid_enum"`
+	Propulsion           RuleConfig `json:"vehicles_propulsion_valid_enum"`
+	WheelchairAccessible RuleConfig `json:"vehicles_wheelchair_accessible_valid_gtfs_enum"`
+	BicyclesCapacity     RuleConfig `json:"vehicles_bicycles_rack_count_non_negative"`
+	TotalCapacity        RuleConfig `json:"vehicles_total_capacity_non_negative"`
+	CarCapacity          RuleConfig `json:"vehicles_car_capacity_non_negative"`
 }
 
 type FareAttributesRules struct {
