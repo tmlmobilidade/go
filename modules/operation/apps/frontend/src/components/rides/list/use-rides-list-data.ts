@@ -66,7 +66,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	// B. Transform data
 
 	const query = useMemo<ControllerRidesListFilters>(() => ({
-		// acceptance_statuses: filterAcceptanceStatus.value,
+		acceptance_statuses: filterAcceptanceStatus.value,
 		agency_ids: filterAgency.value,
 		analysis_at_least_one_vehicle_event_on_last_stop_grades: filterAnalysisAtLeastOneVehicleEventOnLastStop.value,
 		analysis_expected_apex_validation_interval_grades: filterAnalysisExpectedApexValidationInterval.value,
@@ -97,10 +97,12 @@ export function useRidesListData(): UseRidesListDataReturnType {
 
 	const ridesData = useMemo(() => {
 		if (!data?.data) return data?.data;
-		if (!filterFavorites.value) return data.data;
+		// Free-text search (especially an exact `_id`) should surface the hit
+		// even when the favorites toggle is on.
+		if (!filterFavorites.value || filterSearch.value) return data.data;
 		const favoriteIds = new Set(favoriteRideIds);
 		return data.data.filter(ride => favoriteIds.has(ride._id));
-	}, [data?.data, favoriteRideIds, filterFavorites.value]);
+	}, [data?.data, favoriteRideIds, filterFavorites.value, filterSearch.value]);
 
 	//
 	// E. Return data

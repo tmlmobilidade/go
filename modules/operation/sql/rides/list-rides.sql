@@ -43,10 +43,11 @@ WITH
 	 * vehicle_ids — including search tags v:/d: — and every derived
 	 * status/grade) must stay in the final WHERE.
 	 *
-	 * The exact-ride branch is only present when a search term is given.
+	 * The exact-ride branch is only present when a plain search term is given.
 	 * It adds the ride whose id is exactly the search term even when it is
-	 * outside the requested date range. The LIMIT BY over the union keeps a
-	 * single version when that ride is also part of the range.
+	 * outside the requested date range, and ignores UI filters other than
+	 * agency (permissions). The LIMIT BY over the union keeps a single
+	 * version when that ride is also part of the range.
 	 */
 	rides_for_query AS
 	(
@@ -113,7 +114,7 @@ WITH
 			FROM operation.rides
 			WHERE
 				_id = $3
-				--RIDE FILTERS HERE--
+				--EXACT RIDE FILTERS HERE--
 			--EXACT RIDE BRANCH END--
 		)
 		ORDER BY
@@ -371,8 +372,15 @@ SELECT
 FROM ride_view
 
 WHERE
-	1 = 1
-	--DERIVED FILTERS HERE--
+	-- An exact _id hit bypasses derived UI filters (status, grades, …).
+	--EXACT RIDE BYPASS START--
+	_id = $3
+	OR
+	--EXACT RIDE BYPASS END--
+	(
+		1 = 1
+		--DERIVED FILTERS HERE--
+	)
 
 ORDER BY
 	start_time_scheduled ASC,
