@@ -1,15 +1,18 @@
 /* * */
 
+import { StopAmenitiesSchema } from '@/stops/amenities.js';
+import { StopChecksSchema } from '@/stops/checks.js';
 import { StopConnectionSchema } from '@/stops/connections.js';
 import { StopEquipmentSchema } from '@/stops/equipment.js';
 import { StopFacilitySchema } from '@/stops/facilities.js';
 import { StopFlagSchema } from '@/stops/flag.js';
+import { StopInfrastructureSchema } from '@/stops/infrastructure.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
-import { StopRoadTypeSchema } from '@/stops/road-type.js';
+import { StopShelterSchema } from '@/stops/shelter.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { LocationSchema } from '@tmlmobilidade/go-types-locations';
-import { AvailabilityStatusSchema, BaseDocumentSchema, CommentSchema, ConditionStatusSchema, LifecycleStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, CommentSchema, LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -43,29 +46,17 @@ export const StopSchema = BaseDocumentSchema.extend({
 	//
 	// Infrastructure
 
-	bench_status: ConditionStatusSchema.default('unknown'),
-	electricity_status: AvailabilityStatusSchema.default('unknown'),
-	pole_status: ConditionStatusSchema.default('unknown'),
-	road_type: StopRoadTypeSchema.default('unknown'),
+	infrastructure: StopInfrastructureSchema,
 
 	//
 	// Shelter
 
-	shelter_code: z.string().nullable().default(null),
-	shelter_frame_size: z.tuple([z.number(), z.number()]).nullable().default(null),
-	shelter_installation_date: UnixMillisecondsSchema.nullable().default(null),
-	shelter_maintainer: z.string().nullable().default(null),
-	shelter_make: z.string().nullable().default(null),
-	shelter_model: z.string().nullable().default(null),
-	shelter_status: ConditionStatusSchema.default('unknown'),
+	shelter: StopShelterSchema,
 
 	//
 	// Checks
 
-	last_infrastructure_check: UnixMillisecondsSchema.nullable().default(null),
-	last_infrastructure_maintenance: UnixMillisecondsSchema.nullable().default(null),
-	last_schedules_check: UnixMillisecondsSchema.nullable().default(null),
-	last_schedules_maintenance: UnixMillisecondsSchema.nullable().default(null),
+	checks: StopChecksSchema,
 
 	//
 	// Facilities
@@ -78,13 +69,10 @@ export const StopSchema = BaseDocumentSchema.extend({
 
 	equipment: z.array(StopEquipmentSchema).default([]),
 
-	// Has ...
-	has_bench: AvailabilityStatusSchema.default('unknown'),
-	has_mupi: AvailabilityStatusSchema.default('unknown'),
-	has_network_map: AvailabilityStatusSchema.default('unknown'),
-	has_schedules: AvailabilityStatusSchema.default('unknown'),
-	has_shelter: AvailabilityStatusSchema.default('unknown'),
-	has_stop_sign: AvailabilityStatusSchema.default('unknown'),
+	//
+	// Amenities
+
+	amenities: StopAmenitiesSchema,
 
 	//
 	// Images & Files
