@@ -116,9 +116,99 @@
 				},
 				"title": "Identificadores e Postaletes"
 			},
+			"SectionAmenities": {
+				"description": "Equipamentos e elementos presentes nesta paragem.",
+				"fields": {
+					"has_bench": {
+						"label": "Existe Banco?"
+					},
+					"has_mupi": {
+						"label": "Existe Mupi?"
+					},
+					"has_network_map": {
+						"label": "Tem Mapa de Rede?"
+					},
+					"has_schedules": {
+						"label": "Tem Horários?"
+					},
+					"has_shelter": {
+						"label": "Existe Abrigo?"
+					},
+					"has_stop_sign": {
+						"label": "Tem Postalete?"
+					}
+				},
+				"title": "Amenidades"
+			},
+			"SectionChecks": {
+				"description": "Datas das últimas verificações e manutenções.",
+				"fields": {
+					"last_infrastructure_check": {
+						"label": "Última Verificação da Infraestrutura"
+					},
+					"last_infrastructure_maintenance": {
+						"label": "Última Manutenção da Infraestrutura"
+					},
+					"last_schedules_check": {
+						"label": "Última Verificação dos Horários"
+					},
+					"last_schedules_maintenance": {
+						"label": "Última Manutenção dos Horários"
+					}
+				},
+				"title": "Verificações"
+			},
 			"SectionGeneral": {
 				"description": "Informações gerais sobre esta paragem.",
 				"title": "Detalhes desta Paragem"
+			},
+			"SectionInfrastructure": {
+				"description": "Informações relacionadas com os equipamentos da paragem e envolvente.",
+				"fields": {
+					"bench_status": {
+						"label": "Estado do Banco"
+					},
+					"electricity_status": {
+						"label": "Existe Ligação Elétrica?"
+					},
+					"pole_status": {
+						"label": "Estado do Postalete"
+					},
+					"road_type": {
+						"label": "Tipo de Relação com a Via"
+					}
+				},
+				"title": "Infraestrutura"
+			},
+			"SectionShelter": {
+				"description": "Informações relacionadas com o abrigo.",
+				"fields": {
+					"shelter_code": {
+						"label": "Código do Abrigo"
+					},
+					"shelter_frame_size_height": {
+						"label": "Altura do Quadro (mm)"
+					},
+					"shelter_frame_size_width": {
+						"label": "Largura do Quadro (mm)"
+					},
+					"shelter_installation_date": {
+						"label": "Data de Instalação do Abrigo"
+					},
+					"shelter_maintainer": {
+						"label": "Entidade Gestora do Abrigo"
+					},
+					"shelter_make": {
+						"label": "Marca do Abrigo"
+					},
+					"shelter_model": {
+						"label": "Modelo do Abrigo"
+					},
+					"shelter_status": {
+						"label": "Estado do Abrigo"
+					}
+				},
+				"title": "Abrigo"
 			},
 			"UpdateCoordinates": {
 				"EditLink": {
@@ -233,6 +323,15 @@
 		},
 		"shared": {
 			"not_available": "N/A",
+			"road_type": {
+				"complementary_itinerary": "Itinerário Complementar",
+				"highway": "Autoestrada",
+				"main_itinerary": "Itinerário Principal",
+				"national_road": "Estrada Nacional",
+				"regional_road": "Estrada Regional",
+				"secondary_road": "Estrada Secundária",
+				"unknown": "Desconhecido"
+			},
 			"stop_connection": {
 				"airport": "Aeroporto",
 				"bike_parking": "Estacionamento de bicicletas",

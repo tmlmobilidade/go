@@ -116,9 +116,99 @@
 				},
 				"title": "Identificadores y Postes"
 			},
+			"SectionAmenities": {
+				"description": "Equipamientos y elementos presentes en esta parada.",
+				"fields": {
+					"has_bench": {
+						"label": "¿Existe Banco?"
+					},
+					"has_mupi": {
+						"label": "¿Existe Mupi?"
+					},
+					"has_network_map": {
+						"label": "¿Tiene Mapa de Red?"
+					},
+					"has_schedules": {
+						"label": "¿Tiene Horarios?"
+					},
+					"has_shelter": {
+						"label": "¿Existe Refugio?"
+					},
+					"has_stop_sign": {
+						"label": "¿Tiene Poste?"
+					}
+				},
+				"title": "Amenidades"
+			},
+			"SectionChecks": {
+				"description": "Fechas de las últimas verificaciones y mantenimientos.",
+				"fields": {
+					"last_infrastructure_check": {
+						"label": "Última Verificación de la Infraestructura"
+					},
+					"last_infrastructure_maintenance": {
+						"label": "Último Mantenimiento de la Infraestructura"
+					},
+					"last_schedules_check": {
+						"label": "Última Verificación de los Horarios"
+					},
+					"last_schedules_maintenance": {
+						"label": "Último Mantenimiento de los Horarios"
+					}
+				},
+				"title": "Verificaciones"
+			},
 			"SectionGeneral": {
 				"description": "Información general sobre esta parada.",
 				"title": "Detalles de esta Parada"
+			},
+			"SectionInfrastructure": {
+				"description": "Información relacionada con los equipamientos de la parada y entorno.",
+				"fields": {
+					"bench_status": {
+						"label": "Estado del Banco"
+					},
+					"electricity_status": {
+						"label": "¿Existe Conexión Eléctrica?"
+					},
+					"pole_status": {
+						"label": "Estado del Poste"
+					},
+					"road_type": {
+						"label": "Tipo de Relación con la Vía"
+					}
+				},
+				"title": "Infraestructura"
+			},
+			"SectionShelter": {
+				"description": "Información relacionada con el refugio.",
+				"fields": {
+					"shelter_code": {
+						"label": "Código del Refugio"
+					},
+					"shelter_frame_size_height": {
+						"label": "Altura del Marco (mm)"
+					},
+					"shelter_frame_size_width": {
+						"label": "Ancho del Marco (mm)"
+					},
+					"shelter_installation_date": {
+						"label": "Fecha de Instalación del Refugio"
+					},
+					"shelter_maintainer": {
+						"label": "Entidad Gestora del Refugio"
+					},
+					"shelter_make": {
+						"label": "Marca del Refugio"
+					},
+					"shelter_model": {
+						"label": "Modelo del Refugio"
+					},
+					"shelter_status": {
+						"label": "Estado del Refugio"
+					}
+				},
+				"title": "Refugio"
 			},
 			"UpdateCoordinates": {
 				"EditLink": {
@@ -233,6 +323,15 @@
 		},
 		"shared": {
 			"not_available": "N/A",
+			"road_type": {
+				"complementary_itinerary": "Itinerario Complementario",
+				"highway": "Autopista",
+				"main_itinerary": "Itinerario Principal",
+				"national_road": "Carretera Nacional",
+				"regional_road": "Carretera Regional",
+				"secondary_road": "Carretera Secundaria",
+				"unknown": "Desconocido"
+			},
 			"stop_connection": {
 				"airport": "Aeropuerto",
 				"bike_parking": "Aparcamiento de bicicletas",
