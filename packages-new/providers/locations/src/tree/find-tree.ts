@@ -34,7 +34,9 @@ function contains(parent: TreeEntry, point: Feature<Point>): boolean {
 
 async function buildCountryTree(countryCode: SupportedCountryCode): Promise<LocationTreeNode[]> {
 	const adminLevels = LOCATION_SLOTS.map(slot => LOCATION_LEVELS[countryCode][slot]);
-	const rowsPerLevel = await Promise.all(adminLevels.map(adminLevel => locationsDb.findLocationsWithGeojsonByCountryAndAdminLevel(countryCode, adminLevel)));
+	const rowsPerLevel = await Promise.all(adminLevels.map(async levels =>
+		(await Promise.all(levels.map(level => locationsDb.findLocationsWithGeojsonByCountryAndAdminLevel(countryCode, level)))).flat(),
+	));
 	const entriesPerLevel = rowsPerLevel.map(rows => rows.map(toEntry).sort((a, b) => a.node.name.localeCompare(b.node.name)));
 	for (let level = 1; level < entriesPerLevel.length; level++) {
 		for (const child of entriesPerLevel[level]) {

@@ -7,7 +7,7 @@ import { resolveLocation } from '../src/location/resolve-location.js';
 
 const row = (id: string, admin_level: string, name: string, tags: Record<string, string> = {}) => ({ admin_level, code: null, id, name, tags });
 
-// A point in Lisbon: PT uses admin_levels 2 / 6 / 7 / 8; level 4 (unused by PT) must be ignored.
+// A point in Lisbon: PT prefers district (6) over metropolitan area (4) when both cover the point.
 const lisbon = [
 	row('295480', '2', 'Portugal', { 'ISO3166-1': 'PT' }),
 	row('1', '4', 'Área Metropolitana de Lisboa'),
@@ -28,6 +28,18 @@ describe('resolveLocation', () => {
 			secondary: { admin_level: '7', name: 'Lisboa', osm_id: 3 },
 			tertiary: { admin_level: '8', name: 'Arroios', osm_id: 4 },
 		});
+	});
+
+	it('falls back to PT autonomous region (4) when no district (6) covers the point', () => {
+		const madeira = [
+			row('295480', '2', 'Portugal', { 'ISO3166-1': 'PT' }),
+			row('20', '4', 'Madeira'),
+			row('21', '7', 'Funchal'),
+			row('22', '8', 'Sé'),
+		];
+		const location = resolveLocation(madeira, [32.65, -16.91]);
+		assert.equal(location.primary.name, 'Madeira');
+		assert.equal(location.primary.admin_level, '4');
 	});
 
 	it('omits the neighbourhood when no locality is near', () => {

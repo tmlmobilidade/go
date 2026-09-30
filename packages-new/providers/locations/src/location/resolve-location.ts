@@ -21,7 +21,7 @@ export function resolveLocation(rows: LocationRow[], position: [lat: number, lon
 	const levels = LOCATION_LEVELS[countryCode];
 	const slots = {} as Record<LocationSlot, LocationItem>;
 	for (const slot of LOCATION_SLOTS) {
-		const row = rows.find(row => row.admin_level === levels[slot]);
+		const row = levels[slot].map(level => rows.find(row => row.admin_level === level)).find(Boolean);
 		if (!row) throw new Error(`No ${slot} division (admin_level ${levels[slot]}) for coordinates [${position}]`);
 		slots[slot] = toLocationItem(row);
 	}

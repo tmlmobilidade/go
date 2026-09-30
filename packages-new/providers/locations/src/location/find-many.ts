@@ -12,6 +12,8 @@ import { type LocationItem, type LocationSlot } from '@tmlmobilidade/go-types-lo
  * @param slot Which administrative slot to list (e.g. `secondary` = Portuguese municipalities).
  */
 export async function findMany(country: SupportedCountryCode, slot: LocationSlot): Promise<LocationItem[]> {
-	const rows = await locationsDb.findLocationsByCountryAndAdminLevel(country, LOCATION_LEVELS[country][slot]);
-	return rows.map(toLocationItem);
+	const rows = (await Promise.all(
+		LOCATION_LEVELS[country][slot].map(level => locationsDb.findLocationsByCountryAndAdminLevel(country, level)),
+	)).flat();
+	return rows.map(toLocationItem).sort((a, b) => a.name.localeCompare(b.name));
 }

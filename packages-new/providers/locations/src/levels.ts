@@ -9,13 +9,13 @@ import { type LocationItem, type LocationSlot } from '@tmlmobilidade/go-types-lo
 export const LOCATION_SLOTS = ['country', 'primary', 'secondary', 'tertiary'] as const satisfies readonly LocationSlot[];
 
 /**
- * OSM admin_level per slot for each supported country.
- * PT: Country, District, Municipality, Parish.
+ * OSM admin_levels per slot for each supported country (tried in order until one matches).
+ * PT: Country, District|Autonomous Region, Municipality, Parish.
  * ES: Country, Autonomous Community, Province, Municipality.
  */
-export const LOCATION_LEVELS: Record<'ES' | 'PT', Record<LocationSlot, string>> = {
-	ES: { country: '2', primary: '4', secondary: '6', tertiary: '8' },
-	PT: { country: '2', primary: '6', secondary: '7', tertiary: '8' },
+export const LOCATION_LEVELS: Record<'ES' | 'PT', Record<LocationSlot, readonly string[]>> = {
+	ES: { country: ['2'], primary: ['4'], secondary: ['6'], tertiary: ['8'] },
+	PT: { country: ['2'], primary: ['6', '4'], secondary: ['7'], tertiary: ['8'] },
 };
 
 export type SupportedCountryCode = keyof typeof LOCATION_LEVELS;
