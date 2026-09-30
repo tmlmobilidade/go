@@ -7,7 +7,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type LifecycleStatus } from '@tmlmobilidade/go-types-shared';
-import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LifecycleStatusDisplay, LockButton, Spacer, Tag, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LifecycleStatusDisplay, LockButton, Spacer, Tag, Text, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -19,17 +19,15 @@ export function StopsDetailHeader() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
-
 	const router = useRouter();
 
+	const { t } = useTranslation();
 	const { stopId } = useStopsDetailStopId();
-
 	const { data } = useStopsDetailData();
-
 	const { actions, capabilities, form, status } = useStopsDetailFormContext();
 
 	const lifecycleStatus = useStandardFormWatch({ control: form.control, name: 'lifecycle_status' });
+	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
 
 	//
 	// B. Handle actions
@@ -58,6 +56,8 @@ export function StopsDetailHeader() {
 				onChange={handleUpdateLifecycleStatus}
 				value={lifecycleStatus}
 			/>
+
+			<Text size="base" weight="semibold">{nameValue}</Text>
 
 			<Spacer />
 
