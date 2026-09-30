@@ -508,8 +508,7 @@
 			"depends_on": [
 				"shape_pt_sequence_strictly_increasing",
 				"shape_pt_lat_valid_latitude",
-				"shape_pt_lon_valid_longitude",
-				"shape_dist_traveled_non_negative_monotonic"
+				"shape_pt_lon_valid_longitude"
 			],
 			"scope": "shape"
 		}

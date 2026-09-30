@@ -886,12 +886,12 @@
 		"required": "O campo \"shape_id\" é obrigatório"
 	},
 	"shape_points_coordinates_consistent_validation": {
-		"ManyErrors": "Foram encontrados muitos erros em relação às coordenadas introduzidas no ficheiro shapes.txt, existem varias shapes que tem uma distancia muito grande relativamente a anterior por isso tem de ser verificado",
-		"invalid_consistent_distance": "A shape %s tem as coordenadas (%.6f, %.6f) da sequencia (%d) demasiado distantes relativamente a anterior com as coordenadas (%.6f, %.6f) da sequencia (%d)"
+		"ManyErrors": "Muitos pontos consecutivos excedem o limite de distância configurado. Verifique as coordenadas e a sequência em shapes.txt.",
+		"invalid_consistent_distance": "A shape %s tem as coordenadas (%.6f, %.6f) na sequência %d demasiado distantes de (%.6f, %.6f) na sequência %d: %.2f metros excedem o limite de %.2f metros."
 	},
 	"shape_points_coordinates_distances_validation": {
-		"ManyErrors": "Foram encontrados muitos erros em relação às distâncias introduzidas no ficheiro shapes.txt, existem várias shapes com um valor estimado (shape_dist_traveled) mais longe ou mais perto relativamente ao valor real por isso tem de ser verificado",
-		"invalid_distances": "As distâncias entre pontos (%s, %s) e (%s, %s) não correspondem ao incremento de shape_dist_traveled. A distância na shape_dist_traveled é %.2f metros mas a distância geométrica real é %.2f metros"
+		"ManyErrors": "Muitos incrementos de distância diferem dos comprimentos geométricos dos segmentos. Verifique shape_dist_traveled e as suas unidades em shapes.txt.",
+		"invalid_distances": "Entre os pontos (%s, %s) e (%s, %s), shape_dist_traveled aumenta %.2f metros, mas a distância de Haversine é %.2f metros. Shape %s, sequências %d a %d; tolerância de %.2f metros."
 	},
 	"shape_pt_lat_validation": {
 		"forbidden": "O campo \"shape_pt_lat\" é proibido",

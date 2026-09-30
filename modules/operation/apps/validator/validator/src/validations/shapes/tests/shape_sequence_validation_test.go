@@ -39,7 +39,11 @@ func TestAllShapeSequenceValidationTestCases(t *testing.T) {
 					{ShapeId: lib.Ptr("A_shp"), ShapePtSequence: nil, ShapeDistTraveled: lib.Ptr(2.0)},
 				}
 			}
-			validations.ShapeSequenceValidation(shapes, nil)
+			rules := &types.ShapesRules{
+				ShapeIdAndPointSequenceRequired:   types.RuleConfig{Severity: types.SEVERITY_ERROR},
+				ShapePtSequenceStrictlyIncreasing: types.RuleConfig{Severity: types.SEVERITY_ERROR},
+			}
+			validations.ShapeSequenceValidation(shapes, rules)
 
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)

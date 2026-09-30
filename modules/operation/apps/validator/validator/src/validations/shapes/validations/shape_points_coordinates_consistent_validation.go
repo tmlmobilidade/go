@@ -1,54 +1,47 @@
 package shapes
 
 import (
-	"sort"
+	"math"
 	"strconv"
 
 	"main/lib"
 	"main/services"
 	shapes_coordinates "main/services/geo/shapes"
 	"main/types"
+	shapeutils "main/validations/shapes/utils"
 )
 
-type shapePointsCoordinatesConsistentPoint struct {
-	id       string
-	row      int
-	sequence int
-	lat      float64
-	lon      float64
+type pointsCoordinatesConsistentViolation struct {
+	shapeId        string
+	row            int
+	currentLat     float64
+	currentLon     float64
+	currentSeq     int
+	previousLat    float64
+	previousLon    float64
+	previousSeq    int
+	distanceMeters float64
 }
 
+// getShapePointsCoordinatesConsistentToleranceMeters resolves the configurable
+// tolerance from rules.Options[0] (meters), falling back to the default when
+// rules, options or the value itself are missing or invalid.
 func getShapePointsCoordinatesConsistentToleranceMeters(rules *types.ShapesRules) float64 {
 	if rules == nil || rules.ShapePointsCoordinatesConsistent.Options == nil || len(*rules.ShapePointsCoordinatesConsistent.Options) == 0 {
 		return shapes_coordinates.MAX_SHAPE_POINT_DISTANCE_METERS
 	}
 
 	value, err := strconv.ParseFloat((*rules.ShapePointsCoordinatesConsistent.Options)[0], 64)
-	if err != nil || value <= 0 {
+	if err != nil || value <= 0 || math.IsNaN(value) || math.IsInf(value, 0) {
 		return shapes_coordinates.MAX_SHAPE_POINT_DISTANCE_METERS
 	}
 
 	return value
 }
 
-func buildShapeFromPointsCoordinatesConsistentPoint(point shapePointsCoordinatesConsistentPoint) *types.Shape {
-	return &types.Shape{
-		ShapePtLat: lib.Ptr(point.lat),
-		ShapePtLon: lib.Ptr(point.lon),
-	}
-}
-
-type pointsCoordinatesConsistentViolation struct {
-	shapeId     string
-	row         int
-	currentLat  float64
-	currentLon  float64
-	currentSeq  int
-	previousLat float64
-	previousLon float64
-	previousSeq int
-}
-
+// uniquePointsCoordinatesConsistentRows deduplicates row numbers while preserving their
+// first-seen order, so the collapsed "many errors" report emits one message per row instead
+// of one per violation.
 func uniquePointsCoordinatesConsistentRows(rows []int) []int {
 	seen := make(map[int]struct{}, len(rows))
 	unique := make([]int, 0, len(rows))
@@ -62,72 +55,46 @@ func uniquePointsCoordinatesConsistentRows(rows []int) []int {
 	return unique
 }
 
-// ShapePointsCoordinatesConsistentValidation validates if consecutive points from the same shape are not too far apart.
+// ShapePointsCoordinatesConsistentValidation checks consecutive coordinate gaps,
+// independent of shape_dist_traveled. The public rule ID is retained for saved settings.
 func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *types.ShapesRules) {
-	severity := types.SEVERITY_ERROR
-	if rules != nil && rules.ShapePointsCoordinatesConsistent.Severity != "" {
-		severity = types.Severity(rules.ShapePointsCoordinatesConsistent.Severity)
+	severity := types.SEVERITY_IGNORE
+	if rules != nil {
+		severity = rules.ShapePointsCoordinatesConsistent.Severity
+	}
+	if severity == "" || severity == types.SEVERITY_IGNORE {
+		return
 	}
 
-	shapeGroups := map[string][]shapePointsCoordinatesConsistentPoint{}
 	toleranceMeters := getShapePointsCoordinatesConsistentToleranceMeters(rules)
 	violations := []pointsCoordinatesConsistentViolation{}
-
-	// 1. Group by shape_id the points that carry a sequence and coordinates
-	for i, shape := range shapes {
-		if shape.Row != nil {
-			i = *shape.Row
-		}
-		if shape.ShapeId == nil || *shape.ShapeId == "" {
-			continue
-		}
-		if shape.ShapePtSequence == nil || shape.ShapePtLat == nil || shape.ShapePtLon == nil {
-			continue
-		}
-
-		shapeGroups[*shape.ShapeId] = append(shapeGroups[*shape.ShapeId], shapePointsCoordinatesConsistentPoint{
-			id:       *shape.ShapeId,
-			row:      i,
-			sequence: *shape.ShapePtSequence,
-			lat:      *shape.ShapePtLat,
-			lon:      *shape.ShapePtLon,
-		})
-	}
-
-	// 2. Order each shape's points and collect consecutive pairs further apart than the tolerance
-	for _, shapeGroup := range shapeGroups {
-		sort.Slice(shapeGroup, func(i, j int) bool {
-			return shapeGroup[i].sequence < shapeGroup[j].sequence
-		})
-
-		for i := 1; i < len(shapeGroup); i++ {
-			if shapeGroup[i].sequence == 0 {
-				i++
-			}
-			prev := shapeGroup[i-1]
-			current := shapeGroup[i]
-			prevShapePoint := buildShapeFromPointsCoordinatesConsistentPoint(prev)
-			currentShapePoint := buildShapeFromPointsCoordinatesConsistentPoint(current)
-
-			closeEnough := shapes_coordinates.ShapePointIsCloseToBeforeShapePoint(prevShapePoint, currentShapePoint, toleranceMeters)
-			if closeEnough {
+	for _, points := range shapeutils.OrderedPoints(shapes) {
+		for i := 1; i < len(points); i++ {
+			prev, current := points[i-1], points[i]
+			if !prev.ValidCoordinates || !current.ValidCoordinates {
 				continue
 			}
-
+			distanceMeters := lib.HaversineDistance(prev.Coordinates, current.Coordinates)
+			if distanceMeters <= toleranceMeters {
+				continue
+			}
 			violations = append(violations, pointsCoordinatesConsistentViolation{
-				shapeId:     current.id,
-				row:         current.row,
-				currentLat:  current.lat,
-				currentLon:  current.lon,
-				currentSeq:  current.sequence,
-				previousLat: prev.lat,
-				previousLon: prev.lon,
-				previousSeq: prev.sequence,
+				shapeId:        current.ShapeID,
+				row:            current.Row,
+				currentLat:     current.Coordinates.Lat,
+				currentLon:     current.Coordinates.Lng,
+				currentSeq:     current.Sequence,
+				previousLat:    prev.Coordinates.Lat,
+				previousLon:    prev.Coordinates.Lng,
+				previousSeq:    prev.Sequence,
+				distanceMeters: distanceMeters,
 			})
 		}
 	}
 
-	// 3. Report one collapsed message per row when a shape is broken beyond a useful point
+	// Report one collapsed message per row when a shape is broken beyond a useful point.
+	// Past this many violations, per-pair detail stops being useful (it's usually one systemic
+	// cause, e.g. reordered points or a merged shape) and would otherwise flood the output.
 	if len(violations) > 100 {
 		rows := make([]int, 0, len(violations))
 		for _, violation := range violations {
@@ -135,7 +102,7 @@ func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *typ
 		}
 
 		for _, row := range uniquePointsCoordinatesConsistentRows(rows) {
-			ctx := lib.NewValidationContext("shape_sequence", "shapes.txt", "shape_sequence_position_mismatches_cumulative_traveled_distance", row, services.AppMessageService)
+			ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", "shape_sequence_position_mismatches_cumulative_traveled_distance", row, services.AppMessageService)
 			ctx.WithSeverity(severity)
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_points_coordinates_consistent_validation.ManyErrors"))
 		}
@@ -143,7 +110,7 @@ func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *typ
 	}
 
 	for _, violation := range violations {
-		ctx := lib.NewValidationContext("shape_sequence", "shapes.txt", "shape_sequence_position_mismatches_cumulative_traveled_distance", violation.row, services.AppMessageService)
+		ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", "shape_sequence_position_mismatches_cumulative_traveled_distance", violation.row, services.AppMessageService)
 		ctx.WithSeverity(severity)
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage(
 			"shape_points_coordinates_consistent_validation.invalid_consistent_distance",
@@ -154,6 +121,8 @@ func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *typ
 			violation.previousLat,
 			violation.previousLon,
 			violation.previousSeq,
+			violation.distanceMeters,
+			toleranceMeters,
 		))
 	}
 }

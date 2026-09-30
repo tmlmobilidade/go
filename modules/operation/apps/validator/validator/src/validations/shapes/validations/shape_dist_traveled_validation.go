@@ -46,7 +46,7 @@ func ShapeDistTraveledValidation(shape *types.Shape, row int, rules *types.Shape
 		ctx.WithSeverity(rules.ShapeDistTraveled.Severity)
 	}
 
-	// 1. Check if shape_dist_traveled is present
+	// 1. Validate shape_dist_traveled is present
 	if shape.ShapeDistTraveled == nil {
 		if ctx.ShouldSkip() {
 			return
@@ -57,13 +57,13 @@ func ShapeDistTraveledValidation(shape *types.Shape, row int, rules *types.Shape
 		return
 	}
 
-	// 2. Check if shape_dist_traveled is forbidden
+	// 2. Validate shape_dist_traveled is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_dist_traveled_validation.forbidden"))
 		return
 	}
 
-	// 3. Check if shape_dist_traveled is non-negative
+	// 3. Validate shape_dist_traveled is non-negative
 	if *shape.ShapeDistTraveled < 0 {
 		ctx.AddError(ctx.GetTranslatedMessage("shape_dist_traveled_validation.invalid"))
 		return

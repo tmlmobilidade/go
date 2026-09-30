@@ -885,12 +885,12 @@
 		"required": "Field \"shape_id\" is required"
 	},
 	"shape_points_coordinates_consistent_validation": {
-		"ManyErrors": "Many errors found in shapes.txt file, exist several shapes with a large distance relatively to the previous so it has to be verified",
-		"invalid_consistent_distance": "Shape %s has coordinates (%.6f, %.6f) sequence (%d) too far apart relative to previous with coordinates (%.6f, %.6f) sequence (%d)"
+		"ManyErrors": "Many consecutive shape points exceed the configured spacing limit. Review the coordinates and sequence in shapes.txt.",
+		"invalid_consistent_distance": "Shape %s has coordinates (%.6f, %.6f) at sequence %d too far from (%.6f, %.6f) at sequence %d: %.2f meters exceeds the %.2f meter limit."
 	},
 	"shape_points_coordinates_distances_validation": {
-		"ManyErrors": "Many errors found in shapes.txt file, exist several shapes with an estimated value (shape_dist_traveled) further or closer relatively to the real value so it has to be verified",
-		"invalid_distances": "The distances between points (%s, %s) and (%s, %s) do not correspond to the shape_dist_traveled increment. The distance in shape_dist_traveled is %.2f meters but the actual geometric distance is %.2f meters"
+		"ManyErrors": "Many shape distance increments differ from their geometric segment lengths. Review shape_dist_traveled and its units in shapes.txt.",
+		"invalid_distances": "Between points (%s, %s) and (%s, %s), shape_dist_traveled increases by %.2f meters but the Haversine distance is %.2f meters. Shape %s, sequences %d to %d; tolerance %.2f meters."
 	},
 	"shape_pt_lat_validation": {
 		"forbidden": "Field \"shape_pt_lat\" is forbidden",

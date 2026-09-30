@@ -7,6 +7,35 @@ Shapes describe the path that a vehicle travels along a route alignment, and are
 
 ---
 
+### Geometric validation options
+
+These two checks compare consecutive points within each `shape_id`, ordered by
+`shape_pt_sequence`. Sequences may start at zero and need not be consecutive.
+Both checks are disabled unless their severity is configured.
+
+| Rule ID | What it checks | Options |
+| --- | --- | --- |
+| `shape_sequence_position_mismatches_cumulative_traveled_distance` | Haversine distance between consecutive coordinates exceeds the configured maximum. Despite its retained ID, this does not compare cumulative distance and does not require `shape_dist_traveled`. | `["1000"]`: maximum gap in metres; default 1000, must be positive. |
+| `shape_dist_traveled_delta_mismatches_haversine_segment` | Absolute difference between the recorded distance increment and the Haversine segment exceeds the tolerance. Includes the first segment starting at distance zero and zero increments between different coordinates. | `["20", "km"]`: tolerance in metres and optional recorded-distance unit (`m` or `km`). Default tolerance 20; zero is allowed. |
+
+Invalid or nonfinite tolerances fall back to the defaults. Without a recognized
+unit option, the distance check retains automatic conversion: a shape's maximum
+recorded distance below 800 is treated as kilometres, otherwise as metres. This
+heuristic is ambiguous for short shapes recorded in metres; use an explicit unit
+when known. For example, `["20", "m"]` compares metre values with a 20-metre
+tolerance. This unit option applies only to the segment rule.
+
+Missing or invalid coordinates break the comparison chain; points on either side
+are never joined into an invented segment. Missing, negative or duplicate sequences
+make the ordering ambiguous, so both checks skip that shape. The segment check
+skips pairs with missing, negative or nonfinite recorded distances. Decreasing
+distances belong to the separate monotonic-distance rule.
+
+These thresholds are configurable quality checks. The
+[GTFS shapes reference](https://gtfs.org/documentation/schedule/reference/#shapestxt)
+requires consistent distance units with `stop_times.txt`, but does not prescribe
+metres, kilometres, a maximum coordinate gap, or this Haversine tolerance.
+
 ### Field Definitions
 
 |Field Name|Type|Presence|Description|

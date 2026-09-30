@@ -862,7 +862,7 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 	},
 	{
 		config_key: 'shape_sequence_position_mismatches_cumulative_traveled_distance',
-		depends_on: ['shape_pt_sequence_strictly_increasing', 'shape_pt_lat_valid_latitude', 'shape_pt_lon_valid_longitude', 'shape_dist_traveled_non_negative_monotonic'],
+		depends_on: ['shape_pt_sequence_strictly_increasing', 'shape_pt_lat_valid_latitude', 'shape_pt_lon_valid_longitude'],
 		editable: true,
 		group: 'shapes',
 		id: 'shape_sequence_position_mismatches_cumulative_traveled_distance',
