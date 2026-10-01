@@ -3,7 +3,7 @@
 import { IconX } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './styles.module.css';
+import styles from '../navigation-button.module.css';
 
 /* * */
 
@@ -26,7 +26,7 @@ export function BottomSheetClose({ label, onClick, size = 'default' }: BottomShe
 			onClick={onClick}
 			type="button"
 		>
-			<IconX size={size === 'sm' ? 20 : 28} />
+			<IconX aria-hidden={true} size={size === 'sm' ? 20 : 28} />
 		</button>
 	);
 }

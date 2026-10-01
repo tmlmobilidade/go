@@ -60,6 +60,10 @@
 	border-bottom: 0;
 }
 
+.header[data-mode='handle'][data-compact='true'] {
+	padding: 8px 12px 2px;
+}
+
 .header[data-mode='handle'][data-with-background='true'] {
 	background-color: var(--color-system-background-100);
 }

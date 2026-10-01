@@ -24,6 +24,7 @@ type BottomSheetSize = 'fit' | 'full' | 'half' | 'short';
 interface BottomSheetProps {
 	accessibleTitle: string
 	avoidKeyboard?: boolean
+	compactHeader?: boolean
 	disableDismiss?: boolean
 	footer?: ReactNode
 	headerMode?: BottomSheetHeaderMode
@@ -72,6 +73,7 @@ export function BottomSheet({
 	accessibleTitle,
 	avoidKeyboard = true,
 	children,
+	compactHeader = false,
 	disableDismiss = false,
 	footer,
 	headerMode,
@@ -273,11 +275,12 @@ export function BottomSheet({
 							>
 								<Sheet.Header
 									className={styles.header}
+									data-compact={compactHeader}
 									data-mode={selectedHeaderMode}
 									data-with-background={withHeaderBackground}
 								>
 									<div className={styles.headerLeft}>
-										{onBack && <BottomSheetBack onClick={onBack} />}
+										{onBack && <BottomSheetBack onClick={onBack} size={withCompactCloseButton ? 'sm' : 'default'} />}
 									</div>
 
 									{selectedHeaderMode === 'handle' ? (

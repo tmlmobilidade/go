@@ -161,6 +161,7 @@ export function RoutePlanner() {
 	return (
 		<BottomSheet
 			accessibleTitle={sheetConfig.accessibleTitle}
+			compactHeader={routePlannerContext.data.view_mode === 'results'}
 			disableDismiss={sheetConfig.disableDismiss}
 			headerMode={sheetConfig.headerMode}
 			initialFocusRef={routePlannerContext.data.view_mode === 'destination-search' ? searchInputRef : undefined}
