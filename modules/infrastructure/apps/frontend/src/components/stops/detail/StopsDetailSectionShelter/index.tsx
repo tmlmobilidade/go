@@ -2,7 +2,7 @@
 
 import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
 import { ConditionStatusValues } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, DateTimeInput, Grid, NumberInput, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, DateTimeInput, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +38,7 @@ export function StopsDetailSectionShelter() {
 				<Grid columns="ab" gap="md">
 					<StandardFormController
 						control={form.control}
-						name="shelter.shelter_status"
+						name="shelter.status"
 						render={({ field, fieldState }) => (
 							<Select
 								data={conditionStatusOptions}
@@ -52,7 +52,7 @@ export function StopsDetailSectionShelter() {
 					/>
 					<StandardFormController
 						control={form.control}
-						name="shelter.shelter_code"
+						name="shelter.code"
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
@@ -65,7 +65,7 @@ export function StopsDetailSectionShelter() {
 					/>
 					<StandardFormController
 						control={form.control}
-						name="shelter.shelter_maintainer"
+						name="shelter.maintainer"
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
@@ -78,7 +78,7 @@ export function StopsDetailSectionShelter() {
 					/>
 					<StandardFormController
 						control={form.control}
-						name="shelter.shelter_installation_date"
+						name="shelter.installation_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
 								error={fieldState.error?.message}
@@ -92,7 +92,7 @@ export function StopsDetailSectionShelter() {
 					/>
 					<StandardFormController
 						control={form.control}
-						name="shelter.shelter_make"
+						name="shelter.make"
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
@@ -105,7 +105,7 @@ export function StopsDetailSectionShelter() {
 					/>
 					<StandardFormController
 						control={form.control}
-						name="shelter.shelter_model"
+						name="shelter.model"
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
@@ -114,42 +114,6 @@ export function StopsDetailSectionShelter() {
 								readOnly={!capabilities.editEnabled}
 								value={field.value ?? ''}
 							/>
-						)}
-					/>
-					<StandardFormController
-						control={form.control}
-						name="shelter.shelter_frame_size"
-						render={({ field, fieldState }) => (
-							<>
-								<NumberInput
-									error={fieldState.error?.message}
-									label={t('default:stops.detail.SectionShelter.fields.shelter_frame_size_width.label')}
-									readOnly={!capabilities.editEnabled}
-									value={field.value?.[0] ?? undefined}
-									onChange={(value) => {
-										const height = field.value?.[1] ?? null;
-										if (value === '' || value == null) {
-											field.onChange(height == null ? null : [0, height]);
-											return;
-										}
-										field.onChange([Number(value), height ?? 0]);
-									}}
-								/>
-								<NumberInput
-									error={fieldState.error?.message}
-									label={t('default:stops.detail.SectionShelter.fields.shelter_frame_size_height.label')}
-									readOnly={!capabilities.editEnabled}
-									value={field.value?.[1] ?? undefined}
-									onChange={(value) => {
-										const width = field.value?.[0] ?? null;
-										if (value === '' || value == null) {
-											field.onChange(width == null ? null : [width, 0]);
-											return;
-										}
-										field.onChange([width ?? 0, Number(value)]);
-									}}
-								/>
-							</>
 						)}
 					/>
 				</Grid>
