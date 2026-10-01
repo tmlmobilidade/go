@@ -20,6 +20,7 @@ interface RouteCreateContextState {
 	}
 	flags: {
 		isSaving: boolean
+		isValid: boolean
 	}
 }
 
@@ -55,7 +56,7 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateRouteDto>(CreateRouteSchema, undefined, { line_id: lineId });
+	const { flags, form } = useTypicalForm<CreateRouteDto>(CreateRouteSchema, undefined, { code: '', line_id: lineId, name: '' }, 'controlled');
 
 	//
 	// D. Handle actions
@@ -82,9 +83,12 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 		},
 		flags: {
 			isSaving,
+			isValid: flags.isValid,
 		},
 	}), [
 		form,
+		flags.isValid,
+		handleCreate,
 		isSaving,
 	]);
 

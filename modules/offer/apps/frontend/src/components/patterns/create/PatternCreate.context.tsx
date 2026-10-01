@@ -19,6 +19,7 @@ interface PatternCreateContextState {
 	}
 	flags: {
 		isSaving: boolean
+		isValid: boolean
 	}
 }
 
@@ -52,7 +53,7 @@ export const PatternCreateContextProvider = ({ children, lineId, routeId }: Prop
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreatePatternDto>(CreatePatternSchema, undefined, { line_id: lineId, route_id: routeId });
+	const { flags, form } = useTypicalForm<CreatePatternDto>(CreatePatternSchema, undefined, { code: '', destination: '', headsign: '', line_id: lineId, origin: '', route_id: routeId }, 'controlled');
 
 	//
 	// D. Handle actions
@@ -79,9 +80,12 @@ export const PatternCreateContextProvider = ({ children, lineId, routeId }: Prop
 		},
 		flags: {
 			isSaving,
+			isValid: flags.isValid,
 		},
 	}), [
 		form,
+		flags.isValid,
+		handleCreate,
 		isSaving,
 	]);
 
