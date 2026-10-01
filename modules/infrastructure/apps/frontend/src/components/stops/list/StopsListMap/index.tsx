@@ -55,7 +55,7 @@ export function StopsListMap() {
 
 	return (
 		<Pane>
-			<MapView id="stops-list">
+			<MapView height={750} id="stops-list">
 				<MapOverlayMultipleStops
 					data={mapData}
 					id="stops-list"

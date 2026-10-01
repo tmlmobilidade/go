@@ -349,14 +349,14 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	// Used to fetch stops when we revert a path change from the history
 	const enrichPath = useCallback(async (path: Path[]): Promise<PopulatedPath[]> => {
-		const stopIds = [...new Set(path.map(p => p.stop_id))];
+		const stopIds = [...new Set(path.map(p => String(p.stop_id)))];
 		const results = await Promise.all(
 			stopIds.map(id => fetchApiData<Stop>({ url: API_ROUTES.offer.PATTERNS_STOPS_DETAIL(String(id)) })),
 		);
 		const stopsMap = new Map(
-			results.flatMap(r => r.data ? [[r.data._id, r.data]] : []),
+			results.flatMap(r => r.data ? [[String(r.data._id), r.data]] : []),
 		);
-		return path.map(p => ({ ...p, stop: stopsMap.get(p.stop_id) ?? null }));
+		return path.map(p => ({ ...p, stop: stopsMap.get(String(p.stop_id)) ?? null }));
 	}, []);
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({

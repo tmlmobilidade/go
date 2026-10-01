@@ -1,8 +1,8 @@
 /* * */
 
 import { FileExportBaseSchema } from '@/base.js';
-import { StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema, StopFlagSchema, StopIdSchema, StopJurisdictionSchema, StopRoadTypeSchema } from '@tmlmobilidade/go-types-infrastructure';
-import { AvailabilityStatusSchema, ConditionStatusSchema, LifecycleStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { StopConnectionSchema, StopFacilitySchema, StopFlagSchema, StopIdSchema, StopJurisdictionSchema } from '@tmlmobilidade/go-types-infrastructure';
+import { ConditionStatusSchema, LifecycleStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -18,9 +18,10 @@ export const FlatStopSchema = z.object({
 	lifecycle_status: LifecycleStatusSchema.default('draft'),
 	name: z.string().min(2).max(100),
 	new_name: z.string().min(5).max(100).nullable().default(null),
+	observations: z.string().nullable().default(null),
 	previous_go_id: z.string().nullable().default(null),
 	short_name: z.string().min(2).max(55),
-	tts_name: z.string(),
+	tts_name: z.string().nullable().default(null),
 
 	/* LOCATION */
 	/* * */
@@ -28,51 +29,23 @@ export const FlatStopSchema = z.object({
 	latitude: z.number(),
 	locality_id: z.string().nullable().default(null),
 	longitude: z.number(),
-	municapility_name: z.string().optional(),
 	municipality_id: z.string(),
+	municipality_name: z.string().nullable().optional(),
 	parish_id: z.string().nullable().default(null),
-
-	/* INFRASTRUCTURE */
-	/* * */
-	bench_status: ConditionStatusSchema.default('unknown'),
-	electricity_status: AvailabilityStatusSchema.default('unknown'),
-	pole_status: ConditionStatusSchema.default('unknown'),
-	road_type: StopRoadTypeSchema.default('unknown'),
 
 	/* SHELTER */
 	/* * */
 	shelter_code: z.string().nullable().default(null),
-	shelter_frame_size: z.tuple([z.number(), z.number()]).nullable().default(null),
 	shelter_installation_date: UnixMillisecondsSchema.nullable().default(null),
 	shelter_maintainer: z.string().nullable().default(null),
 	shelter_make: z.string().nullable().default(null),
 	shelter_model: z.string().nullable().default(null),
 	shelter_status: ConditionStatusSchema.default('unknown'),
 
-	/* CHECKS */
-	/* * */
-	last_infrastructure_check: UnixMillisecondsSchema.nullable().default(null),
-	last_infrastructure_maintenance: UnixMillisecondsSchema.nullable().default(null),
-	last_schedules_check: UnixMillisecondsSchema.nullable().default(null),
-	last_schedules_maintenance: UnixMillisecondsSchema.nullable().default(null),
-
 	/* FACILITIES */
 	/* * */
 	connections: z.array(StopConnectionSchema).default([]),
 	facilities: z.array(StopFacilitySchema).default([]),
-
-	/* EQUIPMENTS */
-	/* * */
-	equipment: z.array(StopEquipmentSchema).default([]),
-
-	/* HAS ... */
-	/* * */
-	has_bench: AvailabilityStatusSchema.default('unknown'),
-	has_mupi: AvailabilityStatusSchema.default('unknown'),
-	has_network_map: AvailabilityStatusSchema.default('unknown'),
-	has_schedules: AvailabilityStatusSchema.default('unknown'),
-	has_shelter: AvailabilityStatusSchema.default('unknown'),
-	has_stop_sign: AvailabilityStatusSchema.default('unknown'),
 
 });
 
@@ -81,8 +54,6 @@ export const FlatStopSchema = z.object({
 export const StopExportPropertiesSchema = z.object({
 	properties: z.object({
 		connections: z.array(StopConnectionSchema).optional().nullable(),
-
-		equipment: z.array(StopEquipmentSchema).optional().nullable(),
 
 		facilities: z.array(StopFacilitySchema).optional().nullable(),
 

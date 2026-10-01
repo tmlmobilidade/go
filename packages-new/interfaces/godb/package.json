@@ -39,7 +39,6 @@
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
-		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",

@@ -26,6 +26,7 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/go-providers-emails": "*",
+		"@tmlmobilidade/go-providers-locations": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-extractions": "*",

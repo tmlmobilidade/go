@@ -1,5 +1,6 @@
 /* * */
 
+import { locationPermissionMatch } from '@/utils/location-permission-match.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { type StopsListFilters, StopsListFiltersSchema, type StopsListResponse, StopsListResponseSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
@@ -25,13 +26,18 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 		values: request.body.agency_ids,
 	});
 
-	request.body.municipality_ids = PermissionCatalog.filterPermissionResourceValues<string>({
-		action: PermissionCatalog.all.stops.actions.read,
+	const locationAccess = PermissionCatalog.getPermissionResourceAccess({
+		checks: [{ action: PermissionCatalog.all.stops.actions.read, scope: PermissionCatalog.all.stops.scope }],
 		permissions: request.permissions,
-		resourceKey: 'municipality_ids',
-		scope: PermissionCatalog.all.stops.scope,
-		values: request.body.municipality_ids,
+		resource_key: 'location_ids',
 	});
+
+	if (!locationAccess.allowAll && !locationAccess.values.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'User does not have permission to read stops',
+			status_code: '401',
+		});
+	}
 
 	//
 	// Validate the filters
@@ -51,11 +57,12 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 	const pipeline: AggregationPipeline<StopsListResponse> = [
 		{
 			$match: {
-				'district_id': { $in: validatedFilters.data.district_ids ?? [] },
+				...(locationAccess.allowAll ? {} : locationPermissionMatch(locationAccess.values)),
 				'flags.agency_ids': { $in: validatedFilters.data.agency_ids ?? [] },
-				'locality_id': { $in: validatedFilters.data.locality_ids ?? [] },
-				'municipality_id': { $in: validatedFilters.data.municipality_ids ?? [] },
-				'parish_id': { $in: validatedFilters.data.parish_ids ?? [] },
+				'location.neighbourhood.osm_id': { $in: validatedFilters.data.location_neighbourhood_ids.map(Number) },
+				'location.primary.osm_id': { $in: validatedFilters.data.location_primary_ids.map(Number) },
+				'location.secondary.osm_id': { $in: validatedFilters.data.location_secondary_ids.map(Number) },
+				'location.tertiary.osm_id': { $in: validatedFilters.data.location_tertiary_ids.map(Number) },
 			},
 		},
 		{ $project: Object.fromEntries(Object.keys(StopsListResponseSchema.shape).map(key => [key, 1])) },

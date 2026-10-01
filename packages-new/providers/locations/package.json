@@ -31,18 +31,23 @@
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint ./src/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix",
+		"test": "tsx --test tests/*.test.ts",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/go-types-locations": "*"
+		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-interfaces-locationsdb": "*",
+		"@tmlmobilidade/go-types-geo": "*",
+		"@tmlmobilidade/go-types-locations": "*",
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/geojson": "7946.0.16",
 		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
+		"tsx": "4.23.12",
 		"typescript": "6.0.3"
 	}
 }

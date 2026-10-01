@@ -2,7 +2,6 @@
 
 import { encodeStopFlags } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type HubV1GtfsStopsInput, HubV1GtfsStopsSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -16,21 +15,6 @@ export async function exportStopsFile(context: ExportGtfsContext, agencyIds: str
 	const timer = new Timer();
 
 	Logger.info({ message: 'Exporting stops.txt file...' });
-
-	//
-	// Build a map of location entities
-
-	const allDistrictsData = await locationsProvider.findDistricts();
-	const allDistrictsMap = new Map<string, string>(allDistrictsData.map(item => [item._id, item.name]));
-
-	const allMunicipalitiesData = await locationsProvider.findMunicipalities();
-	const allMunicipalitiesMap = new Map<string, string>(allMunicipalitiesData.map(item => [item._id, item.name]));
-
-	const allParishesData = await locationsProvider.findParishes();
-	const allParishesMap = new Map<string, string>(allParishesData.map(item => [item._id, item.name]));
-
-	const allLocalitiesData = await locationsProvider.findLocalities();
-	const allLocalitiesMap = new Map<string, string>(allLocalitiesData.map(item => [item._id, item.name]));
 
 	//
 	// Get all the stops for the specified agency IDs
@@ -55,27 +39,21 @@ export async function exportStopsFile(context: ExportGtfsContext, agencyIds: str
 
 		const encodedStopFlags = encodeStopFlags(stopData.flags, agencyIds);
 
-		//
-		// Get the matching names for the stop's location entities
-
-		const matchingDistrictName = allDistrictsMap.get(stopData.district_id);
-		const matchingMunicipalityName = allMunicipalitiesMap.get(stopData.municipality_id);
-		const matchingParishName = stopData.parish_id ? allParishesMap.get(stopData.parish_id) : '-';
-		const matchingLocalityName = stopData.locality_id ? allLocalitiesMap.get(stopData.locality_id) : '-';
+		const { location } = stopData;
 
 		const parsedStopsRow: HubV1GtfsStopsInput = {
-			district_id: stopData.district_id,
-			district_name: matchingDistrictName,
+			district_id: String(location.primary.osm_id),
+			district_name: location.primary.name,
 			flags: encodedStopFlags,
 			legacy_ids: stopData.legacy_ids.join('|'),
 			lifecycle_status: stopData.lifecycle_status,
-			locality_id: stopData.locality_id ?? '-',
-			locality_name: matchingLocalityName ?? '-',
+			locality_id: location.neighbourhood ? String(location.neighbourhood.osm_id) : '-',
+			locality_name: location.neighbourhood?.name ?? '-',
 			location_type: '0',
-			municipality_id: stopData.municipality_id,
-			municipality_name: matchingMunicipalityName,
-			parish_id: stopData.parish_id ?? '-',
-			parish_name: matchingParishName ?? '-',
+			municipality_id: String(location.secondary.osm_id),
+			municipality_name: location.secondary.name,
+			parish_id: String(location.tertiary.osm_id),
+			parish_name: location.tertiary.name,
 			platform_code: '',
 			stop_code: String(stopData._id),
 			stop_id: String(stopData._id),
