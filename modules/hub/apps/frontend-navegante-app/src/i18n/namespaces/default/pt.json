@@ -214,7 +214,7 @@
 			}
 		},
 		"MapLocationPin": {
-			"get_directions": "Como chegar",
+			"get_directions": "Direções",
 			"selected_location": "Local selecionado"
 		},
 		"MapView": {
@@ -233,7 +233,7 @@
 				"unknown": "Não foi possível calcular a rota."
 			},
 			"place_detail": {
-				"how_to_get_here": "Como chegar aqui",
+				"how_to_get_here": "Direções",
 				"select_origin": "Escolha uma partida para ver alternativas.",
 				"title": "Detalhes do local"
 			},
@@ -369,7 +369,7 @@
 		},
 		"StopsDetail": {
 			"actions": {
-				"get_directions": "Como chegar"
+				"get_directions": "Direções"
 			},
 			"title": "Detalhes da paragem"
 		},

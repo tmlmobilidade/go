@@ -39,24 +39,28 @@
 	position: relative;
 	z-index: 1;
 	display: inline-flex;
+	flex: 0 0 auto;
 	gap: 8px;
 	align-items: center;
-	padding: 7px 10px;
+	justify-content: center;
+	min-width: 88px;
+	height: 44px;
+	padding: 0 20px;
 	font: inherit;
-	font-size: 15px;
-	font-weight: var(--font-weight-bold);
-	line-height: 1.2;
-	color: var(--color-status-active-primary);
+	font-size: 16px;
+	font-weight: 900;
+	line-height: 1;
+	color: var(--color-route-on-accent);
 	white-space: nowrap;
 	cursor: pointer;
-	background: transparent;
-	border: 0;
-	border-radius: var(--border-radius-sm);
+	background-color: var(--color-route-status-info);
+	border: 1px solid var(--color-route-status-info);
+	border-radius: 999px;
 }
 
 .directionsButton:hover,
 .directionsButton:focus-visible {
-	background-color: var(--color-system-background-200);
+	filter: brightness(0.95);
 }
 
 /* * */
