@@ -7,7 +7,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { getBaseGeoJsonFeatureCollection, parseCoordinatePairString } from '@tmlmobilidade/geo';
 import { MapProvider } from '@vis.gl/react-maplibre';
 import { type FeatureCollection, type Point } from 'geojson';
-import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { MapStyle } from '../components/map/configs/styles';
 import { MapOverlayPinsPointDataProps } from '../components/map/overlays/MapOverlayPins';
@@ -46,26 +46,22 @@ export function useMapContext() {
 /* * */
 
 interface MapContextProviderProps extends PropsWithChildren {
-	/** Uses local state instead of persisted user preferences. Use this for public/anonymous surfaces. */
-	anonymous?: boolean
 	/** Isolates search / style preferences from other maps (e.g. modal vs page). Default `'map'`. */
 	preferenceScope?: string
 }
 
-interface MapContextProviderInnerProps extends PropsWithChildren {
-	dataSearch: string
-	flagScrollZoom: boolean
-	flagStyle: MapStyle
-	setDataSearch: (value: string) => void
-	setFlagScrollZoom: (value: boolean) => void
-	setFlagStyle: (value: MapStyle) => void
-}
-
-function MapContextProviderInner({ children, dataSearch, flagScrollZoom, flagStyle, setDataSearch, setFlagScrollZoom, setFlagStyle }: MapContextProviderInnerProps) {
+export const MapContextProvider = ({ children, preferenceScope = 'map' }: MapContextProviderProps) => {
 	//
 
 	//
-	// A. Transform data
+	// A. Setup variables
+
+	const [dataSearch, setDataSearch] = useUserPreference<string>(preferenceScope, 'data:search', '');
+	const [flagStyle, setFlagStyle] = useUserPreference<MapStyle>(preferenceScope, 'flags:style', 'map');
+	const [flagScrollZoom, setFlagScrollZoom] = useUserPreference<boolean>(preferenceScope, 'flags:scroll-zoom', true);
+
+	//
+	// B. Transform data
 
 	const searchPinFC = useMemo(() => {
 		// Prepare an empty feature collection
@@ -92,19 +88,19 @@ function MapContextProviderInner({ children, dataSearch, flagScrollZoom, flagSty
 	//
 	// B. Handle actions
 
-	const toggleScrollZoom = useCallback((value?: boolean) => {
+	const toggleScrollZoom = (value?: boolean) => {
 		if (value !== undefined) setFlagScrollZoom(value);
 		else setFlagScrollZoom(!flagScrollZoom);
-	}, [flagScrollZoom, setFlagScrollZoom]);
+	};
 
-	const toggleStyle = useCallback((value?: MapStyle) => {
+	const toggleStyle = (value?: MapStyle) => {
 		if (value) setFlagStyle(value);
 		else setFlagStyle(flagStyle === 'map' ? 'satellite' : 'map');
-	}, [flagStyle, setFlagStyle]);
+	};
 
-	const handleSearch = useCallback((value: string) => {
+	const handleSearch = (value: string) => {
 		setDataSearch(value);
-	}, [setDataSearch]);
+	};
 
 	//
 	// C. Define context value
@@ -128,9 +124,6 @@ function MapContextProviderInner({ children, dataSearch, flagScrollZoom, flagSty
 		searchPinFC,
 		flagScrollZoom,
 		flagStyle,
-		handleSearch,
-		toggleScrollZoom,
-		toggleStyle,
 	]);
 
 	//
@@ -145,74 +138,4 @@ function MapContextProviderInner({ children, dataSearch, flagScrollZoom, flagSty
 	);
 
 	//
-}
-
-function AnonymousMapContextProvider(props: PropsWithChildren) {
-	//
-
-	//
-	// A. Setup variables
-
-	const [dataSearch, setDataSearch] = useState('');
-	const [flagStyle, setFlagStyle] = useState<MapStyle>('map');
-	const [flagScrollZoom, setFlagScrollZoom] = useState(true);
-
-	//
-	// B. Render components
-
-	return (
-		<MapContextProviderInner
-			dataSearch={dataSearch}
-			flagScrollZoom={flagScrollZoom}
-			flagStyle={flagStyle}
-			setDataSearch={setDataSearch}
-			setFlagScrollZoom={setFlagScrollZoom}
-			setFlagStyle={setFlagStyle}
-		>
-			{props.children}
-		</MapContextProviderInner>
-	);
-}
-
-function AuthenticatedMapContextProvider({ children, preferenceScope }: Required<PropsWithChildren<Pick<MapContextProviderProps, 'preferenceScope'>>>) {
-	//
-
-	//
-	// A. Setup variables
-
-	const [dataSearch, setDataSearch] = useUserPreference<string>(preferenceScope, 'data:search', '');
-	const [flagStyle, setFlagStyle] = useUserPreference<MapStyle>(preferenceScope, 'flags:style', 'map');
-	const [flagScrollZoom, setFlagScrollZoom] = useUserPreference<boolean>(preferenceScope, 'flags:scroll-zoom', true);
-
-	//
-	// B. Render components
-
-	return (
-		<MapContextProviderInner
-			dataSearch={dataSearch}
-			flagScrollZoom={flagScrollZoom}
-			flagStyle={flagStyle}
-			setDataSearch={setDataSearch}
-			setFlagScrollZoom={setFlagScrollZoom}
-			setFlagStyle={setFlagStyle}
-		>
-			{children}
-		</MapContextProviderInner>
-	);
-}
-
-export const MapContextProvider = ({ anonymous = false, children, preferenceScope = 'map' }: MapContextProviderProps) => {
-	if (anonymous) {
-		return (
-			<AnonymousMapContextProvider>
-				{children}
-			</AnonymousMapContextProvider>
-		);
-	}
-
-	return (
-		<AuthenticatedMapContextProvider preferenceScope={preferenceScope}>
-			{children}
-		</AuthenticatedMapContextProvider>
-	);
 };
