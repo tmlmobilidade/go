@@ -13,7 +13,7 @@ import styles from './styles.module.css';
 interface RoutePlannerLinePillProps {
 	leg: MotisPlanLeg
 	lineByShortName: Map<string, HubV1ApiLine>
-	size?: 'md' | 'sm'
+	size?: 'lg' | 'md' | 'sm'
 }
 
 /* * */

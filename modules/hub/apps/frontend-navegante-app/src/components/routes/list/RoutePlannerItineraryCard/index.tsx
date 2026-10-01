@@ -6,10 +6,11 @@ import { useLinesData } from '@/components/lines/use-lines-data';
 import { RoutePlannerItineraryLegStrip } from '@/components/routes/common/RoutePlannerItineraryLegStrip';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/itinerary/alerts';
 import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
+import { getItineraryWaitingMinutes } from '@/utils/route-planner/itinerary/waiting';
 import { getItineraryWalkMinutes } from '@/utils/route-planner/planning/results';
 import { formatMotisPlanDuration, formatMotisPlanTime } from '@/utils/route-planner/presentation/format';
 import { getRoutePlannerTransitLegLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
-import { IconAlertTriangle, IconWalk } from '@tabler/icons-react';
+import { IconAlertTriangle, IconClock, IconWalk } from '@tabler/icons-react';
 import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -44,6 +45,7 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 	const end = itinerary.endTime;
 	const duration = formatMotisPlanDuration(itinerary.duration);
 	const walkingMinutes = getItineraryWalkMinutes(itinerary);
+	const waitingMinutes = getItineraryWaitingMinutes(itinerary);
 
 	const realtimeStatus = useMemo(() => {
 		return getRoutePlannerItineraryRealtimeStatus(legs);
@@ -57,13 +59,9 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 
 	const effectiveStart = realtimeStatus.start_time?.effective_time ?? start;
 	const effectiveEnd = realtimeStatus.end_time?.effective_time ?? end;
-	const plannedEnd = realtimeStatus.end_time?.planned_time ?? end;
-	const hasRealtimeRange = realtimeStatus.is_realtime;
 	const effectiveStartLabel = formatMotisPlanTime(effectiveStart);
 	const effectiveEndLabel = formatMotisPlanTime(effectiveEnd);
-	const plannedEndLabel = formatMotisPlanTime(plannedEnd);
-	const hasChangedArrival = hasRealtimeRange && effectiveEndLabel !== plannedEndLabel;
-	const arrivalStatus = getArrivalStatus(realtimeStatus.arrival_delay_seconds, hasChangedArrival);
+	const hasRealtimeRange = realtimeStatus.is_realtime;
 	const modeLabels = legs
 		.filter(leg => !isMotisWalkingLeg(leg))
 		.map(leg => getRoutePlannerTransitLegLabel(leg, mode => t(`default:routes.RoutePlanner.results.mode_labels.${mode}`)))
@@ -74,8 +72,8 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 		modeLabels || t('default:routes.RoutePlanner.results.walk_label'),
 		t('default:routes.RoutePlanner.results.transfers', '', { count: itinerary.transfers }),
 		t('default:routes.RoutePlanner.results.walking_time', '', { count: walkingMinutes }),
+		t('default:routes.RoutePlanner.results.waiting_time', '', { count: waitingMinutes }),
 		hasRealtimeRange ? t('default:routes.RoutePlanner.results.realtime') : null,
-		hasChangedArrival ? t('default:routes.RoutePlanner.results.scheduled_at', '', { time: plannedEndLabel }) : null,
 		itineraryAlerts.length > 0 ? t('default:routes.RoutePlanner.results.alerts', '', { count: itineraryAlerts.length }) : null,
 	].filter(Boolean).join(', ');
 	const selectItineraryLabel = t('default:routes.RoutePlanner.results.select_itinerary_aria_label', '', { summary: itinerarySummary });
@@ -99,20 +97,15 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 					<strong>{duration || t('default:routes.RoutePlanner.results.duration_unavailable')}</strong>
 				</div>
 
-				<div className={styles.timeRange} data-arrival-status={arrivalStatus} data-realtime={hasRealtimeRange}>
+				<div className={styles.timeRange} data-realtime={hasRealtimeRange}>
 					<div className={styles.primaryTime}>
 						<strong>{formatTimeRange(effectiveStart, effectiveEnd)}</strong>
 						{hasRealtimeRange && (
 							<span className={styles.liveStatus}>
-								<LiveIcon color={getLiveIndicatorColor(arrivalStatus)} />
+								<LiveIcon color="var(--color-status-active-primary)" />
 							</span>
 						)}
 					</div>
-					{hasChangedArrival && (
-						<small>
-							{t('default:routes.RoutePlanner.results.scheduled_at', '', { time: plannedEndLabel })}
-						</small>
-					)}
 				</div>
 
 				{itineraryAlerts.length > 0 && (
@@ -120,10 +113,16 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 						<IconAlertTriangle size={14} />
 					</span>
 				)}
+			</div>
 
-				<span className={styles.walkMetric}>
+			<div aria-hidden="true" className={styles.metrics}>
+				<span className={styles.metric}>
 					<IconWalk size={18} />
 					{t('default:routes.RoutePlanner.results.walking_time', '', { count: walkingMinutes })}
+				</span>
+				<span className={styles.metric}>
+					<IconClock size={18} />
+					{t('default:routes.RoutePlanner.results.waiting_time', '', { count: waitingMinutes })}
 				</span>
 			</div>
 
@@ -136,19 +135,6 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSel
 	);
 
 	//
-}
-
-type ArrivalStatus = 'early' | 'late' | 'on-time';
-
-function getArrivalStatus(arrivalDelaySeconds: number, hasChangedArrival: boolean): ArrivalStatus {
-	if (!hasChangedArrival) return 'on-time';
-	return arrivalDelaySeconds > 0 ? 'late' : 'early';
-}
-
-function getLiveIndicatorColor(arrivalStatus: ArrivalStatus) {
-	if (arrivalStatus === 'late') return 'var(--color-status-warning-primary)';
-	if (arrivalStatus === 'early') return 'var(--color-status-success-primary)';
-	return 'var(--color-status-active-primary)';
 }
 
 function formatTimeRange(start: number | string | undefined, end: number | string | undefined) {

@@ -3,11 +3,12 @@
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { RoutePlannerTime } from '@/components/routes/common/RoutePlannerTime';
+import { RoutePlannerItineraryDetailStep } from '@/components/routes/detail/RoutePlannerItineraryDetailStep';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/itinerary/alerts';
 import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerLegRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
-import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
-import { IconAlertTriangle, IconChevronDown, IconNavigationTop } from '@tabler/icons-react';
+import { getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
+import { IconAlertTriangle, IconChevronDown } from '@tabler/icons-react';
 import { type HubV1ApiAlert, type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { type MotisPlanLeg, type MotisPlanPlace } from '@tmlmobilidade/go-types-motis';
 import { useMemo, useState } from 'react';
@@ -20,15 +21,18 @@ import styles from './styles.module.css';
 interface RoutePlannerItineraryDetailLegProps {
 	alerts: HubV1ApiAlert[]
 	isActive: boolean
+	isFinalDestination: boolean
 	leg: MotisPlanLeg
 	lineByShortName: Map<string, HubV1ApiLine>
 	routeDestinationLabel: string
 	routeOriginLabel: string
+	showDestination?: boolean
+	showOrigin?: boolean
 }
 
 /* * */
 
-export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, leg, lineByShortName, routeDestinationLabel, routeOriginLabel }: RoutePlannerItineraryDetailLegProps) {
+export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, isFinalDestination, leg, lineByShortName, routeDestinationLabel, routeOriginLabel, showDestination = true, showOrigin = true }: RoutePlannerItineraryDetailLegProps) {
 	//
 
 	//
@@ -45,8 +49,9 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, le
 	const durationMinutes = getDurationMinutes(leg.duration);
 	const intermediateStops = getIntermediateStops(leg);
 	const hasIntermediateStops = intermediateStops.length > 0;
+	const lineData = lineByShortName.get(getMotisLegRouteLabel(leg));
+	const lineColor = isMotisWalkingLeg(leg) ? undefined : lineData?.color || 'var(--color-route-line-fallback)';
 	const realtimeStatus = getRoutePlannerLegRealtimeStatus(leg);
-	const departureDelaySeconds = isMotisWalkingLeg(leg) ? 0 : realtimeStatus.departure_delay_seconds;
 	const legAlertFilters = useMemo(() => {
 		if (isMotisWalkingLeg(leg)) return null;
 		return getRoutePlannerItineraryAlertFilters({ legs: [leg] }, Array.from(lineByShortName.values()));
@@ -61,72 +66,48 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, le
 	// C. Render components
 
 	return (
-		<li aria-current={isActive ? 'step' : undefined} className={styles.leg}>
-			<RoutePlannerModeBadge
-				labelled={!isMotisWalkingLeg(leg)}
-				leg={leg}
-				size="md"
-				marker={isActive && (
-					<span
-						aria-label={t('default:routes.RoutePlanner.results.current_step')}
-						className={styles.currentStepMarker}
-						role="img"
-					>
-						<IconNavigationTop size={12} stroke={3} />
-					</span>
-				)}
-			/>
+		<RoutePlannerItineraryDetailStep
+			isActive={isActive}
+			lineColor={lineColor}
+			marker={showOrigin ? <span aria-hidden="true" className={styles.endpointNode} /> : <RoutePlannerModeBadge leg={leg} size="md" />}
+			endMarker={showDestination && (
+				<span
+					aria-hidden={!isFinalDestination}
+					aria-label={isFinalDestination ? t('default:routes.RoutePlanner.results.arrival_at_destination') : undefined}
+					className={styles.endpointNode}
+					data-final-destination={isFinalDestination}
+					role={isFinalDestination ? 'img' : undefined}
+				/>
+			)}
+		>
 
-			<div className={styles.legBody}>
+			<div className={styles.legEndpoints}>
+				{showOrigin && (
+					<div className={styles.endpoint} data-origin="true">
+						<div className={styles.endpointPlace}>
+							<strong>{from}</strong>
+						</div>
+						<span className={styles.endpointTime}><RoutePlannerTime time={realtimeStatus.from_time} /></span>
+					</div>
+				)}
 				<div className={styles.legHeader}>
-					<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} size="md" />
-					{durationMinutes !== null && (
+					{showOrigin && <div className={styles.modeMarker}><RoutePlannerModeBadge leg={leg} size="md" /></div>}
+					{!isMotisWalkingLeg(leg) && (
+						<div className={styles.lineDirection}>
+							<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} size="md" />
+							{!isMotisWalkingLeg(leg) && leg.headsign && (
+								<span aria-label={t('default:routes.RoutePlanner.results.direction', '', { headsign: leg.headsign })} className={styles.headsign}>
+									{leg.headsign}
+								</span>
+							)}
+						</div>
+					)}
+					{durationMinutes !== null && durationMinutes > 0 && (
 						<span className={styles.durationChip}>
 							{t('default:routes.RoutePlanner.results.leg_duration', '', { count: durationMinutes })}
 						</span>
 					)}
 				</div>
-
-				{isMotisWalkingLeg(leg) ? (
-					<p className={styles.instruction}>
-						{t('default:routes.RoutePlanner.results.walk_between', '', { from, to })}
-					</p>
-				) : (
-					<>
-						<p className={styles.instruction}>
-							{t('default:routes.RoutePlanner.results.ride_between', '', { from, to })}
-						</p>
-						{leg.headsign && <p className={styles.headsign}>{leg.headsign}</p>}
-					</>
-				)}
-
-				<div className={styles.legEndpoints}>
-					<span><RoutePlannerTime time={realtimeStatus.from_time} /> · {from}</span>
-					{departureDelaySeconds !== 0 && (
-						<div className={styles.warningItem} data-kind="departure">
-							<IconAlertTriangle size={15} />
-							<span>
-								{t(departureDelaySeconds > 0
-									? 'default:routes.RoutePlanner.results.departure_delay'
-									: 'default:routes.RoutePlanner.results.departure_early', '', {
-									count: Math.max(1, Math.round(Math.abs(departureDelaySeconds) / 60)),
-								})}
-							</span>
-						</div>
-					)}
-					<span><RoutePlannerTime time={realtimeStatus.to_time} /> · {to}</span>
-				</div>
-
-				{alerts.length > 0 && (
-					<div className={styles.warningList}>
-						{alerts.slice(0, 3).map(alert => (
-							<div key={alert._id} className={styles.warningItem} data-kind="alert">
-								<IconAlertTriangle size={15} />
-								<span>{alert.title}</span>
-							</div>
-						))}
-					</div>
-				)}
 
 				{hasIntermediateStops && (
 					<div className={styles.stops}>
@@ -144,16 +125,36 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, le
 							<ol className={styles.stopList}>
 								{intermediateStops.map((stop, index) => (
 									<li key={`${getStopName(stop)}-${index}`}>
-										<RoutePlannerTime time={getRoutePlannerIntermediateStopRealtimeStatus(stop, leg.realTime)} />
 										<strong>{getStopName(stop)}</strong>
+										<span className={styles.intermediateTime}><RoutePlannerTime time={getRoutePlannerIntermediateStopRealtimeStatus(stop, leg.realTime)} /></span>
 									</li>
 								))}
 							</ol>
 						)}
 					</div>
 				)}
+				{alerts.length > 0 && (
+					<div className={styles.warningList}>
+						{alerts.slice(0, 3).map(alert => (
+							<div key={alert._id} className={styles.warningItem} data-kind="alert">
+								<IconAlertTriangle size={15} />
+								<span>{alert.title}</span>
+							</div>
+						))}
+					</div>
+				)}
+
+				{showDestination && (
+					<div className={styles.endpoint} data-destination="true">
+						<div className={styles.endpointPlace}>
+							<strong>{to}</strong>
+						</div>
+						<span className={styles.endpointTime}><RoutePlannerTime time={realtimeStatus.to_time} /></span>
+					</div>
+				)}
 			</div>
-		</li>
+
+		</RoutePlannerItineraryDetailStep>
 	);
 
 	//

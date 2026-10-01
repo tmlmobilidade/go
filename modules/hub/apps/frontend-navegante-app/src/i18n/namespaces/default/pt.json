@@ -240,6 +240,7 @@
 			"results": {
 				"active_leg": "Etapa atual, {step}",
 				"alerts": "{count, plural, one {# alerta} other {# alertas}}",
+				"arrival_at_destination": "Chegada ao destino",
 				"arrival_time_prefix": "Chegada às",
 				"at_time": "às {time}",
 				"current_step": "Etapa atual",
@@ -247,6 +248,7 @@
 				"departure_delay": "Parte {count} min depois do horário",
 				"departure_early": "Parte {count} min antes do horário",
 				"destination": "Destino",
+				"direction": "Sentido {headsign}",
 				"duration_unavailable": "Duração indisponível",
 				"early": "{count} min adiantado",
 				"end_trip": "Terminar",
@@ -298,6 +300,8 @@
 				"time_range": "{start} até {end}",
 				"transfers": "{count, plural, =0 {Sem trocas} one {# troca} other {# trocas}}",
 				"view_alternatives": "Ver alternativas",
+				"waiting_step": "Esperar {count} min",
+				"waiting_time": "{count, plural, =0 {Sem espera} one {# min de espera} other {# min de espera}}",
 				"walk_between": "Caminhar até {to}",
 				"walk_label": "A pé",
 				"walking_time": "{count, plural, =0 {Sem caminhada} one {# min a pé} other {# min a pé}}"

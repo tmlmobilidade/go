@@ -113,32 +113,22 @@
 	transform: scale(0.65);
 }
 
-.timeRange[data-arrival-status='early'] .primaryTime > strong {
-	color: var(--color-status-success-primary);
-}
-
-.timeRange[data-arrival-status='late'] .primaryTime > strong {
-	color: var(--color-status-warning-primary);
-}
-
-.timeRange[data-realtime='true'][data-arrival-status='on-time'] .primaryTime > strong {
+.timeRange[data-realtime='true'] .primaryTime > strong {
 	color: var(--color-status-active-primary);
 }
 
-.timeRange small {
-	overflow: hidden;
-	font-size: 10px;
-	font-weight: 700;
-	color: var(--color-system-text-200);
-	text-overflow: ellipsis;
+.metrics {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 12px;
+	padding: 0 10px 4px;
 }
 
-.walkMetric {
+.metric {
 	display: inline-flex;
 	flex: 0 0 auto;
 	gap: 5px;
 	align-items: center;
-	margin-left: auto;
 	min-width: 0;
 	font-size: 13px;
 	font-weight: 800;
@@ -170,7 +160,7 @@
 		grid-template-columns: auto minmax(78px, 1fr) auto;
 	}
 
-	.walkMetric {
+	.metric {
 		grid-column: auto;
 		justify-self: start;
 		font-size: 13px;

@@ -24,7 +24,7 @@ export function RoutePlannerModeBadge({ labelled = true, leg, marker, size }: Ro
 	const modeKind = getMotisLegModeKind(leg);
 
 	return (
-		<span className={styles.badge} data-mode={modeKind} data-size={size}>
+		<span className={styles.badge} data-size={size}>
 			{labelled && <span className={styles.visuallyHidden}>{t(`default:routes.RoutePlanner.results.mode_labels.${modeKind}`)}</span>}
 			<RoutePlannerModeIcon leg={leg} size={size === 'md' ? 18 : 16} />
 			{marker}

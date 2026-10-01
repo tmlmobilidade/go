@@ -4,7 +4,7 @@ import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLin
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
 import { getRoutePlannerTransitLegLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
-import { IconWalk } from '@tabler/icons-react';
+import { IconArrowRight, IconWalk } from '@tabler/icons-react';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 import { useTranslation } from 'react-i18next';
@@ -58,7 +58,7 @@ export function RoutePlannerLegStripItem({ leg, lineByShortName, showConnector }
 						<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} />
 					</>
 				)}
-				{showConnector && <span className={styles.connector}>•••</span>}
+				{showConnector && <IconArrowRight className={styles.connector} size={14} />}
 			</div>
 		</div>
 	);

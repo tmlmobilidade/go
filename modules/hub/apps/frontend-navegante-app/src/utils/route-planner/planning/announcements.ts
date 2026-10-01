@@ -1,3 +1,4 @@
+import { getItineraryWaitingMinutes } from '@/utils/route-planner/itinerary/waiting';
 import { getItineraryWalkMinutes } from '@/utils/route-planner/planning/results';
 import { formatMotisPlanDuration, formatMotisPlanTime } from '@/utils/route-planner/presentation/format';
 import { getRoutePlannerTransitLegLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
@@ -24,6 +25,7 @@ export function getRoutePlannerItineraryStatusSummary(itinerary: MotisItinerary,
 		modeLabels || translate('default:routes.RoutePlanner.results.walk_label', ''),
 		translate('default:routes.RoutePlanner.results.transfers', '', { count: itinerary.transfers }),
 		translate('default:routes.RoutePlanner.results.walking_time', '', { count: getItineraryWalkMinutes(itinerary) }),
+		translate('default:routes.RoutePlanner.results.waiting_time', '', { count: getItineraryWaitingMinutes(itinerary) }),
 	].join(', ');
 }
 

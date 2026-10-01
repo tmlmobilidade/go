@@ -19,11 +19,12 @@ test('selected itinerary stays actionable in compact preview and returns to its 
 	await page.getByRole('button', { name: /Alverca de teste/ }).click();
 	const choices = page.getByRole('button', { name: /^Selecionar percurso/ });
 	await expect(choices).toHaveCount(12);
+	await expect(choices.first().locator('..').locator('[data-realtime="false"] strong')).toHaveCSS('color', 'rgb(90, 90, 100)');
 	await expect(page.getByRole('button', { name: 'Iniciar viagem com este percurso' })).toHaveCount(0);
 	await page.getByRole('button', { name: 'Expandir painel' }).click();
 	await choices.nth(1).click();
 	const preview = page.getByRole('dialog', { name: 'Resumo da rota' });
-	await expect(preview.locator('header').getByText('44 min', { exact: true })).toBeVisible();
+	await expect(preview.locator('header').getByText('(44 min)', { exact: true })).toBeVisible();
 	const go = preview.getByRole('button', { name: 'Iniciar viagem com este percurso' });
 	await expect(go).toBeInViewport();
 	await expect(preview.getByRole('button', { name: 'Ver alternativas' })).toBeInViewport();
