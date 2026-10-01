@@ -2,7 +2,7 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
-import { Text, useLocationsContext } from '@tmlmobilidade/ui';
+import { Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -16,7 +16,6 @@ export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
 	//
 	// A. Setup variables
 
-	const locationsContext = useLocationsContext();
 	const router = useRouter();
 
 	//
@@ -29,26 +28,11 @@ export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
 	};
 
 	const stopLocationInfo = useMemo(() => {
-		if (!pathItem.stop) return null;
-
-		const municipalityData = pathItem.stop.municipality_id
-			? locationsContext.actions.getMunicipality(pathItem.stop.municipality_id)
-			: undefined;
-
-		const localityData = pathItem.stop.locality_id
-			? locationsContext.actions.getLocality(pathItem.stop.locality_id)
-			: undefined;
-
-		const localityName = localityData?.name;
-		const municipalityName = municipalityData?.name;
-
-		if (!localityName && !municipalityName) return null;
-		if (localityName && !municipalityName) return localityName;
-		if (!localityName && municipalityName) return municipalityName;
-		if (localityName === municipalityName) return localityName;
-
-		return `${localityName}, ${municipalityName}`;
-	}, [pathItem.stop, locationsContext]);
+		const location = pathItem.stop?.location;
+		if (!location) return null;
+		const { neighbourhood, secondary } = location;
+		return neighbourhood && neighbourhood.name !== secondary.name ? `${neighbourhood.name}, ${secondary.name}` : secondary.name;
+	}, [pathItem.stop?.location]);
 
 	//
 	// C. Render components

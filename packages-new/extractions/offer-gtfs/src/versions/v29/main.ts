@@ -13,7 +13,6 @@ import { exportFeedInfoFile } from './exports/feedInfo.js';
 import { fetchAllEvents } from './fetchers/events.js';
 import { fetchAllFares } from './fetchers/fare.js';
 import { fetchAllHolidays } from './fetchers/holidays.js';
-import { fetchAllMunicipalities } from './fetchers/municipality.js';
 import { fetchAllTypologies } from './fetchers/typology.js';
 import { fetchAllYearPeriods } from './fetchers/year-periods.js';
 import { fetchAllZones } from './fetchers/zone.js';
@@ -168,10 +167,6 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 		const allZonesMap = await fetchAllZones();
 		Logger.success(`Loaded ${allZonesMap.size} zones`);
 
-		Logger.info({ message: 'Fetching all municipalities...' });
-		const allMunicipalitiesMap = await fetchAllMunicipalities();
-		Logger.success(`Loaded ${allMunicipalitiesMap.size} municipalities`);
-
 		Logger.info({ message: 'Fetching all periods...' });
 		const allPeriodsMap = await fetchAllYearPeriods();
 		Logger.success(`Loaded ${allPeriodsMap.size} periods`);
@@ -301,16 +296,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 			// Skip stops that are not referenced
 			if (!exportConfig.stops_export_all && !referencedStopCodes.has(stopData._id)) continue;
 
-			const municipalityData = stopData.municipality_id
-				? allMunicipalitiesMap.get(stopData.municipality_id)
-				: undefined;
-
-			if (!municipalityData) {
-				Logger.error({ message: `Stop ${stopData._id} has no municipality data` });
-				continue;
-			}
-
-			await exportStop(stopData, municipalityData, exportConfig);
+			await exportStop(stopData, exportConfig);
 		}
 
 		Logger.success(`Exported ${allStopsData.length} stops to stops.txt`);

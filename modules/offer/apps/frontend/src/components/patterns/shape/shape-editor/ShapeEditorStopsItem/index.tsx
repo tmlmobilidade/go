@@ -4,7 +4,7 @@
 
 import { IconArrowBarToDown, IconArrowBarUp, IconClock } from '@tabler/icons-react';
 import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
-import { DeleteButton, Section, Tag, Text, useLocationsContext } from '@tmlmobilidade/ui';
+import { DeleteButton, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -19,7 +19,6 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 	//
 	// A. Setup variables
 
-	const locationsContext = useLocationsContext();
 	const stopsEditorContext = useStopsEditorContext();
 
 	const enterTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -30,26 +29,11 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 	const stopItem = stopsEditorContext.data.path[rowIndex];
 
 	const stopLocationInfo = useMemo(() => {
-		if (!pathItem.stop) return null;
-
-		const municipalityData = pathItem.stop.municipality_id
-			? locationsContext.actions.getMunicipality(pathItem.stop.municipality_id)
-			: undefined;
-
-		const localityData = pathItem.stop.locality_id
-			? locationsContext.actions.getLocality(pathItem.stop.locality_id)
-			: undefined;
-
-		const localityName = localityData?.name;
-		const municipalityName = municipalityData?.name;
-
-		if (!localityName && !municipalityName) return null;
-		if (localityName && !municipalityName) return localityName;
-		if (!localityName && municipalityName) return municipalityName;
-		if (localityName === municipalityName) return localityName;
-
-		return `${localityName}, ${municipalityName}`;
-	}, [pathItem.stop, locationsContext]);
+		const location = pathItem.stop?.location;
+		if (!location) return null;
+		const { neighbourhood, secondary } = location;
+		return neighbourhood && neighbourhood.name !== secondary.name ? `${neighbourhood.name}, ${secondary.name}` : secondary.name;
+	}, [pathItem.stop?.location]);
 
 	//
 	// B. Handle actions
