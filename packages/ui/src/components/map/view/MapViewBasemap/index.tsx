@@ -1,7 +1,7 @@
 'use client';
 
 import { FullscreenControl, GeolocateControl, Map, type MapLayerMouseEvent, type MapWheelEvent, NavigationControl, ScaleControl, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
-import { type CSSProperties, type PropsWithChildren, useCallback, useEffect, useMemo } from 'react';
+import { type CSSProperties, type PropsWithChildren, useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
 
@@ -31,10 +31,8 @@ export const DEFAULT_LAYERS: MapViewBasemapLayers = {
 export interface MapViewBasemapProps {
 	cursor?: CSSProperties['cursor'] | null
 	id: string
-	initialViewState?: typeof MAP_VIEWPORT
-	interactive?: boolean
 	interactiveLayerIds?: string[]
-	layers?: MapViewBasemapLayers
+	layers: MapViewBasemapLayers
 	onClick?: (e: MapLayerMouseEvent) => void
 	onContextMenu?: (e: MapLayerMouseEvent) => void
 	onDrag?: (e: ViewStateChangeEvent) => void
@@ -46,24 +44,18 @@ export interface MapViewBasemapProps {
 	onMouseOut?: (e: MapLayerMouseEvent) => void
 	onMouseOver?: (e: MapLayerMouseEvent) => void
 	onWheel?: (e: MapWheelEvent) => void
-	scrollZoom?: boolean
-	/** Scroll zoom only while this modifier key is held (e.g. Option/Alt on Mac). */
-	scrollZoomModifierKey?: 'alt' | 'ctrl' | 'meta'
 	/**
 	 * When true (default), pans/zooms the map when search-pin coordinates change.
 	 * Disable for click-to-place flows so selecting a point does not trigger a camera animation.
 	 */
 	searchPinFocusOnChange?: boolean
-	showAttribution?: boolean
-	/** When false, hides the compass on the navigation control (zoom buttons remain). */
-	showCompass?: boolean
 	/** When false, hides the coordinate search pin from global map context (e.g. focused single-stop maps). */
 	showSearchPin?: boolean
 }
 
 /* * */
 
-export function MapViewBasemap({ children, cursor, id, initialViewState = MAP_VIEWPORT, interactive = true, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, scrollZoom, scrollZoomModifierKey, searchPinFocusOnChange = true, showAttribution = true, showCompass = true, showSearchPin = true }: PropsWithChildren<MapViewBasemapProps>) {
+export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, searchPinFocusOnChange = true, showSearchPin = true }: PropsWithChildren<MapViewBasemapProps>) {
 	//
 
 	//
@@ -132,8 +124,8 @@ export function MapViewBasemap({ children, cursor, id, initialViewState = MAP_VI
 			attributionControl={false}
 			cursor={mapViewContext.flags.cursor}
 			id={id}
-			initialViewState={initialViewState}
-			interactive={interactive}
+			initialViewState={MAP_VIEWPORT}
+			interactive={true}
 			interactiveLayerIds={interactiveLayerIds}
 			mapStyle={currentMapStyleConfigValue}
 			maxZoom={currentMapStyleConfig.max_zoom}
@@ -148,10 +140,10 @@ export function MapViewBasemap({ children, cursor, id, initialViewState = MAP_VI
 			onMouseOut={onMouseOut}
 			onMouseOver={onMouseOver}
 			onWheel={handleOnWheel}
-			scrollZoom={resolvedScrollZoom}
+			scrollZoom={mapContext.flags.scroll_zoom}
 			style={{ height: '100%', width: '100%' }}
 		>
-			{layers.navigation && <NavigationControl showCompass={showCompass} />}
+			{layers.navigation && <NavigationControl />}
 			{layers.fullscreen && <FullscreenControl />}
 			{layers.geolocate && <GeolocateControl />}
 			{layers.scale && <ScaleControl />}
@@ -163,7 +155,7 @@ export function MapViewBasemap({ children, cursor, id, initialViewState = MAP_VI
 				/>
 			)}
 			<div className={styles.children}>
-				{showAttribution && <MapViewAttribution />}
+				<MapViewAttribution />
 				{children}
 			</div>
 		</Map>
