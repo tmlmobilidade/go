@@ -18,6 +18,7 @@ interface MotisGeocodePlaceBias {
 interface UseMotisGeocodeOptions {
 	enabled?: boolean
 	errorMessage: string
+	numResults?: number
 	placeBias?: MotisGeocodePlaceBias
 	unnamedLocationLabel: string
 }
@@ -41,6 +42,7 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 	const [isLoading, setIsLoading] = useState(false);
 
 	const enabled = options.enabled ?? true;
+	const numResults = options.numResults ?? 8;
 	const placeBiasLatitude = options.placeBias?.latitude;
 	const placeBiasLongitude = options.placeBias?.longitude;
 	const placeBiasWeight = options.placeBias?.weight;
@@ -61,7 +63,7 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 		const abortController = new AbortController();
 		const timeout = window.setTimeout(async () => {
 			const params = new URLSearchParams({
-				numResults: '8',
+				numResults: String(numResults),
 				text: trimmedQuery,
 				type: 'PLACE',
 			});
@@ -96,7 +98,7 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 			abortController.abort();
 			window.clearTimeout(timeout);
 		};
-	}, [enabled, options.errorMessage, options.unnamedLocationLabel, placeBiasLatitude, placeBiasLongitude, placeBiasWeight, query]);
+	}, [enabled, numResults, options.errorMessage, options.unnamedLocationLabel, placeBiasLatitude, placeBiasLongitude, placeBiasWeight, query]);
 
 	//
 	// C. Return values

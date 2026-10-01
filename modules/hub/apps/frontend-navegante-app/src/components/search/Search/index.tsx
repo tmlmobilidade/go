@@ -2,10 +2,12 @@
 
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { SearchGroup } from '@/components/search/SearchGroup';
+import { SearchInitialLines } from '@/components/search/SearchInitialLines';
 import { SearchStatus } from '@/components/search/SearchStatus';
+import { SearchTypeChips } from '@/components/search/SearchTypeChips';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useSearch } from '@/hooks/search/useSearch';
-import { type SearchResult } from '@/types/common/search';
+import { type SearchGroup as SearchGroupData, type SearchResult } from '@/types/common/search';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/planning/locations';
 import { getSearchDraft, setSearchDraft, subscribeToSearchDraft } from '@/utils/search/search-draft';
@@ -36,14 +38,18 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 	const routePlannerContext = useRoutePlannerContext();
 	const searchDraft = useSyncExternalStore(subscribeToSearchDraft, getSearchDraft, getSearchDraft);
 	const [locationPickerQuery, setLocationPickerQuery] = useState('');
+	const [selectedType, setSelectedType] = useState<null | SearchGroupData['key']>(null);
 	const query = locationPicker ? locationPickerQuery : searchDraft;
 	const internalInputRef = useRef<HTMLInputElement>(null);
 	const inputRef = inputRefProp ?? internalInputRef;
-	const search = useSearch(query);
-	const visibleGroups = locationPicker
+	const search = useSearch(query, selectedType);
+	const availableGroups = locationPicker
 		? search.groups.filter(group => group.key === 'poi' || group.key === 'stop')
 		: search.groups;
+	const visibleGroups = selectedType ? availableGroups.filter(group => group.key === selectedType) : availableGroups;
 	const resultCount = visibleGroups.reduce((total, group) => total + group.results.length, 0);
+	const showInitialLines = !locationPicker && !query.trim();
+	const showTypeChips = !locationPicker && query.trim().length >= 2;
 	const inputLabel = placeholder ?? t('default:search.Search.input_label');
 
 	//
@@ -63,12 +69,18 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 	};
 
 	const handleQueryChange = (value: string) => {
+		if (!value.trim()) setSelectedType(null);
 		if (locationPicker) {
 			setLocationPickerQuery(value);
 			return;
 		}
 
 		setSearchDraft(value);
+	};
+
+	const handleClear = (onClear: () => void) => {
+		setSelectedType(null);
+		onClear();
 	};
 
 	//
@@ -85,15 +97,17 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 				rightSectionWidth={48}
 				value={query}
 				clearButton={onClear => (
-					<button aria-label={t('default:search.Search.clear')} className={styles.clearButton} onClick={onClear} type="button">
+					<button aria-label={t('default:search.Search.clear')} className={styles.clearButton} onClick={() => handleClear(onClear)} type="button">
 						<IconX size={20} />
 					</button>
 				)}
 			/>
 
+			{showTypeChips && <SearchTypeChips onChange={setSelectedType} selectedType={selectedType} />}
 			{visibleGroups.map(group => (
 				<SearchGroup key={group.key} group={group} onSelect={handleSelect} variant={variant} />
 			))}
+			{showInitialLines && <SearchInitialLines lines={search.initialLines} onSelect={lineId => push({ entityId: lineId, view: 'lines-detail' })} variant={variant} />}
 
 			<SearchStatus error={search.error} isLoading={search.isLoading} query={query} resultCount={resultCount} />
 		</div>

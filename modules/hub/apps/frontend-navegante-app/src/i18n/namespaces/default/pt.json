@@ -346,6 +346,7 @@
 			"clear": "Limpar pesquisa",
 			"empty": "Nenhum resultado encontrado.",
 			"error": "Não foi possível carregar todos os resultados.",
+			"filter_types": "Filtrar resultados por tipo",
 			"groups": {
 				"alert": "Alertas",
 				"line": "Linhas",
@@ -356,6 +357,7 @@
 			"loading": "A pesquisar...",
 			"placeholder": "Pesquisar linhas, paragens, alertas e locais",
 			"results": "{count, plural, one {# resultado encontrado} other {# resultados encontrados}}",
+			"show_more_lines": "Ver mais linhas de {agency_name}",
 			"title": "Pesquisa"
 		}
 	},
