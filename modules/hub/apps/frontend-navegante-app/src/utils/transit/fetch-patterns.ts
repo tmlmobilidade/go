@@ -14,7 +14,11 @@ import { fetchApiData } from '@tmlmobilidade/ui';
 export async function fetchPatterns(patternIds: string[]): Promise<HubV1ApiPattern[][]> {
 	const fetchPromises = patternIds.map(async (patternId) => {
 		const response = await fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS(patternId) });
-		return response.data;
+		if (response.error || !Array.isArray(response.data)) return null;
+		return response.data.filter((pattern): pattern is HubV1ApiPattern => pattern !== null && typeof pattern === 'object');
 	});
-	return await Promise.all(fetchPromises);
+	const patterns = await Promise.all(fetchPromises);
+	const availablePatterns = patterns.filter((group): group is HubV1ApiPattern[] => group !== null);
+	if (patternIds.length > 0 && availablePatterns.length === 0) throw new Error('Unable to load patterns');
+	return availablePatterns;
 }

@@ -70,7 +70,7 @@ export function useStopDetailData(stopId: string): UseStopDetailDataReturnType {
 
 	const associatedLines = useMemo(() => lines.filter(line => stop?.line_ids.includes(line._id)), [lines, stop?.line_ids]);
 	const activeAlerts = useMemo(() => getStopAlerts(alerts, stop), [alerts, stop]);
-	const validPatterns = useMemo(() => associatedPatterns?.flat().filter(pattern => selectedOperationalDate ? pattern.valid_on.includes(selectedOperationalDate) : false), [associatedPatterns, selectedOperationalDate]);
+	const validPatterns = useMemo(() => associatedPatterns?.flat().filter(pattern => selectedOperationalDate ? pattern?.valid_on?.includes(selectedOperationalDate) : false), [associatedPatterns, selectedOperationalDate]);
 	const timetable = useMemo(() => buildStopTimetable({ isTodaySelected, selectedOperationalDate, stopEtas, stopId, validPatterns }), [isTodaySelected, selectedOperationalDate, stopEtas, stopId, validPatterns]);
 
 	//
