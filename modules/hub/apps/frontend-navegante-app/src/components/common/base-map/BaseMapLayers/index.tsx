@@ -1,6 +1,7 @@
 'use client';
 
 import { MapViewOverlayPlaceLocation } from '@/components/map/MapViewOverlayPlaceLocation';
+import { MapViewOverlayRouteLegBadges } from '@/components/map/MapViewOverlayRouteLegBadges';
 import { MapViewOverlayStopLineBadges } from '@/components/map/MapViewOverlayStopLineBadges';
 import { MapViewOverlayStops } from '@/components/map/MapViewOverlayStops';
 import { MapViewOverlayUserLocation } from '@/components/map/MapViewOverlayUserLocation';
@@ -86,6 +87,12 @@ export function BaseMapLayers(props: BaseMapLayersProps) {
 					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
 					shapeData={routePlannerContext.data.route_map_data.shapeData}
 					waypointsData={routePlannerContext.data.route_map_data.waypointsData}
+				/>
+			)}
+			{routePlannerContext.data.view_mode === 'itinerary-detail' && !routePlannerContext.flags.is_navigating && routePlannerContext.data.selected_itinerary && (
+				<MapViewOverlayRouteLegBadges
+					itinerary={routePlannerContext.data.selected_itinerary}
+					shapeData={routePlannerContext.data.route_map_data.shapeData}
 				/>
 			)}
 
