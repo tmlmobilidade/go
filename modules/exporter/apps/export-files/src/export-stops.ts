@@ -45,7 +45,7 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 
 	const stopsCollection = await goDb.infrastructure.stops.getCollection();
 	const stopsCursor = stopsCollection.find({ _id: { $in: stopIds } }, { batchSize: 5000 });
-	const municipalityIds = await stopsCollection.distinct('municipality_id', { _id: { $in: stopIds } });
+	const municipalityIds = await stopsCollection.distinct('location.secondary.osm_id', { _id: { $in: stopIds } });
 	const municipalitiesList = await goDb.locations.municipalities.findMany(
 		{ _id: { $in: municipalityIds } },
 		{ projection: { _id: 1, properties: 1 } },
@@ -61,7 +61,7 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 	for await (const stop of stopsCursor) {
 		await csvWriter.write(parseStops({
 			_id: stop._id,
-			municipality_name: municipalitiesMap.get(stop.municipality_id) ?? null,
+			municipality_name: municipalitiesMap.get(stop.location.secondary.osm_id) ?? null,
 			stop,
 		}));
 		count++;
