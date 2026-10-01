@@ -55,7 +55,7 @@ export const useGtfsExportModalContext = () => {
 
 /* * */
 
-const AGENCY_DEFAULT_VALUES: Record<string, { clip_end: OperationalDateInt, clip_start: OperationalDateInt, feed_end: OperationalDateInt, feed_start: OperationalDateInt, numeric_calendar_codes?: boolean }> = {
+const AGENCY_DEFAULT_VALUES_BY_CODE: Record<string, { clip_end: OperationalDateInt, clip_start: OperationalDateInt, feed_end: OperationalDateInt, feed_start: OperationalDateInt, numeric_calendar_codes?: boolean }> = {
 	41: { clip_end: 20261231 as OperationalDateInt, clip_start: 20260101 as OperationalDateInt, feed_end: 20261231 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt },
 	42: { clip_end: 20261231 as OperationalDateInt, clip_start: 20260101 as OperationalDateInt, feed_end: 20261231 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt },
 	43: { clip_end: 20260630 as OperationalDateInt, clip_start: 20250701 as OperationalDateInt, feed_end: 20260630 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt },
@@ -90,8 +90,8 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 
 	const setAgencyIds = useCallback((value: string[]) => {
 		if (value.length === 1) {
-			const selectedAgency = linesListContext?.data.agencyOptions?.find(agency => agency.value === value[0]);
-			const defaults = selectedAgency ? AGENCY_DEFAULT_VALUES[selectedAgency.value] : undefined;
+			const selectedAgency = linesListContext.data.agencies.find(agency => agency._id === value[0]);
+			const defaults = selectedAgency ? AGENCY_DEFAULT_VALUES_BY_CODE[selectedAgency.code] : undefined;
 			if (defaults) {
 				form.setValues({
 					agency_ids: value,
@@ -110,8 +110,9 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 			clip_start_date: null,
 			feed_end_date: null,
 			feed_start_date: null,
+			numeric_calendar_codes: false,
 		});
-	}, [linesListContext?.data.agencyOptions, form]);
+	}, [linesListContext.data.agencies, form]);
 
 	const setLinesMode = useCallback((value: LinesMode) => {
 		form.setValues({

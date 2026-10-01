@@ -25,7 +25,7 @@ export const interchangeModeOptions = [
 /* * */
 
 export const LineSchema = BaseDocumentSchema.extend({
-	agency_id: z.string(),
+	agency_id: z.string().min(1),
 	code: z.string().trim().min(1).max(10),
 	interchange: z.nativeEnum(INTERCHANGE_MODE).default(INTERCHANGE_MODE.NONE),
 	is_circular_line: z.boolean().default(false),
@@ -50,12 +50,11 @@ export const LineNormalizedSchema = LineSchema.extend({
 export const CreateLineSchema = LineSchema.omit({
 	_id: true,
 	created_at: true,
+	created_by: true,
 	updated_at: true,
 });
 
-export const UpdateLineSchema = CreateLineSchema
-	.omit({ created_by: true })
-	.partial();
+export const UpdateLineSchema = CreateLineSchema.partial();
 
 /* * */
 

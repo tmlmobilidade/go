@@ -106,7 +106,7 @@ export async function parseZoning(
 				onboard_fares: formattedOnboardFares,
 				prepaid_fare: prepaidFareCode,
 				prepaid_fare_price: prepaidFarePrice,
-				interchange: lineData.interchange ? '1' : '0',
+				interchange: lineData.interchange,
 			});
 		}
 
