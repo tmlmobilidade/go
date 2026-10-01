@@ -160,7 +160,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 
 		Logger.info({ message: 'Fetching stops...' });
 		const allStopsData = await goDb.infrastructure.stops.findMany({}, { sort: { _id: 1 } });
-		const allStopsMap = new Map(allStopsData.map(stop => [stop._id, stop]));
+		const allStopsMap = new Map(allStopsData.map(stop => [String(stop._id), stop]));
 		Logger.success(`Loaded ${allStopsMap.size} stops`);
 
 		Logger.info({ message: 'Fetching all zones...' });
@@ -254,7 +254,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 					if (patternData.path) {
 						for (const pathItem of patternData.path) {
 							// Track referenced stop
-							referencedStopCodes.add(pathItem.stop_id);
+							referencedStopCodes.add(String(pathItem.stop_id));
 						}
 					}
 
@@ -294,7 +294,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 			//
 
 			// Skip stops that are not referenced
-			if (!exportConfig.stops_export_all && !referencedStopCodes.has(stopData._id)) continue;
+			if (!exportConfig.stops_export_all && !referencedStopCodes.has(String(stopData._id))) continue;
 
 			await exportStop(stopData, exportConfig);
 		}

@@ -101,7 +101,7 @@ export async function exportStopTimesForPattern(
 				}
 
 				// If pathItem.stop is present, use agency-specific stop_id; else fallback to pathItem.stop_id
-				const currentStopData = stopsData.find(s => s._id === pathItem.stop_id);
+				const currentStopData = stopsData.find(s => String(s._id) === String(pathItem.stop_id));
 				const stopId = currentStopData ? getAgencyStopId(currentStopData, agencyId) : String(pathItem.stop_id);
 
 				const stopTimeRow: GtfsStrictV29StopTimes = {
