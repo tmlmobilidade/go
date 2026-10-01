@@ -1,7 +1,7 @@
 'use client';
 
 import { usePatternCreateContext } from '@/components/patterns/create/PatternCreate.context';
-import { PatternSchema } from '@tmlmobilidade/types';
+import { PatternSchema } from '@tmlmobilidade/go-types-offer';
 import { Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

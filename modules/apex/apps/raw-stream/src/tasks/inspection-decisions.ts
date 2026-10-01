@@ -3,8 +3,9 @@
 import { parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexInspectionDecision } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
-import { BatchWriter } from '@tmlmobilidade/utils';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { ZodError } from 'zod';
 
 /* * */
 
@@ -37,7 +38,10 @@ export async function processRawApexTransactionInspectionDecision(databaseOperat
 		if (!parseResult) return;
 		await writer.write(parseResult);
 	} catch (error) {
-		Logger.error({ message: `Error transforming APEX Inspection Decision: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
+		const errorMessage = error instanceof ZodError
+			? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
+			: error instanceof Error ? error.message : String(error);
+		Logger.error({ attributes: { document: databaseOperation.fullDocument }, error, message: `Error transforming APEX Inspection Decision: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${errorMessage}` });
 	}
 
 	//

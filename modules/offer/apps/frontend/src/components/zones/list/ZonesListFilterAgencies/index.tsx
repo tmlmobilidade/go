@@ -1,7 +1,7 @@
 /* * */
 
 import { useZonesListContext } from '@/components/zones/list/ZonesList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function ZonesListFilterAgencies() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={zonesListContext.filters.agencies.isActive}
 			label="Operadores"
 			onChange={zonesListContext.filters.agencies.set}

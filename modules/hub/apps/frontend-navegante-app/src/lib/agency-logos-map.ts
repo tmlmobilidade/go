@@ -1,13 +1,13 @@
 /* * */
 
 const AGENCY_ID_TO_SHORT_NAME = {
-	'2IA2N9': 'ml',
 	'7NTB1': 'fertagus',
 	'A2L1N': 'cmet',
 	'A3H3M': 'tcb',
 	'BNA17': 'cmet',
 	'CM': 'cmet',
 	'HF16N': 'mobi',
+	'IA2N9': 'ml',
 	'IA9T6': 'ccfl',
 	'KB1F6': 'mts',
 	'LA77N': 'cmet',

@@ -41,12 +41,11 @@ Each module represents a domain area of the GO platform. A module is self-contai
 | `dates` | Operational calendar and date period management |
 | `eta` | Estimated time of arrival computation |
 | `exporter` | GTFS and data export pipeline |
-| `fleet` | Vehicle fleet management |
 | `hub` | Central data hub — GTFS sync, Navegante app integration |
 | `locations` | Geographic locations and GeoJSON management |
 | `offer` | Service offer — lines, routes, schedules, GTFS import/export |
 | `performance` | KPI metrics — trip compliance, punctuality, reporting |
-| `plans` | Operational and offer plans — validation, publication |
+| `operation` | Operational and offer plans — validation, publication |
 | `replicator` | Data replication from APEX and vehicle event sources |
 | `stops` | Stop management and organisation |
 | `tracker` | Real-time vehicle tracking — event ingestion from operators |
@@ -76,16 +75,16 @@ Apps inside a module follow the pattern `@tmlmobilidade/go-[module]-[app]`:
 @tmlmobilidade/go-alerts-api
 @tmlmobilidade/go-alerts-frontend
 @tmlmobilidade/go-alerts-organizer
-@tmlmobilidade/go-controller-rides-feeder
-@tmlmobilidade/go-controller-rides-examiner
+@tmlmobilidade/go-operation-rides-feeder
+@tmlmobilidade/go-operation-rides-examiner
 ```
 
 Module-internal packages follow `@tmlmobilidade/go-[module]-pckg-[name]`:
 
 ```
-@tmlmobilidade/go-alerts-pckg-describe
+@tmlmobilidade/go-operation-pckg-compose-alert
 @tmlmobilidade/go-alerts-pckg-organize
-@tmlmobilidade/go-stops-pckg-organize
+@tmlmobilidade/go-infrastructure-pckg-utils
 @tmlmobilidade/go-tracker-pckg-parsers
 ```
 
@@ -103,7 +102,7 @@ Key packages most apps depend on:
 | `@tmlmobilidade/consts` | API routes, page routes, HTTP status codes |
 | `@tmlmobilidade/interfaces` | MongoDB collection methods |
 | `@tmlmobilidade/ui` | React components, hooks, auth context |
-| `@tmlmobilidade/fastify` | Fastify server, request/reply types, auth middleware |
+| `@tmlmobilidade/go-clients-fastify` | Fastify server, request/reply types, auth middleware |
 | `@tmlmobilidade/utils` | fetchData, uploadFile, general utilities |
 
 ---
@@ -209,11 +208,11 @@ The `ENVIRONMENT` variable controls which env file is loaded at runtime. The roo
 
 ## TypeScript
 
-All apps and packages extend from `@tmlmobilidade/tsconfig`. Each app's `tsconfig.json` looks like:
+All apps and packages extend from `@tmlmobilidade/go-utils-tsconfig`. Each app's `tsconfig.json` looks like:
 
 ```json
 {
-  "extends": "@tmlmobilidade/tsconfig/[base|nextjs|node].json",
+  "extends": "@tmlmobilidade/go-utils-tsconfig/[base|nextjs|node].json",
   "compilerOptions": {
     "outDir": "./dist"
   }
@@ -266,12 +265,12 @@ Run this any time you add, rename, or remove a `page.tsx` or `*.routes.ts` file 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 // Frontend navigation
-router.push(PAGE_ROUTES.alerts.ALERTS_LIST);
-router.push(PAGE_ROUTES.alerts.ALERTS_DETAIL(alertId));
+router.push(PAGE_ROUTES.operation.ALERTS_LIST);
+router.push(PAGE_ROUTES.operation.ALERTS_DETAIL(alertId));
 
 // SWR data fetching
-useSWR(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
+useSWR(API_ROUTES.operation.ALERTS_DETAIL(alertId));
 
 // Mutations
-fetchData(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', body);
+fetchData(API_ROUTES.operation.ALERTS_DETAIL(alertId), 'PUT', body);
 ```

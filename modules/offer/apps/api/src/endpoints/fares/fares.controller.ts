@@ -1,10 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { CreateFareDto, type Fare, PermissionCatalog, type PermissionResourceCheck, type UpdateFareDto } from '@tmlmobilidade/types';
+import { type CreateFareDto, type Fare, type UpdateFareDto } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog, type PermissionResourceCheck } from '@tmlmobilidade/go-types-permissions';
 
 /* * */;
 
@@ -57,7 +58,16 @@ export class FaresController {
 		//
 		// Create the new fare
 
-		const newFare = await goDb.offer.fares.insertOne(request.body);
+		const newFare = await goDb.offer.fares.insertOne({
+			created_by: request.me._id,
+			currency_type: 'EUR',
+			is_locked: false,
+			payment_method: '0',
+			price: 0,
+			transfers: '0',
+			updated_by: request.me._id,
+			...request.body,
+		});
 
 		//
 		// Send the response
@@ -229,7 +239,7 @@ export class FaresController {
 		}
 
 		// If authorized, toggle the lock status of the fare
-		await goDb.offer.fares.toggleLockById(request.params.id);
+		await goDb.offer.fares.updateOne({ _id: request.params.id }, { is_locked: !fareData.is_locked });
 		const foundFare = await goDb.offer.fares.findById(request.params.id);
 		if (!foundFare) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');

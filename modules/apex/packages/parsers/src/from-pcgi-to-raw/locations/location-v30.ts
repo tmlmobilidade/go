@@ -1,8 +1,8 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
-import { type PcgiTransactionEntity } from '@tmlmobilidade/go-types-apex';
-import { type RawApexTransaction, type RawApexTransactionLocationV30, RawApexTransactionLocationV30PayloadSchema, RawApexTransactionLocationV30Schema } from '@tmlmobilidade/go-types-apex';
+import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
+import { type PcgiTransactionEntity, type RawApexTransaction, type RawApexTransactionLocationV30, RawApexTransactionLocationV30PayloadSchema, RawApexTransactionLocationV30Schema } from '@tmlmobilidade/go-types-apex';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
@@ -23,11 +23,12 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionLocationV30(pcgi
 
 	const result: RawApexTransactionLocationV30 = {
 		_id: pcgiTransactionEntity.transactionId,
-		agency_id: decodedTransaction.operatorInfo.operatorLongID,
-		created_at: transactionDateValue.unix_timestamp,
+		agency_code: decodedTransaction.operatorInfo.operatorLongID,
+		agency_id: getAgencyIdFromOperatorLongId(decodedTransaction.operatorInfo.operatorLongID),
+		created_at: transactionDateValue.unix_milliseconds,
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionLocationV30PayloadSchema.parse(decodedTransaction),
-		received_at: receivedAtValue.unix_timestamp,
+		received_at: receivedAtValue.unix_milliseconds,
 		version: 'location-3.0',
 	};
 

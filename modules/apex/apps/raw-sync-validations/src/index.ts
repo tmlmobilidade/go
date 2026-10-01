@@ -2,23 +2,12 @@
 
 import { syncApexValidations } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
-import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
+import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
 async function main() {
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'raw-sync-validations', message: 'Sentry APEX Raw Sync Validations initialized', module: 'apex', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Validations' });
-	}
-
 	//
 
 	try {
@@ -39,16 +28,36 @@ async function main() {
 		// and sync each one sequentially.
 
 		await performInTimeChunks({
-			onChunk: syncApexValidations,
-			splitBy: { hours: 2 },
-			startDate: earliestDate.unix_timestamp,
+			intervalHrs: 2,
+			onChunk: async (chunk) => {
+				try {
+					await syncApexValidations(chunk);
+				} catch (error) {
+					// Verify if the error is related to
+					// the distinct query being too big
+					const keywords = ['distinct', 'too', 'big'];
+					if (!keywords.some(keyword => error.message?.toLowerCase().includes(keyword))) throw error;
+					Logger.warning({ error, message: 'Distinct query too big — splitting chunk into smaller chunks...' });
+					// If it is, we need to repeat the process by splitting
+					// the current chunk into smaller chunks
+					await performInTimeChunks({
+						endDate: chunk.end,
+						intervalHrs: 5 / 60, // 5 minutes
+						onChunk: async chunk => await syncApexValidations(chunk),
+						order: 'desc',
+						startDate: chunk.start,
+					});
+				}
+			},
+			order: 'desc',
+			startDate: earliestDate.unix_milliseconds,
 		});
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
 	} catch (err) {
-		console.log('An error occurred. Halting execution.', err);
+		Logger.critical({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 

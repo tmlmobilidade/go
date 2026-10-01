@@ -57,7 +57,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<APIAgency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
+	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<APIAgency[], Error>(API_ROUTES.core.AGENCIES_LIST);
 	const { data: serviceComplianceData, error: serviceComplianceError, isLoading: serviceComplianceLoading } = useSWR<RealtimeServiceCompliance[]>(MetricsRoutes.REALTIME_SERVICE_COMPLIANCE);
 	const { data: demandData, error: demandError, isLoading: demandLoading } = useSWR<RealtimeDemand[]>(MetricsRoutes.REALTIME_DEMAND);
 

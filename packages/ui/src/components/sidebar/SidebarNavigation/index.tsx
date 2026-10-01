@@ -1,6 +1,6 @@
 'use client';
 
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';

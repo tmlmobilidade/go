@@ -1,7 +1,9 @@
 /* * */
 
 import { parseCsv, readGtfsFile } from '@/helpers/index.js';
-import { GtfsTMLTrip, GtfsTMLTripSchema, PatternDirection, patternDirectionMapper } from '@tmlmobilidade/types';
+import { type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type PatternDirection, patternDirectionMapper } from '@tmlmobilidade/go-types-offer';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -9,19 +11,16 @@ import path from 'path';
 
 export async function loadGtfsTrips(gtfsPath: string) {
 	const content = await readGtfsFile(gtfsPath, 'trips.txt');
-	const rawTrips = parseCsv<GtfsTMLTrip>(content);
-	const trips: GtfsTMLTrip[] = [];
-	const skippedTrips: Array<{ error: string, raw: GtfsTMLTrip }> = [];
+	const rawTrips = parseCsv<GtfsStrictV29Trips>(content);
+	const trips: GtfsStrictV29Trips[] = [];
+	const skippedTrips: Array<{ error: string, raw: GtfsStrictV29Trips }> = [];
 
 	for (const raw of rawTrips) {
 		try {
-			trips.push(GtfsTMLTripSchema.parse(raw));
+			trips.push(GtfsStrictV29TripsSchema.parse(raw));
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
-			console.warn('[gtfs-importer] Skipping trip due to validation error', {
-				error: message,
-				raw,
-			});
+			Logger.warning({ attributes: { error: message, raw }, message: '[gtfs-importer] Skipping trip due to validation error' });
 			skippedTrips.push({ error: message, raw });
 		}
 	}
@@ -30,18 +29,15 @@ export async function loadGtfsTrips(gtfsPath: string) {
 		const outputFile = path.join(gtfsPath, 'trips.skipped.jsonl');
 		const lines = skippedTrips.map(entry => JSON.stringify(entry)).join('\n');
 		await fs.writeFile(outputFile, `${lines}\n`, 'utf8');
-		console.warn('[gtfs-importer] Wrote skipped trips file', {
-			count: skippedTrips.length,
-			file: outputFile,
-		});
+		Logger.warning({ attributes: { count: skippedTrips.length, file: outputFile }, message: '[gtfs-importer] Wrote skipped trips file' });
 	}
 
 	return trips;
 }
 
-export function buildTripsByRouteAndDirection(gtfsTrips: GtfsTMLTrip[]) {
+export function buildTripsByRouteAndDirection(gtfsTrips: GtfsStrictV29Trips[]) {
 	const tripsByRouteAndDirection = new Map<string, { directionId: PatternDirection, headsign?: string }>();
-	const tripsByRoute = new Map<string, GtfsTMLTrip[]>();
+	const tripsByRoute = new Map<string, GtfsStrictV29Trips[]>();
 	for (const trip of gtfsTrips) {
 		const directionId = patternDirectionMapper.fromGtfs(trip.direction_id ?? '0') as PatternDirection;
 		const key = `${trip.route_id}:${directionId}`;

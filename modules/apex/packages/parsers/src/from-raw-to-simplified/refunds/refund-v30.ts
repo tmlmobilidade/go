@@ -1,8 +1,7 @@
 /* * */
 
-import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { ApexCardTypeSchema, ApexPaymentMethodSchema, type RawApexTransactionRefundV30, type SimplifiedApexOnBoardRefund, SimplifiedApexOnBoardRefundSchema } from '@tmlmobilidade/go-types-apex';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
@@ -22,11 +21,11 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 	const result: SimplifiedApexOnBoardRefund = {
 		_id: doc.payload.transactionInfo.transactionId,
 		agency_code: doc.payload.operatorInfo.operatorLongID,
-		agency_id: getAgencyIdFromOperatorLongId(doc.payload.operatorInfo.operatorLongID),
+		agency_id: doc.agency_id,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		card_physical_type: ApexCardTypeSchema.parse(String(doc.payload.cardInfo.cardPhysicalType)),
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
-		created_at: transactionDateValue.unix_timestamp,
+		created_at: transactionDateValue.unix_milliseconds,
 		device_id: doc.payload.operatorInfo.deviceID,
 		is_ok: false,
 		is_ok_pcgi: doc.is_ok,
@@ -43,7 +42,7 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 		received_at: doc.received_at,
 		stop_id: null,
 		trip_id: null,
-		updated_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_milliseconds,
 		validation_id: null,
 		vehicle_id: null,
 	};

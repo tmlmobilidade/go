@@ -2,8 +2,9 @@
 
 type ValueMapper<Our extends number | string, Gtfs extends number | string> = Record<Our, Gtfs>;
 
-/* * */
-
+/**
+ * @deprecated Use something else instead.
+ */
 export function createGtfsMapper<
 	Our extends number | string,
 	Gtfs extends number | string,

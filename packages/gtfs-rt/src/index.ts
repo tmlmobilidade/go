@@ -1,3 +1,3 @@
-export * from '@/decode.js';
-export * from '@/encode.js';
-export * from '@/utils/index.js';
+export * from './decode.js';
+export * from './encode.js';
+export * from './utils/index.js';

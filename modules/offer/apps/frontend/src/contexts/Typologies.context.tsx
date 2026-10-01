@@ -1,7 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Typology } from '@tmlmobilidade/types';
+import { type Typology } from '@tmlmobilidade/go-types-offer';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,7 +35,9 @@ export const TypologiesContextProvider = ({ agencyId, children }: PropsWithChild
 	//
 	// A. Fetch data
 
-	const { data: typologiesData } = useSWR<Typology[]>(API_ROUTES.offer.TYPOLOGIES_LIST);
+	const { data: typologiesData } = useSWR<ApiResponse<Typology[]>>(API_ROUTES.offer.TYPOLOGIES_LIST, {
+		fetcher: async url => await fetchApiData<Typology[]>({ url }),
+	});
 
 	//
 	// B. Define context value
@@ -41,7 +45,7 @@ export const TypologiesContextProvider = ({ agencyId, children }: PropsWithChild
 	const contextValue: TypologiesContextState = useMemo(() => ({
 
 		data: {
-			raw: typologiesData?.filter(typology => !agencyId || typology.agency_ids.includes(agencyId)) || [],
+			raw: typologiesData?.data?.filter(typology => !agencyId || typology.agency_ids.includes(agencyId)) || [],
 		},
 	}), [typologiesData, agencyId]);
 

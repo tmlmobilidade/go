@@ -1,15 +1,9 @@
 /* * */
 
 import { CalendarRule } from '@/types.js';
+import { GtfsStrictV29StopTimes, GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { HHMM, type ManualRule, PatternDirection, patternDirectionMapper } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import {
-	GtfsTMLStopTimes,
-	GtfsTMLTrip,
-	HHMM,
-	type ManualRule,
-	PatternDirection,
-	patternDirectionMapper,
-} from '@tmlmobilidade/types';
 
 import { CalendarRulesCM } from '../config/cm/calendarRules.js';
 import { normalizeGtfsTimeToHHMM, resolvePatternKey } from '../helpers/index.js';
@@ -189,8 +183,8 @@ function mergeRulesUntilStable(rules: ManualRule[]): ManualRule[] {
 export function buildScheduleRulesForRoute(params: {
 	events: Array<{ _id: string }>
 	routeId: string
-	routeTrips: GtfsTMLTrip[]
-	stopTimesByTrip: Map<string, GtfsTMLStopTimes[]>
+	routeTrips: GtfsStrictV29Trips[]
+	stopTimesByTrip: Map<string, GtfsStrictV29StopTimes[]>
 }): { rulesByPatternKey: Map<string, ManualRule[]>, unknownServiceIds: Set<string> } {
 	const { events, routeId, routeTrips, stopTimesByTrip } = params;
 

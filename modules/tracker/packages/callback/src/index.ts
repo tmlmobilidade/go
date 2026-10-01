@@ -1,10 +1,9 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Callback function to set Rides as 'waiting' based on new SimplifiedVehicleEvent data.
@@ -12,7 +11,7 @@ import { Timer } from '@tmlmobilidade/timer';
  * which will trigger the necessary reprocessing in the system.
  * @param data An array of SimplifiedVehicleEvent documents that have been inserted or updated.
  */
-export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
+export async function setRidesAsWaiting(data?: SimplifiedVehicleEvent[]) {
 	try {
 		//
 
@@ -35,7 +34,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 			// Rides that are affected by the new data.
 			.map((item: SimplifiedVehicleEvent) => {
 				const standardWindowInterval = Dates
-					.fromUnixTimestamp(item.created_at)
+					.fromUnixMilliseconds(item.created_at)
 					.std_window;
 				return {
 					agency_id: item.agency_id,
@@ -43,7 +42,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 						$gte: standardWindowInterval.start,
 						$lte: standardWindowInterval.end,
 					},
-					trip_id: item.trip_id,
+					trip_id: item.trip_id ?? undefined,
 				};
 			});
 
@@ -56,10 +55,11 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 		// Run the update query to mark all affected Rides as 'waiting',
 		// which will trigger the necessary reprocessing in the system.
 
-		const updateRidesResult = await goDb.operation.rides.updateMany(
+		const ridesCollection = await goDb.operation.rides.getCollection();
+
+		const updateRidesResult = await ridesCollection.updateMany(
 			{ $or: updateRidesOps },
-			{ system_status: 'waiting' },
-			{ returnResults: false },
+			{ $set: { processing_status: 'waiting' } },
 		);
 
 		Logger.info({ message: `Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${timer.get()})` });

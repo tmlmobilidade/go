@@ -1,6 +1,6 @@
 /* * */
 
-import { chunkLineByDistanceV2, hashedShapesToFeatureCollection, lineSlice, nearestPointOnLine, point } from '@tmlmobilidade/geo';
+import { chunkLineByDistanceV2, lineFeatureFromEncodedPolyline, lineSlice, nearestPointOnLine, point } from '@tmlmobilidade/geo';
 import { type Feature, type LineString, type Point } from 'geojson';
 
 import { type AggregationResult, type TrainNextStop, type TripStopWaypoint } from './types.js';
@@ -34,8 +34,8 @@ export function inferTrainPositionOnShape({ nextStop, nextStopWaypoint, previous
 		return [nextStopWaypoint.longitude, nextStopWaypoint.latitude];
 	}
 
-	// Create a GeoJSON LineString for the hashed route shape.
-	const hashedShapeLineString: Feature<LineString> = hashedShapesToFeatureCollection(ride.hashed_shape).features[0];
+	// Create a GeoJSON LineString for the route shape.
+	const hashedShapeLineString: Feature<LineString> = lineFeatureFromEncodedPolyline(ride.shape_polyline, undefined, 6);
 
 	// Create GeoJSON Points for the previous and next stop waypoints.
 	const previousStopPoint: Feature<Point> = point([previousStopWaypoint.longitude, previousStopWaypoint.latitude]);

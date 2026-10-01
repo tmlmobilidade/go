@@ -1,8 +1,11 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type SimplifiedUser } from '@tmlmobilidade/types';
+import { type SimplifiedUser } from '@tmlmobilidade/go-types-core';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import useSWR from 'swr';
+
+import { fetchApiData } from '../../fetch/fetch-api-data';
 
 /* * */
 
@@ -22,7 +25,7 @@ interface UseDataSimplifiedUserReturnType {
 	/**
 	 * The error encountered while fetching data, if any.
 	 */
-	error: Error | undefined
+	error: null | string
 
 	/**
 	 * Indicates whether the data is currently being loaded.
@@ -43,15 +46,19 @@ export function useDataSimplifiedUser(props?: UseDataSimplifiedUserProps): UseDa
 	//
 	// A. Fetch data
 
-	const { data: simplifiedUserData, error: simplifiedUserError, isLoading: simplifiedUserLoading } = useSWR<SimplifiedUser, Error>(props._id && props._id !== 'system' && API_ROUTES.auth.USERS_DETAIL_SIMPLIFIED(props._id));
+	const userId = props?._id;
+
+	const { data, error, isLoading } = useSWR<ApiResponse<SimplifiedUser>>(userId && userId !== 'system' ? API_ROUTES.core.USERS_DETAIL_SIMPLIFIED(userId) : null, {
+		fetcher: async (url: string) => await fetchApiData<SimplifiedUser>({ url }),
+	});
 
 	//
 	// B. Return value
 
 	return {
-		data: simplifiedUserData,
-		error: simplifiedUserError,
-		isLoading: simplifiedUserLoading,
+		data: data?.data ?? undefined,
+		error: data?.error ?? (error instanceof Error ? error.message : null),
+		isLoading,
 	};
 
 	//

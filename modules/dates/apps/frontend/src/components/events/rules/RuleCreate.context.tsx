@@ -1,6 +1,6 @@
 'use client';
 
-import { type EventRule, EventRuleSchema, type HHMM } from '@tmlmobilidade/types';
+import { type EventRule, EventRuleSchema, type HHMM } from '@tmlmobilidade/go-types-offer';
 import { useForm, type UseFormReturnType, zodResolver } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 

@@ -3,7 +3,8 @@
 import { closeAsignPeriodModal } from '@/components/year-periods/calendar/PeriodAssign.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { CalendarKey, convertKeysToOperationalDates, convertRangeToKeysArray, datesFromCalendarKey } from '@tmlmobilidade/dates';
-import { type CreateYearPeriodDto, type OperationalDate, type YearPeriod } from '@tmlmobilidade/types';
+import { type CreateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { useForm, type UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -323,7 +324,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 		const startDate = startD.toFormat('d \'de\' MMMM \'de\' yyyy');
 		const endDate = endD.toFormat('d \'de\' MMMM \'de\' yyyy');
 
-		const diffMs = endD.unix_timestamp - startD.unix_timestamp;
+		const diffMs = endD.unix_milliseconds - startD.unix_milliseconds;
 		const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
 
 		return {

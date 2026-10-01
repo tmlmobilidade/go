@@ -2,9 +2,9 @@
 
 /* * */
 
-import { Button, PasswordInput } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
+import { Button, PasswordInput, useLocalStorage } from '@tmlmobilidade/ui';
 import { type FormEvent, type PropsWithChildren, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -22,6 +22,8 @@ export function PasswordCheck({ children, id, password }: PropsWithChildren<Pass
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const [isValidated, setIsValidated] = useLocalStorage<boolean | null>({ defaultValue: null, key: `password-validated-${id}` });
 
@@ -53,22 +55,18 @@ export function PasswordCheck({ children, id, password }: PropsWithChildren<Pass
 
 	return (
 		<form className={styles.overlay} onSubmit={handleValidate}>
-
 			<PasswordInput
 				className={styles.passwordInput}
-				error={isError ? 'Invalid password' : undefined}
+				error={isError ? t('default:PasswordCheck.error') : undefined}
 				onChange={e => setInputValue(e.target.value)}
-				placeholder="Introduza a sua password..."
+				placeholder={t('default:PasswordCheck.placeholder')}
 				value={inputValue}
 			/>
-
 			<Button
 				className={styles.validateButton}
+				label={t('default:PasswordCheck.validate.label')}
 				type="submit"
-			>
-				Validate
-			</Button>
-
+			/>
 		</form>
 	);
 

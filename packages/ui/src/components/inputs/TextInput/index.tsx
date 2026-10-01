@@ -32,8 +32,7 @@ export function TextInput({ error, validation, value, ...props }: TextInputProps
 	useEffect(() => {
 		if (!value || !error || !validation || value.toString().length === 0) {
 			setIsValid(true);
-		}
-		else {
+		} else {
 			const isValid = validation.test(value.toString());
 			setIsValid(isValid);
 		}

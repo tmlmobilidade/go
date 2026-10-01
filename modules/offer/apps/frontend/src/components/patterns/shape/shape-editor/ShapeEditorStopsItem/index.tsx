@@ -3,8 +3,8 @@
 /* * */
 
 import { IconArrowBarToDown, IconArrowBarUp, IconClock } from '@tabler/icons-react';
-import { PopulatedPath } from '@tmlmobilidade/types';
-import { DeleteButton, Section, Tag, Text, useLocationsContext } from '@tmlmobilidade/ui';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
+import { DeleteButton, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -19,7 +19,6 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 	//
 	// A. Setup variables
 
-	const locationsContext = useLocationsContext();
 	const stopsEditorContext = useStopsEditorContext();
 
 	const enterTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -30,26 +29,11 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 	const stopItem = stopsEditorContext.data.path[rowIndex];
 
 	const stopLocationInfo = useMemo(() => {
-		if (!pathItem.stop) return null;
-
-		const municipalityData = pathItem.stop.municipality_id
-			? locationsContext.data.municipalities_map?.get(pathItem.stop.municipality_id)
-			: undefined;
-
-		const localityData = pathItem.stop.locality_id
-			? locationsContext.data.localitites_map?.get(pathItem.stop.locality_id)
-			: undefined;
-
-		const localityName = localityData?.name;
-		const municipalityName = municipalityData?.name;
-
-		if (!localityName && !municipalityName) return null;
-		if (localityName && !municipalityName) return localityName;
-		if (!localityName && municipalityName) return municipalityName;
-		if (localityName === municipalityName) return localityName;
-
-		return `${localityName}, ${municipalityName}`;
-	}, [pathItem.stop, locationsContext.data.municipalities_map, locationsContext.data.localitites_map]);
+		const location = pathItem.stop?.location;
+		if (!location) return null;
+		const { neighbourhood, secondary } = location;
+		return neighbourhood && neighbourhood.name !== secondary.name ? `${neighbourhood.name}, ${secondary.name}` : secondary.name;
+	}, [pathItem.stop?.location]);
 
 	//
 	// B. Handle actions
@@ -109,13 +93,13 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 			<Section gap="md" padding="none">
 				<div className={styles.stopInfo}>
 					<Text maw="90%" weight="semibold">
-						{rowIndex + 1}. {pathItem.stop.name}
+						{rowIndex + 1}. {pathItem.stop?.name ?? `Paragem ${pathItem.stop_id}`}
 					</Text>
 
 					<div className={styles.details}>
 						<div className={styles.detailsInner}>
 							<Text c="var(--color-system-text-200)" size="sm">
-								{stopLocationInfo} | #{pathItem.stop._id}
+								{stopLocationInfo ? `${stopLocationInfo} | ` : ''}#{pathItem.stop?._id ?? pathItem.stop_id}
 							</Text>
 
 							<Section flexDirection="row" gap="sm" padding="none">

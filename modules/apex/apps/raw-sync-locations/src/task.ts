@@ -1,15 +1,15 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionLocationV30IntoSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
-import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { type Filter } from 'mongodb';
+import { ZodError } from 'zod';
 
 /* * */
 
@@ -30,11 +30,11 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
+		.fromUnixMilliseconds(timeChunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
+		.fromUnixMilliseconds(timeChunk.end)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
@@ -80,15 +80,16 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 					'_id IN $1',
 					{ 1: chunk },
 				);
-			}, 1_000);
+			}, 250);
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await labDb.simplifiedApex.locations.distinct(
-				'upper(toString(_id))',
+			const result = await labDb.simplifiedApex.locations.distinct(
+				'_id',
 				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
+			return result.map(id => String(id).toUpperCase());
 		},
 
 		distinctSourceDbFn: async () => {
@@ -113,7 +114,10 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 				if (!parseResult) return;
 				await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
-				Logger.error({ message: `Error transforming APEX Location: ${sourceDbDocument._id} Reason: ${error.message}` });
+				const errorMessage = error instanceof ZodError
+					? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
+					: error instanceof Error ? error.message : String(error);
+				Logger.error({ attributes: { document: sourceDbDocument }, error, message: `Error transforming APEX Location: ${sourceDbDocument._id} Reason: ${errorMessage}` });
 			}
 		},
 

@@ -10,6 +10,9 @@ export const ValidityStatusValues = [
 	'unknown',
 ] as const;
 
-export const ValidityStatusSchema = z.enum(ValidityStatusValues);
+export const ValidityStatusSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(ValidityStatusValues));
 
 export type ValidityStatus = z.infer<typeof ValidityStatusSchema>;

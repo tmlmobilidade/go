@@ -2,7 +2,7 @@
 
 import { preparePositionalQueryParams } from '@/utils/prepare-positional-query-params.js';
 import { type ClickHouseClient } from '@clickhouse/client';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Executes a query from a string using positional parameters.
@@ -16,7 +16,7 @@ import { Logger } from '@tmlmobilidade/logger';
  *   { '1': '2024-01-01', '2': '2024-12-31' }
  * );
  */
-export async function queryFromString<T>(client: ClickHouseClient, query: string, params?: Record<string, number | string>): Promise<T[]> {
+export async function queryFromString<T>(client: ClickHouseClient, query: string, params?: Record<string, number | string | string[]>): Promise<T[]> {
 	// Validate query param keys and prepare the query statement
 	const preparedQuery = preparePositionalQueryParams(query, params);
 	try {

@@ -1,0 +1,17 @@
+/* * */
+
+import { SeverityStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { z } from 'zod';
+
+/* * */
+
+export const GtfsValidationMessageSchema = z.object({
+	field: z.string(),
+	file_name: z.string(),
+	message: z.string(),
+	rows: z.array(z.number()),
+	rule_id: z.string(),
+	severity: SeverityStatusSchema,
+});
+
+export type GtfsValidationMessage = z.infer<typeof GtfsValidationMessageSchema>;

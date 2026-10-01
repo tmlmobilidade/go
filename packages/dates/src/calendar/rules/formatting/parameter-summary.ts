@@ -1,4 +1,4 @@
-import { StopsParameter, YearPeriod } from '@tmlmobilidade/types';
+import { StopsParameter, YearPeriod } from '@tmlmobilidade/go-types-offer';
 
 import { buildDayPeriodsPart, buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
 

@@ -1,4 +1,36 @@
 {
+	"AppError": {
+		"goto_home": "Ir para a página inicial",
+		"retry": "A recarregar em {count} segundos...",
+		"subtitle": "Estamos a trabalhar para resolver o problema.",
+		"title": "Ocorreu um erro"
+	},
+	"PasswordCheck": {
+		"error": "Invalid password",
+		"placeholder": "Introduza a sua password...",
+		"validate": {
+			"label": "Validate"
+		}
+	},
+	"TimestampDisplay": {
+		"days": {
+			"one": "Atualizado há 1 dia",
+			"other": "Atualizado há {count} dia"
+		},
+		"hours": {
+			"one": "Atualizado há 1 hora",
+			"other": "Atualizado há {count} horas"
+		},
+		"minutes": {
+			"one": "Atualizado há 1 minuto",
+			"other": "Atualizado há {count} minutos"
+		},
+		"seconds": {
+			"one": "Atualizado há 1 segundo",
+			"other": "Atualizado há {count} segundos"
+		},
+		"updating": "Em atualização..."
+	},
 	"action-bar": {
 		"ActionBar": {
 			"alerts": {
@@ -27,6 +59,14 @@
 			"idle": {
 				"label": "Centrar mapa"
 			}
+		}
+	},
+	"agencies": {
+		"CcflDefault": {
+			"title": "CCFL / Passageiros transportados hoje, até agora"
+		},
+		"CmDefault": {
+			"title": "CM / Passageiros transportados hoje, até agora"
 		}
 	},
 	"alerts": {
@@ -87,7 +127,6 @@
 				},
 				"by_stop": {
 					"label": "Filtrar por paragem",
-
 					"placeholder": "Filtrar por paragem"
 				},
 				"text_search": "Procurar alerta por título, descrição, localização..."
@@ -104,6 +143,26 @@
 		},
 		"SelectEffect": {
 			"placeholder": "Filtrar por efeito"
+		}
+	},
+	"areas": {
+		"cards": {
+			"delays": {
+				"title": "{agency} / Viagens atrasadas > 5 min"
+			},
+			"delays_average": {
+				"title": "{agency} / Atraso médio do total de viagens"
+			},
+			"sla": {
+				"secondary": "{percentage}% de {until_now} ({total})",
+				"title": "{agency} / Viagens não executadas hoje, até agora"
+			},
+			"validations": {
+				"title": "{agency} / Passageiros transportados hoje, até agora"
+			},
+			"vkm": {
+				"title": "{agency} / VKm Executados hoje, até agora"
+			}
 		}
 	},
 	"common": {
@@ -327,6 +386,9 @@
 				"subway": "Metro",
 				"train": "Comboios"
 			}
+		},
+		"ViewportHeader": {
+			"title": "GO Videowall • CCFL"
 		}
 	}
 }

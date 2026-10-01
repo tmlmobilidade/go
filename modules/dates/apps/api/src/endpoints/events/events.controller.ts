@@ -1,10 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateEventDto, type Event, PermissionCatalog, type UpdateEventDto } from '@tmlmobilidade/types';
+import { type CreateEventDto, type Event, type Pattern, type UpdateEventDto } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 
@@ -49,7 +50,12 @@ export class EventsController {
 		//
 		// Create the new event
 
-		const newEvent = await goDb.offer.events.insertOne(request.body);
+		const newEvent = await goDb.offer.events.insertOne({
+			...request.body,
+			associated_patterns: [],
+			created_by: request.me._id,
+			updated_by: request.me._id,
+		});
 
 		//
 		// Send the response
@@ -144,7 +150,7 @@ export class EventsController {
 		//
 		// Fetch events based on query filters
 
-		const allEvents = await goDb.offer.events.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allEvents = await goDb.offer.events.findMany(queryFilters);
 
 		return reply.send({ data: allEvents, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -198,26 +204,24 @@ export class EventsController {
 		//
 		// Get pattern ids that reference this event in manual pattern rules
 
-		const associatedPatterns = await goDb.offer.patterns.findMany(
+		const associatedPatterns: Pick<Pattern, '_id' | 'code' | 'headsign' | 'line_id' | 'route_id'>[] = await goDb.offer.patterns.aggregate([
 			{
-				rules: {
-					$elemMatch: {
-						event_id: request.params.id,
-						kind: 'manual',
-					},
+				$match: {
+					event_id: request.params.id,
+					kind: 'manual',
 				},
 			},
 			{
-				projection: {
+				$project: {
 					_id: 1,
 					code: 1,
 					headsign: 1,
 					line_id: 1,
 					route_id: 1,
 				},
-				sort: { code: 1 },
 			},
-		);
+			{ $sort: { code: 1 } },
+		]);
 
 		//
 		// Fetch the event data
@@ -279,7 +283,7 @@ export class EventsController {
 		}
 
 		// If authorized, toggle the lock status of the event
-		await goDb.offer.events.toggleLockById(request.params.id);
+		await goDb.offer.events.updateOne({ _id: request.params.id }, { is_locked: !eventData?.is_locked });
 		const foundEvent = await goDb.offer.events.findById(request.params.id);
 		if (!foundEvent) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');

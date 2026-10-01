@@ -60,7 +60,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 # First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .
-RUN npm ci
+RUN npm ci --foreground-scripts --verbose
 
 COPY .github/templates/docker/scripts /app/.docker/scripts
 

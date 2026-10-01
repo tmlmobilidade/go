@@ -2,14 +2,13 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
+import { useEtaContext } from '@/components/eta/Eta.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
 import { fetchPatterns } from '@/utils/fetch-patterns';
-import { Dates } from '@tmlmobilidade/dates';
-import { type HubAlert, type HubLine, type HubPattern, type HubStop } from '@tmlmobilidade/go-types-public-info';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { convertGTFSTimeStringAndOperationalDateToUnixTimestamp } from '@tmlmobilidade/utils';
+import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
+import { type OperationalTime, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -18,9 +17,9 @@ export interface StopsDetailViewTimetableData {
 	_id: string
 	agency_id: string
 	arrival_delay_ms: number
-	arrival_effective_ms: null | UnixTimestamp
-	arrival_estimated_ms: null | UnixTimestamp
-	arrival_scheduled_ms: UnixTimestamp
+	arrival_effective_ms: null | UnixMilliseconds
+	arrival_estimated_ms: null | UnixMilliseconds
+	arrival_scheduled_ms: UnixMilliseconds
 	color: string
 	headsign: string
 	is_first_stop: boolean
@@ -44,12 +43,12 @@ interface StopsDetailContextState {
 		setActiveTripId: (tripId: string, stopSequence: number) => void
 	}
 	data: {
-		active_alerts: HubAlert[]
-		associated_lines: HubLine[]
-		highlighted_pattern: HubPattern
+		active_alerts: HubV1ApiAlert[]
+		associated_lines: HubV1ApiLine[]
+		highlighted_pattern: HubV1ApiPattern
 		highlighted_stop_sequence: number
 		highlighted_trip_id: string
-		stop: HubStop
+		stop: HubV1ApiStop
 		timetable: StopsDetailViewTimetableData[]
 	}
 	flags: {
@@ -81,13 +80,13 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 	const linesContext = useLinesContext();
 	const alertsContext = useAlertsContext();
 	const operationalDate = useOperationalDate();
-	const tripUpdatesContext = useTripUpdatesContext();
+	const etaContext = useEtaContext();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const [associatedPatternsData, setAssociatedPatternsData] = useState<HubPattern[][]>();
+	const [associatedPatternsData, setAssociatedPatternsData] = useState<HubV1ApiPattern[][]>();
 
-	const [highlightedPattern, setHighlightedPattern] = useState<HubPattern>();
+	const [highlightedPattern, setHighlightedPattern] = useState<HubV1ApiPattern>();
 	const [highlightedTripId, setHighlightedTripId] = useState<string>();
 	const [highlightedStopSequence, setHighlightedStopSequence] = useState<number>();
 
@@ -148,6 +147,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		if (!validPatternsData || !operationalDate.selectedOperationalDate) return;
 		// Initialize the timetable data for the selected date
 		const timetableDataForSelectedDate: StopsDetailViewTimetableData[] = [];
+		const etaData = etaContext.actions.getEtasByStop(stopId);
 		// Loop through each valid pattern, and each trip of the pattern
 		for (const patternData of validPatternsData) {
 			for (const tripData of patternData.trips) {
@@ -160,27 +160,27 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					// Set a unique and stable ID for this arrival data
 					const uniqueIdValueForArrivalData = `${operationalDate.selectedOperationalDate}-${patternData.version_id}-${tripData.version_id}-${stopTime.stop_id}-${stopTime.stop_sequence}-${stopTime.arrival_time}`;
 					// Convert GTFS time string to Unix Timestamp
-					const scheduledArrivalMs = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(stopTime.arrival_time, operationalDate.selectedOperationalDate);
+					const scheduledArrivalMs = fromOperationalDateTimeToUnixMilliseconds({ operational_date: operationalDate.selectedOperationalDate, operational_time: stopTime.arrival_time as OperationalTime, timezone: 'Europe/Lisbon' });
 					// Fetch the trip update for this stop time
-					const tripUpdate = tripUpdatesContext.actions.getTripUpdateForStop(tripData.trip_ids, stopTime.stop_id);
+					const tripUpdate = etaData?.find(eta => eta.trip_id.substring(eta.trip_id.indexOf(']') + 1) === tripData.trip_ids.find(tripId => tripId.substring(tripId.indexOf(']') + 1) === eta.trip_id.substring(eta.trip_id.indexOf(']') + 1))?.substring(eta.trip_id.indexOf(']') + 1)) ?? undefined;
 					// Extract the arrival time, delay and effective arrival time
 					// from the trip update, if any was found
-					const estimatedArrivalMs = tripUpdate?.arrival_time;
-					const arrivalDelayMs = tripUpdate?.delay * 1000;
+					const estimatedArrivalMs = tripUpdate?.eta_at;
+					const arrivalDelayMs = tripUpdate?.eta_seconds * 1000;
 					const effectiveArrivalMs = estimatedArrivalMs || scheduledArrivalMs;
 					// Detect the position of this stop time in the pattern
 					const isFirstStop = stopTime.stop_sequence === patternData.path[0].stop_sequence;
 					const isLastStop = stopTime.stop_sequence === patternData.path[patternData.path.length - 1].stop_sequence;
 					// Detect the temporal status of this stop time
-					const isPast = effectiveArrivalMs < Dates.now('Europe/Lisbon').unix_timestamp;
+					const isPast = Number(effectiveArrivalMs) < Dates.now('Europe/Lisbon').unix_milliseconds;
 					const isRealtime = !!estimatedArrivalMs && operationalDate.isTodaySelected;
 					// Add this stop time to the timetable array
 					timetableDataForSelectedDate.push({
 						_id: uniqueIdValueForArrivalData,
 						agency_id: patternData.agency_id,
 						arrival_delay_ms: arrivalDelayMs,
-						arrival_effective_ms: effectiveArrivalMs,
-						arrival_estimated_ms: estimatedArrivalMs,
+						arrival_effective_ms: Number(effectiveArrivalMs) as UnixMilliseconds,
+						arrival_estimated_ms: Number(estimatedArrivalMs) as UnixMilliseconds,
 						arrival_scheduled_ms: scheduledArrivalMs,
 						color: patternData.color,
 						headsign: patternData.headsign,
@@ -203,7 +203,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		}
 		// Return the timetable data, sorted by scheduled arrival time
 		return timetableDataForSelectedDate.sort((a, b) => a.arrival_effective_ms - b.arrival_effective_ms);
-	}, [validPatternsData, operationalDate.selectedOperationalDate, operationalDate.isTodaySelected, stopId, tripUpdatesContext.actions]);
+	}, [validPatternsData, operationalDate.selectedOperationalDate, operationalDate.isTodaySelected, etaContext.actions, stopId]);
 
 	//
 	// D. Handle actions

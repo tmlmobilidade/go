@@ -4,6 +4,7 @@
 .label {
 	font-size: var(--font-size-md);
 	font-weight: var(--font-weight-semibold);
+	line-height: 1.2;
 	color: var(--color-system-text-200);
 	text-transform: uppercase;
 }

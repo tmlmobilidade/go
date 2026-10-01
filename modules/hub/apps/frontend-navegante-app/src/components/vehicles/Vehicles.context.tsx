@@ -2,7 +2,8 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
+import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -10,18 +11,18 @@ import useSWR from 'swr';
 
 interface VehiclesContextState {
 	actions: {
-		getVehicleById: (vehicleId: string) => HubVehiclePosition | undefined
+		getVehicleById: (vehicleId: string) => HubV1ApiVehiclePosition | undefined
 		getVehicleByIdGeoJsonFC: (vehicleId: string) => GeoJSON.FeatureCollection | undefined
-		getVehiclesByLineId: (lineId: string) => HubVehiclePosition[]
+		getVehiclesByLineId: (lineId: string) => HubV1ApiVehiclePosition[]
 		getVehiclesByLineIdGeoJsonFC: (lineId: string) => GeoJSON.FeatureCollection | undefined
-		getVehiclesByPatternId: (patternId: string) => HubVehiclePosition[]
+		getVehiclesByPatternId: (patternId: string) => HubV1ApiVehiclePosition[]
 		getVehiclesByPatternIdGeoJsonFC: (patternId: string) => GeoJSON.FeatureCollection | undefined
-		getVehiclesByTripId: (tripId: string) => HubVehiclePosition[]
+		getVehiclesByTripId: (tripId: string) => HubV1ApiVehiclePosition[]
 		getVehiclesByTripIdGeoJsonFC: (tripId: string) => GeoJSON.FeatureCollection | undefined
 	}
 	data: {
-		fc: GeoJSON.FeatureCollection<GeoJSON.Point, HubVehiclePosition>
-		vehicles: HubVehiclePosition[]
+		fc: GeoJSON.FeatureCollection<GeoJSON.Point, HubV1ApiVehiclePosition>
+		vehicles: HubV1ApiVehiclePosition[]
 	}
 	flags: {
 		isLoading: boolean
@@ -48,22 +49,25 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allVehiclesPositionsData, isLoading: allVehiclesPositionsLoading } = useSWR<HubVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 5_000 }); // 5 seconds
+	const { data: allVehiclesPositionsData, isLoading: allVehiclesPositionsLoading } = useSWR(API_ROUTES.hub.VEHICLES_POSITIONS, {
+		fetcher: async (url: string) => await fetchApiData<HubV1ApiVehiclePosition[]>({ credentials: 'omit', url }),
+		refreshInterval: 5_000, // 5 seconds
+	});
 
 	//
 	// B. Transform data
 
 	const vehiclesGeoJsonFeatureCollection = useMemo(() => {
-		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubVehiclePosition>();
-		allVehiclesPositionsData?.forEach((vehicle) => {
+		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubV1ApiVehiclePosition>();
+		allVehiclesPositionsData?.data?.forEach((vehicle) => {
 			// Skip if vehicle position is not from an allowed agency
 			if (![
-				'2IA2N9', // Metro de Lisboa
 				'7NTB1', // Fertagus
 				'A2L1N', // Alsa (CM)
 				'A3H3M', // TCB
 				'BNA17', // Rodoviária de Lisboa (CM)
 				'HF16N', // MobiCascais
+				'IA2N9', // Metro de Lisboa
 				'IA9T6', // Carris
 				'KB1F6', // Metro Transportes do Sul
 				'LA77N', // Viação Alvorada (CM)
@@ -83,8 +87,8 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Handle actions
 
-	const getVehicleById = (vehicleId: string): HubVehiclePosition | undefined => {
-		return allVehiclesPositionsData?.find(vehicle => vehicle._id === vehicleId);
+	const getVehicleById = (vehicleId: string): HubV1ApiVehiclePosition | undefined => {
+		return allVehiclesPositionsData?.data?.find(vehicle => vehicle._id === vehicleId);
 	};
 
 	const getVehicleByIdGeoJsonFC = (vehicleId: string): GeoJSON.FeatureCollection | undefined => {
@@ -95,8 +99,8 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 		return collection;
 	};
 
-	const getVehiclesByLineId = (lineId: string): HubVehiclePosition[] => {
-		return allVehiclesPositionsData?.filter(vehicle => vehicle.trip_id === lineId) || [];
+	const getVehiclesByLineId = (lineId: string): HubV1ApiVehiclePosition[] => {
+		return allVehiclesPositionsData?.data?.filter(vehicle => vehicle.trip_id === lineId) || [];
 	};
 
 	const getVehiclesByLineIdGeoJsonFC = (lineId: string): GeoJSON.FeatureCollection | undefined => {
@@ -107,8 +111,8 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 		return collection;
 	};
 
-	const getVehiclesByPatternId = (patternId: string): HubVehiclePosition[] => {
-		return allVehiclesPositionsData?.filter(vehicle => vehicle.trip_id === patternId) || [];
+	const getVehiclesByPatternId = (patternId: string): HubV1ApiVehiclePosition[] => {
+		return allVehiclesPositionsData?.data?.filter(vehicle => vehicle.trip_id === patternId) || [];
 	};
 
 	const getVehiclesByPatternIdGeoJsonFC = (patternId: string) => {
@@ -119,8 +123,8 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 		return collection;
 	};
 
-	const getVehiclesByTripId = (tripId: string): HubVehiclePosition[] => {
-		return allVehiclesPositionsData?.filter(vehicle => vehicle.trip_id === tripId) || [];
+	const getVehiclesByTripId = (tripId: string): HubV1ApiVehiclePosition[] => {
+		return allVehiclesPositionsData?.data?.filter(vehicle => vehicle.trip_id === tripId) || [];
 	};
 
 	const getVehiclesByTripIdGeoJsonFC = (tripId: string) => {
@@ -147,7 +151,7 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 		},
 		data: {
 			fc: vehiclesGeoJsonFeatureCollection,
-			vehicles: allVehiclesPositionsData || [],
+			vehicles: allVehiclesPositionsData?.data || [],
 		},
 		flags: {
 			isLoading: allVehiclesPositionsLoading,
@@ -168,7 +172,7 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 
 /* * */
 
-export function transformVehicleDataIntoGeoJsonFeature(vehicleData: HubVehiclePosition): GeoJSON.Feature<GeoJSON.Point, HubVehiclePosition> {
+export function transformVehicleDataIntoGeoJsonFeature(vehicleData: HubV1ApiVehiclePosition): GeoJSON.Feature<GeoJSON.Point, HubV1ApiVehiclePosition> {
 	return {
 		geometry: {
 			coordinates: [vehicleData.longitude || 0, vehicleData.latitude || 0],

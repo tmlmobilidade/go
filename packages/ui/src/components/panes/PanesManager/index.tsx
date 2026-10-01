@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconLayoutSidebarLeftCollapse, IconLayoutSidebarRightCollapse } from '@tabler/icons-react';
+import { IconCaretLeftFilled, IconCaretRightFilled } from '@tabler/icons-react';
 import { type ReactNode, useMemo, useRef } from 'react';
 
 import styles from './styles.module.css';
@@ -181,7 +181,12 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 	}
 
 	return (
-		<div ref={containerRef} className={styles.container} style={{ gridTemplateColumns }}>
+		<div
+			ref={containerRef}
+			className={styles.container}
+			data-is-collapsed={collapsedPane !== 'none'}
+			style={{ gridTemplateColumns }}
+		>
 			{visiblePanes.map((pane, index) => {
 				const isCollapsed = collapsedPane === index;
 
@@ -189,9 +194,9 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 					return (
 						<button key={index} className={styles.collapsedPane} onClick={handleExpand}>
 							{index === 0 ? (
-								<IconLayoutSidebarLeftCollapse size={20} />
+								<IconCaretRightFilled size={20} />
 							) : (
-								<IconLayoutSidebarRightCollapse size={20} />
+								<IconCaretLeftFilled size={20} />
 							)}
 						</button>
 					);

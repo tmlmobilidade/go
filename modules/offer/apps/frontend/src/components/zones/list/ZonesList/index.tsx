@@ -5,7 +5,7 @@ import { ZonesListCellAgencies } from '@/components/zones/list/ZonesListCellAgen
 import { ZonesListFiltersBar } from '@/components/zones/list/ZonesListFiltersBar';
 import { ZonesListHeader } from '@/components/zones/list/ZonesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Zone } from '@tmlmobilidade/types';
+import { Zone } from '@tmlmobilidade/go-types-offer';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';

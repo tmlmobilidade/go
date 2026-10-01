@@ -25,7 +25,7 @@ export function PatternCreateHeader() {
 			<Label size="lg" singleLine>{patternCreateContext.data.form.values.code}</Label>
 			<Spacer />
 			<Button
-				disabled={!patternCreateContext.data.form.isValid()}
+				disabled={!patternCreateContext.flags.isValid}
 				icon={<IconUpload size={28} />}
 				label="Publicar"
 				loading={patternCreateContext.flags.isSaving}

@@ -12,7 +12,7 @@ import { SearchDetail } from '@/components/search/SearchDetail';
 import { StopsDetail } from '@/components/stops/detail/StopsDetail';
 import { VehiclesDetail } from '@/components/vehicles/detail/VehiclesDetail';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { useColorScheme } from '@mantine/hooks';
+import { useColorScheme } from '@tmlmobilidade/ui';
 import { useEffect } from 'react';
 
 /* * */

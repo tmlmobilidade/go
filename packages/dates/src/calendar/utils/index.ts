@@ -1,8 +1,9 @@
 /* * */
 
 import { Dates } from '@/dates.js';
-import { TimezoneIdentified } from '@/lib/timezone-identified.js';
-import { Holiday, IsoWeekday, OperationalDate } from '@tmlmobilidade/types';
+import { Holiday, IsoWeekday } from '@tmlmobilidade/go-types-offer';
+import { type TimezoneIdentified } from '@tmlmobilidade/go-types-shared';
+import { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -132,7 +133,7 @@ export function eachCalendarDay(start: CalendarKey, end: CalendarKey, tz: Timezo
 	let current = Dates.fromFormat(`${start} 12:00`, 'yyyy-MM-dd HH:mm', tz);
 	const last = Dates.fromFormat(`${end} 12:00`, 'yyyy-MM-dd HH:mm', tz);
 
-	while (current.unix_timestamp <= last.unix_timestamp) {
+	while (current.unix_milliseconds <= last.unix_milliseconds) {
 		out.push(calendarKey(current, tz));
 		current = current.plus({ days: 1 });
 	}

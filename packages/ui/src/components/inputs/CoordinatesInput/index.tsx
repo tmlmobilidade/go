@@ -85,6 +85,7 @@ interface CoordinatesInputProps {
 	disabled?: boolean
 	label?: string
 	onChange?: (changed: Coords | undefined) => void
+	onDraftChange?: (changed: Coords | undefined) => void
 	onPaste?: (pastedValues: string[]) => void
 	value?: Coords | undefined
 }
@@ -94,7 +95,7 @@ interface CoordinatesInputProps {
  * Supports controlled and uncontrolled usage, rounds committed values to 6 decimals,
  * and keeps permissive numeric behavior for typed/pasted input.
  */
-export function CoordinatesInput({ description, disabled = false, label, onChange, onPaste, value }: CoordinatesInputProps) {
+export function CoordinatesInput({ description, disabled = false, label, onChange, onDraftChange, onPaste, value }: CoordinatesInputProps) {
 	//
 
 	//
@@ -122,17 +123,26 @@ export function CoordinatesInput({ description, disabled = false, label, onChang
 	//
 	// C. Handle actions
 
-	const updateCoords = (next: Coords) => {
+	const updateCoords = useCallback((next: Coords) => {
 		draftRef.current = next;
 		setCoords(next);
-	};
+	}, []);
+
+	const commitCoords = useCallback((next: Coords) => {
+		const rounded = roundCoords(next);
+		updateCoords(rounded);
+		onDraftChange?.(rounded);
+		onChange?.(rounded);
+	}, [onChange, onDraftChange, updateCoords]);
 
 	const handleFocus = useCallback(() => {
 		isEditingRef.current = true;
 	}, []);
 
 	const handleChange = (index: 0 | 1, raw: Raw) => {
-		updateCoords(patch(draftRef.current, index, parseRaw(raw)));
+		const next = patch(draftRef.current, index, parseRaw(raw));
+		updateCoords(next);
+		onDraftChange?.(next);
 	};
 
 	const handleBlur = useCallback((event: FocusEvent<HTMLInputElement>) => {
@@ -141,20 +151,27 @@ export function CoordinatesInput({ description, disabled = false, label, onChang
 
 		isEditingRef.current = false;
 
-		const rounded = roundCoords(draftRef.current);
-		updateCoords(rounded);
-		onChange?.(rounded);
-	}, [onChange]);
+		commitCoords(draftRef.current);
+	}, [commitCoords]);
 
-	const handlePaste = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
-		const parts = splitPastedCoords(event.clipboardData.getData('text'));
-		if (!parts) return;
+	const handlePaste = useCallback((index: 0 | 1, event: ClipboardEvent<HTMLInputElement>) => {
+		const text = event.clipboardData.getData('text');
+		const parts = splitPastedCoords(text);
+
+		if (parts) {
+			event.preventDefault();
+			commitCoords([parseRaw(parts[0]), parseRaw(parts[1])]);
+			onPaste?.(parts);
+			return;
+		}
+
+		const pastedCoord = parseRaw(text.trim());
+		if (pastedCoord === undefined) return;
 
 		event.preventDefault();
-
-		updateCoords([parseRaw(parts[0]), parseRaw(parts[1])]);
-		onPaste?.(parts);
-	}, [onPaste]);
+		commitCoords(patch(draftRef.current, index, pastedCoord));
+		onPaste?.([text.trim()]);
+	}, [commitCoords, onPaste]);
 
 	//
 	// D. Render components
@@ -169,7 +186,7 @@ export function CoordinatesInput({ description, disabled = false, label, onChang
 					onBlur={handleBlur}
 					onChange={value => handleChange(0, value)}
 					onFocus={handleFocus}
-					onPaste={handlePaste}
+					onPaste={event => handlePaste(0, event)}
 					placeholder="Latitude (-90 to 90)"
 					style={{ flex: 1 }}
 					value={coords[0] ?? ''}
@@ -179,7 +196,7 @@ export function CoordinatesInput({ description, disabled = false, label, onChang
 					onBlur={handleBlur}
 					onChange={value => handleChange(1, value)}
 					onFocus={handleFocus}
-					onPaste={handlePaste}
+					onPaste={event => handlePaste(1, event)}
 					placeholder="Longitude (-180 to 180)"
 					style={{ flex: 1 }}
 					value={coords[1] ?? ''}

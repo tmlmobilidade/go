@@ -1,10 +1,11 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { type PeriodNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { PermissionCatalog, type YearPeriod } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -19,7 +20,7 @@ interface PeriodsListContextState {
 	}
 	filters: {
 		agency: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -47,17 +48,16 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allPeriodsData, error: allPeriodsError, isLoading: allPeriodsLoading } = useSWR<YearPeriod[], Error>(API_ROUTES.dates.YEAR_PERIODS_LIST);
-
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.year_periods.actions.read],
-		scope: PermissionCatalog.all.year_periods.scope,
+	const { data: allPeriodsData, error: allPeriodsError, isLoading: allPeriodsLoading } = useSWR(API_ROUTES.dates.YEAR_PERIODS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<YearPeriod[]>({ url }),
 	});
+
+	const { ids: filteredAgencyIds, options: filteredAgencyOptions } = useAnnotationsAgenciesData();
 
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 
 	//
@@ -67,7 +67,7 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 		// Skip if no data is available
 		if (!allPeriodsData) return [];
 		// Normalize record fields
-		return allPeriodsData.map((item) => {
+		return allPeriodsData.data?.map((item) => {
 			const agencyIds = item.agency_ids.join(', ');
 
 			return {
@@ -110,7 +110,7 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: PeriodsListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allPeriodsData ?? [],
+			raw: allPeriodsData?.data ?? [],
 		},
 		filters: {
 			agency: filterAgency,

@@ -25,7 +25,7 @@ import './themes/street.css';
 
 /* * */
 
-import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, ColorInput, createTheme, FileInput, Input, InputClearButton, MantineThemeOverride, Menu, MultiSelect, PasswordInput, Pill, PillGroup, Popover, Radio, SegmentedControl, Select, Skeleton, Slider, Stepper, Switch, TagsInput, Text, Textarea } from '@mantine/core';
+import { Accordion, ActionIcon, Avatar, Button, Checkbox, CloseButton, ColorInput, createTheme, FileInput, Input, InputClearButton, MantineThemeOverride, Menu, MultiSelect, PasswordInput, Pill, PillGroup, Popover, Radio, SegmentedControl, Select, Skeleton, Slider, Stepper, Switch, TagsInput, Text, Textarea, TreeSelect } from '@mantine/core';
 import { TimePicker } from '@mantine/dates';
 import { IconCaretLeftFilled } from '@tabler/icons-react';
 
@@ -37,6 +37,8 @@ import MultiSelectBase from './mantine/base/multi-select-input.module.css';
 
 /* * */
 
+import { Dropzone } from '@mantine/dropzone';
+
 import AccordionOverride from './mantine/overrides/Accordion.module.css';
 import ActionIconOverride from './mantine/overrides/ActionIcon.module.css';
 import AvatarOverride from './mantine/overrides/Avatar.module.css';
@@ -45,6 +47,7 @@ import CheckboxOverride from './mantine/overrides/Checkbox.module.css';
 import CheckboxGroupOverride from './mantine/overrides/CheckboxGroup.module.css';
 import CloseButtonOverride from './mantine/overrides/CloseButton.module.css';
 import ColorInputOverride from './mantine/overrides/ColorInput.module.css';
+import DropzoneOverride from './mantine/overrides/Dropzone.module.css';
 import FileInputOverride from './mantine/overrides/FileInput.module.css';
 import InputClearButtonOverride from './mantine/overrides/InputClearButton.module.css';
 import MenuOverride from './mantine/overrides/Menu.module.css';
@@ -118,6 +121,12 @@ export const themeData: MantineThemeOverride = createTheme({
 		ColorInput: ColorInput.extend({
 			classNames: {
 				...ColorInputOverride,
+			},
+		}),
+
+		Dropzone: Dropzone.extend({
+			classNames: {
+				...DropzoneOverride,
 			},
 		}),
 
@@ -257,6 +266,13 @@ export const themeData: MantineThemeOverride = createTheme({
 			classNames: {
 				...DropdownBase,
 				...TimePickerOverride,
+			},
+		}),
+
+		TreeSelect: TreeSelect.extend({
+			classNames: {
+				...DropdownBase,
+				...MultiSelectBase,
 			},
 		}),
 

@@ -1,12 +1,13 @@
 /* * */
 
+import { UnixSecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const GtfsRtTimeRangeSchema = z.object({
-	end: z.number().nullish(),
-	start: z.number().nullish(),
+	end: UnixSecondsSchema.nullish(),
+	start: UnixSecondsSchema.nullish(),
 });
 
 export type GtfsRtTimeRange = z.infer<typeof GtfsRtTimeRangeSchema>;

@@ -1,1 +1,1 @@
-import '@/endpoints/v1/index.js';
+import './v1/index.js';

@@ -1,0 +1,376 @@
+{
+	"stops": {
+		"create": {
+			"Controls": {
+				"BackButton": {
+					"label": "Volver"
+				},
+				"CancelButton": {
+					"label": "Cancelar"
+				},
+				"CreateButton": {
+					"label": "Crear Parada"
+				},
+				"NextButton": {
+					"label": "Avanzar"
+				}
+			},
+			"Header": {
+				"step": "Paso {{current}} de {{total}}",
+				"title": "Nueva parada"
+			},
+			"StepLocationDetails": {
+				"fields": {
+					"location_neighbourhood": {
+						"label": "Localidad"
+					},
+					"location_primary": {
+						"label": "Comunidad"
+					},
+					"location_secondary": {
+						"label": "Provincia"
+					},
+					"location_tertiary": {
+						"label": "Municipio"
+					}
+				}
+			},
+			"StepNames": {
+				"fields": {
+					"name": {
+						"description": "Este es el nombre principal y se mostrará en los canales digitales.",
+						"label": "Denominación Completa de la Parada"
+					},
+					"short_name": {
+						"description": "Esta versión abreviada automáticamente se utilizará en soportes con limitaciones de espacio, como postes y horarios impresos.",
+						"label": "Nombre Corto (automático)"
+					},
+					"tts_name": {
+						"description": "El nombre que utilizará el sistema de TTS (Text-to-Speech).",
+						"label": "Nombre TTS (automático)"
+					}
+				}
+			},
+			"StepSummary": {
+				"fields": {
+					"short_name": {
+						"label": "Nombre corto"
+					},
+					"tts_name": {
+						"label": "Nombre tts"
+					}
+				}
+			},
+			"steps": {
+				"location": {
+					"label": "Ubicación"
+				},
+				"names": {
+					"label": "Nombres"
+				},
+				"summary": {
+					"label": "Resumen"
+				}
+			}
+		},
+		"detail": {
+			"Header": {
+				"DeleteButton": {
+					"confirm_message": "¿Está seguro de que desea eliminar esta parada? La parada quedará indisponible para uso futuro.",
+					"confirm_title": "Eliminar Parada"
+				},
+				"DeletedTag": {
+					"label": "Parada Eliminada"
+				}
+			},
+			"SectionAmenities": {
+				"description": "Equipamientos y elementos presentes en esta parada.",
+				"fields": {
+					"has_bench": {
+						"label": "¿Existe Banco?"
+					},
+					"has_mupi": {
+						"label": "¿Existe Mupi?"
+					},
+					"has_network_map": {
+						"label": "¿Tiene Mapa de Red?"
+					},
+					"has_schedules": {
+						"label": "¿Tiene Horarios?"
+					},
+					"has_shelter": {
+						"label": "¿Existe Refugio?"
+					},
+					"has_stop_sign": {
+						"label": "¿Tiene Poste?"
+					}
+				},
+				"title": "Amenidades"
+			},
+			"SectionChecks": {
+				"description": "Fechas de las últimas verificaciones y mantenimientos.",
+				"fields": {
+					"last_infrastructure_check": {
+						"label": "Última Verificación de la Infraestructura"
+					},
+					"last_infrastructure_maintenance": {
+						"label": "Último Mantenimiento de la Infraestructura"
+					},
+					"last_schedules_check": {
+						"label": "Última Verificación de los Horarios"
+					},
+					"last_schedules_maintenance": {
+						"label": "Último Mantenimiento de los Horarios"
+					}
+				},
+				"title": "Verificaciones"
+			},
+			"SectionFlagItem": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"is_harmonized": {
+						"label": "Poste alineado con los identificadores únicos"
+					},
+					"short_name": {
+						"label": "Nombre Actual del Operador",
+						"placeholder": "Nombre Actual del Operador"
+					},
+					"stop_id": {
+						"label": "ID Actual del Operador",
+						"placeholder": "ID Actual del Operador"
+					}
+				}
+			},
+			"SectionFlags": {
+				"AddFlagButton": {
+					"label": "Añadir Nuevo Poste"
+				},
+				"description": "Gestión de IDs de esta parada.",
+				"fields": {
+					"legacy_ids": {
+						"label": "Otros IDs (Antiguos)"
+					},
+					"unique_id": {
+						"label": "Código Único de la Parada"
+					}
+				},
+				"title": "Identificadores y Postes"
+			},
+			"SectionGeneral": {
+				"coordinates": "Coordenadas",
+				"description": "Información general sobre esta parada.",
+				"edit_link": "Editar",
+				"location_neighbourhood": "Localidad",
+				"location_primary": "Distrito",
+				"location_secondary": "Municipio",
+				"location_tertiary": "Parroquia",
+				"open_in_google_maps": "Abrir en Google Maps",
+				"short_name": "Nombre Corto",
+				"stop_name": "Nombre de la Parada",
+				"title": "Detalles de esta Parada",
+				"tts_name": "Nombre TTS"
+			},
+			"SectionInfrastructure": {
+				"description": "Información relacionada con los equipamientos de la parada y entorno.",
+				"fields": {
+					"bench_status": {
+						"label": "Estado del Banco"
+					},
+					"electricity_status": {
+						"label": "¿Existe Conexión Eléctrica?"
+					},
+					"pole_status": {
+						"label": "Estado del Poste"
+					},
+					"road_type": {
+						"label": "Tipo de Relación con la Vía"
+					}
+				},
+				"title": "Infraestructura"
+			},
+			"SectionMap": {
+				"description": "Localización de la parada.",
+				"title": "Vista Geográfica"
+			},
+			"SectionShelter": {
+				"description": "Información relacionada con el refugio.",
+				"fields": {
+					"shelter_code": {
+						"label": "Código del Refugio"
+					},
+					"shelter_frame_size_height": {
+						"label": "Altura del Marco (mm)"
+					},
+					"shelter_frame_size_width": {
+						"label": "Ancho del Marco (mm)"
+					},
+					"shelter_installation_date": {
+						"label": "Fecha de Instalación del Refugio"
+					},
+					"shelter_maintainer": {
+						"label": "Entidad Gestora del Refugio"
+					},
+					"shelter_make": {
+						"label": "Marca del Refugio"
+					},
+					"shelter_model": {
+						"label": "Modelo del Refugio"
+					},
+					"shelter_status": {
+						"label": "Estado del Refugio"
+					}
+				},
+				"title": "Refugio"
+			},
+			"UpdateCoordinates": {
+				"EditLink": {
+					"label": "Editar"
+				},
+				"OpenInGoogleMaps": {
+					"label": "Google Maps"
+				},
+				"label": "Coordenadas"
+			},
+			"UpdateCoordinatesModal": {
+				"Header": {
+					"UpdateButton": {
+						"label": "Cambiar coordenadas"
+					},
+					"title": "Cambiar coordenadas de la parada"
+				},
+				"fields": {
+					"latitude": {
+						"label": "Latitud"
+					},
+					"longitude": {
+						"label": "Longitud"
+					}
+				}
+			},
+			"UpdateNameModal": {
+				"Header": {
+					"UpdateButton": {
+						"label": "Cambiar nombre"
+					},
+					"title": "Cambiar nombre de la parada"
+				},
+				"fields": {
+					"name": {
+						"description": "Este es el nombre principal y se mostrará en los canales digitales.",
+						"label": "Denominación Completa de la Parada"
+					},
+					"short_name": {
+						"description": "Esta versión abreviada automáticamente se utilizará en soportes con limitaciones de espacio, como postes y horarios impresos.",
+						"label": "Nombre Corto (automático)"
+					},
+					"tts_name": {
+						"description": "El nombre que utilizará el sistema de TTS (Text-to-Speech).",
+						"label": "Nombre TTS (automático)"
+					}
+				}
+			}
+		},
+		"extract": {
+			"ExtractButton": {
+				"label": "Exportar"
+			},
+			"Header": {
+				"title": "Exportar paradas"
+			}
+		},
+		"list": {
+			"FilterAgency": {
+				"label": "Operador"
+			},
+			"FilterConnections": {
+				"label": "Conexiones"
+			},
+			"FilterEquipment": {
+				"label": "Equipamientos"
+			},
+			"FilterFacilities": {
+				"label": "Servicios"
+			},
+			"FilterLifecycleStatus": {
+				"label": "Estado"
+			},
+			"FilterLocationNeighbourhood": {
+				"label": "Localidad"
+			},
+			"FilterLocationPrimary": {
+				"label": "Comunidad"
+			},
+			"FilterLocationSecondary": {
+				"label": "Provincia"
+			},
+			"FilterLocationTertiary": {
+				"label": "Municipio"
+			},
+			"Header": {
+				"title": "Paradas"
+			},
+			"HeaderMenu": {
+				"ExtractStopsButton": {
+					"label": "Exportar Paradas"
+				},
+				"NewStopButton": {
+					"label": "Nueva Parada"
+				}
+			},
+			"Table": {
+				"columns": {
+					"id": "#ID",
+					"latitude": "Latitud",
+					"location_neighbourhood_name": "Localidad",
+					"location_primary_name": "Comunidad",
+					"location_secondary_name": "Provincia",
+					"location_tertiary_name": "Municipio",
+					"longitude": "Longitud",
+					"name": "Nombre de la Parada"
+				}
+			}
+		},
+		"shared": {
+			"not_available": "N/A",
+			"road_type": {
+				"complementary_itinerary": "Itinerario Complementario",
+				"highway": "Autopista",
+				"main_itinerary": "Itinerario Principal",
+				"national_road": "Carretera Nacional",
+				"regional_road": "Carretera Regional",
+				"secondary_road": "Carretera Secundaria",
+				"unknown": "Desconocido"
+			},
+			"stop_connection": {
+				"airport": "Aeropuerto",
+				"bike_parking": "Aparcamiento de bicicletas",
+				"bike_sharing": "Sistema de bicicletas públicas",
+				"boat": "Barco",
+				"car_parking": "Aparcamiento",
+				"ferry": "Ferry",
+				"light_rail": "Metro ligero",
+				"subway": "Metro",
+				"train": "Tren"
+			},
+			"stop_equipment": {
+				"mini_pip": "Mini PIP",
+				"mupi": "MUPI",
+				"pip": "PIP"
+			},
+			"stop_facility": {
+				"beach": "Playa",
+				"fire_station": "Bomberos",
+				"health_clinic": "Clínica",
+				"historic_building": "Edificio Histórico",
+				"hospital": "Hospital",
+				"police_station": "Comisaría",
+				"school": "Escuela",
+				"shopping": "Zona Comercial",
+				"transit_office": "Espaço navegante®",
+				"university": "Universidad"
+			}
+		}
+	}
+}

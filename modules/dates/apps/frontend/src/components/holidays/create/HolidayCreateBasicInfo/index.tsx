@@ -1,9 +1,9 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { useHolidayCreateContext } from '@/components/holidays/create/HolidayCreate.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { HolidaySchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { MultiSelect, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { HolidaySchema } from '@tmlmobilidade/go-types-offer';
+import { MultiSelect, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,10 +15,7 @@ export function HolidayCreateBasicInfo() {
 
 	const holidayCreateContext = useHolidayCreateContext();
 
-	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.holidays.actions.create],
-		scope: PermissionCatalog.all.holidays.scope,
-	});
+	const { options: allAgencyOptions } = useAnnotationsAgenciesData();
 
 	//
 	// B. Render Components

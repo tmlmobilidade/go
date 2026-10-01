@@ -2,8 +2,8 @@
 
 export function getItemPathname(href: string) {
 	if (URL.canParse(href)) return new URL(href).pathname;
-	const hrefWithoutQuery = href.split('?')[0];
-	const hrefWithoutHash = hrefWithoutQuery.split('#')[0];
+	const hrefWithoutQuery = href?.split('?')[0] ?? '';
+	const hrefWithoutHash = hrefWithoutQuery?.split('#')[0] ?? '';
 	return hrefWithoutHash;
 }
 

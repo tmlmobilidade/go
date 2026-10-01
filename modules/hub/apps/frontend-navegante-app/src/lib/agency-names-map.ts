@@ -1,55 +1,56 @@
-/* eslint-disable perfectionist/sort-objects */
+/* * */
+
 export const AGENCY_NAMES_MAP = Object.freeze({
-	1: {
-		full: 'Carris',
-		short: 'Carris',
-	},
-	2: {
-		full: 'Metro de Lisboa',
-		short: 'Metro',
-	},
-	3: {
-		full: 'Comboios de Portugal',
-		short: 'CP',
-	},
-	4: {
-		full: 'Transtejo Soflusa',
-		short: 'TTSL',
-	},
-	8: {
-		full: 'Transportes Colectivos do Barreiro',
-		short: 'TCB',
-	},
-	15: {
+	'7NTB1': {
 		full: 'Fertagus',
 		short: 'Fertagus',
 	},
-	16: {
-		full: 'Metro Transportes do Sul',
-		short: 'MTS',
-	},
-	21: {
-		full: 'MobiCascais',
-		short: 'Mobi',
-	},
-	41: {
-		full: 'Viação Alvorada',
-		short: 'VA',
-	},
-	42: {
-		full: 'Rodóviaria de Lisboa',
-		short: 'RL',
-	},
-	43: {
-		full: 'Trasnportes Sul do Tejo ',
-		short: 'TST',
-	},
-	44: {
+	'A2L1N': {
 		full: 'ALSA Todi',
 		short: 'ALSA',
 	},
-	CM: {
+	'A3H3M': {
+		full: 'Transportes Colectivos do Barreiro',
+		short: 'TCB',
+	},
+	'BNA17': {
+		full: 'Rodóviaria de Lisboa',
+		short: 'RL',
+	},
+	'CM': {
 		full: 'Carris Metropolitana',
 		short: 'CM',
+	},
+	'HF16N': {
+		full: 'MobiCascais',
+		short: 'Mobi',
+	},
+	'IA2N9': {
+		full: 'Metro de Lisboa',
+		short: 'Metro',
+	},
+	'IA9T6': {
+		full: 'Carris',
+		short: 'Carris',
+	},
+	'KB1F6': {
+		full: 'Metro Transportes do Sul',
+		short: 'MTS',
+	},
+	'LA77N': {
+		full: 'Viação Alvorada',
+		short: 'VA',
+	},
+	'LTP61': {
+		full: 'Transtejo Soflusa',
+		short: 'TTSL',
+	},
+	'N18KL': {
+		full: 'Comboios de Portugal',
+		short: 'CP',
+	},
+	'YA15B': {
+		full: 'Trasnportes Sul do Tejo ',
+		short: 'TST',
 	},
 });

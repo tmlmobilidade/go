@@ -1,9 +1,9 @@
 'use client';
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useLineCreateContext } from '@/components/lines/create/LineCreate.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { LineSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { Section, Select, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
+import { LineSchema } from '@tmlmobilidade/go-types-offer';
+import { Section, Select, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -16,10 +16,7 @@ export function LineCreateBasicInfo() {
 	const lineCreateContext = useLineCreateContext();
 
 	// Get agencies with create permission
-	const { options: agencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.lines.actions.create],
-		scope: PermissionCatalog.all.lines.scope,
-	});
+	const { options: agencyOptions } = useAgenciesData();
 
 	//
 	// B. Render components

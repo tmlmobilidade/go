@@ -1,1 +1,1 @@
-export * from '@/calendar/event.js';
+export * from './event.js';

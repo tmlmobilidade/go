@@ -2,7 +2,7 @@
 
 import { ApexBankingBrandSchema } from '@/utils/banking-brand.js';
 import { ApexEventTypeSchema } from '@/utils/event-type.js';
-import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -12,10 +12,11 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
+	banking_tap_id: z.string(),
 	banking_token: z.string(),
 	card_brand: ApexBankingBrandSchema,
 	card_pan: z.string(),
-	created_at: UnixTimestampSchema,
+	created_at: UnixMillisecondsSchema,
 	device_id: z.string(),
 	event_type: ApexEventTypeSchema.nullable().default(null),
 	group_dimension: z.number().default(1),
@@ -27,10 +28,10 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string().nullable().default(null),
 	product_id: z.string().nullable().default(null),
-	received_at: UnixTimestampSchema,
+	received_at: UnixMillisecondsSchema,
 	stop_id: z.string(),
 	trip_id: z.string().nullable().default(null),
-	updated_at: UnixTimestampSchema,
+	updated_at: UnixMillisecondsSchema,
 	vehicle_id: z.string().nullable().default(null),
 }).transform((val) => {
 	// Setup the individual conditions to consider

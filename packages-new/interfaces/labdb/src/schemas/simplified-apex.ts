@@ -1,7 +1,7 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { type SimplifiedApexBankingTap, SimplifiedApexInspection, SimplifiedApexInspectionDecision, SimplifiedApexLocation, SimplifiedApexOnBoardRefund, SimplifiedApexOnBoardSale, SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
+import { type SimplifiedApexBankingTap, type SimplifiedApexInspection, type SimplifiedApexInspectionDecision, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 
@@ -10,6 +10,7 @@ export const simplifiedApexBankingTapTableSchema: ClickHouseTableSchema<Simplifi
 	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
+	banking_tap_id: { type: 'String' },
 	banking_token: { type: 'String' },
 	card_brand: { type: 'UInt8' },
 	card_pan: { type: 'String' },

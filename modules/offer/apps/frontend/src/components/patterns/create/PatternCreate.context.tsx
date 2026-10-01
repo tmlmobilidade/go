@@ -2,9 +2,8 @@
 
 import { closeCreatePatternModal } from '@/components/patterns/create/PatternCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreatePatternDto, CreatePatternSchema, Pattern, Route } from '@tmlmobilidade/types';
-import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type CreatePatternDto, CreatePatternSchema, type Pattern, type Route } from '@tmlmobilidade/go-types-offer';
+import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -20,6 +19,7 @@ interface PatternCreateContextState {
 	}
 	flags: {
 		isSaving: boolean
+		isValid: boolean
 	}
 }
 
@@ -53,18 +53,18 @@ export const PatternCreateContextProvider = ({ children, lineId, routeId }: Prop
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreatePatternDto>(CreatePatternSchema, undefined, { line_id: lineId, route_id: routeId });
+	const { flags, form } = useTypicalForm<CreatePatternDto>(CreatePatternSchema, undefined, { code: '', destination: '', headsign: '', line_id: lineId, origin: '', route_id: routeId }, 'controlled');
 
 	//
 	// D. Handle actions
 
-	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_LIST, 'POST', form.getValues()),
-		onSuccess: (newItem) => {
+	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Pattern>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.PATTERNS_LIST }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			routeMutate();
 			closeCreatePatternModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.PATTERN_DETAIL(lineId, newItem._id, routeId)));
+			router.push(keepUrlParams(PAGE_ROUTES.offer.PATTERN_DETAIL(lineId, data._id, routeId)));
 		},
 	});
 
@@ -80,9 +80,12 @@ export const PatternCreateContextProvider = ({ children, lineId, routeId }: Prop
 		},
 		flags: {
 			isSaving,
+			isValid: flags.isValid,
 		},
 	}), [
 		form,
+		flags.isValid,
+		handleCreate,
 		isSaving,
 	]);
 

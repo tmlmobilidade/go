@@ -1,12 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlTcbV1 } from '@tmlmobilidade/go-types-vehicle-events';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import crypto from 'node:crypto';
 
 /* * */
@@ -14,13 +13,6 @@ import crypto from 'node:crypto';
 let ITERATION = 0;
 
 /* * */
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'pt-tml-tcb-api-fetch', message: 'Sentry Tracker TCB Fetch initialized', module: 'tracker', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Tracker TCB Fetch' });
-}
 
 const main = async () => {
 	//
@@ -35,7 +27,7 @@ const main = async () => {
 	//
 	// Fetch the TCB Vehicle Events data from the API and decode it
 
-	Logger.info({ message: `[${ITERATION}] Fetching TCB data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching TCB data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.tcb.vehiclePositions();
 
@@ -62,7 +54,7 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlTcbV1> = {
 				agency_id: 'A3H3M',
-				created_at: Dates.fromSeconds(timestampSeconds).unix_timestamp,
+				created_at: Dates.fromSeconds(timestampSeconds).unix_milliseconds,
 				entity_id: entity.id,
 				payload: {
 					header: {
@@ -84,7 +76,7 @@ const main = async () => {
 				document: {
 					...hashableRawEvent,
 					_id: hashableRawEventId,
-					received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+					received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 				},
 			});
 

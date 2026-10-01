@@ -1,8 +1,8 @@
 /* * */
 
-import { Modal } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { IconZoomQuestionFilled } from '@tabler/icons-react';
+import { Modal } from '@tmlmobilidade/ui';
+import { useDisclosure } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -24,7 +24,7 @@ export function SelectActivePatternGroupExplainer() {
 
 	return (
 		<>
-			<Modal onClose={closeModal} opened={modalIsOpen} title="Explicação">
+			<Modal onClose={closeModal} opened={modalIsOpen} title={t('default:lines.SelectActivePatternGroupExplainer.title')}>
 				{/* * */}
 			</Modal>
 			<div className={styles.explainer} onClick={openModal}>

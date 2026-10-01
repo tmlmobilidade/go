@@ -2,7 +2,7 @@
 
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { IconClockPlay } from '@tabler/icons-react';
-import { EventReplacementRule, HHMM } from '@tmlmobilidade/types';
+import { type EventReplacementRule, type HHMM } from '@tmlmobilidade/go-types-offer';
 import { Checkbox, Divider, Grid, Section, SegmentedControl, Switch, Text, TextInput } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

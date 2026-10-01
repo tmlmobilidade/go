@@ -6,6 +6,7 @@ import { type CSSProperties, type PropsWithChildren, useCallback, useEffect, use
 import styles from './styles.module.css';
 
 import { useMapContext } from '../../../../contexts';
+import { useCurrentThemeMode } from '../../../../layout';
 import { MAP_STYLES, MAP_VIEWPORT } from '../../configs';
 import { MapOverlayPins } from '../../overlays';
 import { MapViewAttribution } from '../MapViewAttribution';
@@ -71,6 +72,8 @@ export function MapViewBasemap({ children, cursor, id, initialViewState = MAP_VI
 	const mapContext = useMapContext();
 	const mapViewContext = useMapViewContext();
 
+	const currentThemeMode = useCurrentThemeMode();
+
 	//
 	// B. Transform data
 
@@ -80,44 +83,11 @@ export function MapViewBasemap({ children, cursor, id, initialViewState = MAP_VI
 		return MAP_STYLES.map;
 	}, [mapContext.flags.style]);
 
-	const resolvedScrollZoom = scrollZoomModifierKey ? false : (scrollZoom ?? mapContext.flags.scroll_zoom);
-
-	useEffect(() => {
-		if (!scrollZoomModifierKey || mapViewContext.flags.loading) return;
-
-		const mapInstance = mapViewContext.ref.map.current?.getMap();
-		if (!mapInstance) return;
-
-		const hasModifier = (event: KeyboardEvent | WheelEvent) => {
-			switch (scrollZoomModifierKey) {
-				case 'alt':
-					return event.altKey;
-				case 'ctrl':
-					return event.ctrlKey;
-				case 'meta':
-					return event.metaKey;
-			}
-		};
-
-		const syncScrollZoom = (event: Event) => {
-			if (hasModifier(event as KeyboardEvent | WheelEvent)) mapInstance.scrollZoom.enable();
-			else mapInstance.scrollZoom.disable();
-		};
-
-		mapInstance.scrollZoom.disable();
-		window.addEventListener('keydown', syncScrollZoom);
-		window.addEventListener('keyup', syncScrollZoom);
-		window.addEventListener('blur', syncScrollZoom);
-		mapInstance.getCanvas().addEventListener('wheel', syncScrollZoom, { passive: true });
-
-		return () => {
-			window.removeEventListener('keydown', syncScrollZoom);
-			window.removeEventListener('keyup', syncScrollZoom);
-			window.removeEventListener('blur', syncScrollZoom);
-			mapInstance.getCanvas().removeEventListener('wheel', syncScrollZoom);
-			mapInstance.scrollZoom.disable();
-		};
-	}, [mapViewContext.flags.loading, scrollZoomModifierKey]);
+	const currentMapStyleConfigValue = useMemo(() => {
+		if (!('dark' in currentMapStyleConfig.value)) return currentMapStyleConfig.value;
+		if (currentThemeMode === 'dark') return currentMapStyleConfig.value.dark;
+		return currentMapStyleConfig.value.light;
+	}, [currentMapStyleConfig.value, currentThemeMode]);
 
 	//
 	// C. Handle actions
@@ -165,7 +135,7 @@ export function MapViewBasemap({ children, cursor, id, initialViewState = MAP_VI
 			initialViewState={initialViewState}
 			interactive={interactive}
 			interactiveLayerIds={interactiveLayerIds}
-			mapStyle={currentMapStyleConfig.value}
+			mapStyle={currentMapStyleConfigValue}
 			maxZoom={currentMapStyleConfig.max_zoom}
 			minZoom={currentMapStyleConfig.min_zoom}
 			onClick={onClick}

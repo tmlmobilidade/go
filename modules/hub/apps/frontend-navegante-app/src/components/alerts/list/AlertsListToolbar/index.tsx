@@ -1,8 +1,8 @@
 'use client';
 
 import { AlertExpandToggle } from '@/components/alerts/common/AlertExpandToggle';
-import SelectCause from '@/components/alerts/common/SelectCause';
-import SelectEffect from '@/components/alerts/common/SelectEffect';
+import { SelectCause } from '@/components/alerts/common/SelectCause';
+import { SelectEffect } from '@/components/alerts/common/SelectEffect';
 import { SelectLine } from '@/components/alerts/common/SelectLine';
 import { SelectStop } from '@/components/alerts/common/SelectStop';
 import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
@@ -10,7 +10,7 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { SearchAgencyChips } from '@/components/search/SearchAgencyChips';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { SegmentedControl } from '@mantine/core';
-import { SearchInput, Section } from '@tmlmobilidade/ui';
+import { SearchField, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -42,7 +42,7 @@ export function AlertsListToolbar() {
 
 	return (
 		<Section gap="md">
-			<SearchInput onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
+			<SearchField onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
 			<SegmentedControl data={currentViewOptions} onChange={alertsListContext.actions.toggle} value={alertsListContext.view.current} w="100%" fullWidth />
 			<SearchAgencyChips />
 			<AlertExpandToggle defaultState={!!alertsListContext.filters.line_id || !!alertsListContext.filters.stop_id || !!alertsListContext.filters.cause || !!alertsListContext.filters.effect}>

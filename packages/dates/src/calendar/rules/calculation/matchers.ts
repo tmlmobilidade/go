@@ -1,6 +1,6 @@
 import type { DayContext } from './types.js';
 
-import { EventReplacementRule, ManualRule } from '@tmlmobilidade/types';
+import { EventReplacementRule, ManualRule } from '@tmlmobilidade/go-types-offer';
 
 /**
  * Determines if a manual rule matches the given day context.

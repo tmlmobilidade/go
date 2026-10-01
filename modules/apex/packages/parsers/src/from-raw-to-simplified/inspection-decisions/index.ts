@@ -1,1 +1,1 @@
-export * from '@/from-raw-to-simplified/inspection-decisions/inspection-decision-v20.js';
+export * from './inspection-decision-v20.js';

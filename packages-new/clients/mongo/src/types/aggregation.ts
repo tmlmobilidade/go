@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Filter } from 'mongodb';
 
-import { type OptionalIf } from '@tmlmobilidade/types';
+import { type OptionalIf } from '@tmlmobilidade/go-types-shared';
 
 interface MatchStage<T> { $match: Filter<T> }
 interface ProjectStage<T> { $project: Partial<Record<keyof T, 0 | 1> | Record<string, 0 | 1>> }

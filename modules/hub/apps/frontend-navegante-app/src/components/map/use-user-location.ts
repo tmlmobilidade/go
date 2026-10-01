@@ -1,6 +1,6 @@
 'use client';
 
-import { useSessionStorage } from '@mantine/hooks';
+import { useSessionStorage } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -71,7 +71,6 @@ export function useUserLocation(): UseUserLocationReturnType {
 			}));
 		};
 		const errorCallback = (error: GeolocationPositionError) => {
-			console.log({ message: `User location error: ${error.code} - ${error.message}` });
 			setUserLocationError(error.message);
 		};
 		// Watch for user location changes

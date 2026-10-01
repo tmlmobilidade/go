@@ -14,7 +14,7 @@ interface GroupedListSkeletonProps {
 
 /* * */
 
-export default function Component({ groupCount, itemCount, itemSkeleton }: GroupedListSkeletonProps) {
+export function GroupedListSkeleton({ groupCount, itemCount, itemSkeleton }: GroupedListSkeletonProps) {
 	return (
 		<>
 			{Array.from({ length: groupCount }).map((_, groupIndex) => (

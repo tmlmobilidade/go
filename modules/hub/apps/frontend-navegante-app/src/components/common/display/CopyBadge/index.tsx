@@ -1,6 +1,6 @@
 'use client';
 
-import { useClipboard } from '@mantine/hooks';
+import { useClipboard } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

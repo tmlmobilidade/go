@@ -3,14 +3,22 @@
 import { RawVehicleEventEsCrtmAisaV1Schema } from '@/raw/es/crtm/aisa/v1.js';
 import { RawVehicleEventEsCrtmLaVelozV1Schema } from '@/raw/es/crtm/la-veloz/v1.js';
 import { RawVehicleEventPtTmlCcflV1Schema } from '@/raw/pt/tml/ccfl/v1.js';
-import { RawVehicleEventPtTmlCmV1Schema } from '@/raw/pt/tml/cm/v1.js';
+import { RawVehicleEventPtTmlCmAlsaV1Schema } from '@/raw/pt/tml/cm/alsa/v1.js';
+import { RawVehicleEventPtTmlCmRlV1Schema } from '@/raw/pt/tml/cm/rl/v1.js';
+import { RawVehicleEventPtTmlCmTstV1Schema } from '@/raw/pt/tml/cm/tst/v1.js';
+import { RawVehicleEventPtTmlCmVaV1Schema } from '@/raw/pt/tml/cm/va/v1.js';
 import { RawVehicleEventPtTmlCpV1Schema } from '@/raw/pt/tml/cp/v1.js';
 import { RawVehicleEventPtTmlFertagusV1Schema } from '@/raw/pt/tml/fertagus/v1.js';
 import { RawVehicleEventPtTmlMlV1Schema } from '@/raw/pt/tml/ml/v1.js';
 import { RawVehicleEventPtTmlMobiV1Schema } from '@/raw/pt/tml/mobi/v1.js';
 import { RawVehicleEventPtTmlTcbV1Schema } from '@/raw/pt/tml/tcb/v1.js';
 import { RawVehicleEventPtTmlTtslV1Schema } from '@/raw/pt/tml/ttsl/v1.js';
-import { RawVehicleEventPtTmpUnirV1Schema } from '@/raw/pt/tmp/unir/v1.js';
+import { RawVehicleEventPtTmpUnirUt1V1Schema } from '@/raw/pt/tmp/unir/ut1/v1.js';
+import { RawVehicleEventPtTmpUnirUt2V1Schema } from '@/raw/pt/tmp/unir/ut2/v1.js';
+import { RawVehicleEventPtTmpUnirUt3V1Schema } from '@/raw/pt/tmp/unir/ut3/v1.js';
+import { RawVehicleEventPtTmpUnirUt4V1Schema } from '@/raw/pt/tmp/unir/ut4/v1.js';
+import { RawVehicleEventPtTmpUnirUt5V1Schema } from '@/raw/pt/tmp/unir/ut5/v1.js';
+import { RawVehicleEventPtTmpUnirUt6V1Schema } from '@/raw/pt/tmp/unir/ut6/v1.js';
 import { z } from 'zod';
 
 /* * */
@@ -19,14 +27,22 @@ export const RawVehicleEventSchema = z.discriminatedUnion('version', [
 	RawVehicleEventEsCrtmAisaV1Schema,
 	RawVehicleEventEsCrtmLaVelozV1Schema,
 	RawVehicleEventPtTmlCcflV1Schema,
-	RawVehicleEventPtTmlCmV1Schema,
+	RawVehicleEventPtTmlCmAlsaV1Schema,
+	RawVehicleEventPtTmlCmRlV1Schema,
+	RawVehicleEventPtTmlCmTstV1Schema,
+	RawVehicleEventPtTmlCmVaV1Schema,
 	RawVehicleEventPtTmlCpV1Schema,
 	RawVehicleEventPtTmlFertagusV1Schema,
 	RawVehicleEventPtTmlMlV1Schema,
 	RawVehicleEventPtTmlMobiV1Schema,
 	RawVehicleEventPtTmlTcbV1Schema,
 	RawVehicleEventPtTmlTtslV1Schema,
-	RawVehicleEventPtTmpUnirV1Schema,
+	RawVehicleEventPtTmpUnirUt1V1Schema,
+	RawVehicleEventPtTmpUnirUt2V1Schema,
+	RawVehicleEventPtTmpUnirUt3V1Schema,
+	RawVehicleEventPtTmpUnirUt4V1Schema,
+	RawVehicleEventPtTmpUnirUt5V1Schema,
+	RawVehicleEventPtTmpUnirUt6V1Schema,
 ]);
 
 /**

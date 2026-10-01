@@ -2,7 +2,7 @@
 
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { useLinesContext } from '@/contexts/Lines.context';
-import { LinesMode } from '@tmlmobilidade/types';
+import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { MultiSelect, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';
 
@@ -23,7 +23,7 @@ export function RuleCreateLines() {
 	const linesOptions = useMemo(() => filteredLines.map(line => ({
 		label: `${line.code} - ${line.name}`,
 		value: line._id,
-	})), [filteredLines, agencyIds]);
+	})), [filteredLines]);
 
 	// Prune lines_to_include/exclude when agency_ids or available lines change
 	useEffect(() => {
@@ -45,7 +45,7 @@ export function RuleCreateLines() {
 			const next = cur.filter(id => allowed.has(id));
 			if (next.length !== cur.length) form.setFieldValue('lines_to_exclude', next);
 		}
-	}, [filteredLines, createRuleContext.data.eventData.agency_ids]);
+	}, [filteredLines, createRuleContext.data.eventData.agency_ids, createRuleContext.data.form]);
 
 	//
 	// B. Render components

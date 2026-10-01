@@ -25,6 +25,7 @@ const IndicatorBody = forwardRef<HTMLDivElement, IndicatorProps>((props, ref) =>
 		data-filled={props.filled}
 		data-size={props.size}
 		data-variant={props.variant}
+		data-with-tooltip={!!props.tooltip}
 	>
 		<div
 			className={styles.indicator}

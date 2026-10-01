@@ -1,12 +1,12 @@
 /* * */
 
-import { transformAlertIntoRssEntity } from '@/transform/rss/main.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
-import { Timer } from '@tmlmobilidade/timer';
+
+import { transformAlertIntoRssEntity } from '../transform/rss/main.js';
 
 /* * */
 
@@ -29,12 +29,12 @@ export async function publishRssFeed() {
 			$and: [
 				{
 					$or: [
-						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
+						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_milliseconds } },
 						{ publish_end_date: null },
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
-					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
+					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_milliseconds },
 					publish_status: 'published',
 				},
 			],
@@ -51,7 +51,7 @@ export async function publishRssFeed() {
 
 	const transformedItems = await Promise.all(findResult.map(alert => transformAlertIntoRssEntity(alert, RSS_FEED_URL)));
 
-	const transformResult: RssRawItem[] = transformedItems.filter(Boolean);
+	const transformResult: RssRawItem[] = transformedItems.filter((item): item is RssRawItem => item !== undefined);
 
 	Logger.info({ message: `Transformed ${transformResult.length} alerts into RSS feed entities (${globalTimer.get()})` });
 

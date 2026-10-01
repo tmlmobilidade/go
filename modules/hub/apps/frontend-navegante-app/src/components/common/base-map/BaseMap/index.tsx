@@ -1,6 +1,7 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { useBaseMapPatternData } from '@/components/common/base-map/use-base-map-pattern-data';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
@@ -14,12 +15,11 @@ import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
+import { fromEncodedPolylineToGeoJsonLineString } from '@tmlmobilidade/go-utils-geo';
 import { type MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
+import { FeatureCollection, LineString } from 'geojson';
 import { useEffect, useMemo } from 'react';
-import useSWR from 'swr';
 
 /* * */
 
@@ -47,64 +47,57 @@ export function BaseMap() {
 		return vehiclesContext.data.vehicles.find(vehicle => vehicle.vehicle_id === focusedVehicleId)?.pattern_id ?? null;
 	}, [focusedVehicleId, vehiclesContext.data.vehicles]);
 
-	const { data: patterns } = useSWR<HubPattern[]>(
-		focusedVehiclePatternId ? { credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS(focusedVehiclePatternId) } : null,
-	);
+	//
+	// B. Fetch data
 
-	const pattern = patterns?.[0];
+	const { data: patternsData } = useBaseMapPatternData(focusedVehiclePatternId);
 
-	const { data: shape } = useSWR<HubShape>(
-		pattern?.shape_id ? { credentials: 'omit', url: API_ROUTES.hub.NETWORK_SHAPES(pattern.shape_id) } : null,
-	);
+	//
+	// C. Transform data
 
 	const alertsMapData = useMemo(() => {
 		if (!focusedAlertId) return alertsContext.data.fc;
-
 		const collection = getBaseGeoJsonFeatureCollection();
-
 		alertsContext.data.fc.features.forEach((feature) => {
 			const featureId = feature.properties?.id ?? feature.properties?._id;
-
 			if (featureId === focusedAlertId) collection.features.push(feature);
 		});
-
 		return collection;
 	}, [alertsContext.data.fc, focusedAlertId]);
 
 	const vehiclesMapData = useMemo(() => {
 		if (!focusedVehicleId) return vehiclesContext.data.fc;
-
 		const collection = getBaseGeoJsonFeatureCollection();
-
 		vehiclesContext.data.fc.features.forEach((feature) => {
 			if (feature.properties?.vehicle_id === focusedVehicleId) collection.features.push(feature);
 		});
-
 		return collection;
 	}, [vehiclesContext.data.fc, focusedVehicleId]);
 
+	const shapeFc = useMemo(() => {
+		const collection: FeatureCollection<LineString> = { features: [], type: 'FeatureCollection' };
+		if (!patternsData?.[0]?.shape_polyline) return collection;
+		const shapeGeojson = fromEncodedPolylineToGeoJsonLineString(patternsData[0].shape_polyline);
+		collection.features.push({
+			geometry: shapeGeojson,
+			properties: {
+				color: patternsData[0].color,
+				text_color: patternsData[0].text_color,
+			},
+			type: 'Feature',
+		});
+		return collection;
+	}, [patternsData]);
+
 	useEffect(() => {
 		if (!viewportMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
-
-		const focusedFeature = alertsMapData.features.find(
-			feature => feature.geometry?.type === 'Point',
-		);
-
+		const focusedFeature = alertsMapData.features.find(feature => feature.geometry?.type === 'Point');
 		if (!focusedFeature || focusedFeature.geometry?.type !== 'Point') return;
-
 		// moveMap(viewportMap, focusedFeature.geometry.coordinates);
 	}, [viewportMap, focusedAlertId, alertsMapData.features, activeBaseMapOverlays]);
 
-	useEffect(() => {
-		if (!viewportMap || !shape?.geojson) return;
-
-		// centerMap(viewportMap, [shape.geojson], {
-		// 	padding: { bottom: 320, left: 80, right: 80, top: 80 },
-		// });
-	}, [viewportMap, shape?.geojson]);
-
 	//
-	// C. Handle actions
+	// D. Handle actions
 
 	const handleMapClick = (event: MapLayerMouseEvent) => {
 		if (!event.features?.length) return;
@@ -136,7 +129,7 @@ export function BaseMap() {
 	};
 
 	//
-	// B. Render components
+	// E. Render components
 
 	return (
 		<MapView
@@ -158,23 +151,17 @@ export function BaseMap() {
 				visible={activeBaseMapOverlays.includes('stops')}
 			/>
 
-			{shape?.geojson && pattern && (
-				<MapViewStylePath
-					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
-					shapeData={{
-						...shape.geojson,
-						properties: {
-							color: pattern.color,
-							text_color: pattern.text_color,
-						},
-					}}
-				/>
-			)}
-
 			<MapViewOverlayVehicles
 				vehiclesData={vehiclesMapData}
 				visible={activeBaseMapOverlays.includes('vehicles')}
 			/>
+
+			{shapeFc.features.length > 0 && (
+				<MapViewStylePath
+					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
+					shapeData={shapeFc}
+				/>
+			)}
 			{/* <MapViewOverlayVehicleLineBadges
 				visible={activeBaseMapOverlays.includes('vehicles')}
 			/> */}

@@ -1,16 +1,17 @@
 /* * */
 
-import { parsePcgiTransactionEntityIntoRawApexTransactionBankingTapV40 } from '@/from-pcgi-to-raw/banking-taps/banking-tap-v40.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionDecisionV20 } from '@/from-pcgi-to-raw/inspection-decisions/inspection-decision-v20.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionV20 } from '@/from-pcgi-to-raw/inspections/inspection-v20.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionLocationV30 } from '@/from-pcgi-to-raw/locations/location-v30.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionRefundV30 } from '@/from-pcgi-to-raw/refunds/refund-v30.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionSaleV30 } from '@/from-pcgi-to-raw/sales/sale-v30.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionValidationV20 } from '@/from-pcgi-to-raw/validations/validation-v20.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionValidationV30 } from '@/from-pcgi-to-raw/validations/validation-v30.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionValidationV40 } from '@/from-pcgi-to-raw/validations/validation-v40.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionValidationV50 } from '@/from-pcgi-to-raw/validations/validation-v50.js';
 import { type PcgiTransactionEntity, type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
+
+import { parsePcgiTransactionEntityIntoRawApexTransactionBankingTapV40 } from './banking-taps/banking-tap-v40.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionDecisionV20 } from './inspection-decisions/inspection-decision-v20.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionV20 } from './inspections/inspection-v20.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionLocationV30 } from './locations/location-v30.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionRefundV30 } from './refunds/refund-v30.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionSaleV30 } from './sales/sale-v30.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionValidationV20 } from './validations/validation-v20.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionValidationV30 } from './validations/validation-v30.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionValidationV40 } from './validations/validation-v40.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionValidationV50 } from './validations/validation-v50.js';
 
 /* * */
 

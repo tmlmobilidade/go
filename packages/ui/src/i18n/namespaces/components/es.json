@@ -1,12 +1,14 @@
 {
 	"buttons": {
+		"CreateButton": {
+			"label": "Crear"
+		},
 		"DuplicateButton": {
 			"label": "Duplicar",
 			"tooltip": "Crear una copia de este documento"
 		},
-		"SaveButton": {
-			"label": "Guardar",
-			"tooltip": "Guardar cambios"
+		"UpdateButton": {
+			"label": "Guardar"
 		}
 	},
 	"files": {
@@ -25,11 +27,6 @@
 			}
 		}
 	},
-	"filters": {
-		"FilterTypeList": {
-			"toggle_all": "Seleccionar todo"
-		}
-	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {
@@ -39,11 +36,25 @@
 				"placeholder": "Longitud (-180 a 180)"
 			}
 		},
-		"SearchInput": {
-			"placeholder": "Buscar..."
+		"SearchField": {
+			"placeholder": "Buscar...",
+			"tags": {
+				"d": "Conductor",
+				"l": "Líneas",
+				"v": "Vehículos"
+			}
 		},
 		"Select": {
 			"nothing_found": "No se encontraron resultados"
+		}
+	},
+	"loaders": {
+		"LoadingActivity": {
+			"days_ago": "Actualizado hace {count, plural, =1 {1 día} other {# días}}",
+			"hours_ago": "Actualizado hace {count, plural, =1 {1 hora} other {# horas}}",
+			"just_now": "Actualizado ahora",
+			"minutes_ago": "Actualizado hace {count, plural, =1 {1 minuto} other {# minutos}}",
+			"seconds_ago": "Actualizado hace {count, plural, =1 {1 segundo} other {# segundos}}"
 		}
 	},
 	"sidebar": {
@@ -77,22 +88,16 @@
 			"year_periods": "Períodos del año",
 			"zones": "Zonas"
 		},
-		"SidebarExports": {
-			"label": "Exportaciones",
-			"no_exports": "Sin exportaciones disponibles",
-			"title": "Exportaciones"
-		},
-		"SidebarExportsItem": {
-			"no_name": "Sin nombre"
+		"SidebarExtractions": {
+			"tooltip": "Exportaciones"
 		},
 		"SidebarGroups": {
-			"administration": "Administración",
-			"calendar_management": "Calendario",
-			"fleet_management": "Flota",
-			"network_offer": "Oferta de red",
+			"core": "Base",
+			"dates": "Fechas",
+			"infrastructure": "Infraestructura",
 			"offer": "Oferta",
 			"operation": "Operación",
-			"overview": "Visión general"
+			"overview": "Vista General"
 		},
 		"SidebarNotifications": {
 			"label": "Notificaciones",

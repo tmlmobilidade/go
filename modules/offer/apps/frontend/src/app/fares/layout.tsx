@@ -2,7 +2,7 @@
 
 import { FaresList } from '@/components/fares/list/FaresList';
 import { FaresListContextProvider } from '@/components/fares/list/FaresList.context';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ErrorDisplay, HasPermission, PanesManager } from '@tmlmobilidade/ui';
 import { Fragment, type PropsWithChildren } from 'react';
 

@@ -1,9 +1,10 @@
 'use client';
 
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
-import { Modal, SegmentedControl } from '@mantine/core';
+import { SegmentedControl } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Modal } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,7 +30,7 @@ export function SelectOperationalDate() {
 	const selectedOperationalDateDisplay = useMemo(() => {
 		if (!selectedOperationalDate) return '';
 		return Dates
-			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
+			.fromOperationalDateInt(selectedOperationalDate, 'local')
 			.set({ hour: 15 })
 			.toFormat('d MMM yy');
 	}, [selectedOperationalDate]);
@@ -37,7 +38,7 @@ export function SelectOperationalDate() {
 	const selectedOperationalDatePicker = useMemo(() => {
 		if (!selectedOperationalDate) return null;
 		return Dates
-			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
+			.fromOperationalDateInt(selectedOperationalDate, 'local')
 			.set({ hour: 15 })
 			.toFormat('yyyy-MM-dd');
 	}, [selectedOperationalDate]);

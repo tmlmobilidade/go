@@ -1,7 +1,7 @@
 /* * */
 
 import { initProto } from '@/init-proto.js';
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 
 /**
  * Decodes a GTFS-RT feed from an ArrayBuffer or Buffer.

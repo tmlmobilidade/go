@@ -3,7 +3,7 @@
 /* * */
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
-import { DAY_PERIOD_LABELS, DayPeriod } from '@tmlmobilidade/types';
+import { DAY_PERIOD_LABELS, DayPeriod } from '@tmlmobilidade/go-types-offer';
 import { Section, SegmentedMultiSelect, Text } from '@tmlmobilidade/ui';
 
 /* * */

@@ -1,16 +1,16 @@
 'use client';
 
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
-import { Modal, ModalBody } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
-import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
+import { Modal } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface AlertDetailModalProps {
-	alert: HubAlert
+	alert: HubV1ApiAlert
 	isOpen: boolean
 	onClose: () => void
 }
@@ -32,10 +32,10 @@ export function AlertDetailModal({ alert, isOpen, onClose }: AlertDetailModalPro
 			size="lg"
 			title={alert.title}
 		>
-			<ModalBody>
+			<Modal.Body>
 				<AlertActivePeriodStart date={alert.active_period_start_date} size="sm" />
 				<p className={styles.description}>{alert.description}</p>
-			</ModalBody>
+			</Modal.Body>
 		</Modal>
 	);
 }

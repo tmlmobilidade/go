@@ -8,7 +8,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function TypologyCreate() {
 	return (
-		<Pane header={[<TypologyCreateHeader />]}>
+		<Pane header={[<TypologyCreateHeader key="header" />]}>
 			<TypologyCreateBasicInfo />
 		</Pane>
 	);

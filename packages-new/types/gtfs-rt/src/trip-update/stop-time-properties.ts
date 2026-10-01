@@ -1,7 +1,8 @@
 /* * */
 
-import { GtfsRtDropOffPickupTypeSchema } from '@/shared/drop-off-pickup-type.js';
 import { z } from 'zod';
+
+import { GtfsRtDropOffPickupTypeSchema } from '../shared/drop-off-pickup-type.js';
 
 /* * */
 

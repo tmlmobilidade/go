@@ -1,7 +1,7 @@
 'use client';
 
 import { SearchAgencyChips } from '@/components/search/SearchAgencyChips';
-import { SearchInput, Section, SegmentedControl, useFilterStateString } from '@tmlmobilidade/ui';
+import { SearchField, Section, SegmentedControl, useFilterStateText } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -23,7 +23,7 @@ export function SearchToolbar({ onChangeSearchType, searchType }: SearchToolbarP
 
 	const { t } = useTranslation();
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 
 	//
 	// B. Transform data
@@ -39,7 +39,7 @@ export function SearchToolbar({ onChangeSearchType, searchType }: SearchToolbarP
 
 	return (
 		<Section gap="sm">
-			<SearchInput onChange={filterSearch.set} value={filterSearch.value} />
+			<SearchField onChange={filterSearch.set} value={filterSearch.value} />
 			<SegmentedControl
 				data={searchTypeOptions}
 				onChange={onChangeSearchType}

@@ -1,12 +1,14 @@
 {
 	"buttons": {
+		"CreateButton": {
+			"label": "Criar"
+		},
 		"DuplicateButton": {
 			"label": "Duplicar",
 			"tooltip": "Criar cópia deste documento"
 		},
-		"SaveButton": {
-			"label": "Guardar",
-			"tooltip": "Guardar Alterações"
+		"UpdateButton": {
+			"label": "Guardar"
 		}
 	},
 	"files": {
@@ -25,11 +27,6 @@
 			}
 		}
 	},
-	"filters": {
-		"FilterTypeList": {
-			"toggle_all": "Selecionar tudo"
-		}
-	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {
@@ -39,11 +36,25 @@
 				"placeholder": "Longitude (-180 to 180)"
 			}
 		},
-		"SearchInput": {
-			"placeholder": "Pesquisar..."
+		"SearchField": {
+			"placeholder": "Pesquisar...",
+			"tags": {
+				"d": "Motorista",
+				"l": "Linhas",
+				"v": "Veículos"
+			}
 		},
 		"Select": {
 			"nothing_found": "Nenhum resultado encontrado"
+		}
+	},
+	"loaders": {
+		"LoadingActivity": {
+			"days_ago": "Atualizado há {count, plural, =1 {1 dia} other {# dias}}",
+			"hours_ago": "Atualizado há {count, plural, =1 {1 hora} other {# horas}}",
+			"just_now": "Atualizado agora",
+			"minutes_ago": "Atualizado há {count, plural, =1 {1 minuto} other {# minutos}}",
+			"seconds_ago": "Atualizado há {count, plural, =1 {1 segundo} other {# segundos}}"
 		}
 	},
 	"sidebar": {
@@ -77,19 +88,13 @@
 			"year_periods": "Períodos do Ano",
 			"zones": "Zonas"
 		},
-		"SidebarExports": {
-			"label": "Exportações",
-			"no_exports": "Sem exportações disponíveis",
-			"title": "Exportações"
-		},
-		"SidebarExportsItem": {
-			"no_name": "Sem nome"
+		"SidebarExtractions": {
+			"tooltip": "Exportações"
 		},
 		"SidebarGroups": {
-			"administration": "Administração",
-			"calendar_management": "Calendário",
-			"fleet_management": "Frota",
-			"network_offer": "Oferta de Rede",
+			"core": "Base",
+			"dates": "Datas",
+			"infrastructure": "Infraestrutura",
 			"offer": "Oferta",
 			"operation": "Operação",
 			"overview": "Visão Geral"

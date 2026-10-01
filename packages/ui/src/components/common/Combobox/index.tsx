@@ -8,8 +8,6 @@ import { ViewportList } from 'react-viewport-list';
 
 import styles from './styles.module.css';
 
-import { cn } from '../../../lib/utils';
-
 // Define DataItem type
 export interface DataItem {
 	icon?: React.ReactNode
@@ -118,14 +116,12 @@ export default function ComboboxComponent(props: Props) {
 				updatedValue = value.filter(
 					(v: string) => v !== getValue(val),
 				);
-			}
-			else {
+			} else {
 				updatedValue = [...value, val];
 			}
 			setValue(updatedValue);
 			onChange?.(updatedValue as any); // Type assertion handled via discriminated union
-		}
-		else {
+		} else {
 			const newValue = val;
 			const itemData = data.find(dataItem => getValue(dataItem) === val);
 			if (!itemData) return;
@@ -147,8 +143,7 @@ export default function ComboboxComponent(props: Props) {
 			);
 			setValue(updatedValue);
 			onChange?.(updatedValue as any); // Type assertion handled via discriminated union
-		}
-		else {
+		} else {
 			setValue(undefined);
 			onChange?.(undefined);
 		}
@@ -266,7 +261,7 @@ export default function ComboboxComponent(props: Props) {
 			return (
 				<MantineCombobox.DropdownTarget>
 					<PillsInput
-						className={cn(styles.input, styles.pillInputWrapper)}
+						className={`${styles.input} ${styles.pillInputWrapper}`}
 						onClick={() => combobox.openDropdown()}
 					>
 						<Pill.Group style={{ marginRight: '25px' }}>
@@ -364,7 +359,7 @@ export default function ComboboxComponent(props: Props) {
 
 	return (
 		<div
-			className={cn(styles.wrapper, className)}
+			className={`${styles.wrapper} ${className}`}
 			style={{ width: fullWidth ? '100%' : undefined }}
 		>
 			{label && <label className={styles.label}>{label}</label>}

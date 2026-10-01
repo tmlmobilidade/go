@@ -1,14 +1,17 @@
 /* * */
 
 import { generateComments } from '@/utils/comments.js';
+import { populatePatternPath } from '@/utils/populate-pattern-path.js';
 import { mergePatternWithEventRules } from '@/utils/rules.js';
 import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type CreatePatternDto, type Pattern, type PatternShapeMapItem, type PopulatedPath, type PopulatedPattern, type StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type NoteComment } from '@tmlmobilidade/go-types-shared';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { CreatePatternDto, NoteComment, type Pattern, type PatternShapeMapItem, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -35,7 +38,11 @@ export class PatternsController {
 
 		const updateResult = await goDb.offer.patterns.updateById(
 			request.params.id,
-			{ comments: [...patternData.comments, { ...request.body, created_by: createdBy, updated_by: createdBy }], updated_by: createdBy },
+			{ comments: [...patternData.comments, {
+				...request.body,
+				created_by: createdBy,
+				updated_by: createdBy,
+			}], updated_by: createdBy },
 		);
 
 		return reply.send({
@@ -76,6 +83,7 @@ export class PatternsController {
 
 		const newPattern = await goDb.offer.patterns.insertOne({
 			...request.body,
+			created_by: request.me._id,
 			parameters: [defaultParameter],
 		});
 
@@ -243,19 +251,9 @@ export class PatternsController {
 		// Populate stop data for each path item
 
 		if (patternData.path && patternData.path.length > 0) {
-			const stopIds = patternData.path.map(pathItem => pathItem.stop_id);
-			const stopsData = await goDb.infrastructure.stops.findMany(
-				{ _id: { $in: stopIds } },
+			const populatedPath = await populatePatternPath(patternData.path, stopIds =>
+				goDb.infrastructure.stops.findMany({ _id: { $in: stopIds } }),
 			);
-
-			// Create a map for quick lookup
-			const stopsMap = new Map(stopsData.map(stop => [stop._id, stop]));
-
-			// Populate the path with stop data
-			const populatedPath: PopulatedPath[] = patternData.path.map(pathItem => ({
-				...pathItem,
-				stop: stopsMap.get(pathItem.stop_id) || null,
-			}));
 
 			// Return pattern with populated path
 			return reply.send({
@@ -446,7 +444,7 @@ export class PatternsController {
 		}
 
 		// If authorized, toggle the lock status of the pattern
-		await goDb.offer.patterns.toggleLockById(request.params.id);
+		await goDb.offer.patterns.updateOne({ _id: request.params.id }, { is_locked: !patternData.is_locked });
 		const foundPattern = await goDb.offer.patterns.findById(request.params.id);
 		if (!foundPattern) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
@@ -506,6 +504,7 @@ export class PatternsController {
 				...(patternData.comments || []),
 				...patternComments,
 			],
+			updated_by: request.me._id,
 		};
 
 		//

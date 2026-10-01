@@ -1,0 +1,382 @@
+{
+	"stops": {
+		"create": {
+			"Controls": {
+				"BackButton": {
+					"label": "Voltar"
+				},
+				"CancelButton": {
+					"label": "Cancelar"
+				},
+				"CreateButton": {
+					"label": "Criar Paragem"
+				},
+				"NextButton": {
+					"label": "Avançar"
+				}
+			},
+			"Header": {
+				"step": "Passo {{current}} de {{total}}",
+				"title": "Nova paragem"
+			},
+			"StepLocationDetails": {
+				"fields": {
+					"location_neighbourhood": {
+						"label": "Localidade"
+					},
+					"location_primary": {
+						"label": "Distrito"
+					},
+					"location_secondary": {
+						"label": "Município"
+					},
+					"location_tertiary": {
+						"label": "Freguesia"
+					}
+				}
+			},
+			"StepNames": {
+				"fields": {
+					"name": {
+						"description": "Este é o nome principal e será apresentado nos canais digitais.",
+						"label": "Designação Completa da Paragem"
+					},
+					"short_name": {
+						"description": "Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos.",
+						"label": "Nome Curto (automático)"
+					},
+					"tts_name": {
+						"description": "O nome a ser utilizado pelo sistema de TTS (Text-to-Speech).",
+						"label": "Nome TTS (automático)"
+					}
+				}
+			},
+			"StepSummary": {
+				"fields": {
+					"short_name": {
+						"label": "Nome curto"
+					},
+					"tts_name": {
+						"label": "Nome tts"
+					}
+				}
+			},
+			"steps": {
+				"location": {
+					"label": "Localização"
+				},
+				"names": {
+					"label": "Nomes"
+				},
+				"summary": {
+					"label": "Resumo"
+				}
+			}
+		},
+		"detail": {
+			"Header": {
+				"DeleteButton": {
+					"confirm_message": "Tem a certeza que pretende eliminar esta paragem? A paragem ficará indisponível para utilização futura.",
+					"confirm_title": "Eliminar Paragem"
+				},
+				"DeletedTag": {
+					"label": "Paragem Eliminada"
+				}
+			},
+			"SectionAmenities": {
+				"description": "Equipamentos e elementos presentes nesta paragem.",
+				"fields": {
+					"has_bench": {
+						"label": "Existe Banco?"
+					},
+					"has_mupi": {
+						"label": "Existe Mupi?"
+					},
+					"has_network_map": {
+						"label": "Tem Mapa de Rede?"
+					},
+					"has_schedules": {
+						"label": "Tem Horários?"
+					},
+					"has_shelter": {
+						"label": "Existe Abrigo?"
+					},
+					"has_stop_sign": {
+						"label": "Tem Postalete?"
+					}
+				},
+				"title": "Amenidades"
+			},
+			"SectionChecks": {
+				"description": "Datas das últimas verificações e manutenções.",
+				"fields": {
+					"last_infrastructure_check": {
+						"label": "Última Verificação da Infraestrutura"
+					},
+					"last_infrastructure_maintenance": {
+						"label": "Última Manutenção da Infraestrutura"
+					},
+					"last_schedules_check": {
+						"label": "Última Verificação dos Horários"
+					},
+					"last_schedules_maintenance": {
+						"label": "Última Manutenção dos Horários"
+					}
+				},
+				"title": "Verificações"
+			},
+			"SectionFlagItem": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"is_harmonized": {
+						"label": "Postalete alinhado com os identificadores únicos"
+					},
+					"short_name": {
+						"label": "Nome Atual do Operador",
+						"placeholder": "Nome Atual do Operador"
+					},
+					"stop_id": {
+						"label": "ID Atual do Operador",
+						"placeholder": "ID Atual do Operador"
+					}
+				}
+			},
+			"SectionFlags": {
+				"AddFlagButton": {
+					"label": "Adicionar Novo Postalete"
+				},
+				"description": "Gestão de IDs desta paragem.",
+				"fields": {
+					"legacy_ids": {
+						"label": "Outros IDs (Antigos)"
+					},
+					"unique_id": {
+						"label": "Código Único da Paragem"
+					}
+				},
+				"title": "Identificadores e Postaletes"
+			},
+			"SectionGeneral": {
+				"coordinates": "Coordenadas",
+				"description": "Informações gerais sobre esta paragem.",
+				"edit_link": "Editar",
+				"location_neighbourhood": "Localidade",
+				"location_primary": "Distrito",
+				"location_secondary": "Município",
+				"location_tertiary": "Freguesia",
+				"open_in_google_maps": "Abrir no Google Maps",
+				"short_name": "Nome Curto",
+				"stop_name": "Nome da Paragem",
+				"title": "Detalhes desta Paragem",
+				"tts_name": "Nome TTS"
+			},
+			"SectionInfrastructure": {
+				"description": "Informações relacionadas com os equipamentos da paragem e envolvente.",
+				"fields": {
+					"bench_status": {
+						"label": "Estado do Banco"
+					},
+					"electricity_status": {
+						"label": "Existe Ligação Elétrica?"
+					},
+					"pole_status": {
+						"label": "Estado do Postalete"
+					},
+					"road_type": {
+						"label": "Tipo de Relação com a Via"
+					}
+				},
+				"title": "Infraestrutura"
+			},
+			"SectionMap": {
+				"description": "Localização da paragem.",
+				"title": "Visão Geográfica"
+			},
+			"SectionShelter": {
+				"description": "Informações relacionadas com o abrigo.",
+				"fields": {
+					"shelter_code": {
+						"label": "Código do Abrigo"
+					},
+					"shelter_frame_size_height": {
+						"label": "Altura do Quadro (mm)"
+					},
+					"shelter_frame_size_width": {
+						"label": "Largura do Quadro (mm)"
+					},
+					"shelter_installation_date": {
+						"label": "Data de Instalação do Abrigo"
+					},
+					"shelter_maintainer": {
+						"label": "Entidade Gestora do Abrigo"
+					},
+					"shelter_make": {
+						"label": "Marca do Abrigo"
+					},
+					"shelter_model": {
+						"label": "Modelo do Abrigo"
+					},
+					"shelter_status": {
+						"label": "Estado do Abrigo"
+					}
+				},
+				"title": "Abrigo"
+			},
+			"UpdateCoordinates": {
+				"EditLink": {
+					"label": "Editar"
+				},
+				"OpenInGoogleMaps": {
+					"label": "Google Maps"
+				},
+				"label": "Coordenadas"
+			},
+			"UpdateCoordinatesModal": {
+				"Header": {
+					"UpdateButton": {
+						"label": "Alterar coordenadas"
+					},
+					"title": "Alterar coordenadas da paragem"
+				},
+				"fields": {
+					"latitude": {
+						"label": "Latitude"
+					},
+					"longitude": {
+						"label": "Longitude"
+					}
+				}
+			},
+			"UpdateName": {
+				"EditLink": {
+					"label": "Editar"
+				},
+				"label": "Nome Único da Paragem"
+			},
+			"UpdateNameModal": {
+				"Header": {
+					"UpdateButton": {
+						"label": "Alterar nome"
+					},
+					"title": "Alterar nome da paragem"
+				},
+				"fields": {
+					"name": {
+						"description": "Este é o nome principal e será apresentado nos canais digitais.",
+						"label": "Designação Completa da Paragem"
+					},
+					"short_name": {
+						"description": "Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos.",
+						"label": "Nome Curto (automático)"
+					},
+					"tts_name": {
+						"description": "O nome a ser utilizado pelo sistema de TTS (Text-to-Speech).",
+						"label": "Nome TTS (automático)"
+					}
+				}
+			}
+		},
+		"extract": {
+			"ExtractButton": {
+				"label": "Exportar"
+			},
+			"Header": {
+				"title": "Exportar paragens"
+			}
+		},
+		"list": {
+			"FilterAgency": {
+				"label": "Operador"
+			},
+			"FilterConnections": {
+				"label": "Conexões"
+			},
+			"FilterEquipment": {
+				"label": "Equipamentos"
+			},
+			"FilterFacilities": {
+				"label": "Serviços"
+			},
+			"FilterLifecycleStatus": {
+				"label": "Estado"
+			},
+			"FilterLocationNeighbourhood": {
+				"label": "Localidade"
+			},
+			"FilterLocationPrimary": {
+				"label": "Distrito"
+			},
+			"FilterLocationSecondary": {
+				"label": "Município"
+			},
+			"FilterLocationTertiary": {
+				"label": "Freguesia"
+			},
+			"Header": {
+				"title": "Paragens"
+			},
+			"HeaderMenu": {
+				"ExtractStopsButton": {
+					"label": "Exportar Paragens"
+				},
+				"NewStopButton": {
+					"label": "Nova Paragem"
+				}
+			},
+			"Table": {
+				"columns": {
+					"id": "#ID",
+					"latitude": "Latitude",
+					"location_neighbourhood_name": "Localidade",
+					"location_primary_name": "Distrito",
+					"location_secondary_name": "Município",
+					"location_tertiary_name": "Freguesia",
+					"longitude": "Longitude",
+					"name": "Nome da Paragem"
+				}
+			}
+		},
+		"shared": {
+			"not_available": "N/A",
+			"road_type": {
+				"complementary_itinerary": "Itinerário Complementar",
+				"highway": "Autoestrada",
+				"main_itinerary": "Itinerário Principal",
+				"national_road": "Estrada Nacional",
+				"regional_road": "Estrada Regional",
+				"secondary_road": "Estrada Secundária",
+				"unknown": "Desconhecido"
+			},
+			"stop_connection": {
+				"airport": "Aeroporto",
+				"bike_parking": "Estacionamento de bicicletas",
+				"bike_sharing": "Sistema de bicicletas públicas",
+				"boat": "Barco",
+				"car_parking": "Parque de estacionamento",
+				"ferry": "Balsa",
+				"light_rail": "Metro terrestre",
+				"subway": "Metro",
+				"train": "Comboio"
+			},
+			"stop_equipment": {
+				"mini_pip": "Mini PIP",
+				"mupi": "MUPI",
+				"pip": "PIP"
+			},
+			"stop_facility": {
+				"beach": "Praia",
+				"fire_station": "Bombeiros",
+				"health_clinic": "Clínica",
+				"historic_building": "Edifício Histórico",
+				"hospital": "Hospital",
+				"police_station": "Esquadra",
+				"school": "Escola",
+				"shopping": "Zona Comercial",
+				"transit_office": "Espaço navegante®",
+				"university": "Universidade"
+			}
+		}
+	}
+}

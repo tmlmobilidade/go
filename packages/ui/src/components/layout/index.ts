@@ -6,5 +6,4 @@ export * from './Grid';
 export * from './Section';
 export * from './Spacer';
 export * from './Surface';
-export * from './Toolbar';
 export * from './WhenMode';

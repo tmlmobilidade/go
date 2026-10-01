@@ -13,5 +13,6 @@ export * from './merging/index.js';
 export * from './preview/affectedDates.js';
 export * from './preview/buildDayDetails.js';
 export * from './preview/computeRuleTimePoints.js';
+export * from './preview/types.js';
 
 export * from './utils/date.js';

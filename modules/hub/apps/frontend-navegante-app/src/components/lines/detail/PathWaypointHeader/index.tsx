@@ -2,9 +2,9 @@
 
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { formatStopLocation } from '@/utils/format-stop-location';
-import { useClipboard } from '@mantine/hooks';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
-import { type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
+import { type HubV1ApiPatternWaypoint } from '@tmlmobilidade/go-types-hub';
+import { useClipboard } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -15,7 +15,7 @@ interface Props {
 	isFirstStop?: boolean
 	isLastStop?: boolean
 	isSelected: boolean
-	waypointData: HubWaypoint
+	waypointData: HubV1ApiPatternWaypoint
 }
 
 /* * */

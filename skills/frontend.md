@@ -69,7 +69,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import useSWR from 'swr';
 
 const { data, error, isLoading, mutate } = useSWR<Alert>(
-  API_ROUTES.alerts.ALERTS_DETAIL(alertId)
+  API_ROUTES.operation.ALERTS_DETAIL(alertId)
 );
 ```
 
@@ -79,19 +79,17 @@ Always destructure `mutate` so you can invalidate after mutations. For list inva
 
 ## Forms
 
-Use `useContextForm` from `@tmlmobilidade/ui` for all forms inside context providers. It handles syncing with API data and tracks dirty state.
+Use `useStandardForm` from `@tmlmobilidade/ui` for all forms inside context providers. It handles syncing with API data and tracks dirty state.
 
 ```tsx
-import { useContextForm } from '@tmlmobilidade/ui';
+import { useStandardForm } from '@tmlmobilidade/ui';
 import { type UpdateAlertDto } from '@tmlmobilidade/types';
 
-const { form } = useContextForm<UpdateAlertDto>({
+const { form } = useStandardForm<UpdateAlertDto>({
   apiData: alertData,
   // schema: UpdateAlertSchema,  ← uncomment to enable Zod validation
 });
 ```
-
-Access form state via `form.formState.isDirty`, `form.formState.isValid`, `form.getValues()`, `form.reset()`.
 
 ---
 
@@ -135,7 +133,7 @@ const { canSave } = useFlagCanSave({
 Permissions are always checked via `PermissionCatalog` from `@tmlmobilidade/types` and `useMeContext` from `@tmlmobilidade/ui`.
 
 ```tsx
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { useMeContext } from '@tmlmobilidade/ui';
 
 const meContext = useMeContext();
@@ -156,15 +154,15 @@ Each module has its own scope and set of actions in `PermissionCatalog.all.[modu
 
 ## Mutations
 
-Wrap all mutations in `useHandleUpdate` from `@tmlmobilidade/ui`. It handles loading state and success/error callbacks consistently.
+Wrap all mutations in `useHandleAction` from `@tmlmobilidade/ui`. It handles loading state and success/error callbacks consistently.
 
 ```tsx
-import { useHandleUpdate } from '@tmlmobilidade/ui';
+import { useHandleAction } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 
-const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+const { action: handleSave, isLoading: isSaving } = useHandleAction({
   fetchFn: async () => await fetchData<Alert>(
-    API_ROUTES.alerts.ALERTS_DETAIL(alertId),
+    API_ROUTES.operation.ALERTS_DETAIL(alertId),
     'PUT',
     form.getValues()
   ),
@@ -190,7 +188,7 @@ Common components:
 | `LoadingOverlay` | Full-pane loading state |
 | `ErrorDisplay` | Full-pane error state |
 | `ComponentWrapper` | Labelled section wrapper |
-| `SaveButton` / `DeleteButton` / `LockButton` / `DuplicateButton` | Action buttons with built-in loading state |
+| `UpdateButton` / `DeleteButton` / `LockButton` / `DuplicateButton` | Action buttons with built-in loading state |
 
 ```tsx
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
@@ -218,7 +216,7 @@ import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 const router = useRouter();
-router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
+router.push(keepUrlParams(PAGE_ROUTES.operation.ALERTS_LIST));
 ```
 
 ---

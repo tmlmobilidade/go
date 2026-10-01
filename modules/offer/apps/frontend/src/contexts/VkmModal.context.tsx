@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
-import { type CalculateVkmDto, type OperationalDate, type VkmCalculationMethod, type VkmCalculationResult, type VkmExtensionSource } from '@tmlmobilidade/types';
+import { type CalculateVkmDto, type VkmCalculationMethod, type VkmCalculationResult, type VkmExtensionSource } from '@tmlmobilidade/go-types-offer';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { useForm } from '@tmlmobilidade/ui';
 import { type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -12,9 +13,9 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 export interface VkmModalFormValues {
 	agency_id: null | string
 	calculation_method: VkmCalculationMethod
-	end_date: null | OperationalDate
+	end_date: null | OperationalDateInt
 	extension_source: VkmExtensionSource
-	start_date: null | OperationalDate
+	start_date: null | OperationalDateInt
 }
 
 interface VkmModalContextState {
@@ -85,9 +86,9 @@ export const VkmModalContextProvider = ({ children }: PropsWithChildren) => {
 		const payload: CalculateVkmDto = {
 			agency_id: values.agency_id,
 			calculation_method: values.calculation_method,
-			end_date: values.calculation_method === 'fixed_range' ? values.end_date : null,
+			end_date: values.calculation_method === 'fixed_range' && values.end_date ? String(values.end_date) as CalculateVkmDto['start_date'] : null,
 			extension_source: values.extension_source,
-			start_date: values.start_date,
+			start_date: String(values.start_date) as CalculateVkmDto['start_date'],
 		};
 
 		try {

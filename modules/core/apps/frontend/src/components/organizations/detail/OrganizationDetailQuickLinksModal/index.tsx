@@ -1,0 +1,110 @@
+'use client';
+
+import { type HomeQuickLink } from '@tmlmobilidade/go-types-core';
+import { isUrl } from '@tmlmobilidade/strings';
+import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { OrganizationDetailQuickLinksIconChooser } from '../OrganizationDetailQuickLinksIconChooser';
+
+/* * */
+
+export const QUICK_LINKS_MODAL_ID = 'quick-links-modal';
+
+/* * */
+
+export interface QuickLinksModalProps {
+	handleSubmit?: (link: HomeQuickLink) => void
+	link?: HomeQuickLink
+}
+
+/* * */
+
+export const openOrganizationQuickLinksModal = ({ handleSubmit, link }: QuickLinksModalProps) => {
+	openModal({
+		children: (
+			<QuickLinksModal handleSubmit={handleSubmit} link={link} />
+		),
+		closeOnClickOutside: false,
+		modalId: QUICK_LINKS_MODAL_ID,
+		padding: 0,
+		size: 'xl',
+		styles: { content: { overflow: 'unset' } },
+		withCloseButton: false,
+	});
+};
+
+/* * */
+
+export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?: (link: Omit<HomeQuickLink, 'order'>) => void, link?: HomeQuickLink }) {
+	//
+
+	//
+	// A. Setup variables
+
+	const [newLink, setNewLink] = useState<Omit<HomeQuickLink, 'order'>>(link || { href: '', icon: '', title: '' });
+	const [selectedIcon, setSelectedIcon] = useState<'' | string>(link?.icon || '');
+
+	const { t } = useTranslation();
+
+	//
+	// B. Handle actions
+
+	const handleSave = () => {
+		if (!newLink.title || !newLink.href || !newLink.icon) alert(t('default:organizations.detail.QuickLinksModal.Error.message'));
+		if (!newLink.href) return alert(t('default:organizations.detail.QuickLinksModal.Error.title'));
+		closeModal(QUICK_LINKS_MODAL_ID);
+		handleSubmit(newLink);
+	};
+
+	const handleIconChange = (icon) => {
+		newLink.icon = icon;
+		setSelectedIcon(icon);
+	};
+
+	//
+	// C. Render components
+
+	return (
+		<Section flexDirection="column" gap="sm" padding="lg">
+			<TextInput
+				key="link-title"
+				label={t('default:organizations.detail.QuickLinksModal.Fields.title.label')}
+				onChange={e => setNewLink(prev => ({ ...prev, title: e.target.value }))}
+				value={newLink.title}
+				required
+			/>
+			<TextInput
+				key="link-href"
+				error={isUrl(newLink.href) ? null : t('default:organizations.detail.QuickLinksModal.Error.title')}
+				label={t('default:organizations.detail.QuickLinksModal.Fields.link.label')}
+				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
+				value={newLink.href}
+				required
+			/>
+			<OrganizationDetailQuickLinksIconChooser
+				selectedIcon={selectedIcon}
+				setSelectedIcon={handleIconChange}
+			/>
+			<Divider />
+			<Grid columns="ab" gap="sm">
+				<Button
+					label={t('default:organizations.detail.QuickLinksModal.Fields.cancel.label')}
+					onClick={() => closeModal(QUICK_LINKS_MODAL_ID)}
+					variant="secondary"
+					fullWidth
+				/>
+				<Button
+					disabled={!newLink.title || !newLink.href || !newLink.icon || isUrl(newLink.href) === false}
+					label={t('default:organizations.detail.QuickLinksModal.Fields.save.label')}
+					onClick={handleSave}
+					variant="primary"
+					fullWidth
+				/>
+			</Grid>
+		</Section>
+	);
+
+	//
+}

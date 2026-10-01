@@ -5,7 +5,7 @@ import { TypologiesListCellAgencies } from '@/components/typologies/list/Typolog
 import { TypologiesListFiltersBar } from '@/components/typologies/list/TypologiesListFiltersBar';
 import { TypologiesListHeader } from '@/components/typologies/list/TypologiesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Typology } from '@tmlmobilidade/types';
+import { Typology } from '@tmlmobilidade/go-types-offer';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LineBadge, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';

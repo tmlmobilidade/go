@@ -45,42 +45,42 @@
 /* * */
 /* PROPS / AGENCY ID */
 
-.badge[data-size='md'][data-agency-id='3'] {
+.badge[data-size='md'][data-agency-id='N18KL'] {
 	max-width: min-content;
 	padding: 0 10px;
 	letter-spacing: -0.5px;
 }
 
-.badge[data-size='lg'][data-agency-id='3'] {
+.badge[data-size='lg'][data-agency-id='N18KL'] {
 	max-width: min-content;
 	padding: 0 15px;
 	letter-spacing: -0.5px;
 }
 
-.badge[data-size='md'][data-agency-id='15'] {
+.badge[data-size='md'][data-agency-id='7NTB1'] {
 	min-width: 90px;
 	max-width: 90px;
 	letter-spacing: -0.5px;
 }
 
-.badge[data-size='lg'][data-agency-id='15'] {
+.badge[data-size='lg'][data-agency-id='7NTB1'] {
 	min-width: 120px;
 	max-width: 120px;
 	letter-spacing: -0.5px;
 }
 
-.badge[data-size='md'][data-agency-id='41'],
-.badge[data-size='md'][data-agency-id='42'],
-.badge[data-size='md'][data-agency-id='43'],
-.badge[data-size='md'][data-agency-id='44'] {
+.badge[data-size='md'][data-agency-id='LA77N'],
+.badge[data-size='md'][data-agency-id='BNA17'],
+.badge[data-size='md'][data-agency-id='YA15B'],
+.badge[data-size='md'][data-agency-id='A2L1N'] {
 	min-width: 65px;
 	max-width: 65px;
 }
 
-.badge[data-size='lg'][data-agency-id='41'],
-.badge[data-size='lg'][data-agency-id='42'],
-.badge[data-size='lg'][data-agency-id='43'],
-.badge[data-size='lg'][data-agency-id='44'] {
+.badge[data-size='lg'][data-agency-id='LA77N'],
+.badge[data-size='lg'][data-agency-id='BNA17'],
+.badge[data-size='lg'][data-agency-id='YA15B'],
+.badge[data-size='lg'][data-agency-id='A2L1N'] {
 	min-width: 85px;
 	max-width: 85px;
 }

@@ -1,21 +1,21 @@
 'use client';
 
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { type HubLine } from '@tmlmobilidade/go-types-public-info';
-import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
+import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
+import { type ListContextStateTemplate, useFilterStateText, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 /* * */
 
 const DEFAULT_QTY_PER_AGENCY = 5;
 
-const DESIRED_AGENCY_ORDER = ['4', '2', '16', '15', '3', 'CM', '1', '21', '8'];
+const DESIRED_AGENCY_ORDER = ['LTP61', 'IA2N9', 'KB1F6', '7NTB1', 'CM', 'IA9T6', 'A3H3M'] as const;
 
 /* * */
 
 interface LinesListGroupData {
 	agency_id: string
-	lines: HubLine[]
+	lines: HubV1ApiLine[]
 	qty: number
 }
 
@@ -51,14 +51,14 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const linesContext = useLinesContext();
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 
 	const [qtyPerAgency, setQtyPerAgency] = useState<Record<string, number>>({});
 
 	//
 	// B. Transform data
 
-	const searchResultsData = useSearch<HubLine>({
+	const searchResultsData = useSearch<HubV1ApiLine>({
 		accessors: ['long_name', 'short_name', 'tts_name'],
 		data: linesContext.data.lines,
 		query: filterSearch.value,
@@ -66,12 +66,12 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const filteredData: LinesListGroupData[] = useMemo(() => {
 		// Group data by agency ID
-		const groupedDataByAgencyId = searchResultsData?.reduce((acc: Record<string, HubLine[]>, line) => {
+		const groupedDataByAgencyId = searchResultsData?.reduce((acc: Record<string, HubV1ApiLine[]>, line) => {
 			// Normalize agency ID for CM agencies
-			const agencyIdKey = ['41', '42', '43', '44'].includes(line.agency_id) ? 'CM' : line.agency_id;
+			const agencyIdKey = ['A2L1N', 'BNA17', 'LA77N', 'YA15B'].includes(line.agency_id) ? 'CM' : line.agency_id;
 			acc[agencyIdKey] = [...(acc[agencyIdKey] || []), line];
 			return acc;
-		}, {} as Record<string, HubLine[]>);
+		}, {} as Record<string, HubV1ApiLine[]>);
 		// Sort data by agency ID
 		return DESIRED_AGENCY_ORDER
 			.filter(agencyId => agencyId in groupedDataByAgencyId)

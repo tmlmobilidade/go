@@ -1,8 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { INTERCHANGE_MODE } from '@tmlmobilidade/types';
+import { INTERCHANGE_MODE } from '@tmlmobilidade/go-types-offer';
 
 import { fetchAllEvents } from './fetchers/events.js';
 import { buildPatternsForRoute, insertPatterns } from './imports/patterns.js';
@@ -16,16 +15,6 @@ import { printWarningSummary, warn, WARNING } from './warnings.js';
 /* * */
 
 export async function importGtfs(options: ImportOptions): Promise<ImportSummary> {
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'gtfs-importer', message: 'Sentry Offer GTFS Importer initialized', module: 'offer', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Offer GTFS Importer' });
-	}
-
 	//
 	// A. Start / log input
 

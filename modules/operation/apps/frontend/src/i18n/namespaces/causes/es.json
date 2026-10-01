@@ -1,0 +1,19 @@
+{
+	"ABUSIVE_PARKING": "Estacionamiento abusivo",
+	"ACCIDENT": " Accidente",
+	"CONSTRUCTION": "Construcción",
+	"DEMONSTRATION": "Demostración",
+	"DRIVER_ABSENCE": "Falta del conductor",
+	"DRIVER_ISSUE": "Problema del conductor",
+	"HIGH_PASSENGER_LOAD": "Carga excesiva de pasajeros",
+	"MEDICAL_EMERGENCY": "Emergencia médica",
+	"NETWORK_UPDATE": "Actualización de la red",
+	"POLICE_ACTIVITY": "Actividad policial",
+	"PUBLIC_DISORDER": "Desorden pública",
+	"ROAD_ISSUE": "Problema en la carretera",
+	"STRIKE": "Huelga",
+	"TECHNICAL_ISSUE": "Problema técnico",
+	"TRAFFIC_JAM": "Congestión de tráfico",
+	"VEHICLE_ISSUE": "Problema del vehiculo",
+	"WEATHER": "Tiempo"
+}

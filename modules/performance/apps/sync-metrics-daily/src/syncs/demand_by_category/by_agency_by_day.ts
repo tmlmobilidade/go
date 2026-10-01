@@ -1,11 +1,10 @@
 /* * */
 
 import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
+import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type DemandByCategoryByAgencyByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
@@ -63,12 +62,12 @@ export const syncDemandByCategoryByAgencyByDay = async () => {
 	const allTimestampChunks: { end: number, endIso: string, start: number, startIso: string }[] = [];
 
 	let cursor = earliestDataNeeded;
-	while (cursor.unix_timestamp < latest.unix_timestamp) {
+	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ days: 1 });
 		allTimestampChunks.push({
-			end: next.unix_timestamp,
+			end: next.unix_milliseconds,
 			endIso: next.iso,
-			start: cursor.unix_timestamp,
+			start: cursor.unix_milliseconds,
 			startIso: cursor.iso,
 		});
 		cursor = next;

@@ -4,6 +4,7 @@ import { useLinesOverviewContext } from '@/components/lines/overview/LinesOvervi
 import { LinesOverviewMapHover } from '@/components/lines/overview/LinesOverviewMapHover';
 import { LinesOverviewMapLayer } from '@/components/lines/overview/LinesOverviewMapLayer';
 import { LinesOverviewMapPopup } from '@/components/lines/overview/LinesOverviewMapPopup';
+import { LinesOverviewMapStatus } from '@/components/lines/overview/LinesOverviewMapStatus';
 import { MapView, Section } from '@tmlmobilidade/ui';
 
 /* * */
@@ -29,6 +30,7 @@ export function LinesOverviewMap() {
 				showSearchPin={false}
 				toolbar={false}
 			>
+				<LinesOverviewMapStatus />
 				<LinesOverviewMapHover />
 
 				{linesOverviewContext.data.popupInfo && (

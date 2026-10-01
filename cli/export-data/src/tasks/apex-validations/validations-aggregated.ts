@@ -54,8 +54,8 @@ export async function exportValidationsAggregated({ context, groupFields, messag
 	};
 
 	filterQuery.created_at = {
-		$gte: Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp,
-		$lt: Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp,
+		$gte: Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_milliseconds,
+		$lt: Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_milliseconds,
 	};
 
 	if (context.filters.agency_ids.length) {
@@ -114,7 +114,7 @@ export async function exportValidationsAggregated({ context, groupFields, messag
 		// Prepare the result key
 
 		const operationalDate = Dates
-			.fromUnixTimestamp(document.created_at)
+			.fromUnixMilliseconds(document.created_at)
 			.setZone('Europe/Lisbon', 'offset_only')
 			.operational_date;
 

@@ -1,4 +1,36 @@
 {
+	"AppError": {
+		"goto_home": "Ir a la página de inicio",
+		"retry": "Recargando en {count} segundos...",
+		"subtitle": "Estamos trabajando para resolver el problema.",
+		"title": "Se ha producido un error"
+	},
+	"PasswordCheck": {
+		"error": "Contraseña inválida",
+		"placeholder": "Introduzca su contraseña...",
+		"validate": {
+			"label": "Validar"
+		}
+	},
+	"TimestampDisplay": {
+		"days": {
+			"one": "Actualizado hace 1 día",
+			"other": "Actualizado hace {count} días"
+		},
+		"hours": {
+			"one": "Actualizado hace 1 hora",
+			"other": "Actualizado hace {count} horas"
+		},
+		"minutes": {
+			"one": "Actualizado hace 1 minuto",
+			"other": "Actualizado hace {count} minutos"
+		},
+		"seconds": {
+			"one": "Actualizado hace 1 segundo",
+			"other": "Actualizado hace {count} segundos"
+		},
+		"updating": "Actualizando..."
+	},
 	"action-bar": {
 		"ActionBar": {
 			"alerts": {
@@ -27,6 +59,14 @@
 			"idle": {
 				"label": "Centrar mapa"
 			}
+		}
+	},
+	"agencies": {
+		"CcflDefault": {
+			"title": "CCFL / Pasajeros transportados hoy, hasta ahora"
+		},
+		"CmDefault": {
+			"title": "CM / Pasajeros transportados hoy, hasta ahora"
 		}
 	},
 	"alerts": {
@@ -87,7 +127,6 @@
 				},
 				"by_stop": {
 					"label": "Filtrar por parada",
-
 					"placeholder": "Filtrar por parada"
 				},
 				"text_search": "Buscar alerta por título, descripción, ubicación..."
@@ -104,6 +143,26 @@
 		},
 		"SelectEffect": {
 			"placeholder": "Filtrar por efecto"
+		}
+	},
+	"areas": {
+		"cards": {
+			"delays": {
+				"title": "{agency} / Viajes retrasados > 5 min"
+			},
+			"delays_average": {
+				"title": "{agency} / Retraso medio del total de viajes"
+			},
+			"sla": {
+				"secondary": "{percentage}% de {until_now} ({total})",
+				"title": "{agency} / Viajes no ejecutados hoy, hasta ahora"
+			},
+			"validations": {
+				"title": "{agency} / Pasajeros transportados hoy, hasta ahora"
+			},
+			"vkm": {
+				"title": "{agency} / VKm ejecutados hoy, hasta ahora"
+			}
 		}
 	},
 	"common": {
@@ -327,6 +386,9 @@
 				"subway": "Metro",
 				"train": "Trenes"
 			}
+		},
+		"ViewportHeader": {
+			"title": "GO Videowall • CCFL"
 		}
 	}
 }

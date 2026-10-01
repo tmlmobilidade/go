@@ -1,10 +1,10 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
+import { type FileExport, type VehicleExportProperties } from '@tmlmobilidade/go-types-downloads';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
-import { FileExport, type VehicleExportProperties } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import os from 'os';
 import path from 'path';
@@ -59,7 +59,7 @@ export async function exportVehiclesFile(fileExport: FileExport): Promise<string
 
 	await csvWriter.flush();
 
-	Logger.success(`Exported ${count} vehicles in ${timer.get()}`, 1);
+	Logger.success({ message: `Exported ${count} vehicles in ${timer.get()}`, spacesAfter: 1 });
 	Logger.info({ message: `File path: ${tempFilePath}` });
 	Logger.spacer(1);
 

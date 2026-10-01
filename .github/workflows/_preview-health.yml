@@ -60,7 +60,7 @@ jobs:
           POLL_SECONDS: ${{ inputs.poll_seconds }}
         run: |
           set -euo pipefail
-          URL="https://pr-${PR_NUMBER}.go-stg.tmlmobilidade.pt/auth/api/health"
+          URL="https://pr-${PR_NUMBER}.go-stg.tmlmobilidade.pt/core/api/health"
           DEADLINE=$((SECONDS + TIMEOUT_MINUTES * 60))
           echo "Polling ${URL} for up to ${TIMEOUT_MINUTES}m (every ${POLL_SECONDS}s)"
 
@@ -117,6 +117,7 @@ jobs:
                   '### Preview environment failed',
                   '',
                   `Creation of preview environment failed within ${timeout} minutes`,
+                  'Please try to build the core module first if you didn\'t do it yet and then try again.',
                 ].join('\n');
 
             await github.rest.issues.createComment({

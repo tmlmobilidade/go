@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"outDir": "dist",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"rootDir": "src",
+		"strictNullChecks": false
+	},
+	"exclude": ["node_modules", "dist"],
+	"extends": "@tmlmobilidade/go-utils-tsconfig/nodejs.json",
+	"include": ["src"]
+}

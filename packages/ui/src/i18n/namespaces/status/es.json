@@ -23,6 +23,13 @@
 		"none": "(sin valor)",
 		"ontime": "A tiempo"
 	},
+	"grade_status": {
+		"error": "Error",
+		"fail": "Fail",
+		"none": "(sin valor)",
+		"pass": "Pass",
+		"skip": "Skip"
+	},
 	"lifecycle_status": {
 		"active": "Activo",
 		"draft": "Borrador",
@@ -72,6 +79,11 @@
 		"Skipped": "Ignorado",
 		"Unknown": "Desconocido",
 		"Waiting": "En espera"
+	},
+	"temporal_status": {
+		"active": "Activo",
+		"expired": "Expirado",
+		"upcoming": "Futuro"
 	},
 	"validity_status": {
 		"invalid": "Inválido",

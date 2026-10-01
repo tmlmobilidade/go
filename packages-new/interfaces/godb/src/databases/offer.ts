@@ -1,24 +1,26 @@
 /* * */
 
-import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema, type CreateEventDto, CreateEventSchema, type CreateFareDto, CreateFareSchema, type CreateHolidayDto, CreateHolidaySchema, type CreateLineDto, CreateLineSchema, type CreatePatternDto, CreatePatternSchema, type CreateRouteDto, CreateRouteSchema, type CreateTypologyDto, CreateTypologySchema, type CreateYearPeriodDto, CreateYearPeriodSchema, type CreateZoneDto, CreateZoneSchema, type Event, type Fare, type Holiday, type Line, type Pattern, type Route, type Typology, type UpdateAnnotationDto, UpdateAnnotationSchema, type UpdateEventDto, UpdateEventSchema, type UpdateFareDto, UpdateFareSchema, type UpdateHolidayDto, UpdateHolidaySchema, type UpdateLineDto, UpdateLineSchema, type UpdatePatternDto, UpdatePatternSchema, type UpdateRouteDto, UpdateRouteSchema, type UpdateTypologyDto, UpdateTypologySchema, type UpdateYearPeriodDto, UpdateYearPeriodSchema, type UpdateZoneDto, UpdateZoneSchema, type YearPeriod, type Zone } from '@tmlmobilidade/types';
+import { type Annotation, AnnotationSchema, type Event, EventSchema, type Fare, FareSchema, type Holiday, HolidaySchema, type Line, LineSchema, type Pattern, PatternSchema, type Route, RouteSchema, type Typology, TypologySchema, type YearPeriod, YearPeriodSchema, type Zone, ZoneSchema } from '@tmlmobilidade/go-types-offer';
+
+import { createGoDbCollection } from '../factory/create-godb-collection.js';
+import { type GoDbCollection } from '../factory/types/godb-collection.type.js';
 
 /* * */
 
 export class OfferDatabase {
 	//
 
-	public readonly annotations: MongoInterfaceTemplate<Annotation, CreateAnnotationDto, UpdateAnnotationDto>;
-	public readonly events: MongoInterfaceTemplate<Event, CreateEventDto, UpdateEventDto>;
-	public readonly fares: MongoInterfaceTemplate<Fare, CreateFareDto, UpdateFareDto>;
-	public readonly holidays: MongoInterfaceTemplate<Holiday, CreateHolidayDto, UpdateHolidayDto>;
-	public readonly lines: MongoInterfaceTemplate<Line, CreateLineDto, UpdateLineDto>;
-	public readonly patterns: MongoInterfaceTemplate<Pattern, CreatePatternDto, UpdatePatternDto>;
-	public readonly routes: MongoInterfaceTemplate<Route, CreateRouteDto, UpdateRouteDto>;
-	public readonly typologies: MongoInterfaceTemplate<Typology, CreateTypologyDto, UpdateTypologyDto>;
-	public readonly yearPeriods: MongoInterfaceTemplate<YearPeriod, CreateYearPeriodDto, UpdateYearPeriodDto>;
-	public readonly zones: MongoInterfaceTemplate<Zone, CreateZoneDto, UpdateZoneDto>;
+	public readonly annotations: GoDbCollection<Annotation>;
+	public readonly events: GoDbCollection<Event>;
+	public readonly fares: GoDbCollection<Fare>;
+	public readonly holidays: GoDbCollection<Holiday>;
+	public readonly lines: GoDbCollection<Line>;
+	public readonly patterns: GoDbCollection<Pattern>;
+	public readonly routes: GoDbCollection<Route>;
+	public readonly typologies: GoDbCollection<Typology>;
+	public readonly yearPeriods: GoDbCollection<YearPeriod>;
+	public readonly zones: GoDbCollection<Zone>;
 
 	private readonly database: Db;
 	private readonly databaseName = 'offer';
@@ -27,15 +29,15 @@ export class OfferDatabase {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
-		this.annotations = new MongoInterfaceTemplate<Annotation, CreateAnnotationDto, UpdateAnnotationDto>('annotations', this.database, CreateAnnotationSchema, UpdateAnnotationSchema);
-		this.events = new MongoInterfaceTemplate<Event, CreateEventDto, UpdateEventDto>('events', this.database, CreateEventSchema, UpdateEventSchema);
-		this.fares = new MongoInterfaceTemplate<Fare, CreateFareDto, UpdateFareDto>('fares', this.database, CreateFareSchema, UpdateFareSchema);
-		this.holidays = new MongoInterfaceTemplate<Holiday, CreateHolidayDto, UpdateHolidayDto>('holidays', this.database, CreateHolidaySchema, UpdateHolidaySchema);
-		this.lines = new MongoInterfaceTemplate<Line, CreateLineDto, UpdateLineDto>('lines', this.database, CreateLineSchema, UpdateLineSchema);
-		this.patterns = new MongoInterfaceTemplate<Pattern, CreatePatternDto, UpdatePatternDto>('patterns', this.database, CreatePatternSchema, UpdatePatternSchema);
-		this.routes = new MongoInterfaceTemplate<Route, CreateRouteDto, UpdateRouteDto>('routes', this.database, CreateRouteSchema, UpdateRouteSchema);
-		this.typologies = new MongoInterfaceTemplate<Typology, CreateTypologyDto, UpdateTypologyDto>('typologies', this.database, CreateTypologySchema, UpdateTypologySchema);
-		this.yearPeriods = new MongoInterfaceTemplate<YearPeriod, CreateYearPeriodDto, UpdateYearPeriodDto>('year-periods', this.database, CreateYearPeriodSchema, UpdateYearPeriodSchema);
-		this.zones = new MongoInterfaceTemplate<Zone, CreateZoneDto, UpdateZoneDto>('zones', this.database, CreateZoneSchema, UpdateZoneSchema);
+		this.annotations = createGoDbCollection<Annotation>({ collectionName: 'annotations', database: this.database, indexDescription: null, schema: AnnotationSchema });
+		this.events = createGoDbCollection<Event>({ collectionName: 'events', database: this.database, indexDescription: null, schema: EventSchema });
+		this.fares = createGoDbCollection<Fare>({ collectionName: 'fares', database: this.database, indexDescription: null, schema: FareSchema });
+		this.holidays = createGoDbCollection<Holiday>({ collectionName: 'holidays', database: this.database, indexDescription: null, schema: HolidaySchema });
+		this.lines = createGoDbCollection<Line>({ collectionName: 'lines', database: this.database, indexDescription: null, schema: LineSchema });
+		this.patterns = createGoDbCollection<Pattern>({ collectionName: 'patterns', database: this.database, indexDescription: null, schema: PatternSchema });
+		this.routes = createGoDbCollection<Route>({ collectionName: 'routes', database: this.database, indexDescription: null, schema: RouteSchema });
+		this.typologies = createGoDbCollection<Typology>({ collectionName: 'typologies', database: this.database, indexDescription: null, schema: TypologySchema });
+		this.yearPeriods = createGoDbCollection<YearPeriod>({ collectionName: 'year-periods', database: this.database, indexDescription: null, schema: YearPeriodSchema });
+		this.zones = createGoDbCollection<Zone>({ collectionName: 'zones', database: this.database, indexDescription: null, schema: ZoneSchema });
 	}
 }

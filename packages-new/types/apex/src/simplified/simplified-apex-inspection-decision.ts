@@ -1,7 +1,7 @@
 /* * */
 
 import { ApexControlStatusSchema } from '@/utils/control-status.js';
-import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -11,7 +11,7 @@ export const SimplifiedApexInspectionDecisionSchema = z.object({
 	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
-	created_at: UnixTimestampSchema,
+	created_at: UnixMillisecondsSchema,
 	device_id: z.string(),
 	final_control_status: ApexControlStatusSchema,
 	inspection_id: z.string().nullable().default(null),
@@ -20,8 +20,8 @@ export const SimplifiedApexInspectionDecisionSchema = z.object({
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
 	operational_date: OperationalDateIntSchema,
-	received_at: UnixTimestampSchema,
-	updated_at: UnixTimestampSchema,
+	received_at: UnixMillisecondsSchema,
+	updated_at: UnixMillisecondsSchema,
 }).transform((val) => {
 	// Setup the individual conditions to consider
 	// this transaction as OK or NOT OK

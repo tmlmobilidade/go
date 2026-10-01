@@ -11,6 +11,9 @@ export const ApprovalStatusValues = [
 	'none',
 ] as const;
 
-export const ApprovalStatusSchema = z.enum(ApprovalStatusValues);
+export const ApprovalStatusSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(ApprovalStatusValues));
 
 export type ApprovalStatus = z.infer<typeof ApprovalStatusSchema>;

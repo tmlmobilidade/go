@@ -1,4 +1,4 @@
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useTranslations } from 'next-intl';
 
 import { formatDayDetailed, formatDayShort } from './formatDates';

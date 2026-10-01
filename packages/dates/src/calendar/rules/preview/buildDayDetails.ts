@@ -1,6 +1,6 @@
 import { calendarKey, CalendarKey, datesFromCalendarKey } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
-import { type Event, HHMM, Holiday, type ScheduleRule, timeToMinutes, type YearPeriod } from '@tmlmobilidade/types';
+import { type Event, HHMM, Holiday, type ScheduleRule, timeToMinutes, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 
 import { computeActiveRules } from '../calculation/index.js';
 import { DayRuleDetail, DayScheduleDetail } from './types.js';
@@ -121,7 +121,7 @@ export function buildAffectedDaysDetails(
 
 	let currentDate = startDate.startOf('day');
 
-	while (currentDate.unix_timestamp <= endDate.unix_timestamp) {
+	while (currentDate.unix_milliseconds <= endDate.unix_milliseconds) {
 		const key = calendarKey(currentDate);
 		const dayDetails = buildDayScheduleDetail(key, allRules, periods, holidays, options?.events);
 

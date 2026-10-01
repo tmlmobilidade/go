@@ -5,7 +5,7 @@
 import { GtfsStepConfirmation } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepConfirmation';
 import { GtfsStepDropzone } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepDropzone';
 import { GtfsStepSelection } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepSelection';
-import { type Pattern } from '@tmlmobilidade/types';
+import { type Pattern } from '@tmlmobilidade/go-types-offer';
 import { openModal } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 

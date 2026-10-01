@@ -3,7 +3,7 @@
 /* * */
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
-import { WEEKDAYS } from '@tmlmobilidade/types';
+import { WEEKDAYS } from '@tmlmobilidade/go-types-offer';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
 
 /* * */

@@ -1,1 +1,1 @@
-export * from '@/from-pcgi-to-raw/locations/location-v30.js';
+export * from './location-v30.js';

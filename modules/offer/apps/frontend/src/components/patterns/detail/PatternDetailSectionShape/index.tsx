@@ -6,7 +6,7 @@ import { usePatternDetailContext } from '@/components/patterns/detail/PatternDet
 import { openGtfsImportModal } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImport.modal';
 import { ShapeEditorModal } from '@/components/patterns/shape/shape-editor/ShapeEditor.modal';
 import { IconFileZip, IconShape } from '@tabler/icons-react';
-import { Pattern } from '@tmlmobilidade/types';
+import { type Pattern } from '@tmlmobilidade/go-types-offer';
 import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 

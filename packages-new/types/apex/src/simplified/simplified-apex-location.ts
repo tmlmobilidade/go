@@ -1,6 +1,6 @@
 /* * */
 
-import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,7 +10,7 @@ export const SimplifiedApexLocationSchema = z.object({
 	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
-	created_at: UnixTimestampSchema,
+	created_at: UnixMillisecondsSchema,
 	device_id: z.string(),
 	is_ok: z.boolean().default(false),
 	is_ok_pcgi: z.boolean().default(false),
@@ -19,10 +19,10 @@ export const SimplifiedApexLocationSchema = z.object({
 	mac_sam_serial_number: z.number(),
 	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string(),
-	received_at: UnixTimestampSchema,
+	received_at: UnixMillisecondsSchema,
 	stop_id: z.string(),
 	trip_id: z.string().nullable().default(null),
-	updated_at: UnixTimestampSchema,
+	updated_at: UnixMillisecondsSchema,
 	vehicle_id: z.string().nullable().default(null),
 }).transform((val) => {
 	// Setup the individual conditions to consider

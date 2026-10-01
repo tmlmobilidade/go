@@ -3,7 +3,7 @@
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
 import { type StorageError, toStorageError } from '@tmlmobilidade/go-clients-oci-storage';
-import { runWithConcurrency } from '@tmlmobilidade/utils';
+import { runWithConcurrency } from '@tmlmobilidade/go-utils-exec';
 
 import { type StorageDeps } from '../types/deps.js';
 import { type BatchResult } from './batch-upload.js';

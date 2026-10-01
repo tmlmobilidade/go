@@ -4,6 +4,14 @@ import namespaceAlertsEs from './namespaces/alerts/es.json' with { type: 'json' 
 import namespaceAlertsPt from './namespaces/alerts/pt.json' with { type: 'json' };
 import namespaceComponentsEs from './namespaces/components/es.json' with { type: 'json' };
 import namespaceComponentsPt from './namespaces/components/pt.json' with { type: 'json' };
+import namespaceDatatableEs from './namespaces/datatable/es.json' with { type: 'json' };
+import namespaceDatatablePt from './namespaces/datatable/pt.json' with { type: 'json' };
+import namespaceExtractionsEs from './namespaces/extractions/es.json' with { type: 'json' };
+import namespaceExtractionsPt from './namespaces/extractions/pt.json' with { type: 'json' };
+import namespaceFiltersEs from './namespaces/filters/es.json' with { type: 'json' };
+import namespaceFiltersPt from './namespaces/filters/pt.json' with { type: 'json' };
+import namespaceMapEs from './namespaces/map/es.json' with { type: 'json' };
+import namespaceMapPt from './namespaces/map/pt.json' with { type: 'json' };
 import namespaceOperationsEs from './namespaces/operations/es.json' with { type: 'json' };
 import namespaceOperationsPt from './namespaces/operations/pt.json' with { type: 'json' };
 import namespaceStatusEs from './namespaces/status/es.json' with { type: 'json' };
@@ -19,6 +27,10 @@ export const i18nResourceKeysPtShared = {
 	shared: {
 		alerts: namespaceAlertsPt,
 		components: namespaceComponentsPt,
+		datatable: namespaceDatatablePt,
+		extractions: namespaceExtractionsPt,
+		filters: namespaceFiltersPt,
+		map: namespaceMapPt,
 		operations: namespaceOperationsPt,
 		status: namespaceStatusPt,
 	},
@@ -31,6 +43,10 @@ export const i18nResourceKeysEsShared = {
 	shared: {
 		alerts: namespaceAlertsEs,
 		components: namespaceComponentsEs,
+		datatable: namespaceDatatableEs,
+		extractions: namespaceExtractionsEs,
+		filters: namespaceFiltersEs,
+		map: namespaceMapEs,
 		operations: namespaceOperationsEs,
 		status: namespaceStatusEs,
 	},

@@ -1,6 +1,6 @@
 /* * */
 
-import { Typology } from '@tmlmobilidade/types';
+import { type Typology } from '@tmlmobilidade/go-types-offer';
 
 export function normalizeHexColor(value?: null | string) {
 	if (!value) return null;

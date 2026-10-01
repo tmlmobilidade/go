@@ -14,28 +14,28 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.45.0",
+		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.2.11",
-		"nuqs": "2.9.1",
+		"next": "16.3.4",
+		"nuqs": "2.10.1",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
-		"react-i18next": "17.0.10",
-		"sharp": "0.35.3",
-		"swr": "2.4.2"
+		"react-i18next": "17.0.12",
+		"sharp": "0.35.4",
+		"swr": "2.5.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/geojson": "7946.0.16",
-		"@types/node": "26.1.1",
-		"@types/react": "19.2.17",
-		"@types/react-dom": "19.2.3",
+		"@types/node": "26.4.0",
+		"@types/react": "19.2.18",
+		"@types/react-dom": "19.2.5",
 		"typescript": "6.0.3"
 	}
 }

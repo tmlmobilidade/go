@@ -1,7 +1,7 @@
 /* * */
 
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /* * */
 

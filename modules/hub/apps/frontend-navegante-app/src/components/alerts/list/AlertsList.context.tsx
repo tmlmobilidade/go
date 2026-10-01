@@ -2,25 +2,25 @@
 
 import { transformAlertDataIntoGeoJsonFeature, useAlertsContext } from '@/components/alerts/Alerts.context';
 import { type AlertGroup } from '@/types/alerts/alert-group';
-import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
-import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useFilterStateString, UseFilterStateStringReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
+import { GtfsRtCause, GtfsRtEffect } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type ListContextStateTemplate, useFilterStateText, UseFilterStateTextReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-const CM_AGENCY_IDS = new Set(['41', '42', '43', '44']);
+const CM_AGENCY_IDS = new Set(['A2L1N', 'BNA17', 'LA77N', 'YA15B']);
 
 /* * */
 
 interface AlertsListContextState extends ListContextStateTemplate {
 	actions: {
 		toggle: (view: 'current' | 'future' | 'map') => void
-		updateFilterByCause: (value: AlertCause | null) => void
-		updateFilterByEffect: (value: AlertEffect | null) => void
+		updateFilterByCause: (value: GtfsRtCause | null) => void
+		updateFilterByEffect: (value: GtfsRtEffect | null) => void
 		updateFilterByLineId: (value: string) => void
 		updateFilterByStopId: (value: string) => void
 	}
@@ -32,15 +32,15 @@ interface AlertsListContextState extends ListContextStateTemplate {
 	}
 	data: {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
-		filtered: HubAlert[]
+		filtered: HubV1ApiAlert[]
 		grouped: AlertGroup[]
 	}
 	filters: {
-		agency: UseFilterStateStringReturnType
-		cause: AlertCause | null
-		effect: AlertEffect | null
+		agency: UseFilterStateTextReturnType
+		cause: GtfsRtCause | null
+		effect: GtfsRtEffect | null
 		line_id: null | string
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 		stop_id: null | string
 	}
 	view: {
@@ -72,27 +72,27 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const { i18n, t } = useTranslation();
 
-	const filterSearch = useFilterStateString('search');
-	const filterAgency = useFilterStateString('agency');
+	const filterSearch = useFilterStateText('search');
+	const filterAgency = useFilterStateText('agency');
 
 	const [currentView, setCurrentView] = useLocalStorage<'current' | 'future' | 'map'>({ defaultValue: 'current', key: 'alerts-current-view' });
 	const [filterByLineIdState, setFilterByLineIdState] = useQueryState('line_id');
 	const [filterByStopIdState, setFilterByStopIdState] = useQueryState('stop_id');
 	const [filterByCauseState, setFilterByCauseState] = useQueryState('cause', {
-		parse: (value: string) => value as AlertCause | null,
-		serialize: (value: AlertCause | null) => value as string,
+		parse: (value: string) => value as GtfsRtCause | null,
+		serialize: (value: GtfsRtCause | null) => value as string,
 	});
 	const [filterByEffectState, setFilterByEffectState] = useQueryState('effect', {
-		parse: (value: string) => value as AlertEffect | null,
-		serialize: (value: AlertEffect | null) => value as string,
+		parse: (value: string) => value as GtfsRtEffect | null,
+		serialize: (value: GtfsRtEffect | null) => value as string,
 	});
 
 	//
 	// B. Transform data
 
-	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_timestamp, []);
+	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_milliseconds, []);
 
-	const searchResultsData = useSearch<HubAlert>({
+	const searchResultsData = useSearch<HubV1ApiAlert>({
 		accessors: ['title', 'description'],
 		data: alertsContext.data.alerts,
 		query: filterSearch.value,
@@ -170,7 +170,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			if (!alert.active_period_start_date) return result;
 
 			const alertStartDate = Dates
-				.fromUnixTimestamp(alert.active_period_start_date)
+				.fromUnixMilliseconds(alert.active_period_start_date)
 				.setZone('Europe/Lisbon', 'offset_only');
 			const alertStartDateString = alertStartDate.toFormat('yyyyMMdd');
 			const existingGroup = result.find(group => group.value === alertStartDateString);
@@ -183,14 +183,14 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			const alertStartDateCompare = alertStartDate.startOf('day');
 			const formattedDate = alertStartDate.toFormat('d LLLL yyyy', { locale: displayLocale });
 
-			let formattedGroupLabel = '';
-			if (alertStartDateCompare.unix_timestamp === today.unix_timestamp) {
+			let formattedGroupLabel: string;
+			if (alertStartDateCompare.unix_milliseconds === today.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.today', '', { value: formattedDate });
-			} else if (alertStartDateCompare.unix_timestamp === tomorrow.unix_timestamp) {
+			} else if (alertStartDateCompare.unix_milliseconds === tomorrow.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.tomorrow', '', { value: formattedDate });
-			} else if (alertStartDateCompare.unix_timestamp === yesterday.unix_timestamp) {
+			} else if (alertStartDateCompare.unix_milliseconds === yesterday.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.yesterday', '', { value: formattedDate });
-			} else if (alertStartDateCompare.unix_timestamp < yesterday.unix_timestamp) {
+			} else if (alertStartDateCompare.unix_milliseconds < yesterday.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.past', '', { value: formattedDate });
 			} else {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.future', '', { value: formattedDate });
