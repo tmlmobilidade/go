@@ -4,7 +4,7 @@ import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
 
 /**
  * Mongo `$match` fragment: stop is allowed if any primary/secondary/tertiary
- * osm_id is in the user's `municipality_ids` permission values.
+ * osm_id is in the user's `location_ids` permission values.
  */
 export function locationPermissionMatch(allowedOsmIds: string[]) {
 	const ids = allowedOsmIds.map(Number);
