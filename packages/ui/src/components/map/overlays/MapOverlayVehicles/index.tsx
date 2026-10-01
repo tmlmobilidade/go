@@ -2,7 +2,6 @@
 
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Layer, Source } from '@vis.gl/react-maplibre';
-import { type DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 import { useEffect, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -17,7 +16,6 @@ export const MapOverlayVehiclesInteractiveLayerId = 'default-layer-vehicles-regu
 /* * */
 
 interface Props {
-	display?: 'ambient' | 'default'
 	presentBeforeId?: string
 	showCounter?: 'always' | 'positive'
 	vehiclesData?: GeoJSON.FeatureCollection<GeoJSON.Point>
@@ -109,83 +107,9 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 	};
 }
 
-interface VehicleIconSize {
-	zoom10: number
-	zoom20: number
-}
-
-const DEFAULT_VEHICLE_ICON_SIZE: VehicleIconSize = {
-	zoom10: 0.09,
-	zoom20: 0.26,
-};
-
-const AMBIENT_VEHICLE_ICON_SIZE: VehicleIconSize = {
-	zoom10: 0.07,
-	zoom20: 0.20,
-};
-
-const VEHICLE_ICON_SIZE_BY_AGENCY: Array<{
-	agencyIds: readonly number[]
-	size: VehicleIconSize
-}> = [
-	{
-		agencyIds: [1],
-		size: { zoom10: 0.085, zoom20: 0.24 },
-	},
-	{
-		agencyIds: [21],
-		size: { zoom10: 0.085, zoom20: 0.24 },
-	},
-];
-
-const AGENCY_ID_INPUT = ['to-string', ['get', 'agency_id']];
-
-function buildAgencyMatch<T extends number | string>(
-	entries: ReadonlyArray<{ agencyIds: readonly number[], value: T }>,
-	defaultValue: T,
-) {
-	const cases: (number | string | T)[] = [];
-
-	for (const { agencyIds, value } of entries) {
-		for (const agencyId of agencyIds) {
-			cases.push(String(agencyId), value);
-		}
-	}
-
-	return ['match', AGENCY_ID_INPUT, ...cases, defaultValue];
-}
-
-function buildVehicleIconSizeExpression(display: 'ambient' | 'default') {
-	const baseSize = display === 'ambient'
-		? AMBIENT_VEHICLE_ICON_SIZE
-		: DEFAULT_VEHICLE_ICON_SIZE;
-
-	const zoom10Cases = VEHICLE_ICON_SIZE_BY_AGENCY.map(({ agencyIds, size }) => ({
-		agencyIds,
-		value: display === 'ambient' ? size.zoom10 * 0.78 : size.zoom10,
-	}));
-
-	const zoom20Cases = VEHICLE_ICON_SIZE_BY_AGENCY.map(({ agencyIds, size }) => ({
-		agencyIds,
-		value: display === 'ambient' ? size.zoom20 * 0.78 : size.zoom20,
-	}));
-
-	return [
-		'interpolate',
-		['linear'],
-		['zoom'],
-		10,
-		buildAgencyMatch(zoom10Cases, baseSize.zoom10),
-		16,
-		display === 'ambient' ? 0.14 : 0.19,
-		20,
-		buildAgencyMatch(zoom20Cases, baseSize.zoom20),
-	] as unknown as DataDrivenPropertyValueSpecification<number>;
-}
-
 /* * */
 
-export function MapOverlayVehicles({ display = 'default', presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection }: Props) {
+export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection }: Props) {
 	//
 
 	//
@@ -258,6 +182,43 @@ export function MapOverlayVehicles({ display = 'default', presentBeforeId, showC
 
 				<Layer
 					beforeId={presentBeforeId}
+					id="default-layer-vehicles-delay"
+					source="default-source-vehicles"
+					type="symbol"
+					layout={{
+						'icon-allow-overlap': true,
+						'icon-anchor': 'center',
+						'icon-ignore-placement': true,
+						'icon-image': 'cmet-bus-delay',
+						'icon-offset': [0, 0],
+						'icon-rotate': ['get', 'bearing'],
+						'icon-rotation-alignment': 'map',
+						'icon-size': ['interpolate',
+							['linear'],
+							['zoom'],
+							10,
+							0.05,
+							20,
+							0.15,
+						],
+						'symbol-placement': 'point',
+					}}
+					paint={{
+						'icon-opacity': [
+							'interpolate',
+							['linear'],
+							['get',
+								'delay'],
+							20,
+							0,
+							40,
+							1,
+						],
+					}}
+				/>
+
+				<Layer
+					beforeId="default-layer-vehicles-delay"
 					id="default-layer-vehicles-regular"
 					source="default-source-vehicles"
 					type="symbol"
@@ -268,63 +229,47 @@ export function MapOverlayVehicles({ display = 'default', presentBeforeId, showC
 						'icon-image': [
 							'match',
 							['to-string', ['get', 'agency_id']],
-							'1', 'map-vehicle-ccfl-bus',
-							'2', 'map-vehicle-ml-train',
-							'3', 'map-vehicle-cp-train',
-							'4', 'map-vehicle-ttsl-boat',
-							'8', 'map-vehicle-tcb-bus',
-							'15', 'map-vehicle-fertagus-train',
-							'16', 'map-vehicle-mts-tram',
-							'21', 'map-vehicle-mobi-bus',
-							'41', 'map-vehicle-cmet-bus',
-							'42', 'map-vehicle-cmet-bus',
-							'43', 'map-vehicle-cmet-bus',
-							'44', 'map-vehicle-cmet-bus',
-							'map-vehicle-cmet-bus',
+							'4',
+							'ttsl-boat-regular',
+							'3',
+							'ttsl-boat-regular',
+							'1',
+							'carris-bus-regular',
+							'21',
+							'mobi-bus-regular',
+							'cmet-bus-regular',
 						],
 						'icon-offset': [0, 0],
 						'icon-rotate': ['get', 'bearing'],
 						'icon-rotation-alignment': 'map',
-						'icon-size': buildVehicleIconSizeExpression(display),
+						'icon-size': ['interpolate',
+							['linear'],
+							['zoom'],
+							10,
+							['match',
+								['to-string', ['get', 'agency_id']],
+								'1',
+								0.0475,
+								'21',
+								0.0475,
+								0.05,
+							],
+							20,
+							['match',
+								['to-string', ['get', 'agency_id']],
+								'1',
+								0.1425,
+								'21',
+								0.1425,
+								0.15,
+							],
+						],
 						'symbol-placement': 'point',
 					}}
 					paint={{
-						'icon-opacity': display === 'ambient'
-							? ['get', 'opacity']
-							: [
-								'interpolate',
-								['linear'],
-								['zoom'],
-								12,
-								0,
-								13,
-								['get', 'opacity'],
-							],
+						'icon-opacity': ['get', 'opacity'],
 					}}
 				/>
-
-				{display === 'default' && (
-					<Layer
-						beforeId="default-layer-vehicles-regular"
-						id="default-layer-vehicles-dot"
-						source="default-source-vehicles"
-						type="circle"
-						paint={{
-							'circle-color': '#00CD32',
-							'circle-opacity': [
-								'interpolate',
-								['linear'],
-								['zoom'],
-								12,
-								['get', 'opacity'],
-								13,
-								0,
-							],
-							'circle-pitch-alignment': 'map',
-							'circle-radius': 1.8,
-						}}
-					/>
-				)}
 
 			</Source>
 
