@@ -1,7 +1,7 @@
 'use client';
 
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { Collapsible, Grid, MapOverlayMultipleStops, MapOverlayMultipleStopsDataProps, MapView, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, MapOverlayMultipleStops, MapOverlayMultipleStopsDataProps, MapView, Section, Surface, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { Point } from 'geojson';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -61,13 +61,16 @@ export function StopsDetailSectionGeneral() {
 
 			<Section>
 				<Grid columns="ab" gap="md" placeItems="start">
-					<MapView id="stop-detail-map" toolbar={false}>
-						<MapOverlayMultipleStops
-							data={stopMapData}
-							id="stop-map"
-							visible
-						/>
-					</MapView>
+					<Surface height="full">
+
+						<MapView id="stop-detail-map" toolbar={false}>
+							<MapOverlayMultipleStops
+								data={stopMapData}
+								id="stop-map"
+								visible
+							/>
+						</MapView>
+					</Surface>
 					<Section gap="md" padding="none">
 						<StopsDetailUpdateCoordinates />
 						<StopsDetailLocation />

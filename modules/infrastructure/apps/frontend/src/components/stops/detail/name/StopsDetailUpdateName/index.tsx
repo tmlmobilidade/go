@@ -56,9 +56,9 @@ export function StopsDetailUpdateName() {
 			<Surface variant="bordered" withBackground>
 				<Section alignItems="flex-start" flexDirection="row" gap="md" justifyContent="space-between" padding="md">
 					<Section alignItems="flex-start" flexDirection="row" gap="md" padding="none">
-						<div className={styles.iconWrapper} aria-hidden>
+						{/* <div className={styles.iconWrapper} aria-hidden>
 							<IconBus size={22} stroke={1.5} />
-						</div>
+						</div> */}
 						<Section gap="sm" padding="none">
 							{/* Name */}
 							<Section gap="xs" padding="none">

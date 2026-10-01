@@ -69,9 +69,9 @@ export function StopsDetailUpdateCoordinates() {
 		<Surface variant="bordered" withBackground>
 			<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="md">
 				<Section alignItems="flex-start" flexDirection="row" gap="md" padding="none">
-					<div className={styles.iconWrapper} aria-hidden>
+					{/* <div className={styles.iconWrapper} aria-hidden>
 						<IconMapPin size={22} stroke={1.5} />
-					</div>
+					</div> */}
 					<Section gap="xs" padding="none">
 						<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.coordinates')}</Label>
 						<Text size="base" weight="semibold">{coordinatesDisplay}</Text>

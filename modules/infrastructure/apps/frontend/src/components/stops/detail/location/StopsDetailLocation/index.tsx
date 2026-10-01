@@ -34,9 +34,9 @@ export function StopsDetailLocation() {
 			<Surface variant="bordered" withBackground>
 				<Section alignItems="flex-start" flexDirection="row" gap="md" padding="md">
 					<Section alignItems="flex-start" flexDirection="row" gap="md" padding="none">
-						<div className={styles.iconWrapper} aria-hidden>
+						{/* <div className={styles.iconWrapper} aria-hidden>
 							<IconBuildingCommunity size={22} stroke={1.5} />
-						</div>
+						</div> */}
 						<Section gap="sm" padding="none">
 							<Section gap="xs" padding="none">
 								<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.location_primary')}</Label>

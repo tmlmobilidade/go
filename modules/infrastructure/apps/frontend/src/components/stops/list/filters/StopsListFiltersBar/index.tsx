@@ -4,7 +4,6 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 
 import { StopsListFilterAgency } from '../StopsListFilterAgency';
 import { StopsListFilterConnections } from '../StopsListFilterConnections';
-import { StopsListFilterEquipment } from '../StopsListFilterEquipment';
 import { StopsListFilterFacilities } from '../StopsListFilterFacilities';
 import { StopsListFilterLifecycleStatus } from '../StopsListFilterLifecycleStatus';
 import { StopsListFilterLocationNeighbourhood } from '../StopsListFilterLocationNeighberhood';
@@ -25,7 +24,6 @@ export function StopsListFiltersBar() {
 			<StopsListFilterLifecycleStatus />
 			<StopsListFilterFacilities />
 			<StopsListFilterConnections />
-			<StopsListFilterEquipment />
 		</FiltersBar>
 	);
 }
