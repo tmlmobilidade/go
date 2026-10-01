@@ -62,6 +62,7 @@ interface RoutePlannerContextState {
 		was_opened_from_place: boolean
 	}
 	flags: {
+		can_start_trip: boolean
 		is_navigating: boolean
 		is_planning: boolean
 	}
@@ -189,11 +190,12 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	}, [destination, origin, requestPlan, resetPlanRequest, t, travelTime]);
 
 	const startItinerary = useCallback((index: number) => {
+		if (!origin?.isCurrentLocation || !itineraries[index]) return;
 		setSelectedItineraryIndex(index);
 		setIsNavigating(true);
 		setViewMode('itinerary-detail');
 		tripSheetHistoryRef.current = suspend();
-	}, [suspend]);
+	}, [itineraries, origin, suspend]);
 
 	const endActiveTrip = useCallback(() => {
 		setIsNavigating(false);
@@ -393,6 +395,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 			was_opened_from_place: wasOpenedFromPlace,
 		},
 		flags: {
+			can_start_trip: origin?.isCurrentLocation === true,
 			is_navigating: isNavigating,
 			is_planning: isPlanning,
 		},

@@ -104,11 +104,13 @@ export function RoutePlannerItineraryDetail() {
 						<button className={styles.alternativesButton} onClick={routePlannerContext.actions.openResults} type="button">
 							{t('default:routes.RoutePlanner.results.view_alternatives')}
 						</button>
-						<RoutePlannerGoButton
-							ariaLabel={t('default:routes.RoutePlanner.results.start_route_aria_label')}
-							onClick={() => routePlannerContext.actions.startItinerary(routePlannerContext.data.selected_itinerary_index ?? 0)}
-							size="md"
-						/>
+						{routePlannerContext.flags.can_start_trip && (
+							<RoutePlannerGoButton
+								ariaLabel={t('default:routes.RoutePlanner.results.start_route_aria_label')}
+								onClick={() => routePlannerContext.actions.startItinerary(routePlannerContext.data.selected_itinerary_index ?? 0)}
+								size="md"
+							/>
+						)}
 					</>
 				)}
 			</div>

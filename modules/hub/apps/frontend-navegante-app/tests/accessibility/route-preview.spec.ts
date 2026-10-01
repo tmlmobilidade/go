@@ -27,6 +27,7 @@ test('selected itinerary stays actionable in compact preview and returns to its 
 	await expect(preview.locator('header').getByText('(44 min)', { exact: true })).toBeVisible();
 	const go = preview.getByRole('button', { name: 'Iniciar viagem com este percurso' });
 	await expect(go).toBeInViewport();
+	await expect(go).toBeEnabled();
 	await expect(preview.getByRole('button', { name: 'Ver alternativas' })).toBeInViewport();
 	await expect(preview.getByRole('button', { name: 'Expandir painel' })).toHaveAttribute('aria-expanded', 'false');
 	await page.screenshot({ path: '/private/tmp/navegante-route-preview.png' });
@@ -59,6 +60,19 @@ test('selected itinerary stays actionable in compact preview and returns to its 
 	await page.getByRole('dialog').getByRole('button', { name: /Alverca de teste/ }).click();
 	await expect(choices).toHaveCount(12);
 	await expect(page.getByRole('dialog', { name: 'Opções de percurso' }).getByRole('button', { name: 'Expandir painel' })).toHaveAttribute('aria-expanded', 'false');
+	await page.getByRole('button', { name: 'Trocar partida e destino' }).click();
+	await expect(page.getByRole('button', { name: 'Partida Alverca de teste', exact: true })).toBeVisible();
+	await choices.first().click();
+	await expect(preview).toBeVisible();
+	await expect(go).toHaveCount(0);
+	await expect(preview.locator('[aria-current="step"]')).toHaveCount(0);
+	await preview.getByRole('button', { name: 'Ver alternativas' }).click();
+	await page.getByRole('dialog', { name: 'Opções de percurso' }).getByRole('button', { name: 'Recolher painel' }).click();
+	await page.getByRole('button', { name: 'Trocar partida e destino' }).click();
+	await expect(page.getByRole('button', { name: 'Partida A sua localização', exact: true })).toBeVisible();
+	await choices.first().click();
+	await expect(go).toBeEnabled();
+	await preview.getByRole('button', { name: 'Ver alternativas' }).click();
 	await page.getByRole('dialog', { name: 'Opções de percurso' }).getByRole('button', { name: 'Fechar', exact: true }).click();
 	await page.getByRole('dialog', { name: 'Pesquisa', exact: true }).getByRole('button', { name: 'Fechar', exact: true }).click();
 	await expect(page.getByRole('dialog')).toHaveCount(0);

@@ -21,6 +21,7 @@ export function createRoutePlannerCurrentLocation(params: CreateRoutePlannerCurr
 
 	return {
 		detail: params.detail,
+		isCurrentLocation: true,
 		label: params.label,
 		lat: Number(params.latitude.toFixed(6)),
 		lon: Number(params.longitude.toFixed(6)),

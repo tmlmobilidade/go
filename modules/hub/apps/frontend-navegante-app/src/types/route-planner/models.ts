@@ -19,6 +19,7 @@ export interface RoutePlannerLocation {
 	detail: string
 	houseNumber?: string
 	id?: string
+	isCurrentLocation?: boolean
 	label: string
 	lat?: number
 	level?: number

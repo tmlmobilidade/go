@@ -98,6 +98,7 @@ describe('route-planner stop and coordinate locations', () => {
 			longitude: -9.1365946,
 		}), {
 			detail: 'A sua localização atual',
+			isCurrentLocation: true,
 			label: 'Localização atual',
 			lat: 38.707751,
 			lon: -9.136595,
