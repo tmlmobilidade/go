@@ -1,12 +1,8 @@
 /* * */
 
-import { StopAmenitiesSchema } from '@/stops/amenities.js';
-import { StopChecksSchema } from '@/stops/checks.js';
 import { StopConnectionSchema } from '@/stops/connections.js';
-import { StopEquipmentSchema } from '@/stops/equipment.js';
 import { StopFacilitySchema } from '@/stops/facilities.js';
 import { StopFlagSchema } from '@/stops/flag.js';
-import { StopInfrastructureSchema } from '@/stops/infrastructure.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
 import { StopShelterSchema } from '@/stops/shelter.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
@@ -44,19 +40,9 @@ export const StopSchema = BaseDocumentSchema.extend({
 	longitude: LongitudeSchema,
 
 	//
-	// Infrastructure
-
-	infrastructure: StopInfrastructureSchema,
-
-	//
 	// Shelter
 
-	shelter: StopShelterSchema,
-
-	//
-	// Checks
-
-	checks: StopChecksSchema,
+	shelter: StopShelterSchema.nullable().default(null),
 
 	//
 	// Facilities
@@ -64,26 +50,13 @@ export const StopSchema = BaseDocumentSchema.extend({
 	connections: z.array(StopConnectionSchema).default([]),
 	facilities: z.array(StopFacilitySchema).default([]),
 
-	//
-	// Equipments
-
-	equipment: z.array(StopEquipmentSchema).default([]),
-
-	//
-	// Amenities
-
-	amenities: StopAmenitiesSchema,
-
-	//
+	///
+	// Notes & Comments
 	// Images & Files
 
+	comments: z.array(CommentSchema).default([]),
 	file_ids: z.array(z.string()).default([]),
 	image_ids: z.array(z.string()).default([]),
-
-	//
-	// Notes & Comments
-
-	comments: z.array(CommentSchema).default([]),
 	observations: z.string().nullable().default(null),
 
 	//
