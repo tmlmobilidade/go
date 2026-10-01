@@ -63,13 +63,24 @@ GROUP BY id, name, admin_level, code, tags;
 /**
  * Find the administrative locations that cover a WGS84 point ($1 lon, $2 lat), plus the nearest
  * `place=locality` point within $3 metres (returned with `admin_level = 'neighbourhood'`), in one round-trip.
- * The point is transformed once, up front, so both spatial predicates can use the `way` indexes.
- * ponytail: `way` is Web Mercator, whose metres stretch by 1/cos(lat); dividing the radius by
- * cos(lat) corrects the cap while keeping the index usable. Upgrade path: geography cast.
+ * `way` is WGS84 geometry (SRID 4326). Prefilter neighbourhoods with the geometry index
+ * before applying the exact geography distance. The conservative degree radius uses less
+ * than the minimum metres per latitude degree and the most extreme latitude in the cap.
+ * Caps crossing the antimeridian or a pole use worldwide bounds to avoid dropping matches.
  */
 export const FIND_LOCATIONS_AT_POINT = `
-WITH pt AS (
-	SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326) AS way
+WITH point AS (
+	SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326) AS way,
+		$3::double precision / (
+			100000 * GREATEST(cos(radians(LEAST(90, abs($2) + $3::double precision / 100000))), 0.000001)
+		) AS degree_radius
+), pt AS (
+	SELECT way,
+		CASE WHEN abs($1) + degree_radius >= 180 OR abs($2) + degree_radius >= 90
+			THEN ST_MakeEnvelope(-180, -90, 180, 90, 4326)
+			ELSE ST_Expand(way, degree_radius)
+		END AS bounds
+	FROM point
 )
 SELECT
 	abs(p.osm_id) AS id,
@@ -91,8 +102,9 @@ UNION ALL
 	FROM planet_osm_point p, pt
 	WHERE p.place = 'neighbourhood'
 		AND p.name IS NOT NULL
+		AND p.way && pt.bounds
 		AND ST_DWithin(p.way::geography, pt.way::geography, $3)
 	ORDER BY p.way::geography <-> pt.way::geography
+	LIMIT 1
 );
 `;
-
