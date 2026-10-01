@@ -35,7 +35,7 @@ VALIDATOR_GO_CACHE_DIR="${TMPDIR:-/tmp}/go-plans-validator-cache"
 mkdir -p "$BIN_DIR"
 mkdir -p "$VALIDATOR_GO_CACHE_DIR"
 
-echo "Building local GTFS validator: $BINARY_PATH"
+echo "Building GTFS validator binary: $BINARY_PATH"
 (
 	cd "$SCRIPT_DIR/src"
 	CGO_ENABLED=0 GOCACHE="$VALIDATOR_GO_CACHE_DIR" GOOS="$GOOS" GOARCH="$GOARCH" go build \
@@ -44,4 +44,5 @@ echo "Building local GTFS validator: $BINARY_PATH"
 )
 
 chmod +x "$BINARY_PATH"
-echo "Local GTFS validator ready: $("$BINARY_PATH" -version)"
+echo "GTFS validator binary ready: $("$BINARY_PATH" -version)"
+echo
