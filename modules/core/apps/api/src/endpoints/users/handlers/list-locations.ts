@@ -10,5 +10,5 @@ import { type LocationTreeNode } from '@tmlmobilidade/go-types-locations';
  * @param reply The reply object
  */
 export async function listLocationsHandler(request: FastifyRequest, reply: FastifyReply<LocationTreeNode[]>) {
-	return sendSuccessApiResponse(reply, await locationsProvider.findTree());
+	return sendSuccessApiResponse(reply, await locationsProvider.findAdministrativeTree());
 }

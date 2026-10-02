@@ -71,6 +71,14 @@ class LocationsDbClass {
 		return result.rows;
 	}
 
+	/** Reads the last completely published tree, including during an OSM import. */
+	public async findCacheValue<T>(key: string): Promise<null | T> {
+		const result = await this.postgresClient.query<{ value: T }>(
+			'SELECT cache_value AS value FROM public.cache WHERE cache_key = $1', [key],
+		);
+		return result.rows[0]?.value ?? null;
+	}
+
 	/**
 	 * Executes a SQL query against the locations database.
 	 * @param text The SQL query text (supports `$1`, `$2`, … placeholders).
