@@ -69,7 +69,6 @@ func TestTypeScriptContainsTheGoContract(t *testing.T) {
 		"\t\tid: 'calendar_start_date_valid_yyyymmdd',\n\t\tmessage_field: 'start_date',\n\t\toutput_ids: ['calendar_start_end_dates_valid_yyyymmdd_order'],\n",
 		// _file settings and fixed technical severities.
 		"\t\tconfig_key: '_file',\n\t\teditable: true,\n\t\tgroup: 'agency',\n\t\tid: 'agency_file_missing',\n",
-		"\t\tid: 'agency_values_parse',\n\t\tseverity: 'error',\n",
 		"\t\tid: 'file_validation',\n\t\tseverities: ['error', 'ignore'],\n",
 		"export interface RuleConfigInput {\n\tcompare?: null | RuleCompareInput[]\n\tdepends_on?: null | string[]\n\toptions?: null | string[]\n\tseverity?: RuleSeverity\n}",
 		"export type RuleOutputId = 'calendar_start_end_dates_valid_yyyymmdd_order' | RuleId;",
@@ -86,6 +85,9 @@ func TestTypeScriptContainsTheGoContract(t *testing.T) {
 	}
 	if strings.Contains(text, "file_validation_file_missing") {
 		t.Error("file_validation._file must not become an editable file rule")
+	}
+	if strings.Contains(text, "_parse'") {
+		t.Error("parser diagnostics must not appear in the generated agency rule contract")
 	}
 }
 

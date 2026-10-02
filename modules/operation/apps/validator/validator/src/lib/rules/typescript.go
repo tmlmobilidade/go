@@ -371,7 +371,7 @@ func (w *tsWriter) writeIDs(catalogue []CatalogueEntry) {
 	sort.Strings(extra)
 
 	w.line("/**")
-	w.line(" * Rule ids emitted by the validator, one per catalogue entry.")
+	w.line(" * Rule ids in the agency rule catalogue, excluding parser diagnostics.")
 	w.line(" */")
 	w.line("export const ruleIds = [")
 	for _, id := range ids {
@@ -382,8 +382,8 @@ func (w *tsWriter) writeIDs(catalogue []CatalogueEntry) {
 	w.line("export type RuleId = typeof ruleIds[number];")
 	w.line("")
 	w.line("/**")
-	w.line(" * Rule ids that appear in validator messages, including shared ids that")
-	w.line(" * several catalogue entries emit through output_ids.")
+	w.line(" * Message ids emitted by catalogue rules, including shared output_ids.")
+	w.line(" * Parser diagnostics are outside this agency rule contract.")
 	w.line(" */")
 	if len(extra) == 0 {
 		w.line("export type RuleOutputId = RuleId;")

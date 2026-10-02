@@ -15,7 +15,7 @@
 /* * */
 
 /**
- * Rule ids emitted by the validator, one per catalogue entry.
+ * Rule ids in the agency rule catalogue, excluding parser diagnostics.
  */
 export const ruleIds = [
 	'agency_email_valid_address',
@@ -28,17 +28,14 @@ export const ruleIds = [
 	'agency_phone_valid_phone_number',
 	'agency_timezone_valid_id',
 	'agency_url_valid_url',
-	'agency_values_parse',
 	'calendar_dates_exception_date_valid_yyyymmdd',
 	'calendar_dates_exception_type_add_or_remove_service',
 	'calendar_dates_file_missing',
 	'calendar_dates_service_id_references_calendar',
-	'calendar_dates_values_parse',
 	'calendar_end_date_valid_yyyymmdd',
 	'calendar_file_missing',
 	'calendar_service_id_unique_non_empty',
 	'calendar_start_date_valid_yyyymmdd',
-	'calendar_values_parse',
 	'fare_attributes_agency_id_references_agency_table',
 	'fare_attributes_currency_type_valid',
 	'fare_attributes_file_missing',
@@ -46,12 +43,10 @@ export const ruleIds = [
 	'fare_attributes_payment_method_valid_gtfs_enum',
 	'fare_attributes_transfer_duration_valid_seconds_range',
 	'fare_attributes_transfers_valid_gtfs_enum',
-	'fare_attributes_values_parse',
 	'fare_media_file_missing',
 	'fare_media_id_unique',
 	'fare_media_name_non_empty',
 	'fare_media_type_valid',
-	'fare_media_values_parse',
 	'fare_price_valid_non_negative_decimal',
 	'fare_rule_contains_id_references_zones_stops',
 	'fare_rule_destination_id_references_zones_stops',
@@ -59,13 +54,11 @@ export const ruleIds = [
 	'fare_rule_origin_id_references_zones_stops',
 	'fare_rule_route_id_references_routes',
 	'fare_rules_file_missing',
-	'fare_rules_values_parse',
 	'feed_contact_email_valid_address',
 	'feed_contact_url_valid_http_url',
 	'feed_end_date_valid_yyyymmdd_not_before_start',
 	'feed_info_default_lang_matches_feed_lang_when_present',
 	'feed_info_file_missing',
-	'feed_info_values_parse',
 	'feed_lang_valid_tag',
 	'feed_publisher_name_non_empty',
 	'feed_publisher_url_valid_http_url',
@@ -78,14 +71,12 @@ export const ruleIds = [
 	'frequencies_file_missing',
 	'frequencies_headway_secs_positive_and_aligns_trip',
 	'frequencies_trip_id_references_trips_table',
-	'frequencies_values_parse',
 	'frequency_end_time_valid',
 	'frequency_start_time_valid',
 	'level_id_unique',
 	'level_index_required',
 	'level_name',
 	'levels_file_missing',
-	'levels_parse',
 	'pathway_from_stop_id_references_stops_table',
 	'pathway_id_unique',
 	'pathway_is_bidirectional_valid_gtfs_enum',
@@ -99,11 +90,9 @@ export const ruleIds = [
 	'pathway_to_stop_id_references_stops_table',
 	'pathway_traversal_time_non_negative_seconds',
 	'pathways_file_missing',
-	'pathways_values_parse',
 	'rider_categories_at_most_one_default_fare_category',
 	'rider_categories_eligibility_url_valid_http_url',
 	'rider_categories_file_missing',
-	'rider_categories_values_parse',
 	'rider_category_id_unique',
 	'rider_category_name_non_empty',
 	'route_agency_id_references_agency_table',
@@ -125,7 +114,6 @@ export const ruleIds = [
 	'routes_line_short_name_present_when_line_id_present',
 	'routes_network_id_references_networks_table',
 	'routes_path_type_valid_enum',
-	'routes_values_parse',
 	'shape_dist_traveled_delta_mismatches_haversine_block',
 	'shape_dist_traveled_delta_mismatches_haversine_segment',
 	'shape_dist_traveled_non_decreasing_with_sequence',
@@ -138,7 +126,6 @@ export const ruleIds = [
 	'shape_pt_sequence_strictly_increasing',
 	'shape_sequence_position_mismatches_cumulative_traveled_distance',
 	'shapes_file_missing',
-	'shapes_values_parse',
 	'stop_access_validation',
 	'stop_code_valid',
 	'stop_desc_valid',
@@ -165,7 +152,6 @@ export const ruleIds = [
 	'stop_times_stop_id_references_stops_table',
 	'stop_times_timepoint_valid_gtfs_enum',
 	'stop_times_trip_id_references_trips_table',
-	'stop_times_values_parse',
 	'stop_timezone_valid',
 	'stop_url_valid_url',
 	'stops_file_missing',
@@ -187,7 +173,6 @@ export const ruleIds = [
 	'stops_shelter_code_valid',
 	'stops_shelter_maintainer_valid',
 	'stops_tts_stop_name_valid',
-	'stops_values_parse',
 	'stops_wheelchair_boarding_valid_enum',
 	'stops_zone_id_valid',
 	'transfer_from_route_id_references_routes_table',
@@ -199,7 +184,6 @@ export const ruleIds = [
 	'transfer_type_valid_gtfs_enum',
 	'transfers_file_missing',
 	'transfers_min_transfer_time_non_negative_seconds',
-	'transfers_values_parse',
 	'trip_headsign_consistent_for_all_patterns_in_trips',
 	'trip_headsign_consistent_per_route_direction',
 	'trip_headsign_max_two_per_route',
@@ -229,7 +213,6 @@ export const ruleIds = [
 	'trips_shape_id_needs_to_be_the_same_as_pattern_id',
 	'trips_shape_id_references_shapes_table_when_present',
 	'trips_stop_sequence_increasing_by_one_along_trip',
-	'trips_values_parse',
 	'trips_wheelchair_accessible_valid_gtfs_enum',
 	'vehicle_agency_id_references_agency_table',
 	'vehicle_id_unique',
@@ -243,7 +226,6 @@ export const ruleIds = [
 	'vehicles_propulsion_valid_enum',
 	'vehicles_registration_date_valid_day_granularity',
 	'vehicles_total_capacity_non_negative',
-	'vehicles_values_parse',
 	'vehicles_vehicle_type_valid_enum',
 	'vehicles_wheelchair_accessible_valid_gtfs_enum',
 ] as const;
@@ -251,8 +233,8 @@ export const ruleIds = [
 export type RuleId = typeof ruleIds[number];
 
 /**
- * Rule ids that appear in validator messages, including shared ids that
- * several catalogue entries emit through output_ids.
+ * Message ids emitted by catalogue rules, including shared output_ids.
+ * Parser diagnostics are outside this agency rule contract.
  */
 export type RuleOutputId = 'calendar_start_end_dates_valid_yyyymmdd_order' | RuleId;
 

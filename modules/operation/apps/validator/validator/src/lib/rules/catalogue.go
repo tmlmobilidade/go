@@ -48,11 +48,8 @@ func Catalogue() []CatalogueEntry {
 			}
 		}
 	}
-	for _, group := range []string{"agency", "frequencies", "rider_categories", "shapes", "vehicles", "transfers", "calendar", "calendar_dates", "fare_attributes", "fare_media", "fare_rules", "feed_info", "pathways", "routes", "stop_times", "stops", "trips"} {
-		entries = append(entries, CatalogueEntry{Group: group, ID: group + "_values_parse", Severity: types.SEVERITY_ERROR})
-	}
+	// Parser errors are runtime diagnostics, not agency validation settings.
 	entries = append(entries,
-		CatalogueEntry{Group: "levels", ID: "levels_parse", Severity: types.SEVERITY_ERROR},
 		CatalogueEntry{Group: "file_validation", ID: "file_validation", Severities: []types.Severity{types.SEVERITY_ERROR, types.SEVERITY_IGNORE}},
 		CatalogueEntry{Group: "file_validation", ID: "file_not_found_in_rules", Severity: types.SEVERITY_WARNING},
 	)

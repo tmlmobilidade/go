@@ -127,12 +127,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'agency_url_valid_url',
 	},
 	{
-		editable: false,
-		group: 'agency',
-		id: 'agency_values_parse',
-		severity: 'error',
-	},
-	{
 		config_key: 'calendar_end_date_valid_yyyymmdd',
 		depends_on: ['calendar_file_present'],
 		editable: true,
@@ -164,12 +158,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		output_ids: ['calendar_start_end_dates_valid_yyyymmdd_order'],
 	},
 	{
-		editable: false,
-		group: 'calendar',
-		id: 'calendar_values_parse',
-		severity: 'error',
-	},
-	{
 		config_key: 'calendar_dates_exception_date_valid_yyyymmdd',
 		depends_on: ['calendar_dates_file_present'],
 		editable: true,
@@ -195,12 +183,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'calendar_dates',
 		id: 'calendar_dates_service_id_references_calendar',
-	},
-	{
-		editable: false,
-		group: 'calendar_dates',
-		id: 'calendar_dates_values_parse',
-		severity: 'error',
 	},
 	{
 		config_key: 'fare_attributes_agency_id_references_agency_table',
@@ -251,12 +233,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'fare_attributes_transfers_valid_gtfs_enum',
 	},
 	{
-		editable: false,
-		group: 'fare_attributes',
-		id: 'fare_attributes_values_parse',
-		severity: 'error',
-	},
-	{
 		config_key: 'fare_price_valid_non_negative_decimal',
 		depends_on: ['fare_attributes_file_present'],
 		editable: true,
@@ -289,12 +265,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'fare_media',
 		id: 'fare_media_type_valid',
-	},
-	{
-		editable: false,
-		group: 'fare_media',
-		id: 'fare_media_values_parse',
-		severity: 'error',
 	},
 	{
 		config_key: 'fare_rule_contains_id_references_zones_stops',
@@ -338,12 +308,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'fare_rules_file_missing',
 	},
 	{
-		editable: false,
-		group: 'fare_rules',
-		id: 'fare_rules_values_parse',
-		severity: 'error',
-	},
-	{
 		config_key: 'feed_contact_email_valid_address',
 		depends_on: ['feed_info_file_present'],
 		editable: true,
@@ -376,12 +340,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'feed_info',
 		id: 'feed_info_file_missing',
-	},
-	{
-		editable: false,
-		group: 'feed_info',
-		id: 'feed_info_values_parse',
-		severity: 'error',
 	},
 	{
 		config_key: 'feed_lang_valid_tag',
@@ -464,12 +422,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'frequencies_trip_id_references_trips_table',
 	},
 	{
-		editable: false,
-		group: 'frequencies',
-		id: 'frequencies_values_parse',
-		severity: 'error',
-	},
-	{
 		config_key: 'frequency_end_time_valid',
 		depends_on: ['frequency_start_time_valid'],
 		editable: true,
@@ -509,12 +461,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'levels',
 		id: 'levels_file_missing',
-	},
-	{
-		editable: false,
-		group: 'levels',
-		id: 'levels_parse',
-		severity: 'error',
 	},
 	{
 		config_key: 'pathway_from_stop_id_references_stops_table',
@@ -607,12 +553,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'pathways_file_missing',
 	},
 	{
-		editable: false,
-		group: 'pathways',
-		id: 'pathways_values_parse',
-		severity: 'error',
-	},
-	{
 		config_key: 'rider_categories_at_most_one_default_fare_category',
 		depends_on: ['rider_categories_file_present'],
 		editable: true,
@@ -631,12 +571,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'rider_categories',
 		id: 'rider_categories_file_missing',
-	},
-	{
-		editable: false,
-		group: 'rider_categories',
-		id: 'rider_categories_values_parse',
-		severity: 'error',
 	},
 	{
 		config_key: 'rider_category_id_unique',
@@ -785,12 +719,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'routes_path_type_valid_enum',
 	},
 	{
-		editable: false,
-		group: 'routes',
-		id: 'routes_values_parse',
-		severity: 'error',
-	},
-	{
 		config_key: 'shape_dist_traveled_delta_mismatches_haversine_block',
 		depends_on: ['shape_pt_sequence_strictly_increasing', 'shape_pt_lat_valid_latitude', 'shape_pt_lon_valid_longitude', 'shape_dist_traveled_non_negative_monotonic'],
 		editable: true,
@@ -872,12 +800,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'shapes',
 		id: 'shapes_file_missing',
-	},
-	{
-		editable: false,
-		group: 'shapes',
-		id: 'shapes_values_parse',
-		severity: 'error',
 	},
 	{
 		config_key: 'stop_times_arrival_departure_time_non_decreasing_by_stop_sequence',
@@ -1003,12 +925,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'stop_times',
 		id: 'stop_times_trip_id_references_trips_table',
-	},
-	{
-		editable: false,
-		group: 'stop_times',
-		id: 'stop_times_values_parse',
-		severity: 'error',
 	},
 	{
 		config_key: 'stop_access_validation',
@@ -1213,12 +1129,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'stops_tts_stop_name_valid',
 	},
 	{
-		editable: false,
-		group: 'stops',
-		id: 'stops_values_parse',
-		severity: 'error',
-	},
-	{
 		config_key: 'stops_wheelchair_boarding_valid_enum',
 		depends_on: ['stops_location_type_valid_enum'],
 		editable: true,
@@ -1293,12 +1203,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'transfers',
 		id: 'transfers_min_transfer_time_non_negative_seconds',
-	},
-	{
-		editable: false,
-		group: 'transfers',
-		id: 'transfers_values_parse',
-		severity: 'error',
 	},
 	{
 		config_key: 'trip_headsign_consistent_for_all_patterns_in_trips',
@@ -1503,12 +1407,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'trips_stop_sequence_increasing_by_one_along_trip',
 	},
 	{
-		editable: false,
-		group: 'trips',
-		id: 'trips_values_parse',
-		severity: 'error',
-	},
-	{
 		config_key: 'trips_wheelchair_accessible_valid_gtfs_enum',
 		depends_on: ['trips_file_present'],
 		editable: true,
@@ -1597,12 +1495,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'vehicles',
 		id: 'vehicles_total_capacity_non_negative',
-	},
-	{
-		editable: false,
-		group: 'vehicles',
-		id: 'vehicles_values_parse',
-		severity: 'error',
 	},
 	{
 		config_key: 'vehicles_vehicle_type_valid_enum',

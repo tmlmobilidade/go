@@ -29,8 +29,8 @@ Package and Docker builds use the committed files and do not need Go. CI runs th
 | `ruleSeverities`, `RuleSeverity` | Every severity the validator accepts. |
 | `ruleGroups`, `RuleGroup` | The file sections of the rules, such as `agency` or `stops`. |
 | `ruleConfigKeys`, `RuleConfigKey<G>` | The keys stored in each section. |
-| `ruleIds`, `RuleId` | The rule ids the validator emits, one per catalogue entry. |
-| `RuleOutputId` | Every id that can appear in a validator message. |
+| `ruleIds`, `RuleId` | Agency rule catalogue IDs, excluding parser diagnostics. |
+| `RuleOutputId` | Message IDs emitted by catalogue rules, including shared output IDs. |
 | `ValidationRules`, `AgencyRules`, `RuleConfig`, ... | The configuration after Go fills every omitted setting. |
 | `ValidationRulesInput`, `AgencyRulesInput`, `RuleConfigInput`, ... | The configuration as saved and accepted by Go, where keys may be omitted. |
 | `ruleCatalogue`, `RuleCatalogueEntry` | Editor metadata: editable rules and fixed technical notices. |
@@ -41,6 +41,8 @@ Package and Docker builds use the committed files and do not need Go. CI runs th
 | `isRuleSeverity`, `parseRuleSeverity` | Runtime severity checks. |
 
 The generated types are compile-time only. `normalizeValidationRules` removes saved rules whose group/key is no longer in the generated configuration, while preserving `_file` settings and the options and metadata of retained rules. Missing rules stay absent. It is intentionally stricter than the Go decoder: a retained rule must have a valid severity.
+
+Parser diagnostics remain runtime errors. They are excluded from the generated catalogue and rule IDs because they are not stored in agency validation settings.
 
 A stored config key can differ from the emitted rule id. For example, `frequencies.trip_id` emits `frequencies_trip_id_references_trips_table`. Catalogue entries carry both `config_key` and `id`, and `setRuleSeverity` always writes under `config_key`.
 
