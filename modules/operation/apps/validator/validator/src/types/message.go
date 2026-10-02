@@ -11,7 +11,8 @@ const (
 
 type Message struct {
 	Rows     []int    `json:"rows"`
-	FieldID  string   `json:"field_id"`
+	Field    string   `json:"field"`
+	FileName string   `json:"file_name"`
 	Message  string   `json:"message"`
 	RuleID   string   `json:"rule_id"`
 	Severity Severity `json:"severity"`
