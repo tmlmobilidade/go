@@ -32,19 +32,19 @@ func ShapePtLonValidation(shape *types.Shape, row int, rules *types.ShapesRules)
 			return
 		}
 
-		message := ctx.GetRequiredMessage("shape_pt_lon_validation.required", "shape_pt_lon_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate shape_pt_lon is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_pt_lon_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate shape_pt_lon is a valid longitude
 	if !lib.ValidateLongitude(*shape.ShapePtLon) {
-		ctx.AddError(ctx.GetTranslatedMessage("shape_pt_lon_validation.invalid", *shape.ShapePtLon))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *shape.ShapePtLon))
 	}
 }

@@ -33,14 +33,14 @@ func PatternIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *typ
 			return
 		}
 
-		message := ctx.GetRequiredMessage("pattern_id_validation.required", "pattern_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate pattern_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pattern_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 

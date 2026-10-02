@@ -31,19 +31,19 @@ func TransferDurationValidation(fareAttribute *types.FareAttribute, row int, gtf
 			return
 		}
 
-		message := ctx.GetRequiredMessage("transfer_duration_validation.required", "transfer_duration_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate transfer_duration is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("transfer_duration_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate transfer_duration is a valid transfer duration
 	if *fareAttribute.TransferDuration < 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("transfers_validation.invalid", *fareAttribute.TransferDuration))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *fareAttribute.TransferDuration))
 	}
 }

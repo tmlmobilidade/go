@@ -40,21 +40,21 @@ func TimepointValidation(stopTime *types.StopTime, row int, rules *types.StopTim
 		if ctx.ShouldSkip() {
 			return
 		}
-		message := ctx.GetRequiredMessage("timepoint_validation.required", "timepoint_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate timepoint is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("timepoint_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate timepoint is 0 or 1
 	tp := *stopTime.Timepoint
 	if tp != 0 && tp != 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("timepoint_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid"))
 		return
 	}
 
@@ -65,7 +65,7 @@ func TimepointValidation(stopTime *types.StopTime, row int, rules *types.StopTim
 		}
 
 		if !slices.Contains(*rules.Timepoint.Options, fmt.Sprintf("%d", tp)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("timepoint_validation.not_allowed", fmt.Sprintf("%d", tp)))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", fmt.Sprintf("%d", tp)))
 			return
 		}
 	}

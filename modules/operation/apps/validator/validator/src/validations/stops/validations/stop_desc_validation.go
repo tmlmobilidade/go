@@ -33,20 +33,20 @@ func StopDescValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stop_desc_validation.required", "stop_desc_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stop_desc is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_desc_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate stop_desc is not a duplicate of stop_name
 	if stop.StopName != nil && *stop.StopName == *stop.StopDesc {
-		ctx.AddWarning(ctx.GetTranslatedMessage("stop_desc_validation.duplicate", *stop.StopDesc, *stop.StopName))
+		ctx.AddWarning(ctx.GetTranslatedMessage("duplicate", *stop.StopDesc, *stop.StopName))
 		return
 	}
 
@@ -57,7 +57,7 @@ func StopDescValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		}
 
 		if !slices.Contains(*rules.StopDesc.Options, *stop.StopDesc) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_desc_validation.not_allowed", *stop.StopDesc))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.StopDesc))
 			return
 		}
 	}

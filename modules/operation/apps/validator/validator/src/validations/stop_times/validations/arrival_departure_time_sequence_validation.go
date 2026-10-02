@@ -69,7 +69,7 @@ func ArrivalDepartureTimeSequenceValidation(stopTimesByTrip map[string][]stopTim
 			// 5. Check if the times are non-decreasing along the stop sequence
 			if currentTime < previousTime {
 				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage(
-					"arrival_departure_time_sequence_validation.decreasing",
+					"decreasing",
 					tripId,
 					previous.StopSequence,
 					previousTimeLabel,

@@ -34,7 +34,7 @@ func AgencyIdValidation(fareAttribute *types.FareAttribute, row int, gtfs *types
 	agencyCount, _ := gtfs.GetTableCount("agency")
 	if fareAttribute.AgencyId == nil {
 		if agencyCount > 1 && !ctx.ShouldSkip() {
-			message := ctx.GetRequiredMessage("agency_id_validation.required", "agency_id_validation.recommended")
+			message := ctx.GetRequiredMessage("required", "recommended")
 			ctx.AddMessageWithSeverity(message)
 		}
 		return
@@ -42,13 +42,13 @@ func AgencyIdValidation(fareAttribute *types.FareAttribute, row int, gtfs *types
 
 	// 2. Check if agency_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if agency_id is a valid foreign key
 	if !lib.GtfsIdMapKeyExists(gtfs, "agency", *fareAttribute.AgencyId) {
-		ctx.AddError(ctx.GetTranslatedMessage("agency_id_validation.not_found", *fareAttribute.AgencyId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *fareAttribute.AgencyId))
 		return
 	}
 }

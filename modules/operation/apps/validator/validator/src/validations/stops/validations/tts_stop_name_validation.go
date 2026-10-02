@@ -34,14 +34,14 @@ func TtsStopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("tts_stop_name_validation.required", "tts_stop_name_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate tts_stop_name is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("tts_stop_name_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -52,7 +52,7 @@ func TtsStopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		}
 
 		if !slices.Contains(*rules.TtsStopName.Options, *stop.TtsStopName) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("tts_stop_name_validation.not_allowed", *stop.TtsStopName))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.TtsStopName))
 			return
 		}
 	}

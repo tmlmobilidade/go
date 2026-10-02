@@ -33,20 +33,20 @@ func LevelIdValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *types.
 			return
 		}
 
-		message := ctx.GetRequiredMessage("level_id_validation.required", "level_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate level_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate level_id is a valid foreign key
 	if !lib.GtfsIdMapKeyExists(&gtfs, "levels", *stop.LevelId) {
-		ctx.AddError(ctx.GetTranslatedMessage("level_id_validation.not_found", *stop.LevelId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *stop.LevelId))
 		return
 	}
 
@@ -57,7 +57,7 @@ func LevelIdValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *types.
 		}
 
 		if !slices.Contains(*rules.LevelId.Options, *stop.LevelId) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_id_validation.not_allowed", *stop.LevelId))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.LevelId))
 			return
 		}
 	}

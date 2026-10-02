@@ -32,21 +32,21 @@ func FareIdValidation(fareAttribute *types.FareAttribute, row int, gtfs *types.G
 			return
 		}
 
-		message := ctx.GetRequiredMessage("fare_id_validation.required", "fare_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate fare_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("fare_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate fare_id is unique
 	rows, err := gtfs.GetRowsById("fare_attributes", *fareAttribute.FareId)
 	if err == nil && len(rows) > 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("fare_id_validation.duplicate", *fareAttribute.FareId))
+		ctx.AddError(ctx.GetTranslatedMessage("duplicate", *fareAttribute.FareId))
 		return
 	}
 }

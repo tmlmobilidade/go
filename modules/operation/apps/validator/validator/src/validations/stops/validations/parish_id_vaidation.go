@@ -32,13 +32,13 @@ func ParishIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("parish_id_validation.required", "parish_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("parish_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -49,7 +49,7 @@ func ParishIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		}
 
 		if !slices.Contains(*rules.ParishId.Options, *stop.ParishId) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("parish_id_validation.not_allowed", *stop.ParishId))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ParishId))
 			return
 		}
 	}

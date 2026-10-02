@@ -41,20 +41,20 @@ func DestinationIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs
 			return
 		}
 
-		message := ctx.GetRequiredMessage("destination_id_validation.required", "destination_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate destination_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("destination_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate destination_id is a valid destination_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *fareRule.DestinationId) {
-		ctx.AddError(ctx.GetTranslatedMessage("destination_id_validation.invalid", *fareRule.DestinationId))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *fareRule.DestinationId))
 		return
 	}
 }

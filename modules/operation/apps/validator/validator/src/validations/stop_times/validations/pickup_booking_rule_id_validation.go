@@ -35,20 +35,20 @@ func PickupBookingRuleIdValidation(stopTime *types.StopTime, row int, gtfs *type
 			return
 		}
 
-		message := ctx.GetRequiredMessage("pickup_booking_rule_id_validation.required", "pickup_booking_rule_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate pickup_booking_rule_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pickup_booking_rule_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate pickup_booking_rule_id is Foreign Key referencing booking_rules.booking_rule_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "booking_rules", *stopTime.PickupBookingRuleId) {
-		ctx.AddError(ctx.GetTranslatedMessage("pickup_booking_rule_id_validation.not_found", *stopTime.PickupBookingRuleId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *stopTime.PickupBookingRuleId))
 		return
 	}
 
@@ -59,7 +59,7 @@ func PickupBookingRuleIdValidation(stopTime *types.StopTime, row int, gtfs *type
 		}
 
 		if !slices.Contains(*rules.PickupBookingRuleId.Options, *stopTime.PickupBookingRuleId) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pickup_booking_rule_id_validation.not_allowed", *stopTime.PickupBookingRuleId))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stopTime.PickupBookingRuleId))
 			return
 		}
 	}

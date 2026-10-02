@@ -35,20 +35,20 @@ func StopLonValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stop_lon_validation.required", "stop_lon_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stop_lon is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_lon_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate stop_lon is a valid longitude
 		if !lib.ValidateLongitude(*stop.StopLon) {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_lon_validation.invalid", *stop.StopLon))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *stop.StopLon))
 		return
 	}
 

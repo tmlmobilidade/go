@@ -32,21 +32,21 @@ func RouteIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *typ
 			return
 		}
 
-		message := ctx.GetRequiredMessage("route_id_validation.required", "route_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate route_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate route_id is Unique ID
 	rows, err := gtfs.GetRowsById("routes", *route.RouteId)
 	if err == nil && len(rows) > 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("route_id_validation.duplicate", *route.RouteId))
+		ctx.AddError(ctx.GetTranslatedMessage("duplicate", *route.RouteId))
 		return
 	}
 }

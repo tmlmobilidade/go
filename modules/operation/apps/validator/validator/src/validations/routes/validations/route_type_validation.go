@@ -48,14 +48,14 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 			return
 		}
 
-		message := ctx.GetRequiredMessage("route_type_validation.required", "route_type_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate route_type is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_type_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -66,7 +66,7 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		for i, validType := range validTypes {
 			validTypeStrings[i] = strconv.Itoa(validType)
 		}
-		ctx.AddError(ctx.GetTranslatedMessage("route_type_validation.invalid", *route.RouteType, strings.Join(validTypeStrings, ", ")))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *route.RouteType, strings.Join(validTypeStrings, ", ")))
 		return
 	}
 
@@ -77,7 +77,7 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		}
 
 		if !slices.Contains(*rules.RouteType.Options, strconv.Itoa(*route.RouteType)) {
-			ctx.AddError(ctx.GetTranslatedMessage("route_type_validation.not_allowed", *route.RouteType))
+			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *route.RouteType))
 			return
 		}
 	}

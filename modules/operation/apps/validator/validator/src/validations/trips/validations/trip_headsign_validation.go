@@ -35,14 +35,14 @@ func TripHeadsignValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 			return
 		}
 
-		message := ctx.GetRequiredMessage("trip_headsign_validation.required", "trip_headsign_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate trip_headsign is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("trip_headsign_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

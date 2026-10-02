@@ -1,91 +1,71 @@
 {
 	"agency_email_valid_address": {
-		"generic": "The \"agency_email\" field must contain a valid email address."
-	},
-	"agency_email_validation": {
 		"forbidden": "Field \"agency_email\" is forbidden",
+		"generic": "The \"agency_email\" field must contain a valid email address.",
 		"invalid": "Field \"agency_email\" \"%s\" is not a valid email address",
 		"not_allowed": "Field \"agency_email\" \"%s\" is not allowed",
 		"recommended": "Field \"agency_email\" is recommended",
 		"required": "Field \"agency_email\" is required"
 	},
 	"agency_fare_url_valid_url": {
-		"generic": "The \"agency_fare_url\" field must contain a valid URL."
-	},
-	"agency_fare_url_validation": {
 		"forbidden": "Field \"agency_fare_url\" is forbidden",
+		"generic": "The \"agency_fare_url\" field must contain a valid URL.",
 		"invalid": "Field \"agency_fare_url\" \"%s\" is not a valid URL",
 		"not_allowed": "Field \"agency_fare_url\" \"%s\" is not allowed",
 		"recommended": "Field \"agency_fare_url\" is recommended",
 		"required": "Field \"agency_fare_url\" is required"
 	},
 	"agency_file_missing": {
-		"generic": "The agency.txt file was not found in the GTFS archive."
+		"generic": "The agency.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"agency_id_matched_with_agency_name": {
-		"generic": "The \"agency_id\" field must match the agency named in \"agency_name\"."
+		"generic": "The \"agency_id\" field must match the agency named in \"agency_name\".",
+		"no_match": "The match between the field \"agency_id\" \"%s\" and the field \"agency_name\" \"%s\" is not valid. For the agency_id \"%s\" the name \"%s\" is expected"
 	},
 	"agency_id_unique": {
-		"generic": "The \"agency_id\" field must be unique across agency.txt."
-	},
-	"agency_id_validation": {
 		"duplicate": "Duplicate field \"agency_id\" \"%s\" found. Field \"agency_id\" must be unique",
 		"forbidden": "Field \"agency_id\" is forbidden",
-		"invalid": "Field \"agency_id\" \"%s\" is not a valid agency_id from agency.txt",
+		"generic": "The \"agency_id\" field must be unique across agency.txt.",
 		"not_allowed": "Field \"agency_id\" \"%s\" is not allowed",
-		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt",
 		"recommended": "Field \"agency_id\" is recommended when there is only one agency",
 		"required": "Field \"agency_id\" is required when there is more than one agency"
 	},
 	"agency_lang_valid_language_tag": {
-		"generic": "The \"agency_lang\" field must contain a valid language tag."
-	},
-	"agency_lang_validation": {
 		"forbidden": "Field \"agency_lang\" is forbidden",
+		"generic": "The \"agency_lang\" field must contain a valid language tag.",
 		"invalid": "Field \"agency_lang\" \"%s\" is not a valid language code",
 		"not_allowed": "Field \"agency_lang\" \"%s\" is not allowed",
 		"recommended": "Field \"agency_lang\" is recommended",
 		"required": "Field \"agency_lang\" is required"
 	},
-	"agency_name_id_match_validation": {
-		"forbidden": "Field \"agency_id\" and forbidden",
-		"no_match": "The match between the field \"agency_id\" \"%s\" and the field \"agency_name\" \"%s\" is not valid. For the agency_id \"%s\" the name \"%s\" is expected",
-		"required": "Field \"agency_id\" and field \"agency_name\" are required"
-	},
 	"agency_name_present": {
-		"generic": "The \"agency_name\" field must be present."
-	},
-	"agency_name_validation": {
 		"forbidden": "Field \"agency_name\" is forbidden",
+		"generic": "The \"agency_name\" field must be present.",
 		"not_allowed": "Field \"agency_name\" \"%s\" is not allowed",
 		"recommended": "Field \"agency_name\" is recommended",
 		"required": "Field \"agency_name\" is required"
 	},
 	"agency_phone_valid_phone_number": {
-		"generic": "The \"agency_phone\" field must contain a valid phone number."
-	},
-	"agency_phone_validation": {
 		"forbidden": "Field \"agency_phone\" is forbidden",
+		"generic": "The \"agency_phone\" field must contain a valid phone number.",
 		"invalid": "Field \"agency_phone\" \"%s\" is not a valid phone number",
 		"not_allowed": "Field \"agency_phone\" \"%s\" is not allowed",
 		"recommended": "Field \"agency_phone\" is recommended",
 		"required": "Field \"agency_phone\" is required"
 	},
 	"agency_timezone_valid_id": {
-		"generic": "The \"agency_timezone\" field must contain a valid timezone identifier."
-	},
-	"agency_timezone_validation": {
 		"forbidden": "Field \"agency_timezone\" is forbidden",
+		"generic": "The \"agency_timezone\" field must contain a valid timezone identifier.",
 		"invalid": "Field \"agency_timezone\" \"%s\" is not a valid timezone",
 		"not_allowed": "Field \"agency_timezone\" \"%s\" is not allowed",
 		"recommended": "Field \"agency_timezone\" is recommended",
 		"required": "Field \"agency_timezone\" is required"
 	},
 	"agency_url_valid_url": {
-		"generic": "The \"agency_url\" field must contain a valid URL."
-	},
-	"agency_url_validation": {
 		"forbidden": "Field \"agency_url\" is forbidden",
+		"generic": "The \"agency_url\" field must contain a valid URL.",
 		"invalid": "Field \"agency_url\" \"%s\" is not a valid URL",
 		"not_allowed": "Field \"agency_url\" \"%s\" is not allowed",
 		"recommended": "Field \"agency_url\" is recommended",
@@ -93,21 +73,6 @@
 	},
 	"agency_values_parse": {
 		"generic": "The values in agency.txt could not be parsed."
-	},
-	"arrival_departure_time_sequence_validation": {
-		"decreasing": "Fields \"arrival_time\" and \"departure_time\" must not decrease by \"stop_sequence\" for trip_id \"%s\"; previous stop_sequence \"%d\" ends at \"%s\" and current stop_sequence \"%d\" starts at \"%s\""
-	},
-	"arrival_time_validation": {
-		"forbidden": "Field \"arrival_time\" is forbidden",
-		"forbidden_pickup_dropoff": "Field \"arrival_time\" is forbidden when start_pickup_drop_off_window or end_pickup_drop_off_window are defined",
-		"invalid": "Field \"arrival_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
-		"invalid_stop_sequence": "Field \"stop_sequence\" must be a valid integer to validate arrival_time",
-		"invalid_trip_id": "Could not find stop times for the trip while validating arrival_time",
-		"recommended": "Field \"arrival_time\" is recommended",
-		"required": "Field \"arrival_time\" is required",
-		"required_first_stop": "Field \"arrival_time\" is required for the first stop in a trip",
-		"required_last_stop": "Field \"arrival_time\" is required for the last stop in a trip",
-		"required_timepoint": "Field \"arrival_time\" is required for timepoint=1"
 	},
 	"available_seats_validation": {
 		"invalid": "Field \"available_seats\" \"%s\" is not a valid number",
@@ -117,42 +82,37 @@
 		"invalid": "Field \"available_standing\" \"%s\" is not a valid number",
 		"required": "Field \"available_standing\" is required"
 	},
-	"bicycles_capacity_validation": {
-		"forbidden": "Field \"bicycles_capacity\" is forbidden",
-		"invalid": "Field \"bicycles_capacity\" \"%s\" must be a non-negative integer",
-		"recommended": "Field \"bicycles_capacity\" is recommended",
-		"required": "Field \"bicycles_capacity\" is required"
-	},
 	"bicycles_validation": {
 		"invalid": "Field \"bicycles\" \"%s\" is not a valid bicycles type",
 		"not_allowed": "Field \"bicycles\" \"%s\" is not allowed",
 		"required": "Field \"bicycles\" is required"
 	},
-	"bikes_allowed_validation": {
-		"forbidden": "Field \"bikes_allowed\" is forbidden",
-		"invalid": "Field \"bikes_allowed\" must be 0, 1, or 2",
-		"not_allowed": "Field \"bikes_allowed\" \"%s\" is not allowed",
-		"recommended": "Field \"bikes_allowed\" is recommended",
-		"required": "Field \"bikes_allowed\" is required"
-	},
-	"block_id_validation": {
-		"forbidden": "Field \"block_id\" is forbidden",
-		"not_allowed": "Field \"block_id\" \"%s\" is not allowed",
-		"not_found": "Field \"block_id\" \"%s\" does not exist in blocks.txt",
-		"recommended": "Field \"block_id\" is recommended",
-		"required": "Field \"block_id\" is required"
-	},
 	"calendar_dates_exception_date_valid_yyyymmdd": {
-		"generic": "The \"date\" field must contain a valid date in YYYYMMDD format."
+		"forbidden": "Field \"service_date\" is forbidden",
+		"generic": "The \"date\" field must contain a valid date in YYYYMMDD format.",
+		"invalid": "Field \"service_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
+		"recommended": "Field \"service_date\" is recommended",
+		"required": "Field \"service_date\" is required"
 	},
 	"calendar_dates_exception_type_add_or_remove_service": {
-		"generic": "The \"exception_type\" field must indicate either added or removed service."
+		"forbidden": "ield \"exception_type\" must forbidden",
+		"generic": "The \"exception_type\" field must indicate either added or removed service.",
+		"invalid": "Field \"exception_type\" must be 1 or 2. Got \"%s\"",
+		"not_allowed": "Field \"exception_type\" \"%s\" is not allowed",
+		"recommended": "Field \"exception_type\" is recommended",
+		"required": "Field \"exception_type\" is required"
 	},
 	"calendar_dates_file_missing": {
-		"generic": "The calendar_dates.txt file was not found in the GTFS archive."
+		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present",
+		"generic": "The calendar_dates.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"calendar_dates_service_id_references_calendar": {
-		"generic": "The \"service_id\" field must reference a service defined in calendar.txt."
+		"forbidden": "Field \"service_id\" is forbidden",
+		"generic": "The \"service_id\" field must reference a service defined in calendar.txt.",
+		"recommended": "Field \"service_id\" is recommended",
+		"required": "Field \"service_id\" is required"
 	},
 	"calendar_dates_values_parse": {
 		"generic": "The values in calendar_dates.txt could not be parsed."
@@ -161,25 +121,30 @@
 		"generic": "The \"end_date\" field must contain a valid date in YYYYMMDD format."
 	},
 	"calendar_file_missing": {
-		"generic": "The calendar.txt file was not found in the GTFS archive."
+		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present",
+		"generic": "The calendar.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"calendar_service_id_unique_non_empty": {
-		"generic": "The \"service_id\" field must be present and unique across calendar.txt."
+		"duplicate": "Duplicate field \"service_id\" \"%s\" found. Field \"service_id\" must be unique",
+		"forbidden": "Field \"service_id\" is forbidden",
+		"generic": "The \"service_id\" field must be present and unique across calendar.txt.",
+		"recommended": "Field \"service_id\" is recommended",
+		"required": "Field \"service_id\" is required"
 	},
 	"calendar_start_date_valid_yyyymmdd": {
 		"generic": "The \"start_date\" field must contain a valid date in YYYYMMDD format."
 	},
 	"calendar_start_end_dates_valid_yyyymmdd_order": {
-		"generic": "The \"end_date\" field must not fall before \"start_date\"."
+		"forbidden": "Field \"service_date\" is forbidden",
+		"generic": "The \"end_date\" field must not fall before \"start_date\".",
+		"invalid": "Field \"service_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
+		"recommended": "Field \"service_date\" is recommended",
+		"required": "Field \"service_date\" is required"
 	},
 	"calendar_values_parse": {
 		"generic": "The values in calendar.txt could not be parsed."
-	},
-	"car_capacity_validation": {
-		"forbidden": "Field \"car_capacity\" is forbidden",
-		"invalid": "Field \"car_capacity\" \"%s\" must be a non-negative integer",
-		"recommended": "Field \"car_capacity\" is recommended",
-		"required": "Field \"car_capacity\" is required"
 	},
 	"climatization_validation": {
 		"invalid": "Field \"climatization\" \"%s\" is not a valid climatization type",
@@ -191,198 +156,80 @@
 		"not_allowed": "Field \"consumption_meter\" \"%s\" is not allowed",
 		"required": "Field \"consumption_meter\" is required"
 	},
-	"contains_id_validation": {
-		"forbidden": "Field \"contains_id\" is forbidden",
-		"invalid": "Field \"contains_id\" \"%s\" must be a valid ID from stops.txt",
-		"not_allowed": "Field \"contains_id\" \"%s\" is not allowed",
-		"recommended": "Field \"contains_id\" is recommended",
-		"required": "Field \"contains_id\" is required"
-	},
-	"continuous_drop_off_validation": {
-		"forbidden": "Field \"continuous_drop_off\" is forbidden",
-		"forbidden_with_window": "Field \"continuous_drop_off\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
-		"invalid": "Field \"continuous_drop_off\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
-		"not_allowed": "Field \"continuous_drop_off\" \"%s\" is not allowed",
-		"recommended": "Field \"continuous_drop_off\" is recommended",
-		"required": "Field \"continuous_drop_off\" is required"
-	},
-	"continuous_pickup_validation": {
-		"forbidden": "Field \"continuous_pickup\" is forbidden",
-		"forbidden_with_window": "Field \"continuous_pickup\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
-		"invalid": "Field \"continuous_pickup\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
-		"not_allowed": "Field \"continuous_pickup\" \"%s\" is not allowed",
-		"recommended": "Field \"continuous_pickup\" is recommended",
-		"required": "Field \"continuous_pickup\" is required"
-	},
-	"currency_type_validation": {
-		"forbidden": "Field \"currency_type\" is forbidden",
-		"invalid": "Field \"currency_type\" \"%s\" is not a valid ISO 4217 currency code, see https://en.wikipedia.org/wiki/ISO_4217",
-		"recommended": "Field \"currency_type\" is recommended",
-		"required": "Field \"currency_type\" is required"
-	},
-	"date_validation": {
-		"forbidden": "Field \"service_date\" is forbidden",
-		"invalid": "Field \"service_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
-		"recommended": "Field \"service_date\" is recommended",
-		"required": "Field \"service_date\" is required"
-	},
-	"default_lang_validation": {
-		"forbidden": "Field \"default_lang\" is forbidden",
-		"invalid": "Field \"default_lang\" \"%s\" is not a valid language code",
-		"recommended": "Field \"default_lang\" is recommended",
-		"required": "Field \"default_lang\" is required"
-	},
-	"departure_time_validation": {
-		"forbidden": "Field \"departure_time\" is forbidden",
-		"forbidden_pickup_dropoff": "Field \"departure_time\" is forbidden when start_pickup_drop_off_window or end_pickup_drop_off_window are defined",
-		"invalid": "Field \"departure_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
-		"recommended": "Field \"departure_time\" is recommended",
-		"required": "Field \"departure_time\" is required",
-		"required_timepoint": "Field \"departure_time\" is required for timepoint=1"
-	},
-	"destination_id_validation": {
-		"forbidden": "Field \"destination_id\" is forbidden",
-		"invalid": "Field \"destination_id\" \"%s\" must be a valid ID from stops.txt",
-		"not_allowed": "Field \"destination_id\" \"%s\" is not allowed",
-		"recommended": "Field \"destination_id\" is recommended",
-		"required": "Field \"destination_id\" is required"
-	},
-	"direction_id_group_validation": {
-		"different_direction_ids_in_pattern": "pattern_id %s has trips with different direction_ids: %s. All trips with the same pattern_id must have the same direction_id"
-	},
-	"direction_id_validation": {
-		"forbidden": "Field \"direction_id\" is forbidden",
-		"invalid": "Field \"direction_id\" must be 0 or 1",
-		"not_allowed": "Field \"direction_id\" \"%s\" is not allowed",
-		"recommended": "Field \"direction_id\" is recommended",
-		"required": "Field \"direction_id\" is required"
-	},
-	"direction_pattern_id_match": {
-		"invalid_direction_id": "Field \"direction_id\" must be an integer between 0 and 1, received: %s",
-		"invalid_pattern_id": "Field \"pattern_id\" must be a valid ID in the format \"XXXX_[0|1]_1\", received: %s",
-		"not_matching": "Field \"direction_id\" \"%s\" does not match the pattern_id \"%s\"",
-		"required": "Fields \"pattern_id\" and \"direction_id\" are required to validate the match"
-	},
-	"drop_off_booking_rule_id_validation": {
-		"forbidden": "Field \"drop_off_booking_rule_id\" is forbidden",
-		"invalid": "Field \"drop_off_booking_rule_id\" \"%s\" is not a valid booking_rule_id from booking_rules.txt",
-		"not_found": "Field \"drop_off_booking_rule_id\" \"%s\" does not exist in booking_rules.txt",
-		"recommended": "Field \"drop_off_booking_rule_id\" is recommended",
-		"required": "Field \"drop_off_booking_rule_id\" is required"
-	},
-	"drop_off_type_validation": {
-		"forbidden": "Field \"drop_off_type\" is forbidden",
-		"forbidden_pickup_dropoff": "Field \"drop_off_type\"=0 is forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined",
-		"invalid": "Field \"drop_off_type\" must be 0, 1, 2, or 3",
-		"not_allowed": "Field \"drop_off_type\" \"%s\" is not allowed",
-		"recommended": "Field \"drop_off_type\" is recommended",
-		"required": "Field \"drop_off_type\" is required"
-	},
-	"eligibility_url_validation": {
-		"forbidden": "Field \"eligibility_url\" is forbidden",
-		"invalid": "Field \"eligibility_url\" must be a valid URL",
-		"recommended": "Field \"eligibility_url\" is recommended",
-		"required": "Field \"eligibility_url\" is required"
-	},
-	"emission_validation": {
-		"forbidden": "Field \"emission\" is forbidden",
-		"invalid": "Field \"emission\" \"%s\" is not a valid emission type",
-		"not_allowed": "Field \"emission\" \"%s\" is not allowed",
-		"recommended": "Field \"emission\" is recommended",
-		"required": "Field \"emission\" is required"
-	},
-	"end_pickup_drop_off_window_validation": {
-		"forbidden": "Field \"end_pickup_drop_off_window\" is forbidden",
-		"forbidden_arrival_departure": "Field \"end_pickup_drop_off_window\" is forbidden if arrival_time or departure_time are defined",
-		"invalid": "Field \"end_pickup_drop_off_window\" must be a valid time, expected format: HH:MM:SS, got: %s",
-		"recommended": "Field \"end_pickup_drop_off_window\" is recommended",
-		"required": "Field \"end_pickup_drop_off_window\" is required",
-		"required_location_group_id_start_pickup_dropoff": "Field \"end_pickup_drop_off_window\" is required if location_group_id or location_id is defined, or if start_pickup_drop_off_window is defined"
-	},
-	"end_time_validation": {
-		"forbidden": "Field \"end_time\" is forbidden",
-		"invalid": "Field \"end_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
-		"not_allowed": "Field \"end_time\" \"%s\" is not allowed",
-		"recommended": "Field \"end_time\" is recommended",
-		"required": "Field \"end_time\" is required"
-	},
-	"exact_times_validation": {
-		"forbidden": "Field \"exact_times\" is forbidden",
-		"invalid": "Field \"exact_times\" must be 0 or 1, received: %s",
-		"not_allowed": "Field \"exact_times\" \"%s\" is not allowed",
-		"recommended": "Field \"exact_times\" is recommended",
-		"required": "Field \"exact_times\" is required"
-	},
-	"exception_type_validation": {
-		"forbidden": "ield \"exception_type\" must forbidden",
-		"invalid": "Field \"exception_type\" must be 1 or 2. Got \"%s\"",
-		"not_allowed": "Field \"exception_type\" \"%s\" is not allowed",
-		"recommended": "Field \"exception_type\" is recommended",
-		"required": "Field \"exception_type\" is required"
-	},
 	"external_sound_validation": {
 		"invalid": "Field \"external_sound\" \"%s\" is not a valid external_sound type",
 		"not_allowed": "Field \"external_sound\" \"%s\" is not allowed",
 		"required": "Field \"external_sound\" is required"
 	},
 	"fare_attributes_agency_id_references_agency_table": {
-		"generic": "The \"agency_id\" field must reference an agency defined in agency.txt."
+		"forbidden": "Field \"agency_id\" is forbidden",
+		"generic": "The \"agency_id\" field must reference an agency defined in agency.txt.",
+		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt",
+		"recommended": "Field \"agency_id\" is recommended when there is only one agency",
+		"required": "Field \"agency_id\" is required when there is more than one agency"
 	},
 	"fare_attributes_currency_type_valid": {
-		"generic": "The \"currency_type\" field must contain a valid ISO 4217 currency code."
+		"forbidden": "Field \"currency_type\" is forbidden",
+		"generic": "The \"currency_type\" field must contain a valid ISO 4217 currency code.",
+		"invalid": "Field \"currency_type\" \"%s\" is not a valid ISO 4217 currency code, see https://en.wikipedia.org/wiki/ISO_4217",
+		"recommended": "Field \"currency_type\" is recommended",
+		"required": "Field \"currency_type\" is required"
 	},
 	"fare_attributes_file_missing": {
-		"generic": "The fare_attributes.txt file was not found in the GTFS archive."
+		"generic": "The fare_attributes.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"fare_attributes_id_unique": {
-		"generic": "The \"fare_id\" field must be unique across fare_attributes.txt."
+		"duplicate": "Duplicate field \"fare_id\" \"%s\" found. Field \"fare_id\" must be unique",
+		"forbidden": "Field \"fare_id\" is forbidden",
+		"generic": "The \"fare_id\" field must be unique across fare_attributes.txt.",
+		"recommended": "Field \"fare_id\" is recommended",
+		"required": "Field \"fare_id\" is required"
 	},
 	"fare_attributes_payment_method_valid_gtfs_enum": {
-		"generic": "The \"payment_method\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"payment_method\" is forbidden",
+		"generic": "The \"payment_method\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"payment_method\" must be 0 or 1. Got \"%s\"",
+		"recommended": "Field \"payment_method\" is recommended",
+		"required": "Field \"payment_method\" is required"
 	},
 	"fare_attributes_transfer_duration_valid_seconds_range": {
-		"generic": "The \"transfer_duration\" field must contain a duration in seconds within the allowed range."
+		"forbidden": "Field \"transfer_duration\" is forbidden",
+		"generic": "The \"transfer_duration\" field must contain a duration in seconds within the allowed range.",
+		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\"",
+		"recommended": "Field \"transfer_duration\" is recommended",
+		"required": "Field \"transfer_duration\" is required"
 	},
 	"fare_attributes_transfers_valid_gtfs_enum": {
-		"generic": "The \"transfers\" field must contain one of the values allowed by GTFS."
+		"generic": "The \"transfers\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\""
 	},
 	"fare_attributes_values_parse": {
 		"generic": "The values in fare_attributes.txt could not be parsed."
 	},
-	"fare_id_validation": {
-		"duplicate": "Duplicate field \"fare_id\" \"%s\" found. Field \"fare_id\" must be unique",
-		"forbidden": "Field \"fare_id\" is forbidden",
-		"invalid": "Field \"fare_id\" \"%s\" is not a valid fare_id from fare_attributes.txt",
-		"not_found": "Field \"fare_id\" \"%s\" does not exist in fare_attributes.txt",
-		"recommended": "Field \"fare_id\" is recommended",
-		"required": "Field \"fare_id\" is required"
-	},
 	"fare_media_file_missing": {
-		"generic": "The fare_media.txt file was not found in the GTFS archive."
+		"generic": "The fare_media.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"fare_media_id_unique": {
-		"generic": "The \"fare_media_id\" field must be unique across fare_media.txt."
-	},
-	"fare_media_id_validation": {
 		"duplicate": "Duplicate field \"fare_media_id\" \"%s\" found. Field \"fare_media_id\" must be unique",
 		"forbidden": "Field \"fare_media_id\" is forbidden",
+		"generic": "The \"fare_media_id\" field must be unique across fare_media.txt.",
 		"recommended": "Field \"fare_media_id\" is recommended",
 		"required": "Field \"fare_media_id\" is required"
 	},
 	"fare_media_name_non_empty": {
-		"generic": "The \"fare_media_name\" field must be present."
-	},
-	"fare_media_name_validation": {
 		"forbidden": "Field \"fare_media_name\" is forbidden",
+		"generic": "The \"fare_media_name\" field must be present.",
 		"recommended": "Field \"fare_media_name\" is recommended",
 		"required": "Field \"fare_media_name\" is required",
 		"warning": "Field \"fare_media_name\" is recommended for fare media type 2 (transit cards) or 4 (mobile apps)"
 	},
 	"fare_media_type_valid": {
-		"generic": "The \"fare_media_type\" field must contain one of the values allowed by GTFS."
-	},
-	"fare_media_type_validation": {
 		"forbidden": "Field \"fare_media_type\" is forbidden",
+		"generic": "The \"fare_media_type\" field must contain one of the values allowed by GTFS.",
 		"invalid": "Field \"fare_media_type\" must be 0, 1, 2, 3, or 4, received: %s",
 		"not_allowed": "Field \"fare_media_type\" \"%s\" is not allowed",
 		"recommended": "Field \"fare_media_type\" is recommended",
@@ -392,317 +239,226 @@
 		"generic": "The values in fare_media.txt could not be parsed."
 	},
 	"fare_price_valid_non_negative_decimal": {
-		"generic": "The \"price\" field must contain a non-negative decimal value."
+		"forbidden": "Field \"price\" is forbidden",
+		"generic": "The \"price\" field must contain a non-negative decimal value.",
+		"invalid": "Field \"price\" must be non-negative. Got \"%s\"",
+		"recommended": "Field \"price\" is recommended",
+		"required": "Field \"price\" is required"
 	},
 	"fare_rule_contains_id_references_zones_stops": {
-		"generic": "The \"contains_id\" field must reference a zone defined in stops.txt."
+		"forbidden": "Field \"contains_id\" is forbidden",
+		"generic": "The \"contains_id\" field must reference a zone defined in stops.txt.",
+		"invalid": "Field \"contains_id\" \"%s\" must be a valid ID from stops.txt",
+		"recommended": "Field \"contains_id\" is recommended",
+		"required": "Field \"contains_id\" is required"
 	},
 	"fare_rule_destination_id_references_zones_stops": {
-		"generic": "The \"destination_id\" field must reference a zone defined in stops.txt."
+		"forbidden": "Field \"destination_id\" is forbidden",
+		"generic": "The \"destination_id\" field must reference a zone defined in stops.txt.",
+		"invalid": "Field \"destination_id\" \"%s\" must be a valid ID from stops.txt",
+		"recommended": "Field \"destination_id\" is recommended",
+		"required": "Field \"destination_id\" is required"
 	},
 	"fare_rule_fare_id_references_fare_attributes": {
-		"generic": "The \"fare_id\" field must reference a fare defined in fare_attributes.txt."
+		"forbidden": "Field \"fare_id\" is forbidden",
+		"generic": "The \"fare_id\" field must reference a fare defined in fare_attributes.txt.",
+		"invalid": "Field \"fare_id\" \"%s\" is not a valid fare_id from fare_attributes.txt",
+		"recommended": "Field \"fare_id\" is recommended",
+		"required": "Field \"fare_id\" is required"
 	},
 	"fare_rule_origin_id_references_zones_stops": {
-		"generic": "The \"origin_id\" field must reference a zone defined in stops.txt."
+		"forbidden": "Field \"origin_id\" is forbidden",
+		"generic": "The \"origin_id\" field must reference a zone defined in stops.txt.",
+		"invalid": "Field \"origin_id\" \"%s\" must be a valid ID from stops.txt",
+		"recommended": "Field \"origin_id\" is recommended",
+		"required": "Field \"origin_id\" is required"
 	},
 	"fare_rule_route_id_references_routes": {
-		"generic": "The \"route_id\" field must reference a route defined in routes.txt."
+		"forbidden": "Field \"route_id\" is forbidden",
+		"generic": "The \"route_id\" field must reference a route defined in routes.txt.",
+		"invalid": "Field \"route_id\" \"%s\" is not a valid route_id from routes.txt",
+		"recommended": "Field \"route_id\" is recommended",
+		"required": "Field \"route_id\" is required"
 	},
 	"fare_rules_file_missing": {
-		"generic": "The fare_rules.txt file was not found in the GTFS archive."
+		"generic": "The fare_rules.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"fare_rules_values_parse": {
 		"generic": "The values in fare_rules.txt could not be parsed."
 	},
 	"feed_contact_email_valid_address": {
-		"generic": "The \"feed_contact_email\" field must contain a valid email address."
-	},
-	"feed_contact_email_validation": {
 		"forbidden": "Field \"feed_contact_email\" is forbidden",
+		"generic": "The \"feed_contact_email\" field must contain a valid email address.",
 		"invalid": "Field \"feed_contact_email\" \"%s\" is not a valid email address",
 		"recommended": "Field \"feed_contact_email\" is recommended",
 		"required": "Field \"feed_contact_email\" is required"
 	},
 	"feed_contact_url_valid_http_url": {
-		"generic": "The \"feed_contact_url\" field must contain a valid HTTP URL."
-	},
-	"feed_contact_url_validation": {
 		"forbidden": "Field \"feed_contact_url\" is forbidden",
+		"generic": "The \"feed_contact_url\" field must contain a valid HTTP URL.",
 		"invalid": "Field \"feed_contact_url\" \"%s\" is not a valid URL",
 		"recommended": "Field \"feed_contact_url\" is recommended",
 		"required": "Field \"feed_contact_url\" is required"
 	},
 	"feed_end_date_valid_yyyymmdd_not_before_start": {
-		"generic": "The \"feed_end_date\" field must contain a valid YYYYMMDD date and cannot fall before \"feed_start_date\"."
-	},
-	"feed_end_date_validation": {
 		"forbidden": "Field \"feed_end_date\" is forbidden",
+		"generic": "The \"feed_end_date\" field must contain a valid YYYYMMDD date and cannot fall before \"feed_start_date\".",
 		"invalid": "Field \"feed_end_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
 		"recommended": "Field \"feed_end_date\" is recommended",
 		"required": "Field \"feed_end_date\" is required"
 	},
 	"feed_info_default_lang_matches_feed_lang_when_present": {
-		"generic": "The \"default_lang\" field must be consistent with the language declared in \"feed_lang\"."
+		"forbidden": "Field \"default_lang\" is forbidden",
+		"generic": "The \"default_lang\" field must be consistent with the language declared in \"feed_lang\".",
+		"invalid": "Field \"default_lang\" \"%s\" is not a valid language code",
+		"recommended": "Field \"default_lang\" is recommended",
+		"required": "Field \"default_lang\" is required"
 	},
 	"feed_info_file_missing": {
-		"generic": "The feed_info.txt file was not found in the GTFS archive."
+		"feed_info_required_when_translations": "feed_info.txt is required when translations.txt is present",
+		"generic": "The feed_info.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"feed_info_values_parse": {
 		"generic": "The values in feed_info.txt could not be parsed."
 	},
 	"feed_lang_valid_tag": {
-		"generic": "The \"feed_lang\" field must contain a valid language tag."
-	},
-	"feed_lang_validation": {
 		"forbidden": "Field \"feed_lang\" is forbidden",
+		"generic": "The \"feed_lang\" field must contain a valid language tag.",
 		"invalid": "Field \"feed_lang\" \"%s\" is not a valid language code",
 		"recommended": "Field \"feed_lang\" is recommended",
 		"required": "Field \"feed_lang\" is required"
 	},
 	"feed_publisher_name_non_empty": {
-		"generic": "The \"feed_publisher_name\" field must be present."
-	},
-	"feed_publisher_name_validation": {
 		"forbidden": "Field \"feed_publisher_name\" is forbidden",
-		"not_allowed": "Field \"feed_publisher_name\" \"%s\" is not allowed",
+		"generic": "The \"feed_publisher_name\" field must be present.",
 		"recommended": "Field \"feed_publisher_name\" is recommended",
 		"required": "Field \"feed_publisher_name\" is required"
 	},
 	"feed_publisher_url_valid_http_url": {
-		"generic": "The \"feed_publisher_url\" field must contain a valid HTTP URL."
-	},
-	"feed_publisher_url_validation": {
 		"forbidden": "Field \"feed_publisher_url\" is forbidden",
+		"generic": "The \"feed_publisher_url\" field must contain a valid HTTP URL.",
 		"invalid": "Field \"feed_publisher_url\" \"%s\" is not a valid URL",
 		"recommended": "Field \"feed_publisher_url\" is recommended",
 		"required": "Field \"feed_publisher_url\" is required"
 	},
 	"feed_start_date_valid_yyyymmdd": {
-		"generic": "The \"feed_start_date\" field must contain a valid date in YYYYMMDD format."
-	},
-	"feed_start_date_validation": {
 		"forbidden": "Field \"feed_start_date\" is forbidden",
+		"generic": "The \"feed_start_date\" field must contain a valid date in YYYYMMDD format.",
 		"invalid": "Field \"feed_start_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
 		"recommended": "Field \"feed_start_date\" is recommended",
 		"required": "Field \"feed_start_date\" is required"
 	},
 	"feed_version_valid_identifier": {
-		"generic": "The \"feed_version\" field must contain a valid version identifier."
-	},
-	"feed_version_validation": {
 		"forbidden": "Field \"feed_version\" is forbidden",
-		"invalid": "Field \"feed_version\" \"%s\" is not a valid version",
+		"generic": "The \"feed_version\" field must contain a valid version identifier.",
 		"recommended": "Field \"feed_version\" is recommended",
 		"required": "Field \"feed_version\" is required"
 	},
 	"file_not_found_in_rules": {
-		"generic": "A file present in the GTFS archive has no validation rules defined."
+		"generic": "A file present in the GTFS archive has no validation rules defined.",
+		"not_supported": "The file \"%s\" is not supported by the validator and was ignored"
 	},
 	"file_validation": {
-		"generic": "The GTFS archive must contain the required files and all of them must be readable."
+		"generic": "The GTFS archive must contain the required files and all of them must be readable.",
+		"not_supported": "The file \"%s\" is not supported by the validator and was ignored"
 	},
 	"file_validation_gtfs_feed_file_presence_and_integrity_rule": {
-		"generic": "The GTFS archive must contain the required files and all of them must be readable."
-	},
-	"file_validations": {
-		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present",
-		"feed_info_required_when_translations": "feed_info.txt is required when translations.txt is present",
 		"forbidden": "Forbidden file \"%s\" is present",
-		"levels_required_when_elevator": "levels.txt is required when pathways.txt contains elevators (pathway_mode=5)",
+		"generic": "The GTFS archive must contain the required files and all of them must be readable.",
 		"networks_forbidden_when_network_id": "networks.txt is forbidden when network_id exists in routes.txt",
-		"not_allowed": "The file \"%s\" is not allowed",
-		"not_found": "The file \"%s\" is missing",
-		"not_supported": "The file \"%s\" is not supported by the validator and was ignored",
-		"required": "Required file \"%s\" is missing",
-		"route_networks_forbidden_when_network_id": "route_networks.txt is forbidden when network_id exists in routes.txt",
-		"stops_required_when_locations_missing": "stops.txt is required when locations.geojson is not present",
-		"warning": "Warning file \"%s\" is recommended"
+		"route_networks_forbidden_when_network_id": "route_networks.txt is forbidden when network_id exists in routes.txt"
 	},
 	"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": {
-		"generic": "The \"exact_times\" field must be 0 when a trip with fixed times is served through frequencies.txt."
+		"forbidden": "Field \"exact_times\" is forbidden",
+		"generic": "The \"exact_times\" field must be 0 when a trip with fixed times is served through frequencies.txt.",
+		"invalid": "Field \"exact_times\" must be 0 or 1, received: %s",
+		"not_allowed": "Field \"exact_times\" \"%s\" is not allowed",
+		"recommended": "Field \"exact_times\" is recommended",
+		"required": "Field \"exact_times\" is required"
 	},
 	"frequencies_file_missing": {
-		"generic": "The frequencies.txt file was not found in the GTFS archive."
+		"generic": "The frequencies.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"frequencies_headway_secs_positive_and_aligns_trip": {
-		"generic": "The \"headway_secs\" field must be positive and consistent with the trip duration."
+		"forbidden": "Field \"headway_secs\" is forbidden",
+		"generic": "The \"headway_secs\" field must be positive and consistent with the trip duration.",
+		"invalid": "Field \"headway_secs\" must be a positive integer, received: %s",
+		"recommended": "Field \"headway_secs\" is recommended",
+		"required": "Field \"headway_secs\" is required"
 	},
 	"frequencies_trip_id_references_trips_table": {
-		"generic": "The \"trip_id\" field must reference a trip defined in trips.txt."
+		"forbidden": "Field \"trip_id\" is forbidden",
+		"generic": "The \"trip_id\" field must reference a trip defined in trips.txt.",
+		"not_found": "Field \"trip_id\" \"%s\" does not exist in trips.txt",
+		"recommended": "Field \"trip_id\" is recommended",
+		"required": "Field \"trip_id\" is required"
 	},
 	"frequencies_values_parse": {
 		"generic": "The values in frequencies.txt could not be parsed."
 	},
 	"frequency_end_time_valid": {
-		"generic": "The \"end_time\" field must contain a valid time."
+		"forbidden": "Field \"end_time\" is forbidden",
+		"generic": "The \"end_time\" field must contain a valid time.",
+		"invalid": "Field \"end_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
+		"recommended": "Field \"end_time\" is recommended",
+		"required": "Field \"end_time\" is required"
 	},
 	"frequency_start_time_valid": {
-		"generic": "The \"start_time\" field must contain a valid time."
-	},
-	"from_route_id_validation": {
-		"forbidden": "Field \"from_route_id\" is forbidden",
-		"not_allowed": "Field \"from_route_id\" \"%s\" is not allowed",
-		"not_found": "Field \"from_route_id\" \"%s\" does not exist in routes.txt",
-		"recommended": "Field \"from_route_id\" is recommended",
-		"required": "Field \"from_route_id\" is required",
-		"trip_must_belong_to_route": "When both from_trip_id and from_route_id are defined, from_trip_id \"%s\" must belong to from_route_id \"%s\". Trip references route \"%s\""
-	},
-	"from_stop_id_validation": {
-		"forbidden_stop_access_1": "Field \"from_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
-		"invalid_location_type": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
-		"invalid_location_type_format": "Field \"from_stop_id\" \"%s\" references a stop whose \"location_type\" is not a valid integer",
-		"invalid_location_type_pathway": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
-		"invalid_location_type_station": "Field \"from_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
-		"invalid_stop_access_format": "Field \"from_stop_id\" \"%s\" references a stop whose \"stop_access\" is not a valid integer",
-		"must_be_stop_for_transfer_type_4_5": "Field \"from_stop_id\" \"%s\" must reference a stop (location_type=0) when transfer_type is %d. Stations (location_type=1) are not allowed for transfer_type 4 or 5",
-		"not_allowed": "Field \"from_stop_id\" \"%s\" is not allowed",
-		"not_found": "Field \"from_stop_id\" \"%s\" does not exist in stops.txt",
-		"recommended": "Field \"from_stop_id\" is recommended",
-		"required": "Field \"from_stop_id\" is required"
-	},
-	"from_trip_id_validation": {
-		"not_allowed": "Field \"from_trip_id\" \"%s\" is not allowed",
-		"not_found": "Field \"from_trip_id\" \"%s\" does not exist in trips.txt",
-		"recommended": "Field \"from_trip_id\" is recommended",
-		"required": "Field \"from_trip_id\" is required",
-		"trip_must_belong_to_route": "When both from_trip_id and from_route_id are defined, from_trip_id \"%s\" must belong to from_route_id \"%s\". Trip references route \"%s\""
+		"forbidden": "Field \"start_time\" is forbidden",
+		"generic": "The \"start_time\" field must contain a valid time.",
+		"invalid": "Field \"start_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
+		"recommended": "Field \"start_time\" is recommended",
+		"required": "Field \"start_time\" is required"
 	},
 	"front_display_validation": {
 		"invalid": "Field \"front_display\" \"%s\" is not a valid front_display type",
 		"not_allowed": "Field \"front_display\" \"%s\" is not allowed",
 		"required": "Field \"front_display\" is required"
 	},
-	"has_bench_validation": {
-		"forbidden": "Field \"has_bench\" is forbidden",
-		"invalid": "Field \"has_bench\" must be 0, 1, 2, or 3, received: %s",
-		"not_allowed": "Field \"has_bench\" \"%s\" is not allowed",
-		"recommended": "Field \"has_bench\" is recommended",
-		"required": "Field \"has_bench\" is required"
-	},
-	"has_network_map_validation": {
-		"forbidden": "Field \"has_network_map\" is forbidden",
-		"invalid": "Field \"has_network_map\" must be 0, 1, 2, or 3, received: %s",
-		"not_allowed": "Field \"has_network_map\" \"%s\" is not allowed",
-		"recommended": "Field \"has_network_map\" is recommended",
-		"required": "Field \"has_network_map\" is required"
-	},
-	"has_pip_real_time_validation": {
-		"forbidden": "Field \"has_pip_real_time\" is forbidden",
-		"invalid": "Field \"has_pip_real_time\" must be 0, 1, or 2, received: %s",
-		"not_allowed": "Field \"has_pip_real_time\" \"%s\" is not allowed",
-		"recommended": "Field \"has_pip_real_time\" is recommended",
-		"required": "Field \"has_pip_real_time\" is required"
-	},
-	"has_schedules_validation": {
-		"forbidden": "Field \"has_schedules\" is forbidden",
-		"invalid": "Field \"has_schedules\" must be 0 or 1, received: %s",
-		"not_allowed": "Field \"has_schedules\" \"%s\" is not allowed",
-		"recommended": "Field \"has_schedules\" is recommended",
-		"required": "Field \"has_schedules\" is required"
-	},
-	"has_shelter_validation": {
-		"forbidden": "Field \"has_shelter\" is forbidden",
-		"invalid": "Field \"has_shelter\" must be 0 or 1, received: %s",
-		"not_allowed": "Field \"has_shelter\" \"%s\" is not allowed",
-		"recommended": "Field \"has_shelter\" is recommended",
-		"required": "Field \"has_shelter\" is required"
-	},
-	"has_stop_sign_validation": {
-		"forbidden": "Field \"has_stop_sign\" is forbidden",
-		"invalid": "Field \"has_stop_sign\" must be 0, 1, 2, or 3, received: %s",
-		"not_allowed": "Field \"has_stop_sign\" \"%s\" is not allowed",
-		"recommended": "Field \"has_stop_sign\" is recommended",
-		"required": "Field \"has_stop_sign\" is required"
-	},
-	"has_tariffs_information_validation": {
-		"forbidden": "Field \"has_tariffs_information\" is forbidden",
-		"invalid": "Field \"has_tariffs_information\" must be 0, 1, 2, or 3, received: %s",
-		"not_allowed": "Field \"has_tariffs_information\" \"%s\" is not allowed",
-		"recommended": "Field \"has_tariffs_information\" is recommended",
-		"required": "Field \"has_tariffs_information\" is required"
-	},
-	"headway_secs_validation": {
-		"forbidden": "Field \"headway_secs\" is forbidden",
-		"invalid": "Field \"headway_secs\" must be a positive integer, received: %s",
-		"not_allowed": "Field \"headway_secs\" \"%s\" is not allowed",
-		"recommended": "Field \"headway_secs\" is recommended",
-		"required": "Field \"headway_secs\" is required"
-	},
 	"internal_sound_validation": {
 		"invalid": "Field \"internal_sound\" \"%s\" is not a valid internal_sound type",
 		"not_allowed": "Field \"internal_sound\" \"%s\" is not allowed",
 		"required": "Field \"internal_sound\" is required"
-	},
-	"is_bidirectional_validation": {
-		"exit_gate_bidirectional": "Field \"is_bidirectional\" must be 0 when \"pathway_mode\" is 7 (exit gate). Exit gates cannot be bidirectional",
-		"invalid": "Field \"is_bidirectional\" must be 0 or 1, received: %s",
-		"not_allowed": "Field \"is_bidirectional\" \"%s\" is not allowed",
-		"recommended": "Field \"is_bidirectional\" is recommended",
-		"required": "Field \"is_bidirectional\" is required"
-	},
-	"is_default_fare_category_validation": {
-		"forbidden": "Field \"is_default_fare_category\" is forbidden",
-		"invalid": "Field \"is_default_fare_category\" must be 0 or 1",
-		"not_allowed": "Field \"is_default_fare_category\" \"%s\" is not allowed",
-		"recommended": "Field \"is_default_fare_category\" is recommended",
-		"required": "Field \"is_default_fare_category\" is required"
 	},
 	"kneeling_validation": {
 		"invalid": "Field \"kneeling\" \"%s\" is not a valid kneeling type",
 		"not_allowed": "Field \"kneeling\" \"%s\" is not allowed",
 		"required": "Field \"kneeling\" is required"
 	},
-	"length_validation": {
-		"forbidden": "Field \"length\" is forbidden",
-		"invalid": "Field \"length\" \"%s\" is not a valid number",
-		"negative": "Field \"length\" \"%f\" must be a non-negative number",
-		"not_allowed": "Field \"length\" \"%s\" is not allowed",
-		"recommended": "Field \"length\" is recommended",
-		"required": "Field \"length\" is required"
-	},
 	"level_id_unique": {
-		"generic": "The \"level_id\" field must be unique across levels.txt."
-	},
-	"level_id_validation": {
 		"duplicate": "Duplicate field \"level_id\" \"%s\" found. Field \"level_id\" must be unique",
 		"forbidden": "Field \"level_id\" is forbidden",
-		"not_allowed": "Field \"level_id\" \"%s\" is not allowed",
-		"not_found": "Field \"level_id\" \"%s\" does not exist in levels.txt",
+		"generic": "The \"level_id\" field must be unique across levels.txt.",
 		"recommended": "Field \"level_id\" is recommended",
 		"required": "Field \"level_id\" is required"
 	},
 	"level_index_required": {
-		"generic": "The \"level_index\" field must be present and contain a valid number."
-	},
-	"level_index_validation": {
 		"forbidden": "Field \"level_index\" is forbidden",
+		"generic": "The \"level_index\" field must be present and contain a valid number.",
 		"invalid": "Field \"level_index\" must be a non-negative integer",
-		"not_allowed": "Field \"level_index\" \"%s\" is not allowed",
 		"recommended": "Field \"level_index\" is recommended",
 		"required": "Field \"level_index\" is required"
 	},
 	"level_name": {
-		"generic": "The \"level_name\" field must contain a valid name for the level."
-	},
-	"level_name_validation": {
 		"forbidden": "Field \"level_name\" is forbidden",
-		"not_allowed": "Field \"level_name\" \"%s\" is not allowed",
+		"generic": "The \"level_name\" field must contain a valid name for the level.",
 		"recommended": "Field \"level_name\" is recommended",
 		"required": "Field \"level_name\" is required"
 	},
 	"levels_file_missing": {
-		"generic": "The levels.txt file was not found in the GTFS archive."
+		"generic": "The levels.txt file was not found in the GTFS archive.",
+		"levels_required_when_elevator": "levels.txt is required when pathways.txt contains elevators (pathway_mode=5)",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"levels_parse": {
 		"generic": "The values in levels.txt could not be parsed."
-	},
-	"license_plate_validation": {
-		"duplicate": "Duplicate field \"license_plate\" \"%s\" found. Field \"license_plate\" must be unique",
-		"forbidden": "Field \"license_plate\" is forbidden",
-		"invalid": "Field \"license_plate\" \"%s\" has an invalid format, must be in the format XXXXXX (or a valid MMSI for the ferry transport mode)",
-		"recommended": "Field \"license_plate\" is recommended",
-		"required": "Field \"license_plate\" is required"
 	},
 	"line_id_required": {
 		"forbidden": "Field \"line_id\" is forbidden",
@@ -710,118 +466,18 @@
 		"recommended": "Field \"line_id\" is recommended",
 		"required": "Field \"line_id\" is required"
 	},
-	"line_id_validation": {
-		"forbidden": "Field \"line_id\" is forbidden",
-		"not_equal_to_route_short_name": "Field \"line_id\" \"%s\" should be the same as \"route_short_name\" \"%s\"",
-		"recommended": "Field \"line_id\" is recommended",
-		"required": "Field \"line_id\" is required"
-	},
-	"line_long_name_validation": {
-		"forbidden": "Field \"line_long_name\" is forbidden",
-		"recommended": "Field \"line_long_name\" is recommended",
-		"required": "Field \"line_long_name\" is required"
-	},
-	"line_short_name_validation": {
-		"forbidden": "Field \"line_short_name\" is forbidden",
-		"not_equal_to_route_short_name": "Field \"line_short_name\" \"%s\" should be the same as \"route_short_name\" \"%s\"",
-		"recommended": "Field \"line_short_name\" is recommended",
-		"required": "Field \"line_short_name\" is required"
-	},
-	"location_group_id_validation": {
-		"forbidden": "Field \"location_group_id\" is forbidden",
-		"forbidden_stop_location": "Field \"location_group_id\" is forbidden if stop_id or location_id are defined",
-		"not_found": "Field \"location_group_id\" \"%s\" does not exist in location_groups.txt"
-	},
-	"location_type_validation": {
-		"forbidden": "Field \"location_type\" is forbidden",
-		"invalid": "Field \"location_type\" must be one of 0, 1, 2, 3, 4, received: %s",
-		"not_allowed": "Field \"location_type\" \"%s\" is not allowed",
-		"recommended": "Field \"location_type\" is recommended",
-		"required": "Field \"location_type\" is required"
-	},
 	"lowered_floor_validation": {
 		"invalid": "Field \"lowered_floor\" \"%s\" is not a valid lowered_floor type",
 		"not_allowed": "Field \"lowered_floor\" \"%s\" is not allowed",
 		"required": "Field \"lowered_floor\" is required"
-	},
-	"make_validation": {
-		"forbidden": "Field \"make\" is forbidden",
-		"recommended": "Field \"make\" is recommended",
-		"required": "Field \"make\" is required"
-	},
-	"max_slope_validation": {
-		"forbidden": "Field \"max_slope\" is forbidden",
-		"invalid": "Field \"max_slope\" \"%s\" is not a valid number",
-		"not_allowed": "Field \"max_slope\" \"%s\" is not allowed",
-		"not_allowed_pathway_mode": "Field \"max_slope\" is not allowed for pathway_mode \"%s\"",
-		"recommended": "Field \"max_slope\" is recommended",
-		"required": "Field \"max_slope\" is required"
-	},
-	"min_transfer_time_validation": {
-		"forbidden": "Field \"min_transfer_time\" is forbidden",
-		"invalid": "Field \"min_transfer_time\" must be a non-negative integer",
-		"not_allowed": "Field \"min_transfer_time\" \"%s\" is not allowed",
-		"recommended": "Field \"min_transfer_time\" is recommended",
-		"required": "Field \"min_transfer_time\" is required"
-	},
-	"min_width_validation": {
-		"forbidden": "Field \"min_width\" is forbidden",
-		"invalid": "Field \"min_width\" \"%s\" is not a valid number",
-		"negative": "Field \"min_width\" must be a positive number",
-		"recommended": "Field \"min_width\" is recommended",
-		"required": "Field \"min_width\" is required"
-	},
-	"model_validation": {
-		"forbidden": "Field \"model\" is forbidden",
-		"recommended": "Field \"model\" is recommended",
-		"required": "Field \"model\" is required"
-	},
-	"municipality_id_validation": {
-		"forbidden": "Field \"municipality_id\" is forbidden",
-		"not_allowed": "Field \"municipality_id\" \"%s\" is not allowed",
-		"not_found": "Field \"municipality_id\" \"%s\" does not exist in municipalities.txt",
-		"recommended": "Field \"municipality_id\" is recommended",
-		"required": "Field \"municipality_id\" is required"
-	},
-	"network_id_validation": {
-		"forbidden": "Field \"network_id\" is forbidden",
-		"forbidden_when_route_networks_exists": "Field \"network_id\" \"%s\" is forbidden if route_networks.txt exists",
-		"not_allowed": "Field \"network_id\" \"%s\" is not allowed",
-		"recommended": "Field \"network_id\" is recommended",
-		"required": "Field \"network_id\" is required"
 	},
 	"onboard_monitor_validation": {
 		"invalid": "Field \"onboard_monitor\" \"%s\" is not a valid onboard_monitor type",
 		"not_allowed": "Field \"onboard_monitor\" \"%s\" is not allowed",
 		"required": "Field \"onboard_monitor\" is required"
 	},
-	"origin_id_validation": {
-		"forbidden": "Field \"origin_id\" is forbidden",
-		"invalid": "Field \"origin_id\" \"%s\" must be a valid ID from stops.txt",
-		"not_allowed": "Field \"origin_id\" \"%s\" is not allowed",
-		"recommended": "Field \"origin_id\" is recommended",
-		"required": "Field \"origin_id\" is required"
-	},
 	"owner_validation": {
 		"required": "Field \"owner\" is required"
-	},
-	"parent_station_validation": {
-		"forbidden": "Field \"parent_station\" is forbidden",
-		"not_allowed": "Field \"parent_station\" \"%s\" is not allowed",
-		"not_found": "Field \"parent_station\" \"%s\" does not exist in stops.txt",
-		"recommended": "Field \"parent_station\" is recommended",
-		"required": "Field \"parent_station\" is required",
-		"required_location_type": "Field \"parent_station\" is required for location_type 2 (entrance/exit), 3 (generic node) and 4 (boarding area)"
-	},
-	"parish_id_validation": {
-		"forbidden": "Field \"parish_id\" is forbidden",
-		"not_allowed": "Field \"parish_id\" \"%s\" is not allowed",
-		"not_found": "Field \"parish_id\" \"%s\" does not exist in parishes.txt",
-		"recommended": "Field \"parish_id\" is recommended",
-		"required": "Field \"parish_id\" is required"
-	},
-	"parse_shapes": {
-		"parsing_error": "Could not parse shapes.txt: %s"
 	},
 	"parser": {
 		"bool": "Failed to parse \"%s\" to bool",
@@ -844,134 +500,106 @@
 		"not_allowed": "Field \"passenger_counting\" \"%s\" is not allowed",
 		"required": "Field \"passenger_counting\" is required"
 	},
-	"path_type_validation": {
-		"forbidden": "Field \"path_type\" is forbidden",
-		"invalid": "Field \"path_type\" must be one of the valid values (1, 2, or 3). Got \"%s\"",
-		"not_allowed": "Field \"path_type\" \"%s\" is not allowed",
-		"recommended": "Field \"path_type\" is recommended",
-		"required": "Field \"path_type\" is required"
-	},
 	"pathway_from_stop_id_references_stops_table": {
-		"generic": "The \"from_stop_id\" field must reference a stop defined in stops.txt."
+		"forbidden": "Field \"from_stop_id\" is forbidden",
+		"forbidden_stop_access_1": "Field \"from_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
+		"generic": "The \"from_stop_id\" field must reference a stop defined in stops.txt.",
+		"invalid_location_type_format": "Field \"from_stop_id\" \"%s\" references a stop whose \"location_type\" is not a valid integer",
+		"invalid_location_type_pathway": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
+		"invalid_location_type_station": "Field \"from_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
+		"invalid_stop_access_format": "Field \"from_stop_id\" \"%s\" references a stop whose \"stop_access\" is not a valid integer",
+		"not_found": "Field \"from_stop_id\" \"%s\" does not exist in stops.txt",
+		"recommended": "Field \"from_stop_id\" is recommended",
+		"required": "Field \"from_stop_id\" is required"
 	},
 	"pathway_id_unique": {
-		"generic": "The \"pathway_id\" field must be unique across pathways.txt."
-	},
-	"pathway_id_validation": {
 		"duplicate": "Duplicate field \"pathway_id\" \"%s\" found. Field \"pathway_id\" must be unique",
 		"forbidden": "Field \"pathway_id\" is forbidden",
+		"generic": "The \"pathway_id\" field must be unique across pathways.txt.",
 		"recommended": "Field \"pathway_id\" is recommended",
 		"required": "Field \"pathway_id\" is required"
 	},
 	"pathway_is_bidirectional_valid_gtfs_enum": {
-		"generic": "The \"is_bidirectional\" field must contain one of the values allowed by GTFS."
+		"exit_gate_bidirectional": "Field \"is_bidirectional\" must be 0 when \"pathway_mode\" is 7 (exit gate). Exit gates cannot be bidirectional",
+		"forbidden": "Field \"is_bidirectional\" is forbidden",
+		"generic": "The \"is_bidirectional\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"is_bidirectional\" must be 0 or 1, received: %s",
+		"not_allowed": "Field \"is_bidirectional\" \"%s\" is not allowed",
+		"recommended": "Field \"is_bidirectional\" is recommended",
+		"required": "Field \"is_bidirectional\" is required"
 	},
 	"pathway_length_non_negative": {
-		"generic": "The \"length\" field must contain a non-negative length in meters."
+		"forbidden": "Field \"length\" is forbidden",
+		"generic": "The \"length\" field must contain a non-negative length in meters.",
+		"negative": "Field \"length\" \"%f\" must be a non-negative number",
+		"recommended": "Field \"length\" is recommended",
+		"required": "Field \"length\" is required"
 	},
 	"pathway_max_slope_allowed_for_pathway_mode": {
-		"generic": "The \"max_slope\" field must contain a slope allowed for the given pathway mode."
+		"forbidden": "Field \"max_slope\" is forbidden",
+		"generic": "The \"max_slope\" field must contain a slope allowed for the given pathway mode.",
+		"not_allowed_pathway_mode": "Field \"max_slope\" is not allowed for pathway_mode \"%s\"",
+		"recommended": "Field \"max_slope\" is recommended",
+		"required": "Field \"max_slope\" is required"
 	},
 	"pathway_min_width_positive": {
-		"generic": "The \"min_width\" field must contain a positive width in meters."
+		"forbidden": "Field \"min_width\" is forbidden",
+		"generic": "The \"min_width\" field must contain a positive width in meters.",
+		"invalid": "Field \"min_width\" \"%s\" is not a valid number",
+		"negative": "Field \"min_width\" must be a positive number",
+		"recommended": "Field \"min_width\" is recommended",
+		"required": "Field \"min_width\" is required"
 	},
 	"pathway_mode_valid_gtfs_enum": {
-		"generic": "The \"pathway_mode\" field must contain one of the values allowed by GTFS."
-	},
-	"pathway_mode_validation": {
 		"forbidden": "Field \"pathway_mode\" is forbidden",
+		"generic": "The \"pathway_mode\" field must contain one of the values allowed by GTFS.",
 		"invalid": "Field \"pathway_mode\" must be 0, 1, 2, 3, 4, or 5, received: %s",
 		"not_allowed": "Field \"pathway_mode\" \"%s\" is not allowed",
 		"recommended": "Field \"pathway_mode\" is recommended",
 		"required": "Field \"pathway_mode\" is required"
 	},
 	"pathway_reversed_signposted_as": {
-		"generic": "The \"reversed_signposted_as\" field must describe the signage for the reverse direction of the pathway."
+		"forbidden": "Field \"reversed_signposted_as\" is forbidden",
+		"generic": "The \"reversed_signposted_as\" field must describe the signage for the reverse direction of the pathway.",
+		"recommended": "Field \"reversed_signposted_as\" is recommended",
+		"required": "Field \"reversed_signposted_as\" is required"
 	},
 	"pathway_signposted_as": {
-		"generic": "The \"signposted_as\" field must describe the signage for the pathway."
+		"forbidden": "Field \"signposted_as\" is forbidden",
+		"generic": "The \"signposted_as\" field must describe the signage for the pathway.",
+		"recommended": "Field \"signposted_as\" is recommended",
+		"required": "Field \"signposted_as\" is required"
 	},
 	"pathway_stair_count": {
-		"generic": "The \"stair_count\" field must contain a valid number of stairs."
+		"forbidden": "Field \"stair_count\" is forbidden",
+		"generic": "The \"stair_count\" field must contain a valid number of stairs.",
+		"recommended": "Field \"stair_count\" is recommended",
+		"required": "Field \"stair_count\" is required"
 	},
 	"pathway_to_stop_id_references_stops_table": {
-		"generic": "The \"to_stop_id\" field must reference a stop defined in stops.txt."
+		"forbidden": "Field \"to_stop_id\" is forbidden",
+		"forbidden_stop_access_1": "Field \"to_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
+		"generic": "The \"to_stop_id\" field must reference a stop defined in stops.txt.",
+		"invalid_location_type_pathway": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
+		"invalid_location_type_station": "Field \"to_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
+		"not_found": "Field \"to_stop_id\" \"%s\" does not exist in stops.txt",
+		"recommended": "Field \"to_stop_id\" is recommended",
+		"required": "Field \"to_stop_id\" is required"
 	},
 	"pathway_traversal_time_non_negative_seconds": {
-		"generic": "The \"traversal_time\" field must contain a non-negative time in seconds."
+		"forbidden": "Field \"traversal_time\" is forbidden",
+		"generic": "The \"traversal_time\" field must contain a non-negative time in seconds.",
+		"negative": "Field \"traversal_time\" \"%s\" must be a non-negative number",
+		"recommended": "Field \"traversal_time\" is recommended",
+		"required": "Field \"traversal_time\" is required"
 	},
 	"pathways_file_missing": {
-		"generic": "The pathways.txt file was not found in the GTFS archive."
+		"generic": "The pathways.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"pathways_values_parse": {
 		"generic": "The values in pathways.txt could not be parsed."
-	},
-	"pattern_id_format_validation": {
-		"invalid": "Field \"pattern_id\" must be a valid ID in the format \"%s\", received: \"%s\""
-	},
-	"pattern_id_validation": {
-		"different_direction_id": "Different direction_id's found for the same pattern_id: %s",
-		"different_pattern_id_same_shape": "Field \"shape_id\" \"%s\" is used in different pattern_ids: \"%s\" and \"%s\"",
-		"different_route_id": "Different route_id's found for the same pattern_id: %s",
-		"direction_id_not_found": "Field \"direction_id\" not found",
-		"forbidden": "Field \"pattern_id\" is forbidden",
-		"invalid_pattern_id": "Field \"pattern_id\" must be in the format \"XXXX_X_X\", received: %s",
-		"multiple_stop_sequence_variations": "For pattern_id %s, there are trips with multiple stop sequence variations",
-		"not_allowed": "Field \"pattern_id\" \"%s\" is not allowed",
-		"not_found": "Field \"pattern_id\" \"%s\" does not exist in patterns.txt",
-		"recommended": "Field \"pattern_id\" is recommended",
-		"required": "Field \"pattern_id\" is required",
-		"route_id_not_found": "Field \"route_id\" not found",
-		"shape_id_not_found": "Field \"shape_id\" not found",
-		"trip_headsign_not_found": "Field \"trip_headsign\" not found"
-	},
-	"payment_method_validation": {
-		"forbidden": "Field \"payment_method\" is forbidden",
-		"invalid": "Field \"payment_method\" must be 0 or 1. Got \"%s\"",
-		"recommended": "Field \"payment_method\" is recommended",
-		"required": "Field \"payment_method\" is required"
-	},
-	"pickup_booking_rule_id_validation": {
-		"forbidden": "Field \"pickup_booking_rule_id\" is forbidden",
-		"invalid": "Field \"pickup_booking_rule_id\" \"%s\" is not a valid booking_rule_id from booking_rules.txt",
-		"not_allowed": "Field \"pickup_booking_rule_id\" \"%s\" is not allowed",
-		"not_found": "Field \"pickup_booking_rule_id\" \"%s\" does not exist in booking_rules.txt",
-		"recommended": "Field \"pickup_booking_rule_id\" is recommended",
-		"required": "Field \"pickup_booking_rule_id\" is required"
-	},
-	"pickup_type_validation": {
-		"forbidden": "Field \"pickup_type\" is forbidden",
-		"forbidden_pickup_dropoff": "Field \"pickup_type\"=0 or 3 is forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined",
-		"invalid": "Field \"pickup_type\" must be 0, 1, 2, or 3",
-		"not_allowed": "Field \"pickup_type\" \"%s\" is not allowed",
-		"recommended": "Field \"pickup_type\" is recommended",
-		"required": "Field \"pickup_type\" is required"
-	},
-	"platform_code_validation": {
-		"forbidden": "Field \"platform_code\" is forbidden",
-		"not_allowed": "Field \"platform_code\" \"%s\" is not allowed",
-		"recommended": "Field \"platform_code\" is recommended",
-		"required": "Field \"platform_code\" is required"
-	},
-	"price_validation": {
-		"forbidden": "Field \"price\" is forbidden",
-		"invalid": "Field \"price\" must be non-negative. Got \"%s\"",
-		"recommended": "Field \"price\" is recommended",
-		"required": "Field \"price\" is required"
-	},
-	"propulsion_validation": {
-		"forbidden": "Field \"propulsion\" is forbidden",
-		"invalid": "Field \"propulsion\" \"%s\" is not a valid propulsion type",
-		"not_allowed": "Field \"propulsion\" \"%s\" is not allowed",
-		"recommended": "Field \"propulsion\" is recommended",
-		"required": "Field \"propulsion\" is required"
-	},
-	"public_visible_validation": {
-		"forbidden": "Field \"public_visible\" is forbidden",
-		"invalid": "Field \"public_visible\" must be 0 or 1, received: %s",
-		"not_allowed": "Field \"public_visible\" \"%s\" is not allowed",
-		"recommended": "Field \"public_visible\" is recommended",
-		"required": "Field \"public_visible\" is required"
 	},
 	"ramp_validation": {
 		"invalid": "Field \"ramp\" \"%s\" is not a valid ramp type",
@@ -983,159 +611,123 @@
 		"not_allowed": "Field \"rear_display\" \"%s\" is not allowed",
 		"required": "Field \"rear_display\" is required"
 	},
-	"region_id_validation": {
-		"forbidden": "Field \"region_id\" is forbidden",
-		"not_allowed": "Field \"region_id\" \"%s\" is not valid",
-		"not_found": "Field \"region_id\" \"%s\" does not exist in regions.txt",
-		"recommended": "Field \"region_id\" is recommended",
-		"required": "Field \"region_id\" is required"
-	},
-	"registration_date_validation": {
-		"forbidden": "Field \"registration_date\" is forbidden",
-		"invalid": "Field \"registration_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
-		"recommended": "Field \"registration_date\" is recommended",
-		"required": "Field \"registration_date\" is required"
-	},
-	"reversed_signposted_as_validation": {
-		"forbidden": "Field \"reversed_signposted_as\" is forbidden",
-		"recommended": "Field \"reversed_signposted_as\" is recommended",
-		"required": "Field \"reversed_signposted_as\" is required"
-	},
 	"rider_categories_at_most_one_default_fare_category": {
-		"generic": "Only one rider category may be marked as the default fare category."
+		"forbidden": "Field \"is_default_fare_category\" is forbidden",
+		"generic": "Only one rider category may be marked as the default fare category.",
+		"invalid": "Field \"is_default_fare_category\" must be 0 or 1",
+		"not_allowed": "Field \"is_default_fare_category\" \"%s\" is not allowed",
+		"recommended": "Field \"is_default_fare_category\" is recommended",
+		"required": "Field \"is_default_fare_category\" is required"
 	},
 	"rider_categories_eligibility_url_valid_http_url": {
-		"generic": "The \"eligibility_url\" field must contain a valid HTTP URL."
+		"forbidden": "Field \"eligibility_url\" is forbidden",
+		"generic": "The \"eligibility_url\" field must contain a valid HTTP URL.",
+		"invalid": "Field \"eligibility_url\" must be a valid URL",
+		"recommended": "Field \"eligibility_url\" is recommended",
+		"required": "Field \"eligibility_url\" is required"
 	},
 	"rider_categories_file_missing": {
-		"generic": "The rider_categories.txt file was not found in the GTFS archive."
+		"generic": "The rider_categories.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"rider_categories_values_parse": {
 		"generic": "The values in rider_categories.txt could not be parsed."
 	},
 	"rider_category_id_unique": {
-		"generic": "The \"rider_category_id\" field must be unique across rider_categories.txt."
-	},
-	"rider_category_id_validation": {
 		"duplicate": "Duplicate field \"rider_category_id\" \"%s\" found. Field \"rider_category_id\" must be unique",
 		"forbidden": "Field \"rider_category_id\" is forbidden",
+		"generic": "The \"rider_category_id\" field must be unique across rider_categories.txt.",
 		"recommended": "Field \"rider_category_id\" is recommended",
 		"required": "Field \"rider_category_id\" is required"
 	},
 	"rider_category_name_non_empty": {
-		"generic": "The \"rider_category_name\" field must be present."
-	},
-	"rider_category_name_validation": {
 		"forbidden": "Field \"rider_category_name\" is forbidden",
+		"generic": "The \"rider_category_name\" field must be present.",
 		"recommended": "Field \"rider_category_name\" is recommended",
 		"required": "Field \"rider_category_name\" is required"
 	},
 	"route_agency_id_references_agency_table": {
-		"generic": "The \"agency_id\" field must reference an agency defined in agency.txt."
+		"forbidden": "Field \"agency_id\" is forbidden",
+		"generic": "The \"agency_id\" field must reference an agency defined in agency.txt.",
+		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt",
+		"recommended": "Field \"agency_id\" is recommended when there is only one agency",
+		"required": "Field \"agency_id\" is required when there is more than one agency"
 	},
 	"route_associations_validation": {
 		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s",
 		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
 	},
 	"route_color_valid_hex_string": {
-		"generic": "The \"route_color\" field must contain a valid hexadecimal color."
-	},
-	"route_color_validation": {
 		"forbidden": "Field \"route_color\" is forbidden",
+		"generic": "The \"route_color\" field must contain a valid hexadecimal color.",
 		"invalid": "Field \"route_color\" \"%s\" is not a valid 6-character hexadecimal color (e.g., FFFFFF)",
 		"not_allowed": "Field \"route_color\" \"%s\" is not allowed",
 		"recommended": "Field \"route_color\" is recommended",
 		"required": "Field \"route_color\" is required"
 	},
 	"route_desc_per_severity_and_content_rules": {
-		"generic": "The \"route_desc\" field must describe the route without repeating its name."
-	},
-	"route_desc_validation": {
-		"duplicate": "Field \"route_desc\" \"%s\" should not duplicate route_short_name",
-		"duplicate_long": "Field \"route_desc\" \"%s\" should not duplicate route_long_name",
 		"duplicate_long_name": "Field \"route_desc\" should not duplicate route_long_name",
 		"duplicate_short_name": "Field \"route_desc\" should not duplicate route_short_name",
 		"forbidden": "Field \"route_desc\" is forbidden",
+		"generic": "The \"route_desc\" field must describe the route without repeating its name.",
 		"not_allowed": "Field \"route_desc\" \"%s\" is not allowed",
 		"recommended": "Field \"route_desc\" is recommended",
 		"required": "Field \"route_desc\" is required"
 	},
 	"route_id_composed_of_short_name_and_sort_order": {
-		"generic": "The \"route_id\" field must be composed of \"route_short_name\" and \"route_sort_order\"."
-	},
-	"route_id_format_validation": {
+		"generic": "The \"route_id\" field must be composed of \"route_short_name\" and \"route_sort_order\".",
 		"invalid": "Field \"route_id\" \"%s\" should be \"%s\", built from route_short_name \"%s\" and route_sort_order %d"
 	},
-	"route_id_group_validation": {
-		"different_route_ids_in_pattern": "pattern_id %s has trips with different route_ids: %s. All trips with the same pattern_id must have the same route_id"
-	},
 	"route_id_unique": {
-		"generic": "The \"route_id\" field must be unique across routes.txt."
-	},
-	"route_id_validation": {
 		"duplicate": "Duplicate field \"route_id\" \"%s\" found. Field \"route_id\" must be unique",
 		"forbidden": "Field \"route_id\" is forbidden",
-		"invalid": "Field \"route_id\" \"%s\" is not a valid route_id from routes.txt",
-		"not_found": "Field \"route_id\" \"%s\" does not exist in routes.txt",
+		"generic": "The \"route_id\" field must be unique across routes.txt.",
 		"recommended": "Field \"route_id\" is recommended",
 		"required": "Field \"route_id\" is required"
 	},
 	"route_long_name_or_short_name_present": {
-		"generic": "Each route must have either \"route_long_name\" or \"route_short_name\" present."
-	},
-	"route_long_name_validation": {
-		"duplicate": "Field \"route_long_name\" \"%s\" should not duplicate route_short_name",
 		"forbidden": "Field \"route_long_name\" is forbidden",
+		"generic": "Each route must have either \"route_long_name\" or \"route_short_name\" present.",
 		"not_allowed": "Field \"route_long_name\" \"%s\" is not allowed",
 		"recommended": "Field \"route_long_name\" is recommended",
 		"required": "Field \"route_long_name\" is required"
 	},
 	"route_short_name_or_long_name_present": {
-		"generic": "Each route must have either \"route_short_name\" or \"route_long_name\" present."
-	},
-	"route_short_name_validation": {
-		"duplicate": "Field \"route_short_name\" \"%s\" should not duplicate route_long_name",
 		"forbidden": "Field \"route_short_name\" is forbidden",
+		"generic": "Each route must have either \"route_short_name\" or \"route_long_name\" present.",
 		"not_allowed": "Field \"route_short_name\" \"%s\" is not allowed",
 		"recommended": "Field \"route_short_name\" is recommended",
 		"required": "Field \"route_short_name\" is required",
 		"too_long": "Field \"route_short_name\" \"%s\" is too long, must be less than 12 characters"
 	},
 	"route_sort_order_non_negative_integer": {
-		"generic": "The \"route_sort_order\" field must contain a non-negative integer."
-	},
-	"route_sort_order_validation": {
 		"forbidden": "Field \"route_sort_order\" is forbidden",
+		"generic": "The \"route_sort_order\" field must contain a non-negative integer.",
 		"invalid": "Field \"route_sort_order\" \"%d\" must be a non-negative integer",
 		"recommended": "Field \"route_sort_order\" is recommended",
 		"required": "Field \"route_sort_order\" is required"
 	},
 	"route_text_color_valid_hex_contrast": {
-		"generic": "The \"route_text_color\" field must contain a valid hexadecimal color with enough contrast against \"route_color\"."
-	},
-	"route_text_color_validation": {
 		"forbidden": "Field \"route_text_color\" is forbidden",
+		"generic": "The \"route_text_color\" field must contain a valid hexadecimal color with enough contrast against \"route_color\".",
 		"invalid": "Field \"route_text_color\" \"%s\" is not a valid 6-character hexadecimal color (e.g., FFFFFF)",
 		"not_allowed": "Field \"route_text_color\" \"%s\" is not allowed",
 		"recommended": "Field \"route_text_color\" is recommended",
 		"required": "Field \"route_text_color\" is required"
 	},
 	"route_type_valid_gtfs_enum": {
-		"generic": "The \"route_type\" field must contain one of the values allowed by GTFS."
-	},
-	"route_type_validation": {
 		"forbidden": "Field \"route_type\" is forbidden",
+		"generic": "The \"route_type\" field must contain one of the values allowed by GTFS.",
 		"invalid": "Field \"route_type\" \"%d\" must be one of the valid GTFS enum values (%s)",
 		"not_allowed": "Field \"route_type\" \"%d\" is not allowed",
 		"recommended": "Field \"route_type\" is recommended",
 		"required": "Field \"route_type\" is required"
 	},
 	"route_url_valid_http_url": {
-		"generic": "The \"route_url\" field must contain a valid HTTP URL."
-	},
-	"route_url_validation": {
 		"duplicate": "Field \"route_url\" could not be checked against \"agency_url\": more than one agency.txt row matches this route's agency_id",
 		"forbidden": "Field \"route_url\" is forbidden",
+		"generic": "The \"route_url\" field must contain a valid HTTP URL.",
 		"invalid": "Field \"route_url\" \"%s\" is not a valid URL",
 		"not_allowed": "Field \"route_url\" \"%s\" is not allowed",
 		"recommended": "Field \"route_url\" is recommended",
@@ -1143,68 +735,87 @@
 		"same_as_agency_url": "Field \"route_url\" should be different from the agency's \"agency_url\""
 	},
 	"routes_continuous_drop_off_valid_gtfs_enum": {
-		"generic": "The \"continuous_drop_off\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"continuous_drop_off\" is forbidden",
+		"forbidden_with_window": "Field \"continuous_drop_off\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
+		"generic": "The \"continuous_drop_off\" field must contain one of the values allowed by GTFS.",
+		"not_allowed": "Field \"continuous_drop_off\" \"%s\" is not allowed",
+		"recommended": "Field \"continuous_drop_off\" is recommended",
+		"required": "Field \"continuous_drop_off\" is required"
 	},
 	"routes_continuous_pickup_valid_gtfs_enum": {
-		"generic": "The \"continuous_pickup\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"continuous_pickup\" is forbidden",
+		"forbidden_with_window": "Field \"continuous_pickup\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
+		"generic": "The \"continuous_pickup\" field must contain one of the values allowed by GTFS.",
+		"not_allowed": "Field \"continuous_pickup\" \"%s\" is not allowed",
+		"recommended": "Field \"continuous_pickup\" is recommended",
+		"required": "Field \"continuous_pickup\" is required"
 	},
 	"routes_file_missing": {
-		"generic": "The routes.txt file was not found in the GTFS archive."
+		"generic": "The routes.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"routes_line_id_required": {
-		"generic": "The \"line_id\" field must be present and identify the line the route belongs to."
+		"forbidden": "Field \"line_id\" is forbidden",
+		"generic": "The \"line_id\" field must be present and identify the line the route belongs to.",
+		"not_equal_to_route_short_name": "Field \"line_id\" \"%s\" should be the same as \"route_short_name\" \"%s\"",
+		"recommended": "Field \"line_id\" is recommended",
+		"required": "Field \"line_id\" is required"
 	},
 	"routes_line_long_name_present_when_line_id_present": {
-		"generic": "The \"line_long_name\" field must be present whenever \"line_id\" is defined."
+		"forbidden": "Field \"line_long_name\" is forbidden",
+		"generic": "The \"line_long_name\" field must be present whenever \"line_id\" is defined.",
+		"recommended": "Field \"line_long_name\" is recommended",
+		"required": "Field \"line_long_name\" is required"
 	},
 	"routes_line_short_name_present_when_line_id_present": {
-		"generic": "The \"line_short_name\" field must be present whenever \"line_id\" is defined."
+		"forbidden": "Field \"line_short_name\" is forbidden",
+		"generic": "The \"line_short_name\" field must be present whenever \"line_id\" is defined.",
+		"not_equal_to_route_short_name": "Field \"line_short_name\" \"%s\" should be the same as \"route_short_name\" \"%s\"",
+		"recommended": "Field \"line_short_name\" is recommended",
+		"required": "Field \"line_short_name\" is required"
 	},
 	"routes_network_id_references_networks_table": {
-		"generic": "The \"network_id\" field must reference a network defined in networks.txt."
+		"forbidden": "Field \"network_id\" is forbidden",
+		"forbidden_when_route_networks_exists": "Field \"network_id\" \"%s\" is forbidden if route_networks.txt exists",
+		"generic": "The \"network_id\" field must reference a network defined in networks.txt.",
+		"not_allowed": "Field \"network_id\" \"%s\" is not allowed",
+		"recommended": "Field \"network_id\" is recommended",
+		"required": "Field \"network_id\" is required"
 	},
 	"routes_path_type_valid_enum": {
-		"generic": "The \"path_type\" field must contain one of the allowed values."
+		"forbidden": "Field \"path_type\" is forbidden",
+		"generic": "The \"path_type\" field must contain one of the allowed values.",
+		"not_allowed": "Field \"path_type\" \"%s\" is not allowed",
+		"recommended": "Field \"path_type\" is recommended",
+		"required": "Field \"path_type\" is required"
 	},
 	"routes_values_parse": {
 		"generic": "The values in routes.txt could not be parsed."
 	},
-	"service_id_validation": {
-		"duplicate": "Duplicate field \"service_id\" \"%s\" found. Field \"service_id\" must be unique",
-		"forbidden": "Field \"service_id\" is forbidden",
-		"invalid": "Field \"service_id\" \"%s\" is not a valid service_id from calendar.txt or calendar_dates.txt",
-		"not_found": "Field \"service_id\" \"%s\" does not exist in calendar.txt or calendar_dates.txt",
-		"recommended": "Field \"service_id\" is recommended",
-		"required": "Field \"service_id\" is required"
-	},
 	"shape_dist_traveled_delta_mismatches_haversine_block": {
-		"generic": "The \"shape_dist_traveled\" increments must match the geographic distance covered along the block."
+		"generic": "The \"shape_dist_traveled\" increments must match the geographic distance covered along the block.",
+		"invalid_distances": "The total expected distance (shape_dist_traveled) for shape \"%s\" is %.2f meters, the actual geometric distance is %.2f meters (diff: %.2f meters)"
 	},
 	"shape_dist_traveled_delta_mismatches_haversine_segment": {
-		"generic": "The \"shape_dist_traveled\" increments must match the geometric length of each segment."
+		"ManyErrors": "Many shape distance increments differ from their geometric segment lengths. Review shape_dist_traveled and its units in shapes.txt.",
+		"generic": "The \"shape_dist_traveled\" increments must match the geometric length of each segment.",
+		"invalid_distances": "Between points (%s, %s) and (%s, %s), shape_dist_traveled increases by %.2f meters but the Haversine distance is %.2f meters. Shape %s, sequences %d to %d; tolerance %.2f meters."
 	},
 	"shape_dist_traveled_non_decreasing_with_sequence": {
-		"generic": "The \"shape_dist_traveled\" field must not decrease along \"shape_pt_sequence\"."
+		"generic": "The \"shape_dist_traveled\" field must not decrease along \"shape_pt_sequence\".",
+		"not_increasing": "Field \"shape_dist_traveled\" for shape_id '%s' must increase along the trip"
 	},
 	"shape_dist_traveled_non_negative_monotonic": {
-		"generic": "The \"shape_dist_traveled\" field must contain non-negative, always increasing values."
-	},
-	"shape_dist_traveled_validation": {
 		"forbidden": "Field \"shape_dist_traveled\" is forbidden",
+		"generic": "The \"shape_dist_traveled\" field must contain non-negative, always increasing values.",
 		"invalid": "Field \"shape_dist_traveled\" must be a non-negative float",
-		"not_increasing": "Field \"shape_dist_traveled\" for shape_id '%s' must increase along the trip",
 		"recommended": "Field \"shape_dist_traveled\" is recommended",
 		"required": "Field \"shape_dist_traveled\" is required"
 	},
-	"shape_distances_validation": {
-		"invalid_distances": "The total expected distance (shape_dist_traveled) for shape \"%s\" is %.2f meters, the actual geometric distance is %.2f meters (diff: %.2f meters)"
-	},
 	"shape_id_and_point_sequence_required": {
-		"generic": "The \"shape_id\" and \"shape_pt_sequence\" fields must be present on every shape point."
-	},
-	"shape_id_group_validation": {
-		"different_shape_id": "Different shape_id's found for the same pattern_id: %s",
-		"multiple_shape_id_in_unique_pattern_id": "Field \"shape_id\" \"%s\" is used in multiple pattern_ids"
+		"generic": "The \"shape_id\" and \"shape_pt_sequence\" fields must be present on every shape point.",
+		"required": "Field \"shape_pt_sequence\" is required"
 	},
 	"shape_id_in_unique_pattern_id_validation": {
 		"different_pattern_id": "Field \"shape_id\" \"%s\" is used in different pattern_ids: \"%s\" and \"%s\"",
@@ -1213,113 +824,57 @@
 		"shape_id_not_found": "Field \"shape_id\" is required"
 	},
 	"shape_id_required": {
-		"generic": "The \"shape_id\" field must be present."
+		"forbidden": "Field \"shape_id\" is forbidden",
+		"generic": "The \"shape_id\" field must be present.",
+		"recommended": "Field \"shape_id\" is recommended",
+		"required": "Field \"shape_id\" is required"
 	},
 	"shape_id_route_direction_match": {
 		"not_matching": "Field \"shape_id\" \"%s\" should be \"%s\", combining route_id \"%s\" and direction_id %d"
 	},
-	"shape_id_same_pattern_id": {
-		"not_matching": "Field \"shape_id\" \"%s\" is different from the field \"pattern_id\" \"%s\", they need to be the same"
-	},
-	"shape_id_validation": {
-		"different_from_pattern_id": "Field \"shape_id\" \"%s\" is different from field \"pattern_id\" \"%s\"",
-		"forbidden": "Field \"shape_id\" is forbidden",
-		"invalid": "Field \"shape_id\" \"%s\" is not a valid shape_id from shapes.txt",
-		"not_found": "Field \"shape_id\" \"%s\" does not exist in shapes.txt",
-		"recommended": "Field \"shape_id\" is recommended",
-		"required": "Field \"shape_id\" is required"
-	},
-	"shape_points_coordinates_consistent_validation": {
-		"ManyErrors": "Many consecutive shape points exceed the configured spacing limit. Review the coordinates and sequence in shapes.txt.",
-		"invalid_consistent_distance": "Shape %s has coordinates (%.6f, %.6f) at sequence %d too far from (%.6f, %.6f) at sequence %d: %.2f meters exceeds the %.2f meter limit."
-	},
-	"shape_points_coordinates_distances_validation": {
-		"ManyErrors": "Many shape distance increments differ from their geometric segment lengths. Review shape_dist_traveled and its units in shapes.txt.",
-		"invalid_distances": "Between points (%s, %s) and (%s, %s), shape_dist_traveled increases by %.2f meters but the Haversine distance is %.2f meters. Shape %s, sequences %d to %d; tolerance %.2f meters."
-	},
 	"shape_pt_lat_valid_latitude": {
-		"generic": "The \"shape_pt_lat\" field must contain a valid latitude."
-	},
-	"shape_pt_lat_validation": {
 		"forbidden": "Field \"shape_pt_lat\" is forbidden",
+		"generic": "The \"shape_pt_lat\" field must contain a valid latitude.",
 		"invalid": "Field \"shape_pt_lat\" must be a valid latitude, expected range: -90 to 90, got: %f",
 		"recommended": "Field \"shape_pt_lat\" is recommended",
 		"required": "Field \"shape_pt_lat\" is required"
 	},
 	"shape_pt_lon_valid_longitude": {
-		"generic": "The \"shape_pt_lon\" field must contain a valid longitude."
-	},
-	"shape_pt_lon_validation": {
 		"forbidden": "Field \"shape_pt_lon\" is forbidden",
+		"generic": "The \"shape_pt_lon\" field must contain a valid longitude.",
 		"invalid": "Field \"shape_pt_lon\" must be a valid longitude, expected range: -180 to 180, got: %f",
 		"recommended": "Field \"shape_pt_lon\" is recommended",
 		"required": "Field \"shape_pt_lon\" is required"
 	},
 	"shape_pt_sequence_not_repeated_within_shape": {
-		"generic": "The \"shape_pt_sequence\" field must not repeat within the same shape."
-	},
-	"shape_pt_sequence_strictly_increasing": {
-		"generic": "The \"shape_pt_sequence\" field must strictly increase within each shape."
-	},
-	"shape_pt_sequence_validation": {
 		"forbidden": "Field \"shape_pt_sequence\" is forbidden",
+		"generic": "The \"shape_pt_sequence\" field must not repeat within the same shape.",
 		"invalid": "Field \"shape_pt_sequence\" must be a non-negative integer",
-		"not_increasing": "Field \"shape_pt_sequence\" for shape_id '%s' must increase along the trip",
 		"recommended": "Field \"shape_pt_sequence\" is recommended",
 		"required": "Field \"shape_pt_sequence\" is required"
 	},
+	"shape_pt_sequence_strictly_increasing": {
+		"generic": "The \"shape_pt_sequence\" field must strictly increase within each shape.",
+		"not_increasing": "Field \"shape_pt_sequence\" for shape_id '%s' must increase along the trip"
+	},
 	"shape_sequence_position_mismatches_cumulative_traveled_distance": {
-		"generic": "Consecutive shape points are too far apart for the traveled distance declared."
+		"ManyErrors": "Many consecutive shape points exceed the configured spacing limit. Review the coordinates and sequence in shapes.txt.",
+		"generic": "Consecutive shape points are too far apart for the traveled distance declared.",
+		"invalid_consistent_distance": "Shape %s has coordinates (%.6f, %.6f) at sequence %d too far from (%.6f, %.6f) at sequence %d: %.2f meters exceeds the %.2f meter limit."
 	},
 	"shapes_file_missing": {
-		"generic": "The shapes.txt file was not found in the GTFS archive."
+		"generic": "The shapes.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"shapes_values_parse": {
-		"generic": "The values in shapes.txt could not be parsed."
-	},
-	"shelter_code_validation": {
-		"forbidden": "Field \"shelter_code\" is forbidden",
-		"not_allowed": "Field \"shelter_code\" \"%s\" is not allowed",
-		"recommended": "Field \"shelter_code\" is recommended",
-		"required": "Field \"shelter_code\" is required"
-	},
-	"shelter_maintainer_validation": {
-		"forbidden": "Field \"shelter_maintainer\" is forbidden",
-		"not_allowed": "Field \"shelter_maintainer\" \"%s\" is not allowed",
-		"recommended": "Field \"shelter_maintainer\" is recommended",
-		"required": "Field \"shelter_maintainer\" is required"
+		"generic": "The values in shapes.txt could not be parsed.",
+		"parsing_error": "Could not parse shapes.txt: %s"
 	},
 	"side_display_validation": {
 		"invalid": "Field \"side_display\" \"%s\" is not a valid side_display type",
 		"not_allowed": "Field \"side_display\" \"%s\" is not allowed",
 		"required": "Field \"side_display\" is required"
-	},
-	"signposted_as_validation": {
-		"forbidden": "Field \"signposted_as\" is forbidden",
-		"recommended": "Field \"signposted_as\" is recommended",
-		"required": "Field \"signposted_as\" is required"
-	},
-	"stair_count_validation": {
-		"forbidden": "Field \"stair_count\" is forbidden",
-		"invalid": "Field \"stair_count\" \"%s\" is not a valid number",
-		"not_allowed": "Field \"stair_count\" \"%s\" is not allowed",
-		"recommended": "Field \"stair_count\" is recommended",
-		"required": "Field \"stair_count\" is required"
-	},
-	"start_pickup_drop_off_window_validation": {
-		"forbidden": "Field \"start_pickup_drop_off_window\" is forbidden",
-		"forbidden_arrival_departure": "Field \"start_pickup_drop_off_window\" is forbidden if arrival_time or departure_time are defined",
-		"invalid": "Field \"start_pickup_drop_off_window\" must be a valid time, expected format: HH:MM:SS, got: %s",
-		"recommended": "Field \"start_pickup_drop_off_window\" is recommended",
-		"required": "Field \"start_pickup_drop_off_window\" is required",
-		"required_location_group_id_start_pickup_dropoff": "Field \"start_pickup_drop_off_window\" is required if \"location_group_id\" or \"location_id\" is defined, or if \"start_pickup_drop_off_window\" is defined"
-	},
-	"start_time_validation": {
-		"forbidden": "Field \"start_time\" is forbidden",
-		"invalid": "Field \"start_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
-		"not_allowed": "Field \"start_time\" \"%s\" is not allowed",
-		"recommended": "Field \"start_time\" is recommended",
-		"required": "Field \"start_time\" is required"
 	},
 	"static_information_validation": {
 		"invalid": "Field \"static_information\" \"%s\" is not a valid static_information type",
@@ -1337,39 +892,31 @@
 		"required": "Field \"stop_access\" is required"
 	},
 	"stop_code_valid": {
-		"generic": "The \"stop_code\" field must contain a valid stop code."
-	},
-	"stop_code_validation": {
 		"duplicate": "Duplicate field \"stop_code\" \"%s\" found. Field \"stop_code\" must be unique",
 		"forbidden": "Field \"stop_code\" is forbidden",
+		"generic": "The \"stop_code\" field must contain a valid stop code.",
 		"not_allowed": "Field \"stop_code\" \"%s\" is not allowed",
 		"recommended": "Field \"stop_code\" is recommended",
 		"required": "Field \"stop_code\" is required"
 	},
-	"stop_coordinates_validation": {
-		"invalid_distance_to_shape": "Coordinates (%.6f, %.6f) of stop \"%s\" are too far from the shapes, the closest shape \"%s\" in sequence %d at (%.6f, %.6f) (%.2f m)"
-	},
 	"stop_desc_valid": {
-		"generic": "The \"stop_desc\" field must describe the stop without repeating its name."
-	},
-	"stop_desc_validation": {
 		"duplicate": "Field \"stop_desc\" \"%s\" must be different from field \"stop_name\" \"%s\"",
 		"forbidden": "Field \"stop_desc\" is forbidden",
+		"generic": "The \"stop_desc\" field must describe the stop without repeating its name.",
 		"not_allowed": "Field \"stop_desc\" \"%s\" is not allowed",
 		"recommended": "Field \"stop_desc\" is recommended",
 		"required": "Field \"stop_desc\" is required"
-	},
-	"stop_headsign_validation": {
-		"forbidden": "Field \"stop_headsign\" is forbidden",
-		"not_allowed": "Field \"stop_headsign\" \"%s\" is not allowed",
-		"recommended": "Field \"stop_headsign\" is recommended",
-		"required": "Field \"stop_headsign\" is required"
 	},
 	"stop_id_exists": {
 		"generic": "The \"stop_id\" field must be present."
 	},
 	"stop_id_unique": {
-		"generic": "The \"stop_id\" field must be unique across stops.txt."
+		"duplicate": "Duplicate field \"stop_id\" \"%s\" found. Field \"stop_id\" must be unique",
+		"forbidden": "Field \"stop_id\" is forbidden",
+		"generic": "The \"stop_id\" field must be unique across stops.txt.",
+		"not_allowed": "Field \"stop_id\" \"%s\" is not allowed",
+		"recommended": "Field \"stop_id\" is recommended",
+		"required": "Field \"stop_id\" is required"
 	},
 	"stop_id_validation": {
 		"does_not_exist": "Field \"stop_id\" \"%s\" does not exist, verify if id is correct",
@@ -1387,7 +934,11 @@
 		"generic": "The \"stop_lat\" field must match the latitude on record for the stop."
 	},
 	"stop_lat_valid_latitude_range": {
-		"generic": "The \"stop_lat\" field must contain a latitude within the valid range."
+		"forbidden": "Field \"stop_lat\" is forbidden",
+		"generic": "The \"stop_lat\" field must contain a latitude within the valid range.",
+		"invalid": "Field \"stop_lat\" must be a valid latitude, expected range: -90 to 90, got: %f",
+		"recommended": "Field \"stop_lat\" is recommended",
+		"required": "Field \"stop_lat\" is required"
 	},
 	"stop_lat_validation": {
 		"does_not_match_stops_data": "Field \"stop_lat\" %f does not match stops_data.json",
@@ -1400,7 +951,11 @@
 		"generic": "The \"stop_lon\" field must match the longitude on record for the stop."
 	},
 	"stop_lon_valid_longitude_range": {
-		"generic": "The \"stop_lon\" field must contain a longitude within the valid range."
+		"forbidden": "Field \"stop_lon\" is forbidden",
+		"generic": "The \"stop_lon\" field must contain a longitude within the valid range.",
+		"invalid": "Field \"stop_lon\" must be a valid longitude, expected range: -180 to 180, got: %f",
+		"recommended": "Field \"stop_lon\" is recommended",
+		"required": "Field \"stop_lon\" is required"
 	},
 	"stop_lon_validation": {
 		"does_not_match_stops_data": "Field \"stop_lon\" %f does not match stops_data.json",
@@ -1413,7 +968,11 @@
 		"generic": "The \"stop_name\" field must match the name on record for the stop."
 	},
 	"stop_name_required_by_location_type": {
-		"generic": "The \"stop_name\" field must be present for the given location type."
+		"forbidden": "Field \"stop_name\" is forbidden",
+		"generic": "The \"stop_name\" field must be present for the given location type.",
+		"not_allowed": "Field \"stop_short_name\" \"%s\" is not allowed",
+		"recommended": "Field \"stop_name\" is recommended",
+		"required": "Field \"stop_name\" is required"
 	},
 	"stop_name_validation": {
 		"does_not_match_stops_data": "Field \"stop_name\" \"%s\" does not match stops_data.json",
@@ -1422,390 +981,557 @@
 		"recommended": "Field \"stop_name\" is recommended",
 		"required": "Field \"stop_name\" is required"
 	},
-	"stop_sequence_validation": {
-		"consecutive_stop_ids": "The same stop_id \"%s\" cannot appear consecutively (one directly after another) in trip \"%s\"",
-		"forbidden": "Field \"stop_sequence\" is forbidden",
-		"invalid": "Field \"stop_sequence\" must be a non-negative integer",
-		"invalid_shape_dist": "Field \"shape_dist_traveled\" must be a valid number to validate stop_sequence",
-		"non_increasing_sequence": "The values of \"stop_sequence\" must increase along the trip ('%s')",
-		"non_increasing_shape_dist": "The values of \"shape_dist_traveled\" must increase along the trip ('%s')",
-		"not_allowed": "Field \"stop_sequence\" \"%s\" is not allowed",
-		"recommended": "Field \"stop_sequence\" is recommended",
-		"required": "Field \"stop_sequence\" is required"
-	},
 	"stop_short_name_valid": {
-		"generic": "The \"stop_short_name\" field must contain a valid short name."
-	},
-	"stop_short_name_validation": {
 		"forbidden": "Field \"stop_short_name\" is forbidden",
+		"generic": "The \"stop_short_name\" field must contain a valid short name.",
 		"not_allowed": "Field \"stop_short_name\" \"%s\" is not allowed",
 		"recommended": "Field \"stop_short_name\" is recommended",
-		"required": "Field \"stop_short_name\" is required",
-		"required_location_type": "Field \"stop_short_name\" is required when location_type is 0, 1, or 2"
+		"required": "Field \"stop_short_name\" is required"
 	},
 	"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence": {
+		"decreasing": "Fields \"arrival_time\" and \"departure_time\" must not decrease by \"stop_sequence\" for trip_id \"%s\"; previous stop_sequence \"%d\" ends at \"%s\" and current stop_sequence \"%d\" starts at \"%s\"",
 		"generic": "Arrival and departure times must not go backwards between consecutive stops of the same trip."
 	},
 	"stop_times_arrival_time_ordering_with_departure_and_frequencies": {
-		"generic": "The \"arrival_time\" field must be consistent with \"departure_time\" and with the service declared in frequencies.txt."
+		"forbidden": "Field \"arrival_time\" is forbidden",
+		"generic": "The \"arrival_time\" field must be consistent with \"departure_time\" and with the service declared in frequencies.txt.",
+		"invalid": "Field \"arrival_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
+		"recommended": "Field \"arrival_time\" is recommended",
+		"required": "Field \"arrival_time\" is required"
 	},
 	"stop_times_continuous_drop_off_valid_gtfs_enum": {
-		"generic": "The \"continuous_drop_off\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"continuous_drop_off\" is forbidden",
+		"forbidden_with_window": "Field \"continuous_drop_off\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
+		"generic": "The \"continuous_drop_off\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"continuous_drop_off\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
+		"not_allowed": "Field \"continuous_drop_off\" \"%s\" is not allowed",
+		"recommended": "Field \"continuous_drop_off\" is recommended",
+		"required": "Field \"continuous_drop_off\" is required"
 	},
 	"stop_times_continuous_pickup_valid_gtfs_enum": {
-		"generic": "The \"continuous_pickup\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"continuous_pickup\" is forbidden",
+		"forbidden_with_window": "Field \"continuous_pickup\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
+		"generic": "The \"continuous_pickup\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"continuous_pickup\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
+		"not_allowed": "Field \"continuous_pickup\" \"%s\" is not allowed",
+		"recommended": "Field \"continuous_pickup\" is recommended",
+		"required": "Field \"continuous_pickup\" is required"
 	},
 	"stop_times_departure_time_ordering_with_arrival_and_timepoint": {
-		"generic": "The \"departure_time\" field must be consistent with \"arrival_time\" and with the \"timepoint\" value."
+		"forbidden": "Field \"departure_time\" is forbidden",
+		"generic": "The \"departure_time\" field must be consistent with \"arrival_time\" and with the \"timepoint\" value.",
+		"invalid": "Field \"departure_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
+		"recommended": "Field \"departure_time\" is recommended",
+		"required": "Field \"departure_time\" is required"
 	},
 	"stop_times_drop_off_booking_rule_id_references_booking_rules_or_empty": {
-		"generic": "The \"drop_off_booking_rule_id\" field must reference a rule defined in booking_rules.txt or be left empty."
+		"forbidden": "Field \"drop_off_booking_rule_id\" is forbidden",
+		"generic": "The \"drop_off_booking_rule_id\" field must reference a rule defined in booking_rules.txt or be left empty.",
+		"not_found": "Field \"drop_off_booking_rule_id\" \"%s\" does not exist in booking_rules.txt",
+		"recommended": "Field \"drop_off_booking_rule_id\" is recommended",
+		"required": "Field \"drop_off_booking_rule_id\" is required"
 	},
 	"stop_times_drop_off_type_valid_gtfs_enum": {
-		"generic": "The \"drop_off_type\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"drop_off_type\" is forbidden",
+		"forbidden_pickup_dropoff": "Field \"drop_off_type\"=0 is forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined",
+		"generic": "The \"drop_off_type\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"drop_off_type\" must be 0, 1, 2, or 3",
+		"not_allowed": "Field \"drop_off_type\" \"%s\" is not allowed",
+		"recommended": "Field \"drop_off_type\" is recommended",
+		"required": "Field \"drop_off_type\" is required"
 	},
 	"stop_times_end_pickup_drop_off_window_valid": {
-		"generic": "The \"end_pickup_drop_off_window\" field must contain a valid time and respect the on-demand service conditions."
+		"forbidden": "Field \"end_pickup_drop_off_window\" is forbidden",
+		"forbidden_arrival_departure": "Field \"end_pickup_drop_off_window\" is forbidden if arrival_time or departure_time are defined",
+		"generic": "The \"end_pickup_drop_off_window\" field must contain a valid time and respect the on-demand service conditions.",
+		"invalid": "Field \"end_pickup_drop_off_window\" must be a valid time, expected format: HH:MM:SS, got: %s",
+		"recommended": "Field \"end_pickup_drop_off_window\" is recommended",
+		"required": "Field \"end_pickup_drop_off_window\" is required",
+		"required_location_group_id_start_pickup_dropoff": "Field \"end_pickup_drop_off_window\" is required if location_group_id or location_id is defined, or if start_pickup_drop_off_window is defined"
 	},
 	"stop_times_file_missing": {
-		"generic": "The stop_times.txt file was not found in the GTFS archive."
+		"generic": "The stop_times.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"stop_times_location_group_id_consistent_with_trip_id_and_stops": {
-		"generic": "The \"location_group_id\" field must be consistent with the trip and the stops declared."
+		"forbidden": "Field \"location_group_id\" is forbidden",
+		"forbidden_stop_location": "Field \"location_group_id\" is forbidden if stop_id or location_id are defined",
+		"generic": "The \"location_group_id\" field must be consistent with the trip and the stops declared.",
+		"not_found": "Field \"location_group_id\" \"%s\" does not exist in location_groups.txt"
 	},
 	"stop_times_pickup_booking_rule_id_references_booking_rules": {
-		"generic": "The \"pickup_booking_rule_id\" field must reference a rule defined in booking_rules.txt."
+		"forbidden": "Field \"pickup_booking_rule_id\" is forbidden",
+		"generic": "The \"pickup_booking_rule_id\" field must reference a rule defined in booking_rules.txt.",
+		"not_allowed": "Field \"pickup_booking_rule_id\" \"%s\" is not allowed",
+		"not_found": "Field \"pickup_booking_rule_id\" \"%s\" does not exist in booking_rules.txt",
+		"recommended": "Field \"pickup_booking_rule_id\" is recommended",
+		"required": "Field \"pickup_booking_rule_id\" is required"
 	},
 	"stop_times_pickup_type_valid_gtfs_enum": {
-		"generic": "The \"pickup_type\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"pickup_type\" is forbidden",
+		"forbidden_pickup_dropoff": "Field \"pickup_type\"=0 or 3 is forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined",
+		"generic": "The \"pickup_type\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"pickup_type\" must be 0, 1, 2, or 3",
+		"not_allowed": "Field \"pickup_type\" \"%s\" is not allowed",
+		"recommended": "Field \"pickup_type\" is recommended",
+		"required": "Field \"pickup_type\" is required"
 	},
 	"stop_times_shape_dist_traveled_non_decreasing_on_trip": {
-		"generic": "The \"shape_dist_traveled\" field must not decrease along the stops of the same trip."
+		"forbidden": "Field \"shape_dist_traveled\" is forbidden",
+		"generic": "The \"shape_dist_traveled\" field must not decrease along the stops of the same trip.",
+		"invalid": "Field \"shape_dist_traveled\" must be a non-negative float",
+		"recommended": "Field \"shape_dist_traveled\" is recommended",
+		"required": "Field \"shape_dist_traveled\" is required"
 	},
 	"stop_times_start_pickup_drop_off_window_valid": {
-		"generic": "The \"start_pickup_drop_off_window\" field must contain a valid time and respect the on-demand service conditions."
+		"forbidden": "Field \"start_pickup_drop_off_window\" is forbidden",
+		"forbidden_arrival_departure": "Field \"start_pickup_drop_off_window\" is forbidden if arrival_time or departure_time are defined",
+		"generic": "The \"start_pickup_drop_off_window\" field must contain a valid time and respect the on-demand service conditions.",
+		"invalid": "Field \"start_pickup_drop_off_window\" must be a valid time, expected format: HH:MM:SS, got: %s",
+		"recommended": "Field \"start_pickup_drop_off_window\" is recommended",
+		"required": "Field \"start_pickup_drop_off_window\" is required",
+		"required_location_group_id_start_pickup_dropoff": "Field \"start_pickup_drop_off_window\" is required if \"location_group_id\" or \"location_id\" is defined, or if \"start_pickup_drop_off_window\" is defined"
 	},
 	"stop_times_stop_headsign_present": {
-		"generic": "The \"stop_headsign\" field must be present when the destination differs from the trip's."
+		"forbidden": "Field \"stop_headsign\" is forbidden",
+		"generic": "The \"stop_headsign\" field must be present when the destination differs from the trip's.",
+		"not_allowed": "Field \"stop_headsign\" \"%s\" is not allowed",
+		"recommended": "Field \"stop_headsign\" is recommended",
+		"required": "Field \"stop_headsign\" is required"
 	},
 	"stop_times_stop_id_references_stops_table": {
-		"generic": "The \"stop_id\" field must reference a stop defined in stops.txt."
+		"does_not_exist": "Field \"stop_id\" \"%s\" does not exist, verify if id is correct",
+		"forbidden": "Field \"stop_id\" is forbidden",
+		"forbidden_location_group_id_location_id": "Field \"stop_id\" is forbidden if \"location_group_id\" or \"location_id\" are defined",
+		"generic": "The \"stop_id\" field must reference a stop defined in stops.txt.",
+		"invalid_location_type": "Field \"stop_id\" must reference a stop with location_type 0 or empty (platform/stop)",
+		"recommended": "Field \"stop_id\" is recommended",
+		"required": "Field \"stop_id\" is required"
 	},
 	"stop_times_timepoint_valid_gtfs_enum": {
-		"generic": "The \"timepoint\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"timepoint\" is forbidden",
+		"generic": "The \"timepoint\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"timepoint\" must be 0 or 1",
+		"not_allowed": "Field \"timepoint\" \"%s\" is not allowed",
+		"recommended": "Field \"timepoint\" is recommended",
+		"required": "Field \"timepoint\" is required"
 	},
 	"stop_times_trip_id_references_trips_table": {
-		"generic": "The \"trip_id\" field must reference a trip defined in trips.txt."
+		"forbidden": "Field \"trip_id\" is forbidden",
+		"generic": "The \"trip_id\" field must reference a trip defined in trips.txt.",
+		"not_found": "Field \"trip_id\" \"%s\" does not exist in trips.txt",
+		"recommended": "Field \"trip_id\" is recommended",
+		"required": "Field \"trip_id\" is required"
 	},
 	"stop_times_values_parse": {
 		"generic": "The values in stop_times.txt could not be parsed."
 	},
 	"stop_timezone_valid": {
-		"generic": "The \"stop_timezone\" field must contain a valid timezone identifier."
-	},
-	"stop_timezone_validation": {
 		"forbidden": "Field \"stop_timezone\" is forbidden",
+		"generic": "The \"stop_timezone\" field must contain a valid timezone identifier.",
 		"invalid": "Field \"stop_timezone\" must be a valid timezone, expected format: Europe/Lisbon, got: %s",
 		"not_allowed": "Field \"stop_timezone\" \"%s\" is not allowed",
 		"recommended": "Field \"stop_timezone\" is recommended",
 		"required": "Field \"stop_timezone\" is required"
 	},
 	"stop_url_valid_url": {
-		"generic": "The \"stop_url\" field must contain a valid URL."
-	},
-	"stop_url_validation": {
 		"forbidden": "Field \"stop_url\" is forbidden",
+		"generic": "The \"stop_url\" field must contain a valid URL.",
 		"invalid": "Field \"stop_url\" must be a valid URL, received: %s",
 		"not_allowed": "Field \"stop_url\" \"%s\" is not allowed",
 		"recommended": "Field \"stop_url\" is recommended",
 		"required": "Field \"stop_url\" is required"
 	},
 	"stops_file_missing": {
-		"generic": "The stops.txt file was not found in the GTFS archive."
+		"generic": "The stops.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"stops_required_when_locations_missing": "stops.txt is required when locations.geojson is not present",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"stops_has_bench_valid_enum": {
-		"generic": "The \"has_bench\" field must contain one of the allowed values."
+		"forbidden": "Field \"has_bench\" is forbidden",
+		"generic": "The \"has_bench\" field must contain one of the allowed values.",
+		"invalid": "Field \"has_bench\" must be 0, 1, 2, or 3, received: %s",
+		"not_allowed": "Field \"has_bench\" \"%s\" is not allowed",
+		"recommended": "Field \"has_bench\" is recommended",
+		"required": "Field \"has_bench\" is required"
 	},
 	"stops_has_network_map_valid_enum": {
-		"generic": "The \"has_network_map\" field must contain one of the allowed values."
+		"forbidden": "Field \"has_network_map\" is forbidden",
+		"generic": "The \"has_network_map\" field must contain one of the allowed values.",
+		"invalid": "Field \"has_network_map\" must be 0, 1, 2, or 3, received: %s",
+		"not_allowed": "Field \"has_network_map\" \"%s\" is not allowed",
+		"recommended": "Field \"has_network_map\" is recommended",
+		"required": "Field \"has_network_map\" is required"
 	},
 	"stops_has_pip_real_time_valid_enum": {
-		"generic": "The \"has_pip_real_time\" field must contain one of the allowed values."
+		"forbidden": "Field \"has_pip_real_time\" is forbidden",
+		"generic": "The \"has_pip_real_time\" field must contain one of the allowed values.",
+		"invalid": "Field \"has_pip_real_time\" must be 0, 1, or 2, received: %s",
+		"not_allowed": "Field \"has_pip_real_time\" \"%s\" is not allowed",
+		"recommended": "Field \"has_pip_real_time\" is recommended",
+		"required": "Field \"has_pip_real_time\" is required"
 	},
 	"stops_has_schedules_valid_enum": {
-		"generic": "The \"has_schedules\" field must contain one of the allowed values."
+		"forbidden": "Field \"has_schedules\" is forbidden",
+		"generic": "The \"has_schedules\" field must contain one of the allowed values.",
+		"invalid": "Field \"has_schedules\" must be 0 or 1, received: %s",
+		"not_allowed": "Field \"has_schedules\" \"%s\" is not allowed",
+		"recommended": "Field \"has_schedules\" is recommended",
+		"required": "Field \"has_schedules\" is required"
 	},
 	"stops_has_shelter_valid_enum": {
-		"generic": "The \"has_shelter\" field must contain one of the allowed values."
+		"forbidden": "Field \"has_shelter\" is forbidden",
+		"generic": "The \"has_shelter\" field must contain one of the allowed values.",
+		"invalid": "Field \"has_shelter\" must be 0 or 1, received: %s",
+		"not_allowed": "Field \"has_shelter\" \"%s\" is not allowed",
+		"recommended": "Field \"has_shelter\" is recommended",
+		"required": "Field \"has_shelter\" is required"
 	},
 	"stops_has_stop_sign_valid_enum": {
-		"generic": "The \"has_stop_sign\" field must contain one of the allowed values."
+		"forbidden": "Field \"has_stop_sign\" is forbidden",
+		"generic": "The \"has_stop_sign\" field must contain one of the allowed values.",
+		"invalid": "Field \"has_stop_sign\" must be 0, 1, 2, or 3, received: %s",
+		"not_allowed": "Field \"has_stop_sign\" \"%s\" is not allowed",
+		"recommended": "Field \"has_stop_sign\" is recommended",
+		"required": "Field \"has_stop_sign\" is required"
 	},
 	"stops_has_tariffs_information_valid_enum": {
-		"generic": "The \"has_tariffs_information\" field must contain one of the allowed values."
+		"forbidden": "Field \"has_tariffs_information\" is forbidden",
+		"generic": "The \"has_tariffs_information\" field must contain one of the allowed values.",
+		"invalid": "Field \"has_tariffs_information\" must be 0, 1, 2, or 3, received: %s",
+		"not_allowed": "Field \"has_tariffs_information\" \"%s\" is not allowed",
+		"recommended": "Field \"has_tariffs_information\" is recommended",
+		"required": "Field \"has_tariffs_information\" is required"
 	},
 	"stops_level_id_valid_id": {
-		"generic": "The \"level_id\" field must reference a level defined in levels.txt."
+		"forbidden": "Field \"level_id\" is forbidden",
+		"generic": "The \"level_id\" field must reference a level defined in levels.txt.",
+		"not_allowed": "Field \"level_id\" \"%s\" is not allowed",
+		"not_found": "Field \"level_id\" \"%s\" does not exist in levels.txt",
+		"recommended": "Field \"level_id\" is recommended",
+		"required": "Field \"level_id\" is required"
 	},
 	"stops_location_type_valid_enum": {
-		"generic": "The \"location_type\" field must contain one of the values allowed by GTFS."
+		"generic": "The \"location_type\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"location_type\" must be one of 0, 1, 2, 3, 4, received: %s",
+		"not_allowed": "Field \"location_type\" \"%s\" is not allowed",
+		"required": "Field \"location_type\" is required"
 	},
 	"stops_municipality_id_valid": {
-		"generic": "The \"municipality_id\" field must reference a valid municipality."
+		"forbidden": "Field \"municipality_id\" is forbidden",
+		"generic": "The \"municipality_id\" field must reference a valid municipality.",
+		"not_allowed": "Field \"municipality_id\" \"%s\" is not allowed",
+		"recommended": "Field \"municipality_id\" is recommended",
+		"required": "Field \"municipality_id\" is required"
 	},
 	"stops_parent_station_id_valid_for_stop_hierarchy": {
-		"generic": "The \"parent_station\" field must reference a station compatible with the stop hierarchy."
+		"forbidden": "Field \"parent_station\" is forbidden",
+		"generic": "The \"parent_station\" field must reference a station compatible with the stop hierarchy.",
+		"not_allowed": "Field \"parent_station\" \"%s\" is not allowed",
+		"not_found": "Field \"parent_station\" \"%s\" does not exist in stops.txt",
+		"recommended": "Field \"parent_station\" is recommended",
+		"required": "Field \"parent_station\" is required",
+		"required_location_type": "Field \"parent_station\" is required for location_type 2 (entrance/exit), 3 (generic node) and 4 (boarding area)"
 	},
 	"stops_parish_id_valid": {
-		"generic": "The \"parish_id\" field must reference a valid parish."
+		"forbidden": "Field \"parish_id\" is forbidden",
+		"generic": "The \"parish_id\" field must reference a valid parish.",
+		"not_allowed": "Field \"parish_id\" \"%s\" is not allowed",
+		"recommended": "Field \"parish_id\" is recommended",
+		"required": "Field \"parish_id\" is required"
 	},
 	"stops_platform_code_valid": {
-		"generic": "The \"platform_code\" field must contain a valid platform code."
+		"forbidden": "Field \"platform_code\" is forbidden",
+		"generic": "The \"platform_code\" field must contain a valid platform code.",
+		"not_allowed": "Field \"platform_code\" \"%s\" is not allowed",
+		"recommended": "Field \"platform_code\" is recommended",
+		"required": "Field \"platform_code\" is required"
 	},
 	"stops_public_visible_valid_enum": {
-		"generic": "The \"public_visible\" field must contain one of the allowed values."
+		"forbidden": "Field \"public_visible\" is forbidden",
+		"generic": "The \"public_visible\" field must contain one of the allowed values.",
+		"invalid": "Field \"public_visible\" must be 0 or 1, received: %s",
+		"not_allowed": "Field \"public_visible\" \"%s\" is not allowed",
+		"recommended": "Field \"public_visible\" is recommended",
+		"required": "Field \"public_visible\" is required"
 	},
 	"stops_region_id_valid": {
-		"generic": "The \"region_id\" field must reference a valid region."
+		"forbidden": "Field \"region_id\" is forbidden",
+		"generic": "The \"region_id\" field must reference a valid region.",
+		"not_allowed": "Field \"region_id\" \"%s\" is not valid",
+		"recommended": "Field \"region_id\" is recommended",
+		"required": "Field \"region_id\" is required"
 	},
 	"stops_shelter_code_valid": {
-		"generic": "The \"shelter_code\" field must contain a valid shelter code."
+		"forbidden": "Field \"shelter_code\" is forbidden",
+		"generic": "The \"shelter_code\" field must contain a valid shelter code.",
+		"not_allowed": "Field \"shelter_code\" \"%s\" is not allowed",
+		"recommended": "Field \"shelter_code\" is recommended",
+		"required": "Field \"shelter_code\" is required"
 	},
 	"stops_shelter_maintainer_valid": {
-		"generic": "The \"shelter_maintainer\" field must identify a valid maintaining entity."
+		"forbidden": "Field \"shelter_maintainer\" is forbidden",
+		"generic": "The \"shelter_maintainer\" field must identify a valid maintaining entity.",
+		"not_allowed": "Field \"shelter_maintainer\" \"%s\" is not allowed",
+		"recommended": "Field \"shelter_maintainer\" is recommended",
+		"required": "Field \"shelter_maintainer\" is required"
 	},
 	"stops_tts_stop_name_valid": {
-		"generic": "The \"tts_stop_name\" field must contain a valid spoken reading of the stop name."
+		"forbidden": "Field \"tts_stop_name\" is forbidden",
+		"generic": "The \"tts_stop_name\" field must contain a valid spoken reading of the stop name.",
+		"not_allowed": "Field \"tts_stop_name\" \"%s\" is not allowed",
+		"recommended": "Field \"tts_stop_name\" is recommended",
+		"required": "Field \"tts_stop_name\" is required"
 	},
 	"stops_values_parse": {
 		"generic": "The values in stops.txt could not be parsed."
 	},
 	"stops_wheelchair_boarding_valid_enum": {
-		"generic": "The \"wheelchair_boarding\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"wheelchair_boarding\" is forbidden",
+		"generic": "The \"wheelchair_boarding\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"wheelchair_boarding\" must be 0, 1, or 2, received: %s",
+		"not_allowed": "Field \"wheelchair_boarding\" \"%s\" is not allowed",
+		"recommended": "Field \"wheelchair_boarding\" is recommended",
+		"required": "Field \"wheelchair_boarding\" is required"
 	},
 	"stops_zone_id_valid": {
-		"generic": "The \"zone_id\" field must contain a valid fare zone."
+		"forbidden": "Field \"zone_id\" is forbidden",
+		"generic": "The \"zone_id\" field must contain a valid fare zone.",
+		"not_allowed": "Field \"zone_id\" \"%s\" is not allowed",
+		"recommended": "Field \"zone_id\" is recommended",
+		"required": "Field \"zone_id\" is required"
 	},
-	"timepoint_validation": {
-		"forbidden": "Field \"timepoint\" is forbidden",
-		"invalid": "Field \"timepoint\" must be 0 or 1",
-		"not_allowed": "Field \"timepoint\" \"%s\" is not allowed",
-		"recommended": "Field \"timepoint\" is recommended",
-		"required": "Field \"timepoint\" is required"
+	"transfer_from_route_id_references_routes_table": {
+		"forbidden": "Field \"from_route_id\" is forbidden",
+		"generic": "The \"from_route_id\" field must reference a route defined in routes.txt.",
+		"not_found": "Field \"from_route_id\" \"%s\" does not exist in routes.txt",
+		"recommended": "Field \"from_route_id\" is recommended",
+		"trip_must_belong_to_route": "When both from_trip_id and from_route_id are defined, from_trip_id \"%s\" must belong to from_route_id \"%s\". Trip references route \"%s\""
 	},
-	"to_route_id_validation": {
+	"transfer_from_stop_id_references_stops_table": {
+		"generic": "The \"from_stop_id\" field must reference a stop defined in stops.txt.",
+		"invalid_location_type": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
+		"must_be_stop_for_transfer_type_4_5": "Field \"from_stop_id\" \"%s\" must reference a stop (location_type=0) when transfer_type is %d. Stations (location_type=1) are not allowed for transfer_type 4 or 5",
+		"not_found": "Field \"from_stop_id\" \"%s\" does not exist in stops.txt",
+		"recommended": "Field \"from_stop_id\" is recommended",
+		"required": "Field \"from_stop_id\" is required"
+	},
+	"transfer_from_trip_id_references_trips_table": {
+		"generic": "The \"from_trip_id\" field must reference a trip defined in trips.txt.",
+		"not_found": "Field \"from_trip_id\" \"%s\" does not exist in trips.txt",
+		"recommended": "Field \"from_trip_id\" is recommended",
+		"required": "Field \"from_trip_id\" is required",
+		"trip_must_belong_to_route": "When both from_trip_id and from_route_id are defined, from_trip_id \"%s\" must belong to from_route_id \"%s\". Trip references route \"%s\""
+	},
+	"transfer_to_route_id_references_routes_table": {
 		"forbidden": "Field \"to_route_id\" is forbidden",
-		"not_allowed": "Field \"to_route_id\" \"%s\" is not allowed",
+		"generic": "The \"to_route_id\" field must reference a route defined in routes.txt.",
 		"not_found": "Field \"to_route_id\" \"%s\" does not exist in routes.txt",
 		"recommended": "Field \"to_route_id\" is recommended",
-		"required": "Field \"to_route_id\" is required",
 		"trip_must_belong_to_route": "When both to_trip_id and to_route_id are defined, to_trip_id \"%s\" must belong to to_route_id \"%s\". Trip references route \"%s\""
 	},
-	"to_stop_id_validation": {
-		"forbidden": "Field \"to_stop_id\" is forbidden",
-		"forbidden_stop_access_1": "Field \"to_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
+	"transfer_to_stop_id_references_stops_table": {
+		"generic": "The \"to_stop_id\" field must reference a stop defined in stops.txt.",
 		"invalid_location_type": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
-		"invalid_location_type_pathway": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
-		"invalid_location_type_station": "Field \"to_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
 		"must_be_different_from_from_stop_id": "Field \"to_stop_id\" \"%s\" must be different from \"from_stop_id\" \"%s\". A transfer cannot have the same stop for both from and to",
 		"must_be_stop_for_transfer_type_4_5": "Field \"to_stop_id\" \"%s\" must reference a stop (location_type=0) when transfer_type is %d. Stations (location_type=1) are not allowed for transfer_type 4 or 5",
-		"not_allowed": "Field \"to_stop_id\" \"%s\" is not allowed",
 		"not_found": "Field \"to_stop_id\" \"%s\" does not exist in stops.txt",
 		"recommended": "Field \"to_stop_id\" is recommended",
 		"required": "Field \"to_stop_id\" is required"
 	},
-	"to_trip_id_validation": {
-		"not_allowed": "Field \"to_trip_id\" \"%s\" is not allowed",
+	"transfer_to_trip_id_references_trips_table": {
+		"generic": "The \"to_trip_id\" field must reference a trip defined in trips.txt.",
 		"not_found": "Field \"to_trip_id\" \"%s\" does not exist in trips.txt",
 		"recommended": "Field \"to_trip_id\" is recommended",
 		"required": "Field \"to_trip_id\" is required",
 		"trip_must_belong_to_route": "When both to_trip_id and to_route_id are defined, to_trip_id \"%s\" must belong to to_route_id \"%s\". Trip references route \"%s\""
 	},
-	"total_capacity_validation": {
-		"forbidden": "Field \"total_capacity\" is forbidden",
-		"invalid": "Field \"total_capacity\" \"%s\" must be a non-negative integer",
-		"recommended": "Field \"total_capacity\" is recommended",
-		"required": "Field \"total_capacity\" is required"
-	},
-	"transfer_duration_validation": {
-		"forbidden": "Field \"transfer_duration\" is forbidden",
-		"recommended": "Field \"transfer_duration\" is recommended",
-		"required": "Field \"transfer_duration\" is required"
-	},
-	"transfer_from_route_id_references_routes_table": {
-		"generic": "The \"from_route_id\" field must reference a route defined in routes.txt."
-	},
-	"transfer_from_stop_id_references_stops_table": {
-		"generic": "The \"from_stop_id\" field must reference a stop defined in stops.txt."
-	},
-	"transfer_from_trip_id_references_trips_table": {
-		"generic": "The \"from_trip_id\" field must reference a trip defined in trips.txt."
-	},
-	"transfer_to_route_id_references_routes_table": {
-		"generic": "The \"to_route_id\" field must reference a route defined in routes.txt."
-	},
-	"transfer_to_stop_id_references_stops_table": {
-		"generic": "The \"to_stop_id\" field must reference a stop defined in stops.txt."
-	},
-	"transfer_to_trip_id_references_trips_table": {
-		"generic": "The \"to_trip_id\" field must reference a trip defined in trips.txt."
-	},
 	"transfer_type_valid_gtfs_enum": {
-		"generic": "The \"transfer_type\" field must contain one of the values allowed by GTFS."
-	},
-	"transfer_type_validation": {
-		"forbidden": "Field \"transfer_type\" is forbidden",
+		"generic": "The \"transfer_type\" field must contain one of the values allowed by GTFS.",
 		"invalid": "Field \"transfer_type\" must be 0, 1, 2, 3, 4, or 5, received: %s",
 		"not_allowed": "Field \"transfer_type\" \"%s\" is not allowed",
-		"recommended": "Field \"transfer_type\" is recommended",
 		"required": "Field \"transfer_type\" is required"
 	},
 	"transfers_file_missing": {
-		"generic": "The transfers.txt file was not found in the GTFS archive."
+		"generic": "The transfers.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"transfers_min_transfer_time_non_negative_seconds": {
-		"generic": "The \"min_transfer_time\" field must contain a non-negative time in seconds."
-	},
-	"transfers_validation": {
-		"forbidden": "Field \"transfer_duration\" is forbidden",
+		"forbidden": "Field \"min_transfer_time\" is forbidden",
+		"generic": "The \"min_transfer_time\" field must contain a non-negative time in seconds.",
 		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\"",
-		"required": "Field \"transfer_duration\" is required"
+		"recommended": "Field \"min_transfer_time\" is recommended",
+		"required": "Field \"min_transfer_time\" is required"
 	},
 	"transfers_values_parse": {
 		"generic": "The values in transfers.txt could not be parsed."
 	},
-	"traversal_time_validation": {
-		"forbidden": "Field \"traversal_time\" is forbidden",
-		"invalid": "Field \"traversal_time\" \"%s\" is not a valid number",
-		"negative": "Field \"traversal_time\" \"%s\" must be a non-negative number",
-		"not_allowed": "Field \"traversal_time\" \"%s\" is not allowed",
-		"recommended": "Field \"traversal_time\" is recommended",
-		"required": "Field \"traversal_time\" is required"
-	},
 	"trip_headsign_consistent_for_all_patterns_in_trips": {
+		"different_headsigns_in_pattern": "pattern_id %s has trips with different trip_headsigns: %s. All trips with the same pattern_id must have the same trip_headsign",
 		"generic": "The \"trip_headsign\" field must be consistent across all trips of the same pattern."
 	},
 	"trip_headsign_consistent_per_route_direction": {
-		"generic": "The \"trip_headsign\" field must be consistent for each route and direction combination."
-	},
-	"trip_headsign_group_validation": {
-		"different_headsigns_in_pattern": "pattern_id %s has trips with different trip_headsigns: %s. All trips with the same pattern_id must have the same trip_headsign"
+		"generic": "The \"trip_headsign\" field must be consistent for each route and direction combination.",
+		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s"
 	},
 	"trip_headsign_max_two_per_route": {
-		"generic": "Each route must not have more than two distinct \"trip_headsign\" values."
+		"generic": "Each route must not have more than two distinct \"trip_headsign\" values.",
+		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
 	},
 	"trip_headsign_present_when_short_name_absent": {
-		"generic": "The \"trip_headsign\" field must be present when \"trip_short_name\" is absent."
-	},
-	"trip_headsign_validation": {
 		"forbidden": "Field \"trip_headsign\" is forbidden",
-		"not_allowed": "Field \"trip_headsign\" \"%s\" is not allowed",
+		"generic": "The \"trip_headsign\" field must be present when \"trip_short_name\" is absent.",
 		"recommended": "Field \"trip_headsign\" is recommended",
 		"required": "Field \"trip_headsign\" is required"
 	},
-	"trip_id_limit_characters_validation": {
-		"not_allowed": "Field \"trip_id\" \"%s\" is not allowed",
+	"trip_id_limit_max_length": {
+		"generic": "The \"trip_id\" field must not exceed the maximum allowed number of characters.",
 		"too_long": "Field \"trip_id\" must be less than or equal to 36 characters"
 	},
-	"trip_id_limit_max_length": {
-		"generic": "The \"trip_id\" field must not exceed the maximum allowed number of characters."
-	},
 	"trip_id_unique": {
-		"generic": "The \"trip_id\" field must be unique across trips.txt."
-	},
-	"trip_id_validation": {
 		"duplicate": "Duplicate field \"trip_id\" \"%s\" found. Field \"trip_id\" must be unique",
 		"forbidden": "Field \"trip_id\" is forbidden",
-		"not_found": "Field \"trip_id\" \"%s\" does not exist in trips.txt",
+		"generic": "The \"trip_id\" field must be unique across trips.txt.",
 		"recommended": "Field \"trip_id\" is recommended",
 		"required": "Field \"trip_id\" is required"
 	},
 	"trip_path_stop_coordinates_referenced_from_stops": {
-		"generic": "The coordinates of the stops along the path must match those declared in stops.txt."
+		"generic": "The coordinates of the stops along the path must match those declared in stops.txt.",
+		"invalid_distance_to_shape": "Coordinates (%.6f, %.6f) of stop \"%s\" are too far from the shapes, the closest shape \"%s\" in sequence %d at (%.6f, %.6f) (%.2f m)"
 	},
 	"trip_short_name_exclusivity": {
-		"generic": "The \"trip_short_name\" field must not be shared by different trips."
-	},
-	"trip_short_name_validation": {
 		"forbidden": "Field \"trip_short_name\" is forbidden",
-		"not_allowed": "Field \"trip_short_name\" \"%s\" is not allowed",
+		"generic": "The \"trip_short_name\" field must not be shared by different trips.",
 		"recommended": "Field \"trip_short_name\" is recommended",
 		"required": "Field \"trip_short_name\" is required"
 	},
 	"trips_bikes_allowed_valid_gtfs_enum": {
-		"generic": "The \"bikes_allowed\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"bikes_allowed\" is forbidden",
+		"generic": "The \"bikes_allowed\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"bikes_allowed\" must be 0, 1, or 2",
+		"not_allowed": "Field \"bikes_allowed\" \"%s\" is not allowed",
+		"recommended": "Field \"bikes_allowed\" is recommended",
+		"required": "Field \"bikes_allowed\" is required"
 	},
 	"trips_block_id_in_allowed_set": {
-		"generic": "The \"block_id\" field must contain an allowed block identifier."
+		"forbidden": "Field \"block_id\" is forbidden",
+		"generic": "The \"block_id\" field must contain an allowed block identifier.",
+		"recommended": "Field \"block_id\" is recommended",
+		"required": "Field \"block_id\" is required"
 	},
 	"trips_direction_id_consistent_for_all_patterns_in_trips": {
+		"different_direction_ids_in_pattern": "pattern_id %s has trips with different direction_ids: %s. All trips with the same pattern_id must have the same direction_id",
 		"generic": "The \"direction_id\" field must be consistent across all trips of the same pattern."
 	},
 	"trips_direction_id_matches_feed_pattern_direction": {
-		"generic": "The \"direction_id\" field must match the direction declared in \"pattern_id\"."
+		"generic": "The \"direction_id\" field must match the direction declared in \"pattern_id\".",
+		"invalid_direction_id": "Field \"direction_id\" must be an integer between 0 and 1, received: %s",
+		"invalid_pattern_id": "Field \"pattern_id\" must be a valid ID in the format \"XXXX_[0|1]_1\", received: %s",
+		"not_matching": "Field \"direction_id\" \"%s\" does not match the pattern_id \"%s\"",
+		"required": "Fields \"pattern_id\" and \"direction_id\" are required to validate the match"
 	},
 	"trips_direction_id_valid_enum": {
-		"generic": "The \"direction_id\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"direction_id\" is forbidden",
+		"generic": "The \"direction_id\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"direction_id\" must be 0 or 1",
+		"not_allowed": "Field \"direction_id\" \"%s\" is not allowed",
+		"recommended": "Field \"direction_id\" is recommended",
+		"required": "Field \"direction_id\" is required"
 	},
 	"trips_file_missing": {
-		"generic": "The trips.txt file was not found in the GTFS archive."
+		"generic": "The trips.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"trips_one_pattern_id_per_shape_id_group": {
-		"generic": "Each \"shape_id\" must be associated with only one \"pattern_id\"."
+		"generic": "Each \"shape_id\" must be associated with only one \"pattern_id\".",
+		"multiple_shape_id_in_unique_pattern_id": "Field \"shape_id\" \"%s\" is used in multiple pattern_ids"
 	},
 	"trips_one_shape_id_per_pattern_id_group": {
+		"different_shape_id": "Different shape_id's found for the same pattern_id: %s",
 		"generic": "Each \"pattern_id\" must be associated with only one \"shape_id\"."
 	},
 	"trips_pattern_id_matches_feed_pattern_id_syntax": {
-		"generic": "The \"pattern_id\" field must follow the syntax defined for the feed."
+		"generic": "The \"pattern_id\" field must follow the syntax defined for the feed.",
+		"invalid": "Field \"pattern_id\" must be a valid ID in the format \"%s\", received: \"%s\""
 	},
 	"trips_pattern_id_present_and_references_consistent": {
-		"generic": "The \"pattern_id\" field must be present and consistent with the trip's references."
+		"forbidden": "Field \"pattern_id\" is forbidden",
+		"generic": "The \"pattern_id\" field must be present and consistent with the trip's references.",
+		"recommended": "Field \"pattern_id\" is recommended",
+		"required": "Field \"pattern_id\" is required"
 	},
 	"trips_pattern_id_single_trip_signature_per_pattern": {
-		"generic": "All trips sharing a \"pattern_id\" must serve the same sequence of stops."
+		"generic": "All trips sharing a \"pattern_id\" must serve the same sequence of stops.",
+		"multiple_stop_sequence_variations": "For pattern_id %s, there are trips with multiple stop sequence variations"
 	},
 	"trips_pattern_id_trip_has_required_fields_for_grouping": {
-		"generic": "The trip must have the fields required to be grouped by \"pattern_id\"."
+		"direction_id_not_found": "Field \"direction_id\" not found",
+		"generic": "The trip must have the fields required to be grouped by \"pattern_id\".",
+		"route_id_not_found": "Field \"route_id\" not found",
+		"shape_id_not_found": "Field \"shape_id\" not found",
+		"trip_headsign_not_found": "Field \"trip_headsign\" not found"
 	},
 	"trips_route_id_consistent_for_all_patterns_in_trips": {
+		"different_route_ids_in_pattern": "pattern_id %s has trips with different route_ids: %s. All trips with the same pattern_id must have the same route_id",
 		"generic": "The \"route_id\" field must be consistent across all trips of the same pattern."
 	},
 	"trips_route_id_references_routes_table": {
-		"generic": "The \"route_id\" field must reference a route defined in routes.txt."
+		"forbidden": "Field \"route_id\" is forbidden",
+		"generic": "The \"route_id\" field must reference a route defined in routes.txt.",
+		"not_found": "Field \"route_id\" \"%s\" does not exist in routes.txt",
+		"recommended": "Field \"route_id\" is recommended",
+		"required": "Field \"route_id\" is required"
 	},
 	"trips_service_id_references_calendar_service": {
-		"generic": "The \"service_id\" field must reference a service defined in calendar.txt or calendar_dates.txt."
+		"forbidden": "Field \"service_id\" is forbidden",
+		"generic": "The \"service_id\" field must reference a service defined in calendar.txt or calendar_dates.txt.",
+		"not_found": "Field \"service_id\" \"%s\" does not exist in calendar.txt or calendar_dates.txt",
+		"recommended": "Field \"service_id\" is recommended",
+		"required": "Field \"service_id\" is required"
 	},
 	"trips_shape_id_consistent_per_route_direction": {
-		"generic": "The \"shape_id\" field must be consistent for each route and direction combination."
+		"generic": "The \"shape_id\" field must be consistent for each route and direction combination.",
+		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s"
 	},
 	"trips_shape_id_matches_route_id_and_direction_id": {
-		"generic": "The \"shape_id\" field must match the combination of \"route_id\" and \"direction_id\"."
+		"generic": "The \"shape_id\" field must match the combination of \"route_id\" and \"direction_id\".",
+		"not_matching": "Field \"shape_id\" \"%s\" should be \"%s\", combining route_id \"%s\" and direction_id %d"
 	},
 	"trips_shape_id_max_two_per_route": {
-		"generic": "Each route must not have more than two distinct \"shape_id\" values."
+		"generic": "Each route must not have more than two distinct \"shape_id\" values.",
+		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
 	},
 	"trips_shape_id_needs_to_be_the_same_as_pattern_id": {
-		"generic": "The \"shape_id\" field must be equal to the \"pattern_id\" field."
+		"generic": "The \"shape_id\" field must be equal to the \"pattern_id\" field.",
+		"not_matching": "Field \"shape_id\" \"%s\" is different from the field \"pattern_id\" \"%s\", they need to be the same"
 	},
 	"trips_shape_id_references_shapes_table_when_present": {
-		"generic": "The \"shape_id\" field must reference a shape defined in shapes.txt."
+		"forbidden": "Field \"shape_id\" is forbidden",
+		"generic": "The \"shape_id\" field must reference a shape defined in shapes.txt.",
+		"not_found": "Field \"shape_id\" \"%s\" does not exist in shapes.txt",
+		"recommended": "Field \"shape_id\" is recommended",
+		"required": "Field \"shape_id\" is required"
 	},
 	"trips_stop_sequence_increasing_by_one_along_trip": {
-		"generic": "The \"stop_sequence\" field must increase by one along the trip."
+		"consecutive_stop_ids": "The same stop_id \"%s\" cannot appear consecutively (one directly after another) in trip \"%s\"",
+		"generic": "The \"stop_sequence\" field must increase by one along the trip.",
+		"invalid": "Field \"stop_sequence\" must be a non-negative integer",
+		"invalid_shape_dist": "Field \"shape_dist_traveled\" must be a valid number to validate stop_sequence",
+		"non_increasing_sequence": "The values of \"stop_sequence\" must increase along the trip ('%s')",
+		"non_increasing_shape_dist": "The values of \"shape_dist_traveled\" must increase along the trip ('%s')"
 	},
 	"trips_values_parse": {
 		"generic": "The values in trips.txt could not be parsed."
 	},
 	"trips_wheelchair_accessible_valid_gtfs_enum": {
-		"generic": "The \"wheelchair_accessible\" field must contain one of the values allowed by GTFS."
-	},
-	"tts_stop_name_validation": {
-		"forbidden": "Field \"tts_stop_name\" is forbidden",
-		"not_allowed": "Field \"tts_stop_name\" \"%s\" is not allowed",
-		"recommended": "Field \"tts_stop_name\" is recommended",
-		"required": "Field \"tts_stop_name\" is required"
+		"forbidden": "Field \"wheelchair_accessible\" is forbidden",
+		"generic": "The \"wheelchair_accessible\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"wheelchair_accessible\" must be 0, 1, or 2, received: %s",
+		"not_allowed": "Field \"wheelchair_accessible\" \"%s\" is not allowed"
 	},
 	"typology_validation": {
 		"invalid": "Field \"typology\" \"%s\" is not a valid type. We need your feedback.",
@@ -1813,92 +1539,115 @@
 		"required": "Field \"typology\" will be required soon. We need your feedback."
 	},
 	"vehicle_agency_id_references_agency_table": {
-		"generic": "The \"agency_id\" field must reference an agency defined in agency.txt."
+		"forbidden": "Field \"agency_id\" is forbidden",
+		"generic": "The \"agency_id\" field must reference an agency defined in agency.txt.",
+		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt",
+		"recommended": "Field \"agency_id\" is recommended when there is only one agency",
+		"required": "Field \"agency_id\" is required when there is more than one agency"
 	},
 	"vehicle_id_unique": {
-		"generic": "The \"vehicle_id\" field must be unique across vehicles.txt."
-	},
-	"vehicle_id_validation": {
 		"duplicate": "Duplicate field \"vehicle_id\" \"%s\" found. Field \"vehicle_id\" must be unique",
 		"forbidden": "Field \"vehicle_id\" is forbidden",
+		"generic": "The \"vehicle_id\" field must be unique across vehicles.txt.",
 		"recommended": "Field \"vehicle_id\" is recommended",
 		"required": "Field \"vehicle_id\" is required"
 	},
 	"vehicle_make_required": {
-		"generic": "The \"make\" field must be present."
+		"forbidden": "Field \"make\" is forbidden",
+		"generic": "The \"make\" field must be present.",
+		"recommended": "Field \"make\" is recommended",
+		"required": "Field \"make\" is required"
 	},
 	"vehicle_model_required": {
-		"generic": "The \"model\" field must be present."
-	},
-	"vehicle_type_validation": {
-		"forbidden": "Field \"vehicle_type\" is forbidden",
-		"invalid": "Field \"vehicle_type\" \"%s\" is not a valid vehicle type",
-		"not_allowed": "Field \"vehicle_type\" \"%s\" is not allowed",
-		"recommended": "Field \"vehicle_type\" is recommended",
-		"required": "Field \"vehicle_type\" is required"
+		"forbidden": "Field \"model\" is forbidden",
+		"generic": "The \"model\" field must be present.",
+		"recommended": "Field \"model\" is recommended",
+		"required": "Field \"model\" is required"
 	},
 	"vehicles_bicycles_rack_count_non_negative": {
-		"generic": "The \"bicycles_capacity\" field must contain a non-negative number."
+		"forbidden": "Field \"bicycles_capacity\" is forbidden",
+		"generic": "The \"bicycles_capacity\" field must contain a non-negative number.",
+		"invalid": "Field \"bicycles_capacity\" \"%s\" must be a non-negative integer",
+		"recommended": "Field \"bicycles_capacity\" is recommended",
+		"required": "Field \"bicycles_capacity\" is required"
 	},
 	"vehicles_car_capacity_non_negative": {
-		"generic": "The \"car_capacity\" field must contain a non-negative number."
+		"forbidden": "Field \"car_capacity\" is forbidden",
+		"generic": "The \"car_capacity\" field must contain a non-negative number.",
+		"invalid": "Field \"car_capacity\" \"%s\" must be a non-negative integer",
+		"recommended": "Field \"car_capacity\" is recommended",
+		"required": "Field \"car_capacity\" is required"
 	},
 	"vehicles_emission_valid_enum": {
-		"generic": "The \"emission\" field must contain one of the allowed values."
+		"forbidden": "Field \"emission\" is forbidden",
+		"generic": "The \"emission\" field must contain one of the allowed values.",
+		"invalid": "Field \"emission\" \"%s\" is not a valid emission type",
+		"not_allowed": "Field \"emission\" \"%s\" is not allowed",
+		"recommended": "Field \"emission\" is recommended",
+		"required": "Field \"emission\" is required"
 	},
 	"vehicles_file_missing": {
-		"generic": "The vehicles.txt file was not found in the GTFS archive."
+		"generic": "The vehicles.txt file was not found in the GTFS archive.",
+		"required": "Required file \"%s\" is missing",
+		"warning": "Warning file \"%s\" is recommended"
 	},
 	"vehicles_license_plate_format_per_market_rules": {
-		"generic": "The \"license_plate\" field must follow the expected license plate format."
+		"duplicate": "Duplicate field \"license_plate\" \"%s\" found. Field \"license_plate\" must be unique",
+		"forbidden": "Field \"license_plate\" is forbidden",
+		"generic": "The \"license_plate\" field must follow the expected license plate format.",
+		"invalid": "Field \"license_plate\" \"%s\" has an invalid format, must be in the format XXXXXX (or a valid MMSI for the ferry transport mode)",
+		"recommended": "Field \"license_plate\" is recommended",
+		"required": "Field \"license_plate\" is required"
 	},
 	"vehicles_propulsion_valid_enum": {
-		"generic": "The \"propulsion\" field must contain one of the allowed values."
+		"forbidden": "Field \"propulsion\" is forbidden",
+		"generic": "The \"propulsion\" field must contain one of the allowed values.",
+		"invalid": "Field \"propulsion\" \"%s\" is not a valid propulsion type",
+		"not_allowed": "Field \"propulsion\" \"%s\" is not allowed",
+		"recommended": "Field \"propulsion\" is recommended",
+		"required": "Field \"propulsion\" is required"
 	},
 	"vehicles_registration_date_valid_day_granularity": {
-		"generic": "The \"registration_date\" field must contain a valid date with day granularity."
+		"forbidden": "Field \"registration_date\" is forbidden",
+		"generic": "The \"registration_date\" field must contain a valid date with day granularity.",
+		"invalid": "Field \"registration_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
+		"recommended": "Field \"registration_date\" is recommended",
+		"required": "Field \"registration_date\" is required"
 	},
 	"vehicles_total_capacity_non_negative": {
-		"generic": "The \"total_capacity\" field must contain a non-negative number."
+		"forbidden": "Field \"total_capacity\" is forbidden",
+		"generic": "The \"total_capacity\" field must contain a non-negative number.",
+		"invalid": "Field \"total_capacity\" \"%s\" must be a non-negative integer",
+		"recommended": "Field \"total_capacity\" is recommended",
+		"required": "Field \"total_capacity\" is required"
 	},
 	"vehicles_values_parse": {
 		"generic": "The values in vehicles.txt could not be parsed."
 	},
 	"vehicles_vehicle_type_valid_enum": {
-		"generic": "The \"vehicle_type\" field must contain one of the allowed values."
+		"forbidden": "Field \"vehicle_type\" is forbidden",
+		"generic": "The \"vehicle_type\" field must contain one of the allowed values.",
+		"invalid": "Field \"vehicle_type\" \"%s\" is not a valid vehicle type",
+		"not_allowed": "Field \"vehicle_type\" \"%s\" is not allowed",
+		"recommended": "Field \"vehicle_type\" is recommended",
+		"required": "Field \"vehicle_type\" is required"
 	},
 	"vehicles_wheelchair_accessible_valid_gtfs_enum": {
-		"generic": "The \"wheelchair_accessible\" field must contain one of the values allowed by GTFS."
+		"forbidden": "Field \"wheelchair_accessible\" is forbidden",
+		"generic": "The \"wheelchair_accessible\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"wheelchair_accessible\" must be 0, 1, or 2, received: %s",
+		"not_allowed": "Field \"wheelchair_accessible\" \"%s\" is not allowed",
+		"recommended": "Field \"wheelchair_accessible\" is recommended",
+		"required": "Field \"wheelchair_accessible\" is required"
 	},
 	"video_surveillance_validation": {
 		"invalid": "Field \"video_surveillance\" \"%s\" is not a valid video_surveillance type",
 		"not_allowed": "Field \"video_surveillance\" \"%s\" is not allowed",
 		"required": "Field \"video_surveillance\" is required"
 	},
-	"wheelchair_accessible_validation": {
-		"forbidden": "Field \"wheelchair_accessible\" is forbidden",
-		"invalid": "Field \"wheelchair_accessible\" must be 0, 1, or 2, received: %s",
-		"not_allowed": "Field \"wheelchair_accessible\" \"%s\" is not allowed",
-		"recommended": "Field \"wheelchair_accessible\" is recommended",
-		"required": "Field \"wheelchair_accessible\" is required"
-	},
-	"wheelchair_boarding_validation": {
-		"forbidden": "Field \"wheelchair_boarding\" is forbidden",
-		"invalid": "Field \"wheelchair_boarding\" must be 0, 1, or 2, received: %s",
-		"not_allowed": "Field \"wheelchair_boarding\" \"%s\" is not allowed",
-		"recommended": "Field \"wheelchair_boarding\" is recommended",
-		"required": "Field \"wheelchair_boarding\" is required"
-	},
 	"wheelchair_validation": {
 		"invalid": "Field \"wheelchair\" \"%s\" is not a valid wheelchair type",
 		"not_allowed": "Field \"wheelchair\" \"%s\" is not allowed",
 		"required": "Field \"wheelchair\" is required"
-	},
-	"zone_id_validation": {
-		"forbidden": "Field \"zone_id\" is forbidden",
-		"not_allowed": "Field \"zone_id\" \"%s\" is not allowed",
-		"not_found": "Field \"zone_id\" \"%s\" does not exist in zones.txt",
-		"recommended": "Field \"zone_id\" is recommended",
-		"required": "Field \"zone_id\" is required"
 	}
 }

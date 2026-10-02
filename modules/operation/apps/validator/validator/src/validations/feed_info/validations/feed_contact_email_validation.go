@@ -33,20 +33,20 @@ func FeedContactEmailValidation(feedInfo *types.FeedInfo, row int, rules *types.
 			return
 		}
 
-		message := ctx.GetRequiredMessage("feed_contact_email_validation.required", "feed_contact_email_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate feed_contact_email is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_contact_email_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate feed_contact_email is a valid feed_contact_email
 	if !lib.ValidateEmail(*feedInfo.FeedContactEmail) {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_contact_email_validation.invalid", *feedInfo.FeedContactEmail))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *feedInfo.FeedContactEmail))
 		return
 	}
 }

@@ -52,7 +52,7 @@ func ShapeSequenceRuleValidation(shapes []types.Shape, rules *types.ShapesRules,
 			if ctx.ShouldSkip() {
 				return
 			}
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_pt_sequence_validation.required"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("required"))
 			// A point without shape_id/shape_pt_sequence can't be grouped or ordered, so the
 			// rest of the file (including other shapes) is left unchecked rather than guessed at.
 			return
@@ -91,7 +91,7 @@ func ShapeSequenceRuleValidation(shapes []types.Shape, rules *types.ShapesRules,
 				}
 				if shape.sequence <= shapeGroup[i-1].sequence && (ruleID == "" || ruleID == "shape_pt_sequence_strictly_increasing") {
 					if !ctx.ShouldSkip() {
-						ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_pt_sequence_validation.not_increasing", shape.shapeId))
+						ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_increasing", shape.shapeId))
 					}
 				}
 				// Only check dist if both current and previous are present (dist == -1
@@ -103,7 +103,7 @@ func ShapeSequenceRuleValidation(shapes []types.Shape, rules *types.ShapesRules,
 							ctxDist.WithSeverity(rules.ShapeDistTraveledNonDecreasingWithSequence.Severity)
 						}
 						if !ctxDist.ShouldSkip() {
-							ctxDist.AddMessageWithSeverity(ctxDist.GetTranslatedMessage("shape_dist_traveled_validation.not_increasing", shape.shapeId))
+							ctxDist.AddMessageWithSeverity(ctxDist.GetTranslatedMessage("not_increasing", shape.shapeId))
 						}
 					}
 				}

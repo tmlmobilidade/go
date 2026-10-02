@@ -33,14 +33,14 @@ func MunicipalityIdValidation(stop *types.Stop, row int, rules *types.StopsRules
 			return
 		}
 
-		message := ctx.GetRequiredMessage("municipality_id_validation.required", "municipality_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate municipality_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("municipality_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -51,7 +51,7 @@ func MunicipalityIdValidation(stop *types.Stop, row int, rules *types.StopsRules
 		}
 
 		if !slices.Contains(*rules.MunicipalityId.Options, *stop.MunicipalityId) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("municipality_id_validation.not_allowed", *stop.MunicipalityId))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.MunicipalityId))
 			return
 		}
 	}

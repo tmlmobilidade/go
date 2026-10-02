@@ -44,20 +44,20 @@ func ContainsIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, r
 			return
 		}
 
-		message := ctx.GetRequiredMessage("contains_id_validation.required", "contains_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate contains_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("contains_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate contains_id is a valid contains_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *fareRule.ContainsId) {
-		ctx.AddError(ctx.GetTranslatedMessage("contains_id_validation.invalid", *fareRule.ContainsId))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *fareRule.ContainsId))
 		return
 	}
 

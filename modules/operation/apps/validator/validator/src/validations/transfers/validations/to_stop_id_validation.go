@@ -56,14 +56,14 @@ func ToStopIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, rul
 		if ctx.ShouldSkip() {
 			return
 		}
-		message := ctx.GetRequiredMessage("to_stop_id_validation.required", "to_stop_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// Check Foreign Key
 	if !lib.GtfsIdMapKeyExists(&gtfs, "stops", *transfer.ToStopId) {
-		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.not_found", *transfer.ToStopId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *transfer.ToStopId))
 		return
 	}
 
@@ -93,21 +93,21 @@ func ToStopIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, rul
 	// Validate location_type
 	// General rule: must be stop (location_type=0) or station (location_type=1)
 	if locationType != 0 && locationType != 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.invalid_location_type", *transfer.ToStopId, locationType))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid_location_type", *transfer.ToStopId, locationType))
 		return
 	}
 
 	// Special rule: if transfer_type is 4 or 5, must be a stop (location_type=0)
 	if transfer.TransferType != nil && (*transfer.TransferType == 4 || *transfer.TransferType == 5) {
 		if locationType != 0 {
-			ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.must_be_stop_for_transfer_type_4_5", *transfer.ToStopId, *transfer.TransferType))
+			ctx.AddError(ctx.GetTranslatedMessage("must_be_stop_for_transfer_type_4_5", *transfer.ToStopId, *transfer.TransferType))
 			return
 		}
 	}
 
 	// Validate to_stop_id must be different from from_stop_id
 	if transfer.FromStopId != nil && *transfer.FromStopId == *transfer.ToStopId {
-		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.must_be_different_from_from_stop_id", *transfer.ToStopId, *transfer.FromStopId))
+		ctx.AddError(ctx.GetTranslatedMessage("must_be_different_from_from_stop_id", *transfer.ToStopId, *transfer.FromStopId))
 		return
 	}
 }

@@ -31,14 +31,14 @@ func ReversedSignpostedAsValidation(pathways *types.Pathways, row int, rules *ty
 			return
 		}
 
-		message := ctx.GetRequiredMessage("reversed_signposted_as_validation.required", "reversed_signposted_as_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate reversed_signposted_as is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("reversed_signposted_as_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

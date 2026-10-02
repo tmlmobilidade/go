@@ -38,18 +38,18 @@ func MaxSlopeValidation(pathways *types.Pathways, row int, rules *types.Pathways
 		}
 
 		if *pathways.PathwayMode == 1 || *pathways.PathwayMode == 3 {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("max_slope_validation.recommended"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("recommended"))
 			return
 		}
 
-		message := ctx.GetRequiredMessage("max_slope_validation.required", "max_slope_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate max_slope is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("max_slope_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -59,7 +59,7 @@ func MaxSlopeValidation(pathways *types.Pathways, row int, rules *types.Pathways
 			return
 		}
 
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("max_slope_validation.not_allowed_pathway_mode", strconv.Itoa(*pathways.PathwayMode)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed_pathway_mode", strconv.Itoa(*pathways.PathwayMode)))
 		return
 	}
 }

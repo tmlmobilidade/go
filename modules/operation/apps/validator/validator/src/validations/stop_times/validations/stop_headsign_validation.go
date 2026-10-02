@@ -41,14 +41,14 @@ func StopHeadsignValidation(stopTime *types.StopTime, row int, rules *types.Stop
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stop_headsign_validation.required", "stop_headsign_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stop_headsign is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_headsign_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -59,7 +59,7 @@ func StopHeadsignValidation(stopTime *types.StopTime, row int, rules *types.Stop
 		}
 
 		if !slices.Contains(*rules.StopHeadsign.Options, *stopTime.StopHeadsign) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_headsign_validation.not_allowed", *stopTime.StopHeadsign))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stopTime.StopHeadsign))
 			return
 		}
 	}

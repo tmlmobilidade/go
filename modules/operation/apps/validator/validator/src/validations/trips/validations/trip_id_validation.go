@@ -32,21 +32,21 @@ func TripIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.
 			return
 		}
 
-		message := ctx.GetRequiredMessage("trip_id_validation.required", "trip_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate trip_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("trip_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate trip_id is unique
 	rows, err := gtfs.GetRowsById("trips", *trip.TripId)
 	if err == nil && len(rows) > 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("trip_id_validation.duplicate", *trip.TripId))
+		ctx.AddError(ctx.GetTranslatedMessage("duplicate", *trip.TripId))
 		return
 	}
 }

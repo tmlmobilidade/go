@@ -53,6 +53,6 @@ func RouteIdPatternGroupValidation(tripsGroupedByPattern types.TripGroupedByPatt
 		if ctx.ShouldSkip() {
 			return
 		}
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_id_group_validation.different_route_ids_in_pattern", patternId, strings.Join(ids, ", ")))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("different_route_ids_in_pattern", patternId, strings.Join(ids, ", ")))
 	}
 }

@@ -35,7 +35,7 @@ func LocationGroupIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gt
 	// 1. Validate location_group_id is forbidden if stop_id or location_id are defined
 	if (stopTime.StopId != nil && *stopTime.StopId != "") || (stopTime.LocationId != nil && *stopTime.LocationId != "") {
 		if stopTime.LocationGroupId != nil && *stopTime.LocationGroupId != "" {
-			ctx.AddError(ctx.GetTranslatedMessage("location_group_id_validation.forbidden_stop_location"))
+			ctx.AddError(ctx.GetTranslatedMessage("forbidden_stop_location"))
 		}
 		return
 	}
@@ -47,13 +47,13 @@ func LocationGroupIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gt
 
 	// 3. Validate location_group_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("location_group_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 4. Validate location_group_id is Foreign Key referencing location_groups.location_group_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "location_groups", *stopTime.LocationGroupId) {
-		ctx.AddError(ctx.GetTranslatedMessage("location_group_id_validation.not_found", *stopTime.LocationGroupId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *stopTime.LocationGroupId))
 		return
 	}
 }

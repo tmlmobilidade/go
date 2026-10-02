@@ -37,21 +37,21 @@ func PublicVisibleValidation(stop *types.Stop, row int, rules *types.StopsRules)
 			return
 		}
 
-		message := ctx.GetRequiredMessage("public_visible_validation.required", "public_visible_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate public_visible is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("public_visible_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate public_visible is a valid value
 	validValues := []int{0, 1}
 	if !slices.Contains(validValues, *stop.PublicVisible) {
-		ctx.AddError(ctx.GetTranslatedMessage("public_visible_validation.invalid", strconv.Itoa(*stop.PublicVisible)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*stop.PublicVisible)))
 		return
 	}
 
@@ -62,7 +62,7 @@ func PublicVisibleValidation(stop *types.Stop, row int, rules *types.StopsRules)
 		}
 
 		if !slices.Contains(*rules.PublicVisible.Options, strconv.Itoa(*stop.PublicVisible)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("public_visible_validation.not_allowed", *stop.PublicVisible))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.PublicVisible))
 			return
 		}
 	}

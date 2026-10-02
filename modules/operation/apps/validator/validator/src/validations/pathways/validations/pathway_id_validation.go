@@ -35,21 +35,21 @@ func PathwayIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, ru
 			return
 		}
 
-		message := ctx.GetRequiredMessage("pathway_id_validation.required", "pathway_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate pathway_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate pathway_id is a valid pathway_id
 	rows, err := gtfs.GetRowsById("pathways", *pathways.PathwayId)
 	if err == nil && len(rows) > 1 {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_id_validation.duplicate", *pathways.PathwayId))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("duplicate", *pathways.PathwayId))
 		return
 	}
 }

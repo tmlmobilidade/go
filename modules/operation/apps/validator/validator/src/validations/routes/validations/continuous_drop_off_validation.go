@@ -46,21 +46,21 @@ func ContinuousDropOffValidation(route *types.Route, row int, gtfs *types.Gtfs, 
 			return
 		}
 
-		message := ctx.GetRequiredMessage("continuous_drop_off_validation.required", "continuous_drop_off_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate continuous_drop_off is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_drop_off_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate continuous_drop_off is a valid continuous_drop_off
 	if route.RouteId != nil {
 		if routesWithWindows[*route.RouteId] {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_drop_off_validation.forbidden_with_window"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden_with_window"))
 			return
 		}
 	}
@@ -72,7 +72,7 @@ func ContinuousDropOffValidation(route *types.Route, row int, gtfs *types.Gtfs, 
 		}
 
 		if !slices.Contains(*rules.ContinuousDropOff.Options, *route.ContinuousDropOff) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_drop_off_validation.not_allowed", *route.ContinuousDropOff))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.ContinuousDropOff))
 			return
 		}
 	}

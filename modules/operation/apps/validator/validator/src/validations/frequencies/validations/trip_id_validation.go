@@ -33,20 +33,20 @@ func TripIdValidation(frequency *types.Frequencies, row int, gtfs *types.Gtfs, r
 			return
 		}
 
-		message := ctx.GetRequiredMessage("trip_id_validation.required", "trip_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate trip_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("trip_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate trip_id is a valid trip_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "trips", *frequency.TripId) {
-		ctx.AddError(ctx.GetTranslatedMessage("trip_id_validation.not_found", *frequency.TripId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *frequency.TripId))
 		return
 	}
 }

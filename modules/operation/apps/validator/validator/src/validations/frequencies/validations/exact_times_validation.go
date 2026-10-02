@@ -39,21 +39,21 @@ func ExactTimesValidation(frequency *types.Frequencies, row int, rules *types.Fr
 			return
 		}
 
-		message := ctx.GetRequiredMessage("exact_times_validation.required", "exact_times_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate exact_times is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("exact_times_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate exact_times is a valid exact_times
 	validOptions := []int{0, 1}
 	if !slices.Contains(validOptions, *frequency.ExactTimes) {
-		ctx.AddError(ctx.GetTranslatedMessage("exact_times_validation.invalid", strconv.Itoa(*frequency.ExactTimes)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*frequency.ExactTimes)))
 		return
 	}
 
@@ -64,7 +64,7 @@ func ExactTimesValidation(frequency *types.Frequencies, row int, rules *types.Fr
 		}
 
 		if !slices.Contains(*rules.ExactTimes.Options, strconv.Itoa(*frequency.ExactTimes)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("exact_times_validation.not_allowed", *frequency.ExactTimes))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *frequency.ExactTimes))
 			return
 		}
 	}

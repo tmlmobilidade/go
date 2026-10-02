@@ -40,7 +40,7 @@ func WheelchairAccessibleValidation(trip *types.Trip, row int, gtfs *types.Gtfs,
 
 	// 2. Validate wheelchair_accessible is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -48,7 +48,7 @@ func WheelchairAccessibleValidation(trip *types.Trip, row int, gtfs *types.Gtfs,
 	if trip.WheelchairAccessible != nil {
 		validWheelchairAccessible := []int{0, 1, 2}
 		if !slices.Contains(validWheelchairAccessible, *trip.WheelchairAccessible) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.invalid", strconv.Itoa(*trip.WheelchairAccessible)))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*trip.WheelchairAccessible)))
 			return
 		}
 	}
@@ -60,7 +60,7 @@ func WheelchairAccessibleValidation(trip *types.Trip, row int, gtfs *types.Gtfs,
 		}
 
 		if !slices.Contains(*rules.WheelchairAccessible.Options, fmt.Sprintf("%d", *trip.WheelchairAccessible)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.not_allowed", *trip.WheelchairAccessible))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *trip.WheelchairAccessible))
 			return
 		}
 	}

@@ -39,14 +39,14 @@ func StopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stop_name_validation.required", "stop_name_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stop_name is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_name_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -57,7 +57,7 @@ func StopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		}
 
 		if !slices.Contains(*rules.StopName.Options, *stop.StopName) {
-			ctx.AddError(ctx.GetTranslatedMessage("stop_short_name_validation.not_allowed", *stop.StopName))
+			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *stop.StopName))
 			return
 		}
 	}

@@ -66,7 +66,7 @@ func ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRo
 					ids = append(ids, value)
 				}
 				sort.Strings(ids)
-				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_associations_validation.max_two", routeId, "shape_id", len(ids), strings.Join(ids, ", ")))
+				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("max_two", routeId, "shape_id", len(ids), strings.Join(ids, ", ")))
 			}
 		}
 
@@ -90,7 +90,7 @@ func ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRo
 				ids = append(ids, value)
 			}
 			sort.Strings(ids)
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_associations_validation.inconsistent_direction", routeId, directionId, "shape_id", strings.Join(ids, ", ")))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("inconsistent_direction", routeId, directionId, "shape_id", strings.Join(ids, ", ")))
 		}
 	}
 }

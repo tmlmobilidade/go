@@ -33,20 +33,20 @@ func DropOffBookingRuleIdValidation(stopTime *types.StopTime, row int, gtfs *typ
 		if ctx.ShouldSkip() {
 			return
 		}
-		message := ctx.GetRequiredMessage("drop_off_booking_rule_id_validation.required", "drop_off_booking_rule_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate drop_off_booking_rule_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("drop_off_booking_rule_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate drop_off_booking_rule_id is Foreign Key referencing booking_rules.booking_rule_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "booking_rules", *stopTime.DropOffBookingRuleId) {
-		ctx.AddError(ctx.GetTranslatedMessage("drop_off_booking_rule_id_validation.not_found", *stopTime.DropOffBookingRuleId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *stopTime.DropOffBookingRuleId))
 		return
 	}
 }

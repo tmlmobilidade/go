@@ -41,20 +41,20 @@ func LineShortNameValidation(route *types.Route, row int, gtfs *types.Gtfs, rule
 			return
 		}
 
-		message := ctx.GetRequiredMessage("line_short_name_validation.required", "line_short_name_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 3. Validate line_short_name is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_short_name_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 4. Validate line_short_name matches route_short_name
 	if route.RouteShortName != nil && *route.RouteShortName != *route.LineShortName {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_short_name_validation.not_equal_to_route_short_name", *route.LineShortName, *route.RouteShortName))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_equal_to_route_short_name", *route.LineShortName, *route.RouteShortName))
 		return
 	}
 }

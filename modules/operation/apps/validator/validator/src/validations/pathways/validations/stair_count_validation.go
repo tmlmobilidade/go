@@ -32,14 +32,14 @@ func StairCountValidation(pathways *types.Pathways, row int, rules *types.Pathwa
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stair_count_validation.required", "stair_count_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stair_count is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stair_count_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

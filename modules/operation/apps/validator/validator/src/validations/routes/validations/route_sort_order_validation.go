@@ -32,20 +32,20 @@ func RouteSortOrderValidation(route *types.Route, row int, rules *types.RoutesRu
 			return
 		}
 
-		message := ctx.GetRequiredMessage("route_sort_order_validation.required", "route_sort_order_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate route_sort_order is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_sort_order_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate route_sort_order is valid
 	if *route.RouteSortOrder < 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("route_sort_order_validation.invalid", *route.RouteSortOrder))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *route.RouteSortOrder))
 		return
 	}
 }

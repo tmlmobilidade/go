@@ -32,20 +32,20 @@ func RegistrationDateValidation(vehicle *types.Vehicle, row int, rules *types.Ve
 			return
 		}
 
-		message := ctx.GetRequiredMessage("registration_date_validation.required", "registration_date_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if registration_date is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("registration_date_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if registration_date is valid
 	if !lib.IsValidServiceDate(*vehicle.RegistrationDate) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("registration_date_validation.invalid", *vehicle.RegistrationDate))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", *vehicle.RegistrationDate))
 		return
 	}
 }

@@ -45,21 +45,21 @@ func PathwayModeValidation(pathways *types.Pathways, row int, rules *types.Pathw
 			return
 		}
 
-		message := ctx.GetRequiredMessage("pathway_mode_validation.required", "pathway_mode_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate pathway_mode is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_mode_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate pathway_mode is a valid pathway_mode
 	validOptions := []int{1, 2, 3, 4, 5, 6, 7}
 	if !slices.Contains(validOptions, *pathways.PathwayMode) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_mode_validation.invalid", strconv.Itoa(*pathways.PathwayMode)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*pathways.PathwayMode)))
 		return
 	}
 
@@ -70,7 +70,7 @@ func PathwayModeValidation(pathways *types.Pathways, row int, rules *types.Pathw
 		}
 
 		if !slices.Contains(*rules.PathwayMode.Options, strconv.Itoa(*pathways.PathwayMode)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pathway_mode_validation.not_allowed", strconv.Itoa(*pathways.PathwayMode)))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*pathways.PathwayMode)))
 			return
 		}
 	}

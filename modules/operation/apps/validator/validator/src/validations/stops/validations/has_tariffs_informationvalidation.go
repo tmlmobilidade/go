@@ -39,21 +39,21 @@ func HasTariffsInformationValidation(stop *types.Stop, row int, rules *types.Sto
 			return
 		}
 
-		message := ctx.GetRequiredMessage("has_tariffs_information_validation.required", "has_tariffs_information_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate has_tariffs_information is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_tariffs_information_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate has_tariffs_information is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasTariffsInformation) {
-		ctx.AddError(ctx.GetTranslatedMessage("has_tariffs_information_validation.invalid", strconv.Itoa(*stop.HasTariffsInformation)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*stop.HasTariffsInformation)))
 		return
 	}
 
@@ -64,7 +64,7 @@ func HasTariffsInformationValidation(stop *types.Stop, row int, rules *types.Sto
 		}
 
 		if !slices.Contains(*rules.HasTariffsInformation.Options, strconv.Itoa(*stop.HasTariffsInformation)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_tariffs_information_validation.not_allowed", *stop.HasTariffsInformation))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.HasTariffsInformation))
 			return
 		}
 	}

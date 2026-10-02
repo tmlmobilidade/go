@@ -39,18 +39,18 @@ func FromRouteIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, 
 		if ctx.ShouldSkip() {
 			return
 		}
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("from_route_id_validation.recommended"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("recommended"))
 		return
 	}
 
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("from_route_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// Validation foreign key from_route_id
 	if !lib.GtfsIdMapKeyExists(&gtfs, "routes", *transfer.FromRouteId) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("from_route_id_validation.not_found", *transfer.FromRouteId))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", *transfer.FromRouteId))
 		return
 	}
 
@@ -68,7 +68,7 @@ func FromRouteIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, 
 		}
 
 		if trip.RouteId != "" && trip.RouteId != *transfer.FromRouteId {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("from_route_id_validation.trip_must_belong_to_route", *transfer.FromTripId, *transfer.FromRouteId, trip.RouteId))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("trip_must_belong_to_route", *transfer.FromTripId, *transfer.FromRouteId, trip.RouteId))
 			return
 		}
 	}

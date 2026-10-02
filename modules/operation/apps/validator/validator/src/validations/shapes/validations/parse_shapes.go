@@ -34,7 +34,7 @@ func ParseShape(rawShape types.ShapeRaw, row int) types.Shape {
 			Field:    field,
 			FileName: "shapes.txt",
 			Rows:     []int{row},
-			Message:  i18n.AppTranslator.Get("parse_shapes.parsing_error", msg),
+			Message:  i18n.AppTranslator.Get("shapes_values_parse.parsing_error", msg),
 			Severity: types.SEVERITY_ERROR,
 			RuleID:   "shapes_values_parse",
 		})

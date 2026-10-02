@@ -40,20 +40,20 @@ func StopTimezoneValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 		if ctx.ShouldSkip() {
 			return
 		}
-		message := ctx.GetRequiredMessage("stop_timezone_validation.required", "stop_timezone_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stop_timezone is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_timezone_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate stop_timezone is a valid timezone
 	if !lib.ValidateTimezone(*stop.StopTimezone) {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_timezone_validation.invalid", *stop.StopTimezone))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *stop.StopTimezone))
 		return
 	}
 
@@ -64,7 +64,7 @@ func StopTimezoneValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 		}
 
 		if !slices.Contains(*rules.StopTimezone.Options, *stop.StopTimezone) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_timezone_validation.not_allowed", *stop.StopTimezone))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.StopTimezone))
 			return
 		}
 	}

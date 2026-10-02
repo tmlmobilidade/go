@@ -39,14 +39,14 @@ func PathTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("path_type_validation.required", "path_type_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate path_type is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("path_type_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -57,7 +57,7 @@ func PathTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
 		}
 
 		if !slices.Contains(*rules.PathType.Options, *route.PathType) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("path_type_validation.not_allowed", *route.PathType))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.PathType))
 			return
 		}
 	}

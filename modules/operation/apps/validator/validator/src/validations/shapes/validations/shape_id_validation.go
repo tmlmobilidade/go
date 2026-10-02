@@ -32,14 +32,14 @@ func ShapeIdValidation(shape *types.Shape, row int, rules *types.ShapesRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("shape_id_validation.required", "shape_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate shape_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

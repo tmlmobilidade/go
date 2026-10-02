@@ -32,21 +32,21 @@ func TripIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, rules
 			return
 		}
 
-		message := ctx.GetRequiredMessage("trip_id_validation.required", "trip_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate trip_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("trip_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate trip_id is Foreign Key referencing trips.trip_id
 	// Use IdMap cache instead of database query for performance
 	if !lib.GtfsIdMapKeyExists(gtfs, "trips", *stopTime.TripId) {
-		ctx.AddError(ctx.GetTranslatedMessage("trip_id_validation.not_found", *stopTime.TripId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *stopTime.TripId))
 		return
 	}
 }

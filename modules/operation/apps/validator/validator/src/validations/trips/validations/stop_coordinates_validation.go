@@ -79,7 +79,7 @@ func StopCoordinatesByTripIdValidation(trip *types.Trip, row int, gtfs *types.Gt
 		if info, ok := stopClosestShapePointsCache[key]; ok {
 			stopLat, _ := strconv.ParseFloat(stop.StopLat, 64)
 			stopLon, _ := strconv.ParseFloat(stop.StopLon, 64)
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_coordinates_validation.invalid_distance_to_shape", stopLat, stopLon, stop.StopId, info.ShapeID, info.ClosestShapePtSeq, info.ClosestShapePtLat, info.ClosestShapePtLon, info.DistanceMeters))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid_distance_to_shape", stopLat, stopLon, stop.StopId, info.ShapeID, info.ClosestShapePtSeq, info.ClosestShapePtLat, info.ClosestShapePtLon, info.DistanceMeters))
 		}
 	}
 

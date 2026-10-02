@@ -31,20 +31,20 @@ func BicyclesCapacityValidation(vehicle *types.Vehicle, row int, rules *types.Ve
 			return
 		}
 
-		message := ctx.GetRequiredMessage("bicycles_capacity_validation.required", "bicycles_capacity_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if bicycles_capacity is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("bicycles_capacity_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if bicycles_capacity is valid
 	if *vehicle.BicyclesCapacity < 0 {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("bicycles_capacity_validation.invalid", strconv.Itoa(*vehicle.BicyclesCapacity)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*vehicle.BicyclesCapacity)))
 		return
 	}
 }

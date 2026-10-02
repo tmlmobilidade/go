@@ -50,7 +50,7 @@ func ParentStationValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *
 
 		// Handle Severity
 		if !ctx.ShouldIgnore() {
-			message := ctx.GetRequiredMessage("parent_station_validation.required", "parent_station_validation.recommended")
+			message := ctx.GetRequiredMessage("required", "recommended")
 			ctx.AddMessageWithSeverity(message)
 			return
 		}
@@ -62,25 +62,25 @@ func ParentStationValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *
 	}
 
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("parent_station_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// Validate Parent Station for Location Type 1 (Station)
 	if locationType == 1 && stop.ParentStation != nil {
-		ctx.AddError(ctx.GetTranslatedMessage("parent_station_validation.forbidden"))
+		ctx.AddError(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// Validate Parent Station for Location Type 2 (Entrance/Exit), 3 (Generic Node), or 4 (Boarding Area)
 	if (locationType == 2 || locationType == 3 || locationType == 4) && stop.ParentStation == nil {
-		ctx.AddError(ctx.GetTranslatedMessage("parent_station_validation.required_location_type"))
+		ctx.AddError(ctx.GetTranslatedMessage("required_location_type"))
 		return
 	}
 
 	// Validate Foreign Key
 	if !lib.GtfsIdMapKeyExists(&gtfs, "stops", *stop.ParentStation) {
-		ctx.AddError(ctx.GetTranslatedMessage("parent_station_validation.not_found", *stop.ParentStation))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *stop.ParentStation))
 		return
 	}
 
@@ -91,7 +91,7 @@ func ParentStationValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *
 		}
 
 		if !slices.Contains(*rules.ParentStation.Options, *stop.ParentStation) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("parent_station_validation.not_allowed", *stop.ParentStation))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ParentStation))
 			return
 		}
 	}

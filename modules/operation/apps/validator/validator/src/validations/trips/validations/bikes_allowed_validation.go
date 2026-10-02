@@ -40,14 +40,14 @@ func BikesAllowedValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 			return
 		}
 
-		message := ctx.GetRequiredMessage("bikes_allowed_validation.required", "bikes_allowed_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate bikes_allowed is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("bikes_allowed_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -55,7 +55,7 @@ func BikesAllowedValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 	if trip.BikesAllowed != nil {
 		validBikesAllowed := map[int]bool{0: true, 1: true, 2: true}
 		if !validBikesAllowed[*trip.BikesAllowed] {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("bikes_allowed_validation.invalid"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid"))
 			return
 		}
 	}
@@ -67,7 +67,7 @@ func BikesAllowedValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		}
 
 		if !slices.Contains(*rules.BikesAllowed.Options, fmt.Sprintf("%d", *trip.BikesAllowed)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("bikes_allowed_validation.not_allowed", map[string]any{"value": *trip.BikesAllowed}))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", map[string]any{"value": *trip.BikesAllowed}))
 			return
 		}
 	}

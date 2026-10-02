@@ -48,14 +48,14 @@ func DirectionIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *t
 			return
 		}
 
-		message := ctx.GetRequiredMessage("direction_id_validation.required", "direction_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate direction_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("direction_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -63,7 +63,7 @@ func DirectionIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *t
 	if trip.DirectionId != nil {
 		validDirectionIds := map[int]bool{0: true, 1: true}
 		if !validDirectionIds[*trip.DirectionId] {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("direction_id_validation.invalid"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid"))
 			return
 		}
 	}
@@ -75,7 +75,7 @@ func DirectionIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *t
 		}
 
 		if !slices.Contains(*rules.DirectionId.Options, fmt.Sprintf("%d", *trip.DirectionId)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("direction_id_validation.not_allowed", map[string]any{"value": *trip.DirectionId}))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", map[string]any{"value": *trip.DirectionId}))
 			return
 		}
 	}

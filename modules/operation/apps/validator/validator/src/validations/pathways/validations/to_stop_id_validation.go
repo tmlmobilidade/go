@@ -38,20 +38,20 @@ func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rul
 			return
 		}
 
-		message := ctx.GetRequiredMessage("to_stop_id_validation.required", "to_stop_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate to_stop_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("to_stop_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate to_stop_id is a valid to_stop_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *pathways.ToStopId) {
-		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.not_found", *pathways.ToStopId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *pathways.ToStopId))
 		return
 	}
 
@@ -82,12 +82,12 @@ func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rul
 	// Allowed: platform (0 or empty), entrance/exit (2), generic node (3), boarding area (4)
 	// Forbidden: station (1)
 	if locationType == 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.invalid_location_type_station", *pathways.ToStopId))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid_location_type_station", *pathways.ToStopId))
 		return
 	}
 
 	if locationType != 0 && locationType != 2 && locationType != 3 && locationType != 4 {
-		ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.invalid_location_type_pathway", *pathways.ToStopId, locationType))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid_location_type_pathway", *pathways.ToStopId, locationType))
 		return
 	}
 
@@ -106,7 +106,7 @@ func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rul
 		}
 
 		if stopAccess == 1 && locationType == 0 {
-			ctx.AddError(ctx.GetTranslatedMessage("to_stop_id_validation.forbidden_stop_access_1", *pathways.ToStopId))
+			ctx.AddError(ctx.GetTranslatedMessage("forbidden_stop_access_1", *pathways.ToStopId))
 			return
 		}
 	}

@@ -32,20 +32,20 @@ func CurrencyTypeValidation(fareAttribute *types.FareAttribute, row int, rules *
 			return
 		}
 
-		message := ctx.GetRequiredMessage("currency_type_validation.required", "currency_type_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate currency_type is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("currency_type_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate currency_type is a valid currency type
 	if !lib.ValidateCurrencyType(*fareAttribute.CurrencyType) {
-		ctx.AddError(ctx.GetTranslatedMessage("currency_type_validation.invalid", *fareAttribute.CurrencyType))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *fareAttribute.CurrencyType))
 		return
 	}
 }

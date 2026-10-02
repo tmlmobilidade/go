@@ -30,14 +30,14 @@ func ModelValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules
 			return
 		}
 
-		message := ctx.GetRequiredMessage("model_validation.required", "model_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if model is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("model_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

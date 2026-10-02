@@ -47,27 +47,27 @@ func ContinuousPickupValidation(stopTime *types.StopTime, row int, rules *types.
 		if ctx.ShouldSkip() {
 			return
 		}
-		message := ctx.GetRequiredMessage("continuous_pickup_validation.required", "continuous_pickup_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate continuous_pickup is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_pickup_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate continuous_pickup is between 0 and 3
 	cp := *stopTime.ContinuousPickup
 	if cp < 0 || cp > 3 {
-		ctx.AddError(ctx.GetTranslatedMessage("continuous_pickup_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid"))
 		return
 	}
 
 	// 4. Validate continuous_pickup is forbidden with a window: any value other than 1 or empty if start/end_pickup_drop_off_window are defined
 	if ((stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "") || (stopTime.EndPickupDropOffWindow != nil && *stopTime.EndPickupDropOffWindow != "")) && (cp != 1) {
-		ctx.AddError(ctx.GetTranslatedMessage("continuous_pickup_validation.forbidden_with_window"))
+		ctx.AddError(ctx.GetTranslatedMessage("forbidden_with_window"))
 		return
 	}
 
@@ -81,7 +81,7 @@ func ContinuousPickupValidation(stopTime *types.StopTime, row int, rules *types.
 			return
 		}
 
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_pickup_validation.not_allowed", fmt.Sprintf("%d", cp)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", fmt.Sprintf("%d", cp)))
 		return
 	}
 }

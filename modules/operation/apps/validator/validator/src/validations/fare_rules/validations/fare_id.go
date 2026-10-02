@@ -33,20 +33,20 @@ func FareIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules
 			return
 		}
 
-		message := ctx.GetRequiredMessage("fare_id_validation.required", "fare_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate fare_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("fare_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate fare_id is a valid fare_id
 	if !lib.GtfsIdMapKeyExists(gtfs, "fare_attributes", *fareRule.FareId) {
-		ctx.AddError(ctx.GetTranslatedMessage("fare_id_validation.invalid", *fareRule.FareId))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *fareRule.FareId))
 		return
 	}
 }

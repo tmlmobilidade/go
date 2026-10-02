@@ -35,14 +35,14 @@ func StopIdValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *types.
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stop_id_validation.required", "stop_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stop_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -55,7 +55,7 @@ func StopIdValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *types.
 		count := len(lib.RemoveDuplicates(rows))
 
 		if count > 1 {
-			ctx.AddError(ctx.GetTranslatedMessage("stop_id_validation.duplicate", *stop.StopId))
+			ctx.AddError(ctx.GetTranslatedMessage("duplicate", *stop.StopId))
 			return
 		}
 	}
@@ -67,7 +67,7 @@ func StopIdValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *types.
 		}
 
 		if !slices.Contains(*rules.StopId.Options, *stop.StopId) {
-			ctx.AddError(ctx.GetTranslatedMessage("stop_id_validation.not_allowed", *stop.StopId))
+			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *stop.StopId))
 			return
 		}
 	}

@@ -45,20 +45,20 @@ func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *ty
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stop_access_validation.required", "stop_access_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stop_access is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_access_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate parent_station is present
 	if stop.ParentStation == nil || *stop.ParentStation == "" {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_access_validation.forbidden_parent_station_empty"))
+		ctx.AddError(ctx.GetTranslatedMessage("forbidden_parent_station_empty"))
 		return
 	}
 
@@ -69,7 +69,7 @@ func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *ty
 		}
 
 		if *stop.LocationType != 0 {
-			ctx.AddError(ctx.GetTranslatedMessage("stop_access_validation.forbidden_location_type_not_platform"))
+			ctx.AddError(ctx.GetTranslatedMessage("forbidden_location_type_not_platform"))
 			return
 		}
 		return
@@ -78,7 +78,7 @@ func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *ty
 	// 5. Validate stop_access is a valid value
 	validOptions := []int{0, 1}
 	if !slices.Contains(validOptions, *stop.StopAccess) {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_access_validation.invalid", strconv.Itoa(*stop.StopAccess)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*stop.StopAccess)))
 		return
 	}
 
@@ -89,7 +89,7 @@ func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *ty
 		}
 
 		if !slices.Contains(*rules.StopAccess.Options, strconv.Itoa(*stop.StopAccess)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_access_validation.not_allowed", *stop.StopAccess))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.StopAccess))
 			return
 		}
 	}

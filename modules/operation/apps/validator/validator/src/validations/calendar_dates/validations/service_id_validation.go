@@ -33,14 +33,14 @@ func ServiceIdValidation(calendarDate *types.CalendarDates, row int) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("service_id_validation.required", "service_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate service_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("service_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

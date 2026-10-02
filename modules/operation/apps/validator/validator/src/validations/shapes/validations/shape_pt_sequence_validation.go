@@ -43,19 +43,19 @@ func ShapePtSequenceValidation(shape *types.Shape, row int, rules *types.ShapesR
 			return
 		}
 
-		message := ctx.GetRequiredMessage("shape_pt_sequence_validation.required", "shape_pt_sequence_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate shape_pt_sequence is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_pt_sequence_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate shape_pt_sequence is non-negative
 	if *shape.ShapePtSequence < 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("shape_pt_sequence_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid"))
 	}
 }

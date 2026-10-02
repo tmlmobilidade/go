@@ -38,20 +38,20 @@ func FeedStartDateValidation(feedInfo *types.FeedInfo, row int, rules *types.Fee
 			return
 		}
 
-		message := ctx.GetRequiredMessage("feed_start_date_validation.required", "feed_start_date_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate feed_start_date is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_start_date_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate feed_start_date is a valid feed_start_date
 	if !lib.IsValidServiceDate(*feedInfo.FeedStartDate) {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_start_date_validation.invalid", *feedInfo.FeedStartDate))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *feedInfo.FeedStartDate))
 		return
 	}
 }

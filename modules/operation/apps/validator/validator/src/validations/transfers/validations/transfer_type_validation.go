@@ -40,13 +40,13 @@ func TransferTypeValidation(transfer *types.Transfers, row int, rules *types.Tra
 			return
 		}
 
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("transfer_type_validation.required"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("required"))
 		return
 	}
 
 	validTransferTypes := []int{0, 1, 2, 3, 4, 5}
 	if !slices.Contains(validTransferTypes, *transfer.TransferType) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("transfer_type_validation.invalid", strconv.Itoa(*transfer.TransferType)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*transfer.TransferType)))
 		return
 	}
 
@@ -57,7 +57,7 @@ func TransferTypeValidation(transfer *types.Transfers, row int, rules *types.Tra
 		}
 
 		if !slices.Contains(*rules.TransferType.Options, fmt.Sprintf("%d", *transfer.TransferType)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("transfer_type_validation.not_allowed", fmt.Sprintf("%d", *transfer.TransferType)))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", fmt.Sprintf("%d", *transfer.TransferType)))
 			return
 		}
 	}

@@ -42,7 +42,7 @@ func NewTranslator(lang string) *Translator {
 	}
 }
 
-// Get retrieves a translation for a given key (e.g., "agency_id_validation.required").
+// Get retrieves a translation for a given key (e.g., "agency_id_unique.required").
 // It supports formatting arguments using fmt.Sprintf for placeholders like %s, %f, etc.
 // If the key is not found, it returns the key itself as a fallback.
 func (t *Translator) Get(key string, args ...interface{}) string {

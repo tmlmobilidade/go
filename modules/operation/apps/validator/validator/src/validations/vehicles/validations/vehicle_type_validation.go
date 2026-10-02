@@ -47,21 +47,21 @@ func VehicleTypeValidation(vehicle *types.Vehicle, row int, rules *types.Vehicle
 			return
 		}
 
-		message := ctx.GetRequiredMessage("vehicle_type_validation.required", "vehicle_type_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if vehicle_type is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("vehicle_type_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if vehicle_type is valid
 	validOptions := []int{0, 1, 2, 3, 4, 5, 6, 7, 11, 12}
 	if !slices.Contains(validOptions, *vehicle.VehicleType) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("vehicle_type_validation.invalid", strconv.Itoa(*vehicle.VehicleType)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*vehicle.VehicleType)))
 		return
 	}
 
@@ -72,7 +72,7 @@ func VehicleTypeValidation(vehicle *types.Vehicle, row int, rules *types.Vehicle
 		}
 
 		if !slices.Contains(*rules.VehicleType.Options, strconv.Itoa(*vehicle.VehicleType)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("vehicle_type_validation.not_allowed", strconv.Itoa(*vehicle.VehicleType)))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*vehicle.VehicleType)))
 			return
 		}
 	}

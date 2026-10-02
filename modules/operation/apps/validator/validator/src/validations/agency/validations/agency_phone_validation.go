@@ -36,20 +36,20 @@ func AgencyPhoneValidation(agency *types.Agency, row int, rules *types.AgencyRul
 			return
 		}
 
-		message := ctx.GetRequiredMessage("agency_phone_validation.required", "agency_phone_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if agency_phone is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_phone_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if agency_phone is valid
 	if !lib.ValidatePhone(*agency.AgencyPhone) {
-		ctx.AddError(ctx.GetTranslatedMessage("agency_phone_validation.invalid", *agency.AgencyPhone))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *agency.AgencyPhone))
 		return
 	}
 
@@ -60,7 +60,7 @@ func AgencyPhoneValidation(agency *types.Agency, row int, rules *types.AgencyRul
 		}
 
 		if !slices.Contains(*rules.AgencyPhone.Options, *agency.AgencyPhone) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_phone_validation.not_allowed", *agency.AgencyPhone))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *agency.AgencyPhone))
 			return
 		}
 	}

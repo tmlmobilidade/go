@@ -46,23 +46,23 @@ func RouteDescValidation(route *types.Route, row int, rules *types.RoutesRules) 
 			return
 		}
 
-		message := ctx.GetRequiredMessage("route_desc_validation.required", "route_desc_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate route_desc is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_desc_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate route_desc is a duplicate of route_short_name or route_long_name
 	if route.RouteShortName != nil && *route.RouteDesc == *route.RouteShortName {
-		ctx.AddWarning(ctx.GetTranslatedMessage("route_desc_validation.duplicate_short_name"))
+		ctx.AddWarning(ctx.GetTranslatedMessage("duplicate_short_name"))
 	}
 	if route.RouteLongName != nil && *route.RouteDesc == *route.RouteLongName {
-		ctx.AddWarning(ctx.GetTranslatedMessage("route_desc_validation.duplicate_long_name"))
+		ctx.AddWarning(ctx.GetTranslatedMessage("duplicate_long_name"))
 	}
 
 	// 4. Validate Rule Options
@@ -72,7 +72,7 @@ func RouteDescValidation(route *types.Route, row int, rules *types.RoutesRules) 
 		}
 
 		if !slices.Contains(*rules.RouteDesc.Options, *route.RouteDesc) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_desc_validation.not_allowed", *route.RouteDesc))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.RouteDesc))
 			return
 		}
 	}

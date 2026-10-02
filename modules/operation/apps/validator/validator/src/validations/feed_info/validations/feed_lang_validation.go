@@ -38,20 +38,20 @@ func FeedLangValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfo
 			return
 		}
 
-		message := ctx.GetRequiredMessage("feed_lang_validation.required", "feed_lang_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate feed_lang is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_lang_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate feed_lang is a valid feed_lang
 	if !lib.ValidateLanguage(*feedInfo.FeedLang) {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_lang_validation.invalid", *feedInfo.FeedLang))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *feedInfo.FeedLang))
 		return
 	}
 }

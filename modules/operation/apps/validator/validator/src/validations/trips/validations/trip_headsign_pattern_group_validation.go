@@ -66,6 +66,6 @@ func TripHeadsignPatternGroupValidation(tripsGroupedByPattern types.TripGroupedB
 		if ctx.ShouldSkip() {
 			return
 		}
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("trip_headsign_group_validation.different_headsigns_in_pattern", patternId, strings.Join(parts, ", ")))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("different_headsigns_in_pattern", patternId, strings.Join(parts, ", ")))
 	}
 }

@@ -38,14 +38,14 @@ func NetworkIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *t
 			return
 		}
 
-		message := ctx.GetRequiredMessage("network_id_validation.required", "network_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate network_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("network_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -56,7 +56,7 @@ func NetworkIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *t
 		routeNetworkCount = len(gtfs.RouteNetwork)
 	}
 	if routeNetworkCount > 0 && route.NetworkId != nil {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("network_id_validation.forbidden_when_route_networks_exists", *route.NetworkId))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden_when_route_networks_exists", *route.NetworkId))
 		return
 	}
 
@@ -67,7 +67,7 @@ func NetworkIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *t
 		}
 
 		if !slices.Contains(*rules.NetworkId.Options, *route.NetworkId) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("network_id_validation.not_allowed", *route.NetworkId))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.NetworkId))
 			return
 		}
 	}

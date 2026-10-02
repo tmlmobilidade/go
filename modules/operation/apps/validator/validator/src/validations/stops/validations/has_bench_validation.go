@@ -39,21 +39,21 @@ func HasBenchValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("has_bench_validation.required", "has_bench_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate has_bench is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_bench_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate has_bench is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasBench) {
-		ctx.AddError(ctx.GetTranslatedMessage("has_bench_validation.invalid", strconv.Itoa(*stop.HasBench)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*stop.HasBench)))
 		return
 	}
 
@@ -64,7 +64,7 @@ func HasBenchValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		}
 
 		if !slices.Contains(*rules.HasBench.Options, strconv.Itoa(*stop.HasBench)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_bench_validation.not_allowed", *stop.HasBench))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.HasBench))
 		}
 
 		return

@@ -78,7 +78,7 @@ func runValidations(gtfs types.Gtfs, tracker *lib.PerformanceTracker, rules *typ
 				Rows:     []int{},
 				Field:    "N/A",
 				FileName: fileName,
-				Message:  fmt.Sprintf(i18n.AppTranslator.Get("file_validations.not_supported"), fileName),
+				Message:  fmt.Sprintf(i18n.AppTranslator.Get("file_not_found_in_rules.not_supported"), fileName),
 				RuleID:   "file_not_found_in_rules",
 				Severity: types.SEVERITY_WARNING,
 			})

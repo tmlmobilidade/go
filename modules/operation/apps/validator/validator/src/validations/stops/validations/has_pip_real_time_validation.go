@@ -38,21 +38,21 @@ func HasPipRealTimeValidation(stop *types.Stop, row int, rules *types.StopsRules
 			return
 		}
 
-		message := ctx.GetRequiredMessage("has_pip_real_time_validation.required", "has_pip_real_time_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate has_pip_real_time is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_pip_real_time_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate has_pip_real_time is a valid value
 	validValues := []int{0, 1, 2}
 	if !slices.Contains(validValues, *stop.HasPipRealTime) {
-		ctx.AddError(ctx.GetTranslatedMessage("has_pip_real_time_validation.invalid", strconv.Itoa(*stop.HasPipRealTime)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*stop.HasPipRealTime)))
 		return
 	}
 
@@ -63,7 +63,7 @@ func HasPipRealTimeValidation(stop *types.Stop, row int, rules *types.StopsRules
 		}
 
 		if !slices.Contains(*rules.HasPipRealTime.Options, strconv.Itoa(*stop.HasPipRealTime)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_pip_real_time_validation.not_allowed", *stop.HasPipRealTime))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.HasPipRealTime))
 			return
 		}
 	}

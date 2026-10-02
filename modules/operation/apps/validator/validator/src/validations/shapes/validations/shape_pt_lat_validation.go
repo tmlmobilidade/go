@@ -32,19 +32,19 @@ func ShapePtLatValidation(shape *types.Shape, row int, rules *types.ShapesRules)
 			return
 		}
 
-		message := ctx.GetRequiredMessage("shape_pt_lat_validation.required", "shape_pt_lat_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate shape_pt_lat is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_pt_lat_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate shape_pt_lat is a valid latitude
 	if !lib.ValidateLatitude(*shape.ShapePtLat) {
-		ctx.AddError(ctx.GetTranslatedMessage("shape_pt_lat_validation.invalid", *shape.ShapePtLat))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *shape.ShapePtLat))
 	}
 }

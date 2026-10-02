@@ -33,14 +33,14 @@ func ShelterMaintainerValidation(stop *types.Stop, row int, rules *types.StopsRu
 			return
 		}
 
-		message := ctx.GetRequiredMessage("shelter_maintainer_validation.required", "shelter_maintainer_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate shelter_maintainer is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shelter_maintainer_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -51,7 +51,7 @@ func ShelterMaintainerValidation(stop *types.Stop, row int, rules *types.StopsRu
 		}
 
 		if !slices.Contains(*rules.ShelterMaintainer.Options, *stop.ShelterMaintainer) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shelter_maintainer_validation.not_allowed", *stop.ShelterMaintainer))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ShelterMaintainer))
 			return
 		}
 	}

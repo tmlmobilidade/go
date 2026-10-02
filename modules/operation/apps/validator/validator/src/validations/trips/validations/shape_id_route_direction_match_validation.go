@@ -56,7 +56,7 @@ func ShapeIdRouteDirectionMatchValidation(trip *types.Trip, row int, gtfs *types
 	// 4. Validate shape_id is route_id and direction_id joined by an underscore
 	expected := fmt.Sprintf("%s_%d", *trip.RouteId, *trip.DirectionId)
 	if *trip.ShapeId != expected {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_id_route_direction_match.not_matching", *trip.ShapeId, expected, *trip.RouteId, *trip.DirectionId))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_matching", *trip.ShapeId, expected, *trip.RouteId, *trip.DirectionId))
 		return
 	}
 }

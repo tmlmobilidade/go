@@ -35,20 +35,20 @@ func AgencyEmailValidation(agency *types.Agency, row int, rules *types.AgencyRul
 			return
 		}
 
-		message := ctx.GetRequiredMessage("agency_email_validation.required", "agency_email_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if agency_email is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_email_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if agency_email is valid
 	if !lib.ValidateEmail(*agency.AgencyEmail) {
-		ctx.AddError(ctx.GetTranslatedMessage("agency_email_validation.invalid", *agency.AgencyEmail))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *agency.AgencyEmail))
 		return
 	}
 
@@ -59,7 +59,7 @@ func AgencyEmailValidation(agency *types.Agency, row int, rules *types.AgencyRul
 		}
 
 		if !slices.Contains(*rules.AgencyEmail.Options, *agency.AgencyEmail) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_email_validation.not_allowed", *agency.AgencyEmail))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *agency.AgencyEmail))
 			return
 		}
 	}

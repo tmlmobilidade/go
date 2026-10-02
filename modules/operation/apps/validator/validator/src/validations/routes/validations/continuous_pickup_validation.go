@@ -46,21 +46,21 @@ func ContinuousPickupValidation(route *types.Route, row int, gtfs *types.Gtfs, r
 			return
 		}
 
-		message := ctx.GetRequiredMessage("continuous_pickup_validation.required", "continuous_pickup_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate continuous_pickup is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_pickup_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate continuous_pickup is a valid continuous_pickup
 	if route.RouteId != nil {
 		if routesWithWindows[*route.RouteId] {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_pickup_validation.forbidden_with_window"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden_with_window"))
 			return
 		}
 	}
@@ -72,7 +72,7 @@ func ContinuousPickupValidation(route *types.Route, row int, gtfs *types.Gtfs, r
 		}
 
 		if !slices.Contains(*rules.ContinuousPickup.Options, *route.ContinuousPickup) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("continuous_pickup_validation.not_allowed", *route.ContinuousPickup))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.ContinuousPickup))
 			return
 		}
 	}

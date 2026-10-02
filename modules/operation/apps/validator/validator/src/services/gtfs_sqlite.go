@@ -123,7 +123,7 @@ func ImportGTFSZipToSQLite(zipPath, sqlitePath string) (*GtfsSQLite, error) {
 			lib.AppLogger.Debug("Skipping invalid GTFS file: " + file.Name)
 			AppMessageService.AddMessage(types.Message{
 				FileName: file.Name,
-				Message:  i18n.AppTranslator.Get("file_validations.not_supported", file.Name),
+				Message:  i18n.AppTranslator.Get("file_validation.not_supported", file.Name),
 				RuleID:   "file_validation",
 				Severity: types.SEVERITY_IGNORE,
 				Field:    "N/A",

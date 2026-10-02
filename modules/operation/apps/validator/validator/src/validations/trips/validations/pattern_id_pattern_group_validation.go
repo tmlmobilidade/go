@@ -42,22 +42,22 @@ func PatternIdPatternGroupRuleValidation(tripsGroupedByPattern types.TripGrouped
 				return
 			}
 			if trip.ShapeId == nil {
-				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pattern_id_validation.shape_id_not_found"))
+				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_id_not_found"))
 				continue
 			}
 
 			if trip.RouteId == nil {
-				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pattern_id_validation.route_id_not_found"))
+				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_id_not_found"))
 				continue
 			}
 
 			if trip.DirectionId == nil {
-				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pattern_id_validation.direction_id_not_found"))
+				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("direction_id_not_found"))
 				continue
 			}
 
 			if trip.TripHeadsign == nil {
-				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pattern_id_validation.trip_headsign_not_found"))
+				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("trip_headsign_not_found"))
 				continue
 			}
 		}
@@ -72,7 +72,7 @@ func PatternIdPatternGroupRuleValidation(tripsGroupedByPattern types.TripGrouped
 			if ctx.ShouldSkip() {
 				return
 			}
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pattern_id_validation.multiple_stop_sequence_variations", patternId))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("multiple_stop_sequence_variations", patternId))
 		}
 	}
 }

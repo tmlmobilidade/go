@@ -35,14 +35,14 @@ func RouteTextColorValidation(route *types.Route, row int, rules *types.RoutesRu
 			return
 		}
 
-		message := ctx.GetRequiredMessage("route_text_color_validation.required", "route_text_color_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate route_text_color is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_text_color_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -50,7 +50,7 @@ func RouteTextColorValidation(route *types.Route, row int, rules *types.RoutesRu
 	color := strings.ToUpper(*route.RouteTextColor)
 	matched, _ := regexp.MatchString(`^[0-9A-F]{6}$`, color)
 	if !matched {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_text_color_validation.invalid", *route.RouteTextColor))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", *route.RouteTextColor))
 		return
 	}
 
@@ -61,7 +61,7 @@ func RouteTextColorValidation(route *types.Route, row int, rules *types.RoutesRu
 		}
 
 		if !slices.Contains(*rules.RouteTextColor.Options, *route.RouteTextColor) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_text_color_validation.not_allowed", *route.RouteTextColor))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.RouteTextColor))
 			return
 		}
 	}

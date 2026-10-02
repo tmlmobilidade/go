@@ -35,14 +35,14 @@ func RouteLongNameValidation(route *types.Route, row int, rules *types.RoutesRul
 			return
 		}
 
-		message := ctx.GetRequiredMessage("route_long_name_validation.required", "route_long_name_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate route_long_name is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_long_name_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -53,7 +53,7 @@ func RouteLongNameValidation(route *types.Route, row int, rules *types.RoutesRul
 		}
 
 		if !slices.Contains(*rules.RouteLongName.Options, *route.RouteLongName) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_long_name_validation.not_allowed", *route.RouteLongName))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.RouteLongName))
 			return
 		}
 	}

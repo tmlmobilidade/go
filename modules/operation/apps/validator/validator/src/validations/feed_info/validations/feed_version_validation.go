@@ -32,14 +32,14 @@ func FeedVersionValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedI
 			return
 		}
 
-		message := ctx.GetRequiredMessage("feed_version_validation.required", "feed_version_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate feed_version is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_version_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

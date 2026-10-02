@@ -42,21 +42,21 @@ func IsDefaultFareCategoryValidation(riderCategory *types.RiderCategory, row int
 			return
 		}
 
-		message := ctx.GetRequiredMessage("is_default_fare_category_validation.required", "is_default_fare_category_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate is_default_fare_category is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("is_default_fare_category_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate is_default_fare_category is a valid is_default_fare_category
 	validOptions := []int{0, 1}
 	if !slices.Contains(validOptions, *riderCategory.IsDefaultFareCategory) {
-		ctx.AddError(ctx.GetTranslatedMessage("is_default_fare_category_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid"))
 		return
 	}
 
@@ -67,7 +67,7 @@ func IsDefaultFareCategoryValidation(riderCategory *types.RiderCategory, row int
 		}
 
 		if !slices.Contains(*rules.IsDefaultFareCategory.Options, strconv.Itoa(*riderCategory.IsDefaultFareCategory)) {
-			ctx.AddError(ctx.GetTranslatedMessage("is_default_fare_category_validation.not_allowed", strconv.Itoa(*riderCategory.IsDefaultFareCategory)))
+			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*riderCategory.IsDefaultFareCategory)))
 			return
 		}
 	}

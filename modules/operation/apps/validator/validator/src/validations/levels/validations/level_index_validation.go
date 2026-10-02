@@ -33,20 +33,20 @@ func LevelIndexValidation(level *types.Levels, row int, rules *types.LevelsRules
 			return
 		}
 
-		message := ctx.GetRequiredMessage("level_index_validation.required", "level_index_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate level_index is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_index_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate level_index is a valid level_index
 	if *level.LevelIndex < 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("level_index_validation.invalid", strconv.FormatFloat(float64(*level.LevelIndex), 'f', -1, 32)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.FormatFloat(float64(*level.LevelIndex), 'f', -1, 32)))
 		return
 	}
 }

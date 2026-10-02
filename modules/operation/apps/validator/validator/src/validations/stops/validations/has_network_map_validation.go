@@ -39,21 +39,21 @@ func HasNetworkMapValidation(stop *types.Stop, row int, rules *types.StopsRules)
 			return
 		}
 
-		message := ctx.GetRequiredMessage("has_network_map_validation.required", "has_network_map_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate has_network_map is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_network_map_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate has_network_map is a valid value
 	validValues := []int{0, 1, 2, 3}
 	if !slices.Contains(validValues, *stop.HasNetworkMap) {
-		ctx.AddError(ctx.GetTranslatedMessage("has_network_map_validation.invalid", strconv.Itoa(*stop.HasNetworkMap)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*stop.HasNetworkMap)))
 		return
 	}
 
@@ -64,7 +64,7 @@ func HasNetworkMapValidation(stop *types.Stop, row int, rules *types.StopsRules)
 		}
 
 		if !slices.Contains(*rules.HasNetworkMap.Options, strconv.Itoa(*stop.HasNetworkMap)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("has_network_map_validation.not_allowed", *stop.HasNetworkMap))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.HasNetworkMap))
 			return
 		}
 	}

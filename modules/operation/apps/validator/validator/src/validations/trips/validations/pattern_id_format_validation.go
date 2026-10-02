@@ -93,7 +93,7 @@ func PatternIdFormatValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rule
 
 	// 5. Validate pattern_id is invalid
 	if !isValidFormat {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("pattern_id_format_validation.invalid", expectedFormat, *trip.PatternId))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", expectedFormat, *trip.PatternId))
 		return
 	}
 }

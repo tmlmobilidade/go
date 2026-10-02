@@ -49,6 +49,6 @@ func TransfersValidation(fareAttribute *types.FareAttribute, row int, gtfs *type
 
 	validTransfers := []int{0, 1, 2}
 	if !slices.Contains(validTransfers, *fareAttribute.Transfers) {
-		ctx.AddError(ctx.GetTranslatedMessage("transfers_validation.invalid", *fareAttribute.Transfers))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *fareAttribute.Transfers))
 	}
 }

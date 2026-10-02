@@ -32,14 +32,14 @@ func ServiceIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, calendarRo
 			return
 		}
 
-		message := ctx.GetRequiredMessage("service_id_validation.required", "service_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate service_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("service_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -52,5 +52,5 @@ func ServiceIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, calendarRo
 	if err == nil && len(calendarDatesRows) > 0 {
 		return
 	}
-	ctx.AddError(ctx.GetTranslatedMessage("service_id_validation.not_found", map[string]any{"service_id": *trip.ServiceId}))
+	ctx.AddError(ctx.GetTranslatedMessage("not_found", map[string]any{"service_id": *trip.ServiceId}))
 }

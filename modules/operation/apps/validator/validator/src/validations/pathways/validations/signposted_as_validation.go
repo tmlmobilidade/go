@@ -36,14 +36,14 @@ func SignpostedAsValidation(pathways *types.Pathways, row int, rules *types.Path
 			return
 		}
 
-		message := ctx.GetRequiredMessage("signposted_as_validation.required", "signposted_as_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate signposted_as is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("signposted_as_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

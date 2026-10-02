@@ -38,20 +38,20 @@ func ArrivalTimeValidation(stopTime *types.StopTime, row int, rules *types.StopT
 			return
 		}
 
-		message := ctx.GetRequiredMessage("arrival_time_validation.required", "arrival_time_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate arrival_time is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("arrival_time_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate arrival_time is a valid time
 	if !lib.ValidateTime(*stopTime.ArrivalTime) {
-		ctx.AddError(ctx.GetTranslatedMessage("arrival_time_validation.invalid", *stopTime.ArrivalTime))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *stopTime.ArrivalTime))
 		return
 	}
 }

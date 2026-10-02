@@ -36,14 +36,14 @@ func StopShortNameValidation(stop *types.Stop, row int, rules *types.StopsRules)
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stop_short_name_validation.required", "stop_short_name_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stop_short_name is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_short_name_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -54,7 +54,7 @@ func StopShortNameValidation(stop *types.Stop, row int, rules *types.StopsRules)
 		}
 
 		if !slices.Contains(*rules.StopShortName.Options, *stop.StopShortName) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_short_name_validation.not_allowed", *stop.StopShortName))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.StopShortName))
 			return
 		}
 	}

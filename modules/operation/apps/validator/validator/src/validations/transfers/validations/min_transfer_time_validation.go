@@ -28,17 +28,17 @@ func MinTransferTimeValidation(transfer *types.Transfers, row int, rules *types.
 
 	if transfer.MinTransferTime == nil {
 		if !ctx.ShouldSkip() {
-			ctx.AddMessageWithSeverity(ctx.GetRequiredMessage("min_transfer_time_validation.required", "min_transfer_time_validation.recommended"))
+			ctx.AddMessageWithSeverity(ctx.GetRequiredMessage("required", "recommended"))
 		}
 		return
 	}
 
 	if *transfer.MinTransferTime < 0 {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("transfers_validation.invalid", *transfer.MinTransferTime))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", *transfer.MinTransferTime))
 	}
 
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("min_transfer_time_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

@@ -33,20 +33,20 @@ func AgencyUrlValidation(agency *types.Agency, row int, rules *types.AgencyRules
 			return
 		}
 
-		message := ctx.GetRequiredMessage("agency_url_validation.required", "agency_url_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if agency_url is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_url_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if agency_url is valid
 	if !lib.ValidateUrl(*agency.AgencyUrl) {
-		ctx.AddError(ctx.GetTranslatedMessage("agency_url_validation.invalid", *agency.AgencyUrl))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *agency.AgencyUrl))
 		return
 	}
 
@@ -57,7 +57,7 @@ func AgencyUrlValidation(agency *types.Agency, row int, rules *types.AgencyRules
 		}
 
 		if !slices.Contains(*rules.AgencyUrl.Options, *agency.AgencyUrl) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_url_validation.not_allowed", *agency.AgencyUrl))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *agency.AgencyUrl))
 			return
 		}
 	}

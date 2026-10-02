@@ -32,21 +32,21 @@ func DefaultLangValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedI
 			return
 		}
 
-		message := ctx.GetRequiredMessage("default_lang_validation.required", "default_lang_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate default_lang is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("default_lang_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate default_lang is a valid default_lang
 	if feedInfo.DefaultLang != nil && *feedInfo.DefaultLang != "" {
 		if !lib.ValidateLanguage(*feedInfo.DefaultLang) {
-			ctx.AddError(ctx.GetTranslatedMessage("default_lang_validation.invalid", *feedInfo.DefaultLang))
+			ctx.AddError(ctx.GetTranslatedMessage("invalid", *feedInfo.DefaultLang))
 			return
 		}
 	}

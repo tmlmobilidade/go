@@ -41,21 +41,21 @@ func WheelchairAccessibleValidation(vehicle *types.Vehicle, row int, rules *type
 			return
 		}
 
-		message := ctx.GetRequiredMessage("wheelchair_accessible_validation.required", "wheelchair_accessible_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if wheelchair_accessible is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if wheelchair_accessible is valid
 	validOptions := []int{0, 1, 2}
 	if !slices.Contains(validOptions, *vehicle.WheelchairAccessible) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.invalid", strconv.Itoa(*vehicle.WheelchairAccessible)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*vehicle.WheelchairAccessible)))
 		return
 	}
 
@@ -66,7 +66,7 @@ func WheelchairAccessibleValidation(vehicle *types.Vehicle, row int, rules *type
 		}
 
 		if !slices.Contains(*rules.WheelchairAccessible.Options, strconv.Itoa(*vehicle.WheelchairAccessible)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("wheelchair_accessible_validation.not_allowed", strconv.Itoa(*vehicle.WheelchairAccessible)))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*vehicle.WheelchairAccessible)))
 			return
 		}
 	}

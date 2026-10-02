@@ -32,13 +32,13 @@ func LevelNameValidation(level *types.Levels, row int, rules *types.LevelsRules)
 		if ctx.ShouldSkip() {
 			return
 		}
-		message := ctx.GetRequiredMessage("level_name_validation.required", "level_name_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 	}
 
 	// 2. Validate level_name is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_name_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

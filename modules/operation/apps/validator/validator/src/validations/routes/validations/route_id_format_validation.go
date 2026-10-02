@@ -52,7 +52,7 @@ func RouteIdFormatValidation(route *types.Route, row int, rules *types.RoutesRul
 	// 3. Validate route_id is route_short_name and route_sort_order joined by an underscore
 	expected := fmt.Sprintf("%s_%d", *route.RouteShortName, *route.RouteSortOrder)
 	if *route.RouteId != expected {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_id_format_validation.invalid", *route.RouteId, expected, *route.RouteShortName, *route.RouteSortOrder))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", *route.RouteId, expected, *route.RouteShortName, *route.RouteSortOrder))
 		return
 	}
 }

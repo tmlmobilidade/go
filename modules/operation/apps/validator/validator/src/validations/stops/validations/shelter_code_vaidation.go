@@ -33,14 +33,14 @@ func ShelterCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("shelter_code_validation.required", "shelter_code_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate shelter_code is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shelter_code_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -51,7 +51,7 @@ func ShelterCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		}
 
 		if !slices.Contains(*rules.ShelterCode.Options, *stop.ShelterCode) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shelter_code_validation.not_allowed", *stop.ShelterCode))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ShelterCode))
 			return
 		}
 	}

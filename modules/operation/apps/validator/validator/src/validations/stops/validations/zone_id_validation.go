@@ -35,14 +35,14 @@ func ZoneIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("zone_id_validation.required", "zone_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate zone_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("zone_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -53,7 +53,7 @@ func ZoneIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		}
 
 		if !slices.Contains(*rules.ZoneId.Options, *stop.ZoneId) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("zone_id_validation.not_allowed", *stop.ZoneId))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ZoneId))
 			return
 		}
 	}

@@ -32,20 +32,20 @@ func PriceValidation(fareAttribute *types.FareAttribute, row int, rules *types.F
 			return
 		}
 
-		message := ctx.GetRequiredMessage("price_validation.required", "price_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate price is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("price_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate price is a valid price
 	if *fareAttribute.Price < 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("price_validation.invalid", *fareAttribute.Price))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *fareAttribute.Price))
 		return
 	}
 }

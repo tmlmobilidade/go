@@ -33,20 +33,20 @@ func HeadwaySecsValidation(frequency *types.Frequencies, row int, rules *types.F
 			return
 		}
 
-		message := ctx.GetRequiredMessage("headway_secs_validation.required", "headway_secs_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate headway_secs is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("headway_secs_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate headway_secs is a valid headway_secs
 	if *frequency.HeadwaySecs <= 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("headway_secs_validation.invalid", strconv.Itoa(*frequency.HeadwaySecs)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*frequency.HeadwaySecs)))
 		return
 	}
 }

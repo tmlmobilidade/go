@@ -38,21 +38,21 @@ func PaymentMethodValidation(fareAttribute *types.FareAttribute, row int, rules 
 			return
 		}
 
-		message := ctx.GetRequiredMessage("payment_method_validation.required", "payment_method_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate payment_method is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("payment_method_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate payment_method is a valid payment method
 	validPaymentMethods := []int{0, 1}
 	if !slices.Contains(validPaymentMethods, *fareAttribute.PaymentMethod) {
-		ctx.AddError(ctx.GetTranslatedMessage("payment_method_validation.invalid", *fareAttribute.PaymentMethod))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *fareAttribute.PaymentMethod))
 		return
 	}
 }

@@ -35,13 +35,13 @@ func PlatformCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 			return
 		}
 
-		message := ctx.GetRequiredMessage("platform_code_validation.required", "platform_code_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("platform_code_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -52,7 +52,7 @@ func PlatformCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 		}
 
 		if !slices.Contains(*rules.PlatformCode.Options, *stop.PlatformCode) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("platform_code_validation.not_allowed", *stop.PlatformCode))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.PlatformCode))
 			return
 		}
 	}

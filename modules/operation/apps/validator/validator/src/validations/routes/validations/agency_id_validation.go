@@ -32,21 +32,21 @@ func AgencyIdValidation(route *types.Route, row int, gtfs types.Gtfs, rules *typ
 			return
 		}
 
-		message := ctx.GetRequiredMessage("agency_id_validation.required", "agency_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate agency_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate agency_id is valid
 	if route.AgencyId != nil && *route.AgencyId != "" {
 		if !lib.GtfsIdMapKeyExists(&gtfs, "agency", *route.AgencyId) {
-			ctx.AddError(ctx.GetTranslatedMessage("agency_id_validation.not_found", *route.AgencyId))
+			ctx.AddError(ctx.GetTranslatedMessage("not_found", *route.AgencyId))
 			return
 		}
 	}

@@ -33,14 +33,14 @@ func AgencyNameValidation(agency *types.Agency, row int, rules *types.AgencyRule
 			return
 		}
 
-		message := ctx.GetRequiredMessage("agency_name_validation.required", "agency_name_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if agency_name is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_name_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -51,7 +51,7 @@ func AgencyNameValidation(agency *types.Agency, row int, rules *types.AgencyRule
 		}
 
 		if !slices.Contains(*rules.AgencyName.Options, *agency.AgencyName) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_name_validation.not_allowed", *agency.AgencyName))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *agency.AgencyName))
 			return
 		}
 	}

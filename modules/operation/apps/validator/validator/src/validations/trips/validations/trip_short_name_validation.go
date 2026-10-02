@@ -34,14 +34,14 @@ func TripShortNameValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules 
 			return
 		}
 
-		message := ctx.GetRequiredMessage("trip_short_name_validation.required", "trip_short_name_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate trip_short_name is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("trip_short_name_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 

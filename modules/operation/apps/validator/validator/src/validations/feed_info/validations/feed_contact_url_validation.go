@@ -33,20 +33,20 @@ func FeedContactUrlValidation(feedInfo *types.FeedInfo, row int, rules *types.Fe
 			return
 		}
 
-		message := ctx.GetRequiredMessage("feed_contact_url_validation.required", "feed_contact_url_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate feed_contact_url is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("feed_contact_url_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate feed_contact_url is a valid feed_contact_url
 	if !lib.ValidateUrl(*feedInfo.FeedContactUrl) {
-		ctx.AddError(ctx.GetTranslatedMessage("feed_contact_url_validation.invalid", *feedInfo.FeedContactUrl))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *feedInfo.FeedContactUrl))
 		return
 	}
 }

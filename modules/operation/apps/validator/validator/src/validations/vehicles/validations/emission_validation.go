@@ -42,21 +42,21 @@ func EmissionValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRu
 			return
 		}
 
-		message := ctx.GetRequiredMessage("emission_validation.required", "emission_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if emission is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("emission_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if emission is valid
 	validOptions := []string{"Euro I", "Euro II", "Euro III", "Euro IV", "Euro V", "Euro VI", "Euro VII", "N/A"}
 	if !slices.Contains(validOptions, *vehicle.Emission) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("emission_validation.invalid", *vehicle.Emission))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", *vehicle.Emission))
 		return
 	}
 
@@ -67,7 +67,7 @@ func EmissionValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRu
 		}
 
 		if !slices.Contains(*rules.Emission.Options, *vehicle.Emission) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("emission_validation.not_allowed", *vehicle.Emission))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *vehicle.Emission))
 			return
 		}
 	}

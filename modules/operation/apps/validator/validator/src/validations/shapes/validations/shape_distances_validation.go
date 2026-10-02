@@ -205,7 +205,7 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 		ctx := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", "shape_dist_traveled_delta_mismatches_haversine_block", violation.row, services.AppMessageService)
 		ctx.WithSeverity(severity)
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage(
-			"shape_distances_validation.invalid_distances",
+			"invalid_distances",
 			violation.id,
 			violation.totalExpectedM,
 			violation.totalRealM,

@@ -40,7 +40,7 @@ func StopIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, stopL
 	// 1. Validate stop_id is forbidden if location_group_id or location_id are defined
 	if (stopTime.LocationGroupId != nil && *stopTime.LocationGroupId != "") || (stopTime.LocationId != nil && *stopTime.LocationId != "") {
 		if stopTime.StopId != nil && *stopTime.StopId != "" {
-			ctx.AddError(ctx.GetTranslatedMessage("stop_id_validation.forbidden_location_group_id_location_id"))
+			ctx.AddError(ctx.GetTranslatedMessage("forbidden_location_group_id_location_id"))
 		}
 		return
 	}
@@ -51,28 +51,28 @@ func StopIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, stopL
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stop_id_validation.required", "stop_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 3. Validate stop_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 4. Validate stop_id is Foreign Key referencing stops.stop_id
 	// Use IdMap cache instead of database query for performance
 	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *stopTime.StopId) {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_id_validation.does_not_exist", *stopTime.StopId))
+		ctx.AddError(ctx.GetTranslatedMessage("does_not_exist", *stopTime.StopId))
 		return
 	}
 
 	// 5. Validate location_type is 0 or empty using cache
 	locationTypeStr, exists := stopLocationTypeCache[*stopTime.StopId]
 	if exists && locationTypeStr != "" && locationTypeStr != "0" {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_id_validation.invalid_location_type"))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid_location_type"))
 		return
 	}
 }

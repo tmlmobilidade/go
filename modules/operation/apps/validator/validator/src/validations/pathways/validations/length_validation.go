@@ -32,7 +32,7 @@ func LengthValidation(pathways *types.Pathways, row int, rules *types.PathwaysRu
 	// 1. Validate length is present
 	if pathways.Length == nil {
 		if *pathways.PathwayMode == 1 || *pathways.PathwayMode == 6 || *pathways.PathwayMode == 7 {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("length_validation.recommended"))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("recommended"))
 			return
 		}
 
@@ -40,20 +40,20 @@ func LengthValidation(pathways *types.Pathways, row int, rules *types.PathwaysRu
 			return
 		}
 
-		message := ctx.GetRequiredMessage("length_validation.required", "length_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate length is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("length_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate length is a valid length
 	if *pathways.Length < 0 {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("length_validation.negative", *pathways.Length))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("negative", *pathways.Length))
 		return
 	}
 }

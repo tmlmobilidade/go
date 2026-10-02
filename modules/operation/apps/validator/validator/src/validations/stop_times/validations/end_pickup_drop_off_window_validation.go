@@ -35,14 +35,14 @@ func EndPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules *
 	// 1. Validate end_pickup_drop_off_window is forbidden: forbidden if arrival_time or departure_time are defined
 	if (stopTime.ArrivalTime != nil && *stopTime.ArrivalTime != "") || (stopTime.DepartureTime != nil && *stopTime.DepartureTime != "") {
 		if stopTime.EndPickupDropOffWindow != nil && *stopTime.EndPickupDropOffWindow != "" {
-			ctx.AddError(ctx.GetTranslatedMessage("end_pickup_drop_off_window_validation.forbidden_arrival_departure"))
+			ctx.AddError(ctx.GetTranslatedMessage("forbidden_arrival_departure"))
 		}
 		return
 	}
 
 	// 2. Validate end_pickup_drop_off_window is forbidden
 	if stopTime.EndPickupDropOffWindow != nil && ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("end_pickup_drop_off_window_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
@@ -59,7 +59,7 @@ func EndPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules *
 
 	if required {
 		if stopTime.EndPickupDropOffWindow == nil || *stopTime.EndPickupDropOffWindow == "" {
-			ctx.AddError(ctx.GetTranslatedMessage("end_pickup_drop_off_window_validation.required_location_group_id_start_pickup_dropoff"))
+			ctx.AddError(ctx.GetTranslatedMessage("required_location_group_id_start_pickup_dropoff"))
 			return
 		}
 	}
@@ -67,14 +67,14 @@ func EndPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules *
 	// 4. Validate end_pickup_drop_off_window is a valid time
 	if stopTime.EndPickupDropOffWindow != nil && *stopTime.EndPickupDropOffWindow != "" {
 		if !lib.ValidateTime(*stopTime.EndPickupDropOffWindow) {
-			ctx.AddError(ctx.GetTranslatedMessage("end_pickup_drop_off_window_validation.invalid", *stopTime.EndPickupDropOffWindow))
+			ctx.AddError(ctx.GetTranslatedMessage("invalid", *stopTime.EndPickupDropOffWindow))
 			return
 		}
 	}
 
 	// 5. Validate end_pickup_drop_off_window is present
 	if stopTime.EndPickupDropOffWindow == nil && !ctx.ShouldIgnore() {
-		message := ctx.GetRequiredMessage("end_pickup_drop_off_window_validation.required", "end_pickup_drop_off_window_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}

@@ -32,21 +32,21 @@ func LevelIdValidation(level *types.Levels, row int, gtfs types.Gtfs, rules *typ
 			return
 		}
 
-		message := ctx.GetRequiredMessage("level_id_validation.required", "level_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate level_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate level_id is a valid level_id
 	rows, err := gtfs.GetRowsById("levels", *level.LevelId)
 	if err == nil && len(rows) > 1 {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("level_id_validation.duplicate", *level.LevelId))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("duplicate", *level.LevelId))
 		return
 	}
 }

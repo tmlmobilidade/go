@@ -41,21 +41,21 @@ func FareMediaTypeValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gt
 			return
 		}
 
-		message := ctx.GetRequiredMessage("fare_media_type_validation.required", "fare_media_type_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate fare_media_type is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("fare_media_type_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate fare_media_type is a valid fare media type
 	validTypeOptions := []int{0, 1, 2, 3, 4}
 	if !slices.Contains(validTypeOptions, *fareMedia.FareMediaType) {
-		ctx.AddError(ctx.GetTranslatedMessage("fare_media_type_validation.invalid", strconv.Itoa(*fareMedia.FareMediaType)))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*fareMedia.FareMediaType)))
 		return
 	}
 
@@ -66,7 +66,7 @@ func FareMediaTypeValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gt
 		}
 
 		if !slices.Contains(*rules.FareMediaType.Options, strconv.Itoa(*fareMedia.FareMediaType)) {
-			ctx.AddError(ctx.GetTranslatedMessage("fare_media_type_validation.not_allowed", fareMedia.FareMediaType))
+			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", fareMedia.FareMediaType))
 			return
 		}
 	}

@@ -33,20 +33,20 @@ func TraversalTimeValidation(pathways *types.Pathways, row int, rules *types.Pat
 			return
 		}
 
-		message := ctx.GetRequiredMessage("traversal_time_validation.required", "traversal_time_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate traversal_time is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("traversal_time_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate traversal_time is a valid traversal_time
 	if *pathways.TraversalTime < 0 {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("traversal_time_validation.negative", strconv.Itoa(*pathways.TraversalTime)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("negative", strconv.Itoa(*pathways.TraversalTime)))
 		return
 	}
 }

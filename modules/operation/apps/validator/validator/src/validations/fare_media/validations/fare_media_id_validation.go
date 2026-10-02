@@ -33,21 +33,21 @@ func FareMediaIdValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gtfs
 			return
 		}
 
-		message := ctx.GetRequiredMessage("fare_media_id_validation.required", "fare_media_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate fare_media_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("fare_media_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate fare_media_id is unique
 	rows, err := gtfs.GetRowsById("fare_media", *fareMedia.FareMediaId)
 	if err == nil && len(rows) > 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("fare_media_id_validation.duplicate", map[string]interface{}{"fare_media_id": *fareMedia.FareMediaId}))
+		ctx.AddError(ctx.GetTranslatedMessage("duplicate", map[string]interface{}{"fare_media_id": *fareMedia.FareMediaId}))
 		return
 	}
 }

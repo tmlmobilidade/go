@@ -32,20 +32,20 @@ func ServiceIdValidation(calendar *types.Calendar, row int, gtfs *types.Gtfs, ru
 			return
 		}
 
-		message := ctx.GetRequiredMessage("service_id_validation.required", "service_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate service_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("service_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate service_id is unique
 	rows, err := gtfs.GetRowsById("calendar", calendar.ServiceId)
 	if err == nil && len(rows) > 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("service_id_validation.duplicate", calendar.ServiceId))
+		ctx.AddError(ctx.GetTranslatedMessage("duplicate", calendar.ServiceId))
 	}
 }

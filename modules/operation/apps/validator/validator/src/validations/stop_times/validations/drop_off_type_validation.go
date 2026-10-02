@@ -40,27 +40,27 @@ func DropOffTypeValidation(stopTime *types.StopTime, row int, rules *types.StopT
 		if ctx.ShouldSkip() {
 			return
 		}
-		message := ctx.GetRequiredMessage("drop_off_type_validation.required", "drop_off_type_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate drop_off_type is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("drop_off_type_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate drop_off_type is between 0 and 3
 	dt := *stopTime.DropOffType
 	if dt < 0 || dt > 3 {
-		ctx.AddError(ctx.GetTranslatedMessage("drop_off_type_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid"))
 		return
 	}
 
 	// 4. Validate drop_off_type is forbidden with a window: 0 is forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined
 	if dt == 0 && ((stopTime.StartPickupDropOffWindow != nil && *stopTime.StartPickupDropOffWindow != "") || (stopTime.EndPickupDropOffWindow != nil && *stopTime.EndPickupDropOffWindow != "")) {
-		ctx.AddError(ctx.GetTranslatedMessage("drop_off_type_validation.forbidden_pickup_dropoff"))
+		ctx.AddError(ctx.GetTranslatedMessage("forbidden_pickup_dropoff"))
 		return
 	}
 
@@ -71,7 +71,7 @@ func DropOffTypeValidation(stopTime *types.StopTime, row int, rules *types.StopT
 		}
 
 		if !slices.Contains(*rules.DropOffType.Options, fmt.Sprintf("%d", dt)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("drop_off_type_validation.not_allowed", fmt.Sprintf("%d", dt)))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", fmt.Sprintf("%d", dt)))
 			return
 		}
 	}

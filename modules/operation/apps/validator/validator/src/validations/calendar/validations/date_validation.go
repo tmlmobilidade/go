@@ -40,20 +40,20 @@ func DateValidation(date string, dateType string, row int, rules *types.Calendar
 			return
 		}
 
-		message := ctx.GetRequiredMessage("date_validation.required", "date_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate date is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("date_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate date is a valid service date
 	if !lib.IsValidServiceDate(date) {
-		ctx.AddError(ctx.GetTranslatedMessage("date_validation.invalid", date))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", date))
 		return
 	}
 }

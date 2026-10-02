@@ -33,20 +33,20 @@ func StopUrlValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 
-		message := ctx.GetRequiredMessage("stop_url_validation.required", "stop_url_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate stop_url is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_url_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate stop_url is a valid url
 	if !lib.ValidateUrl(*stop.StopUrl) {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_url_validation.invalid", *stop.StopUrl))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *stop.StopUrl))
 		return
 	}
 
@@ -57,7 +57,7 @@ func StopUrlValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 		}
 
 		if !slices.Contains(*rules.StopUrl.Options, *stop.StopUrl) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_url_validation.not_allowed", *stop.StopUrl))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.StopUrl))
 			return
 		}
 	}

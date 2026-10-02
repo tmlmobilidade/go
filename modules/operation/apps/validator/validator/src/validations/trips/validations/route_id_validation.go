@@ -32,20 +32,20 @@ func RouteIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, routeRowsCac
 			return
 		}
 
-		message := ctx.GetRequiredMessage("route_id_validation.required", "route_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate route_id is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_id_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate route_id is Foreign Key referencing routes.route_id (use cache to avoid repeated queries)
 	rows, err := gtfs.GetCachedRowsById(routeRowsCache, "routes", *trip.RouteId)
 	if err != nil || len(rows) == 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("route_id_validation.not_found", *trip.RouteId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *trip.RouteId))
 	}
 }

@@ -129,9 +129,10 @@ func (vc *ValidationContext) AddMessageWithSeverity(message string, ruleID ...st
 	vc.AddMessage(message, vc.Severity, ruleID...)
 }
 
-// GetTranslatedMessage gets a translated message by key
+// GetTranslatedMessage resolves a detail key under this context's rule ID,
+// using the same namespace as the rule's generic summary.
 func (vc *ValidationContext) GetTranslatedMessage(key string, args ...interface{}) string {
-	return i18n.AppTranslator.Get(key, args...)
+	return i18n.AppTranslator.Get(vc.RuleID+"."+key, args...)
 }
 
 // GetRequiredMessage gets a translated message for required field validation

@@ -49,7 +49,7 @@ func AgencyNameIdMatchValidation(agency *types.Agency, row int, rules *types.Age
 			}
 		}
 
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("agency_name_id_match_validation.no_match", *agency.AgencyId, *agency.AgencyName, *agency.AgencyId, validName))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("no_match", *agency.AgencyId, *agency.AgencyName, *agency.AgencyId, validName))
 		return
 	}
 }

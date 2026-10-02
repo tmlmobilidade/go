@@ -80,7 +80,7 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 	for _, stopTimeRaw := range stopTimesRaw {
 		stopSequence, err := strconv.Atoi(stopTimeRaw.StopSequence)
 		if err != nil {
-			ctx.AddError(ctx.GetTranslatedMessage("stop_sequence_validation.invalid"))
+			ctx.AddError(ctx.GetTranslatedMessage("invalid"))
 			return
 		}
 
@@ -88,7 +88,7 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 		if stopTimeRaw.ShapeDistTraveled != "" {
 			shapeDistTraveled, err = strconv.ParseFloat(stopTimeRaw.ShapeDistTraveled, 64)
 			if err != nil {
-				ctx.AddError(ctx.GetTranslatedMessage("stop_sequence_validation.invalid_shape_dist"))
+				ctx.AddError(ctx.GetTranslatedMessage("invalid_shape_dist"))
 				return
 			}
 		}
@@ -117,13 +117,13 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 	for i, stopSequence := range stopSequences {
 		if i > 0 {
 			if *stopSequence.StopSequence <= *stopSequences[i-1].StopSequence {
-				ctx.AddError(ctx.GetTranslatedMessage("stop_sequence_validation.non_increasing_sequence", *trip.TripId))
+				ctx.AddError(ctx.GetTranslatedMessage("non_increasing_sequence", *trip.TripId))
 				return
 			}
 
 			if *stopSequence.ShapeDistTraveled >= 0 && *stopSequences[i-1].ShapeDistTraveled >= 0 {
 				if *stopSequence.ShapeDistTraveled < *stopSequences[i-1].ShapeDistTraveled {
-					ctx.AddError(ctx.GetTranslatedMessage("stop_sequence_validation.non_increasing_shape_dist", *trip.TripId))
+					ctx.AddError(ctx.GetTranslatedMessage("non_increasing_shape_dist", *trip.TripId))
 					return
 				}
 			}
@@ -133,7 +133,7 @@ func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 			if stopSequence.StopId != nil && *stopSequence.StopId != "" &&
 				stopSequences[i-1].StopId != nil && *stopSequences[i-1].StopId != "" {
 				if *stopSequence.StopId == *stopSequences[i-1].StopId {
-					ctx.AddError(ctx.GetTranslatedMessage("stop_sequence_validation.consecutive_stop_ids", *stopSequence.StopId, *trip.TripId))
+					ctx.AddError(ctx.GetTranslatedMessage("consecutive_stop_ids", *stopSequence.StopId, *trip.TripId))
 					return
 				}
 			}

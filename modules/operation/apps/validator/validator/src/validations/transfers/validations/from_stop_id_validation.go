@@ -56,14 +56,14 @@ func FromStopIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, r
 		if ctx.ShouldSkip() {
 			return
 		}
-		message := ctx.GetRequiredMessage("from_stop_id_validation.required", "from_stop_id_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// Check Foreign Key
 	if !lib.GtfsIdMapKeyExists(&gtfs, "stops", *transfer.FromStopId) {
-		ctx.AddError(ctx.GetTranslatedMessage("from_stop_id_validation.not_found", *transfer.FromStopId))
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *transfer.FromStopId))
 		return
 	}
 
@@ -93,14 +93,14 @@ func FromStopIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, r
 	// Validate location_type
 	// General rule: must be stop (location_type=0) or station (location_type=1)
 	if locationType != 0 && locationType != 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("from_stop_id_validation.invalid_location_type", *transfer.FromStopId, locationType))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid_location_type", *transfer.FromStopId, locationType))
 		return
 	}
 
 	// Special rule: if transfer_type is 4 or 5, must be a stop (location_type=0)
 	if transfer.TransferType != nil && (*transfer.TransferType == 4 || *transfer.TransferType == 5) {
 		if locationType != 0 {
-			ctx.AddError(ctx.GetTranslatedMessage("from_stop_id_validation.must_be_stop_for_transfer_type_4_5", *transfer.FromStopId, *transfer.TransferType))
+			ctx.AddError(ctx.GetTranslatedMessage("must_be_stop_for_transfer_type_4_5", *transfer.FromStopId, *transfer.TransferType))
 			return
 		}
 	}

@@ -52,21 +52,21 @@ func PropulsionValidation(vehicle *types.Vehicle, row int, rules *types.Vehicles
 			return
 		}
 
-		message := ctx.GetRequiredMessage("propulsion_validation.required", "propulsion_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if propulsion is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("propulsion_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Check if propulsion is valid
 	validOptions := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 101, 102, 103, 104, 105, 106}
 	if !slices.Contains(validOptions, *vehicle.Propulsion) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("propulsion_validation.invalid", strconv.Itoa(*vehicle.Propulsion)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*vehicle.Propulsion)))
 		return
 	}
 
@@ -77,7 +77,7 @@ func PropulsionValidation(vehicle *types.Vehicle, row int, rules *types.Vehicles
 		}
 
 		if !slices.Contains(*rules.Propulsion.Options, strconv.Itoa(*vehicle.Propulsion)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("propulsion_validation.not_allowed", strconv.Itoa(*vehicle.Propulsion)))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*vehicle.Propulsion)))
 			return
 		}
 	}

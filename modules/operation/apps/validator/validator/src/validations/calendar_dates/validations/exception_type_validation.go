@@ -48,20 +48,20 @@ func ExceptionTypeValidation(calendarDate *types.CalendarDates, row int, rules *
 			return
 		}
 
-		message := ctx.GetRequiredMessage("exception_type_validation.required", "exception_type_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate exception_type is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("exception_type_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate exception_type is a valid exception type
 	if !slices.Contains(validExceptionTypes, *calendarDate.ExceptionType) {
-		ctx.AddError(ctx.GetTranslatedMessage("exception_type_validation.invalid", *calendarDate.ExceptionType))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *calendarDate.ExceptionType))
 		return
 	}
 
@@ -72,10 +72,10 @@ func ExceptionTypeValidation(calendarDate *types.CalendarDates, row int, rules *
 		}
 
 		if !slices.Contains(*rules.ExceptionType.Options, strconv.Itoa(*calendarDate.ExceptionType)) {
-			ctx.AddError(ctx.GetTranslatedMessage("exception_type_validation.not_allowed", *calendarDate.ExceptionType))
+			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *calendarDate.ExceptionType))
 		}
 
-		ctx.AddError(ctx.GetTranslatedMessage("exception_type_validation.not_allowed", *calendarDate.ExceptionType))
+		ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *calendarDate.ExceptionType))
 		return
 	}
 }

@@ -41,14 +41,14 @@ func LineLongNameValidation(route *types.Route, row int, gtfs *types.Gtfs, rules
 			return
 		}
 
-		message := ctx.GetRequiredMessage("line_long_name_validation.required", "line_long_name_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 3. Validate line_long_name is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("line_long_name_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

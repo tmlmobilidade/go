@@ -64,7 +64,7 @@ func TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupe
 					ids = append(ids, value)
 				}
 				sort.Strings(ids)
-				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_associations_validation.max_two", routeId, "trip_headsign", len(ids), strings.Join(ids, ", ")))
+				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("max_two", routeId, "trip_headsign", len(ids), strings.Join(ids, ", ")))
 			}
 		}
 
@@ -88,7 +88,7 @@ func TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupe
 				ids = append(ids, value)
 			}
 			sort.Strings(ids)
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("route_associations_validation.inconsistent_direction", routeId, directionId, "trip_headsign", strings.Join(ids, ", ")))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("inconsistent_direction", routeId, directionId, "trip_headsign", strings.Join(ids, ", ")))
 		}
 	}
 }

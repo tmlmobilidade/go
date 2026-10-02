@@ -33,20 +33,20 @@ func EligibilityUrlValidation(riderCategory *types.RiderCategory, row int, rules
 			return
 		}
 
-		message := ctx.GetRequiredMessage("eligibility_url_validation.required", "eligibility_url_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate eligibility_url is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("eligibility_url_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate eligibility_url is a valid eligibility_url
 	if !lib.ValidateUrl(*riderCategory.EligibilityUrl) {
-		ctx.AddError(ctx.GetTranslatedMessage("eligibility_url_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid"))
 		return
 	}
 }

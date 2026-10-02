@@ -41,21 +41,21 @@ func IsBidirectionalValidation(pathways *types.Pathways, row int, rules *types.P
 			return
 		}
 
-		message := ctx.GetRequiredMessage("is_bidirectional_validation.required", "is_bidirectional_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate is_bidirectional is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("is_bidirectional_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate is_bidirectional is a valid is_bidirectional
 	validOptions := []int{0, 1}
 	if !slices.Contains(validOptions, *pathways.IsBidirectional) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("is_bidirectional_validation.invalid", strconv.Itoa(*pathways.IsBidirectional)))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", strconv.Itoa(*pathways.IsBidirectional)))
 		return
 	}
 
@@ -66,14 +66,14 @@ func IsBidirectionalValidation(pathways *types.Pathways, row int, rules *types.P
 		}
 
 		if !slices.Contains(*rules.IsBidirectional.Options, strconv.Itoa(*pathways.IsBidirectional)) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("is_bidirectional_validation.not_allowed", strconv.Itoa(*pathways.IsBidirectional)))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*pathways.IsBidirectional)))
 			return
 		}
 	}
 
 	// 5. Check Exit Gate Bidirectional
 	if *pathways.IsBidirectional == 1 && *pathways.PathwayMode == 7 {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("is_bidirectional_validation.exit_gate_bidirectional"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("exit_gate_bidirectional"))
 		return
 	}
 }

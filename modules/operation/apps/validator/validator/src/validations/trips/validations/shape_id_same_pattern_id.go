@@ -36,6 +36,6 @@ func ShapeIdSamePatternIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs,
 	}
 
 	if *trip.ShapeId != *trip.PatternId {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_id_same_pattern_id.not_matching", *trip.ShapeId, *trip.PatternId))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_matching", *trip.ShapeId, *trip.PatternId))
 	}
 }

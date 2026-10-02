@@ -30,14 +30,14 @@ func MakeValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules)
 			return
 		}
 
-		message := ctx.GetRequiredMessage("make_validation.required", "make_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Check if make is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("make_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 }

@@ -74,7 +74,7 @@ func ShapeIdPatternGroupRuleValidation(
 			if ctx.ShouldSkip() {
 				continue
 			}
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_id_group_validation.different_shape_id", patternId))
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("different_shape_id", patternId))
 			for _, trip := range group.Trips {
 				if trip.ShapeId != nil {
 					reportedPairs[key(patternId, *trip.ShapeId)] = true
@@ -118,6 +118,6 @@ func ShapeIdPatternGroupRuleValidation(
 		if ctx.ShouldSkip() {
 			continue
 		}
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_id_group_validation.multiple_shape_id_in_unique_pattern_id", shapeId))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("multiple_shape_id_in_unique_pattern_id", shapeId))
 	}
 }

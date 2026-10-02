@@ -52,20 +52,20 @@ func ShapeDistTraveledValidation(shape *types.Shape, row int, rules *types.Shape
 			return
 		}
 
-		message := ctx.GetRequiredMessage("shape_dist_traveled_validation.required", "shape_dist_traveled_validation.recommended")
+		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
 		return
 	}
 
 	// 2. Validate shape_dist_traveled is forbidden
 	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("shape_dist_traveled_validation.forbidden"))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return
 	}
 
 	// 3. Validate shape_dist_traveled is non-negative
 	if *shape.ShapeDistTraveled < 0 {
-		ctx.AddError(ctx.GetTranslatedMessage("shape_dist_traveled_validation.invalid"))
+		ctx.AddError(ctx.GetTranslatedMessage("invalid"))
 		return
 	}
 }
