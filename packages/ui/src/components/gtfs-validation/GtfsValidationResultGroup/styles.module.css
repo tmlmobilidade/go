@@ -1,0 +1,251 @@
+.group {
+	container-type: inline-size;
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.header {
+	display: grid;
+	grid-template-columns: 16px 190px 76px minmax(0, 1fr) 120px;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+	width: 100%;
+	padding: var(--size-spacing-md) var(--size-spacing-sm);
+	text-align: left;
+	background: none;
+	border: none;
+	cursor: pointer;
+
+	&:hover,
+	&[aria-expanded='true'] {
+		background-color: color-mix(in srgb, var(--color-system-text-100) 4%, var(--color-system-background-100));
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--color-system-text-200);
+		outline-offset: -2px;
+	}
+}
+
+.chevron {
+	color: var(--color-system-text-200);
+	transition: transform 150ms ease;
+
+	&[data-open='true'] {
+		transform: rotate(90deg);
+	}
+}
+
+.metadata {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	min-width: 0;
+}
+
+.fileName {
+	font-weight: 600;
+	overflow-wrap: anywhere;
+}
+
+.field {
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-200);
+	overflow-wrap: anywhere;
+}
+
+.severity {
+	width: fit-content;
+
+	> div {
+		justify-content: center;
+	}
+}
+
+.headline {
+	min-width: 0;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	line-height: var(--font-line-height);
+}
+
+.occurrences {
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-200);
+	text-align: right;
+	white-space: nowrap;
+}
+
+/* * *
+ * Details continue the full-width row, using the page's surface and separators.
+ */
+
+.detail {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	margin: 0;
+	padding: var(--size-spacing-md);
+	background-color: var(--color-system-background-100);
+	border-top: 1px solid var(--color-system-border-100);
+	animation: detail-reveal 150ms ease;
+}
+
+@keyframes detail-reveal {
+	from {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.detail {
+		animation: none;
+	}
+
+	.chevron {
+		transition: none;
+	}
+}
+
+.detailHeader {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-spacing-sm);
+	padding-bottom: var(--size-spacing-xs);
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.ruleId {
+	font-family: var(--font-family-monospace);
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-200);
+	overflow-wrap: anywhere;
+}
+
+.occurrenceList {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.occurrence {
+	display: flex;
+	align-items: baseline;
+	gap: var(--size-spacing-sm);
+	padding: var(--size-spacing-xs) 0;
+
+	& + & {
+		border-top: 1px solid var(--color-system-border-100);
+	}
+}
+
+.occurrenceIndex {
+	flex: 0 0 auto;
+	min-width: 20px;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	font-variant-numeric: tabular-nums;
+	color: var(--color-system-text-300);
+	text-align: right;
+}
+
+.occurrenceBody {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	min-width: 0;
+	flex: 1;
+}
+
+.occurrenceMessage {
+	margin: 0;
+	font-size: var(--font-size-md);
+	line-height: var(--font-line-height);
+	overflow-wrap: anywhere;
+}
+
+.occurrenceFooter {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-spacing-xs);
+}
+
+.occurrenceRowsLabel {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-300);
+	text-transform: uppercase;
+}
+
+.showAll {
+	align-self: flex-start;
+	padding: 0;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-200);
+	text-decoration: underline;
+	background: none;
+	border: none;
+	cursor: pointer;
+
+	&:hover {
+		color: var(--color-system-text-100);
+	}
+}
+
+@container (max-width: 680px) {
+	.header {
+		grid-template-columns: 16px minmax(0, 1fr) max-content;
+		grid-template-areas:
+			'chevron metadata severity'
+			'. message message'
+			'. occurrences occurrences';
+	}
+
+	.chevron {
+		grid-area: chevron;
+	}
+
+	.metadata {
+		grid-area: metadata;
+	}
+
+	.header > .severity {
+		grid-area: severity;
+	}
+
+	.header > .headline {
+		grid-area: message;
+	}
+
+	.occurrences {
+		grid-area: occurrences;
+	}
+}
+
+.link {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-200);
+	text-decoration: underline;
+	white-space: nowrap;
+	cursor: pointer;
+
+	&:hover {
+		color: var(--color-system-text-100);
+	}
+}

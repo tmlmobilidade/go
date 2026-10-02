@@ -27,6 +27,12 @@
 			}
 		}
 	},
+	"gtfsValidationResultGroup": {
+		"learnMore": "Saber más",
+		"occurrences": "{count, plural, =1 {1 ocurrencia} other {# ocurrencias}}",
+		"rows": "Indexes",
+		"showAll": "{count, plural, =1 {Mostrar 1 ocurrencia más} other {Mostrar # ocurrencias más}}"
+	},
 	"gtfsValidationRules": {
 		"compare": {
 			"description": "Pares clave / valor esperado que la regla comprueba.",
@@ -163,6 +169,24 @@
 		"IdTag": {
 			"copied": "¡Copiado!",
 			"copy": "Haga clic para copiar el ID"
+		},
+		"SeverityTag": {
+			"error": {
+				"filter": "Filtrar por errores",
+				"label": "Error"
+			},
+			"forbidden": {
+				"filter": "Filtrar por prohibidos",
+				"label": "Prohibido"
+			},
+			"info": {
+				"filter": "Filtrar por información",
+				"label": "Información"
+			},
+			"warning": {
+				"filter": "Filtrar por avisos",
+				"label": "Aviso"
+			}
 		}
 	},
 	"topbar": {

@@ -2,7 +2,7 @@
 
 import type { GtfsValidationResult, GtfsValidatorOptions } from './interfaces/index.js';
 import type { SupportedPlatform } from './types/index.js';
-import type { GtfsValidationSummary } from '@tmlmobilidade/types';
+import type { GtfsValidationOutputSummary } from '@tmlmobilidade/go-types-gtfs-validator';
 
 import { GoBinaryError, runGoBinary, type RunGoBinaryOptions } from '@/utils.js';
 import { access, constants, readFile } from 'fs/promises';
@@ -110,11 +110,11 @@ export async function GtfsValidator(input: string, options: GtfsValidatorOptions
 		};
 
 		const startTime = Date.now();
-		let result: Awaited<ReturnType<typeof runGoBinary<GtfsValidationSummary>>>;
-		let summary: GtfsValidationSummary;
+		let result: Awaited<ReturnType<typeof runGoBinary<GtfsValidationOutputSummary>>>;
+		let summary: GtfsValidationOutputSummary;
 
 		try {
-			result = await runGoBinary<GtfsValidationSummary>(binaryPath, runOptions);
+			result = await runGoBinary<GtfsValidationOutputSummary>(binaryPath, runOptions);
 			summary = result.data;
 		} catch (err) {
 			// If output file was specified and we got a JSON parse error or no output,
@@ -128,7 +128,7 @@ export async function GtfsValidator(input: string, options: GtfsValidatorOptions
 					// Wait a bit for the file to be written (in case of race condition)
 					await new Promise(resolve => setTimeout(resolve, 100));
 					const fileContent = await readFile(outputFilePath, 'utf-8');
-					summary = JSON.parse(fileContent.trim()) as GtfsValidationSummary;
+					summary = JSON.parse(fileContent.trim()) as GtfsValidationOutputSummary;
 					// Calculate execution time from when we started
 					const executionTime = Date.now() - startTime;
 					// Create a result object with the file data, preserving error info for stderr/stdout

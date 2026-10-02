@@ -30,7 +30,11 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 				processing_status: 'error',
 				summary: {
-					messages: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
+					messages: [{
+						...SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED,
+						messages: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
+						total_rows: 0,
+					}],
 					total_errors: 1,
 					total_warnings: 0,
 				},
@@ -107,7 +111,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
-			summary: gtfsValidationResult.summary as GtfsValidation['summary'],
+			summary: gtfsValidationResult.summary,
 			validity_status: gtfsValidationResult.summary.total_errors === 0 ? 'valid' : 'invalid',
 		});
 
@@ -173,9 +177,12 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			summary: {
 				messages: [{
 					...SYSTEM_ERROR_MESSAGES.GENERIC_ERROR,
-					// Override the generic error message with
-					// the actual error message for more context.
-					message: error instanceof Error ? error.message : String(error),
+					messages: [{
+						...SYSTEM_ERROR_MESSAGES.GENERIC_ERROR,
+						// Keep the actual error as detail under the generic system error.
+						message: error instanceof Error ? error.message : String(error),
+					}],
+					total_rows: 0,
 				}],
 				total_errors: 1,
 				total_warnings: 0,

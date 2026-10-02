@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"encoding/json"
 	"fmt"
+	"main/i18n"
 	"main/lib"
 	ruleset "main/lib/rules"
 	"main/types"
@@ -128,10 +129,97 @@ func (ms *MessageService) GetSummary() types.Summary {
 	messages = sortedMessages(messages)
 
 	return types.Summary{
-		Messages:      messages,
+		Messages:      groupedMessages(messages),
 		TotalErrors:   ms.errorCount,
 		TotalWarnings: ms.warningCount,
 	}
+}
+
+// severityRank orders severities so a rule that reported at more than one severity
+// is summarised by the most serious one it produced.
+var severityRank = map[types.Severity]int{
+	types.SEVERITY_IGNORE:    0,
+	types.SEVERITY_WARNING:   1,
+	types.SEVERITY_FORBIDDEN: 2,
+	types.SEVERITY_ERROR:     3,
+}
+
+// groupedMessages collapses the messages into one entry per rule, so the output has
+// a single line per rule carrying its generic sentence, with the errors and warnings
+// it stands for kept together in one array.
+//
+// Input is expected to be sortedMessages output, whose file_name then rule_id ordering
+// the groups inherit by keeping the order in which each rule first appears.
+func groupedMessages(messages []types.Message) []types.RuleMessage {
+	grouped := []types.RuleMessage{}
+	indexByKey := map[string]int{}
+	fieldsByKey := map[string][]string{}
+	rowsByKey := map[string]map[int]bool{}
+
+	for _, message := range messages {
+		key := message.FileName + "::" + message.RuleID
+
+		index, found := indexByKey[key]
+		if !found {
+			index = len(grouped)
+			indexByKey[key] = index
+			grouped = append(grouped, types.RuleMessage{
+				Messages: []types.Message{},
+				FileName: message.FileName,
+				Message:  genericRuleMessage(message.RuleID),
+				RuleID:   message.RuleID,
+				Severity: message.Severity,
+			})
+			rowsByKey[key] = map[int]bool{}
+		}
+
+		group := &grouped[index]
+		group.Messages = append(group.Messages, message)
+
+		if !slices.Contains(fieldsByKey[key], message.Field) {
+			fieldsByKey[key] = append(fieldsByKey[key], message.Field)
+		}
+
+		for _, row := range message.Rows {
+			rowsByKey[key][row] = true
+		}
+
+		if severityRank[message.Severity] > severityRank[group.Severity] {
+			group.Severity = message.Severity
+		}
+	}
+
+	for key, index := range indexByKey {
+		grouped[index].Field = strings.Join(fieldsByKey[key], ", ")
+		grouped[index].TotalRows = len(rowsByKey[key])
+	}
+
+	return grouped
+}
+
+// genericRuleMessage returns the rule's generic sentence, used as the summary line
+// that stands in for the rule's individual messages.
+//
+// Rules whose sentence has not been translated yet fall back to their humanised id,
+// so a missing entry reads as a plain description instead of leaking a raw key.
+func genericRuleMessage(ruleID string) string {
+	key := ruleID + ".generic"
+	if message := i18n.AppTranslator.Get(key); message != key {
+		return message
+	}
+
+	return humanizeRuleID(ruleID)
+}
+
+// humanizeRuleID turns a rule id into a readable sentence by replacing the underscores
+// with spaces and capitalising the first letter.
+func humanizeRuleID(ruleID string) string {
+	humanized := strings.ReplaceAll(ruleID, "_", " ")
+	if humanized == "" {
+		return ruleID
+	}
+
+	return strings.ToUpper(humanized[:1]) + humanized[1:]
 }
 
 func (ms *MessageService) TotalErrors() int {
@@ -183,12 +271,17 @@ func (ms *MessageService) PrintTable() {
 	table.SetHeader([]string{"Validation ID", "Message", "Severity", "Field", "File Name", "Row"})
 	table.SetRowSeparator("-")
 	table.SetFooter([]string{"", "", "Errors: " + strconv.Itoa(summary.TotalErrors), "Warnings: " + strconv.Itoa(summary.TotalWarnings), "Total: " + strconv.Itoa(summary.TotalErrors+summary.TotalWarnings), ""})
-	for _, message := range summary.Messages {
-		rows := make([]string, len(message.Rows))
-		for i, row := range message.Rows {
-			rows[i] = strconv.Itoa(row)
+	// One line per rule with its generic sentence, followed by the messages it stands
+	// for, so the table reads like the grouped output without losing the detail
+	for _, rule := range summary.Messages {
+		table.Append([]string{rule.RuleID, rule.Message, string(rule.Severity), rule.Field, rule.FileName, strconv.Itoa(rule.TotalRows) + " rows"})
+		for _, message := range rule.Messages {
+			rows := make([]string, len(message.Rows))
+			for i, row := range message.Rows {
+				rows[i] = strconv.Itoa(row)
+			}
+			table.Append([]string{"", "  " + message.Message, string(message.Severity), message.Field, message.FileName, strings.Join(rows, ", ")})
 		}
-		table.Append([]string{message.RuleID, message.Message, string(message.Severity), message.Field, message.FileName, strings.Join(rows, ", ")})
 	}
 	table.Render()
 }

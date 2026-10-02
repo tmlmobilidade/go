@@ -1,4 +1,4 @@
-import type { GtfsValidationSummary } from '@tmlmobilidade/types';
+import type { GtfsValidationOutputSummary } from '@tmlmobilidade/go-types-gtfs-validator';
 
 /* * */
 export interface GtfsValidationResult {
@@ -11,5 +11,5 @@ export interface GtfsValidationResult {
 	/** Raw stdout from the validator */
 	stdout: string
 	/** Parsed validation summary */
-	summary: GtfsValidationSummary
+	summary: GtfsValidationOutputSummary
 }
