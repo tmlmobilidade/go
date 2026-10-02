@@ -45,6 +45,7 @@
 		"build:locations": "turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:offer": "turbo run build --filter=@tmlmobilidade/go-offer-*",
 		"build:operation": "turbo run build --filter=@tmlmobilidade/go-operation-*",
+		"build:operation:gtfs-validator": "turbo run build --filter=@tmlmobilidade/go-operation-gtfs-validator",
 		"build:operation:pckg": "turbo run build --filter=@tmlmobilidade/go-operation-pckg-*",
 		"build:performance": "turbo run build --filter=@tmlmobilidade/go-performance-*",
 		"build:tracker": "turbo run build --filter=@tmlmobilidade/go-tracker-*",
@@ -172,7 +173,7 @@
 		"repo:assets": "bash ./scripts/set-public-symlinks.sh",
 		"repo:build": "turbo build --filter=./packages-new/**/* && turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/*",
 		"repo:deps": "npx --yes @tmlmobilidade/repo-deps",
-		"repo:init": "npm i && npm run repo:assets && npm run repo:sql && npm run repo:build && npm run repo:routes",
+		"repo:init": "npm run repo:validator-binary && npm i && npm run repo:assets && npm run repo:sql && npm run repo:validator-rules && npm run repo:build && npm run repo:routes",
 		"repo:lint": "turbo lint",
 		"repo:lint:fix": "turbo lint:fix",
 		"repo:load-env-prd": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -f ./environments/prd/.env.prd --",
@@ -180,7 +181,10 @@
 		"repo:rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"repo:routes": "bash ./scripts/generate-routes.sh",
 		"repo:sql": "bash ./scripts/generate-sql-registry.sh",
-		"repo:sql:check": "bash ./scripts/generate-sql-registry.sh --check"
+		"repo:sql:check": "bash ./scripts/generate-sql-registry.sh --check",
+		"repo:validator-binary": "bash modules/operation/apps/validator/validator/compile-local.sh",
+		"repo:validator-rules": "bash ./scripts/generate-validator-rules.sh",
+		"repo:validator-rules:check": "bash ./scripts/generate-validator-rules.sh --check"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "21.2.2",
@@ -207,7 +211,7 @@
 		"@parcel/watcher": true,
 		"@sentry/cli": true,
 		"@swc/core": true,
-		"@tmlmobilidade/gtfs-validator": true,
+		"@tmlmobilidade/go-operation-validator": true,
 		"better-sqlite3": true,
 		"cpu-features": true,
 		"esbuild": true,

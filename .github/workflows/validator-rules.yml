@@ -1,0 +1,46 @@
+name: 'Validator Rules'
+
+# Keeps the committed TypeScript rule contract in sync with the Go validator.
+# Package and Docker builds use the committed files and never need Go.
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/validator-rules.yml'
+      - 'modules/operation/apps/validator/validator/src/**'
+      - 'package.json'
+      - 'packages-new/types/gtfs-validator/src/rules/**'
+      - 'scripts/generate-validator-rules.sh'
+  push:
+    branches:
+      - prd
+    paths:
+      - '.github/workflows/validator-rules.yml'
+      - 'modules/operation/apps/validator/validator/src/**'
+      - 'package.json'
+      - 'packages-new/types/gtfs-validator/src/rules/**'
+      - 'scripts/generate-validator-rules.sh'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check generated rules and run rule tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: modules/operation/apps/validator/validator/src/go.mod
+          cache-dependency-path: modules/operation/apps/validator/validator/src/go.sum
+
+      - name: Check the generated TypeScript contract is up to date
+        run: npm run repo:validator-rules:check
+
+      - name: Run rule, parser and file-validation tests
+        working-directory: modules/operation/apps/validator/validator/src
+        run: go test ./lib/rules/ ./services/ ./validations/files/

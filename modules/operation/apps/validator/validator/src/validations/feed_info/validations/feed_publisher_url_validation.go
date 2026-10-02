@@ -1,0 +1,51 @@
+package feed_info
+
+import (
+	"main/lib"
+	"main/services"
+	"main/types"
+)
+
+/*
+# Attributes
+
+- File: [feed_info.txt]
+- Field: feed_publisher_url
+- Presence: Optional
+- Type: URL
+
+# Description
+
+URL of the dataset publishing organization's website. This may be the same as one of the agency.agency_url values.
+
+[feed_info.txt]: https://gtfs.org/schedule/reference/#feed_infotxt
+*/
+func FeedPublisherUrlValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfoRules) {
+	ctx := lib.NewValidationContext("feed_publisher_url", "feed_info.txt", "feed_publisher_url_valid_http_url", row, services.AppMessageService)
+	if rules != nil && rules.FeedPublisherUrl.Severity != "" {
+		ctx.WithSeverity(rules.FeedPublisherUrl.Severity)
+	}
+
+	// 1. Validate feed_publisher_url is present
+	if feedInfo.FeedPublisherUrl == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("required", "recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate feed_publisher_url is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
+		return
+	}
+
+	// 3. Validate feed_publisher_url is a valid feed_publisher_url
+	if !lib.ValidateUrl(*feedInfo.FeedPublisherUrl) {
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *feedInfo.FeedPublisherUrl))
+		return
+	}
+}

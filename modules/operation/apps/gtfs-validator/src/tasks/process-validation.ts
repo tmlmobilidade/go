@@ -3,13 +3,14 @@
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { GtfsValidator } from '@tmlmobilidade/go-operation-validator';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { normalizeValidationRules, type ValidationRulesInput } from '@tmlmobilidade/go-types-gtfs-validator';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getTmpWorkdirPath } from '@tmlmobilidade/go-utils-files';
-import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
@@ -29,7 +30,11 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 				processing_status: 'error',
 				summary: {
-					messages: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
+					messages: [{
+						...SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED,
+						messages: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
+						total_rows: 0,
+					}],
 					total_errors: 1,
 					total_warnings: 0,
 				},
@@ -81,11 +86,8 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		const foundAgency = await goDb.core.agencies.findById(gtfsValidation.agency_id);
 		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.agency_id}`);
-		if (!foundAgency.plans?.validation_rules) throw new Error(`No validation rules found for agency: ${gtfsValidation.agency_id}`);
-
-		const rulesContent = typeof foundAgency.plans.validation_rules === 'string'
-			? foundAgency.plans.validation_rules
-			: JSON.stringify(foundAgency.plans.validation_rules);
+		const rules: ValidationRulesInput = normalizeValidationRules(foundAgency.plans?.validation_rules);
+		const rulesContent = JSON.stringify(rules);
 
 		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });
 
@@ -109,7 +111,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
-			summary: gtfsValidationResult.summary as GtfsValidation['summary'],
+			summary: gtfsValidationResult.summary,
 			validity_status: gtfsValidationResult.summary.total_errors === 0 ? 'valid' : 'invalid',
 		});
 
@@ -175,9 +177,12 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			summary: {
 				messages: [{
 					...SYSTEM_ERROR_MESSAGES.GENERIC_ERROR,
-					// Override the generic error message with
-					// the actual error message for more context.
-					message: error instanceof Error ? error.message : String(error),
+					messages: [{
+						...SYSTEM_ERROR_MESSAGES.GENERIC_ERROR,
+						// Keep the actual error as detail under the generic system error.
+						message: error instanceof Error ? error.message : String(error),
+					}],
+					total_rows: 0,
 				}],
 				total_errors: 1,
 				total_warnings: 0,

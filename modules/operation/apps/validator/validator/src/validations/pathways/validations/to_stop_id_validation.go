@@ -1,0 +1,113 @@
+package pathways
+
+import (
+	"main/lib"
+	"main/services"
+	"main/types"
+)
+
+/*
+# Attributes
+
+- File: [pathways.txt]
+- Field: to_stop_id
+- Presence: Required
+- Type: Foreign ID referencing [stops.stop_id]
+
+# Description
+
+Identifies the stop where the pathway ends.
+
+Must contain a stop_id that identifies a platform (location_type=0 or empty), entrance/exit (location_type=2), generic node (location_type=3) or boarding area (location_type=4).
+
+Values for stop_id that identify stations (location_type=1), or stops (location_type=0 or empty) with stop_access=1, are forbidden.
+
+[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+[stops.stop_id]: https://gtfs.org/schedule/reference/#stopstxt
+*/
+
+func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rules *types.PathwaysRules) {
+	ctx := lib.NewValidationContext("to_stop_id", "pathways.txt", "pathway_to_stop_id_references_stops_table", row, services.AppMessageService)
+	if rules != nil && rules.ToStopId.Severity != "" {
+		ctx.WithSeverity(rules.ToStopId.Severity)
+	}
+
+	// 1. Validate to_stop_id is present
+	if pathways.ToStopId == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("required", "recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate to_stop_id is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
+		return
+	}
+
+	// 3. Validate to_stop_id is a valid to_stop_id
+	if !lib.GtfsIdMapKeyExists(gtfs, "stops", *pathways.ToStopId) {
+		ctx.AddError(ctx.GetTranslatedMessage("not_found", *pathways.ToStopId))
+		return
+	}
+
+	// 4. Get the stop to check location_type
+	stopRows, err := gtfs.GetRowsById("stops", *pathways.ToStopId)
+	if err != nil || len(stopRows) == 0 {
+		return // Already handled by foreign key check above
+	}
+
+	stop, err := gtfs.GetStop(stopRows[0])
+	if err != nil {
+		return
+	}
+
+	// 5. Parse location_type
+	var locationType int
+	locationTypeStr := stop.LocationType
+	if locationTypeStr == "" {
+		locationType = 0 // Empty defaults to 0 (platform/stop)
+	} else {
+		if errMsg := lib.ParseStringToPrimitive(locationTypeStr, &locationType); errMsg != "" {
+			// If location_type cannot be parsed, skip this validation
+			return
+		}
+	}
+
+	// 6. Validate location_type
+	// Allowed: platform (0 or empty), entrance/exit (2), generic node (3), boarding area (4)
+	// Forbidden: station (1)
+	if locationType == 1 {
+		ctx.AddError(ctx.GetTranslatedMessage("invalid_location_type_station", *pathways.ToStopId))
+		return
+	}
+
+	if locationType != 0 && locationType != 2 && locationType != 3 && locationType != 4 {
+		ctx.AddError(ctx.GetTranslatedMessage("invalid_location_type_pathway", *pathways.ToStopId, locationType))
+		return
+	}
+
+	// 7. Check stop_access only for platforms/stops (location_type=0 or empty)
+	// According to the spec: "stops (location_type=0 or empty) with stop_access=1, are forbidden"
+	if locationType == 0 {
+		var stopAccess int
+		stopAccessStr := stop.StopAccess
+		if stopAccessStr == "" {
+			stopAccess = 0 // Empty defaults to 0
+		} else {
+			if errMsg := lib.ParseStringToPrimitive(stopAccessStr, &stopAccess); errMsg != "" {
+				// If stop_access cannot be parsed, skip this check
+				return
+			}
+		}
+
+		if stopAccess == 1 && locationType == 0 {
+			ctx.AddError(ctx.GetTranslatedMessage("forbidden_stop_access_1", *pathways.ToStopId))
+			return
+		}
+	}
+}

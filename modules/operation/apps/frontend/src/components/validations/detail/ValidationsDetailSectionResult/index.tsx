@@ -1,15 +1,10 @@
 'use client';
 
-import { SeverityTag } from '@/components/common/SeverityTag';
-import { ValidationsDetailSectionResultCellRows } from '@/components/validations/detail/ValidationsDetailSectionResultCellRows';
 import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { getGtfsScheduleDocUrl } from '@/lib/gtfs-schedule-doc-url';
-import { IconExternalLink } from '@tabler/icons-react';
-import { type GtfsValidationOutputMessage } from '@tmlmobilidade/go-types-gtfs-validator';
-import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
+import { filterGroupsBySeverity, normalizeValidationMessageGroups } from '@/lib/gtfs-validation-message-groups';
+import { Collapsible, Divider, GtfsValidationResultGroup, NoDataLabel, Section, SeverityTag } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -21,37 +16,6 @@ export function ValidationsDetailSectionResult() {
 
 	const validationsDetailContext = useValidationsDetailContext();
 	const [selectedSeverity, setSelectedSeverity] = useState<'error' | 'warning' | null>(null);
-
-	const columns: DataTableColumn<GtfsValidationOutputMessage>[] = [
-		{
-			accessor: 'file_name',
-			title: 'Ficheiro',
-			width: 180,
-		},
-		{
-			accessor: 'field',
-			title: 'Campo',
-			width: 250,
-		},
-		{
-			accessor: 'severity',
-			render: item => <SeverityTag severity={item.severity} />,
-			title: 'Severidade',
-			width: 100,
-		},
-		{
-			accessor: 'message',
-			render: item => <div>{item.message} {' | '} <a className={styles.link} href={getGtfsScheduleDocUrl(item.rule_id)} rel="noopener noreferrer" target="_blank">Saber mais <IconExternalLink size={12} /></a></div>,
-			title: 'Mensagem',
-			width: 500,
-		},
-		{
-			accessor: 'rows',
-			render: item => <ValidationsDetailSectionResultCellRows rows={item.rows} />,
-			title: 'Linhas do Ficheiro',
-			width: 600,
-		},
-	];
 
 	//
 	// B. Transform data
@@ -67,11 +31,14 @@ export function ValidationsDetailSectionResult() {
 		};
 	}, [validationsDetailContext.data.validation]);
 
-	const filteredMessages = useMemo(() => {
+	// The validator already returns one entry per rule with its generic sentence;
+	// normalizing only rebuilds the grouping for validations stored before that change
+	const messageGroups = useMemo(() => {
 		const messages = validationsDetailContext.data.validation?.summary?.messages ?? [];
-		const messagesWithoutIgnored = messages.filter(message => message.severity !== 'ignore');
-		if (!selectedSeverity) return messagesWithoutIgnored;
-		return messagesWithoutIgnored.filter(message => message.severity === selectedSeverity);
+		const groups = normalizeValidationMessageGroups(messages)
+			.filter(group => group.severity !== 'ignore');
+
+		return filterGroupsBySeverity(groups, selectedSeverity);
 	}, [selectedSeverity, validationsDetailContext.data.validation]);
 
 	//
@@ -104,8 +71,12 @@ export function ValidationsDetailSectionResult() {
 				/>
 			</Section>
 			<Divider />
-			<div style={{ overflowX: 'auto' }}>
-				<DataTable columns={columns} records={filteredMessages} />
+			<div>
+				{messageGroups.length === 0
+					? <NoDataLabel text="Sem resultados para mostrar" />
+					: messageGroups.map(group => (
+						<GtfsValidationResultGroup key={`${group.file_name}::${group.rule_id}`} getRuleDocumentationUrl={getGtfsScheduleDocUrl} group={group} />
+					))}
 			</div>
 		</Collapsible>
 	);

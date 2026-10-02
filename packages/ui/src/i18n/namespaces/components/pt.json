@@ -27,6 +27,41 @@
 			}
 		}
 	},
+	"gtfsValidationResultGroup": {
+		"learnMore": "Saber mais",
+		"message": "Mensagem",
+		"occurrences": "{count, plural, =1 {1 ocorrência} other {# ocorrências}}",
+		"rows": "Índice(s)",
+		"showAll": "{count, plural, =1 {Mostrar mais 1 ocorrência} other {Mostrar mais # ocorrências}}"
+	},
+	"gtfsValidationRules": {
+		"compare": {
+			"description": "Pares chave / valor esperado que a regra verifica.",
+			"label": "Comparações",
+			"value": "Valor esperado"
+		},
+		"group": "Ficheiro",
+		"options": {
+			"description": "Valores usados pela regra. Vazio usa as opções predefinidas.",
+			"label": "Opções",
+			"placeholder": "Escreva e separe por vírgulas ou espaços."
+		},
+		"rule": "Regra",
+		"search": "Pesquisar ficheiro ou regra...",
+		"settings": {
+			"remove": "Remover configuração"
+		},
+		"severities": {
+			"error": "Erro",
+			"forbidden": "Proibido",
+			"ignore": "Ignorar",
+			"warning": "Aviso"
+		},
+		"severity": "Severidade",
+		"unconfigured": {
+			"title": "Regras sem severidade definida"
+		}
+	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {
@@ -35,6 +70,12 @@
 			"longitude": {
 				"placeholder": "Longitude (-180 to 180)"
 			}
+		},
+		"KeyValueListInput": {
+			"add": "Adicionar par",
+			"key": "Chave",
+			"remove": "Remover par",
+			"value": "Valor"
 		},
 		"SearchField": {
 			"placeholder": "Pesquisar...",
@@ -129,6 +170,24 @@
 		"IdTag": {
 			"copied": "Copiado!",
 			"copy": "Clique para copiar o ID"
+		},
+		"SeverityTag": {
+			"error": {
+				"filter": "Filtrar por erros",
+				"label": "Erro"
+			},
+			"forbidden": {
+				"filter": "Filtrar por proibidos",
+				"label": "Proibido"
+			},
+			"info": {
+				"filter": "Filtrar por informações",
+				"label": "Informação"
+			},
+			"warning": {
+				"filter": "Filtrar por avisos",
+				"label": "Aviso"
+			}
 		}
 	},
 	"topbar": {
