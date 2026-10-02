@@ -1,0 +1,74 @@
+.container {
+	display: grid;
+	gap: 0.9rem;
+	padding: 0.9rem;
+}
+
+.container[data-variant='top'] {
+	position: relative;
+	width: 100%;
+	max-width: 560px;
+	padding: 0;
+	margin: 0 auto;
+	pointer-events: auto;
+}
+
+.container .inputWrapper {
+	--input-bg: var(--color-system-background-100);
+	background-color: var(--input-bg);
+	border: 0;
+	border-radius: 0.85rem;
+}
+
+.container .inputWrapper:focus-within {
+	border: 0;
+	box-shadow: none;
+}
+
+.input {
+	height: 54px;
+	font-size: 1.05rem;
+	background: transparent;
+	border: 0;
+	border-radius: 0.85rem;
+	outline: 0;
+}
+
+.container[data-variant='top'] .inputWrapper {
+	--input-bg: var(--color-system-background-100, #fff);
+	border: 1px solid var(--color-system-border-100, #ececf1);
+	border-radius: 16px;
+	box-shadow: 0 8px 26px rgb(0 0 0 / 14%);
+}
+
+.container[data-variant='top'] .inputWrapper:focus-within {
+	border: 1px solid var(--color-system-border-100, #ececf1);
+	box-shadow: 0 8px 26px rgb(0 0 0 / 14%);
+}
+
+.container[data-variant='top'] .input {
+	height: 56px;
+}
+
+.clearButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	color: var(--color-system-text-200);
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	border-radius: 50%;
+	transition: color 150ms ease, transform 150ms ease;
+}
+
+.clearButton:active {
+	transform: scale(0.92);
+}
+
+.clearButton:hover {
+	color: var(--color-system-text-100);
+}

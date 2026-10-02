@@ -8,7 +8,7 @@
 }
 
 .scrollChipsWrapper div {
-	touch-action: pan-x !important;
+	touch-action: pan-x pinch-zoom;
 }
 
 /* * */

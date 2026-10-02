@@ -1,0 +1,30 @@
+.filtersPanel {
+	display: flex;
+	flex-direction: column;
+	gap: 9px;
+	min-width: 0;
+	padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+	background-color: var(--color-system-background-100);
+}
+
+.filterSection {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+}
+
+.filterSection strong {
+	font-size: 11px;
+	font-weight: 900;
+	color: var(--color-system-text-300);
+	text-transform: uppercase;
+}
+
+.filterGroup {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+	align-items: center;
+	min-width: 0;
+}

@@ -16,7 +16,7 @@ export function StopsDetailViewHeaderMetadata() {
 	const stopsDetailContext = useStopsDetailContext();
 
 	//
-	// B. Render componentss
+	// B. Render components
 
 	return (
 		<ScrollChips>

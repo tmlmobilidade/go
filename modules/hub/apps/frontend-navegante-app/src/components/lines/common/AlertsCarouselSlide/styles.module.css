@@ -16,10 +16,19 @@
 
 .title {
 	display: inline;
+	padding: 0;
 	font-size: 14px;
 	font-weight: var(--font-weight-bold);
-	color:  var(--color-status-info-text);
+	color: var(--color-status-info-text);
+	text-align: left;
 	cursor: pointer;
+	background: transparent;
+	border: 0;
+}
+
+.title:focus-visible {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 2px;
 }
 
 /* * */

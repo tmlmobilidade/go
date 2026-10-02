@@ -72,12 +72,14 @@ export const MapViewContextProvider = ({ children }: PropsWithChildren) => {
 		centerMapOnRegisteredSources();
 	}, [flagLoading, flagAutoZoom, registeredSources]);
 
-	const initMap = (event: MapLibreEvent) => {
-		loadMapAssets(event.target, MAP_ASSETS_ALERTS);
-		loadMapAssets(event.target, MAP_ASSETS_MISC);
-		loadMapAssets(event.target, MAP_ASSETS_SHAPES);
-		loadMapAssets(event.target, MAP_ASSETS_STOPS);
-		loadMapAssets(event.target, MAP_ASSETS_VEHICLES);
+	const initMap = async (event: MapLibreEvent) => {
+		await Promise.all([
+			loadMapAssets(event.target, MAP_ASSETS_ALERTS),
+			loadMapAssets(event.target, MAP_ASSETS_MISC),
+			loadMapAssets(event.target, MAP_ASSETS_SHAPES),
+			loadMapAssets(event.target, MAP_ASSETS_STOPS),
+			loadMapAssets(event.target, MAP_ASSETS_VEHICLES),
+		]);
 		setFlagLoading(false);
 	};
 

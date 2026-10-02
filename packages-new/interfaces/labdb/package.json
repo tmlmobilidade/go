@@ -36,6 +36,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-clients-clickhouse": "*",
 		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",

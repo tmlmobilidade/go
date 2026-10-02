@@ -1,6 +1,6 @@
 'use client';
 
-import { useLinesContext } from '@/components/lines/Lines.context';
+import { useLinesData } from '@/components/lines/use-lines-data';
 import { IconInfoTriangleFilled } from '@tabler/icons-react';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 
@@ -15,7 +15,7 @@ interface LineBadgeProps {
 	lineId?: string
 	onClick?: () => void
 	shortName?: string
-	size?: 'lg' | 'md'
+	size?: 'lg' | 'md' | 'sm'
 	textColor?: string
 	withAlertIcon?: boolean
 }
@@ -28,31 +28,52 @@ export function LineBadge({ agencyId, color, lineData, lineId, onClick, shortNam
 	//
 	// A. Setup variables
 
-	const linesContext = useLinesContext();
+	const { data: lines } = useLinesData();
 
 	//
 	// B. Transform data
 
-	const fetchedLineData = lineId ? linesContext.data.lines.find(line => line._id === lineId) : undefined;
+	const fetchedLineData = lineId ? lines.find(line => line._id === lineId) : undefined;
 
 	//
 	// C. Render components
 
+	const badgeAgencyId = agencyId || lineData?.agency_id || fetchedLineData?.agency_id;
+	const badgeLabel = shortName || lineData?.short_name || fetchedLineData?.short_name || '• • •';
+	const badgeStyle = { backgroundColor: color || lineData?.color || fetchedLineData?.color, color: textColor || lineData?.text_color || fetchedLineData?.text_color };
+	const alertIcon = withAlertIcon && (
+		<span aria-hidden="true" className={styles.alertIcon}>
+			<IconInfoTriangleFilled size={12} />
+		</span>
+	);
+
+	if (onClick) {
+		return (
+			<button
+				className={styles.badge}
+				data-agency-id={badgeAgencyId}
+				data-clickable="true"
+				data-size={size}
+				onClick={onClick}
+				style={badgeStyle}
+				type="button"
+			>
+				{badgeLabel}
+				{alertIcon}
+			</button>
+		);
+	}
+
 	return (
-		<div
+		<span
 			className={styles.badge}
-			data-agency-id={agencyId || lineData?.agency_id || fetchedLineData?.agency_id}
-			data-clickable={!!onClick}
+			data-agency-id={badgeAgencyId}
+			data-clickable="false"
 			data-size={size}
-			onClick={onClick}
-			style={{ backgroundColor: color || lineData?.color || fetchedLineData?.color, color: textColor || lineData?.text_color || fetchedLineData?.text_color }}
+			style={badgeStyle}
 		>
-			{shortName || lineData?.short_name || fetchedLineData?.short_name || '• • •'}
-			{withAlertIcon && (
-				<div className={styles.alertIcon}>
-					<IconInfoTriangleFilled size={12} />
-				</div>
-			)}
-		</div>
+			{badgeLabel}
+			{alertIcon}
+		</span>
 	);
 }

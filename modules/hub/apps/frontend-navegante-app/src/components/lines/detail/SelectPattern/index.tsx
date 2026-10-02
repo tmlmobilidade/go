@@ -2,13 +2,13 @@
 
 /* * */
 
-import { useLinesContext } from '@/components/lines/Lines.context';
-import { useStopsContext } from '@/components/stops/Stops.context';
-import { formatStopLocation } from '@/utils/format-stop-location';
-import { ComboboxItem, ComboboxItemGroup, Flex, Group, Select, SelectProps, Text } from '@mantine/core';
+import { useRoutesData } from '@/components/lines/use-routes-data';
+import { useStopsData } from '@/components/stops/use-stops-data';
+import { formatStopLocation } from '@/utils/transit/format-stop-location';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
-import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { type ComboboxItem, type ComboboxItemGroup, Flex, Group, Select, type SelectProps, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -44,8 +44,8 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 
 	const { t } = useTranslation();
 
-	const linesContext = useLinesContext();
-	const stopsContext = useStopsContext();
+	const { data: routes } = useRoutesData();
+	const { data: stops } = useStopsData();
 
 	//
 	// B. Transform data
@@ -72,12 +72,12 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		// Filter patterns by date
 		patternsForSelect.map((patternGroupData) => {
 			const group = data.find(group => group.group === patternGroupData.route_id);
-			const routeData = linesContext.data.routes.find(route => route._id === patternGroupData.route_id);
+			const routeData = routes.find(route => route._id === patternGroupData.route_id);
 
 			const item = {
 				direction_id: patternGroupData.direction_id,
 				disabled: (date_filter ? !patternGroupData.valid_on.includes(date_filter) : false) || !patternGroupData.path.length,
-				label: `Destino: ${getPatternTitle(patternGroupData, routeData?.long_name)}`,
+				label: t('default:lines.SelectPattern.destination', '', { destination: getPatternTitle(patternGroupData, routeData?.long_name) }),
 				pattern_id: patternGroupData._id,
 				value: patternGroupData.version_id,
 			};
@@ -97,13 +97,13 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		// data.sort((a, b) => a.group.localeCompare(b.group));
 
 		data = data.map((group, index) => {
-			const routeData = linesContext.data.routes.find(route => route._id === group.group);
+			const routeData = routes.find(route => route._id === group.group);
 			const letterIndex = String.fromCharCode(65 + index);
 			return ({ ...group, group: `${letterIndex} | ${routeData?.long_name}` });
 		});
 
 		return data;
-	}, [date_filter, linesContext.data.routes, patternsForSelect]);
+	}, [date_filter, patternsForSelect, routes, t]);
 
 	//
 	// C. Render components
@@ -116,15 +116,15 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 			return (
 				<Flex align="center" gap={5} justify="center">
 					<IconAlertTriangle size={14} />
-					<Text size="xs">Percurso: {t('default:lines.SelectPattern.invalid_option', '', { pattern_id: option.pattern_id })}</Text>
+					<Text size="xs">{t('default:lines.SelectPattern.invalid_option_label', '', { message: t('default:lines.SelectPattern.invalid_option', '', { pattern_id: option.pattern_id }) })}</Text>
 				</Flex>
 			);
 		};
 
-		const firstStopData = stopsContext.actions.getStopById(patternData.path[0].stop_id);
+		const firstStopData = stops.find(stop => String(stop._id) === String(patternData.path[0].stop_id));
 		const firstStopLocation = formatStopLocation(firstStopData?.locality_name, firstStopData?.municipality_name);
 
-		const routeData = linesContext.data.routes.find(route => route._id === patternData.route_id);
+		const routeData = routes.find(route => route._id === patternData.route_id);
 
 		return (
 			<Group key={option.value} gap={2}>

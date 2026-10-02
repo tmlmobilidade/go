@@ -1,0 +1,28 @@
+.badge {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 999px;
+}
+
+.title {
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 28px;
+	color: var(--color-system-text-200);
+}
+
+.times {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: baseline;
+	font-size: 12px;
+	color: var(--color-system-text-200);
+}

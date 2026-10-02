@@ -18,8 +18,15 @@
 	color: var(--color-system-text-300);
 	text-align: center;
 	cursor: pointer;
+	background: transparent;
+	border: 0;
 	border-radius: 5px;
 	transition: all 200ms ease;
+}
+
+.toggleShowPastArrivals:focus-visible {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 2px;
 }
 
 .toggleShowPastArrivals:hover {

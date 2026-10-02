@@ -1,38 +1,38 @@
 /* * */
 /* CONTAINER */
 
-.container {
-	display: flex;
-	flex-direction: row;
-	gap: var(--size-spacing-5);
+.container,
+.icon {
+	display: inline-flex;
 	align-items: center;
-	justify-content: flex-start;
+	justify-content: center;
 }
 
-/* * */
-/* LABEL */
-
-.label {
-	font-size: var(--font-size-text);
-	font-weight: var(--font-weight-bold);
+.sizeMd svg {
+	width: 24px;
+	height: 24px;
 }
 
+.sizeLg svg {
+	width: 32px;
+	height: 32px;
+}
 
 /* * */
 /* SEVERITY LEVEL */
 
-.severityLevel_low {
+.levelLow {
 	color: var(--color-alerts-0);
 }
 
-.severityLevel_info {
+.levelInfo {
 	color: var(--color-alerts-1);
 }
 	
-.severityLevel_medium {
+.levelMedium {
 	color: var(--color-alerts-2);
 }
 
-.severityLevel_high {
+.levelHigh {
 	color: var(--color-alerts-3);
 }
