@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"encoding/json"
 	"main/types"
 	"strings"
 	"testing"
@@ -32,8 +33,16 @@ func TestRuleIDsIdentifyTheirDomainWithoutRedundantPrefixes(t *testing.T) {
 	}
 }
 
-func TestDecodeConfigPreservesSavedSettingsAndDefaultsMissing(t *testing.T) {
-	config, err := DecodeConfig([]byte(`{"trips":{"_file":"warning","trip_id_unique":{"severity":"error","options":["T1"],"depends_on":["trips_pattern_id_present_and_references_consistent"]}}}`))
+func TestDecodeConfigPreservesCompleteSettings(t *testing.T) {
+	saved := DefaultConfig()
+	saved.Trips.File = types.SEVERITY_WARNING
+	options := []string{"T1"}
+	saved.Trips.TripId = types.RuleConfig{Severity: types.SEVERITY_ERROR, Options: &options, DependsOn: []string{"trips_pattern_id_present_and_references_consistent"}}
+	data, err := json.Marshal(saved)
+	if err != nil {
+		t.Fatal(err)
+	}
+	config, err := DecodeConfig(data)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +50,7 @@ func TestDecodeConfigPreservesSavedSettingsAndDefaultsMissing(t *testing.T) {
 		t.Fatal("saved severities changed")
 	}
 	if config.Shapes.File != types.SEVERITY_IGNORE || config.Trips.RouteId.Severity != types.SEVERITY_IGNORE {
-		t.Fatal("missing values were not ignored")
+		t.Fatal("explicit ignore settings changed")
 	}
 	if config.Trips.TripId.Options == nil || (*config.Trips.TripId.Options)[0] != "T1" || len(config.Trips.TripId.DependsOn) != 1 {
 		t.Fatal("metadata lost")
@@ -53,6 +62,62 @@ func TestDecodeConfigRejectsInvalidExplicitValues(t *testing.T) {
 		t.Run(input, func(t *testing.T) {
 			if _, err := DecodeConfig([]byte(input)); err == nil {
 				t.Fatal("invalid explicit value accepted")
+			}
+		})
+	}
+}
+
+func TestDecodeConfigRequiresEverySupportedRule(t *testing.T) {
+	for _, tc := range []struct {
+		name, want string
+		change     func(map[string]map[string]any)
+	}{
+		{"renamed rule", "missing rules: agency.agency_id_unique", func(input map[string]map[string]any) {
+			input["agency"]["agency_id"] = input["agency"]["agency_id_unique"]
+			delete(input["agency"], "agency_id_unique")
+		}},
+		{"missing section", "agency.agency_id_unique", func(input map[string]map[string]any) {
+			delete(input, "agency")
+		}},
+		{"missing file rule", "missing rules: agency._file", func(input map[string]map[string]any) {
+			delete(input["agency"], "_file")
+		}},
+		{"missing severity", "agency.agency_id_unique.severity: required", func(input map[string]map[string]any) {
+			input["agency"]["agency_id_unique"] = map[string]any{}
+		}},
+		{"forbidden file", "missing rules: agency.agency_id_unique", func(input map[string]map[string]any) {
+			input["agency"]["_file"] = "forbidden"
+			delete(input["agency"], "agency_id_unique")
+		}},
+		{"unsupported sections", "", func(input map[string]map[string]any) {
+			input["translations"] = map[string]any{"_file": "ignore"}
+			input["attributions"] = map[string]any{"_file": "ignore"}
+		}},
+		{"meta file setting", "", func(input map[string]map[string]any) {
+			delete(input["file_validation"], "_file")
+		}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			data, err := json.Marshal(DefaultConfig())
+			if err != nil {
+				t.Fatal(err)
+			}
+			var input map[string]map[string]any
+			if err := json.Unmarshal(data, &input); err != nil {
+				t.Fatal(err)
+			}
+			tc.change(input)
+			data, err = json.Marshal(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, err = DecodeConfig(data)
+			if tc.want == "" {
+				if err != nil {
+					t.Fatal(err)
+				}
+			} else if err == nil || !strings.Contains(err.Error(), tc.want) {
+				t.Fatalf("got %v, want error containing %s", err, tc.want)
 			}
 		})
 	}

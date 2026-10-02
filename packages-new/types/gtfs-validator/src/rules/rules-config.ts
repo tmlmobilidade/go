@@ -6,9 +6,9 @@
  * modules/operation/apps/validator/validator/src
  *
  * Configuration types describe what the Go decoder produces. The *Input types
- * describe what it accepts: every key may be omitted (Go fills the default),
- * and null is allowed where Go ignores it or decodes it to nil. Severities,
- * sections and rule objects reject null, as rules.DecodeConfig does.
+ * allow incomplete agency settings while editing. Running the Go validator
+ * requires every supported rule and its severity. Null is allowed only where
+ * Go ignores it or decodes it to nil; sections and rule objects reject null.
  * These are compile-time types only. They do not validate anything at runtime.
  */
 
@@ -297,7 +297,7 @@ export interface VehiclesRules {
 }
 
 /**
- * Rules after the Go validator filled every omitted setting.
+ * Complete rules after Go applies defaults for optional rule settings.
  * Source: types.GtfsRules
  */
 export interface ValidationRules {

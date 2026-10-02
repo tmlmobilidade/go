@@ -31,8 +31,8 @@ Package and Docker builds use the committed files and do not need Go. CI runs th
 | `ruleConfigKeys`, `RuleConfigKey<G>` | The keys stored in each section. |
 | `ruleIds`, `RuleId` | Agency rule catalogue IDs, excluding parser diagnostics. |
 | `RuleOutputId` | Message IDs emitted by catalogue rules, including shared output IDs. |
-| `ValidationRules`, `AgencyRules`, `RuleConfig`, ... | The configuration after Go fills every omitted setting. |
-| `ValidationRulesInput`, `AgencyRulesInput`, `RuleConfigInput`, ... | The configuration as saved and accepted by Go, where keys may be omitted. |
+| `ValidationRules`, `AgencyRules`, `RuleConfig`, ... | Complete configuration with defaults for optional rule settings. |
+| `ValidationRulesInput`, `AgencyRulesInput`, `RuleConfigInput`, ... | Editable agency settings, which may be incomplete until configured. |
 | `ruleCatalogue`, `RuleCatalogueEntry` | Editor metadata: editable rules and fixed technical notices. |
 | `getRuleSeverity`, `setRuleSeverity` | Read and change one catalogue entry's severity in saved rules. |
 | `getRuleConfig`, `setRuleConfig` | Read a rule's configuration and change its optional `options` or `compare` settings while preserving severity and metadata. Setting a field to `null` removes it. |
@@ -40,9 +40,11 @@ Package and Docker builds use the committed files and do not need Go. CI runs th
 | `normalizeValidationRules` | Parse and check saved rules against the editor's policy. |
 | `isRuleSeverity`, `parseRuleSeverity` | Runtime severity checks. |
 
-The generated types are compile-time only. `normalizeValidationRules` removes saved rules whose group/key is no longer in the generated configuration, while preserving `_file` settings and the options and metadata of retained rules. Missing rules stay absent. It is intentionally stricter than the Go decoder: a retained rule must have a valid severity.
+The generated types are compile-time only. `normalizeValidationRules` removes saved rules whose group/key is no longer in the generated configuration, while preserving `_file` settings and the options and metadata of retained rules. Missing rules stay absent so the Go validator can report them. A retained rule must have a valid severity.
 
 Parser diagnostics remain runtime errors. They are excluded from the generated catalogue and rule IDs because they are not stored in agency validation settings.
+
+Before importing a GTFS into SQLite, the Go validator requires every supported rule in the rules JSON file, with an explicit severity (`ignore` to disable it). Missing sections report their missing rules too. Renaming `agency_id_unique` to `agency_id` reports `missing rules: agency.agency_id_unique`. Unsupported sections such as `translations` and `attributions` are ignored. File-presence settings (`_file`) are required for supported GTFS sections; the internal `file_validation._file` setting is optional.
 
 A stored config key can differ from the emitted rule id. For example, `frequencies.trip_id` emits `frequencies_trip_id_references_trips_table`. Catalogue entries carry both `config_key` and `id`, and `setRuleSeverity` always writes under `config_key`.
 
@@ -62,7 +64,7 @@ Agency settings may add `depends_on` edges using configuration keys from the sam
 
 The shared runner sorts the DAG once per file and evaluates it independently for each row. Warnings and errors both fail a prerequisite. Ignored, unavailable, or blocked rules are skipped, and their dependents are skipped too. Independent rules and rows continue. Group checks use only the prerequisite outcomes of their own members, preserving the original source row numbers. Missing-file errors are reported without stopping validation of other available files.
 
-The contract also includes existing configuration keys whose checks have not yet been implemented (for example, the placeholder translations and attributions validators). A missing implementation never counts as a passed prerequisite. Technical parsing notices remain fixed and outside the configurable rule DAG.
+A missing implementation never counts as a passed prerequisite. Technical parsing notices remain fixed and outside the configurable rule DAG.
 
 ### Removed exports
 

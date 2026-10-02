@@ -1,6 +1,7 @@
 package services
 
 import (
+	"encoding/json"
 	"main/lib"
 	ruleset "main/lib/rules"
 	"main/types"
@@ -9,14 +10,21 @@ import (
 	"testing"
 )
 
-func TestAgencyRulesParsePartialAndRejectInvalid(t *testing.T) {
+func TestAgencyRulesRequireCompleteConfiguration(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "rules.json")
+	complete, err := json.Marshal(ruleset.DefaultConfig())
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, tc := range []struct {
 		input string
 		valid bool
 	}{
-		{`{}`, true},
-		{`{"trips":{"_file":"warning"}}`, true},
+		{string(complete), true},
+		{`{}`, false},
+		{`{"trips":{"_file":"warning"}}`, false},
+		{`{"agency":{"agency_id_unique":{"severity":"error"}}}`, false},
+		{`{"agency":{"agency_id":{"severity":"error"}}}`, false},
 		{`{"trips":{"_file":""}}`, false},
 		{`{"trips":{"trip_id_unique":{"severity":"invalid"}}}`, false},
 	} {

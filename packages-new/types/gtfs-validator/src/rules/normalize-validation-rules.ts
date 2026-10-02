@@ -9,13 +9,13 @@ const currentRuleKeys = new Map<string, readonly string[]>(Object.entries(ruleCo
 
 /**
  * Remove obsolete rules and validate the remaining editor configuration.
- * A rule absent from the input stays absent: the Go validator already treats
- * a missing severity as Ignore, so nothing here needs to write it out.
+ * A rule absent from the input stays absent so the Go validator can report
+ * incomplete configuration before importing the GTFS.
  * A rule that IS present must be complete: an entry without a severity, or
  * with an invalid one, is rejected instead of being silently accepted.
  *
- * This policy is stricter than the Go decoder and is kept here on purpose,
- * separate from the generated types. Only current configuration keys and
+ * Completeness is checked by Go, separately from these editable settings.
+ * Only current configuration keys and
  * _file settings are kept. Options and metadata of retained rules are unchanged.
  */
 export function normalizeValidationRules(input: unknown): ValidationRulesInput {

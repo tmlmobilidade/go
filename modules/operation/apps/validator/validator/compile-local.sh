@@ -29,10 +29,13 @@ case "$(uname -m)" in
 esac
 
 BIN_DIR="$SCRIPT_DIR/../ts-wrapper/bin"
+RUNTIME_BIN_DIR="$SCRIPT_DIR/../ts-wrapper/dist/bin"
 BINARY_PATH="$BIN_DIR/validator-$GOOS-$BINARY_ARCH"
 VALIDATOR_GO_CACHE_DIR="${TMPDIR:-/tmp}/go-plans-validator-cache"
 
-mkdir -p "$BIN_DIR"
+echo "Cleaning validator binary directories..."
+rm -rf -- "$BIN_DIR" "$RUNTIME_BIN_DIR"
+mkdir -p "$BIN_DIR" "$RUNTIME_BIN_DIR"
 mkdir -p "$VALIDATOR_GO_CACHE_DIR"
 
 echo "Building GTFS validator binary: $BINARY_PATH"
@@ -44,5 +47,8 @@ echo "Building GTFS validator binary: $BINARY_PATH"
 )
 
 chmod +x "$BINARY_PATH"
+# The compiled TypeScript wrapper executes the binary from dist/bin.
+cp -p "$BINARY_PATH" "$RUNTIME_BIN_DIR/"
 echo "GTFS validator binary ready: $("$BINARY_PATH" -version)"
+echo "Runtime binary updated: $RUNTIME_BIN_DIR/$(basename "$BINARY_PATH")"
 echo

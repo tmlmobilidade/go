@@ -19,9 +19,9 @@ const TypeScriptHeader = `/**
  * modules/operation/apps/validator/validator/src
  *
  * Configuration types describe what the Go decoder produces. The *Input types
- * describe what it accepts: every key may be omitted (Go fills the default),
- * and null is allowed where Go ignores it or decodes it to nil. Severities,
- * sections and rule objects reject null, as rules.DecodeConfig does.
+ * allow incomplete agency settings while editing. Running the Go validator
+ * requires every supported rule and its severity. Null is allowed only where
+ * Go ignores it or decodes it to nil; sections and rule objects reject null.
  * These are compile-time types only. They do not validate anything at runtime.
  */
 `
@@ -478,12 +478,12 @@ func (w *tsWriter) writeGroupTypes(root reflect.Type, groups []tsGroup, input bo
 	name := "ValidationRules"
 	if input {
 		w.line("/**")
-		w.line(" * Rules as saved for an agency and accepted by the Go validator.")
+		w.line(" * Editable agency settings; completeness is checked by Go before validation.")
 		w.line(" */")
 		name += "Input"
 	} else {
 		w.line("/**")
-		w.line(" * Rules after the Go validator filled every omitted setting.")
+		w.line(" * Complete rules after Go applies defaults for optional rule settings.")
 		w.line(" * Source: %s", root.String())
 		w.line(" */")
 	}
