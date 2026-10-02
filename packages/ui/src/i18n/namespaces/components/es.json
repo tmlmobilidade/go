@@ -29,8 +29,9 @@
 	},
 	"gtfsValidationResultGroup": {
 		"learnMore": "Saber más",
+		"message": "Mensaje",
 		"occurrences": "{count, plural, =1 {1 ocurrencia} other {# ocurrencias}}",
-		"rows": "Indexes",
+		"rows": "Índice(s)",
 		"showAll": "{count, plural, =1 {Mostrar 1 ocurrencia más} other {Mostrar # ocurrencias más}}"
 	},
 	"gtfsValidationRules": {

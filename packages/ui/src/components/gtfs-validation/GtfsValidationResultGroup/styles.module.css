@@ -130,42 +130,46 @@
 	overflow-wrap: anywhere;
 }
 
-.occurrenceList {
-	display: flex;
-	flex-direction: column;
-	gap: var(--size-spacing-xs);
-	margin: 0;
-	padding: 0;
-	list-style: none;
+.occurrenceTableContainer {
+	min-width: 0;
+	overflow-x: auto;
 }
 
-.occurrence {
-	display: flex;
-	align-items: baseline;
-	gap: var(--size-spacing-sm);
-	padding: var(--size-spacing-xs) 0;
+.occurrenceTable {
+	width: 100%;
+	min-width: 560px;
+	table-layout: fixed;
+	border-collapse: collapse;
+	text-align: left;
 
-	& + & {
+	th,
+	td {
+		padding: var(--size-spacing-sm);
+		vertical-align: top;
+		overflow-wrap: anywhere;
+	}
+
+	th {
+		font-size: var(--font-size-sm);
+		font-weight: var(--font-weight-medium);
+		color: var(--color-system-text-200);
+	}
+
+	tbody tr {
 		border-top: 1px solid var(--color-system-border-100);
 	}
 }
 
-.occurrenceIndex {
-	flex: 0 0 auto;
-	min-width: 20px;
-	font-size: var(--font-size-sm);
-	font-weight: var(--font-weight-medium);
-	font-variant-numeric: tabular-nums;
-	color: var(--color-system-text-300);
-	text-align: right;
+.rowsColumn {
+	width: 28%;
 }
 
 .occurrenceBody {
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-spacing-xs);
+	align-items: flex-start;
 	min-width: 0;
-	flex: 1;
 }
 
 .occurrenceMessage {
@@ -175,18 +179,8 @@
 	overflow-wrap: anywhere;
 }
 
-.occurrenceFooter {
-	display: flex;
+.occurrenceRows > div {
 	flex-wrap: wrap;
-	align-items: center;
-	gap: var(--size-spacing-xs);
-}
-
-.occurrenceRowsLabel {
-	font-size: var(--font-size-sm);
-	font-weight: var(--font-weight-medium);
-	color: var(--color-system-text-300);
-	text-transform: uppercase;
 }
 
 .showAll {
