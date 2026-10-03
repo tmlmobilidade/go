@@ -256,6 +256,10 @@
 			},
 			"SectionBasicInfo": {
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Selecione os operadores da organização"
+					},
 					"long_name": {
 						"label": "Nome da organização",
 						"placeholder": "Carris Metropolitana"
@@ -328,6 +332,10 @@
 			"SectionBasicInfo": {
 				"description": "Detalhes como nome, sigla, logótipo, links da página inicial.",
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Selecione os operadores da organização"
+					},
 					"logo_dark": {
 						"label": "Logótipo em Modo Escuro"
 					},

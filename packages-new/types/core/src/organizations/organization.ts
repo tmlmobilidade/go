@@ -7,6 +7,7 @@ import { z } from 'zod';
 /* * */
 
 export const OrganizationSchema = BaseDocumentSchema.extend({
+	agency_ids: z.array(z.string()).default([]),
 	home_links: z.array(HomeQuickLinkSchema).default([]),
 	home_wikis: z.array(z.string()).default([]),
 	logo_dark: z.string().nullable().default(null),

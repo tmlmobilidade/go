@@ -1,9 +1,10 @@
 'use client';
 
 import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Collapsible, Grid, Section, StandardFormController, TextInput, UploadImage } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, MultiSelect, Section, StandardFormController, TextInput, UploadImage } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
+import { useOrganizationsAgenciesData } from '../../shared/use-organizations-agencies-data';
 import { useOrganizationsDetailFormContext } from '../OrganizationsDetailForm.context';
 import { useOrganizationsImageDetailData } from '../use-organizations-image-detail-data';
 
@@ -21,6 +22,8 @@ export function OrganizationsDetailBasicInfo() {
 
 	const { data: logoLightUrlValue, isLoading: isLoadingLogoLight } = useOrganizationsImageDetailData('light');
 	const { data: logoDarkUrlValue, isLoading: isLoadingLogoDark } = useOrganizationsImageDetailData('dark');
+
+	const { error: agenciesError, isLoading: agenciesLoading, options: agenciesOptions } = useOrganizationsAgenciesData();
 
 	//
 	// B. Render components
@@ -67,6 +70,26 @@ export function OrganizationsDetailBasicInfo() {
 								value={field.value ?? ''}
 								data-autofocus
 								withAsterisk
+							/>
+						)}
+					/>
+				</Grid>
+
+				<Grid columns="a" gap="lg">
+					<StandardFormController
+						control={form.control}
+						name="agency_ids"
+						render={({ field, fieldState }) => (
+							<MultiSelect
+								data={agenciesOptions}
+								disabled={agenciesLoading}
+								error={fieldState.error?.message ?? agenciesError}
+								label={t('default:organizations.detail.SectionBasicInfo.fields.agency_ids.label')}
+								onBlur={field.onBlur}
+								onChange={field.onChange}
+								placeholder={t('default:organizations.detail.SectionBasicInfo.fields.agency_ids.placeholder')}
+								readOnly={!capabilities.editEnabled}
+								value={field.value ?? []}
 							/>
 						)}
 					/>
