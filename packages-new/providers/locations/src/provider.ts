@@ -2,7 +2,7 @@
 
 import { type SupportedCountryCode } from '@/levels.js';
 import * as location from '@/location/index.js';
-import * as tree from '@/tree/index.js';
+import { locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { type Location, type LocationItem, type LocationSlot, type LocationTreeNode } from '@tmlmobilidade/go-types-locations';
 
 /* * */
@@ -31,11 +31,13 @@ class LocationsProviderClass {
 	}
 
 	/**
-	 * Builds the administrative location tree (country → 3 nested slots) for every supported country.
+	 * Reads the precomputed administrative location tree (country → 3 nested slots) for every supported country.
 	 * @returns Country root nodes with their nested locations, sourced from the locations (OSM) database.
 	 */
-	async findTree(): Promise<LocationTreeNode[]> {
-		return tree.findTree();
+	async findAdministrativeTree(): Promise<LocationTreeNode[]> {
+		const tree = await locationsDb.findCacheValue<LocationTreeNode[]>('locations-administrative-tree');
+		if (!tree) throw new Error('Location tree is not ready. Run the go-infra post-import SQL before serving requests.');
+		return tree;
 	}
 }
 

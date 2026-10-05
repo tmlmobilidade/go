@@ -38,6 +38,10 @@ export function useUsersLocationsData(): UseUsersLocationsDataReturnType {
 
 	const { data, error } = useSWR<ApiResponse<LocationTreeNode[]>>(API_ROUTES.core.USERS_LIST_LOCATIONS, {
 		fetcher: async (url: string) => await fetchApiData<LocationTreeNode[]>({ url }),
+		refreshInterval: 0,
+		revalidateIfStale: false,
+		revalidateOnFocus: false,
+		revalidateOnReconnect: false,
 	});
 
 	//

@@ -21,12 +21,14 @@ SELECT
 FROM planet_osm_polygon p
 WHERE p.boundary = 'administrative'
 	AND p.admin_level = $1
-	AND p.way && (${COUNTRY_WAY})
 	AND ST_Within(p.way, (${COUNTRY_WAY}))
 ORDER BY name;
 `;
 
-/** List locations at a given admin_level ($1) inside a country ($2), with GeoJSON geometry. */
+/**
+ * Lists one GeoJSON feature per OSM relation. The post-import migration enforces
+ * unique osm_id values; flex imports these geometries in SRID 4326.
+ */
 export const FIND_LOCATIONS_WITH_GEOJSON_BY_COUNTRY_AND_ADMIN_LEVEL = `
 SELECT
 	abs(p.osm_id) AS id,
@@ -36,7 +38,7 @@ SELECT
 	p.tags,
 	json_build_object(
 		'type', 'FeatureCollection',
-		'features', json_agg(
+		'features', json_build_array(
 			json_build_object(
 				'type', 'Feature',
 				'id', abs(osm_id),
@@ -46,18 +48,14 @@ SELECT
 					'code', tags->>'ref:ine',
 					'tags', tags
 				),
-				'geometry', ST_AsGeoJSON(
-					ST_Transform(way, 4326)
-				)::json
+				'geometry', ST_AsGeoJSON(way)::json
 			)
 		)
 	) AS geojson
 FROM planet_osm_polygon p
 WHERE p.boundary = 'administrative'
 	AND p.admin_level = $1
-	AND p.way && (${COUNTRY_WAY})
-	AND ST_Within(p.way, (${COUNTRY_WAY}))
-GROUP BY id, name, admin_level, code, tags;
+	AND ST_Within(p.way, (${COUNTRY_WAY}));
 `;
 
 /**
