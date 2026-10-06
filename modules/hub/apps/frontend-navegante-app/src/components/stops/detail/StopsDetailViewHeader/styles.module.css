@@ -2,24 +2,42 @@
 	padding-top: 0;
 }
 
+.headingRow {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.headingName {
+	flex: 1;
+	min-width: 0;
+}
+
 .directionsButton {
-	display: inline-flex;
+	display: flex;
 	flex: 0 0 auto;
-	gap: 8px;
+	flex-direction: column;
+	gap: 2px;
 	align-items: center;
-	align-self: flex-start;
 	justify-content: center;
-	min-width: 88px;
-	height: 44px;
-	padding: 0 20px;
+	width: 58px;
+	height: 58px;
+	padding: 4px;
 	font: inherit;
-	font-size: 16px;
-	font-weight: 900;
+	font-size: 10px;
+	font-weight: 800;
 	line-height: 1;
 	color: var(--color-route-on-accent);
 	white-space: nowrap;
 	cursor: pointer;
 	background-color: var(--color-route-status-info);
 	border: 1px solid var(--color-route-status-info);
-	border-radius: 999px;
+	border-radius: 16px;
+}
+
+.directionsButton:focus-visible {
+	outline: 2px solid var(--color-system-text-100);
+	outline-offset: 2px;
 }

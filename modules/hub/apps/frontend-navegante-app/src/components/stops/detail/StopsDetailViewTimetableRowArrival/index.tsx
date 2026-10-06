@@ -85,8 +85,7 @@ export function StopsDetailViewTimetableRowArrival({ data }: StopsDetailViewTime
 
 	return (
 		<div className={styles.container} data-is-realtime={data.is_realtime}>
-			{data.is_realtime && <div className={styles.beta}>BETA</div>}
-			{data.is_realtime ? <LiveIcon color="var(--color-status-warning-primary)" /> : <IconClockHour9 size={18} />}
+			{data.is_realtime ? <LiveIcon color="var(--color-status-active-primary)" /> : <IconClockHour9 size={18} />}
 			<p className={styles.label}>{formattedArrivalLabel}</p>
 		</div>
 	);

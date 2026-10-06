@@ -194,6 +194,9 @@
 			"option_label": "Início do percurso: {locality}",
 			"placeholder": "Selecionar Percurso / Destino..."
 		},
+		"TimetableExceptionsLink": {
+			"variant": "<0>{exception_id})</0> Percurso <1>{route_long_name}</1> com destino a <2>{pattern_headsign}</2>"
+		},
 		"TimetableSchedules": {
 			"hours": "Hora",
 			"minutes": "Min.",
