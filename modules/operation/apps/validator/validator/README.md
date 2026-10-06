@@ -198,7 +198,7 @@ Each validation message contains:
 - `-rules`: Path to the validation rules JSON file (optional)
 - `-out` / `-o`: Path to write output file (optional)
 - `-log`: Log level (debug, info, error)
-- `-lang`: Language for error messages (en, pt)
+- `-lang`: Language for error messages (en, es, pt)
 
 ### Rules File Format
 
@@ -226,4 +226,3 @@ After validation completes:
 3. Results are output in the requested format
 
 This ensures no temporary files are left behind after validation completes.
-

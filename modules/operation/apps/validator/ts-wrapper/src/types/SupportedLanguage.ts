@@ -1,4 +1,4 @@
 /**
  * Supported language codes for validation messages.
  */
-export type SupportedLanguage = 'en' | 'pt';
+export type SupportedLanguage = 'en' | 'es' | 'pt';

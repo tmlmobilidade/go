@@ -44,7 +44,7 @@ func (c *CLI) Parse() {
 	flag.StringVar(&c.Options.LogLevel, "log", "info", "Log level (debug, info, error)")
 	flag.StringVar(&c.Options.RulesPath, "rules", "", "Path to the rules file")
 	flag.StringVar(&c.Options.StopsPath, "stops", "", "Path to the stops_data.json file")
-	flag.StringVar(&c.Options.RulesLang, "lang", "en", "Rules language (en, pt)")
+	flag.StringVar(&c.Options.RulesLang, "lang", "en", "Rules language (en, es, pt)")
 	flag.BoolVar(&c.Options.Version, "v", false, "Show version")
 	flag.BoolVar(&c.Options.Version, "version", false, "Show help")
 
@@ -61,9 +61,9 @@ func (c *CLI) Validate() error {
 		return fmt.Errorf("input path is required")
 	}
 
-	validLangs := []string{"en", "pt"}
+	validLangs := []string{"en", "es", "pt"}
 	if !slices.Contains(validLangs, c.Options.RulesLang) {
-		return fmt.Errorf("invalid rules language: %q (supported: en, pt)", c.Options.RulesLang)
+		return fmt.Errorf("invalid rules language: %q (supported: en, es, pt)", c.Options.RulesLang)
 	}
 
 	return nil

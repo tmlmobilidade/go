@@ -6,7 +6,7 @@ export interface GtfsValidatorOptions {
 	cwd?: string
 	/** Additional environment variables */
 	env?: Record<string, string>
-	/** Language for validation messages (e.g., 'en', 'pt') */
+	/** Language for validation messages ('en', 'es', 'pt') */
 	lang?: SupportedLanguage
 	/** Log level for validation messages */
 	log_level?: 'debug' | 'error' | 'info'

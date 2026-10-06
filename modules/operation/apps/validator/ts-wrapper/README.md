@@ -112,7 +112,7 @@ Error class thrown when validation fails.
 
 - `cwd?` (string): Working directory for the validation process
 - `env?` (Record<string, string>): Additional environment variables
-- `lang?` ('en' | 'pt'): Language for validation messages
+- `lang?` ('en' | 'es' | 'pt'): Language for validation messages
 - `out_file?` (string): Output file path for detailed validation results
 - `rules_path?` (string): Path to custom validation rules file
 - `timeout?` (number): Timeout in milliseconds (default: 30 minutes)

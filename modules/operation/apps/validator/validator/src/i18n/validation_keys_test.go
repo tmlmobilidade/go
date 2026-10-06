@@ -13,7 +13,7 @@ import (
 
 // Check the actual call sites, including contexts for several rules in one file.
 func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
-	translators := []*Translator{NewTranslator("en"), NewTranslator("pt")}
+	translators := []*Translator{NewTranslator("en"), NewTranslator("es"), NewTranslator("pt")}
 	check := func(key string, position token.Position) {
 		for _, translator := range translators {
 			if _, exists := translator.translations[key]; !exists {
