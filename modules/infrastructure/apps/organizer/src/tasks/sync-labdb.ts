@@ -21,6 +21,8 @@ export async function syncLabdbTask() {
 
 	await labDb.queryFromString(`DROP TABLE IF EXISTS infrastructure.simplified_stops`);
 
+	Logger.success('Dropped table infrastructure.simplified_stops');
+
 	//
 	// Recreate the table
 
@@ -28,13 +30,15 @@ export async function syncLabdbTask() {
 
 	await labDb.infrastructure.simplifiedStops.init();
 
+	Logger.success('Recreated table infrastructure.simplified_stops');
+
 	//
 	// Setup a batch writer instance
 
 	const writer = new BatchWriter<SimplifiedStop>({
 		batch_size: 5_000,
-		insertFn: async (values) => {
-			await labDb.infrastructure.simplifiedStops.insert('JSONEachRow', values);
+		insertFn: async (data) => {
+			await labDb.infrastructure.simplifiedStops.insert('JSONEachRow', data);
 		},
 		title: await labDb.infrastructure.simplifiedStops.getTableName(),
 	});
@@ -60,24 +64,24 @@ export async function syncLabdbTask() {
 			latitude: stopData.latitude,
 			legacy_ids: stopData.legacy_ids,
 			lifecycle_status: stopData.lifecycle_status,
-			location_country_admin_level: stopData.location.country.admin_level,
+			location_country_admin_level: Number(stopData.location.country.admin_level),
 			location_country_name: stopData.location.country.name,
 			location_country_osm_id: stopData.location.country.osm_id,
 			location_neighbourhood_admin_level: stopData.location.neighbourhood?.admin_level ?? null,
 			location_neighbourhood_name: stopData.location.neighbourhood?.name ?? null,
 			location_neighbourhood_osm_id: stopData.location.neighbourhood?.osm_id ?? null,
-			location_primary_admin_level: stopData.location.primary.admin_level,
+			location_primary_admin_level: Number(stopData.location.primary.admin_level),
 			location_primary_code: stopData.location.primary.code ?? null,
 			location_primary_name: stopData.location.primary.name,
 			location_primary_osm_id: stopData.location.primary.osm_id,
-			location_secondary_admin_level: stopData.location.secondary.admin_level,
+			location_secondary_admin_level: Number(stopData.location.secondary.admin_level),
 			location_secondary_code: stopData.location.secondary.code ?? null,
 			location_secondary_name: stopData.location.secondary.name,
 			location_secondary_osm_id: stopData.location.secondary.osm_id,
-			location_tertiary_admin_level: stopData.location.tertiary?.admin_level ?? null,
+			location_tertiary_admin_level: Number(stopData.location.tertiary.admin_level),
 			location_tertiary_code: stopData.location.tertiary?.code ?? null,
-			location_tertiary_name: stopData.location.tertiary?.name ?? null,
-			location_tertiary_osm_id: stopData.location.tertiary?.osm_id ?? null,
+			location_tertiary_name: stopData.location.tertiary.name,
+			location_tertiary_osm_id: stopData.location.tertiary.osm_id,
 			longitude: stopData.longitude,
 			name: stopData.name,
 			short_name: stopData.short_name,

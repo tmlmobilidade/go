@@ -21,7 +21,7 @@ async function main() {
 	//
 	// Run tasks
 
-	// await setStopLocationTask();
+	await setStopLocationTask();
 	await syncLabdbTask();
 
 	//
