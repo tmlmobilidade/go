@@ -12,23 +12,32 @@ export type BottomSheetNavigationAction =
 /* * */
 
 export function reduceBottomSheetNavigation(stack: BottomSheetNavigationEntry[], action: BottomSheetNavigationAction): BottomSheetNavigationEntry[] {
-	if (action.type === 'restore') return action.entries.map(normalizeBottomSheetNavigationEntry);
-	if (action.type === 'clear') return stack.length > 0 ? [] : stack;
-	if (action.type === 'pop') return stack.length > 0 ? stack.slice(0, -1) : stack;
-
-	const entry = normalizeBottomSheetNavigationEntry(action.entry);
-	if (action.type === 'push') {
-		const activeEntry = stack.at(-1);
-		if (activeEntry?.view === entry.view && (activeEntry.entityId ?? null) === entry.entityId) return stack;
-		return [...stack, entry];
+	switch (action.type) {
+		case 'clear':
+			return stack.length ? [] : stack;
+		case 'pop':
+			return stack.length ? stack.slice(0, -1) : stack;
+		case 'push': {
+			const entry = normalizeBottomSheetNavigationEntry(action.entry);
+			const activeEntry = stack.at(-1);
+			if (activeEntry?.view !== entry.view) return [...stack, entry];
+			// Avoid stacking sheets when switching between entities of the same type.
+			if ((activeEntry.entityId ?? null) === entry.entityId) return stack;
+			return replaceActiveEntry(stack, entry);
+		}
+		case 'replace-active':
+			return replaceActiveEntry(stack, normalizeBottomSheetNavigationEntry(action.entry));
+		case 'restore':
+			return action.entries.map(normalizeBottomSheetNavigationEntry);
 	}
-	if (stack.length === 0) return [entry];
-
-	return [...stack.slice(0, -1), entry];
 }
 
 /* * */
 
 function normalizeBottomSheetNavigationEntry(entry: BottomSheetNavigationEntry): BottomSheetNavigationEntry {
 	return { entityId: entry.entityId ?? null, view: entry.view };
+}
+
+function replaceActiveEntry(stack: BottomSheetNavigationEntry[], entry: BottomSheetNavigationEntry): BottomSheetNavigationEntry[] {
+	return stack.length ? [...stack.slice(0, -1), entry] : [entry];
 }

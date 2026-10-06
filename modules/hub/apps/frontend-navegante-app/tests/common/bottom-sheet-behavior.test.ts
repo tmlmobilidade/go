@@ -76,6 +76,14 @@ describe('bottom-sheet navigation operations', () => {
 		assert.equal(reduceBottomSheetNavigation(stack, { entry: stop, type: 'push' }), stack);
 	});
 
+	it('replaces the active detail when another entity of the same type opens', () => {
+		const nextStop = { entityId: 'stop-2', view: 'stops-detail' as const };
+		const firstVehicle = { entityId: 'vehicle-1', view: 'vehicles-detail' as const };
+		const nextVehicle = { entityId: 'vehicle-2', view: 'vehicles-detail' as const };
+		assert.deepEqual(reduceBottomSheetNavigation([search, stop], { entry: nextStop, type: 'push' }), [search, nextStop]);
+		assert.deepEqual(reduceBottomSheetNavigation([search, firstVehicle], { entry: nextVehicle, type: 'push' }), [search, nextVehicle]);
+	});
+
 	it('restores pre-trip results and their previous sheet after trip sheets were cleared', () => {
 		const beforeTrip = [search, routes];
 		const duringTrip = reduceBottomSheetNavigation(beforeTrip, { type: 'clear' });
