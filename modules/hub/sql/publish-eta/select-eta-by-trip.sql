@@ -29,5 +29,6 @@ SELECT
     ) AS value
 FROM eta.pred_trip_stop_etas
 FINAL
+WHERE has({agency_ids:Array(String)}, agency_id)
 GROUP BY plan_id, agency_id, trip_id
 ORDER BY key;
