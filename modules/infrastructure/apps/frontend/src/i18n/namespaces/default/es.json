@@ -283,14 +283,39 @@
 			},
 			"StopsExtractProperties": {
 				"fields": {
-					"municipality_ids": {
-						"label": "Municipios",
-						"placeholder": "Todos los municipios permitidos"
+					"agency_ids": {
+						"label": "Operador"
+					},
+					"connections": {
+						"label": "Conexiones"
+					},
+					"facilities": {
+						"label": "Servicios"
+					},
+					"lifecycle_statuses": {
+						"label": "Estado"
+					},
+					"location_neighbourhood_ids": {
+						"label": "Localidad"
+					},
+					"location_primary_ids": {
+						"label": "División administrativa (nivel 1)"
+					},
+					"location_secondary_ids": {
+						"label": "División administrativa (nivel 2)"
+					},
+					"loclation_tertiary_ids": {
+						"label": "División administrativa (nivel 3)"
+					},
+					"search": {
+						"label": "Búsqueda",
+						"placeholder": "ID o nombre de la parada..."
 					},
 					"version": {
 						"label": "Versión"
 					}
-				}
+				},
+				"placeholder": "Sin filtro"
 			}
 		},
 		"list": {

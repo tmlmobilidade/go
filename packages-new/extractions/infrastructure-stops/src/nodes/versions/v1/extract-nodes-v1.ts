@@ -28,14 +28,29 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		throw new Error('User does not have permission to export stops');
 	}
 
-	const stops = await goDb.infrastructure.stops.findMany({
-		...(agencyAccess.allowAll ? {} : { 'flags.agency_ids': { $in: agencyAccess.values } }),
-		...(locationAccess.allowAll ? {} : {
-			$or: LOCATION_PERMISSION_SLOTS.map(slot => ({
-				[`location.${slot}.osm_id`]: { $in: locationAccess.values.map(Number) },
-			})),
+	const selectedAgencyIds = properties.agency_ids?.length
+		? properties.agency_ids.filter(id => agencyAccess.allowAll || agencyAccess.values.includes(id))
+		: agencyAccess.allowAll ? undefined : agencyAccess.values;
+	const search = properties.search?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const filters = [
+		...[...LOCATION_PERMISSION_SLOTS, 'neighbourhood' as const].flatMap((slot) => {
+			const ids = slot === 'secondary'
+				? properties.location_secondary_ids ?? properties.municipality_ids
+				: properties[`location_${slot}_ids`];
+			return ids?.length ? [{ [`location.${slot}.osm_id`]: { $in: ids.map(Number) } }] : [];
 		}),
-		...(properties.municipality_ids?.length ? { 'location.secondary.osm_id': { $in: properties.municipality_ids.map(Number) } } : {}),
+		...(locationAccess.allowAll ? [] : [{
+			$or: LOCATION_PERMISSION_SLOTS.map(slot => ({ [`location.${slot}.osm_id`]: { $in: locationAccess.values.map(Number) } })),
+		}]),
+		...(search ? [{ $or: [{ _id: { $options: 'i', $regex: search } }, { name: { $options: 'i', $regex: search } }] }] : []),
+	];
+
+	const stops = await goDb.infrastructure.stops.findMany({
+		...(selectedAgencyIds ? { 'flags.agency_ids': { $in: selectedAgencyIds } } : {}),
+		...(filters.length ? { $and: filters } : {}),
+		...(properties.lifecycle_statuses?.length ? { lifecycle_status: { $in: properties.lifecycle_statuses } } : {}),
+		...(properties.facilities?.length ? { facilities: { $in: properties.facilities } } : {}),
+		...(properties.connections?.length ? { connections: { $in: properties.connections } } : {}),
 		is_deleted: false,
 	}, {
 		projection: { _id: 1, flags: 1, latitude: 1, longitude: 1, name: 1 },
@@ -44,7 +59,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	for (const stop of stops) {
 		stop.flags = stop.flags.map(flag => ({
 			...flag,
-			agency_ids: flag.agency_ids.filter(id => agencyAccess.allowAll || agencyAccess.values.includes(id)),
+			agency_ids: flag.agency_ids.filter(id => !selectedAgencyIds || selectedAgencyIds.includes(id)),
 		}));
 	}
 

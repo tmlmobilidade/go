@@ -29,7 +29,7 @@ export function StopsExtractFormContextProvider({ children }: PropsWithChildren)
 
 	const { form, isDirty, isValid, unblock } = useStandardForm<StopsExtractionCreate, typeof StopsExtractionCreateSchema>({
 		defaultValues: {
-			properties: { municipality_ids: [] },
+			properties: {},
 			send_email_notification: false,
 			version: InfrastructureStopsV1ExtractionVersionValue,
 		},
