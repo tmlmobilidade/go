@@ -34,7 +34,7 @@
 		"build:binary": "bash ../validator/compile-local.sh && npm run build",
 		"lint": "eslint ./src && tsc -p tsconfig.json --noEmit --noEmit",
 		"lint:fix": "eslint --fix ./src",
-		"postinstall": "if [ ! -d dist ]; then tsx ./scripts/postinstall.ts; else node ./dist/scripts/postinstall.js; fi",
+		"postinstall": "if [ ! -f dist/scripts/postinstall.js ]; then tsx ./scripts/postinstall.ts; else node ./dist/scripts/postinstall.js; fi",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"test": "vitest run --config vitest.config.ts",
 		"test:coverage": "vitest run --config vitest.config.ts --coverage",
