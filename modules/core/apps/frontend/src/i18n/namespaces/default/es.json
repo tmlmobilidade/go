@@ -385,6 +385,9 @@
 			},
 			"table": {
 				"columns": {
+					"gtfs_published": {
+						"label": "GTFS"
+					},
 					"id": {
 						"label": "#ID"
 					},
@@ -726,6 +729,7 @@
 				},
 				"Table": {
 					"columns": {
+						"gtfs_published": "GTFS",
 						"id": "#ID",
 						"name": "Nombre",
 						"permissions": "Permisos"

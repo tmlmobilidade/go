@@ -23,6 +23,11 @@ async function main() {
 	Logger.init();
 
 	const globalTimer = new Timer();
+	const organizationsCollection = await goDb.core.organizations.getCollection();
+
+	await organizationsCollection.updateMany({ 'open_data.gtfs_status': { $ne: 'skipped' }, 'open_data.services.gtfs_enabled': { $ne: true } }, {
+		$set: { 'open_data.gtfs_status': 'skipped' },
+	});
 
 	//
 	// Each enabled organization publishes a feed containing its agencies.
@@ -42,6 +47,7 @@ async function main() {
 			const activePlans = await getActivePlans(organization.agency_ids);
 			organizationExports.push({ activePlans, organization });
 		} catch (error) {
+			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs_status': 'error' } });
 			organization.agency_ids.forEach(agencyId => failedAgencyIds.add(agencyId));
 			Logger.error({ error, message: `Error selecting GTFS plans for organization ${organization._id}.` });
 		}
@@ -81,12 +87,15 @@ async function main() {
 			})),
 		})).digest('hex');
 
-		if (previousExportHashes.get(organization._id) === exportHash) continue;
+		if (previousExportHashes.get(organization._id) === exportHash && organization.open_data.gtfs_status === 'complete') continue;
 
 		try {
+			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs_status': 'processing' } });
 			await exportOrganizationGtfs(organization, activePlans);
+			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs_status': 'complete' } });
 			previousExportHashes.set(organization._id, exportHash);
 		} catch (error) {
+			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs_status': 'error' } });
 			Logger.error({ error, message: `Error publishing GTFS for organization ${organization.short_name}.` });
 		}
 	}

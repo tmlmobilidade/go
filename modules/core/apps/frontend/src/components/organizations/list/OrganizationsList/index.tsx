@@ -3,7 +3,7 @@
 import { OrganizationsListHeader } from '@/components/organizations/list/OrganizationsListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { OrganizationsListItem } from '@tmlmobilidade/go-core-pckg-types';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -37,6 +37,12 @@ export function OrganizationsList() {
 			accessor: 'long_name',
 			title: t('default:organizations.list.table.columns.name.label'),
 			width: 600,
+		},
+		{
+			accessor: 'open_data.gtfs_status',
+			render: item => <ProcessingStatusDisplay value={item.open_data.services.gtfs_enabled ? item.open_data.gtfs_status : 'skipped'} />,
+			title: t('default:organizations.list.table.columns.gtfs_published.label'),
+			width: 180,
 		},
 	];
 
