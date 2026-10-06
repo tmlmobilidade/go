@@ -2,7 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
-import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureStopsV1Extraction, InfrastructureStopsV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
+import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureNodesV1Extraction, InfrastructureNodesV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
 import { type TransportType } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -17,8 +17,8 @@ import { toOutputRows } from './transform.js';
  * @param context The extraction task context.
  * @param extraction The extraction to run.
  */
-export async function extractInfrastructureNodesV1(context: ExtractionTaskContext, extraction: InfrastructureStopsV1Extraction): Promise<ExtractionTaskResult> {
-	const properties = InfrastructureStopsV1ExtractionPropertiesSchema.parse(extraction.properties);
+export async function extractInfrastructureNodesV1(context: ExtractionTaskContext, extraction: InfrastructureNodesV1Extraction): Promise<ExtractionTaskResult> {
+	const properties = InfrastructureNodesV1ExtractionPropertiesSchema.parse(extraction.properties);
 	const permissions = await authProvider.getPermissionsFromUserId(extraction.created_by);
 	const checks = [{ action: PermissionCatalog.all.stops.actions.export, scope: PermissionCatalog.all.stops.scope }];
 	const agencyAccess = PermissionCatalog.getPermissionResourceAccess({ checks, permissions, resource_key: 'agency_ids' });
