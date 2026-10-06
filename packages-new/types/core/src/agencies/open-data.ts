@@ -14,7 +14,6 @@ export const AgencyOpenDataSchema = z.object({
 	}),
 	services: z.object({
 		eta_enabled: z.boolean().default(false),
-		gtfs_enabled: z.boolean().default(false),
 		positions_enabled: z.boolean().default(false),
 		service_alerts_enabled: z.boolean().default(false),
 	}),

@@ -302,8 +302,7 @@ export const API_ROUTES = Object.freeze({
 		NETWORK_STOPS_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/stops/${encodeURIComponent(id)}`,
 
 		// PLANS
-		PLANS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs`,
-		PLANS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs/cm`,
+		PLANS_GTFS: (organizationShortName: string) => `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs/${encodeURIComponent(organizationShortName)}`,
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 
 		// REALTIME

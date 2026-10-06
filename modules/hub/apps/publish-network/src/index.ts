@@ -1,56 +1,63 @@
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type ImportGtfsConfig, importGtfsHubV1ToDatabase } from '@tmlmobilidade/import-gtfs';
+import { type GtfsHubV1SQLTables, importGtfsHubV1ToDatabase } from '@tmlmobilidade/import-gtfs';
 
 import { syncLinesRoutesPatterns } from './tasks/sync-lines-routes-patterns.js';
 import { syncStops } from './tasks/sync-stops.js';
+import { mergeGtfsTables } from './utils/merge-gtfs-tables.js';
 
 /* * */
 
 async function main() {
 	//
 
-	//
-	// Initialize the logger
-
 	Logger.init();
 
 	const globalTimer = new Timer();
 
-	Logger.info({ message: `Starting publish schedules process...` });
+	Logger.info({ message: 'Starting publish schedules process...' });
 
-	//
-	// Set up the import config
+	const organizations = await goDb.core.organizations.findMany({ 'open_data.services.gtfs_enabled': true });
+	let mergedGtfs: GtfsHubV1SQLTables | null = null;
 
-	const importConfig: ImportGtfsConfig = {
-		source: {
-			url: API_ROUTES.hub.PLANS_GTFS,
-		},
-		sqlite_config: {
-			memory: true,
-		},
-	};
+	try {
+		//
+		// Combine published organization feeds before updating the global network.
 
-	const importedGtfsSql = await importGtfsHubV1ToDatabase(importConfig);
+		for (const organization of organizations) {
+			const feed = await storageProvider.findById(`gtfs-latest-${organization.short_name}`);
+			if (!feed?.url) continue;
 
-	//
-	// Export GTFS files from the merged dataset
+			const importedGtfs = await importGtfsHubV1ToDatabase({
+				source: { url: feed.url },
+				sqlite_config: { memory: true },
+			});
 
-	await syncStops(importedGtfsSql);
+			if (!mergedGtfs) {
+				mergedGtfs = importedGtfs;
+				continue;
+			}
 
-	await syncLinesRoutesPatterns(importedGtfsSql);
+			try {
+				await mergeGtfsTables(mergedGtfs, importedGtfs);
+			} finally {
+				importedGtfs._db.cleanup();
+			}
+		}
 
-	importedGtfsSql._db.cleanup();
+		if (!mergedGtfs) return Logger.terminate('No published organization GTFS feeds found.');
 
-	//
-	// Finalize the export process
+		await syncStops(mergedGtfs);
+		await syncLinesRoutesPatterns(mergedGtfs);
+	} finally {
+		mergedGtfs?._db.cleanup();
+	}
 
 	Logger.terminate(`Run took ${globalTimer.get()}`);
-
-	//
 }
 
 /* * */

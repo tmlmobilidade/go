@@ -22,6 +22,12 @@ export async function publishAgencies() {
 	Logger.info({ message: `Retrieved ${allAgenciesData.length} agencies...` });
 
 	//
+	// Resolve GTFS availability from enabled organizations.
+
+	const enabledOrganizations = await goDb.core.organizations.findMany({ 'open_data.services.gtfs_enabled': true });
+	const gtfsAgencyIds = new Set(enabledOrganizations.flatMap(organization => organization.agency_ids));
+
+	//
 	// Parse the agencies into the Hub V1 API schema
 
 	const parsedAgencies: HubV1ApiAgency[] = allAgenciesData.map((agencyData) => {
@@ -35,7 +41,7 @@ export async function publishAgencies() {
 			primary_language: agencyData.primary_language,
 			services: {
 				eta_enabled: agencyData.open_data.services.eta_enabled,
-				gtfs_enabled: agencyData.open_data.services.gtfs_enabled,
+				gtfs_enabled: gtfsAgencyIds.has(agencyData._id),
 				positions_enabled: agencyData.open_data.services.positions_enabled,
 				service_alerts_enabled: agencyData.open_data.services.service_alerts_enabled,
 			},
