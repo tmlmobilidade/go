@@ -2,6 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -10,13 +11,13 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getRssFeedHandler(request: FastifyRequest, reply: FastifyReply<string>) {
+export async function getRssFeedHandler(request: FastifyRequest<{ Params: { organizationId: string } }>, reply: FastifyReply<string>) {
 	//
 
 	//
 	// Get the published feed from the cache
 
-	const cachedData = await cacheDb.get('hub:v1:alerts:published:rss');
+	const cachedData = await cacheDb.get(getOrganizationCacheKey(request.params.organizationId, 'alerts:published:rss'));
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/alerts:getRssFeedHandler()] No RSS feed found in cache. Returning empty message.' });

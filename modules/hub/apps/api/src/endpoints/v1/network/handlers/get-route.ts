@@ -1,6 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiRoute } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -10,13 +11,13 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getRouteHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubV1ApiRoute>) {
+export async function getRouteHandler(request: FastifyRequest<{ Params: { id: string, organizationId: string } }>, reply: FastifyReply<HubV1ApiRoute>) {
 	//
 
 	//
 	// Get the published route from the cache
 
-	const cachedData = await cacheDb.getNew<HubV1ApiRoute>(`hub:v1:network:routes:${request.params.id}`);
+	const cachedData = await cacheDb.getNew<HubV1ApiRoute>(getOrganizationCacheKey(request.params.organizationId, `network:routes:${request.params.id}`));
 
 	if (!cachedData) {
 		Logger.error({ message: `[hub/v1/network:getRouteHandler(${request.params.id})] No cached data found for route ${request.params.id}` });

@@ -1,5 +1,6 @@
 /* * */
 
+import { requireOrganization } from '@/hooks/require-organization.js';
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getGtfsRtJsonFeedHandler } from './handlers/get-gtfs-rt-json-feed.js';
@@ -9,7 +10,7 @@ import { getRssFeedHandler } from './handlers/get-rss-feed.js';
 
 /* * */
 
-const NAMESPACE = '/v1/alerts';
+const NAMESPACE = '/v1/:organizationId/alerts';
 
 /* * */
 
@@ -17,6 +18,8 @@ const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
+		instance.addHook('preHandler', requireOrganization);
+
 		//
 
 		instance.get('/', getJsonFeedHandler);

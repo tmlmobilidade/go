@@ -1,6 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { getOrganizationGtfsResourceId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
@@ -9,25 +10,22 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getGtfsHandler(request: FastifyRequest<{ Params: { organizationShortName: string } }>, reply: FastifyReply<string>) {
+export async function getGtfsHandler(request: FastifyRequest<{ Params: { organizationId: string } }>, reply: FastifyReply<string>) {
 	//
 
 	//
 	// Retrieve the file data from the storage provider
 
-	const organization = await goDb.core.organizations.findOne({
-		'open_data.services.gtfs_enabled': true,
-		'short_name': request.params.organizationShortName,
-	});
+	const organization = await goDb.core.organizations.findById(request.params.organizationId);
 
-	if (!organization) {
+	if (!organization?.open_data?.services?.gtfs_enabled) {
 		return sendErrorApiResponse(reply, {
 			error: 'Organization with GTFS publishing enabled not found',
 			status_code: '404',
 		});
 	}
 
-	const resourceId = `gtfs-latest-${organization.short_name}`;
+	const resourceId = getOrganizationGtfsResourceId(organization._id);
 	const foundFileData = await storageProvider.findById(resourceId);
 
 	if (!foundFileData?.url) {

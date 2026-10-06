@@ -1,5 +1,6 @@
 /* * */
 
+import { requireOrganization } from '@/hooks/require-organization.js';
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getVehicleMetadataJsonHandler } from './handlers/get-vehicle-metadata-json.js';
@@ -9,7 +10,7 @@ import { getVehiclePositionsJsonHandler } from './handlers/get-vehicle-positions
 
 /* * */
 
-const NAMESPACE = '/v1/vehicles';
+const NAMESPACE = '/v1/:organizationId/vehicles';
 
 /* * */
 
@@ -17,6 +18,8 @@ const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
+		instance.addHook('preHandler', requireOrganization);
+
 		//
 
 		instance.get('/metadata', getVehicleMetadataJsonHandler);

@@ -2,26 +2,27 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
-import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 
 /**
  * Retrieves the vehicle positions GTFS RT Protobuf data from the cache.
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getVehiclePositionsGtfsRtProtobufHandler(request: FastifyRequest, reply: FastifyReply<unknown>) {
+export async function getVehiclePositionsGtfsRtProtobufHandler(request: FastifyRequest<{ Params: { organizationId: string } }>, reply: FastifyReply<unknown>) {
 	//
 
 	//
 	// Get the published feed from the cache
 
-	const cachedData = await cacheDb.get('hub:v1:realtime:vehicles:positions:gtfs');
+	const cachedData = await cacheDb.get(getOrganizationCacheKey(request.params.organizationId, 'vehicles:positions:gtfs'));
 
 	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/realtime:getVehiclePositionsGtfsRtProtobufHandler()] No cached data found for vehicles positions' });
+		Logger.error({ message: '[hub/v1/vehicles:getVehiclePositionsGtfsRtProtobufHandler()] No cached data found for vehicles positions' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')
