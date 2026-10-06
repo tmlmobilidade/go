@@ -37,6 +37,8 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		}),
 		...(properties.municipality_ids?.length ? { 'location.secondary.osm_id': { $in: properties.municipality_ids.map(Number) } } : {}),
 		is_deleted: false,
+	}, {
+		projection: { _id: 1, flags: 1, latitude: 1, longitude: 1, name: 1 },
 	});
 
 	for (const stop of stops) {
@@ -48,14 +50,16 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 
 	const agencyIds = [...new Set(stops.flatMap(stop => stop.flags.flatMap(flag => flag.agency_ids)))];
 	const [agencies, lines] = await Promise.all([
-		goDb.core.agencies.findMany({ _id: { $in: agencyIds } }),
-		goDb.offer.lines.findMany({ agency_id: { $in: agencyIds } }),
+		goDb.core.agencies.findMany({ _id: { $in: agencyIds } }, { projection: { _id: 1, code: 1 } }),
+		goDb.offer.lines.findMany({ agency_id: { $in: agencyIds } }, { projection: { _id: 1, agency_id: 1, transport_type: 1 } }),
 	]);
 	const agencyCodesById = new Map(agencies.map(agency => [agency._id, agency.code]));
 	const linesById = new Map(lines.map(line => [line._id, line]));
 	const patterns = await goDb.offer.patterns.findMany({
 		'line_id': { $in: lines.map(line => line._id) },
 		'path.stop_id': { $in: stops.flatMap(stop => [stop._id, Number(stop._id)]) },
+	}, {
+		projection: { 'line_id': 1, 'path.stop_id': 1 },
 	});
 	const modesByStopAndAgency = new Map<string, Set<TransportType>>();
 
@@ -72,20 +76,18 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	}
 
 	const rows = stops.flatMap(stop => stop.flags.flatMap(flag => flag.agency_ids.flatMap((agencyId) => {
-		const modes = modesByStopAndAgency.get(`${stop._id}:${agencyId}`);
-		const mode = modes?.values().next().value ?? '';
-		if (modes && modes.size > 1) {
-			throw new Error(`Multiple transport modes for stop ${stop._id} and agency ${agencyId}: ${[...modes].join(', ')}`);
-		}
+		if (!agencyCodesById.has(agencyId)) return [];
 
-		return toOutputRows({
+		const modes = modesByStopAndAgency.get(`${stop._id}:${agencyId}`);
+
+		return [...(modes ?? ['' as const])].flatMap(mode => toOutputRows({
 			// Parent stations are not yet available through goDb.
 			has_parent_station: false,
 			mode,
 			stop: { ...stop, flags: [{ ...flag, agency_ids: [agencyId] }] },
 			// Stop flags do not currently contain association validity dates.
 			valid_from: '',
-		}, agencyCodesById);
+		}, agencyCodesById));
 	})));
 
 	if (!rows.length) return;
