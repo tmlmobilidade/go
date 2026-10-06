@@ -280,7 +280,10 @@
 		},
 		"extract": {
 			"ExtractButton": {
-				"label": "Exportar"
+				"label": "Exportar paragens"
+			},
+			"ExtractNodesButton": {
+				"label": "Exportar node.txt"
 			},
 			"Header": {
 				"title": "Exportar paragens"

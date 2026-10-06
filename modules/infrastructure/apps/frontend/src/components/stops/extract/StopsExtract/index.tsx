@@ -1,13 +1,16 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Extraction, type InfrastructureStopsV1ExtractionCreate } from '@tmlmobilidade/go-types-extractions';
-import { Button, fetchApiData, Pane, Section, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
+import { type Extraction, type InfrastructureNodesV1ExtractionCreate, type InfrastructureStopsV1ExtractionCreate } from '@tmlmobilidade/go-types-extractions';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Button, fetchApiData, HasPermission, Pane, Section, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { StopsExtractHeader } from '../StopsExtractHeader';
 
 /* * */
+
+type StopsExtractionCreate = InfrastructureNodesV1ExtractionCreate | InfrastructureStopsV1ExtractionCreate;
 
 export function StopsExtract() {
 	//
@@ -22,14 +25,14 @@ export function StopsExtract() {
 	//
 	// B. Handle actions
 
-	const { action: handleExtract } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Extraction[], InfrastructureStopsV1ExtractionCreate>({
+	const { action: handleExtract, isLoading } = useHandleAction({
+		fetchFn: async (version: StopsExtractionCreate['version']) => await fetchApiData<Extraction[], StopsExtractionCreate>({
 			body: {
 				properties: {
 					municipality_ids: [],
 				},
 				send_email_notification: false,
-				version: 'infrastructure-stops-v1',
+				version,
 			},
 			method: 'POST',
 			url: API_ROUTES.core.EXTRACTIONS_CREATE,
@@ -44,9 +47,12 @@ export function StopsExtract() {
 
 	return (
 		<Pane header={[<StopsExtractHeader key="header" />]}>
-			<Section>
-				<Button label={t('default:stops.extract.ExtractButton.label')} onClick={handleExtract} />
-			</Section>
+			<HasPermission action={PermissionCatalog.all.stops.actions.export} scope={PermissionCatalog.all.stops.scope}>
+				<Section gap="sm">
+					<Button disabled={isLoading} label={t('default:stops.extract.ExtractButton.label')} onClick={() => handleExtract('infrastructure-stops-v1')} />
+					<Button disabled={isLoading} label={t('default:stops.extract.ExtractNodesButton.label')} onClick={() => handleExtract('infrastructure-nodes-v1')} />
+				</Section>
+			</HasPermission>
 		</Pane>
 	);
 }

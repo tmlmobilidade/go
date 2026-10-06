@@ -274,7 +274,10 @@
 		},
 		"extract": {
 			"ExtractButton": {
-				"label": "Exportar"
+				"label": "Exportar paradas"
+			},
+			"ExtractNodesButton": {
+				"label": "Exportar node.txt"
 			},
 			"Header": {
 				"title": "Exportar paradas"
