@@ -2,18 +2,16 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsListFilters, type StopsListItem, type StopsListResponse } from '@tmlmobilidade/go-infrastructure-pckg-types';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useStopsLocationsData } from '../shared/use-stops-locations-data';
 import { useStopsListFilterAgency } from './filters/StopsListFilterAgency/use-stops-list-filter-agency';
-import { useStopsListFilterDistrict } from './filters/StopsListFilterDistrict/use-stops-list-filter-district';
-import { useStopsListFilterLocality } from './filters/StopsListFilterLocality/use-stops-list-filter-locality';
-import { useStopsListFilterMunicipality } from './filters/StopsListFilterMunicipality/use-stops-list-filter-municipality';
-import { useStopsListFilterParish } from './filters/StopsListFilterParish/use-stops-list-filter-parish';
+import { useStopsListFilterLocationNeighbourhood } from './filters/StopsListFilterLocationNeighberhood/use-stops-list-filter-location-neighberhood';
+import { useStopsListFilterLocationPrimary } from './filters/StopsListFilterLocationPrimary/use-stops-list-filter-location-primary';
+import { useStopsListFilterLocationSecondary } from './filters/StopsListFilterLocationSecondary/use-stops-list-filter-location-secondary';
+import { useStopsListFilterLocationTertiary } from './filters/StopsListFilterLocationTertiary/use-stops-list-filter-location-tertiary';
 import { useStopsListFilterSearch } from './filters/StopsListFilterSearch/use-stops-list-filter-search';
 
 /* * */
@@ -35,15 +33,11 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	//
 	// A. Setup variables
 
-	const { districtMap, isLoading: isLoadingLocations, localityMap, municipalityMap, parishMap } = useStopsLocationsData({
-		permissions: { actions: [PermissionCatalog.all.stops.actions.read], scope: PermissionCatalog.all.stops.scope },
-	});
-
 	const filterAgency = useStopsListFilterAgency();
-	const filterDistrict = useStopsListFilterDistrict();
-	const filterMunicipality = useStopsListFilterMunicipality();
-	const filterParish = useStopsListFilterParish();
-	const filterLocality = useStopsListFilterLocality();
+	const filterLocationNeighbourhood = useStopsListFilterLocationNeighbourhood();
+	const filterLocationPrimary = useStopsListFilterLocationPrimary();
+	const filterLocationSecondary = useStopsListFilterLocationSecondary();
+	const filterLocationTertiary = useStopsListFilterLocationTertiary();
 	const filterSearch = useStopsListFilterSearch();
 
 	//
@@ -51,12 +45,12 @@ export function useStopsListData(): UseStopsListDataReturnType {
 
 	const query = useMemo<StopsListFilters>(() => ({
 		agency_ids: filterAgency.value,
-		district_ids: filterDistrict.value,
 		lifecycle_statuses: [],
-		locality_ids: filterLocality.value,
-		municipality_ids: filterMunicipality.value,
-		parish_ids: filterParish.value,
-	}), [filterAgency.value, filterMunicipality.value, filterDistrict.value, filterLocality.value, filterParish.value]);
+		location_neighbourhood_ids: filterLocationNeighbourhood.value,
+		location_primary_ids: filterLocationPrimary.value,
+		location_secondary_ids: filterLocationSecondary.value,
+		location_tertiary_ids: filterLocationTertiary.value,
+	}), [filterAgency.value, filterLocationNeighbourhood.value, filterLocationPrimary.value, filterLocationSecondary.value, filterLocationTertiary.value]);
 
 	//
 	// C. Fetch data
@@ -72,12 +66,12 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	const populatedStops = useMemo<StopsListItem[]>(() => {
 		return data?.data?.map(item => ({
 			...item,
-			district_name: districtMap.get(item.district_id)?.name,
-			locality_name: localityMap.get(item.locality_id)?.name,
-			municipality_name: municipalityMap.get(item.municipality_id)?.name,
-			parish_name: parishMap.get(item.parish_id)?.name,
+			neighbourhood_name: item.location.neighbourhood?.name ?? '',
+			primary_location_name: item.location.primary.name,
+			secondary_location_name: item.location.secondary.name,
+			tertiary_location_name: item.location.tertiary.name,
 		}));
-	}, [data?.data, districtMap, localityMap, municipalityMap, parishMap]);
+	}, [data?.data]);
 
 	const searchResultsData = useSearch<StopsListItem>({
 		accessors: ['_id', 'name'],
@@ -91,9 +85,9 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	return useMemo(() => ({
 		data: searchResultsData,
 		error: error?.error,
-		isLoading: isLoading || isLoadingLocations,
+		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [searchResultsData, data?.timestamp, error, isLoading, isLoadingLocations, isValidating, mutate]);
+	}), [searchResultsData, data?.timestamp, error, isLoading, isValidating, mutate]);
 };

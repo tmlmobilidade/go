@@ -19,6 +19,7 @@ interface LineCreateContextState {
 	}
 	flags: {
 		isSaving: boolean
+		isValid: boolean
 	}
 }
 
@@ -52,7 +53,7 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateLineDto>(CreateLineSchema);
+	const { flags, form } = useTypicalForm<CreateLineDto>(CreateLineSchema, undefined, { agency_id: '', code: '', name: '' }, 'controlled');
 
 	//
 	// D. Handle actions
@@ -79,9 +80,12 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			isSaving,
+			isValid: flags.isValid,
 		},
 	}), [
 		form,
+		flags.isValid,
+		handleCreate,
 		isSaving,
 	]);
 

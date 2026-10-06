@@ -4,6 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { type StopsUpdateNameRequest, StopsUpdateNameRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Stop, type StopId } from '@tmlmobilidade/go-types-infrastructure';
+import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -44,9 +45,9 @@ export async function updateStopNameHandler(request: FastifyRequest<{ Body: Stop
 	const hasPermission = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.stops.actions.edit_name,
 		permissions: request.permissions,
-		resource_key: 'municipality_ids',
+		resource_key: 'location_ids',
 		scope: PermissionCatalog.all.stops.scope,
-		value: foundStop.municipality_id,
+		value: locationSlotOsmIds(foundStop.location),
 	});
 
 	if (!hasPermission) {

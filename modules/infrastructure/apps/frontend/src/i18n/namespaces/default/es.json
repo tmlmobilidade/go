@@ -21,17 +21,17 @@
 			},
 			"StepLocationDetails": {
 				"fields": {
-					"district": {
-						"label": "Distrito"
-					},
-					"locality": {
+					"location_neighbourhood": {
 						"label": "Localidad"
 					},
-					"municipality": {
-						"label": "Municipio"
+					"location_primary": {
+						"label": "Comunidad"
 					},
-					"parish": {
-						"label": "Parroquia"
+					"location_secondary": {
+						"label": "Provincia"
+					},
+					"location_tertiary": {
+						"label": "Municipio"
 					}
 				}
 			},
@@ -83,6 +83,48 @@
 					"label": "Parada Eliminada"
 				}
 			},
+			"SectionAmenities": {
+				"description": "Equipamientos y elementos presentes en esta parada.",
+				"fields": {
+					"has_bench": {
+						"label": "¿Existe Banco?"
+					},
+					"has_mupi": {
+						"label": "¿Existe Mupi?"
+					},
+					"has_network_map": {
+						"label": "¿Tiene Mapa de Red?"
+					},
+					"has_schedules": {
+						"label": "¿Tiene Horarios?"
+					},
+					"has_shelter": {
+						"label": "¿Existe Refugio?"
+					},
+					"has_stop_sign": {
+						"label": "¿Tiene Poste?"
+					}
+				},
+				"title": "Amenidades"
+			},
+			"SectionChecks": {
+				"description": "Fechas de las últimas verificaciones y mantenimientos.",
+				"fields": {
+					"last_infrastructure_check": {
+						"label": "Última Verificación de la Infraestructura"
+					},
+					"last_infrastructure_maintenance": {
+						"label": "Último Mantenimiento de la Infraestructura"
+					},
+					"last_schedules_check": {
+						"label": "Última Verificación de los Horarios"
+					},
+					"last_schedules_maintenance": {
+						"label": "Último Mantenimiento de los Horarios"
+					}
+				},
+				"title": "Verificaciones"
+			},
 			"SectionFlagItem": {
 				"fields": {
 					"agency_ids": {
@@ -117,12 +159,77 @@
 				"title": "Identificadores y Postes"
 			},
 			"SectionGeneral": {
+				"coordinates": "Coordenadas",
 				"description": "Información general sobre esta parada.",
-				"title": "Detalles de esta Parada"
+				"edit_link": "Editar",
+				"location_neighbourhood": "Localidad",
+				"location_primary": "Distrito",
+				"location_secondary": "Municipio",
+				"location_tertiary": "Parroquia",
+				"open_in_google_maps": "Abrir en Google Maps",
+				"short_name": "Nombre Corto",
+				"stop_name": "Nombre de la Parada",
+				"title": "Detalles de esta Parada",
+				"tts_name": "Nombre TTS"
+			},
+			"SectionInfrastructure": {
+				"description": "Información relacionada con los equipamientos de la parada y entorno.",
+				"fields": {
+					"bench_status": {
+						"label": "Estado del Banco"
+					},
+					"electricity_status": {
+						"label": "¿Existe Conexión Eléctrica?"
+					},
+					"pole_status": {
+						"label": "Estado del Poste"
+					},
+					"road_type": {
+						"label": "Tipo de Relación con la Vía"
+					}
+				},
+				"title": "Infraestructura"
+			},
+			"SectionMap": {
+				"description": "Localización de la parada.",
+				"title": "Vista Geográfica"
+			},
+			"SectionShelter": {
+				"description": "Información relacionada con el refugio.",
+				"fields": {
+					"shelter_code": {
+						"label": "Código del Refugio"
+					},
+					"shelter_frame_size_height": {
+						"label": "Altura del Marco (mm)"
+					},
+					"shelter_frame_size_width": {
+						"label": "Ancho del Marco (mm)"
+					},
+					"shelter_installation_date": {
+						"label": "Fecha de Instalación del Refugio"
+					},
+					"shelter_maintainer": {
+						"label": "Entidad Gestora del Refugio"
+					},
+					"shelter_make": {
+						"label": "Marca del Refugio"
+					},
+					"shelter_model": {
+						"label": "Modelo del Refugio"
+					},
+					"shelter_status": {
+						"label": "Estado del Refugio"
+					}
+				},
+				"title": "Refugio"
 			},
 			"UpdateCoordinates": {
 				"EditLink": {
 					"label": "Editar"
+				},
+				"OpenInGoogleMaps": {
+					"label": "Google Maps"
 				},
 				"label": "Coordenadas"
 			},
@@ -141,12 +248,6 @@
 						"label": "Longitud"
 					}
 				}
-			},
-			"UpdateName": {
-				"EditLink": {
-					"label": "Editar"
-				},
-				"label": "Nombre Único de la Parada"
 			},
 			"UpdateNameModal": {
 				"Header": {
@@ -186,9 +287,6 @@
 			"FilterConnections": {
 				"label": "Conexiones"
 			},
-			"FilterDistrict": {
-				"label": "Distrito"
-			},
 			"FilterEquipment": {
 				"label": "Equipamientos"
 			},
@@ -198,14 +296,17 @@
 			"FilterLifecycleStatus": {
 				"label": "Estado"
 			},
-			"FilterLocality": {
+			"FilterLocationNeighbourhood": {
 				"label": "Localidad"
 			},
-			"FilterMunicipality": {
-				"label": "Municipio"
+			"FilterLocationPrimary": {
+				"label": "Comunidad"
 			},
-			"FilterParish": {
-				"label": "Parroquia"
+			"FilterLocationSecondary": {
+				"label": "Provincia"
+			},
+			"FilterLocationTertiary": {
+				"label": "Municipio"
 			},
 			"Header": {
 				"title": "Paradas"
@@ -220,19 +321,28 @@
 			},
 			"Table": {
 				"columns": {
-					"district_name": "Distrito",
 					"id": "#ID",
 					"latitude": "Latitud",
-					"locality_name": "Localidad",
+					"location_neighbourhood_name": "Localidad",
+					"location_primary_name": "Comunidad",
+					"location_secondary_name": "Provincia",
+					"location_tertiary_name": "Municipio",
 					"longitude": "Longitud",
-					"municipality_name": "Municipio",
-					"name": "Nombre de la Parada",
-					"parish_name": "Parroquia"
+					"name": "Nombre de la Parada"
 				}
 			}
 		},
 		"shared": {
 			"not_available": "N/A",
+			"road_type": {
+				"complementary_itinerary": "Itinerario Complementario",
+				"highway": "Autopista",
+				"main_itinerary": "Itinerario Principal",
+				"national_road": "Carretera Nacional",
+				"regional_road": "Carretera Regional",
+				"secondary_road": "Carretera Secundaria",
+				"unknown": "Desconocido"
+			},
 			"stop_connection": {
 				"airport": "Aeropuerto",
 				"bike_parking": "Aparcamiento de bicicletas",

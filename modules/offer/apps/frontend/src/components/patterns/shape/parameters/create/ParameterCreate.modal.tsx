@@ -2,7 +2,7 @@
 
 import { DataProviders } from '@/providers/data-providers';
 import { StopsParameter } from '@tmlmobilidade/go-types-offer';
-import { closeModal, LocationsContextProvider, MeContextProvider, openModal } from '@tmlmobilidade/ui';
+import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 import { ParameterCreate } from './ParameterCreate';
 import { ParameterCreateContextProvider } from './ParameterCreate.context';
@@ -18,17 +18,15 @@ export const openCreateParameterModal = (agencyId: string, onSubmit: (rule: Stop
 		children: (
 			<MeContextProvider>
 				<DataProviders agency_id={agencyId}>
-					<LocationsContextProvider>
-						<ParameterCreateContextProvider
-							defaultParameter={defaultParameter}
-							initialValues={initialValues}
-							onDelete={onDelete}
-							onSubmit={onSubmit}
-							path={path}
-						>
-							<ParameterCreate />
-						</ParameterCreateContextProvider>
-					</LocationsContextProvider>
+					<ParameterCreateContextProvider
+						defaultParameter={defaultParameter}
+						initialValues={initialValues}
+						onDelete={onDelete}
+						onSubmit={onSubmit}
+						path={path}
+					>
+						<ParameterCreate />
+					</ParameterCreateContextProvider>
 				</DataProviders>
 			</MeContextProvider>
 		),

@@ -1,13 +1,10 @@
-Location Types Definition
+Location Types
 
-This file defines two distinct type categories:
+All values come from OpenStreetMap through the locations database (`go-interfaces-locationsdb`).
 
-1.	DATABASE TYPES: These maintain the complete GeoJSON Feature structure with geometry
-	and properties nested within the Feature object. This structure is optimized for
-	MongoDB's spatial indexing and querying capabilities, allowing for efficient
-	geospatial operations directly on the database.
-
-2.	CODEBASE TYPES: These flatten the GeoJSON structure by extracting properties to the
-	top level and moving the complete Feature to a separate 'geojson' field. This makes
-	them much easier to work with in application code since you can directly access
-	properties like location.name instead of location.properties.name.
+- `LocationItem`: one administrative division (`osm_id`, `name`, `admin_level`).
+- `Location`: the divisions containing a point, in country-agnostic slots
+  (`country`, `primary`, `secondary`, `tertiary`, optional `neighbourhood`).
+  Which OSM admin_level fills each slot depends on the country.
+- `LocationTreeNode`: the same divisions nested country → primary → secondary → tertiary,
+  used by the permissions UI.

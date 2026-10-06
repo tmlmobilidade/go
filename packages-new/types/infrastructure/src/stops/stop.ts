@@ -1,14 +1,14 @@
 /* * */
 
 import { StopConnectionSchema } from '@/stops/connections.js';
-import { StopEquipmentSchema } from '@/stops/equipment.js';
 import { StopFacilitySchema } from '@/stops/facilities.js';
 import { StopFlagSchema } from '@/stops/flag.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
-import { StopRoadTypeSchema } from '@/stops/road-type.js';
+import { StopShelterSchema } from '@/stops/shelter.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
-import { AvailabilityStatusSchema, BaseDocumentSchema, CommentSchema, ConditionStatusSchema, LifecycleStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { LocationSchema } from '@tmlmobilidade/go-types-locations';
+import { BaseDocumentSchema, CommentSchema, LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -35,39 +35,14 @@ export const StopSchema = BaseDocumentSchema.extend({
 	//
 	// Location
 
-	district_id: z.string(),
 	latitude: LatitudeSchema,
-	locality_id: z.string().nullable().default(null),
+	location: LocationSchema,
 	longitude: LongitudeSchema,
-	municipality_id: z.string(),
-	parish_id: z.string().nullable().default(null),
-
-	//
-	// Infrastructure
-
-	bench_status: ConditionStatusSchema.default('unknown'),
-	electricity_status: AvailabilityStatusSchema.default('unknown'),
-	pole_status: ConditionStatusSchema.default('unknown'),
-	road_type: StopRoadTypeSchema.default('unknown'),
 
 	//
 	// Shelter
 
-	shelter_code: z.string().nullable().default(null),
-	shelter_frame_size: z.tuple([z.number(), z.number()]).nullable().default(null),
-	shelter_installation_date: UnixMillisecondsSchema.nullable().default(null),
-	shelter_maintainer: z.string().nullable().default(null),
-	shelter_make: z.string().nullable().default(null),
-	shelter_model: z.string().nullable().default(null),
-	shelter_status: ConditionStatusSchema.default('unknown'),
-
-	//
-	// Checks
-
-	last_infrastructure_check: UnixMillisecondsSchema.nullable().default(null),
-	last_infrastructure_maintenance: UnixMillisecondsSchema.nullable().default(null),
-	last_schedules_check: UnixMillisecondsSchema.nullable().default(null),
-	last_schedules_maintenance: UnixMillisecondsSchema.nullable().default(null),
+	shelter: StopShelterSchema.nullable().default(null),
 
 	//
 	// Facilities
@@ -75,29 +50,13 @@ export const StopSchema = BaseDocumentSchema.extend({
 	connections: z.array(StopConnectionSchema).default([]),
 	facilities: z.array(StopFacilitySchema).default([]),
 
-	//
-	// Equipments
-
-	equipment: z.array(StopEquipmentSchema).default([]),
-
-	// Has ...
-	has_bench: AvailabilityStatusSchema.default('unknown'),
-	has_mupi: AvailabilityStatusSchema.default('unknown'),
-	has_network_map: AvailabilityStatusSchema.default('unknown'),
-	has_schedules: AvailabilityStatusSchema.default('unknown'),
-	has_shelter: AvailabilityStatusSchema.default('unknown'),
-	has_stop_sign: AvailabilityStatusSchema.default('unknown'),
-
-	//
+	///
+	// Notes & Comments
 	// Images & Files
 
+	comments: z.array(CommentSchema).default([]),
 	file_ids: z.array(z.string()).default([]),
 	image_ids: z.array(z.string()).default([]),
-
-	//
-	// Notes & Comments
-
-	comments: z.array(CommentSchema).default([]),
 	observations: z.string().nullable().default(null),
 
 	//

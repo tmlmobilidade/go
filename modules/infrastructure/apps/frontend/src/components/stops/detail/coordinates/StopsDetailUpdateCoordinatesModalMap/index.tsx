@@ -1,11 +1,10 @@
 'use client';
 
+import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-data';
 import { MapOverlayPins, type MapOverlayPinsPointDataProps, MapOverlayPolygon, MapView } from '@tmlmobilidade/ui';
 import * as turf from '@turf/turf';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useMemo } from 'react';
-
-import { useStopsDetailData } from '../../use-stops-detail-data';
 
 /* * */
 
