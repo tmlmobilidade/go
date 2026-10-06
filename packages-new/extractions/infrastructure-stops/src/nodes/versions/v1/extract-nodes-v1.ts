@@ -55,7 +55,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	const linesById = new Map(lines.map(line => [line._id, line]));
 	const patterns = await goDb.offer.patterns.findMany({
 		'line_id': { $in: lines.map(line => line._id) },
-		'path.stop_id': { $in: stops.map(stop => stop._id) },
+		'path.stop_id': { $in: stops.flatMap(stop => [stop._id, Number(stop._id)]) },
 	});
 	const modesByStopAndAgency = new Map<string, Set<TransportType>>();
 
@@ -73,9 +73,9 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 
 	const rows = stops.flatMap(stop => stop.flags.flatMap(flag => flag.agency_ids.flatMap((agencyId) => {
 		const modes = modesByStopAndAgency.get(`${stop._id}:${agencyId}`);
-		const mode = modes?.values().next().value;
-		if (modes?.size !== 1 || !mode) {
-			throw new Error(`Expected one transport mode for stop ${stop._id} and agency ${agencyId}`);
+		const mode = modes?.values().next().value ?? '';
+		if (modes && modes.size > 1) {
+			throw new Error(`Multiple transport modes for stop ${stop._id} and agency ${agencyId}: ${[...modes].join(', ')}`);
 		}
 
 		return toOutputRows({

@@ -14,7 +14,7 @@ export interface InfrastructureNodesV1OutputRow {
 	lon: number
 	quay_id: string
 	stop_place_id: string
-	mode: TransportType
+	mode: '' | TransportType
 	valid_from: string
 	valid_to: string
 }
