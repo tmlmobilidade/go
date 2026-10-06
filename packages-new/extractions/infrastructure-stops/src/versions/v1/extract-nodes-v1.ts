@@ -10,7 +10,7 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { toOutputRows } from './transform.js';
+import { toOutputRows } from './nodes-transform.js';
 
 /**
  * Exports the permitted stops and their operator identifiers to node.txt.

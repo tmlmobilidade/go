@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import { type InfrastructureNodesV1Input, type InfrastructureNodesV1OutputRow } from './types.js';
+import { type InfrastructureNodesV1Input, type InfrastructureNodesV1OutputRow } from './nodes-types.js';
 
 /* * */
 
