@@ -2,13 +2,14 @@
 
 import { StopIdSchema } from '@/stops/stop-id.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
-import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { LifecycleStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const SimplifiedStopSchema = z.object({
 	_id: StopIdSchema,
+	created_at: UnixMillisecondsSchema,
 	is_deleted: z.boolean().default(false),
 	latitude: LatitudeSchema,
 	legacy_ids: z.array(z.string()).default([]),
@@ -34,6 +35,7 @@ export const SimplifiedStopSchema = z.object({
 	longitude: LongitudeSchema,
 	name: z.string().min(2).max(100),
 	short_name: z.string().min(2).max(55),
+	updated_at: UnixMillisecondsSchema,
 });
 
 export type SimplifiedStop = z.infer<typeof SimplifiedStopSchema>;
