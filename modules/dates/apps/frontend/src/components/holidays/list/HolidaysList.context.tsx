@@ -5,7 +5,7 @@ import { type HolidayNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Holiday } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, useAgencyFilterOptions, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -57,7 +57,8 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 	// B. Setup filters
 
 	const filterSearch = useFilterStateText('search');
-	const filterAgency = useFilterStateList('agency', allAgencyIds, allAgencyOptions);
+	const groupedAgencyOptions = useAgencyFilterOptions(allAgencyOptions);
+	const filterAgency = useFilterStateList('agency', allAgencyIds, groupedAgencyOptions);
 
 	// Get all unique dates from holidays for the dates filter
 	const allDatesOptions = useMemo(() => {
