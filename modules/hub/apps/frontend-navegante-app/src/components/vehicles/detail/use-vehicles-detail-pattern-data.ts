@@ -27,7 +27,7 @@ export function useVehiclesDetailPatternData(patternId: null | string | undefine
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading } = useSWR<ApiResponse<HubV1ApiPattern[]>>(patternId && API_ROUTES.hub.NETWORK_PATTERNS(patternId), {
+	const { data, error, isLoading } = useSWR<ApiResponse<HubV1ApiPattern[]>>(patternId && API_ROUTES.hub.NETWORK_PATTERNS('U4WLV', patternId), {
 		fetcher: async (url: string) => await fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url }),
 		refreshInterval: 5_000, // 5 seconds
 	});

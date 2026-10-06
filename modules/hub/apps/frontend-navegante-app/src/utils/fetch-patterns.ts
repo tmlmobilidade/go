@@ -13,7 +13,7 @@ import { fetchApiData } from '@tmlmobilidade/ui';
  */
 export async function fetchPatterns(patternIds: string[]): Promise<HubV1ApiPattern[][]> {
 	const fetchPromises = patternIds.map(async (patternId) => {
-		const response = await fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS(patternId) });
+		const response = await fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS('U4WLV', patternId) });
 		return response.data;
 	});
 	return await Promise.all(fetchPromises);
