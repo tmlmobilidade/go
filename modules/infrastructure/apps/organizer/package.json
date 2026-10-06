@@ -18,7 +18,9 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-providers-locations": "*",
+		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
