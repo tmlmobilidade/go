@@ -24,7 +24,7 @@ export async function publishAgencies() {
 	//
 	// Resolve GTFS availability from enabled organizations.
 
-	const enabledOrganizations = await goDb.core.organizations.findMany({ 'open_data.services.gtfs_enabled': true });
+	const enabledOrganizations = await goDb.core.organizations.findMany({ 'open_data.gtfs.enabled': true });
 	const gtfsAgencyIds = new Set(enabledOrganizations.flatMap(organization => organization.agency_ids));
 
 	//

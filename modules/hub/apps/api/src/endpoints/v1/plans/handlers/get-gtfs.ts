@@ -18,7 +18,7 @@ export async function getGtfsHandler(request: FastifyRequest<{ Params: { organiz
 
 	const organization = await goDb.core.organizations.findById(request.params.organizationId);
 
-	if (!organization?.open_data?.services?.gtfs_enabled) {
+	if (!organization?.open_data?.gtfs?.enabled) {
 		return sendErrorApiResponse(reply, {
 			error: 'Organization with GTFS publishing enabled not found',
 			status_code: '404',

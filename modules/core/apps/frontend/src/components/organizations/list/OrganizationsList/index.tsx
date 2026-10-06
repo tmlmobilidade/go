@@ -40,7 +40,7 @@ export function OrganizationsList() {
 		},
 		{
 			accessor: 'open_data.gtfs_status',
-			render: item => <ProcessingStatusDisplay value={item.open_data.services.gtfs_enabled ? item.open_data.gtfs_status : 'skipped'} />,
+			render: item => <ProcessingStatusDisplay value={item.open_data.gtfs.enabled ? item.open_data.gtfs.status : 'skipped'} />,
 			title: t('default:organizations.list.table.columns.gtfs_published.label'),
 			width: 180,
 		},

@@ -27,7 +27,7 @@ async function main() {
 	for (const organization of organizations) {
 		let importedGtfs: GtfsHubV1SQLTables | undefined;
 		try {
-			if (!organization.open_data?.services?.gtfs_enabled || !organization.agency_ids.length) {
+			if (!organization.open_data?.gtfs?.enabled || !organization.agency_ids.length) {
 				const keys = await cacheDb.scan(getOrganizationCacheKey(organization._id, 'network:*'));
 				if (keys.length) await cacheDb.deleteMany(keys);
 				for (const resource of ['stops', 'lines', 'routes']) {

@@ -1,19 +1,12 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Organization } from '@tmlmobilidade/go-types-core';
-import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import crypto from 'node:crypto';
 
 import { exportOrganizationGtfs } from './tasks/export-organization.js';
 import { getActivePlans } from './utils/get-active-plans.js';
-
-/* * */
-
-const previousExportHashes = new Map<string, string>();
 
 /* * */
 
@@ -25,78 +18,47 @@ async function main() {
 	const globalTimer = new Timer();
 	const organizationsCollection = await goDb.core.organizations.getCollection();
 
-	await organizationsCollection.updateMany({ 'open_data.gtfs_status': { $ne: 'skipped' }, 'open_data.services.gtfs_enabled': { $ne: true } }, {
-		$set: { 'open_data.gtfs_status': 'skipped' },
+	// Update GTFS Status of Organizations that do not have GTFS Processing enabled
+	await organizationsCollection.updateMany({ 'open_data.gtfs.enabled': { $ne: true }, 'open_data.gtfs.status': { $ne: 'skipped' } }, {
+		$set: { 'open_data.gtfs.status': 'skipped' },
 	});
 
 	//
-	// Each enabled organization publishes a feed containing its agencies.
+	// For each enabled organization, publish a feed containing its agencies.
 
-	const organizations = await goDb.core.organizations.findMany({ 'open_data.services.gtfs_enabled': true });
-	const enabledOrganizationIds = new Set(organizations.map(organization => organization._id));
-
-	for (const organizationId of previousExportHashes.keys()) {
-		if (!enabledOrganizationIds.has(organizationId)) previousExportHashes.delete(organizationId);
-	}
-
-	const organizationExports: { activePlans: Plan[], organization: Organization }[] = [];
-	const failedAgencyIds = new Set<string>();
-
+	const organizations = await goDb.core.organizations.findMany({ 'open_data.gtfs.enabled': true }, { projection: { _id: 1, agency_ids: 1, long_name: 1, open_data: 1 } });
 	for (const organization of organizations) {
 		try {
+			Logger.title(`Publishing GTFS feed for organization ${organization.long_name} (${organization._id}).`);
+
+			//
+			// Retrieve active plans for the organization
 			const activePlans = await getActivePlans(organization.agency_ids);
-			organizationExports.push({ activePlans, organization });
-		} catch (error) {
-			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs_status': 'error' } });
-			organization.agency_ids.forEach(agencyId => failedAgencyIds.add(agencyId));
-			Logger.error({ error, message: `Error selecting GTFS plans for organization ${organization._id}.` });
-		}
-	}
+			const planHashes = activePlans.map(plan => plan.hash).sort();
+			const previousPlanHashes = [...(organization.open_data.gtfs.plan_hashes ?? [])].sort();
 
-	//
-	// Only skip plans absent from every enabled organization's export.
-	// Agencies may belong to more than one organization.
+			// Only reuse a successfully published feed with the same complete list of hashes.
+			const plansUnchanged = planHashes.length === previousPlanHashes.length && planHashes.every((hash, index) => hash === previousPlanHashes[index]);
+			if (organization.open_data.gtfs.status === 'complete' && plansUnchanged) {
+				continue;
+			}
 
-	const plansCollection = await goDb.operation.plans.getCollection();
-	const activePlanIds = organizationExports.flatMap(item => item.activePlans.map(plan => plan._id));
+			if (!activePlans.length) {
+				Logger.warning({ message: `No active plans found for organization ${organization._id}.` });
+			}
 
-	await plansCollection.updateMany({ '_id': { $nin: activePlanIds }, 'agency_id': { $nin: [...failedAgencyIds] }, 'apps.hub_publish_gtfs.status': { $ne: 'skipped' } }, {
-		$set: {
-			'apps.hub_publish_gtfs.message': null,
-			'apps.hub_publish_gtfs.status': 'skipped',
-			'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
-		},
-	});
-
-	for (const { activePlans, organization } of organizationExports) {
-		//
-		// Include membership, organization ID and date so configuration changes
-		// and plan activation dates trigger an export. Cache only successful runs.
-
-		const exportHash = crypto.createHash('sha1').update(JSON.stringify({
-			agency_ids: [...organization.agency_ids].sort(),
-			date: Dates.now('Europe/Lisbon').operational_date_int,
-			organization_id: organization._id,
-			plans: [...activePlans].sort((a, b) => a._id.localeCompare(b._id)).map(plan => ({
-				_id: plan._id,
-				active_from: plan.active_from,
-				active_until: plan.active_until,
-				agency_id: plan.agency_id,
-				attachment: plan.attachments.operation_gtfs_normalized,
-				hash: plan.hash,
-			})),
-		})).digest('hex');
-
-		if (previousExportHashes.get(organization._id) === exportHash && organization.open_data.gtfs_status === 'complete') continue;
-
-		try {
-			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs_status': 'processing' } });
+			//
+			// Generate GTFS feed for the organization
+			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs.status': 'processing', 'open_data.gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 			await exportOrganizationGtfs(organization, activePlans);
-			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs_status': 'complete' } });
-			previousExportHashes.set(organization._id, exportHash);
+			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs.plan_hashes': planHashes, 'open_data.gtfs.status': 'complete', 'open_data.gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
+			Logger.success({ message: `GTFS feed published for organization ${organization._id}.` });
 		} catch (error) {
-			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.gtfs_status': 'error' } });
-			Logger.error({ error, message: `Error publishing GTFS for organization ${organization.short_name}.` });
+			Logger.error({ error, message: `Error generating GTFS feed for organization ${organization._id}.` });
+			await organizationsCollection.updateOne({ _id: organization._id }, { $set: {
+				'open_data.gtfs.status': 'error',
+				'open_data.gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
+			} });
 		}
 	}
 
