@@ -64,7 +64,7 @@ async function main() {
 		}
 
 		//
-		// Include membership, feed name and date so configuration changes
+		// Include membership, organization ID and date so configuration changes
 		// and plan activation dates trigger an export. Cache only successful runs.
 
 		const exportHash = crypto.createHash('sha1').update(JSON.stringify({
@@ -78,7 +78,7 @@ async function main() {
 				attachment: plan.attachments.operation_gtfs_normalized,
 				hash: plan.hash,
 			})),
-			short_name: organization.short_name,
+			organization_id: organization._id,
 		})).digest('hex');
 
 		if (previousExportHashes.get(organization._id) === exportHash) continue;

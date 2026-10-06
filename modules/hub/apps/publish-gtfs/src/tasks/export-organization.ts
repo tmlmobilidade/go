@@ -1,6 +1,6 @@
 /* * */
 
-import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { getOrganizationGtfsResourceId, getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Organization } from '@tmlmobilidade/go-types-core';
@@ -240,7 +240,7 @@ export async function exportOrganizationGtfs(organization: Organization, activeP
 
 		const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
 
-		const resourceId = `gtfs-latest-${organization.short_name}`;
+		const resourceId = getOrganizationGtfsResourceId(organization._id);
 
 		await storageProvider.replace(fileStream, {
 			_id: resourceId,

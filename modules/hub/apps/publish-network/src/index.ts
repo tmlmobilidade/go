@@ -1,5 +1,6 @@
 /* * */
 
+import { getOrganizationGtfsResourceId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
@@ -29,7 +30,7 @@ async function main() {
 		// Combine published organization feeds before updating the global network.
 
 		for (const organization of organizations) {
-			const feed = await storageProvider.findById(`gtfs-latest-${organization.short_name}`);
+			const feed = await storageProvider.findById(getOrganizationGtfsResourceId(organization._id));
 			if (!feed?.url) continue;
 
 			const importedGtfs = await importGtfsHubV1ToDatabase({
