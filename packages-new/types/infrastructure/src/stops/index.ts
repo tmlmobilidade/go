@@ -1,5 +1,6 @@
 export * from './connections.js';
 export * from './facilities.js';
+export * from './filters.js';
 export * from './flag.js';
 export * from './jurisdiction.js';
 export * from './name-abbreviations.js';
