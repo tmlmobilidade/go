@@ -1,6 +1,6 @@
 /* * */
 
-/** Flat ETA row — matches select-eta.sql and the grouped organization snapshots */
+/** Flat ETA row — matches select-eta.sql / by-trip / by-stop JSON */
 export interface TripStopEta {
 	eta_at: number
 	eta_seconds: number

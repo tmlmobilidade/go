@@ -26,6 +26,8 @@ export const SQL_FILES = {
 		'eta/loader/load-historical-vehicle-events.sql',
 		'eta/loader/load-rides.sql',
 		'eta/loader/snap-waypoints.sql',
+		'publish-eta/select-eta-by-stop.sql',
+		'publish-eta/select-eta-by-trip.sql',
 		'publish-eta/select-eta-gtfs.sql',
 		'publish-eta/select-eta.sql',
 		'publish-vehicles/select-vehicle-positions.sql',
