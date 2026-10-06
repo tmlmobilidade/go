@@ -94,19 +94,24 @@ describe('base-map alert filtering order', () => {
 
 describe('base-map vehicle filtering order', () => {
 	const vehiclesData = createVehicleCollection([
-		{ agency_id: 'IA2N9', direction_id: 0, route_id: 'route-a', shape_id: 'route-shape', vehicle_id: 'route-vehicle' },
-		{ agency_id: 'KB1F6', direction_id: 1, route_id: 'route-b', shape_id: 'line-shape', vehicle_id: 'line-vehicle' },
+		{ agency_id: 'IA2N9', direction_id: 0, route_id: 'route-a', route_short_name: '100', shape_id: 'route-shape', vehicle_id: 'route-vehicle' },
+		{ agency_id: 'KB1F6', direction_id: 1, route_id: 'route-b', route_short_name: '200', shape_id: 'line-shape', vehicle_id: 'line-vehicle' },
+		{ agency_id: 'KB1F6', direction_id: 0, route_id: 'route-b-return', route_short_name: '200', shape_id: 'return-shape', vehicle_id: 'return-vehicle' },
+		{ agency_id: 'KB1F6', direction_id: 1, route_id: 'new-route-b', route_short_name: '200', shape_id: 'new-shape', vehicle_id: 'new-vehicle' },
+		{ agency_id: 'KB1F6', direction_id: 1, route_id: 'other-route', route_short_name: '201', shape_id: 'line-shape', vehicle_id: 'other-line-vehicle' },
+		{ agency_id: 'IA2N9', direction_id: 1, route_id: 'other-agency-route', route_short_name: '200', shape_id: 'other-agency-shape', vehicle_id: 'other-agency-vehicle' },
 		{ agency_id: 'IA9T6', direction_id: 1, route_id: 'route-c', shape_id: 'focused-shape', vehicle_id: 'focused-vehicle' },
 		{ agency_id: 'LA77N', direction_id: 0, route_id: 'route-d', shape_id: 'cm-shape', vehicle_id: 'cm-vehicle' },
 		{ agency_id: 'unknown-agency', direction_id: 0, route_id: 'route-e', shape_id: 'unknown-shape', vehicle_id: 'unknown-vehicle' },
 	]);
 	const routePlannerRouteDirections = new Set(['[IA2N9]route-a:0']);
+	const lineDetailLine = { line: { agency_id: 'KB1F6', route_ids: ['route-b', 'route-b-return'], short_name: '200' } };
 
 	it('starts from vehicles matching the selected itinerary route and direction', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: [],
 			focusedVehicleId: null,
-			lineDetailShapeIds: null,
+			lineDetailLine: null,
 			routePlannerRouteDirections,
 			vehiclesData,
 		});
@@ -114,35 +119,47 @@ describe('base-map vehicle filtering order', () => {
 		assert.deepEqual(getVehicleIds(result), ['route-vehicle']);
 	});
 
-	it('lets a selected line shape override itinerary vehicle filtering', () => {
+	it('shows vehicles from every route of the selected line, including a route ID not yet in line data', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: [],
 			focusedVehicleId: null,
-			lineDetailShapeIds: new Set(['line-shape']),
+			lineDetailLine,
 			routePlannerRouteDirections,
 			vehiclesData,
 		});
 
-		assert.deepEqual(getVehicleIds(result), ['line-vehicle']);
+		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'return-vehicle', 'new-vehicle']);
+	});
+
+	it('shows no unrelated vehicles while the selected line is loading', () => {
+		const result = getBaseMapVehiclesMapData({
+			excludedOperatorIds: [],
+			focusedVehicleId: null,
+			lineDetailLine: { line: undefined },
+			routePlannerRouteDirections: null,
+			vehiclesData,
+		});
+
+		assert.deepEqual(getVehicleIds(result), []);
 	});
 
 	it('keeps line vehicles visible and adds the focused vehicle', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: [],
 			focusedVehicleId: 'focused-vehicle',
-			lineDetailShapeIds: new Set(['line-shape']),
+			lineDetailLine,
 			routePlannerRouteDirections,
 			vehiclesData,
 		});
 
-		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'focused-vehicle']);
+		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'return-vehicle', 'new-vehicle', 'focused-vehicle']);
 		assert.deepEqual(
 			result.features.map(feature => feature.properties.is_focused),
-			[false, true],
+			[false, false, false, true],
 		);
 		assert.deepEqual(
 			result.features.map(feature => feature.properties.is_dimmed),
-			[true, false],
+			[true, true, true, false],
 		);
 	});
 
@@ -150,24 +167,24 @@ describe('base-map vehicle filtering order', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: ['CM'],
 			focusedVehicleId: null,
-			lineDetailShapeIds: null,
+			lineDetailLine: null,
 			routePlannerRouteDirections: null,
 			vehiclesData,
 		});
 
-		assert.deepEqual(getVehicleIds(result), ['route-vehicle', 'line-vehicle', 'focused-vehicle', 'unknown-vehicle']);
+		assert.deepEqual(getVehicleIds(result), ['route-vehicle', 'line-vehicle', 'return-vehicle', 'new-vehicle', 'other-line-vehicle', 'other-agency-vehicle', 'focused-vehicle', 'unknown-vehicle']);
 	});
 
 	it('applies operator visibility while preserving the focused vehicle marker', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: ['IA9T6'],
 			focusedVehicleId: 'focused-vehicle',
-			lineDetailShapeIds: new Set(['line-shape']),
+			lineDetailLine,
 			routePlannerRouteDirections,
 			vehiclesData,
 		});
 
-		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'focused-vehicle']);
+		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'return-vehicle', 'new-vehicle', 'focused-vehicle']);
 	});
 });
 
@@ -190,6 +207,7 @@ interface VehicleProperties {
 	is_dimmed?: boolean
 	is_focused?: boolean
 	route_id: string
+	route_short_name?: string
 	shape_id: string
 	vehicle_id: string
 }

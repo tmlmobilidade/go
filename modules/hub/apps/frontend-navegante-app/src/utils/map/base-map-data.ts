@@ -1,6 +1,7 @@
 import { type BaseMapOperatorId } from '@/lib/agency-catalog';
 import { isBaseMapAgencyVisible } from '@/utils/map/base-map-operators';
 import { getRoutePlannerRouteDirectionKey } from '@/utils/route-planner/itinerary/vehicles';
+import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 
@@ -13,9 +14,11 @@ interface BaseMapVehicleProperties {
 	agency_id?: null | string
 	direction_id?: null | number | string
 	route_id?: null | string
-	shape_id?: null | string
+	route_short_name?: null | string
 	vehicle_id?: null | string
 }
+
+type BaseMapLineIdentity = Pick<HubV1ApiLine, 'agency_id' | 'route_ids' | 'short_name'>;
 
 interface GetBaseMapAlertsMapDataParams {
 	alerts: BaseMapAlert[]
@@ -28,7 +31,7 @@ interface GetBaseMapAlertsMapDataParams {
 interface GetBaseMapVehiclesMapDataParams<TProperties extends BaseMapVehicleProperties> {
 	excludedOperatorIds: BaseMapOperatorId[]
 	focusedVehicleId: null | string
-	lineDetailShapeIds: null | Set<string>
+	lineDetailLine: null | { line: BaseMapLineIdentity | undefined }
 	routePlannerRouteDirections: null | Set<string>
 	vehiclesData: GeoJSON.FeatureCollection<GeoJSON.Point, TProperties>
 }
@@ -41,6 +44,15 @@ function getAlertFeatureId(feature: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.Ge
 
 function getVehicleFeatureId(feature: GeoJSON.Feature<GeoJSON.Point, BaseMapVehicleProperties>) {
 	return feature.properties?.vehicle_id;
+}
+
+export function isVehicleOnLine(vehicle: BaseMapVehicleProperties, line: BaseMapLineIdentity | undefined) {
+	if (!line) return false;
+	if (vehicle.agency_id !== line.agency_id) return false;
+	return Boolean(
+		(vehicle.route_id && line.route_ids.includes(vehicle.route_id))
+		|| (vehicle.route_short_name && vehicle.route_short_name === line.short_name),
+	);
 }
 
 /* * */
@@ -92,12 +104,11 @@ export function getBaseMapVehiclesMapData<TProperties extends BaseMapVehicleProp
 		}
 		: params.vehiclesData;
 
-	const lineDetailVehiclesData = params.lineDetailShapeIds
+	const lineDetailVehiclesData = params.lineDetailLine
 		? {
 			...params.vehiclesData,
 			features: params.vehiclesData.features.filter((feature) => {
-				const shapeId = feature.properties?.shape_id;
-				return typeof shapeId === 'string' && params.lineDetailShapeIds?.has(shapeId);
+				return isVehicleOnLine(feature.properties, params.lineDetailLine?.line);
 			}),
 		}
 		: routePlannerVehiclesData;

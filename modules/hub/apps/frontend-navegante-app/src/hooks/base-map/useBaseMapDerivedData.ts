@@ -34,11 +34,12 @@ export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
 	//
 	// B. Transform data
 
-	const lineDetailVehicleShapeIds = useMemo(() => {
+	const lineDetailLine = useMemo(() => {
 		if (params.activeBottomSheet?.view !== 'lines-detail') return null;
-		const activeShapeId = linesDetailContext.data.active_pattern?.shape_id;
-		return new Set(activeShapeId ? [activeShapeId] : []);
-	}, [params.activeBottomSheet?.view, linesDetailContext.data.active_pattern?.shape_id]);
+		return {
+			line: linesDetailContext.data.line?._id === params.activeBottomSheet.entityId ? linesDetailContext.data.line : undefined,
+		};
+	}, [params.activeBottomSheet, linesDetailContext.data.line]);
 
 	const alertsMapData = useMemo(() => {
 		return getBaseMapAlertsMapData({
@@ -59,18 +60,18 @@ export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
 		return getBaseMapVehiclesMapData({
 			excludedOperatorIds: params.excludedOperatorIds,
 			focusedVehicleId: params.focusedVehicleId,
-			lineDetailShapeIds: lineDetailVehicleShapeIds,
+			lineDetailLine,
 			routePlannerRouteDirections: routePlannerMapData.vehicleRouteDirections,
 			vehiclesData: vehiclesFeatureCollection,
 		});
-	}, [lineDetailVehicleShapeIds, params.excludedOperatorIds, params.focusedVehicleId, routePlannerMapData.vehicleRouteDirections, vehiclesFeatureCollection]);
+	}, [lineDetailLine, params.excludedOperatorIds, params.focusedVehicleId, routePlannerMapData.vehicleRouteDirections, vehiclesFeatureCollection]);
 
 	const focusedVehicle = useMemo(() => {
 		if (!params.focusedVehicleId) return null;
 		return vehiclesMapData.features.find(feature => feature.properties?.is_focused === true) ?? null;
 	}, [params.focusedVehicleId, vehiclesMapData.features]);
 
-	const shouldAlwaysShowFilteredVehicles = routePlannerMapData.vehicleRouteDirections !== null || lineDetailVehicleShapeIds !== null;
+	const shouldAlwaysShowFilteredVehicles = routePlannerMapData.vehicleRouteDirections !== null || lineDetailLine !== null;
 
 	//
 	// C. Return data
