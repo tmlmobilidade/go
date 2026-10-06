@@ -279,14 +279,24 @@
 			}
 		},
 		"extract": {
-			"ExtractButton": {
-				"label": "Exportar paragens"
-			},
-			"ExtractNodesButton": {
-				"label": "Exportar node.txt"
-			},
 			"Header": {
 				"title": "Exportar paragens"
+			},
+			"StopsExtractFooter": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"StopsExtractProperties": {
+				"fields": {
+					"municipality_ids": {
+						"label": "Municípios",
+						"placeholder": "Todos os municípios permitidos"
+					},
+					"version": {
+						"label": "Versão"
+					}
+				}
 			}
 		},
 		"list": {

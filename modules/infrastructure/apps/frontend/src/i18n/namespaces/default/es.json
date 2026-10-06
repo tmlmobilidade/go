@@ -273,14 +273,24 @@
 			}
 		},
 		"extract": {
-			"ExtractButton": {
-				"label": "Exportar paradas"
-			},
-			"ExtractNodesButton": {
-				"label": "Exportar node.txt"
-			},
 			"Header": {
 				"title": "Exportar paradas"
+			},
+			"StopsExtractFooter": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"StopsExtractProperties": {
+				"fields": {
+					"municipality_ids": {
+						"label": "Municipios",
+						"placeholder": "Todos los municipios permitidos"
+					},
+					"version": {
+						"label": "Versión"
+					}
+				}
 			}
 		},
 		"list": {
