@@ -6,7 +6,7 @@ import { type InfrastructureNodesV1Input, type InfrastructureNodesV1OutputRow } 
 
 /**
  * Converts a stop's flags into rows for node.txt.
- * @param input The stop with the flags and agencies selected for export, plus stop place, mode and validity dates.
+ * @param input The stop with the flags and agencies selected for export, plus parent station presence, mode and validity dates.
  * @param agencyCodesById Public agency codes indexed by internal agency ID.
  * @returns One row per agency in each flag, in CSV column order.
  */
@@ -21,8 +21,8 @@ export function toOutputRows(input: InfrastructureNodesV1Input, agencyCodesById:
 			stop_name: input.stop.name,
 			lat: input.stop.latitude,
 			lon: input.stop.longitude,
-			quay_id: input.stop._id,
-			stop_place_id: input.stop_place_id,
+			quay_id: input.has_parent_station ? input.stop._id : '',
+			stop_place_id: input.stop._id,
 			mode: input.mode,
 			valid_from: input.valid_from,
 			valid_to: input.valid_to ?? '',

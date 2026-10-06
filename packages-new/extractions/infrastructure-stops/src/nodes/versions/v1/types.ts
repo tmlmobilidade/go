@@ -19,7 +19,8 @@ export interface InfrastructureNodesV1OutputRow {
 	valid_to: string
 }
 
-export type InfrastructureNodesV1Input = Omit<InfrastructureNodesV1OutputRow, 'lat' | 'lon' | 'operator_id' | 'operator_stop_id' | 'quay_id' | 'stop_name' | 'valid_to'> & {
+export type InfrastructureNodesV1Input = Pick<InfrastructureNodesV1OutputRow, 'mode' | 'valid_from'> & {
+	has_parent_station: boolean
 	stop: Pick<Stop, '_id' | 'flags' | 'latitude' | 'longitude' | 'name'>
 	valid_to?: string
 };
