@@ -1,45 +1,37 @@
-/* * */
+import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-
+import { TTL_REALTIME } from '../../config.js';
 import { EXTERNAL_FEEDS } from '../external-feeds.js';
-import { cacheEtasByAll } from './cache-etas-by-all.js';
-import { cacheEtasByStop } from './cache-etas-by-stop.js';
-import { cacheEtasByTrip } from './cache-etas-by-trip.js';
-import { cacheAllEtasFromClickHouse } from './cache-etas-from-clickhouse-all.js';
-import { cacheEtasFromClickHouseByStop } from './cache-etas-from-clickhouse-by-stop.js';
-import { cacheEtasFromClickHouseByTrip } from './cache-etas-from-clickhouse-by-trip.js';
+import { getClickHouseEtas } from './get-clickhouse-etas.js';
 import { getExternalEtas } from './get-external-etas.js';
+import { groupEtasByStop, groupEtasByTrip } from './trip-updates-to-etas.js';
 
-/* * */
+export async function publishEtas(organizationId: string, agencyIds: string[]) {
+	let etas = await getClickHouseEtas(agencyIds);
 
-/**
- * Publishes the simplified (non-GTFS) trip-stop ETA caches.
- *
- * Rebuilds `eta:all`, `eta:by-trip:*`, and `eta:by-stop:*` from ClickHouse.
- * External feeds can later merge into those same keys via
- * {@link cacheEtasByTrip}, {@link cacheEtasByStop}, and {@link cacheEtasInAll}.
- */
-export async function publishEtas() {
-	//
-
-	Logger.title('Publishing trip stop ETAs...');
-
-	const globalTimer = new Timer();
-
-	// Rebuild ETA caches from ClickHouse SQL aggregations
-	await cacheAllEtasFromClickHouse();
-	await cacheEtasFromClickHouseByTrip();
-	await cacheEtasFromClickHouseByStop();
-
-	for (const feed of EXTERNAL_FEEDS) {
-		const etas = await getExternalEtas(feed);
-		await cacheEtasByTrip(etas);
-		await cacheEtasByStop(etas);
-		await cacheEtasByAll(etas);
+	for (const feed of EXTERNAL_FEEDS.filter(feed => agencyIds.includes(feed.agencyId))) {
+		const externalEtas = await getExternalEtas(organizationId, feed);
+		const externalTripIds = new Set(externalEtas.map(eta => eta.trip_id));
+		etas = [...etas.filter(eta => !externalTripIds.has(eta.trip_id)), ...externalEtas];
 	}
 
-	Logger.success(`Finished publishing trip stop ETAs (${globalTimer.get()})`);
+	const currentKeys = new Set<string>();
+	for (const [resource, grouped] of [['by-trip', groupEtasByTrip(etas)], ['by-stop', groupEtasByStop(etas)]] as const) {
+		for (const [id, rows] of grouped) {
+			const key = getOrganizationCacheKey(organizationId, `eta:${resource}:${id}`);
+			const sorted = [...rows].sort((a, b) => a.stop_sequence - b.stop_sequence);
+			await cacheDb.set(key, JSON.stringify(sorted), TTL_REALTIME);
+			currentKeys.add(key);
+		}
+	}
+	await cacheDb.set(getOrganizationCacheKey(organizationId, 'eta:all'), JSON.stringify(etas), TTL_REALTIME);
 
-	//
-};
+	for (const resource of ['by-trip', 'by-stop']) {
+		const staleKeys = (await cacheDb.scan(getOrganizationCacheKey(organizationId, `eta:${resource}:*`))).filter(key => !currentKeys.has(key));
+		if (staleKeys.length) await cacheDb.deleteMany(staleKeys);
+	}
+
+	Logger.success(`Published ${etas.length} ETAs for organization ${organizationId}.`);
+}

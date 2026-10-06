@@ -1,15 +1,17 @@
 /* * */
 
+import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type Organization } from '@tmlmobilidade/go-types-core';
 import { type HubV1ApiPlan, HubV1ApiPlanSchema } from '@tmlmobilidade/go-types-hub';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
-export async function publishApprovedPlans() {
+export async function publishApprovedPlans(organization: Organization) {
 	//
 
 	Logger.title('Publishing approved plans JSON feed...');
@@ -19,7 +21,7 @@ export async function publishApprovedPlans() {
 	//
 	// Retrieve all plans
 
-	const allPlansData = await goDb.operation.plans.findMany();
+	const allPlansData = await goDb.operation.plans.findMany({ agency_id: { $in: organization.agency_ids } });
 
 	Logger.info({ message: `Retrieved ${allPlansData.length} approved plans...` });
 
@@ -91,7 +93,7 @@ export async function publishApprovedPlans() {
 	//
 	// Save the result in API Cache
 
-	await cacheDb.set('hub:v1:plans:approved:json', JSON.stringify(approvedPlans));
+	await cacheDb.set(getOrganizationCacheKey(organization._id, 'plans:approved:json'), JSON.stringify(approvedPlans));
 
 	Logger.success(`Finished publishing ${approvedPlans.length} approved plans JSON feed. (${globalTimer.get()})`);
 };

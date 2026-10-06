@@ -15,11 +15,7 @@ WITH trip_summary AS (
 
 stops AS (
     SELECT
-        if(
-            empty(r._id),
-            e.trip_id,
-            concat('[', r.plan_id, ']', '[', r.agency_id, ']', e.trip_id)
-        )                                                                        AS trip_id,
+        concat('[', e.plan_id, ']', '[', e.agency_id, ']', e.trip_id)                 AS trip_id,
         e.vehicle_id                                                             AS vehicle_id,
         e.stop_id                                                                AS stop_id,
         e.stop_sequence                                                          AS stop_sequence,
@@ -54,10 +50,11 @@ stops AS (
     LEFT JOIN eta.curr_waypoints_snapped AS w
         ON w.hashed_trip_id = e.hashed_trip_id AND w.stop_sequence = e.stop_sequence
     LEFT JOIN eta.curr_rides AS r
-        ON r.trip_id = e.trip_id
+        ON r.trip_id = e.trip_id AND r.agency_id = e.agency_id AND r.hashed_trip_id = e.hashed_trip_id
     LEFT JOIN trip_summary AS ts
         ON ts.hashed_trip_id = e.hashed_trip_id
-    WHERE estimated_arrival_unix IS NOT NULL
+    WHERE has({agency_ids:Array(String)}, e.agency_id)
+        AND estimated_arrival_unix IS NOT NULL
     ORDER BY trip_id, stop_sequence, stop_id
     LIMIT 1 BY trip_id, stop_id
 ),

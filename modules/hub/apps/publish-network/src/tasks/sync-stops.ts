@@ -1,6 +1,6 @@
 /* * */
 
-import { decodeStopFlags } from '@tmlmobilidade/go-hub-pckg-utils';
+import { decodeStopFlags, getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiStop, HubV1ApiStopSchema, type HubV1GtfsStops } from '@tmlmobilidade/go-types-hub';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
@@ -17,7 +17,7 @@ interface QueryResult extends HubV1GtfsStops {
 
 /* * */
 
-export async function syncStops(importedGtfsSql: GtfsSQLTables) {
+export async function syncStops(importedGtfsSql: GtfsSQLTables, organizationId: string, agencyIds: string[]) {
 	//
 
 	Logger.title(`Sync Stops`);
@@ -87,7 +87,7 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 			//
 			// Parse the flags object
 
-			const decodedFlags = decodeStopFlags(gtfsStop.flags);
+			const decodedFlags = decodeStopFlags(gtfsStop.flags).filter(flag => agencyIds.includes(flag.agency_id));
 
 			//
 			// Build the final stop object
@@ -118,7 +118,7 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 
 			const parsedStop = HubV1ApiStopSchema.parse(validatedStop);
 
-			await cacheDb.setNew(`hub:v1:network:stops:${gtfsStop.stop_id}`, parsedStop);
+			await cacheDb.setNew(getOrganizationCacheKey(organizationId, `network:stops:${gtfsStop.stop_id}`), parsedStop);
 
 			exportedStopsData.push(parsedStop);
 
@@ -127,15 +127,18 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 			//
 		} catch (error) {
 			Logger.error({ error, message: `Error processing stop ${gtfsStop.stop_id}: ${JSON.stringify(gtfsStop)}` });
-			process.exit(1);
-			continue;
+			throw error;
 		}
 	}
 
 	//
 	// Save to the database
 
-	await cacheDb.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
+	await cacheDb.set(getOrganizationCacheKey(organizationId, 'network:stops'), JSON.stringify(exportedStopsData));
+
+	const currentStopKeys = new Set<string>(exportedStopsData.map(stop => getOrganizationCacheKey(organizationId, `network:stops:${stop._id}`)));
+	const staleStopKeys = (await cacheDb.scan(getOrganizationCacheKey(organizationId, 'network:stops:*'))).filter(key => !currentStopKeys.has(key));
+	if (staleStopKeys.length) await cacheDb.deleteMany(staleStopKeys);
 
 	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 };

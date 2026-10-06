@@ -5,6 +5,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Organization } from '@tmlmobilidade/go-types-core';
 import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
+import { HubV1GtfsAgencySchema, HubV1GtfsCalendarDatesSchema, HubV1GtfsPlansSchema, HubV1GtfsRoutesSchema, HubV1GtfsShapesSchema, HubV1GtfsStopsSchema, HubV1GtfsStopTimesSchema, HubV1GtfsTripsSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -202,6 +203,22 @@ export async function exportOrganizationGtfs(organization: Organization, activeP
 		await exportStopsFile(context, Array.from(referencedAgencyIds));
 		await exportAgencyFile(context, Array.from(referencedAgencyIds));
 		await exportFeedInfoFile(context, currentDate, farthestDateFound ?? currentDate);
+
+		// Keep empty snapshots importable and replace previously published service.
+		const fileSchemas = {
+			agency: HubV1GtfsAgencySchema,
+			calendar_dates: HubV1GtfsCalendarDatesSchema,
+			plans: HubV1GtfsPlansSchema,
+			routes: HubV1GtfsRoutesSchema,
+			shapes: HubV1GtfsShapesSchema,
+			stop_times: HubV1GtfsStopTimesSchema,
+			stops: HubV1GtfsStopsSchema,
+			trips: HubV1GtfsTripsSchema,
+		};
+		for (const [name, schema] of Object.entries(fileSchemas)) {
+			const filePath = `${context.workdir.path}/${name}.txt`;
+			if (!fs.existsSync(filePath)) fs.writeFileSync(filePath, `${Object.keys(schema.shape).join(',')}\n`);
+		}
 
 		//
 		// Zip the exported GTFS files into a single archive.

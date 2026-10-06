@@ -38,10 +38,10 @@ export async function transformReferenceTypeRidesIntoJson(alertData: Alert): Pro
 
 		const foundRide = await labDb.queryFromString<Ride>(`
 			SELECT * FROM operation.rides
-			WHERE _id = '${reference.parent_id}'
+			WHERE _id = $1 AND agency_id = $2
 			ORDER BY updated_at DESC
 			LIMIT 1 BY _id
-		`);
+		`, { 1: reference.parent_id, 2: alertData.agency_id });
 
 		if (!foundRide.length) {
 			Logger.error({ message: `[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.` });

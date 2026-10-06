@@ -9,14 +9,16 @@ import { type ClickHouseEtaGtfsResponse } from '../types.js';
 
 /* * */
 
-export async function getClickHouseTripUpdates(): Promise<GtfsRtTripUpdate[]> {
+export async function getClickHouseTripUpdates(agencyIds: string[]): Promise<GtfsRtTripUpdate[]> {
 	//
+
+	if (!agencyIds.length) return [];
 
 	const timer = new Timer();
 
 	Logger.info({ message: 'Retrieving Estimated Time of Arrivals from ClickHouse...' });
 
-	const allTripUpdates = await labDb.queryFromFile<ClickHouseEtaGtfsResponse>(sqlPath('hub', 'publish-eta/select-eta-gtfs.sql'));
+	const allTripUpdates = await labDb.queryFromFile<ClickHouseEtaGtfsResponse>(sqlPath('hub', 'publish-eta/select-eta-gtfs.sql'), { agency_ids: agencyIds });
 
 	const tripUpdates: GtfsRtTripUpdate[] = allTripUpdates.map(row => JSON.parse(row.trip_update));
 

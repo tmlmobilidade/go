@@ -38,7 +38,7 @@ async function getStopNames(stopIds: string[]): Promise<Map<string, string>> {
  * @param feed - External feed config (agency, label, fetch fn)
  * @returns Flat {@link TripStopEta} rows ready for simplified ETA caches
  */
-export async function getExternalEtas(feed: ExternalFeedConfig): Promise<TripStopEta[]> {
+export async function getExternalEtas(organizationId: string, feed: ExternalFeedConfig): Promise<TripStopEta[]> {
 	//
 
 	const timer = new Timer();
@@ -46,8 +46,8 @@ export async function getExternalEtas(feed: ExternalFeedConfig): Promise<TripSto
 	Logger.info({ message: `Retrieving trip stop ETAs from ${feed.label} API...` });
 
 	const [tripUpdates, scheduleIndex] = await Promise.all([
-		getExternalTripUpdates(feed),
-		loadTripScheduleIndex(feed.agencyId),
+		getExternalTripUpdates(organizationId, feed),
+		loadTripScheduleIndex(organizationId, feed.agencyId),
 	]);
 	const stopIds = [...new Set(tripUpdates.flatMap(tripUpdate =>
 		(tripUpdate.stop_time_update ?? [])

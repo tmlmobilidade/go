@@ -35,10 +35,16 @@ async function main() {
 	}
 
 	const organizationExports: { activePlans: Plan[], organization: Organization }[] = [];
+	const failedAgencyIds = new Set<string>();
 
 	for (const organization of organizations) {
-		const activePlans = await getActivePlans(organization.agency_ids);
-		organizationExports.push({ activePlans, organization });
+		try {
+			const activePlans = await getActivePlans(organization.agency_ids);
+			organizationExports.push({ activePlans, organization });
+		} catch (error) {
+			organization.agency_ids.forEach(agencyId => failedAgencyIds.add(agencyId));
+			Logger.error({ error, message: `Error selecting GTFS plans for organization ${organization._id}.` });
+		}
 	}
 
 	//
@@ -48,7 +54,7 @@ async function main() {
 	const plansCollection = await goDb.operation.plans.getCollection();
 	const activePlanIds = organizationExports.flatMap(item => item.activePlans.map(plan => plan._id));
 
-	await plansCollection.updateMany({ '_id': { $nin: activePlanIds }, 'apps.hub_publish_gtfs.status': { $ne: 'skipped' } }, {
+	await plansCollection.updateMany({ '_id': { $nin: activePlanIds }, 'agency_id': { $nin: [...failedAgencyIds] }, 'apps.hub_publish_gtfs.status': { $ne: 'skipped' } }, {
 		$set: {
 			'apps.hub_publish_gtfs.message': null,
 			'apps.hub_publish_gtfs.status': 'skipped',
@@ -57,12 +63,6 @@ async function main() {
 	});
 
 	for (const { activePlans, organization } of organizationExports) {
-		if (!activePlans.length) {
-			previousExportHashes.delete(organization._id);
-			Logger.info({ message: `No eligible plans for organization ${organization.short_name}.` });
-			continue;
-		}
-
 		//
 		// Include membership, organization ID and date so configuration changes
 		// and plan activation dates trigger an export. Cache only successful runs.
@@ -70,6 +70,7 @@ async function main() {
 		const exportHash = crypto.createHash('sha1').update(JSON.stringify({
 			agency_ids: [...organization.agency_ids].sort(),
 			date: Dates.now('Europe/Lisbon').operational_date_int,
+			organization_id: organization._id,
 			plans: [...activePlans].sort((a, b) => a._id.localeCompare(b._id)).map(plan => ({
 				_id: plan._id,
 				active_from: plan.active_from,
@@ -78,7 +79,6 @@ async function main() {
 				attachment: plan.attachments.operation_gtfs_normalized,
 				hash: plan.hash,
 			})),
-			organization_id: organization._id,
 		})).digest('hex');
 
 		if (previousExportHashes.get(organization._id) === exportHash) continue;

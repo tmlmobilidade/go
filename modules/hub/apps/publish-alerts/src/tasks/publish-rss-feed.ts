@@ -1,7 +1,10 @@
 /* * */
 
+import { getModuleConfig } from '@tmlmobilidade/consts';
+import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Organization } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
@@ -10,16 +13,13 @@ import { transformAlertIntoRssEntity } from '../transform/rss/main.js';
 
 /* * */
 
-const RSS_FEED_URL = 'https://www.carrismetropolitana.pt/alerts';
-
-/* * */
-
-export async function publishRssFeed() {
+export async function publishRssFeed(organization: Organization, agencyIds: string[]) {
 	//
 
 	Logger.title('Starting build of RSS feed...');
 
 	const globalTimer = new Timer();
+	const feedUrl = `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organization._id)}/alerts`;
 
 	//
 	// Retrieve active alerts from the database
@@ -38,6 +38,7 @@ export async function publishRssFeed() {
 					publish_status: 'published',
 				},
 			],
+			agency_id: { $in: agencyIds },
 		},
 		{
 			sort: { created_at: -1 },
@@ -49,7 +50,7 @@ export async function publishRssFeed() {
 	//
 	// Transform alerts into RSS feed entities
 
-	const transformedItems = await Promise.all(findResult.map(alert => transformAlertIntoRssEntity(alert, RSS_FEED_URL)));
+	const transformedItems = await Promise.all(findResult.map(alert => transformAlertIntoRssEntity(alert, feedUrl)));
 
 	const transformResult: RssRawItem[] = transformedItems.filter((item): item is RssRawItem => item !== undefined);
 
@@ -59,14 +60,14 @@ export async function publishRssFeed() {
 	// Save the result in API Cache
 
 	const rssFeed: string = createRssFeed(transformResult, {
-		copyright: 'Carris Metropolitana',
-		description: 'Alertas e atualizações da Carris Metropolitana.',
-		feedSelfUrl: `${RSS_FEED_URL}.rss`,
-		link: RSS_FEED_URL,
-		title: 'Carris Metropolitana - Alertas',
+		copyright: organization.long_name,
+		description: `Alertas e atualizações de ${organization.long_name}.`,
+		feedSelfUrl: `${feedUrl}.rss`,
+		link: feedUrl,
+		title: `${organization.long_name} - Alertas`,
 	});
 
-	await cacheDb.set('hub:v1:alerts:published:rss', rssFeed);
+	await cacheDb.set(getOrganizationCacheKey(organization._id, 'alerts:published:rss'), rssFeed);
 
 	Logger.success(`Finished publishing RSS feed (${globalTimer.get()})`);
 
