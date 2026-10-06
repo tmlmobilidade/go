@@ -11,7 +11,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { toOutputRows } from './transform.js';
-import { type InfrastructureNodesV1OutputRow } from './types.js';
 
 /**
  * Exports the permitted stops and their operator identifiers to node.txt.
@@ -58,43 +57,36 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		'line_id': { $in: lines.map(line => line._id) },
 		'path.stop_id': { $in: stops.map(stop => stop._id) },
 	});
-	const modesByStop = new Map<string, Map<string, Set<TransportType>>>();
+	const modesByStopAndAgency = new Map<string, Set<TransportType>>();
 
 	for (const pattern of patterns) {
 		const line = linesById.get(pattern.line_id);
 		if (!line) continue;
 
 		for (const item of pattern.path ?? []) {
-			const modesByAgency = modesByStop.get(item.stop_id) ?? new Map<string, Set<TransportType>>();
-			const modes = modesByAgency.get(line.agency_id) ?? new Set<TransportType>();
+			const key = `${item.stop_id}:${line.agency_id}`;
+			const modes = modesByStopAndAgency.get(key) ?? new Set<TransportType>();
 			modes.add(line.transport_type);
-			modesByAgency.set(line.agency_id, modes);
-			modesByStop.set(item.stop_id, modesByAgency);
+			modesByStopAndAgency.set(key, modes);
 		}
 	}
 
-	const rows: InfrastructureNodesV1OutputRow[] = [];
-
-	for (const stop of stops) {
-		for (const flag of stop.flags) {
-			for (const agencyId of flag.agency_ids) {
-				const modes = modesByStop.get(stop._id)?.get(agencyId);
-				const mode = modes?.values().next().value;
-				if (modes?.size !== 1 || !mode) {
-					throw new Error(`Expected one transport mode for stop ${stop._id} and agency ${agencyId}`);
-				}
-
-				rows.push(...toOutputRows({
-					// Parent stations are not yet available through goDb.
-					has_parent_station: false,
-					mode,
-					stop: { ...stop, flags: [{ ...flag, agency_ids: [agencyId] }] },
-					// Stop flags do not currently contain association validity dates.
-					valid_from: '',
-				}, agencyCodesById));
-			}
+	const rows = stops.flatMap(stop => stop.flags.flatMap(flag => flag.agency_ids.flatMap((agencyId) => {
+		const modes = modesByStopAndAgency.get(`${stop._id}:${agencyId}`);
+		const mode = modes?.values().next().value;
+		if (modes?.size !== 1 || !mode) {
+			throw new Error(`Expected one transport mode for stop ${stop._id} and agency ${agencyId}`);
 		}
-	}
+
+		return toOutputRows({
+			// Parent stations are not yet available through goDb.
+			has_parent_station: false,
+			mode,
+			stop: { ...stop, flags: [{ ...flag, agency_ids: [agencyId] }] },
+			// Stop flags do not currently contain association validity dates.
+			valid_from: '',
+		}, agencyCodesById);
+	})));
 
 	if (!rows.length) return;
 
