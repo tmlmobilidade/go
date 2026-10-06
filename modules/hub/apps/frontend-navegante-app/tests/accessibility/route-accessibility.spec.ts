@@ -13,6 +13,7 @@ test('nested sorting hides the parent, traps keyboard focus, and restores its tr
 	await trigger.focus();
 	await page.keyboard.press('Enter');
 	const filter = page.getByRole('dialog', { exact: true, name: 'Ordenar' });
+	await expectFullWidthRows(filter, 4);
 	await expect(page.locator('[data-overlay-container]')).toHaveAttribute('aria-hidden', 'true');
 	await expect(page.getByRole('dialog')).toHaveCount(1);
 	await expect(trigger).toHaveAttribute('aria-expanded', 'true');
@@ -46,6 +47,8 @@ test('transport checkboxes filter results and announce when no routes remain', a
 	const results = page.getByRole('dialog', { name: 'Opções de percurso' });
 	await results.getByRole('button', { exact: true, name: 'Transportes' }).click();
 	const filter = page.getByRole('dialog', { exact: true, name: 'Transportes' });
+	await expectFullWidthRows(filter, 2);
+	await page.screenshot({ path: '/private/tmp/navegante-transport-filter.png' });
 	const bus = filter.getByRole('checkbox', { exact: true, name: 'Autocarro' });
 	const rail = filter.getByRole('checkbox', { exact: true, name: 'Comboio' });
 	await expect(bus).toBeChecked();
@@ -69,12 +72,15 @@ test('time radios and date validation remain labelled and keyboard operable', as
 	await openResults(page);
 	await page.getByRole('dialog', { name: 'Opções de percurso' }).getByRole('button', { exact: true, name: 'Agora' }).click();
 	const filter = page.getByRole('dialog', { exact: true, name: 'Data e hora' });
+	await expectFullWidthRows(filter, 3);
+	await page.screenshot({ path: '/private/tmp/navegante-date-filter.png' });
 	await expect(filter.getByRole('radio', { exact: true, name: 'Agora' })).toBeChecked();
 	await filter.getByRole('radio', { exact: true, name: 'Chegar até' }).focus();
 	await page.keyboard.press('Space');
 	await expect(filter.getByRole('radio', { exact: true, name: 'Chegar até' })).toBeChecked();
 	await expect(filter.getByRole('radio', { exact: true, name: 'Partida às' })).not.toBeChecked();
 	const date = filter.getByRole('textbox', { exact: true, name: 'Data e hora' });
+	await expect(date).toBeInViewport({ ratio: 1 });
 	await date.fill('');
 	await expect(date).toHaveAttribute('aria-invalid', 'true');
 	const error = filter.getByRole('alert');
@@ -166,6 +172,16 @@ for (const failure of ['error', 'empty'] as const) {
 
 async function expectFocusInside(dialog: Locator) {
 	await expect.poll(async () => await dialog.evaluate(element => element.contains(document.activeElement) ? 'inside' : document.activeElement?.outerHTML)).toBe('inside');
+}
+
+async function expectFullWidthRows(dialog: Locator, count: number) {
+	const rows = dialog.locator('label');
+	await expect(rows).toHaveCount(count);
+	await expect.poll(async () => await rows.evaluateAll((elements) => {
+		const boxes = elements.map(element => element.getBoundingClientRect());
+		return boxes.every((box, index) => box.width > 250 && box.height >= 56 && (index === 0 || box.top >= boxes[index - 1].bottom));
+	})).toBe(true);
+	await expect(rows.last()).toBeInViewport({ ratio: 1 });
 }
 
 async function scanDialog(page: Page, dialog: Locator) {

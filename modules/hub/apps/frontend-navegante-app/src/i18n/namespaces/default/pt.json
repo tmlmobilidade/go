@@ -275,7 +275,7 @@
 				"modes": {
 					"bus": "Autocarro",
 					"ferry": "Barco",
-					"label": "Transportes",
+					"label": "Modos",
 					"rail": "Comboio",
 					"subway": "Metro",
 					"tram": "Elétrico",
@@ -292,8 +292,8 @@
 				"select_itinerary_aria_label": "Selecionar percurso, {summary}",
 				"selected_itinerary_status": "Percurso selecionado, {summary}",
 				"sort": {
-					"best": "Melhor",
-					"fastest": "Rápida",
+					"best": "Recomendado",
+					"fastest": "Mais rápida",
 					"fewer_transfers": "Menos trocas",
 					"label": "Ordenar",
 					"least_walking": "Menos a pé"

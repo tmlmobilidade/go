@@ -5,6 +5,7 @@ import { RoutePlannerFilterPanel } from '@/components/routes/list/RoutePlannerFi
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/types/route-planner/models';
 import { formatDateTimeLocalInputValue } from '@/utils/route-planner/presentation/format';
+import { IconArrowLeft, IconArrowRight, IconClock } from '@tabler/icons-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -75,7 +76,7 @@ export function RoutePlannerTimeFilter({ id, onClose }: RoutePlannerTimeFilterPr
 			footer={routePlannerContext.data.travel_time.mode !== 'now' && (
 				<div className={styles.dateTimeField}>
 					<label className={styles.dateTimeLabel} htmlFor={dateTimeInputId}>
-						<span className={styles.visuallyHidden}>
+						<span className={styles.dateTimeFieldLabel}>
 							{t('default:routes.RoutePlannerInput.time.datetime_label')}
 						</span>
 						<input
@@ -102,7 +103,9 @@ export function RoutePlannerTimeFilter({ id, onClose }: RoutePlannerTimeFilterPr
 				onClick={() => handleTravelTimeModeChange('now')}
 				selection="radio"
 				value="now"
+				variant="row"
 			>
+				<IconClock aria-hidden="true" size={22} />
 				{t('default:routes.RoutePlannerInput.time.now')}
 			</RoutePlannerFilterButton>
 			<RoutePlannerFilterButton
@@ -111,7 +114,9 @@ export function RoutePlannerTimeFilter({ id, onClose }: RoutePlannerTimeFilterPr
 				onClick={() => handleTravelTimeModeChange('departure')}
 				selection="radio"
 				value="departure"
+				variant="row"
 			>
+				<IconArrowRight aria-hidden="true" size={22} />
 				{t('default:routes.RoutePlannerInput.time.departure')}
 			</RoutePlannerFilterButton>
 			<RoutePlannerFilterButton
@@ -120,7 +125,9 @@ export function RoutePlannerTimeFilter({ id, onClose }: RoutePlannerTimeFilterPr
 				onClick={() => handleTravelTimeModeChange('arrival')}
 				selection="radio"
 				value="arrival"
+				variant="row"
 			>
+				<IconArrowLeft aria-hidden="true" size={22} />
 				{t('default:routes.RoutePlannerInput.time.arrival')}
 			</RoutePlannerFilterButton>
 		</RoutePlannerFilterPanel>

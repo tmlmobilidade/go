@@ -3,7 +3,7 @@
 import { RoutePlannerFilterButton } from '@/components/routes/list/RoutePlannerFilterButton';
 import { RoutePlannerFilterPanel } from '@/components/routes/list/RoutePlannerFilterPanel';
 import { type RoutePlannerSortMode } from '@/utils/route-planner/planning/results';
-import { IconRoute, IconSortAscending, IconWalk } from '@tabler/icons-react';
+import { IconBolt, IconRoute, IconStar, IconWalk } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -20,8 +20,8 @@ interface RoutePlannerSortFilterOption {
 }
 
 const SORT_OPTIONS: RoutePlannerSortFilterOption[] = [
-	{ icon: IconSortAscending, value: 'best' },
-	{ icon: IconSortAscending, value: 'fastest' },
+	{ icon: IconStar, value: 'best' },
+	{ icon: IconBolt, value: 'fastest' },
 	{ icon: IconRoute, value: 'fewer_transfers' },
 	{ icon: IconWalk, value: 'least_walking' },
 ];
@@ -52,8 +52,9 @@ export function RoutePlannerSortFilter({ id, onSortModeChange, sortMode }: Route
 						onClick={() => onSortModeChange(option.value)}
 						selection="radio"
 						value={option.value}
+						variant="row"
 					>
-						<FilterIcon aria-hidden="true" size={14} />
+						<FilterIcon aria-hidden="true" size={22} />
 						{t(`default:routes.RoutePlanner.results.sort.${option.value}`)}
 					</RoutePlannerFilterButton>
 				);

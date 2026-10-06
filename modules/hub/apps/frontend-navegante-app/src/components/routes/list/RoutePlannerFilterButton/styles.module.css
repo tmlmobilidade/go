@@ -31,6 +31,45 @@
 	border-color: var(--color-route-status-info);
 }
 
+.filterButton[data-variant='row'] {
+	flex: 0 0 auto;
+	gap: 14px;
+	justify-content: flex-start;
+	width: 100%;
+	height: auto;
+	min-height: 60px;
+	padding: 10px 8px;
+	font-size: 16px;
+	font-weight: 750;
+	color: var(--color-system-text-100);
+	white-space: normal;
+	border: 0;
+	border-bottom: 1px solid var(--color-system-border-100);
+	border-radius: 0;
+}
+
+.filterButton[data-variant='row']:last-child {
+	border-bottom: 0;
+}
+
+.filterButton[data-variant='row'][data-active='true'] {
+	color: var(--color-route-status-info);
+	background-color: var(--color-system-background-100);
+	border-color: var(--color-system-border-100);
+}
+
+.filterButton[data-variant='row'] .nativeControl {
+	position: static;
+	flex: 0 0 auto;
+	order: 2;
+	width: 22px;
+	height: 22px;
+	margin: 0 0 0 auto;
+	appearance: auto;
+	accent-color: var(--color-route-status-info);
+	clip-path: none;
+}
+
 .filterButton:focus-visible,
 .filterButton:has(:focus-visible) {
 	outline: 2px solid var(--color-brand-navegante);

@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, useId } from 'react';
+import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';
 
@@ -20,22 +20,14 @@ export function RoutePlannerFilterPanel({ children, footer, id, label, selection
 	//
 
 	//
-	// A. Setup variables
-
-	const labelId = useId();
-
-	//
-	// B. Render components
+	// A. Render components
 
 	return (
 		<div className={styles.filtersPanel} id={id}>
-			<div className={styles.filterSection}>
-				<strong id={labelId}>{label}</strong>
-				<div aria-labelledby={labelId} className={styles.filterGroup} role={selection === 'single' ? 'radiogroup' : 'group'}>
-					{children}
-				</div>
-				{footer}
+			<div aria-label={label} className={styles.filterGroup} role={selection === 'single' ? 'radiogroup' : 'group'}>
+				{children}
 			</div>
+			{footer && <div className={styles.footer}>{footer}</div>}
 		</div>
 	);
 

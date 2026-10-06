@@ -53,8 +53,9 @@ export function RoutePlannerModeFilter({ availableModes, enabledModes, id, onMod
 						onClick={() => onModeToggle(option.value)}
 						selection="checkbox"
 						value={option.value}
+						variant="row"
 					>
-						<FilterIcon aria-hidden="true" size={14} />
+						<FilterIcon aria-hidden="true" size={22} />
 						{t(`default:routes.RoutePlanner.results.modes.${option.value}`)}
 					</RoutePlannerFilterButton>
 				);

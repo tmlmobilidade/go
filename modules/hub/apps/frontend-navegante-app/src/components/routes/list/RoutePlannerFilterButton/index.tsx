@@ -15,7 +15,7 @@ interface RoutePlannerFilterButtonProps {
 	onClick: () => void
 	selection?: 'checkbox' | 'radio'
 	value?: string
-	variant?: 'option' | 'trigger'
+	variant?: 'option' | 'row' | 'trigger'
 }
 
 /* * */

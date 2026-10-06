@@ -5,6 +5,13 @@
 
 .dateTimeLabel {
 	display: grid;
+	gap: 6px;
+}
+
+.dateTimeFieldLabel {
+	font-size: 13px;
+	font-weight: 800;
+	color: var(--color-system-text-200);
 }
 
 .dateTimeError {
@@ -14,21 +21,9 @@
 	color: var(--color-route-status-error-text);
 }
 
-.visuallyHidden {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	overflow: hidden;
-	white-space: nowrap;
-	border: 0;
-	clip-path: inset(50%);
-}
-
 .timeInput {
 	width: 100%;
-	height: 38px;
+	height: 48px;
 	padding: 0 10px;
 	font-size: 16px;
 	font-weight: 750;
