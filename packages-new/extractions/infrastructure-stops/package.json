@@ -21,6 +21,7 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
+		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",

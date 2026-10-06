@@ -1,6 +1,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { type TransportType } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
@@ -13,10 +14,8 @@ export interface InfrastructureNodesV1OutputRow {
 	lon: number
 	quay_id: string
 	stop_place_id: string
-	mode: 'AIR' | 'BUS' | 'CABLEWAY' | 'COACH' | 'FERRY' | 'FUNICULAR' | 'METRO' | 'RAIL' | 'TAXI' | 'TRAM' | 'TROLLEYBUS'
-	/** Start of the association's validity, in YYYY-MM-DD format. */
+	mode: TransportType
 	valid_from: string
-	/** End of the association's validity, in YYYY-MM-DD format, or empty when active. */
 	valid_to: string
 }
 
