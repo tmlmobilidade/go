@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAgenciesDetailAgencyId } from '../../detail/use-agencies-detail-agency-id';
 import { useAgenciesOrganizationsData } from '../../shared/use-agencies-organizations-data';
+import { AgenciesListFiltersBar } from '../filters/AgenciesListFiltersBar';
 import { useAgenciesListData } from '../use-agencies-list-data';
 
 /* * */
@@ -72,7 +73,7 @@ export function AgenciesList() {
 	// C. Render components
 
 	return (
-		<Pane header={[<AgenciesListHeader key="header" />]}>
+		<Pane header={[<AgenciesListHeader key="header" />, <AgenciesListFiltersBar key="filters" />]}>
 			{agenciesData.error && <ErrorDisplay message={agenciesData.error} />}
 			{organizationsData.error && <ErrorDisplay message={organizationsData.error} />}
 			<DataTable

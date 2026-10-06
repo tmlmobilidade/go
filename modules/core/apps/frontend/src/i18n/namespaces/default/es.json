@@ -196,6 +196,10 @@
 			}
 		},
 		"list": {
+			"FiltersBar": {
+				"label": "Filtrar por",
+				"organizations": "Organizaciones"
+			},
 			"Header": {
 				"title": "Operadores"
 			},

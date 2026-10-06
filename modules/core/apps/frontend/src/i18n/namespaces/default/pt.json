@@ -195,6 +195,10 @@
 			}
 		},
 		"list": {
+			"FiltersBar": {
+				"label": "Filtrar por",
+				"organizations": "Organizações"
+			},
 			"Header": {
 				"title": "Operadores"
 			},
