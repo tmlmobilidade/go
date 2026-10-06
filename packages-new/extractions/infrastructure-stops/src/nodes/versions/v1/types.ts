@@ -20,7 +20,7 @@ export interface InfrastructureNodesV1OutputRow {
 	valid_to: string
 }
 
-export type InfrastructureNodesV1Input = Omit<InfrastructureNodesV1OutputRow, 'lat' | 'lon' | 'operator_id' | 'operator_stop_id' | 'stop_name' | 'valid_to'> & {
-	stop: Pick<Stop, 'flags' | 'latitude' | 'longitude' | 'name'>
+export type InfrastructureNodesV1Input = Omit<InfrastructureNodesV1OutputRow, 'lat' | 'lon' | 'operator_id' | 'operator_stop_id' | 'quay_id' | 'stop_name' | 'valid_to'> & {
+	stop: Pick<Stop, '_id' | 'flags' | 'latitude' | 'longitude' | 'name'>
 	valid_to?: string
 };
