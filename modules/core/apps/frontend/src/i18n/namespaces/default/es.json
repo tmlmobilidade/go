@@ -28,6 +28,11 @@
 						"label": "Nombre del operador",
 						"placeholder": "Alsa Todi"
 					},
+					"organizations": {
+						"empty": "No pertenece a ninguna organización",
+						"label": "Organizaciones",
+						"loading": "Cargando organizaciones..."
+					},
 					"phone": {
 						"label": "Contacto telefónico",
 						"placeholder": "912345678"
@@ -199,6 +204,7 @@
 					"code": "Código",
 					"id": "#ID",
 					"name": "Nombre",
+					"organizations": "Organizaciones",
 					"pta_name": "Nombre de la Autoridad"
 				}
 			}

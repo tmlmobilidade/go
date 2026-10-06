@@ -2,10 +2,11 @@
 
 import { CreateAgencySchema } from '@tmlmobilidade/go-types-core';
 import { LanguageTagValues, TimezoneIdentifiedValues } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Label, Section, Select, StandardFormController, TagGroup, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
+import { useAgenciesDetailOrganizationsData } from '../use-agencies-detail-organizations-data';
 
 /* * */
 
@@ -18,6 +19,13 @@ export function AgenciesDetailBasicInfo() {
 	const { t } = useTranslation();
 
 	const { capabilities, form } = useAgenciesDetailFormContext();
+
+	const { data: organizations, error: organizationsError, isLoading: organizationsLoading } = useAgenciesDetailOrganizationsData();
+
+	const organizationTags = organizations.map(organization => ({ label: `${organization.long_name} (${organization.short_name})` }));
+	const organizationsStatusLabel = organizationsLoading
+		? t('default:agencies.detail.SectionBasicInfo.fields.organizations.loading')
+		: t('default:agencies.detail.SectionBasicInfo.fields.organizations.empty');
 
 	//
 	// B. Render components
@@ -127,6 +135,18 @@ export function AgenciesDetailBasicInfo() {
 							/>
 						)}
 					/>
+				</Grid>
+				<Grid columns="a" gap="lg">
+					<Section gap="xs" padding="none">
+						<Label size="sm">{t('default:agencies.detail.SectionBasicInfo.fields.organizations.label')}</Label>
+						{organizationsError ? (
+							<Label variant="danger">{organizationsError}</Label>
+						) : organizationsLoading || !organizationTags.length ? (
+							<Label variant="muted">{organizationsStatusLabel}</Label>
+						) : (
+							<TagGroup limit={organizationTags.length} tags={organizationTags} />
+						)}
+					</Section>
 				</Grid>
 			</Section>
 		</Collapsible>
