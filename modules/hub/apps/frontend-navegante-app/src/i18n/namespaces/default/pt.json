@@ -150,6 +150,9 @@
 		}
 	},
 	"lines": {
+		"LineBadge": {
+			"open_details": "Abrir detalhes da linha {line}"
+		},
 		"LinesDetail": {
 			"title": "Detalhes da linha"
 		},

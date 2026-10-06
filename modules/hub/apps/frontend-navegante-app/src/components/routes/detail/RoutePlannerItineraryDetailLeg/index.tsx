@@ -94,7 +94,7 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, is
 					{showOrigin && <div className={styles.modeMarker}><RoutePlannerModeBadge leg={leg} size="md" /></div>}
 					{!isMotisWalkingLeg(leg) && (
 						<div className={styles.lineDirection}>
-							<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} size="md" />
+							<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} size="md" openLineDetails />
 							{!isMotisWalkingLeg(leg) && leg.headsign && (
 								<span aria-label={t('default:routes.RoutePlanner.results.direction', '', { headsign: leg.headsign })} className={styles.headsign}>
 									{leg.headsign}

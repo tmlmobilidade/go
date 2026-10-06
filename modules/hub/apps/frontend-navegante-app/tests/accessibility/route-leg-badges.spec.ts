@@ -17,11 +17,21 @@ test('the map preview labels transit legs, skips walking, and shrinks badges whe
 	await page.getByRole('button', { name: /Alverca de teste/ }).click();
 	await page.getByRole('button', { name: /^Selecionar percurso/ }).click();
 	await expect(page.getByRole('dialog', { name: 'Resumo da rota' })).toBeVisible();
+	await page.getByRole('dialog', { name: 'Resumo da rota' }).getByRole('button', { name: 'Ver alternativas' }).click();
 	const mapBadges = page.locator('[data-route-leg-index]');
+	const results = page.getByRole('dialog', { name: 'Opções de percurso' });
+	await expect(results).toBeVisible();
+	await results.getByRole('button', { name: 'Recolher painel' }).click();
 	await expect(mapBadges).toHaveCount(2);
 	await expect(mapBadges.nth(0)).toContainText('2701');
 	await expect(mapBadges.nth(1)).toContainText('2702');
+	await expect(mapBadges.nth(0)).toBeInViewport();
+	await expect(mapBadges.nth(1)).toBeInViewport();
 	await expect(page.locator('[data-route-leg-index="1"]')).toHaveCount(0);
+	await page.screenshot({ path: '/private/tmp/navegante-map-route-results-badges.png' });
+	await page.getByRole('button', { name: /^Selecionar percurso/ }).click();
+	await expect(page.getByRole('dialog', { name: 'Resumo da rota' })).toBeVisible();
+	await expect(mapBadges).toHaveCount(2);
 	const badgeScale = async () => await mapBadges.first().evaluate(element => Number(new DOMMatrix(getComputedStyle(element).transform).a.toFixed(2)));
 	const initialScale = await badgeScale();
 	await page.mouse.move(195, 300);
@@ -29,6 +39,8 @@ test('the map preview labels transit legs, skips walking, and shrinks badges whe
 	await expect.poll(badgeScale).toBeLessThan(initialScale);
 	await page.screenshot({ path: '/private/tmp/navegante-map-route-leg-badges.png' });
 	await page.getByRole('dialog', { name: 'Resumo da rota' }).getByRole('button', { name: 'Ver alternativas' }).click();
+	await expect(mapBadges).toHaveCount(2);
+	await page.getByRole('dialog', { name: 'Opções de percurso' }).getByRole('button', { exact: true, name: 'Fechar' }).click();
 	await expect(mapBadges).toHaveCount(0);
 });
 

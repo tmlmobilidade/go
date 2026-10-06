@@ -10,6 +10,7 @@ import styles from './styles.module.css';
 
 interface LineBadgeProps {
 	agencyId?: string
+	ariaLabel?: string
 	color?: string
 	lineData?: HubV1ApiLine
 	lineId?: string
@@ -22,7 +23,7 @@ interface LineBadgeProps {
 
 /* * */
 
-export function LineBadge({ agencyId, color, lineData, lineId, onClick, shortName, size = 'md', textColor, withAlertIcon = false }: LineBadgeProps) {
+export function LineBadge({ agencyId, ariaLabel, color, lineData, lineId, onClick, shortName, size = 'md', textColor, withAlertIcon = false }: LineBadgeProps) {
 	//
 
 	//
@@ -50,6 +51,7 @@ export function LineBadge({ agencyId, color, lineData, lineId, onClick, shortNam
 	if (onClick) {
 		return (
 			<button
+				aria-label={ariaLabel}
 				className={styles.badge}
 				data-agency-id={badgeAgencyId}
 				data-clickable="true"

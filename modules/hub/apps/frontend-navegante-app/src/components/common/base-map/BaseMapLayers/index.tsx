@@ -94,7 +94,7 @@ export function BaseMapLayers(props: BaseMapLayersProps) {
 					waypointsData={routePlannerContext.data.route_map_data.waypointsData}
 				/>
 			)}
-			{routePlannerContext.data.view_mode === 'itinerary-detail' && !routePlannerContext.flags.is_navigating && routePlannerContext.data.selected_itinerary && (
+			{(routePlannerContext.data.view_mode === 'results' || routePlannerContext.data.view_mode === 'itinerary-detail') && !routePlannerContext.flags.is_navigating && routePlannerContext.data.selected_itinerary && (
 				<MapViewOverlayRouteLegBadges
 					itinerary={routePlannerContext.data.selected_itinerary}
 					shapeData={routePlannerContext.data.route_map_data.shapeData}

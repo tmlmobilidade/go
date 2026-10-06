@@ -140,6 +140,11 @@ test('itinerary connects transport and waiting steps and ends at the destination
 	await page.setViewportSize({ height: 844, width: 390 });
 	await steps.last().scrollIntoViewIfNeeded();
 	await page.screenshot({ path: '/private/tmp/navegante-itinerary-bottom.png' });
+	await busStep.getByRole('button', { name: 'Abrir detalhes da linha 2790' }).click();
+	const lineSheet = page.getByRole('dialog', { name: 'Detalhes da linha' });
+	await expect(lineSheet).toBeVisible();
+	await lineSheet.getByRole('button', { name: 'Fechar' }).click();
+	await expect(preview).toBeVisible();
 });
 
 /* * */

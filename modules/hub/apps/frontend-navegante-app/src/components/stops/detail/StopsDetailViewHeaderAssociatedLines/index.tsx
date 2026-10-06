@@ -3,6 +3,7 @@
 import { ScrollChips } from '@/components/common/lists/ScrollChips';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { getAgencyDisplayInfo, getAgencyLogo, getAgencyMapOperatorId } from '@/lib/agency-catalog';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import Image from 'next/image';
@@ -20,6 +21,7 @@ export function StopsDetailViewHeaderAssociatedLines() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const { push } = useBottomSheet();
 
 	const stopsDetailContext = useStopsDetailContext();
 
@@ -64,7 +66,12 @@ export function StopsDetailViewHeaderAssociatedLines() {
 						/>
 					)}
 					{group.lines.map(line => (
-						<LineBadge key={line._id} lineData={line} />
+						<LineBadge
+							key={line._id}
+							ariaLabel={t('default:lines.LineBadge.open_details', '', { line: line.short_name })}
+							lineData={line}
+							onClick={() => push({ entityId: line._id, view: 'lines-detail' })}
+						/>
 					))}
 				</div>
 			</ScrollChips>

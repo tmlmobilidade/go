@@ -1,6 +1,7 @@
 'use client';
 
 import { useAlertsData } from '@/components/alerts/use-alerts-data';
+import { RoutePlannerItineraryLegStrip } from '@/components/routes/common/RoutePlannerItineraryLegStrip';
 import { RoutePlannerTime } from '@/components/routes/common/RoutePlannerTime';
 import { RoutePlannerItineraryArrivalStep } from '@/components/routes/detail/RoutePlannerItineraryArrivalStep';
 import { getRoutePlannerLegPlaceName, RoutePlannerItineraryDetailLeg } from '@/components/routes/detail/RoutePlannerItineraryDetailLeg';
@@ -77,16 +78,19 @@ export function RoutePlannerItineraryDetail() {
 					<strong className={styles.duration}>({duration || t('default:routes.RoutePlanner.results.duration_unavailable')})</strong>
 				</div>
 				{!isNavigating && (
-					<div className={styles.metrics}>
-						<span className={styles.metric}>
-							<IconWalk aria-hidden="true" size={16} />
-							{t('default:routes.RoutePlanner.results.walking_time', '', { count: walkingMinutes })}
-						</span>
-						<span className={styles.metric}>
-							<IconClock aria-hidden="true" size={16} />
-							{t('default:routes.RoutePlanner.results.waiting_time', '', { count: waitingMinutes })}
-						</span>
-					</div>
+					<>
+						<div className={styles.metrics}>
+							<span className={styles.metric}>
+								<IconWalk aria-hidden="true" size={16} />
+								{t('default:routes.RoutePlanner.results.walking_time', '', { count: walkingMinutes })}
+							</span>
+							<span className={styles.metric}>
+								<IconClock aria-hidden="true" size={16} />
+								{t('default:routes.RoutePlanner.results.waiting_time', '', { count: waitingMinutes })}
+							</span>
+						</div>
+						<RoutePlannerItineraryLegStrip itinerary={itinerary} />
+					</>
 				)}
 			</header>
 
