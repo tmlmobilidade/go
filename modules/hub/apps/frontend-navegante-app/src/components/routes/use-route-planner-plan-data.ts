@@ -6,7 +6,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubV1ApiMotisPlanResponse } from '@tmlmobilidade/go-types-hub';
 import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
 import { fetchApiData } from '@tmlmobilidade/ui';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import useSWRMutation from 'swr/mutation';
 
 /* * */
@@ -48,9 +48,6 @@ export function useRoutePlannerPlanData(): UseRoutePlannerPlanDataReturnType {
 	// A. Fetch data
 
 	const { data, isMutating, reset, trigger } = useSWRMutation<HubV1ApiMotisPlanResponse, Error, string, RoutePlanRequest>(ROUTE_PLAN_KEY, requestRoutePlan, { throwOnError: true });
-
-	// Reset mutation data when the route planner is unmounted.
-	useEffect(() => () => reset(), [reset]);
 
 	//
 	// B. Transform data

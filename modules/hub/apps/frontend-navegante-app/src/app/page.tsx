@@ -4,6 +4,7 @@ import { AlertsDetail } from '@/components/alerts/detail/AlertsDetail';
 import { ActionBar } from '@/components/common/action-bar/ActionBar';
 import { BaseMap } from '@/components/common/base-map/BaseMap';
 import { BaseMapOverlaysControl } from '@/components/common/base-map/BaseMapOverlaysControl';
+import { AppStatePersistence } from '@/components/common/persistence/AppStatePersistence';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetail.context';
 import { RoutePlannerVehiclesCounter } from '@/components/routes/common/RoutePlannerVehiclesCounter';
@@ -52,6 +53,7 @@ export default function Page() {
 		<LinesDetailContextProvider lineId={activeLineId}>
 			<RoutePlannerContextProvider>
 				<RoutePlannerAnnouncerProvider>
+					<AppStatePersistence isMapFiltersOpen={isMapFiltersOpen} setIsMapFiltersOpen={setIsMapFiltersOpen} />
 					<main className={styles.main}>
 						<h1 className={styles.visuallyHidden}>{t('default:layout.metadata.title')}</h1>
 						<BaseMap />

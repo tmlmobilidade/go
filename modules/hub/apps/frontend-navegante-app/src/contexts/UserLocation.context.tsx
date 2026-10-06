@@ -1,8 +1,8 @@
 'use client';
 
+import { usePersistedPreference } from '@/hooks/persistence/usePersistedPreference';
 import { type UserLocation, type UserLocationError, type UserLocationTrackingMode } from '@/types/common/user-location';
 import { createUserLocationError, getDeviceOrientationBearing } from '@/utils/map/user-location';
-import { useSessionStorage } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 /* * */
@@ -31,6 +31,7 @@ interface UserLocationContextState {
 	}
 	flags: {
 		is_requesting_location: boolean
+		is_storage_ready: boolean
 	}
 }
 
@@ -65,7 +66,7 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 	const [deviceOrientationError, setDeviceOrientationError] = useState<null | UserLocationError>(null);
 	const [isRequestingUserLocation, setIsRequestingUserLocation] = useState(false);
 	const [isBearingTrackingEnabled, setIsBearingTrackingEnabled] = useState(false);
-	const [userLocationTrackingMode, setUserLocationTrackingMode] = useSessionStorage<UserLocationTrackingMode>({ defaultValue: 'follow', key: 'user-location-tracking-mode' });
+	const [userLocationTrackingMode, setUserLocationTrackingMode, isStorageReady] = usePersistedPreference<UserLocationTrackingMode>('user-location-tracking-mode', 'follow', parseTrackingMode);
 	const pendingLocationRequestCount = useRef(0);
 	const userLocationRef = useRef<null | UserLocation>(null);
 
@@ -205,7 +206,7 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 
 	useEffect(() => {
 		// Idle releases the camera, while an enabled location keeps the marker and trip progress current.
-		if (!shouldWatchUserLocation) return;
+		if (!isStorageReady || !shouldWatchUserLocation) return;
 
 		if (typeof navigator === 'undefined' || !navigator.geolocation) {
 			setUserLocationError({
@@ -224,7 +225,7 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 		return () => {
 			navigator.geolocation.clearWatch(watchId);
 		};
-	}, [handleUserLocationError, handleUserLocationSuccess, shouldWatchUserLocation]);
+	}, [handleUserLocationError, handleUserLocationSuccess, isStorageReady, shouldWatchUserLocation]);
 
 	useEffect(() => {
 		if (userLocationTrackingMode !== 'follow-bearing') return;
@@ -280,8 +281,9 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 		},
 		flags: {
 			is_requesting_location: isRequestingUserLocation,
+			is_storage_ready: isStorageReady,
 		},
-	}), [availableUserLocationTrackingModes, deviceOrientationError, enableBearingTracking, followUserLocation, isRequestingUserLocation, requestCurrentLocation, setUserLocationTrackingMode, userLocation, userLocationError, userLocationTrackingMode]);
+	}), [availableUserLocationTrackingModes, deviceOrientationError, enableBearingTracking, followUserLocation, isRequestingUserLocation, isStorageReady, requestCurrentLocation, setUserLocationTrackingMode, userLocation, userLocationError, userLocationTrackingMode]);
 
 	//
 	// F. Render components
@@ -293,4 +295,15 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 	);
 
 	//
+}
+
+/* * */
+
+function parseTrackingMode(value: string): UserLocationTrackingMode {
+	try {
+		const parsed: unknown = JSON.parse(value);
+		return parsed === 'idle' || parsed === 'follow' || parsed === 'follow-bearing' ? parsed : 'follow';
+	} catch {
+		return 'follow';
+	}
 }

@@ -183,6 +183,7 @@ export function RoutePlanner() {
 				<Search
 					key={routePlannerContext.data.location_search_target}
 					inputRef={searchInputRef}
+					onCurrentLocationSelect={() => routePlannerContext.actions.selectCurrentLocation(routePlannerContext.data.location_search_target)}
 					onLocationSelect={handleLocationSelect}
 					placeholder={routePlannerContext.data.location_search_target === 'origin'
 						? t('default:routes.RoutePlannerSearch.origin_placeholder')

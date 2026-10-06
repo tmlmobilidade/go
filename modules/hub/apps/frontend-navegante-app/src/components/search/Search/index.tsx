@@ -11,7 +11,7 @@ import { type SearchGroup as SearchGroupData, type SearchResult } from '@/types/
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/planning/locations';
 import { getSearchDraft, setSearchDraft, subscribeToSearchDraft } from '@/utils/search/search-draft';
-import { IconX } from '@tabler/icons-react';
+import { IconCurrentLocation, IconX } from '@tabler/icons-react';
 import { SearchInput } from '@tmlmobilidade/ui';
 import { type RefObject, useRef, useState, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,12 +23,13 @@ import styles from './styles.module.css';
 interface SearchProps {
 	inputRef?: RefObject<HTMLInputElement | null>
 	locationPicker?: boolean
+	onCurrentLocationSelect?: () => Promise<boolean>
 	onLocationSelect?: (location: RoutePlannerLocation) => void
 	placeholder?: string
 	variant?: 'sheet' | 'top'
 }
 
-export function Search({ inputRef: inputRefProp, locationPicker = false, onLocationSelect, placeholder, variant = 'sheet' }: SearchProps) {
+export function Search({ inputRef: inputRefProp, locationPicker = false, onCurrentLocationSelect, onLocationSelect, placeholder, variant = 'sheet' }: SearchProps) {
 	//
 
 	// A. Setup variables
@@ -38,6 +39,8 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 	const routePlannerContext = useRoutePlannerContext();
 	const searchDraft = useSyncExternalStore(subscribeToSearchDraft, getSearchDraft, getSearchDraft);
 	const [locationPickerQuery, setLocationPickerQuery] = useState('');
+	const [isLocating, setIsLocating] = useState(false);
+	const [currentLocationError, setCurrentLocationError] = useState(false);
 	const [selectedType, setSelectedType] = useState<null | SearchGroupData['key']>(null);
 	const query = locationPicker ? locationPickerQuery : searchDraft;
 	const internalInputRef = useRef<HTMLInputElement>(null);
@@ -83,6 +86,20 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 		onClear();
 	};
 
+	const handleCurrentLocationSelect = async () => {
+		if (!onCurrentLocationSelect || isLocating) return;
+		setCurrentLocationError(false);
+		setIsLocating(true);
+		try {
+			const selected = await onCurrentLocationSelect();
+			if (!selected) setCurrentLocationError(true);
+		} catch {
+			setCurrentLocationError(true);
+		} finally {
+			setIsLocating(false);
+		}
+	};
+
 	//
 	// C. Render components
 
@@ -102,6 +119,13 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onLocat
 					</button>
 				)}
 			/>
+			{locationPicker && onCurrentLocationSelect && (
+				<button className={styles.currentLocationButton} disabled={isLocating} onClick={() => void handleCurrentLocationSelect()} type="button">
+					<IconCurrentLocation aria-hidden="true" size={22} />
+					{t(isLocating ? 'default:routes.RoutePlannerSearch.current_location_loading' : 'default:routes.RoutePlannerSearch.origin.current_location')}
+				</button>
+			)}
+			{currentLocationError && <p className={styles.currentLocationError} role="alert">{t('default:routes.RoutePlannerSearch.current_location_error')}</p>}
 
 			{showTypeChips && <SearchTypeChips onChange={setSelectedType} selectedType={selectedType} />}
 			{visibleGroups.map(group => (

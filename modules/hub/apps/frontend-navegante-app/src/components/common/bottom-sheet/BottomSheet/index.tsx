@@ -107,20 +107,25 @@ export function BottomSheet({
 	const { t } = useTranslation();
 	const contentId = useId();
 	const isSheetOpenRef = useRef(false);
+	const wasOpenedRef = useRef(false);
 	const sheetRef = useRef<SheetRef>(null);
 	const dialogRef = useRef<HTMLDivElement>(null);
-	const { setActiveBottomSheetSnap } = useBottomSheet();
+	const { restoredSnapIndex, setActiveBottomSheetSnap } = useBottomSheet();
 	const snapPoints = customSnapPoints ?? (mapAware ? MAP_BOTTOM_SHEET_SNAP_POINTS : SHEET_SNAP_POINTS_BY_SIZE[size]);
 	const snapPointsKey = useMemo(() => snapPoints.join('|'), [snapPoints]);
 	const detent = customSnapPoints || mapAware || size !== 'fit' ? 'full' : 'content';
-	const selectedInitialSnap = initialSnap ?? (mapAware
+	const defaultInitialSnap = initialSnap ?? (mapAware
 		? MAP_BOTTOM_SHEET_INITIAL_SNAP
 		: customSnapPoints
 			? snapPoints.length - 1
 			: SHEET_INITIAL_SNAP_BY_SIZE[size]);
+	const selectedInitialSnap = opened && restoredSnapIndex !== null && restoredSnapIndex > 0 && restoredSnapIndex < snapPoints.length
+		? restoredSnapIndex
+		: defaultInitialSnap;
 	const selectedInitialSnapPoint = snapPoints[selectedInitialSnap] ?? null;
 	const selectedHeaderMode = headerMode ?? (title ? 'default' : 'handle');
 	const [activeSnapIndex, setActiveSnapIndex] = useState(selectedInitialSnap);
+	const [isOpenAnimationComplete, setIsOpenAnimationComplete] = useState(false);
 	const [snapAnnouncement, setSnapAnnouncement] = useState('');
 	const fullSnapIndex = snapPoints.length - 1;
 	const compactSnapIndex = snapPoints.findIndex((snapPoint, snapIndex) => snapIndex > 0 && snapPoint > 0);
@@ -137,14 +142,16 @@ export function BottomSheet({
 
 	useEffect(() => {
 		if (!opened) {
-			if (syncSnapState) setActiveBottomSheetSnap({ snapIndex: null, snapPoint: null });
+			if (syncSnapState && wasOpenedRef.current) setActiveBottomSheetSnap({ snapIndex: null, snapPoint: null }, contentId);
+			wasOpenedRef.current = false;
 			return;
 		}
 
+		wasOpenedRef.current = true;
 		setActiveSnapIndex(selectedInitialSnap);
 
 		let animationFrameId: number | undefined;
-		if (isSheetOpenRef.current) {
+		if (isOpenAnimationComplete) {
 			animationFrameId = window.requestAnimationFrame(() => {
 				const sheet = sheetRef.current;
 				if (!sheet || sheet.snapPoints.length <= selectedInitialSnap) return;
@@ -156,23 +163,23 @@ export function BottomSheet({
 			setActiveBottomSheetSnap({
 				snapIndex: selectedInitialSnap,
 				snapPoint: selectedInitialSnapPoint,
-			});
+			}, contentId);
 		}
 
 		return () => {
 			if (animationFrameId !== undefined) window.cancelAnimationFrame(animationFrameId);
 		};
-	}, [opened, selectedInitialSnap, selectedInitialSnapPoint, setActiveBottomSheetSnap, snapPointsKey, syncSnapState]);
+	}, [contentId, isOpenAnimationComplete, opened, selectedInitialSnap, selectedInitialSnapPoint, setActiveBottomSheetSnap, snapPointsKey, syncSnapState]);
 
 	useEffect(() => {
 		if (!syncSnapState || !mapAware || !opened) return;
 		return registerActiveBottomSheetSnapController((snapIndex) => {
-			setActiveBottomSheetSnap(getBottomSheetSnapState(snapPoints, snapIndex));
+			setActiveBottomSheetSnap(getBottomSheetSnapState(snapPoints, snapIndex), contentId);
 			const sheet = sheetRef.current;
 			if (!sheet || sheet.snapPoints.length <= snapIndex) return;
 			void sheet.snapTo(snapIndex);
 		});
-	}, [mapAware, opened, setActiveBottomSheetSnap, snapPoints, snapPointsKey, syncSnapState]);
+	}, [contentId, mapAware, opened, setActiveBottomSheetSnap, snapPoints, snapPointsKey, syncSnapState]);
 
 	useEffect(() => {
 		if (!mapAware || !opened || typeof document === 'undefined') return;
@@ -205,7 +212,7 @@ export function BottomSheet({
 				: 'default:common.BottomSheet.collapsed'));
 		}
 		if (!syncSnapState) return;
-		setActiveBottomSheetSnap(getBottomSheetSnapState(snapPoints, snapIndex));
+		setActiveBottomSheetSnap(getBottomSheetSnapState(snapPoints, snapIndex), contentId);
 	};
 
 	const handleSnapToggle = () => {
@@ -222,6 +229,7 @@ export function BottomSheet({
 
 	const handleCloseEnd = () => {
 		isSheetOpenRef.current = false;
+		setIsOpenAnimationComplete(false);
 		setActiveSnapIndex(selectedInitialSnap);
 		setSnapAnnouncement('');
 		onCloseEnd?.();
@@ -229,6 +237,7 @@ export function BottomSheet({
 
 	const handleOpenEnd = () => {
 		isSheetOpenRef.current = true;
+		setIsOpenAnimationComplete(true);
 		initialFocusRef?.current?.focus({ preventScroll: true });
 		// Auto-focus may run while the animated sheet is still outside the viewport.
 		if (modality === 'modal' && !dialogRef.current?.contains(document.activeElement)) {
@@ -239,6 +248,7 @@ export function BottomSheet({
 
 	const handleOpenStart = () => {
 		isSheetOpenRef.current = false;
+		setIsOpenAnimationComplete(false);
 		onOpenStart?.();
 	};
 

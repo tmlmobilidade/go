@@ -1,9 +1,10 @@
 'use client';
 
 import { useUserLocation } from '@/contexts/UserLocation.context';
+import { usePersistedPreference } from '@/hooks/persistence/usePersistedPreference';
 import { type BaseMapOperatorId } from '@/lib/agency-catalog';
 import { type BaseMapOverlayType } from '@/types/common/map';
-import { moveMapView, useSessionStorage } from '@tmlmobilidade/ui';
+import { moveMapView } from '@tmlmobilidade/ui';
 import { type MapRef } from '@vis.gl/react-maplibre';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -21,11 +22,17 @@ interface MapContextState {
 		excludedBaseMapOperatorIds: BaseMapOperatorId[]
 		map: MapRef | undefined
 	}
+	flags: {
+		is_storage_ready: boolean
+	}
 }
 
 /* * */
 
 const MapContext = createContext<MapContextState | undefined>(undefined);
+const BASE_MAP_OPERATOR_IDS: BaseMapOperatorId[] = ['IA9T6', 'IA2N9', 'N18KL', 'LTP61', 'A3H3M', '7NTB1', 'KB1F6', 'HF16N', 'CM'];
+const DEFAULT_BASE_MAP_OVERLAYS: BaseMapOverlayType[] = ['alerts', 'vehicles'];
+const DEFAULT_EXCLUDED_OPERATORS: BaseMapOperatorId[] = [];
 
 export function useMapContext() {
 	const context = useContext(MapContext);
@@ -45,16 +52,10 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 
 	const [dataMapState, setDataMapState] = useState<MapContextState['data']['map']>(undefined);
 
-	const { data: { location: userLocation, tracking_mode: userLocationTrackingMode } } = useUserLocation();
+	const { data: { location: userLocation, tracking_mode: userLocationTrackingMode }, flags: { is_storage_ready: isUserLocationStorageReady } } = useUserLocation();
 
-	const [activeBaseMapOverlays, setActiveBaseMapOverlays] = useSessionStorage<BaseMapOverlayType[]>({
-		defaultValue: ['alerts', 'vehicles'],
-		key: 'active-viewport-map-sources',
-	});
-	const [excludedBaseMapOperatorIds, setExcludedBaseMapOperatorIds] = useSessionStorage<BaseMapOperatorId[]>({
-		defaultValue: [],
-		key: 'excluded-viewport-map-operators',
-	});
+	const [activeBaseMapOverlays, setActiveBaseMapOverlays, areOverlaysReady] = usePersistedPreference('active-viewport-map-sources', DEFAULT_BASE_MAP_OVERLAYS, parseStoredOverlays);
+	const [excludedBaseMapOperatorIds, setExcludedBaseMapOperatorIds, areOperatorsReady] = usePersistedPreference('excluded-viewport-map-operators', DEFAULT_EXCLUDED_OPERATORS, parseStoredOperators);
 
 	//
 	// B. Handle actions
@@ -92,6 +93,7 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 	}, [setExcludedBaseMapOperatorIds]);
 
 	useEffect(() => {
+		if (!isUserLocationStorageReady) return;
 		// Skip if the user location tracking mode is idle
 		if (userLocationTrackingMode === 'idle') return;
 		// Skip if the user location is not available
@@ -101,7 +103,7 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.bearing ?? undefined : undefined;
 		// Move the map view
 		moveMapView(dataMapState, coordinates, { bearing, zoom: 15 });
-	}, [dataMapState, userLocation, userLocationTrackingMode]);
+	}, [dataMapState, isUserLocationStorageReady, userLocation, userLocationTrackingMode]);
 
 	//
 	// C. Define context value
@@ -118,7 +120,10 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 			excludedBaseMapOperatorIds,
 			map: dataMapState,
 		},
-	}), [activeBaseMapOverlays, dataMapState, excludedBaseMapOperatorIds, moveMap, setMap, toggleBaseMapOperator, toggleBaseMapOverlay]);
+		flags: {
+			is_storage_ready: areOverlaysReady && areOperatorsReady,
+		},
+	}), [activeBaseMapOverlays, areOperatorsReady, areOverlaysReady, dataMapState, excludedBaseMapOperatorIds, moveMap, setMap, toggleBaseMapOperator, toggleBaseMapOverlay]);
 
 	//
 	// D. Render components
@@ -128,4 +133,23 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 			{children}
 		</MapContext.Provider>
 	);
+}
+
+/* * */
+
+function parseStoredList<T extends string>(value: string, fallback: T[], allowed: T[]): T[] {
+	try {
+		const parsed: unknown = JSON.parse(value);
+		return Array.isArray(parsed) ? parsed.filter((item): item is T => typeof item === 'string' && allowed.includes(item as T)) : fallback;
+	} catch {
+		return fallback;
+	}
+}
+
+function parseStoredOverlays(value: string): BaseMapOverlayType[] {
+	return parseStoredList(value, DEFAULT_BASE_MAP_OVERLAYS, DEFAULT_BASE_MAP_OVERLAYS);
+}
+
+function parseStoredOperators(value: string): BaseMapOperatorId[] {
+	return parseStoredList(value, DEFAULT_EXCLUDED_OPERATORS, BASE_MAP_OPERATOR_IDS);
 }

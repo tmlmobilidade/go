@@ -3,7 +3,7 @@
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useSessionStorage } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -30,25 +30,34 @@ export function useOperationalDate(): UseOperationalDateReturnType {
 	//
 	// A. Setup variables
 
-	const defaultOperationalDate = useMemo(() => {
-		return Dates.now('local').operational_date_int;
-	}, []);
+	const [todayOperationalDate, setTodayOperationalDate] = useState(() => Dates.now('local').operational_date_int);
 
 	const [selectedOperationalDate, setSelectedOperationalDate] = useSessionStorage<OperationalDateInt>({
-		defaultValue: defaultOperationalDate,
+		defaultValue: todayOperationalDate,
 		key: 'operational-date-int',
 	});
+
+	useEffect(() => {
+		const refreshDate = () => {
+			const today = Dates.now('local').operational_date_int;
+			setTodayOperationalDate(today);
+			if (sessionStorage.getItem('operational-date-selected-on') !== String(today)) {
+				setSelectedOperationalDate(today);
+				sessionStorage.setItem('operational-date-selected-on', String(today));
+			}
+		};
+
+		refreshDate();
+		document.addEventListener('visibilitychange', refreshDate);
+		return () => document.removeEventListener('visibilitychange', refreshDate);
+	}, [setSelectedOperationalDate]);
 
 	//
 	// B. Transform data
 
-	const todayOperationalDate = useMemo(() => {
-		return Dates.now('local').operational_date_int;
-	}, []);
-
 	const tomorrowOperationalDate = useMemo(() => {
-		return Dates.now('local').plus({ days: 1 }).operational_date_int;
-	}, []);
+		return Dates.fromOperationalDateInt(todayOperationalDate, 'local').plus({ days: 1 }).operational_date_int;
+	}, [todayOperationalDate]);
 
 	const isTodaySelected = useMemo(() => {
 		return selectedOperationalDate === todayOperationalDate;
@@ -61,12 +70,17 @@ export function useOperationalDate(): UseOperationalDateReturnType {
 	//
 	// C. Handle actions
 
+	const selectOperationalDate = (value: OperationalDateInt) => {
+		setSelectedOperationalDate(value);
+		sessionStorage.setItem('operational-date-selected-on', String(Dates.now('local').operational_date_int));
+	};
+
 	const setOperationalDate = (value: OperationalDateInt) => {
 		const operationalDateValue = Dates
 			.fromOperationalDateInt(value, 'local')
 			.set({ hour: 15 })
 			.operational_date_int;
-		setSelectedOperationalDate(operationalDateValue);
+		selectOperationalDate(operationalDateValue);
 	};
 
 	const setOperationalDateFromFormat = (value: string, format = 'yyyy-MM-dd') => {
@@ -74,7 +88,7 @@ export function useOperationalDate(): UseOperationalDateReturnType {
 			.fromFormat(value, format, 'local')
 			.set({ hour: 15 })
 			.operational_date_int;
-		setSelectedOperationalDate(operationalDateValue);
+		selectOperationalDate(operationalDateValue);
 	};
 
 	const setOperationalDateFromJsDate = (value: Date) => {
@@ -82,15 +96,15 @@ export function useOperationalDate(): UseOperationalDateReturnType {
 			.fromJSDate(value)
 			.set({ hour: 15 })
 			.operational_date_int;
-		setSelectedOperationalDate(operationalDateValue);
+		selectOperationalDate(operationalDateValue);
 	};
 
 	const setOperationalDateToToday = () => {
-		setSelectedOperationalDate(todayOperationalDate);
+		selectOperationalDate(todayOperationalDate);
 	};
 
 	const setOperationalDateToTomorrow = () => {
-		setSelectedOperationalDate(tomorrowOperationalDate);
+		selectOperationalDate(tomorrowOperationalDate);
 	};
 
 	//

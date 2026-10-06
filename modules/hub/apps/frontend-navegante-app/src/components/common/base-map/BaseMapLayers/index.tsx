@@ -49,6 +49,11 @@ export function BaseMapLayers(props: BaseMapLayersProps) {
 				visible
 			/>
 			<MapViewOverlayStopLineBadges visible />
+			<MapViewOverlayVehicles
+				alwaysShowVehicles={props.derivedData.shouldAlwaysShowFilteredVehicles}
+				vehiclesData={props.derivedData.vehiclesMapData}
+				visible={activeBaseMapOverlays.includes('vehicles')}
+			/>
 
 			{props.focusedEntities.focusedStopMapData && (
 				<MapViewStyleActiveStops
@@ -96,11 +101,6 @@ export function BaseMapLayers(props: BaseMapLayersProps) {
 				/>
 			)}
 
-			<MapViewOverlayVehicles
-				alwaysShowVehicles={props.derivedData.shouldAlwaysShowFilteredVehicles}
-				vehiclesData={props.derivedData.vehiclesMapData}
-				visible={activeBaseMapOverlays.includes('vehicles')}
-			/>
 			<MapViewStyleAlerts
 				data={props.derivedData.alertsMapData}
 				visible={activeBaseMapOverlays.includes('alerts')}

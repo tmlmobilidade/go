@@ -3,6 +3,7 @@
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { StopsDetailContextProvider } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailView } from '@/components/stops/detail/StopsDetailView';
+import { MAP_BOTTOM_SHEET_MIDDLE_SNAP } from '@/constants/bottom-sheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useTranslation } from 'react-i18next';
 
@@ -25,6 +26,7 @@ export function StopsDetail() {
 	return (
 		<BottomSheet
 			accessibleTitle={t('default:stops.StopsDetail.title')}
+			initialSnap={MAP_BOTTOM_SHEET_MIDDLE_SNAP}
 			modality="non-modal"
 			onClose={pop}
 			opened={isOpen}

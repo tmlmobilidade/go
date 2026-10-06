@@ -328,6 +328,8 @@
 			}
 		},
 		"RoutePlannerSearch": {
+			"current_location_error": "Não foi possível obter a sua localização. Verifique as permissões e tente novamente.",
+			"current_location_loading": "A obter a sua localização...",
 			"destination_placeholder": "Pesquisar paragem ou destino",
 			"destination_title": "Escolher destino",
 			"origin": {
