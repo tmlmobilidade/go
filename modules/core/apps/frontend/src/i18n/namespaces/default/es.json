@@ -121,9 +121,6 @@
 							"eta_enabled": {
 								"label": "Disponibilizar estimativas de llegada"
 							},
-							"gtfs_enabled": {
-								"label": "Disponibilizar GTFS unificado"
-							},
 							"positions_enabled": {
 								"label": "Disponibilizar posiciones de los vehículos"
 							},
@@ -271,6 +268,9 @@
 						"label": "Operadores",
 						"placeholder": "Seleccione los operadores de la organización"
 					},
+					"gtfs_enabled": {
+						"label": "Publicar GTFS de la organización"
+					},
 					"long_name": {
 						"label": "Nombre de la organización",
 						"placeholder": "Carris Metropolitana"
@@ -363,6 +363,17 @@
 					}
 				},
 				"title": "Información general"
+			},
+			"SectionOpenData": {
+				"description": "Publicar un GTFS con los planes de todos los operadores de la organización.",
+				"fields": {
+					"services": {
+						"gtfs_enabled": {
+							"label": "Publicar GTFS de la organización"
+						}
+					}
+				},
+				"title": "Datos abiertos"
 			}
 		},
 		"list": {

@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Grid, MultiSelect, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, Section, StandardFormController, Switch, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsAgenciesData } from '../../shared/use-organizations-agencies-data';
@@ -79,6 +79,20 @@ export function OrganizationsCreateBasicInfo() {
 							placeholder={t('default:organizations.create.SectionBasicInfo.fields.agency_ids.placeholder')}
 							readOnly={!capabilities.editEnabled}
 							value={field.value ?? []}
+						/>
+					)}
+				/>
+
+				<StandardFormController
+					control={form.control}
+					name="open_data.services.gtfs_enabled"
+					render={({ field, fieldState }) => (
+						<Switch
+							checked={field.value ?? false}
+							error={fieldState.error?.message}
+							label={t('default:organizations.create.SectionBasicInfo.fields.gtfs_enabled.label')}
+							onChange={field.onChange}
+							readOnly={!capabilities.editEnabled}
 						/>
 					)}
 				/>

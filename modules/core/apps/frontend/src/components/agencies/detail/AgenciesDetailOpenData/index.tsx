@@ -107,19 +107,6 @@ export function AgenciesDetailOpenData() {
 			<Section gap="lg">
 				<StandardFormController
 					control={form.control}
-					name="open_data.services.gtfs_enabled"
-					render={({ field, fieldState }) => (
-						<Switch
-							checked={field.value}
-							error={fieldState.error?.message}
-							label={t('default:agencies.detail.SectionOpenData.fields.services.gtfs_enabled.label')}
-							onChange={field.onChange}
-							readOnly={!capabilities.editEnabled}
-						/>
-					)}
-				/>
-				<StandardFormController
-					control={form.control}
 					name="open_data.services.positions_enabled"
 					render={({ field, fieldState }) => (
 						<Switch
