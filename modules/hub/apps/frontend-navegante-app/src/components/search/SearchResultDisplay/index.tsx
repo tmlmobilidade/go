@@ -1,5 +1,5 @@
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
-import { SearchStopAgencyLogos } from '@/components/search/SearchStopAgencyLogos';
+import { SearchAgencyLogos } from '@/components/search/SearchAgencyLogos';
 import { type SearchResult } from '@/types/common/search';
 
 import styles from './styles.module.css';
@@ -19,9 +19,21 @@ export function SearchResultDisplay({ result }: SearchResultDisplayProps) {
 		return (
 			<div className={styles.stopDisplay}>
 				<strong>{result.label}</strong>
-				<span>
+				<span className={styles.resultMeta}>
 					<small>{getResultDetail(result)}</small>
-					<SearchStopAgencyLogos agencyIds={result.entity.agency_ids} />
+					<SearchAgencyLogos agencyIds={result.entity.agency_ids} />
+				</span>
+			</div>
+		);
+	}
+
+	if (result.type === 'alert') {
+		return (
+			<div className={styles.resultDisplay}>
+				<strong>{result.label}</strong>
+				<span className={styles.resultMeta}>
+					{result.entity.description && <small>{result.entity.description}</small>}
+					<SearchAgencyLogos agencyIds={[result.entity.agency_id]} />
 				</span>
 			</div>
 		);
@@ -40,8 +52,7 @@ export function SearchResultDisplay({ result }: SearchResultDisplayProps) {
 /* * */
 
 function getResultDetail(result: SearchResult) {
-	if (result.type === 'alert') return result.entity.description;
-	if (result.type === 'line') return '';
 	if (result.type === 'stop') return [result.entity.locality_name, result.entity.municipality_name].filter(Boolean).join(' | ');
+	if (result.type !== 'poi') return '';
 	return [result.entity.street, result.entity.areas?.map(area => area.name).filter(Boolean).slice(0, 2).join(', ')].filter(Boolean).join(' | ');
 }

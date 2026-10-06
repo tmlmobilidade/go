@@ -362,6 +362,12 @@
 			"loading": "A pesquisar...",
 			"placeholder": "Pesquisar linhas, paragens, alertas e locais",
 			"results": "{count, plural, one {# resultado encontrado} other {# resultados encontrados}}",
+			"show_more": {
+				"alert": "Ver mais alertas",
+				"line": "Ver mais linhas",
+				"poi": "Ver mais locais",
+				"stop": "Ver mais paragens"
+			},
 			"show_more_lines": "Ver mais linhas de {agency_name}",
 			"title": "Pesquisa"
 		}

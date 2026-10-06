@@ -1,4 +1,5 @@
 import { ScrollChips } from '@/components/common/lists/ScrollChips';
+import { SEARCH_RESULT_TYPE_ORDER } from '@/constants/search';
 import { type SearchGroup } from '@/types/common/search';
 import { useTranslation } from 'react-i18next';
 
@@ -11,8 +12,6 @@ interface SearchTypeChipsProps {
 	selectedType: null | SearchGroup['key']
 }
 
-const SEARCH_TYPES: SearchGroup['key'][] = ['poi', 'stop', 'line', 'alert' ];
-
 /* * */
 
 export function SearchTypeChips({ onChange, selectedType }: SearchTypeChipsProps) {
@@ -21,7 +20,7 @@ export function SearchTypeChips({ onChange, selectedType }: SearchTypeChipsProps
 	return (
 		<ScrollChips>
 			<div aria-label={t('default:search.Search.filter_types')} className={styles.chips} role="group">
-				{SEARCH_TYPES.map(type => (
+				{SEARCH_RESULT_TYPE_ORDER.map(type => (
 					<button
 						key={type}
 						aria-pressed={selectedType === type}

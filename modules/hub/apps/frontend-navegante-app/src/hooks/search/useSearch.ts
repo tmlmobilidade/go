@@ -3,6 +3,7 @@
 import { useAlertsData } from '@/components/alerts/use-alerts-data';
 import { useLinesData } from '@/components/lines/use-lines-data';
 import { useStopsData } from '@/components/stops/use-stops-data';
+import { SEARCH_RESULT_TYPE_ORDER } from '@/constants/search';
 import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
 import { type SearchGroup, type SearchResult } from '@/types/common/search';
@@ -28,15 +29,13 @@ interface SearchCoordinates {
 
 /* * */
 
-const GROUP_TIE_BREAKERS: Record<SearchResult['type'], number> = { alert: 0, line: 1, poi: 3, stop: 2 };
 const MOTIS_PLACE_BIAS = 1;
-const RESULTS_PER_GROUP = 5;
-const RESULTS_WHEN_FILTERED = 20;
+const MOTIS_RESULTS = 10;
 const DEFAULT_SEARCH_COORDINATES: SearchCoordinates = { latitude: 38.7223, longitude: -9.1393 };
 
 /* * */
 
-export function useSearch(query: string, selectedType: null | SearchResult['type'] = null): UseSearchResult {
+export function useSearch(query: string): UseSearchResult {
 	//
 
 	// A. Setup variables
@@ -51,7 +50,7 @@ export function useSearch(query: string, selectedType: null | SearchResult['type
 	const normalizedQuery = normalizeSearchText(query).trim();
 	const motisSearch = useMotisGeocode(query, {
 		errorMessage: t('default:search.Search.error'),
-		numResults: selectedType === 'poi' ? 10 : 8,
+		numResults: MOTIS_RESULTS,
 		placeBias: {
 			latitude: searchBiasCoordinates.latitude,
 			longitude: searchBiasCoordinates.longitude,
@@ -74,8 +73,8 @@ export function useSearch(query: string, selectedType: null | SearchResult['type
 			...motisSearch.data.map(location => toPoiResult(location, normalizedQuery)),
 		].filter((result): result is SearchResult => result !== null);
 
-		return groupResults(results, selectedType);
-	}, [alerts, lines, motisSearch.data, normalizedQuery, selectedType, stops]);
+		return groupResults(results);
+	}, [alerts, lines, motisSearch.data, normalizedQuery, stops]);
 
 	const hasLocalDataError = normalizedQuery ? Boolean(alertsError || linesError || stopsError) : Boolean(linesError);
 	const error = (normalizedQuery ? motisSearch.error : null) || (hasLocalDataError ? t('default:search.Search.error') : null);
@@ -109,7 +108,7 @@ function toPoiResult(location: RoutePlannerLocation, query: string): Extract<Sea
 	};
 }
 
-function groupResults(results: SearchResult[], selectedType: null | SearchResult['type']): SearchGroup[] {
+function groupResults(results: SearchResult[]): SearchGroup[] {
 	const groups = new Map<SearchResult['type'], SearchResult[]>();
 	results.forEach((result) => {
 		const current = groups.get(result.type) ?? [];
@@ -119,19 +118,14 @@ function groupResults(results: SearchResult[], selectedType: null | SearchResult
 
 	return Array.from(groups.entries())
 		.map(([key, groupResults]) => {
-			const limit = key === selectedType ? RESULTS_WHEN_FILTERED : RESULTS_PER_GROUP;
 			return {
 				key,
 				results: key === 'poi'
-					? groupResults.slice(0, limit)
-					: groupResults.sort(compareResults).slice(0, limit),
+					? groupResults
+					: groupResults.sort(compareResults),
 			};
 		})
-		.sort((a, b) => getGroupScore(b) - getGroupScore(a) || GROUP_TIE_BREAKERS[a.key] - GROUP_TIE_BREAKERS[b.key]);
-}
-
-function getGroupScore(group: SearchGroup) {
-	return Math.max(...group.results.map(result => result.score));
+		.sort((a, b) => SEARCH_RESULT_TYPE_ORDER.indexOf(a.key) - SEARCH_RESULT_TYPE_ORDER.indexOf(b.key));
 }
 
 function compareResults(a: SearchResult, b: SearchResult) {

@@ -45,7 +45,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 	const query = locationPicker ? locationPickerQuery : searchDraft;
 	const internalInputRef = useRef<HTMLInputElement>(null);
 	const inputRef = inputRefProp ?? internalInputRef;
-	const search = useSearch(query, selectedType);
+	const search = useSearch(query);
 	const availableGroups = locationPicker
 		? search.groups.filter(group => group.key === 'poi' || group.key === 'stop')
 		: search.groups;
@@ -129,7 +129,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 
 			{showTypeChips && <SearchTypeChips onChange={setSelectedType} selectedType={selectedType} />}
 			{visibleGroups.map(group => (
-				<SearchGroup key={group.key} group={group} onSelect={handleSelect} variant={variant} />
+				<SearchGroup key={`${group.key}:${query}`} group={group} onSelect={handleSelect} variant={variant} />
 			))}
 			{showInitialLines && <SearchInitialLines lines={search.initialLines} onSelect={lineId => push({ entityId: lineId, view: 'lines-detail' })} variant={variant} />}
 

@@ -12,9 +12,17 @@
 	gap: 0.25rem;
 }
 
+.resultMeta {
+	display: flex;
+	gap: 0.45rem;
+	align-items: center;
+	min-width: 0;
+	color: var(--mantine-color-dimmed);
+}
+
 .resultDisplay strong,
 .stopDisplay strong {
-	font-size: 1.05rem;
+	font-size: 15px;
 	line-height: 1.2;
 }
 
@@ -24,12 +32,4 @@
 	color: var(--mantine-color-dimmed);
 	text-overflow: ellipsis;
 	white-space: nowrap;
-}
-
-.stopDisplay > span {
-	display: flex;
-	gap: 0.45rem;
-	align-items: center;
-	min-width: 0;
-	color: var(--mantine-color-dimmed);
 }
