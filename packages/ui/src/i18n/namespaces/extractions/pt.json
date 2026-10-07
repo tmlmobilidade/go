@@ -35,7 +35,7 @@
 	},
 	"versions": {
 		"infrastructure-nodes-v1": {
-			"title": "Node (v1)"
+			"title": "Nodes (v1)"
 		},
 		"infrastructure-stops-v1": {
 			"title": "Paragens (v1)"
