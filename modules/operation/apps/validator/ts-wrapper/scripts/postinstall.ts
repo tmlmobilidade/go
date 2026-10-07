@@ -30,16 +30,12 @@ const LOCAL_BIN_PATH = join(__dirname, '..', 'bin');
 /**
  * Resolves the URL to download the binary from.
  *
- * Pins to the exact package version when available (via npm_package_version
- * set by npm during lifecycle scripts), otherwise falls back to the latest
- * GitHub release.
+ * Binaries are published by the `build-binary` workflow as `validator-build-<n>`
+ * releases of this repository, so there is no per-package-version release to pin
+ * to. Can be overridden with `VALIDATOR_BINARY_BASE_URL` (must end with `/`).
  */
 function getRemoteBinPath(): string {
-	const version = process.env.npm_package_version;
-	if (version) {
-		return `https://github.com/tmlmobilidade/validator/releases/download/${version}/`;
-	}
-	return 'https://github.com/tmlmobilidade/validator/releases/latest/download/';
+	return process.env.VALIDATOR_BINARY_BASE_URL ?? 'https://github.com/tmlmobilidade/go/releases/latest/download/';
 }
 
 /**
