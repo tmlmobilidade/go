@@ -117,8 +117,6 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 
 				for (const mode of modes) {
 					rows.push(...toOutputRows({
-						// Parent stations are not yet available through goDb.
-						has_parent_station: false,
 						mode,
 						stop: operatorStop,
 						// Stop flags do not currently contain association validity dates.

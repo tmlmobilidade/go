@@ -20,7 +20,7 @@ export interface InfrastructureNodesV1OutputRow {
 }
 
 export type InfrastructureNodesV1Input = Pick<InfrastructureNodesV1OutputRow, 'mode' | 'valid_from'> & {
-	has_parent_station: boolean
+	parent_station_id?: string
 	stop: Pick<Stop, '_id' | 'flags' | 'latitude' | 'longitude' | 'name'>
 	valid_to?: string
 };
