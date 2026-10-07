@@ -3,7 +3,7 @@
 import { type GtfsStrictV30Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { OperationPostersV1RoutesSchema, type OperationPostersV1RoutesToCanvasExt } from '@tmlmobilidade/go-types-operation';
 import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';

@@ -1,7 +1,7 @@
 /* * */
 
 import { OperationPostersV1ShapesSchema } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { buildVariantNotes } from '../utils/build-variant-notes.js';

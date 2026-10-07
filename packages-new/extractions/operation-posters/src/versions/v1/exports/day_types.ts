@@ -1,7 +1,7 @@
 /* * */
 
 import { type OperationPostersV1DayTypesExt } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { DAY_TYPES } from '../day-types.js';
 import { type OperationPostersV1Context } from '../types/context.js';

@@ -6,7 +6,7 @@ import { type GtfsTernary, type GtfsTripDirection, type GtfsWheelchairBoarding }
 import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

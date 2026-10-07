@@ -1,7 +1,7 @@
 /* * */
 
 import { OperationPostersV1StopsSchema, type OperationPostersV1StopToCanvasExt } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';

@@ -5,7 +5,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 

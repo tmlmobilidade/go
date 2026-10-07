@@ -2,7 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { OperationPostersV1AgencySchema, type Plan } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context } from '../types/context.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';

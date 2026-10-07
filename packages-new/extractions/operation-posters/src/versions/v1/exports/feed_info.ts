@@ -1,7 +1,7 @@
 /* * */
 
 import { type OperationPostersV1FeedInfo, OperationPostersV1FeedInfoSchema } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context } from '../types/context.js';
 

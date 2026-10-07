@@ -5,7 +5,7 @@ import { type MergedGtfsExportConfig } from '@/types.js';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
