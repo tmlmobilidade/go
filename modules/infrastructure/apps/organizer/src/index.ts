@@ -4,6 +4,7 @@ import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { setStopLocationTask } from './tasks/set-stop-location.js';
+import { syncLabdbTask } from './tasks/sync-labdb.js';
 
 /* * */
 
@@ -21,6 +22,7 @@ async function main() {
 	// Run tasks
 
 	await setStopLocationTask();
+	await syncLabdbTask();
 
 	//
 	// Log completion
