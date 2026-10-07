@@ -27,16 +27,18 @@ export function PlansListHeader() {
 			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
 			<PlansListFilterSearch />
-			<Menu icon={IconDots} label="Extrair">
-				<MenuLabel>Exportações</MenuLabel>
-				<HasPermission action={PermissionCatalog.all.plans.actions.generate_pdf_posters} scope={PermissionCatalog.all.plans.scope}>
-					<MenuItem
-						leftSection={<IconFileTypePdf size={20} />}
-						onClick={openPlanPostersExtractModal}
-						title="Extrair PDFs"
-					/>
-				</HasPermission>
-			</Menu>
+			<HasPermission action={PermissionCatalog.all.plans.actions.generate_pdf_posters} scope={PermissionCatalog.all.plans.scope}>
+				<Menu icon={IconDots} label="Extrair">
+					<MenuLabel>Exportações</MenuLabel>
+					<HasPermission action={PermissionCatalog.all.plans.actions.generate_pdf_posters} scope={PermissionCatalog.all.plans.scope}>
+						<MenuItem
+							leftSection={<IconFileTypePdf size={20} />}
+							onClick={openPlanPostersExtractModal}
+							title="Extrair PDFs"
+						/>
+					</HasPermission>
+				</Menu>
+			</HasPermission>
 		</Toolbar>
 	);
 }
