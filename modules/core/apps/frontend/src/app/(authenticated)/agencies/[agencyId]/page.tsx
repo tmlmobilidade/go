@@ -5,17 +5,9 @@ import { AgenciesDetailFormContextProvider } from '@/components/agencies/detail/
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ agencyId: string }> }) {
-	//
-
-	//
-	// A. Get the agency ID
-	const { agencyId } = await params;
-
-	//
-	// B. Render the page
+export default async function Page() {
 	return (
-		<AgenciesDetailFormContextProvider key={agencyId}>
+		<AgenciesDetailFormContextProvider>
 			<AgenciesDetail />
 		</AgenciesDetailFormContextProvider>
 	);
