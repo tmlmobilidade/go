@@ -104,7 +104,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		}
 	}
 
-	// E. Generate node.txt
+	// E. Generate nodes.txt
 
 	const rows: InfrastructureNodesV1OutputRow[] = [];
 
@@ -127,7 +127,10 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		}
 	}
 
-	if (!rows.length) return;
+	const csv = csvStringify(rows, {
+		columns: ['operator_id', 'operator_stop_id', 'stop_name', 'lat', 'lon', 'quay_id', 'stop_place_id', 'mode', 'valid_from', 'valid_to'] satisfies (keyof InfrastructureNodesV1OutputRow)[],
+		header: true,
+	});
 
-	fs.writeFileSync(path.join(context.output_path, 'nodes.txt'), csvStringify(rows, { header: true }), { encoding: 'utf-8', flush: true });
+	fs.writeFileSync(path.join(context.output_path, 'nodes.txt'), csv, { encoding: 'utf-8', flush: true });
 }
