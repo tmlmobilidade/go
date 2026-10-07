@@ -45,8 +45,11 @@ func TestTypeScriptIsDeterministic(t *testing.T) {
 		if !bytes.Equal(content, second[name]) {
 			t.Errorf("two runs produced different output for %s", name)
 		}
-		if !bytes.HasPrefix(content, []byte(TypeScriptHeader)) {
-			t.Errorf("%s does not start with the regeneration header", name)
+		if !bytes.HasPrefix(content, []byte("/* * */\n\n")) {
+			t.Errorf("%s does not start with a section separator", name)
+		}
+		if !bytes.Contains(content, []byte("/* * */\n\n"+TypeScriptHeader)) {
+			t.Errorf("%s is missing the separator before the regeneration header", name)
 		}
 	}
 }

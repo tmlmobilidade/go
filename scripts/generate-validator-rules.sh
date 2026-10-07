@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Generate the TypeScript validation-rule files from the Go validator.
+# The Go generator adds /* * */ separators before imports and the file body.
 # Usage: ./generate-validator-rules.sh [--check] [output_directory]
 #
 # With --check, no output files are changed. Package and Docker builds use the

@@ -85,15 +85,17 @@ func renderTypeScript(root reflect.Type, catalogue []CatalogueEntry) (map[string
 	files := map[string][]byte{}
 	startFile := func(imports ...string) {
 		w.buf.Reset()
-		w.buf.WriteString(TypeScriptHeader)
+		w.line("/* * */")
 		w.line("")
 		for _, declaration := range imports {
 			w.line("%s", declaration)
 		}
 		if len(imports) > 0 {
 			w.line("")
+			w.line("/* * */")
+			w.line("")
 		}
-		w.line("/* * */")
+		w.buf.WriteString(TypeScriptHeader)
 		w.line("")
 	}
 	saveFile := func(name string) {
