@@ -43,4 +43,4 @@ jobs:
 
       - name: Run rule, parser and file-validation tests
         working-directory: modules/operation/apps/validator/validator/src
-        run: go test ./lib/rules/ ./services/ ./validations/files/
+        run: go test ./lib/rules/... ./services/ ./validations/files/
