@@ -14,12 +14,14 @@ export interface InfrastructureNodesV1OutputRow {
 	lon: number
 	quay_id: string
 	stop_place_id: string
-	mode: '' | TransportType
+	mode: '' | 'AIR' | 'BUS' | 'CABLEWAY' | 'COACH' | 'FERRY' | 'FUNICULAR' | 'METRO' | 'RAIL' | 'TAXI' | 'TRAM' | 'TROLLEYBUS'
 	valid_from: string
 	valid_to: string
 }
 
-export type InfrastructureNodesV1Input = Pick<InfrastructureNodesV1OutputRow, 'mode' | 'valid_from'> & {
+export type InfrastructureNodesV1Input = Pick<InfrastructureNodesV1OutputRow, 'valid_from'> & {
+	mode: '' | TransportType
+	namespace: string
 	parent_station_id?: string
 	stop: Pick<Stop, '_id' | 'flags' | 'latitude' | 'longitude' | 'name'>
 	valid_to?: string

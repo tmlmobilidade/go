@@ -11,6 +11,7 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { getCodespacesByMunicipality } from './codespaces.js';
 import { toOutputRows } from './transform.js';
 import { type InfrastructureNodesV1OutputRow } from './types.js';
 
@@ -62,7 +63,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		...(properties.connections?.length ? { connections: { $in: properties.connections } } : {}),
 		is_deleted: false,
 	}, {
-		projection: { _id: 1, created_at: 1, flags: 1, latitude: 1, longitude: 1, name: 1 },
+		projection: { _id: 1, created_at: 1, flags: 1, latitude: 1, location: 1, longitude: 1, name: 1 },
 	});
 
 	for (const stop of stops) {
@@ -75,9 +76,10 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	// C. Fetch operators, lines and patterns
 
 	const agencyIds = [...new Set(stops.flatMap(stop => stop.flags.flatMap(flag => flag.agency_ids)))];
-	const [agencies, lines] = await Promise.all([
+	const [agencies, lines, codespacesByMunicipality] = await Promise.all([
 		goDb.core.agencies.findMany({ _id: { $in: agencyIds } }, { projection: { _id: 1, code: 1 } }),
 		goDb.offer.lines.findMany({ agency_id: { $in: agencyIds } }, { projection: { _id: 1, agency_id: 1, transport_type: 1 } }),
+		getCodespacesByMunicipality(),
 	]);
 	const agencyCodesById = new Map(agencies.map(agency => [agency._id, agency.code]));
 	const linesById = new Map(lines.map(line => [line._id, line]));
@@ -113,12 +115,16 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 			for (const agencyId of flag.agency_ids) {
 				if (!agencyCodesById.has(agencyId)) continue;
 
+				const namespace = codespacesByMunicipality.get(stop.location.secondary.osm_id);
+				if (!namespace) throw new Error(`Codespace not found for stop ${stop._id} and municipality ${stop.location.secondary.osm_id}`);
+
 				const modes = modesByStopAndAgency.get(`${stop._id}:${agencyId}`) ?? ['' as const];
 				const operatorStop = { ...stop, flags: [{ ...flag, agency_ids: [agencyId] }] };
 
 				for (const mode of modes) {
 					rows.push(...toOutputRows({
 						mode,
+						namespace,
 						stop: operatorStop,
 						valid_from: Dates.fromUnixMilliseconds(stop.created_at).calendar_date,
 					}, agencyCodesById));
