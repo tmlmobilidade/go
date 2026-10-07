@@ -15,7 +15,7 @@ import { toOutputRows } from './transform.js';
 import { type InfrastructureNodesV1OutputRow } from './types.js';
 
 /**
- * Exports the permitted stops and their operator identifiers to node.txt.
+ * Exports the permitted stops and their operator identifiers to nodes.txt.
  * @param context The extraction task context.
  * @param extraction The extraction to run.
  */
@@ -129,5 +129,5 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 
 	if (!rows.length) return;
 
-	fs.writeFileSync(path.join(context.output_path, 'node.txt'), csvStringify(rows, { header: true }), { encoding: 'utf-8', flush: true });
+	fs.writeFileSync(path.join(context.output_path, 'nodes.txt'), csvStringify(rows, { header: true }), { encoding: 'utf-8', flush: true });
 }
