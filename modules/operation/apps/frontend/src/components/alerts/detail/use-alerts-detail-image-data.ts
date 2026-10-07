@@ -11,7 +11,7 @@ import { useAlertsDetailAlertId } from './use-alerts-detail-alert-id';
 
 /* * */
 
-interface UseAlertsDetailFileDataReturnType {
+interface UseAlertsDetailImageDataReturnType {
 	data: Attachment
 	error: null | string
 	isLoading: boolean
@@ -22,7 +22,7 @@ interface UseAlertsDetailFileDataReturnType {
 
 /* * */
 
-export function useAlertsDetailFileData(): UseAlertsDetailFileDataReturnType {
+export function useAlertsDetailImageData(): UseAlertsDetailImageDataReturnType {
 	//
 
 	//
@@ -33,7 +33,7 @@ export function useAlertsDetailFileData(): UseAlertsDetailFileDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR(alertId && API_ROUTES.operation.ALERTS_DETAIL_IMAGE(alertId), {
+	const { data, error, isLoading, isValidating, mutate } = useSWR(alertId && API_ROUTES.operation.ALERTS_DETAIL_DETAIL_IMAGE(alertId), {
 		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
 		refreshInterval: 30_000, // 30 seconds
 	});

@@ -33,7 +33,7 @@ export function useAlertsDetailData(): UseAlertsDetailDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Alert>>(alertId && API_ROUTES.operation.ALERTS_DETAIL(alertId), {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Alert>>(alertId && API_ROUTES.operation.ALERTS_DETAIL_DETAIL(alertId), {
 		fetcher: async (url: string) => await fetchApiData<Alert>({ url }),
 		refreshInterval: 30_000, // 30 seconds
 	});
