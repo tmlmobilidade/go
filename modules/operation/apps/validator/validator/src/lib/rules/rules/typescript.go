@@ -33,7 +33,7 @@ func TypeScript() (map[string][]byte, error) {
 	if err := ValidateDependencyContract(); err != nil {
 		return nil, err
 	}
-	return renderTypeScript(reflect.TypeOf(types.GtfsRules{}), Catalogue())
+	return RenderTypeScript(reflect.TypeOf(types.GtfsRules{}), Catalogue())
 }
 
 type tsField struct {
@@ -59,7 +59,8 @@ func (w *tsWriter) line(format string, args ...any) {
 	w.buf.WriteByte('\n')
 }
 
-func renderTypeScript(root reflect.Type, catalogue []CatalogueEntry) (map[string][]byte, error) {
+// RenderTypeScript renders the TypeScript contract for an arbitrary rules root and catalogue.
+func RenderTypeScript(root reflect.Type, catalogue []CatalogueEntry) (map[string][]byte, error) {
 	if root.Kind() != reflect.Struct {
 		return nil, fmt.Errorf("rules root %s is not a struct", root)
 	}
