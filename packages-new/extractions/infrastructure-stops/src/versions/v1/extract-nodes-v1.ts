@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { toOutputRows } from './nodes-transform.js';
+import { type InfrastructureNodesV1OutputRow } from './nodes-types.js';
 
 /**
  * Exports the permitted stops and their operator identifiers to node.txt.
@@ -18,6 +19,8 @@ import { toOutputRows } from './nodes-transform.js';
  * @param extraction The extraction to run.
  */
 export async function extractInfrastructureNodesV1(context: ExtractionTaskContext, extraction: InfrastructureNodesV1Extraction): Promise<ExtractionTaskResult> {
+	// A. Validate properties and permissions
+
 	const properties = InfrastructureNodesV1ExtractionPropertiesSchema.parse(extraction.properties);
 	const permissions = await authProvider.getPermissionsFromUserId(extraction.created_by);
 	const checks = [{ action: PermissionCatalog.all.stops.actions.export, scope: PermissionCatalog.all.stops.scope }];
@@ -28,9 +31,14 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		throw new Error('User does not have permission to export stops');
 	}
 
-	const selectedAgencyIds = properties.agency_ids?.length
-		? properties.agency_ids.filter(id => agencyAccess.allowAll || agencyAccess.values.includes(id))
-		: agencyAccess.allowAll ? undefined : agencyAccess.values;
+	// B. Fetch stops matching the filters and permissions
+
+	let selectedAgencyIds = agencyAccess.allowAll ? undefined : agencyAccess.values;
+
+	if (properties.agency_ids?.length) {
+		selectedAgencyIds = properties.agency_ids.filter(id => agencyAccess.allowAll || agencyAccess.values.includes(id));
+	}
+
 	const search = properties.search?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	const filters = [
 		...[...LOCATION_PERMISSION_SLOTS, 'neighbourhood' as const].flatMap((slot) => {
@@ -63,6 +71,8 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		}));
 	}
 
+	// C. Fetch operators, lines and patterns
+
 	const agencyIds = [...new Set(stops.flatMap(stop => stop.flags.flatMap(flag => flag.agency_ids)))];
 	const [agencies, lines] = await Promise.all([
 		goDb.core.agencies.findMany({ _id: { $in: agencyIds } }, { projection: { _id: 1, code: 1 } }),
@@ -76,6 +86,9 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	}, {
 		projection: { 'line_id': 1, 'path.stop_id': 1 },
 	});
+
+	// D. Resolve transport modes for each stop and operator
+
 	const modesByStopAndAgency = new Map<string, Set<TransportType>>();
 
 	for (const pattern of patterns) {
@@ -90,20 +103,31 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		}
 	}
 
-	const rows = stops.flatMap(stop => stop.flags.flatMap(flag => flag.agency_ids.flatMap((agencyId) => {
-		if (!agencyCodesById.has(agencyId)) return [];
+	// E. Generate node.txt
 
-		const modes = modesByStopAndAgency.get(`${stop._id}:${agencyId}`);
+	const rows: InfrastructureNodesV1OutputRow[] = [];
 
-		return [...(modes ?? ['' as const])].flatMap(mode => toOutputRows({
-			// Parent stations are not yet available through goDb.
-			has_parent_station: false,
-			mode,
-			stop: { ...stop, flags: [{ ...flag, agency_ids: [agencyId] }] },
-			// Stop flags do not currently contain association validity dates.
-			valid_from: '',
-		}, agencyCodesById));
-	})));
+	for (const stop of stops) {
+		for (const flag of stop.flags) {
+			for (const agencyId of flag.agency_ids) {
+				if (!agencyCodesById.has(agencyId)) continue;
+
+				const modes = modesByStopAndAgency.get(`${stop._id}:${agencyId}`) ?? ['' as const];
+				const operatorStop = { ...stop, flags: [{ ...flag, agency_ids: [agencyId] }] };
+
+				for (const mode of modes) {
+					rows.push(...toOutputRows({
+						// Parent stations are not yet available through goDb.
+						has_parent_station: false,
+						mode,
+						stop: operatorStop,
+						// Stop flags do not currently contain association validity dates.
+						valid_from: '',
+					}, agencyCodesById));
+				}
+			}
+		}
+	}
 
 	if (!rows.length) return;
 
