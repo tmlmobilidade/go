@@ -48,6 +48,18 @@ server.register(
 			updateOrganizationHandler,
 		);
 
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware('organizations', ['lock']) },
+			lockOrganizationHandler,
+		);
+
+		instance.delete(
+			'/:id/delete',
+			{ preHandler: authorizationMiddleware('organizations', ['delete']) },
+			deleteOrganizationHandler,
+		);
+
 		instance.post(
 			'/:id/update/image',
 			{ preHandler: authorizationMiddleware('organizations', ['update']) },
@@ -64,18 +76,6 @@ server.register(
 			'/:id/delete/image/:theme',
 			{ preHandler: authorizationMiddleware('organizations', ['update']) },
 			deleteImageHandler,
-		);
-
-		instance.get(
-			'/:id/lock',
-			{ preHandler: authorizationMiddleware('organizations', ['lock']) },
-			lockOrganizationHandler,
-		);
-
-		instance.delete(
-			'/:id/delete',
-			{ preHandler: authorizationMiddleware('organizations', ['delete']) },
-			deleteOrganizationHandler,
 		);
 
 		next();

@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert } from '@tmlmobilidade/go-types-operation';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -11,18 +11,18 @@ import { useAlertsDetailAlertId } from './use-alerts-detail-alert-id';
 
 /* * */
 
-interface UseAlertsDetailDataReturnType {
-	data: Alert
+interface UseAlertsDetailImageDataReturnType {
+	data: Attachment
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: (newData?: ApiResponse<Alert>) => void
+	mutate: (newData?: ApiResponse<Attachment>) => void
 	timestamp: null | UnixMilliseconds
 }
 
 /* * */
 
-export function useAlertsDetailData(): UseAlertsDetailDataReturnType {
+export function useAlertsDetailImageData(): UseAlertsDetailImageDataReturnType {
 	//
 
 	//
@@ -33,8 +33,8 @@ export function useAlertsDetailData(): UseAlertsDetailDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Alert>>(alertId && API_ROUTES.operation.ALERTS_DETAIL_DETAIL(alertId), {
-		fetcher: async (url: string) => await fetchApiData<Alert>({ url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR(alertId && API_ROUTES.operation.ALERTS_DETAIL_DETAIL_IMAGE(alertId), {
+		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
 		refreshInterval: 30_000, // 30 seconds
 	});
 
