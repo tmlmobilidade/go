@@ -46,8 +46,8 @@
 		"@tmlmobilidade/go-types-gtfs-validator": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/eslint": "20260526.939.0",
-		"@tmlmobilidade/tsconfig": "20260526.939.0",
+		"@tmlmobilidade/eslint": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "25.9.1",
 		"@vitest/coverage-v8": "4.1.7",
 		"resolve-tspaths": "0.8.23",
