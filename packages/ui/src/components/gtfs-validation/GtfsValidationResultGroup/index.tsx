@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
+import { Surface } from '../../layout/Surface';
 import { SeverityTag } from '../../tags/SeverityTag';
 import { GtfsValidationResultRows } from '../GtfsValidationResultRows';
 
@@ -68,7 +69,6 @@ export function GtfsValidationResultGroup({ getRuleDocumentationUrl, group }: Gt
 				<IconChevronRight className={styles.chevron} data-open={isOpen} size={16} />
 				<span className={styles.metadata}>
 					<span className={styles.fileName}>{group.file_name}</span>
-					<span className={styles.field}>{group.field}</span>
 				</span>
 				<div className={styles.severity}><SeverityTag severity={group.severity} /></div>
 				<span className={styles.headline}>{group.message}</span>
@@ -80,7 +80,7 @@ export function GtfsValidationResultGroup({ getRuleDocumentationUrl, group }: Gt
 						<span className={styles.ruleId}>{group.rule_id}</span>
 						{documentationUrl && (
 							<a className={styles.link} href={documentationUrl} rel="noopener noreferrer" target="_blank">
-								{t('shared:components.gtfsValidationResultGroup.learnMore')} <IconExternalLink size={12} />
+								{t('shared:components.gtfsValidationResultGroup.documentation')} <IconExternalLink size={12} />
 							</a>
 						)}
 					</div>
@@ -117,6 +117,7 @@ export function GtfsValidationResultGroup({ getRuleDocumentationUrl, group }: Gt
 				</div>
 			)}
 		</div>
+
 	);
 
 	//

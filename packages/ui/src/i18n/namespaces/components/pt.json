@@ -28,7 +28,7 @@
 		}
 	},
 	"gtfsValidationResultGroup": {
-		"learnMore": "Saber mais",
+		"documentation": "Documentação",
 		"message": "Mensagem",
 		"occurrences": "{count, plural, =1 {1 ocorrência} other {# ocorrências}}",
 		"rows": "Índice(s)",
