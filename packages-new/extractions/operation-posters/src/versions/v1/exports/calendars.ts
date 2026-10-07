@@ -388,7 +388,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 
 	const uniqueExceptionsMap: Record<string, { comment: string, index: string }> = {};
 
-	const indexesList = ['¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹', '¹⁰', '¹¹', '¹²', '¹³', '¹⁴', '¹⁵', '¹⁶', '¹⁷', '¹⁸', '¹⁹', '²⁰', '²¹', '²²', '²³', '²⁴', '²⁵', '²⁶', '²⁷', '²⁸', '²⁹', '³⁰', '³¹', '³²', '³³', '³⁴', '³⁵', '³⁶', '³⁷', '³⁸', '³⁹', '⁴⁰', '⁴¹', '⁴²', '⁴³', '⁴⁴', '⁴⁵', '⁴⁶', '⁴⁷', '⁴⁸', '⁴⁹', '⁵⁰'];
+	const indexesList = Array.from({ length: 50 }, (_, i) => String(i + 1));
 
 	Array.from(uniqueExceptions).sort().forEach((exception, index) => uniqueExceptionsMap[exception] = { comment: exception, index: indexesList[index] });
 
