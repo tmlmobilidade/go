@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"main/i18n"
 	"main/lib"
-	ruleset "main/lib/rules"
+	ruleset "main/lib/rules/rules"
 	"main/types"
 	"os"
 	"slices"

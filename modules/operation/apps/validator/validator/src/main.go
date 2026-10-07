@@ -6,7 +6,7 @@ import (
 	"main/config"
 	"main/i18n"
 	"main/lib"
-	ruleset "main/lib/rules"
+	ruleset "main/lib/rules/rules"
 	"main/services"
 	"main/types"
 	"main/validations"

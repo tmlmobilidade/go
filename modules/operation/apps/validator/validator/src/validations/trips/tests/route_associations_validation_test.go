@@ -3,7 +3,7 @@ package trips
 import (
 	"main/i18n"
 	"main/lib"
-	"main/lib/rules"
+	"main/lib/rules/rules"
 	"main/services"
 	"main/types"
 	validations "main/validations/trips/validations"
@@ -64,7 +64,7 @@ func TestRouteAssociations(t *testing.T) {
 					if severity == types.SEVERITY_IGNORE {
 						want = 0
 					}
-					messages := services.AppMessageService.GetSummary().Messages
+					messages := services.AppMessageService.GetSummary().AllMessages()
 					if len(messages) != want {
 						t.Fatalf("got %+v, want %d issues", messages, want)
 					}

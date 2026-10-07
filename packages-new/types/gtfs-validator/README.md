@@ -50,7 +50,7 @@ A stored config key can differ from the emitted rule id. For example, `frequenci
 
 ### Rule dependencies
 
-The structural DAG is declared in `modules/operation/apps/validator/validator/src/lib/rules/dependencies.json` and embedded in the Go binary. Every configurable rule has an entry. The generated catalogue exposes its direct prerequisites as `depends_on`.
+The structural DAG is declared in `modules/operation/apps/validator/validator/src/lib/rules/rules/dependencies.json` and embedded in the Go binary. Every configurable rule has an entry. The generated catalogue exposes its direct prerequisites as `depends_on`.
 
 Basic rules depend on the synthetic `<section>_file_present` node. This tests whether the file was imported, independently of the agency's `_file` severity. Compound rules depend on the checks whose results they need; file availability is inherited transitively:
 

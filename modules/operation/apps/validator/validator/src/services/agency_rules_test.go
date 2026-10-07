@@ -3,7 +3,7 @@ package services
 import (
 	"encoding/json"
 	"main/lib"
-	ruleset "main/lib/rules"
+	ruleset "main/lib/rules/rules"
 	"main/types"
 	"os"
 	"path/filepath"

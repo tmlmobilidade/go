@@ -7,7 +7,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"main/lib/rules"
+	"main/lib/rules/rules"
 	"os"
 	"path/filepath"
 	"sort"

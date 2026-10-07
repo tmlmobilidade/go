@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
-	ruleset "main/lib/rules"
+	ruleset "main/lib/rules/rules"
 	"main/services"
 	"main/types"
 	stopTimesTypes "main/types/stop_times"

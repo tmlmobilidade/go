@@ -591,7 +591,7 @@ func TestFileValidation(t *testing.T) {
 				}
 			}
 
-			if tt.checkMessages != nil && !tt.checkMessages(summary.Messages) {
+			if tt.checkMessages != nil && !tt.checkMessages(summary.AllMessages()) {
 				t.Errorf("[%v] FileValidation.Validate() messages did not match expected conditions", tt.name)
 			}
 		})
@@ -804,7 +804,7 @@ func TestCheckWarningFiles(t *testing.T) {
 				}
 			}
 
-			if tt.checkMessages != nil && !tt.checkMessages(summary.Messages) {
+			if tt.checkMessages != nil && !tt.checkMessages(summary.AllMessages()) {
 				t.Errorf("[%v] FileValidation.checkWarningFiles() messages did not match expected conditions", tt.name)
 			}
 		})

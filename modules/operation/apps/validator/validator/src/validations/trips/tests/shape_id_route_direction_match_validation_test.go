@@ -3,7 +3,7 @@ package trips
 import (
 	"main/i18n"
 	"main/lib"
-	"main/lib/rules"
+	"main/lib/rules/rules"
 	"main/services"
 	"main/types"
 	validations "main/validations/trips/validations"
@@ -44,7 +44,7 @@ func TestShapeIdRouteDirectionMatchValidation(t *testing.T) {
 				trip := &types.Trip{RouteId: tc.route, ShapeId: tc.shape, DirectionId: tc.direction}
 				config := &types.TripsRules{ShapeIdRouteDirectionMatch: types.RuleConfig{Severity: severity}}
 				validations.ShapeIdRouteDirectionMatchValidation(trip, 5, nil, config)
-				messages := services.AppMessageService.GetSummary().Messages
+				messages := services.AppMessageService.GetSummary().AllMessages()
 				want := 0
 				if tc.mismatch && severity != types.SEVERITY_IGNORE {
 					want = 1

@@ -8,7 +8,7 @@ import (
 
 	"main/i18n"
 	"main/lib"
-	ruleset "main/lib/rules"
+	ruleset "main/lib/rules/rules"
 	"main/lib/test_helpers"
 	"main/services"
 	"main/types"
@@ -73,7 +73,7 @@ func TestShapeGeometryInputs(t *testing.T) {
 				t.Run(tc.name, func(t *testing.T) {
 					services.AppMessageService.Clear()
 					check.run(tc.mutate(geometryFixture()), config)
-					messages := services.AppMessageService.GetSummary().Messages
+					messages := services.AppMessageService.GetSummary().AllMessages()
 					if len(messages) != tc.want {
 						t.Fatalf("got %d messages, want %d: %+v", len(messages), tc.want, messages)
 					}
@@ -87,7 +87,7 @@ func TestShapeGeometryInputs(t *testing.T) {
 			for _, config := range []*types.ShapesRules{nil, {}, {ShapePointsCoordinatesConsistent: types.RuleConfig{Severity: types.SEVERITY_IGNORE}, ShapePointsCoordinatesDistances: types.RuleConfig{Severity: types.SEVERITY_IGNORE}}} {
 				services.AppMessageService.Clear()
 				check.run(geometryFixture(), config)
-				if len(services.AppMessageService.GetSummary().Messages) != 0 {
+				if len(services.AppMessageService.GetSummary().AllMessages()) != 0 {
 					t.Fatal("disabled check emitted a message")
 				}
 			}
@@ -117,7 +117,7 @@ func TestShapeGeometryToleranceAndUnits(t *testing.T) {
 		validations.ShapePointsCoordinatesConsistentValidation(points, &types.ShapesRules{ShapePointsCoordinatesConsistent: types.RuleConfig{
 			Severity: types.SEVERITY_ERROR, Options: lib.Ptr([]string{strconv.FormatFloat(distance, 'g', -1, 64)}),
 		}})
-		if len(services.AppMessageService.GetSummary().Messages) != 0 {
+		if len(services.AppMessageService.GetSummary().AllMessages()) != 0 {
 			t.Fatal("exact boundary rejected")
 		}
 	})
@@ -133,7 +133,7 @@ func TestShapeGeometryToleranceAndUnits(t *testing.T) {
 			validations.ShapePointsCoordinatesDistancesValidation(points, &types.ShapesRules{ShapePointsCoordinatesDistances: types.RuleConfig{
 				Severity: types.SEVERITY_ERROR, Options: lib.Ptr([]string{"0", unit}),
 			}})
-			if got := services.AppMessageService.GetSummary(); len(got.Messages) != 0 {
+			if got := services.AppMessageService.GetSummary(); len(got.AllMessages()) != 0 {
 				t.Fatalf("correct %s distances rejected: %+v", unit, got)
 			}
 		})
@@ -143,7 +143,7 @@ func TestShapeGeometryToleranceAndUnits(t *testing.T) {
 		points[1].ShapeDistTraveled = lib.Ptr(distance)
 		services.AppMessageService.Clear()
 		validations.ShapePointsCoordinatesDistancesValidation(points, &types.ShapesRules{ShapePointsCoordinatesDistances: types.RuleConfig{Severity: types.SEVERITY_ERROR}})
-		if len(services.AppMessageService.GetSummary().Messages) != 0 {
+		if len(services.AppMessageService.GetSummary().AllMessages()) != 0 {
 			t.Fatal("invalid distance produced a geometric diagnostic")
 		}
 	}
@@ -158,7 +158,7 @@ func TestShapeGeometryMessagesRenderInBothLanguages(t *testing.T) {
 		config := &types.ShapesRules{ShapePointsCoordinatesConsistent: types.RuleConfig{Severity: types.SEVERITY_ERROR}, ShapePointsCoordinatesDistances: types.RuleConfig{Severity: types.SEVERITY_ERROR}}
 		validations.ShapePointsCoordinatesConsistentValidation(geometryFixture(), config)
 		validations.ShapePointsCoordinatesDistancesValidation(geometryFixture(), config)
-		messages := services.AppMessageService.GetSummary().Messages
+		messages := services.AppMessageService.GetSummary().AllMessages()
 		if len(messages) != 2 {
 			t.Fatalf("%s: expected two diagnostics", language)
 		}
@@ -194,7 +194,7 @@ func TestShapeSpacingRunsWithoutRecordedDistances(t *testing.T) {
 	ruleset.ConfigureMessageSeverities(&config)
 	t.Cleanup(func() { ruleset.ConfigureMessageSeverities(nil); services.AppMessageService.Clear() })
 	shapeRunner.RunValidations(*gtfs, &config)
-	messages := services.AppMessageService.GetSummary().Messages
+	messages := services.AppMessageService.GetSummary().AllMessages()
 	if len(messages) != 1 || messages[0].RuleID != spacingRuleID || len(messages[0].Rows) != 1 || messages[0].Rows[0] != 3 {
 		t.Fatalf("spacing check was blocked by optional distances: %+v", messages)
 	}

@@ -1,7 +1,8 @@
-package rules
+package rules_test
 
 import (
 	"encoding/json"
+	"main/lib/rules/rules"
 	"main/types"
 	"strings"
 	"testing"
@@ -15,12 +16,13 @@ func TestRuleIDsIdentifyTheirDomainWithoutRedundantPrefixes(t *testing.T) {
 		"rider_categories": "rider_category", "fare_rules": "fare_rule",
 		"fare_attributes": "fare", "feed_info": "feed", "file_validation": "file",
 	}
-	for _, entry := range Catalogue() {
+	for _, entry := range rules.Catalogue() {
 		alias := aliases[entry.Group]
 		identified := entry.ID == entry.Group || strings.HasPrefix(entry.ID, entry.Group+"_")
 		if alias != "" {
 			identified = identified || strings.HasPrefix(entry.ID, alias+"_")
-			if strings.HasPrefix(entry.ID, entry.Group+"_"+alias+"_") {
+			// vehicle_type is the actual field name, not a repeated domain prefix.
+			if strings.HasPrefix(entry.ID, entry.Group+"_"+alias+"_") && entry.ID != "vehicles_vehicle_type_valid_enum" {
 				t.Errorf("%s has a redundant domain prefix", entry.ID)
 			}
 		}
@@ -34,7 +36,7 @@ func TestRuleIDsIdentifyTheirDomainWithoutRedundantPrefixes(t *testing.T) {
 }
 
 func TestDecodeConfigPreservesCompleteSettings(t *testing.T) {
-	saved := DefaultConfig()
+	saved := rules.DefaultConfig()
 	saved.Trips.File = types.SEVERITY_WARNING
 	options := []string{"T1"}
 	saved.Trips.TripId = types.RuleConfig{Severity: types.SEVERITY_ERROR, Options: &options, DependsOn: []string{"trips_pattern_id_present_and_references_consistent"}}
@@ -42,7 +44,7 @@ func TestDecodeConfigPreservesCompleteSettings(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	config, err := DecodeConfig(data)
+	config, err := rules.DecodeConfig(data)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,7 +62,7 @@ func TestDecodeConfigPreservesCompleteSettings(t *testing.T) {
 func TestDecodeConfigRejectsInvalidExplicitValues(t *testing.T) {
 	for _, input := range []string{`null`, `[]`, `{"trips":null}`, `{"trips":{"_file":null}}`, `{"trips":{"_file":"info"}}`, `{"trips":{"trip_id_unique":null}}`, `{"trips":{"trip_id_unique":{"severity":""}}}`, `{"trips":{"trip_id_unique":{"severity":null}}}`} {
 		t.Run(input, func(t *testing.T) {
-			if _, err := DecodeConfig([]byte(input)); err == nil {
+			if _, err := rules.DecodeConfig([]byte(input)); err == nil {
 				t.Fatal("invalid explicit value accepted")
 			}
 		})
@@ -98,7 +100,7 @@ func TestDecodeConfigRequiresEverySupportedRule(t *testing.T) {
 		}},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			data, err := json.Marshal(DefaultConfig())
+			data, err := json.Marshal(rules.DefaultConfig())
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -111,7 +113,7 @@ func TestDecodeConfigRequiresEverySupportedRule(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			_, err = DecodeConfig(data)
+			_, err = rules.DecodeConfig(data)
 			if tc.want == "" {
 				if err != nil {
 					t.Fatal(err)
@@ -124,12 +126,12 @@ func TestDecodeConfigRequiresEverySupportedRule(t *testing.T) {
 }
 
 func TestMessageSeverityUsesAgencyAndLeavesTechnicalErrorsFixed(t *testing.T) {
-	defer ConfigureMessageSeverities(nil)
-	config := DefaultConfig()
+	defer rules.ConfigureMessageSeverities(nil)
+	config := rules.DefaultConfig()
 	config.Shapes.ShapeId.Severity = types.SEVERITY_WARNING
 	config.Frequencies.TripId.Severity = types.SEVERITY_ERROR
 	config.Calendar.StartDate.Severity = types.SEVERITY_WARNING
-	ConfigureMessageSeverities(&config)
+	rules.ConfigureMessageSeverities(&config)
 	for _, tc := range []struct {
 		file, id, field string
 		want            types.Severity
@@ -141,17 +143,17 @@ func TestMessageSeverityUsesAgencyAndLeavesTechnicalErrorsFixed(t *testing.T) {
 		{"calendar.txt", "calendar_start_end_dates_valid_yyyymmdd_order", "end_date", types.SEVERITY_IGNORE},
 		{"trips.txt", "trips_values_parse", "trip_id", types.SEVERITY_ERROR},
 	} {
-		if got := ResolveMessageSeverity(tc.file, tc.id, tc.field, types.SEVERITY_ERROR); got != tc.want {
+		if got := rules.ResolveMessageSeverity(tc.file, tc.id, tc.field, types.SEVERITY_ERROR); got != tc.want {
 			t.Errorf("%s: got %s want %s", tc.id, got, tc.want)
 		}
 	}
 	config.Shapes.ShapeId.Severity = types.SEVERITY_IGNORE
-	ConfigureMessageSeverities(&config)
-	if got := ResolveMessageSeverity("shapes.txt", "shape_id_required", "shape_id", types.SEVERITY_ERROR); got != types.SEVERITY_IGNORE {
+	rules.ConfigureMessageSeverities(&config)
+	if got := rules.ResolveMessageSeverity("shapes.txt", "shape_id_required", "shape_id", types.SEVERITY_ERROR); got != types.SEVERITY_IGNORE {
 		t.Fatal("previous agency settings leaked")
 	}
-	ConfigureMessageSeverities(nil)
-	if got := ResolveMessageSeverity("shapes.txt", "shape_id_required", "shape_id", types.SEVERITY_ERROR); got != types.SEVERITY_ERROR {
+	rules.ConfigureMessageSeverities(nil)
+	if got := rules.ResolveMessageSeverity("shapes.txt", "shape_id_required", "shape_id", types.SEVERITY_ERROR); got != types.SEVERITY_ERROR {
 		t.Fatal("standalone changed")
 	}
 }

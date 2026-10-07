@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"main/lib"
-	ruleset "main/lib/rules"
+	ruleset "main/lib/rules/rules"
 	"main/types"
 	"os"
 	"reflect"

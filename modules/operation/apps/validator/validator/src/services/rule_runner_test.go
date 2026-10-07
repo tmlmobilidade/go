@@ -1,7 +1,7 @@
 package services_test
 
 import (
-	"main/lib/rules"
+	"main/lib/rules/rules"
 	"main/lib/test_helpers"
 	"main/services"
 	"main/types"

@@ -1,7 +1,7 @@
 package trips
 
 import (
-	ruleset "main/lib/rules"
+	ruleset "main/lib/rules/rules"
 	"main/services"
 	"main/types"
 )
