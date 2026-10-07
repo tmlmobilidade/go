@@ -6,12 +6,13 @@ import { type ExtractionTaskContext, type ExtractionTaskResult, type Infrastruct
 import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
 import { type TransportType } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { toOutputRows } from './nodes-transform.js';
-import { type InfrastructureNodesV1OutputRow } from './nodes-types.js';
+import { toOutputRows } from './transform.js';
+import { type InfrastructureNodesV1OutputRow } from './types.js';
 
 /**
  * Exports the permitted stops and their operator identifiers to node.txt.
@@ -61,7 +62,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		...(properties.connections?.length ? { connections: { $in: properties.connections } } : {}),
 		is_deleted: false,
 	}, {
-		projection: { _id: 1, flags: 1, latitude: 1, longitude: 1, name: 1 },
+		projection: { _id: 1, created_at: 1, flags: 1, latitude: 1, longitude: 1, name: 1 },
 	});
 
 	for (const stop of stops) {
@@ -119,8 +120,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 					rows.push(...toOutputRows({
 						mode,
 						stop: operatorStop,
-						// Stop flags do not currently contain association validity dates.
-						valid_from: '',
+						valid_from: Dates.fromUnixMilliseconds(stop.created_at).calendar_date,
 					}, agencyCodesById));
 				}
 			}
