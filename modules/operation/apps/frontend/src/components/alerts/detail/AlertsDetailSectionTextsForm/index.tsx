@@ -25,7 +25,7 @@ export function AlertsDetailSectionTextsForm() {
 
 	const { capabilities, form } = useAlertsDetailFormContext();
 
-	const { data: alertFileData } = useAlertsDetailFileData();
+	const { data: alertFileData, mutate: alertsFileMutate } = useAlertsDetailFileData();
 
 	//
 	// B. Render components
@@ -33,11 +33,11 @@ export function AlertsDetailSectionTextsForm() {
 	const { action: handleUploadFile, isLoading: isUploadingFile } = useHandleAction({
 		fetchFn: async (imageFile: File) => {
 			const formData = new FormData();
-			formData.append('light', imageFile);
-			return await fetchApiMultipart<Organization>(API_ROUTES.operation.ALERTS_DETAIL_IMAGE(organizationId), formData);
+			formData.append('file', imageFile);
+			return await fetchApiMultipart<Alert>(API_ROUTES.operation.ALERTS_DETAIL_IMAGE(organizationId), formData);
 		},
 		onSuccess: () => {
-			organizationsImageDetailLightMutate();
+			alertsFileMutate();
 		},
 	});
 

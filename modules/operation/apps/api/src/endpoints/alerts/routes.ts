@@ -60,9 +60,40 @@ server.register(
 			listStops,
 		);
 
-		instance.get('/:id/detail',
+		instance.post(
+			'/create',
+			{ preHandler: authorizationMiddleware('alerts', ['create']) },
+			createAlertHandler,
+		);
+
+		instance.get(
+			'/:id/detail',
 			{ preHandler: authorizationMiddleware('alerts', ['read']) },
 			getAlertHandler,
+		);
+
+		instance.put(
+			'/:id/update',
+			{ preHandler: authorizationMiddleware('alerts', ['update']) },
+			updateAlertHandler,
+		);
+
+		instance.post(
+			'/:id/duplicate',
+			{ preHandler: authorizationMiddleware('alerts', ['create']) },
+			duplicateAlertHandler,
+		);
+
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware('alerts', ['lock']) },
+			lockAlertHandler,
+		);
+
+		instance.delete(
+			'/:id/delete',
+			{ preHandler: authorizationMiddleware('alerts', ['delete']) },
+			deleteAlertHandler,
 		);
 
 		instance.get(
@@ -77,40 +108,10 @@ server.register(
 			updateImageHandler,
 		);
 
-		instance.post(
-			'/create',
-			{ preHandler: authorizationMiddleware('alerts', ['create']) },
-			createAlertHandler,
-		);
-
-		instance.put(
-			'/:id',
-			{ preHandler: authorizationMiddleware('alerts', ['update']) },
-			updateAlertHandler,
-		);
-
 		instance.delete(
-			'/:id',
-			{ preHandler: authorizationMiddleware('alerts', ['delete']) },
-			deleteAlertHandler,
-		);
-
-		instance.delete(
-			'/:id/image',
+			'/:id/delete/image',
 			{ preHandler: authorizationMiddleware('alerts', ['update']) },
 			deleteImageHandler,
-		);
-
-		instance.get(
-			'/:id/lock',
-			{ preHandler: authorizationMiddleware('alerts', ['lock']) },
-			lockAlertHandler,
-		);
-
-		instance.post(
-			'/:id/duplicate',
-			{ preHandler: authorizationMiddleware('alerts', ['create']) },
-			duplicateAlertHandler,
 		);
 
 		instance.post(
