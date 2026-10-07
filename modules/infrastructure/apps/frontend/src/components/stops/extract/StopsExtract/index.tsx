@@ -1,22 +1,24 @@
 'use client';
 
-import { Divider, Pane } from '@tmlmobilidade/ui';
+import { InfrastructureStopsV1ExtractionCreateSchema, InfrastructureStopsV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
+import { useTranslation } from 'react-i18next';
 
-import { StopsExtractFooter } from '../StopsExtractFooter';
-import { StopsExtractFormContextProvider } from '../StopsExtractForm.context';
-import { StopsExtractHeader } from '../StopsExtractHeader';
-import { StopsExtractProperties } from '../StopsExtractProperties';
+import { StopsExtractForm } from '../shared/StopsExtractForm';
+import { closeStopsExtractModal } from '../StopsExtract.modal';
 
 /* * */
 
 export function StopsExtract() {
+	const { t } = useTranslation();
+
 	return (
-		<StopsExtractFormContextProvider>
-			<Pane header={[<StopsExtractHeader key="header" />]}>
-				<StopsExtractProperties />
-				<Divider />
-				<StopsExtractFooter />
-			</Pane>
-		</StopsExtractFormContextProvider>
+		<StopsExtractForm
+			onClose={closeStopsExtractModal}
+			schema={InfrastructureStopsV1ExtractionCreateSchema}
+			title={t('default:stops.extract.Header.title')}
+			versions={[
+				{ label: t('shared:extractions.versions.infrastructure-stops-v1.title'), value: InfrastructureStopsV1ExtractionVersionValue },
+			]}
+		/>
 	);
 }

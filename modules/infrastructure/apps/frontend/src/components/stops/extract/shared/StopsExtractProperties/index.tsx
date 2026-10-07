@@ -2,19 +2,18 @@
 
 import { useStopsAgenciesData } from '@/components/stops/shared/use-stops-agencies-data';
 import { useStopsLocationsData } from '@/components/stops/shared/use-stops-locations-data';
-import { InfrastructureNodesV1ExtractionVersionValue, InfrastructureStopsV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
 import { StopConnectionValues, StopFacilityValues } from '@tmlmobilidade/go-types-infrastructure';
 import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { LifecycleStatusValues } from '@tmlmobilidade/go-types-shared';
-import { Grid, MultiSelect, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, Section, Select, type SelectDataItem, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useStopsExtractFormContext } from '../StopsExtractForm.context';
 
 /* * */
 
-export function StopsExtractProperties() {
+export function StopsExtractProperties({ versions }: { versions: SelectDataItem[] }) {
 	//
 	// A. Setup variables
 	const { t } = useTranslation();
@@ -74,15 +73,12 @@ export function StopsExtractProperties() {
 				render={({ field, fieldState }) => (
 					<Select
 						clearable={false}
+						data={versions}
 						disabled={!capabilities?.editEnabled}
 						error={fieldState.error?.message}
 						label={t('default:stops.extract.StopsExtractProperties.fields.version.label')}
 						onChange={field.onChange}
 						value={field.value}
-						data={[
-							{ label: t('shared:extractions.versions.infrastructure-stops-v1.title'), value: InfrastructureStopsV1ExtractionVersionValue },
-							{ label: t('shared:extractions.versions.infrastructure-nodes-v1.title'), value: InfrastructureNodesV1ExtractionVersionValue },
-						]}
 					/>
 				)}
 			/>

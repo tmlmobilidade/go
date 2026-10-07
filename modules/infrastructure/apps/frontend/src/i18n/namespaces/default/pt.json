@@ -282,6 +282,9 @@
 			"Header": {
 				"title": "Exportar paragens"
 			},
+			"NodesExtract": {
+				"title": "Exportar nodes"
+			},
 			"StopsExtractFooter": {
 				"button": {
 					"label": "Exportar"
@@ -356,6 +359,9 @@
 				"title": "Paragens"
 			},
 			"HeaderMenu": {
+				"ExtractNodesButton": {
+					"label": "Exportar Nodes"
+				},
 				"ExtractStopsButton": {
 					"label": "Exportar Paragens"
 				},

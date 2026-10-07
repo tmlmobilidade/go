@@ -276,6 +276,9 @@
 			"Header": {
 				"title": "Exportar paradas"
 			},
+			"NodesExtract": {
+				"title": "Exportar nodos"
+			},
 			"StopsExtractFooter": {
 				"button": {
 					"label": "Exportar"
@@ -304,7 +307,7 @@
 					"location_secondary_ids": {
 						"label": "División administrativa (nivel 2)"
 					},
-					"loclation_tertiary_ids": {
+					"location_tertiary_ids": {
 						"label": "División administrativa (nivel 3)"
 					},
 					"search": {
@@ -350,6 +353,9 @@
 				"title": "Paradas"
 			},
 			"HeaderMenu": {
+				"ExtractNodesButton": {
+					"label": "Exportar Nodos"
+				},
 				"ExtractStopsButton": {
 					"label": "Exportar Paradas"
 				},

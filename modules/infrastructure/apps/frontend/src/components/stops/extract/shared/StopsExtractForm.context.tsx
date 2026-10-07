@@ -1,18 +1,16 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Extraction, type InfrastructureNodesV1ExtractionCreate, InfrastructureNodesV1ExtractionCreateSchema, type InfrastructureStopsV1ExtractionCreate, InfrastructureStopsV1ExtractionCreateSchema, InfrastructureStopsV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
+import { type Extraction, type InfrastructureNodesV1ExtractionCreate, type InfrastructureNodesV1ExtractionCreateSchema, type InfrastructureStopsV1ExtractionCreate, type InfrastructureStopsV1ExtractionCreateSchema } from '@tmlmobilidade/go-types-extractions';
 import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
-import { closeStopsExtractModal } from './StopsExtract.modal';
-
 /* * */
 
 type StopsExtractionCreate = InfrastructureNodesV1ExtractionCreate | InfrastructureStopsV1ExtractionCreate;
+export type StopsExtractionCreateSchema = typeof InfrastructureNodesV1ExtractionCreateSchema | typeof InfrastructureStopsV1ExtractionCreateSchema;
 
-const StopsExtractionCreateSchema = InfrastructureStopsV1ExtractionCreateSchema.or(InfrastructureNodesV1ExtractionCreateSchema);
 const StopsExtractFormContext = createContext<StandardFormContextValue<StopsExtractionCreate> | undefined>(undefined);
 
 export function useStopsExtractFormContext() {
@@ -23,17 +21,17 @@ export function useStopsExtractFormContext() {
 
 /* * */
 
-export function StopsExtractFormContextProvider({ children }: PropsWithChildren) {
+export function StopsExtractFormContextProvider({ children, onClose, schema }: PropsWithChildren<{ onClose: () => void, schema: StopsExtractionCreateSchema }>) {
 	const { data: meData } = useMeData();
 	const { mutate } = useExtractionsListData();
 
-	const { form, isDirty, isValid, unblock } = useStandardForm<StopsExtractionCreate, typeof StopsExtractionCreateSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<StopsExtractionCreate, StopsExtractionCreateSchema>({
 		defaultValues: {
 			properties: {},
 			send_email_notification: false,
-			version: InfrastructureStopsV1ExtractionVersionValue,
+			version: schema.shape.version.value,
 		},
-		schema: StopsExtractionCreateSchema,
+		schema,
 	});
 
 	const { action: handleExtract, isLoading: isExtracting } = useHandleAction({
@@ -45,7 +43,7 @@ export function StopsExtractFormContextProvider({ children }: PropsWithChildren)
 		onSuccess: (response) => {
 			mutate(response);
 			unblock();
-			closeStopsExtractModal();
+			onClose();
 			openExtractionsListModal();
 		},
 	});
