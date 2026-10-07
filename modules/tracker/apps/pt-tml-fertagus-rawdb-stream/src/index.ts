@@ -6,7 +6,7 @@ import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { parseRawVehicleEventPtTmlFertagusV1 } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -24,15 +24,6 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 
 (async function init() {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pt-tml-fertagus-rawdb-stream', message: 'Sentry Tracker Fertagus LabDb Stream initialized', module: 'tracker', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus LabDb Stream' });
-	}
 
 	//
 	// Watch for changes to the raw Fertagus collection
@@ -56,7 +47,6 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 
 				await writer.write(simplified, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
-				console.error(error);
 				Logger.error({ error, message: `[pt-tml-fertagus-rawdb-stream] Failed to transform document _id="${change.fullDocument._id}"` });
 			}
 		});

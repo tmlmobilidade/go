@@ -3,8 +3,7 @@
 // import { syncVehicleEvents } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -12,15 +11,6 @@ async function main() {
 	throw new Error('Not implemented');
 	try {
 		//
-
-		// Initialize Sentry
-
-		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'clickhouse-sync', message: 'Sentry Tracker Clickhouse Sync initialized', module: 'tracker', severity: 'info' });
-		} catch (error) {
-			Logger.error({ error, message: 'Error initializing Sentry Tracker Clickhouse Sync' });
-		}
 
 		//
 		// Initialize the logger

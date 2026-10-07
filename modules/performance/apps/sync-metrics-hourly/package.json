@@ -22,8 +22,7 @@
 		"@tmlmobilidade/go-performance-pckg-log": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"p-limit": "7.3.1"
 	},
 	"devDependencies": {

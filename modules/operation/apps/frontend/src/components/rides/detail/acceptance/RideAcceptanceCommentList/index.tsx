@@ -1,14 +1,18 @@
 'use client';
 
-import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
+import { useRideAcceptanceData } from '@/components/rides/detail/acceptance/use-ride-acceptance-data';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { UserDisplay } from '@tmlmobilidade/go-types-core';
+import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type NoteComment } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { CommentInput, CommentItemProps, CommentList, displayUnixMilliseconds, HasPermission, Label, Section, Tooltip } from '@tmlmobilidade/ui';
+import { CommentInput, CommentItemProps, CommentList, displayUnixMilliseconds, fetchApiData, HasPermission, Label, Section, Tooltip, useHandleAction } from '@tmlmobilidade/ui';
 import React, { createElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useRidesDetailRideId } from '../../shared/use-rides-detail-ride-id';
 import styles from './styles.module.css';
 
 /* * */
@@ -19,8 +23,9 @@ export function RideAcceptanceCommentList() {
 	//
 	// A. Setup variables
 
-	const acceptanceContext = useRideAcceptanceContext();
 	const { t } = useTranslation();
+	const { rideId } = useRidesDetailRideId();
+	const { data: acceptance, mutate } = useRideAcceptanceData();
 
 	const CommentAcceptanceStatusProps = Object.freeze({
 		accepted: {
@@ -105,8 +110,12 @@ export function RideAcceptanceCommentList() {
 	});
 
 	const commentItems = useMemo(() => {
-		return acceptanceContext.data.acceptance.comments.map((comment) => {
-			const createdBy = comment.created_by === 'system' ? 'Sistema' : (comment.created_by as unknown as UserDisplay)?.first_name + ' ' + (comment.created_by as unknown as UserDisplay)?.last_name;
+		if (!acceptance?.comments) return [];
+
+		return acceptance.comments.map((comment) => {
+			const createdBy = comment.created_by === 'system'
+				? t('default:rides.acceptance.RideAcceptanceCommentList.system')
+				: `${(comment.created_by as unknown as UserDisplay)?.first_name} ${(comment.created_by as unknown as UserDisplay)?.last_name}`;
 			const item: CommentItemProps = { content: null, created_at: comment.created_at, created_by: createdBy, icon: null };
 
 			if (comment.type === 'field_changed' && comment.field === 'acceptance_status') {
@@ -128,22 +137,22 @@ export function RideAcceptanceCommentList() {
 				item.iconTopMargin = 25;
 				item.icon = createElement(CommentAnalysisSummaryProps.icon, { color: CommentAnalysisSummaryProps.color });
 
-				const analysisItems = []; //  Object.entries(analysisSummary).map(([id, item]) => ({ id: id, ...item }));
+				const analysisItems: { grade: string, id: string }[] = [];
 
 				item.content = (
 					<div className={styles.messageContainer}>
 						<div className={styles.label}>{CommentAnalysisSummaryProps.label}</div>
 						<Section flexDirection="row" gap="xs" padding="none">
-							{analysisItems.map(item => (
+							{analysisItems.map(analysisItem => (
 								<Tooltip
-									key={item.id}
-									label={item.grade}
+									key={analysisItem.id}
+									label={analysisItem.grade}
 									p={0}
 									radius="md"
 								>
 									<IconCircleFilled
 										size={18}
-										color={(item.grade === 'fail' || item.grade === 'error')
+										color={(analysisItem.grade === 'fail' || analysisItem.grade === 'error')
 											? 'var(--color-status-danger-primary)'
 											: 'var(--color-status-success-primary)'}
 									/>
@@ -173,25 +182,37 @@ export function RideAcceptanceCommentList() {
 
 			return item;
 		});
-	}, [CommentAcceptanceStatusProps, CommentAnalysisSummaryProps.color, CommentAnalysisSummaryProps.icon, CommentAnalysisSummaryProps.label, CommentCrudProps, CommentJustificationProps.color, CommentJustificationProps.icon, CommentJustificationProps.label, CommentLockProps, CommentNoteProps.color, CommentNoteProps.icon, acceptanceContext.data.acceptance.comments]);
+	}, [CommentAcceptanceStatusProps, CommentAnalysisSummaryProps.color, CommentAnalysisSummaryProps.icon, CommentAnalysisSummaryProps.label, CommentCrudProps, CommentJustificationProps.color, CommentJustificationProps.icon, CommentJustificationProps.label, CommentLockProps, CommentNoteProps.color, CommentNoteProps.icon, acceptance?.comments, t]);
 
 	//
 	// B. Handle actions
 
+	const { action: handleAddComment, isLoading: isAddingComment } = useHandleAction<RideAcceptance, NoteComment>({
+		fetchFn: async comment => await fetchApiData<RideAcceptance, NoteComment>({
+			body: comment,
+			method: 'POST',
+			url: API_ROUTES.operation.RIDE_ACCEPTANCES_COMMENT(rideId),
+		}),
+		onSuccess: () => {
+			mutate();
+		},
+	});
+
 	function addComment(comment: string) {
-		acceptanceContext.actions.addComment({
-			created_at: Dates.now('Europe/Lisbon').unix_milliseconds,
+		const now = Dates.now('Europe/Lisbon').unix_milliseconds;
+		handleAddComment({
+			created_at: now,
 			created_by: 'will-be-set-by-api',
 			message: comment,
 			type: 'note',
-			updated_at: Dates.now('Europe/Lisbon').unix_milliseconds,
+			updated_at: now,
 		});
 	}
 
 	//
 	// C. Render components
 
-	if (!acceptanceContext.data.acceptance) return null;
+	if (!acceptance) return null;
 
 	return (
 		<Section gap="md" width="100%">
@@ -199,10 +220,12 @@ export function RideAcceptanceCommentList() {
 			<CommentList data={commentItems} maxHeight={500} reverse />
 			<HasPermission action={PermissionCatalog.all.rides.actions.acceptance_comment_activity} scope={PermissionCatalog.all.rides.scope}>
 				<CommentInput
-					disabled={acceptanceContext.data.acceptance.is_locked}
+					disabled={acceptance.is_locked || isAddingComment}
 					onSubmit={addComment}
 				/>
 			</HasPermission>
 		</Section>
 	);
+
+	//
 }

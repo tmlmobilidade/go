@@ -14,3 +14,11 @@ export const RideAcceptanceStatusValues = [
 export const RideAcceptanceStatusSchema = z.enum(RideAcceptanceStatusValues);
 
 export type RideAcceptanceStatus = z.infer<typeof RideAcceptanceStatusSchema>;
+
+/* * */
+
+export const RideAcceptanceStatusFilterValues = [...RideAcceptanceStatusValues, 'none'] as const;
+
+export const RideAcceptanceStatusFilterSchema = z.enum(RideAcceptanceStatusFilterValues);
+
+export type RideAcceptanceStatusFilter = z.infer<typeof RideAcceptanceStatusFilterSchema>;

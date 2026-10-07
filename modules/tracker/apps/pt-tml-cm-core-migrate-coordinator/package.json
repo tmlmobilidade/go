@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
-		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"fastify": "5.12.1"
 	},
 	"devDependencies": {

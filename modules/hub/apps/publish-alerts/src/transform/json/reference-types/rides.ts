@@ -3,7 +3,7 @@
 import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Alert, type AlertReference, type Ride } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

@@ -22,8 +22,7 @@
 		"@tmlmobilidade/go-operation-pckg-types": "*",
 		"@tmlmobilidade/go-operation-pckg-utils": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"fastify": "5.12.1"
 	},
 	"devDependencies": {

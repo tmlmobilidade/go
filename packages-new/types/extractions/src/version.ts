@@ -7,6 +7,7 @@ import { OfferGtfsV29ExtractionVersionValue } from './modules/offer/gtfs/v29/ver
 import { OperationPostersV1ExtractionVersionValue } from './modules/operation/posters/v1/version.js';
 import { OperationRidesV1ExtractionVersionValue } from './modules/operation/rides/v1/version.js';
 import { OperationRidesV2ExtractionVersionValue } from './modules/operation/rides/v2/version.js';
+import { OperationRidesV3ExtractionVersionValue } from './modules/operation/rides/v3/version.js';
 
 /* * */
 
@@ -16,6 +17,7 @@ export const ExtractionVersionValues = [
 	OperationPostersV1ExtractionVersionValue,
 	OperationRidesV1ExtractionVersionValue,
 	OperationRidesV2ExtractionVersionValue,
+	OperationRidesV3ExtractionVersionValue,
 ] as const;
 
 export const ExtractionVersionSchema = z.enum(ExtractionVersionValues);

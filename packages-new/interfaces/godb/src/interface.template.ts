@@ -6,7 +6,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type AggregationPipeline, CreateIndexesOptions, isSameIndex, prepareMongoIndexOptions, type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
 import { UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { z } from 'zod';
 

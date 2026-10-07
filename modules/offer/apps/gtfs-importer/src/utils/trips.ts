@@ -3,6 +3,7 @@
 import { parseCsv, readGtfsFile } from '@/helpers/index.js';
 import { type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type PatternDirection, patternDirectionMapper } from '@tmlmobilidade/go-types-offer';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -19,10 +20,7 @@ export async function loadGtfsTrips(gtfsPath: string) {
 			trips.push(GtfsStrictV29TripsSchema.parse(raw));
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
-			console.warn('[gtfs-importer] Skipping trip due to validation error', {
-				error: message,
-				raw,
-			});
+			Logger.warning({ attributes: { error: message, raw }, message: '[gtfs-importer] Skipping trip due to validation error' });
 			skippedTrips.push({ error: message, raw });
 		}
 	}
@@ -31,10 +29,7 @@ export async function loadGtfsTrips(gtfsPath: string) {
 		const outputFile = path.join(gtfsPath, 'trips.skipped.jsonl');
 		const lines = skippedTrips.map(entry => JSON.stringify(entry)).join('\n');
 		await fs.writeFile(outputFile, `${lines}\n`, 'utf8');
-		console.warn('[gtfs-importer] Wrote skipped trips file', {
-			count: skippedTrips.length,
-			file: outputFile,
-		});
+		Logger.warning({ attributes: { count: skippedTrips.length, file: outputFile }, message: '[gtfs-importer] Wrote skipped trips file' });
 	}
 
 	return trips;

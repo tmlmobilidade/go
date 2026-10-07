@@ -1,7 +1,7 @@
 /* * */
 
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import Fastify from 'fastify';
 import { type FastifyRequest } from 'fastify';
 
@@ -16,15 +16,15 @@ let IS_BUSY = false;
 await (async function init() {
 	//
 
-	console.log(`[${PROCESS_ID}] Starting...`);
+	Logger.info({ message: `[${PROCESS_ID}] Starting...` });
 
 	//
 	// Reset ststaus on init
 
-	console.log('Resetting status on init...');
+	Logger.info({ message: 'Resetting status on init...' });
 	const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 	const result = await coreVehicleEventsCollection.updateMany({ status: { $exists: true } }, { $unset: { status: true } });
-	console.log('Reset status on init:', result);
+	Logger.info({ message: `Reset status on init: ${result.modifiedCount}` });
 
 	//
 	// Setup variables
@@ -50,7 +50,7 @@ await (async function init() {
 			// sequentially. To do that, we implement a simple lock mechanism.
 
 			if (IS_BUSY) {
-				console.log(`[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})`);
+				Logger.info({ message: `[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})` });
 				return null;
 			}
 
@@ -79,7 +79,7 @@ await (async function init() {
 			const fetchTimerResult = fetchTimer.get();
 
 			if (!latestCoreVehicleEvents.length) {
-				console.log(`[${sessionId}] No core vehicle events to process (fetch: ${fetchTimerResult})`);
+				Logger.info({ message: `[${sessionId}] No core vehicle events to process (fetch: ${fetchTimerResult})` });
 				return null;
 			}
 
@@ -93,7 +93,7 @@ await (async function init() {
 
 			await coreVehicleEventsCollection.updateMany({ _id: { $in: latestCoreVehicleEventsIds } }, { $set: { status: sessionId } });
 
-			console.log(`[${sessionId}] New batch: Qty ${latestCoreVehicleEventsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
+			Logger.info({ message: `[${sessionId}] New batch: Qty ${latestCoreVehicleEventsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 
 			IS_BUSY = false;
 
@@ -101,7 +101,7 @@ await (async function init() {
 
 			//
 		} catch (error) {
-			console.error(`[${sessionId}] Error getting core vehicle events: ${error.message}`);
+			Logger.error({ error, message: `[${sessionId}] Error getting core vehicle events` });
 			return null;
 		}
 	});
@@ -111,10 +111,10 @@ await (async function init() {
 
 	fastify.listen({ host: '::0', port: 5050 }, (err, address) => {
 		if (err) {
-			console.log(err);
+			Logger.critical({ error: err, message: 'Error starting the API service' });
 			process.exit(1);
 		}
-		console.log(`Server listening at ${address}`);
+		Logger.info({ message: `Server listening at ${address}` });
 	});
 
 	//

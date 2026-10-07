@@ -5,7 +5,7 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-client
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { HubV1ApiEtaGtfsFeed } from '@tmlmobilidade/go-types-hub';
 import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Retrieves the trip updates GTFS RT JSON data from the cache.

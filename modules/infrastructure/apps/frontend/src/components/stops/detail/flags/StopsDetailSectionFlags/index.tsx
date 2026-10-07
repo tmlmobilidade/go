@@ -1,11 +1,11 @@
 'use client';
 
+import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
+import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-data';
 import { Button, Collapsible, Grid, Section, useStandardFormWatch, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
-import { useStopsDetailData } from '../../use-stops-detail-data';
 import { StopsDetailSectionFlagItem } from '../StopsDetailSectionFlagItem';
 
 /* * */
@@ -61,7 +61,6 @@ export function StopsDetailSectionFlags() {
 		<Collapsible
 			description={t('default:stops.detail.SectionFlags.description')}
 			title={t('default:stops.detail.SectionFlags.title')}
-			defaultOpen
 		>
 
 			<Section gap="md">

@@ -4,7 +4,7 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type RawVehicleEventPtTmlFertagusV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

@@ -4,7 +4,8 @@ import { type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobili
 import { type OperationPostersV1CalendarAssignmentsExt, type OperationPostersV1CalendarDates, type OperationPostersV1CalendarExt, type OperationPostersV1Calendars } from '@tmlmobilidade/go-types-operation';
 import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 import { DAY_TYPES } from '../day-types.js';

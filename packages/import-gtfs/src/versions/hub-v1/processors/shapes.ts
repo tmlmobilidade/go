@@ -2,8 +2,7 @@
 
 import { type HubV1GtfsShapes, HubV1GtfsShapesSchema } from '@tmlmobilidade/go-types-hub';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';
 import { type GtfsHubV1SQLTables } from '../types.js';
@@ -42,7 +41,7 @@ export async function processGtfsHubV1Shapes(context: ImportGtfsContext<GtfsHubV
 
 		context.gtfs.shapes.flush();
 
-		Logger.success(`Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
+		Logger.success({ message: `Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, spacesAfter: 1 });
 
 		//
 	} catch (error) {

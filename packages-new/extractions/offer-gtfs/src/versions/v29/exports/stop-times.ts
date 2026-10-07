@@ -7,7 +7,7 @@ import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/go-types-offer';
 import { OperationalTimeSchema } from '@tmlmobilidade/go-types-shared';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { metersToGtfsKm } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
@@ -101,7 +101,7 @@ export async function exportStopTimesForPattern(
 				}
 
 				// If pathItem.stop is present, use agency-specific stop_id; else fallback to pathItem.stop_id
-				const currentStopData = stopsData.find(s => s._id === pathItem.stop_id);
+				const currentStopData = stopsData.find(s => String(s._id) === String(pathItem.stop_id));
 				const stopId = currentStopData ? getAgencyStopId(currentStopData, agencyId) : String(pathItem.stop_id);
 
 				const stopTimeRow: GtfsStrictV29StopTimes = {

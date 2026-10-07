@@ -2,8 +2,7 @@
 
 import { type GtfsStrictV30Trips, GtfsStrictV30TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';
 import { type GtfsStrictV30SQLTables } from '../types.js';
@@ -45,7 +44,7 @@ export async function processGtfsStrictV30Trips(context: ImportGtfsContext<GtfsS
 
 		context.gtfs.trips.flush();
 
-		Logger.success(`Finished processing "trips.txt": ${context.gtfs.trips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
+		Logger.success({ message: `Finished processing "trips.txt": ${context.gtfs.trips.size} rows saved in ${tripsParseTimer.get()}.`, spacesAfter: 1 });
 
 		//
 	} catch (error) {

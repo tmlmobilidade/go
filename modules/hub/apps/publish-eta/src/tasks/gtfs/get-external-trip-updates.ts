@@ -5,8 +5,7 @@ import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { GtfsRtStopTimeUpdate, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubV1ApiPlan } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ExternalFeedConfig } from '../external-feeds.js';
 
@@ -98,7 +97,7 @@ export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<
 			});
 		}
 
-		Logger.info({ message: `Found ${tripUpdates.length} ${feed.label} trip updates in ${timer.get()}`, spacesAfterOrBefore: 1 });
+		Logger.info({ message: `Found ${tripUpdates.length} ${feed.label} trip updates in ${timer.get()}`, spacesAfter: 1 });
 
 		return tripUpdates;
 	} catch (error) {

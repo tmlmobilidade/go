@@ -4,22 +4,11 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RidesCoordinatorPlansResponse } from '@tmlmobilidade/go-operation-pckg-types';
 import { getCoordinatorUrl, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { parsePlanTask } from './tasks/parse-plan.js';
 
 /* * */
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
-}
 
 async function main() {
 	//
@@ -39,11 +28,11 @@ async function main() {
 		.then(data => data.plan_id);
 
 	if (!planId) {
-		console.log(`No plan to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})`);
+		Logger.info({ message: `No plan to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})` });
 		return;
 	}
 
-	console.log(`Received plan ID from coordinator: ${planId} (fetch: ${fetchCoordinatorTimer.get()})`);
+	Logger.info({ message: `Received plan ID from coordinator: ${planId} (fetch: ${fetchCoordinatorTimer.get()})` });
 
 	//
 	// Retrieve the plan from the database

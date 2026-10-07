@@ -2,8 +2,7 @@
 
 import { type GtfsStrictV29ExtCalendarDates, GtfsStrictV29ExtCalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';
@@ -86,7 +85,7 @@ export async function processGtfsStrictV29ExtCalendarDates(context: ImportGtfsCo
 
 		if (fs.existsSync(`${context.workdir.extract_dir_path}/calendar_dates.txt`)) {
 			await streamCsvFile(`${context.workdir.extract_dir_path}/calendar_dates.txt`, parseEachRow);
-			Logger.success(`Finished processing "calendar_dates.txt": ${Object.keys(context.gtfs.calendar_dates).length} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
+			Logger.success({ message: `Finished processing "calendar_dates.txt": ${Object.keys(context.gtfs.calendar_dates).length} rows saved in ${calendarDatesParseTimer.get()}.`, spacesAfter: 1 });
 		} else {
 			Logger.info({ message: 'Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...' });
 		}

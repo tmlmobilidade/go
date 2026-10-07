@@ -6,7 +6,7 @@ import { type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { Dates, isHoliday } from '@tmlmobilidade/dates';
 import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

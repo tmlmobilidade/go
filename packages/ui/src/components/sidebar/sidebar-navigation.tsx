@@ -167,7 +167,7 @@ export const sidebarNavigationGroups = [
 				_id: 'stops',
 				href: PAGE_ROUTES.infrastructure.STOPS_LIST,
 				icon: <IconFlag2 />,
-				permissions: [{ action: 'read', resources: { agency_ids: [], municipality_ids: [] }, scope: 'stops' }],
+				permissions: [{ action: 'read', resources: { agency_ids: [], location_ids: [] }, scope: 'stops' }],
 			},
 		],
 	},

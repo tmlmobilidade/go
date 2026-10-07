@@ -32,11 +32,9 @@ export const RouteSimplifiedSchema = z.object({
 
 /* * */
 
-export const CreateRouteSchema = RouteSchema.omit({ _id: true, created_at: true, patterns: true, updated_at: true });
+export const CreateRouteSchema = RouteSchema.omit({ _id: true, created_at: true, created_by: true, patterns: true, updated_at: true });
 
-export const UpdateRouteSchema = CreateRouteSchema
-	.omit({ created_by: true })
-	.partial();
+export const UpdateRouteSchema = CreateRouteSchema.partial();
 
 /* * */
 

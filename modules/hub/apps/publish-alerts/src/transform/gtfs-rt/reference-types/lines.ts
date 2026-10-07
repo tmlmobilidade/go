@@ -7,7 +7,7 @@ import { type GtfsRtEntitySelector } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

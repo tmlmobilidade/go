@@ -1,7 +1,7 @@
 /* * */
 
 import { type OperationContext } from '@/types/operation-context.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -49,17 +49,17 @@ export function createLoggerObservability(): Observability {
 				: `[storage] ${rest.operation} failed (${durationMs}ms)`;
 
 			if (outcome === 'success') {
-				Logger.info({ contextOrSpacesAfter: rest, message });
+				Logger.info({ attributes: rest, message });
 			} else {
-				Logger.error({ contextOrErrorOrSpacesAfter: rest, message });
+				Logger.error({ attributes: rest, message });
 			}
 		},
 		onOperationStart: (ctx) => {
-			Logger.info({ contextOrSpacesAfter: ctx, message: `[storage] ${ctx.operation} started` });
+			Logger.info({ attributes: ctx, message: `[storage] ${ctx.operation} started` });
 		},
 		onStep: (ctx) => {
 			Logger.info({
-				contextOrSpacesAfter: ctx,
+				attributes: ctx,
 				message: `[storage] ${ctx.operation} ${ctx.phase} ${ctx.step}`,
 			});
 		},

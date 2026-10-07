@@ -15,7 +15,7 @@ export async function updateAlertHandler(request: FastifyRequest<{ Body: UpdateA
 	//
 	// Validate the request body
 
-	const updatedAlertData = await goDb.operation.alerts.updateById(request.params.id, {
+	const updatedAlertData = await goDb.operation.alerts.updateOne({ _id: request.params.id }, {
 		...request.body,
 		updated_by: request.me._id,
 	});

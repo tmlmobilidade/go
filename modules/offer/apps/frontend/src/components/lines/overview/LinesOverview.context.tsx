@@ -89,7 +89,7 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// C. Fetch data
 
-	const { data: fetchedPatternsData, error: patternsError, isLoading: patternsLoading } = useSWR<ApiResponse<PatternShapeMapItem[]>>(patternsRequestKey, {
+	const { data: fetchedPatternsData, error: patternsError, isLoading: patternsRequestLoading } = useSWR<ApiResponse<PatternShapeMapItem[]>>(patternsRequestKey, {
 		fetcher: async url => await fetchApiData<PatternShapeMapItem[]>({ url }),
 	});
 
@@ -144,6 +144,10 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	const patternsData = useMemo(() => {
 		return agencyIds.flatMap(agencyId => patternsByAgencyId[agencyId] ?? []);
 	}, [agencyIds, patternsByAgencyId]);
+
+	// Keep loading until agency defaults are ready and every selected agency's
+	// response has been applied to the cache, including successful empty results.
+	const patternsLoading = linesListContext.flags.agenciesLoading || patternsRequestLoading || (!patternsError && missingAgencyIds.length > 0);
 
 	const contextValue: LinesOverviewContextState = useMemo(() => ({
 		actions: {

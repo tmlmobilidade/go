@@ -2,8 +2,7 @@
 
 import { type GtfsStrictV29ExtShapes, GtfsStrictV29ExtShapesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';
 import { type GtfsStrictV29ExtSQLTables } from '../types.js';
@@ -42,7 +41,7 @@ export async function processGtfsStrictV29ExtShapes(context: ImportGtfsContext<G
 
 		context.gtfs.shapes.flush();
 
-		Logger.success(`Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
+		Logger.success({ message: `Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, spacesAfter: 1 });
 
 		//
 	} catch (error) {

@@ -2,8 +2,7 @@
 
 import { type GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ImportGtfsContext } from '../../../shared/init-context.js';
 import { type GtfsStrictV29SQLTables } from '../types.js';
@@ -47,7 +46,7 @@ export async function processGtfsStrictV29StopTimes(context: ImportGtfsContext<G
 
 		context.gtfs.stop_times.flush();
 
-		Logger.success(`Finished processing "stop_times.txt": ${context.counters.stop_times} rows saved in ${stopTimesParseTimer.get()}.`, 1);
+		Logger.success({ message: `Finished processing "stop_times.txt": ${context.counters.stop_times} rows saved in ${stopTimesParseTimer.get()}.`, spacesAfter: 1 });
 
 		//
 	} catch (error) {

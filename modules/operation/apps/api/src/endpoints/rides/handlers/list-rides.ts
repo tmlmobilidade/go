@@ -1,11 +1,16 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type ControllerRidesListFilters, ControllerRidesListFiltersSchema, type ControllerRidesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
 import { sqlPath } from '@tmlmobilidade/go-utils-sql';
 import { readFile } from 'node:fs/promises';
+
+import { parseRidesListSearch } from '../utils/parse-rides-list-search.js';
+
+/* * */
 
 /**
  * Get rides by query.
@@ -32,8 +37,17 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	const validatedFilters = ControllerRidesListFiltersSchema.parse(request.body);
 
 	//
+	// Parse search tags (`v:`, `d:`, `l:`) and optional trip_id pattern (`%%`)
+
+	const parsedSearch = parseRidesListSearch(validatedFilters.search);
+	const search = parsedSearch.text;
+	const isTripIdPattern = search?.includes('%%') ?? false;
+	const exactRideSearch = search && !isTripIdPattern ? search : null;
+
+	//
 	// If any of the required filters are empty arrays,
-	// then there is no data to return, so return an empty array.
+	// then there is no data to return — unless we have an exact-ride
+	// search, which bypasses every UI filter except agency permissions.
 
 	const hasEmptyFilter = [
 		validatedFilters.agency_ids,
@@ -45,24 +59,22 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 		validatedFilters.start_delay_statuses,
 		validatedFilters.end_delay_statuses,
 		validatedFilters.operational_statuses,
-		validatedFilters.route_short_names,
 		validatedFilters.ticketing_statuses,
 	].some(value => Array.isArray(value) && value.length === 0);
 
-	if (hasEmptyFilter) return [];
+	if (hasEmptyFilter && !exactRideSearch) return [];
+	if (hasEmptyFilter && !validatedFilters.agency_ids.length) return [];
 
 	//
 	// Build query parameters
-
-	const search = validatedFilters.search?.trim() || null;
 
 	const params: Record<string, number | string> = {
 		1: validatedFilters.start_time_scheduled_start,
 		2: validatedFilters.start_time_scheduled_end,
 	};
 
-	// $3 is the exact-ride id and only exists in the query when a search term is given.
-	if (search) params[3] = search;
+	// $3 is the exact-ride id and only exists in the query when a plain search term is given.
+	if (exactRideSearch) params[3] = exactRideSearch;
 
 	let paramIndex = 4;
 
@@ -75,49 +87,73 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	//
 	// Build WHERE conditions
 	//
-	// The SQL template has three injection points:
+	// The SQL template has these injection points:
 	//
-	//   --RIDE FILTERS HERE--      inside the read of operation.rides, before the latest
-	//                              version is selected. Only attributes that are identical
-	//                              across every version of a ride may go here (agency, route,
-	//                              id/headsign search), so the primary key can prune the read.
-	//   --ANALYSIS FILTERS HERE--  inside each analysis read (agency only).
-	//   --DERIVED FILTERS HERE--   after deduplication and status derivation, for attributes
-	//                              that change between versions (driver/vehicle ids) and for
-	//                              every derived status or grade.
+	//   --RIDE FILTERS HERE--         inside the dated read of operation.rides, before the
+	//                                 latest version is selected. Only attributes that are
+	//                                 identical across every version of a ride may go here
+	//                                 (agency, route, id/headsign/trip_id search).
+	//   --EXACT RIDE FILTERS HERE--   agency only — an exact `_id` hit bypasses every other
+	//                                 UI filter; permissions still hold.
+	//   --DERIVED FILTERS HERE--      after deduplication and status derivation, for attributes
+	//                                 that change between versions (driver/vehicle ids) and for
+	//                                 every derived status or grade.
+	//   --EXACT RIDE BYPASS--         `_id = $3 OR (…)` so the exact hit skips derived filters.
 
 	const rideConditions: string[] = [];
+	const exactRideConditions: string[] = [];
 	const conditions: string[] = [];
+
+	// Empty UI filters normally mean "match nothing". With an exact-ride search we still
+	// want that one ride, so disable the dated branch and let the exact branch do the work.
+	if (hasEmptyFilter) rideConditions.push('1 = 0');
 
 	//
 	// Agency IDs
 
 	if (validatedFilters.agency_ids.length) {
 		const placeholders = validatedFilters.agency_ids.map(addParam);
-		rideConditions.push(`agency_id IN (${placeholders.join(', ')})`);
+		const agencyCondition = `agency_id IN (${placeholders.join(', ')})`;
+		rideConditions.push(agencyCondition);
+		exactRideConditions.push(agencyCondition);
 	}
 
 	//
-	// Route short names
+	// Route short names (filter UI + `l:` search tag)
 
-	if (validatedFilters.route_short_names?.length) {
-		const placeholders = validatedFilters.route_short_names.map(addParam);
+	const routeShortNames = [
+		...(validatedFilters.route_short_names ?? []),
+		...parsedSearch.routeShortNames,
+	];
+
+	if (routeShortNames.length) {
+		const placeholders = routeShortNames.map(addParam);
 		rideConditions.push(`route_short_name IN (${placeholders.join(', ')})`);
 	}
 
 	//
-	// Driver IDs
+	// Driver IDs (filter UI + `d:` search tag)
 
-	if (validatedFilters.driver_ids?.length) {
-		const placeholders = validatedFilters.driver_ids.map(addParam);
+	const driverIds = [
+		...(validatedFilters.driver_ids ?? []),
+		...parsedSearch.driverIds,
+	];
+
+	if (driverIds.length) {
+		const placeholders = driverIds.map(addParam);
 		conditions.push(`hasAny(driver_ids, [${placeholders.join(', ')}])`);
 	}
 
 	//
-	// Vehicle IDs
+	// Vehicle IDs (filter UI + `v:` search tag)
 
-	if (validatedFilters.vehicle_ids?.length) {
-		const placeholders = validatedFilters.vehicle_ids.map(addParam);
+	const vehicleIds = [
+		...(validatedFilters.vehicle_ids ?? []),
+		...parsedSearch.vehicleIds,
+	];
+
+	if (vehicleIds.length) {
+		const placeholders = vehicleIds.map(addParam);
 		conditions.push(`hasAny(vehicle_ids, [${placeholders.join(', ')}])`);
 	}
 
@@ -197,10 +233,18 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 
 	//
 	// Search
+	//
+	//   `%%` in the remaining text → anchored trip_id pattern (`%%` = any sequence)
+	//   otherwise → partial match on _id / headsign (+ exact-ride branch outside the date range)
 
 	if (search) {
-		const partialSearch = addParam(`%${search}%`);
-		rideConditions.push(`(_id ILIKE ${partialSearch} OR headsign ILIKE ${partialSearch})`);
+		if (isTripIdPattern) {
+			const pattern = `^${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replaceAll('%%', '.*')}$`;
+			rideConditions.push(`match(trip_id, ${addParam(pattern)})`);
+		} else {
+			const partialSearch = addParam(`%${search}%`);
+			rideConditions.push(`(_id ILIKE ${partialSearch} OR headsign ILIKE ${partialSearch})`);
+		}
 	}
 
 	//
@@ -208,19 +252,49 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 	//
 	// The exact-ride branch (a UNION ALL that adds the ride whose id is exactly the search
 	// term, even outside the date range) is a scan of every part of operation.rides because
-	// _id is the last column of the sorting key. It is only kept when there is a search term.
-	// The ride filters are applied to that branch as well, so permission filters still hold.
+	// _id is the last column of the sorting key. It is only kept when there is a plain
+	// (non-pattern) search term. Only the agency filter is applied there so permissions
+	// still hold while every other UI filter is bypassed.
 
 	const joinConditions = (items: string[]): string => (items.length ? `\n\t\t\t\tAND ${items.join('\n\t\t\t\tAND ')}` : '');
 
 	const queryTemplate = await readFile(sqlPath('operation', 'rides/list-rides.sql'), 'utf-8');
 
 	const sql = queryTemplate
-		.replace(/--EXACT RIDE BRANCH START--([\s\S]*?)--EXACT RIDE BRANCH END--/, (_, branch: string) => (search ? branch : ''))
+		.replace(/--EXACT RIDE BRANCH START--([\s\S]*?)--EXACT RIDE BRANCH END--/, (_, branch: string) => (exactRideSearch ? branch : ''))
+		.replace(/--EXACT RIDE BYPASS START--([\s\S]*?)--EXACT RIDE BYPASS END--/, (_, bypass: string) => (exactRideSearch ? bypass : ''))
 		.replaceAll('--RIDE FILTERS HERE--', joinConditions(rideConditions))
+		.replace('--EXACT RIDE FILTERS HERE--', joinConditions(exactRideConditions))
 		.replace('--DERIVED FILTERS HERE--', joinConditions(conditions));
 
-	const queryResult = await labDb.queryFromString<ControllerRidesListItem>(sql, params);
+	let queryResult = await labDb.queryFromString<ControllerRidesListItem>(sql, params);
+
+	//
+	// Acceptance status lives in MongoDB (`ride-acceptances`), not ClickHouse.
+	// Enrich and filter after the rides query. `none` means no acceptance document.
+	// An exact `_id` search bypasses this filter too.
+
+	if (validatedFilters.acceptance_statuses?.length) {
+		const acceptances = await goDb.operation.rideAcceptances.findMany(
+			{ _id: { $in: queryResult.map(ride => ride._id) } },
+			{ projection: { acceptance_status: 1 } },
+		);
+		const statusByRideId = new Map(acceptances.map(acceptance => [acceptance._id, acceptance.acceptance_status]));
+
+		const statuses = validatedFilters.acceptance_statuses.filter(status => status !== 'none');
+		const includesNone = validatedFilters.acceptance_statuses.includes('none');
+
+		queryResult = queryResult
+			.map(ride => ({
+				...ride,
+				acceptance_status: statusByRideId.get(ride._id) ?? null,
+			}))
+			.filter((ride) => {
+				if (exactRideSearch && ride._id === exactRideSearch) return true;
+				if (ride.acceptance_status === null) return includesNone;
+				return statuses.includes(ride.acceptance_status);
+			});
+	}
 
 	//
 	// Return the results

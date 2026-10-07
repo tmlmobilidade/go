@@ -1,12 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlMobiV1 } from '@tmlmobilidade/go-types-vehicle-events';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import crypto from 'node:crypto';
 
 /* * */
@@ -14,13 +13,6 @@ import crypto from 'node:crypto';
 let ITERATION = 0;
 
 /* * */
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'pt-tml-mobi-api-fetch', message: 'Sentry Tracker MOBI Fetch initialized', module: 'tracker', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Tracker MOBI Fetch' });
-}
 
 const main = async () => {
 	//
@@ -35,7 +27,7 @@ const main = async () => {
 	//
 	// Fetch the MOBI Vehicle Events data from the API and decode it
 
-	Logger.info({ message: `[${ITERATION}] Fetching MOBI data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching MOBI data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.mobi.vehiclePositions();
 

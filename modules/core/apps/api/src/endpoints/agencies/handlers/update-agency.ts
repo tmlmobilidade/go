@@ -3,6 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Updates an Agency in the database
@@ -21,7 +22,7 @@ export async function updateAgencyHandler(request: FastifyRequest<{ Body: Update
 	});
 
 	if (!validatedAgency.success) {
-		console.log(validatedAgency.error.message);
+		Logger.warning({ error: validatedAgency.error, message: 'Invalid agency data' });
 		return sendErrorApiResponse(reply, {
 			error: validatedAgency.error.message,
 			status_code: '400',

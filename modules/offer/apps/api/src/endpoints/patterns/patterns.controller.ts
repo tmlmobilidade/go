@@ -1,6 +1,7 @@
 /* * */
 
 import { generateComments } from '@/utils/comments.js';
+import { populatePatternPath } from '@/utils/populate-pattern-path.js';
 import { mergePatternWithEventRules } from '@/utils/rules.js';
 import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
@@ -82,6 +83,7 @@ export class PatternsController {
 
 		const newPattern = await goDb.offer.patterns.insertOne({
 			...request.body,
+			created_by: request.me._id,
 			parameters: [defaultParameter],
 		});
 
@@ -249,19 +251,9 @@ export class PatternsController {
 		// Populate stop data for each path item
 
 		if (patternData.path && patternData.path.length > 0) {
-			const stopIds = patternData.path.map(pathItem => pathItem.stop_id);
-			const stopsData = await goDb.infrastructure.stops.findMany(
-				{ _id: { $in: stopIds } },
+			const populatedPath = await populatePatternPath(patternData.path, stopIds =>
+				goDb.infrastructure.stops.findMany({ _id: { $in: stopIds } }),
 			);
-
-			// Create a map for quick lookup
-			const stopsMap = new Map(stopsData.map(stop => [stop._id, stop]));
-
-			// Populate the path with stop data
-			const populatedPath: PopulatedPath[] = patternData.path.map(pathItem => ({
-				...pathItem,
-				stop: stopsMap.get(pathItem.stop_id) || null,
-			}));
 
 			// Return pattern with populated path
 			return reply.send({
@@ -512,6 +504,7 @@ export class PatternsController {
 				...(patternData.comments || []),
 				...patternComments,
 			],
+			updated_by: request.me._id,
 		};
 
 		//

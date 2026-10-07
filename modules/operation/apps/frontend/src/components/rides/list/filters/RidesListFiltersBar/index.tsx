@@ -10,6 +10,7 @@ import { RidesListFilterDateRange } from '@/components/rides/list/filters/RidesL
 import { RidesListFilterDriver } from '@/components/rides/list/filters/RidesListFilterDriver';
 import { RidesListFilterEndDelayStatus } from '@/components/rides/list/filters/RidesListFilterEndDelayStatus';
 import { RidesListFilterFavorites } from '@/components/rides/list/filters/RidesListFilterFavorites';
+import { RidesListFilterLine } from '@/components/rides/list/filters/RidesListFilterLine';
 import { RidesListFilterOperationalStatus } from '@/components/rides/list/filters/RidesListFilterOperationalStatus';
 import { RidesListFilterStartDelayStatus } from '@/components/rides/list/filters/RidesListFilterStartDelayStatus';
 import { RidesListFilterTicketingStatus } from '@/components/rides/list/filters/RidesListFilterTicketingStatus';
@@ -28,6 +29,7 @@ export function RidesListFiltersBar() {
 			<RidesListFilterStartDelayStatus />
 			<RidesListFilterEndDelayStatus />
 			<RidesListFilterAcceptanceStatus />
+			<RidesListFilterLine />
 			<RidesListFilterDriver />
 			<RidesListFilterVehicle />
 			<RidesListFilterTicketingStatus />

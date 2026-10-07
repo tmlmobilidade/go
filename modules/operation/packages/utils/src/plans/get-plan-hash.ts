@@ -5,6 +5,7 @@ import { type Attachment } from '@tmlmobilidade/go-types-core';
 import { type HashablePlanMetadata } from '@tmlmobilidade/go-types-operation';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { getZipFileHash } from '@tmlmobilidade/go-utils-exec';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -27,7 +28,12 @@ interface GetPlanHashParams {
 export async function getPlanHash({ activeFrom, activeUntil, operationGtfsAttachmentId, operationGtfsNormalizedAttachmentId, planId }: GetPlanHashParams): Promise<string> {
 	//
 
-	console.info(`[getPlanHash()] Getting hash for plan ${planId}: activeFrom=${activeFrom}, activeUntil=${activeUntil}, operationGtfsAttachmentId=${operationGtfsAttachmentId}, operationGtfsNormalizedAttachmentId=${operationGtfsNormalizedAttachmentId}`);
+	Logger.info(
+		{
+			attributes: { activeFrom, activeUntil, operationGtfsAttachmentId, operationGtfsNormalizedAttachmentId, planId },
+			message: `[getPlanHash()] Getting hash for plan ${planId}: activeFrom=${activeFrom}, activeUntil=${activeUntil}, operationGtfsAttachmentId=${operationGtfsAttachmentId}, operationGtfsNormalizedAttachmentId=${operationGtfsNormalizedAttachmentId}`,
+		},
+	);
 
 	//
 	// Check if all necessary data is present
@@ -57,7 +63,7 @@ export async function getPlanHash({ activeFrom, activeUntil, operationGtfsAttach
 	}
 
 	if (!operationGtfsNormalizedAttachmentData?.url) {
-		console.error(`[getPlanHash()] Operation GTFS normalized attachment "${operationGtfsNormalizedAttachmentId}" not found in Storage for plan ${planId}`);
+		Logger.error({ attributes: { operationGtfsNormalizedAttachmentId, planId }, message: 'Operation GTFS normalized attachment not found in Storage' });
 	}
 
 	//

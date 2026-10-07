@@ -1,5 +1,6 @@
 /* * */
 
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import path from 'path';
 
 import { importGtfs } from './main.js';
@@ -15,6 +16,6 @@ export async function runImport() {
 }
 
 runImport().catch((error) => {
-	console.error(error);
+	Logger.critical({ error, message: 'Error importing GTFS' });
 	process.exit(1);
 });

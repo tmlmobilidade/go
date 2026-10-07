@@ -6,8 +6,7 @@ import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-operation-pck
 import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type ServiceAlertResponse } from '@tmlmobilidade/types';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -24,16 +23,6 @@ const ProtobufPath = path.resolve(__dirname, './gtfs-realtime.proto');
 
 async function main() {
 	//
-
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Alerts Sync Datik' });
-	}
 
 	//
 	// Initialize the logger

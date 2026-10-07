@@ -2,8 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * This task makes sure the associated GTFS files of plan documents have the correct
@@ -35,7 +34,7 @@ export async function updatePlanHashesTask() {
 
 			const timer = new Timer();
 
-			console.log(`[${allPlans.length - index}/${allPlans.length}] Processing plan ${planData._id}`);
+			Logger.info({ message: `[${allPlans.length - index}/${allPlans.length}] Processing plan ${planData._id}` });
 
 			if (!planData.attachments.operation_gtfs) {
 				throw new Error(`[${planData._id}] Operation GTFS attachment not found.`);
