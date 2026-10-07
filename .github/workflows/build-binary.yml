@@ -7,12 +7,12 @@ on:
       - go-695-passar-o-validador-para-o-go
       # - prd
     paths:
-      - '.github/workflows/publish-validator.yaml'
-      - 'modules/plans/apps/validator/compile.sh'
-      - 'modules/plans/apps/validator/src/**'
+      - '.github/workflows/build-binary.yml'
+      - 'modules/operation/apps/validator/validator/compile.sh'
+      - 'modules/operation/apps/validator/validator/src/**'
       - 'packages-new/interfaces/validator-db/src/**'
       - 'packages-new/types/gtfs-validator/src/validation/**'
-      - '!modules/plans/apps/validator/bin/**'
+      - '!modules/operation/apps/validator/ts-wrapper/bin/**'
 
 permissions:
   contents: write
@@ -25,9 +25,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: modules/operation/apps/validator/validator/src/go.mod
+          cache-dependency-path: modules/operation/apps/validator/validator/src/go.sum
+
       - name: Build binaries
         shell: bash
-        run: bash modules/plans/apps/validator/compile.sh
+        run: bash modules/operation/apps/validator/validator/compile.sh
 
       - name: Create GitHub release with binaries
         env:
@@ -38,7 +44,7 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "Validator build ${GITHUB_RUN_NUMBER}" \
             --notes "Validator binaries built from commit ${GITHUB_SHA}." \
-            modules/plans/apps/validator/bin/validator-linux-amd64 \
-            modules/plans/apps/validator/bin/validator-linux-arm64 \
-            modules/plans/apps/validator/bin/validator-darwin-amd64 \
-            modules/plans/apps/validator/bin/validator-darwin-arm64
+            modules/operation/apps/validator/ts-wrapper/bin/validator-linux-amd64 \
+            modules/operation/apps/validator/ts-wrapper/bin/validator-linux-arm64 \
+            modules/operation/apps/validator/ts-wrapper/bin/validator-darwin-amd64 \
+            modules/operation/apps/validator/ts-wrapper/bin/validator-darwin-arm64
