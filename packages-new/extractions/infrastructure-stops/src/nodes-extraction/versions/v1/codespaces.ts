@@ -4,7 +4,7 @@ import { locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
 
 /* * */
 
-// INE municipality codes grouped by the codespaces in the access nodes guide (July 2026).
+// INE municipality codes grouped by the codespaces in the access nodes guide.
 // Territorial membership: DGT CAOP2025, Areas_Municipios_CAOP2025.
 const MUNICIPALITY_CODES_BY_CODESPACE = {
 	'pt.amal': ['0801', '0802', '0803', '0804', '0805', '0806', '0807', '0808', '0809', '0810', '0811', '0812', '0813', '0814', '0815', '0816'],

@@ -1,6 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureNodesV1Extraction, InfrastructureNodesV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
@@ -55,13 +56,17 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		...(search ? [{ $or: [{ _id: { $options: 'i', $regex: search } }, { name: { $options: 'i', $regex: search } }] }] : []),
 	];
 
+	const [country] = await locationsDb.findLocationsByCountryAndAdminLevel('PT', '2');
+	if (!country) throw new Error('Portugal not found in locations database');
+
 	const stops = await goDb.infrastructure.stops.findMany({
+		'location.country.osm_id': Number(country.id),
 		...(selectedAgencyIds ? { 'flags.agency_ids': { $in: selectedAgencyIds } } : {}),
 		...(filters.length ? { $and: filters } : {}),
 		...(properties.lifecycle_statuses?.length ? { lifecycle_status: { $in: properties.lifecycle_statuses } } : {}),
 		...(properties.facilities?.length ? { facilities: { $in: properties.facilities } } : {}),
 		...(properties.connections?.length ? { connections: { $in: properties.connections } } : {}),
-		is_deleted: false,
+		'is_deleted': false,
 	}, {
 		projection: { _id: 1, created_at: 1, flags: 1, latitude: 1, location: 1, longitude: 1, name: 1 },
 	});
