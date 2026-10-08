@@ -163,6 +163,19 @@ describe('base-map vehicle filtering order', () => {
 		);
 	});
 
+	it('marks all vehicles as dots while a stop or alert is selected', () => {
+		const result = getBaseMapVehiclesMapData({
+			excludedOperatorIds: [],
+			focusedVehicleId: null,
+			lineDetailLine: null,
+			routePlannerRouteDirections: null,
+			showVehiclesAsDots: true,
+			vehiclesData,
+		});
+
+		assert.ok(result.features.every(feature => feature.properties.is_dimmed));
+	});
+
 	it('applies grouped operator visibility last and keeps unknown agencies visible', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: ['CM'],

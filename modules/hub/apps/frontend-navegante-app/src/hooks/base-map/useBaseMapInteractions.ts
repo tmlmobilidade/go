@@ -1,7 +1,7 @@
 'use client';
 
 import { MapViewOverlayStopsInteractiveLayerId, MapViewOverlayStopsVisibleMinZoom } from '@/components/map/MapViewOverlayStops';
-import { MapViewOverlayVehiclesInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/MapViewOverlayVehicles';
+import { MapViewOverlayVehiclesDotLayerId, MapViewOverlayVehiclesInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/MapViewOverlayVehicles';
 import { MapViewStyleAlertsInteractiveLayerId } from '@/components/map/MapViewStyleAlerts';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useUserLocation } from '@/contexts/UserLocation.context';
@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 export const baseMapInteractiveLayerIds = [
 	MapViewOverlayVehiclesPrimaryLayerId,
+	MapViewOverlayVehiclesDotLayerId,
 	MapViewOverlayStopsInteractiveLayerId,
 	MapViewStyleAlertsInteractiveLayerId,
 ];
@@ -65,7 +66,7 @@ export function useBaseMapInteractions({ setUserLocationTrackingMode }: UseBaseM
 			return;
 		}
 
-		if (layerId === MapViewOverlayVehiclesInteractiveLayerId) {
+		if (layerId === MapViewOverlayVehiclesInteractiveLayerId || layerId === MapViewOverlayVehiclesDotLayerId) {
 			if (!feature.properties.vehicle_id) return;
 			push({ entityId: String(feature.properties.vehicle_id), view: 'vehicles-detail' });
 		}

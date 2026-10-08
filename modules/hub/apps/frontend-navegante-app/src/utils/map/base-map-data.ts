@@ -33,6 +33,7 @@ interface GetBaseMapVehiclesMapDataParams<TProperties extends BaseMapVehicleProp
 	focusedVehicleId: null | string
 	lineDetailLine: null | { line: BaseMapLineIdentity | undefined }
 	routePlannerRouteDirections: null | Set<string>
+	showVehiclesAsDots?: boolean
 	vehiclesData: GeoJSON.FeatureCollection<GeoJSON.Point, TProperties>
 }
 
@@ -134,7 +135,7 @@ export function getBaseMapVehiclesMapData<TProperties extends BaseMapVehicleProp
 					...feature,
 					properties: {
 						...feature.properties,
-						is_dimmed: Boolean(params.focusedVehicleId) && !isFocused,
+						is_dimmed: (Boolean(params.focusedVehicleId) || params.showVehiclesAsDots === true) && !isFocused,
 						is_focused: isFocused,
 					},
 				};

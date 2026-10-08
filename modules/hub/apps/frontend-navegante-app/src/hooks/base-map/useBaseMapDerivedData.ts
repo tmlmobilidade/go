@@ -62,9 +62,10 @@ export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
 			focusedVehicleId: params.focusedVehicleId,
 			lineDetailLine,
 			routePlannerRouteDirections: routePlannerMapData.vehicleRouteDirections,
+			showVehiclesAsDots: params.activeBottomSheet?.view === 'alerts-detail' || params.activeBottomSheet?.view === 'stops-detail',
 			vehiclesData: vehiclesFeatureCollection,
 		});
-	}, [lineDetailLine, params.excludedOperatorIds, params.focusedVehicleId, routePlannerMapData.vehicleRouteDirections, vehiclesFeatureCollection]);
+	}, [lineDetailLine, params.activeBottomSheet?.view, params.excludedOperatorIds, params.focusedVehicleId, routePlannerMapData.vehicleRouteDirections, vehiclesFeatureCollection]);
 
 	const focusedVehicle = useMemo(() => {
 		if (!params.focusedVehicleId) return null;

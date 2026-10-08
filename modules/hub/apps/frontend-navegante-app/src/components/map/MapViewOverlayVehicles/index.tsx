@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 
 export const MapViewOverlayVehiclesPrimaryLayerId = 'default-layer-vehicles-regular';
 export const MapViewOverlayVehiclesInteractiveLayerId = 'default-layer-vehicles-regular';
+export const MapViewOverlayVehiclesDotLayerId = 'default-layer-vehicles-dot';
 
 /* * */
 
@@ -116,19 +117,14 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 	const previousDataRef = useRef<GeoJSON.FeatureCollection>(vehiclesData);
 	const animationStart = useRef<null | number>(null);
 	const animationFrame = useRef<null | number>(null);
-	const focusOpacity: DataDrivenPropertyValueSpecification<number> = ['case', ['boolean', ['get', 'is_dimmed'], false], 0.55, 1];
 	const iconOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles
-		? ['*', ['coalesce', ['get', 'opacity'], 1], focusOpacity]
-		: ['interpolate', ['linear'], ['zoom'], 12, 0, 13, focusOpacity];
-	const circleOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles ? 0 : [
-		'interpolate',
-		['linear'],
-		['zoom'],
-		12,
-		focusOpacity,
-		13,
-		0,
-	];
+		? ['coalesce', ['get', 'opacity'], 1]
+		: ['interpolate', ['linear'], ['zoom'], 12, 0, 13, 1];
+	const otherVehicleDotOpacity: DataDrivenPropertyValueSpecification<number> = ['case', ['boolean', ['get', 'is_dimmed'], false], 1, 0];
+	const circleOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles
+		? otherVehicleDotOpacity
+		: ['interpolate', ['linear'], ['zoom'], 12, 1, 13, otherVehicleDotOpacity];
+	const circleRadius: DataDrivenPropertyValueSpecification<number> = ['interpolate', ['linear'], ['zoom'], 12, 1.8, 13, ['case', ['boolean', ['get', 'is_dimmed'], false], 3, 1.8]];
 
 	//
 	// B. Transform data
@@ -190,6 +186,7 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 
 			<Layer
 				beforeId={presentBeforeId}
+				filter={['!', ['boolean', ['get', 'is_dimmed'], false]]}
 				id="default-layer-vehicles-regular"
 				source="default-source-vehicles"
 				type="symbol"
@@ -206,9 +203,9 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 						['linear'],
 						['zoom'],
 						10,
-						['case', ['boolean', ['get', 'is_focused'], false], 0.075, 0.05],
+						0.05,
 						30,
-						['case', ['boolean', ['get', 'is_focused'], false], 0.75, 0.5],
+						0.5,
 					],
 					'symbol-placement': 'point',
 					'symbol-sort-key': ['case', ['boolean', ['get', 'is_focused'], false], 1, 0],
@@ -222,7 +219,7 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 
 			<Layer
 				beforeId="default-layer-vehicles-regular"
-				id="default-layer-vehicles-dot"
+				id={MapViewOverlayVehiclesDotLayerId}
 				source="default-source-vehicles"
 				type="circle"
 				layout={{
@@ -232,7 +229,7 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 					'circle-color': '#00CD32',
 					'circle-opacity': circleOpacity,
 					'circle-pitch-alignment': 'map',
-					'circle-radius': 1.8,
+					'circle-radius': circleRadius,
 				}}
 			/>
 
