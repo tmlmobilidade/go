@@ -13,7 +13,7 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 	//
 	// Export stop times and annotations using the final trip IDs from calendar processing.
 
-	const { tripNotes: variantNotes } = buildVariantNotes(sqlTables.trips.all());
+	const { tripNotes: variantNotes } = buildVariantNotes(sqlTables.trips.all(), sqlTables.routes.all());
 	let previousTripId: string | undefined;
 	let routeStopSequence = 0;
 	let annotationsCount = 0;
