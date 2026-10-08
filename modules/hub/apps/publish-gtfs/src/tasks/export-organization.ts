@@ -255,11 +255,11 @@ export async function exportOrganizationGtfs(organization: Organization, activeP
 
 		Logger.info({ message: 'Uploading GTFS zip file to Files collection...' });
 
+		const resourceId = getOrganizationGtfsResourceId(organization._id);
+		const existingAttachment = await goDb.core.attachments.findById(resourceId);
 		const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
 
-		const resourceId = getOrganizationGtfsResourceId(organization._id);
-
-		await storageProvider.replace(fileStream, {
+		const attachmentData = {
 			_id: resourceId,
 			created_by: 'system',
 			name: `${resourceId}.zip`,
@@ -268,7 +268,13 @@ export async function exportOrganizationGtfs(organization: Organization, activeP
 			size: fs.statSync(`${context.workdir.path}/${context.run_id}.zip`).size,
 			type: 'application/zip',
 			updated_by: 'system',
-		});
+		};
+
+		if (existingAttachment) {
+			await storageProvider.replace(fileStream, attachmentData);
+		} else {
+			await storageProvider.upload(fileStream, attachmentData);
+		}
 
 		//
 		// Mark the plans complete after the feed is published.
