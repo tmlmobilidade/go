@@ -3,6 +3,7 @@
 import fastifyMultipart from '@fastify/multipart';
 import { getModuleConfig } from '@tmlmobilidade/consts';
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { registerPrometheusMetrics } from '@tmlmobilidade/go-utils-metrics';
 
 /* * */
 
@@ -17,6 +18,10 @@ import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 	await fastifyService.server.register(fastifyMultipart, {
 		limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+	});
+
+	await registerPrometheusMetrics(fastifyService.server, {
+		name: 'core_api',
 	});
 
 	await fastifyService.start();
