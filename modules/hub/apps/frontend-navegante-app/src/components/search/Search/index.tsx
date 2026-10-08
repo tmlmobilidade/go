@@ -2,10 +2,11 @@
 
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { SearchGroup } from '@/components/search/SearchGroup';
-import { SearchInitialLines } from '@/components/search/SearchInitialLines';
+import { SearchRecentResults } from '@/components/search/SearchRecentResults';
 import { SearchStatus } from '@/components/search/SearchStatus';
 import { SearchTypeChips } from '@/components/search/SearchTypeChips';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { useRecentSearches } from '@/hooks/search/useRecentSearches';
 import { useSearch } from '@/hooks/search/useSearch';
 import { type SearchGroup as SearchGroupData, type SearchResult } from '@/types/common/search';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
@@ -45,13 +46,14 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 	const query = locationPicker ? locationPickerQuery : searchDraft;
 	const internalInputRef = useRef<HTMLInputElement>(null);
 	const inputRef = inputRefProp ?? internalInputRef;
-	const search = useSearch(query);
+	const recentSearches = useRecentSearches();
+	const search = useSearch(query, recentSearches.entries);
 	const availableGroups = locationPicker
 		? search.groups.filter(group => group.key === 'poi' || group.key === 'stop')
 		: search.groups;
 	const visibleGroups = selectedType ? availableGroups.filter(group => group.key === selectedType) : availableGroups;
 	const resultCount = visibleGroups.reduce((total, group) => total + group.results.length, 0);
-	const showInitialLines = !locationPicker && !query.trim();
+	const showRecentSearches = !locationPicker && !query.trim() && recentSearches.isReady;
 	const showTypeChips = !locationPicker && query.trim().length >= 2;
 	const inputLabel = placeholder ?? t('default:search.Search.input_label');
 
@@ -65,6 +67,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 			return;
 		}
 
+		recentSearches.add(result);
 		if (result.type === 'line') push({ entityId: result.id, view: 'lines-detail' });
 		if (result.type === 'stop') push({ entityId: result.id, view: 'stops-detail' });
 		if (result.type === 'alert') push({ entityId: result.id, view: 'alerts-detail' });
@@ -131,7 +134,16 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 			{visibleGroups.map(group => (
 				<SearchGroup key={`${group.key}:${query}`} group={group} onSelect={handleSelect} variant={variant} />
 			))}
-			{showInitialLines && <SearchInitialLines lines={search.initialLines} onSelect={lineId => push({ entityId: lineId, view: 'lines-detail' })} variant={variant} />}
+			{showRecentSearches && (
+				<SearchRecentResults
+					hasEntries={recentSearches.entries.length > 0}
+					isLoading={search.isRecentLoading}
+					onClear={recentSearches.clear}
+					onSelect={handleSelect}
+					results={search.recentResults}
+					variant={variant}
+				/>
+			)}
 
 			<SearchStatus error={search.error} isLoading={search.isLoading} query={query} resultCount={resultCount} />
 		</div>

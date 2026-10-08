@@ -34,6 +34,16 @@
 	outline: 0;
 }
 
+.container .input:focus-visible {
+	outline-color: var(--color-system-border-200) !important;
+}
+
+@media (forced-colors: active) {
+	.container .input:focus-visible {
+		outline-color: CanvasText !important;
+	}
+}
+
 .container[data-variant='top'] .inputWrapper {
 	--input-bg: var(--color-system-background-100, #fff);
 	border: 1px solid var(--color-system-border-100, #ececf1);

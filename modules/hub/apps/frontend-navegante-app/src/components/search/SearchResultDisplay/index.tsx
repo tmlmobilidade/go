@@ -54,5 +54,5 @@ export function SearchResultDisplay({ result }: SearchResultDisplayProps) {
 function getResultDetail(result: SearchResult) {
 	if (result.type === 'stop') return [result.entity.locality_name, result.entity.municipality_name].filter(Boolean).join(' | ');
 	if (result.type !== 'poi') return '';
-	return [result.entity.street, result.entity.areas?.map(area => area.name).filter(Boolean).slice(0, 2).join(', ')].filter(Boolean).join(' | ');
+	return [result.entity.street, result.entity.areas?.map(area => area.name).filter(Boolean).slice(0, 2).join(', ')].filter(Boolean).join(' | ') || result.entity.detail;
 }

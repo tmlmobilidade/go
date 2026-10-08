@@ -364,6 +364,12 @@
 			"input_label": "Pesquisar linhas, paragens, alertas e locais",
 			"loading": "A pesquisar...",
 			"placeholder": "Pesquisar linhas, paragens, alertas e locais",
+			"recent": {
+				"clear": "Limpar recentes",
+				"empty": "Ainda não há pesquisas recentes.",
+				"loading": "A carregar pesquisas recentes...",
+				"title": "Pesquisas recentes"
+			},
 			"results": "{count, plural, one {# resultado encontrado} other {# resultados encontrados}}",
 			"show_more": {
 				"alert": "Ver mais alertas",
@@ -371,7 +377,6 @@
 				"poi": "Ver mais locais",
 				"stop": "Ver mais paragens"
 			},
-			"show_more_lines": "Ver mais linhas de {agency_name}",
 			"title": "Pesquisa"
 		}
 	},

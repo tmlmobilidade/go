@@ -6,7 +6,7 @@ import { useStopsData } from '@/components/stops/use-stops-data';
 import { SEARCH_RESULT_TYPE_ORDER } from '@/constants/search';
 import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
-import { type SearchGroup, type SearchResult } from '@/types/common/search';
+import { type RecentSearchEntry, type SearchGroup, type SearchResult } from '@/types/common/search';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { normalizeSearchText } from '@/utils/search/normalize';
 import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
@@ -18,8 +18,9 @@ import { useTranslation } from 'react-i18next';
 interface UseSearchResult {
 	error: null | string
 	groups: SearchGroup[]
-	initialLines: HubV1ApiLine[]
 	isLoading: boolean
+	isRecentLoading: boolean
+	recentResults: SearchResult[]
 }
 
 interface SearchCoordinates {
@@ -35,7 +36,7 @@ const DEFAULT_SEARCH_COORDINATES: SearchCoordinates = { latitude: 38.7223, longi
 
 /* * */
 
-export function useSearch(query: string): UseSearchResult {
+export function useSearch(query: string, recentEntries: RecentSearchEntry[]): UseSearchResult {
 	//
 
 	// A. Setup variables
@@ -76,11 +77,27 @@ export function useSearch(query: string): UseSearchResult {
 		return groupResults(results);
 	}, [alerts, lines, motisSearch.data, normalizedQuery, stops]);
 
-	const hasLocalDataError = normalizedQuery ? Boolean(alertsError || linesError || stopsError) : Boolean(linesError);
-	const error = (normalizedQuery ? motisSearch.error : null) || (hasLocalDataError ? t('default:search.Search.error') : null);
-	const isLoading = normalizedQuery ? motisSearch.isLoading || isAlertsLoading || isLinesLoading || isStopsLoading : isLinesLoading;
+	const recentResults = useMemo(() => recentEntries.flatMap((entry): SearchResult[] => {
+		if (entry.type === 'poi') return [{ entity: entry.location, id: entry.id, label: entry.location.label, score: 0, type: 'poi' }];
+		if (entry.type === 'alert') {
+			const alert = alerts.find(item => item._id === entry.id);
+			return alert ? [{ entity: alert, id: entry.id, label: alert.title, score: 0, type: 'alert' }] : [];
+		}
+		if (entry.type === 'line') {
+			const line = lines.find(item => item._id === entry.id);
+			return line ? [{ entity: line, id: entry.id, label: line.long_name, score: 0, type: 'line' }] : [];
+		}
+		const stop = stops.find(item => String(item._id) === entry.id);
+		return stop ? [{ entity: stop, id: entry.id, label: stop.name, score: 0, type: 'stop' }] : [];
+	}), [alerts, lines, recentEntries, stops]);
 
-	return { error, groups, initialLines: lines, isLoading };
+	const hasSearchQuery = normalizedQuery.length >= 2;
+	const hasLocalDataError = Boolean(alertsError || linesError || stopsError);
+	const error = hasSearchQuery ? motisSearch.error || (hasLocalDataError ? t('default:search.Search.error') : null) : null;
+	const isLoading = hasSearchQuery && (motisSearch.isLoading || isAlertsLoading || isLinesLoading || isStopsLoading);
+	const isRecentLoading = recentEntries.some(entry => (entry.type === 'alert' && isAlertsLoading) || (entry.type === 'line' && isLinesLoading) || (entry.type === 'stop' && isStopsLoading));
+
+	return { error, groups, isLoading, isRecentLoading, recentResults };
 }
 
 /* * */
