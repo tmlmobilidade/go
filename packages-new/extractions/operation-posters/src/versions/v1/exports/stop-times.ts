@@ -41,9 +41,10 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 		await yieldToEventLoop(exportedRows);
 
 		const annotation = variantNotes.get(stopTimeData.trip_id);
+		if (!annotation?.index.trim() || !annotation.note.trim()) continue;
 
 		//
-		// HiTouch requires one extension row per stop time, including rows without notes.
+		// Only export extension rows with a complete variant annotation.
 
 		const extension = {
 			stop_id: stopTimeData.stop_id,
@@ -52,17 +53,17 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 			// Leave billboard selection/alignment to the canvas; this file adds annotations only.
 			billboard_alignment_id: '',
 			billboard_importance: '',
-			index: annotation?.index ?? '',
-			note: annotation?.note ?? '',
+			index: annotation.index,
+			note: annotation.note,
 			route_stop_sequence: routeStopSequence,
 		};
 		await context.writers.stop_times_ext.write(extension);
-		if (annotation) annotationsCount++;
+		annotationsCount++;
 	}
 
 	await context.writers.stop_times.flush();
 	await context.writers.stop_times_ext.flush();
 
 	Logger.info({ message: 'Exported stop_times.txt file.' });
-	Logger.info({ message: `Exported ${exportedRows} rows in stop_timesExt.txt with ${annotationsCount} variant annotations.` });
+	Logger.info({ message: `Exported ${annotationsCount} rows in stop_timesExt.txt with variant annotations.` });
 }

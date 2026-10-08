@@ -23,6 +23,7 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 	const { shapeSequences } = buildVariantNotes(sqlTables.trips.all(), sqlTables.routes.all());
 	const exportedShapeIds = new Set<string>();
 	let exportedRows = 0;
+	let extensionRows = 0;
 
 	//
 	// Export shapes
@@ -50,8 +51,10 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 			shape_id: shapeData.shape_id,
 			via_text: '',
 		};
-		await context.writers.shapes_ext.write(extension);
 		exportedShapeIds.add(shapeData.shape_id);
+		if (!extension.note.trim()) continue;
+		await context.writers.shapes_ext.write(extension);
+		extensionRows++;
 	}
 
 	//
@@ -60,5 +63,5 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 	await context.writers.shapes.flush();
 	await context.writers.shapes_ext.flush();
 
-	Logger.info({ message: `Exported shapes.txt and shapesExt.txt for ${exportedShapeIds.size} patterns.` });
+	Logger.info({ message: `Exported shapes.txt for ${exportedShapeIds.size} patterns and ${extensionRows} rows in shapesExt.txt with notes.` });
 }
