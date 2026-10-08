@@ -19,7 +19,7 @@ interface StopsExtractFormProps {
 
 export function StopsExtractForm({ onClose, schema, showFacilitiesAndConnections = true, title, versions }: StopsExtractFormProps) {
 	return (
-		<StopsExtractFormContextProvider onClose={onClose} schema={schema}>
+		<StopsExtractFormContextProvider onClose={onClose} schema={schema} showFacilitiesAndConnections={showFacilitiesAndConnections}>
 			<Pane header={[<StopsExtractHeader key="header" onClose={onClose} title={title} />]}>
 				<StopsExtractProperties showFacilitiesAndConnections={showFacilitiesAndConnections} versions={versions} />
 				<Divider />
