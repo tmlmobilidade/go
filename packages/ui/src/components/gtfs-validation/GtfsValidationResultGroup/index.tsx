@@ -76,18 +76,16 @@ export function GtfsValidationResultGroup({ getRuleDocumentationUrl, group }: Gt
 			</button>
 			{isOpen && (
 				<div className={styles.detail}>
-					<Surface variant="bordered">
-						<div className={styles.detailHeader}>
-							<span className={styles.ruleId}>{group.rule_id}</span>
-							{documentationUrl && (
-								<a className={styles.link} href={documentationUrl} rel="noopener noreferrer" target="_blank">
-									{t('shared:components.gtfsValidationResultGroup.documentation')} <IconExternalLink size={12} />
-								</a>
-							)}
-						</div>
-					</Surface>
-					<Surface variant="bordered">
-						<div className={styles.occurrenceTableContainer}>
+					<div className={styles.detailHeader}>
+						<span className={styles.ruleId}>{group.rule_id}</span>
+						{documentationUrl && (
+							<a className={styles.link} href={documentationUrl} rel="noopener noreferrer" target="_blank">
+								{t('shared:components.gtfsValidationResultGroup.documentation')} <IconExternalLink size={16} />
+							</a>
+						)}
+					</div>
+					<div className={styles.occurrenceTableContainer}>
+						<Surface variant="bordered">
 							<table aria-label={group.message} className={styles.occurrenceTable}>
 								<thead>
 									<tr>
@@ -111,8 +109,8 @@ export function GtfsValidationResultGroup({ getRuleDocumentationUrl, group }: Gt
 									))}
 								</tbody>
 							</table>
-						</div>
-					</Surface>
+						</Surface>
+					</div>
 					{hiddenOccurrencesCount > 0 && (
 						<button className={styles.showAll} onClick={() => setShowAllOccurrences(true)} type="button">
 							{t('shared:components.gtfsValidationResultGroup.showAll', '', { count: hiddenOccurrencesCount })}
