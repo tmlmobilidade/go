@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -11,10 +11,24 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 import { useAlertsListData } from '../list/use-alerts-list-data';
 import { useAlertsDetailAlertId } from './use-alerts-detail-alert-id';
 import { useAlertsDetailData } from './use-alerts-detail-data';
+import { useAlertsDetailImageData } from './use-alerts-detail-image-data';
 
 /* * */
 
-const AlertsDetailFormContext = createContext<StandardFormContextValue<UpdateAlertDto> | undefined>(undefined);
+interface AlertsDetailFormContextValue extends StandardFormContextValue<UpdateAlertDto> {
+	actions: StandardFormContextValue<UpdateAlertDto>['actions'] & {
+		deleteImage: () => void
+		updateImage: (imageFile: File) => void
+	}
+	status: StandardFormContextValue<UpdateAlertDto>['status'] & {
+		isDeletingImage: boolean
+		isUpdatingImage: boolean
+	}
+}
+
+/* * */
+
+const AlertsDetailFormContext = createContext<AlertsDetailFormContextValue | undefined>(undefined);
 
 export function useAlertsDetailFormContext() {
 	const context = useContext(AlertsDetailFormContext);
@@ -37,6 +51,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	const { mutate: alertsListMutate } = useAlertsListData();
 
 	const { data: alertData, isLoading: alertDataLoading, mutate: alertsDetailMutate } = useAlertsDetailData();
+	const { mutate: alertImageMutate } = useAlertsDetailImageData();
 
 	const router = useRouter();
 
@@ -52,7 +67,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.operation.ALERTS_DETAIL(alertId) }),
+		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.operation.ALERTS_DETAIL_UPDATE(alertId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
 			alertsDetailMutate(response);
@@ -72,11 +87,29 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'DELETE', url: API_ROUTES.operation.ALERTS_DETAIL(alertId) }),
+		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'DELETE', url: API_ROUTES.operation.ALERTS_DETAIL_DELETE(alertId) }),
 		onSuccess: () => {
 			unblock();
 			alertsListMutate();
 			router.push(PAGE_ROUTES.operation.ALERTS_LIST);
+		},
+	});
+
+	const { action: handleUpdateImage, isLoading: isUpdatingImage } = useHandleAction({
+		fetchFn: async (imageFile: File) => {
+			const formData = new FormData();
+			formData.append('file', imageFile);
+			return await fetchApiMultipart<Alert>(API_ROUTES.operation.ALERTS_DETAIL_UPDATE_IMAGE(alertId), formData);
+		},
+		onSuccess: () => {
+			alertImageMutate();
+		},
+	});
+
+	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Alert>({ method: 'DELETE', url: API_ROUTES.operation.ALERTS_DETAIL_DELETE_IMAGE(alertId) }),
+		onSuccess: () => {
+			alertImageMutate();
 		},
 	});
 
@@ -146,18 +179,20 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 		},
 		update: {
 			hasPermission: hasUpdatePermission,
-			isUpdating: isUpdating,
+			isUpdating: isUpdating || isUpdatingImage,
 		},
 	});
 
 	//
 	// E. Return state
 
-	const stateValue: StandardFormContextValue<UpdateAlertDto> = useMemo(() => ({
+	const stateValue: AlertsDetailFormContextValue = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
+			deleteImage: handleDeleteImage,
 			duplicate: handleDuplicate,
 			update: handleUpdate,
+			updateImage: handleUpdateImage,
 		},
 		capabilities: {
 			deleteEnabled,
@@ -169,11 +204,13 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 		isDirty,
 		isValid,
 		status: {
+			isDeletingImage,
 			isLoading: alertDataLoading,
 			isUpdating,
+			isUpdatingImage,
 		},
 		unblock,
-	}), [handleDelete, handleDuplicate, handleUpdate, deleteEnabled, duplicateEnabled, editEnabled, updateEnabled, form, isDirty, isValid, alertDataLoading, isUpdating, unblock]);
+	}), [handleDelete, handleDeleteImage, handleDuplicate, handleUpdate, handleUpdateImage, deleteEnabled, duplicateEnabled, editEnabled, updateEnabled, form, isDirty, isValid, isDeletingImage, alertDataLoading, isUpdating, isUpdatingImage, unblock]);
 
 	return (
 		<AlertsDetailFormContext.Provider value={stateValue}>
