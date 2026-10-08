@@ -310,10 +310,6 @@
 					"location_tertiary_ids": {
 						"label": "Municipio"
 					},
-					"search": {
-						"label": "Búsqueda",
-						"placeholder": "ID o nombre de la parada..."
-					},
 					"version": {
 						"label": "Versión"
 					}

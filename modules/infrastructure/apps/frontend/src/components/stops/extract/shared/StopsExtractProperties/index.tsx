@@ -6,7 +6,7 @@ import { StopConnectionValues, StopFacilityValues } from '@tmlmobilidade/go-type
 import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { LifecycleStatusValues } from '@tmlmobilidade/go-types-shared';
-import { Grid, MultiSelect, Section, Select, type SelectDataItem, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, Section, Select, type SelectDataItem, StandardFormController } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useStopsExtractFormContext } from '../StopsExtractForm.context';
@@ -81,20 +81,6 @@ export function StopsExtractProperties({ showFacilitiesAndConnections = true, ve
 						label={t('default:stops.extract.StopsExtractProperties.fields.version.label')}
 						onChange={field.onChange}
 						value={field.value}
-					/>
-				)}
-			/>
-			<StandardFormController
-				control={form.control}
-				name="properties.search"
-				render={({ field, fieldState }) => (
-					<TextInput
-						disabled={!capabilities?.editEnabled}
-						error={fieldState.error?.message}
-						label={t('default:stops.extract.StopsExtractProperties.fields.search.label')}
-						onChange={field.onChange}
-						placeholder={t('default:stops.extract.StopsExtractProperties.fields.search.placeholder')}
-						value={field.value ?? ''}
 					/>
 				)}
 			/>

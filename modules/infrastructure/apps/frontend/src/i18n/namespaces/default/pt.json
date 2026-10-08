@@ -316,10 +316,6 @@
 					"location_tertiary_ids": {
 						"label": "Freguesia"
 					},
-					"search": {
-						"label": "Pesquisa",
-						"placeholder": "ID ou nome da paragem..."
-					},
 					"version": {
 						"label": "Versão"
 					}
