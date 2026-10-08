@@ -1,34 +1,44 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateVehicleDto, type Vehicle } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmobilidade/go-types-operation';
 
 /**
- * Creates a new vehicle.
- * @param request Fastify request containing vehicle data
- * @param reply Fastify reply
+ * Creates a new Vehicle in the database.
+ * @param request The request object containing the vehicle data in the body.
+ * @param reply The reply object.
  */
-export async function createVehicleHandler(request: FastifyRequest<{ Body: CreateVehicleDto | CreateVehicleDto[] }>, reply: FastifyReply<null | Vehicle>) {
+export async function createVehicleHandler(request: FastifyRequest<{ Body: CreateVehicleDto }>, reply: FastifyReply<Vehicle>) {
 	//
 
 	//
-	// Check if the user has permission to create vehicles
+	// Validate the request body
 
-	if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.create)) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create vehicles');
+	const validatedVehicle = CreateVehicleSchema.safeParse({
+		...request.body,
+		created_by: request.me._id,
+		updated_by: request.me._id,
+	});
+
+	if (!validatedVehicle.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedVehicle.error.message,
+			status_code: '400',
+		});
 	}
 
 	//
-	// Create the new vehicle
+	// Create the vehicle in the database
 
-	if (Array.isArray(request.body)) {
-		await goDb.operation.vehicles.insertMany(request.body);
-		reply.send({ data: null, error: null, statusCode: HTTP_STATUS.CREATED });
-	} else {
-		const newVehicle = await goDb.operation.vehicles.insertOne(request.body);
-		reply.send({ data: newVehicle, error: null, statusCode: HTTP_STATUS.CREATED });
+	const insertResult = await goDb.operation.vehicles.insertOne(validatedVehicle.data);
+
+	if (!insertResult) {
+		return sendErrorApiResponse(reply, {
+			error: 'Failed to create vehicle',
+			status_code: '500',
+		});
 	}
+
+	return sendSuccessApiResponse(reply, insertResult, { status_code: '201' });
 }

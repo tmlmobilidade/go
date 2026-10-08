@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiPlan } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Retrieves all plans that are approved together with the URL to the operation file.

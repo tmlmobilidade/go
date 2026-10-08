@@ -23,7 +23,7 @@
 		"@tmlmobilidade/go-tracker-pckg-parsers": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/logger": "*"
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

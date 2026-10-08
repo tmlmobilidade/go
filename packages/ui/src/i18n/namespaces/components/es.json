@@ -37,7 +37,12 @@
 			}
 		},
 		"SearchField": {
-			"placeholder": "Buscar..."
+			"placeholder": "Buscar...",
+			"tags": {
+				"d": "Conductor",
+				"l": "Líneas",
+				"v": "Vehículos"
+			}
 		},
 		"Select": {
 			"nothing_found": "No se encontraron resultados"

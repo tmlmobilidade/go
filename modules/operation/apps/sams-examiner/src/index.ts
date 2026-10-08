@@ -4,8 +4,7 @@
 // import { Dates } from '@tmlmobilidade/go-utils-dates';
 // import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 // import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-// import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-// import { Timer } from '@tmlmobilidade/timer';
+// import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 // import { type CreateSamDto, Sam, type SamAnalysis, type SamTimelineSummary, UpdateSamDto } from '@tmlmobilidade/types';
 // import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
@@ -100,16 +99,6 @@
 // async function main() {
 // 	try {
 // 		//
-
-// 		//
-// 		// Initialize Sentry
-
-// 		try {
-// 			await initSentryNode();
-// 			Logger.startNodeLogs({ app: 'sams-examiner', message: 'Sentry Sams Examiner initialized', module: 'controller', severity: 'info' });
-// 		} catch (error) {
-// 			Logger.error({ error, message: 'Error initializing Sentry Sams Examiner' });
-// 		}
 
 // 		//
 // 		// Initialize the logger
@@ -432,7 +421,7 @@
 
 // 				await sams.updateById(samData._id, updatedSamData);
 
-// 				Logger.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, 1);
+// 				Logger.success({ message: `Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, spacesAfter: 1 });
 
 // 			//
 // 			} catch (error) {

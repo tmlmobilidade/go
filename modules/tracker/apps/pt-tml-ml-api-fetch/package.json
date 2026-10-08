@@ -29,8 +29,7 @@
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-sql": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

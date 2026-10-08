@@ -21,6 +21,7 @@ export const STOP_EXPORT_ORDERED_FIELDS = [
 	'previous_go_id',
 	'short_name',
 	'tts_name',
+	'observations',
 
 	// LOCATION
 	'district_id',
@@ -31,41 +32,17 @@ export const STOP_EXPORT_ORDERED_FIELDS = [
 	'municipality_id',
 	'parish_id',
 
-	// INFRASTRUCTURE
-	'bench_status',
-	'electricity_status',
-	'pole_status',
-	'road_type',
-
 	// SHELTER
 	'shelter_code',
-	'shelter_frame_size',
 	'shelter_installation_date',
 	'shelter_maintainer',
 	'shelter_make',
 	'shelter_model',
 	'shelter_status',
 
-	// CHECKS
-	'last_infrastructure_check',
-	'last_infrastructure_maintenance',
-	'last_schedules_check',
-	'last_schedules_maintenance',
-
 	// FACILITIES
 	'connections',
 	'facilities',
-
-	// EQUIPMENTS
-	'equipment',
-
-	// HAS ...
-	'has_bench',
-	'has_mupi',
-	'has_network_map',
-	'has_schedules',
-	'has_shelter',
-	'has_stop_sign',
 ] as const satisfies ReadonlyArray<keyof StopExportCsvData>;
 
 /* * */
@@ -85,47 +62,33 @@ function toOrderedCsvData(source: StopExportCsvData): StopExportCsvData {
 
 export function parseStops(row: ParseStopRow): StopExportCsvData {
 	const { _id, municipality_name: municipalityName, stop } = row;
+	const shelter = stop.shelter;
 
 	return toOrderedCsvData({
-		_id: _id ?? stop._id,
-		bench_status: stop.bench_status,
+		_id: String(_id ?? stop._id),
 		connections: stop.connections,
-		district_id: stop.district_id,
-		electricity_status: stop.electricity_status,
-		equipment: stop.equipment,
+		district_id: String(stop.location.primary.osm_id),
 		facilities: stop.facilities,
-		has_bench: stop.has_bench,
-		has_mupi: stop.has_mupi,
-		has_network_map: stop.has_network_map,
-		has_schedules: stop.has_schedules,
-		has_shelter: stop.has_shelter,
-		has_stop_sign: stop.has_stop_sign,
 		jurisdiction: stop.jurisdiction,
-		last_infrastructure_check: stop.last_infrastructure_check,
-		last_infrastructure_maintenance: stop.last_infrastructure_maintenance,
-		last_schedules_check: stop.last_schedules_check,
-		last_schedules_maintenance: stop.last_schedules_maintenance,
 		latitude: stop.latitude,
 		legacy_id: stop.legacy_id,
 		legacy_ids: stop.legacy_ids,
 		lifecycle_status: stop.lifecycle_status,
-		locality_id: stop.locality_id,
+		locality_id: stop.location.neighbourhood ? String(stop.location.neighbourhood.osm_id) : null,
 		longitude: stop.longitude,
-		municipality_id: stop.municipality_id,
+		municipality_id: String(stop.location.secondary.osm_id),
 		municipality_name: municipalityName ?? null,
 		name: stop.name,
 		new_name: stop.new_name,
-		parish_id: stop.parish_id,
-		pole_status: stop.pole_status,
+		observations: stop.observations,
+		parish_id: String(stop.location.tertiary.osm_id),
 		previous_go_id: stop.previous_go_id,
-		road_type: stop.road_type,
-		shelter_code: stop.shelter_code,
-		shelter_frame_size: stop.shelter_frame_size,
-		shelter_installation_date: stop.shelter_installation_date,
-		shelter_maintainer: stop.shelter_maintainer,
-		shelter_make: stop.shelter_make,
-		shelter_model: stop.shelter_model,
-		shelter_status: stop.shelter_status,
+		shelter_code: shelter?.code ?? null,
+		shelter_installation_date: shelter?.installation_date ?? null,
+		shelter_maintainer: shelter?.maintainer ?? null,
+		shelter_make: shelter?.make ?? null,
+		shelter_model: shelter?.model ?? null,
+		shelter_status: shelter?.status ?? 'unknown',
 		short_name: stop.short_name,
 		tts_name: stop.tts_name,
 	});

@@ -3,8 +3,7 @@
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type DemandByCategoryByPatternByYear } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 

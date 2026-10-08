@@ -12,7 +12,7 @@ export const RideJustificationSchema = BaseDocumentSchema
 	.extend({
 		justification_cause: AlertCauseSchema,
 		justification_source: RideJustificationSourceSchema,
-		manual_trip_id: z.string().optional(),
+		manual_trip_id: z.string().nullish().nullable(),
 		pto_message: z.string().min(2).max(5000).default(''),
 	});
 

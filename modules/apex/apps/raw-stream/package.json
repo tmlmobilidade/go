@@ -23,7 +23,7 @@
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {

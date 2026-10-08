@@ -8,9 +8,8 @@ import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Files } from '@tmlmobilidade/go-utils-files';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
@@ -33,16 +32,6 @@ let PREVIOUS_PLANS_LIST_HASH: null | string = null;
 
 /* * */
 
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'publish-gtfs-cm', message: 'Sentry Hub Publish GTFS CM initialized', module: 'hub', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS CM' });
-}
-
 async function main() {
 	//
 
@@ -64,7 +53,7 @@ async function main() {
 	try {
 		fs.rmSync(context.workdir.path, { force: true, recursive: true });
 		fs.mkdirSync(context.workdir.path, { recursive: true });
-		Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
+		Logger.success({ message: `Prepared working directory at "${context.workdir.path}".`, spacesAfter: 1 });
 	} catch (error) {
 		Logger.error({ error, message: `Error preparing workdir path "${context.workdir.path}".` });
 		process.exit(1);

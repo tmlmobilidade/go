@@ -6,7 +6,7 @@ import { createRoleHandler } from './handlers/create-role.js';
 import { deleteRoleHandler } from './handlers/delete-role.js';
 import { getRoleHandler } from './handlers/get-role.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';
-import { listMunicipalitiesHandler } from './handlers/list-municipalities.js';
+import { listLocationsHandler } from './handlers/list-locations.js';
 import { listRolesHandler } from './handlers/list-roles.js';
 import { lockRoleHandler } from './handlers/lock-role.js';
 import { updateRoleHandler } from './handlers/update-role.js';
@@ -27,7 +27,7 @@ server.register(
 
 		instance.get('/list-agencies', { preHandler: authorizationMiddleware('roles', ['read', 'create']) }, listAgenciesHandler);
 
-		instance.get('/list-municipalities', { preHandler: authorizationMiddleware('roles', ['read', 'create']) }, listMunicipalitiesHandler);
+		instance.get('/list-locations', { preHandler: authorizationMiddleware('roles', ['read', 'create']) }, listLocationsHandler);
 
 		instance.get('/:id', { preHandler: authorizationMiddleware('roles', ['read']) }, getRoleHandler);
 

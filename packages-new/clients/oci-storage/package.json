@@ -35,7 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/utils": "*",
 		"oci-common": "2.140.0",
 		"oci-objectstorage": "2.140.0"

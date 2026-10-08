@@ -4,6 +4,7 @@ import { ClickHouseClient, ClickHouseDatabaseClient, queryEachStatementFromFile,
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
 import { HubDatabase } from './databases/hub.js';
+import { InfrastructureDatabase } from './databases/infrastructure.js';
 import { OperationDatabase } from './databases/operation.js';
 import { PerformanceDatabase } from './databases/performance.js';
 import { SimplifiedApexDatabase } from './databases/simplified-apex.js';
@@ -16,6 +17,7 @@ class LabDbClass {
 	private static _instance: null | Promise<LabDbClass> = null;
 
 	public readonly hub: HubDatabase;
+	public readonly infrastructure: InfrastructureDatabase;
 	public readonly operation: OperationDatabase;
 	public readonly performance: PerformanceDatabase;
 	public readonly simplifiedApex: SimplifiedApexDatabase;
@@ -25,6 +27,7 @@ class LabDbClass {
 	private constructor(client: ClickHouseClient) {
 		this.clickhouseClient = client;
 		this.hub = new HubDatabase(this.clickhouseClient);
+		this.infrastructure = new InfrastructureDatabase(this.clickhouseClient);
 		this.operation = new OperationDatabase(this.clickhouseClient);
 		this.performance = new PerformanceDatabase(this.clickhouseClient);
 		this.simplifiedApex = new SimplifiedApexDatabase(this.clickhouseClient);
@@ -72,6 +75,7 @@ class LabDbClass {
 	private async init() {
 		await Promise.all([
 			this.hub.init(),
+			this.infrastructure.init(),
 			this.operation.init(),
 			this.performance.init(),
 			this.simplifiedApex.init(),

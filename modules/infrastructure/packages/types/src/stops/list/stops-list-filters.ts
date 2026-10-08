@@ -11,23 +11,23 @@ export const StopsListFiltersSchema = z.object({
 		.array(z.string())
 		.default([]),
 
-	district_ids: z
-		.array(z.string())
-		.default([]),
-
 	lifecycle_statuses: z
 		.array(LifecycleStatusSchema)
 		.default([]),
 
-	locality_ids: z
+	location_neighbourhood_ids: z
 		.array(z.string())
 		.default([]),
 
-	municipality_ids: z
+	location_primary_ids: z
 		.array(z.string())
 		.default([]),
 
-	parish_ids: z
+	location_secondary_ids: z
+		.array(z.string())
+		.default([]),
+
+	location_tertiary_ids: z
 		.array(z.string())
 		.default([]),
 

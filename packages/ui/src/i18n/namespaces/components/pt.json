@@ -37,7 +37,12 @@
 			}
 		},
 		"SearchField": {
-			"placeholder": "Pesquisar..."
+			"placeholder": "Pesquisar...",
+			"tags": {
+				"d": "Motorista",
+				"l": "Linhas",
+				"v": "Veículos"
+			}
 		},
 		"Select": {
 			"nothing_found": "Nenhum resultado encontrado"

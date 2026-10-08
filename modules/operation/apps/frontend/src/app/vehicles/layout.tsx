@@ -1,9 +1,8 @@
 /* * */
 
 import { VehiclesList } from '@/components/vehicles/list/VehiclesList';
-import { VehiclesListContextProvider } from '@/contexts/VehiclesList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
-import { type PropsWithChildren } from 'react';
+import { Fragment, type PropsWithChildren } from 'react';
 
 /* * */
 
@@ -12,10 +11,8 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="vehicles"
 			panes={[
-				<VehiclesListContextProvider key="vehicles-list">
-					<VehiclesList />
-				</VehiclesListContextProvider>,
-				children,
+				<VehiclesList key="list" />,
+				<Fragment key="children">{children}</Fragment>,
 			]}
 		/>
 	);

@@ -1,22 +1,10 @@
 /* * */
 
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { setStopLocationTask } from './tasks/set-stop-location.js';
-
-/* * */
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Stops Organizer initialized', module: 'stops', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Stops Organizer' });
-}
+import { syncLabdbTask } from './tasks/sync-labdb.js';
 
 /* * */
 
@@ -34,6 +22,7 @@ async function main() {
 	// Run tasks
 
 	await setStopLocationTask();
+	await syncLabdbTask();
 
 	//
 	// Log completion

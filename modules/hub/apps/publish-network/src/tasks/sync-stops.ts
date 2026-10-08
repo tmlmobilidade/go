@@ -3,9 +3,8 @@
 import { decodeStopFlags } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiStop, HubV1ApiStopSchema, type HubV1GtfsStops } from '@tmlmobilidade/go-types-hub';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 

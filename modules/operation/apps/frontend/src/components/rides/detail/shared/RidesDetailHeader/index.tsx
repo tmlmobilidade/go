@@ -1,10 +1,12 @@
 'use client';
 
+import { useRidesFavoritesData } from '@/components/rides/shared/use-rides-favorites-data';
+import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Ride } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { ProcessingStatus } from '@tmlmobilidade/go-types-shared';
-import { CloseButton, fetchApiData, IdTag, keepUrlParams, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, SegmentedControl, Spacer, Toolbar, useHandleAction, useMeData } from '@tmlmobilidade/ui';
+import { CloseButton, fetchApiData, IconButton, IdTag, keepUrlParams, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, SegmentedControl, Spacer, Toolbar, useHandleAction, useMeData } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -44,7 +46,7 @@ export function RidesDetailHeader() {
 	const { isLoading: simplifiedApexSalesIsLoading, isValidating: simplifiedApexSalesIsValidating, timestamp: simplifiedApexSalesTimestamp } = useRidesDetailApexSalesData();
 	const { isLoading: simplifiedApexRefundsIsLoading, isValidating: simplifiedApexRefundsIsValidating, timestamp: simplifiedApexRefundsTimestamp } = useRidesDetailApexRefundsData();
 
-	// const rideFavoritesContext = useRideFavoritesContext();
+	const { data: favoriteRideIds, isLoading: isTogglingFavorite, toggleFavorite } = useRidesFavoritesData();
 
 	//
 	// B. Transform data
@@ -56,10 +58,10 @@ export function RidesDetailHeader() {
 		}));
 	}, [availableViews, t]);
 
-	// const isFavorite = useMemo(() => {
-	// 	if (!rideAnalysisContext.data.ride_id) return false;
-	// 	return rideFavoritesContext.data.favorites.includes(rideAnalysisContext.data.ride_id);
-	// }, [rideAnalysisContext.data.ride_id, rideFavoritesContext.data.favorites]);
+	const isFavorite = useMemo(() => {
+		if (!rideId) return false;
+		return favoriteRideIds.includes(rideId);
+	}, [favoriteRideIds, rideId]);
 
 	const hasPermissionToChangeProcessingStatus = useMemo(() => {
 		return hasPermissionResource(meData.permissions, {
@@ -83,10 +85,10 @@ export function RidesDetailHeader() {
 		},
 	});
 
-	// const handleToggleFavorite = () => {
-	// 	if (!rideAnalysisContext.data.ride_id || rideFavoritesContext.flags.loading) return;
-	// 	void rideFavoritesContext.actions.toggleFavorite(rideAnalysisContext.data.ride_id);
-	// };
+	const handleToggleFavorite = () => {
+		if (!rideId || isTogglingFavorite) return;
+		void toggleFavorite(rideId);
+	};
 
 	//
 	// D. Render components
@@ -108,17 +110,19 @@ export function RidesDetailHeader() {
 			/>
 			{/* <GradeStatusDisplay value={rideData?.analysis_simple_three_vehicle_events_grade} /> */}
 			<OperationalStatusDisplay value={rideData?.operational_status} />
-			{/* <IconButton
-				disabled={!rideAnalysisContext.data.ride_id || rideFavoritesContext.flags.loading}
-				icon={isFavorite ? <IconHeartFilled /> : <IconHeart />}
-				onClick={handleToggleFavorite}
-				tooltip={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-				variant="primary"
-			/> */}
 			<SegmentedControl
 				data={viewOptions}
 				onChange={setCurrentView}
 				value={currentView}
+			/>
+			<IconButton
+				icon={isFavorite ? <IconHeartFilled /> : <IconHeart />}
+				isDisabled={!rideId || isTogglingFavorite}
+				onClick={handleToggleFavorite}
+				variant="primary"
+				tooltip={isFavorite
+					? t('default:rides.detail.RidesDetailHeader.favorites.remove')
+					: t('default:rides.detail.RidesDetailHeader.favorites.add')}
 			/>
 		</Toolbar>
 	);

@@ -2,8 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { processRideAcceptanceChunk } from './process.js';
 
@@ -12,16 +11,6 @@ import { processRideAcceptanceChunk } from './process.js';
 const SYNC_DAYS_BACK = 3;
 
 /* * */
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Rides Acceptor' });
-}
 
 async function main() {
 	try {

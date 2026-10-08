@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type FileExport, type FlatSamsAnalysisExportAnalysis, type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { buildSamsMatch, sams, samsAnalysisExportAggregationPipeline } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { PermissionCatalog, type Sam, type SamAnalysis } from '@tmlmobilidade/types';
@@ -88,7 +88,7 @@ export async function exportSamsAnalysisFile(fileExport: FileExport): Promise<st
 
 	await csvWriter.flush();
 
-	Logger.success(`Exported ${count} SAM analysis rows in ${timer.get()}`, 1);
+	Logger.success({ message: `Exported ${count} SAM analysis rows in ${timer.get()}`, spacesAfter: 1 });
 	Logger.info({ message: `File path: ${tempFilePath}` });
 	Logger.spacer(1);
 

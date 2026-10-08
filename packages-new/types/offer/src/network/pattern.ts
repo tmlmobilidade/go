@@ -149,10 +149,9 @@ export const PatternStopSearchQuerySchema = z.object({
 
 /* * */
 
-export const CreatePatternSchema = PatternSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const CreatePatternSchema = PatternSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true });
 
 export const UpdatePatternSchema = CreatePatternSchema
-	.omit({ created_by: true })
 	.partial()
 	.extend({
 		rules: PatternUpdateRulesSchema,

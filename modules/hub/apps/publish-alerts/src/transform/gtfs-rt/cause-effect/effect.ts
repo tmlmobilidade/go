@@ -2,7 +2,7 @@
 
 import { type GtfsRtEffect } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type Alert, AlertEffectToGtfsRtEffectMap } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

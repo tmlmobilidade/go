@@ -2,8 +2,7 @@
 
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Attachment } from '@tmlmobilidade/go-types-core';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 
 /* * */

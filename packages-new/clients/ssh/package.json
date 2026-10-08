@@ -34,7 +34,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {

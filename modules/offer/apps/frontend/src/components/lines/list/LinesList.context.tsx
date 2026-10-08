@@ -25,6 +25,7 @@ interface LinesListContextState {
 		search: UseFilterStateTextReturnType
 	}
 	flags: {
+		agenciesLoading: boolean
 		canCreate: boolean
 		error: Error | undefined
 		loading: boolean
@@ -52,7 +53,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { data: agenciesData, ids: agenciesIds, options: agenciesOptions } = useAgenciesData();
+	const { data: agenciesData, ids: agenciesIds, isLoading: agenciesLoading, options: agenciesOptions } = useAgenciesData();
 
 	//
 	// B. Setup filters
@@ -112,11 +113,12 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 			search: filterSearch,
 		},
 		flags: {
+			agenciesLoading,
 			canCreate: canCreatePermission,
 			error: allLinesError,
 			loading: allLinesLoading,
 		},
-	}), [agenciesData, agenciesIds, agenciesOptions, filterResultsData, allLinesData, filterAgencies, filterSearch, canCreatePermission, allLinesError, allLinesLoading]);
+	}), [agenciesData, agenciesIds, agenciesLoading, agenciesOptions, filterResultsData, allLinesData, filterAgencies, filterSearch, canCreatePermission, allLinesError, allLinesLoading]);
 
 	// E. Render components
 	return (

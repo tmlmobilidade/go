@@ -1,4 +1,4 @@
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { goSshTunnel, SshTunnel } from '@tmlmobilidade/go-clients-ssh';
 import { createClient, type RedisClientOptions, type RedisClientType } from 'redis';
 

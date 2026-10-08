@@ -50,13 +50,13 @@ export function StopsCreateStepSummary() {
 
 	const locationDisplay = useMemo(() => {
 		// Extract the locality and municipality names
-		const localityName = locationData?.locality?.name;
-		const municipalityName = locationData?.municipality?.name;
+		const localityName = locationData?.neighbourhood?.name;
+		const municipalityName = locationData?.secondary.name;
 		// Return the combined name if both locality and municipality names are available
 		if (localityName && localityName !== municipalityName) return `${localityName}, ${municipalityName}`;
 		// Return the municipality name if available or the locality name if not
 		return municipalityName || localityName || '';
-	}, [locationData?.locality?.name, locationData?.municipality?.name]);
+	}, [locationData?.neighbourhood?.name, locationData?.secondary.name]);
 
 	//
 	// D. Render components

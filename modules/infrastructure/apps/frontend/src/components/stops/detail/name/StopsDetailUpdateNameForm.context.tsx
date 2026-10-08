@@ -1,14 +1,14 @@
 'use client';
 
+import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-data';
+import { useStopsDetailStopId } from '@/components/stops/detail/use-stops-detail-stop-id';
+import { useStopsListData } from '@/components/stops/list/use-stops-list-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsUpdateNameRequest, StopsUpdateNameRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { fetchApiData, type StandardFormContextValue, useHandleAction, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
-import { useStopsListData } from '../../list/use-stops-list-data';
-import { useStopsDetailData } from '../use-stops-detail-data';
-import { useStopsDetailStopId } from '../use-stops-detail-stop-id';
 import { closeStopsDetailUpdateNameModal } from './StopsDetailUpdateName.modal';
 
 /* * */

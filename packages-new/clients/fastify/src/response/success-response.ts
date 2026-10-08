@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply } from '@/fastify-service.js';
+import { type FastifyReply } from '@/types.js';
 import { type ApiResponseSuccess } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 

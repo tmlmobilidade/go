@@ -27,9 +27,8 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-files": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/import-gtfs": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/writers": "*",
 		"yazl": "3.3.1"
 	},

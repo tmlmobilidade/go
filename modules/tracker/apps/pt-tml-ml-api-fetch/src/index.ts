@@ -6,8 +6,7 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlMlV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import crypto from 'node:crypto';
 
 import { findRideForTrain } from './find-ride-for-train.js';
@@ -21,13 +20,6 @@ import { AggregationResult, type TrainPositionsMap } from './types.js';
 let ITERATION = 0;
 
 /* * */
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'pt-tml-ml-api-fetch', message: 'Sentry Tracker Metro Lisboa Fetch initialized', module: 'tracker', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Tracker Metro Lisboa Fetch' });
-}
 
 const main = async () => {
 	//
@@ -48,7 +40,7 @@ const main = async () => {
 	//
 	// Fetch the Metro Lisboa Vehicle Events data from API and decode it.
 
-	Logger.info({ message: `[${ITERATION}] Fetching Metro Lisboa data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching Metro Lisboa data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	const lines = ['Amarela', 'Azul', 'Verde', 'Vermelha'];
 
@@ -68,8 +60,7 @@ const main = async () => {
 		try {
 			response = await externalClients.ml.tempoEsperaLinha(line);
 		} catch (error) {
-			console.log(error);
-			Logger.error({ error, message: `[${ITERATION}] Error fetching Metro Lisboa data from API for line ${line}:` });
+			Logger.error({ error, message: `[${ITERATION}] Error fetching Metro Lisboa data from API for line ${line}` });
 			continue;
 		}
 

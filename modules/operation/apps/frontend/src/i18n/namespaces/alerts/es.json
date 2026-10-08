@@ -34,5 +34,14 @@
 				"placeholder": "Ej.: Desvío por la calle X, sentido Y, debido a Z."
 			}
 		}
+	},
+	"detail": {
+		"SectionTextsForm": {
+			"fields": {
+				"image": {
+					"label": "Imagen"
+				}
+			}
+		}
 	}
 }

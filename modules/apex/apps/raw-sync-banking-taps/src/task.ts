@@ -8,7 +8,7 @@ import { type RawApexTransaction, SimplifiedApexBankingTap } from '@tmlmobilidad
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { type Filter } from 'mongodb';
 import { ZodError } from 'zod';
 
@@ -118,7 +118,7 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 				const errorMessage = error instanceof ZodError
 					? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
 					: error instanceof Error ? error.message : String(error);
-				Logger.error({ message: `Error transforming APEX Banking Tap: ${sourceDbDocument._id} Reason: ${errorMessage}` });
+				Logger.error({ attributes: { document: sourceDbDocument }, error, message: `Error transforming APEX Banking Tap: ${sourceDbDocument._id} Reason: ${errorMessage}` });
 			}
 		},
 

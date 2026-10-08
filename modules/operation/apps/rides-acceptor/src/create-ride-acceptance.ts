@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { RideAcceptance, RideAcceptanceSchema } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { testRide } from './test-ride.js';
 import { type RideWithAnalyses } from './types/ride-with-analyses.js';
@@ -45,6 +45,6 @@ export async function createRideAcceptance(ride: RideWithAnalyses) {
 
 		Logger.info({ message: `Created acceptance for ride ${ride._id} with status ${pass ? 'accepted' : 'justification_required'}.` });
 	} catch (err) {
-		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.critical({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }

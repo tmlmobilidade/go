@@ -28,9 +28,8 @@
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-zip": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/go-utils-telemetry": "*",
+		"@tmlmobilidade/go-utils-zip": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

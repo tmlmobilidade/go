@@ -7,7 +7,7 @@ import { type HubV1GtfsStopTimesInput, HubV1GtfsStopTimesSchema } from '@tmlmobi
 import { type StopId } from '@tmlmobilidade/go-types-infrastructure';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ExportGtfsContext } from '../types/context.js';
 

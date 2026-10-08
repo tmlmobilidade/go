@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Retrieves a pattern by its ID from cache.

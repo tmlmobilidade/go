@@ -3,6 +3,7 @@
 import { parseCsv, readGtfsFile, toNumberOrNull } from '@/helpers/index.js';
 import { GtfsStrictV29Routes, GtfsStrictV29RoutesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { CreateRouteDto, pathTypeMapper } from '@tmlmobilidade/go-types-offer';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -22,7 +23,7 @@ export async function loadGtfsRoutes(gtfsPath: string) {
 			} as GtfsStrictV29Routes;
 			routes.push(GtfsStrictV29RoutesSchema.parse(normalized));
 		} catch (error) {
-			console.warn(`Skipping route due to validation error: ${error instanceof Error ? error.message : String(error)}`);
+			Logger.warning({ error, message: 'Skipping route due to validation error' });
 		}
 	}
 

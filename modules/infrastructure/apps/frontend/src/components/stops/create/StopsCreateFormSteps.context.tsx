@@ -1,5 +1,6 @@
 'use client';
 
+import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { useMeData, useMultiStep, type UseMultiStepReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -48,17 +49,15 @@ export function StopsCreateFormStepsContextProvider({ children }: PropsWithChild
 	// C. Setup flags
 
 	const hasCreateStopsPermission = useMemo(() => {
-		// Return false if municipality is not available
-		if (!locationData?.municipality?._id) return false;
-		// Check if the user is allowed to create stops in the municipality
+		if (!locationData) return false;
 		return PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.stops.actions.create,
 			permissions: meData?.permissions,
-			resource_key: 'municipality_ids',
+			resource_key: 'location_ids',
 			scope: PermissionCatalog.all.stops.scope,
-			value: locationData.municipality._id,
+			value: locationSlotOsmIds(locationData),
 		});
-	}, [locationData?.municipality?._id, meData?.permissions]);
+	}, [locationData, meData?.permissions]);
 
 	//
 	// D. Setup steps

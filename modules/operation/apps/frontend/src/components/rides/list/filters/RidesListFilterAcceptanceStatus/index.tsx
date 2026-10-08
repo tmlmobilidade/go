@@ -26,7 +26,6 @@ export function RidesListFilterAcceptanceStatus() {
 			label={t('default:list.RidesListFilterAcceptanceStatus.label')}
 			onChange={filterAcceptanceStatus.set}
 			options={filterAcceptanceStatus.options}
-			disabled
 			withToggleAll
 		/>
 	);

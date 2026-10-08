@@ -38,7 +38,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"csv-parse": "7.0.2",
 		"unzipper": "0.12.5"
 	},

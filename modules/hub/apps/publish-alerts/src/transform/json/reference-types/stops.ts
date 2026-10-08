@@ -3,7 +3,7 @@
 import { getQualifiedLineId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Alert, type AlertReference } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

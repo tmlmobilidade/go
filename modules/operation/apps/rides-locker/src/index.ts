@@ -3,22 +3,11 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
 const SYNC_DAYS_BACK = 90;
-
-//
-// Initialize Sentry
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'rides-locker', message: 'Sentry Rides Locker initialized', module: 'controller', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Rides Locker' });
-}
 
 async function main() {
 	try {
@@ -57,7 +46,7 @@ async function main() {
 				for (const rideAcceptance of foundRides) {
 					totalRides++;
 					if (rideAcceptance.is_locked) continue;
-					await goDb.operation.rideAcceptances.updateById(rideAcceptance._id, { ...rideAcceptance, is_locked: true, updated_by: 'system' });
+					await goDb.operation.rideAcceptances.updateOne({ _id: rideAcceptance._id }, { is_locked: true, updated_by: 'system' });
 					Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance._id}.` });
 				}
 
@@ -72,7 +61,7 @@ async function main() {
 
 		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });
 	} catch (err) {
-		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.critical({ error: err, message: 'An error occurred. Halting execution.' });
 		Logger.info({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process

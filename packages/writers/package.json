@@ -34,8 +34,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"papaparse": "5.7.0"
 	},
 	"devDependencies": {

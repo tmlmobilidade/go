@@ -2,8 +2,7 @@
 
 import { GtfsStrictV30Shapes, GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { BatchWriter, streamCsvFile } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path, { join } from 'node:path';
@@ -35,7 +34,7 @@ export async function rewriteShapeIdsToPatternIds(context: NormalizePlansTaskCon
 	try {
 		fs.rmSync(outputFilePath, { force: true, recursive: true });
 		fs.mkdirSync(outputFilePath, { recursive: true });
-		Logger.success(`Prepared output directory at "${outputFilePath}".`, 1);
+		Logger.success({ message: `Prepared output directory at "${outputFilePath}".`, spacesAfter: 1 });
 	} catch (error) {
 		Logger.error({ error, message: `Error preparing output path "${outputFilePath}".` });
 		process.exit(1);
@@ -97,7 +96,7 @@ export async function rewriteShapeIdsToPatternIds(context: NormalizePlansTaskCon
 
 	await tripsWriter.flush();
 
-	Logger.success(`Finished processing "trips.txt" in ${tripsTimer.get()}.`, 1);
+	Logger.success({ message: `Finished processing "trips.txt" in ${tripsTimer.get()}.`, spacesAfter: 1 });
 
 	//
 	// Parse the shapes.txt file, writing the rows to the output file.
@@ -118,7 +117,7 @@ export async function rewriteShapeIdsToPatternIds(context: NormalizePlansTaskCon
 
 	await shapesWriter.flush();
 
-	Logger.success(`Finished processing "shapes.txt" in ${shapesTimer.get()}.`, 1);
+	Logger.success({ message: `Finished processing "shapes.txt" in ${shapesTimer.get()}.`, spacesAfter: 1 });
 
 	//
 	// Replace the original trips.txt and shapes.txt files with the new ones.
@@ -129,7 +128,7 @@ export async function rewriteShapeIdsToPatternIds(context: NormalizePlansTaskCon
 	fs.renameSync(path.join(outputFilePath, 'trips.txt'), path.join(context.paths.extracted_dir_path, 'trips.txt'));
 	fs.renameSync(path.join(outputFilePath, 'shapes.txt'), path.join(context.paths.extracted_dir_path, 'shapes.txt'));
 
-	Logger.success(`Replaced original trips.txt and shapes.txt files with the new ones.`, 1);
+	Logger.success({ message: `Replaced original trips.txt and shapes.txt files with the new ones.`, spacesAfter: 1 });
 
 	//
 }
