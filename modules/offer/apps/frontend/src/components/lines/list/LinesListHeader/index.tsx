@@ -43,6 +43,11 @@ export function LinesListHeader() {
 					onClick={openVkmModal}
 					title="Consultar VKM"
 				/>
+				<MenuItem
+					leftSection={<IconFileDownload size={20} />}
+					onClick={() => {}}
+					title="Exportar GTFS STEPP"
+				/>
 			</Menu>
 		</Toolbar>
 	);
