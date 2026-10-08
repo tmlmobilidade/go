@@ -119,8 +119,6 @@ export function VehiclesDetailView() {
 				{differenceInSeconds !== undefined && <p className={styles.lastSeenLabel}>{t('default:vehicles.VehiclesDetailView.seen_seconds_ago', '', { count: differenceInSeconds })}</p>}
 				{vehiclesDetailContext.flags.is_stale && <p className={styles.lastSeenLabel}>{t('default:vehicles.VehiclesDetailView.stale')}</p>}
 
-				<CopyBadge value={`${vehiclesDetailContext.data.vehicle?.bearing || '-'} | ${vehiclesDetailContext.data.vehicle?.bearing_method || '-'}`} />
-
 			</div>
 		</Section>
 	);
