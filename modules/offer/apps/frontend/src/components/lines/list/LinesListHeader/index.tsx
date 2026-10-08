@@ -46,7 +46,7 @@ export function LinesListHeader() {
 				<MenuItem
 					leftSection={<IconFileDownload size={20} />}
 					onClick={() => {}}
-					title="Exportar GTFS STEPP"
+					title="Exportar GTFS STePP"
 				/>
 			</Menu>
 		</Toolbar>
