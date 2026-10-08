@@ -229,15 +229,9 @@ export class SQLiteTableInstance<T> {
 		const iterator = this.databaseInstance
 			.prepare(`SELECT * FROM ${this.tableName} ${whereClause}`)
 			.iterate(...params);
-		// Return a Readable stream in object mode
-		return new Readable({
-			objectMode: true,
-			read() {
-				const next = iterator.next();
-				if (next.done) this.push(null); // end of stream
-				else this.push(next.value as T);
-			},
-		});
+		// Readable.from closes the iterator when a consumer exits early,
+		// releasing the active SQLite query before database cleanup.
+		return Readable.from(iterator, { objectMode: true });
 	}
 
 	/**

@@ -65,7 +65,7 @@ export async function exportStopTimesFile(context: ExportGtfsContext, planData: 
 			const validatedStopTimesRow = HubV1GtfsStopTimesSchema.parse(parsedStopTimesRow);
 			await context.writers.stop_times.write(validatedStopTimesRow);
 		} catch (error) {
-			Logger.error({ message: `Error exporting stop_time row: ${JSON.stringify(stopTimeItem)}` });
+			Logger.error({ error, message: `Error exporting stop_time row: ${JSON.stringify(stopTimeItem)}` });
 			throw error;
 		}
 	}
