@@ -302,13 +302,13 @@
 						"label": "Localidad"
 					},
 					"location_primary_ids": {
-						"label": "location_primary"
+						"label": "Comunidad"
 					},
 					"location_secondary_ids": {
-						"label": "location_secondary"
+						"label": "Provincia"
 					},
 					"location_tertiary_ids": {
-						"label": "location_tertiary"
+						"label": "Municipio"
 					},
 					"search": {
 						"label": "Búsqueda",
