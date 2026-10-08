@@ -21,6 +21,7 @@ const PlansPermissionActionsValues = [
 	'delete_apex_file',
 	'send_apex_notification',
 	'generate_pdf_posters',
+	'export_gtfs_stepp',
 ] as const;
 
 export const PlansPermissionActionsSchema = z.enum(PlansPermissionActionsValues);
