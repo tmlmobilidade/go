@@ -27,8 +27,8 @@
 		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/gtfs-rt": "*",
-		"@tmlmobilidade/go-utils-telemetry": "*"
+		"@tmlmobilidade/go-utils-telemetry": "*",
+		"@tmlmobilidade/gtfs-rt": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
