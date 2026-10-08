@@ -22,8 +22,8 @@ export async function transformAlertIntoRssEntity(alertData: Alert, feedBaseUrl:
 
 		return {
 			description: alertData.description,
-			link: alertData.info_url || feedBaseUrl,
-			linkLabel: 'Ver mais informações sobre o alerta',
+			link: `${feedBaseUrl}/${alertData._id}`,
+			linkLabel: 'Ver o alerta completo em carrismetropolitana.pt',
 			publish_start_date: alertData.publish_start_date,
 			title: alertData.title,
 		};

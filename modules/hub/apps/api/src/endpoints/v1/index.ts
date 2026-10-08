@@ -4,6 +4,6 @@ import './debug/routes.js';
 import './eta/routes.js';
 import './metrics/routes.js';
 import './network/routes.js';
-import './organizations/routes.js';
 import './plans/routes.js';
+import './realtime/routes.js';
 import './vehicles/routes.js';

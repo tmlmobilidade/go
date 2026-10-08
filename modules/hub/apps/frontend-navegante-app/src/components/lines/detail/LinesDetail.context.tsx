@@ -94,7 +94,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		(async () => {
 			if (!selectedLineData) return;
 			const fetchPromises = selectedLineData.pattern_ids.map(async (patternId) => {
-				const response = await fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS('U4WLV', patternId) });
+				const response = await fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS(patternId) });
 				if (response.error) return null;
 				return (response.data ?? []).map((patternGroup) => {
 					patternGroup.path = patternGroup.path.map((waypoint) => {

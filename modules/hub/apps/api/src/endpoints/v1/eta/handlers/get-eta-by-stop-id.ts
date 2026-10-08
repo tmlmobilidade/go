@@ -2,7 +2,6 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { HubV1ApiTripStopEta } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -12,24 +11,24 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getEtaByStopIdHandler(request: FastifyRequest<{ Params: { id: string, organizationId: string } }>, reply: FastifyReply<HubV1ApiTripStopEta[]>) {
+export async function getEtaByStopIdHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubV1ApiTripStopEta[]>) {
 	//
 
 	//
 	// Get the published data from the cache
 
-	const cachedData = await cacheDb.get(getOrganizationCacheKey(request.params.organizationId, `eta:by-stop:${request.params.id}`));
+	const cachedData = await cacheDb.get(`hub:v1:realtime:eta:by-stop:${request.params.id}`);
 
 	if (!cachedData) {
-		Logger.error({ message: `[hub/v1/eta:getEtaByStopIdHandler(${request.params.id})] No data in cache.` });
+		Logger.error({ message: `[hub/v1/realtime:getEtaByStopIdHandler(${request.params.id})] No data in cache.` });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')
-			.code(HTTP_STATUS.NOT_FOUND)
+			.code(HTTP_STATUS.NO_CONTENT)
 			.send({
 				data: [],
 				error: null,
-				status_code: HTTP_STATUS.NOT_FOUND,
+				status_code: HTTP_STATUS.NO_CONTENT,
 			});
 	}
 

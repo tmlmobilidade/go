@@ -20,8 +20,6 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-shared": "*",

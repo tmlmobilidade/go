@@ -1,7 +1,5 @@
 /* * */
 
-import { getOrganizationAgencyIds } from '@tmlmobilidade/go-hub-pckg-utils';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -24,18 +22,11 @@ async function main() {
 	//
 	// Run all tasks sequentially
 
-	const [organizations, agencies] = await Promise.all([goDb.core.organizations.findMany(), goDb.core.agencies.findMany()]);
+	await publishGtfsRtFeed();
 
-	for (const organization of organizations) {
-		try {
-			const agencyIds = getOrganizationAgencyIds(organization, agencies, 'service_alerts_enabled');
-			await publishGtfsRtFeed(organization, agencyIds);
-			await publishJsonFeed(organization, agencyIds);
-			await publishRssFeed(organization, agencyIds);
-		} catch (error) {
-			Logger.error({ error, message: `Error publishing alerts for organization ${organization._id}.` });
-		}
-	}
+	await publishJsonFeed();
+
+	await publishRssFeed();
 
 	//
 	// Log the total time taken for all tasks

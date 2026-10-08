@@ -6,8 +6,8 @@ import { type GtfsStopTimes } from '@tmlmobilidade/go-types-gtfs';
 import { type HubV1GtfsStopTimesInput, HubV1GtfsStopTimesSchema } from '@tmlmobilidade/go-types-hub';
 import { type StopId } from '@tmlmobilidade/go-types-infrastructure';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type ExportGtfsContext } from '../types/context.js';
 
@@ -65,7 +65,7 @@ export async function exportStopTimesFile(context: ExportGtfsContext, planData: 
 			const validatedStopTimesRow = HubV1GtfsStopTimesSchema.parse(parsedStopTimesRow);
 			await context.writers.stop_times.write(validatedStopTimesRow);
 		} catch (error) {
-			Logger.error({ error, message: `Error exporting stop_time row: ${JSON.stringify(stopTimeItem)}` });
+			Logger.error({ message: `Error exporting stop_time row: ${JSON.stringify(stopTimeItem)}` });
 			throw error;
 		}
 	}

@@ -2,7 +2,6 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiPlan } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -13,13 +12,13 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getApprovedPlansHandler(request: FastifyRequest<{ Params: { organizationId: string } }>, reply: FastifyReply<HubV1ApiPlan[]>) {
+export async function getApprovedPlansHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiPlan[]>) {
 	//
 
 	//
 	// Get the published plans from the cache
 
-	const cachedData = await cacheDb.get(getOrganizationCacheKey(request.params.organizationId, 'plans:approved:json'));
+	const cachedData = await cacheDb.get('hub:v1:plans:approved:json');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/plans:getApprovedPlansHandler()] No cached data found for approved plans' });

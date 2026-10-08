@@ -1,32 +1,20 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { getOrganizationGtfsResourceId } from '@tmlmobilidade/go-hub-pckg-utils';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
 /**
- * Download the latest GTFS feed for an enabled organization.
+ * Download the latest GTFS merged file.
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getGtfsHandler(request: FastifyRequest<{ Params: { organizationId: string } }>, reply: FastifyReply<string>) {
+export async function getGtfsHandler(request: FastifyRequest, reply: FastifyReply<string>) {
 	//
 
 	//
 	// Retrieve the file data from the storage provider
 
-	const organization = await goDb.core.organizations.findById(request.params.organizationId);
-
-	if (!organization?.open_data?.gtfs?.enabled) {
-		return sendErrorApiResponse(reply, {
-			error: 'Organization with GTFS publishing enabled not found',
-			status_code: '404',
-		});
-	}
-
-	const resourceId = getOrganizationGtfsResourceId(organization._id);
-	const foundFileData = await storageProvider.findById(resourceId);
+	const foundFileData = await storageProvider.findById('gtfs-latest');
 
 	if (!foundFileData?.url) {
 		return sendErrorApiResponse(reply, {
@@ -52,7 +40,7 @@ export async function getGtfsHandler(request: FastifyRequest<{ Params: { organiz
 	// and nginx buffering to memory
 
 	reply.header('access-control-allow-origin', '*');
-	reply.header('content-disposition', `attachment; filename="${encodeURIComponent(resourceId)}.zip"`);
+	reply.header('content-disposition', 'attachment; filename="gtfs-latest.zip"');
 	reply.header('content-type', 'application/zip');
 	reply.header('cache-control', 'no-store');
 	reply.header('X-Accel-Buffering', 'no');

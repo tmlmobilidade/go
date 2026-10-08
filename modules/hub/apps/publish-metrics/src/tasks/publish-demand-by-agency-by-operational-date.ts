@@ -1,8 +1,6 @@
 /* * */
 
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -27,14 +25,7 @@ export async function publishDemandByAgencyByOperationalDate() {
 	//
 	// Save the result in API Cache
 
-	for (const organization of await goDb.core.organizations.findMany()) {
-		try {
-			const organizationDemand = result.filter(row => organization.agency_ids.includes(row.agency_id));
-			await cacheDb.set(getOrganizationCacheKey(organization._id, 'metrics:demand:by-agency:by-operational-date:json'), JSON.stringify(organizationDemand));
-		} catch (error) {
-			Logger.error({ error, message: `Error publishing metrics for organization ${organization._id}.` });
-		}
-	}
+	await cacheDb.set('hub:v1:metrics:demand:by-agency:by-operational-date:json', JSON.stringify(result));
 
 	Logger.success(`Finished publishing Demand by Agency by Operational Date (${globalTimer.get()})`);
 

@@ -1,10 +1,8 @@
 /* * */
 
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type Organization } from '@tmlmobilidade/go-types-core';
 import { type HubV1ApiAlert, HubV1ApiAlertSchema } from '@tmlmobilidade/go-types-hub';
 import { AlertCauseToGtfsRtCauseMap, AlertEffectToGtfsRtEffectMap, type AlertReference } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -17,7 +15,7 @@ import { transformReferenceTypeStopsIntoJson } from '../transform/json/reference
 
 /* * */
 
-export async function publishJsonFeed(organization: Organization, agencyIds: string[]) {
+export async function publishJsonFeed() {
 	//
 
 	Logger.title('Starting build of JSON feed...');
@@ -41,7 +39,6 @@ export async function publishJsonFeed(organization: Organization, agencyIds: str
 					publish_status: 'published',
 				},
 			],
-			agency_id: { $in: agencyIds },
 		},
 		{
 			sort: { created_at: -1 },
@@ -138,7 +135,7 @@ export async function publishJsonFeed(organization: Organization, agencyIds: str
 	//
 	// Save the result in API Cache
 
-	await cacheDb.set(getOrganizationCacheKey(organization._id, 'alerts:published:json'), JSON.stringify(result));
+	await cacheDb.set('hub:v1:alerts:published:json', JSON.stringify(result));
 
 	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
 

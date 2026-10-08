@@ -17,11 +17,9 @@
 		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
-		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",

@@ -1,6 +1,5 @@
 /* * */
 
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiPatternTrip, type HubV1ApiPatternWaypoint, type HubV1ApiRoute, type HubV1ApiScheduledArrival, type HubV1ApiStop, HubV1GtfsRoutes } from '@tmlmobilidade/go-types-hub';
 import { HexColorSchema } from '@tmlmobilidade/go-types-shared';
@@ -12,7 +11,7 @@ import { getEncodedPolyline } from '../utils/get-encoded-polyline.js';
 
 /* * */
 
-export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTables, organizationId: string) {
+export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTables) {
 	//
 
 	/* * *
@@ -56,7 +55,7 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 	const fetchRawDataTimer = new Timer();
 
 	// For Stops
-	const allStopsParsedTxt = await cacheDb.get(getOrganizationCacheKey(organizationId, 'network:stops'));
+	const allStopsParsedTxt = await cacheDb.get('hub:v1:network:stops');
 	const allStopsParsedJson: HubV1ApiStop[] = allStopsParsedTxt ? JSON.parse(allStopsParsedTxt) : [];
 	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item._id, item]));
 
@@ -486,8 +485,8 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 
 		const finalizedPatternGroupsData: HubV1ApiPattern[] = Array.from(parsedPatternsForThisPatternGroup.values()).map((item: HubV1ApiPattern) => ({ ...item, trips: Object.values(item.trips) }));
 
-		await cacheDb.setNew(getOrganizationCacheKey(organizationId, `network:patterns:${patternId}`), finalizedPatternGroupsData);
-		updatedPatternKeys.add(getOrganizationCacheKey(organizationId, `network:patterns:${patternId}`));
+		await cacheDb.setNew(`hub:v1:network:patterns:${patternId}`, finalizedPatternGroupsData);
+		updatedPatternKeys.add(`hub:v1:network:patterns:${patternId}`);
 
 		Logger.info({ message: `Updated pattern_id "${patternId}" (${intraPatternTimer.get()})` });
 
@@ -503,7 +502,7 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 
 	Logger.info({ message: `Removing stale Patterns from cache...` });
 
-	const allPatternKeysInTheDatabase = await cacheDb.scan(getOrganizationCacheKey(organizationId, 'network:patterns:*'));
+	const allPatternKeysInTheDatabase = await cacheDb.scan(`hub:v1:network:patterns:*`);
 	const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
 	if (stalePatternKeys.length) await cacheDb.deleteMany(stalePatternKeys);
 
@@ -514,9 +513,9 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 
 	const finalizedAllRoutesData: HubV1ApiRoute[] = Array.from(allRoutesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
 	for (const route of finalizedAllRoutesData) {
-		await cacheDb.setNew(getOrganizationCacheKey(organizationId, `network:routes:${route._id}`), route);
+		await cacheDb.setNew(`hub:v1:network:routes:${route._id}`, route);
 	}
-	await cacheDb.set(getOrganizationCacheKey(organizationId, 'network:routes'), JSON.stringify(finalizedAllRoutesData));
+	await cacheDb.set('hub:v1:network:routes', JSON.stringify(finalizedAllRoutesData));
 	Logger.info({ message: `Updated ${finalizedAllRoutesData.length} Routes` });
 
 	//
@@ -524,16 +523,9 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 
 	const finalizedAllLinesData: HubV1ApiLine[] = Array.from(allLinesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
 	for (const line of finalizedAllLinesData) {
-		await cacheDb.setNew(getOrganizationCacheKey(organizationId, `network:lines:${line._id}`), line);
+		await cacheDb.setNew(`hub:v1:network:lines:${line._id}`, line);
 	}
-	await cacheDb.set(getOrganizationCacheKey(organizationId, 'network:lines'), JSON.stringify(finalizedAllLinesData));
-
-	for (const [resource, items] of [['routes', finalizedAllRoutesData], ['lines', finalizedAllLinesData]] as const) {
-		const currentKeys = new Set<string>(items.map(item => getOrganizationCacheKey(organizationId, `network:${resource}:${item._id}`)));
-		const staleKeys = (await cacheDb.scan(getOrganizationCacheKey(organizationId, `network:${resource}:*`))).filter(key => !currentKeys.has(key));
-		if (staleKeys.length) await cacheDb.deleteMany(staleKeys);
-	}
-
+	await cacheDb.set('hub:v1:network:lines', JSON.stringify(finalizedAllLinesData));
 	Logger.info({ message: `Updated ${finalizedAllLinesData.length} Lines` });
 
 	//

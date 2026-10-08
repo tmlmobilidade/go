@@ -11,16 +11,16 @@ import { type TripStopEta } from '../types.js';
 /**
  * Fetches all simplified trip-stop ETAs from ClickHouse (`select-eta.sql`).
  *
- * Used by {@link cacheAllEtasFromClickHouse} to rebuild `hub:v1:{organizationId}:eta:all`.
+ * Used by {@link cacheAllEtasFromClickHouse} to rebuild `hub:v1:realtime:eta:all`.
  */
-export async function getClickHouseEtas(agencyIds: string[]): Promise<TripStopEta[]> {
+export async function getClickHouseEtas(): Promise<TripStopEta[]> {
 	//
 
 	const timer = new Timer();
 
 	Logger.info({ message: 'Retrieving trip stop ETAs from ClickHouse...' });
 
-	const etas = await labDb.queryFromFile<TripStopEta>(sqlPath('hub', 'publish-eta/select-eta.sql'), { agency_ids: agencyIds });
+	const etas = await labDb.queryFromFile<TripStopEta>(sqlPath('hub', 'publish-eta/select-eta.sql'));
 
 	Logger.info({ message: `Found ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfter: 1 });
 

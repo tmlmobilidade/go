@@ -27,7 +27,7 @@ export function useBaseMapPatternData(patternId: null | string): UseBaseMapPatte
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading } = useSWR<ApiResponse<HubV1ApiPattern[]>>(patternId && API_ROUTES.hub.NETWORK_PATTERNS('U4WLV', patternId), {
+	const { data, error, isLoading } = useSWR<ApiResponse<HubV1ApiPattern[]>>(patternId && API_ROUTES.hub.NETWORK_PATTERNS(patternId), {
 		fetcher: (url: string) => fetchApiData<HubV1ApiPattern[]>({ credentials: 'omit', url }),
 	});
 

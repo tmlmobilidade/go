@@ -1,7 +1,6 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -11,13 +10,13 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getLinesHandler(request: FastifyRequest<{ Params: { organizationId: string } }>, reply: FastifyReply<HubV1ApiLine[]>) {
+export async function getLinesHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiLine[]>) {
 	//
 
 	//
 	// Get the published lines from the cache
 
-	const cachedData = await cacheDb.get(getOrganizationCacheKey(request.params.organizationId, 'network:lines'));
+	const cachedData = await cacheDb.get('hub:v1:network:lines');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/network:getLinesHandler()] No cached data found for lines' });

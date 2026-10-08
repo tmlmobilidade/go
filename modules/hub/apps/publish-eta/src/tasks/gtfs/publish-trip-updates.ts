@@ -1,6 +1,5 @@
 /* * */
 
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -13,7 +12,7 @@ import { getExternalTripUpdates } from './get-external-trip-updates.js';
 
 /* * */
 
-export async function publishTripUpdates(organizationId: string, agencyIds: string[]) {
+export async function publishTripUpdates() {
 	//
 
 	Logger.title('Publishing GTFS-RT TripUpdate feed...');
@@ -31,18 +30,18 @@ export async function publishTripUpdates(organizationId: string, agencyIds: stri
 
 	//
 	// Get Clickhouse TripUpdates
-	const clickhouseTripUpdates = await getClickHouseTripUpdates(agencyIds);
+	const clickhouseTripUpdates = await getClickHouseTripUpdates();
 	clickhouseTripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
 
-	for (const feed of EXTERNAL_FEEDS.filter(feed => agencyIds.includes(feed.agencyId))) {
+	for (const feed of EXTERNAL_FEEDS) {
 		Logger.info({ message: `Retrieving TripUpdates from ${feed.label} API...` });
-		const tripUpdates = await getExternalTripUpdates(organizationId, feed);
+		const tripUpdates = await getExternalTripUpdates(feed);
 		tripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
 	}
 
 	//
 	// Cache the feed result
-	await cacheDb.set(getOrganizationCacheKey(organizationId, 'eta:all:gtfs'), JSON.stringify(feedResult), TTL_REALTIME);
+	await cacheDb.set('hub:v1:realtime:eta:all:gtfs', JSON.stringify(feedResult), TTL_REALTIME);
 
 	Logger.success(`Finished publishing GTFS-RT TripUpdate feed (${globalTimer.get()})`);
 

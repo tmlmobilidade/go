@@ -1,6 +1,6 @@
 /* * */
 
-import { getOrganizationCacheKey, getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { getQualifiedTripId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { GtfsRtStopTimeUpdate, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
@@ -22,7 +22,7 @@ import { type ExternalFeedConfig } from '../external-feeds.js';
  * @param feed - External feed config (agency, label, fetch fn)
  * @returns Normalized TripUpdates ready for GTFS-RT ETA caches
  */
-export async function getExternalTripUpdates(organizationId: string, feed: ExternalFeedConfig): Promise<GtfsRtTripUpdate[]> {
+export async function getExternalTripUpdates(feed: ExternalFeedConfig): Promise<GtfsRtTripUpdate[]> {
 	//
 
 	const timer = new Timer();
@@ -30,7 +30,7 @@ export async function getExternalTripUpdates(organizationId: string, feed: Exter
 	Logger.info({ message: `Retrieving Estimated Time of Arrivals from ${feed.label} API...` });
 
 	try {
-		const approvedPlans = await cacheDb.get(getOrganizationCacheKey(organizationId, 'plans:approved:json'));
+		const approvedPlans = await cacheDb.get('hub:v1:plans:approved:json');
 		if (!approvedPlans) throw new Error('No approved plans found in API Cache');
 
 		const activePlanId = (JSON.parse(approvedPlans) as HubV1ApiPlan[])

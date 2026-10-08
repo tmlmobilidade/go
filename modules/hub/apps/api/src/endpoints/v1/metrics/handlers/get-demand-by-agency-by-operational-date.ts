@@ -2,7 +2,6 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -12,13 +11,13 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getDemandByAgencyByOperationalDateHandler(request: FastifyRequest<{ Params: { organizationId: string } }>, reply: FastifyReply<DemandByAgencyByOperationalDate>) {
+export async function getDemandByAgencyByOperationalDateHandler(request: FastifyRequest, reply: FastifyReply<DemandByAgencyByOperationalDate>) {
 	//
 
 	//
 	// Get the published data from the cache
 
-	const cachedData = await cacheDb.get(getOrganizationCacheKey(request.params.organizationId, 'metrics:demand:by-agency:by-operational-date:json'));
+	const cachedData = await cacheDb.get('hub:v1:metrics:demand:by-agency:by-operational-date:json');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/metrics:getDemandByAgencyByOperationalDateHandler()] No data in cache.' });

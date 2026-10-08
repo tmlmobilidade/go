@@ -4,8 +4,6 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
 
 import { type ExportGtfsContext } from '../types/context.js';
 
@@ -25,7 +23,7 @@ export function initExportGtfsContext(): ExportGtfsContext {
 	//
 	// Use the run ID to prepare the working directory.
 
-	const temporaryPath = fs.mkdtempDisposableSync(path.join(os.tmpdir(), `export-gtfs-${runId}-`));
+	const temporaryPath = fs.mkdtempDisposableSync(`export-gtfs-${runId}`);
 
 	const workdirContext: ExportGtfsContext['workdir'] = {
 		path: temporaryPath.path,

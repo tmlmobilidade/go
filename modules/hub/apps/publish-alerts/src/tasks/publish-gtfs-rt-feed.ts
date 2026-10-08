@@ -1,9 +1,7 @@
 /* * */
 
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Organization } from '@tmlmobilidade/go-types-core';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
@@ -12,7 +10,7 @@ import { transformAlertIntoGtfsRtEntity } from '../transform/gtfs-rt/main.js';
 
 /* * */
 
-export async function publishGtfsRtFeed(organization: Organization, agencyIds: string[]) {
+export async function publishGtfsRtFeed() {
 	//
 
 	Logger.title('Publishing GTFS-RT feed...');
@@ -31,7 +29,6 @@ export async function publishGtfsRtFeed(organization: Organization, agencyIds: s
 					publish_status: 'published',
 				},
 			],
-			agency_id: { $in: agencyIds },
 		},
 		{
 			sort: { created_at: -1 },
@@ -61,7 +58,7 @@ export async function publishGtfsRtFeed(organization: Organization, agencyIds: s
 		},
 	};
 
-	await cacheDb.set(getOrganizationCacheKey(organization._id, 'alerts:published:gtfs'), JSON.stringify(gtfsRtFeed));
+	await cacheDb.set('hub:v1:alerts:published:gtfs', JSON.stringify(gtfsRtFeed));
 
 	Logger.success(`Finished publishing GTFS-RT feed (${globalTimer.get()})`);
 

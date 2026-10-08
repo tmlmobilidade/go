@@ -2,23 +2,22 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Returns a GTFS-RT Protobuf feed with service alerts.
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getGtfsRtProtobufFeedHandler(request: FastifyRequest<{ Params: { organizationId: string } }>, reply: FastifyReply<Buffer>) {
+export async function getGtfsRtProtobufFeedHandler(request: FastifyRequest, reply: FastifyReply<Buffer>) {
 	//
 
 	//
 	// Get the published feed from the cache
 
-	const cachedData = await cacheDb.get(getOrganizationCacheKey(request.params.organizationId, 'alerts:published:gtfs'));
+	const cachedData = await cacheDb.get('hub:v1:alerts:published:gtfs');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/alerts:getGtfsRtProtobufFeedHandler()] No GTFS-RT feed found in cache. Returning empty message.' });

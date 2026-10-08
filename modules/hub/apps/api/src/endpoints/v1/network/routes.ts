@@ -1,6 +1,5 @@
 /* * */
 
-import { requireOrganization } from '@/hooks/require-organization.js';
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getLineHandler } from './handlers/get-line.js';
@@ -14,7 +13,7 @@ import { getStopsHandler } from './handlers/get-stops.js';
 
 /* * */
 
-const NAMESPACE = '/v1/:organizationId/network';
+const NAMESPACE = '/v1/network';
 
 /* * */
 
@@ -22,8 +21,6 @@ const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
-		instance.addHook('preHandler', requireOrganization);
-
 		//
 
 		instance.get('/stops', getStopsHandler);

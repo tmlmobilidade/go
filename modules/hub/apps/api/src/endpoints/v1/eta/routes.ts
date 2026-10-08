@@ -1,6 +1,5 @@
 /* * */
 
-import { requireOrganization } from '@/hooks/require-organization.js';
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getEtaAllHandler } from './handlers/get-eta-all.js';
@@ -11,7 +10,7 @@ import { getEtaGtfsRtProtobufHandler } from './handlers/get-eta-gtfs-rt-protobuf
 
 /* * */
 
-const NAMESPACE = '/v1/:organizationId/eta';
+const NAMESPACE = '/v1/eta';
 
 /* * */
 
@@ -19,8 +18,6 @@ const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
-		instance.addHook('preHandler', requireOrganization);
-
 		//
 
 		instance.get('/', getEtaAllHandler);

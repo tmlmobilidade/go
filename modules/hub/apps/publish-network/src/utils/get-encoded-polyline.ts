@@ -7,7 +7,7 @@ import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 
 /* * */
 
-const encodedPolylineCache = new WeakMap<GtfsSQLTables, Map<string, EncodedPolyline>>();
+const encodedPolylineCache = new Map<string, EncodedPolyline>();
 
 /**
  * Retrieves an encoded polyline from the database.
@@ -22,9 +22,7 @@ export async function getEncodedPolyline(importedGtfsSql: GtfsSQLTables, shapeId
 	//
 	// Check if the encoded polyline is already cached
 
-	const shapeCache = encodedPolylineCache.get(importedGtfsSql) ?? new Map<string, EncodedPolyline>();
-	encodedPolylineCache.set(importedGtfsSql, shapeCache);
-	const cachedEncodedPolyline = shapeCache.get(shapeId);
+	const cachedEncodedPolyline = encodedPolylineCache.get(shapeId);
 
 	if (cachedEncodedPolyline) return cachedEncodedPolyline;
 
@@ -54,7 +52,7 @@ export async function getEncodedPolyline(importedGtfsSql: GtfsSQLTables, shapeId
 	//
 	// Cache the encoded polyline
 
-	shapeCache.set(shapeId, shapeAsEncodedPolyline);
+	encodedPolylineCache.set(shapeId, shapeAsEncodedPolyline);
 
 	//
 	// Return the encoded polyline

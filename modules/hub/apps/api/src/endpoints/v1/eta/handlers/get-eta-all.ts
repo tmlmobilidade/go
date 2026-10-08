@@ -2,7 +2,6 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { getOrganizationCacheKey } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { HubV1ApiTripStopEta } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -12,16 +11,16 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getEtaAllHandler(request: FastifyRequest<{ Params: { organizationId: string } }>, reply: FastifyReply<HubV1ApiTripStopEta[]>) {
+export async function getEtaAllHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiTripStopEta[]>) {
 	//
 
 	//
 	// Get the published data from the cache
 
-	const cachedData = await cacheDb.get(getOrganizationCacheKey(request.params.organizationId, 'eta:all'));
+	const cachedData = await cacheDb.get('hub:v1:realtime:eta:all');
 
 	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/eta:getEtaAllHandler()] No data in cache.' });
+		Logger.error({ message: '[hub/v1/realtime:getEtaAllHandler()] No data in cache.' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')

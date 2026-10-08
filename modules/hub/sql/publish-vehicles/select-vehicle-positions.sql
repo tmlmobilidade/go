@@ -14,8 +14,7 @@ WITH latest_events AS (
 				trip_id,
 				bearing
 			FROM operation.simplified_vehicle_events
-			WHERE has({agency_ids:Array(String)}, agency_id)
-				AND created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL 90 SECOND)
+			WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL 90 SECOND)
 			ORDER BY created_at DESC
 			LIMIT 2 BY agency_id, vehicle_id
 		),

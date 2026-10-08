@@ -1,12 +1,10 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { publishAgencies } from './tasks/publish-agencies.js';
 import { publishApprovedPlans } from './tasks/publish-approved-plans.js';
-import { publishOrganizations } from './tasks/publish-organizations.js';
 
 /* * */
 
@@ -25,15 +23,7 @@ async function main() {
 
 	await publishAgencies();
 
-	await publishOrganizations();
-
-	for (const organization of await goDb.core.organizations.findMany()) {
-		try {
-			await publishApprovedPlans(organization);
-		} catch (error) {
-			Logger.error({ error, message: `Error publishing plans for organization ${organization._id}.` });
-		}
-	}
+	await publishApprovedPlans();
 
 	//
 	// Log the total time taken for all tasks
