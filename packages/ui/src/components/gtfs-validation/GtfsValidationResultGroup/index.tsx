@@ -76,39 +76,43 @@ export function GtfsValidationResultGroup({ getRuleDocumentationUrl, group }: Gt
 			</button>
 			{isOpen && (
 				<div className={styles.detail}>
-					<div className={styles.detailHeader}>
-						<span className={styles.ruleId}>{group.rule_id}</span>
-						{documentationUrl && (
-							<a className={styles.link} href={documentationUrl} rel="noopener noreferrer" target="_blank">
-								{t('shared:components.gtfsValidationResultGroup.documentation')} <IconExternalLink size={12} />
-							</a>
-						)}
-					</div>
-					<div className={styles.occurrenceTableContainer}>
-						<table aria-label={group.message} className={styles.occurrenceTable}>
-							<thead>
-								<tr>
-									<th scope="col">{t('shared:components.gtfsValidationResultGroup.message')}</th>
-									<th className={styles.rowsColumn} scope="col">{t('shared:components.gtfsValidationResultGroup.rows')}</th>
-								</tr>
-							</thead>
-							<tbody>
-								{visibleOccurrences.map((occurrence, index) => (
-									<tr key={`${group.rule_id}::${index}`}>
-										<td>
-											<div className={styles.occurrenceBody}>
-												<p className={styles.occurrenceMessage}>{occurrence.message}</p>
-												{occurrence.severity !== group.severity && <SeverityTag severity={occurrence.severity} />}
-											</div>
-										</td>
-										<td className={styles.occurrenceRows}>
-											{occurrence.rows.length > 0 ? <GtfsValidationResultRows limit={10} rows={occurrence.rows} /> : 'N/A'}
-										</td>
+					<Surface variant="bordered">
+						<div className={styles.detailHeader}>
+							<span className={styles.ruleId}>{group.rule_id}</span>
+							{documentationUrl && (
+								<a className={styles.link} href={documentationUrl} rel="noopener noreferrer" target="_blank">
+									{t('shared:components.gtfsValidationResultGroup.documentation')} <IconExternalLink size={12} />
+								</a>
+							)}
+						</div>
+					</Surface>
+					<Surface variant="bordered">
+						<div className={styles.occurrenceTableContainer}>
+							<table aria-label={group.message} className={styles.occurrenceTable}>
+								<thead>
+									<tr>
+										<th scope="col">{t('shared:components.gtfsValidationResultGroup.message')}</th>
+										<th className={styles.rowsColumn} scope="col">{t('shared:components.gtfsValidationResultGroup.rows')}</th>
 									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
+								</thead>
+								<tbody>
+									{visibleOccurrences.map((occurrence, index) => (
+										<tr key={`${group.rule_id}::${index}`}>
+											<td>
+												<div className={styles.occurrenceBody}>
+													<p className={styles.occurrenceMessage}>{occurrence.message}</p>
+													{occurrence.severity !== group.severity && <SeverityTag severity={occurrence.severity} />}
+												</div>
+											</td>
+											<td className={styles.occurrenceRows}>
+												{occurrence.rows.length > 0 ? <GtfsValidationResultRows limit={10} rows={occurrence.rows} /> : 'N/A'}
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+					</Surface>
 					{hiddenOccurrencesCount > 0 && (
 						<button className={styles.showAll} onClick={() => setShowAllOccurrences(true)} type="button">
 							{t('shared:components.gtfsValidationResultGroup.showAll', '', { count: hiddenOccurrencesCount })}
