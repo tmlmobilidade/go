@@ -35,24 +35,43 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
 	const { mapPadding, shouldFitMap } = useMapBottomSheet();
 	const { 'base-map': baseMap } = useMap();
 	const lastRouteMapFitKeyRef = useRef<null | string>(null);
-	const focusedPoint = params.focusedAlert ?? params.focusedVehicle;
+	const lastFocusedDetailKeyRef = useRef<null | string>(null);
+	const detailView = activeBottomSheet?.view;
+	const detailId = activeBottomSheet?.entityId;
 
 	//
 	// B. Synchronize camera
 
+	// Focus a selected alert, stop, or vehicle once. Live positions and sheet changes must not move the camera again.
 	useEffect(() => {
-		if (!baseMap || focusedPoint?.geometry.type !== 'Point' || !shouldFitMap) return;
-		const [longitude, latitude] = focusedPoint.geometry.coordinates;
-		if (!Number.isFinite(longitude) || !Number.isFinite(latitude)) return;
+		if (!detailId || (detailView !== 'alerts-detail' && detailView !== 'stops-detail' && detailView !== 'vehicles-detail')) {
+			lastFocusedDetailKeyRef.current = null;
+			return;
+		}
+		if (!baseMap || !shouldFitMap) return;
 
-		baseMap.flyTo({
-			center: [longitude, latitude],
+		let coordinates: number[] | undefined;
+		if (detailView === 'stops-detail' && params.focusedStop) {
+			coordinates = [params.focusedStop.longitude, params.focusedStop.latitude];
+		} else if (detailView === 'alerts-detail' && params.focusedAlert?.geometry.type === 'Point') {
+			coordinates = params.focusedAlert.geometry.coordinates;
+		} else if (detailView === 'vehicles-detail' && params.focusedVehicle?.geometry.type === 'Point') {
+			coordinates = params.focusedVehicle.geometry.coordinates;
+		}
+		if (!coordinates?.every(Number.isFinite)) return;
+
+		const detailKey = `${detailView}:${detailId}`;
+		if (lastFocusedDetailKeyRef.current === detailKey) return;
+		lastFocusedDetailKeyRef.current = detailKey;
+		baseMap.easeTo({
+			center: [coordinates[0], coordinates[1]],
 			duration: 650,
 			offset: [0, Math.round((mapPadding.top - mapPadding.bottom) / 2)],
-			zoom: 14,
+			zoom: baseMap.getZoom(),
 		});
-	}, [activeBottomSheetSnap.snapPoint, baseMap, focusedPoint, mapPadding, shouldFitMap]);
+	}, [baseMap, detailId, detailView, mapPadding, params.focusedAlert, params.focusedStop, params.focusedVehicle, shouldFitMap]);
 
+	// Fit the selected line's complete shape when the available map area changes.
 	useEffect(() => {
 		if (!baseMap || !params.focusedLineShape || !shouldFitMap) return;
 		centerMap(baseMap, [params.focusedLineShape], {
@@ -60,16 +79,7 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
 		});
 	}, [activeBottomSheetSnap.snapPoint, baseMap, mapPadding, params.focusedLineShape, shouldFitMap]);
 
-	useEffect(() => {
-		if (!baseMap || !params.focusedStop || !shouldFitMap) return;
-		baseMap.flyTo({
-			center: [params.focusedStop.longitude, params.focusedStop.latitude],
-			duration: 650,
-			offset: [0, Math.round((mapPadding.top - mapPadding.bottom) / 2)],
-			zoom: 15.5,
-		});
-	}, [activeBottomSheetSnap.snapPoint, baseMap, mapPadding, params.focusedStop, shouldFitMap]);
-
+	// Show a chosen place at the close zoom used by the route planner.
 	useEffect(() => {
 		if (!baseMap || !Number.isFinite(params.placeDestination?.lon) || !Number.isFinite(params.placeDestination?.lat) || !shouldFitMap) return;
 		baseMap.flyTo({
@@ -80,6 +90,7 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
 		});
 	}, [activeBottomSheetSnap.snapPoint, baseMap, mapPadding, params.placeDestination, shouldFitMap]);
 
+	// Fit an itinerary once per route view and sheet snap; stop location tracking while previewing it.
 	useEffect(() => {
 		if (!baseMap || params.routePlannerMapFitFeatures.length === 0) return;
 		if (activeBottomSheet?.view !== 'routes' && !routePlannerContext.flags.is_navigating) return;
