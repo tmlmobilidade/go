@@ -23,7 +23,7 @@ export function LinesDetailViewHeader() {
 	// B. Render components
 
 	return (
-		<Surface variant="plain">
+		<Surface variant="transparent">
 			<Section className={styles.section} gap="sm">
 				<div aria-hidden={true} className={styles.row}>
 					<LineBadge lineData={linesDetailContext.data.line} size="lg" />

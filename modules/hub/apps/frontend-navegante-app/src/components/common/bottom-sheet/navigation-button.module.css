@@ -1,5 +1,7 @@
 .button {
+	position: relative;
 	z-index: 200;
+	box-sizing: border-box;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -10,15 +12,14 @@
 	pointer-events: auto;
 	cursor: pointer;
 	background-color: var(--color-system-background-100, #fff);
-	border: 1px solid var(--color-system-border-100, #e8e8ee);
 	border-radius: 50%;
+	box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
 	transition: background-color 150ms ease, opacity 150ms ease, transform 150ms ease;
 }
 
 .button[data-size='sm'] {
 	width: 36px;
 	height: 36px;
-	border: 0;
 }
 
 .button:active {

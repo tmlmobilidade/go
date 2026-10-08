@@ -31,7 +31,6 @@ export function LinesDetail() {
 			withOverlay={false}
 			mapAware
 			withCompactCloseButton
-			withHeaderBackground
 		>
 			{activeLineId && <LinesDetailView />}
 		</BottomSheet>

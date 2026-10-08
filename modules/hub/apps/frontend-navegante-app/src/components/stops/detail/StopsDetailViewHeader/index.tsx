@@ -44,15 +44,13 @@ export function StopsDetailViewHeader() {
 	// C. Render components
 
 	return (
-		<Surface variant="plain">
+		<Surface variant="transparent">
 			<Section className={styles.section} gap="sm">
-				<div className={styles.headingRow}>
-					<div className={styles.headingName}><StopsDetailViewName /></div>
-					<button className={styles.directionsButton} onClick={handleGetDirections} type="button">
-						<IconDirections aria-hidden="true" size={22} stroke={2.25} />
-						<span>{t('default:stops.StopsDetail.actions.get_directions')}</span>
-					</button>
-				</div>
+				<StopsDetailViewName />
+				<button className={styles.directionsButton} onClick={handleGetDirections} type="button">
+					<IconDirections aria-hidden="true" size={18} stroke={2.25} />
+					<span>{t('default:stops.StopsDetail.actions.get_directions')}</span>
+				</button>
 				<StopsDetailViewHeaderMetadata />
 				<StopsDetailViewHeaderAssociatedLines />
 				<SelectOperationalDate />

@@ -33,7 +33,6 @@ export function StopsDetail() {
 			withOverlay={false}
 			mapAware
 			withCompactCloseButton
-			withHeaderBackground
 		>
 			{activeStopId && (
 				<StopsDetailContextProvider stopId={activeStopId}>

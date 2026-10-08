@@ -47,7 +47,6 @@ interface BottomSheetProps {
 	title?: string
 	withCloseButton?: boolean
 	withCompactCloseButton?: boolean
-	withHeaderBackground?: boolean
 	withOverlay?: boolean
 }
 
@@ -96,7 +95,6 @@ export function BottomSheet({
 	title,
 	withCloseButton = true,
 	withCompactCloseButton = false,
-	withHeaderBackground = false,
 	withOverlay = true,
 }: PropsWithChildren<BottomSheetProps>) {
 	//
@@ -281,13 +279,14 @@ export function BottomSheet({
 								{...containerProps}
 								ref={containerRef}
 								className={styles.container}
+								data-compact-header={compactHeader}
 								data-detent={detent}
+								data-header-mode={selectedHeaderMode}
 							>
 								<Sheet.Header
 									className={styles.header}
 									data-compact={compactHeader}
 									data-mode={selectedHeaderMode}
-									data-with-background={withHeaderBackground}
 								>
 									<div className={styles.headerLeft}>
 										{onBack && <BottomSheetBack onClick={onBack} size={withCompactCloseButton ? 'sm' : 'default'} />}
@@ -334,6 +333,7 @@ export function BottomSheet({
 									disableScroll={({ currentSnap }) => mapAware && currentSnap !== snapPoints.length - 1}
 									id={contentId}
 									onFocusCapture={handleContentFocus}
+									scrollClassName={styles.scroller}
 									scrollRef={scrollRef}
 								>
 									{children}

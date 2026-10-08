@@ -31,7 +31,6 @@ export function VehiclesDetail() {
 			withOverlay={false}
 			mapAware
 			withCompactCloseButton
-			withHeaderBackground
 		>
 			{activeVehicleId && (
 				<VehiclesDetailContextProvider vehicleId={activeVehicleId}>

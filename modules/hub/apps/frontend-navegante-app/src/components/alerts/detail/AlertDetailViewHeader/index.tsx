@@ -27,7 +27,7 @@ export function AlertDetailViewHeader({ agencyId, effect, title }: AlertDetailVi
 	// B. Render components
 
 	return (
-		<Surface variant="plain">
+		<Surface variant="transparent">
 			<Section className={styles.section} gap="sm">
 				<div className={styles.row}>
 					<AlertEffectIcon effect={effect} />

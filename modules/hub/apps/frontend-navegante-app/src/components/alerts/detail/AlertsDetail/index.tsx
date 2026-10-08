@@ -36,7 +36,6 @@ export function AlertsDetail() {
 			withOverlay={false}
 			mapAware
 			withCompactCloseButton
-			withHeaderBackground
 		>
 			{activeAlertId && isLoading && <BusyStatus fullHeight />}
 			{activeAlertId && !isLoading && error && <DetailUnavailable reason="error" />}
