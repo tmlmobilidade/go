@@ -8,7 +8,7 @@ import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetCl
 import { ACTIVE_MAP_BOTTOM_SHEET_HEIGHT_CSS_PROPERTY, MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { registerActiveBottomSheetSnapController, useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { getBottomSheetSnapState, shouldShowBottomSheetOverlay } from '@/utils/bottom-sheet/behavior';
-import { type FocusEvent, type PropsWithChildren, type ReactNode, type RefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { type FocusEvent, type PropsWithChildren, type RefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ModalProvider } from 'react-aria';
 import { useTranslation } from 'react-i18next';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
@@ -26,7 +26,6 @@ interface BottomSheetProps {
 	avoidKeyboard?: boolean
 	compactHeader?: boolean
 	disableDismiss?: boolean
-	footer?: ReactNode
 	headerMode?: BottomSheetHeaderMode
 	initialFocusRef?: RefObject<HTMLElement | null>
 	initialSnap?: number
@@ -74,7 +73,6 @@ export function BottomSheet({
 	children,
 	compactHeader = false,
 	disableDismiss = false,
-	footer,
 	headerMode,
 	initialFocusRef,
 	initialSnap,
@@ -339,7 +337,6 @@ export function BottomSheet({
 									{children}
 								</Sheet.Content>
 
-								{footer && <div className={styles.footer}>{footer}</div>}
 								<div aria-live="polite" className={styles.visuallyHidden} role="status">{snapAnnouncement}</div>
 							</Sheet.Container>
 

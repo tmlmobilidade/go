@@ -13,7 +13,8 @@ import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/planning/locations';
 import { getSearchDraft, setSearchDraft, subscribeToSearchDraft } from '@/utils/search/search-draft';
 import { IconCurrentLocation, IconX } from '@tabler/icons-react';
-import { SearchInput } from '@tmlmobilidade/ui';
+import { SearchInput, useVersionContext } from '@tmlmobilidade/ui';
+import clsx from 'clsx';
 import { type RefObject, useRef, useState, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,15 +28,15 @@ interface SearchProps {
 	onCurrentLocationSelect?: () => Promise<boolean>
 	onLocationSelect?: (location: RoutePlannerLocation) => void
 	placeholder?: string
-	variant?: 'sheet' | 'top'
 }
 
-export function Search({ inputRef: inputRefProp, locationPicker = false, onCurrentLocationSelect, onLocationSelect, placeholder, variant = 'sheet' }: SearchProps) {
+export function Search({ inputRef: inputRefProp, locationPicker = false, onCurrentLocationSelect, onLocationSelect, placeholder }: SearchProps) {
 	//
 
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const versionContext = useVersionContext();
 	const { push } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
 	const searchDraft = useSyncExternalStore(subscribeToSearchDraft, getSearchDraft, getSearchDraft);
@@ -55,6 +56,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 	const resultCount = visibleGroups.reduce((total, group) => total + group.results.length, 0);
 	const showRecentSearches = !locationPicker && !query.trim() && recentSearches.isReady;
 	const showTypeChips = !locationPicker && query.trim().length >= 2;
+	const showVersion = !locationPicker;
 	const inputLabel = placeholder ?? t('default:search.Search.input_label');
 
 	//
@@ -107,7 +109,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 	// C. Render components
 
 	return (
-		<div className={styles.container} data-variant={variant}>
+		<div className={clsx(styles.container, showVersion && styles.withVersion)}>
 			<SearchInput
 				ref={inputRef}
 				aria-label={inputLabel}
@@ -132,7 +134,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 
 			{showTypeChips && <SearchTypeChips onChange={setSelectedType} selectedType={selectedType} />}
 			{visibleGroups.map(group => (
-				<SearchGroup key={`${group.key}:${query}`} group={group} onSelect={handleSelect} variant={variant} />
+				<SearchGroup key={`${group.key}:${query}`} group={group} onSelect={handleSelect} />
 			))}
 			{showRecentSearches && (
 				<SearchRecentResults
@@ -141,11 +143,13 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 					onClear={recentSearches.clear}
 					onSelect={handleSelect}
 					results={search.recentResults}
-					variant={variant}
 				/>
 			)}
 
 			<SearchStatus error={search.error} isLoading={search.isLoading} query={query} resultCount={resultCount} />
+			{showVersion && (
+				<p className={styles.version}>{t('shared:components.sidebar.SidebarOptions.version')} {versionContext.data.version}</p>
+			)}
 		</div>
 	);
 }

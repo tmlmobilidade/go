@@ -14,7 +14,6 @@ import styles from './styles.module.css';
 interface SearchGroupProps {
 	group: SearchGroupData
 	onSelect: (result: SearchResult) => void
-	variant: 'sheet' | 'top'
 }
 
 const INITIAL_RESULTS = 5;
@@ -22,7 +21,7 @@ const ADDITIONAL_RESULTS_PER_CLICK = 30;
 
 /* * */
 
-export function SearchGroup({ group, onSelect, variant }: SearchGroupProps) {
+export function SearchGroup({ group, onSelect }: SearchGroupProps) {
 	//
 
 	//
@@ -37,7 +36,7 @@ export function SearchGroup({ group, onSelect, variant }: SearchGroupProps) {
 	// B. Render components
 
 	return (
-		<section aria-labelledby={headingId} className={styles.group} data-variant={variant}>
+		<section aria-labelledby={headingId} className={styles.group}>
 			<h2 id={headingId}>{t(`default:search.Search.groups.${group.key}`)}</h2>
 			<ul>
 				{group.results.slice(0, visibleCount).map(result => (

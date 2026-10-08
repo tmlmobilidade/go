@@ -9,3 +9,12 @@
 .error {
 	padding: 0 20px 20px;
 }
+
+.submitFooter {
+	position: sticky;
+	bottom: 0;
+	z-index: 1;
+	padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
+	background-color: var(--color-system-background-200);
+	border-top: 1px solid var(--color-system-border-100);
+}

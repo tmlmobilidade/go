@@ -17,12 +17,11 @@ interface SearchRecentResultsProps {
 	onClear: () => void
 	onSelect: (result: SearchResult) => void
 	results: SearchResult[]
-	variant: 'sheet' | 'top'
 }
 
 /* * */
 
-export function SearchRecentResults({ hasEntries, isLoading, onClear, onSelect, results, variant }: SearchRecentResultsProps) {
+export function SearchRecentResults({ hasEntries, isLoading, onClear, onSelect, results }: SearchRecentResultsProps) {
 	//
 
 	//
@@ -35,7 +34,7 @@ export function SearchRecentResults({ hasEntries, isLoading, onClear, onSelect, 
 	// B. Render components
 
 	return (
-		<section aria-labelledby={headingId} className={styles.group} data-variant={variant}>
+		<section aria-labelledby={headingId} className={styles.group}>
 			<div className={styles.heading}>
 				<h2 id={headingId}>{t('default:search.Search.recent.title')}</h2>
 				{hasEntries && <button className={styles.clearButton} onClick={onClear} type="button">{t('default:search.Search.recent.clear')}</button>}

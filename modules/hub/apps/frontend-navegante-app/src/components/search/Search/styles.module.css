@@ -1,23 +1,30 @@
 .container {
 	display: grid;
-	gap: 0.9rem;
-	padding: 0.9rem;
+	gap: 14.4px;
+	padding: 14.4px;
 }
 
-.container[data-variant='top'] {
-	position: relative;
-	width: 100%;
-	max-width: 560px;
-	padding: 0;
-	margin: 0 auto;
-	pointer-events: auto;
+.withVersion {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
+
+.version {
+	margin: auto 0 0;
+	padding: 4px 0 calc(8px + env(safe-area-inset-bottom));
+	font-size: 12px;
+	line-height: 1.2;
+	color: var(--color-system-text-200);
+	text-align: center;
 }
 
 .container .inputWrapper {
 	--input-bg: var(--color-system-background-100);
 	background-color: var(--input-bg);
 	border: 0;
-	border-radius: 0.85rem;
+	border-radius: 13.6px;
 }
 
 .container .inputWrapper:focus-within {
@@ -27,10 +34,10 @@
 
 .input {
 	height: 54px;
-	font-size: 1.05rem;
+	font-size: 16.8px;
 	background: transparent;
 	border: 0;
-	border-radius: 0.85rem;
+	border-radius: 13.6px;
 	outline: 0;
 }
 
@@ -44,25 +51,9 @@
 	}
 }
 
-.container[data-variant='top'] .inputWrapper {
-	--input-bg: var(--color-system-background-100, #fff);
-	border: 1px solid var(--color-system-border-100, #ececf1);
-	border-radius: 16px;
-	box-shadow: 0 8px 26px rgb(0 0 0 / 14%);
-}
-
-.container[data-variant='top'] .inputWrapper:focus-within {
-	border: 1px solid var(--color-system-border-100, #ececf1);
-	box-shadow: 0 8px 26px rgb(0 0 0 / 14%);
-}
-
-.container[data-variant='top'] .input {
-	height: 56px;
-}
-
 .currentLocationButton {
 	display: flex;
-	gap: 0.75rem;
+	gap: 12px;
 	align-items: center;
 	width: 100%;
 	padding: 14px 16px;

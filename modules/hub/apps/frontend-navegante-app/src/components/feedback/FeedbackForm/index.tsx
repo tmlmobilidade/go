@@ -181,12 +181,6 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 				size="fit"
 				syncSnapState={false}
 				title={sheetTitle}
-				footer={activeView === 'reasons' ? (
-					<FeedbackSubmitButton
-						disabled={!canSubmitReasons}
-						onClick={() => void submitFeedback(selectedMood, selectedReasonValues)}
-					/>
-				) : undefined}
 			>
 				{activeView === 'mood' && (
 					<div className={styles.moodView}>
@@ -230,6 +224,15 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 				{hasSubmissionError && (
 					<div className={styles.error} role="alert">
 						<AlertMessage title={t('default:feedback.form.submit_error')} variant="danger" raised />
+					</div>
+				)}
+
+				{activeView === 'reasons' && (
+					<div className={styles.submitFooter}>
+						<FeedbackSubmitButton
+							disabled={!canSubmitReasons}
+							onClick={() => void submitFeedback(selectedMood, selectedReasonValues)}
+						/>
 					</div>
 				)}
 			</BottomSheet>
