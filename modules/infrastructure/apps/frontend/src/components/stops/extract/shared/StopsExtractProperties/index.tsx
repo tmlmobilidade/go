@@ -13,7 +13,7 @@ import { useStopsExtractFormContext } from '../StopsExtractForm.context';
 
 /* * */
 
-export function StopsExtractProperties({ versions }: { versions: SelectDataItem[] }) {
+export function StopsExtractProperties({ showFacilitiesAndConnections = true, versions }: { showFacilitiesAndConnections?: boolean, versions: SelectDataItem[] }) {
 	//
 	// A. Setup variables
 	const { t } = useTranslation();
@@ -48,18 +48,20 @@ export function StopsExtractProperties({ versions }: { versions: SelectDataItem[
 			label: t('default:stops.extract.StopsExtractProperties.fields.lifecycle_statuses.label'),
 			name: 'properties.lifecycle_statuses' as const,
 		},
-		{
-			data: StopFacilityValues.map(value => ({ label: t(`default:stops.shared.stop_facility.${value}`), value })),
-			isLoading: false,
-			label: t('default:stops.extract.StopsExtractProperties.fields.facilities.label'),
-			name: 'properties.facilities' as const,
-		},
-		{
-			data: StopConnectionValues.map(value => ({ label: t(`default:stops.shared.stop_connection.${value}`), value })),
-			isLoading: false,
-			label: t('default:stops.extract.StopsExtractProperties.fields.connections.label'),
-			name: 'properties.connections' as const,
-		},
+		...(showFacilitiesAndConnections ? [
+			{
+				data: StopFacilityValues.map(value => ({ label: t(`default:stops.shared.stop_facility.${value}`), value })),
+				isLoading: false,
+				label: t('default:stops.extract.StopsExtractProperties.fields.facilities.label'),
+				name: 'properties.facilities' as const,
+			},
+			{
+				data: StopConnectionValues.map(value => ({ label: t(`default:stops.shared.stop_connection.${value}`), value })),
+				isLoading: false,
+				label: t('default:stops.extract.StopsExtractProperties.fields.connections.label'),
+				name: 'properties.connections' as const,
+			},
+		] : []),
 	];
 
 	//

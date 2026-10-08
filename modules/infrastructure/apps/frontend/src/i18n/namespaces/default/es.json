@@ -302,13 +302,13 @@
 						"label": "Localidad"
 					},
 					"location_primary_ids": {
-						"label": "División administrativa (nivel 1)"
+						"label": "location_primary"
 					},
 					"location_secondary_ids": {
-						"label": "División administrativa (nivel 2)"
+						"label": "location_secondary"
 					},
 					"location_tertiary_ids": {
-						"label": "División administrativa (nivel 3)"
+						"label": "location_tertiary"
 					},
 					"search": {
 						"label": "Búsqueda",

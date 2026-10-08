@@ -308,13 +308,13 @@
 						"label": "Localidade"
 					},
 					"location_primary_ids": {
-						"label": "Divisão administrativa (nível 1)"
+						"label": "location_primary"
 					},
 					"location_secondary_ids": {
-						"label": "Divisão administrativa (nível 2)"
+						"label": "location_secondary"
 					},
 					"location_tertiary_ids": {
-						"label": "Divisão administrativa (nível 3)"
+						"label": "location_tertiary"
 					},
 					"search": {
 						"label": "Pesquisa",

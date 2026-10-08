@@ -15,6 +15,7 @@ export function NodesExtract() {
 		<StopsExtractForm
 			onClose={closeNodesExtractModal}
 			schema={InfrastructureNodesV1ExtractionCreateSchema}
+			showFacilitiesAndConnections={false}
 			title={t('default:stops.extract.NodesExtract.title')}
 			versions={[
 				{ label: t('shared:extractions.versions.infrastructure-nodes-v1.title'), value: InfrastructureNodesV1ExtractionVersionValue },

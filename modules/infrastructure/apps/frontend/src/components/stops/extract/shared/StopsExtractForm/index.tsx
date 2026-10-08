@@ -12,15 +12,16 @@ import { StopsExtractProperties } from '../StopsExtractProperties';
 interface StopsExtractFormProps {
 	onClose: () => void
 	schema: StopsExtractionCreateSchema
+	showFacilitiesAndConnections?: boolean
 	title: string
 	versions: SelectDataItem[]
 }
 
-export function StopsExtractForm({ onClose, schema, title, versions }: StopsExtractFormProps) {
+export function StopsExtractForm({ onClose, schema, showFacilitiesAndConnections = true, title, versions }: StopsExtractFormProps) {
 	return (
 		<StopsExtractFormContextProvider onClose={onClose} schema={schema}>
 			<Pane header={[<StopsExtractHeader key="header" onClose={onClose} title={title} />]}>
-				<StopsExtractProperties versions={versions} />
+				<StopsExtractProperties showFacilitiesAndConnections={showFacilitiesAndConnections} versions={versions} />
 				<Divider />
 				<StopsExtractFooter />
 			</Pane>
