@@ -9,7 +9,7 @@ import { createHash } from 'node:crypto';
 /* * */
 
 const FEEDBACK_BODY_LIMIT_BYTES = 4_096;
-const FEEDBACK_RATE_LIMIT_MAX_REQUESTS = 10;
+const FEEDBACK_RATE_LIMIT_MAX_REQUESTS = 100;
 const FEEDBACK_RATE_LIMIT_WINDOW_SECONDS = 10 * 60;
 
 interface FeedbackNetwork {

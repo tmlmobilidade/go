@@ -25,11 +25,11 @@ const stopSubmission = PublicFeedbackSubmissionSchema.parse({
 /* * */
 
 describe('post feedback', () => {
-	it('validates and inserts a submission through the POST handler', async () => {
+	it('accepts the hundredth submission through the POST handler', async () => {
 		const insertedFeedback: PublicFeedback[] = [];
 		const dependencies: PostFeedbackDependencies = {
 			getCacheValue: async () => JSON.stringify([createHubLine('line-1', 'agency-1')]),
-			incrementRateLimit: async () => 1,
+			incrementRateLimit: async () => 100,
 			insertFeedback: async feedback => void insertedFeedback.push(feedback),
 			now: () => 1_700_000_000_000,
 		};
@@ -126,7 +126,7 @@ describe('post feedback', () => {
 	it('returns a retry window when the client exceeds the rate limit', async () => {
 		const dependencies: PostFeedbackDependencies = {
 			getCacheValue: async () => null,
-			incrementRateLimit: async () => 11,
+			incrementRateLimit: async () => 101,
 			insertFeedback: async () => undefined,
 			now: Date.now,
 		};
