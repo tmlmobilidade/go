@@ -5,7 +5,6 @@ import { locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureNodesV1Extraction, InfrastructureNodesV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
-import { type TransportType } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { stringify as csvStringify } from 'csv-stringify/sync';
@@ -78,40 +77,16 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		}));
 	}
 
-	// C. Fetch operators, lines and patterns
+	// C. Fetch operators and municipality codespaces
 
 	const agencyIds = [...new Set(stops.flatMap(stop => stop.flags.flatMap(flag => flag.agency_ids)))];
-	const [agencies, lines, codespacesByMunicipality] = await Promise.all([
+	const [agencies, codespacesByMunicipality] = await Promise.all([
 		goDb.core.agencies.findMany({ _id: { $in: agencyIds } }, { projection: { _id: 1, code: 1 } }),
-		goDb.offer.lines.findMany({ agency_id: { $in: agencyIds } }, { projection: { _id: 1, agency_id: 1, transport_type: 1 } }),
 		getCodespacesByMunicipality(),
 	]);
 	const agencyCodesById = new Map(agencies.map(agency => [agency._id, agency.code]));
-	const linesById = new Map(lines.map(line => [line._id, line]));
-	const patterns = await goDb.offer.patterns.findMany({
-		'line_id': { $in: lines.map(line => line._id) },
-		'path.stop_id': { $in: stops.flatMap(stop => [stop._id, Number(stop._id)]) },
-	}, {
-		projection: { 'line_id': 1, 'path.stop_id': 1 },
-	});
 
-	// D. Resolve transport modes for each stop and operator
-
-	const modesByStopAndAgency = new Map<string, Set<TransportType>>();
-
-	for (const pattern of patterns) {
-		const line = linesById.get(pattern.line_id);
-		if (!line) continue;
-
-		for (const item of pattern.path ?? []) {
-			const key = `${item.stop_id}:${line.agency_id}`;
-			const modes = modesByStopAndAgency.get(key) ?? new Set<TransportType>();
-			modes.add(line.transport_type);
-			modesByStopAndAgency.set(key, modes);
-		}
-	}
-
-	// E. Generate nodes.txt
+	// D. Generate nodes.txt
 
 	const rows: InfrastructureNodesV1OutputRow[] = [];
 
@@ -123,17 +98,13 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 				const namespace = codespacesByMunicipality.get(stop.location.secondary.osm_id);
 				if (!namespace) throw new Error(`Codespace not found for stop ${stop._id} and municipality ${stop.location.secondary.osm_id}`);
 
-				const modes = modesByStopAndAgency.get(`${stop._id}:${agencyId}`) ?? ['' as const];
 				const operatorStop = { ...stop, flags: [{ ...flag, agency_ids: [agencyId] }] };
 
-				for (const mode of modes) {
-					rows.push(...toOutputRows({
-						mode,
-						namespace,
-						stop: operatorStop,
-						valid_from: Dates.fromUnixMilliseconds(stop.created_at).calendar_date,
-					}, agencyCodesById));
-				}
+				rows.push(...toOutputRows({
+					namespace,
+					stop: operatorStop,
+					valid_from: Dates.fromUnixMilliseconds(stop.created_at).calendar_date,
+				}, agencyCodesById));
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { type TransportType } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
@@ -20,7 +19,6 @@ export interface InfrastructureNodesV1OutputRow {
 }
 
 export type InfrastructureNodesV1Input = Pick<InfrastructureNodesV1OutputRow, 'valid_from'> & {
-	mode: '' | TransportType
 	namespace: string
 	parent_station_id?: string
 	stop: Pick<Stop, '_id' | 'flags' | 'latitude' | 'longitude' | 'name'>
