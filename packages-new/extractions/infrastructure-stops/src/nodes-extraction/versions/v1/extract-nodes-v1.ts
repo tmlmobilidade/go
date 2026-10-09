@@ -25,6 +25,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	// B. Fetch stops matching the filters and permissions
 
 	const stops = await goDb.infrastructure.stops.findMany(filter, { projection });
+	if (!stops.length) throw new Error('No stops found matching the nodes extraction filters');
 
 	for (const stop of stops) {
 		stop.flags = stop.flags.map(flag => ({
@@ -49,8 +50,6 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	for (const stop of stops) {
 		for (const flag of stop.flags) {
 			for (const agencyId of flag.agency_ids) {
-				if (!agencyCodesById.has(agencyId)) continue;
-
 				const namespace = codespacesByMunicipality.get(stop.location.secondary.osm_id);
 				if (!namespace) throw new Error(`Codespace not found for stop ${stop._id} and municipality ${stop.location.secondary.osm_id}`);
 
@@ -62,6 +61,25 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 					valid_from: Dates.fromUnixMilliseconds(stop.created_at).calendar_date,
 				}, agencyCodesById));
 			}
+		}
+	}
+
+	// E. Validate required fields before writing nodes.txt
+
+	if (!rows.length) throw new Error('No nodes found matching the extraction filters');
+
+	for (const [index, row] of rows.entries()) {
+		const invalidFields = Object.entries(row)
+			.filter(([field, value]) => field !== 'valid_to' && (
+				value === null
+				|| value === undefined
+				|| (typeof value === 'string' && !value.trim())
+				|| (typeof value === 'number' && !Number.isFinite(value))
+			))
+			.map(([field]) => field);
+
+		if (invalidFields.length) {
+			throw new Error(`Nodes row ${index + 1} has empty or invalid required fields: ${invalidFields.join(', ')}`);
 		}
 	}
 
