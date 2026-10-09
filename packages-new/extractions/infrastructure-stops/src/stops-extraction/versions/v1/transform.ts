@@ -15,7 +15,7 @@ export function parseStopsExtraction(stop: InfrastructureStopsV1QueryRow): Infra
 		_id: stop._id,
 		jurisdiction: stop.jurisdiction,
 		legacy_id: stop.legacy_id,
-		legacy_ids: stop.legacy_ids.join(','),
+		legacy_ids: stop.legacy_ids?.join(',') ?? '',
 		lifecycle_status: stop.lifecycle_status,
 		name: stop.name,
 		new_name: stop.new_name,
@@ -25,13 +25,13 @@ export function parseStopsExtraction(stop: InfrastructureStopsV1QueryRow): Infra
 		observations: stop.observations,
 
 		// Location
-		district_id: String(stop.location.primary.osm_id),
+		district_id: String(stop.location?.primary?.osm_id ?? ''),
 		latitude: stop.latitude,
-		locality_id: stop.location.neighbourhood ? String(stop.location.neighbourhood.osm_id) : null,
+		locality_id: stop.location?.neighbourhood ? String(stop.location.neighbourhood.osm_id ?? '') : null,
 		longitude: stop.longitude,
-		municipality_name: stop.location.secondary.name,
-		municipality_id: String(stop.location.secondary.osm_id),
-		parish_id: String(stop.location.tertiary.osm_id),
+		municipality_name: stop.location?.secondary?.name ?? '',
+		municipality_id: String(stop.location?.secondary?.osm_id ?? ''),
+		parish_id: String(stop.location?.tertiary?.osm_id ?? ''),
 
 		// Shelter
 		shelter_code: stop.shelter?.code ?? null,
@@ -42,7 +42,7 @@ export function parseStopsExtraction(stop: InfrastructureStopsV1QueryRow): Infra
 		shelter_status: stop.shelter?.status ?? 'unknown',
 
 		// Facilities
-		connections: stop.connections.join(','),
-		facilities: stop.facilities.join(','),
+		connections: stop.connections?.join(',') ?? '',
+		facilities: stop.facilities?.join(',') ?? '',
 	};
 }
