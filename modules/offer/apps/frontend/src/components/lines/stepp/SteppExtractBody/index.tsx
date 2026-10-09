@@ -2,7 +2,8 @@
 
 import { useLinesAgenciesData } from '@/components/lines/shared/use-agencies-data';
 import { useSteppExtractFormContext } from '@/components/lines/stepp/SteppExtractForm.context';
-import { Section, Select, StandardFormController } from '@tmlmobilidade/ui';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { DateInput, Grid, Section, Select, StandardFormController } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -40,6 +41,38 @@ export function SteppExtractBody() {
 					/>
 				)}
 			/>
+			<Grid columns="ab" gap="md">
+				<StandardFormController
+					control={form.control}
+					name="start_date"
+					render={({ field, fieldState }) => (
+						<DateInput
+							description="O GTFS carregado a partir desta data"
+							error={fieldState.error?.message}
+							label="Primeira data do calendário"
+							onChange={value => field.onChange(value != null ? String(value) : '')}
+							placeholder="YYYYMMDD"
+							readOnly={!capabilities.editEnabled}
+							value={field.value ? Number(field.value) as OperationalDateInt : null}
+						/>
+					)}
+				/>
+				<StandardFormController
+					control={form.control}
+					name="end_date"
+					render={({ field, fieldState }) => (
+						<DateInput
+							description="O GTFS carregado até esta data"
+							error={fieldState.error?.message}
+							label="Última data do calendário"
+							onChange={value => field.onChange(value != null ? String(value) : '')}
+							placeholder="YYYYMMDD"
+							readOnly={!capabilities.editEnabled}
+							value={field.value ? Number(field.value) as OperationalDateInt : null}
+						/>
+					)}
+				/>
+			</Grid>
 		</Section>
 	);
 }
