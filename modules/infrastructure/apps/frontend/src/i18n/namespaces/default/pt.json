@@ -16,7 +16,7 @@
 				}
 			},
 			"Header": {
-				"step": "Passo {{current}} de {{total}}",
+				"step": "Passo {current} de {total}",
 				"title": "Nova paragem"
 			},
 			"StepLocationDetails": {
@@ -37,6 +37,14 @@
 			},
 			"StepNames": {
 				"fields": {
+					"agency_ids": {
+						"description": "Selecione os operadores associados ao postalete harmonizado desta paragem.",
+						"empty": "Não tem operadores disponíveis nas permissões de criação de paragens. Contacte um administrador.",
+						"label": "Operadores",
+						"loading": "A carregar os operadores disponíveis…",
+						"required": "Selecione pelo menos um operador permitido.",
+						"unavailable": "Não foi possível carregar os operadores. Não é possível criar a paragem até que estejam disponíveis."
+					},
 					"name": {
 						"description": "Este é o nome principal e será apresentado nos canais digitais.",
 						"label": "Designação Completa da Paragem"
@@ -53,6 +61,9 @@
 			},
 			"StepSummary": {
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
 					"short_name": {
 						"label": "Nome curto"
 					},
