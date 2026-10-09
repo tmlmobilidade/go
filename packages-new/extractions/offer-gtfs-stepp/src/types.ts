@@ -1,6 +1,7 @@
 /* * */
 
 import { type GtfsStrictV30SteppAgency, type GtfsStrictV30SteppCalendarDates, GtfsStrictV30SteppShapes, type GtfsStrictV30SteppStops } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { type CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */
@@ -13,6 +14,16 @@ export interface GtfsSteppV1ExportConfig {
 	 * The agency IDs to export data for
 	 */
 	agency_id: string
+
+	/**
+	 * The last date to include in calendar_dates.txt, inclusive
+	 */
+	end_date: OperationalDate
+
+	/**
+	 * The first date to include in calendar_dates.txt, inclusive
+	 */
+	start_date: OperationalDate
 
 	/**
 	 * CSV writers for each GTFS file
