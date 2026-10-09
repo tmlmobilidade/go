@@ -6,7 +6,7 @@ import { useVehiclesMapData } from '@/components/vehicles/use-vehicles-map-data'
 import { useRoutePlannerMapData } from '@/hooks/base-map/useRoutePlannerMapData';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type BaseMapOperatorId } from '@/lib/agency-catalog';
-import { getBaseMapAlertsMapData, getBaseMapVehiclesMapData } from '@/utils/map/base-map-data';
+import { getBaseMapAlertsMapData, getBaseMapVehiclesMapData, getLineDetailVehicleSelection } from '@/utils/map/base-map-data';
 import { useMemo } from 'react';
 
 /* * */
@@ -36,10 +36,9 @@ export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
 
 	const lineDetailLine = useMemo(() => {
 		if (params.activeBottomSheet?.view !== 'lines-detail') return null;
-		return {
-			line: linesDetailContext.data.line?._id === params.activeBottomSheet.entityId ? linesDetailContext.data.line : undefined,
-		};
-	}, [params.activeBottomSheet, linesDetailContext.data.line]);
+		const line = linesDetailContext.data.line?._id === params.activeBottomSheet.entityId ? linesDetailContext.data.line : undefined;
+		return getLineDetailVehicleSelection(line, linesDetailContext.data.active_pattern);
+	}, [params.activeBottomSheet, linesDetailContext.data.active_pattern, linesDetailContext.data.line]);
 
 	const alertsMapData = useMemo(() => {
 		return getBaseMapAlertsMapData({

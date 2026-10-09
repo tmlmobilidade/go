@@ -1,7 +1,7 @@
 import { type BaseMapOperatorId } from '@/lib/agency-catalog';
 import { isBaseMapAgencyVisible } from '@/utils/map/base-map-operators';
 import { getRoutePlannerRouteDirectionKey } from '@/utils/route-planner/itinerary/vehicles';
-import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiLine, type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 
@@ -13,12 +13,20 @@ interface BaseMapAlert {
 interface BaseMapVehicleProperties {
 	agency_id?: null | string
 	direction_id?: null | number | string
+	pattern_id?: null | string
 	route_id?: null | string
 	route_short_name?: null | string
+	trip_id?: null | string
 	vehicle_id?: null | string
 }
 
 type BaseMapLineIdentity = Pick<HubV1ApiLine, 'agency_id' | 'route_ids' | 'short_name'>;
+type BaseMapPatternIdentity = Pick<HubV1ApiPattern, '_id' | 'trips'>;
+
+interface BaseMapLineDetailSelection {
+	line: BaseMapLineIdentity | undefined
+	pattern: null | { id: string, tripIds: Set<string> }
+}
 
 interface GetBaseMapAlertsMapDataParams {
 	alerts: BaseMapAlert[]
@@ -31,7 +39,7 @@ interface GetBaseMapAlertsMapDataParams {
 interface GetBaseMapVehiclesMapDataParams<TProperties extends BaseMapVehicleProperties> {
 	excludedOperatorIds: BaseMapOperatorId[]
 	focusedVehicleId: null | string
-	lineDetailLine: null | { line: BaseMapLineIdentity | undefined }
+	lineDetailLine: BaseMapLineDetailSelection | null
 	routePlannerRouteDirections: null | Set<string>
 	showVehiclesAsDots?: boolean
 	vehiclesData: GeoJSON.FeatureCollection<GeoJSON.Point, TProperties>
@@ -54,6 +62,19 @@ export function isVehicleOnLine(vehicle: BaseMapVehicleProperties, line: BaseMap
 		(vehicle.route_id && line.route_ids.includes(vehicle.route_id))
 		|| (vehicle.route_short_name && vehicle.route_short_name === line.short_name),
 	);
+}
+
+export function getLineDetailVehicleSelection(line: BaseMapLineIdentity | undefined, pattern: BaseMapPatternIdentity | null): BaseMapLineDetailSelection {
+	return {
+		line,
+		pattern: pattern ? { id: pattern._id, tripIds: new Set(pattern.trips.flatMap(trip => trip.trip_ids)) } : null,
+	};
+}
+
+export function isVehicleOnSelectedLinePattern(vehicle: BaseMapVehicleProperties, selection: BaseMapLineDetailSelection) {
+	if (!selection.pattern || !isVehicleOnLine(vehicle, selection.line)) return false;
+	const tripId = vehicle.trip_id;
+	return vehicle.pattern_id === selection.pattern.id && Boolean(tripId && selection.pattern.tripIds.has(tripId));
 }
 
 /* * */
@@ -109,7 +130,7 @@ export function getBaseMapVehiclesMapData<TProperties extends BaseMapVehicleProp
 		? {
 			...params.vehiclesData,
 			features: params.vehiclesData.features.filter((feature) => {
-				return isVehicleOnLine(feature.properties, params.lineDetailLine?.line);
+				return params.lineDetailLine !== null && isVehicleOnSelectedLinePattern(feature.properties, params.lineDetailLine);
 			}),
 		}
 		: routePlannerVehiclesData;

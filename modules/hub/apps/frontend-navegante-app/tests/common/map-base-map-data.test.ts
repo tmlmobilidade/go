@@ -94,18 +94,21 @@ describe('base-map alert filtering order', () => {
 
 describe('base-map vehicle filtering order', () => {
 	const vehiclesData = createVehicleCollection([
-		{ agency_id: 'IA2N9', direction_id: 0, route_id: 'route-a', route_short_name: '100', shape_id: 'route-shape', vehicle_id: 'route-vehicle' },
-		{ agency_id: 'KB1F6', direction_id: 1, route_id: 'route-b', route_short_name: '200', shape_id: 'line-shape', vehicle_id: 'line-vehicle' },
-		{ agency_id: 'KB1F6', direction_id: 0, route_id: 'route-b-return', route_short_name: '200', shape_id: 'return-shape', vehicle_id: 'return-vehicle' },
-		{ agency_id: 'KB1F6', direction_id: 1, route_id: 'new-route-b', route_short_name: '200', shape_id: 'new-shape', vehicle_id: 'new-vehicle' },
-		{ agency_id: 'KB1F6', direction_id: 1, route_id: 'other-route', route_short_name: '201', shape_id: 'line-shape', vehicle_id: 'other-line-vehicle' },
-		{ agency_id: 'IA2N9', direction_id: 1, route_id: 'other-agency-route', route_short_name: '200', shape_id: 'other-agency-shape', vehicle_id: 'other-agency-vehicle' },
-		{ agency_id: 'IA9T6', direction_id: 1, route_id: 'route-c', shape_id: 'focused-shape', vehicle_id: 'focused-vehicle' },
-		{ agency_id: 'LA77N', direction_id: 0, route_id: 'route-d', shape_id: 'cm-shape', vehicle_id: 'cm-vehicle' },
-		{ agency_id: 'unknown-agency', direction_id: 0, route_id: 'route-e', shape_id: 'unknown-shape', vehicle_id: 'unknown-vehicle' },
+		{ agency_id: 'IA2N9', direction_id: 0, pattern_id: 'pattern-a', route_id: 'route-a', route_short_name: '100', shape_id: 'route-shape', trip_id: 'trip-a', vehicle_id: 'route-vehicle' },
+		{ agency_id: 'KB1F6', direction_id: 1, pattern_id: 'pattern-b', route_id: 'route-b', route_short_name: '200', shape_id: 'line-shape', trip_id: 'trip-b-selected', vehicle_id: 'line-vehicle' },
+		{ agency_id: 'KB1F6', direction_id: 0, pattern_id: 'pattern-b-return', route_id: 'route-b-return', route_short_name: '200', shape_id: 'return-shape', trip_id: 'trip-b-return', vehicle_id: 'return-vehicle' },
+		{ agency_id: 'KB1F6', direction_id: 1, pattern_id: 'pattern-b', route_id: 'new-route-b', route_short_name: '200', shape_id: 'new-shape', trip_id: 'trip-b-other-version', vehicle_id: 'new-vehicle' },
+		{ agency_id: 'KB1F6', direction_id: 1, pattern_id: 'pattern-b', route_id: 'other-route', route_short_name: '201', shape_id: 'line-shape', trip_id: 'trip-b-selected', vehicle_id: 'other-line-vehicle' },
+		{ agency_id: 'IA2N9', direction_id: 1, pattern_id: 'pattern-b', route_id: 'other-agency-route', route_short_name: '200', shape_id: 'other-agency-shape', trip_id: 'trip-b-selected', vehicle_id: 'other-agency-vehicle' },
+		{ agency_id: 'IA9T6', direction_id: 1, pattern_id: 'pattern-c', route_id: 'route-c', shape_id: 'focused-shape', trip_id: 'trip-c', vehicle_id: 'focused-vehicle' },
+		{ agency_id: 'LA77N', direction_id: 0, pattern_id: 'pattern-d', route_id: 'route-d', shape_id: 'cm-shape', trip_id: 'trip-d', vehicle_id: 'cm-vehicle' },
+		{ agency_id: 'unknown-agency', direction_id: 0, pattern_id: 'pattern-e', route_id: 'route-e', shape_id: 'unknown-shape', trip_id: 'trip-e', vehicle_id: 'unknown-vehicle' },
 	]);
 	const routePlannerRouteDirections = new Set(['[IA2N9]route-a:0']);
-	const lineDetailLine = { line: { agency_id: 'KB1F6', route_ids: ['route-b', 'route-b-return'], short_name: '200' } };
+	const lineDetailLine = {
+		line: { agency_id: 'KB1F6', route_ids: ['route-b', 'route-b-return'], short_name: '200' },
+		pattern: { id: 'pattern-b', tripIds: new Set(['trip-b-selected']) },
+	};
 
 	it('starts from vehicles matching the selected itinerary route and direction', () => {
 		const result = getBaseMapVehiclesMapData({
@@ -119,7 +122,7 @@ describe('base-map vehicle filtering order', () => {
 		assert.deepEqual(getVehicleIds(result), ['route-vehicle']);
 	});
 
-	it('shows vehicles from every route of the selected line, including a route ID not yet in line data', () => {
+	it('shows only vehicles assigned to a trip in the selected pattern version', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: [],
 			focusedVehicleId: null,
@@ -128,14 +131,26 @@ describe('base-map vehicle filtering order', () => {
 			vehiclesData,
 		});
 
-		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'return-vehicle', 'new-vehicle']);
+		assert.deepEqual(getVehicleIds(result), ['line-vehicle']);
+	});
+
+	it('updates visible vehicles when another pattern is selected', () => {
+		const result = getBaseMapVehiclesMapData({
+			excludedOperatorIds: [],
+			focusedVehicleId: null,
+			lineDetailLine: { line: lineDetailLine.line, pattern: { id: 'pattern-b-return', tripIds: new Set(['trip-b-return']) } },
+			routePlannerRouteDirections: null,
+			vehiclesData,
+		});
+
+		assert.deepEqual(getVehicleIds(result), ['return-vehicle']);
 	});
 
 	it('shows no unrelated vehicles while the selected line is loading', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: [],
 			focusedVehicleId: null,
-			lineDetailLine: { line: undefined },
+			lineDetailLine: { line: undefined, pattern: lineDetailLine.pattern },
 			routePlannerRouteDirections: null,
 			vehiclesData,
 		});
@@ -143,7 +158,19 @@ describe('base-map vehicle filtering order', () => {
 		assert.deepEqual(getVehicleIds(result), []);
 	});
 
-	it('keeps line vehicles visible and adds the focused vehicle', () => {
+	it('shows no line vehicles while the selected pattern is loading', () => {
+		const result = getBaseMapVehiclesMapData({
+			excludedOperatorIds: [],
+			focusedVehicleId: null,
+			lineDetailLine: { line: lineDetailLine.line, pattern: null },
+			routePlannerRouteDirections: null,
+			vehiclesData,
+		});
+
+		assert.deepEqual(getVehicleIds(result), []);
+	});
+
+	it('keeps selected pattern vehicles visible and adds the focused vehicle', () => {
 		const result = getBaseMapVehiclesMapData({
 			excludedOperatorIds: [],
 			focusedVehicleId: 'focused-vehicle',
@@ -152,14 +179,14 @@ describe('base-map vehicle filtering order', () => {
 			vehiclesData,
 		});
 
-		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'return-vehicle', 'new-vehicle', 'focused-vehicle']);
+		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'focused-vehicle']);
 		assert.deepEqual(
 			result.features.map(feature => feature.properties.is_focused),
-			[false, false, false, true],
+			[false, true],
 		);
 		assert.deepEqual(
 			result.features.map(feature => feature.properties.is_dimmed),
-			[true, true, true, false],
+			[true, false],
 		);
 	});
 
@@ -197,7 +224,7 @@ describe('base-map vehicle filtering order', () => {
 			vehiclesData,
 		});
 
-		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'return-vehicle', 'new-vehicle', 'focused-vehicle']);
+		assert.deepEqual(getVehicleIds(result), ['line-vehicle', 'focused-vehicle']);
 	});
 });
 
@@ -219,9 +246,11 @@ interface VehicleProperties {
 	direction_id: number
 	is_dimmed?: boolean
 	is_focused?: boolean
+	pattern_id: string
 	route_id: string
 	route_short_name?: string
 	shape_id: string
+	trip_id: string
 	vehicle_id: string
 }
 

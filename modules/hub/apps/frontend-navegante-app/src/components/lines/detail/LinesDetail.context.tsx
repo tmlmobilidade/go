@@ -25,7 +25,7 @@ interface LinesDetailContextState {
 		valid_patterns: HubV1ApiPattern[] | undefined
 	}
 	filters: {
-		active_pattern_id: null | string
+		active_pattern_version_id: null | string
 		active_waypoint_stop_id: null | string
 		active_waypoint_stop_sequence: null | string
 	}
@@ -57,7 +57,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	//
 	// A. Setup variables
 
-	const [activePatternId, setActivePatternId] = useState<null | string>(null);
+	const [activePatternVersionId, setActivePatternVersionId] = useState<null | string>(null);
 	const [activeWaypointStopId, setActiveWaypointStopId] = useState<null | string>(null);
 	const [activeWaypointStopSequence, setActiveWaypointStopSequence] = useState<null | string>(null);
 	const [highlightedTripIds, setHighlightedTripIdsState] = useState<null | string[]>([]);
@@ -71,7 +71,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	//
 	// C. Transform data
 
-	const activePattern = useMemo(() => validPatterns?.find(pattern => pattern._id === activePatternId) ?? null, [activePatternId, validPatterns]);
+	const activePattern = useMemo(() => validPatterns?.find(pattern => pattern.version_id === activePatternVersionId) ?? null, [activePatternVersionId, validPatterns]);
 	const activeShape = useLineDetailShapeData(activePattern);
 	const activeWaypoint = useMemo(() => {
 		if (!activePattern || !activeWaypointStopId || !activeWaypointStopSequence) return null;
@@ -83,20 +83,22 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 
 	// Reset interactions when navigating to a different line.
 	useEffect(() => {
-		setActivePatternId(null);
+		setActivePatternVersionId(null);
 		setActiveWaypointStopId(null);
 		setActiveWaypointStopSequence(null);
 		setHighlightedTripIdsState([]);
 		setIsInteractiveMode(false);
 	}, [lineId]);
 
-	// Select an initial pattern once line data is available.
+	// Keep the selected pattern when its version changes with the operational date.
 	useEffect(() => {
-		if (activePatternId || !validPatterns?.length) return;
-		const firstPattern = validPatterns.find(pattern => pattern.path.length > 0) ?? validPatterns[0];
-		setActivePatternId(firstPattern._id);
+		if (!validPatterns?.length || validPatterns.some(pattern => pattern.version_id === activePatternVersionId)) return;
+		const previousPatternId = allPatterns?.flat().find(pattern => pattern.version_id === activePatternVersionId)?._id;
+		const matchingPattern = validPatterns.find(pattern => pattern._id === previousPatternId);
+		const nextPattern = matchingPattern ?? validPatterns.find(pattern => pattern.path.length > 0) ?? validPatterns[0];
+		setActivePatternVersionId(nextPattern.version_id);
 		setIsInteractiveMode(false);
-	}, [activePatternId, validPatterns]);
+	}, [activePatternVersionId, allPatterns, validPatterns]);
 
 	// Select the first waypoint when the active pattern has no selection.
 	useEffect(() => {
@@ -122,7 +124,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	const setActivePattern = useCallback((patternVersionId: string) => {
 		const pattern = validPatterns?.find(candidate => candidate.version_id === patternVersionId);
 		if (!pattern) return;
-		setActivePatternId(pattern._id);
+		setActivePatternVersionId(pattern.version_id);
 		setActiveWaypointStopId(null);
 		setActiveWaypointStopSequence(null);
 		setIsInteractiveMode(false);
@@ -163,7 +165,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			valid_patterns: validPatterns,
 		},
 		filters: {
-			active_pattern_id: activePatternId,
+			active_pattern_version_id: activePatternVersionId,
 			active_waypoint_stop_id: activeWaypointStopId,
 			active_waypoint_stop_sequence: activeWaypointStopSequence,
 		},
@@ -173,7 +175,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			is_loading: isLoading,
 			is_not_found: isNotFound,
 		},
-	}), [activeAlerts, activePattern, activePatternId, activeShape, activeWaypoint, activeWaypointStopId, activeWaypointStopSequence, allPatterns, hasError, highlightedTripIds, isInteractiveMode, isLoading, isNotFound, line, routes, setActivePattern, setActiveWaypoint, setHighlightedTripIds, validPatterns]);
+	}), [activeAlerts, activePattern, activePatternVersionId, activeShape, activeWaypoint, activeWaypointStopId, activeWaypointStopSequence, allPatterns, hasError, highlightedTripIds, isInteractiveMode, isLoading, isNotFound, line, routes, setActivePattern, setActiveWaypoint, setHighlightedTripIds, validPatterns]);
 
 	//
 	// G. Render components
