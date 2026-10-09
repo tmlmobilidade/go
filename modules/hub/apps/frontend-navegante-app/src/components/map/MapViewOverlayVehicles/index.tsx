@@ -117,13 +117,16 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 	const previousDataRef = useRef<GeoJSON.FeatureCollection>(vehiclesData);
 	const animationStart = useRef<null | number>(null);
 	const animationFrame = useRef<null | number>(null);
+	const hasFocusedVehicle = vehiclesData.features.some(feature => feature.properties?.is_focused === true);
+	const isFocused: ['boolean', ['get', 'is_focused'], false] = ['boolean', ['get', 'is_focused'], false];
 	const iconOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles
-		? ['coalesce', ['get', 'opacity'], 1]
-		: ['interpolate', ['linear'], ['zoom'], 12, 0, 13, 1];
+		? ['case', isFocused, 1, ['coalesce', ['get', 'opacity'], 1]]
+		: ['interpolate', ['linear'], ['zoom'], 12, ['case', isFocused, 1, 0], 13, 1];
+	const iconSize: DataDrivenPropertyValueSpecification<number> = ['interpolate', ['linear'], ['zoom'], 10, 0.05, 30, 0.5];
 	const otherVehicleDotOpacity: DataDrivenPropertyValueSpecification<number> = ['case', ['boolean', ['get', 'is_dimmed'], false], 1, 0];
 	const circleOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles
-		? otherVehicleDotOpacity
-		: ['interpolate', ['linear'], ['zoom'], 12, 1, 13, otherVehicleDotOpacity];
+		? ['case', isFocused, 0, otherVehicleDotOpacity]
+		: ['interpolate', ['linear'], ['zoom'], 12, ['case', isFocused, 0, 1], 13, otherVehicleDotOpacity];
 	const circleRadius: DataDrivenPropertyValueSpecification<number> = ['interpolate', ['linear'], ['zoom'], 12, 1.8, 13, ['case', ['boolean', ['get', 'is_dimmed'], false], 3, 1.8]];
 
 	//
@@ -186,7 +189,7 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 
 			<Layer
 				beforeId={presentBeforeId}
-				filter={['!', ['boolean', ['get', 'is_dimmed'], false]]}
+				filter={visible ? ['!', ['boolean', ['get', 'is_dimmed'], false]] : ['boolean', ['get', 'is_focused'], false]}
 				id="default-layer-vehicles-regular"
 				source="default-source-vehicles"
 				type="symbol"
@@ -198,18 +201,10 @@ export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBefo
 					'icon-offset': [0, 0],
 					'icon-rotate': ['get', 'bearing'],
 					'icon-rotation-alignment': 'map',
-					'icon-size': [
-						'interpolate',
-						['linear'],
-						['zoom'],
-						10,
-						0.05,
-						30,
-						0.5,
-					],
+					'icon-size': iconSize,
 					'symbol-placement': 'point',
 					'symbol-sort-key': ['case', ['boolean', ['get', 'is_focused'], false], 1, 0],
-					'visibility': visible ? 'visible' : 'none',
+					'visibility': visible || hasFocusedVehicle ? 'visible' : 'none',
 
 				}}
 				paint={{
