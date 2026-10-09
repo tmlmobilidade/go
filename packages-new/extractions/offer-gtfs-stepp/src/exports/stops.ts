@@ -8,47 +8,13 @@ import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 
 interface ExportsStopTemporaryWorkaround {
-	bench: ''
-	entrance_restriction: ''
-	equipment: ''
-	exit_restriction: ''
-	has_bench: 0 | 1
-	has_network_map: 0 | 1
-	has_pip_real_time: 0 | 1
-	has_schedules: 0 | 1
-	has_shelter: 0 | 1
-	has_stop_sign: 0 | 1
-	has_tariffs_information: 0 | 1
-	level_id: string
-	location_type: '0' | null | number
-	municipality: string
-	network_map: ''
-	observations: ''
-	parent_station: string
-	platform_code: string
-	preservation_state: ''
-	public_visible: 0
-	real_time_information: ''
-	region: string
-	schedule: ''
-	shelter: ''
-	signalling: ''
-	slot: ''
 	stop_code: string
 	stop_desc: string
 	stop_id: string
-	stop_id_stepp: '0'
 	stop_lat: number
 	stop_lon: number
 	stop_name: string
-	stop_remarks: ''
-	stop_short_name: string
-	stop_timezone: string
-	stop_url: string
-	tariff: ''
-	wheelchair_boarding: '0' | null
 	zone_id: string
-	zone_shift: ''
 }
 
 /**
@@ -66,44 +32,10 @@ export function parseStop(
 			stop_id: getAgencyStopId(stopData, agencyId),
 			stop_code: getAgencyStopId(stopData, agencyId),
 			stop_name: stopData.name,
-			stop_short_name: stopData.short_name,
-			stop_desc: '',
+			stop_desc: stopData.location.secondary.name + ' - ' + stopData.location.tertiary.name,
 			stop_lat: Number(stopData.latitude.toFixed(6)),
 			stop_lon: Number(stopData.longitude.toFixed(6)),
 			zone_id: '',
-			stop_url: '',
-			location_type: null,
-			parent_station: '',
-			stop_timezone: '',
-			wheelchair_boarding: null,
-			level_id: '',
-			platform_code: '',
-			stop_id_stepp: '0',
-			municipality: String(stopData.location.secondary.code),
-			region: String(stopData.location.primary.osm_id),
-			real_time_information: '',
-			schedule: '',
-			network_map: '',
-			observations: '',
-			stop_remarks: '',
-			tariff: '',
-			signalling: '',
-			shelter: '',
-			bench: '',
-			entrance_restriction: '',
-			exit_restriction: '',
-			equipment: '',
-			preservation_state: '',
-			slot: '',
-			zone_shift: '',
-			has_bench: 0,
-			has_shelter: stopData.shelter?.status === 'ok' ? 1 : 0,
-			has_network_map: 0,
-			has_pip_real_time: 0,
-			has_schedules: 0,
-			has_stop_sign: 0,
-			has_tariffs_information: 0,
-			public_visible: 0,
 		};
 	} catch (error) {
 		throw new Error(`Error parsing stop ${stopData._id}: ${error}`, error);
