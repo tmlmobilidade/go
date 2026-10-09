@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsStrictV30SteppAgency, type GtfsStrictV30SteppCalendar, type GtfsStrictV30SteppCalendarDates, GtfsStrictV30SteppShapes, type GtfsStrictV30SteppStops } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30SteppAgency, type GtfsStrictV30SteppCalendar, type GtfsStrictV30SteppCalendarDates, GtfsStrictV30SteppShapes, type GtfsStrictV30SteppStops, type GtfsStrictV30SteppTrips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { type CsvWriter } from '@tmlmobilidade/writers';
 
@@ -26,6 +26,11 @@ export interface GtfsSteppV1ExportConfig {
 	start_date: OperationalDate
 
 	/**
+	 * Working directory where the GTFS files are written
+	 */
+	workdir: string
+
+	/**
 	 * CSV writers for each GTFS file
 	 */
 	writers: GtfsSteppV1Writers
@@ -40,4 +45,15 @@ export interface GtfsSteppV1Writers {
 	calendar_dates: CsvWriter<GtfsStrictV30SteppCalendarDates>
 	shapes: CsvWriter<GtfsStrictV30SteppShapes>
 	stops: CsvWriter<GtfsStrictV30SteppStops>
+	trips: CsvWriter<GtfsStrictV30SteppTrips>
+}
+
+/**
+ * Export progress tracking
+ */
+export interface ExportProgress {
+	_id: string
+	progress_current: number
+	progress_total: number
+	workdir: string
 }
