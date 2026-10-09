@@ -1,7 +1,6 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type LinesAgencyItem, type LinesAgencyRequest } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, type SelectDataItem } from '@tmlmobilidade/ui';
@@ -10,8 +9,8 @@ import useSWR from 'swr';
 
 /* * */
 
-interface UseAgenciesDataReturnType<T extends LinesAgencyItem> {
-	data: T[]
+interface UseAgenciesDataReturnType {
+	data: Agency[]
 	error: null | string
 	ids: string[]
 	isLoading: boolean
@@ -23,48 +22,30 @@ interface UseAgenciesDataReturnType<T extends LinesAgencyItem> {
 
 /* * */
 
-export function useAgenciesData(): UseAgenciesDataReturnType<Agency>;
-export function useAgenciesData(query: LinesAgencyRequest): UseAgenciesDataReturnType<LinesAgencyItem>;
-export function useAgenciesData(query?: LinesAgencyRequest): UseAgenciesDataReturnType<LinesAgencyItem> {
+export function useAgenciesData(): UseAgenciesDataReturnType {
 	//
 
-	//
-	// A. Fetch data
-
-	const url = query ? API_ROUTES.offer.LINES_LIST_AGENCIES : API_ROUTES.offer.AGENCIES_LIST;
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<LinesAgencyItem[]>>([url, query], {
-		fetcher: async ([url, query]: [string, LinesAgencyRequest | undefined]) => query
-			? await fetchApiData<LinesAgencyItem[], LinesAgencyRequest>({ body: query, method: 'POST', url })
-			: await fetchApiData<Agency[]>({ url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Agency[]>>(API_ROUTES.offer.AGENCIES_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Agency[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
-	//
-	// B. Transform data
+	const ids = useMemo(() => {
+		return data?.data?.map(agency => agency._id) ?? [];
+	}, [data?.data]);
 
-	const agencies = useMemo(() => {
-		if (error || data?.error) return [];
-		return data?.data ?? [];
-	}, [data, error]);
-
-	const ids = useMemo(() => agencies.map(agency => agency._id), [agencies]);
-
-	const options = useMemo(() => agencies.map((agency): SelectDataItem => ({
-		label: query ? `${agency.code} - ${agency.name}` : agency.name,
-		value: agency._id,
-	})), [agencies, query]);
-
-	//
-	// C. Return data
+	const options = useMemo(() => {
+		return data?.data?.map(agency => ({ label: agency.name, value: agency._id })) ?? [];
+	}, [data?.data]);
 
 	return useMemo(() => ({
-		data: agencies,
-		error: error?.message ?? data?.error ?? null,
+		data: data?.data,
+		error: error?.error,
 		ids,
 		isLoading,
 		isValidating,
 		mutate,
 		options,
-		timestamp: data?.timestamp ?? null,
-	}), [agencies, data?.error, data?.timestamp, error?.message, ids, isLoading, isValidating, mutate, options]);
+		timestamp: data?.timestamp,
+	}), [data?.data, data?.timestamp, error, isLoading, isValidating, mutate]);
 };

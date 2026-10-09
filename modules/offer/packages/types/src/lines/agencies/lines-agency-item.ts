@@ -8,6 +8,7 @@ import { z } from 'zod';
 export const LinesAgencyItemSchema = AgencySchema.pick({
 	_id: true,
 	code: true,
+	financials: true,
 	name: true,
 	short_name: true,
 });

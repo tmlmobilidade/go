@@ -4,8 +4,6 @@ import { LinesController } from '@/endpoints/lines/lines.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
-import { listAgenciesHandler } from './handlers/list-agencies.js';
-
 /* * */
 
 const NAMESPACE = '/lines';
@@ -26,8 +24,8 @@ server.register(
 
 		instance.post(
 			'/list-agencies',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions['extract-stepp']]) },
-			listAgenciesHandler,
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.read]) },
+			LinesController.listAgenciesHandler,
 		);
 
 		instance.get(

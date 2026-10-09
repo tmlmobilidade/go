@@ -2,9 +2,10 @@
 
 import { populateLine, populateLines } from '@/utils/lines.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { AggregationPipeline, type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { LinesAgencyItem, LinesAgencyItemSchema, LinesAgencyRequest, LinesAgencyRequestSchema } from '@tmlmobilidade/go-offer-pckg-types';
 import { type CreateLineDto, type Line, type LineNormalized, type UpdateLineDto } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
@@ -340,4 +341,45 @@ export class LinesController {
 		//
 	}
 	//
+
+	/**
+	 * Lists agencies allowed by the current user's requested scope and actions.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
+	 */
+	static async listAgenciesHandler(request: FastifyRequest<{ Body: LinesAgencyRequest }>, reply: FastifyReply<LinesAgencyItem[]>) {
+		//
+
+		//
+		// Validate the permission query
+
+		const validatedQuery = LinesAgencyRequestSchema.safeParse(request.body);
+
+		if (!validatedQuery.success) {
+			return sendErrorApiResponse(reply, { error: validatedQuery.error.message, status_code: '400' });
+		}
+
+		//
+		// Resolve allowed agency IDs from the authenticated user's permissions
+
+		const { permissions } = validatedQuery.data;
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
+			checks: permissions.actions.map(action => ({ action, scope: permissions.scope })),
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+		});
+
+		//
+		// Return all permitted agencies, keeping agencies with the same code separate
+
+		const pipeline: AggregationPipeline<LinesAgencyItem> = [
+			{ $match: agencyAccess.allowAll ? {} : { _id: { $in: agencyAccess.values } } },
+			{ $project: Object.fromEntries(Object.keys(LinesAgencyItemSchema.shape).map(key => [key, 1])) },
+			{ $sort: { _id: -1 } },
+		];
+
+		const agencies = await goDb.core.agencies.aggregate(pipeline);
+
+		return sendSuccessApiResponse(reply, LinesAgencyItemSchema.array().parse(agencies ?? []));
+	}
 }
