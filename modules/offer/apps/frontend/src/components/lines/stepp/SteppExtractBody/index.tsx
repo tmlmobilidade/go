@@ -1,7 +1,7 @@
 /* * */
 
 import { useAgenciesData } from '@/components/common/use-agencies-data';
-import { MultiSelect, Section } from '@tmlmobilidade/ui';
+import { Section, Select } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -19,12 +19,13 @@ export function SteppExtractBody() {
 	return (
 		<Section>
 			<Section gap="md">
-				<MultiSelect
+				<Select
 					data={agencyOptions}
-					description="Selecione um ou mais operadores para exportar os dados correspondentes"
-					label="Selecionar operadores"
+					description="Selecione o operador para exportar os dados correspondentes"
+					label="Selecionar operador"
+					onChange={() => {}}
 					placeholder="Selecionar operadores"
-					value={[]}
+					value={agencyOptions[0].value}
 					w="100%"
 				/>
 			</Section>
