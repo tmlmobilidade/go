@@ -284,11 +284,48 @@
 			}
 		},
 		"extract": {
-			"ExtractButton": {
-				"label": "Exportar"
-			},
 			"Header": {
 				"title": "Exportar paradas"
+			},
+			"NodesExtract": {
+				"title": "Exportar nodos"
+			},
+			"StopsExtractFooter": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"StopsExtractProperties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operador"
+					},
+					"connections": {
+						"label": "Conexiones"
+					},
+					"facilities": {
+						"label": "Servicios"
+					},
+					"lifecycle_statuses": {
+						"label": "Estado"
+					},
+					"location_neighbourhood_ids": {
+						"label": "Localidad"
+					},
+					"location_primary_ids": {
+						"label": "Comunidad"
+					},
+					"location_secondary_ids": {
+						"label": "Provincia"
+					},
+					"location_tertiary_ids": {
+						"label": "Municipio"
+					},
+					"version": {
+						"label": "Versión"
+					}
+				},
+				"placeholder": "Sin filtro"
 			}
 		},
 		"list": {
@@ -323,6 +360,9 @@
 				"title": "Paradas"
 			},
 			"HeaderMenu": {
+				"ExtractNodesButton": {
+					"label": "Exportar Nodos"
+				},
 				"ExtractStopsButton": {
 					"label": "Exportar Paradas"
 				},

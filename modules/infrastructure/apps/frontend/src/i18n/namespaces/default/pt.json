@@ -290,11 +290,48 @@
 			}
 		},
 		"extract": {
-			"ExtractButton": {
-				"label": "Exportar"
-			},
 			"Header": {
 				"title": "Exportar paragens"
+			},
+			"NodesExtract": {
+				"title": "Exportar nodes"
+			},
+			"StopsExtractFooter": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"StopsExtractProperties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operador"
+					},
+					"connections": {
+						"label": "Conexões"
+					},
+					"facilities": {
+						"label": "Serviços"
+					},
+					"lifecycle_statuses": {
+						"label": "Estado"
+					},
+					"location_neighbourhood_ids": {
+						"label": "Localidade"
+					},
+					"location_primary_ids": {
+						"label": "Distrito"
+					},
+					"location_secondary_ids": {
+						"label": "Município"
+					},
+					"location_tertiary_ids": {
+						"label": "Freguesia"
+					},
+					"version": {
+						"label": "Versão"
+					}
+				},
+				"placeholder": "Sem filtro"
 			}
 		},
 		"list": {
@@ -329,6 +366,9 @@
 				"title": "Paragens"
 			},
 			"HeaderMenu": {
+				"ExtractNodesButton": {
+					"label": "Exportar Nodes"
+				},
 				"ExtractStopsButton": {
 					"label": "Exportar Paragens"
 				},

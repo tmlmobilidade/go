@@ -1,6 +1,5 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureStopsV1Extraction, InfrastructureStopsV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import fs from 'node:fs';
@@ -17,7 +16,7 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 	//
 	// Validate the received properties
 
-	const validatedProperties = InfrastructureStopsV1ExtractionPropertiesSchema.parse(extraction.properties);
+	InfrastructureStopsV1ExtractionPropertiesSchema.parse(extraction.properties);
 
 	//
 	// Setup a temporary directory and a batch writer
@@ -34,13 +33,6 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 	// 	},
 	// 	title: 'calendar_dates',
 	// });
-
-	//
-	// Get the stops from the database
-
-	const foundStops = await goDb.infrastructure.stops.findMany({
-		municipality_id: { in: validatedProperties.municipality_ids },
-	});
 
 	//
 	// Export the stops to a CSV file
