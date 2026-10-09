@@ -1,6 +1,7 @@
 'use client';
 
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { MAP_BOTTOM_SHEET_MIDDLE_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useBaseMapDerivedData } from '@/hooks/base-map/useBaseMapDerivedData';
 import { useBaseMapFocusedEntities } from '@/hooks/base-map/useBaseMapFocusedEntities';
@@ -23,7 +24,7 @@ interface UseBaseMapCameraSyncParams {
 
 /* * */
 
-export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
+export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams, { mapPadding, shouldFitMap }: Pick<ReturnType<typeof useMapBottomSheet>, 'mapPadding' | 'shouldFitMap'>) {
 	//
 
 	//
@@ -31,8 +32,7 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
 
 	const routePlannerContext = useRoutePlannerContext();
 	const { actions: { setTrackingMode } } = useUserLocation();
-	const { activeBottomSheet, activeBottomSheetSnap } = useBottomSheet();
-	const { mapPadding, shouldFitMap } = useMapBottomSheet();
+	const { activeBottomSheet, activeBottomSheetSnap, restoredSnapIndex } = useBottomSheet();
 	const { 'base-map': baseMap } = useMap();
 	const lastRouteMapFitKeyRef = useRef<null | string>(null);
 	const lastFocusedDetailKeyRef = useRef<null | string>(null);
@@ -42,13 +42,19 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
 	//
 	// B. Synchronize camera
 
-	// Focus a selected alert, stop, or vehicle once. Live positions and sheet changes must not move the camera again.
+	// Focus a selected detail when it opens or the sheet snaps, but not when its live data changes.
 	useEffect(() => {
 		if (!detailId || (detailView !== 'alerts-detail' && detailView !== 'stops-detail' && detailView !== 'vehicles-detail')) {
 			lastFocusedDetailKeyRef.current = null;
 			return;
 		}
 		if (!baseMap || !shouldFitMap) return;
+		if (detailView === 'stops-detail' && !lastFocusedDetailKeyRef.current?.startsWith(`${detailView}:${detailId}:`)) {
+			const initialSnapIndex = restoredSnapIndex !== null && restoredSnapIndex > 0 && restoredSnapIndex < MAP_BOTTOM_SHEET_SNAP_POINTS.length
+				? restoredSnapIndex
+				: MAP_BOTTOM_SHEET_MIDDLE_SNAP;
+			if (activeBottomSheetSnap.snapPoint !== MAP_BOTTOM_SHEET_SNAP_POINTS[initialSnapIndex]) return;
+		}
 
 		let coordinates: number[] | undefined;
 		if (detailView === 'stops-detail' && params.focusedStop) {
@@ -60,16 +66,16 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams) {
 		}
 		if (!coordinates?.every(Number.isFinite)) return;
 
-		const detailKey = `${detailView}:${detailId}`;
+		const detailKey = `${detailView}:${detailId}:${activeBottomSheetSnap.snapPoint}`;
 		if (lastFocusedDetailKeyRef.current === detailKey) return;
 		lastFocusedDetailKeyRef.current = detailKey;
 		baseMap.easeTo({
 			center: [coordinates[0], coordinates[1]],
 			duration: 650,
 			offset: [0, Math.round((mapPadding.top - mapPadding.bottom) / 2)],
-			zoom: baseMap.getZoom(),
+			zoom: detailView === 'stops-detail' ? Math.max(baseMap.getZoom(), 15.5) : baseMap.getZoom(),
 		});
-	}, [baseMap, detailId, detailView, mapPadding, params.focusedAlert, params.focusedStop, params.focusedVehicle, shouldFitMap]);
+	}, [activeBottomSheetSnap.snapPoint, baseMap, detailId, detailView, mapPadding, params.focusedAlert, params.focusedStop, params.focusedVehicle, restoredSnapIndex, shouldFitMap]);
 
 	// Fit the selected line's complete shape when the available map area changes.
 	useEffect(() => {

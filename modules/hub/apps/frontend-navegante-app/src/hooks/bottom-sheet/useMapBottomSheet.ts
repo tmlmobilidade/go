@@ -23,8 +23,8 @@ export function useMapBottomSheet() {
 	//
 	// A. Setup variables
 
-	const { activeBottomSheetSnap, snapActiveBottomSheet } = useBottomSheet();
-	const ignoredMapFitSnapPointRef = useRef<null | number>(null);
+	const { activeBottomSheet, activeBottomSheetSnap, snapActiveBottomSheet } = useBottomSheet();
+	const ignoredMapFitRef = useRef<null | { navigationEntry: typeof activeBottomSheet, snapPoint: number }>(null);
 
 	const compactSnapPoint = MAP_BOTTOM_SHEET_SNAP_POINTS[MAP_BOTTOM_SHEET_INITIAL_SNAP];
 
@@ -43,13 +43,13 @@ export function useMapBottomSheet() {
 		};
 	}, [activeBottomSheetSnap.snapPoint, compactSnapPoint]);
 
-	const shouldFitMap = ignoredMapFitSnapPointRef.current !== activeBottomSheetSnap.snapPoint;
+	const shouldFitMap = ignoredMapFitRef.current?.navigationEntry !== activeBottomSheet || ignoredMapFitRef.current?.snapPoint !== activeBottomSheetSnap.snapPoint;
 
 	useEffect(() => {
-		if (ignoredMapFitSnapPointRef.current === null) return;
-		if (activeBottomSheetSnap.snapPoint === ignoredMapFitSnapPointRef.current) return;
-		ignoredMapFitSnapPointRef.current = null;
-	}, [activeBottomSheetSnap.snapPoint]);
+		if (ignoredMapFitRef.current === null) return;
+		if (activeBottomSheet === ignoredMapFitRef.current.navigationEntry && activeBottomSheetSnap.snapPoint === ignoredMapFitRef.current.snapPoint) return;
+		ignoredMapFitRef.current = null;
+	}, [activeBottomSheet, activeBottomSheetSnap.snapPoint]);
 
 	//
 	// C. Handle actions
@@ -61,12 +61,12 @@ export function useMapBottomSheet() {
 			snapIndex: activeBottomSheetSnap.snapIndex,
 		});
 		if (collapseTarget === null) return;
-		if (ignoredMapFitSnapPointRef.current === compactSnapPoint) return;
+		if (ignoredMapFitRef.current?.navigationEntry === activeBottomSheet && ignoredMapFitRef.current.snapPoint === compactSnapPoint) return;
 
-		ignoredMapFitSnapPointRef.current = compactSnapPoint;
+		ignoredMapFitRef.current = { navigationEntry: activeBottomSheet, snapPoint: compactSnapPoint };
 		const didSnap = snapActiveBottomSheet(collapseTarget);
-		if (!didSnap) ignoredMapFitSnapPointRef.current = null;
-	}, [activeBottomSheetSnap.snapIndex, compactSnapPoint, snapActiveBottomSheet]);
+		if (!didSnap) ignoredMapFitRef.current = null;
+	}, [activeBottomSheet, activeBottomSheetSnap.snapIndex, compactSnapPoint, snapActiveBottomSheet]);
 
 	//
 	// D. Return data

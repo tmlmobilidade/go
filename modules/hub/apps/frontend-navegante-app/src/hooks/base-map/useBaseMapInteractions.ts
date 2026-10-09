@@ -22,12 +22,13 @@ export const baseMapInteractiveLayerIds = [
 ];
 
 interface UseBaseMapInteractionsParams {
+	collapseForMapInteraction: ReturnType<typeof useMapBottomSheet>['collapseForMapInteraction']
 	setUserLocationTrackingMode: ReturnType<typeof useUserLocation>['actions']['setTrackingMode']
 }
 
 /* * */
 
-export function useBaseMapInteractions({ setUserLocationTrackingMode }: UseBaseMapInteractionsParams) {
+export function useBaseMapInteractions({ collapseForMapInteraction, setUserLocationTrackingMode }: UseBaseMapInteractionsParams) {
 	//
 
 	//
@@ -36,7 +37,6 @@ export function useBaseMapInteractions({ setUserLocationTrackingMode }: UseBaseM
 	const { t } = useTranslation();
 	const routePlannerContext = useRoutePlannerContext();
 	const { push } = useBottomSheet();
-	const { collapseForMapInteraction } = useMapBottomSheet();
 	const { 'base-map': baseMap } = useMap();
 	const [selectedMapLocation, setSelectedMapLocation] = useState<MapLongPressLocation | null>(null);
 	const mapLongPress = useMapLongPress(setSelectedMapLocation);
