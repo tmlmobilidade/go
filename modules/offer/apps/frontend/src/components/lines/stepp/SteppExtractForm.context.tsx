@@ -2,11 +2,11 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OfferGtfsSteppV1ExtractionCreate, type OfferGtfsSteppV1ExtractionProperties, OfferGtfsSteppV1ExtractionPropertiesSchema, OfferGtfsSteppV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
-import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { closeSteppExtractsModal } from './SteppExtract.modal';
+import { useSteppAgenciesData } from './use-agencies-data';
 
 /* * */
 
@@ -26,7 +26,7 @@ export function SteppExtractFormContextProvider({ children }: PropsWithChildren)
 	//
 	// A. Setup variables
 
-	const { data: meData } = useMeData();
+	const { ids: permittedAgencyIds, isLoading: isLoadingAgencies } = useSteppAgenciesData();
 
 	const { mutate } = useExtractionsListData();
 
@@ -65,11 +65,8 @@ export function SteppExtractFormContextProvider({ children }: PropsWithChildren)
 	// D. Setup flags
 
 	const hasExtractPermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
-			action: PermissionCatalog.all.lines.actions.read,
-			scope: PermissionCatalog.all.lines.scope,
-		});
-	}, [meData?.permissions]);
+		return permittedAgencyIds.includes(agencyIdValue);
+	}, [agencyIdValue, permittedAgencyIds]);
 
 	const { createEnabled, editEnabled } = useStandardFormCapabilities({
 		create: {
@@ -79,6 +76,9 @@ export function SteppExtractFormContextProvider({ children }: PropsWithChildren)
 		form: {
 			isDirty,
 			isValid: isValid && !!agencyIdValue?.trim(),
+		},
+		loading: {
+			isLoading: isLoadingAgencies,
 		},
 	});
 

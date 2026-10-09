@@ -1,7 +1,7 @@
 'use client';
 
-import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useSteppExtractFormContext } from '@/components/lines/stepp/SteppExtractForm.context';
+import { useSteppAgenciesData } from '@/components/lines/stepp/use-agencies-data';
 import { Section, Select, StandardFormController } from '@tmlmobilidade/ui';
 
 /* * */
@@ -12,7 +12,7 @@ export function SteppExtractBody() {
 	//
 	// A. Setup variables
 
-	const { isLoading, options: agencyOptions } = useAgenciesData();
+	const { isLoading, options: agencyOptions } = useSteppAgenciesData();
 	const { capabilities, form } = useSteppExtractFormContext();
 
 	//
