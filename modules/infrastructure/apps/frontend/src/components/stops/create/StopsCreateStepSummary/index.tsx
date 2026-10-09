@@ -21,10 +21,11 @@ export function StopsCreateStepSummary() {
 
 	const { t } = useTranslation();
 
-	const { form } = useStopsCreateFormContext();
+	const { agencies, form } = useStopsCreateFormContext();
 
 	const latitudeValue = useStandardFormWatch({ control: form.control, name: 'latitude' });
 	const longitudeValue = useStandardFormWatch({ control: form.control, name: 'longitude' });
+	const agencyIds = useStandardFormWatch({ control: form.control, name: 'agency_ids' });
 	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
 
 	//
@@ -74,6 +75,7 @@ export function StopsCreateStepSummary() {
 			<Divider />
 
 			<Section>
+				<ValueDisplay label={t('default:stops.create.StepSummary.fields.agency_ids.label')} value={agencies.options.filter(option => agencyIds?.includes(option.value)).map(option => option.label).join(', ')} variant="plain" />
 				<ValueDisplay label={t('default:stops.create.StepSummary.fields.short_name.label')} value={automaticShortName} variant="plain" />
 				<ValueDisplay label={t('default:stops.create.StepSummary.fields.tts_name.label')} value={automaticTtsName} variant="plain" />
 			</Section>

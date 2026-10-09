@@ -37,6 +37,14 @@
 			},
 			"StepNames": {
 				"fields": {
+					"agency_ids": {
+						"description": "Seleccione los operadores asociados al poste armonizado de esta parada.",
+						"empty": "No tiene operadores disponibles en los permisos de creación de paradas. Contacte con un administrador.",
+						"label": "Operadores",
+						"loading": "Cargando los operadores disponibles…",
+						"required": "Seleccione al menos un operador permitido.",
+						"unavailable": "No se han podido cargar los operadores. No se puede crear la parada hasta que estén disponibles."
+					},
 					"name": {
 						"description": "Este es el nombre principal y se mostrará en los canales digitales.",
 						"label": "Denominación Completa de la Parada"
@@ -53,6 +61,9 @@
 			},
 			"StepSummary": {
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
 					"short_name": {
 						"label": "Nombre corto"
 					},
