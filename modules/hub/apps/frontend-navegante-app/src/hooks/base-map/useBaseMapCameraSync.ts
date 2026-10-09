@@ -96,10 +96,11 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams, { mapPa
 		});
 	}, [activeBottomSheetSnap.snapPoint, baseMap, mapPadding, params.placeDestination, shouldFitMap]);
 
-	// Fit an itinerary once per route view and sheet snap; stop location tracking while previewing it.
+	// Fit an itinerary while previewing it; navigation follows the user's location instead.
 	useEffect(() => {
 		if (!baseMap || params.routePlannerMapFitFeatures.length === 0) return;
-		if (activeBottomSheet?.view !== 'routes' && !routePlannerContext.flags.is_navigating) return;
+		if (routePlannerContext.flags.is_navigating) return;
+		if (activeBottomSheet?.view !== 'routes') return;
 		if (!shouldFitMap) {
 			lastRouteMapFitKeyRef.current = null;
 			return;
@@ -117,7 +118,7 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams, { mapPa
 
 		// Previewing an itinerary takes camera control, just like dragging the map.
 		// The location button can explicitly resume following afterwards.
-		if (!routePlannerContext.flags.is_navigating) setTrackingMode('idle');
+		setTrackingMode('idle');
 		centerMap(baseMap, params.routePlannerMapFitFeatures, {
 			padding: mapPadding,
 		});

@@ -4,6 +4,7 @@ import { useLinesData } from '@/components/lines/use-lines-data';
 import { useRoutePlannerOrigin } from '@/components/routes/use-route-planner-origin';
 import { useRoutePlannerPlanData } from '@/components/routes/use-route-planner-plan-data';
 import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type BottomSheetNavigationEntry } from '@/types/common/bottom-sheet';
 import { type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerLocationSearchReturnView, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner/models';
@@ -100,6 +101,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 
 	const { t } = useTranslation();
 	const { activeBottomSheet, bottomSheetNavigation, pop, push, replaceActive, restore, suspend } = useBottomSheet();
+	const { actions: { enableBearingTracking, setTrackingMode } } = useUserLocation();
 	const tripSheetHistoryRef = useRef<BottomSheetNavigationEntry[]>([]);
 	const { data: lines } = useLinesData();
 	const { cachedOrigin, requestCurrentOrigin, resolveOrigin } = useRoutePlannerOrigin();
@@ -242,11 +244,12 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setActiveTripItinerary(trip.itinerary);
 		setViewMode('itinerary-detail');
 		setIsNavigating(true);
+		setTrackingMode('follow');
 		tripSheetHistoryRef.current = trip.sheetHistory.length > 0 ? trip.sheetHistory : [{ view: 'routes' }];
 		void requestCurrentOrigin().then((freshOrigin) => {
 			if (activeTripRestoreRequestRef.current === requestId && freshOrigin) setOriginState(freshOrigin);
 		});
-	}, [cachedOrigin, requestCurrentOrigin, resetPlanRequest]);
+	}, [cachedOrigin, requestCurrentOrigin, resetPlanRequest, setTrackingMode]);
 
 	const planRoute = useCallback(async (options: RoutePlannerPlanOptions = {}) => {
 		const requestOrigin = options.origin === undefined ? origin : options.origin;
@@ -283,13 +286,14 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 
 	const startItinerary = useCallback((index: number) => {
 		if (!origin?.isCurrentLocation || !itineraries[index]) return;
+		void enableBearingTracking();
 		activeTripRestoreRequestRef.current += 1;
 		setActiveTripItinerary(itineraries[index]);
 		setSelectedItineraryIndex(index);
 		setIsNavigating(true);
 		setViewMode('itinerary-detail');
 		tripSheetHistoryRef.current = suspend();
-	}, [itineraries, origin, suspend]);
+	}, [enableBearingTracking, itineraries, origin, suspend]);
 
 	const endActiveTrip = useCallback(() => {
 		activeTripRestoreRequestRef.current += 1;
