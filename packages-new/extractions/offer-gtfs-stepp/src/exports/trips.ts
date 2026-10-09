@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 /* * */
 
 import { type GtfsSteppV1ExportConfig } from '@/types.js';
@@ -616,13 +617,13 @@ export async function exportTripsForPattern(
 			});
 
 			const tripData: GtfsStrictV30SteppTrips = {
-				bikes_allowed: '0',
-				direction_id: Number(patternDirectionMapper.toGtfs(patternData.direction)),
 				route_id: routeData.code,
 				service_id: row.serviceId,
-				shape_id: shapeId,
-				trip_headsign: headsign,
 				trip_id: tripId,
+				trip_headsign: headsign,
+				direction_id: Number(patternDirectionMapper.toGtfs(patternData.direction)),
+				shape_id: shapeId,
+				bikes_allowed: '0',
 				wheelchair_accessible: '0',
 			};
 

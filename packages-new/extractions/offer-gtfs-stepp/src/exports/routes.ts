@@ -22,11 +22,11 @@ export function parseRoute(
 ): GtfsStrictV30SteppRoutes {
 	try {
 		return {
-			agency_id: agencyData.code,
-			route_desc: '',
 			route_id: routeData.code,
+			agency_id: agencyData.code,
 			route_short_name: lineData.code.replace(/  +/g, ' ').trim(),
 			route_long_name: routeData.name.replaceAll(',', '').replace(/  +/g, ' ').trim(),
+			route_desc: '',
 			route_type: transportTypeMapper.toGtfs(lineData.transport_type),
 		};
 	} catch (error) {

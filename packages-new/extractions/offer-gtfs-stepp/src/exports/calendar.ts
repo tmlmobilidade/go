@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 /* * */
 
 import { type GtfsSteppV1ExportConfig } from '@/types.js';
@@ -75,16 +76,16 @@ export async function exportCalendar(
 			})) as Record<typeof WEEKDAY_FIELDS[number], GtfsBinary>;
 
 			const row: GtfsStrictV30SteppCalendar = {
-				end_date: OperationalDateIntSchema.parse(serviceEndDate),
-				friday: weekdays.friday,
-				monday: weekdays.monday,
-				saturday: weekdays.saturday,
 				service_id: serviceInfo.serviceId,
-				start_date: OperationalDateIntSchema.parse(serviceStartDate),
-				sunday: weekdays.sunday,
-				thursday: weekdays.thursday,
+				monday: weekdays.monday,
 				tuesday: weekdays.tuesday,
 				wednesday: weekdays.wednesday,
+				thursday: weekdays.thursday,
+				friday: weekdays.friday,
+				saturday: weekdays.saturday,
+				sunday: weekdays.sunday,
+				end_date: OperationalDateIntSchema.parse(serviceEndDate),
+				start_date: OperationalDateIntSchema.parse(serviceStartDate),
 			};
 
 			await exportConfig.writers.calendar.write(row);
