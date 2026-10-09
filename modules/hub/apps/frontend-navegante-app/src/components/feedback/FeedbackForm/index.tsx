@@ -156,7 +156,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	// C. Setup effects
 
 	useEffect(() => {
-		setTriggerPortalRoot(document.querySelector('main') ?? document.body);
+		setTriggerPortalRoot(document.body);
 	}, []);
 
 	//
@@ -167,7 +167,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	return (
 		<>
 			{triggerPortalRoot && isTriggerVisible && createPortal(
-				<FeedbackTrigger onClick={() => setIsFeedbackSheetOpen(true)} />,
+				<FeedbackTrigger className={styles.trigger} onClick={() => setIsFeedbackSheetOpen(true)} />,
 				triggerPortalRoot,
 			)}
 

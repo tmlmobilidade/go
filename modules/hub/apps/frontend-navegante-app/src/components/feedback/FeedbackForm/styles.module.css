@@ -1,3 +1,7 @@
+button.trigger[data-position='bottom-right'] {
+	z-index: 103;
+}
+
 .moodView {
 	display: flex;
 	flex-direction: column;
