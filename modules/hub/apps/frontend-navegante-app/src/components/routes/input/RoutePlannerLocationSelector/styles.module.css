@@ -104,7 +104,6 @@
 	opacity: 0.5;
 }
 
-
 .container[data-readonly='true'] {
 	grid-template-columns: 18px minmax(0, 1fr);
 }

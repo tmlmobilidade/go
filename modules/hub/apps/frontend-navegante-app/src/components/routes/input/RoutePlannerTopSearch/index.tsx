@@ -29,12 +29,10 @@ export function RoutePlannerTopSearch() {
 
 	const hasRouteInputContext = !!routePlannerContext.data.origin || !!routePlannerContext.data.destination;
 	const isNavigating = routePlannerContext.flags.is_navigating;
-	const isPreviewDetail = routePlannerContext.data.view_mode === 'itinerary-detail' && !isNavigating;
 	const isDestinationSearchWithRouteInput = routePlannerContext.data.view_mode === 'destination-search' && hasRouteInputContext;
 	const isRouteInputView = ['itinerary-detail', 'place-detail', 'results'].includes(routePlannerContext.data.view_mode) || isDestinationSearchWithRouteInput;
-	const shouldShowRouteInput = !isNavigating && isRouteInputView;
+	const shouldShowRouteInput = isRouteInputView;
 	const searchLabel = isNavigating ? t('default:routes.RoutePlannerTopSearch.placeholder') : selectedEntityLabel || t('default:action-bar.ActionBar.search.label');
-	const isRouteInputReadOnly = isPreviewDetail;
 
 	//
 	// C. Handle effects
@@ -86,7 +84,7 @@ export function RoutePlannerTopSearch() {
 						onOriginClick={handleOriginClick}
 						onSwap={routePlannerContext.actions.swapLocations}
 						origin={routePlannerContext.data.origin}
-						readOnly={isRouteInputReadOnly}
+						readOnly={isNavigating}
 					/>
 				</div>
 			)}
