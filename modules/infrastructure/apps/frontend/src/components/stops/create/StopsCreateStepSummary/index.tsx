@@ -1,7 +1,7 @@
 'use client';
 
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
-import { Divider, Section, useStandardFormWatch, ValueDisplay } from '@tmlmobilidade/ui';
+import { Divider, Label, Section, TagGroup, type TagProps, useStandardFormWatch, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -39,6 +39,12 @@ export function StopsCreateStepSummary() {
 	//
 	// C. Transform data
 
+	const agencyTags = useMemo(() => agencies.data?.filter(agency => agencyIds?.includes(agency._id)).map((agency): TagProps => ({
+		label: agency.short_name || agency.name,
+		tooltip: `[${agency._id}] ${agency.code} - ${agency.name}`,
+		variant: 'muted',
+	})) ?? [], [agencies.data, agencyIds]);
+
 	const automaticShortName = useMemo(() => {
 		if (!nameValue) return '';
 		return getStopShortName(nameValue);
@@ -75,7 +81,10 @@ export function StopsCreateStepSummary() {
 			<Divider />
 
 			<Section>
-				<ValueDisplay label={t('default:stops.create.StepSummary.fields.agency_ids.label')} value={agencies.options.filter(option => agencyIds?.includes(option.value)).map(option => option.label).join(', ')} variant="plain" />
+				<Section gap="xs">
+					<Label variant="muted" caps>{t('default:stops.create.StepSummary.fields.agency_ids.label')}</Label>
+					<TagGroup limit={agencyTags.length} tags={agencyTags} />
+				</Section>
 				<ValueDisplay label={t('default:stops.create.StepSummary.fields.short_name.label')} value={automaticShortName} variant="plain" />
 				<ValueDisplay label={t('default:stops.create.StepSummary.fields.tts_name.label')} value={automaticTtsName} variant="plain" />
 			</Section>
