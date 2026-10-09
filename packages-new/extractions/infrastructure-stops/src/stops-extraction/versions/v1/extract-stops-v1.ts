@@ -1,9 +1,11 @@
 /* * */
 
-import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureStopsV1Extraction, InfrastructureStopsV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
+import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureStopsV1Extraction } from '@tmlmobilidade/go-types-extractions';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import fs from 'node:fs';
 import path from 'node:path';
+
+import { buildExtractV1 } from '../../../build-extract-v1.js';
 
 /**
  * Exports a batch of stops to a CSV file.
@@ -14,9 +16,9 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 	//
 
 	//
-	// Validate the received properties
+	// Prepare the shared filters and permissions
 
-	InfrastructureStopsV1ExtractionPropertiesSchema.parse(extraction.properties);
+	await buildExtractV1(extraction);
 
 	//
 	// Setup a temporary directory and a batch writer
