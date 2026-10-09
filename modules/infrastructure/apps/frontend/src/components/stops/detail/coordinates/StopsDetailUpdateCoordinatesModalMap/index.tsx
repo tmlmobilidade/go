@@ -89,7 +89,7 @@ export function StopsDetailUpdateCoordinatesModalMap() {
 	// D. Render components
 
 	return (
-		<MapView cursor="crosshair" height={200} id="editStopCoordinatesMap" onClick={handleMapClick} showSearchPin={false}>
+		<MapView cursor="crosshair" height={400} id="editStopCoordinatesMap" onClick={handleMapClick} showSearchPin={false} toolbar={false}>
 			<MapOverlayPins id="selected-coordinates" pinsData={pinsData} focusOnChange visible />
 			{mapViewportMask && <MapOverlayPolygon data={mapViewportMask} id="mask" registerForAutoZoom={false} />}
 		</MapView>
