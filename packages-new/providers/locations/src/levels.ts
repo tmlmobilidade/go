@@ -28,5 +28,5 @@ export const SUPPORTED_COUNTRIES = Object.keys(LOCATION_LEVELS) as SupportedCoun
 
 /** Converts a locations database row into the shape stored on documents (no `code` for now). */
 export function toLocationItem(row: LocationRow): LocationItem {
-	return { admin_level: row.admin_level ?? '', name: row.name ?? row.id, osm_id: Number(row.id) };
+	return { admin_level: row.admin_level ?? '', code: row.code ?? null, name: row.name ?? row.id, osm_id: Number(row.id) };
 }
