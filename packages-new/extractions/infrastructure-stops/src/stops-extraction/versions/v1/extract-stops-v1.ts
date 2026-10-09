@@ -5,7 +5,7 @@ import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { buildExtractV1 } from '../../../build-extraction-v1.js';
+import { buildStopsExtractionQuery } from './apply-query.js';
 
 /**
  * Exports a batch of stops to a CSV file.
@@ -18,7 +18,7 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 	//
 	// Prepare the shared filters and permissions
 
-	await buildExtractV1(extraction);
+	await buildStopsExtractionQuery(extraction);
 
 	//
 	// Setup a temporary directory and a batch writer

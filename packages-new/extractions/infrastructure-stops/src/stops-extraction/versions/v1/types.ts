@@ -4,6 +4,8 @@ import { type Stop, type StopShelter } from '@tmlmobilidade/go-types-infrastruct
 
 /* * */
 
+export type InfrastructureStopsV1QueryRow = Pick<Stop, '_id' | 'connections' | 'facilities' | 'jurisdiction' | 'latitude' | 'legacy_id' | 'legacy_ids' | 'lifecycle_status' | 'location' | 'longitude' | 'name' | 'new_name' | 'observations' | 'previous_go_id' | 'shelter' | 'short_name' | 'tts_name'>;
+
 export interface InfrastructureStopsV1OutputRow {
 	// General
 	_id: Stop['_id']

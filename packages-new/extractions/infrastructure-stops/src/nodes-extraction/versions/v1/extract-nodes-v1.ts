@@ -7,9 +7,9 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { buildExtractV1 } from '../../../build-extraction-v1.js';
+import { buildNodesExtractionQuery } from './apply-query.js';
 import { getCodespacesByMunicipality } from './codespaces.js';
-import { toOutputRows } from './transform.js';
+import { parseNodesExtraction } from './transform.js';
 import { type InfrastructureNodesV1OutputRow } from './types.js';
 
 /**
@@ -20,13 +20,11 @@ import { type InfrastructureNodesV1OutputRow } from './types.js';
 export async function extractInfrastructureNodesV1(context: ExtractionTaskContext, extraction: InfrastructureNodesV1Extraction): Promise<ExtractionTaskResult> {
 	// A. Prepare the shared filters and permissions
 
-	const { filter, selectedAgencyIds } = await buildExtractV1(extraction);
+	const { filter, projection, selectedAgencyIds } = await buildNodesExtractionQuery(extraction);
 
 	// B. Fetch stops matching the filters and permissions
 
-	const stops = await goDb.infrastructure.stops.findMany(filter, {
-		projection: { _id: 1, created_at: 1, flags: 1, latitude: 1, location: 1, longitude: 1, name: 1 },
-	});
+	const stops = await goDb.infrastructure.stops.findMany(filter, { projection });
 
 	for (const stop of stops) {
 		stop.flags = stop.flags.map(flag => ({
@@ -58,7 +56,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 
 				const operatorStop = { ...stop, flags: [{ ...flag, agency_ids: [agencyId] }] };
 
-				rows.push(...toOutputRows({
+				rows.push(...parseNodesExtraction({
 					namespace,
 					stop: operatorStop,
 					valid_from: Dates.fromUnixMilliseconds(stop.created_at).calendar_date,

@@ -10,7 +10,7 @@ import { type InfrastructureNodesV1Input, type InfrastructureNodesV1OutputRow } 
  * @param agencyCodesById Public agency codes indexed by internal agency ID.
  * @returns One row per agency in each flag, in CSV column order.
  */
-export function toOutputRows(input: InfrastructureNodesV1Input, agencyCodesById: ReadonlyMap<string, string>): InfrastructureNodesV1OutputRow[] {
+export function parseNodesExtraction(input: InfrastructureNodesV1Input, agencyCodesById: ReadonlyMap<string, string>): InfrastructureNodesV1OutputRow[] {
 	return input.stop.flags.flatMap(flag => flag.agency_ids.map((agencyId) => {
 		const agencyCode = agencyCodesById.get(agencyId);
 		if (agencyCode === undefined) throw new Error(`Agency code not found for agency ${agencyId}`);

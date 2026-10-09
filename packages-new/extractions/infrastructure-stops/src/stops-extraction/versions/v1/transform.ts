@@ -1,8 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-
-import { type InfrastructureStopsV1OutputRow } from './types.js';
+import { type InfrastructureStopsV1OutputRow, type InfrastructureStopsV1QueryRow } from './types.js';
 
 /* * */
 
@@ -11,7 +9,7 @@ import { type InfrastructureStopsV1OutputRow } from './types.js';
  * @param stop The stop to export.
  * @returns The output row, with lists represented as comma-separated values.
  */
-export function parseStopsExtraction(stop: Stop): InfrastructureStopsV1OutputRow {
+export function parseStopsExtraction(stop: InfrastructureStopsV1QueryRow): InfrastructureStopsV1OutputRow {
 	return {
 		// General
 		_id: stop._id,

@@ -4,6 +4,8 @@ import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 
 /* * */
 
+export type InfrastructureNodesV1QueryRow = Pick<Stop, '_id' | 'created_at' | 'flags' | 'latitude' | 'location' | 'longitude' | 'name'>;
+
 export interface InfrastructureNodesV1OutputRow {
 	/** Public agency code used as agency_id in GTFS. */
 	operator_id: string
