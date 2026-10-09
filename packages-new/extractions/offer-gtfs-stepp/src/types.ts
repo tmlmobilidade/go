@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsStrictV29Agency } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29Agency, type GtfsStrictV29Stops } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */
@@ -17,12 +17,13 @@ export interface GtfsSteppV1ExportConfig {
 	/**
 	 * CSV writers for each GTFS file
 	 */
-	writers: GtfsV29Writers
+	writers: GtfsSteppV1Writers
 }
 
 /**
  * CSV writers for each GTFS file
  */
-export interface GtfsV29Writers {
+export interface GtfsSteppV1Writers {
 	agency: CsvWriter<GtfsStrictV29Agency>
+	stops: CsvWriter<GtfsStrictV29Stops>
 }
