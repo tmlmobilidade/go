@@ -6,13 +6,13 @@ import { Button, fetchApiData, useExtractionsListData, useHandleAction } from '@
 
 /* * */
 
-interface ExtractionListActionReloadProps {
+interface ExtractionsListActionReloadProps {
 	extractionItem: Extraction
 }
 
 /* * */
 
-export function ExtractionListActionReload({ extractionItem }: ExtractionListActionReloadProps) {
+export function ExtractionsListActionReload({ extractionItem }: ExtractionsListActionReloadProps) {
 	//
 
 	//

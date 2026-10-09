@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { ExtractionsListActionDelete } from '../ExtractionsListActionDelete';
 import { ExtractionsListActionDownload } from '../ExtractionsListActionDownload';
 import { ExtractionsListActionLock } from '../ExtractionsListActionLock';
+import { ExtractionsListActionReload } from '../ExtractionsListActionReload';
 import { ExtractionsListFooter } from '../ExtractionsListFooter';
 import { ExtractionsListHeader } from '../ExtractionsListHeader';
 import { ExtractionsListFilterBar } from '../filters/ExtractionsListFilterBar';
@@ -54,6 +55,12 @@ export function ExtractionsList() {
 			render: item => <ExtractionsListActionDownload extractionItem={item} />,
 			title: t('shared:extractions.components.ExtractionsList.table.columns.version.title'),
 			width: 'fill',
+		},
+		{
+			accessor: 'reload',
+			render: item => <ExtractionsListActionReload extractionItem={item} />,
+			title: null,
+			width: 70,
 		},
 		{
 			accessor: 'remove',
