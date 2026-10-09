@@ -7,7 +7,7 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { buildExtractV1 } from '../../../build-extract-v1.js';
+import { buildExtractV1 } from '../../../build-extraction-v1.js';
 import { getCodespacesByMunicipality } from './codespaces.js';
 import { toOutputRows } from './transform.js';
 import { type InfrastructureNodesV1OutputRow } from './types.js';

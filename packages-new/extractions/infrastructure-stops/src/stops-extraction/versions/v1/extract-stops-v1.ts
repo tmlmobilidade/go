@@ -5,7 +5,7 @@ import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { buildExtractV1 } from '../../../build-extract-v1.js';
+import { buildExtractV1 } from '../../../build-extraction-v1.js';
 
 /**
  * Exports a batch of stops to a CSV file.
