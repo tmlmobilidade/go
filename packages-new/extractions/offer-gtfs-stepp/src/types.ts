@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsStrictV29Agency, type GtfsStrictV29Stops } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29Agency, GtfsStrictV29CalendarDates, type GtfsStrictV29Stops } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */
@@ -25,5 +25,6 @@ export interface GtfsSteppV1ExportConfig {
  */
 export interface GtfsSteppV1Writers {
 	agency: CsvWriter<GtfsStrictV29Agency>
+	calendar_dates: CsvWriter<GtfsStrictV29CalendarDates>
 	stops: CsvWriter<GtfsStrictV29Stops>
 }

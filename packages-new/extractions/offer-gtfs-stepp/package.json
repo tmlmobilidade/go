@@ -20,8 +20,14 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
-		"@tmlmobilidade/go-utils-exec": "*"
+		"@tmlmobilidade/go-types-gtfs-strict": "*",
+		"@tmlmobilidade/go-types-infrastructure": "*",
+		"@tmlmobilidade/go-types-offer": "*",
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
