@@ -16,7 +16,7 @@
 				}
 			},
 			"Header": {
-				"step": "Paso {{current}} de {{total}}",
+				"step": "Paso {current} de {total}",
 				"title": "Nueva parada"
 			},
 			"StepLocationDetails": {

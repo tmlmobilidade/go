@@ -16,7 +16,7 @@
 				}
 			},
 			"Header": {
-				"step": "Passo {{current}} de {{total}}",
+				"step": "Passo {current} de {total}",
 				"title": "Nova paragem"
 			},
 			"StepLocationDetails": {
