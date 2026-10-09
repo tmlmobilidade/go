@@ -3,14 +3,14 @@
 import { z } from 'zod';
 
 import { ExtractionBaseCreateSchema } from '../../../../shared/base-create.js';
-import { OfferSteppV1ExtractionPropertiesSchema } from './properties.js';
-import { OfferSteppV1ExtractionVersionSchema } from './version.js';
+import { OfferGtfsSteppV1ExtractionPropertiesSchema } from './properties.js';
+import { OfferGtfsSteppV1ExtractionVersionSchema } from './version.js';
 
 /* * */
 
-export const OfferSteppV1ExtractionCreateSchema = ExtractionBaseCreateSchema.extend({
-	properties: OfferSteppV1ExtractionPropertiesSchema,
-	version: OfferSteppV1ExtractionVersionSchema,
+export const OfferGtfsSteppV1ExtractionCreateSchema = ExtractionBaseCreateSchema.extend({
+	properties: OfferGtfsSteppV1ExtractionPropertiesSchema,
+	version: OfferGtfsSteppV1ExtractionVersionSchema,
 });
 
-export type OfferSteppV1ExtractionCreate = z.infer<typeof OfferSteppV1ExtractionCreateSchema>;
+export type OfferGtfsSteppV1ExtractionCreate = z.infer<typeof OfferGtfsSteppV1ExtractionCreateSchema>;
