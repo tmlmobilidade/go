@@ -43,10 +43,12 @@ export function useLinesAgenciesData(query: LinesAgencyRequest): UseLinesAgencie
 
 	const ids = useMemo(() => agencies.map(agency => agency._id), [agencies]);
 
-	const options = useMemo(() => agencies.map((agency): SelectDataItem => ({
-		label: `${agency.code} - ${agency.name}`,
-		value: agency._id,
-	})), [agencies]);
+	const options = useMemo(() => [...agencies]
+		.sort((a, b) => a.code.localeCompare(b.code, 'pt', { numeric: true }))
+		.map((agency): SelectDataItem => ({
+			label: `${agency.code} - ${agency.name}`,
+			value: agency._id,
+		})), [agencies]);
 
 	//
 	// C. Return data
