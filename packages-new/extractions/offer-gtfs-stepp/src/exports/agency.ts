@@ -3,7 +3,7 @@
 
 import { type GtfsSteppV1ExportConfig } from '@/types.js';
 import { type Agency } from '@tmlmobilidade/go-types-core';
-import { type GtfsStrictV29Agency } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30SteppAgency } from '@tmlmobilidade/go-types-gtfs-strict';
 
 /* * */
 
@@ -12,7 +12,7 @@ import { type GtfsStrictV29Agency } from '@tmlmobilidade/go-types-gtfs-strict';
  * @param agencyData - The agency data from the database
  * @returns The formatted agency row
  */
-export function parseAgency(agencyData: Agency): GtfsStrictV29Agency {
+export function parseAgency(agencyData: Agency): GtfsStrictV30SteppAgency {
 	try {
 		return {
 			// agency_code: agencyData.code,
