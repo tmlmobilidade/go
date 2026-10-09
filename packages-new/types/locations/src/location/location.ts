@@ -9,7 +9,7 @@ export const LocationItemSchema = z.object({
 	/** OSM admin_level, or `"neighbourhood"` for a neighbourhood (a `place=locality` point). */
 	admin_level: z.string(),
 	/** National statistics code (`ref:ine`), when the source has one. */
-	code: z.string().optional(),
+	code: z.string().nullable().default(null),
 	name: z.string(),
 	/** Absolute OSM id, unique across all levels. */
 	osm_id: z.number(),

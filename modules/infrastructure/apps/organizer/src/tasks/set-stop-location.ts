@@ -34,7 +34,7 @@ export async function setStopLocationTask() {
 
 		const stops = await goDb.infrastructure.stops.findMany(findQuery, {
 			limit: BATCH_SIZE,
-			projection: { _id: 1, latitude: 1, longitude: 1 },
+			projection: { _id: 1, flag: 1, latitude: 1, longitude: 1, name: 1 },
 			sort: { _id: 1 },
 		});
 
@@ -50,11 +50,9 @@ export async function setStopLocationTask() {
 					//
 
 					const location = await locationsProvider.findLocationByGeo(stopData.latitude, stopData.longitude);
-
 					await goDb.infrastructure.stops.updateById(stopData._id, { location });
 
-					const summary = Object.entries(location).map(([slot, item]) => `${slot} [${item.osm_id}] ${item.name}`).join(' | ');
-					Logger.info({ message: `[${stopData._id}] Location set for coordinates [${stopData.latitude}, ${stopData.longitude}]: ${summary}` });
+					Logger.info({ attributes: { location, stop: stopData }, message: `Location set for Stop ${stopData._id} - ${stopData.name}` });
 				} catch (error) {
 					Logger.error({ error, message: `[${stopData._id}] Error setting location` });
 				}
