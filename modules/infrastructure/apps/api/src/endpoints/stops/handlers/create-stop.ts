@@ -8,7 +8,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type Stop, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { type Location, locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { AllowAllFlagValue, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
@@ -27,6 +27,40 @@ export async function createStopHandler(request: FastifyRequest<{ Body: StopsCre
 	if (!validatedRequest.success) {
 		return sendErrorApiResponse(reply, {
 			error: validatedRequest.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
+	// Resolve available agencies from the user's stop creation permissions
+
+	const resourceAgencyIds = [...new Set(request.permissions
+		.filter(permission => permission.scope === PermissionCatalog.all.stops.scope && permission.action === PermissionCatalog.all.stops.actions.create)
+		.flatMap(permission => 'resources' in permission ? permission.resources.agency_ids ?? [] : []))];
+
+	const availableAgencies = await goDb.core.agencies.findMany(resourceAgencyIds.includes(AllowAllFlagValue) ? {} : { _id: { $in: resourceAgencyIds } });
+	const availableAgencyIds = [...new Set(availableAgencies.map(agency => agency._id))];
+	const requestedAgencyIds = [...new Set(validatedRequest.data.agency_ids)];
+
+	if (!availableAgencyIds.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'No agencies are available through your stop creation permissions.',
+			status_code: '403',
+		});
+	}
+
+	if (requestedAgencyIds.some(id => !availableAgencyIds.includes(id))) {
+		return sendErrorApiResponse(reply, {
+			error: 'User does not have permission to assign these agencies to a new stop.',
+			status_code: '403',
+		});
+	}
+
+	const agencyIds = availableAgencyIds.length === 1 ? availableAgencyIds : requestedAgencyIds;
+
+	if (!agencyIds.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'Select at least one permitted agency to create a stop.',
 			status_code: '400',
 		});
 	}
@@ -72,16 +106,18 @@ export async function createStopHandler(request: FastifyRequest<{ Body: StopsCre
 	// Prepare the stop data
 
 	const nowMs = Dates.now('utc').unix_milliseconds;
+	const shortName = getStopShortName(validatedRequest.data.name);
 
 	const validatedStopData = StopSchema.parse({
 		_id: newStopId,
 		created_at: nowMs,
 		created_by: request.me._id,
+		flags: [{ agency_ids: agencyIds, is_harmonized: true, short_name: shortName, stop_id: newStopId }],
 		latitude: validatedRequest.data.latitude,
 		location: foundLocation,
 		longitude: validatedRequest.data.longitude,
 		name: validatedRequest.data.name,
-		short_name: getStopShortName(validatedRequest.data.name),
+		short_name: shortName,
 		tts_name: getStopTtsName(validatedRequest.data.name),
 		updated_at: nowMs,
 		updated_by: request.me._id,

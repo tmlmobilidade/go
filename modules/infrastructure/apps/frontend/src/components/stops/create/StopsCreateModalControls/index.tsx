@@ -19,7 +19,7 @@ export function StopsCreateModalControls() {
 
 	const { actions: stepsActions, progress } = useStopsCreateFormStepsContext();
 
-	const { actions: formActions, status } = useStopsCreateFormContext();
+	const { actions: formActions, capabilities, status } = useStopsCreateFormContext();
 
 	//
 	// B. Setup flags
@@ -39,7 +39,7 @@ export function StopsCreateModalControls() {
 					onClick={isFirstStep ? closeStopsCreateModal : stepsActions.prev}
 				/>
 				<Button
-					disabled={!progress.current?.isValid}
+					disabled={!progress.current?.isValid || (isLastStep && !capabilities?.createEnabled)}
 					label={isLastStep ? t('default:stops.create.Controls.CreateButton.label') : t('default:stops.create.Controls.NextButton.label')}
 					loading={status.isCreating}
 					onClick={isLastStep ? formActions.create : stepsActions.next}
