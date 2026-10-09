@@ -180,7 +180,6 @@ export async function buildPatternsForRoute(params: {
 			const patternInput: CreatePatternDto = {
 				code: patternCode,
 				comments: [],
-				created_by: 'system',
 				destination,
 				direction: directionId as PatternDirection,
 				headsign: trip.trip_headsign ?? destination,
@@ -214,7 +213,7 @@ export async function insertPatterns(builtPatterns: BuiltPattern[]): Promise<{ p
 	let patternsCreated = 0;
 
 	for (const { input } of builtPatterns) {
-		const patternDoc = await goDb.offer.patterns.insertOne(input);
+		const patternDoc = await goDb.offer.patterns.insertOne({ ...input, created_by: 'system' });
 		patternsCreated += 1;
 		Logger.info({
 			attributes: {

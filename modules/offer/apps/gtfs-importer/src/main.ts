@@ -101,7 +101,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		//
 		// E.1 Insert line
 
-		const lineDoc = await goDb.offer.lines.insertOne(lineInput);
+		const lineDoc = await goDb.offer.lines.insertOne({ ...lineInput, created_by: 'system' });
 		linesCreated += 1;
 		const lineId = lineDoc._id;
 		// Logger.info('[gtfs-importer] Line created', {
@@ -122,7 +122,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 
 		const routeDocsByCode = new Map<string, { _id: string }>();
 		for (const routeInput of routeInputs) {
-			const routeDoc = await goDb.offer.routes.insertOne(routeInput);
+			const routeDoc = await goDb.offer.routes.insertOne({ ...routeInput, created_by: 'system' });
 			routesCreated += 1;
 			routeDocsByCode.set(routeInput.code, { _id: routeDoc._id });
 			// Logger.info('[gtfs-importer] Route created', {
