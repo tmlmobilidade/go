@@ -93,7 +93,8 @@ test('search chips filter matching entity types and can be cleared', async ({ pa
 	await search.getByRole('button', { name: 'Limpar pesquisa' }).click();
 	await expect(search.getByRole('textbox')).toHaveValue('');
 	await expect(filters).toHaveCount(0);
-	await expect(search.getByRole('region', { name: 'Carris' })).toBeVisible();
+	await expect(search.getByRole('region', { name: 'Pesquisas recentes' })).toBeVisible();
+	await expect(search.getByRole('region', { name: 'Linhas', exact: true })).toHaveCount(0);
 	await search.getByRole('textbox').fill('Paragem Oriente 0');
 	await expect(search.getByRole('region', { name: 'Paragens' }).locator('li')).toHaveCount(1);
 	await expect(search.getByRole('region', { name: 'Paragens' }).getByRole('button', { name: 'Ver mais paragens' })).toHaveCount(0);

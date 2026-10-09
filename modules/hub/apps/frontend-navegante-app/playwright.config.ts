@@ -16,6 +16,8 @@ export default defineConfig({
 		baseURL: 'http://localhost:51101',
 		trace: 'retain-on-failure',
 	},
+	// Map animations and the shared dev server need predictable browser scheduling.
+	workers: 1,
 	webServer: {
 		command: 'npm run dev',
 		reuseExistingServer: !process.env.CI,

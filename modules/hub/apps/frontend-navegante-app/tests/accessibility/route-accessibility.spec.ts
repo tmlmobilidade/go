@@ -9,7 +9,7 @@ test('nested sorting hides the parent, traps keyboard focus, and restores its tr
 	await mockRouting(page);
 	await openResults(page);
 	const results = page.getByRole('dialog', { includeHidden: true, name: 'Opções de percurso' });
-	const trigger = results.getByRole('button', { exact: true, includeHidden: true, name: 'Melhor' });
+	const trigger = results.getByRole('button', { exact: true, includeHidden: true, name: 'Recomendado' });
 	await trigger.focus();
 	await page.keyboard.press('Enter');
 	const filter = page.getByRole('dialog', { exact: true, name: 'Ordenar' });
@@ -20,7 +20,7 @@ test('nested sorting hides the parent, traps keyboard focus, and restores its tr
 	const panelId = await trigger.getAttribute('aria-controls');
 	if (!panelId) throw new Error('Sort trigger must identify its filter panel');
 	await expect(filter.locator(`[id="${panelId}"]`).getByRole('radiogroup')).toBeVisible();
-	await expect(filter.getByRole('radio', { exact: true, name: 'Melhor' })).toBeChecked();
+	await expect(filter.getByRole('radio', { exact: true, name: 'Recomendado' })).toBeChecked();
 	await expectFocusInside(filter);
 	for (let step = 0; step < 8; step++) {
 		await page.keyboard.press('Tab');
@@ -35,18 +35,18 @@ test('nested sorting hides the parent, traps keyboard focus, and restores its tr
 	await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 	await expect(results).toBeVisible();
 	await trigger.press('Enter');
-	await filter.getByRole('radio', { exact: true, name: 'Rápida' }).focus();
+	await filter.getByRole('radio', { exact: true, name: 'Mais rápida' }).focus();
 	await page.keyboard.press('Space');
 	await expect(filter).toBeHidden();
-	await expect(results.getByRole('button', { exact: true, name: 'Rápida' })).toBeFocused();
+	await expect(results.getByRole('button', { exact: true, name: 'Mais rápida' })).toBeFocused();
 });
 
 test('transport checkboxes filter results and announce when no routes remain', async ({ page }) => {
 	await mockRouting(page);
 	await openResults(page);
 	const results = page.getByRole('dialog', { name: 'Opções de percurso' });
-	await results.getByRole('button', { exact: true, name: 'Transportes' }).click();
-	const filter = page.getByRole('dialog', { exact: true, name: 'Transportes' });
+	await results.getByRole('button', { exact: true, name: 'Modos' }).click();
+	const filter = page.getByRole('dialog', { exact: true, name: 'Modos' });
 	await expectFullWidthRows(filter, 2);
 	await page.screenshot({ path: '/private/tmp/navegante-transport-filter.png' });
 	const bus = filter.getByRole('checkbox', { exact: true, name: 'Autocarro' });
@@ -64,7 +64,7 @@ test('transport checkboxes filter results and announce when no routes remain', a
 	await page.keyboard.press('Escape');
 	await expect(results.getByRole('button', { name: /^Selecionar percurso/ })).toHaveCount(0);
 	await expect(page.getByRole('status').filter({ hasText: 'Nenhum percurso com estes transportes.' })).toBeAttached();
-	await expect(results.getByRole('button', { name: /Transportes/ })).toBeFocused();
+	await expect(results.getByRole('button', { name: /Modos/ })).toBeFocused();
 });
 
 test('time radios and date validation remain labelled and keyboard operable', async ({ page }) => {

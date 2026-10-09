@@ -48,7 +48,7 @@ test('selected itinerary stays actionable in compact preview and returns to its 
 	await expect(page.getByRole('dialog', { name: 'Opções de percurso' })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Iniciar viagem com este percurso' })).toHaveCount(0);
 	await expect(choices.nth(1)).toHaveAttribute('aria-pressed', 'true');
-	await page.getByRole('button', { exact: true, name: 'Melhor' }).click();
+	await page.getByRole('button', { exact: true, name: 'Recomendado' }).click();
 	const sortSheet = page.getByRole('dialog', { name: 'Ordenar' });
 	const sortRows = sortSheet.locator('label');
 	await expect(sortRows).toHaveCount(4);
@@ -58,7 +58,7 @@ test('selected itinerary stays actionable in compact preview and returns to its 
 	})).toBe(true);
 	await expect(sortRows.last()).toBeInViewport({ ratio: 1 });
 	await page.screenshot({ path: '/private/tmp/navegante-sort-sheet.png' });
-	await page.getByRole('radio', { exact: true, name: 'Rápida' }).focus();
+	await page.getByRole('radio', { exact: true, name: 'Mais rápida' }).focus();
 	await page.keyboard.press('Space');
 	await choices.nth(11).scrollIntoViewIfNeeded();
 	const resultsScroller = page.getByRole('dialog', { name: 'Opções de percurso' }).locator('.react-modal-sheet-content-scroller');
@@ -66,7 +66,7 @@ test('selected itinerary stays actionable in compact preview and returns to its 
 	expect(previousScrollTop).toBeGreaterThan(0);
 	await choices.nth(11).click();
 	await preview.getByRole('button', { name: 'Ver alternativas' }).click();
-	await expect(page.getByRole('button', { exact: true, name: 'Rápida' })).toBeVisible();
+	await expect(page.getByRole('button', { exact: true, name: 'Mais rápida' })).toBeVisible();
 	await expect.poll(async () => await resultsScroller.evaluate(element => element.scrollTop)).toBeCloseTo(previousScrollTop, 0);
 	await expect(choices.nth(11)).toHaveAttribute('aria-pressed', 'true');
 	await choices.nth(11).click();

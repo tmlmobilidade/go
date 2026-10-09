@@ -1,6 +1,6 @@
 # Frontend Navegante accessibility execution plan
 
-Last updated: 2026-09-28
+Last updated: 2026-10-09
 
 This plan covers the accessibility gaps found in the current `frontend-navegante-app` source audit. The target is WCAG 2.2 AA behavior in the web UI, followed by verification in the real iOS and Android WebView hosts with VoiceOver and TalkBack.
 
@@ -154,6 +154,13 @@ These tasks can run in parallel, with one agent per row to avoid file conflicts.
 - `tests/accessibility/app-shell.spec.ts`: landmarks/language, touch and selection behavior, keyboard focus ring, global search focus containment/restoration, Escape dismissal, semantic search results, and Axe scans.
 - `tests/accessibility/route-preview.spec.ts`: card selection, compact preview actions, result selection/sort/scroll preservation, starting/ending a trip, compact new results, and route/search cleanup after closing the final sheet.
 - `tests/accessibility/route-accessibility.spec.ts`: nested sort focus containment and restoration, hiding the parent from assistive technology, radio/checkbox semantics and keyboard operation, transport filtering and no-results announcements, labelled date validation, keyboard expansion of compact content, preview focus and background controls, origin/destination modal search, and controlled planning busy/failure/empty states. Axe scans cover filters, preview, route search, and planning errors.
+
+- `tests/accessibility/line-pattern-picker.spec.ts`: modal background hiding, focus containment, visible keyboard targets in a scrolling picker, Escape/close dismissal, keyboard selection, selected state, and trigger focus restoration after the close animation.
+- `tests/accessibility/route-recent-locations.spec.ts`: shared stop/place recents in origin and destination search, keyboard selection from itinerary preview, return-view focus, location-only clearing, input focus restoration, and empty-state announcement.
+- Search pagination coverage verifies that “Ver mais” moves focus to the first newly revealed result. Empty-search expectations now follow the recent-search view, and route-filter selectors use the current labels.
+- Browser tests run with one worker to keep map rendering and animations predictable on the shared development server. The route-leg badge regression passes with endpoint fallback geometry and zoom changes.
+
+The new picker scans disable only `color-contrast` while functional accessibility is verified; contrast remains a separate release gate.
 
 The new route scans allow only the existing `color-contrast` finding tracked by `VISUAL-02`; every other finding fails. Passing these tests does not complete the contrast release gate or replace VoiceOver/TalkBack verification. Remaining automated coverage includes entity-detail loading/unavailable states and feedback completion, plus CI execution of the browser suite.
 

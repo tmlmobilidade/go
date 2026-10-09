@@ -7,9 +7,7 @@ const APP_SHELL_KNOWN_VIOLATIONS = new Map([
 	['color-contrast', 'VISUAL-02'],
 ]);
 
-const SEARCH_SHEET_KNOWN_VIOLATIONS = new Map([
-	['color-contrast', 'VISUAL-02'],
-]);
+const SEARCH_SHEET_KNOWN_VIOLATIONS = new Map<string, string>();
 
 const SEARCH_RESULTS_KNOWN_VIOLATIONS = new Map<string, string>();
 

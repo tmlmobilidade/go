@@ -7,7 +7,7 @@ import { formatStopLocation } from '@/utils/transit/format-stop-location';
 import { IconAlertTriangle, IconArrowBarToRight, IconCheck, IconChevronDown } from '@tabler/icons-react';
 import { type HubV1ApiPattern } from '@tmlmobilidade/go-types-hub';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { useId, useMemo, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -53,6 +53,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value }: Select
 	const { data: stops } = useStopsData();
 	const [isOpen, setIsOpen] = useState(false);
 	const panelId = useId();
+	const triggerRef = useRef<HTMLButtonElement>(null);
 
 	//
 	// B. Transform data
@@ -109,8 +110,10 @@ export function SelectPattern({ date_filter, onChange, patterns, value }: Select
 	return (
 		<>
 			<button
+				ref={triggerRef}
 				aria-controls={isOpen ? panelId : undefined}
 				aria-expanded={isOpen}
+				aria-haspopup="dialog"
 				className={styles.trigger}
 				onClick={handleOpen}
 				type="button"
@@ -130,6 +133,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value }: Select
 				layer="foreground"
 				modality="modal"
 				onClose={() => setIsOpen(false)}
+				onCloseEnd={() => triggerRef.current?.focus({ preventScroll: true })}
 				opened={isOpen}
 				size="half"
 				syncSnapState={false}

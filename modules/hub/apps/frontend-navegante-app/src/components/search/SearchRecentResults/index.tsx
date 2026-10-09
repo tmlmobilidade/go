@@ -52,7 +52,7 @@ export function SearchRecentResults({ hasEntries, isLoading, onClear, onSelect, 
 					))}
 				</ul>
 			) : (
-				<p className={styles.status}>{t('default:search.Search.recent.empty')}</p>
+				<p className={styles.status} role="status">{t('default:search.Search.recent.empty')}</p>
 			)}
 		</section>
 	);

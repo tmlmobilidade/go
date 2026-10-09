@@ -97,6 +97,12 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 		onClear();
 	};
 
+	const handleClearRecentSearches = () => {
+		if (locationPicker) recentSearches.clearLocations();
+		else recentSearches.clear();
+		inputRef.current?.focus();
+	};
+
 	const handleCurrentLocationSelect = async () => {
 		if (!onCurrentLocationSelect || isLocating) return;
 		setCurrentLocationError(false);
@@ -146,7 +152,7 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 				<SearchRecentResults
 					hasEntries={recentEntries.length > 0}
 					isLoading={search.isRecentLoading}
-					onClear={locationPicker ? recentSearches.clearLocations : recentSearches.clear}
+					onClear={handleClearRecentSearches}
 					onSelect={handleSelect}
 					results={search.recentResults}
 				/>
