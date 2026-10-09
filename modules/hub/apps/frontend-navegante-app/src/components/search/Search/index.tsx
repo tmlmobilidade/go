@@ -15,7 +15,7 @@ import { getSearchDraft, setSearchDraft, subscribeToSearchDraft } from '@/utils/
 import { IconCurrentLocation, IconX } from '@tabler/icons-react';
 import { SearchInput, useVersionContext } from '@tmlmobilidade/ui';
 import clsx from 'clsx';
-import { type RefObject, useRef, useState, useSyncExternalStore } from 'react';
+import { type RefObject, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -48,13 +48,16 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 	const internalInputRef = useRef<HTMLInputElement>(null);
 	const inputRef = inputRefProp ?? internalInputRef;
 	const recentSearches = useRecentSearches();
-	const search = useSearch(query, recentSearches.entries);
+	const recentEntries = useMemo(() => locationPicker
+		? recentSearches.entries.filter(entry => entry.type === 'poi' || entry.type === 'stop')
+		: recentSearches.entries, [locationPicker, recentSearches.entries]);
+	const search = useSearch(query, recentEntries);
 	const availableGroups = locationPicker
 		? search.groups.filter(group => group.key === 'poi' || group.key === 'stop')
 		: search.groups;
 	const visibleGroups = selectedType ? availableGroups.filter(group => group.key === selectedType) : availableGroups;
 	const resultCount = visibleGroups.reduce((total, group) => total + group.results.length, 0);
-	const showRecentSearches = !locationPicker && !query.trim() && recentSearches.isReady;
+	const showRecentSearches = !query.trim() && recentSearches.isReady;
 	const showTypeChips = !locationPicker && query.trim().length >= 2;
 	const showVersion = !locationPicker;
 	const inputLabel = placeholder ?? t('default:search.Search.input_label');
@@ -65,7 +68,10 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 	const handleSelect = (result: SearchResult) => {
 		if (locationPicker) {
 			const location = getRoutePlannerLocation(result);
-			if (location) onLocationSelect?.(location);
+			if (location) {
+				recentSearches.add(result);
+				onLocationSelect?.(location);
+			}
 			return;
 		}
 
@@ -138,9 +144,9 @@ export function Search({ inputRef: inputRefProp, locationPicker = false, onCurre
 			))}
 			{showRecentSearches && (
 				<SearchRecentResults
-					hasEntries={recentSearches.entries.length > 0}
+					hasEntries={recentEntries.length > 0}
 					isLoading={search.isRecentLoading}
-					onClear={recentSearches.clear}
+					onClear={locationPicker ? recentSearches.clearLocations : recentSearches.clear}
 					onSelect={handleSelect}
 					results={search.recentResults}
 				/>

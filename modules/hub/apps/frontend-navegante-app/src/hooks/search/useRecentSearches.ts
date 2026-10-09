@@ -11,6 +11,7 @@ import { useCallback, useMemo } from 'react';
 interface UseRecentSearchesReturnType {
 	add: (result: SearchResult) => void
 	clear: () => void
+	clearLocations: () => void
 	entries: RecentSearchEntry[]
 	isReady: boolean
 }
@@ -31,8 +32,9 @@ export function useRecentSearches(): UseRecentSearchesReturnType {
 	}, [setEntries]);
 
 	const clear = useCallback(() => setEntries([]), [setEntries]);
+	const clearLocations = useCallback(() => setEntries(current => current.filter(entry => entry.type !== 'poi' && entry.type !== 'stop')), [setEntries]);
 
-	return useMemo(() => ({ add, clear, entries, isReady }), [add, clear, entries, isReady]);
+	return useMemo(() => ({ add, clear, clearLocations, entries, isReady }), [add, clear, clearLocations, entries, isReady]);
 }
 
 /* * */
