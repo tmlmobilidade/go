@@ -8,7 +8,6 @@ import { ExtractionsListActionDelete } from '../ExtractionsListActionDelete';
 import { ExtractionsListActionDownload } from '../ExtractionsListActionDownload';
 import { ExtractionsListActionLock } from '../ExtractionsListActionLock';
 import { ExtractionsListActionReload } from '../ExtractionsListActionReload';
-import { ExtractionsListFooter } from '../ExtractionsListFooter';
 import { ExtractionsListHeader } from '../ExtractionsListHeader';
 import { ExtractionsListFilterBar } from '../filters/ExtractionsListFilterBar';
 import { useExtractionsListData } from '../use-extractions-list-data';
@@ -75,7 +74,6 @@ export function ExtractionsList() {
 
 	return (
 		<Pane
-			footer={[<ExtractionsListFooter key="footer" />]}
 			header={[
 				<ExtractionsListHeader key="header" />,
 				<ExtractionsListFilterBar key="filter-bar" />,

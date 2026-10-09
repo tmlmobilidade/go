@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction } from '@tmlmobilidade/go-types-extractions';
-import { Button, fetchApiData, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
+import { fetchApiData, ReloadButton, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -32,11 +32,10 @@ export function ExtractionsListActionReload({ extractionItem }: ExtractionsListA
 	// C. Render components
 
 	return (
-		<Button
-			disabled={extractionItem?.is_locked ?? true}
-			loading={isLoading}
-			onClick={handleReload}
-			variant="primary"
+		<ReloadButton
+			isDisabled={extractionItem?.is_locked ?? true}
+			isLoading={isLoading}
+			onReload={handleReload}
 		/>
 	);
 }
