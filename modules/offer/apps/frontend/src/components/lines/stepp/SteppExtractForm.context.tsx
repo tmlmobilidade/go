@@ -1,12 +1,12 @@
 'use client';
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OfferGtfsSteppV1ExtractionCreate, type OfferGtfsSteppV1ExtractionProperties, OfferGtfsSteppV1ExtractionPropertiesSchema, OfferGtfsSteppV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
 import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { closeSteppExtractsModal } from './SteppExtract.modal';
-import { useSteppAgenciesData } from './use-agencies-data';
 
 /* * */
 
@@ -26,7 +26,9 @@ export function SteppExtractFormContextProvider({ children }: PropsWithChildren)
 	//
 	// A. Setup variables
 
-	const { ids: permittedAgencyIds, isLoading: isLoadingAgencies } = useSteppAgenciesData();
+	const { ids: permittedAgencyIds, isLoading: isLoadingAgencies } = useAgenciesData({
+		permissions: { actions: ['extract-stepp'], scope: 'lines' },
+	});
 
 	const { mutate } = useExtractionsListData();
 
