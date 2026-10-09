@@ -28,7 +28,7 @@ export function ValueDisplay({ elevated, footer, icon, isLoading, label, strong,
 				<p className={styles.label}>{label} {icon}</p>
 				{isLoading
 					? <Skeleton height={12} width={230} />
-					: <p className={styles.value} data-strong={strong}>{value}</p>}
+					: <div className={styles.value} data-strong={strong}>{value}</div>}
 				{footer && <p className={styles.footer}>{footer}</p>}
 			</Section>
 		</Surface>

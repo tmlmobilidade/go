@@ -52,12 +52,5 @@ export async function listAgenciesHandler(request: FastifyRequest<{ Body: StopsA
 	//
 	// Parse and return the result
 
-	if (!aggregationResult?.length) {
-		return sendErrorApiResponse(reply, {
-			error: 'No stops agencies found for this user.',
-			status_code: '404',
-		});
-	}
-
 	return sendSuccessApiResponse(reply, aggregationResult);
 }

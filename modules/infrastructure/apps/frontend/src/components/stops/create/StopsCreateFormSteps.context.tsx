@@ -31,7 +31,7 @@ export function StopsCreateFormStepsContextProvider({ children }: PropsWithChild
 
 	const { data: meData } = useMeData();
 
-	const { form } = useStopsCreateFormContext();
+	const { agenciesValid, form, isValid } = useStopsCreateFormContext();
 
 	const latitudeValue = useStandardFormWatch({ control: form.control, name: 'latitude' });
 	const longitudeValue = useStandardFormWatch({ control: form.control, name: 'longitude' });
@@ -75,22 +75,22 @@ export function StopsCreateFormStepsContextProvider({ children }: PropsWithChild
 		{
 			id: 'names',
 			isEnabled: !!latitudeValue && !!longitudeValue,
-			isValid: !!nameValue,
+			isValid: !!nameValue && agenciesValid && isValid,
 			isVisible: true,
 			label: t('default:stops.create.steps.names.label'),
 			order: 1,
-			validate: () => !!form.getValues('name'),
+			validate: () => !!form.getValues('name') && agenciesValid && isValid,
 		},
 		{
 			id: 'summary',
-			isEnabled: !!nameValue,
-			isValid: !!nameValue,
+			isEnabled: !!nameValue && agenciesValid && isValid && hasCreateStopsPermission,
+			isValid: !!nameValue && agenciesValid && isValid && hasCreateStopsPermission,
 			isVisible: true,
 			label: t('default:stops.create.steps.summary.label'),
 			order: 2,
-			validate: () => !!form.getValues('name'),
+			validate: () => !!form.getValues('name') && agenciesValid && isValid && hasCreateStopsPermission,
 		},
-	], [form, hasCreateStopsPermission, latitudeValue, longitudeValue, nameValue, t]);
+	], [agenciesValid, isValid, form, hasCreateStopsPermission, latitudeValue, longitudeValue, nameValue, t]);
 
 	const multiStep = useMultiStep({ steps });
 
