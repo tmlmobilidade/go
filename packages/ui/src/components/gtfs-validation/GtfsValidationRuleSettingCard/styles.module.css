@@ -1,0 +1,24 @@
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	min-width: 0;
+	padding: var(--size-spacing-md);
+	background-color: color-mix(in srgb, var(--color-system-background-100) 65%, var(--color-system-background-200));
+	border: 1px solid color-mix(in srgb, var(--color-system-background-100) 50%, var(--color-system-border-100));
+	border-radius: var(--border-radius-sm);
+}
+
+.header {
+	display: flex;
+	gap: var(--size-spacing-sm);
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.heading {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	min-width: 0;
+}

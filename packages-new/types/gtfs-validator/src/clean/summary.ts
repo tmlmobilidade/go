@@ -1,12 +1,12 @@
 /* * */
 
-import { GtfsValidationMessageSchema } from '@/clean/message.js';
+import { GtfsValidationRuleMessageSchema } from '@/clean/message.js';
 import { z } from 'zod';
 
 /* * */
 
 export const GtfsValidationSummarySchema = z.object({
-	messages: z.array(GtfsValidationMessageSchema),
+	messages: z.array(GtfsValidationRuleMessageSchema),
 	total_errors: z.number(),
 	total_warnings: z.number(),
 });

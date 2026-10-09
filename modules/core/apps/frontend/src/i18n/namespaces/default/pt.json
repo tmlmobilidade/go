@@ -137,53 +137,10 @@
 				},
 				"title": "Planos"
 			},
-			"SectionValidationRules": {
-				"description": "Ficheiro de regras de validação do GTFS",
-				"fields": {
-					"Rules": {
-						"label": "Regras"
-					},
-					"Severity": {
-						"label": "Severidade"
-					},
-					"file": {
-						"button": "Carregar regras",
-						"label": "Inserir regras de validação do GTFS"
-					},
-					"file_content": {
-						"button": "Transferir regras",
-						"label": "Download regras de validação do GTFS",
-						"no_content": "Nenhuma regra de validação definida"
-					}
-				},
-				"title": {
-					"GTFS_validation_rules": {
-						"title": "Regras de validação do GTFS"
-					}
-				},
-
-				"toasts": {
-					"error": {
-						"message": "Não foi possível ler o ficheiro JSON. Verifique o conteúdo.",
-						"title": "Erro ao processar ficheiro."
-					},
-					"file_type": {
-						"message": "O ficheiro submetido excede o limite permitido.",
-						"title": "Tipo de ficheiro inválido."
-					},
-					"max_size": {
-						"message": "O ficheiro submetido excede o limite permitido.",
-						"title": "Ficheiro demasiado grande."
-					},
-					"read_only": {
-						"message": "O documento está em modo de visualização.",
-						"title": "Não é possível atualizar as regras de validação."
-					},
-					"success": {
-						"message": "O ficheiro submetido foi aceite. Guarde as alterações para ativar.",
-						"title": "Regras carregadas."
-					}
-				}
+			"ValidationRules": {
+				"description": "Lista de regras que serão aplicadas à validação do GTFS.",
+				"invalid": "Não é possível guardar as regras:",
+				"title": "Regras de validação do GTFS"
 			},
 			"header": {
 				"save": "Guardar"

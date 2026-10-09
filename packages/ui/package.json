@@ -43,6 +43,7 @@
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
+		"@tmlmobilidade/go-types-gtfs-validator": "*",
 		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-types-offer": "*",
