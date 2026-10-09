@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const OfferGtfsSteppV1ExtractionVersionValue = 'offer-stepp-v1';
+export const OfferGtfsSteppV1ExtractionVersionValue = 'offer-gtfs-stepp-v1';
 
 export const OfferGtfsSteppV1ExtractionVersionSchema = z.literal(OfferGtfsSteppV1ExtractionVersionValue);
 

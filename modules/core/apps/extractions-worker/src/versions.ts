@@ -10,8 +10,8 @@ import { type Extraction, type ExtractionTaskContext, type ExtractionTaskResult 
 
 export const VERSIONS_MAP: Record<Extraction['version'], (context: ExtractionTaskContext, extraction: Extraction) => Promise<ExtractionTaskResult>> = {
 	'infrastructure-stops-v1': extractInfrastructureStopsV1,
+	'offer-gtfs-stepp-v1': extractOfferGtfsSteppV1,
 	'offer-gtfs-v29': extractOfferGtfsV29,
-	'offer-stepp-v1': extractOfferGtfsSteppV1,
 	'operation-rides-v1': operationRidesV1Extraction,
 	'operation-rides-v2': operationRidesV2Extraction,
 	'operation-rides-v3': operationRidesV3Extraction,
