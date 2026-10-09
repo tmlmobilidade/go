@@ -58,13 +58,6 @@ export async function approveGtfsValidationHandler(request: FastifyRequest<{ Par
 				status: 'waiting',
 				timestamp: null,
 			},
-			hub_publish_gtfs_cm: {
-				last_hash: null,
-				message: null,
-				metadata_hash: null,
-				status: 'waiting',
-				timestamp: null,
-			},
 			organizer: {
 				last_hash: null,
 				message: null,

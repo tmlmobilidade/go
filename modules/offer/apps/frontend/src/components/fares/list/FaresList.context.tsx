@@ -5,7 +5,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Fare } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, useFilterStateList, UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, useAgencyFilterOptions, useFilterStateList, UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -54,7 +54,8 @@ export const FaresListContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Setup filters
 
 	const filterSearch = useFilterStateText('search');
-	const filterAgencies = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const groupedAgencyOptions = useAgencyFilterOptions(filteredAgencyOptions);
+	const filterAgencies = useFilterStateList('agency', filteredAgencyIds, groupedAgencyOptions);
 
 	//
 	// B. Fetch data

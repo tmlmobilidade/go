@@ -1,6 +1,6 @@
 'use client';
 
-import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+import { useAgencyFilterOptions, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 import { useGtfsValidationsAgenciesData } from '../../../shared/use-gtfs-validations-agencies-data';
 
@@ -14,5 +14,7 @@ export function useValidationsListFilterAgency(): UseFilterStateListReturnType {
 		permissions: { actions: ['read'], scope: 'gtfs_validations' },
 	});
 
-	return useFilterStateList('agency', ids, options);
+	const groupedOptions = useAgencyFilterOptions(options);
+
+	return useFilterStateList('agency', ids, groupedOptions);
 }

@@ -1,5 +1,6 @@
 {
 	"ListFilter": {
+		"no_organization": "Sin organización",
 		"toggle_all": "Seleccionar todo"
 	},
 	"TagFilter": {

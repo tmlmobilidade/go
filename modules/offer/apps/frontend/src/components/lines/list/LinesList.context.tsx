@@ -6,7 +6,7 @@ import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type LineNormalized } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, type SelectDataItem, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, type SelectDataItem, useAgencyFilterOptions, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -59,7 +59,8 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Setup filters
 
 	const filterSearch = useFilterStateText('search');
-	const filterAgencies = useFilterStateList('agency', agenciesIds, agenciesOptions);
+	const groupedAgencyOptions = useAgencyFilterOptions(agenciesOptions);
+	const filterAgencies = useFilterStateList('agency', agenciesIds, groupedAgencyOptions);
 
 	//
 	// B. Fetch data

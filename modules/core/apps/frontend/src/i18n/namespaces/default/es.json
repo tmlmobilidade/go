@@ -28,6 +28,11 @@
 						"label": "Nombre del operador",
 						"placeholder": "Alsa Todi"
 					},
+					"organizations": {
+						"empty": "No pertenece a ninguna organización",
+						"label": "Organizaciones",
+						"loading": "Cargando organizaciones..."
+					},
 					"phone": {
 						"label": "Contacto telefónico",
 						"placeholder": "912345678"
@@ -116,9 +121,6 @@
 							"eta_enabled": {
 								"label": "Disponibilizar estimativas de llegada"
 							},
-							"gtfs_enabled": {
-								"label": "Disponibilizar GTFS unificado"
-							},
 							"positions_enabled": {
 								"label": "Disponibilizar posiciones de los vehículos"
 							},
@@ -191,6 +193,10 @@
 			}
 		},
 		"list": {
+			"FiltersBar": {
+				"label": "Filtrar por",
+				"organizations": "Organizaciones"
+			},
 			"Header": {
 				"title": "Operadores"
 			},
@@ -199,6 +205,7 @@
 					"code": "Código",
 					"id": "#ID",
 					"name": "Nombre",
+					"organizations": "Organizaciones",
 					"pta_name": "Nombre de la Autoridad"
 				}
 			}
@@ -257,6 +264,13 @@
 			},
 			"SectionBasicInfo": {
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Seleccione los operadores de la organización"
+					},
+					"gtfs_enabled": {
+						"label": "Publicar GTFS de la organización"
+					},
 					"long_name": {
 						"label": "Nombre de la organización",
 						"placeholder": "Carris Metropolitana"
@@ -329,6 +343,10 @@
 			"SectionBasicInfo": {
 				"description": "Detalles como nombre, sigla, logotipo, enlaces de la página de inicio.",
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Seleccione los operadores de la organización"
+					},
 					"logo_dark": {
 						"label": "Logotipo en modo oscuro"
 					},
@@ -345,6 +363,17 @@
 					}
 				},
 				"title": "Información general"
+			},
+			"SectionOpenData": {
+				"description": "Publicar un GTFS con los planes de todos los operadores de la organización.",
+				"fields": {
+					"services": {
+						"gtfs_enabled": {
+							"label": "Publicar GTFS de la organización"
+						}
+					}
+				},
+				"title": "Datos abiertos"
 			}
 		},
 		"list": {
@@ -356,6 +385,9 @@
 			},
 			"table": {
 				"columns": {
+					"gtfs_published": {
+						"label": "GTFS"
+					},
 					"id": {
 						"label": "#ID"
 					},
@@ -697,6 +729,7 @@
 				},
 				"Table": {
 					"columns": {
+						"gtfs_published": "GTFS",
 						"id": "#ID",
 						"name": "Nombre",
 						"permissions": "Permisos"
