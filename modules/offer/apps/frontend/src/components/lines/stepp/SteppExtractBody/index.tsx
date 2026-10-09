@@ -1,7 +1,8 @@
-/* * */
+'use client';
 
 import { useAgenciesData } from '@/components/common/use-agencies-data';
-import { Section, Select } from '@tmlmobilidade/ui';
+import { useSteppExtractFormContext } from '@/components/lines/stepp/SteppExtractForm.context';
+import { Section, Select, StandardFormController } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -11,24 +12,32 @@ export function SteppExtractBody() {
 	//
 	// A. Setup variables
 
-	const { options: agencyOptions } = useAgenciesData();
+	const { isLoading, options: agencyOptions } = useAgenciesData();
+	const { capabilities, form } = useSteppExtractFormContext();
 
 	//
-	// b. Render components
+	// B. Render components
 
 	return (
-		<Section>
-			<Section gap="md">
-				<Select
-					data={agencyOptions}
-					description="Selecione o operador para exportar os dados correspondentes"
-					label="Selecionar operador"
-					onChange={() => {}}
-					placeholder="Selecionar operadores"
-					value={agencyOptions[0].value}
-					w="100%"
-				/>
-			</Section>
+		<Section gap="md">
+			<StandardFormController
+				control={form.control}
+				name="agency_id"
+				render={({ field, fieldState }) => (
+					<Select
+						data={agencyOptions}
+						description="Selecione o operador para exportar os dados correspondentes"
+						disabled={isLoading || !capabilities.editEnabled}
+						error={fieldState.error?.message}
+						label="Selecionar operador"
+						onChange={value => field.onChange(value ?? '')}
+						placeholder="Selecionar operador"
+						value={field.value}
+						w="100%"
+						withAsterisk
+					/>
+				)}
+			/>
 		</Section>
 	);
 }

@@ -3,6 +3,7 @@
 import { closeModal, openModal } from '@tmlmobilidade/ui';
 
 import { SteppExtract } from './SteppExtract';
+import { SteppExtractFormContextProvider } from './SteppExtractForm.context';
 
 /* * */
 
@@ -13,7 +14,9 @@ const MODAL_ID = 'stepp-extract-modal';
 export const openSteppExtractModal = () => {
 	openModal({
 		children: (
-			<SteppExtract />
+			<SteppExtractFormContextProvider>
+				<SteppExtract />
+			</SteppExtractFormContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,
