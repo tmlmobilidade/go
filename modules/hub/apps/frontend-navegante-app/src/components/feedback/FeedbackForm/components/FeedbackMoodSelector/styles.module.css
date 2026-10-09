@@ -1,0 +1,70 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	width: 100%;
+	padding: 16px;
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 8px;
+}
+
+.title {
+	margin: 0;
+	font-size: 17px;
+	font-weight: var(--font-weight-bold);
+	line-height: 1.2;
+	color: var(--color-system-text-100);
+}
+
+.actions {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.action {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	min-width: 0;
+	min-height: 48px;
+	padding: 0 16px;
+	font: inherit;
+	font-size: 16px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	color: var(--color-system-text-200);
+	cursor: pointer;
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 999px;
+	transition: 200ms all ease;
+}
+
+.action:focus-visible {
+	color: var(--color-brand-navegante);
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 2px;
+	border-color: var(--color-brand-navegante);
+}
+
+.action[data-selected='true'] {
+	color: #000;
+	background-color: var(--color-brand-navegante);
+	border-color: var(--color-brand-navegante);
+}
+
+@media (hover: hover) {
+	.action:hover {
+		color: var(--color-brand-navegante);
+		background-color: var(--color-system-background-300);
+		border-color: var(--color-brand-navegante);
+	}
+
+	.action[data-selected='true']:hover {
+		color: #000;
+		background-color: var(--color-brand-navegante);
+	}
+}

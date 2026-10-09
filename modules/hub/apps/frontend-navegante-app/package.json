@@ -10,25 +10,21 @@
 	"scripts": {
 		"build": "next build",
 		"dev": "next dev -p 51101",
-		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ./src"
+		"lint": "eslint ./src --quiet && npm run lint:accessibility && tsc --noEmit",
+		"lint:accessibility": "node scripts/check-accessibility-lint.mjs",
+		"lint:fix": "eslint --fix ./src",
+		"test": "node --import tsx --test tests/*/*.test.ts",
+		"test:accessibility": "playwright test"
 	},
 	"dependencies": {
 		"@amplitude/analytics-browser": "2.45.8",
-		"@mantine/carousel": "9.5.2",
-		"@mantine/charts": "9.5.2",
-		"@mantine/core": "9.5.2",
-		"@mantine/dates": "9.5.2",
-		"@mantine/form": "9.5.2",
-		"@mantine/hooks": "9.5.2",
-		"@mantine/modals": "9.5.2",
-		"@mantine/notifications": "9.5.2",
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-locations": "*",
+		"@tmlmobilidade/go-types-motis": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
@@ -48,21 +44,24 @@
 		"next": "16.3.4",
 		"nuqs": "2.10.1",
 		"react": "19.2.8",
+		"react-aria": "3.52.1",
 		"react-dom": "19.2.8",
 		"react-i18next": "17.0.12",
 		"react-lottie-player": "2.1.0",
 		"react-modal-sheet": "5.6.0",
-		"react-viewport-list": "7.1.2",
 		"sharp": "0.35.4",
 		"swr": "2.5.1"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "4.13.0",
+		"@playwright/test": "1.63.0",
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/node": "26.4.0",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.5",
+		"eslint-plugin-jsx-a11y": "6.10.2",
 		"typescript": "6.0.3"
 	}
 }

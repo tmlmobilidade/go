@@ -1,8 +1,18 @@
 /* * */
-/* LINE NAME */
+/* HEADER SECTION */
+
+.section[data-padding] {
+	padding-top: 0;
+}
+
+/* * */
+/* ALERT TITLE */
 
 .alertTitle {
-	font-size: 20px;
+	flex: 1;
+	min-width: 0;
+	margin: 0;
+	font-size: 18px;
 	font-weight: var(--font-weight-bold);
 	color: var(--color-system-text-100);
 }
@@ -15,5 +25,9 @@
 	flex-direction: row;
 	gap: 15px;
 	align-items: center;
-	justify-content: center;
+}
+
+.agencyLogo {
+	flex-shrink: 0;
+	object-fit: contain;
 }

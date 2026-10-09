@@ -1,15 +1,10 @@
 'use client';
 
-import { AlertsListContextProvider } from '@/components/alerts/list/AlertsList.context';
-import { AlertsListViewList } from '@/components/alerts/list/AlertsListViewList';
-import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { LinesListContextProvider } from '@/components/lines/list/LinesList.context';
-import { LinesListViewAll } from '@/components/lines/list/LinesListViewAll';
-import { SearchToolbar, type SearchType } from '@/components/search/SearchToolbar';
-import { StopsListContextProvider } from '@/components/stops/list/StopsList.context';
-import { StopsListViewList } from '@/components/stops/list/StopsListViewList';
-import { useState } from 'react';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { Search } from '@/components/search/Search';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { clearSearchDraft } from '@/utils/search/search-draft';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -20,41 +15,44 @@ export function SearchDetail() {
 	//
 	// A. Setup variables
 
+	const { activeBottomSheet, pop } = useBottomSheet();
 	const { t } = useTranslation();
-
-	const [searchType, setSearchType] = useState<SearchType>('lines');
-
-	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
+	const inputRef = useRef<HTMLInputElement>(null);
+	const isOpen = activeBottomSheet?.view === 'search';
+	const [isMounted, setIsMounted] = useState(isOpen);
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleOpenStart = () => {
+		setIsMounted(true);
+	};
+
+	const handleClose = () => {
+		clearSearchDraft();
+		pop();
+	};
+
+	if (!isOpen && !isMounted) return null;
+
+	//
+	// C. Render components
 
 	return (
 		<BottomSheet
-			onClose={closeActiveBottomSheet}
-			opened={activeBottomSheet?.view === 'search'}
+			accessibleTitle={t('default:search.Search.title')}
+			avoidKeyboard={false}
+			headerMode="handle"
+			initialFocusRef={inputRef}
+			modality="modal"
+			onClose={handleClose}
+			onCloseEnd={() => setIsMounted(false)}
+			onOpenStart={handleOpenStart}
+			opened={isOpen}
 			size="full"
-			title={t('default:search.SearchDetail.title')}
+			withCompactCloseButton
 		>
-			<SearchToolbar onChangeSearchType={setSearchType} searchType={searchType} />
-
-			{searchType === 'lines' && (
-				<LinesListContextProvider>
-					<LinesListViewAll />
-				</LinesListContextProvider>
-			)}
-
-			{searchType === 'stops' && (
-				<StopsListContextProvider>
-					<StopsListViewList />
-				</StopsListContextProvider>
-			)}
-
-			{searchType === 'alerts' && (
-				<AlertsListContextProvider>
-					<AlertsListViewList />
-				</AlertsListContextProvider>
-			)}
+			<Search inputRef={inputRef} />
 		</BottomSheet>
 	);
 }

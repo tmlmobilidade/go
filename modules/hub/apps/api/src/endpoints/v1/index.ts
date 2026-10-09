@@ -7,3 +7,5 @@ import './network/routes.js';
 import './plans/routes.js';
 import './realtime/routes.js';
 import './vehicles/routes.js';
+import './motis/routes.js';
+import './feedback/routes.js';

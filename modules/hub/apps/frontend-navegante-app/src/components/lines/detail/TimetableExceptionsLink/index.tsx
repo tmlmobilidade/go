@@ -52,11 +52,7 @@ export function TimetableExceptionsLink({ exceptionData, selectedExceptionIds, s
 	// D. Render components
 
 	return (
-		<div
-			className={`${styles.container} ${isSelected && styles.isSelected} ${!isSelected && selectedExceptionIds.length > 0 && styles.isOthersSelected}`}
-			onMouseOut={handleMouseOutException}
-			onMouseOver={handleMouseOverException}
-		>
+		<div className={`${styles.container} ${isSelected && styles.isSelected} ${!isSelected && selectedExceptionIds.length > 0 && styles.isOthersSelected}`}>
 			{exceptionData.type === 'variant' && (
 				<Trans
 					i18nKey={'lines.TimetableExceptionsLink.variant' as never}
@@ -64,9 +60,18 @@ export function TimetableExceptionsLink({ exceptionData, selectedExceptionIds, s
 					components={[
 						<span key="exception-id" className={styles.exceptionId} />,
 						<span key="route-long-name" className={styles.routeLongName} />,
-						<span key="pattern-headsign" className={styles.patternHeadsign} onClick={handleExceptionClick}>
-							<IconArrowUpRight className={styles.icon} />
-						</span>,
+						<button
+							key="pattern-headsign"
+							className={styles.patternHeadsign}
+							onBlur={handleMouseOutException}
+							onClick={handleExceptionClick}
+							onFocus={handleMouseOverException}
+							onMouseOut={handleMouseOutException}
+							onMouseOver={handleMouseOverException}
+							type="button"
+						>
+							<IconArrowUpRight aria-hidden="true" className={styles.icon} />
+						</button>,
 					] as ReactElement[]}
 					values={{
 						exception_id: exceptionData.exception_id,

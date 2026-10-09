@@ -3,41 +3,54 @@
 
 .container {
 	position: fixed;
-	top: 15px;
+	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
 	left: 15px;
+	z-index: 15;
 	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	color: var(--color-system-text-400);
-	background-color: var(--color-system-background-100);
-	border-radius: 16px;
-	box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+	color: var(--color-system-text-100);
+	pointer-events: none;
+	transition: top 180ms ease, opacity 180ms ease;
+}
+
+.container[data-layout='hidden'] {
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
 }
 
 /* * */
-/* BUTTON */
+/* TRIGGER */
 
-.button {
+.trigger {
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 50px;
+	min-width: 50px;
 	height: 50px;
-	border-bottom: 1px solid var(--color-system-border-100);
-	transition: 100ms all ease;
-}
-
-.button:last-child {
-	border-bottom: none;
-}
-
-.button:active {
-	background-color: var(--color-system-background-200);
-}
-
-/* * */
-/* PROPS / ENABLED */
-
-.button[data-enabled="true"] {
+	min-height: 50px;
 	color: var(--color-system-text-100);
+	pointer-events: all;
+	cursor: pointer;
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 16px;
+	box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+	transition: 160ms all ease;
+}
+
+.trigger:active {
+	background-color: var(--color-system-background-200);
+	transform: scale(0.96);
+}
+
+.trigger:focus-visible {
+	outline: 3px solid var(--color-status-active-primary);
+	outline-offset: 2px;
+}
+
+.trigger[data-open='true'] {
+	color: var(--color-status-active-contrast);
+	background-color: var(--color-status-active-primary);
 }

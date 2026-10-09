@@ -1,0 +1,39 @@
+.linePill {
+	display: inline-flex;
+	align-items: center;
+	overflow: hidden;
+	font-weight: 900;
+	line-height: 1;
+	color: var(--color-route-on-accent);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	background-color: var(--color-route-line-fallback);
+	border-radius: 999px;
+}
+
+.linePill[data-size='sm'] {
+	max-width: 92px;
+	height: 22px;
+	padding: 0 8px;
+	font-size: 12px;
+}
+
+.linePill[data-size='md'] {
+	max-width: 170px;
+	height: 26px;
+	padding: 0 10px;
+	font-size: 13px;
+}
+
+.linePill[data-size='lg'] {
+	max-width: 170px;
+	height: 34px;
+	padding: 0 12px;
+	font-size: 18px;
+}
+
+.linePill[data-mode='walk'] {
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
+}
