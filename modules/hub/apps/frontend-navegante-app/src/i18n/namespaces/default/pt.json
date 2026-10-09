@@ -176,7 +176,7 @@
 			"title": "Horários planeados nesta paragem:"
 		},
 		"SelectActivePatternGroup": {
-			"placeholder": "Selecionar percurso/destino..."
+			"placeholder": "Selecionar percurso"
 		},
 		"SelectActivePatternGroupExplainer": {
 			"title": "Explicação",
@@ -191,8 +191,9 @@
 			"destination": "Destino: {destination}",
 			"invalid_option": "Percurso inválido: {pattern_id}",
 			"invalid_option_label": "Percurso: {message}",
+			"no_results": "Nenhum percurso encontrado.",
 			"option_label": "Início do percurso: {locality}",
-			"placeholder": "Selecionar Percurso / Destino..."
+			"placeholder": "Selecionar percurso"
 		},
 		"TimetableExceptionsLink": {
 			"variant": "<0>{exception_id})</0> Percurso <1>{route_long_name}</1> com destino a <2>{pattern_headsign}</2>"

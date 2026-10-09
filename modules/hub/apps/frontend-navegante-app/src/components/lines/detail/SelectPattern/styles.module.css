@@ -1,0 +1,95 @@
+.trigger {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	width: 100%;
+	min-height: 48px;
+	padding: 8px 12px;
+	font: inherit;
+	color: var(--color-system-text-100);
+	text-align: left;
+	cursor: pointer;
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 6px;
+}
+
+.triggerLabel {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.panel {
+	min-width: 0;
+	padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+	background-color: var(--color-system-background-100);
+}
+
+.group {
+	margin-bottom: 12px;
+}
+
+.groupTitle {
+	margin: 0;
+	padding: 8px 4px;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--color-system-text-200);
+}
+
+.option {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	width: 100%;
+	min-height: 60px;
+	padding: 10px 4px;
+	font: inherit;
+	color: var(--color-system-text-100);
+	text-align: left;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.option[data-selected='true'] {
+	color: var(--color-route-status-info);
+}
+
+.option:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.optionText {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+
+.optionTitle {
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.optionSubtitle {
+	font-size: 13px;
+	color: var(--color-system-text-300);
+}
+
+.empty {
+	padding: 16px 4px;
+	color: var(--color-system-text-300);
+}
+
+.trigger:focus-visible,
+.option:focus-visible {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 2px;
+}
