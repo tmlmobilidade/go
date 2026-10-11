@@ -5,7 +5,7 @@ import { type PeriodNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, useAgencyFilterOptions, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -58,7 +58,8 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Setup filters
 
 	const filterSearch = useFilterStateText('search');
-	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const groupedAgencyOptions = useAgencyFilterOptions(filteredAgencyOptions);
+	const filterAgency = useFilterStateList('agency', filteredAgencyIds, groupedAgencyOptions);
 
 	//
 	// C. Transform data

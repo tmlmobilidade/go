@@ -28,6 +28,11 @@
 						"label": "Nome do Operador",
 						"placeholder": "Alsa Todi"
 					},
+					"organizations": {
+						"empty": "Não pertence a nenhuma organização",
+						"label": "Organizações",
+						"loading": "A carregar organizações..."
+					},
 					"phone": {
 						"label": "Contacto Telefónico",
 						"placeholder": "912345678"
@@ -104,9 +109,6 @@
 					"services": {
 						"eta_enabled": {
 							"label": "Disponibilizar estimativas de chegada"
-						},
-						"gtfs_enabled": {
-							"label": "Disponibilizar GTFS unificado"
 						},
 						"positions_enabled": {
 							"label": "Disponibilizar posições dos veículos"
@@ -190,6 +192,10 @@
 			}
 		},
 		"list": {
+			"FiltersBar": {
+				"label": "Filtrar por",
+				"organizations": "Organizações"
+			},
 			"Header": {
 				"title": "Operadores"
 			},
@@ -198,6 +204,7 @@
 					"code": "Código",
 					"id": "#ID",
 					"name": "Nome",
+					"organizations": "Organizações",
 					"pta_name": "Nome da Autoridade"
 				}
 			}
@@ -256,6 +263,13 @@
 			},
 			"SectionBasicInfo": {
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Selecione os operadores da organização"
+					},
+					"gtfs_enabled": {
+						"label": "Publicar GTFS da organização"
+					},
 					"long_name": {
 						"label": "Nome da organização",
 						"placeholder": "Carris Metropolitana"
@@ -328,6 +342,10 @@
 			"SectionBasicInfo": {
 				"description": "Detalhes como nome, sigla, logótipo, links da página inicial.",
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Selecione os operadores da organização"
+					},
 					"logo_dark": {
 						"label": "Logótipo em Modo Escuro"
 					},
@@ -344,6 +362,17 @@
 					}
 				},
 				"title": "Informações gerais"
+			},
+			"SectionOpenData": {
+				"description": "Publicar um GTFS com os planos de todos os operadores da organização.",
+				"fields": {
+					"services": {
+						"gtfs_enabled": {
+							"label": "Publicar GTFS da organização"
+						}
+					}
+				},
+				"title": "Dados abertos"
 			}
 		},
 		"list": {
@@ -355,6 +384,9 @@
 			},
 			"table": {
 				"columns": {
+					"gtfs_published": {
+						"label": "GTFS"
+					},
 					"id": {
 						"label": "#ID"
 					},

@@ -52,6 +52,7 @@ export function useRidesAgenciesData(): UseRidesAgenciesDataReturnType {
 			checked: false,
 			disabled: false,
 			label: `[${item._id}] ${item.code} - ${item.name}`,
+			sortLabel: `${item.code} - ${item.name}`,
 			value: item._id,
 		}));
 	}, [data?.data]);

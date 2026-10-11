@@ -7,7 +7,9 @@ import { Select as MantineSelect, type SelectProps as MantineSelectProps } from 
 export interface SelectDataItem {
 	checked?: boolean
 	disabled?: boolean
+	group?: string
 	label: string
+	sortLabel?: string
 	value: string
 };
 

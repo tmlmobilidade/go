@@ -4,7 +4,7 @@ import { Checkbox, ScrollArea } from '@mantine/core';
 import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { SelectDataItem } from '../../../components';
+import { Label, type SelectDataItem } from '../../../components';
 import { FilterWrapper, FilterWrapperRef } from '../../shared';
 
 /* * */
@@ -41,7 +41,7 @@ export function ListFilter({ active, disabled, isMultiple = true, label, onChang
 
 	const checkedOptionValues = useMemo(() => {
 		if (!options?.length) return [];
-		return options.filter(o => o.checked).map(o => o.value);
+		return [...new Set(options.filter(o => o.checked).map(o => o.value))];
 	}, [options]);
 
 	const toggleAllActive = useMemo(() => {
@@ -55,7 +55,7 @@ export function ListFilter({ active, disabled, isMultiple = true, label, onChang
 		// If single selection mode and withToggleAll is true,
 		// add "all" as first option.
 		if (!isMultiple && withToggleAll) {
-			const allOption = {
+			const allOption: SelectDataItem = {
 				checked: toggleAllActive,
 				disabled: false,
 				label: t('shared:filters.ListFilter.toggle_all'),
@@ -66,13 +66,24 @@ export function ListFilter({ active, disabled, isMultiple = true, label, onChang
 		return options;
 	}, [options, isMultiple, withToggleAll, toggleAllActive, t]);
 
+	const optionGroups = useMemo(() => {
+		const groups = new Map<string, SelectDataItem[]>();
+		for (const option of displayOptions) {
+			const group = option.group ?? '';
+			const groupOptions = groups.get(group) ?? [];
+			groupOptions.push(option);
+			groups.set(group, groupOptions);
+		}
+		return [...groups.entries()];
+	}, [displayOptions]);
+
 	//
 	// C. Handle actions
 
 	const handleMultiToggleAll = () => {
 		if (!onChange || !options) return;
 		if (toggleAllActive) onChange([]);
-		else onChange(options.map(o => o.value));
+		else onChange([...new Set(options.map(o => o.value))]);
 	};
 
 	const handleSingleOptionSelect = (value: string) => {
@@ -84,7 +95,7 @@ export function ListFilter({ active, disabled, isMultiple = true, label, onChang
 
 	const handleSingleAllSelect = () => {
 		// For "all" option, select all available options (excluding "all" itself)
-		const allValues = options.map(opt => opt.value) || [];
+		const allValues = [...new Set(options.map(opt => opt.value))];
 		if (onChange) onChange(allValues);
 		// Also close dropdown for "all" selection
 		filterWrapperRef.current?.close();
@@ -113,28 +124,31 @@ export function ListFilter({ active, disabled, isMultiple = true, label, onChang
 					/>
 				)}
 
-				{isMultiple && (
+				{isMultiple ? (
 					<Checkbox.Group onChange={onChange} value={checkedOptionValues}>
-						{options?.map(option => (
+						{optionGroups.map(([group, groupOptions]) => (
+							<div key={group}>
+								{group && <Label size="sm" variant="muted">{group}</Label>}
+								{groupOptions.map(option => (
+									<Checkbox key={option.value} disabled={option.disabled} label={option.label} value={option.value} />
+								))}
+							</div>
+						))}
+					</Checkbox.Group>
+				) : optionGroups.map(([group, groupOptions]) => (
+					<div key={group}>
+						{group && <Label size="sm" variant="muted">{group}</Label>}
+						{groupOptions.map(option => (
 							<Checkbox
 								key={option.value}
+								checked={checkedOptionValues.includes(option.value) || (option.value === 'all' && toggleAllActive)}
 								disabled={option.disabled}
 								label={option.label}
+								onChange={() => handleOptionSelect(option)}
 								value={option.value}
 							/>
 						))}
-					</Checkbox.Group>
-				)}
-
-				{!isMultiple && displayOptions?.map(option => (
-					<Checkbox
-						key={option.value}
-						checked={checkedOptionValues.includes(option.value) || (option.value === 'all' && toggleAllActive)}
-						disabled={option.disabled}
-						label={option.label}
-						onChange={() => handleOptionSelect(option)}
-						value={option.value}
-					/>
+					</div>
 				))}
 
 			</ScrollArea.Autosize>

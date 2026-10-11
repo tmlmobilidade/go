@@ -1,7 +1,7 @@
 'use client';
 
 import { useRidesAgenciesData } from '@/components/rides/shared/use-rides-agencies-data';
-import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+import { useAgencyFilterOptions, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
  * Hook to manage the agency IDs filter for the rides list filter bar.
@@ -12,5 +12,7 @@ export function useRidesListFilterAgency(): UseFilterStateListReturnType {
 
 	const { ids, options } = useRidesAgenciesData();
 
-	return useFilterStateList('agency', ids, options);
+	const groupedOptions = useAgencyFilterOptions(options);
+
+	return useFilterStateList('agency', ids, groupedOptions);
 }

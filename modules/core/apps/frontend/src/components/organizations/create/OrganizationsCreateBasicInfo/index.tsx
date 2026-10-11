@@ -1,9 +1,10 @@
 'use client';
 
 import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, Section, StandardFormController, Switch, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
+import { useOrganizationsAgenciesData } from '../../shared/use-organizations-agencies-data';
 import { useOrganizationsCreateFormContext } from '../OrganizationsCreateForm.context';
 
 /* * */
@@ -17,6 +18,8 @@ export function OrganizationsCreateBasicInfo() {
 	const { t } = useTranslation();
 
 	const { capabilities, form } = useOrganizationsCreateFormContext();
+
+	const { error: agenciesError, isLoading: agenciesLoading, options: agenciesOptions } = useOrganizationsAgenciesData();
 
 	//
 	// B. Render components
@@ -58,6 +61,38 @@ export function OrganizationsCreateBasicInfo() {
 							placeholder={t('default:organizations.create.SectionBasicInfo.fields.short_name.placeholder')}
 							value={field.value ?? ''}
 							withAsterisk
+						/>
+					)}
+				/>
+
+				<StandardFormController
+					control={form.control}
+					name="agency_ids"
+					render={({ field, fieldState }) => (
+						<MultiSelect
+							data={agenciesOptions}
+							disabled={agenciesLoading}
+							error={fieldState.error?.message ?? agenciesError}
+							label={t('default:organizations.create.SectionBasicInfo.fields.agency_ids.label')}
+							onBlur={field.onBlur}
+							onChange={field.onChange}
+							placeholder={t('default:organizations.create.SectionBasicInfo.fields.agency_ids.placeholder')}
+							readOnly={!capabilities.editEnabled}
+							value={field.value ?? []}
+						/>
+					)}
+				/>
+
+				<StandardFormController
+					control={form.control}
+					name="open_data.gtfs.enabled"
+					render={({ field, fieldState }) => (
+						<Switch
+							checked={field.value ?? false}
+							error={fieldState.error?.message}
+							label={t('default:organizations.create.SectionBasicInfo.fields.gtfs_enabled.label')}
+							onChange={field.onChange}
+							readOnly={!capabilities.editEnabled}
 						/>
 					)}
 				/>

@@ -301,7 +301,7 @@ scan_api_routes() {
 
             # Extract all variables from combined namespace and path for later use
             local combined_path="${namespace}/${clean_path}"
-            local route_variables=$(echo "$combined_path" | grep -oE ':[a-zA-Z][a-zA-Z0-9]*' | sort -u | tr '\n' ' ' | sed 's/ $//')
+            local route_variables=$(echo "$combined_path" | grep -oE ':[a-zA-Z][a-zA-Z0-9]*' | awk '!seen[$0]++' | tr '\n' ' ' | sed 's/ $//')
 
             # Combine namespace and path (namespace already has leading slash removed by extraction)
             if [ "$path" = "/" ] || [ -z "$clean_path" ]; then
@@ -336,8 +336,8 @@ scan_api_routes() {
 
             # Build route name
             if [ "$path" = "/" ] || [ -z "$clean_path" ]; then
-                # Root path - check if namespace contains any variable to determine if it's a detail route
-                if echo "$namespace" | grep -qE ':[a-zA-Z][a-zA-Z0-9]*'; then
+                # Root path is a detail only when the namespace ends in a parameter.
+                if echo "$namespace" | grep -qE ':[a-zA-Z][a-zA-Z0-9]*$'; then
                     local route_name=$(to_snake_case "${last_namespace_part}_DETAIL")
                 else
                     local route_name=$(to_snake_case "${last_namespace_part}_LIST")
@@ -382,6 +382,10 @@ scan_api_routes() {
                 local route_name=$(to_snake_case "${last_namespace_part}_${route_suffix}")
             fi
             route_name=$(sanitize_route_name "$route_name")
+            if [ "$module_name" = "hub" ] && { [ "$namespace" = "v1/agencies" ] || [ "$namespace" = "v1/organizations" ]; }; then
+                route_name="CORE_${route_name}"
+                file_name="core"
+            fi
 
             # Include file name and variables in route storage: route_name:route_path|file_name|variables
             routes+=("${route_name}:${route_path}|${file_name}|${route_variables}")
