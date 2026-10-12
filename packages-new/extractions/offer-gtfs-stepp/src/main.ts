@@ -3,6 +3,7 @@
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendar } from '@/exports/calendar.js';
 import { exportCalendarDates } from '@/exports/calendar_dates.js';
+import { exportRoute } from '@/exports/routes.js';
 import { exportShape } from '@/exports/shapes.js';
 import { exportStopTimesForPattern } from '@/exports/stop_times.js';
 import { exportStop } from '@/exports/stops.js';
@@ -69,11 +70,13 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 	try {
 		//
 
+		Logger.info({ message: `` });
 		Logger.info({ message: '* * *' });
 		Logger.info({ message: '* GTFS STEPP v1 : NEW EXPORT' });
 		Logger.info({ message: `* Agency ID: ${exportConfig.agency_id}` });
 		Logger.info({ message: `* Dates: ${exportConfig.start_date} to ${exportConfig.end_date}` });
 		Logger.info({ message: '* * *' });
+		Logger.info({ message: `` });
 
 		// Clear existing CSV files to ensure fresh export
 		await clearExportFiles(exportConfig);
@@ -146,6 +149,8 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 
 			for (const routeData of lineRoutes) {
 				//
+
+				await exportRoute(agencyData, lineData, routeData, exportConfig);
 
 				const routePatterns = await goDb.offer.patterns.findMany({
 					line_id: lineData._id,
@@ -226,6 +231,7 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 		await exportConfig.writers.agency.flush();
 		await exportConfig.writers.calendar.flush();
 		await exportConfig.writers.calendar_dates.flush();
+		await exportConfig.writers.routes.flush();
 		await exportConfig.writers.shapes.flush();
 		await exportConfig.writers.stop_times.flush();
 		await exportConfig.writers.stops.flush();
