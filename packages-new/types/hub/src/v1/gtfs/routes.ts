@@ -5,7 +5,9 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubV1GtfsRoutesSchema = GtfsRoutesSchema;
+export const HubV1GtfsRoutesSchema = GtfsRoutesSchema.extend({
+	line_id: z.string(),
+});
 
 /**
  * Representation of a GTFS route for the Hub V1 GTFS that is being created.
