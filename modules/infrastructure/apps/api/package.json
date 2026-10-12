@@ -16,7 +16,8 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint:fix": "eslint --fix .",
+		"test": "node --import tsx --experimental-test-module-mocks --test tests/*.test.mjs"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",

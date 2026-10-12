@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-const AGENCY_ORDER = ['LTP61', 'IA2N9', 'KB1F6', '7NTB1', 'CM', 'IA9T6', 'A3H3M'] as const;
+const AGENCY_ORDER = ['LTP61', 'IA2N9', 'KB1F6', 'N18KL', '7NTB1', 'CM', 'IA9T6', 'A3H3M'] as const;
 
 /* * */
 
