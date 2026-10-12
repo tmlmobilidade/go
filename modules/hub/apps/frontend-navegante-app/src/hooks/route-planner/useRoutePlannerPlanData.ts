@@ -20,7 +20,7 @@ interface RoutePlanRequest {
 interface UseRoutePlannerPlanDataReturnType {
 	isLoading: boolean
 	itineraries: MotisItinerary[]
-	requestPlan: (request: RoutePlanRequest) => Promise<HubV1ApiMotisPlanResponse>
+	requestPlan: (request: RoutePlanRequest) => Promise<HubV1ApiMotisPlanResponse | undefined>
 	reset: () => void
 }
 

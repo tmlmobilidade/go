@@ -15,7 +15,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface UseRoutePlannerMapDataParams {
+interface UseRoutePlannerMapLayersParams {
 	activeBottomSheet: ReturnType<typeof useBottomSheet>['activeBottomSheet']
 	alerts: HubV1ApiAlert[]
 	alertsFeatureCollection: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
@@ -23,7 +23,7 @@ interface UseRoutePlannerMapDataParams {
 
 /* * */
 
-export function useRoutePlannerMapData({ activeBottomSheet, alerts: allAlerts, alertsFeatureCollection }: UseRoutePlannerMapDataParams) {
+export function useRoutePlannerMapLayers({ activeBottomSheet, alerts: allAlerts, alertsFeatureCollection }: UseRoutePlannerMapLayersParams) {
 	//
 
 	//

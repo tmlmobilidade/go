@@ -3,8 +3,8 @@
 import { useAlertsMapData } from '@/components/alerts/use-alerts-map-data';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { useVehiclesMapData } from '@/components/vehicles/use-vehicles-map-data';
-import { useRoutePlannerMapData } from '@/hooks/base-map/useRoutePlannerMapData';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { useRoutePlannerMapLayers } from '@/hooks/route-planner/useRoutePlannerMapLayers';
 import { type BaseMapOperatorId } from '@/lib/agency-catalog';
 import { getBaseMapAlertsMapData, getBaseMapVehiclesMapData, getLineDetailVehicleSelection } from '@/utils/map/base-map-data';
 import { useMemo } from 'react';
@@ -29,7 +29,7 @@ export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
 	const { data: alertsFeatureCollection, entities: alerts } = useAlertsMapData();
 	const linesDetailContext = useLinesDetailContext();
 	const { data: vehiclesFeatureCollection } = useVehiclesMapData();
-	const routePlannerMapData = useRoutePlannerMapData({ activeBottomSheet: params.activeBottomSheet, alerts, alertsFeatureCollection });
+	const routePlannerMapData = useRoutePlannerMapLayers({ activeBottomSheet: params.activeBottomSheet, alerts, alertsFeatureCollection });
 
 	//
 	// B. Transform data

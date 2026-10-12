@@ -33,10 +33,11 @@ tests/
 | --- | --- |
 | `common/` | Sheet navigation and snap behavior, map filtering and geometry, location sensors, search normalization, agency/vehicle matching, translations, and analytics. |
 | `feedback/` | Reason selection, navigation between steps, and submission cooldowns. |
-| `route-planner/` | MOTIS request parameters, location mapping, modes, sorting/filtering, itinerary geometry and progress, navigation decisions, announcement rules, and realtime departure deviations. |
+| `route-planner/` | MOTIS request parameters, location mapping, modes, sorting/filtering, itinerary geometry and progress, navigation decisions, planner state transitions, announcement rules, and realtime departure deviations. |
 | `accessibility/app-shell.spec.ts` | Language and landmarks, focus styling, touch/text selection behavior, global search focus containment/restoration, Escape dismissal, semantic search results, and Axe scans. |
 | `accessibility/route-accessibility.spec.ts` | Nested filters, keyboard focus containment/restoration, radios and checkboxes, date validation, compact-sheet expansion, preview focus, origin/destination search, planning busy/error/empty states, and Axe scans of those views. |
 | `accessibility/route-preview.spec.ts` | Card selection and compact previews, visible trip actions, result selection/filter/scroll preservation, starting/ending trips, and clearing route/search state when the final sheet closes. |
+| `accessibility/route-request-races.spec.ts` | Delayed planning and restoration responses, clearing pending routes, and reporting current failures while preserving the endpoint picker. |
 
 ## Running tests
 
@@ -118,7 +119,7 @@ npm run test:accessibility -- route-accessibility.spec.ts --debug
 
 The route-preview test also writes a diagnostic screenshot to `/private/tmp/navegante-route-preview.png`. It is not a screenshot comparison or visual regression assertion.
 
-As of 2026-09-28, source ESLint and the static accessibility baseline pass, but the full `lint` command reaches an existing TypeScript error in `packages/ui/src/contexts/Locale.context.tsx` caused by incompatible `i18next` types from two dependency locations. Treat that separately from a failing test; update this note once resolved.
+As of 2026-10-12, the full `lint` command passes, including source ESLint, the static accessibility baseline, and TypeScript.
 
 ## Adding coverage
 
