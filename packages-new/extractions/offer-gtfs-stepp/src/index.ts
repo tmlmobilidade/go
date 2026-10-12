@@ -48,6 +48,7 @@ export async function extractOfferGtfsSteppV1(context: ExtractionTaskContext, ex
 		agency_id: permittedAgencyId,
 		end_date: validatedProperties.end_date,
 		start_date: validatedProperties.start_date,
+		stop_sequence_start: 1,
 		workdir: context.output_path,
 		writers: {
 			agency: new CsvWriter('agency.txt', `${context.output_path}/agency.txt`),
@@ -55,6 +56,7 @@ export async function extractOfferGtfsSteppV1(context: ExtractionTaskContext, ex
 			calendar_dates: new CsvWriter('calendar_dates.txt', `${context.output_path}/calendar_dates.txt`),
 			routes: new CsvWriter('routes.txt', `${context.output_path}/routes.txt`),
 			shapes: new CsvWriter('shapes.txt', `${context.output_path}/shapes.txt`),
+			stop_times: new CsvWriter('stop_times.txt', `${context.output_path}/stop_times.txt`),
 			stops: new CsvWriter('stops.txt', `${context.output_path}/stops.txt`),
 			trips: new CsvWriter('trips.txt', `${context.output_path}/trips.txt`),
 		},

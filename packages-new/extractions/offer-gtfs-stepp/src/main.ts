@@ -4,6 +4,7 @@ import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendar } from '@/exports/calendar.js';
 import { exportCalendarDates } from '@/exports/calendar_dates.js';
 import { exportShape } from '@/exports/shapes.js';
+import { exportStopTimesForPattern } from '@/exports/stop_times.js';
 import { exportStop } from '@/exports/stops.js';
 import { exportTripsForPattern } from '@/exports/trips.js';
 import { type ExportProgress, type GtfsSteppV1ExportConfig } from '@/types.js';
@@ -169,7 +170,7 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 
 					// Export trips for this pattern (will deduplicate serviceIds across patterns).
 					// This is also what fills the service registry used by calendar.txt and calendar_dates.txt.
-					await exportTripsForPattern(
+					const tripSchedules = await exportTripsForPattern(
 						routeData,
 						patternData,
 						shapeId,
@@ -181,6 +182,8 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 						serviceRegistry,
 						exportConfig,
 					);
+
+					await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, exportConfig.agency_id);
 				}
 
 				Logger.info({ message: `  Processed route ${routeData.code} with ${routePatterns.length} patterns` });
@@ -224,6 +227,7 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 		await exportConfig.writers.calendar.flush();
 		await exportConfig.writers.calendar_dates.flush();
 		await exportConfig.writers.shapes.flush();
+		await exportConfig.writers.stop_times.flush();
 		await exportConfig.writers.stops.flush();
 		await exportConfig.writers.trips.flush();
 

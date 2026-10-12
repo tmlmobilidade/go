@@ -1,14 +1,14 @@
+/* eslint-disable perfectionist/sort-objects */
 /* * */
 
 import { type TripSchedule } from '@/exports/trips.js';
 import { type GtfsSteppV1ExportConfig } from '@/types.js';
 import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
-import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30SteppStopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/go-types-offer';
 import { OperationalTimeSchema } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { metersToGtfsKm } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 
@@ -85,7 +85,6 @@ export async function exportStopTimesForPattern(
 			const stopDwellSeconds = travelTimes.stopDwellSeconds.raw;
 
 			let currentSeconds = timepointToSeconds(tripSchedule.timepoint);
-			let cumulativeDistanceMeters = 0;
 
 			for (let i = 0; i < mergedPath.length; i++) {
 				const pathItem = mergedPath[i];
@@ -96,26 +95,16 @@ export async function exportStopTimesForPattern(
 				const departureSeconds = arrivalSeconds + dwellSeconds;
 				currentSeconds = departureSeconds;
 
-				if (i > 0) {
-					cumulativeDistanceMeters += pathItem.distance_delta ?? 0;
-				}
-
 				// If pathItem.stop is present, use agency-specific stop_id; else fallback to pathItem.stop_id
 				const currentStopData = stopsData.find(s => String(s._id) === String(pathItem.stop_id));
 				const stopId = currentStopData ? getAgencyStopId(currentStopData, agencyId) : String(pathItem.stop_id);
 
-				const stopTimeRow: GtfsStrictV29StopTimes = {
+				const stopTimeRow: GtfsStrictV30SteppStopTimes = {
+					trip_id: tripSchedule.trip_id,
 					arrival_time: OperationalTimeSchema.parse(formatGtfsTime(arrivalSeconds)),
-					// continuous_drop_off: '0',
-					// continuous_pickup: '0',
 					departure_time: OperationalTimeSchema.parse(formatGtfsTime(departureSeconds)),
-					drop_off_type: pathItem.allow_drop_off ? '0' : '1',
-					pickup_type: pathItem.allow_pickup ? '0' : '1',
-					shape_dist_traveled: metersToGtfsKm(cumulativeDistanceMeters),
 					stop_id: stopId,
 					stop_sequence: exportConfig.stop_sequence_start + i,
-					timepoint: pathItem.timepoint ? '1' : '0',
-					trip_id: tripSchedule.trip_id,
 				};
 
 				await exportConfig.writers.stop_times.write(stopTimeRow);
