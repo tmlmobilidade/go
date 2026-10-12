@@ -25,6 +25,7 @@
 		"@tmlmobilidade/go-extractions-offer-gtfs-stepp": "*",
 		"@tmlmobilidade/go-extractions-operation-rides": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-locationsdb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-extractions": "*",

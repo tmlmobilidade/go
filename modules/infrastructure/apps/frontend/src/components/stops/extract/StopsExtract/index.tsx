@@ -1,52 +1,24 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Extraction, type InfrastructureStopsV1ExtractionCreate } from '@tmlmobilidade/go-types-extractions';
-import { Button, fetchApiData, Pane, Section, useExtractionsListData, useHandleAction } from '@tmlmobilidade/ui';
+import { InfrastructureStopsV1ExtractionCreateSchema, InfrastructureStopsV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
 import { useTranslation } from 'react-i18next';
 
-import { StopsExtractHeader } from '../StopsExtractHeader';
+import { StopsExtractForm } from '../shared/StopsExtractForm';
+import { closeStopsExtractModal } from '../StopsExtract.modal';
 
 /* * */
 
 export function StopsExtract() {
-	//
-
-	//
-	// A. Setup variables
-
 	const { t } = useTranslation();
 
-	const { mutate } = useExtractionsListData();
-
-	//
-	// B. Handle actions
-
-	const { action: handleExtract } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Extraction[], InfrastructureStopsV1ExtractionCreate>({
-			body: {
-				properties: {
-					municipality_ids: [],
-				},
-				send_email_notification: false,
-				version: 'infrastructure-stops-v1',
-			},
-			method: 'POST',
-			url: API_ROUTES.core.EXTRACTIONS_CREATE,
-		}),
-		onSuccess: (response) => {
-			mutate(response);
-		},
-	});
-
-	//
-	// C. Render components
-
 	return (
-		<Pane header={[<StopsExtractHeader key="header" />]}>
-			<Section>
-				<Button label={t('default:stops.extract.ExtractButton.label')} onClick={handleExtract} />
-			</Section>
-		</Pane>
+		<StopsExtractForm
+			onClose={closeStopsExtractModal}
+			schema={InfrastructureStopsV1ExtractionCreateSchema}
+			title={t('default:stops.extract.Header.title')}
+			versions={[
+				{ label: t('shared:extractions.versions.infrastructure-stops-v1.title'), value: InfrastructureStopsV1ExtractionVersionValue },
+			]}
+		/>
 	);
 }
