@@ -9,7 +9,7 @@ import { createContext, type PropsWithChildren, useContext, useMemo, useState } 
 
 const DEFAULT_QTY_PER_AGENCY = 5;
 
-const DESIRED_AGENCY_ORDER = ['LTP61', 'IA2N9', 'KB1F6', '7NTB1', 'CM', 'IA9T6', 'A3H3M'] as const;
+const DESIRED_AGENCY_ORDER = ['LTP61', 'IA2N9', 'KB1F6', 'N18KL', '7NTB1', 'CM', 'IA9T6', 'A3H3M'] as const;
 
 /* * */
 

@@ -8,3 +8,11 @@
 	align-items: center;
 	justify-content: flex-start;
 }
+
+.container[data-wrap='wrap'] {
+	flex-wrap: wrap;
+}
+
+.container[data-wrap='wrap-reverse'] {
+	flex-wrap: wrap-reverse;
+}

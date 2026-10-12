@@ -2,6 +2,7 @@
 
 import { z } from 'zod';
 
+import { InfrastructureNodesV1ExtractionVersionValue } from './modules/infrastructure/nodes/v1/version.js';
 import { InfrastructureStopsV1ExtractionVersionValue } from './modules/infrastructure/stops/v1/version.js';
 import { OfferGtfsV29ExtractionVersionValue } from './modules/offer/gtfs/v29/version.js';
 import { OperationPostersV1ExtractionVersionValue } from './modules/operation/posters/v1/version.js';
@@ -12,6 +13,7 @@ import { OperationRidesV3ExtractionVersionValue } from './modules/operation/ride
 /* * */
 
 export const ExtractionVersionValues = [
+	InfrastructureNodesV1ExtractionVersionValue,
 	InfrastructureStopsV1ExtractionVersionValue,
 	OfferGtfsV29ExtractionVersionValue,
 	OperationPostersV1ExtractionVersionValue,

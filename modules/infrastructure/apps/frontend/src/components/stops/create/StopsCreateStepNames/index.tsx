@@ -1,7 +1,7 @@
 'use client';
 
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-utils';
-import { Divider, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Divider, ErrorDisplay, MultiSelect, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +17,7 @@ export function StopsCreateStepNames() {
 
 	const { t } = useTranslation();
 
-	const { form } = useStopsCreateFormContext();
+	const { agencies, agenciesValid, form } = useStopsCreateFormContext();
 
 	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
 
@@ -34,6 +34,14 @@ export function StopsCreateStepNames() {
 		return getStopTtsName(nameValue);
 	}, [nameValue]);
 
+	const agenciesMessage = agencies.isLoading
+		? t('default:stops.create.StepNames.fields.agency_ids.loading')
+		: agencies.error || !agencies.data
+			? t('default:stops.create.StepNames.fields.agency_ids.unavailable')
+			: !agencies.ids.length
+				? t('default:stops.create.StepNames.fields.agency_ids.empty')
+				: null;
+
 	//
 	// C. Render components
 
@@ -41,6 +49,25 @@ export function StopsCreateStepNames() {
 		<>
 
 			<Section gap="sm">
+				{agenciesMessage && <ErrorDisplay message={agenciesMessage} />}
+				{!agenciesMessage && agencies.ids.length > 1 && (
+					<StandardFormController
+						control={form.control}
+						name="agency_ids"
+						render={({ field }) => (
+							<MultiSelect
+								data={agencies.options}
+								description={t('default:stops.create.StepNames.fields.agency_ids.description')}
+								error={!agenciesValid ? t('default:stops.create.StepNames.fields.agency_ids.required') : undefined}
+								label={t('default:stops.create.StepNames.fields.agency_ids.label')}
+								onChange={field.onChange}
+								value={field.value ?? []}
+								w="100%"
+								required
+							/>
+						)}
+					/>
+				)}
 				<StandardFormController
 					control={form.control}
 					name="name"
