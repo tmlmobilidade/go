@@ -114,7 +114,17 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 
 		await updateProgress(progress, { progress_current: 2, progress_total: 5 });
 
-		const allLinesData = await goDb.offer.lines.findMany({ agency_id: exportConfig.agency_id }, { sort: { code: 1 } });
+		const linesFilter: { _id?: { $in?: string[], $nin?: string[] }, agency_id: string } = {
+			agency_id: exportConfig.agency_id,
+		};
+
+		if (exportConfig.lines_mode === 'include') {
+			linesFilter._id = { $in: exportConfig.lines_include };
+		} else if (exportConfig.lines_mode === 'exclude') {
+			linesFilter._id = { $nin: exportConfig.lines_exclude };
+		}
+
+		const allLinesData = await goDb.offer.lines.findMany(linesFilter, { sort: { code: 1 } });
 		Logger.info({ message: `Processing ${allLinesData.length} lines...` });
 
 		Logger.info({ message: 'Fetching stops...' });

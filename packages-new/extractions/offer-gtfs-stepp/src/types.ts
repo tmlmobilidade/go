@@ -20,6 +20,10 @@ export interface GtfsSteppV1ExportConfig {
 	 */
 	end_date: OperationalDate
 
+	lines_exclude: string[]
+	lines_include: string[]
+	lines_mode: 'all' | 'exclude' | 'include'
+
 	/**
 	 * The first date to include in calendar.txt and calendar_dates.txt, inclusive
 	 */

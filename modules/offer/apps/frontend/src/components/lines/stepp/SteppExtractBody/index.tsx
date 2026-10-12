@@ -2,6 +2,7 @@
 
 import { useLinesAgenciesData } from '@/components/lines/shared/use-agencies-data';
 import { useSteppExtractFormContext } from '@/components/lines/stepp/SteppExtractForm.context';
+import { SteppExtractLines } from '@/components/lines/stepp/SteppExtractLines';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { DateInput, Grid, Section, Select, StandardFormController } from '@tmlmobilidade/ui';
 
@@ -73,6 +74,7 @@ export function SteppExtractBody() {
 					)}
 				/>
 			</Grid>
+			<SteppExtractLines />
 		</Section>
 	);
 }

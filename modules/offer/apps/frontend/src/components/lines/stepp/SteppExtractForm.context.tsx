@@ -37,13 +37,15 @@ export function SteppExtractFormContextProvider({ children }: PropsWithChildren)
 	// B. Setup form
 
 	const { form, isDirty, isValid, unblock } = useStandardForm<OfferGtfsSteppV1ExtractionProperties, typeof OfferGtfsSteppV1ExtractionPropertiesSchema>({
-		defaultValues: { agency_id: '', end_date: '' as OperationalDate, start_date: '' as OperationalDate },
+		defaultValues: { agency_id: '', end_date: '' as OperationalDate, lines_exclude: [], lines_include: [], lines_mode: 'all', start_date: '' as OperationalDate },
 		schema: OfferGtfsSteppV1ExtractionPropertiesSchema,
 	});
 
 	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
 	const startDateValue = useStandardFormWatch({ control: form.control, name: 'start_date' });
 	const endDateValue = useStandardFormWatch({ control: form.control, name: 'end_date' });
+	const linesModeValue = useStandardFormWatch({ control: form.control, name: 'lines_mode' });
+	const linesIncludeValue = useStandardFormWatch({ control: form.control, name: 'lines_include' });
 
 	//
 	// C. Handle actions
@@ -80,7 +82,7 @@ export function SteppExtractFormContextProvider({ children }: PropsWithChildren)
 		},
 		form: {
 			isDirty,
-			isValid: isValid && !!agencyIdValue?.trim() && !!startDateValue && !!endDateValue,
+			isValid: isValid && !!agencyIdValue?.trim() && !!startDateValue && !!endDateValue && (linesModeValue !== 'include' || linesIncludeValue.length > 0),
 		},
 		loading: {
 			isLoading: isLoadingAgencies,

@@ -47,6 +47,9 @@ export async function extractOfferGtfsSteppV1(context: ExtractionTaskContext, ex
 	}, {
 		agency_id: permittedAgencyId,
 		end_date: validatedProperties.end_date,
+		lines_exclude: validatedProperties.lines_exclude,
+		lines_include: validatedProperties.lines_include,
+		lines_mode: validatedProperties.lines_mode,
 		start_date: validatedProperties.start_date,
 		stop_sequence_start: 1,
 		workdir: context.output_path,
