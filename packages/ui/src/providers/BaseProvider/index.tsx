@@ -5,7 +5,7 @@ import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { type PropsWithChildren, Suspense } from 'react';
+import { type PropsWithChildren, Suspense, useMemo } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
 import { type AnalyticsContextProps, AnalyticsContextProvider } from '../../contexts/Analytics.context';
@@ -37,6 +37,12 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 
 	//
 	// A. Setup variables
+
+	const analyticsOptions = useMemo<AnalyticsContextProps['options']>(() => ({
+		appVersion: version,
+		serverZone: process.env.NEXT_PUBLIC_AMPLITUDE_SERVER_ZONE === 'US' ? 'US' : 'EU',
+		...analytics?.options,
+	}), [analytics?.options, version]);
 
 	const nuqsSettings = {
 		processUrlSearchParams: (search: URLSearchParams) => {
@@ -72,7 +78,10 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 				<NuqsAdapter {...nuqsSettings}>
 					<Suspense fallback={<LoadingSection fullHeight />}>
 						<VersionContextProvider version={version}>
-							<AnalyticsContextProvider {...analytics}>
+							<AnalyticsContextProvider
+								apiKey={analytics?.apiKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY}
+								options={analyticsOptions}
+							>
 								<SWRConfig value={swrSettings}>
 									<LocaleContextProvider i18n={i18n}>
 										<MantineProvider defaultColorScheme="auto" theme={theme ?? themeData}>
