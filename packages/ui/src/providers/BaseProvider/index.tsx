@@ -8,6 +8,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren, Suspense } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
+import { type AnalyticsContextProps, AnalyticsContextProvider } from '../../contexts/Analytics.context';
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
 import { LoadingSection } from '../../loaders';
@@ -16,6 +17,8 @@ import { themeData } from '../../styles/theme';
 /* * */
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
+	analytics?: AnalyticsContextProps
+
 	/**
 	 * Please avoid using this prop. It is only intended for very specific use cases.
 	 * @dangerous
@@ -29,7 +32,7 @@ type BaseProviderProps = LocaleContextProps & VersionContextProps & {
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, theme, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ analytics, children, i18n, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
@@ -69,18 +72,20 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 				<NuqsAdapter {...nuqsSettings}>
 					<Suspense fallback={<LoadingSection fullHeight />}>
 						<VersionContextProvider version={version}>
-							<SWRConfig value={swrSettings}>
-								<LocaleContextProvider i18n={i18n}>
-									<MantineProvider defaultColorScheme="auto" theme={theme ?? themeData}>
-										<DatesProvider settings={mantineDatesSettings}>
-											<ModalsProvider>
-												<Notifications position="bottom-right" />
-												{children}
-											</ModalsProvider>
-										</DatesProvider>
-									</MantineProvider>
-								</LocaleContextProvider>
-							</SWRConfig>
+							<AnalyticsContextProvider {...analytics}>
+								<SWRConfig value={swrSettings}>
+									<LocaleContextProvider i18n={i18n}>
+										<MantineProvider defaultColorScheme="auto" theme={theme ?? themeData}>
+											<DatesProvider settings={mantineDatesSettings}>
+												<ModalsProvider>
+													<Notifications position="bottom-right" />
+													{children}
+												</ModalsProvider>
+											</DatesProvider>
+										</MantineProvider>
+									</LocaleContextProvider>
+								</SWRConfig>
+							</AnalyticsContextProvider>
 						</VersionContextProvider>
 					</Suspense>
 				</NuqsAdapter>
