@@ -20,7 +20,7 @@ export function SteppExtractBody() {
 	const { capabilities, form } = useSteppExtractFormContext();
 	const agencyId = useStandardFormWatch({ control: form.control, name: 'agency_id' });
 	const linesMode = useStandardFormWatch({ control: form.control, name: 'lines_mode' });
-	const { error, options } = useSteppExtractLinesData(agencyId);
+	const { error, isLoading: isLoadingLines, options } = useSteppExtractLinesData(agencyId);
 
 	//
 	// B. Render components
@@ -116,7 +116,7 @@ export function SteppExtractBody() {
 						<MultiSelect
 							data={options}
 							description={linesMode === 'include' ? 'Apenas estas linhas serão exportadas.' : 'Todas as linhas serão exportadas, exceto estas.'}
-							disabled={!agencyId || isLoading || !capabilities.editEnabled}
+							disabled={!agencyId || isLoading || isLoadingLines || !capabilities.editEnabled}
 							error={fieldState.error?.message ?? error}
 							onChange={field.onChange}
 							placeholder="Selecionar linhas"

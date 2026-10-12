@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type LineNormalized } from '@tmlmobilidade/go-types-offer';
+import { type LinesExtractItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, type SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -10,6 +10,7 @@ import useSWR from 'swr';
 /* * */
 
 interface UseSteppExtractLinesDataReturnType {
+	data: LinesExtractItem[] | undefined
 	error: null | string
 	isLoading: boolean
 	options: SelectDataItem[]
@@ -21,8 +22,8 @@ export function useSteppExtractLinesData(agencyId: string): UseSteppExtractLines
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading } = useSWR<ApiResponse<LineNormalized[]>>(agencyId ? API_ROUTES.offer.LINES_LIST : null, {
-		fetcher: async (url: string) => await fetchApiData<LineNormalized[]>({ url }),
+	const { data, error, isLoading } = useSWR<ApiResponse<LinesExtractItem[]>>(agencyId ? API_ROUTES.offer.LINES_LIST_EXTRACT(agencyId) : null, {
+		fetcher: async (url: string) => await fetchApiData<LinesExtractItem[]>({ url }),
 	});
 
 	//
@@ -31,17 +32,18 @@ export function useSteppExtractLinesData(agencyId: string): UseSteppExtractLines
 	const options = useMemo(() => {
 		if (error || data?.error) return [];
 		return (data?.data ?? [])
-			.filter(line => line.agency_id === agencyId)
+			.slice()
 			.sort((a, b) => a.code.localeCompare(b.code, 'pt', { numeric: true }))
 			.map(line => ({ label: `${line.code} - ${line.name}`, value: line._id }));
-	}, [agencyId, data, error]);
+	}, [data, error]);
 
 	//
 	// C. Return data
 
 	return useMemo(() => ({
+		data: data?.data,
 		error: error?.message ?? data?.error ?? null,
 		isLoading,
 		options,
-	}), [data?.error, error?.message, isLoading, options]);
+	}), [data?.data, data?.error, error?.message, isLoading, options]);
 }
