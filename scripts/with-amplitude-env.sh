@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+export NEXT_PUBLIC_AMPLITUDE_API_KEY="${NEXT_PUBLIC_AMPLITUDE_API_KEY-${AMPLITUDE_API_KEY-}}"
+
+exec "$@"
