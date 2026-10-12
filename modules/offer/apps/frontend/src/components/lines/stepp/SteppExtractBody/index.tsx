@@ -87,6 +87,7 @@ export function SteppExtractBody() {
 				name="lines_mode"
 				render={({ field }) => (
 					<SegmentedControl
+						disabled={!capabilities.editEnabled || !agencyId}
 						onBlur={field.onBlur}
 						value={field.value}
 						data={[
