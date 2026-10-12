@@ -2,7 +2,6 @@
 
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
 import { useMapContext } from '@/contexts/Map.context';
-import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
 import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
 import { along, length, lineString } from '@turf/turf';
@@ -26,7 +25,6 @@ export function MapViewOverlayRouteLegBadges({ itinerary, shapeData }: MapViewOv
 	//
 	// A. Setup variables
 
-	const lineByShortName = useLinesByShortName();
 	const { data: { map } } = useMapContext();
 	const [zoom, setZoom] = useState(() => map?.getZoom() ?? 14);
 
@@ -65,7 +63,7 @@ export function MapViewOverlayRouteLegBadges({ itinerary, shapeData }: MapViewOv
 	return badges.map(({ coordinate, leg, legIndex }) => (
 		<Marker key={legIndex} anchor="bottom" latitude={coordinate[1]} longitude={coordinate[0]} offset={[0, -12]}>
 			<div aria-hidden="true" className={styles.badge} data-route-leg-index={legIndex} style={{ transform: `scale(${badgeScale})` }}>
-				<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} size="md" />
+				<RoutePlannerLinePill leg={leg} size="md" />
 			</div>
 		</Marker>
 	));

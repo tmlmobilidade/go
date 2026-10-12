@@ -8,7 +8,6 @@ import { getRoutePlannerLegPlaceName, RoutePlannerItineraryDetailLeg } from '@/c
 import { RoutePlannerItineraryWaitStep } from '@/components/routes/detail/RoutePlannerItineraryWaitStep';
 import { RoutePlannerGoButton } from '@/components/routes/navigation/RoutePlannerGoButton';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
 import { useRoutePlannerActiveLeg } from '@/hooks/route-planner/useRoutePlannerActiveLeg';
 import { isSameRoutePlannerPlace } from '@/utils/route-planner/itinerary/places';
 import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
@@ -32,7 +31,6 @@ export function RoutePlannerItineraryDetail() {
 
 	const { t } = useTranslation();
 	const { data: alerts } = useAlertsData();
-	const lineByShortName = useLinesByShortName();
 	const routePlannerContext = useRoutePlannerContext();
 	const { activeLegIndex } = useRoutePlannerActiveLeg();
 
@@ -132,7 +130,6 @@ export function RoutePlannerItineraryDetail() {
 								isActive={isNavigating && index === activeLegIndex}
 								isFinalDestination={index === legs.length - 1 && !showDestinationStep}
 								leg={leg}
-								lineByShortName={lineByShortName}
 								routeDestinationLabel={routeDestinationLabel}
 								routeOriginLabel={routeOriginLabel}
 								showDestination={showDestination}

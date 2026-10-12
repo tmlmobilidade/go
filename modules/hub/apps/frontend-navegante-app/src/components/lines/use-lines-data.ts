@@ -14,6 +14,7 @@ interface UseLinesDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
+	linesByShortName: Map<string, HubV1ApiLine>
 	mutate: () => void
 	timestamp: null | UnixMilliseconds
 }
@@ -31,16 +32,22 @@ export function useLinesData(): UseLinesDataReturnType {
 	});
 
 	//
-	// B. Return data
+	// B. Build line lookups
+
+	const linesByShortName = useMemo(() => new Map((data?.data ?? []).map(line => [line.short_name, line])), [data?.data]);
+
+	//
+	// C. Return data
 
 	return useMemo(() => ({
 		data: data?.data ?? [],
 		error: data?.error ?? (error instanceof Error ? error.message : null),
 		isLoading,
 		isValidating,
+		linesByShortName,
 		mutate,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, data?.error, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [data?.data, data?.error, data?.timestamp, error, isLoading, isValidating, linesByShortName, mutate]);
 
 	//
 }

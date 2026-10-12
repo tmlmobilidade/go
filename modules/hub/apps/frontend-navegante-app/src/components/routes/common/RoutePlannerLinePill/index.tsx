@@ -1,10 +1,10 @@
 'use client';
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
+import { useLinesData } from '@/components/lines/use-lines-data';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useMotisLegDisplayLabel } from '@/hooks/route-planner/useMotisLegDisplayLabel';
 import { getMotisLegModeKind, getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
-import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import { type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 import { useTranslation } from 'react-i18next';
 
@@ -14,19 +14,19 @@ import styles from './styles.module.css';
 
 interface RoutePlannerLinePillProps {
 	leg: MotisPlanLeg
-	lineByShortName: Map<string, HubV1ApiLine>
 	openLineDetails?: boolean
 	size?: 'lg' | 'md' | 'sm'
 }
 
 /* * */
 
-export function RoutePlannerLinePill({ leg, lineByShortName, openLineDetails = false, size = 'sm' }: RoutePlannerLinePillProps) {
+export function RoutePlannerLinePill({ leg, openLineDetails = false, size = 'sm' }: RoutePlannerLinePillProps) {
 	//
 
 	//
 	// A. Setup variables
 
+	const { linesByShortName } = useLinesData();
 	const getLegDisplayLabel = useMotisLegDisplayLabel();
 	const { push } = useBottomSheet();
 	const { t } = useTranslation();
@@ -37,7 +37,7 @@ export function RoutePlannerLinePill({ leg, lineByShortName, openLineDetails = f
 	const routeLabel = getMotisLegRouteLabel(leg);
 	const label = getLegDisplayLabel(leg);
 	const modeKind = getMotisLegModeKind(leg);
-	const lineData = lineByShortName.get(routeLabel);
+	const lineData = linesByShortName.get(routeLabel);
 
 	//
 	// C. Render components

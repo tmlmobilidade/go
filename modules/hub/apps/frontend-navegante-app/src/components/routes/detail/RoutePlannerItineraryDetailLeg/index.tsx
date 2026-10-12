@@ -1,5 +1,6 @@
 'use client';
 
+import { useLinesData } from '@/components/lines/use-lines-data';
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { RoutePlannerTime } from '@/components/routes/common/RoutePlannerTime';
@@ -9,7 +10,7 @@ import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerLegRealti
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
 import { getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconAlertTriangle, IconChevronDown } from '@tabler/icons-react';
-import { type HubV1ApiAlert, type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
+import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 import { type MotisPlanLeg, type MotisPlanPlace } from '@tmlmobilidade/go-types-motis';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +24,6 @@ interface RoutePlannerItineraryDetailLegProps {
 	isActive: boolean
 	isFinalDestination: boolean
 	leg: MotisPlanLeg
-	lineByShortName: Map<string, HubV1ApiLine>
 	routeDestinationLabel: string
 	routeOriginLabel: string
 	showDestination?: boolean
@@ -32,12 +32,13 @@ interface RoutePlannerItineraryDetailLegProps {
 
 /* * */
 
-export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, isFinalDestination, leg, lineByShortName, routeDestinationLabel, routeOriginLabel, showDestination = true, showOrigin = true }: RoutePlannerItineraryDetailLegProps) {
+export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, isFinalDestination, leg, routeDestinationLabel, routeOriginLabel, showDestination = true, showOrigin = true }: RoutePlannerItineraryDetailLegProps) {
 	//
 
 	//
 	// A. Setup variables
 
+	const { linesByShortName } = useLinesData();
 	const { t } = useTranslation();
 	const [isStopsExpanded, setIsStopsExpanded] = useState(false);
 
@@ -49,13 +50,13 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, is
 	const durationMinutes = getDurationMinutes(leg.duration);
 	const intermediateStops = getIntermediateStops(leg);
 	const hasIntermediateStops = intermediateStops.length > 0;
-	const lineData = lineByShortName.get(getMotisLegRouteLabel(leg));
+	const lineData = linesByShortName.get(getMotisLegRouteLabel(leg));
 	const lineColor = isMotisWalkingLeg(leg) ? undefined : lineData?.color || 'var(--color-route-line-fallback)';
 	const realtimeStatus = getRoutePlannerLegRealtimeStatus(leg);
 	const legAlertFilters = useMemo(() => {
 		if (isMotisWalkingLeg(leg)) return null;
-		return getRoutePlannerItineraryAlertFilters({ legs: [leg] }, Array.from(lineByShortName.values()));
-	}, [leg, lineByShortName]);
+		return getRoutePlannerItineraryAlertFilters({ legs: [leg] }, Array.from(linesByShortName.values()));
+	}, [leg, linesByShortName]);
 
 	const alerts = useMemo(() => {
 		if (isMotisWalkingLeg(leg)) return [];
@@ -94,7 +95,7 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, is
 					{showOrigin && <div className={styles.modeMarker}><RoutePlannerModeBadge leg={leg} size="md" /></div>}
 					{!isMotisWalkingLeg(leg) && (
 						<div className={styles.lineDirection}>
-							<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} size="md" openLineDetails />
+							<RoutePlannerLinePill leg={leg} size="md" openLineDetails />
 							{!isMotisWalkingLeg(leg) && leg.headsign && (
 								<span aria-label={t('default:routes.RoutePlanner.results.direction', '', { headsign: leg.headsign })} className={styles.headsign}>
 									{leg.headsign}

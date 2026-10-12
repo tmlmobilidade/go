@@ -1,7 +1,6 @@
 'use client';
 
 import { RoutePlannerLegStripItem } from '@/components/routes/common/RoutePlannerLegStripItem';
-import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
 import { getMotisLegMode } from '@/utils/route-planner/presentation/modes';
 import { type MotisItinerary } from '@tmlmobilidade/go-types-motis';
 import { useMemo } from 'react';
@@ -24,7 +23,6 @@ export function RoutePlannerItineraryLegStrip({ itinerary }: RoutePlannerItinera
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const lineByShortName = useLinesByShortName();
 
 	//
 	// B. Transform data
@@ -45,7 +43,6 @@ export function RoutePlannerItineraryLegStrip({ itinerary }: RoutePlannerItinera
 				<li key={`${getMotisLegMode(leg)}-${legIndex}`}>
 					<RoutePlannerLegStripItem
 						leg={leg}
-						lineByShortName={lineByShortName}
 						showConnector={legIndex < legs.length - 1}
 					/>
 				</li>

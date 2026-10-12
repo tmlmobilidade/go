@@ -1,10 +1,10 @@
 'use client';
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
+import { useLinesData } from '@/components/lines/use-lines-data';
 import { useRoutePlannerAnnouncer } from '@/components/routes/navigation/RoutePlannerAnnouncer';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
-import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
 import { useMotisLegDisplayLabel } from '@/hooks/route-planner/useMotisLegDisplayLabel';
 import { useRoutePlannerActiveLeg } from '@/hooks/route-planner/useRoutePlannerActiveLeg';
 import { formatMotisPlanDistance, formatMotisPlanTime } from '@/utils/route-planner/presentation/format';
@@ -25,7 +25,7 @@ export function RoutePlannerLiveBar() {
 
 	const { t } = useTranslation();
 	const { activeBottomSheet } = useBottomSheet();
-	const lineByShortName = useLinesByShortName();
+	const { linesByShortName } = useLinesData();
 	const getLegDisplayLabel = useMotisLegDisplayLabel();
 	const routePlannerContext = useRoutePlannerContext();
 	const announce = useRoutePlannerAnnouncer();
@@ -51,10 +51,10 @@ export function RoutePlannerLiveBar() {
 		}
 
 		const routeLabel = getMotisLegRouteLabel(activeLeg);
-		const lineData = lineByShortName.get(routeLabel);
+		const lineData = linesByShortName.get(routeLabel);
 		const displayLabel = getLegDisplayLabel(activeLeg);
 		return activeLeg.headsign || lineData?.short_name || displayLabel || t('default:routes.RoutePlanner.results.route_summary');
-	}, [activeLeg, getLegDisplayLabel, lineByShortName, routePlannerContext.data.destination?.label, t]);
+	}, [activeLeg, getLegDisplayLabel, linesByShortName, routePlannerContext.data.destination?.label, t]);
 
 	const activeStepDetail = useMemo(() => {
 		const details: string[] = [];
@@ -74,13 +74,13 @@ export function RoutePlannerLiveBar() {
 	const activeStepLine = useMemo(() => {
 		if (!activeLeg || isMotisWalkingLeg(activeLeg)) return null;
 		const routeLabel = getMotisLegRouteLabel(activeLeg);
-		return lineByShortName.get(routeLabel) ?? null;
-	}, [activeLeg, lineByShortName]);
+		return linesByShortName.get(routeLabel) ?? null;
+	}, [activeLeg, linesByShortName]);
 
 	const nextStepLine = useMemo(() => {
 		if (!nextLeg || isMotisWalkingLeg(nextLeg)) return null;
-		return lineByShortName.get(getMotisLegRouteLabel(nextLeg)) ?? null;
-	}, [lineByShortName, nextLeg]);
+		return linesByShortName.get(getMotisLegRouteLabel(nextLeg)) ?? null;
+	}, [linesByShortName, nextLeg]);
 
 	const nextStepDisplayLabel = nextLeg && !isMotisWalkingLeg(nextLeg)
 		? getLegDisplayLabel(nextLeg)
