@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsStrictV30SteppAgency, type GtfsStrictV30SteppCalendar, type GtfsStrictV30SteppCalendarDates, GtfsStrictV30SteppRoutes, GtfsStrictV30SteppShapes, type GtfsStrictV30SteppStops, type GtfsStrictV30SteppTrips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30SteppAgency, type GtfsStrictV30SteppCalendar, type GtfsStrictV30SteppCalendarDates, GtfsStrictV30SteppRoutes, GtfsStrictV30SteppShapes, type GtfsStrictV30SteppStops, GtfsStrictV30SteppStopTimes, type GtfsStrictV30SteppTrips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { type CsvWriter } from '@tmlmobilidade/writers';
 
@@ -26,6 +26,11 @@ export interface GtfsSteppV1ExportConfig {
 	start_date: OperationalDate
 
 	/**
+	 * Starting value for stop_sequence (0 or 1)
+	 */
+	stop_sequence_start: number
+
+	/**
 	 * Working directory where the GTFS files are written
 	 */
 	workdir: string
@@ -45,6 +50,7 @@ export interface GtfsSteppV1Writers {
 	calendar_dates: CsvWriter<GtfsStrictV30SteppCalendarDates>
 	routes: CsvWriter<GtfsStrictV30SteppRoutes>
 	shapes: CsvWriter<GtfsStrictV30SteppShapes>
+	stop_times: CsvWriter<GtfsStrictV30SteppStopTimes>
 	stops: CsvWriter<GtfsStrictV30SteppStops>
 	trips: CsvWriter<GtfsStrictV30SteppTrips>
 }
