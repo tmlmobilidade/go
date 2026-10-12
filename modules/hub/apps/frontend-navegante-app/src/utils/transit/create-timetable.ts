@@ -54,10 +54,12 @@ export function createTimetable(primaryPatternGroup: HubV1ApiPattern, secondaryP
 
 			// Find or create the minute entry in the timetable
 			// Since we're processing the primary Pattern, ensure that the minute entry does not have any exceptions.
-			const minuteEntry = hourEntry.minutes.find(m => m.minute_value === minuteValue && m.exception_ids === undefined);
+			const minuteEntry = hourEntry.minutes.find(m => m.minute_value === minuteValue && m.exception_ids.length === 0);
 
 			if (!minuteEntry) {
-				hourEntry.minutes.push({ exception_ids: [], minute_label: minute24, minute_value: minuteValue, trip_ids: trip.trip_ids });
+				hourEntry.minutes.push({ exception_ids: [], minute_label: minute24, minute_value: minuteValue, trip_ids: [...new Set(trip.trip_ids)] });
+			} else {
+				minuteEntry.trip_ids = [...new Set([...minuteEntry.trip_ids, ...trip.trip_ids])];
 			}
 		});
 	});
@@ -102,11 +104,6 @@ export function createTimetable(primaryPatternGroup: HubV1ApiPattern, secondaryP
 
 					timetableResult.hours.push(hourEntry);
 				}
-
-				// Find or create the minute entry in the timetable
-
-				const minuteEntry = hourEntry.minutes.find(m => m.minute_value === minuteValue && m.exception_ids === undefined);
-
 				// Since we're processing secondary Patterns, we have to reuse or create exceptions for each minute entry.
 
 				let existingException = timetableResult.exceptions.find(exception => exception.pattern_id === patternGroup._id);
@@ -136,12 +133,15 @@ export function createTimetable(primaryPatternGroup: HubV1ApiPattern, secondaryP
 				}
 
 				// Create a new minute entry if it doesn't exist yet
+				// Keep variants separate from the primary pattern and other variants at the same minute.
+
+				const exceptionId = existingException.exception_id;
+				const minuteEntry = hourEntry.minutes.find(m => m.minute_value === minuteValue && m.exception_ids.includes(exceptionId));
 
 				if (!minuteEntry) {
-					hourEntry.minutes.push({ exception_ids: [existingException.exception_id], minute_label: minute24, minute_value: minuteValue, trip_ids: trip.trip_ids });
+					hourEntry.minutes.push({ exception_ids: [existingException.exception_id], minute_label: minute24, minute_value: minuteValue, trip_ids: [...new Set(trip.trip_ids)] });
 				} else {
-					// If the minute entry already exists, add the exception ID to it
-					minuteEntry.exception_ids.push(existingException.exception_id);
+					minuteEntry.trip_ids = [...new Set([...minuteEntry.trip_ids, ...trip.trip_ids])];
 				}
 			});
 		});
