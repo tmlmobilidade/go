@@ -429,7 +429,7 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 
 			let currentLineObject: HubV1ApiLine;
 
-			const parsedLineObject = allLinesParsed.get(getQualifiedLineId(routeRawData.agency_id, routeRawData.route_short_name));
+			const parsedLineObject = allLinesParsed.get(qualifiedLineId);
 
 			if (parsedLineObject) {
 				currentLineObject = parsedLineObject;
