@@ -9,10 +9,10 @@ import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 /* * */
 
 interface QueryResult extends HubV1GtfsStops {
-	agency_ids: string
-	pattern_ids: string
-	route_ids: string
-	route_short_names: string
+	agency_ids: null | string
+	line_ids: null | string
+	pattern_ids: null | string
+	route_ids: null | string
 }
 
 /* * */
@@ -38,11 +38,11 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 			stops s
 		LEFT JOIN (
 			SELECT
-				stop_id,
+				st.stop_id,
 				json_group_array(DISTINCT r.agency_id) AS agency_ids,
-				json_group_array(DISTINCT t.pattern_id) AS pattern_ids,
+				json_group_array(DISTINCT r.line_id) AS line_ids,
 				json_group_array(DISTINCT r.route_id) AS route_ids,
-				json_group_array(DISTINCT r.route_short_name) AS route_short_names
+				json_group_array(DISTINCT t.pattern_id) AS pattern_ids
 			FROM
 				stop_times st
 			JOIN
@@ -50,7 +50,7 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 			JOIN
 				routes r ON t.route_id = r.route_id
 			GROUP BY
-				stop_id
+				st.stop_id
 		) r ON s.stop_id = r.stop_id;
 	`);
 
@@ -69,7 +69,7 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 				continue;
 			}
 
-			if (!gtfsStop.route_short_names?.length) {
+			if (!gtfsStop.line_ids?.length) {
 				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no line IDs.` });
 				continue;
 			}
@@ -101,7 +101,7 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 				latitude: gtfsStop.stop_lat,
 				legacy_ids: gtfsStop.legacy_ids ? JSON.parse(gtfsStop.legacy_ids) : [],
 				lifecycle_status: gtfsStop.lifecycle_status,
-				line_ids: JSON.parse(gtfsStop.route_short_names),
+				line_ids: JSON.parse(gtfsStop.line_ids),
 				locality_id: gtfsStop.locality_id,
 				locality_name: gtfsStop.locality_name,
 				longitude: gtfsStop.stop_lon,
