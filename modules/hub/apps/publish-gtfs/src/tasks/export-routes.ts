@@ -1,6 +1,6 @@
 /* * */
 
-import { getQualifiedLineId, getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
 import { type HubV1GtfsRoutesInput, HubV1GtfsRoutesSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
@@ -27,7 +27,6 @@ export async function exportRoutesFile(context: ExportGtfsContext, routesList: G
 			cemv_support: routeData.cemv_support,
 			continuous_drop_off: routeData.continuous_drop_off,
 			continuous_pickup: routeData.continuous_pickup,
-			line_id: getQualifiedLineId(routeData.agency_id, routeData.route_short_name),
 			route_color: routeData.route_color,
 			route_id: getQualifiedRouteId(routeData.agency_id, routeData.route_id),
 			route_long_name: routeData.route_long_name,
