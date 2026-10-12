@@ -90,12 +90,10 @@
 	cursor: pointer;
 	background: transparent;
 	border: 0;
-	transition: all 0.1s ease-in-out;
+	transition: color 0.1s ease-in-out;
 
 	&:hover {
 		color: var(--color-system-text-200);
-		scale: 1.05;
-		translate: 0 -2px;
 	}
 }
 
@@ -124,14 +122,12 @@
 }
 
 .minute.isHighlighted {
-	margin: 2px;
 	color: var(--color-system-text-100);
-	background-color: var(--color-brand-navegante);
-	border-radius: 100%;
+	background: radial-gradient(circle 12px at center, var(--color-brand-navegante) 99%, transparent 100%);
 
 	&[data-is-dark="true"] {
 		color: var(--color-brand-navegante);
-		background-color: var(--color-system-background-100)
+		background: radial-gradient(circle 12px at center, var(--color-system-background-100) 99%, transparent 100%);
 	}
 }
 
