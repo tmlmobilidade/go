@@ -1,6 +1,6 @@
 /* * */
 
-import { decodeStopFlags } from '@tmlmobilidade/go-hub-pckg-utils';
+import { decodeStopFlags, getQualifiedLineId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiStop, HubV1ApiStopSchema, type HubV1GtfsStops } from '@tmlmobilidade/go-types-hub';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
@@ -10,9 +10,9 @@ import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 
 interface QueryResult extends HubV1GtfsStops {
 	agency_ids: null | string
-	line_ids: null | string
 	pattern_ids: null | string
 	route_ids: null | string
+	route_short_names: null | string
 }
 
 /* * */
@@ -40,9 +40,9 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 			SELECT
 				st.stop_id,
 				json_group_array(DISTINCT r.agency_id) AS agency_ids,
-				json_group_array(DISTINCT r.line_id) AS line_ids,
+				json_group_array(DISTINCT json_object('agency_id', r.agency_id, 'route_short_name', r.route_short_name)) AS route_short_names
 				json_group_array(DISTINCT r.route_id) AS route_ids,
-				json_group_array(DISTINCT t.pattern_id) AS pattern_ids
+				json_group_array(DISTINCT t.pattern_id) AS pattern_ids,
 			FROM
 				stop_times st
 			JOIN
@@ -69,7 +69,7 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 				continue;
 			}
 
-			if (!gtfsStop.line_ids?.length) {
+			if (!gtfsStop.route_short_names?.length) {
 				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no line IDs.` });
 				continue;
 			}
@@ -90,6 +90,12 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 			const decodedFlags = decodeStopFlags(gtfsStop.flags);
 
 			//
+			// Build the associated line IDs from the route short names
+
+			const parsedRouteShortNames: { agency_id: string, route_short_name: string }[] = JSON.parse(gtfsStop.route_short_names);
+			const associatedLineIds = parsedRouteShortNames.map(route => getQualifiedLineId(route.agency_id, route.route_short_name));
+
+			//
 			// Build the final stop object
 
 			const validatedStop: HubV1ApiStop = {
@@ -101,7 +107,7 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 				latitude: gtfsStop.stop_lat,
 				legacy_ids: gtfsStop.legacy_ids ? JSON.parse(gtfsStop.legacy_ids) : [],
 				lifecycle_status: gtfsStop.lifecycle_status,
-				line_ids: JSON.parse(gtfsStop.line_ids),
+				line_ids: associatedLineIds,
 				locality_id: gtfsStop.locality_id,
 				locality_name: gtfsStop.locality_name,
 				longitude: gtfsStop.stop_lon,
