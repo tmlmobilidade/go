@@ -40,9 +40,9 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 			SELECT
 				st.stop_id,
 				json_group_array(DISTINCT r.agency_id) AS agency_ids,
-				json_group_array(DISTINCT json_object('agency_id', r.agency_id, 'route_short_name', r.route_short_name)) AS route_short_names
+				json_group_array(DISTINCT json_object('agency_id', r.agency_id, 'route_short_name', r.route_short_name)) AS route_short_names,
 				json_group_array(DISTINCT r.route_id) AS route_ids,
-				json_group_array(DISTINCT t.pattern_id) AS pattern_ids,
+				json_group_array(DISTINCT t.pattern_id) AS pattern_ids
 			FROM
 				stop_times st
 			JOIN
