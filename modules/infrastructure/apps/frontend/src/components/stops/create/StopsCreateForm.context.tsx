@@ -3,15 +3,25 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsCreateRequest, StopsCreateRequestSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import { useStopsAgenciesData } from '../shared/use-stops-agencies-data';
 import { closeStopsCreateModal } from './StopsCreate.modal';
 
 /* * */
 
-const StopsCreateFormContext = createContext<StandardFormContextValue<StopsCreateRequest> | undefined>(undefined);
+interface StopsCreateFormContextValue extends StandardFormContextValue<StopsCreateRequest> {
+	agencies: ReturnType<typeof useStopsAgenciesData>
+	agenciesValid: boolean
+}
+
+/* * */
+
+const StopsCreateFormContext = createContext<StopsCreateFormContextValue | undefined>(undefined);
 
 export function useStopsCreateFormContext() {
 	const context = useContext(StopsCreateFormContext);
@@ -28,11 +38,17 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 	// A. Setup variables
 
 	const router = useRouter();
+	const { t } = useTranslation();
+
+	const agencies = useStopsAgenciesData({
+		permissions: { actions: [PermissionCatalog.all.stops.actions.create], scope: PermissionCatalog.all.stops.scope },
+	});
 
 	//
 	// B. Setup form
 
 	const formDefaultValues = useMemo<StopsCreateRequest>(() => ({
+		agency_ids: [],
 		latitude: undefined,
 		longitude: undefined,
 		name: '',
@@ -43,13 +59,28 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 		schema: StopsCreateRequestSchema,
 	});
 
+	const agencyIds = useStandardFormWatch({ control: form.control, name: 'agency_ids' });
+	const agenciesReady = !agencies.isLoading && !agencies.error && !!agencies.data && agencies.ids.length > 0;
+	const agenciesValid = agenciesReady && !!agencyIds?.length && agencyIds.every(id => agencies.ids.includes(id));
+
+	useEffect(() => {
+		if (!agenciesReady) return;
+		const currentIds = form.getValues('agency_ids');
+		const nextIds = agencies.ids.length === 1 ? agencies.ids : currentIds.filter(id => agencies.ids.includes(id));
+		if (JSON.stringify(currentIds) === JSON.stringify(nextIds)) return;
+		form.setValue('agency_ids', nextIds, { shouldDirty: true, shouldValidate: true });
+	}, [agenciesReady, agencies.ids, form]);
+
 	//
 	// C. Handle actions
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Stop>({ body: form.getValues(), method: 'POST', url: API_ROUTES.infrastructure.STOPS_CREATE }),
+		fetchFn: async () => {
+			if (!agenciesValid) throw new Error(t('default:stops.create.StepNames.fields.agency_ids.required'));
+			return await fetchApiData<Stop>({ body: form.getValues(), method: 'POST', url: API_ROUTES.infrastructure.STOPS_CREATE });
+		},
 		onSuccess: (response) => {
-			form.reset(response.data);
+			form.reset();
 			unblock();
 			closeStopsCreateModal();
 			router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(String(response.data._id))));
@@ -61,8 +92,8 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 
 	const { createEnabled, editEnabled } = useStandardFormCapabilities({
 		create: {
-			hasPermission: true,
-			isCreating: false,
+			hasPermission: agenciesValid,
+			isCreating,
 		},
 		form: {
 			isDirty,
@@ -73,10 +104,12 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// E. Return state
 
-	const stateValue: StandardFormContextValue<StopsCreateRequest> = useMemo(() => ({
+	const stateValue: StopsCreateFormContextValue = useMemo(() => ({
 		actions: {
 			create: handleCreate,
 		},
+		agencies,
+		agenciesValid,
 		capabilities: {
 			createEnabled,
 			editEnabled,
@@ -88,7 +121,7 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 			isCreating,
 		},
 		unblock,
-	}), [handleCreate, createEnabled, editEnabled, form, isDirty, isValid, isCreating, unblock]);
+	}), [agencies, agenciesValid, handleCreate, createEnabled, editEnabled, form, isDirty, isValid, isCreating, unblock]);
 
 	return (
 		<StopsCreateFormContext.Provider value={stateValue}>

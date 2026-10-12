@@ -19,7 +19,6 @@ export function buildLineFromRoute(route: GtfsStrictV29Routes, agencyId: string,
 	return {
 		agency_id: agencyId,
 		code: lineCode,
-		created_by: 'system',
 		interchange: interchangeMode,
 		is_circular_line: route.circular === '1',
 		is_locked: false,
