@@ -2,6 +2,7 @@
 
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { mapMotisGeocodeResultToLocation } from '@/utils/search/motis-geocode';
+import { rankMotisLocations } from '@/utils/search/rank-motis-locations';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubV1ApiMotisGeocodeResponse } from '@tmlmobilidade/go-types-hub';
 import { fetchApiData } from '@tmlmobilidade/ui';
@@ -63,7 +64,7 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 		const abortController = new AbortController();
 		const timeout = window.setTimeout(async () => {
 			const params = new URLSearchParams({
-				numResults: String(numResults),
+				numResults: String(Math.max(numResults, 50)),
 				text: trimmedQuery,
 				type: 'PLACE',
 			});
@@ -88,7 +89,8 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 				setData([]);
 				setError(options.errorMessage);
 			} else {
-				setData(response.data.map(result => mapMotisGeocodeResultToLocation(result, options.unnamedLocationLabel)));
+				const locations = response.data.map(result => mapMotisGeocodeResultToLocation(result, options.unnamedLocationLabel));
+				setData(rankMotisLocations(locations, trimmedQuery).slice(0, numResults));
 			}
 
 			setIsLoading(false);

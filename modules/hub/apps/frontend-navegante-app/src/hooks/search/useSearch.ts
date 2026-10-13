@@ -30,7 +30,7 @@ interface SearchCoordinates {
 
 /* * */
 
-const MOTIS_PLACE_BIAS = 1;
+const MOTIS_PLACE_BIAS = 2;
 const MOTIS_RESULTS = 10;
 const DEFAULT_SEARCH_COORDINATES: SearchCoordinates = { latitude: 38.7223, longitude: -9.1393 };
 

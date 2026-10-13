@@ -10,7 +10,7 @@ const HubV1ApiMotisBooleanQuerySchema = z.enum(['false', 'true']).transform(valu
 /* * */
 
 export const HubV1ApiMotisGeocodeQuerySchema = z.object({
-	numResults: z.coerce.number().int().min(1).max(10).optional(),
+	numResults: z.coerce.number().int().min(1).max(50).optional(),
 	place: z.string().max(100).optional(),
 	placeBias: z.coerce.number().min(0).max(1_000).optional(),
 	text: z.string().trim().min(2).max(256),
