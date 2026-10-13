@@ -1,9 +1,7 @@
 /* * */
 
-import { type GtfsTripDirection } from '@tmlmobilidade/go-types-gtfs';
 import { type Stop, StopIdSchema, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { BaseDocumentSchema, CommentSchema } from '@tmlmobilidade/go-types-shared';
-import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 import { StopsParametersListSchema } from './parameters.js';
@@ -12,21 +10,16 @@ import { PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
 /* * */
 
 export const PatternDirectionValues = [
-	'outbound',
-	'inbound',
+	'0',
+	'1',
 ] as const;
 
 export const PatternDirectionSchema = z.enum(PatternDirectionValues);
 export type PatternDirection = z.infer<typeof PatternDirectionSchema>;
 
-export const patternDirectionMapper = createGtfsMapper<typeof PatternDirectionValues[number], GtfsTripDirection>({
-	inbound: '1',
-	outbound: '0',
-});
-
 export const directionOptions: { label: string, value: typeof PatternDirectionValues[number] }[] = [
-	{ label: 'Ida', value: 'outbound' },
-	{ label: 'Volta', value: 'inbound' },
+	{ label: 'Ida', value: '0' },
+	{ label: 'Volta', value: '1' },
 ];
 
 /* * */
@@ -99,7 +92,7 @@ export const PatternSchema = BaseDocumentSchema.extend({
 	comments: z.array(CommentSchema).optional().default([]),
 
 	destination: z.string().trim().min(1).max(100),
-	direction: PatternDirectionSchema.default('outbound'),
+	direction: PatternDirectionSchema.default('0'),
 	headsign: z.string().trim().min(1).max(100),
 	is_locked: z.boolean().default(false),
 	line_id: z.string(),
