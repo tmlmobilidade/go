@@ -81,4 +81,4 @@
 54. Documentar tabelas do Clickhouse nos docs e nas próprias tabelas com as funções de comentários do Clickhouse
 55. Possibilidade de ter um wrapper em electron?
 56. Uniformizar / limpar / finalizar eventos iniciais / antigos na rawDb
-
+57. Login redirect to where user was

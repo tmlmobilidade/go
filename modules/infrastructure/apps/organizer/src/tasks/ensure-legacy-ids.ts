@@ -19,7 +19,7 @@ export async function ensureLegacyIdsTask() {
 
 	const stopsCollection = await goDb.infrastructure.stops.getCollection();
 
-	const stopsStream = stopsCollection.find().stream();
+	const stopsStream = stopsCollection.find({}, { sort: { _id: 1 } }).stream();
 
 	for await (const stopItem of stopsStream) {
 		//

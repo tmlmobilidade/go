@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-infrastructure-helpers-seed-stops",
+	"name": "@tmlmobilidade/go-tracker-pt-cimat-flaviamobil-rawdb-stream",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -12,22 +12,22 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix",
-		"start": "tsx watch src/index.ts"
+		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/go-types-infrastructure": "*",
-		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/utils": "*",
-		"papaparse": "5.7.0"
+		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-interfaces-rawdb": "*",
+		"@tmlmobilidade/go-tracker-pckg-callback": "*",
+		"@tmlmobilidade/go-tracker-pckg-parsers": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.4.0",
-		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.12",
 		"typescript": "6.0.3"

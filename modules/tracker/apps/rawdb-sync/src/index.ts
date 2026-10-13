@@ -31,6 +31,7 @@ export const syncConfig = [
 	{ agency_id: 'VZAS3', collection: rawDb.vehicleEvents.ptTmpUnirUt4 },
 	{ agency_id: '8NDX4', collection: rawDb.vehicleEvents.ptTmpUnirUt5 },
 	{ agency_id: '0AMEO', collection: rawDb.vehicleEvents.ptTmpUnirUt6 },
+	{ agency_id: 'NIRIC', collection: rawDb.vehicleEvents.ptCimatFlaviamobil },
 ] as const satisfies readonly SyncConfig[];
 
 /* * */
