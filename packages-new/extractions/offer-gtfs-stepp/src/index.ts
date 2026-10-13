@@ -57,6 +57,7 @@ export async function extractOfferGtfsSteppV1(context: ExtractionTaskContext, ex
 			agency: new CsvWriter('agency.txt', `${context.output_path}/agency.txt`),
 			calendar: new CsvWriter('calendar.txt', `${context.output_path}/calendar.txt`),
 			calendar_dates: new CsvWriter('calendar_dates.txt', `${context.output_path}/calendar_dates.txt`),
+			calendar_stepp: new CsvWriter('calendar_stepp.txt', `${context.output_path}/calendar_stepp.txt`),
 			routes: new CsvWriter('routes.txt', `${context.output_path}/routes.txt`),
 			shapes: new CsvWriter('shapes.txt', `${context.output_path}/shapes.txt`),
 			stop_times: new CsvWriter('stop_times.txt', `${context.output_path}/stop_times.txt`),

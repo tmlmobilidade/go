@@ -10,7 +10,15 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
-const WEEKDAY_FIELDS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
+const WEEKDAY_FIELDS = [
+	'sunday',
+	'monday',
+	'tuesday',
+	'wednesday',
+	'thursday',
+	'friday',
+	'saturday',
+] as const;
 
 const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 

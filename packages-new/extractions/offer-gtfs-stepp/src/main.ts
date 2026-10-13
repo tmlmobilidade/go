@@ -3,6 +3,7 @@
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendar } from '@/exports/calendar.js';
 import { exportCalendarDates } from '@/exports/calendar_dates.js';
+import { exportCalendarStepp } from '@/exports/calendar_stepp.js';
 import { exportRoute } from '@/exports/routes.js';
 import { exportShape } from '@/exports/shapes.js';
 import { exportStopTimesForPattern } from '@/exports/stop_times.js';
@@ -224,13 +225,14 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 
 		//
 		// 5.
-		// Export calendar and calendar_dates
+		// Export calendar, calendar_dates and calendar_stepp
 		// Export all unique serviceIds and their dates that were collected during pattern processing
 
 		await updateProgress(progress, { progress_current: 4, progress_total: 5 });
 
 		await exportCalendar(serviceRegistry, exportConfig);
 		await exportCalendarDates(serviceRegistry, exportConfig);
+		await exportCalendarStepp(serviceRegistry, allHolidaysData, exportConfig);
 
 		//
 		// 6.
@@ -241,6 +243,7 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 		await exportConfig.writers.agency.flush();
 		await exportConfig.writers.calendar.flush();
 		await exportConfig.writers.calendar_dates.flush();
+		await exportConfig.writers.calendar_stepp.flush();
 		await exportConfig.writers.routes.flush();
 		await exportConfig.writers.shapes.flush();
 		await exportConfig.writers.stop_times.flush();
