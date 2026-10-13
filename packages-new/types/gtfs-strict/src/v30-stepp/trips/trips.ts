@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsTernarySchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsBinarySchema, GtfsTernarySchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const GtfsStrictV30SteppTripsSchema = z.object({
 	bikes_allowed: GtfsTernarySchema,
 	block_id: z.string().optional(),
-	direction_id: z.number(),
+	direction_id: GtfsBinarySchema,
 	route_id: z.string(),
 	service_id: z.string(),
 	shape_id: z.string(),

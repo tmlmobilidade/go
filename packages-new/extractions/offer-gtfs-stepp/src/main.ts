@@ -11,6 +11,7 @@ import { exportStop } from '@/exports/stops.js';
 import { exportTripsForPattern } from '@/exports/trips.js';
 import { type ExportProgress, type GtfsSteppV1ExportConfig } from '@/types.js';
 import { ServiceRegistry } from '@/utils/service-registry.js';
+import { TripDirectionRegistry } from '@/utils/trip-direction-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -91,6 +92,7 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 
 		// Initialize service registry for calendar deduplication
 		const serviceRegistry = new ServiceRegistry();
+		const tripDirectionRegistry = new TripDirectionRegistry();
 
 		// Define export date range
 		const exportStartDate = Dates.fromOperationalDate(exportConfig.start_date, 'Europe/Lisbon');
@@ -196,6 +198,7 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 						exportStartDate,
 						exportEndDate,
 						serviceRegistry,
+						tripDirectionRegistry,
 						exportConfig,
 					);
 

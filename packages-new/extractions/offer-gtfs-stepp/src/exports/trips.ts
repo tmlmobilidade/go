@@ -3,9 +3,10 @@
 
 import { type GtfsSteppV1ExportConfig } from '@/types.js';
 import { type ServiceId, type ServiceRegistry } from '@/utils/service-registry.js';
+import { type TripDirectionRegistry } from '@/utils/trip-direction-registry.js';
 import { buildOperationalDateRange, buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, Dates, getActivePeriodId, getTimepointsRemovedByEventRestriction, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap, yyyymmddToKey } from '@tmlmobilidade/dates';
 import { type GtfsStrictV30SteppTrips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { DayPeriod, type Event, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { DayPeriod, type Event, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type Pattern, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
@@ -551,6 +552,7 @@ export async function exportTripsForPattern(
 	startDate: Dates,
 	endDate: Dates,
 	serviceRegistry: ServiceRegistry,
+	tripDirectionRegistry: TripDirectionRegistry,
 	exportConfig: GtfsSteppV1ExportConfig,
 ): Promise<TripSchedule[]> {
 	try {
@@ -591,6 +593,11 @@ export async function exportTripsForPattern(
 
 		// Step 3: Export trips
 		const headsign = patternData.headsign.replaceAll(',', '').replace(/  +/g, ' ').trim();
+		const directionId = tripDirectionRegistry.resolve({
+			route_id: routeData.code,
+			shape_id: shapeId,
+			trip_headsign: headsign,
+		});
 
 		const sortedTripRows = resolvedTripRows.sort((a, b) => {
 			const timeDiff = timepointToOperationalMinutes(a.timepoint) - timepointToOperationalMinutes(b.timepoint);
@@ -621,7 +628,7 @@ export async function exportTripsForPattern(
 				service_id: row.serviceId,
 				trip_id: tripId,
 				trip_headsign: headsign,
-				direction_id: Number(patternDirectionMapper.toGtfs(patternData.direction)),
+				direction_id: directionId,
 				shape_id: shapeId,
 				bikes_allowed: '0',
 				wheelchair_accessible: '0',
