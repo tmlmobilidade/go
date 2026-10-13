@@ -235,6 +235,7 @@
 				"planning": "Calculating..."
 			},
 			"errors": {
+				"current_location_unavailable": "Your current location could not be determined. Try again or choose a departure point on the map.",
 				"missing_locations": "Choose a departure point and destination before calculating the route.",
 				"no_itineraries": "No alternatives found. Try another date or locations closer to the network.",
 				"unknown": "The route could not be calculated."
