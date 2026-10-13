@@ -10,8 +10,13 @@
 	width: 100%;
 	padding: 20px;
 	padding-right: 10px;
+	font: inherit;
 	color: var(--color-system-text-100);
+	text-align: left;
+	appearance: none;
+	cursor: pointer;
 	background-color: var(--color-system-background-100);
+	border: 0;
 	border-top: 1px solid var(--color-system-border-100);
 }
 
@@ -19,12 +24,11 @@
 	opacity: 0.7;
 }
 
-:not(.container) + .container {
-	border-top: none;
-}
-
-.container[data-disabled="true"] {
-	pointer-events: none;
+.container:focus-visible {
+	position: relative;
+	z-index: 1;
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: -4px;
 }
 
 /* * */

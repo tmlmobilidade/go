@@ -8,6 +8,7 @@ export * from './KeyValueListInput';
 export * from './MultiSelect';
 export * from './NumberInput';
 export * from './PasswordInput';
+export * from './SearchInput';
 export * from './SegmentedControl';
 export * from './Select';
 export * from './TagsInput';

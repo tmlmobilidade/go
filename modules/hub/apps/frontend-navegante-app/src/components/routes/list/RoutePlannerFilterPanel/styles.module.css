@@ -1,0 +1,17 @@
+.filtersPanel {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+	background-color: var(--color-system-background-100);
+}
+
+.filterGroup {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.footer {
+	padding-top: 12px;
+}
