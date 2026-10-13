@@ -1,12 +1,12 @@
 'use client';
 
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailViewTimetableRow } from '@/components/stops/detail/StopsDetailViewTimetableRow';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Section } from '@tmlmobilidade/ui';
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -25,6 +25,7 @@ export function StopsDetailViewTimetable() {
 	const stopsDetailContext = useStopsDetailContext();
 
 	const [showPastArrivals, setShowPastArrivals] = useState(false);
+	const pastArrivalsId = useId();
 
 	//
 	// B. Transform data
@@ -65,14 +66,14 @@ export function StopsDetailViewTimetable() {
 	}, [stopsDetailContext.data.timetable]);
 
 	//
-	// C. Render components
+	// C. Handle actions
 
 	const toggleShowPastArrivals = () => {
 		setShowPastArrivals(prev => !prev);
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	if (!stopsDetailContext.data.timetable?.length) {
 		return <NoDataLabel text={t('default:stops.StopsDetailViewTimetable.no_service')} withMinHeight />;
@@ -82,12 +83,18 @@ export function StopsDetailViewTimetable() {
 		<Section padding="none">
 
 			{operationalDate.isTodaySelected &&	(
-				<p className={styles.toggleShowPastArrivals} onClick={toggleShowPastArrivals}>
+				<button
+					aria-controls={pastArrivalsId}
+					aria-expanded={showPastArrivals}
+					className={styles.toggleShowPastArrivals}
+					onClick={toggleShowPastArrivals}
+					type="button"
+				>
 					{showPastArrivals ? t('default:stops.StopsDetailViewTimetable.show_past_trips_toggle.hide') : t('default:stops.StopsDetailViewTimetable.show_past_trips_toggle.show')}
-				</p>
+				</button>
 			)}
 
-			<div className={styles.arrivalsWrapper}>
+			<div className={styles.arrivalsWrapper} id={pastArrivalsId}>
 				{pastArrivals.map(item => (
 					<StopsDetailViewTimetableRow
 						key={item._id}

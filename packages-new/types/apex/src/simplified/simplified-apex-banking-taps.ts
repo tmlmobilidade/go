@@ -1,9 +1,10 @@
 /* * */
 
-import { ApexBankingBrandSchema } from '@/utils/banking-brand.js';
-import { ApexEventTypeSchema } from '@/utils/event-type.js';
 import { OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { ApexBankingBrandSchema } from '../utils/banking-brand.js';
+import { ApexEventTypeSchema } from '../utils/event-type.js';
 
 /* * */
 
