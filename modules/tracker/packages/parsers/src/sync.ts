@@ -15,7 +15,7 @@ import { PARSER_MAP } from './parsers.js';
  * Valid `agency_id` <-> `rawDb.collection` pairs for vehicle-events sync.
  * Specifying either field narrows the other to the only matching value.
  */
-export type SyncConfig = {
+type SyncConfig = {
 	[K in keyof typeof rawDb.vehicleEvents]: {
 		agency_id: VehicleEventsCollectionDocument<typeof rawDb.vehicleEvents[K]>['agency_id']
 		collection: typeof rawDb.vehicleEvents[K]
@@ -25,7 +25,7 @@ export type SyncConfig = {
 /**
  * Parameters for the handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents function.
  */
-interface HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams {
+export interface HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams {
 
 	/**
 	 * The batch writer to be used to write the SimplifiedVehicleEvent
