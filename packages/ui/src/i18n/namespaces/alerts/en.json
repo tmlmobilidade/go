@@ -1,0 +1,128 @@
+{
+	"causes": {
+		"ABUSIVE_PARKING": {
+			"description": "Obstructions caused by illegal parking.",
+			"title": "Illegal Parking"
+		},
+		"ACCIDENT": {
+			"description": "Road closures caused by traffic accidents.",
+			"title": "Accident"
+		},
+		"CONSTRUCTION": {
+			"description": "Roadworks on public roads.",
+			"title": "Roadworks"
+		},
+		"DEMONSTRATION": {
+			"description": "Festivals, protests or strikes by third parties.",
+			"title": "Event / Demonstration"
+		},
+		"DRIVER_ABSENCE": {
+			"description": "The road is closed due to maintenance or other reasons.",
+			"title": "Driver Absence"
+		},
+		"DRIVER_ISSUE": {
+			"description": "The road is closed due to maintenance or other reasons.",
+			"title": "Driver Issue"
+		},
+		"HIGH_PASSENGER_LOAD": {
+			"description": "High passenger volumes.",
+			"title": "High Passenger Load"
+		},
+		"MEDICAL_EMERGENCY": {
+			"description": "Incidents involving passengers or drivers requiring medical assistance.",
+			"title": "Medical Emergency"
+		},
+		"NETWORK_UPDATE": {
+			"description": "Changes to the transport network, such as route or timetable changes.",
+			"title": "Network Update"
+		},
+		"POLICE_ACTIVITY": {
+			"description": "Police checkpoints or other police activity preventing traffic from moving.",
+			"title": "Police Activity"
+		},
+		"PUBLIC_DISORDER": {
+			"description": "Conflicts, assaults or other disturbances on the vehicle.",
+			"title": "Public Disorder"
+		},
+		"ROAD_ISSUE": {
+			"description": "Road obstructions caused by fallen trees, landslides or other obstacles.",
+			"title": "Road Incident"
+		},
+		"STRIKE": {
+			"description": "Strikes by this or other transport agencies.",
+			"title": "Strike"
+		},
+		"TECHNICAL_ISSUE": {
+			"description": "Mechanical breakdowns, AVL failures or unavailable validators.",
+			"title": "Technical Issue"
+		},
+		"TRAFFIC_JAM": {
+			"description": "Unusually high road traffic volumes.",
+			"title": "Traffic Congestion"
+		},
+		"VEHICLE_ISSUE": {
+			"description": "Mechanical or onboard system failures.",
+			"title": "Vehicle Issue"
+		},
+		"WEATHER": {
+			"description": "Storms or heavy rain causing road obstructions.",
+			"title": "Weather Conditions"
+		}
+	},
+	"effects": {
+		"ACCESSIBILITY_ISSUE": {
+			"description": "Passengers with reduced mobility are particularly affected.",
+			"title": "Accessibility Impact"
+		},
+		"ADDITIONAL_SERVICE": {
+			"description": "Additional vehicles or new departures.",
+			"title": "Additional Service"
+		},
+		"DETOUR": {
+			"description": "Temporary change to the usual route.",
+			"title": "Detour"
+		},
+		"MODIFIED_SERVICE": {
+			"description": "Changes to the route or timetable.",
+			"title": "Modified Service"
+		},
+		"NO_SERVICE": {
+			"description": "The service has been cancelled.",
+			"title": "Cancellation"
+		},
+		"ON_BOARD_SALE_ISSUE": {
+			"description": "Ticket sales are unavailable or limited.",
+			"title": "Limited Onboard Ticket Sales"
+		},
+		"REALTIME_INFO_ISSUE": {
+			"description": "An issue with real-time information.",
+			"title": "Passenger Information Impact"
+		},
+		"REDUCED_SERVICE": {
+			"description": "The trip will end early.",
+			"title": "Shortened Route"
+		},
+		"SIGNIFICANT_DELAYS": {
+			"description": "The scheduled timetable cannot be met.",
+			"title": "Significant Delays"
+		},
+		"STOP_MOVED": {
+			"description": "The stop has been temporarily moved.",
+			"title": "Stop Moved"
+		}
+	},
+	"reference_types": {
+		"agency": {
+			"title": "Agency"
+		},
+		"lines": {
+			"title": "Lines"
+		},
+		"rides": {
+			"title": "Trips"
+		},
+		"stops": {
+			"title": "Stops"
+		}
+	}
+}

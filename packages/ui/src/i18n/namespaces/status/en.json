@@ -1,0 +1,93 @@
+{
+	"approval_status": {
+		"approved": "Approved",
+		"none": "-",
+		"pending": "Pending",
+		"rejected": "Rejected"
+	},
+	"availability_status": {
+		"available": "Available",
+		"unavailable": "Unavailable",
+		"unknown": "Unknown"
+	},
+	"condition_status": {
+		"damaged": "Damaged",
+		"missing": "Missing",
+		"not_applicable": "Not applicable",
+		"ok": "OK",
+		"unknown": "Unknown"
+	},
+	"delay_status": {
+		"delayed": "Delayed",
+		"early": "Early",
+		"none": "(no value)",
+		"ontime": "On Time"
+	},
+	"grade_status": {
+		"error": "Error",
+		"fail": "Fail",
+		"none": "(no value)",
+		"pass": "Pass",
+		"skip": "Skip"
+	},
+	"lifecycle_status": {
+		"active": "Active",
+		"draft": "Draft",
+		"inactive": "Inactive",
+		"provisional": "Provisional",
+		"seasonal": "Seasonal",
+		"voided": "Voided"
+	},
+	"operational_status": {
+		"ended": "Ended",
+		"missed": "Missed",
+		"running": "Running",
+		"scheduled": "Scheduled"
+	},
+	"processing_status": {
+		"complete": "Complete",
+		"error": "Error",
+		"processing": "In Progress",
+		"skipped": "Skipped",
+		"waiting": "Waiting"
+	},
+	"publish_status": {
+		"archived": "Archived",
+		"draft": "Draft",
+		"published": "Published"
+	},
+	"seen_status": {
+		"gone": "-",
+		"seen": "Ahead",
+		"unseen": "Behind"
+	},
+	"statuses": {
+		"Archived": "Archived",
+		"Complete": "Valid",
+		"Concluded": "Complete",
+		"Draft": "Draft",
+		"Ended": "Ended",
+		"Error": "Invalid",
+		"Fail": "Fail",
+		"Failed": "Error",
+		"Missed": "Missed",
+		"Pass": "Pass",
+		"Processing": "Processing",
+		"Published": "Published",
+		"Running": "Running",
+		"Scheduled": "Scheduled",
+		"Skipped": "Skipped",
+		"Unknown": "Unknown",
+		"Waiting": "Waiting"
+	},
+	"temporal_status": {
+		"active": "Active",
+		"expired": "Expired",
+		"upcoming": "Upcoming"
+	},
+	"validity_status": {
+		"invalid": "Invalid",
+		"unknown": "Unknown",
+		"valid": "Valid"
+	}
+}
