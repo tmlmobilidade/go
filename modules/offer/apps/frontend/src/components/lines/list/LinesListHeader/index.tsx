@@ -39,11 +39,6 @@ export function LinesListHeader() {
 					onClick={openGtfsExportModal}
 					title="Exportar GTFS"
 				/>
-				<MenuItem
-					leftSection={<IconSearch size={20} />}
-					onClick={openVkmModal}
-					title="Consultar VKM"
-				/>
 				<HasPermission action="extract-stepp" scope="lines">
 					<MenuItem
 						leftSection={<IconFileZip size={20} />}
@@ -51,6 +46,11 @@ export function LinesListHeader() {
 						title="Exportar GTFS STePP"
 					/>
 				</HasPermission>
+				<MenuItem
+					leftSection={<IconSearch size={20} />}
+					onClick={openVkmModal}
+					title="Consultar VKM"
+				/>
 			</Menu>
 		</Toolbar>
 	);
