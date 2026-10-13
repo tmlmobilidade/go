@@ -2,11 +2,10 @@
 
 import { populateLine, populateLines } from '@/utils/lines.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { AggregationPipeline, type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { LinesAgencyItem, LinesAgencyItemSchema, LinesAgencyRequest, LinesAgencyRequestSchema, LinesExtractItem, LinesExtractItemSchema } from '@tmlmobilidade/go-offer-pckg-types';
-import { type CreateLineDto, type Line, type LineNormalized, LineSchema, type UpdateLineDto } from '@tmlmobilidade/go-types-offer';
+import { type CreateLineDto, type Line, type LineNormalized, type UpdateLineDto } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
@@ -341,90 +340,4 @@ export class LinesController {
 		//
 	}
 	//
-
-	/**
-	 * Lists agencies allowed by the current user's requested scope and actions.
-	 * @param request The Fastify request object.
-	 * @param reply The Fastify reply object.
-	 */
-	static async listAgenciesHandler(request: FastifyRequest<{ Body: LinesAgencyRequest }>, reply: FastifyReply<LinesAgencyItem[]>) {
-		//
-
-		//
-		// Validate the permission query
-
-		const validatedQuery = LinesAgencyRequestSchema.safeParse(request.body);
-
-		if (!validatedQuery.success) {
-			return sendErrorApiResponse(reply, { error: validatedQuery.error.message, status_code: '400' });
-		}
-
-		//
-		// Resolve allowed agency IDs from the authenticated user's permissions
-
-		const { permissions } = validatedQuery.data;
-		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
-			checks: permissions.actions.map(action => ({ action, scope: permissions.scope })),
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-		});
-
-		//
-		// Return all permitted agencies, keeping agencies with the same code separate
-
-		const pipeline: AggregationPipeline<LinesAgencyItem> = [
-			{ $match: agencyAccess.allowAll ? {} : { _id: { $in: agencyAccess.values } } },
-			{ $project: Object.fromEntries(Object.keys(LinesAgencyItemSchema.shape).map(key => [key, 1])) },
-			{ $sort: { _id: -1 } },
-		];
-
-		const agencies = await goDb.core.agencies.aggregate(pipeline);
-
-		return sendSuccessApiResponse(reply, LinesAgencyItemSchema.array().parse(agencies ?? []));
-	}
-
-	/**
-	 * Lists the permitted agency's lines for extraction.
-	 * @param request The request containing the agency filter.
-	 * @param reply The response containing extraction line items.
-	 */
-	static async listExtractLinesHandler(request: FastifyRequest<{ Params: { agencyId: string } }>, reply: FastifyReply<LinesExtractItem[]>) {
-		//
-
-		//
-		// Validate the agency ID
-
-		const agencyId = LineSchema.shape.agency_id.safeParse(request.params.agencyId);
-
-		if (!agencyId.success) {
-			return sendErrorApiResponse(reply, { error: agencyId.error.message, status_code: '400' });
-		}
-
-		//
-		// Restrict the selected agency to the user's extraction permissions
-
-		const allowedAgencyIds = PermissionCatalog.filterPermissionResourceValues<string>({
-			action: PermissionCatalog.all.lines.actions['extract-stepp'],
-			permissions: request.permissions,
-			resourceKey: 'agency_ids',
-			scope: PermissionCatalog.all.lines.scope,
-			values: [agencyId.data],
-		});
-
-		if (!allowedAgencyIds.length) {
-			return sendErrorApiResponse(reply, { error: 'User does not have permission to extract lines for the selected agency.', status_code: '403' });
-		}
-
-		//
-		// Fetch only the fields required by the extraction selector
-
-		const pipeline: AggregationPipeline<LinesExtractItem> = [
-			{ $match: { agency_id: { $in: allowedAgencyIds } } },
-			{ $project: Object.fromEntries(Object.keys(LinesExtractItemSchema.shape).map(key => [key, 1])) },
-		];
-
-		const lines = await goDb.offer.lines.aggregate(pipeline);
-
-		return sendSuccessApiResponse(reply, LinesExtractItemSchema.array().parse(lines ?? []));
-	}
 }
