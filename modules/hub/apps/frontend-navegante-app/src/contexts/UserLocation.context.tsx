@@ -66,17 +66,21 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 	const [deviceOrientationError, setDeviceOrientationError] = useState<null | UserLocationError>(null);
 	const [isRequestingUserLocation, setIsRequestingUserLocation] = useState(false);
 	const [isBearingTrackingEnabled, setIsBearingTrackingEnabled] = useState(false);
+	const [watchRestartKey, setWatchRestartKey] = useState(0);
 	const [userLocationTrackingMode, setUserLocationTrackingMode, isStorageReady] = usePersistedPreference<UserLocationTrackingMode>('user-location-tracking-mode', 'follow', parseTrackingMode);
 	const pendingLocationRequestCount = useRef(0);
+	const pendingLocationResolversRef = useRef(new Set<(location: null | UserLocation) => void>());
 	const userLocationRef = useRef<null | UserLocation>(null);
+	const lastPositionTimestampRef = useRef<null | number>(null);
 
 	//
 	// B. Transform data
 
 	const availableUserLocationTrackingModes = useMemo(() => {
 		const modes = new Set<UserLocationTrackingMode>(['follow', 'follow-bearing', 'idle']);
-		if (userLocationError) modes.delete('follow');
-		if (userLocationError || deviceOrientationError) modes.delete('follow-bearing');
+		const locationPermissionUnavailable = userLocationError?.code === 'permission-denied' || userLocationError?.code === 'unsupported';
+		if (locationPermissionUnavailable) modes.delete('follow');
+		if (locationPermissionUnavailable || deviceOrientationError) modes.delete('follow-bearing');
 		return Array.from(modes);
 	}, [deviceOrientationError, userLocationError]);
 	const isTrackingUserLocation = userLocationTrackingMode !== 'idle';
@@ -86,6 +90,10 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 	// C. Handle actions
 
 	const handleUserLocationSuccess = useCallback((position: GeolocationPosition): UserLocation => {
+		if (userLocationRef.current && lastPositionTimestampRef.current !== null && position.timestamp < lastPositionTimestampRef.current) {
+			return userLocationRef.current;
+		}
+
 		const nextUserLocation: UserLocation = {
 			accuracy: position.coords.accuracy,
 			bearing: userLocationRef.current?.bearing ?? null,
@@ -94,17 +102,27 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 		};
 
 		userLocationRef.current = nextUserLocation;
+		lastPositionTimestampRef.current = position.timestamp;
 		setUserLocation(nextUserLocation);
 		setUserLocationError(null);
+		for (const resolve of pendingLocationResolversRef.current) resolve(nextUserLocation);
 
 		return nextUserLocation;
 	}, []);
 
 	const handleUserLocationError = useCallback((error: GeolocationPositionError) => {
+		if (error.code === 1) {
+			lastPositionTimestampRef.current = null;
+			userLocationRef.current = null;
+			setUserLocation(null);
+			for (const resolve of pendingLocationResolversRef.current) resolve(null);
+		}
 		setUserLocationError(createUserLocationError(error));
 	}, []);
 
 	const requestCurrentLocation = useCallback(async (): Promise<null | UserLocation> => {
+		if (userLocationRef.current) return userLocationRef.current;
+
 		if (typeof navigator === 'undefined' || !navigator.geolocation) {
 			setUserLocationError({
 				code: 'unsupported',
@@ -117,26 +135,31 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 		setIsRequestingUserLocation(true);
 
 		return new Promise((resolve) => {
-			const finishRequest = () => {
+			let isSettled = false;
+			let watchId: null | number = null;
+			let timeoutId: null | number = null;
+			const finishRequest = (location: null | UserLocation) => {
+				if (isSettled) return;
+				isSettled = true;
+				pendingLocationResolversRef.current.delete(finishRequest);
+				if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+				if (timeoutId !== null) window.clearTimeout(timeoutId);
 				pendingLocationRequestCount.current -= 1;
 				setIsRequestingUserLocation(pendingLocationRequestCount.current > 0);
+				resolve(location);
 			};
 
-			navigator.geolocation.getCurrentPosition(
-				(position) => {
-					const location = handleUserLocationSuccess(position);
-					finishRequest();
-					resolve(location);
-				},
-				(error) => {
-					handleUserLocationError(error);
-					finishRequest();
-					resolve(null);
-				},
-				GEOLOCATION_OPTIONS,
-			);
+			pendingLocationResolversRef.current.add(finishRequest);
+			if (!isStorageReady || !isTrackingUserLocation) {
+				watchId = navigator.geolocation.watchPosition(
+					handleUserLocationSuccess,
+					handleUserLocationError,
+					GEOLOCATION_OPTIONS,
+				);
+			}
+			timeoutId = window.setTimeout(() => finishRequest(null), GEOLOCATION_OPTIONS.timeout);
 		});
-	}, [handleUserLocationError, handleUserLocationSuccess]);
+	}, [handleUserLocationError, handleUserLocationSuccess, isStorageReady, isTrackingUserLocation]);
 
 	const followUserLocation = useCallback(async (): Promise<null | UserLocation> => {
 		const location = await requestCurrentLocation();
@@ -225,13 +248,17 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 		return () => {
 			navigator.geolocation.clearWatch(watchId);
 		};
-	}, [handleUserLocationError, handleUserLocationSuccess, isStorageReady, shouldWatchUserLocation]);
+	}, [handleUserLocationError, handleUserLocationSuccess, isStorageReady, shouldWatchUserLocation, watchRestartKey]);
 
 	useEffect(() => {
 		if (!shouldWatchUserLocation) return;
 
 		const refreshWhenVisible = () => {
-			if (document.visibilityState === 'visible') void requestCurrentLocation();
+			if (document.visibilityState !== 'visible') return;
+			userLocationRef.current = null;
+			lastPositionTimestampRef.current = null;
+			setUserLocation(null);
+			setWatchRestartKey(previous => previous + 1);
 		};
 		const refreshRestoredPage = (event: PageTransitionEvent) => {
 			if (event.persisted) refreshWhenVisible();
@@ -243,7 +270,7 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 			document.removeEventListener('visibilitychange', refreshWhenVisible);
 			window.removeEventListener('pageshow', refreshRestoredPage);
 		};
-	}, [requestCurrentLocation, shouldWatchUserLocation]);
+	}, [shouldWatchUserLocation]);
 
 	useEffect(() => {
 		if (userLocationTrackingMode !== 'follow-bearing') return;
