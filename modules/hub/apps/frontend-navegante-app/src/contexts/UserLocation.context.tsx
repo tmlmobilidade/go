@@ -228,6 +228,24 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 	}, [handleUserLocationError, handleUserLocationSuccess, isStorageReady, shouldWatchUserLocation]);
 
 	useEffect(() => {
+		if (!shouldWatchUserLocation) return;
+
+		const refreshWhenVisible = () => {
+			if (document.visibilityState === 'visible') void requestCurrentLocation();
+		};
+		const refreshRestoredPage = (event: PageTransitionEvent) => {
+			if (event.persisted) refreshWhenVisible();
+		};
+
+		document.addEventListener('visibilitychange', refreshWhenVisible);
+		window.addEventListener('pageshow', refreshRestoredPage);
+		return () => {
+			document.removeEventListener('visibilitychange', refreshWhenVisible);
+			window.removeEventListener('pageshow', refreshRestoredPage);
+		};
+	}, [requestCurrentLocation, shouldWatchUserLocation]);
+
+	useEffect(() => {
 		if (userLocationTrackingMode !== 'follow-bearing') return;
 
 		if (!isBearingTrackingEnabled) {

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 interface UseRoutePlannerOriginReturnType {
-	cachedOrigin: null | RoutePlannerLocation
+	latestKnownOrigin: null | RoutePlannerLocation
 	requestCurrentOrigin: () => Promise<null | RoutePlannerLocation>
 	resolveOrigin: (origin: null | RoutePlannerLocation) => Promise<null | RoutePlannerLocation>
 }
@@ -36,7 +36,7 @@ export function useRoutePlannerOrigin(): UseRoutePlannerOriginReturnType {
 		});
 	}, [t]);
 
-	const cachedOrigin = userLocation ? createCurrentLocation(userLocation.latitude, userLocation.longitude) : null;
+	const latestKnownOrigin = userLocation ? createCurrentLocation(userLocation.latitude, userLocation.longitude) : null;
 	const requestCurrentOrigin = useCallback(async () => {
 		const location = await requestCurrentLocation();
 		return location ? createCurrentLocation(location.latitude, location.longitude) : null;
@@ -44,13 +44,13 @@ export function useRoutePlannerOrigin(): UseRoutePlannerOriginReturnType {
 
 	const resolveOrigin = useCallback(async (origin: null | RoutePlannerLocation) => {
 		if (origin) return origin;
-		return cachedOrigin;
-	}, [cachedOrigin]);
+		return latestKnownOrigin;
+	}, [latestKnownOrigin]);
 
 	//
 	// C. Return data
 
-	return useMemo(() => ({ cachedOrigin, requestCurrentOrigin, resolveOrigin }), [cachedOrigin, requestCurrentOrigin, resolveOrigin]);
+	return useMemo(() => ({ latestKnownOrigin, requestCurrentOrigin, resolveOrigin }), [latestKnownOrigin, requestCurrentOrigin, resolveOrigin]);
 
 	//
 }
