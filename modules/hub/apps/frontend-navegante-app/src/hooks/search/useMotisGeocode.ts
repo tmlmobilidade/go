@@ -1,8 +1,8 @@
 'use client';
 
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
+import { deduplicateMotisLocations } from '@/utils/search/deduplicate-motis-locations';
 import { mapMotisGeocodeResultToLocation } from '@/utils/search/motis-geocode';
-import { rankMotisLocations } from '@/utils/search/rank-motis-locations';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubV1ApiMotisGeocodeResponse } from '@tmlmobilidade/go-types-hub';
 import { fetchApiData } from '@tmlmobilidade/ui';
@@ -90,7 +90,7 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 				setError(options.errorMessage);
 			} else {
 				const locations = response.data.map(result => mapMotisGeocodeResultToLocation(result, options.unnamedLocationLabel));
-				setData(rankMotisLocations(locations, trimmedQuery).slice(0, numResults));
+				setData(deduplicateMotisLocations(locations).slice(0, numResults));
 			}
 
 			setIsLoading(false);
