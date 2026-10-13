@@ -5,7 +5,7 @@ import { type GtfsSteppV1ExportConfig } from '@/types.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { GtfsStrictV30SteppShapes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Shape } from '@tmlmobilidade/go-types-offer';
-import { metersToGtfsKm, shapeDistTraveledMetersAtPoint } from '@tmlmobilidade/types';
+import { shapeDistTraveledMetersAtPoint } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -30,7 +30,7 @@ export function parseShape(shapeId: string, shapeData: Shape): GtfsStrictV30Step
 			const distMeters = shapeDistTraveledMetersAtPoint(extensionMeters, pointIndex, pointCount);
 			const shapePtLat = Number(lat.toFixed(6));
 			const shapePtLon = Number(lon.toFixed(6));
-			const shapeDistTraveled = metersToGtfsKm(distMeters);
+			const shapeDistTraveled = distMeters;
 
 			parsedShape.push({
 				shape_id: shapeId,
