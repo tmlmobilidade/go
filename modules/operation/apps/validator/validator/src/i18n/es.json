@@ -830,7 +830,7 @@
 		"required": "El campo \"shape_id\" es obligatorio"
 	},
 	"shape_id_route_direction_match": {
-		"not_matching": "El campo \"shape_id\" \"%s\" debe ser \"%s\", combinando route_id \"%s\" y direction_id %d"
+		"not_matching": "El campo \"shape_id\" \"%s\" debe ser \"%s\", combinando route_id \"%s\" y direction_id \"%d\""
 	},
 	"shape_pt_lat_valid_latitude": {
 		"forbidden": "El campo \"shape_pt_lat\" está prohibido",
@@ -1499,7 +1499,7 @@
 	},
 	"trips_shape_id_matches_route_id_and_direction_id": {
 		"generic": "El campo \"shape_id\" debe coincidir con la combinación de \"route_id\" y \"direction_id\".",
-		"not_matching": "El campo \"shape_id\" \"%s\" debe ser \"%s\", combinando route_id \"%s\" y direction_id %d"
+		"not_matching": "El campo \"shape_id\" \"%s\" debe ser \"%s\", combinando route_id \"%s\" y direction_id \"%d\""
 	},
 	"trips_shape_id_max_two_per_route": {
 		"generic": "Cada ruta no debe tener más de dos valores distintos de \"shape_id\".",
