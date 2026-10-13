@@ -1,0 +1,59 @@
+{
+	"name": "@tmlmobilidade/go-utils-metrics",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"homepage": "https://go.tmlmobilidade.pt",
+	"bugs": {
+		"url": "https://github.com/tmlmobilidade/go/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tmlmobilidade/go.git"
+	},
+	"keywords": [
+		"public transit",
+		"tml",
+		"transportes metropolitanos de lisboa",
+		"go"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"lint": "eslint ./src/ && tsc --noEmit",
+		"lint:fix": "eslint ./src/ --fix",
+		"test": "tsx --test tests/*.test.ts",
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
+	},
+	"dependencies": {
+		"@prometheus-io/client": "0.16.1"
+	},
+	"peerDependencies": {
+		"fastify": ">=5"
+	},
+	"peerDependenciesMeta": {
+		"fastify": {
+			"optional": true
+		}
+	},
+	"devDependencies": {
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
+		"fastify": "5.12.1",
+		"resolve-tspaths": "0.8.23",
+		"tsc-watch": "7.2.1",
+		"tsx": "4.23.12",
+		"typescript": "6.0.3"
+	}
+}
