@@ -7,6 +7,7 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 
 export interface AnalyticsContextProps {
 	apiKey?: string
+	configurationUrl?: string
 	options?: Types.BrowserOptions
 }
 
@@ -42,16 +43,23 @@ export function useAnalyticsContext() {
 /* * */
 
 /** Initializes an isolated client. Tracking is inactive until `flags.ready` is true. */
-export function AnalyticsContextProvider({ apiKey, children, options }: PropsWithChildren<AnalyticsContextProps>) {
+export function AnalyticsContextProvider({ apiKey, children, configurationUrl, options }: PropsWithChildren<AnalyticsContextProps>) {
 	//
 
 	//
 	// A. Setup variables
 
 	const initializationRef = useRef<AnalyticsInitialization | undefined>(undefined);
+	const [configuration, setConfiguration] = useState<{
+		url: string
+		value: Pick<AnalyticsContextProps, 'apiKey' | 'options'>
+	}>();
 	const [error, setError] = useState<Error | undefined>(undefined);
 	const [initialized, setInitialized] = useState<AnalyticsInitialization | undefined>(undefined);
-	const ready = Boolean(apiKey) && initialized?.apiKey === apiKey && initialized?.options === options;
+	const remoteConfiguration = configuration?.url === configurationUrl ? configuration?.value : undefined;
+	const resolvedApiKey = apiKey ?? remoteConfiguration?.apiKey;
+	const resolvedOptions = useMemo(() => remoteConfiguration ? { ...remoteConfiguration.options, ...options } : options, [remoteConfiguration, options]);
+	const ready = Boolean(resolvedApiKey) && initialized?.apiKey === resolvedApiKey && initialized?.options === resolvedOptions;
 
 	//
 	// B. Handle actions
@@ -72,17 +80,42 @@ export function AnalyticsContextProvider({ apiKey, children, options }: PropsWit
 	// C. Handle effects
 
 	useEffect(() => {
+		if (apiKey !== undefined || !configurationUrl) return;
 		setError(undefined);
-		if (!apiKey) return;
+
+		const controller = new AbortController();
+		let active = true;
+
+		fetch(configurationUrl, { cache: 'no-store', signal: controller.signal })
+			.then((response) => {
+				if (!response.ok) throw new Error(`Unable to load analytics configuration: ${response.status}`);
+				return response.json();
+			})
+			.then((value: Pick<AnalyticsContextProps, 'apiKey' | 'options'>) => {
+				if (active) setConfiguration({ url: configurationUrl, value });
+			})
+			.catch((cause: unknown) => {
+				if (active) handleError(cause);
+			});
+
+		return () => {
+			active = false;
+			controller.abort();
+		};
+	}, [apiKey, configurationUrl, handleError]);
+
+	useEffect(() => {
+		setError(undefined);
+		if (!resolvedApiKey) return;
 
 		let initialization = initializationRef.current;
-		if (initialization?.apiKey !== apiKey || initialization.options !== options) {
+		if (initialization?.apiKey !== resolvedApiKey || initialization.options !== resolvedOptions) {
 			const client = createInstance();
 			initialization = {
-				apiKey,
+				apiKey: resolvedApiKey,
 				client,
-				options,
-				promise: client.init(apiKey, { autocapture: false, ...options }).promise,
+				options: resolvedOptions,
+				promise: client.init(resolvedApiKey, { autocapture: false, serverZone: 'EU', ...resolvedOptions }).promise,
 			};
 			initializationRef.current = initialization;
 		}
@@ -92,7 +125,7 @@ export function AnalyticsContextProvider({ apiKey, children, options }: PropsWit
 
 		promise.then(() => {
 			if (!active) return;
-			client.setOptOut(options?.optOut ?? false);
+			client.setOptOut(resolvedOptions?.optOut ?? false);
 			setInitialized(initialization);
 		}).catch((cause: unknown) => {
 			if (active) handleError(cause);
@@ -102,7 +135,7 @@ export function AnalyticsContextProvider({ apiKey, children, options }: PropsWit
 			active = false;
 			client.setOptOut(true);
 		};
-	}, [apiKey, handleError, options]);
+	}, [handleError, resolvedApiKey, resolvedOptions]);
 
 	//
 	// D. Define context value

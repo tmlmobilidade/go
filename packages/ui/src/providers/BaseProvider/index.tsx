@@ -40,7 +40,7 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 
 	const analyticsOptions = useMemo<AnalyticsContextProps['options']>(() => ({
 		appVersion: version,
-		serverZone: process.env.NEXT_PUBLIC_AMPLITUDE_SERVER_ZONE === 'US' ? 'US' : 'EU',
+		...(process.env.NEXT_PUBLIC_AMPLITUDE_SERVER_ZONE ? { serverZone: process.env.NEXT_PUBLIC_AMPLITUDE_SERVER_ZONE === 'US' ? 'US' : 'EU' } : {}),
 		...analytics?.options,
 	}), [analytics?.options, version]);
 
@@ -80,6 +80,7 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 						<VersionContextProvider version={version}>
 							<AnalyticsContextProvider
 								apiKey={analytics?.apiKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY}
+								configurationUrl={analytics?.configurationUrl ?? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/analytics`}
 								options={analyticsOptions}
 							>
 								<SWRConfig value={swrSettings}>
