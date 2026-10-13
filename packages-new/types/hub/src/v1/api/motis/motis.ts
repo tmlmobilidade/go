@@ -14,7 +14,7 @@ export const HubV1ApiMotisGeocodeQuerySchema = z.object({
 	place: z.string().max(100).optional(),
 	placeBias: z.coerce.number().min(0).max(1_000).optional(),
 	text: z.string().trim().min(2).max(256),
-	type: MotisLocationTypeSchema.optional(),
+	type: MotisLocationTypeSchema.or(z.literal('PLACE,ADDRESS')).optional(),
 }).strict();
 
 export const HubV1ApiMotisGeocodeResponseSchema: z.ZodType<MotisGeocodeResponse> = MotisGeocodeResponseSchema;

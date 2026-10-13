@@ -66,7 +66,7 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 			const params = new URLSearchParams({
 				numResults: String(Math.max(numResults, 50)),
 				text: trimmedQuery,
-				type: 'PLACE',
+				type: 'PLACE,ADDRESS',
 			});
 
 			if (Number.isFinite(placeBiasLatitude) && Number.isFinite(placeBiasLongitude) && Number.isFinite(placeBiasWeight)) {

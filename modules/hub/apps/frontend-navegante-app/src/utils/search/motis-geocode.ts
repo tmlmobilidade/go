@@ -24,7 +24,8 @@ export function mapMotisGeocodeResultToLocation(result: MotisGeocodeResult, unna
 		country: result.country,
 		detail: formatMotisLocationDetail(result),
 		houseNumber: result.houseNumber,
-		id: result.id,
+		// MOTIS can return multiple street segments with empty IDs.
+		id: result.id || `${result.type}:${result.lat},${result.lon}:${label}`,
 		label,
 		lat: result.lat,
 		level: result.level,

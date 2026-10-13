@@ -1,6 +1,7 @@
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { createRoutePlannerCurrentLocation, mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/planning/locations';
 import { formatMotisLocationDetail } from '@/utils/route-planner/presentation/format';
+import { deduplicateMotisLocations } from '@/utils/search/deduplicate-motis-locations';
 import { getMotisPlaceParam, mapMotisGeocodeResultToLocation, parseRoutePlannerCoordinate, routePlannerCoordinateToLocation } from '@/utils/search/motis-geocode';
 import { HubV1ApiStopSchema } from '@tmlmobilidade/go-types-hub';
 import { type MotisGeocodeResult } from '@tmlmobilidade/go-types-motis';
@@ -38,7 +39,7 @@ describe('MOTIS geocode location mapping', () => {
 			areas: result.areas,
 			category: 'station',
 			country: 'PT',
-			detail: 'Avenida de Berlim 1 · 1990-096 Lisboa Distrito de Lisboa',
+			detail: 'Avenida de Berlim 1 · 1990-096 Lisboa, Distrito de Lisboa',
 			houseNumber: '1',
 			id: 'stop-oriente',
 			label: 'Estação Oriente',
@@ -85,7 +86,53 @@ describe('MOTIS geocode location mapping', () => {
 			zip: '1200-450',
 		};
 
-		assert.equal(formatMotisLocationDetail(location), '1200-450 Lisboa Área Metropolitana de Lisboa');
+		assert.equal(formatMotisLocationDetail(location), '1200-450 Lisboa, Área Metropolitana de Lisboa');
+	});
+
+	it('shows the parish and municipality from MOTIS areas without changing their order in the data', () => {
+		const location: RoutePlannerLocation = {
+			areas: [
+				{ adminLevel: 2, name: 'Portugal' },
+				{ adminLevel: 6, name: 'Lisboa' },
+				{ adminLevel: 7, name: 'Lisboa' },
+				{ adminLevel: 8, name: 'Areeiro' },
+			],
+			detail: '',
+			label: 'Avenida de Roma',
+			type: 'PLACE',
+		};
+		const originalAreas = structuredClone(location.areas);
+
+		assert.equal(formatMotisLocationDetail(location), 'Areeiro, Lisboa');
+		assert.deepEqual(location.areas, originalAreas);
+	});
+
+	it('keeps Alvalade and Areeiro street segments when MOTIS gives both empty IDs', () => {
+		const street: MotisGeocodeResult = {
+			areas: [
+				{ adminLevel: 2, matched: false, name: 'Portugal' },
+				{ adminLevel: 7, matched: false, name: 'Lisboa' },
+				{ adminLevel: 8, matched: false, name: 'Alvalade' },
+			],
+			id: '',
+			lat: 38.754493,
+			lon: -9.1446479,
+			name: 'Avenida de Roma',
+			score: -10,
+			tokens: [],
+			type: 'ADDRESS',
+		};
+		const areeiro: MotisGeocodeResult = {
+			...street,
+			areas: [{ adminLevel: 8, matched: false, name: 'Areeiro' }, ...street.areas.slice(0, 2)],
+			lat: 38.741347,
+			lon: -9.1375055,
+		};
+		const mapped = [street, areeiro].map(result => mapMotisGeocodeResultToLocation(result, 'Local sem nome'));
+
+		assert.deepEqual(mapped.map(location => location.detail), ['Alvalade, Lisboa', 'Areeiro, Lisboa']);
+		assert.notEqual(mapped[0]?.id, mapped[1]?.id);
+		assert.deepEqual(deduplicateMotisLocations(mapped), mapped);
 	});
 });
 

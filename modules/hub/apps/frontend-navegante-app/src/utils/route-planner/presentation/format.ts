@@ -1,4 +1,4 @@
-import { type RoutePlannerLocation } from '@/types/route-planner/models';
+import { type RoutePlannerLocation, type RoutePlannerLocationArea } from '@/types/route-planner/models';
 import { type MotisGeocodeResult, type MotisPlanLeg } from '@tmlmobilidade/go-types-motis';
 
 /* * */
@@ -16,7 +16,7 @@ export function formatMotisLocationDetail(location: MotisGeocodeResult | RoutePl
 		getUsefulLocationPart(location.houseNumber),
 	].filter(Boolean).join(' ');
 	const areaNames = getMotisAreaNames(location.areas, [label, street]);
-	const locality = [getUsefulLocationPart(location.zip), ...areaNames].filter(Boolean).join(' ');
+	const locality = [getUsefulLocationPart(location.zip), areaNames.join(', ')].filter(Boolean).join(' ');
 
 	return [street, locality].filter(Boolean).join(' · ');
 }
@@ -74,12 +74,13 @@ export function getMotisLegDetail(leg: MotisPlanLeg, fallbackOrigin: string, fal
 
 /* * */
 
-function getMotisAreaNames(areas: Array<{ name?: string }> | undefined, excludedValues: Array<string | undefined>) {
+function getMotisAreaNames(areas: RoutePlannerLocationArea[] | undefined, excludedValues: Array<string | undefined>) {
 	const excluded = new Set(excludedValues.map(normalizeLocationPart).filter(Boolean));
 	const result: string[] = [];
 	const seen = new Set<string>();
 
-	for (const area of areas ?? []) {
+	const orderedAreas = [...(areas ?? [])].sort((a, b) => (b.adminLevel ?? 0) - (a.adminLevel ?? 0));
+	for (const area of orderedAreas) {
 		const name = getUsefulLocationPart(area.name);
 		const normalizedName = normalizeLocationPart(name);
 		if (!name || !normalizedName || excluded.has(normalizedName) || seen.has(normalizedName)) continue;

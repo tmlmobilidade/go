@@ -9,6 +9,7 @@ export type RoutePlannerViewMode = 'destination-search' | 'itinerary-detail' | R
 export type MotisLegModeKind = 'bike' | 'bus' | 'car' | 'elevator' | 'ferry' | 'plane' | 'rail' | 'scooter' | 'subway' | 'tram' | 'transit' | 'walk';
 
 export interface RoutePlannerLocationArea {
+	adminLevel?: number
 	name?: string
 }
 

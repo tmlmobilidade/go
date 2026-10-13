@@ -1,9 +1,10 @@
 'use client';
 
 import { RegularListItem } from '@/components/common/lists/RegularListItem';
+import { SearchLocationIcon } from '@/components/search/SearchLocationIcon';
 import { SearchResultDisplay } from '@/components/search/SearchResultDisplay';
 import { type SearchGroup as SearchGroupData, type SearchResult } from '@/types/common/search';
-import { IconAlertTriangle, IconBusStop, IconMapPin } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBusStop } from '@tabler/icons-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -79,7 +80,7 @@ export function SearchGroup({ group, onSelect }: SearchGroupProps) {
 
 function getResultIcon(result: SearchResult) {
 	if (result.type === 'alert') return <IconAlertTriangle size={22} />;
-	if (result.type === 'poi') return <IconMapPin size={22} />;
+	if (result.type === 'poi') return <SearchLocationIcon location={result.entity} />;
 	if (result.type === 'stop') return <IconBusStop size={22} />;
 	return undefined;
 }
