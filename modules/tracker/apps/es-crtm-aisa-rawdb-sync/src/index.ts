@@ -4,11 +4,18 @@ import { getEarliestDate } from '@tmlmobilidade/consts';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
-import { handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { type HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams, handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+
+/* * */
+
+const config = {
+	agency_id: 'G8N1G',
+	collection: rawDb.vehicleEvents.esCrtmAisa,
+} as const satisfies HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams['configItem'];
 
 /* * */
 
@@ -50,7 +57,7 @@ async function main() {
 				try {
 					await handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents({
 						batchWriter: writer,
-						configItem: { agency_id: 'G8N1G', collection: rawDb.vehicleEvents.esCrtmAisa },
+						configItem: config,
 						flushCallback: setRidesAsWaiting,
 						timeChunk: chunk,
 					});
@@ -67,7 +74,7 @@ async function main() {
 						intervalHrs: 10 / 60, // 10 minutes
 						onChunk: async chunk => await handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents({
 							batchWriter: writer,
-							configItem: { agency_id: 'G8N1G', collection: rawDb.vehicleEvents.esCrtmAisa },
+							configItem: config,
 							flushCallback: setRidesAsWaiting,
 							timeChunk: chunk,
 						}),
