@@ -3,7 +3,6 @@
 import { useLinesAgenciesData } from '@/components/lines/shared/use-agencies-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type LinesAgencyItem } from '@tmlmobilidade/go-offer-pckg-types';
-import { Agency } from '@tmlmobilidade/go-types-core';
 import { type LineNormalized } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
@@ -15,7 +14,7 @@ import useSWR from 'swr';
 
 interface LinesListContextState {
 	data: {
-		agencies: Agency[] | LinesAgencyItem[]
+		agencies: LinesAgencyItem[]
 		agencyIds: string[]
 		agencyOptions: SelectDataItem[]
 		filtered: LineNormalized[]
