@@ -243,7 +243,7 @@ export const ruleConfigKeys = {
 		'trips_one_shape_id_per_pattern_id_group',
 		'trips_one_pattern_id_per_shape_id_group',
 		'trip_headsign_consistent_for_all_patterns_in_trips',
-		'trips_shape_id_needs_to_be_the_same_as_pattern_id',
+		'trips_pattern_id_needs_to_be_the_same_as_shape_id',
 		'trips_shape_id_matches_route_id_and_direction_id',
 		'trips_shape_id_max_two_per_route',
 		'trip_headsign_max_two_per_route',

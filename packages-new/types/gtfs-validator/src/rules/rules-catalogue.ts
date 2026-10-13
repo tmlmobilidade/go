@@ -1325,6 +1325,13 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		id: 'trips_pattern_id_matches_feed_pattern_id_syntax',
 	},
 	{
+		config_key: 'trips_pattern_id_needs_to_be_the_same_as_shape_id',
+		depends_on: ['trips_shape_id_references_shapes_table_when_present', 'trips_pattern_id_matches_feed_pattern_id_syntax'],
+		editable: true,
+		group: 'trips',
+		id: 'trips_pattern_id_needs_to_be_the_same_as_shape_id',
+	},
+	{
 		config_key: 'trips_pattern_id_present_and_references_consistent',
 		depends_on: ['trips_file_present'],
 		editable: true,
@@ -1386,13 +1393,6 @@ export const ruleCatalogue: readonly RuleCatalogueEntry[] = [
 		editable: true,
 		group: 'trips',
 		id: 'trips_shape_id_max_two_per_route',
-	},
-	{
-		config_key: 'trips_shape_id_needs_to_be_the_same_as_pattern_id',
-		depends_on: ['trips_shape_id_references_shapes_table_when_present', 'trips_pattern_id_matches_feed_pattern_id_syntax'],
-		editable: true,
-		group: 'trips',
-		id: 'trips_shape_id_needs_to_be_the_same_as_pattern_id',
 	},
 	{
 		config_key: 'trips_shape_id_references_shapes_table_when_present',

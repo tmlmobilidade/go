@@ -1505,9 +1505,9 @@
 		"generic": "Cada ruta no debe tener más de dos valores distintos de \"shape_id\".",
 		"max_two": "La ruta \"%s\" debe tener como máximo dos valores distintos de \"%s\"; se encontraron %d: %s"
 	},
-	"trips_shape_id_needs_to_be_the_same_as_pattern_id": {
-		"generic": "El campo \"shape_id\" debe ser igual al campo \"pattern_id\".",
-		"not_matching": "El campo \"shape_id\" \"%s\" es distinto del campo \"pattern_id\" \"%s\"; deben ser iguales"
+	"trips_pattern_id_needs_to_be_the_same_as_shape_id": {
+		"generic": "El campo \"pattern_id\" debe ser igual al campo \"shape_id\".",
+		"not_matching": "El campo \"pattern_id\" \"%s\" es distinto del campo \"shape_id\" \"%s\"; deben ser iguales"
 	},
 	"trips_shape_id_references_shapes_table_when_present": {
 		"forbidden": "El campo \"shape_id\" está prohibido",

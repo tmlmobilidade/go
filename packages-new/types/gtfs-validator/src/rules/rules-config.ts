@@ -266,6 +266,7 @@ export interface TripsRules {
 	trips_one_pattern_id_per_shape_id_group: RuleConfig
 	trips_one_shape_id_per_pattern_id_group: RuleConfig
 	trips_pattern_id_matches_feed_pattern_id_syntax: RuleConfig
+	trips_pattern_id_needs_to_be_the_same_as_shape_id: RuleConfig
 	trips_pattern_id_present_and_references_consistent: RuleConfig
 	trips_pattern_id_single_trip_signature_per_pattern: RuleConfig
 	trips_pattern_id_trip_has_required_fields_for_grouping: RuleConfig
@@ -275,7 +276,6 @@ export interface TripsRules {
 	trips_shape_id_consistent_per_route_direction: RuleConfig
 	trips_shape_id_matches_route_id_and_direction_id: RuleConfig
 	trips_shape_id_max_two_per_route: RuleConfig
-	trips_shape_id_needs_to_be_the_same_as_pattern_id: RuleConfig
 	trips_shape_id_references_shapes_table_when_present: RuleConfig
 	trips_stop_sequence_increasing_by_one_along_trip: RuleConfig
 	trips_wheelchair_accessible_valid_gtfs_enum: RuleConfig

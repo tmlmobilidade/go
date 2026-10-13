@@ -1505,9 +1505,9 @@
 		"generic": "Each route must not have more than two distinct \"shape_id\" values.",
 		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
 	},
-	"trips_shape_id_needs_to_be_the_same_as_pattern_id": {
-		"generic": "The \"shape_id\" field must be equal to the \"pattern_id\" field.",
-		"not_matching": "Field \"shape_id\" \"%s\" is different from the field \"pattern_id\" \"%s\", they need to be the same"
+	"trips_pattern_id_needs_to_be_the_same_as_shape_id": {
+		"generic": "The \"pattern_id\" field must be equal to the \"shape_id\" field.",
+		"not_matching": "Field \"pattern_id\" \"%s\" is different from the field \"shape_id\" \"%s\", they need to be the same"
 	},
 	"trips_shape_id_references_shapes_table_when_present": {
 		"forbidden": "Field \"shape_id\" is forbidden",
