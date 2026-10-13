@@ -19,15 +19,15 @@
 
 .button[data-position='bottom-left'] {
 	position: fixed;
-	bottom: calc(16px + env(safe-area-inset-bottom));
-	left: calc(16px + env(safe-area-inset-left));
+	bottom: 16px;
+	left: 16px;
 	z-index: 110;
 }
 
 .button[data-position='bottom-right'] {
 	position: fixed;
-	right: calc(16px + env(safe-area-inset-right));
-	bottom: calc(16px + env(safe-area-inset-bottom));
+	right: 16px;
+	bottom: 16px;
 	z-index: 101;
 }
 

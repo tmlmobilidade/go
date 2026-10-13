@@ -22,7 +22,7 @@ export function ActionBar() {
 		<div
 			className={styles.container}
 			data-layout={controlsLayout.layout}
-			style={controlsLayout.layout === 'above-sheet' ? { bottom: `calc(var(--active-map-bottom-sheet-height, ${controlsLayout.bottomOffsetPx}px) + env(safe-area-inset-bottom, 0px) + 20px)` } : undefined}
+			style={controlsLayout.layout === 'above-sheet' ? { bottom: `calc(var(--active-map-bottom-sheet-height, ${controlsLayout.bottomOffsetPx}px) + 20px)` } : undefined}
 		>
 			<ActionBarUserLocation />
 		</div>

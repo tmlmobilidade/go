@@ -4,7 +4,7 @@
 .container {
 	position: fixed;
 	z-index: 20;
-	top: calc(env(safe-area-inset-top, 0px) + 14px);
+	top: 14px;
 	right: 16px;
 	left: 16px;
 	pointer-events: none;
