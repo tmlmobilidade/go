@@ -105,26 +105,27 @@ export function SteppExtractBody() {
 				)}
 			/>
 
-			<Divider />
-
 			{linesMode !== 'all' && (
-				<StandardFormController
-					key={linesMode}
-					control={form.control}
-					name={linesMode === 'include' ? 'lines_include' : 'lines_exclude'}
-					render={({ field, fieldState }) => (
-						<MultiSelect
-							data={options}
-							description={linesMode === 'include' ? 'Apenas estas linhas serão exportadas.' : 'Todas as linhas serão exportadas, exceto estas.'}
-							disabled={!agencyId || isLoading || isLoadingLines || !capabilities.editEnabled}
-							error={fieldState.error?.message ?? error}
-							onChange={field.onChange}
-							placeholder="Selecionar linhas"
-							value={field.value}
-							w="100%"
-						/>
-					)}
-				/>
+				<>
+					<Divider />
+					<StandardFormController
+						key={linesMode}
+						control={form.control}
+						name={linesMode === 'include' ? 'lines_include' : 'lines_exclude'}
+						render={({ field, fieldState }) => (
+							<MultiSelect
+								data={options}
+								description={linesMode === 'include' ? 'Apenas estas linhas serão exportadas.' : 'Todas as linhas serão exportadas, exceto estas.'}
+								disabled={!agencyId || isLoading || isLoadingLines || !capabilities.editEnabled}
+								error={fieldState.error?.message ?? error}
+								onChange={field.onChange}
+								placeholder="Selecionar linhas"
+								value={field.value}
+								w="100%"
+							/>
+						)}
+					/>
+				</>
 			)}
 		</Section>
 	);
