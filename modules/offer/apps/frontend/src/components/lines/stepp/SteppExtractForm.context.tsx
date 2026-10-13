@@ -46,6 +46,7 @@ export function SteppExtractFormContextProvider({ children }: PropsWithChildren)
 	const endDateValue = useStandardFormWatch({ control: form.control, name: 'end_date' });
 	const linesModeValue = useStandardFormWatch({ control: form.control, name: 'lines_mode' });
 	const linesIncludeValue = useStandardFormWatch({ control: form.control, name: 'lines_include' });
+	const linesExcludeValue = useStandardFormWatch({ control: form.control, name: 'lines_exclude' });
 
 	//
 	// C. Handle actions
@@ -82,7 +83,7 @@ export function SteppExtractFormContextProvider({ children }: PropsWithChildren)
 		},
 		form: {
 			isDirty,
-			isValid: isValid && !!agencyIdValue?.trim() && !!startDateValue && !!endDateValue && (linesModeValue !== 'include' || linesIncludeValue.length > 0),
+			isValid: isValid && !!agencyIdValue?.trim() && !!startDateValue && !!endDateValue && (linesModeValue !== 'include' || linesIncludeValue.length > 0) && (linesModeValue !== 'exclude' || linesExcludeValue.length > 0),
 		},
 		loading: {
 			isLoading: isLoadingAgencies,
