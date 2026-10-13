@@ -3,6 +3,7 @@
 import { type PcgiTransactionEntity, type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 
 import { parsePcgiTransactionEntityIntoRawApexTransactionBankingTapV40 } from './banking-taps/banking-tap-v40.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionBankingTapV70 } from './banking-taps/banking-tap-v70.js';
 import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionDecisionV20 } from './inspection-decisions/inspection-decision-v20.js';
 import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionV20 } from './inspections/inspection-v20.js';
 import { parsePcgiTransactionEntityIntoRawApexTransactionLocationV30 } from './locations/location-v30.js';
@@ -53,6 +54,7 @@ export function parsePcgiTransactionEntityIntoRawApexTransaction(pcgiTransaction
 	if (documentTypeKey === '19|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionLocationV30(pcgiTransactionEntity, decodedTransaction);
 
 	if (documentTypeKey === '20|4.0') return parsePcgiTransactionEntityIntoRawApexTransactionBankingTapV40(pcgiTransactionEntity, decodedTransaction);
+	if (documentTypeKey === '20|7.0') return parsePcgiTransactionEntityIntoRawApexTransactionBankingTapV70(pcgiTransactionEntity, decodedTransaction);
 
 	//
 	// If no transformation function is found, throw an error
