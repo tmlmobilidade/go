@@ -147,7 +147,7 @@
 	padding: 0;
 	overflow: hidden;
 	color: #fff;
-	background: linear-gradient(rgb(0 0 0 / 18%), rgb(0 0 0 / 18%)), url('./assets/lisbon-transit-map.png') center / cover;
+	background: linear-gradient(rgb(0 0 0 / 18%), rgb(0 0 0 / 18%));
 	border: 3px solid #0d5dd7;
 	border-radius: 8px;
 	cursor: pointer;
