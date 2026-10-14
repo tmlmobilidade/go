@@ -13,7 +13,7 @@ export interface AnalyticsContextProps {
 
 interface AnalyticsContextState {
 	actions: {
-		track: (eventName: string, properties?: Record<string, unknown>) => void
+		track: (eventName: string, properties?: Record<string, unknown>) => Promise<boolean>
 	}
 	flags: {
 		error: Error | undefined
@@ -68,12 +68,20 @@ export function AnalyticsContextProvider({ apiKey, children, configurationUrl, o
 		setError(cause instanceof Error ? cause : new Error(String(cause)));
 	}, []);
 
-	const track = useCallback((eventName: string, properties?: Record<string, unknown>) => {
-		if (!ready || !initialized || initializationRef.current !== initialized) return;
+	const track = useCallback(async (eventName: string, properties?: Record<string, unknown>) => {
+		if (!ready || !initialized || initializationRef.current !== initialized) return false;
+		setError(undefined);
 
-		initialized.client.track(eventName, properties).promise.catch((cause: unknown) => {
+		try {
+			const result = await initialized.client.track(eventName, properties).promise;
+			if (result.code < 200 || result.code >= 300) {
+				throw new Error(`Amplitude upload failed (${result.code}): ${result.message}`);
+			}
+			return true;
+		} catch (cause: unknown) {
 			if (initializationRef.current === initialized && !initialized.client.getOptOut()) handleError(cause);
-		});
+			return false;
+		}
 	}, [handleError, initialized, ready]);
 
 	//
