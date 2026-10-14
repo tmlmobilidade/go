@@ -85,9 +85,11 @@ export async function exportStopTimesForPattern(
 			const stopDwellSeconds = travelTimes.stopDwellSeconds.raw;
 
 			let currentSeconds = timepointToSeconds(tripSchedule.timepoint);
+			let cumulativeDistance = 0;
 
 			for (let i = 0; i < mergedPath.length; i++) {
 				const pathItem = mergedPath[i];
+				cumulativeDistance += pathItem.distance_delta ?? 0;
 				const segmentSeconds = segmentTravelSeconds[i] ?? 0;
 				const dwellSeconds = stopDwellSeconds[i] ?? 0;
 
@@ -105,6 +107,7 @@ export async function exportStopTimesForPattern(
 					departure_time: OperationalTimeSchema.parse(formatGtfsTime(departureSeconds)),
 					stop_id: stopId,
 					stop_sequence: exportConfig.stop_sequence_start + i,
+					shape_dist_traveled: cumulativeDistance,
 				};
 
 				await exportConfig.writers.stop_times.write(stopTimeRow);
