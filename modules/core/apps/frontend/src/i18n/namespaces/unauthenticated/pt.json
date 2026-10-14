@@ -35,7 +35,8 @@
 		"modules": {
 			"description": "O GO está organizado em 4 módulos essenciais que completam o ciclo de responsabilidades de uma autoridade de transportes.",
 			"play_video": "Reproduzir vídeo de apresentação",
-			"title": "Desenvolvido de forma modular — usa só o que precisas."
+			"title": "Desenvolvido de forma modular — usa só o que precisas.",
+			"video_title": "Vídeo de apresentação do GO"
 		},
 		"quick_links": {
 			"apex": "Sistema APEX",

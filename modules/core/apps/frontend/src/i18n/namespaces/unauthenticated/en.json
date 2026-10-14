@@ -35,7 +35,8 @@
 		"modules": {
 			"description": "GO is organised into four essential modules that complete the responsibilities of a transport authority.",
 			"play_video": "Play introduction video",
-			"title": "Built modularly — use only what you need."
+			"title": "Built modularly — use only what you need.",
+			"video_title": "GO introduction video"
 		},
 		"quick_links": {
 			"apex": "APEX system",
