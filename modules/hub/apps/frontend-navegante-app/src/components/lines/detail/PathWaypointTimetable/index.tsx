@@ -1,11 +1,11 @@
 'use client';
 
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { TimetableDisplay } from '@/components/lines/detail/TimetableDisplay';
-import { createTimetable } from '@/utils/create-timetable';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
+import { createTimetable } from '@/utils/transit/create-timetable';
 import { type Timetable } from '@tmlmobilidade/go-types-hub';
-import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -37,18 +37,19 @@ export function PathWaypointTimetable() {
 		const mentionedRoutes = linesDetailContext.data.routes;
 		const selectedStopId = linesDetailContext.data.active_waypoint?.stop_id;
 		const selectedStopSequence = linesDetailContext.data.active_waypoint?.stop_sequence;
-		const selectedOperationalDate = operationalDate.selectedOperationalDate;
+		const selectedOperationalDateRaw = operationalDate.selectedOperationalDate;
 		// Check if all these variables are defined
-		if (!activePatternGroup || !mentionedRoutes || !selectedStopId || selectedStopSequence === undefined || !selectedOperationalDate) {
+		if (!activePatternGroup || !mentionedRoutes || !selectedStopId || selectedStopSequence === undefined || !selectedOperationalDateRaw) {
 			return null;
 		}
+		const selectedOperationalDate = OperationalDateIntSchema.parse(selectedOperationalDateRaw);
 
 		// Check if there are schedules for the selected operational day
 		if (!activePatternGroup.valid_on.includes(selectedOperationalDate)) {
 			// Find the closest valid date
-			return activePatternGroup.valid_on.reduce((acc, curr) => {
-				if (selectedOperationalDate <= curr && (acc === null || curr < acc)) return curr;
-				return acc;
+			return activePatternGroup.valid_on.reduce<null | OperationalDateInt>((closestDate, currentDate) => {
+				if (selectedOperationalDate <= currentDate && (closestDate === null || currentDate < closestDate)) return currentDate;
+				return closestDate;
 			}, null);
 		}
 
@@ -83,7 +84,11 @@ export function PathWaypointTimetable() {
 		return (
 			<div className={styles.container}>
 				<p className={styles.noData}>{t('default:lines.PathWaypointTimetable.no_data')}</p>
-				{nextDate && <p className={styles.nextDate} onClick={() => handleNextDateClick(nextDate)}>{t('lines.PathWaypointTimetable.next_date', '', { value: nextDate })}</p>}
+				{nextDate && (
+					<button className={styles.nextDate} onClick={() => handleNextDateClick(nextDate)} type="button">
+						{t('lines.PathWaypointTimetable.next_date', '', { value: nextDate })}
+					</button>
+				)}
 			</div>
 		);
 	}

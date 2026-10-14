@@ -13,6 +13,12 @@ export interface LocaleConfig {
 
 export const availableLocales: LocaleConfig[] = [
 	{
+		_id: 'en',
+		alias: ['en-US', 'en_US', 'en-GB', 'en_GB'],
+		enabled: true,
+		name: 'English',
+	},
+	{
 		_id: 'pt',
 		alias: ['pt-PT', 'pt_PT', 'pt-BR', 'pt_BR', 'pt-GW', 'pt_GW', 'pt-MZ', 'pt_MZ'],
 		enabled: true,

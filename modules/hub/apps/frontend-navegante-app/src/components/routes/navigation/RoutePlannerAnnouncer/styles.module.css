@@ -1,0 +1,15 @@
+/* ponytail: VoiceOver ignores live regions that use clip-path or sit inside the sheet overflow. */
+.announcer {
+	position: fixed;
+	z-index: 40;
+	top: 0;
+	left: 0;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	pointer-events: none;
+	border: 0;
+}

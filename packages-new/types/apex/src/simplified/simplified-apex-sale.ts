@@ -1,9 +1,10 @@
 /* * */
 
-import { ApexCardTypeSchema } from '@/utils/card-type.js';
-import { ApexPaymentMethodSchema } from '@/utils/payment-method.js';
 import { OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { ApexCardTypeSchema } from '../utils/card-type.js';
+import { ApexPaymentMethodSchema } from '../utils/payment-method.js';
 
 /* * */
 
