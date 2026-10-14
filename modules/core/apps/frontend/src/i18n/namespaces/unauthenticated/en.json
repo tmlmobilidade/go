@@ -25,6 +25,29 @@
 		},
 		"title": "Change password"
 	},
+	"LandingPage": {
+		"description": "GO is a platform that responds to the needs of transport authorities and operators in an agile and intuitive way.",
+		"explore": "Explore",
+		"hero": {
+			"label": "Public transport map of Lisbon"
+		},
+		"login": "Log in",
+		"modules": {
+			"description": "GO is organised into four essential modules that complete the responsibilities of a transport authority.",
+			"play_video": "Play introduction video",
+			"title": "Built modularly — use only what you need."
+		},
+		"quick_links": {
+			"apex": "APEX system",
+			"documentation": "Documentation",
+			"gtfs": "GTFS standard",
+			"label": "Quick menu",
+			"login": "Log in",
+			"open_data": "Open data API",
+			"open_services": "Open services"
+		},
+		"title": "A new way to work with public transport in Portugal."
+	},
 	"LoginForm": {
 		"description": "We aim to simplify public transport management with reliable, intuitive digital tools.",
 		"error": {
