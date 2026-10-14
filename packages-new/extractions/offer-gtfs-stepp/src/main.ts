@@ -4,6 +4,7 @@ import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendar } from '@/exports/calendar.js';
 import { exportCalendarDates } from '@/exports/calendar_dates.js';
 import { exportCalendarStepp } from '@/exports/calendar_stepp.js';
+import { exportRouteStepp } from '@/exports/route_stepp.js';
 import { exportRoute } from '@/exports/routes.js';
 import { exportShape } from '@/exports/shapes.js';
 import { exportStopTimesForPattern } from '@/exports/stop_times.js';
@@ -177,6 +178,8 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 						continue;
 					}
 
+					await exportRouteStepp(patternData, exportConfig);
+
 					// Export shape
 					const shapeId = `shp_${patternData.code}`;
 					await exportShape(shapeId, patternData.shape, exportConfig);
@@ -247,6 +250,7 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 		await exportConfig.writers.calendar.flush();
 		await exportConfig.writers.calendar_dates.flush();
 		await exportConfig.writers.calendar_stepp.flush();
+		await exportConfig.writers.route_stepp.flush();
 		await exportConfig.writers.routes.flush();
 		await exportConfig.writers.shapes.flush();
 		await exportConfig.writers.stop_times.flush();
