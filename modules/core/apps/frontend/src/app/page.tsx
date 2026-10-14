@@ -1,10 +1,5 @@
 /* * */
 
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { redirect } from 'next/navigation';
-
-/* * */
-
 export default function Page() {
-	redirect(PAGE_ROUTES.core.HOME_LIST);
+	return <div>This is a homepage</div>;
 }
