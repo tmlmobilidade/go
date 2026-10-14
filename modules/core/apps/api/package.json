@@ -23,6 +23,7 @@
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-core-pckg-types": "*",
+		"@tmlmobilidade/go-core-pckg-utils": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/go-providers-emails": "*",
