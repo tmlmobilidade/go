@@ -1,0 +1,9 @@
+{
+	"ListFilter": {
+		"toggle_all": "Select all"
+	},
+	"TagFilter": {
+		"description": "Enter values separated by commas or spaces.",
+		"placeholder": "Search..."
+	}
+}

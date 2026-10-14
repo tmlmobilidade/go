@@ -1,10 +1,11 @@
 /* * */
 
-import { ApexEventTypeSchema } from '@/utils/event-type.js';
-import { ApexValidationCategorySchema } from '@/utils/validation-category.js';
-import { ApexValidationStatusSchema, ValidApexValidationStatusSchema } from '@/utils/validation-status.js';
 import { OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { ApexEventTypeSchema } from '../utils/event-type.js';
+import { ApexValidationCategorySchema } from '../utils/validation-category.js';
+import { ApexValidationStatusSchema, ValidApexValidationStatusSchema } from '../utils/validation-status.js';
 
 /* * */
 

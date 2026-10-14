@@ -3,9 +3,9 @@
 /* * */
 
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
-import { Flex, Group, Select, type SelectProps } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
 import { GtfsRtEffect, GtfsRtEffectValues } from '@tmlmobilidade/go-types-gtfs-rt';
+import { Flex, Group, Select, type SelectProps } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

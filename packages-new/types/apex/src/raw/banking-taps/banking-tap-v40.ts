@@ -1,7 +1,8 @@
 /* * */
 
-import { RawApexTransactionBaseSchema } from '@/raw/raw-apex-transaction-base.js';
 import { z } from 'zod';
+
+import { RawApexTransactionBaseSchema } from '../raw-apex-transaction-base.js';
 
 /* * */
 
