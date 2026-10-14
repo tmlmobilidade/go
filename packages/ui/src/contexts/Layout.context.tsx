@@ -2,7 +2,7 @@
 
 import { useColorScheme } from '@mantine/hooks';
 import { IconAB2, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { useFullscreenState } from '../hooks/use-fullscreen-state';
 import { useUserPreference } from '../hooks/use-user-preference';
@@ -76,6 +76,7 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 
 	const savedLocalePreference = meContext.actions.getPreference<string>('ui', 'active_locale');
 	const defaultLocale = savedLocalePreference ?? getBrowserLocale();
+	const hasSelectedLocale = useRef(false);
 
 	const [activeFullscreen, setActiveFullscreen] = useFullscreenState();
 	const [activeTheme, setActiveTheme] = useUserPreference<ThemeType>('ui', 'active_theme', 'ocean');
@@ -121,6 +122,7 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 	}, [activeLocale, localeContext.actions]);
 
 	useEffect(() => {
+		if (hasSelectedLocale.current) return;
 		if (meContext.actions.getPreference<string>('ui', 'active_locale') != null) return;
 
 		const browserLocale = getBrowserLocale();
@@ -134,6 +136,7 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 
 	const activateLocale = useCallback((localeId: string) => {
 		if (!enabledLocales.some(item => item._id === localeId)) return;
+		hasSelectedLocale.current = true;
 		setActiveLocale(localeId);
 	}, [setActiveLocale]);
 

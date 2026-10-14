@@ -1,0 +1,454 @@
+{
+	"action-bar": {
+		"ActionBar": {
+			"search": {
+				"label": "Search"
+			}
+		},
+		"ActionBarUserLocation": {
+			"disabled": {
+				"label": "Location disabled"
+			},
+			"follow": {
+				"label": "Orient map"
+			},
+			"follow-bearing": {
+				"label": "Centre map"
+			},
+			"idle": {
+				"label": "Centre map"
+			}
+		}
+	},
+	"alerts": {
+		"AlertActivePeriod": {
+			"start": "Start: {value, date, dayShort}"
+		},
+		"AlertsDetail": {
+			"title": "Alert details"
+		},
+		"SelectCause": {
+			"placeholder": "Filter by cause"
+		},
+		"SelectEffect": {
+			"placeholder": "Filter by effect"
+		}
+	},
+	"common": {
+		"BottomSheet": {
+			"collapse": "Collapse panel",
+			"collapsed": "Panel collapsed",
+			"expand": "Expand panel",
+			"expanded": "Panel expanded"
+		},
+		"BottomSheetBack": {
+			"label": "Back"
+		},
+		"BottomSheetClose": {
+			"label": "Close"
+		},
+		"CopyBadge": {
+			"copied": "Copied",
+			"copy": "Copy {value}"
+		},
+		"DetailUnavailable": {
+			"error": "This information could not be loaded.",
+			"not_found": "This information is no longer available."
+		},
+		"Loading": {
+			"label": "Loading"
+		},
+		"locations": {
+			"coordinates": "Coordinates",
+			"unnamed": "Unnamed location"
+		}
+	},
+	"feedback": {
+		"categories": {
+			"driver": "Driver",
+			"line_service": "Line/Service",
+			"stop": "Stop",
+			"vehicle": "Vehicle"
+		},
+		"form": {
+			"categories_happy_title": "What can we improve?",
+			"categories_prompt": "Help us improve the service.",
+			"categories_unhappy_title": "What are you dissatisfied with?",
+			"reasons_prompt": "Select the reasons that apply.",
+			"submit": "Send feedback",
+			"submit_error": "Your feedback could not be sent. Please try again.",
+			"title": "Feedback"
+		},
+		"mood": {
+			"improvement_prompt": "What could we improve?",
+			"no": "No",
+			"question": "Are you satisfied with this service?",
+			"yes": "Yes"
+		},
+		"reasons": {
+			"accessibility_issue": "Accessibility issue",
+			"audio_announcement_issue": "Audio announcement issue",
+			"cancelled_departure": "Cancelled departure",
+			"climate_control_issue": "Climate control issue",
+			"confusing_signage": "Confusing signage",
+			"damaged": "Damaged",
+			"damaged_bench": "Damaged bench",
+			"detour": "Route diversion",
+			"did_not_pass": "Did not arrive",
+			"dirty": "Dirty",
+			"disorganized_boarding": "Disorganised boarding or queue",
+			"display_issue": "Display issue",
+			"door_issue": "Door issue",
+			"driver_bad_conduct": "Driver misconduct",
+			"early": "Arrived early",
+			"elevator_escalator_issue": "Lift or escalator issue",
+			"excessive_travel_time": "Excessive journey time",
+			"inaccurate_realtime": "Incorrect real-time information",
+			"inadequate_service": "Inadequate service",
+			"insufficient_capacity": "Insufficient capacity",
+			"interrupted": "Service interrupted",
+			"lack_of_passenger_support": "Lack of passenger support",
+			"late": "Arrived late",
+			"lighting_issue": "Lighting issue",
+			"long_headway": "Long waiting time",
+			"long_queue": "Queue too long",
+			"missing_line_information": "Missing line information",
+			"missing_safety_equipment": "Missing safety equipment",
+			"no_bench": "No bench",
+			"no_shelter": "No shelter",
+			"no_trash_bin": "No rubbish bin",
+			"other": "Other",
+			"route_changed_without_notice": "Route changed without notice",
+			"rude_staff": "Rude staff",
+			"safety_incident": "Safety incident",
+			"shelter_issue": "Shelter issue",
+			"sidewalk_issue": "Pavement issue",
+			"skipped_stop": "Skipped the stop",
+			"ticket_machine_issue": "Ticket machine issue",
+			"too_crowded": "Too crowded",
+			"traffic_law_violation": "Traffic violation",
+			"unsafe_speed": "Unsafe speed",
+			"validator_issue": "Validator issue",
+			"weather_exposure_issue": "Exposure to bad weather",
+			"wrong_panel_information": "Incorrect display information"
+		},
+		"thank_you": {
+			"description": "Your response has been sent.",
+			"title": "Thank you for your feedback!"
+		},
+		"trigger": {
+			"label": "Give us your feedback"
+		}
+	},
+	"layout": {
+		"NoDataLabel": {
+			"no_data": "No data available"
+		},
+		"metadata": {
+			"description": "Real-time public transport information in the Lisbon Metropolitan Area.",
+			"title": "navegante | Real time"
+		}
+	},
+	"lines": {
+		"LineBadge": {
+			"open_details": "Open details for line {line}"
+		},
+		"LinesDetail": {
+			"title": "Line details"
+		},
+		"LinesDetailPath": {
+			"no_data": "Select a route / destination",
+			"stop_details_name": "Stop {index}: {stop_name}"
+		},
+		"LinesListGroup": {
+			"logo": {
+				"alt": "Lines operated by: {agency_name}"
+			}
+		},
+		"PathStopNextArrivals": {
+			"arriving": "Arriving",
+			"hours": "{count, plural, one {# hour} other {# hours}}",
+			"minutes": "{count} min",
+			"title": "Next departures"
+		},
+		"PathWaypointTimetable": {
+			"no_data": "Timetables unavailable for this date.",
+			"title": "Scheduled departures at this stop:"
+		},
+		"SelectActivePatternGroup": {
+			"placeholder": "Select route"
+		},
+		"SelectActivePatternGroupExplainer": {
+			"title": "Explanation",
+			"toggle": "What is a line's route/destination?"
+		},
+		"SelectOperationalDate": {
+			"other_date": "Another date",
+			"today": "Today",
+			"tomorrow": "Tomorrow"
+		},
+		"SelectPattern": {
+			"destination": "Destination: {destination}",
+			"invalid_option": "Invalid route: {pattern_id}",
+			"invalid_option_label": "Route: {message}",
+			"no_results": "No routes found.",
+			"option_label": "Route start: {locality}",
+			"placeholder": "Select route"
+		},
+		"TimetableExceptionsLink": {
+			"variant": "<0>{exception_id})</0> Route <1>{route_long_name}</1> towards <2>{pattern_headsign}</2>"
+		},
+		"TimetableSchedules": {
+			"hours": "Hour",
+			"minutes": "Min.",
+			"timestamp": "{hour} hours and {minute} minutes"
+		}
+	},
+	"map": {
+		"BaseMapOverlaysControl": {
+			"layers": {
+				"alerts": "Alerts",
+				"vehicles": "Vehicles"
+			},
+			"sections": {
+				"map_details": "Show on map",
+				"operators": "Agencies",
+				"operators_description": "Choose the agencies whose vehicles and alerts you want to see."
+			},
+			"title": "Map filters",
+			"trigger": {
+				"label": "Map layers"
+			}
+		},
+		"MapLocationPin": {
+			"get_directions": "Directions",
+			"selected_location": "Selected location"
+		},
+		"MapView": {
+			"instructions": "Search for stops, alerts and places.",
+			"name": "Transport map"
+		}
+	},
+	"routes": {
+		"RoutePlanner": {
+			"actions": {
+				"planning": "Calculating..."
+			},
+			"errors": {
+				"current_location_unavailable": "Your current location could not be determined. Try again or choose a departure point on the map.",
+				"missing_locations": "Choose a departure point and destination before calculating the route.",
+				"no_itineraries": "No alternatives found. Try another date or locations closer to the network.",
+				"unknown": "The route could not be calculated."
+			},
+			"place_detail": {
+				"how_to_get_here": "Directions",
+				"select_origin": "Choose a departure point to see alternatives.",
+				"title": "Place details"
+			},
+			"results": {
+				"active_leg": "Current leg, {step}",
+				"alerts": "{count, plural, one {# alert} other {# alerts}}",
+				"arrival_at_destination": "Arrival at destination",
+				"arrival_time_prefix": "Arrival at",
+				"at_time": "at {time}",
+				"current_step": "Current leg",
+				"delay": "{count} min delay",
+				"departure_delay": "Departs {count} min after the scheduled time",
+				"departure_early": "Departs {count} min before the scheduled time",
+				"destination": "Destination",
+				"direction": "Towards {headsign}",
+				"duration_unavailable": "Duration unavailable",
+				"early": "{count} min early",
+				"end_trip": "Finish",
+				"filtered_no_results": "No routes using these transport modes.",
+				"intermediate_stops": "{count, plural, one {# intermediate stop} other {# intermediate stops}}",
+				"leg_duration": "{count, plural, one {# min} other {# min}}",
+				"mode_labels": {
+					"bike": "Bicycle",
+					"bus": "Bus",
+					"car": "Car",
+					"elevator": "Lift",
+					"ferry": "Ferry",
+					"plane": "Plane",
+					"rail": "Train",
+					"scooter": "Scooter",
+					"subway": "Metro",
+					"tram": "Tram",
+					"transit": "Transit",
+					"walk": "Walking"
+				},
+				"modes": {
+					"bus": "Bus",
+					"ferry": "Ferry",
+					"label": "Modes",
+					"rail": "Train",
+					"subway": "Metro",
+					"tram": "Tram",
+					"transit": "Transit"
+				},
+				"next_step_at": "{step} at {time}",
+				"origin": "Origin",
+				"realtime": "Real time",
+				"result_count": "{count, plural, one {# route found} other {# routes found}}",
+				"ride_between": "Travel from {from} to {to}",
+				"route_options": "Route options",
+				"route_summary": "Route summary",
+				"scheduled_at": "Scheduled at {time}",
+				"select_itinerary_aria_label": "Select route, {summary}",
+				"selected_itinerary_status": "Selected route, {summary}",
+				"sort": {
+					"best": "Recommended",
+					"fastest": "Fastest",
+					"fewer_transfers": "Fewest transfers",
+					"label": "Sort",
+					"least_walking": "Least walking"
+				},
+				"start_route": "Go",
+				"start_route_aria_label": "Start journey with this route",
+				"time_range": "{start} to {end}",
+				"transfers": "{count, plural, =0 {No transfers} one {# transfer} other {# transfers}}",
+				"view_alternatives": "View alternatives",
+				"waiting_step": "Wait {count} min",
+				"waiting_time": "{count, plural, =0 {No waiting} one {# min waiting} other {# min waiting}}",
+				"walk_between": "Walk to {to}",
+				"walk_label": "Walking",
+				"walking_time": "{count, plural, =0 {No walking} one {# min walking} other {# min walking}}"
+			}
+		},
+		"RoutePlannerInput": {
+			"destination": {
+				"label": "Destination",
+				"placeholder": "Choose destination"
+			},
+			"origin": {
+				"label": "Departure",
+				"placeholder": "Choose departure point"
+			},
+			"swap": "Swap departure point and destination",
+			"time": {
+				"arrival": "Arrive by",
+				"arrival_short": "Arrive",
+				"datetime_invalid": "Enter a valid date and time.",
+				"datetime_label": "Date and time",
+				"departure": "Depart at",
+				"departure_short": "Depart",
+				"now": "Now"
+			}
+		},
+		"RoutePlannerSearch": {
+			"current_location_error": "Your location could not be obtained. Check your permissions and try again.",
+			"current_location_loading": "Getting your location...",
+			"destination_placeholder": "Search for a stop or destination",
+			"destination_title": "Choose destination",
+			"origin": {
+				"current_location": "Your location",
+				"current_location_detail": "Current location"
+			},
+			"origin_placeholder": "Search departure point",
+			"origin_title": "Choose departure point"
+		},
+		"RoutePlannerTopSearch": {
+			"placeholder": "Where are you going?"
+		}
+	},
+	"search": {
+		"Search": {
+			"clear": "Clear search",
+			"empty": "No results found.",
+			"error": "Some results could not be loaded.",
+			"filter_types": "Filter results by type",
+			"groups": {
+				"alert": "Alerts",
+				"line": "Lines",
+				"poi": "Places",
+				"stop": "Stops"
+			},
+			"input_label": "Search lines, stops, alerts and places",
+			"loading": "Searching...",
+			"placeholder": "Search lines, stops, alerts and places",
+			"recent": {
+				"clear": "Clear recent searches",
+				"empty": "No recent searches yet.",
+				"loading": "Loading recent searches...",
+				"title": "Recent searches"
+			},
+			"results": "{count, plural, one {# result found} other {# results found}}",
+			"show_more": {
+				"alert": "View more alerts",
+				"line": "View more lines",
+				"poi": "View more places",
+				"stop": "View more stops"
+			},
+			"title": "Search"
+		}
+	},
+	"stops": {
+		"NextArrivals": {
+			"arriving": "Arriving",
+			"hours": "h",
+			"minutes": "min"
+		},
+		"StopsDetail": {
+			"actions": {
+				"get_directions": "Directions"
+			},
+			"title": "Stop details"
+		},
+		"StopsDetailViewTimetable": {
+			"end_of_day": "End of day",
+			"no_service": "No service on the selected day",
+			"show_past_trips_toggle": {
+				"hide": "Hide past departures",
+				"show": "Show past departures"
+			}
+		},
+		"StopsDetailViewTimetableRow": {
+			"localities": "Via: {localities}",
+			"select": "Select {line}, {destination}"
+		}
+	},
+	"vehicles": {
+		"VehiclesCounter": {
+			"label": "{count, plural, zero {No vehicles in motion} one {# vehicle in motion} other {# vehicles in motion}}"
+		},
+		"VehiclesDetail": {
+			"title": "Vehicle details"
+		},
+		"VehiclesDetailView": {
+			"destination": "Destination: {destination}",
+			"headsign": "Destination: {headsign}",
+			"headsign_unknown": "unknown",
+			"open_line_details": "Open details for line {line}",
+			"seen_seconds_ago": "Seen {count, plural, one {# second} other {# seconds}} ago",
+			"stale": "Showing the last available information.",
+			"unknown_destination": "unknown"
+		},
+		"VehiclesListDetails": {
+			"bikes_allowed": "Bicycles allowed",
+			"contactless": "Contactless payments accepted",
+			"no_bikes_allowed": "Bicycles not allowed",
+			"no_contactless": "Contactless payments not accepted",
+			"no_data": "Select a vehicle",
+			"no_wheelchair_accessible": "Not wheelchair accessible",
+			"unknown": "Unknown",
+			"wheelchair_accessible": "Wheelchair accessible"
+		}
+	},
+	"viewport": {
+		"NavigationBar": {
+			"tabs": {
+				"alerts": "Alerts",
+				"lines": "Lines",
+				"stops": "Stops"
+			}
+		},
+		"TransitModesBar": {
+			"aria_label": {
+				"bus": "Buses",
+				"ferry": "Ferry",
+				"subway": "Metro",
+				"train": "Trains"
+			}
+		}
+	}
+}

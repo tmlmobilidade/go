@@ -37,6 +37,7 @@ export type RoutePlannerStateAction =
   | { location: RoutePlannerLocation, needsOrigin: boolean, type: 'open-directions' }
   | { location: RoutePlannerLocation, returnView: RoutePlannerLocationSearchReturnView, type: 'select-destination' }
   | { location: RoutePlannerLocation, type: 'open-place' }
+  | { location: RoutePlannerLocation, type: 'refresh-current-location' }
   | { location: RoutePlannerLocation, type: 'select-origin' }
   | { location: RoutePlannerLocation, type: 'set-origin' }
   | { origin: null | RoutePlannerLocation, route: PersistedRoute, trip: PersistedActiveTrip, type: 'restore-active-trip' }
@@ -104,6 +105,12 @@ export function routePlannerReducer(state: RoutePlannerState, action: RoutePlann
 			return { ...state, isNavigating: false, isRestoringSessionRoute: false, pendingCurrentLocationRoute: null, planError: null, resultsInitialSnap: MAP_BOTTOM_SHEET_INITIAL_SNAP, selectedItineraryIndex: action.viewMode === 'place-detail' ? null : 0, viewMode: action.viewMode };
 		case 'preview-itinerary':
 			return { ...state, selectedItineraryIndex: action.index, viewMode: 'itinerary-detail' };
+		case 'refresh-current-location':
+			return {
+				...state,
+				destination: state.destination?.isCurrentLocation ? action.location : state.destination,
+				origin: state.origin?.isCurrentLocation ? action.location : state.origin,
+			};
 		case 'require-origin':
 			return { ...state, locationSearchReturnView: action.returnView, locationSearchTarget: 'origin', viewMode: 'destination-search' };
 		case 'restore-active-trip':

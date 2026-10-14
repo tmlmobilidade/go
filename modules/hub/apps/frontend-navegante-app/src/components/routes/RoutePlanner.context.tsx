@@ -31,7 +31,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	const [state, dispatch] = useReducer(routePlannerReducer, undefined, createRoutePlannerState);
 	const { activeBottomSheet, bottomSheetNavigation, pop, push, replaceActive, restore, suspend } = useBottomSheet();
 	const { actions: { enableBearingTracking } } = useUserLocation();
-	const { cachedOrigin, cancelActiveTripRestore, invalidatePlanResult, isPlanning, itineraries, planRoute, requestCurrentOrigin, resolveOrigin, restoreActiveTrip, restoreSessionRoute } = useRoutePlannerPlanning({ dispatch, state });
+	const { cancelActiveTripRestore, invalidatePlanResult, isPlanning, itineraries, latestKnownOrigin, planRoute, requestCurrentOrigin, resolveOrigin, restoreActiveTrip, restoreSessionRoute } = useRoutePlannerPlanning({ dispatch, state });
 	const { activeTripItinerary, destination, isNavigating, locationSearchReturnView, origin, selectedItineraryIndex, tripSheetHistory, viewMode } = state;
 	const hadRouteSheetRef = useRef(false);
 
@@ -100,12 +100,12 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	}, [invalidatePlanResult, locationSearchReturnView, origin, planRoute, resolveOrigin, viewMode]);
 
 	const openDirectionsTo = useCallback(async (location: RoutePlannerLocation) => {
-		const needsOrigin = !origin && !cachedOrigin;
+		const needsOrigin = !origin && !latestKnownOrigin;
 		if (needsOrigin) invalidatePlanResult();
 		dispatch({ location, needsOrigin, type: 'open-directions' });
 		openRouteSheet();
 		if (!needsOrigin) await selectDestination(location);
-	}, [cachedOrigin, invalidatePlanResult, openRouteSheet, origin, selectDestination]);
+	}, [invalidatePlanResult, latestKnownOrigin, openRouteSheet, origin, selectDestination]);
 
 	const selectOrigin = useCallback(async (location: RoutePlannerLocation) => {
 		const nextViewMode = viewMode === 'destination-search' ? locationSearchReturnView : 'results';
@@ -115,12 +115,12 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	}, [destination, invalidatePlanResult, locationSearchReturnView, planRoute, viewMode]);
 
 	const selectCurrentLocation = useCallback(async (target: RoutePlannerLocationSearchTarget) => {
-		const location = cachedOrigin ?? await requestCurrentOrigin();
+		const location = latestKnownOrigin ?? await requestCurrentOrigin();
 		if (!location) return false;
 		if (target === 'origin') await selectOrigin(location);
 		else await selectDestination(location);
 		return true;
-	}, [cachedOrigin, requestCurrentOrigin, selectDestination, selectOrigin]);
+	}, [latestKnownOrigin, requestCurrentOrigin, selectDestination, selectOrigin]);
 
 	const setTravelTime = useCallback((date: Date) => {
 		invalidatePlanResult();

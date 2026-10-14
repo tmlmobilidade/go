@@ -235,6 +235,7 @@
 				"planning": "A calcular..."
 			},
 			"errors": {
+				"current_location_unavailable": "Não foi possível obter a sua localização atual. Tente novamente ou escolha uma partida no mapa.",
 				"missing_locations": "Escolha a partida e o destino antes de calcular a rota.",
 				"no_itineraries": "Nenhuma alternativa encontrada. Experimente outra data ou localizações mais próximas da rede.",
 				"unknown": "Não foi possível calcular a rota."

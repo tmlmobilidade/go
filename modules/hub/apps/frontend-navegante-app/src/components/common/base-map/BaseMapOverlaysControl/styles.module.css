@@ -3,7 +3,7 @@
 
 .container {
 	position: fixed;
-	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
+	top: var(--route-planner-floating-controls-top, 84px);
 	left: 15px;
 	z-index: 15;
 	display: flex;

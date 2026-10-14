@@ -106,4 +106,14 @@ describe('route planner state transitions', () => {
 		assert.equal(state.locationSearchTarget, 'origin');
 		assert.equal(state.viewMode, 'destination-search');
 	});
+
+	it('updates only endpoints selected as the current location', () => {
+		const oldPosition = { ...origin, isCurrentLocation: true };
+		const newPosition = { ...oldPosition, lat: 38.73, lon: -9.15 };
+		let state = routePlannerReducer(createRoutePlannerState(), { location: oldPosition, type: 'select-origin' });
+		state = routePlannerReducer(state, { location: destination, returnView: 'results', type: 'select-destination' });
+		state = routePlannerReducer(state, { location: newPosition, type: 'refresh-current-location' });
+		assert.equal(state.origin, newPosition);
+		assert.equal(state.destination, destination);
+	});
 });

@@ -25,6 +25,7 @@ export const RawVehicleEventPtCimatFlaviamobilV1PayloadSchema = z.object({
 export type RawVehicleEventPtCimatFlaviamobilV1Payload = z.infer<typeof RawVehicleEventPtCimatFlaviamobilV1PayloadSchema>;
 
 export const RawVehicleEventPtCimatFlaviamobilV1Schema = RawVehicleEventBaseSchema.extend({
+	agency_id: z.literal('NIRIC'),
 	payload: RawVehicleEventPtCimatFlaviamobilV1PayloadSchema,
 	version: z.literal('pt-cimat-flaviamobil-v1'),
 });

@@ -2,34 +2,68 @@
 
 import { type Collection, type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
-import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { type MongoInterfaceTemplate, rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { ZodError } from 'zod';
 
-import { type SyncConfig, type VehicleEventsCollectionDocument } from './types.js';
-
-/* * */
-
-const writer = new BatchWriter<SimplifiedVehicleEvent>({
-	batch_size: 10_000,
-	insertFn: async (data) => {
-		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
-	},
-	title: await labDb.operation.simplifiedVehicleEvents.getTableName(),
-});
+import { PARSER_MAP } from './parsers.js';
 
 /**
- * Syncs Vehicle Events from the RawDB database
- * to the ClickHouse database for a given time chunk.
- * @param timeChunk The time chunk to sync the data for.
- * @param agencyId The agency ID to sync the data for,
- * limited to the agencies configured to have `RawVehicleEvent` collections.
+ * Valid `agency_id` <-> `rawDb.collection` pairs for vehicle-events sync.
+ * Specifying either field narrows the other to the only matching value.
  */
-export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, configItem: SyncConfig) {
+type SyncConfig = {
+	[K in keyof typeof rawDb.vehicleEvents]: {
+		agency_id: VehicleEventsCollectionDocument<typeof rawDb.vehicleEvents[K]>['agency_id']
+		collection: typeof rawDb.vehicleEvents[K]
+	}
+}[keyof typeof rawDb.vehicleEvents];
+
+/**
+ * Parameters for the handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents function.
+ */
+export interface HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams {
+
+	/**
+	 * The batch writer to be used to write the SimplifiedVehicleEvent
+	 * documents to the SimplifiedVehicleEvents collection.
+	 */
+	batchWriter: BatchWriter<SimplifiedVehicleEvent>
+
+	/**
+	 * The configuration item for the sync operation.
+	 */
+	configItem: SyncConfig
+
+	/**
+	 * The callback to be called when the batch writer is flushed.
+	 */
+	flushCallback: (data: SimplifiedVehicleEvent[]) => Promise<void>
+
+	/**
+	 * The time chunk to sync the data for.
+	 */
+	timeChunk: PerformInTimeChunksItem
+}
+
+/**
+ * Document type accepted by a given
+ * `rawDb.vehicleEvents` collection.
+ */
+type VehicleEventsCollectionDocument<C> = C extends MongoInterfaceTemplate<infer T, unknown> ? T : never;
+
+/**
+ * Parse the RawVehicleEvent document into a SimplifiedVehicleEvent document
+ * by validating the operation type, transforming the document, and writing it
+ * to the SimplifiedVehicleEvents collection.
+ * @param params The parameters for the function.
+ * @returns A promise that resolves when the RawVehicleEvent document has been
+ * parsed into a SimplifiedVehicleEvent document.
+ */
+export async function handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents({ batchWriter, configItem, flushCallback, timeChunk }: HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams) {
 	//
 
 	const chunkStartDate = Dates
@@ -48,7 +82,6 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 	// for the current timestamp chunk.
 
 	const rawdbQuery: Filter<VehicleEventsCollectionDocument<SyncConfig['collection']>> = {
-		agency_id: configItem.agency_id,
 		created_at: {
 			$gte: timeChunk.start,
 			$lt: timeChunk.end,
@@ -85,9 +118,9 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 				const labDbClient = await labDb.getClient();
 				await labDbClient.command({
 					query: `
-						ALTER TABLE operation.simplified_vehicle_events
-						DELETE WHERE _id IN (${chunk.map(id => `'${id}'`).join(',')})
-					`,
+					ALTER TABLE operation.simplified_vehicle_events
+					DELETE WHERE _id IN (${chunk.map(id => `'${id}'`).join(',')})
+				`,
 				});
 				Logger.info({ message: `Deleted ${chunk.length} documents from the destination database in ${deleteTimer.get()}.` });
 			}, 500);
@@ -113,7 +146,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 		},
 
 		onCompleteCallbackFn: async () => {
-			await writer.flush(setRidesAsWaiting);
+			await batchWriter.flush(flushCallback);
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
@@ -125,7 +158,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 				const newSimplifiedVehicleEventDocument = await parser(sourceDbDocument);
 				if (!newSimplifiedVehicleEventDocument) throw new Error(`Failed to parse document with _id "${sourceDbDocument._id}". Skipping...`);
 				// Write the simplified vehicle event document to the destination database
-				await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
+				await batchWriter.write(newSimplifiedVehicleEventDocument, { flushCallback });
 			} catch (error) {
 				const errorMessage = error instanceof ZodError
 					? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
@@ -135,6 +168,4 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 		},
 
 	});
-
-	//
-}
+};

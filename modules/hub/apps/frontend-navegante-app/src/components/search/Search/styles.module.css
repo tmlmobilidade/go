@@ -13,7 +13,7 @@
 
 .version {
 	margin: auto 0 0;
-	padding: 4px 0 calc(8px + env(safe-area-inset-bottom));
+	padding: 4px 0 8px;
 	font-size: 12px;
 	line-height: 1.2;
 	color: var(--color-system-text-200);
