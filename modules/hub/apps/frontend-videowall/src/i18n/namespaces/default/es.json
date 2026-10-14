@@ -342,7 +342,7 @@
 				"placeholder": "Buscar por nombre, número..."
 			},
 			"found_items_counter": {
-				"all": "{{count}}"
+				"all": "{count}"
 			},
 			"heading": "Buscar paradas"
 		},

@@ -1,10 +1,10 @@
 'use client';
 
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
-import { type StopsDetailViewTimetableData } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailViewTimetableClock } from '@/components/stops/detail/StopsDetailViewTimetableClock';
 import { StopsDetailViewTimetableRowArrival } from '@/components/stops/detail/StopsDetailViewTimetableRowArrival';
-import { useSelectedTrip } from '@/hooks/use-selected-trip';
+import { type StopsDetailViewTimetableData } from '@/components/stops/detail/use-stop-detail-data';
+import { useSelectedTrip } from '@/hooks/transit/useSelectedTrip';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -63,10 +63,23 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 				data-is-past={data.is_past}
 				data-is-selected={isSelected}
 				data-with-clock={withClock}
-				onClick={handleClick}
 			>
+				<button
+					aria-pressed={isSelected}
+					className={styles.action}
+					onClick={handleClick}
+					type="button"
+				>
+					<span className={styles.actionLabel}>
+						{t('default:stops.StopsDetailViewTimetableRow.select', '', {
+							destination: data.headsign,
+							line: data.short_name,
+						})}
+						{data.locality_names?.length > 0 && `. ${t('default:stops.StopsDetailViewTimetableRow.localities', '', { localities: data.locality_names.join(', ') })}`}
+					</span>
+				</button>
 
-				<div className={styles.summary}>
+				<div aria-hidden="true" className={styles.summary}>
 					<LineDisplay
 						agencyId={data.agency_id}
 						color={data.color}
@@ -78,14 +91,8 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 				</div>
 
 				{data.locality_names?.length > 0 && (
-					<div className={styles.details}>
+					<div aria-hidden="true" className={styles.details}>
 						<p className={styles.localitiesList}>{t('default:stops.StopsDetailViewTimetableRow.localities', '', { localities: data.locality_names.join(', ') })}</p>
-						{/* <pre
-							onClick={e => e.stopPropagation()}
-							style={{ overflow: 'auto', userSelect: 'text', width: '100%' }}
-						>
-							{JSON.stringify(data, null, 2)}
-						</pre> */}
 					</div>
 				)}
 

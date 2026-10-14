@@ -278,6 +278,9 @@ export const API_ROUTES = Object.freeze({
 		// DEBUG
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
+		// FEEDBACK
+		FEEDBACK_LIST: `${getModuleConfig('hub', 'api_url')}/v1/feedback`,
+
 		// ETA
 		ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-stop/${encodeURIComponent(id)}`,
 		ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-trip/${encodeURIComponent(id)}`,
@@ -287,6 +290,10 @@ export const API_ROUTES = Object.freeze({
 
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
+
+		// MOTIS
+		MOTIS_GEOCODE: `${getModuleConfig('hub', 'api_url')}/v1/motis/geocode`,
+		MOTIS_PLAN: `${getModuleConfig('hub', 'api_url')}/v1/motis/plan`,
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
@@ -404,10 +411,14 @@ export const API_ROUTES = Object.freeze({
 		// ALERTS
 		ALERTS_COMPOSE: `${getModuleConfig('operation', 'api_url')}/alerts/compose`,
 		ALERTS_CREATE: `${getModuleConfig('operation', 'api_url')}/alerts/create`,
-		ALERTS_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}`,
+		ALERTS_DETAIL_DELETE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/delete`,
+		ALERTS_DETAIL_DELETE_IMAGE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/delete/image`,
+		ALERTS_DETAIL_DETAIL: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/detail`,
+		ALERTS_DETAIL_DETAIL_IMAGE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/detail/image`,
 		ALERTS_DETAIL_DUPLICATE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/duplicate`,
-		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/lock`,
+		ALERTS_DETAIL_UPDATE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/update`,
+		ALERTS_DETAIL_UPDATE_IMAGE: (id: string) => `${getModuleConfig('operation', 'api_url')}/alerts/${encodeURIComponent(id)}/update/image`,
 		ALERTS_LIST: `${getModuleConfig('operation', 'api_url')}/alerts/list`,
 		ALERTS_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/alerts/list-agencies`,
 		ALERTS_LIST_LINES: `${getModuleConfig('operation', 'api_url')}/alerts/list-lines`,

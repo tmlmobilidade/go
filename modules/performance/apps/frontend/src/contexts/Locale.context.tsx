@@ -1,9 +1,9 @@
 'use client';
 
-import { availableFormats, DEFAULT_LOCALE_CODE, defaultLocale, enabledLocales, getMatchingLocale, LOCALE_STORAGE_KEY } from '@/i18n/config';
-import { useLocalStorage, useQueryState } from '@tmlmobilidade/ui';
+import { availableFormats, DEFAULT_LOCALE_CODE, defaultLocale, getMatchingLocale, LOCALE_STORAGE_KEY } from '@/i18n/config';
+import { useLayoutContext, useLocalStorage, useMeContext, useQueryState } from '@tmlmobilidade/ui';
 import { NextIntlClientProvider } from 'next-intl';
-import { createContext, useContext, useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 /* * */
 
@@ -30,64 +30,65 @@ export function useLocaleContext() {
 
 /* * */
 
-export const LocaleContextProvider = ({ children }) => {
+export const LocaleContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
 	// A. Setup variables
 
-	const [currentLocale, setCurrentLocale] = useLocalStorage<string>({ defaultValue: DEFAULT_LOCALE_CODE, key: LOCALE_STORAGE_KEY });
-
+	const layoutContext = useLayoutContext();
+	const meContext = useMeContext();
+	const { activateLocale } = layoutContext.actions;
+	const savedLocalePreference = meContext.actions.getPreference<string>('ui', 'active_locale');
+	const [legacyLocale] = useLocalStorage<string>({ defaultValue: '', getInitialValueInEffect: false, key: LOCALE_STORAGE_KEY });
 	const [currentLocaleQueryParam, setCurrentLocaleQueryParam] = useQueryState(LOCALE_STORAGE_KEY);
-
+	const hasMigratedLegacyLocale = useRef(false);
 	const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 	//
 	// B. Transform data
 
-	const currentLocaleMessages = useMemo(() => {
-		const matchingLocale = enabledLocales.find(item => item._id === currentLocale || item.alias.includes(currentLocale));
-		if (matchingLocale) return matchingLocale.messages;
-		else return defaultLocale.messages;
-	}, [currentLocale]);
+	const matchingLocale = getMatchingLocale(layoutContext.data.active_locale) ?? defaultLocale;
+	const currentLocale = matchingLocale._id;
+	const currentLocaleMessages = matchingLocale.messages;
 
 	//
 	// C. Handle actions
 
-	useEffect(() => {
-		// Ensure a valid locale is always set
-		const matchingLocale = getMatchingLocale(currentLocale);
-		// Exit if a match is found
-		if (matchingLocale) return;
-		// If no match is found, log a warning and set the default locale
-		console.warn(`Invalid locale: ${currentLocale}. Setting to default locale: ${defaultLocale._id}`);
-		setCurrentLocale(defaultLocale._id);
-	}, [currentLocale]);
+	const setCurrentLocale = useCallback((localeCode: string) => {
+		activateLocale(getMatchingLocale(localeCode)?._id ?? DEFAULT_LOCALE_CODE);
+	}, [activateLocale]);
 
 	useEffect(() => {
-		// Exit if no query param is set
-		if (!currentLocaleQueryParam) return;
-		// Try to match the query param value with an enabled locale
-		const matchingLocale = getMatchingLocale(currentLocaleQueryParam);
-		// If no match is found, log a warning and set the locale to the default
-		if (!matchingLocale) console.warn(`Invalid locale query param: ${currentLocaleQueryParam}`);
-		// If a match is found, set the current locale to the query param value
-		else setCurrentLocale(currentLocaleQueryParam);
-		// Clear the query param to avoid infinite loop
-		setCurrentLocaleQueryParam(null);
-	}, [currentLocaleQueryParam]);
+		if (currentLocaleQueryParam) {
+			const queryLocale = getMatchingLocale(currentLocaleQueryParam);
+			if (queryLocale) {
+				activateLocale(queryLocale._id);
+				hasMigratedLegacyLocale.current = true;
+			} else console.warn(`Invalid locale query param: ${currentLocaleQueryParam}`);
+			setCurrentLocaleQueryParam(null);
+			return;
+		}
+
+		if (hasMigratedLegacyLocale.current) return;
+		hasMigratedLegacyLocale.current = true;
+		// Keep an existing Performance preference when no shared preference is saved.
+		if (savedLocalePreference != null) return;
+		const storedLocale = getMatchingLocale(legacyLocale);
+		if (storedLocale) activateLocale(storedLocale._id);
+	}, [activateLocale, currentLocaleQueryParam, legacyLocale, savedLocalePreference, setCurrentLocaleQueryParam]);
 
 	//
 	// D. Define context value
 
-	const contextValue: LocaleContextState = {
+	const contextValue: LocaleContextState = useMemo(() => ({
 		actions: {
 			setCurrentLocale,
 		},
 		data: {
 			current_locale: currentLocale,
 		},
-	};
+	}), [currentLocale, setCurrentLocale]);
 
 	//
 	// E. Render components

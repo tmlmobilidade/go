@@ -5,6 +5,8 @@
 import { getValueAtPath } from '@tmlmobilidade/utils';
 import { ViewportList } from 'react-viewport-list';
 
+import styles from './styles.module.css';
+
 import { DataTableProps } from '../DataTable';
 import { useDataTableContext } from '../DataTableContext';
 import { DataTableEmptyState } from '../DataTableEmptyState';
@@ -47,7 +49,7 @@ export function DataTableContent<T>({ columns, isLoading, onRowClick, onRowConte
 	}
 
 	return (
-		<>
+		<div className={styles.container}>
 			<DataTableHeader columns={columns} withTopBorder={withTopBorder} />
 			<ViewportList
 				ref={dataTableContext.refs.list}
@@ -68,6 +70,6 @@ export function DataTableContent<T>({ columns, isLoading, onRowClick, onRowConte
 					/>
 				)}
 			</ViewportList>
-		</>
+		</div>
 	);
 }
