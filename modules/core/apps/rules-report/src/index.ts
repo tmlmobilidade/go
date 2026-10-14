@@ -29,7 +29,7 @@ async function main() {
 	// C. Fetch all agencies with their validation rules
 
 	const agencies = await goDb.core.agencies.findMany({}, {
-		projection: { '_id': 1, 'plans.validation_rules': 1, 'short_name': 1 },
+		projection: { '_id': 1, 'name': 1, 'plans.validation_rules': 1, 'short_name': 1 },
 	});
 	if (!agencies.length) throw new Error('No agencies found. Check the selected database environment.');
 

@@ -8,7 +8,7 @@ import { isRuleSeverity, ruleCatalogue, type RuleCatalogueEntry, type RuleSeveri
 //
 // A. Define the agency input and report cell types
 
-type ReportAgency = Pick<Agency, '_id' | 'short_name'> & { plans?: { validation_rules?: unknown } };
+type ReportAgency = Pick<Agency, '_id' | 'name' | 'short_name'> & { plans?: { validation_rules?: unknown } };
 type CellState = 'fixed' | 'invalid' | 'missing' | RuleSeverity;
 interface Cell { label: string, state: CellState, title: string }
 
@@ -129,8 +129,8 @@ export function renderAgencyValidationRulesReport(agencies: ReportAgency[], gene
 		if (hasIgnored) ignored++;
 		if (hasIncomplete) incomplete++;
 		return `<tr data-different="${different}" data-ignored="${hasIgnored}" data-incomplete="${hasIncomplete}" data-search="${escapeHtml(`${entry.group} ${entry.id}`)}">
-			<th scope="row"><code>${escapeHtml(entry.id)}</code><small>${escapeHtml(entry.group)}${entry.editable ? '' : ' · Fixo'}${different ? ' · Diferenças' : ''}</small></th>
-			${cells.map(cell => `<td><span class="badge ${cell.state}" title="${escapeHtml(cell.title)}">${escapeHtml(cell.label)}</span></td>`).join('')}
+			<th scope="row"><code>${escapeHtml(entry.id)}</code><small>${escapeHtml(entry.group)}${entry.editable ? '' : ' · Fixo'}<span data-difference-label${different ? '' : ' hidden'}> · Diferenças</span></small></th>
+			${cells.map((cell, index) => `<td data-agency="${index}" data-state="${cell.state}"><span class="badge ${cell.state}" title="${escapeHtml(cell.title)}">${escapeHtml(cell.label)}</span></td>`).join('')}
 		</tr>`;
 	}).join('\n');
 
@@ -152,7 +152,17 @@ p { margin: 8px 0; color: #52616b; }
 .summary span { padding: 10px 14px; background: white; border: 1px solid #dce3e8; border-radius: 8px; }
 label { display: flex; align-items: center; gap: 8px; }
 input, select { padding: 8px 10px; border: 1px solid #aab8c2; border-radius: 6px; font: inherit; background: white; color: inherit; }
-input { width: min(350px, 65vw); }
+input[type="search"] { width: min(350px, 65vw); }
+.agency-picker { position: relative; }
+.agency-picker summary { padding: 8px 12px; border: 1px solid #aab8c2; border-radius: 6px; background: white; cursor: pointer; }
+.agency-picker[open] summary { border-color: #2563eb; }
+.agency-panel { position: absolute; top: calc(100% + 8px); left: 0; z-index: 4; width: min(360px, calc(100vw - 56px)); padding: 12px; border: 1px solid #cbd5dc; border-radius: 8px; background: white; box-shadow: 0 8px 24px #18263026; }
+.agency-list { display: flex; flex-direction: column; gap: 4px; max-height: 260px; overflow: auto; margin-top: 12px; }
+.agency-list label { padding: 8px; border-radius: 4px; cursor: pointer; overflow-wrap: anywhere; }
+.agency-list label:hover { background: #f4f6f8; }
+.agency-list input { flex-shrink: 0; }
+.agency-actions { display: flex; gap: 8px; }
+.agency-actions button { padding: 6px 12px; border: 1px solid #aab8c2; border-radius: 6px; background: white; font: inherit; cursor: pointer; }
 .table-wrap { max-height: 70vh; overflow: auto; border: 1px solid #cbd5dc; border-radius: 8px; background: white; }
 table { border-spacing: 0; width: 100%; }
 th, td { padding: 12px 16px; border-bottom: 1px solid #e1e7eb; border-right: 1px solid #e1e7eb; text-align: center; }
@@ -180,12 +190,19 @@ tbody tr:hover td { background: #f8fafc; }
 <h1>Regras de validação por operador</h1>
 <p>Comparação das severidades guardadas por operador. Gerado em ${escapeHtml(generatedAt.toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon' }))} (Europe/Lisbon).</p>
 <div class="summary">
-<span><strong>${columns.length}</strong> operadores</span><span><strong>${ruleCatalogue.length}</strong> regras</span>
-<span><strong>${differences}</strong> com diferenças</span><span><strong>${ignored}</strong> com operadores a ignorar</span><span><strong>${incomplete}</strong> por configurar ou corrigir</span>
+<span><strong id="agency-count">${columns.length}</strong> operadores selecionados</span><span><strong>${ruleCatalogue.length}</strong> regras</span>
+<span><strong id="differences-count">${differences}</strong> com diferenças</span><span><strong id="ignored-count">${ignored}</strong> com operadores a ignorar</span><span><strong id="incomplete-count">${incomplete}</strong> por configurar ou corrigir</span>
 </div>
 <p>«Ignorado» indica uma regra desativada explicitamente. «Não configurado» indica uma regra em falta; o validador exige a configuração completa. «Inválido» indica um valor que precisa de correção.</p>
 <p>As linhas «Fixo» são avisos técnicos do validador. A comparação considera apenas severidades, não opções nem dependências. Este relatório é uma fotografia dos dados e não altera configurações.</p>
 <div class="controls">
+<details class="agency-picker" id="agency-picker">
+<summary>Operadores (<span id="agency-selection-count">${columns.length}</span>)</summary>
+<div class="agency-panel">
+<div class="agency-actions"><button type="button" id="agencies-all">Selecionar todos</button><button type="button" id="agencies-none">Limpar seleção</button></div>
+<div class="agency-list">${columns.map((agency, index) => `<label><input type="checkbox" name="agency" value="${index}" checked> ${escapeHtml(agency._id)} · ${escapeHtml(agency.short_name || agency.name || 'Sem nome')}</label>`).join('')}</div>
+</div>
+</details>
 <label for="search">Pesquisar regra <input id="search" type="search" placeholder="rule_id ou ficheiro"></label>
 <label for="filter">Mostrar <select id="filter">
 <option value="all">Todas as regras</option><option value="different">Com diferenças entre operadores</option>
@@ -196,7 +213,7 @@ tbody tr:hover td { background: #f8fafc; }
 <div class="legend" aria-label="Legenda">${Object.entries(severityLabels).map(([state, label]) => `<span class="badge ${state}">${label}</span>`).join('')}<span class="badge missing">Não configurado</span><span class="badge invalid">Inválido</span><span class="badge fixed">Fixo</span></div>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Comparação de regras por operador">
 <table>
-<thead><tr><th scope="col">rule_id / ficheiro</th>${columns.map(agency => `<th scope="col">${escapeHtml(agency._id)}<small>${escapeHtml(agency.short_name || 'Sem nome abreviado')}</small></th>`).join('')}</tr></thead>
+<thead><tr><th scope="col">rule_id / ficheiro</th>${columns.map((agency, index) => `<th data-agency="${index}" scope="col">${escapeHtml(agency._id)}<small>${escapeHtml(agency.short_name || agency.name || 'Sem nome')}</small></th>`).join('')}</tr></thead>
 <tbody>${rows}</tbody>
 </table>
 <p id="empty" hidden>Nenhuma regra corresponde aos filtros.</p>
@@ -205,26 +222,82 @@ tbody tr:hover td { background: #f8fafc; }
 const search = document.getElementById('search');
 const filter = document.getElementById('filter');
 const rows = Array.from(document.querySelectorAll('tbody tr'));
+const agencyInputs = Array.from(document.querySelectorAll('input[name="agency"]'));
+const agencyColumns = Array.from(document.querySelectorAll('[data-agency]'));
 function update() {
 
   //
-  // A. Filter rows by search text and the selected configuration state
+  // A. Show selected agency columns and recalculate comparison flags
+
+  const selected = new Set(agencyInputs.filter(input => input.checked).map(input => input.value));
+  for (const cell of agencyColumns) cell.hidden = !selected.has(cell.dataset.agency);
+  let differences = 0;
+  let ignored = 0;
+  let incomplete = 0;
+  for (const row of rows) {
+    const states = Array.from(row.querySelectorAll('td[data-agency]'))
+      .filter(cell => selected.has(cell.dataset.agency))
+      .map(cell => cell.dataset.state);
+    const different = new Set(states).size > 1;
+    const hasIgnored = states.includes('ignore');
+    const hasIncomplete = states.includes('missing') || states.includes('invalid');
+    row.dataset.different = String(different);
+    row.dataset.ignored = String(hasIgnored);
+    row.dataset.incomplete = String(hasIncomplete);
+    row.querySelector('[data-difference-label]').hidden = !different;
+    if (different) differences++;
+    if (hasIgnored) ignored++;
+    if (hasIncomplete) incomplete++;
+  }
+  document.getElementById('agency-count').textContent = selected.size;
+  document.getElementById('agency-selection-count').textContent = selected.size;
+  document.getElementById('differences-count').textContent = differences;
+  document.getElementById('ignored-count').textContent = ignored;
+  document.getElementById('incomplete-count').textContent = incomplete;
+
+  //
+  // B. Filter rows by search text and the selected configuration state
 
   const query = search.value.trim().toLowerCase();
   let visible = 0;
   for (const row of rows) {
-    row.hidden = !row.dataset.search.toLowerCase().includes(query) || (filter.value !== 'all' && row.dataset[filter.value] !== 'true');
+    row.hidden = selected.size === 0 || !row.dataset.search.toLowerCase().includes(query) || (filter.value !== 'all' && row.dataset[filter.value] !== 'true');
     if (!row.hidden) visible++;
   }
 
   //
-  // B. Update the visible count and empty-state message
+  // C. Update the visible count and empty-state message
 
   document.getElementById('count').textContent = visible + ' de ' + rows.length + ' regras';
   document.getElementById('empty').hidden = visible !== 0;
+  document.getElementById('empty').textContent = selected.size === 0
+    ? 'Selecione pelo menos um operador.'
+    : 'Nenhuma regra corresponde aos filtros.';
 }
 search.addEventListener('input', update);
 filter.addEventListener('change', update);
+
+//
+// Close the agency list when clicking outside or pressing Escape
+
+const agencyPicker = document.getElementById('agency-picker');
+document.addEventListener('click', event => {
+  if (!agencyPicker.contains(event.target)) agencyPicker.open = false;
+});
+agencyPicker.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    agencyPicker.open = false;
+    agencyPicker.querySelector('summary').focus();
+  }
+});
+for (const input of agencyInputs) input.addEventListener('change', update);
+for (const [id, checked] of [['agencies-all', true], ['agencies-none', false]]) {
+  document.getElementById(id).addEventListener('click', () => {
+    for (const input of agencyInputs) input.checked = checked;
+    update();
+  });
+}
+update();
 </script>
 </body>
 </html>`;
