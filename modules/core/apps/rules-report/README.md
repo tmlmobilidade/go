@@ -26,14 +26,14 @@ One-shot, read-only Core worker. Exports a standalone HTML table with the curren
 From the repository root:
 
 ```sh
-npm run dev:core:agency-rules-report
+npm run dev:core:rules-report
 open .output/agency-validation-rules.html
 ```
 
 The command builds the worker and its dependencies and uses the existing **staging** environment loader. It requires the same database/SSH access as the Core API. To choose the output file:
 
 ```sh
-npm run dev:core:agency-rules-report -- --output "$HOME/Downloads/agency-validation-rules.html"
+npm run dev:core:rules-report -- --output "$HOME/Downloads/agency-validation-rules.html"
 ```
 
 Relative output paths resolve against the directory where npm was invoked. The default is `.output/agency-validation-rules.html`; rerunning replaces that snapshot. To use another environment, build the workspace and run its `start` script under the appropriate environment loader.
@@ -50,6 +50,6 @@ Only current catalogue entries are shown. Differences compare saved severity/sta
 Validation without database access:
 
 ```sh
-npm run test --workspace=@tmlmobilidade/go-core-agency-rules-report
-npm run lint --workspace=@tmlmobilidade/go-core-agency-rules-report
+npm run test --workspace=@tmlmobilidade/go-core-rules-report
+npm run lint --workspace=@tmlmobilidade/go-core-rules-report
 ```
