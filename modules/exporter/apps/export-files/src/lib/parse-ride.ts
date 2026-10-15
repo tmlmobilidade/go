@@ -1,5 +1,5 @@
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type RideExportData } from '@tmlmobilidade/go-types-downloads';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type RideAcceptance, type RideNormalized, type UnixMilliseconds } from '@tmlmobilidade/types';
 
 function parseTime(time: null | UnixMilliseconds): null | string {
