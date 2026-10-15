@@ -178,7 +178,7 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 						continue;
 					}
 
-					await exportRouteStepp(patternData, exportConfig);
+					await exportRouteStepp(routeData, patternData, exportConfig);
 
 					// Export shape
 					const shapeId = `shp_${patternData.code}`;
