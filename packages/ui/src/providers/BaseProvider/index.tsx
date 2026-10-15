@@ -4,11 +4,12 @@ import { MantineProvider, MantineProviderProps } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
+import { type AnalyticsContextProps, AnalyticsContextProvider } from '@tmlmobilidade/go-ui-analytics';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren, Suspense, useMemo } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
-import { type AnalyticsContextProps, AnalyticsContextProvider } from '../../contexts/Analytics.context';
+import { useMeData } from '../../auth/use-me-data';
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
 import { LoadingSection } from '../../loaders';
@@ -37,6 +38,13 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 
 	//
 	// A. Setup variables
+
+	const { data: meData, isLoading: isMeLoading } = useMeData();
+	const analyticsUser = useMemo<AnalyticsContextProps['user']>(() => {
+		if (analytics?.user !== undefined) return analytics.user;
+		if (isMeLoading) return undefined;
+		return meData ? { _id: meData._id, email: meData.email, name: `${meData.first_name} ${meData.last_name}` } : null;
+	}, [analytics?.user, isMeLoading, meData]);
 
 	const analyticsOptions = useMemo<AnalyticsContextProps['options']>(() => ({
 		appVersion: version,
@@ -82,6 +90,7 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 								apiKey={analytics?.apiKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY}
 								configurationUrl={analytics?.configurationUrl ?? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/analytics`}
 								options={analyticsOptions}
+								user={analyticsUser}
 							>
 								<SWRConfig value={swrSettings}>
 									<LocaleContextProvider i18n={i18n}>

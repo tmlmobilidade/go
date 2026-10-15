@@ -28,7 +28,6 @@
 		"swr": "2.x"
 	},
 	"dependencies": {
-		"@amplitude/analytics-browser": "2.45.8",
 		"@dnd-kit/core": "6.3.1",
 		"@dnd-kit/sortable": "10.0.0",
 		"@dnd-kit/utilities": "3.2.2",
@@ -54,6 +53,7 @@
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-ui-analytics": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",

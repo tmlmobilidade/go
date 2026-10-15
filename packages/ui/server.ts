@@ -1,1 +1,1 @@
-export * from './src/server/analytics';
+export * from '@tmlmobilidade/go-ui-analytics/server';
