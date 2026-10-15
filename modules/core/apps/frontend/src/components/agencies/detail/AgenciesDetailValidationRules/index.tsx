@@ -19,6 +19,7 @@ export function AgenciesDetailValidationRules() {
 	// B. Handle actions
 
 	const handleChange = (rules: ValidationRulesInput) => {
+		if (!capabilities.editEnabled) return;
 		form.setValue('plans.validation_rules', rules, { shouldDirty: true });
 	};
 

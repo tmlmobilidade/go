@@ -16,7 +16,6 @@ export interface GtfsValidationRuleSettingCardProps {
 
 export interface GtfsValidationRulesTableProps extends GtfsValidationRulesEditorProps {
 	entries: RuleCatalogueEntry[]
-	showGroup?: boolean
 	title: ReactNode
 }
 

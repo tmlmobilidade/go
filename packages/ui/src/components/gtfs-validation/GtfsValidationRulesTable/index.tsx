@@ -11,7 +11,7 @@ import { type GtfsValidationRulesTableProps } from '../types';
 
 /* * */
 
-export function GtfsValidationRulesTable({ entries, onChange, readOnly, rules, showGroup = false, title }: GtfsValidationRulesTableProps) {
+export function GtfsValidationRulesTable({ entries, onChange, readOnly, rules, title }: GtfsValidationRulesTableProps) {
 	//
 
 	//
@@ -30,13 +30,12 @@ export function GtfsValidationRulesTable({ entries, onChange, readOnly, rules, s
 				<Table highlightOnHover>
 					<Table.Thead>
 						<Table.Tr>
-							{showGroup && <Table.Th>{t('shared:components.gtfsValidationRules.group')}</Table.Th>}
 							<Table.Th>{t('shared:components.gtfsValidationRules.rule')}</Table.Th>
 							<Table.Th w={380}>{t('shared:components.gtfsValidationRules.severity')}</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
 					<Table.Tbody>
-						{entries.map(rule => <GtfsValidationRuleRow key={`${rule.group}.${rule.id}`} onChange={onChange} readOnly={readOnly} rule={rule} rules={rules} showGroup={showGroup} />)}
+						{entries.map(rule => <GtfsValidationRuleRow key={`${rule.group}.${rule.id}`} onChange={onChange} readOnly={readOnly} rule={rule} rules={rules} />)}
 					</Table.Tbody>
 				</Table>
 			</Section>

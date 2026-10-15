@@ -40,7 +40,6 @@
 			"label": "Comparaciones",
 			"value": "Valor esperado"
 		},
-		"group": "Archivo",
 		"options": {
 			"description": "Valores usados por la regla. Vacío usa las opciones predeterminadas.",
 			"label": "Opciones",
@@ -59,7 +58,7 @@
 		},
 		"severity": "Severidad",
 		"unconfigured": {
-			"title": "Reglas sin severidad definida"
+			"description": "Sin severidad definida"
 		}
 	},
 	"inputs": {

@@ -46,22 +46,25 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// B. Setup form
 
-	const { form, isDirty, isValid: formIsValid, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
+	const { form, isDirty: formIsDirty, isValid: formIsValid, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
 		apiData: agencyData,
 		schema: UpdateAgencySchema,
 	});
 
 	const savedRulesValue = useStandardFormWatch({ control: form.control, name: 'plans.validation_rules' });
-	const { validationRules, validationRulesError } = useMemo(() => {
+	const { hasRulesChanges, validationRules, validationRulesError } = useMemo(() => {
 		let validationRules: null | ValidationRulesInput = null;
 		try {
-			validationRules = normalizeValidationRules(savedRulesValue, { allowIncomplete: true });
-			normalizeValidationRules(savedRulesValue);
-			return { validationRules, validationRulesError: null };
+			const parsedRules: unknown = typeof savedRulesValue === 'string' ? JSON.parse(savedRulesValue) : savedRulesValue;
+			validationRules = normalizeValidationRules(parsedRules, { allowIncomplete: true });
+			normalizeValidationRules(parsedRules);
+			const hasRulesChanges = JSON.stringify(parsedRules ?? {}) !== JSON.stringify(validationRules);
+			return { hasRulesChanges, validationRules, validationRulesError: null };
 		} catch (error) {
-			return { validationRules, validationRulesError: error instanceof Error ? error.message : String(error) };
+			return { hasRulesChanges: false, validationRules, validationRulesError: error instanceof Error ? error.message : String(error) };
 		}
 	}, [savedRulesValue]);
+	const isDirty = formIsDirty || hasRulesChanges;
 	const isValid = formIsValid && !validationRulesError;
 
 	//
@@ -70,8 +73,11 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => {
 			const values = form.getValues();
-			normalizeValidationRules(values.plans?.validation_rules);
-			return await fetchApiData<Agency>({ body: values, method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) });
+			const body = {
+				...values,
+				...(values.plans && { plans: { ...values.plans, validation_rules: normalizeValidationRules(values.plans.validation_rules) } }),
+			};
+			return await fetchApiData<Agency>({ body, method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) });
 		},
 		onSuccess: (response) => {
 			form.reset(response.data);

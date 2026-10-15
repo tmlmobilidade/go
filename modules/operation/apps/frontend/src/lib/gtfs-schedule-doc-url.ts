@@ -1,4 +1,4 @@
-const BASE_URL = 'https://go.tmlmobilidade.pt/reference/gtfs/validation-rules-v2';
+const BASE_URL = 'https://go.tmlmobilidade.pt/reference/gtfs/validation-rules';
 
 /* * */
 

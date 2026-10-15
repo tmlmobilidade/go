@@ -17,12 +17,11 @@ import { type GtfsValidationRulesEditorProps } from '../types';
 
 interface GtfsValidationRuleRowProps extends GtfsValidationRulesEditorProps {
 	rule: RuleCatalogueEntry
-	showGroup: boolean
 }
 
 /* * */
 
-export function GtfsValidationRuleRow({ onChange, readOnly, rule, rules, showGroup }: GtfsValidationRuleRowProps) {
+export function GtfsValidationRuleRow({ onChange, readOnly, rule, rules }: GtfsValidationRuleRowProps) {
 	//
 
 	//
@@ -48,7 +47,6 @@ export function GtfsValidationRuleRow({ onChange, readOnly, rule, rules, showGro
 	return (
 		<>
 			<Table.Tr>
-				{showGroup && <Table.Td>{rule.group}</Table.Td>}
 				<Table.Td className={styles.rule}>
 					{expandable
 						? (
@@ -63,7 +61,7 @@ export function GtfsValidationRuleRow({ onChange, readOnly, rule, rules, showGro
 			</Table.Tr>
 			{expandable && (
 				<Table.Tr className={styles.settingsRow} data-expanded={expanded}>
-					<Table.Td colSpan={showGroup ? 3 : 2} p={0}>
+					<Table.Td colSpan={2} p={0}>
 						{/* Unmounted while collapsed, so closed rules stay cheap. */}
 						<Collapse expanded={expanded} keepMounted={false}>
 							<div className={styles.settings}>

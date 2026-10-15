@@ -40,7 +40,6 @@
 			"label": "Comparações",
 			"value": "Valor esperado"
 		},
-		"group": "Ficheiro",
 		"options": {
 			"description": "Valores usados pela regra. Vazio usa as opções predefinidas.",
 			"label": "Opções",
@@ -59,7 +58,7 @@
 		},
 		"severity": "Severidade",
 		"unconfigured": {
-			"title": "Regras sem severidade definida"
+			"description": "Sem severidade definida"
 		}
 	},
 	"inputs": {

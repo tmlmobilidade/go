@@ -1,6 +1,6 @@
 'use client';
 
-import { getRuleSeverity, getSavedRuleSeverity, ruleCatalogue, type RuleCatalogueEntry, type RuleGroup, type RuleSeverity, setRuleSeverity } from '@tmlmobilidade/go-types-gtfs-validator';
+import { getRuleSeverity, ruleCatalogue, type RuleCatalogueEntry, type RuleGroup, type RuleSeverity, setRuleSeverity } from '@tmlmobilidade/go-types-gtfs-validator';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -43,12 +43,6 @@ export function GtfsValidationRulesEditor({ onChange, readOnly, rules }: GtfsVal
 		return Array.from(result.entries());
 	}, [matchingEntries]);
 
-	// Missing rules and saved rules without a valid severity are listed apart.
-	// A rule deliberately set to Ignore is configured, so it stays out of here.
-	const unconfiguredEntries = useMemo(() => {
-		return matchingEntries.filter(entry => entry.editable && getSavedRuleSeverity(rules, entry) === undefined);
-	}, [matchingEntries, rules]);
-
 	//
 	// C. Handle actions
 
@@ -72,16 +66,6 @@ export function GtfsValidationRulesEditor({ onChange, readOnly, rules }: GtfsVal
 	return (
 		<Section gap="lg" padding="none">
 			<SearchField onChange={setSearch} placeholder={t('shared:components.gtfsValidationRules.search')} value={search} />
-			{unconfiguredEntries.length > 0 && (
-				<GtfsValidationRulesTable
-					entries={unconfiguredEntries}
-					onChange={onChange}
-					readOnly={readOnly}
-					rules={rules}
-					title={t('shared:components.gtfsValidationRules.unconfigured.title')}
-					showGroup
-				/>
-			)}
 			<Grid columns="a" gap="lg">
 				{groups.map(([group, entries]) => (
 					<GtfsValidationRulesTable

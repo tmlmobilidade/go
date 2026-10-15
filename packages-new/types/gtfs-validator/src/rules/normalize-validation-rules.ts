@@ -5,10 +5,8 @@ import { parseRuleSeverity } from './severity.js';
 
 /* * */
 
-const currentRuleKeys = new Map<string, readonly string[]>(Object.entries(ruleConfigKeys));
-
 /**
- * Remove obsolete rules and validate the remaining editor configuration.
+ * Rebuild the configuration from the current validator's groups and keys.
  * A rule absent from the input stays absent so the Go validator can report
  * incomplete configuration before importing the GTFS.
  * By default, a present rule must have a valid severity. The editor can use
@@ -16,8 +14,9 @@ const currentRuleKeys = new Map<string, readonly string[]>(Object.entries(ruleCo
  * preserving the rule's other settings. Saving still uses the default checks.
  *
  * Completeness is checked by Go, separately from these editable settings.
- * Only current configuration keys and
- * _file settings are kept. Options and metadata of retained rules are unchanged.
+ * Only current configuration keys (including supported _file settings) are
+ * copied into a fresh object. Obsolete sections and rules are never retained.
+ * Options and metadata of retained rules are unchanged.
  */
 export function normalizeValidationRules(input: unknown, { allowIncomplete = false }: { allowIncomplete?: boolean } = {}): ValidationRulesInput {
 	const parsed: unknown = typeof input === 'string' ? JSON.parse(input) : input;
@@ -25,26 +24,26 @@ export function normalizeValidationRules(input: unknown, { allowIncomplete = fal
 		throw new Error('Validation rules must be a JSON object');
 	}
 	const result: [string, unknown][] = [];
-	for (const [group, section] of Object.entries(parsed ?? {})) {
-		const keys = currentRuleKeys.get(group);
+	for (const [group, keys] of Object.entries(ruleConfigKeys)) {
+		if (!parsed || !Object.hasOwn(parsed, group)) continue;
+		const section: unknown = parsed[group];
 		if (!isRecord(section)) {
-			if (keys) result.push([group, section]);
-			continue;
+			throw new Error(`${group}: expected a rules section object`);
 		}
-		const currentSection = Object.fromEntries(Object.entries(section).filter(([key, value]) => {
+		const currentSection = Object.fromEntries(keys.filter(key => Object.hasOwn(section, key)).map((key) => {
+			const value = section[key];
 			if (key === '_file') {
 				if (!allowIncomplete) parseRuleSeverity(value, `${group}.${key}`);
-				return true;
+				return [key, value];
 			}
-			if (!keys?.includes(key)) return false;
 			if (!isRecord(value)) throw new Error(`${group}.${key}: expected a rule object`);
 			if (!allowIncomplete) {
 				if (!('severity' in value)) throw new Error(`${group}.${key}: missing severity`);
 				parseRuleSeverity(value.severity, `${group}.${key}.severity`);
 			}
-			return true;
+			return [key, value];
 		}));
-		if (keys || Object.keys(currentSection).length > 0) result.push([group, currentSection]);
+		result.push([group, currentSection]);
 	}
 	return structuredClone(Object.fromEntries(result)) as ValidationRulesInput;
 }

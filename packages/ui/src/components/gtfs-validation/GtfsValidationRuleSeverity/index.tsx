@@ -17,6 +17,7 @@ export function GtfsValidationRuleSeverity({ onChange, readOnly, rule, rules }: 
 
 	const { t } = useTranslation();
 	const options = ruleSeverities.map(value => ({ label: t(`shared:components.gtfsValidationRules.severities.${value}`), value }));
+	const severity = getSavedRuleSeverity(rules, rule);
 
 	//
 	// B. Render components
@@ -30,10 +31,11 @@ export function GtfsValidationRuleSeverity({ onChange, readOnly, rule, rules }: 
 		<SegmentedControl
 			aria-label={`${rule.id}: ${t('shared:components.gtfsValidationRules.severity')}`}
 			data={options}
+			description={severity === undefined ? t('shared:components.gtfsValidationRules.unconfigured.description') : undefined}
 			onChange={value => onChange(setRuleSeverity(rules, rule, value as RuleSeverity))}
 			readOnly={readOnly}
 			size="xs"
-			value={getSavedRuleSeverity(rules, rule) ?? ''}
+			value={severity ?? ''}
 		/>
 	);
 }
