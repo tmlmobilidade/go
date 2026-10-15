@@ -4,16 +4,37 @@ import { OperationPostersV1StopTimesSchema } from '@tmlmobilidade/go-types-opera
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
+import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
 import { buildVariantNotes } from '../utils/build-variant-notes.js';
+import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportStopTimesFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables) {
+export async function exportStopTimesFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig) {
 	//
 	// Export stop times and annotations using the final trip IDs from calendar processing.
 
-	const { tripNotes: variantNotes } = buildVariantNotes(sqlTables.trips.all(), sqlTables.routes.all());
+	const routes = sqlTables.routes.all();
+	const { tripNotes: variantNotes } = buildVariantNotes(sqlTables.trips.all(), routes);
+	const { clause, parameters } = getCanvasLineFilter(routes.map(route => route.route_id), exportConfig);
+	const filterClauses = clause ? [clause] : [];
+
+	if ((exportConfig.content_mode === 'stops' || exportConfig.content_mode === 'lines_stops') && exportConfig.stop_ids.length) {
+		const stopPlaceholders = exportConfig.stop_ids.map(() => '?').join(', ');
+		filterClauses.push(`EXISTS (
+			SELECT 1 FROM stop_times
+			WHERE stop_times.trip_id = trips.trip_id
+			AND stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${stopPlaceholders})
+		)`);
+		parameters.push(...exportConfig.stop_ids);
+	}
+
+	// Select whole trips for annotations, keeping their original variant indexes.
+	const selectedTripIds = filterClauses.length ? new Set(sqlTables._db.databaseInstance.prepare(
+		`SELECT trips.trip_id FROM trips WHERE ${filterClauses.join(' AND ')}`,
+	).all(...parameters).map((row: { trip_id: string }) => row.trip_id)) : undefined;
+
 	let previousTripId: string | undefined;
 	let routeStopSequence = 0;
 	let annotationsCount = 0;
@@ -39,6 +60,8 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 		await context.writers.stop_times.write(data);
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
+
+		if (selectedTripIds && !selectedTripIds.has(stopTimeData.trip_id)) continue;
 
 		const annotation = variantNotes.get(stopTimeData.trip_id);
 		if (!annotation?.index.trim() || !annotation.note.trim()) continue;

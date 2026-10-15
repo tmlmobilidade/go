@@ -4,8 +4,8 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
-import { importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 
@@ -110,7 +110,7 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 		await exportCalendarFiles(context, sqlGtfs, exportConfig, calendarsByService);
 		const routeIds = await exportRoutesFile(context, sqlGtfs, exportConfig);
 		await exportTripsFile(context, sqlGtfs, routeIds);
-		await exportStopTimesFile(context, sqlGtfs);
+		await exportStopTimesFile(context, sqlGtfs, exportConfig);
 		await exportShapesFiles(context, sqlGtfs);
 		await exportStopsFile(context, sqlGtfs, exportConfig, routeIds);
 		for (const plan of plans) await exportAgencyFile(context, plan);
