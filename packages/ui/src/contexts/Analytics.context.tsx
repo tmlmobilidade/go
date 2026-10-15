@@ -131,9 +131,18 @@ export function AnalyticsContextProvider({ apiKey, children, configurationUrl, o
 		const { client, promise } = initialization;
 		let active = true;
 
+		const meData = useMeData();
+
 		promise.then(() => {
 			if (!active) return;
 			client.setOptOut(resolvedOptions?.optOut ?? false);
+			const userProperties: AnalyticsUserProperties = {
+				_id: meData?.id,
+				email: meData?.email,
+				name: meData?.name,
+			};
+			client.setUserProperties(userProperties);
+			client.identify();
 			setInitialized(initialization);
 		}).catch((cause: unknown) => {
 			if (active) handleError(cause);
