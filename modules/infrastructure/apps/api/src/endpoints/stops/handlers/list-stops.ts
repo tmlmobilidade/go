@@ -59,7 +59,7 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 			$match: {
 				...(locationAccess.allowAll ? {} : locationPermissionMatch(locationAccess.values)),
 				'flags.agency_ids': { $in: validatedFilters.data.agency_ids ?? [] },
-				'location.neighbourhood.osm_id': { $in: validatedFilters.data.location_neighbourhood_ids.map(Number) },
+				...(validatedFilters.data.location_neighbourhood_ids ? { 'location.neighbourhood.osm_id': { $in: validatedFilters.data.location_neighbourhood_ids.map(Number) } } : {}),
 				'location.primary.osm_id': { $in: validatedFilters.data.location_primary_ids.map(Number) },
 				'location.secondary.osm_id': { $in: validatedFilters.data.location_secondary_ids.map(Number) },
 				'location.tertiary.osm_id': { $in: validatedFilters.data.location_tertiary_ids.map(Number) },
