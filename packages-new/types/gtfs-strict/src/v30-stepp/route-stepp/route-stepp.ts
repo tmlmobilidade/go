@@ -13,5 +13,5 @@ export const GtfsStrictV30SteppRouteSteppSchema = z.object({
 	route_origin: z.string(),
 });
 
-/** Route circular flags, path types, and pattern origins and destinations exported in routes.stepp.txt. */
+/** Route circular flags, path types, and pattern origins and destinations exported in routes_stepp.txt. */
 export type GtfsStrictV30SteppRouteStepp = z.infer<typeof GtfsStrictV30SteppRouteSteppSchema>;

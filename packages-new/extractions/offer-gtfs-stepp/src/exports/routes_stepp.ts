@@ -7,7 +7,7 @@ import { pathTypeMapper, type Pattern, type Route } from '@tmlmobilidade/go-type
 
 /* * */
 
-/** Exports a route's circular flag and path type and a pattern's origin and destination to routes.stepp.txt. */
+/** Exports a route's circular flag and path type and a pattern's origin and destination to routes_stepp.txt. */
 export async function exportRouteStepp(routeData: Route, patternData: Pattern, isCircular: boolean, exportConfig: GtfsSteppV1ExportConfig) {
 	const row: GtfsStrictV30SteppRouteStepp = {
 		route_id: routeData.code,
