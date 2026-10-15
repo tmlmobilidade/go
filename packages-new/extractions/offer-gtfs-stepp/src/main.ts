@@ -178,8 +178,6 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 						continue;
 					}
 
-					await exportRouteStepp(lineData, routeData, patternData, exportConfig);
-
 					// Export shape
 					const shapeId = `shp_${patternData.code}`;
 					await exportShape(shapeId, patternData.shape, exportConfig);
@@ -205,7 +203,8 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 						exportConfig,
 					);
 
-					await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, exportConfig.agency_id);
+					const isCircular = await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, exportConfig.agency_id);
+					await exportRouteStepp(routeData, patternData, isCircular, exportConfig);
 				}
 
 				Logger.info({ message: `  Processed route ${routeData.code} with ${routePatterns.length} patterns` });

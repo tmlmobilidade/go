@@ -66,16 +66,19 @@ function formatGtfsTime(totalSeconds: number): string {
 
 /* * */
 
+/** Exports stop times and reports whether every exported trip starts and ends at the same stop_id. */
 export async function exportStopTimesForPattern(
 	stopsData: Stop[],
 	patternData: Pattern,
 	tripSchedules: TripSchedule[],
 	exportConfig: GtfsSteppV1ExportConfig,
 	agencyId: string,
-) {
+): Promise<boolean> {
 	try {
-		if (!patternData.path?.length) return;
-		if (tripSchedules.length === 0) return;
+		if (!patternData.path?.length) return false;
+		if (tripSchedules.length === 0) return false;
+
+		let isCircular = true;
 
 		for (const tripSchedule of tripSchedules) {
 			const activeParameter = resolveActiveParameter(patternData.parameters, tripSchedule, patternData.path);
@@ -86,6 +89,8 @@ export async function exportStopTimesForPattern(
 
 			let currentSeconds = timepointToSeconds(tripSchedule.timepoint);
 			let cumulativeDistance = 0;
+			let firstStopId: string | undefined;
+			let lastStopId: string | undefined;
 
 			for (let i = 0; i < mergedPath.length; i++) {
 				const pathItem = mergedPath[i];
@@ -111,8 +116,14 @@ export async function exportStopTimesForPattern(
 				};
 
 				await exportConfig.writers.stop_times.write(stopTimeRow);
+				firstStopId ??= stopTimeRow.stop_id;
+				lastStopId = stopTimeRow.stop_id;
 			}
+
+			isCircular = isCircular && firstStopId !== undefined && firstStopId === lastStopId;
 		}
+
+		return isCircular;
 	} catch (error) {
 		Logger.error({ error, message: `Error exporting stop_times for pattern ${patternData.code}` });
 		throw new Error(`Error exporting stop_times for pattern ${patternData.code}: ${error}`, error);
