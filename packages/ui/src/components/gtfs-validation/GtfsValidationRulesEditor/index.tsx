@@ -43,7 +43,7 @@ export function GtfsValidationRulesEditor({ onChange, readOnly, rules }: GtfsVal
 		return Array.from(result.entries());
 	}, [matchingEntries]);
 
-	// Editable rules with nothing saved yet, listed apart so they are not missed.
+	// Missing rules and saved rules without a valid severity are listed apart.
 	// A rule deliberately set to Ignore is configured, so it stays out of here.
 	const unconfiguredEntries = useMemo(() => {
 		return matchingEntries.filter(entry => entry.editable && getSavedRuleSeverity(rules, entry) === undefined);

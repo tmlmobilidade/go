@@ -53,10 +53,13 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 
 	const savedRulesValue = useStandardFormWatch({ control: form.control, name: 'plans.validation_rules' });
 	const { validationRules, validationRulesError } = useMemo(() => {
+		let validationRules: null | ValidationRulesInput = null;
 		try {
-			return { validationRules: normalizeValidationRules(savedRulesValue), validationRulesError: null };
+			validationRules = normalizeValidationRules(savedRulesValue, { allowIncomplete: true });
+			normalizeValidationRules(savedRulesValue);
+			return { validationRules, validationRulesError: null };
 		} catch (error) {
-			return { validationRules: null, validationRulesError: error instanceof Error ? error.message : String(error) };
+			return { validationRules, validationRulesError: error instanceof Error ? error.message : String(error) };
 		}
 	}, [savedRulesValue]);
 	const isValid = formIsValid && !validationRulesError;
@@ -65,7 +68,11 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) }),
+		fetchFn: async () => {
+			const values = form.getValues();
+			normalizeValidationRules(values.plans?.validation_rules);
+			return await fetchApiData<Agency>({ body: values, method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) });
+		},
 		onSuccess: (response) => {
 			form.reset(response.data);
 			agenciesDetailMutate(response);

@@ -11,14 +11,15 @@ const currentRuleKeys = new Map<string, readonly string[]>(Object.entries(ruleCo
  * Remove obsolete rules and validate the remaining editor configuration.
  * A rule absent from the input stays absent so the Go validator can report
  * incomplete configuration before importing the GTFS.
- * A rule that IS present must be complete: an entry without a severity, or
- * with an invalid one, is rejected instead of being silently accepted.
+ * By default, a present rule must have a valid severity. The editor can use
+ * allowIncomplete to display and repair missing or invalid severities while
+ * preserving the rule's other settings. Saving still uses the default checks.
  *
  * Completeness is checked by Go, separately from these editable settings.
  * Only current configuration keys and
  * _file settings are kept. Options and metadata of retained rules are unchanged.
  */
-export function normalizeValidationRules(input: unknown): ValidationRulesInput {
+export function normalizeValidationRules(input: unknown, { allowIncomplete = false }: { allowIncomplete?: boolean } = {}): ValidationRulesInput {
 	const parsed: unknown = typeof input === 'string' ? JSON.parse(input) : input;
 	if (parsed !== null && parsed !== undefined && !isRecord(parsed)) {
 		throw new Error('Validation rules must be a JSON object');
@@ -32,13 +33,15 @@ export function normalizeValidationRules(input: unknown): ValidationRulesInput {
 		}
 		const currentSection = Object.fromEntries(Object.entries(section).filter(([key, value]) => {
 			if (key === '_file') {
-				parseRuleSeverity(value, `${group}.${key}`);
+				if (!allowIncomplete) parseRuleSeverity(value, `${group}.${key}`);
 				return true;
 			}
 			if (!keys?.includes(key)) return false;
 			if (!isRecord(value)) throw new Error(`${group}.${key}: expected a rule object`);
-			if (!('severity' in value)) throw new Error(`${group}.${key}: missing severity`);
-			parseRuleSeverity(value.severity, `${group}.${key}.severity`);
+			if (!allowIncomplete) {
+				if (!('severity' in value)) throw new Error(`${group}.${key}: missing severity`);
+				parseRuleSeverity(value.severity, `${group}.${key}.severity`);
+			}
 			return true;
 		}));
 		if (keys || Object.keys(currentSection).length > 0) result.push([group, currentSection]);

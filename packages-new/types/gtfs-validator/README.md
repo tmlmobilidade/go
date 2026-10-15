@@ -40,7 +40,7 @@ Package and Docker builds use the committed files and do not need Go. CI runs th
 | `normalizeValidationRules` | Parse and check saved rules against the editor's policy. |
 | `isRuleSeverity`, `parseRuleSeverity` | Runtime severity checks. |
 
-The generated types are compile-time only. `normalizeValidationRules` removes saved rules whose group/key is no longer in the generated configuration, while preserving `_file` settings and the options and metadata of retained rules. Missing rules stay absent so the Go validator can report them. A retained rule must have a valid severity.
+The generated types are compile-time only. `normalizeValidationRules` removes saved rules whose group/key is no longer in the generated configuration, while preserving `_file` settings and the options and metadata of retained rules. Missing rules stay absent so the Go validator can report them. A retained rule must have a valid severity. The editor passes `{ allowIncomplete: true }` to display rules with missing or invalid severities for correction; saving still uses the default validation.
 
 Parser diagnostics remain runtime errors. They are excluded from the generated catalogue and rule IDs because they are not stored in agency validation settings.
 
