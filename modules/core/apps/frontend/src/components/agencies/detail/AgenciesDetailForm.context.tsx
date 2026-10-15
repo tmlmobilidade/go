@@ -56,9 +56,12 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 		let validationRules: null | ValidationRulesInput = null;
 		try {
 			const parsedRules: unknown = typeof savedRulesValue === 'string' ? JSON.parse(savedRulesValue) : savedRulesValue;
+
 			validationRules = normalizeValidationRules(parsedRules, { allowIncomplete: true });
 			normalizeValidationRules(parsedRules);
+
 			const hasRulesChanges = JSON.stringify(parsedRules ?? {}) !== JSON.stringify(validationRules);
+
 			return { hasRulesChanges, validationRules, validationRulesError: null };
 		} catch (error) {
 			return { hasRulesChanges: false, validationRules, validationRulesError: error instanceof Error ? error.message : String(error) };
