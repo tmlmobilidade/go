@@ -22,45 +22,65 @@ Should be provided to help GTFS consumers choose capitalization rules and other 
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyLangValidation(agency *types.Agency, row int, rules *types.AgencyRules) {
-	ctx := lib.NewValidationContext("agency_lang", "agency.txt", "agency_lang_valid_language_tag", row, services.AppMessageService)
+func AgencyLangValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+	ctx := lib.NewValidationContext("agency_lang", "agency.txt", "agency_lang_valid_language_tag", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyLang.Severity != "" {
 		ctx.WithSeverity(rules.AgencyLang.Severity)
 	}
 
-	// 1. Check if agency_lang is required
-	if agency.AgencyLang == nil {
+	//
+	// 1. Get the agency_lang value
+
+	value, err := db.Field("agency_lang")
+	if err != nil {
+		return err
+	}
+
+	//
+	// 2. Check if agency_lang is required
+
+	if value == "" {
 		if ctx.ShouldSkip() {
-			return
+			return nil
 		}
 
 		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
-		return
+		return nil
 	}
 
-	// 2. Check if agency_lang is forbidden
+	//
+	// 3. Check if agency_lang is forbidden
+
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return
+		return nil
 	}
 
-	// 3. Check if agency_lang is valid
-	if agency.AgencyLang != nil && !lib.ValidateLanguage(*agency.AgencyLang) {
-		ctx.AddError(ctx.GetTranslatedMessage("invalid", *agency.AgencyLang))
-		return
+	//
+	// 4. Check if agency_lang is valid
+
+	if !lib.ValidateLanguage(value) {
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", value))
+		return nil
 	}
 
-	// 4. Validate rules
+	//
+	// 5. Validate rules
+
 	if rules != nil && rules.AgencyLang.Options != nil {
 		if slices.Contains(*rules.AgencyLang.Options, types.ALL_OPTIONS) {
-			return
+			return nil
 		}
 
-		if !slices.Contains(*rules.AgencyLang.Options, *agency.AgencyLang) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *agency.AgencyLang))
-			return
+		if !slices.Contains(*rules.AgencyLang.Options, value) {
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
+			return nil
 		}
 	}
 
+	//
+	// 6. Return success
+
+	return nil
 }

@@ -26,14 +26,14 @@ func TestAllAgencyPhoneValidationTestCases(t *testing.T) {
 				severity = types.SEVERITY_WARNING
 			}
 
-			agency := &types.Agency{}
+			agency := map[string]*string{}
 			if tc.Name == "Invalid_Value" {
-				agency = &types.Agency{}
+				agency = map[string]*string{}
 			} else if tc.Value != nil {
-				agency = &types.Agency{AgencyPhone: lib.Ptr(test_helpers.GetValidPhoneNumbers()[0])}
+				agency = map[string]*string{"agency_phone": lib.Ptr(test_helpers.GetValidPhoneNumbers()[0])}
 			}
 
-			validations.AgencyPhoneValidation(agency, tc.Row, &types.AgencyRules{AgencyPhone: types.RuleConfig{Severity: severity}})
+			assertAgencyRead(t, validations.AgencyPhoneValidation(agencyRow(t, tc.Row, agency), &types.AgencyRules{AgencyPhone: types.RuleConfig{Severity: severity}}))
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

@@ -26,11 +26,11 @@ func TestAllAgencyTimezoneValidationTestCases(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 
-			agency := &types.Agency{AgencyTimezone: tc.Timezone}
+			agency := map[string]*string{"agency_timezone": tc.Timezone}
 
 			// agency_timezone is optional: no rules configured means a missing
 			// value is ignored, while an invalid value is always an error.
-			validations.AgencyTimezoneValidation(agency, 1, nil)
+			assertAgencyRead(t, validations.AgencyTimezoneValidation(agencyRow(t, 1, agency), nil))
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 		})
 	}

@@ -524,7 +524,7 @@ func (g *Gtfs) HasTable(table string) bool {
 		return false
 	}
 	var count int
-	err := g.db.QueryRow("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?", sanitizeTableNameForQuery(table)).Scan(&count)
+	err := g.db.QueryRow("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=? COLLATE NOCASE", table).Scan(&count)
 	return err == nil && count > 0
 }
 
@@ -599,9 +599,9 @@ func (g *Gtfs) GetRowsByField(table, column, value string) ([]int, error) {
 	return result, rows.Err()
 }
 
-// sanitizeTableNameForQuery sanitizes table name for use in queries (without quotes for table name)
+// sanitizeTableNameForQuery quotes the original table name for SQL queries.
 func sanitizeTableNameForQuery(name string) string {
-	return strings.ReplaceAll(name, "-", "_")
+	return `"` + strings.ReplaceAll(name, `"`, `""`) + `"`
 }
 
 // convertRowToStruct converts a map[string]string to a struct using reflection

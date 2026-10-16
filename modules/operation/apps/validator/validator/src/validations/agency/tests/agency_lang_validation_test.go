@@ -33,7 +33,7 @@ func TestAllAgencyLangValidationTestCases(t *testing.T) {
 				agencyLang = tc.Value
 			}
 
-			validations.AgencyLangValidation(&types.Agency{AgencyLang: agencyLang}, tc.Row, &types.AgencyRules{AgencyLang: types.RuleConfig{Severity: severity}})
+			assertAgencyRead(t, validations.AgencyLangValidation(agencyRow(t, tc.Row, map[string]*string{"agency_lang": agencyLang}), &types.AgencyRules{AgencyLang: types.RuleConfig{Severity: severity}}))
 			if tc.Name == "Recommended_Missing" {
 				test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 			} else {

@@ -6,6 +6,17 @@ Transit agencies with service represented in this dataset.
 **Presence**: Required<br>
 **Primary key**: agency_id
 
+Agency rules receive a `services.SQLiteRow` identifying the current SQLite row.
+Each rule requests its own field with `db.Field("agency_email")`, then validates
+the returned text. Missing columns, SQL `NULL`, and empty cells are treated as
+missing values. Database failures are returned as errors.
+
+The ID rule uses `FieldWithCount("agency_id")` to fetch the value and its duplicate
+count in one query. The ID/name comparison fetches both fields in one query with
+`Fields("agency_id", "agency_name")`. Only column names are retained between
+rules; field values are read from SQLite each time. No `types.Agency` conversion
+is used.
+
 ---
 
 ### Field Definitions

@@ -20,36 +20,60 @@ Full name of the transit agency.
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyNameIdMatchValidation(agency *types.Agency, row int, rules *types.AgencyRules) {
-	ctx := lib.NewValidationContext("agency_name_id_match", "agency.txt", "agency_id_matched_with_agency_name", row, services.AppMessageService)
+func AgencyNameIdMatchValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+	ctx := lib.NewValidationContext("agency_name_id_match", "agency.txt", "agency_id_matched_with_agency_name", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyNameIdMatch.Severity != "" {
 		ctx.WithSeverity(rules.AgencyNameIdMatch.Severity)
 	}
 
-	// 1. Check if agency_id and agency_name are required
-	if agency.AgencyId == nil || agency.AgencyName == nil {
-		return
+	//
+	// 1. Get the agency_id and agency_name values
+
+	values, err := db.Fields("agency_id", "agency_name")
+	if err != nil {
+		return err
+	}
+	agencyID, agencyName := values["agency_id"], values["agency_name"]
+
+	//
+	// 2. Check if agency_id and agency_name are required
+
+	if agencyID == "" || agencyName == "" {
+		return nil
 	}
 
-	// 2. Check if agency_name_id_match should be skipped
+	//
+	// 3. Check if agency_name_id_match should be skipped
+
 	if ctx.ShouldSkip() {
-		return
+		return nil
 	}
 
-	// 3. Validate rules
+	//
+	// 4. Validate rules
+
 	if rules != nil && rules.AgencyNameIdMatch.Compare != nil {
-		// Find the matching key and value
+		//
+
+		//
+		// 4.1. Find the matching key and value
+
 		validName := ""
 		for _, compare := range *rules.AgencyNameIdMatch.Compare {
-			if compare.Key == *agency.AgencyId && compare.Value == *agency.AgencyName {
-				return
+			if compare.Key == agencyID && compare.Value == agencyName {
+				return nil
 			}
-			if compare.Key == *agency.AgencyId {
+			if compare.Key == agencyID {
 				validName = compare.Value
 			}
 		}
 
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("no_match", *agency.AgencyId, *agency.AgencyName, *agency.AgencyId, validName))
-		return
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("no_match", agencyID, agencyName, agencyID, validName))
+		return nil
 	}
+
+	//
+	// 5. Return success
+
+	return nil
 }

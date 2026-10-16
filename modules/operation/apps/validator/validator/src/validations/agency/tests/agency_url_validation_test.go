@@ -22,7 +22,7 @@ func TestAllAgencyUrlValidationTestCases(t *testing.T) {
 				severity = types.SEVERITY_WARNING
 			}
 
-			validations.AgencyUrlValidation(&types.Agency{AgencyUrl: tc.Url}, tc.Row, &types.AgencyRules{AgencyUrl: types.RuleConfig{Severity: severity}})
+			assertAgencyRead(t, validations.AgencyUrlValidation(agencyRow(t, tc.Row, map[string]*string{"agency_url": tc.Url}), &types.AgencyRules{AgencyUrl: types.RuleConfig{Severity: severity}}))
 			if tc.Name == "Recommended_Missing" {
 				test_helpers.AssertMessageCount(t, services.AppMessageService, 1, tc.Name, types.SEVERITY_WARNING)
 			} else {

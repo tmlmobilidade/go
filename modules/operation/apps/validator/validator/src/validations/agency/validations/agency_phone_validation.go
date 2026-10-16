@@ -24,44 +24,65 @@ Dialable text (for example, TriMet's "503-238-RIDE") is permitted, but the field
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyPhoneValidation(agency *types.Agency, row int, rules *types.AgencyRules) {
-	ctx := lib.NewValidationContext("agency_phone", "agency.txt", "agency_phone_valid_phone_number", row, services.AppMessageService)
+func AgencyPhoneValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+	ctx := lib.NewValidationContext("agency_phone", "agency.txt", "agency_phone_valid_phone_number", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyPhone.Severity != "" {
 		ctx.WithSeverity(rules.AgencyPhone.Severity)
 	}
 
-	// 1. Check if agency_phone is required
-	if agency.AgencyPhone == nil {
+	//
+	// 1. Get the agency_phone value
+
+	value, err := db.Field("agency_phone")
+	if err != nil {
+		return err
+	}
+
+	//
+	// 2. Check if agency_phone is required
+
+	if value == "" {
 		if ctx.ShouldSkip() {
-			return
+			return nil
 		}
 
 		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
-		return
+		return nil
 	}
 
-	// 2. Check if agency_phone is forbidden
+	//
+	// 3. Check if agency_phone is forbidden
+
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return
+		return nil
 	}
 
-	// 3. Check if agency_phone is valid
-	if !lib.ValidatePhone(*agency.AgencyPhone) {
-		ctx.AddError(ctx.GetTranslatedMessage("invalid", *agency.AgencyPhone))
-		return
+	//
+	// 4. Check if agency_phone is valid
+
+	if !lib.ValidatePhone(value) {
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", value))
+		return nil
 	}
 
-	// 4. Validate rules
+	//
+	// 5. Validate rules
+
 	if rules != nil && rules.AgencyPhone.Options != nil {
 		if slices.Contains(*rules.AgencyPhone.Options, types.ALL_OPTIONS) {
-			return
+			return nil
 		}
 
-		if !slices.Contains(*rules.AgencyPhone.Options, *agency.AgencyPhone) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *agency.AgencyPhone))
-			return
+		if !slices.Contains(*rules.AgencyPhone.Options, value) {
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
+			return nil
 		}
 	}
+
+	//
+	// 6. Return success
+
+	return nil
 }

@@ -106,8 +106,8 @@ func ImportGTFSZipToSQLite(zipPath, sqlitePath string) (*GtfsSQLite, error) {
 		// flat ZIPs whose files sit at the root.
 		baseName := path.Base(file.Name)
 
-		// Only process known GTFS files
-		if _, ok := config.GTFSFiles[baseName]; ok {
+		// Every CSV-style text file defines its own table through its header row.
+		if strings.EqualFold(path.Ext(baseName), ".txt") {
 			if err := processGTFSFile(gtfsDB.db, file, &dbMutex); err != nil {
 				lib.AppLogger.Error(fmt.Sprintf("Error processing %s: %v", baseName, err))
 				AppMessageService.AddMessage(types.Message{
@@ -120,7 +120,7 @@ func ImportGTFSZipToSQLite(zipPath, sqlitePath string) (*GtfsSQLite, error) {
 				})
 			}
 		} else {
-			lib.AppLogger.Debug("Skipping invalid GTFS file: " + file.Name)
+			lib.AppLogger.Debug("Skipping non-CSV GTFS file: " + file.Name)
 			AppMessageService.AddMessage(types.Message{
 				FileName: file.Name,
 				Message:  i18n.AppTranslator.Get("file_validation.not_supported", file.Name),
@@ -170,7 +170,6 @@ func processGTFSFile(db *sql.DB, file *zip.File, dbMutex *sync.Mutex) error {
 	}
 
 	reader := csv.NewReader(strings.NewReader(string(content)))
-	reader.TrimLeadingSpace = true
 
 	// Read headers
 	headers, err := reader.Read()
@@ -181,10 +180,23 @@ func processGTFSFile(db *sql.DB, file *zip.File, dbMutex *sync.Mutex) error {
 		return fmt.Errorf("could not read CSV header: %w", err)
 	}
 
-	table := strings.TrimSuffix(path.Base(file.Name), ".txt")
+	baseName := path.Base(file.Name)
+	table := strings.TrimSuffix(baseName, path.Ext(baseName))
+	if table == "" {
+		return fmt.Errorf("file %s has no table name", file.Name)
+	}
 
-	// Create table if it doesn't exist (serialized to prevent locking)
+	// Keep each file separate and protect internal tables such as id_map.
 	dbMutex.Lock()
+	exists, err := dbops.TableExists(db, table)
+	if err != nil {
+		dbMutex.Unlock()
+		return err
+	}
+	if exists {
+		dbMutex.Unlock()
+		return fmt.Errorf("file %s conflicts with existing SQLite table %s", file.Name, table)
+	}
 	if err := createSQLiteTableIfNotExists(db, table, headers); err != nil {
 		dbMutex.Unlock()
 		return fmt.Errorf("failed to create table %s: %w", table, err)
@@ -198,11 +210,15 @@ func processGTFSFile(db *sql.DB, file *zip.File, dbMutex *sync.Mutex) error {
 	}
 
 	// Prepare INSERT statement
+	columns := make([]string, len(headers))
+	for i, header := range headers {
+		columns[i] = dbops.SanitizeColumnName(header)
+	}
 	placeholders := "(" + strings.Repeat("?,", len(headers)-1) + "?)"
 	insertSQL := fmt.Sprintf(
 		"INSERT INTO %s (%s) VALUES %s",
-		table,
-		strings.Join(headers, ","),
+		dbops.SanitizeTableName(table),
+		strings.Join(columns, ","),
 		placeholders,
 	)
 
@@ -400,12 +416,9 @@ func QueryTableRows(db *sql.DB, table string, fn func(int, map[string]string) er
 		for i, col := range columns {
 			val := values[i]
 			if val != nil {
-				// Remove quotes from column names if present
-				colName := strings.Trim(col, `"`)
-				rowMap[colName] = fmt.Sprintf("%v", val)
+				rowMap[col] = fmt.Sprintf("%v", val)
 			} else {
-				colName := strings.Trim(col, `"`)
-				rowMap[colName] = ""
+				rowMap[col] = ""
 			}
 		}
 
@@ -462,11 +475,9 @@ func GetTableRow(db *sql.DB, table string, rowIndex int) (map[string]string, err
 	for i, col := range columns {
 		val := values[i]
 		if val != nil {
-			colName := strings.Trim(col, `"`)
-			rowMap[colName] = fmt.Sprintf("%v", val)
+			rowMap[col] = fmt.Sprintf("%v", val)
 		} else {
-			colName := strings.Trim(col, `"`)
-			rowMap[colName] = ""
+			rowMap[col] = ""
 		}
 	}
 

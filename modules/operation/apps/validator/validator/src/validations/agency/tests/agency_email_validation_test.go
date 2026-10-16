@@ -30,7 +30,7 @@ func TestAllAgencyEmailTestCases(t *testing.T) {
 				agencyEmail = tc.Value
 			}
 
-			validations.AgencyEmailValidation(&types.Agency{AgencyEmail: agencyEmail}, tc.Row, &types.AgencyRules{AgencyEmail: types.RuleConfig{Severity: severity}})
+			assertAgencyRead(t, validations.AgencyEmailValidation(agencyRow(t, tc.Row, map[string]*string{"agency_email": agencyEmail}), &types.AgencyRules{AgencyEmail: types.RuleConfig{Severity: severity}}))
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

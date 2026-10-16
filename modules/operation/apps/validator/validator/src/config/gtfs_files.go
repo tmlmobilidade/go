@@ -23,30 +23,6 @@ var GTFSFileToTable = map[string]string{
 	"transfers.txt":       "transfers",
 }
 
-// GTFSFiles is the set of valid GTFS filenames that will be processed
-var GTFSFiles = map[string]struct{}{
-	"agency.txt":          {},
-	"stops.txt":           {},
-	"routes.txt":          {},
-	"trips.txt":           {},
-	"stop_times.txt":      {},
-	"calendar.txt":        {},
-	"archives.txt":        {},
-	"calendar_dates.txt":  {},
-	"dates.txt":           {},
-	"fare_attributes.txt": {},
-	"fare_rules.txt":      {},
-	"feed_info.txt":       {},
-	"municipalities.txt":  {},
-	"periods.txt":         {},
-	"shapes.txt":          {},
-	"vehicles.txt":        {},
-	"frequencies.txt":     {},
-	"levels.txt":          {},
-	"pathways.txt":        {},
-	"transfers.txt":       {},
-}
-
 // GTFSTables is the list of all possible GTFS table names (without .txt extension)
 // This is used for validation registry and database table checks
 var GTFSTables = []string{

@@ -93,13 +93,13 @@ The process begins when `ReadGTFSZip()` is called with a path to a GTFS zip file
 
 Each file in the GTFS zip archive is processed sequentially:
 
-1. **File Filtering**: Only known GTFS files (defined in `config.GTFSFiles`) are processed
+1. **File Filtering**: Every CSV-style `.txt` file is imported, including custom files without registered validations. Directories, macOS metadata, and other file formats are skipped. The filename without its extension becomes the table name; nested ZIP folders are ignored. Conflicting table names are reported as import errors.
 2. **CSV Parsing**: Each `.txt` file is read as CSV with:
    - UTF-8 BOM removal
    - UTF-8 encoding validation
    - Header row extraction
-3. **Table Creation**: SQLite tables are created dynamically based on CSV headers
-4. **Batch Insertion**: Rows are inserted in batches using transactions for performance
+3. **Table Creation**: The first CSV record defines the SQLite columns, preserving their names and order, including custom fields absent from Go structs. Every column uses `TEXT`.
+4. **Batch Insertion**: All following CSV records are inserted using transactions. Values retain whitespace, empty strings, and leading zeros; import does not convert them to numbers or validate them against Go structs.
 5. **ID Mapping**: Primary keys are indexed in a separate `id_map` table for fast lookups
 
 ### Step 3: Data Structure Creation

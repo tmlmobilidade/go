@@ -33,7 +33,7 @@ func TestAllAgencyFareUrlValidationTestCases(t *testing.T) {
 				agencyFareUrl = tc.Value
 			}
 
-			validations.AgencyFareUrlValidation(&types.Agency{AgencyFareUrl: agencyFareUrl}, tc.Row, &types.AgencyRules{AgencyFare: types.RuleConfig{Severity: severity}})
+			assertAgencyRead(t, validations.AgencyFareUrlValidation(agencyRow(t, tc.Row, map[string]*string{"agency_fare_url": agencyFareUrl}), &types.AgencyRules{AgencyFare: types.RuleConfig{Severity: severity}}))
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})

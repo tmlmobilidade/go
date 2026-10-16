@@ -40,14 +40,14 @@ func TestAllAgencyNameIdMatchValidationTestCases(t *testing.T) {
 				severity = types.SEVERITY_WARNING
 			}
 
-			agency := &types.Agency{}
+			agency := map[string]*string{}
 			if tc.Name == "Invalid_Value" {
-				agency = &types.Agency{}
+				agency = map[string]*string{}
 			} else if tc.Value != nil {
-				agency = &types.Agency{AgencyId: lib.Ptr("AGENCY1"), AgencyName: lib.Ptr("Metro Transit")}
+				agency = map[string]*string{"agency_id": lib.Ptr("AGENCY1"), "agency_name": lib.Ptr("Metro Transit")}
 			}
 
-			validations.AgencyNameIdMatchValidation(agency, tc.Row, &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: severity}})
+			assertAgencyRead(t, validations.AgencyNameIdMatchValidation(agencyRow(t, tc.Row, agency), &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: severity}}))
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
 		})
@@ -58,29 +58,29 @@ func TestAllAgencyNameIdMatchValidationTestCases(t *testing.T) {
 		}
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
-			validations.AgencyNameIdMatchValidation(&types.Agency{AgencyId: lib.Ptr("AGENCY1"), AgencyName: lib.Ptr("Metro Transit")}, tc.Row, &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: tc.Severity}})
+			assertAgencyRead(t, validations.AgencyNameIdMatchValidation(agencyRow(t, tc.Row, map[string]*string{"agency_id": lib.Ptr("AGENCY1"), "agency_name": lib.Ptr("Metro Transit")}), &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: tc.Severity}}))
 			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, tc.Severity)
 		})
 	}
 
 	t.Run("WithCompare_Match", func(t *testing.T) {
 		services.AppMessageService.Clear()
-		validations.AgencyNameIdMatchValidation(&types.Agency{AgencyId: lib.Ptr("AGENCY1"), AgencyName: lib.Ptr("Metro Transit")}, 1, &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_ERROR, Compare: &compare}})
+		assertAgencyRead(t, validations.AgencyNameIdMatchValidation(agencyRow(t, 1, map[string]*string{"agency_id": lib.Ptr("AGENCY1"), "agency_name": lib.Ptr("Metro Transit")}), &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_ERROR, Compare: &compare}}))
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 0, "Matching agency_id and agency_name should not error", types.SEVERITY_ERROR)
 	})
 	t.Run("WithCompare_NoMatch", func(t *testing.T) {
 		services.AppMessageService.Clear()
-		validations.AgencyNameIdMatchValidation(&types.Agency{AgencyId: lib.Ptr("AGENCY1"), AgencyName: lib.Ptr("Wrong Name")}, 1, &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_ERROR, Compare: &compare}})
+		assertAgencyRead(t, validations.AgencyNameIdMatchValidation(agencyRow(t, 1, map[string]*string{"agency_id": lib.Ptr("AGENCY1"), "agency_name": lib.Ptr("Wrong Name")}), &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_ERROR, Compare: &compare}}))
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Non-matching agency_id and agency_name should error", types.SEVERITY_ERROR)
 	})
 	t.Run("WithCompare_NoMatch_Warning", func(t *testing.T) {
 		services.AppMessageService.Clear()
-		validations.AgencyNameIdMatchValidation(&types.Agency{AgencyId: lib.Ptr("AGENCY1"), AgencyName: lib.Ptr("Wrong Name")}, 1, &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_WARNING, Compare: &compare}})
+		assertAgencyRead(t, validations.AgencyNameIdMatchValidation(agencyRow(t, 1, map[string]*string{"agency_id": lib.Ptr("AGENCY1"), "agency_name": lib.Ptr("Wrong Name")}), &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_WARNING, Compare: &compare}}))
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 1, "Non-matching agency_id and agency_name should warn", types.SEVERITY_WARNING)
 	})
 	t.Run("WithCompare_MultipleMatches", func(t *testing.T) {
 		services.AppMessageService.Clear()
-		validations.AgencyNameIdMatchValidation(&types.Agency{AgencyId: lib.Ptr("AGENCY1"), AgencyName: lib.Ptr("Metro Transit")}, 1, &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_ERROR, Compare: &compare}})
+		assertAgencyRead(t, validations.AgencyNameIdMatchValidation(agencyRow(t, 1, map[string]*string{"agency_id": lib.Ptr("AGENCY1"), "agency_name": lib.Ptr("Metro Transit")}), &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_ERROR, Compare: &compare}}))
 		test_helpers.AssertMessageCount(t, services.AppMessageService, 0, "Matching agency_id and agency_name should not error even with multiple entries", types.SEVERITY_ERROR)
 	})
 }

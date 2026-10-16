@@ -28,20 +28,14 @@ func CreateTableIfNotExists(db *sql.DB, table string, headers []string) error {
 	return nil
 }
 
-// SanitizeColumnName sanitizes a column name for SQLite
+// SanitizeColumnName quotes a CSV header for SQLite without changing its name.
 func SanitizeColumnName(name string) string {
-	// Replace spaces and special characters with underscores
-	name = strings.ReplaceAll(name, " ", "_")
-	name = strings.ReplaceAll(name, "-", "_")
-	// Wrap in quotes to handle reserved words
-	return fmt.Sprintf(`"%s"`, name)
+	return `"` + strings.ReplaceAll(name, `"`, `""`) + `"`
 }
 
-// SanitizeTableName sanitizes a table name for SQLite
+// SanitizeTableName quotes a file's table name without changing it.
 func SanitizeTableName(name string) string {
-	// Replace dashes with underscores
-	name = strings.ReplaceAll(name, "-", "_")
-	return name
+	return `"` + strings.ReplaceAll(name, `"`, `""`) + `"`
 }
 
 // TableExists checks if a table exists in the database
@@ -50,9 +44,9 @@ func TableExists(db *sql.DB, tableName string) (bool, error) {
 		return false, fmt.Errorf("database connection is nil")
 	}
 
-	query := fmt.Sprintf("SELECT name FROM sqlite_master WHERE type='table' AND name='%s'", SanitizeTableName(tableName))
+	query := "SELECT name FROM sqlite_master WHERE type='table' AND name = ? COLLATE NOCASE"
 	var name string
-	err := db.QueryRow(query).Scan(&name)
+	err := db.QueryRow(query, tableName).Scan(&name)
 	if err == sql.ErrNoRows {
 		return false, nil
 	}
