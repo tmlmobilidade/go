@@ -47,21 +47,13 @@ func AgencyNameField(db *services.SQLiteContext, rules *types.AgencyRules) error
 			return nil
 		}
 
-		message := ctx.GetRequiredMessage("required", "recommended")
+		message := ctx.GetSeverityMessage("required", "recommended", "informational")
 		ctx.AddMessageWithSeverity(message)
 		return nil
 	}
 
 	//
-	// 4. Check if agency_name is forbidden
-
-	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return nil
-	}
-
-	//
-	// 5. Return success
+	// 4. Return success
 
 	return nil
 }

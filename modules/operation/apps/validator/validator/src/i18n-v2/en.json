@@ -1,5 +1,6 @@
 {
 	"agency_email_field": {
+		"informational": "The agency_email field is informational",
 		"recommended": "The agency_email field is recommended",
 		"required": "The agency_email field is required"
 	},
@@ -8,6 +9,7 @@
 		"not_allowed": "Field \"agency_email\" \"%s\" is not allowed"
 	},
 	"agency_fare_url_field": {
+		"informational": "The agency_fare_url field is informational",
 		"recommended": "The agency_fare_url field is recommended",
 		"required": "The agency_fare_url field is required"
 	},
@@ -16,6 +18,7 @@
 		"not_allowed": "Field \"agency_fare_url\" \"%s\" is not allowed"
 	},
 	"agency_id_field": {
+		"informational": "The agency_id field is informational",
 		"recommended": "The agency_id field is recommended",
 		"required": "The agency_id field is required"
 	},
@@ -26,6 +29,7 @@
 		"not_allowed": "The \"agency_id\" \"%s\" is not allowed"
 	},
 	"agency_lang_field": {
+		"informational": "The agency_lang field is informational",
 		"recommended": "The agency_lang field is recommended",
 		"required": "The agency_lang field is required"
 	},
@@ -34,6 +38,7 @@
 		"not_allowed": "Field \"agency_lang\" \"%s\" is not allowed"
 	},
 	"agency_name_field": {
+		"informational": "The agency_name field is informational",
 		"recommended": "The agency_name field is recommended",
 		"required": "The agency_name field is required"
 	},
@@ -44,6 +49,7 @@
 		"not_allowed": "Field \"agency_name\" \"%s\" is not allowed"
 	},
 	"agency_phone_field": {
+		"informational": "The agency_phone field is informational",
 		"recommended": "The agency_phone field is recommended",
 		"required": "The agency_phone field is required"
 	},
@@ -52,6 +58,7 @@
 		"not_allowed": "Field \"agency_phone\" \"%s\" is not allowed"
 	},
 	"agency_timezone_field": {
+		"informational": "The agency_timezone field is informational",
 		"recommended": "The agency_timezone field is recommended",
 		"required": "The agency_timezone field is required"
 	},
@@ -60,6 +67,7 @@
 		"not_allowed": "Field \"agency_timezone\" \"%s\" is not allowed"
 	},
 	"agency_url_field": {
+		"informational": "The agency_url field is informational",
 		"recommended": "The agency_url field is recommended",
 		"required": "The agency_url field is required"
 	},

@@ -150,3 +150,14 @@ func (vc *ValidationContext) GetRequiredMessage(requiredKey, recommendedKey stri
 	}
 	return vc.GetTranslatedMessage(recommendedKey)
 }
+
+// GetSeverityMessage gets a translated message for the current severity
+func (vc *ValidationContext) GetSeverityMessage(requiredKey, recommendedKey, informationalKey string) string {
+	if vc.Severity == types.SEVERITY_ERROR {
+		return vc.GetTranslatedMessage(requiredKey)
+	}
+	if vc.Severity == types.SEVERITY_WARNING {
+		return vc.GetTranslatedMessage(recommendedKey)
+	}
+	return vc.GetTranslatedMessage(informationalKey)
+}

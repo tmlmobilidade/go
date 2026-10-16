@@ -48,19 +48,11 @@ func AgencyEmailField(db *services.SQLiteContext, rules *types.AgencyRules) erro
 			return nil
 		}
 
-		message := ctx.GetRequiredMessage("required", "recommended")
+		message := ctx.GetSeverityMessage("required", "recommended", "informational")
 		ctx.AddMessageWithSeverity(message)
 		return nil
 	}
-
-	//
-	// 4. Check if agency_email is forbidden
-
-	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return nil
-	}
-
+	
 	//
 	// 5. Return success
 
