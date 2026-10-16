@@ -2,6 +2,7 @@ package lib
 
 import (
 	"main/i18n"
+	"main/lib/rules"
 	"main/types"
 	"strings"
 	"testing"
@@ -27,5 +28,27 @@ func TestValidationContextTranslatesUsingRuleID(t *testing.T) {
 		if generic := context.GetTranslatedMessage("generic"); generic == "agency_id_unique.generic" || generic == required {
 			t.Fatalf("%s: generic summary was not resolved: %s", language, generic)
 		}
+	}
+}
+
+type capturedValidationMessages struct {
+	messages []types.Message
+}
+
+func (c *capturedValidationMessages) AddMessage(message types.Message) {
+	c.messages = append(c.messages, message)
+}
+
+func TestForbiddenContextEmitsErrorAndKeepsMessage(t *testing.T) {
+	rules.ConfigureMessageSeverities(nil)
+	collector := &capturedValidationMessages{}
+	ctx := NewValidationContext("agency_id", "agency.txt", "agency_id_unique", 0, collector).WithSeverity(types.SEVERITY_FORBIDDEN)
+	message := ctx.GetTranslatedMessage("forbidden")
+	ctx.AddMessageWithSeverity(message)
+	if !ctx.IsForbidden() || ctx.Status() != rules.Failed {
+		t.Fatal("forbidden rule configuration or failed status was lost")
+	}
+	if len(collector.messages) != 1 || collector.messages[0].Severity != types.SEVERITY_ERROR || collector.messages[0].Message != message {
+		t.Fatalf("unexpected output: %+v", collector.messages)
 	}
 }

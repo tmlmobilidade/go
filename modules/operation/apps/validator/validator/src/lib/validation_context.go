@@ -98,7 +98,10 @@ func (vc *ValidationContext) AddMessage(message string, severity types.Severity,
 		}
 		severity = override
 	}
-	if severity == types.SEVERITY_ERROR || severity == types.SEVERITY_WARNING || severity == types.SEVERITY_FORBIDDEN {
+	if severity == types.SEVERITY_FORBIDDEN {
+		severity = types.SEVERITY_ERROR
+	}
+	if severity == types.SEVERITY_ERROR || severity == types.SEVERITY_WARNING {
 		vc.failed = true
 	}
 	vc.MessageAdder.AddMessage(types.Message{

@@ -59,6 +59,9 @@ func (ms *MessageService) AddMessage(message types.Message) {
 		}
 		message.Severity = severity
 	}
+	if message.Severity == types.SEVERITY_FORBIDDEN {
+		message.Severity = types.SEVERITY_ERROR
+	}
 
 	ms.mu.Lock()
 	if message.Severity != types.SEVERITY_IGNORE {
@@ -94,8 +97,6 @@ func (ms *MessageService) AddMessage(message types.Message) {
 
 	switch message.Severity {
 	case types.SEVERITY_ERROR:
-		ms.errorCount++
-	case types.SEVERITY_FORBIDDEN:
 		ms.errorCount++
 	case types.SEVERITY_WARNING:
 		ms.warningCount++
@@ -138,10 +139,9 @@ func (ms *MessageService) GetSummary() types.Summary {
 // severityRank orders severities so a rule that reported at more than one severity
 // is summarised by the most serious one it produced.
 var severityRank = map[types.Severity]int{
-	types.SEVERITY_IGNORE:    0,
-	types.SEVERITY_WARNING:   1,
-	types.SEVERITY_FORBIDDEN: 2,
-	types.SEVERITY_ERROR:     3,
+	types.SEVERITY_IGNORE:  0,
+	types.SEVERITY_WARNING: 1,
+	types.SEVERITY_ERROR:   2,
 }
 
 // groupedMessages collapses the messages into one entry per rule, so the output has

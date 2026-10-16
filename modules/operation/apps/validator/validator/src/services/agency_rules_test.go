@@ -138,3 +138,32 @@ func TestMessagesFromDifferentRulesAreNotMerged(t *testing.T) {
 		t.Fatal("different file rules merged")
 	}
 }
+
+func TestForbiddenMessagesAlwaysReportError(t *testing.T) {
+	defer ruleset.ConfigureMessageSeverities(nil)
+	for _, configured := range []bool{false, true} {
+		ruleset.ConfigureMessageSeverities(nil)
+		if configured {
+			config := ruleset.DefaultConfig()
+			config.Agency.AgencyEmail.Severity = types.SEVERITY_FORBIDDEN
+			ruleset.ConfigureMessageSeverities(&config)
+		}
+		service := NewMessageService()
+		message := "agency_email is forbidden."
+		service.AddMessage(types.Message{
+			FileName: "agency.txt", Field: "agency_email", RuleID: "agency_email_valid_address",
+			Rows: []int{0}, Severity: types.SEVERITY_FORBIDDEN, Message: message,
+		})
+		summary := service.GetSummary()
+		if summary.TotalErrors != 1 || summary.TotalWarnings != 0 || len(summary.Messages) != 1 {
+			t.Fatalf("configured=%v: unexpected summary: %+v", configured, summary)
+		}
+		group := summary.Messages[0]
+		if group.Severity != types.SEVERITY_ERROR || len(group.Messages) != 1 || group.Messages[0].Severity != types.SEVERITY_ERROR || group.Messages[0].Message != message {
+			t.Fatalf("configured=%v: unexpected output: %+v", configured, group)
+		}
+		if service.RuleIssueCount("agency_email_valid_address") != 1 {
+			t.Fatal("forbidden error was not counted for dependency scheduling")
+		}
+	}
+}
