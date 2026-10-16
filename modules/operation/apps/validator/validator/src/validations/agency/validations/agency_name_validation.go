@@ -21,7 +21,7 @@ Full name of the transit agency.
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyNameValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+func AgencyNameValidation(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	ctx := lib.NewValidationContext("agency_name", "agency.txt", "agency_name_present", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyName.Severity != "" {
 		ctx.WithSeverity(rules.AgencyName.Severity)
@@ -30,7 +30,7 @@ func AgencyNameValidation(db *services.SQLiteRow, rules *types.AgencyRules) erro
 	//
 	// 1. Get the agency_name value
 
-	value, err := db.Field("agency_name")
+	value, err := db.Agency.Field("agency_name")
 	if err != nil {
 		return err
 	}

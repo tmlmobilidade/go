@@ -21,7 +21,7 @@ URL of the transit agency.
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyUrlValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+func AgencyUrlValidation(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	ctx := lib.NewValidationContext("agency_url", "agency.txt", "agency_url_valid_url", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyUrl.Severity != "" {
 		ctx.WithSeverity(rules.AgencyUrl.Severity)
@@ -30,7 +30,7 @@ func AgencyUrlValidation(db *services.SQLiteRow, rules *types.AgencyRules) error
 	//
 	// 1. Get the agency_url value
 
-	value, err := db.Field("agency_url")
+	value, err := db.Agency.Field("agency_url")
 	if err != nil {
 		return err
 	}

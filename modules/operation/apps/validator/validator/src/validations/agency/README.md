@@ -6,16 +6,21 @@ Transit agencies with service represented in this dataset.
 **Presence**: Required<br>
 **Primary key**: agency_id
 
-Agency rules receive a `services.SQLiteRow` identifying the current SQLite row.
-Each rule requests its own field with `db.Field("agency_email")`, then validates
+Agency rules receive a `services.SQLiteContext` identifying the current SQLite row.
+Each rule requests its own field with `db.Agency.Field("agency_email")`, then validates
 the returned text. Missing columns, SQL `NULL`, and empty cells are treated as
 missing values. Database failures are returned as errors.
 
-The ID rule uses `FieldWithCount("agency_id")` to fetch the value and its duplicate
+The ID rule uses `db.Agency.FieldWithCount("agency_id")` to fetch the value and its duplicate
 count in one query. The ID/name comparison fetches both fields in one query with
-`Fields("agency_id", "agency_name")`. Only column names are retained between
+`db.Agency.Fields("agency_id", "agency_name")`. Only column names are retained between
 rules; field values are read from SQLite each time. No `types.Agency` conversion
 is used.
+
+`db.Agency` refers to the current agency row. To read another standard or custom
+table, select it with `table, err := db.Table("routes")`, then select its row
+with `table.At(rowIndex).Field("route_id")`. Row indexes are zero-based; rows
+from different tables are not implicitly linked.
 
 ---
 

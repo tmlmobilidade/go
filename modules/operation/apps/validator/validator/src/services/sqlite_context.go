@@ -40,6 +40,31 @@ type SQLiteRow struct {
 	Row   int
 }
 
+// SQLiteContext exposes the current validation row and access to other tables.
+// Agency is bound only when validating an agency row; other tables require an
+// explicit row selection through Table(name).At(row).
+type SQLiteContext struct {
+	Row    int
+	Agency *SQLiteRow
+	source *SQLiteRow
+}
+
+func (r *SQLiteRow) Context() *SQLiteContext {
+	ctx := &SQLiteContext{Row: r.Row, source: r}
+	if strings.EqualFold(r.table.name, "agency") {
+		ctx.Agency = r
+	}
+	return ctx
+}
+
+// Table selects any imported table. It does not fetch or cache field values.
+func (c *SQLiteContext) Table(name string) (*SQLiteTable, error) {
+	if strings.EqualFold(name, c.source.table.name) {
+		return c.source.table, nil
+	}
+	return NewSQLiteTable(c.source.table.db, name)
+}
+
 func (t *SQLiteTable) At(row int) *SQLiteRow {
 	return &SQLiteRow{table: t, Row: row}
 }

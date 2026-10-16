@@ -21,7 +21,7 @@ URL of a web page where a rider can purchase tickets or other fare instruments f
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyFareUrlValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+func AgencyFareUrlValidation(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	ctx := lib.NewValidationContext("agency_fare_url", "agency.txt", "agency_fare_url_valid_url", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyFare.Severity != "" {
 		ctx.WithSeverity(rules.AgencyFare.Severity)
@@ -30,7 +30,7 @@ func AgencyFareUrlValidation(db *services.SQLiteRow, rules *types.AgencyRules) e
 	//
 	// 1. Get the agency_fare_url value
 
-	value, err := db.Field("agency_fare_url")
+	value, err := db.Agency.Field("agency_fare_url")
 	if err != nil {
 		return err
 	}

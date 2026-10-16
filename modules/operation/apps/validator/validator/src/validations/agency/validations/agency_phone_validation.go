@@ -24,7 +24,7 @@ Dialable text (for example, TriMet's "503-238-RIDE") is permitted, but the field
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyPhoneValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+func AgencyPhoneValidation(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	ctx := lib.NewValidationContext("agency_phone", "agency.txt", "agency_phone_valid_phone_number", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyPhone.Severity != "" {
 		ctx.WithSeverity(rules.AgencyPhone.Severity)
@@ -33,7 +33,7 @@ func AgencyPhoneValidation(db *services.SQLiteRow, rules *types.AgencyRules) err
 	//
 	// 1. Get the agency_phone value
 
-	value, err := db.Field("agency_phone")
+	value, err := db.Agency.Field("agency_phone")
 	if err != nil {
 		return err
 	}

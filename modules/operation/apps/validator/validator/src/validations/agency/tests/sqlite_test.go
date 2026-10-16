@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func agencyRow(t *testing.T, index int, fields map[string]*string) *services.SQLiteRow {
+func agencyRow(t *testing.T, index int, fields map[string]*string) *services.SQLiteContext {
 	t.Helper()
 	db, err := sql.Open("sqlite", filepath.Join(t.TempDir(), "agency.db"))
 	if err != nil {
@@ -34,7 +34,7 @@ func agencyRow(t *testing.T, index int, fields map[string]*string) *services.SQL
 	if err != nil {
 		t.Fatal(err)
 	}
-	return table.At(index)
+	return table.At(index).Context()
 }
 
 func assertAgencyRead(t *testing.T, err error) {

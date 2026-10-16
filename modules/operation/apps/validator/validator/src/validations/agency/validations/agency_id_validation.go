@@ -24,7 +24,7 @@ This document uses the term "agency" in place of "brand". A dataset may contain 
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyIdValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+func AgencyIdValidation(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	ctx := lib.NewValidationContext("agency_id", "agency.txt", "agency_id_unique", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyId.Severity != "" {
 		ctx.WithSeverity(rules.AgencyId.Severity)
@@ -33,7 +33,7 @@ func AgencyIdValidation(db *services.SQLiteRow, rules *types.AgencyRules) error 
 	//
 	// 1. Get the agency_id value
 
-	value, count, err := db.FieldWithCount("agency_id")
+	value, count, err := db.Agency.FieldWithCount("agency_id")
 	if err != nil {
 		return err
 	}

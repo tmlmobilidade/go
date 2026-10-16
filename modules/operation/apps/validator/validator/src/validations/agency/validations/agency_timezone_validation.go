@@ -22,7 +22,7 @@ If multiple agencies are specified in the dataset, each must have the same 'agen
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyTimezoneValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+func AgencyTimezoneValidation(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	ctx := lib.NewValidationContext("agency_timezone", "agency.txt", "agency_timezone_valid_id", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyTimezone.Severity != "" {
 		ctx.WithSeverity(rules.AgencyTimezone.Severity)
@@ -31,7 +31,7 @@ func AgencyTimezoneValidation(db *services.SQLiteRow, rules *types.AgencyRules) 
 	//
 	// 1. Get the agency_timezone value
 
-	value, err := db.Field("agency_timezone")
+	value, err := db.Agency.Field("agency_timezone")
 	if err != nil {
 		return err
 	}

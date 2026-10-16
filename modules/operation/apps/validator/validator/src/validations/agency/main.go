@@ -36,7 +36,8 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 		return
 	}
 
-	err = table.ForEachRow(func(db *services.SQLiteRow) error {
+	err = table.ForEachRow(func(row *services.SQLiteRow) error {
+		db := row.Context()
 		tracker.Track()
 		check := func(ruleID string, err error) {
 			if err != nil {

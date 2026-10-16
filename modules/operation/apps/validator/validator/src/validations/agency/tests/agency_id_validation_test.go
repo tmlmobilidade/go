@@ -42,7 +42,7 @@ func TestAgencyIdValidation(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			assertAgencyRead(t, validations.AgencyIdValidation(table.At(tc.row), &types.AgencyRules{
+			assertAgencyRead(t, validations.AgencyIdValidation(table.At(tc.row).Context(), &types.AgencyRules{
 				AgencyId: types.RuleConfig{Severity: tc.severity, Options: tc.options},
 			}))
 			messages := services.AppMessageService.GetSummary().Messages

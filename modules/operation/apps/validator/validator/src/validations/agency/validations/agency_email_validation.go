@@ -23,7 +23,7 @@ This email address should be a direct contact point where transit riders can rea
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
 
-func AgencyEmailValidation(db *services.SQLiteRow, rules *types.AgencyRules) error {
+func AgencyEmailValidation(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	ctx := lib.NewValidationContext("agency_email", "agency.txt", "agency_email_valid_address", db.Row, services.AppMessageService)
 	if rules != nil && rules.AgencyEmail.Severity != "" {
 		ctx.WithSeverity(rules.AgencyEmail.Severity)
@@ -32,7 +32,7 @@ func AgencyEmailValidation(db *services.SQLiteRow, rules *types.AgencyRules) err
 	//
 	// 1. Get the agency_email value
 
-	value, err := db.Field("agency_email")
+	value, err := db.Agency.Field("agency_email")
 	if err != nil {
 		return err
 	}
