@@ -63,7 +63,7 @@
 		"dev:apex:raw-sync-refunds": "npm run build:apex:raw-sync-refunds && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-apex-raw-sync-refunds",
 		"dev:apex:raw-sync-sales": "npm run build:apex:raw-sync-sales && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-apex-raw-sync-sales",
 		"dev:apex:raw-sync-validations": "npm run build:apex:raw-sync-validations && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-apex-raw-sync-validations",
-		"dev:core": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-core-*",
+		"dev:core": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-core-* --filter=!@tmlmobilidade/go-core-rules-report",
 		"dev:core:extractions": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-core-extractions-coordinator --filter=@tmlmobilidade/go-core-extractions-worker",
 		"dev:core:rules-report": "turbo run build --filter=@tmlmobilidade/go-core-rules-report && npm run repo:load-env-stg -- npm run start --workspace=@tmlmobilidade/go-core-rules-report --",
 		"dev:core:ui": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-core-frontend --filter=@tmlmobilidade/go-core-api",
