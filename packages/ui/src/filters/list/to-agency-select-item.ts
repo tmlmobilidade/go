@@ -19,17 +19,14 @@ interface AgencySelectItem {
  * The name is the label and the id is the detail. The code stays searchable.
  */
 export function toAgencySelectItem(agency: AgencyOptionSource): AgencySelectItem {
-	// Prefer agency short name if available
-	const label = agency.short_name || agency.name;
-	// Description should be the agency code and the ID
-	const description = `[${agency.code}] [${agency._id}]`;
-	// Keywords should be the ID, code, short name and name of the agency
-	const keywords = [agency._id, agency.code, agency.short_name, agency.name].filter(Boolean).join(' ');
-	// Return the item
 	return {
-		description,
-		keywords,
-		label,
+		// Description should be the agency code and the ID
+		description: `[${agency.code}] [${agency._id}]`,
+		// Keywords should be the ID, code, short name and name of the agency
+		keywords: [agency._id, agency.code, agency.short_name, agency.name].filter(Boolean).join(' '),
+		// Label should be the agency name
+		label: agency.name,
+		// Value should be the agency ID
 		value: agency._id,
 	};
 }
