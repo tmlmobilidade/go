@@ -1,7 +1,7 @@
 'use client';
 
 import { IconChevronRight } from '@tabler/icons-react';
-import { type RuleCatalogueEntry } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type GtfsValidatorRuleId } from '@tmlmobilidade/go-types-gtfs-validator';
 import { type KeyboardEvent, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -16,7 +16,7 @@ import { type GtfsValidationRulesEditorProps } from '../types';
 /* * */
 
 interface GtfsValidationRuleRowProps extends GtfsValidationRulesEditorProps {
-	rule: RuleCatalogueEntry
+	rule: GtfsValidatorRuleId
 }
 
 /* * */
@@ -52,10 +52,10 @@ export function GtfsValidationRuleRow({ onChange, readOnly, rule, rules }: GtfsV
 						? (
 							<Inline aria-expanded={expanded} className={styles.toggle} onClick={handleToggle} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
 								<IconChevronRight className={styles.chevron} data-expanded={expanded} size={14} stroke={2.5} />
-								{rule.id}
+								{rule}
 							</Inline>
 						)
-						: rule.id}
+						: rule}
 				</Table.Td>
 				<Table.Td><GtfsValidationRuleSeverity onChange={onChange} readOnly={readOnly} rule={rule} rules={rules} /></Table.Td>
 			</Table.Tr>

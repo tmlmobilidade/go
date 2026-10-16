@@ -2,6 +2,7 @@
 
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { isRuleSeverity, ruleCatalogue, type RuleCatalogueEntry, type RuleSeverity } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type SeverityStatus, SeverityStatusSchema } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -9,13 +10,14 @@ import { isRuleSeverity, ruleCatalogue, type RuleCatalogueEntry, type RuleSeveri
 // A. Define the agency input and report cell types
 
 type ReportAgency = Pick<Agency, '_id' | 'name' | 'short_name'> & { plans?: { validation_rules?: unknown } };
-type CellState = 'fixed' | 'invalid' | 'missing' | RuleSeverity;
+type CellState = 'fixed' | 'invalid' | 'missing' | RuleSeverity | SeverityStatus;
 interface Cell { label: string, state: CellState, title: string }
 
-const severityLabels: Record<RuleSeverity, string> = {
+const severityLabels: Record<RuleSeverity | SeverityStatus, string> = {
 	error: 'Erro',
 	forbidden: 'Proibido',
 	ignore: 'Ignorado',
+	info: 'Informação',
 	warning: 'Aviso',
 };
 
@@ -73,6 +75,13 @@ function getCell(config: ReturnType<typeof parseRules>, entry: RuleCatalogueEntr
 	// B. Distinguish missing settings from invalid configuration shapes
 
 	if (config.invalid) return invalid;
+	if (Object.hasOwn(config.rules, entry.id)) {
+		const rule = config.rules[entry.id];
+		if (!isRecord(rule)) return invalid;
+		const severity = SeverityStatusSchema.safeParse(rule.severity);
+		if (!severity.success) return invalid;
+		return { label: severityLabels[severity.data], state: severity.data, title: `${entry.id}: ${severity.data}` };
+	}
 	if (!(entry.group in config.rules)) return missing;
 	const section = config.rules[entry.group];
 	if (!isRecord(section)) return invalid;
@@ -177,6 +186,7 @@ tbody tr:hover td { background: #f8fafc; }
 .error { color: #9b1c1c; background: #fee2e2; }
 .warning { color: #854d0e; background: #fef3c7; }
 .ignore { color: #475569; background: #e2e8f0; }
+.info { color: #075985; background: #e0f2fe; }
 .forbidden { color: #6b21a8; background: #f3e8ff; }
 .missing { color: #075985; background: #e0f2fe; border: 1px dashed #0284c7; }
 .invalid { color: #9a3412; background: #ffedd5; border: 1px dashed #c2410c; }

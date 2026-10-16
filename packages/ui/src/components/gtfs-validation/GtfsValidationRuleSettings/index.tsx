@@ -1,7 +1,7 @@
 'use client';
 
 import { IconPlus } from '@tabler/icons-react';
-import { getRuleConfig, getSavedRuleSeverity, type RuleCatalogueEntry, type RuleConfigInput, setRuleConfig } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type GtfsValidatiorRule, type GtfsValidatorRuleId } from '@tmlmobilidade/go-types-gtfs-validator';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,23 +11,24 @@ import { Button } from '../../../buttons/Button';
 import { KeyValueListInput } from '../../inputs/KeyValueListInput';
 import { TagsInput } from '../../inputs/TagsInput';
 import { Section } from '../../layout/Section';
+import { GtfsValidationRuleDependencies } from '../GtfsValidationRuleDependencies';
 import { GtfsValidationRuleSettingCard } from '../GtfsValidationRuleSettingCard';
 import { type GtfsValidationRulesEditorProps } from '../types';
 
 /* * */
 
 interface GtfsValidationRuleSettingsProps extends GtfsValidationRulesEditorProps {
-	rule: RuleCatalogueEntry
+	rule: GtfsValidatorRuleId
 }
 
 /* * */
 
 // Whether the rule has settings to show; read-only rules only show saved ones.
-export function hasRuleSettings(rules: GtfsValidationRulesEditorProps['rules'], rule: RuleCatalogueEntry, readOnly: boolean) {
-	if (!rule.editable || rule.config_key === '_file' || getSavedRuleSeverity(rules, rule) === undefined) return false;
+export function hasRuleSettings(rules: GtfsValidationRulesEditorProps['rules'], rule: GtfsValidatorRuleId, readOnly: boolean) {
+	if (rules[rule]?.severity === undefined) return false;
 	if (!readOnly) return true;
-	const config = getRuleConfig(rules, rule);
-	return Array.isArray(config?.options) || Array.isArray(config?.compare);
+	const config = rules[rule];
+	return !!config?.depends_on?.length || Array.isArray(config?.options) || Array.isArray(config?.compare);
 }
 
 /* * */
@@ -39,8 +40,8 @@ export function GtfsValidationRuleSettings({ onChange, readOnly, rule, rules }: 
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const config = getRuleConfig(rules, rule);
-	const hasSeverity = getSavedRuleSeverity(rules, rule) !== undefined;
+	const config = rules[rule];
+	const hasSeverity = config?.severity !== undefined;
 
 	const [opened, setOpened] = useState({ compare: false, options: false });
 	const showOptions = opened.options || Array.isArray(config?.options);
@@ -49,9 +50,9 @@ export function GtfsValidationRuleSettings({ onChange, readOnly, rule, rules }: 
 	//
 	// B. Handle actions
 
-	const handleChange = (settings: Pick<RuleConfigInput, 'compare' | 'options'>) => {
+	const handleChange = (settings: Pick<GtfsValidatiorRule, 'compare' | 'options'>) => {
 		if (readOnly || !hasSeverity) return;
-		onChange(setRuleConfig(rules, rule, settings));
+		onChange({ ...rules, [rule]: { depends_on: [], ...config, ...settings } });
 	};
 
 	const handleAdd = (setting: 'compare' | 'options') => {
@@ -62,7 +63,7 @@ export function GtfsValidationRuleSettings({ onChange, readOnly, rule, rules }: 
 	const handleRemove = (setting: 'compare' | 'options') => {
 		if (readOnly) return;
 		setOpened(current => ({ ...current, [setting]: false }));
-		handleChange({ [setting]: null });
+		handleChange({ [setting]: undefined });
 	};
 
 	//
@@ -72,6 +73,7 @@ export function GtfsValidationRuleSettings({ onChange, readOnly, rule, rules }: 
 
 	return (
 		<Section gap="sm" padding="none">
+			<GtfsValidationRuleDependencies onChange={onChange} readOnly={readOnly} rule={rule} rules={rules} />
 			{(showOptions || showCompare) && (
 				<div className={styles.cards}>
 					{showOptions && (
@@ -82,8 +84,8 @@ export function GtfsValidationRuleSettings({ onChange, readOnly, rule, rules }: 
 							title={t('shared:components.gtfsValidationRules.options.label')}
 						>
 							<TagsInput
-								aria-label={`${rule.id}: ${t('shared:components.gtfsValidationRules.options.label')}`}
-								onChange={options => handleChange({ options: options.length ? options : null })}
+								aria-label={`${rule}: ${t('shared:components.gtfsValidationRules.options.label')}`}
+								onChange={options => handleChange({ options })}
 								placeholder={t('shared:components.gtfsValidationRules.options.placeholder')}
 								readOnly={readOnly}
 								size="xs"
@@ -101,8 +103,8 @@ export function GtfsValidationRuleSettings({ onChange, readOnly, rule, rules }: 
 							title={t('shared:components.gtfsValidationRules.compare.label')}
 						>
 							<KeyValueListInput
-								ariaLabel={rule.id}
-								onChange={compare => handleChange({ compare: compare.length ? compare : null })}
+								ariaLabel={rule}
+								onChange={compare => handleChange({ compare: compare.map(({ key, value }) => ({ key: key ?? '', value: value ?? '' })) })}
 								readOnly={readOnly}
 								value={config?.compare ?? []}
 								valueLabel={t('shared:components.gtfsValidationRules.compare.value')}

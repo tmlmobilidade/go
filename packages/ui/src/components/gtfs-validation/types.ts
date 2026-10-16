@@ -1,10 +1,11 @@
-import { RuleCatalogueEntry, type ValidationRulesInput } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type AgencyPlans } from '@tmlmobilidade/go-types-core';
+import { type GtfsValidatorRuleId } from '@tmlmobilidade/go-types-gtfs-validator';
 import { ReactNode } from 'react';
 
 export interface GtfsValidationRulesEditorProps {
-	onChange: (rules: ValidationRulesInput) => void
+	onChange: (rules: AgencyPlans['validation_rules']) => void
 	readOnly: boolean
-	rules: ValidationRulesInput
+	rules: AgencyPlans['validation_rules']
 }
 
 export interface GtfsValidationRuleSettingCardProps {
@@ -15,10 +16,10 @@ export interface GtfsValidationRuleSettingCardProps {
 }
 
 export interface GtfsValidationRulesTableProps extends GtfsValidationRulesEditorProps {
-	entries: RuleCatalogueEntry[]
+	entries: GtfsValidatorRuleId[]
 	title: ReactNode
 }
 
 export interface GtfsValidationRuleSeverityProps extends GtfsValidationRulesEditorProps {
-	rule: RuleCatalogueEntry
+	rule: GtfsValidatorRuleId
 }

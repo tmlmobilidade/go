@@ -1,12 +1,11 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
-import { normalizeValidationRules, type ValidationRulesInput } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type Agency, type AgencyPlans, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
 import { useAgenciesListData } from '../list/use-agencies-list-data';
 import { useAgenciesDetailAgencyId } from './use-agencies-detail-agency-id';
@@ -15,8 +14,7 @@ import { useAgenciesDetailData } from './use-agencies-detail-data';
 /* * */
 
 interface AgenciesDetailFormContextValue extends StandardFormContextValue<UpdateAgencyDto> {
-	validationRules: null | ValidationRulesInput
-	validationRulesError: null | string
+	validationRules: AgencyPlans['validation_rules']
 }
 
 const AgenciesDetailFormContext = createContext<AgenciesDetailFormContextValue | undefined>(undefined);
@@ -46,40 +44,19 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// B. Setup form
 
-	const { form, isDirty: formIsDirty, isValid: formIsValid, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
 		apiData: agencyData,
 		schema: UpdateAgencySchema,
 	});
 
-	const savedRulesValue = useStandardFormWatch({ control: form.control, name: 'plans.validation_rules' });
-	const { hasRulesChanges, validationRules, validationRulesError } = useMemo(() => {
-		let validationRules: null | ValidationRulesInput = null;
-		try {
-			const parsedRules: unknown = typeof savedRulesValue === 'string' ? JSON.parse(savedRulesValue) : savedRulesValue;
-
-			validationRules = normalizeValidationRules(parsedRules, { allowIncomplete: true });
-			normalizeValidationRules(parsedRules);
-
-			const hasRulesChanges = JSON.stringify(parsedRules ?? {}) !== JSON.stringify(validationRules);
-
-			return { hasRulesChanges, validationRules, validationRulesError: null };
-		} catch (error) {
-			return { hasRulesChanges: false, validationRules, validationRulesError: error instanceof Error ? error.message : String(error) };
-		}
-	}, [savedRulesValue]);
-	const isDirty = formIsDirty || hasRulesChanges;
-	const isValid = formIsValid && !validationRulesError;
+	const validationRules = useStandardFormWatch({ control: form.control, name: 'plans.validation_rules' });
 
 	//
 	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => {
-			const values = form.getValues();
-			const body = {
-				...values,
-				...(values.plans && { plans: { ...values.plans, validation_rules: normalizeValidationRules(values.plans.validation_rules) } }),
-			};
+			const body = UpdateAgencySchema.parse(form.getValues());
 			return await fetchApiData<Agency>({ body, method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) });
 		},
 		onSuccess: (response) => {
@@ -107,18 +84,24 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 		loading: {
 			isLoading: agencyDataLoading,
 		},
+		locked: { isLocked: !hasUpdatePermission },
 		update: {
 			hasPermission: hasUpdatePermission,
 			isUpdating: isUpdating,
 		},
 	});
 
+	const handleSave = useCallback(async () => {
+		if (!updateEnabled || isUpdating || !await form.trigger()) return;
+		await handleUpdate();
+	}, [form, handleUpdate, isUpdating, updateEnabled]);
+
 	//
 	// E. Return state
 
 	const stateValue: AgenciesDetailFormContextValue = useMemo(() => ({
 		actions: {
-			update: handleUpdate,
+			update: handleSave,
 		},
 		capabilities: {
 			editEnabled,
@@ -132,9 +115,8 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 			isUpdating,
 		},
 		unblock,
-		validationRules,
-		validationRulesError,
-	}), [editEnabled, form, handleUpdate, isUpdating, agencyDataLoading, unblock, updateEnabled, isDirty, isValid, validationRules, validationRulesError]);
+		validationRules: validationRules ?? {},
+	}), [editEnabled, form, handleSave, isUpdating, agencyDataLoading, unblock, updateEnabled, isDirty, isValid, validationRules]);
 
 	return (
 		<AgenciesDetailFormContext.Provider value={stateValue}>

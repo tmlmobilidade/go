@@ -21,7 +21,6 @@ export interface SeverityTagProps {
 
 const SEVERITY_CONFIG = {
 	error: { variant: 'danger' },
-	forbidden: { variant: 'danger' },
 	info: { variant: 'secondary' },
 	warning: { variant: 'warning' },
 } as const satisfies Record<Exclude<SeverityStatus, 'ignore'>, { variant: 'danger' | 'secondary' | 'warning' }>;

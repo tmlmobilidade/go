@@ -35,18 +35,25 @@
 		"showAll": "{count, plural, =1 {Mostrar 1 ocurrencia más} other {Mostrar # ocurrencias más}}"
 	},
 	"gtfsValidationRules": {
+		"allRules": "Todas las reglas",
 		"compare": {
 			"description": "Pares clave / valor esperado que la regla comprueba.",
 			"label": "Comparaciones",
 			"value": "Valor esperado"
 		},
+		"dependencies": {
+			"description": "Reglas del mismo archivo que deben pasar antes de esta regla. Vacío significa sin dependencias.",
+			"label": "Dependencias",
+			"placeholder": "Seleccionar dependencias..."
+		},
+		"empty": "No se encontraron reglas.",
 		"options": {
 			"description": "Valores usados por la regla. Vacío usa las opciones predeterminadas.",
 			"label": "Opciones",
 			"placeholder": "Escriba y separe por comas o espacios."
 		},
 		"rule": "Regla",
-		"search": "Buscar archivo o regla...",
+		"search": "Buscar regla...",
 		"settings": {
 			"remove": "Eliminar configuración"
 		},
@@ -54,6 +61,7 @@
 			"error": "Error",
 			"forbidden": "Prohibido",
 			"ignore": "Ignorar",
+			"info": "Información",
 			"warning": "Aviso"
 		},
 		"severity": "Severidad",
