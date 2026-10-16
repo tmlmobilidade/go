@@ -21,12 +21,12 @@ export function LandingPage() {
 	const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
 	const quickLinks = [
-		t('unauthenticated:LandingPage.quick_links.open_data'),
-		t('unauthenticated:LandingPage.quick_links.open_services'),
-		t('unauthenticated:LandingPage.quick_links.gtfs'),
-		t('unauthenticated:LandingPage.quick_links.apex'),
-		t('unauthenticated:LandingPage.quick_links.documentation'),
-		t('unauthenticated:LandingPage.quick_links.login'),
+		{ href: '#modules', label: t('unauthenticated:LandingPage.quick_links.open_data') },
+		{ href: '#modules', label: t('unauthenticated:LandingPage.quick_links.open_services') },
+		{ href: '#modules', label: t('unauthenticated:LandingPage.quick_links.gtfs') },
+		{ href: '#modules', label: t('unauthenticated:LandingPage.quick_links.apex') },
+		{ href: `${PAGE_ROUTES.root.BASE}/hub/reference`, label: t('unauthenticated:LandingPage.quick_links.documentation') },
+		{ href: PAGE_ROUTES.core.LOGIN_LIST, label: t('unauthenticated:LandingPage.quick_links.login') },
 	];
 
 	//
@@ -57,8 +57,8 @@ export function LandingPage() {
 
 					<nav aria-label={t('unauthenticated:LandingPage.quick_links.label')} className={styles.quickLinks}>
 						<span>{t('unauthenticated:LandingPage.quick_links.label')}</span>
-						{quickLinks.map((label, index) => (
-							<a key={label} href={index === quickLinks.length - 1 ? PAGE_ROUTES.core.LOGIN_LIST : '#modules'}>
+						{quickLinks.map(({ href, label }) => (
+							<a key={label} href={href}>
 								{label}
 								<IconArrowRight aria-hidden="true" />
 							</a>
