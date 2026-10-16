@@ -8,6 +8,16 @@ Service dates specified using a weekly schedule with start and end dates.
 
 **Primary key**: `service_id`
 
+Calendar rules receive a `services.SQLiteContext` for the current SQLite row.
+Date rules read `db.Calendar.Field("start_date")` or `db.Calendar.Field("end_date")`.
+The service ID rule uses `db.Calendar.FieldWithCount("service_id")` to read the
+value and count duplicates in `calendar` in one query. Row values are not cached.
+
+Weekday checks read the seven weekday columns together and keep the existing
+`calendar_values_parse` diagnostics. Rows with invalid weekday values skip the
+remaining checks, as before. The configured rules run in `rules.json` dependency
+order. SQLite read failures are reported as errors for the affected rule.
+
 ---
 
 ### Field Definitions

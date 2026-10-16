@@ -88,14 +88,15 @@
 		"required": "O campo \"bicycles\" é obrigatório"
 	},
 	"calendar_dates_exception_date_valid_yyyymmdd": {
-		"forbidden": "O campo \"service_date\" é proibido",
+		"forbidden": "O campo \"date\" é proibido",
 		"generic": "O campo \"date\" deve conter uma data válida no formato YYYYMMDD.",
-		"invalid": "O campo \"service_date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
-		"recommended": "O campo \"service_date\" é recomendado",
-		"required": "O campo \"service_date\" é obrigatório"
+		"invalid": "O campo \"date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
+		"not_allowed": "O campo \"date\" \"%s\" não é permitido",
+		"recommended": "O campo \"date\" é recomendado",
+		"required": "O campo \"date\" é obrigatório"
 	},
 	"calendar_dates_exception_type_add_or_remove_service": {
-		"forbidden": "campo \"exception_type\" deve proibido",
+		"forbidden": "O campo \"exception_type\" é proibido",
 		"generic": "O campo \"exception_type\" deve indicar a adição ou a remoção de serviço.",
 		"invalid": "O campo \"exception_type\" deve ser 1 ou 2. Recebido: \"%s\"",
 		"not_allowed": "O campo \"exception_type\" \"%s\" não é permitido",
@@ -111,6 +112,7 @@
 	"calendar_dates_service_id_references_calendar": {
 		"forbidden": "O campo \"service_id\" é proibido",
 		"generic": "O campo \"service_id\" deve referenciar um serviço definido em calendar.txt.",
+		"not_allowed": "O campo \"service_id\" \"%s\" não é permitido",
 		"recommended": "O campo \"service_id\" é recomendado",
 		"required": "O campo \"service_id\" é obrigatório"
 	},

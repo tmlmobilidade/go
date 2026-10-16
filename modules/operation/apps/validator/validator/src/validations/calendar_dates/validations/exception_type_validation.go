@@ -34,48 +34,67 @@ For a particular holiday, the [calendar_dates.txt] file could be used to add the
 
 [calendar_dates.txt]: https://gtfs.org/schedule/reference/#calendar_datestxt
 */
-func ExceptionTypeValidation(calendarDate *types.CalendarDates, row int, rules *types.CalendarDatesRules) {
-	ctx := lib.NewValidationContext("exception_type", "calendar_dates.txt", "calendar_dates_exception_type_add_or_remove_service", row, services.AppMessageService)
-	if rules != nil && rules.ExceptionType.Severity != types.SEVERITY_IGNORE {
+func ExceptionTypeValidation(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
+	ctx := lib.NewValidationContext("exception_type", "calendar_dates.txt", "calendar_dates_exception_type_add_or_remove_service", db.Row, services.AppMessageService)
+	if rules != nil && rules.ExceptionType.Severity != "" {
 		ctx.WithSeverity(rules.ExceptionType.Severity)
 	}
 
 	validExceptionTypes := []int{1, 2}
 
-	// 1. Validate exception_type is present
-	if calendarDate.ExceptionType == nil {
+	//
+	// 1. Get the exception_type value
+
+	exceptionType, err := db.CalendarDates.Field("exception_type")
+	if err != nil {
+		return err
+	}
+
+	//
+	// 2. Validate exception_type is present
+
+	if exceptionType == "" {
 		if ctx.ShouldSkip() {
-			return
+			return nil
 		}
 
 		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
-		return
+		return nil
 	}
 
-	// 2. Validate exception_type is forbidden
+	//
+	// 3. Validate exception_type is forbidden
+
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return
+		return nil
 	}
 
-	// 3. Validate exception_type is a valid exception type
-	if !slices.Contains(validExceptionTypes, *calendarDate.ExceptionType) {
-		ctx.AddError(ctx.GetTranslatedMessage("invalid", *calendarDate.ExceptionType))
-		return
+	//
+	// 4. Validate exception_type is a valid exception type
+
+	exceptionTypeInt, err := strconv.Atoi(exceptionType)
+	if err != nil || !slices.Contains(validExceptionTypes, exceptionTypeInt) {
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", exceptionType))
+		return nil
 	}
 
-	// 4. Validate Rule Options
+	//
+	// 5. Validate Rule Options
+
 	if rules != nil && rules.ExceptionType.Options != nil {
 		if slices.Contains(*rules.ExceptionType.Options, types.ALL_OPTIONS) {
-			return
+			return nil
 		}
 
-		if !slices.Contains(*rules.ExceptionType.Options, strconv.Itoa(*calendarDate.ExceptionType)) {
-			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *calendarDate.ExceptionType))
+		if !slices.Contains(*rules.ExceptionType.Options, exceptionType) {
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", exceptionType))
 		}
-
-		ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *calendarDate.ExceptionType))
-		return
 	}
+
+	//
+	// 6. Return success
+
+	return nil
 }

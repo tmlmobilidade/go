@@ -29,19 +29,38 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 	// Create progress tracker
 	tracker := lib.CreateProgressTracker(gtfs, "calendar", config.ProgressThresholdSmall)
 
-	err := gtfs.IterateCalendars(func(i int, rawCalendar types.CalendarRaw) error {
-		tracker.Track()
-		calendar := ParseCalendar(rawCalendar, i, &gtfs)
+	table, err := services.NewSQLiteTable(gtfs.DB(), "calendar")
+	if err != nil {
+		lib.AppLogger.Error(fmt.Sprintf("Error opening calendar table: %v", err))
+		return
+	}
 
-		if calendar == (types.Calendar{}) {
+	err = table.ForEachRow(func(row *services.SQLiteRow) error {
+		db := row.Context()
+		tracker.Track()
+		check := func(ruleID string, err error) {
+			if err != nil {
+				ctx := lib.NewValidationContext("N/A", "calendar.txt", ruleID, db.Row, services.AppMessageService)
+				ctx.AddError(fmt.Sprintf("SQLite read failed: %v", err))
+			}
+		}
+
+		valid, err := validations.WeekdaysValidation(db)
+		check("calendar_values_parse", err)
+		if err != nil || !valid {
 			return nil
 		}
 
-		// Validate service_id
 		runner.Run(services.RuleActions{
-			"calendar_service_id_unique_non_empty": func() { validations.ServiceIdValidation(&calendar, i, &gtfs, section) },
-			"calendar_start_date_valid_yyyymmdd":   func() { validations.DateValidation(calendar.StartDate, "start_date", i, section) },
-			"calendar_end_date_valid_yyyymmdd":     func() { validations.DateValidation(calendar.EndDate, "end_date", i, section) },
+			"calendar_service_id_unique_non_empty": func() {
+				check("calendar_service_id_unique_non_empty", validations.ServiceIdValidation(db, section))
+			},
+			"calendar_start_date_valid_yyyymmdd": func() {
+				check("calendar_start_date_valid_yyyymmdd", validations.DateValidation(db, "start_date", section))
+			},
+			"calendar_end_date_valid_yyyymmdd": func() {
+				check("calendar_end_date_valid_yyyymmdd", validations.DateValidation(db, "end_date", section))
+			},
 		}, nil)
 
 		return nil

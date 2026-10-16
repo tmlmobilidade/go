@@ -20,32 +20,38 @@ Identifies a set of dates when service is available for one or more routes.
 
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
-func ServiceIdValidation(calendar *types.Calendar, row int, gtfs *types.Gtfs, rules *types.CalendarRules) {
-	ctx := lib.NewValidationContext("service_id", "calendar.txt", "calendar_service_id_unique_non_empty", row, services.AppMessageService)
+func ServiceIdValidation(db *services.SQLiteContext, rules *types.CalendarRules) error {
+	ctx := lib.NewValidationContext("service_id", "calendar.txt", "calendar_service_id_unique_non_empty", db.Row, services.AppMessageService)
 	if rules != nil && rules.ServiceId.Severity != "" {
 		ctx.WithSeverity(rules.ServiceId.Severity)
 	}
 
-	// 1. Validate service_id is present
-	if calendar.ServiceId == "" {
+	// 1. Get service_id and its occurrence count in calendar
+	value, count, err := db.Calendar.FieldWithCount("service_id")
+	if err != nil {
+		return err
+	}
+
+	// 2. Validate service_id is present
+	if value == "" {
 		if ctx.ShouldSkip() {
-			return
+			return nil
 		}
 
 		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
-		return
+		return nil
 	}
 
-	// 2. Validate service_id is forbidden
+	// 3. Validate service_id is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return
+		return nil
 	}
 
-	// 3. Validate service_id is unique
-	rows, err := gtfs.GetRowsById("calendar", calendar.ServiceId)
-	if err == nil && len(rows) > 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("duplicate", calendar.ServiceId))
+	// 4. Validate service_id is unique
+	if count > 1 {
+		ctx.AddError(ctx.GetTranslatedMessage("duplicate", value))
 	}
+	return nil
 }

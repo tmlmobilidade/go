@@ -88,14 +88,15 @@
 		"required": "Field \"bicycles\" is required"
 	},
 	"calendar_dates_exception_date_valid_yyyymmdd": {
-		"forbidden": "Field \"service_date\" is forbidden",
+		"forbidden": "Field \"date\" is forbidden",
 		"generic": "The \"date\" field must contain a valid date in YYYYMMDD format.",
-		"invalid": "Field \"service_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
-		"recommended": "Field \"service_date\" is recommended",
-		"required": "Field \"service_date\" is required"
+		"invalid": "Field \"date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
+		"not_allowed": "Field \"date\" \"%s\" is not allowed",
+		"recommended": "Field \"date\" is recommended",
+		"required": "Field \"date\" is required"
 	},
 	"calendar_dates_exception_type_add_or_remove_service": {
-		"forbidden": "ield \"exception_type\" must forbidden",
+		"forbidden": "Field \"exception_type\" is forbidden",
 		"generic": "The \"exception_type\" field must indicate either added or removed service.",
 		"invalid": "Field \"exception_type\" must be 1 or 2. Got \"%s\"",
 		"not_allowed": "Field \"exception_type\" \"%s\" is not allowed",
@@ -111,6 +112,7 @@
 	"calendar_dates_service_id_references_calendar": {
 		"forbidden": "Field \"service_id\" is forbidden",
 		"generic": "The \"service_id\" field must reference a service defined in calendar.txt.",
+		"not_allowed": "Field \"service_id\" \"%s\" is not allowed",
 		"recommended": "Field \"service_id\" is recommended",
 		"required": "Field \"service_id\" is required"
 	},

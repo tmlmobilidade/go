@@ -22,8 +22,8 @@ End service day for the service interval. This service day is included in the in
 
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
-func DateValidation(date string, dateType string, row int, rules *types.CalendarRules) {
-	ctx := lib.NewValidationContext(dateType, "calendar.txt", "calendar_start_end_dates_valid_yyyymmdd_order", row, services.AppMessageService)
+func DateValidation(db *services.SQLiteContext, dateType string, rules *types.CalendarRules) error {
+	ctx := lib.NewValidationContext(dateType, "calendar.txt", "calendar_start_end_dates_valid_yyyymmdd_order", db.Row, services.AppMessageService)
 	if rules != nil {
 		rule := rules.StartDate
 		if dateType == "end_date" {
@@ -34,26 +34,32 @@ func DateValidation(date string, dateType string, row int, rules *types.Calendar
 		}
 	}
 
-	// 1. Validate date is present
+	// 1. Get the date value
+	date, err := db.Calendar.Field(dateType)
+	if err != nil {
+		return err
+	}
+
+	// 2. Validate date is present
 	if date == "" {
 		if ctx.ShouldSkip() {
-			return
+			return nil
 		}
 
 		message := ctx.GetRequiredMessage("required", "recommended")
 		ctx.AddMessageWithSeverity(message)
-		return
+		return nil
 	}
 
-	// 2. Validate date is forbidden
+	// 3. Validate date is forbidden
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return
+		return nil
 	}
 
-	// 3. Validate date is a valid service date
+	// 4. Validate date is a valid service date
 	if !lib.IsValidServiceDate(date) {
 		ctx.AddError(ctx.GetTranslatedMessage("invalid", date))
-		return
 	}
+	return nil
 }

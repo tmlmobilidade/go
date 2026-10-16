@@ -29,24 +29,33 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 	// Create progress tracker
 	tracker := lib.CreateProgressTracker(gtfs, "calendar_dates", config.ProgressThresholdSmall)
 
-	err := gtfs.IterateCalendarDates(func(i int, rawCalendarDate types.CalendarDatesRaw) error {
+	// Open the calendar_dates table
+	table, err := services.NewSQLiteTable(gtfs.DB(), "calendar_dates")
+	if err != nil {
+		lib.AppLogger.Error(fmt.Sprintf("Error opening calendar_dates table: %v", err))
+		return
+	}
+
+	err = table.ForEachRow(func(row *services.SQLiteRow) error {
+		db := row.Context()
 		tracker.Track()
-		calendarDate := ParseCalendarDates(rawCalendarDate, i)
-
-		if calendarDate == (types.CalendarDates{}) {
-			return nil
+		check := func(ruleID string, err error) {
+			if err != nil {
+				ctx := lib.NewValidationContext("N/A", "calendar_dates.txt", ruleID, db.Row, services.AppMessageService)
+				ctx.AddError(fmt.Sprintf("SQLite read failed: %v", err))
+			}
 		}
 
-		var calendarDatesRules types.CalendarDatesRules
-		if rules != nil {
-			calendarDatesRules = rules.CalendarDates
-		}
-
-		// Validate service_id
 		runner.Run(services.RuleActions{
-			"calendar_dates_service_id_references_calendar":       func() { validations.ServiceIdValidation(&calendarDate, i) },
-			"calendar_dates_exception_date_valid_yyyymmdd":        func() { validations.DateValidation(&calendarDate, i) },
-			"calendar_dates_exception_type_add_or_remove_service": func() { validations.ExceptionTypeValidation(&calendarDate, i, &calendarDatesRules) },
+			"calendar_dates_service_id_references_calendar": func() {
+				check("calendar_dates_service_id_references_calendar", validations.ServiceIdValidation(db, section))
+			},
+			"calendar_dates_exception_date_valid_yyyymmdd": func() {
+				check("calendar_dates_exception_date_valid_yyyymmdd", validations.DateValidation(db, section))
+			},
+			"calendar_dates_exception_type_add_or_remove_service": func() {
+				check("calendar_dates_exception_type_add_or_remove_service", validations.ExceptionTypeValidation(db, section))
+			},
 		}, nil)
 
 		return nil

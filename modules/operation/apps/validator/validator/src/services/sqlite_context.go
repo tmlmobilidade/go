@@ -41,18 +41,25 @@ type SQLiteRow struct {
 }
 
 // SQLiteContext exposes the current validation row and access to other tables.
-// Agency is bound only when validating an agency row; other tables require an
-// explicit row selection through Table(name).At(row).
+// Named rows are bound only when validating their table; other tables require
+// an explicit row selection through Table(name).At(row).
 type SQLiteContext struct {
-	Row    int
-	Agency *SQLiteRow
-	source *SQLiteRow
+	Row           int
+	Agency        *SQLiteRow
+	Calendar      *SQLiteRow
+	CalendarDates *SQLiteRow
+	source        *SQLiteRow
 }
 
 func (r *SQLiteRow) Context() *SQLiteContext {
 	ctx := &SQLiteContext{Row: r.Row, source: r}
-	if strings.EqualFold(r.table.name, "agency") {
+	switch strings.ToLower(r.table.name) {
+	case "agency":
 		ctx.Agency = r
+	case "calendar":
+		ctx.Calendar = r
+	case "calendar_dates":
+		ctx.CalendarDates = r
 	}
 	return ctx
 }
@@ -65,6 +72,7 @@ func (c *SQLiteContext) Table(name string) (*SQLiteTable, error) {
 	return NewSQLiteTable(c.source.table.db, name)
 }
 
+// At selects a row by zero-based index.
 func (t *SQLiteTable) At(row int) *SQLiteRow {
 	return &SQLiteRow{table: t, Row: row}
 }

@@ -159,20 +159,6 @@ type StopTime struct {
 	DropOffBookingRuleId     *string  `json:"drop_off_booking_rule_id"`
 }
 
-/* CALENDAR */
-type Calendar struct {
-	EndDate   string `json:"end_date"`
-	Friday    bool   `json:"friday"`
-	Monday    bool   `json:"monday"`
-	Saturday  bool   `json:"saturday"`
-	ServiceId string `json:"service_id"`
-	StartDate string `json:"start_date"`
-	Sunday    bool   `json:"sunday"`
-	Thursday  bool   `json:"thursday"`
-	Tuesday   bool   `json:"tuesday"`
-	Wednesday bool   `json:"wednesday"`
-}
-
 /* CALENDAR DATES */
 type CalendarDates struct {
 	Date          string `json:"date"`

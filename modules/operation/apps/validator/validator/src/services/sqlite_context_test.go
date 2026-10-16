@@ -143,3 +143,26 @@ func TestSQLiteContextSelectsAgencyAndOtherTables(t *testing.T) {
 		t.Fatalf("agency context returned a stale value: %q, error = %v", value, err)
 	}
 }
+
+func TestSQLiteContextBindsCalendarRow(t *testing.T) {
+	connection, customTable := sqliteContextFixture(t)
+	_, err := connection.Exec(`CREATE TABLE calendar (start_date TEXT);
+		INSERT INTO calendar VALUES ('20260101'), ('20261016');`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	table, err := NewSQLiteTable(connection, "CALENDAR")
+	if err != nil {
+		t.Fatal(err)
+	}
+	db := table.At(1).Context()
+	if db.Row != 1 || db.Calendar == nil || db.Calendar.Row != 1 || db.Agency != nil {
+		t.Fatalf("current calendar row was not bound: %+v", db)
+	}
+	if value, err := db.Calendar.Field("start_date"); err != nil || value != "20261016" {
+		t.Fatalf("start_date = %q, error = %v", value, err)
+	}
+	if customTable.At(0).Context().Calendar != nil {
+		t.Fatal("a custom table's row was incorrectly bound as a calendar")
+	}
+}
