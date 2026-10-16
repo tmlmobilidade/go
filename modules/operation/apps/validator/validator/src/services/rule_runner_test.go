@@ -23,10 +23,10 @@ func agencyRunner(t *testing.T, present bool) *services.RuleRunner {
 	}
 	t.Cleanup(cleanup)
 	section := &types.AgencyRules{
-		AgencyId:          types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_present"}},
-		AgencyName:        types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_present"}},
-		AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_id_unique", "agency_name_present"}},
-		AgencyUrl:         types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_present"}},
+		AgencyIdUnique:    types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_present"}},
+		AgencyNameField:   types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_present"}},
+		AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_id_unique", "agency_name_field"}},
+		AgencyUrlValid:    types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_present"}},
 	}
 	runner, err := services.NewRuleRunner(*gtfs, section)
 	if err != nil {
@@ -43,13 +43,13 @@ func TestRuleRunnerBlocksWarningsAndDeduplicatedErrorsPerRow(t *testing.T) {
 				matched, unrelated := false, false
 				status := runner.Run(services.RuleActions{
 					"agency_id_matched_with_agency_name": func() { matched = true },
-					"agency_name_present":                func() {},
+					"agency_name_field":                  func() {},
 					"agency_id_unique": func() {
 						if row < 2 {
 							services.AppMessageService.AddMessage(types.Message{FileName: "agency.txt", RuleID: "agency_id_unique", Rows: []int{row}, Severity: severity, Message: "same issue"})
 						}
 					},
-					"agency_url_valid_url": func() { unrelated = true },
+					"agency_url_valid": func() { unrelated = true },
 				}, nil)
 				if !unrelated {
 					t.Fatal("unrelated check skipped")
@@ -70,12 +70,12 @@ func TestRuleRunnerMissingFileAndMissingImplementationNeverPass(t *testing.T) {
 		runner := agencyRunner(t, present)
 		status := runner.Run(services.RuleActions{
 			"agency_id_matched_with_agency_name": func() { t.Fatal("unavailable prerequisite passed") },
-			"agency_name_present":                func() {},
+			"agency_name_field":                  func() {},
 		}, nil)
 		if status["agency_id_matched_with_agency_name"] != rules.Skipped {
 			t.Fatal(status)
 		}
-		if !present && status["agency_name_present"] != rules.Skipped {
+		if !present && status["agency_name_field"] != rules.Skipped {
 			t.Fatal(status)
 		}
 	}
@@ -83,7 +83,7 @@ func TestRuleRunnerMissingFileAndMissingImplementationNeverPass(t *testing.T) {
 
 func TestRuleRunnerGroupsKeepIndependentPrerequisiteStatuses(t *testing.T) {
 	runner := agencyRunner(t, true)
-	good := runner.Run(services.RuleActions{"agency_id_unique": func() {}, "agency_name_present": func() {}}, nil)
+	good := runner.Run(services.RuleActions{"agency_id_unique": func() {}, "agency_name_field": func() {}}, nil)
 	bad := services.MergeRuleStatuses(nil, good)
 	bad["agency_id_unique"] = rules.Failed
 	for _, tc := range []struct {

@@ -6,14 +6,24 @@ Transit agencies with service represented in this dataset.
 **Presence**: Required<br>
 **Primary key**: agency_id
 
+`main.go` collects the actions from `fields/checks`, `standard/checks`, and `custom/checks` and runs
+one DAG for each row. The folders organize implementations; execution order and
+prerequisites come only from each rule's configured `depends_on` list.
+Each category keeps its checks in `checks/` and its tests in `tests/`.
+Shared SQLite test helpers live in `utils/`. Email validation belongs to
+`custom/checks`; email presence is checked in `fields/checks`.
+Each split rule has its own configuration key, severity, and options. For example,
+set `agency_id_unique.depends_on` to `["agency_id_field"]` to require the presence
+check to pass before checking uniqueness. No dependency is added automatically.
+
 Agency rules receive a `services.SQLiteContext` identifying the current SQLite row.
 Each rule requests its own field with `db.Agency.Field("agency_email")`, then validates
 the returned text. Missing columns, SQL `NULL`, and empty cells are treated as
 missing values. Database failures are returned as errors.
 
 The ID rule uses `db.Agency.FieldWithCount("agency_id")` to fetch the value and its duplicate
-count in one query. The ID/name comparison fetches both fields in one query with
-`db.Agency.Fields("agency_id", "agency_name")`. Only column names are retained between
+count in one query. The ID/name comparison reads each field with
+`db.Agency.Field`. Only column names are retained between
 rules; field values are read from SQLite each time. No `types.Agency` conversion
 is used.
 

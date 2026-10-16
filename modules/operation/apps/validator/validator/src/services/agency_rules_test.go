@@ -82,7 +82,7 @@ func TestParseFlatAgencyRulesFromFile(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if config.Agency.AgencyId.Severity != types.SEVERITY_WARNING || !slices.Contains(NewRulesParser(path).GetRequiredFiles(config), "agency.txt") {
+		if config.Agency.AgencyIdUnique.Severity != types.SEVERITY_WARNING || !slices.Contains(NewRulesParser(path).GetRequiredFiles(config), "agency.txt") {
 			t.Fatal("flat severities did not reach runtime rule and required-file settings")
 		}
 	}
@@ -145,13 +145,13 @@ func TestForbiddenMessagesAlwaysReportError(t *testing.T) {
 		ruleset.ConfigureMessageSeverities(nil)
 		if configured {
 			config := ruleset.DefaultConfig()
-			config.Agency.AgencyEmail.Severity = types.SEVERITY_FORBIDDEN
+			config.Agency.AgencyEmailField.Severity = types.SEVERITY_FORBIDDEN
 			ruleset.ConfigureMessageSeverities(&config)
 		}
 		service := NewMessageService()
 		message := "agency_email is forbidden."
 		service.AddMessage(types.Message{
-			FileName: "agency.txt", Field: "agency_email", RuleID: "agency_email_valid_address",
+			FileName: "agency.txt", Field: "agency_email", RuleID: "agency_email_field",
 			Rows: []int{0}, Severity: types.SEVERITY_FORBIDDEN, Message: message,
 		})
 		summary := service.GetSummary()
@@ -162,7 +162,7 @@ func TestForbiddenMessagesAlwaysReportError(t *testing.T) {
 		if group.Severity != types.SEVERITY_ERROR || len(group.Messages) != 1 || group.Messages[0].Severity != types.SEVERITY_ERROR || group.Messages[0].Message != message {
 			t.Fatalf("configured=%v: unexpected output: %+v", configured, group)
 		}
-		if service.RuleIssueCount("agency_email_valid_address") != 1 {
+		if service.RuleIssueCount("agency_email_field") != 1 {
 			t.Fatal("forbidden error was not counted for dependency scheduling")
 		}
 	}

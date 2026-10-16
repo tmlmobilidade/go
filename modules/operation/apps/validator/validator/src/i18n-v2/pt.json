@@ -1,0 +1,70 @@
+{
+	"agency_email_field": {
+		"recommended": "O campo agency_email é recomendado",
+		"required": "O campo agency_email é obrigatório"
+	},
+	"agency_email_valid": {
+		"invalid": "O campo \"agency_email\" \"%s\" não é um endereço de e-mail válido",
+		"not_allowed": "O campo \"agency_email\" \"%s\" não é permitido"
+	},
+	"agency_fare_url_field": {
+		"recommended": "O campo agency_fare_url é recomendado",
+		"required": "O campo agency_fare_url é obrigatório"
+	},
+	"agency_fare_url_valid": {
+		"invalid": "O campo \"agency_fare_url\" \"%s\" não é um URL válido",
+		"not_allowed": "O campo \"agency_fare_url\" \"%s\" não é permitido"
+	},
+	"agency_id_field": {
+		"recommended": "O campo agency_id é recomendado",
+		"required": "O campo agency_id é obrigatório"
+	},
+	"agency_id_unique": {
+		"duplicate": "O campo \"agency_id\" \"%s\" deve ser único"
+	},
+	"agency_id_valid": {
+		"not_allowed": "O campo \"agency_id\" \"%s\" não é permitido"
+	},
+	"agency_lang_field": {
+		"recommended": "O campo agency_lang é recomendado",
+		"required": "O campo agency_lang é obrigatório"
+	},
+	"agency_lang_valid": {
+		"invalid": "O campo \"agency_lang\" \"%s\" não é um código de idioma válido",
+		"not_allowed": "O campo \"agency_lang\" \"%s\" não é permitido"
+	},
+	"agency_name_field": {
+		"recommended": "O campo agency_name é recomendado",
+		"required": "O campo agency_name é obrigatório"
+	},
+	"agency_name_id_match": {
+		"no_match": "A correspondência entre o campo \"agency_id\" \"%s\" e o campo \"agency_name\" \"%s\" não é válida. Para o agency_id \"%s\" o nome \"%s\" é esperado"
+	},
+	"agency_name_valid": {
+		"not_allowed": "O campo \"agency_name\" \"%s\" não é permitido"
+	},
+	"agency_phone_field": {
+		"recommended": "O campo agency_phone é recomendado",
+		"required": "O campo agency_phone é obrigatório"
+	},
+	"agency_phone_valid": {
+		"invalid": "O campo \"agency_phone\" \"%s\" não é um número de telefone válido",
+		"not_allowed": "O campo \"agency_phone\" \"%s\" não é permitido"
+	},
+	"agency_timezone_field": {
+		"recommended": "O campo agency_timezone é recomendado",
+		"required": "O campo agency_timezone é obrigatório"
+	},
+	"agency_timezone_valid": {
+		"invalid": "O campo \"agency_timezone\" \"%s\" não é um fuso horário válido",
+		"not_allowed": "O campo \"agency_timezone\" \"%s\" não é permitido"
+	},
+	"agency_url_field": {
+		"recommended": "O campo agency_url é recomendado",
+		"required": "O campo agency_url é obrigatório"
+	},
+	"agency_url_valid": {
+		"invalid": "O campo \"agency_url\" \"%s\" não é um URL válido",
+		"not_allowed": "O campo \"agency_url\" \"%s\" não é permitido"
+	}
+}

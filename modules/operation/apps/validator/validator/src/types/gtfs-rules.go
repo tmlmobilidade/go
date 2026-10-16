@@ -16,16 +16,28 @@ type RuleConfig struct {
 }
 
 type AgencyRules struct {
-	File              Severity   `json:"_file"`
-	AgencyId          RuleConfig `json:"agency_id_unique"`
+	File Severity `json:"_file"`
+
+	AgencyIdField       RuleConfig `json:"agency_id_field"`
+	AgencyNameField     RuleConfig `json:"agency_name_field"`
+	AgencyUrlField      RuleConfig `json:"agency_url_field"`
+	AgencyTimezoneField RuleConfig `json:"agency_timezone_field"`
+	AgencyLangField     RuleConfig `json:"agency_lang_field"`
+	AgencyPhoneField    RuleConfig `json:"agency_phone_field"`
+	AgencyFareUrlField  RuleConfig `json:"agency_fare_url_field"`
+	AgencyEmailField    RuleConfig `json:"agency_email_field"`
+
+	AgencyIdUnique      RuleConfig `json:"agency_id_unique"`
+	AgencyIdValid       RuleConfig `json:"agency_id_valid"`
+	AgencyNameValid     RuleConfig `json:"agency_name_valid"`
+	AgencyUrlValid      RuleConfig `json:"agency_url_valid"`
+	AgencyTimezoneValid RuleConfig `json:"agency_timezone_valid"`
+	AgencyLangValid     RuleConfig `json:"agency_lang_valid"`
+	AgencyPhoneValid    RuleConfig `json:"agency_phone_valid"`
+	AgencyFareUrlValid  RuleConfig `json:"agency_fare_url_valid"`
+	AgencyEmailValid    RuleConfig `json:"agency_email_valid"`
+
 	AgencyNameIdMatch RuleConfig `json:"agency_id_matched_with_agency_name"`
-	AgencyName        RuleConfig `json:"agency_name_present"`
-	AgencyUrl         RuleConfig `json:"agency_url_valid_url"`
-	AgencyTimezone    RuleConfig `json:"agency_timezone_valid_id"`
-	AgencyLang        RuleConfig `json:"agency_lang_valid_language_tag"`
-	AgencyPhone       RuleConfig `json:"agency_phone_valid_phone_number"`
-	AgencyFare        RuleConfig `json:"agency_fare_url_valid_url"`
-	AgencyEmail       RuleConfig `json:"agency_email_valid_address"`
 }
 
 type StopsRules struct {
