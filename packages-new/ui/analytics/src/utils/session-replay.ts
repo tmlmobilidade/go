@@ -11,6 +11,15 @@ export function createSessionReplayController(client: Types.BrowserClient): Anal
 	let loading: Promise<SessionReplayPlugin | undefined> | undefined;
 	let requested = false;
 	let generation = 0;
+	let stopTimeout: ReturnType<typeof setTimeout> | undefined;
+
+	const stop = () => {
+		requested = false;
+		generation++;
+		clearTimeout(stopTimeout);
+		stopTimeout = undefined;
+		plugin?.stop();
+	};
 
 	const load = () => {
 		if (loading !== undefined) return loading;
@@ -51,12 +60,10 @@ export function createSessionReplayController(client: Types.BrowserClient): Anal
 				replay.stop();
 				return false;
 			}
-			return currentGeneration === generation;
+			if (currentGeneration !== generation) return false;
+			stopTimeout = setTimeout(stop, 30_000);
+			return true;
 		},
-		stop: () => {
-			requested = false;
-			generation++;
-			plugin?.stop();
-		},
+		stop,
 	};
 }

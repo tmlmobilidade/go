@@ -38,6 +38,7 @@ export function LoginForm() {
 			});
 		},
 		onSuccess: async (response) => {
+			stopReplay();
 			setIsCompletingLogin(true);
 			useToast.success({
 				message: t('unauthenticated:LoginForm.success.description'),
@@ -52,7 +53,6 @@ export function LoginForm() {
 				]);
 			} finally {
 				clearTimeout(timeout);
-				stopReplay();
 				window.location.href = redirectToValue;
 			}
 		},
