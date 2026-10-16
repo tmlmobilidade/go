@@ -6,17 +6,22 @@ import { type AnalyticsConfiguration, type AnalyticsContextProps } from '../type
 
 /* * */
 
+/** Resolves explicit settings and loads runtime configuration when no API key is supplied. */
 export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }: AnalyticsContextProps, onError: (cause: unknown) => void, onLoad: () => void) {
 	const [configuration, setConfiguration] = useState<{
 		url: string
 		value: AnalyticsConfiguration
 	}>();
+	// Ignore settings fetched from a previous URL while the current request is pending.
 	const remoteConfiguration = configuration?.url === configurationUrl ? configuration?.value : undefined;
+	// Explicit props take precedence over values returned by the configuration endpoint.
 	const resolvedApiKey = apiKey ?? remoteConfiguration?.apiKey;
 	const resolvedOptions = useMemo(() => remoteConfiguration ? { ...remoteConfiguration.options, ...options } : options, [remoteConfiguration, options]);
 
+	// Keep the network request in React's lifecycle so URL changes and unmounts cancel it.
 	useEffect(() => {
 		if (apiKey !== undefined || !configurationUrl) return;
+		// Despite its name, onLoad runs before fetching; the caller uses it to clear stale errors.
 		onLoad();
 
 		const controller = new AbortController();
@@ -35,6 +40,7 @@ export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }:
 			});
 
 		return () => {
+			// Abort the request and ignore responses that still complete after cleanup.
 			active = false;
 			controller.abort();
 		};

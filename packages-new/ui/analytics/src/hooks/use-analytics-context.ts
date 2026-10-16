@@ -6,6 +6,7 @@ import { AnalyticsContext } from '../contexts/Analytics.context.js';
 
 /* * */
 
+/** Reads analytics actions and status, enforcing usage within the provider. */
 export function useAnalyticsContext() {
 	const context = useContext(AnalyticsContext);
 	if (!context) {

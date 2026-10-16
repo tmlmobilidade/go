@@ -3,6 +3,7 @@
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Session } from '@tmlmobilidade/go-types-core';
+import { LoginEvent, useAnalyticsContext } from '@tmlmobilidade/go-ui-analytics';
 import { fetchApiData, PasswordInput, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +17,8 @@ export function LoginForm() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const { actions: analytics } = useAnalyticsContext();
+	const [isCompletingLogin, setIsCompletingLogin] = useState(false);
 
 	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: PAGE_ROUTES.core.HOME_LIST });
 
@@ -33,12 +36,30 @@ export function LoginForm() {
 				title: t('unauthenticated:LoginForm.error.title'),
 			});
 		},
-		onSuccess: () => {
+		onSuccess: async (response) => {
+			setIsCompletingLogin(true);
 			useToast.success({
 				message: t('unauthenticated:LoginForm.success.description'),
 				title: t('unauthenticated:LoginForm.success.title'),
 			});
-			window.location.href = redirectToValue;
+			let timeout: ReturnType<typeof setTimeout> | undefined;
+			let active = true;
+			try {
+				await Promise.race([
+					(async () => {
+						await analytics.startReplay();
+						if (!active) return;
+						analytics.identify({ _id: response.data.user_id, email: emailValue });
+						await analytics.track(LoginEvent.shape.title.value);
+					})(),
+					new Promise<void>((resolve) => { timeout = setTimeout(resolve, 1500); }),
+				]);
+			} finally {
+				active = false;
+				clearTimeout(timeout);
+				analytics.stopReplay();
+				window.location.href = redirectToValue;
+			}
 		},
 	});
 
@@ -50,22 +71,22 @@ export function LoginForm() {
 			description={t('unauthenticated:LoginForm.description')}
 			footerLabel={t('unauthenticated:LoginForm.footer.label')}
 			footerUrl={PAGE_ROUTES.core.RESET_PASSWORD_LIST}
-			loading={isLoggingIn}
+			loading={isLoggingIn || isCompletingLogin}
 			onSubmit={handleLogin}
-			submitDisabled={passwordValue.length < 8 || emailValue.length === 0 || isLoggingIn}
+			submitDisabled={passwordValue.length < 8 || emailValue.length === 0 || isLoggingIn || isCompletingLogin}
 			submitLabel={t('unauthenticated:LoginForm.submit.label')}
 			title={t('unauthenticated:LoginForm.title')}
 		>
 			<TextInput
 				key="email"
-				disabled={isLoggingIn}
+				disabled={isLoggingIn || isCompletingLogin}
 				onChange={e => setEmailValue(e.target.value)}
 				placeholder={t('unauthenticated:LoginForm.fields.email.placeholder')}
 				value={emailValue}
 			/>
 			<PasswordInput
 				key="password"
-				disabled={isLoggingIn}
+				disabled={isLoggingIn || isCompletingLogin}
 				onChange={e => setPasswordValue(e.target.value)}
 				placeholder={t('unauthenticated:LoginForm.fields.password.placeholder')}
 				value={passwordValue}

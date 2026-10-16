@@ -14,6 +14,9 @@ export interface AnalyticsContextProps {
 
 export interface AnalyticsContextState {
 	actions: {
+		identify: (user: AnalyticsUserProperties | null) => boolean
+		startReplay: () => Promise<boolean>
+		stopReplay: () => void
 		track: (eventName: string, properties?: Record<string, unknown>) => Promise<boolean>
 	}
 	flags: {
@@ -29,4 +32,10 @@ export interface AnalyticsInitialization {
 	client: Types.BrowserClient
 	options: AnalyticsContextProps['options']
 	promise: Promise<void>
+	replay: AnalyticsReplayController
+}
+
+export interface AnalyticsReplayController {
+	start: () => Promise<boolean>
+	stop: () => void
 }
