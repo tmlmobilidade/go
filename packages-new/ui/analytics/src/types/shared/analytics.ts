@@ -1,6 +1,6 @@
 import { type Types } from '@amplitude/analytics-browser';
 
-import { type AnalyticsUserProperties } from './user-properties.js';
+import { type AnalyticsUserProperties } from './user-properties';
 
 /* * */
 

@@ -1,1 +1,1 @@
-export * from './src/server/analytics.js';
+export * from './src/server/analytics';

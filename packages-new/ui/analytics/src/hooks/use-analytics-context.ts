@@ -2,7 +2,7 @@
 
 import { useContext } from 'react';
 
-import { AnalyticsContext } from '../contexts/Analytics.context.js';
+import { AnalyticsContext } from '../contexts/Analytics.context';
 
 /* * */
 

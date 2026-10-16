@@ -1,2 +1,2 @@
-export * from './events/index.js';
-export * from './shared/index.js';
+export * from './events/index';
+export * from './shared/index';

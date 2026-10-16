@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { type AnalyticsContextProps, type AnalyticsContextState, type AnalyticsInitialization } from '../types/shared/analytics.js';
-import { type AnalyticsUserProperties } from '../types/shared/user-properties.js';
-import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client.js';
-import { useAnalyticsConfiguration } from './use-analytics-configuration.js';
+import { type AnalyticsContextProps, type AnalyticsContextState, type AnalyticsInitialization } from '../types/shared/analytics';
+import { type AnalyticsUserProperties } from '../types/shared/user-properties';
+import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client';
+import { useAnalyticsConfiguration } from './use-analytics-configuration';
 
 /* * */
 

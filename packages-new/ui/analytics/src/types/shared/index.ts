@@ -1,2 +1,2 @@
-export * from './analytics.js';
-export * from './user-properties.js';
+export * from './analytics';
+export * from './user-properties';
