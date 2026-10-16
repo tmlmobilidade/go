@@ -8,7 +8,7 @@ import (
 
 	"main/i18n"
 	"main/lib"
-	ruleset "main/lib/rules/rules"
+	ruleset "main/lib/rules"
 	"main/lib/test_helpers"
 	"main/services"
 	"main/types"

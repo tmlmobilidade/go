@@ -2,7 +2,7 @@ package lib
 
 import (
 	"main/i18n"
-	"main/lib/rules/rules"
+	"main/lib/rules"
 	"main/types"
 )
 

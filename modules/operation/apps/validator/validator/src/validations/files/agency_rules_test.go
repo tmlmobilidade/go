@@ -1,7 +1,7 @@
 package file_validation
 
 import (
-	ruleset "main/lib/rules/rules"
+	ruleset "main/lib/rules"
 	"main/services"
 	"main/types"
 	"testing"

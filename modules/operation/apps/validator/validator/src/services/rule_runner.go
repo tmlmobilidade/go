@@ -2,7 +2,7 @@ package services
 
 import (
 	"fmt"
-	"main/lib/rules/rules"
+	"main/lib/rules"
 	"main/types"
 	"reflect"
 )

@@ -3,7 +3,7 @@ package trips
 import (
 	"main/i18n"
 	"main/lib"
-	"main/lib/rules/rules"
+	"main/lib/rules"
 	"main/services"
 	"main/types"
 	validations "main/validations/trips/validations"

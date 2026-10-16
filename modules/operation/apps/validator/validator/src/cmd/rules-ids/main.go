@@ -6,7 +6,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"main/lib/rules/rules"
+	"main/lib/rules"
 	"os"
 	"path/filepath"
 )

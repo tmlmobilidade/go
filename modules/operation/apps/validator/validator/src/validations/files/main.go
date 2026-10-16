@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"main/i18n"
 	"main/lib"
-	ruleset "main/lib/rules/rules"
+	ruleset "main/lib/rules"
 	"main/services"
 	"main/types"
 	"strings"
