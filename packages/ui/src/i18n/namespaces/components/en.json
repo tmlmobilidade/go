@@ -48,6 +48,11 @@
 			"nothing_found": "No results found"
 		}
 	},
+	"layout": {
+		"ListHeader": {
+			"countTooltip": "Total in this view. Reflects the search and active filters."
+		}
+	},
 	"loaders": {
 		"LoadingActivity": {
 			"days_ago": "Updated {count, plural, =1 {1 day} other {# days}} ago",

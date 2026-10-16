@@ -1,0 +1,45 @@
+/* * */
+
+.identity {
+	display: flex;
+	flex: 0 1 auto;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.leading,
+.activity {
+	flex-shrink: 0;
+}
+
+.heading {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.count {
+	flex-shrink: 0;
+}
+
+.gap {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+/* ponytail: search grows until 384px, then the gap takes the rest; below 176px the title ellipsizes */
+
+.search {
+	flex: 100 100 176px;
+	min-width: 176px;
+	max-width: 384px;
+}
+
+.search * {
+	min-width: 0 !important;
+}
+
+.actions {
+	flex-shrink: 0;
+}
