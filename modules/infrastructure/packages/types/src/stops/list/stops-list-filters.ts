@@ -11,12 +11,12 @@ export const StopsListFiltersSchema = z.object({
 		.array(z.string())
 		.default([]),
 
-	lifecycle_statuses: z
-		.array(LifecycleStatusSchema)
+	legacy_ids: z
+		.array(z.string())
 		.default([]),
 
-	location_neighbourhood_ids: z
-		.array(z.string())
+	lifecycle_statuses: z
+		.array(LifecycleStatusSchema)
 		.default([]),
 
 	location_primary_ids: z

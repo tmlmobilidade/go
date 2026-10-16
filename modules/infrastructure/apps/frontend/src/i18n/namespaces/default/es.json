@@ -341,6 +341,9 @@
 			"FilterFacilities": {
 				"label": "Servicios"
 			},
+			"FilterLegacyId": {
+				"label": "ID Antiguo"
+			},
 			"FilterLifecycleStatus": {
 				"label": "Estado"
 			},
