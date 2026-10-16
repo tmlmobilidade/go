@@ -145,6 +145,7 @@
 		"prd:hub:publish-vehicles": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-vehicles",
 		"prd:hub:ui:navegante-app": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
 		"prd:infrastructure": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-*",
+		"prd:infrastructure:ui": "npm run build:infrastructure:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-api --filter=@tmlmobilidade/go-infrastructure-frontend",
 		"prd:offer": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-offer-api --filter=@tmlmobilidade/go-offer-frontend",
 		"prd:operation": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-operation-*",
 		"prd:operation:gtfs-validator": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-operation-gtfs-validator",
