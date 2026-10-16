@@ -43,19 +43,13 @@ export function LoginForm() {
 				title: t('unauthenticated:LoginForm.success.title'),
 			});
 			let timeout: ReturnType<typeof setTimeout> | undefined;
-			let active = true;
 			try {
+				analytics.identify({ _id: response.data.user_id, email: emailValue });
 				await Promise.race([
-					(async () => {
-						await analytics.startReplay();
-						if (!active) return;
-						analytics.identify({ _id: response.data.user_id, email: emailValue });
-						await analytics.track(LoginEvent.shape.title.value);
-					})(),
+					analytics.track(LoginEvent.shape.title.value),
 					new Promise<void>((resolve) => { timeout = setTimeout(resolve, 1500); }),
 				]);
 			} finally {
-				active = false;
 				clearTimeout(timeout);
 				analytics.stopReplay();
 				window.location.href = redirectToValue;
