@@ -370,6 +370,9 @@ func LoadIdMapFromSQLite(db *sql.DB) (types.GtfsIdMap, error) {
 		}
 		idMap[file][key] = append(idMap[file][key], rowIndex)
 	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("failed to iterate id_map rows: %w", err)
+	}
 
 	return idMap, nil
 }
