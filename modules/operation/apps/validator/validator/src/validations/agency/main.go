@@ -19,8 +19,13 @@ func init() {
 func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 	lib.AppLogger.Debug("Running Validations for agency.txt")
 
+	//
 	// Create progress tracker
+
 	tracker := lib.CreateProgressTracker(gtfs, "agency", config.ProgressThresholdSmall)
+
+	//
+	// Get file rules
 
 	var fileRules *types.AgencyRules
 	if gtfsRules != nil {
@@ -32,11 +37,17 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 		return
 	}
 
+	//
+	// Open agency table
+
 	table, err := services.NewSQLiteTable(gtfs.DB(), "agency")
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error opening agency table: %v", err))
 		return
 	}
+
+	//
+	// Iterate over agency table
 
 	err = table.ForEachRow(func(row *services.SQLiteRow) error {
 		db := row.Context()
@@ -49,8 +60,6 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 		}
 
 		runner.Run(services.RuleActions{
-			//
-			
 			//
 			// Fields
 			"agency_id_field":       func() { check("agency_id_field", agency_fields.AgencyIdField(db, fileRules)) },
@@ -81,6 +90,9 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 		}, nil)
 		return nil
 	})
+
+	//
+	// Check for errors
 
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error iterating agencies: %v", err))
