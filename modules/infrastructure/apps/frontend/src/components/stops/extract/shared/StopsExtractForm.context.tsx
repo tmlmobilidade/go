@@ -4,7 +4,6 @@ import { useStopsListFilterAgency } from '@/components/stops/list/filters/StopsL
 import { useStopsListFilterConnections } from '@/components/stops/list/filters/StopsListFilterConnections/use-stops-list-filter-connections';
 import { useStopsListFilterFacilities } from '@/components/stops/list/filters/StopsListFilterFacilities/use-stops-list-filter-facilities';
 import { useStopsListFilterLifecycleStatus } from '@/components/stops/list/filters/StopsListFilterLifecycleStatus/use-stops-list-filter-lifecycle-status';
-import { useStopsListFilterLocationNeighbourhood } from '@/components/stops/list/filters/StopsListFilterLocationNeighberhood/use-stops-list-filter-location-neighberhood';
 import { useStopsListFilterLocationPrimary } from '@/components/stops/list/filters/StopsListFilterLocationPrimary/use-stops-list-filter-location-primary';
 import { useStopsListFilterLocationSecondary } from '@/components/stops/list/filters/StopsListFilterLocationSecondary/use-stops-list-filter-location-secondary';
 import { useStopsListFilterLocationTertiary } from '@/components/stops/list/filters/StopsListFilterLocationTertiary/use-stops-list-filter-location-tertiary';
@@ -37,7 +36,6 @@ export function StopsExtractFormContextProvider({ children, onClose, schema, sho
 	const filterConnections = useStopsListFilterConnections();
 	const filterFacilities = useStopsListFilterFacilities();
 	const filterLifecycleStatus = useStopsListFilterLifecycleStatus();
-	const filterLocationNeighbourhood = useStopsListFilterLocationNeighbourhood();
 	const filterLocationPrimary = useStopsListFilterLocationPrimary();
 	const filterLocationSecondary = useStopsListFilterLocationSecondary();
 	const filterLocationTertiary = useStopsListFilterLocationTertiary();
@@ -50,7 +48,6 @@ export function StopsExtractFormContextProvider({ children, onClose, schema, sho
 				connections: showFacilitiesAndConnections && filterConnections.isActive ? filterConnections.value : undefined,
 				facilities: showFacilitiesAndConnections && filterFacilities.isActive ? filterFacilities.value : undefined,
 				lifecycle_statuses: filterLifecycleStatus.isActive ? filterLifecycleStatus.value : undefined,
-				location_neighbourhood_ids: filterLocationNeighbourhood.isActive ? filterLocationNeighbourhood.value : undefined,
 				location_primary_ids: filterLocationPrimary.isActive ? filterLocationPrimary.value : undefined,
 				location_secondary_ids: filterLocationSecondary.isActive ? filterLocationSecondary.value : undefined,
 				location_tertiary_ids: filterLocationTertiary.isActive ? filterLocationTertiary.value : undefined,
