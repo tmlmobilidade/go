@@ -4,7 +4,7 @@ import { type WorkerMessage } from '@/types/worker';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ValidationCreateItem, ValidationCreateItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { fetchApiMultipart, keepUrlParams, type SelectDataItem, type StandardFormContextValue, useHandleAction, useStandardForm, useStandardFormCapabilities, useToast } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, keepUrlParams, type SelectDataItem, type StandardFormContextValue, toAgencySelectItem, useHandleAction, useStandardForm, useStandardFormCapabilities, useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -83,10 +83,7 @@ export function ValidationCreateContextProvider({ children }: PropsWithChildren)
 		return permittedAgencies.filter(agency => agency.code.trim().toLowerCase() === normalizedGtfsAgencyCode);
 	}, [gtfsAgencyCode, permittedAgencies]);
 
-	const agencyOptions = useMemo(() => matchingAgencies.map(agency => ({
-		label: `${agency._id} - ${agency.name}`,
-		value: agency._id,
-	})), [matchingAgencies]);
+	const agencyOptions = useMemo(() => matchingAgencies.map(toAgencySelectItem), [matchingAgencies]);
 
 	const hasCreatePermission = useMemo(() => {
 		if (!selectedAgencyId) return false;
