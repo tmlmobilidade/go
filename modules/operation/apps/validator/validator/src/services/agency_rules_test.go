@@ -63,6 +63,7 @@ func TestParseFlatAgencyRulesFromFile(t *testing.T) {
 		}
 	}
 	flat["agency_id_matched_with_agency_name"] = map[string]any{"severity": "error", "depends_on": []string{"agency_id_unique"}}
+	flat["agency_name_field"] = map[string]any{"severity": "info"}
 	flat["agency_file_missing"] = map[string]any{"severity": "error"}
 	flat["agency_id_unique"] = map[string]any{"severity": "warning", "depends_on": []string{"agency_file_present"}}
 	path := filepath.Join(t.TempDir(), "rules.json")
@@ -82,7 +83,7 @@ func TestParseFlatAgencyRulesFromFile(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if config.Agency.AgencyIdUnique.Severity != types.SEVERITY_WARNING || !slices.Contains(NewRulesParser(path).GetRequiredFiles(config), "agency.txt") {
+		if config.Agency.AgencyNameField.Severity != types.SEVERITY_INFO || config.Agency.AgencyIdUnique.Severity != types.SEVERITY_WARNING || !slices.Contains(NewRulesParser(path).GetRequiredFiles(config), "agency.txt") {
 			t.Fatal("flat severities did not reach runtime rule and required-file settings")
 		}
 	}

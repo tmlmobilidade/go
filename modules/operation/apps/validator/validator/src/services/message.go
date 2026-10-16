@@ -64,7 +64,7 @@ func (ms *MessageService) AddMessage(message types.Message) {
 	}
 
 	ms.mu.Lock()
-	if message.Severity != types.SEVERITY_IGNORE {
+	if message.Severity == types.SEVERITY_ERROR || message.Severity == types.SEVERITY_WARNING {
 		if ms.issues == nil {
 			ms.issues = make(map[string]uint64)
 		}
@@ -140,13 +140,14 @@ func (ms *MessageService) GetSummary() types.Summary {
 // is summarised by the most serious one it produced.
 var severityRank = map[types.Severity]int{
 	types.SEVERITY_IGNORE:  0,
-	types.SEVERITY_WARNING: 1,
-	types.SEVERITY_ERROR:   2,
+	types.SEVERITY_INFO:    1,
+	types.SEVERITY_WARNING: 2,
+	types.SEVERITY_ERROR:   3,
 }
 
 // groupedMessages collapses the messages into one entry per rule, so the output has
-// a single line per rule carrying its generic sentence, with the errors and warnings
-// it stands for kept together in one array.
+// a single line per rule carrying its generic sentence, with its informational
+// messages, warnings, and errors kept together in one array.
 //
 // Input is expected to be sortedMessages output, whose file_name then rule_id ordering
 // the groups inherit by keeping the order in which each rule first appears.
@@ -324,7 +325,8 @@ func (ms *MessageService) Clear() {
 
 var AppMessageService = NewMessageService()
 
-// RuleIssueCount counts emissions before message deduplication. Counting only
+// RuleIssueCount counts warning/error emissions before message deduplication.
+// Informational messages do not fail a rule or block its dependents. Counting only
 // summary messages would miss a failing prerequisite on a subsequent row.
 func (ms *MessageService) RuleIssueCount(id string) uint64 {
 	ms.mu.RLock()

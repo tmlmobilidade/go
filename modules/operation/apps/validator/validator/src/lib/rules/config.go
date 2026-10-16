@@ -90,7 +90,7 @@ func forEachRuleConfig(section any, fn func(id string, config types.RuleConfig))
 }
 
 // Severities lists the severity values accepted by the validator.
-var Severities = []types.Severity{types.SEVERITY_ERROR, types.SEVERITY_WARNING, types.SEVERITY_IGNORE, types.SEVERITY_FORBIDDEN}
+var Severities = []types.Severity{types.SEVERITY_ERROR, types.SEVERITY_WARNING, types.SEVERITY_INFO, types.SEVERITY_IGNORE, types.SEVERITY_FORBIDDEN}
 
 // DefaultConfig fills omitted settings before JSON decoding; explicit invalid values
 // still replace these defaults and are rejected by the parser.

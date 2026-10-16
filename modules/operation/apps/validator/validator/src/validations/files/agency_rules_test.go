@@ -9,7 +9,7 @@ import (
 
 func TestAgencyMissingFileSeverities(t *testing.T) {
 	for _, file := range []string{"trips", "shapes"} {
-		for _, severity := range []types.Severity{types.SEVERITY_IGNORE, types.SEVERITY_WARNING, types.SEVERITY_ERROR, types.SEVERITY_FORBIDDEN} {
+		for _, severity := range []types.Severity{types.SEVERITY_IGNORE, types.SEVERITY_INFO, types.SEVERITY_WARNING, types.SEVERITY_ERROR, types.SEVERITY_FORBIDDEN} {
 			t.Run(file+"/"+string(severity), func(t *testing.T) {
 				services.AppMessageService.Clear()
 				config := ruleset.DefaultConfig()
@@ -27,7 +27,7 @@ func TestAgencyMissingFileSeverities(t *testing.T) {
 				hasErrors := NewFileValidation().Validate(*gtfs, &config)
 				summary := services.AppMessageService.GetSummary()
 				want := 0
-				if severity == types.SEVERITY_ERROR || severity == types.SEVERITY_WARNING {
+				if severity == types.SEVERITY_ERROR || severity == types.SEVERITY_WARNING || severity == types.SEVERITY_INFO {
 					want = 1
 				}
 				if len(summary.Messages) != want || hasErrors != (severity == types.SEVERITY_ERROR) {
@@ -55,7 +55,7 @@ func TestAgencyConditionalPresenceSeverities(t *testing.T) {
 		{"feed_info", types.Gtfs{Translations: []types.TranslationsRaw{{TableName: "stops"}}}, func(c *types.GtfsRules, s types.Severity) { c.FeedInfo.File = s }, (*FileValidation).checkFeedInfoWithTranslations, "feed_info_file_missing"},
 	}
 	for _, tc := range cases {
-		for _, severity := range []types.Severity{types.SEVERITY_IGNORE, types.SEVERITY_WARNING, types.SEVERITY_ERROR, types.SEVERITY_FORBIDDEN} {
+		for _, severity := range []types.Severity{types.SEVERITY_IGNORE, types.SEVERITY_INFO, types.SEVERITY_WARNING, types.SEVERITY_ERROR, types.SEVERITY_FORBIDDEN} {
 			t.Run(tc.name+"/"+string(severity), func(t *testing.T) {
 				services.AppMessageService.Clear()
 				config := ruleset.DefaultConfig()
@@ -70,7 +70,7 @@ func TestAgencyConditionalPresenceSeverities(t *testing.T) {
 				tc.check(validator, *gtfs, &config)
 				summary := services.AppMessageService.GetSummary()
 				want := 0
-				if severity == types.SEVERITY_WARNING || severity == types.SEVERITY_ERROR {
+				if severity == types.SEVERITY_WARNING || severity == types.SEVERITY_ERROR || severity == types.SEVERITY_INFO {
 					want = 1
 				}
 				if len(summary.Messages) != want {

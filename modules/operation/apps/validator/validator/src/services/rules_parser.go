@@ -172,12 +172,20 @@ func (rp *RulesParser) GetForbiddenFiles(rules *types.GtfsRules) []string {
 }
 
 func (rp *RulesParser) GetWarningFiles(rules *types.GtfsRules) []string {
+	return rp.getFilesBySeverity(rules, types.SEVERITY_WARNING)
+}
+
+func (rp *RulesParser) GetInfoFiles(rules *types.GtfsRules) []string {
+	return rp.getFilesBySeverity(rules, types.SEVERITY_INFO)
+}
+
+func (rp *RulesParser) getFilesBySeverity(rules *types.GtfsRules, wanted types.Severity) []string {
 	if rules == nil {
 		return []string{}
 	}
 
 	allFiles := lib.GetAllStructTagValues(types.GtfsRules{}, "json")
-	warningFiles := make([]string, 0)
+	matchingFiles := make([]string, 0)
 
 	for _, file := range allFiles {
 		if isMetaGtfsRulesSection(file) {
@@ -190,13 +198,13 @@ func (rp *RulesParser) GetWarningFiles(rules *types.GtfsRules) []string {
 			fileField := rp.getNestedFieldByTag(fileValue.Addr().Interface(), "json", "_file")
 			if fileField.IsValid() {
 				severity := types.Severity(fileField.String())
-				if severity == types.SEVERITY_WARNING {
+				if severity == wanted {
 					// Add .txt extension to match file name format
-					warningFiles = append(warningFiles, file+".txt")
+					matchingFiles = append(matchingFiles, file+".txt")
 				}
 			}
 		}
 	}
 
-	return warningFiles
+	return matchingFiles
 }

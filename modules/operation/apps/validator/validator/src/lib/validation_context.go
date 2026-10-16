@@ -80,6 +80,11 @@ func (vc *ValidationContext) AddError(message string, ruleID ...string) {
 	vc.AddMessage(message, types.SEVERITY_ERROR, ruleID...)
 }
 
+// AddInfo adds an informational message without failing the rule.
+func (vc *ValidationContext) AddInfo(message string, ruleID ...string) {
+	vc.AddMessage(message, types.SEVERITY_INFO, ruleID...)
+}
+
 // AddWarning adds a warning message. Optional ruleID overrides the default.
 func (vc *ValidationContext) AddWarning(message string, ruleID ...string) {
 	vc.AddMessage(message, types.SEVERITY_WARNING, ruleID...)

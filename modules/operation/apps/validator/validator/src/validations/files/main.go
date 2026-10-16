@@ -32,6 +32,7 @@ func (v *FileValidation) Validate(gtfs types.Gtfs, rules *types.GtfsRules) bool 
 
 	v.checkForbiddenFiles(gtfs, rules)
 	v.checkWarningFiles(gtfs, rules)
+	v.checkInfoFiles(gtfs, rules)
 	v.checkRequiredFiles(gtfs, rules)
 	v.checkStopsConditional(gtfs, rules)
 	v.checkCalendarFiles(gtfs, rules)
@@ -59,9 +60,9 @@ func (v *FileValidation) addError(file, msg string, severity types.Severity) {
 	})
 }
 
-// Missing files have a stable rule ID per file, regardless of required/recommended severity.
+// Missing files have a stable rule ID per file, regardless of error, warning, or info severity.
 func (v *FileValidation) addMissingFile(file, msg string, severity types.Severity) {
-	if severity != types.SEVERITY_ERROR && severity != types.SEVERITY_WARNING {
+	if severity != types.SEVERITY_ERROR && severity != types.SEVERITY_WARNING && severity != types.SEVERITY_INFO {
 		return
 	}
 	if v.missingFiles == nil {
@@ -99,6 +100,16 @@ func (v *FileValidation) checkWarningFiles(gtfs types.Gtfs, rules *types.GtfsRul
 		tableName := file[:len(file)-4]
 		if !gtfs.HasTable(tableName) {
 			v.addMissingFile(file, fmt.Sprintf(i18n.AppTranslator.Get(strings.TrimSuffix(file, ".txt")+"_file_missing.warning"), file), types.SEVERITY_WARNING)
+		}
+	}
+}
+
+func (v *FileValidation) checkInfoFiles(gtfs types.Gtfs, rules *types.GtfsRules) {
+	files := services.NewRulesParser(services.AppCLI.Options.RulesPath).GetInfoFiles(rules)
+	for _, file := range files {
+		tableName := strings.TrimSuffix(file, ".txt")
+		if !gtfs.HasTable(tableName) {
+			v.addMissingFile(file, i18n.AppTranslator.Get(tableName+"_file_missing.generic"), types.SEVERITY_INFO)
 		}
 	}
 }

@@ -4,6 +4,7 @@ type Severity string
 
 const (
 	SEVERITY_IGNORE    Severity = "ignore"
+	SEVERITY_INFO      Severity = "info"
 	SEVERITY_ERROR     Severity = "error"
 	SEVERITY_WARNING   Severity = "warning"
 	SEVERITY_FORBIDDEN Severity = "forbidden"
@@ -20,7 +21,7 @@ type Message struct {
 
 // RuleMessage collapses every message a rule reported into a single summary entry.
 // Message is the rule's generic sentence, meant to be read on its own without the
-// detail; Messages carries the errors and warnings it stands for, in one array.
+// detail; Messages carries its informational messages, warnings, and errors.
 type RuleMessage struct {
 	Messages  []Message `json:"messages"`
 	Field     string    `json:"field"`
