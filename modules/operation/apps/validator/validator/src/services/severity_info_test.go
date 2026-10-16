@@ -38,7 +38,7 @@ func TestInfoSeverityConfiguration(t *testing.T) {
 	}
 }
 
-func TestInfoMessagesDoNotBlockDAGDependents(t *testing.T) {
+func TestInfoMessagesBlockDAGDependents(t *testing.T) {
 	gtfs, cleanup, err := (test_helpers.MockGtfs{TableData: map[string][]map[string]string{
 		"agency": {{"agency_id": "1"}},
 	}}).ToGtfsWithDB()
@@ -60,25 +60,31 @@ func TestInfoMessagesDoNotBlockDAGDependents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for row := range 2 {
+	for row := range 3 {
 		ran := false
 		statuses := runner.Run(services.RuleActions{
 			"agency_id_field": func() {
 				ctx := lib.NewValidationContext("agency_id", "agency.txt", "agency_id_field", row, services.AppMessageService)
-				ctx.AddError("informational finding")
-				if ctx.Status() != rules.Passed {
-					t.Fatal("info override failed the validation context")
+				if row < 2 {
+					ctx.AddError("informational finding")
+					if ctx.Status() != rules.Failed {
+						t.Fatal("info override did not fail the validation context")
+					}
 				}
 			},
 			"agency_id_unique": func() { ran = true },
 		}, nil)
-		if !ran || statuses["agency_id_field"] != rules.Passed || statuses["agency_id_unique"] != rules.Passed {
-			t.Fatalf("info blocked dependent rule: %v", statuses)
+		if row < 2 {
+			if ran || statuses["agency_id_field"] != rules.Failed || statuses["agency_id_unique"] != rules.Skipped {
+				t.Fatalf("info did not block dependent rule: %v", statuses)
+			}
+		} else if !ran || statuses["agency_id_field"] != rules.Passed || statuses["agency_id_unique"] != rules.Passed {
+			t.Fatalf("previous info finding leaked into a valid row: %v", statuses)
 		}
 	}
 	summary := services.AppMessageService.GetSummary()
-	if summary.TotalErrors != 0 || summary.TotalWarnings != 0 || services.AppMessageService.RuleIssueCount("agency_id_field") != 0 {
-		t.Fatalf("info was counted as an issue: %+v", summary)
+	if summary.TotalErrors != 0 || summary.TotalWarnings != 0 || services.AppMessageService.RuleIssueCount("agency_id_field") != 2 {
+		t.Fatalf("incorrect info counts: %+v", summary)
 	}
 	if len(summary.Messages) != 1 || summary.Messages[0].Severity != types.SEVERITY_INFO || summary.Messages[0].TotalRows != 2 {
 		t.Fatalf("info messages were lost: %+v", summary)

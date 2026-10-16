@@ -4,7 +4,6 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
-	"slices"
 )
 
 /*
@@ -40,10 +39,6 @@ func AgencyUrlValid(db *services.SQLiteContext, rules *types.AgencyRules) error 
 		return err
 	}
 
-	if value == "" || ctx.ShouldSkip() {
-		return nil
-	}
-
 	//
 	// 3. Check if agency_url is valid
 
@@ -53,21 +48,7 @@ func AgencyUrlValid(db *services.SQLiteContext, rules *types.AgencyRules) error 
 	}
 
 	//
-	// 4. Validate rules
-
-	if rules != nil && rules.AgencyUrlValid.Options != nil {
-		if slices.Contains(*rules.AgencyUrlValid.Options, types.ALL_OPTIONS) {
-			return nil
-		}
-
-		if !slices.Contains(*rules.AgencyUrlValid.Options, value) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
-			return nil
-		}
-	}
-
-	//
-	// 5. Return success
+	// 4. Return success
 
 	return nil
 }

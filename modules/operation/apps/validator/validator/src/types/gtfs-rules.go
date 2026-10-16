@@ -11,8 +11,7 @@ type RuleConfig struct {
 	Severity Severity   `json:"severity"`
 	Options  *[]string  `json:"options,omitempty"`
 	Compare  *[]Compare `json:"compare,omitempty"`
-	// DependsOn lists rule ids (from the same file section) that must pass before this rule runs
-	DependsOn []string `json:"depends_on,omitempty"`
+	DependsOn []string `json:"depends_on,omitempty"` // DependsOn lists rule ids (from the same file section) that must pass before this rule runs
 }
 
 type AgencyRules struct {

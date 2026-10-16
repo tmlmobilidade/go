@@ -4,7 +4,6 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
-	"slices"
 )
 
 /*
@@ -43,10 +42,6 @@ func AgencyPhoneValid(db *services.SQLiteContext, rules *types.AgencyRules) erro
 		return err
 	}
 
-	if value == "" || ctx.ShouldSkip() {
-		return nil
-	}
-
 	//
 	// 3. Check if agency_phone is valid
 
@@ -56,21 +51,7 @@ func AgencyPhoneValid(db *services.SQLiteContext, rules *types.AgencyRules) erro
 	}
 
 	//
-	// 4. Validate rules
-
-	if rules != nil && rules.AgencyPhoneValid.Options != nil {
-		if slices.Contains(*rules.AgencyPhoneValid.Options, types.ALL_OPTIONS) {
-			return nil
-		}
-
-		if !slices.Contains(*rules.AgencyPhoneValid.Options, value) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
-			return nil
-		}
-	}
-
-	//
-	// 5. Return success
+	// 4. Return success
 
 	return nil
 }

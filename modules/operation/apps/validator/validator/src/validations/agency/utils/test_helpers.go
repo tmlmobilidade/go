@@ -86,7 +86,7 @@ func CheckPresence(t *testing.T, field string, check Check, configure Configure)
 	}
 }
 
-func CheckValue(t *testing.T, field, valid, invalid string, check Check, configure Configure) {
+func CheckOptions(t *testing.T, field, valid string, check Check, configure Configure) {
 	t.Helper()
 	cases := []struct {
 		name     string
@@ -111,18 +111,62 @@ func CheckValue(t *testing.T, field, valid, invalid string, check Check, configu
 			rules.ConfigureMessageSeverities(nil)
 			t.Cleanup(services.AppMessageService.Clear)
 			config := configure(types.RuleConfig{Severity: tc.severity, Options: tc.options})
+			rules.ConfigureMessageSeverities(&types.GtfsRules{Agency: *config})
+			t.Cleanup(func() { rules.ConfigureMessageSeverities(nil) })
 			AssertAgencyRead(t, check(AgencyRow(t, 0, map[string]*string{field: tc.value}), config))
 			assertIssues(t, field+"_valid", tc.errors, tc.warnings)
 		})
 	}
-	if invalid != "" {
-		t.Run("invalid format", func(t *testing.T) {
+}
+
+// CheckFormat tests format checks independently of their presence prerequisites.
+// Empty timezones are accepted by time.LoadLocation; the field check handles presence.
+func CheckFormat(t *testing.T, field, valid, invalid string, emptyValid bool, check Check, configure Configure) {
+	t.Helper()
+	emptyIssues := 1
+	if emptyValid {
+		emptyIssues = 0
+	}
+	for _, tc := range []struct {
+		name     string
+		value    *string
+		severity types.Severity
+		options  *[]string
+		issues   int
+	}{
+		{"SQL NULL", nil, types.SEVERITY_ERROR, nil, emptyIssues},
+		{"empty", lib.Ptr(""), types.SEVERITY_ERROR, nil, emptyIssues},
+		{"valid", &valid, types.SEVERITY_ERROR, nil, 0},
+		{"options do not restrict format", &valid, types.SEVERITY_ERROR, &[]string{"other"}, 0},
+		{"invalid error", &invalid, types.SEVERITY_ERROR, nil, 1},
+		{"invalid warning", &invalid, types.SEVERITY_WARNING, nil, 1},
+		{"invalid info", &invalid, types.SEVERITY_INFO, nil, 1},
+		{"invalid ignored", &invalid, types.SEVERITY_IGNORE, nil, 0},
+		{"wildcard does not bypass format", &invalid, types.SEVERITY_ERROR, &[]string{types.ALL_OPTIONS}, 1},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 			rules.ConfigureMessageSeverities(nil)
 			t.Cleanup(services.AppMessageService.Clear)
-			config := configure(types.RuleConfig{Severity: types.SEVERITY_ERROR})
-			AssertAgencyRead(t, check(AgencyRow(t, 0, map[string]*string{field: &invalid}), config))
-			assertIssues(t, field+"_valid", 1, 0)
+			config := configure(types.RuleConfig{Severity: tc.severity, Options: tc.options})
+			rules.ConfigureMessageSeverities(&types.GtfsRules{Agency: *config})
+			t.Cleanup(func() { rules.ConfigureMessageSeverities(nil) })
+			AssertAgencyRead(t, check(AgencyRow(t, 0, map[string]*string{field: tc.value}), config))
+			errors, warnings := 0, 0
+			if tc.severity == types.SEVERITY_ERROR {
+				errors = tc.issues
+			}
+			if tc.severity == types.SEVERITY_WARNING {
+				warnings = tc.issues
+			}
+			assertIssues(t, field+"_valid", errors, warnings)
+			messages := services.AppMessageService.GetSummary().Messages
+			if len(messages) != tc.issues {
+				t.Fatalf("got %d findings, want %d: %+v", len(messages), tc.issues, messages)
+			}
+			if len(messages) > 0 && messages[0].Severity != tc.severity {
+				t.Fatalf("severity = %s, want %s", messages[0].Severity, tc.severity)
+			}
 		})
 	}
 }

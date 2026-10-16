@@ -64,7 +64,7 @@ func (ms *MessageService) AddMessage(message types.Message) {
 	}
 
 	ms.mu.Lock()
-	if message.Severity == types.SEVERITY_ERROR || message.Severity == types.SEVERITY_WARNING {
+	if message.Severity == types.SEVERITY_ERROR || message.Severity == types.SEVERITY_WARNING || message.Severity == types.SEVERITY_INFO {
 		if ms.issues == nil {
 			ms.issues = make(map[string]uint64)
 		}
@@ -325,8 +325,8 @@ func (ms *MessageService) Clear() {
 
 var AppMessageService = NewMessageService()
 
-// RuleIssueCount counts warning/error emissions before message deduplication.
-// Informational messages do not fail a rule or block its dependents. Counting only
+// RuleIssueCount counts info/warning/error findings before message deduplication.
+// All findings fail a rule and block its dependents. Counting only
 // summary messages would miss a failing prerequisite on a subsequent row.
 func (ms *MessageService) RuleIssueCount(id string) uint64 {
 	ms.mu.RLock()

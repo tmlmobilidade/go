@@ -40,10 +40,6 @@ func AgencyNameValid(db *services.SQLiteContext, rules *types.AgencyRules) error
 		return err
 	}
 
-	if value == "" || ctx.ShouldSkip() {
-		return nil
-	}
-
 	//
 	// 3. Validate rules
 

@@ -35,7 +35,7 @@ type ValidationContext struct {
 	// Message adder for adding messages (avoids import cycle)
 	MessageAdder MessageAdder
 
-	// failed is set once a warning or error is reported
+	// failed is set once an info, warning, or error finding is reported
 	failed bool
 }
 
@@ -80,7 +80,7 @@ func (vc *ValidationContext) AddError(message string, ruleID ...string) {
 	vc.AddMessage(message, types.SEVERITY_ERROR, ruleID...)
 }
 
-// AddInfo adds an informational message without failing the rule.
+// AddInfo adds an informational finding that fails the rule for DAG dependencies.
 func (vc *ValidationContext) AddInfo(message string, ruleID ...string) {
 	vc.AddMessage(message, types.SEVERITY_INFO, ruleID...)
 }
@@ -106,7 +106,7 @@ func (vc *ValidationContext) AddMessage(message string, severity types.Severity,
 	if severity == types.SEVERITY_FORBIDDEN {
 		severity = types.SEVERITY_ERROR
 	}
-	if severity == types.SEVERITY_ERROR || severity == types.SEVERITY_WARNING {
+	if severity == types.SEVERITY_ERROR || severity == types.SEVERITY_WARNING || severity == types.SEVERITY_INFO {
 		vc.failed = true
 	}
 	vc.MessageAdder.AddMessage(types.Message{
@@ -123,7 +123,7 @@ func (vc *ValidationContext) AddMessage(message string, severity types.Severity,
 // whose parameter is named "rules" can still name the type
 type RuleStatus = rules.Status
 
-// Status reports the rule outcome for the rules manager: Failed if a warning or error was added
+// Status reports the rule outcome for the rules manager: Failed if an info, warning, or error finding was added
 func (vc *ValidationContext) Status() rules.Status {
 	if vc.failed {
 		return rules.Failed

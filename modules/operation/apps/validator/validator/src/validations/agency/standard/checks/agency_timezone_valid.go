@@ -4,7 +4,6 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
-	"slices"
 )
 
 /*
@@ -41,10 +40,6 @@ func AgencyTimezoneValid(db *services.SQLiteContext, rules *types.AgencyRules) e
 		return err
 	}
 
-	if value == "" || ctx.ShouldSkip() {
-		return nil
-	}
-
 	//
 	// 3. Check if agency_timezone is valid
 
@@ -54,21 +49,7 @@ func AgencyTimezoneValid(db *services.SQLiteContext, rules *types.AgencyRules) e
 	}
 
 	//
-	// 4. Validate rules
-
-	if rules != nil && rules.AgencyTimezoneValid.Options != nil {
-		if slices.Contains(*rules.AgencyTimezoneValid.Options, types.ALL_OPTIONS) {
-			return nil
-		}
-
-		if !slices.Contains(*rules.AgencyTimezoneValid.Options, value) {
-			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
-			return nil
-		}
-	}
-
-	//
-	// 5. Return success
+	// 4. Return success
 
 	return nil
 }

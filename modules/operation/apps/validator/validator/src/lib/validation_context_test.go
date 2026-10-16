@@ -53,7 +53,7 @@ func TestForbiddenContextEmitsErrorAndKeepsMessage(t *testing.T) {
 	}
 }
 
-func TestInfoContextPreservesMessageWithoutFailing(t *testing.T) {
+func TestInfoContextPreservesSeverityAndFailsRule(t *testing.T) {
 	rules.ConfigureMessageSeverities(nil)
 	collector := &capturedValidationMessages{}
 	ctx := NewValidationContext("agency_id", "agency.txt", "agency_id_field", 0, collector).WithSeverity(types.SEVERITY_INFO)
@@ -62,7 +62,7 @@ func TestInfoContextPreservesMessageWithoutFailing(t *testing.T) {
 	}
 	ctx.AddMessageWithSeverity("configured information")
 	ctx.AddInfo("explicit information")
-	if ctx.Status() != rules.Passed || len(collector.messages) != 2 {
+	if ctx.Status() != rules.Failed || len(collector.messages) != 2 {
 		t.Fatalf("unexpected info outcome: %+v", collector.messages)
 	}
 	for _, message := range collector.messages {

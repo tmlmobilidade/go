@@ -8,7 +8,7 @@ import (
 )
 
 func TestAgencyPhoneValid(t *testing.T) {
-	testutils.CheckValue(t, "agency_phone", "+351210000000", "invalid", checks.AgencyPhoneValid, func(config types.RuleConfig) *types.AgencyRules {
+	testutils.CheckFormat(t, "agency_phone", "+351210000000", "invalid", false, checks.AgencyPhoneValid, func(config types.RuleConfig) *types.AgencyRules {
 		return &types.AgencyRules{AgencyPhoneValid: config}
 	})
 }
