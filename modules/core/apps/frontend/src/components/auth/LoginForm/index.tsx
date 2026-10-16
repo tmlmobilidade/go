@@ -5,7 +5,6 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Session } from '@tmlmobilidade/go-types-core';
 import { LoginEvent, LoginOpenedEvent, useAnalyticsContext } from '@tmlmobilidade/go-ui-analytics';
 import { fetchApiData, PasswordInput, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +18,7 @@ export function LoginForm() {
 
 	const { t } = useTranslation();
 	const { actions: { identify, startReplay, stopReplay, track }, flags: { ready } } = useAnalyticsContext();
-	const replayRequested = useSearchParams().get('replay') === 'login';
+	const [replayRequested, setReplayRequested] = useState(false);
 	const [isCompletingLogin, setIsCompletingLogin] = useState(false);
 
 	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: PAGE_ROUTES.core.HOME_LIST });
@@ -59,7 +58,7 @@ export function LoginForm() {
 		},
 	});
 
-	// Capture only the login flow requested by the landing page's navigation link.
+	// Request capture on the first focus of either credential field, waiting for SDK readiness.
 	useEffect(() => {
 		if (!replayRequested || !ready) return;
 		let active = true;
@@ -90,6 +89,7 @@ export function LoginForm() {
 				key="email"
 				disabled={isLoggingIn || isCompletingLogin}
 				onChange={e => setEmailValue(e.target.value)}
+				onFocus={() => setReplayRequested(true)}
 				placeholder={t('unauthenticated:LoginForm.fields.email.placeholder')}
 				value={emailValue}
 			/>
@@ -97,6 +97,7 @@ export function LoginForm() {
 				key="password"
 				disabled={isLoggingIn || isCompletingLogin}
 				onChange={e => setPasswordValue(e.target.value)}
+				onFocus={() => setReplayRequested(true)}
 				placeholder={t('unauthenticated:LoginForm.fields.password.placeholder')}
 				value={passwordValue}
 			/>
