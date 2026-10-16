@@ -18,12 +18,3 @@
 .control {
 	display: none;
 }
-
-.fit {
-	overflow: hidden;
-}
-
-.fitContent {
-	width: 100%;
-	min-width: 0;
-}

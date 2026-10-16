@@ -12,14 +12,38 @@ import { Toolbar } from '../../toolbar/Toolbar';
 /* * */
 
 export interface ListHeaderProps {
+
+	/**
+	 * List of actions to render in the header.
+	 */
 	actions?: ReactNode
-	/** Live indicator, rendered before the title. */
+
+	/**
+	 * The loading activity indicator component,
+	 * rendered before the title.
+	 */
 	activity?: ReactNode
-	/** Rows in the current view. Shown as 0 until a count is available. */
+
+	/**
+	 * The number of rows in the current view.
+	 * Zero until a count is available.
+	 */
 	count?: number
-	/** Rendered before the title, such as a modal close button. */
+
+	/**
+	 * The component to render before the title,
+	 * such as a modal close button.
+	 */
 	leading?: ReactNode
+
+	/**
+	 * The search input component.
+	 */
 	search?: ReactNode
+
+	/**
+	 * The title of the list.
+	 */
 	title: string
 }
 
@@ -39,28 +63,24 @@ export function ListHeader({ actions, activity, count, leading, search, title }:
 	// B. Render components
 
 	return (
-		<Toolbar fit>
-			{leading && <div className={styles.leading}>{leading}</div>}
-			<div className={styles.identity}>
-				{activity && <div className={styles.activity}>{activity}</div>}
-				<div className={styles.heading}>
-					<Label size="lg" caps singleLine>{title}</Label>
-				</div>
-				<Tooltip label={t('shared:components.layout.ListHeader.countTooltip')} position="bottom" withArrow>
-					<div className={styles.count}>
-						<Label size="md" variant="muted" singleLine>{`(${countLabel})`}</Label>
-					</div>
-				</Tooltip>
-			</div>
+		<Toolbar>
+
+			{leading && leading}
+
+			{activity && activity}
+
+			<Label size="lg" caps singleLine>{title}</Label>
+
+			<Tooltip label={t('shared:components.layout.ListHeader.countTooltip')} position="bottom" withArrow>
+				<Label size="md" variant="muted" singleLine>{`(${countLabel})`}</Label>
+			</Tooltip>
+
 			<div className={styles.gap} />
-			{search && (
-				<div className={styles.search}>
-					{search}
-				</div>
-			)}
-			{actions && <div className={styles.actions}>{actions}</div>}
+
+			{search && <div className={styles.search}>{search}</div>}
+
+			{actions && actions}
+
 		</Toolbar>
 	);
-
-	//
 }
