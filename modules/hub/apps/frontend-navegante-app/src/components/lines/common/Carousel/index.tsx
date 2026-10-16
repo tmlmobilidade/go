@@ -34,7 +34,7 @@ export function Carousel({ skeletonComponent, skeletonQty = 3, slides = [], slid
 			nextControlIcon={<IconArrowRight size={20} />}
 			plugins={[WheelGesturesPlugin()]}
 			previousControlIcon={<IconArrowLeft size={20} />}
-			slideGap={1}
+			slideGap="16px"
 			slideSize={slideSize}
 			w="100%"
 			withControls={slides.length > 0}
