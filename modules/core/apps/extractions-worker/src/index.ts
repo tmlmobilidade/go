@@ -8,6 +8,7 @@ import { runOnInterval, startHeartbeat } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { zipDirectory } from '@tmlmobilidade/go-utils-zip';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 import { sendEmailNotification } from './utils/send-email-notification.js';
@@ -67,7 +68,7 @@ async function main() {
 	//
 	// Initialize the extraction context
 
-	const temporaryDirectory = fs.mkdtempDisposableSync(`extraction-${extractionId}-`);
+	const temporaryDirectory = fs.mkdtempDisposableSync(path.join(os.tmpdir(), `extraction-${extractionId}-`));
 
 	const context: ExtractionTaskContext = {
 		attachment_name: `extraction-${extractionId}.zip`,

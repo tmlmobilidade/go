@@ -10,6 +10,7 @@ const LinesPermissionActionsValues = [
 	'read',
 	'lock',
 	'update',
+	'extract-stepp',
 ] as const;
 
 export const LinesPermissionActionsSchema = z.enum(LinesPermissionActionsValues);

@@ -316,6 +316,7 @@ const linesActions: PermissionConfig = {
 		{ action: 'update', description: 'Permite editar uma linha', label: 'Editar linha', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar uma linha', label: 'Eliminar linha', resources: ['AGENCIES'] },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma linha', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'extract-stepp', description: 'Permite exportar a oferta em formato GTFS STePP', label: 'Exportar GTFS STePP', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de linhas.',
 	scope: PermissionCatalog.all.lines.scope,

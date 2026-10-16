@@ -1,8 +1,8 @@
 'use client';
 
-import { useAgenciesData } from '@/components/common/use-agencies-data';
+import { useLinesAgenciesData } from '@/components/lines/shared/use-agencies-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Agency } from '@tmlmobilidade/go-types-core';
+import { type LinesAgencyItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type LineNormalized } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
@@ -14,7 +14,7 @@ import useSWR from 'swr';
 
 interface LinesListContextState {
 	data: {
-		agencies: Agency[]
+		agencies: LinesAgencyItem[]
 		agencyIds: string[]
 		agencyOptions: SelectDataItem[]
 		filtered: LineNormalized[]
@@ -53,7 +53,9 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { data: agenciesData, ids: agenciesIds, isLoading: agenciesLoading, options: agenciesOptions } = useAgenciesData();
+	const { data: agenciesData, ids: agenciesIds, isLoading: agenciesLoading, options: agenciesOptions } = useLinesAgenciesData({
+		permissions: { actions: ['read'], scope: 'lines' },
+	});
 
 	//
 	// B. Setup filters

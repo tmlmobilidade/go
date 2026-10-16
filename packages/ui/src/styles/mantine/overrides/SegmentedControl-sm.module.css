@@ -23,6 +23,7 @@
 	text-transform: uppercase;
 }
 
-.label[data-active="true"] {
+.label[data-active="true"],
+input:checked + .label[data-disabled] {
     color: var(--color-contrast);
 }

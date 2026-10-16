@@ -371,6 +371,8 @@ export const API_ROUTES = Object.freeze({
 		LINES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}`,
 		LINES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}/lock`,
 		LINES_LIST: `${getModuleConfig('offer', 'api_url')}/lines`,
+		LINES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/lines/list-agencies`,
+		LINES_LIST_EXTRACT: (agencyId: string) => `${getModuleConfig('offer', 'api_url')}/lines/list-extract/${encodeURIComponent(agencyId)}`,
 
 		// PATTERNS
 		PATTERNS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}`,
