@@ -1,7 +1,9 @@
 'use client';
 
-import { Checkbox, ScrollArea, Stack, Text } from '@mantine/core';
+import { Checkbox, ScrollArea, Text } from '@mantine/core';
 import { useState } from 'react';
+
+import styles from './styles.module.css';
 
 import { type SelectDataItem } from '../../../components/inputs/Select';
 
@@ -41,7 +43,7 @@ export function ListFilterOptions({ emptyMessage, onSelect, options }: ListFilte
 			scrollbars="y"
 			type="auto"
 		>
-			<Stack gap={0}>
+			<div className={styles.container}>
 				{options.length === 0 && <Text c="dimmed" role="status" size="sm">{emptyMessage}</Text>}
 				{options.slice(0, visibleCount).map(option => (
 					<Checkbox
@@ -53,7 +55,7 @@ export function ListFilterOptions({ emptyMessage, onSelect, options }: ListFilte
 						value={option.value}
 					/>
 				))}
-			</Stack>
+			</div>
 		</ScrollArea.Autosize>
 	);
 }

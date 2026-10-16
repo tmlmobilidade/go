@@ -1,9 +1,11 @@
 'use client';
 
-import { Checkbox, Divider, Stack, TextInput } from '@mantine/core';
+import { Checkbox, Divider, TextInput } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 import { type SelectDataItem } from '../../../components/inputs/Select';
 import { FilterWrapper, type FilterWrapperRef } from '../../shared/FilterWrapper';
@@ -73,34 +75,40 @@ export function ListFilter({ active, disabled, isMultiple = true, label, onChang
 
 	return (
 		<FilterWrapper ref={filterWrapperRef} active={active} disabled={disabled} label={label} onClose={handleClose}>
-			<Stack gap="xs" maw="calc(100vw - 48px)" w={320}>
-				{withSearch && (
-					<TextInput
-						aria-label={t('shared:filters.ListFilter.search')}
-						leftSection={<IconSearch size={16} />}
-						onChange={event => setSearch(event.currentTarget.value)}
-						placeholder={t('shared:filters.ListFilter.search')}
-						value={search}
-					/>
-				)}
-				{withToggleAll && options.length > 0 && (
-					<>
-						<Checkbox
-							checked={toggleAllActive}
-							indeterminate={isMultiple && !toggleAllActive && checkedOptionValues.length > 0}
-							label={t('shared:filters.ListFilter.toggle_all')}
-							onChange={handleToggleAll}
-						/>
-						<Divider />
-					</>
-				)}
-				<ListFilterOptions
-					key={normalizedSearch}
-					emptyMessage={t(options.length ? 'shared:filters.ListFilter.no_results' : 'shared:filters.ListFilter.empty')}
-					onSelect={handleOptionSelect}
-					options={filteredOptions}
-				/>
-			</Stack>
+
+			{(withSearch || withToggleAll) && (
+				<>
+					<div className={styles.header}>
+						{withSearch && (
+							<TextInput
+								aria-label={t('shared:filters.ListFilter.search')}
+								leftSection={<IconSearch size={16} />}
+								onChange={event => setSearch(event.currentTarget.value)}
+								placeholder={t('shared:filters.ListFilter.search')}
+								value={search}
+								autoFocus
+							/>
+						)}
+						{withToggleAll && options.length > 0 && (
+							<Checkbox
+								checked={toggleAllActive}
+								indeterminate={isMultiple && !toggleAllActive && checkedOptionValues.length > 0}
+								label={t('shared:filters.ListFilter.toggle_all')}
+								onChange={handleToggleAll}
+							/>
+						)}
+					</div>
+					<Divider />
+				</>
+			)}
+
+			<ListFilterOptions
+				key={normalizedSearch}
+				emptyMessage={t(options.length ? 'shared:filters.ListFilter.no_results' : 'shared:filters.ListFilter.empty')}
+				onSelect={handleOptionSelect}
+				options={filteredOptions}
+			/>
+
 		</FilterWrapper>
 	);
 }
