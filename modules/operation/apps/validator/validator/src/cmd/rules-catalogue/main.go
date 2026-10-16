@@ -1,7 +1,6 @@
-// rules-catalogue writes the shared TypeScript rule contract derived from the
-// Go rule structs and catalogue. Use `npm run repo:validator-rules` from the
-// repository root, which writes the files to
-// packages-new/types/gtfs-validator/src/rules/.
+// rules-catalogue writes the TypeScript rule IDs derived from the Go catalogue.
+// Use `npm run repo:validator-rules` from the repository root to generate
+// packages-new/types/gtfs-validator/src/rules-new/rule-ids.ts.
 package main
 
 import (
@@ -14,7 +13,7 @@ import (
 )
 
 func main() {
-	outputDir := flag.String("output-dir", "", "directory for the TypeScript rule files")
+	outputDir := flag.String("output-dir", "", "directory for the generated rule-ids.ts file")
 	flag.Parse()
 	if *outputDir == "" {
 		fmt.Fprintln(os.Stderr, "rules-catalogue: --output-dir is required")
