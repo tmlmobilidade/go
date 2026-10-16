@@ -3,9 +3,10 @@
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Session } from '@tmlmobilidade/go-types-core';
-import { LoginEvent, useAnalyticsContext } from '@tmlmobilidade/go-ui-analytics';
+import { LoginEvent, LoginOpenedEvent, useAnalyticsContext } from '@tmlmobilidade/go-ui-analytics';
 import { fetchApiData, PasswordInput, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -17,7 +18,8 @@ export function LoginForm() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { actions: analytics } = useAnalyticsContext();
+	const { actions: { identify, startReplay, stopReplay, track }, flags: { ready } } = useAnalyticsContext();
+	const replayRequested = useSearchParams().get('replay') === 'login';
 	const [isCompletingLogin, setIsCompletingLogin] = useState(false);
 
 	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: PAGE_ROUTES.core.HOME_LIST });
@@ -44,18 +46,31 @@ export function LoginForm() {
 			});
 			let timeout: ReturnType<typeof setTimeout> | undefined;
 			try {
-				analytics.identify({ _id: response.data.user_id, email: emailValue });
+				identify({ _id: response.data.user_id, email: emailValue });
 				await Promise.race([
-					analytics.track(LoginEvent.shape.title.value),
+					track(LoginEvent.shape.title.value),
 					new Promise<void>((resolve) => { timeout = setTimeout(resolve, 1500); }),
 				]);
 			} finally {
 				clearTimeout(timeout);
-				analytics.stopReplay();
+				stopReplay();
 				window.location.href = redirectToValue;
 			}
 		},
 	});
+
+	// Capture only the login flow requested by the landing page's navigation link.
+	useEffect(() => {
+		if (!replayRequested || !ready) return;
+		let active = true;
+		void startReplay().then((started) => {
+			if (active && started) void track(LoginOpenedEvent.shape.title.value);
+		});
+		return () => {
+			active = false;
+			stopReplay();
+		};
+	}, [ready, replayRequested, startReplay, stopReplay, track]);
 
 	//
 	// C. Render components
