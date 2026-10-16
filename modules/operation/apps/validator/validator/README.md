@@ -202,12 +202,37 @@ Each validation message contains:
 
 ### Rules File Format
 
-The rules file is a JSON structure that defines validation severity levels for each GTFS table and field. Each field can have:
+The rules file accepts a flat object keyed by rule ID, either directly or inside a `validation_rules` object. For example (excerpt; a real file must include every configurable rule):
 
-- **Severity**: ERROR, WARNING, IGNORE, or FORBIDDEN
-- **Options**: Allowed values for the field
-- **Compare**: Comparison rules for cross-field validation
-- **Depends on**: Rule ids from the same file that must pass before this rule runs
+```json
+{
+  "validation_rules": {
+    "agency_file_missing": {
+      "severity": "error",
+      "depends_on": []
+    },
+    "agency_id_unique": {
+      "severity": "warning",
+      "depends_on": ["agency_file_present"]
+    }
+  }
+}
+```
+
+`<group>_file_missing` configures the file-presence severity previously stored as `<group>._file`. File-presence rules have no prerequisites. The synthetic `<group>_file_present` node is a valid prerequisite for rules in that group; it does not need its own configuration entry.
+
+Each rule can have:
+
+- **severity**: `error`, `warning`, `ignore`, or `forbidden` (required)
+- **options**: An array of allowed string values
+- **compare**: An array of `{ "key": "field_name", "value": "expected_value" }` objects
+- **depends_on**: Rule IDs from the same file, or its synthetic file-presence node, that must pass before this rule runs
+
+Dependencies come only from `depends_on` in the supplied rules JSON. Omitting it or supplying an empty array means the rule has no prerequisites. Unknown dependencies, cycles, and dependencies on incompatible execution phases are rejected before the GTFS is imported. Execution phases are declared on the Go configuration fields with `scope` tags; they do not add dependencies.
+
+Run `npm run repo:validator-rules` to generate only `packages-new/types/gtfs-validator/src/rules-new/rule-ids.ts`. The generator reads IDs directly from `types.GtfsRules`; it does not generate a catalogue or define dependencies.
+
+Legacy rules grouped by GTFS file are still accepted. Both formats require every configurable rule and its severity; use `ignore` to disable a rule. Fixed runtime diagnostics such as `file_validation` and `file_not_found_in_rules` are not configurable.
 
 ## Performance Considerations
 

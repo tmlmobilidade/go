@@ -22,7 +22,12 @@ func agencyRunner(t *testing.T, present bool) *services.RuleRunner {
 		t.Fatal(err)
 	}
 	t.Cleanup(cleanup)
-	var section *types.AgencyRules
+	section := &types.AgencyRules{
+		AgencyId:          types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_present"}},
+		AgencyName:        types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_present"}},
+		AgencyNameIdMatch: types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_id_unique", "agency_name_present"}},
+		AgencyUrl:         types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_present"}},
+	}
 	runner, err := services.NewRuleRunner(*gtfs, section)
 	if err != nil {
 		t.Fatal(err)
@@ -107,7 +112,7 @@ func TestConcurrentRuleIssueCounting(t *testing.T) {
 		}()
 	}
 	wg.Wait()
-	if count := service.RuleIssueCount(rules.CatalogueEntry{ID: "agency_id_unique"}); count != 800 {
+	if count := service.RuleIssueCount("agency_id_unique"); count != 800 {
 		t.Fatalf("count=%d", count)
 	}
 }

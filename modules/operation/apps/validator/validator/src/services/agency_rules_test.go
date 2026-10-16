@@ -7,6 +7,8 @@ import (
 	"main/types"
 	"os"
 	"path/filepath"
+	"slices"
+	"strings"
 	"testing"
 )
 
@@ -35,6 +37,74 @@ func TestAgencyRulesRequireCompleteConfiguration(t *testing.T) {
 		if (err == nil) != tc.valid {
 			t.Fatalf("input %s: %v", tc.input, err)
 		}
+	}
+}
+
+func TestParseFlatAgencyRulesFromFile(t *testing.T) {
+	grouped, err := json.Marshal(ruleset.DefaultConfig())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var groups map[string]map[string]any
+	if err := json.Unmarshal(grouped, &groups); err != nil {
+		t.Fatal(err)
+	}
+	flat := map[string]any{}
+	for group, entries := range groups {
+		for id, value := range entries {
+			if id == "_file" {
+				if group == "file_validation" {
+					continue
+				}
+				id = group + "_file_missing"
+				value = map[string]any{"severity": value, "depends_on": []string{}}
+			}
+			flat[id] = value
+		}
+	}
+	flat["agency_id_matched_with_agency_name"] = map[string]any{"severity": "error", "depends_on": []string{"agency_id_unique"}}
+	flat["agency_file_missing"] = map[string]any{"severity": "error"}
+	flat["agency_id_unique"] = map[string]any{"severity": "warning", "depends_on": []string{"agency_file_present"}}
+	path := filepath.Join(t.TempDir(), "rules.json")
+	for _, wrapped := range []bool{false, true} {
+		var input any = flat
+		if wrapped {
+			input = map[string]any{"validation_rules": flat}
+		}
+		data, err := json.Marshal(input)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, data, 0600); err != nil {
+			t.Fatal(err)
+		}
+		config, err := ParseRulesFromFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if config.Agency.AgencyId.Severity != types.SEVERITY_WARNING || !slices.Contains(NewRulesParser(path).GetRequiredFiles(config), "agency.txt") {
+			t.Fatal("flat severities did not reach runtime rule and required-file settings")
+		}
+	}
+	for name, dependencies := range map[string][]string{
+		"unknown":       {"not_a_rule"},
+		"cycle":         {"agency_id_matched_with_agency_name"},
+		"another file":  {"trips_file_present"},
+		"another group": {"trip_id_unique"},
+	} {
+		t.Run(name, func(t *testing.T) {
+			flat["agency_id_unique"] = map[string]any{"severity": "warning", "depends_on": dependencies}
+			data, err := json.Marshal(flat)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(path, data, 0600); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := ParseRulesFromFile(path); err == nil || !strings.Contains(err.Error(), "Invalid depends_on") {
+				t.Fatalf("invalid dependency accepted: %v", err)
+			}
+		})
 	}
 }
 

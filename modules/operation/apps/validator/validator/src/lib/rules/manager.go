@@ -42,16 +42,6 @@ func NewManager[T any](rules ...Rule[T]) (*Manager[T], error) {
 	return m, nil
 }
 
-// MustNewManager is like NewManager but panics on error.
-// Dependencies are declared in code, so an error here is a programming mistake.
-func MustNewManager[T any](rules ...Rule[T]) *Manager[T] {
-	m, err := NewManager(rules...)
-	if err != nil {
-		panic(err)
-	}
-	return m
-}
-
 // Build sorts the rules using Kahn's algorithm. Ties keep registration order,
 // so the execution order is deterministic.
 func (m *Manager[T]) Build() error {

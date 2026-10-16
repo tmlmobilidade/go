@@ -44,12 +44,6 @@ func NewRuleRunner(gtfs types.Gtfs, section any) (*RuleRunner, error) {
 			}
 		}
 	}
-	entries := map[string]rules.CatalogueEntry{}
-	for _, entry := range rules.Catalogue() {
-		if entry.Group == group && entry.Editable {
-			entries[entry.ConfigKey] = entry
-		}
-	}
 	filePresent := gtfs.HasTable(group)
 	list := []rules.Rule[ruleInput]{{ID: rules.FileNode(group), Run: func(ruleInput) rules.Status {
 		if filePresent {
@@ -69,9 +63,9 @@ func NewRuleRunner(gtfs types.Gtfs, section any) (*RuleRunner, error) {
 			if severity, explicit := severities[id]; explicit && (severity == "" || severity == types.SEVERITY_IGNORE) {
 				return rules.Skipped
 			}
-			before := AppMessageService.RuleIssueCount(entries[id])
+			before := AppMessageService.RuleIssueCount(id)
 			run()
-			if AppMessageService.RuleIssueCount(entries[id]) != before {
+			if AppMessageService.RuleIssueCount(id) != before {
 				return rules.Failed
 			}
 			return rules.Passed

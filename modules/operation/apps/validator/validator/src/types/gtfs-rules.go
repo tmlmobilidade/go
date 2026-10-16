@@ -102,19 +102,19 @@ type TripsRules struct {
 	TripIdLimitCharacters                     RuleConfig `json:"trip_id_limit_max_length"`
 	PatternIdFormat                           RuleConfig `json:"trips_pattern_id_matches_feed_pattern_id_syntax"`
 	StopCoordinatesByTripId                   RuleConfig `json:"trip_path_stop_coordinates_referenced_from_stops"`
-	PatternIdTripHasRequiredFieldsForGrouping RuleConfig `json:"trips_pattern_id_trip_has_required_fields_for_grouping"`
-	PatternIdSingleTripSignaturePerPattern    RuleConfig `json:"trips_pattern_id_single_trip_signature_per_pattern"`
-	RouteIdGroup                              RuleConfig `json:"trips_route_id_consistent_for_all_patterns_in_trips"`
-	DirectionIdGroup                          RuleConfig `json:"trips_direction_id_consistent_for_all_patterns_in_trips"`
-	OneShapeIdPerPatternIdGroup               RuleConfig `json:"trips_one_shape_id_per_pattern_id_group"`
-	OnePatternIdPerShapeIdGroup               RuleConfig `json:"trips_one_pattern_id_per_shape_id_group"`
-	TripHeadsignGroup                         RuleConfig `json:"trip_headsign_consistent_for_all_patterns_in_trips"`
+	PatternIdTripHasRequiredFieldsForGrouping RuleConfig `json:"trips_pattern_id_trip_has_required_fields_for_grouping" scope:"pattern"`
+	PatternIdSingleTripSignaturePerPattern    RuleConfig `json:"trips_pattern_id_single_trip_signature_per_pattern" scope:"pattern"`
+	RouteIdGroup                              RuleConfig `json:"trips_route_id_consistent_for_all_patterns_in_trips" scope:"pattern"`
+	DirectionIdGroup                          RuleConfig `json:"trips_direction_id_consistent_for_all_patterns_in_trips" scope:"pattern"`
+	OneShapeIdPerPatternIdGroup               RuleConfig `json:"trips_one_shape_id_per_pattern_id_group" scope:"pattern"`
+	OnePatternIdPerShapeIdGroup               RuleConfig `json:"trips_one_pattern_id_per_shape_id_group" scope:"shape"`
+	TripHeadsignGroup                         RuleConfig `json:"trip_headsign_consistent_for_all_patterns_in_trips" scope:"pattern"`
 	PatternIdSameShapeId                      RuleConfig `json:"trips_pattern_id_needs_to_be_the_same_as_shape_id"`
 	ShapeIdRouteDirectionMatch                RuleConfig `json:"trips_shape_id_matches_route_id_and_direction_id"`
-	ShapeIdMaxTwoPerRoute                     RuleConfig `json:"trips_shape_id_max_two_per_route"`
-	TripHeadsignMaxTwoPerRoute                RuleConfig `json:"trip_headsign_max_two_per_route"`
-	ShapeIdConsistentPerRouteDirection        RuleConfig `json:"trips_shape_id_consistent_per_route_direction"`
-	TripHeadsignConsistentPerRouteDirection   RuleConfig `json:"trip_headsign_consistent_per_route_direction"`
+	ShapeIdMaxTwoPerRoute                     RuleConfig `json:"trips_shape_id_max_two_per_route" scope:"route"`
+	TripHeadsignMaxTwoPerRoute                RuleConfig `json:"trip_headsign_max_two_per_route" scope:"route"`
+	ShapeIdConsistentPerRouteDirection        RuleConfig `json:"trips_shape_id_consistent_per_route_direction" scope:"route"`
+	TripHeadsignConsistentPerRouteDirection   RuleConfig `json:"trip_headsign_consistent_per_route_direction" scope:"route"`
 }
 
 type StopTimesRules struct {
@@ -122,7 +122,7 @@ type StopTimesRules struct {
 	TripId                   RuleConfig `json:"stop_times_trip_id_references_trips_table"`
 	ArrivalTime              RuleConfig `json:"stop_times_arrival_time_ordering_with_departure_and_frequencies"`
 	DepartureTime            RuleConfig `json:"stop_times_departure_time_ordering_with_arrival_and_timepoint"`
-	ArrivalDepartureSequence RuleConfig `json:"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence"`
+	ArrivalDepartureSequence RuleConfig `json:"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence" scope:"trip"`
 	StopId                   RuleConfig `json:"stop_times_stop_id_references_stops_table"`
 	StopHeadsign             RuleConfig `json:"stop_times_stop_headsign_present"`
 	PickupType               RuleConfig `json:"stop_times_pickup_type_valid_gtfs_enum"`
@@ -203,12 +203,12 @@ type ShapesRules struct {
 	ShapePtLon                                     RuleConfig `json:"shape_pt_lon_valid_longitude"`
 	ShapePtSequence                                RuleConfig `json:"shape_pt_sequence_not_repeated_within_shape"`
 	ShapeDistTraveled                              RuleConfig `json:"shape_dist_traveled_non_negative_monotonic"`
-	ShapeIdAndPointSequenceRequired                RuleConfig `json:"shape_id_and_point_sequence_required"`
-	ShapePtSequenceStrictlyIncreasing              RuleConfig `json:"shape_pt_sequence_strictly_increasing"`
-	ShapeDistTraveledNonDecreasingWithSequence     RuleConfig `json:"shape_dist_traveled_non_decreasing_with_sequence"`
-	ShapePointsCoordinatesConsistent               RuleConfig `json:"shape_sequence_position_mismatches_cumulative_traveled_distance"`
-	ShapePointsCoordinatesDistances                RuleConfig `json:"shape_dist_traveled_delta_mismatches_haversine_segment"`
-	ShapeDistTraveledDeltaMismatchesHaversineBlock RuleConfig `json:"shape_dist_traveled_delta_mismatches_haversine_block"`
+	ShapeIdAndPointSequenceRequired                RuleConfig `json:"shape_id_and_point_sequence_required" scope:"shape"`
+	ShapePtSequenceStrictlyIncreasing              RuleConfig `json:"shape_pt_sequence_strictly_increasing" scope:"shape"`
+	ShapeDistTraveledNonDecreasingWithSequence     RuleConfig `json:"shape_dist_traveled_non_decreasing_with_sequence" scope:"shape"`
+	ShapePointsCoordinatesConsistent               RuleConfig `json:"shape_sequence_position_mismatches_cumulative_traveled_distance" scope:"shape"`
+	ShapePointsCoordinatesDistances                RuleConfig `json:"shape_dist_traveled_delta_mismatches_haversine_segment" scope:"shape"`
+	ShapeDistTraveledDeltaMismatchesHaversineBlock RuleConfig `json:"shape_dist_traveled_delta_mismatches_haversine_block" scope:"shape"`
 }
 
 type FrequenciesRules struct {

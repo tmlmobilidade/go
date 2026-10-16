@@ -326,18 +326,12 @@ var AppMessageService = NewMessageService()
 
 // RuleIssueCount counts emissions before message deduplication. Counting only
 // summary messages would miss a failing prerequisite on a subsequent row.
-func (ms *MessageService) RuleIssueCount(entry ruleset.CatalogueEntry) uint64 {
+func (ms *MessageService) RuleIssueCount(id string) uint64 {
 	ms.mu.RLock()
 	defer ms.mu.RUnlock()
-	count := ms.issues[entry.ID]
-	for _, id := range entry.OutputIDs {
-		if id == entry.ID {
-			continue
-		}
-		if entry.MessageField != "" {
-			id += "/" + entry.MessageField
-		}
-		count += ms.issues[id]
+	count := ms.issues[id]
+	if key := ruleset.RuleMessageKey(id); key != id {
+		count += ms.issues[key]
 	}
 	return count
 }

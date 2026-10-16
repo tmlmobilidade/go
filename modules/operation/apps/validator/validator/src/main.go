@@ -122,9 +122,6 @@ func main() {
 	}
 
 	// 0.3 Parse Rules
-	if err := ruleset.ValidateDependencyContract(); err != nil {
-		log.Fatalf("Invalid dependency contract: %v", err)
-	}
 	rules, err := services.NewRulesParser(services.AppCLI.Options.RulesPath).ParseRules()
 	if err != nil {
 		log.Fatalf("Error parsing rules: %v", err)

@@ -18,30 +18,21 @@ func ConfigureMessageSeverities(config *types.GtfsRules) {
 	}
 	values := map[string]types.Severity{}
 	groups := reflect.ValueOf(config).Elem()
-	for _, entry := range Catalogue() {
-		// File checks resolve their own presence/forbidden semantics.
-		if !entry.Editable || entry.ConfigKey == "_file" || entry.Group == "file_validation" {
+	for i := range groups.NumField() {
+		name := groups.Type().Field(i).Tag.Get("json")
+		if name == "file_validation" {
 			continue
 		}
-		for i := range groups.NumField() {
-			if groups.Type().Field(i).Tag.Get("json") != entry.Group {
-				continue
+		forEachRuleConfig(groups.Field(i).Interface(), func(id string, config types.RuleConfig) {
+			severity := config.Severity
+			if severity == "" {
+				severity = types.SEVERITY_IGNORE
 			}
-			group := groups.Field(i)
-			for j := range group.NumField() {
-				if group.Type().Field(j).Tag.Get("json") != entry.ConfigKey {
-					continue
-				}
-				severity := group.Field(j).Interface().(types.RuleConfig).Severity
-				if severity == "" {
-					severity = types.SEVERITY_IGNORE
-				}
-				values[entry.Group+"/"+entry.ID+"/"] = severity
-				for _, id := range entry.OutputIDs {
-					values[entry.Group+"/"+id+"/"+entry.MessageField] = severity
-				}
+			values[name+"/"+id+"/"] = severity
+			if key := RuleMessageKey(id); key != id {
+				values[name+"/"+key] = severity
 			}
-		}
+		})
 	}
 	messageSeverities.Store(&values)
 }
@@ -70,4 +61,16 @@ func MessageSeverityOverride(file, id, field string) (types.Severity, bool) {
 		severity = types.SEVERITY_ERROR
 	}
 	return severity, ok
+}
+
+// RuleMessageKey handles the shared message ID emitted by calendar date checks.
+func RuleMessageKey(id string) string {
+	switch id {
+	case "calendar_start_date_valid_yyyymmdd":
+		return "calendar_start_end_dates_valid_yyyymmdd_order/start_date"
+	case "calendar_end_date_valid_yyyymmdd":
+		return "calendar_start_end_dates_valid_yyyymmdd_order/end_date"
+	default:
+		return id
+	}
 }

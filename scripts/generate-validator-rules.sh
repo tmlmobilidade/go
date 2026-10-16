@@ -33,14 +33,14 @@ if [ "${CHECK_ONLY}" = false ]; then
     printf 'Generating validator rule IDs from the Go validator...\n'
 fi
 
-if ! (cd "${VALIDATOR_DIR}" && go run ./cmd/rules-catalogue --output-dir "${TEMP_DIR}"); then
-    printf 'The rules-catalogue command failed. Nothing was written.\n' >&2
+if ! (cd "${VALIDATOR_DIR}" && go run ./cmd/rules-ids --output-dir "${TEMP_DIR}"); then
+    printf 'The rules-ids command failed. Nothing was written.\n' >&2
     exit 1
 fi
 
 SOURCE="${TEMP_DIR}/rule-ids.ts"
 if [ ! -f "${SOURCE}" ]; then
-    printf 'The rules-catalogue command did not produce rule-ids.ts. Nothing was written.\n' >&2
+    printf 'The rules-ids command did not produce rule-ids.ts. Nothing was written.\n' >&2
     exit 1
 fi
 
