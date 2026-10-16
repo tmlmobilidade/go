@@ -34,13 +34,17 @@ func DateValidation(db *services.SQLiteContext, dateType string, rules *types.Ca
 		}
 	}
 
+	//
 	// 1. Get the date value
+
 	date, err := db.Calendar.Field(dateType)
 	if err != nil {
 		return err
 	}
 
+	//
 	// 2. Validate date is present
+
 	if date == "" {
 		if ctx.ShouldSkip() {
 			return nil
@@ -51,15 +55,23 @@ func DateValidation(db *services.SQLiteContext, dateType string, rules *types.Ca
 		return nil
 	}
 
+	//
 	// 3. Validate date is forbidden
+
 	if ctx.IsForbidden() {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
 		return nil
 	}
 
+	//
 	// 4. Validate date is a valid service date
+
 	if !lib.IsValidServiceDate(date) {
 		ctx.AddError(ctx.GetTranslatedMessage("invalid", date))
 	}
+
+	//
+	// 5. Return success
+
 	return nil
 }
