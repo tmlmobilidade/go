@@ -8,4 +8,5 @@ export * from './EditButton';
 export * from './IconButton';
 export * from './LargeButton';
 export * from './LockButton';
+export * from './ReloadButton';
 export * from './UpdateButton';
