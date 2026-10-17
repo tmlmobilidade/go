@@ -1,10 +1,9 @@
 /* * */
 
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { redirect } from 'next/navigation';
+import { LandingPage } from '@/components/landing/LandingPage';
 
 /* * */
 
 export default function Page() {
-	redirect(PAGE_ROUTES.core.HOME_LIST);
+	return <LandingPage />;
 }

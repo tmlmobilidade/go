@@ -34,6 +34,4 @@ export default async function Layout({ children }: PropsWithChildren) {
 			{children}
 		</NonAuthenticatedWrapper>
 	);
-
-	//
 }

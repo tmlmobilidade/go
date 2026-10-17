@@ -114,6 +114,10 @@ jobs:
           echo "$APPS" | jq -r '.[]' | while read -r app; do
             echo "${MODULE}-${app}" >> "$OUT"
           done
+          # Preview overlays: apps built outside this monorepo but required in PR env
+          if [ "$MODULE" = "hub" ]; then
+            echo "hub-docs" >> "$OUT"
+          fi
           cat "$OUT"
 
       - uses: actions/upload-artifact@v4
