@@ -1,11 +1,11 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
+import { type Agency, type AgencyPlans, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
 import { useAgenciesListData } from '../list/use-agencies-list-data';
 import { useAgenciesDetailAgencyId } from './use-agencies-detail-agency-id';
@@ -13,7 +13,11 @@ import { useAgenciesDetailData } from './use-agencies-detail-data';
 
 /* * */
 
-const AgenciesDetailFormContext = createContext<StandardFormContextValue<UpdateAgencyDto> | undefined>(undefined);
+interface AgenciesDetailFormContextValue extends StandardFormContextValue<UpdateAgencyDto> {
+	validationRules: AgencyPlans['validation_rules']
+}
+
+const AgenciesDetailFormContext = createContext<AgenciesDetailFormContextValue | undefined>(undefined);
 
 export function useAgenciesDetailFormContext() {
 	const context = useContext(AgenciesDetailFormContext);
@@ -45,11 +49,16 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 		schema: UpdateAgencySchema,
 	});
 
+	const validationRules = useStandardFormWatch({ control: form.control, name: 'plans.validation_rules' });
+
 	//
 	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) }),
+		fetchFn: async () => {
+			const body = UpdateAgencySchema.parse(form.getValues());
+			return await fetchApiData<Agency>({ body, method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) });
+		},
 		onSuccess: (response) => {
 			form.reset(response.data);
 			agenciesDetailMutate(response);
@@ -75,18 +84,24 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 		loading: {
 			isLoading: agencyDataLoading,
 		},
+		locked: { isLocked: !hasUpdatePermission },
 		update: {
 			hasPermission: hasUpdatePermission,
 			isUpdating: isUpdating,
 		},
 	});
 
+	const handleSave = useCallback(async () => {
+		if (!updateEnabled || isUpdating || !await form.trigger()) return;
+		await handleUpdate();
+	}, [form, handleUpdate, isUpdating, updateEnabled]);
+
 	//
 	// E. Return state
 
-	const stateValue: StandardFormContextValue<UpdateAgencyDto> = useMemo(() => ({
+	const stateValue: AgenciesDetailFormContextValue = useMemo(() => ({
 		actions: {
-			update: handleUpdate,
+			update: handleSave,
 		},
 		capabilities: {
 			editEnabled,
@@ -100,7 +115,8 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 			isUpdating,
 		},
 		unblock,
-	}), [editEnabled, form, handleUpdate, isUpdating, agencyDataLoading, unblock, updateEnabled, isDirty, isValid]);
+		validationRules: validationRules ?? {},
+	}), [editEnabled, form, handleSave, isUpdating, agencyDataLoading, unblock, updateEnabled, isDirty, isValid, validationRules]);
 
 	return (
 		<AgenciesDetailFormContext.Provider value={stateValue}>

@@ -1,0 +1,26 @@
+# `feed_info.txt`
+
+Dataset metadata, including publisher, version, and expiration information.
+
+The file contains information about the dataset itself, rather than the services that the dataset describes. In some cases, the publisher of the dataset is a different entity than any of the agencies.
+
+**Presence**: <u>Conditionally Required</u>
+  <ul><li><u style='color:#ff3333'>Required</u> if `translations.txt` is provided.</li><li><u style='color:#ffcc00'>Recommended</u> otherwise.</li></ul><br>
+
+**Primary key**: none
+
+---
+
+### Field Definitions
+
+|Field Name|Type|Presence|Description|
+|--- |--- |--- |--- |
+|`feed_publisher_name`|Text|Required|Full name of the organization that publishes the dataset. This may be the same as one of the `agency.agency_name` values.|
+|`feed_publisher_url`|URL|Required|URL of the dataset publishing organization's website. This may be the same as one of the `agency.agency_url` values.|
+|`feed_lang`|Language code|Required|Default language used for the text in this dataset. This setting helps GTFS consumers choose capitalization rules and other language-specific settings for the dataset. The file `translations.txt` can be used if the text needs to be translated into languages other than the default one.<br><br>The default language may be multilingual for datasets with the original text in multiple languages. In such cases, the `feed_lang` field should contain the language code `mul` defined by the norm ISO 639-2, and a translation for each language used in the dataset should be provided in `translations.txt`. If all the original text in the dataset is in the same language, then `mul` should not be used.<br><br><u>Example</u>: Consider a dataset from a multilingual country like Switzerland, with the original `stops.stop_name` field populated with stop names in different languages. Each stop name is written according to the dominant language in that stop’s geographic location, e.g. `Genève` for the French-speaking city of Geneva, `Zürich` for the German-speaking city of Zurich, and `Biel/Bienne` for the bilingual city of Biel/Bienne. The dataset `feed_lang` should be `mul` and translations would be provided in `translations.txt`, in German: `Genf`, `Zürich` and `Biel`; in French: `Genève`, `Zurich` and `Bienne`; in Italian: `Ginevra`, `Zurigo` and `Bienna`; and in English: `Geneva`, `Zurich` and `Biel/Bienne`.|
+|default_lang|Language code|Optional|Defines the language that should be used when the data consumer doesn’t know the language of the rider. It will often be `en` (English).|
+|`feed_start_date`|Date|Recommended|The dataset provides complete and reliable schedule information for service in the period from the beginning of the `feed_start_date` day to the end of the `feed_end_date` day. Both days may be left empty if unavailable. The `feed_end_date` date must not precede the `feed_start_date` date if both are given. It is recommended that dataset providers give schedule data outside this period to advise of likely future service, but dataset consumers should treat it mindful of its non-authoritative status. If `feed_start_date` or `feed_end_date` extend beyond the active calendar dates defined in `calendar.txt` and `calendar_dates.txt`, the dataset is making an explicit assertion that there is no service for dates within the `feed_start_date` or `feed_end_date` range but not included in the active calendar dates.|
+|`feed_end_date`|Date|Recommended|(see above)|
+|feed_version|Text|Recommended|String that indicates the current version of their GTFS dataset. GTFS-consuming applications can display this value to help dataset publishers determine whether the latest dataset has been incorporated.|
+|`feed_contact_email`|Email|Optional|Email address for communication regarding the GTFS dataset and data publishing practices. `feed_contact_email` is a technical contact for GTFS-consuming applications. Provide customer service contact information through `agency.txt`. It's recommended that at least one of `feed_contact_email` or `feed_contact_url` are provided.|
+|`feed_contact_url`|URL|Optional|URL for contact information, a web-form, support desk, or other tools for communication regarding the GTFS dataset and data publishing practices. `feed_contact_url` is a technical contact for GTFS-consuming applications. Provide customer service contact information through `agency.txt`. It's recommended that at least one of `feed_contact_url` or `feed_contact_email` are provided.|

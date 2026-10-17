@@ -1,0 +1,51 @@
+package routes
+
+import (
+	"main/lib"
+	"main/services"
+	"main/types"
+)
+
+/*
+# Attributes
+
+- File: [routes.txt]
+- Field: route_sort_order
+- Presence: Recommended
+- Type: Non-negative integer
+
+# Description
+
+Orders the routes in a way which is ideal for presentation to customers. Routes with smaller route_sort_order values should be displayed first.
+
+[routes.txt]: https://gtfs.org/schedule/reference/#routestxt
+*/
+func RouteSortOrderValidation(route *types.Route, row int, rules *types.RoutesRules) {
+	ctx := lib.NewValidationContext("route_sort_order", "routes.txt", "route_sort_order_non_negative_integer", row, services.AppMessageService)
+	if rules != nil && rules.RouteSortOrder.Severity != "" {
+		ctx.WithSeverity(rules.RouteSortOrder.Severity)
+	}
+
+	// 1. Validate route_sort_order is present
+	if route.RouteSortOrder == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("required", "recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate route_sort_order is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
+		return
+	}
+
+	// 3. Validate route_sort_order is valid
+	if *route.RouteSortOrder < 0 {
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *route.RouteSortOrder))
+		return
+	}
+}

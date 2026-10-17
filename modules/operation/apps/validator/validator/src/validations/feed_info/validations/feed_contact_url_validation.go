@@ -1,0 +1,52 @@
+package feed_info
+
+import (
+	"main/lib"
+	"main/services"
+	"main/types"
+)
+
+/*
+# Attributes
+
+- File: [feed_info.txt]
+- Field: feed_contact_url
+- Presence: Optional
+- Type: URL
+
+# Description
+
+URL for contact information, a web-form, support desk, or other tools for communication regarding the GTFS dataset and data publishing practices. feed_contact_url is a technical contact for GTFS-consuming applications. Provide customer service contact information through [agency.txt]. It's recommended that at least one of feed_contact_url or feed_contact_email are provided.
+
+[feed_info.txt]: https://gtfs.org/schedule/reference/#feed_infotxt
+[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+*/
+func FeedContactUrlValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfoRules) {
+	ctx := lib.NewValidationContext("feed_contact_url", "feed_info.txt", "feed_contact_url_valid_http_url", row, services.AppMessageService)
+	if rules != nil && rules.FeedContactUrl.Severity != "" {
+		ctx.WithSeverity(rules.FeedContactUrl.Severity)
+	}
+
+	// 1. Validate feed_contact_url is present
+	if feedInfo.FeedContactUrl == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+
+		message := ctx.GetRequiredMessage("required", "recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate feed_contact_url is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
+		return
+	}
+
+	// 3. Validate feed_contact_url is a valid feed_contact_url
+	if !lib.ValidateUrl(*feedInfo.FeedContactUrl) {
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *feedInfo.FeedContactUrl))
+		return
+	}
+}

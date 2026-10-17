@@ -1,0 +1,71 @@
+/*
+# Attributes
+
+ - File: [stops.txt]
+ - Field: stop_timezone
+ - Presence: Optional
+ - Type: Timezone
+
+# Description
+
+Timezone of the location.
+
+If the location has a parent station, it inherits the parent station's timezone instead of applying its own.
+
+Stations and parentless stops with empty stop_timezone inherit the timezone specified by `agency.agency_timezone`.
+
+The times provided in stop_times.txt are in the timezone specified by `agency.agency_timezone`, not stop_timezone. This ensures that the time values in a trip always increase over the course of a trip, regardless of which timezones the trip crosses.
+
+[stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
+*/
+
+package stops
+
+import (
+	"main/lib"
+	"main/services"
+	"main/types"
+	"slices"
+)
+
+// StopTimezoneValidation validates the stop_timezone field in stops.txt
+func StopTimezoneValidation(stop *types.Stop, row int, rules *types.StopsRules) {
+	ctx := lib.NewValidationContext("stop_timezone", "stops.txt", "stop_timezone_valid", row, services.AppMessageService)
+	if rules != nil && rules.StopTimezone.Severity != "" {
+		ctx.WithSeverity(rules.StopTimezone.Severity)
+	}
+
+	// 1. Validate stop_timezone is present
+	if stop.StopTimezone == nil {
+		if ctx.ShouldSkip() {
+			return
+		}
+		message := ctx.GetRequiredMessage("required", "recommended")
+		ctx.AddMessageWithSeverity(message)
+		return
+	}
+
+	// 2. Validate stop_timezone is forbidden
+	if ctx.IsForbidden() {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
+		return
+	}
+
+	// 3. Validate stop_timezone is a valid timezone
+	if !lib.ValidateTimezone(*stop.StopTimezone) {
+		ctx.AddError(ctx.GetTranslatedMessage("invalid", *stop.StopTimezone))
+		return
+	}
+
+	// 4. Validate Rule options
+	if rules != nil && rules.StopTimezone.Options != nil {
+		if slices.Contains(*rules.StopTimezone.Options, types.ALL_OPTIONS) {
+			return
+		}
+
+		if !slices.Contains(*rules.StopTimezone.Options, *stop.StopTimezone) {
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.StopTimezone))
+			return
+		}
+	}
+}

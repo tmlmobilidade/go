@@ -1,0 +1,14 @@
+package agency_standard_test
+
+import (
+	"main/types"
+	checks "main/validations/agency/standard/checks"
+	testutils "main/validations/agency/utils"
+	"testing"
+)
+
+func TestAgencyIdValid(t *testing.T) {
+	testutils.CheckOptions(t, "agency_id", "001", checks.AgencyIdValid, func(config types.RuleConfig) *types.AgencyRules {
+		return &types.AgencyRules{AgencyIdValid: config}
+	})
+}
