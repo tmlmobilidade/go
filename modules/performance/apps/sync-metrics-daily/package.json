@@ -24,13 +24,13 @@
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"luxon": "3.7.2",
-		"p-limit": "7.3.1"
+		"p-limit": "7.3.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/node": "26.4.0",
+		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.12",
+		"tsx": "4.23.15",
 		"typescript": "6.0.3"
 	}
 }

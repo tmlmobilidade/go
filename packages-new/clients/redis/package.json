@@ -36,11 +36,11 @@
 	"dependencies": {
 		"@tmlmobilidade/go-clients-ssh": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"redis": "6.2.1"
+		"redis": "6.3.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/node": "26.4.0",
+		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"
