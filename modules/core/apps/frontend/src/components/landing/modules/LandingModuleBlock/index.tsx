@@ -2,7 +2,7 @@
 
 import styles from './styles.module.css';
 
-import { LandingVideoModalButton } from '../../modules/LandingVideoModalButton';
+import { LandingVideoModalButton } from '../LandingVideoModalButton';
 
 /* * */
 

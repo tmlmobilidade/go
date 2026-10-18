@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 
 import { LandingSection } from '../../shared/LandingContainer';
 import { LandingInfoBlock } from '../../shared/LandingInfoBlock';
-import { LandingModuleBlock } from '../../shared/LandingModuleBlock';
+import { LandingModuleBlock } from '../LandingModuleBlock';
 import { LandingVideoModalButton } from '../LandingVideoModalButton';
 
 /* * */
