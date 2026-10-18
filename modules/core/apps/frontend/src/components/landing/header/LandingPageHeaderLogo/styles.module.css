@@ -4,9 +4,15 @@
 .container {
 	display: flex;
 	flex-direction: row;
-	gap: 12px;
+	gap: 10px;
 	align-items: center;
 	justify-content: center;
+	padding: 4px;
+	padding-left: 11px;
+	background-color: var(--color-system-background-100);
+	border-radius: 999px;
+	margin-left: -11px;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
 }
 
 /* * */
@@ -15,7 +21,7 @@
 .text {
 	font-size: 30px;
 	font-weight: 900;
-	line-height: 1.1;
+	line-height: 1;
 	color: var(--color-system-text-100);
 }
 
