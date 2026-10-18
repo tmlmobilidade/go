@@ -135,6 +135,14 @@
 	padding-top: 0;
 }
 
+
+.video {
+	display: block;
+	width: 100%;
+	max-height: 70vh;
+	background: #000;
+}
+
 .videoPreview {
 	display: grid;
 	place-items: center;
@@ -147,13 +155,6 @@
 	border: 3px solid #0d5dd7;
 	border-radius: 8px;
 	cursor: pointer;
-}
-
-.video {
-	display: block;
-	width: 100%;
-	max-height: 70vh;
-	background: #000;
 }
 
 .videoPreview svg {
