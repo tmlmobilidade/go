@@ -6,11 +6,11 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { LandingPageHeaderLogo } from '../LandingPageHeaderLogo';
+import { LandingHeaderLogo } from '../LandingHeaderLogo';
 
 /* * */
 
-export function LandingPageHeader() {
+export function LandingHeader() {
 	//
 
 	// A. Setup variables
@@ -22,7 +22,7 @@ export function LandingPageHeader() {
 
 	return (
 		<header className={styles.header}>
-			<LandingPageHeaderLogo />
+			<LandingHeaderLogo />
 			<Spacer orientation="horizontal" size="full" />
 			<Button href={PAGE_ROUTES.core.LOGIN_LIST} label={t('unauthenticated:LandingPage.login')} variant="primary" />
 		</header>

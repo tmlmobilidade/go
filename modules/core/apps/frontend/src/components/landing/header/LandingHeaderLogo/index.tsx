@@ -4,7 +4,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function LandingPageHeaderLogo() {
+export function LandingHeaderLogo() {
 	return (
 		<div className={styles.container}>
 			<p className={styles.text}>GO</p>

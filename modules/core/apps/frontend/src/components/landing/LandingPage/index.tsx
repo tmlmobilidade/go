@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { LandingPageHeader } from '../header/LandingPageHeader';
-import { LandingMap } from '../LandingMap';
+import { LandingHeader } from '../header/LandingHeader';
+import { LandingMap } from '../map/LandingMap';
 
 /* * */
 
@@ -40,7 +40,7 @@ export function LandingPage() {
 					<LandingMap />
 				</section>
 
-				<LandingPageHeader />
+				<LandingHeader />
 
 				<section className={styles.introduction} id="top">
 					<div className={styles.copy}>
