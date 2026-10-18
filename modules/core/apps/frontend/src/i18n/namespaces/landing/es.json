@@ -25,7 +25,8 @@
 			"documentation": "Documentación",
 			"gtfs": "Standard GTFS",
 			"open_data": "API Datos Abiertos",
-			"open_services": "Servicios Abiertos"
+			"open_services": "Servicios Abiertos",
+			"roadmap": "Roadmap"
 		}
 	}
 }

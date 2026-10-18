@@ -1,4 +1,11 @@
 {
+	"LandingFooter": {
+		"links": {
+			"github": "GitHub",
+			"infrastructure": "Infraestrutura",
+			"status": "Estado"
+		}
+	},
 	"LandingModules": {
 		"infrastructure": {
 			"description": "Com um módulo dedicado à gestão da infraestrutura, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
@@ -25,7 +32,8 @@
 			"documentation": "Documentação",
 			"gtfs": "Standard GTFS",
 			"open_data": "API Dados Abertos",
-			"open_services": "Serviços Abertos"
+			"open_services": "Serviços Abertos",
+			"roadmap": "Roadmap"
 		}
 	}
 }

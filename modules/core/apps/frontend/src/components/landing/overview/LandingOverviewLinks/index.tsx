@@ -22,6 +22,7 @@ export function LandingOverviewLinks() {
 		{ href: '#modules', label: t('landing:LandingOverviewLinks.links.gtfs') },
 		{ href: '#modules', label: t('landing:LandingOverviewLinks.links.apex') },
 		{ href: `${PAGE_ROUTES.root.BASE}/hub/reference`, label: t('landing:LandingOverviewLinks.links.documentation') },
+		{ href: '#modules', label: t('landing:LandingOverviewLinks.links.roadmap') },
 	];
 
 	//

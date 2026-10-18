@@ -1,5 +1,7 @@
 'use client';
 
+import { Fragment } from 'react';
+
 import styles from './styles.module.css';
 
 import { LandingVideoModalButton } from '../LandingVideoModalButton';
@@ -31,8 +33,8 @@ export function LandingModuleBlock({ content, index, title }: LandingModuleBlock
 			</div>
 
 			{content.map((item, idx) => (
-				<>
-					<div key={idx} className={styles.wrapper}>
+				<Fragment key={idx}>
+					<div className={styles.wrapper}>
 						<h2 className={styles.subtitle}>{item.subtitle}</h2>
 						<p className={styles.description}>{item.description}</p>
 						<LandingVideoModalButton
@@ -41,7 +43,7 @@ export function LandingModuleBlock({ content, index, title }: LandingModuleBlock
 						/>
 					</div>
 					{idx < content.length - 1 && <div className={styles.divider} />}
-				</>
+				</Fragment>
 			))}
 
 		</div>
