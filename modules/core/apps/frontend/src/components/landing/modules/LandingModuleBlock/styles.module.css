@@ -83,3 +83,13 @@
 	font-weight: 400;
 	padding-bottom: 15px;
 }
+
+/* * */
+/* DIVIDER */
+
+.divider {
+	height: 1px;
+	margin-bottom: 20px;
+	width: 100%;
+	background: var(--color-system-border-100);
+}

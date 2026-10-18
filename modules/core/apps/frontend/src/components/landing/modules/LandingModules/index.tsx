@@ -41,39 +41,61 @@ export function LandingModules() {
 			<div className={styles.grid}>
 
 				<LandingModuleBlock
-					description={t('landing:LandingModules.infrastructure.description')}
 					index={1}
-					subtitle={t('landing:LandingModules.infrastructure.subtitle')}
-					thumbnailSrc="/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg"
 					title={t('landing:LandingModules.infrastructure.title')}
-					videoSrc="https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4"
+					content={[{
+						description: t('landing:LandingModules.infrastructure.description'),
+						subtitle: t('landing:LandingModules.infrastructure.subtitle'),
+						thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+						videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+					}]}
 				/>
 
 				<LandingModuleBlock
-					description={t('landing:LandingModules.infrastructure.description')}
-					index={2}
-					subtitle={t('landing:LandingModules.infrastructure.subtitle')}
-					thumbnailSrc="/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg"
+					index={1}
 					title={t('landing:LandingModules.infrastructure.title')}
-					videoSrc="https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4"
+					content={[{
+						description: t('landing:LandingModules.infrastructure.description'),
+						subtitle: t('landing:LandingModules.infrastructure.subtitle'),
+						thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+						videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+					}]}
 				/>
 
 				<LandingModuleBlock
-					description={t('landing:LandingModules.infrastructure.description')}
-					index={3}
-					subtitle={t('landing:LandingModules.infrastructure.subtitle')}
-					thumbnailSrc="/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg"
+					index={1}
 					title={t('landing:LandingModules.infrastructure.title')}
-					videoSrc="https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4"
+					content={[
+						{
+							description: t('landing:LandingModules.infrastructure.description'),
+							subtitle: t('landing:LandingModules.infrastructure.subtitle'),
+							thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+						},
+						{
+							description: t('landing:LandingModules.infrastructure.description'),
+							subtitle: t('landing:LandingModules.infrastructure.subtitle'),
+							thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+						},
+						{
+							description: t('landing:LandingModules.infrastructure.description'),
+							subtitle: t('landing:LandingModules.infrastructure.subtitle'),
+							thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+						},
+					]}
 				/>
 
 				<LandingModuleBlock
-					description={t('landing:LandingModules.infrastructure.description')}
-					index={3}
-					subtitle={t('landing:LandingModules.infrastructure.subtitle')}
-					thumbnailSrc="/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg"
+					index={1}
 					title={t('landing:LandingModules.infrastructure.title')}
-					videoSrc="https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4"
+					content={[{
+						description: t('landing:LandingModules.infrastructure.description'),
+						subtitle: t('landing:LandingModules.infrastructure.subtitle'),
+						thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+						videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+					}]}
 				/>
 
 			</div>

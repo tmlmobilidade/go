@@ -6,18 +6,22 @@ import { LandingVideoModalButton } from '../LandingVideoModalButton';
 
 /* * */
 
-interface LandingModuleBlockProps {
+interface LandingModuleBlockContent {
 	description: string
-	index: number
 	subtitle: string
 	thumbnailSrc: string
-	title: string
 	videoSrc: string
+}
+
+interface LandingModuleBlockProps {
+	content: LandingModuleBlockContent[]
+	index: number
+	title: string
 }
 
 /* * */
 
-export function LandingModuleBlock({ description, index, subtitle, thumbnailSrc, title, videoSrc }: LandingModuleBlockProps) {
+export function LandingModuleBlock({ content, index, title }: LandingModuleBlockProps) {
 	return (
 		<div className={styles.container}>
 
@@ -26,14 +30,19 @@ export function LandingModuleBlock({ description, index, subtitle, thumbnailSrc,
 				<p className={styles.title}>{title}</p>
 			</div>
 
-			<div className={styles.wrapper}>
-				<h2 className={styles.subtitle}>{subtitle}</h2>
-				<p className={styles.description}>{description}</p>
-				<LandingVideoModalButton
-					thumbnailSrc={thumbnailSrc}
-					videoSrc={videoSrc}
-				/>
-			</div>
+			{content.map((item, idx) => (
+				<>
+					<div key={idx} className={styles.wrapper}>
+						<h2 className={styles.subtitle}>{item.subtitle}</h2>
+						<p className={styles.description}>{item.description}</p>
+						<LandingVideoModalButton
+							thumbnailSrc={item.thumbnailSrc}
+							videoSrc={item.videoSrc}
+						/>
+					</div>
+					{idx < content.length - 1 && <div className={styles.divider} />}
+				</>
+			))}
 
 		</div>
 	);
