@@ -29,7 +29,6 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-telemetry": "*",
 		"csv-stringify": "6.9.0"
 	},
 	"devDependencies": {

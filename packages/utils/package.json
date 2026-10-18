@@ -36,8 +36,6 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
-		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/go-utils-dates": "*",
 		"mergekit": "3.0.6",
 		"zod": "3.25.76"
 	},

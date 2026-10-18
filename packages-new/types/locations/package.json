@@ -35,7 +35,6 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types-geo": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
