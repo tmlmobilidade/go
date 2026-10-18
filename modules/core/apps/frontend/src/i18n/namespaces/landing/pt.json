@@ -1,0 +1,10 @@
+{
+	"LandingOverview": {
+		"actions": {
+			"explore": "Explorar",
+			"login": "Login"
+		},
+		"description": "O GO é uma plataforma que responde às necessidades das autoridades e dos operadores de transporte, de forma ágil e intuitiva.",
+		"title": "Uma nova forma de trabalhar transportes públicos em Portugal."
+	}
+}

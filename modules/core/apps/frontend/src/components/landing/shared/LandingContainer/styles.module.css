@@ -1,0 +1,7 @@
+/* * */
+/* SECTION */
+
+.section {
+	width: min(1200px, 100%);
+	margin: 0 auto;
+}

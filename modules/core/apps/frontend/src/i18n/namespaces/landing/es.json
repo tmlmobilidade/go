@@ -1,0 +1,10 @@
+{
+	"LandingOverview": {
+		"actions": {
+			"explore": "Explorar",
+			"login": "Iniciar sesión"
+		},
+		"description": "GO es una plataforma que responde a las necesidades de las autoridades y los operadores de transporte de forma ágil e intuitiva.",
+		"title": "Una nueva forma de trabajar el transporte público en Portugal."
+	}
+}

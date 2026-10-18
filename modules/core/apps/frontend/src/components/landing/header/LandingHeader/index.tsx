@@ -1,11 +1,12 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, Spacer } from '@tmlmobilidade/ui';
+import { Button, Section, Spacer } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
+import { LandingSection } from '../../shared/LandingContainer';
 import { LandingHeaderLogo } from '../LandingHeaderLogo';
 
 /* * */
@@ -22,9 +23,11 @@ export function LandingHeader() {
 
 	return (
 		<header className={styles.header}>
-			<LandingHeaderLogo />
-			<Spacer orientation="horizontal" size="full" />
-			<Button href={PAGE_ROUTES.core.LOGIN_LIST} label={t('unauthenticated:LandingPage.login')} variant="primary" />
+			<LandingSection>
+				<Section flexDirection="row">
+					<LandingHeaderLogo />
+				</Section>
+			</LandingSection>
 		</header>
 	);
 }

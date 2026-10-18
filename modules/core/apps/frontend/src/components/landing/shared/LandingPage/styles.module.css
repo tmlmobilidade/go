@@ -1,14 +1,10 @@
 .root {
 	min-height: 100vh;
 	color: #050505;
-	background: #f4f6f8;
-}
-
-.hero {
-	position: relative;
-	height: min(500px, 38vw);
-	min-height: 420px;
-	overflow: hidden;
+	background: var(--color-system-background-200);
+	display: flex;
+	flex-direction: column;
+	gap: 50px;
 }
 
 .header {

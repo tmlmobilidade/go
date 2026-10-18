@@ -104,7 +104,7 @@
 .quickLinks > span {
 	color: #bbbfc9;
 	font-size: 18px;
-	font-weight: 800;
+	font-weight: 700;
 	text-transform: uppercase;
 }
 
@@ -115,7 +115,7 @@
 	justify-content: space-between;
 	color: inherit;
 	font-size: clamp(24px, 2vw, 32px);
-	font-weight: 800;
+	font-weight: 700;
 	line-height: 1.05;
 	text-decoration: none;
 	letter-spacing: -0.035em;

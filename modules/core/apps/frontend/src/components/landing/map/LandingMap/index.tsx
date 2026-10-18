@@ -3,6 +3,8 @@
 import { MapContextProvider, MapView, useMapViewContext } from '@tmlmobilidade/ui';
 import { useEffect } from 'react';
 
+import styles from './styles.module.css';
+
 /* * */
 
 const LISBON_VIEW = {
@@ -15,11 +17,13 @@ const LISBON_VIEW = {
 
 export function LandingMap() {
 	return (
-		<MapContextProvider preferenceScope="landing-map">
-			<MapView id="landing-map" layers={{}} showSearchPin={false} toolbar={false}>
-				<LandingMapViewport />
-			</MapView>
-		</MapContextProvider>
+		<div className={styles.container}>
+			<MapContextProvider preferenceScope="landing-map">
+				<MapView id="landing-map" layers={{}} showSearchPin={false} toolbar={false}>
+					<LandingMapViewport />
+				</MapView>
+			</MapContextProvider>
+		</div>
 	);
 }
 
