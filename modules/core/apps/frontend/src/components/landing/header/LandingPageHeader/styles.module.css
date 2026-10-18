@@ -1,0 +1,14 @@
+/* * */
+/* HEADER */
+
+.header {
+	position: fixed;
+	z-index: 10;
+	top: 24px;
+	left: 50%;
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	width: min(1140px, calc(100% - 64px));
+	transform: translateX(-50%);
+}

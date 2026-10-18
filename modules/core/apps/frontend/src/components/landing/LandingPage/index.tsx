@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
+import { LandingPageHeader } from '../header/LandingPageHeader';
 import { LandingMap } from '../LandingMap';
 
 /* * */
@@ -39,13 +40,7 @@ export function LandingPage() {
 					<LandingMap />
 				</section>
 
-				<header className={styles.header}>
-					<a aria-label="GO" className={styles.logo} href="#top">
-						<span>GO</span>
-						<i aria-hidden="true" />
-					</a>
-					<Button href={PAGE_ROUTES.core.LOGIN_LIST} label={t('unauthenticated:LandingPage.login')} variant="primary" />
-				</header>
+				<LandingPageHeader />
 
 				<section className={styles.introduction} id="top">
 					<div className={styles.copy}>
