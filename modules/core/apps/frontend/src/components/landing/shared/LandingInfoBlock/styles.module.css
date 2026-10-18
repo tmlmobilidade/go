@@ -4,7 +4,7 @@
 .container {
 	display: flex;
 	flex-direction: column;
-	max-width: 500px;
+	max-width: 600px;
 	align-items: flex-start;
 	gap: 15px;
 	padding-top: 30px;
@@ -24,7 +24,6 @@
 /* TITLE */
 
 .title {
-	max-width: 640px;
 	margin: 0;
 	font-size: 40px;
 	font-weight: 700;
@@ -36,8 +35,8 @@
 /* DESCRIPTION */
 
 .description {
-	max-width: 590px;
 	font-size: 24px;
 	line-height: 1.28;
 	letter-spacing: -0.02em;
+	padding-bottom: 15px;
 }

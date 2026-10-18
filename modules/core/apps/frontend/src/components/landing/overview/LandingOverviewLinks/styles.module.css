@@ -1,0 +1,50 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 20px;
+	padding: 35px 30px;
+	background: var(--color-system-background-100);
+	border-radius: 30px;
+	box-shadow: 0 10px 30px rgb(0 0 0 / 6%);
+}
+
+/* * */
+/* LABEL */
+
+.label {
+	color: var(--color-system-text-300);
+	font-size: 17px;
+	line-height: 1;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+/* * */
+/* LINK & ICON */
+
+.link {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: flex-start;
+	color: var(--color-system-text-100);
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 1;
+	text-decoration: none;
+	text-decoration-thickness: 4px;
+}
+
+.icon {
+	color: var(--color-system-border-100);
+}
+
+.link:hover,
+.link:hover .icon {
+	text-decoration: underline;
+	color: var(--color-primary);
+}

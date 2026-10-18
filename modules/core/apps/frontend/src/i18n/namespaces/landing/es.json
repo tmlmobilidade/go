@@ -6,5 +6,15 @@
 		},
 		"description": "GO es una plataforma que responde a las necesidades de las autoridades y los operadores de transporte de forma ágil e intuitiva.",
 		"title": "Una nueva forma de trabajar el transporte público en Portugal."
+	},
+	"LandingOverviewLinks": {
+		"label": "Links rápidos",
+		"links": {
+			"apex": "Sistema APEX",
+			"documentation": "Documentación",
+			"gtfs": "Standard GTFS",
+			"open_data": "API Datos Abiertos",
+			"open_services": "Servicios Abiertos"
+		}
 	}
 }

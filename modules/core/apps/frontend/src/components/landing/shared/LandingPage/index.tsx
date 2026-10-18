@@ -16,6 +16,7 @@ import { LandingOverview } from '../../overview/LandingOverview';
 export function LandingPage() {
 	//
 
+	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
