@@ -1,9 +1,9 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { DemandByLineByDay, Metric } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { DemandByLineByDay, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,7 +19,7 @@ export const syncDemandByLineByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -27,7 +27,7 @@ export const syncDemandByLineByMonth = async () => {
 
 	const fetchTimer = new Timer();
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	const dailyMetrics = await metricsCollection.find({
 		metric: 'demand_by_line_by_day',
 	}).toArray() as DemandByLineByDay[];
@@ -54,6 +54,7 @@ export const syncDemandByLineByMonth = async () => {
 		}
 
 		const lineDoc = lineMap.get(line_id);
+		if (!lineDoc) throw new Error('Metric group was not initialized');
 
 		// Aggregate daily data into months
 		for (const [dayKey, dayData] of Object.entries(dailyMetric.data)) {
@@ -75,7 +76,7 @@ export const syncDemandByLineByMonth = async () => {
 	// Insert all metrics
 
 	const insertTimer = new Timer();
-	await metrics.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 	Logger.info({ message: `Inserted ${results.length} monthly metrics (${insertTimer.get()})` });
 
 	logMetricToFile({

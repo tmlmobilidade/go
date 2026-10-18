@@ -1,9 +1,9 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { DemandByPatternHourByMonth, Metric } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { DemandByPatternHourByMonth, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -20,13 +20,13 @@ export const syncDemandByPatternHourByYear = async () => {
 
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch metrics collection
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 
 	//
 	// Get all monthly metrics
@@ -74,10 +74,10 @@ export const syncDemandByPatternHourByYear = async () => {
 					pattern_id,
 				},
 			} as Metric);
-		}
-		else {
+		} else {
 			// Merge yearly data if somehow we have duplicates
 			const existingMetric = yearlyMap.get(key);
+			if (!existingMetric) throw new Error('Metric group was not initialized');
 			for (const [year, data] of Object.entries(yearlyData)) {
 				if (!existingMetric.data[year]) {
 					existingMetric.data[year] = { qty: 0 };
@@ -94,7 +94,7 @@ export const syncDemandByPatternHourByYear = async () => {
 	// Insert all metrics
 
 	if (monthlyAggregation.length > 0) {
-		await metrics.insertMany(monthlyAggregation);
+		await goDb.performance.metrics.insertMany(monthlyAggregation);
 	}
 
 	logMetricToFile({

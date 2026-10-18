@@ -1,7 +1,7 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { Metric } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { Metric } from '@tmlmobilidade/types';
 
 export const computeTopDemandByAgencyByDayType = async () => {
 	//
@@ -15,12 +15,12 @@ export const computeTopDemandByAgencyByDayType = async () => {
 	// Delete existing metrics
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch metrics collection
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 
 	//
 	// Compute top 5 days by agency and day type
@@ -148,7 +148,7 @@ export const computeTopDemandByAgencyByDayType = async () => {
 
 	//
 	// Insert metric
-	await metricsCollection.insertOne(metricDoc);
+	await goDb.performance.metrics.insertOne(metricDoc);
 
 	logMetricToFile({
 		approach: {

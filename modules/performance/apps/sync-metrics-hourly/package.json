@@ -19,9 +19,12 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-performance-pckg-log": "*",
+		"@tmlmobilidade/go-performance-pckg-scripts": "*",
+		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"p-limit": "7.3.1"
 	},

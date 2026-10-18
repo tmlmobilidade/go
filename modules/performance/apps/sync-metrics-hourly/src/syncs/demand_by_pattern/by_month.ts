@@ -1,9 +1,9 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { DemandByPatternByDay, Metric } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { DemandByPatternByDay, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,7 +19,7 @@ export const syncDemandByPatternByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -27,7 +27,7 @@ export const syncDemandByPatternByMonth = async () => {
 
 	const fetchTimer = new Timer();
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	const dailyMetrics = await metricsCollection.find({
 		metric: 'demand_by_pattern_by_day',
 	}).toArray() as DemandByPatternByDay[];
@@ -54,6 +54,7 @@ export const syncDemandByPatternByMonth = async () => {
 		}
 
 		const patternDoc = patternMap.get(pattern_id);
+		if (!patternDoc) throw new Error('Metric group was not initialized');
 
 		// Aggregate daily data into months
 		for (const [dayKey, dayData] of Object.entries(dailyMetric.data)) {
@@ -75,7 +76,7 @@ export const syncDemandByPatternByMonth = async () => {
 	// Insert all metrics
 
 	const insertTimer = new Timer();
-	await metrics.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 	Logger.info({ message: `Inserted ${results.length} monthly metrics (${insertTimer.get()})` });
 
 	logMetricToFile({

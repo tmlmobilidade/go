@@ -1,12 +1,14 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
-import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
+import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromStartIso } from '@/utils/day-label.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { type PerformanceCalendarEntry as CalendarEntry, fetchPerformanceCalendar } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { type DemandByAgencyByDay } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type DemandByAgencyByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -17,25 +19,23 @@ export const syncDemandByAgencyByDay = async () => {
 	Logger.title(`Sync Demand Metrics by Agency by Day`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_agency_by_day';
+	const metricKey = 'demand_by_agency_by_day';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await goDb.performance.metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
-	// Fetch validations collection
-
-	const validationsCollection = await simplifiedApexValidations.getCollection();
+	// Read migrated validations through labDb.
 
 	//
 	// Load calendar JSON
 
-	const calendarJson = await Dates.fetchCalendarData();
+	const calendarJson = await fetchPerformanceCalendar();
 
 	if (!calendarJson.length) {
 		throw new Error('Calendar data unavailable — cannot build demand_by_agency_by_day metrics');
@@ -69,6 +69,7 @@ export const syncDemandByAgencyByDay = async () => {
 	let cursor = earliestDataNeeded;
 	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ days: 1 });
+		if (!cursor.iso || !next.iso) throw new Error('Invalid metric date range');
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
 			endIso: next.iso,
@@ -94,21 +95,14 @@ export const syncDemandByAgencyByDay = async () => {
 
 			const dayLabel = dayLabelFromStartIso(chunkData.startIso);
 
-			const validationsAgg = await validationsCollection.aggregate([
-				{
-					$match: {
-						agency_id: { $in: [...LEGACY_CM_AGENCY_IDS] },
-						created_at: { $gte: chunkData.start, $lt: chunkData.end },
-						is_passenger: true,
-					},
-				},
-				{
-					$group: {
-						_id: '$agency_id',
-						count: { $sum: 1 },
-					},
-				},
-			]).toArray();
+			const validationsAgg = await labDb.queryFromString<{ _id: string, count: number }>(
+				`SELECT agency_code AS _id, toFloat64(count()) AS count
+				 FROM simplified_apex.validations FINAL
+				 WHERE created_at >= $1 AND created_at < $2
+				   AND agency_id IN $3 AND is_passenger = 1
+				 GROUP BY agency_code`,
+				{ 1: chunkData.start, 2: chunkData.end, 3: [...GO_CM_AGENCY_IDS] },
+			);
 
 			Logger.info({ message: `Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} agencies (${chunkTimer.get()})` });
 			return { dayLabel, validationsAgg };
@@ -129,20 +123,21 @@ export const syncDemandByAgencyByDay = async () => {
 		}
 
 		for (const validation of validationsAgg) {
-			const agency_id = validation._id ?? 'no-agency';
+			const agencyId = validation._id ?? 'no-agency';
 
 			// Create or get agency document
-			if (!agencyMap.has(agency_id)) {
-				agencyMap.set(agency_id, {
+			if (!agencyMap.has(agencyId)) {
+				agencyMap.set(agencyId, {
 					data: {},
-					description: `Aggregated passengers for the agency ${agency_id}`,
+					description: `Aggregated passengers for the agency ${agencyId}`,
 					generated_at: new Date(),
-					metric: METRIC,
-					properties: { agency_id },
+					metric: metricKey,
+					properties: { agency_id: agencyId },
 				});
 			}
 
-			const agencyDoc = agencyMap.get(agency_id);
+			const agencyDoc = agencyMap.get(agencyId);
+			if (!agencyDoc) throw new Error('Metric group was not initialized');
 
 			// Update individual agency data
 			agencyDoc.data[dayLabel] = {
@@ -163,12 +158,12 @@ export const syncDemandByAgencyByDay = async () => {
 	if (results.length === 0) {
 		Logger.info({ message: 'No metric documents to insert — skipping insertMany' });
 	} else {
-		await metrics.insertMany(results);
+		await goDb.performance.metrics.insertMany(results);
 	}
 
 	logMetricToFile({
-		approach: { description: 'Loop by day, aggregate on mongo (parallel)', key: 'loop_day_parallel' },
-		metric: METRIC,
+		approach: { description: 'Loop by day, aggregate in ClickHouse (parallel)', key: 'loop_day_parallel' },
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

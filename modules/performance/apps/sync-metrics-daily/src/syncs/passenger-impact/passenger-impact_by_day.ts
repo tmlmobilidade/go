@@ -1,19 +1,17 @@
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AggregationPipeline, metrics } from '@tmlmobilidade/interfaces';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type OperationalDate, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { type OperationalDate, type Ride } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
 
 type AgencyId = string;
 type PatternHour = string;
 
 interface PassengerAggRow {
-	_id: {
-		agency_id: AgencyId
-		patternHour: PatternHour
-	}
+	agency_id: AgencyId
+	pattern_hour: PatternHour
 	values: number[]
 }
 
@@ -48,31 +46,35 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	const allDaysChunks = Interval
 		.fromISO(`${Dates.fromUnixMilliseconds(startDate).iso}/${Dates.fromUnixMilliseconds(endDate).iso}`)
 		.splitBy({ day: 1 })
-		.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }));
+		.map((interval) => {
+			if (!interval.start || !interval.end) throw new Error('Invalid passenger impact date interval');
+			return { end: interval.end.toMillis(), start: interval.start.toMillis() };
+		});
 
 	// 1) Failed rides in the target interval -> operationalDayMap[opDate][agency] = Set(patternHour)
-	const ridesCollection = await goDb.operation.rides.getCollection();
-	const ridesPipeline: AggregationPipeline<Ride> = [
-		{
-			$match: {
-				'agency_id': { $in: [...GO_CM_AGENCY_IDS] },
-				'analysis.SIMPLE_ONE_APEX_VALIDATION.grade': 'fail',
-				'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade': 'fail',
-				'start_time_scheduled': { $gte: startDate, $lt: endDate },
-			},
-		},
-	];
-
-	Logger.info({ message: `Fetching failed rides in the target interval...` });
-	const ridesCursor = ridesCollection.aggregate<Ride>(ridesPipeline).batchSize(100_000);
-	const ridesCount = await ridesCollection.countDocuments(ridesPipeline[0]['$match']);
-
-	Logger.info({ message: `Found ${ridesCount} failed rides in the target interval.` });
+	Logger.info({ message: 'Fetching failed pattern-hours in the target interval...' });
+	const ridesCursor = await labDb.queryFromString<{
+		agency_id: string
+		operational_date: OperationalDate
+		pattern_hour: string
+	}>(
+		`SELECT DISTINCT r.agency_id, toString(r.operational_date) AS operational_date,
+		        concat(r.shape_id, '_', formatDateTime(fromUnixTimestamp64Milli(r.start_time_scheduled, 'Europe/Lisbon'), '%H:%i')) AS pattern_hour
+		 FROM operation.rides AS r FINAL
+		 INNER JOIN (SELECT ride_id, grade_status FROM operation.ride_analysis_simple_one_apex_validation FINAL) AS a
+		   ON r._id = a.ride_id
+		 INNER JOIN (SELECT ride_id, grade_status FROM operation.ride_analysis_simple_three_vehicle_events FINAL) AS v
+		   ON r._id = v.ride_id
+		 WHERE r.agency_id IN $3 AND r.start_time_scheduled >= $1 AND r.start_time_scheduled < $2
+		   AND a.grade_status = 'fail' AND v.grade_status = 'fail'`,
+		{ 1: startDate, 2: endDate, 3: [...GO_CM_AGENCY_IDS] },
+	);
+	Logger.info({ message: `Found ${ridesCursor.length} failed pattern-hours in the target interval.` });
 
 	const operationalDayMap = new Map<OperationalDate, Map<AgencyId, Set<PatternHour>>>();
 
 	let ridesProcessed = 0;
-	for await (const ride of ridesCursor) {
+	for (const ride of ridesCursor) {
 		ridesProcessed++;
 		if (ridesProcessed % 10_000 === 0) {
 			Logger.info({ message: `Processed ${ridesProcessed} failed rides...` });
@@ -81,27 +83,20 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 		const operationalDate: OperationalDate = ride.operational_date;
 		const agencyId: AgencyId = String(ride.agency_id);
 
-		const date = new Date(ride.start_time_scheduled);
-		const time = date.toLocaleTimeString('pt-PT', {
-			hour: '2-digit',
-			hour12: false,
-			minute: '2-digit',
-			timeZone: 'Europe/Lisbon',
-		});
-
-		const patternHour: PatternHour = `${String(ride.pattern_id)}_${time}`;
+		const patternHour: PatternHour = ride.pattern_hour;
 
 		if (!operationalDayMap.has(operationalDate)) {
 			operationalDayMap.set(operationalDate, new Map<AgencyId, Set<PatternHour>>());
 		}
 
 		const agencyMap = operationalDayMap.get(operationalDate);
+		if (!agencyMap) throw new Error('Operational day group was not initialized');
 
 		if (!agencyMap.has(agencyId)) {
 			agencyMap.set(agencyId, new Set<PatternHour>());
 		}
 
-		agencyMap.get(agencyId).add(patternHour);
+		agencyMap.get(agencyId)?.add(patternHour);
 	}
 
 	// Global union of failed patternHours (used to restrict the median query)
@@ -136,61 +131,28 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 			.unix_milliseconds;
 
 		Logger.info(
-			{ message: `Calculating passenger impact for day ${Dates.fromUnixMilliseconds(start30dTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}...${Dates.fromUnixMilliseconds(endTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}` },
+			{ message: `Calculating passenger impact for day ${Dates.fromUnixMilliseconds(start30dTs).toLocaleString('full')}...${Dates.fromUnixMilliseconds(endTs).toLocaleString('full')}` },
 		);
 
 		// 2) Median passengers_observed per (agency_id, patternHour) over the last 30 days
-		const passengersPipeline: AggregationPipeline<Ride> = [
-			{
-				$match: {
-					agency_id: { $in: [...GO_CM_AGENCY_IDS] },
-					passengers_observed: { $ne: null },
-					start_time_scheduled: { $gte: start30dTs, $lt: endTs },
-				},
-			},
-			{
-				$addFields: {
-					patternHour: {
-						$concat: [
-							{ $toString: '$pattern_id' },
-							'_',
-							{
-								$dateToString: {
-									date: { $toDate: '$start_time_scheduled' },
-									format: '%H:%M',
-									timezone: 'Europe/Lisbon',
-								},
-							},
-						],
-					},
-				},
-			},
-			{
-				$match: {
-					patternHour: { $in: failedPatternHours },
-				},
-			},
-			{
-				$group: {
-					_id: {
-						agency_id: '$agency_id',
-						patternHour: '$patternHour',
-					},
-					values: { $push: '$passengers_observed' },
-				},
-			},
-		];
-
-		const passengersAgg = await ridesCollection
-			.aggregate<PassengerAggRow>(passengersPipeline)
-			.toArray();
+		const passengersAgg = await labDb.queryFromString<PassengerAggRow>(
+			`SELECT agency_id,
+			        concat(shape_id, '_', formatDateTime(fromUnixTimestamp64Milli(start_time_scheduled, 'Europe/Lisbon'), '%H:%i')) AS pattern_hour,
+			        groupArray(passengers_observed) AS values
+			 FROM operation.rides FINAL
+			 WHERE agency_id IN $3 AND passengers_observed IS NOT NULL
+			   AND start_time_scheduled >= $1 AND start_time_scheduled < $2
+			   AND pattern_hour IN $4
+			 GROUP BY agency_id, pattern_hour`,
+			{ 1: start30dTs, 2: endTs, 3: [...GO_CM_AGENCY_IDS], 4: failedPatternHours },
+		);
 
 		// medianByAgencyPH[agency][patternHour] = mediana(passengers_observed)
 		const medianByAgencyPH = new Map<AgencyId, Map<PatternHour, number>>();
 
 		for (const row of passengersAgg) {
-			const agencyId: AgencyId = String(row._id.agency_id);
-			const patternHour: PatternHour = String(row._id.patternHour);
+			const agencyId: AgencyId = String(row.agency_id);
+			const patternHour: PatternHour = String(row.pattern_hour);
 
 			const values: number[] = (row.values ?? [])
 				.map((v: number) => Number(v))
@@ -200,14 +162,14 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 				medianByAgencyPH.set(agencyId, new Map<PatternHour, number>());
 			}
 
-			medianByAgencyPH.get(agencyId).set(patternHour, median(values));
+			medianByAgencyPH.get(agencyId)?.set(patternHour, median(values));
 		}
 
 		// 3) Aggregate ONLY for the current dayChunk's operational day
-		const operationalDateForChunk: OperationalDate = Dates
+		const operationalDateForChunk = OperationalDateSchema.parse(String(Dates
 			.fromUnixMilliseconds(dayChunk.start) // NOTE: assumes Dates.fromUnixMilliseconds accepts ms here (same as your current usage)
 			.setZone('Europe/Lisbon', 'rebase_utc')
-			.operational_date;
+			.operational_date_int));
 
 		// If there were no failed rides for this operational date, skip
 		const agencyMapForDay = operationalDayMap.get(operationalDateForChunk);
@@ -271,11 +233,11 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	}));
 
 	// clear existing (match working example field name)
-	await metrics.deleteMany({ metric: metricKey });
+	await goDb.performance.metrics.deleteMany({ metric: metricKey });
 
 	// insertMany
 	if (results.length > 0) {
-		await metrics.insertMany(results);
+		await goDb.performance.metrics.insertMany(results);
 	}
 
 	return out;

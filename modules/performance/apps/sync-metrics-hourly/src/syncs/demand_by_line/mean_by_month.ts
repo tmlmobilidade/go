@@ -1,9 +1,9 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { type Metric } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -23,7 +23,7 @@ export const computeMeanDemandByLineByMonth = async () => {
 
 	const METRIC = 'mean_demand_by_line_by_month' as const;
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 
 	//
 	// Delete existing metrics
@@ -95,7 +95,7 @@ export const computeMeanDemandByLineByMonth = async () => {
 	//
 	// Insert all metrics
 
-	await metricsCollection.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 
 	logMetricToFile({
 		approach: { description: 'Iterate demand_by_line_by_day', key: 'iterate_demand_by_line_by_day' },

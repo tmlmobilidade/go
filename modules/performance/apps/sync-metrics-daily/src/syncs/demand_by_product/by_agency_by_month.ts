@@ -1,9 +1,9 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { type DemandByProductByAgencyByMonth } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type DemandByProductByAgencyByMonth } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -28,6 +28,7 @@ const processBatch = (batch: DemandByProductByAgencyByMonth[], productMap: Map<s
 		}
 
 		const productDoc = productMap.get(key);
+		if (!productDoc) throw new Error('Metric group was not initialized');
 
 		// Aggregate daily data into months
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +61,7 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -68,7 +69,7 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 
 	const streamTimer = new Timer();
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	const productMap = new Map<string, DemandByProductByAgencyByMonth>();
 
 	// Use batched approach - process in chunks to balance memory usage and performance
@@ -106,7 +107,7 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 	// Insert all metrics
 
 	const insertTimer = new Timer();
-	await metrics.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 	Logger.info({ message: `Inserted ${results.length} monthly metrics (${insertTimer.get()})` });
 
 	logMetricToFile({

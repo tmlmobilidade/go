@@ -1,9 +1,9 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { Metric } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -22,7 +22,7 @@ const getAllMonthsFromMetrics = async (metricName: Metric['metric']): Promise<st
 
 	Logger.info({ message: `Fetching all months from metric '${metricName}'...` });
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 
 	const monthsSet = new Set<string>();
 
@@ -58,7 +58,7 @@ const getAllMonthsFromMetrics = async (metricName: Metric['metric']): Promise<st
  * Computes and stores the top mean demand by line for each month across all available months.
  *
  * This function performs the following steps:
- * 1. Retrieves all months present in the 'mean_demand_by_line_by_month' metrics.
+ * 1. Retrieves all months present in the 'mean_demand_by_line_by_month' goDb.performance.metrics.
  * 2. For each month, computes the top mean demand by line and stores the result as a new metric.
  *
  * Done separately for each month to be simpler to debug and re-run for current month when needed.
@@ -76,7 +76,7 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 	//
 	// Delete existing metrics
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
@@ -141,7 +141,7 @@ const topMeanDemandByLineForMonth = async (yearMonth: string, METRIC: string) =>
 	//
 	// Fetch metrics collection
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	const cursor = metricsCollection.find({ metric: 'mean_demand_by_line_by_month' }) as AsyncIterable<Metric>;
 
 	const tempResults: {
@@ -221,7 +221,7 @@ const topMeanDemandByLineForMonth = async (yearMonth: string, METRIC: string) =>
 	//
 	// Insert metric
 
-	await metrics.insertOne(result);
+	await goDb.performance.metrics.insertOne(result);
 
 	Logger.info({ message: `Computed TopMeanDemandByLineByMonth for ${yearMonth} in ${globalTimer.get()}` });
 };

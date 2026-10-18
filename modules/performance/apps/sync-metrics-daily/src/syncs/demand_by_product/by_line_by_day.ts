@@ -1,11 +1,13 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
-import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
+import { GO_CM_AGENCY_IDS } from '@/constants.js';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { type PerformanceCalendarEntry as CalendarEntry, fetchPerformanceCalendar } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { type DemandByProductByLineByDay } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type DemandByProductByLineByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -16,25 +18,23 @@ export const syncDemandByProductByLineByDay = async () => {
 	Logger.title(`Sync Demand Metrics by Product by Line by Day`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_product_by_line_by_day';
+	const metricKey = 'demand_by_product_by_line_by_day';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await goDb.performance.metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
-	// Fetch validations collection
-
-	const validationsCollection = await simplifiedApexValidations.getCollection();
+	// Read migrated validations through labDb.
 
 	//
 	// Load calendar JSON
 
-	const calendarJson = await Dates.fetchCalendarData();
+	const calendarJson = await fetchPerformanceCalendar();
 
 	//
 	// Build a map for fast lookup
@@ -64,6 +64,7 @@ export const syncDemandByProductByLineByDay = async () => {
 	let cursor = earliestDataNeeded;
 	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ days: 1 });
+		if (!cursor.iso || !next.iso) throw new Error('Invalid metric date range');
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
 			endIso: next.iso,
@@ -77,8 +78,8 @@ export const syncDemandByProductByLineByDay = async () => {
 	// Set max concurrent queries and batch processing
 
 	const limit = pLimit(5); // Reduce concurrent queries
-	const BATCH_SIZE = 50; // Process chunks in smaller batches
-	const FLUSH_THRESHOLD = 10000; // Flush to DB when we have this many combinations
+	const batchSize = 50; // Process chunks in smaller batches
+	const flushThreshold = 10000; // Flush to DB when we have this many combinations
 
 	//
 	// Process chunks in batches to avoid memory issues
@@ -86,10 +87,10 @@ export const syncDemandByProductByLineByDay = async () => {
 	const productMap = new Map<string, DemandByProductByLineByDay>();
 	let totalProcessed = 0;
 
-	for (let i = 0; i < allTimestampChunks.length; i += BATCH_SIZE) {
-		const batchChunks = allTimestampChunks.slice(i, i + BATCH_SIZE);
+	for (let i = 0; i < allTimestampChunks.length; i += batchSize) {
+		const batchChunks = allTimestampChunks.slice(i, i + batchSize);
 
-		Logger.info({ message: `Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allTimestampChunks.length / BATCH_SIZE)} (chunks ${i + 1}-${Math.min(i + BATCH_SIZE, allTimestampChunks.length)})` });
+		Logger.info({ message: `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(allTimestampChunks.length / batchSize)} (chunks ${i + 1}-${Math.min(i + batchSize, allTimestampChunks.length)})` });
 
 		const batchPromises = batchChunks.map((chunkData, batchIndex) =>
 			limit(async () => {
@@ -99,27 +100,14 @@ export const syncDemandByProductByLineByDay = async () => {
 				const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
 
 				// Aggregation: Get counts by product and line for each day
-				const validationsAgg = await validationsCollection.aggregate([
-					{
-						$match: {
-							agency_id: { $in: [...LEGACY_CM_AGENCY_IDS] },
-							created_at: { $gte: chunkData.start, $lt: chunkData.end },
-							is_passenger: true,
-						},
-					},
-					{
-						$group: {
-							_id: {
-								line_id: '$line_id',
-								product_id: '$product_id',
-							},
-							count: { $sum: 1 },
-							day: { $first: dayLabel },
-							line_id: { $first: '$line_id' },
-							product_id: { $first: '$product_id' },
-						},
-					},
-				], { hint: 'is_passenger_1_agency_id_1_created_at_1' }).toArray();
+				const validationsAgg = await labDb.queryFromString<{ count: number, day: string, line_id: null | string, product_id: null | string }>(
+					`SELECT line_id AS line_id, product_id, toFloat64(count()) AS count, $4 AS day
+					 FROM simplified_apex.validations AS v FINAL
+					 WHERE created_at >= $1 AND created_at < $2
+					   AND v.agency_id IN $3 AND is_passenger = 1
+					 GROUP BY line_id, product_id`,
+					{ 1: chunkData.start, 2: chunkData.end, 3: [...GO_CM_AGENCY_IDS], 4: dayLabel },
+				);
 
 				Logger.info({ message: `Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} product-line combinations (${chunkTimer.get()})` });
 				return validationsAgg;
@@ -133,27 +121,28 @@ export const syncDemandByProductByLineByDay = async () => {
 
 		for (const validationsAgg of batchResults) {
 			for (const validation of validationsAgg) {
-				const product_id = validation.product_id ?? 'unknown-product';
-				const line_id = validation.line_id ?? 'no-line';
+				const productId = validation.product_id ?? 'unknown-product';
+				const lineId = validation.line_id ?? 'no-line';
 
 				// Create unique key for each product-line combination
-				const productLineKey = `${product_id}:${line_id}`;
+				const productLineKey = `${productId}:${lineId}`;
 
 				// Create or get product-line document
 				if (!productMap.has(productLineKey)) {
 					productMap.set(productLineKey, {
 						data: {},
-						description: `Aggregated passengers for product ${product_id} on line ${line_id}`,
+						description: `Aggregated passengers for product ${productId} on line ${lineId}`,
 						generated_at: new Date(),
-						metric: METRIC,
+						metric: metricKey,
 						properties: {
-							line_id,
-							product_id,
+							line_id: lineId,
+							product_id: productId,
 						},
 					});
 				}
 
 				const productLineDoc = productMap.get(productLineKey);
+				if (!productLineDoc) throw new Error('Metric group was not initialized');
 				const calendarProps = calendarMap.get(validation.day);
 
 				// Update individual product-line data
@@ -170,12 +159,12 @@ export const syncDemandByProductByLineByDay = async () => {
 		totalProcessed += batchResults.reduce((sum, batch) => sum + batch.length, 0);
 
 		// Flush to database periodically to avoid memory issues
-		if (productMap.size >= FLUSH_THRESHOLD) {
+		if (productMap.size >= flushThreshold) {
 			const flushTimer = new Timer();
 			const results = Array.from(productMap.values());
 
 			Logger.info({ message: `Flushing ${results.length} documents to database...` });
-			await metrics.insertMany(results);
+			await goDb.performance.metrics.insertMany(results);
 			Logger.info({ message: `Flushed ${results.length} documents (${flushTimer.get()})` });
 
 			productMap.clear(); // Free memory
@@ -188,12 +177,12 @@ export const syncDemandByProductByLineByDay = async () => {
 	if (productMap.size > 0) {
 		const results = Array.from(productMap.values());
 		Logger.info({ message: `Inserting final ${results.length} documents...` });
-		await metrics.insertMany(results);
+		await goDb.performance.metrics.insertMany(results);
 	}
 
 	logMetricToFile({
-		approach: { description: 'Loop by day, aggregate on mongo (batched)', key: 'loop_day_batched' },
-		metric: METRIC,
+		approach: { description: 'Loop by day, aggregate in ClickHouse (batched)', key: 'loop_day_batched' },
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

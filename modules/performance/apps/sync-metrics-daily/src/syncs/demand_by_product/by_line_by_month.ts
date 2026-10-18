@@ -1,10 +1,10 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { type DemandByProductByLineByMonth } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type DemandByProductByLineByMonth } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -22,13 +22,13 @@ export const syncDemandByProductByLineByMonth = async () => {
 
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch existing daily metrics collection (more efficient than raw validations)
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	Logger.info({ message: 'Using daily metrics for aggregation (optimized approach)' });
 
 	//
@@ -48,6 +48,7 @@ export const syncDemandByProductByLineByMonth = async () => {
 	let cursor = earliestDataNeeded;
 	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ months: 1 });
+		if (!cursor.iso || !next.iso) throw new Error('Invalid metric date range');
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
 			endIso: next.iso,
@@ -145,6 +146,7 @@ export const syncDemandByProductByLineByMonth = async () => {
 			}
 
 			const productLineDoc = productMap.get(productLineKey);
+			if (!productLineDoc) throw new Error('Metric group was not initialized');
 
 			// Update individual product-line data for this month
 			productLineDoc.data[monthData.month_year] = {
@@ -158,7 +160,7 @@ export const syncDemandByProductByLineByMonth = async () => {
 	//
 	// Insert all metrics
 
-	await metrics.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 
 	logMetricToFile({
 		approach: { description: 'Loop by month, aggregate from daily metrics (parallel)', key: 'loop_month_parallel' },

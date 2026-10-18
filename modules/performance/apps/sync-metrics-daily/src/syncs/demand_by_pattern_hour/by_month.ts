@@ -1,7 +1,7 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { DemandByPatternHourByDay, Metric } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { DemandByPatternHourByDay, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -32,6 +32,7 @@ function processBatch(
 		}
 
 		const patternHourDoc = patternHourMap.get(key);
+		if (!patternHourDoc) throw new Error('Metric group was not initialized');
 
 		// Aggregate daily data into months
 		for (const [dayKey, dayData] of Object.entries(typedMetric.data)) {
@@ -62,7 +63,7 @@ export const syncDemandByPatternHourByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -70,7 +71,7 @@ export const syncDemandByPatternHourByMonth = async () => {
 
 	const streamTimer = new Timer();
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	const patternHourMap = new Map<string, Metric>();
 
 	// Use batched approach - process in chunks to balance memory usage and performance
@@ -108,7 +109,7 @@ export const syncDemandByPatternHourByMonth = async () => {
 	// Insert all metrics
 
 	const insertTimer = new Timer();
-	await metrics.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 	Logger.info({ message: `Inserted ${results.length} monthly metrics (${insertTimer.get()})` });
 
 	logMetricToFile({

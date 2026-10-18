@@ -1,10 +1,10 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { type Metric } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { type Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -133,7 +133,7 @@ export class MetricsController {
 			const query = buildQuery(id, filters);
 
 			// Fetch metrics from database
-			const metricDocs = (await metrics.findMany(query)) as Metric[];
+			const metricDocs = (await goDb.performance.metrics.findMany(query)) as Metric[];
 
 			if (!metricDocs || metricDocs.length === 0) {
 				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Metric not found');

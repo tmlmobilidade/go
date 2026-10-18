@@ -2,12 +2,14 @@
 
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromOperationalDate } from '@/utils/day-label.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { type PerformanceCalendarEntry as CalendarEntry, fetchPerformanceCalendar } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { SupplyByAgencyByDay } from '@tmlmobilidade/go-types-performance';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { SupplyByAgencyByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -27,7 +29,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${metricKey}' metrics for CM agencies...` });
-	await metrics.deleteMany({
+	await goDb.performance.metrics.deleteMany({
 		'metric': metricKey,
 		'properties.agency_id': { $in: [...GO_CM_AGENCY_IDS] },
 	});
@@ -36,7 +38,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	//
 	// Fetch rides collection
 
-	const ridesCollection = await goDb.operation.rides.getCollection();
+	// Read rides from ClickHouse; agency pricing remains in goDb.
 
 	// Fetch agencies collection + build price map (agency_id -> price_per_km)
 
@@ -65,7 +67,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	// Load calendar JSON
 
-	const calendarJson = await Dates.fetchCalendarData();
+	const calendarJson = await fetchPerformanceCalendar();
 
 	if (!calendarJson.length) {
 		throw new Error('Calendar data unavailable — cannot build supply_by_agency_by_day metrics');
@@ -94,12 +96,12 @@ export const syncSupplyByAgencyByDay = async () => {
 		year: 2024,
 	});
 
-	const latestRide = await ridesCollection.findOne(
-		{
-			agency_id: { $in: [...GO_CM_AGENCY_IDS] },
-			operational_date: { $exists: true, $ne: null },
-		},
-		{ projection: { operational_date: 1 }, sort: { operational_date: -1 } },
+	const [latestRide] = await labDb.queryFromString<{ operational_date: string }>(
+		`SELECT toString(operational_date) AS operational_date
+		 FROM operation.rides FINAL
+		 WHERE agency_id IN $3
+		 ORDER BY operational_date DESC LIMIT 1`,
+		{ 3: [...GO_CM_AGENCY_IDS] },
 	);
 
 	const latestOperationalData = latestRide?.operational_date;
@@ -109,7 +111,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	}
 
 	const latest = latestOperationalData
-		? Dates.fromOperationalDate(latestOperationalData, 'Europe/Lisbon')
+		? Dates.fromOperationalDateInt(OperationalDateIntSchema.parse(latestOperationalData), 'Europe/Lisbon')
 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
 			.plus({ days: 1 })
 		: Dates.now('Europe/Lisbon')
@@ -120,18 +122,19 @@ export const syncSupplyByAgencyByDay = async () => {
 	let cursor = earliestDataNeeded;
 	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ days: 1 });
+		if (!cursor.iso || !next.iso) throw new Error('Invalid metric date range');
 		allTimestampChunks.push({
-			operationalDate: cursor.operational_date,
+			operationalDate: String(cursor.operational_date_int),
 			start: cursor.unix_milliseconds,
 		});
 		cursor = next;
 	}
 
 	Logger.info({ message: [
-		`Date range: ${earliestDataNeeded.operational_date} → ${latestOperationalData ?? 'today'}`,
+		`Date range: ${earliestDataNeeded.operational_date_int} → ${latestOperationalData ?? 'today'}`,
 		`Total chunks: ${allTimestampChunks.length}`,
 		`CM agencies: ${GO_CM_AGENCY_IDS.join(', ')}`,
-	] });
+	].join(' | ') });
 
 	//
 	// Set max concurrent queries
@@ -152,79 +155,37 @@ export const syncSupplyByAgencyByDay = async () => {
 			Logger.info({ message: `Chunk ${chunkLabel} START operational_date=${chunkData.operationalDate} (${dayLabel})` });
 
 			try {
-				const ridesAgg = await ridesCollection
-					.aggregate([
-						{
-							$match: {
-								agency_id: { $in: [...GO_CM_AGENCY_IDS] },
-								operational_date: chunkData.operationalDate,
-							},
-						},
-						{
-							$project: {
-								agency_id: 1,
-
-								// supply
-								extension_scheduled: { $ifNull: ['$extension_scheduled', 0] },
-								grade: '$analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade',
-
-								// divide apex_on_board_sales_amount and passengers_observed_prepaid_amount fields by 100 before summing
-								apex_on_board_sales_amount: {
-									$divide: [{ $ifNull: ['$apex_on_board_sales_amount', 0] }, 100],
-								},
-								apex_on_board_sales_qty: { $ifNull: ['$apex_on_board_sales_qty', 0] },
-								apex_validations_qty: { $ifNull: ['$apex_validations_qty', 0] },
-								passengers_observed: { $ifNull: ['$passengers_observed', 0] },
-								passengers_observed_prepaid_amount: {
-									$divide: [{ $ifNull: ['$passengers_observed_prepaid_amount', 0] }, 100],
-								},
-								passengers_observed_subscription_qty: { $ifNull: ['$passengers_observed_subscription_qty', 0] },
-							},
-						},
-						{
-							$addFields: {
-								has_realtime_events: { $eq: ['$grade', 'pass'] },
-								has_ticketing: {
-									$or: [
-										{ $gt: ['$apex_validations_qty', 0] },
-										{ $gt: ['$apex_on_board_sales_qty', 0] },
-										{ $gt: ['$passengers_observed', 0] },
-									],
-								},
-							},
-						},
-						{
-							$addFields: {
-								is_valid: {
-									$or: ['$has_realtime_events', '$has_ticketing'],
-								},
-								revenue_row: {
-									$add: [
-										'$apex_on_board_sales_amount',
-										'$passengers_observed_prepaid_amount',
-										'$passengers_observed_subscription_qty',
-									],
-								},
-							},
-						},
-						{
-							$group: {
-								_id: '$agency_id',
-
-								// only valid rides for accomplished count
-								accomplished_rides: { $sum: { $cond: ['$is_valid', 1, 0] } },
-								vkms_observed: { $sum: { $cond: ['$is_valid', '$extension_scheduled', 0] } },
-
-								// all rides for scheduled counts
-								scheduled_rides: { $sum: 1 },
-								vkms_scheduled: { $sum: '$extension_scheduled' },
-
-								// revenue per trip/day/agency
-								revenue_per_trip: { $sum: '$revenue_row' },
-							},
-						},
-					])
-					.toArray();
+				const ridesAgg = await labDb.queryFromString<{
+					_id: string
+					accomplished_rides: number
+					revenue_per_trip: number
+					scheduled_rides: number
+					vkms_observed: number
+					vkms_scheduled: number
+				}>(
+					`WITH rides AS (
+					   SELECT r.*,
+					          (ifNull(a.grade_status = 'pass', false)
+					           OR ifNull(r.apex_validations_qty, 0) > 0
+					           OR ifNull(r.apex_sales_qty, 0) > 0
+					           OR ifNull(r.passengers_observed, 0) > 0) AS is_valid
+					   FROM operation.rides AS r FINAL
+					   LEFT JOIN (SELECT ride_id, grade_status FROM operation.ride_analysis_simple_three_vehicle_events FINAL
+					              WHERE agency_id IN $3 AND operational_date = $1) AS a
+					     ON r._id = a.ride_id
+					   WHERE r.agency_id IN $3 AND r.operational_date = $1
+					 )
+					 SELECT agency_id AS _id,
+					        toFloat64(countIf(is_valid)) AS accomplished_rides,
+					        toFloat64(sumIf(extension_scheduled, is_valid)) AS vkms_observed,
+					        toFloat64(count()) AS scheduled_rides,
+					        toFloat64(sum(extension_scheduled)) AS vkms_scheduled,
+					        sum(ifNull(apex_sales_amount, 0) / 100.0
+					            + ifNull(passengers_observed_prepaid_amount, 0) / 100.0
+					            + ifNull(passengers_observed_subscription_qty, 0)) AS revenue_per_trip
+					 FROM rides GROUP BY agency_id`,
+					{ 1: Number(chunkData.operationalDate), 3: [...GO_CM_AGENCY_IDS] },
+				);
 
 				Logger.info({ message: `Chunk ${chunkLabel} DONE - Found ${ridesAgg.length} agencies (${chunkTimer.get()})` });
 				return { dayLabel, ridesAgg };
@@ -274,6 +235,7 @@ export const syncSupplyByAgencyByDay = async () => {
 			}
 
 			const agencyDoc = agencyMap.get(agencyId);
+			if (!agencyDoc) throw new Error('Metric group was not initialized');
 
 			const pricePerKm = pricePerKmByAgency.get(agencyId) ?? 0;
 
@@ -303,7 +265,7 @@ export const syncSupplyByAgencyByDay = async () => {
 		`Merge finished (${mergeTimer.get()})`,
 		`Skipped ${skippedCalendarDays} days without calendar`,
 		`Built ${results.length} agency metric documents`,
-	] });
+	].join(' | ') });
 	for (const doc of results) {
 		Logger.info({ message: `  agency ${doc.properties.agency_id}: ${Object.keys(doc.data).length} days in data` });
 	}
@@ -316,12 +278,12 @@ export const syncSupplyByAgencyByDay = async () => {
 	} else {
 		const insertTimer = new Timer();
 		Logger.info({ message: `insertMany starting (${results.length} documents)...` });
-		await metrics.insertMany(results);
+		await goDb.performance.metrics.insertMany(results);
 		Logger.info({ message: `insertMany finished (${insertTimer.get()})` });
 	}
 
 	logMetricToFile({
-		approach: { description: 'Loop by day, calc in Mongo (Optimized)', key: 'loop_day_mongo_calc' },
+		approach: { description: 'Loop by day, calculate in ClickHouse', key: 'loop_day_clickhouse_calc' },
 		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),

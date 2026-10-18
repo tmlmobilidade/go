@@ -1,9 +1,9 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { DemandByAgencyByMonth, Metric } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { DemandByAgencyByMonth, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,7 +19,7 @@ export const syncDemandByAgencyByYear = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -27,7 +27,7 @@ export const syncDemandByAgencyByYear = async () => {
 
 	const fetchTimer = new Timer();
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	const monthlyMetrics = await metricsCollection.find({
 		metric: 'demand_by_agency_by_month',
 	}).toArray() as DemandByAgencyByMonth[];
@@ -54,6 +54,7 @@ export const syncDemandByAgencyByYear = async () => {
 		}
 
 		const agencyDoc = agencyMap.get(agency_id);
+		if (!agencyDoc) throw new Error('Metric group was not initialized');
 
 		// Aggregate monthly data into years
 		for (const [monthKey, monthData] of Object.entries(monthlyMetric.data)) {
@@ -75,7 +76,7 @@ export const syncDemandByAgencyByYear = async () => {
 	// Insert all metrics
 
 	const insertTimer = new Timer();
-	await metrics.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 	Logger.info({ message: `Inserted ${results.length} yearly metrics (${insertTimer.get()})` });
 
 	logMetricToFile({

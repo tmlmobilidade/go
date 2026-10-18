@@ -1,10 +1,11 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
-import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
+import { GO_CM_AGENCY_IDS, LEGACY_CM_AGENCY_IDS } from '@/constants.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { type RealtimeDemand } from '@tmlmobilidade/go-types-performance';
-import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
@@ -22,22 +23,19 @@ export const syncRealtimeDemand = async () => {
 
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${metric}' metrics...` });
-	await metrics.deleteMany({ metric: metric });
+	await goDb.performance.metrics.deleteMany({ metric: metric });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
-	// Fetch validations collection
-
-	const validationsCollection = await simplifiedApexValidations.getCollection();
+	// Read migrated validations through labDb.
 
 	//
 	// Setup the timestamp boundary
 	// This takes in consideration the current time, as we want to compare today so far with the previous day so far, also.
 	// For example, today is monday 10h49. We want to compare the number of validations until 10h49 of today with the number of validations until 10h49 of last monday.
 
-	const currentOperationalDate = Dates
-		.now('Europe/Lisbon')
-		.operational_date;
+	const referenceNow = Dates.now('Europe/Lisbon');
+	const currentOperationalDate = referenceNow.operational_date;
 
 	const currentOperationalDateAsUnixMilliseconds = Dates
 		.fromOperationalDate(currentOperationalDate, 'Europe/Lisbon')
@@ -45,8 +43,7 @@ export const syncRealtimeDemand = async () => {
 		.set({ hour: 4 })
 		.unix_milliseconds;
 
-	const previousOperationalDate = Dates
-		.now('Europe/Lisbon')
+	const previousOperationalDate = referenceNow
 		.minus({ days: 7 })
 		.operational_date;
 
@@ -56,8 +53,7 @@ export const syncRealtimeDemand = async () => {
 		.set({ hour: 4 })
 		.unix_milliseconds;
 
-	const previousUntilNowAsUnixMilliseconds = Dates
-		.now('Europe/Lisbon')
+	const previousUntilNowAsUnixMilliseconds = referenceNow
 		.minus({ days: 7 })
 		.unix_milliseconds;
 
@@ -76,46 +72,36 @@ export const syncRealtimeDemand = async () => {
 	// Count validations per agency
 
 	for (const agencyId of LEGACY_CM_AGENCY_IDS) {
-		const agencyTimer = new Timer();
-		Logger.info({ message: `Processing Agency ${agencyId}...` });
+		results.agencies[agencyId] = { last_week: 0, now: 0 };
+	}
 
-		//
-		// Count validations for today so far
+	const counts = await labDb.queryFromString<{ agency_id: string, last_week: number, now: number }>(
+		`SELECT agency_code AS agency_id,
+		        toFloat64(countIf(created_at >= $1 AND created_at <= $2)) AS now,
+		        toFloat64(countIf(created_at >= $4 AND created_at <= $5)) AS last_week
+		 FROM simplified_apex.validations AS v FINAL
+		 WHERE v.agency_id IN $3 AND is_passenger = 1
+		   AND ((created_at >= $1 AND created_at <= $2) OR (created_at >= $4 AND created_at <= $5))
+		 GROUP BY agency_code`,
+		{
+			1: currentOperationalDateAsUnixMilliseconds,
+			2: referenceNow.unix_milliseconds,
+			3: [...GO_CM_AGENCY_IDS],
+			4: previousOperationalDateAsUnixMilliseconds,
+			5: previousUntilNowAsUnixMilliseconds,
+		},
+	);
 
-		const todayValidCount = await validationsCollection.countDocuments({
-			agency_id: agencyId,
-			created_at: { $gte: currentOperationalDateAsUnixMilliseconds },
-			is_passenger: true,
-		});
-
-		//
-		// Count validations for previous operational date so far
-
-		const lastWeekValidCount = await validationsCollection.countDocuments({
-			agency_id: agencyId,
-			created_at: {
-				$gte: previousOperationalDateAsUnixMilliseconds,
-				$lte: previousUntilNowAsUnixMilliseconds,
-			},
-			is_passenger: true,
-		});
-
-		//
-		// Store results
-
-		results.agencies[agencyId] = {
-			last_week: lastWeekValidCount,
-			now: todayValidCount,
-		};
-		results.total.last_week += lastWeekValidCount;
-		results.total.now += todayValidCount;
-
-		Logger.info({ message: `Processed agency ${agencyId} in ${agencyTimer.get()}` });
+	for (const row of counts) {
+		results.agencies[row.agency_id] = { last_week: row.last_week, now: row.now };
+		results.total.last_week += row.last_week;
+		results.total.now += row.now;
 	}
 
 	const metricToInsert: RealtimeDemand = {
 		data: results,
-		description: `Realtime Demand Metrics by agencies and for all CM, compared with previous week in the same day period.`,
+		description: `Realtime Demand Metrics by agencies and for all CM
+		compared with previous week in the same day period.`,
 		generated_at: new Date(),
 		metric: metric,
 	};
@@ -123,12 +109,12 @@ export const syncRealtimeDemand = async () => {
 	//
 	// Insert metric
 
-	await metrics.insertOne(metricToInsert);
+	await goDb.performance.metrics.insertOne(metricToInsert);
 
 	logMetricToFile({
-		approach: { description: 'Count validations by agency', key: 'count_validations_by_agency' },
+		approach: { description: 'Count validations by agency in ClickHouse', key: 'count_validations_by_agency' },
 		metric: metric,
-		queryCount: 2,
+		queryCount: 1,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
 	});

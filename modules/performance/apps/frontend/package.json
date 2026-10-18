@@ -17,6 +17,10 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/ui": "*",
 		"luxon": "3.7.2",
 		"next": "16.3.4",

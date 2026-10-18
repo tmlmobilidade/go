@@ -1,10 +1,11 @@
 import { GO_CM_AGENCY_IDS } from '@/constants.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { type PerformanceCalendarEntry as CalendarEntry, fetchPerformanceCalendar } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { Metric } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { Metric } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -22,18 +23,18 @@ export const syncDemandByPatternHourByDay = async () => {
 
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
-	await metrics.deleteMany({ metric: metricKey });
+	await goDb.performance.metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch rides collection
 
-	const ridesCollection = await goDb.operation.rides.getCollection();
+	// Rides and their analyses are stored in ClickHouse.
 
 	//
 	// Load calendar JSON
 
-	const calendarJson = await Dates.fetchCalendarData();
+	const calendarJson = await fetchPerformanceCalendar();
 
 	//
 	// Build a map for fast lookup
@@ -41,7 +42,7 @@ export const syncDemandByPatternHourByDay = async () => {
 	const calendarMap = new Map<string, CalendarEntry>();
 	for (const day of calendarJson) {
 		// convert date to YYYY-MM-DD format
-		const formattedDate = `${day.date.slice(0, 4)}-${day.date.slice(4, 6)}-${day.date.slice(6, 8)}`;
+		const formattedDate = `${String(day.date).slice(0, 4)}-${String(day.date).slice(4, 6)}-${String(day.date).slice(6, 8)}`;
 		calendarMap.set(formattedDate, day);
 	}
 
@@ -61,6 +62,7 @@ export const syncDemandByPatternHourByDay = async () => {
 
 	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ days: 1 });
+		if (!cursor.iso || !next.iso) throw new Error('Invalid metric date range');
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
 			endIso: next.iso,
@@ -95,35 +97,23 @@ export const syncDemandByPatternHourByDay = async () => {
 
 				const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
 
-				const ridesAgg = await ridesCollection
-					.aggregate([
-						{
-							$match: {
-								agency_id: { $in: [...GO_CM_AGENCY_IDS] },
-								passengers_observed: { $gt: 0 },
-								start_time_scheduled: {
-									$gte: chunkData.start,
-									$lt: chunkData.end,
-								},
-							},
-						},
-						{
-							$group: {
-								_id: {
-									hour: { $hour: { $toDate: '$start_time_scheduled' } },
-									line_id: '$line_id',
-									minute: { $minute: { $toDate: '$start_time_scheduled' } },
-									pattern_id: '$pattern_id',
-								},
-								hour: { $first: { $hour: { $toDate: '$start_time_scheduled' } } },
-								line_id: { $first: '$line_id' },
-								minute: { $first: { $minute: { $toDate: '$start_time_scheduled' } } },
-								pattern_id: { $first: '$pattern_id' },
-								total_passengers: { $sum: '$passengers_observed' },
-							},
-						},
-					])
-					.toArray();
+				const ridesAgg = await labDb.queryFromString<{
+					hour: number
+					line_id: string
+					minute: number
+					pattern_id: string
+					total_passengers: number
+				}>(
+					`SELECT toHour(fromUnixTimestamp64Milli(start_time_scheduled, 'UTC')) AS hour,
+					        toMinute(fromUnixTimestamp64Milli(start_time_scheduled, 'UTC')) AS minute,
+					        route_short_name AS line_id, shape_id AS pattern_id,
+					        toFloat64(sum(passengers_observed)) AS total_passengers
+					 FROM operation.rides FINAL
+					 WHERE agency_id IN $3 AND passengers_observed > 0
+					   AND start_time_scheduled >= $1 AND start_time_scheduled < $2
+					 GROUP BY hour, minute, route_short_name, shape_id`,
+					{ 1: chunkData.start, 2: chunkData.end, 3: [...GO_CM_AGENCY_IDS] },
+				);
 
 				Logger.info({ message: `Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})` });
 
@@ -157,7 +147,9 @@ export const syncDemandByPatternHourByDay = async () => {
 				}
 
 				const metric = patternHourMap.get(key);
+				if (!metric) throw new Error('Metric group was not initialized');
 				const calendarProps = calendarMap.get(dayLabel);
+				if (!calendarProps) throw new Error(`Calendar entry unavailable for ${dayLabel}`);
 
 				metric.data[dayLabel] = {
 					day_type: calendarProps.day_type,
@@ -177,7 +169,7 @@ export const syncDemandByPatternHourByDay = async () => {
 			const results = Array.from(patternHourMap.values());
 
 			Logger.info({ message: `Flushing ${results.length} documents to database...` });
-			await metrics.insertMany(results);
+			await goDb.performance.metrics.insertMany(results);
 			Logger.info({ message: `Flushed ${results.length} documents (${flushTimer.get()})` });
 
 			patternHourMap.clear(); // Free memory
@@ -190,11 +182,11 @@ export const syncDemandByPatternHourByDay = async () => {
 	if (patternHourMap.size > 0) {
 		const results = Array.from(patternHourMap.values());
 		Logger.info({ message: `Inserting final ${results.length} documents...` });
-		await metrics.insertMany(results);
+		await goDb.performance.metrics.insertMany(results);
 	}
 
 	logMetricToFile({
-		approach: { description: 'Loop by day, aggregate on mongo (batched)', key: 'loop_day_batched' },
+		approach: { description: 'Loop by day, aggregate in ClickHouse (batched)', key: 'loop_day_batched' },
 		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),

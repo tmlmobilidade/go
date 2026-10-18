@@ -5,7 +5,7 @@ import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyTypeWithAll } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
-import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/types';
+import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/go-types-performance';
 import { Progress, Tooltip } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';

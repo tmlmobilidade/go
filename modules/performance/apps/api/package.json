@@ -19,8 +19,9 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {

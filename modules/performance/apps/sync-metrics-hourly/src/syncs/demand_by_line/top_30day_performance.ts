@@ -1,10 +1,10 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { DemandByLineByDay, Metric } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { DemandByLineByDay, Metric } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -35,7 +35,7 @@ export const computeTop30DayPerformanceByLine = async () => {
 
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -45,6 +45,7 @@ export const computeTop30DayPerformanceByLine = async () => {
 	const thirtyDaysAgo = now.minus({ days: 30 });
 	const oneYearAgo = now.minus({ years: 1 });
 
+	if (!thirtyDaysAgo.iso || !now.iso || !oneYearAgo.iso) throw new Error('Invalid metric date range');
 	const last30DaysStart = thirtyDaysAgo.iso.slice(0, 10);
 	const last30DaysEnd = now.iso.slice(0, 10);
 	const yearAgoDate = oneYearAgo.iso.slice(0, 10);
@@ -58,7 +59,7 @@ export const computeTop30DayPerformanceByLine = async () => {
 	const fetchTimer = new Timer();
 	Logger.info({ message: `Fetching demand_by_line_by_day metrics...` });
 
-	const dailyMetrics = await metrics.findMany({
+	const dailyMetrics = await goDb.performance.metrics.findMany({
 		metric: 'demand_by_line_by_day',
 	});
 
@@ -212,7 +213,7 @@ export const computeTop30DayPerformanceByLine = async () => {
 	//
 	// Insert metric
 
-	await metrics.insertOne(result);
+	await goDb.performance.metrics.insertOne(result);
 
 	logMetricToFile({
 		approach: { description: 'Analyze last 30 days vs rolling 365-day average from daily metrics', key: 'last_30_days_vs_rolling_year' },

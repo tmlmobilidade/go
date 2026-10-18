@@ -1,9 +1,9 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { Metric, SupplyByAgencyByDay } from '@tmlmobilidade/go-types-performance';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { Metric, SupplyByAgencyByDay } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,14 +17,14 @@ export const syncSupplyByAgencyByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	await metrics.deleteMany({ metric: METRIC });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	// Fetch by_day metrics from the metrics collection
 
 	const fetchTimer = new Timer();
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	const dailyMetrics = await metricsCollection
 		.find({ metric: 'supply_by_agency_by_day' })
 		.toArray() as SupplyByAgencyByDay[];
@@ -51,6 +51,7 @@ export const syncSupplyByAgencyByMonth = async () => {
 		}
 
 		const agencyDoc = agencyMap.get(agency_id);
+		if (!agencyDoc) throw new Error('Metric group was not initialized');
 
 		// Aggregate daily data into months
 		for (const [dayKey, dayData] of Object.entries(dailyMetric.data)) {
@@ -77,7 +78,7 @@ export const syncSupplyByAgencyByMonth = async () => {
 	// Insert all metrics
 
 	const insertTimer = new Timer();
-	await metrics.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 	Logger.info({ message: `Inserted ${results.length} monthly metrics (${insertTimer.get()})` });
 
 	logMetricToFile({

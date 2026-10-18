@@ -1,10 +1,10 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { type DemandByCategoryByLineByYear } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type DemandByCategoryByLineByYear } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -22,13 +22,13 @@ export const syncDemandByCategoryByLineByYear = async () => {
 
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_line_by_year' });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch existing monthly metrics collection (more efficient than raw validations)
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	Logger.info({ message: 'Using monthly metrics for aggregation (optimized approach)' });
 
 	//
@@ -48,6 +48,7 @@ export const syncDemandByCategoryByLineByYear = async () => {
 	let cursor = earliestDataNeeded;
 	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ years: 1 });
+		if (!cursor.iso || !next.iso) throw new Error('Invalid metric date range');
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
 			endIso: next.iso,
@@ -146,6 +147,7 @@ export const syncDemandByCategoryByLineByYear = async () => {
 			}
 
 			const categoryLineDoc = categoryMap.get(categoryLineKey);
+			if (!categoryLineDoc) throw new Error('Metric group was not initialized');
 
 			// Update individual category-line data for this year
 			categoryLineDoc.data[yearData.year] = {
@@ -159,7 +161,7 @@ export const syncDemandByCategoryByLineByYear = async () => {
 	//
 	// Insert all metrics
 
-	await metrics.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 
 	logMetricToFile({
 		approach: { description: 'Loop by year, aggregate from monthly metrics (parallel)', key: 'loop_year_parallel' },

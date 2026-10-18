@@ -1,10 +1,10 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { type DemandByCategoryByAgencyByMonth } from '@tmlmobilidade/go-types-performance';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type DemandByCategoryByAgencyByMonth } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -22,13 +22,13 @@ export const syncDemandByCategoryByAgencyByMonth = async () => {
 
 	const deleteTimer = new Timer();
 	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_agency_by_month' });
+	await goDb.performance.metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch existing daily metrics collection (more efficient than raw validations)
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 	Logger.info({ message: 'Using daily metrics for aggregation (optimized approach)' });
 
 	//
@@ -48,6 +48,7 @@ export const syncDemandByCategoryByAgencyByMonth = async () => {
 	let cursor = earliestDataNeeded;
 	while (cursor.unix_milliseconds < latest.unix_milliseconds) {
 		const next = cursor.plus({ months: 1 });
+		if (!cursor.iso || !next.iso) throw new Error('Invalid metric date range');
 		allTimestampChunks.push({
 			end: next.unix_milliseconds,
 			endIso: next.iso,
@@ -145,6 +146,7 @@ export const syncDemandByCategoryByAgencyByMonth = async () => {
 			}
 
 			const categoryAgencyDoc = categoryMap.get(categoryAgencyKey);
+			if (!categoryAgencyDoc) throw new Error('Metric group was not initialized');
 
 			// Update individual category-agency data for this month
 			categoryAgencyDoc.data[monthData.month_year] = {
@@ -158,7 +160,7 @@ export const syncDemandByCategoryByAgencyByMonth = async () => {
 	//
 	// Insert all metrics
 
-	await metrics.insertMany(results);
+	await goDb.performance.metrics.insertMany(results);
 
 	logMetricToFile({
 		approach: { description: 'Loop by month, aggregate on mongo (parallel)', key: 'loop_month_parallel' },

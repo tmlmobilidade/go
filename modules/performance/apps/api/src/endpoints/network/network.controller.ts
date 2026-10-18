@@ -1,8 +1,8 @@
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
@@ -16,7 +16,7 @@ export class NetworkController {
 	static async getUniqueLineIds(request: FastifyRequest, reply: FastifyReply<string[]>) {
 		try {
 			// Connect to metrics collection
-			const metricsCollection = await metrics.getCollection();
+			const metricsCollection = await goDb.performance.metrics.getCollection();
 			// Get unique line IDs from existing metrics
 			const aggregationResult = await metricsCollection.aggregate([
 				{ $group: { _id: null, uniqueValues: { $addToSet: '$properties.line_id' } } },
@@ -40,7 +40,7 @@ export class NetworkController {
 	static async getUniquePatternIds(request: FastifyRequest, reply: FastifyReply<string[]>) {
 		try {
 			// Connect to metrics collection
-			const metricsCollection = await metrics.getCollection();
+			const metricsCollection = await goDb.performance.metrics.getCollection();
 			// Get unique line IDs from existing metrics
 			const aggregationResult = await metricsCollection.aggregate([
 				{ $group: { _id: null, uniqueValues: { $addToSet: '$properties.pattern_id' } } },
