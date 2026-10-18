@@ -22,7 +22,7 @@
 		"@tmlmobilidade/go-operation-pckg-compose-alert": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"protobufjs": "8.8.0"
+		"protobufjs": "8.8.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
