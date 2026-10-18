@@ -2,23 +2,23 @@
 
 import { render } from 'react-email';
 
-import { Anchor } from '../components/Anchor/index.js';
-import { DebugCode } from '../components/DebugCode/index.js';
-import { Greeting } from '../components/Greeting/index.js';
-import { MainButton } from '../components/MainButton/index.js';
-import { Paragraph } from '../components/Paragraph/index.js';
-import { Span } from '../components/Span/index.js';
-import { Wrapper } from '../components/Wrapper/index.js';
-import { emailProvider } from '../email.provider.js';
-import { type SendEmailProps } from '../types.js';
+import { Anchor } from '../../components/Anchor/index.js';
+import { DebugCode } from '../../components/DebugCode/index.js';
+import { Greeting } from '../../components/Greeting/index.js';
+import { MainButton } from '../../components/MainButton/index.js';
+import { Paragraph } from '../../components/Paragraph/index.js';
+import { Span } from '../../components/Span/index.js';
+import { Wrapper } from '../../components/Wrapper/index.js';
+import { emailProvider } from '../../email.provider.js';
+import { type SendEmailProps } from '../../types.js';
 
 /* * */
 
-export const sucessfulGtfsValidationSubject = 'Validação GTFS realizada com sucesso';
+export const executiveSummarySubject = 'Validação GTFS realizada com sucesso';
 
 /* * */
 
-export interface SucessfulGtfsValidationTemplateProps {
+export interface ExecutiveSummaryTemplateProps {
 	firstName: string
 	gtfsValidationId: string
 	gtfsValidationUrl: string
@@ -27,7 +27,7 @@ export interface SucessfulGtfsValidationTemplateProps {
 
 /* * */
 
-export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidationId, gtfsValidationUrl, totalWarnings = 0 }: SucessfulGtfsValidationTemplateProps) {
+export default function ExecutiveSummaryTemplate({ firstName, gtfsValidationId, gtfsValidationUrl, totalWarnings = 0 }: ExecutiveSummaryTemplateProps) {
 	return (
 		<Wrapper previewMessage="Validação GTFS realizada com sucesso">
 			<Greeting text={`${firstName},`} />
@@ -68,25 +68,25 @@ export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidat
 
 /* * */
 
-SucessfulGtfsValidationTemplate.PreviewProps = {
+ExecutiveSummaryTemplate.PreviewProps = {
 	firstName: 'Josué',
 	gtfsValidationId: 'TUH16N',
 	gtfsValidationUrl: 'https://go.tmlmobilidade.pt/gtfs-validations/TUH16N',
 	totalWarnings: 0,
-} satisfies SucessfulGtfsValidationTemplateProps;
+} satisfies ExecutiveSummaryTemplateProps;
 
 /* * */
 
-export const renderSucessfulGtfsValidationTemplate = async (props: SucessfulGtfsValidationTemplateProps) => {
-	return await render(<SucessfulGtfsValidationTemplate {...props} />);
+export const renderExecutiveSummaryTemplate = async (props: ExecutiveSummaryTemplateProps) => {
+	return await render(<ExecutiveSummaryTemplate {...props} />);
 };
 
 /* * */
 
-export const sendSucessfulGtfsValidationEmail = async ({ data, to }: SendEmailProps<SucessfulGtfsValidationTemplateProps>) => {
+export const sendExecutiveSummaryEmail = async ({ data, to }: SendEmailProps<ExecutiveSummaryTemplateProps>) => {
 	await emailProvider.send({
-		html: await renderSucessfulGtfsValidationTemplate(data),
-		subject: sucessfulGtfsValidationSubject,
+		html: await renderExecutiveSummaryTemplate(data),
+		subject: executiveSummarySubject,
 		to: to,
 	});
 };

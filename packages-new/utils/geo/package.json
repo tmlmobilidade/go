@@ -44,10 +44,10 @@
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/ngeohash": "0.6.8",
-		"@types/node": "26.4.0",
+		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
-		"tsx": "4.23.12",
+		"tsx": "4.23.15",
 		"typescript": "6.0.3"
 	}
 }

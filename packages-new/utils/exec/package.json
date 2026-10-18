@@ -39,13 +39,11 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"csv-parse": "7.0.2",
-		"unzipper": "0.12.5"
+		"csv-parse": "7.0.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/node": "26.4.0",
-		"@types/unzipper": "0.10.11",
+		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"

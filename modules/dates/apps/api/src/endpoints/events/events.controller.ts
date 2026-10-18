@@ -207,8 +207,12 @@ export class EventsController {
 		const associatedPatterns: Pick<Pattern, '_id' | 'code' | 'headsign' | 'line_id' | 'route_id'>[] = await goDb.offer.patterns.aggregate([
 			{
 				$match: {
-					event_id: request.params.id,
-					kind: 'manual',
+					rules: {
+						$elemMatch: {
+							event_id: request.params.id,
+							kind: 'manual',
+						},
+					},
 				},
 			},
 			{

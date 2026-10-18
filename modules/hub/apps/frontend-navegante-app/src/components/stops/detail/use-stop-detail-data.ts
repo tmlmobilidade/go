@@ -6,6 +6,7 @@ import { useStopsData } from '@/components/stops/use-stops-data';
 import { useStopEtaData } from '@/hooks/transit/use-stop-eta-data';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { fetchPatterns } from '@/utils/transit/fetch-patterns';
+import { filterAlertsForStop } from '@/utils/transit/filter-entity-alerts';
 import { buildStopTimetable, type StopsDetailViewTimetableData } from '@/utils/transit/stop-timetable';
 import { HubV1ApiAlert, HubV1ApiLine, HubV1ApiPattern, HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { useMemo } from 'react';
@@ -46,7 +47,7 @@ export function useStopDetailData(stopId: string): UseStopDetailDataReturnType {
 	// B. Transform data
 
 	const associatedLines = useMemo(() => lines.filter(line => stop?.line_ids.includes(line._id)), [lines, stop?.line_ids]);
-	const activeAlerts = useMemo(() => getStopAlerts(alerts, stop), [alerts, stop]);
+	const activeAlerts = useMemo(() => filterAlertsForStop(alerts, stop), [alerts, stop]);
 	const validPatterns = useMemo(() => associatedPatterns?.flat().filter(pattern => selectedOperationalDate ? pattern?.valid_on?.includes(selectedOperationalDate) : false), [associatedPatterns, selectedOperationalDate]);
 	const timetable = useMemo(() => buildStopTimetable({ isTodaySelected, selectedOperationalDate, stopEtas, stopId, validPatterns }), [isTodaySelected, selectedOperationalDate, stopEtas, stopId, validPatterns]);
 
@@ -64,17 +65,4 @@ export function useStopDetailData(stopId: string): UseStopDetailDataReturnType {
 	}), [activeAlerts, associatedLines, isLinesLoading, isPatternsLoading, isStopsLoading, linesError, patternsError, stop, stopsError, timetable]);
 
 	//
-}
-
-/* * */
-
-function getStopAlerts(alerts: HubV1ApiAlert[], stop: HubV1ApiStop | undefined): HubV1ApiAlert[] {
-	if (!stop) return [];
-
-	return alerts.filter((alert) => {
-		if (alert.reference_type === 'agency') return stop.agency_ids.includes(alert.agency_id);
-		if (alert.reference_type === 'stops') return alert.references.some(reference => reference.parent_id === String(stop._id));
-		if (alert.reference_type === 'lines') return alert.references.some(reference => reference.child_ids.includes(String(stop._id)));
-		return false;
-	});
 }

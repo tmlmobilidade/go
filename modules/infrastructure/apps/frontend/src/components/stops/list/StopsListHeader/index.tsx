@@ -1,6 +1,6 @@
 'use client';
 
-import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { ListHeader, LoadingActivity } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { StopsListFilterSearch } from '../filters/StopsListFilterSearch';
@@ -17,18 +17,18 @@ export function StopsListHeader() {
 
 	const { t } = useTranslation();
 
-	const { isLoading, isValidating, timestamp } = useStopsListData();
+	const { data, isLoading, isValidating, timestamp } = useStopsListData();
 
 	//
 	// B. Render components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps singleLine>{t('default:stops.list.Header.title')}</Label>
-			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
-			<Spacer shrink />
-			<StopsListFilterSearch />
-			<StopsListHeaderMenu />
-		</Toolbar>
+		<ListHeader
+			actions={<StopsListHeaderMenu />}
+			activity={<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />}
+			count={data?.length}
+			search={<StopsListFilterSearch />}
+			title={t('default:stops.list.Header.title')}
+		/>
 	);
 }

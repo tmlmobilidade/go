@@ -4,11 +4,11 @@ import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { render } from 'react-email';
 
-import { Paragraph } from '../components/Paragraph/index.js';
-import { Span } from '../components/Span/index.js';
-import { Wrapper } from '../components/Wrapper/index.js';
-import { emailProvider } from '../email.provider.js';
-import { type SendEmailProps } from '../types.js';
+import { Paragraph } from '../../components/Paragraph/index.js';
+import { Span } from '../../components/Span/index.js';
+import { Wrapper } from '../../components/Wrapper/index.js';
+import { emailProvider } from '../../email.provider.js';
+import { type SendEmailProps } from '../../types.js';
 
 /* * */
 
