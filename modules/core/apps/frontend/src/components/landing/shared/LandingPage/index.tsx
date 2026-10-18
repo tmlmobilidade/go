@@ -9,6 +9,8 @@ import styles from './styles.module.css';
 
 import { LandingHeader } from '../../header/LandingHeader';
 import { LandingMap } from '../../map/LandingMap';
+import { LandingModulesInfrastructure } from '../../modules/LandingModulesInfrastructure';
+import { LandingModulesIntro } from '../../modules/LandingModulesIntro';
 import { LandingOverview } from '../../overview/LandingOverview';
 
 /* * */
@@ -20,10 +22,11 @@ export function LandingPage() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+
 	const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
 	//
-	// F. Render components
+	// B. Render components
 
 	return (
 		<>
@@ -31,17 +34,8 @@ export function LandingPage() {
 				<LandingHeader />
 				<LandingMap />
 				<LandingOverview />
-
-				<section className={styles.modules} id="modules">
-					<div className={styles.copy}>
-						<span className={styles.rule} />
-						<h2>{t('unauthenticated:LandingPage.modules.title')}</h2>
-						<p>{t('unauthenticated:LandingPage.modules.description')}</p>
-						<button aria-label={t('unauthenticated:LandingPage.modules.play_video')} className={styles.videoPreview} onClick={() => setIsVideoModalOpen(true)} type="button">
-							<IconPlayerPlayFilled aria-hidden="true" />
-						</button>
-					</div>
-				</section>
+				<LandingModulesIntro />
+				<LandingModulesInfrastructure />
 			</main>
 
 			<Modal onClose={() => setIsVideoModalOpen(false)} opened={isVideoModalOpen} size="xl" title={t('unauthenticated:LandingPage.modules.video_title')} centered>

@@ -1,4 +1,13 @@
 {
+	"LandingModulesInfrastructure": {
+		"description": "GO es una plataforma que responde a las necesidades de las autoridades y los operadores de transporte de forma ágil e intuitiva.",
+		"subtitle": "Uma nova forma de trabalhar transportes públicos em Portugal.",
+		"title": "Infraestrutura"
+	},
+	"LandingModulesIntro": {
+		"description": "The GO is organized into 4 essential modules that complete the cycle of responsibilities of a transport authority.",
+		"title": "Developed in a modular way — use only what you need."
+	},
 	"LandingOverview": {
 		"actions": {
 			"explore": "Explorar",

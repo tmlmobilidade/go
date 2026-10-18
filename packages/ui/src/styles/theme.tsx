@@ -16,6 +16,7 @@ import './system/utils.css';
 /* * */
 
 import './fonts/jetbrains-mono-700.css';
+import './fonts/jetbrains-mono-900.css';
 import './fonts/work-sans-500.css';
 import './fonts/work-sans-600.css';
 import './fonts/work-sans-700.css';

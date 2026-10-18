@@ -1,4 +1,13 @@
 {
+	"LandingModulesInfrastructure": {
+		"description": "Com um módulo dedicado à gestão da infraestrutura, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+		"subtitle": "As paragens são a espinha dorsal da rede de transportes.",
+		"title": "Infraestrutura"
+	},
+	"LandingModulesIntro": {
+		"description": "O GO está organizado em 4 módulos essenciais que completam o ciclo de responsabilidades de uma autoridade de transportes.",
+		"title": "Desenvolvido de forma modular — usa só o que precisas."
+	},
 	"LandingOverview": {
 		"actions": {
 			"explore": "Explorar",
