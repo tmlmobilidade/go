@@ -3,8 +3,8 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getPlanHash, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { unzipFile } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+import { unzipFile } from '@tmlmobilidade/go-utils-zip';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ZipFile } from 'yazl';
