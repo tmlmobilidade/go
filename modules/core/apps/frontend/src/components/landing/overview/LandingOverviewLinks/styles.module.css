@@ -46,5 +46,5 @@
 .link:hover,
 .link:hover .icon {
 	text-decoration: underline;
-	color: var(--color-primary);
+	color: var(--color-secondary);
 }

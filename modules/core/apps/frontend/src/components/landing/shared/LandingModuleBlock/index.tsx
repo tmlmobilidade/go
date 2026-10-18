@@ -1,8 +1,8 @@
 'use client';
 
-import { type PropsWithChildren } from 'react';
-
 import styles from './styles.module.css';
+
+import { LandingVideoModalButton } from '../../modules/LandingVideoModalButton';
 
 /* * */
 
@@ -10,12 +10,14 @@ interface LandingModuleBlockProps {
 	description: string
 	index: number
 	subtitle: string
+	thumbnailSrc: string
 	title: string
+	videoSrc: string
 }
 
 /* * */
 
-export function LandingModuleBlock({ children, description, index, subtitle, title }: PropsWithChildren<LandingModuleBlockProps>) {
+export function LandingModuleBlock({ description, index, subtitle, thumbnailSrc, title, videoSrc }: LandingModuleBlockProps) {
 	return (
 		<div className={styles.container}>
 
@@ -27,7 +29,10 @@ export function LandingModuleBlock({ children, description, index, subtitle, tit
 			<div className={styles.wrapper}>
 				<h2 className={styles.subtitle}>{subtitle}</h2>
 				<p className={styles.description}>{description}</p>
-				{children}
+				<LandingVideoModalButton
+					thumbnailSrc={thumbnailSrc}
+					videoSrc={videoSrc}
+				/>
 			</div>
 
 		</div>

@@ -1,12 +1,14 @@
 {
-	"LandingModulesInfrastructure": {
-		"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
-		"subtitle": "Stops are the backbone of the transport network.",
-		"title": "Infrastructure"
-	},
-	"LandingModulesIntro": {
-		"description": "GO is organized into 4 essential modules that complete the cycle of responsibilities of a transport authority.",
-		"title": "Developed in a modular way — use only what you need."
+	"LandingModules": {
+		"infrastructure": {
+			"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+			"subtitle": "Stops are the backbone of the transport network.",
+			"title": "Infrastructure"
+		},
+		"intro": {
+			"description": "GO is organized into 4 essential modules that complete the cycle of responsibilities of a transport authority.",
+			"title": "Developed in a modular way — use only what you need."
+		}
 	},
 	"LandingOverview": {
 		"actions": {

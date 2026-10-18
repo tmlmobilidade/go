@@ -4,8 +4,7 @@ import styles from './styles.module.css';
 
 import { LandingHeader } from '../../header/LandingHeader';
 import { LandingMap } from '../../map/LandingMap';
-import { LandingModulesInfrastructure } from '../../modules/LandingModulesInfrastructure';
-import { LandingModulesIntro } from '../../modules/LandingModulesIntro';
+import { LandingModules } from '../../modules/LandingModules';
 import { LandingOverview } from '../../overview/LandingOverview';
 
 /* * */
@@ -16,8 +15,7 @@ export function LandingPage() {
 			<LandingHeader />
 			<LandingMap />
 			<LandingOverview />
-			<LandingModulesIntro />
-			<LandingModulesInfrastructure />
+			<LandingModules />
 		</main>
 	);
 }
