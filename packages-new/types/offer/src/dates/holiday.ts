@@ -6,15 +6,15 @@ import { z } from 'zod';
 /* * */
 
 export const HolidaySchema = BaseDocumentSchema.extend({
-	agency_ids: z.array(z.string()).default([]),
+	agency_ids: z.array(z.string()).min(1),
 	dates: z.array(OperationalDateSchema).default([]),
 	description: z.string().optional(),
 	is_locked: z.boolean().default(false),
 	title: z.string().min(1),
 });
 
-export const CreateHolidaySchema = HolidaySchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateHolidaySchema = CreateHolidaySchema.omit({ created_by: true }).partial();
+export const CreateHolidaySchema = HolidaySchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true });
+export const UpdateHolidaySchema = CreateHolidaySchema.partial();
 
 /* * */
 

@@ -1,5 +1,6 @@
 /* * */
 
+import { getQualifiedLineId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiPatternTrip, type HubV1ApiPatternWaypoint, type HubV1ApiRoute, type HubV1ApiScheduledArrival, type HubV1ApiStop, HubV1GtfsRoutes } from '@tmlmobilidade/go-types-hub';
 import { HexColorSchema } from '@tmlmobilidade/go-types-shared';
@@ -234,6 +235,11 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 			const encodedPolyline = await getEncodedPolyline(importedGtfsSql, tripRawData.shape_id);
 
 			//
+			// Get the qualified line ID for the current pattern ID
+
+			const qualifiedLineId = getQualifiedLineId(routeRawData.agency_id, routeRawData.route_short_name);
+
+			//
 			// Create the pattern version object with only the fields used to differentiate between each version.
 			// A pattern version is differentiated by the fields below, with special focus on direction_id,
 			// trip_headsign, shape_id and the simplified version of path (stop_id and stop_sequence).
@@ -246,7 +252,7 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 				color: HexColorSchema.parse(routeRawData.route_color || '#000000'),
 				direction_id: tripRawData.direction_id,
 				headsign: tripRawData.trip_headsign,
-				line_id: routeRawData.route_short_name,
+				line_id: qualifiedLineId,
 				route_id: routeRawData.route_id,
 				shape_polyline: encodedPolyline,
 				short_name: routeRawData.route_short_name,
@@ -278,7 +284,7 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 					district_names: [],
 					facilities: [],
 					headsign: tripRawData.trip_headsign,
-					line_id: routeRawData.route_short_name,
+					line_id: qualifiedLineId,
 					locality_ids: [],
 					locality_names: [],
 					municipality_ids: [],
@@ -386,7 +392,7 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 					district_ids: [],
 					district_names: [],
 					facilities: [],
-					line_id: routeRawData.route_short_name,
+					line_id: qualifiedLineId,
 					locality_ids: [],
 					locality_names: [],
 					long_name: routeRawData.route_long_name,
@@ -423,13 +429,13 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 
 			let currentLineObject: HubV1ApiLine;
 
-			const parsedLineObject = allLinesParsed.get(routeRawData.route_short_name);
+			const parsedLineObject = allLinesParsed.get(qualifiedLineId);
 
 			if (parsedLineObject) {
 				currentLineObject = parsedLineObject;
 			} else {
 				currentLineObject = {
-					_id: routeRawData.route_short_name,
+					_id: qualifiedLineId,
 					agency_id: routeRawData.agency_id,
 					color: HexColorSchema.parse(routeRawData.route_color || '#000000'),
 					district_ids: [],
@@ -471,7 +477,7 @@ export async function syncLinesRoutesPatterns(importedGtfsSql: GtfsHubV1SQLTable
 			//
 			// Save the updated objects back to the maps
 
-			allLinesParsed.set(routeRawData?.route_short_name, currentLineObject);
+			allLinesParsed.set(qualifiedLineId, currentLineObject);
 			allRoutesParsed.set(routeRawData.route_id, currentRouteObject);
 			parsedPatternsForThisPatternGroup.set(currentPatternVersionHash, currentPatternObject);
 

@@ -59,6 +59,7 @@ export function HolidaysDetail() {
 						data={agencyOptions}
 						disabled={holidaysDetailContext.flags.isReadOnly}
 						label="Operadores afetados"
+						required={!HolidaySchema.shape.agency_ids.isOptional()}
 						value={holidaysDetailContext.data.form.values.agency_ids || []}
 						{...holidaysDetailContext.data.form.getInputProps('agency_ids')}
 					/>

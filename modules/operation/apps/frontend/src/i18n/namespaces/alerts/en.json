@@ -1,0 +1,134 @@
+{
+	"create": {
+		"AlertCreateStepDates": {
+			"sections": {
+				"active_period": {
+					"description": "The period during which the cause of the alert is active. An alert may be published before it takes effect (for example, an alert about a diversion caused by a road closure is published a week in advance, but the closure itself lasts only 2 days).",
+					"fields": {
+						"active_period_end_date": {
+							"label": "End Date"
+						},
+						"active_period_start_date": {
+							"label": "Start Date"
+						}
+					},
+					"title": "Validity Period"
+				},
+				"publish_date": {
+					"description": "The period during which the alert is published and visible on digital channels. You can schedule when the alert is published and when it is removed from digital channels.",
+					"fields": {
+						"publish_date_end_date": {
+							"label": "End Date"
+						},
+						"publish_date_start_date": {
+							"label": "Start Date"
+						}
+					},
+					"title": "Publication Schedule"
+				}
+			}
+		},
+		"causes": {
+			"no_data": "No causes available"
+		},
+		"effects": {
+			"no_data": "No effects available"
+		},
+		"references": {
+			"no_data": "No reference types available"
+		},
+		"summary": {
+			"auto_texts": {
+				"label": "Automatic Text"
+			},
+			"coordinates": {
+				"label": "Geographic Coordinates"
+			},
+			"description": {
+				"label": "Description"
+			},
+			"generate_text": {
+				"label": "Generate Automatic Text"
+			},
+			"info_url": {
+				"description": "Optionally include the URL of a website with more information",
+				"label": "Additional Link"
+			},
+			"title": {
+				"label": "Title"
+			},
+			"user_instructions": {
+				"label": "Additional information for automatic text generation (optional)",
+				"placeholder": "E.g. Diversion via Street X, towards Y, due to Z."
+			}
+		}
+	},
+	"detail": {
+		"SectionTextsForm": {
+			"fields": {
+				"image": {
+					"label": "Image"
+				}
+			}
+		}
+	},
+	"list": {
+		"AlertsList": {
+			"columns": {
+				"agency_id": {
+					"label": "Agency"
+				},
+				"cause_effect": {
+					"label": "Cause & Effect"
+				},
+				"created_at": {
+					"label": "Creation Date"
+				},
+				"lines": {
+					"label": "Lines"
+				},
+				"publish_date": {
+					"label": "Publication Date"
+				},
+				"publish_status": {
+					"label": "Status"
+				},
+				"reference_type": {
+					"label": "Reference"
+				},
+				"stops": {
+					"label": "Stops"
+				},
+				"title": {
+					"label": "Title"
+				}
+			}
+		},
+		"AlertsListHeader": {
+			"title": "Alerts"
+		},
+		"filters": {
+			"active_period": {
+				"label": "Active Period"
+			},
+			"agency": {
+				"label": "Agency"
+			},
+			"cause": {
+				"label": "Cause"
+			},
+			"effect": {
+				"label": "Effect"
+			},
+			"publish_date": {
+				"label": "Publication Date"
+			},
+			"publish_status": {
+				"label": "Status"
+			},
+			"reference_type": {
+				"label": "Reference"
+			}
+		}
+	}
+}
