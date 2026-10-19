@@ -1,17 +1,19 @@
 'use client';
 
-import { useMapContext } from '@/components/map/Map.context';
-import { mapDefaultConfig } from '@/components/map/Map.settings';
+import { mapDefaultConfig } from '@/constants/map';
+import { useMapContext } from '@/contexts/Map.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
+import { readPersistedMapCamera, writePersistedMapCamera } from '@/utils/persistence/app-state';
+import { useColorScheme } from '@tmlmobilidade/ui';
 import { loadMapAssets, MAP_ASSETS_ALERTS, MAP_ASSETS_MISC, MAP_ASSETS_SHAPES, MAP_ASSETS_STOPS, MAP_ASSETS_VEHICLES } from '@tmlmobilidade/ui';
-import Map, { MapRef, useMap } from '@vis.gl/react-maplibre';
+import Map, { type MapLayerMouseEvent, type MapLayerTouchEvent, MapRef, useMap, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type MapLibreEvent } from 'maplibre-gl';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
-
-export type MapStyle = 'map' | 'satellite';
 
 interface MapViewProps {
 	autoZoom?: boolean
@@ -22,13 +24,20 @@ interface MapViewProps {
 	onCenterMap?: () => void
 	onClick?: (arg0) => void
 	onDrag?: (arg0) => void
+	onMouseDown?: (event: MapLayerMouseEvent) => void
 	onMouseEnter?: (arg0) => void // When the mouse enters the interactive layer
 	onMouseLeave?: (arg0) => void // When the mouse leaves the interactive layer
+	onMouseMove?: (event: MapLayerMouseEvent) => void
 	onMouseOut?: (arg0) => void // When the mouse enters the map
 	onMouseOver?: (arg0) => void // When the mouse leaves the map
+	onMouseUp?: (event: MapLayerMouseEvent) => void
 	onMove?: (arg0) => void
 	onMoveEnd?: (arg0) => void
 	onMoveStart?: (arg0) => void
+	onTouchCancel?: (event: MapLayerTouchEvent) => void
+	onTouchEnd?: (event: MapLayerTouchEvent) => void
+	onTouchMove?: (event: MapLayerTouchEvent) => void
+	onTouchStart?: (event: MapLayerTouchEvent) => void
 	onZoom?: (arg0) => void
 	primarySourceId?: string
 	scrollZoom?: boolean
@@ -38,17 +47,28 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ children, id, interactiveLayerIds = [], onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scrollZoom = true }: MapViewProps) {
+export function MapView({ children, id, interactiveLayerIds = [], onClick, onDrag, onMouseDown, onMouseEnter, onMouseLeave, onMouseMove, onMouseOut, onMouseOver, onMouseUp, onMoveEnd, onMoveStart, onTouchCancel, onTouchEnd, onTouchMove, onTouchStart, onZoom, scrollZoom = true }: MapViewProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const allMaps = useMap();
+	const colorScheme = useColorScheme();
+	const { t } = useTranslation();
+	const instructionsId = useId();
+	const mapName = t('default:map.MapView.name');
 
 	const mapContext = useMapContext();
+	const { data: { tracking_mode: trackingMode }, flags: { is_storage_ready: isStorageReady } } = useUserLocation();
+	const isMapStorageReady = mapContext.flags.is_storage_ready;
+	const canMountMap = isStorageReady && isMapStorageReady;
+	const mapStyle = colorScheme === 'dark' ? mapDefaultConfig.styles.dark : mapDefaultConfig.styles.light;
+	const hasRestoredCameraRef = useRef(false);
+	const restoredCamera = useMemo(() => canMountMap && trackingMode === 'idle' ? readPersistedMapCamera() : null, [canMountMap, trackingMode]);
 
 	const [cursor, setCursor] = useState<string>('auto');
+	const [areMapAssetsLoaded, setAreMapAssetsLoaded] = useState(false);
 
 	//
 	// B. Transform data
@@ -58,15 +78,52 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 		mapContext.actions.setMap(allMaps[id]);
 	}, [allMaps, id, mapContext.actions]);
 
+	useEffect(() => {
+		if (canMountMap && allMaps[id || 'map']) hasRestoredCameraRef.current = true;
+	}, [allMaps, canMountMap, id]);
+
+	useEffect(() => {
+		setAreMapAssetsLoaded(false);
+	}, [mapStyle]);
+
 	//
 	// C. Handle actions
 
-	const handleOnLoad = (event: MapLibreEvent) => {
-		loadMapAssets(event.target, MAP_ASSETS_ALERTS);
-		loadMapAssets(event.target, MAP_ASSETS_MISC);
-		loadMapAssets(event.target, MAP_ASSETS_SHAPES);
-		loadMapAssets(event.target, MAP_ASSETS_STOPS);
-		loadMapAssets(event.target, MAP_ASSETS_VEHICLES);
+	const applyCanvasName = useCallback((map: MapLibreEvent['target']) => {
+		const canvas = map.getCanvas();
+		canvas.setAttribute('aria-label', mapName);
+		canvas.setAttribute('aria-describedby', instructionsId);
+	}, [mapName, instructionsId]);
+
+	useEffect(() => {
+		const map = allMaps[id || 'map'];
+		if (!map) return;
+
+		const apply = () => applyCanvasName(map.getMap());
+		apply();
+		map.on('idle', apply);
+		return () => {
+			map.off('idle', apply);
+		};
+	}, [allMaps, applyCanvasName, id, instructionsId, mapName]);
+
+	const handleOnLoad = async (event: MapLibreEvent) => {
+		applyCanvasName(event.target);
+
+		await Promise.all([
+			loadMapAssets(event.target, MAP_ASSETS_ALERTS),
+			loadMapAssets(event.target, MAP_ASSETS_MISC),
+			loadMapAssets(event.target, MAP_ASSETS_SHAPES),
+			loadMapAssets(event.target, MAP_ASSETS_STOPS),
+			loadMapAssets(event.target, MAP_ASSETS_VEHICLES),
+		]);
+		setAreMapAssetsLoaded(true);
+		applyCanvasName(event.target);
+	};
+
+	const handleOnStyleData = async (event: MapLibreEvent) => {
+		if (!event.target.isStyleLoaded()) return;
+		await handleOnLoad(event);
 	};
 
 	const handleOnMouseEnter = useCallback((event) => {
@@ -84,49 +141,69 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 		if (onMoveStart) onMoveStart(event);
 	}, [onMoveStart]);
 
-	const handleOnMoveEnd = useCallback((event) => {
+	const handleOnMoveEnd = useCallback((event: ViewStateChangeEvent) => {
 		setCursor('auto');
+		if (hasRestoredCameraRef.current && isStorageReady && trackingMode === 'idle') {
+			writePersistedMapCamera({
+				bearing: event.viewState.bearing,
+				latitude: event.viewState.latitude,
+				longitude: event.viewState.longitude,
+				zoom: event.viewState.zoom,
+			});
+		}
 		if (onMoveEnd) onMoveEnd(event);
-	}, [onMoveEnd]);
+	}, [isStorageReady, onMoveEnd, trackingMode]);
 
 	//
 	// D. Render components
 
 	return (
-		<div className={styles.container} aria-hidden>
+		<div className={styles.container}>
+			<p className={styles.visuallyHidden} id={instructionsId}>{t('default:map.MapView.instructions')}</p>
 
-			<Map
-				attributionControl={false}
-				cursor={cursor}
-				id={id || 'map'}
-				initialViewState={mapDefaultConfig.initialViewState}
-				interactive={interactiveLayerIds ? true : false}
-				interactiveLayerIds={interactiveLayerIds}
-				mapStyle={mapDefaultConfig.styles['map']}
-				maxPitch={0}
-				maxZoom={mapDefaultConfig.maxZoom}
-				minPitch={0}
-				minZoom={mapDefaultConfig.minZoom}
-				onClick={onClick}
-				onDrag={onDrag}
-				onLoad={handleOnLoad}
-				onMouseEnter={handleOnMouseEnter}
-				onMouseLeave={handleOnMouseLeave}
-				onMouseOut={onMouseOut}
-				onMouseOver={onMouseOver}
-				onMove={handleOnMoveStart}
-				onMoveEnd={handleOnMoveEnd}
-				onMoveStart={handleOnMoveStart}
-				onZoom={onZoom}
-				scrollZoom={scrollZoom}
-				style={{ height: '100%', width: '100%' }}
-			>
+			<div className={styles.map}>
+				{canMountMap && (
+					<Map
+						attributionControl={false}
+						cursor={cursor}
+						id={id || 'map'}
+						initialViewState={restoredCamera ?? mapDefaultConfig.initialViewState}
+						interactive={interactiveLayerIds ? true : false}
+						interactiveLayerIds={interactiveLayerIds}
+						mapStyle={mapStyle}
+						maxPitch={0}
+						maxZoom={mapDefaultConfig.maxZoom}
+						minPitch={0}
+						minZoom={mapDefaultConfig.minZoom}
+						onClick={onClick}
+						onDrag={onDrag}
+						onLoad={handleOnLoad}
+						onMouseDown={onMouseDown}
+						onMouseEnter={handleOnMouseEnter}
+						onMouseLeave={handleOnMouseLeave}
+						onMouseMove={onMouseMove}
+						onMouseOut={onMouseOut}
+						onMouseOver={onMouseOver}
+						onMouseUp={onMouseUp}
+						onMove={handleOnMoveStart}
+						onMoveEnd={handleOnMoveEnd}
+						onMoveStart={handleOnMoveStart}
+						onStyleData={handleOnStyleData}
+						onTouchCancel={onTouchCancel}
+						onTouchEnd={onTouchEnd}
+						onTouchMove={onTouchMove}
+						onTouchStart={onTouchStart}
+						onZoom={onZoom}
+						scrollZoom={scrollZoom}
+					>
 
-				<div className={styles.childrenWrapper}>
-					{children}
-				</div>
+						<div className={styles.childrenWrapper}>
+							{areMapAssetsLoaded && children}
+						</div>
 
-			</Map>
+					</Map>
+				)}
+			</div>
 
 			<div className={styles.attributionWrapper}>
 				<a href="https://maplibre.org/" target="_blank">MapLibre</a>

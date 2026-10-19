@@ -1,0 +1,97 @@
+.step {
+	position: relative;
+	display: grid;
+	grid-template-columns: 32px minmax(0, 1fr);
+	gap: 8px;
+	padding: 10px;
+}
+
+.marker {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-100);
+	border-radius: 999px;
+}
+
+.body {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+}
+
+.currentStepMarker {
+	position: absolute;
+	top: -7px;
+	right: -7px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	color: var(--color-route-on-accent);
+	background-color: var(--color-route-status-info);
+	border: 2px solid var(--color-system-background-100);
+	border-radius: 999px;
+	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+}
+
+.step::before {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 25px;
+	content: '';
+	border-left: 2px dotted var(--color-system-text-300);
+}
+
+.step:first-child::before {
+	top: 26px;
+}
+
+.step:last-child::before {
+	bottom: auto;
+	height: 26px;
+}
+
+.lineColor {
+	position: absolute;
+	z-index: 1;
+	top: 26px;
+	bottom: -26px;
+	left: 24px;
+	width: 4px;
+	pointer-events: none;
+	border-radius: 999px;
+}
+
+.endMarker {
+	position: absolute;
+	z-index: 2;
+	bottom: 10px;
+	left: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+}
+
+.step[data-has-end-marker='true'] > .marker {
+	background-color: transparent;
+}
+
+.step[data-has-end-marker='true'] .lineColor {
+	bottom: 26px;
+}
+
+.step[data-has-end-marker='true']:last-child::before {
+	bottom: 26px;
+	height: auto;
+}

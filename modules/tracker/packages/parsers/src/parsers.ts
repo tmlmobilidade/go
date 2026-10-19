@@ -4,6 +4,7 @@ import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidad
 
 import { parseRawVehicleEventEsCrtmAisaV1 } from './es/crtm/aisa/v1.js';
 import { parseRawVehicleEventEsCrtmLaVelozV1 } from './es/crtm/la-veloz/v1.js';
+import { parseRawVehicleEventPtCimatFlaviamobilV1 } from './pt/cimat/flaviamobil/v1.js';
 import { parseRawVehicleEventPtTmlCcflV1 } from './pt/tml/ccfl/v1.js';
 import { parseRawVehicleEventPtTmlCmAlsaV1 } from './pt/tml/cm/alsa/v1.js';
 import { parseRawVehicleEventPtTmlCmRlV1 } from './pt/tml/cm/rl/v1.js';
@@ -27,6 +28,7 @@ import { parseRawVehicleEventPtTmpUnirUt6V1 } from './pt/tmp/unir/ut6/v1.js';
 export const PARSER_MAP: Record<RawVehicleEvent['version'], (vehicleEvent: RawVehicleEvent) => Promise<null | SimplifiedVehicleEvent>> = {
 	'es-crtm-aisa-v1': parseRawVehicleEventEsCrtmAisaV1,
 	'es-crtm-la-veloz-v1': parseRawVehicleEventEsCrtmLaVelozV1,
+	'pt-cimat-flaviamobil-v1': parseRawVehicleEventPtCimatFlaviamobilV1,
 	'pt-tml-ccfl-v1': parseRawVehicleEventPtTmlCcflV1,
 	'pt-tml-cm-alsa-v1': parseRawVehicleEventPtTmlCmAlsaV1,
 	'pt-tml-cm-rl-v1': parseRawVehicleEventPtTmlCmRlV1,

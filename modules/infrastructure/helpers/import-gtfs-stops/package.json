@@ -1,0 +1,31 @@
+{
+	"name": "@tmlmobilidade/go-infrastructure-helpers-import-gtfs-stops",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "tsc",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix",
+		"start": "node --import tsx src/index.ts",
+		"test": "node --import tsx --test src/import.test.ts"
+	},
+	"dependencies": {
+		"@tmlmobilidade/go-clients-mongo": "*",
+		"@tmlmobilidade/go-clients-postgres": "*",
+		"@tmlmobilidade/go-infrastructure-pckg-utils": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-locations": "*",
+		"@tmlmobilidade/go-types-infrastructure": "*",
+		"@tmlmobilidade/go-types-locations": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
+		"csv-parse": "7.0.2"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/eslint": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
+		"tsx": "4.23.12",
+		"typescript": "6.0.3"
+	}
+}

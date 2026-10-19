@@ -1,6 +1,9 @@
 {
 	"ListFilter": {
+		"empty": "Nenhuma opção disponível",
 		"no_organization": "Sem organização",
+		"no_results": "Nenhum resultado encontrado",
+		"search": "Pesquisar...",
 		"toggle_all": "Selecionar tudo"
 	},
 	"TagFilter": {

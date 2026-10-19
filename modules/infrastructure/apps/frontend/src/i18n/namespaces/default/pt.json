@@ -16,7 +16,7 @@
 				}
 			},
 			"Header": {
-				"step": "Passo {{current}} de {{total}}",
+				"step": "Passo {current} de {total}",
 				"title": "Nova paragem"
 			},
 			"StepLocationDetails": {
@@ -37,6 +37,14 @@
 			},
 			"StepNames": {
 				"fields": {
+					"agency_ids": {
+						"description": "Selecione os operadores associados ao postalete harmonizado desta paragem.",
+						"empty": "Não tem operadores disponíveis nas permissões de criação de paragens. Contacte um administrador.",
+						"label": "Operadores",
+						"loading": "A carregar os operadores disponíveis…",
+						"required": "Selecione pelo menos um operador permitido.",
+						"unavailable": "Não foi possível carregar os operadores. Não é possível criar a paragem até que estejam disponíveis."
+					},
 					"name": {
 						"description": "Este é o nome principal e será apresentado nos canais digitais.",
 						"label": "Designação Completa da Paragem"
@@ -53,6 +61,9 @@
 			},
 			"StepSummary": {
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
 					"short_name": {
 						"label": "Nome curto"
 					},
@@ -279,11 +290,48 @@
 			}
 		},
 		"extract": {
-			"ExtractButton": {
-				"label": "Exportar"
-			},
 			"Header": {
 				"title": "Exportar paragens"
+			},
+			"NodesExtract": {
+				"title": "Exportar nodes"
+			},
+			"StopsExtractFooter": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"StopsExtractProperties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operador"
+					},
+					"connections": {
+						"label": "Conexões"
+					},
+					"facilities": {
+						"label": "Serviços"
+					},
+					"lifecycle_statuses": {
+						"label": "Estado"
+					},
+					"location_neighbourhood_ids": {
+						"label": "Localidade"
+					},
+					"location_primary_ids": {
+						"label": "Distrito"
+					},
+					"location_secondary_ids": {
+						"label": "Município"
+					},
+					"location_tertiary_ids": {
+						"label": "Freguesia"
+					},
+					"version": {
+						"label": "Versão"
+					}
+				},
+				"placeholder": "Sem filtro"
 			}
 		},
 		"list": {
@@ -298,6 +346,9 @@
 			},
 			"FilterFacilities": {
 				"label": "Serviços"
+			},
+			"FilterLegacyId": {
+				"label": "ID Antigo"
 			},
 			"FilterLifecycleStatus": {
 				"label": "Estado"
@@ -318,6 +369,9 @@
 				"title": "Paragens"
 			},
 			"HeaderMenu": {
+				"ExtractNodesButton": {
+					"label": "Exportar Nodes"
+				},
 				"ExtractStopsButton": {
 					"label": "Exportar Paragens"
 				},

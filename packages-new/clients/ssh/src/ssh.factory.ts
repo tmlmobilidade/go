@@ -1,5 +1,6 @@
 /* * */
 
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { randomInt } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
@@ -40,29 +41,76 @@ export function createSshTunnelFactory(type: SshTunnelType): SshTunnelFactory {
 }
 
 function buildSshTunnel(type: SshTunnelType, options: SshTunnelFactoryOptions): null | SshTunnel {
-	const { dstAddr, dstPort, maxRetries } = options;
+	//
+
+	//
+	// Setup a helper function to get the environment variable
+
 	const env = (name: string) => process.env[`${type}_${name}`];
+
+	//
+	// Check if tunnel is enabled
 
 	if (env('TUNNEL_ENABLED') !== 'true') {
 		return null;
 	}
 
-	if (!env('TUNNEL_SSH_HOST')) {
-		throw new Error(`Missing ${type}_TUNNEL_SSH_HOST environment variable.`);
-	}
-	if (!env('TUNNEL_SSH_USERNAME')) {
-		throw new Error(`Missing ${type}_TUNNEL_SSH_USERNAME environment variable.`);
-	}
-	if (!env('TUNNEL_SSH_KEY_PATH') && !env('TUNNEL_SSH_KEY') && !process.env.SSH_AUTH_SOCK) {
+	//
+	// Check if required SSH options are set
+
+	if (!options.dstAddr) throw new Error(`Missing dstAddr in options.`);
+
+	if (!options.dstPort) throw new Error(`Missing dstPort in options.`);
+
+	//
+	// Setup SHH Host and Username. Both are required for tunneling.
+
+	const tunnelSshHost = env('TUNNEL_SSH_HOST');
+	const tunnelSshUsername = env('TUNNEL_SSH_USERNAME');
+
+	if (!tunnelSshHost) throw new Error(`Missing ${type}_TUNNEL_SSH_HOST environment variable.`);
+
+	if (!tunnelSshUsername) throw new Error(`Missing ${type}_TUNNEL_SSH_USERNAME environment variable.`);
+
+	//
+	// Setup the SSH agent and private key.
+	// SSH agent is used when no private key or key path is provided,
+	// and a value is set for the SSH_AUTH_SOCK environment variable.
+
+	const tunnelSshKeyPath = env('TUNNEL_SSH_KEY_PATH');
+	const tunnelSshKey = env('TUNNEL_SSH_KEY');
+
+	let shouldUseSshAgent: boolean;
+	let privateKeyValue: Buffer | string | undefined;
+
+	if (tunnelSshKeyPath) {
+		shouldUseSshAgent = false;
+		privateKeyValue = readFileSync(tunnelSshKeyPath);
+		Logger.info(`Using ${type}_TUNNEL_SSH_KEY_PATH to connect to ${type}_TUNNEL.`);
+	} else if (tunnelSshKey) {
+		shouldUseSshAgent = false;
+		privateKeyValue = tunnelSshKey;
+		Logger.info(`Using ${type}_TUNNEL_SSH_KEY to connect to ${type}_TUNNEL.`);
+	} else if (process.env.SSH_AUTH_SOCK) {
+		shouldUseSshAgent = true;
+		privateKeyValue = undefined;
+		Logger.info(`Using SSH agent on ${process.env.SSH_AUTH_SOCK} to connect to ${type}_TUNNEL.`);
+	} else {
 		throw new Error(`Missing authentication configuration. Please provide ${type}_TUNNEL_SSH_KEY_PATH, ${type}_TUNNEL_SSH_KEY, or ensure SSH_AUTH_SOCK is set.`);
 	}
 
+	//
+	// Assign a random source port
+
 	const srcPort = randomInt(8_000, 8_999);
+
+	//
+	// Build SSH config
 
 	const sshConfig: SshConfig = {
 		forwardOptions: {
-			dstAddr: dstAddr,
-			dstPort: dstPort,
+			dstAddr: options.dstAddr,
+			dstPort: options.dstPort,
 			srcAddr: 'localhost',
 			srcPort: srcPort,
 		},
@@ -70,17 +118,13 @@ function buildSshTunnel(type: SshTunnelType, options: SshTunnelFactoryOptions): 
 			port: srcPort,
 		},
 		sshOptions: {
-			agent: (env('TUNNEL_SSH_KEY_PATH') || env('TUNNEL_SSH_KEY')) ? undefined : process.env.SSH_AUTH_SOCK,
-			host: env('TUNNEL_SSH_HOST'),
+			agent: shouldUseSshAgent ? process.env.SSH_AUTH_SOCK : undefined,
+			host: tunnelSshHost,
 			keepaliveCountMax: 3,
 			keepaliveInterval: 10_000,
 			port: 22,
-			privateKey: env('TUNNEL_SSH_KEY_PATH')
-				? readFileSync(env('TUNNEL_SSH_KEY_PATH')!)
-				: env('TUNNEL_SSH_KEY')
-					? env('TUNNEL_SSH_KEY')
-					: undefined,
-			username: env('TUNNEL_SSH_USERNAME'),
+			privateKey: privateKeyValue,
+			username: tunnelSshUsername,
 		},
 		tunnelOptions: {
 			autoClose: false,
@@ -89,10 +133,10 @@ function buildSshTunnel(type: SshTunnelType, options: SshTunnelFactoryOptions): 
 	};
 
 	const sshOptions: SshTunnelOptions = {
-		maxRetries: maxRetries ?? 3,
+		maxRetries: options.maxRetries ?? 3,
 	};
 
-	const cacheKey = `${type}:${dstAddr}:${dstPort}`;
+	const cacheKey = `${type}:${options.dstAddr}:${options.dstPort}`;
 	const cached = tunnelCache.get(cacheKey);
 
 	if (cached) {

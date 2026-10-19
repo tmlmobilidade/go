@@ -1,8 +1,9 @@
 /* * */
 
-import { ApexControlStatusSchema } from '@/utils/control-status.js';
 import { OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { ApexControlStatusSchema } from '../utils/control-status.js';
 
 /* * */
 

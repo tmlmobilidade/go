@@ -2,7 +2,8 @@
 
 import { AlertsCarousel } from '@/components/lines/common/AlertsCarousel';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
-import { Section, Surface } from '@tmlmobilidade/ui';
+import { Surface } from '@tmlmobilidade/ui';
+
 /* * */
 
 export function LinesDetailAlerts() {
@@ -22,9 +23,7 @@ export function LinesDetailAlerts() {
 
 	return (
 		<Surface variant="plain">
-			<Section>
-				<AlertsCarousel alerts={linesDetailContext.data.active_alerts} />
-			</Section>
+			<AlertsCarousel alerts={linesDetailContext.data.active_alerts} />
 		</Surface>
 	);
 
