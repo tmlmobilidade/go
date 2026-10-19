@@ -227,5 +227,78 @@
 		"informational": "O campo \"transfers\" é recomendado",
 		"recommended": "O campo \"transfers\" é recomendado",
 		"required": "O campo \"transfers\" é obrigatório"
+	},
+	"feed_info_default_lang_field": {
+		"informational": "O campo default_lang é informativo",
+		"recommended": "O campo default_lang é recomendado",
+		"required": "O campo default_lang é obrigatório"
+	},
+	"feed_info_default_lang_valid": {
+		"invalid": "O campo \"default_lang\" \"%s\" não é um código de idioma válido"
+	},
+	"feed_info_feed_contact_email_field": {
+		"informational": "O campo feed_contact_email é informativo",
+		"recommended": "O campo feed_contact_email é recomendado",
+		"required": "O campo feed_contact_email é obrigatório"
+	},
+	"feed_info_feed_contact_email_valid": {
+		"invalid": "O campo \"feed_contact_email\" \"%s\" não é um endereço de e-mail válido"
+	},
+	"feed_info_feed_contact_url_field": {
+		"informational": "O campo feed_contact_url é informativo",
+		"recommended": "O campo feed_contact_url é recomendado",
+		"required": "O campo feed_contact_url é obrigatório"
+	},
+	"feed_info_feed_contact_url_valid": {
+		"invalid": "O campo \"feed_contact_url\" \"%s\" não é um URL válido"
+	},
+	"feed_info_feed_end_date_field": {
+		"informational": "O campo feed_end_date é informativo",
+		"recommended": "O campo feed_end_date é recomendado",
+		"required": "O campo feed_end_date é obrigatório"
+	},
+	"feed_info_feed_end_date_format": {
+		"informational": "Espera-se que o campo \"feed_end_date\" contenha uma data válida no formato AAAAMMDD",
+		"invalid": "O campo \"feed_end_date\" deve conter uma data válida no formato AAAAMMDD",
+		"recommended": "Recomenda-se que o campo \"feed_end_date\" contenha uma data válida no formato AAAAMMDD"
+	},
+	"feed_info_feed_lang_field": {
+		"informational": "O campo feed_lang é informativo",
+		"recommended": "O campo feed_lang é recomendado",
+		"required": "O campo feed_lang é obrigatório"
+	},
+	"feed_info_feed_lang_valid": {
+		"invalid": "O campo \"feed_lang\" \"%s\" não é um código de idioma válido"
+	},
+	"feed_info_feed_publisher_name_field": {
+		"informational": "O campo feed_publisher_name é informativo",
+		"recommended": "O campo feed_publisher_name é recomendado",
+		"required": "O campo feed_publisher_name é obrigatório"
+	},
+	"feed_info_feed_publisher_url_field": {
+		"informational": "O campo feed_publisher_url é informativo",
+		"recommended": "O campo feed_publisher_url é recomendado",
+		"required": "O campo feed_publisher_url é obrigatório"
+	},
+	"feed_info_feed_publisher_url_valid": {
+		"invalid": "O campo \"feed_publisher_url\" \"%s\" não é um URL válido"
+	},
+	"feed_info_feed_start_date_field": {
+		"informational": "O campo feed_start_date é informativo",
+		"recommended": "O campo feed_start_date é recomendado",
+		"required": "O campo feed_start_date é obrigatório"
+	},
+	"feed_info_feed_start_date_format": {
+		"informational": "Espera-se que o campo \"feed_start_date\" contenha uma data válida no formato AAAAMMDD",
+		"invalid": "O campo \"feed_start_date\" deve conter uma data válida no formato AAAAMMDD",
+		"recommended": "Recomenda-se que o campo \"feed_start_date\" contenha uma data válida no formato AAAAMMDD"
+	},
+	"feed_info_feed_version_field": {
+		"informational": "O campo feed_version é informativo",
+		"recommended": "O campo feed_version é recomendado",
+		"required": "O campo feed_version é obrigatório"
+	},
+	"feed_info_start_end_dates_valid": {
+		"invalid": "A data \"%s\" do campo \"feed_start_date\" deve ser anterior à data \"%s\" do campo \"feed_end_date\""
 	}
 }

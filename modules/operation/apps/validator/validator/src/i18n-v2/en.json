@@ -227,5 +227,78 @@
 		"informational": "Field \"transfers\" is recommended",
 		"recommended": "Field \"transfers\" is recommended",
 		"required": "Field \"transfers\" is required"
+	},
+	"feed_info_default_lang_field": {
+		"informational": "The default_lang field is informational",
+		"recommended": "The default_lang field is recommended",
+		"required": "The default_lang field is required"
+	},
+	"feed_info_default_lang_valid": {
+		"invalid": "Field \"default_lang\" \"%s\" is not a valid language code"
+	},
+	"feed_info_feed_contact_email_field": {
+		"informational": "The feed_contact_email field is informational",
+		"recommended": "The feed_contact_email field is recommended",
+		"required": "The feed_contact_email field is required"
+	},
+	"feed_info_feed_contact_email_valid": {
+		"invalid": "Field \"feed_contact_email\" \"%s\" is not a valid email address"
+	},
+	"feed_info_feed_contact_url_field": {
+		"informational": "The feed_contact_url field is informational",
+		"recommended": "The feed_contact_url field is recommended",
+		"required": "The feed_contact_url field is required"
+	},
+	"feed_info_feed_contact_url_valid": {
+		"invalid": "Field \"feed_contact_url\" \"%s\" is not a valid URL"
+	},
+	"feed_info_feed_end_date_field": {
+		"informational": "The feed_end_date field is informational",
+		"recommended": "The feed_end_date field is recommended",
+		"required": "The feed_end_date field is required"
+	},
+	"feed_info_feed_end_date_format": {
+		"informational": "The \"feed_end_date\" field is expected to contain a valid date in YYYYMMDD format",
+		"invalid": "The \"feed_end_date\" field must contain a valid date in YYYYMMDD format",
+		"recommended": "The \"feed_end_date\" field should contain a valid date in YYYYMMDD format"
+	},
+	"feed_info_feed_lang_field": {
+		"informational": "The feed_lang field is informational",
+		"recommended": "The feed_lang field is recommended",
+		"required": "The feed_lang field is required"
+	},
+	"feed_info_feed_lang_valid": {
+		"invalid": "Field \"feed_lang\" \"%s\" is not a valid language code"
+	},
+	"feed_info_feed_publisher_name_field": {
+		"informational": "The feed_publisher_name field is informational",
+		"recommended": "The feed_publisher_name field is recommended",
+		"required": "The feed_publisher_name field is required"
+	},
+	"feed_info_feed_publisher_url_field": {
+		"informational": "The feed_publisher_url field is informational",
+		"recommended": "The feed_publisher_url field is recommended",
+		"required": "The feed_publisher_url field is required"
+	},
+	"feed_info_feed_publisher_url_valid": {
+		"invalid": "Field \"feed_publisher_url\" \"%s\" is not a valid URL"
+	},
+	"feed_info_feed_start_date_field": {
+		"informational": "The feed_start_date field is informational",
+		"recommended": "The feed_start_date field is recommended",
+		"required": "The feed_start_date field is required"
+	},
+	"feed_info_feed_start_date_format": {
+		"informational": "The \"feed_start_date\" field is expected to contain a valid date in YYYYMMDD format",
+		"invalid": "The \"feed_start_date\" field must contain a valid date in YYYYMMDD format",
+		"recommended": "The \"feed_start_date\" field should contain a valid date in YYYYMMDD format"
+	},
+	"feed_info_feed_version_field": {
+		"informational": "The feed_version field is informational",
+		"recommended": "The feed_version field is recommended",
+		"required": "The feed_version field is required"
+	},
+	"feed_info_start_end_dates_valid": {
+		"invalid": "The \"feed_start_date\" value \"%s\" must be earlier than the \"feed_end_date\" value \"%s\""
 	}
 }
