@@ -59,9 +59,6 @@ func TestAgencyIdUnique(t *testing.T) {
 		{"duplicate ignored", []map[string]string{{"agency_id": "001"}, {"agency_id": "001"}}, 1, types.SEVERITY_IGNORE, 0},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			services.AppMessageService.Clear()
-			rules.ConfigureMessageSeverities(nil)
-			t.Cleanup(services.AppMessageService.Clear)
 			gtfs, cleanup, err := (test_helpers.MockGtfs{TableData: map[string][]map[string]string{
 				"agency": tc.rows,
 			}}).ToGtfsWithDB()
@@ -76,17 +73,10 @@ func TestAgencyIdUnique(t *testing.T) {
 			config := &types.AgencyRules{
 				AgencyIdUnique: types.RuleConfig{Severity: tc.severity},
 			}
-			rules.ConfigureMessageSeverities(&types.GtfsRules{Agency: *config})
-			t.Cleanup(func() { rules.ConfigureMessageSeverities(nil) })
+			testutils.ConfigureMessages(t, config)
 			db := table.At(tc.row).Context()
 			testutils.AssertAgencyRead(t, agency_standard.AgencyIdUnique(db, config))
-			messages := services.AppMessageService.GetSummary().Messages
-			if len(messages) != tc.issues {
-				t.Fatalf("got %d issues, want %d: %+v", len(messages), tc.issues, messages)
-			}
-			if len(messages) > 0 && (messages[0].Severity != tc.severity || messages[0].RuleID != "agency_id_unique") {
-				t.Fatalf("expected agency_id_unique with severity %s: %+v", tc.severity, messages[0])
-			}
+			testutils.AssertFindings(t, "agency_id_unique", tc.severity, tc.issues)
 		})
 	}
 }

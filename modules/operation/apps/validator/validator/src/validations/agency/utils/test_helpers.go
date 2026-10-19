@@ -52,6 +52,17 @@ type Check func(*services.SQLiteContext, *types.AgencyRules) error
 
 type Configure func(types.RuleConfig) *types.AgencyRules
 
+// ConfigureMessages isolates the global message service and applies runtime severity settings.
+func ConfigureMessages(t *testing.T, config *types.AgencyRules) {
+	t.Helper()
+	services.AppMessageService.Clear()
+	rules.ConfigureMessageSeverities(&types.GtfsRules{Agency: *config})
+	t.Cleanup(func() {
+		rules.ConfigureMessageSeverities(nil)
+		services.AppMessageService.Clear()
+	})
+}
+
 func CheckPresence(t *testing.T, field string, check Check, configure Configure) {
 	t.Helper()
 	for _, tc := range []struct {
@@ -59,62 +70,63 @@ func CheckPresence(t *testing.T, field string, check Check, configure Configure)
 		value         *string
 		missingColumn bool
 		severity      types.Severity
-		errors        int
-		warnings      int
+		issues        int
 	}{
-		{"missing column", nil, true, types.SEVERITY_ERROR, 1, 0},
-		{"SQL NULL", nil, false, types.SEVERITY_ERROR, 1, 0},
-		{"empty required", lib.Ptr(""), false, types.SEVERITY_ERROR, 1, 0},
-		{"empty recommended", lib.Ptr(""), false, types.SEVERITY_WARNING, 0, 1},
-		{"empty ignored", nil, false, types.SEVERITY_IGNORE, 0, 0},
-		{"present", lib.Ptr("value"), false, types.SEVERITY_ERROR, 0, 0},
-		{"present forbidden", lib.Ptr("value"), false, types.SEVERITY_FORBIDDEN, 1, 0},
-		{"empty forbidden", nil, false, types.SEVERITY_FORBIDDEN, 0, 0},
+		{"missing column", nil, true, types.SEVERITY_ERROR, 1},
+		{"SQL NULL", nil, false, types.SEVERITY_ERROR, 1},
+		{"empty required", lib.Ptr(""), false, types.SEVERITY_ERROR, 1},
+		{"empty recommended", lib.Ptr(""), false, types.SEVERITY_WARNING, 1},
+		{"empty informational", lib.Ptr(""), false, types.SEVERITY_INFO, 1},
+		{"missing column informational", nil, true, types.SEVERITY_INFO, 1},
+		{"SQL NULL informational", nil, false, types.SEVERITY_INFO, 1},
+		{"empty ignored", nil, false, types.SEVERITY_IGNORE, 0},
+		{"empty unconfigured", nil, false, "", 0},
+		{"present", lib.Ptr("value"), false, types.SEVERITY_ERROR, 0},
+		{"present informational", lib.Ptr("value"), false, types.SEVERITY_INFO, 0},
+		// Presence checks no longer reject a populated field with forbidden severity.
+		{"present forbidden", lib.Ptr("value"), false, types.SEVERITY_FORBIDDEN, 0},
+		{"empty forbidden", nil, false, types.SEVERITY_FORBIDDEN, 0},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			services.AppMessageService.Clear()
-			rules.ConfigureMessageSeverities(nil)
-			t.Cleanup(services.AppMessageService.Clear)
 			values := map[string]*string{}
 			if !tc.missingColumn {
 				values[field] = tc.value
 			}
 			config := configure(types.RuleConfig{Severity: tc.severity})
+			ConfigureMessages(t, config)
 			AssertAgencyRead(t, check(AgencyRow(t, 0, values), config))
-			assertIssues(t, field+"_field", tc.errors, tc.warnings)
+			AssertFindings(t, field+"_field", tc.severity, tc.issues)
 		})
 	}
 }
 
 func CheckOptions(t *testing.T, field, valid string, check Check, configure Configure) {
 	t.Helper()
-	cases := []struct {
+	for _, tc := range []struct {
 		name     string
 		value    *string
 		severity types.Severity
 		options  *[]string
-		errors   int
-		warnings int
+		issues   int
 	}{
-		{"missing", nil, types.SEVERITY_ERROR, nil, 0, 0},
-		{"empty", lib.Ptr(""), types.SEVERITY_ERROR, nil, 0, 0},
-		{"valid", &valid, types.SEVERITY_ERROR, nil, 0, 0},
-		{"allowed", &valid, types.SEVERITY_ERROR, &[]string{valid}, 0, 0},
-		{"not allowed", &valid, types.SEVERITY_ERROR, &[]string{"other"}, 1, 0},
-		{"not allowed warning", &valid, types.SEVERITY_WARNING, &[]string{"other"}, 0, 1},
-		{"wildcard", &valid, types.SEVERITY_ERROR, &[]string{types.ALL_OPTIONS}, 0, 0},
-		{"ignored", &valid, types.SEVERITY_IGNORE, &[]string{"other"}, 0, 0},
-	}
-	for _, tc := range cases {
+		{"SQL NULL without options", nil, types.SEVERITY_ERROR, nil, 0},
+		{"empty without options", lib.Ptr(""), types.SEVERITY_ERROR, nil, 0},
+		{"valid", &valid, types.SEVERITY_ERROR, nil, 0},
+		{"allowed", &valid, types.SEVERITY_ERROR, &[]string{valid}, 0},
+		{"not allowed", &valid, types.SEVERITY_ERROR, &[]string{"other"}, 1},
+		{"not allowed warning", &valid, types.SEVERITY_WARNING, &[]string{"other"}, 1},
+		{"not allowed info", &valid, types.SEVERITY_INFO, &[]string{"other"}, 1},
+		{"empty options", &valid, types.SEVERITY_ERROR, &[]string{}, 1},
+		{"empty value not allowed", lib.Ptr(""), types.SEVERITY_ERROR, &[]string{valid}, 1},
+		{"wildcard", &valid, types.SEVERITY_ERROR, &[]string{types.ALL_OPTIONS}, 0},
+		{"ignored", &valid, types.SEVERITY_IGNORE, &[]string{"other"}, 0},
+		{"unconfigured", &valid, "", &[]string{"other"}, 0},
+	} {
 		t.Run(tc.name, func(t *testing.T) {
-			services.AppMessageService.Clear()
-			rules.ConfigureMessageSeverities(nil)
-			t.Cleanup(services.AppMessageService.Clear)
 			config := configure(types.RuleConfig{Severity: tc.severity, Options: tc.options})
-			rules.ConfigureMessageSeverities(&types.GtfsRules{Agency: *config})
-			t.Cleanup(func() { rules.ConfigureMessageSeverities(nil) })
+			ConfigureMessages(t, config)
 			AssertAgencyRead(t, check(AgencyRow(t, 0, map[string]*string{field: tc.value}), config))
-			assertIssues(t, field+"_valid", tc.errors, tc.warnings)
+			AssertFindings(t, field+"_valid", tc.severity, tc.issues)
 		})
 	}
 }
@@ -145,41 +157,37 @@ func CheckFormat(t *testing.T, field, valid, invalid string, emptyValid bool, ch
 		{"wildcard does not bypass format", &invalid, types.SEVERITY_ERROR, &[]string{types.ALL_OPTIONS}, 1},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			services.AppMessageService.Clear()
-			rules.ConfigureMessageSeverities(nil)
-			t.Cleanup(services.AppMessageService.Clear)
 			config := configure(types.RuleConfig{Severity: tc.severity, Options: tc.options})
-			rules.ConfigureMessageSeverities(&types.GtfsRules{Agency: *config})
-			t.Cleanup(func() { rules.ConfigureMessageSeverities(nil) })
+			ConfigureMessages(t, config)
 			AssertAgencyRead(t, check(AgencyRow(t, 0, map[string]*string{field: tc.value}), config))
-			errors, warnings := 0, 0
-			if tc.severity == types.SEVERITY_ERROR {
-				errors = tc.issues
-			}
-			if tc.severity == types.SEVERITY_WARNING {
-				warnings = tc.issues
-			}
-			assertIssues(t, field+"_valid", errors, warnings)
-			messages := services.AppMessageService.GetSummary().Messages
-			if len(messages) != tc.issues {
-				t.Fatalf("got %d findings, want %d: %+v", len(messages), tc.issues, messages)
-			}
-			if len(messages) > 0 && messages[0].Severity != tc.severity {
-				t.Fatalf("severity = %s, want %s", messages[0].Severity, tc.severity)
-			}
+			AssertFindings(t, field+"_valid", tc.severity, tc.issues)
 		})
 	}
 }
 
-func assertIssues(t *testing.T, ruleID string, errors, warnings int) {
+// AssertFindings checks informational findings as well as error/warning totals.
+func AssertFindings(t *testing.T, ruleID string, severity types.Severity, issues int) {
 	t.Helper()
+	errors, warnings := 0, 0
+	if severity == types.SEVERITY_FORBIDDEN {
+		severity = types.SEVERITY_ERROR
+	}
+	if severity == types.SEVERITY_ERROR {
+		errors = issues
+	}
+	if severity == types.SEVERITY_WARNING {
+		warnings = issues
+	}
 	summary := services.AppMessageService.GetSummary()
-	if summary.TotalErrors != errors || summary.TotalWarnings != warnings {
-		t.Fatalf("got %d errors and %d warnings, want %d and %d: %+v", summary.TotalErrors, summary.TotalWarnings, errors, warnings, summary.Messages)
+	if summary.TotalErrors != errors || summary.TotalWarnings != warnings || len(summary.Messages) != issues {
+		t.Fatalf("want %d findings, %d errors and %d warnings: %+v", issues, errors, warnings, summary)
 	}
 	for _, group := range summary.Messages {
-		if group.RuleID != ruleID {
-			t.Fatalf("rule ID = %s, want %s", group.RuleID, ruleID)
+		if group.RuleID != ruleID || group.Severity != severity || group.FileName != "agency.txt" || group.TotalRows != 1 {
+			t.Fatalf("expected one agency.txt row for %s with severity %s: %+v", ruleID, severity, group)
 		}
+	}
+	if count := services.AppMessageService.RuleIssueCount(ruleID); count != uint64(issues) {
+		t.Fatalf("rule issue count = %d, want %d", count, issues)
 	}
 }

@@ -48,20 +48,13 @@ func AgencyNameIdMatch(db *services.SQLiteContext, rules *types.AgencyRules) err
 	}
 
 	//
-	// 4. Check if agency_name_id_match should be skipped
-
-	if agencyID == "" || agencyName == "" || ctx.ShouldSkip() {
-		return nil
-	}
-
-	//
-	// 5. Validate rules
+	// 4. Validate rules
 
 	if rules != nil && rules.AgencyNameIdMatch.Compare != nil {
 		//
 
 		//
-		// 5.1. Find the matching key and value
+		// 4.1. Find the matching key and value
 
 		validName := ""
 		for _, compare := range *rules.AgencyNameIdMatch.Compare {
@@ -78,7 +71,7 @@ func AgencyNameIdMatch(db *services.SQLiteContext, rules *types.AgencyRules) err
 	}
 
 	//
-	// 6. Return success
+	// 5. Return success
 
 	return nil
 }
