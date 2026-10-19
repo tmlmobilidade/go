@@ -20,8 +20,8 @@
 		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
+		"@fastify/multipart": "10.1.1",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",

@@ -19,19 +19,15 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-dates-pckg-types": "*",
-		"@tmlmobilidade/go-types-locations": "*",
+		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"clsx": "2.1.1",
 		"dayjs": "1.11.23",
-		"jszip": "3.10.1",
 		"next": "16.3.4",
-		"papaparse": "5.7.0",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
 		"swr": "2.5.1"
@@ -39,7 +35,6 @@
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.4.0",
-		"@types/papaparse": "5.5.2",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.5",
 		"typescript": "6.0.3"
