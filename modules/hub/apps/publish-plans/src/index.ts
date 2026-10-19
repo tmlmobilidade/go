@@ -1,5 +1,6 @@
 /* * */
 
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -24,6 +25,19 @@ async function main() {
 	await publishAgencies();
 
 	await publishApprovedPlans();
+
+	//
+	// Publish feeds for each organization's agencies.
+
+	const organizationsCollection = await goDb.core.organizations.getCollection();
+	const organizations = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.plans.enabled': true }).toArray();
+
+	for (const organization of organizations) {
+		Logger.info({ message: `Publishing plans data for organization ${organization._id}...` });
+
+		await publishAgencies(organization);
+		await publishApprovedPlans(organization);
+	}
 
 	//
 	// Log the total time taken for all tasks

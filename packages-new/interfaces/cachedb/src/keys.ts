@@ -40,4 +40,4 @@ export const cacheDbKeyValues = [
 	`hub:v1:network:shapes:${dynamicKey()}`,
 ] as const;
 
-export type CacheDbKey = `hub:v1:${string}:${'alerts' | 'eta' | 'metrics' | 'network' | 'plans' | 'vehicles'}:${string}` | typeof cacheDbKeyValues[number];
+export type CacheDbKey = `hub:v1:${string}:${'agencies' | 'alerts' | 'eta' | 'metrics' | 'network' | 'plans' | 'vehicles'}:${string}` | typeof cacheDbKeyValues[number];
