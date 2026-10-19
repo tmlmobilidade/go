@@ -10,23 +10,23 @@ import (
 # Attributes
 
   - File: [calendar.txt]
-  - Field: [tusday]
+  - Field: [tuesday]
   - Presence: Required
   - Type: Boolean
 
 # Description
 
-Indicates whether service is available on Tusday.
+Indicates whether service is available on Tuesday.
 
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
-func TusdayValid(db *services.SQLiteContext, rules *types.CalendarRules) error {
+func TuesdayValid(db *services.SQLiteContext, rules *types.CalendarRules) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "calendar_tuesday_valid"
+	const ruleID = "calendar_tuesday_valid_field"
 
 	//
 	// 2. Create the validation context

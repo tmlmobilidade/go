@@ -13,41 +13,45 @@ import (
 
 func TestCalendarSQLiteRulesKeepDependenciesSeveritiesAndSourceRows(t *testing.T) {
 	db, _ := calendarTable(t, `CREATE TABLE calendar (service_id TEXT, start_date TEXT, end_date TEXT, monday TEXT);
-		INSERT INTO calendar VALUES
-		('dup', '20260101', 'invalid', '1'),
-		('dup', '20260101', 'invalid', '1'),
-		('', 'invalid', 'invalid', '1'),
-		('single', '20260101', 'invalid', '1'),
-		('', '20260101', 'invalid', '1'),
-		('', 'invalid', 'invalid', '2'),
-		('valid', '20260101', '20261231', '1');`)
-	config := &types.GtfsRules{Calendar: types.CalendarRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"calendar_service_id_unique_non_empty": types.RuleConfig{Severity: types.SEVERITY_WARNING, DependsOn: []string{"calendar_start_date_valid_yyyymmdd"}}, "calendar_start_date_valid_yyyymmdd": types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"calendar_file_present"}}, "calendar_end_date_valid_yyyymmdd": types.RuleConfig{Severity: types.SEVERITY_WARNING, DependsOn: []string{"calendar_service_id_unique_non_empty"}}}}}}
+ INSERT INTO calendar VALUES
+ ('dup', '20260101', '20261231', '1'),
+ ('dup', 'invalid', '20261231', '1'),
+ ('', '20260101', '20261231', '1'),
+ ('single', '20261231', '20260101', '2'),
+ ('valid', '20260101', '20261231', '1');`)
+	config := &types.GtfsRules{}
+	config.Calendar.Rules = map[string]types.RuleConfig{
+		"calendar_service_id_field":             {Severity: types.SEVERITY_INFO},
+		"calendar_start_date_field":             {Severity: types.SEVERITY_ERROR},
+		"calendar_end_date_field":               {Severity: types.SEVERITY_ERROR},
+		"calendar_start_end_dates_valid_format": {Severity: types.SEVERITY_ERROR, DependsOn: []string{"calendar_start_date_field", "calendar_end_date_field"}},
+		"calendar_start_end_dates_valid":        {Severity: types.SEVERITY_WARNING, DependsOn: []string{"calendar_start_end_dates_valid_format"}},
+		"calendar_service_id_unique":            {Severity: types.SEVERITY_WARNING, DependsOn: []string{"calendar_service_id_field", "calendar_start_end_dates_valid_format"}},
+		"calendar_monday_valid":                 {Severity: types.SEVERITY_ERROR},
+	}
 	ruleset.ConfigureMessageSeverities(config)
 	t.Cleanup(func() { ruleset.ConfigureMessageSeverities(nil) })
 	gtfs := types.NewGtfsFromSQLite(db, "")
 	calendarrunner.RunValidations(*gtfs, config)
 	expected := map[string][]int{
-		"service_id": {2, 3, 6},
-		"start_date": {4},
-		"end_date":   {5},
-		"monday":     {7},
+		"calendar_service_id_unique":            {2},
+		"calendar_start_end_dates_valid_format": {3},
+		"calendar_service_id_field":             {4},
+		"calendar_start_end_dates_valid":        {5},
+		"calendar_monday_valid":                 {5},
 	}
 	actual := map[string][]int{}
 	for _, message := range services.AppMessageService.GetSummary().AllMessages() {
-		actual[message.Field] = append(actual[message.Field], message.Rows...)
-		severity := types.SEVERITY_ERROR
-		if message.Field == "service_id" || message.Field == "end_date" {
-			severity = types.SEVERITY_WARNING
-		}
-		if message.Severity != severity {
-			t.Fatalf("unexpected severity: %+v", message)
+		actual[message.RuleID] = append(actual[message.RuleID], message.Rows...)
+		if message.Severity != config.Calendar.Rule(message.RuleID).Severity || message.FileName != "calendar.txt" {
+			t.Fatalf("unexpected finding: %+v", message)
 		}
 	}
 	for _, rows := range actual {
 		slices.Sort(rows)
 	}
 	if !reflect.DeepEqual(actual, expected) {
-		t.Fatalf("rows by field = %v, want %v", actual, expected)
+		t.Fatalf("rows by rule = %v, want %v", actual, expected)
 	}
 }
 
