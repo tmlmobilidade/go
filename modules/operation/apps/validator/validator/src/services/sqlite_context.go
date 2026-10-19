@@ -233,3 +233,24 @@ func (t *SQLiteTable) ExistsMatching(fields map[string]string) (bool, error) {
 	}
 	return exists, nil
 }
+
+// ForEachMatching selects source rows whose field equals the supplied value.
+// Values are bound parameters; callers can request just the fields they need.
+func (t *SQLiteTable) ForEachMatching(field, value string, fn func(*SQLiteRow) error) error {
+	query := "SELECT rowid FROM " + dbops.SanitizeTableName(t.name) + " AS source WHERE COALESCE(" + t.column("source", field) + ", '') = ? ORDER BY rowid"
+	rows, err := t.db.Query(query, value)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var rowID int
+		if err := rows.Scan(&rowID); err != nil {
+			return err
+		}
+		if err := fn(t.At(rowID - 1)); err != nil {
+			return err
+		}
+	}
+	return rows.Err()
+}
