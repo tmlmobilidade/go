@@ -74,5 +74,85 @@
 	"agency_url_valid": {
 		"invalid": "Field \"agency_url\" \"%s\" is not a valid URL",
 		"not_allowed": "Field \"agency_url\" \"%s\" is not allowed"
+	},
+	"calendar_end_date_field": {
+		"informational": "The end_date field is informational",
+		"recommended": "The end_date field is recommended",
+		"required": "The end_date field is required"
+	},
+	"calendar_friday_field": {
+		"informational": "The friday field is informational",
+		"recommended": "The friday field is recommended",
+		"required": "The friday field is required"
+	},
+	"calendar_friday_valid": {
+		"invalid": "Field \"friday\" has an invalid value \"%s\"; it must be 0 or 1"
+	},
+	"calendar_monday_field": {
+		"informational": "The monday field is informational",
+		"recommended": "The monday field is recommended",
+		"required": "The monday field is required"
+	},
+	"calendar_monday_valid": {
+		"invalid": "Field \"monday\" has an invalid value \"%s\"; it must be 0 or 1"
+	},
+	"calendar_saturday_field": {
+		"informational": "The saturday field is informational",
+		"recommended": "The saturday field is recommended",
+		"required": "The saturday field is required"
+	},
+	"calendar_saturday_valid": {
+		"invalid": "Field \"saturday\" has an invalid value \"%s\"; it must be 0 or 1"
+	},
+	"calendar_service_id_field": {
+		"informational": "The service_id field is informational",
+		"recommended": "The service_id field is recommended",
+		"required": "The service_id field is required"
+	},
+	"calendar_service_id_unique": {
+		"duplicate": "The \"service_id\" value \"%s\" must be unique"
+	},
+	"calendar_start_date_field": {
+		"informational": "The start_date field is informational",
+		"recommended": "The start_date field is recommended",
+		"required": "The start_date field is required"
+	},
+	"calendar_start_end_dates_valid": {
+		"invalid": "The \"start_date\" value \"%s\" must be earlier than \"end_date\""
+	},
+	"calendar_start_end_dates_valid_format": {
+		"invalid": "Date value \"%s\" in \"start_date\" or \"end_date\" is invalid; it must be a valid date in YYYYMMDD format"
+	},
+	"calendar_sunday_field": {
+		"informational": "The sunday field is informational",
+		"recommended": "The sunday field is recommended",
+		"required": "The sunday field is required"
+	},
+	"calendar_sunday_valid": {
+		"invalid": "Field \"sunday\" has an invalid value \"%s\"; it must be 0 or 1"
+	},
+	"calendar_thursday_field": {
+		"informational": "The thursday field is informational",
+		"recommended": "The thursday field is recommended",
+		"required": "The thursday field is required"
+	},
+	"calendar_thursday_valid": {
+		"invalid": "Field \"thursday\" has an invalid value \"%s\"; it must be 0 or 1"
+	},
+	"calendar_tuesday_field": {
+		"informational": "The tuesday field is informational",
+		"recommended": "The tuesday field is recommended",
+		"required": "The tuesday field is required"
+	},
+	"calendar_tuesday_valid": {
+		"invalid": "Field \"tuesday\" has an invalid value \"%s\"; it must be 0 or 1"
+	},
+	"calendar_wednesday_field": {
+		"informational": "The wednesday field is informational",
+		"recommended": "The wednesday field is recommended",
+		"required": "The wednesday field is required"
+	},
+	"calendar_wednesday_valid": {
+		"invalid": "Field \"wednesday\" has an invalid value \"%s\"; it must be 0 or 1"
 	}
 }

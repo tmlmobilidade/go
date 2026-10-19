@@ -74,5 +74,85 @@
 	"agency_url_valid": {
 		"invalid": "O campo \"agency_url\" \"%s\" não é um URL válido",
 		"not_allowed": "O campo \"agency_url\" \"%s\" não é permitido"
+	},
+	"calendar_end_date_field": {
+		"informational": "O campo end_date é informativo",
+		"recommended": "O campo end_date é recomendado",
+		"required": "O campo end_date é obrigatório"
+	},
+	"calendar_friday_field": {
+		"informational": "O campo friday é informativo",
+		"recommended": "O campo friday é recomendado",
+		"required": "O campo friday é obrigatório"
+	},
+	"calendar_friday_valid": {
+		"invalid": "O campo \"friday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_monday_field": {
+		"informational": "O campo monday é informativo",
+		"recommended": "O campo monday é recomendado",
+		"required": "O campo monday é obrigatório"
+	},
+	"calendar_monday_valid": {
+		"invalid": "O campo \"monday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_saturday_field": {
+		"informational": "O campo saturday é informativo",
+		"recommended": "O campo saturday é recomendado",
+		"required": "O campo saturday é obrigatório"
+	},
+	"calendar_saturday_valid": {
+		"invalid": "O campo \"saturday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_service_id_field": {
+		"informational": "O campo service_id é informativo",
+		"recommended": "O campo service_id é recomendado",
+		"required": "O campo service_id é obrigatório"
+	},
+	"calendar_service_id_unique": {
+		"duplicate": "O valor \"%s\" do campo \"service_id\" deve ser único"
+	},
+	"calendar_start_date_field": {
+		"informational": "O campo start_date é informativo",
+		"recommended": "O campo start_date é recomendado",
+		"required": "O campo start_date é obrigatório"
+	},
+	"calendar_start_end_dates_valid": {
+		"invalid": "A data \"%s\" do campo \"start_date\" deve ser anterior à data do campo \"end_date\""
+	},
+	"calendar_start_end_dates_valid_format": {
+		"invalid": "A data \"%s\" no campo \"start_date\" ou \"end_date\" é inválida; deve ser uma data válida no formato AAAAMMDD"
+	},
+	"calendar_sunday_field": {
+		"informational": "O campo sunday é informativo",
+		"recommended": "O campo sunday é recomendado",
+		"required": "O campo sunday é obrigatório"
+	},
+	"calendar_sunday_valid": {
+		"invalid": "O campo \"sunday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_thursday_field": {
+		"informational": "O campo thursday é informativo",
+		"recommended": "O campo thursday é recomendado",
+		"required": "O campo thursday é obrigatório"
+	},
+	"calendar_thursday_valid": {
+		"invalid": "O campo \"thursday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_tuesday_field": {
+		"informational": "O campo tuesday é informativo",
+		"recommended": "O campo tuesday é recomendado",
+		"required": "O campo tuesday é obrigatório"
+	},
+	"calendar_tuesday_valid": {
+		"invalid": "O campo \"tuesday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_wednesday_field": {
+		"informational": "O campo wednesday é informativo",
+		"recommended": "O campo wednesday é recomendado",
+		"required": "O campo wednesday é obrigatório"
+	},
+	"calendar_wednesday_valid": {
+		"invalid": "O campo \"wednesday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
 	}
 }
