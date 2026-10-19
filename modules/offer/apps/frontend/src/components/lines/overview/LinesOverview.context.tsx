@@ -4,7 +4,7 @@ import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { PatternShapeMapInteractionState } from '@/types/lines-overview';
 import { getPatternFeaturesAtEvent } from '@/utils/lines-overview';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PatternShapeMapItem } from '@tmlmobilidade/go-types-offer';
+import { type PatternsShapeMapItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
@@ -25,7 +25,7 @@ interface LinesOverviewContextState {
 		highlightedPatternIds: string[]
 		hitboxLayerId: string
 		hoverInfo: null | PatternShapeMapInteractionState
-		patternsData: PatternShapeMapItem[]
+		patternsData: PatternsShapeMapItem[]
 		patternsError: Error | null
 		patternsLoading: boolean
 		popupInfo: null | PatternShapeMapInteractionState
@@ -65,7 +65,7 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	 * Cache patterns by agency.
 	 * This allows us to avoid refetching agencies that were already loaded before.
 	 */
-	const [patternsByAgencyId, setPatternsByAgencyId] = useState<Record<string, PatternShapeMapItem[]>>({});
+	const [patternsByAgencyId, setPatternsByAgencyId] = useState<Record<string, PatternsShapeMapItem[]>>({});
 
 	/**
 	 * Important: this is separate from patternsByAgencyId because an agency may have zero patterns.
@@ -89,8 +89,8 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// C. Fetch data
 
-	const { data: fetchedPatternsData, error: patternsError, isLoading: patternsRequestLoading } = useSWR<ApiResponse<PatternShapeMapItem[]>>(patternsRequestKey, {
-		fetcher: async url => await fetchApiData<PatternShapeMapItem[]>({ url }),
+	const { data: fetchedPatternsData, error: patternsError, isLoading: patternsRequestLoading } = useSWR<ApiResponse<PatternsShapeMapItem[]>>(patternsRequestKey, {
+		fetcher: async url => await fetchApiData<PatternsShapeMapItem[]>({ url }),
 	});
 
 	//

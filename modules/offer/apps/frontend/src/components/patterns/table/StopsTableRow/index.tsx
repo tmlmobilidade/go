@@ -2,14 +2,14 @@
 
 import { PathTableColumnStop } from '@/components/patterns/table/StopsTableColumnStop';
 import { StopsTableTableColumnZones } from '@/components/patterns/table/StopsTableColumnZones';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { Text } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';
 
 /* * */
 
-export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PopulatedPath, rowIndex: number }) {
+export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PatternsDetailPathItem, rowIndex: number }) {
 	//
 
 	//
