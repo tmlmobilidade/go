@@ -24,28 +24,41 @@ func RouteUrlDifferentAgencyUrl(db *services.SQLiteContext, rules *types.RoutesR
 	}
 
 	//
-	// 3. Get the route_url value
+	// 3. Get the values
 
 	routeUrl, err := db.Routes.Field("route_url")
 	if err != nil {
 		return err
 	}
 
-	agencyUrl, err := db.Agency.Field("agency_url")
+	agencyID, err := db.Routes.Field("agency_id")
 	if err != nil {
 		return err
 	}
 
 	//
-	// 4. Check if the route_url is different from the agency_url
+	// 4. Get the agency table
 
-	if routeUrl == agencyUrl {
+	agency, err := db.Table("agency")
+	if err != nil {
+		return err
+	}
+
+	//
+	// 5. Check if the route_url is different from the agency_url
+
+	same, err := agency.ExistsMatching(map[string]string{"agency_id": agencyID, "agency_url": routeUrl})
+	if err != nil {
+		return err
+	}
+	
+	if same {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", routeUrl))
 		return nil
 	}
 
 	//
-	// 5. Return success
+	// 6. Return success
 
 	return nil
-}	
+}

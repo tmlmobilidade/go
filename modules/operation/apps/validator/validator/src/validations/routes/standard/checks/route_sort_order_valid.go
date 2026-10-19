@@ -4,6 +4,7 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
+	"strconv"
 )
 
 func RouteSortOrderValid(db *services.SQLiteContext, rules *types.RoutesRules) error {
@@ -34,7 +35,8 @@ func RouteSortOrderValid(db *services.SQLiteContext, rules *types.RoutesRules) e
 	//
 	// 4. Check if the route_sort_order is valid
 
-	if value < 0 {
+	number, parseErr := strconv.Atoi(value)
+	if parseErr != nil || number < 0 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 		return nil
 	}
@@ -43,4 +45,4 @@ func RouteSortOrderValid(db *services.SQLiteContext, rules *types.RoutesRules) e
 	// 5. Return success
 
 	return nil
-}	
+}

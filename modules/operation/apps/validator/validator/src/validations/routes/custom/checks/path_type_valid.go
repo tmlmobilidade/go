@@ -43,4 +43,4 @@ func PathTypeValid(db *services.SQLiteContext, rules *types.RoutesRules) error {
 	// 5. Return success
 
 	return nil
-}	
+}

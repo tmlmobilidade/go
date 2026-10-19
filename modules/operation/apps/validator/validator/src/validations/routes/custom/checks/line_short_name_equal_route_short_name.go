@@ -34,8 +34,12 @@ func LineShortNameEqualRouteShortName(db *services.SQLiteContext, rules *types.R
 	//
 	// 4. Check if the line_short_name is equal to the route_short_name
 
-	if value != db.Routes.Field("route_short_name") {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_equal_to_route_short_name", value, db.Routes.Field("route_short_name")))
+	routeShortName, err := db.Routes.Field("route_short_name")
+	if err != nil {
+		return err
+	}
+	if value != routeShortName {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_equal_to_route_short_name", value, routeShortName))
 		return nil
 	}
 

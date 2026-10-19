@@ -45,14 +45,14 @@ func RouteIdFormat(db *services.SQLiteContext, rules *types.RoutesRules) error {
 	//
 	// 4. Validate route_id is route_short_name and route_sort_order joined by an underscore
 
-	expected := fmt.Sprintf("%s_%d", routeShortName, routeSortOrder)
+	expected := fmt.Sprintf("%s_%s", routeShortName, routeSortOrder)
 	if routeId != expected {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", routeId, expected, routeShortName, routeSortOrder))
-		return
+		return nil
 	}
 
 	//
 	// 5. Return success
 
 	return nil
-}	
+}

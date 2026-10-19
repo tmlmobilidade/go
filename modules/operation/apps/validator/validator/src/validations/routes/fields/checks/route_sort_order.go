@@ -6,33 +6,33 @@ import (
 	"main/types"
 )
 
-func RouteSortNameField(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func RouteSortOrderField(db *services.SQLiteContext, rules *types.RoutesRules) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "routes_route_sort_name_field"
+	const ruleID = "routes_route_sort_order_field"
 
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("route_sort_name", "routes.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("route_sort_order", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 3. Get the route_sort_name value
+	// 3. Get the route_sort_order value
 
-	value, err := db.Routes.Field("route_sort_name")
+	value, err := db.Routes.Field("route_sort_order")
 	if err != nil {
 		return err
 	}
 
 	//
-	// 4. Check if the route_sort_name is required
+	// 4. Check if the route_sort_order is required
 
 	if value == "" {
 		if ctx.ShouldIgnore() {
@@ -47,4 +47,4 @@ func RouteSortNameField(db *services.SQLiteContext, rules *types.RoutesRules) er
 	// 5. Return success
 
 	return nil
-}	
+}

@@ -256,3 +256,32 @@ func TestSQLiteNamedExistsFromRoutes(t *testing.T) {
 		t.Fatal("closed database matched")
 	}
 }
+
+func TestSQLiteTableExistsMatching(t *testing.T) {
+	connection, table := sqliteContextFixture(t)
+	for _, tc := range []struct {
+		name   string
+		fields map[string]string
+		want   bool
+	}{
+		{"SameRow", map[string]string{"agency_id": "001", "agency_name": "Agency One"}, true},
+		{"DifferentRows", map[string]string{"agency_id": "005", "agency_name": "Agency One"}, false},
+		{"MissingColumn", map[string]string{"absent": "value"}, false},
+		{"QuotedColumn", map[string]string{"extra\"field": "untouched"}, true},
+		{"BoundValue", map[string]string{"agency_id": "' OR 1=1 --"}, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := table.ExistsMatching(tc.fields)
+			if err != nil || got != tc.want {
+				t.Fatalf("got %v, %v; want %v", got, err, tc.want)
+			}
+		})
+	}
+	if _, err := table.ExistsMatching(nil); err == nil {
+		t.Fatal("empty conditions accepted")
+	}
+	connection.Close()
+	if _, err := table.ExistsMatching(map[string]string{"agency_id": "001"}); err == nil {
+		t.Fatal("read failure swallowed")
+	}
+}

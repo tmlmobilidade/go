@@ -55,6 +55,7 @@ type SQLiteContext struct {
 	FareAttributes *SQLiteRow
 	FeedInfo       *SQLiteRow
 	Routes         *SQLiteRow
+	RouteNetworks  *SQLiteRow
 	source         *SQLiteRow
 }
 
@@ -72,6 +73,7 @@ func (r *SQLiteRow) Context() *SQLiteContext {
 	ctx.FareAttributes = bind("fare_attributes")
 	ctx.FeedInfo = bind("feed_info")
 	ctx.Routes = bind("routes")
+	ctx.RouteNetworks = bind("route_networks")
 
 	return ctx
 }
@@ -209,4 +211,23 @@ func (r *SQLiteRow) Exists(field, value string) bool {
 		return false
 	}
 	return exists
+}
+
+// ExistsMatching checks that all requested values occur in the same row.
+func (t *SQLiteTable) ExistsMatching(fields map[string]string) (bool, error) {
+	if len(fields) == 0 {
+		return false, fmt.Errorf("at least one field is required")
+	}
+	conditions := make([]string, 0, len(fields))
+	values := make([]any, 0, len(fields))
+	for field, value := range fields {
+		conditions = append(conditions, t.column("source", field)+" = ?")
+		values = append(values, value)
+	}
+	query := "SELECT EXISTS(SELECT 1 FROM " + dbops.SanitizeTableName(t.name) + " AS source WHERE " + strings.Join(conditions, " AND ") + ")"
+	var exists bool
+	if err := t.db.QueryRow(query, values...).Scan(&exists); err != nil {
+		return false, err
+	}
+	return exists, nil
 }

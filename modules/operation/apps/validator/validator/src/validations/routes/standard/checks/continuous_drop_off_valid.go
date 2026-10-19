@@ -69,12 +69,8 @@ func ContinuousDropOffValid(db *services.SQLiteContext, rules *types.RoutesRules
 	}
 
 	//
-	// 5. Check whether continuous service is forbidden
+	// 5. Check whether continuous service is forbidden with windows
 
-	if ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return nil
-	}
 	if routesWithWindows[values["route_id"]] {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden_with_window"))
 		return nil
