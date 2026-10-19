@@ -22,7 +22,7 @@ End service day for the service interval. This service day is included in the in
 
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
-func DateValidFormat(db *services.SQLiteContext, dateType string, rules *types.CalendarRules) error {
+func DateValidFormat(db *services.SQLiteContext, rules *types.CalendarRules) error {
 	//
 
 	//
@@ -33,7 +33,7 @@ func DateValidFormat(db *services.SQLiteContext, dateType string, rules *types.C
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext(dateType, "calendar.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("dates", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)

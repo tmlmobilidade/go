@@ -22,7 +22,7 @@ End service day for the service interval. This service day is included in the in
 
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
-func DateValid(db *services.SQLiteContext, dateType string, rules *types.CalendarRules) error {
+func DateValid(db *services.SQLiteContext, rules *types.CalendarRules) error {
 	//
 
 	//
@@ -33,7 +33,7 @@ func DateValid(db *services.SQLiteContext, dateType string, rules *types.Calenda
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext(dateType, "calendar.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("dates", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
@@ -42,16 +42,21 @@ func DateValid(db *services.SQLiteContext, dateType string, rules *types.Calenda
 	//
 	// 3. Get the date value
 
-	date, err := db.Calendar.Field(dateType)
+	startDate, err := db.Calendar.Field("start_date")
+	if err != nil {
+		return err
+	}
+
+	endDate, err := db.Calendar.Field("end_date")
 	if err != nil {
 		return err
 	}
 
 	//
-	// 4. Validate date is a valid service date
+	// 4. Validate start_date is before end_date
 
-	if !lib.IsValidServiceDate(date) {
-		ctx.AddError(ctx.GetTranslatedMessage("invalid", date))
+	if startDate >= endDate {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", startDate))
 	}
 
 	//
