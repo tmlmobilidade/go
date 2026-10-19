@@ -1,5 +1,5 @@
 import { mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 

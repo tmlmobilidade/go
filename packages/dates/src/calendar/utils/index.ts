@@ -2,9 +2,8 @@
 
 import { Dates } from '@/dates.js';
 import { Holiday, IsoWeekday } from '@tmlmobilidade/go-types-offer';
-import { type TimezoneIdentified } from '@tmlmobilidade/go-types-shared';
+import { CalendarDate, type TimezoneIdentified } from '@tmlmobilidade/go-types-shared';
 import { OperationalDate } from '@tmlmobilidade/go-types-shared';
-import { type CalendarDate, Holiday, IsoWeekday } from '@tmlmobilidade/types';
 
 /* * */
 

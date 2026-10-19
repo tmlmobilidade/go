@@ -1,7 +1,7 @@
 'use client';
 
 import { type MonthViewProps, Schedule, ScheduleEvent, type ScheduleEventData, type ScheduleEventProps, type ScheduleProps, type ScheduleViewLevel } from '@mantine/schedule';
-import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/types';
+import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 

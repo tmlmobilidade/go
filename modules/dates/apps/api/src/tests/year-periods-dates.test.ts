@@ -1,4 +1,5 @@
-import { UpdateYearPeriodDatesSchema, validateOperationalDate } from '@tmlmobilidade/types';
+import { UpdateYearPeriodDatesSchema } from '@tmlmobilidade/go-types-offer';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
