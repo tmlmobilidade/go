@@ -1,48 +1,18 @@
 /* * */
 
+import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureStopsV1Extraction } from '@tmlmobilidade/go-types-extractions';
+import { locationPermissionMatch } from '@tmlmobilidade/go-interfaces-locationsdb';
+import { authProvider } from '@tmlmobilidade/go-providers-auth';
+import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureStopsV1Extraction, InfrastructureStopsV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
+import { Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { filterPermissionResourceValues, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { buildStopsExtractionQuery } from './apply-query.js';
-import { parseStopsExtraction } from './transform.js';
-import { type InfrastructureStopsV1OutputRow, type InfrastructureStopsV1QueryRow } from './types.js';
-
-/* * */
-
-const columns = [
-	'_id',
-	'jurisdiction',
-	'legacy_id',
-	'legacy_ids',
-	'lifecycle_status',
-	'name',
-	'new_name',
-	'previous_go_id',
-	'short_name',
-	'tts_name',
-	'observations',
-	'district_id',
-	'latitude',
-	'locality_id',
-	'longitude',
-	'municipality_name',
-	'municipality_id',
-	'parish_id',
-	'shelter_code',
-	'shelter_installation_date',
-	'shelter_maintainer',
-	'shelter_make',
-	'shelter_model',
-	'shelter_status',
-	'connections',
-	'facilities',
-] satisfies (keyof InfrastructureStopsV1OutputRow)[];
-
-/* * */
+import { type InfrastructureStopsV1OutputRow, InfrastructureStopsV1OutputRowSchema } from './types.js';
 
 /**
  * Exports the permitted stops matching the filters to stops.csv.
@@ -56,33 +26,98 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 	const collection = await goDb.infrastructure.stops.getCollection();
 	const cursor = collection.find<InfrastructureStopsV1QueryRow>(filter, { batchSize: 5_000, projection, sort: { _id: 1 } });
 
-	try {
-		// B. Write the CSV header and set up the batch writer
+	const validatedProperties = InfrastructureStopsV1ExtractionPropertiesSchema.parse(extraction.properties);
+
+	//
+	// Adjust properties to match user permissions
+
+	const userPermissions = await authProvider.getPermissionsFromUserId(extraction.created_by);
+
+	const locationAccess = PermissionCatalog.getPermissionResourceAccess({
+		checks: [{ action: PermissionCatalog.all.stops.actions.read, scope: PermissionCatalog.all.stops.scope }],
+		permissions: userPermissions,
+		resource_key: 'location_ids',
+	});
+
+	validatedProperties.agency_ids = filterPermissionResourceValues<string>({
+		action: 'read',
+		permissions: userPermissions,
+		resourceKey: 'agency_ids',
+		scope: 'stops',
+		values: validatedProperties.agency_ids,
+	});
+
+	//
+	// Build aggregation pipeline
+
+	const pipeline: AggregationPipeline<Stop> = [
+		{
+			$match: {
+				...(locationAccess.allowAll ? {} : locationPermissionMatch(locationAccess.values)),
+				...(validatedProperties.agency_ids?.length ? { 'flags.agency_ids': { $in: validatedProperties.agency_ids ?? [] } } : {}),
+				...(validatedProperties.location_primary_ids?.length ? { 'location.primary.osm_id': { $in: validatedProperties.location_primary_ids?.map(Number) ?? [] } } : {}),
+				...(validatedProperties.location_secondary_ids?.length ? { 'location.secondary.osm_id': { $in: validatedProperties.location_secondary_ids?.map(Number) ?? [] } } : {}),
+				...(validatedProperties.location_tertiary_ids?.length ? { 'location.tertiary.osm_id': { $in: validatedProperties.location_tertiary_ids?.map(Number) ?? [] } } : {}),
+			},
+		},
+		{ $sort: { created_at: -1 } },
+	];
+
+	const aggregationResult = await goDb.infrastructure.stops.aggregate(pipeline);
+
+	console.log('aggregationResult length:', aggregationResult.length);
 
 		const filePath = path.join(context.output_path, 'stops.csv');
 		const header = csvStringify([], { bom: true, columns, header: true });
 		fs.writeFileSync(filePath, header, { encoding: 'utf-8', flush: true });
 
-		const writer = new BatchWriter<InfrastructureStopsV1QueryRow>({
-			batch_size: 10_000,
-			insertFn: async (rows) => {
-				const outputRows = rows.map(parseStopsExtraction);
-				const csv = csvStringify(outputRows, { columns });
-				fs.appendFileSync(filePath, csv, { encoding: 'utf-8', flush: true });
-			},
-			// Retrying a partial append could duplicate rows in the CSV.
-			max_retries: 0,
-			title: 'infrastructure-stops-v1',
-		});
+	const fileName = `infrastructure-stops-v1-${extraction._id}.csv`;
 
-		// C. Export stops and flush the final batch
+	const writer = new BatchWriter({
+		batch_size: 100_000,
+		insertFn: async (data) => {
+			const filePath = path.join(context.output_path, fileName);
+			const fileAlreadyExists = fs.existsSync(filePath);
+			const csvData = csvStringify(data, { header: !fileAlreadyExists });
+			fs.appendFileSync(filePath, csvData, { encoding: 'utf-8', flush: true });
+		},
+		title: 'infrastructure_stops_v1',
+	});
 
-		for await (const stop of cursor) {
-			await writer.write(stop);
+	//
+	// Parse the aggregation result into CSV
+
+	for (const foundStop of aggregationResult) {
+		//
+
+		//
+		// Format the flags from a complex array to a string
+
+		const formattedFlags: string[] = [];
+
+		for (const flag of foundStop.flags) {
+			for (const flagAgencyId of flag.agency_ids) {
+				formattedFlags.push(`${flagAgencyId}:${flag.stop_id}`);
+			}
 		}
 
-		await writer.flush();
-	} finally {
-		await cursor.close();
+		//
+		// Format the output row
+
+		const outputRow: InfrastructureStopsV1OutputRow = {
+			flags: formattedFlags.join('|'),
+			legacy_ids: foundStop.legacy_ids.join('|'),
+			stop_code: foundStop._id,
+			stop_id: foundStop._id,
+			stop_lat: foundStop.latitude,
+			stop_lon: foundStop.longitude,
+			stop_name: foundStop.name,
+		};
+
+		const validatedOutputRow = InfrastructureStopsV1OutputRowSchema.parse(outputRow);
+
+		await writer.write(validatedOutputRow);
 	}
+
+	await writer.flush();
 }

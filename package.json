@@ -63,7 +63,7 @@
 		"dev:apex:raw-sync-sales": "npm run build:apex:raw-sync-sales && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-apex-raw-sync-sales",
 		"dev:apex:raw-sync-validations": "npm run build:apex:raw-sync-validations && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-apex-raw-sync-validations",
 		"dev:core": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-core-*",
-		"dev:core:extractions": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-core-extractions-coordinator --filter=@tmlmobilidade/go-core-extractions-worker",
+		"dev:core:extractions": "npm run build:core && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-core-extractions-coordinator --filter=@tmlmobilidade/go-core-extractions-worker",
 		"dev:core:ui": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-core-frontend --filter=@tmlmobilidade/go-core-api",
 		"dev:dates": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-dates-*",
 		"dev:exporter": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-exporter-*",
