@@ -14,6 +14,8 @@ import { infrastructureStopsV1ExtractionQuery } from './query.js';
 export async function buildStopsExtractionQuery(extraction: InfrastructureStopsV1Extraction) {
 	// A. Validate properties and permissions
 
+	sdihisdfhuisd;
+
 	const properties = InfrastructureStopsExtractionFiltersSchema.parse(extraction.properties);
 	const permissions = await authProvider.getPermissionsFromUserId(extraction.created_by);
 	const checks = [{ action: PermissionCatalog.all.stops.actions.export, scope: PermissionCatalog.all.stops.scope }];
