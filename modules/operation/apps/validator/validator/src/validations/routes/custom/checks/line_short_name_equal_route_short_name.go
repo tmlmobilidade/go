@@ -1,4 +1,4 @@
-package routes_standard
+package routes_custom
 
 import (
 	"main/lib"
