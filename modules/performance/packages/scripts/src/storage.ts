@@ -5,7 +5,12 @@ import { readFile } from 'node:fs/promises';
 export const sqlFile = (file: string) => new URL(`../../../sql/${file}`, import.meta.url);
 
 export async function executeSql(file: string, params: Record<string, number | string | string[]> = {}) {
-	const source = await readFile(sqlFile(file), 'utf8');
+	// ALTER ... REPLACE PARTITION FROM does not accept ClickHouse Identifier parameters.
+	const source = (await readFile(sqlFile(file), 'utf8')).replace(/\{(\w+):Identifier\}/g, (_, name: string) => {
+		const value = params[name];
+		if (typeof value !== 'string' || !/^[A-Za-z_][A-Za-z0-9_]*$/.test(value)) throw new Error(`Invalid SQL identifier: ${name}`);
+		return `\`${value}\``;
+	});
 	for (const query of splitClickHouseStatements(source)) {
 		await labDb.command({ query, query_params: params });
 	}

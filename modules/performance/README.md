@@ -47,6 +47,7 @@ From the repository root:
 ```sh
 npm run build:performance
 node --import tsx --test modules/performance/tests/build-compatibility.test.ts modules/performance/tests/metric-storage.test.ts
+node --experimental-test-module-mocks --import tsx --test modules/performance/tests/sql-commands.test.ts
 TSX_TSCONFIG_PATH=modules/performance/apps/frontend/tsconfig.json node --experimental-test-module-mocks --import tsx --test modules/performance/tests/frontend-data-provider.test.ts
 node modules/performance/tests/verify-source-queries.mjs --static
 ```
@@ -57,6 +58,7 @@ With the configured staging credentials and tunnel:
 ENVIRONMENT=dev node --env-file=environments/stg/.env.stg modules/performance/tests/initialize-storage.mjs
 ENVIRONMENT=dev node --env-file=environments/stg/.env.stg modules/performance/tests/verify-source-queries.mjs --all
 ENVIRONMENT=dev node --env-file=environments/stg/.env.stg modules/performance/tests/verify-storage.mjs
+PERFORMANCE_VERIFY_SQL=1 ENVIRONMENT=dev node --env-file=environments/stg/.env.stg --experimental-test-module-mocks --import tsx --test modules/performance/tests/sql-commands.test.ts
 ```
 
 The SQL verifier executes synthetic fixtures, validates formatted payloads against the existing metric schemas, and explains every production SELECT against the staging schema. The storage verifier writes isolated test generations in `temp_performance`, checks publication and retention, and deletes its test records afterward. Neither verifier runs the production metric workers or refreshes Hub output.
