@@ -21,3 +21,15 @@
 .grid > *:nth-child(even) {
 	transform: translateY(100px);
 }
+
+/* * */
+/* LAST BLOCK & MEETINGS BLOCK */
+
+.lastBlock {
+	display: flex;
+	flex-direction: column;
+}
+
+.meetingsBlock {
+	padding: 30px;
+}

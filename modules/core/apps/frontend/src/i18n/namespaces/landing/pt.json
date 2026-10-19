@@ -18,6 +18,14 @@
 			"description": "O GO está organizado em 4 módulos essenciais que completam o ciclo de responsabilidades de uma autoridade de transportes.",
 			"title": "Desenvolvido de forma modular — usa só o que precisas."
 		},
+		"meetings": {
+			"actions": {
+				"schedule_meeting": "Marcar reunião",
+				"send_email": "Enviar email"
+			},
+			"description": "Presencial ou por Teams, estamos disponíveis para conversar sobre o que precisas.",
+			"title": "Marcamos uma reunião?"
+		},
 		"offer": {
 			"offer": {
 				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",

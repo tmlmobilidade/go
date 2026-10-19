@@ -1,6 +1,6 @@
 'use client';
 
-import { Section } from '@tmlmobilidade/ui';
+import { Button, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -52,7 +52,7 @@ export function LandingModules() {
 				/>
 
 				<LandingModuleBlock
-					index={1}
+					index={2}
 					title={t('landing:LandingModules.offer.title')}
 					content={[{
 						description: t('landing:LandingModules.offer.offer.description'),
@@ -63,7 +63,7 @@ export function LandingModules() {
 				/>
 
 				<LandingModuleBlock
-					index={1}
+					index={3}
 					title={t('landing:LandingModules.operation.title')}
 					content={[
 						{
@@ -87,16 +87,29 @@ export function LandingModules() {
 					]}
 				/>
 
-				<LandingModuleBlock
-					index={1}
-					title={t('landing:LandingModules.performance.title')}
-					content={[{
-						description: t('landing:LandingModules.performance.performance.description'),
-						subtitle: t('landing:LandingModules.performance.performance.subtitle'),
-						thumbnailSrc: '/core/assets/landing/modules/performance-video-thumbnail.jpg',
-						videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
-					}]}
-				/>
+				<div className={styles.lastBlock}>
+					<LandingModuleBlock
+						index={4}
+						title={t('landing:LandingModules.performance.title')}
+						content={[{
+							description: t('landing:LandingModules.performance.performance.description'),
+							subtitle: t('landing:LandingModules.performance.performance.subtitle'),
+							thumbnailSrc: '/core/assets/landing/modules/performance-video-thumbnail.jpg',
+							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+						}]}
+					/>
+					<div className={styles.meetingsBlock}>
+						<LandingInfoBlock
+							description={t('landing:LandingModules.meetings.description')}
+							title={t('landing:LandingModules.meetings.title')}
+						>
+							<Section gap="md" padding="none">
+								<Button label={t('landing:LandingModules.meetings.actions.send_email')} />
+								<Button label={t('landing:LandingModules.meetings.actions.schedule_meeting')} />
+							</Section>
+						</LandingInfoBlock>
+					</div>
+				</div>
 
 			</div>
 

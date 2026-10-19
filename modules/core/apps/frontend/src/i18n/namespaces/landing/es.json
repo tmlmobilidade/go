@@ -1,13 +1,52 @@
 {
 	"LandingModules": {
 		"infrastructure": {
-			"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
-			"subtitle": "Las paradas son la espina dorsal de la red de transportes.",
+			"stops": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Las paradas son la espina dorsal de la red de transportes."
+			},
 			"title": "Infraestructura"
 		},
 		"intro": {
 			"description": "GO es una plataforma que responde a las necesidades de las autoridades y los operadores de transporte de forma ágil e intuitiva.",
 			"title": "Desarrollado de forma modular — usa solo lo que necesitas."
+		},
+		"meetings": {
+			"actions": {
+				"schedule_meeting": "Marcar reunión",
+				"send_email": "Enviar email"
+			},
+			"description": "Presencial o por Teams, estamos disponibles para conversar sobre lo que necesitas.",
+			"title": "Marcamos una reunión?"
+		},
+		"offer": {
+			"offer": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Las paradas son la espina dorsal de la red de transportes."
+			},
+			"title": "Oferta"
+		},
+		"operation": {
+			"alerts": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Alertas"
+			},
+			"plans": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Planos"
+			},
+			"rides": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Circulaciones / Monitorización"
+			},
+			"title": "Operación"
+		},
+		"performance": {
+			"performance": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Las paradas son la espina dorsal de la red de transportes."
+			},
+			"title": "Performance"
 		}
 	},
 	"LandingOverview": {
