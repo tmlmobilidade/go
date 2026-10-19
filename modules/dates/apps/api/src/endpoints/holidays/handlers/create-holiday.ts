@@ -44,7 +44,10 @@ export async function createHolidayHandler(request: FastifyRequest<{ Body: Creat
 	//
 	// Create the new holiday
 
-	const newHoliday = await goDb.offer.holidays.insertOne(request.body);
+	const newHoliday = await goDb.offer.holidays.insertOne({
+		...request.body,
+		created_by: request.me._id,
+	});
 
 	//
 	// Send the response
