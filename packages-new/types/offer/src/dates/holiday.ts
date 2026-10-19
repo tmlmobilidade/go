@@ -1,23 +1,3 @@
-/* * */
-
-import { BaseDocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
-import { z } from 'zod';
-
-/* * */
-
-export const HolidaySchema = BaseDocumentSchema.extend({
-	agency_ids: z.array(z.string()).min(1),
-	dates: z.array(OperationalDateSchema).default([]),
-	description: z.string().optional(),
-	is_locked: z.boolean().default(false),
-	title: z.string().min(1),
-});
-
-export const CreateHolidaySchema = HolidaySchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true });
-export const UpdateHolidaySchema = CreateHolidaySchema.partial();
-
-/* * */
-
-export type Holiday = z.infer<typeof HolidaySchema>;
-export type CreateHolidayDto = z.infer<typeof CreateHolidaySchema>;
-export type UpdateHolidayDto = z.infer<typeof UpdateHolidaySchema>;
+// Compatibility export while consumers migrate to go-types-dates.
+export { CreateHolidaySchema, HolidaySchema, UpdateHolidaySchema } from '@tmlmobilidade/go-types-dates';
+export type { CreateHolidayDto, Holiday, UpdateHolidayDto } from '@tmlmobilidade/go-types-dates';
