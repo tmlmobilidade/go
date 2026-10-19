@@ -26,12 +26,12 @@ func TusdayValid(db *services.SQLiteContext, rules *types.CalendarRules) error {
 	//
 	// 1. Get the rule
 
-	const ruleID = "calendar_tusday_valid"
+	const ruleID = "calendar_tuesday_valid"
 
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("tusday", "calendar.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("tuesday", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
@@ -40,7 +40,7 @@ func TusdayValid(db *services.SQLiteContext, rules *types.CalendarRules) error {
 	//
 	// 3. Get the value
 
-	value, err := db.Calendar.Field("tusday")
+	value, err := db.Calendar.Field("tuesday")
 	if err != nil {
 		return err
 	}
