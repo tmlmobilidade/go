@@ -1,8 +1,14 @@
 /* * */
 
-import { ZonesController } from '@/endpoints/zones/zones.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { createZoneHandler } from './handlers/create-zone.js';
+import { deleteZoneHandler } from './handlers/delete-zone.js';
+import { getZoneHandler } from './handlers/get-zone.js';
+import { listZonesHandler } from './handlers/list-zones.js';
+import { lockZoneHandler } from './handlers/lock-zone.js';
+import { updateZoneHandler } from './handlers/update-zone.js';
 
 /* * */
 
@@ -22,7 +28,7 @@ server.register(
 				{ actions: [PermissionCatalog.all.zones.actions.nav], scope: PermissionCatalog.all.zones.scope },
 				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
 			]) },
-			ZonesController.getAll,
+			listZonesHandler,
 		);
 
 		instance.get(
@@ -31,31 +37,31 @@ server.register(
 				{ actions: [PermissionCatalog.all.zones.actions.nav], scope: PermissionCatalog.all.zones.scope },
 				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
 			]) },
-			ZonesController.getById,
+			getZoneHandler,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.zones.scope, [PermissionCatalog.all.zones.actions.create]) },
-			ZonesController.create,
+			createZoneHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.zones.scope, [PermissionCatalog.all.zones.actions.update]) },
-			ZonesController.update,
+			updateZoneHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.zones.scope, [PermissionCatalog.all.zones.actions.lock]) },
-			ZonesController.lock,
+			lockZoneHandler,
 		);
 
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.zones.scope, [PermissionCatalog.all.zones.actions.delete]) },
-			ZonesController.delete,
+			deleteZoneHandler,
 		);
 
 		next();
