@@ -5,8 +5,8 @@ import { AnnotationsListCellAgencies } from '@/components/annotations/list/Annot
 import { AnnotationsListCellDates } from '@/components/annotations/list/AnnotationsListCellDates';
 import { AnnotationsListFiltersBar } from '@/components/annotations/list/AnnotationsListFiltersBar';
 import { AnnotationsListHeader } from '@/components/annotations/list/AnnotationsListHeader';
-import { type AnnotationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type Annotation } from '@tmlmobilidade/go-types-dates';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ export function AnnotationsList() {
 
 	const annotationsListContext = useAnnotationsListContext();
 
-	const columns: DataTableColumn<AnnotationNormalized>[] = [
+	const columns: DataTableColumn<Annotation>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -37,7 +37,7 @@ export function AnnotationsList() {
 			width: 400,
 		},
 		{
-			accessor: 'agency_ids_normalized',
+			accessor: 'agency_ids',
 			render: item => <AnnotationsListCellAgencies agencyIds={item.agency_ids} />,
 			title: 'Operadores',
 			width: 200,
@@ -53,7 +53,7 @@ export function AnnotationsList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: AnnotationNormalized) => {
+	const handleRowClick = (item: Annotation) => {
 		router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(item._id)));
 	};
 

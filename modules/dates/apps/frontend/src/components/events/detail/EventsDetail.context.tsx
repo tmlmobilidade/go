@@ -1,6 +1,7 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type EventsDetail } from '@tmlmobilidade/go-dates-pckg-types';
 import { type Event, EventRule, Line, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { generateRandomString } from '@tmlmobilidade/strings';
@@ -21,7 +22,7 @@ interface EventsDetailContextState {
 		openRuleModal: (rule?: EventRule) => void
 	}
 	data: {
-		event: Event | null
+		event: EventsDetail | null
 		form: UseFormReturnType<UpdateEventDto>
 		id: string
 		lines?: Line[]
@@ -59,7 +60,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 		fetcher: async (url: string) => await fetchApiData<Event[]>({ url }),
 	});
 	const { data: eventData, error: eventError, isLoading: eventLoading, mutate: eventMutate } = useSWR(API_ROUTES.dates.EVENTS_DETAIL(eventId), {
-		fetcher: async (url: string) => await fetchApiData<Event>({ url }),
+		fetcher: async (url: string) => await fetchApiData<EventsDetail>({ url }),
 	});
 	const { data: allLinesData } = useSWR(API_ROUTES.offer.LINES_LIST, {
 		fetcher: async (url: string) => await fetchApiData<Line[]>({ url }),
@@ -87,15 +88,15 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Event>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.dates.EVENTS_DETAIL(eventId) }),
-		onSuccess: (response) => {
+		onSuccess: () => {
 			form.resetDirty();
-			eventMutate(response);
+			eventMutate();
 			eventsListMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Event>({ method: 'DELETE', url: API_ROUTES.dates.EVENTS_DETAIL(eventId) }),
+		fetchFn: async () => await fetchApiData<undefined>({ method: 'DELETE', url: API_ROUTES.dates.EVENTS_DETAIL(eventId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			eventsListMutate();
@@ -105,9 +106,9 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 
 	const { action: handleLock, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Event>({ url: API_ROUTES.dates.EVENTS_DETAIL_LOCK(eventId) }),
-		onSuccess: (response) => {
+		onSuccess: () => {
 			form.resetDirty();
-			eventMutate(response);
+			eventMutate();
 			eventsListMutate();
 		},
 	});

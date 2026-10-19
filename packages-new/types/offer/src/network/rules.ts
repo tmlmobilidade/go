@@ -75,10 +75,13 @@ export const EventDerivedBaseSchema = z.object({
 	timepoints: z.array(HHMMSchema).optional(), // UI generated
 });
 
+// All-day and explicit-timepoint restrictions have no time window.
+const EventRestrictionTimeSchema = z.union([z.literal(''), HHMMSchema]).default('');
+
 export const EventRestrictionSchema = EventDerivedBaseSchema.extend({
 	all_day: z.boolean(),
-	end_time: HHMMSchema.default(''),
-	start_time: HHMMSchema.default(''),
+	end_time: EventRestrictionTimeSchema,
+	start_time: EventRestrictionTimeSchema,
 
 	// Event info
 	event: z.object({

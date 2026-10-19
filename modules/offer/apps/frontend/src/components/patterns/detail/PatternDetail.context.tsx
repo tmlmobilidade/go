@@ -9,8 +9,9 @@ import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { PatternsDetail, PatternsDetailPathItem, type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { EventReplacementRule, EventRestrictionRule, type LineNormalized, ManualRule, Path, Pattern, PopulatedPath, PopulatedPattern, ScheduleRule, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
+import { EventReplacementRule, EventRestrictionRule, ManualRule, Path, Pattern, ScheduleRule, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { generateRandomString } from '@tmlmobilidade/strings';
@@ -30,7 +31,7 @@ interface PatternDetailContextState {
 		deleteRule: (ruleId: string) => void
 		duplicateRule: (rule: ManualRule) => void
 		editRule: (rule: ManualRule) => void
-		enrichPath: (path: Path[]) => Promise<PopulatedPath[]>
+		enrichPath: (path: Path[]) => Promise<PatternsDetailPathItem[]>
 		mutate: () => Promise<ApiResponse<Pattern> | undefined>
 		openRuleModal: (rule?: ManualRule) => void
 		openRulesCalendarPreviewModal: () => void
@@ -42,9 +43,9 @@ interface PatternDetailContextState {
 		id: string
 		lineId: string
 		mergedRules: ScheduleRule[]
-		pattern: null | PopulatedPattern
+		pattern: null | PatternsDetail
 		stopsParameterRules: StopsParameterExtended[]
-		typologyData?: LineNormalized['typology_data']
+		typologyData?: PopulatedLine['typology_data']
 	}
 	flags: DetailContextStateTemplate['flags']
 	geojson: {
@@ -81,12 +82,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// B. Fetch data
 
-	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<ApiResponse<PopulatedPattern>>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), {
-		fetcher: async url => await fetchApiData<PopulatedPattern>({ url }),
+	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<ApiResponse<PatternsDetail>>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), {
+		fetcher: async url => await fetchApiData<PatternsDetail>({ url }),
 	});
 
-	const { data: lineData, mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
-		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	const { data: lineData, mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
 	});
 
 	const typologyData = lineData?.data?.typology_data;
@@ -115,7 +116,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	// C. Editable pattern data
 
 	const editablePath = useMemo(
-		() => (form.values.path ?? patternData?.data?.path ?? []) as PopulatedPath[],
+		() => (form.values.path ?? patternData?.data?.path ?? []) as PatternsDetailPathItem[],
 		[form.values.path, patternData?.data?.path],
 	);
 	const editableShape = form.values.shape ?? patternData?.data?.shape;
@@ -318,7 +319,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		const onDelete = rule?._id ? () => handleDeleteStopParameter(rule._id) : undefined;
 
 		const defaultParameter = (form.getValues().parameters ?? []).find((p): p is StopsParameter => p.kind === 'default');
-		openCreateParameterModal(lineData?.data?.agency_id || '', onSubmit, (form.getValues().path ?? patternData?.data?.path) as PopulatedPath[], rule, onDelete, defaultParameter);
+		openCreateParameterModal(lineData?.data?.agency_id || '', onSubmit, (form.getValues().path ?? patternData?.data?.path) as PatternsDetailPathItem[], rule, onDelete, defaultParameter);
 	}, [lineData?.data?.agency_id, patternData?.data, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter, form]);
 
 	//
@@ -348,7 +349,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	}, [patternId, patternMutate]);
 
 	// Used to fetch stops when we revert a path change from the history
-	const enrichPath = useCallback(async (path: Path[]): Promise<PopulatedPath[]> => {
+	const enrichPath = useCallback(async (path: Path[]): Promise<PatternsDetailPathItem[]> => {
 		const stopIds = [...new Set(path.map(p => String(p.stop_id)))];
 		const results = await Promise.all(
 			stopIds.map(id => fetchApiData<Stop>({ url: API_ROUTES.offer.PATTERNS_STOPS_DETAIL(String(id)) })),

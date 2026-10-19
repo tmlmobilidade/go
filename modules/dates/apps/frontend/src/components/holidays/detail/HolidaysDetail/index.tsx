@@ -4,7 +4,7 @@ import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-
 import { DatesSelector } from '@/components/holidays/detail/HolidaysDatesSelector';
 import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
 import { HolidaysDetailHeader } from '@/components/holidays/detail/HolidaysDetailHeader';
-import { HolidaySchema } from '@tmlmobilidade/go-types-offer';
+import { HolidaySchema } from '@tmlmobilidade/go-types-dates';
 import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

@@ -1,10 +1,8 @@
 'use client';
 
 import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
-import { type PeriodNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { normalizeString } from '@tmlmobilidade/strings';
 import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -15,7 +13,7 @@ import useSWR from 'swr';
 
 interface PeriodsListContextState {
 	data: {
-		filtered: PeriodNormalized[]
+		filtered: YearPeriod[]
 		raw: YearPeriod[]
 	}
 	filters: {
@@ -63,23 +61,9 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Transform data
 
-	const normalizedPeriodsData: PeriodNormalized[] = useMemo(() => {
-		// Skip if no data is available
-		if (!allPeriodsData) return [];
-		// Normalize record fields
-		return allPeriodsData.data?.map((item) => {
-			const agencyIds = item.agency_ids.join(', ');
-
-			return {
-				...item,
-				agency_ids_normalized: normalizeString(agencyIds),
-			};
-		});
-	}, [allPeriodsData]);
-
-	const searchResultsData = useSearch<PeriodNormalized>({
-		accessors: ['_id', 'name', 'agency_ids_normalized'],
-		data: normalizedPeriodsData,
+	const searchResultsData = useSearch<YearPeriod>({
+		accessors: ['_id', 'name', 'agency_ids'],
+		data: allPeriodsData?.data ?? [],
 		query: filterSearch.value,
 	});
 
@@ -90,7 +74,7 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 		const agencySet = new Set(filterAgency.value);
 
 		return searchResultsData
-			.filter((item: PeriodNormalized) => {
+			.filter((item: YearPeriod) => {
 				// Filter by agency - check if the period has ANY matching agency
 				if (!item.agency_ids || item.agency_ids.length === 0) {
 					return true; // Show periods with no agencies in all filters
