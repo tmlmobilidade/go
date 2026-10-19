@@ -1,7 +1,7 @@
 import { type Types } from '@amplitude/analytics-browser';
 import { type SessionReplayPlugin } from '@amplitude/plugin-session-replay-browser';
 
-import { type AnalyticsReplayController } from '../types/shared/analytics';
+import { type AnalyticsReplayController } from '../types/shared/replay';
 
 /* * */
 

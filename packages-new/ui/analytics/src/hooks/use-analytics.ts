@@ -6,6 +6,7 @@ import { type AnalyticsContextProps, type AnalyticsContextState, type AnalyticsI
 import { type AnalyticsUserProperties } from '../types/shared/user-properties';
 import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client';
 import { useAnalyticsConfiguration } from './use-analytics-configuration';
+import { useReplay } from './use-replay';
 
 /* * */
 
@@ -21,27 +22,13 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 	const clearError = useCallback(() => setError(undefined), []);
 	const { apiKey, options } = useAnalyticsConfiguration(configuration, handleError, clearError);
 	const ready = Boolean(apiKey) && initialized?.apiKey === apiKey && initialized?.options === options;
+	const { startReplay, stopReplay } = useReplay(initialized, initializationRef, ready, handleError);
 
 	// Actions must use the initialized client that still matches the current configuration.
 	const identify = useCallback((value: AnalyticsUserProperties | null) => {
 		if (!ready || !initialized || initializationRef.current !== initialized || initialized.client.getOptOut()) return false;
 		return identifyAnalyticsUser(initialized.client, value, handleError);
 	}, [handleError, initialized, ready]);
-
-	// Each consumer decides when its flow starts capturing; initialization alone does not start it.
-	const startReplay = useCallback(async () => {
-		if (!ready || !initialized || initializationRef.current !== initialized) return false;
-		try {
-			return await initialized.replay.start();
-		} catch (cause: unknown) {
-			if (initializationRef.current === initialized && !initialized.client.getOptOut()) handleError(cause);
-			return false;
-		}
-	}, [handleError, initialized, ready]);
-
-	const stopReplay = useCallback(() => {
-		initializationRef.current?.replay.stop();
-	}, []);
 
 	const track = useCallback(async (eventName: string, properties?: Record<string, unknown>) => {
 		if (!ready || !initialized || initializationRef.current !== initialized) return false;

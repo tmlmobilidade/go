@@ -2,9 +2,11 @@
 
 import { z } from 'zod';
 
+import { AnalyticsEvent } from '../../shared/event';
+
 /* * */
 
-export const LoginEvent = z.object({
+export const LoginEvent = AnalyticsEvent.extend({
 	title: z.literal('go-core-frontend-login'),
 });
 

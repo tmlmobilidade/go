@@ -2,9 +2,11 @@
 
 import { z } from 'zod';
 
+import { AnalyticsEvent } from '../../shared/event';
+
 /* * */
 
-export const LinesOpenedEvent = z.object({
+export const LinesOpenedEvent = AnalyticsEvent.extend({
 	title: z.literal('go-offer-frontend-lines-opened'),
 });
 

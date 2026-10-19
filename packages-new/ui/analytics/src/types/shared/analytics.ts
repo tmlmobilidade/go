@@ -1,6 +1,9 @@
 import { type Types } from '@amplitude/analytics-browser';
 
+import { type AnalyticsReplayController } from './replay';
 import { type AnalyticsUserProperties } from './user-properties';
+
+export { type AnalyticsReplayController } from './replay';
 
 /* * */
 
@@ -33,9 +36,4 @@ export interface AnalyticsInitialization {
 	options: AnalyticsContextProps['options']
 	promise: Promise<void>
 	replay: AnalyticsReplayController
-}
-
-export interface AnalyticsReplayController {
-	start: () => Promise<boolean>
-	stop: () => void
 }
