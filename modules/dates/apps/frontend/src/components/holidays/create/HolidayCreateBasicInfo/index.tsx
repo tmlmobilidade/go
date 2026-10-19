@@ -45,6 +45,7 @@ export function HolidayCreateBasicInfo() {
 				key={holidayCreateContext.data.form.key('agency_ids')}
 				data={allAgencyOptions}
 				label="Operadores afetados"
+				required={!HolidaySchema.shape.agency_ids.isOptional()}
 				w="100%"
 				{...holidayCreateContext.data.form.getInputProps('agency_ids')}
 			/>

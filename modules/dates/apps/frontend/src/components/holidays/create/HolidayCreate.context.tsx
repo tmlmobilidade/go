@@ -61,6 +61,7 @@ export const HolidayCreateContextProvider = ({ children }: PropsWithChildren) =>
 	// D. Handle actions
 
 	const handleCreateHoliday = async () => {
+		if (form.validate().hasErrors) return;
 		setIsSaving(true);
 		const response = await fetchData<Holiday>(API_ROUTES.dates.HOLIDAYS_LIST, 'POST', form.getValues());
 		if (response.error) {
