@@ -15,15 +15,16 @@ import path from 'node:path';
 import { type InfrastructureStopsV1OutputRow, InfrastructureStopsV1OutputRowSchema } from './types.js';
 
 /**
- * Exports a batch of stops to a CSV file.
- * @param fileExport - The file export object.
- * @returns The path to the exported file.
+ * Exports the permitted stops matching the filters to stops.csv.
+ * @param context The extraction task context.
+ * @param extraction The extraction to run.
  */
 export async function extractInfrastructureStopsV1(context: ExtractionTaskContext, extraction: InfrastructureStopsV1Extraction): Promise<ExtractionTaskResult> {
-	//
+	// A. Prepare the query and open the stop cursor
 
-	//
-	// Validate the received properties
+	const { filter, projection } = await buildStopsExtractionQuery(extraction);
+	const collection = await goDb.infrastructure.stops.getCollection();
+	const cursor = collection.find<InfrastructureStopsV1QueryRow>(filter, { batchSize: 5_000, projection, sort: { _id: 1 } });
 
 	const validatedProperties = InfrastructureStopsV1ExtractionPropertiesSchema.parse(extraction.properties);
 
@@ -66,8 +67,9 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 
 	console.log('aggregationResult length:', aggregationResult.length);
 
-	//
-	// Setup a temporary directory and a batch writer
+		const filePath = path.join(context.output_path, 'stops.csv');
+		const header = csvStringify([], { bom: true, columns, header: true });
+		fs.writeFileSync(filePath, header, { encoding: 'utf-8', flush: true });
 
 	const fileName = `infrastructure-stops-v1-${extraction._id}.csv`;
 
