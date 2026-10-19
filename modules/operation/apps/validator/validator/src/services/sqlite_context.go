@@ -50,6 +50,7 @@ type SQLiteContext struct {
 	Calendar       *SQLiteRow
 	CalendarDates  *SQLiteRow
 	FareAttributes *SQLiteRow
+	FeedInfo       *SQLiteRow
 	source         *SQLiteRow
 }
 
@@ -64,6 +65,8 @@ func (r *SQLiteRow) Context() *SQLiteContext {
 		ctx.FareAttributes = r
 	case "calendar_dates":
 		ctx.CalendarDates = r
+	case "feed_info":
+		ctx.FeedInfo = r
 	}
 	return ctx
 }
