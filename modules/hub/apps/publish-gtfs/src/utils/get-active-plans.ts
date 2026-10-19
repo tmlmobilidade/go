@@ -12,28 +12,13 @@ let PREVIOUS_PLANS_LIST_HASH: null | string = null;
 
 /* * */
 
-export async function getActivePlans(): Promise<Plan[]> {
+export async function getActivePlans(agencyIds: string[]): Promise<Plan[]> {
 	//
-
-	//
-	// Retrieve all agencies from the database
-	// that have the gtfs export enabled
-
-	const allAgenciesWithGtfsEnabled = await goDb.core.agencies.findMany({
-		'open_data.services.gtfs_enabled': true,
-	});
-
-	if (!allAgenciesWithGtfsEnabled.length) {
-		Logger.info({ message: 'No Agencies with GTFS export enabled found.' });
-		return [];
-	}
 
 	//
 	// Retrieve all Plans from the database
 
-	const allPlansData = await goDb.operation.plans.findMany({
-		agency_id: { $in: allAgenciesWithGtfsEnabled.map(agency => agency._id) },
-	});
+	const allPlansData = await goDb.operation.plans.findMany({ agency_id: { $in: agencyIds } });
 
 	if (allPlansData.length === 0) {
 		Logger.terminate('No Plans found. Exiting...');
