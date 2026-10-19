@@ -26,22 +26,23 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 	}
 	lib.AppLogger.Debug("Running Calendar Dates Validations...")
 
+	//
 	// Create progress tracker
 	tracker := lib.CreateProgressTracker(gtfs, "calendar_dates", config.ProgressThresholdSmall)
 
+	//
 	// Open the calendar_dates table
+
 	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error preparing SQLite tables: %v", err))
 		return
 	}
-	table, err := tables.Table("calendar_dates")
-	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error opening calendar_dates table: %v", err))
-		return
-	}
 
-	err = table.ForEachRow(func(row *services.SQLiteRow) error {
+	//
+	// Iterate over calendar_dates table
+
+	err = tables.ForEachRow("calendar_dates", func(row *services.SQLiteRow) error {
 		db := row.Context()
 		tracker.Track()
 		check := func(ruleID string, err error) {
@@ -65,6 +66,9 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 
 		return nil
 	})
+
+	//
+	// Check for errors
 
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error iterating calendar dates: %v", err))
