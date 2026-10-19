@@ -8,11 +8,16 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { infrastructureNodesV1ExtractionQuery } from './query.js';
 
-/* * */
-
-/** Builds the permitted stop filter and field projection for a v1 nodes extraction. */
+/**
+ * Builds the permitted stop filter and field projection for a v1 nodes extraction.
+ * @param extraction The extraction to build the query for.
+ * @returns The permitted stop filter and field projection.
+ */
 export async function buildNodesExtractionQuery(extraction: InfrastructureNodesV1Extraction) {
-	// A. Validate properties and permissions
+	//
+
+	//
+	// Validate properties and permissions
 
 	const properties = InfrastructureStopsExtractionFiltersSchema.parse(extraction.properties);
 	const permissions = await authProvider.getPermissionsFromUserId(extraction.created_by);
@@ -24,7 +29,8 @@ export async function buildNodesExtractionQuery(extraction: InfrastructureNodesV
 		throw new Error('User does not have permission to export stops');
 	}
 
-	// B. Build filters matching the selection and permissions
+	//
+	// Build filters matching the selection and permissions
 
 	let selectedAgencyIds = agencyAccess.allowAll ? undefined : agencyAccess.values;
 
@@ -33,6 +39,7 @@ export async function buildNodesExtractionQuery(extraction: InfrastructureNodesV
 	}
 
 	const search = properties.search?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 	const filters = [
 		...[...LOCATION_PERMISSION_SLOTS, 'neighbourhood' as const].flatMap((slot) => {
 			const ids = slot === 'secondary'
