@@ -43,11 +43,9 @@ export function identifyAnalyticsUser(client: Types.BrowserClient, user: Analyti
 
 export async function trackAnalyticsEvent(initialization: AnalyticsInitialization, event: AnalyticsEventInput, properties: Record<string, unknown> | undefined, onError: (cause: unknown) => void): Promise<boolean> {
 	try {
-		const { client, replay } = initialization;
+		const { client } = initialization;
 		if (client.getOptOut()) return false;
 		const normalizedEvent = normalizeAnalyticsEvent(event);
-		// Mark the block at occurrence time, before awaiting the Analytics upload.
-		replay.recordEvent(normalizedEvent);
 		const result = await client.track(normalizedEvent.title, properties).promise;
 		if (result.code < 200 || result.code >= 300) {
 			throw new Error(`Amplitude upload failed (${result.code}): ${result.message}`);

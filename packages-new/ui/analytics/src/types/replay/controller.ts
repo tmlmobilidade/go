@@ -1,10 +1,7 @@
-import { type AnalyticsEvent } from '../events/shared';
-
 /* * */
 
-/** Controls consecutive capture blocks and their retention policy. */
+/** Starts one support capture and allows it to be stopped before its five-minute limit. */
 export interface AnalyticsReplayController {
-	recordEvent: (event: AnalyticsEvent) => void
 	start: () => Promise<boolean>
 	stop: () => void
 }
