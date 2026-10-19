@@ -1,10 +1,10 @@
 /* * */
 
-import { locationPermissionMatch } from '@/utils/location-permission-match.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { type StopsListFilters, StopsListFiltersSchema, type StopsListResponse, StopsListResponseSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationPermissionMatch } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
