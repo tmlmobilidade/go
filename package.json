@@ -89,6 +89,7 @@
 		"dev:infrastructure:ui": "npm run build:infrastructure:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-api --filter=@tmlmobilidade/go-infrastructure-frontend",
 		"dev:locations": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-locations-*",
 		"dev:offer": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-offer-api --filter=@tmlmobilidade/go-offer-frontend",
+		"dev:offer:ui": "npm run dev:offer",
 		"dev:operation": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-operation-*",
 		"dev:operation:gtfs-validator": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-operation-gtfs-validator",
 		"dev:operation:organizer": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-operation-organizer",
