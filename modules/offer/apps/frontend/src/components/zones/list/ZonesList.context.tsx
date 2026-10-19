@@ -1,6 +1,8 @@
 'use client';
 
 import { useAgenciesData } from '@/components/common/use-agencies-data';
+import { getZonesExtractAgencyAccess } from '@/components/zones/extract/zones-extract-permissions';
+import { openZonesExtractModal } from '@/components/zones/extract/ZonesExtract.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Zone } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -12,6 +14,9 @@ import useSWR from 'swr';
 /* * */
 
 interface ZonesListContextState {
+	actions: {
+		extract: () => void
+	}
 	data: {
 		filtered: Zone[]
 		raw: Zone[]
@@ -22,6 +27,7 @@ interface ZonesListContextState {
 	}
 	flags: {
 		canCreate: boolean
+		canExtract: boolean
 		error: Error | undefined
 		loading: boolean
 	}
@@ -87,9 +93,17 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 	}, [searchResultsData, filterAgencies]);
 
 	const canCreatePermission = meContext.actions.hasPermission(PermissionCatalog.all.zones.scope, PermissionCatalog.all.zones.actions.create);
+	const agencyAccess = getZonesExtractAgencyAccess(meContext.data.user?.permissions);
+	const canExtract = filterResultsData.length > 0 && (agencyAccess.allowAll || agencyAccess.values.length > 0);
 
 	// D. Define context value
 	const contextValue: ZonesListContextState = useMemo(() => ({
+		actions: {
+			extract: () => {
+				if (!canExtract) return;
+				openZonesExtractModal(filterResultsData.map(zone => zone._id));
+			},
+		},
 		data: {
 			filtered: filterResultsData,
 			raw: allZonesData?.data ?? [],
@@ -100,10 +114,11 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			canCreate: canCreatePermission,
+			canExtract,
 			error: allZonesError,
 			loading: allZonesLoading,
 		},
-	}), [allZonesError, allZonesLoading, allZonesData, canCreatePermission, filterResultsData, filterSearch, filterAgencies]);
+	}), [allZonesError, allZonesLoading, allZonesData, canCreatePermission, canExtract, filterResultsData, filterSearch, filterAgencies]);
 
 	return (
 		<ZonesListContext.Provider value={contextValue}>

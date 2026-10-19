@@ -43,6 +43,11 @@
 		"offer-gtfs-v29": {
 			"title": "GTFS (v29)"
 		},
+		"offer-zones-v1": {
+			"export_button": "Export zones",
+			"selection": "{count, plural, one {# zone from the filtered results will be exported.} other {# zones from the filtered results will be exported.}}",
+			"title": "Zones (v1)"
+		},
 		"operation-rides-v1": {
 			"title": "Trips (GO v1)"
 		},
