@@ -32,7 +32,7 @@ export function LandingModules() {
 					title={t('landing:LandingModules.intro.title')}
 				>
 					<LandingVideoModalButton
-						thumbnailSrc="/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg"
+						thumbnailSrc="/core/assets/landing/modules/hub-video-thumbnail.jpg"
 						videoSrc="https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4"
 					/>
 				</LandingInfoBlock>
@@ -44,44 +44,44 @@ export function LandingModules() {
 					index={1}
 					title={t('landing:LandingModules.infrastructure.title')}
 					content={[{
-						description: t('landing:LandingModules.infrastructure.description'),
-						subtitle: t('landing:LandingModules.infrastructure.subtitle'),
-						thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+						description: t('landing:LandingModules.infrastructure.stops.description'),
+						subtitle: t('landing:LandingModules.infrastructure.stops.subtitle'),
+						thumbnailSrc: '/core/assets/landing/modules/stops-video-thumbnail.jpg',
 						videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
 					}]}
 				/>
 
 				<LandingModuleBlock
 					index={1}
-					title={t('landing:LandingModules.infrastructure.title')}
+					title={t('landing:LandingModules.offer.title')}
 					content={[{
-						description: t('landing:LandingModules.infrastructure.description'),
-						subtitle: t('landing:LandingModules.infrastructure.subtitle'),
-						thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+						description: t('landing:LandingModules.offer.offer.description'),
+						subtitle: t('landing:LandingModules.offer.offer.subtitle'),
+						thumbnailSrc: '/core/assets/landing/modules/offer-video-thumbnail.jpg',
 						videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
 					}]}
 				/>
 
 				<LandingModuleBlock
 					index={1}
-					title={t('landing:LandingModules.infrastructure.title')}
+					title={t('landing:LandingModules.operation.title')}
 					content={[
 						{
-							description: t('landing:LandingModules.infrastructure.description'),
-							subtitle: t('landing:LandingModules.infrastructure.subtitle'),
-							thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+							description: t('landing:LandingModules.operation.plans.description'),
+							subtitle: t('landing:LandingModules.operation.plans.subtitle'),
+							thumbnailSrc: '/core/assets/landing/modules/plans-video-thumbnail.jpg',
 							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
 						},
 						{
-							description: t('landing:LandingModules.infrastructure.description'),
-							subtitle: t('landing:LandingModules.infrastructure.subtitle'),
-							thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+							description: t('landing:LandingModules.operation.rides.description'),
+							subtitle: t('landing:LandingModules.operation.rides.subtitle'),
+							thumbnailSrc: '/core/assets/landing/modules/rides-video-thumbnail.jpg',
 							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
 						},
 						{
-							description: t('landing:LandingModules.infrastructure.description'),
-							subtitle: t('landing:LandingModules.infrastructure.subtitle'),
-							thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+							description: t('landing:LandingModules.operation.alerts.description'),
+							subtitle: t('landing:LandingModules.operation.alerts.subtitle'),
+							thumbnailSrc: '/core/assets/landing/modules/alerts-video-thumbnail.jpg',
 							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
 						},
 					]}
@@ -89,11 +89,11 @@ export function LandingModules() {
 
 				<LandingModuleBlock
 					index={1}
-					title={t('landing:LandingModules.infrastructure.title')}
+					title={t('landing:LandingModules.performance.title')}
 					content={[{
-						description: t('landing:LandingModules.infrastructure.description'),
-						subtitle: t('landing:LandingModules.infrastructure.subtitle'),
-						thumbnailSrc: '/core/assets/landing/modules/infrastructure/infrastructure-video-thumbnail.jpg',
+						description: t('landing:LandingModules.performance.performance.description'),
+						subtitle: t('landing:LandingModules.performance.performance.subtitle'),
+						thumbnailSrc: '/core/assets/landing/modules/performance-video-thumbnail.jpg',
 						videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
 					}]}
 				/>
