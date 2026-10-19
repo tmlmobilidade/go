@@ -45,7 +45,7 @@ func ExceptionTypeField(db *services.SQLiteContext, rules *types.CalendarDatesRu
 	//
 	// 4. Validate exception_type is present
 
-	if exceptionType == "" || exceptionType == nil {
+	if exceptionType == "" {
 		if ctx.ShouldSkip() {
 			return nil
 		}

@@ -2,6 +2,7 @@ package services
 
 import (
 	"database/sql"
+	"errors"
 	"path/filepath"
 	"sync"
 	"testing"
@@ -122,5 +123,32 @@ func TestPreparedSQLiteTablesRejectInvalidConnections(t *testing.T) {
 	}
 	if _, err := PrepareSQLiteTables(db); err == nil {
 		t.Fatal("closed database accepted")
+	}
+}
+
+func TestPreparedSQLiteTablesForEachRow(t *testing.T) {
+	db, tables := preparedTablesFixture(t)
+	db.SetMaxOpenConns(2)
+	count := 0
+	err := tables.ForEachRow("trips", func(row *SQLiteRow) error {
+		count++
+		value, err := row.Field("trip_id")
+		if err != nil {
+			return err
+		}
+		if value != "T1" {
+			t.Fatalf("trip_id = %q", value)
+		}
+		return nil
+	})
+	if err != nil || count != 1 {
+		t.Fatalf("count=%d, error=%v", count, err)
+	}
+	expected := errors.New("stop iteration")
+	if err := tables.ForEachRow("trips", func(*SQLiteRow) error { return expected }); !errors.Is(err, expected) {
+		t.Fatalf("callback error lost: %v", err)
+	}
+	if err := tables.ForEachRow("missing", func(*SQLiteRow) error { t.Fatal("missing table iterated"); return nil }); err == nil {
+		t.Fatal("missing table accepted")
 	}
 }

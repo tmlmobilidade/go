@@ -139,6 +139,17 @@ func (r *SQLiteRow) Field(field string) (string, error) {
 	return values[field], err
 }
 
+// Exists checks a value across the table without loading matching rows.
+func (t *SQLiteTable) Exists(field string, value string) (bool, error) {
+	query := "SELECT EXISTS(SELECT 1 FROM " + dbops.SanitizeTableName(t.name) +
+		" AS source WHERE " + t.column("source", field) + " = ?)"
+	var exists bool
+	if err := t.db.QueryRow(query, value).Scan(&exists); err != nil {
+		return false, fmt.Errorf("check %s.%s: %w", t.name, field, err)
+	}
+	return exists, nil
+}
+
 // FieldWithCount reads a field and counts equal values in this table in one query.
 func (r *SQLiteRow) FieldWithCount(field string) (string, int, error) {
 	table := dbops.SanitizeTableName(r.table.name)

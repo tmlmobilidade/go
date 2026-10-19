@@ -166,3 +166,32 @@ func TestSQLiteContextBindsCalendarRow(t *testing.T) {
 		t.Fatal("a custom table's row was incorrectly bound as a calendar")
 	}
 }
+
+func TestSQLiteTableExists(t *testing.T) {
+	db, table := sqliteContextFixture(t)
+	for _, tc := range []struct {
+		name, field, value string
+		want               bool
+	}{
+		{"Present", "agency_id", "001", true},
+		{"LaterRow", "agency_id", "005", true},
+		{"Absent", "agency_id", "missing", false},
+		{"MissingColumn", "missing", "001", false},
+		{"NullDoesNotMatchEmpty", `extra"field`, "", false},
+		{"QuotedColumn", `extra"field`, "untouched", true},
+		{"BoundParameter", "agency_id", "' OR 1=1 --", false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := table.Exists(tc.field, tc.value)
+			if err != nil || got != tc.want {
+				t.Fatalf("Exists(%q, %q) = %v, %v; want %v", tc.field, tc.value, got, err, tc.want)
+			}
+		})
+	}
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := table.Exists("agency_id", "001"); err == nil {
+		t.Fatal("database failure was hidden")
+	}
+}

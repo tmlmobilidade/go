@@ -1,4 +1,4 @@
-package calendar_fields
+package calendar_dates_fields
 
 import (
 	"main/lib"

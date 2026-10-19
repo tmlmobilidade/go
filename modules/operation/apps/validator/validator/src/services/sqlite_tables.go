@@ -78,3 +78,12 @@ func ValidationTables(db *sql.DB, prepared ...*SQLiteTables) (*SQLiteTables, err
 	}
 	return PrepareSQLiteTables(db)
 }
+
+// ForEachRow iterates a prepared table without requiring a separate handle.
+func (t *SQLiteTables) ForEachRow(name string, fn func(*SQLiteRow) error) error {
+	table, err := t.Table(name)
+	if err != nil {
+		return err
+	}
+	return table.ForEachRow(fn)
+}

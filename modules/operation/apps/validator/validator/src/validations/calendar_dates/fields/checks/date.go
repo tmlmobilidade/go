@@ -47,7 +47,7 @@ func DateField(db *services.SQLiteContext, rules *types.CalendarDatesRules) erro
 	//
 	// 4. Validate date is present
 
-	if date == "" || date == nil {
+	if date == "" {
 		if ctx.ShouldSkip() {
 			return nil
 		}
