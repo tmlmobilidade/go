@@ -178,5 +178,54 @@
 	},
 	"calendar_wednesday_valid": {
 		"invalid": "O campo \"wednesday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"fare_attributes_agency_id_field": {
+		"forbidden": "O campo \"agency_id\" é proibido",
+		"generic": "O campo \"agency_id\" é obrigatório quando existe mais do que uma agência",
+		"informational": "O campo \"agency_id\" é recomendado quando existe apenas uma agência",
+		"recommended": "O campo \"agency_id\" é recomendado quando existe apenas uma agência",
+		"required": "O campo \"agency_id\" é obrigatório quando existe mais do que uma agência"
+	},
+	"fare_attributes_currency_type_field": {
+		"forbidden": "O campo \"currency_type\" é proibido",
+		"generic": "O campo \"currency_type\" é obrigatório",
+		"informational": "O campo \"currency_type\" é recomendado",
+		"recommended": "O campo \"currency_type\" é recomendado",
+		"required": "O campo \"currency_type\" é obrigatório"
+	},
+	"fare_attributes_fare_id_field": {
+		"forbidden": "O campo \"fare_id\" é proibido",
+		"generic": "O campo \"fare_id\" é obrigatório",
+		"informational": "O campo \"fare_id\" é recomendado",
+		"recommended": "O campo \"fare_id\" é recomendado",
+		"required": "O campo \"fare_id\" é obrigatório"
+	},
+	"fare_attributes_payment_method_field": {
+		"forbidden": "O campo \"payment_method\" é proibido",
+		"generic": "O campo \"payment_method\" é obrigatório",
+		"informational": "O campo \"payment_method\" é recomendado",
+		"recommended": "O campo \"payment_method\" é recomendado",
+		"required": "O campo \"payment_method\" é obrigatório"
+	},
+	"fare_attributes_price_field": {
+		"forbidden": "O campo \"price\" é proibido",
+		"generic": "O campo \"price\" é obrigatório",
+		"informational": "O campo \"price\" é recomendado",
+		"recommended": "O campo \"price\" é recomendado",
+		"required": "O campo \"price\" é obrigatório"
+	},
+	"fare_attributes_transfer_duration_field": {
+		"forbidden": "O campo \"transfer_duration\" é proibido",
+		"generic": "O campo \"transfer_duration\" é obrigatório",
+		"informational": "O campo \"transfer_duration\" é recomendado",
+		"recommended": "O campo \"transfer_duration\" é recomendado",
+		"required": "O campo \"transfer_duration\" é obrigatório"
+	},
+	"fare_attributes_transfers_field": {
+		"forbidden": "O campo \"transfers\" é proibido",
+		"generic": "O campo \"transfers\" é obrigatório",
+		"informational": "O campo \"transfers\" é recomendado",
+		"recommended": "O campo \"transfers\" é recomendado",
+		"required": "O campo \"transfers\" é obrigatório"
 	}
 }

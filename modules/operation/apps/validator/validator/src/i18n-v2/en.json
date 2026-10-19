@@ -178,5 +178,54 @@
 	},
 	"calendar_wednesday_valid": {
 		"invalid": "Field \"wednesday\" has an invalid value \"%s\"; it must be 0 or 1"
+	},
+	"fare_attributes_agency_id_field": {
+		"forbidden": "Field \"agency_id\" is forbidden",
+		"generic": "Field \"agency_id\" is required when there is more than one agency",
+		"informational": "Field \"agency_id\" is recommended when there is only one agency",
+		"recommended": "Field \"agency_id\" is recommended when there is only one agency",
+		"required": "Field \"agency_id\" is required when there is more than one agency"
+	},
+	"fare_attributes_currency_type_field": {
+		"forbidden": "Field \"currency_type\" is forbidden",
+		"generic": "Field \"currency_type\" is required",
+		"informational": "Field \"currency_type\" is recommended",
+		"recommended": "Field \"currency_type\" is recommended",
+		"required": "Field \"currency_type\" is required"
+	},
+	"fare_attributes_fare_id_field": {
+		"forbidden": "Field \"fare_id\" is forbidden",
+		"generic": "Field \"fare_id\" is required",
+		"informational": "Field \"fare_id\" is recommended",
+		"recommended": "Field \"fare_id\" is recommended",
+		"required": "Field \"fare_id\" is required"
+	},
+	"fare_attributes_payment_method_field": {
+		"forbidden": "Field \"payment_method\" is forbidden",
+		"generic": "Field \"payment_method\" is required",
+		"informational": "Field \"payment_method\" is recommended",
+		"recommended": "Field \"payment_method\" is recommended",
+		"required": "Field \"payment_method\" is required"
+	},
+	"fare_attributes_price_field": {
+		"forbidden": "Field \"price\" is forbidden",
+		"generic": "Field \"price\" is required",
+		"informational": "Field \"price\" is recommended",
+		"recommended": "Field \"price\" is recommended",
+		"required": "Field \"price\" is required"
+	},
+	"fare_attributes_transfer_duration_field": {
+		"forbidden": "Field \"transfer_duration\" is forbidden",
+		"generic": "Field \"transfer_duration\" is required",
+		"informational": "Field \"transfer_duration\" is recommended",
+		"recommended": "Field \"transfer_duration\" is recommended",
+		"required": "Field \"transfer_duration\" is required"
+	},
+	"fare_attributes_transfers_field": {
+		"forbidden": "Field \"transfers\" is forbidden",
+		"generic": "Field \"transfers\" is required",
+		"informational": "Field \"transfers\" is recommended",
+		"recommended": "Field \"transfers\" is recommended",
+		"required": "Field \"transfers\" is required"
 	}
 }

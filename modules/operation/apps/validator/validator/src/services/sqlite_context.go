@@ -45,11 +45,12 @@ type SQLiteRow struct {
 // Named rows are bound only when validating their table; other tables require
 // an explicit row selection through Table(name).At(row).
 type SQLiteContext struct {
-	Row           int
-	Agency        *SQLiteRow
-	Calendar      *SQLiteRow
-	CalendarDates *SQLiteRow
-	source        *SQLiteRow
+	Row            int
+	Agency         *SQLiteRow
+	Calendar       *SQLiteRow
+	CalendarDates  *SQLiteRow
+	FareAttributes *SQLiteRow
+	source         *SQLiteRow
 }
 
 func (r *SQLiteRow) Context() *SQLiteContext {
@@ -59,6 +60,8 @@ func (r *SQLiteRow) Context() *SQLiteContext {
 		ctx.Agency = r
 	case "calendar":
 		ctx.Calendar = r
+	case "fare_attributes":
+		ctx.FareAttributes = r
 	case "calendar_dates":
 		ctx.CalendarDates = r
 	}
@@ -162,3 +165,13 @@ func (r *SQLiteRow) FieldWithCount(field string) (string, int, error) {
 	}
 	return value.String, count, nil
 }
+
+// Count returns the number of imported rows in this table.
+func (t *SQLiteTable) Count() (int, error) {
+	var count int
+	err := t.db.QueryRow("SELECT COUNT(*) FROM " + dbops.SanitizeTableName(t.name)).Scan(&count)
+	return count, err
+}
+
+// HasColumn reports whether a field header was imported.
+func (r *SQLiteRow) HasColumn(field string) bool { return r.table.columns[field] }
