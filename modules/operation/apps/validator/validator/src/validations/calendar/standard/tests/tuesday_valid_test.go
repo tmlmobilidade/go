@@ -6,6 +6,6 @@ import (
 	"testing"
 )
 
-func TestTusdayValid(t *testing.T) {
-	testutils.CheckWeekday(t, "tuesday", checks.TusdayValid)
+func TestTuesdayValid(t *testing.T) {
+	testutils.CheckWeekday(t, "tuesday", checks.TuesdayValid)
 }
