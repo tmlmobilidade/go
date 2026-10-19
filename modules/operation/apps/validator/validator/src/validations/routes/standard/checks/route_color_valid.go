@@ -34,7 +34,7 @@ func RouteColorValid(db *services.SQLiteContext, rules *types.RoutesRules) error
 	//
 	// 4. Check if the route_color is valid
 
-	if !lib.IsHex(value) {
+	if !lib.IsHexString(value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_valid", value))
 		return nil
 	}

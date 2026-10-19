@@ -206,7 +206,7 @@ func GtfsIdMapKeyExists(gtfs *types.Gtfs, fileName string, key string) bool {
 }
 
 // IsHex validates a six-digit RGB color without a leading hash.
-func IsHex(value string) bool {
+func IsHexString(value string) bool {
 	if len(value) != 6 {
 		return false
 	}
