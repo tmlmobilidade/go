@@ -11,10 +11,10 @@ import (
 )
 
 func init() {
-	registry.Register("calendar_dates", RunValidations)
+	registry.RegisterWithTables("calendar_dates", RunValidations)
 }
 
-func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*services.SQLiteTables) {
 	var section *types.CalendarDatesRules
 	if rules != nil {
 		section = &rules.CalendarDates
@@ -30,7 +30,12 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 	tracker := lib.CreateProgressTracker(gtfs, "calendar_dates", config.ProgressThresholdSmall)
 
 	// Open the calendar_dates table
-	table, err := services.NewSQLiteTable(gtfs.DB(), "calendar_dates")
+	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
+	if err != nil {
+		lib.AppLogger.Error(fmt.Sprintf("Error preparing SQLite tables: %v", err))
+		return
+	}
+	table, err := tables.Table("calendar_dates")
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error opening calendar_dates table: %v", err))
 		return

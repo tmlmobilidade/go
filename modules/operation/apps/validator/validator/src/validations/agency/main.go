@@ -13,10 +13,10 @@ import (
 )
 
 func init() {
-	registry.Register("agency", RunValidations)
+	registry.RegisterWithTables("agency", RunValidations)
 }
 
-func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
+func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*services.SQLiteTables) {
 	lib.AppLogger.Debug("Running Validations for agency.txt")
 
 	//
@@ -38,18 +38,18 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 	}
 
 	//
-	// Open agency table
+	// Select the prepared agency table
 
-	table, err := services.NewSQLiteTable(gtfs.DB(), "agency")
+	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
 	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error opening agency table: %v", err))
+		lib.AppLogger.Error(fmt.Sprintf("Error preparing SQLite tables: %v", err))
 		return
 	}
 
 	//
 	// Iterate over agency table
 
-	err = table.ForEachRow(func(row *services.SQLiteRow) error {
+	err = tables.ForEachRow("agency", func(row *services.SQLiteRow) error {
 		db := row.Context()
 		tracker.Track()
 		check := func(ruleID string, err error) {
@@ -70,7 +70,7 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 			"agency_phone_field":    func() { check("agency_phone_field", agency_fields.AgencyPhoneField(db, fileRules)) },
 			"agency_fare_url_field": func() { check("agency_fare_url_field", agency_fields.AgencyFareUrlField(db, fileRules)) },
 			"agency_email_field":    func() { check("agency_email_field", agency_fields.AgencyEmailField(db, fileRules)) },
-			
+
 			//
 			// Standard
 			"agency_email_valid":    func() { check("agency_email_valid", agency_standard.AgencyEmailValid(db, fileRules)) },
@@ -86,7 +86,6 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 			//
 			// Custom
 			"agency_id_matched_with_agency_name": func() { check("agency_id_matched_with_agency_name", agency_custom.AgencyNameIdMatch(db, fileRules)) },
-		
 		}, nil)
 		return nil
 	})

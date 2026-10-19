@@ -58,6 +58,17 @@ func init() {
 }
 
 func runValidations(gtfs types.Gtfs, tracker *lib.PerformanceTracker, rules *types.GtfsRules) {
+	// Prepare all imported tables before starting any validation goroutine.
+	tables, err := services.PrepareSQLiteTables(gtfs.DB())
+	if err != nil {
+		services.AppMessageService.AddMessage(types.Message{
+			FileName: "N/A", Field: "N/A", RuleID: "file_validation",
+			Severity: types.SEVERITY_ERROR, Message: fmt.Sprintf("Error preparing SQLite tables: %v", err),
+		})
+		tracker.End()
+		return
+	}
+
 	// Create a wait group to wait for all validations to complete
 	var wg sync.WaitGroup
 
@@ -67,7 +78,7 @@ func runValidations(gtfs types.Gtfs, tracker *lib.PerformanceTracker, rules *typ
 	// Run Validations for each file concurrently
 	for _, fileName := range gtfsTables {
 		// Check if table exists in database
-		if !gtfs.HasTable(fileName) {
+		if !tables.Has(fileName) {
 			continue
 		}
 
@@ -88,7 +99,7 @@ func runValidations(gtfs types.Gtfs, tracker *lib.PerformanceTracker, rules *typ
 		wg.Add(1)
 		go func(name string, fn validations.ValidationFunction) {
 			defer wg.Done()
-			fn(gtfs, rules)
+			fn(gtfs, rules, tables)
 		}(fileName, validationFn)
 	}
 

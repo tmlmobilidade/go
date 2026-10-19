@@ -12,10 +12,10 @@ import (
 )
 
 func init() {
-	registry.Register("calendar", RunValidations)
+	registry.RegisterWithTables("calendar", RunValidations)
 }
 
-func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
+func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*services.SQLiteTables) {
 	lib.AppLogger.Debug("Running Validations for calendar.txt")
 
 	//
@@ -37,9 +37,14 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 	}
 
 	//
-	// Open calendar table
+	// Select the prepared calendar table
 
-	table, err := services.NewSQLiteTable(gtfs.DB(), "calendar")
+	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
+	if err != nil {
+		lib.AppLogger.Error(fmt.Sprintf("Error preparing SQLite tables: %v", err))
+		return
+	}
+	table, err := tables.Table("calendar")
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error opening calendar table: %v", err))
 		return
@@ -74,16 +79,18 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 
 			//
 			// Standard
-			"calendar_service_id_unique":            func() { check("calendar_service_id_unique", calendar_standard.ServiceIdUnique(db, fileRules)) },
-			"calendar_start_end_dates_valid_format": func() { check("calendar_start_end_dates_valid_format", calendar_standard.DateValidFormat(db, fileRules)) },
-			"calendar_start_end_dates_valid":        func() { check("calendar_start_end_dates_valid", calendar_standard.DateValid(db, fileRules)) },
-			"calendar_monday_valid":                 func() { check("calendar_monday_valid", calendar_standard.MondayValid(db, fileRules)) },
-			"calendar_tuesday_valid":                func() { check("calendar_tuesday_valid", calendar_standard.TuesdayValid(db, fileRules)) },
-			"calendar_wednesday_valid":              func() { check("calendar_wednesday_valid", calendar_standard.WednesdayValid(db, fileRules)) },
-			"calendar_thursday_valid":               func() { check("calendar_thursday_valid", calendar_standard.ThursdayValid(db, fileRules)) },
-			"calendar_friday_valid":                 func() { check("calendar_friday_valid", calendar_standard.FridayValid(db, fileRules)) },
-			"calendar_saturday_valid":               func() { check("calendar_saturday_valid", calendar_standard.SaturdayValid(db, fileRules)) },
-			"calendar_sunday_valid":                 func() { check("calendar_sunday_valid", calendar_standard.SundayValid(db, fileRules)) },
+			"calendar_service_id_unique": func() { check("calendar_service_id_unique", calendar_standard.ServiceIdUnique(db, fileRules)) },
+			"calendar_start_end_dates_valid_format": func() {
+				check("calendar_start_end_dates_valid_format", calendar_standard.DateValidFormat(db, fileRules))
+			},
+			"calendar_start_end_dates_valid": func() { check("calendar_start_end_dates_valid", calendar_standard.DateValid(db, fileRules)) },
+			"calendar_monday_valid":          func() { check("calendar_monday_valid", calendar_standard.MondayValid(db, fileRules)) },
+			"calendar_tuesday_valid":         func() { check("calendar_tuesday_valid", calendar_standard.TuesdayValid(db, fileRules)) },
+			"calendar_wednesday_valid":       func() { check("calendar_wednesday_valid", calendar_standard.WednesdayValid(db, fileRules)) },
+			"calendar_thursday_valid":        func() { check("calendar_thursday_valid", calendar_standard.ThursdayValid(db, fileRules)) },
+			"calendar_friday_valid":          func() { check("calendar_friday_valid", calendar_standard.FridayValid(db, fileRules)) },
+			"calendar_saturday_valid":        func() { check("calendar_saturday_valid", calendar_standard.SaturdayValid(db, fileRules)) },
+			"calendar_sunday_valid":          func() { check("calendar_sunday_valid", calendar_standard.SundayValid(db, fileRules)) },
 		}, nil)
 		return nil
 	})

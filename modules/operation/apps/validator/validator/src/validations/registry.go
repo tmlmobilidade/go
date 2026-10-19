@@ -1,12 +1,13 @@
 package validations
 
 import (
+	"main/services"
 	"main/types"
 	"sync"
 )
 
 // ValidationFunction is the signature for a validation function
-type ValidationFunction func(gtfs types.Gtfs, rules *types.GtfsRules)
+type ValidationFunction func(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*services.SQLiteTables)
 
 // Registry holds all registered validations
 type Registry struct {
@@ -19,7 +20,14 @@ var globalRegistry = &Registry{
 }
 
 // Register registers a validation function for a table name
-func Register(tableName string, fn ValidationFunction) {
+func Register(tableName string, fn func(types.Gtfs, *types.GtfsRules)) {
+	RegisterWithTables(tableName, func(gtfs types.Gtfs, rules *types.GtfsRules, _ ...*services.SQLiteTables) {
+		fn(gtfs, rules)
+	})
+}
+
+// RegisterWithTables registers validators that share the prepared table collection.
+func RegisterWithTables(tableName string, fn ValidationFunction) {
 	globalRegistry.mu.Lock()
 	defer globalRegistry.mu.Unlock()
 	globalRegistry.validations[tableName] = fn
@@ -54,4 +62,3 @@ func GetRegisteredTables() []string {
 	}
 	return tables
 }
-

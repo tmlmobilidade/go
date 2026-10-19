@@ -9,9 +9,10 @@ import (
 
 // SQLiteTable shares a database connection and column names, never row values.
 type SQLiteTable struct {
-	db      *sql.DB
-	name    string
-	columns map[string]bool
+	db       *sql.DB
+	name     string
+	columns  map[string]bool
+	prepared *SQLiteTables
 }
 
 func NewSQLiteTable(db *sql.DB, name string) (*SQLiteTable, error) {
@@ -66,6 +67,9 @@ func (r *SQLiteRow) Context() *SQLiteContext {
 
 // Table selects any imported table. It does not fetch or cache field values.
 func (c *SQLiteContext) Table(name string) (*SQLiteTable, error) {
+	if c.source.table.prepared != nil {
+		return c.source.table.prepared.Table(name)
+	}
 	if strings.EqualFold(name, c.source.table.name) {
 		return c.source.table, nil
 	}
