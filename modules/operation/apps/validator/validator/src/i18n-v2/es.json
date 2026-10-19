@@ -75,6 +75,30 @@
 		"invalid": "El campo \"agency_url\" \"%s\" no es una URL válida",
 		"not_allowed": "El campo \"agency_url\" \"%s\" no está permitido"
 	},
+	"calendar_dates_date_field": {
+		"informational": "El campo date es informativo",
+		"recommended": "El campo date es recomendado",
+		"required": "El campo date es obligatorio"
+	},
+	"calendar_dates_date_valid": {
+		"invalid": "La fecha \"%s\" no es válida; debe ser una fecha válida con el formato AAAAMMDD"
+	},
+	"calendar_dates_exception_type_field": {
+		"informational": "El campo exception_type es informativo",
+		"recommended": "El campo exception_type es recomendado",
+		"required": "El campo exception_type es obligatorio"
+	},
+	"calendar_dates_exception_type_valid": {
+		"invalid": "El valor \"%s\" del campo exception_type no es válido; debe ser 1 o 2"
+	},
+	"calendar_dates_service_id_field": {
+		"informational": "El campo service_id es informativo",
+		"recommended": "El campo service_id es recomendado",
+		"required": "El campo service_id es obligatorio"
+	},
+	"calendar_dates_service_id_foreign": {
+		"not_found": "El service_id \"%s\" no existe en calendar.txt"
+	},
 	"calendar_end_date_field": {
 		"informational": "El campo end_date es informativo",
 		"recommended": "El campo end_date es recomendado",
