@@ -300,5 +300,139 @@
 	},
 	"feed_info_start_end_dates_valid": {
 		"invalid": "The \"feed_start_date\" value \"%s\" must be earlier than the \"feed_end_date\" value \"%s\""
+	},
+	"routes_agency_id_field": {
+		"informational": "The agency_id field is informational",
+		"recommended": "The agency_id field is recommended",
+		"required": "The agency_id field is required"
+	},
+	"routes_agency_id_unique": {
+		"not_found": "Field \"agency_id\" value \"%s\" was not found in agency.txt"
+	},
+	"routes_continuous_drop_off_field": {
+		"informational": "The continuous_drop_off field is informational",
+		"recommended": "The continuous_drop_off field is recommended",
+		"required": "The continuous_drop_off field is required"
+	},
+	"routes_continuous_drop_off_valid_gtfs_enum": {
+		"forbidden_with_window": "Field \"continuous_drop_off\" must be empty or 1 when a trip on this route has a pickup/drop-off window in stop_times.txt",
+		"recommended": "Field \"continuous_drop_off\" is recommended to enable continuous service; an empty value or 1 disables it",
+		"required": "Field \"continuous_drop_off\" must enable continuous service; an empty value or 1 disables it"
+	},
+	"routes_continuous_pickup_field": {
+		"informational": "The continuous_pickup field is informational",
+		"recommended": "The continuous_pickup field is recommended",
+		"required": "The continuous_pickup field is required"
+	},
+	"routes_continuous_pickup_valid_gtfs_enum": {
+		"forbidden_with_window": "Field \"continuous_pickup\" must be empty or 1 when a trip on this route has a pickup/drop-off window in stop_times.txt",
+		"recommended": "Field \"continuous_pickup\" is recommended to enable continuous service; an empty value or 1 disables it",
+		"required": "Field \"continuous_pickup\" must enable continuous service; an empty value or 1 disables it"
+	},
+	"routes_line_id_equal_route_short_name": {
+		"not_equal_to_route_short_name": "Field \"line_id\" value \"%s\" must equal the \"route_short_name\" value \"%s\""
+	},
+	"routes_line_id_field": {
+		"informational": "The line_id field is informational",
+		"recommended": "The line_id field is recommended",
+		"required": "The line_id field is required"
+	},
+	"routes_line_long_name_field": {
+		"informational": "The line_long_name field is informational",
+		"recommended": "The line_long_name field is recommended",
+		"required": "The line_long_name field is required"
+	},
+	"routes_line_short_name_equal_route_short_name": {
+		"not_equal_to_route_short_name": "Field \"line_short_name\" value \"%s\" must equal the \"route_short_name\" value \"%s\""
+	},
+	"routes_line_short_name_field": {
+		"informational": "The line_short_name field is informational",
+		"recommended": "The line_short_name field is recommended",
+		"required": "The line_short_name field is required"
+	},
+	"routes_network_id_field": {
+		"informational": "The network_id field is informational",
+		"recommended": "The network_id field is recommended",
+		"required": "The network_id field is required"
+	},
+	"routes_network_id_foreign": {
+		"not_found": "Field \"network_id\" value \"%s\" was not found in route_networks.txt"
+	},
+	"routes_path_type_field": {
+		"informational": "The path_type field is informational",
+		"recommended": "The path_type field is recommended",
+		"required": "The path_type field is required"
+	},
+	"routes_path_type_valid": {
+		"not_valid": "Field \"path_type\" value \"%s\" must be one of: 1, 2, 3"
+	},
+	"routes_route_color_field": {
+		"informational": "The route_color field is informational",
+		"recommended": "The route_color field is recommended",
+		"required": "The route_color field is required"
+	},
+	"routes_route_color_valid": {
+		"not_valid": "Field \"route_color\" value \"%s\" must be a six-digit hexadecimal color without #"
+	},
+	"routes_route_desc_field": {
+		"informational": "The route_desc field is informational",
+		"recommended": "The route_desc field is recommended",
+		"required": "The route_desc field is required"
+	},
+	"routes_route_id_field": {
+		"informational": "The route_id field is informational",
+		"recommended": "The route_id field is recommended",
+		"required": "The route_id field is required"
+	},
+	"routes_route_id_format": {
+		"invalid": "The \"route_id\" value \"%s\" must be \"%s\", formed from \"route_short_name\" \"%s\" and \"route_sort_order\" \"%s\" separated by an underscore"
+	},
+	"routes_route_id_unique": {
+		"duplicate": "The \"route_id\" value \"%s\" must be unique in routes.txt"
+	},
+	"routes_route_long_name_field": {
+		"informational": "The route_long_name field is informational",
+		"recommended": "The route_long_name field is recommended",
+		"required": "The route_long_name field is required"
+	},
+	"routes_route_short_name_field": {
+		"informational": "The route_short_name field is informational",
+		"recommended": "The route_short_name field is recommended",
+		"required": "The route_short_name field is required"
+	},
+	"routes_route_sort_order_field": {
+		"informational": "The route_sort_order field is informational",
+		"recommended": "The route_sort_order field is recommended",
+		"required": "The route_sort_order field is required"
+	},
+	"routes_route_sort_order_valid": {
+		"invalid": "Field \"route_sort_order\" value \"%s\" must be a non-negative integer"
+	},
+	"routes_route_text_color_field": {
+		"informational": "The route_text_color field is informational",
+		"recommended": "The route_text_color field is recommended",
+		"required": "The route_text_color field is required"
+	},
+	"routes_route_text_color_valid": {
+		"invalid": "Field \"route_text_color\" value \"%s\" must be a six-digit hexadecimal color without #"
+	},
+	"routes_route_type_field": {
+		"informational": "The route_type field is informational",
+		"recommended": "The route_type field is recommended",
+		"required": "The route_type field is required"
+	},
+	"routes_route_type_valid": {
+		"invalid": "Field \"route_type\" value \"%s\" must be one of: 1, 2, 3, 4, 5, 6, 7, 11, 12"
+	},
+	"routes_route_url_different_agency_url": {
+		"invalid": "The \"route_url\" value \"%s\" must differ from the URL of the route's agency"
+	},
+	"routes_route_url_field": {
+		"informational": "The route_url field is informational",
+		"recommended": "The route_url field is recommended",
+		"required": "The route_url field is required"
+	},
+	"routes_route_url_valid": {
+		"invalid": "Field \"route_url\" \"%s\" is not a valid URL"
 	}
 }

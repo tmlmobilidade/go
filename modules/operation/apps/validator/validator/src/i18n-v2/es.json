@@ -300,5 +300,139 @@
 	},
 	"feed_info_start_end_dates_valid": {
 		"invalid": "La fecha \"%s\" del campo \"feed_start_date\" debe ser anterior a la fecha \"%s\" del campo \"feed_end_date\""
+	},
+	"routes_agency_id_field": {
+		"informational": "El campo agency_id es informativo",
+		"recommended": "El campo agency_id es recomendado",
+		"required": "El campo agency_id es requerido"
+	},
+	"routes_agency_id_unique": {
+		"not_found": "El valor \"%s\" del campo \"agency_id\" no se ha encontrado en agency.txt"
+	},
+	"routes_continuous_drop_off_field": {
+		"informational": "El campo continuous_drop_off es informativo",
+		"recommended": "El campo continuous_drop_off es recomendado",
+		"required": "El campo continuous_drop_off es requerido"
+	},
+	"routes_continuous_drop_off_valid_gtfs_enum": {
+		"forbidden_with_window": "El campo \"continuous_drop_off\" debe estar vacío o tener el valor 1 cuando un viaje de esta ruta tiene una ventana de recogida o bajada en stop_times.txt",
+		"recommended": "Se recomienda que el campo \"continuous_drop_off\" permita el servicio continuo; un valor vacío o 1 lo desactiva",
+		"required": "El campo \"continuous_drop_off\" debe permitir el servicio continuo; un valor vacío o 1 lo desactiva"
+	},
+	"routes_continuous_pickup_field": {
+		"informational": "El campo continuous_pickup es informativo",
+		"recommended": "El campo continuous_pickup es recomendado",
+		"required": "El campo continuous_pickup es requerido"
+	},
+	"routes_continuous_pickup_valid_gtfs_enum": {
+		"forbidden_with_window": "El campo \"continuous_pickup\" debe estar vacío o tener el valor 1 cuando un viaje de esta ruta tiene una ventana de recogida o bajada en stop_times.txt",
+		"recommended": "Se recomienda que el campo \"continuous_pickup\" permita el servicio continuo; un valor vacío o 1 lo desactiva",
+		"required": "El campo \"continuous_pickup\" debe permitir el servicio continuo; un valor vacío o 1 lo desactiva"
+	},
+	"routes_line_id_equal_route_short_name": {
+		"not_equal_to_route_short_name": "El valor \"%s\" del campo \"line_id\" debe ser igual al valor \"%s\" del campo \"route_short_name\""
+	},
+	"routes_line_id_field": {
+		"informational": "El campo line_id es informativo",
+		"recommended": "El campo line_id es recomendado",
+		"required": "El campo line_id es requerido"
+	},
+	"routes_line_long_name_field": {
+		"informational": "El campo line_long_name es informativo",
+		"recommended": "El campo line_long_name es recomendado",
+		"required": "El campo line_long_name es requerido"
+	},
+	"routes_line_short_name_equal_route_short_name": {
+		"not_equal_to_route_short_name": "El valor \"%s\" del campo \"line_short_name\" debe ser igual al valor \"%s\" del campo \"route_short_name\""
+	},
+	"routes_line_short_name_field": {
+		"informational": "El campo line_short_name es informativo",
+		"recommended": "El campo line_short_name es recomendado",
+		"required": "El campo line_short_name es requerido"
+	},
+	"routes_network_id_field": {
+		"informational": "El campo network_id es informativo",
+		"recommended": "El campo network_id es recomendado",
+		"required": "El campo network_id es requerido"
+	},
+	"routes_network_id_foreign": {
+		"not_found": "El valor \"%s\" del campo \"network_id\" no se ha encontrado en route_networks.txt"
+	},
+	"routes_path_type_field": {
+		"informational": "El campo path_type es informativo",
+		"recommended": "El campo path_type es recomendado",
+		"required": "El campo path_type es requerido"
+	},
+	"routes_path_type_valid": {
+		"not_valid": "El valor \"%s\" del campo \"path_type\" debe ser uno de los siguientes: 1, 2, 3"
+	},
+	"routes_route_color_field": {
+		"informational": "El campo route_color es informativo",
+		"recommended": "El campo route_color es recomendado",
+		"required": "El campo route_color es requerido"
+	},
+	"routes_route_color_valid": {
+		"not_valid": "El valor \"%s\" del campo \"route_color\" debe ser un color hexadecimal de seis dígitos, sin #"
+	},
+	"routes_route_desc_field": {
+		"informational": "El campo route_desc es informativo",
+		"recommended": "El campo route_desc es recomendado",
+		"required": "El campo route_desc es requerido"
+	},
+	"routes_route_id_field": {
+		"informational": "El campo route_id es informativo",
+		"recommended": "El campo route_id es recomendado",
+		"required": "El campo route_id es requerido"
+	},
+	"routes_route_id_format": {
+		"invalid": "El valor \"%s\" del campo \"route_id\" debe ser \"%s\", formado por el valor \"%s\" de \"route_short_name\" y el valor \"%s\" de \"route_sort_order\", separados por un guion bajo"
+	},
+	"routes_route_id_unique": {
+		"duplicate": "El valor \"%s\" del campo \"route_id\" debe ser único en routes.txt"
+	},
+	"routes_route_long_name_field": {
+		"informational": "El campo route_long_name es informativo",
+		"recommended": "El campo route_long_name es recomendado",
+		"required": "El campo route_long_name es requerido"
+	},
+	"routes_route_short_name_field": {
+		"informational": "El campo route_short_name es informativo",
+		"recommended": "El campo route_short_name es recomendado",
+		"required": "El campo route_short_name es requerido"
+	},
+	"routes_route_sort_order_field": {
+		"informational": "El campo route_sort_order es informativo",
+		"recommended": "El campo route_sort_order es recomendado",
+		"required": "El campo route_sort_order es requerido"
+	},
+	"routes_route_sort_order_valid": {
+		"invalid": "El valor \"%s\" del campo \"route_sort_order\" debe ser un número entero no negativo"
+	},
+	"routes_route_text_color_field": {
+		"informational": "El campo route_text_color es informativo",
+		"recommended": "El campo route_text_color es recomendado",
+		"required": "El campo route_text_color es requerido"
+	},
+	"routes_route_text_color_valid": {
+		"invalid": "El valor \"%s\" del campo \"route_text_color\" debe ser un color hexadecimal de seis dígitos, sin #"
+	},
+	"routes_route_type_field": {
+		"informational": "El campo route_type es informativo",
+		"recommended": "El campo route_type es recomendado",
+		"required": "El campo route_type es requerido"
+	},
+	"routes_route_type_valid": {
+		"invalid": "El valor \"%s\" del campo \"route_type\" debe ser uno de los siguientes: 1, 2, 3, 4, 5, 6, 7, 11, 12"
+	},
+	"routes_route_url_different_agency_url": {
+		"invalid": "El valor \"%s\" del campo \"route_url\" debe ser diferente del URL de la agencia de la ruta"
+	},
+	"routes_route_url_field": {
+		"informational": "El campo route_url es informativo",
+		"recommended": "El campo route_url es recomendado",
+		"required": "El campo route_url es requerido"
+	},
+	"routes_route_url_valid": {
+		"invalid": "El campo \"route_url\" \"%s\" no es una URL válida"
 	}
 }
