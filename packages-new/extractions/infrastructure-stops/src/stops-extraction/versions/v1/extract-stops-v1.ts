@@ -20,11 +20,7 @@ import { type InfrastructureStopsV1OutputRow, InfrastructureStopsV1OutputRowSche
  * @param extraction The extraction to run.
  */
 export async function extractInfrastructureStopsV1(context: ExtractionTaskContext, extraction: InfrastructureStopsV1Extraction): Promise<ExtractionTaskResult> {
-	// A. Prepare the query and open the stop cursor
-
-	const { filter, projection } = await buildStopsExtractionQuery(extraction);
-	const collection = await goDb.infrastructure.stops.getCollection();
-	const cursor = collection.find<InfrastructureStopsV1QueryRow>(filter, { batchSize: 5_000, projection, sort: { _id: 1 } });
+	//
 
 	const validatedProperties = InfrastructureStopsV1ExtractionPropertiesSchema.parse(extraction.properties);
 
@@ -64,12 +60,6 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 	];
 
 	const aggregationResult = await goDb.infrastructure.stops.aggregate(pipeline);
-
-	console.log('aggregationResult length:', aggregationResult.length);
-
-		const filePath = path.join(context.output_path, 'stops.csv');
-		const header = csvStringify([], { bom: true, columns, header: true });
-		fs.writeFileSync(filePath, header, { encoding: 'utf-8', flush: true });
 
 	const fileName = `infrastructure-stops-v1-${extraction._id}.csv`;
 
