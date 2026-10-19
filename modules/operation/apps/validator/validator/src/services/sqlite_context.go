@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"fmt"
+	"main/lib"
 	dbops "main/services/database"
 	"strings"
 )
@@ -37,13 +38,15 @@ func NewSQLiteTable(db *sql.DB, name string) (*SQLiteTable, error) {
 
 // SQLiteRow identifies a source row. Row is its zero-based data-row index.
 type SQLiteRow struct {
-	table *SQLiteTable
-	Row   int
+	table   *SQLiteTable
+	Row     int
+	context *SQLiteContext
+	name    string
 }
 
 // SQLiteContext exposes the current validation row and access to other tables.
-// Named rows are bound only when validating their table; other tables require
-// an explicit row selection through Table(name).At(row).
+// Named handles support table-wide existence checks from any source table.
+// Field reads are bound only to the current table; other rows require Table(name).At(row).
 type SQLiteContext struct {
 	Row            int
 	Agency         *SQLiteRow
@@ -51,23 +54,25 @@ type SQLiteContext struct {
 	CalendarDates  *SQLiteRow
 	FareAttributes *SQLiteRow
 	FeedInfo       *SQLiteRow
+	Routes         *SQLiteRow
 	source         *SQLiteRow
 }
 
 func (r *SQLiteRow) Context() *SQLiteContext {
 	ctx := &SQLiteContext{Row: r.Row, source: r}
-	switch strings.ToLower(r.table.name) {
-	case "agency":
-		ctx.Agency = r
-	case "calendar":
-		ctx.Calendar = r
-	case "fare_attributes":
-		ctx.FareAttributes = r
-	case "calendar_dates":
-		ctx.CalendarDates = r
-	case "feed_info":
-		ctx.FeedInfo = r
+	bind := func(name string) *SQLiteRow {
+		if strings.EqualFold(r.table.name, name) {
+			return r
+		}
+		return &SQLiteRow{Row: -1, context: ctx, name: name}
 	}
+	ctx.Agency = bind("agency")
+	ctx.Calendar = bind("calendar")
+	ctx.CalendarDates = bind("calendar_dates")
+	ctx.FareAttributes = bind("fare_attributes")
+	ctx.FeedInfo = bind("feed_info")
+	ctx.Routes = bind("routes")
+
 	return ctx
 }
 
@@ -119,6 +124,9 @@ func (t *SQLiteTable) column(alias, field string) string {
 // Fields requests only the named fields in one query. Missing columns and SQL
 // NULL values are represented by empty strings, just like empty CSV cells.
 func (r *SQLiteRow) Fields(fields ...string) (map[string]string, error) {
+	if r.table == nil {
+		return nil, fmt.Errorf("select a row from %s before reading fields", r.name)
+	}
 	if len(fields) == 0 {
 		return nil, fmt.Errorf("at least one field is required")
 	}
@@ -158,6 +166,9 @@ func (t *SQLiteTable) Exists(field string, value string) (bool, error) {
 
 // FieldWithCount reads a field and counts equal values in this table in one query.
 func (r *SQLiteRow) FieldWithCount(field string) (string, int, error) {
+	if r.table == nil {
+		return "", 0, fmt.Errorf("select a row from %s before reading fields", r.name)
+	}
 	table := dbops.SanitizeTableName(r.table.name)
 	column := r.table.column("source", field)
 	query := "SELECT " + column + ", (SELECT COUNT(*) FROM " + table + " AS other WHERE " + r.table.column("other", field) + " = " + column + ") FROM " + table + " AS source WHERE source.rowid = ?"
@@ -177,4 +188,25 @@ func (t *SQLiteTable) Count() (int, error) {
 }
 
 // HasColumn reports whether a field header was imported.
-func (r *SQLiteRow) HasColumn(field string) bool { return r.table.columns[field] }
+func (r *SQLiteRow) HasColumn(field string) bool { return r.table != nil && r.table.columns[field] }
+
+// Exists checks the named table, independent of the current source row.
+// Query failures are logged and return false. Use Table(name).Exists when the
+// caller needs to handle the error directly.
+func (r *SQLiteRow) Exists(field, value string) bool {
+	table := r.table
+	if table == nil {
+		var err error
+		table, err = r.context.Table(r.name)
+		if err != nil {
+			lib.AppLogger.Error(fmt.Sprintf("SQLite existence check failed: %v", err))
+			return false
+		}
+	}
+	exists, err := table.Exists(field, value)
+	if err != nil {
+		lib.AppLogger.Error(fmt.Sprintf("SQLite existence check failed: %v", err))
+		return false
+	}
+	return exists
+}

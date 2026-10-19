@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"path/filepath"
 	"reflect"
 	"testing"
@@ -133,7 +134,7 @@ func TestSQLiteContextSelectsAgencyAndOtherTables(t *testing.T) {
 	if _, err := db.Table("missing_table"); err == nil {
 		t.Fatal("missing table must return an error")
 	}
-	if customTable.At(0).Context().Agency != nil {
+	if customTable.At(0).Context().Agency.table != nil {
 		t.Fatal("a custom table's row was incorrectly bound as an agency")
 	}
 	if _, err := connection.Exec("UPDATE agency SET agency_email = 'changed@example.com' WHERE rowid = 2"); err != nil {
@@ -156,13 +157,13 @@ func TestSQLiteContextBindsCalendarRow(t *testing.T) {
 		t.Fatal(err)
 	}
 	db := table.At(1).Context()
-	if db.Row != 1 || db.Calendar == nil || db.Calendar.Row != 1 || db.Agency != nil {
+	if db.Row != 1 || db.Calendar == nil || db.Calendar.Row != 1 || db.Agency.table != nil {
 		t.Fatalf("current calendar row was not bound: %+v", db)
 	}
 	if value, err := db.Calendar.Field("start_date"); err != nil || value != "20261016" {
 		t.Fatalf("start_date = %q, error = %v", value, err)
 	}
-	if customTable.At(0).Context().Calendar != nil {
+	if customTable.At(0).Context().Calendar.table != nil {
 		t.Fatal("a custom table's row was incorrectly bound as a calendar")
 	}
 }
@@ -193,5 +194,65 @@ func TestSQLiteTableExists(t *testing.T) {
 	}
 	if _, err := table.Exists("agency_id", "001"); err == nil {
 		t.Fatal("database failure was hidden")
+	}
+}
+
+func TestSQLiteNamedExistsFromRoutes(t *testing.T) {
+	connection, _ := sqliteContextFixture(t)
+	_, err := connection.Exec(`CREATE TABLE agency (agency_id TEXT);
+ INSERT INTO agency VALUES ('A1'), ('A1'), ('O''Brien');
+ CREATE TABLE routes (agency_id TEXT);
+ INSERT INTO routes (rowid, agency_id) VALUES (8, 'A1');`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, prepared := range []bool{false, true} {
+		t.Run(fmt.Sprint(prepared), func(t *testing.T) {
+			var table *SQLiteTable
+			if prepared {
+				tables, err := PrepareSQLiteTables(connection)
+				if err != nil {
+					t.Fatal(err)
+				}
+				table, err = tables.Table("routes")
+				if err != nil {
+					t.Fatal(err)
+				}
+			} else {
+				table, err = NewSQLiteTable(connection, "routes")
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+			ctx := table.At(7).Context()
+			value, err := ctx.Routes.Field("agency_id")
+			if err != nil || value != "A1" {
+				t.Fatalf("value=%q err=%v", value, err)
+			}
+			if !ctx.Agency.Exists("agency_id", value) {
+				t.Fatal("agency was not found across rows")
+			}
+			if !ctx.Agency.Exists("agency_id", "O'Brien") {
+				t.Fatal("quoted value was not found")
+			}
+			if ctx.Agency.Exists("agency_id", "missing") || ctx.Agency.Exists("agency_id", "' OR 1=1 --") {
+				t.Fatal("unexpected match")
+			}
+			if _, err := ctx.Agency.Field("agency_id"); err == nil {
+				t.Fatal("foreign row was implicitly selected")
+			}
+			if ctx.Calendar.Exists("service_id", "missing") {
+				t.Fatal("missing table matched")
+			}
+		})
+	}
+	table, err := NewSQLiteTable(connection, "agency")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := table.At(0).Context()
+	connection.Close()
+	if ctx.Agency.Exists("agency_id", "A1") {
+		t.Fatal("closed database matched")
 	}
 }
