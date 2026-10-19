@@ -2,7 +2,6 @@
 
 import { AVAILABLE_THEMES, ThemeType } from '@tmlmobilidade/ui';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -13,8 +12,6 @@ export function LandingOverviewTheme() {
 
 	//
 	// A. Setup variables
-
-	const { t } = useTranslation();
 
 	const [activeTheme, setActiveTheme] = useState<ThemeType>('ocean');
 
@@ -32,9 +29,13 @@ export function LandingOverviewTheme() {
 	return (
 		<div className={styles.container}>
 			{AVAILABLE_THEMES.map(item => (
-				<div key={item._id} onClick={() => setActiveTheme(item._id)}>
-					{item.name}
-				</div>
+				<div
+					key={item._id}
+					className={styles.swatch}
+					data-active={activeTheme === item._id}
+					data-theme={item._id}
+					onClick={() => setActiveTheme(item._id)}
+				/>
 			))}
 		</div>
 	);
