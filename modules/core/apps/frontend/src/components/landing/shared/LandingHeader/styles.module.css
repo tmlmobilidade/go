@@ -2,11 +2,12 @@
 /* HEADER */
 
 .header {
-	position: fixed;
+	position: absolute;
 	z-index: 10;
 	margin: auto;
 	display: flex;
 	gap: 12px;
 	align-items: center;
 	width: 100%;
+	padding: 30px;
 }
