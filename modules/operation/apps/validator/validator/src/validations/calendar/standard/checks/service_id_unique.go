@@ -6,6 +6,20 @@ import (
 	"main/types"
 )
 
+/*
+# Attributes
+
+  - File: [calendar.txt]
+  - Field: [service_id]
+  - Presence: Required
+  - Type: Unique ID
+
+# Description
+
+Identifies a set of dates when service is available for one or more routes.
+
+[calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
+*/
 func ServiceIdUnique(db *services.SQLiteContext, rules *types.CalendarRules) error {
 	//
 
@@ -33,7 +47,7 @@ func ServiceIdUnique(db *services.SQLiteContext, rules *types.CalendarRules) err
 
 	// 4. Validate service_id is unique
 	if count > 1 {
-		ctx.AddError(ctx.GetTranslatedMessage("duplicate", value))
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("duplicate", value))
 	}
 
 	// 5. Return success
