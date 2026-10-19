@@ -48,7 +48,7 @@ export function LoginForm() {
 			try {
 				identify({ _id: response.data.user_id, email: emailValue });
 				await Promise.race([
-					track(LoginEvent.shape.title.value),
+					track(LoginEvent),
 					new Promise<void>((resolve) => { timeout = setTimeout(resolve, 1500); }),
 				]);
 			} finally {
@@ -63,7 +63,7 @@ export function LoginForm() {
 		if (!replayRequested || !ready) return;
 		let active = true;
 		void startReplay().then((started) => {
-			if (active && started) void track(LoginOpenedEvent.shape.title.value);
+			if (active && started) void track(LoginOpenedEvent);
 		});
 		return () => {
 			active = false;

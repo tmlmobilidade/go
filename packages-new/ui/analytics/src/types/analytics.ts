@@ -1,5 +1,6 @@
 import { type Types } from '@amplitude/analytics-browser';
 
+import { type AnalyticsEventInput } from './events/shared';
 import { type AnalyticsReplayController } from './replay/controller';
 import { type AnalyticsUserProperties } from './user-properties';
 
@@ -20,7 +21,7 @@ export interface AnalyticsContextState {
 		identify: (user: AnalyticsUserProperties | null) => boolean
 		startReplay: () => Promise<boolean>
 		stopReplay: () => void
-		track: (eventName: string, properties?: Record<string, unknown>) => Promise<boolean>
+		track: (event: AnalyticsEventInput, properties?: Record<string, unknown>) => Promise<boolean>
 	}
 	flags: {
 		error: Error | undefined

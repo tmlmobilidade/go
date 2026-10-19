@@ -1,7 +1,9 @@
 import { createInstance, Identify, type Types } from '@amplitude/analytics-browser';
 
 import { type AnalyticsContextProps, type AnalyticsInitialization } from '../types/analytics';
+import { type AnalyticsEventInput } from '../types/events/shared';
 import { type AnalyticsUserProperties } from '../types/user-properties';
+import { normalizeAnalyticsEvent } from './analytics-event';
 import { createSessionReplayController } from './session-replay';
 
 /* * */
@@ -37,9 +39,10 @@ export function identifyAnalyticsUser(client: Types.BrowserClient, user: Analyti
 	}
 }
 
-export async function trackAnalyticsEvent(client: Types.BrowserClient, eventName: string, properties: Record<string, unknown> | undefined, onError: (cause: unknown) => void): Promise<boolean> {
+export async function trackAnalyticsEvent(client: Types.BrowserClient, event: AnalyticsEventInput, properties: Record<string, unknown> | undefined, onError: (cause: unknown) => void): Promise<boolean> {
 	try {
-		const result = await client.track(eventName, properties).promise;
+		const normalizedEvent = normalizeAnalyticsEvent(event);
+		const result = await client.track(normalizedEvent.title, properties).promise;
 		if (result.code < 200 || result.code >= 300) {
 			throw new Error(`Amplitude upload failed (${result.code}): ${result.message}`);
 		}

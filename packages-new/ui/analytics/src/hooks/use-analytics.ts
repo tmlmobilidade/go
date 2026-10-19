@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { type AnalyticsContextProps, type AnalyticsContextState, type AnalyticsInitialization } from '../types/analytics';
+import { type AnalyticsEventInput } from '../types/events/shared';
 import { type AnalyticsUserProperties } from '../types/user-properties';
 import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client';
 import { useAnalyticsConfiguration } from './use-analytics-configuration';
@@ -30,11 +31,11 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 		return identifyAnalyticsUser(initialized.client, value, handleError);
 	}, [handleError, initialized, ready]);
 
-	const track = useCallback(async (eventName: string, properties?: Record<string, unknown>) => {
+	const track = useCallback(async (event: AnalyticsEventInput, properties?: Record<string, unknown>) => {
 		if (!ready || !initialized || initializationRef.current !== initialized) return false;
 		clearError();
 
-		return trackAnalyticsEvent(initialized.client, eventName, properties, (cause) => {
+		return trackAnalyticsEvent(initialized.client, event, properties, (cause) => {
 			// A failure from a replaced or opted-out client must not overwrite the current error state.
 			if (initializationRef.current === initialized && !initialized.client.getOptOut()) handleError(cause);
 		});
