@@ -4,6 +4,7 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
+	"strconv"
 )
 
 func ShapePtLatValid(db *services.SQLiteContext, rules *types.ShapesRules) error {
@@ -32,15 +33,24 @@ func ShapePtLatValid(db *services.SQLiteContext, rules *types.ShapesRules) error
 	}
 
 	//
-	// 4. Check if the shape_pt_lat is valid
+	// 4. Transform the value to a float
 
-	if !lib.ValidateLatitude(value) {
+	number, parseErr := strconv.ParseFloat(value, 64)
+	if parseErr != nil {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 		return nil
 	}
 
 	//
-	// 5. Return success
+	// 5. Check if the shape_pt_lat is valid
+
+	if !lib.ValidateLatitude(number) {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
+		return nil
+	}
+
+	//
+	// 6. Return success
 
 	return nil
 }	
