@@ -1,8 +1,14 @@
 /* * */
 
-import { FaresController } from '@/endpoints/fares/fares.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { createFareHandler } from './handlers/create-fare.js';
+import { deleteFareHandler } from './handlers/delete-fare.js';
+import { getFareHandler } from './handlers/get-fare.js';
+import { listFaresHandler } from './handlers/list-fares.js';
+import { lockFareHandler } from './handlers/lock-fare.js';
+import { updateFareHandler } from './handlers/update-fare.js';
 
 /* * */
 
@@ -22,7 +28,7 @@ server.register(
 				{ actions: [PermissionCatalog.all.fares.actions.nav], scope: PermissionCatalog.all.fares.scope },
 				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
 			]) },
-			FaresController.getAll,
+			listFaresHandler,
 		);
 
 		instance.get(
@@ -31,31 +37,31 @@ server.register(
 				{ actions: [PermissionCatalog.all.fares.actions.nav], scope: PermissionCatalog.all.fares.scope },
 				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
 			]) },
-			FaresController.getById,
+			getFareHandler,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.create]) },
-			FaresController.create,
+			createFareHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.update]) },
-			FaresController.update,
+			updateFareHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.lock]) },
-			FaresController.lock,
+			lockFareHandler,
 		);
 
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.delete]) },
-			FaresController.delete,
+			deleteFareHandler,
 		);
 
 		next();

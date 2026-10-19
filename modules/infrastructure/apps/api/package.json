@@ -26,6 +26,7 @@
 		"@tmlmobilidade/go-infrastructure-pckg-types": "*",
 		"@tmlmobilidade/go-infrastructure-pckg-utils": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-locationsdb": "*",
 		"@tmlmobilidade/go-providers-locations": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",

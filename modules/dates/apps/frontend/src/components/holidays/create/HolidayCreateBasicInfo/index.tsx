@@ -2,7 +2,7 @@
 
 import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { useHolidayCreateContext } from '@/components/holidays/create/HolidayCreate.context';
-import { HolidaySchema } from '@tmlmobilidade/go-types-offer';
+import { HolidaySchema } from '@tmlmobilidade/go-types-dates';
 import { MultiSelect, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -45,6 +45,7 @@ export function HolidayCreateBasicInfo() {
 				key={holidayCreateContext.data.form.key('agency_ids')}
 				data={allAgencyOptions}
 				label="Operadores afetados"
+				required={!HolidaySchema.shape.agency_ids.isOptional()}
 				w="100%"
 				{...holidayCreateContext.data.form.getInputProps('agency_ids')}
 			/>

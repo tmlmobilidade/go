@@ -3,8 +3,9 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type EventsDetail } from '@tmlmobilidade/go-dates-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateEventDto, type Event, type Pattern, type UpdateEventDto } from '@tmlmobilidade/go-types-offer';
+import { type CreateEventDto, type Event, EventSchema, type UpdateEventDto } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
@@ -52,7 +53,6 @@ export class EventsController {
 
 		const newEvent = await goDb.offer.events.insertOne({
 			...request.body,
-			associated_patterns: [],
 			created_by: request.me._id,
 			updated_by: request.me._id,
 		});
@@ -150,7 +150,7 @@ export class EventsController {
 		//
 		// Fetch events based on query filters
 
-		const allEvents = await goDb.offer.events.findMany(queryFilters);
+		const allEvents = await goDb.offer.events.findMany(queryFilters, { projection: { associated_patterns: 0 } });
 
 		return reply.send({ data: allEvents, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -162,7 +162,7 @@ export class EventsController {
 	 * @param request Fastify request containing event ID in params
 	 * @param reply Fastify reply
 	 */
-	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Event>) {
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<EventsDetail>) {
 		//
 
 		//
@@ -204,7 +204,7 @@ export class EventsController {
 		//
 		// Get pattern ids that reference this event in manual pattern rules
 
-		const associatedPatterns: Pick<Pattern, '_id' | 'code' | 'headsign' | 'line_id' | 'route_id'>[] = await goDb.offer.patterns.aggregate([
+		const associatedPatterns: EventsDetail['associated_patterns'] = await goDb.offer.patterns.aggregate([
 			{
 				$match: {
 					rules: {
@@ -288,7 +288,7 @@ export class EventsController {
 
 		// If authorized, toggle the lock status of the event
 		await goDb.offer.events.updateOne({ _id: request.params.id }, { is_locked: !eventData?.is_locked });
-		const foundEvent = await goDb.offer.events.findById(request.params.id);
+		const foundEvent = await goDb.offer.events.findById(request.params.id, { projection: { associated_patterns: 0 } });
 		if (!foundEvent) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
 		}
@@ -350,7 +350,7 @@ export class EventsController {
 		// Send the updated event data as the response
 
 		reply.send({
-			data: updatedEvent,
+			data: EventSchema.parse(updatedEvent),
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});

@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Annotation } from '@tmlmobilidade/go-types-offer';
+import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema } from '@tmlmobilidade/go-types-dates';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -10,13 +10,25 @@ import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
  * @param request The request object containing the annotation data in the body.
  * @param reply The reply object used to send the response.
  */
-export async function createAnnotationHandler(request: FastifyRequest<{ Body: Omit<Annotation, '_id' | 'created_at' | 'created_by' | 'updated_at' | 'updated_by'> }>, reply: FastifyReply<Annotation>) {
+export async function createAnnotationHandler(request: FastifyRequest<{ Body: CreateAnnotationDto }>, reply: FastifyReply<Annotation>) {
 	//
+
+	//
+	// Validate the shared client contract before applying permissions or server audit fields.
+
+	const validatedAnnotation = CreateAnnotationSchema.safeParse(request.body);
+
+	if (!validatedAnnotation.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedAnnotation.error.message,
+			status_code: '400',
+		});
+	}
 
 	//
 	// Check if the user has permission for ALL the specified agencies
 
-	const hasPermissionForAllAgencies = request.body.agency_ids.every((agencyId) => {
+	const hasPermissionForAllAgencies = validatedAnnotation.data.agency_ids.every((agencyId) => {
 		return hasPermissionResource(request.permissions, {
 			requiredPermission: {
 				action: 'create',
@@ -38,7 +50,7 @@ export async function createAnnotationHandler(request: FastifyRequest<{ Body: Om
 	// Insert the new annotation
 
 	const insertResult = await goDb.offer.annotations.insertOne({
-		...request.body,
+		...validatedAnnotation.data,
 		created_by: request.me._id,
 		updated_by: request.me._id,
 	});

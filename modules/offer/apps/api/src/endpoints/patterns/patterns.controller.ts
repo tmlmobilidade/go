@@ -8,7 +8,8 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreatePatternDto, type Pattern, type PatternShapeMapItem, type PopulatedPath, type PopulatedPattern, type StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
+import { type PatternsDetail, type PatternsDetailPathItem, type PatternsImportGtfsRequest, type PatternsShapeMapItem, type PatternsShapeMapQuery } from '@tmlmobilidade/go-offer-pckg-types';
+import { type CreatePatternDto, type Pattern, type StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type NoteComment } from '@tmlmobilidade/go-types-shared';
 import { generateRandomString } from '@tmlmobilidade/strings';
@@ -98,7 +99,7 @@ export class PatternsController {
 	/**
 	 * Retrieves compact pattern shape data for one agency.
 	 */
-	static async getShapesByAgencies(request: FastifyRequest<{ Querystring: { agency_ids?: string } }>, reply: FastifyReply<PatternShapeMapItem[]>) {
+	static async getShapesByAgencies(request: FastifyRequest<{ Querystring: PatternsShapeMapQuery }>, reply: FastifyReply<PatternsShapeMapItem[]>) {
 		const agencyIds = (request.query.agency_ids ?? '')
 			.split(',')
 			.map(agencyId => agencyId.trim())
@@ -159,7 +160,7 @@ export class PatternsController {
 			},
 		);
 
-		const result = agencyPatterns.flatMap((pattern): PatternShapeMapItem[] => {
+		const result = agencyPatterns.flatMap((pattern): PatternsShapeMapItem[] => {
 			const line = lineById.get(pattern.line_id);
 			const encodedPolyline = pattern.shape?.encoded_polyline;
 			if (!line || !encodedPolyline) return [];
@@ -221,7 +222,7 @@ export class PatternsController {
 	 * @param request Fastify request containing pattern ID
 	 * @param reply Fastify reply
 	 */
-	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<PopulatedPattern>) {
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<PatternsDetail>) {
 		//
 
 		//
@@ -267,7 +268,7 @@ export class PatternsController {
 		// Fetch the pattern data
 
 		return reply.send({
-			data: merged as PopulatedPattern,
+			data: merged as PatternsDetail,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
@@ -280,7 +281,7 @@ export class PatternsController {
 	 * @param request Fastify request containing GTFS import data
 	 * @param reply Fastify reply
 	 */
-	static async importFromGtfs(request: FastifyRequest<{ Body: { path: { avg_speed: number, dwell_time: number, shape_dist_traveled: number, stop_id: string, stop_sequence: number }[], shape: { shape_dist_traveled: number, shape_pt_lat: number, shape_pt_lon: number, shape_pt_sequence: number }[] }, Params: { id: string } }>, reply: FastifyReply<PopulatedPattern>) {
+	static async importFromGtfs(request: FastifyRequest<{ Body: PatternsImportGtfsRequest, Params: { id: string } }>, reply: FastifyReply<PatternsDetail>) {
 		//
 
 		//
@@ -340,7 +341,7 @@ export class PatternsController {
 
 		const sortedPath = request.body.path.sort((a, b) => a.stop_sequence - b.stop_sequence);
 		const formattedPath = [];
-		const populatedPath: PopulatedPath[] = [];
+		const populatedPath: PatternsDetailPathItem[] = [];
 		let prevDistance = 0;
 
 		for (const [pathIndex, pathItem] of sortedPath.entries()) {
@@ -391,7 +392,7 @@ export class PatternsController {
 		//
 		// Build the computed import result (without saving — the frontend loads it into the form and the user confirms via the save button)
 
-		const importResult: PopulatedPattern = {
+		const importResult: PatternsDetail = {
 			...patternData,
 			parameters: [defaultParameter],
 			path: populatedPath,

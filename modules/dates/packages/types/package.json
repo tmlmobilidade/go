@@ -12,10 +12,14 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-offer": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {

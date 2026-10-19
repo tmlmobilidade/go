@@ -20,12 +20,14 @@
 		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
+		"@fastify/multipart": "10.1.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-offer-pckg-types": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-types-offer": "*",

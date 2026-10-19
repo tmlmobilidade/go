@@ -4,7 +4,7 @@ import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-
 import { DatesSelector } from '@/components/holidays/detail/HolidaysDatesSelector';
 import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
 import { HolidaysDetailHeader } from '@/components/holidays/detail/HolidaysDetailHeader';
-import { HolidaySchema } from '@tmlmobilidade/go-types-offer';
+import { HolidaySchema } from '@tmlmobilidade/go-types-dates';
 import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -59,6 +59,7 @@ export function HolidaysDetail() {
 						data={agencyOptions}
 						disabled={holidaysDetailContext.flags.isReadOnly}
 						label="Operadores afetados"
+						required={!HolidaySchema.shape.agency_ids.isOptional()}
 						value={holidaysDetailContext.data.form.values.agency_ids || []}
 						{...holidaysDetailContext.data.form.getInputProps('agency_ids')}
 					/>
