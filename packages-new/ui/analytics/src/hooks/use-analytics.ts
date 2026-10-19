@@ -35,7 +35,7 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 		if (!ready || !initialized || initializationRef.current !== initialized) return false;
 		clearError();
 
-		return trackAnalyticsEvent(initialized.client, event, properties, (cause) => {
+		return trackAnalyticsEvent(initialized, event, properties, (cause) => {
 			// A failure from a replaced or opted-out client must not overwrite the current error state.
 			if (initializationRef.current === initialized && !initialized.client.getOptOut()) handleError(cause);
 		});
@@ -48,7 +48,7 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 
 		let initialization = initializationRef.current;
 		if (initialization?.apiKey !== apiKey || initialization.options !== options) {
-			initialization = initializeAnalyticsClient(apiKey, options);
+			initialization = initializeAnalyticsClient(apiKey, options, handleError);
 			initializationRef.current = initialization;
 		}
 

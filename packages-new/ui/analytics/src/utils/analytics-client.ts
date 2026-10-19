@@ -8,14 +8,16 @@ import { createSessionReplayController } from './session-replay';
 
 /* * */
 
-export function initializeAnalyticsClient(apiKey: string, options?: AnalyticsContextProps['options']): AnalyticsInitialization {
+export function initializeAnalyticsClient(apiKey: string, options: AnalyticsContextProps['options'], onError: (cause: unknown) => void): AnalyticsInitialization {
 	const client = createInstance();
 	return {
 		apiKey,
 		client,
 		options,
 		promise: client.init(apiKey, { autocapture: false, serverZone: 'EU', ...options }).promise,
-		replay: createSessionReplayController(client),
+		replay: createSessionReplayController(client, (cause) => {
+			if (!client.getOptOut()) onError(cause);
+		}),
 	};
 }
 
@@ -39,9 +41,13 @@ export function identifyAnalyticsUser(client: Types.BrowserClient, user: Analyti
 	}
 }
 
-export async function trackAnalyticsEvent(client: Types.BrowserClient, event: AnalyticsEventInput, properties: Record<string, unknown> | undefined, onError: (cause: unknown) => void): Promise<boolean> {
+export async function trackAnalyticsEvent(initialization: AnalyticsInitialization, event: AnalyticsEventInput, properties: Record<string, unknown> | undefined, onError: (cause: unknown) => void): Promise<boolean> {
 	try {
+		const { client, replay } = initialization;
+		if (client.getOptOut()) return false;
 		const normalizedEvent = normalizeAnalyticsEvent(event);
+		// Mark the block at occurrence time, before awaiting the Analytics upload.
+		replay.recordEvent(normalizedEvent);
 		const result = await client.track(normalizedEvent.title, properties).promise;
 		if (result.code < 200 || result.code >= 300) {
 			throw new Error(`Amplitude upload failed (${result.code}): ${result.message}`);
