@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -18,17 +20,8 @@
 		"test": "tsx ./src/tests/index.ts"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/go-interfaces-labdb": "*",
-		"@tmlmobilidade/go-performance-pckg-log": "*",
 		"@tmlmobilidade/go-performance-pckg-scripts": "*",
-		"@tmlmobilidade/go-types-performance": "*",
-		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-telemetry": "*",
-		"luxon": "3.7.2",
-		"p-limit": "7.3.1"
+		"@tmlmobilidade/go-utils-exec": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

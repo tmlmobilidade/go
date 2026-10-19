@@ -159,6 +159,7 @@
 		"prd:operation:rides-matcher": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-operation-rides-matcher",
 		"prd:operation:rides-sync": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-operation-rides-sync",
 		"prd:operation:ui": "npm run build:operation:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-operation-api --filter=@tmlmobilidade/go-operation-frontend",
+		"prd:performance": "npm run build:performance && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-performance-*",
 		"prd:performance:ui": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-performance-api --filter=@tmlmobilidade/go-performance-frontend",
 		"prd:tracker": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
 		"prd:tracker:es-crtm-aisa": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-es-crtm-aisa-*",
