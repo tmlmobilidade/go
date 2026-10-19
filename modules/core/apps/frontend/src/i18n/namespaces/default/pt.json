@@ -277,6 +277,9 @@
 					"short_name": {
 						"label": "Sigla",
 						"placeholder": "CM"
+					},
+					"vehicles_enabled": {
+						"label": "Publicar posições e dados dos veículos da organização"
 					}
 				}
 			}
@@ -364,11 +367,14 @@
 				"title": "Informações gerais"
 			},
 			"SectionOpenData": {
-				"description": "Publicar um GTFS com os planos de todos os operadores da organização.",
+				"description": "Publicar os planos e os dados dos veículos dos operadores da organização.",
 				"fields": {
 					"services": {
 						"gtfs_enabled": {
 							"label": "Publicar GTFS da organização"
+						},
+						"vehicles_enabled": {
+							"label": "Publicar posições e dados dos veículos da organização"
 						}
 					}
 				},

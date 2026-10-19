@@ -97,6 +97,20 @@ export function OrganizationsCreateBasicInfo() {
 					)}
 				/>
 
+				<StandardFormController
+					control={form.control}
+					name="open_data.realtime.vehicles"
+					render={({ field, fieldState }) => (
+						<Switch
+							checked={field.value ?? false}
+							error={fieldState.error?.message}
+							label={t('default:organizations.create.SectionBasicInfo.fields.vehicles_enabled.label')}
+							onChange={field.onChange}
+							readOnly={!capabilities.editEnabled}
+						/>
+					)}
+				/>
+
 			</Grid>
 		</Section>
 	);

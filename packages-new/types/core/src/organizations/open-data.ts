@@ -15,7 +15,8 @@ export const OrganizationOpenDataSchema = z.object({
 	realtime: z.object({
 		alerts: z.boolean().default(false),
 		eta: z.boolean().default(false),
-	}).default({ alerts: false, eta: false }),
+		vehicles: z.boolean().default(false),
+	}).default({ alerts: false, eta: false, vehicles: false }),
 }).default({});
 
 export type OrganizationOpenData = z.infer<typeof OrganizationOpenDataSchema>;

@@ -26,7 +26,7 @@ async function main() {
 	// Run all tasks sequentially
 
 	const organizationsCollection = await goDb.core.organizations.getCollection();
-	const organizations = await organizationsCollection.find({ agency_ids: { $exists: true } }).toArray();
+	const organizations = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.realtime.vehicles': true }).toArray();
 
 	await publishVehiclesPositions(organizations);
 
