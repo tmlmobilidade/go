@@ -1,4 +1,4 @@
-package agency_testutils
+package agency_utils
 
 import (
 	"database/sql"

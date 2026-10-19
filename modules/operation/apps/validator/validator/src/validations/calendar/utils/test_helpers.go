@@ -1,4 +1,4 @@
-package calendar_testutils
+package calendar_utils
 
 import (
 	"database/sql"

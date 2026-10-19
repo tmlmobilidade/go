@@ -1,4 +1,4 @@
-package calendar_dates_testutils
+package calendar_dates_utils
 
 import (
 	"main/types"
