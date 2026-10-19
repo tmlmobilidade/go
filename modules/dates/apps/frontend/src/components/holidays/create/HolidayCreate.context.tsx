@@ -2,7 +2,7 @@
 
 import { closeCreateHolidayModal } from '@/components/holidays/create/HolidayCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateHolidayDto, CreateHolidaySchema, type Holiday } from '@tmlmobilidade/go-types-offer';
+import { type CreateHolidayDto, CreateHolidaySchema, type Holiday } from '@tmlmobilidade/go-types-dates';
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -61,6 +61,7 @@ export const HolidayCreateContextProvider = ({ children }: PropsWithChildren) =>
 	// D. Handle actions
 
 	const handleCreateHoliday = async () => {
+		if (form.validate().hasErrors) return;
 		setIsSaving(true);
 		const response = await fetchData<Holiday>(API_ROUTES.dates.HOLIDAYS_LIST, 'POST', form.getValues());
 		if (response.error) {

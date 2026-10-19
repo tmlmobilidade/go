@@ -5,8 +5,8 @@ import { EventsListCellAgencies } from '@/components/events/list/EventsListCellA
 import { EventsListCellDates } from '@/components/events/list/EventsListCellDates';
 import { EventsListFiltersBar } from '@/components/events/list/EventsListFiltersBar';
 import { EventsListHeader } from '@/components/events/list/EventsListHeader';
-import { type EventNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type Event } from '@tmlmobilidade/go-types-offer';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ export function EventsList() {
 
 	const eventsListContext = useEventsListContext();
 
-	const columns: DataTableColumn<EventNormalized>[] = [
+	const columns: DataTableColumn<Event>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -37,7 +37,7 @@ export function EventsList() {
 			width: 400,
 		},
 		{
-			accessor: 'agency_ids_normalized',
+			accessor: 'agency_ids',
 			render: item => <EventsListCellAgencies agencyIds={item.agency_ids} />,
 			title: 'Operadores',
 			width: 200,
@@ -53,7 +53,7 @@ export function EventsList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: EventNormalized) => {
+	const handleRowClick = (item: Event) => {
 		router.push(keepUrlParams(PAGE_ROUTES.dates.EVENTS_DETAIL(item._id)));
 	};
 

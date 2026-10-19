@@ -5,8 +5,8 @@ import { HolidaysListCellAgencies } from '@/components/holidays/list/HolidaysLis
 import { HolidaysListCellDates } from '@/components/holidays/list/HolidaysListCellDates';
 import { HolidaysListFiltersBar } from '@/components/holidays/list/HolidaysListFiltersBar';
 import { HolidaysListHeader } from '@/components/holidays/list/HolidaysListHeader';
-import { type HolidayNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ export function HolidaysList() {
 
 	const holidaysListContext = useHolidaysListContext();
 
-	const columns: DataTableColumn<HolidayNormalized>[] = [
+	const columns: DataTableColumn<Holiday>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -37,7 +37,7 @@ export function HolidaysList() {
 			width: 400,
 		},
 		{
-			accessor: 'agency_ids_normalized',
+			accessor: 'agency_ids',
 			render: item => <HolidaysListCellAgencies agencyIds={item.agency_ids} />,
 			title: 'Operadores',
 			width: 200,
@@ -53,7 +53,7 @@ export function HolidaysList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: HolidayNormalized) => {
+	const handleRowClick = (item: Holiday) => {
 		router.push(keepUrlParams(PAGE_ROUTES.dates.HOLIDAYS_DETAIL(item._id)));
 	};
 

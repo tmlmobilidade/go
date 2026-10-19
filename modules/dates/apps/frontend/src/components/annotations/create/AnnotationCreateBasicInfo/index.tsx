@@ -1,7 +1,7 @@
 'use client';
 
 import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
-import { AnnotationSchema } from '@tmlmobilidade/go-types-offer';
+import { AnnotationSchema } from '@tmlmobilidade/go-types-dates';
 import { MultiSelect, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 import { useAnnotationsAgenciesData } from '../../shared/use-users-agencies-data';

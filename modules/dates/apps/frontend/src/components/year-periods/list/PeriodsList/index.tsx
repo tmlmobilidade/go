@@ -3,8 +3,8 @@
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { PeriodsListCellAgency } from '@/components/year-periods/list/PeriodsListCellAgency';
 import { PeriodsListHeader } from '@/components/year-periods/list/PeriodsListHeader';
-import { type PeriodNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { ColorSwatch, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -22,7 +22,7 @@ export function PeriodsList() {
 	const router = useRouter();
 	const periodsListContext = usePeriodsListContext();
 
-	const columns: DataTableColumn<PeriodNormalized>[] = [
+	const columns: DataTableColumn<YearPeriod>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -41,7 +41,7 @@ export function PeriodsList() {
 			width: 400,
 		},
 		{
-			accessor: 'agency_ids_normalized',
+			accessor: 'agency_ids',
 			render: item => <PeriodsListCellAgency agencyIds={item.agency_ids} />,
 			title: 'Operadores',
 			width: 300,
@@ -51,7 +51,7 @@ export function PeriodsList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: PeriodNormalized) => {
+	const handleRowClick = (item: YearPeriod) => {
 		const destUrl = keepUrlParams(PAGE_ROUTES.dates.YEAR_PERIODS_DETAIL(item._id));
 		router.push(destUrl);
 	};

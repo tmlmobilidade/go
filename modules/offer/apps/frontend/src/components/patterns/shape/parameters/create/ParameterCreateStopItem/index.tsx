@@ -4,7 +4,7 @@
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { IconArrowNarrowDown, IconClockPause, IconGauge } from '@tabler/icons-react';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { Divider, NumberInput, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -15,8 +15,8 @@ interface ParameterCreateStopItemProps {
 	distance: null | number
 	index: number
 	isLast: boolean
-	nextPathItem?: PopulatedPath
-	pathItem: PopulatedPath
+	nextPathItem?: PatternsDetailPathItem
+	pathItem: PatternsDetailPathItem
 	travelTime: string
 }
 
