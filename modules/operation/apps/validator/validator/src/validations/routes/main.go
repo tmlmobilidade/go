@@ -7,102 +7,116 @@ import (
 	"main/services"
 	"main/types"
 	registry "main/validations"
-	validations "main/validations/routes/validations"
+	routes_custom "main/validations/routes/custom/checks"
+	routes_fields "main/validations/routes/fields/checks"
+	routes_standard "main/validations/routes/standard/checks"
+	routes_utils "main/validations/routes/utils"
 )
 
 func init() {
-	registry.Register("routes", RunValidations)
+	registry.RegisterWithTables("routes", RunValidations)
 }
 
-func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	var section *types.RoutesRules
-	if rules != nil {
-		section = &rules.Routes
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
-	if dagErr != nil {
-		lib.AppLogger.Error(dagErr.Error())
-		return
-	}
-	lib.AppLogger.Debug("Running Routes Validations...")
+func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*services.SQLiteTables) {
+	lib.AppLogger.Debug("Running Validations for routes.txt")
 
-	// Pre-compute trip_id -> route_id mapping for performance
-	// This avoids repeated database queries when checking continuous pickup/dropoff
-	lib.AppLogger.Debug("Pre-computing trip_id -> route_id mapping...")
-	tripToRouteMap := make(map[string]string) // trip_id -> route_id
-	err := gtfs.IterateTrips(func(i int, rawTrip types.TripRaw) error {
-		if rawTrip.TripId != "" && rawTrip.RouteId != "" {
-			tripToRouteMap[rawTrip.TripId] = rawTrip.RouteId
-		}
-		return nil
-	})
-	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error pre-computing trip to route mapping: %v", err))
-	}
-	lib.AppLogger.Debug(fmt.Sprintf("Pre-computed route mapping for %d trips", len(tripToRouteMap)))
-
-	// Pre-compute which routes have trips with pickup/dropoff windows
-	// This avoids expensive nested loops in continuous pickup/dropoff validation
-	lib.AppLogger.Debug("Pre-computing routes with pickup/dropoff windows...")
-	routesWithWindows := make(map[string]bool) // route_id -> has windows
-	err = gtfs.IterateStopTimes(func(i int, rawStopTime types.StopTimeRaw) error {
-		if rawStopTime.TripId == "" {
-			return nil
-		}
-		// Check if this stop_time has pickup/dropoff windows
-		if rawStopTime.StartPickupDropOffWindow != "" || rawStopTime.EndPickupDropOffWindow != "" {
-			// Get route_id for this trip
-			if routeId, exists := tripToRouteMap[rawStopTime.TripId]; exists {
-				routesWithWindows[routeId] = true
-			}
-		}
-		return nil
-	})
-	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error pre-computing routes with windows: %v", err))
-	}
-	lib.AppLogger.Debug(fmt.Sprintf("Pre-computed windows for %d routes", len(routesWithWindows)))
-
+	//
 	// Create progress tracker
+
 	tracker := lib.CreateProgressTracker(gtfs, "routes", config.ProgressThresholdLarge)
 
-	err = gtfs.IterateRoutes(func(i int, rawRoute types.RouteRaw) error {
+	//
+	// Get file rules
+
+	var fileRules *types.RoutesRules
+	if gtfsRules != nil {
+		fileRules = &gtfsRules.Routes
+	}
+	runner, err := services.NewRuleRunner(gtfs, fileRules)
+	if err != nil {
+		lib.AppLogger.Error(err.Error())
+		return
+	}
+
+	//
+	// Select the prepared routes table
+
+	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
+	if err != nil {
+		lib.AppLogger.Error(fmt.Sprintf("Error preparing SQLite tables: %v", err))
+		return
+	}
+
+	//
+	// Prepare pickup/drop-off window lookups once for all route rows
+
+	routesWithWindows, err := routes_utils.RoutesWithWindows(tables)
+	if err != nil {
+		lib.AppLogger.Error(fmt.Sprintf("Error preparing routes with pickup/drop-off windows: %v", err))
+		return
+	}
+
+	//
+	// Iterate over routes table
+
+	err = tables.ForEachRow("routes", func(row *services.SQLiteRow) error {
+		db := row.Context()
 		tracker.Track()
-		route := validations.ParseRoutes(rawRoute, i)
-
-		if route == (types.Route{}) {
-			return nil
+		check := func(ruleID string, err error) {
+			if err != nil {
+				ctx := lib.NewValidationContext("N/A", "routes.txt", ruleID, db.Row, services.AppMessageService)
+				ctx.AddError(fmt.Sprintf("SQLite read failed: %v", err))
+			}
 		}
 
-		var routeRules *types.RoutesRules
-		if rules != nil {
-			routeRules = &rules.Routes
-		}
-
-		// Validate route_id
 		runner.Run(services.RuleActions{
-			"route_id_unique":         func() { validations.RouteIdValidation(&route, i, &gtfs, routeRules) },
-			"routes_line_id_required": func() { validations.LineIdValidation(&route, i, &gtfs, routeRules) },
-			"routes_line_short_name_present_when_line_id_present": func() { validations.LineShortNameValidation(&route, i, &gtfs, routeRules) },
-			"routes_line_long_name_present_when_line_id_present":  func() { validations.LineLongNameValidation(&route, i, &gtfs, routeRules) },
-			"route_agency_id_references_agency_table":             func() { validations.AgencyIdValidation(&route, i, gtfs, routeRules) },
-			"route_short_name_or_long_name_present":               func() { validations.RouteShortNameValidation(&route, i, routeRules) },
-			"route_long_name_or_short_name_present":               func() { validations.RouteLongNameValidation(&route, i, routeRules) },
-			"route_desc_per_severity_and_content_rules":           func() { validations.RouteDescValidation(&route, i, routeRules) },
-			"route_type_valid_gtfs_enum":                          func() { validations.RouteTypeValidation(&route, i, routeRules) },
-			"route_url_valid_http_url":                            func() { validations.RouteUrlValidation(&route, i, &gtfs, routeRules) },
-			"route_color_valid_hex_string":                        func() { validations.RouteColorValidation(&route, i, routeRules) },
-			"route_text_color_valid_hex_contrast":                 func() { validations.RouteTextColorValidation(&route, i, routeRules) },
-			"route_sort_order_non_negative_integer":               func() { validations.RouteSortOrderValidation(&route, i, routeRules) },
-			"route_id_composed_of_short_name_and_sort_order":      func() { validations.RouteIdFormatValidation(&route, i, routeRules) },
-			"routes_continuous_drop_off_valid_gtfs_enum":          func() { validations.ContinuousDropOffValidation(&route, i, &gtfs, routeRules, routesWithWindows) },
-			"routes_continuous_pickup_valid_gtfs_enum":            func() { validations.ContinuousPickupValidation(&route, i, &gtfs, routeRules, routesWithWindows) },
-			"routes_network_id_references_networks_table":         func() { validations.NetworkIdValidation(&route, i, &gtfs, routeRules) },
-			"routes_path_type_valid_enum":                         func() { validations.PathTypeValidation(&route, i, routeRules) },
+			//
+			// Fields
+			"routes_agency_id_field":           func() { check("routes_agency_id_field", routes_fields.AgencyIdField(db, fileRules)) },
+			"routes_continuous_drop_off_field": func() { check("routes_continuous_drop_off_field", routes_fields.ContinuousDropOffField(db, fileRules)) },
+			"routes_continuous_pickup_field":   func() { check("routes_continuous_pickup_field", routes_fields.ContinuousPickupField(db, fileRules)) },
+			"routes_line_id_field":             func() { check("routes_line_id_field", routes_fields.LineIdField(db, fileRules)) },
+			"routes_line_long_name_field":      func() { check("routes_line_long_name_field", routes_fields.LineLongNameField(db, fileRules)) },
+			"routes_line_short_name_field":     func() { check("routes_line_short_name_field", routes_fields.LineShortNameField(db, fileRules)) },
+			"routes_network_id_field":          func() { check("routes_network_id_field", routes_fields.NetworkIdField(db, fileRules)) },
+			"routes_path_type_field":           func() { check("routes_path_type_field", routes_fields.PathTypeField(db, fileRules)) },
+			"routes_route_color_field":         func() { check("routes_route_color_field", routes_fields.RouteColorField(db, fileRules)) },
+			"routes_route_desc_field":          func() { check("routes_route_desc_field", routes_fields.RouteDescField(db, fileRules)) },
+			"routes_route_id_field":            func() { check("routes_route_id_field", routes_fields.RouteIdField(db, fileRules)) },
+			"routes_route_long_name_field":     func() { check("routes_route_long_name_field", routes_fields.RouteLongNameField(db, fileRules)) },
+			"routes_route_short_name_field":    func() { check("routes_route_short_name_field", routes_fields.RouteShortNameField(db, fileRules)) },
+			"routes_route_sort_order_field":    func() { check("routes_route_sort_order_field", routes_fields.RouteSortOrderField(db, fileRules)) },
+			"routes_route_text_color_field":    func() { check("routes_route_text_color_field", routes_fields.RouteTextColorField(db, fileRules)) },
+			"routes_route_type_field":          func() { check("routes_route_type_field", routes_fields.RouteTypeField(db, fileRules)) },
+			"routes_route_url_field":           func() { check("routes_route_url_field", routes_fields.RouteUrlField(db, fileRules)) },
+			
+			//
+			// Standard
+			"routes_agency_id_unique":                    func() { check("routes_agency_id_unique", routes_standard.AgencyIdUnique(db, fileRules)) },
+			"routes_continuous_drop_off_valid_gtfs_enum": func() { check("routes_continuous_drop_off_valid_gtfs_enum", routes_standard.ContinuousDropOffValid(db, fileRules, routesWithWindows)) },
+			"routes_continuous_pickup_valid_gtfs_enum":   func() { check("routes_continuous_pickup_valid_gtfs_enum", routes_standard.ContinuousPickupValid(db, fileRules, routesWithWindows)) },
+			"routes_network_id_foreign":                  func() { check("routes_network_id_foreign", routes_standard.NetworkIdForeign(db, fileRules)) },
+			"routes_route_color_valid":                   func() { check("routes_route_color_valid", routes_standard.RouteColorValid(db, fileRules)) },
+			"routes_route_id_unique":                     func() { check("routes_route_id_unique", routes_standard.RouteIdUnique(db, fileRules)) },
+			"routes_route_sort_order_valid":              func() { check("routes_route_sort_order_valid", routes_standard.RouteSortOrderValid(db, fileRules)) },
+			"routes_route_text_color_valid":              func() { check("routes_route_text_color_valid", routes_standard.RouteTextColorValid(db, fileRules)) },
+			"routes_route_type_valid":                    func() { check("routes_route_type_valid", routes_standard.RouteTypeValid(db, fileRules)) },
+			"routes_route_url_different_agency_url":      func() { check("routes_route_url_different_agency_url", routes_standard.RouteUrlDifferentAgencyUrl(db, fileRules)) },
+			"routes_route_url_valid":                     func() { check("routes_route_url_valid", routes_standard.RouteUrlValid(db, fileRules)) },
+			
+			//
+			// Custom
+			"routes_line_id_equal_route_short_name":         func() { check("routes_line_id_equal_route_short_name", routes_custom.LineIdEqualRouteShortName(db, fileRules)) },
+			"routes_line_short_name_equal_route_short_name": func() { check("routes_line_short_name_equal_route_short_name", routes_custom.LineShortNameEqualRouteShortName(db, fileRules)) },
+			"routes_path_type_valid":                        func() { check("routes_path_type_valid", routes_custom.PathTypeValid(db, fileRules)) },
+			"routes_route_id_format":                        func() { check("routes_route_id_format", routes_custom.RouteIdFormat(db, fileRules)) },
+		
 		}, nil)
-
 		return nil
 	})
+
+	//
+	// Check for errors
 
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error iterating routes: %v", err))
