@@ -4,6 +4,7 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
+	"strconv"
 )
 
 func ShapePtSequence(db *services.SQLiteContext, rules *types.ShapesRules) error {
@@ -34,7 +35,8 @@ func ShapePtSequence(db *services.SQLiteContext, rules *types.ShapesRules) error
 	//
 	// 4. Check if the shape_pt_sequence is non-negative
 
-	if value < 0 {
+	number, parseErr := strconv.Atoi(value)
+	if parseErr != nil || number < 0 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid"))
 		return nil
 	}
@@ -43,4 +45,4 @@ func ShapePtSequence(db *services.SQLiteContext, rules *types.ShapesRules) error
 	// 5. Return success
 
 	return nil
-}	
+}
