@@ -6,7 +6,7 @@ import { locationPermissionMatch } from '@tmlmobilidade/go-interfaces-locationsd
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type ExtractionTaskContext, type ExtractionTaskResult, type InfrastructureStopsV1Extraction, InfrastructureStopsV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { filterPermissionResourceValues, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
@@ -38,6 +38,14 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 		resource_key: 'location_ids',
 	});
 
+	validatedProperties.agency_ids = filterPermissionResourceValues<string>({
+		action: 'read',
+		permissions: userPermissions,
+		resourceKey: 'agency_ids',
+		scope: 'stops',
+		values: validatedProperties.agency_ids,
+	});
+
 	//
 	// Build aggregation pipeline
 
@@ -45,10 +53,10 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 		{
 			$match: {
 				...(locationAccess.allowAll ? {} : locationPermissionMatch(locationAccess.values)),
-				'flags.agency_ids': { $in: validatedProperties.agency_ids ?? [] },
-				'location.primary.osm_id': { $in: validatedProperties.location_primary_ids?.map(Number) ?? [] },
-				'location.secondary.osm_id': { $in: validatedProperties.location_secondary_ids?.map(Number) ?? [] },
-				'location.tertiary.osm_id': { $in: validatedProperties.location_tertiary_ids?.map(Number) ?? [] },
+				...(validatedProperties.agency_ids?.length ? { 'flags.agency_ids': { $in: validatedProperties.agency_ids ?? [] } } : {}),
+				...(validatedProperties.location_primary_ids?.length ? { 'location.primary.osm_id': { $in: validatedProperties.location_primary_ids?.map(Number) ?? [] } } : {}),
+				...(validatedProperties.location_secondary_ids?.length ? { 'location.secondary.osm_id': { $in: validatedProperties.location_secondary_ids?.map(Number) ?? [] } } : {}),
+				...(validatedProperties.location_tertiary_ids?.length ? { 'location.tertiary.osm_id': { $in: validatedProperties.location_tertiary_ids?.map(Number) ?? [] } } : {}),
 			},
 		},
 		{ $sort: { created_at: -1 } },
@@ -56,18 +64,20 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 
 	const aggregationResult = await goDb.infrastructure.stops.aggregate(pipeline);
 
+	console.log('aggregationResult length:', aggregationResult.length);
+
 	//
 	// Setup a temporary directory and a batch writer
 
-	const temporaryDirectory = fs.mkdtempDisposableSync('infrastructure-stops-v1-');
+	const fileName = `infrastructure-stops-v1-${extraction._id}.csv`;
 
 	const writer = new BatchWriter({
 		batch_size: 100_000,
 		insertFn: async (data) => {
-			const dirPath = path.join(temporaryDirectory.path, 'stops.csv');
-			const fileAlreadyExists = fs.existsSync(dirPath);
+			const filePath = path.join(context.output_path, fileName);
+			const fileAlreadyExists = fs.existsSync(filePath);
 			const csvData = csvStringify(data, { header: !fileAlreadyExists });
-			fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
+			fs.appendFileSync(filePath, csvData, { encoding: 'utf-8', flush: true });
 		},
 		title: 'infrastructure_stops_v1',
 	});
