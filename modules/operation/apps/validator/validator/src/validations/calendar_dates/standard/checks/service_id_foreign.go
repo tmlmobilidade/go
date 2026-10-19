@@ -40,27 +40,15 @@ func ServiceIdForeign(db *services.SQLiteContext, rules *types.CalendarDatesRule
 	}
 
 	//
-	// 4. Get the calendar table
+	// 4. Check if the service_id is foreign
 
-	calendar, err := db.Table("calendar")
-	if err != nil {
-		return err
-	}
-
-	//
-	// 5. Check the service exists in calendar
-
-	exists, err := calendar.Exists("service_id", serviceId)
-	if err != nil {
-		return err
-	}
-
-	if !exists {
+	if !db.Calendar.Exists("service_id", serviceId) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", serviceId))
+		return nil
 	}
 
 	//
-	// 6. Return success
+	// 5. Return success
 
 	return nil
 }
