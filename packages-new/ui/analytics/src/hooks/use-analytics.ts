@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { type AnalyticsContextProps, type AnalyticsContextState, type AnalyticsInitialization } from '../types/shared/analytics';
-import { type AnalyticsUserProperties } from '../types/shared/user-properties';
+import { type AnalyticsContextProps, type AnalyticsContextState, type AnalyticsInitialization } from '../types/analytics';
+import { type AnalyticsUserProperties } from '../types/user-properties';
 import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client';
 import { useAnalyticsConfiguration } from './use-analytics-configuration';
 import { useReplay } from './use-replay';

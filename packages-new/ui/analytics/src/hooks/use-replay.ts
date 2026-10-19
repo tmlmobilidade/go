@@ -2,7 +2,7 @@
 
 import { type RefObject, useCallback } from 'react';
 
-import { type AnalyticsInitialization } from '../types/shared/analytics';
+import { type AnalyticsInitialization } from '../types/analytics';
 
 /* * */
 

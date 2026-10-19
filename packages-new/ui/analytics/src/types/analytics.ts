@@ -1,9 +1,9 @@
 import { type Types } from '@amplitude/analytics-browser';
 
-import { type AnalyticsReplayController } from './replay';
+import { type AnalyticsReplayController } from './replay/controller';
 import { type AnalyticsUserProperties } from './user-properties';
 
-export { type AnalyticsReplayController } from './replay';
+export { type AnalyticsReplayController } from './replay/controller';
 
 /* * */
 

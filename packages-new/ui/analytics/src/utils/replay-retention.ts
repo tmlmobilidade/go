@@ -1,5 +1,5 @@
-import { type AnalyticsEvent } from '../types/shared/event';
-import { type AnalyticsReplayBlock } from '../types/shared/replay';
+import { type AnalyticsEvent } from '../types/events/shared';
+import { type AnalyticsReplayBlock } from '../types/replay/block';
 
 /* * */
 

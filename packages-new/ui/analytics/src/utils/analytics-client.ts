@@ -1,7 +1,7 @@
 import { createInstance, Identify, type Types } from '@amplitude/analytics-browser';
 
-import { type AnalyticsContextProps, type AnalyticsInitialization } from '../types/shared/analytics';
-import { type AnalyticsUserProperties } from '../types/shared/user-properties';
+import { type AnalyticsContextProps, type AnalyticsInitialization } from '../types/analytics';
+import { type AnalyticsUserProperties } from '../types/user-properties';
 import { createSessionReplayController } from './session-replay';
 
 /* * */
