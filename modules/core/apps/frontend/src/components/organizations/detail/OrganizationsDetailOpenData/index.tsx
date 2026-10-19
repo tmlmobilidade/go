@@ -27,7 +27,7 @@ export function OrganizationsDetailOpenData() {
 			<Section>
 				<StandardFormController
 					control={form.control}
-					name="open_data.gtfs.enabled"
+					name="open_data.plans.enabled"
 					render={({ field, fieldState }) => (
 						<Switch
 							checked={field.value ?? false}

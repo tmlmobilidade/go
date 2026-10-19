@@ -39,7 +39,7 @@ async function main() {
 	const globalTimer = new Timer();
 
 	const organizationsCollection = await goDb.core.organizations.getCollection();
-	const organizationsWithGtfsEnabled = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.gtfs.enabled': true }).toArray();
+	const organizationsWithGtfsEnabled = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.plans.enabled': true }).toArray();
 
 	//
 	// Mark all organizations with GTFS export enabled
@@ -99,8 +99,8 @@ async function main() {
 
 		if (
 			Array.isArray(organization.open_data?.gtfs?.plan_hashes) &&
-			activePlans.length === organization.open_data.gtfs.plan_hashes.length &&
-			activePlans.every(plan => organization.open_data.gtfs.plan_hashes.includes(plan.hash))
+			activePlans.length === organization.open_data.plans.plan_hashes.length &&
+			activePlans.every(plan => organization.open_data.plans.plan_hashes.includes(plan.hash))
 		) {
 			Logger.terminate('No changes in the Plans list since last export. Exiting...');
 			continue;
@@ -323,7 +323,7 @@ async function main() {
 		}
 
 		//
-		// Update the organization's open_data.gtfs.plan_hashes
+		// Update the organization's open_data.plans.plan_hashes
 		// with the new list of plan hashes.
 
 		const organizationUpdateData: Omit<OrganizationOpenData['gtfs'], 'enabled'> = {
@@ -331,7 +331,7 @@ async function main() {
 			status: 'complete',
 			timestamp: Dates.now('Europe/Lisbon').unix_milliseconds,
 		};
-		await organizationsCollection.updateOne({ _id: { $eq: organization._id } }, { $set: { 'open_data.gtfs': { ...organization.open_data?.gtfs, ...organizationUpdateData } } });
+		await organizationsCollection.updateOne({ _id: { $eq: organization._id } }, { $set: { 'open_data.plans': { ...organization.open_data?.gtfs, ...organizationUpdateData } } });
 
 		//
 		// Finalize the export process
