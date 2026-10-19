@@ -27,8 +27,9 @@ func AgencyNameIdMatch(db *services.SQLiteContext, rules *types.AgencyRules) err
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_name_id_match", "agency.txt", "agency_id_matched_with_agency_name", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyNameIdMatch.Severity != "" {
-		ctx.WithSeverity(rules.AgencyNameIdMatch.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_id_matched_with_agency_name")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
@@ -50,14 +51,14 @@ func AgencyNameIdMatch(db *services.SQLiteContext, rules *types.AgencyRules) err
 	//
 	// 4. Validate rules
 
-	if rules != nil && rules.AgencyNameIdMatch.Compare != nil {
+	if rules != nil && rules.Rule("agency_id_matched_with_agency_name").Compare != nil {
 		//
 
 		//
 		// 4.1. Find the matching key and value
 
 		validName := ""
-		for _, compare := range *rules.AgencyNameIdMatch.Compare {
+		for _, compare := range *rules.Rule("agency_id_matched_with_agency_name").Compare {
 			if compare.Key == agencyID && compare.Value == agencyName {
 				return nil
 			}

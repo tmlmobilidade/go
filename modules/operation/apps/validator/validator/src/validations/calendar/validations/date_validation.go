@@ -23,15 +23,14 @@ End service day for the service interval. This service day is included in the in
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
 func DateValidation(db *services.SQLiteContext, dateType string, rules *types.CalendarRules) error {
+
 	ctx := lib.NewValidationContext(dateType, "calendar.txt", "calendar_start_end_dates_valid_yyyymmdd_order", db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.StartDate
+		rule := rules.Rule("calendar_start_date_valid_yyyymmdd")
 		if dateType == "end_date" {
-			rule = rules.EndDate
+			rule = rules.Rule("calendar_end_date_valid_yyyymmdd")
 		}
-		if rule.Severity != "" {
-			ctx.WithSeverity(rule.Severity)
-		}
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//

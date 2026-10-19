@@ -37,10 +37,7 @@ Valid options are:
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("route_type", "routes.txt", "route_type_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.RouteType.Severity != "" {
-		ctx.WithSeverity(rules.RouteType.Severity)
-	}
+	ctx := lib.NewValidationContext("route_type", "routes.txt", "route_type_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate route_type is present
 	if route.RouteType == nil {
@@ -71,12 +68,12 @@ func RouteTypeValidation(route *types.Route, row int, rules *types.RoutesRules) 
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.RouteType.Options != nil {
-		if slices.Contains(*rules.RouteType.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("route_type_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("route_type_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.RouteType.Options, strconv.Itoa(*route.RouteType)) {
+		if !slices.Contains(*rules.Rule("route_type_valid_gtfs_enum").Options, strconv.Itoa(*route.RouteType)) {
 			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *route.RouteType))
 			return
 		}

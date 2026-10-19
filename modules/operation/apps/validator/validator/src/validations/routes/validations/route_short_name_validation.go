@@ -23,10 +23,7 @@ Both route_short_name and route_long_name may be defined.
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func RouteShortNameValidation(route *types.Route, row int, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("route_short_name", "routes.txt", "route_short_name_or_long_name_present", row, services.AppMessageService)
-	if rules != nil && rules.RouteShortName.Severity != "" {
-		ctx.WithSeverity(rules.RouteShortName.Severity)
-	}
+	ctx := lib.NewValidationContext("route_short_name", "routes.txt", "route_short_name_or_long_name_present", row, services.AppMessageService, rules)
 
 	// 1. Validate route_short_name is present
 	if route.RouteShortName == nil || *route.RouteShortName == "" {
@@ -51,12 +48,12 @@ func RouteShortNameValidation(route *types.Route, row int, rules *types.RoutesRu
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.RouteShortName.Options != nil {
-		if slices.Contains(*rules.RouteShortName.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("route_short_name_or_long_name_present").Options != nil {
+		if slices.Contains(*rules.Rule("route_short_name_or_long_name_present").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.RouteShortName.Options, *route.RouteShortName) {
+		if !slices.Contains(*rules.Rule("route_short_name_or_long_name_present").Options, *route.RouteShortName) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.RouteShortName))
 			return
 		}

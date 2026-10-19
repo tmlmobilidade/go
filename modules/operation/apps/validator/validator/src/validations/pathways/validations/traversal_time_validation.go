@@ -22,10 +22,7 @@ Time in seconds required to traverse the pathway from the origin location (defin
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
 func TraversalTimeValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
-	ctx := lib.NewValidationContext("traversal_time", "pathways.txt", "pathway_traversal_time_non_negative_seconds", row, services.AppMessageService)
-	if rules != nil && rules.TraversalTime.Severity != "" {
-		ctx.WithSeverity(rules.TraversalTime.Severity)
-	}
+	ctx := lib.NewValidationContext("traversal_time", "pathways.txt", "pathway_traversal_time_non_negative_seconds", row, services.AppMessageService, rules)
 
 	// 1. Validate traversal_time is present
 	if pathways.TraversalTime == nil {

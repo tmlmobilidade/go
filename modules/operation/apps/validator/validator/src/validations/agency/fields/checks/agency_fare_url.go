@@ -27,8 +27,9 @@ func AgencyFareUrlField(db *services.SQLiteContext, rules *types.AgencyRules) er
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_fare_url", "agency.txt", "agency_fare_url_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyFareUrlField.Severity != "" {
-		ctx.WithSeverity(rules.AgencyFareUrlField.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_fare_url_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//

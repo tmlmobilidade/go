@@ -3,6 +3,7 @@ package calendar_fields
 import (
 	"main/lib"
 	"main/services"
+	"main/types"
 )
 
 /*
@@ -26,8 +27,9 @@ func StartDateValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("start_date", "calendar.txt", "calendar_start_date_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.StartDate.Severity != "" {
-		ctx.WithSeverity(rules.StartDate.Severity)
+	if rules != nil {
+		rule := rules.Rule("calendar_start_date_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//

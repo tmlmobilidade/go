@@ -30,10 +30,7 @@ All records of [stop_times.txt] with defined arrival or departure times should h
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func TimepointValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("timepoint", "stop_times.txt", "stop_times_timepoint_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.Timepoint.Severity != "" {
-		ctx.WithSeverity(rules.Timepoint.Severity)
-	}
+	ctx := lib.NewValidationContext("timepoint", "stop_times.txt", "stop_times_timepoint_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate timepoint is present
 	if stopTime.Timepoint == nil {
@@ -59,12 +56,12 @@ func TimepointValidation(stopTime *types.StopTime, row int, rules *types.StopTim
 	}
 
 	// 4. Validate rule options
-	if rules != nil && rules.Timepoint.Options != nil {
-		if slices.Contains(*rules.Timepoint.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stop_times_timepoint_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stop_times_timepoint_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Timepoint.Options, fmt.Sprintf("%d", tp)) {
+		if !slices.Contains(*rules.Rule("stop_times_timepoint_valid_gtfs_enum").Options, fmt.Sprintf("%d", tp)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", fmt.Sprintf("%d", tp)))
 			return
 		}

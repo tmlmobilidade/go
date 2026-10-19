@@ -21,11 +21,7 @@ func TestCalendarSQLiteRulesKeepDependenciesSeveritiesAndSourceRows(t *testing.T
 		('', '20260101', 'invalid', '1'),
 		('', 'invalid', 'invalid', '2'),
 		('valid', '20260101', '20261231', '1');`)
-	config := &types.GtfsRules{Calendar: types.CalendarRules{
-		ServiceId: types.RuleConfig{Severity: types.SEVERITY_WARNING, DependsOn: []string{"calendar_start_date_valid_yyyymmdd"}},
-		StartDate: types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"calendar_file_present"}},
-		EndDate:   types.RuleConfig{Severity: types.SEVERITY_WARNING, DependsOn: []string{"calendar_service_id_unique_non_empty"}},
-	}}
+	config := &types.GtfsRules{Calendar: types.CalendarRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"calendar_service_id_unique_non_empty": types.RuleConfig{Severity: types.SEVERITY_WARNING, DependsOn: []string{"calendar_start_date_valid_yyyymmdd"}}, "calendar_start_date_valid_yyyymmdd": types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"calendar_file_present"}}, "calendar_end_date_valid_yyyymmdd": types.RuleConfig{Severity: types.SEVERITY_WARNING, DependsOn: []string{"calendar_service_id_unique_non_empty"}}}}}}
 	ruleset.ConfigureMessageSeverities(config)
 	t.Cleanup(func() { ruleset.ConfigureMessageSeverities(nil) })
 	gtfs := types.NewGtfsFromSQLite(db, "")

@@ -28,8 +28,9 @@ func AgencyEmailField(db *services.SQLiteContext, rules *types.AgencyRules) erro
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_email", "agency.txt", "agency_email_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyEmailField.Severity != "" {
-		ctx.WithSeverity(rules.AgencyEmailField.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_email_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
@@ -52,7 +53,7 @@ func AgencyEmailField(db *services.SQLiteContext, rules *types.AgencyRules) erro
 		ctx.AddMessageWithSeverity(message)
 		return nil
 	}
-	
+
 	//
 	// 5. Return success
 

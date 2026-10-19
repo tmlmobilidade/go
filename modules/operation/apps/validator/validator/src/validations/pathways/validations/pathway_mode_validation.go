@@ -34,10 +34,7 @@ Valid options are:
 */
 
 func PathwayModeValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
-	ctx := lib.NewValidationContext("pathway_mode", "pathways.txt", "pathway_mode_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.PathwayMode.Severity != "" {
-		ctx.WithSeverity(rules.PathwayMode.Severity)
-	}
+	ctx := lib.NewValidationContext("pathway_mode", "pathways.txt", "pathway_mode_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate pathway_mode is present
 	if pathways.PathwayMode == nil {
@@ -64,12 +61,12 @@ func PathwayModeValidation(pathways *types.Pathways, row int, rules *types.Pathw
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.PathwayMode.Options != nil {
-		if slices.Contains(*rules.PathwayMode.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("pathway_mode_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("pathway_mode_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.PathwayMode.Options, strconv.Itoa(*pathways.PathwayMode)) {
+		if !slices.Contains(*rules.Rule("pathway_mode_valid_gtfs_enum").Options, strconv.Itoa(*pathways.PathwayMode)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*pathways.PathwayMode)))
 			return
 		}

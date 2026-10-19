@@ -31,10 +31,7 @@ When multiple rider categories are eligible for a single fare product specified 
 */
 
 func IsDefaultFareCategoryValidation(riderCategory *types.RiderCategory, row int, rules *types.RiderCategoriesRules) {
-	ctx := lib.NewValidationContext("is_default_fare_category", "rider_categories.txt", "rider_categories_at_most_one_default_fare_category", row, services.AppMessageService)
-	if rules != nil && rules.IsDefaultFareCategory.Severity != "" {
-		ctx.WithSeverity(rules.IsDefaultFareCategory.Severity)
-	}
+	ctx := lib.NewValidationContext("is_default_fare_category", "rider_categories.txt", "rider_categories_at_most_one_default_fare_category", row, services.AppMessageService, rules)
 
 	// 1. Validate is_default_fare_category is present
 	if riderCategory.IsDefaultFareCategory == nil {
@@ -61,12 +58,12 @@ func IsDefaultFareCategoryValidation(riderCategory *types.RiderCategory, row int
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.IsDefaultFareCategory.Options != nil {
-		if slices.Contains(*rules.IsDefaultFareCategory.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("rider_categories_at_most_one_default_fare_category").Options != nil {
+		if slices.Contains(*rules.Rule("rider_categories_at_most_one_default_fare_category").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.IsDefaultFareCategory.Options, strconv.Itoa(*riderCategory.IsDefaultFareCategory)) {
+		if !slices.Contains(*rules.Rule("rider_categories_at_most_one_default_fare_category").Options, strconv.Itoa(*riderCategory.IsDefaultFareCategory)) {
 			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*riderCategory.IsDefaultFareCategory)))
 			return
 		}

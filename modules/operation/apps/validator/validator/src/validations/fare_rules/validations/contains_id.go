@@ -33,10 +33,7 @@ Because all contains_id zones must be matched for the fare to apply, an itinerar
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func ContainsIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
-	ctx := lib.NewValidationContext("contains_id", "fare_rules.txt", "fare_rule_contains_id_references_zones_stops", row, services.AppMessageService)
-	if rules != nil && rules.ContainsId.Severity != "" {
-		ctx.WithSeverity(rules.ContainsId.Severity)
-	}
+	ctx := lib.NewValidationContext("contains_id", "fare_rules.txt", "fare_rule_contains_id_references_zones_stops", row, services.AppMessageService, rules)
 
 	// 1. Validate contains_id is present
 	if fareRule.ContainsId == nil {

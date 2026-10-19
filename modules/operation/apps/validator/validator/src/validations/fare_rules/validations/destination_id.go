@@ -30,10 +30,7 @@ The destination_id and destination_id fields could be used together to specify t
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func DestinationIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
-	ctx := lib.NewValidationContext("destination_id", "fare_rules.txt", "fare_rule_destination_id_references_zones_stops", row, services.AppMessageService)
-	if rules != nil && rules.DestinationId.Severity != "" {
-		ctx.WithSeverity(rules.DestinationId.Severity)
-	}
+	ctx := lib.NewValidationContext("destination_id", "fare_rules.txt", "fare_rule_destination_id_references_zones_stops", row, services.AppMessageService, rules)
 
 	// 1. Validate destination_id is present
 	if fareRule.DestinationId == nil {

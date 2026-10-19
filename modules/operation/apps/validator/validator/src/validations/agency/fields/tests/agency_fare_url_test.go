@@ -9,6 +9,6 @@ import (
 
 func TestAgencyFareUrlField(t *testing.T) {
 	testutils.CheckPresence(t, "agency_fare_url", checks.AgencyFareUrlField, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{AgencyFareUrlField: config}
+		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_fare_url_field": config}}}
 	})
 }

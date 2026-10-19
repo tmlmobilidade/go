@@ -25,10 +25,7 @@ If both to_trip_id and to_route_id are defined, the trip_id must belong to the r
 */
 
 func ToRouteIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, rules *types.TransfersRules) {
-	ctx := lib.NewValidationContext("to_route_id", "transfers.txt", "transfer_to_route_id_references_routes_table", row, services.AppMessageService)
-	if rules != nil && rules.ToRouteId.Severity != "" {
-		ctx.WithSeverity(rules.ToRouteId.Severity)
-	}
+	ctx := lib.NewValidationContext("to_route_id", "transfers.txt", "transfer_to_route_id_references_routes_table", row, services.AppMessageService, rules)
 
 	// Validation to_route_id
 	if transfer.ToRouteId == nil {

@@ -36,7 +36,7 @@ Both directions of a route reference a shape named after the route and the direc
 func ShapeIdRouteDirectionMatchValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
 	ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_shape_id_matches_route_id_and_direction_id", row, services.AppMessageService)
 	if rules != nil {
-		ctx.WithSeverity(rules.ShapeIdRouteDirectionMatch.Severity)
+		ctx.WithSeverity(rules.Rule("trips_shape_id_matches_route_id_and_direction_id").Severity)
 	}
 	// 1. Validate shape_id, route_id and direction_id are required
 	if trip.ShapeId == nil || trip.RouteId == nil || trip.DirectionId == nil {

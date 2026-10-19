@@ -28,8 +28,9 @@ func AgencyLangField(db *services.SQLiteContext, rules *types.AgencyRules) error
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_lang", "agency.txt", "agency_lang_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyLangField.Severity != "" {
-		ctx.WithSeverity(rules.AgencyLangField.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_lang_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//

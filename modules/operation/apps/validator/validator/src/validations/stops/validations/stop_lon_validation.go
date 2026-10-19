@@ -24,10 +24,7 @@ For stops/platforms (location_type=0) and boarding area (location_type=4), the c
 */
 // func StopLonValidation(stop *types.Stop, row int, rules *types.StopsRules, stopsData *types.StopsDataCache) {
 func StopLonValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("stop_lon", "stops.txt", "stop_lon_valid_longitude_range", row, services.AppMessageService)
-	if rules != nil && rules.StopLon.Severity != "" {
-		ctx.WithSeverity(rules.StopLon.Severity)
-	}
+	ctx := lib.NewValidationContext("stop_lon", "stops.txt", "stop_lon_valid_longitude_range", row, services.AppMessageService, rules)
 
 	// 1. Validate stop_lon is present
 	if stop.StopLon == nil {
@@ -47,7 +44,7 @@ func StopLonValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// 3. Validate stop_lon is a valid longitude
-		if !lib.ValidateLongitude(*stop.StopLon) {
+	if !lib.ValidateLongitude(*stop.StopLon) {
 		ctx.AddError(ctx.GetTranslatedMessage("invalid", *stop.StopLon))
 		return
 	}

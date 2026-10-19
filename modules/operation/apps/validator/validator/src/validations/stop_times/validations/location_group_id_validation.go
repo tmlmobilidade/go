@@ -27,10 +27,7 @@ Conditionally Forbidden:
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func LocationGroupIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("location_group_id", "stop_times.txt", "stop_times_location_group_id_consistent_with_trip_id_and_stops", row, services.AppMessageService)
-	if rules != nil && rules.LocationGroupId.Severity != "" {
-		ctx.WithSeverity(rules.LocationGroupId.Severity)
-	}
+	ctx := lib.NewValidationContext("location_group_id", "stop_times.txt", "stop_times_location_group_id_consistent_with_trip_id_and_stops", row, services.AppMessageService, rules)
 
 	// 1. Validate location_group_id is forbidden if stop_id or location_id are defined
 	if (stopTime.StopId != nil && *stopTime.StopId != "") || (stopTime.LocationId != nil && *stopTime.LocationId != "") {

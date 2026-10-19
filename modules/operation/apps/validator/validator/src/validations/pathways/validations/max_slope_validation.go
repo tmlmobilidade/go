@@ -26,10 +26,7 @@ This field should only be used with walkways (pathway_mode=1) and moving sidewal
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
 func MaxSlopeValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
-	ctx := lib.NewValidationContext("max_slope", "pathways.txt", "pathway_max_slope_allowed_for_pathway_mode", row, services.AppMessageService)
-	if rules != nil && rules.MaxSlope.Severity != "" {
-		ctx.WithSeverity(rules.MaxSlope.Severity)
-	}
+	ctx := lib.NewValidationContext("max_slope", "pathways.txt", "pathway_max_slope_allowed_for_pathway_mode", row, services.AppMessageService, rules)
 
 	// 1. Validate max_slope is present
 	if pathways.MaxSlope == nil {

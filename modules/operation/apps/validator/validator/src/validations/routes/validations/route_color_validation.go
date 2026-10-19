@@ -24,10 +24,7 @@ Route color designation that matches public facing material. The color differenc
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func RouteColorValidation(route *types.Route, row int, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("route_color", "routes.txt", "route_color_valid_hex_string", row, services.AppMessageService)
-	if rules != nil && rules.RouteColor.Severity != "" {
-		ctx.WithSeverity(rules.RouteColor.Severity)
-	}
+	ctx := lib.NewValidationContext("route_color", "routes.txt", "route_color_valid_hex_string", row, services.AppMessageService, rules)
 
 	// 1. Validate route_color is present
 	if route.RouteColor == nil {
@@ -55,12 +52,12 @@ func RouteColorValidation(route *types.Route, row int, rules *types.RoutesRules)
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.RouteColor.Options != nil {
-		if slices.Contains(*rules.RouteColor.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("route_color_valid_hex_string").Options != nil {
+		if slices.Contains(*rules.Rule("route_color_valid_hex_string").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.RouteColor.Options, *route.RouteColor) {
+		if !slices.Contains(*rules.Rule("route_color_valid_hex_string").Options, *route.RouteColor) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.RouteColor))
 			return
 		}

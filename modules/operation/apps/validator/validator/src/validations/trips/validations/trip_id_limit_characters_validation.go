@@ -21,10 +21,7 @@ Ensures the trip_id is less than or equal to 36 characters.
 */
 
 func TripIdLimitCharactersValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ctx := lib.NewValidationContext("trip_id_limit_characters", "trips.txt", "trip_id_limit_max_length", row, services.AppMessageService)
-	if rules != nil && rules.TripIdLimitCharacters.Severity != "" {
-		ctx.WithSeverity(rules.TripIdLimitCharacters.Severity)
-	}
+	ctx := lib.NewValidationContext("trip_id_limit_characters", "trips.txt", "trip_id_limit_max_length", row, services.AppMessageService, rules)
 
 	if trip.TripId == nil {
 		return

@@ -8,6 +8,7 @@ import (
 // WeekdaysValidation preserves the calendar_values_parse checks without building
 // a typed calendar. Invalid weekday values prevent further checks on that row.
 func WeekdaysValidation(db *services.SQLiteContext) (bool, error) {
+
 	fields := []string{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"}
 	values, err := db.Calendar.Fields(fields...)
 	if err != nil {

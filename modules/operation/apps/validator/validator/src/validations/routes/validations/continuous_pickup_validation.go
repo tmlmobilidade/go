@@ -35,10 +35,7 @@ Conditionally Forbidden:
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func ContinuousPickupValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *types.RoutesRules, routesWithWindows map[string]bool) {
-	ctx := lib.NewValidationContext("continuous_pickup", "routes.txt", "routes_continuous_pickup_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.ContinuousPickup.Severity != "" {
-		ctx.WithSeverity(rules.ContinuousPickup.Severity)
-	}
+	ctx := lib.NewValidationContext("continuous_pickup", "routes.txt", "routes_continuous_pickup_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate continuous_pickup is present
 	if route.ContinuousPickup == nil || *route.ContinuousPickup == "" || *route.ContinuousPickup == "1" {
@@ -66,12 +63,12 @@ func ContinuousPickupValidation(route *types.Route, row int, gtfs *types.Gtfs, r
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.ContinuousPickup.Options != nil {
-		if slices.Contains(*rules.ContinuousPickup.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("routes_continuous_pickup_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("routes_continuous_pickup_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.ContinuousPickup.Options, *route.ContinuousPickup) {
+		if !slices.Contains(*rules.Rule("routes_continuous_pickup_valid_gtfs_enum").Options, *route.ContinuousPickup) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.ContinuousPickup))
 			return
 		}

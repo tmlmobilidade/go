@@ -25,10 +25,7 @@ When the physical signage is multilingual, this field may be populated and trans
 */
 
 func SignpostedAsValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
-	ctx := lib.NewValidationContext("signposted_as", "pathways.txt", "pathway_signposted_as", row, services.AppMessageService)
-	if rules != nil && rules.SignpostedAs.Severity != "" {
-		ctx.WithSeverity(rules.SignpostedAs.Severity)
-	}
+	ctx := lib.NewValidationContext("signposted_as", "pathways.txt", "pathway_signposted_as", row, services.AppMessageService, rules)
 
 	// 1. Validate signposted_as is present
 	if pathways.SignpostedAs == nil {

@@ -37,10 +37,7 @@ Conditionally Forbidden:
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func ContinuousPickupValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("continuous_pickup", "stop_times.txt", "stop_times_continuous_pickup_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.ContinuousPickup.Severity != "" {
-		ctx.WithSeverity(rules.ContinuousPickup.Severity)
-	}
+	ctx := lib.NewValidationContext("continuous_pickup", "stop_times.txt", "stop_times_continuous_pickup_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate continuous_pickup is present
 	if stopTime.ContinuousPickup == nil {
@@ -72,12 +69,12 @@ func ContinuousPickupValidation(stopTime *types.StopTime, row int, rules *types.
 	}
 
 	// 5. Validate rule options
-	if rules != nil && rules.ContinuousPickup.Options != nil {
-		if slices.Contains(*rules.ContinuousPickup.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stop_times_continuous_pickup_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stop_times_continuous_pickup_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if slices.Contains(*rules.ContinuousPickup.Options, fmt.Sprintf("%d", cp)) {
+		if slices.Contains(*rules.Rule("stop_times_continuous_pickup_valid_gtfs_enum").Options, fmt.Sprintf("%d", cp)) {
 			return
 		}
 

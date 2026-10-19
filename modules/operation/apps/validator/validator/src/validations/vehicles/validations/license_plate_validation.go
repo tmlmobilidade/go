@@ -22,10 +22,7 @@ The license plate must be in the format XXXXXX. For the ferry transport mode the
 MMSI is used instead, a 9 digit identifier starting with 2-7.
 */
 func LicensePlateValidation(vehicle *types.Vehicle, row int, gtfs *types.Gtfs, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("license_plate", "vehicles.txt", "vehicles_license_plate_format_per_market_rules", row, services.AppMessageService)
-	if rules != nil && rules.LicensePlate.Severity != "" {
-		ctx.WithSeverity(rules.LicensePlate.Severity)
-	}
+	ctx := lib.NewValidationContext("license_plate", "vehicles.txt", "vehicles_license_plate_format_per_market_rules", row, services.AppMessageService, rules)
 
 	// 1. Check if license_plate is required
 	if vehicle.LicensePlate == nil {

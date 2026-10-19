@@ -25,10 +25,7 @@ Conditionally Required:
 [agencies.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
 func AgencyIdValidation(fareAttribute *types.FareAttribute, row int, gtfs *types.Gtfs, rules *types.FareAttributesRules) {
-	ctx := lib.NewValidationContext("agency_id", "fare_attributes.txt", "fare_attributes_agency_id_references_agency_table", row, services.AppMessageService)
-	if rules != nil && rules.AgencyId.Severity != "" {
-		ctx.WithSeverity(rules.AgencyId.Severity)
-	}
+	ctx := lib.NewValidationContext("agency_id", "fare_attributes.txt", "fare_attributes_agency_id_references_agency_table", row, services.AppMessageService, rules)
 
 	// 1. Check if agency_id is required
 	agencyCount, _ := gtfs.GetTableCount("agency")

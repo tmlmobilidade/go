@@ -28,10 +28,7 @@ Describes if the stop has a stop sign.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func HasStopSignValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("has_stop_sign", "stops.txt", "stops_has_stop_sign_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.HasStopSign.Severity != "" {
-		ctx.WithSeverity(rules.HasStopSign.Severity)
-	}
+	ctx := lib.NewValidationContext("has_stop_sign", "stops.txt", "stops_has_stop_sign_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate has_stop_sign is present
 	if stop.HasStopSign == nil {
@@ -58,12 +55,12 @@ func HasStopSignValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.HasStopSign.Options != nil {
-		if slices.Contains(*rules.HasStopSign.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_has_stop_sign_valid_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stops_has_stop_sign_valid_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.HasStopSign.Options, strconv.Itoa(*stop.HasStopSign)) {
+		if !slices.Contains(*rules.Rule("stops_has_stop_sign_valid_enum").Options, strconv.Itoa(*stop.HasStopSign)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.HasStopSign))
 			return
 		}

@@ -32,10 +32,7 @@ If the shape "A_shp" has three points in its definition, the [shapes.txt] file m
 [shapes.txt]: https://gtfs.org/schedule/reference/#shapestxt
 */
 func ShapePtSequenceValidation(shape *types.Shape, row int, rules *types.ShapesRules) {
-	ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", "shape_pt_sequence_not_repeated_within_shape", row, services.AppMessageService)
-	if rules != nil && rules.ShapePtSequence.Severity != "" {
-		ctx.WithSeverity(rules.ShapePtSequence.Severity)
-	}
+	ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", "shape_pt_sequence_not_repeated_within_shape", row, services.AppMessageService, rules)
 
 	// 1. Validate shape_pt_sequence is present
 	if shape.ShapePtSequence == nil {

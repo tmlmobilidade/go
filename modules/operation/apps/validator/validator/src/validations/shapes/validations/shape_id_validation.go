@@ -21,10 +21,7 @@ Identifies a shape.
 [shapes.txt]: https://gtfs.org/schedule/reference/#shapestxt
 */
 func ShapeIdValidation(shape *types.Shape, row int, rules *types.ShapesRules) {
-	ctx := lib.NewValidationContext("shape_id", "shapes.txt", "shape_id_required", row, services.AppMessageService)
-	if rules != nil && rules.ShapeId.Severity != "" {
-		ctx.WithSeverity(rules.ShapeId.Severity)
-	}
+	ctx := lib.NewValidationContext("shape_id", "shapes.txt", "shape_id_required", row, services.AppMessageService, rules)
 
 	// 1. Validate shape_id is present
 	if shape.ShapeId == nil || *shape.ShapeId == "" {

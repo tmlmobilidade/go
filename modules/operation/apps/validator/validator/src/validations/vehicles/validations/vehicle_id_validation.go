@@ -21,10 +21,7 @@ It is used to track the vehicle as it circulates throughout the transport networ
 Corresponds to the field in the GTFS-RT specification: FeedMessage › FeedEntity › VehiclePosition › Vehicle in real-time data—serving as the vehicle's internal identifier in the system.
 */
 func VehicleIdValidation(vehicle *types.Vehicle, row int, gtfs *types.Gtfs, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("vehicle_id", "vehicles.txt", "vehicle_id_unique", row, services.AppMessageService)
-	if rules != nil && rules.VehicleId.Severity != "" {
-		ctx.WithSeverity(rules.VehicleId.Severity)
-	}
+	ctx := lib.NewValidationContext("vehicle_id", "vehicles.txt", "vehicle_id_unique", row, services.AppMessageService, rules)
 
 	// 1. Check if vehicle_id is required
 	if vehicle.VehicleId == nil {

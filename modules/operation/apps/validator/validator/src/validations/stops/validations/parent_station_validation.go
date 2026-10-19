@@ -35,10 +35,7 @@ Conditionally Required:
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func ParentStationValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("parent_station", "stops.txt", "stops_parent_station_id_valid_for_stop_hierarchy", row, services.AppMessageService)
-	if rules != nil && rules.ParentStation.Severity != "" {
-		ctx.WithSeverity(rules.ParentStation.Severity)
-	}
+	ctx := lib.NewValidationContext("parent_station", "stops.txt", "stops_parent_station_id_valid_for_stop_hierarchy", row, services.AppMessageService, rules)
 
 	locationType := 0
 	if stop.LocationType != nil {
@@ -85,12 +82,12 @@ func ParentStationValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *
 	}
 
 	// Validate rules
-	if rules != nil && rules.ParentStation.Options != nil {
-		if slices.Contains(*rules.ParentStation.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_parent_station_id_valid_for_stop_hierarchy").Options != nil {
+		if slices.Contains(*rules.Rule("stops_parent_station_id_valid_for_stop_hierarchy").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.ParentStation.Options, *stop.ParentStation) {
+		if !slices.Contains(*rules.Rule("stops_parent_station_id_valid_for_stop_hierarchy").Options, *stop.ParentStation) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ParentStation))
 			return
 		}

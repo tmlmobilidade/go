@@ -23,10 +23,7 @@ Required for operators that provide service for light vehicles.
 */
 
 func CarCapacityValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("car_capacity", "vehicles.txt", "vehicles_car_capacity_non_negative", row, services.AppMessageService)
-	if rules != nil && rules.CarCapacity.Severity != "" {
-		ctx.WithSeverity(rules.CarCapacity.Severity)
-	}
+	ctx := lib.NewValidationContext("car_capacity", "vehicles.txt", "vehicles_car_capacity_non_negative", row, services.AppMessageService, rules)
 
 	// 1. Check if car_capacity is required
 	if vehicle.CarCapacity == nil {

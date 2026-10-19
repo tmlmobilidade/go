@@ -23,10 +23,7 @@ func TestAgencyIdUniqueDependsOnInformationalPresence(t *testing.T) {
 		t.Fatal(err)
 	}
 	gtfs := types.NewGtfsFromSQLite(db, "")
-	config := &types.GtfsRules{Agency: types.AgencyRules{
-		AgencyIdField:  types.RuleConfig{Severity: types.SEVERITY_INFO},
-		AgencyIdUnique: types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_id_field"}},
-	}}
+	config := &types.GtfsRules{Agency: types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_id_field": types.RuleConfig{Severity: types.SEVERITY_INFO}, "agency_id_unique": types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_id_field"}}}}}}
 	rules.ConfigureMessageSeverities(config)
 	services.AppMessageService.Clear()
 	t.Cleanup(func() {
@@ -70,9 +67,7 @@ func TestAgencyIdUnique(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			config := &types.AgencyRules{
-				AgencyIdUnique: types.RuleConfig{Severity: tc.severity},
-			}
+			config := &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_id_unique": types.RuleConfig{Severity: tc.severity}}}}
 			testutils.ConfigureMessages(t, config)
 			db := table.At(tc.row).Context()
 			testutils.AssertAgencyRead(t, agency_standard.AgencyIdUnique(db, config))

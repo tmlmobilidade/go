@@ -27,10 +27,7 @@ If exact arrival and departure times (timepoint=1) are not available, estimated 
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func DepartureTimeValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("departure_time", "stop_times.txt", "stop_times_departure_time_ordering_with_arrival_and_timepoint", row, services.AppMessageService)
-	if rules != nil && rules.DepartureTime.Severity != "" {
-		ctx.WithSeverity(rules.DepartureTime.Severity)
-	}
+	ctx := lib.NewValidationContext("departure_time", "stop_times.txt", "stop_times_departure_time_ordering_with_arrival_and_timepoint", row, services.AppMessageService, rules)
 
 	// 1. Validate departure_time is present
 	if stopTime.DepartureTime == nil {

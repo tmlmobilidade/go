@@ -61,12 +61,12 @@ func StopIdValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *types.
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.StopId.Options != nil {
-		if slices.Contains(*rules.StopId.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stop_id_unique").Options != nil {
+		if slices.Contains(*rules.Rule("stop_id_unique").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.StopId.Options, *stop.StopId) {
+		if !slices.Contains(*rules.Rule("stop_id_unique").Options, *stop.StopId) {
 			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *stop.StopId))
 			return
 		}

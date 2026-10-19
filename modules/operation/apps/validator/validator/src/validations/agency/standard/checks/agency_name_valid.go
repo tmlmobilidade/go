@@ -28,8 +28,9 @@ func AgencyNameValid(db *services.SQLiteContext, rules *types.AgencyRules) error
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_name", "agency.txt", "agency_name_valid", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyNameValid.Severity != "" {
-		ctx.WithSeverity(rules.AgencyNameValid.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_name_valid")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
@@ -43,12 +44,12 @@ func AgencyNameValid(db *services.SQLiteContext, rules *types.AgencyRules) error
 	//
 	// 3. Validate rules
 
-	if rules != nil && rules.AgencyNameValid.Options != nil {
-		if slices.Contains(*rules.AgencyNameValid.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("agency_name_valid").Options != nil {
+		if slices.Contains(*rules.Rule("agency_name_valid").Options, types.ALL_OPTIONS) {
 			return nil
 		}
 
-		if !slices.Contains(*rules.AgencyNameValid.Options, value) {
+		if !slices.Contains(*rules.Rule("agency_name_valid").Options, value) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
 			return nil
 		}

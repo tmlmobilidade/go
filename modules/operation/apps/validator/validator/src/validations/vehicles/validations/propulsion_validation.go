@@ -41,10 +41,7 @@ Valid options are:
 */
 
 func PropulsionValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("propulsion", "vehicles.txt", "vehicles_propulsion_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.Propulsion.Severity != "" {
-		ctx.WithSeverity(rules.Propulsion.Severity)
-	}
+	ctx := lib.NewValidationContext("propulsion", "vehicles.txt", "vehicles_propulsion_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Check if propulsion is required
 	if vehicle.Propulsion == nil {
@@ -71,12 +68,12 @@ func PropulsionValidation(vehicle *types.Vehicle, row int, rules *types.Vehicles
 	}
 
 	// 4. Validate rules
-	if rules != nil && rules.Propulsion.Options != nil {
-		if slices.Contains(*rules.Propulsion.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("vehicles_propulsion_valid_enum").Options != nil {
+		if slices.Contains(*rules.Rule("vehicles_propulsion_valid_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Propulsion.Options, strconv.Itoa(*vehicle.Propulsion)) {
+		if !slices.Contains(*rules.Rule("vehicles_propulsion_valid_enum").Options, strconv.Itoa(*vehicle.Propulsion)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*vehicle.Propulsion)))
 			return
 		}

@@ -22,10 +22,7 @@ Parish identifier for a stop.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func ParishIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("parish_id", "stops.txt", "stops_parish_id_valid", row, services.AppMessageService)
-	if rules != nil && rules.ParishId.Severity != "" {
-		ctx.WithSeverity(rules.ParishId.Severity)
-	}
+	ctx := lib.NewValidationContext("parish_id", "stops.txt", "stops_parish_id_valid", row, services.AppMessageService, rules)
 
 	if stop.ParishId == nil || *stop.ParishId == "" {
 		if ctx.ShouldSkip() {
@@ -43,12 +40,12 @@ func ParishIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// Validate rules
-	if rules != nil && rules.ParishId.Options != nil {
-		if slices.Contains(*rules.ParishId.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_parish_id_valid").Options != nil {
+		if slices.Contains(*rules.Rule("stops_parish_id_valid").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.ParishId.Options, *stop.ParishId) {
+		if !slices.Contains(*rules.Rule("stops_parish_id_valid").Options, *stop.ParishId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ParishId))
 			return
 		}

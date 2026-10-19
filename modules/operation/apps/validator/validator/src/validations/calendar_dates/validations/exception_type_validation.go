@@ -35,10 +35,7 @@ For a particular holiday, the [calendar_dates.txt] file could be used to add the
 [calendar_dates.txt]: https://gtfs.org/schedule/reference/#calendar_datestxt
 */
 func ExceptionTypeValidation(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
-	ctx := lib.NewValidationContext("exception_type", "calendar_dates.txt", "calendar_dates_exception_type_add_or_remove_service", db.Row, services.AppMessageService)
-	if rules != nil && rules.ExceptionType.Severity != "" {
-		ctx.WithSeverity(rules.ExceptionType.Severity)
-	}
+	ctx := lib.NewValidationContext("exception_type", "calendar_dates.txt", "calendar_dates_exception_type_add_or_remove_service", db.Row, services.AppMessageService, rules)
 
 	validExceptionTypes := []int{1, 2}
 
@@ -83,12 +80,12 @@ func ExceptionTypeValidation(db *services.SQLiteContext, rules *types.CalendarDa
 	//
 	// 5. Validate Rule Options
 
-	if rules != nil && rules.ExceptionType.Options != nil {
-		if slices.Contains(*rules.ExceptionType.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("calendar_dates_exception_type_add_or_remove_service").Options != nil {
+		if slices.Contains(*rules.Rule("calendar_dates_exception_type_add_or_remove_service").Options, types.ALL_OPTIONS) {
 			return nil
 		}
 
-		if !slices.Contains(*rules.ExceptionType.Options, exceptionType) {
+		if !slices.Contains(*rules.Rule("calendar_dates_exception_type_add_or_remove_service").Options, exceptionType) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", exceptionType))
 		}
 	}

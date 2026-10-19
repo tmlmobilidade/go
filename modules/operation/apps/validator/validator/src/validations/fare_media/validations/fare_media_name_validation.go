@@ -24,10 +24,7 @@ For fare media which are transit cards (fare_media_type =2) or mobile apps (fare
 */
 
 func FareMediaNameValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gtfs, rules *types.FareMediaRules) {
-	ctx := lib.NewValidationContext("fare_media_name", "fare_media.txt", "fare_media_name_non_empty", row, services.AppMessageService)
-	if rules != nil && rules.FareMediaName.Severity != "" {
-		ctx.WithSeverity(rules.FareMediaName.Severity)
-	}
+	ctx := lib.NewValidationContext("fare_media_name", "fare_media.txt", "fare_media_name_non_empty", row, services.AppMessageService, rules)
 
 	// 1. Validate fare_media_name is present
 	if fareMedia.FareMediaName == nil {

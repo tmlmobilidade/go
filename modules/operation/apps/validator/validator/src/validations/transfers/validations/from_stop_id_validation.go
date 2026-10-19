@@ -26,10 +26,7 @@ Conditionally Required:
 */
 
 func FromStopIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, rules *types.TransfersRules) {
-	ctx := lib.NewValidationContext("from_stop_id", "transfers.txt", "transfer_from_stop_id_references_stops_table", row, services.AppMessageService)
-	if rules != nil && rules.FromStopId.Severity != "" {
-		ctx.WithSeverity(rules.FromStopId.Severity)
-	}
+	ctx := lib.NewValidationContext("from_stop_id", "transfers.txt", "transfer_from_stop_id_references_stops_table", row, services.AppMessageService, rules)
 
 	// Check if transfer_type is 4 or 5 (optional case)
 	if transfer.TransferType != nil && (*transfer.TransferType == 4 || *transfer.TransferType == 5) {

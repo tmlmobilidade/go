@@ -24,10 +24,7 @@ For stops/platforms (location_type=0) and boarding area (location_type=4), the c
 */
 // func StopLatValidation(stop *types.Stop, row int, rules *types.StopsRules, stopsData *types.StopsDataCache) {
 func StopLatValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("stop_lat", "stops.txt", "stop_lat_valid_latitude_range", row, services.AppMessageService)
-	if rules != nil && rules.StopLat.Severity != "" {
-		ctx.WithSeverity(rules.StopLat.Severity)
-	}
+	ctx := lib.NewValidationContext("stop_lat", "stops.txt", "stop_lat_valid_latitude_range", row, services.AppMessageService, rules)
 
 	// 1. Validate stop_lat is present
 	if stop.StopLat == nil {

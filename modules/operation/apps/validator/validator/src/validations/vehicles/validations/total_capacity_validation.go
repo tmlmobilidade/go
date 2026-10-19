@@ -20,10 +20,7 @@ Total capacity of passengers. When it is equal to 0, it means that the vehicle u
 */
 
 func TotalCapacityValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("total_capacity", "vehicles.txt", "vehicles_total_capacity_non_negative", row, services.AppMessageService)
-	if rules != nil && rules.TotalCapacity.Severity != "" {
-		ctx.WithSeverity(rules.TotalCapacity.Severity)
-	}
+	ctx := lib.NewValidationContext("total_capacity", "vehicles.txt", "vehicles_total_capacity_non_negative", row, services.AppMessageService, rules)
 
 	// 1. Check if total_capacity is required
 	if vehicle.TotalCapacity == nil {

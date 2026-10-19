@@ -9,6 +9,6 @@ import (
 
 func TestAgencyTimezoneValid(t *testing.T) {
 	testutils.CheckFormat(t, "agency_timezone", "Europe/Lisbon", "Not/A_Timezone", true, checks.AgencyTimezoneValid, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{AgencyTimezoneValid: config}
+		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_timezone_valid": config}}}
 	})
 }

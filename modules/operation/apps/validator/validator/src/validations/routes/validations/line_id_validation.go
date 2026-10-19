@@ -25,10 +25,7 @@ Optional:
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func LineIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("line_id", "routes.txt", "routes_line_id_required", row, services.AppMessageService)
-	if rules != nil && rules.LineId.Severity != "" {
-		ctx.WithSeverity(rules.LineId.Severity)
-	}
+	ctx := lib.NewValidationContext("line_id", "routes.txt", "routes_line_id_required", row, services.AppMessageService, rules)
 
 	// 1. Validate line_id is present
 	if route.LineId == nil {

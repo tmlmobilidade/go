@@ -9,6 +9,6 @@ import (
 
 func TestAgencyEmailValid(t *testing.T) {
 	testutils.CheckFormat(t, "agency_email", "support@example.com", "invalid", false, checks.AgencyEmailValid, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{AgencyEmailValid: config}
+		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_email_valid": config}}}
 	})
 }

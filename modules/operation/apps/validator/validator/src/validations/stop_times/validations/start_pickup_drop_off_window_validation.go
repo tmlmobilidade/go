@@ -28,10 +28,7 @@ Conditionally Required:
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func StartPickupDropOffWindowValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("start_pickup_drop_off_window", "stop_times.txt", "stop_times_start_pickup_drop_off_window_valid", row, services.AppMessageService)
-	if rules != nil && rules.StartPickupDropOffWindow.Severity != "" {
-		ctx.WithSeverity(rules.StartPickupDropOffWindow.Severity)
-	}
+	ctx := lib.NewValidationContext("start_pickup_drop_off_window", "stop_times.txt", "stop_times_start_pickup_drop_off_window_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate start_pickup_drop_off_window is forbidden: forbidden if arrival_time or departure_time are defined
 	if (stopTime.ArrivalTime != nil && *stopTime.ArrivalTime != "") || (stopTime.DepartureTime != nil && *stopTime.DepartureTime != "") {

@@ -22,10 +22,7 @@ Identifies a fare media.
 */
 
 func FareMediaIdValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gtfs, rules *types.FareMediaRules) {
-	ctx := lib.NewValidationContext("fare_media_id", "fare_media.txt", "fare_media_id_unique", row, services.AppMessageService)
-	if rules != nil && rules.FareMediaId.Severity != "" {
-		ctx.WithSeverity(rules.FareMediaId.Severity)
-	}
+	ctx := lib.NewValidationContext("fare_media_id", "fare_media.txt", "fare_media_id_unique", row, services.AppMessageService, rules)
 
 	// 1. Validate fare_media_id is present
 	if fareMedia.FareMediaId == nil {

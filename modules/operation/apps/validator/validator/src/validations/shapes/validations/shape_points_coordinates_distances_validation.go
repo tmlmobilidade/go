@@ -33,11 +33,11 @@ type distanceViolation struct {
 // tolerance from rules.Options[0] (meters), falling back to the default when
 // rules, options or the value itself are missing or invalid.
 func getShapePointsCoordinatesDistancesToleranceMeters(rules *types.ShapesRules) float64 {
-	if rules == nil || rules.ShapePointsCoordinatesDistances.Options == nil || len(*rules.ShapePointsCoordinatesDistances.Options) == 0 {
+	if rules == nil || rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options == nil || len(*rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options) == 0 {
 		return maxDistanceDeltaToleranceMeters
 	}
 
-	value, err := strconv.ParseFloat((*rules.ShapePointsCoordinatesDistances.Options)[0], 64)
+	value, err := strconv.ParseFloat((*rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options)[0], 64)
 	if err != nil || value < 0 || math.IsNaN(value) || math.IsInf(value, 0) {
 		return maxDistanceDeltaToleranceMeters
 	}
@@ -64,8 +64,8 @@ func uniqueDistanceRows(rows []int) []int {
 // alone cannot distinguish meters from kilometers. Without it, retain the
 // existing auto-detection used by the other shape-distance checks.
 func shapeDistanceScale(rules *types.ShapesRules, maxInShape float64) float64 {
-	if rules != nil && rules.ShapePointsCoordinatesDistances.Options != nil {
-		options := *rules.ShapePointsCoordinatesDistances.Options
+	if rules != nil && rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options != nil {
+		options := *rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options
 		if len(options) > 1 {
 			switch strings.ToLower(strings.TrimSpace(options[1])) {
 			case "m":
@@ -84,7 +84,7 @@ func shapeDistanceScale(rules *types.ShapesRules, maxInShape float64) float64 {
 func ShapePointsCoordinatesDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 	severity := types.SEVERITY_IGNORE
 	if rules != nil {
-		severity = rules.ShapePointsCoordinatesDistances.Severity
+		severity = rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Severity
 	}
 	if severity == "" || severity == types.SEVERITY_IGNORE {
 		return

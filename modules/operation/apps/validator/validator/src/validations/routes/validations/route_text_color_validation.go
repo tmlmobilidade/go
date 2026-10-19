@@ -24,10 +24,7 @@ Route color designation that matches public facing material. The color differenc
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func RouteTextColorValidation(route *types.Route, row int, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("route_text_color", "routes.txt", "route_text_color_valid_hex_contrast", row, services.AppMessageService)
-	if rules != nil && rules.RouteTextColor.Severity != "" {
-		ctx.WithSeverity(rules.RouteTextColor.Severity)
-	}
+	ctx := lib.NewValidationContext("route_text_color", "routes.txt", "route_text_color_valid_hex_contrast", row, services.AppMessageService, rules)
 
 	// 1. Validate route_text_color is present
 	if route.RouteTextColor == nil {
@@ -55,12 +52,12 @@ func RouteTextColorValidation(route *types.Route, row int, rules *types.RoutesRu
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.RouteTextColor.Options != nil {
-		if slices.Contains(*rules.RouteTextColor.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("route_text_color_valid_hex_contrast").Options != nil {
+		if slices.Contains(*rules.Rule("route_text_color_valid_hex_contrast").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.RouteTextColor.Options, *route.RouteTextColor) {
+		if !slices.Contains(*rules.Rule("route_text_color_valid_hex_contrast").Options, *route.RouteTextColor) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.RouteTextColor))
 			return
 		}

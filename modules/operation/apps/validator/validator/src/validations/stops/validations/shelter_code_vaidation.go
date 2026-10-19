@@ -22,10 +22,7 @@ Shelter code for a stop.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func ShelterCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("shelter_code", "stops.txt", "stops_shelter_code_valid", row, services.AppMessageService)
-	if rules != nil && rules.ShelterCode.Severity != "" {
-		ctx.WithSeverity(rules.ShelterCode.Severity)
-	}
+	ctx := lib.NewValidationContext("shelter_code", "stops.txt", "stops_shelter_code_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate shelter_code is present
 	if stop.ShelterCode == nil {
@@ -45,12 +42,12 @@ func ShelterCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// 3. Validate Rule options
-	if rules != nil && rules.ShelterCode.Options != nil {
-		if slices.Contains(*rules.ShelterCode.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_shelter_code_valid").Options != nil {
+		if slices.Contains(*rules.Rule("stops_shelter_code_valid").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.ShelterCode.Options, *stop.ShelterCode) {
+		if !slices.Contains(*rules.Rule("stops_shelter_code_valid").Options, *stop.ShelterCode) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ShelterCode))
 			return
 		}

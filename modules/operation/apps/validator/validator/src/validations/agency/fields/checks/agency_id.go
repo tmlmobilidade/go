@@ -30,8 +30,9 @@ func AgencyIdField(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_id", "agency.txt", "agency_id_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyIdField.Severity != "" {
-		ctx.WithSeverity(rules.AgencyIdField.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_id_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//

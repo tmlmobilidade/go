@@ -43,10 +43,7 @@ For station entrances/exits:
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func WheelchairBoardingValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("wheelchair_boarding", "stops.txt", "stops_wheelchair_boarding_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.WheelchairBoarding.Severity != "" {
-		ctx.WithSeverity(rules.WheelchairBoarding.Severity)
-	}
+	ctx := lib.NewValidationContext("wheelchair_boarding", "stops.txt", "stops_wheelchair_boarding_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate wheelchair_boarding is present
 	if stop.WheelchairBoarding == nil {
@@ -73,12 +70,12 @@ func WheelchairBoardingValidation(stop *types.Stop, row int, rules *types.StopsR
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.WheelchairBoarding.Options != nil {
-		if slices.Contains(*rules.WheelchairBoarding.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_wheelchair_boarding_valid_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stops_wheelchair_boarding_valid_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.WheelchairBoarding.Options, strconv.Itoa(*stop.WheelchairBoarding)) {
+		if !slices.Contains(*rules.Rule("stops_wheelchair_boarding_valid_enum").Options, strconv.Itoa(*stop.WheelchairBoarding)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.WheelchairBoarding))
 			return
 		}

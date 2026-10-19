@@ -27,8 +27,9 @@ func WednesdayValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("wednesday", "calendar.txt", "calendar_wednesday_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.Wednesday.Severity != "" {
-		ctx.WithSeverity(rules.Wednesday.Severity)
+	if rules != nil {
+		rule := rules.Rule("calendar_wednesday_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//

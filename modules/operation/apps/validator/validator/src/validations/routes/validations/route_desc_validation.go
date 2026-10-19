@@ -30,10 +30,7 @@ Conditionally Required:
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func RouteDescValidation(route *types.Route, row int, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("route_desc", "routes.txt", "route_desc_per_severity_and_content_rules", row, services.AppMessageService)
-	if rules != nil && rules.RouteDesc.Severity != "" {
-		ctx.WithSeverity(rules.RouteDesc.Severity)
-	}
+	ctx := lib.NewValidationContext("route_desc", "routes.txt", "route_desc_per_severity_and_content_rules", row, services.AppMessageService, rules)
 
 	// 1. Validate route_desc is present
 	// Conditionally Required: required only when route_short_name is empty
@@ -66,12 +63,12 @@ func RouteDescValidation(route *types.Route, row int, rules *types.RoutesRules) 
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.RouteDesc.Options != nil {
-		if slices.Contains(*rules.RouteDesc.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("route_desc_per_severity_and_content_rules").Options != nil {
+		if slices.Contains(*rules.Rule("route_desc_per_severity_and_content_rules").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.RouteDesc.Options, *route.RouteDesc) {
+		if !slices.Contains(*rules.Rule("route_desc_per_severity_and_content_rules").Options, *route.RouteDesc) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.RouteDesc))
 			return
 		}

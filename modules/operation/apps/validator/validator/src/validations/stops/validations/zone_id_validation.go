@@ -24,10 +24,7 @@ Identifies the fare zone for a stop. If this record represents a station or stat
 
 // ZoneIdValidation validates the zone_id field in stops.txt
 func ZoneIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("zone_id", "stops.txt", "stops_zone_id_valid", row, services.AppMessageService)
-	if rules != nil && rules.ZoneId.Severity != "" {
-		ctx.WithSeverity(rules.ZoneId.Severity)
-	}
+	ctx := lib.NewValidationContext("zone_id", "stops.txt", "stops_zone_id_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate zone_id is present
 	if stop.ZoneId == nil {
@@ -47,12 +44,12 @@ func ZoneIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// 3. Validate Rule options
-	if rules != nil && rules.ZoneId.Options != nil {
-		if slices.Contains(*rules.ZoneId.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_zone_id_valid").Options != nil {
+		if slices.Contains(*rules.Rule("stops_zone_id_valid").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.ZoneId.Options, *stop.ZoneId) {
+		if !slices.Contains(*rules.Rule("stops_zone_id_valid").Options, *stop.ZoneId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ZoneId))
 			return
 		}

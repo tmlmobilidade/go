@@ -21,10 +21,7 @@ Defines the language that should be used when the data consumer doesn't know the
 [feed_info.txt]: https://gtfs.org/schedule/reference/#feed_infotxt
 */
 func DefaultLangValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfoRules) {
-	ctx := lib.NewValidationContext("default_lang", "feed_info.txt", "feed_info_default_lang_matches_feed_lang_when_present", row, services.AppMessageService)
-	if rules != nil && rules.DefaultLang.Severity != "" {
-		ctx.WithSeverity(rules.DefaultLang.Severity)
-	}
+	ctx := lib.NewValidationContext("default_lang", "feed_info.txt", "feed_info_default_lang_matches_feed_lang_when_present", row, services.AppMessageService, rules)
 
 	// 1. Validate default_lang is present
 	if feedInfo.DefaultLang == nil {

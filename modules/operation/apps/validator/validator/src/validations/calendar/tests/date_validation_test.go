@@ -41,9 +41,17 @@ func TestDateValidation(t *testing.T) {
 				}
 				config := &types.CalendarRules{}
 				if field == "start_date" {
-					config.StartDate.Severity = tc.severity
+					{
+						ruleConfig := config.Rule("calendar_start_date_valid_yyyymmdd")
+						ruleConfig.Severity = tc.severity
+						config.SetRule("calendar_start_date_valid_yyyymmdd", ruleConfig)
+					}
 				} else {
-					config.EndDate.Severity = tc.severity
+					{
+						ruleConfig := config.Rule("calendar_end_date_valid_yyyymmdd")
+						ruleConfig.Severity = tc.severity
+						config.SetRule("calendar_end_date_valid_yyyymmdd", ruleConfig)
+					}
 				}
 				if err := validations.DateValidation(table.At(3).Context(), field, config); err != nil {
 					t.Fatal(err)

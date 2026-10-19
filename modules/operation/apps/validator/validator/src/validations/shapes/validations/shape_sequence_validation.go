@@ -41,8 +41,8 @@ func ShapeSequenceRuleValidation(shapes []types.Shape, rules *types.ShapesRules,
 			i = *shape.Row
 		}
 		ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", "shape_id_and_point_sequence_required", i, services.AppMessageService)
-		if rules != nil && rules.ShapeIdAndPointSequenceRequired.Severity != "" {
-			ctx.WithSeverity(rules.ShapeIdAndPointSequenceRequired.Severity)
+		if rules != nil && rules.Rule("shape_id_and_point_sequence_required").Severity != "" {
+			ctx.WithSeverity(rules.Rule("shape_id_and_point_sequence_required").Severity)
 		}
 
 		if shape.ShapeId == nil || shape.ShapePtSequence == nil {
@@ -86,8 +86,8 @@ func ShapeSequenceRuleValidation(shapes []types.Shape, rules *types.ShapesRules,
 				// previous row in the file, so out-of-order rows in the source file are
 				// still caught correctly here.
 				ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", "shape_pt_sequence_strictly_increasing", shape.row, services.AppMessageService)
-				if rules != nil && rules.ShapePtSequenceStrictlyIncreasing.Severity != "" {
-					ctx.WithSeverity(rules.ShapePtSequenceStrictlyIncreasing.Severity)
+				if rules != nil && rules.Rule("shape_pt_sequence_strictly_increasing").Severity != "" {
+					ctx.WithSeverity(rules.Rule("shape_pt_sequence_strictly_increasing").Severity)
 				}
 				if shape.sequence <= shapeGroup[i-1].sequence && (ruleID == "" || ruleID == "shape_pt_sequence_strictly_increasing") {
 					if !ctx.ShouldSkip() {
@@ -99,8 +99,8 @@ func ShapeSequenceRuleValidation(shapes []types.Shape, rules *types.ShapesRules,
 				if shape.dist >= 0 && shapeGroup[i-1].dist >= 0 && (ruleID == "" || ruleID == "shape_dist_traveled_non_decreasing_with_sequence") {
 					if shape.dist < shapeGroup[i-1].dist {
 						ctxDist := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", "shape_dist_traveled_non_decreasing_with_sequence", shape.row, services.AppMessageService)
-						if rules != nil && rules.ShapeDistTraveledNonDecreasingWithSequence.Severity != "" {
-							ctxDist.WithSeverity(rules.ShapeDistTraveledNonDecreasingWithSequence.Severity)
+						if rules != nil && rules.Rule("shape_dist_traveled_non_decreasing_with_sequence").Severity != "" {
+							ctxDist.WithSeverity(rules.Rule("shape_dist_traveled_non_decreasing_with_sequence").Severity)
 						}
 						if !ctxDist.ShouldSkip() {
 							ctxDist.AddMessageWithSeverity(ctxDist.GetTranslatedMessage("not_increasing", shape.shapeId))

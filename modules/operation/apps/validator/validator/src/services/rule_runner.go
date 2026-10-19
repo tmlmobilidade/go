@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"main/lib/rules"
 	"main/types"
-	"reflect"
 )
 
 // RuleActions bind validator functions to configuration keys. The DAG, rather
@@ -32,18 +31,6 @@ func NewRuleRunner(gtfs types.Gtfs, section any) (*RuleRunner, error) {
 		return nil, fmt.Errorf("%s: %w", group, err)
 	}
 	dependencies := rules.DependenciesFrom(section)
-	configured := reflect.ValueOf(section)
-	if configured.Kind() == reflect.Ptr && !configured.IsNil() {
-		configured = configured.Elem()
-	}
-	severities := map[string]types.Severity{}
-	if configured.Kind() == reflect.Struct {
-		for i := range configured.NumField() {
-			if config, ok := configured.Field(i).Interface().(types.RuleConfig); ok {
-				severities[configured.Type().Field(i).Tag.Get("json")] = config.Severity
-			}
-		}
-	}
 	filePresent := gtfs.HasTable(group)
 	list := []rules.Rule[ruleInput]{{ID: rules.FileNode(group), Run: func(ruleInput) rules.Status {
 		if filePresent {
@@ -60,7 +47,7 @@ func NewRuleRunner(gtfs types.Gtfs, section any) (*RuleRunner, error) {
 				}
 				return rules.Skipped // An unimplemented or out-of-phase rule never passes.
 			}
-			if severity, explicit := severities[id]; explicit && (severity == "" || severity == types.SEVERITY_IGNORE) {
+			if rules.SeverityFor(section, id) == types.SEVERITY_IGNORE {
 				return rules.Skipped
 			}
 			before := AppMessageService.RuleIssueCount(id)
@@ -83,12 +70,13 @@ func NewRuleRunner(gtfs types.Gtfs, section any) (*RuleRunner, error) {
 }
 
 func (r *RuleRunner) Run(actions RuleActions, seed map[string]rules.Status) map[string]rules.Status {
+	statuses := r.manager.RunRow(ruleInput{actions: actions, seed: seed})
 	for id := range actions {
 		if !r.known[id] {
-			panic(fmt.Sprintf("validator binds unknown rule %q", id))
+			statuses[id] = rules.Skipped
 		}
 	}
-	return r.manager.RunRow(ruleInput{actions: actions, seed: seed})
+	return statuses
 }
 
 // MergeRuleStatuses aggregates only the rows belonging to one trip/pattern/shape.

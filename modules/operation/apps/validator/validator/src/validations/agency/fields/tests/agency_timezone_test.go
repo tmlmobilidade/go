@@ -9,6 +9,6 @@ import (
 
 func TestAgencyTimezoneField(t *testing.T) {
 	testutils.CheckPresence(t, "agency_timezone", checks.AgencyTimezoneField, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{AgencyTimezoneField: config}
+		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_timezone_field": config}}}
 	})
 }

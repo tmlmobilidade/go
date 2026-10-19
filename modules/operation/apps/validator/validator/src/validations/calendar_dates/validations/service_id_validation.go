@@ -24,10 +24,7 @@ If a service_id value appears in both [calendar.txt] and [calendar_dates.txt], t
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
 func ServiceIdValidation(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
-	ctx := lib.NewValidationContext("service_id", "calendar_dates.txt", "calendar_dates_service_id_references_calendar", db.Row, services.AppMessageService)
-	if rules != nil && rules.ServiceId.Severity != "" {
-		ctx.WithSeverity(rules.ServiceId.Severity)
-	}
+	ctx := lib.NewValidationContext("service_id", "calendar_dates.txt", "calendar_dates_service_id_references_calendar", db.Row, services.AppMessageService, rules)
 
 	//
 	// 1. Get the service_id value
@@ -61,12 +58,12 @@ func ServiceIdValidation(db *services.SQLiteContext, rules *types.CalendarDatesR
 	//
 	// 4. Validate rules
 
-	if rules != nil && rules.ServiceId.Options != nil {
-		if slices.Contains(*rules.ServiceId.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("calendar_dates_service_id_references_calendar").Options != nil {
+		if slices.Contains(*rules.Rule("calendar_dates_service_id_references_calendar").Options, types.ALL_OPTIONS) {
 			return nil
 		}
 
-		if !slices.Contains(*rules.ServiceId.Options, serviceId) {
+		if !slices.Contains(*rules.Rule("calendar_dates_service_id_references_calendar").Options, serviceId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", serviceId))
 			return nil
 		}

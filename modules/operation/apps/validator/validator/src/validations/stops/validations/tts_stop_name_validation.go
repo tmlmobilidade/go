@@ -23,10 +23,7 @@ Readable version of the stop_name. See "Text-to-speech field" in the [Term Defin
 [Term Definitions]: https://gtfs.org/schedule/reference/#term-definitions
 */
 func TtsStopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("tts_stop_name", "stops.txt", "stops_tts_stop_name_valid", row, services.AppMessageService)
-	if rules != nil && rules.TtsStopName.Severity != "" {
-		ctx.WithSeverity(rules.TtsStopName.Severity)
-	}
+	ctx := lib.NewValidationContext("tts_stop_name", "stops.txt", "stops_tts_stop_name_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate tts_stop_name is present
 	if stop.TtsStopName == nil {
@@ -46,12 +43,12 @@ func TtsStopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// 3. Validate Rule options
-	if rules != nil && rules.TtsStopName.Options != nil {
-		if slices.Contains(*rules.TtsStopName.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_tts_stop_name_valid").Options != nil {
+		if slices.Contains(*rules.Rule("stops_tts_stop_name_valid").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.TtsStopName.Options, *stop.TtsStopName) {
+		if !slices.Contains(*rules.Rule("stops_tts_stop_name_valid").Options, *stop.TtsStopName) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.TtsStopName))
 			return
 		}

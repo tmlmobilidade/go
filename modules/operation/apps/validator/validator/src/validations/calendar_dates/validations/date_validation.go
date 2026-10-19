@@ -21,10 +21,7 @@ Date when service exception occurs.
 [calendar_dates.txt]: https://gtfs.org/schedule/reference/#calendar_datestxt
 */
 func DateValidation(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
-	ctx := lib.NewValidationContext("date", "calendar_dates.txt", "calendar_dates_exception_date_valid_yyyymmdd", db.Row, services.AppMessageService)
-	if rules != nil && rules.Date.Severity != "" {
-		ctx.WithSeverity(rules.Date.Severity)
-	}
+	ctx := lib.NewValidationContext("date", "calendar_dates.txt", "calendar_dates_exception_date_valid_yyyymmdd", db.Row, services.AppMessageService, rules)
 
 	//
 	// 1. Get the date value
@@ -66,12 +63,12 @@ func DateValidation(db *services.SQLiteContext, rules *types.CalendarDatesRules)
 	//
 	// 5. Validate rules
 
-	if rules != nil && rules.Date.Options != nil {
-		if slices.Contains(*rules.Date.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("calendar_dates_exception_date_valid_yyyymmdd").Options != nil {
+		if slices.Contains(*rules.Rule("calendar_dates_exception_date_valid_yyyymmdd").Options, types.ALL_OPTIONS) {
 			return nil
 		}
 
-		if !slices.Contains(*rules.Date.Options, date) {
+		if !slices.Contains(*rules.Rule("calendar_dates_exception_date_valid_yyyymmdd").Options, date) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", date))
 		}
 	}

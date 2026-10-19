@@ -21,10 +21,7 @@ Full name of the organization that publishes the dataset. This may be the same a
 [feed_info.txt]: https://gtfs.org/schedule/reference/#feed_infotxt
 */
 func FeedPublisherNameValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfoRules) {
-	ctx := lib.NewValidationContext("feed_publisher_name", "feed_info.txt", "feed_publisher_name_non_empty", row, services.AppMessageService)
-	if rules != nil && rules.FeedPublisherName.Severity != "" {
-		ctx.WithSeverity(rules.FeedPublisherName.Severity)
-	}
+	ctx := lib.NewValidationContext("feed_publisher_name", "feed_info.txt", "feed_publisher_name_non_empty", row, services.AppMessageService, rules)
 
 	// 1. Validate feed_publisher_name is present
 	if feedInfo.FeedPublisherName == nil {

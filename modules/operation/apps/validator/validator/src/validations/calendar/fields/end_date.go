@@ -27,12 +27,13 @@ func EndDateValidation(db *services.SQLiteContext, rules *types.CalendarRules) e
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("end_date", "calendar.txt", "calendar_end_date_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.EndDate.Severity != "" {
-		ctx.WithSeverity(rules.EndDate.Severity)
+	if rules != nil {
+		rule := rules.Rule("calendar_end_date_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 1. Get the date value
+	// 2. Get the date value
 
 	date, err := db.Calendar.Field("end_date")
 	if err != nil {

@@ -22,10 +22,7 @@ URL of the transit stop.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func StopUrlValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("stop_url", "stops.txt", "stop_url_valid_url", row, services.AppMessageService)
-	if rules != nil && rules.StopUrl.Severity != "" {
-		ctx.WithSeverity(rules.StopUrl.Severity)
-	}
+	ctx := lib.NewValidationContext("stop_url", "stops.txt", "stop_url_valid_url", row, services.AppMessageService, rules)
 
 	// 1. Validate stop_url is present
 	if stop.StopUrl == nil {
@@ -51,12 +48,12 @@ func StopUrlValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.StopUrl.Options != nil {
-		if slices.Contains(*rules.StopUrl.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stop_url_valid_url").Options != nil {
+		if slices.Contains(*rules.Rule("stop_url_valid_url").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.StopUrl.Options, *stop.StopUrl) {
+		if !slices.Contains(*rules.Rule("stop_url_valid_url").Options, *stop.StopUrl) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.StopUrl))
 			return
 		}

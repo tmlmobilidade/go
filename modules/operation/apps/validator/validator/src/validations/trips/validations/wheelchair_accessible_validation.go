@@ -28,10 +28,7 @@ Indicates wheelchair accessibility. Valid options are:
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func WheelchairAccessibleValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ctx := lib.NewValidationContext("wheelchair_accessible", "trips.txt", "trips_wheelchair_accessible_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.WheelchairAccessible.Severity != "" {
-		ctx.WithSeverity(rules.WheelchairAccessible.Severity)
-	}
+	ctx := lib.NewValidationContext("wheelchair_accessible", "trips.txt", "trips_wheelchair_accessible_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Empty is valid: no accessibility information is available.
 	if trip.WheelchairAccessible == nil {
@@ -54,12 +51,12 @@ func WheelchairAccessibleValidation(trip *types.Trip, row int, gtfs *types.Gtfs,
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.WheelchairAccessible.Options != nil {
-		if slices.Contains(*rules.WheelchairAccessible.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("trips_wheelchair_accessible_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("trips_wheelchair_accessible_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.WheelchairAccessible.Options, fmt.Sprintf("%d", *trip.WheelchairAccessible)) {
+		if !slices.Contains(*rules.Rule("trips_wheelchair_accessible_valid_gtfs_enum").Options, fmt.Sprintf("%d", *trip.WheelchairAccessible)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *trip.WheelchairAccessible))
 			return
 		}

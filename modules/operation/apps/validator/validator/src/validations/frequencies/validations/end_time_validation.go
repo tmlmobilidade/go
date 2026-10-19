@@ -21,10 +21,7 @@ Time at which service changes to a different headway (or ceases) at the first st
 [frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
 */
 func EndTimeValidation(frequency *types.Frequencies, row int, rules *types.FrequenciesRules) {
-	ctx := lib.NewValidationContext("end_time", "frequencies.txt", "frequency_end_time_valid", row, services.AppMessageService)
-	if rules != nil && rules.EndTime.Severity != "" {
-		ctx.WithSeverity(rules.EndTime.Severity)
-	}
+	ctx := lib.NewValidationContext("end_time", "frequencies.txt", "frequency_end_time_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate end_time is present
 	if frequency.EndTime == nil {

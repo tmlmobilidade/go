@@ -9,6 +9,6 @@ import (
 
 func TestAgencyUrlValid(t *testing.T) {
 	testutils.CheckFormat(t, "agency_url", "https://example.com", "invalid", false, checks.AgencyUrlValid, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{AgencyUrlValid: config}
+		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_url_valid": config}}}
 	})
 }

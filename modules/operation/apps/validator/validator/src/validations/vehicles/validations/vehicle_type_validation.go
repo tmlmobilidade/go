@@ -36,10 +36,7 @@ https://gtfs.org/documentation/schedule/reference/#routestxt:~:text=and%20Far%20
 */
 
 func VehicleTypeValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("vehicle_type", "vehicles.txt", "vehicles_vehicle_type_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.VehicleType.Severity != "" {
-		ctx.WithSeverity(rules.VehicleType.Severity)
-	}
+	ctx := lib.NewValidationContext("vehicle_type", "vehicles.txt", "vehicles_vehicle_type_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Check if vehicle_type is required
 	if vehicle.VehicleType == nil {
@@ -66,12 +63,12 @@ func VehicleTypeValidation(vehicle *types.Vehicle, row int, rules *types.Vehicle
 	}
 
 	// 4. Validate rules
-	if rules != nil && rules.VehicleType.Options != nil {
-		if slices.Contains(*rules.VehicleType.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("vehicles_vehicle_type_valid_enum").Options != nil {
+		if slices.Contains(*rules.Rule("vehicles_vehicle_type_valid_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.VehicleType.Options, strconv.Itoa(*vehicle.VehicleType)) {
+		if !slices.Contains(*rules.Rule("vehicles_vehicle_type_valid_enum").Options, strconv.Itoa(*vehicle.VehicleType)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*vehicle.VehicleType)))
 			return
 		}

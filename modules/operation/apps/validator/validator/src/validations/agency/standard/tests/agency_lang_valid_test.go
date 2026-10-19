@@ -9,6 +9,6 @@ import (
 
 func TestAgencyLangValid(t *testing.T) {
 	testutils.CheckFormat(t, "agency_lang", "pt", "invalid", false, checks.AgencyLangValid, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{AgencyLangValid: config}
+		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_lang_valid": config}}}
 	})
 }

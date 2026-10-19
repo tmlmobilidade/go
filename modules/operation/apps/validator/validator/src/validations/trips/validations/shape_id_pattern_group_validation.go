@@ -67,8 +67,8 @@ func ShapeIdPatternGroupRuleValidation(
 			}
 			row := group.Trips[0].Row
 			ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_one_shape_id_per_pattern_id_group", row, services.AppMessageService)
-			if rules != nil && rules.OneShapeIdPerPatternIdGroup.Severity != "" {
-				ctx.WithSeverity(rules.OneShapeIdPerPatternIdGroup.Severity)
+			if rules != nil && rules.Rule("trips_one_shape_id_per_pattern_id_group").Severity != "" {
+				ctx.WithSeverity(rules.Rule("trips_one_shape_id_per_pattern_id_group").Severity)
 			}
 			// Nothing was reported, so nothing is suppressed on the shape_id side.
 			if ctx.ShouldSkip() {
@@ -112,8 +112,8 @@ func ShapeIdPatternGroupRuleValidation(
 		}
 		row := group.Trips[0].Row
 		ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_one_pattern_id_per_shape_id_group", row, services.AppMessageService)
-		if rules != nil && rules.OnePatternIdPerShapeIdGroup.Severity != "" {
-			ctx.WithSeverity(rules.OnePatternIdPerShapeIdGroup.Severity)
+		if rules != nil && rules.Rule("trips_one_pattern_id_per_shape_id_group").Severity != "" {
+			ctx.WithSeverity(rules.Rule("trips_one_pattern_id_per_shape_id_group").Severity)
 		}
 		if ctx.ShouldSkip() {
 			continue

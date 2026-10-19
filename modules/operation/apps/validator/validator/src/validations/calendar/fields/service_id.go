@@ -27,14 +27,15 @@ func ServiceIdValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("service_id", "calendar.txt", "calendar_service_id_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.ServiceId.Severity != "" {
-		ctx.WithSeverity(rules.ServiceId.Severity)
+	if rules != nil {
+		rule := rules.Rule("calendar_service_id_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
 	// 2. Get service_id and its occurrence count in calendar
 
-	value, count, err := db.Calendar.FieldWithCount("service_id")
+	value, _, err := db.Calendar.FieldWithCount("service_id")
 	if err != nil {
 		return err
 	}

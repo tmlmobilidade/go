@@ -9,6 +9,6 @@ import (
 
 func TestAgencyIdField(t *testing.T) {
 	testutils.CheckPresence(t, "agency_id", checks.AgencyIdField, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{AgencyIdField: config}
+		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_id_field": config}}}
 	})
 }

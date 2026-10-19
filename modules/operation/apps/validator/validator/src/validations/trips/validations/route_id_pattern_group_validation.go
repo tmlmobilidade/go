@@ -47,8 +47,8 @@ func RouteIdPatternGroupValidation(tripsGroupedByPattern types.TripGroupedByPatt
 		sort.Strings(ids)
 		row := group.Trips[0].Row
 		ctx := lib.NewValidationContext("route_id", "trips.txt", "trips_route_id_consistent_for_all_patterns_in_trips", row, services.AppMessageService)
-		if rules != nil && rules.RouteIdGroup.Severity != "" {
-			ctx.WithSeverity(rules.RouteIdGroup.Severity)
+		if rules != nil && rules.Rule("trips_route_id_consistent_for_all_patterns_in_trips").Severity != "" {
+			ctx.WithSeverity(rules.Rule("trips_route_id_consistent_for_all_patterns_in_trips").Severity)
 		}
 		if ctx.ShouldSkip() {
 			return

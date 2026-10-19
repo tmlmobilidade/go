@@ -24,10 +24,7 @@ This field is recommended for walkways (pathway_mode=1), fare gates (pathway_mod
 */
 
 func LengthValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
-	ctx := lib.NewValidationContext("length", "pathways.txt", "pathway_length_non_negative", row, services.AppMessageService)
-	if rules != nil && rules.Length.Severity != "" {
-		ctx.WithSeverity(rules.Length.Severity)
-	}
+	ctx := lib.NewValidationContext("length", "pathways.txt", "pathway_length_non_negative", row, services.AppMessageService, rules)
 
 	// 1. Validate length is present
 	if pathways.Length == nil {

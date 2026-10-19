@@ -58,7 +58,7 @@ func ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRo
 		if len(values) > 2 && (ruleID == "" || ruleID == "trips_shape_id_max_two_per_route") {
 			ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_shape_id_max_two_per_route", firstRow, services.AppMessageService)
 			if rules != nil {
-				ctx.WithSeverity(rules.ShapeIdMaxTwoPerRoute.Severity)
+				ctx.WithSeverity(rules.Rule("trips_shape_id_max_two_per_route").Severity)
 			}
 			if !ctx.ShouldSkip() {
 				ids := make([]string, 0, len(values))
@@ -80,7 +80,7 @@ func ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRo
 			}
 			ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_shape_id_consistent_per_route_direction", directionRows[directionId], services.AppMessageService)
 			if rules != nil {
-				ctx.WithSeverity(rules.ShapeIdConsistentPerRouteDirection.Severity)
+				ctx.WithSeverity(rules.Rule("trips_shape_id_consistent_per_route_direction").Severity)
 			}
 			if ctx.ShouldSkip() {
 				continue

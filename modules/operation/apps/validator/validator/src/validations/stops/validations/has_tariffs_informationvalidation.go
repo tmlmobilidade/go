@@ -28,10 +28,7 @@ Describes if the stop has tariffs information.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func HasTariffsInformationValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("has_tariffs_information", "stops.txt", "stops_has_tariffs_information_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.HasTariffsInformation.Severity != "" {
-		ctx.WithSeverity(rules.HasTariffsInformation.Severity)
-	}
+	ctx := lib.NewValidationContext("has_tariffs_information", "stops.txt", "stops_has_tariffs_information_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate has_tariffs_information is present
 	if stop.HasTariffsInformation == nil {
@@ -58,12 +55,12 @@ func HasTariffsInformationValidation(stop *types.Stop, row int, rules *types.Sto
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.HasTariffsInformation.Options != nil {
-		if slices.Contains(*rules.HasTariffsInformation.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_has_tariffs_information_valid_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stops_has_tariffs_information_valid_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.HasTariffsInformation.Options, strconv.Itoa(*stop.HasTariffsInformation)) {
+		if !slices.Contains(*rules.Rule("stops_has_tariffs_information_valid_enum").Options, strconv.Itoa(*stop.HasTariffsInformation)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.HasTariffsInformation))
 			return
 		}

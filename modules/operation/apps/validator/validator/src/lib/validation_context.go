@@ -37,17 +37,25 @@ type ValidationContext struct {
 
 	// failed is set once an info, warning, or error finding is reported
 	failed bool
+
+	// hasRuleConfig makes explicit rule lookup authoritative for emitted findings.
+	hasRuleConfig bool
 }
 
 // NewValidationContext creates a new ValidationContext with default severity
-func NewValidationContext(field, fileName, ruleID string, row int, messageAdder MessageAdder) *ValidationContext {
+func NewValidationContext(field, fileName, ruleID string, row int, messageAdder MessageAdder, ruleSection ...any) *ValidationContext {
+	severity := types.SEVERITY_IGNORE
+	if len(ruleSection) > 0 {
+		severity = rules.SeverityFor(ruleSection[0], ruleID)
+	}
 	return &ValidationContext{
-		Field:        field,
-		FileName:     fileName,
-		Row:          row,
-		RuleID:       ruleID,
-		Severity:     types.SEVERITY_IGNORE,
-		MessageAdder: messageAdder,
+		Field:         field,
+		FileName:      fileName,
+		Row:           row,
+		RuleID:        ruleID,
+		Severity:      severity,
+		hasRuleConfig: len(ruleSection) > 0,
+		MessageAdder:  messageAdder,
 	}
 }
 
@@ -97,11 +105,17 @@ func (vc *ValidationContext) AddMessage(message string, severity types.Severity,
 	if len(ruleID) > 0 {
 		rid = ruleID[0]
 	}
+	if vc.hasRuleConfig && rid == vc.RuleID {
+		severity = vc.Severity
+	}
 	if override, configured := rules.MessageSeverityOverride(vc.FileName, rid, vc.Field); configured {
 		if override == types.SEVERITY_IGNORE {
 			return
 		}
 		severity = override
+	}
+	if severity == types.SEVERITY_IGNORE {
+		return
 	}
 	if severity == types.SEVERITY_FORBIDDEN {
 		severity = types.SEVERITY_ERROR

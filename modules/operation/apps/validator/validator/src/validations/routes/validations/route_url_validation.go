@@ -22,10 +22,7 @@ URL of a web page about the particular route. Should be different from the agenc
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func RouteUrlValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("route_url", "routes.txt", "route_url_valid_http_url", row, services.AppMessageService)
-	if rules != nil && rules.RouteUrl.Severity != "" {
-		ctx.WithSeverity(rules.RouteUrl.Severity)
-	}
+	ctx := lib.NewValidationContext("route_url", "routes.txt", "route_url_valid_http_url", row, services.AppMessageService, rules)
 
 	// 1. Validate route_url is present
 	if route.RouteUrl == nil {
@@ -66,12 +63,12 @@ func RouteUrlValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *ty
 	}
 
 	// 5. Validate Rule Options
-	if rules != nil && rules.RouteUrl.Options != nil {
-		if slices.Contains(*rules.RouteUrl.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("route_url_valid_http_url").Options != nil {
+		if slices.Contains(*rules.Rule("route_url_valid_http_url").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.RouteUrl.Options, *route.RouteUrl) {
+		if !slices.Contains(*rules.Rule("route_url_valid_http_url").Options, *route.RouteUrl) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.RouteUrl))
 			return
 		}

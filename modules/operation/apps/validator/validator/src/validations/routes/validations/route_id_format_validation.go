@@ -34,10 +34,7 @@ The two directions of line 1001 are published as two routes, ordered by `route_s
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func RouteIdFormatValidation(route *types.Route, row int, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("route_id", "routes.txt", "route_id_composed_of_short_name_and_sort_order", row, services.AppMessageService)
-	if rules != nil && rules.RouteIdFormat.Severity != "" {
-		ctx.WithSeverity(rules.RouteIdFormat.Severity)
-	}
+	ctx := lib.NewValidationContext("route_id", "routes.txt", "route_id_composed_of_short_name_and_sort_order", row, services.AppMessageService, rules)
 
 	// 1. Validate route_id format is skipped
 	if ctx.ShouldSkip() {

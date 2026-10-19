@@ -30,10 +30,7 @@ If you want to override the `trip_headsign` for multiple `stop_times` in the sam
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func StopHeadsignValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("stop_headsign", "stop_times.txt", "stop_times_stop_headsign_present", row, services.AppMessageService)
-	if rules != nil && rules.StopHeadsign.Severity != "" {
-		ctx.WithSeverity(rules.StopHeadsign.Severity)
-	}
+	ctx := lib.NewValidationContext("stop_headsign", "stop_times.txt", "stop_times_stop_headsign_present", row, services.AppMessageService, rules)
 
 	// 1. Validate stop_headsign is present
 	if stopTime.StopHeadsign == nil {
@@ -53,12 +50,12 @@ func StopHeadsignValidation(stopTime *types.StopTime, row int, rules *types.Stop
 	}
 
 	// 3. Validate rule options
-	if rules != nil && rules.StopHeadsign.Options != nil {
-		if slices.Contains(*rules.StopHeadsign.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stop_times_stop_headsign_present").Options != nil {
+		if slices.Contains(*rules.Rule("stop_times_stop_headsign_present").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.StopHeadsign.Options, *stopTime.StopHeadsign) {
+		if !slices.Contains(*rules.Rule("stop_times_stop_headsign_present").Options, *stopTime.StopHeadsign) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stopTime.StopHeadsign))
 			return
 		}

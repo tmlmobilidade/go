@@ -22,10 +22,7 @@ Rider category name as displayed to the rider.
 */
 
 func RiderCategoryNameValidation(riderCategory *types.RiderCategory, row int, rules *types.RiderCategoriesRules) {
-	ctx := lib.NewValidationContext("rider_category_name", "rider_categories.txt", "rider_category_name_non_empty", row, services.AppMessageService)
-	if rules != nil && rules.RiderCategoryName.Severity != "" {
-		ctx.WithSeverity(rules.RiderCategoryName.Severity)
-	}
+	ctx := lib.NewValidationContext("rider_category_name", "rider_categories.txt", "rider_category_name_non_empty", row, services.AppMessageService, rules)
 
 	// 1. Validate rider_category_name is present
 	if riderCategory.RiderCategoryName == nil {

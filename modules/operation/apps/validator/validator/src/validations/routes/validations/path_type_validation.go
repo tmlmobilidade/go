@@ -28,10 +28,7 @@ Valid options are:
 This is a TML-specific extension to the GTFS standard.
 */
 func PathTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("path_type", "routes.txt", "routes_path_type_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.PathType.Severity != "" {
-		ctx.WithSeverity(rules.PathType.Severity)
-	}
+	ctx := lib.NewValidationContext("path_type", "routes.txt", "routes_path_type_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate path_type is present
 	if route.PathType == nil {
@@ -51,12 +48,12 @@ func PathTypeValidation(route *types.Route, row int, rules *types.RoutesRules) {
 	}
 
 	// 3. Validate Rule Options
-	if rules != nil && rules.PathType.Options != nil {
-		if slices.Contains(*rules.PathType.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("routes_path_type_valid_enum").Options != nil {
+		if slices.Contains(*rules.Rule("routes_path_type_valid_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.PathType.Options, *route.PathType) {
+		if !slices.Contains(*rules.Rule("routes_path_type_valid_enum").Options, *route.PathType) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.PathType))
 			return
 		}

@@ -21,10 +21,7 @@ Time at which the first vehicle departs from the first stop of the trip with the
 [frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
 */
 func StartTimeValidation(frequency *types.Frequencies, row int, rules *types.FrequenciesRules) {
-	ctx := lib.NewValidationContext("start_time", "frequencies.txt", "frequency_start_time_valid", row, services.AppMessageService)
-	if rules != nil && rules.StartTime.Severity != "" {
-		ctx.WithSeverity(rules.StartTime.Severity)
-	}
+	ctx := lib.NewValidationContext("start_time", "frequencies.txt", "frequency_start_time_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate start_time is present
 	if frequency.StartTime == nil {

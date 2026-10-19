@@ -60,8 +60,8 @@ func TripHeadsignPatternGroupValidation(tripsGroupedByPattern types.TripGroupedB
 		}
 		row := group.Trips[0].Row
 		ctx := lib.NewValidationContext("trip_headsign", "trips.txt", "trip_headsign_consistent_for_all_patterns_in_trips", row, services.AppMessageService)
-		if rules != nil && rules.TripHeadsignGroup.Severity != "" {
-			ctx.WithSeverity(rules.TripHeadsignGroup.Severity)
+		if rules != nil && rules.Rule("trip_headsign_consistent_for_all_patterns_in_trips").Severity != "" {
+			ctx.WithSeverity(rules.Rule("trip_headsign_consistent_for_all_patterns_in_trips").Severity)
 		}
 		if ctx.ShouldSkip() {
 			return

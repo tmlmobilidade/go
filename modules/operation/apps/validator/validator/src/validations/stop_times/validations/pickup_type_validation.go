@@ -36,10 +36,7 @@ Conditionally Forbidden:
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func PickupTypeValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("pickup_type", "stop_times.txt", "stop_times_pickup_type_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.PickupType.Severity != "" {
-		ctx.WithSeverity(rules.PickupType.Severity)
-	}
+	ctx := lib.NewValidationContext("pickup_type", "stop_times.txt", "stop_times_pickup_type_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate pickup_type is present
 	if stopTime.PickupType == nil {
@@ -72,12 +69,12 @@ func PickupTypeValidation(stopTime *types.StopTime, row int, rules *types.StopTi
 	}
 
 	// 5. Validate rule options
-	if rules != nil && rules.PickupType.Options != nil {
-		if slices.Contains(*rules.PickupType.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stop_times_pickup_type_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stop_times_pickup_type_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.PickupType.Options, fmt.Sprintf("%d", pt)) {
+		if !slices.Contains(*rules.Rule("stop_times_pickup_type_valid_gtfs_enum").Options, fmt.Sprintf("%d", pt)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", fmt.Sprintf("%d", pt)))
 			return
 		}

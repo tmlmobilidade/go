@@ -5,13 +5,27 @@ import (
 	"main/types"
 	"reflect"
 	"slices"
-	"strings"
+	"sort"
 )
 
-var ruleConfigType = reflect.TypeOf(types.RuleConfig{})
+// SeverityFor resolves a rule by its JSON id, defaulting missing settings to Ignore.
+func SeverityFor(section any, ruleID string) types.Severity {
+	v := ruleSectionValue(section)
+	if !v.IsValid() {
+		return types.SEVERITY_IGNORE
+	}
+	if provider, ok := v.Interface().(interface{ Rule(string) types.RuleConfig }); ok {
+		return provider.Rule(ruleID).Severity
+	}
+	if configs, ok := v.Interface().(map[string]types.RuleConfig); ok {
+		if severity := configs[ruleID].Severity; severity != "" {
+			return severity
+		}
+	}
+	return types.SEVERITY_IGNORE
+}
 
-// RuleIDs returns the rule ids (json tags of RuleConfig fields) of a rules section,
-// e.g. types.AgencyRules, in declaration order
+// RuleIDs returns the configured rule IDs in stable order.
 func RuleIDs(section any) []string {
 	ids := []string{}
 	forEachRuleConfig(section, func(id string, _ types.RuleConfig) {
@@ -33,20 +47,11 @@ func DependenciesFrom(section any) map[string][]string {
 // of the same section (or its file-presence node) and that there are no cycles
 func ValidateSection(section any) error {
 	deps := DependenciesFrom(section)
-	scopes := map[string]string{}
-	v := ruleSectionValue(section)
-	if v.Kind() == reflect.Struct {
-		for i := range v.NumField() {
-			field := v.Type().Field(i)
-			scopes[field.Tag.Get("json")] = field.Tag.Get("scope")
-		}
-	}
 	for id, prerequisites := range deps {
-		scope := scopes[id]
 		for _, prerequisite := range prerequisites {
-			prerequisiteScope := scopes[prerequisite]
-			if prerequisiteScope != "" && scope != prerequisiteScope {
-				return fmt.Errorf("rule %q cannot depend on %q in %s scope", id, prerequisite, prerequisiteScope)
+			scope := executionScopes[prerequisite]
+			if scope != "" && executionScopes[id] != scope {
+				return fmt.Errorf("rule %q cannot depend on %q in %s scope", id, prerequisite, scope)
 			}
 		}
 	}
@@ -72,20 +77,23 @@ func ruleSectionValue(section any) reflect.Value {
 
 func forEachRuleConfig(section any, fn func(id string, config types.RuleConfig)) {
 	v := ruleSectionValue(section)
-	if v.Kind() != reflect.Struct {
+	if !v.IsValid() {
 		return
 	}
-	t := v.Type()
-	for i := range v.NumField() {
-		field := t.Field(i)
-		if field.Type != ruleConfigType {
-			continue
-		}
-		id, _, _ := strings.Cut(field.Tag.Get("json"), ",")
-		if id == "" || id == "-" {
-			continue
-		}
-		fn(id, v.Field(i).Interface().(types.RuleConfig))
+	provider, ok := v.Interface().(interface {
+		RuleConfigs() map[string]types.RuleConfig
+	})
+	if !ok {
+		return
+	}
+	configs := provider.RuleConfigs()
+	ids := make([]string, 0, len(configs))
+	for id := range configs {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	for _, id := range ids {
+		fn(id, configs[id])
 	}
 }
 
@@ -98,15 +106,7 @@ func DefaultConfig() types.GtfsRules {
 	result := types.GtfsRules{}
 	groups := reflect.ValueOf(&result).Elem()
 	for i := range groups.NumField() {
-		group := groups.Field(i)
-		for j := range group.NumField() {
-			field := group.Field(j)
-			if field.Type() == ruleConfigType {
-				field.Set(reflect.ValueOf(types.RuleConfig{Severity: types.SEVERITY_IGNORE}))
-			} else if field.Type() == reflect.TypeOf(types.Severity("")) {
-				field.SetString(string(types.SEVERITY_IGNORE))
-			}
-		}
+		groups.Field(i).FieldByName("File").SetString(string(types.SEVERITY_IGNORE))
 	}
 	return result
 }

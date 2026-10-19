@@ -19,10 +19,7 @@ import (
 The make of the vehicle.
 */
 func MakeValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("make", "vehicles.txt", "vehicle_make_required", row, services.AppMessageService)
-	if rules != nil && rules.Make.Severity != "" {
-		ctx.WithSeverity(rules.Make.Severity)
-	}
+	ctx := lib.NewValidationContext("make", "vehicles.txt", "vehicle_make_required", row, services.AppMessageService, rules)
 
 	// 1. Check if make is required
 	if vehicle.Make == nil {

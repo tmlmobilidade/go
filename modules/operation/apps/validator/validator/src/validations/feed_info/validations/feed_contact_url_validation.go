@@ -22,10 +22,7 @@ URL for contact information, a web-form, support desk, or other tools for commun
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
 func FeedContactUrlValidation(feedInfo *types.FeedInfo, row int, rules *types.FeedInfoRules) {
-	ctx := lib.NewValidationContext("feed_contact_url", "feed_info.txt", "feed_contact_url_valid_http_url", row, services.AppMessageService)
-	if rules != nil && rules.FeedContactUrl.Severity != "" {
-		ctx.WithSeverity(rules.FeedContactUrl.Severity)
-	}
+	ctx := lib.NewValidationContext("feed_contact_url", "feed_info.txt", "feed_contact_url_valid_http_url", row, services.AppMessageService, rules)
 
 	// 1. Validate feed_contact_url is present
 	if feedInfo.FeedContactUrl == nil {

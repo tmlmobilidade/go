@@ -20,10 +20,7 @@ Number of available spaces for non-folding bicycles. When it is equal to 0, it m
 */
 
 func BicyclesCapacityValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("bicycles_capacity", "vehicles.txt", "vehicles_bicycles_rack_count_non_negative", row, services.AppMessageService)
-	if rules != nil && rules.BicyclesCapacity.Severity != "" {
-		ctx.WithSeverity(rules.BicyclesCapacity.Severity)
-	}
+	ctx := lib.NewValidationContext("bicycles_capacity", "vehicles.txt", "vehicles_bicycles_rack_count_non_negative", row, services.AppMessageService, rules)
 
 	// 1. Check if bicycles_capacity is required
 	if vehicle.BicyclesCapacity == nil {

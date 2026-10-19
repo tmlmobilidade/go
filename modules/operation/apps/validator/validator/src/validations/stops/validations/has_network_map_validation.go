@@ -28,10 +28,7 @@ Describes if the stop has a network map.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func HasNetworkMapValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("has_network_map", "stops.txt", "stops_has_network_map_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.HasNetworkMap.Severity != "" {
-		ctx.WithSeverity(rules.HasNetworkMap.Severity)
-	}
+	ctx := lib.NewValidationContext("has_network_map", "stops.txt", "stops_has_network_map_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate has_network_map is present
 	if stop.HasNetworkMap == nil {
@@ -58,12 +55,12 @@ func HasNetworkMapValidation(stop *types.Stop, row int, rules *types.StopsRules)
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.HasNetworkMap.Options != nil {
-		if slices.Contains(*rules.HasNetworkMap.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_has_network_map_valid_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stops_has_network_map_valid_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.HasNetworkMap.Options, strconv.Itoa(*stop.HasNetworkMap)) {
+		if !slices.Contains(*rules.Rule("stops_has_network_map_valid_enum").Options, strconv.Itoa(*stop.HasNetworkMap)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.HasNetworkMap))
 			return
 		}

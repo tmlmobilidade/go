@@ -30,10 +30,7 @@ Indicates the type of connection for the specified (from_stop_id, to_stop_id) pa
 [transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
 */
 func TransferTypeValidation(transfer *types.Transfers, row int, rules *types.TransfersRules) {
-	ctx := lib.NewValidationContext("transfer_type", "transfers.txt", "transfer_type_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.TransferType.Severity != "" {
-		ctx.WithSeverity(rules.TransferType.Severity)
-	}
+	ctx := lib.NewValidationContext("transfer_type", "transfers.txt", "transfer_type_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	if transfer.TransferType == nil {
 		if ctx.ShouldSkip() {
@@ -51,12 +48,12 @@ func TransferTypeValidation(transfer *types.Transfers, row int, rules *types.Tra
 	}
 
 	// Validate Rule Options
-	if rules != nil && rules.TransferType.Options != nil {
-		if slices.Contains(*rules.TransferType.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("transfer_type_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("transfer_type_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.TransferType.Options, fmt.Sprintf("%d", *transfer.TransferType)) {
+		if !slices.Contains(*rules.Rule("transfer_type_valid_gtfs_enum").Options, fmt.Sprintf("%d", *transfer.TransferType)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", fmt.Sprintf("%d", *transfer.TransferType)))
 			return
 		}

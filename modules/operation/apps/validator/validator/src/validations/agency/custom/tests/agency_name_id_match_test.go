@@ -43,7 +43,7 @@ func TestAgencyNameIdMatch(t *testing.T) {
 		{"empty name", lib.Ptr("AGENCY1"), lib.Ptr(""), types.SEVERITY_ERROR, &compare, 1},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			config := &types.AgencyRules{AgencyNameIdMatch: types.RuleConfig{Severity: tc.severity, Compare: tc.compare}}
+			config := &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_id_matched_with_agency_name": types.RuleConfig{Severity: tc.severity, Compare: tc.compare}}}}
 			testutils.ConfigureMessages(t, config)
 			db := testutils.AgencyRow(t, 0, map[string]*string{"agency_id": tc.id, "agency_name": tc.agency})
 			testutils.AssertAgencyRead(t, checks.AgencyNameIdMatch(db, config))
@@ -64,15 +64,11 @@ func TestAgencyNameIdMatchDependsOnPresence(t *testing.T) {
 				INSERT INTO agency VALUES ('', 'Expected'), ('1', ''), ('1', 'Wrong'), ('1', 'Expected');`); err != nil {
 				t.Fatal(err)
 			}
-			config := &types.GtfsRules{Agency: types.AgencyRules{
-				AgencyIdField:   types.RuleConfig{Severity: severity},
-				AgencyNameField: types.RuleConfig{Severity: severity},
-				AgencyNameIdMatch: types.RuleConfig{
-					Severity:  types.SEVERITY_ERROR,
-					DependsOn: []string{"agency_id_field", "agency_name_field"},
-					Compare:   &[]types.Compare{{Key: "1", Value: "Expected"}},
-				},
-			}}
+			config := &types.GtfsRules{Agency: types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_id_field": types.RuleConfig{Severity: severity}, "agency_name_field": types.RuleConfig{Severity: severity}, "agency_id_matched_with_agency_name": types.RuleConfig{
+				Severity:  types.SEVERITY_ERROR,
+				DependsOn: []string{"agency_id_field", "agency_name_field"},
+				Compare:   &[]types.Compare{{Key: "1", Value: "Expected"}},
+			}}}}}
 			testutils.ConfigureMessages(t, &config.Agency)
 			agency.RunValidations(*types.NewGtfsFromSQLite(db, ""), config)
 			summary := services.AppMessageService.GetSummary()

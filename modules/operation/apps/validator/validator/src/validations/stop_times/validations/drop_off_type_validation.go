@@ -30,10 +30,7 @@ Valid options are:
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func DropOffTypeValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("drop_off_type", "stop_times.txt", "stop_times_drop_off_type_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.DropOffType.Severity != "" {
-		ctx.WithSeverity(rules.DropOffType.Severity)
-	}
+	ctx := lib.NewValidationContext("drop_off_type", "stop_times.txt", "stop_times_drop_off_type_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate drop_off_type is present
 	if stopTime.DropOffType == nil {
@@ -65,12 +62,12 @@ func DropOffTypeValidation(stopTime *types.StopTime, row int, rules *types.StopT
 	}
 
 	// 5. Validate rule options
-	if rules != nil && rules.DropOffType.Options != nil {
-		if slices.Contains(*rules.DropOffType.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stop_times_drop_off_type_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stop_times_drop_off_type_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.DropOffType.Options, fmt.Sprintf("%d", dt)) {
+		if !slices.Contains(*rules.Rule("stop_times_drop_off_type_valid_gtfs_enum").Options, fmt.Sprintf("%d", dt)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", fmt.Sprintf("%d", dt)))
 			return
 		}

@@ -25,10 +25,7 @@ This allows feed consumers to more easily internationalize and localize the plat
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func PlatformCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("platform_code", "stops.txt", "stops_platform_code_valid", row, services.AppMessageService)
-	if rules != nil && rules.PlatformCode.Severity != "" {
-		ctx.WithSeverity(rules.PlatformCode.Severity)
-	}
+	ctx := lib.NewValidationContext("platform_code", "stops.txt", "stops_platform_code_valid", row, services.AppMessageService, rules)
 
 	if stop.PlatformCode == nil || *stop.PlatformCode == "" {
 		if ctx.ShouldSkip() {
@@ -46,12 +43,12 @@ func PlatformCodeValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 	}
 
 	// Validate rules
-	if rules != nil && rules.PlatformCode.Options != nil {
-		if slices.Contains(*rules.PlatformCode.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_platform_code_valid").Options != nil {
+		if slices.Contains(*rules.Rule("stops_platform_code_valid").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.PlatformCode.Options, *stop.PlatformCode) {
+		if !slices.Contains(*rules.Rule("stops_platform_code_valid").Options, *stop.PlatformCode) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.PlatformCode))
 			return
 		}

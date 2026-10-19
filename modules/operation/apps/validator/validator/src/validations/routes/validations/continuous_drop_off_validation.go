@@ -35,10 +35,7 @@ Conditionally Forbidden:
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func ContinuousDropOffValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *types.RoutesRules, routesWithWindows map[string]bool) {
-	ctx := lib.NewValidationContext("continuous_drop_off", "routes.txt", "routes_continuous_drop_off_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.ContinuousDropOff.Severity != "" {
-		ctx.WithSeverity(rules.ContinuousDropOff.Severity)
-	}
+	ctx := lib.NewValidationContext("continuous_drop_off", "routes.txt", "routes_continuous_drop_off_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate continuous_drop_off is present
 	if route.ContinuousDropOff == nil || *route.ContinuousDropOff == "" || *route.ContinuousDropOff == "1" {
@@ -66,12 +63,12 @@ func ContinuousDropOffValidation(route *types.Route, row int, gtfs *types.Gtfs, 
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.ContinuousDropOff.Options != nil {
-		if slices.Contains(*rules.ContinuousDropOff.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("routes_continuous_drop_off_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("routes_continuous_drop_off_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.ContinuousDropOff.Options, *route.ContinuousDropOff) {
+		if !slices.Contains(*rules.Rule("routes_continuous_drop_off_valid_gtfs_enum").Options, *route.ContinuousDropOff) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.ContinuousDropOff))
 			return
 		}

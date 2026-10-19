@@ -27,10 +27,7 @@ Values for stop_id that identify stations (location_type=1), or stops (location_
 */
 
 func ToStopIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rules *types.PathwaysRules) {
-	ctx := lib.NewValidationContext("to_stop_id", "pathways.txt", "pathway_to_stop_id_references_stops_table", row, services.AppMessageService)
-	if rules != nil && rules.ToStopId.Severity != "" {
-		ctx.WithSeverity(rules.ToStopId.Severity)
-	}
+	ctx := lib.NewValidationContext("to_stop_id", "pathways.txt", "pathway_to_stop_id_references_stops_table", row, services.AppMessageService, rules)
 
 	// 1. Validate to_stop_id is present
 	if pathways.ToStopId == nil {

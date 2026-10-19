@@ -24,10 +24,7 @@ point along the shape's densified line, not just its original points.
 */
 
 func StopCoordinatesByTripIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, tripStopTimesCache map[string][]types.StopTimeRaw, stopsCache map[string]types.StopCoordinatesValidation, stopClosestShapePointsCache map[string]types.StopClosestShapePointsInfo, rules *types.TripsRules) []types.StopCoordinatesValidation {
-	ctx := lib.NewValidationContext("stop_id", "stop_times.txt", "trip_path_stop_coordinates_referenced_from_stops", row, services.AppMessageService)
-	if rules != nil && rules.StopCoordinatesByTripId.Severity != "" {
-		ctx.WithSeverity(rules.StopCoordinatesByTripId.Severity)
-	}
+	ctx := lib.NewValidationContext("stop_id", "stop_times.txt", "trip_path_stop_coordinates_referenced_from_stops", row, services.AppMessageService, rules)
 
 	// 1. Load the trip's stop_times, falling back to a direct query if the pre-built cache missed it
 	stopTimesRaw, exists := tripStopTimesCache[*trip.TripId]

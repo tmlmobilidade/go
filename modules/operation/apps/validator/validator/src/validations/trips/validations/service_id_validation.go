@@ -21,10 +21,7 @@ Identifies a service.
 [trips.txt]: https://gtfs.org/schedule/reference/#trips
 */
 func ServiceIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, calendarRowsCache, calendarDatesRowsCache map[string][]int, rules *types.TripsRules) {
-	ctx := lib.NewValidationContext("service_id", "trips.txt", "trips_service_id_references_calendar_service", row, services.AppMessageService)
-	if rules != nil && rules.ServiceId.Severity != "" {
-		ctx.WithSeverity(rules.ServiceId.Severity)
-	}
+	ctx := lib.NewValidationContext("service_id", "trips.txt", "trips_service_id_references_calendar_service", row, services.AppMessageService, rules)
 
 	// 1. Validate service_id is present
 	if trip.ServiceId == nil {

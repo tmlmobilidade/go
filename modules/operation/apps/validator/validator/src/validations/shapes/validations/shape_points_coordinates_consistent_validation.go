@@ -27,11 +27,11 @@ type pointsCoordinatesConsistentViolation struct {
 // tolerance from rules.Options[0] (meters), falling back to the default when
 // rules, options or the value itself are missing or invalid.
 func getShapePointsCoordinatesConsistentToleranceMeters(rules *types.ShapesRules) float64 {
-	if rules == nil || rules.ShapePointsCoordinatesConsistent.Options == nil || len(*rules.ShapePointsCoordinatesConsistent.Options) == 0 {
+	if rules == nil || rules.Rule("shape_sequence_position_mismatches_cumulative_traveled_distance").Options == nil || len(*rules.Rule("shape_sequence_position_mismatches_cumulative_traveled_distance").Options) == 0 {
 		return shapes_coordinates.MAX_SHAPE_POINT_DISTANCE_METERS
 	}
 
-	value, err := strconv.ParseFloat((*rules.ShapePointsCoordinatesConsistent.Options)[0], 64)
+	value, err := strconv.ParseFloat((*rules.Rule("shape_sequence_position_mismatches_cumulative_traveled_distance").Options)[0], 64)
 	if err != nil || value <= 0 || math.IsNaN(value) || math.IsInf(value, 0) {
 		return shapes_coordinates.MAX_SHAPE_POINT_DISTANCE_METERS
 	}
@@ -60,7 +60,7 @@ func uniquePointsCoordinatesConsistentRows(rows []int) []int {
 func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *types.ShapesRules) {
 	severity := types.SEVERITY_IGNORE
 	if rules != nil {
-		severity = rules.ShapePointsCoordinatesConsistent.Severity
+		severity = rules.Rule("shape_sequence_position_mismatches_cumulative_traveled_distance").Severity
 	}
 	if severity == "" || severity == types.SEVERITY_IGNORE {
 		return

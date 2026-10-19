@@ -9,6 +9,6 @@ import (
 
 func TestAgencyEmailField(t *testing.T) {
 	testutils.CheckPresence(t, "agency_email", checks.AgencyEmailField, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{AgencyEmailField: config}
+		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_email_field": config}}}
 	})
 }

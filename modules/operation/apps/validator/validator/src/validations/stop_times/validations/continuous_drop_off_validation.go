@@ -37,10 +37,7 @@ Conditionally Forbidden:
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func ContinuousDropOffValidation(stopTime *types.StopTime, row int, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("continuous_drop_off", "stop_times.txt", "stop_times_continuous_drop_off_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.ContinuousDropOff.Severity != "" {
-		ctx.WithSeverity(rules.ContinuousDropOff.Severity)
-	}
+	ctx := lib.NewValidationContext("continuous_drop_off", "stop_times.txt", "stop_times_continuous_drop_off_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate continuous_drop_off is present
 	if stopTime.ContinuousDropOff == nil {
@@ -72,12 +69,12 @@ func ContinuousDropOffValidation(stopTime *types.StopTime, row int, rules *types
 	}
 
 	// 5. Validate rule options
-	if rules != nil && rules.ContinuousDropOff.Options != nil {
-		if slices.Contains(*rules.ContinuousDropOff.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stop_times_continuous_drop_off_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stop_times_continuous_drop_off_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.ContinuousDropOff.Options, fmt.Sprintf("%d", cd)) {
+		if !slices.Contains(*rules.Rule("stop_times_continuous_drop_off_valid_gtfs_enum").Options, fmt.Sprintf("%d", cd)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", fmt.Sprintf("%d", cd)))
 			return
 		}

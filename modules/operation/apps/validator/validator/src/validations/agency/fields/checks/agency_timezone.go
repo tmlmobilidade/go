@@ -28,8 +28,9 @@ func AgencyTimezoneField(db *services.SQLiteContext, rules *types.AgencyRules) e
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_timezone", "agency.txt", "agency_timezone_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyTimezoneField.Severity != "" {
-		ctx.WithSeverity(rules.AgencyTimezoneField.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_timezone_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//

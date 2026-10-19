@@ -21,10 +21,7 @@ Orders the routes in a way which is ideal for presentation to customers. Routes 
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
 func RouteSortOrderValidation(route *types.Route, row int, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("route_sort_order", "routes.txt", "route_sort_order_non_negative_integer", row, services.AppMessageService)
-	if rules != nil && rules.RouteSortOrder.Severity != "" {
-		ctx.WithSeverity(rules.RouteSortOrder.Severity)
-	}
+	ctx := lib.NewValidationContext("route_sort_order", "routes.txt", "route_sort_order_non_negative_integer", row, services.AppMessageService, rules)
 
 	// 1. Validate route_sort_order is present
 	if route.RouteSortOrder == nil {

@@ -27,8 +27,9 @@ func AgencyNameField(db *services.SQLiteContext, rules *types.AgencyRules) error
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_name", "agency.txt", "agency_name_field", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyNameField.Severity != "" {
-		ctx.WithSeverity(rules.AgencyNameField.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_name_field")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//

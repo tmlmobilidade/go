@@ -27,10 +27,7 @@ Valid options are:
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
 func PaymentMethodValidation(fareAttribute *types.FareAttribute, row int, rules *types.FareAttributesRules) {
-	ctx := lib.NewValidationContext("payment_method", "fare_attributes.txt", "fare_attributes_payment_method_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.PaymentMethod.Severity != "" {
-		ctx.WithSeverity(rules.PaymentMethod.Severity)
-	}
+	ctx := lib.NewValidationContext("payment_method", "fare_attributes.txt", "fare_attributes_payment_method_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate payment_method is present
 	if fareAttribute.PaymentMethod == nil {

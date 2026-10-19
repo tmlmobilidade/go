@@ -24,10 +24,7 @@ Recommended when pickup_type=2.
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
 func PickupBookingRuleIdValidation(stopTime *types.StopTime, row int, gtfs *types.Gtfs, rules *types.StopTimesRules) {
-	ctx := lib.NewValidationContext("pickup_booking_rule_id", "stop_times.txt", "stop_times_pickup_booking_rule_id_references_booking_rules", row, services.AppMessageService)
-	if rules != nil && rules.PickupBookingRuleId.Severity != "" {
-		ctx.WithSeverity(rules.PickupBookingRuleId.Severity)
-	}
+	ctx := lib.NewValidationContext("pickup_booking_rule_id", "stop_times.txt", "stop_times_pickup_booking_rule_id_references_booking_rules", row, services.AppMessageService, rules)
 
 	// 1. Validate pickup_booking_rule_id is present
 	if stopTime.PickupBookingRuleId == nil {
@@ -53,12 +50,12 @@ func PickupBookingRuleIdValidation(stopTime *types.StopTime, row int, gtfs *type
 	}
 
 	// 4. Validate rule options
-	if rules != nil && rules.PickupBookingRuleId.Options != nil {
-		if slices.Contains(*rules.PickupBookingRuleId.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stop_times_pickup_booking_rule_id_references_booking_rules").Options != nil {
+		if slices.Contains(*rules.Rule("stop_times_pickup_booking_rule_id_references_booking_rules").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.PickupBookingRuleId.Options, *stopTime.PickupBookingRuleId) {
+		if !slices.Contains(*rules.Rule("stop_times_pickup_booking_rule_id_references_booking_rules").Options, *stopTime.PickupBookingRuleId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stopTime.PickupBookingRuleId))
 			return
 		}

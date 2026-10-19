@@ -27,10 +27,7 @@ Conditionally Forbidden:
 [route_networks.txt]: https://gtfs.org/schedule/reference/#routenetworkstxt
 */
 func NetworkIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *types.RoutesRules) {
-	ctx := lib.NewValidationContext("network_id", "routes.txt", "routes_network_id_references_networks_table", row, services.AppMessageService)
-	if rules != nil && rules.NetworkId.Severity != "" {
-		ctx.WithSeverity(rules.NetworkId.Severity)
-	}
+	ctx := lib.NewValidationContext("network_id", "routes.txt", "routes_network_id_references_networks_table", row, services.AppMessageService, rules)
 
 	// 1. Validate network_id is present
 	if route.NetworkId == nil {
@@ -61,12 +58,12 @@ func NetworkIdValidation(route *types.Route, row int, gtfs *types.Gtfs, rules *t
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.NetworkId.Options != nil {
-		if slices.Contains(*rules.NetworkId.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("routes_network_id_references_networks_table").Options != nil {
+		if slices.Contains(*rules.Rule("routes_network_id_references_networks_table").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.NetworkId.Options, *route.NetworkId) {
+		if !slices.Contains(*rules.Rule("routes_network_id_references_networks_table").Options, *route.NetworkId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *route.NetworkId))
 			return
 		}

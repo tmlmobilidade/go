@@ -36,11 +36,11 @@ type distancesViolation struct {
 // rules.Options[0] (meters), falling back to the default when rules, options
 // or the value itself are missing or invalid.
 func getDistanceToleranceMeters(rules *types.ShapesRules) float64 {
-	if rules == nil || rules.ShapeDistTraveledDeltaMismatchesHaversineBlock.Options == nil || len(*rules.ShapeDistTraveledDeltaMismatchesHaversineBlock.Options) == 0 {
+	if rules == nil || rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Options == nil || len(*rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Options) == 0 {
 		return maxAllPointsDistanceDeltaToleranceMeters
 	}
 
-	value, err := strconv.ParseFloat((*rules.ShapeDistTraveledDeltaMismatchesHaversineBlock.Options)[0], 64)
+	value, err := strconv.ParseFloat((*rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Options)[0], 64)
 	if err != nil || value < 0 {
 		return maxAllPointsDistanceDeltaToleranceMeters
 	}
@@ -65,8 +65,8 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 	// Severity comes from rules; with no rules configured it defaults to SEVERITY_IGNORE,
 	// so nothing below actually gets reported.
 	severity := types.SEVERITY_IGNORE
-	if rules != nil && rules.ShapeDistTraveledDeltaMismatchesHaversineBlock.Severity != "" {
-		severity = types.Severity(rules.ShapeDistTraveledDeltaMismatchesHaversineBlock.Severity)
+	if rules != nil && rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Severity != "" {
+		severity = types.Severity(rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Severity)
 	}
 
 	shapeGroups := map[string][]shapeDistancesPoint{}

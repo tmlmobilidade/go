@@ -31,8 +31,9 @@ func AgencyIdValid(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_id", "agency.txt", "agency_id_valid", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyIdValid.Severity != "" {
-		ctx.WithSeverity(rules.AgencyIdValid.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_id_valid")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
@@ -46,12 +47,12 @@ func AgencyIdValid(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	//
 	// 3. Validate rules
 
-	if rules != nil && rules.AgencyIdValid.Options != nil {
-		if slices.Contains(*rules.AgencyIdValid.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("agency_id_valid").Options != nil {
+		if slices.Contains(*rules.Rule("agency_id_valid").Options, types.ALL_OPTIONS) {
 			return nil
 		}
 
-		if !slices.Contains(*rules.AgencyIdValid.Options, value) {
+		if !slices.Contains(*rules.Rule("agency_id_valid").Options, value) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
 			return nil
 		}

@@ -21,10 +21,7 @@ Currency used to pay the fare.
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
 func CurrencyTypeValidation(fareAttribute *types.FareAttribute, row int, rules *types.FareAttributesRules) {
-	ctx := lib.NewValidationContext("currency_type", "fare_attributes.txt", "fare_attributes_currency_type_valid", row, services.AppMessageService)
-	if rules != nil && rules.CurrencyType.Severity != "" {
-		ctx.WithSeverity(rules.CurrencyType.Severity)
-	}
+	ctx := lib.NewValidationContext("currency_type", "fare_attributes.txt", "fare_attributes_currency_type_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate currency_type is present
 	if fareAttribute.CurrencyType == nil {

@@ -9,6 +9,6 @@ import (
 
 func TestAgencyNameValid(t *testing.T) {
 	testutils.CheckOptions(t, "agency_name", "Agency", checks.AgencyNameValid, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{AgencyNameValid: config}
+		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_name_valid": config}}}
 	})
 }

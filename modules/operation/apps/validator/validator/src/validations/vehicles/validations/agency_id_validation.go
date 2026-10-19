@@ -19,10 +19,7 @@ import (
 Agency for the specified vehicle.
 */
 func AgencyIdValidation(vehicle *types.Vehicle, row int, gtfs *types.Gtfs, rules *types.VehiclesRules) {
-	ctx := lib.NewValidationContext("agency_id", "vehicles.txt", "vehicle_agency_id_references_agency_table", row, services.AppMessageService)
-	if rules != nil && rules.AgencyId.Severity != "" {
-		ctx.WithSeverity(rules.AgencyId.Severity)
-	}
+	ctx := lib.NewValidationContext("agency_id", "vehicles.txt", "vehicle_agency_id_references_agency_table", row, services.AppMessageService, rules)
 
 	// 1. Check if agency_id is required
 	if vehicle.AgencyId == nil {

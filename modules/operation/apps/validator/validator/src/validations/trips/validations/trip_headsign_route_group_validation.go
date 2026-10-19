@@ -56,7 +56,7 @@ func TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupe
 		if len(values) > 2 && (ruleID == "" || ruleID == "trip_headsign_max_two_per_route") {
 			ctx := lib.NewValidationContext("trip_headsign", "trips.txt", "trip_headsign_max_two_per_route", firstRow, services.AppMessageService)
 			if rules != nil {
-				ctx.WithSeverity(rules.TripHeadsignMaxTwoPerRoute.Severity)
+				ctx.WithSeverity(rules.Rule("trip_headsign_max_two_per_route").Severity)
 			}
 			if !ctx.ShouldSkip() {
 				ids := make([]string, 0, len(values))
@@ -78,7 +78,7 @@ func TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupe
 			}
 			ctx := lib.NewValidationContext("trip_headsign", "trips.txt", "trip_headsign_consistent_per_route_direction", directionRows[directionId], services.AppMessageService)
 			if rules != nil {
-				ctx.WithSeverity(rules.TripHeadsignConsistentPerRouteDirection.Severity)
+				ctx.WithSeverity(rules.Rule("trip_headsign_consistent_per_route_direction").Severity)
 			}
 			if ctx.ShouldSkip() {
 				continue

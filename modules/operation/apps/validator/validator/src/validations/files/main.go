@@ -184,7 +184,7 @@ func (v *FileValidation) checkFeedInfoWithTranslations(gtfs types.Gtfs, rules *t
 func (v *FileValidation) checkForbiddenNetworks(gtfs types.Gtfs, rules *types.GtfsRules) {
 	severity := types.SEVERITY_ERROR
 	if rules != nil {
-		severity = rules.FileValidation.GtfsFeedFilePresenceAndIntegrity.Severity
+		severity = rules.FileValidation.Rule("file_validation_gtfs_feed_file_presence_and_integrity_rule").Severity
 	}
 	routeCount, err := gtfs.GetTableCount("routes")
 	if err != nil || routeCount == 0 {

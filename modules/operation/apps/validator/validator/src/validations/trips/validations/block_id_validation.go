@@ -42,10 +42,7 @@ Notes on above table:
 [transfers]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 */
 func BlockIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ctx := lib.NewValidationContext("block_id", "trips.txt", "trips_block_id_in_allowed_set", row, services.AppMessageService)
-	if rules != nil && rules.BlockId.Severity != "" {
-		ctx.WithSeverity(rules.BlockId.Severity)
-	}
+	ctx := lib.NewValidationContext("block_id", "trips.txt", "trips_block_id_in_allowed_set", row, services.AppMessageService, rules)
 
 	// 1. Validate block_id is required
 	if trip.BlockId == nil {

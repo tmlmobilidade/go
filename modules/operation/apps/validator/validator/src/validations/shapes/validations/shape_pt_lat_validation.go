@@ -21,10 +21,7 @@ Latitude of a shape point. Each record in shapes.txt represents a shape point us
 [shapes.txt]: https://gtfs.org/schedule/reference/#shapestxt
 */
 func ShapePtLatValidation(shape *types.Shape, row int, rules *types.ShapesRules) {
-	ctx := lib.NewValidationContext("shape_pt_lat", "shapes.txt", "shape_pt_lat_valid_latitude", row, services.AppMessageService)
-	if rules != nil && rules.ShapePtLat.Severity != "" {
-		ctx.WithSeverity(rules.ShapePtLat.Severity)
-	}
+	ctx := lib.NewValidationContext("shape_pt_lat", "shapes.txt", "shape_pt_lat_valid_latitude", row, services.AppMessageService, rules)
 
 	// 1. Validate shape_pt_lat is present
 	if shape.ShapePtLat == nil {

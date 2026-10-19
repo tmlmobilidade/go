@@ -57,6 +57,9 @@ func MessageSeverityOverride(file, id, field string) (types.Severity, bool) {
 	if !ok {
 		severity, ok = (*values)[prefix]
 	}
+	if !ok && !isTechnicalNotice(id) {
+		return types.SEVERITY_IGNORE, true
+	}
 	if severity == types.SEVERITY_FORBIDDEN {
 		severity = types.SEVERITY_ERROR
 	}
@@ -73,4 +76,11 @@ func RuleMessageKey(id string) string {
 	default:
 		return id
 	}
+}
+
+// Parser and file-level diagnostics are not per-row configurable validations.
+func isTechnicalNotice(id string) bool {
+	return strings.HasSuffix(id, "_values_parse") || strings.HasSuffix(id, "_file_missing") ||
+		id == "file_validation" || id == "file_not_found_in_rules" ||
+		id == types.RuleIDGtfsFeedFilePresenceAndIntegrity
 }

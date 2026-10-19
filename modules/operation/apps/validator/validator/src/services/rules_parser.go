@@ -87,33 +87,7 @@ func isMetaGtfsRulesSection(jsonTag string) bool {
 }
 
 func (rp *RulesParser) GetRequiredFiles(rules *types.GtfsRules) []string {
-	if rules == nil {
-		return []string{}
-	}
-
-	allFiles := lib.GetAllStructTagValues(types.GtfsRules{}, "json")
-	requiredFiles := make([]string, 0)
-
-	for _, file := range allFiles {
-		if isMetaGtfsRulesSection(file) {
-			continue
-		}
-		// Get the nested struct field value by json tag
-		fileValue := rp.getNestedFieldByTag(rules, "json", file)
-		if fileValue.IsValid() && fileValue.Kind() == reflect.Struct {
-			// Look for _file field in the nested struct
-			fileField := rp.getNestedFieldByTag(fileValue.Addr().Interface(), "json", "_file")
-			if fileField.IsValid() {
-				severity := types.Severity(fileField.String())
-				if severity == types.SEVERITY_ERROR {
-					// Add .txt extension to match file name format
-					requiredFiles = append(requiredFiles, file+".txt")
-				}
-			}
-		}
-	}
-
-	return requiredFiles
+	return rp.getFilesBySeverity(rules, types.SEVERITY_ERROR)
 }
 
 // getNestedFieldByTag gets a field value by tag from a struct (handles nested structs)
@@ -142,33 +116,7 @@ func (rp *RulesParser) getNestedFieldByTag(obj interface{}, tagKey, tagValue str
 }
 
 func (rp *RulesParser) GetForbiddenFiles(rules *types.GtfsRules) []string {
-	if rules == nil {
-		return []string{}
-	}
-
-	allFiles := lib.GetAllStructTagValues(types.GtfsRules{}, "json")
-	forbiddenFiles := make([]string, 0)
-
-	for _, file := range allFiles {
-		if isMetaGtfsRulesSection(file) {
-			continue
-		}
-		// Get the nested struct field value by json tag
-		fileValue := rp.getNestedFieldByTag(rules, "json", file)
-		if fileValue.IsValid() && fileValue.Kind() == reflect.Struct {
-			// Look for _file field in the nested struct
-			fileField := rp.getNestedFieldByTag(fileValue.Addr().Interface(), "json", "_file")
-			if fileField.IsValid() {
-				severity := types.Severity(fileField.String())
-				if severity == types.SEVERITY_FORBIDDEN {
-					// Add .txt extension to match file name format
-					forbiddenFiles = append(forbiddenFiles, file+".txt")
-				}
-			}
-		}
-	}
-
-	return forbiddenFiles
+	return rp.getFilesBySeverity(rules, types.SEVERITY_FORBIDDEN)
 }
 
 func (rp *RulesParser) GetWarningFiles(rules *types.GtfsRules) []string {
@@ -195,7 +143,7 @@ func (rp *RulesParser) getFilesBySeverity(rules *types.GtfsRules, wanted types.S
 		fileValue := rp.getNestedFieldByTag(rules, "json", file)
 		if fileValue.IsValid() && fileValue.Kind() == reflect.Struct {
 			// Look for _file field in the nested struct
-			fileField := rp.getNestedFieldByTag(fileValue.Addr().Interface(), "json", "_file")
+			fileField := fileValue.FieldByName("File")
 			if fileField.IsValid() {
 				severity := types.Severity(fileField.String())
 				if severity == wanted {

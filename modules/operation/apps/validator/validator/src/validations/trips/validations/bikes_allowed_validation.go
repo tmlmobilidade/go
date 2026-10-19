@@ -29,10 +29,7 @@ Valid options are:
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func BikesAllowedValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ctx := lib.NewValidationContext("bikes_allowed", "trips.txt", "trips_bikes_allowed_valid_gtfs_enum", row, services.AppMessageService)
-	if rules != nil && rules.BikesAllowed.Severity != "" {
-		ctx.WithSeverity(rules.BikesAllowed.Severity)
-	}
+	ctx := lib.NewValidationContext("bikes_allowed", "trips.txt", "trips_bikes_allowed_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate bikes_allowed is required
 	if trip.BikesAllowed == nil {
@@ -61,12 +58,12 @@ func BikesAllowedValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.BikesAllowed.Options != nil {
-		if slices.Contains(*rules.BikesAllowed.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("trips_bikes_allowed_valid_gtfs_enum").Options != nil {
+		if slices.Contains(*rules.Rule("trips_bikes_allowed_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.BikesAllowed.Options, fmt.Sprintf("%d", *trip.BikesAllowed)) {
+		if !slices.Contains(*rules.Rule("trips_bikes_allowed_valid_gtfs_enum").Options, fmt.Sprintf("%d", *trip.BikesAllowed)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", map[string]any{"value": *trip.BikesAllowed}))
 			return
 		}

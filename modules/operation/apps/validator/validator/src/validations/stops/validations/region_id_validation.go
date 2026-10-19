@@ -22,10 +22,7 @@ Region identifier for a stop.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func RegionIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("region_id", "stops.txt", "stops_region_id_valid", row, services.AppMessageService)
-	if rules != nil && rules.RegionId.Severity != "" {
-		ctx.WithSeverity(rules.RegionId.Severity)
-	}
+	ctx := lib.NewValidationContext("region_id", "stops.txt", "stops_region_id_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate region_id is present
 	if stop.RegionId == nil || *stop.RegionId == "" {
@@ -45,12 +42,12 @@ func RegionIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// 3. Validate Rule options
-	if rules != nil && rules.RegionId.Options != nil {
-		if slices.Contains(*rules.RegionId.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_region_id_valid").Options != nil {
+		if slices.Contains(*rules.Rule("stops_region_id_valid").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.RegionId.Options, *stop.RegionId) {
+		if !slices.Contains(*rules.Rule("stops_region_id_valid").Options, *stop.RegionId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.RegionId))
 			return
 		}

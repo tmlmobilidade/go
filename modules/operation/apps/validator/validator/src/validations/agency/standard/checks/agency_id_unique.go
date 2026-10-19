@@ -30,8 +30,9 @@ func AgencyIdUnique(db *services.SQLiteContext, rules *types.AgencyRules) error 
 	// 1. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_id", "agency.txt", "agency_id_unique", db.Row, services.AppMessageService)
-	if rules != nil && rules.AgencyIdUnique.Severity != "" {
-		ctx.WithSeverity(rules.AgencyIdUnique.Severity)
+	if rules != nil {
+		rule := rules.Rule("agency_id_unique")
+		ctx.WithSeverity(rule.Severity)
 	}
 
 	//

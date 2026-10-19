@@ -37,10 +37,7 @@ The `trip_headsign` and `direction_id` fields may be used together to assign a n
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func DirectionIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ctx := lib.NewValidationContext("direction_id", "trips.txt", "trips_direction_id_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.DirectionId.Severity != "" {
-		ctx.WithSeverity(rules.DirectionId.Severity)
-	}
+	ctx := lib.NewValidationContext("direction_id", "trips.txt", "trips_direction_id_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate direction_id is present
 	if trip.DirectionId == nil {
@@ -69,12 +66,12 @@ func DirectionIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *t
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.DirectionId.Options != nil {
-		if slices.Contains(*rules.DirectionId.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("trips_direction_id_valid_enum").Options != nil {
+		if slices.Contains(*rules.Rule("trips_direction_id_valid_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.DirectionId.Options, fmt.Sprintf("%d", *trip.DirectionId)) {
+		if !slices.Contains(*rules.Rule("trips_direction_id_valid_enum").Options, fmt.Sprintf("%d", *trip.DirectionId)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", map[string]any{"value": *trip.DirectionId}))
 			return
 		}

@@ -28,10 +28,7 @@ Describes if the stop has schedules.
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func HasSchedulesValidation(stop *types.Stop, row int, rules *types.StopsRules) {
-	ctx := lib.NewValidationContext("has_schedules", "stops.txt", "stops_has_schedules_valid_enum", row, services.AppMessageService)
-	if rules != nil && rules.HasSchedules.Severity != "" {
-		ctx.WithSeverity(rules.HasSchedules.Severity)
-	}
+	ctx := lib.NewValidationContext("has_schedules", "stops.txt", "stops_has_schedules_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate has_schedules is present
 	if stop.HasSchedules == nil {
@@ -58,12 +55,12 @@ func HasSchedulesValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.HasSchedules.Options != nil {
-		if slices.Contains(*rules.HasSchedules.Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule("stops_has_schedules_valid_enum").Options != nil {
+		if slices.Contains(*rules.Rule("stops_has_schedules_valid_enum").Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.HasSchedules.Options, strconv.Itoa(*stop.HasSchedules)) {
+		if !slices.Contains(*rules.Rule("stops_has_schedules_valid_enum").Options, strconv.Itoa(*stop.HasSchedules)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.HasSchedules))
 			return
 		}
