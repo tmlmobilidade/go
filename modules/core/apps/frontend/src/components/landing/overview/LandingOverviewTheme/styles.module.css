@@ -1,0 +1,19 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: 20px;
+}
+
+/* * */
+/* SWATCH */
+
+.swatch {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	border: 1px solid var(--color-system-border-100);
+}
