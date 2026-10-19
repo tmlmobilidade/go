@@ -24,11 +24,16 @@ func EndDateValidation(db *services.SQLiteContext, rules *types.CalendarRules) e
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("end_date", "calendar.txt", "calendar_end_date_field", db.Row, services.AppMessageService)
+	const ruleID = "calendar_end_date_field"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("end_date", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("calendar_end_date_field")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
@@ -41,7 +46,7 @@ func EndDateValidation(db *services.SQLiteContext, rules *types.CalendarRules) e
 	}
 
 	//
-	// 2. Validate date is present
+	// 3. Validate date is present
 
 	if date == "" {
 		if ctx.ShouldSkip() {
@@ -54,7 +59,7 @@ func EndDateValidation(db *services.SQLiteContext, rules *types.CalendarRules) e
 	}
 
 	//
-	// 3. Return success
+	// 4. Return success
 
 	return nil
 }

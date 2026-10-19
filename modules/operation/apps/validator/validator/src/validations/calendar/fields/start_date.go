@@ -24,16 +24,21 @@ func StartDateValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("start_date", "calendar.txt", "calendar_start_date_field", db.Row, services.AppMessageService)
+	const ruleID = "calendar_start_date_field"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("start_date", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("calendar_start_date_field")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get the date value
+	// 3. Get the date value
 
 	date, err := db.Calendar.Field("start_date")
 	if err != nil {
@@ -41,7 +46,7 @@ func StartDateValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 	}
 
 	//
-	// 3. Validate date is present
+	// 4. Validate date is present
 
 	if date == "" {
 		if ctx.ShouldSkip() {
@@ -54,7 +59,7 @@ func StartDateValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

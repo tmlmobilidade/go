@@ -21,10 +21,11 @@ Identifies a set of dates when service is available for one or more routes.
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
 func ServiceIdValidation(db *services.SQLiteContext, rules *types.CalendarRules) error {
+	const ruleID = "calendar_service_id_unique_non_empty"
 
-	ctx := lib.NewValidationContext("service_id", "calendar.txt", "calendar_service_id_unique_non_empty", db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("service_id", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("calendar_service_id_unique_non_empty")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 

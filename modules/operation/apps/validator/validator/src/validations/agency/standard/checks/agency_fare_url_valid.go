@@ -24,16 +24,21 @@ func AgencyFareUrlValid(db *services.SQLiteContext, rules *types.AgencyRules) er
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("agency_fare_url", "agency.txt", "agency_fare_url_valid", db.Row, services.AppMessageService)
+	const ruleID = "agency_fare_url_valid"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("agency_fare_url", "agency.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("agency_fare_url_valid")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get the agency_fare_url value
+	// 3. Get the agency_fare_url value
 
 	value, err := db.Agency.Field("agency_fare_url")
 	if err != nil {
@@ -41,7 +46,7 @@ func AgencyFareUrlValid(db *services.SQLiteContext, rules *types.AgencyRules) er
 	}
 
 	//
-	// 3. Check if agency_fare_url is valid
+	// 4. Check if agency_fare_url is valid
 
 	if !lib.ValidateUrl(value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
@@ -49,7 +54,7 @@ func AgencyFareUrlValid(db *services.SQLiteContext, rules *types.AgencyRules) er
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

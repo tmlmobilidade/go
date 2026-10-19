@@ -24,16 +24,21 @@ func SundayValidation(db *services.SQLiteContext, rules *types.CalendarRules) er
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("sunday", "calendar.txt", "calendar_sunday_field", db.Row, services.AppMessageService)
+	const ruleID = "calendar_sunday_field"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("sunday", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("calendar_sunday_field")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get the value
+	// 3. Get the value
 
 	value, err := db.Calendar.Field("sunday")
 	if err != nil {
@@ -41,7 +46,7 @@ func SundayValidation(db *services.SQLiteContext, rules *types.CalendarRules) er
 	}
 
 	//
-	// 3. Validate value is present
+	// 4. Validate value is present
 
 	if value == "" {
 		if ctx.ShouldSkip() {
@@ -54,7 +59,7 @@ func SundayValidation(db *services.SQLiteContext, rules *types.CalendarRules) er
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

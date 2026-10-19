@@ -27,16 +27,21 @@ func AgencyPhoneValid(db *services.SQLiteContext, rules *types.AgencyRules) erro
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("agency_phone", "agency.txt", "agency_phone_valid", db.Row, services.AppMessageService)
+	const ruleID = "agency_phone_valid"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("agency_phone", "agency.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("agency_phone_valid")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get the agency_phone value
+	// 3. Get the agency_phone value
 
 	value, err := db.Agency.Field("agency_phone")
 	if err != nil {
@@ -44,7 +49,7 @@ func AgencyPhoneValid(db *services.SQLiteContext, rules *types.AgencyRules) erro
 	}
 
 	//
-	// 3. Check if agency_phone is valid
+	// 4. Check if agency_phone is valid
 
 	if !lib.ValidatePhone(value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
@@ -52,7 +57,7 @@ func AgencyPhoneValid(db *services.SQLiteContext, rules *types.AgencyRules) erro
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

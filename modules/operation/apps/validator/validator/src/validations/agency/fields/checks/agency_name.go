@@ -24,16 +24,21 @@ func AgencyNameField(db *services.SQLiteContext, rules *types.AgencyRules) error
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("agency_name", "agency.txt", "agency_name_field", db.Row, services.AppMessageService)
+	const ruleID = "agency_name_field"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("agency_name", "agency.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("agency_name_field")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get the agency_name value
+	// 3. Get the agency_name value
 
 	value, err := db.Agency.Field("agency_name")
 	if err != nil {
@@ -41,7 +46,7 @@ func AgencyNameField(db *services.SQLiteContext, rules *types.AgencyRules) error
 	}
 
 	//
-	// 3. Check if agency_name is required
+	// 4. Check if agency_name is required
 
 	if value == "" {
 		if ctx.ShouldSkip() {
@@ -54,7 +59,7 @@ func AgencyNameField(db *services.SQLiteContext, rules *types.AgencyRules) error
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

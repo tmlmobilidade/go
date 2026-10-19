@@ -24,16 +24,21 @@ func ServiceIdValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("service_id", "calendar.txt", "calendar_service_id_field", db.Row, services.AppMessageService)
+	const ruleID = "calendar_service_id_field"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("service_id", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("calendar_service_id_field")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get service_id and its occurrence count in calendar
+	// 3. Get service_id and its occurrence count in calendar
 
 	value, _, err := db.Calendar.FieldWithCount("service_id")
 	if err != nil {
@@ -41,7 +46,7 @@ func ServiceIdValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 	}
 
 	//
-	// 3. Validate service_id is present
+	// 4. Validate service_id is present
 
 	if value == "" {
 		if ctx.ShouldSkip() {
@@ -54,7 +59,7 @@ func ServiceIdValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

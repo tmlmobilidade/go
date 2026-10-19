@@ -25,16 +25,21 @@ func AgencyTimezoneValid(db *services.SQLiteContext, rules *types.AgencyRules) e
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("agency_timezone", "agency.txt", "agency_timezone_valid", db.Row, services.AppMessageService)
+	const ruleID = "agency_timezone_valid"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("agency_timezone", "agency.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("agency_timezone_valid")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get the agency_timezone value
+	// 3. Get the agency_timezone value
 
 	value, err := db.Agency.Field("agency_timezone")
 	if err != nil {
@@ -42,7 +47,7 @@ func AgencyTimezoneValid(db *services.SQLiteContext, rules *types.AgencyRules) e
 	}
 
 	//
-	// 3. Check if agency_timezone is valid
+	// 4. Check if agency_timezone is valid
 
 	if !lib.ValidateTimezone(value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
@@ -50,7 +55,7 @@ func AgencyTimezoneValid(db *services.SQLiteContext, rules *types.AgencyRules) e
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

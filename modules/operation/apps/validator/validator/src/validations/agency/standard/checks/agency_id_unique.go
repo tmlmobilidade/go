@@ -27,16 +27,21 @@ func AgencyIdUnique(db *services.SQLiteContext, rules *types.AgencyRules) error 
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("agency_id", "agency.txt", "agency_id_unique", db.Row, services.AppMessageService)
+	const ruleID = "agency_id_unique"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("agency_id", "agency.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("agency_id_unique")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get the agency_id value
+	// 3. Get the agency_id value
 
 	value, count, err := db.Agency.FieldWithCount("agency_id")
 	if err != nil {
@@ -44,14 +49,14 @@ func AgencyIdUnique(db *services.SQLiteContext, rules *types.AgencyRules) error 
 	}
 
 	//
-	// 3. Check if agency_id is Unique ID
+	// 4. Check if agency_id is Unique ID
 
 	if count > 1 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("duplicate", value))
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

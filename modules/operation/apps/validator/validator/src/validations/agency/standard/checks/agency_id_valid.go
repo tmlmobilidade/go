@@ -28,16 +28,21 @@ func AgencyIdValid(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("agency_id", "agency.txt", "agency_id_valid", db.Row, services.AppMessageService)
+	const ruleID = "agency_id_valid"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("agency_id", "agency.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("agency_id_valid")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get the agency_id value
+	// 3. Get the agency_id value
 
 	value, err := db.Agency.Field("agency_id")
 	if err != nil {
@@ -45,21 +50,21 @@ func AgencyIdValid(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	}
 
 	//
-	// 3. Validate rules
+	// 4. Validate rules
 
-	if rules != nil && rules.Rule("agency_id_valid").Options != nil {
-		if slices.Contains(*rules.Rule("agency_id_valid").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Rule(ruleID).Options != nil {
+		if slices.Contains(*rules.Rule(ruleID).Options, types.ALL_OPTIONS) {
 			return nil
 		}
 
-		if !slices.Contains(*rules.Rule("agency_id_valid").Options, value) {
+		if !slices.Contains(*rules.Rule(ruleID).Options, value) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
 			return nil
 		}
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

@@ -24,16 +24,21 @@ func AgencyUrlField(db *services.SQLiteContext, rules *types.AgencyRules) error 
 	//
 
 	//
-	// 1. Create the validation context
+	// 1. Get the rule
 
-	ctx := lib.NewValidationContext("agency_url", "agency.txt", "agency_url_field", db.Row, services.AppMessageService)
+	const ruleID = "agency_url_field"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("agency_url", "agency.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule("agency_url_field")
+		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
 	}
 
 	//
-	// 2. Get the agency_url value
+	// 3. Get the agency_url value
 
 	value, err := db.Agency.Field("agency_url")
 	if err != nil {
@@ -41,7 +46,7 @@ func AgencyUrlField(db *services.SQLiteContext, rules *types.AgencyRules) error 
 	}
 
 	//
-	// 3. Check if agency_url is required
+	// 4. Check if agency_url is required
 
 	if value == "" {
 		if ctx.ShouldSkip() {
@@ -54,7 +59,7 @@ func AgencyUrlField(db *services.SQLiteContext, rules *types.AgencyRules) error 
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }
