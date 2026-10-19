@@ -1,0 +1,27 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	/* background-color: var(--color-system-background-100); */
+	/* padding: 3px 10px; */
+	gap: 20px;
+	/* border-radius: 999px;
+	transform: translateX(-10px); */
+}
+
+/* * */
+/* LOCALE */
+
+.locale {
+	text-transform: uppercase;
+	cursor: pointer;
+	color: var(--color-system-text-200);
+}
+
+.locale[data-active="true"] {
+	color: var(--color-system-text-100);
+	font-weight: 600;
+}

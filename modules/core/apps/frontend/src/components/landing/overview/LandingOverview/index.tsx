@@ -37,11 +37,10 @@ export function LandingOverview() {
 								<Button href={PAGE_ROUTES.core.LOGIN_LIST} label={t('landing:LandingOverview.actions.login')} />
 								<Button href="#modules" label={t('landing:LandingOverview.actions.explore')} variant="secondary" />
 							</Section>
-							<Space h={15} />
-							<Section gap="md" padding="none">
-								<LandingOverviewI18n />
-								<LandingOverviewTheme />
-							</Section>
+							<Space h={20} />
+							<LandingOverviewI18n />
+							<Space />
+							<LandingOverviewTheme />
 						</>
 					</LandingInfoBlock>
 

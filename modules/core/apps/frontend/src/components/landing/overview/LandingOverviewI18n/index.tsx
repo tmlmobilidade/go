@@ -1,12 +1,8 @@
 'use client';
 
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, Grid, Section } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
+import { enabledLocales, useLocaleContext } from '@tmlmobilidade/ui';
 
-import { LandingSection } from '../../shared/LandingContainer';
-import { LandingInfoBlock } from '../../shared/LandingInfoBlock';
-import { LandingOverviewLinks } from '../LandingOverviewLinks';
+import styles from './styles.module.css';
 
 /* * */
 
@@ -16,14 +12,23 @@ export function LandingOverviewI18n() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const localeContext = useLocaleContext();
 
 	//
 	// B. Render components
 
 	return (
-		<div>
-			i18n
+		<div className={styles.container}>
+			{enabledLocales.map(item => (
+				<div
+					key={item._id}
+					className={styles.locale}
+					data-active={localeContext.data.locale === item._id}
+					onClick={() => localeContext.actions.setLocale(item._id)}
+				>
+					{item.name}
+				</div>
+			))}
 		</div>
 	);
 }
