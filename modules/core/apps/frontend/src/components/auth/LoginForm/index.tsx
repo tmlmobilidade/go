@@ -3,9 +3,9 @@
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Session } from '@tmlmobilidade/go-types-core';
-import { LoginEvent, LoginOpenedEvent, useAnalyticsContext } from '@tmlmobilidade/go-ui-analytics';
+import { LoginEvent, useAnalyticsContext } from '@tmlmobilidade/go-ui-analytics';
 import { fetchApiData, PasswordInput, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -17,8 +17,7 @@ export function LoginForm() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { actions: { identify, startReplay, stopReplay, track }, flags: { ready } } = useAnalyticsContext();
-	const [replayRequested, setReplayRequested] = useState(false);
+	const { actions: { identify, track } } = useAnalyticsContext();
 	const [isCompletingLogin, setIsCompletingLogin] = useState(false);
 
 	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: PAGE_ROUTES.core.HOME_LIST });
@@ -38,7 +37,6 @@ export function LoginForm() {
 			});
 		},
 		onSuccess: async (response) => {
-			stopReplay();
 			setIsCompletingLogin(true);
 			useToast.success({
 				message: t('unauthenticated:LoginForm.success.description'),
@@ -58,19 +56,6 @@ export function LoginForm() {
 		},
 	});
 
-	// Request capture on the first focus of either credential field, waiting for SDK readiness.
-	useEffect(() => {
-		if (!replayRequested || !ready) return;
-		let active = true;
-		void startReplay().then((started) => {
-			if (active && started) void track(LoginOpenedEvent);
-		});
-		return () => {
-			active = false;
-			stopReplay();
-		};
-	}, [ready, replayRequested, startReplay, stopReplay, track]);
-
 	//
 	// C. Render components
 
@@ -89,7 +74,6 @@ export function LoginForm() {
 				key="email"
 				disabled={isLoggingIn || isCompletingLogin}
 				onChange={e => setEmailValue(e.target.value)}
-				onFocus={() => setReplayRequested(true)}
 				placeholder={t('unauthenticated:LoginForm.fields.email.placeholder')}
 				value={emailValue}
 			/>
@@ -97,7 +81,6 @@ export function LoginForm() {
 				key="password"
 				disabled={isLoggingIn || isCompletingLogin}
 				onChange={e => setPasswordValue(e.target.value)}
-				onFocus={() => setReplayRequested(true)}
 				placeholder={t('unauthenticated:LoginForm.fields.password.placeholder')}
 				value={passwordValue}
 			/>

@@ -98,7 +98,7 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'lines',
-				href: `${PAGE_ROUTES.offer.LINES_LIST}?replay=offer-lines`,
+				href: PAGE_ROUTES.offer.LINES_LIST,
 				icon: <IconRoute />,
 				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'lines' }],
 			},
