@@ -1,5 +1,6 @@
 /* * */
 
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -24,9 +25,12 @@ async function main() {
 	//
 	// Run all tasks sequentially
 
-	await publishVehiclesPositions();
+	const organizationsCollection = await goDb.core.organizations.getCollection();
+	const organizations = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.realtime.vehicles': true }).toArray();
 
-	if (ITERATION % 100 === 0) await publishVehiclesMetadata(); // Every 100 iterations * 1s + execution time
+	await publishVehiclesPositions(organizations);
+
+	if (ITERATION % 100 === 0) await publishVehiclesMetadata(organizations); // Every 100 iterations * 1s + execution time
 
 	ITERATION++;
 

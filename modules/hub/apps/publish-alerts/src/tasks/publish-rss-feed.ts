@@ -2,6 +2,7 @@
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Organization } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
@@ -14,7 +15,7 @@ const RSS_FEED_URL = 'https://www.carrismetropolitana.pt/alerts';
 
 /* * */
 
-export async function publishRssFeed() {
+export async function publishRssFeed(organization?: Organization) {
 	//
 
 	Logger.title('Starting build of RSS feed...');
@@ -26,6 +27,7 @@ export async function publishRssFeed() {
 
 	const findResult = await goDb.operation.alerts.findMany(
 		{
+			...(organization && { agency_id: { $in: organization.agency_ids } }),
 			$and: [
 				{
 					$or: [
@@ -66,7 +68,7 @@ export async function publishRssFeed() {
 		title: 'Carris Metropolitana - Alertas',
 	});
 
-	await cacheDb.set('hub:v1:alerts:published:rss', rssFeed);
+	await cacheDb.set(organization ? `hub:v1:${organization._id}:alerts:published:rss` : 'hub:v1:alerts:published:rss', rssFeed);
 
 	Logger.success(`Finished publishing RSS feed (${globalTimer.get()})`);
 

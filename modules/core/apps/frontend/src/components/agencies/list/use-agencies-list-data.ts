@@ -7,7 +7,9 @@ import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
+import { useAgenciesOrganizationsData } from '../shared/use-agencies-organizations-data';
 import { useAgenciesListFilterSearch } from './AgenciesListFilterSearch/use-agencies-list-filter-search';
+import { useAgenciesListFilterOrganization } from './filters/AgenciesListFilterOrganization/use-agencies-list-filter-organization';
 
 /* * */
 
@@ -29,6 +31,8 @@ export function useAgenciesListData(): UseAgenciesListDataReturnType {
 	// A. Setup variables
 
 	const filterSearch = useAgenciesListFilterSearch();
+	const filterOrganization = useAgenciesListFilterOrganization();
+	const { data: organizations } = useAgenciesOrganizationsData();
 
 	//
 	// B. Fetch data
@@ -47,15 +51,23 @@ export function useAgenciesListData(): UseAgenciesListDataReturnType {
 		query: filterSearch.value,
 	});
 
+	const filteredAgenciesData = useMemo(() => {
+		if (!filterOrganization.isActive) return searchResultsData;
+		const agencyIds = new Set(organizations
+			.filter(organization => filterOrganization.value.includes(organization._id))
+			.flatMap(organization => organization.agency_ids ?? []));
+		return searchResultsData.filter(agency => agencyIds.has(agency._id));
+	}, [filterOrganization.isActive, filterOrganization.value, organizations, searchResultsData]);
+
 	//
 	// D. Return data
 
 	return useMemo(() => ({
-		data: searchResultsData,
+		data: filteredAgenciesData,
 		error: error?.error,
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [searchResultsData, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [filteredAgenciesData, data?.timestamp, error, isLoading, isValidating, mutate]);
 };
