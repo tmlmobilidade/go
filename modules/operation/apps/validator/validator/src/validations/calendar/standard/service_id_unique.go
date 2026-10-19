@@ -1,0 +1,42 @@
+package calendar_standard
+
+import (
+	"main/lib"
+	"main/services"
+	"main/types"
+)
+
+func ServiceIdUnique(db *services.SQLiteContext, rules *types.CalendarRules) error {
+	//
+
+	//
+	// 1. Get the rule
+
+	const ruleID = "calendar_service_id_unique"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("service_id", "calendar.txt", ruleID, db.Row, services.AppMessageService)
+	if rules != nil {
+		rule := rules.Rule(ruleID)
+		ctx.WithSeverity(rule.Severity)
+	}
+
+	//
+	// 3. Get service_id and its occurrence count in calendar
+
+	value, count, err := db.Calendar.FieldWithCount("service_id")
+	if err != nil {
+		return err
+	}
+
+	// 4. Validate service_id is unique
+	if count > 1 {
+		ctx.AddError(ctx.GetTranslatedMessage("duplicate", value))
+	}
+
+	// 5. Return success
+
+	return nil
+}
