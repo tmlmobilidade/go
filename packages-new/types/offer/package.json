@@ -29,8 +29,9 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint ./src/ && tsc --noEmit",
-		"lint:fix": "eslint ./src/ --fix",
+		"lint": "eslint ./src ./tests && tsc -p tsconfig.check.json --noEmit",
+		"lint:fix": "eslint ./src ./tests --fix",
+		"test": "node --import tsx --test tests/*.test.ts",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
@@ -48,6 +49,7 @@
 		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
+		"tsx": "4.23.12",
 		"typescript": "6.0.3"
 	}
 }

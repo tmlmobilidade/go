@@ -1,9 +1,7 @@
 'use client';
 
-import { type AnnotationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Annotation } from '@tmlmobilidade/go-types-offer';
-import { normalizeString } from '@tmlmobilidade/strings';
+import { type Annotation } from '@tmlmobilidade/go-types-dates';
 import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -14,7 +12,7 @@ import { useAnnotationsAgenciesData } from '../shared/use-users-agencies-data';
 
 interface AnnotationsListContextState {
 	data: {
-		filtered: AnnotationNormalized[]
+		filtered: Annotation[]
 		raw: Annotation[]
 	}
 	filters: {
@@ -80,24 +78,9 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// C. Transform data
 
-	const normalizedAnnotationsData: AnnotationNormalized[] = useMemo(() => {
-		// Skip if no data is available
-		if (!allAnnotationsData) return [];
-		// Normalize record fields
-		return allAnnotationsData.data?.map((item) => {
-			// Get agency IDs for normalization
-			const agencyIds = item.agency_ids.join(', ');
-
-			return {
-				...item,
-				agency_ids_normalized: normalizeString(agencyIds),
-			};
-		});
-	}, [allAnnotationsData]);
-
-	const searchResultsData = useSearch<AnnotationNormalized>({
-		accessors: ['_id', 'title', 'description', 'agency_ids_normalized'],
-		data: normalizedAnnotationsData,
+	const searchResultsData = useSearch<Annotation>({
+		accessors: ['_id', 'title', 'description', 'agency_ids'],
+		data: allAnnotationsData?.data ?? [],
 		query: filterSearch.value,
 	});
 
@@ -109,7 +92,7 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 		const datesSet = new Set(filterDates.value);
 
 		return searchResultsData
-			.filter((item: AnnotationNormalized) => {
+			.filter((item: Annotation) => {
 				// Filter by agency - check if any of the annotation's agencies match the filter
 				if (!item.agency_ids.some(agencyId => agencySet.has(agencyId))) return false;
 

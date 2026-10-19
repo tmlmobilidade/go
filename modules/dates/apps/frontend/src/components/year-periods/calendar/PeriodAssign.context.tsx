@@ -3,6 +3,7 @@
 import { closeAsignPeriodModal } from '@/components/year-periods/calendar/PeriodAssign.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { CalendarKey, convertKeysToOperationalDates, convertRangeToKeysArray, datesFromCalendarKey } from '@tmlmobilidade/dates';
+import { type YearPeriodsConflictsRequest, type YearPeriodsConflictsResponse } from '@tmlmobilidade/go-dates-pckg-types';
 import { type CreateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { useForm, type UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
@@ -120,14 +121,14 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 			const keys = convertRangeToKeysArray(params.dateRange.start, params.dateRange.end);
 			const dates = convertKeysToOperationalDates(keys);
 
-			const response = await fetchData<{ conflicts: { dates: OperationalDate[], year_period: YearPeriod }[] }>(
+			const response = await fetchData<YearPeriodsConflictsResponse>(
 				API_ROUTES.dates.YEAR_PERIODS_CHECK_CONFLICTS,
 				'POST',
 				{
 					agency_ids: params.agency_ids,
 					dates,
-					period_id: params.assignmentMode === 'existing' && params.yearPeriodId ? params.yearPeriodId : undefined,
-				},
+					year_period_id: params.assignmentMode === 'existing' && params.yearPeriodId ? params.yearPeriodId : undefined,
+				} satisfies YearPeriodsConflictsRequest,
 			);
 
 			if (response?.data?.conflicts) {

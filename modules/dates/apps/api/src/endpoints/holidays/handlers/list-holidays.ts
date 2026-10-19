@@ -4,7 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Holiday } from '@tmlmobilidade/go-types-offer';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**

@@ -4,6 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type YearPeriodsConflictsRequest, type YearPeriodsConflictsResponse } from '@tmlmobilidade/go-dates-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateYearPeriodDto, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -20,16 +21,7 @@ export class YearPeriodsController {
 	 * @param request Fastify request containing dates and optional period_id
 	 * @param reply Fastify reply
 	 */
-	static async checkConflicts(
-		request: FastifyRequest<{
-			Body: {
-				agency_ids: string[]
-				dates: OperationalDate[]
-				year_period_id?: string
-			}
-		}>,
-		reply: FastifyReply<{ conflicts: { dates: OperationalDate[], year_period: YearPeriod }[] }>,
-	) {
+	static async checkConflicts(request: FastifyRequest<{ Body: YearPeriodsConflictsRequest }>, reply: FastifyReply<YearPeriodsConflictsResponse>) {
 		//
 
 		//

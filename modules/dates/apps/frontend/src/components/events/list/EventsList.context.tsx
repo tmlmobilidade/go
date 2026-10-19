@@ -1,10 +1,8 @@
 'use client';
 
 import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
-import { type EventNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Event } from '@tmlmobilidade/go-types-offer';
-import { normalizeString } from '@tmlmobilidade/strings';
 import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -13,7 +11,7 @@ import useSWR from 'swr';
 
 interface EventsListContextState {
 	data: {
-		filtered: EventNormalized[]
+		filtered: Event[]
 		raw: Event[]
 	}
 	filters: {
@@ -79,24 +77,9 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Transform data
 
-	const normalizedEventsData: EventNormalized[] = useMemo(() => {
-		// Skip if no data is available
-		if (!allEventsData) return [];
-		// Normalize record fields
-		return allEventsData.data?.map((item) => {
-			// Get agency IDs for normalization
-			const agencyIds = item.agency_ids.join(', ');
-
-			return {
-				...item,
-				agency_ids_normalized: normalizeString(agencyIds),
-			};
-		});
-	}, [allEventsData]);
-
-	const searchResultsData = useSearch<EventNormalized>({
-		accessors: ['_id', 'title', 'description', 'agency_ids_normalized'],
-		data: normalizedEventsData,
+	const searchResultsData = useSearch<Event>({
+		accessors: ['_id', 'title', 'description', 'agency_ids'],
+		data: allEventsData?.data ?? [],
 		query: filterSearch.value,
 	});
 
@@ -108,7 +91,7 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 		const datesSet = new Set(filterDates.value);
 
 		return searchResultsData
-			.filter((item: EventNormalized) => {
+			.filter((item: Event) => {
 				// Filter by agency - check if any of the event's agencies match the filter
 				if (!item.agency_ids.some(agencyId => agencySet.has(agencyId))) return false;
 

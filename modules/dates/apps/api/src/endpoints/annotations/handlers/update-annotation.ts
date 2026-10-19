@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Annotation, type UpdateAnnotationDto } from '@tmlmobilidade/go-types-offer';
+import { type Annotation, type UpdateAnnotationDto, UpdateAnnotationSchema } from '@tmlmobilidade/go-types-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -53,7 +53,16 @@ export async function updateAnnotationHandler(request: FastifyRequest<{ Body: Up
 	//
 	// Update the annotation
 
-	const updatedAnnotation = await goDb.offer.annotations.updateById(annotationData._id, request.body);
+	const validatedAnnotation = UpdateAnnotationSchema.safeParse(request.body);
+
+	if (!validatedAnnotation.success) {
+		throw new HttpException(HTTP_STATUS.BAD_REQUEST, validatedAnnotation.error.message);
+	}
+
+	const updatedAnnotation = await goDb.offer.annotations.updateById(annotationData._id, {
+		...validatedAnnotation.data,
+		updated_by: request.me._id,
+	});
 
 	//
 	// Send the updated annotation data as the response

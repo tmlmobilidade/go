@@ -13,8 +13,8 @@ export const AnnotationSchema = BaseDocumentSchema.extend({
 	title: z.string().min(1),
 });
 
-export const CreateAnnotationSchema = AnnotationSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateAnnotationSchema = CreateAnnotationSchema.omit({ created_by: true }).partial();
+export const CreateAnnotationSchema = AnnotationSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
+export const UpdateAnnotationSchema = CreateAnnotationSchema.partial();
 
 /* * */
 

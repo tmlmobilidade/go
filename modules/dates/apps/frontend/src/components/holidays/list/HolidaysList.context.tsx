@@ -1,10 +1,8 @@
 'use client';
 
 import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
-import { type HolidayNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Holiday } from '@tmlmobilidade/go-types-offer';
-import { normalizeString } from '@tmlmobilidade/strings';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -13,7 +11,7 @@ import useSWR from 'swr';
 
 interface HolidaysListContextState {
 	data: {
-		filtered: HolidayNormalized[]
+		filtered: Holiday[]
 		raw: Holiday[]
 	}
 	filters: {
@@ -79,24 +77,9 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 	//
 	// C. Transform data
 
-	const normalizedHolidaysData: HolidayNormalized[] = useMemo(() => {
-		// Skip if no data is available
-		if (!allHolidaysData) return [];
-		// Normalize record fields
-		return allHolidaysData.data?.map((item) => {
-			// Get agency IDs for normalization
-			const agencyIds = item.agency_ids.join(', ');
-
-			return {
-				...item,
-				agency_ids_normalized: normalizeString(agencyIds),
-			};
-		});
-	}, [allHolidaysData]);
-
-	const searchResultsData = useSearch<HolidayNormalized>({
-		accessors: ['_id', 'title', 'description', 'agency_ids_normalized'],
-		data: normalizedHolidaysData,
+	const searchResultsData = useSearch<Holiday>({
+		accessors: ['_id', 'title', 'description', 'agency_ids'],
+		data: allHolidaysData?.data ?? [],
 		query: filterSearch.value,
 	});
 
@@ -108,7 +91,7 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 		const datesSet = new Set(filterDates.value);
 
 		return searchResultsData
-			.filter((item: HolidayNormalized) => {
+			.filter((item: Holiday) => {
 				// Filter by agency - check if any of the holiday's agencies match the filter
 				if (!item.agency_ids.some(agencyId => agencySet.has(agencyId))) return false;
 
