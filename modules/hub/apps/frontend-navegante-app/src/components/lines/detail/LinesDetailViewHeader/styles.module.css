@@ -1,6 +1,10 @@
 /* * */
 /* HEADING SECTION */
 
+.section[data-padding] {
+	padding-top: 0;
+}
+
 .row {
 	display: flex;
 	flex-direction: row;
@@ -14,6 +18,7 @@
 /* LINE NAME */
 
 .lineName {
+	margin: 0;
 	font-size: 20px;
 	font-weight: var(--font-weight-bold);
 	color: var(--color-system-text-100);

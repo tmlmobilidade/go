@@ -1,4 +1,5 @@
-import { type FlatSamsAnalysisExportAnalysis, type SamAnalysis } from '@tmlmobilidade/types';
+import { type FlatSamsAnalysisExportAnalysis } from '@tmlmobilidade/go-types-downloads';
+import { type SamAnalysis } from '@tmlmobilidade/types';
 
 export function parseAnalysis(row: { _id?: null | number, agency_id?: null | string, analysis: SamAnalysis }): FlatSamsAnalysisExportAnalysis {
 	const { _id, agency_id: agencyId, analysis } = row;

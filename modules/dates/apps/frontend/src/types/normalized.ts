@@ -1,6 +1,6 @@
 /* * */
 
-import { Annotation, Event, YearPeriod } from '@tmlmobilidade/types';
+import { type Annotation, type Event, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 

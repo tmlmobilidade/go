@@ -1,9 +1,9 @@
 // /* * */
 
-// import { Dates } from '@tmlmobilidade/dates';
+// import { Dates } from '@tmlmobilidade/go-utils-dates';
 // import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-apex-pckg-parse';
 // import { simplifiedApexOnBoardSalesNew, simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
-// import { Logger } from '@tmlmobilidade/logger';
+// import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 // import { Timer } from '@tmlmobilidade/timer';
 // import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
@@ -93,7 +93,7 @@
 // 				vehicle_id: validationTransaction.vehicle_id,
 // 			});
 // 			//
-// 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardSale.created_at).std_window;
+// 			const standardWindowInterval = Dates.fromUnixMilliseconds(onBoardSale.created_at).std_window;
 // 			await goDb.operation.rides.updateMany(
 // 				{
 // 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },

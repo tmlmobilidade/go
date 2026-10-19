@@ -1,10 +1,9 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type SimplifiedApexBankingTap, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /**
  * Common type for all SimplifiedApex documents that can be processed by the setRidesAsWaiting callback.
@@ -25,7 +24,7 @@ type AnySimplifiedApexDocument =
  * which will trigger the necessary reprocessing in the system.
  * @param data An array of SimplifiedApex documents that have been inserted or updated.
  */
-export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
+export async function setRidesAsWaiting(data?: AnySimplifiedApexDocument[]) {
 	try {
 		//
 
@@ -43,12 +42,12 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 		const updateRidesOps = data
 			// Filter out documents that don't have a trip_id,
 			// as they can't be associated with a Ride.
-			.filter(item => !!item.trip_id)
+			.filter(item => item.trip_id)
 			// Map each document to a query that will match
 			// Rides that are affected by the new data.
 			.map((item: AnySimplifiedApexDocument) => {
 				const standardWindowInterval = Dates
-					.fromUnixTimestamp(item.created_at)
+					.fromUnixMilliseconds(item.created_at)
 					.std_window;
 				return {
 					agency_id: item.agency_id,
@@ -56,7 +55,7 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 						$gte: standardWindowInterval.start,
 						$lte: standardWindowInterval.end,
 					},
-					trip_id: item.trip_id,
+					trip_id: item.trip_id ?? undefined,
 				};
 			});
 
@@ -69,10 +68,11 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 		// Run the update query to mark all affected Rides as 'waiting',
 		// which will trigger the necessary reprocessing in the system.
 
-		const updateRidesResult = await goDb.operation.rides.updateMany(
+		const ridesCollection = await goDb.operation.rides.getCollection();
+
+		const updateRidesResult = await ridesCollection.updateMany(
 			{ $or: updateRidesOps },
-			{ system_status: 'waiting' },
-			{ returnResults: false },
+			{ $set: { processing_status: 'waiting' } },
 		);
 
 		Logger.info({ message: `Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${timer.get()})` });

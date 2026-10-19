@@ -25,7 +25,7 @@ export function LineCreateHeader() {
 			<Label size="lg" singleLine>{lineCreateContext.data.form.values.code}</Label>
 			<Spacer />
 			<Button
-				disabled={!lineCreateContext.data.form.isValid()}
+				disabled={!lineCreateContext.flags.isValid}
 				icon={<IconUpload size={28} />}
 				label="Publicar"
 				loading={lineCreateContext.flags.isSaving}

@@ -6,7 +6,7 @@ import { RuleCreateMonths } from '@/components/patterns/rules/create/RuleCreateM
 import { RuleCreatePeriods } from '@/components/patterns/rules/create/RuleCreatePeriods';
 import { RuleCreateSchedule } from '@/components/patterns/rules/create/RuleCreateSchedule';
 import { RuleCreateWeekdays } from '@/components/patterns/rules/create/RuleCreateWeekdays';
-import { hhmm } from '@tmlmobilidade/types';
+import { hhmm } from '@tmlmobilidade/go-types-offer';
 import { Divider, Section, Switch, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

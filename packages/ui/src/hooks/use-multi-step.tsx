@@ -21,32 +21,37 @@ interface MultiStepItem {
 	 * Usually determined by the completion
 	 * of previous steps.
 	 */
-	isEnabled?: () => boolean
+	isEnabled: boolean
 
 	/**
 	 * Indicates whether the step is valid.
 	 * Usually determined by the correctness
 	 * of the current step's data.
 	 */
-	isValid?: () => boolean
+	isValid: boolean
 
 	/**
 	 * Indicates whether the step is visible.
 	 * Usually determined by user permissions
 	 * or other custom conditions.
 	 */
-	isVisible?: boolean
+	isVisible: boolean
 
 	/**
 	 * An optional label for the step.
 	 */
-	label?: string
+	label: string
 
 	/**
 	 * The order position of the step
 	 * in the multi-step process.
 	 */
 	order: number
+
+	/**
+	 * Validates the step's data.
+	 */
+	validate: () => boolean
 
 }
 
@@ -99,7 +104,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 			// Sort steps by their order
 			.sort((a, b) => a.order - b.order)
 			// Ensure index is sequential based on visible steps
-			.map((step, idx) => ({ ...step, index: idx, isValid: step.isValid || (() => true) }));
+			.map((step, idx) => ({ ...step, index: idx }));
 	}, [steps]);
 
 	const currentStep = useMemo(() => {
@@ -142,34 +147,38 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 	useEffect(() => {
 		// Skip if no available steps
 		if (!availableSteps.length) return;
-		// If no current step is set,
-		// default to the first available step
+		// If there is a current step already set,
+		// check if it can be enabled still
+		if (currentStepId && currentStep?.isEnabled === false) {
+			// If the current step cannot be enabled anymore,
+			// then go back to the previous step, if possible
+			setCurrentStepId(prevStep?.id);
+			return;
+		}
+		// Otherwise, if there is no current step already set,
+		// set it to the first available step, if possible
 		if (!currentStepId) setCurrentStepId(availableSteps[0].id);
-	}, [availableSteps, currentStepId]);
+	}, [availableSteps, currentStepId, currentStep, prevStep]);
 
 	//
 	// C. Handle actions
 
 	const next = useCallback(() => {
-		// Exit if no current step
+		// Skip if no current step
 		if (!currentStep) return;
-		// Exit if current step is not valid
-		if (currentStep.isValid?.() === false) return;
-		// Exit if no next step
+		// Skip if current step is not valid
+		if (!currentStep.validate()) return;
+		// Skip if no next step
 		if (!nextStep) return;
-		// Exit if next step is not enabled
-		if (nextStep.isEnabled?.() === false) return;
 		// Proceed to the next step
 		setCurrentStepId(nextStep.id);
 	}, [currentStep, nextStep]);
 
 	const prev = useCallback(() => {
-		// Exit if no current step
+		// Skip if no current step
 		if (!currentStep) return;
-		// Exit if no previous step
+		// Skip if no previous step
 		if (!prevStep) return;
-		// Exit if previous step is not enabled
-		if (prevStep.isEnabled?.() === false) return;
 		// Proceed to the previous step
 		setCurrentStepId(prevStep.id);
 	}, [currentStep, prevStep]);
@@ -180,7 +189,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		// Exit if the step is not found
 		if (!destStep) return;
 		// Exit if the desired step is not enabled
-		if (destStep.isEnabled?.() === false) return;
+		if (destStep.isEnabled === false) return;
 		// Proceed to set the current step
 		setCurrentStepId(id);
 	}, [availableSteps]);
@@ -195,7 +204,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 	//
 	// C. Return values
 
-	return {
+	return useMemo(() => ({
 		actions: {
 			goTo,
 			goToIndex,
@@ -209,7 +218,5 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 			prev: prevStep,
 			steps: availableSteps,
 		},
-	};
-
-	//
+	}), [availableSteps, currentStep, goTo, goToIndex, next, nextStep, prev, prevStep]);
 }

@@ -1,10 +1,11 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { type EventNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Event } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Event, PermissionCatalog } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -18,7 +19,7 @@ interface EventsListContextState {
 	filters: {
 		agency: UseFilterStateListReturnType
 		dates: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -46,24 +47,23 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.events.actions.read],
-		scope: PermissionCatalog.all.events.scope,
-	});
+	const { ids: allAgencyIds, options: allAgencyOptions } = useAnnotationsAgenciesData();
 
-	const { data: allEventsData, error: allEventsError, isLoading: allEventsLoading } = useSWR<Event[], Error>(API_ROUTES.dates.EVENTS_LIST);
+	const { data: allEventsData, error: allEventsError, isLoading: allEventsLoading } = useSWR(API_ROUTES.dates.EVENTS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Event[]>({ url }),
+	});
 
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search');
-	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterSearch = useFilterStateText('search');
+	const filterAgency = useFilterStateList('agency', allAgencyIds, allAgencyOptions);
 
 	// Get all unique dates from events for the dates filter
 	const allDatesOptions = useMemo(() => {
 		if (!allEventsData) return [];
 		const uniqueDates = new Set<string>();
-		allEventsData.forEach((event) => {
+		allEventsData.data?.forEach((event) => {
 			event.dates.forEach(date => uniqueDates.add(String(date)));
 		});
 		return Array.from(uniqueDates).sort().map(date => ({
@@ -83,7 +83,7 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 		// Skip if no data is available
 		if (!allEventsData) return [];
 		// Normalize record fields
-		return allEventsData.map((item) => {
+		return allEventsData.data?.map((item) => {
 			// Get agency IDs for normalization
 			const agencyIds = item.agency_ids.join(', ');
 
@@ -133,7 +133,7 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: EventsListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData,
-			raw: allEventsData ?? [],
+			raw: allEventsData?.data ?? [],
 		},
 		filters: {
 			agency: filterAgency,

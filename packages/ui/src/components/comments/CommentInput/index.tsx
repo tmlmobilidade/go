@@ -5,8 +5,8 @@ import { useCallback, useState } from 'react';
 
 import styles from './styles.module.css';
 
+import { IconButton } from '../../../buttons';
 import { isPlatformMac } from '../../../utils';
-import { IconButton } from '../../buttons';
 import { Label } from '../../display/Label';
 import { Textarea } from '../../inputs';
 import { Section } from '../../layout/Section';
@@ -132,8 +132,8 @@ export function CommentInput({
 				</Section>
 
 				<IconButton
-					disabled={isSendDisabled}
 					icon={<IconSend size={20} />}
+					isDisabled={isSendDisabled}
 					isLoading={loading}
 					onClick={handleSubmit}
 				/>

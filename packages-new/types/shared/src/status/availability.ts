@@ -10,6 +10,9 @@ export const AvailabilityStatusValues = [
 	'unknown',
 ] as const;
 
-export const AvailabilityStatusSchema = z.enum(AvailabilityStatusValues);
+export const AvailabilityStatusSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(AvailabilityStatusValues));
 
 export type AvailabilityStatus = z.infer<typeof AvailabilityStatusSchema>;

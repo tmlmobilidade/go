@@ -1,7 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Fare } from '@tmlmobilidade/types';
+import { type Fare } from '@tmlmobilidade/go-types-offer';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,7 +35,9 @@ export const FaresContextProvider = ({ agencyId, children }: PropsWithChildren<{
 	//
 	// A. Fetch data
 
-	const { data: faresData } = useSWR<Fare[]>(API_ROUTES.offer.FARES_LIST);
+	const { data: faresData } = useSWR<ApiResponse<Fare[]>>(API_ROUTES.offer.FARES_LIST, {
+		fetcher: async url => await fetchApiData<Fare[]>({ url }),
+	});
 
 	//
 	// B. Define context value
@@ -41,7 +45,7 @@ export const FaresContextProvider = ({ agencyId, children }: PropsWithChildren<{
 	const contextValue: FaresContextState = useMemo(() => ({
 
 		data: {
-			raw: faresData?.filter(fare => !agencyId || fare.agency_ids.includes(agencyId)) || [],
+			raw: faresData?.data?.filter(fare => !agencyId || fare.agency_ids.includes(agencyId)) || [],
 		},
 	}), [faresData, agencyId]);
 

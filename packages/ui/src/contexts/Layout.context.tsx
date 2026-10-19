@@ -2,10 +2,9 @@
 
 import { useColorScheme } from '@mantine/hooks';
 import { IconAB2, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { useFullscreenState } from '../hooks/use-fullscreen-state';
-import { useUserOrganization } from '../hooks/use-user-organization';
 import { useUserPreference } from '../hooks/use-user-preference';
 import { DEFAULT_LOCALE_CODE, enabledLocales, getBrowserLocale, getMatchingLocale } from '../i18n/locales';
 import { useLocaleContext } from './Locale.context';
@@ -75,14 +74,12 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 	const localeContext = useLocaleContext();
 	const meContext = useMeContext();
 
-	const [userOrganization] = useUserOrganization();
-
-	const defaultTheme: ThemeType = userOrganization?.theme && AVAILABLE_THEMES.some(t => t._id === userOrganization.theme) ? userOrganization.theme as ThemeType : 'ocean';
 	const savedLocalePreference = meContext.actions.getPreference<string>('ui', 'active_locale');
 	const defaultLocale = savedLocalePreference ?? getBrowserLocale();
+	const hasSelectedLocale = useRef(false);
 
 	const [activeFullscreen, setActiveFullscreen] = useFullscreenState();
-	const [activeTheme, setActiveTheme] = useUserPreference<ThemeType>('ui', 'active_theme', defaultTheme);
+	const [activeTheme, setActiveTheme] = useUserPreference<ThemeType>('ui', 'active_theme', 'ocean');
 	const [activeMode, setActiveMode] = useUserPreference<ModeType>('ui', 'active_mode', 'system');
 	const [activeLocale, setActiveLocale] = useUserPreference<string>('ui', 'active_locale', defaultLocale);
 
@@ -125,6 +122,7 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 	}, [activeLocale, localeContext.actions]);
 
 	useEffect(() => {
+		if (hasSelectedLocale.current) return;
 		if (meContext.actions.getPreference<string>('ui', 'active_locale') != null) return;
 
 		const browserLocale = getBrowserLocale();
@@ -138,6 +136,7 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 
 	const activateLocale = useCallback((localeId: string) => {
 		if (!enabledLocales.some(item => item._id === localeId)) return;
+		hasSelectedLocale.current = true;
 		setActiveLocale(localeId);
 	}, [setActiveLocale]);
 

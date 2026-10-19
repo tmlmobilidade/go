@@ -3,7 +3,7 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { IconCalendarCancel, IconCalendarCheck, IconCopy, IconDots, IconPencil, IconTrash } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { ManualRule, ScheduleRule } from '@tmlmobilidade/types';
+import { type ManualRule, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
 import { DayPeriodsTimepoints, Menu, MenuDivider, MenuItem, openConfirmModal, Section, Tag, Text, Tooltip } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { MouseEvent } from 'react';

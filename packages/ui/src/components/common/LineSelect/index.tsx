@@ -3,20 +3,20 @@
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLoopRight, IconSelector, IconX } from '@tabler/icons-react';
-import { HubLine } from '@tmlmobilidade/go-types-public-info';
+import { HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
 import { createDocCollection } from '../../../hooks/use-other-search';
-import { Loader } from '../../loaders/Loader';
+import { Loader } from '../../../loaders';
 import { LineDisplay } from '../LineDisplay';
 
 /* * */
 
 export interface LineSelectProps {
-	data: HubLine[]
+	data: HubV1ApiLine[]
 	label?: string
 	loading?: boolean
 	nothingFound?: string

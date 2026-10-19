@@ -1,4 +1,4 @@
-import { type PatternShapeMapItem } from '@tmlmobilidade/types';
+import { type PatternShapeMapItem } from '@tmlmobilidade/go-types-offer';
 
 export interface PatternShapeMapFeatureProperties extends Omit<PatternShapeMapItem, 'encoded_polyline'> {
 	id: string

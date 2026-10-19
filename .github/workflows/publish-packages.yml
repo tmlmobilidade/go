@@ -167,7 +167,7 @@ jobs:
           path: .
       # # #
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --foreground-scripts --verbose
       # # #
       - name: Build packages
         working-directory: .

@@ -1,4 +1,6 @@
-import { ClickhouseField } from './field.js';
+/* * */
+
+import { type ClickhouseField } from './field.js';
 
 /**
  * Definition for allowed ClickHouse table engines.

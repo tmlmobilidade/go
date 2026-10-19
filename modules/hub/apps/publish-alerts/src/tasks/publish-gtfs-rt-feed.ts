@@ -1,12 +1,12 @@
 /* * */
 
-import { transformAlertIntoGtfsRtEntity } from '@/transform/gtfs-rt/main.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
-import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/types';
+import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+
+import { transformAlertIntoGtfsRtEntity } from '../transform/gtfs-rt/main.js';
 
 /* * */
 
@@ -24,13 +24,8 @@ export async function publishGtfsRtFeed() {
 		{
 			$and: [
 				{
-					$or: [
-						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
-						{ publish_end_date: null },
-						{ publish_end_date: undefined },
-						{ publish_end_date: { $exists: false } },
-					],
-					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
+					publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_milliseconds },
+					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_milliseconds },
 					publish_status: 'published',
 				},
 			],
@@ -47,7 +42,7 @@ export async function publishGtfsRtFeed() {
 
 	const transformedItems = await Promise.all(findResult.map(transformAlertIntoGtfsRtEntity));
 
-	const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
+	const transformResult: GtfsRtFeedEntity[] = transformedItems.filter((item): item is GtfsRtFeedEntity => item !== undefined);
 
 	Logger.info({ message: `Transformed ${transformResult.length} alerts into GTFS-RT feed entities (${globalTimer.get()})` });
 
@@ -59,7 +54,7 @@ export async function publishGtfsRtFeed() {
 		header: {
 			gtfs_realtime_version: '2.0',
 			incrementality: 'FULL_DATASET',
-			timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			timestamp: Dates.now('Europe/Lisbon').unix_seconds,
 		},
 	};
 

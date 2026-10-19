@@ -1,0 +1,12 @@
+{
+	"ListFilter": {
+		"empty": "No options available",
+		"no_results": "No results found",
+		"search": "Search...",
+		"toggle_all": "Select all"
+	},
+	"TagFilter": {
+		"description": "Enter values separated by commas or spaces.",
+		"placeholder": "Search..."
+	}
+}

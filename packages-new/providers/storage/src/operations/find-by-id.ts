@@ -6,7 +6,7 @@ import { type OperationContext } from '@/types/operation-context.js';
 import { runOperation } from '@/utils/operation-runner.js';
 import { storageKey } from '@/utils/storage-key.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Attachment } from '@tmlmobilidade/types';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
 
 /* * */
 

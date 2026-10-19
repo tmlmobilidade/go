@@ -1,9 +1,9 @@
 'use client';
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useZoneCreateContext } from '@/components/zones/create/ZoneCreate.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, ZoneSchema } from '@tmlmobilidade/types';
-import { MultiSelect, Section, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
+import { ZoneSchema } from '@tmlmobilidade/go-types-offer';
+import { MultiSelect, Section, TextInput } from '@tmlmobilidade/ui';
 /* * */
 
 export function ZoneCreateBasicInfo() {
@@ -13,10 +13,7 @@ export function ZoneCreateBasicInfo() {
 	// A. Setup variables
 
 	const zoneCreateContext = useZoneCreateContext();
-	const { options: allAgencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.zones.actions.create],
-		scope: PermissionCatalog.all.zones.scope,
-	});
+	const { options: allAgencyOptions } = useAgenciesData();
 
 	//
 	// B. Render Components

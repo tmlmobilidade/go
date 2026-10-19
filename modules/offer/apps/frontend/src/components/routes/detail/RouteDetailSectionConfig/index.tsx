@@ -1,7 +1,7 @@
 /* * */
 
 import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
-import { pathTypeOptions, RouteSchema } from '@tmlmobilidade/types';
+import { pathTypeOptions, RouteSchema } from '@tmlmobilidade/go-types-offer';
 import { Collapsible, Section, Select, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

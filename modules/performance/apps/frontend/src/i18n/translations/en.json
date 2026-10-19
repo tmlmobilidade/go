@@ -1,1 +1,55 @@
-{}
+{
+	"agencies": {
+		"41": "Area 1",
+		"42": "Area 2",
+		"43": "Area 3",
+		"44": "Area 4",
+		"A2L1N": "Area 4",
+		"BNA17": "Area 2",
+		"LA77N": "Area 1",
+		"YA15B": "Area 3",
+		"all": "All CM"
+	},
+	"chart": {
+		"series": {
+			"average": {
+				"label": "Average = {value, number}"
+			},
+			"qty": {
+				"label": "Passengers carried / day"
+			}
+		}
+	},
+	"dates": {
+		"day_types": {
+			"day_type_1": "Weekdays",
+			"day_type_2": "Saturdays",
+			"day_type_3": "Sundays and public holidays"
+		},
+		"formatted": "{date, date, ::EEEE, dd MMMM yyyy}",
+		"formatted_short": "{date, date, ::dd MMMM yyyy}",
+		"holiday": "Public holiday"
+	},
+	"recordProgress": {
+		"0_10": "We have just left the depot 🚍💨",
+		"100_plus": "New record set! 🏆🎉",
+		"10_25": "There is still a long way to go 🛣️",
+		"25_50": "The engines are warming up! 🔥",
+		"50_75": "Halfway there — keep going! 💪",
+		"75_90": "Almost at the record! 🚀",
+		"90_99": "Watch out! The record is within reach 😏"
+	},
+	"systemStatus": {
+		"negative": "Warning! Operations are *value* away from ideal performance.",
+		"positive": "Operations are running very well today, with *value* efficiency!",
+		"tooltip": "Overall operational performance index. Calculated from the system’s main weighted metrics (punctuality, valid trips, delays, etc.).",
+		"warning": "Today, operations are *value* away from ideal performance."
+	},
+	"updated_at": {
+		"days": "{count, plural, one {# day} other {# days}}",
+		"hours": "{count, plural, one {# hour} other {# hours}}",
+		"just_now": "moments",
+		"minutes": "{count, plural, one {# minute} other {# minutes}}",
+		"relative": "Updated {value} ago"
+	}
+}

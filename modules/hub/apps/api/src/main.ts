@@ -1,7 +1,7 @@
 /* * */
 
 import { getModuleConfig } from '@tmlmobilidade/consts';
-import { FastifyService } from '@tmlmobilidade/fastify';
+import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 
@@ -12,6 +12,10 @@ import { FastifyService } from '@tmlmobilidade/fastify';
 		module: 'hub',
 		origin: getModuleConfig('hub', 'cors_origin'),
 		port: getModuleConfig('hub', 'api_port'),
+	});
+
+	fastifyService.server.addHook('onRequest', async (request, reply) => {
+		reply.header('access-control-allow-origin', '*');
 	});
 
 	await fastifyService.start();

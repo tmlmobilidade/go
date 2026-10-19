@@ -1,7 +1,7 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { directionOptions, PatternSchema } from '@tmlmobilidade/types';
+import { directionOptions, PatternSchema } from '@tmlmobilidade/go-types-offer';
 import { Collapsible, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

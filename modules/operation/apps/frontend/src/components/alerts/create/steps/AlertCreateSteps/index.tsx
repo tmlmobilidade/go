@@ -1,0 +1,47 @@
+'use client';
+
+import { useAlertsCreateFormStepsContext } from '@/components/alerts/create/AlertsCreateFormSteps.context';
+import { AlertCreateStepAgency } from '@/components/alerts/create/steps/AlertCreateStepAgency';
+import { AlertCreateStepCause } from '@/components/alerts/create/steps/AlertCreateStepCause';
+import { AlertCreateStepDates } from '@/components/alerts/create/steps/AlertCreateStepDates';
+import { AlertCreateStepEffect } from '@/components/alerts/create/steps/AlertCreateStepEffect';
+import { AlertCreateStepReferences } from '@/components/alerts/create/steps/AlertCreateStepReferences';
+import { AlertCreateStepSummary } from '@/components/alerts/create/steps/AlertCreateStepSummary';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { NoDataLabel, Surface, useMeContext } from '@tmlmobilidade/ui';
+
+/* * */
+
+export function AlertCreateSteps() {
+	//
+
+	//
+	// A. Setup variables
+
+	const meContext = useMeContext();
+	const { progress: alertsCreateFormStepsProgress } = useAlertsCreateFormStepsContext();
+
+	const hasPermissionCreate = meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+
+	//
+	// B. Render components
+
+	if (!hasPermissionCreate) {
+		return (
+			<Surface align="center" justify="center" variant="transparent">
+				<NoDataLabel text="Selecione um alerta" />
+			</Surface>
+		);
+	}
+
+	return (
+		<>
+			{alertsCreateFormStepsProgress.current?.id === 'agency' && <AlertCreateStepAgency />}
+			{alertsCreateFormStepsProgress.current?.id === 'cause' && <AlertCreateStepCause />}
+			{alertsCreateFormStepsProgress.current?.id === 'effect' && <AlertCreateStepEffect />}
+			{alertsCreateFormStepsProgress.current?.id === 'dates' && <AlertCreateStepDates />}
+			{alertsCreateFormStepsProgress.current?.id === 'references' && <AlertCreateStepReferences />}
+			{alertsCreateFormStepsProgress.current?.id === 'summary' && <AlertCreateStepSummary />}
+		</>
+	);
+}

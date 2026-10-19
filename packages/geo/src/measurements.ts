@@ -10,6 +10,7 @@ import { type Point, type Position } from 'geojson';
  * @param pointA The first point.
  * @param pointB The second point.
  * @returns The distance between the two points, in meters.
+ * @deprecated Use `getDistanceBetweenPositions` from `@tmlmobilidade/go-utils-geo` instead.
  */
 export function getDistanceBetweenPoints(pointA: Point, pointB: Point): number {
 	return getDistanceBetweenPositions(pointA.coordinates, pointB.coordinates);
@@ -25,6 +26,7 @@ export function getDistanceBetweenPoints(pointA: Point, pointB: Point): number {
  * @param positionA The first position.
  * @param positionB The second position.
  * @returns The distance between the two points, in meters.
+ * @deprecated Use `getDistanceBetweenPositions` from `@tmlmobilidade/go-utils-geo` instead.
  */
 export function getDistanceBetweenPositions(positionA: Position, positionB: Position): number {
 	// Extract coordinates from the points
@@ -46,6 +48,7 @@ export function getDistanceBetweenPositions(positionA: Position, positionB: Posi
  * @param pointB The second point.
  * @param ratio The ratio at which to interpolate (0 = pointA, 1 = pointB).
  * @returns The interpolated point.
+ * @deprecated Use `interpolatePositions` from `@tmlmobilidade/go-utils-geo` instead.
  */
 export function interpolatePoints(pointA: Point, pointB: Point, ratio: number): Point {
 	const result = interpolatePositions(pointA.coordinates, pointB.coordinates, ratio);
@@ -62,6 +65,7 @@ export function interpolatePoints(pointA: Point, pointB: Point, ratio: number): 
  *              A ratio of 0.5 would give the midpoint between the two positions.
  *              A ratio of 0.25 would give a point closer to positionA.
  * @returns The interpolated position.
+ * @deprecated Use `interpolatePositions` from `@tmlmobilidade/go-utils-geo` instead.
  */
 export function interpolatePositions(positionA: Position, positionB: Position, ratio: number): Position {
 	// Extract coordinates from the points

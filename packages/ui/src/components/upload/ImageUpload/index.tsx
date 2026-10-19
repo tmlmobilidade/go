@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
 
+import { DeleteButton } from '../../../buttons';
 import { useToast } from '../../../hooks/toast';
-import { DeleteButton } from '../../buttons/DeleteButton';
 import { ComponentWrapper } from '../../common/ComponentWrapper';
 import { Label } from '../../display/Label';
 import { FileButton } from '../FileButton';
@@ -14,6 +14,8 @@ import { FileButton } from '../FileButton';
 /* * */
 
 export interface ImageUploadProps {
+	isDisabled?: boolean
+	isLoading?: boolean
 	label?: string
 	maxFileSize?: number
 	maxHeight?: number
@@ -23,9 +25,12 @@ export interface ImageUploadProps {
 	value?: string
 }
 
-/* * */
-
+/**
+ * @deprecated Use `UploadImage` instead.
+ */
 export function ImageUpload({
+	isDisabled,
+	isLoading,
 	label,
 	maxFileSize = 6 * 1024 * 1024, // 5MB default
 	maxHeight = 300,
@@ -98,7 +103,9 @@ export function ImageUpload({
 			) : (
 				<FileButton
 					accept="image/*"
+					disabled={isDisabled}
 					label="Carregar imagem"
+					loading={isLoading}
 					onFileChange={handleFileChange}
 				/>
 			)}

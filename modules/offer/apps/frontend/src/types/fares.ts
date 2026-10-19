@@ -1,4 +1,4 @@
-import { FARE_CURRENCY, FARE_PAYMENT_METHOD, FARE_TRANSFERS } from '@tmlmobilidade/types';
+import { FARE_CURRENCY, FARE_PAYMENT_METHOD, FARE_TRANSFERS } from '@tmlmobilidade/go-types-offer';
 
 export const currencyOptions = [
 	{ label: '€ Euro', value: FARE_CURRENCY.EUR },

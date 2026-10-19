@@ -5,8 +5,8 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { handleStreamRawVehicleEventIntoSimplifiedVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { BatchWriter } from '@tmlmobilidade/utils';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -15,7 +15,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	batch_timeout: 250,
 	idle_timeout: 250,
 	insertFn: async (data) => {
-		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
+		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
 	},
 	title: `pt-tmp-unir-ut5-rawdb-stream`,
 });
@@ -24,15 +24,6 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 
 (async function init() {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pt-tmp-unir-ut5-rawdb-stream', message: 'Sentry Tracker CRTM AISA LabDb Stream initialized', module: 'tracker', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker CRTM AISA LabDb Stream' });
-	}
 
 	//
 	// Watch for changes to the rawVehicleEventsNew collection

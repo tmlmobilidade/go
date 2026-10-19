@@ -3,8 +3,8 @@
 import { usePatternDetailContext } from '@/components/patterns/detail//PatternDetail.context';
 import { IconRotate2, IconTicket } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Path, PermissionCatalog } from '@tmlmobilidade/types';
-import { HasPermission, IconButton, MultiSelect } from '@tmlmobilidade/ui';
+import { Path } from '@tmlmobilidade/go-types-offer';
+import { IconButton, MultiSelect } from '@tmlmobilidade/ui';
 import useSWR from 'swr';
 
 import styles from '../styles.module.css';
@@ -51,8 +51,8 @@ export function StopsTableTableColumnZones({ pathItem, rowIndex }: { pathItem: P
 				leftSection={(
 					<IconButton
 						color="gray"
-						disabled={patternsDetailContext.flags.isReadOnly}
 						icon={<IconRotate2 size={20} />}
+						isDisabled={patternsDetailContext.flags.isReadOnly}
 						onClick={handleResetZones}
 						variant="subtle"
 					/>

@@ -1,7 +1,6 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 

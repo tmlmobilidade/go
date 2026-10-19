@@ -1,7 +1,8 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type GtfsRtTranslatedString } from '@tmlmobilidade/types';
+import { type GtfsRtTranslatedString } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type Alert } from '@tmlmobilidade/go-types-operation';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

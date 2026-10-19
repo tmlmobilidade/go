@@ -29,7 +29,7 @@ export function TypologyDetail() {
 	}
 
 	return (
-		<Pane header={[<TypologyDetailHeader />]}>
+		<Pane header={[<TypologyDetailHeader key="header" />]}>
 			<TypologyDetailSectionConfig />
 			<TypologyDetailSectionStyles />
 			<TypologyDetailSectionFares />

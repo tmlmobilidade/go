@@ -1,4 +1,4 @@
-import type { HHMM, ScheduleRule } from '@tmlmobilidade/types';
+import type { HHMM, ScheduleRule } from '@tmlmobilidade/go-types-offer';
 
 /** How a rule binds to a timepoint in GTFS export. */
 export type GtfsIncludeContributionKind = 'base_off' | 'operating';

@@ -1,0 +1,18 @@
+.loader {
+	font-size: 15px;
+	font-weight: var(--font-weight-semibold);
+	color: transparent;
+	background: linear-gradient(-90deg, var(--color-system-text-300) 40%, var(--color-system-text-200) 50%, var(--color-system-text-300) 80%);
+	background-clip: text;
+	background-size: 200% 100%;
+	animation: shimmer 2000ms linear infinite;
+  }
+
+  @keyframes shimmer {
+	0% {
+		background-position: 200% 0;
+	}
+	100% {
+		background-position: 0 0;
+	}
+  }

@@ -1,9 +1,9 @@
 'use client';
 
 import { LiveIcon } from '@/components/common/display/LiveIcon';
-import { type StopsDetailViewTimetableData } from '@/components/stops/detail/StopsDetail.context';
+import { type StopsDetailViewTimetableData } from '@/components/stops/detail/use-stop-detail-data';
 import { IconClockHour9 } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -33,12 +33,12 @@ export function StopsDetailViewTimetableRowArrival({ data }: StopsDetailViewTime
 	useEffect(() => {
 		const formatArrivals = () => {
 			// Prepare the time values
-			const nowUnixTimestamp = Dates.now('Europe/Lisbon').unix_timestamp;
-			const relativeArrivalMs = data.arrival_effective_ms - nowUnixTimestamp;
+			const nowUnixMilliseconds = Dates.now('Europe/Lisbon').unix_milliseconds;
+			const relativeArrivalMs = data.arrival_effective_ms - nowUnixMilliseconds;
 			// If arrival is in the past
 			if (relativeArrivalMs <= 0) {
 				const absoluteArrivalLabel = Dates
-					.fromUnixTimestamp(data.arrival_scheduled_ms)
+					.fromUnixMilliseconds(data.arrival_scheduled_ms)
 					.setZone('Europe/Lisbon', 'offset_only')
 					.toFormat('HH:mm');
 				setFormattedArrivalLabel(absoluteArrivalLabel);
@@ -61,7 +61,7 @@ export function StopsDetailViewTimetableRowArrival({ data }: StopsDetailViewTime
 			// If scheduled, format the arrival label as absolute HH:mm
 			if (!data.is_realtime) {
 				const absoluteArrivalLabel = Dates
-					.fromUnixTimestamp(data.arrival_scheduled_ms)
+					.fromUnixMilliseconds(data.arrival_scheduled_ms)
 					.setZone('Europe/Lisbon', 'offset_only')
 					.toFormat('HH:mm');
 				setFormattedArrivalLabel(absoluteArrivalLabel);
@@ -85,8 +85,7 @@ export function StopsDetailViewTimetableRowArrival({ data }: StopsDetailViewTime
 
 	return (
 		<div className={styles.container} data-is-realtime={data.is_realtime}>
-			{data.is_realtime && <div className={styles.beta}>BETA</div>}
-			{data.is_realtime ? <LiveIcon color="var(--color-status-warning-primary)" /> : <IconClockHour9 size={18} />}
+			{data.is_realtime ? <LiveIcon color="var(--color-status-active-primary)" /> : <IconClockHour9 size={18} />}
 			<p className={styles.label}>{formattedArrivalLabel}</p>
 		</div>
 	);

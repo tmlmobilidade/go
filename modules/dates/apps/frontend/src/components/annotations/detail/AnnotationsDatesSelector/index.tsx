@@ -1,7 +1,7 @@
 'use client';
 
 import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Button, MiniCalendar, Section, Text, TimeChip } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';

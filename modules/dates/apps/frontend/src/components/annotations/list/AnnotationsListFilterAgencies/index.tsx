@@ -1,7 +1,7 @@
 /* * */
 
 import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function AnnotationsListFilterAgencies() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={annotationsListContext.filters.agency.isActive}
 			label="Operadores"
 			onChange={annotationsListContext.filters.agency.set}

@@ -42,7 +42,10 @@ build
 .content-collections
 .source
 coverage
+playwright-report
+test-results
 .output
+.claude
 
 # OS
 .DS_Store

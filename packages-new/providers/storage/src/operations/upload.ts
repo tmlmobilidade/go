@@ -9,8 +9,9 @@ import { buildStorageKey } from '@/utils/storage-key.js';
 import { withTransaction } from '@tmlmobilidade/go-clients-mongo';
 import { StorageError, toStorageError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/go-types-core';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -44,11 +45,13 @@ export async function upload(deps: StorageDeps, input: UploadInput): Promise<Att
 
 		const inserted = await withTransaction(deps.mongoClient, async (session) => {
 			deps.observability.onStep({ ...context, phase: 'execute', step: 'insertMetadata' });
-			const attachment = await goDb.core.attachments.insertOne({
+			const attachment = await goDb.core.attachments.insertOneUnsafe({
 				...createAttachmentDto,
 				_id: fileId,
+				created_at: Dates.now('utc').unix_milliseconds,
 				type: mimeType,
-			}, { options: { session } });
+				updated_at: Dates.now('utc').unix_milliseconds,
+			}, { session });
 
 			await hooks?.onSuccess?.(context, attachment, session);
 			return attachment;

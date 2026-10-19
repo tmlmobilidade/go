@@ -1,9 +1,10 @@
 /* * */
 
-import { GtfsRtAlertSchema } from '@/alert/alert.js';
-import { GtfsRtTripUpdateSchema } from '@/trip-update/trip-update.js';
-import { GtfsRtVehiclePositionSchema } from '@/vehicle-position/vehicle-position.js';
 import { z } from 'zod';
+
+import { GtfsRtAlertSchema } from '../alert/alert.js';
+import { GtfsRtTripUpdateSchema } from '../trip-update/trip-update.js';
+import { GtfsRtVehiclePositionSchema } from '../vehicle-position/vehicle-position.js';
 
 /* * */
 

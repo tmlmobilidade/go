@@ -1,0 +1,12 @@
+.widget[role='status'] {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 2;
+	max-width: calc(100% - 70px);
+	padding: 8px 12px;
+	pointer-events: none;
+	background-color: #ffffff;
+	border-radius: 4px;
+	box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+}

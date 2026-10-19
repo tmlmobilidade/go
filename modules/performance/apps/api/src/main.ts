@@ -1,7 +1,7 @@
 /* * */
 
 import { getModuleConfig } from '@tmlmobilidade/consts';
-import { FastifyService } from '@tmlmobilidade/fastify';
+import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

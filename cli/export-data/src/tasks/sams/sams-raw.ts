@@ -4,8 +4,8 @@ import { type SamExport } from '@/tasks/sams/sams-raw.types.js';
 import { type ExportType, type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Sam } from '@tmlmobilidade/go-types-operation';
 import { type Filter } from '@tmlmobilidade/interfaces';
-import { type Sam } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 
@@ -62,14 +62,14 @@ export async function exportSamsRaw({ context, message }: TaskProps): Promise<vo
 				agency_id: document.agency_id,
 				apex_version: analysisGroup.apex_version ?? null,
 				device_id: analysisGroup.device_id ?? null,
-				end_time: analysisGroup.end_time ? Dates.fromUnixTimestamp(analysisGroup.end_time).iso : null,
+				end_time: analysisGroup.end_time ? Dates.fromUnixMilliseconds(analysisGroup.end_time).iso : null,
 				first_transaction_ase_counter_value: analysisGroup.first_transaction_ase_counter_value ?? null,
 				first_transaction_id: analysisGroup.first_transaction_id ?? null,
 				first_transaction_type: analysisGroup.first_transaction_type ?? null,
 				last_transaction_ase_counter_value: analysisGroup.last_transaction_ase_counter_value ?? null,
 				last_transaction_id: analysisGroup.last_transaction_id ?? null,
 				last_transaction_type: analysisGroup.last_transaction_type ?? null,
-				start_time: analysisGroup.start_time ? Dates.fromUnixTimestamp(analysisGroup.start_time).iso : null,
+				start_time: analysisGroup.start_time ? Dates.fromUnixMilliseconds(analysisGroup.start_time).iso : null,
 				transactions_expected: analysisGroup.transactions_expected ?? null,
 				transactions_found: analysisGroup.transactions_found ?? null,
 				transactions_missing: analysisGroup.transactions_missing ?? null,

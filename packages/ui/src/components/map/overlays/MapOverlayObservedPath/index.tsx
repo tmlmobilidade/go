@@ -1,24 +1,28 @@
 'use client';
 
-import { Layer, type MapMouseEvent, Popup, Source } from '@vis.gl/react-maplibre';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { Layer, type MapMouseEvent, Source } from '@vis.gl/react-maplibre';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
-import { useEffect, useState } from 'react';
-
-import styles from './styles.module.css';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useCssVariable } from '../../../../hooks/use-css-variable';
-import { Divider } from '../../../layout/Divider';
 import { useMapViewContext } from '../../view/MapViewContext';
+import { MapOverlayObservedPathPopup } from '../MapOverlayObservedPathPopup';
 
 /* * */
 
-export interface MapOverlayObservedPathPointsDataProps {
-	id: string
-	sequence: number
-	stop_id: string
-	timestamp: string
-	trigger_door: string
-}
+export type MapOverlayObservedPathPointsDataProps =
+  Pick<SimplifiedVehicleEvent,
+  | '_id'
+  | 'bearing'
+  | 'created_at'
+  | 'driver_id'
+  | 'received_at'
+  | 'speed'
+  | 'stop_id'
+  | 'vehicle_id'
+  >
+  & { index_position: number };
 
 export interface MapOverlayObservedPathLineDataProps {
 	id: string
@@ -55,7 +59,7 @@ export function MapOverlayObservedPath({ id, lineData, pointsData, visible = tru
 
 	const mapViewContext = useMapViewContext();
 
-	const interactiveLayerIds = [`${id}:observed-path:layer:points`];
+	const interactiveLayerIds = useMemo(() => [`${id}:observed-path:layer:points`], [id]);
 
 	const primaryColorHexValue = useCssVariable('--color-primary', '#000000');
 
@@ -72,7 +76,7 @@ export function MapOverlayObservedPath({ id, lineData, pointsData, visible = tru
 			mapViewContext.actions.unregisterOverlaySource(`${id}:observed-path:source:line`);
 			mapViewContext.actions.unregisterOverlaySource(`${id}:observed-path:source:points`);
 		};
-	}, [lineData, pointsData]);
+	}, [id, lineData, mapViewContext.actions, pointsData]);
 
 	useEffect(() => {
 		if (!lineData || !pointsData) return;
@@ -107,15 +111,15 @@ export function MapOverlayObservedPath({ id, lineData, pointsData, visible = tru
 		return () => {
 			map.off('styledata', onStyleData);
 		};
-	}, [id, lineData, pointsData, mapViewContext.flags.loading]);
+	}, [id, lineData, pointsData, mapViewContext.flags.loading, mapViewContext.ref.map]);
 
-	const handleMouseOverEvent = (event: MapMouseEvent) => {
+	const handleMouseOverEvent = useCallback((event: MapMouseEvent) => {
 		const relevantFeature = event.target
 			.queryRenderedFeatures(event.point)
 			.find(feature => interactiveLayerIds.includes(feature.layer.id));
 		if (!relevantFeature) return setHoveredFeature(null);
 		setHoveredFeature(relevantFeature as unknown as Feature<Point, MapOverlayObservedPathPointsDataProps>);
-	};
+	}, [interactiveLayerIds]);
 
 	useEffect(() => {
 		// Skip if no map collection is available
@@ -123,7 +127,7 @@ export function MapOverlayObservedPath({ id, lineData, pointsData, visible = tru
 		// Attach a click event listener to the map
 		// so that when a feature is interacted with, we can handle it here.
 		mapViewContext.ref.map.current.on('mousemove', handleMouseOverEvent);
-	}, [mapViewContext.ref.map.current]);
+	}, [handleMouseOverEvent, mapViewContext.ref.map]);
 
 	//
 	// C. Render components
@@ -136,23 +140,12 @@ export function MapOverlayObservedPath({ id, lineData, pointsData, visible = tru
 		<>
 
 			{hoveredFeature && (
-				<Popup
-					anchor="bottom"
-					closeButton={false}
+				<MapOverlayObservedPathPopup
+					data={hoveredFeature.properties}
 					latitude={hoveredFeature.geometry.coordinates[1] ?? 0}
 					longitude={hoveredFeature.geometry.coordinates[0] ?? 0}
-					maxWidth="300px"
-					offset={12}
-				>
-					<div className={styles.popup}>
-						<span className={styles.id}>{hoveredFeature.properties.sequence}/{pointsData.features.length}</span>
-						<span className={styles.id}>#{hoveredFeature.properties.id}</span>
-						<Divider />
-						<span className={styles.value}>Portas: {hoveredFeature.properties.trigger_door}</span>
-						<span className={styles.value}>Stop ID: #{hoveredFeature.properties.stop_id}</span>
-						<span className={styles.value}>Hora: {hoveredFeature.properties.timestamp}</span>
-					</div>
-				</Popup>
+					totalCount={pointsData.features.length}
+				/>
 			)}
 
 			<Source data={lineData} id={`${id}:observed-path:source:line`} type="geojson" generateId>

@@ -25,7 +25,7 @@ export function RouteCreateHeader() {
 			<Label size="lg" singleLine>{routeCreateContext.data.form.values.code}</Label>
 			<Spacer />
 			<Button
-				disabled={!routeCreateContext.data.form.isValid()}
+				disabled={!routeCreateContext.flags.isValid}
 				icon={<IconUpload size={28} />}
 				label="Publicar"
 				loading={routeCreateContext.flags.isSaving}

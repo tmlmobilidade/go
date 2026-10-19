@@ -1,6 +1,6 @@
 /* * */
 
-import { DAY_PERIOD_TIME_RANGES, DayPeriod, timeToMinutes } from '@tmlmobilidade/types';
+import { DAY_PERIOD_TIME_RANGES, DayPeriod, timeToMinutes } from '@tmlmobilidade/go-types-offer';
 
 const MINUTES_PER_DAY = 24 * 60;
 

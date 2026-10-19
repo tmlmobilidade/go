@@ -2,7 +2,7 @@
 
 import { IconEye, IconRouteOff } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Event } from '@tmlmobilidade/types';
+import { type Event } from '@tmlmobilidade/go-types-offer';
 import { Menu, MenuItem, MenuList, MenuNoContent } from '@tmlmobilidade/ui';
 
 /* * */

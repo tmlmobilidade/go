@@ -2,7 +2,7 @@
 
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
-import { LineSchema, transportTypeOptions } from '@tmlmobilidade/types';
+import { LineSchema, transportTypeOptions } from '@tmlmobilidade/go-types-offer';
 import { Collapsible, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
 /* * */
 

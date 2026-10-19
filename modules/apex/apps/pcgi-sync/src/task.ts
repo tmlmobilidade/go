@@ -1,13 +1,12 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { pcgiFileManager } from '@tmlmobilidade/go-interfaces-pcgi-file-manager';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
-import { BatchWriter, type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { BatchWriter, type PerformInTimeChunksItem } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -37,15 +36,15 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 	const timeChunkTimer = new Timer();
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
+		.fromUnixMilliseconds(timeChunk.start)
 		.setZone('utc', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
+		.fromUnixMilliseconds(timeChunk.end)
 		.setZone('utc', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`APEX Tx [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+	Logger.divider(`APEX Tx [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_milliseconds}] › ${chunkStartDate.iso}[${chunkStartDate.unix_milliseconds}]`, 150);
 
 	//
 	// Setup the queries for both the source and destination databases,
@@ -98,7 +97,7 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 			const parsedDocument = parsePcgiTransactionEntityIntoRawApexTransaction(document);
 			await writer.write(parsedDocument);
 		} catch (error) {
-			Logger.error({ message: `Error transforming APEX Transaction: ${document.transactionId}: Reason: ${error.message}` });
+			Logger.error({ attributes: { document }, error, message: `Error transforming APEX Transaction: ${document.transactionId}: Reason: ${error.message}` });
 		}
 	}
 

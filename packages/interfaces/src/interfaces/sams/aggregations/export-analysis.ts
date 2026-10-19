@@ -1,7 +1,7 @@
 /* * */
 
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
-import { type Sam } from '@tmlmobilidade/types';
+import { type Sam } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Optional per-analysis filters after `$unwind` (e.g. export file `start_time` / `end_time`).

@@ -1,16 +1,18 @@
 /* * */
 
-import { stopsIndexes } from '@/indexes/index.js';
-import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { CreateStopDto, CreateStopSchema, Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
+import { type Stop, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
+
+import { createGoDbCollection } from '../factory/create-godb-collection.js';
+import { type GoDbCollection } from '../factory/types/godb-collection.type.js';
+import { stopsIndexes } from '../indexes/index.js';
 
 /* * */
 
 export class InfrastructureDatabase {
 	//
 
-	public readonly stops: MongoInterfaceTemplate<Stop, CreateStopDto, UpdateStopDto>;
+	public readonly stops: GoDbCollection<Stop>;
 
 	private readonly database: Db;
 	private readonly databaseName = 'infrastructure';
@@ -19,6 +21,6 @@ export class InfrastructureDatabase {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
-		this.stops = new MongoInterfaceTemplate<Stop, CreateStopDto, UpdateStopDto>('stops', this.database, CreateStopSchema, UpdateStopSchema, stopsIndexes);
+		this.stops = createGoDbCollection<Stop>({ collectionName: 'stops', database: this.database, indexDescription: stopsIndexes, schema: StopSchema });
 	}
 }

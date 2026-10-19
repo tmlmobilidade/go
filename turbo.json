@@ -1,6 +1,6 @@
 {
 	"$schema": "https://turbo.build/schema.json",
-	"concurrency": "12",
+	"concurrency": "15",
 	"envMode": "loose",
 	"globalEnv": [
 		"NODE_ENV"
@@ -11,7 +11,9 @@
 				"^build"
 			],
 			"outputs": [
-				"dist/**"
+				"dist/**",
+				".next/**",
+				"!.next/cache/**"
 			]
 		},
 		"dev": {

@@ -1,0 +1,28 @@
+/* * */
+
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
+import { sqlPath } from '@tmlmobilidade/go-utils-sql';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+
+import { type ClickHouseEtaGtfsResponse } from '../types.js';
+
+/* * */
+
+export async function getClickHouseTripUpdates(): Promise<GtfsRtTripUpdate[]> {
+	//
+
+	const timer = new Timer();
+
+	Logger.info({ message: 'Retrieving Estimated Time of Arrivals from ClickHouse...' });
+
+	const allTripUpdates = await labDb.queryFromFile<ClickHouseEtaGtfsResponse>(sqlPath('hub', 'publish-eta/select-eta-gtfs.sql'));
+
+	const tripUpdates: GtfsRtTripUpdate[] = allTripUpdates.map(row => JSON.parse(row.trip_update));
+
+	Logger.info({ message: `Found ${allTripUpdates.length} trip updates in ${timer.get()}`, spacesAfter: 1 });
+
+	//
+
+	return tripUpdates;
+};

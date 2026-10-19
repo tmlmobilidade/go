@@ -1,12 +1,12 @@
 /* * */
 
 import { IconEdit, IconRestore } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
-import { FieldChange, FieldChangedComment } from '@tmlmobilidade/types';
+import { FieldChange, FieldChangedComment } from '@tmlmobilidade/go-types-shared';
 
 import styles from './styles.module.css';
 
-import { IconButton } from '../../buttons';
+import { IconButton } from '../../../buttons';
+import { displayUnixMilliseconds } from '../../../utils';
 import { Label } from '../../display/Label';
 
 /* * */
@@ -71,7 +71,7 @@ export function CommentItemField({ comment, loading, onRevert, reverse }: Commen
 					</div>
 					<div className={styles.footer}>
 						<Label size="sm">
-							{createdBy} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}
+							{createdBy} a {displayUnixMilliseconds(comment.created_at, 'short')}
 						</Label>
 					</div>
 				</div>

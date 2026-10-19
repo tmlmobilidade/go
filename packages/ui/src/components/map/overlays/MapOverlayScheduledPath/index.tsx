@@ -1,13 +1,11 @@
 'use client';
 
-import { Layer, type MapMouseEvent, Popup, Source } from '@vis.gl/react-maplibre';
+import { Layer, type MapMouseEvent, Source } from '@vis.gl/react-maplibre';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import styles from './styles.module.css';
-
-import { Divider } from '../../../layout/Divider';
 import { useMapViewContext } from '../../view/MapViewContext';
+import { MapOverlayScheduledPathPopup } from '../MapOverlayScheduledPathPopup';
 
 /* * */
 
@@ -42,7 +40,7 @@ export function MapOverlayScheduledPath({ id, lineData, pointsData, visible = tr
 
 	const mapViewContext = useMapViewContext();
 
-	const interactiveLayerIds = [`${id}:scheduled-path:layer:points`];
+	const interactiveLayerIds = useMemo(() => [`${id}:scheduled-path:layer:points`], [id]);
 
 	const [hoveredFeature, setHoveredFeature] = useState<Feature<Point, MapOverlayScheduledPathPointsDataProps> | null>(null);
 
@@ -57,15 +55,15 @@ export function MapOverlayScheduledPath({ id, lineData, pointsData, visible = tr
 			mapViewContext.actions.unregisterOverlaySource(`${id}:scheduled-path:source:line`);
 			mapViewContext.actions.unregisterOverlaySource(`${id}:scheduled-path:source:points`);
 		};
-	}, [lineData, pointsData]);
+	}, [id, lineData, mapViewContext.actions, pointsData]);
 
-	const handleMouseOverEvent = (event: MapMouseEvent) => {
+	const handleMouseOverEvent = useCallback((event: MapMouseEvent) => {
 		const relevantFeature = event.target
 			.queryRenderedFeatures(event.point)
 			.find(feature => interactiveLayerIds.includes(feature.layer.id));
 		if (!relevantFeature) return setHoveredFeature(null);
 		setHoveredFeature(relevantFeature as unknown as Feature<Point, MapOverlayScheduledPathPointsDataProps>);
-	};
+	}, [interactiveLayerIds]);
 
 	useEffect(() => {
 		// Skip if no map collection is available
@@ -73,7 +71,7 @@ export function MapOverlayScheduledPath({ id, lineData, pointsData, visible = tr
 		// Attach a click event listener to the map
 		// so that when a feature is interacted with, we can handle it here.
 		mapViewContext.ref.map.current.on('mousemove', handleMouseOverEvent);
-	}, [mapViewContext.ref.map.current]);
+	}, [handleMouseOverEvent, mapViewContext.ref.map]);
 
 	//
 	// C. Render components
@@ -86,24 +84,16 @@ export function MapOverlayScheduledPath({ id, lineData, pointsData, visible = tr
 		<>
 
 			{hoveredFeature && (
-				<Popup
-					anchor="bottom"
-					closeButton={false}
+				<MapOverlayScheduledPathPopup
+					arrivalTime={hoveredFeature.properties.arrival_time}
 					latitude={hoveredFeature.geometry.coordinates[1] ?? 0}
 					longitude={hoveredFeature.geometry.coordinates[0] ?? 0}
-					maxWidth="300px"
-					offset={12}
-				>
-					<div className={styles.popup}>
-						<span className={styles.id}>#{hoveredFeature.properties.id}</span>
-						<span className={styles.name}>{hoveredFeature.properties.name}</span>
-						<Divider />
-						<span className={styles.value}>Sequência: {hoveredFeature.properties.sequence}/{pointsData.features.length}</span>
-						<span className={styles.value}>Hora planeada: {hoveredFeature.properties.arrival_time}</span>
-						<Divider />
-						<span className={styles.value}>Entradas: {hoveredFeature.properties.passengers_observed}</span>
-					</div>
-				</Popup>
+					passengersObserved={hoveredFeature.properties.passengers_observed}
+					pathLength={pointsData.features.length}
+					stopId={hoveredFeature.properties.id}
+					stopName={hoveredFeature.properties.name}
+					stopSequence={hoveredFeature.properties.sequence}
+				/>
 			)}
 
 			<Source data={lineData} id={`${id}:scheduled-path:source:line`} type="geojson" generateId>
@@ -163,7 +153,7 @@ export function MapOverlayScheduledPath({ id, lineData, pointsData, visible = tr
 						'visibility': visible ? 'visible' : 'none',
 					}}
 					paint={{
-						'line-color': '#000000', // primaryColorHexValue,
+						'line-color': '#000000',
 						'line-width': [
 							'interpolate',
 							['linear'],
@@ -264,6 +254,4 @@ export function MapOverlayScheduledPath({ id, lineData, pointsData, visible = tr
 
 		</>
 	);
-
-	//
 }

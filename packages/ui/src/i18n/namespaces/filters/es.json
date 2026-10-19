@@ -1,0 +1,12 @@
+{
+	"ListFilter": {
+		"empty": "No hay opciones disponibles",
+		"no_results": "No se encontraron resultados",
+		"search": "Buscar...",
+		"toggle_all": "Seleccionar todo"
+	},
+	"TagFilter": {
+		"description": "Escriba y separe por comas o espacios.",
+		"placeholder": "Buscar..."
+	}
+}

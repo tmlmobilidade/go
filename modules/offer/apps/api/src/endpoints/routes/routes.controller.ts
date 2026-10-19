@@ -1,9 +1,10 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { CreateRouteDto, PatternSimplified, PermissionCatalog, type Route, type UpdateRouteDto } from '@tmlmobilidade/types';
+import { type CreateRouteDto, type PatternSimplified, type Route, type UpdateRouteDto } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 
@@ -33,7 +34,10 @@ export class RoutesController {
 		//
 		// Create the new route
 
-		const newRoute = await goDb.offer.routes.insertOne(request.body);
+		const newRoute = await goDb.offer.routes.insertOne({
+			...request.body,
+			created_by: request.me._id,
+		});
 
 		//
 		// Send the response
@@ -155,7 +159,7 @@ export class RoutesController {
 		}
 
 		// If authorized, toggle the lock status of the route
-		await goDb.offer.routes.toggleLockById(request.params.id);
+		await goDb.offer.routes.updateOne({ _id: request.params.id }, { is_locked: !routeData.is_locked });
 		const foundRoute = await goDb.offer.routes.findById(request.params.id);
 		if (!foundRoute) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
@@ -198,7 +202,10 @@ export class RoutesController {
 		//
 		// Update the route
 
-		const updatedRoute = await goDb.offer.routes.updateById(routeData._id, request.body);
+		const updatedRoute = await goDb.offer.routes.updateById(routeData._id, {
+			...request.body,
+			updated_by: request.me._id,
+		});
 
 		//
 		// Send the updated route data as the response

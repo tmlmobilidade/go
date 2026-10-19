@@ -1,11 +1,12 @@
 /* * */
 
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
-import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap, parseRawApexTransactionBankingTapV70IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
-import { BatchWriter } from '@tmlmobilidade/utils';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { ZodError } from 'zod';
 
 /* * */
 
@@ -35,10 +36,14 @@ export async function processRawApexTransactionBankingTap(databaseOperation) {
 	try {
 		let parseResult: null | SimplifiedApexBankingTap = null;
 		if (databaseOperation.fullDocument.version === 'banking-tap-4.0') parseResult = parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap(databaseOperation.fullDocument);
+		if (databaseOperation.fullDocument.version === 'banking-tap-7.0') parseResult = parseRawApexTransactionBankingTapV70IntoSimplifiedApexBankingTap(databaseOperation.fullDocument);
 		if (!parseResult) return;
 		await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 	} catch (error) {
-		Logger.error({ message: `Error transforming APEX Banking Tap: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
+		const errorMessage = error instanceof ZodError
+			? error.issues.map(issue => `${issue.path.join('.')} ${issue.message}`).join('; ')
+			: error instanceof Error ? error.message : String(error);
+		Logger.error({ attributes: { document: databaseOperation.fullDocument }, error, message: `Error transforming APEX Banking Tap: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${errorMessage}` });
 	}
 
 	//

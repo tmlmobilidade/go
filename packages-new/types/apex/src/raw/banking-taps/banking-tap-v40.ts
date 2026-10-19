@@ -1,7 +1,8 @@
 /* * */
 
-import { RawApexTransactionBaseSchema } from '@/raw/raw-apex-transaction-base.js';
 import { z } from 'zod';
+
+import { RawApexTransactionBaseSchema } from '../raw-apex-transaction-base.js';
 
 /* * */
 
@@ -26,8 +27,8 @@ export const RawApexTransactionBankingTapV40PayloadSchema = z.object({
 		operatorLongID: z.string(),
 	}),
 	serviceInfo: z.object({
-		blockID: z.string(),
-		dutyID: z.string(),
+		blockID: z.string().nullable().default(null),
+		dutyID: z.string().nullable().default(null),
 		journeyID: z.string(),
 		lineLongID: z.string(),
 		onBehalfOfOperatorLongID: z.string(),

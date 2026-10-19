@@ -2,10 +2,11 @@
 
 import { populateLine, populateLines } from '@/utils/lines.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { CreateLineDto, type Line, type LineNormalized, PermissionCatalog, type UpdateLineDto } from '@tmlmobilidade/types';
+import { type CreateLineDto, type Line, type LineNormalized, type UpdateLineDto } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 
@@ -50,7 +51,10 @@ export class LinesController {
 		//
 		// Create the new line
 
-		const newLine = await goDb.offer.lines.insertOne(request.body);
+		const newLine = await goDb.offer.lines.insertOne({
+			...request.body,
+			created_by: request.me._id,
+		});
 		const populatedLine = await populateLine(newLine);
 
 		//
@@ -258,7 +262,7 @@ export class LinesController {
 		}
 
 		// If authorized, toggle the lock status of the line
-		await goDb.offer.lines.toggleLockById(request.params.id);
+		await goDb.offer.lines.updateOne({ _id: request.params.id }, { is_locked: !lineData.is_locked });
 		const foundLine = await goDb.offer.lines.findById(request.params.id);
 		if (!foundLine) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
@@ -318,7 +322,10 @@ export class LinesController {
 		//
 		// Update the line
 
-		const updatedLine = await goDb.offer.lines.updateById(lineData._id, request.body);
+		const updatedLine = await goDb.offer.lines.updateById(lineData._id, {
+			...request.body,
+			updated_by: request.me._id,
+		});
 		const populatedLine = await populateLine(updatedLine);
 
 		//

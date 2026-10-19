@@ -1,4 +1,5 @@
-import type { Event, Holiday, IsoWeekday, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
+import type { Event, Holiday, IsoWeekday, ScheduleRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
+import type { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';

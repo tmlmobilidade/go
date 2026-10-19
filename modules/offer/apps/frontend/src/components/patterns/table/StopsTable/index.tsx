@@ -3,7 +3,7 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { StopsTableHeader } from '@/components/patterns/table/StopsTableHeader';
 import { StopsTableRow } from '@/components/patterns/table/StopsTableRow';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 
 import styles from '../styles.module.css';
 

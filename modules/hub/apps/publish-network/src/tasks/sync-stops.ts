@@ -1,46 +1,46 @@
 /* * */
 
+import { decodeStopFlags, getQualifiedLineId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubGtfsExportStops, type HubStop, HubStopSchema } from '@tmlmobilidade/go-types-public-info';
+import { type HubV1ApiStop, HubV1ApiStopSchema, type HubV1GtfsStops } from '@tmlmobilidade/go-types-hub';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-interface QueryResult extends HubGtfsExportStops {
-	agency_ids: string
-	line_ids: string
-	pattern_ids: string
-	route_ids: string
+interface QueryResult extends HubV1GtfsStops {
+	agency_ids: null | string
+	pattern_ids: null | string
+	route_ids: null | string
+	route_short_names: null | string
 }
 
 /* * */
 
-export async function generateStops(importedGtfsSql: GtfsSQLTables) {
+export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 	//
 
 	Logger.title(`Sync Stops`);
 	const globalTimer = new Timer();
 
 	//
-	// Aggregate stops with their associated routes, lines and patterns
+	// Aggregate stops with their associated routes, lines and shapes
 	// from the imported GTFS database
 
-	const allGtfsStops = importedGtfsSql.stops.query(`
+	const allGtfsStops = importedGtfsSql.stops.query<QueryResult>(`
 		SELECT
 			s.*,
 			r.agency_ids,
-			r.line_ids,
+			r.pattern_ids,
 			r.route_ids,
-			r.pattern_ids
+			r.route_short_names
 		FROM
 			stops s
 		LEFT JOIN (
 			SELECT
-				stop_id,
+				st.stop_id,
 				json_group_array(DISTINCT r.agency_id) AS agency_ids,
-				json_group_array(DISTINCT r.line_id) AS line_ids,
+				json_group_array(DISTINCT json_object('agency_id', r.agency_id, 'route_short_name', r.route_short_name)) AS route_short_names,
 				json_group_array(DISTINCT r.route_id) AS route_ids,
 				json_group_array(DISTINCT t.pattern_id) AS pattern_ids
 			FROM
@@ -50,17 +50,17 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			JOIN
 				routes r ON t.route_id = r.route_id
 			GROUP BY
-				stop_id
+				st.stop_id
 		) r ON s.stop_id = r.stop_id;
 	`);
 
 	//
 	// For each item, update its entry in the database
 
-	const exportedStopsData: HubStop[] = [];
+	const exportedStopsData: HubV1ApiStop[] = [];
 	let updatedStopsCounter = 0;
 
-	for (const gtfsStop of allGtfsStops as QueryResult[]) {
+	for (const gtfsStop of allGtfsStops) {
 		try {
 			//
 
@@ -69,7 +69,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				continue;
 			}
 
-			if (!gtfsStop.line_ids?.length) {
+			if (!gtfsStop.route_short_names?.length) {
 				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no line IDs.` });
 				continue;
 			}
@@ -85,18 +85,29 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			}
 
 			//
+			// Parse the flags object
+
+			const decodedFlags = decodeStopFlags(gtfsStop.flags);
+
+			//
+			// Build the associated line IDs from the route short names
+
+			const parsedRouteShortNames: { agency_id: string, route_short_name: string }[] = JSON.parse(gtfsStop.route_short_names);
+			const associatedLineIds = parsedRouteShortNames.map(route => getQualifiedLineId(route.agency_id, route.route_short_name));
+
+			//
 			// Build the final stop object
 
-			const validatedStop: HubStop = {
-				_id: Number(gtfsStop.stop_id),
+			const validatedStop: HubV1ApiStop = {
+				_id: gtfsStop.stop_id,
 				agency_ids: JSON.parse(gtfsStop.agency_ids),
 				district_id: gtfsStop.district_id,
 				district_name: gtfsStop.district_name,
-				flags: gtfsStop.flags ? JSON.parse(gtfsStop.flags) : [],
+				flags: decodedFlags,
 				latitude: gtfsStop.stop_lat,
 				legacy_ids: gtfsStop.legacy_ids ? JSON.parse(gtfsStop.legacy_ids) : [],
 				lifecycle_status: gtfsStop.lifecycle_status,
-				line_ids: JSON.parse(gtfsStop.line_ids),
+				line_ids: associatedLineIds,
 				locality_id: gtfsStop.locality_id,
 				locality_name: gtfsStop.locality_name,
 				longitude: gtfsStop.stop_lon,
@@ -107,11 +118,13 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				parish_name: gtfsStop.parish_name,
 				pattern_ids: JSON.parse(gtfsStop.pattern_ids),
 				route_ids: JSON.parse(gtfsStop.route_ids),
-				short_name: gtfsStop.stop_short_name ?? gtfsStop.stop_name,
-				tts_name: gtfsStop.tts_stop_name,
+				short_name: gtfsStop.stop_name,
+				tts_name: gtfsStop.tts_stop_name || gtfsStop.stop_name,
 			};
 
-			const parsedStop = HubStopSchema.parse(validatedStop);
+			const parsedStop = HubV1ApiStopSchema.parse(validatedStop);
+
+			await cacheDb.setNew(`hub:v1:network:stops:${gtfsStop.stop_id}`, parsedStop);
 
 			exportedStopsData.push(parsedStop);
 
@@ -119,8 +132,8 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 
 			//
 		} catch (error) {
-			Logger.error({ error, message: `Error processing stop ${gtfsStop.stop_id}:` });
-			console.log(gtfsStop);
+			Logger.error({ error, message: `Error processing stop ${gtfsStop.stop_id}: ${JSON.stringify(gtfsStop)}` });
+			process.exit(1);
 			continue;
 		}
 	}
@@ -131,6 +144,4 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	await cacheDb.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
 
 	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
-
-	//
 };

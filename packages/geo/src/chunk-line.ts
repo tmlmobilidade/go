@@ -11,6 +11,7 @@ import { type LineString, type Position } from 'geojson';
  * @param line The LineString to be split into chunks.
  * @param segmentLength The length of each segment in meters.
  * @returns A GeoJSON LineString with the split chunks.
+ * @deprecated Use `chunkLineStringAtDistance` from `@tmlmobilidade/go-utils-geo` instead.
  */
 export function chunkLineByDistance(line: LineString, segmentLength: number): LineString {
 	//
@@ -98,6 +99,7 @@ export function chunkLineByDistance(line: LineString, segmentLength: number): Li
  * @param line The LineString to resample.
  * @param segmentLength The target distance between consecutive output points, in meters.
  * @returns A GeoJSON LineString with equidistant coordinates along the original path.
+ * @deprecated Use `chunkLineStringAtDistance` from `@tmlmobilidade/go-utils-geo` instead.
  */
 export function chunkLineByDistanceV2(line: LineString, segmentLength: number): LineString {
 	//

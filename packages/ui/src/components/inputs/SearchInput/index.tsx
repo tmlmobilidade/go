@@ -1,49 +1,53 @@
 'use client';
 
-import { Input, TextInput as MantineTextInput } from '@mantine/core';
+import { Input, TextInput as MantineTextInput, type TextInputProps as MantineTextInputProps } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
+import { forwardRef, type ReactNode } from 'react';
 
 /* * */
 
-export interface SearchInputProps {
+export interface SearchInputProps extends Omit<MantineTextInputProps, 'onChange' | 'rightSection' | 'type' | 'value'> {
+	clearButton?: (onClear: () => void) => ReactNode
 	onChange: (value: string) => void
-	placeholder?: string
-	size?: 'sm' | 'xl'
-	value?: null | string
+	value: string
 }
 
 /* * */
 
-export function SearchInput({ onChange, placeholder = 'Pesquisar...', size = 'sm', value }: SearchInputProps) {
+export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(function SearchInput({ clearButton, onChange, value, ...props }, ref) {
 	//
 
 	//
 	// A. Handle actions
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (!onChange) return;
-		onChange(event.target.value);
+		onChange(event.currentTarget.value);
 	};
 
 	const handleClear = () => {
-		if (!onChange) return;
 		onChange('');
 	};
+
+	const clearButtonElement = value.length > 0
+		? clearButton?.(handleClear) ?? <Input.ClearButton onClick={handleClear} />
+		: undefined;
 
 	//
 	// B. Render components
 
 	return (
 		<MantineTextInput
-			leftSection={<IconSearch size={size === 'xl' ? 28 : 20} />}
+			ref={ref}
+			enterKeyHint="search"
+			inputMode="search"
+			leftSection={<IconSearch size={20} />}
 			onChange={handleChange}
-			placeholder={placeholder}
-			rightSection={value?.length && <Input.ClearButton onClick={handleClear} />}
-			size={size}
-			value={value ?? ''}
-			w="100%"
+			rightSection={clearButtonElement}
+			rightSectionPointerEvents={clearButtonElement ? 'all' : undefined}
+			value={value}
+			{...props}
 		/>
 	);
 
 	//
-}
+});

@@ -1,9 +1,9 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { useEventCreateContext } from '@/components/events/create/EventCreate.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { EventSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { MultiSelect, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { EventSchema } from '@tmlmobilidade/go-types-offer';
+import { MultiSelect, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,10 +15,7 @@ export function EventCreateBasicInfo() {
 
 	const eventCreateContext = useEventCreateContext();
 
-	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.events.actions.create],
-		scope: PermissionCatalog.all.events.scope,
-	});
+	const { options: allAgencyOptions } = useAnnotationsAgenciesData();
 
 	//
 	// B. Render Components

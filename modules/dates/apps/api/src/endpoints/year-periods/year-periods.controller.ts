@@ -3,14 +3,15 @@
 import { applyYearPeriodDateChanges } from '@/utils/year-periods-dates.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type ClientSession, type Filter, MongoDatabaseClient, withTransaction } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateYearPeriodDto, type OperationalDate, PermissionCatalog, type UpdateYearPeriodDatesDto, UpdateYearPeriodDatesSchema, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/types';
+import { type CreateYearPeriodDto, type UpdateYearPeriodDatesDto, UpdateYearPeriodDatesSchema, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
-// TODO: Migrate this legacy controller to the newer one-file-per-handler endpoint structure.
 export class YearPeriodsController {
 	//
 
@@ -47,17 +48,16 @@ export class YearPeriodsController {
 		//
 		// Validate that user has permission for ALL specified agencies
 
-		if ('resources' in userYearPeriodPermissions && 'agency_ids' in userYearPeriodPermissions.resources) {
-			const userAgencyIds = userYearPeriodPermissions.resources['agency_ids'];
-			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.year_periods.actions.read,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.year_periods.scope,
+			value: request.body.agency_ids,
+		});
 
-			if (!hasAllowAll) {
-				// Check that user has permission for all requested agencies
-				const hasAllAgencies = request.body.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
-				if (!hasAllAgencies) {
-					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read periods for all specified agencies');
-				}
-			}
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read periods for all specified agencies');
 		}
 
 		//
@@ -71,16 +71,6 @@ export class YearPeriodsController {
 		}
 
 		const agencyPeriods = await goDb.offer.yearPeriods.findMany(query);
-
-		//
-		// Helper function to check if two agency arrays are exactly the same (regardless of order)
-
-		const areAgencySetsEqual = (set1: string[], set2: string[]) => {
-			if (set1.length !== set2.length) return false;
-			const sorted1 = [...set1].sort();
-			const sorted2 = [...set2].sort();
-			return sorted1.every((id, index) => id === sorted2[index]);
-		};
 
 		//
 		// Find conflicts
@@ -142,24 +132,23 @@ export class YearPeriodsController {
 		//
 		// Validate that user has permission for ALL specified agencies
 
-		if ('resources' in userYearPeriodPermissions && 'agency_ids' in userYearPeriodPermissions.resources) {
-			const userAgencyIds = userYearPeriodPermissions.resources['agency_ids'];
-			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.year_periods.actions.create,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.year_periods.scope,
+			value: request.body.agency_ids,
+		});
 
-			if (!hasAllowAll) {
-				const hasAllAgencies = request.body.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
-				if (!hasAllAgencies) {
-					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create periods for all specified agencies');
-				}
-			}
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create periods for all specified agencies');
 		}
 
 		//
 		// If dates are provided, handle conflicts with other periods of the same agency set
 
 		if (request.body.dates && request.body.dates.length > 0) {
-			const newDates = request.body.dates as OperationalDate[];
-			request.body.dates = await YearPeriodsController.handleDateAssignment(request.body.agency_ids, newDates);
+			request.body.dates = await YearPeriodsController.handleDateAssignment(request.body.agency_ids, request.body.dates);
 		}
 
 		//
@@ -192,6 +181,7 @@ export class YearPeriodsController {
 		// Get the resource permissions for periods for the current user.
 
 		const userYearPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.year_periods.scope, PermissionCatalog.all.year_periods.actions.delete);
+
 		//
 		// If no permission found, deny access
 
@@ -202,17 +192,16 @@ export class YearPeriodsController {
 		//
 		// Validate that user has permission for this period's agency
 
-		if ('resources' in userYearPeriodPermissions && 'agency_ids' in userYearPeriodPermissions.resources) {
-			const userAgencyIds = userYearPeriodPermissions.resources['agency_ids'];
-			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.year_periods.actions.delete,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.year_periods.scope,
+			value: period.agency_ids,
+		});
 
-			// User needs access to ALL agencies to delete
-			if (!hasAllowAll) {
-				const hasAllAgencies = period.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
-				if (!hasAllAgencies) {
-					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this period');
-				}
-			}
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this period');
 		}
 
 		//
@@ -251,16 +240,20 @@ export class YearPeriodsController {
 		// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
 		// filter year periods by those agency IDs.
 
-		if ('resources' in userYearPeriodPermissions && 'agency_ids' in userYearPeriodPermissions.resources) {
-			if (!userYearPeriodPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters.agency_ids = { $in: userYearPeriodPermissions.resources['agency_ids'] };
-			}
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess<string>({
+			checks: [{ action: PermissionCatalog.all.year_periods.actions.read, scope: PermissionCatalog.all.year_periods.scope }],
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+		});
+
+		if (!agencyAccess.allowAll) {
+			queryFilters.agency_ids = { $in: agencyAccess.values };
 		}
 
 		//
 		// Fetch year periods based on query filters
 
-		const allYearPeriods = await goDb.offer.yearPeriods.findMany(queryFilters, { sort: { start_date: -1 } });
+		const allYearPeriods = await goDb.offer.yearPeriods.findMany(queryFilters);
 		return reply.send({ data: allYearPeriods, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
@@ -295,19 +288,18 @@ export class YearPeriodsController {
 		}
 
 		//
-		// Validate that user has permission for this period's agency
+		// Validate that user has permission for at least one of this period's agencies
 
-		if ('resources' in userYearPeriodPermissions && 'agency_ids' in userYearPeriodPermissions.resources) {
-			const userAgencyIds = userYearPeriodPermissions.resources['agency_ids'];
-			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const hasPermissionForAnyAgency = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.year_periods.actions.read,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.year_periods.scope,
+			value: periodData.agency_ids,
+		});
 
-			// User can read if they have access to at least ONE agency
-			if (!hasAllowAll) {
-				const hasAnyAgency = periodData.agency_ids.some(agencyId => userAgencyIds.includes(agencyId));
-				if (!hasAnyAgency) {
-					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this year period');
-				}
-			}
+		if (!hasPermissionForAnyAgency) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this year period');
 		}
 
 		//
@@ -343,6 +335,7 @@ export class YearPeriodsController {
 		// Get the resource permissions for year periods for the current user.
 
 		const userYearPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.year_periods.scope, PermissionCatalog.all.year_periods.actions.lock);
+
 		//
 		// If no permission found, deny access
 
@@ -353,27 +346,22 @@ export class YearPeriodsController {
 		//
 		// Validate that user has permission for this period's agency
 
-		if ('resources' in userYearPeriodPermissions && 'agency_ids' in userYearPeriodPermissions.resources) {
-			const userAgencyIds = userYearPeriodPermissions.resources['agency_ids'];
-			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.year_periods.actions.lock,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.year_periods.scope,
+			value: periodData.agency_ids,
+		});
 
-			// User needs access to ALL agencies to lock
-			if (!hasAllowAll) {
-				const hasAllAgencies = periodData.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
-				if (!hasAllAgencies) {
-					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
-				}
-			}
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
 		}
 
 		//
 		// Toggle the lock status of the period
 
-		await goDb.offer.yearPeriods.toggleLockById(request.params.id);
-		const updatedPeriod = await goDb.offer.yearPeriods.findById(request.params.id);
-		if (!updatedPeriod) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
-		}
+		const updatedPeriod = await goDb.offer.yearPeriods.updateOne({ _id: request.params.id }, { is_locked: !periodData.is_locked });
 
 		return reply.send({
 			data: updatedPeriod,
@@ -406,6 +394,7 @@ export class YearPeriodsController {
 		// Get the resource permissions for year periods for the current user.
 
 		const userYearPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.year_periods.scope, PermissionCatalog.all.year_periods.actions.update);
+
 		//
 		// If no permission found, deny access
 
@@ -416,28 +405,26 @@ export class YearPeriodsController {
 		//
 		// Validate that user has permission for this period's agency
 
-		if ('resources' in userYearPeriodPermissions && 'agency_ids' in userYearPeriodPermissions.resources) {
-			const userAgencyIds = userYearPeriodPermissions.resources['agency_ids'];
-			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.year_periods.actions.update,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.year_periods.scope,
+			value: periodData.agency_ids,
+		});
 
-			// User needs access to ALL agencies to lock
-			if (!hasAllowAll) {
-				const hasAllAgencies = periodData.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
-				if (!hasAllAgencies) {
-					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock this period');
-				}
-			}
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this period');
 		}
 
 		//
 		// If dates are provided, handle conflicts with other periods of the same agency
 
 		if (request.body.dates && request.body.dates.length > 0) {
-			const newDates = request.body.dates as OperationalDate[];
 			const existingDates = periodData.dates || [];
 			request.body.dates = await YearPeriodsController.handleDateAssignment(
 				periodData.agency_ids,
-				newDates,
+				request.body.dates,
 				periodData._id,
 				existingDates,
 			);
@@ -446,7 +433,7 @@ export class YearPeriodsController {
 		//
 		// Update the period
 
-		const updatedPeriod = await goDb.offer.yearPeriods.updateById(periodData._id, request.body);
+		const updatedPeriod = await goDb.offer.yearPeriods.updateOne({ _id: periodData._id }, request.body);
 
 		//
 		// Send the updated period data as the response
@@ -493,14 +480,16 @@ export class YearPeriodsController {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update year periods');
 		}
 
-		if ('resources' in userYearPeriodPermissions && 'agency_ids' in userYearPeriodPermissions.resources) {
-			const userAgencyIds = userYearPeriodPermissions.resources['agency_ids'];
-			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
-			const hasAllAgencies = periodData.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.year_periods.actions.update,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.year_periods.scope,
+			value: periodData.agency_ids,
+		});
 
-			if (!hasAllowAll && !hasAllAgencies) {
-				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this period');
-			}
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this period');
 		}
 
 		//
@@ -513,7 +502,7 @@ export class YearPeriodsController {
 		);
 		const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GODB', tunnelType: 'GO' });
 		const updatedPeriod = await withTransaction(mongoClient, async (session) => {
-			const result = await goDb.offer.yearPeriods.updateById(periodData._id, { dates: updatedDates }, { session });
+			const result = await goDb.offer.yearPeriods.updateOne({ _id: periodData._id }, { dates: updatedDates }, { session });
 
 			await YearPeriodsController.handleDateAssignment(
 				periodData.agency_ids,
@@ -571,16 +560,6 @@ export class YearPeriodsController {
 		const agencyPeriods = await goDb.offer.yearPeriods.findMany(query, { session });
 
 		//
-		// Helper function to check if two agency arrays are exactly the same (regardless of order)
-
-		const areAgencySetsEqual = (set1: string[], set2: string[]) => {
-			if (set1.length !== set2.length) return false;
-			const sorted1 = [...set1].sort();
-			const sorted2 = [...set2].sort();
-			return sorted1.every((id, index) => id === sorted2[index]);
-		};
-
-		//
 		// For each year period with EXACT same agency set and overlapping dates, remove the conflicting dates
 
 		for (const otherPeriod of agencyPeriods) {
@@ -595,7 +574,7 @@ export class YearPeriodsController {
 			if (conflicts.length > 0) {
 				// Remove conflicting dates from this year period
 				const updatedDates = removeDatesFromArray(otherPeriod.dates, conflicts);
-				await goDb.offer.yearPeriods.updateById(otherPeriod._id, { dates: updatedDates }, { session });
+				await goDb.offer.yearPeriods.updateOne({ _id: otherPeriod._id }, { dates: updatedDates }, { session });
 			}
 		}
 
@@ -607,4 +586,13 @@ export class YearPeriodsController {
 		//
 	}
 	//
+}
+
+/* * */
+
+function areAgencySetsEqual(set1: string[], set2: string[]) {
+	if (set1.length !== set2.length) return false;
+	const sorted1 = [...set1].sort();
+	const sorted2 = [...set2].sort();
+	return sorted1.every((id, index) => id === sorted2[index]);
 }

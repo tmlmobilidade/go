@@ -7,7 +7,7 @@ import { type OperationContext } from '@/types/operation-context.js';
 import { createLoggerObservability } from '@/utils/observability.js';
 import { type Filter, type FindOptions, MongoDatabaseClient } from '@tmlmobilidade/go-clients-mongo';
 import { OCIStorageClient } from '@tmlmobilidade/go-clients-oci-storage';
-import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
+import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/go-types-core';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 import * as operations from './operations/index.js';
@@ -164,7 +164,7 @@ class StorageProviderClass {
 	 * @returns A promise resolving to an array of matching attachments.
 	 */
 	async findMany(filter?: Filter<Attachment>, options?: FindOptions, hooks?: OperationHooks<OperationContext, Attachment[]>): Promise<Attachment[] | null> {
-		return operations.findMany(this.deps, { filter, hooks, options });
+		return operations.findMany(this.deps, { clientSession: options?.session, filter, hooks });
 	}
 }
 

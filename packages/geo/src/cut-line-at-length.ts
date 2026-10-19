@@ -11,6 +11,7 @@ import { type LineString, type Position } from 'geojson';
  * @param length The length at which to cut the line, in meters, from the start of the line.
  * @param direction The direction in which to cut the line. If 'forward', it cuts from the start of the line.
  * @returns A new LineString that is cut at the specified length.
+ * @deprecated Use `cutLineStringAtLength` from `@tmlmobilidade/go-utils-geo` instead.
  */
 export function cutLineStringAtLength(line: LineString, length: number, direction: 'forward' | 'reversed' = 'forward'): LineString {
 	//

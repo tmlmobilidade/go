@@ -4,11 +4,11 @@
 import { type RoutePreviewDto, type RoutePreviewResponse } from '@/types/shapes.js';
 import { routeWithValhalla } from '@/utils/route-preview.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 
-const VALHALLA_URL = process.env.VALHALLA_URL ?? 'https://valhalla-stg.go.tmlmobilidade.pt';
+const VALHALLA_URL = process.env.VALHALLA_URL ?? 'https://valhalla.go.tmlmobilidade.pt';
 
 /* * */
 

@@ -10,18 +10,20 @@ interface GridProps {
 	columns?: 'a' | 'aab' | 'aabc' | 'ab' | 'abb' | 'abc' | 'abcd' | 'abcde'
 	gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl' | 'xs'
 	hAlign?: 'center' | 'end' | 'start'
+	placeItems?: 'center' | 'end' | 'start' | 'stretch'
 	vAlign?: 'center' | 'end' | 'start'
 }
 
 /* * */
 
-export function Grid({ children, columns = 'a', gap = 'none', hAlign = 'start', vAlign = 'start' }: PropsWithChildren<GridProps>) {
+export function Grid({ children, columns = 'a', gap = 'none', hAlign = 'start', placeItems = 'stretch', vAlign = 'start' }: PropsWithChildren<GridProps>) {
 	return (
 		<div
 			className={styles.container}
 			data-columns={columns}
 			data-gap={gap}
 			data-h-align={hAlign}
+			data-place-items={placeItems}
 			data-v-align={vAlign}
 		>
 			{children}

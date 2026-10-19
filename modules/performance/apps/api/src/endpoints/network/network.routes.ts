@@ -1,8 +1,8 @@
 /* * */
 
 import { NetworkController } from '@/endpoints/network/network.controller.js';
-import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 

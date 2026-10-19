@@ -2,9 +2,9 @@
 
 import { closeCreateRouteModal } from '@/components/routes/create/RouteCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateRouteDto, CreateRouteSchema, type LineNormalized, Route } from '@tmlmobilidade/types';
-import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type CreateRouteDto, CreateRouteSchema, type LineNormalized, type Route } from '@tmlmobilidade/go-types-offer';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -20,6 +20,7 @@ interface RouteCreateContextState {
 	}
 	flags: {
 		isSaving: boolean
+		isValid: boolean
 	}
 }
 
@@ -48,23 +49,25 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	//
 	// B. Fetch data
 
-	const { mutate: lineMutate } = useSWR<LineNormalized>(API_ROUTES.offer.LINES_DETAIL(lineId));
+	const { mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	});
 
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateRouteDto>(CreateRouteSchema, undefined, { line_id: lineId });
+	const { flags, form } = useTypicalForm<CreateRouteDto>(CreateRouteSchema, undefined, { code: '', line_id: lineId, name: '' }, 'controlled');
 
 	//
 	// D. Handle actions
 
-	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_LIST, 'POST', form.getValues()),
-		onSuccess: (newItem) => {
+	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.ROUTES_LIST }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			lineMutate();
 			closeCreateRouteModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.ROUTE_DETAIL(lineId, newItem._id)));
+			router.push(keepUrlParams(PAGE_ROUTES.offer.ROUTE_DETAIL(lineId, data._id)));
 		},
 	});
 
@@ -80,9 +83,12 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 		},
 		flags: {
 			isSaving,
+			isValid: flags.isValid,
 		},
 	}), [
 		form,
+		flags.isValid,
+		handleCreate,
 		isSaving,
 	]);
 

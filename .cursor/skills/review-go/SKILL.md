@@ -40,7 +40,7 @@ For each area, only review if files from that area are present in the diff.
 - No direct `@mantine/*` imports in module frontends — must go through `@tmlmobilidade/ui`
 - SWR used with `API_ROUTES` from `@tmlmobilidade/consts` — no hardcoded URL strings
 - Flag hooks (`useFlagCanSave`, `useFlagReadOnly`, etc.) used instead of manual boolean logic
-- Mutations wrapped in `useHandleUpdate`
+- Mutations wrapped in `useHandleAction`
 
 ---
 

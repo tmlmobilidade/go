@@ -13,6 +13,9 @@ export const LifecycleStatusValues = [
 	'voided',
 ] as const;
 
-export const LifecycleStatusSchema = z.enum(LifecycleStatusValues);
+export const LifecycleStatusSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(LifecycleStatusValues));
 
 export type LifecycleStatus = z.infer<typeof LifecycleStatusSchema>;

@@ -3,7 +3,7 @@
 import { RuleCreate } from '@/components/patterns/rules/create/RuleCreate';
 import { RuleCreateContextProvider } from '@/components/patterns/rules/create/RuleCreate.context';
 import { DataProviders } from '@/providers/data-providers';
-import { type ManualRule } from '@tmlmobilidade/types';
+import { type ManualRule } from '@tmlmobilidade/go-types-offer';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */

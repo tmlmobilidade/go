@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Add Module
 
-You are creating a new GO module. Follow every step in order. Ask for the **module name** if not provided (lowercase, kebab-case, e.g. `fleet`, `alerts`).
+You are creating a new GO module. Follow every step in order. Ask for the **module name** if not provided (lowercase, kebab-case, e.g. `operation`, `offer`).
 
 ## Steps
 
@@ -42,11 +42,11 @@ Path: `modules/[module]/apps/api/package.json`
 
 - `"name": "@tmlmobilidade/go-[module]-api"`
 - `"version": "0.0.1"`
-- Extend `@tmlmobilidade/tsconfig/node.json`
-- Deps: `@tmlmobilidade/fastify`, `@tmlmobilidade/types`, `@tmlmobilidade/interfaces`, `@tmlmobilidade/consts`, `@tmlmobilidade/mongo`
+- Extend `@tmlmobilidade/go-utils-tsconfig/node.json`
+- Deps: `@tmlmobilidade/go-clients-fastify`, `@tmlmobilidade/types`, `@tmlmobilidade/interfaces`, `@tmlmobilidade/consts`, `@tmlmobilidade/mongo`
 
 ### 4. API app — bootstrap files
-`src/main.ts` — imports `FastifyService` from `@tmlmobilidade/fastify`, imports `./index.js`, starts the server
+`src/main.ts` — imports `FastifyService` from `@tmlmobilidade/go-clients-fastify`, imports `./index.js`, starts the server
 `src/index.ts` — imports `./endpoints/index.js`
 `src/endpoints/index.ts` — empty for now, will collect route imports
 
@@ -54,7 +54,7 @@ Path: `modules/[module]/apps/api/package.json`
 Path: `modules/[module]/apps/frontend/package.json`
 
 - `"name": "@tmlmobilidade/go-[module]-frontend"`
-- Extend `@tmlmobilidade/tsconfig/nextjs.json`
+- Extend `@tmlmobilidade/go-utils-tsconfig/nextjs.json`
 - Deps: `@tmlmobilidade/ui`, `@tmlmobilidade/types`, `@tmlmobilidade/consts`, `@tmlmobilidade/utils`, `next`, `react`, `react-dom`, `swr`
 
 ### 6. Register types in packages/types

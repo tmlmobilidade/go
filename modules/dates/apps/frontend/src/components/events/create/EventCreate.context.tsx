@@ -2,7 +2,7 @@
 
 import { closeCreateEventModal } from '@/components/events/create/EventCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateEventDto, CreateEventSchema, type Event } from '@tmlmobilidade/types';
+import { type CreateEventDto, CreateEventSchema, type Event } from '@tmlmobilidade/go-types-offer';
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';

@@ -1,8 +1,8 @@
 /* * */
 
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
+import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
+import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { type Vehicle } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -20,7 +20,7 @@ import { type Vehicle } from '@tmlmobilidade/types';
  * - lon:       Vehicle longitude
  * - trip_id:   Associated trip identifier
  */
-export function transformVehicleDataIntoGeoJsonFeature(event: HubVehiclePosition | SimplifiedVehicleEvent, vehicleData?: Vehicle): GeoJSON.Feature<GeoJSON.Point> {
+export function transformVehicleDataIntoGeoJsonFeature<T extends HubV1ApiVehiclePosition | SimplifiedVehicleEvent>(event: T, vehicleData?: Vehicle): GeoJSON.Feature<GeoJSON.Point, Partial<Vehicle> & T> {
 	return {
 		geometry: {
 			coordinates: [event.longitude, event.latitude],

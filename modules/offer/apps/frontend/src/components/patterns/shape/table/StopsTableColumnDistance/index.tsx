@@ -1,7 +1,7 @@
 'use client';
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { Path } from '@tmlmobilidade/types';
+import { Path } from '@tmlmobilidade/go-types-offer';
 import { NumberInput } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';

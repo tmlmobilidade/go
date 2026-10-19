@@ -1,5 +1,5 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 
 export function createImportedStopResolver(agencyId?: string) {
 	const cache = new Map<string, Promise<null | Stop>>();
@@ -12,11 +12,8 @@ export function createImportedStopResolver(agencyId?: string) {
 		if (cached) return cached;
 
 		const promise = (async () => {
-			const numericStopId = Number(normalizedStopId);
-			if (!Number.isNaN(numericStopId)) {
-				const stopById = await goDb.infrastructure.stops.findById(numericStopId);
-				if (stopById) return stopById;
-			}
+			const stopById = await goDb.infrastructure.stops.findById(normalizedStopId);
+			if (stopById) return stopById;
 
 			if (agencyId) {
 				const stopByAgencyFlag = await goDb.infrastructure.stops.findOne({

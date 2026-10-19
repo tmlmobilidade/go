@@ -1,9 +1,9 @@
 'use client';
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useFareCreateContext } from '@/components/fares/create/FareCreate.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { FareSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { MultiSelect, Section, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
+import { FareSchema } from '@tmlmobilidade/go-types-offer';
+import { MultiSelect, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,10 +14,7 @@ export function FareCreateBasicInfo() {
 	// A. Setup variables
 
 	const fareCreateContext = useFareCreateContext();
-	const { options: allAgencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.fares.actions.create],
-		scope: PermissionCatalog.all.fares.scope,
-	});
+	const { options: allAgencyOptions } = useAgenciesData();
 
 	//
 	// B. Render Components

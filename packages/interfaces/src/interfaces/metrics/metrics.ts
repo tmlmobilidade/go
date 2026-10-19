@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { MetricSchema } from '@tmlmobilidade/types';
+import { MetricSchema } from '@tmlmobilidade/go-types-performance';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -14,6 +14,7 @@ export type MetricDocument = z.infer<typeof MetricSchema>;
 
 class MetricsClass extends MongoCollectionClass<MetricDocument, MetricDocument, MetricDocument> {
 	private static _instance: MetricsClass;
+
 	protected override createSchema: z.ZodSchema = MetricSchema;
 	protected override updateSchema: z.ZodSchema = MetricSchema;
 

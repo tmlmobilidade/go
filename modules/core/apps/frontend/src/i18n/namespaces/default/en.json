@@ -1,0 +1,840 @@
+{
+	"agencies": {
+		"NoDataLabel": {
+			"text": "Select an Agency"
+		},
+		"detail": {
+			"SectionAlerts": {
+				"description": "Mapping of causes, effects, and reference types for Service Alerts.",
+				"table": {
+					"header": {
+						"effect": "Effect"
+					}
+				},
+				"title": "Alerts"
+			},
+			"SectionBasicInfo": {
+				"description": "Name, email, phone, URL, and time zone.",
+				"fields": {
+					"code": {
+						"label": "Code",
+						"placeholder": "44"
+					},
+					"fare_url": {
+						"label": "Fare information URL",
+						"placeholder": "https://www.carrismetropolitana.pt/tarifas"
+					},
+					"name": {
+						"label": "Agency Name",
+						"placeholder": "Alsa Todi"
+					},
+					"phone": {
+						"label": "Phone Number",
+						"placeholder": "912345678"
+					},
+					"primary_language": {
+						"label": "Primary Language",
+						"placeholder": "pt"
+					},
+					"pta_name": {
+						"label": "Authority Name",
+						"placeholder": "CIM..."
+					},
+					"public_email": {
+						"label": "Public Email",
+						"placeholder": "email@example.com"
+					},
+					"public_name": {
+						"label": "Public Name",
+						"placeholder": "Carris Metropolitana"
+					},
+					"short_name": {
+						"label": "Short Name",
+						"placeholder": "CM"
+					},
+					"timezone": {
+						"label": "Time Zone"
+					},
+					"website_url": {
+						"label": "Website",
+						"placeholder": "https://www.carrismetropolitana.pt"
+					}
+				},
+				"title": "Agency Details"
+			},
+			"SectionFinancials": {
+				"description": "Financial Information",
+				"fields": {
+					"price_per_km": {
+						"label": "Price per km",
+						"placeholder": "1.50"
+					},
+					"total_vkm_per_year": {
+						"label": "Total km per year",
+						"placeholder": "1000000"
+					}
+				},
+				"title": "Agency financial information"
+			},
+			"SectionOpenData": {
+				"description": "Open data settings.",
+				"fields": {
+					"details": {
+						"email": {
+							"label": "Email",
+							"placeholder": "email@example.com"
+						},
+						"fare_url": {
+							"label": "Fare information URL",
+							"placeholder": "https://www.carrismetropolitana.pt/tarifas"
+						},
+						"name": {
+							"label": "Name",
+							"placeholder": "Carris Metropolitana"
+						},
+						"phone": {
+							"label": "Phone",
+							"placeholder": "912345678"
+						},
+						"website_url": {
+							"label": "Website",
+							"placeholder": "https://www.carrismetropolitana.pt"
+						}
+					},
+					"services": {
+						"eta_enabled": {
+							"label": "Make arrival estimates available"
+						},
+						"gtfs_enabled": {
+							"label": "Make unified GTFS available"
+						},
+						"positions_enabled": {
+							"label": "Make vehicle positions available"
+						},
+						"service_alerts_enabled": {
+							"label": "Make service alerts available"
+						}
+					}
+				},
+				"title": "Open Data"
+			},
+			"SectionPlans": {
+				"description": "Settings for applying plans.",
+				"fields": {
+					"apex_notification_emails": {
+						"description": "Email addresses notified when new APEX configuration files become available.",
+						"label": "APEX contact emails",
+						"placeholder": "email@example.com"
+					},
+					"approval_notification_emails": {
+						"description": "Email addresses notified when a plan is approved.",
+						"label": "Plan approval notification emails"
+					},
+					"approval_request_emails": {
+						"description": "Email addresses notified when a plan is submitted for approval.",
+						"label": "Plan approval request emails"
+					}
+				},
+				"title": "Plans"
+			},
+			"SectionValidationRules": {
+				"description": "GTFS validation rules file",
+				"fields": {
+					"Rules": {
+						"label": "Rules"
+					},
+					"Severity": {
+						"label": "Severity"
+					},
+					"file": {
+						"button": "Upload rules",
+						"label": "Upload GTFS validation rules"
+					},
+					"file_content": {
+						"button": "Download rules",
+						"label": "Download GTFS validation rules",
+						"no_content": "No validation rules defined"
+					}
+				},
+				"title": {
+					"GTFS_validation_rules": {
+						"title": "GTFS validation rules"
+					}
+				},
+				"toasts": {
+					"error": {
+						"message": "Unable to read the JSON file. Check its contents.",
+						"title": "Error processing file."
+					},
+					"file_type": {
+						"message": "The uploaded file exceeds the allowed limit.",
+						"title": "Invalid file type."
+					},
+					"max_size": {
+						"message": "The uploaded file exceeds the allowed limit.",
+						"title": "File too large."
+					},
+					"read_only": {
+						"message": "The document is in view mode.",
+						"title": "Unable to update validation rules."
+					},
+					"success": {
+						"message": "The uploaded file was accepted. Save your changes to activate it.",
+						"title": "Rules uploaded."
+					}
+				}
+			},
+			"header": {
+				"save": "Save"
+			}
+		},
+		"list": {
+			"Header": {
+				"title": "Agencies"
+			},
+			"Table": {
+				"columns": {
+					"code": "Code",
+					"id": "#ID",
+					"name": "Name",
+					"pta_name": "Authority Name"
+				}
+			}
+		}
+	},
+	"common": {
+		"FileComponent": {
+			"downloadError": "Error downloading file",
+			"downloadFailed": "Unable to generate the JSON file.",
+			"downloadStarted": "Download started successfully.",
+			"downloadTitle": "Downloading file"
+		},
+		"IconChooser": {
+			"label": "Icons"
+		},
+		"UploadImage": {
+			"DeleteButton": {
+				"confirm": {
+					"message": "Are you sure you want to delete the image?",
+					"title": "Delete image"
+				}
+			},
+			"Error": {
+				"message": "The file size exceeds the allowed limit",
+				"title": "Error uploading image"
+			},
+			"FileButton": {
+				"label": "Upload image"
+			}
+		}
+	},
+	"home": {
+		"Wiki": {
+			"list": {
+				"columns": {
+					"category": {
+						"label": "Categories"
+					},
+					"title": {
+						"label": "Title"
+					}
+				}
+			}
+		}
+	},
+	"organizations": {
+		"NoDataLabel": {
+			"text": "Select an Organization"
+		},
+		"create": {
+			"Header": {
+				"PublishButton": {
+					"label": "Publish"
+				},
+				"title": "Create Organization"
+			},
+			"SectionBasicInfo": {
+				"fields": {
+					"long_name": {
+						"label": "Organization name",
+						"placeholder": "Carris Metropolitana"
+					},
+					"short_name": {
+						"label": "Abbreviation",
+						"placeholder": "CM"
+					}
+				}
+			}
+		},
+		"detail": {
+			"Header": {
+				"DeleteButton": {
+					"Confirm": {
+						"message": "Are you sure you want to delete this organization? This action cannot be undone.",
+						"title": "Delete Organization"
+					},
+					"NewOrganizationButton": {
+						"label": "New organization"
+					}
+				}
+			},
+			"QuickLinks": {
+				"AddQuickLinkButton": {
+					"label": "Add Quick Link"
+				},
+				"NoOrganizationLabel": {
+					"label": "Create the organization first to add quick links."
+				},
+				"description": "Quick links displayed on the home page.",
+				"table": {
+					"columns": {
+						"actions": {
+							"label": "Actions"
+						},
+						"icon": {
+							"label": "Icon"
+						},
+						"link": {
+							"label": "Link"
+						},
+						"name": {
+							"label": "Name"
+						}
+					}
+				},
+				"title": "Quick Links"
+			},
+			"QuickLinksModal": {
+				"Error": {
+					"message": "Please fill in all fields",
+					"title": "Please enter a valid URL"
+				},
+				"Fields": {
+					"cancel": {
+						"label": "Cancel"
+					},
+					"link": {
+						"label": "Link"
+					},
+					"save": {
+						"label": "Save"
+					},
+					"title": {
+						"label": "Name"
+					}
+				}
+			},
+			"SectionBasicInfo": {
+				"description": "Details such as name, abbreviation, logo, and home page links.",
+				"fields": {
+					"logo_dark": {
+						"label": "Dark Mode Logo"
+					},
+					"logo_light": {
+						"label": "Light Mode Logo"
+					},
+					"long_name": {
+						"label": "Organization Name",
+						"placeholder": "Carris Metropolitana"
+					},
+					"short_name": {
+						"label": "Abbreviation",
+						"placeholder": "CM"
+					}
+				},
+				"title": "General information"
+			}
+		},
+		"list": {
+			"header": {
+				"NewOrganizationButton": {
+					"label": "New organization"
+				},
+				"title": "Organizations"
+			},
+			"table": {
+				"columns": {
+					"id": {
+						"label": "#ID"
+					},
+					"name": {
+						"label": "Name"
+					}
+				}
+			}
+		}
+	},
+	"permissions": {
+		"AgencyPermissionMultiselect": {
+			"all": "All agencies",
+			"description": "Agencies the user can access for this action.",
+			"label": "Agencies"
+		},
+		"AlertReferenceTypePermissionMultiselect": {
+			"alertReferenceTypeOptionsWithAllowAll": {
+				"all": "Reference types",
+				"lines": "Lines",
+				"rides": "Rides",
+				"stops": "Stops"
+			},
+			"all": "All reference types",
+			"description": "Select the reference types this user can use.",
+			"label": "Reference types"
+		},
+		"SectionItems": {
+			"label": "Permission inherited from the permission group"
+		},
+		"agencyActions": {
+			"description": "Actions the user can perform when managing agencies.",
+			"descriptions": {
+				"create": "Allows the user to create an agency",
+				"delete": "Allows the user to delete an agency",
+				"read": "Allows the user to view agencies",
+				"toggleLock": "Allows the user to lock/unlock an agency",
+				"update": "Allows the user to edit an agency"
+			},
+			"labels": {
+				"create": "Create",
+				"delete": "Delete",
+				"read": "View",
+				"toggleLock": "Lock/Unlock",
+				"update": "Edit"
+			},
+			"title": "Agency Permissions"
+		},
+		"alertActions": {
+			"description": "Actions the user can perform when managing alerts.",
+			"descriptions": {
+				"create": "Allows the user to create an alert",
+				"delete": "Allows the user to delete an alert",
+				"read": "Allows the user to view alerts",
+				"toggleLock": "Allows the user to lock/unlock an alert",
+				"update": "Allows the user to edit an alert"
+			},
+			"labels": {
+				"create": "Create",
+				"delete": "Delete",
+				"read": "View",
+				"toggleLock": "Lock/Unlock",
+				"update": "Edit"
+			},
+			"title": "Alert Permissions"
+		},
+		"annotationsActions": {
+			"description": "Actions the user can perform when managing annotations.",
+			"title": "Annotation Permissions"
+		},
+		"datesActions": {
+			"descriptions": {
+				"createAnnotations": "Allows the user to create an annotation",
+				"deleteAnnotations": "Allows the user to delete an annotation",
+				"readAnnotations": "Allows the user to view annotations",
+				"toggleLockAnnotations": "Allows the user to lock/unlock an annotation",
+				"updateAnnotations": "Allows the user to edit an annotation"
+			},
+			"labels": {
+				"createAnnotations": "Create annotation",
+				"deleteAnnotations": "Delete annotation",
+				"readAnnotations": "View annotations",
+				"toggleLockAnnotations": "Lock/Unlock",
+				"updateAnnotations": "Edit annotation"
+			}
+		},
+		"gtfsValidationActions": {
+			"description": "Actions the user can perform when managing GTFS validations.",
+			"descriptions": {
+				"create": "Allows the user to create a validation",
+				"read": "Allows the user to view validations",
+				"requestApproval": "Allows the user to request approval for a validation"
+			},
+			"labels": {
+				"create": "Create",
+				"read": "View",
+				"requestApproval": "Request approval"
+			},
+			"title": "Validation (GTFS) Permissions"
+		},
+		"homeActions": {
+			"description": "Actions the user can perform on the home page.",
+			"descriptions": {
+				"seeQuickLinks": "Allows the user to view quick links",
+				"seeWikiLinks": "Allows the user to view wiki"
+			},
+			"labels": {
+				"seeQuickLinks": "View quick links",
+				"seeWikiLinks": "View wiki"
+			},
+			"title": "Home Permissions"
+		},
+		"organizationActions": {
+			"description": "Actions the user can perform when managing organizations.",
+			"descriptions": {
+				"create": "Allows the user to create an organization",
+				"delete": "Allows the user to delete an organization",
+				"read": "Allows the user to view organizations",
+				"toggleLock": "Allows the user to lock/unlock an organization",
+				"update": "Allows the user to edit an organization"
+			},
+			"labels": {
+				"create": "Create",
+				"delete": "Delete",
+				"read": "View",
+				"toggleLock": "Lock/Unlock",
+				"update": "Edit"
+			},
+			"title": "Organization Permissions"
+		},
+		"performanceActions": {
+			"description": "Actions the user can perform when viewing metrics.",
+			"descriptions": {
+				"read": "Allows the user to view metrics"
+			},
+			"labels": {
+				"read": "View"
+			},
+			"title": "Metrics Permissions"
+		},
+		"periodsActions": {
+			"description": "Actions the user can perform when managing periods.",
+			"descriptions": {
+				"create": "Allows the user to create a period",
+				"delete": "Allows the user to delete a period",
+				"read": "Allows the user to view periods",
+				"toggleLock": "Allows the user to lock/unlock a period",
+				"update": "Allows the user to edit a period"
+			},
+			"labels": {
+				"create": "Create",
+				"delete": "Delete",
+				"read": "View",
+				"toggleLock": "Lock/Unlock",
+				"update": "Edit"
+			},
+			"title": "Period Permissions"
+		},
+		"planActions": {
+			"description": "Actions the user can perform when managing plans.",
+			"descriptions": {
+				"create": "Allows the user to create a plan",
+				"delete": "Allows the user to delete a plan",
+				"read": "Allows the user to view a specific plan",
+				"readController": "Allows the user to view the SLA configuration of a plan",
+				"readPcgiLegacy": "Allows the user to view PCGI Legacy data",
+				"toggleLock": "Allows the user to lock/unlock a plan",
+				"update": "Allows the user to edit a plan",
+				"updateController": "Allows the user to configure the SLAs of a plan",
+				"updateFeedInfoDates": "Allows the user to edit feed information dates",
+				"updateGtfsPlan": "Allows the user to change the GTFS of a plan",
+				"updatePcgiLegacy": "Allows the user to edit PCGI Legacy data"
+			},
+			"labels": {
+				"create": "Create",
+				"delete": "Delete",
+				"read": "View",
+				"readController": "View SLA Controller",
+				"readPcgiLegacy": "View PCGI Legacy",
+				"toggleLock": "Lock/Unlock",
+				"update": "Edit",
+				"updateController": "Edit SLA Controller",
+				"updateFeedInfoDates": "Edit Validity Dates",
+				"updateGtfsPlan": "Change GTFS",
+				"updatePcgiLegacy": "Edit PCGI Legacy"
+			},
+			"title": "Plan Permissions"
+		},
+		"realtimeActions": {
+			"description": "Actions the user can perform when managing real-time alerts.",
+			"descriptions": {
+				"create": "Allows the user to create a real-time alert",
+				"delete": "Allows the user to delete a real-time alert",
+				"read": "Allows the user to view real-time alerts",
+				"toggleLock": "Allows the user to lock/unlock a real-time alert",
+				"update": "Allows the user to edit a real-time alert"
+			},
+			"labels": {
+				"create": "Create",
+				"delete": "Delete",
+				"read": "View",
+				"toggleLock": "Lock/Unlock",
+				"update": "Edit"
+			},
+			"title": "Real-Time Alert Permissions"
+		},
+		"rideActions": {
+			"description": "Actions the user can perform when managing rides.",
+			"descriptions": {
+				"acceptanceChangeStatus": "Allows the user to change the status of a ride justification",
+				"acceptanceJustify": "Allows the user to justify a ride",
+				"acceptanceLock": "Allows the user to lock/unlock a ride justification",
+				"acceptanceRead": "Allows the user to view a ride justification",
+				"analsysLock": "Allows the user to lock/unlock a ride analysis",
+				"analysisRead": "Allows the user to view a ride analysis",
+				"analysisReprocess": "Allows the user to reprocess a ride analysis",
+				"analysisUpdate": "Allows the user to edit a ride analysis",
+				"auditLock": "Allows the user to lock/unlock a ride audit",
+				"auditRead": "Allows the user to view a ride audit",
+				"auditUpdate": "Allows the user to edit a ride audit"
+			},
+			"labels": {
+				"acceptanceChangeStatus": "Acceptance - Change status",
+				"acceptanceJustify": "Acceptance - Justify",
+				"acceptanceLock": "Acceptance - Lock/Unlock",
+				"acceptanceRead": "Acceptance - View",
+				"analsysLock": "Analysis - Lock/Unlock",
+				"analysisRead": "Analysis - View",
+				"analysisReprocess": "Analysis - Reprocess",
+				"analysisUpdate": "Analysis - Edit",
+				"auditLock": "Audit - Lock/Unlock",
+				"auditRead": "Audit - View",
+				"auditUpdate": "Audit - Edit"
+			},
+			"title": "Ride Permissions"
+		},
+		"roleActions": {
+			"description": "Actions the user can perform when managing permission groups.",
+			"descriptions": {
+				"create": "Allows the user to create a permission group",
+				"delete": "Allows the user to delete a permission group",
+				"read": "Allows the user to view permission groups",
+				"toggleLock": "Allows the user to lock/unlock a permission group",
+				"update": "Allows the user to edit a permission group"
+			},
+			"labels": {
+				"create": "Create",
+				"delete": "Delete",
+				"read": "View",
+				"toggleLock": "Lock/Unlock",
+				"update": "Edit"
+			},
+			"title": "Permission Group Permissions"
+		},
+		"stopActions": {
+			"description": "Actions the user can perform when managing stops.",
+			"descriptions": {
+				"create": "Allows the user to create a stop",
+				"delete": "Allows the user to delete a stop",
+				"read": "Allows the user to view stops",
+				"toggleLock": "Allows the user to lock/unlock a stop",
+				"update": "Allows the user to edit a stop"
+			},
+			"labels": {
+				"create": "Create",
+				"delete": "Delete",
+				"read": "View",
+				"toggleLock": "Lock/Unlock",
+				"update": "Edit"
+			},
+			"title": "Stop Permissions"
+		},
+		"userActions": {
+			"description": "Actions the user can perform when managing users.",
+			"descriptions": {
+				"create": "Allows the user to create a user",
+				"delete": "Allows the user to delete a user",
+				"read": "Allows the user to view users",
+				"toggleLock": "Allows the user to lock/unlock a user",
+				"update": "Allows the user to edit a user"
+			},
+			"labels": {
+				"create": "Create",
+				"delete": "Delete",
+				"read": "View",
+				"toggleLock": "Lock/Unlock",
+				"update": "Edit"
+			},
+			"title": "User Permissions"
+		}
+	},
+	"roles": {
+		"create": {
+			"BasicInfo": {
+				"fields": {
+					"name": {
+						"label": "Group Name",
+						"placeholder": "..."
+					}
+				}
+			},
+			"Header": {
+				"NewRoleButton": {
+					"label": "New Permission Group"
+				},
+				"UpdateButton": {
+					"label": "Create"
+				}
+			}
+		},
+		"detail": {
+			"BasicInfo": {
+				"description": "Basic user information",
+				"fields": {
+					"name": {
+						"label": "Group name",
+						"placeholder": "..."
+					}
+				},
+				"title": "Basic Information"
+			},
+			"header": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "Are you sure you want to delete this permission group? This action cannot be undone.",
+						"title": "Delete Permission Group"
+					}
+				},
+				"NewRoleButton": {
+					"label": "New Permission Group"
+				}
+			}
+		},
+		"list": {
+			"Header": {
+				"NewRoleButton": {
+					"label": "New Permission Group"
+				},
+				"Table": {
+					"columns": {
+						"id": "#ID",
+						"name": "Name",
+						"permissions": "Permissions"
+					}
+				},
+				"title": "Permission Groups"
+			}
+		}
+	},
+	"users": {
+		"create": {
+			"BasicInfo": {
+				"fields": {
+					"email": {
+						"label": "Email",
+						"placeholder": "user@example.com"
+					},
+					"first_name": {
+						"label": "First Name",
+						"placeholder": "..."
+					},
+					"last_name": {
+						"label": "Last Name",
+						"placeholder": "..."
+					}
+				}
+			},
+			"Header": {
+				"NewUserButton": {
+					"label": "New User"
+				},
+				"UpdateButton": {
+					"label": "Create"
+				}
+			},
+			"OrganizationAndRoles": {
+				"fields": {
+					"organization": {
+						"label": "Organization",
+						"placeholder": "Select an option..."
+					},
+					"roles": {
+						"label": "Roles",
+						"placeholder": "Select an option..."
+					}
+				}
+			}
+		},
+		"detail": {
+			"BasicInfo": {
+				"description": "Basic user information",
+				"fields": {
+					"email": {
+						"label": "Email",
+						"placeholder": "user@example.com"
+					},
+					"first_name": {
+						"label": "First Name",
+						"placeholder": "..."
+					},
+					"last_name": {
+						"label": "Last Name",
+						"placeholder": "..."
+					},
+					"password": {
+						"label": "Password",
+						"placeholder": "..."
+					},
+					"phone": {
+						"label": "Mobile Phone",
+						"placeholder": "912345678"
+					}
+				},
+				"title": "Basic Information"
+			},
+			"Header": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "Are you sure you want to delete this user? This action cannot be undone.",
+						"title": "Delete User"
+					}
+				},
+				"NewUserButton": {
+					"label": "New User"
+				}
+			},
+			"RolesAndOrganization": {
+				"description": "The permissions assigned to the user in the system and the organizations they belong to.",
+				"fields": {
+					"organization": {
+						"label": "Organization",
+						"placeholder": "Select an option..."
+					},
+					"roles": {
+						"label": "Roles",
+						"placeholder": "Select an option..."
+					}
+				},
+				"title": "Roles & Organizations"
+			}
+		},
+		"list": {
+			"FilterBar": {
+				"organization": {
+					"label": "Organization"
+				},
+				"role": {
+					"label": "Groups"
+				}
+			},
+			"Header": {
+				"NewUserButton": {
+					"label": "New User"
+				},
+				"title": "Users"
+			},
+			"Idle": {
+				"text": "Select a User"
+			},
+			"Table": {
+				"columns": {
+					"email": {
+						"label": "Email"
+					},
+					"id": {
+						"label": "#ID"
+					},
+					"lastSeenAt": {
+						"label": "Last Visit"
+					},
+					"name": {
+						"label": "Name"
+					},
+					"organizationId": {
+						"label": "Organization"
+					},
+					"roleIds": {
+						"label": "Groups"
+					}
+				}
+			}
+		}
+	}
+}

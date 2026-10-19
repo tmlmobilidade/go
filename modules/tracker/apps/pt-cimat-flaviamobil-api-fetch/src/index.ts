@@ -1,0 +1,115 @@
+/* * */
+
+import { externalClients } from '@tmlmobilidade/external';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
+import { HashableRawVehicleEvent, type RawVehicleEventPtCimatFlaviamobilV1 } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+import crypto from 'node:crypto';
+
+/* * */
+
+let ITERATION = 0;
+
+/* * */
+
+const main = async () => {
+	//
+
+	//
+	// Initialize the timer
+
+	const timer = new Timer();
+
+	let saveCount = 0;
+
+	//
+	// Fetch the AMI FLAVIAMOBIL Vehicle Events data from the API
+
+	Logger.info({ message: `[${ITERATION}] Fetching AMI FLAVIAMOBIL data from API...`, spacesAfter: 1, spacesBefore: 0 });
+
+	const positions = await externalClients.ami.vehiclePositions(1059);
+
+	Logger.info({ message: `[${ITERATION}] Found ${positions.length} Vehicle Events in the AMI FLAVIAMOBIL data.` });
+
+	//
+	// Transform each position into a RawVehicleEvent
+
+	const candidateEvents: Array<{ _id: string, document: RawVehicleEventPtCimatFlaviamobilV1 }> = [];
+
+	for (const position of positions) {
+		try {
+			//
+
+			//
+			// Hash the relevant fields of the vehicle event
+			// to create a unique identifier for the event.
+			// This allows us to identify duplicate events
+			// and avoid storing them multiple times in the database.
+
+			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtCimatFlaviamobilV1> = {
+				agency_id: 'NIRIC',
+				created_at: Dates.fromFormat(position.position_date, 'dd-MM-yyyy HH:mm:ss', 'Europe/Lisbon').unix_milliseconds,
+				entity_id: position.fleet_number,
+				payload: position,
+				version: 'pt-cimat-flaviamobil-v1',
+			};
+
+			const hashableRawEventId = crypto
+				.createHash('sha256')
+				.update(JSON.stringify(hashableRawEvent))
+				.digest('hex');
+
+			candidateEvents.push({
+				_id: hashableRawEventId,
+				document: {
+					...hashableRawEvent,
+					_id: hashableRawEventId,
+					received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
+				},
+			});
+
+			//
+		} catch (error) {
+			Logger.error({ error, message: `[${ITERATION}] Error processing vehicle position with fleet number ${position.fleet_number}:` });
+		}
+	}
+
+	//
+	// Save the new vehicle events to the database
+
+	if (candidateEvents.length > 0) {
+		try {
+			const candidateIds = candidateEvents.map(event => event._id);
+			const existingDocs = await rawDb.vehicleEvents.ptCimatFlaviamobil.findMany(
+				{ _id: { $in: candidateIds } },
+				{ projection: { _id: 1 } },
+			);
+			const existingIds = new Set(existingDocs.map(doc => doc._id));
+
+			const newEvents = candidateEvents.filter((event) => {
+				if (existingIds.has(event._id)) return false;
+				existingIds.add(event._id);
+				return true;
+			});
+
+			if (newEvents.length > 0) {
+				await rawDb.vehicleEvents.ptCimatFlaviamobil.insertMany(newEvents.map(event => event.document));
+				saveCount = newEvents.length;
+			}
+		} catch (error) {
+			Logger.error({ error, message: `[${ITERATION}] Error saving vehicle events to database:` });
+		}
+	}
+
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from AMI FLAVIAMOBIL data in ${timer.get()}.` });
+
+	ITERATION++;
+
+	//
+};
+
+/* * */
+
+await runOnInterval(main, { intervalMs: '5s', throwOnError: false });

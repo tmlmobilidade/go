@@ -1,7 +1,7 @@
 /* * */
 
 import { useEventsListContext } from '@/components/events/list/EventsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function EventsListFilterAgencies() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={eventsListContext.filters.agency.isActive}
 			label="Operadores"
 			onChange={eventsListContext.filters.agency.set}

@@ -1,12 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventEsCrtmLaVelozV1 } from '@tmlmobilidade/go-types-vehicle-events';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import crypto from 'node:crypto';
 
 /* * */
@@ -14,13 +13,6 @@ import crypto from 'node:crypto';
 let ITERATION = 0;
 
 /* * */
-
-try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'es-crtm-la-veloz-api-fetch', message: 'Sentry Tracker CRTM La Veloz Fetch initialized', module: 'tracker', severity: 'info' });
-} catch (error) {
-	Logger.error({ error, message: 'Error initializing Sentry Tracker CRTM La Veloz Fetch' });
-}
 
 const main = async () => {
 	//
@@ -35,7 +27,7 @@ const main = async () => {
 	//
 	// Fetch the CRTM La Veloz Vehicle Events data from the API and decode it
 
-	Logger.info({ message: `[${ITERATION}] Fetching CRTM La Veloz data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
+	Logger.info({ message: `[${ITERATION}] Fetching CRTM La Veloz data from API...`, spacesAfter: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.crtmLaVeloz.vehiclePositions();
 
@@ -64,7 +56,7 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventEsCrtmLaVelozV1> = {
 				agency_id: 'DFS5M',
-				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
+				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_milliseconds,
 				entity_id: entity.id,
 				payload: {
 					header: decodedMessage.header,
@@ -89,7 +81,7 @@ const main = async () => {
 			await rawDb.vehicleEvents.esCrtmLaVeloz.insertOne({
 				...hashableRawEvent,
 				_id: hashableRawEventId,
-				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 			});
 
 			saveCount++;

@@ -23,7 +23,7 @@
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"devDependencies": {
-		"@types/node": "26.1.2",
+		"@types/node": "26.4.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
 	}

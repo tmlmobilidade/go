@@ -2,21 +2,22 @@
 
 import { GTFS_EXPORT_MODAL_ID } from '@/components/lines/export/GtfsExportModal';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
-import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
-import { type CreateFileExportDto, FileExport, FileExportType, type GtfsExportProperties, type LinesMode, type OperationalDate } from '@tmlmobilidade/types';
-import { useForm } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Extraction, type OfferGtfsV29ExtractionCreate } from '@tmlmobilidade/go-types-extractions';
+import { type LinesMode } from '@tmlmobilidade/go-types-offer';
+import { type OperationalDate, type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData, useForm } from '@tmlmobilidade/ui';
 import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
 
 export interface GtfsExportFormValues {
 	agency_ids: string[]
-	clip_end_date: null | OperationalDate
-	clip_start_date: null | OperationalDate
-	feed_end_date: null | OperationalDate
-	feed_start_date: null | OperationalDate
+	clip_end_date: null | OperationalDateInt
+	clip_start_date: null | OperationalDateInt
+	feed_end_date: null | OperationalDateInt
+	feed_start_date: null | OperationalDateInt
 	lines_exclude: string[]
 	lines_include: string[]
 	lines_mode: LinesMode
@@ -54,11 +55,11 @@ export const useGtfsExportModalContext = () => {
 
 /* * */
 
-const AGENCY_DEFAULT_VALUES: Record<string, { clip_end: OperationalDate, clip_start: OperationalDate, feed_end: OperationalDate, feed_start: OperationalDate, numeric_calendar_codes?: boolean }> = {
-	41: { clip_end: '20261231' as OperationalDate, clip_start: '20260101' as OperationalDate, feed_end: '20261231' as OperationalDate, feed_start: '20260501' as OperationalDate },
-	42: { clip_end: '20261231' as OperationalDate, clip_start: '20260101' as OperationalDate, feed_end: '20261231' as OperationalDate, feed_start: '20260501' as OperationalDate },
-	43: { clip_end: '20260630' as OperationalDate, clip_start: '20250701' as OperationalDate, feed_end: '20260630' as OperationalDate, feed_start: '20260501' as OperationalDate },
-	44: { clip_end: '20270430' as OperationalDate, clip_start: '20260501' as OperationalDate, feed_end: '20270430' as OperationalDate, feed_start: '20260501' as OperationalDate, numeric_calendar_codes: true },
+const AGENCY_DEFAULT_VALUES_BY_CODE: Record<string, { clip_end: OperationalDateInt, clip_start: OperationalDateInt, feed_end: OperationalDateInt, feed_start: OperationalDateInt, numeric_calendar_codes?: boolean }> = {
+	41: { clip_end: 20261231 as OperationalDateInt, clip_start: 20260101 as OperationalDateInt, feed_end: 20261231 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt },
+	42: { clip_end: 20261231 as OperationalDateInt, clip_start: 20260101 as OperationalDateInt, feed_end: 20261231 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt },
+	43: { clip_end: 20260630 as OperationalDateInt, clip_start: 20250701 as OperationalDateInt, feed_end: 20260630 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt },
+	44: { clip_end: 20270430 as OperationalDateInt, clip_start: 20260501 as OperationalDateInt, feed_end: 20270430 as OperationalDateInt, feed_start: 20260501 as OperationalDateInt, numeric_calendar_codes: true },
 };
 
 export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) => {
@@ -89,8 +90,8 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 
 	const setAgencyIds = useCallback((value: string[]) => {
 		if (value.length === 1) {
-			const selectedAgency = linesListContext?.data.agencyOptions?.find(agency => agency.value === value[0]);
-			const defaults = selectedAgency ? AGENCY_DEFAULT_VALUES[selectedAgency.value] : undefined;
+			const selectedAgency = linesListContext.data.agencies.find(agency => agency._id === value[0]);
+			const defaults = selectedAgency ? AGENCY_DEFAULT_VALUES_BY_CODE[selectedAgency.code] : undefined;
 			if (defaults) {
 				form.setValues({
 					agency_ids: value,
@@ -109,8 +110,9 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 			clip_start_date: null,
 			feed_end_date: null,
 			feed_start_date: null,
+			numeric_calendar_codes: false,
 		});
-	}, [linesListContext?.data.agencyOptions, form]);
+	}, [linesListContext.data.agencies, form]);
 
 	const setLinesMode = useCallback((value: LinesMode) => {
 		form.setValues({
@@ -129,32 +131,17 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// C. Handle actions
 
-	const createExport = useCallback(async <T extends { properties: Record<string, unknown>, type: FileExportType }>(dto: CreateFileExportDto<T>): Promise<FileExport> => {
-		const response = await fetchData<FileExport>(API_ROUTES.offer.GTFS_CREATE_EXPORT, 'POST', dto);
-
-		if (response.error || !response.data) {
-			throw new HttpException(response.statusCode, response.error ?? 'Failed to create file export');
-		}
-
-		return response.data;
-	}, []);
-
 	const exportGtfs = useCallback(async () => {
 		const values = form.getValues();
 		if (!values.clip_start_date || !values.clip_end_date || !values.feed_start_date || !values.feed_end_date) return;
 
-		const fileName = `gtfs_export_${values.agency_ids.join('_')}_${values.clip_start_date}_${values.clip_end_date}.zip`;
-		const createFileExportDto: CreateFileExportDto<GtfsExportProperties> = {
-			created_by: 'will-be-set-by-api',
-			file_id: null,
-			file_name: fileName,
-			processing_status: 'waiting',
+		const createFileExportDto: OfferGtfsV29ExtractionCreate = {
 			properties: {
 				agency_ids: values.agency_ids,
-				calendars_clip_end_date: values.clip_end_date,
-				calendars_clip_start_date: values.clip_start_date,
-				feed_end_date: values.feed_end_date,
-				feed_start_date: values.feed_start_date,
+				calendars_clip_end_date: String(values.clip_end_date) as OperationalDate,
+				calendars_clip_start_date: String(values.clip_start_date) as OperationalDate,
+				feed_end_date: String(values.feed_end_date) as OperationalDate,
+				feed_start_date: String(values.feed_start_date) as OperationalDate,
 				lines_exclude: values.lines_exclude,
 				lines_include: values.lines_include,
 				lines_mode: values.lines_mode,
@@ -162,13 +149,20 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 				stop_sequence_start: values.stop_sequence_start,
 				stops_export_all: values.stops_export_all,
 			},
-			type: 'gtfs',
+			send_email_notification: false,
+			version: 'offer-gtfs-v29',
 		};
 
 		try {
 			setLoading(true);
-			const fileExport = await createExport(createFileExportDto);
-			if (!fileExport) return;
+			const fileExport = await fetchApiData<Extraction[], OfferGtfsV29ExtractionCreate>({
+				body: createFileExportDto,
+				method: 'POST',
+				url: API_ROUTES.core.EXTRACTIONS_CREATE,
+			});
+			if (fileExport.error || !fileExport.data) {
+				throw new Error(fileExport.error ?? 'Failed to create file export');
+			}
 			useToast.success({ message: 'A exportação GTFS foi iniciada', title: 'Sucesso' });
 			closeModal(GTFS_EXPORT_MODAL_ID);
 		} catch (error) {
@@ -176,7 +170,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 		} finally {
 			setLoading(false);
 		}
-	}, [form, createExport]);
+	}, [form]);
 
 	//
 	// D. Define context value

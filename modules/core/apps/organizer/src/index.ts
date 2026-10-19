@@ -1,0 +1,33 @@
+/* * */
+
+import { cleanExpiredSessions } from '@/tasks/clean-sessions.js';
+import { cleanExpiredVerificationTokens } from '@/tasks/clean-verification-tokens.js';
+import { sanitizePermissions } from '@/tasks/sanitize-permissions.js';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+
+/* * */
+
+async function main() {
+	//
+
+	// Only run in production environment
+	if (process.env.ENVIRONMENT !== 'prd') {
+		Logger.info({ message: 'Cleaner is disabled in non-prd environments' });
+		return;
+	}
+
+	Logger.init();
+
+	const globalTimer = new Timer();
+
+	await cleanExpiredSessions();
+	await cleanExpiredVerificationTokens();
+	await sanitizePermissions();
+
+	Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
+}
+
+/* * */
+
+await runOnInterval(main, { intervalMs: '5m' });

@@ -58,7 +58,11 @@ export function DataTableHeader<T = Record<string, unknown>>({ columns, withTopB
 	};
 
 	return (
-		<div className={styles.header} data-with-top-border={withTopBorder}>
+		<div
+			className={styles.header}
+			data-with-top-border={withTopBorder}
+			style={{ gridTemplateColumns: columns.map(column => column.width === 'fill' ? '1fr' : `${column.width}px`).join(' ') }}
+		>
 			{columns.map((column, idx) => (
 				<div
 					key={idx}

@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type RawVehicleEventPtTmlCmVaV1, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
-export function parseRawVehicleEventPtTmlCmVaV1(doc: RawVehicleEventPtTmlCmVaV1): null | SimplifiedVehicleEvent {
+export async function parseRawVehicleEventPtTmlCmVaV1(doc: RawVehicleEventPtTmlCmVaV1): Promise<null | SimplifiedVehicleEvent> {
 	return SimplifiedVehicleEventSchema.parse({
 		_id: doc._id,
 		agency_id: doc.agency_id,
@@ -17,8 +17,8 @@ export function parseRawVehicleEventPtTmlCmVaV1(doc: RawVehicleEventPtTmlCmVaV1)
 		geohash: null,
 		latitude: doc.payload.vehicle.position.latitude,
 		longitude: doc.payload.vehicle.position.longitude,
-		odometer: doc.payload.vehicle.position.odometer,
-		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date_int,
+		odometer: doc.payload.vehicle.position.odometer && doc.payload.vehicle.position.odometer >= 0 ? doc.payload.vehicle.position.odometer : null, // VA sends -1 when no odometer is available,
+		operational_date: Dates.fromUnixMilliseconds(doc.created_at).operational_date_int,
 		received_at: doc.received_at,
 		speed: doc.payload.vehicle.position.speed,
 		stop_id: doc.payload.vehicle.stopId ?? null,

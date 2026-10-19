@@ -3,14 +3,13 @@
 import { MantineProvider, MantineProviderProps } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import { swrFetcher } from '@tmlmobilidade/utils';
-import { NuqsAdapter } from 'nuqs/adapters/next';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren, Suspense } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
-import { LoadingSection } from '../../components/loaders/LoadingSection';
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
+import { LoadingSection } from '../../loaders';
 import { themeData } from '../../styles/theme';
 import { LocalizedDatesProvider } from '../LocalizedDatesProvider';
 
@@ -36,8 +35,14 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 	//
 	// A. Setup variables
 
+	const nuqsSettings = {
+		processUrlSearchParams: (search: URLSearchParams) => {
+			search.sort();
+			return search;
+		},
+	};
+
 	const swrSettings: SWRConfiguration = {
-		fetcher: swrFetcher,
 		refreshInterval: 600_000, // 10 minutes
 		refreshWhenHidden: false,
 		revalidateIfStale: true,
@@ -55,7 +60,7 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 			lang="pt"
 		>
 			<body>
-				<NuqsAdapter>
+				<NuqsAdapter {...nuqsSettings}>
 					<Suspense fallback={<LoadingSection fullHeight />}>
 						<VersionContextProvider version={version}>
 							<SWRConfig value={swrSettings}>

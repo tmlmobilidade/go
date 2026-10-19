@@ -10,6 +10,9 @@ export const PublishStatusValues = [
 	'draft',
 ] as const;
 
-export const PublishStatusSchema = z.enum(PublishStatusValues);
+export const PublishStatusSchema = z
+	.string()
+	.transform(value => String(value).toLowerCase())
+	.pipe(z.enum(PublishStatusValues));
 
 export type PublishStatus = z.infer<typeof PublishStatusSchema>;

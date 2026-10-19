@@ -2,8 +2,6 @@
 
 import styles from './styles.module.css';
 
-import { cn } from '../../../lib/utils';
-
 /* * */
 
 export type SegmentedValue = number | string;
@@ -43,7 +41,7 @@ export function SegmentedMultiSelect<T extends SegmentedValue>({
 	};
 
 	return (
-		<div className={cn(styles.card, fullWidth && styles.fullWidth, className)}>
+		<div className={`${styles.card} ${fullWidth && styles.fullWidth} ${className}`}>
 			{title && <div className={styles.title}>{title}</div>}
 
 			<div aria-label={title ?? 'Selector'} className={cn(styles.bar, wrap && styles.wrap)} role="group">
@@ -54,7 +52,7 @@ export function SegmentedMultiSelect<T extends SegmentedValue>({
 							key={opt.value}
 							aria-label={opt.ariaLabel ?? opt.label}
 							aria-pressed={selected}
-							className={cn(styles.segment, styles[size], selected && styles.selected)}
+							className={`${styles.segment} ${styles[size]} ${selected && styles.selected}`}
 							onClick={() => toggle(opt.value)}
 							type="button"
 						>

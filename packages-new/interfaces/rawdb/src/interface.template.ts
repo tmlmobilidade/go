@@ -1,7 +1,7 @@
 /* * */
 
 import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, Collection, CreateIndexesOptions, Db, Document, Filter, FindOptions, InsertOneOptions, isSameIndex, prepareMongoIndexOptions, SimplifiedMongoIndex, WithId } from '@tmlmobilidade/go-clients-mongo';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { z } from 'zod';
 
 /* * */

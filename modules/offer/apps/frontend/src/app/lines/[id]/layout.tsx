@@ -1,6 +1,6 @@
 import { DataProviders } from '@/providers/data-providers';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Line } from '@tmlmobilidade/types';
+import { type Line } from '@tmlmobilidade/go-types-offer';
 import { cookies } from 'next/headers';
 
 async function fetchLine(id: string): Promise<{ data: Line }> {

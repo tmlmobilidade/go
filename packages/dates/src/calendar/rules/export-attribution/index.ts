@@ -1,10 +1,11 @@
 import type { DayContext } from '../calculation/types.js';
 import type { GtfsIncludeContribution } from './types.js';
-import type { Event, EventReplacementRule, HHMM, Holiday, ManualRule, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
+import type { Event, EventReplacementRule, HHMM, Holiday, ManualRule, ScheduleRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
+import type { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
-import { hhmm } from '@tmlmobilidade/types';
+import { hhmm } from '@tmlmobilidade/go-types-offer';
 
 import { getTimepointsRemovedByEventRestriction } from '../calculation/filters.js';
 import { computeActiveRules } from '../calculation/index.js';

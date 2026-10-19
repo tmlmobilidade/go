@@ -1,7 +1,7 @@
 /* * */
 
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function PeriodsListFilterAgency() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={periodsListContext.filters.agency.isActive}
 			label="Operador"
 			onChange={periodsListContext.filters.agency.set}

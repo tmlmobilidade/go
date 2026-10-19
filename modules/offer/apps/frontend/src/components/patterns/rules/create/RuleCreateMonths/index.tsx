@@ -1,7 +1,7 @@
 'use client';
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
-import { MONTH_OPTIONS } from '@tmlmobilidade/types';
+import { MONTH_OPTIONS } from '@tmlmobilidade/go-types-offer';
 import { Section, SegmentedMultiSelect, Text } from '@tmlmobilidade/ui';
 
 /* * */

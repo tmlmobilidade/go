@@ -52,7 +52,7 @@ export async function deleteAttachment(deps: StorageDeps, input: DeleteInput): P
 			},
 			{
 				execute: async () => {
-					await goDb.core.attachments.deleteById(fileId, { forceIfLocked: true });
+					await goDb.core.attachments.deleteById(fileId);
 				},
 				name: 'deleteMetadata',
 			},

@@ -4,7 +4,7 @@ import { AnnotationsContextProvider } from '@/contexts/Annotations.context';
 import { EventsContextProvider } from '@/contexts/Events.context';
 import { HolidaysContextProvider } from '@/contexts/Holidays.context';
 import { PeriodsContextProvider } from '@/contexts/Periods.context';
-import { ScheduleRule } from '@tmlmobilidade/types';
+import { type ScheduleRule } from '@tmlmobilidade/go-types-offer';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 import { RulesCalendarPreview } from './RulesCalendarPreview';

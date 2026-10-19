@@ -1,4 +1,5 @@
-import type { Event, Holiday, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
+import type { Event, Holiday, ScheduleRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
+import type { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 import { buildCanonicalRuleDates } from './canonical-registry.js';
 

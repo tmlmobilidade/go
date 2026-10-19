@@ -1,0 +1,17 @@
+/* * */
+
+.numberDisplay {
+	padding: 3px 5px;
+	font-family: var(--font-family-monospace);
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	background-color: var(--color-system-background-100);
+	border-radius: 4px;
+	box-shadow: 0 0 5px 0 rgb(0 0 0 / 5%);
+}
+
+.numberDisplay[data-is-zero="true"] {
+	color: var(--color-system-text-300);
+	background-color: transparent;
+	box-shadow: none;
+}

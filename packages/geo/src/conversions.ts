@@ -1,23 +1,6 @@
 /* * */
 
-import { type HashedShape } from '@tmlmobilidade/types';
 import { type Feature, type GeoJsonProperties, type LineString, type Point, type Polygon, type Position } from 'geojson';
-
-/**
- * Converts a list of GTFS shape points into a GeoJSON LineString.
- * @param hashedShape The hashed shape containing GTFS shape points.
- * @returns GeoJSON LineString feature
- */
-export function toLineStringFromHashedShape(hashedShape: HashedShape): LineString {
-	// Exit if no points are provided
-	if (!hashedShape.points?.length) return toLineStringFromPositions([]);
-	// Sort points by shape_pt_sequence
-	const sortedPoints = [...hashedShape.points].sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
-	// Create a LineString feature
-	const coordinates = sortedPoints.map(p => [Number(p.shape_pt_lon), Number(p.shape_pt_lat)] as [number, number]);
-	// Return the LineString feature
-	return toLineStringFromPositions(coordinates);
-}
 
 /**
  * Creates a new LineString from the given set of coordinates.

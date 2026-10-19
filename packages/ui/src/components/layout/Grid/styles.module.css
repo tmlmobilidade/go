@@ -4,7 +4,6 @@
 .container {
 	display: grid;
 	grid-template-rows: 1fr;
-	place-items: stretch !important;
 	width: 100%;
 }
 
@@ -36,6 +35,25 @@
 
 .container[data-v-align='end'] {
 	align-items: flex-end;
+}
+
+/* * */
+/* PROPS / PLACE-ITEMS */
+
+.container[data-place-items='start'] {
+	place-items: flex-start;
+}
+
+.container[data-place-items='center'] {
+	place-items: center;
+}
+
+.container[data-place-items='end'] {
+	place-items: flex-end;
+}
+
+.container[data-place-items='stretch'] {
+	place-items: stretch;
 }
 
 /* * */

@@ -2,9 +2,8 @@
 
 import { closeCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateLineDto, CreateLineSchema, type LineNormalized } from '@tmlmobilidade/types';
-import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type CreateLineDto, CreateLineSchema, type LineNormalized } from '@tmlmobilidade/go-types-offer';
+import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -20,6 +19,7 @@ interface LineCreateContextState {
 	}
 	flags: {
 		isSaving: boolean
+		isValid: boolean
 	}
 }
 
@@ -53,18 +53,18 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateLineDto>(CreateLineSchema);
+	const { flags, form } = useTypicalForm<CreateLineDto>(CreateLineSchema, undefined, { agency_id: '', code: '', name: '' }, 'controlled');
 
 	//
 	// D. Handle actions
 
-	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<LineNormalized>(API_ROUTES.offer.LINES_LIST, 'POST', form.getValues()),
-		onSuccess: (newItem) => {
+	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
+		fetchFn: async () => await fetchApiData<LineNormalized>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.LINES_LIST }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			linesListMutate();
 			closeCreateLineModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_DETAIL(newItem._id)));
+			router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_DETAIL(data._id)));
 		},
 	});
 
@@ -80,9 +80,12 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			isSaving,
+			isValid: flags.isValid,
 		},
 	}), [
 		form,
+		flags.isValid,
+		handleCreate,
 		isSaving,
 	]);
 

@@ -1,7 +1,7 @@
 /* * */
 
-import { type UnixTimestamp } from '@/dates/unix-timestamp.js';
-import { DocumentSchema } from '@/documents/document.js';
+import { type UnixMilliseconds } from '@/datetime/unix-millis.js';
+import { BaseDocumentSchema } from '@/documents/document.js';
 import { type ApprovalStatus, ApprovalStatusSchema } from '@/status/approval.js';
 import { z } from 'zod';
 
@@ -15,7 +15,7 @@ export type Scope = z.infer<typeof ScopeSchema>;
 
 // Define schemas using constants
 
-export const ProposedChangeSchema = DocumentSchema.extend({
+export const ProposedChangeSchema = BaseDocumentSchema.extend({
 	curr_value: z.any(),
 	field: z.string(),
 	related_id: z.string(),
@@ -29,14 +29,14 @@ export const ProposedChangeSchema = DocumentSchema.extend({
 export type ProposedChange<T> = {
 	[P in keyof T]: {
 		_id: string
-		created_at: UnixTimestamp
+		created_at: UnixMilliseconds
 		created_by: string
 		curr_value: T[P]
 		field: P
 		related_id: string
 		scope: Scope
 		status: ApprovalStatus
-		updated_at: UnixTimestamp
+		updated_at: UnixMilliseconds
 		updated_by: string
 	}
 }[keyof T];

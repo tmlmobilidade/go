@@ -1,6 +1,6 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 
 import { useDataSimplifiedUser } from '../../../hooks/use-data/use-data-simplified-user';
@@ -44,7 +44,7 @@ export function UserTag({ showFullName = true, userId, variant = 'tag' }: UserTa
 			<UserTagCard
 				fullName="Plataforma GO"
 				organizationName="Sistema"
-				seenLastAt={Dates.now('Europe/Lisbon').unix_timestamp}
+				seenLastAt={Dates.now('Europe/Lisbon').unix_milliseconds}
 			>
 				<Inline dotted>GO</Inline>
 			</UserTagCard>

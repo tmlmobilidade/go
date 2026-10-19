@@ -12,7 +12,7 @@ When adding a new utility, type, component, or integration — check here first 
 |---|---|
 | `@tmlmobilidade/[name]` | Root-level shared package (`packages/[name]`) |
 | `@tmlmobilidade/go-[module]-[app]` | Module app (e.g. `go-alerts-api`, `go-alerts-frontend`) |
-| `@tmlmobilidade/go-[module]-pckg-[name]` | Module-internal package (e.g. `go-alerts-pckg-describe`) |
+| `@tmlmobilidade/go-[module]-pckg-[name]` | Module-internal package (e.g. `go-alerts-pckg-compose`) |
 
 ---
 
@@ -47,14 +47,14 @@ Use this for: all type imports. Never define entity types locally in a module.
 import { API_ROUTES, HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 // API routes (used in both frontend SWR keys and backend route handlers)
-API_ROUTES.alerts.ALERTS_LIST
-API_ROUTES.alerts.ALERTS_DETAIL(id)
-API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(id)
-API_ROUTES.alerts.ALERTS_DETAIL_LOCK(id)
+API_ROUTES.operation.ALERTS_LIST
+API_ROUTES.operation.ALERTS_DETAIL(id)
+API_ROUTES.operation.ALERTS_DETAIL_IMAGE(id)
+API_ROUTES.operation.ALERTS_DETAIL_LOCK(id)
 
 // Page routes (used in frontend navigation)
-PAGE_ROUTES.alerts.ALERTS_LIST
-PAGE_ROUTES.alerts.ALERTS_DETAIL(id)
+PAGE_ROUTES.operation.ALERTS_LIST
+PAGE_ROUTES.operation.ALERTS_DETAIL(id)
 
 // HTTP status codes
 HTTP_STATUS.OK          // 200
@@ -100,10 +100,10 @@ Key exports:
 import { ComponentWrapper, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 // Action buttons
-import { DeleteButton, DuplicateButton, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { DeleteButton, DuplicateButton, LockButton, UpdateButton } from '@tmlmobilidade/ui';
 
 // Form utilities
-import { useContextForm } from '@tmlmobilidade/ui';
+import { useStandardForm } from '@tmlmobilidade/ui';
 
 // Data hooks
 import { useDataAgencies, useDataLines, useDataStops } from '@tmlmobilidade/ui';
@@ -121,7 +121,7 @@ import {
 } from '@tmlmobilidade/ui';
 
 // Context utilities
-import { useHandleUpdate } from '@tmlmobilidade/ui';
+import { useHandleAction } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 
 // Types
@@ -132,7 +132,7 @@ Use this for: all UI in GO module frontends. Do not import from Mantine directly
 
 ---
 
-### `@tmlmobilidade/fastify`
+### `@tmlmobilidade/go-clients-fastify`
 **Fastify server setup, typed request/reply, and auth middleware for GO API apps.**
 
 ```ts
@@ -142,7 +142,7 @@ import {
   type FastifyReply,
   type FastifyRequest,
   FastifyService,
-} from '@tmlmobilidade/fastify';
+} from '@tmlmobilidade/go-clients-fastify';
 
 // Get the singleton server instance
 const server: FastifyInstance = FastifyService.getInstance().server;
@@ -165,10 +165,10 @@ Use this for: all Fastify API apps. Never bootstrap a Fastify server directly.
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 
 // Typed API fetch (used in frontend mutations)
-const result = await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(id), 'PUT', body);
+const result = await fetchData<Alert>(API_ROUTES.operation.ALERTS_DETAIL(id), 'PUT', body);
 
 // File upload
-await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(id), file);
+await uploadFile(API_ROUTES.operation.ALERTS_DETAIL_IMAGE(id), file);
 ```
 
 Also contains batching, caching, generic object/array utilities. Check `packages/utils/src/` before writing a utility function locally.
@@ -180,17 +180,17 @@ Also contains batching, caching, generic object/array utilities. Check `packages
 ### `@tmlmobilidade/mongo`
 MongoDB client with connection pooling and helpers. Used by `@tmlmobilidade/interfaces` — you rarely import this directly.
 
-### `@tmlmobilidade/rabbitmq`
+### `@tmlmobilidade/go-clients-rabbitmq`
 RabbitMQ client for inter-service messaging. Used in worker apps that consume or publish events.
 
-### `@tmlmobilidade/fastify`
+### `@tmlmobilidade/go-clients-fastify`
 See above — covers all Fastify server setup.
 
 ---
 
 ## Domain packages
 
-### `@tmlmobilidade/dates`
+### `@tmlmobilidade/go-utils-dates`
 Date utilities for operational calendar logic, period management, and GTFS date handling.
 
 ### `@tmlmobilidade/geo`
@@ -218,14 +218,14 @@ Typed write helpers for bulk database operations.
 ### `@tmlmobilidade/eslint`
 Shared ESLint config. Extended by all apps and packages in the monorepo.
 
-### `@tmlmobilidade/tsconfig`
+### `@tmlmobilidade/go-utils-tsconfig`
 Shared TypeScript configs. Extended by `tsconfig.json` in every package.
 
 ---
 
 ## Email and messaging
 
-### `@tmlmobilidade/emails`
+### `@tmlmobilidade/go-providers-emails`
 React Email templates for transactional emails. Contains components, styles, and rendered templates.
 
 ### `@tmlmobilidade/rss`
@@ -247,13 +247,13 @@ Structured logging. Use this instead of `console.log` in production services.
 ### `@tmlmobilidade/timer`
 Timer and interval utilities for scheduled tasks.
 
-### `@tmlmobilidade/files`
+### `@tmlmobilidade/go-utils-files`
 File system utilities (reading, writing, path helpers).
 
-### `@tmlmobilidade/ssh`
+### `@tmlmobilidade/go-clients-ssh`
 SSH connection utilities for remote operations.
 
-### `@tmlmobilidade/sqlite`
+### `@tmlmobilidade/go-clients-sqlite`
 SQLite client for local data storage in CLI tools.
 
 ### `@tmlmobilidade/ai`

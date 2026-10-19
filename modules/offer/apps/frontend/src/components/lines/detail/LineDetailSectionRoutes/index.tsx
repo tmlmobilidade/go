@@ -3,7 +3,7 @@
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
 import LineDetailRoute from '@/components/lines/detail/LineDetailRoute';
 import { openCreateRouteModal } from '@/components/routes/create/RouteCreate.modal';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, Collapsible, HasPermission, Section } from '@tmlmobilidade/ui';
 
 /* * */

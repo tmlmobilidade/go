@@ -1,7 +1,7 @@
 /* * */
 
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function LinesListFilterAgencies() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={linesListContext.filters.agencies.isActive}
 			label="Operadores"
 			onChange={linesListContext.filters.agencies.set}

@@ -1,7 +1,7 @@
 /* * */
 
 import { useTypologyDetailContext } from '@/components/typologies/detail/TypologyDetail.context';
-import { TypologySchema } from '@tmlmobilidade/types';
+import { TypologySchema } from '@tmlmobilidade/go-types-offer';
 import { Collapsible, ColorInput, Grid, LineDisplay, Section, Spacer } from '@tmlmobilidade/ui';
 
 /* * */

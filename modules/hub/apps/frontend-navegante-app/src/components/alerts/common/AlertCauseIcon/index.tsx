@@ -1,65 +1,57 @@
 /* * */
 
-import { getCauseSeverityLevel } from '@/utils/get-alert-severity-level';
-import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/types';
+import { type AlertSeverityLevel, getCauseSeverityLevel } from '@/utils/alerts/get-alert-severity-level';
+import { type GtfsRtCause } from '@tmlmobilidade/go-types-gtfs-rt';
 import { AlertCauseIcons } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface AlertCauseIconProps {
-	cause?: AlertCause
+	cause?: GtfsRtCause
 	className?: string
 	size?: 'lg' | 'md'
 	withText?: boolean
 }
+
 /* * */
 
-export function AlertCauseIcon({ cause, className, size, withText = false }: AlertCauseIconProps) {
+const SEVERITY_CLASS_NAMES: Record<AlertSeverityLevel, string> = {
+	high: styles.levelHigh,
+	info: styles.levelInfo,
+	low: styles.levelLow,
+	medium: styles.levelMedium,
+};
+
+/* * */
+
+export function AlertCauseIcon({ cause, className, size = 'md', withText = false }: AlertCauseIconProps) {
 	//
 
 	//
-	// A. Setup variables
+	// A. Transform data
 
-	const { t } = useTranslation();
-
-	const severityColor = {
-		high: styles.severityLevel_high,
-		info: styles.severityLevel_info,
-		low: styles.severityLevel_low,
-		medium: styles.severityLevel_medium,
-	};
+	const causeIcon = cause ? AlertCauseIcons[cause] : null;
+	const severityClassName = cause ? SEVERITY_CLASS_NAMES[getCauseSeverityLevel(cause)] : null;
+	const sizeClassName = size === 'lg' ? styles.sizeLg : styles.sizeMd;
 
 	//
-	// B. Transform data
+	// B. Render components
 
-	const causesWithIcons = AlertCauseValues.map(cause => ({
-		cause,
-		color: severityColor[getCauseSeverityLevel(cause)],
-		icon: AlertCauseIcons[cause],
-	}));
+	if (!causeIcon || !severityClassName) {
+		return null;
+	}
 
-	//
-	// C. Render components
-
-	const causeItem = causesWithIcons.find(item => item.cause === cause);
-
-	if (withText && cause && causeItem) {
+	if (withText) {
 		return (
-			<div className={`${styles.container} ${className ?? ''} ${causeItem.color}`}>
-				{causeItem.icon}
-				<span className={styles.label}>{t(`shared:alerts.causes.${cause}.title`)}</span>
+			<div className={`${styles.container} ${severityClassName} ${sizeClassName} ${className ?? ''}`}>
+				{causeIcon}
 			</div>
 		);
 	}
 
-	if (!causeItem) {
-		return null;
-	}
-
-	return <span className={causeItem.color}>{causeItem.icon}</span>;
+	return <span className={`${styles.icon} ${severityClassName} ${sizeClassName} ${className ?? ''}`}>{causeIcon}</span>;
 
 	//
 }

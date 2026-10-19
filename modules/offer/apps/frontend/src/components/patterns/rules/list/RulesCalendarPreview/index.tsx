@@ -6,13 +6,15 @@ import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconArrowBarToLeft, IconArrowBarToRight, IconHandClick } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { buildAffectedDaysDetails, type CalendarKey, Dates, datesFromCalendarKey, FORMATS } from '@tmlmobilidade/dates';
-import { type CalendarDate, type HHMM, type ScheduleRule, toCalendarDate } from '@tmlmobilidade/types';
-import { AlertMessage, buildCalendarScheduleRuleImpactEvents, CalendarSchedule, type CalendarScheduleSources, CloseButton, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, type ScheduleEventData, Section, Surface, Text, useLocaleContext } from '@tmlmobilidade/ui';
+import { buildAffectedDaysDetails, CalendarKey, Dates, datesFromCalendarKey, FORMATS } from '@tmlmobilidade/dates';
+import { type HHMM, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
+import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { AlertMessage, buildCalendarScheduleRuleImpactEvents, CalendarSchedule, CalendarScheduleSources, CloseButton, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, ScheduleEventData, Section, Surface, Text } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
+import { useLocaleContext } from '../../../../../../../../../../packages/ui/src/contexts/Locale.context';
 import { RulesCalendarPreviewHeader } from '../RulesCalendarPreviewHeader';
 import { RulesGroup } from '../RulesCalendarPreviewRulesGroup';
 

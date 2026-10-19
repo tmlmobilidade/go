@@ -2,7 +2,7 @@
 
 import { AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';
 
 /* * */
@@ -63,7 +63,7 @@ export function AgenciesSelector({ defaultToAll = true, isMultiple = true, onCha
 	// C. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={isActive}
 			isMultiple={isMultiple}
 			label="Operador"

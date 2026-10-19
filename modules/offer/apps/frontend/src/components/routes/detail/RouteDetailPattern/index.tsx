@@ -2,7 +2,7 @@
 
 import { IconChevronRight } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PatternSimplified } from '@tmlmobilidade/types';
+import { PatternSimplified } from '@tmlmobilidade/go-types-offer';
 import { keepUrlParams, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

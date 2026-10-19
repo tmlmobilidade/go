@@ -1,5 +1,5 @@
-import { Dates } from '@tmlmobilidade/dates';
-import { Comment } from '@tmlmobilidade/types';
+import { Comment } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { compareObjects } from '@tmlmobilidade/utils';
 
 function shouldSkipKey(key: string, exclude?: string[]) {
@@ -41,7 +41,7 @@ export function generateComments<T extends object>(
 	},
 ): Comment[] {
 	const diff = compareObjects(prev, curr);
-	const now = Dates.now('utc').unix_timestamp;
+	const now = Dates.now('utc').unix_milliseconds;
 
 	// Next state (needed to store "whole new version")
 	const next = { ...prev, ...curr } as T;

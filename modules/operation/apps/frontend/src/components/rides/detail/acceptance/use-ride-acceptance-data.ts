@@ -1,0 +1,52 @@
+'use client';
+
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
+import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
+import useSWR from 'swr';
+
+import { useRidesDetailRideId } from '../shared/use-rides-detail-ride-id';
+
+/* * */
+
+interface UseRideAcceptanceDataReturnType {
+	data: RideAcceptance | undefined
+	error: null | string
+	isLoading: boolean
+	isValidating: boolean
+	mutate: () => void
+	timestamp: null | UnixMilliseconds
+}
+
+/* * */
+
+export function useRideAcceptanceData(): UseRideAcceptanceDataReturnType {
+	//
+
+	//
+	// A. Setup variables
+
+	const { rideId } = useRidesDetailRideId();
+
+	//
+	// B. Fetch data
+
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<RideAcceptance>>(rideId && API_ROUTES.operation.RIDE_ACCEPTANCES_DETAIL(rideId), {
+		fetcher: async (url: string) => await fetchApiData<RideAcceptance>({ url }),
+		refreshInterval: 10_000, // 10 seconds
+	});
+
+	//
+	// C. Return data
+
+	return useMemo(() => ({
+		data: data?.data,
+		error: error?.error,
+		isLoading,
+		isValidating,
+		mutate,
+		timestamp: data?.timestamp,
+	}), [data, error, isLoading, isValidating, mutate]);
+};

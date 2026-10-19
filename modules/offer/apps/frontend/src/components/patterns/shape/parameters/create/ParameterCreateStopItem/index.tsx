@@ -4,7 +4,7 @@
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { IconArrowNarrowDown, IconClockPause, IconGauge } from '@tabler/icons-react';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { Divider, NumberInput, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

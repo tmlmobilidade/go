@@ -1,0 +1,28 @@
+.root {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	border: none;
+	border-radius: 0;
+}
+
+.root[data-reject] {
+	background-color: var(--color-status-danger-contrast);
+}
+
+.root[data-accept] {
+	background-color: var(--color-status-success-contrast);
+}
+
+.root[data-disabled] {
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+.inner {
+	width: 100%;
+}

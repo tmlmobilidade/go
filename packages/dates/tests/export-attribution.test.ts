@@ -1,5 +1,5 @@
 import type { GtfsIncludeContribution } from '../src/calendar/rules/export-attribution/types.js';
-import type { Event, EventReplacementRule, HHMM, Holiday, ManualRule, OperationalDate, ScheduleRule, UnixTimestamp, YearPeriod } from '@tmlmobilidade/types';
+import type { Event, EventReplacementRule, HHMM, Holiday, ManualRule, OperationalDate, ScheduleRule, UnixMilliseconds, YearPeriod } from '@tmlmobilidade/types';
 
 import { hhmm } from '@tmlmobilidade/types';
 import assert from 'node:assert/strict';
@@ -17,10 +17,10 @@ const d = (value: string) => value as OperationalDate;
 const t = (value: string) => hhmm(value) as HHMM;
 
 const documentFields = {
-	created_at: 1_700_000_000_000 as UnixTimestamp,
+	created_at: 1_700_000_000_000 as UnixMilliseconds,
 	created_by: null,
 	is_locked: false,
-	updated_at: 1_700_000_000_000 as UnixTimestamp,
+	updated_at: 1_700_000_000_000 as UnixMilliseconds,
 };
 
 function testEvent(overrides: Partial<Event> & Pick<Event, '_id' | 'code' | 'dates' | 'title'>): Event {

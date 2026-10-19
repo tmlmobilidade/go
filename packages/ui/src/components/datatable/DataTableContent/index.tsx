@@ -9,7 +9,9 @@ import styles from './styles.module.css';
 
 import { DataTableProps } from '../DataTable';
 import { useDataTableContext } from '../DataTableContext';
+import { DataTableEmptyState } from '../DataTableEmptyState';
 import { DataTableHeader } from '../DataTableHeader';
+import { DataTableLoading } from '../DataTableLoading';
 import { DataTableRow } from '../DataTableRow';
 
 /* * */
@@ -18,7 +20,7 @@ type DataTableContentProps<T> = Omit<DataTableProps<T>, 'records'>;
 
 /* * */
 
-export function DataTableContent<T>({ columns, maxHeight, onRowClick, onRowContextMenu, onRowDoubleClick, rowIdAccessor, selectedId, selectedIds, withTopBorder }: DataTableContentProps<T>) {
+export function DataTableContent<T>({ columns, isLoading, onRowClick, onRowContextMenu, onRowDoubleClick, onRowMouseEnter, onRowMouseLeave, rowIdAccessor, selectedId, selectedIds, withTopBorder }: DataTableContentProps<T>) {
 	//
 
 	//
@@ -38,8 +40,16 @@ export function DataTableContent<T>({ columns, maxHeight, onRowClick, onRowConte
 	//
 	// C. Render components
 
+	if (isLoading) {
+		return <DataTableLoading />;
+	}
+
+	if (!dataTableContext.data.records.length) {
+		return <DataTableEmptyState />;
+	}
+
 	return (
-		<div className={styles.root} style={{ maxHeight }}>
+		<div className={styles.container}>
 			<DataTableHeader columns={columns} withTopBorder={withTopBorder} />
 			<ViewportList
 				ref={dataTableContext.refs.list}
@@ -54,12 +64,12 @@ export function DataTableContent<T>({ columns, maxHeight, onRowClick, onRowConte
 						onRowClick={onRowClick}
 						onRowContextMenu={onRowContextMenu}
 						onRowDoubleClick={onRowDoubleClick}
+						onRowMouseEnter={onRowMouseEnter}
+						onRowMouseLeave={onRowMouseLeave}
 						record={record}
 					/>
 				)}
 			</ViewportList>
 		</div>
 	);
-
-	//
 }

@@ -1,9 +1,10 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Fare, PermissionCatalog, type UpdateFareDto, UpdateFareSchema } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type Fare, type UpdateFareDto, UpdateFareSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -47,27 +48,30 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 	// B. Fetch data
 
 	const { mutate: faresListMutate } = useSWR<Fare[]>(API_ROUTES.offer.FARES_LIST);
-	const { data: fareData, error: fareError, isLoading: fareLoading, mutate: fareMutate } = useSWR<Fare>(API_ROUTES.offer.FARES_DETAIL(fareId), { refreshInterval: 5000 });
+	const { data: fareData, error: fareError, isLoading: fareLoading, mutate: fareMutate } = useSWR<ApiResponse<Fare>>(API_ROUTES.offer.FARES_DETAIL(fareId), {
+		fetcher: async url => await fetchApiData<Fare>({ url }),
+		refreshInterval: 5000,
+	});
 
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateFareDto>(UpdateFareSchema, fareData);
+	const { form } = useTypicalForm<UpdateFareDto>(UpdateFareSchema, fareData?.data);
 
 	//
 	// D. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL(fareId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+	const { action: handleSave, isLoading: isSaving } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Fare>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.FARES_DETAIL(fareId) }),
+		onSuccess: (data) => {
 			form.resetDirty();
-			fareMutate(updatedItem);
+			fareMutate(data);
 			faresListMutate();
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL(fareId), 'DELETE', fareData),
+	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Fare>({ body: fareData, method: 'DELETE', url: API_ROUTES.offer.FARES_DETAIL(fareId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			faresListMutate();
@@ -75,11 +79,11 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL_LOCK(fareId)),
-		onSuccess: (updatedItem) => {
+	const { action: handleLock, isLoading: isLocking } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Fare>({ url: API_ROUTES.offer.FARES_DETAIL_LOCK(fareId) }),
+		onSuccess: (data) => {
 			form.resetDirty();
-			fareMutate(updatedItem);
+			fareMutate(data);
 			faresListMutate();
 		},
 	});
@@ -93,7 +97,7 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: fareData?.agency_ids ?? [],
+			value: fareData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.fares.scope,
 	});
@@ -104,7 +108,7 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 		resource: {
 			key: 'agency_ids',
 			requireAll: true,
-			value: fareData?.agency_ids ?? [],
+			value: fareData?.data?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.fares.scope,
 	});
@@ -122,7 +126,7 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 		isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: fareLoading,
-		isLocked: fareData?.is_locked,
+		isLocked: fareData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
@@ -144,7 +148,7 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 			save: handleSave,
 		},
 		data: {
-			fare: fareData,
+			fare: fareData?.data,
 			form,
 			id: fareId,
 		},

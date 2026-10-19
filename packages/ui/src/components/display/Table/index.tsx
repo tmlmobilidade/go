@@ -1,9 +1,10 @@
 'use client';
 
-import { Table as MantineTable, type TableProps as MantineTableProps, type TableTbodyProps as MantineTableTbodyProps, type TableTdProps as MantineTableTdProps, type TableTheadProps as MantineTableTheadProps, type TableThProps as MantineTableThProps, type TableTrProps as MantineTableTrProps } from '@mantine/core';
+import { Table as MantineTable, type TableData as MantineTableData, type TableProps as MantineTableProps, type TableTbodyProps as MantineTableTbodyProps, type TableTdProps as MantineTableTdProps, type TableTheadProps as MantineTableTheadProps, type TableThProps as MantineTableThProps, type TableTrProps as MantineTableTrProps } from '@mantine/core';
 
 /* * */
 
+export type TableData = MantineTableData;
 export type TableProps = MantineTableProps;
 export type TableTheadProps = MantineTableTheadProps;
 export type TableTbodyProps = MantineTableTbodyProps;
