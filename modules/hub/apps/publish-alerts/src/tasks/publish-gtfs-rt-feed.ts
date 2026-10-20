@@ -29,6 +29,7 @@ export async function publishGtfsRtFeed(agencyId: string) {
 					publish_status: 'published',
 				},
 			],
+			agency_id: agencyId,
 		},
 		{
 			sort: { created_at: -1 },
