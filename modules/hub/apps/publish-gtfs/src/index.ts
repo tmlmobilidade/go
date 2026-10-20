@@ -39,7 +39,7 @@ async function main() {
 	const globalTimer = new Timer();
 
 	const organizationsCollection = await goDb.core.organizations.getCollection();
-	const organizationsWithGtfsEnabled = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.plans.enabled': true }).toArray();
+	const organizationsWithGtfsEnabled = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.enabled': true }).toArray();
 
 	//
 	// Mark all organizations with GTFS export enabled
@@ -48,27 +48,19 @@ async function main() {
 
 	await organizationsCollection.updateMany({ _id: { $in: organizationsWithGtfsEnabled.map(organization => organization._id) } }, {
 		$set: {
-			'apps.hub_publish_gtfs.message': null,
-			'apps.hub_publish_gtfs.status': 'waiting',
-			'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
+			'open_data.plans.status': 'waiting',
+			'open_data.plans.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
 		},
 	});
 
 	await organizationsCollection.updateMany({ _id: { $nin: organizationsWithGtfsEnabled.map(organization => organization._id) } }, {
 		$set: {
-			'apps.hub_publish_gtfs.message': null,
-			'apps.hub_publish_gtfs.status': 'skipped',
-			'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
+			'open_data.plans.status': 'skipped',
+			'open_data.plans.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
 		},
 	});
 
 	for (const organization of organizationsWithGtfsEnabled) {
-		//
-		// Initialize context for the export process.
-
-		const context = initExportGtfsContext();
-		organizationsCollection.updateOne({ _id: { $eq: organization._id } }, { $set: { 'apps.hub_publish_gtfs.status': 'processing', 'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
-
 		//
 		// Setup the necessary variables for the export process.
 
@@ -93,18 +85,23 @@ async function main() {
 		const activePlans = await getActivePlans(organization.agency_ids);
 
 		if (!activePlans?.length) {
+			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.plans.status': 'skipped' } });
 			Logger.terminate('No active Plans found for this organization. Exiting...');
 			continue;
 		}
 
 		if (
-			Array.isArray(organization.open_data?.gtfs?.plan_hashes) &&
-			activePlans.length === organization.open_data.plans.plan_hashes.length &&
-			activePlans.every(plan => organization.open_data.plans.plan_hashes.includes(plan.hash))
+			Array.isArray(organization.open_data?.plans?.hashes) &&
+			activePlans.length === organization.open_data.plans.hashes.length &&
+			activePlans.every(plan => organization.open_data.plans.hashes.includes(plan.hash))
 		) {
+			await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.plans.status': 'complete' } });
 			Logger.terminate('No changes in the Plans list since last export. Exiting...');
 			continue;
 		}
+
+		const context = initExportGtfsContext();
+		await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.plans.status': 'processing', 'open_data.plans.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 		// await plansCollection.updateMany({ _id: { $in: activePlans.map(plan => plan._id) } }, {
 		// 	$set: {
@@ -323,15 +320,15 @@ async function main() {
 		}
 
 		//
-		// Update the organization's open_data.plans.plan_hashes
+		// Update the organization's open_data.plans.hashes
 		// with the new list of plan hashes.
 
-		const organizationUpdateData: Omit<OrganizationOpenData['gtfs'], 'enabled'> = {
-			plan_hashes: activePlans.map(plan => plan.hash),
+		const organizationUpdateData: OrganizationOpenData['plans'] = {
+			hashes: activePlans.map(plan => plan.hash),
 			status: 'complete',
 			timestamp: Dates.now('Europe/Lisbon').unix_milliseconds,
 		};
-		await organizationsCollection.updateOne({ _id: { $eq: organization._id } }, { $set: { 'open_data.plans': { ...organization.open_data?.gtfs, ...organizationUpdateData } } });
+		await organizationsCollection.updateOne({ _id: { $eq: organization._id } }, { $set: { 'open_data.plans': organizationUpdateData } });
 
 		//
 		// Finalize the export process
