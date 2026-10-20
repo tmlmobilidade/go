@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -20,7 +19,10 @@ export async function lockHolidayHandler(request: FastifyRequest<{ Params: { id:
 	const holidayData = await goDb.offer.holidays.findById(request.params.id);
 
 	if (!holidayData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Holiday not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -32,7 +34,10 @@ export async function lockHolidayHandler(request: FastifyRequest<{ Params: { id:
 	// If no permission found, deny access
 
 	if (!userHolidayPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock holidays');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to lock/unlock holidays',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,17 +52,23 @@ export async function lockHolidayHandler(request: FastifyRequest<{ Params: { id:
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock holiday. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: toggle lock holiday. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	// If authorized, toggle the lock status of the holiday
-	await goDb.offer.holidays.updateOne({ _id: request.params.id }, { is_locked: !holidayData?.is_locked });
+	await goDb.offer.holidays.updateOne({ _id: request.params.id }, { is_locked: !holidayData.is_locked, updated_by: request.me._id });
 	const foundHoliday = await goDb.offer.holidays.findById(request.params.id);
 	if (!foundHoliday) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Holiday not found',
+			status_code: '404',
+		});
 	}
 
-	return reply.send({ data: foundHoliday, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, foundHoliday);
 
 	//
 }

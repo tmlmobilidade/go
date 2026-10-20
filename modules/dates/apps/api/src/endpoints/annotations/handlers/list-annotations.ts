@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Annotation } from '@tmlmobilidade/go-types-dates';
@@ -24,7 +23,10 @@ export async function listAnnotationsHandler(request: FastifyRequest, reply: Fas
 	// If no permission found, deny access
 
 	if (!userAnnotationPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read annotations',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,7 +49,7 @@ export async function listAnnotationsHandler(request: FastifyRequest, reply: Fas
 
 	const allAnnotations = await goDb.offer.annotations.findMany(queryFilters);
 
-	return reply.send({ data: allAnnotations, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, allAnnotations);
 
 	//
 }

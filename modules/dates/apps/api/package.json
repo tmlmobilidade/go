@@ -13,8 +13,9 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ./src"
+		"lint": "eslint ./src ./tests && tsc -p tsconfig.check.json --noEmit",
+		"lint:fix": "eslint --fix ./src ./tests",
+		"test": "node --experimental-test-module-mocks --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@fastify/multipart": "10.1.1",
