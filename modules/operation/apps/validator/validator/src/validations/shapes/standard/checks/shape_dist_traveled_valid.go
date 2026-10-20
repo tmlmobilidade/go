@@ -4,6 +4,7 @@ import (
 	"main/lib"
 	"main/services"
 	"main/types"
+	"math"
 	"strconv"
 )
 
@@ -36,7 +37,7 @@ func ShapeDistTraveledValid(db *services.SQLiteContext, rules *types.ShapesRules
 	// 4. Check if the shape_dist_traveled is valid
 
 	number, parseErr := strconv.ParseFloat(value, 64)
-	if parseErr != nil || number < 0 {
+	if parseErr != nil || number < 0 || math.IsNaN(number) || math.IsInf(number, 0) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 		return nil
 	}
@@ -45,4 +46,4 @@ func ShapeDistTraveledValid(db *services.SQLiteContext, rules *types.ShapesRules
 	// 5. Return success
 
 	return nil
-}	
+}
