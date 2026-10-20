@@ -3,7 +3,6 @@
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type Organization } from '@tmlmobilidade/go-types-core';
 import { type HubV1ApiAlert, HubV1ApiAlertSchema } from '@tmlmobilidade/go-types-hub';
 import { AlertCauseToGtfsRtCauseMap, AlertEffectToGtfsRtEffectMap, type AlertReference } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -16,10 +15,10 @@ import { transformReferenceTypeStopsIntoJson } from '../transform/json/reference
 
 /* * */
 
-export async function publishJsonFeed(organization?: Organization) {
+export async function publishJsonFeed(agencyId: string) {
 	//
 
-	Logger.title('Starting build of JSON feed...');
+	Logger.info({ message: `Starting build of JSON feed` });
 
 	const globalTimer = new Timer();
 
@@ -28,7 +27,6 @@ export async function publishJsonFeed(organization?: Organization) {
 
 	const findResult = await goDb.operation.alerts.findMany(
 		{
-			...(organization && { agency_id: { $in: organization.agency_ids } }),
 			$and: [
 				{
 					$or: [
@@ -137,9 +135,10 @@ export async function publishJsonFeed(organization?: Organization) {
 	//
 	// Save the result in API Cache
 
-	await cacheDb.set(organization ? `hub:v1:${organization._id}:alerts:published:json` : 'hub:v1:alerts:published:json', JSON.stringify(result));
+	const agencyAlerts = result.filter(alert => alert.agency_id === agencyId);
+	await cacheDb.set(`hub:v1:${agencyId}:alerts:published:json`, JSON.stringify(agencyAlerts));
 
-	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
+	Logger.success({ message: `Finished publishing JSON feed (${globalTimer.get()})` });
 
 	//
 };

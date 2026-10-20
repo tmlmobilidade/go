@@ -23,24 +23,16 @@ async function main() {
 	//
 	// Run all tasks sequentially
 
-	await publishGtfsRtFeed();
+	const agencies = await goDb.core.agencies.findMany({ 'services.service_alerts_enabled': true }, { projection: { _id: 1, name: 1 } });
 
-	await publishJsonFeed();
+	for (const agency of agencies) {
+		Logger.title(`Publishing alerts for agency ${agency._id} - ${agency.name}...`);
 
-	await publishRssFeed();
+		await publishGtfsRtFeed(agency._id);
+		await publishJsonFeed(agency._id);
+		await publishRssFeed(agency._id);
 
-	//
-	// Publish feeds for each organization's agencies.
-
-	const organizationsCollection = await goDb.core.organizations.getCollection();
-	const organizations = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.realtime.alerts': true }).toArray();
-
-	for (const organization of organizations) {
-		Logger.info({ message: `Publishing alerts for organization ${organization._id}...` });
-
-		await publishGtfsRtFeed(organization);
-		await publishJsonFeed(organization);
-		await publishRssFeed(organization);
+		Logger.success({ message: `Finished publishing alerts for agency ${agency._id} - ${agency.name} (${globalTimer.get()})` });
 	}
 
 	//
