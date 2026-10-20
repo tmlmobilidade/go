@@ -45,7 +45,7 @@ func DepartureTimeField(db *services.SQLiteContext, rules *types.StopTimesRules)
 	}
 
 	//
-	// 5. Return nil
+	// 5. Return success
 
 	return nil
 }
