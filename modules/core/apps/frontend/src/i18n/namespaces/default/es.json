@@ -268,19 +268,16 @@
 						"label": "Operadores",
 						"placeholder": "Seleccione los operadores de la organización"
 					},
-					"gtfs_enabled": {
-						"label": "Publicar GTFS de la organización"
-					},
 					"long_name": {
 						"label": "Nombre de la organización",
 						"placeholder": "Carris Metropolitana"
 					},
+					"open_data_enabled": {
+						"label": "Publicar GTFS de la organización"
+					},
 					"short_name": {
 						"label": "Sigla",
 						"placeholder": "CM"
-					},
-					"vehicles_enabled": {
-						"label": "Publicar posiciones y datos de los vehículos de la organización"
 					}
 				}
 			}
@@ -368,15 +365,10 @@
 				"title": "Información general"
 			},
 			"SectionOpenData": {
-				"description": "Publicar los planes y los datos de los vehículos de los operadores de la organización.",
+				"description": "Publicar el GTFS combinado de los operadores de la organización.",
 				"fields": {
-					"services": {
-						"gtfs_enabled": {
-							"label": "Publicar GTFS de la organización"
-						},
-						"vehicles_enabled": {
-							"label": "Publicar posiciones y datos de los vehículos de la organización"
-						}
+					"enabled": {
+						"label": "Publicar GTFS de la organización"
 					}
 				},
 				"title": "Datos abiertos"

@@ -27,26 +27,12 @@ export function OrganizationsDetailOpenData() {
 			<Section>
 				<StandardFormController
 					control={form.control}
-					name="open_data.plans.enabled"
+					name="open_data.enabled"
 					render={({ field, fieldState }) => (
 						<Switch
 							checked={field.value ?? false}
 							error={fieldState.error?.message}
-							label={t('default:organizations.detail.SectionOpenData.fields.services.gtfs_enabled.label')}
-							onChange={field.onChange}
-							readOnly={!capabilities.editEnabled}
-						/>
-					)}
-				/>
-
-				<StandardFormController
-					control={form.control}
-					name="open_data.realtime.vehicles"
-					render={({ field, fieldState }) => (
-						<Switch
-							checked={field.value ?? false}
-							error={fieldState.error?.message}
-							label={t('default:organizations.detail.SectionOpenData.fields.services.vehicles_enabled.label')}
+							label={t('default:organizations.detail.SectionOpenData.fields.enabled.label')}
 							onChange={field.onChange}
 							readOnly={!capabilities.editEnabled}
 						/>

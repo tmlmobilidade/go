@@ -163,7 +163,6 @@
 						"title": "Regras de validação do GTFS"
 					}
 				},
-
 				"toasts": {
 					"error": {
 						"message": "Não foi possível ler o ficheiro JSON. Verifique o conteúdo.",
@@ -267,19 +266,16 @@
 						"label": "Operadores",
 						"placeholder": "Selecione os operadores da organização"
 					},
-					"gtfs_enabled": {
-						"label": "Publicar GTFS da organização"
-					},
 					"long_name": {
 						"label": "Nome da organização",
 						"placeholder": "Carris Metropolitana"
 					},
+					"open_data_enabled": {
+						"label": "Publicar GTFS da organização"
+					},
 					"short_name": {
 						"label": "Sigla",
 						"placeholder": "CM"
-					},
-					"vehicles_enabled": {
-						"label": "Publicar posições e dados dos veículos da organização"
 					}
 				}
 			}
@@ -367,15 +363,10 @@
 				"title": "Informações gerais"
 			},
 			"SectionOpenData": {
-				"description": "Publicar os planos e os dados dos veículos dos operadores da organização.",
+				"description": "Publicar o GTFS combinado dos operadores da organização.",
 				"fields": {
-					"services": {
-						"gtfs_enabled": {
-							"label": "Publicar GTFS da organização"
-						},
-						"vehicles_enabled": {
-							"label": "Publicar posições e dados dos veículos da organização"
-						}
+					"enabled": {
+						"label": "Publicar GTFS da organização"
 					}
 				},
 				"title": "Dados abertos"

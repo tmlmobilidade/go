@@ -39,8 +39,8 @@ export function OrganizationsList() {
 			width: 600,
 		},
 		{
-			accessor: 'open_data.plans_status',
-			render: item => <ProcessingStatusDisplay value={item.open_data.plans.enabled ? item.open_data.plans.status : 'skipped'} />,
+			accessor: 'open_data.plans.status',
+			render: item => <ProcessingStatusDisplay value={item.open_data.enabled ? item.open_data.plans.status : 'skipped'} />,
 			title: t('default:organizations.list.table.columns.gtfs_published.label'),
 			width: 180,
 		},
