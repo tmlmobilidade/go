@@ -35,11 +35,11 @@ type distanceViolation struct {
 // tolerance from rules.Options[0] (meters), falling back to the default when
 // rules, options or the value itself are missing or invalid.
 func getShapePointsCoordinatesDistancesToleranceMeters(rules *types.ShapesRules) float64 {
-	if rules == nil || rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options == nil || len(*rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options) == 0 {
+	if rules == nil || rules.Rule("shapes_shape_dist_traveled_segment_valid").Options == nil || len(*rules.Rule("shapes_shape_dist_traveled_segment_valid").Options) == 0 {
 		return maxDistanceDeltaToleranceMeters
 	}
 
-	value, err := strconv.ParseFloat((*rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options)[0], 64)
+	value, err := strconv.ParseFloat((*rules.Rule("shapes_shape_dist_traveled_segment_valid").Options)[0], 64)
 	if err != nil || value < 0 || math.IsNaN(value) || math.IsInf(value, 0) {
 		return maxDistanceDeltaToleranceMeters
 	}
@@ -66,8 +66,8 @@ func uniqueDistanceRows(rows []int) []int {
 // alone cannot distinguish meters from kilometers. Without it, retain the
 // existing auto-detection used by the other shape-distance checks.
 func shapeDistanceScale(rules *types.ShapesRules, maxInShape float64) float64 {
-	if rules != nil && rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options != nil {
-		options := *rules.Rule("shape_dist_traveled_delta_mismatches_haversine_segment").Options
+	if rules != nil && rules.Rule("shapes_shape_dist_traveled_segment_valid").Options != nil {
+		options := *rules.Rule("shapes_shape_dist_traveled_segment_valid").Options
 		if len(options) > 1 {
 			switch strings.ToLower(strings.TrimSpace(options[1])) {
 			case "m":
@@ -89,7 +89,7 @@ func ShapePointsCoordinatesDistances(db *services.SQLiteContext, rules *types.Sh
 	//
 	// 1. Get the rule and severity
 
-	const ruleID = "shape_dist_traveled_delta_mismatches_haversine_segment"
+	const ruleID = "shapes_shape_dist_traveled_segment_valid"
 
 	//
 	// 2. Get the severity

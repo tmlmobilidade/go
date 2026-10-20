@@ -13,7 +13,7 @@ import (
 )
 
 func TestShapePointsCoordinatesConsistent(t *testing.T) {
-	const id = "shape_sequence_position_mismatches_cumulative_traveled_distance"
+	const id = "shapes_shape_point_spacing_valid"
 	for _, tc := range []struct {
 		name      string
 		severity  types.Severity
@@ -88,7 +88,7 @@ func TestShapePointsCoordinatesConsistent(t *testing.T) {
 }
 
 func TestShapePointsCoordinatesConsistentManyGaps(t *testing.T) {
-	const id = "shape_sequence_position_mismatches_cumulative_traveled_distance"
+	const id = "shapes_shape_point_spacing_valid"
 	for _, gaps := range []int{100, 101} {
 		t.Run(fmt.Sprint(gaps), func(t *testing.T) {
 			connection, table := coordinateGapTable(t)

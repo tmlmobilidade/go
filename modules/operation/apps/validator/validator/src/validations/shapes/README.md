@@ -15,8 +15,8 @@ Both checks are disabled unless their severity is configured.
 
 | Rule ID | What it checks | Options |
 | --- | --- | --- |
-| `shape_sequence_position_mismatches_cumulative_traveled_distance` | Haversine distance between consecutive coordinates exceeds the configured maximum. Despite its retained ID, this does not compare cumulative distance and does not require `shape_dist_traveled`. | `["1000"]`: maximum gap in metres; default 1000, must be positive. |
-| `shape_dist_traveled_delta_mismatches_haversine_segment` | Absolute difference between the recorded distance increment and the Haversine segment exceeds the tolerance. Includes the first segment starting at distance zero and zero increments between different coordinates. | `["20", "km"]`: tolerance in metres and optional recorded-distance unit (`m` or `km`). Default tolerance 20; zero is allowed. |
+| `shapes_shape_point_spacing_valid` | Haversine distance between consecutive coordinates exceeds the configured maximum. This does not compare cumulative distance and does not require `shape_dist_traveled`. | `["1000"]`: maximum gap in metres; default 1000, must be positive. |
+| `shapes_shape_dist_traveled_segment_valid` | Absolute difference between the recorded distance increment and the Haversine segment exceeds the tolerance. Includes the first segment starting at distance zero and zero increments between different coordinates. | `["20", "km"]`: tolerance in metres and optional recorded-distance unit (`m` or `km`). Default tolerance 20; zero is allowed. |
 
 Invalid or nonfinite tolerances fall back to the defaults. Without a recognized
 unit option, the distance check retains automatic conversion: a shape's maximum

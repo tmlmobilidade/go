@@ -36,11 +36,11 @@ type pointsCoordinatesConsistentViolation struct {
 // tolerance from rules.Options[0] (meters), falling back to the default when
 // rules, options or the value itself are missing or invalid.
 func getShapePointsCoordinatesConsistentToleranceMeters(rules *types.ShapesRules) float64 {
-	if rules == nil || rules.Rule("shape_sequence_position_mismatches_cumulative_traveled_distance").Options == nil || len(*rules.Rule("shape_sequence_position_mismatches_cumulative_traveled_distance").Options) == 0 {
+	if rules == nil || rules.Rule("shapes_shape_point_spacing_valid").Options == nil || len(*rules.Rule("shapes_shape_point_spacing_valid").Options) == 0 {
 		return shapes_coordinates.MAX_SHAPE_POINT_DISTANCE_METERS
 	}
 
-	value, err := strconv.ParseFloat((*rules.Rule("shape_sequence_position_mismatches_cumulative_traveled_distance").Options)[0], 64)
+	value, err := strconv.ParseFloat((*rules.Rule("shapes_shape_point_spacing_valid").Options)[0], 64)
 	if err != nil || value <= 0 || math.IsNaN(value) || math.IsInf(value, 0) {
 		return shapes_coordinates.MAX_SHAPE_POINT_DISTANCE_METERS
 	}
@@ -65,14 +65,14 @@ func uniquePointsCoordinatesConsistentRows(rows []int) []int {
 }
 
 // ShapePointsCoordinatesConsistent checks consecutive coordinate gaps,
-// independent of shape_dist_traveled. The public rule ID is retained for saved settings.
+// independent of shape_dist_traveled.
 func ShapePointsCoordinatesConsistent(db *services.SQLiteContext, rules *types.ShapesRules) error {
 	//
 
 	//
 	// 1. Get the rule and tolerance
 
-	const ruleID = "shape_sequence_position_mismatches_cumulative_traveled_distance"
+	const ruleID = "shapes_shape_point_spacing_valid"
 
 	//
 	// 2. Get the severity

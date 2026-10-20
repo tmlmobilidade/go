@@ -18,7 +18,7 @@ var executionScopes = map[string]string{
 	"shape_id_and_point_sequence_required":                              "shape",
 	"shape_pt_sequence_strictly_increasing":                             "shape",
 	"shape_dist_traveled_non_decreasing_with_sequence":                  "shape",
-	"shape_sequence_position_mismatches_cumulative_traveled_distance":   "shape",
-	"shape_dist_traveled_delta_mismatches_haversine_segment":            "shape",
+	"shapes_shape_point_spacing_valid":                                  "shape",
+	"shapes_shape_dist_traveled_segment_valid":                          "shape",
 	"shapes_shape_dist_traveled_block_valid":                            "shape",
 }

@@ -13,7 +13,7 @@ import (
 )
 
 func TestShapePointsCoordinatesDistances(t *testing.T) {
-	const id = "shape_dist_traveled_delta_mismatches_haversine_segment"
+	const id = "shapes_shape_dist_traveled_segment_valid"
 	segment := lib.HaversineDistance(types.Coordinates{Lat: 0, Lng: 0}, types.Coordinates{Lat: 0, Lng: 0.001})
 	for _, tc := range []struct {
 		name     string
@@ -99,8 +99,8 @@ func TestShapePointsCoordinatesDistances(t *testing.T) {
 	}
 }
 
-func TestShapePointsCoordinatesDistancesManyErrors(t *testing.T) {
-	const id = "shape_dist_traveled_delta_mismatches_haversine_segment"
+func TestShapePointsCoordinatesDistancesManySegments(t *testing.T) {
+	const id = "shapes_shape_dist_traveled_segment_valid"
 	for _, gaps := range []int{100, 101} {
 		t.Run(fmt.Sprint(gaps), func(t *testing.T) {
 			connection, table := coordinateDistanceTable(t)
@@ -121,8 +121,8 @@ func TestShapePointsCoordinatesDistancesManyErrors(t *testing.T) {
 			ctx := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", id, 0, services.AppMessageService)
 			rows := map[int]bool{}
 			for _, msg := range services.AppMessageService.GetSummary().AllMessages() {
-				if collapsed := msg.Message == ctx.GetTranslatedMessage("ManyErrors"); collapsed != (gaps > 100) {
-					t.Fatalf("unexpected collapsed report: %+v", msg)
+				if msg.Message == ctx.GetTranslatedMessage("ManyErrors") || len(msg.Rows) != 1 {
+					t.Fatalf("expected an individual finding for each segment: %+v", msg)
 				}
 				for _, row := range msg.Rows {
 					if row < 3 || row > gaps+2 || rows[row] {
@@ -131,9 +131,9 @@ func TestShapePointsCoordinatesDistancesManyErrors(t *testing.T) {
 					rows[row] = true
 				}
 			}
-			// Repeated messages retain at most 100 rows, including the last row.
-			if len(rows) != min(gaps, 100) || !rows[gaps+2] {
-				t.Fatalf("reported rows=%d want=%d; last row present=%v", len(rows), min(gaps, 100), rows[gaps+2])
+			// Every segment retains its own diagnostic, including above 100 findings.
+			if len(rows) != gaps || !rows[gaps+2] {
+				t.Fatalf("reported rows=%d want=%d; last row present=%v", len(rows), gaps, rows[gaps+2])
 			}
 			connection.Close()
 			if err := checks.ShapePointsCoordinatesDistances(table.At(0).Context(), config); err == nil {
