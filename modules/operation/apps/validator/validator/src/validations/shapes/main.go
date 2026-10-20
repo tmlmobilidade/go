@@ -8,6 +8,7 @@ import (
 	"main/services"
 	"main/types"
 	registry "main/validations"
+	shapes_custom "main/validations/shapes/custom/checks"
 	shapes_standard "main/validations/shapes/standard/checks"
 	validations "main/validations/shapes/validations"
 )
@@ -123,7 +124,9 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			},
 			"shape_sequence_position_mismatches_cumulative_traveled_distance": func() { validations.ShapePointsCoordinatesConsistentValidation(points, shapesRules) },
 			"shape_dist_traveled_delta_mismatches_haversine_segment":          func() { validations.ShapePointsCoordinatesDistancesValidation(points, shapesRules) },
-			"shape_dist_traveled_delta_mismatches_haversine_block":            func() { validations.ShapeDistancesValidation(points, shapesRules) },
+			"shapes_shape_dist_traveled_block_valid": func() {
+				check(db, "shapes_shape_dist_traveled_block_valid", shapes_custom.ShapeDistancesValid(db, shapesRules))
+			},
 		}, groupStatuses[shapeID])
 	}
 }

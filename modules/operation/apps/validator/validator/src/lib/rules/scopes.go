@@ -20,5 +20,5 @@ var executionScopes = map[string]string{
 	"shape_dist_traveled_non_decreasing_with_sequence":                  "shape",
 	"shape_sequence_position_mismatches_cumulative_traveled_distance":   "shape",
 	"shape_dist_traveled_delta_mismatches_haversine_segment":            "shape",
-	"shape_dist_traveled_delta_mismatches_haversine_block":              "shape",
+	"shapes_shape_dist_traveled_block_valid":                            "shape",
 }

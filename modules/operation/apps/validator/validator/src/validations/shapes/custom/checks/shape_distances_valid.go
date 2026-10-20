@@ -1,4 +1,4 @@
-package shapes
+package shapes_custom
 
 import (
 	"math"
@@ -35,21 +35,32 @@ type distancesViolation struct {
 // getDistanceToleranceMeters resolves the configurable tolerance from
 // rules.Options[0] (meters), falling back to the default when rules, options
 // or the value itself are missing or invalid.
-func getDistanceToleranceMeters(rules *types.ShapesRules) float64 {
-	if rules == nil || rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Options == nil || len(*rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Options) == 0 {
+func getDistanceToleranceMeters(rules *types.ShapesRules, ruleID string) float64 {
+	//
+
+	//
+	// 1. Get the tolerance
+
+	if rules == nil || rules.Rule(ruleID).Options == nil || len(*rules.Rule(ruleID).Options) == 0 {
 		return maxAllPointsDistanceDeltaToleranceMeters
 	}
 
-	value, err := strconv.ParseFloat((*rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Options)[0], 64)
-	if err != nil || value < 0 {
+	//
+	// 2. Parse the tolerance
+
+	value, err := strconv.ParseFloat((*rules.Rule(ruleID).Options)[0], 64)
+	if err != nil || value < 0 || math.IsNaN(value) || math.IsInf(value, 0) {
 		return maxAllPointsDistanceDeltaToleranceMeters
 	}
+
+	//
+	// 3. Return the tolerance
 
 	return value
 }
 
 /*
-ShapeDistancesValidation checks, per "block" of a shape (points between one shape_dist_traveled
+ShapeDistancesValid checks, per "block" of a shape (points between one shape_dist_traveled
 reset to 0.0 and the next, or the end of the shape), that the block's total shape_dist_traveled
 matches the sum of the real (haversine) distances between its points. Unlike the sibling
 per-segment validations, this looks at the cumulative distance over the whole block, so it can
@@ -61,46 +72,114 @@ by the per-segment validation instead of being double-reported here).
 
 https://gtfs.org/schedule/reference/#shapestxt
 */
-func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
-	// Severity comes from rules; with no rules configured it defaults to SEVERITY_IGNORE,
-	// so nothing below actually gets reported.
-	severity := types.SEVERITY_IGNORE
-	if rules != nil && rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Severity != "" {
-		severity = types.Severity(rules.Rule("shape_dist_traveled_delta_mismatches_haversine_block").Severity)
+func ShapeDistancesValid(db *services.SQLiteContext, rules *types.ShapesRules) error {
+	//
+
+	//
+	// 1. Get the rule
+
+	const ruleID = "shapes_shape_dist_traveled_block_valid"
+
+	//
+	// 2. Resolve the rule independently of other shape-distance checks.
+
+	ctx := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", ruleID, db.Row, services.AppMessageService)
+	if rules != nil {
+		rule := rules.Rule(ruleID)
+		ctx.WithSeverity(rule.Severity)
 	}
 
-	shapeGroups := map[string][]shapeDistancesPoint{}
-	toleranceMeters := getDistanceToleranceMeters(rules)
+	//
+	// 3. Get the tolerance
+
+	toleranceMeters := getDistanceToleranceMeters(rules, ruleID)
+
+	//
+	// 4. Get the violations
+
 	violations := []distancesViolation{}
 
-	// 1. Group by shape_id the points that carry a sequence and coordinates
-	for i, shape := range shapes {
-		if shape.Row != nil {
-			i = *shape.Row
-		}
+	//
+	// 5. Read only this shape's sequence, coordinates, and recorded distances.
 
-		if shape.ShapeId == nil || *shape.ShapeId == "" {
-			continue
-		}
-		if shape.ShapePtSequence == nil || shape.ShapePtLat == nil || shape.ShapePtLon == nil {
-			continue
-		}
-
-		shapeGroups[*shape.ShapeId] = append(shapeGroups[*shape.ShapeId], shapeDistancesPoint{
-			id:           *shape.ShapeId,
-			row:          i,
-			sequence:     *shape.ShapePtSequence,
-			lat:          float64(*shape.ShapePtLat),
-			lon:          float64(*shape.ShapePtLon),
-			distTraveled: shape.ShapeDistTraveled,
-		})
+	// Each point keeps its SQLite row index so sorting cannot change diagnostics.
+	shapeID, err := db.Shapes.Field("shape_id")
+	if err != nil {
+		return err
+	}
+	if shapeID == "" {
+		return nil
 	}
 
-	// 2. Order each shape's points and compare its travelled distance with the real geometry
+	//
+	// 6. Get the table
+
+	table, err := db.Table("shapes")
+	if err != nil {
+		return err
+	}
+
+	//
+	// 7. Get the shape groups
+
+	shapeGroups := map[string][]shapeDistancesPoint{}
+	err = table.ForEachMatching("shape_id", shapeID, func(row *services.SQLiteRow) error {
+		//
+		// 7.1 Get the values
+
+		values, err := row.Fields("shape_pt_sequence", "shape_pt_lat", "shape_pt_lon", "shape_dist_traveled")
+		if err != nil {
+			return err
+		}
+
+		//
+		// 7.2 Parse the values
+
+		sequence, err := strconv.Atoi(values["shape_pt_sequence"])
+		if err != nil {
+			return err
+		}
+		lat, err := strconv.ParseFloat(values["shape_pt_lat"], 64)
+		if err != nil {
+			return err
+		}
+		lon, err := strconv.ParseFloat(values["shape_pt_lon"], 64)
+		if err != nil {
+			return err
+		}
+
+		//
+		// 7.3 Create the point
+
+		point := shapeDistancesPoint{id: shapeID, row: row.Row, sequence: sequence, lat: lat, lon: lon}
+		if values["shape_dist_traveled"] != "" {
+			distance, err := strconv.ParseFloat(values["shape_dist_traveled"], 64)
+			if err != nil {
+				return err
+			}
+			point.distTraveled = &distance
+		}
+
+		//
+		// 7.4 Add the point to the shape groups
+
+		shapeGroups[shapeID] = append(shapeGroups[shapeID], point)
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	//
+	// 8. Order each shape's points and compare its travelled distance with the real geometry
+
 	for _, shapeGroup := range shapeGroups {
-		sort.Slice(shapeGroup, func(i, j int) bool {
+		sort.SliceStable(shapeGroup, func(i, j int) bool {
 			return shapeGroup[i].sequence < shapeGroup[j].sequence
 		})
+
+		//
+		// 8.1 Get the max distance traveled
 
 		// GTFS doesn't fix a unit for shape_dist_traveled; feeds use either km or m.
 		// The largest value in the shape is used to guess which one (see
@@ -113,14 +192,18 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 			}
 		}
 
-		// Process blocks: from 0.0 (reset) to next 0.0 or end of shape
+		//
+		// 8.2 Process blocks: from 0.0 (reset) to next 0.0 or end of shape
+
 		for blockStart := 0; blockStart < len(shapeGroup); blockStart++ {
 			pt := shapeGroup[blockStart]
 			if pt.distTraveled == nil || *pt.distTraveled != 0.0 {
 				continue
 			}
 
+			//
 			// Find block end: last point before next 0.0 or end of shape
+
 			blockEnd := blockStart
 			for j := blockStart + 1; j < len(shapeGroup); j++ {
 				if shapeGroup[j].distTraveled != nil && *shapeGroup[j].distTraveled == 0.0 {
@@ -133,16 +216,22 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 				continue
 			}
 
+			//
+			// Walk the block segment by segment
+
 			// Walk the block segment by segment first: if any single segment is already
 			// outside tolerance, it's the per-segment validation's job to report it, so this
 			// block is skipped here rather than double-reported against its cumulative total.
+
 			var totalRealM float64
 			allSegmentsPass := true
 			for j := blockStart + 1; j <= blockEnd; j++ {
 				prev := shapeGroup[j-1]
 				curr := shapeGroup[j]
 				if prev.distTraveled == nil || curr.distTraveled == nil {
-					continue
+					// An incomplete block cannot be compared end-to-end safely.
+					allSegmentsPass = false
+					break
 				}
 				// The block's first segment starts at the 0.0 reset point and must be
 				// counted: the block's final shape_dist_traveled is measured from there,
@@ -200,11 +289,13 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 		}
 	}
 
-	// 3. Report every block whose travelled distance does not match its geometry
+	//
+	// 9. Report every block whose travelled distance does not match its geometry
+
 	for _, violation := range violations {
-		ctx := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", "shape_dist_traveled_delta_mismatches_haversine_block", violation.row, services.AppMessageService)
-		ctx.WithSeverity(severity)
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage(
+		finding := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", ruleID, violation.row, services.AppMessageService)
+		finding.WithSeverity(ctx.Severity)
+		finding.AddMessageWithSeverity(finding.GetTranslatedMessage(
 			"invalid_distances",
 			violation.id,
 			violation.totalExpectedM,
@@ -212,4 +303,9 @@ func ShapeDistancesValidation(shapes []types.Shape, rules *types.ShapesRules) {
 			violation.diffMeters,
 		))
 	}
+
+	//
+	// 10. Return success
+
+	return nil
 }
