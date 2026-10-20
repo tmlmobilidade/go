@@ -2,30 +2,23 @@
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Organization } from '@tmlmobilidade/go-types-core';
 import { type HubV1ApiAgency, HubV1ApiAgencySchema } from '@tmlmobilidade/go-types-hub';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
-export async function publishAgencies(organization?: Organization) {
+export async function publishAgencies(agencyIds: string[]) {
 	//
 
 	Logger.title('Publishing agencies JSON feed...');
 
 	const globalTimer = new Timer();
-
-	//
-	// Retrieve agencies
-
-	const allAgenciesData = await goDb.core.agencies.findMany(organization ? { _id: { $in: organization.agency_ids } } : {});
-
-	Logger.info({ message: `Retrieved ${allAgenciesData.length} agencies...` });
+	const agencies = await goDb.core.agencies.findMany({ _id: { $in: agencyIds } });
 
 	//
 	// Parse the agencies into the Hub V1 API schema
 
-	const parsedAgencies: HubV1ApiAgency[] = allAgenciesData.map((agencyData) => {
+	const parsedAgencies: HubV1ApiAgency[] = agencies.map((agencyData) => {
 		return HubV1ApiAgencySchema.parse({
 			_id: agencyData._id,
 			code: agencyData.code,
@@ -47,7 +40,6 @@ export async function publishAgencies(organization?: Organization) {
 	//
 	// Save the result in API Cache
 
-	await cacheDb.setNew(organization ? `hub:v1:${organization._id}:agencies:json` : 'hub:v1:agencies:json', parsedAgencies);
-
-	Logger.success(`Finished publishing ${parsedAgencies.length} agencies JSON feed. (${globalTimer.get()})`);
+	await cacheDb.setNew('hub:v1:agencies:json', parsedAgencies);
+	Logger.success({ message: `Finished publishing ${parsedAgencies.length} agencies JSON feed. (${globalTimer.get()})` });
 };

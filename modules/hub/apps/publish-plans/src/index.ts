@@ -20,24 +20,21 @@ async function main() {
 	const globalTimer = new Timer();
 
 	//
-	// Run all tasks sequentially
+	// Get a set of agency IDs where open data is enabled in an organization
 
-	await publishAgencies();
-
-	await publishApprovedPlans();
+	const collection = await goDb.core.organizations.getCollection();
+	const agencyIds = await collection.aggregate([
+		{ $match: { 'agency_ids.0': { $exists: true }, 'open_data.enabled': true } },
+		{ $unwind: '$agency_ids' },
+		{ $group: { _id: null, agency_ids: { $addToSet: '$agency_ids' } } },
+		{ $project: { _id: 0, agency_ids: 1 } },
+	]).toArray()[0]?.agency_ids ?? [];
 
 	//
-	// Publish feeds for each organization's agencies.
+	// Run all tasks sequentially
 
-	const organizationsCollection = await goDb.core.organizations.getCollection();
-	const organizations = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.plans.enabled': true }).toArray();
-
-	for (const organization of organizations) {
-		Logger.info({ message: `Publishing plans data for organization ${organization._id}...` });
-
-		await publishAgencies(organization);
-		await publishApprovedPlans(organization);
-	}
+	await publishAgencies(agencyIds);
+	await publishApprovedPlans(agencyIds);
 
 	//
 	// Log the total time taken for all tasks
