@@ -434,5 +434,57 @@
 	},
 	"routes_route_url_valid": {
 		"invalid": "El campo \"route_url\" \"%s\" no es una URL válida"
+	},
+	"shape_dist_traveled_non_decreasing_with_sequence": {
+		"not_increasing": "Los valores de \"shape_dist_traveled\" para el shape_id \"%s\" no deben disminuir en orden de secuencia"
+	},
+	"shape_pt_sequence_strictly_increasing": {
+		"not_increasing": "Los valores de \"shape_pt_sequence\" para el shape_id \"%s\" deben ser únicos y estrictamente crecientes en orden de secuencia"
+	},
+	"shapes_shape_dist_traveled_block_valid": {
+		"invalid_distances": "La distancia total prevista (shape_dist_traveled) para la geometría \"%s\" es de %.2f metros; la distancia geométrica real es de %.2f metros (diferencia: %.2f metros)"
+	},
+	"shapes_shape_dist_traveled_field": {
+		"informational": "El campo shape_dist_traveled es informativo",
+		"recommended": "El campo shape_dist_traveled es recomendado",
+		"required": "El campo shape_dist_traveled es requerido"
+	},
+	"shapes_shape_dist_traveled_segment_valid": {
+		"invalid_distances": "Entre los puntos (%s, %s) y (%s, %s), shape_dist_traveled aumenta %.2f metros, pero la distancia de Haversine es de %.2f metros. Geometría %s, secuencias de %d a %d; tolerancia de %.2f metros."
+	},
+	"shapes_shape_dist_traveled_valid": {
+		"invalid": "El valor \"%s\" del campo \"shape_dist_traveled\" debe ser un número no negativo"
+	},
+	"shapes_shape_id_field": {
+		"informational": "El campo shape_id es informativo",
+		"recommended": "El campo shape_id es recomendado",
+		"required": "El campo shape_id es requerido"
+	},
+	"shapes_shape_point_spacing_valid": {
+		"invalid_consistent_distance": "La geometría %s tiene las coordenadas (%.6f, %.6f) en la secuencia %d demasiado lejos de (%.6f, %.6f) en la secuencia %d: %.2f metros superan el límite de %.2f metros."
+	},
+	"shapes_shape_pt_lat_field": {
+		"informational": "El campo shape_pt_lat es informativo",
+		"recommended": "El campo shape_pt_lat es recomendado",
+		"required": "El campo shape_pt_lat es requerido"
+	},
+	"shapes_shape_pt_lat_valid": {
+		"invalid": "El valor \"%s\" del campo \"shape_pt_lat\" debe ser una latitud válida entre -90 y 90"
+	},
+	"shapes_shape_pt_lon_field": {
+		"informational": "El campo shape_pt_lon es informativo",
+		"recommended": "El campo shape_pt_lon es recomendado",
+		"required": "El campo shape_pt_lon es requerido"
+	},
+	"shapes_shape_pt_lon_valid": {
+		"invalid": "El valor \"%s\" del campo \"shape_pt_lon\" debe ser una longitud válida entre -180 y 180"
+	},
+	"shapes_shape_pt_sequence_field": {
+		"informational": "El campo shape_pt_sequence es informativo",
+		"recommended": "El campo shape_pt_sequence es recomendado",
+		"required": "El campo shape_pt_sequence es requerido"
+	},
+	"shapes_shape_pt_sequence_non_negative": {
+		"invalid": "El campo \"shape_pt_sequence\" debe ser un número entero no negativo"
 	}
 }

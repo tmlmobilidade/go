@@ -434,5 +434,57 @@
 	},
 	"routes_route_url_valid": {
 		"invalid": "Field \"route_url\" \"%s\" is not a valid URL"
+	},
+	"shape_dist_traveled_non_decreasing_with_sequence": {
+		"not_increasing": "The \"shape_dist_traveled\" values for shape_id \"%s\" must not decrease in sequence order"
+	},
+	"shape_pt_sequence_strictly_increasing": {
+		"not_increasing": "The \"shape_pt_sequence\" values for shape_id \"%s\" must be unique and strictly increasing in sequence order"
+	},
+	"shapes_shape_dist_traveled_block_valid": {
+		"invalid_distances": "The total expected distance (shape_dist_traveled) for shape \"%s\" is %.2f meters, the actual geometric distance is %.2f meters (diff: %.2f meters)"
+	},
+	"shapes_shape_dist_traveled_field": {
+		"informational": "The shape_dist_traveled field is informational",
+		"recommended": "The shape_dist_traveled field is recommended",
+		"required": "The shape_dist_traveled field is required"
+	},
+	"shapes_shape_dist_traveled_segment_valid": {
+		"invalid_distances": "Between points (%s, %s) and (%s, %s), shape_dist_traveled increases by %.2f meters but the Haversine distance is %.2f meters. Shape %s, sequences %d to %d; tolerance %.2f meters."
+	},
+	"shapes_shape_dist_traveled_valid": {
+		"invalid": "Field \"shape_dist_traveled\" value \"%s\" must be a non-negative number"
+	},
+	"shapes_shape_id_field": {
+		"informational": "The shape_id field is informational",
+		"recommended": "The shape_id field is recommended",
+		"required": "The shape_id field is required"
+	},
+	"shapes_shape_point_spacing_valid": {
+		"invalid_consistent_distance": "Shape %s has coordinates (%.6f, %.6f) at sequence %d too far from (%.6f, %.6f) at sequence %d: %.2f meters exceeds the %.2f meter limit."
+	},
+	"shapes_shape_pt_lat_field": {
+		"informational": "The shape_pt_lat field is informational",
+		"recommended": "The shape_pt_lat field is recommended",
+		"required": "The shape_pt_lat field is required"
+	},
+	"shapes_shape_pt_lat_valid": {
+		"invalid": "Field \"shape_pt_lat\" value \"%s\" must be a valid latitude between -90 and 90"
+	},
+	"shapes_shape_pt_lon_field": {
+		"informational": "The shape_pt_lon field is informational",
+		"recommended": "The shape_pt_lon field is recommended",
+		"required": "The shape_pt_lon field is required"
+	},
+	"shapes_shape_pt_lon_valid": {
+		"invalid": "Field \"shape_pt_lon\" value \"%s\" must be a valid longitude between -180 and 180"
+	},
+	"shapes_shape_pt_sequence_field": {
+		"informational": "The shape_pt_sequence field is informational",
+		"recommended": "The shape_pt_sequence field is recommended",
+		"required": "The shape_pt_sequence field is required"
+	},
+	"shapes_shape_pt_sequence_non_negative": {
+		"invalid": "Field \"shape_pt_sequence\" must be a non-negative integer"
 	}
 }

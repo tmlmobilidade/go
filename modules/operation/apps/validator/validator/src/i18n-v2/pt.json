@@ -434,5 +434,57 @@
 	},
 	"routes_route_url_valid": {
 		"invalid": "O campo \"route_url\" \"%s\" não é um URL válido"
+	},
+	"shape_dist_traveled_non_decreasing_with_sequence": {
+		"not_increasing": "Os valores de \"shape_dist_traveled\" para o shape_id \"%s\" não podem diminuir por ordem de sequência"
+	},
+	"shape_pt_sequence_strictly_increasing": {
+		"not_increasing": "Os valores de \"shape_pt_sequence\" para o shape_id \"%s\" devem ser únicos e estritamente crescentes por ordem de sequência"
+	},
+	"shapes_shape_dist_traveled_block_valid": {
+		"invalid_distances": "A distância total esperada (shape_dist_traveled) para a shape \"%s\" é %.2f metros, a distância geométrica real é %.2f metros (diferença: %.2f metros)"
+	},
+	"shapes_shape_dist_traveled_field": {
+		"informational": "O campo shape_dist_traveled é informativo",
+		"recommended": "O campo shape_dist_traveled é recomendado",
+		"required": "O campo shape_dist_traveled é obrigatório"
+	},
+	"shapes_shape_dist_traveled_segment_valid": {
+		"invalid_distances": "Entre os pontos (%s, %s) e (%s, %s), shape_dist_traveled aumenta %.2f metros, mas a distância de Haversine é %.2f metros. Shape %s, sequências %d a %d; tolerância de %.2f metros."
+	},
+	"shapes_shape_dist_traveled_valid": {
+		"invalid": "O valor \"%s\" do campo \"shape_dist_traveled\" deve ser um número não negativo"
+	},
+	"shapes_shape_id_field": {
+		"informational": "O campo shape_id é informativo",
+		"recommended": "O campo shape_id é recomendado",
+		"required": "O campo shape_id é obrigatório"
+	},
+	"shapes_shape_point_spacing_valid": {
+		"invalid_consistent_distance": "A shape %s tem as coordenadas (%.6f, %.6f) na sequência %d demasiado distantes de (%.6f, %.6f) na sequência %d: %.2f metros excedem o limite de %.2f metros."
+	},
+	"shapes_shape_pt_lat_field": {
+		"informational": "O campo shape_pt_lat é informativo",
+		"recommended": "O campo shape_pt_lat é recomendado",
+		"required": "O campo shape_pt_lat é obrigatório"
+	},
+	"shapes_shape_pt_lat_valid": {
+		"invalid": "O valor \"%s\" do campo \"shape_pt_lat\" deve ser uma latitude válida entre -90 e 90"
+	},
+	"shapes_shape_pt_lon_field": {
+		"informational": "O campo shape_pt_lon é informativo",
+		"recommended": "O campo shape_pt_lon é recomendado",
+		"required": "O campo shape_pt_lon é obrigatório"
+	},
+	"shapes_shape_pt_lon_valid": {
+		"invalid": "O valor \"%s\" do campo \"shape_pt_lon\" deve ser uma longitude válida entre -180 e 180"
+	},
+	"shapes_shape_pt_sequence_field": {
+		"informational": "O campo shape_pt_sequence é informativo",
+		"recommended": "O campo shape_pt_sequence é recomendado",
+		"required": "O campo shape_pt_sequence é obrigatório"
+	},
+	"shapes_shape_pt_sequence_non_negative": {
+		"invalid": "O campo \"shape_pt_sequence\" deve ser um número inteiro não negativo"
 	}
 }
