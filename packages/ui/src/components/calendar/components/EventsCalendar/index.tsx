@@ -2,7 +2,7 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CalendarKey, Dates } from '@tmlmobilidade/dates';
-import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
+import { type CalendarEvent, type CalendarEventType } from '@tmlmobilidade/types';
 import { useRouter } from 'next/navigation';
 
 import { EVENT_TYPE_DEFS } from '../../../../icons/event-types';
@@ -84,7 +84,7 @@ function EventsCalendarContent({
 			router.push(PAGE_ROUTES.dates.HOLIDAYS_DETAIL(event.id));
 		}
 		if (event.type === 'event') {
-			router.push(PAGE_ROUTES.dates.EVENTS_DETAIL(event.id));
+			router.push(PAGE_ROUTES.offer.EVENTS_DETAIL(event.id));
 		}
 	};
 
