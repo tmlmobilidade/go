@@ -73,10 +73,10 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 			"feed_info_feed_contact_email_valid": func() { check("feed_info_feed_contact_email_valid", standard.FeedContactEmailValid(db, fileRules)) },
 			"feed_info_feed_contact_url_valid":   func() { check("feed_info_feed_contact_url_valid", standard.FeedContactUrlValid(db, fileRules)) },
 			"feed_info_feed_lang_valid":          func() { check("feed_info_feed_lang_valid", standard.FeedLangValid(db, fileRules)) },
-			"feed_info_feed_publisher_url_valid":  func() { check("feed_info_feed_publisher_url_valid", standard.FeedPublisherUrlValid(db, fileRules)) },
-			"feed_info_feed_end_date_format":      func() { check("feed_info_feed_end_date_format", standard.FeedEndDateFormat(db, fileRules)) },
-			"feed_info_feed_start_date_format":    func() { check("feed_info_feed_start_date_format", standard.FeedStartDateFormat(db, fileRules)) },
-			"feed_info_start_end_dates_valid":       func() { check("feed_info_start_end_dates_valid", standard.FeedStartEndDateValid(db, fileRules)) },
+			"feed_info_feed_publisher_url_valid": func() { check("feed_info_feed_publisher_url_valid", standard.FeedPublisherUrlValid(db, fileRules)) },
+			"feed_info_feed_end_date_format":     func() { check("feed_info_feed_end_date_format", standard.FeedEndDateFormat(db, fileRules)) },
+			"feed_info_feed_start_date_format":   func() { check("feed_info_feed_start_date_format", standard.FeedStartDateFormat(db, fileRules)) },
+			"feed_info_start_end_dates_valid":    func() { check("feed_info_start_end_dates_valid", standard.FeedStartEndDateValid(db, fileRules)) },
 		
 		}, nil)
 		return nil
