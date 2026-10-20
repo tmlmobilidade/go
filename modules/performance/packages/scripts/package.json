@@ -14,12 +14,15 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'",
+		"lint": "eslint ./src && tsc --noEmit"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-clients-clickhouse": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
-		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/go-utils-dates": "*"
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
