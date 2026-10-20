@@ -48,7 +48,7 @@ export async function publishVehiclesPositions(agencyId: string) {
 
 	const metadataTimer = new Timer();
 
-	const vehiclesMetadata = await getVehiclesMetadataMap();
+	const vehiclesMetadata = await getVehiclesMetadataMap(agencyId);
 
 	Logger.info({ message: `Retrieved ${vehiclesMetadata.size} vehicle metadata in ${metadataTimer.get()}` });
 
@@ -58,7 +58,9 @@ export async function publishVehiclesPositions(agencyId: string) {
 
 	const queryTimer = new Timer();
 
-	const latestVehiclePositions = await labDb.queryFromFile<QueryResult>(sqlPath('hub', 'publish-vehicles/select-vehicle-positions.sql'));
+	const latestVehiclePositions = await labDb.queryFromFile<QueryResult>(sqlPath('hub', 'publish-vehicles/select-vehicle-positions.sql'), {
+		agency_id: agencyId,
+	});
 
 	const vehiclePositionsMap = new Map<string, QueryResult[]>();
 

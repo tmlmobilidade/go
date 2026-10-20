@@ -25,7 +25,7 @@ async function main() {
 	//
 	// Run all tasks sequentially
 
-	const agencies = await goDb.core.agencies.findMany({ 'services.positions_enabled': true }, { projection: { _id: 1, name: 1 } });
+	const agencies = await goDb.core.agencies.findMany({ 'open_data.services.positions_enabled': true }, { projection: { _id: 1, name: 1 } });
 
 	for (const agency of agencies) {
 		Logger.title(`Publishing realtime vehicles positions for agency ${agency._id} - ${agency.name}...`);

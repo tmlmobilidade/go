@@ -15,7 +15,7 @@ export async function publishVehiclesMetadata(agencyId: string) {
 	//
 	// Retrieve the vehicles metadata map
 
-	const vehiclesMetadataMap = await getVehiclesMetadataMap();
+	const vehiclesMetadataMap = await getVehiclesMetadataMap(agencyId);
 
 	const vehiclesMetadata = Array.from(vehiclesMetadataMap.values());
 
