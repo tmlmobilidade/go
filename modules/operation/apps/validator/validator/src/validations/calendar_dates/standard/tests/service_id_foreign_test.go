@@ -46,10 +46,9 @@ func TestServiceIdForeign(t *testing.T) {
 	})
 	for _, tc := range []struct {
 		name, setup string
-		wantError   bool
 	}{
-		{"MissingCalendar", "DROP TABLE calendar", true},
-		{"MissingTargetColumn", "DROP TABLE calendar; CREATE TABLE calendar (other TEXT); INSERT INTO calendar VALUES ('S1')", false},
+		{"MissingCalendar", "DROP TABLE calendar"},
+		{"MissingTargetColumn", "DROP TABLE calendar; CREATE TABLE calendar (other TEXT); INSERT INTO calendar VALUES ('S1')"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
@@ -65,15 +64,10 @@ func TestServiceIdForeign(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			err = checks.ServiceIdForeign(table.At(3).Context(), config)
-			if (err != nil) != tc.wantError {
-				t.Fatalf("error=%v, wantError=%v", err, tc.wantError)
+			if err := checks.ServiceIdForeign(table.At(3).Context(), config); err != nil {
+				t.Fatal(err)
 			}
-			count := 1
-			if tc.wantError {
-				count = 0
-			}
-			testutils.AssertFindings(t, id, "service_id", types.SEVERITY_ERROR, count)
+			testutils.AssertFindings(t, id, "service_id", types.SEVERITY_ERROR, 1)
 		})
 	}
 	testutils.CheckInvalid(t, id, "service_id", checks.ServiceIdForeign, map[string]any{"service_id": "missing"})

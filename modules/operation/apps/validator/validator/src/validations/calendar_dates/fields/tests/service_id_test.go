@@ -6,6 +6,6 @@ import (
 	"testing"
 )
 
-func TestServiceIdValidation(t *testing.T) {
-	testutils.CheckPresence(t, "service_id", checks.ServiceIdValidation)
+func TestServiceIdField(t *testing.T) {
+	testutils.CheckPresence(t, "service_id", checks.ServiceIdField)
 }
