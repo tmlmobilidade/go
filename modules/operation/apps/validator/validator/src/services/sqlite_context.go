@@ -50,13 +50,14 @@ type SQLiteRow struct {
 type SQLiteContext struct {
 	Row            int
 	Agency         *SQLiteRow
+	BookingRules   *SQLiteRow
 	Calendar       *SQLiteRow
 	CalendarDates  *SQLiteRow
 	FareAttributes *SQLiteRow
 	FeedInfo       *SQLiteRow
+	RouteNetworks  *SQLiteRow
 	Routes         *SQLiteRow
 	Shapes         *SQLiteRow
-	RouteNetworks  *SQLiteRow
 	StopTimes      *SQLiteRow
 	source         *SQLiteRow
 }
@@ -70,13 +71,14 @@ func (r *SQLiteRow) Context() *SQLiteContext {
 		return &SQLiteRow{Row: -1, context: ctx, name: name}
 	}
 	ctx.Agency = bind("agency")
+	ctx.BookingRules = bind("booking_rules")
 	ctx.Calendar = bind("calendar")
 	ctx.CalendarDates = bind("calendar_dates")
 	ctx.FareAttributes = bind("fare_attributes")
 	ctx.FeedInfo = bind("feed_info")
+	ctx.RouteNetworks = bind("route_networks")
 	ctx.Routes = bind("routes")
 	ctx.Shapes = bind("shapes")
-	ctx.RouteNetworks = bind("route_networks")
 	ctx.StopTimes = bind("stop_times")
 	return ctx
 }
