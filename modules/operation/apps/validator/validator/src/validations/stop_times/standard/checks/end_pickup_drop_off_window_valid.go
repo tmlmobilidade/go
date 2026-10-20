@@ -69,14 +69,6 @@ func EndPickupDropOffWindowValid(db *services.SQLiteContext, rules *types.StopTi
 	}
 
 	//
-	// 6. Check whether the field is forbidden by configuration
-
-	if value != "" && ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return nil
-	}
-
-	//
 	// 7. Require the window for locations or when the other window is defined
 
 	required := values["location_group_id"] != "" || values["location_id"] != "" || values["start_pickup_drop_off_window"] != ""

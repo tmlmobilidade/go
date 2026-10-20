@@ -70,15 +70,7 @@ func StartPickupDropOffWindowValid(db *services.SQLiteContext, rules *types.Stop
 	}
 
 	//
-	// 6. Check whether the field is forbidden by configuration
-
-	if value != "" && ctx.IsForbidden() {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden"))
-		return nil
-	}
-
-	//
-	// 7. Require the window for locations or when the other window is defined
+	// 6. Require the window for locations or when the other window is defined
 
 	required := values["location_group_id"] != "" || values["location_id"] != "" || values["end_pickup_drop_off_window"] != ""
 	if value == "" {
@@ -89,7 +81,7 @@ func StartPickupDropOffWindowValid(db *services.SQLiteContext, rules *types.Stop
 	}
 
 	//
-	// 8. Validate the time format
+	// 7. Validate the time format
 
 	if !lib.ValidateTime(value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
@@ -97,7 +89,7 @@ func StartPickupDropOffWindowValid(db *services.SQLiteContext, rules *types.Stop
 	}
 
 	//
-	// 9. Return success
+	// 8. Return success
 
 	return nil
 }
