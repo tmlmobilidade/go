@@ -486,5 +486,139 @@
 	},
 	"shapes_shape_pt_sequence_non_negative": {
 		"invalid": "Field \"shape_pt_sequence\" must be a non-negative integer"
+	},
+	"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence": {
+		"decreasing": "Fields \"arrival_time\" and \"departure_time\" must not decrease by \"stop_sequence\" for trip_id \"%s\"; previous stop_sequence \"%d\" ends at \"%s\" and current stop_sequence \"%d\" starts at \"%s\""
+	},
+	"stop_times_arrival_time_field": {
+		"informational": "The arrival_time field is informational",
+		"recommended": "The arrival_time field is recommended",
+		"required": "The arrival_time field is required"
+	},
+	"stop_times_arrival_time_valid": {
+		"invalid": "Field \"arrival_time\" value \"%s\" must be a valid time in HH:MM:SS format"
+	},
+	"stop_times_continuous_drop_off_field": {
+		"informational": "The continuous_drop_off field is informational",
+		"recommended": "The continuous_drop_off field is recommended",
+		"required": "The continuous_drop_off field is required"
+	},
+	"stop_times_continuous_drop_off_valid_gtfs_enum": {
+		"forbidden_with_window": "Field \"continuous_drop_off\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
+		"invalid": "Field \"continuous_drop_off\" must be an integer between 0 and 3"
+	},
+	"stop_times_continuous_pickup_field": {
+		"informational": "The continuous_pickup field is informational",
+		"recommended": "The continuous_pickup field is recommended",
+		"required": "The continuous_pickup field is required"
+	},
+	"stop_times_continuous_pickup_valid_gtfs_enum": {
+		"forbidden_with_window": "Field \"continuous_pickup\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
+		"invalid": "Field \"continuous_pickup\" must be an integer between 0 and 3"
+	},
+	"stop_times_departure_time_field": {
+		"informational": "The departure_time field is informational",
+		"recommended": "The departure_time field is recommended",
+		"required": "The departure_time field is required"
+	},
+	"stop_times_departure_time_valid": {
+		"invalid": "Field \"departure_time\" value \"%s\" must be a valid time in HH:MM:SS format"
+	},
+	"stop_times_drop_off_booking_rule_id_field": {
+		"informational": "The drop_off_booking_rule_id field is informational",
+		"recommended": "The drop_off_booking_rule_id field is recommended",
+		"required": "The drop_off_booking_rule_id field is required"
+	},
+	"stop_times_drop_off_booking_rule_id_foreign": {
+		"not_found": "Field \"drop_off_booking_rule_id\" value \"%s\" does not exist in booking_rules.txt"
+	},
+	"stop_times_drop_off_type_field": {
+		"informational": "The drop_off_type field is informational",
+		"recommended": "The drop_off_type field is recommended",
+		"required": "The drop_off_type field is required"
+	},
+	"stop_times_drop_off_type_valid": {
+		"invalid": "Field \"drop_off_type\" value \"%s\" must be an integer between 0 and 3"
+	},
+	"stop_times_end_pickup_drop_off_window_field": {
+		"informational": "The end_pickup_drop_off_window field is informational",
+		"recommended": "The end_pickup_drop_off_window field is recommended",
+		"required": "The end_pickup_drop_off_window field is required"
+	},
+	"stop_times_end_pickup_drop_off_window_valid": {
+		"forbidden_arrival_departure": "Field \"end_pickup_drop_off_window\" is forbidden if arrival_time or departure_time are defined",
+		"invalid": "Field \"end_pickup_drop_off_window\" value \"%s\" must be a valid time in HH:MM:SS format",
+		"required_location_group_id_start_pickup_dropoff": "Field \"end_pickup_drop_off_window\" is required if \"location_group_id\", \"location_id\" or \"start_pickup_drop_off_window\" is defined"
+	},
+	"stop_times_location_group_id_field": {
+		"forbidden_stop_location": "Field \"location_group_id\" is forbidden if stop_id or location_id are defined"
+	},
+	"stop_times_location_group_id_forbidden": {
+		"informational": "The location_group_id field is informational",
+		"recommended": "The location_group_id field is recommended",
+		"required": "The location_group_id field is required"
+	},
+	"stop_times_pickup_booking_rule_id_field": {
+		"informational": "The pickup_booking_rule_id field is informational",
+		"recommended": "The pickup_booking_rule_id field is recommended",
+		"required": "The pickup_booking_rule_id field is required"
+	},
+	"stop_times_pickup_booking_rule_id_foreign": {
+		"not_found": "Field \"pickup_booking_rule_id\" value \"%s\" does not exist in booking_rules.txt"
+	},
+	"stop_times_pickup_type_field": {
+		"informational": "The pickup_type field is informational",
+		"recommended": "The pickup_type field is recommended",
+		"required": "The pickup_type field is required"
+	},
+	"stop_times_pickup_type_valid": {
+		"invalid": "Field \"pickup_type\" value \"%s\" must be an integer between 0 and 3"
+	},
+	"stop_times_shape_dist_traveled_field": {
+		"informational": "The shape_dist_traveled field is informational",
+		"recommended": "The shape_dist_traveled field is recommended",
+		"required": "The shape_dist_traveled field is required"
+	},
+	"stop_times_shape_dist_traveled_valid": {
+		"invalid": "Field \"shape_dist_traveled\" value \"%s\" must be a non-negative number"
+	},
+	"stop_times_start_pickup_drop_off_window_field": {
+		"informational": "The start_pickup_drop_off_window field is informational",
+		"recommended": "The start_pickup_drop_off_window field is recommended",
+		"required": "The start_pickup_drop_off_window field is required"
+	},
+	"stop_times_start_pickup_drop_off_window_valid": {
+		"forbidden_arrival_departure": "Field \"start_pickup_drop_off_window\" is forbidden if arrival_time or departure_time are defined",
+		"invalid": "Field \"start_pickup_drop_off_window\" value \"%s\" must be a valid time in HH:MM:SS format",
+		"required_location_group_id_start_pickup_dropoff": "Field \"start_pickup_drop_off_window\" is required if \"location_group_id\", \"location_id\" or \"end_pickup_drop_off_window\" is defined"
+	},
+	"stop_times_stop_headsign_field": {
+		"informational": "The stop_headsign field is informational",
+		"recommended": "The stop_headsign field is recommended",
+		"required": "The stop_headsign field is required"
+	},
+	"stop_times_stop_id_field": {
+		"informational": "The stop_id field is informational",
+		"recommended": "The stop_id field is recommended",
+		"required": "The stop_id field is required"
+	},
+	"stop_times_stop_id_foreign": {
+		"not_found": "Field \"stop_id\" value \"%s\" does not exist in stops.txt"
+	},
+	"stop_times_timepoint_field": {
+		"informational": "The timepoint field is informational",
+		"recommended": "The timepoint field is recommended",
+		"required": "The timepoint field is required"
+	},
+	"stop_times_timepoint_valid": {
+		"invalid": "Field \"timepoint\" value \"%s\" must be 0 or 1"
+	},
+	"stop_times_trip_id_field": {
+		"informational": "The trip_id field is informational",
+		"recommended": "The trip_id field is recommended",
+		"required": "The trip_id field is required"
+	},
+	"stop_times_trip_id_foreign": {
+		"not_found": "Field \"trip_id\" value \"%s\" does not exist in trips.txt"
 	}
 }

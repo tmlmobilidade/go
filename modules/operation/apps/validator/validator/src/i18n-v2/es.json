@@ -486,5 +486,139 @@
 	},
 	"shapes_shape_pt_sequence_non_negative": {
 		"invalid": "El campo \"shape_pt_sequence\" debe ser un número entero no negativo"
+	},
+	"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence": {
+		"decreasing": "Los campos \"arrival_time\" y \"departure_time\" no deben disminuir según \"stop_sequence\" para trip_id \"%s\"; el stop_sequence anterior \"%d\" termina a las \"%s\" y el stop_sequence actual \"%d\" comienza a las \"%s\""
+	},
+	"stop_times_arrival_time_field": {
+		"informational": "El campo arrival_time es informativo",
+		"recommended": "El campo arrival_time es recomendado",
+		"required": "El campo arrival_time es requerido"
+	},
+	"stop_times_arrival_time_valid": {
+		"invalid": "El valor \"%s\" del campo \"arrival_time\" debe ser una hora válida en formato HH:MM:SS"
+	},
+	"stop_times_continuous_drop_off_field": {
+		"informational": "El campo continuous_drop_off es informativo",
+		"recommended": "El campo continuous_drop_off es recomendado",
+		"required": "El campo continuous_drop_off es requerido"
+	},
+	"stop_times_continuous_drop_off_valid_gtfs_enum": {
+		"forbidden_with_window": "El campo \"continuous_drop_off\" debe ser 1 o estar vacío si se define start_pickup_drop_off_window o end_pickup_drop_off_window",
+		"invalid": "El campo \"continuous_drop_off\" debe ser un número entero entre 0 y 3"
+	},
+	"stop_times_continuous_pickup_field": {
+		"informational": "El campo continuous_pickup es informativo",
+		"recommended": "El campo continuous_pickup es recomendado",
+		"required": "El campo continuous_pickup es requerido"
+	},
+	"stop_times_continuous_pickup_valid_gtfs_enum": {
+		"forbidden_with_window": "El campo \"continuous_pickup\" debe ser 1 o estar vacío si se define start_pickup_drop_off_window o end_pickup_drop_off_window",
+		"invalid": "El campo \"continuous_pickup\" debe ser un número entero entre 0 y 3"
+	},
+	"stop_times_departure_time_field": {
+		"informational": "El campo departure_time es informativo",
+		"recommended": "El campo departure_time es recomendado",
+		"required": "El campo departure_time es requerido"
+	},
+	"stop_times_departure_time_valid": {
+		"invalid": "El valor \"%s\" del campo \"departure_time\" debe ser una hora válida en formato HH:MM:SS"
+	},
+	"stop_times_drop_off_booking_rule_id_field": {
+		"informational": "El campo drop_off_booking_rule_id es informativo",
+		"recommended": "El campo drop_off_booking_rule_id es recomendado",
+		"required": "El campo drop_off_booking_rule_id es requerido"
+	},
+	"stop_times_drop_off_booking_rule_id_foreign": {
+		"not_found": "El valor \"%s\" del campo \"drop_off_booking_rule_id\" no existe en booking_rules.txt"
+	},
+	"stop_times_drop_off_type_field": {
+		"informational": "El campo drop_off_type es informativo",
+		"recommended": "El campo drop_off_type es recomendado",
+		"required": "El campo drop_off_type es requerido"
+	},
+	"stop_times_drop_off_type_valid": {
+		"invalid": "El valor \"%s\" del campo \"drop_off_type\" debe ser un número entero entre 0 y 3"
+	},
+	"stop_times_end_pickup_drop_off_window_field": {
+		"informational": "El campo end_pickup_drop_off_window es informativo",
+		"recommended": "El campo end_pickup_drop_off_window es recomendado",
+		"required": "El campo end_pickup_drop_off_window es requerido"
+	},
+	"stop_times_end_pickup_drop_off_window_valid": {
+		"forbidden_arrival_departure": "El campo \"end_pickup_drop_off_window\" está prohibido si se define arrival_time o departure_time",
+		"invalid": "El valor \"%s\" del campo \"end_pickup_drop_off_window\" debe ser una hora válida en formato HH:MM:SS",
+		"required_location_group_id_start_pickup_dropoff": "El campo \"end_pickup_drop_off_window\" es obligatorio si se define \"location_group_id\", \"location_id\" o \"start_pickup_drop_off_window\""
+	},
+	"stop_times_location_group_id_field": {
+		"forbidden_stop_location": "El campo \"location_group_id\" está prohibido si se define stop_id o location_id"
+	},
+	"stop_times_location_group_id_forbidden": {
+		"informational": "El campo location_group_id es informativo",
+		"recommended": "El campo location_group_id es recomendado",
+		"required": "El campo location_group_id es requerido"
+	},
+	"stop_times_pickup_booking_rule_id_field": {
+		"informational": "El campo pickup_booking_rule_id es informativo",
+		"recommended": "El campo pickup_booking_rule_id es recomendado",
+		"required": "El campo pickup_booking_rule_id es requerido"
+	},
+	"stop_times_pickup_booking_rule_id_foreign": {
+		"not_found": "El valor \"%s\" del campo \"pickup_booking_rule_id\" no existe en booking_rules.txt"
+	},
+	"stop_times_pickup_type_field": {
+		"informational": "El campo pickup_type es informativo",
+		"recommended": "El campo pickup_type es recomendado",
+		"required": "El campo pickup_type es requerido"
+	},
+	"stop_times_pickup_type_valid": {
+		"invalid": "El valor \"%s\" del campo \"pickup_type\" debe ser un número entero entre 0 y 3"
+	},
+	"stop_times_shape_dist_traveled_field": {
+		"informational": "El campo shape_dist_traveled es informativo",
+		"recommended": "El campo shape_dist_traveled es recomendado",
+		"required": "El campo shape_dist_traveled es requerido"
+	},
+	"stop_times_shape_dist_traveled_valid": {
+		"invalid": "El valor \"%s\" del campo \"shape_dist_traveled\" debe ser un número no negativo"
+	},
+	"stop_times_start_pickup_drop_off_window_field": {
+		"informational": "El campo start_pickup_drop_off_window es informativo",
+		"recommended": "El campo start_pickup_drop_off_window es recomendado",
+		"required": "El campo start_pickup_drop_off_window es requerido"
+	},
+	"stop_times_start_pickup_drop_off_window_valid": {
+		"forbidden_arrival_departure": "El campo \"start_pickup_drop_off_window\" está prohibido si se define arrival_time o departure_time",
+		"invalid": "El valor \"%s\" del campo \"start_pickup_drop_off_window\" debe ser una hora válida en formato HH:MM:SS",
+		"required_location_group_id_start_pickup_dropoff": "El campo \"start_pickup_drop_off_window\" es obligatorio si se define \"location_group_id\", \"location_id\" o \"end_pickup_drop_off_window\""
+	},
+	"stop_times_stop_headsign_field": {
+		"informational": "El campo stop_headsign es informativo",
+		"recommended": "El campo stop_headsign es recomendado",
+		"required": "El campo stop_headsign es requerido"
+	},
+	"stop_times_stop_id_field": {
+		"informational": "El campo stop_id es informativo",
+		"recommended": "El campo stop_id es recomendado",
+		"required": "El campo stop_id es requerido"
+	},
+	"stop_times_stop_id_foreign": {
+		"not_found": "El valor \"%s\" del campo \"stop_id\" no existe en stops.txt"
+	},
+	"stop_times_timepoint_field": {
+		"informational": "El campo timepoint es informativo",
+		"recommended": "El campo timepoint es recomendado",
+		"required": "El campo timepoint es requerido"
+	},
+	"stop_times_timepoint_valid": {
+		"invalid": "El valor \"%s\" del campo \"timepoint\" debe ser 0 o 1"
+	},
+	"stop_times_trip_id_field": {
+		"informational": "El campo trip_id es informativo",
+		"recommended": "El campo trip_id es recomendado",
+		"required": "El campo trip_id es requerido"
+	},
+	"stop_times_trip_id_foreign": {
+		"not_found": "El valor \"%s\" del campo \"trip_id\" no existe en trips.txt"
 	}
 }
