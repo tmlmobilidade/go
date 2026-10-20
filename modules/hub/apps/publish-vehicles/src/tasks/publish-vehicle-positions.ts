@@ -3,7 +3,6 @@
 import { getQualifiedPatternId, getQualifiedRouteId, getQualifiedShapeId, getQualifiedTripId, getQualifiedVehicleId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type Organization } from '@tmlmobilidade/go-types-core';
 import { type GtfsRtFeedEntity, GtfsRtFeedEntitySchema, type GtfsRtFeedMessage, GtfsRtFeedMessageSchema } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubV1ApiVehiclePosition, HubV1ApiVehiclePositionSchema } from '@tmlmobilidade/go-types-hub';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
@@ -39,12 +38,10 @@ type QueryResult =
 
 /* * */
 
-export async function publishVehiclesPositions(organizations: Organization[] = []) {
+export async function publishVehiclesPositions(agencyId: string) {
 	//
 
 	Logger.title('Publishing latest vehicles positions...');
-
-	const timer = new Timer();
 
 	//
 	// Retrieve active plans from local cache
@@ -222,20 +219,15 @@ export async function publishVehiclesPositions(organizations: Organization[] = [
 	await cacheDb.set('hub:v1:realtime:vehicles:positions:gtfs', JSON.stringify(validatedGtfsRtFeedMessage), 600);
 	Logger.success(`Finished publishing latest vehicles positions GTFS-RT (${saveTimer.get()})`);
 
-	for (const organization of organizations) {
-		const agencyIds = new Set(organization.agency_ids);
-		const organizationPositions = hubVehiclePositionsJson.filter(position => agencyIds.has(position.agency_id));
-		const positionIds = new Set(organizationPositions.map(position => position._id));
-		const organizationGtfsRtFeed: GtfsRtFeedMessage = {
-			...validatedGtfsRtFeedMessage,
-			entity: hubVehiclePositionsGtfsRt.filter(entity => positionIds.has(entity.id)),
-		};
+	const agencyPositions = hubVehiclePositionsJson.filter(position => position.agency_id === agencyId);
+	const positionIds = new Set(agencyPositions.map(position => position._id));
+	const agencyGtfsRtFeed: GtfsRtFeedMessage = {
+		...validatedGtfsRtFeedMessage,
+		entity: hubVehiclePositionsGtfsRt.filter(entity => positionIds.has(entity.id)),
+	};
 
-		await cacheDb.setNew(`hub:v1:${organization._id}:realtime:vehicles:positions:json`, organizationPositions, 600);
-		await cacheDb.set(`hub:v1:${organization._id}:realtime:vehicles:positions:gtfs`, JSON.stringify(organizationGtfsRtFeed), 600);
-	}
-
-	Logger.info({ message: `Run complete in ${timer.get()}` });
+	await cacheDb.setNew(`hub:v1:${agencyId}:realtime:vehicles:positions:json`, agencyPositions, 600);
+	await cacheDb.set(`hub:v1:${agencyId}:realtime:vehicles:positions:gtfs`, JSON.stringify(agencyGtfsRtFeed), 600);
 
 	//
 };

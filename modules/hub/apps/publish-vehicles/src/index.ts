@@ -9,7 +9,7 @@ import { publishVehiclesMetadata } from './tasks/publish-vehicles-metadata.js';
 
 /* * */
 
-let ITERATION = 0;
+const ITERATION = 0;
 
 async function main() {
 	//
@@ -25,14 +25,16 @@ async function main() {
 	//
 	// Run all tasks sequentially
 
-	const organizationsCollection = await goDb.core.organizations.getCollection();
-	const organizations = await organizationsCollection.find({ 'agency_ids': { $exists: true }, 'open_data.realtime.vehicles': true }).toArray();
+	const agencies = await goDb.core.agencies.findMany({ 'services.positions_enabled': true }, { projection: { _id: 1, name: 1 } });
 
-	await publishVehiclesPositions(organizations);
+	for (const agency of agencies) {
+		Logger.title(`Publishing realtime vehicles positions for agency ${agency._id} - ${agency.name}...`);
 
-	if (ITERATION % 100 === 0) await publishVehiclesMetadata(organizations); // Every 100 iterations * 1s + execution time
+		await publishVehiclesPositions(agency._id);
+		if (ITERATION % 100 === 0) await publishVehiclesMetadata(agency._id);
 
-	ITERATION++;
+		Logger.success({ message: `Finished publishing realtime vehicles positions for agency ${agency._id} - ${agency.name} (${globalTimer.get()})` });
+	}
 
 	//
 	// Log the total time taken for all tasks
