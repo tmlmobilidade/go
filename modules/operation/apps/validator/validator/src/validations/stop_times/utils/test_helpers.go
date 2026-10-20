@@ -16,7 +16,7 @@ type Check func(*services.SQLiteContext, *types.StopTimesRules) error
 
 // Fixture uses real SQLite reads and the same severity overrides as the runner.
 // Tests using the global message service must not run in parallel.
-func Fixture(t *testing.T, values map[string]any, config *types.StopTimesRules) (*sql.DB, *services.SQLiteContext) {
+func Fixture(t *testing.T, values map[string]any, config *types.StopTimesRules, setup ...func(*sql.DB)) (*sql.DB, *services.SQLiteContext) {
 	t.Helper()
 	db, err := sql.Open("sqlite", filepath.Join(t.TempDir(), "stop_times.db"))
 	if err != nil {
@@ -39,6 +39,9 @@ func Fixture(t *testing.T, values map[string]any, config *types.StopTimesRules) 
 		if _, err := db.Exec(fmt.Sprintf("UPDATE stop_times SET %q = ?", field), values[field]); err != nil {
 			t.Fatal(err)
 		}
+	}
+	for _, prepare := range setup {
+		prepare(db)
 	}
 	tables, err := services.PrepareSQLiteTables(db)
 	if err != nil {
@@ -69,6 +72,12 @@ func AssertFindings(t *testing.T, id, field string, severity types.Severity, cou
 	if got := services.AppMessageService.RuleIssueCount(id); got != uint64(count) {
 		t.Fatalf("%s: findings = %d, want %d; messages: %+v", id, got, count, services.AppMessageService.GetSummary().AllMessages())
 	}
+	if severity == types.SEVERITY_INFO {
+		summary := services.AppMessageService.GetSummary()
+		if summary.TotalErrors != 0 || summary.TotalWarnings != 0 {
+			t.Fatal("informational findings changed error/warning totals")
+		}
+	}
 	messages := services.AppMessageService.GetSummary().AllMessages()
 	if count == 0 && len(messages) != 0 {
 		t.Fatalf("unexpected findings: %+v", messages)
@@ -86,4 +95,64 @@ func AssertFindings(t *testing.T, id, field string, severity types.Severity, cou
 			}
 		}
 	}
+}
+
+// Case describes an observable result, including checks that return parse errors.
+type Case struct {
+	Name      string
+	Values    map[string]any
+	Count     int
+	WantError bool
+}
+
+func CheckCases(t *testing.T, id, field string, check Check, cases []Case, setup ...func(*sql.DB)) {
+	t.Helper()
+	for _, tc := range cases {
+		for _, severity := range []types.Severity{types.SEVERITY_ERROR, types.SEVERITY_WARNING, types.SEVERITY_INFO, types.SEVERITY_IGNORE} {
+			t.Run(tc.Name+"/"+string(severity), func(t *testing.T) {
+				config := Config(id, severity)
+				_, db := Fixture(t, tc.Values, config, setup...)
+				err := check(db, config)
+				if (err != nil) != tc.WantError {
+					t.Fatalf("error = %v, want error %v", err, tc.WantError)
+				}
+				count := tc.Count
+				if severity == types.SEVERITY_IGNORE {
+					count = 0
+				}
+				AssertFindings(t, id, field, severity, count)
+			})
+		}
+	}
+	for name, config := range map[string]*types.StopTimesRules{"NilRules": nil, "MissingRule": {}} {
+		t.Run(name, func(t *testing.T) {
+			_, db := Fixture(t, map[string]any{field: "0"}, config, setup...)
+			if err := check(db, config); err != nil {
+				t.Fatal(err)
+			}
+			AssertFindings(t, id, field, types.SEVERITY_IGNORE, 0)
+		})
+	}
+	t.Run("ReadFailure", func(t *testing.T) {
+		config := Config(id, types.SEVERITY_ERROR)
+		connection, db := Fixture(t, map[string]any{field: "0"}, config, setup...)
+		if err := connection.Close(); err != nil {
+			t.Fatal(err)
+		}
+		if err := check(db, config); err == nil {
+			t.Fatal("SQLite error was swallowed")
+		}
+		AssertFindings(t, id, field, types.SEVERITY_ERROR, 0)
+	})
+}
+
+func CheckPresence(t *testing.T, field string, check Check) {
+	t.Helper()
+	CheckCases(t, "stop_times_"+field+"_field", field, check, []Case{
+		{Name: "MissingColumn", Values: map[string]any{}, Count: 1},
+		{Name: "Null", Values: map[string]any{field: nil}, Count: 1},
+		{Name: "Empty", Values: map[string]any{field: ""}, Count: 1},
+		{Name: "Present", Values: map[string]any{field: "value"}},
+		{Name: "Zero", Values: map[string]any{field: "0"}},
+	})
 }
