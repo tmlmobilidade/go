@@ -1,8 +1,14 @@
 /* * */
 
-import { EventsController } from '@/endpoints/events/events.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { createEventHandler } from './handlers/create-event.js';
+import { deleteEventHandler } from './handlers/delete-event.js';
+import { getEventHandler } from './handlers/get-event.js';
+import { listEventsHandler } from './handlers/list-events.js';
+import { lockEventHandler } from './handlers/lock-event.js';
+import { updateEventHandler } from './handlers/update-event.js';
 
 /* * */
 
@@ -19,37 +25,37 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.events.scope, [PermissionCatalog.all.events.actions.read]) },
-			EventsController.getAll,
+			listEventsHandler,
 		);
 
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.events.scope, [PermissionCatalog.all.events.actions.read]) },
-			EventsController.getById,
+			getEventHandler,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.events.scope, [PermissionCatalog.all.events.actions.create]) },
-			EventsController.create,
+			createEventHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.events.scope, [PermissionCatalog.all.events.actions.update]) },
-			EventsController.update,
+			updateEventHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.events.scope, [PermissionCatalog.all.events.actions.lock]) },
-			EventsController.lock,
+			lockEventHandler,
 		);
 
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.events.scope, [PermissionCatalog.all.events.actions.delete]) },
-			EventsController.delete,
+			deleteEventHandler,
 		);
 
 		next();

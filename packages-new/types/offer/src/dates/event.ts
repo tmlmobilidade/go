@@ -19,8 +19,8 @@ export const EventSchema = BaseDocumentSchema.extend({
 	title: z.string().min(1),
 });
 
-export const CreateEventSchema = EventSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateEventSchema = CreateEventSchema.omit({ created_by: true }).partial();
+export const CreateEventSchema = EventSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
+export const UpdateEventSchema = CreateEventSchema.partial();
 
 /* * */
 

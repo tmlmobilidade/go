@@ -1,8 +1,15 @@
 /* * */
 
-import { YearPeriodsController } from '@/endpoints/year-periods/year-periods.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { checkYearPeriodsConflictsHandler } from './handlers/check-conflicts.js';
+import { createYearPeriodHandler } from './handlers/create-year-period.js';
+import { deleteYearPeriodHandler } from './handlers/delete-year-period.js';
+import { getYearPeriodHandler } from './handlers/get-year-period.js';
+import { listYearPeriodsHandler } from './handlers/list-year-periods.js';
+import { lockYearPeriodHandler } from './handlers/lock-year-period.js';
+import { updateYearPeriodHandler } from './handlers/update-year-period.js';
 
 /* * */
 
@@ -19,43 +26,43 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.read]) },
-			YearPeriodsController.getAll,
+			listYearPeriodsHandler,
 		);
 
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.read]) },
-			YearPeriodsController.getById,
+			getYearPeriodHandler,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.create]) },
-			YearPeriodsController.create,
+			createYearPeriodHandler,
 		);
 
 		instance.post(
 			'/check-conflicts',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.read]) },
-			YearPeriodsController.checkConflicts,
+			checkYearPeriodsConflictsHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.update]) },
-			YearPeriodsController.update,
+			updateYearPeriodHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.lock]) },
-			YearPeriodsController.lock,
+			lockYearPeriodHandler,
 		);
 
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.delete]) },
-			YearPeriodsController.delete,
+			deleteYearPeriodHandler,
 		);
 
 		next();
