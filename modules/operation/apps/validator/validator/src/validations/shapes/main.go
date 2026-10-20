@@ -122,7 +122,9 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"shape_dist_traveled_non_decreasing_with_sequence": func() {
 				check(db, "shape_dist_traveled_non_decreasing_with_sequence", shapes_standard.ShapeDistTraveledNonDecreasing(db, shapesRules))
 			},
-			"shape_sequence_position_mismatches_cumulative_traveled_distance": func() { validations.ShapePointsCoordinatesConsistentValidation(points, shapesRules) },
+			"shape_sequence_position_mismatches_cumulative_traveled_distance": func() {
+				check(db, "shape_sequence_position_mismatches_cumulative_traveled_distance", shapes_custom.ShapePointsCoordinatesConsistent(db, shapesRules))
+			},
 			"shape_dist_traveled_delta_mismatches_haversine_segment":          func() { validations.ShapePointsCoordinatesDistancesValidation(points, shapesRules) },
 			"shapes_shape_dist_traveled_block_valid": func() {
 				check(db, "shapes_shape_dist_traveled_block_valid", shapes_custom.ShapeDistancesValid(db, shapesRules))

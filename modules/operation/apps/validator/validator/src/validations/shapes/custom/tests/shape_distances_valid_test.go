@@ -24,15 +24,19 @@ func TestShapeDistancesValid(t *testing.T) {
 		count      int
 	}{
 		{name: "CorrectDistanceIncludesFirstSegment", severity: types.SEVERITY_ERROR},
-		{name: "AccumulatedDrift", drift: 10, severity: types.SEVERITY_ERROR, count: 1},
-		{name: "BadSegmentSkipsBlock", drift: 30, severity: types.SEVERITY_ERROR},
-		{name: "MissingFinalDistance", drift: 10, missingEnd: true, severity: types.SEVERITY_ERROR},
-		{name: "Warning", drift: 10, severity: types.SEVERITY_WARNING, count: 1},
-		{name: "Ignore", drift: 10, severity: types.SEVERITY_IGNORE},
-		{name: "MissingSeverity", drift: 10},
-		{name: "CustomTolerance", drift: 10, tolerance: toleranceValue("50"), severity: types.SEVERITY_ERROR},
-		{name: "InvalidToleranceDefaults", drift: 10, tolerance: toleranceValue("bad"), severity: types.SEVERITY_ERROR, count: 1},
-		{name: "NonFiniteToleranceDefaults", drift: 10, tolerance: toleranceValue("NaN"), severity: types.SEVERITY_ERROR, count: 1},
+		{name: "WithinDefaultTolerance", drift: 50, severity: types.SEVERITY_ERROR},
+		// Three 100 m segment differences each pass the 200 m default,
+		// but their accumulated 300 m difference must fail the block check.
+		{name: "AccumulatedDrift", drift: 100, severity: types.SEVERITY_ERROR, count: 1},
+		{name: "BadSegmentSkipsBlock", drift: 300, severity: types.SEVERITY_ERROR},
+		{name: "MissingFinalDistance", drift: 100, missingEnd: true, severity: types.SEVERITY_ERROR},
+		{name: "Warning", drift: 100, severity: types.SEVERITY_WARNING, count: 1},
+		{name: "Ignore", drift: 100, severity: types.SEVERITY_IGNORE},
+		{name: "MissingSeverity", drift: 100},
+		{name: "CustomTolerance", drift: 100, tolerance: toleranceValue("500"), severity: types.SEVERITY_ERROR},
+		{name: "LowerCustomTolerance", drift: 10, tolerance: toleranceValue("20"), severity: types.SEVERITY_ERROR, count: 1},
+		{name: "InvalidToleranceDefaults", drift: 100, tolerance: toleranceValue("bad"), severity: types.SEVERITY_ERROR, count: 1},
+		{name: "NonFiniteToleranceDefaults", drift: 100, tolerance: toleranceValue("NaN"), severity: types.SEVERITY_ERROR, count: 1},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			connection, err := sql.Open("sqlite", filepath.Join(t.TempDir(), "shapes.db"))
