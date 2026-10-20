@@ -49,7 +49,6 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 
 	// Create progress tracker
 	tracker := lib.CreateProgressTracker(gtfs, "shapes", config.ProgressThresholdLarge)
-	var allShapes []types.Shape
 
 	var shapesRules *types.ShapesRules
 	if rules != nil {
@@ -96,8 +95,6 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			groupStatuses[*shape.ShapeId] = services.MergeRuleStatuses(groupStatuses[*shape.ShapeId], statuses)
 		}
 
-		// Add shape to all shapes
-		allShapes = append(allShapes, shape)
 		return nil
 	})
 
@@ -107,14 +104,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 		lib.AppLogger.Info(fmt.Sprintf("Completed shapes.txt validation: %d rows processed", tracker.GetProcessedCount()))
 	}
 
-	shapeGroups := map[string][]types.Shape{}
-	for _, shape := range allShapes {
-		if shape.ShapeId != nil {
-			shapeGroups[*shape.ShapeId] = append(shapeGroups[*shape.ShapeId], shape)
-		}
-	}
 	for shapeID, db := range sequenceRows {
-		points := shapeGroups[shapeID]
 		runner.Run(services.RuleActions{
 			"shape_pt_sequence_strictly_increasing": func() {
 				check(db, "shape_pt_sequence_strictly_increasing", shapes_standard.ShapePtSequenceStrictlyIncreasing(db, shapesRules))
@@ -125,7 +115,9 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"shape_sequence_position_mismatches_cumulative_traveled_distance": func() {
 				check(db, "shape_sequence_position_mismatches_cumulative_traveled_distance", shapes_custom.ShapePointsCoordinatesConsistent(db, shapesRules))
 			},
-			"shape_dist_traveled_delta_mismatches_haversine_segment":          func() { validations.ShapePointsCoordinatesDistancesValidation(points, shapesRules) },
+			"shape_dist_traveled_delta_mismatches_haversine_segment": func() {
+				check(db, "shape_dist_traveled_delta_mismatches_haversine_segment", shapes_custom.ShapePointsCoordinatesDistances(db, shapesRules))
+			},
 			"shapes_shape_dist_traveled_block_valid": func() {
 				check(db, "shapes_shape_dist_traveled_block_valid", shapes_custom.ShapeDistancesValid(db, shapesRules))
 			},
