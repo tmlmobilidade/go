@@ -7,7 +7,8 @@ import (
 	"main/services"
 	"main/types"
 	registry "main/validations"
-	validations "main/validations/feed_info/validations"
+	fields "main/validations/feed_info/fields/checks"
+	standard "main/validations/feed_info/standard/checks"
 )
 
 func init() {
@@ -32,16 +33,16 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 
 
 	//
-	// Select the prepared agency table
+	// Select the prepared GTFS tables
 
-	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
+	tables, err := services.ValidationTables(gtfs.DB())
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error preparing SQLite tables: %v", err))
 		return
 	}
 
 	//
-	// Iterate over feed info table
+	// Iterate over the feed_info table
 
 	err = tables.ForEachRow("feed_info", func(row *services.SQLiteRow) error {
 		db := row.Context()
@@ -56,28 +57,27 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 		runner.Run(services.RuleActions{
 			//
 			// Fields
-			"default_lang_field":        func() { check("default_lang_field", feed_info_fields.DefaultLangField(db, fileRules)) },
-			"feed_lang_field":           func() { check("feed_lang_field", feed_info_fields.FeedLangField(db, fileRules)) },
-			"feed_publisher_name_field": func() { check("feed_publisher_name_field", feed_info_fields.FeedPublisherNameField(db, fileRules)) },
-			"feed_publisher_url_field":  func() { check("feed_publisher_url_field", feed_info_fields.FeedPublisherUrlField(db, fileRules)) },
-			"feed_contact_email_field":  func() { check("feed_contact_email_field", feed_info_fields.FeedContactEmailField(db, fileRules)) },
-			"feed_contact_url_field":    func() { check("feed_contact_url_field", feed_info_fields.FeedContactUrlField(db, fileRules)) },
-			"feed_end_date_field":       func() { check("feed_end_date_field", feed_info_fields.FeedEndDateField(db, fileRules)) },
-			"feed_start_date_field":     func() { check("feed_start_date_field", feed_info_fields.FeedStartDateField(db, fileRules)) },
-			"feed_version_field":        func() { check("feed_version_field", feed_info_fields.FeedVersionField(db, fileRules)) },
+			"default_lang_field":        func() { check("default_lang_field", fields.DefaultLangField(db, fileRules)) },
+			"feed_lang_field":           func() { check("feed_lang_field", fields.FeedLangField(db, fileRules)) },
+			"feed_publisher_name_field": func() { check("feed_publisher_name_field", fields.FeedPublisherNameField(db, fileRules)) },
+			"feed_publisher_url_field":  func() { check("feed_publisher_url_field", fields.FeedPublisherUrlField(db, fileRules)) },
+			"feed_contact_email_field":  func() { check("feed_contact_email_field", fields.FeedContactEmailField(db, fileRules)) },
+			"feed_contact_url_field":    func() { check("feed_contact_url_field", fields.FeedContactUrlField(db, fileRules)) },
+			"feed_end_date_field":       func() { check("feed_end_date_field", fields.FeedEndDateField(db, fileRules)) },
+			"feed_start_date_field":     func() { check("feed_start_date_field", fields.FeedStartDateField(db, fileRules)) },
+			"feed_version_field":        func() { check("feed_version_field", fields.FeedVersionField(db, fileRules)) },
 
 			//
 			// Standard
-			"default_lang_valid":        func() { check("default_lang_valid", feed_info_standard.DefaultLangValid(db, fileRules)) },
-			"feed_lang_valid":           func() { check("feed_lang_valid", feed_info_standard.FeedLangValid(db, fileRules)) },
-			"feed_publisher_name_valid": func() { check("feed_publisher_name_valid", feed_info_standard.FeedPublisherNameValid(db, fileRules)) },
-			"feed_publisher_url_valid":  func() { check("feed_publisher_url_valid", feed_info_standard.FeedPublisherUrlValid(db, fileRules)) },
-			"feed_contact_email_valid":  func() { check("feed_contact_email_valid", feed_info_standard.FeedContactEmailValid(db, fileRules)) },
-			"feed_contact_url_valid":    func() { check("feed_contact_url_valid", feed_info_standard.FeedContactUrlValid(db, fileRules)) },
-			"feed_end_date_valid":       func() { check("feed_end_date_valid", feed_info_standard.FeedEndDateValid(db, fileRules)) },
-			"feed_start_date_valid":     func() { check("feed_start_date_valid", feed_info_standard.FeedStartDateValid(db, fileRules)) },
-			"feed_version_valid":        func() { check("feed_version_valid", feed_info_standard.FeedVersionValid(db, fileRules)) },
-			
+			"feed_info_default_lang_valid":       func() { check("feed_info_default_lang_valid", standard.DefaultLangValid(db, fileRules)) },
+			"feed_info_feed_contact_email_valid": func() { check("feed_info_feed_contact_email_valid", standard.FeedContactEmailValid(db, fileRules)) },
+			"feed_info_feed_contact_url_valid":   func() { check("feed_info_feed_contact_url_valid", standard.FeedContactUrlValid(db, fileRules)) },
+			"feed_info_feed_lang_valid":          func() { check("feed_info_feed_lang_valid", standard.FeedLangValid(db, fileRules)) },
+			"feed_info_feed_publisher_url_valid":  func() { check("feed_info_feed_publisher_url_valid", standard.FeedPublisherUrlValid(db, fileRules)) },
+			"feed_info_feed_end_date_format":      func() { check("feed_info_feed_end_date_format", standard.FeedEndDateFormat(db, fileRules)) },
+			"feed_info_feed_start_date_format":    func() { check("feed_info_feed_start_date_format", standard.FeedStartDateFormat(db, fileRules)) },
+			"feed_info_start_end_dates_valid":       func() { check("feed_info_start_end_dates_valid", standard.FeedStartEndDateValid(db, fileRules)) },
+		
 		}, nil)
 		return nil
 	})
