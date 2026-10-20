@@ -33,7 +33,7 @@ export function LandingModules() {
 				>
 					<LandingVideoModalButton
 						thumbnailSrc="/core/assets/landing/modules/hub-video-thumbnail.jpg"
-						videoSrc="https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4"
+						videoSrc="https://storage.carrismetropolitana.pt/static/go/hub.mp4"
 					/>
 				</LandingInfoBlock>
 			</Section>
@@ -47,7 +47,7 @@ export function LandingModules() {
 						description: t('landing:LandingModules.infrastructure.stops.description'),
 						subtitle: t('landing:LandingModules.infrastructure.stops.subtitle'),
 						thumbnailSrc: '/core/assets/landing/modules/stops-video-thumbnail.jpg',
-						videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+						videoSrc: 'https://storage.carrismetropolitana.pt/static/go/stops.mp4',
 					}]}
 				/>
 
@@ -58,7 +58,7 @@ export function LandingModules() {
 						description: t('landing:LandingModules.offer.offer.description'),
 						subtitle: t('landing:LandingModules.offer.offer.subtitle'),
 						thumbnailSrc: '/core/assets/landing/modules/offer-video-thumbnail.jpg',
-						videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+						videoSrc: 'https://storage.carrismetropolitana.pt/static/go/offer.mp4',
 					}]}
 				/>
 
@@ -70,19 +70,19 @@ export function LandingModules() {
 							description: t('landing:LandingModules.operation.plans.description'),
 							subtitle: t('landing:LandingModules.operation.plans.subtitle'),
 							thumbnailSrc: '/core/assets/landing/modules/plans-video-thumbnail.jpg',
-							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+							videoSrc: 'https://storage.carrismetropolitana.pt/static/go/plans.mp4',
 						},
 						{
 							description: t('landing:LandingModules.operation.rides.description'),
 							subtitle: t('landing:LandingModules.operation.rides.subtitle'),
 							thumbnailSrc: '/core/assets/landing/modules/rides-video-thumbnail.jpg',
-							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+							videoSrc: 'https://storage.carrismetropolitana.pt/static/go/rides.mp4',
 						},
 						{
 							description: t('landing:LandingModules.operation.alerts.description'),
 							subtitle: t('landing:LandingModules.operation.alerts.subtitle'),
 							thumbnailSrc: '/core/assets/landing/modules/alerts-video-thumbnail.jpg',
-							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+							videoSrc: 'https://storage.carrismetropolitana.pt/static/go/alerts.mp4',
 						},
 					]}
 				/>
@@ -95,7 +95,7 @@ export function LandingModules() {
 							description: t('landing:LandingModules.performance.performance.description'),
 							subtitle: t('landing:LandingModules.performance.performance.subtitle'),
 							thumbnailSrc: '/core/assets/landing/modules/performance-video-thumbnail.jpg',
-							videoSrc: 'https://storage.carrismetropolitana.pt/static/app/assets/widgets/app-widget-lines.mp4',
+							videoSrc: 'https://storage.carrismetropolitana.pt/static/go/performance.mp4',
 						}]}
 					/>
 					<div className={styles.meetingsBlock}>

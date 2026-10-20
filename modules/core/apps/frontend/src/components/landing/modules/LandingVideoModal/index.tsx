@@ -12,6 +12,8 @@ const MODAL_ID = 'extractions-list-modal';
 
 export const openLandingVideoModal = (videoSrc: string) => {
 	openModal({
+
+		centered: true,
 		children: (
 			<LandingVideoModalContent videoSrc={videoSrc} />
 		),
@@ -19,7 +21,10 @@ export const openLandingVideoModal = (videoSrc: string) => {
 		closeOnEscape: true,
 		modalId: MODAL_ID,
 		padding: 0,
-		size: '75%',
+		size: 'auto',
+		styles: {
+			content: { backgroundColor: 'transparent' },
+		},
 		withCloseButton: false,
 	});
 };
