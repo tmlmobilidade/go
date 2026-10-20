@@ -1,9 +1,8 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateTypologyDto, type Typology } from '@tmlmobilidade/go-types-offer';
+import { type CreateTypologyDto, CreateTypologySchema, type Typology } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -15,6 +14,18 @@ export async function createTypologyHandler(request: FastifyRequest<{ Body: Crea
 	//
 
 	//
+	// Validate the client contract before using the request data.
+
+	const validatedTypology = CreateTypologySchema.safeParse(request.body);
+
+	if (!validatedTypology.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedTypology.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
 	// Get the resource permissions for typologies for the current user.
 
 	const userTypologyPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.typologies.scope, PermissionCatalog.all.typologies.actions.create);
@@ -23,7 +34,10 @@ export async function createTypologyHandler(request: FastifyRequest<{ Body: Crea
 	// If no permission found, deny access
 
 	if (!userTypologyPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create typologies');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create typologies',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -34,31 +48,34 @@ export async function createTypologyHandler(request: FastifyRequest<{ Body: Crea
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.typologies.scope,
-		value: request.body.agency_ids,
+		value: validatedTypology.data.agency_ids,
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create typologies for these agencies. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create typologies for these agencies. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
 	// Create the new typology
 
 	const newTypology = await goDb.offer.typologies.insertOne({
-		color: request.body.color ?? '#000000',
-		created_by: request.me._id,
-		default_onboard_fare_ids: request.body.default_onboard_fare_ids ?? [],
-		default_prepaid_fare_id: request.body.default_prepaid_fare_id ?? null,
+		color: validatedTypology.data.color ?? '#000000',
+		default_onboard_fare_ids: validatedTypology.data.default_onboard_fare_ids ?? [],
+		default_prepaid_fare_id: validatedTypology.data.default_prepaid_fare_id ?? null,
 		is_locked: false,
-		text_color: request.body.text_color ?? '#FFFFFF',
+		text_color: validatedTypology.data.text_color ?? '#FFFFFF',
+		...validatedTypology.data,
+		created_by: request.me._id,
 		updated_by: request.me._id,
-		...request.body,
 	});
 
 	//
 	// Send the response
 
-	reply.send({ data: newTypology, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, newTypology);
 
 	//
 }

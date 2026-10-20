@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Typology } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -20,7 +19,10 @@ export async function lockTypologyHandler(request: FastifyRequest<{ Params: { id
 	const typologyData = await goDb.offer.typologies.findById(request.params.id);
 
 	if (!typologyData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Typology not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -32,7 +34,10 @@ export async function lockTypologyHandler(request: FastifyRequest<{ Params: { id
 	// If no permission found, deny access
 
 	if (!userTypologyPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock typologies');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to lock/unlock typologies',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,17 +52,23 @@ export async function lockTypologyHandler(request: FastifyRequest<{ Params: { id
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock typology. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: toggle lock typology. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	// If authorized, toggle the lock status of the typology
-	await goDb.offer.typologies.updateOne({ _id: request.params.id }, { is_locked: !typologyData.is_locked });
+	await goDb.offer.typologies.updateOne({ _id: request.params.id }, { is_locked: !typologyData.is_locked, updated_by: request.me._id });
 	const foundTypology = await goDb.offer.typologies.findById(request.params.id);
 	if (!foundTypology) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Typology not found',
+			status_code: '404',
+		});
 	}
 
-	return reply.send({ data: foundTypology, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, foundTypology);
 
 	//
 }

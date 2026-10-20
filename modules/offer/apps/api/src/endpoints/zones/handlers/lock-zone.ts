@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Zone } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -20,7 +19,10 @@ export async function lockZoneHandler(request: FastifyRequest<{ Params: { id: st
 	const zoneData = await goDb.offer.zones.findById(request.params.id);
 
 	if (!zoneData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Zone not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -32,7 +34,10 @@ export async function lockZoneHandler(request: FastifyRequest<{ Params: { id: st
 	// If no permission found, deny access
 
 	if (!userZonePermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock zones');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to lock/unlock zones',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,17 +52,23 @@ export async function lockZoneHandler(request: FastifyRequest<{ Params: { id: st
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock zone. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: toggle lock zone. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	// If authorized, toggle the lock status of the zone
-	await goDb.offer.zones.updateOne({ _id: request.params.id }, { is_locked: !zoneData.is_locked });
+	await goDb.offer.zones.updateOne({ _id: request.params.id }, { is_locked: !zoneData.is_locked, updated_by: request.me._id });
 	const foundZone = await goDb.offer.zones.findById(request.params.id);
 	if (!foundZone) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Zone not found',
+			status_code: '404',
+		});
 	}
 
-	return reply.send({ data: foundZone, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, foundZone);
 
 	//
 }

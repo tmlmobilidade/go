@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Typology } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -22,7 +21,10 @@ export async function getTypologyHandler(request: FastifyRequest<{ Params: { id:
 	const typologyData = await goDb.offer.typologies.findById(request.params.id);
 
 	if (!typologyData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Typology not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -37,17 +39,16 @@ export async function getTypologyHandler(request: FastifyRequest<{ Params: { id:
 	const canReadTypology = agencyAccess.allowAll || typologyData.agency_ids.some(agencyId => agencyAccess.values.includes(agencyId));
 
 	if (!canReadTypology) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this typology');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read this typology',
+			status_code: '403',
+		});
 	}
 
 	//
 	// Fetch the typology data
 
-	return reply.send({
-		data: typologyData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, typologyData);
 
 	//
 }

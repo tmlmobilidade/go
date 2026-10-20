@@ -1,9 +1,8 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type UpdateZoneDto, type Zone } from '@tmlmobilidade/go-types-offer';
+import { type UpdateZoneDto, UpdateZoneSchema, type Zone } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -15,12 +14,27 @@ export async function updateZoneHandler(request: FastifyRequest<{ Body: UpdateZo
 	//
 
 	//
+	// Validate the client contract before using the request data.
+
+	const validatedZone = UpdateZoneSchema.safeParse(request.body);
+
+	if (!validatedZone.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedZone.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
 	// Get the Zone from the database
 
 	const zoneData = await goDb.offer.zones.findById(request.params.id);
 
 	if (!zoneData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Zone not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -32,7 +46,10 @@ export async function updateZoneHandler(request: FastifyRequest<{ Body: UpdateZo
 	// If no permission found, deny access
 
 	if (!userZonePermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update zones');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update zones',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,22 +64,40 @@ export async function updateZoneHandler(request: FastifyRequest<{ Body: UpdateZo
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this zone. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update this zone. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
-	// Update the zone
+	// Check permission for every newly assigned agency as well.
 
-	const updatedZone = await goDb.offer.zones.updateById(zoneData._id, request.body);
+	if (validatedZone.data.agency_ids && !PermissionCatalog.hasPermissionResourceAll({
+		action: PermissionCatalog.all.zones.actions.update,
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.zones.scope,
+		value: validatedZone.data.agency_ids,
+	})) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update zones for these agencies.',
+			status_code: '403',
+		});
+	}
+
+	//
+	// Update the zone with parsed client fields and the authenticated updater.
+
+	const updatedZone = await goDb.offer.zones.updateById(zoneData._id, {
+		...validatedZone.data,
+		updated_by: request.me._id,
+	});
 
 	//
 	// Send the updated zone data as the response
 
-	reply.send({
-		data: updatedZone,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, updatedZone);
 
 	//
 }

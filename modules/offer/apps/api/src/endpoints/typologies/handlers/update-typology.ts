@@ -1,9 +1,8 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Typology, type UpdateTypologyDto } from '@tmlmobilidade/go-types-offer';
+import { type Typology, type UpdateTypologyDto, UpdateTypologySchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -15,12 +14,27 @@ export async function updateTypologyHandler(request: FastifyRequest<{ Body: Upda
 	//
 
 	//
+	// Validate the client contract before using the request data.
+
+	const validatedTypology = UpdateTypologySchema.safeParse(request.body);
+
+	if (!validatedTypology.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedTypology.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
 	// Get the Typology from the database
 
 	const typologyData = await goDb.offer.typologies.findById(request.params.id);
 
 	if (!typologyData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Typology not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -32,7 +46,10 @@ export async function updateTypologyHandler(request: FastifyRequest<{ Body: Upda
 	// If no permission found, deny access
 
 	if (!userTypologyPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update typologies');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update typologies',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,22 +64,40 @@ export async function updateTypologyHandler(request: FastifyRequest<{ Body: Upda
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this typology. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update this typology. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
-	// Update the typology
+	// Check permission for every newly assigned agency as well.
 
-	const updatedTypology = await goDb.offer.typologies.updateById(typologyData._id, request.body);
+	if (validatedTypology.data.agency_ids && !PermissionCatalog.hasPermissionResourceAll({
+		action: PermissionCatalog.all.typologies.actions.update,
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.typologies.scope,
+		value: validatedTypology.data.agency_ids,
+	})) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update typologies for these agencies.',
+			status_code: '403',
+		});
+	}
+
+	//
+	// Update the typology with parsed client fields and the authenticated updater.
+
+	const updatedTypology = await goDb.offer.typologies.updateById(typologyData._id, {
+		...validatedTypology.data,
+		updated_by: request.me._id,
+	});
 
 	//
 	// Send the updated typology data as the response
 
-	reply.send({
-		data: updatedTypology,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, updatedTypology);
 
 	//
 }

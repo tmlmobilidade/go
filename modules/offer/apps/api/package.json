@@ -17,7 +17,7 @@
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src ./tests && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src ./tests",
-		"test": "node --import tsx --test tests/*.test.ts"
+		"test": "node --experimental-test-module-mocks --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@fastify/multipart": "10.1.1",
