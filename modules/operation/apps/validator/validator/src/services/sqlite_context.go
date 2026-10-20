@@ -57,6 +57,7 @@ type SQLiteContext struct {
 	Routes         *SQLiteRow
 	Shapes         *SQLiteRow
 	RouteNetworks  *SQLiteRow
+	StopTimes      *SQLiteRow
 	source         *SQLiteRow
 }
 
@@ -76,7 +77,7 @@ func (r *SQLiteRow) Context() *SQLiteContext {
 	ctx.Routes = bind("routes")
 	ctx.Shapes = bind("shapes")
 	ctx.RouteNetworks = bind("route_networks")
-
+	ctx.StopTimes = bind("stop_times")
 	return ctx
 }
 
