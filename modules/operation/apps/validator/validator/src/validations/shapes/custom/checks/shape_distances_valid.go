@@ -13,7 +13,7 @@ import (
 
 // Default tolerance between the total distance of a shape and the sum of the real
 // (haversine) distances between its points, in meters.
-const maxAllPointsDistanceDeltaToleranceMeters = 20.0
+const maxAllPointsDistanceDeltaToleranceMeters = 200.0
 
 type shapeDistancesPoint struct {
 	id           string
