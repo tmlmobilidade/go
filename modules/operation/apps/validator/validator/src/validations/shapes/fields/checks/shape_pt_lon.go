@@ -38,6 +38,9 @@ func ShapePtLonField(db *services.SQLiteContext, rules *types.ShapesRules) error
 		if ctx.ShouldIgnore() {
 			return nil
 		}
+
+		ctx.AddMessageWithSeverity(ctx.GetSeverityMessage("required", "recommended", "informational"))
+		return nil
 	}
 
 	//

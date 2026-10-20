@@ -1,5 +1,10 @@
 package rules
 
+// ExecutionScope returns the group a rule checks, or "" for a row check.
+func ExecutionScope(id string) string {
+	return executionScopes[id]
+}
+
 // executionScopes describe grouped validators whose prerequisites must run in
 // the same scope. This is execution metadata, not a configuration allowlist.
 var executionScopes = map[string]string{

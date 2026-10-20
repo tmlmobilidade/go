@@ -16,8 +16,12 @@ type ruleInput struct {
 }
 
 type RuleRunner struct {
-	manager *rules.Manager[ruleInput]
-	known   map[string]bool
+	manager      *rules.Manager[ruleInput]
+	known        map[string]bool
+	section      any
+	dependencies map[string][]string
+	fileNode     string
+	filePresent  bool
 }
 
 // NewRuleRunner builds a plan once per file. Rows get independent statuses;
@@ -66,7 +70,104 @@ func NewRuleRunner(gtfs types.Gtfs, section any) (*RuleRunner, error) {
 	for _, id := range rules.RuleIDs(section) {
 		known[id] = true
 	}
-	return &RuleRunner{manager: manager, known: known}, nil
+	return &RuleRunner{manager: manager, known: known, section: section, dependencies: dependencies, fileNode: rules.FileNode(group), filePresent: filePresent}, nil
+}
+
+// RunTable executes one action registration in dependency order across a table.
+// Row prerequisites are checked independently. A grouped rule requires every
+// member's prerequisites to pass and runs once using the group's first row.
+// Empty group keys still receive row checks, but do not form a group.
+func (r *RuleRunner) RunTable(table *SQLiteTable, scope, groupField string, actions func(*SQLiteContext) RuleActions, onRow func()) error {
+	if scope == "" || groupField == "" {
+		return fmt.Errorf("table validation requires a group scope and field")
+	}
+	order := r.manager.Order()
+	for _, id := range order {
+		if ruleScope := rules.ExecutionScope(id); ruleScope != "" && ruleScope != scope {
+			return fmt.Errorf("rule %q uses %s scope, not %s", id, ruleScope, scope)
+		}
+	}
+
+	var rows []int
+	var groups [][]int
+	groupIndexes := map[string]int{}
+	err := table.ForEachRow(func(row *SQLiteRow) error {
+		key, err := row.Field(groupField)
+		if err != nil {
+			return err
+		}
+		index := len(rows)
+		rows = append(rows, row.Row)
+		if key != "" {
+			group, exists := groupIndexes[key]
+			if !exists {
+				group = len(groups)
+				groupIndexes[key] = group
+				groups = append(groups, nil)
+			}
+			groups[group] = append(groups[group], index)
+		}
+		if onRow != nil {
+			onRow()
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	statuses := make(map[string][]rules.Status, len(order))
+	for _, id := range order {
+		outcomes := make([]rules.Status, len(rows))
+		for i := range outcomes {
+			outcomes[i] = rules.Skipped
+		}
+		statuses[id] = outcomes
+		if id == r.fileNode {
+			for i := range outcomes {
+				outcomes[i] = rules.Failed
+				if r.filePresent {
+					outcomes[i] = rules.Passed
+				}
+			}
+			continue
+		}
+		if rules.SeverityFor(r.section, id) == types.SEVERITY_IGNORE {
+			continue
+		}
+		run := func(members []int) {
+			for _, dependency := range r.dependencies[id] {
+				for _, member := range members {
+					if statuses[dependency][member] != rules.Passed {
+						return
+					}
+				}
+			}
+			action, exists := actions(table.At(rows[members[0]]).Context())[id]
+			if !exists {
+				return
+			}
+			before := AppMessageService.RuleIssueCount(id)
+			action()
+			status := rules.Passed
+			if AppMessageService.RuleIssueCount(id) != before {
+				status = rules.Failed
+			}
+			for _, member := range members {
+				outcomes[member] = status
+			}
+		}
+		if rules.ExecutionScope(id) == scope {
+			for _, members := range groups {
+				run(members)
+			}
+		} else {
+			for i := range rows {
+				run([]int{i})
+			}
+		}
+	}
+	return nil
 }
 
 func (r *RuleRunner) Run(actions RuleActions, seed map[string]rules.Status) map[string]rules.Status {

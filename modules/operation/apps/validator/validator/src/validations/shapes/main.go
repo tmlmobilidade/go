@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"main/config"
 	"main/lib"
-	ruleset "main/lib/rules"
 	"main/services"
 	"main/types"
 	registry "main/validations"
 	shapes_custom "main/validations/shapes/custom/checks"
+	shapes_fields "main/validations/shapes/fields/checks"
 	shapes_standard "main/validations/shapes/standard/checks"
-	validations "main/validations/shapes/validations"
 )
 
 func init() {
@@ -18,11 +17,11 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*services.SQLiteTables) {
-	var section *types.ShapesRules
+	var fileRules *types.ShapesRules
 	if rules != nil {
-		section = &rules.Shapes
+		fileRules = &rules.Shapes
 	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, fileRules)
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -37,90 +36,47 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 		lib.AppLogger.Error(err.Error())
 		return
 	}
-	sequenceRows := map[string]*services.SQLiteContext{}
 	check := func(db *services.SQLiteContext, ruleID string, err error) {
 		if err != nil {
 			ctx := lib.NewValidationContext("N/A", "shapes.txt", ruleID, db.Row, services.AppMessageService)
 			ctx.AddError(fmt.Sprintf("SQLite read failed: %v", err))
 		}
 	}
-	groupStatuses := map[string]map[string]ruleset.Status{}
 	lib.AppLogger.Debug("Running Shapes Validations...")
 
 	// Create progress tracker
 	tracker := lib.CreateProgressTracker(gtfs, "shapes", config.ProgressThresholdLarge)
 
-	var shapesRules *types.ShapesRules
-	if rules != nil {
-		shapesRules = &rules.Shapes
-	}
+	err = runner.RunTable(table, "shape", "shape_id", func(db *services.SQLiteContext) services.RuleActions {
+		return services.RuleActions{
+			//
+			// Fields
+			"shapes_shape_id_field":            func() { check(db, "shapes_shape_id_field", shapes_fields.ShapeIdField(db, fileRules)) },
+			"shapes_shape_pt_lat_field":        func() { check(db, "shapes_shape_pt_lat_field", shapes_fields.ShapePtLatField(db, fileRules)) },
+			"shapes_shape_pt_lon_field":        func() { check(db, "shapes_shape_pt_lon_field", shapes_fields.ShapePtLonField(db, fileRules)) },
+			"shapes_shape_pt_sequence_field":   func() { check(db, "shapes_shape_pt_sequence_field", shapes_fields.ShapePtSequenceField(db, fileRules)) },
+			"shapes_shape_dist_traveled_field": func() { check(db, "shapes_shape_dist_traveled_field", shapes_fields.ShapeDistTraveledField(db, fileRules)) },
 
-	err = gtfs.IterateShapes(func(row int, rawShape types.ShapeRaw) error {
-		tracker.Track()
-		db := table.At(row).Context()
-		shapeID, err := db.Shapes.Field("shape_id")
-		if err != nil {
-			return err
+			//
+			// Standard
+			"shapes_shape_pt_lat_valid":                        func() { check(db, "shapes_shape_pt_lat_valid", shapes_standard.ShapePtLatValid(db, fileRules)) },
+			"shapes_shape_pt_lon_valid":                        func() { check(db, "shapes_shape_pt_lon_valid", shapes_standard.ShapePtLonValid(db, fileRules)) },
+			"shapes_shape_pt_sequence_non_negative":            func() { check(db, "shapes_shape_pt_sequence_non_negative", shapes_standard.ShapePtSequence(db, fileRules)) },
+			"shapes_shape_dist_traveled_valid":                 func() { check(db, "shapes_shape_dist_traveled_valid", shapes_standard.ShapeDistTraveledValid(db, fileRules)) },
+			"shape_pt_sequence_strictly_increasing":            func() { check(db, "shape_pt_sequence_strictly_increasing", shapes_standard.ShapePtSequenceStrictlyIncreasing(db, fileRules)) },
+			"shape_dist_traveled_non_decreasing_with_sequence": func() { check(db, "shape_dist_traveled_non_decreasing_with_sequence", shapes_standard.ShapeDistTraveledNonDecreasing(db, fileRules)) },
+
+			//
+			// Custom
+			"shapes_shape_point_spacing_valid":         func() { check(db, "shapes_shape_point_spacing_valid", shapes_custom.ShapePointsCoordinatesConsistent(db, fileRules)) },
+			"shapes_shape_dist_traveled_segment_valid": func() { check(db, "shapes_shape_dist_traveled_segment_valid", shapes_custom.ShapePointsCoordinatesDistances(db, fileRules)) },
+			"shapes_shape_dist_traveled_block_valid":   func() { check(db, "shapes_shape_dist_traveled_block_valid", shapes_custom.ShapeDistancesValid(db, fileRules)) },
 		}
-		if shapeID != "" {
-			if _, ok := sequenceRows[shapeID]; !ok {
-				sequenceRows[shapeID] = db
-			}
-		}
-		presenceStatuses := runner.Run(services.RuleActions{
-			"shape_id_and_point_sequence_required": func() {
-				check(db, "shape_id_and_point_sequence_required", shapes_standard.ShapeIdAndPointSequenceRequired(db, shapesRules))
-			},
-		}, nil)
-		if shapeID != "" {
-			groupStatuses[shapeID] = services.MergeRuleStatuses(groupStatuses[shapeID], presenceStatuses)
-		}
-
-		shape := validations.ParseShape(rawShape, row)
-
-		if shape == (types.Shape{}) {
-			return nil
-		}
-
-		// Validate shape_id
-		statuses := runner.Run(services.RuleActions{
-			"shape_id_required":                           func() { validations.ShapeIdValidation(&shape, row, shapesRules) },
-			"shape_pt_lat_valid_latitude":                 func() { validations.ShapePtLatValidation(&shape, row, shapesRules) },
-			"shape_pt_lon_valid_longitude":                func() { validations.ShapePtLonValidation(&shape, row, shapesRules) },
-			"shape_pt_sequence_not_repeated_within_shape": func() { validations.ShapePtSequenceValidation(&shape, row, shapesRules) },
-			"shape_dist_traveled_non_negative_monotonic":  func() { validations.ShapeDistTraveledValidation(&shape, row, shapesRules) },
-		}, nil)
-
-		if shape.ShapeId != nil {
-			groupStatuses[*shape.ShapeId] = services.MergeRuleStatuses(groupStatuses[*shape.ShapeId], statuses)
-		}
-
-		return nil
-	})
+	}, tracker.Track)
 
 	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error iterating shapes: %v", err))
-	} else {
-		lib.AppLogger.Info(fmt.Sprintf("Completed shapes.txt validation: %d rows processed", tracker.GetProcessedCount()))
+		lib.AppLogger.Error(fmt.Sprintf("Error validating shapes: %v", err))
+		return
 	}
-
-	for shapeID, db := range sequenceRows {
-		runner.Run(services.RuleActions{
-			"shape_pt_sequence_strictly_increasing": func() {
-				check(db, "shape_pt_sequence_strictly_increasing", shapes_standard.ShapePtSequenceStrictlyIncreasing(db, shapesRules))
-			},
-			"shape_dist_traveled_non_decreasing_with_sequence": func() {
-				check(db, "shape_dist_traveled_non_decreasing_with_sequence", shapes_standard.ShapeDistTraveledNonDecreasing(db, shapesRules))
-			},
-			"shapes_shape_point_spacing_valid": func() {
-				check(db, "shapes_shape_point_spacing_valid", shapes_custom.ShapePointsCoordinatesConsistent(db, shapesRules))
-			},
-			"shapes_shape_dist_traveled_segment_valid": func() {
-				check(db, "shapes_shape_dist_traveled_segment_valid", shapes_custom.ShapePointsCoordinatesDistances(db, shapesRules))
-			},
-			"shapes_shape_dist_traveled_block_valid": func() {
-				check(db, "shapes_shape_dist_traveled_block_valid", shapes_custom.ShapeDistancesValid(db, shapesRules))
-			},
-		}, groupStatuses[shapeID])
-	}
+	lib.AppLogger.Info(fmt.Sprintf("Completed shapes.txt validation: %d rows processed", tracker.GetProcessedCount()))
 }

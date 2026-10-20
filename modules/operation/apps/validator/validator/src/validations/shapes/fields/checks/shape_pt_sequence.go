@@ -38,6 +38,9 @@ func ShapePtSequenceField(db *services.SQLiteContext, rules *types.ShapesRules) 
 		if ctx.ShouldIgnore() {
 			return nil
 		}
+
+		ctx.AddMessageWithSeverity(ctx.GetSeverityMessage("required", "recommended", "informational"))
+		return nil
 	}
 
 	//
