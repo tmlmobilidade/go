@@ -35,7 +35,7 @@ func DepartureTimeField(db *services.SQLiteContext, rules *types.StopTimesRules)
 	// 4. Check if the departure_time is required
 
 	if value == "" {
-		if ctx.ShouldSkip() {
+		if ctx.ShouldIgnore() {
 			return nil
 		}
 

@@ -35,7 +35,7 @@ func ArrivalTimeField(db *services.SQLiteContext, rules *types.StopTimesRules) e
 	// 4. Check if the arrival_time is required
 
 	if value == "" {
-		if ctx.ShouldSkip() {
+		if ctx.ShouldIgnore() {
 			return nil
 		}
 

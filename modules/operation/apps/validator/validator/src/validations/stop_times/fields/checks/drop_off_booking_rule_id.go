@@ -35,7 +35,7 @@ func DropOffBookingRuleIdField(db *services.SQLiteContext, rules *types.StopTime
 	// 4. Check if the drop_off_booking_rule_id is required
 
 	if value == "" {
-		if ctx.ShouldSkip() {
+		if ctx.ShouldIgnore() {
 			return nil
 		}
 
