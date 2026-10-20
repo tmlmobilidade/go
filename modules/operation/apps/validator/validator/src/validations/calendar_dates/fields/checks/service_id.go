@@ -22,7 +22,7 @@ If a service_id value appears in both [calendar.txt] and [calendar_dates.txt], t
 [calendar_dates.txt]: https://gtfs.org/schedule/reference/#calendar_datestxt
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
-func ServiceIdValidation(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
+func ServiceIdField(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
 	//
 
 	//

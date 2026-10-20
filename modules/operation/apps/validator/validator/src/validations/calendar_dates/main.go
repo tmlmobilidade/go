@@ -7,7 +7,8 @@ import (
 	"main/services"
 	"main/types"
 	registry "main/validations"
-	validations "main/validations/calendar_dates/validations"
+	fields "main/validations/calendar_dates/fields/checks"
+	standard "main/validations/calendar_dates/standard/checks"
 )
 
 func init() {
@@ -31,7 +32,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 	tracker := lib.CreateProgressTracker(gtfs, "calendar_dates", config.ProgressThresholdSmall)
 
 	//
-	// Open the calendar_dates table
+	// Open the GTFS tables
 
 	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
 	if err != nil {
@@ -40,7 +41,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 	}
 
 	//
-	// Iterate over calendar_dates table
+	// Iterate over the calendar_dates table
 
 	err = tables.ForEachRow("calendar_dates", func(row *services.SQLiteRow) error {
 		db := row.Context()
@@ -53,15 +54,18 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 		}
 
 		runner.Run(services.RuleActions{
-			"calendar_dates_service_id_references_calendar": func() {
-				check("calendar_dates_service_id_references_calendar", validations.ServiceIdValidation(db, section))
-			},
-			"calendar_dates_exception_date_valid_yyyymmdd": func() {
-				check("calendar_dates_exception_date_valid_yyyymmdd", validations.DateValidation(db, section))
-			},
-			"calendar_dates_exception_type_add_or_remove_service": func() {
-				check("calendar_dates_exception_type_add_or_remove_service", validations.ExceptionTypeValidation(db, section))
-			},
+			//
+			// Fields
+			"calendar_dates_date_field":           func() { check("calendar_dates_date_field", fields.DateField(db, section)) },
+			"calendar_dates_exception_type_field": func() { check("calendar_dates_exception_type_field", fields.ExceptionTypeField(db, section)) },
+			"calendar_dates_service_id_field":     func() { check("calendar_dates_service_id_field", fields.ServiceIdField(db, section)) },
+
+			//
+			// Standard
+			"calendar_dates_date_valid":           func() { check("calendar_dates_date_valid", standard.DateValid(db, section)) },
+			"calendar_dates_exception_type_valid": func() { check("calendar_dates_exception_type_valid", standard.ExceptionTypeValid(db, section)) },
+			"calendar_dates_service_id_foreign":   func() { check("calendar_dates_service_id_foreign", standard.ServiceIdForeign(db, section)) },
+
 		}, nil)
 
 		return nil
