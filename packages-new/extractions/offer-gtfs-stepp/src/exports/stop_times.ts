@@ -1,0 +1,131 @@
+/* eslint-disable perfectionist/sort-objects */
+/* * */
+
+import { type TripSchedule } from '@/exports/trips.js';
+import { type GtfsSteppV1ExportConfig } from '@/types.js';
+import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
+import { type GtfsStrictV30SteppStopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/go-types-offer';
+import { OperationalTimeSchema } from '@tmlmobilidade/go-types-shared';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+
+import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
+
+/* * */
+
+function resolveActiveParameter(
+	parameters: StopsParameter[] | undefined,
+	tripSchedule: TripSchedule,
+	fallbackPath: Path[],
+): StopsParameter {
+	const defaultParameter = parameters?.find(p => p.kind === 'default');
+	const overrides = (parameters?.filter(p => p.kind === 'override') || []) as StopsParameterOverride[];
+
+	if (overrides.length > 0) {
+		for (const override of overrides) {
+			const weekdayMatch = tripSchedule.weekdays.some(w => override.weekdays.includes(w));
+			const periodMatch = tripSchedule.period_ids.some(p => override.year_period_ids.includes(p));
+			const dayPeriodMatch = !override.day_periods?.length || override.day_periods.includes(tripSchedule.day_period);
+
+			if (weekdayMatch && periodMatch && dayPeriodMatch) {
+				return override;
+			}
+		}
+	}
+
+	if (defaultParameter) return defaultParameter;
+
+	return {
+		kind: 'default',
+		path: fallbackPath.map(p => ({
+			avg_speed: 0,
+			dwell_time: 0,
+			stop_id: p.stop_id,
+		})),
+	};
+}
+
+function timepointToSeconds(timepoint: HHMM): number {
+	const [hours, minutes] = timepoint.split(':').map(Number);
+	return hours * 3600 + minutes * 60;
+}
+
+function formatGtfsTime(totalSeconds: number): string {
+	const safeSeconds = Math.max(0, Math.round(totalSeconds));
+	const hours = Math.floor(safeSeconds / 3600);
+	const minutes = Math.floor((safeSeconds % 3600) / 60);
+	const seconds = safeSeconds % 60;
+
+	const hh = String(hours).padStart(2, '0');
+	const mm = String(minutes).padStart(2, '0');
+	const ss = String(seconds).padStart(2, '0');
+
+	return `${hh}:${mm}:${ss}`;
+}
+
+/* * */
+
+/** Exports stop times and reports whether every exported trip starts and ends at the same stop_id. */
+export async function exportStopTimesForPattern(
+	stopsData: Stop[],
+	patternData: Pattern,
+	tripSchedules: TripSchedule[],
+	exportConfig: GtfsSteppV1ExportConfig,
+	agencyId: string,
+): Promise<boolean> {
+	try {
+		if (!patternData.path?.length) return false;
+		if (tripSchedules.length === 0) return false;
+
+		let isCircular = true;
+
+		for (const tripSchedule of tripSchedules) {
+			const activeParameter = resolveActiveParameter(patternData.parameters, tripSchedule, patternData.path);
+			const mergedPath = getMergedPath(patternData.path, activeParameter.path);
+			const travelTimes = computeSegmentTravelTimes(mergedPath);
+			const segmentTravelSeconds = travelTimes.segmentTravelSeconds.raw;
+			const stopDwellSeconds = travelTimes.stopDwellSeconds.raw;
+
+			let currentSeconds = timepointToSeconds(tripSchedule.timepoint);
+			let cumulativeDistance = 0;
+			let firstStopId: string | undefined;
+			let lastStopId: string | undefined;
+
+			for (let i = 0; i < mergedPath.length; i++) {
+				const pathItem = mergedPath[i];
+				cumulativeDistance += pathItem.distance_delta ?? 0;
+				const segmentSeconds = segmentTravelSeconds[i] ?? 0;
+				const dwellSeconds = stopDwellSeconds[i] ?? 0;
+
+				const arrivalSeconds = i === 0 ? currentSeconds : currentSeconds + segmentSeconds;
+				const departureSeconds = arrivalSeconds + dwellSeconds;
+				currentSeconds = departureSeconds;
+
+				// If pathItem.stop is present, use agency-specific stop_id; else fallback to pathItem.stop_id
+				const currentStopData = stopsData.find(s => String(s._id) === String(pathItem.stop_id));
+				const stopId = currentStopData ? getAgencyStopId(currentStopData, agencyId) : String(pathItem.stop_id);
+
+				const stopTimeRow: GtfsStrictV30SteppStopTimes = {
+					trip_id: tripSchedule.trip_id,
+					arrival_time: OperationalTimeSchema.parse(formatGtfsTime(arrivalSeconds)),
+					departure_time: OperationalTimeSchema.parse(formatGtfsTime(departureSeconds)),
+					stop_id: stopId,
+					stop_sequence: exportConfig.stop_sequence_start + i,
+					shape_dist_traveled: cumulativeDistance,
+				};
+
+				await exportConfig.writers.stop_times.write(stopTimeRow);
+				firstStopId ??= stopTimeRow.stop_id;
+				lastStopId = stopTimeRow.stop_id;
+			}
+
+			isCircular = isCircular && firstStopId !== undefined && firstStopId === lastStopId;
+		}
+
+		return isCircular;
+	} catch (error) {
+		Logger.error({ error, message: `Error exporting stop_times for pattern ${patternData.code}` });
+		throw new Error(`Error exporting stop_times for pattern ${patternData.code}: ${error}`, error);
+	}
+}

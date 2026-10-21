@@ -112,6 +112,33 @@
 			"just_now": "Ahora mismo"
 		}
 	},
+	"plans": {
+		"list": {
+			"PlansListHeaderMenu": {
+				"extractStepp": "Exportar GTFS STePP de Operación"
+			}
+		},
+		"stepp": {
+			"PlansSteppExtractBody": {
+				"empty": "No hay planes disponibles en este intervalo.",
+				"fields": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"end_date": {
+						"label": "Fecha de fin"
+					},
+					"start_date": {
+						"label": "Fecha de inicio"
+					}
+				}
+			},
+			"PlansSteppExtractHeader": {
+				"export": "Exportar",
+				"title": "Exportar GTFS STePP de Operación"
+			}
+		}
+	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {

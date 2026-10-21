@@ -3,9 +3,10 @@
 import { openCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { openGtfsExportModal } from '@/components/lines/export/GtfsExportModal';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
+import { openSteppExtractModal } from '@/components/lines/stepp/SteppExtract.modal';
 import { openVkmModal } from '@/components/lines/vkms/VkmModal';
-import { IconDots, IconFileDownload, IconPlus, IconSearch } from '@tabler/icons-react';
-import { ListHeader, Menu, MenuItem, MenuLabel, SearchField } from '@tmlmobilidade/ui';
+import { IconDots, IconFileDownload, IconFileZip, IconPlus, IconSearch } from '@tabler/icons-react';
+import { HasPermission, ListHeader, Menu, MenuItem, MenuLabel, SearchField } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,6 +22,7 @@ export function LinesListHeader() {
 	// B. Render components
 
 	return (
+
 		<ListHeader
 			count={linesListContext.data.filtered.length}
 			search={<SearchField onChange={linesListContext.filters.search.set} value={linesListContext.filters.search.value} />}
@@ -39,6 +41,13 @@ export function LinesListHeader() {
 						onClick={openGtfsExportModal}
 						title="Exportar GTFS"
 					/>
+					<HasPermission action="extract-stepp" scope="lines">
+						<MenuItem
+							leftSection={<IconFileZip size={20} />}
+							onClick={openSteppExtractModal}
+							title="Exportar GTFS STePP"
+						/>
+					</HasPermission>
 					<MenuItem
 						leftSection={<IconSearch size={20} />}
 						onClick={openVkmModal}

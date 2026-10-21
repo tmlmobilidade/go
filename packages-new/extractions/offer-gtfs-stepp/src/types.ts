@@ -1,0 +1,72 @@
+/* * */
+
+import { type GtfsStrictV30SteppAgency, type GtfsStrictV30SteppCalendar, type GtfsStrictV30SteppCalendarDates, type GtfsStrictV30SteppCalendarStepp, GtfsStrictV30SteppRoutes, type GtfsStrictV30SteppRouteStepp, GtfsStrictV30SteppShapes, type GtfsStrictV30SteppStops, GtfsStrictV30SteppStopTimes, type GtfsStrictV30SteppTrips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type CsvWriter } from '@tmlmobilidade/writers';
+
+/* * */
+
+/**
+ * Configuration for GTFS STEPP v1 export
+ */
+export interface GtfsSteppV1ExportConfig {
+	/**
+	 * The agency IDs to export data for
+	 */
+	agency_id: string
+
+	/**
+	 * The last date to include in calendar.txt and calendar_dates.txt, inclusive
+	 */
+	end_date: OperationalDate
+
+	lines_exclude: string[]
+	lines_include: string[]
+	lines_mode: 'all' | 'exclude' | 'include'
+
+	/**
+	 * The first date to include in calendar.txt and calendar_dates.txt, inclusive
+	 */
+	start_date: OperationalDate
+
+	/**
+	 * Starting value for stop_sequence (0 or 1)
+	 */
+	stop_sequence_start: number
+
+	/**
+	 * Working directory where the GTFS files are written
+	 */
+	workdir: string
+
+	/**
+	 * CSV writers for each GTFS file
+	 */
+	writers: GtfsSteppV1Writers
+}
+
+/**
+ * CSV writers for each GTFS file
+ */
+export interface GtfsSteppV1Writers {
+	agency: CsvWriter<GtfsStrictV30SteppAgency>
+	calendar: CsvWriter<GtfsStrictV30SteppCalendar>
+	calendar_dates: CsvWriter<GtfsStrictV30SteppCalendarDates>
+	calendar_stepp: CsvWriter<GtfsStrictV30SteppCalendarStepp>
+	route_stepp: CsvWriter<GtfsStrictV30SteppRouteStepp>
+	routes: CsvWriter<GtfsStrictV30SteppRoutes>
+	shapes: CsvWriter<GtfsStrictV30SteppShapes>
+	stop_times: CsvWriter<GtfsStrictV30SteppStopTimes>
+	stops: CsvWriter<GtfsStrictV30SteppStops>
+	trips: CsvWriter<GtfsStrictV30SteppTrips>
+}
+
+/**
+ * Export progress tracking
+ */
+export interface ExportProgress {
+	_id: string
+	progress_current: number
+	progress_total: number
+	workdir: string
+}

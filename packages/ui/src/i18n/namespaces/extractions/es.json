@@ -40,8 +40,14 @@
 		"infrastructure-stops-v1": {
 			"title": "Paradas (v1)"
 		},
+		"offer-gtfs-stepp-v1": {
+			"title": "GTFS STePP (v1)"
+		},
 		"offer-gtfs-v29": {
 			"title": "GTFS (v29)"
+		},
+		"operation-gtfs-stepp-v1": {
+			"title": "GTFS STePP de Operación (v1)"
 		},
 		"operation-rides-v1": {
 			"title": "Circulaciones (v1)"

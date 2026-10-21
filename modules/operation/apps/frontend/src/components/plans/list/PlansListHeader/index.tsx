@@ -3,6 +3,7 @@
 import { PlansListFilterSearch } from '@/components/plans/list/filters/PlansListFilterSearch';
 import { ListHeader, LoadingActivity } from '@tmlmobilidade/ui';
 
+import { PlansListHeaderMenu } from '../PlansListHeaderMenu';
 import { usePlansListData } from '../use-plans-list-data';
 
 /* * */
@@ -20,6 +21,7 @@ export function PlansListHeader() {
 
 	return (
 		<ListHeader
+			actions={<PlansListHeaderMenu />}
 			activity={<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />}
 			count={data?.length}
 			search={<PlansListFilterSearch />}
