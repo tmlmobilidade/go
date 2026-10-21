@@ -18,7 +18,7 @@ func HasSchedulesAllowed(db *services.SQLiteContext, rulesContext *types.RuleCon
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("has_schedules_allowed", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("has_schedules", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}

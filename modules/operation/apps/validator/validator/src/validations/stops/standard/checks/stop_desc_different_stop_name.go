@@ -17,7 +17,7 @@ func StopDescDifferentStopName(db *services.SQLiteContext, rulesContext *types.R
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("stop_desc_different_stop_name", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("stop_desc", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}

@@ -18,7 +18,7 @@ func HasStopSignAllowed(db *services.SQLiteContext, rulesContext *types.RuleCont
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("has_stop_sign_allowed", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("has_stop_sign", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}

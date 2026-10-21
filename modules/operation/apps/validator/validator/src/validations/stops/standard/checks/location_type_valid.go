@@ -16,7 +16,7 @@ func LocationTypeValid(db *services.SQLiteContext, rulesContext *types.RuleConte
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("location_type_valid", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("location_type", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}

@@ -18,7 +18,7 @@ func RegionIdAllowed(db *services.SQLiteContext, rulesContext *types.RuleContext
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("region_id_allowed", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("region_id", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}

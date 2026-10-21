@@ -18,7 +18,7 @@ func HasPipRealTimeAllowed(db *services.SQLiteContext, rulesContext *types.RuleC
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("has_pip_real_time_allowed", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("has_pip_real_time", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}

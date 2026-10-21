@@ -17,7 +17,7 @@ func StopIdUnique(db *services.SQLiteContext, rulesContext *types.RuleContext) e
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("stop_id_unique", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("stop_id", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}

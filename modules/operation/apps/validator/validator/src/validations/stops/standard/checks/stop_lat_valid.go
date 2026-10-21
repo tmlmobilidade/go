@@ -18,7 +18,7 @@ func StopLatValid(db *services.SQLiteContext, rulesContext *types.RuleContext) e
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("stop_lat_valid", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("stop_lat", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}

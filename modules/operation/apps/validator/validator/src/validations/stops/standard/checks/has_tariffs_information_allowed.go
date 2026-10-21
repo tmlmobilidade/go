@@ -18,7 +18,7 @@ func HasTariffsInformationAllowed(db *services.SQLiteContext, rulesContext *type
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("has_tariffs_information_allowed", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("has_tariffs_information", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}

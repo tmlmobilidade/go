@@ -18,7 +18,7 @@ func HasNetworkMapAllowed(db *services.SQLiteContext, rulesContext *types.RuleCo
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("has_network_map_allowed", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("has_network_map", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}
