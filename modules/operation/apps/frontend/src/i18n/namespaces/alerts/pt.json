@@ -72,6 +72,23 @@
 			}
 		}
 	},
+	"extract": {
+		"AlertsExtract": {
+			"action": {
+				"error_title": "Erro ao solicitar a exportação",
+				"success_title": "Exportação solicitada"
+			},
+			"button": {
+				"label": "Exportar CSV"
+			},
+			"description": "A exportação utiliza os filtros e a pesquisa atuais da lista. O ficheiro CSV ficará disponível na lista de exportações.",
+			"total": "Alertas na lista filtrada: {{total}}.",
+			"unavailable": "Verifique os filtros e as permissões. É necessário pelo menos um alerta na lista para exportar."
+		},
+		"AlertsExtractHeader": {
+			"title": "Exportar alertas"
+		}
+	},
 	"list": {
 		"AlertsList": {
 			"columns": {
@@ -105,6 +122,11 @@
 			}
 		},
 		"AlertsListHeader": {
+			"actions": {
+				"extract": {
+					"label": "Exportar alertas"
+				}
+			},
 			"title": "Alertas"
 		},
 		"filters": {

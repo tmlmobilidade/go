@@ -72,6 +72,23 @@
 			}
 		}
 	},
+	"extract": {
+		"AlertsExtract": {
+			"action": {
+				"error_title": "Failed to request export",
+				"success_title": "Export requested"
+			},
+			"button": {
+				"label": "Export CSV"
+			},
+			"description": "The export uses the list's current filters and search. The CSV file will be available in the exports list.",
+			"total": "Alerts in the filtered list: {{total}}.",
+			"unavailable": "Check the filters and permissions. At least one alert must be present in the list to export."
+		},
+		"AlertsExtractHeader": {
+			"title": "Export alerts"
+		}
+	},
 	"list": {
 		"AlertsList": {
 			"columns": {
@@ -105,6 +122,11 @@
 			}
 		},
 		"AlertsListHeader": {
+			"actions": {
+				"extract": {
+					"label": "Export alerts"
+				}
+			},
 			"title": "Alerts"
 		},
 		"filters": {
