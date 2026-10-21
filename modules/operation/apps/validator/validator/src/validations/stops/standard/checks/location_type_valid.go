@@ -30,20 +30,7 @@ func LocationTypeValid(db *services.SQLiteContext, rulesContext *types.RuleConte
 	}
 
 	//
-	// 4. Check if the location_type is present
-
-	if value == "" {
-		if ctx.ShouldIgnore() {
-			return nil
-		}
-		
-		message := ctx.GetSeverityMessage("required", "recommended", "informational")
-		ctx.AddMessageWithSeverity(message)
-		return nil
-	}
-
-	//
-	// 5. Validate the location_type is a valid value
+	// 4. Check if the location_type is valid
 
 	validValues := []string{"0", "1", "2", "3", "4"}
 	if !slices.Contains(validValues, value) {
