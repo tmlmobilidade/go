@@ -2,10 +2,10 @@
 
 import { locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
 
-/* * */
-
-// INE municipality codes grouped by the codespaces in the access nodes guide.
-// Territorial membership: DGT CAOP2025, Areas_Municipios_CAOP2025.
+/**
+ * INE municipality codes grouped by the codespaces in the access nodes guide.
+ * Territorial membership: DGT CAOP2025, Areas_Municipios_CAOP2025.
+ */
 const MUNICIPALITY_CODES_BY_CODESPACE = {
 	'pt.amal': ['0801', '0802', '0803', '0804', '0805', '0806', '0807', '0808', '0809', '0810', '0811', '0812', '0813', '0814', '0815', '0816'],
 	'pt.aml': ['1105', '1106', '1107', '1109', '1110', '1111', '1114', '1115', '1116', '1502', '1503', '1504', '1506', '1507', '1508', '1510', '1511', '1512'],
@@ -34,12 +34,17 @@ const MUNICIPALITY_CODES_BY_CODESPACE = {
 	'pt.ram': ['3101', '3102', '3103', '3104', '3105', '3106', '3107', '3108', '3109', '3110', '3201'],
 };
 
+/**
+ * A map of INE municipality codes to codespaces.
+ */
 const codespacesByMunicipalityCode = new Map(
 	Object.entries(MUNICIPALITY_CODES_BY_CODESPACE).flatMap(([codespace, codes]) => codes.map(code => [code, codespace] as const)),
 );
 
-/* * */
-
+/**
+ * Gets the codespaces by INE municipality code.
+ * @returns The codespaces by municipality code.
+ */
 export async function getCodespacesByMunicipality(): Promise<Map<number, string>> {
 	const municipalities = await locationsDb.findLocationsByCountryAndAdminLevel('PT', '7');
 

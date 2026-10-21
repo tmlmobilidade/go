@@ -4,7 +4,7 @@ import { openCreateAnnotationModal } from '@/components/annotations/create/Annot
 import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, HasPermission, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, ListHeader, SearchField } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,15 +20,15 @@ export function AnnotationsListHeader() {
 	// B. Render components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps singleLine>Anotações</Label>
-			<Spacer />
-			<SearchField onChange={annotationsListContext.filters.search.set} value={annotationsListContext.filters.search.value} />
-			<HasPermission action={PermissionCatalog.all.annotations.actions.create} scope={PermissionCatalog.all.annotations.scope}>
-				<Button label="Nova anotação" leftSection={<IconPlus />} onClick={openCreateAnnotationModal} />
-			</HasPermission>
-		</Toolbar>
+		<ListHeader
+			count={annotationsListContext.data.filtered.length}
+			search={<SearchField onChange={annotationsListContext.filters.search.set} value={annotationsListContext.filters.search.value} />}
+			title="Anotações"
+			actions={(
+				<HasPermission action={PermissionCatalog.all.annotations.actions.create} scope={PermissionCatalog.all.annotations.scope}>
+					<Button label="Nova anotação" leftSection={<IconPlus />} onClick={openCreateAnnotationModal} />
+				</HasPermission>
+			)}
+		/>
 	);
-
-	//
 }

@@ -64,7 +64,7 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 	// B. Handle actions
 
 	const handleClickEventRule = () => {
-		router.push(PAGE_ROUTES.dates.EVENTS_DETAIL(rule?.event.id ?? ''));
+		router.push(PAGE_ROUTES.offer.EVENTS_DETAIL(rule?.event.id ?? ''));
 	};
 
 	//

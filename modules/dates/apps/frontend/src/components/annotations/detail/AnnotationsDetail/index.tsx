@@ -3,7 +3,7 @@
 import { DatesSelector } from '@/components/annotations/detail/AnnotationsDatesSelector';
 import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
 import { AnnotationsDetailHeader } from '@/components/annotations/detail/AnnotationsDetailHeader';
-import { AnnotationSchema } from '@tmlmobilidade/go-types-offer';
+import { AnnotationSchema } from '@tmlmobilidade/go-types-dates';
 import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 import { useAnnotationsAgenciesData } from '../../shared/use-users-agencies-data';

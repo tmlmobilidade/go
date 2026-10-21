@@ -8,7 +8,9 @@ export type { ComboboxItem, ComboboxItemGroup } from '@mantine/core';
 
 export interface SelectDataItem {
 	checked?: boolean
+	description?: string
 	disabled?: boolean
+	keywords?: string
 	label: string
 	value: string
 };

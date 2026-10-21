@@ -1,4 +1,5 @@
-import { hhmm, type Event, type EventRestrictionRule, type HHMM, type OperationalDate, type Pattern } from '@tmlmobilidade/types';
+import { type Event, type EventRestrictionRule, hhmm, type HHMM, type Pattern } from '@tmlmobilidade/go-types-offer';
+import { type OperationalDate, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
@@ -77,10 +78,9 @@ describe('resolvePatternRules', () => {
 		const event: Event = {
 			_id: '01_JAN',
 			agency_ids: ['42'],
-			associated_patterns: [],
 			code: '01_JAN',
-			created_at: 0,
-			created_by: null,
+			created_at: UnixMillisecondsSchema.parse(1_792_368_000_000),
+			created_by: 'user',
 			dates: [d('20260101')],
 			description: '',
 			is_locked: false,
@@ -89,13 +89,14 @@ describe('resolvePatternRules', () => {
 				all_day: false,
 				dates: [d('20260101')],
 				end_time: '',
+				event: { id: '01_JAN', title: 'Jan 1' },
 				kind: 'event_restriction',
 				lines_mode: 'all',
 				start_time: '',
 				timepoints: [t('06:00'), t('07:00')],
 			}],
 			title: 'Jan 1',
-			updated_at: 0,
+			updated_at: UnixMillisecondsSchema.parse(1_792_368_000_000),
 		};
 
 		const pattern = {
@@ -107,7 +108,7 @@ describe('resolvePatternRules', () => {
 		const merged = resolvePatternRules(pattern, [event]);
 		const derived = merged.find(r => r.kind === 'event_restriction');
 
-		assert.ok(derived && derived.kind === 'event_restriction');
+		assert.ok(derived?.kind === 'event_restriction');
 		assert.deepEqual(derived.timepoints, [t('06:00'), t('07:00')]);
 	});
 });

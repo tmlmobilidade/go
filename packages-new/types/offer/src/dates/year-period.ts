@@ -14,8 +14,8 @@ export const YearPeriodSchema = BaseDocumentSchema.extend({
 	name: z.string().min(1),
 });
 
-export const CreateYearPeriodSchema = YearPeriodSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateYearPeriodSchema = CreateYearPeriodSchema.omit({ created_by: true }).partial();
+export const CreateYearPeriodSchema = YearPeriodSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
+export const UpdateYearPeriodSchema = CreateYearPeriodSchema.partial();
 
 /* * */
 

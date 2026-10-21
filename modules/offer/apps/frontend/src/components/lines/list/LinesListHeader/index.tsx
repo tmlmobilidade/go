@@ -6,7 +6,7 @@ import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { openSteppExtractModal } from '@/components/lines/stepp/SteppExtract.modal';
 import { openVkmModal } from '@/components/lines/vkms/VkmModal';
 import { IconDots, IconFileDownload, IconFileZip, IconPlus, IconSearch } from '@tabler/icons-react';
-import { HasPermission, Label, Menu, MenuItem, MenuLabel, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { HasPermission, ListHeader, Menu, MenuItem, MenuLabel, SearchField } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,37 +22,40 @@ export function LinesListHeader() {
 	// B. Render components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps singleLine>Linhas</Label>
-			<Spacer />
-			<SearchField onChange={linesListContext.filters.search.set} value={linesListContext.filters.search.value} />
-			<Menu icon={IconDots} label="Mais opções">
-				<MenuLabel>Ações</MenuLabel>
-				<MenuItem
-					disabled={!linesListContext.flags.canCreate}
-					leftSection={<IconPlus size={20} />}
-					onClick={openCreateLineModal}
-					title="Nova linha"
-				/>
-				<MenuItem
-					leftSection={<IconFileDownload size={20} />}
-					onClick={openGtfsExportModal}
-					title="Exportar GTFS"
-				/>
-				<HasPermission action="extract-stepp" scope="lines">
+
+		<ListHeader
+			count={linesListContext.data.filtered.length}
+			search={<SearchField onChange={linesListContext.filters.search.set} value={linesListContext.filters.search.value} />}
+			title="Linhas"
+			actions={(
+				<Menu icon={IconDots} label="Mais opções">
+					<MenuLabel>Ações</MenuLabel>
 					<MenuItem
-						leftSection={<IconFileZip size={20} />}
-						onClick={openSteppExtractModal}
-						title="Exportar GTFS STePP"
+						disabled={!linesListContext.flags.canCreate}
+						leftSection={<IconPlus size={20} />}
+						onClick={openCreateLineModal}
+						title="Nova linha"
 					/>
-				</HasPermission>
-				<MenuItem
-					leftSection={<IconSearch size={20} />}
-					onClick={openVkmModal}
-					title="Consultar VKM"
-				/>
-			</Menu>
-		</Toolbar>
+					<MenuItem
+						leftSection={<IconFileDownload size={20} />}
+						onClick={openGtfsExportModal}
+						title="Exportar GTFS"
+					/>
+					<HasPermission action="extract-stepp" scope="lines">
+						<MenuItem
+							leftSection={<IconFileZip size={20} />}
+							onClick={openSteppExtractModal}
+							title="Exportar GTFS STePP"
+						/>
+					</HasPermission>
+					<MenuItem
+						leftSection={<IconSearch size={20} />}
+						onClick={openVkmModal}
+						title="Consultar VKM"
+					/>
+				</Menu>
+			)}
+		/>
 	);
 
 	//
