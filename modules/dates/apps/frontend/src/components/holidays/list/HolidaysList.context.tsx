@@ -1,6 +1,6 @@
 'use client';
 
-import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-annotations-agencies-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { fetchApiData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';

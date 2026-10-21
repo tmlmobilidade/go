@@ -1,0 +1,40 @@
+{
+	"annotations": {
+		"create": {
+			"title": "Nova anotação"
+		},
+		"dates": {
+			"prompt": "Selecione as datas da ocorrência",
+			"removeMonth": "Remover mês",
+			"selectMonth": "Selecionar mês"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida.",
+			"confirmTitle": "Apagar anotação"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores afetados"
+			},
+			"description": {
+				"label": "Descrição",
+				"placeholder": "Descrição da ocorrência"
+			},
+			"title": {
+				"label": "Título",
+				"placeholder": "Ex: Greve de transportes"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"dates": "Datas",
+				"id": "#ID",
+				"title": "Título"
+			},
+			"title": "Anotações"
+		}
+	}
+}

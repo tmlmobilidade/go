@@ -1,0 +1,40 @@
+{
+	"annotations": {
+		"create": {
+			"title": "New annotation"
+		},
+		"dates": {
+			"prompt": "Select occurrence dates",
+			"removeMonth": "Remove month",
+			"selectMonth": "Select month"
+		},
+		"detail": {
+			"cancel": "Cancel",
+			"confirm": "Delete",
+			"confirmMessage": "Are you sure you want to delete this occurrence? This cannot be undone.",
+			"confirmTitle": "Delete annotation"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Affected operators"
+			},
+			"description": {
+				"label": "Description",
+				"placeholder": "Occurrence description"
+			},
+			"title": {
+				"label": "Title",
+				"placeholder": "E.g. Transport strike"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operators",
+				"dates": "Dates",
+				"id": "#ID",
+				"title": "Title"
+			},
+			"title": "Annotations"
+		}
+	}
+}

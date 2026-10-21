@@ -1,6 +1,6 @@
 'use client';
 
-import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-annotations-agencies-data';
 import { DatesSelector } from '@/components/holidays/detail/HolidaysDatesSelector';
 import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
 import { HolidaysDetailHeader } from '@/components/holidays/detail/HolidaysDetailHeader';

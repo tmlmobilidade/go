@@ -1,6 +1,6 @@
 'use client';
 
-import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-annotations-agencies-data';
 import { useHolidayCreateContext } from '@/components/holidays/create/HolidayCreate.context';
 import { HolidaySchema } from '@tmlmobilidade/go-types-dates';
 import { MultiSelect, Section, Textarea, TextInput } from '@tmlmobilidade/ui';

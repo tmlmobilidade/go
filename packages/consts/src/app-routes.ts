@@ -240,6 +240,7 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('dates', 'api_url')}`,
 
 		// ANNOTATIONS
+		ANNOTATIONS_CREATE: `${getModuleConfig('dates', 'api_url')}/annotations/create`,
 		ANNOTATIONS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}`,
 		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}/lock`,
 		ANNOTATIONS_LIST: `${getModuleConfig('dates', 'api_url')}/annotations/list`,
