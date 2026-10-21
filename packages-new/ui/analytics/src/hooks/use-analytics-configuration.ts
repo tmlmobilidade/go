@@ -7,7 +7,7 @@ import { type AnalyticsConfiguration, type AnalyticsContextProps } from '../type
 /* * */
 
 /** Resolves explicit settings and loads runtime configuration when no API key is supplied. */
-export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }: AnalyticsContextProps, onError: (cause: unknown) => void, onLoad: () => void) {
+export function useAnalyticsConfiguration({ apiKey, configurationUrl, experimentDeploymentKey, options }: AnalyticsContextProps, onError: (cause: unknown) => void, onLoad: () => void) {
 	const [configuration, setConfiguration] = useState<{
 		url: string
 		value: AnalyticsConfiguration
@@ -16,6 +16,7 @@ export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }:
 	const remoteConfiguration = configuration?.url === configurationUrl ? configuration?.value : undefined;
 	// Explicit props take precedence over values returned by the configuration endpoint.
 	const resolvedApiKey = apiKey ?? remoteConfiguration?.apiKey;
+	const resolvedExperimentDeploymentKey = experimentDeploymentKey ?? remoteConfiguration?.experimentDeploymentKey;
 	const resolvedOptions = useMemo(() => remoteConfiguration ? { ...remoteConfiguration.options, ...options } : options, [remoteConfiguration, options]);
 
 	// Keep the network request in React's lifecycle so URL changes and unmounts cancel it.
@@ -46,5 +47,5 @@ export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }:
 		};
 	}, [apiKey, configurationUrl, onError, onLoad]);
 
-	return { apiKey: resolvedApiKey, options: resolvedOptions };
+	return { apiKey: resolvedApiKey, experimentDeploymentKey: resolvedExperimentDeploymentKey, options: resolvedOptions };
 }

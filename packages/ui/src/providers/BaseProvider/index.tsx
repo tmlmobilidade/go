@@ -89,6 +89,7 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 							<AnalyticsContextProvider
 								apiKey={analytics?.apiKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY}
 								configurationUrl={analytics?.configurationUrl ?? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/analytics`}
+								experimentDeploymentKey={analytics?.experimentDeploymentKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY}
 								options={analyticsOptions}
 								user={analyticsUser}
 							>
