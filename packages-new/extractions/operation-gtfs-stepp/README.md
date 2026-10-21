@@ -28,8 +28,11 @@ and no holiday collection is queried.
   and nonempty block IDs use `plan_<encoded plan ID>:<encoded source ID>` to keep
   references separate even when source IDs repeat.
 - Agency, route and stop IDs stay unchanged. Identical exported rows are shared.
-  Conflicting definitions of the same ID fail with the ID and plan in the error;
-  no source is silently chosen over another.
+  For each route or stop, the latest plan supplies `route_long_name`,
+  `route_short_name`, and `stop_name`. Latest means greatest original `active_from`,
+  then `created_at`, then plan ID for deterministic ties, regardless of processing
+  order or clipped export dates. One final row per public ID is written after all
+  plans have been merged. Differences in other fields still fail with diagnostics.
 - Existing `routes_stepp.txt` rows are preserved once per used route, including
   their circular flag. These rows have no standard pattern key, so all rows for
   a used route are retained. Missing extension fields fall back to `routes.txt`,
@@ -43,8 +46,26 @@ and no holiday collection is queried.
 
 Temporary source ZIPs are removed after each plan and never enter the output ZIP.
 
+## Logs
+
+Each run lists the extraction ID, requested agency/dates, included plan IDs,
+active and clipped date ranges, and normalized attachment IDs. Per-plan logs
+report download/unzip durations, source filenames, CSV record counts, selected
+and skipped trips, and the exported row counts. A failed plan identifies the
+processing stage.
+
+Conflicting agency, route or stop definitions report the file and public ID,
+both plan IDs and export ranges, and every differing field with both values.
+Values are JSON-quoted so empty strings and special characters are visible.
+The same details are available in structured log attributes. Name changes log
+both values and the winning plan instead of stopping the extraction. Route and
+stop provenance advances to the latest plan even when its names are identical.
+Other conflicting fields still stop the extraction. Signed download URLs are
+not logged.
+
 ## Validation
 
 Run `npm run build`, `npm test`, and `npm exec eslint src` from this package.
 Fixtures cover calendar exceptions, range boundaries, source-field preservation,
-merged references, conflicting public IDs and missing referenced data.
+merged references, latest-plan names in either processing order, deterministic
+ties, conflicting non-name fields and missing referenced data.

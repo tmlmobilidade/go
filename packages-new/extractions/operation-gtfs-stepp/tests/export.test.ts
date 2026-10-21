@@ -1,13 +1,14 @@
 /* * */
 
 import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
 
-import { exportPlanGtfs } from '../src/main.js';
+import { exportPlanGtfs, writeSharedFiles } from '../src/main.js';
 import { createSteppWriters } from '../src/writers.js';
 
 /* * */
@@ -55,8 +56,10 @@ async function withExport(callback: (options: ExportOptions, outputDirectory: st
 			agencyCode: '41',
 			endDate: '20261007',
 			namespaceIds: false,
+			planActiveFrom: 20261001,
+			planCreatedAt: 1,
 			planId: 'plan',
-			sharedRows: new Map<string, string>(),
+			sharedRows: new Map(),
 			sourceDirectory,
 			startDate: '20261005',
 			writers,
@@ -68,6 +71,7 @@ async function withExport(callback: (options: ExportOptions, outputDirectory: st
 }
 
 async function closeWriters(options: ExportOptions) {
+	await writeSharedFiles(options.sharedRows, options.writers);
 	await Promise.all(Object.values(options.writers).map(writer => writer.close()));
 }
 
@@ -228,22 +232,146 @@ test('merges plans with overlapping IDs while preserving every trip, calendar an
 	});
 });
 
-for (const conflict of [
-	{ fileName: 'agency.txt', from: 'Operator', to: 'Different operator' },
-	{ fileName: 'routes.txt', from: 'Source route description', to: 'Different route' },
-	{ fileName: 'stops.txt', from: 'Terminal B', to: 'Different stop' },
+for (const newestFirst of [false, true]) {
+	test(`uses the latest plan's route and stop names when processed ${newestFirst ? 'first' : 'last'}`, async (context) => {
+		const logs = context.mock.method(Logger, 'info', () => {});
+		await withExport(async (options, outputDirectory, directory) => {
+			const updated = makeFeed();
+			updated['routes.txt'] = updated['routes.txt'].replace('1009,41,1009,Terminal A - Terminal B', '1009,41,New short name,New origin - Terminal B');
+			updated['stops.txt'] = updated['stops.txt'].replace('B,002,Terminal B', 'B,002,Renamed terminal');
+			const newerSource = path.join(directory, 'newer-source');
+			await writeFeed(newerSource, updated);
+			// Both plans have the same clipped dates; precedence uses their original active_from.
+			const older = { ...options, namespaceIds: true, planActiveFrom: 20261001, planCreatedAt: 20, planId: 'older' };
+			const newer = { ...options, namespaceIds: true, planActiveFrom: 20261005, planCreatedAt: 10, planId: 'newer', sourceDirectory: newerSource };
+			const ordered = newestFirst ? [newer, older] : [older, newer];
+			await exportPlanGtfs(ordered[0]);
+			// Flushing streaming writers must not lock in an obsolete public definition.
+			await Promise.all(Object.values(options.writers).map(writer => writer.close()));
+			await exportPlanGtfs(ordered[1]);
+			await closeWriters(options);
+
+			const routes = await readRows(outputDirectory, 'routes.txt');
+			assert.equal(routes.length, 1);
+			assert.equal(routes[0].route_id, '1009');
+			assert.equal(routes[0].route_short_name, 'New short name');
+			assert.equal(routes[0].route_long_name, 'New origin - Terminal B');
+			const stops = await readRows(outputDirectory, 'stops.txt');
+			assert.equal(stops.length, 2);
+			assert.equal(stops.find(row => row.stop_id === 'B')?.stop_name, 'Renamed terminal');
+			const trips = await readRows(outputDirectory, 'trips.txt');
+			assert.equal(trips.length, 2);
+			assert.ok(trips.every(row => row.route_id === '1009'));
+			const stopTimes = await readRows(outputDirectory, 'stop_times.txt');
+			assert.equal(stopTimes.length, 4);
+			assert.ok(stopTimes.every(row => stops.some(stop => stop.stop_id === row.stop_id)));
+			const nameLogs = logs.mock.calls.map(call => call.arguments[0]).filter(log => typeof log === 'object' && !(log instanceof Error) && log.attributes?.event === 'operation_gtfs_stepp.name_merge');
+			assert.equal(nameLogs.length, 2);
+			for (const log of nameLogs) {
+				assert.ok(typeof log === 'object' && !(log instanceof Error));
+				assert.equal(log.attributes?.chosen_plan_id, 'newer');
+				assert.equal(log.attributes?.replaced, !newestFirst);
+				assert.match(log.message ?? '', /using newer plan "newer"/);
+			}
+		});
+	});
+}
+
+test('an identical newer plan prevents an older plan from reverting its names', async () => {
+	await withExport(async (options, outputDirectory, directory) => {
+		const intermediate = makeFeed();
+		intermediate['routes.txt'] = intermediate['routes.txt'].replace('Terminal A - Terminal B', 'Intermediate route name');
+		intermediate['stops.txt'] = intermediate['stops.txt'].replace('B,002,Terminal B', 'B,002,Intermediate stop name');
+		const intermediateSource = path.join(directory, 'intermediate-source');
+		await writeFeed(intermediateSource, intermediate);
+		await exportPlanGtfs({ ...options, namespaceIds: true, planActiveFrom: 20261001, planId: 'first' });
+		await exportPlanGtfs({ ...options, namespaceIds: true, planActiveFrom: 20261005, planId: 'latest' });
+		await exportPlanGtfs({ ...options, namespaceIds: true, planActiveFrom: 20261003, planId: 'intermediate', sourceDirectory: intermediateSource });
+		await closeWriters(options);
+		assert.equal((await readRows(outputDirectory, 'routes.txt'))[0].route_long_name, 'Terminal A - Terminal B');
+		assert.equal((await readRows(outputDirectory, 'stops.txt')).find(row => row.stop_id === 'B')?.stop_name, 'Terminal B');
+	});
+});
+
+for (const tie of [
+	{ name: 'creation timestamp', newerCreatedAt: 2, newerId: 'A', olderCreatedAt: 1, olderId: 'Z' },
+	{ name: 'plan ID', newerCreatedAt: 1, newerId: 'Z', olderCreatedAt: 1, olderId: 'A' },
 ]) {
-	test(`rejects conflicting ${conflict.fileName} metadata across merged plans`, async () => {
+	test(`breaks equal active_from ties by ${tie.name}`, async () => {
+		await withExport(async (options, outputDirectory, directory) => {
+			const newer = makeFeed();
+			newer['routes.txt'] = newer['routes.txt'].replace('Terminal A - Terminal B', 'Latest route name');
+			const newerSource = path.join(directory, 'newer-source');
+			await writeFeed(newerSource, newer);
+			await exportPlanGtfs({ ...options, namespaceIds: true, planCreatedAt: tie.newerCreatedAt, planId: tie.newerId, sourceDirectory: newerSource });
+			await exportPlanGtfs({ ...options, namespaceIds: true, planCreatedAt: tie.olderCreatedAt, planId: tie.olderId });
+			await closeWriters(options);
+			const routes = await readRows(outputDirectory, 'routes.txt');
+			assert.equal(routes.length, 1);
+			assert.equal(routes[0].route_long_name, 'Latest route name');
+		});
+	});
+}
+
+for (const conflict of [
+	{ field: 'agency_name', fileName: 'agency.txt', from: 'Operator', to: 'Different operator' },
+	{ field: 'route_desc', fileName: 'routes.txt', from: 'Source route description', to: 'Different route' },
+	{ field: 'stop_desc', fileName: 'stops.txt', from: 'Source B description', to: 'Different stop description' },
+]) {
+	test(`rejects conflicting ${conflict.fileName} metadata across merged plans`, async (context) => {
+		const logs = context.mock.method(Logger, 'error', () => {});
 		await withExport(async (options, _outputDirectory, directory) => {
 			const conflicting = makeFeed();
 			conflicting[conflict.fileName] = conflicting[conflict.fileName].replace(conflict.from, conflict.to);
 			const otherSource = path.join(directory, 'conflicting-source');
 			await writeFeed(otherSource, conflicting);
 			await exportPlanGtfs({ ...options, namespaceIds: true, planId: 'first' });
-			await assert.rejects(exportPlanGtfs({ ...options, namespaceIds: true, planId: 'second', sourceDirectory: otherSource }), /conflict/i);
+			// Route and stop provenance follows the newest plan, even when its names match.
+			await exportPlanGtfs({ ...options, namespaceIds: true, planId: 'identical' });
+			const previousPlan = conflict.fileName === 'agency.txt' ? 'first' : 'identical';
+			await assert.rejects(exportPlanGtfs({ ...options, endDate: '20261009', namespaceIds: true, planId: 'second', sourceDirectory: otherSource, startDate: '20261008' }), (error: unknown) => {
+				assert.ok(error instanceof Error);
+				assert.match(error.message, /conflict/i);
+				assert.ok(error.message.includes(conflict.fileName));
+				assert.ok(error.message.includes(`plan "${previousPlan}", exported dates 20261005–20261007`));
+				assert.ok(error.message.includes('plan "second", exported dates 20261008–20261009'));
+				assert.ok(error.message.includes(`${conflict.field}: plan "${previousPlan}" = ${JSON.stringify(conflict.from)}; plan "second" = ${JSON.stringify(conflict.to)}`));
+				return true;
+			});
+			assert.equal(logs.mock.callCount(), 1);
+			const log = logs.mock.calls[0].arguments[0];
+			assert.ok(typeof log === 'object' && !(log instanceof Error));
+			assert.deepEqual(log.attributes?.differences, [{ current: conflict.to, field: conflict.field, previous: conflict.from }]);
+			assert.equal(log.attributes?.previous_plan_id, previousPlan);
+			assert.equal(log.attributes?.current_plan_id, 'second');
 		});
 	});
 }
+
+test('reports every changed route field, including empty and quoted values', async (context) => {
+	const logs = context.mock.method(Logger, 'error', () => {});
+	await withExport(async (options, _outputDirectory, directory) => {
+		const conflicting = makeFeed();
+		conflicting['routes.txt'] = 'route_id,agency_id,route_short_name,route_long_name,route_desc,route_type\n1009,41,1009,"New ""quoted"" name",,3\n';
+		const otherSource = path.join(directory, 'conflicting-source');
+		await writeFeed(otherSource, conflicting);
+		await exportPlanGtfs({ ...options, namespaceIds: true, planId: 'first' });
+		await assert.rejects(exportPlanGtfs({ ...options, namespaceIds: true, planId: 'LI43M', sourceDirectory: otherSource }), (error: unknown) => {
+			assert.ok(error instanceof Error);
+			assert.ok(error.message.includes('route_id "1009"'));
+			assert.ok(error.message.includes('Different fields (2)'));
+			assert.ok(error.message.includes(`plan "LI43M" = ${JSON.stringify('New "quoted" name')}`));
+			assert.ok(error.message.includes('route_desc: plan "first" = "Source route description"; plan "LI43M" = ""'));
+			return true;
+		});
+		const log = logs.mock.calls[0].arguments[0];
+		assert.ok(typeof log === 'object' && !(log instanceof Error));
+		assert.deepEqual(log.attributes?.differences, [
+			{ current: 'New "quoted" name', field: 'route_long_name', previous: 'Terminal A - Terminal B' },
+			{ current: '', field: 'route_desc', previous: 'Source route description' },
+		]);
+	});
+});
 
 for (const reference of [
 	{ fileName: 'routes.txt', id: '1009' },
