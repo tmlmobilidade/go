@@ -8,7 +8,7 @@ import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
  * Cleans expired session documents
  * from the "sessions" collection.
  */
-export async function cleanExpiredSessions() {
+export async function cleanExpiredSessionsTask() {
 	try {
 		const timer = new Timer();
 		Logger.info({ message: `Cleaning expired "sessions" documents...` });

@@ -1,10 +1,10 @@
 /* * */
 
-import { locationPermissionMatch } from '@/utils/location-permission-match.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { type StopsListFilters, StopsListFiltersSchema, type StopsListResponse, StopsListResponseSchema } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationPermissionMatch } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -58,15 +58,15 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 		{
 			$match: {
 				...(locationAccess.allowAll ? {} : locationPermissionMatch(locationAccess.values)),
+				...(validatedFilters.data.legacy_ids.length ? { legacy_ids: { $in: validatedFilters.data.legacy_ids } } : {}),
 				'flags.agency_ids': { $in: validatedFilters.data.agency_ids ?? [] },
-				'location.neighbourhood.osm_id': { $in: validatedFilters.data.location_neighbourhood_ids.map(Number) },
 				'location.primary.osm_id': { $in: validatedFilters.data.location_primary_ids.map(Number) },
 				'location.secondary.osm_id': { $in: validatedFilters.data.location_secondary_ids.map(Number) },
 				'location.tertiary.osm_id': { $in: validatedFilters.data.location_tertiary_ids.map(Number) },
 			},
 		},
 		{ $project: Object.fromEntries(Object.keys(StopsListResponseSchema.shape).map(key => [key, 1])) },
-		{ $sort: { created_at: 1 } },
+		{ $sort: { created_at: -1 } },
 	];
 
 	const aggregationResult = await goDb.infrastructure.stops.aggregate(pipeline);

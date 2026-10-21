@@ -1,10 +1,15 @@
 /* * */
 
-import { AnnotationsController } from '@/endpoints/annotations/annotations.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { createAnnotationHandler } from './handlers/create-annotation.js';
+import { deleteAnnotationHandler } from './handlers/delete-annotation.js';
+import { getAnnotationHandler } from './handlers/get-annotation.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';
+import { listAnnotationsHandler } from './handlers/list-annotations.js';
+import { lockAnnotationHandler } from './handlers/lock-annotation.js';
+import { updateAnnotationHandler } from './handlers/update-annotation.js';
 
 /* * */
 
@@ -18,19 +23,47 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/list', { preHandler: authorizationMiddleware('annotations', ['read']) }, AnnotationsController.getAll);
+		instance.get(
+			'/list',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.read]) },
+			listAnnotationsHandler,
+		);
 
-		instance.get('/list-agencies', { preHandler: authorizationMiddleware('annotations', ['read', 'create']) }, listAgenciesHandler);
+		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.read, PermissionCatalog.all.annotations.actions.create]) },
+			listAgenciesHandler,
+		);
 
-		instance.get('/:id', { preHandler: authorizationMiddleware('annotations', ['read']) }, AnnotationsController.getById);
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.read]) },
+			getAnnotationHandler,
+		);
 
-		instance.post('/', { preHandler: authorizationMiddleware('annotations', ['create']) }, createAnnotationHandler);
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.create]) },
+			createAnnotationHandler,
+		);
 
-		instance.put('/:id', { preHandler: authorizationMiddleware('annotations', ['update']) }, AnnotationsController.update);
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.update]) },
+			updateAnnotationHandler,
+		);
 
-		instance.get('/:id/lock', { preHandler: authorizationMiddleware('annotations', ['lock']) }, AnnotationsController.lock);
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.lock]) },
+			lockAnnotationHandler,
+		);
 
-		instance.delete('/:id', { preHandler: authorizationMiddleware('annotations', ['delete']) }, AnnotationsController.delete);
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.delete]) },
+			deleteAnnotationHandler,
+		);
 
 		next();
 	},

@@ -3,7 +3,7 @@
 import { openCreateFareModal } from '@/components/fares/create/FareCreate.modal';
 import { useFaresListContext } from '@/components/fares/list/FaresList.context';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, ListHeader, SearchField } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -19,12 +19,12 @@ export function FaresListHeader() {
 	// B. Render components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps singleLine>Tarifas</Label>
-			<Spacer />
-			<SearchField onChange={faresListContext.filters.search.set} value={faresListContext.filters.search.value} />
-			<Button disabled={!faresListContext.flags.canCreate} label="Nova tarifa" leftSection={<IconPlus />} onClick={openCreateFareModal} />
-		</Toolbar>
+		<ListHeader
+			actions={<Button disabled={!faresListContext.flags.canCreate} label="Nova tarifa" leftSection={<IconPlus />} onClick={openCreateFareModal} />}
+			count={faresListContext.data.filtered.length}
+			search={<SearchField onChange={faresListContext.filters.search.set} value={faresListContext.filters.search.value} />}
+			title="Tarifas"
+		/>
 	);
 
 	//

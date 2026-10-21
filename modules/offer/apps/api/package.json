@@ -17,16 +17,17 @@
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src ./tests && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src ./tests",
-		"test": "node --import tsx --test tests/*.test.ts"
+		"test": "node --experimental-test-module-mocks --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
+		"@fastify/multipart": "10.1.1",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-offer-pckg-types": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-types-offer": "*",

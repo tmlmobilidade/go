@@ -23,16 +23,18 @@ export const CreateZoneSchema = z.object({
 	name: ZoneSchema.shape.name,
 }).merge(
 	ZoneSchema.omit({
+		_id: true,
 		agency_ids: true,
 		code: true,
 		created_at: true,
+		created_by: true,
 		name: true,
 		updated_at: true,
+		updated_by: true,
 	}).partial(),
 );
 
 export const UpdateZoneSchema = CreateZoneSchema
-	.omit({ created_by: true })
 	.partial();
 
 /* * */

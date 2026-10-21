@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type LineNormalized, type Route, type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
+import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
+import { type Route, type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
@@ -16,7 +17,7 @@ interface RouteDetailContextState {
 	data: {
 		form: UseFormReturnType<UpdateRouteDto>
 		id: string
-		line: LineNormalized | null
+		line: null | PopulatedLine
 		route: null | Route
 	}
 	flags: DetailContextStateTemplate['flags']
@@ -52,8 +53,8 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 		fetcher: async url => await fetchApiData<Route>({ url }),
 	});
 
-	const { data: lineData, mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
-		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	const { data: lineData, mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
 	});
 
 	//

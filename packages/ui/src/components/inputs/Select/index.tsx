@@ -2,24 +2,28 @@
 
 import { Select as MantineSelect, type SelectProps as MantineSelectProps } from '@mantine/core';
 
+export type { ComboboxItem, ComboboxItemGroup } from '@mantine/core';
+
 /* * */
 
 export interface SelectDataItem {
 	checked?: boolean
+	description?: string
 	disabled?: boolean
+	keywords?: string
 	label: string
 	value: string
 };
 
 /* * */
 
-export interface SelectProps extends Omit<MantineSelectProps, 'allowDeselect' | 'data'> {
+export interface SelectProps extends MantineSelectProps {
 
 	/**
 	 * The data items to be displayed in the Select component.
-	 * Use the `SelectDataItem` interface to define properties for each item.
+	 * Supports Mantine's grouped options as well as `SelectDataItem` values.
 	 */
-	data?: SelectDataItem[]
+	data?: MantineSelectProps['data']
 
 };
 

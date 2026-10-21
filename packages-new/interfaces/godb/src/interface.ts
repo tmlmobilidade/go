@@ -7,6 +7,7 @@ import { CoreDatabase } from './databases/core.js';
 import { InfrastructureDatabase } from './databases/infrastructure.js';
 import { OfferDatabase } from './databases/offer.js';
 import { OperationDatabase } from './databases/operation.js';
+import { PerformanceDatabase } from './databases/performance.js';
 
 /* * */
 
@@ -19,6 +20,7 @@ class GoDBClass {
 	public readonly infrastructure: InfrastructureDatabase;
 	public readonly offer: OfferDatabase;
 	public readonly operation: OperationDatabase;
+	public readonly performance: PerformanceDatabase;
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
@@ -40,6 +42,7 @@ class GoDBClass {
 		this.infrastructure = new InfrastructureDatabase(mongoClient);
 		this.offer = new OfferDatabase(mongoClient);
 		this.operation = new OperationDatabase(mongoClient);
+		this.performance = new PerformanceDatabase(mongoClient);
 	}
 }
 

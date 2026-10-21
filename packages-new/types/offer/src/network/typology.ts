@@ -25,16 +25,18 @@ export const CreateTypologySchema = z.object({
 	name: TypologySchema.shape.name,
 }).merge(
 	TypologySchema.omit({
+		_id: true,
 		agency_ids: true,
 		code: true,
 		created_at: true,
+		created_by: true,
 		name: true,
 		updated_at: true,
+		updated_by: true,
 	}).partial(),
 );
 
 export const UpdateTypologySchema = CreateTypologySchema
-	.omit({ created_by: true })
 	.partial();
 
 /* * */

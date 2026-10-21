@@ -1,8 +1,6 @@
 'use client';
 
 import { IconChevronRight } from '@tabler/icons-react';
-import { useRouter } from 'next/navigation';
-import { type RefObject } from 'react';
 
 import styles from './styles.module.css';
 
@@ -11,47 +9,22 @@ import styles from './styles.module.css';
 interface RegularListItemProps {
 	ariaLabel?: string
 	children?: React.ReactNode
-	href?: string
 	icon?: React.ReactNode
-	onClick?: () => void
-	refFn?: RefObject<HTMLDivElement>
-	style?: React.CSSProperties
+	onClick: () => void
 }
 
 /* * */
 
-export function RegularListItem({ ariaLabel, children, href, icon, onClick, refFn, style }: RegularListItemProps) {
-	//
-
-	//
-	// A. Setup variables
-
-	const router = useRouter();
-
-	//
-	// B. Handle actions
-
-	const handleClick = () => {
-		if (onClick) onClick();
-		else if (!href || href === '#') return;
-		else router.push(href);
-	};
-
-	//
-	// C. Render components
-
+export function RegularListItem({ ariaLabel, children, icon, onClick }: RegularListItemProps) {
 	return (
-		<div
-			ref={refFn || undefined}
+		<button
 			aria-label={ariaLabel}
 			className={styles.container}
-			data-disabled={href === '#'}
-			onClick={handleClick}
-			role="link"
-			style={style}
+			onClick={onClick}
+			type="button"
 		>
 			{icon && (
-				<div className={styles.iconWrapper}>
+				<div aria-hidden="true" className={styles.iconWrapper}>
 					{icon}
 				</div>
 			)}
@@ -60,11 +33,9 @@ export function RegularListItem({ ariaLabel, children, href, icon, onClick, refF
 					{children}
 				</div>
 			)}
-			{href !== '#' && (
-				<div className={styles.arrowWrapper}>
-					<IconChevronRight size={20} />
-				</div>
-			)}
-		</div>
+			<div aria-hidden="true" className={styles.arrowWrapper}>
+				<IconChevronRight size={20} />
+			</div>
+		</button>
 	);
 }

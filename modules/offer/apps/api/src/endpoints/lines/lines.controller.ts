@@ -5,7 +5,8 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateLineDto, type Line, type LineNormalized, type UpdateLineDto } from '@tmlmobilidade/go-types-offer';
+import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
+import { type CreateLineDto, type Line, type UpdateLineDto } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
@@ -18,7 +19,7 @@ export class LinesController {
 	 * @param request Fastify request containing line data
 	 * @param reply Fastify reply
 	 */
-	static async create(request: FastifyRequest<{ Body: CreateLineDto }>, reply: FastifyReply<LineNormalized>) {
+	static async create(request: FastifyRequest<{ Body: CreateLineDto }>, reply: FastifyReply<PopulatedLine>) {
 		//
 
 		//
@@ -119,7 +120,7 @@ export class LinesController {
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
-	static async getAll(request: FastifyRequest, reply: FastifyReply<LineNormalized[]>) {
+	static async getAll(request: FastifyRequest, reply: FastifyReply<PopulatedLine[]>) {
 		//
 
 		//
@@ -164,7 +165,7 @@ export class LinesController {
 	 * @param request Fastify request containing line ID in params
 	 * @param reply Fastify reply
 	 */
-	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<LineNormalized>) {
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<PopulatedLine>) {
 		//
 
 		//
@@ -222,7 +223,7 @@ export class LinesController {
 	 * @param request Fastify request containing line ID in params
 	 * @param reply Fastify reply
 	 */
-	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<LineNormalized>) {
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<PopulatedLine>) {
 		//
 
 		//
@@ -280,7 +281,7 @@ export class LinesController {
 	 * @param request Fastify request containing line ID in params and update data in body
 	 * @param reply Fastify reply
 	 */
-	static async update(request: FastifyRequest<{ Body: UpdateLineDto, Params: { id: string } }>, reply: FastifyReply<LineNormalized>) {
+	static async update(request: FastifyRequest<{ Body: UpdateLineDto, Params: { id: string } }>, reply: FastifyReply<PopulatedLine>) {
 		//
 
 		//

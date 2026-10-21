@@ -1,0 +1,12 @@
+{
+	"ACCESSIBILITY_ISSUE": "Accessibility",
+	"ADDITIONAL_SERVICE": "Additional service",
+	"DETOUR": "Diversion",
+	"MODIFIED_SERVICE": "Modified service",
+	"NO_SERVICE": "Service unavailable",
+	"ON_BOARD_SALE_ISSUE": "On-board sale issue",
+	"REALTIME_INFO_ISSUE": "Real-time information issue",
+	"REDUCED_SERVICE": "Reduced service",
+	"SIGNIFICANT_DELAYS": "Significant delays",
+	"STOP_MOVED": "Stop relocated"
+}
