@@ -87,6 +87,16 @@ export async function updateTypologyHandler(request: FastifyRequest<{ Body: Upda
 	}
 
 	//
+	// Locked records must be unlocked through the dedicated lock action first.
+
+	if (typologyData.is_locked) {
+		return sendErrorApiResponse(reply, {
+			error: 'Cannot update a locked typology. Unlock it first.',
+			status_code: '409',
+		});
+	}
+
+	//
 	// Update the typology with parsed client fields and the authenticated updater.
 
 	const updatedTypology = await goDb.offer.typologies.updateById(typologyData._id, {

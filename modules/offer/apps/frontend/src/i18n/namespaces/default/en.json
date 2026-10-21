@@ -156,5 +156,58 @@
 			},
 			"title": "Periods"
 		}
+	},
+	"typologies": {
+		"create": {
+			"title": "New typology"
+		},
+		"detail": {
+			"cancel": "Cancel",
+			"confirm": "Delete",
+			"confirmMessage": "Delete this typology? This action cannot be undone.",
+			"confirmTitle": "Delete typology"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operators"
+			},
+			"code": {
+				"label": "Code",
+				"placeholder": "Ex: LONGA"
+			},
+			"color": {
+				"label": "Background colour"
+			},
+			"default_onboard_fare_ids": {
+				"label": "Default onboard fares"
+			},
+			"default_prepaid_fare_id": {
+				"label": "Default prepaid fare"
+			},
+			"name": {
+				"label": "Name",
+				"placeholder": "E.g. Long line"
+			},
+			"text_color": {
+				"label": "Text colour"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operators",
+				"code": "Code",
+				"id": "#ID",
+				"name": "Name"
+			},
+			"select": "Select a typology",
+			"title": "Typologies"
+		},
+		"noAccess": "You do not have permission to access this page.",
+		"preview": "Example line",
+		"sections": {
+			"basic": "Basic configuration",
+			"fares": "Associated fares",
+			"styles": "Styles"
+		}
 	}
 }

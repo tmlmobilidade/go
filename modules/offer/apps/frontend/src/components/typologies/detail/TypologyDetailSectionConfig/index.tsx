@@ -1,9 +1,13 @@
-/* * */
+'use client';
 
-import { useAgenciesData } from '@/components/common/use-agencies-data';
-import { useTypologyDetailContext } from '@/components/typologies/detail/TypologyDetail.context';
-import { TypologySchema } from '@tmlmobilidade/go-types-offer';
-import { Collapsible, MultiSelect, Section, TextInput } from '@tmlmobilidade/ui';
+import { CreateTypologySchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Collapsible, ErrorDisplay, MultiSelect, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useTypologiesAgenciesData } from '../../shared/use-typologies-agencies-data';
+import { useTypologiesDetailFormContext } from '../TypologiesDetailForm.context';
+
 /* * */
 
 export function TypologyDetailSectionConfig() {
@@ -12,42 +16,69 @@ export function TypologyDetailSectionConfig() {
 	//
 	// A. Setup variables
 
-	const typologyDetailContext = useTypologyDetailContext();
-
-	const { options: agencyOptions } = useAgenciesData();
+	const { t } = useTranslation();
+	const { capabilities, form } = useTypologiesDetailFormContext();
+	const { error, isLoading, options } = useTypologiesAgenciesData({ permissions: capabilities.editEnabled ? { actions: [PermissionCatalog.all.typologies.actions.update], scope: PermissionCatalog.all.typologies.scope } : undefined });
 
 	//
 	// B. Render components
 
 	return (
-		<Collapsible title="Configuração Básica" defaultOpen>
-			<Section gap="sm">
-				<TextInput
-					key={typologyDetailContext.data.form.key('name')}
-					disabled={typologyDetailContext.flags.isReadOnly}
-					label="Nome"
-					placeholder="Ex: Autocarro"
-					required={!TypologySchema.shape.name.isOptional()}
-					w="100%"
-					{...typologyDetailContext.data.form.getInputProps('name')}
+		<Collapsible title={t('default:typologies.sections.basic')} defaultOpen>
+			<Section gap="md">
+				{error && <ErrorDisplay message={error} />}
+
+				<StandardFormController
+					control={form.control}
+					name="name"
+					render={({ field, fieldState }) => (
+						<TextInput
+							error={fieldState.error?.message}
+							label={t('default:typologies.fields.name.label')}
+							maxLength={CreateTypologySchema.shape.name.maxLength}
+							onChange={field.onChange}
+							placeholder={t('default:typologies.fields.name.placeholder')}
+							readOnly={!capabilities.editEnabled}
+							value={field.value ?? ''}
+							w="100%"
+							withAsterisk={!CreateTypologySchema.shape.name.isOptional()}
+						/>
+					)}
 				/>
 
-				<TextInput
-					key={typologyDetailContext.data.form.key('code')}
-					disabled={typologyDetailContext.flags.isReadOnly}
-					label="Código"
-					placeholder="Ex: BUS"
-					required={!TypologySchema.shape.code.isOptional()}
-					w="100%"
-					{...typologyDetailContext.data.form.getInputProps('code')}
+				<StandardFormController
+					control={form.control}
+					name="code"
+					render={({ field, fieldState }) => (
+						<TextInput
+							error={fieldState.error?.message}
+							label={t('default:typologies.fields.code.label')}
+							maxLength={CreateTypologySchema.shape.code.maxLength}
+							onChange={field.onChange}
+							placeholder={t('default:typologies.fields.code.placeholder')}
+							readOnly={!capabilities.editEnabled}
+							value={field.value ?? ''}
+							w="100%"
+							withAsterisk={!CreateTypologySchema.shape.code.isOptional()}
+						/>
+					)}
 				/>
 
-				<MultiSelect
-					key={typologyDetailContext.data.form.key('agency_ids')}
-					data={agencyOptions}
-					disabled={typologyDetailContext.flags.isReadOnly}
-					label="Operadores"
-					{...typologyDetailContext.data.form.getInputProps('agency_ids')}
+				<StandardFormController
+					control={form.control}
+					name="agency_ids"
+					render={({ field, fieldState }) => (
+						<MultiSelect
+							data={options}
+							disabled={!capabilities.editEnabled || isLoading || !!error}
+							error={fieldState.error?.message}
+							label={t('default:typologies.fields.agency_ids.label')}
+							onChange={field.onChange}
+							value={field.value ?? []}
+							w="100%"
+							withAsterisk={!CreateTypologySchema.shape.agency_ids.isOptional()}
+						/>
+					)}
 				/>
 			</Section>
 		</Collapsible>

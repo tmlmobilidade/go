@@ -390,9 +390,12 @@ export const API_ROUTES = Object.freeze({
 		SHAPES_ROUTE_PREVIEW: `${getModuleConfig('offer', 'api_url')}/shapes/route-preview`,
 
 		// TYPOLOGIES
+		TYPOLOGIES_CREATE: `${getModuleConfig('offer', 'api_url')}/typologies/create`,
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${encodeURIComponent(id)}`,
 		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${encodeURIComponent(id)}/lock`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'api_url')}/typologies`,
+		TYPOLOGIES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/typologies/list-agencies`,
+		TYPOLOGIES_LIST_FARES: `${getModuleConfig('offer', 'api_url')}/typologies/list-fares`,
 
 		// VKM
 		VKM_CALCULATE: `${getModuleConfig('offer', 'api_url')}/vkm/calculate`,

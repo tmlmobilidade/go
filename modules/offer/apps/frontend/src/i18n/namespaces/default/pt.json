@@ -156,5 +156,58 @@
 			},
 			"title": "Períodos"
 		}
+	},
+	"typologies": {
+		"create": {
+			"title": "Nova tipologia"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "Tem a certeza que deseja apagar esta tipologia? Esta ação não pode ser revertida.",
+			"confirmTitle": "Apagar tipologia"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: LONGA"
+			},
+			"color": {
+				"label": "Cor do fundo"
+			},
+			"default_onboard_fare_ids": {
+				"label": "Tarifas de bordo por defeito"
+			},
+			"default_prepaid_fare_id": {
+				"label": "Tarifa pré-paga por defeito"
+			},
+			"name": {
+				"label": "Nome",
+				"placeholder": "Ex: Linha longa"
+			},
+			"text_color": {
+				"label": "Cor do texto"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nome"
+			},
+			"select": "Selecione uma tipologia",
+			"title": "Tipologias"
+		},
+		"noAccess": "Não tem permissão para aceder a esta página.",
+		"preview": "Linha de exemplo",
+		"sections": {
+			"basic": "Configuração básica",
+			"fares": "Tarifas associadas",
+			"styles": "Estilos"
+		}
 	}
 }

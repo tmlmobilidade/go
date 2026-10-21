@@ -156,5 +156,58 @@
 			},
 			"title": "Períodos"
 		}
+	},
+	"typologies": {
+		"create": {
+			"title": "Nueva tipología"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Eliminar esta tipología? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar tipología"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: LONGA"
+			},
+			"color": {
+				"label": "Color de fondo"
+			},
+			"default_onboard_fare_ids": {
+				"label": "Tarifas a bordo predeterminadas"
+			},
+			"default_prepaid_fare_id": {
+				"label": "Tarifa prepago predeterminada"
+			},
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Ej.: Línea larga"
+			},
+			"text_color": {
+				"label": "Color del texto"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nombre"
+			},
+			"select": "Seleccione una tipología",
+			"title": "Tipologías"
+		},
+		"noAccess": "No tiene permiso para acceder a esta página.",
+		"preview": "Línea de ejemplo",
+		"sections": {
+			"basic": "Configuración básica",
+			"fares": "Tarifas asociadas",
+			"styles": "Estilos"
+		}
 	}
 }

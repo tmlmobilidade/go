@@ -1,6 +1,6 @@
 /* * */
 
-import { TypologiesListFilterAgencies } from '@/components/typologies/list/TypologiesListFilterAgencies';
+import { TypologiesListFilterAgencies } from '@/components/typologies/list/filters/TypologiesListFilterAgencies';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
