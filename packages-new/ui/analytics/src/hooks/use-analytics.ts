@@ -8,6 +8,7 @@ import { type AnalyticsUserProperties } from '../types/user-properties';
 import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client';
 import { useAnalyticsConfiguration } from './use-analytics-configuration';
 import { useReplay } from './use-replay';
+import { useReplayFlag } from './use-replay-flag';
 
 /* * */
 
@@ -21,7 +22,7 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 		setError(cause instanceof Error ? cause : new Error(String(cause)));
 	}, []);
 	const clearError = useCallback(() => setError(undefined), []);
-	const { apiKey, options } = useAnalyticsConfiguration(configuration, handleError, clearError);
+	const { apiKey, experimentDeploymentKey, options } = useAnalyticsConfiguration(configuration, handleError, clearError);
 	const ready = Boolean(apiKey) && initialized?.apiKey === apiKey && initialized?.options === options;
 	const { startReplay, stopReplay } = useReplay(initialized, initializationRef, ready, handleError);
 
@@ -77,8 +78,11 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 		if (user !== undefined) identify(user);
 	}, [identify, user]);
 
+	// Register flag polling after synchronizing Analytics identity for this user.
+	const replayEnabled = useReplayFlag(initialized, experimentDeploymentKey, user?._id, ready, handleError);
+
 	return useMemo(() => ({
 		actions: { identify, startReplay, stopReplay, track },
-		flags: { error, ready },
-	}), [error, identify, ready, startReplay, stopReplay, track]);
+		flags: { error, ready, replayEnabled },
+	}), [error, identify, ready, replayEnabled, startReplay, stopReplay, track]);
 }

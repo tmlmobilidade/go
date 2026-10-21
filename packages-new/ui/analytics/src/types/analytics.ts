@@ -28,6 +28,8 @@ export interface AnalyticsContextState {
 	flags: {
 		error: Error | undefined
 		ready: boolean
+		/** Latest remote decision for the current user; false until a successful evaluation. */
+		replayEnabled: boolean
 	}
 }
 
