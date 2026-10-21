@@ -1,4 +1,5 @@
 export * from './events/index.js';
+export * from './fares/index.js';
 export * from './lines/populated-line.js';
 export * from './patterns/patterns-detail.js';
 export * from './patterns/patterns-import-gtfs-request.js';

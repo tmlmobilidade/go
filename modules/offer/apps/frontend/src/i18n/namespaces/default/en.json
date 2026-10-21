@@ -103,6 +103,68 @@
 			"title": "Service rules"
 		}
 	},
+	"fares": {
+		"create": {
+			"title": "New fare"
+		},
+		"detail": {
+			"cancel": "Cancel",
+			"confirm": "Delete",
+			"confirmMessage": "Delete this fare? This action cannot be undone.",
+			"confirmTitle": "Delete fare"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operators"
+			},
+			"code": {
+				"label": "Code",
+				"placeholder": "Ex: T1-BORDO"
+			},
+			"currency_type": {
+				"label": "Currency"
+			},
+			"name": {
+				"label": "Name",
+				"placeholder": "E.g. navegante® onboard T1"
+			},
+			"payment_method": {
+				"label": "Payment method"
+			},
+			"price": {
+				"label": "Price"
+			},
+			"transfers": {
+				"label": "Transfers"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operators",
+				"code": "Code",
+				"id": "#ID",
+				"name": "Name"
+			},
+			"select": "Select a fare",
+			"title": "Fares"
+		},
+		"noAccess": "You do not have permission to access this page.",
+		"options": {
+			"currency": {
+				"eur": "€ Euro"
+			},
+			"paymentMethod": {
+				"onboard": "Onboard payment (navegante® a bordo)",
+				"prepaid": "Prepaid (navegante® pré-pago)"
+			},
+			"transfers": {
+				"none": "No transfers",
+				"one": "One transfer",
+				"two": "Up to two transfers",
+				"unlimited": "Unlimited transfers"
+			}
+		}
+	},
 	"periods": {
 		"assignment": {
 			"acknowledge": "I understand and want to continue",

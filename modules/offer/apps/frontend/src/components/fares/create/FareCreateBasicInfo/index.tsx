@@ -1,9 +1,12 @@
 'use client';
 
-import { useAgenciesData } from '@/components/common/use-agencies-data';
-import { useFareCreateContext } from '@/components/fares/create/FareCreate.context';
-import { FareSchema } from '@tmlmobilidade/go-types-offer';
-import { MultiSelect, Section, TextInput } from '@tmlmobilidade/ui';
+import { CreateFareSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { ErrorDisplay, MultiSelect, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useFaresAgenciesData } from '../../shared/use-fares-agencies-data';
+import { useFaresCreateFormContext } from '../FaresCreateForm.context';
 
 /* * */
 
@@ -13,40 +16,69 @@ export function FareCreateBasicInfo() {
 	//
 	// A. Setup variables
 
-	const fareCreateContext = useFareCreateContext();
-	const { options: allAgencyOptions } = useAgenciesData();
+	const { t } = useTranslation();
+	const { capabilities, form } = useFaresCreateFormContext();
+	const { error, isLoading, options } = useFaresAgenciesData({ permissions: { actions: [PermissionCatalog.all.fares.actions.create], scope: PermissionCatalog.all.fares.scope } });
 
 	//
-	// B. Render Components
+	// B. Render components
 
 	return (
 		<Section gap="md">
-			<TextInput
-				label="Nome"
-				placeholder="Ex: navegante® a bordo T1"
-				required={!FareSchema.shape.name.isOptional()}
-				w="100%"
-				{...fareCreateContext.data.form.getInputProps('name')}
+			{error && <ErrorDisplay message={error} />}
+
+			<StandardFormController
+				control={form.control}
+				name="name"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label={t('default:fares.fields.name.label')}
+						maxLength={CreateFareSchema.shape.name.maxLength}
+						onChange={field.onChange}
+						placeholder={t('default:fares.fields.name.placeholder')}
+						readOnly={!capabilities.editEnabled}
+						value={field.value ?? ''}
+						w="100%"
+						withAsterisk={!CreateFareSchema.shape.name.isOptional()}
+					/>
+				)}
 			/>
 
-			<TextInput
-				label="Código"
-				placeholder="Ex: T1-BORDO"
-				required={!FareSchema.shape.code.isOptional()}
-				w="100%"
-				{...fareCreateContext.data.form.getInputProps('code')}
+			<StandardFormController
+				control={form.control}
+				name="code"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label={t('default:fares.fields.code.label')}
+						maxLength={CreateFareSchema.shape.code.maxLength}
+						onChange={field.onChange}
+						placeholder={t('default:fares.fields.code.placeholder')}
+						readOnly={!capabilities.editEnabled}
+						value={field.value ?? ''}
+						w="100%"
+						withAsterisk={!CreateFareSchema.shape.code.isOptional()}
+					/>
+				)}
 			/>
 
-			<MultiSelect
-				key={fareCreateContext.data.form.key('agency_ids')}
-				data={allAgencyOptions}
-				label="Operadores"
-				required={!FareSchema.shape.agency_ids.isOptional()}
-				w="100%"
-				{...fareCreateContext.data.form.getInputProps('agency_ids')}
+			<StandardFormController
+				control={form.control}
+				name="agency_ids"
+				render={({ field, fieldState }) => (
+					<MultiSelect
+						data={options}
+						disabled={!capabilities.editEnabled || isLoading || !!error}
+						error={fieldState.error?.message}
+						label={t('default:fares.fields.agency_ids.label')}
+						onChange={field.onChange}
+						value={field.value ?? []}
+						w="100%"
+						withAsterisk={!CreateFareSchema.shape.agency_ids.isOptional()}
+					/>
+				)}
 			/>
 		</Section>
 	);
-
-	//
 }

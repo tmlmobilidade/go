@@ -359,9 +359,11 @@ export const API_ROUTES = Object.freeze({
 		EVENTS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/events/list-agencies`,
 
 		// FARES
+		FARES_CREATE: `${getModuleConfig('offer', 'api_url')}/fares/create`,
 		FARES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}`,
 		FARES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}/lock`,
 		FARES_LIST: `${getModuleConfig('offer', 'api_url')}/fares`,
+		FARES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/fares/list-agencies`,
 
 		// GTFS
 		GTFS_PARSE: `${getModuleConfig('offer', 'api_url')}/gtfs/parse`,

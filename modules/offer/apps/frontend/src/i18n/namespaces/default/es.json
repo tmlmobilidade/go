@@ -103,6 +103,68 @@
 			"title": "Reglas de oferta"
 		}
 	},
+	"fares": {
+		"create": {
+			"title": "Nueva tarifa"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Eliminar esta tarifa? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar tarifa"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: T1-BORDO"
+			},
+			"currency_type": {
+				"label": "Moneda"
+			},
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Ej.: navegante® a bordo T1"
+			},
+			"payment_method": {
+				"label": "Método de pago"
+			},
+			"price": {
+				"label": "Precio"
+			},
+			"transfers": {
+				"label": "Transbordos"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nombre"
+			},
+			"select": "Seleccione una tarifa",
+			"title": "Tarifas"
+		},
+		"noAccess": "No tiene permiso para acceder a esta página.",
+		"options": {
+			"currency": {
+				"eur": "€ Euro"
+			},
+			"paymentMethod": {
+				"onboard": "Pago al conductor (navegante® a bordo)",
+				"prepaid": "Prepago (navegante® pré-pago)"
+			},
+			"transfers": {
+				"none": "Sin transbordos",
+				"one": "Un transbordo",
+				"two": "Hasta dos transbordos",
+				"unlimited": "Transbordos ilimitados"
+			}
+		}
+	},
 	"periods": {
 		"assignment": {
 			"acknowledge": "Entiendo y deseo continuar",

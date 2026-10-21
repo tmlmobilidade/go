@@ -1,8 +1,7 @@
 /* * */
 
+import { FaresListFilterAgencies } from '@/components/fares/list/filters/FaresListFilterAgencies';
 import { FiltersBar } from '@tmlmobilidade/ui';
-
-import { FaresListFilterAgencies } from '../FaresListFilterAgencies';
 
 /* * */
 
