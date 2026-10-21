@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Zone } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -22,7 +21,10 @@ export async function getZoneHandler(request: FastifyRequest<{ Params: { id: str
 	const zoneData = await goDb.offer.zones.findById(request.params.id);
 
 	if (!zoneData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Zone not found',
+			status_code: '404',
+		});
 	}
 
 	const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
@@ -34,17 +36,16 @@ export async function getZoneHandler(request: FastifyRequest<{ Params: { id: str
 	const canReadZone = agencyAccess.allowAll || zoneData.agency_ids.some(agencyId => agencyAccess.values.includes(agencyId));
 
 	if (!canReadZone) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this zone');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read this zone',
+			status_code: '403',
+		});
 	}
 
 	//
 	// Fetch the zone data
 
-	return reply.send({
-		data: zoneData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, zoneData);
 
 	//
 }

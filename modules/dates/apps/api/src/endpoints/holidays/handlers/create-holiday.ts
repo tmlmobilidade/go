@@ -1,9 +1,8 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateHolidayDto, type Holiday } from '@tmlmobilidade/go-types-dates';
+import { type CreateHolidayDto, CreateHolidaySchema, type Holiday } from '@tmlmobilidade/go-types-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -15,6 +14,18 @@ export async function createHolidayHandler(request: FastifyRequest<{ Body: Creat
 	//
 
 	//
+	// Validate the client contract before using the request data.
+
+	const validatedHoliday = CreateHolidaySchema.safeParse(request.body);
+
+	if (!validatedHoliday.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedHoliday.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
 	// Get the resource permissions for holidays for the current user.
 
 	const userHolidayPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.holidays.scope, PermissionCatalog.all.holidays.actions.create);
@@ -23,7 +34,10 @@ export async function createHolidayHandler(request: FastifyRequest<{ Body: Creat
 	// If no permission found, deny access
 
 	if (!userHolidayPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create holidays');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create holidays',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -34,25 +48,29 @@ export async function createHolidayHandler(request: FastifyRequest<{ Body: Creat
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.holidays.scope,
-		value: request.body.agency_ids,
+		value: validatedHoliday.data.agency_ids,
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create holidays for these agencies. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create holidays for these agencies. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
 	// Create the new holiday
 
 	const newHoliday = await goDb.offer.holidays.insertOne({
-		...request.body,
+		...validatedHoliday.data,
 		created_by: request.me._id,
+		updated_by: request.me._id,
 	});
 
 	//
 	// Send the response
 
-	reply.send({ data: newHoliday, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, newHoliday);
 
 	//
 }

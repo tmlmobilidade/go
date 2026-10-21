@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
@@ -17,7 +16,10 @@ export async function deleteFareHandler(request: FastifyRequest<{ Params: { id: 
 	const fare = await goDb.offer.fares.findById(id);
 
 	if (!fare) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Fare not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -29,7 +31,10 @@ export async function deleteFareHandler(request: FastifyRequest<{ Params: { id: 
 	// If no permission found, deny access
 
 	if (!userFarePermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete fares');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to delete fares',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -44,12 +49,15 @@ export async function deleteFareHandler(request: FastifyRequest<{ Params: { id: 
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this fare. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to delete this fare. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
 
 	await goDb.offer.fares.deleteById(id);
 
-	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, undefined);
 }

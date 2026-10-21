@@ -53,17 +53,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// CALENDAR
 		CALENDAR_LIST: `${getModuleConfig('dates', 'frontend_url')}/calendar`,
 
-		// EVENTS
-		EVENTS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/events/${encodeURIComponent(id)}`,
-		EVENTS_LIST: `${getModuleConfig('dates', 'frontend_url')}/events`,
-
 		// HOLIDAYS
 		HOLIDAYS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/holidays/${encodeURIComponent(id)}`,
 		HOLIDAYS_LIST: `${getModuleConfig('dates', 'frontend_url')}/holidays`,
-
-		// YEAR_PERIODS
-		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/year-periods/${encodeURIComponent(id)}`,
-		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'frontend_url')}/year-periods`,
 	},
 
 	infrastructure: {
@@ -78,6 +70,10 @@ export const PAGE_ROUTES = Object.freeze({
 	offer: {
 		// BASE
 		BASE: `${getModuleConfig('offer', 'frontend_url')}`,
+
+		// EVENTS
+		EVENTS_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/events/${encodeURIComponent(id)}`,
+		EVENTS_LIST: `${getModuleConfig('offer', 'frontend_url')}/events`,
 
 		// FARES
 		FARES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/fares/${encodeURIComponent(id)}`,
@@ -96,6 +92,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/typologies/${encodeURIComponent(id)}`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'frontend_url')}/typologies`,
+
+		// YEAR_PERIODS
+		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/year-periods/${encodeURIComponent(id)}`,
+		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'frontend_url')}/year-periods`,
 
 		// ZONES
 		ZONES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/zones/${encodeURIComponent(id)}`,
@@ -245,21 +245,10 @@ export const API_ROUTES = Object.freeze({
 		ANNOTATIONS_LIST: `${getModuleConfig('dates', 'api_url')}/annotations/list`,
 		ANNOTATIONS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/annotations/list-agencies`,
 
-		// EVENTS
-		EVENTS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/events/${encodeURIComponent(id)}`,
-		EVENTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/events/${encodeURIComponent(id)}/lock`,
-		EVENTS_LIST: `${getModuleConfig('dates', 'api_url')}/events`,
-
 		// HOLIDAYS
 		HOLIDAYS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/holidays/${encodeURIComponent(id)}`,
 		HOLIDAYS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/holidays/${encodeURIComponent(id)}/lock`,
 		HOLIDAYS_LIST: `${getModuleConfig('dates', 'api_url')}/holidays`,
-
-		// YEAR-PERIODS
-		YEAR_PERIODS_CHECK_CONFLICTS: `${getModuleConfig('dates', 'api_url')}/year-periods/check-conflicts`,
-		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/year-periods/${encodeURIComponent(id)}`,
-		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/year-periods/${encodeURIComponent(id)}/lock`,
-		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},
 
 	hub: {
@@ -278,15 +267,15 @@ export const API_ROUTES = Object.freeze({
 		// DEBUG
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
-		// FEEDBACK
-		FEEDBACK_LIST: `${getModuleConfig('hub', 'api_url')}/v1/feedback`,
-
 		// ETA
 		ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-stop/${encodeURIComponent(id)}`,
 		ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-trip/${encodeURIComponent(id)}`,
 		ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/eta/gtfs`,
 		ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/eta/gtfs.pb`,
 		ETA_LIST: `${getModuleConfig('hub', 'api_url')}/v1/eta`,
+
+		// FEEDBACK
+		FEEDBACK_LIST: `${getModuleConfig('hub', 'api_url')}/v1/feedback`,
 
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
@@ -359,6 +348,11 @@ export const API_ROUTES = Object.freeze({
 		// AGENCIES
 		AGENCIES_LIST: `${getModuleConfig('offer', 'api_url')}/agencies`,
 
+		// EVENTS
+		EVENTS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}`,
+		EVENTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}/lock`,
+		EVENTS_LIST: `${getModuleConfig('offer', 'api_url')}/events`,
+
 		// FARES
 		FARES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}`,
 		FARES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}/lock`,
@@ -397,6 +391,12 @@ export const API_ROUTES = Object.freeze({
 
 		// VKM
 		VKM_CALCULATE: `${getModuleConfig('offer', 'api_url')}/vkm/calculate`,
+
+		// YEAR-PERIODS
+		YEAR_PERIODS_CHECK_CONFLICTS: `${getModuleConfig('offer', 'api_url')}/year-periods/check-conflicts`,
+		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}`,
+		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}/lock`,
+		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'api_url')}/year-periods`,
 
 		// ZONES
 		ZONES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${encodeURIComponent(id)}`,

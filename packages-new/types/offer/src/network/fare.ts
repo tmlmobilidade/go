@@ -43,16 +43,18 @@ export const CreateFareSchema = z.object({
 	name: FareSchema.shape.name,
 }).merge(
 	FareSchema.omit({
+		_id: true,
 		agency_ids: true,
 		code: true,
 		created_at: true,
+		created_by: true,
 		name: true,
 		updated_at: true,
+		updated_by: true,
 	}).partial(),
 );
 
 export const UpdateFareSchema = CreateFareSchema
-	.omit({ created_by: true })
 	.partial();
 
 /* * */

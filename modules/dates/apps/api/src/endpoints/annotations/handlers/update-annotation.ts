@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Annotation, type UpdateAnnotationDto, UpdateAnnotationSchema } from '@tmlmobilidade/go-types-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -15,12 +14,27 @@ export async function updateAnnotationHandler(request: FastifyRequest<{ Body: Up
 	//
 
 	//
+	// Validate the client contract before using the request data.
+
+	const validatedAnnotation = UpdateAnnotationSchema.safeParse(request.body);
+
+	if (!validatedAnnotation.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedAnnotation.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
 	// Get the Annotation from the database
 
 	const annotationData = await goDb.offer.annotations.findById(request.params.id);
 
 	if (!annotationData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Annotation not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -32,7 +46,10 @@ export async function updateAnnotationHandler(request: FastifyRequest<{ Body: Up
 	// If no permission found, deny access
 
 	if (!userAnnotationPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update annotations');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update annotations',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,17 +64,30 @@ export async function updateAnnotationHandler(request: FastifyRequest<{ Body: Up
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this annotation. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update this annotation. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
-	// Update the annotation
+	// Check permission for every newly assigned agency as well.
 
-	const validatedAnnotation = UpdateAnnotationSchema.safeParse(request.body);
-
-	if (!validatedAnnotation.success) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, validatedAnnotation.error.message);
+	if (validatedAnnotation.data.agency_ids && !PermissionCatalog.hasPermissionResourceAll({
+		action: PermissionCatalog.all.annotations.actions.update,
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.annotations.scope,
+		value: validatedAnnotation.data.agency_ids,
+	})) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update annotations for these agencies.',
+			status_code: '403',
+		});
 	}
+
+	//
+	// Update the annotation with parsed client fields and the authenticated updater.
 
 	const updatedAnnotation = await goDb.offer.annotations.updateById(annotationData._id, {
 		...validatedAnnotation.data,
@@ -67,11 +97,7 @@ export async function updateAnnotationHandler(request: FastifyRequest<{ Body: Up
 	//
 	// Send the updated annotation data as the response
 
-	reply.send({
-		data: updatedAnnotation,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, updatedAnnotation);
 
 	//
 }

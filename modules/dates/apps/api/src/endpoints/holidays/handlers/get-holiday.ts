@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -20,7 +19,10 @@ export async function getHolidayHandler(request: FastifyRequest<{ Params: { id: 
 	const holidayData = await goDb.offer.holidays.findById(request.params.id);
 
 	if (!holidayData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Holiday not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -32,7 +34,10 @@ export async function getHolidayHandler(request: FastifyRequest<{ Params: { id: 
 	// If no permission found, deny access
 
 	if (!userHolidayPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read holidays');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read holidays',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,17 +52,16 @@ export async function getHolidayHandler(request: FastifyRequest<{ Params: { id: 
 	});
 
 	if (!hasPermissionForAnyAgency) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this holiday');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read this holiday',
+			status_code: '403',
+		});
 	}
 
 	//
 	// Fetch the holiday data
 
-	return reply.send({
-		data: holidayData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, holidayData);
 
 	//
 }

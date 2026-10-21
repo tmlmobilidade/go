@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
@@ -17,7 +16,10 @@ export async function deleteZoneHandler(request: FastifyRequest<{ Params: { id: 
 	const zone = await goDb.offer.zones.findById(id);
 
 	if (!zone) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Zone not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -29,7 +31,10 @@ export async function deleteZoneHandler(request: FastifyRequest<{ Params: { id: 
 	// If no permission found, deny access
 
 	if (!userZonePermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete zones');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to delete zones',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -44,12 +49,15 @@ export async function deleteZoneHandler(request: FastifyRequest<{ Params: { id: 
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this zone. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to delete this zone. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
 
 	await goDb.offer.zones.deleteById(id);
 
-	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, undefined);
 }

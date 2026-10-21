@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Annotation } from '@tmlmobilidade/go-types-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -20,7 +19,10 @@ export async function getAnnotationHandler(request: FastifyRequest<{ Params: { i
 	const annotationData = await goDb.offer.annotations.findById(request.params.id);
 
 	if (!annotationData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Annotation not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -32,7 +34,10 @@ export async function getAnnotationHandler(request: FastifyRequest<{ Params: { i
 	// If no permission found, deny access
 
 	if (!userAnnotationPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read annotations',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,17 +52,16 @@ export async function getAnnotationHandler(request: FastifyRequest<{ Params: { i
 	});
 
 	if (!hasPermissionForAnyAgency) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this annotation');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read this annotation',
+			status_code: '403',
+		});
 	}
 
 	//
 	// Fetch the annotation data
 
-	return reply.send({
-		data: annotationData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, annotationData);
 
 	//
 }
