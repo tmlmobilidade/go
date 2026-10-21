@@ -1,0 +1,24 @@
+package stops_standard_test
+
+import (
+	checks "main/validations/stops/standard/checks"
+	testutils "main/validations/stops/utils"
+	"testing"
+)
+
+func TestHasPipRealTimeValid(t *testing.T) {
+	testutils.CheckCases(t, "stops_has_pip_real_time_valid", "has_pip_real_time", checks.HasPipRealTimeValid, []testutils.Case{
+		{Name: "Valid0", Values: map[string]any{"has_pip_real_time": "0"}},
+		{Name: "Valid1", Values: map[string]any{"has_pip_real_time": "1"}},
+		{Name: "Valid2", Values: map[string]any{"has_pip_real_time": "2"}},
+		{Name: "AboveMaximum", Values: map[string]any{"has_pip_real_time": "3"}, Count: 1},
+		{Name: "Negative", Values: map[string]any{"has_pip_real_time": "-1"}, Count: 1},
+		{Name: "LeadingZero", Values: map[string]any{"has_pip_real_time": "01"}, Count: 1},
+		{Name: "Decimal", Values: map[string]any{"has_pip_real_time": "1.0"}, Count: 1},
+		{Name: "Whitespace", Values: map[string]any{"has_pip_real_time": " 1 "}, Count: 1},
+		{Name: "Text", Values: map[string]any{"has_pip_real_time": "bad"}, Count: 1},
+		{Name: "Empty", Values: map[string]any{"has_pip_real_time": ""}, Count: 1},
+		{Name: "Null", Values: map[string]any{"has_pip_real_time": nil}, Count: 1},
+		{Name: "MissingColumn", Values: map[string]any{}, Count: 1},
+	})
+}
