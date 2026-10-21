@@ -21,7 +21,7 @@ Headway of service in seconds.
 
 [frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
 */
-func HeadwaySecsValidation(frequency *types.Frequencies, row int, rules *types.FrequenciesRules) {
+func HeadwaySecsValidation(frequency *types.Frequencies, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("headway_secs", "frequencies.txt", "frequencies_headway_secs_positive_and_aligns_trip", row, services.AppMessageService, rules)
 
 	// 1. Validate headway_secs is present

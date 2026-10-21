@@ -34,12 +34,12 @@ type distanceViolation struct {
 // getShapePointsCoordinatesDistancesToleranceMeters resolves the configurable
 // tolerance from rules.Options[0] (meters), falling back to the default when
 // rules, options or the value itself are missing or invalid.
-func getShapePointsCoordinatesDistancesToleranceMeters(rules *types.ShapesRules) float64 {
-	if rules == nil || rules.Rule("shapes_shape_dist_traveled_segment_valid").Options == nil || len(*rules.Rule("shapes_shape_dist_traveled_segment_valid").Options) == 0 {
+func getShapePointsCoordinatesDistancesToleranceMeters(rules *types.RuleContext) float64 {
+	if rules == nil || rules.Options == nil || len(*rules.Options) == 0 {
 		return maxDistanceDeltaToleranceMeters
 	}
 
-	value, err := strconv.ParseFloat((*rules.Rule("shapes_shape_dist_traveled_segment_valid").Options)[0], 64)
+	value, err := strconv.ParseFloat((*rules.Options)[0], 64)
 	if err != nil || value < 0 || math.IsNaN(value) || math.IsInf(value, 0) {
 		return maxDistanceDeltaToleranceMeters
 	}
@@ -65,9 +65,9 @@ func uniqueDistanceRows(rows []int) []int {
 // shapeDistanceScale allows an explicit unit for short shapes where magnitude
 // alone cannot distinguish meters from kilometers. Without it, retain the
 // existing auto-detection used by the other shape-distance checks.
-func shapeDistanceScale(rules *types.ShapesRules, maxInShape float64) float64 {
-	if rules != nil && rules.Rule("shapes_shape_dist_traveled_segment_valid").Options != nil {
-		options := *rules.Rule("shapes_shape_dist_traveled_segment_valid").Options
+func shapeDistanceScale(rules *types.RuleContext, maxInShape float64) float64 {
+	if rules != nil && rules.Options != nil {
+		options := *rules.Options
 		if len(options) > 1 {
 			switch strings.ToLower(strings.TrimSpace(options[1])) {
 			case "m":
@@ -83,7 +83,7 @@ func shapeDistanceScale(rules *types.ShapesRules, maxInShape float64) float64 {
 // ShapePointsCoordinatesDistances compares each cumulative-distance
 // increment with its Haversine segment, including the first segment from zero.
 // Decreases belong to the monotonic-distance rule, not this geometric check.
-func ShapePointsCoordinatesDistances(db *services.SQLiteContext, rules *types.ShapesRules) error {
+func ShapePointsCoordinatesDistances(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -96,7 +96,7 @@ func ShapePointsCoordinatesDistances(db *services.SQLiteContext, rules *types.Sh
 
 	severity := types.SEVERITY_IGNORE
 	if rules != nil {
-		severity = rules.Rule(ruleID).Severity
+		severity = rules.Severity
 	}
 
 	if severity == "" || severity == types.SEVERITY_IGNORE {

@@ -74,17 +74,17 @@ func TestShapePointsCoordinatesDistances(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			config := &types.ShapesRules{}
-			rule := types.RuleConfig{Severity: tc.severity}
+			config := &types.GtfsRules{}
+			rule := types.RuleContext{Severity: tc.severity}
 			if tc.options != nil {
 				rule.Options = &tc.options
 			}
 			config.SetRule(id, rule)
-			ruleset.ConfigureMessageSeverities(&types.GtfsRules{Shapes: *config})
+			ruleset.ConfigureMessageSeverities(config)
 			if tc.nilRules {
 				config = nil
 			}
-			if err := checks.ShapePointsCoordinatesDistances(table.At(6).Context(), config); err != nil {
+			if err := checks.ShapePointsCoordinatesDistances(table.At(6).Context(), config.Rule("shapes_shape_dist_traveled_segment_valid")); err != nil {
 				t.Fatal(err)
 			}
 			if got := services.AppMessageService.RuleIssueCount(id); got != uint64(tc.count) {
@@ -109,10 +109,10 @@ func TestShapePointsCoordinatesDistancesManySegments(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			config := &types.ShapesRules{}
-			config.SetRule(id, types.RuleConfig{Severity: types.SEVERITY_ERROR})
-			ruleset.ConfigureMessageSeverities(&types.GtfsRules{Shapes: *config})
-			if err := checks.ShapePointsCoordinatesDistances(table.At(0).Context(), config); err != nil {
+			config := &types.GtfsRules{}
+			config.SetRule(id, types.RuleContext{Severity: types.SEVERITY_ERROR})
+			ruleset.ConfigureMessageSeverities(config)
+			if err := checks.ShapePointsCoordinatesDistances(table.At(0).Context(), config.Rule("shapes_shape_dist_traveled_segment_valid")); err != nil {
 				t.Fatal(err)
 			}
 			if got := services.AppMessageService.RuleIssueCount(id); got != uint64(gaps) {
@@ -137,7 +137,7 @@ func TestShapePointsCoordinatesDistancesManySegments(t *testing.T) {
 				t.Fatalf("reported rows=%d minimum=%d; last row present=%v", len(rows), min(gaps, 100), rows[gaps+2])
 			}
 			connection.Close()
-			if err := checks.ShapePointsCoordinatesDistances(table.At(0).Context(), config); err == nil {
+			if err := checks.ShapePointsCoordinatesDistances(table.At(0).Context(), config.Rule("shapes_shape_dist_traveled_segment_valid")); err == nil {
 				t.Fatal("SQLite failure was swallowed")
 			}
 		})

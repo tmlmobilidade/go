@@ -29,7 +29,7 @@ func TestFeedContactEmailValid(t *testing.T) {
 			}
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, values, config)
-			if err := checks.FeedContactEmailValid(ctx, config); err != nil {
+			if err := checks.FeedContactEmailValid(ctx, config.Rule("feed_info_feed_contact_email_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "feed_contact_email", types.SEVERITY_ERROR, tc.count)

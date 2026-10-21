@@ -30,7 +30,7 @@ If fare class "b" is valid on route "TSW" and "TSE", the fare_rules.txt file wou
 [fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
 [routes.route_id]: https://gtfs.org/schedule/reference/#routestxt
 */
-func RouteIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
+func RouteIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("route_id", "fare_rules.txt", "fare_rule_route_id_references_routes", row, services.AppMessageService, rules)
 
 	if fareRule.RouteId == nil {

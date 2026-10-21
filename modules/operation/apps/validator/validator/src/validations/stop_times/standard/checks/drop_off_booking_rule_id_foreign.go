@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func DropOffBookingRuleIdForeign(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func DropOffBookingRuleIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func DropOffBookingRuleIdForeign(db *services.SQLiteContext, rules *types.StopTi
 
 	ctx := lib.NewValidationContext("drop_off_booking_rule_id", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -38,7 +37,7 @@ func DropOffBookingRuleIdForeign(db *services.SQLiteContext, rules *types.StopTi
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 		return nil
 	}
-	
+
 	//
 	// 5. Return success
 

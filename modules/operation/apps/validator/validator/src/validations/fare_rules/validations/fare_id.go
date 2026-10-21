@@ -21,7 +21,7 @@ Identifies a fare class.
 [fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
 [fare_attributes.fare_id]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
-func FareIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
+func FareIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("fare_id", "fare_rules.txt", "fare_rule_fare_id_references_fare_attributes", row, services.AppMessageService, rules)
 
 	// 1. Validate fare_id is present

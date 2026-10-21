@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func FeedEndDateFormat(db *services.SQLiteContext, rules *types.FeedInfoRules) error {
+func FeedEndDateFormat(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func FeedEndDateFormat(db *services.SQLiteContext, rules *types.FeedInfoRules) e
 
 	ctx := lib.NewValidationContext("feed_end_date_format", "feed_info.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

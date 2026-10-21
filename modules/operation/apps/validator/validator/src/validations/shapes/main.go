@@ -17,11 +17,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*services.SQLiteTables) {
-	var fileRules *types.ShapesRules
-	if rules != nil {
-		fileRules = &rules.Shapes
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, fileRules)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "shapes")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -51,26 +47,54 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 		return services.RuleActions{
 			//
 			// Fields
-			"shapes_shape_id_field":            func() { check(db, "shapes_shape_id_field", shapes_fields.ShapeIdField(db, fileRules)) },
-			"shapes_shape_pt_lat_field":        func() { check(db, "shapes_shape_pt_lat_field", shapes_fields.ShapePtLatField(db, fileRules)) },
-			"shapes_shape_pt_lon_field":        func() { check(db, "shapes_shape_pt_lon_field", shapes_fields.ShapePtLonField(db, fileRules)) },
-			"shapes_shape_pt_sequence_field":   func() { check(db, "shapes_shape_pt_sequence_field", shapes_fields.ShapePtSequenceField(db, fileRules)) },
-			"shapes_shape_dist_traveled_field": func() { check(db, "shapes_shape_dist_traveled_field", shapes_fields.ShapeDistTraveledField(db, fileRules)) },
+			"shapes_shape_id_field": func() {
+				check(db, "shapes_shape_id_field", shapes_fields.ShapeIdField(db, rules.Rule("shapes_shape_id_field")))
+			},
+			"shapes_shape_pt_lat_field": func() {
+				check(db, "shapes_shape_pt_lat_field", shapes_fields.ShapePtLatField(db, rules.Rule("shapes_shape_pt_lat_field")))
+			},
+			"shapes_shape_pt_lon_field": func() {
+				check(db, "shapes_shape_pt_lon_field", shapes_fields.ShapePtLonField(db, rules.Rule("shapes_shape_pt_lon_field")))
+			},
+			"shapes_shape_pt_sequence_field": func() {
+				check(db, "shapes_shape_pt_sequence_field", shapes_fields.ShapePtSequenceField(db, rules.Rule("shapes_shape_pt_sequence_field")))
+			},
+			"shapes_shape_dist_traveled_field": func() {
+				check(db, "shapes_shape_dist_traveled_field", shapes_fields.ShapeDistTraveledField(db, rules.Rule("shapes_shape_dist_traveled_field")))
+			},
 
 			//
 			// Standard
-			"shapes_shape_pt_lat_valid":                        func() { check(db, "shapes_shape_pt_lat_valid", shapes_standard.ShapePtLatValid(db, fileRules)) },
-			"shapes_shape_pt_lon_valid":                        func() { check(db, "shapes_shape_pt_lon_valid", shapes_standard.ShapePtLonValid(db, fileRules)) },
-			"shapes_shape_pt_sequence_non_negative":            func() { check(db, "shapes_shape_pt_sequence_non_negative", shapes_standard.ShapePtSequence(db, fileRules)) },
-			"shapes_shape_dist_traveled_valid":                 func() { check(db, "shapes_shape_dist_traveled_valid", shapes_standard.ShapeDistTraveledValid(db, fileRules)) },
-			"shape_pt_sequence_strictly_increasing":            func() { check(db, "shape_pt_sequence_strictly_increasing", shapes_standard.ShapePtSequenceStrictlyIncreasing(db, fileRules)) },
-			"shape_dist_traveled_non_decreasing_with_sequence": func() { check(db, "shape_dist_traveled_non_decreasing_with_sequence", shapes_standard.ShapeDistTraveledNonDecreasing(db, fileRules)) },
+			"shapes_shape_pt_lat_valid": func() {
+				check(db, "shapes_shape_pt_lat_valid", shapes_standard.ShapePtLatValid(db, rules.Rule("shapes_shape_pt_lat_valid")))
+			},
+			"shapes_shape_pt_lon_valid": func() {
+				check(db, "shapes_shape_pt_lon_valid", shapes_standard.ShapePtLonValid(db, rules.Rule("shapes_shape_pt_lon_valid")))
+			},
+			"shapes_shape_pt_sequence_non_negative": func() {
+				check(db, "shapes_shape_pt_sequence_non_negative", shapes_standard.ShapePtSequence(db, rules.Rule("shapes_shape_pt_sequence_non_negative")))
+			},
+			"shapes_shape_dist_traveled_valid": func() {
+				check(db, "shapes_shape_dist_traveled_valid", shapes_standard.ShapeDistTraveledValid(db, rules.Rule("shapes_shape_dist_traveled_valid")))
+			},
+			"shape_pt_sequence_strictly_increasing": func() {
+				check(db, "shape_pt_sequence_strictly_increasing", shapes_standard.ShapePtSequenceStrictlyIncreasing(db, rules.Rule("shape_pt_sequence_strictly_increasing")))
+			},
+			"shape_dist_traveled_non_decreasing_with_sequence": func() {
+				check(db, "shape_dist_traveled_non_decreasing_with_sequence", shapes_standard.ShapeDistTraveledNonDecreasing(db, rules.Rule("shape_dist_traveled_non_decreasing_with_sequence")))
+			},
 
 			//
 			// Custom
-			"shapes_shape_point_spacing_valid":         func() { check(db, "shapes_shape_point_spacing_valid", shapes_custom.ShapePointsCoordinatesConsistent(db, fileRules)) },
-			"shapes_shape_dist_traveled_segment_valid": func() { check(db, "shapes_shape_dist_traveled_segment_valid", shapes_custom.ShapePointsCoordinatesDistances(db, fileRules)) },
-			"shapes_shape_dist_traveled_block_valid":   func() { check(db, "shapes_shape_dist_traveled_block_valid", shapes_custom.ShapeDistancesValid(db, fileRules)) },
+			"shapes_shape_point_spacing_valid": func() {
+				check(db, "shapes_shape_point_spacing_valid", shapes_custom.ShapePointsCoordinatesConsistent(db, rules.Rule("shapes_shape_point_spacing_valid")))
+			},
+			"shapes_shape_dist_traveled_segment_valid": func() {
+				check(db, "shapes_shape_dist_traveled_segment_valid", shapes_custom.ShapePointsCoordinatesDistances(db, rules.Rule("shapes_shape_dist_traveled_segment_valid")))
+			},
+			"shapes_shape_dist_traveled_block_valid": func() {
+				check(db, "shapes_shape_dist_traveled_block_valid", shapes_custom.ShapeDistancesValid(db, rules.Rule("shapes_shape_dist_traveled_block_valid")))
+			},
 		}
 	}, tracker.Track)
 

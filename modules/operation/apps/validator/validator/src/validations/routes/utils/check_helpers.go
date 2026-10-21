@@ -34,16 +34,16 @@ func CheckPresence(t *testing.T, field string, check Check) {
 			}
 			config := Config(id, tc.severity)
 			_, ctx := Fixture(t, values, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			AssertFindings(t, id, field, tc.severity, tc.count)
 		})
 	}
-	for name, config := range map[string]*types.RoutesRules{"NilRules": nil, "MissingRule": {}} {
+	for name, config := range map[string]*types.GtfsRules{"NilRules": nil, "MissingRule": {}} {
 		t.Run(name, func(t *testing.T) {
 			_, ctx := Fixture(t, map[string]any{field: ""}, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			AssertFindings(t, id, field, types.SEVERITY_IGNORE, 0)
@@ -59,7 +59,7 @@ func CheckInvalid(t *testing.T, id, field string, check Check, values map[string
 		t.Run("Severity/"+string(severity), func(t *testing.T) {
 			config := Config(id, severity)
 			_, ctx := Fixture(t, values, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			count := 1
@@ -69,10 +69,10 @@ func CheckInvalid(t *testing.T, id, field string, check Check, values map[string
 			AssertFindings(t, id, field, severity, count)
 		})
 	}
-	for name, config := range map[string]*types.RoutesRules{"NilRules": nil, "MissingRule": {}} {
+	for name, config := range map[string]*types.GtfsRules{"NilRules": nil, "MissingRule": {}} {
 		t.Run(name, func(t *testing.T) {
 			_, ctx := Fixture(t, values, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			AssertFindings(t, id, field, types.SEVERITY_IGNORE, 0)

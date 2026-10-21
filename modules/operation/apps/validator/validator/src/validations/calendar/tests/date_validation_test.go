@@ -39,21 +39,21 @@ func TestDateValidation(t *testing.T) {
 						t.Fatal(err)
 					}
 				}
-				config := &types.CalendarRules{}
+				config := &types.GtfsRules{}
 				if field == "start_date" {
 					{
 						ruleConfig := config.Rule("calendar_start_date_valid_yyyymmdd")
 						ruleConfig.Severity = tc.severity
-						config.SetRule("calendar_start_date_valid_yyyymmdd", ruleConfig)
+						config.SetRule("calendar_start_date_valid_yyyymmdd", *ruleConfig)
 					}
 				} else {
 					{
 						ruleConfig := config.Rule("calendar_end_date_valid_yyyymmdd")
 						ruleConfig.Severity = tc.severity
-						config.SetRule("calendar_end_date_valid_yyyymmdd", ruleConfig)
+						config.SetRule("calendar_end_date_valid_yyyymmdd", *ruleConfig)
 					}
 				}
-				if err := validations.DateValidation(table.At(3).Context(), field, config); err != nil {
+				if err := validations.DateValidation(table.At(3).Context(), field, config.Rule("calendar_"+field+"_valid_yyyymmdd")); err != nil {
 					t.Fatal(err)
 				}
 				messages := services.AppMessageService.GetSummary().AllMessages()

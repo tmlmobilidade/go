@@ -22,7 +22,7 @@ Required for operators that provide service for light vehicles.
 
 */
 
-func CarCapacityValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func CarCapacityValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("car_capacity", "vehicles.txt", "vehicles_car_capacity_non_negative", row, services.AppMessageService, rules)
 
 	// 1. Check if car_capacity is required

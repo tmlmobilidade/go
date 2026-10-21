@@ -27,7 +27,7 @@ func TestExceptionTypeValid(t *testing.T) {
 			}
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, values, config)
-			if err := checks.ExceptionTypeValid(ctx, config); err != nil {
+			if err := checks.ExceptionTypeValid(ctx, config.Rule("calendar_dates_exception_type_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "exception_type", types.SEVERITY_ERROR, tc.count)

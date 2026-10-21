@@ -14,9 +14,9 @@ func TestAgencyMissingFileSeverities(t *testing.T) {
 				services.AppMessageService.Clear()
 				config := ruleset.DefaultConfig()
 				if file == "trips" {
-					config.Trips.File = severity
+					config.SetRule("trips_file_missing", types.RuleContext{Severity: severity})
 				} else {
-					config.Shapes.File = severity
+					config.SetRule("shapes_file_missing", types.RuleContext{Severity: severity})
 				}
 				gtfs, cleanup, err := createTestGtfs(types.Gtfs{})
 				if err != nil {
@@ -49,10 +49,18 @@ func TestAgencyConditionalPresenceSeverities(t *testing.T) {
 		check     func(*FileValidation, types.Gtfs, *types.GtfsRules)
 		id        string
 	}{
-		{"stops", types.Gtfs{}, func(c *types.GtfsRules, s types.Severity) { c.Stops.File = s }, (*FileValidation).checkStopsConditional, "stops_file_missing"},
-		{"calendar", types.Gtfs{}, func(c *types.GtfsRules, s types.Severity) { c.Calendar.File = s }, (*FileValidation).checkCalendarFiles, "calendar_file_missing"},
-		{"levels", types.Gtfs{Pathways: []types.PathwaysRaw{{PathwayId: "1", PathwayMode: "5"}}}, func(c *types.GtfsRules, s types.Severity) { c.Levels.File = s }, (*FileValidation).checkLevelsIfElevator, "levels_file_missing"},
-		{"feed_info", types.Gtfs{Translations: []types.TranslationsRaw{{TableName: "stops"}}}, func(c *types.GtfsRules, s types.Severity) { c.FeedInfo.File = s }, (*FileValidation).checkFeedInfoWithTranslations, "feed_info_file_missing"},
+		{"stops", types.Gtfs{}, func(c *types.GtfsRules, s types.Severity) {
+			c.SetRule("stops_file_missing", types.RuleContext{Severity: s})
+		}, (*FileValidation).checkStopsConditional, "stops_file_missing"},
+		{"calendar", types.Gtfs{}, func(c *types.GtfsRules, s types.Severity) {
+			c.SetRule("calendar_file_missing", types.RuleContext{Severity: s})
+		}, (*FileValidation).checkCalendarFiles, "calendar_file_missing"},
+		{"levels", types.Gtfs{Pathways: []types.PathwaysRaw{{PathwayId: "1", PathwayMode: "5"}}}, func(c *types.GtfsRules, s types.Severity) {
+			c.SetRule("levels_file_missing", types.RuleContext{Severity: s})
+		}, (*FileValidation).checkLevelsIfElevator, "levels_file_missing"},
+		{"feed_info", types.Gtfs{Translations: []types.TranslationsRaw{{TableName: "stops"}}}, func(c *types.GtfsRules, s types.Severity) {
+			c.SetRule("feed_info_file_missing", types.RuleContext{Severity: s})
+		}, (*FileValidation).checkFeedInfoWithTranslations, "feed_info_file_missing"},
 	}
 	for _, tc := range cases {
 		for _, severity := range []types.Severity{types.SEVERITY_IGNORE, types.SEVERITY_INFO, types.SEVERITY_WARNING, types.SEVERITY_ERROR, types.SEVERITY_FORBIDDEN} {
@@ -93,7 +101,7 @@ func TestAgencyConditionalPresenceSeverities(t *testing.T) {
 func TestForbiddenAgencyFilePresent(t *testing.T) {
 	services.AppMessageService.Clear()
 	config := ruleset.DefaultConfig()
-	config.Trips.File = types.SEVERITY_FORBIDDEN
+	config.SetRule("trips_file_missing", types.RuleContext{Severity: types.SEVERITY_FORBIDDEN})
 	gtfs, cleanup, err := createTestGtfs(types.Gtfs{Trip: []types.TripRaw{{TripId: "1"}}})
 	if err != nil {
 		t.Fatal(err)

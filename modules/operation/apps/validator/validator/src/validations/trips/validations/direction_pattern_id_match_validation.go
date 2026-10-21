@@ -19,7 +19,7 @@ import (
 
 Ensure the direction_id is consistent with the pattern_id (e.g., pattern_id "1001_0_1" should have direction_id = 0).
 */
-func DirectionPatternIdMatchValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
+func DirectionPatternIdMatchValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("direction_pattern_id_match", "trips.txt", "trips_direction_id_matches_feed_pattern_direction", row, services.AppMessageService, rules)
 
 	// 1. Validate pattern_id and direction_id are required

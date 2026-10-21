@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func RouteLongNameField(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func RouteLongNameField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func RouteLongNameField(db *services.SQLiteContext, rules *types.RoutesRules) er
 
 	ctx := lib.NewValidationContext("route_long_name", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -47,4 +46,4 @@ func RouteLongNameField(db *services.SQLiteContext, rules *types.RoutesRules) er
 	// 5. Return success
 
 	return nil
-}	
+}

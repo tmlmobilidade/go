@@ -42,12 +42,12 @@ func ParsePathways(rawPathways types.PathwaysRaw, row int) types.Pathways {
 
 	addMessage := func(field, msg string) {
 		messages = append(messages, types.Message{
-			Field:        field,
-			FileName:     "pathways.txt",
-			Rows:         []int{row},
-			Message:      msg,
-			Severity:     types.SEVERITY_ERROR,
-			RuleID:       "pathways_values_parse",
+			Field:    field,
+			FileName: "pathways.txt",
+			Rows:     []int{row},
+			Message:  msg,
+			Severity: types.SEVERITY_ERROR,
+			RuleID:   "pathways_values_parse",
 		})
 	}
 

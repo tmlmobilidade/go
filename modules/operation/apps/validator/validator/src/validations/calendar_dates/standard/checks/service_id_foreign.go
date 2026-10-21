@@ -14,7 +14,7 @@ import (
   - Type: Foreign ID referencing calendar.service_id or ID
 */
 
-func ServiceIdForeign(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
+func ServiceIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -27,8 +27,7 @@ func ServiceIdForeign(db *services.SQLiteContext, rules *types.CalendarDatesRule
 
 	ctx := lib.NewValidationContext("service_id", "calendar_dates.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

@@ -17,7 +17,7 @@ func TestSeverityFor(t *testing.T) {
 		{"unknown", `{}`, "unknown_rule", types.SEVERITY_IGNORE},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			var section types.CalendarRules
+			var section types.GtfsRules
 			if err := json.Unmarshal([]byte(tc.input), &section); err != nil {
 				t.Fatal(err)
 			}
@@ -26,7 +26,7 @@ func TestSeverityFor(t *testing.T) {
 			}
 		})
 	}
-	var section *types.CalendarRules
+	var section *types.GtfsRules
 	if got := SeverityFor(section, "calendar_start_end_dates_valid_format"); got != types.SEVERITY_IGNORE {
 		t.Fatalf("nil config: got %s", got)
 	}

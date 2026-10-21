@@ -32,7 +32,7 @@ reported by the arrival_time and departure_time validations.
 
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
-func ArrivalDepartureTimeSequence(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func ArrivalDepartureTimeSequence(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -41,7 +41,7 @@ func ArrivalDepartureTimeSequence(db *services.SQLiteContext, rules *types.StopT
 	const ruleID = "stop_times_arrival_departure_time_non_decreasing_by_stop_sequence"
 	ctx := lib.NewValidationContext("arrival_time", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		ctx.WithSeverity(rules.Rule(ruleID).Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 	if ctx.ShouldSkip() {
 		return nil

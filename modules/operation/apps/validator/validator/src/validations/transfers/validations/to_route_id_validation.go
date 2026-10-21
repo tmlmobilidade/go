@@ -24,7 +24,7 @@ If both to_trip_id and to_route_id are defined, the trip_id must belong to the r
 [transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
 */
 
-func ToRouteIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, rules *types.TransfersRules) {
+func ToRouteIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("to_route_id", "transfers.txt", "transfer_to_route_id_references_routes_table", row, services.AppMessageService, rules)
 
 	// Validation to_route_id

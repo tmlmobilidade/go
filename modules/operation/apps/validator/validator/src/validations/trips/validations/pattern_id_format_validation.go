@@ -42,7 +42,7 @@ func toPatternIDDisplayFormat(formatRegex string) string {
 	return formatted
 }
 
-func PatternIdFormatValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
+func PatternIdFormatValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("pattern_id", "trips.txt", "trips_pattern_id_matches_feed_pattern_id_syntax", row, services.AppMessageService, rules)
 
 	// 1. Validate pattern_id is required
@@ -59,11 +59,11 @@ func PatternIdFormatValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rule
 	expectedFormat := defaultPatternIDFormat
 	allowedRegexes := []*regexp.Regexp{regexp.MustCompile(defaultPatternIDRegex)}
 
-	if rules != nil && rules.Rule("trips_pattern_id_matches_feed_pattern_id_syntax").Options != nil && len(*rules.Rule("trips_pattern_id_matches_feed_pattern_id_syntax").Options) > 0 {
+	if rules != nil && rules.Options != nil && len(*rules.Options) > 0 {
 		expectedFormats := make([]string, 0)
 		allowedRegexes = make([]*regexp.Regexp, 0)
 
-		for _, configuredFormatRegex := range *rules.Rule("trips_pattern_id_matches_feed_pattern_id_syntax").Options {
+		for _, configuredFormatRegex := range *rules.Options {
 			configuredRegex, err := regexp.Compile(configuredFormatRegex)
 			if err == nil {
 				expectedFormats = append(expectedFormats, toPatternIDDisplayFormat(configuredFormatRegex))

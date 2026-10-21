@@ -20,7 +20,7 @@ func TestCalendarSQLiteRulesKeepDependenciesSeveritiesAndSourceRows(t *testing.T
  ('single', '20261231', '20260101', '2'),
  ('valid', '20260101', '20261231', '1');`)
 	config := &types.GtfsRules{}
-	config.Calendar.Rules = map[string]types.RuleConfig{
+	*config = map[string]types.RuleContext{
 		"calendar_service_id_field":             {Severity: types.SEVERITY_INFO},
 		"calendar_start_date_field":             {Severity: types.SEVERITY_ERROR},
 		"calendar_end_date_field":               {Severity: types.SEVERITY_ERROR},
@@ -43,7 +43,7 @@ func TestCalendarSQLiteRulesKeepDependenciesSeveritiesAndSourceRows(t *testing.T
 	actual := map[string][]int{}
 	for _, message := range services.AppMessageService.GetSummary().AllMessages() {
 		actual[message.RuleID] = append(actual[message.RuleID], message.Rows...)
-		if message.Severity != config.Calendar.Rule(message.RuleID).Severity || message.FileName != "calendar.txt" {
+		if message.Severity != config.Rule(message.RuleID).Severity || message.FileName != "calendar.txt" {
 			t.Fatalf("unexpected finding: %+v", message)
 		}
 	}

@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func ContinuousDropOffField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func ContinuousDropOffField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func ContinuousDropOffField(db *services.SQLiteContext, rules *types.StopTimesRu
 
 	ctx := lib.NewValidationContext("continuous_drop_off", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

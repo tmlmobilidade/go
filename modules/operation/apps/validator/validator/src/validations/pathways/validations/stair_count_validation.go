@@ -20,7 +20,7 @@ Number of stairs in the pathway.
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
 
-func StairCountValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
+func StairCountValidation(pathways *types.Pathways, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("stair_count", "pathways.txt", "pathway_stair_count", row, services.AppMessageService, rules)
 
 	// 1. Validate stair_count is present

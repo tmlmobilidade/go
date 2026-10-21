@@ -32,12 +32,12 @@ func TestShapePtSequenceStrictlyIncreasing(t *testing.T) {
 			if tc.nilRules {
 				config = nil
 			}
-			if err := checks.ShapePtSequenceStrictlyIncreasing(table.At(3).Context(), config); err != nil {
+			if err := checks.ShapePtSequenceStrictlyIncreasing(table.At(3).Context(), config.Rule("shape_pt_sequence_strictly_increasing")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertShapeFindings(t, id, "shape_pt_sequence", tc.severity, tc.rows...)
 			db.Close()
-			if err := checks.ShapePtSequenceStrictlyIncreasing(table.At(3).Context(), config); err == nil {
+			if err := checks.ShapePtSequenceStrictlyIncreasing(table.At(3).Context(), config.Rule("shape_pt_sequence_strictly_increasing")); err == nil {
 				t.Fatal("SQLite failure swallowed")
 			}
 		})

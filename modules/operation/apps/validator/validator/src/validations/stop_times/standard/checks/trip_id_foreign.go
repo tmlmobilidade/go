@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func TripIdForeign(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func TripIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 	// 1. Get the rule
 
@@ -17,8 +17,7 @@ func TripIdForeign(db *services.SQLiteContext, rules *types.StopTimesRules) erro
 
 	ctx := lib.NewValidationContext("trip_id", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -28,7 +27,7 @@ func TripIdForeign(db *services.SQLiteContext, rules *types.StopTimesRules) erro
 	if err != nil {
 		return err
 	}
-	
+
 	//
 	// 4. Check if the trip_id is foreign
 
@@ -36,7 +35,7 @@ func TripIdForeign(db *services.SQLiteContext, rules *types.StopTimesRules) erro
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 		return nil
 	}
-	
+
 	//
 	// 5. Return success
 

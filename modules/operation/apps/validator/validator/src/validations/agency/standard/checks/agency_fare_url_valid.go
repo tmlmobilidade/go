@@ -20,7 +20,7 @@ URL of a web page where a rider can purchase tickets or other fare instruments f
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyFareUrlValid(db *services.SQLiteContext, rules *types.AgencyRules) error {
+func AgencyFareUrlValid(db *services.SQLiteContext, ruleContext *types.RuleContext) error {
 	//
 
 	//
@@ -32,9 +32,8 @@ func AgencyFareUrlValid(db *services.SQLiteContext, rules *types.AgencyRules) er
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_fare_url", "agency.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+	if ruleContext != nil {
+		ctx.WithSeverity(ruleContext.Severity)
 	}
 
 	//

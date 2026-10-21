@@ -19,7 +19,7 @@ import (
 Total capacity of passengers. When it is equal to 0, it means that the vehicle unit does not allow the boarding of passengers.
 */
 
-func TotalCapacityValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func TotalCapacityValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("total_capacity", "vehicles.txt", "vehicles_total_capacity_non_negative", row, services.AppMessageService, rules)
 
 	// 1. Check if total_capacity is required

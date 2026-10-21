@@ -15,11 +15,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	var section *types.RiderCategoriesRules
-	if rules != nil {
-		section = &rules.RiderCategories
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "rider_categories")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -54,10 +50,18 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate rider_category_id
 		runner.Run(services.RuleActions{
-			"rider_category_id_unique":                           func() { validations.RiderCategoryIdValidation(&riderCategory, i, &gtfs, &rules.RiderCategories) },
-			"rider_category_name_non_empty":                      func() { validations.RiderCategoryNameValidation(&riderCategory, i, &rules.RiderCategories) },
-			"rider_categories_at_most_one_default_fare_category": func() { validations.IsDefaultFareCategoryValidation(&riderCategory, i, &rules.RiderCategories) },
-			"rider_categories_eligibility_url_valid_http_url":    func() { validations.EligibilityUrlValidation(&riderCategory, i, &rules.RiderCategories) },
+			"rider_category_id_unique": func() {
+				validations.RiderCategoryIdValidation(&riderCategory, i, &gtfs, rules.Rule("rider_category_id_unique"))
+			},
+			"rider_category_name_non_empty": func() {
+				validations.RiderCategoryNameValidation(&riderCategory, i, rules.Rule("rider_category_name_non_empty"))
+			},
+			"rider_categories_at_most_one_default_fare_category": func() {
+				validations.IsDefaultFareCategoryValidation(&riderCategory, i, rules.Rule("rider_categories_at_most_one_default_fare_category"))
+			},
+			"rider_categories_eligibility_url_valid_http_url": func() {
+				validations.EligibilityUrlValidation(&riderCategory, i, rules.Rule("rider_categories_eligibility_url_valid_http_url"))
+			},
 		}, nil)
 
 		return nil

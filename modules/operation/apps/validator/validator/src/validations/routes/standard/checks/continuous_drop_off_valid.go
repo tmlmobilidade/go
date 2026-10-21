@@ -33,7 +33,7 @@ Conditionally Forbidden:
 
 [routes.txt]: https://gtfs.org/schedule/reference/#routestxt
 */
-func ContinuousDropOffValid(db *services.SQLiteContext, rules *types.RoutesRules, routesWithWindows map[string]bool) error {
+func ContinuousDropOffValid(db *services.SQLiteContext, rules *types.RuleContext, routesWithWindows map[string]bool) error {
 	//
 	// 1. Get the rule
 
@@ -44,8 +44,7 @@ func ContinuousDropOffValid(db *services.SQLiteContext, rules *types.RoutesRules
 
 	ctx := lib.NewValidationContext("continuous_drop_off", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

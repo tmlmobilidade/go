@@ -21,7 +21,7 @@ This email address should be a direct contact point where transit riders can rea
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyEmailValid(db *services.SQLiteContext, rules *types.AgencyRules) error {
+func AgencyEmailValid(db *services.SQLiteContext, ruleContext *types.RuleContext) error {
 	//
 
 	//
@@ -33,9 +33,8 @@ func AgencyEmailValid(db *services.SQLiteContext, rules *types.AgencyRules) erro
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_email", "agency.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+	if ruleContext != nil {
+		ctx.WithSeverity(ruleContext.Severity)
 	}
 
 	//

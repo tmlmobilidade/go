@@ -1,0 +1,78 @@
+{
+	"agency_email_field": {
+		"depends_on": [],
+		"severity": "warning"
+	},
+	"agency_email_valid": {
+		"depends_on": ["agency_email_field"],
+		"severity": "warning"
+	},
+	"agency_fare_url_field": {
+		"depends_on": [],
+		"severity": "warning"
+	},
+	"agency_fare_url_valid": {
+		"depends_on": ["agency_fare_url_field"],
+		"severity": "warning"
+	},
+	"agency_id_field": {
+		"depends_on": [],
+		"severity": "error"
+	},
+	"agency_id_matched_with_agency_name": {
+		"compare": [
+			{
+				"key": "1",
+				"value": "test"
+			}
+		],
+		"depends_on": ["agency_id_valid", "agency_name_valid"],
+		"severity": "error"
+	},
+	"agency_id_valid": {
+		"depends_on": ["agency_id_field"],
+		"options": ["1"],
+		"severity": "error"
+	},
+	"agency_lang_field": {
+		"depends_on": [],
+		"severity": "info"
+	},
+	"agency_lang_valid": {
+		"depends_on": ["agency_lang_field"],
+		"severity": "info"
+	},
+	"agency_name_field": {
+		"depends_on": [],
+		"severity": "error"
+	},
+	"agency_name_valid": {
+		"depends_on": ["agency_name_field"],
+		"options": ["test"],
+		"severity": "error"
+	},
+	"agency_phone_field": {
+		"depends_on": [],
+		"severity": "warning"
+	},
+	"agency_phone_valid": {
+		"depends_on": ["agency_phone_field"],
+		"severity": "warning"
+	},
+	"agency_timezone_field": {
+		"depends_on": [],
+		"severity": "info"
+	},
+	"agency_timezone_valid": {
+		"depends_on": ["agency_timezone_field"],
+		"severity": "info"
+	},
+	"agency_url_field": {
+		"depends_on": [],
+		"severity": "warning"
+	},
+	"agency_url_valid": {
+		"depends_on": ["agency_url_field"],
+		"severity": "warning"
+	}
+}

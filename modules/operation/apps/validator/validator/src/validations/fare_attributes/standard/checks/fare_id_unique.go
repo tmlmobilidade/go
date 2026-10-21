@@ -20,21 +20,20 @@ Identifies a fare class.
 
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
-func FareIdUnique(db *services.SQLiteContext, rules *types.FareAttributesRules) error {
+func FareIdUnique(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
 	const ruleID = "fare_attributes_id_unique"
-	
+
 	//
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("fare_id", "fare_attributes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

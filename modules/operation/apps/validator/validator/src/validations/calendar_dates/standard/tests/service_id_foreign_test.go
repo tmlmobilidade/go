@@ -30,7 +30,7 @@ func TestServiceIdForeign(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, map[string]any{"service_id": tc.value}, config, tc.calendar...)
-			if err := checks.ServiceIdForeign(ctx, config); err != nil {
+			if err := checks.ServiceIdForeign(ctx, config.Rule("calendar_dates_service_id_foreign")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "service_id", types.SEVERITY_ERROR, tc.count)
@@ -39,7 +39,7 @@ func TestServiceIdForeign(t *testing.T) {
 	t.Run("MissingSourceColumn", func(t *testing.T) {
 		config := testutils.Config(id, types.SEVERITY_ERROR)
 		_, ctx := testutils.Fixture(t, map[string]any{}, config, "S1")
-		if err := checks.ServiceIdForeign(ctx, config); err != nil {
+		if err := checks.ServiceIdForeign(ctx, config.Rule("calendar_dates_service_id_foreign")); err != nil {
 			t.Fatal(err)
 		}
 		testutils.AssertFindings(t, id, "service_id", types.SEVERITY_ERROR, 1)
@@ -64,7 +64,7 @@ func TestServiceIdForeign(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if err := checks.ServiceIdForeign(table.At(3).Context(), config); err != nil {
+			if err := checks.ServiceIdForeign(table.At(3).Context(), config.Rule("calendar_dates_service_id_foreign")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "service_id", types.SEVERITY_ERROR, 1)

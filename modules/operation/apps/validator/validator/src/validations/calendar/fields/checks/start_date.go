@@ -20,7 +20,7 @@ Start service day for the service interval.
 
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
-func StartDateValidation(db *services.SQLiteContext, rules *types.CalendarRules) error {
+func StartDateValidation(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -33,8 +33,7 @@ func StartDateValidation(db *services.SQLiteContext, rules *types.CalendarRules)
 
 	ctx := lib.NewValidationContext("start_date", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

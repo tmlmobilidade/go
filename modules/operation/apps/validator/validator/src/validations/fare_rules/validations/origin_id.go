@@ -29,7 +29,7 @@ If fare class "b" is valid for all travel originating from either zone "2" or zo
 [fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func OriginIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.FareRulesRules) {
+func OriginIdValidation(fareRule *types.FareRule, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("origin_id", "fare_rules.txt", "fare_rule_origin_id_references_zones_stops", row, services.AppMessageService, rules)
 
 	// 1. Validate origin_id is present

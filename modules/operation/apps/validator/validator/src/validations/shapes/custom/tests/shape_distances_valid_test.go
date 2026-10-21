@@ -75,18 +75,18 @@ func TestShapeDistancesValid(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			config := &types.ShapesRules{}
-			rule := types.RuleConfig{Severity: tc.severity}
+			config := &types.GtfsRules{}
+			rule := types.RuleContext{Severity: tc.severity}
 			if tc.tolerance != nil {
 				options := []string{*tc.tolerance}
 				rule.Options = &options
 			}
 			config.SetRule(id, rule)
-			runtime := &types.GtfsRules{Shapes: *config}
+			runtime := config
 			ruleset.ConfigureMessageSeverities(runtime)
 			services.AppMessageService.Clear()
 			t.Cleanup(func() { ruleset.ConfigureMessageSeverities(nil); services.AppMessageService.Clear() })
-			if err := checks.ShapeDistancesValid(table.At(3).Context(), config); err != nil {
+			if err := checks.ShapeDistancesValid(table.At(3).Context(), config.Rule("shapes_shape_dist_traveled_block_valid")); err != nil {
 				t.Fatal(err)
 			}
 			if got := services.AppMessageService.RuleIssueCount(id); got != uint64(tc.count) {
@@ -98,7 +98,7 @@ func TestShapeDistancesValid(t *testing.T) {
 				}
 			}
 			connection.Close()
-			if err := checks.ShapeDistancesValid(table.At(3).Context(), config); err == nil {
+			if err := checks.ShapeDistancesValid(table.At(3).Context(), config.Rule("shapes_shape_dist_traveled_block_valid")); err == nil {
 				t.Fatal("SQLite failure was swallowed")
 			}
 		})
@@ -117,10 +117,10 @@ func TestShapeDistancesValidMultipleResetBlocks(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	config := &types.ShapesRules{}
-	config.SetRule(id, types.RuleConfig{Severity: types.SEVERITY_ERROR})
-	ruleset.ConfigureMessageSeverities(&types.GtfsRules{Shapes: *config})
-	if err := checks.ShapeDistancesValid(table.At(3).Context(), config); err != nil {
+	config := &types.GtfsRules{}
+	config.SetRule(id, types.RuleContext{Severity: types.SEVERITY_ERROR})
+	ruleset.ConfigureMessageSeverities(config)
+	if err := checks.ShapeDistancesValid(table.At(3).Context(), config.Rule("shapes_shape_dist_traveled_block_valid")); err != nil {
 		t.Fatal(err)
 	}
 	if got := services.AppMessageService.RuleIssueCount(id); got != 2 {

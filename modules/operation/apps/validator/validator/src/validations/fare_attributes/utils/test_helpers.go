@@ -12,11 +12,11 @@ import (
 	"testing"
 )
 
-type Check func(*services.SQLiteContext, *types.FareAttributesRules) error
+type Check func(*services.SQLiteContext, *types.RuleContext) error
 
 // Fixture uses real SQLite reads and the same severity overrides as the runner.
 // Tests using the global message service must not run in parallel.
-func Fixture(t *testing.T, values map[string]any, config *types.FareAttributesRules, agencyIDs ...string) (*sql.DB, *services.SQLiteContext) {
+func Fixture(t *testing.T, values map[string]any, config *types.GtfsRules, agencyIDs ...string) (*sql.DB, *services.SQLiteContext) {
 	t.Helper()
 	db, err := sql.Open("sqlite", filepath.Join(t.TempDir(), "fare_attributes.db"))
 	if err != nil {
@@ -59,16 +59,16 @@ func Fixture(t *testing.T, values map[string]any, config *types.FareAttributesRu
 	services.AppMessageService.Clear()
 	runtime := &types.GtfsRules{}
 	if config != nil {
-		runtime.FareAttributes = *config
+		*runtime = *config
 	}
 	ruleset.ConfigureMessageSeverities(runtime)
 	t.Cleanup(func() { ruleset.ConfigureMessageSeverities(nil); services.AppMessageService.Clear() })
 	return db, table.At(3).Context()
 }
 
-func Config(id string, severity types.Severity) *types.FareAttributesRules {
-	config := &types.FareAttributesRules{}
-	config.SetRule(id, types.RuleConfig{Severity: severity})
+func Config(id string, severity types.Severity) *types.GtfsRules {
+	config := &types.GtfsRules{}
+	config.SetRule(id, types.RuleContext{Severity: severity})
 	return config
 }
 
@@ -103,7 +103,7 @@ func AssertReadFailure(t *testing.T, check Check, id string) {
 	if err := db.Close(); err != nil {
 		t.Fatal(err)
 	}
-	if err := check(ctx, config); err == nil {
+	if err := check(ctx, config.Rule(id)); err == nil {
 		t.Fatal("SQLite failure was swallowed")
 	}
 	AssertFindings(t, id, "", types.SEVERITY_ERROR, 0)

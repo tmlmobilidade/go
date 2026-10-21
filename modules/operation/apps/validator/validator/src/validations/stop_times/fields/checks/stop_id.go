@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func StopIdField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func StopIdField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -18,9 +18,8 @@ func StopIdField(db *services.SQLiteContext, rules *types.StopTimesRules) error 
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("stop_id", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {	
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+	if rules != nil {
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

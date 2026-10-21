@@ -12,11 +12,11 @@ import (
 	"testing"
 )
 
-type Check func(*services.SQLiteContext, *types.StopTimesRules) error
+type Check func(*services.SQLiteContext, *types.RuleContext) error
 
 // Fixture uses real SQLite reads and the same severity overrides as the runner.
 // Tests using the global message service must not run in parallel.
-func Fixture(t *testing.T, values map[string]any, config *types.StopTimesRules, setup ...func(*sql.DB)) (*sql.DB, *services.SQLiteContext) {
+func Fixture(t *testing.T, values map[string]any, config *types.GtfsRules, setup ...func(*sql.DB)) (*sql.DB, *services.SQLiteContext) {
 	t.Helper()
 	db, err := sql.Open("sqlite", filepath.Join(t.TempDir(), "stop_times.db"))
 	if err != nil {
@@ -54,16 +54,16 @@ func Fixture(t *testing.T, values map[string]any, config *types.StopTimesRules, 
 	services.AppMessageService.Clear()
 	runtime := &types.GtfsRules{}
 	if config != nil {
-		runtime.StopTimes = *config
+		*runtime = *config
 	}
 	ruleset.ConfigureMessageSeverities(runtime)
 	t.Cleanup(func() { ruleset.ConfigureMessageSeverities(nil); services.AppMessageService.Clear() })
 	return db, table.At(3).Context()
 }
 
-func Config(id string, severity types.Severity) *types.StopTimesRules {
-	config := &types.StopTimesRules{}
-	config.SetRule(id, types.RuleConfig{Severity: severity})
+func Config(id string, severity types.Severity) *types.GtfsRules {
+	config := &types.GtfsRules{}
+	config.SetRule(id, types.RuleContext{Severity: severity})
 	return config
 }
 
@@ -112,7 +112,7 @@ func CheckCases(t *testing.T, id, field string, check Check, cases []Case, setup
 			t.Run(tc.Name+"/"+string(severity), func(t *testing.T) {
 				config := Config(id, severity)
 				_, db := Fixture(t, tc.Values, config, setup...)
-				err := check(db, config)
+				err := check(db, config.Rule(id))
 				if (err != nil) != tc.WantError {
 					t.Fatalf("error = %v, want error %v", err, tc.WantError)
 				}
@@ -124,10 +124,10 @@ func CheckCases(t *testing.T, id, field string, check Check, cases []Case, setup
 			})
 		}
 	}
-	for name, config := range map[string]*types.StopTimesRules{"NilRules": nil, "MissingRule": {}} {
+	for name, config := range map[string]*types.GtfsRules{"NilRules": nil, "MissingRule": {}} {
 		t.Run(name, func(t *testing.T) {
 			_, db := Fixture(t, map[string]any{field: "0"}, config, setup...)
-			if err := check(db, config); err != nil {
+			if err := check(db, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			AssertFindings(t, id, field, types.SEVERITY_IGNORE, 0)
@@ -139,7 +139,7 @@ func CheckCases(t *testing.T, id, field string, check Check, cases []Case, setup
 		if err := connection.Close(); err != nil {
 			t.Fatal(err)
 		}
-		if err := check(db, config); err == nil {
+		if err := check(db, config.Rule(id)); err == nil {
 			t.Fatal("SQLite error was swallowed")
 		}
 		AssertFindings(t, id, field, types.SEVERITY_ERROR, 0)

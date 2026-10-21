@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func PathTypeValid(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func PathTypeValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func PathTypeValid(db *services.SQLiteContext, rules *types.RoutesRules) error {
 
 	ctx := lib.NewValidationContext("path_type", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

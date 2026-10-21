@@ -24,7 +24,7 @@ func TestServiceIdUnique(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			if err := checks.ServiceIdUnique(ctx, config); err != nil {
+			if err := checks.ServiceIdUnique(ctx, config.Rule("calendar_service_id_unique")); err != nil {
 				t.Fatal(err)
 			}
 			count := 0
@@ -41,7 +41,7 @@ func TestServiceIdUnique(t *testing.T) {
 			if _, err := db.Exec("INSERT INTO calendar (service_id) VALUES ('S1')"); err != nil {
 				t.Fatal(err)
 			}
-			if err := checks.ServiceIdUnique(ctx, config); err != nil {
+			if err := checks.ServiceIdUnique(ctx, config.Rule("calendar_service_id_unique")); err != nil {
 				t.Fatal(err)
 			}
 			count := 1

@@ -24,13 +24,9 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 	tracker := lib.CreateProgressTracker(gtfs, "calendar", config.ProgressThresholdSmall)
 
 	//
-	// Get file rules
+	// Create the rule runner
 
-	var fileRules *types.CalendarRules
-	if gtfsRules != nil {
-		fileRules = &gtfsRules.Calendar
-	}
-	runner, err := services.NewRuleRunner(gtfs, fileRules)
+	runner, err := services.NewRuleRunner(gtfs, gtfsRules, "calendar")
 	if err != nil {
 		lib.AppLogger.Error(err.Error())
 		return
@@ -66,31 +62,69 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 		runner.Run(services.RuleActions{
 			//
 			// Fields
-			"calendar_service_id_field": func() { check("calendar_service_id_field", calendar_fields.ServiceIdValidation(db, fileRules)) },
-			"calendar_start_date_field": func() { check("calendar_start_date_field", calendar_fields.StartDateValidation(db, fileRules)) },
-			"calendar_end_date_field":   func() { check("calendar_end_date_field", calendar_fields.EndDateValidation(db, fileRules)) },
-			"calendar_monday_field":     func() { check("calendar_monday_field", calendar_fields.MondayValidation(db, fileRules)) },
-			"calendar_tuesday_field":    func() { check("calendar_tuesday_field", calendar_fields.TuesdayValidation(db, fileRules)) },
-			"calendar_wednesday_field":  func() { check("calendar_wednesday_field", calendar_fields.WednesdayValidation(db, fileRules)) },
-			"calendar_thursday_field":   func() { check("calendar_thursday_field", calendar_fields.ThursdayValidation(db, fileRules)) },
-			"calendar_friday_field":     func() { check("calendar_friday_field", calendar_fields.FridayValidation(db, fileRules)) },
-			"calendar_saturday_field":   func() { check("calendar_saturday_field", calendar_fields.SaturdayValidation(db, fileRules)) },
-			"calendar_sunday_field":     func() { check("calendar_sunday_field", calendar_fields.SundayValidation(db, fileRules)) },
+			"calendar_service_id_field": func() {
+				check("calendar_service_id_field", calendar_fields.ServiceIdValidation(db, gtfsRules.Rule("calendar_service_id_field")))
+			},
+			"calendar_start_date_field": func() {
+				check("calendar_start_date_field", calendar_fields.StartDateValidation(db, gtfsRules.Rule("calendar_start_date_field")))
+			},
+			"calendar_end_date_field": func() {
+				check("calendar_end_date_field", calendar_fields.EndDateValidation(db, gtfsRules.Rule("calendar_end_date_field")))
+			},
+			"calendar_monday_field": func() {
+				check("calendar_monday_field", calendar_fields.MondayValidation(db, gtfsRules.Rule("calendar_monday_field")))
+			},
+			"calendar_tuesday_field": func() {
+				check("calendar_tuesday_field", calendar_fields.TuesdayValidation(db, gtfsRules.Rule("calendar_tuesday_field")))
+			},
+			"calendar_wednesday_field": func() {
+				check("calendar_wednesday_field", calendar_fields.WednesdayValidation(db, gtfsRules.Rule("calendar_wednesday_field")))
+			},
+			"calendar_thursday_field": func() {
+				check("calendar_thursday_field", calendar_fields.ThursdayValidation(db, gtfsRules.Rule("calendar_thursday_field")))
+			},
+			"calendar_friday_field": func() {
+				check("calendar_friday_field", calendar_fields.FridayValidation(db, gtfsRules.Rule("calendar_friday_field")))
+			},
+			"calendar_saturday_field": func() {
+				check("calendar_saturday_field", calendar_fields.SaturdayValidation(db, gtfsRules.Rule("calendar_saturday_field")))
+			},
+			"calendar_sunday_field": func() {
+				check("calendar_sunday_field", calendar_fields.SundayValidation(db, gtfsRules.Rule("calendar_sunday_field")))
+			},
 
 			//
 			// Standard
-			"calendar_service_id_unique": func() { check("calendar_service_id_unique", calendar_standard.ServiceIdUnique(db, fileRules)) },
-			"calendar_start_end_dates_valid_format": func() {
-				check("calendar_start_end_dates_valid_format", calendar_standard.DateValidFormat(db, fileRules))
+			"calendar_service_id_unique": func() {
+				check("calendar_service_id_unique", calendar_standard.ServiceIdUnique(db, gtfsRules.Rule("calendar_service_id_unique")))
 			},
-			"calendar_start_end_dates_valid": func() { check("calendar_start_end_dates_valid", calendar_standard.DateValid(db, fileRules)) },
-			"calendar_monday_valid":          func() { check("calendar_monday_valid", calendar_standard.MondayValid(db, fileRules)) },
-			"calendar_tuesday_valid":         func() { check("calendar_tuesday_valid", calendar_standard.TuesdayValid(db, fileRules)) },
-			"calendar_wednesday_valid":       func() { check("calendar_wednesday_valid", calendar_standard.WednesdayValid(db, fileRules)) },
-			"calendar_thursday_valid":        func() { check("calendar_thursday_valid", calendar_standard.ThursdayValid(db, fileRules)) },
-			"calendar_friday_valid":          func() { check("calendar_friday_valid", calendar_standard.FridayValid(db, fileRules)) },
-			"calendar_saturday_valid":        func() { check("calendar_saturday_valid", calendar_standard.SaturdayValid(db, fileRules)) },
-			"calendar_sunday_valid":          func() { check("calendar_sunday_valid", calendar_standard.SundayValid(db, fileRules)) },
+			"calendar_start_end_dates_valid_format": func() {
+				check("calendar_start_end_dates_valid_format", calendar_standard.DateValidFormat(db, gtfsRules.Rule("calendar_start_end_dates_valid_format")))
+			},
+			"calendar_start_end_dates_valid": func() {
+				check("calendar_start_end_dates_valid", calendar_standard.DateValid(db, gtfsRules.Rule("calendar_start_end_dates_valid")))
+			},
+			"calendar_monday_valid": func() {
+				check("calendar_monday_valid", calendar_standard.MondayValid(db, gtfsRules.Rule("calendar_monday_valid")))
+			},
+			"calendar_tuesday_valid": func() {
+				check("calendar_tuesday_valid", calendar_standard.TuesdayValid(db, gtfsRules.Rule("calendar_tuesday_valid")))
+			},
+			"calendar_wednesday_valid": func() {
+				check("calendar_wednesday_valid", calendar_standard.WednesdayValid(db, gtfsRules.Rule("calendar_wednesday_valid")))
+			},
+			"calendar_thursday_valid": func() {
+				check("calendar_thursday_valid", calendar_standard.ThursdayValid(db, gtfsRules.Rule("calendar_thursday_valid")))
+			},
+			"calendar_friday_valid": func() {
+				check("calendar_friday_valid", calendar_standard.FridayValid(db, gtfsRules.Rule("calendar_friday_valid")))
+			},
+			"calendar_saturday_valid": func() {
+				check("calendar_saturday_valid", calendar_standard.SaturdayValid(db, gtfsRules.Rule("calendar_saturday_valid")))
+			},
+			"calendar_sunday_valid": func() {
+				check("calendar_sunday_valid", calendar_standard.SundayValid(db, gtfsRules.Rule("calendar_sunday_valid")))
+			},
 		}, nil)
 		return nil
 	})

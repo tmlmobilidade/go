@@ -8,7 +8,7 @@ import (
 )
 
 func TestAgencyEmailValid(t *testing.T) {
-	testutils.CheckFormat(t, "agency_email", "support@example.com", "invalid", false, checks.AgencyEmailValid, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_email_valid": config}}}
+	testutils.CheckFormat(t, "agency_email", "support@example.com", "invalid", false, checks.AgencyEmailValid, func(config types.RuleContext) *types.GtfsRules {
+		return &types.GtfsRules{"agency_email_valid": config}
 	})
 }

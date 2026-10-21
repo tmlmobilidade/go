@@ -26,7 +26,7 @@ Conditionally Required:
 
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
-func EndPickupDropOffWindowValid(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func EndPickupDropOffWindowValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -39,7 +39,7 @@ func EndPickupDropOffWindowValid(db *services.SQLiteContext, rules *types.StopTi
 
 	ctx := lib.NewValidationContext("end_pickup_drop_off_window", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		ctx.WithSeverity(rules.Rule(ruleID).Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

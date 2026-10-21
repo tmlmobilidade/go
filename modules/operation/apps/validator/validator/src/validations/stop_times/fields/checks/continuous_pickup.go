@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func ContinuousPickupField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func ContinuousPickupField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func ContinuousPickupField(db *services.SQLiteContext, rules *types.StopTimesRul
 
 	ctx := lib.NewValidationContext("continuous_pickup", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

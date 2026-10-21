@@ -202,7 +202,7 @@ Each validation message contains:
 
 ### Rules File Format
 
-The rules file accepts a flat object keyed by rule ID, either directly or inside a `validation_rules` object. For example (excerpt; a real file must include every configurable rule):
+The rules file accepts a flat object keyed by rule ID, either directly or inside a `validation_rules` object. Partial configurations are supported; omitted rules and severities default to `ignore`. For example:
 
 ```json
 {
@@ -223,16 +223,16 @@ The rules file accepts a flat object keyed by rule ID, either directly or inside
 
 Each rule can have:
 
-- **severity**: `error`, `warning`, `ignore`, or `forbidden` (required)
+- **severity**: `error`, `warning`, `info`, `ignore`, or `forbidden`
 - **options**: An array of allowed string values
 - **compare**: An array of `{ "key": "field_name", "value": "expected_value" }` objects
 - **depends_on**: Rule IDs from the same file, or its synthetic file-presence node, that must pass before this rule runs
 
-Dependencies come only from `depends_on` in the supplied rules JSON. Omitting it or supplying an empty array means the rule has no prerequisites. Unknown dependencies, cycles, and dependencies on incompatible execution phases are rejected before the GTFS is imported. Execution phases are declared on the Go configuration fields with `scope` tags; they do not add dependencies.
+Dependencies come only from `depends_on` in the supplied rules JSON. Omitting it or supplying an empty array means the rule has no prerequisites. Unknown dependencies, cycles, and dependencies on incompatible execution phases are rejected before the GTFS is imported. Execution scopes are declared in `lib/rules/scopes.go`; they do not add dependencies.
 
-Run `npm run repo:validator-rules` to generate only `packages-new/types/gtfs-validator/src/rules-new/rule-ids.ts`. The generator reads IDs directly from `types.GtfsRules`; it does not generate a catalogue or define dependencies.
+Run `npm run repo:validator-rules` to generate only `packages-new/types/gtfs-validator/src/rules-new/rule-ids.ts`. The generator reads IDs from the validation implementations; it does not generate a catalogue or define dependencies.
 
-Legacy rules grouped by GTFS file are still accepted. Both formats require every configurable rule and its severity; use `ignore` to disable a rule. Fixed runtime diagnostics such as `file_validation` and `file_not_found_in_rules` are not configurable.
+Legacy rules grouped by GTFS file are flattened when parsed; the runtime always stores `types.GtfsRules` as a map from rule ID to `types.RuleContext`. Each check receives only its own context, for example `AgencyEmailField(db, rules.Rule("agency_email_field"))`. Use `ignore` to disable a rule. Fixed runtime diagnostics such as `file_validation` and `file_not_found_in_rules` are not configurable.
 
 ## Performance Considerations
 

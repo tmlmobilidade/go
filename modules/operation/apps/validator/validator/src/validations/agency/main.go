@@ -25,13 +25,9 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 	tracker := lib.CreateProgressTracker(gtfs, "agency", config.ProgressThresholdSmall)
 
 	//
-	// Get file rules
+	// Create the rule runner
 
-	var fileRules *types.AgencyRules
-	if gtfsRules != nil {
-		fileRules = &gtfsRules.Agency
-	}
-	runner, err := services.NewRuleRunner(gtfs, fileRules)
+	runner, err := services.NewRuleRunner(gtfs, gtfsRules, "agency")
 	if err != nil {
 		lib.AppLogger.Error(err.Error())
 		return
@@ -62,30 +58,62 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 		runner.Run(services.RuleActions{
 			//
 			// Fields
-			"agency_id_field":       func() { check("agency_id_field", agency_fields.AgencyIdField(db, fileRules)) },
-			"agency_name_field":     func() { check("agency_name_field", agency_fields.AgencyNameField(db, fileRules)) },
-			"agency_url_field":      func() { check("agency_url_field", agency_fields.AgencyUrlField(db, fileRules)) },
-			"agency_timezone_field": func() { check("agency_timezone_field", agency_fields.AgencyTimezoneField(db, fileRules)) },
-			"agency_lang_field":     func() { check("agency_lang_field", agency_fields.AgencyLangField(db, fileRules)) },
-			"agency_phone_field":    func() { check("agency_phone_field", agency_fields.AgencyPhoneField(db, fileRules)) },
-			"agency_fare_url_field": func() { check("agency_fare_url_field", agency_fields.AgencyFareUrlField(db, fileRules)) },
-			"agency_email_field":    func() { check("agency_email_field", agency_fields.AgencyEmailField(db, fileRules)) },
+			"agency_id_field": func() { check("agency_id_field", agency_fields.AgencyIdField(db, gtfsRules.Rule("agency_id_field"))) },
+			"agency_name_field": func() {
+				check("agency_name_field", agency_fields.AgencyNameField(db, gtfsRules.Rule("agency_name_field")))
+			},
+			"agency_url_field": func() {
+				check("agency_url_field", agency_fields.AgencyUrlField(db, gtfsRules.Rule("agency_url_field")))
+			},
+			"agency_timezone_field": func() {
+				check("agency_timezone_field", agency_fields.AgencyTimezoneField(db, gtfsRules.Rule("agency_timezone_field")))
+			},
+			"agency_lang_field": func() {
+				check("agency_lang_field", agency_fields.AgencyLangField(db, gtfsRules.Rule("agency_lang_field")))
+			},
+			"agency_phone_field": func() {
+				check("agency_phone_field", agency_fields.AgencyPhoneField(db, gtfsRules.Rule("agency_phone_field")))
+			},
+			"agency_fare_url_field": func() {
+				check("agency_fare_url_field", agency_fields.AgencyFareUrlField(db, gtfsRules.Rule("agency_fare_url_field")))
+			},
+			"agency_email_field": func() {
+				check("agency_email_field", agency_fields.AgencyEmailField(db, gtfsRules.Rule("agency_email_field")))
+			},
 
 			//
 			// Standard
-			"agency_email_valid":    func() { check("agency_email_valid", agency_standard.AgencyEmailValid(db, fileRules)) },
-			"agency_id_valid":       func() { check("agency_id_valid", agency_standard.AgencyIdValid(db, fileRules)) },
-			"agency_id_unique":      func() { check("agency_id_unique", agency_standard.AgencyIdUnique(db, fileRules)) },
-			"agency_name_valid":     func() { check("agency_name_valid", agency_standard.AgencyNameValid(db, fileRules)) },
-			"agency_url_valid":      func() { check("agency_url_valid", agency_standard.AgencyUrlValid(db, fileRules)) },
-			"agency_timezone_valid": func() { check("agency_timezone_valid", agency_standard.AgencyTimezoneValid(db, fileRules)) },
-			"agency_lang_valid":     func() { check("agency_lang_valid", agency_standard.AgencyLangValid(db, fileRules)) },
-			"agency_phone_valid":    func() { check("agency_phone_valid", agency_standard.AgencyPhoneValid(db, fileRules)) },
-			"agency_fare_url_valid": func() { check("agency_fare_url_valid", agency_standard.AgencyFareUrlValid(db, fileRules)) },
+			"agency_email_valid": func() {
+				check("agency_email_valid", agency_standard.AgencyEmailValid(db, gtfsRules.Rule("agency_email_valid")))
+			},
+			"agency_id_valid": func() { check("agency_id_valid", agency_standard.AgencyIdValid(db, gtfsRules.Rule("agency_id_valid"))) },
+			"agency_id_unique": func() {
+				check("agency_id_unique", agency_standard.AgencyIdUnique(db, gtfsRules.Rule("agency_id_unique")))
+			},
+			"agency_name_valid": func() {
+				check("agency_name_valid", agency_standard.AgencyNameValid(db, gtfsRules.Rule("agency_name_valid")))
+			},
+			"agency_url_valid": func() {
+				check("agency_url_valid", agency_standard.AgencyUrlValid(db, gtfsRules.Rule("agency_url_valid")))
+			},
+			"agency_timezone_valid": func() {
+				check("agency_timezone_valid", agency_standard.AgencyTimezoneValid(db, gtfsRules.Rule("agency_timezone_valid")))
+			},
+			"agency_lang_valid": func() {
+				check("agency_lang_valid", agency_standard.AgencyLangValid(db, gtfsRules.Rule("agency_lang_valid")))
+			},
+			"agency_phone_valid": func() {
+				check("agency_phone_valid", agency_standard.AgencyPhoneValid(db, gtfsRules.Rule("agency_phone_valid")))
+			},
+			"agency_fare_url_valid": func() {
+				check("agency_fare_url_valid", agency_standard.AgencyFareUrlValid(db, gtfsRules.Rule("agency_fare_url_valid")))
+			},
 
 			//
 			// Custom
-			"agency_id_matched_with_agency_name": func() { check("agency_id_matched_with_agency_name", agency_custom.AgencyNameIdMatch(db, fileRules)) },
+			"agency_id_matched_with_agency_name": func() {
+				check("agency_id_matched_with_agency_name", agency_custom.AgencyNameIdMatch(db, gtfsRules.Rule("agency_id_matched_with_agency_name")))
+			},
 		}, nil)
 		return nil
 	})

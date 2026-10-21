@@ -33,7 +33,7 @@ func TestPriceValid(t *testing.T) {
 			}
 			_, ctx := testutils.Fixture(t, values, config, "A1")
 
-			if err := checks.PriceValid(ctx, config); err != nil {
+			if err := checks.PriceValid(ctx, config.Rule("fare_price_valid_non_negative_decimal")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "price", types.SEVERITY_ERROR, tc.count)

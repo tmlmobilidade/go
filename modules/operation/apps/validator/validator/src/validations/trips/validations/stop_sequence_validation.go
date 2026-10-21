@@ -39,7 +39,7 @@ stop_id,stop_sequence
 
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
-func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules, tripStopTimesCache map[string][]types.StopTimeRaw) (stopSequenceHash string) {
+func StopSequenceValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.RuleContext, tripStopTimesCache map[string][]types.StopTimeRaw) (stopSequenceHash string) {
 	ctx := lib.NewValidationContext("stop_sequence", "stop_times.txt", "trips_stop_sequence_increasing_by_one_along_trip", row, services.AppMessageService, rules)
 
 	// 1. Validate rule are skipped

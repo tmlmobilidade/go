@@ -35,20 +35,20 @@ type distancesViolation struct {
 // getDistanceToleranceMeters resolves the configurable tolerance from
 // rules.Options[0] (meters), falling back to the default when rules, options
 // or the value itself are missing or invalid.
-func getDistanceToleranceMeters(rules *types.ShapesRules, ruleID string) float64 {
+func getDistanceToleranceMeters(rules *types.RuleContext) float64 {
 	//
 
 	//
 	// 1. Get the tolerance
 
-	if rules == nil || rules.Rule(ruleID).Options == nil || len(*rules.Rule(ruleID).Options) == 0 {
+	if rules == nil || rules.Options == nil || len(*rules.Options) == 0 {
 		return maxAllPointsDistanceDeltaToleranceMeters
 	}
 
 	//
 	// 2. Parse the tolerance
 
-	value, err := strconv.ParseFloat((*rules.Rule(ruleID).Options)[0], 64)
+	value, err := strconv.ParseFloat((*rules.Options)[0], 64)
 	if err != nil || value < 0 || math.IsNaN(value) || math.IsInf(value, 0) {
 		return maxAllPointsDistanceDeltaToleranceMeters
 	}
@@ -72,7 +72,7 @@ by the per-segment validation instead of being double-reported here).
 
 https://gtfs.org/schedule/reference/#shapestxt
 */
-func ShapeDistancesValid(db *services.SQLiteContext, rules *types.ShapesRules) error {
+func ShapeDistancesValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -85,14 +85,13 @@ func ShapeDistancesValid(db *services.SQLiteContext, rules *types.ShapesRules) e
 
 	ctx := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
 	// 3. Get the tolerance
 
-	toleranceMeters := getDistanceToleranceMeters(rules, ruleID)
+	toleranceMeters := getDistanceToleranceMeters(rules)
 
 	//
 	// 4. Get the violations

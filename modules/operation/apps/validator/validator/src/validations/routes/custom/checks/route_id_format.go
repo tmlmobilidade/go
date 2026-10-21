@@ -7,7 +7,7 @@ import (
 	"main/types"
 )
 
-func RouteIdFormat(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func RouteIdFormat(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -20,8 +20,7 @@ func RouteIdFormat(db *services.SQLiteContext, rules *types.RoutesRules) error {
 
 	ctx := lib.NewValidationContext("route_id", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

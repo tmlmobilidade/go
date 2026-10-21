@@ -8,7 +8,7 @@ import (
 )
 
 func TestAgencyPhoneValid(t *testing.T) {
-	testutils.CheckFormat(t, "agency_phone", "+351210000000", "invalid", false, checks.AgencyPhoneValid, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_phone_valid": config}}}
+	testutils.CheckFormat(t, "agency_phone", "+351210000000", "invalid", false, checks.AgencyPhoneValid, func(config types.RuleContext) *types.GtfsRules {
+		return &types.GtfsRules{"agency_phone_valid": config}
 	})
 }

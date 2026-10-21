@@ -29,16 +29,16 @@ func TestRuleRunnerTableOrdersRowAndGroupDependencies(t *testing.T) {
 	const second = "shapes_shape_dist_traveled_segment_valid"
 	const missing = "shapes_shape_id_field"
 	const blocked = "shapes_shape_dist_traveled_block_valid"
-	config := &types.ShapesRules{}
-	config.SetRule(rowRule, types.RuleConfig{Severity: types.SEVERITY_INFO})
-	config.SetRule(first, types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{rowRule}})
-	config.SetRule(second, types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{first}})
-	config.SetRule(missing, types.RuleConfig{Severity: types.SEVERITY_ERROR})
-	config.SetRule(blocked, types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{missing}})
+	config := &types.GtfsRules{}
+	config.SetRule(rowRule, types.RuleContext{Severity: types.SEVERITY_INFO})
+	config.SetRule(first, types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{rowRule}})
+	config.SetRule(second, types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{first}})
+	config.SetRule(missing, types.RuleContext{Severity: types.SEVERITY_ERROR})
+	config.SetRule(blocked, types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{missing}})
 	rules.ConfigureMessageSeverities(nil)
 	services.AppMessageService.Clear()
 	t.Cleanup(func() { services.AppMessageService.Clear() })
-	runner, err := services.NewRuleRunner(*gtfs, config)
+	runner, err := services.NewRuleRunner(*gtfs, config, "shapes")
 	if err != nil {
 		t.Fatal(err)
 	}

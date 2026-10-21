@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func LineShortNameField(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func LineShortNameField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func LineShortNameField(db *services.SQLiteContext, rules *types.RoutesRules) er
 
 	ctx := lib.NewValidationContext("line_short_name", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

@@ -9,11 +9,11 @@ import (
 // ParseStop parses a row from stops.txt into a Stop struct, following gtfs-parser-validation best practices
 func ParseStop(rawStop types.StopRaw, row int) types.Stop {
 	var (
-		stop                                                                                                                                                                                                                  types.Stop = types.Stop{}
-		stopId, stopCode, stopName, stopDesc, zoneId, stopUrl, parentStation, stopTimezone, levelId, platformCode, ttsStopName, shelterCode, shelterMaintainer, stopShortName, municipalityId, parishId, regionId             string
-		locationType, wheelchairBoarding, hasBench, hasNetworkMap, hasPipRealTime, hasSchedules, hasShelter, hasStopSign, hasTariffsInformation, publicVisible, stopAccess                                                     int
-		stopLat, stopLon                                                                                                                                                                                                      float64
-		messages                                                                                                                                                                                                              []types.Message
+		stop                                                                                                                                                                                                      types.Stop = types.Stop{}
+		stopId, stopCode, stopName, stopDesc, zoneId, stopUrl, parentStation, stopTimezone, levelId, platformCode, ttsStopName, shelterCode, shelterMaintainer, stopShortName, municipalityId, parishId, regionId string
+		locationType, wheelchairBoarding, hasBench, hasNetworkMap, hasPipRealTime, hasSchedules, hasShelter, hasStopSign, hasTariffsInformation, publicVisible, stopAccess                                        int
+		stopLat, stopLon                                                                                                                                                                                          float64
+		messages                                                                                                                                                                                                  []types.Message
 	)
 
 	stringFields := map[string]*string{

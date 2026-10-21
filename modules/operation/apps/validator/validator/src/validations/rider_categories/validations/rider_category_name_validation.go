@@ -21,7 +21,7 @@ Rider category name as displayed to the rider.
 [rider_categories.txt]: https://gtfs.org/schedule/reference/#rider_categoriestxt
 */
 
-func RiderCategoryNameValidation(riderCategory *types.RiderCategory, row int, rules *types.RiderCategoriesRules) {
+func RiderCategoryNameValidation(riderCategory *types.RiderCategory, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("rider_category_name", "rider_categories.txt", "rider_category_name_non_empty", row, services.AppMessageService, rules)
 
 	// 1. Validate rider_category_name is present

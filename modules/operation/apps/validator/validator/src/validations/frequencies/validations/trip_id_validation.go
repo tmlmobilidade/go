@@ -21,7 +21,7 @@ Identifies a trip to which the specified headway of service applies.
 [frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
-func TripIdValidation(frequency *types.Frequencies, row int, gtfs *types.Gtfs, rules *types.FrequenciesRules) {
+func TripIdValidation(frequency *types.Frequencies, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("trip_id", "frequencies.txt", "frequencies_trip_id_references_trips_table", row, services.AppMessageService, rules)
 
 	// 1. Validate trip_id is present

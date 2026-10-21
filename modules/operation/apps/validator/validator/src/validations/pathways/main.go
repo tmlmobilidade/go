@@ -15,11 +15,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	var section *types.PathwaysRules
-	if rules != nil {
-		section = &rules.Pathways
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "pathways")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -38,24 +34,42 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			return nil
 		}
 
-		var pathwaysRules *types.PathwaysRules
-		if rules != nil {
-			pathwaysRules = &rules.Pathways
-		}
 		// Validate pathway_id
 		runner.Run(services.RuleActions{
-			"pathway_id_unique":                           func() { validations.PathwayIdValidation(&pathways, row, &gtfs, pathwaysRules) },
-			"pathway_mode_valid_gtfs_enum":                func() { validations.PathwayModeValidation(&pathways, row, pathwaysRules) },
-			"pathway_is_bidirectional_valid_gtfs_enum":    func() { validations.IsBidirectionalValidation(&pathways, row, pathwaysRules) },
-			"pathway_traversal_time_non_negative_seconds": func() { validations.TraversalTimeValidation(&pathways, row, pathwaysRules) },
-			"pathway_from_stop_id_references_stops_table": func() { validations.FromStopIdValidation(&pathways, row, &gtfs, pathwaysRules) },
-			"pathway_to_stop_id_references_stops_table":   func() { validations.ToStopIdValidation(&pathways, row, &gtfs, pathwaysRules) },
-			"pathway_length_non_negative":                 func() { validations.LengthValidation(&pathways, row, pathwaysRules) },
-			"pathway_max_slope_allowed_for_pathway_mode":  func() { validations.MaxSlopeValidation(&pathways, row, pathwaysRules) },
-			"pathway_min_width_positive":                  func() { validations.MinWidthValidation(&pathways, row, pathwaysRules) },
-			"pathway_stair_count":                         func() { validations.StairCountValidation(&pathways, row, pathwaysRules) },
-			"pathway_signposted_as":                       func() { validations.SignpostedAsValidation(&pathways, row, pathwaysRules) },
-			"pathway_reversed_signposted_as":              func() { validations.ReversedSignpostedAsValidation(&pathways, row, pathwaysRules) },
+			"pathway_id_unique": func() {
+				validations.PathwayIdValidation(&pathways, row, &gtfs, rules.Rule("pathway_id_unique"))
+			},
+			"pathway_mode_valid_gtfs_enum": func() {
+				validations.PathwayModeValidation(&pathways, row, rules.Rule("pathway_mode_valid_gtfs_enum"))
+			},
+			"pathway_is_bidirectional_valid_gtfs_enum": func() {
+				validations.IsBidirectionalValidation(&pathways, row, rules.Rule("pathway_is_bidirectional_valid_gtfs_enum"))
+			},
+			"pathway_traversal_time_non_negative_seconds": func() {
+				validations.TraversalTimeValidation(&pathways, row, rules.Rule("pathway_traversal_time_non_negative_seconds"))
+			},
+			"pathway_from_stop_id_references_stops_table": func() {
+				validations.FromStopIdValidation(&pathways, row, &gtfs, rules.Rule("pathway_from_stop_id_references_stops_table"))
+			},
+			"pathway_to_stop_id_references_stops_table": func() {
+				validations.ToStopIdValidation(&pathways, row, &gtfs, rules.Rule("pathway_to_stop_id_references_stops_table"))
+			},
+			"pathway_length_non_negative": func() {
+				validations.LengthValidation(&pathways, row, rules.Rule("pathway_length_non_negative"))
+			},
+			"pathway_max_slope_allowed_for_pathway_mode": func() {
+				validations.MaxSlopeValidation(&pathways, row, rules.Rule("pathway_max_slope_allowed_for_pathway_mode"))
+			},
+			"pathway_min_width_positive": func() {
+				validations.MinWidthValidation(&pathways, row, rules.Rule("pathway_min_width_positive"))
+			},
+			"pathway_stair_count": func() { validations.StairCountValidation(&pathways, row, rules.Rule("pathway_stair_count")) },
+			"pathway_signposted_as": func() {
+				validations.SignpostedAsValidation(&pathways, row, rules.Rule("pathway_signposted_as"))
+			},
+			"pathway_reversed_signposted_as": func() {
+				validations.ReversedSignpostedAsValidation(&pathways, row, rules.Rule("pathway_reversed_signposted_as"))
+			},
 		}, nil)
 
 		return nil

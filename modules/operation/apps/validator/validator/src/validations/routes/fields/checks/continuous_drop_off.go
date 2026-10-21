@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func ContinuousDropOffField(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func ContinuousDropOffField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func ContinuousDropOffField(db *services.SQLiteContext, rules *types.RoutesRules
 
 	ctx := lib.NewValidationContext("continuous_drop_off", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -47,4 +46,4 @@ func ContinuousDropOffField(db *services.SQLiteContext, rules *types.RoutesRules
 	// 5. Return success
 
 	return nil
-}	
+}

@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func RouteUrlField(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func RouteUrlField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func RouteUrlField(db *services.SQLiteContext, rules *types.RoutesRules) error {
 
 	ctx := lib.NewValidationContext("route_url", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -47,4 +46,4 @@ func RouteUrlField(db *services.SQLiteContext, rules *types.RoutesRules) error {
 	// 5. Return success
 
 	return nil
-}	
+}

@@ -28,7 +28,7 @@ func TestAgencyIdForeign(t *testing.T) {
 			}
 			_, ctx := testutils.Fixture(t, values, config, "A1")
 
-			if err := checks.AgencyIdForeign(ctx, config); err != nil {
+			if err := checks.AgencyIdForeign(ctx, config.Rule("fare_attributes_agency_id_references_agency_table")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "agency_id", types.SEVERITY_ERROR, tc.count)

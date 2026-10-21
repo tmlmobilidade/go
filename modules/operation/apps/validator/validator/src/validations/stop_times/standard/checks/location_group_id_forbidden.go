@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func LocationGroupIdForbidden(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func LocationGroupIdForbidden(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func LocationGroupIdForbidden(db *services.SQLiteContext, rules *types.StopTimes
 
 	ctx := lib.NewValidationContext("location_group_id", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -30,7 +29,7 @@ func LocationGroupIdForbidden(db *services.SQLiteContext, rules *types.StopTimes
 	if err != nil {
 		return err
 	}
-	
+
 	//
 	// 4. Check if the location_group_id is forbidden
 

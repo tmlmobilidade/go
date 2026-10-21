@@ -33,7 +33,7 @@ Conditionally Forbidden:
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
 
-func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *types.StopsRules) {
+func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("stop_access", "stops.txt", "stop_access_validation", row, services.AppMessageService, rules)
 
 	// 1. Validate stop_access is present
@@ -80,12 +80,12 @@ func StopAccessValidation(stop *types.Stop, row int, gtfs *types.Gtfs, rules *ty
 	}
 
 	// 6. Validate Rule options
-	if rules != nil && rules.Rule("stop_access_validation").Options != nil {
-		if slices.Contains(*rules.Rule("stop_access_validation").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("stop_access_validation").Options, strconv.Itoa(*stop.StopAccess)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*stop.StopAccess)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.StopAccess))
 			return
 		}

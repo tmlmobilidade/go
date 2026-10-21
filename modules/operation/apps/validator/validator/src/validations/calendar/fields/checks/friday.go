@@ -20,7 +20,7 @@ Indicates whether service is available on Friday.
 
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
-func FridayValidation(db *services.SQLiteContext, rules *types.CalendarRules) error {
+func FridayValidation(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -33,8 +33,7 @@ func FridayValidation(db *services.SQLiteContext, rules *types.CalendarRules) er
 
 	ctx := lib.NewValidationContext("friday", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

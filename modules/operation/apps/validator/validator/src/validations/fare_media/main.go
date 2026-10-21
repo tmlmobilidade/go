@@ -15,11 +15,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	var section *types.FareMediaRules
-	if rules != nil {
-		section = &rules.FareMedia
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "fare_media")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -38,16 +34,17 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			return nil
 		}
 
-		var fareMediaRules *types.FareMediaRules
-		if rules != nil {
-			fareMediaRules = &rules.FareMedia
-		}
-
 		// Validate fare_media_id
 		runner.Run(services.RuleActions{
-			"fare_media_id_unique":      func() { validations.FareMediaIdValidation(&fareMedia, i, &gtfs, fareMediaRules) },
-			"fare_media_name_non_empty": func() { validations.FareMediaNameValidation(&fareMedia, i, &gtfs, fareMediaRules) },
-			"fare_media_type_valid":     func() { validations.FareMediaTypeValidation(&fareMedia, i, &gtfs, fareMediaRules) },
+			"fare_media_id_unique": func() {
+				validations.FareMediaIdValidation(&fareMedia, i, &gtfs, rules.Rule("fare_media_id_unique"))
+			},
+			"fare_media_name_non_empty": func() {
+				validations.FareMediaNameValidation(&fareMedia, i, &gtfs, rules.Rule("fare_media_name_non_empty"))
+			},
+			"fare_media_type_valid": func() {
+				validations.FareMediaTypeValidation(&fareMedia, i, &gtfs, rules.Rule("fare_media_type_valid"))
+			},
 		}, nil)
 
 		return nil

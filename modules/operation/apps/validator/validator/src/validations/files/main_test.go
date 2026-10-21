@@ -432,9 +432,7 @@ func TestFileValidation(t *testing.T) {
 				Stop:     []types.StopRaw{{StopId: "1", StopName: "1"}},
 				Calendar: []types.CalendarRaw{{ServiceId: "1"}},
 			},
-			rules: &types.GtfsRules{
-				FeedInfo: types.FeedInfoRules{RuleSection: types.RuleSection{File: types.SEVERITY_ERROR}},
-			},
+			rules:        &types.GtfsRules{"feed_info_file_missing": types.RuleContext{Severity: types.SEVERITY_ERROR}},
 			wantErrors:   1,
 			wantWarnings: 0,
 			checkMessages: func(messages []types.Message) bool {
@@ -456,9 +454,7 @@ func TestFileValidation(t *testing.T) {
 				Stop:     []types.StopRaw{{StopId: "1", StopName: "1"}},
 				Calendar: []types.CalendarRaw{{ServiceId: "1"}},
 			},
-			rules: &types.GtfsRules{
-				Shapes: types.ShapesRules{RuleSection: types.RuleSection{File: types.SEVERITY_ERROR}},
-			},
+			rules:        &types.GtfsRules{"shapes_file_missing": types.RuleContext{Severity: types.SEVERITY_ERROR}},
 			wantErrors:   1,
 			wantWarnings: 0,
 			checkMessages: func(messages []types.Message) bool {
@@ -480,11 +476,7 @@ func TestFileValidation(t *testing.T) {
 				Stop:     []types.StopRaw{{StopId: "1", StopName: "1"}},
 				Calendar: []types.CalendarRaw{{ServiceId: "1"}},
 			},
-			rules: &types.GtfsRules{
-				FeedInfo:       types.FeedInfoRules{RuleSection: types.RuleSection{File: types.SEVERITY_ERROR}},
-				Shapes:         types.ShapesRules{RuleSection: types.RuleSection{File: types.SEVERITY_ERROR}},
-				FareAttributes: types.FareAttributesRules{RuleSection: types.RuleSection{File: types.SEVERITY_ERROR}},
-			},
+			rules:        &types.GtfsRules{"feed_info_file_missing": types.RuleContext{Severity: types.SEVERITY_ERROR}, "shapes_file_missing": types.RuleContext{Severity: types.SEVERITY_ERROR}, "fare_attributes_file_missing": types.RuleContext{Severity: types.SEVERITY_ERROR}},
 			wantErrors:   3,
 			wantWarnings: 0,
 			checkMessages: func(messages []types.Message) bool {
@@ -519,9 +511,7 @@ func TestFileValidation(t *testing.T) {
 				Calendar: []types.CalendarRaw{{ServiceId: "1"}},
 				FeedInfo: []types.FeedInfoRaw{{FeedPublisherName: "Test"}},
 			},
-			rules: &types.GtfsRules{
-				FeedInfo: types.FeedInfoRules{RuleSection: types.RuleSection{File: types.SEVERITY_ERROR}},
-			},
+			rules:        &types.GtfsRules{"feed_info_file_missing": types.RuleContext{Severity: types.SEVERITY_ERROR}},
 			wantErrors:   0,
 			wantWarnings: 0,
 		},
@@ -605,9 +595,7 @@ func TestCheckWarningFiles(t *testing.T) {
 				Calendar: []types.CalendarRaw{{ServiceId: "1"}},
 				// FeedInfo is missing
 			},
-			rules: &types.GtfsRules{
-				FeedInfo: types.FeedInfoRules{RuleSection: types.RuleSection{File: types.SEVERITY_WARNING}},
-			},
+			rules:        &types.GtfsRules{"feed_info_file_missing": types.RuleContext{Severity: types.SEVERITY_WARNING}},
 			wantWarnings: 1,
 			checkMessages: func(messages []types.Message) bool {
 				for _, msg := range messages {
@@ -629,9 +617,7 @@ func TestCheckWarningFiles(t *testing.T) {
 				Calendar: []types.CalendarRaw{{ServiceId: "1"}},
 				// Shapes is missing
 			},
-			rules: &types.GtfsRules{
-				Shapes: types.ShapesRules{RuleSection: types.RuleSection{File: types.SEVERITY_WARNING}},
-			},
+			rules:        &types.GtfsRules{"shapes_file_missing": types.RuleContext{Severity: types.SEVERITY_WARNING}},
 			wantWarnings: 1,
 			checkMessages: func(messages []types.Message) bool {
 				for _, msg := range messages {
@@ -653,9 +639,7 @@ func TestCheckWarningFiles(t *testing.T) {
 				Calendar: []types.CalendarRaw{{ServiceId: "1"}},
 				FeedInfo: []types.FeedInfoRaw{{FeedPublisherName: "Test"}},
 			},
-			rules: &types.GtfsRules{
-				FeedInfo: types.FeedInfoRules{RuleSection: types.RuleSection{File: types.SEVERITY_WARNING}},
-			},
+			rules:        &types.GtfsRules{"feed_info_file_missing": types.RuleContext{Severity: types.SEVERITY_WARNING}},
 			wantWarnings: 0,
 		},
 		{
@@ -669,11 +653,7 @@ func TestCheckWarningFiles(t *testing.T) {
 				Calendar: []types.CalendarRaw{{ServiceId: "1"}},
 				// FeedInfo, Shapes, and FareAttributes are missing
 			},
-			rules: &types.GtfsRules{
-				FeedInfo:       types.FeedInfoRules{RuleSection: types.RuleSection{File: types.SEVERITY_WARNING}},
-				Shapes:         types.ShapesRules{RuleSection: types.RuleSection{File: types.SEVERITY_WARNING}},
-				FareAttributes: types.FareAttributesRules{RuleSection: types.RuleSection{File: types.SEVERITY_WARNING}},
-			},
+			rules:        &types.GtfsRules{"feed_info_file_missing": types.RuleContext{Severity: types.SEVERITY_WARNING}, "shapes_file_missing": types.RuleContext{Severity: types.SEVERITY_WARNING}, "fare_attributes_file_missing": types.RuleContext{Severity: types.SEVERITY_WARNING}},
 			wantWarnings: 3,
 			checkMessages: func(messages []types.Message) bool {
 				warningFiles := map[string]bool{
@@ -722,10 +702,7 @@ func TestCheckWarningFiles(t *testing.T) {
 				Calendar: []types.CalendarRaw{{ServiceId: "1"}},
 				// FeedInfo and Shapes are missing
 			},
-			rules: &types.GtfsRules{
-				FeedInfo: types.FeedInfoRules{RuleSection: types.RuleSection{File: types.SEVERITY_WARNING}},
-				Shapes:   types.ShapesRules{RuleSection: types.RuleSection{File: types.SEVERITY_ERROR}},
-			},
+			rules:        &types.GtfsRules{"feed_info_file_missing": types.RuleContext{Severity: types.SEVERITY_WARNING}, "shapes_file_missing": types.RuleContext{Severity: types.SEVERITY_ERROR}},
 			wantWarnings: 1, // Only feed_info.txt should generate warning
 			checkMessages: func(messages []types.Message) bool {
 				warningCount := 0

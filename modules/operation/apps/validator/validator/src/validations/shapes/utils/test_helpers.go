@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-type Check func(*services.SQLiteContext, *types.ShapesRules) error
+type Check func(*services.SQLiteContext, *types.RuleContext) error
 
 type TestRow struct {
 	ID     int
@@ -57,11 +57,11 @@ func TestTable(t *testing.T, rows ...TestRow) (*sql.DB, *services.SQLiteTable) {
 	return db, table
 }
 
-func TestRules(t *testing.T, id string, severity types.Severity) *types.ShapesRules {
+func TestRules(t *testing.T, id string, severity types.Severity) *types.GtfsRules {
 	t.Helper()
-	config := &types.ShapesRules{}
-	config.SetRule(id, types.RuleConfig{Severity: severity})
-	rules.ConfigureMessageSeverities(&types.GtfsRules{Shapes: *config})
+	config := &types.GtfsRules{}
+	config.SetRule(id, types.RuleContext{Severity: severity})
+	rules.ConfigureMessageSeverities(config)
 	services.AppMessageService.Clear()
 	t.Cleanup(func() { rules.ConfigureMessageSeverities(nil); services.AppMessageService.Clear() })
 	return config
@@ -121,7 +121,7 @@ func CheckShapePresence(t *testing.T, field string, check Check) {
 			if tc.nilRules {
 				config = nil
 			}
-			if err := check(table.At(6).Context(), config); err != nil {
+			if err := check(table.At(6).Context(), config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			var rows []int
@@ -130,7 +130,7 @@ func CheckShapePresence(t *testing.T, field string, check Check) {
 			}
 			AssertShapeFindings(t, id, field, tc.severity, rows...)
 			db.Close()
-			if err := check(table.At(6).Context(), config); err == nil {
+			if err := check(table.At(6).Context(), config.Rule(id)); err == nil {
 				t.Fatal("SQLite failure swallowed")
 			}
 		})
@@ -147,7 +147,7 @@ func CheckShapeValues(t *testing.T, id, field string, check Check, valid, invali
 			t.Run("Value="+value, func(t *testing.T) {
 				_, table := TestTable(t, TestRow{ID: 7, Values: map[string]any{field: value}})
 				config := TestRules(t, id, types.SEVERITY_ERROR)
-				if err := check(table.At(6).Context(), config); err != nil {
+				if err := check(table.At(6).Context(), config.Rule(id)); err != nil {
 					t.Fatal(err)
 				}
 				var rows []int
@@ -184,7 +184,7 @@ func CheckShapeValues(t *testing.T, id, field string, check Check, valid, invali
 			if tc.nilRules {
 				config = nil
 			}
-			if err := check(table.At(6).Context(), config); err != nil {
+			if err := check(table.At(6).Context(), config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			var rows []int
@@ -193,7 +193,7 @@ func CheckShapeValues(t *testing.T, id, field string, check Check, valid, invali
 			}
 			AssertShapeFindings(t, id, field, tc.severity, rows...)
 			db.Close()
-			if err := check(table.At(6).Context(), config); err == nil {
+			if err := check(table.At(6).Context(), config.Rule(id)); err == nil {
 				t.Fatal("SQLite failure swallowed")
 			}
 		})

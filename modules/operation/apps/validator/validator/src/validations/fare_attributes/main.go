@@ -24,13 +24,9 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 	tracker := lib.CreateProgressTracker(gtfs, "fare_attributes", config.ProgressThresholdSmall)
 
 	//
-	// Get file rules
+	// Create the rule runner
 
-	var fileRules *types.FareAttributesRules
-	if gtfsRules != nil {
-		fileRules = &gtfsRules.FareAttributes
-	}
-	runner, err := services.NewRuleRunner(gtfs, fileRules)
+	runner, err := services.NewRuleRunner(gtfs, gtfsRules, "fare_attributes")
 	if err != nil {
 		lib.AppLogger.Error(err.Error())
 		return
@@ -60,38 +56,48 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 
 		runner.Run(services.RuleActions{
 			// Fields
-			"fare_attributes_fare_id_field": func() { check("fare_attributes_fare_id_field", fare_attributes_fields.FareIdField(db, fileRules)) },
-			"fare_attributes_price_field":   func() { check("fare_attributes_price_field", fare_attributes_fields.PriceField(db, fileRules)) },
+			"fare_attributes_fare_id_field": func() {
+				check("fare_attributes_fare_id_field", fare_attributes_fields.FareIdField(db, gtfsRules.Rule("fare_attributes_fare_id_field")))
+			},
+			"fare_attributes_price_field": func() {
+				check("fare_attributes_price_field", fare_attributes_fields.PriceField(db, gtfsRules.Rule("fare_attributes_price_field")))
+			},
 			"fare_attributes_currency_type_field": func() {
-				check("fare_attributes_currency_type_field", fare_attributes_fields.CurrencyTypeField(db, fileRules))
+				check("fare_attributes_currency_type_field", fare_attributes_fields.CurrencyTypeField(db, gtfsRules.Rule("fare_attributes_currency_type_field")))
 			},
 			"fare_attributes_payment_method_field": func() {
-				check("fare_attributes_payment_method_field", fare_attributes_fields.PaymentMethodField(db, fileRules))
+				check("fare_attributes_payment_method_field", fare_attributes_fields.PaymentMethodField(db, gtfsRules.Rule("fare_attributes_payment_method_field")))
 			},
-			"fare_attributes_transfers_field": func() { check("fare_attributes_transfers_field", fare_attributes_fields.TransfersField(db, fileRules)) },
-			"fare_attributes_agency_id_field": func() { check("fare_attributes_agency_id_field", fare_attributes_fields.AgencyIdField(db, fileRules)) },
+			"fare_attributes_transfers_field": func() {
+				check("fare_attributes_transfers_field", fare_attributes_fields.TransfersField(db, gtfsRules.Rule("fare_attributes_transfers_field")))
+			},
+			"fare_attributes_agency_id_field": func() {
+				check("fare_attributes_agency_id_field", fare_attributes_fields.AgencyIdField(db, gtfsRules.Rule("fare_attributes_agency_id_field")))
+			},
 			"fare_attributes_transfer_duration_field": func() {
-				check("fare_attributes_transfer_duration_field", fare_attributes_fields.TransferDurationField(db, fileRules))
+				check("fare_attributes_transfer_duration_field", fare_attributes_fields.TransferDurationField(db, gtfsRules.Rule("fare_attributes_transfer_duration_field")))
 			},
 			// Standard
-			"fare_attributes_id_unique": func() { check("fare_attributes_id_unique", fare_attributes_standard.FareIdUnique(db, fileRules)) },
+			"fare_attributes_id_unique": func() {
+				check("fare_attributes_id_unique", fare_attributes_standard.FareIdUnique(db, gtfsRules.Rule("fare_attributes_id_unique")))
+			},
 			"fare_price_valid_non_negative_decimal": func() {
-				check("fare_price_valid_non_negative_decimal", fare_attributes_standard.PriceValid(db, fileRules))
+				check("fare_price_valid_non_negative_decimal", fare_attributes_standard.PriceValid(db, gtfsRules.Rule("fare_price_valid_non_negative_decimal")))
 			},
 			"fare_attributes_currency_type_valid": func() {
-				check("fare_attributes_currency_type_valid", fare_attributes_standard.CurrencyTypeValid(db, fileRules))
+				check("fare_attributes_currency_type_valid", fare_attributes_standard.CurrencyTypeValid(db, gtfsRules.Rule("fare_attributes_currency_type_valid")))
 			},
 			"fare_attributes_payment_method_valid_gtfs_enum": func() {
-				check("fare_attributes_payment_method_valid_gtfs_enum", fare_attributes_standard.PaymentMethodValid(db, fileRules))
+				check("fare_attributes_payment_method_valid_gtfs_enum", fare_attributes_standard.PaymentMethodValid(db, gtfsRules.Rule("fare_attributes_payment_method_valid_gtfs_enum")))
 			},
 			"fare_attributes_transfers_valid_gtfs_enum": func() {
-				check("fare_attributes_transfers_valid_gtfs_enum", fare_attributes_standard.TransfersValid(db, fileRules))
+				check("fare_attributes_transfers_valid_gtfs_enum", fare_attributes_standard.TransfersValid(db, gtfsRules.Rule("fare_attributes_transfers_valid_gtfs_enum")))
 			},
 			"fare_attributes_agency_id_references_agency_table": func() {
-				check("fare_attributes_agency_id_references_agency_table", fare_attributes_standard.AgencyIdForeign(db, fileRules))
+				check("fare_attributes_agency_id_references_agency_table", fare_attributes_standard.AgencyIdForeign(db, gtfsRules.Rule("fare_attributes_agency_id_references_agency_table")))
 			},
 			"fare_attributes_transfer_duration_valid_seconds_range": func() {
-				check("fare_attributes_transfer_duration_valid_seconds_range", fare_attributes_standard.TransferDurationValid(db, fileRules))
+				check("fare_attributes_transfer_duration_valid_seconds_range", fare_attributes_standard.TransferDurationValid(db, gtfsRules.Rule("fare_attributes_transfer_duration_valid_seconds_range")))
 			},
 		}, nil)
 		return nil

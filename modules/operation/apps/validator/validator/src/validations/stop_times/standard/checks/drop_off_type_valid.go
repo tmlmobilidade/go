@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func DropOffTypeValid(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func DropOffTypeValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -20,8 +20,7 @@ func DropOffTypeValid(db *services.SQLiteContext, rules *types.StopTimesRules) e
 
 	ctx := lib.NewValidationContext("drop_off_type", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -43,7 +42,7 @@ func DropOffTypeValid(db *services.SQLiteContext, rules *types.StopTimesRules) e
 	if dt < 0 || dt > 3 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 		return nil
-	}	
+	}
 
 	//
 	// 5. Return success

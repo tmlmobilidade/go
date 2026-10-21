@@ -10,7 +10,7 @@ import (
 // ShapeDistTraveledNonDecreasing compares distances in sequence order.
 // Equal distances are allowed. Missing or negative distances break a comparison;
 // this check does not bridge across them or replace the non-negative-value rule.
-func ShapeDistTraveledNonDecreasing(db *services.SQLiteContext, rules *types.ShapesRules) error {
+func ShapeDistTraveledNonDecreasing(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -26,7 +26,7 @@ func ShapeDistTraveledNonDecreasing(db *services.SQLiteContext, rules *types.Sha
 
 	//
 	// 2. Compare neighbouring points within each independently ordered shape.
-	
+
 	for _, points := range groups {
 		for i := 1; i < len(points); i++ {
 			point, previous := points[i], points[i-1]
@@ -43,7 +43,7 @@ func ShapeDistTraveledNonDecreasing(db *services.SQLiteContext, rules *types.Sha
 			// 2. Report the decrease on the current point, using its source row.
 			ctx := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", ruleID, point.Row, services.AppMessageService)
 			if rules != nil {
-				rule := rules.Rule(ruleID)
+				rule := rules
 				ctx.WithSeverity(rule.Severity)
 			}
 			if ctx.ShouldSkip() {

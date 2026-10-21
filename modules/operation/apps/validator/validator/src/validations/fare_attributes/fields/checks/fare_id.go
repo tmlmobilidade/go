@@ -20,7 +20,7 @@ Identifies a fare class.
 
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
-func FareIdField(db *services.SQLiteContext, rules *types.FareAttributesRules) error {
+func FareIdField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -33,8 +33,7 @@ func FareIdField(db *services.SQLiteContext, rules *types.FareAttributesRules) e
 
 	ctx := lib.NewValidationContext("fare_id", "fare_attributes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 	//
 	// 3. Get the fare_id value

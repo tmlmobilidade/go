@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func ShapePtSequence(db *services.SQLiteContext, rules *types.ShapesRules) error {
+func ShapePtSequence(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -20,8 +20,7 @@ func ShapePtSequence(db *services.SQLiteContext, rules *types.ShapesRules) error
 
 	ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

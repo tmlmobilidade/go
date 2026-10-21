@@ -10,7 +10,7 @@ import (
 // ShapePtSequenceStrictlyIncreasing checks points prepared by SequenceGroups.
 // CSV rows may appear out of sequence: after sorting, a non-increasing pair
 // means a repeated sequence number, not an out-of-order source row.
-func ShapePtSequenceStrictlyIncreasing(db *services.SQLiteContext, rules *types.ShapesRules) error {
+func ShapePtSequenceStrictlyIncreasing(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -41,7 +41,7 @@ func ShapePtSequenceStrictlyIncreasing(db *services.SQLiteContext, rules *types.
 
 			ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", ruleID, point.Row, services.AppMessageService)
 			if rules != nil {
-				rule := rules.Rule(ruleID)
+				rule := rules
 				ctx.WithSeverity(rule.Severity)
 			}
 

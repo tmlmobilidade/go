@@ -28,7 +28,7 @@ func TestCurrencyTypeValid(t *testing.T) {
 			}
 			_, ctx := testutils.Fixture(t, values, config, "A1")
 
-			if err := checks.CurrencyTypeValid(ctx, config); err != nil {
+			if err := checks.CurrencyTypeValid(ctx, config.Rule("fare_attributes_currency_type_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "currency_type", types.SEVERITY_ERROR, tc.count)

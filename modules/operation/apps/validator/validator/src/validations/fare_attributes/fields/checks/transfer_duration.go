@@ -19,9 +19,9 @@ Length of time in seconds before a transfer expires. When transfers=0 this field
 
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
-func TransferDurationField(db *services.SQLiteContext, rules *types.FareAttributesRules) error {
+func TransferDurationField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
-		
+
 	//
 	// 1. Get the rule
 
@@ -32,10 +32,9 @@ func TransferDurationField(db *services.SQLiteContext, rules *types.FareAttribut
 
 	ctx := lib.NewValidationContext("transfer_duration", "fare_attributes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
-	
+
 	//
 	// 3. Get the transfer_duration value
 

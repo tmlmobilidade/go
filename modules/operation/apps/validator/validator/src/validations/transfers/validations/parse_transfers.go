@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func ParseTransfers(rawTransfers *types.TransfersRaw, row int, gtfs types.Gtfs, rules *types.TransfersRules) *types.Transfers {
+func ParseTransfers(rawTransfers *types.TransfersRaw, row int, gtfs types.Gtfs, rules *types.GtfsRules) *types.Transfers {
 	var (
 		transfer                                                           *types.Transfers = &types.Transfers{}
 		fromStopId, toStopId, fromRouteId, toRouteId, fromTripId, toTripId string
@@ -31,11 +31,11 @@ func ParseTransfers(rawTransfers *types.TransfersRaw, row int, gtfs types.Gtfs, 
 	// Helper to collect error messages
 	addMessage := func(field, msg string) {
 		messages = append(messages, types.Message{
-			Field:        field,
-			FileName:     "transfers.txt",
-			Rows:         []int{row},
-			Message:      msg,
-			Severity:     types.SEVERITY_ERROR,
+			Field:    field,
+			FileName: "transfers.txt",
+			Rows:     []int{row},
+			Message:  msg,
+			Severity: types.SEVERITY_ERROR,
 			RuleID:   "transfers_values_parse",
 		})
 	}

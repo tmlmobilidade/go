@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func DropOffTypeField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func DropOffTypeField(db *services.SQLiteContext, rules *types.RuleContext) error {
 
 	//
 	// 1. Get the rule
@@ -18,8 +18,7 @@ func DropOffTypeField(db *services.SQLiteContext, rules *types.StopTimesRules) e
 
 	ctx := lib.NewValidationContext("drop_off_type", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

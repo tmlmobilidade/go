@@ -20,7 +20,7 @@ Id of the level that can be referenced from stops.txt.
 
 [levels.txt]: https://gtfs.org/schedule/reference/#levelstxt
 */
-func LevelIdValidation(level *types.Levels, row int, gtfs types.Gtfs, rules *types.LevelsRules) {
+func LevelIdValidation(level *types.Levels, row int, gtfs types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("level_id", "levels.txt", "level_id_unique", row, services.AppMessageService, rules)
 
 	// 1. Validate level_id is present

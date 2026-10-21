@@ -15,11 +15,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	var section *types.TransfersRules
-	if rules != nil {
-		section = &rules.Transfers
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "transfers")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -31,7 +27,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 	err := gtfs.IterateTransfers(func(row int, rawTransfers types.TransfersRaw) error {
 		tracker.Track()
-		transfer := validations.ParseTransfers(&rawTransfers, row, gtfs, &rules.Transfers)
+		transfer := validations.ParseTransfers(&rawTransfers, row, gtfs, rules)
 
 		if transfer == nil {
 			return nil
@@ -39,14 +35,28 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		// Validate from_stop_id
 		runner.Run(services.RuleActions{
-			"transfer_from_stop_id_references_stops_table":     func() { validations.FromStopIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_to_stop_id_references_stops_table":       func() { validations.ToStopIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_from_route_id_references_routes_table":   func() { validations.FromRouteIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_to_route_id_references_routes_table":     func() { validations.ToRouteIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_from_trip_id_references_trips_table":     func() { validations.FromTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_to_trip_id_references_trips_table":       func() { validations.ToTripIdValidation(transfer, row, gtfs, &rules.Transfers) },
-			"transfer_type_valid_gtfs_enum":                    func() { validations.TransferTypeValidation(transfer, row, &rules.Transfers) },
-			"transfers_min_transfer_time_non_negative_seconds": func() { validations.MinTransferTimeValidation(transfer, row, &rules.Transfers) },
+			"transfer_from_stop_id_references_stops_table": func() {
+				validations.FromStopIdValidation(transfer, row, gtfs, rules.Rule("transfer_from_stop_id_references_stops_table"))
+			},
+			"transfer_to_stop_id_references_stops_table": func() {
+				validations.ToStopIdValidation(transfer, row, gtfs, rules.Rule("transfer_to_stop_id_references_stops_table"))
+			},
+			"transfer_from_route_id_references_routes_table": func() {
+				validations.FromRouteIdValidation(transfer, row, gtfs, rules.Rule("transfer_from_route_id_references_routes_table"))
+			},
+			"transfer_to_route_id_references_routes_table": func() {
+				validations.ToRouteIdValidation(transfer, row, gtfs, rules.Rule("transfer_to_route_id_references_routes_table"))
+			},
+			"transfer_from_trip_id_references_trips_table": func() {
+				validations.FromTripIdValidation(transfer, row, gtfs, rules.Rule("transfer_from_trip_id_references_trips_table"))
+			},
+			"transfer_to_trip_id_references_trips_table": func() {
+				validations.ToTripIdValidation(transfer, row, gtfs, rules.Rule("transfer_to_trip_id_references_trips_table"))
+			},
+			"transfer_type_valid_gtfs_enum": func() { validations.TransferTypeValidation(transfer, row, rules.Rule("transfer_type_valid_gtfs_enum")) },
+			"transfers_min_transfer_time_non_negative_seconds": func() {
+				validations.MinTransferTimeValidation(transfer, row, rules.Rule("transfers_min_transfer_time_non_negative_seconds"))
+			},
 		}, nil)
 
 		return nil

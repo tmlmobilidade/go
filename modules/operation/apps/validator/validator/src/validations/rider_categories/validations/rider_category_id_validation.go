@@ -21,7 +21,7 @@ Identifies a rider category.
 [rider_categories.txt]: https://gtfs.org/schedule/reference/#rider_categoriestxt
 */
 
-func RiderCategoryIdValidation(riderCategory *types.RiderCategory, row int, gtfs *types.Gtfs, rules *types.RiderCategoriesRules) {
+func RiderCategoryIdValidation(riderCategory *types.RiderCategory, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("rider_category_id", "rider_categories.txt", "rider_category_id_unique", row, services.AppMessageService, rules)
 
 	// 1. Validate rider_category_id is present

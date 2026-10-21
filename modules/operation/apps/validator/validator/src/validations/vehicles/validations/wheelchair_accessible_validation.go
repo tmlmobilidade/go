@@ -29,7 +29,7 @@ Valid options are:
 https://gtfs.org/documentation/schedule/reference/#:~:text=wheelchair_accessible
 */
 
-func WheelchairAccessibleValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func WheelchairAccessibleValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("wheelchair_accessible", "vehicles.txt", "vehicles_wheelchair_accessible_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	// 1. Check if wheelchair_accessible is required
@@ -57,12 +57,12 @@ func WheelchairAccessibleValidation(vehicle *types.Vehicle, row int, rules *type
 	}
 
 	// 4. Validate rules
-	if rules != nil && rules.Rule("vehicles_wheelchair_accessible_valid_gtfs_enum").Options != nil {
-		if slices.Contains(*rules.Rule("vehicles_wheelchair_accessible_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("vehicles_wheelchair_accessible_valid_gtfs_enum").Options, strconv.Itoa(*vehicle.WheelchairAccessible)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*vehicle.WheelchairAccessible)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*vehicle.WheelchairAccessible)))
 			return
 		}

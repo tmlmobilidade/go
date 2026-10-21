@@ -31,12 +31,12 @@ func ParseFrequencies(rawFrequencies *types.FrequenciesRaw, row int) *types.Freq
 
 	addMessage := func(field, msg string) {
 		messages = append(messages, types.Message{
-			Field:        field,
-			FileName:     "frequencies.txt",
-			Rows:         []int{row},
-			Message:      msg,
-			Severity:     types.SEVERITY_ERROR,
-			RuleID:       "frequencies_values_parse",
+			Field:    field,
+			FileName: "frequencies.txt",
+			Rows:     []int{row},
+			Message:  msg,
+			Severity: types.SEVERITY_ERROR,
+			RuleID:   "frequencies_values_parse",
 		})
 	}
 

@@ -30,7 +30,7 @@ Exit gates (pathway_mode=7) must not be bidirectional.
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
 
-func IsBidirectionalValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
+func IsBidirectionalValidation(pathways *types.Pathways, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("is_bidirectional", "pathways.txt", "pathway_is_bidirectional_valid_gtfs_enum", row, services.AppMessageService, rules)
 
 	if pathways.IsBidirectional == nil {
@@ -57,12 +57,12 @@ func IsBidirectionalValidation(pathways *types.Pathways, row int, rules *types.P
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.Rule("pathway_is_bidirectional_valid_gtfs_enum").Options != nil {
-		if slices.Contains(*rules.Rule("pathway_is_bidirectional_valid_gtfs_enum").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("pathway_is_bidirectional_valid_gtfs_enum").Options, strconv.Itoa(*pathways.IsBidirectional)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*pathways.IsBidirectional)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*pathways.IsBidirectional)))
 			return
 		}

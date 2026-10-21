@@ -20,7 +20,7 @@ Full name of the transit agency.
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyNameIdMatch(db *services.SQLiteContext, rules *types.AgencyRules) error {
+func AgencyNameIdMatch(db *services.SQLiteContext, ruleContext *types.RuleContext) error {
 	//
 
 	//
@@ -32,9 +32,8 @@ func AgencyNameIdMatch(db *services.SQLiteContext, rules *types.AgencyRules) err
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_name_id_match", "agency.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+	if ruleContext != nil {
+		ctx.WithSeverity(ruleContext.Severity)
 	}
 
 	//
@@ -56,14 +55,14 @@ func AgencyNameIdMatch(db *services.SQLiteContext, rules *types.AgencyRules) err
 	//
 	// 5. Validate rules
 
-	if rules != nil && rules.Rule(ruleID).Compare != nil {
+	if ruleContext != nil && ruleContext.Compare != nil {
 		//
 
 		//
 		// 5.1. Find the matching key and value
 
 		validName := ""
-		for _, compare := range *rules.Rule(ruleID).Compare {
+		for _, compare := range *ruleContext.Compare {
 			if compare.Key == agencyID && compare.Value == agencyName {
 				return nil
 			}

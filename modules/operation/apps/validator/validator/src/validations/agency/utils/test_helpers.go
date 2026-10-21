@@ -48,15 +48,15 @@ func AssertAgencyRead(t *testing.T, err error) {
 }
 
 // Check is the common signature of an agency row validation.
-type Check func(*services.SQLiteContext, *types.AgencyRules) error
+type Check func(*services.SQLiteContext, *types.RuleContext) error
 
-type Configure func(types.RuleConfig) *types.AgencyRules
+type Configure func(types.RuleContext) *types.GtfsRules
 
 // ConfigureMessages isolates the global message service and applies runtime severity settings.
-func ConfigureMessages(t *testing.T, config *types.AgencyRules) {
+func ConfigureMessages(t *testing.T, config *types.GtfsRules) {
 	t.Helper()
 	services.AppMessageService.Clear()
-	rules.ConfigureMessageSeverities(&types.GtfsRules{Agency: *config})
+	rules.ConfigureMessageSeverities(config)
 	t.Cleanup(func() {
 		rules.ConfigureMessageSeverities(nil)
 		services.AppMessageService.Clear()
@@ -64,6 +64,7 @@ func ConfigureMessages(t *testing.T, config *types.AgencyRules) {
 }
 
 func CheckPresence(t *testing.T, field string, check Check, configure Configure) {
+	id := field + "_field"
 	t.Helper()
 	for _, tc := range []struct {
 		name          string
@@ -92,15 +93,16 @@ func CheckPresence(t *testing.T, field string, check Check, configure Configure)
 			if !tc.missingColumn {
 				values[field] = tc.value
 			}
-			config := configure(types.RuleConfig{Severity: tc.severity})
+			config := configure(types.RuleContext{Severity: tc.severity})
 			ConfigureMessages(t, config)
-			AssertAgencyRead(t, check(AgencyRow(t, 0, values), config))
+			AssertAgencyRead(t, check(AgencyRow(t, 0, values), config.Rule(id)))
 			AssertFindings(t, field+"_field", tc.severity, tc.issues)
 		})
 	}
 }
 
 func CheckOptions(t *testing.T, field, valid string, check Check, configure Configure) {
+	id := field + "_valid"
 	t.Helper()
 	for _, tc := range []struct {
 		name     string
@@ -123,9 +125,9 @@ func CheckOptions(t *testing.T, field, valid string, check Check, configure Conf
 		{"unconfigured", &valid, "", &[]string{"other"}, 0},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			config := configure(types.RuleConfig{Severity: tc.severity, Options: tc.options})
+			config := configure(types.RuleContext{Severity: tc.severity, Options: tc.options})
 			ConfigureMessages(t, config)
-			AssertAgencyRead(t, check(AgencyRow(t, 0, map[string]*string{field: tc.value}), config))
+			AssertAgencyRead(t, check(AgencyRow(t, 0, map[string]*string{field: tc.value}), config.Rule(id)))
 			AssertFindings(t, field+"_valid", tc.severity, tc.issues)
 		})
 	}
@@ -134,6 +136,7 @@ func CheckOptions(t *testing.T, field, valid string, check Check, configure Conf
 // CheckFormat tests format checks independently of their presence prerequisites.
 // Empty timezones are accepted by time.LoadLocation; the field check handles presence.
 func CheckFormat(t *testing.T, field, valid, invalid string, emptyValid bool, check Check, configure Configure) {
+	id := field + "_valid"
 	t.Helper()
 	emptyIssues := 1
 	if emptyValid {
@@ -157,9 +160,9 @@ func CheckFormat(t *testing.T, field, valid, invalid string, emptyValid bool, ch
 		{"wildcard does not bypass format", &invalid, types.SEVERITY_ERROR, &[]string{types.ALL_OPTIONS}, 1},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			config := configure(types.RuleConfig{Severity: tc.severity, Options: tc.options})
+			config := configure(types.RuleContext{Severity: tc.severity, Options: tc.options})
 			ConfigureMessages(t, config)
-			AssertAgencyRead(t, check(AgencyRow(t, 0, map[string]*string{field: tc.value}), config))
+			AssertAgencyRead(t, check(AgencyRow(t, 0, map[string]*string{field: tc.value}), config.Rule(id)))
 			AssertFindings(t, field+"_valid", tc.severity, tc.issues)
 		})
 	}

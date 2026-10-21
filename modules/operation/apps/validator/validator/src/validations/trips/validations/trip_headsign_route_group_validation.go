@@ -19,11 +19,12 @@ Each route_id may have at most two distinct trip_headsign values.
 Trips with the same route_id and direction_id must share one trip_headsign.
 Missing values and invalid directions are handled by their own rules.
 */
-func TripHeadsignRouteGroupValidation(tripsGroupedByRouteId types.TripGroupedByRouteId, gtfs *types.Gtfs, rules *types.TripsRules) {
-	TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId, gtfs, rules, "")
+func TripHeadsignRouteGroupValidation(tripsGroupedByRouteId types.TripGroupedByRouteId, gtfs *types.Gtfs, rules *types.GtfsRules) {
+	TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId, gtfs, rules.Rule("trip_headsign_max_two_per_route"), "trip_headsign_max_two_per_route")
+	TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId, gtfs, rules.Rule("trip_headsign_consistent_per_route_direction"), "trip_headsign_consistent_per_route_direction")
 }
 
-func TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRouteId, gtfs *types.Gtfs, rules *types.TripsRules, ruleID string) {
+func TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRouteId, gtfs *types.Gtfs, rules *types.RuleContext, ruleID string) {
 	for routeId, group := range tripsGroupedByRouteId {
 		if len(group.Trips) == 0 {
 			continue
@@ -53,10 +54,10 @@ func TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupe
 		}
 
 		// 1. At most two distinct values per route_id.
-		if len(values) > 2 && (ruleID == "" || ruleID == "trip_headsign_max_two_per_route") {
+		if len(values) > 2 && (ruleID == "trip_headsign_max_two_per_route") {
 			ctx := lib.NewValidationContext("trip_headsign", "trips.txt", "trip_headsign_max_two_per_route", firstRow, services.AppMessageService)
 			if rules != nil {
-				ctx.WithSeverity(rules.Rule("trip_headsign_max_two_per_route").Severity)
+				ctx.WithSeverity(rules.Severity)
 			}
 			if !ctx.ShouldSkip() {
 				ids := make([]string, 0, len(values))
@@ -69,7 +70,7 @@ func TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupe
 		}
 
 		// 2. One value per direction within the route_id.
-		if ruleID != "" && ruleID != "trip_headsign_consistent_per_route_direction" {
+		if ruleID != "trip_headsign_consistent_per_route_direction" {
 			continue
 		}
 		for directionId := 0; directionId <= 1; directionId++ {
@@ -78,7 +79,7 @@ func TripHeadsignRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupe
 			}
 			ctx := lib.NewValidationContext("trip_headsign", "trips.txt", "trip_headsign_consistent_per_route_direction", directionRows[directionId], services.AppMessageService)
 			if rules != nil {
-				ctx.WithSeverity(rules.Rule("trip_headsign_consistent_per_route_direction").Severity)
+				ctx.WithSeverity(rules.Severity)
 			}
 			if ctx.ShouldSkip() {
 				continue

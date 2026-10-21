@@ -65,7 +65,7 @@ func SequenceGroups(db *services.SQLiteContext) ([][]SequencePoint, error) {
 		if distance, err := strconv.ParseFloat(values["shape_dist_traveled"], 64); err == nil {
 			point.Distance = &distance
 		}
-		
+
 		points = append(points, point)
 		return nil
 	})

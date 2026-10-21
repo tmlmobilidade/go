@@ -29,7 +29,7 @@ func TestRouteIdUnique(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			if err := checks.RouteIdUnique(ctx, config); err != nil {
+			if err := checks.RouteIdUnique(ctx, config.Rule("routes_route_id_unique")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "route_id", types.SEVERITY_ERROR, tc.count)
@@ -47,7 +47,7 @@ func TestRouteIdUniqueSeverity(t *testing.T) {
 			if _, err := connection.Exec("INSERT INTO routes (route_id) VALUES ('R1')"); err != nil {
 				t.Fatal(err)
 			}
-			if err := checks.RouteIdUnique(ctx, config); err != nil {
+			if err := checks.RouteIdUnique(ctx, config.Rule("routes_route_id_unique")); err != nil {
 				t.Fatal(err)
 			}
 			count := 1

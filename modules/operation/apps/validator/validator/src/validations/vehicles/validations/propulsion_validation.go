@@ -40,7 +40,7 @@ Valid options are:
   - 106 - Other
 */
 
-func PropulsionValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func PropulsionValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("propulsion", "vehicles.txt", "vehicles_propulsion_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Check if propulsion is required
@@ -68,12 +68,12 @@ func PropulsionValidation(vehicle *types.Vehicle, row int, rules *types.Vehicles
 	}
 
 	// 4. Validate rules
-	if rules != nil && rules.Rule("vehicles_propulsion_valid_enum").Options != nil {
-		if slices.Contains(*rules.Rule("vehicles_propulsion_valid_enum").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("vehicles_propulsion_valid_enum").Options, strconv.Itoa(*vehicle.Propulsion)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*vehicle.Propulsion)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*vehicle.Propulsion)))
 			return
 		}

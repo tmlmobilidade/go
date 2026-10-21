@@ -33,16 +33,16 @@ func CheckPresence(t *testing.T, field string, check Check) {
 			}
 			config := Config(id, tc.severity)
 			_, ctx := Fixture(t, values, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			AssertFindings(t, id, field, tc.severity, tc.count)
 		})
 	}
-	for name, config := range map[string]*types.CalendarRules{"NilRules": nil, "MissingRule": {}} {
+	for name, config := range map[string]*types.GtfsRules{"NilRules": nil, "MissingRule": {}} {
 		t.Run(name, func(t *testing.T) {
 			_, ctx := Fixture(t, map[string]any{field: ""}, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			AssertFindings(t, id, field, types.SEVERITY_IGNORE, 0)
@@ -65,7 +65,7 @@ func CheckWeekday(t *testing.T, field string, check Check) {
 		t.Run(tc.name, func(t *testing.T) {
 			config := Config(id, types.SEVERITY_ERROR)
 			_, ctx := Fixture(t, map[string]any{field: tc.value}, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			AssertFindings(t, id, field, types.SEVERITY_ERROR, tc.count)
@@ -75,7 +75,7 @@ func CheckWeekday(t *testing.T, field string, check Check) {
 		t.Run(string(severity), func(t *testing.T) {
 			config := Config(id, severity)
 			_, ctx := Fixture(t, map[string]any{field: "2"}, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			count := 1
@@ -101,7 +101,7 @@ func CheckDateSeverities(t *testing.T, id string, check Check, values map[string
 		t.Run("Severity/"+string(severity), func(t *testing.T) {
 			config := Config(id, severity)
 			_, ctx := Fixture(t, values, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			count := 1
@@ -111,10 +111,10 @@ func CheckDateSeverities(t *testing.T, id string, check Check, values map[string
 			AssertFindings(t, id, "dates", severity, count)
 		})
 	}
-	for name, config := range map[string]*types.CalendarRules{"NilRules": nil, "MissingRule": {}} {
+	for name, config := range map[string]*types.GtfsRules{"NilRules": nil, "MissingRule": {}} {
 		t.Run(name, func(t *testing.T) {
 			_, ctx := Fixture(t, values, config)
-			if err := check(ctx, config); err != nil {
+			if err := check(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			AssertFindings(t, id, "dates", types.SEVERITY_IGNORE, 0)

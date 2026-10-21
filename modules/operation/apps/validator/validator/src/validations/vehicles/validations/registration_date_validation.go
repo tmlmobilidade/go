@@ -20,7 +20,7 @@ It is often used to determine the vehicle's age. In the numeric format yyyymmdd.
 
 */
 
-func RegistrationDateValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func RegistrationDateValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("registration_date", "vehicles.txt", "vehicles_registration_date_valid_day_granularity", row, services.AppMessageService, rules)
 
 	// 1. Check if registration_date is required

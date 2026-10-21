@@ -21,7 +21,7 @@ Example: Take the elevator to "Mezzanine" or "Platform" or "-1".
 
 [levels.txt]: https://gtfs.org/schedule/reference/#levelstxt
 */
-func LevelNameValidation(level *types.Levels, row int, rules *types.LevelsRules) {
+func LevelNameValidation(level *types.Levels, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("level_name", "levels.txt", "level_name", row, services.AppMessageService, rules)
 
 	// 1. Validate level_name is present

@@ -16,15 +16,7 @@ type TestMessageServiceInterface interface {
 
 // CreateTestGtfsRules creates a test GtfsRules with default values
 func CreateTestGtfsRules() *types.GtfsRules {
-	return &types.GtfsRules{
-		Agency:        types.AgencyRules{},
-		Stops:         types.StopsRules{},
-		Routes:        types.RoutesRules{},
-		Trips:         types.TripsRules{},
-		StopTimes:     types.StopTimesRules{},
-		Calendar:      types.CalendarRules{},
-		CalendarDates: types.CalendarDatesRules{},
-	}
+	return &types.GtfsRules{}
 }
 
 // AssertValidationError checks if the expected number of errors occurred

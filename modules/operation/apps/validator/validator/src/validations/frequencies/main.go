@@ -15,11 +15,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	var section *types.FrequenciesRules
-	if rules != nil {
-		section = &rules.Frequencies
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "frequencies")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -51,18 +47,23 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 
 		parsedFrequency := validations.ParseFrequencies(&rawFrequency, i)
 
-		var frequenciesRules *types.FrequenciesRules
-		if rules != nil {
-			frequenciesRules = &rules.Frequencies
-		}
-
 		// Validate trip_id
 		runner.Run(services.RuleActions{
-			"frequencies_trip_id_references_trips_table":                    func() { validations.TripIdValidation(parsedFrequency, i, &gtfs, frequenciesRules) },
-			"frequency_end_time_valid":                                      func() { validations.EndTimeValidation(parsedFrequency, i, frequenciesRules) },
-			"frequency_start_time_valid":                                    func() { validations.StartTimeValidation(parsedFrequency, i, frequenciesRules) },
-			"frequencies_headway_secs_positive_and_aligns_trip":             func() { validations.HeadwaySecsValidation(parsedFrequency, i, frequenciesRules) },
-			"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": func() { validations.ExactTimesValidation(parsedFrequency, i, frequenciesRules) },
+			"frequencies_trip_id_references_trips_table": func() {
+				validations.TripIdValidation(parsedFrequency, i, &gtfs, rules.Rule("frequencies_trip_id_references_trips_table"))
+			},
+			"frequency_end_time_valid": func() {
+				validations.EndTimeValidation(parsedFrequency, i, rules.Rule("frequency_end_time_valid"))
+			},
+			"frequency_start_time_valid": func() {
+				validations.StartTimeValidation(parsedFrequency, i, rules.Rule("frequency_start_time_valid"))
+			},
+			"frequencies_headway_secs_positive_and_aligns_trip": func() {
+				validations.HeadwaySecsValidation(parsedFrequency, i, rules.Rule("frequencies_headway_secs_positive_and_aligns_trip"))
+			},
+			"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": func() {
+				validations.ExactTimesValidation(parsedFrequency, i, rules.Rule("frequencies_exact_times_zero_when_timed_trip_uses_frequencies"))
+			},
 		}, nil)
 
 		return nil

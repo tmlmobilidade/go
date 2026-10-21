@@ -16,11 +16,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
-	var fileRules *types.FeedInfoRules
-	if gtfsRules != nil {
-		fileRules = &gtfsRules.FeedInfo
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, fileRules)
+	runner, dagErr := services.NewRuleRunner(gtfs, gtfsRules, "feed_info")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -30,7 +26,6 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 	//
 	// Create progress tracker
 	tracker := lib.CreateProgressTracker(gtfs, "feed_info", config.ProgressThresholdSmall)
-
 
 	//
 	// Select the prepared GTFS tables
@@ -57,27 +52,60 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules) {
 		runner.Run(services.RuleActions{
 			//
 			// Fields
-			"default_lang_field":        func() { check("default_lang_field", fields.DefaultLangField(db, fileRules)) },
-			"feed_lang_field":           func() { check("feed_lang_field", fields.FeedLangField(db, fileRules)) },
-			"feed_publisher_name_field": func() { check("feed_publisher_name_field", fields.FeedPublisherNameField(db, fileRules)) },
-			"feed_publisher_url_field":  func() { check("feed_publisher_url_field", fields.FeedPublisherUrlField(db, fileRules)) },
-			"feed_contact_email_field":  func() { check("feed_contact_email_field", fields.FeedContactEmailField(db, fileRules)) },
-			"feed_contact_url_field":    func() { check("feed_contact_url_field", fields.FeedContactUrlField(db, fileRules)) },
-			"feed_end_date_field":       func() { check("feed_end_date_field", fields.FeedEndDateField(db, fileRules)) },
-			"feed_start_date_field":     func() { check("feed_start_date_field", fields.FeedStartDateField(db, fileRules)) },
-			"feed_version_field":        func() { check("feed_version_field", fields.FeedVersionField(db, fileRules)) },
+			"feed_info_default_lang_field": func() {
+				check("feed_info_default_lang_field", fields.DefaultLangField(db, gtfsRules.Rule("feed_info_default_lang_field")))
+			},
+			"feed_info_feed_lang_field": func() {
+				check("feed_info_feed_lang_field", fields.FeedLangField(db, gtfsRules.Rule("feed_info_feed_lang_field")))
+			},
+			"feed_info_feed_publisher_name_field": func() {
+				check("feed_info_feed_publisher_name_field", fields.FeedPublisherNameField(db, gtfsRules.Rule("feed_info_feed_publisher_name_field")))
+			},
+			"feed_info_feed_publisher_url_field": func() {
+				check("feed_info_feed_publisher_url_field", fields.FeedPublisherUrlField(db, gtfsRules.Rule("feed_info_feed_publisher_url_field")))
+			},
+			"feed_info_feed_contact_email_field": func() {
+				check("feed_info_feed_contact_email_field", fields.FeedContactEmailField(db, gtfsRules.Rule("feed_info_feed_contact_email_field")))
+			},
+			"feed_info_feed_contact_url_field": func() {
+				check("feed_info_feed_contact_url_field", fields.FeedContactUrlField(db, gtfsRules.Rule("feed_info_feed_contact_url_field")))
+			},
+			"feed_info_feed_end_date_field": func() {
+				check("feed_info_feed_end_date_field", fields.FeedEndDateField(db, gtfsRules.Rule("feed_info_feed_end_date_field")))
+			},
+			"feed_info_feed_start_date_field": func() {
+				check("feed_info_feed_start_date_field", fields.FeedStartDateField(db, gtfsRules.Rule("feed_info_feed_start_date_field")))
+			},
+			"feed_info_feed_version_field": func() {
+				check("feed_info_feed_version_field", fields.FeedVersionField(db, gtfsRules.Rule("feed_info_feed_version_field")))
+			},
 
 			//
 			// Standard
-			"feed_info_default_lang_valid":       func() { check("feed_info_default_lang_valid", standard.DefaultLangValid(db, fileRules)) },
-			"feed_info_feed_contact_email_valid": func() { check("feed_info_feed_contact_email_valid", standard.FeedContactEmailValid(db, fileRules)) },
-			"feed_info_feed_contact_url_valid":   func() { check("feed_info_feed_contact_url_valid", standard.FeedContactUrlValid(db, fileRules)) },
-			"feed_info_feed_lang_valid":          func() { check("feed_info_feed_lang_valid", standard.FeedLangValid(db, fileRules)) },
-			"feed_info_feed_publisher_url_valid": func() { check("feed_info_feed_publisher_url_valid", standard.FeedPublisherUrlValid(db, fileRules)) },
-			"feed_info_feed_end_date_format":     func() { check("feed_info_feed_end_date_format", standard.FeedEndDateFormat(db, fileRules)) },
-			"feed_info_feed_start_date_format":   func() { check("feed_info_feed_start_date_format", standard.FeedStartDateFormat(db, fileRules)) },
-			"feed_info_start_end_dates_valid":    func() { check("feed_info_start_end_dates_valid", standard.FeedStartEndDateValid(db, fileRules)) },
-		
+			"feed_info_default_lang_valid": func() {
+				check("feed_info_default_lang_valid", standard.DefaultLangValid(db, gtfsRules.Rule("feed_info_default_lang_valid")))
+			},
+			"feed_info_feed_contact_email_valid": func() {
+				check("feed_info_feed_contact_email_valid", standard.FeedContactEmailValid(db, gtfsRules.Rule("feed_info_feed_contact_email_valid")))
+			},
+			"feed_info_feed_contact_url_valid": func() {
+				check("feed_info_feed_contact_url_valid", standard.FeedContactUrlValid(db, gtfsRules.Rule("feed_info_feed_contact_url_valid")))
+			},
+			"feed_info_feed_lang_valid": func() {
+				check("feed_info_feed_lang_valid", standard.FeedLangValid(db, gtfsRules.Rule("feed_info_feed_lang_valid")))
+			},
+			"feed_info_feed_publisher_url_valid": func() {
+				check("feed_info_feed_publisher_url_valid", standard.FeedPublisherUrlValid(db, gtfsRules.Rule("feed_info_feed_publisher_url_valid")))
+			},
+			"feed_info_feed_end_date_format": func() {
+				check("feed_info_feed_end_date_format", standard.FeedEndDateFormat(db, gtfsRules.Rule("feed_info_feed_end_date_format")))
+			},
+			"feed_info_feed_start_date_format": func() {
+				check("feed_info_feed_start_date_format", standard.FeedStartDateFormat(db, gtfsRules.Rule("feed_info_feed_start_date_format")))
+			},
+			"feed_info_start_end_dates_valid": func() {
+				check("feed_info_start_end_dates_valid", standard.FeedStartEndDateValid(db, gtfsRules.Rule("feed_info_start_end_dates_valid")))
+			},
 		}, nil)
 		return nil
 	})

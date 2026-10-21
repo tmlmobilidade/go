@@ -22,7 +22,7 @@ A `trip_short_name` value, if provided, should uniquely identify a trip within a
 
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
-func TripShortNameValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
+func TripShortNameValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("trip_short_name", "trips.txt", "trip_short_name_exclusivity", row, services.AppMessageService, rules)
 
 	// 1. Validate trip_short_name is required

@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func FeedPublisherNameField(db *services.SQLiteContext, rules *types.FeedInfoRules) error {
+func FeedPublisherNameField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func FeedPublisherNameField(db *services.SQLiteContext, rules *types.FeedInfoRul
 
 	ctx := lib.NewValidationContext("feed_publisher_name", "feed_info.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

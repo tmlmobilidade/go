@@ -30,7 +30,7 @@ func TestPathTypeValid(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
 
-			if err := checks.PathTypeValid(ctx, config); err != nil {
+			if err := checks.PathTypeValid(ctx, config.Rule("routes_path_type_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "path_type", types.SEVERITY_ERROR, tc.count)

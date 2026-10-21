@@ -19,11 +19,12 @@ Each route_id may have at most two distinct shape_id values.
 Trips with the same route_id and direction_id must share one shape_id.
 Missing values and invalid directions are handled by their own rules.
 */
-func ShapeIdRouteGroupValidation(tripsGroupedByRouteId types.TripGroupedByRouteId, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId, gtfs, rules, "")
+func ShapeIdRouteGroupValidation(tripsGroupedByRouteId types.TripGroupedByRouteId, gtfs *types.Gtfs, rules *types.GtfsRules) {
+	ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId, gtfs, rules.Rule("trips_shape_id_max_two_per_route"), "trips_shape_id_max_two_per_route")
+	ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId, gtfs, rules.Rule("trips_shape_id_consistent_per_route_direction"), "trips_shape_id_consistent_per_route_direction")
 }
 
-func ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRouteId, gtfs *types.Gtfs, rules *types.TripsRules, ruleID string) {
+func ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRouteId, gtfs *types.Gtfs, rules *types.RuleContext, ruleID string) {
 	// 1. Validate tripsGroupedByRouteId is valid
 	for routeId, group := range tripsGroupedByRouteId {
 		if len(group.Trips) == 0 {
@@ -55,10 +56,10 @@ func ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRo
 		}
 
 		// 3. Validate at most two distinct values per route_id.
-		if len(values) > 2 && (ruleID == "" || ruleID == "trips_shape_id_max_two_per_route") {
+		if len(values) > 2 && (ruleID == "trips_shape_id_max_two_per_route") {
 			ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_shape_id_max_two_per_route", firstRow, services.AppMessageService)
 			if rules != nil {
-				ctx.WithSeverity(rules.Rule("trips_shape_id_max_two_per_route").Severity)
+				ctx.WithSeverity(rules.Severity)
 			}
 			if !ctx.ShouldSkip() {
 				ids := make([]string, 0, len(values))
@@ -71,7 +72,7 @@ func ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRo
 		}
 
 		// 4. Validate one value per direction within the route_id.
-		if ruleID != "" && ruleID != "trips_shape_id_consistent_per_route_direction" {
+		if ruleID != "trips_shape_id_consistent_per_route_direction" {
 			continue
 		}
 		for directionId := 0; directionId <= 1; directionId++ {
@@ -80,7 +81,7 @@ func ShapeIdRouteGroupRuleValidation(tripsGroupedByRouteId types.TripGroupedByRo
 			}
 			ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_shape_id_consistent_per_route_direction", directionRows[directionId], services.AppMessageService)
 			if rules != nil {
-				ctx.WithSeverity(rules.Rule("trips_shape_id_consistent_per_route_direction").Severity)
+				ctx.WithSeverity(rules.Severity)
 			}
 			if ctx.ShouldSkip() {
 				continue

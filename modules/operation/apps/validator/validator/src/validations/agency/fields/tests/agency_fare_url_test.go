@@ -8,7 +8,7 @@ import (
 )
 
 func TestAgencyFareUrlField(t *testing.T) {
-	testutils.CheckPresence(t, "agency_fare_url", checks.AgencyFareUrlField, func(config types.RuleConfig) *types.AgencyRules {
-		return &types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_fare_url_field": config}}}
+	testutils.CheckPresence(t, "agency_fare_url", checks.AgencyFareUrlField, func(config types.RuleContext) *types.GtfsRules {
+		return &types.GtfsRules{"agency_fare_url_field": config}
 	})
 }

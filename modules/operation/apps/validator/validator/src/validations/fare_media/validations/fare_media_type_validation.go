@@ -29,7 +29,7 @@ The type of fare media. Valid options are:
 [fare_media.txt]: https://gtfs.org/schedule/reference/#fare_mediatxt
 */
 
-func FareMediaTypeValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gtfs, rules *types.FareMediaRules) {
+func FareMediaTypeValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("fare_media_type", "fare_media.txt", "fare_media_type_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate fare_media_type is present
@@ -57,12 +57,12 @@ func FareMediaTypeValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gt
 	}
 
 	// 4. Validate Rule Options
-	if rules != nil && rules.Rule("fare_media_type_valid").Options != nil {
-		if slices.Contains(*rules.Rule("fare_media_type_valid").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("fare_media_type_valid").Options, strconv.Itoa(*fareMedia.FareMediaType)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*fareMedia.FareMediaType)) {
 			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", fareMedia.FareMediaType))
 			return
 		}

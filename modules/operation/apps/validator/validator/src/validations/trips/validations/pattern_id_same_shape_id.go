@@ -19,7 +19,7 @@ The `pattern_id` must be the same as the `shape_id`, so that the pattern identif
 
 Trips without `shape_id` or `pattern_id` are left alone: there is nothing to compare, and their own rules already report the problem.
 */
-func PatternIdSameShapeIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
+func PatternIdSameShapeIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("pattern_id", "trips.txt", "trips_pattern_id_needs_to_be_the_same_as_shape_id", row, services.AppMessageService, rules)
 
 	// 1. Validate shape_id and pattern_id are required

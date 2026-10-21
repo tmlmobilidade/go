@@ -22,7 +22,7 @@ func TestDateValid(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, map[string]any{"start_date": tc.start, "end_date": tc.end}, config)
-			if err := checks.DateValid(ctx, config); err != nil {
+			if err := checks.DateValid(ctx, config.Rule("calendar_start_end_dates_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "dates", types.SEVERITY_ERROR, tc.count)

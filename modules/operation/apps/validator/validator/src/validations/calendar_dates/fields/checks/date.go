@@ -19,7 +19,7 @@ Date when service exception occurs.
 
 [calendar_dates.txt]: https://gtfs.org/schedule/reference/#calendar_datestxt
 */
-func DateField(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
+func DateField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -32,8 +32,7 @@ func DateField(db *services.SQLiteContext, rules *types.CalendarDatesRules) erro
 
 	ctx := lib.NewValidationContext("date", "calendar_dates.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

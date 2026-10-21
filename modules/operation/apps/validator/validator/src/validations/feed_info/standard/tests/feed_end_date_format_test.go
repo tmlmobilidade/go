@@ -33,7 +33,7 @@ func TestFeedEndDateFormat(t *testing.T) {
 			}
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, values, config)
-			if err := checks.FeedEndDateFormat(ctx, config); err != nil {
+			if err := checks.FeedEndDateFormat(ctx, config.Rule("feed_info_feed_end_date_format")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "feed_end_date_format", types.SEVERITY_ERROR, tc.count)

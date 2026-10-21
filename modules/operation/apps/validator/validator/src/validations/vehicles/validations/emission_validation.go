@@ -30,7 +30,7 @@ Valid options are:
   - N/A - Not applicable
 */
 
-func EmissionValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func EmissionValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("emission", "vehicles.txt", "vehicles_emission_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Check if emission is required
@@ -58,12 +58,12 @@ func EmissionValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRu
 	}
 
 	// 4. Validate rules
-	if rules != nil && rules.Rule("vehicles_emission_valid_enum").Options != nil {
-		if slices.Contains(*rules.Rule("vehicles_emission_valid_enum").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("vehicles_emission_valid_enum").Options, *vehicle.Emission) {
+		if !slices.Contains(*rules.Options, *vehicle.Emission) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *vehicle.Emission))
 			return
 		}

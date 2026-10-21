@@ -15,11 +15,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	var section *types.FareRulesRules
-	if rules != nil {
-		section = &rules.FareRules
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "fare_rules")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -38,18 +34,23 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			return nil
 		}
 
-		var fareRulesRules *types.FareRulesRules
-		if rules != nil {
-			fareRulesRules = &rules.FareRules
-		}
-
 		// validate contains_id
 		runner.Run(services.RuleActions{
-			"fare_rule_contains_id_references_zones_stops":    func() { validations.ContainsIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
-			"fare_rule_destination_id_references_zones_stops": func() { validations.DestinationIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
-			"fare_rule_origin_id_references_zones_stops":      func() { validations.OriginIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
-			"fare_rule_fare_id_references_fare_attributes":    func() { validations.FareIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
-			"fare_rule_route_id_references_routes":            func() { validations.RouteIdValidation(&fareRule, i, &gtfs, fareRulesRules) },
+			"fare_rule_contains_id_references_zones_stops": func() {
+				validations.ContainsIdValidation(&fareRule, i, &gtfs, rules.Rule("fare_rule_contains_id_references_zones_stops"))
+			},
+			"fare_rule_destination_id_references_zones_stops": func() {
+				validations.DestinationIdValidation(&fareRule, i, &gtfs, rules.Rule("fare_rule_destination_id_references_zones_stops"))
+			},
+			"fare_rule_origin_id_references_zones_stops": func() {
+				validations.OriginIdValidation(&fareRule, i, &gtfs, rules.Rule("fare_rule_origin_id_references_zones_stops"))
+			},
+			"fare_rule_fare_id_references_fare_attributes": func() {
+				validations.FareIdValidation(&fareRule, i, &gtfs, rules.Rule("fare_rule_fare_id_references_fare_attributes"))
+			},
+			"fare_rule_route_id_references_routes": func() {
+				validations.RouteIdValidation(&fareRule, i, &gtfs, rules.Rule("fare_rule_route_id_references_routes"))
+			},
 		}, nil)
 
 		return nil

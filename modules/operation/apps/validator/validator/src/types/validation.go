@@ -1,12 +1,12 @@
 package types
 
 type Validation struct {
-	ID          string
-	Description string
-	Field       string
-	FileName    string
-	Severity    *Severity
-	Name        string
+	ID              string
+	Description     string
+	Field           string
+	FileName        string
+	Severity        *Severity
+	Name            string
 	SeverityOptions []Severity
 }
 
@@ -15,7 +15,7 @@ Creates a new Validation
 
 Parameters:
 
-  - id: unique identifier for the validation 
+  - id: unique identifier for the validation
   - name: display name of the validation
   - description: detailed description of what the validation checks
   - field: the field being validated
@@ -24,23 +24,23 @@ Parameters:
 
 Example:
 
-  CreateValidation(
-    "agency.agency_email_validation",
-    "Agency Email Validation",
-    "Validates if the agency email is present and valid.",
-    "agency_email",
-    "agency.txt",
-    []Severity{SEVERITY_ERROR, SEVERITY_WARNING, SEVERITY_IGNORE}
-  )
+	CreateValidation(
+	  "agency.agency_email_validation",
+	  "Agency Email Validation",
+	  "Validates if the agency email is present and valid.",
+	  "agency_email",
+	  "agency.txt",
+	  []Severity{SEVERITY_ERROR, SEVERITY_WARNING, SEVERITY_IGNORE}
+	)
 */
 func CreateValidation(id string, name string, description string, field string, fileName string, severityOptions []Severity) *Validation {
 	return &Validation{
-		ID: id,
-		Description: description,
-		Field: field,
-		FileName: fileName,
+		ID:              id,
+		Description:     description,
+		Field:           field,
+		FileName:        fileName,
 		SeverityOptions: severityOptions,
-		Name: name,
+		Name:            name,
 	}
 }
 
@@ -53,7 +53,8 @@ Returns:
   - Severity: The current severity level of the validation
 
 Example:
-  severity := validation.GetSeverity()
+
+	severity := validation.GetSeverity()
 */
 func (v *Validation) GetSeverity() Severity {
 	if v.Severity == nil {
@@ -70,7 +71,8 @@ Parameters:
   - severity: The severity level to set for the validation
 
 Example:
-  validation.SetSeverity(types.SEVERITY_ERROR)
+
+	validation.SetSeverity(types.SEVERITY_ERROR)
 */
 func (v *Validation) SetSeverity(severity Severity) {
 	v.Severity = &severity

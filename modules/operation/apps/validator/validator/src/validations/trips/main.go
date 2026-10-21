@@ -17,11 +17,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	var section *types.TripsRules
-	if rules != nil {
-		section = &rules.Trips
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "trips")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -55,36 +51,61 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			return nil
 		}
 
-		var tripRules *types.TripsRules
-		if rules != nil {
-			tripRules = &rules.Trips
-		}
-
 		// Validate trip_id
 		var groupHash string
 		statuses := runner.Run(services.RuleActions{
-			"trip_id_unique": func() { validations.TripIdValidation(&trip, i, &gtfs, tripRules) },
-			"trips_shape_id_references_shapes_table_when_present": func() { validations.ShapeIdValidation(&trip, i, &gtfs, tripRules) },
-			"trips_route_id_references_routes_table":              func() { validations.RouteIdValidation(&trip, i, &gtfs, routeRowsCache, tripRules) },
+			"trip_id_unique": func() { validations.TripIdValidation(&trip, i, &gtfs, rules.Rule("trip_id_unique")) },
+			"trips_shape_id_references_shapes_table_when_present": func() {
+				validations.ShapeIdValidation(&trip, i, &gtfs, rules.Rule("trips_shape_id_references_shapes_table_when_present"))
+			},
+			"trips_route_id_references_routes_table": func() {
+				validations.RouteIdValidation(&trip, i, &gtfs, routeRowsCache, rules.Rule("trips_route_id_references_routes_table"))
+			},
 			"trips_service_id_references_calendar_service": func() {
-				validations.ServiceIdValidation(&trip, i, &gtfs, calendarRowsCache, calendarDatesRowsCache, tripRules)
+				validations.ServiceIdValidation(&trip, i, &gtfs, calendarRowsCache, calendarDatesRowsCache, rules.Rule("trips_service_id_references_calendar_service"))
 			},
-			"trip_headsign_present_when_short_name_absent": func() { validations.TripHeadsignValidation(&trip, i, &gtfs, tripRules) },
-			"trip_short_name_exclusivity":                  func() { validations.TripShortNameValidation(&trip, i, &gtfs, tripRules) },
-			"trips_direction_id_valid_enum":                func() { validations.DirectionIdValidation(&trip, i, &gtfs, tripRules) },
-			"trips_block_id_in_allowed_set":                func() { validations.BlockIdValidation(&trip, i, &gtfs, tripRules) },
-			"trips_wheelchair_accessible_valid_gtfs_enum":  func() { validations.WheelchairAccessibleValidation(&trip, i, &gtfs, tripRules) },
-			"trips_bikes_allowed_valid_gtfs_enum":          func() { validations.BikesAllowedValidation(&trip, i, &gtfs, tripRules) },
+			"trip_headsign_present_when_short_name_absent": func() {
+				validations.TripHeadsignValidation(&trip, i, &gtfs, rules.Rule("trip_headsign_present_when_short_name_absent"))
+			},
+			"trip_short_name_exclusivity": func() {
+				validations.TripShortNameValidation(&trip, i, &gtfs, rules.Rule("trip_short_name_exclusivity"))
+			},
+			"trips_direction_id_valid_enum": func() {
+				validations.DirectionIdValidation(&trip, i, &gtfs, rules.Rule("trips_direction_id_valid_enum"))
+			},
+			"trips_block_id_in_allowed_set": func() {
+				validations.BlockIdValidation(&trip, i, &gtfs, rules.Rule("trips_block_id_in_allowed_set"))
+			},
+			"trips_wheelchair_accessible_valid_gtfs_enum": func() {
+				validations.WheelchairAccessibleValidation(&trip, i, &gtfs, rules.Rule("trips_wheelchair_accessible_valid_gtfs_enum"))
+			},
+			"trips_bikes_allowed_valid_gtfs_enum": func() {
+				validations.BikesAllowedValidation(&trip, i, &gtfs, rules.Rule("trips_bikes_allowed_valid_gtfs_enum"))
+			},
 			"trip_path_stop_coordinates_referenced_from_stops": func() {
-				validations.StopCoordinatesByTripIdValidation(&trip, i, &gtfs, tripStopTimesCache, stopsCache, stopClosestShapePointsCache, tripRules)
+				validations.StopCoordinatesByTripIdValidation(&trip, i, &gtfs, tripStopTimesCache, stopsCache, stopClosestShapePointsCache, rules.Rule("trip_path_stop_coordinates_referenced_from_stops"))
 			},
-			"trips_direction_id_matches_feed_pattern_direction":  func() { validations.DirectionPatternIdMatchValidation(&trip, i, &gtfs, tripRules) },
-			"trip_id_limit_max_length":                           func() { validations.TripIdLimitCharactersValidation(&trip, i, &gtfs, tripRules) },
-			"trips_pattern_id_matches_feed_pattern_id_syntax":    func() { validations.PatternIdFormatValidation(&trip, i, &gtfs, tripRules) },
-			"trips_pattern_id_needs_to_be_the_same_as_shape_id":  func() { validations.PatternIdSameShapeIdValidation(&trip, i, &gtfs, tripRules) },
-			"trips_shape_id_matches_route_id_and_direction_id":   func() { validations.ShapeIdRouteDirectionMatchValidation(&trip, i, &gtfs, tripRules) },
-			"trips_stop_sequence_increasing_by_one_along_trip":   func() { groupHash = validations.StopSequenceValidation(&trip, i, &gtfs, tripRules, tripStopTimesCache) },
-			"trips_pattern_id_present_and_references_consistent": func() { validations.PatternIdValidation(&trip, i, &gtfs, tripRules) },
+			"trips_direction_id_matches_feed_pattern_direction": func() {
+				validations.DirectionPatternIdMatchValidation(&trip, i, &gtfs, rules.Rule("trips_direction_id_matches_feed_pattern_direction"))
+			},
+			"trip_id_limit_max_length": func() {
+				validations.TripIdLimitCharactersValidation(&trip, i, &gtfs, rules.Rule("trip_id_limit_max_length"))
+			},
+			"trips_pattern_id_matches_feed_pattern_id_syntax": func() {
+				validations.PatternIdFormatValidation(&trip, i, &gtfs, rules.Rule("trips_pattern_id_matches_feed_pattern_id_syntax"))
+			},
+			"trips_pattern_id_needs_to_be_the_same_as_shape_id": func() {
+				validations.PatternIdSameShapeIdValidation(&trip, i, &gtfs, rules.Rule("trips_pattern_id_needs_to_be_the_same_as_shape_id"))
+			},
+			"trips_shape_id_matches_route_id_and_direction_id": func() {
+				validations.ShapeIdRouteDirectionMatchValidation(&trip, i, &gtfs, rules.Rule("trips_shape_id_matches_route_id_and_direction_id"))
+			},
+			"trips_stop_sequence_increasing_by_one_along_trip": func() {
+				groupHash = validations.StopSequenceValidation(&trip, i, &gtfs, rules.Rule("trips_stop_sequence_increasing_by_one_along_trip"), tripStopTimesCache)
+			},
+			"trips_pattern_id_present_and_references_consistent": func() {
+				validations.PatternIdValidation(&trip, i, &gtfs, rules.Rule("trips_pattern_id_present_and_references_consistent"))
+			},
 		}, nil)
 
 		if trip.RouteId != nil {
@@ -119,12 +140,7 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		lib.AppLogger.Info(fmt.Sprintf("Completed trips.txt validation: %d rows processed", tracker.GetProcessedCount()))
 	}
 
-	var tripsRules *types.TripsRules
-	if rules != nil {
-		tripsRules = &rules.Trips
-	}
+	validations.ValidateRouteGroups(tripsGroupedByRouteId, &gtfs, rules, runner, groupStatuses)
 
-	validations.ValidateRouteGroups(tripsGroupedByRouteId, &gtfs, tripsRules, runner, groupStatuses)
-
-	validations.ValidatePatternGroups(tripsGroupedByPattern, tripsGroupedByShapeId, &gtfs, tripsRules, runner, groupStatuses)
+	validations.ValidatePatternGroups(tripsGroupedByPattern, tripsGroupedByShapeId, &gtfs, rules, runner, groupStatuses)
 }

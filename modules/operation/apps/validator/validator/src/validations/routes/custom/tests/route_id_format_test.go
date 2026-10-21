@@ -24,7 +24,7 @@ func TestRouteIdFormat(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
 
-			if err := checks.RouteIdFormat(ctx, config); err != nil {
+			if err := checks.RouteIdFormat(ctx, config.Rule("routes_route_id_format")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "route_id", types.SEVERITY_ERROR, tc.count)

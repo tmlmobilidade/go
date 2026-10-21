@@ -12,7 +12,7 @@ import (
 func ValidateRouteGroups(
 	tripsGroupedByRouteId types.TripGroupedByRouteId,
 	gtfs *types.Gtfs,
-	rules *types.TripsRules,
+	rules *types.GtfsRules,
 	runner *services.RuleRunner,
 	groupStatuses map[string]map[string]ruleset.Status,
 ) {
@@ -20,16 +20,16 @@ func ValidateRouteGroups(
 		routes := types.TripGroupedByRouteId{routeId: group}
 		runner.Run(services.RuleActions{
 			"trips_shape_id_max_two_per_route": func() {
-				ShapeIdRouteGroupRuleValidation(routes, gtfs, rules, "trips_shape_id_max_two_per_route")
+				ShapeIdRouteGroupRuleValidation(routes, gtfs, rules.Rule("trips_shape_id_max_two_per_route"), "trips_shape_id_max_two_per_route")
 			},
 			"trips_shape_id_consistent_per_route_direction": func() {
-				ShapeIdRouteGroupRuleValidation(routes, gtfs, rules, "trips_shape_id_consistent_per_route_direction")
+				ShapeIdRouteGroupRuleValidation(routes, gtfs, rules.Rule("trips_shape_id_consistent_per_route_direction"), "trips_shape_id_consistent_per_route_direction")
 			},
 			"trip_headsign_max_two_per_route": func() {
-				TripHeadsignRouteGroupRuleValidation(routes, gtfs, rules, "trip_headsign_max_two_per_route")
+				TripHeadsignRouteGroupRuleValidation(routes, gtfs, rules.Rule("trip_headsign_max_two_per_route"), "trip_headsign_max_two_per_route")
 			},
 			"trip_headsign_consistent_per_route_direction": func() {
-				TripHeadsignRouteGroupRuleValidation(routes, gtfs, rules, "trip_headsign_consistent_per_route_direction")
+				TripHeadsignRouteGroupRuleValidation(routes, gtfs, rules.Rule("trip_headsign_consistent_per_route_direction"), "trip_headsign_consistent_per_route_direction")
 			},
 		}, groupStatuses["route/"+routeId])
 	}

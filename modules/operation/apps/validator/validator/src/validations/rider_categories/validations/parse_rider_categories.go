@@ -27,12 +27,12 @@ func ParseRiderCategories(rawRiderCategories types.RiderCategoryRaw, row int) ty
 	// Helper to collect error messages
 	addMessage := func(field, msg string) {
 		messages = append(messages, types.Message{
-			Field:        field,
-			FileName:     "rider_categories.txt",
-			Rows:         []int{row},
-			Message:      msg,
-			Severity:     types.SEVERITY_ERROR,
-			RuleID:       "rider_categories_values_parse",
+			Field:    field,
+			FileName: "rider_categories.txt",
+			Rows:     []int{row},
+			Message:  msg,
+			Severity: types.SEVERITY_ERROR,
+			RuleID:   "rider_categories_values_parse",
 		})
 	}
 

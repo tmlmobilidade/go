@@ -20,7 +20,7 @@ URL of the transit agency.
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyUrlField(db *services.SQLiteContext, rules *types.AgencyRules) error {
+func AgencyUrlField(db *services.SQLiteContext, ruleContext *types.RuleContext) error {
 	//
 
 	//
@@ -32,9 +32,8 @@ func AgencyUrlField(db *services.SQLiteContext, rules *types.AgencyRules) error 
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_url", "agency.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+	if ruleContext != nil {
+		ctx.WithSeverity(ruleContext.Severity)
 	}
 
 	//

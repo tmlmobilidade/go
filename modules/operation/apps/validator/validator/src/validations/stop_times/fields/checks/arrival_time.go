@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func ArrivalTimeField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func ArrivalTimeField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func ArrivalTimeField(db *services.SQLiteContext, rules *types.StopTimesRules) e
 
 	ctx := lib.NewValidationContext("arrival_time", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

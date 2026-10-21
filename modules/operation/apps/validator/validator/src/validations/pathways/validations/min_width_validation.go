@@ -22,7 +22,7 @@ This field is recommended if the minimum width is less than 1 meter.
 
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
-func MinWidthValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
+func MinWidthValidation(pathways *types.Pathways, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("min_width", "pathways.txt", "pathway_min_width_positive", row, services.AppMessageService, rules)
 
 	// 1. Validate min_width is present

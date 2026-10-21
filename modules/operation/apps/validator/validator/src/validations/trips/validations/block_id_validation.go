@@ -41,7 +41,7 @@ Notes on above table:
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 [transfers]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 */
-func BlockIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
+func BlockIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("block_id", "trips.txt", "trips_block_id_in_allowed_set", row, services.AppMessageService, rules)
 
 	// 1. Validate block_id is required

@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func ShapeDistTraveledField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func ShapeDistTraveledField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func ShapeDistTraveledField(db *services.SQLiteContext, rules *types.StopTimesRu
 
 	ctx := lib.NewValidationContext("shape_dist_traveled", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

@@ -21,7 +21,7 @@ Level of the location. The same level may be used by multiple unlinked stations.
 
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func LevelIdValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *types.StopsRules) {
+func LevelIdValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("level_id", "stops.txt", "stops_level_id_valid_id", row, services.AppMessageService, rules)
 
 	// 1. Validate level_id is present
@@ -48,12 +48,12 @@ func LevelIdValidation(stop *types.Stop, row int, gtfs types.Gtfs, rules *types.
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.Rule("stops_level_id_valid_id").Options != nil {
-		if slices.Contains(*rules.Rule("stops_level_id_valid_id").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("stops_level_id_valid_id").Options, *stop.LevelId) {
+		if !slices.Contains(*rules.Options, *stop.LevelId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.LevelId))
 			return
 		}

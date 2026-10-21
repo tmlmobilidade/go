@@ -30,7 +30,7 @@ func TestAgencyIdField(t *testing.T) {
 			ids := []string{"A1", "A2"}[:tc.agencies]
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, values, config, ids...)
-			if err := checks.AgencyIdField(ctx, config); err != nil {
+			if err := checks.AgencyIdField(ctx, config.Rule("fare_attributes_agency_id_field")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "agency_id", types.SEVERITY_ERROR, tc.count)

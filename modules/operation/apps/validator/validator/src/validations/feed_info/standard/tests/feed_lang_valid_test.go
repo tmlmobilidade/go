@@ -30,7 +30,7 @@ func TestFeedLangValid(t *testing.T) {
 			}
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, values, config)
-			if err := checks.FeedLangValid(ctx, config); err != nil {
+			if err := checks.FeedLangValid(ctx, config.Rule("feed_info_feed_lang_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "feed_lang", types.SEVERITY_ERROR, tc.count)

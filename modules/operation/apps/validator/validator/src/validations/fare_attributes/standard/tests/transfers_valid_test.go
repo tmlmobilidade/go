@@ -31,7 +31,7 @@ func TestTransfersValid(t *testing.T) {
 			}
 			_, ctx := testutils.Fixture(t, values, config, "A1")
 
-			if err := checks.TransfersValid(ctx, config); err != nil {
+			if err := checks.TransfersValid(ctx, config.Rule("fare_attributes_transfers_valid_gtfs_enum")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "transfers", types.SEVERITY_ERROR, tc.count)

@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func FeedPublisherUrlValid(db *services.SQLiteContext, rules *types.FeedInfoRules) error {
+func FeedPublisherUrlValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func FeedPublisherUrlValid(db *services.SQLiteContext, rules *types.FeedInfoRule
 
 	ctx := lib.NewValidationContext("feed_publisher_url", "feed_info.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

@@ -35,12 +35,12 @@ func ParseTrips(rawTrips types.TripRaw, row int) types.Trip {
 	// Helper to collect error messages
 	addMessage := func(field, msg string) {
 		messages = append(messages, types.Message{
-			Field:        field,
-			FileName:     "trips.txt",
-			Rows:         []int{row},
-			Message:      msg,
-			Severity:     types.SEVERITY_ERROR,
-			RuleID:       "trips_values_parse",
+			Field:    field,
+			FileName: "trips.txt",
+			Rows:     []int{row},
+			Message:  msg,
+			Severity: types.SEVERITY_ERROR,
+			RuleID:   "trips_values_parse",
 		})
 	}
 

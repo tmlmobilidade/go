@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func StopHeadsignField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func StopHeadsignField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func StopHeadsignField(db *services.SQLiteContext, rules *types.StopTimesRules) 
 
 	ctx := lib.NewValidationContext("stop_headsign", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -44,7 +43,7 @@ func StopHeadsignField(db *services.SQLiteContext, rules *types.StopTimesRules) 
 	}
 
 	//
-	// 5. Return success	
+	// 5. Return success
 
 	return nil
 }

@@ -21,7 +21,7 @@ Parish identifier for a stop.
 
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func ParishIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
+func ParishIdValidation(stop *types.Stop, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("parish_id", "stops.txt", "stops_parish_id_valid", row, services.AppMessageService, rules)
 
 	if stop.ParishId == nil || *stop.ParishId == "" {
@@ -40,12 +40,12 @@ func ParishIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// Validate rules
-	if rules != nil && rules.Rule("stops_parish_id_valid").Options != nil {
-		if slices.Contains(*rules.Rule("stops_parish_id_valid").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("stops_parish_id_valid").Options, *stop.ParishId) {
+		if !slices.Contains(*rules.Options, *stop.ParishId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.ParishId))
 			return
 		}

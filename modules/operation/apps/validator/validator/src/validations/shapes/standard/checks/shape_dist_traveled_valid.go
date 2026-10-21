@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func ShapeDistTraveledValid(db *services.SQLiteContext, rules *types.ShapesRules) error {
+func ShapeDistTraveledValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -21,8 +21,7 @@ func ShapeDistTraveledValid(db *services.SQLiteContext, rules *types.ShapesRules
 
 	ctx := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

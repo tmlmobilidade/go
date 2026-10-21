@@ -42,22 +42,22 @@ func TestContinuousDropOffValid(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			config := testutils.Config(id, tc.severity)
-			config.SetRule(id, types.RuleConfig{Severity: tc.severity, Options: tc.options})
+			config.SetRule(id, types.RuleContext{Severity: tc.severity, Options: tc.options})
 			values := map[string]any{"route_id": "R1"}
 			if !tc.missing {
 				values["continuous_drop_off"] = tc.value
 			}
 			_, ctx := testutils.Fixture(t, values, config)
-			if err := checks.ContinuousDropOffValid(ctx, config, tc.windows); err != nil {
+			if err := checks.ContinuousDropOffValid(ctx, config.Rule("routes_continuous_drop_off_valid_gtfs_enum"), tc.windows); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "continuous_drop_off", tc.severity, tc.count)
 		})
 	}
-	for name, config := range map[string]*types.RoutesRules{"NilRules": nil, "MissingRule": {}} {
+	for name, config := range map[string]*types.GtfsRules{"NilRules": nil, "MissingRule": {}} {
 		t.Run(name, func(t *testing.T) {
 			_, ctx := testutils.Fixture(t, map[string]any{"continuous_drop_off": ""}, config)
-			if err := checks.ContinuousDropOffValid(ctx, config, nil); err != nil {
+			if err := checks.ContinuousDropOffValid(ctx, config.Rule("routes_continuous_drop_off_valid_gtfs_enum"), nil); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "continuous_drop_off", types.SEVERITY_IGNORE, 0)
@@ -67,7 +67,7 @@ func TestContinuousDropOffValid(t *testing.T) {
 		config := testutils.Config(id, types.SEVERITY_ERROR)
 		connection, ctx := testutils.Fixture(t, map[string]any{"continuous_drop_off": "0"}, config)
 		connection.Close()
-		if err := checks.ContinuousDropOffValid(ctx, config, nil); err == nil {
+		if err := checks.ContinuousDropOffValid(ctx, config.Rule("routes_continuous_drop_off_valid_gtfs_enum"), nil); err == nil {
 			t.Fatal("SQLite error was swallowed")
 		}
 		testutils.AssertFindings(t, id, "continuous_drop_off", types.SEVERITY_ERROR, 0)

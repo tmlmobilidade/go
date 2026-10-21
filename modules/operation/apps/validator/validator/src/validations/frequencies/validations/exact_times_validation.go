@@ -27,7 +27,7 @@ Valid options are:
 
 [frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
 */
-func ExactTimesValidation(frequency *types.Frequencies, row int, rules *types.FrequenciesRules) {
+func ExactTimesValidation(frequency *types.Frequencies, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("exact_times", "frequencies.txt", "frequencies_exact_times_zero_when_timed_trip_uses_frequencies", row, services.AppMessageService, rules)
 
 	// 1. Validate exact_times is present
@@ -55,12 +55,12 @@ func ExactTimesValidation(frequency *types.Frequencies, row int, rules *types.Fr
 	}
 
 	// 4. Validate rules
-	if rules != nil && rules.Rule("frequencies_exact_times_zero_when_timed_trip_uses_frequencies").Options != nil {
-		if slices.Contains(*rules.Rule("frequencies_exact_times_zero_when_timed_trip_uses_frequencies").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("frequencies_exact_times_zero_when_timed_trip_uses_frequencies").Options, strconv.Itoa(*frequency.ExactTimes)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*frequency.ExactTimes)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *frequency.ExactTimes))
 			return
 		}

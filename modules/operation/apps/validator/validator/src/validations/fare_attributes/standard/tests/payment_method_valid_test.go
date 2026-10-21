@@ -31,7 +31,7 @@ func TestPaymentMethodValid(t *testing.T) {
 			}
 			_, ctx := testutils.Fixture(t, values, config, "A1")
 
-			if err := checks.PaymentMethodValid(ctx, config); err != nil {
+			if err := checks.PaymentMethodValid(ctx, config.Rule("fare_attributes_payment_method_valid_gtfs_enum")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "payment_method", types.SEVERITY_ERROR, tc.count)

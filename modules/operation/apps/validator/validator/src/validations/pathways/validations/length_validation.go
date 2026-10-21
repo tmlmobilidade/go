@@ -23,7 +23,7 @@ This field is recommended for walkways (pathway_mode=1), fare gates (pathway_mod
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
 
-func LengthValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
+func LengthValidation(pathways *types.Pathways, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("length", "pathways.txt", "pathway_length_non_negative", row, services.AppMessageService, rules)
 
 	// 1. Validate length is present

@@ -23,7 +23,7 @@ For fare media which are transit cards (fare_media_type =2) or mobile apps (fare
 [fare_media.txt]: https://gtfs.org/schedule/reference/#fare_mediatxt
 */
 
-func FareMediaNameValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gtfs, rules *types.FareMediaRules) {
+func FareMediaNameValidation(fareMedia *types.FareMedia, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("fare_media_name", "fare_media.txt", "fare_media_name_non_empty", row, services.AppMessageService, rules)
 
 	// 1. Validate fare_media_name is present

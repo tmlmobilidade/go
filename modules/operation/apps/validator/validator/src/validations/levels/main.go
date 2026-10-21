@@ -15,11 +15,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	var section *types.LevelsRules
-	if rules != nil {
-		section = &rules.Levels
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "levels")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -37,15 +33,10 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 			return nil
 		}
 
-		var levelRules *types.LevelsRules
-		if rules != nil {
-			levelRules = &rules.Levels
-		}
-
 		runner.Run(services.RuleActions{
-			"level_id_unique":      func() { validations.LevelIdValidation(&level, row, gtfs, levelRules) },
-			"level_index_required": func() { validations.LevelIndexValidation(&level, row, levelRules) },
-			"level_name":           func() { validations.LevelNameValidation(&level, row, levelRules) },
+			"level_id_unique":      func() { validations.LevelIdValidation(&level, row, gtfs, rules.Rule("level_id_unique")) },
+			"level_index_required": func() { validations.LevelIndexValidation(&level, row, rules.Rule("level_index_required")) },
+			"level_name":           func() { validations.LevelNameValidation(&level, row, rules.Rule("level_name")) },
 		}, nil)
 		return nil
 	})

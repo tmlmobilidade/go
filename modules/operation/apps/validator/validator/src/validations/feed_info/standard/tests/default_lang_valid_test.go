@@ -30,7 +30,7 @@ func TestDefaultLangValid(t *testing.T) {
 			}
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, values, config)
-			if err := checks.DefaultLangValid(ctx, config); err != nil {
+			if err := checks.DefaultLangValid(ctx, config.Rule("feed_info_default_lang_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "default_lang", types.SEVERITY_ERROR, tc.count)

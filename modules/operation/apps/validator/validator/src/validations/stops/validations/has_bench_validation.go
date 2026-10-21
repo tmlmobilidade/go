@@ -27,7 +27,7 @@ Describes if the stop has a bench.
 
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func HasBenchValidation(stop *types.Stop, row int, rules *types.StopsRules) {
+func HasBenchValidation(stop *types.Stop, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("has_bench", "stops.txt", "stops_has_bench_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate has_bench is present
@@ -55,12 +55,12 @@ func HasBenchValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.Rule("stops_has_bench_valid_enum").Options != nil {
-		if slices.Contains(*rules.Rule("stops_has_bench_valid_enum").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("stops_has_bench_valid_enum").Options, strconv.Itoa(*stop.HasBench)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*stop.HasBench)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.HasBench))
 		}
 

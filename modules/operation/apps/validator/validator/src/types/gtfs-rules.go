@@ -7,48 +7,13 @@ type Compare struct {
 	Value string `json:"value"`
 }
 
-type RuleConfig struct {
+// RuleContext contains the configuration supplied to one validation rule.
+type RuleContext struct {
 	Severity  Severity   `json:"severity"`
 	Options   *[]string  `json:"options,omitempty"`
 	Compare   *[]Compare `json:"compare,omitempty"`
-	DependsOn []string   `json:"depends_on,omitempty"` // DependsOn lists rule ids (from the same file section) that must pass before this rule runs
+	DependsOn []string   `json:"depends_on,omitempty"` // DependsOn lists rule IDs that must pass before this rule runs
 }
-
-type AgencyRules struct{ RuleSection }
-
-type StopsRules struct{ RuleSection }
-
-type RoutesRules struct{ RuleSection }
-
-type TripsRules struct{ RuleSection }
-
-type StopTimesRules struct{ RuleSection }
-
-type CalendarRules struct{ RuleSection }
-
-type CalendarDatesRules struct{ RuleSection }
-
-type VehiclesRules struct{ RuleSection }
-
-type FareAttributesRules struct{ RuleSection }
-
-type FareRulesRules struct{ RuleSection }
-
-type FareMediaRules struct{ RuleSection }
-
-type ShapesRules struct{ RuleSection }
-
-type FrequenciesRules struct{ RuleSection }
-
-type TransfersRules struct{ RuleSection }
-
-type PathwaysRules struct{ RuleSection }
-
-type LevelsRules struct{ RuleSection }
-
-type FeedInfoRules struct{ RuleSection }
-
-type RiderCategoriesRules struct{ RuleSection }
 
 // RuleIDGtfsFeedFilePresenceAndIntegrity is the rule_id for forbidden-file checks.
 // Missing-file checks emit <table>_file_missing instead.
@@ -57,26 +22,48 @@ const RuleIDGtfsFeedFilePresenceAndIntegrity = "file_validation_gtfs_feed_file_p
 // RuleIDFeedInfoValuesParse is the rule_id for feed_info row parsing errors.
 const RuleIDFeedInfoValuesParse = "feed_info_values_parse"
 
-type FileValidationRules struct{ RuleSection }
+// GtfsRules stores configuration by rule ID, matching rules.json.
+type GtfsRules map[string]RuleContext
 
-type GtfsRules struct {
-	Agency          AgencyRules          `json:"agency"`
-	FileValidation  FileValidationRules  `json:"file_validation"`
-	RiderCategories RiderCategoriesRules `json:"rider_categories"`
-	Stops           StopsRules           `json:"stops"`
-	Routes          RoutesRules          `json:"routes"`
-	Trips           TripsRules           `json:"trips"`
-	StopTimes       StopTimesRules       `json:"stop_times"`
-	Calendar        CalendarRules        `json:"calendar"`
-	CalendarDates   CalendarDatesRules   `json:"calendar_dates"`
-	Vehicles        VehiclesRules        `json:"vehicles"`
-	FareAttributes  FareAttributesRules  `json:"fare_attributes"`
-	FareRules       FareRulesRules       `json:"fare_rules"`
-	Shapes          ShapesRules          `json:"shapes"`
-	Frequencies     FrequenciesRules     `json:"frequencies"`
-	Transfers       TransfersRules       `json:"transfers"`
-	Pathways        PathwaysRules        `json:"pathways"`
-	Levels          LevelsRules          `json:"levels"`
-	FeedInfo        FeedInfoRules        `json:"feed_info"`
-	FareMedia       FareMediaRules       `json:"fare_media"`
+// Rule returns the context for one check; omitted rules default to Ignore.
+func (r *GtfsRules) Rule(id string) *RuleContext {
+	context := RuleContext{Severity: SEVERITY_IGNORE}
+	if r != nil {
+		if configured, exists := (*r)[id]; exists {
+			context = configured
+			if context.Severity == "" {
+				context.Severity = SEVERITY_IGNORE
+			}
+		}
+	}
+	return &context
+}
+
+func (r *GtfsRules) SetRule(id string, context RuleContext) {
+	if *r == nil {
+		*r = make(GtfsRules)
+	}
+	(*r)[id] = context
+}
+
+// GtfsRuleFiles lists the tables supported by validation, independently of configuration.
+var GtfsRuleFiles = []string{
+	"agency",
+	"rider_categories",
+	"stops",
+	"routes",
+	"trips",
+	"stop_times",
+	"calendar",
+	"calendar_dates",
+	"vehicles",
+	"fare_attributes",
+	"fare_rules",
+	"shapes",
+	"frequencies",
+	"transfers",
+	"pathways",
+	"levels",
+	"feed_info",
+	"fare_media",
 }

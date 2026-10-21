@@ -24,7 +24,7 @@ func TestAgencyIdUnique(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
 
-			if err := checks.AgencyIdUnique(ctx, config); err != nil {
+			if err := checks.AgencyIdUnique(ctx, config.Rule("routes_agency_id_unique")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "agency_id", types.SEVERITY_ERROR, tc.count)

@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func PickupTypeField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func PickupTypeField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,13 +19,12 @@ func PickupTypeField(db *services.SQLiteContext, rules *types.StopTimesRules) er
 
 	ctx := lib.NewValidationContext("pickup_type", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
 	// 3. Get the pickup_type value
-	
+
 	value, err := db.StopTimes.Field("pickup_type")
 	if err != nil {
 		return err

@@ -38,12 +38,12 @@ func TestShapeDistTraveledNonDecreasing(t *testing.T) {
 			if tc.nilRules {
 				config = nil
 			}
-			if err := checks.ShapeDistTraveledNonDecreasing(table.At(3).Context(), config); err != nil {
+			if err := checks.ShapeDistTraveledNonDecreasing(table.At(3).Context(), config.Rule("shape_dist_traveled_non_decreasing_with_sequence")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertShapeFindings(t, id, "shape_dist_traveled", tc.severity, tc.rows...)
 			db.Close()
-			if err := checks.ShapeDistTraveledNonDecreasing(table.At(3).Context(), config); err == nil {
+			if err := checks.ShapeDistTraveledNonDecreasing(table.At(3).Context(), config.Rule("shape_dist_traveled_non_decreasing_with_sequence")); err == nil {
 				t.Fatal("SQLite failure swallowed")
 			}
 		})

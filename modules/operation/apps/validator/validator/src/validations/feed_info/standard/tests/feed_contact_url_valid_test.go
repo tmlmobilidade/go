@@ -32,7 +32,7 @@ func TestFeedContactUrlValid(t *testing.T) {
 			}
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, values, config)
-			if err := checks.FeedContactUrlValid(ctx, config); err != nil {
+			if err := checks.FeedContactUrlValid(ctx, config.Rule("feed_info_feed_contact_url_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "feed_contact_url", types.SEVERITY_ERROR, tc.count)

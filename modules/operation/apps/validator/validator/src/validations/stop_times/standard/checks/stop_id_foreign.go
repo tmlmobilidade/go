@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func StopIdForeign(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func StopIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func StopIdForeign(db *services.SQLiteContext, rules *types.StopTimesRules) erro
 
 	ctx := lib.NewValidationContext("stop_id", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -30,7 +29,7 @@ func StopIdForeign(db *services.SQLiteContext, rules *types.StopTimesRules) erro
 	if err != nil {
 		return err
 	}
-	
+
 	//
 	// 4. Check if the stop_id is foreign
 
@@ -38,7 +37,7 @@ func StopIdForeign(db *services.SQLiteContext, rules *types.StopTimesRules) erro
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 		return nil
 	}
-	
+
 	//
 	// 5. Return success
 

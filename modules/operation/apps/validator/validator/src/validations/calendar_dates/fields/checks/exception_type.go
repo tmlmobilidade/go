@@ -17,7 +17,7 @@ import (
 
 Indicates whether service is available on the date specified in the date field.
 */
-func ExceptionTypeField(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
+func ExceptionTypeField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -30,8 +30,7 @@ func ExceptionTypeField(db *services.SQLiteContext, rules *types.CalendarDatesRu
 
 	ctx := lib.NewValidationContext("exception_type", "calendar_dates.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

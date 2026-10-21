@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func LocationGroupIdField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func LocationGroupIdField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func LocationGroupIdField(db *services.SQLiteContext, rules *types.StopTimesRule
 
 	ctx := lib.NewValidationContext("location_group_id", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -34,7 +33,7 @@ func LocationGroupIdField(db *services.SQLiteContext, rules *types.StopTimesRule
 	//
 	// 4. Check if stop_id or location_id is defined
 
-	if (db.StopTimes.Exists("stop_id", value) || db.StopTimes.Exists("location_id", value)) {
+	if db.StopTimes.Exists("stop_id", value) || db.StopTimes.Exists("location_id", value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden_stop_location"))
 		return nil
 	}

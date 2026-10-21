@@ -15,11 +15,11 @@ import (
 
 func TestInfoSeverityConfiguration(t *testing.T) {
 	config := rules.DefaultConfig()
-	config.Agency.File = types.SEVERITY_INFO
+	config.SetRule("agency_file_missing", types.RuleContext{Severity: types.SEVERITY_INFO})
 	{
-		ruleConfig := config.Agency.Rule("agency_id_field")
+		ruleConfig := config.Rule("agency_id_field")
 		ruleConfig.Severity = types.SEVERITY_INFO
-		config.Agency.SetRule("agency_id_field", ruleConfig)
+		config.SetRule("agency_id_field", *ruleConfig)
 	}
 	data, err := json.Marshal(config)
 	if err != nil {
@@ -34,7 +34,7 @@ func TestInfoSeverityConfiguration(t *testing.T) {
 		t.Fatal(err)
 	}
 	parser := services.NewRulesParser(path)
-	if parsed.Agency.Rule("agency_id_field").Severity != types.SEVERITY_INFO || !slices.Contains(parser.GetInfoFiles(parsed), "agency.txt") {
+	if parsed.Rule("agency_id_field").Severity != types.SEVERITY_INFO || !slices.Contains(parser.GetInfoFiles(parsed), "agency.txt") {
 		t.Fatal("info severity was not retained")
 	}
 	if slices.Contains(parser.GetRequiredFiles(parsed), "agency.txt") || slices.Contains(parser.GetWarningFiles(parsed), "agency.txt") {
@@ -50,14 +50,14 @@ func TestInfoMessagesBlockDAGDependents(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer cleanup()
-	config := &types.GtfsRules{Agency: types.AgencyRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"agency_id_field": types.RuleConfig{Severity: types.SEVERITY_INFO}, "agency_id_unique": types.RuleConfig{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_id_field"}}}}}}
+	config := &types.GtfsRules{"agency_id_field": types.RuleContext{Severity: types.SEVERITY_INFO}, "agency_id_unique": types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_id_field"}}}
 	rules.ConfigureMessageSeverities(config)
 	services.AppMessageService.Clear()
 	t.Cleanup(func() {
 		rules.ConfigureMessageSeverities(nil)
 		services.AppMessageService.Clear()
 	})
-	runner, err := services.NewRuleRunner(*gtfs, &config.Agency)
+	runner, err := services.NewRuleRunner(*gtfs, config, "agency")
 	if err != nil {
 		t.Fatal(err)
 	}

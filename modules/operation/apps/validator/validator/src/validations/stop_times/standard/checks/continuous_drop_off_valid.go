@@ -35,57 +35,57 @@ Conditionally Forbidden:
 
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
-func ContinuousDropOffValid(db *services.SQLiteContext, rules *types.StopTimesRules) error {
-    //
-    
-    //
-    // 1. Get the rule and create the validation context
+func ContinuousDropOffValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
 
-    const ruleID = "stop_times_continuous_drop_off_valid_gtfs_enum"
-    ctx := lib.NewValidationContext("continuous_drop_off", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
-    if rules != nil {
-        ctx.WithSeverity(rules.Rule(ruleID).Severity)
-    }
+	//
+	// 1. Get the rule and create the validation context
 
-    //
-    // 2. Check if the rule should be ignored
+	const ruleID = "stop_times_continuous_drop_off_valid_gtfs_enum"
+	ctx := lib.NewValidationContext("continuous_drop_off", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
+	if rules != nil {
+		ctx.WithSeverity(rules.Severity)
+	}
 
-    if ctx.ShouldIgnore() {
-        return nil
-    }
+	//
+	// 2. Check if the rule should be ignored
 
-    //
-    // 3. Read the value and pickup/drop-off windows
+	if ctx.ShouldIgnore() {
+		return nil
+	}
 
-    values, err := db.StopTimes.Fields("continuous_drop_off", "start_pickup_drop_off_window", "end_pickup_drop_off_window")
-    if err != nil {
-        return err
-    }
+	//
+	// 3. Read the value and pickup/drop-off windows
 
-    value := values["continuous_drop_off"]
-    if value == "" {
-        return nil
-    }
+	values, err := db.StopTimes.Fields("continuous_drop_off", "start_pickup_drop_off_window", "end_pickup_drop_off_window")
+	if err != nil {
+		return err
+	}
 
-    //
-    // 4. Validate the GTFS enum
+	value := values["continuous_drop_off"]
+	if value == "" {
+		return nil
+	}
 
-    continuous, err := strconv.Atoi(value)
-    if err != nil || continuous < 0 || continuous > 3 {
-        ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid"))
-        return nil
-    }
+	//
+	// 4. Validate the GTFS enum
 
-    //
-    // 5. Only 1 or empty is allowed with pickup/drop-off windows
+	continuous, err := strconv.Atoi(value)
+	if err != nil || continuous < 0 || continuous > 3 {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid"))
+		return nil
+	}
 
-    if continuous != 1 && (values["start_pickup_drop_off_window"] != "" || values["end_pickup_drop_off_window"] != "") {
-        ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden_with_window"))
-        return nil
-    }
+	//
+	// 5. Only 1 or empty is allowed with pickup/drop-off windows
 
-    //
-    // 6. Return success
+	if continuous != 1 && (values["start_pickup_drop_off_window"] != "" || values["end_pickup_drop_off_window"] != "") {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("forbidden_with_window"))
+		return nil
+	}
 
-    return nil
+	//
+	// 6. Return success
+
+	return nil
 }

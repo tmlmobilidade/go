@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func ShapeDistTraveledValid(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func ShapeDistTraveledValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -20,8 +20,7 @@ func ShapeDistTraveledValid(db *services.SQLiteContext, rules *types.StopTimesRu
 
 	ctx := lib.NewValidationContext("shape_dist_traveled", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -31,7 +30,7 @@ func ShapeDistTraveledValid(db *services.SQLiteContext, rules *types.StopTimesRu
 	if err != nil {
 		return err
 	}
-	
+
 	//
 	// 4. Check if the shape_dist_traveled is valid
 

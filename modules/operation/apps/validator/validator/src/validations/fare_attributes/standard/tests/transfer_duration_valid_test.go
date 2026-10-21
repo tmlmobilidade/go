@@ -31,7 +31,7 @@ func TestTransferDurationValid(t *testing.T) {
 			}
 			_, ctx := testutils.Fixture(t, values, config, "A1")
 
-			if err := checks.TransferDurationValid(ctx, config); err != nil {
+			if err := checks.TransferDurationValid(ctx, config.Rule("fare_attributes_transfer_duration_valid_seconds_range")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "transfer_duration", types.SEVERITY_ERROR, tc.count)

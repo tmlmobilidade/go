@@ -35,7 +35,7 @@ Valid options are:
 https://gtfs.org/documentation/schedule/reference/#routestxt:~:text=and%20Far%20Rockaway).-,route_type,-Enum
 */
 
-func VehicleTypeValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func VehicleTypeValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("vehicle_type", "vehicles.txt", "vehicles_vehicle_type_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Check if vehicle_type is required
@@ -63,12 +63,12 @@ func VehicleTypeValidation(vehicle *types.Vehicle, row int, rules *types.Vehicle
 	}
 
 	// 4. Validate rules
-	if rules != nil && rules.Rule("vehicles_vehicle_type_valid_enum").Options != nil {
-		if slices.Contains(*rules.Rule("vehicles_vehicle_type_valid_enum").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("vehicles_vehicle_type_valid_enum").Options, strconv.Itoa(*vehicle.VehicleType)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*vehicle.VehicleType)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(*vehicle.VehicleType)))
 			return
 		}

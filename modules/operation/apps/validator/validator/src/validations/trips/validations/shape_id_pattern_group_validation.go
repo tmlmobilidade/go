@@ -29,19 +29,19 @@ both, and run the pattern_id side first, or the suppression has nothing to read.
 
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
-func ShapeIdPatternGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, tripsGroupedByShapeId types.TripGroupedByShapeId, gtfs *types.Gtfs, rules *types.TripsRules) {
-	ShapeIdPatternGroupRuleValidation(tripsGroupedByPattern, tripsGroupedByShapeId, gtfs, rules, "", nil)
+func ShapeIdPatternGroupValidation(tripsGroupedByPattern types.TripGroupedByPattern, tripsGroupedByShapeId types.TripGroupedByShapeId, gtfs *types.Gtfs, rules *types.GtfsRules) {
+	reportedPairs := make(map[string]bool)
+	ShapeIdPatternGroupRuleValidation(tripsGroupedByPattern, tripsGroupedByShapeId, gtfs, rules.Rule("trips_one_shape_id_per_pattern_id_group"), "trips_one_shape_id_per_pattern_id_group", reportedPairs)
+	ShapeIdPatternGroupRuleValidation(tripsGroupedByPattern, tripsGroupedByShapeId, gtfs, rules.Rule("trips_one_pattern_id_per_shape_id_group"), "trips_one_pattern_id_per_shape_id_group", reportedPairs)
 }
 
-// ShapeIdPatternGroupRuleValidation runs one of the two rules, or both when ruleID is
-// empty. reportedPairs carries the suppression state between the two rules and
-// is allocated per call when nil, which only makes sense for a single call that
-// receives both groupings.
+// ShapeIdPatternGroupRuleValidation runs the selected rule with its own context.
+// reportedPairs carries suppression state between the two rule executions.
 func ShapeIdPatternGroupRuleValidation(
 	tripsGroupedByPattern types.TripGroupedByPattern,
 	tripsGroupedByShapeId types.TripGroupedByShapeId,
 	gtfs *types.Gtfs,
-	rules *types.TripsRules,
+	rules *types.RuleContext,
 	ruleID string,
 	reportedPairs map[string]bool,
 ) {
@@ -51,7 +51,7 @@ func ShapeIdPatternGroupRuleValidation(
 	key := func(p, s string) string { return p + "|" + s }
 
 	// 1. Process pattern_id groups: find pattern_ids with multiple shape_ids
-	if ruleID == "" || ruleID == "trips_one_shape_id_per_pattern_id_group" {
+	if ruleID == "trips_one_shape_id_per_pattern_id_group" {
 		for patternId, group := range tripsGroupedByPattern {
 			if len(group.Trips) == 0 {
 				continue
@@ -67,8 +67,8 @@ func ShapeIdPatternGroupRuleValidation(
 			}
 			row := group.Trips[0].Row
 			ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_one_shape_id_per_pattern_id_group", row, services.AppMessageService)
-			if rules != nil && rules.Rule("trips_one_shape_id_per_pattern_id_group").Severity != "" {
-				ctx.WithSeverity(rules.Rule("trips_one_shape_id_per_pattern_id_group").Severity)
+			if rules != nil && rules.Severity != "" {
+				ctx.WithSeverity(rules.Severity)
 			}
 			// Nothing was reported, so nothing is suppressed on the shape_id side.
 			if ctx.ShouldSkip() {
@@ -84,7 +84,7 @@ func ShapeIdPatternGroupRuleValidation(
 	}
 
 	// 2. Process shape_id groups: find shape_ids with multiple pattern_ids (only if not already reported)
-	if ruleID != "" && ruleID != "trips_one_pattern_id_per_shape_id_group" {
+	if ruleID != "trips_one_pattern_id_per_shape_id_group" {
 		return
 	}
 	for shapeId, group := range tripsGroupedByShapeId {
@@ -112,8 +112,8 @@ func ShapeIdPatternGroupRuleValidation(
 		}
 		row := group.Trips[0].Row
 		ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_one_pattern_id_per_shape_id_group", row, services.AppMessageService)
-		if rules != nil && rules.Rule("trips_one_pattern_id_per_shape_id_group").Severity != "" {
-			ctx.WithSeverity(rules.Rule("trips_one_pattern_id_per_shape_id_group").Severity)
+		if rules != nil && rules.Severity != "" {
+			ctx.WithSeverity(rules.Severity)
 		}
 		if ctx.ShouldSkip() {
 			continue

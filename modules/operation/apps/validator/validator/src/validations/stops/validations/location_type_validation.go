@@ -30,7 +30,7 @@ Valid options are:
 
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func LocationTypeValidation(stop *types.Stop, row int, rules *types.StopsRules) {
+func LocationTypeValidation(stop *types.Stop, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("location_type", "stops.txt", "stops_location_type_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate location_type is present
@@ -47,12 +47,12 @@ func LocationTypeValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 	}
 
 	// 3. Validate Rule options
-	if rules != nil && rules.Rule("stops_location_type_valid_enum").Options != nil {
-		if slices.Contains(*rules.Rule("stops_location_type_valid_enum").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("stops_location_type_valid_enum").Options, strconv.Itoa(*stop.LocationType)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*stop.LocationType)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.LocationType))
 			return
 		}

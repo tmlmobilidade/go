@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func RouteUrlDifferentAgencyUrl(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func RouteUrlDifferentAgencyUrl(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func RouteUrlDifferentAgencyUrl(db *services.SQLiteContext, rules *types.RoutesR
 
 	ctx := lib.NewValidationContext("route_url", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -51,7 +50,7 @@ func RouteUrlDifferentAgencyUrl(db *services.SQLiteContext, rules *types.RoutesR
 	if err != nil {
 		return err
 	}
-	
+
 	if same {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", routeUrl))
 		return nil

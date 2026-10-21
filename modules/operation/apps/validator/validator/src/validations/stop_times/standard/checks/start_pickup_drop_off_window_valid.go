@@ -27,20 +27,20 @@ Conditionally Required:
 
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
-func StartPickupDropOffWindowValid(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func StartPickupDropOffWindowValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule and create the validation context
 
 	const ruleID = "stop_times_start_pickup_drop_off_window_valid"
-	
+
 	//
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("start_pickup_drop_off_window", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		ctx.WithSeverity(rules.Rule(ruleID).Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

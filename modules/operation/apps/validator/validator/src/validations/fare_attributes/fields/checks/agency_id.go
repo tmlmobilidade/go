@@ -24,23 +24,22 @@ Conditionally Required:
 
 [agencies.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyIdField(db *services.SQLiteContext, rules *types.FareAttributesRules) error {
+func AgencyIdField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
 	const ruleID = "fare_attributes_agency_id_field"
-	
+
 	//
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_id", "fare_attributes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
-	
+
 	//
 	// 3. Get the agency_id value
 
@@ -48,7 +47,7 @@ func AgencyIdField(db *services.SQLiteContext, rules *types.FareAttributesRules)
 	if err != nil {
 		return err
 	}
-	
+
 	//
 	// 4. Check if the agency_id is required
 

@@ -18,7 +18,7 @@ import (
 
 The model of the vehicle.
 */
-func ModelValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func ModelValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("model", "vehicles.txt", "vehicle_model_required", row, services.AppMessageService, rules)
 
 	// 1. Check if model is required

@@ -23,7 +23,7 @@ Example: When two escalators are side-by-side in opposite directions, or when a 
 
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
-func PathwayIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rules *types.PathwaysRules) {
+func PathwayIdValidation(pathways *types.Pathways, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("pathway_id", "pathways.txt", "pathway_id_unique", row, services.AppMessageService, rules)
 
 	// 1. Validate pathway_id is present

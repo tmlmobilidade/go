@@ -20,23 +20,22 @@ Currency used to pay the fare.
 
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
-func CurrencyTypeField(db *services.SQLiteContext, rules *types.FareAttributesRules) error {
+func CurrencyTypeField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
 	const ruleID = "fare_attributes_currency_type_field"
-	
+
 	//
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("currency_type", "fare_attributes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
-	
+
 	//
 	// 3. Get the currency_type value
 

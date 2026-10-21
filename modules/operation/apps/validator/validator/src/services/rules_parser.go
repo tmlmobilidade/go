@@ -7,7 +7,6 @@ import (
 	ruleset "main/lib/rules"
 	"main/types"
 	"os"
-	"reflect"
 )
 
 // RulesParser handles parsing of GTFS validation rules from JSON files
@@ -60,13 +59,11 @@ func (rp *RulesParser) ParseRules() (*types.GtfsRules, error) {
 	return &rules, nil
 }
 
-// validateRules checks the configured dependency graph in every file section.
-func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
-	sections := reflect.ValueOf(rules).Elem()
-	for i := range sections.NumField() {
-		sectionName := sections.Type().Field(i).Tag.Get("json")
-		if err := ruleset.ValidateSection(sections.Field(i).Interface()); err != nil {
-			return fmt.Errorf("Invalid depends_on in '%s': %w", sectionName, err)
+// validateRules checks dependency scopes without grouping stored configuration.
+func (rp *RulesParser) validateRules(config *types.GtfsRules) error {
+	for _, file := range append(types.GtfsRuleFiles[:len(types.GtfsRuleFiles):len(types.GtfsRuleFiles)], "file_validation") {
+		if err := ruleset.ValidateDependencies(ruleset.ForFile(config, file), file); err != nil {
+			return fmt.Errorf("Invalid depends_on in '%s': %w", file, err)
 		}
 	}
 	return nil
@@ -82,37 +79,8 @@ func ParseRulesFromFile(rulesPath string) (*types.GtfsRules, error) {
 	return parser.ParseRules()
 }
 
-func isMetaGtfsRulesSection(jsonTag string) bool {
-	return jsonTag == "file_validation"
-}
-
 func (rp *RulesParser) GetRequiredFiles(rules *types.GtfsRules) []string {
 	return rp.getFilesBySeverity(rules, types.SEVERITY_ERROR)
-}
-
-// getNestedFieldByTag gets a field value by tag from a struct (handles nested structs)
-func (rp *RulesParser) getNestedFieldByTag(obj interface{}, tagKey, tagValue string) reflect.Value {
-	v := reflect.ValueOf(obj)
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-
-	if v.Kind() != reflect.Struct {
-		return reflect.Value{}
-	}
-
-	t := v.Type()
-	for i := 0; i < v.NumField(); i++ {
-		field := v.Field(i)
-		fieldType := t.Field(i)
-		tag := fieldType.Tag.Get(tagKey)
-
-		if tag == tagValue {
-			return field
-		}
-	}
-
-	return reflect.Value{}
 }
 
 func (rp *RulesParser) GetForbiddenFiles(rules *types.GtfsRules) []string {
@@ -127,32 +95,12 @@ func (rp *RulesParser) GetInfoFiles(rules *types.GtfsRules) []string {
 	return rp.getFilesBySeverity(rules, types.SEVERITY_INFO)
 }
 
-func (rp *RulesParser) getFilesBySeverity(rules *types.GtfsRules, wanted types.Severity) []string {
-	if rules == nil {
-		return []string{}
-	}
-
-	allFiles := lib.GetAllStructTagValues(types.GtfsRules{}, "json")
-	matchingFiles := make([]string, 0)
-
-	for _, file := range allFiles {
-		if isMetaGtfsRulesSection(file) {
-			continue
-		}
-		// Get the nested struct field value by json tag
-		fileValue := rp.getNestedFieldByTag(rules, "json", file)
-		if fileValue.IsValid() && fileValue.Kind() == reflect.Struct {
-			// Look for _file field in the nested struct
-			fileField := fileValue.FieldByName("File")
-			if fileField.IsValid() {
-				severity := types.Severity(fileField.String())
-				if severity == wanted {
-					// Add .txt extension to match file name format
-					matchingFiles = append(matchingFiles, file+".txt")
-				}
-			}
+func (rp *RulesParser) getFilesBySeverity(config *types.GtfsRules, wanted types.Severity) []string {
+	files := []string{}
+	for _, file := range types.GtfsRuleFiles {
+		if ruleset.FileSeverity(config, file) == wanted {
+			files = append(files, file+".txt")
 		}
 	}
-
-	return matchingFiles
+	return files
 }

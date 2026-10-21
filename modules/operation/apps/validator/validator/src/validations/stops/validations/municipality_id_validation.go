@@ -21,7 +21,7 @@ Municipality identifier for a stop.
 
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func MunicipalityIdValidation(stop *types.Stop, row int, rules *types.StopsRules) {
+func MunicipalityIdValidation(stop *types.Stop, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("municipality_id", "stops.txt", "stops_municipality_id_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate municipality_id is present
@@ -42,12 +42,12 @@ func MunicipalityIdValidation(stop *types.Stop, row int, rules *types.StopsRules
 	}
 
 	// 3. Validate Rule options
-	if rules != nil && rules.Rule("stops_municipality_id_valid").Options != nil {
-		if slices.Contains(*rules.Rule("stops_municipality_id_valid").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("stops_municipality_id_valid").Options, *stop.MunicipalityId) {
+		if !slices.Contains(*rules.Options, *stop.MunicipalityId) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.MunicipalityId))
 			return
 		}

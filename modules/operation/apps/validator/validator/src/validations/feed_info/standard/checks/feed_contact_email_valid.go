@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func FeedContactEmailValid(db *services.SQLiteContext, rules *types.FeedInfoRules) error {
+func FeedContactEmailValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func FeedContactEmailValid(db *services.SQLiteContext, rules *types.FeedInfoRule
 
 	ctx := lib.NewValidationContext("feed_contact_email", "feed_info.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

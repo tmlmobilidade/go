@@ -26,8 +26,8 @@ import (
 )
 
 // StopNameValidation validates the presence of stop_name in stops.txt according to location_type
-// func StopNameValidation(stop *types.Stop, row int, rules *types.StopsRules, stopsData *types.StopsDataCache) {
-func StopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
+// func StopNameValidation(stop *types.Stop, row int, rules *types.GtfsRules, stopsData *types.StopsDataCache) {
+func StopNameValidation(stop *types.Stop, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("stop_name", "stops.txt", "stop_name_required_by_location_type", row, services.AppMessageService, rules)
 
 	// 1. Validate stop_name is present
@@ -48,12 +48,12 @@ func StopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	}
 
 	// 3. Validate stop_name is a valid value
-	if rules != nil && rules.Rule("stop_name_required_by_location_type").Options != nil {
-		if slices.Contains(*rules.Rule("stop_name_required_by_location_type").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("stop_name_required_by_location_type").Options, *stop.StopName) {
+		if !slices.Contains(*rules.Options, *stop.StopName) {
 			ctx.AddError(ctx.GetTranslatedMessage("not_allowed", *stop.StopName))
 			return
 		}

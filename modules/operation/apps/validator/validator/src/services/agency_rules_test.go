@@ -41,27 +41,7 @@ func TestAgencyRulesAcceptPartialConfiguration(t *testing.T) {
 }
 
 func TestParseFlatAgencyRulesFromFile(t *testing.T) {
-	grouped, err := json.Marshal(ruleset.DefaultConfig())
-	if err != nil {
-		t.Fatal(err)
-	}
-	var groups map[string]map[string]any
-	if err := json.Unmarshal(grouped, &groups); err != nil {
-		t.Fatal(err)
-	}
 	flat := map[string]any{}
-	for group, entries := range groups {
-		for id, value := range entries {
-			if id == "_file" {
-				if group == "file_validation" {
-					continue
-				}
-				id = group + "_file_missing"
-				value = map[string]any{"severity": value, "depends_on": []string{}}
-			}
-			flat[id] = value
-		}
-	}
 	flat["agency_id_matched_with_agency_name"] = map[string]any{"severity": "error", "depends_on": []string{"agency_id_unique"}}
 	flat["agency_name_field"] = map[string]any{"severity": "info"}
 	flat["agency_file_missing"] = map[string]any{"severity": "error"}
@@ -83,7 +63,7 @@ func TestParseFlatAgencyRulesFromFile(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if config.Agency.Rule("agency_name_field").Severity != types.SEVERITY_INFO || config.Agency.Rule("agency_id_unique").Severity != types.SEVERITY_WARNING || !slices.Contains(NewRulesParser(path).GetRequiredFiles(config), "agency.txt") {
+		if config.Rule("agency_name_field").Severity != types.SEVERITY_INFO || config.Rule("agency_id_unique").Severity != types.SEVERITY_WARNING || !slices.Contains(NewRulesParser(path).GetRequiredFiles(config), "agency.txt") {
 			t.Fatal("flat severities did not reach runtime rule and required-file settings")
 		}
 	}
@@ -112,9 +92,9 @@ func TestParseFlatAgencyRulesFromFile(t *testing.T) {
 func TestAgencySeverityControlsMessagesAndDependencies(t *testing.T) {
 	config := ruleset.DefaultConfig()
 	{
-		ruleConfig := config.Trips.Rule("trip_id_unique")
+		ruleConfig := config.Rule("trip_id_unique")
 		ruleConfig.Severity = types.SEVERITY_WARNING
-		config.Trips.SetRule("trip_id_unique", ruleConfig)
+		config.SetRule("trip_id_unique", *ruleConfig)
 	}
 	ruleset.ConfigureMessageSeverities(&config)
 	defer ruleset.ConfigureMessageSeverities(nil)
@@ -151,9 +131,9 @@ func TestForbiddenMessagesAlwaysReportError(t *testing.T) {
 		if configured {
 			config := ruleset.DefaultConfig()
 			{
-				ruleConfig := config.Agency.Rule("agency_email_field")
+				ruleConfig := config.Rule("agency_email_field")
 				ruleConfig.Severity = types.SEVERITY_FORBIDDEN
-				config.Agency.SetRule("agency_email_field", ruleConfig)
+				config.SetRule("agency_email_field", *ruleConfig)
 			}
 			ruleset.ConfigureMessageSeverities(&config)
 		}

@@ -25,23 +25,22 @@ Indicates the number of transfers permitted on this fare. Valid options are:
 
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
-func TransfersValid(db *services.SQLiteContext, rules *types.FareAttributesRules) error {
+func TransfersValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
 	const ruleID = "fare_attributes_transfers_valid_gtfs_enum"
-	
+
 	//
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("transfers", "fare_attributes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
-	
+
 	//
 	// 3. Get the transfers value
 

@@ -32,7 +32,7 @@ func TestFeedPublisherUrlValid(t *testing.T) {
 			}
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, values, config)
-			if err := checks.FeedPublisherUrlValid(ctx, config); err != nil {
+			if err := checks.FeedPublisherUrlValid(ctx, config.Rule("feed_info_feed_publisher_url_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "feed_publisher_url", types.SEVERITY_ERROR, tc.count)

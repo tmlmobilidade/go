@@ -24,7 +24,7 @@ Conditionally Required:
 
 [agencies.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyIdForeign(db *services.SQLiteContext, rules *types.FareAttributesRules) error {
+func AgencyIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -37,10 +37,9 @@ func AgencyIdForeign(db *services.SQLiteContext, rules *types.FareAttributesRule
 
 	ctx := lib.NewValidationContext("agency_id", "fare_attributes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
-	
+
 	//
 	// 3. Get the agency_id value
 

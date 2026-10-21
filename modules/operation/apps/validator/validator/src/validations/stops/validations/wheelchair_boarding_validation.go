@@ -42,7 +42,7 @@ For station entrances/exits:
 
 [stops.txt]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func WheelchairBoardingValidation(stop *types.Stop, row int, rules *types.StopsRules) {
+func WheelchairBoardingValidation(stop *types.Stop, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("wheelchair_boarding", "stops.txt", "stops_wheelchair_boarding_valid_enum", row, services.AppMessageService, rules)
 
 	// 1. Validate wheelchair_boarding is present
@@ -70,12 +70,12 @@ func WheelchairBoardingValidation(stop *types.Stop, row int, rules *types.StopsR
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.Rule("stops_wheelchair_boarding_valid_enum").Options != nil {
-		if slices.Contains(*rules.Rule("stops_wheelchair_boarding_valid_enum").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("stops_wheelchair_boarding_valid_enum").Options, strconv.Itoa(*stop.WheelchairBoarding)) {
+		if !slices.Contains(*rules.Options, strconv.Itoa(*stop.WheelchairBoarding)) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.WheelchairBoarding))
 			return
 		}

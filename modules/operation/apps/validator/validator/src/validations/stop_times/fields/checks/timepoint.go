@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func TimepointField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func TimepointField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func TimepointField(db *services.SQLiteContext, rules *types.StopTimesRules) err
 
 	ctx := lib.NewValidationContext("timepoint", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -30,7 +29,7 @@ func TimepointField(db *services.SQLiteContext, rules *types.StopTimesRules) err
 	if err != nil {
 		return err
 	}
-	
+
 	//
 	// 4. Check if the timepoint is required
 
@@ -42,7 +41,7 @@ func TimepointField(db *services.SQLiteContext, rules *types.StopTimesRules) err
 		ctx.AddMessageWithSeverity(message)
 		return nil
 	}
-	
+
 	//
 	// 5. Return success
 

@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func RouteSortOrderField(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func RouteSortOrderField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func RouteSortOrderField(db *services.SQLiteContext, rules *types.RoutesRules) e
 
 	ctx := lib.NewValidationContext("route_sort_order", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

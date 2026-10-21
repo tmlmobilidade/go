@@ -22,7 +22,7 @@ Fare price, in the unit specified by currency_type.
 
 [fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
-func PriceValid(db *services.SQLiteContext, rules *types.FareAttributesRules) error {
+func PriceValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -35,10 +35,9 @@ func PriceValid(db *services.SQLiteContext, rules *types.FareAttributesRules) er
 
 	ctx := lib.NewValidationContext("price", "fare_attributes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
-	
+
 	//
 	// 3. Get the price value
 

@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func NetworkIdForeign(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func NetworkIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func NetworkIdForeign(db *services.SQLiteContext, rules *types.RoutesRules) erro
 
 	ctx := lib.NewValidationContext("network_id", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

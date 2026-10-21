@@ -25,7 +25,7 @@ Conditionally Required:
 [transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
 */
 
-func ToStopIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, rules *types.TransfersRules) {
+func ToStopIdValidation(transfer *types.Transfers, row int, gtfs types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("to_stop_id", "transfers.txt", "transfer_to_stop_id_references_stops_table", row, services.AppMessageService, rules)
 
 	// Check if transfer_type is 4 or 5 (optional case)

@@ -24,7 +24,7 @@ When the physical signage is multilingual, this field may be populated and trans
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
 
-func SignpostedAsValidation(pathways *types.Pathways, row int, rules *types.PathwaysRules) {
+func SignpostedAsValidation(pathways *types.Pathways, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("signposted_as", "pathways.txt", "pathway_signposted_as", row, services.AppMessageService, rules)
 
 	// 1. Validate signposted_as is present

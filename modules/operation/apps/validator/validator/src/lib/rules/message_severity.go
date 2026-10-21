@@ -2,7 +2,6 @@ package rules
 
 import (
 	"main/types"
-	"reflect"
 	"strings"
 	"sync/atomic"
 )
@@ -17,28 +16,22 @@ func ConfigureMessageSeverities(config *types.GtfsRules) {
 		return
 	}
 	values := map[string]types.Severity{}
-	groups := reflect.ValueOf(config).Elem()
-	for i := range groups.NumField() {
-		name := groups.Type().Field(i).Tag.Get("json")
+	for _, id := range RuleIDs(config) {
+		context := config.Rule(id)
+		name := FileForRuleID(id)
 		if name == "file_validation" {
 			continue
 		}
-		forEachRuleConfig(groups.Field(i).Interface(), func(id string, config types.RuleConfig) {
-			severity := config.Severity
-			if severity == "" {
-				severity = types.SEVERITY_IGNORE
-			}
-			values[name+"/"+id+"/"] = severity
-			if key := RuleMessageKey(id); key != id {
-				values[name+"/"+key] = severity
-			}
-		})
+		values[name+"/"+id+"/"] = context.Severity
+		if key := RuleMessageKey(id); key != id {
+			values[name+"/"+key] = context.Severity
+		}
 	}
 	messageSeverities.Store(&values)
 }
 
 // ResolveMessageSeverity also covers older validators that emit hardcoded errors
-// instead of consulting their RuleConfig. Technical notices have no override.
+// instead of consulting their RuleContext. Technical notices have no override.
 func ResolveMessageSeverity(file, id, field string, fallback types.Severity) types.Severity {
 	severity, ok := MessageSeverityOverride(file, id, field)
 	if !ok {
@@ -66,16 +59,17 @@ func MessageSeverityOverride(file, id, field string) (types.Severity, bool) {
 	return severity, ok
 }
 
-// RuleMessageKey handles the shared message ID emitted by calendar date checks.
+// Shared message IDs retain the field-specific configuration IDs.
+var ruleMessageKeys = map[string]string{
+	"calendar_start_date_valid_yyyymmdd": "calendar_start_end_dates_valid_yyyymmdd_order/start_date",
+	"calendar_end_date_valid_yyyymmdd":   "calendar_start_end_dates_valid_yyyymmdd_order/end_date",
+}
+
 func RuleMessageKey(id string) string {
-	switch id {
-	case "calendar_start_date_valid_yyyymmdd":
-		return "calendar_start_end_dates_valid_yyyymmdd_order/start_date"
-	case "calendar_end_date_valid_yyyymmdd":
-		return "calendar_start_end_dates_valid_yyyymmdd_order/end_date"
-	default:
-		return id
+	if key, exists := ruleMessageKeys[id]; exists {
+		return key
 	}
+	return id
 }
 
 // Parser and file-level diagnostics are not per-row configurable validations.

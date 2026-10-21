@@ -61,7 +61,7 @@ func TestArrivalDepartureTimeSequence(t *testing.T) {
 						t.Fatal(err)
 					}
 				})
-				if err := checks.ArrivalDepartureTimeSequence(ctx, config); err != nil {
+				if err := checks.ArrivalDepartureTimeSequence(ctx, config.Rule("stop_times_arrival_departure_time_non_decreasing_by_stop_sequence")); err != nil {
 					t.Fatal(err)
 				}
 				count := uint64(0)

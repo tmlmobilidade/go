@@ -20,7 +20,7 @@ Identifies a route.
 
 [trips.txt]: https://gtfs.org/schedule/reference/#trips
 */
-func RouteIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, routeRowsCache map[string][]int, rules *types.TripsRules) {
+func RouteIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, routeRowsCache map[string][]int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("route_id", "trips.txt", "trips_route_id_references_routes_table", row, services.AppMessageService, rules)
 
 	// 1. Validate route_id is present

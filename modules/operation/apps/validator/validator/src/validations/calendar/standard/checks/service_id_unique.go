@@ -20,7 +20,7 @@ Identifies a set of dates when service is available for one or more routes.
 
 [calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
 */
-func ServiceIdUnique(db *services.SQLiteContext, rules *types.CalendarRules) error {
+func ServiceIdUnique(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -33,8 +33,7 @@ func ServiceIdUnique(db *services.SQLiteContext, rules *types.CalendarRules) err
 
 	ctx := lib.NewValidationContext("service_id", "calendar.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

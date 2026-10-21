@@ -23,7 +23,7 @@ This document uses the term "agency" in place of "brand". A dataset may contain 
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyIdField(db *services.SQLiteContext, rules *types.AgencyRules) error {
+func AgencyIdField(db *services.SQLiteContext, ruleContext *types.RuleContext) error {
 	//
 
 	//
@@ -35,9 +35,8 @@ func AgencyIdField(db *services.SQLiteContext, rules *types.AgencyRules) error {
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("agency_id", "agency.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+	if ruleContext != nil {
+		ctx.WithSeverity(ruleContext.Severity)
 	}
 
 	//

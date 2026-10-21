@@ -21,7 +21,7 @@ Numeric index of the level that indicates relative position of this level in rel
 
 [levels.txt]: https://gtfs.org/schedule/reference/#levelstxt
 */
-func LevelIndexValidation(level *types.Levels, row int, rules *types.LevelsRules) {
+func LevelIndexValidation(level *types.Levels, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("level_index", "levels.txt", "level_index_required", row, services.AppMessageService, rules)
 
 	// 1. Validate level_index is present

@@ -16,11 +16,7 @@ func init() {
 }
 
 func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*services.SQLiteTables) {
-	var section *types.CalendarDatesRules
-	if rules != nil {
-		section = &rules.CalendarDates
-	}
-	runner, dagErr := services.NewRuleRunner(gtfs, section)
+	runner, dagErr := services.NewRuleRunner(gtfs, rules, "calendar_dates")
 	if dagErr != nil {
 		lib.AppLogger.Error(dagErr.Error())
 		return
@@ -56,16 +52,27 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 		runner.Run(services.RuleActions{
 			//
 			// Fields
-			"calendar_dates_date_field":           func() { check("calendar_dates_date_field", fields.DateField(db, section)) },
-			"calendar_dates_exception_type_field": func() { check("calendar_dates_exception_type_field", fields.ExceptionTypeField(db, section)) },
-			"calendar_dates_service_id_field":     func() { check("calendar_dates_service_id_field", fields.ServiceIdField(db, section)) },
+			"calendar_dates_date_field": func() {
+				check("calendar_dates_date_field", fields.DateField(db, rules.Rule("calendar_dates_date_field")))
+			},
+			"calendar_dates_exception_type_field": func() {
+				check("calendar_dates_exception_type_field", fields.ExceptionTypeField(db, rules.Rule("calendar_dates_exception_type_field")))
+			},
+			"calendar_dates_service_id_field": func() {
+				check("calendar_dates_service_id_field", fields.ServiceIdField(db, rules.Rule("calendar_dates_service_id_field")))
+			},
 
 			//
 			// Standard
-			"calendar_dates_date_valid":           func() { check("calendar_dates_date_valid", standard.DateValid(db, section)) },
-			"calendar_dates_exception_type_valid": func() { check("calendar_dates_exception_type_valid", standard.ExceptionTypeValid(db, section)) },
-			"calendar_dates_service_id_foreign":   func() { check("calendar_dates_service_id_foreign", standard.ServiceIdForeign(db, section)) },
-
+			"calendar_dates_date_valid": func() {
+				check("calendar_dates_date_valid", standard.DateValid(db, rules.Rule("calendar_dates_date_valid")))
+			},
+			"calendar_dates_exception_type_valid": func() {
+				check("calendar_dates_exception_type_valid", standard.ExceptionTypeValid(db, rules.Rule("calendar_dates_exception_type_valid")))
+			},
+			"calendar_dates_service_id_foreign": func() {
+				check("calendar_dates_service_id_foreign", standard.ServiceIdForeign(db, rules.Rule("calendar_dates_service_id_foreign")))
+			},
 		}, nil)
 
 		return nil

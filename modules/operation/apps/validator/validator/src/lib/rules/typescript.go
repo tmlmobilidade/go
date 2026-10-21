@@ -9,7 +9,6 @@ import (
 	"io/fs"
 	"main/types"
 	"path/filepath"
-	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -32,12 +31,11 @@ func TypeScript() (map[string][]byte, error) {
 
 func RenderTypeScript(sourceDir string) (map[string][]byte, error) {
 	found := map[string]bool{"file_validation": true, "file_not_found_in_rules": true}
-	root := reflect.TypeOf(types.GtfsRules{})
-	for i := range root.NumField() {
-		name := root.Field(i).Tag.Get("json")
-		if name != "file_validation" {
-			found[name+"_file_missing"] = true
-		}
+	for id := range ruleMessageKeys {
+		found[id] = true
+	}
+	for _, file := range types.GtfsRuleFiles {
+		found[file+"_file_missing"] = true
 	}
 	err := filepath.WalkDir(sourceDir, func(path string, entry fs.DirEntry, err error) error {
 		if err != nil {
@@ -131,18 +129,6 @@ export const GtfsValidatorRuleIdSchema = z
 export type GtfsValidatorRuleId = z.infer<typeof GtfsValidatorRuleIdSchema>;
 `)
 	return map[string][]byte{"rule-ids.ts": output.Bytes()}, nil
-}
-
-func jsonName(field reflect.StructField) (string, error) {
-	tag, ok := field.Tag.Lookup("json")
-	if !ok {
-		return "", fmt.Errorf("field %s has no json tag", field.Name)
-	}
-	name, _, _ := strings.Cut(tag, ",")
-	if name == "" || name == "-" {
-		return "", fmt.Errorf("field %s has unsupported json tag %q", field.Name, tag)
-	}
-	return name, nil
 }
 
 var tsStringEscaper = strings.NewReplacer(`\`, `\\`, "'", `\'`, "\n", `\n`, "\r", `\r`)

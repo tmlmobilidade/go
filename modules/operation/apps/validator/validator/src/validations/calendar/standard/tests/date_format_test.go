@@ -27,7 +27,7 @@ func TestDateValidFormat(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
-			if err := checks.DateValidFormat(ctx, config); err != nil {
+			if err := checks.DateValidFormat(ctx, config.Rule("calendar_start_end_dates_valid_format")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "dates", types.SEVERITY_ERROR, tc.count)

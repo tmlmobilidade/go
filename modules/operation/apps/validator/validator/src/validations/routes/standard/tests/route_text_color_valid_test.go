@@ -29,7 +29,7 @@ func TestRouteTextColorValid(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
 
-			if err := checks.RouteTextColorValid(ctx, config); err != nil {
+			if err := checks.RouteTextColorValid(ctx, config.Rule("routes_route_text_color_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "route_text_color", types.SEVERITY_ERROR, tc.count)

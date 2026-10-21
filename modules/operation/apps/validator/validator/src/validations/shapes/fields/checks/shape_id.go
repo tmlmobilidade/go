@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func ShapeIdField(db *services.SQLiteContext, rules *types.ShapesRules) error {
+func ShapeIdField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -18,10 +18,9 @@ func ShapeIdField(db *services.SQLiteContext, rules *types.ShapesRules) error {
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("shape_id", "shapes.txt", ruleID, db.Row, services.AppMessageService)
-	
+
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -48,4 +47,4 @@ func ShapeIdField(db *services.SQLiteContext, rules *types.ShapesRules) error {
 	// 5. Return success
 
 	return nil
-}	
+}

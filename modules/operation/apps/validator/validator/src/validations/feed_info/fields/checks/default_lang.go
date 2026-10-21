@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func DefaultLangField(db *services.SQLiteContext, rules *types.FeedInfoRules) error {
+func DefaultLangField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func DefaultLangField(db *services.SQLiteContext, rules *types.FeedInfoRules) er
 
 	ctx := lib.NewValidationContext("default_lang", "feed_info.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

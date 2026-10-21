@@ -19,7 +19,7 @@ import (
 Number of available spaces for non-folding bicycles. When it is equal to 0, it means that the vehicle unit does not allow the boarding of non-folding bicycles.
 */
 
-func BicyclesCapacityValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func BicyclesCapacityValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("bicycles_capacity", "vehicles.txt", "vehicles_bicycles_rack_count_non_negative", row, services.AppMessageService, rules)
 
 	// 1. Check if bicycles_capacity is required

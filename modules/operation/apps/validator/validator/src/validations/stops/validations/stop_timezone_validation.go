@@ -29,7 +29,7 @@ import (
 )
 
 // StopTimezoneValidation validates the stop_timezone field in stops.txt
-func StopTimezoneValidation(stop *types.Stop, row int, rules *types.StopsRules) {
+func StopTimezoneValidation(stop *types.Stop, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("stop_timezone", "stops.txt", "stop_timezone_valid", row, services.AppMessageService, rules)
 
 	// 1. Validate stop_timezone is present
@@ -55,12 +55,12 @@ func StopTimezoneValidation(stop *types.Stop, row int, rules *types.StopsRules) 
 	}
 
 	// 4. Validate Rule options
-	if rules != nil && rules.Rule("stop_timezone_valid").Options != nil {
-		if slices.Contains(*rules.Rule("stop_timezone_valid").Options, types.ALL_OPTIONS) {
+	if rules != nil && rules.Options != nil {
+		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return
 		}
 
-		if !slices.Contains(*rules.Rule("stop_timezone_valid").Options, *stop.StopTimezone) {
+		if !slices.Contains(*rules.Options, *stop.StopTimezone) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", *stop.StopTimezone))
 			return
 		}

@@ -18,7 +18,7 @@ type ruleInput struct {
 type RuleRunner struct {
 	manager      *rules.Manager[ruleInput]
 	known        map[string]bool
-	section      any
+	section      *types.GtfsRules
 	dependencies map[string][]string
 	fileNode     string
 	filePresent  bool
@@ -26,12 +26,9 @@ type RuleRunner struct {
 
 // NewRuleRunner builds a plan once per file. Rows get independent statuses;
 // grouped checks can seed the same plan with their members' row outcomes.
-func NewRuleRunner(gtfs types.Gtfs, section any) (*RuleRunner, error) {
-	group := rules.SectionName(section)
-	if group == "" {
-		return nil, fmt.Errorf("unknown rule section %T", section)
-	}
-	if err := rules.ValidateSection(section); err != nil {
+func NewRuleRunner(gtfs types.Gtfs, config *types.GtfsRules, group string) (*RuleRunner, error) {
+	section := rules.ForFile(config, group)
+	if err := rules.ValidateDependencies(section, group); err != nil {
 		return nil, fmt.Errorf("%s: %w", group, err)
 	}
 	dependencies := rules.DependenciesFrom(section)

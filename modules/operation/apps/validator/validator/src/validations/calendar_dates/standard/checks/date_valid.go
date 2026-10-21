@@ -17,7 +17,7 @@ import (
 
 Date when service exception occurs.
 */
-func DateValid(db *services.SQLiteContext, rules *types.CalendarDatesRules) error {
+func DateValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -30,8 +30,7 @@ func DateValid(db *services.SQLiteContext, rules *types.CalendarDatesRules) erro
 
 	ctx := lib.NewValidationContext("date", "calendar_dates.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

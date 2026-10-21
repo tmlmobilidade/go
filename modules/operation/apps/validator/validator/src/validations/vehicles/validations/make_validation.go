@@ -18,7 +18,7 @@ import (
 
 The make of the vehicle.
 */
-func MakeValidation(vehicle *types.Vehicle, row int, rules *types.VehiclesRules) {
+func MakeValidation(vehicle *types.Vehicle, row int, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("make", "vehicles.txt", "vehicle_make_required", row, services.AppMessageService, rules)
 
 	// 1. Check if make is required

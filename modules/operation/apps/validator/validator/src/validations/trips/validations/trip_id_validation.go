@@ -20,7 +20,7 @@ Identifies a trip.
 
 [trips.txt]: https://gtfs.org/schedule/reference/#trips
 */
-func TripIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
+func TripIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("trip_id", "trips.txt", "trip_id_unique", row, services.AppMessageService, rules)
 
 	// 1. Validate trip_id is present

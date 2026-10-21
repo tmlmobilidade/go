@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func PickupBookingRuleIdField(db *services.SQLiteContext, rules *types.StopTimesRules) error {
+func PickupBookingRuleIdField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func PickupBookingRuleIdField(db *services.SQLiteContext, rules *types.StopTimes
 
 	ctx := lib.NewValidationContext("pickup_booking_rule_id", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//

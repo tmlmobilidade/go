@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func ShapePtSequenceField(db *services.SQLiteContext, rules *types.ShapesRules) error {
+func ShapePtSequenceField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func ShapePtSequenceField(db *services.SQLiteContext, rules *types.ShapesRules) 
 
 	ctx := lib.NewValidationContext("shape_pt_sequence", "shapes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -47,4 +46,4 @@ func ShapePtSequenceField(db *services.SQLiteContext, rules *types.ShapesRules) 
 	// 5. Return success
 
 	return nil
-}	
+}

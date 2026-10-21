@@ -35,24 +35,24 @@ Conditionally Forbidden:
 
 [stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
 */
-func ContinuousPickupValid(db *services.SQLiteContext, rules *types.StopTimesRules) error {
-    //
+func ContinuousPickupValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
 
 	//
 	// 1. Get the rule and create the validation context
 
 	const ruleID = "stop_times_continuous_pickup_valid_gtfs_enum"
 
-    //
-    // 2. Create the validation context
+	//
+	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("continuous_pickup", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		ctx.WithSeverity(rules.Rule(ruleID).Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
-    //
-    // 3. Check if the rule should be ignored
+	//
+	// 3. Check if the rule should be ignored
 
 	if ctx.ShouldIgnore() {
 		return nil

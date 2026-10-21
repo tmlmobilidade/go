@@ -6,7 +6,7 @@ import (
 	"main/types"
 )
 
-func RouteTextColorField(db *services.SQLiteContext, rules *types.RoutesRules) error {
+func RouteTextColorField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
@@ -19,8 +19,7 @@ func RouteTextColorField(db *services.SQLiteContext, rules *types.RoutesRules) e
 
 	ctx := lib.NewValidationContext("route_text_color", "routes.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
-		rule := rules.Rule(ruleID)
-		ctx.WithSeverity(rule.Severity)
+		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
@@ -47,4 +46,4 @@ func RouteTextColorField(db *services.SQLiteContext, rules *types.RoutesRules) e
 	// 5. Return success
 
 	return nil
-}	
+}

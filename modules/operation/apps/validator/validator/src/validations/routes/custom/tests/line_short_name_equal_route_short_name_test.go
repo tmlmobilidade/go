@@ -24,7 +24,7 @@ func TestLineShortNameEqualRouteShortName(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
 
-			if err := checks.LineShortNameEqualRouteShortName(ctx, config); err != nil {
+			if err := checks.LineShortNameEqualRouteShortName(ctx, config.Rule("routes_line_short_name_equal_route_short_name")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "line_short_name", types.SEVERITY_ERROR, tc.count)

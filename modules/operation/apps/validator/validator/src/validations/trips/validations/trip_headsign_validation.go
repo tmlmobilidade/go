@@ -23,7 +23,7 @@ If the headsign changes during a trip, values for `trip_headsign` may be overrid
 
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
-func TripHeadsignValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
+func TripHeadsignValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("trip_headsign", "trips.txt", "trip_headsign_present_when_short_name_absent", row, services.AppMessageService, rules)
 
 	// 1. Validate trip_headsign is present

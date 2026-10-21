@@ -37,7 +37,7 @@ func TestServiceIdValidation(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			if err := validations.ServiceIdValidation(table.At(tc.row).Context(), &types.CalendarRules{RuleSection: types.RuleSection{Rules: map[string]types.RuleConfig{"calendar_service_id_unique_non_empty": types.RuleConfig{Severity: tc.severity}}}}); err != nil {
+			if err := validations.ServiceIdValidation(table.At(tc.row).Context(), (&types.GtfsRules{"calendar_service_id_unique_non_empty": types.RuleContext{Severity: tc.severity}}).Rule("calendar_service_id_unique_non_empty")); err != nil {
 				t.Fatal(err)
 			}
 			messages := services.AppMessageService.GetSummary().AllMessages()

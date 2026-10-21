@@ -24,7 +24,7 @@ func TestNetworkIdForeign(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
 
-			if err := checks.NetworkIdForeign(ctx, config); err != nil {
+			if err := checks.NetworkIdForeign(ctx, config.Rule("routes_network_id_foreign")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "network_id", types.SEVERITY_ERROR, tc.count)

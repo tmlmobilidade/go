@@ -19,7 +19,7 @@ Identifies a geospatial shape describing the vehicle travel path for a trip.
 
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
-func ShapeIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.TripsRules) {
+func ShapeIdValidation(trip *types.Trip, row int, gtfs *types.Gtfs, rules *types.RuleContext) {
 	ctx := lib.NewValidationContext("shape_id", "trips.txt", "trips_shape_id_references_shapes_table_when_present", row, services.AppMessageService, rules)
 
 	// 1. Validate shape_id is present
