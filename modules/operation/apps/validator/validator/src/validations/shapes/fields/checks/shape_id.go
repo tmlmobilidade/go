@@ -18,6 +18,7 @@ func ShapeIdField(db *services.SQLiteContext, rules *types.ShapesRules) error {
 	// 2. Create the validation context
 
 	ctx := lib.NewValidationContext("shape_id", "shapes.txt", ruleID, db.Row, services.AppMessageService)
+	
 	if rules != nil {
 		rule := rules.Rule(ruleID)
 		ctx.WithSeverity(rule.Severity)
