@@ -31,12 +31,16 @@ func HasBenchField(db *services.SQLiteContext, rulesContext *types.RuleContext) 
 	}
 
 	//
-	// 4. Check if the has_bench is required
+	// 4. Check if the has_bench is present
 
 	if value == "" {
 		if ctx.ShouldIgnore() {
 			return nil
 		}
+
+		message := ctx.GetSeverityMessage("required", "recommended", "informational")
+		ctx.AddMessageWithSeverity(message)
+		return nil
 	}
 
 	//
