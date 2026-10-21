@@ -1,9 +1,9 @@
 /* * */
 
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
-import { locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
+import { locationPermissionMatch, locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
-import { type InfrastructureNodesV1Extraction, InfrastructureStopsExtractionFiltersSchema } from '@tmlmobilidade/go-types-extractions';
+import { type InfrastructureNodesV1Extraction, InfrastructureNodesV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -21,7 +21,7 @@ export async function buildNodesExtractionQuery(extraction: InfrastructureNodesV
 	//
 	// Validate properties and permissions
 
-	const validatedProperties = InfrastructureStopsExtractionFiltersSchema.parse(extraction.properties);
+	const validatedProperties = InfrastructureNodesV1ExtractionPropertiesSchema.parse(extraction.properties);
 	const userPermissions = await authProvider.getPermissionsFromUserId(extraction.created_by);
 	const permissionChecks = [{ action: PermissionCatalog.all.stops.actions.export, scope: PermissionCatalog.all.stops.scope }];
 
@@ -80,12 +80,7 @@ export async function buildNodesExtractionQuery(extraction: InfrastructureNodesV
 	// Apply location permissions
 
 	if (!locationAccess.allowAll) {
-		const permittedLocationOsmIds = locationAccess.values.map(Number);
-		const permittedLocationFilters = LOCATION_PERMISSION_SLOTS.map(locationSlot => ({
-			[`location.${locationSlot}.osm_id`]: { $in: permittedLocationOsmIds },
-		}));
-
-		additionalFilters.push({ $or: permittedLocationFilters });
+		additionalFilters.push(locationPermissionMatch(locationAccess.values));
 	}
 
 	//

@@ -64,25 +64,20 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	const outputRows: InfrastructureNodesV1OutputRow[] = [];
 
 	for (const stop of foundStops) {
-		for (const stopFlag of stop.flags) {
-			for (const agencyId of stopFlag.agency_ids) {
-				const municipalityOsmId = stop.location.secondary.osm_id;
-				const namespace = codespacesByMunicipality.get(municipalityOsmId);
-				if (!namespace) throw new Error(`Codespace not found for stop ${stop._id} and municipality ${municipalityOsmId}`);
+		if (!stop.flags.some(stopFlag => stopFlag.agency_ids.length > 0)) continue;
 
-				const operatorFlag = { ...stopFlag, agency_ids: [agencyId] };
-				const operatorStop = { ...stop, flags: [operatorFlag] };
-				const validFrom = Dates.fromUnixMilliseconds(stop.created_at).calendar_date;
+		const municipalityOsmId = stop.location.secondary.osm_id;
+		const namespace = codespacesByMunicipality.get(municipalityOsmId);
+		if (!namespace) throw new Error(`Codespace not found for stop ${stop._id} and municipality ${municipalityOsmId}`);
 
-				const operatorRows = parseNodesExtraction({
-					namespace,
-					stop: operatorStop,
-					valid_from: validFrom,
-				}, agencyCodesById);
+		const validFrom = Dates.fromUnixMilliseconds(stop.created_at).calendar_date;
+		const stopRows = parseNodesExtraction({
+			namespace,
+			stop,
+			valid_from: validFrom,
+		}, agencyCodesById);
 
-				outputRows.push(...operatorRows);
-			}
-		}
+		outputRows.push(...stopRows);
 	}
 
 	//
