@@ -21,7 +21,11 @@ export function HolidaysListCellAgencies({ agencyIds }: HolidaysListCellAgencies
 	//
 	// B. Render components
 
-	return <TagGroup limit={4} tags={preparedTags} />;
+	return (
+
+		<TagGroup limit={4} tags={preparedTags} />
+
+	);
 
 	//
 }

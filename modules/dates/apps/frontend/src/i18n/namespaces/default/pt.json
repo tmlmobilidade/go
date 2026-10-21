@@ -36,5 +36,44 @@
 			},
 			"title": "Anotações"
 		}
+	},
+	"holidays": {
+		"create": {
+			"title": "Novo feriado"
+		},
+		"dates": {
+			"prompt": "Selecione as datas do feriado",
+			"removeMonth": "Remover mês",
+			"selectMonth": "Selecionar mês"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "Tem a certeza que deseja apagar este feriado? Esta ação não pode ser revertida.",
+			"confirmTitle": "Apagar feriado"
+		},
+		"empty": "Selecione um feriado",
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores afetados"
+			},
+			"description": {
+				"label": "Descrição",
+				"placeholder": "Descrição do feriado"
+			},
+			"title": {
+				"label": "Título",
+				"placeholder": "Ex: 25 de Abril"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"dates": "Datas",
+				"id": "#ID",
+				"title": "Título"
+			},
+			"title": "Feriados"
+		}
 	}
 }

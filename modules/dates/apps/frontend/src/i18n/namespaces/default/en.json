@@ -36,5 +36,44 @@
 			},
 			"title": "Annotations"
 		}
+	},
+	"holidays": {
+		"create": {
+			"title": "New holiday"
+		},
+		"dates": {
+			"prompt": "Select holiday dates",
+			"removeMonth": "Remove month",
+			"selectMonth": "Select month"
+		},
+		"detail": {
+			"cancel": "Cancel",
+			"confirm": "Delete",
+			"confirmMessage": "Are you sure you want to delete this holiday? This cannot be undone.",
+			"confirmTitle": "Delete holiday"
+		},
+		"empty": "Select a holiday",
+		"fields": {
+			"agency_ids": {
+				"label": "Affected operators"
+			},
+			"description": {
+				"label": "Description",
+				"placeholder": "Holiday description"
+			},
+			"title": {
+				"label": "Title",
+				"placeholder": "E.g. April 25"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operators",
+				"dates": "Dates",
+				"id": "#ID",
+				"title": "Title"
+			},
+			"title": "Holidays"
+		}
 	}
 }

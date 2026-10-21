@@ -247,9 +247,11 @@ export const API_ROUTES = Object.freeze({
 		ANNOTATIONS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/annotations/list-agencies`,
 
 		// HOLIDAYS
+		HOLIDAYS_CREATE: `${getModuleConfig('dates', 'api_url')}/holidays/create`,
 		HOLIDAYS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/holidays/${encodeURIComponent(id)}`,
 		HOLIDAYS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/holidays/${encodeURIComponent(id)}/lock`,
 		HOLIDAYS_LIST: `${getModuleConfig('dates', 'api_url')}/holidays`,
+		HOLIDAYS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/holidays/list-agencies`,
 	},
 
 	hub: {
