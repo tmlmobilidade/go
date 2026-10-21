@@ -19,7 +19,7 @@ import { createSteppWriters } from './writers.js';
 
 /* * */
 
-/** Extracts a merged STePP feed from selected Operation plans' normalized attachments. */
+/** Extracts a merged STePP feed from the agency's Operation plans active in the date range. */
 export async function extractOperationGtfsSteppV1(context: ExtractionTaskContext, extraction: OperationGtfsSteppV1Extraction): Promise<ExtractionTaskResult> {
 	const properties = OperationGtfsSteppV1ExtractionPropertiesSchema.parse(extraction.properties);
 	const permissions = await authProvider.getPermissionsFromUserId(extraction.created_by);
@@ -33,17 +33,13 @@ export async function extractOperationGtfsSteppV1(context: ExtractionTaskContext
 	if (!agencyId) throw new Error(`User "${extraction.created_by}" cannot read plans of agency "${properties.agency_id}"`);
 
 	const plans = await goDb.operation.plans.findMany({
-		_id: { $in: properties.plan_ids },
-		active_from: { $lte: OperationalDateIntSchema.parse(properties.end_date) },
-		active_until: { $gte: OperationalDateIntSchema.parse(properties.start_date) },
-		agency_id: agencyId,
+		'active_from': { $lte: OperationalDateIntSchema.parse(properties.end_date) },
+		'active_until': { $gte: OperationalDateIntSchema.parse(properties.start_date) },
+		'agency_id': agencyId,
+		'attachments.operation_gtfs_normalized': { $ne: '', $type: 'string' },
 	}, { sort: { active_from: 1 } });
 
-	for (const planId of properties.plan_ids) {
-		const plan = plans.find(item => item._id === planId);
-		if (!plan) throw new Error(`Selected plan "${planId}" is unavailable for this agency and date range`);
-		if (!plan.attachments.operation_gtfs_normalized) throw new Error(`Plan "${planId}" has no normalized Operation GTFS attachment`);
-	}
+	if (!plans.length) throw new Error('No normalized Operation plans are available for this agency and date range');
 
 	const agency = await goDb.core.agencies.findById(agencyId);
 	if (!agency) throw new Error(`Agency "${agencyId}" was not found`);
@@ -82,6 +78,6 @@ export async function extractOperationGtfsSteppV1(context: ExtractionTaskContext
 		}
 	}
 
-	if (!exportedTrips) throw new Error('The selected plans contain no trips operating in the requested date range');
+	if (!exportedTrips) throw new Error('The matching plans contain no trips operating in the requested date range');
 	for (const writer of Object.values(writers)) await writer.close();
 }

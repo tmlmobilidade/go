@@ -3,8 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PlansListFilters, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { TemporalStatusValues, type UnixMilliseconds, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { fetchApiData, type SelectDataItem } from '@tmlmobilidade/ui';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -13,10 +12,8 @@ import useSWR from 'swr';
 interface UsePlansSteppExtractPlansDataReturnType {
 	data: PlansListItem[]
 	error: null | string
-	ids: string[]
 	isLoading: boolean
 	isValidating: boolean
-	options: SelectDataItem[]
 	timestamp: null | UnixMilliseconds
 }
 
@@ -60,23 +57,14 @@ export function usePlansSteppExtractPlansData(agencyId: string, startDate: strin
 		});
 	}, [agencyId, data?.data, endDate, isRangeValid, startDate]);
 
-	const options = useMemo(() => eligiblePlans.map(plan => ({
-		label: `${plan._id} · ${Dates.fromOperationalDateInt(plan.active_from, 'Europe/Lisbon').toFormat('dd/MM/yyyy')} – ${Dates.fromOperationalDateInt(plan.active_until, 'Europe/Lisbon').toFormat('dd/MM/yyyy')}`,
-		value: plan._id,
-	})), [eligiblePlans]);
-
-	const ids = useMemo(() => eligiblePlans.map(plan => plan._id), [eligiblePlans]);
-
 	//
 	// D. Return data
 
 	return useMemo(() => ({
 		data: eligiblePlans,
 		error: data?.error ?? (error instanceof Error ? error.message : null),
-		ids,
 		isLoading,
 		isValidating,
-		options,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.error, data?.timestamp, eligiblePlans, error, ids, isLoading, isValidating, options]);
+	}), [data?.error, data?.timestamp, eligiblePlans, error, isLoading, isValidating]);
 }

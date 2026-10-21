@@ -117,7 +117,6 @@
 		},
 		"stepp": {
 			"PlansSteppExtractBody": {
-				"description": "Combine os planos selecionados num único GTFS STePP para o intervalo indicado, usando os dados dos planos e sem calendário de feriados.",
 				"empty": "Não existem planos disponíveis neste intervalo.",
 				"fields": {
 					"agency_id": {
@@ -125,11 +124,6 @@
 					},
 					"end_date": {
 						"label": "Data de fim"
-					},
-					"plan_ids": {
-						"description": "Selecione os planos com GTFS normalizado e datas de atividade que coincidam com o intervalo.",
-						"label": "Planos a exportar",
-						"placeholder": "Selecionar planos"
 					},
 					"start_date": {
 						"label": "Data de início"

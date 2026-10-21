@@ -21,8 +21,6 @@ export const OperationGtfsSteppV1ExtractionPropertiesSchema = z.object({
 
 	end_date: ExtractionDateSchema,
 
-	plan_ids: z.array(z.string().trim().min(1)).min(1).refine(values => new Set(values).size === values.length, 'Plan IDs must be unique.'),
-
 	start_date: ExtractionDateSchema,
 
 }).refine(properties => properties.start_date <= properties.end_date, {

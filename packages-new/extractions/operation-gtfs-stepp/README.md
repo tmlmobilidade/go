@@ -1,13 +1,14 @@
 # Operation GTFS STePP
 
-`operation-gtfs-stepp-v1` converts selected Operation plans into one STePP feed.
-It reads only the selected plans' `operation_gtfs_normalized` attachments; it does
+`operation-gtfs-stepp-v1` automatically finds Operation plans for an agency and date range and converts them into one STePP feed.
+It reads only the matching plans' `operation_gtfs_normalized` attachments; it does
 not query Offer. The Core extractions worker archives and uploads the output.
 
-In Operation → Plans, choose **Export STePP**, an agency, an inclusive date range,
-and the plans to include. Only plans with a normalized attachment overlapping the
-range are selectable. The worker checks `plans.read` for the agency again and
-rejects missing, unrelated, or out-of-range plans.
+In Operation → Plans, choose **Export STePP**, an agency and an inclusive date
+range. All plans with a normalized attachment whose active dates overlap the range
+are included automatically. The worker checks `plans.read` for the agency and
+resolves the matching plans again when the extraction runs. The extraction
+properties contain only `agency_id`, `start_date`, and `end_date`.
 
 Each plan is clipped to the intersection of its active dates and the requested
 range. `calendar.txt` weekdays and `calendar_dates.txt` additions/removals determine

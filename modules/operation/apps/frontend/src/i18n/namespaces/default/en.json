@@ -117,7 +117,6 @@
 		},
 		"stepp": {
 			"PlansSteppExtractBody": {
-				"description": "Combine the selected plans into one GTFS STePP for the specified date range, using plan data and without a holiday calendar.",
 				"empty": "No plans are available for this date range.",
 				"fields": {
 					"agency_id": {
@@ -125,11 +124,6 @@
 					},
 					"end_date": {
 						"label": "End date"
-					},
-					"plan_ids": {
-						"description": "Select plans with normalized GTFS and active dates overlapping the range.",
-						"label": "Plans to export",
-						"placeholder": "Select plans"
 					},
 					"start_date": {
 						"label": "Start date"
