@@ -1,9 +1,12 @@
 'use client';
 
-import { useAgenciesData } from '@/components/common/use-agencies-data';
-import { useEventCreateContext } from '@/components/events/create/EventCreate.context';
-import { EventSchema } from '@tmlmobilidade/go-types-offer';
-import { MultiSelect, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { CreateEventSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { ErrorDisplay, MultiSelect, Section, StandardFormController, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useEventsAgenciesData } from '../../shared/use-events-agencies-data';
+import { useEventsCreateFormContext } from '../EventsCreateForm.context';
 
 /* * */
 
@@ -13,58 +16,87 @@ export function EventCreateBasicInfo() {
 	//
 	// A. Setup variables
 
-	const eventCreateContext = useEventCreateContext();
-
-	const { options: allAgencyOptions } = useAgenciesData();
+	const { t } = useTranslation();
+	const { capabilities, form } = useEventsCreateFormContext();
+	const { error, isLoading, options } = useEventsAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.events.actions.create],
+			scope: PermissionCatalog.all.events.scope,
+		},
+	});
 
 	//
-	// B. Render Components
+	// B. Render components
 
 	return (
 		<Section gap="md">
-			<TextInput
-				key={eventCreateContext.data.form.key('title')}
-				label="Título"
-				placeholder="Ex: Maratona de Lisboa"
-				required={!EventSchema.shape.title.isOptional()}
-				w="100%"
-				{...eventCreateContext.data.form.getInputProps('title')}
+			{error && <ErrorDisplay message={error} />}
+			<StandardFormController
+				control={form.control}
+				name="title"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label={t('default:events.fields.title.label')}
+						onChange={field.onChange}
+						placeholder={t('default:events.fields.title.placeholder')}
+						readOnly={!capabilities.editEnabled}
+						value={field.value ?? ''}
+						w="100%"
+						withAsterisk={!CreateEventSchema.shape.title.isOptional()}
+					/>
+				)}
 			/>
-
-			<TextInput
-				description={`Deve conter apenas letras maiúsculas, números e underscores. Máximo de ${EventSchema.shape.code.maxLength} caracteres.`}
-				label="Código"
-				maxLength={EventSchema.shape.code.maxLength}
-				placeholder="Ex: MARAT_LIS"
-				required={!EventSchema.shape.code.isOptional()}
-				value={eventCreateContext.data.form.values?.code ?? ''}
-				w="100%"
-				onChange={(e) => {
-					const normalized = e.currentTarget.value
-						.toUpperCase()
-						.replace(/[^A-Z0-9_]/g, '');
-
-					eventCreateContext.data.form.setFieldValue('code', normalized);
-				}}
+			<StandardFormController
+				control={form.control}
+				name="code"
+				render={({ field, fieldState }) => (
+					<TextInput
+						description={t('default:events.fields.code.description', { max: CreateEventSchema.shape.code.maxLength })}
+						error={fieldState.error?.message}
+						label={t('default:events.fields.code.label')}
+						maxLength={CreateEventSchema.shape.code.maxLength}
+						onChange={event => field.onChange(event.currentTarget.value.toUpperCase().replace(/[^A-Z0-9_]/g, ''))}
+						placeholder={t('default:events.fields.code.placeholder')}
+						readOnly={!capabilities.editEnabled}
+						value={field.value ?? ''}
+						w="100%"
+						withAsterisk={!CreateEventSchema.shape.code.isOptional()}
+					/>
+				)}
 			/>
-
-			<Textarea
-				key={eventCreateContext.data.form.key('description')}
-				label="Descrição"
-				minRows={2}
-				placeholder="Descreva o evento..."
-				required={!EventSchema.shape.description.isOptional()}
-				w="100%"
-				{...eventCreateContext.data.form.getInputProps('description')}
+			<StandardFormController
+				control={form.control}
+				name="description"
+				render={({ field, fieldState }) => (
+					<Textarea
+						error={fieldState.error?.message}
+						label={t('default:events.fields.description.label')}
+						minRows={2}
+						onChange={field.onChange}
+						placeholder={t('default:events.fields.description.placeholder')}
+						readOnly={!capabilities.editEnabled}
+						value={field.value ?? ''}
+						w="100%"
+						withAsterisk={!CreateEventSchema.shape.description.isOptional()}
+					/>
+				)}
 			/>
-
-			<MultiSelect
-				key={eventCreateContext.data.form.key('agency_ids')}
-				data={allAgencyOptions}
-				label="Operadores afetados"
-				required={!EventSchema.shape.agency_ids.isOptional()}
-				w="100%"
-				{...eventCreateContext.data.form.getInputProps('agency_ids')}
+			<StandardFormController
+				control={form.control}
+				name="agency_ids"
+				render={({ field, fieldState }) => (
+					<MultiSelect
+						data={options}
+						disabled={!capabilities.editEnabled || isLoading || !!error}
+						error={fieldState.error?.message}
+						label={t('default:events.fields.agency_ids.label')}
+						onChange={field.onChange}
+						value={field.value ?? []}
+						w="100%"
+						withAsterisk={!CreateEventSchema.shape.agency_ids.isOptional()}
+					/>
+				)}
 			/>
 		</Section>
 	);

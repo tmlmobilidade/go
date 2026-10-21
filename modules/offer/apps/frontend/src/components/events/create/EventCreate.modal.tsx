@@ -1,9 +1,8 @@
 'use client';
 
 import { EventCreate } from '@/components/events/create/EventCreate';
-import { EventCreateContextProvider } from '@/components/events/create/EventCreate.context';
-import { EventPeriodsProviders } from '@/components/events/shared/EventPeriodsProviders';
-import { closeModal, openModal } from '@tmlmobilidade/ui';
+import { EventsCreateFormContextProvider } from '@/components/events/create/EventsCreateForm.context';
+import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,11 +13,11 @@ const MODAL_ID = 'create-event-modal';
 export const openCreateEventModal = () => {
 	openModal({
 		children: (
-			<EventPeriodsProviders>
-				<EventCreateContextProvider>
+			<MeContextProvider>
+				<EventsCreateFormContextProvider>
 					<EventCreate />
-				</EventCreateContextProvider>
-			</EventPeriodsProviders>
+				</EventsCreateFormContextProvider>
+			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,

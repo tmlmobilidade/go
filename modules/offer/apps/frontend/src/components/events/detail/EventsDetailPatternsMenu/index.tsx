@@ -4,6 +4,7 @@ import { IconEye, IconRouteOff } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type EventsDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { Menu, MenuItem, MenuList, MenuNoContent } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -28,18 +29,20 @@ function EventsDetailPatternsMenuItem({ item: pattern }: { item: EventsDetail['a
 /* * */
 
 export function EventsDetailPatternsMenu({ patterns = [] }: EventsDetailPatternsMenuProps) {
+	const { t } = useTranslation();
+
 	return (
 		<Menu
 			counter={patterns.length}
 			icon={IconEye}
-			label="Ver patterns associados"
+			label={t('default:events.ruleEditor.viewPatterns')}
 			variant="primary"
 			width={320}
 		>
 			{patterns.length === 0 ? (
 				<MenuNoContent
 					icon={IconRouteOff}
-					text="Sem patterns associados"
+					text={t('default:events.ruleEditor.noPatterns')}
 				/>
 			) : (
 				<MenuList
@@ -47,7 +50,7 @@ export function EventsDetailPatternsMenu({ patterns = [] }: EventsDetailPatterns
 					getItemKey={pattern => pattern._id}
 					itemComponent={EventsDetailPatternsMenuItem}
 					maxHeight={500}
-					title="Patterns associados"
+					title={t('default:events.ruleEditor.patterns')}
 				/>
 			)}
 		</Menu>

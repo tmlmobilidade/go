@@ -1,0 +1,106 @@
+{
+	"events": {
+		"create": {
+			"title": "New event"
+		},
+		"dates": {
+			"prompt": "Select event dates",
+			"removeMonth": "Remove month",
+			"selectMonth": "Select month"
+		},
+		"detail": {
+			"cancel": "Cancel",
+			"confirm": "Delete",
+			"confirmMessage": "Are you sure you want to delete this event? This cannot be undone.",
+			"confirmTitle": "Delete event"
+		},
+		"empty": "Select a event",
+		"fields": {
+			"agency_ids": {
+				"label": "Affected operators"
+			},
+			"code": {
+				"description": "Uppercase letters, numbers and underscores only. Maximum {{max}} characters.",
+				"label": "Code",
+				"placeholder": "E.g. MARAT_LIS"
+			},
+			"description": {
+				"label": "Description",
+				"placeholder": "Event description"
+			},
+			"title": {
+				"label": "Title",
+				"placeholder": "E.g. Lisbon Marathon"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operators",
+				"dates": "Dates",
+				"id": "#ID",
+				"title": "Title"
+			},
+			"title": "Events"
+		},
+		"ruleCard": {
+			"allDay": "All day {{dates}}",
+			"allLines": "All lines",
+			"days_one": "day",
+			"days_other": "days",
+			"exceptLines": "All except {{lines}}",
+			"lines_one": "{{count}} line",
+			"lines_other": "{{count}} lines",
+			"namedLines": "Lines {{lines}}",
+			"noLines": "No lines",
+			"onDates": "(on {{dates}})",
+			"operateAs": "Operates as {{replacement}}",
+			"timeWindow": "{{start}} to {{end}} {{dates}}"
+		},
+		"ruleEditor": {
+			"affectedDates": "2. Which dates does this rule affect?",
+			"affectedLines": "3. Which lines does this rule affect?",
+			"all": "All",
+			"allDay": "All-day event",
+			"allLines": "Applies to all lines",
+			"cancel": "Cancel",
+			"create": "Create",
+			"dayType": "Day type",
+			"edit": "Edit",
+			"endTime": "End time",
+			"endTimeDescription": "After midnight, use 24+ hours. E.g. 02:00 → 26:00",
+			"eventTime": "4. When does the event take place?",
+			"excludeLines": "All except these lines",
+			"excludeLinesDescription": "All lines except these will be affected.",
+			"includeLines": "Only these lines",
+			"includeLinesDescription": "Only these lines will be affected.",
+			"newRule": "New rule",
+			"noPatterns": "No associated patterns",
+			"operateAs": "The selected dates will operate as:",
+			"patterns": "Associated patterns",
+			"periods": "Periods",
+			"replacement": "Service replacement",
+			"replacementDescription": "Apply service from another day type on these dates",
+			"replacementExample": "Example: 17/02/2026 (Tuesday) operates as Saturday · School period.",
+			"restriction": "Service restriction",
+			"restrictionDescription": "This rule removes all service during the event",
+			"restrictionExample": "E.g. service is removed on 17/02/26 (Tuesday) between 14:00 and 18:00",
+			"restrictionTimeDescription": "Service is suspended during the period defined here",
+			"ruleType": "1. Rule type",
+			"sameWeekday": "Same weekday",
+			"sameWeekdayDescription": "Each date uses its actual weekday within the selected period. E.g. Tuesday · Summer period.",
+			"selectDates": "Select the dates affected by this rule",
+			"serviceType": "4. Which service applies on these dates?",
+			"startTime": "Start time",
+			"startTimeDescription": "HH:MM within the operational day. E.g. 10:00",
+			"viewPatterns": "View associated patterns",
+			"weekdays": "Weekdays",
+			"weekend": "Weekend"
+		},
+		"rules": {
+			"create": "New rule",
+			"description": "Define how service is calculated on event dates. These rules override the normal calendar behavior.",
+			"empty": "No rules defined",
+			"title": "Service rules"
+		}
+	}
+}

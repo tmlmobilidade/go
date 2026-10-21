@@ -1,84 +1,85 @@
 'use client';
 
-import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { IconArrowRight, IconCalendarCancel, IconCalendarRepeat } from '@tabler/icons-react';
 import { Dates, FORMATS } from '@tmlmobilidade/dates';
-import { EventRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/go-types-offer';
+import { EventRule, type Line } from '@tmlmobilidade/go-types-offer';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface RuleCardProps {
+	disabled: boolean
+	lines: Line[]
+	onEdit: (rule: EventRule) => void
 	rule: EventRule
 }
 
 /* * */
 
-export function RuleCard({ rule }: RuleCardProps) {
+export function RuleCard({ disabled, lines, onEdit, rule }: RuleCardProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const eventsDetailContext = useEventsDetailContext();
 	const periodsContext = usePeriodsListContext();
+	const { i18n, t } = useTranslation();
 
 	const isRestriction = rule.kind === 'event_restriction';
 	const isReplacement = rule.kind === 'event_replacement';
 
 	const eventDates = rule.dates?.map(d =>
 		Dates.fromOperationalDate(d, 'Europe/Lisbon')
-			.toLocaleString(FORMATS.DATE_SHORT, 'pt-PT'),
+			.toLocaleString(FORMATS.DATE_SHORT, i18n.language),
 	).join(', ') ?? '';
 
-	const eventDatesSuffix = rule.dates?.length > 1
-		? `(nos dias ${eventDates})`
-		: `(no dia ${eventDates})`;
+	const eventDatesSuffix = t('default:events.ruleCard.onDates', { dates: eventDates });
 
 	// Lines information
 	const linesMode = rule.lines_mode || 'all';
 	const affectedLinesCount = useMemo(() => linesMode === 'all'
-		? eventsDetailContext.data.lines?.length ?? 0
+		? lines?.length ?? 0
 		: linesMode === 'include'
 			? rule.lines_to_include?.length ?? 0
 			: linesMode === 'exclude'
-				? (eventsDetailContext.data.lines?.length ?? 0) - (rule.lines_to_exclude?.length ?? 0)
+				? (lines?.length ?? 0) - (rule.lines_to_exclude?.length ?? 0)
 				: 0,
-	[linesMode, eventsDetailContext.data.lines, rule.lines_to_include, rule.lines_to_exclude]);
+	[linesMode, lines, rule.lines_to_include, rule.lines_to_exclude]);
 
 	const linesText = affectedLinesCount > 0
-		? `${affectedLinesCount} ${affectedLinesCount > 1 ? 'linhas' : 'linha'}`
-		: 'Nenhuma linha';
+		? t('default:events.ruleCard.lines', { count: affectedLinesCount })
+		: t('default:events.ruleCard.noLines');
 
 	// Build detailed lines description
 	let linesDescription;
 	if (linesMode === 'all') {
-		linesDescription = 'Todas as linhas';
+		linesDescription = t('default:events.ruleCard.allLines');
 	} else if (linesMode === 'include' && rule.lines_to_include?.length) {
 		const lineNames = rule.lines_to_include
-			.map(lineId => eventsDetailContext.data.lines?.find(l => l._id === lineId)?.code)
+			.map(lineId => lines?.find(l => l._id === lineId)?.code)
 			.filter(Boolean)
 			.join(', ');
-		linesDescription = `Linhas ${lineNames}`;
+		linesDescription = t('default:events.ruleCard.namedLines', { lines: lineNames });
 	} else if (linesMode === 'exclude' && rule.lines_to_exclude?.length) {
 		const lineNames = rule.lines_to_exclude
-			.map(lineId => eventsDetailContext.data.lines?.find(l => l._id === lineId)?.code)
+			.map(lineId => lines?.find(l => l._id === lineId)?.code)
 			.filter(Boolean)
 			.join(', ');
-		linesDescription = `Todas exceto ${lineNames}`;
+		linesDescription = t('default:events.ruleCard.exceptLines', { lines: lineNames });
 	} else {
-		linesDescription = 'Nenhuma linha';
+		linesDescription = t('default:events.ruleCard.noLines');
 	}
 
 	// For replacement rules, build the "funcionará como" text
 	let replacementText = '';
 	if (isReplacement && rule.kind === 'event_replacement') {
 		const weekdayLabels = rule.weekdays?.map(wd =>
-			WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label,
+			new Date(2026, 0, 4 + wd).toLocaleDateString(i18n.language, { weekday: 'long' }),
 		).filter(Boolean).join(', ') ?? '';
 
 		const periodNames = rule.year_period_ids?.map(pid =>
@@ -88,10 +89,12 @@ export function RuleCard({ rule }: RuleCardProps) {
 		const parts = [weekdayLabels, periodNames].filter(Boolean);
 		replacementText = parts.length > 0 ? `${parts.join(' · ')}` : '';
 	}
+
+	//
 	// B. Handle actions
 
 	const handleEdit = () => {
-		eventsDetailContext.actions.openRuleModal(rule);
+		if (!disabled) onEdit(rule);
 	};
 
 	//
@@ -106,17 +109,17 @@ export function RuleCard({ rule }: RuleCardProps) {
 						{isRestriction && (
 							<>
 								<IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
-								<Text size="lg">Restrição da oferta</Text>
+								<Text size="lg">{t('default:events.ruleEditor.restriction')}</Text>
 							</>
 						)}
 						{isReplacement && (
 							<>
 								<IconCalendarRepeat color="var(--color-primary)" size={20} />
-								<Text size="lg">Substituição da oferta</Text>
+								<Text size="lg">{t('default:events.ruleEditor.replacement')}</Text>
 							</>
 						)}
 						<Text c="dimmed" className={styles.timesCount}>
-							· {linesText} · {rule.dates?.length ?? 0} {(rule.dates?.length ?? 0) > 1 ? 'dias' : 'dia'}
+							· {linesText} · {rule.dates?.length ?? 0} {t('default:events.ruleCard.days', { count: rule.dates?.length ?? 0 })}
 						</Text>
 					</Section>
 
@@ -124,18 +127,18 @@ export function RuleCard({ rule }: RuleCardProps) {
 				</Section>
 
 				{isRestriction && (
-					<Text size="sm" style={{ fontFamily: 'monospace' }}>
+					<Text className={styles.operationalTime} size="sm">
 						{!rule.all_day
-							? `${rule.start_time} às ${rule.end_time} ${eventDatesSuffix}`
-							: `Todo o dia ${eventDatesSuffix}`}
+							? t('default:events.ruleCard.timeWindow', { dates: eventDatesSuffix, end: rule.end_time, start: rule.start_time })
+							: t('default:events.ruleCard.allDay', { dates: eventDatesSuffix })}
 					</Text>
 				)}
 
 				{isReplacement && (
 					<>
-						<Text>Funcionará como {replacementText}</Text>
-						<Text size="sm" style={{ fontFamily: 'monospace' }}>
-							(nos dias {eventDates})
+						<Text>{t('default:events.ruleCard.operateAs', { replacement: replacementText })}</Text>
+						<Text className={styles.operationalTime} size="sm">
+							{t('default:events.ruleCard.onDates', { dates: eventDates })}
 						</Text>
 					</>
 				)}
@@ -144,6 +147,7 @@ export function RuleCard({ rule }: RuleCardProps) {
 
 			<IconButton
 				icon={<IconArrowRight size={20} />}
+				isDisabled={disabled}
 				onClick={handleEdit}
 			/>
 

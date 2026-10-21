@@ -27,3 +27,6 @@
   color: var(--color-system-text-200);
   font-size: var(--size-spacing-md);
 }
+.operationalTime {
+	font-family: monospace;
+}

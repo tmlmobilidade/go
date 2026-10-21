@@ -1,7 +1,11 @@
+'use client';
+
 /* * */
 
-import { useEventsListContext } from '@/components/events/list/EventsList.context';
 import { ListFilter } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useEventsListFilterAgencies } from './use-events-list-filter-agencies';
 
 /* * */
 
@@ -11,17 +15,18 @@ export function EventsListFilterAgencies() {
 	//
 	// A. Setup variables
 
-	const eventsListContext = useEventsListContext();
+	const agency = useEventsListFilterAgencies();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<ListFilter
-			active={eventsListContext.filters.agency.isActive}
-			label="Operadores"
-			onChange={eventsListContext.filters.agency.set}
-			options={eventsListContext.filters.agency.options}
+			active={agency.isActive}
+			label={t('default:events.list.columns.agency_ids')}
+			onChange={agency.set}
+			options={agency.options}
 			isMultiple
 			withToggleAll
 		/>

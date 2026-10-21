@@ -3,6 +3,7 @@
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -27,11 +28,13 @@ export function RuleCreateYearPeriods() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const createRuleContext = useRuleCreateContext();
 	const { data: periodsData } = usePeriodsListContext();
 
 	// Filter periods by event's agency_ids
-	const eventAgencyIds = new Set(createRuleContext.data.eventData.agency_ids);
+	const eventAgencyIds = new Set(createRuleContext.eventData.agency_ids);
 	const filteredPeriods = periodsData.raw.filter(period =>
 		period.agency_ids?.some(agencyId => eventAgencyIds.has(agencyId)),
 	);
@@ -46,22 +49,22 @@ export function RuleCreateYearPeriods() {
 	//
 	// B. Handle actions
 
-	const currentPeriodIds = createRuleContext.data.form.values.kind === 'event_replacement'
-		? createRuleContext.data.form.values.year_period_ids || []
+	const currentPeriodIds = createRuleContext.values.kind === 'event_replacement'
+		? createRuleContext.values.year_period_ids || []
 		: [];
 	const selectedPresetKey = getSelectedPresetKey(currentPeriodIds, allPeriodIds);
 
 	const applyPreset = (key: null | PeriodPresetKey) => {
-		if (createRuleContext.data.form.values.kind !== 'event_replacement') return;
+		if (createRuleContext.values.kind !== 'event_replacement') return;
 
 		if (!key) {
-			// same convention as weekdays: empty => undefined
-			createRuleContext.data.form.setFieldValue('year_period_ids', undefined);
+			// Keep the array contract when clearing the selection.
+			createRuleContext.form.setValue('year_period_ids', []);
 			return;
 		}
 
 		// select all
-		createRuleContext.data.form.setFieldValue('year_period_ids', [...allPeriodIds]);
+		createRuleContext.form.setValue('year_period_ids', [...allPeriodIds]);
 	};
 
 	//
@@ -70,7 +73,7 @@ export function RuleCreateYearPeriods() {
 	return (
 		<Section gap="md">
 			<Section gap="xs" padding="none">
-				<Text>Períodos</Text>
+				<Text>{t('default:events.ruleEditor.periods')}</Text>
 			</Section>
 
 			{/* Quick Select Tags */}
@@ -78,15 +81,15 @@ export function RuleCreateYearPeriods() {
 				onChange={applyPreset}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
+					{ label: t('default:events.ruleEditor.all'), value: 'all' },
 				]}
 			/>
 
 			<SegmentedMultiSelect
 				value={currentPeriodIds}
 				onChange={(selectedPeriods) => {
-					if (createRuleContext.data.form.values.kind !== 'event_replacement') return;
-					createRuleContext.data.form.setFieldValue('year_period_ids', selectedPeriods.length > 0 ? selectedPeriods : undefined);
+					if (createRuleContext.values.kind !== 'event_replacement') return;
+					createRuleContext.form.setValue('year_period_ids', selectedPeriods);
 				}}
 				options={PERIOD_OPTIONS.map(o => ({
 					ariaLabel: o.label,

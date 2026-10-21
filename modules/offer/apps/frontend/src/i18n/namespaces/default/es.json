@@ -1,0 +1,106 @@
+{
+	"events": {
+		"create": {
+			"title": "Nuevo evento"
+		},
+		"dates": {
+			"prompt": "Seleccione las fechas del evento",
+			"removeMonth": "Quitar mes",
+			"selectMonth": "Seleccionar mes"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Seguro que desea eliminar este evento? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar evento"
+		},
+		"empty": "Seleccione un evento",
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores afectados"
+			},
+			"code": {
+				"description": "Solo letras mayúsculas, números y guiones bajos. Máximo de {{max}} caracteres.",
+				"label": "Código",
+				"placeholder": "Ej.: MARAT_LIS"
+			},
+			"description": {
+				"label": "Descripción",
+				"placeholder": "Descripción del evento"
+			},
+			"title": {
+				"label": "Título",
+				"placeholder": "Ej.: Maratón de Lisboa"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"dates": "Fechas",
+				"id": "#ID",
+				"title": "Título"
+			},
+			"title": "Eventos"
+		},
+		"ruleCard": {
+			"allDay": "Todo el día {{dates}}",
+			"allLines": "Todas las líneas",
+			"days_one": "día",
+			"days_other": "días",
+			"exceptLines": "Todas excepto {{lines}}",
+			"lines_one": "{{count}} línea",
+			"lines_other": "{{count}} líneas",
+			"namedLines": "Líneas {{lines}}",
+			"noLines": "Ninguna línea",
+			"onDates": "(en las fechas {{dates}})",
+			"operateAs": "Funcionará como {{replacement}}",
+			"timeWindow": "{{start}} a {{end}} {{dates}}"
+		},
+		"ruleEditor": {
+			"affectedDates": "2. ¿Qué días afecta esta regla?",
+			"affectedLines": "3. ¿Qué líneas afecta esta regla?",
+			"all": "Todos",
+			"allDay": "Evento de día completo",
+			"allLines": "Se aplica a todas las líneas",
+			"cancel": "Cancelar",
+			"create": "Crear",
+			"dayType": "Tipo de día",
+			"edit": "Editar",
+			"endTime": "Hora de fin",
+			"endTimeDescription": "Después de medianoche, usar 24+ horas. Ej.: 02:00 → 26:00",
+			"eventTime": "4. ¿Cuándo tiene lugar el evento?",
+			"excludeLines": "Todas excepto estas líneas",
+			"excludeLinesDescription": "Se verán afectadas todas las líneas excepto estas.",
+			"includeLines": "Solo estas líneas",
+			"includeLinesDescription": "Solo se verán afectadas estas líneas.",
+			"newRule": "Nueva regla",
+			"noPatterns": "Sin patrones asociados",
+			"operateAs": "Los días seleccionados funcionarán como:",
+			"patterns": "Patrones asociados",
+			"periods": "Períodos",
+			"replacement": "Sustitución de oferta",
+			"replacementDescription": "Aplicar la oferta de otro tipo de día en estas fechas",
+			"replacementExample": "Ejemplo: el 17/02/2026 (martes) funciona como sábado · Período escolar.",
+			"restriction": "Restricción de oferta",
+			"restrictionDescription": "Esta regla eliminará toda la oferta durante el evento",
+			"restrictionExample": "Ej.: el 17/02/26 (martes) no hay oferta entre las 14 y las 18 horas",
+			"restrictionTimeDescription": "La oferta se suspende durante el período definido aquí",
+			"ruleType": "1. Tipo de regla",
+			"sameWeekday": "Mismo día de la semana",
+			"sameWeekdayDescription": "Cada fecha funciona como su día de la semana real, en el período seleccionado. Ej.: martes · Período de verano.",
+			"selectDates": "Seleccione las fechas afectadas por esta regla",
+			"serviceType": "4. ¿Qué tipo de oferta se aplica estos días?",
+			"startTime": "Hora de inicio",
+			"startTimeDescription": "Formato HH:MM en el día operativo. Ej.: 10:00",
+			"viewPatterns": "Ver patrones asociados",
+			"weekdays": "Días laborables",
+			"weekend": "Fin de semana"
+		},
+		"rules": {
+			"create": "Nueva regla",
+			"description": "Definen cómo calcular la oferta en los días del evento. Estas reglas sustituyen el comportamiento normal del calendario.",
+			"empty": "No hay reglas definidas",
+			"title": "Reglas de oferta"
+		}
+	}
+}
