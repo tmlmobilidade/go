@@ -6,13 +6,13 @@ import (
 	"main/types"
 )
 
-func StopDescValidation(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
+func StopDescField(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
 	//
 	
 	//
 	// 1. Get the rule
 
-	const ruleID = "stops_stop_desc_validation"
+	const ruleID = "stops_stop_desc_field"
 
 	//
 	// 2. Create the validation context

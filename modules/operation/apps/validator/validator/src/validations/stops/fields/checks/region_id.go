@@ -6,13 +6,13 @@ import (
 	"main/types"
 )
 
-func RegionIdValidation(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
+func RegionIdField(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
 	//
 	
 	//
 	// 1. Get the rule
 
-	const ruleID = "stops_region_id_validation"
+	const ruleID = "stops_region_id_field"
 
 	//
 	// 2. Create the validation context

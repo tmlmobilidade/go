@@ -6,13 +6,13 @@ import (
 	"main/types"
 )
 
-func TtsStopNameValidation(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
+func TtsStopNameField(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
 	//
 	
 	//
 	// 1. Get the rule
 
-	const ruleID = "stops_tts_stop_name_validation"		
+	const ruleID = "stops_tts_stop_name_field"		
 
 	//
 	// 2. Create the validation context

@@ -6,13 +6,13 @@ import (
 	"main/types"
 )
 
-func StopUrlValidation(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
+func StopUrlField(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
 	//
 	
 	//
 	// 1. Get the rule
 
-	const ruleID = "stops_stop_url_validation"
+	const ruleID = "stops_stop_url_field"
 
 	//
 	// 2. Create the validation context
@@ -29,7 +29,7 @@ func StopUrlValidation(db *services.SQLiteContext, rulesContext *types.RuleConte
 	if err != nil {
 		return err
 	}
-	
+
 	//
 	// 4. Check if the stop_url is present
 
