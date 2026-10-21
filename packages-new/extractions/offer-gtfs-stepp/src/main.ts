@@ -204,7 +204,7 @@ export async function exportGtfsSteppV1(progress: ExportProgress, exportConfig: 
 					);
 
 					const isCircular = await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, exportConfig.agency_id);
-					await exportRouteStepp(routeData, patternData, isCircular, exportConfig);
+					await exportRouteStepp(agencyData, routeData, patternData, isCircular, exportConfig);
 				}
 
 				Logger.info({ message: `  Processed route ${routeData.code} with ${routePatterns.length} patterns` });
