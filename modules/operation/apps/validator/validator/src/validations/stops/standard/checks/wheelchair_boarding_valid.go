@@ -18,7 +18,7 @@ func WheelchairBoardingValid(db *services.SQLiteContext, rulesContext *types.Rul
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("wheelchair_boarding_valid", "stops.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("wheelchair_boarding", "stops.txt", ruleID, db.Row, services.AppMessageService)
 	if rulesContext != nil {
 		ctx.WithSeverity(rulesContext.Severity)
 	}
