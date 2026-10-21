@@ -1,6 +1,6 @@
 /* * */
 
-import { ZonesListFilterAgencies } from '@/components/zones/list/ZonesListFilterAgencies';
+import { ZonesListFilterAgencies } from '@/components/zones/list/filters/ZonesListFilterAgencies';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */

@@ -209,5 +209,48 @@
 			"fares": "Associated fares",
 			"styles": "Styles"
 		}
+	},
+	"zones": {
+		"create": {
+			"title": "New zone"
+		},
+		"detail": {
+			"cancel": "Cancel",
+			"confirm": "Delete",
+			"confirmMessage": "Delete this zone? This action cannot be undone.",
+			"confirmTitle": "Delete zone"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operators"
+			},
+			"code": {
+				"label": "Code",
+				"placeholder": "Ex: 1101"
+			},
+			"geojson": {
+				"invalid": "Invalid GeoJSON file",
+				"label": "GeoJSON"
+			},
+			"name": {
+				"label": "Name",
+				"placeholder": "E.g. Lisbon"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operators",
+				"code": "Code",
+				"id": "#ID",
+				"name": "Name"
+			},
+			"select": "Select a zone",
+			"title": "Zones"
+		},
+		"noAccess": "You do not have permission to access this page.",
+		"sections": {
+			"basic": "Basic configuration",
+			"geometry": "Geometry"
+		}
 	}
 }

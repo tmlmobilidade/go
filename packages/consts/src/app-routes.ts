@@ -409,9 +409,11 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/year-periods/list-agencies`,
 
 		// ZONES
+		ZONES_CREATE: `${getModuleConfig('offer', 'api_url')}/zones/create`,
 		ZONES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${encodeURIComponent(id)}`,
 		ZONES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${encodeURIComponent(id)}/lock`,
 		ZONES_LIST: `${getModuleConfig('offer', 'api_url')}/zones`,
+		ZONES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/zones/list-agencies`,
 	},
 
 	operation: {

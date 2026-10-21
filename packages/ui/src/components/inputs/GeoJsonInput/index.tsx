@@ -64,12 +64,16 @@ export function GeoJsonInput({
 			/>
 
 			<Grid columns="ab" gap="md">
-				<Button
-					label="Atualizar"
-					onClick={onUpdateMap}
-				/>
+				{onUpdateMap && (
+					<Button
+						disabled={disabled}
+						label="Atualizar"
+						onClick={onUpdateMap}
+					/>
+				)}
 
 				<Button
+					disabled={disabled}
 					label="Remover"
 					onClick={handleRemove}
 					variant="danger"

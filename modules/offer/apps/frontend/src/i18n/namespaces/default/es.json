@@ -209,5 +209,48 @@
 			"fares": "Tarifas asociadas",
 			"styles": "Estilos"
 		}
+	},
+	"zones": {
+		"create": {
+			"title": "Nueva zona"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Eliminar esta zona? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar zona"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: 1101"
+			},
+			"geojson": {
+				"invalid": "Archivo GeoJSON no válido",
+				"label": "GeoJSON"
+			},
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Ej.: Lisboa"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nombre"
+			},
+			"select": "Seleccione una zona",
+			"title": "Zonas"
+		},
+		"noAccess": "No tiene permiso para acceder a esta página.",
+		"sections": {
+			"basic": "Configuración básica",
+			"geometry": "Geometría"
+		}
 	}
 }
