@@ -102,5 +102,59 @@
 			"empty": "No rules defined",
 			"title": "Service rules"
 		}
+	},
+	"periods": {
+		"assignment": {
+			"acknowledge": "I understand and want to continue",
+			"blockedConflict": "Assignment blocked: a conflicting period is locked or you lack update permission for all its operators.",
+			"checking": "Checking conflicts...",
+			"conflictMessage": "{{count}} dates will be removed from periods: {{periods}}.",
+			"conflictTitle": "Conflict warning",
+			"create": "Create a new period",
+			"dayCount_one": "{{count}} day",
+			"dayCount_other": "{{count}} days",
+			"existing": "Assign to an existing period",
+			"mode": "Assign",
+			"noPeriods": "No editable periods match this operator set. Select all operators of the period or create a new one.",
+			"period": "Select period",
+			"range": "Selected date range",
+			"search": "Search...",
+			"submit": "Assign period",
+			"title": "Assign dates"
+		},
+		"create": {
+			"title": "New period"
+		},
+		"detail": {
+			"cancel": "Cancel",
+			"confirm": "Delete",
+			"confirmMessage": "Are you sure you want to delete this period? This cannot be undone.",
+			"confirmTitle": "Delete period",
+			"openCalendar": "Assign dates"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operators"
+			},
+			"code": {
+				"label": "Code",
+				"placeholder": "E.g. 1"
+			},
+			"color": {
+				"label": "Colour"
+			},
+			"name": {
+				"label": "Name",
+				"placeholder": "E.g. School period 2025/2026"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operators",
+				"id": "#ID",
+				"name": "Name"
+			},
+			"title": "Periods"
+		}
 	}
 }

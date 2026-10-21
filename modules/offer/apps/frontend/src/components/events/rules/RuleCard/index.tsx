@@ -1,6 +1,6 @@
 'use client';
 
-import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
+import { usePeriodsData } from '@/components/year-periods/shared/use-periods-data';
 import { IconArrowRight, IconCalendarCancel, IconCalendarRepeat } from '@tabler/icons-react';
 import { Dates, FORMATS } from '@tmlmobilidade/dates';
 import { EventRule, type Line } from '@tmlmobilidade/go-types-offer';
@@ -27,7 +27,7 @@ export function RuleCard({ disabled, lines, onEdit, rule }: RuleCardProps) {
 	//
 	// A. Setup variables
 
-	const periodsContext = usePeriodsListContext();
+	const { data: periods } = usePeriodsData();
 	const { i18n, t } = useTranslation();
 
 	const isRestriction = rule.kind === 'event_restriction';
@@ -83,7 +83,7 @@ export function RuleCard({ disabled, lines, onEdit, rule }: RuleCardProps) {
 		).filter(Boolean).join(', ') ?? '';
 
 		const periodNames = rule.year_period_ids?.map(pid =>
-			periodsContext.data.raw.find(p => p._id === pid)?.name,
+			periods.find(p => p._id === pid)?.name,
 		).filter(Boolean).join(', ') ?? '';
 
 		const parts = [weekdayLabels, periodNames].filter(Boolean);

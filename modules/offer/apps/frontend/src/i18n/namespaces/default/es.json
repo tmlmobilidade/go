@@ -102,5 +102,59 @@
 			"empty": "No hay reglas definidas",
 			"title": "Reglas de oferta"
 		}
+	},
+	"periods": {
+		"assignment": {
+			"acknowledge": "Entiendo y deseo continuar",
+			"blockedConflict": "Asignación bloqueada: un período en conflicto está bloqueado o faltan permisos de actualización para todos sus operadores.",
+			"checking": "Comprobando conflictos...",
+			"conflictMessage": "Se eliminarán {{count}} fechas de los períodos: {{periods}}.",
+			"conflictTitle": "Aviso de conflicto",
+			"create": "Crear un nuevo período",
+			"dayCount_one": "{{count}} día",
+			"dayCount_other": "{{count}} días",
+			"existing": "Asignar a un período existente",
+			"mode": "Asignar",
+			"noPeriods": "No hay períodos editables para este conjunto de operadores. Seleccione todos los operadores del período o cree uno nuevo.",
+			"period": "Seleccionar período",
+			"range": "Intervalo de fechas seleccionado",
+			"search": "Buscar...",
+			"submit": "Asignar período",
+			"title": "Asignar fechas"
+		},
+		"create": {
+			"title": "Nuevo período"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Desea eliminar este período? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar período",
+			"openCalendar": "Asignar fechas"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ej.: 1"
+			},
+			"color": {
+				"label": "Color"
+			},
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Ej.: Período escolar 2025/2026"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"id": "#ID",
+				"name": "Nombre"
+			},
+			"title": "Períodos"
+		}
 	}
 }

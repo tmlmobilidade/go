@@ -1,7 +1,7 @@
 'use client';
 
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
-import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
+import { usePeriodsData } from '@/components/year-periods/shared/use-periods-data';
 import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -31,11 +31,11 @@ export function RuleCreateYearPeriods() {
 	const { t } = useTranslation();
 
 	const createRuleContext = useRuleCreateContext();
-	const { data: periodsData } = usePeriodsListContext();
+	const { data: periodsData } = usePeriodsData();
 
 	// Filter periods by event's agency_ids
 	const eventAgencyIds = new Set(createRuleContext.eventData.agency_ids);
-	const filteredPeriods = periodsData.raw.filter(period =>
+	const filteredPeriods = periodsData.filter(period =>
 		period.agency_ids?.some(agencyId => eventAgencyIds.has(agencyId)),
 	);
 

@@ -4,72 +4,70 @@ import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobi
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
-import { haveSameAgencies } from './same-agencies.js';
+/* * */
+
+interface YearPeriodDateAssignmentArgs {
+	actorId: string
+	agencyIds: string[]
+	existingDates?: OperationalDate[]
+	newDates: OperationalDate[]
+	userPermissions: Permission[]
+	yearPeriodId?: string
+}
+
+type YearPeriodDateAssignmentResult = { dates: OperationalDate[], error?: never } | { dates?: never, error: { error: string, status_code: '403' | '409' } };
+
+/* * */
 
 /**
- * Utility function to handle date assignment with conflict resolution.
- * Merges new dates with existing dates and removes conflicts from other year periods with the EXACT same agency set.
- * @param agencyIds - Array of agency IDs
- * @param newDates - Array of new dates to assign
- * @param actorId - Authenticated actor responsible for assignment changes
- * @param yearPeriodId - Optional period ID to exclude from conflict resolution (for updates)
- * @param existingDates - Optional array of existing dates to merge with
- * @returns The merged dates array
+ * Merges assignment dates and removes overlaps from periods sharing any operator.
+ * A period has one shared dates array: changing [A, B] affects both operators.
+ * Validate every affected period's lock and update permission before any writes.
  */
-export async function handleYearPeriodDateAssignment(
-	agencyIds: string[],
-	newDates: OperationalDate[],
-	actorId: string,
-	yearPeriodId?: string,
-	existingDates: OperationalDate[] = [],
-): Promise<OperationalDate[]> {
+export async function handleYearPeriodDateAssignment({ actorId, agencyIds, existingDates = [], newDates, userPermissions, yearPeriodId }: YearPeriodDateAssignmentArgs): Promise<YearPeriodDateAssignmentResult> {
 	//
 
 	//
-	// Merge with existing dates if provided
+	// Find all overlapping periods for any shared operator
 
-	const mergedDates = existingDates.length > 0 ? mergeDateArrays(existingDates, newDates) : newDates;
-
-	//
-	// Find all periods that have at least one matching agency (excluding the current period if provided)
-
-	const query: Filter<YearPeriod> = {
-		agency_ids: { $in: agencyIds },
-	};
-	if (yearPeriodId) {
-		query._id = { $ne: yearPeriodId };
-	}
-
-	const agencyPeriods = await goDb.offer.yearPeriods.findMany(query);
+	const mergedDates = mergeDateArrays(existingDates, newDates);
+	const query: Filter<YearPeriod> = { agency_ids: { $in: agencyIds } };
+	if (yearPeriodId) query._id = { $ne: yearPeriodId };
+	const periods = await goDb.offer.yearPeriods.findMany(query);
+	const conflicts = periods
+		.filter(period => period._id !== yearPeriodId && period.agency_ids.some(id => agencyIds.includes(id)))
+		.map(period => ({ dates: findCommonDates(mergedDates, period.dates ?? []), period }))
+		.filter(conflict => conflict.dates.length > 0);
 
 	//
-	// Helper function to check if two agency arrays are exactly the same (regardless of order)
+	// Preflight every conflict before changing any period
 
-	//
-	// For each year period with EXACT same agency set and overlapping dates, remove the conflicting dates
-
-	for (const otherPeriod of agencyPeriods) {
-		if (!otherPeriod.dates || otherPeriod.dates.length === 0) continue;
-
-		// Only handle conflicts for year periods with EXACTLY the same agency set
-		if (!haveSameAgencies(agencyIds, otherPeriod.agency_ids)) continue;
-
-		// Find dates that conflict between the merged dates and this year period
-		const conflicts = findCommonDates(mergedDates, otherPeriod.dates);
-
-		if (conflicts.length > 0) {
-			// Remove conflicting dates from this year period
-			const updatedDates = removeDatesFromArray(otherPeriod.dates, conflicts);
-			await goDb.offer.yearPeriods.updateById(otherPeriod._id, { dates: updatedDates, updated_by: actorId });
+	for (const { period } of conflicts) {
+		if (period.is_locked) {
+			return { error: { error: `YearPeriod ${period._id} is locked. Unlock it before reassigning its dates.`, status_code: '409' } };
+		}
+		if (!PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.year_periods.actions.update,
+			permissions: userPermissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.year_periods.scope,
+			value: period.agency_ids,
+		})) {
+			return { error: { error: 'You must have update permission for every operator of each conflicting period.', status_code: '403' } };
 		}
 	}
 
 	//
-	// Return the merged dates
+	// Apply the authorized removals, preserving the authenticated audit actor
 
-	return mergedDates;
-
-	//
+	for (const { dates, period } of conflicts) {
+		await goDb.offer.yearPeriods.updateById(period._id, {
+			dates: removeDatesFromArray(period.dates ?? [], dates),
+			updated_by: actorId,
+		});
+	}
+	return { dates: mergedDates };
 }

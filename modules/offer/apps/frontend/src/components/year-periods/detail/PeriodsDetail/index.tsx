@@ -1,12 +1,13 @@
 'use client';
 
-import { useAgenciesData } from '@/components/common/use-agencies-data';
-import { usePeriodsDetailContext } from '@/components/year-periods/detail/PeriodsDetail.context';
-import { PeriodsDetailHeader } from '@/components/year-periods/detail/PeriodsDetailHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { YearPeriodSchema } from '@tmlmobilidade/go-types-offer';
-import { Button, ColorInput, ErrorDisplay, LoadingOverlay, MultiSelect, Pane, Section, TextInput } from '@tmlmobilidade/ui';
+import { Button, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Section } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+
+import { PeriodsDetailBasicInfo } from '../PeriodsDetailBasicInfo';
+import { PeriodsDetailHeader } from '../PeriodsDetailHeader';
+import { usePeriodsDetailData } from '../use-periods-detail-data';
 
 /* * */
 
@@ -16,75 +17,23 @@ export function PeriodsDetail() {
 	//
 	// A. Setup variables
 
+	const { data, error, isLoading } = usePeriodsDetailData();
 	const router = useRouter();
-
-	const periodsDetailContext = usePeriodsDetailContext();
-
-	const { options: allAgencyOptions } = useAgenciesData();
+	const { t } = useTranslation();
+	const handleOpenCalendar = () => router.push(keepUrlParams(PAGE_ROUTES.offer.YEAR_PERIODS_LIST));
 
 	//
-	// B. Handle actions
+	// B. Render components
 
-	const openCalendar = () => {
-		router.push(PAGE_ROUTES.offer.YEAR_PERIODS_LIST);
-	};
-
-	//
-	// C. Render components
-
-	if (periodsDetailContext.flags.isLoading) {
-		return <LoadingOverlay />;
-	}
-
-	if (periodsDetailContext.flags.error) {
-		return <ErrorDisplay message={periodsDetailContext.flags.error.message} />;
-	}
+	if (error) return <ErrorDisplay message={error} />;
+	if (isLoading || !data) return <LoadingOverlay />;
 
 	return (
-		<Pane header={[<PeriodsDetailHeader key="periods-detail-header" />]}>
+		<Pane header={[<PeriodsDetailHeader key="header" />]}>
 			<Section gap="lg">
-
-				<TextInput
-					label="Nome"
-					placeholder="Ex: Período Escolar 2024/2025"
-					readOnly={periodsDetailContext.flags.isReadOnly}
-					required={!YearPeriodSchema.shape.name.isOptional()}
-					w="100%"
-					{...periodsDetailContext.data.form.getInputProps('name')}
-				/>
-
-				<TextInput
-					label="Código"
-					placeholder="Ex: 1"
-					readOnly={periodsDetailContext.flags.isReadOnly}
-					required={!YearPeriodSchema.shape.code.isOptional()}
-					w="100%"
-					{...periodsDetailContext.data.form.getInputProps('code')}
-				/>
-
-				<MultiSelect
-					key={periodsDetailContext.data.form.key('agency_ids')}
-					data={allAgencyOptions}
-					disabled={periodsDetailContext.flags.isReadOnly}
-					label="Operadores"
-					w="100%"
-					{...periodsDetailContext.data.form.getInputProps('agency_ids')}
-				/>
-
-				<ColorInput
-					key={periodsDetailContext.data.form.key('color')}
-					label="Cor"
-					readOnly={periodsDetailContext.flags.isReadOnly}
-					required={!YearPeriodSchema.shape.color.isOptional()}
-					withEyeDropper={false}
-					{...periodsDetailContext.data.form.getInputProps('color')}
-				/>
-
-				<Button label="Atribuir Datas" onClick={openCalendar} />
-
+				<PeriodsDetailBasicInfo />
+				<Button label={t('default:periods.detail.openCalendar')} onClick={handleOpenCalendar} />
 			</Section>
 		</Pane>
 	);
-
-	//
 }

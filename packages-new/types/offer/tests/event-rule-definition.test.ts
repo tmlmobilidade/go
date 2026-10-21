@@ -23,6 +23,7 @@ for (const definition of definitions) {
 		const created = CreateEventSchema.parse({ agency_ids: ['A'], code: 'EVENT', rules: [rule], title: 'Current title' });
 		const updated = UpdateEventSchema.parse({ rules: [rule] });
 		assert.equal('event' in created.rules[0], false);
+		assert.ok(updated.rules);
 		assert.equal('event' in updated.rules[0], false);
 	});
 }
