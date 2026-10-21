@@ -46,6 +46,9 @@
 		"offer-gtfs-v29": {
 			"title": "GTFS (v29)"
 		},
+		"operation-gtfs-stepp-v1": {
+			"title": "GTFS STePP de Operação (v1)"
+		},
 		"operation-rides-v1": {
 			"title": "Circulações (GO v1)"
 		},

@@ -112,6 +112,39 @@
 			"just_now": "Ahora mismo"
 		}
 	},
+	"plans": {
+		"list": {
+			"PlansListHeaderMenu": {
+				"extractStepp": "Exportar GTFS STePP de Operación"
+			}
+		},
+		"stepp": {
+			"PlansSteppExtractBody": {
+				"description": "Combine los planes seleccionados en un único GTFS STePP para el intervalo indicado, usando los datos de los planes y sin calendario de festivos.",
+				"empty": "No hay planes disponibles en este intervalo.",
+				"fields": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"end_date": {
+						"label": "Fecha de fin"
+					},
+					"plan_ids": {
+						"description": "Seleccione los planes con GTFS normalizado y fechas de actividad que coincidan con el intervalo.",
+						"label": "Planes a exportar",
+						"placeholder": "Seleccionar planes"
+					},
+					"start_date": {
+						"label": "Fecha de inicio"
+					}
+				}
+			},
+			"PlansSteppExtractHeader": {
+				"export": "Exportar",
+				"title": "Exportar GTFS STePP de Operación"
+			}
+		}
+	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {

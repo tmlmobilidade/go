@@ -23,6 +23,7 @@
 		"@tmlmobilidade/go-extractions-infrastructure-stops": "*",
 		"@tmlmobilidade/go-extractions-offer-gtfs": "*",
 		"@tmlmobilidade/go-extractions-offer-gtfs-stepp": "*",
+		"@tmlmobilidade/go-extractions-operation-gtfs-stepp": "*",
 		"@tmlmobilidade/go-extractions-operation-rides": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-locationsdb": "*",

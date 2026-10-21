@@ -9,6 +9,7 @@ import { OfferGtfsSteppV1ExtractionSchema } from './modules/offer/stepp/v1/extra
 import { OperationRidesV1ExtractionSchema } from './modules/operation/rides/v1/extraction.js';
 import { OperationRidesV2ExtractionSchema } from './modules/operation/rides/v2/extraction.js';
 import { OperationRidesV3ExtractionSchema } from './modules/operation/rides/v3/extraction.js';
+import { OperationGtfsSteppV1ExtractionSchema } from './modules/operation/stepp/v1/extraction.js';
 
 /* * */
 
@@ -17,6 +18,7 @@ export const ExtractionSchema = z.discriminatedUnion('version', [
 	InfrastructureStopsV1ExtractionSchema,
 	OfferGtfsV29ExtractionSchema,
 	OfferGtfsSteppV1ExtractionSchema,
+	OperationGtfsSteppV1ExtractionSchema,
 	OperationRidesV1ExtractionSchema,
 	OperationRidesV2ExtractionSchema,
 	OperationRidesV3ExtractionSchema,

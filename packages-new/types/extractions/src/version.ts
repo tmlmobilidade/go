@@ -9,6 +9,7 @@ import { OfferGtfsSteppV1ExtractionVersionValue } from './modules/offer/stepp/v1
 import { OperationRidesV1ExtractionVersionValue } from './modules/operation/rides/v1/version.js';
 import { OperationRidesV2ExtractionVersionValue } from './modules/operation/rides/v2/version.js';
 import { OperationRidesV3ExtractionVersionValue } from './modules/operation/rides/v3/version.js';
+import { OperationGtfsSteppV1ExtractionVersionValue } from './modules/operation/stepp/v1/version.js';
 
 /* * */
 
@@ -17,6 +18,7 @@ export const ExtractionVersionValues = [
 	InfrastructureStopsV1ExtractionVersionValue,
 	OfferGtfsV29ExtractionVersionValue,
 	OfferGtfsSteppV1ExtractionVersionValue,
+	OperationGtfsSteppV1ExtractionVersionValue,
 	OperationRidesV1ExtractionVersionValue,
 	OperationRidesV2ExtractionVersionValue,
 	OperationRidesV3ExtractionVersionValue,
