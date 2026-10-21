@@ -620,5 +620,266 @@
 	},
 	"stop_times_trip_id_foreign": {
 		"not_found": "El valor \"%s\" del campo \"trip_id\" no existe en trips.txt"
+	},
+	"stops_has_bench_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"has_bench\" no está permitido"
+	},
+	"stops_has_bench_field": {
+		"informational": "El campo has_bench es informativo",
+		"recommended": "El campo has_bench es recomendado",
+		"required": "El campo has_bench es requerido"
+	},
+	"stops_has_bench_valid": {
+		"invalid": "El valor \"%s\" del campo \"has_bench\" debe ser 0, 1, 2 o 3"
+	},
+	"stops_has_network_map_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"has_network_map\" no está permitido"
+	},
+	"stops_has_network_map_field": {
+		"informational": "El campo has_network_map es informativo",
+		"recommended": "El campo has_network_map es recomendado",
+		"required": "El campo has_network_map es requerido"
+	},
+	"stops_has_network_map_valid": {
+		"invalid": "El valor \"%s\" del campo \"has_network_map\" debe ser 0, 1, 2 o 3"
+	},
+	"stops_has_pip_real_time_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"has_pip_real_time\" no está permitido"
+	},
+	"stops_has_pip_real_time_field": {
+		"informational": "El campo has_pip_real_time es informativo",
+		"recommended": "El campo has_pip_real_time es recomendado",
+		"required": "El campo has_pip_real_time es requerido"
+	},
+	"stops_has_pip_real_time_valid": {
+		"invalid": "El valor \"%s\" del campo \"has_pip_real_time\" debe ser 0, 1 o 2"
+	},
+	"stops_has_schedules_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"has_schedules\" no está permitido"
+	},
+	"stops_has_schedules_field": {
+		"informational": "El campo has_schedules es informativo",
+		"recommended": "El campo has_schedules es recomendado",
+		"required": "El campo has_schedules es requerido"
+	},
+	"stops_has_schedules_valid": {
+		"invalid": "El valor \"%s\" del campo \"has_schedules\" debe ser 0, 1, 2 o 3"
+	},
+	"stops_has_shelter_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"has_shelter\" no está permitido"
+	},
+	"stops_has_shelter_field": {
+		"informational": "El campo has_shelter es informativo",
+		"recommended": "El campo has_shelter es recomendado",
+		"required": "El campo has_shelter es requerido"
+	},
+	"stops_has_shelter_valid": {
+		"invalid": "El valor \"%s\" del campo \"has_shelter\" debe ser 0, 1, 2 o 3"
+	},
+	"stops_has_stop_sign_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"has_stop_sign\" no está permitido"
+	},
+	"stops_has_stop_sign_field": {
+		"informational": "El campo has_stop_sign es informativo",
+		"recommended": "El campo has_stop_sign es recomendado",
+		"required": "El campo has_stop_sign es requerido"
+	},
+	"stops_has_stop_sign_valid": {
+		"invalid": "El valor \"%s\" del campo \"has_stop_sign\" debe ser 0, 1, 2 o 3"
+	},
+	"stops_has_tariffs_information_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"has_tariffs_information\" no está permitido"
+	},
+	"stops_has_tariffs_information_field": {
+		"informational": "El campo has_tariffs_information es informativo",
+		"recommended": "El campo has_tariffs_information es recomendado",
+		"required": "El campo has_tariffs_information es requerido"
+	},
+	"stops_has_tariffs_information_valid": {
+		"invalid": "El valor \"%s\" del campo \"has_tariffs_information\" debe ser 0, 1, 2 o 3"
+	},
+	"stops_level_id_field": {
+		"informational": "El campo level_id es informativo",
+		"recommended": "El campo level_id es recomendado",
+		"required": "El campo level_id es requerido"
+	},
+	"stops_level_id_foreign": {
+		"not_found": "El valor \"%s\" del campo \"level_id\" no existe en levels.txt"
+	},
+	"stops_location_type_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"location_type\" no está permitido"
+	},
+	"stops_location_type_field": {
+		"informational": "El campo location_type es informativo",
+		"recommended": "El campo location_type es recomendado",
+		"required": "El campo location_type es requerido"
+	},
+	"stops_location_type_valid": {
+		"invalid": "El valor \"%s\" del campo \"location_type\" debe ser 0, 1, 2, 3 o 4"
+	},
+	"stops_municipality_id_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"municipality_id\" no está permitido"
+	},
+	"stops_municipality_id_field": {
+		"informational": "El campo municipality_id es informativo",
+		"recommended": "El campo municipality_id es recomendado",
+		"required": "El campo municipality_id es requerido"
+	},
+	"stops_parent_station_empty_location_types": {
+		"required_location_type": "El campo \"parent_station\" es obligatorio cuando \"location_type\" es 2, 3 o 4"
+	},
+	"stops_parent_station_field": {
+		"informational": "El campo parent_station es informativo",
+		"recommended": "El campo parent_station es recomendado",
+		"required": "El campo parent_station es requerido"
+	},
+	"stops_parent_station_for_location_type_one": {
+		"forbidden": "El campo \"location_type\" debe ser 1 (estación)"
+	},
+	"stops_parent_station_foreign": {
+		"duplicate": "El valor del campo \"parent_station\" está duplicado en stops.txt"
+	},
+	"stops_parish_id_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"parish_id\" no está permitido"
+	},
+	"stops_parish_id_field": {
+		"informational": "El campo parish_id es informativo",
+		"recommended": "El campo parish_id es recomendado",
+		"required": "El campo parish_id es requerido"
+	},
+	"stops_platform_code_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"platform_code\" no está permitido"
+	},
+	"stops_platform_code_field": {
+		"informational": "El campo platform_code es informativo",
+		"recommended": "El campo platform_code es recomendado",
+		"required": "El campo platform_code es requerido"
+	},
+	"stops_public_visible_field": {
+		"informational": "El campo public_visible es informativo",
+		"recommended": "El campo public_visible es recomendado",
+		"required": "El campo public_visible es requerido"
+	},
+	"stops_public_visible_valid": {
+		"invalid": "El valor \"%s\" del campo \"public_visible\" debe ser 0 o 1"
+	},
+	"stops_region_id_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"region_id\" no está permitido"
+	},
+	"stops_region_id_field": {
+		"informational": "El campo region_id es informativo",
+		"recommended": "El campo region_id es recomendado",
+		"required": "El campo region_id es requerido"
+	},
+	"stops_shelter_code_field": {
+		"informational": "El campo shelter_code es informativo",
+		"recommended": "El campo shelter_code es recomendado",
+		"required": "El campo shelter_code es requerido"
+	},
+	"stops_shelter_maintainer_field": {
+		"informational": "El campo shelter_maintainer es informativo",
+		"recommended": "El campo shelter_maintainer es recomendado",
+		"required": "El campo shelter_maintainer es requerido"
+	},
+	"stops_stop_access_differente_location_type_zero": {
+		"forbidden": "El campo \"stop_access\" no está permitido cuando \"location_type\" es distinto de 0"
+	},
+	"stops_stop_access_field": {
+		"informational": "El campo stop_access es informativo",
+		"recommended": "El campo stop_access es recomendado",
+		"required": "El campo stop_access es requerido"
+	},
+	"stops_stop_access_forbidden_parent_station": {
+		"forbidden": "El campo \"stop_access\" no está permitido cuando \"parent_station\" está vacío"
+	},
+	"stops_stop_access_valid": {
+		"invalid": "El valor \"%s\" del campo \"stop_access\" debe ser 0 o 1"
+	},
+	"stops_stop_code_field": {
+		"informational": "El campo stop_code es informativo",
+		"recommended": "El campo stop_code es recomendado",
+		"required": "El campo stop_code es requerido"
+	},
+	"stops_stop_code_unique": {
+		"duplicate": "El valor \"%s\" del campo \"stop_code\" debe ser único"
+	},
+	"stops_stop_desc_different_stop_name": {
+		"duplicate": "El valor \"%s\" del campo \"stop_desc\" debe ser distinto del valor \"%s\" del campo \"stop_name\""
+	},
+	"stops_stop_desc_field": {
+		"informational": "El campo stop_desc es informativo",
+		"recommended": "El campo stop_desc es recomendado",
+		"required": "El campo stop_desc es requerido"
+	},
+	"stops_stop_id_field": {
+		"informational": "El campo stop_id es informativo",
+		"recommended": "El campo stop_id es recomendado",
+		"required": "El campo stop_id es requerido"
+	},
+	"stops_stop_id_unique": {
+		"duplicate": "El valor \"%s\" del campo \"stop_id\" debe ser único"
+	},
+	"stops_stop_lat_field": {
+		"informational": "El campo stop_lat es informativo",
+		"recommended": "El campo stop_lat es recomendado",
+		"required": "El campo stop_lat es requerido"
+	},
+	"stops_stop_lat_valid": {
+		"invalid": "El valor \"%s\" del campo \"stop_lat\" debe ser una latitud válida entre -90 y 90"
+	},
+	"stops_stop_lon_field": {
+		"informational": "El campo stop_lon es informativo",
+		"recommended": "El campo stop_lon es recomendado",
+		"required": "El campo stop_lon es requerido"
+	},
+	"stops_stop_lon_valid": {
+		"invalid": "El valor \"%s\" del campo \"stop_lon\" debe ser una longitud válida entre -180 y 180"
+	},
+	"stops_stop_name_field": {
+		"informational": "El campo stop_name es informativo",
+		"recommended": "El campo stop_name es recomendado",
+		"required": "El campo stop_name es requerido"
+	},
+	"stops_stop_short_name_field": {
+		"informational": "El campo stop_short_name es informativo",
+		"recommended": "El campo stop_short_name es recomendado",
+		"required": "El campo stop_short_name es requerido"
+	},
+	"stops_stop_timezone_field": {
+		"informational": "El campo stop_timezone es informativo",
+		"recommended": "El campo stop_timezone es recomendado",
+		"required": "El campo stop_timezone es requerido"
+	},
+	"stops_stop_timezone_valid": {
+		"invalid": "El valor \"%s\" del campo \"stop_timezone\" debe ser una zona horaria válida"
+	},
+	"stops_stop_url_field": {
+		"informational": "El campo stop_url es informativo",
+		"recommended": "El campo stop_url es recomendado",
+		"required": "El campo stop_url es requerido"
+	},
+	"stops_stop_url_valid": {
+		"invalid": "El valor \"%s\" del campo \"stop_url\" debe ser una URL válida"
+	},
+	"stops_tts_stop_name_field": {
+		"informational": "El campo tts_stop_name es informativo",
+		"recommended": "El campo tts_stop_name es recomendado",
+		"required": "El campo tts_stop_name es requerido"
+	},
+	"stops_wheelchair_boarding_allowed": {
+		"not_allowed": "El valor \"%s\" del campo \"wheelchair_boarding\" no está permitido"
+	},
+	"stops_wheelchair_boarding_field": {
+		"informational": "El campo wheelchair_boarding es informativo",
+		"recommended": "El campo wheelchair_boarding es recomendado",
+		"required": "El campo wheelchair_boarding es requerido"
+	},
+	"stops_wheelchair_boarding_valid": {
+		"invalid": "El valor \"%s\" del campo \"wheelchair_boarding\" debe ser 0, 1 o 2"
+	},
+	"stops_zone_id_field": {
+		"informational": "El campo zone_id es informativo",
+		"recommended": "El campo zone_id es recomendado",
+		"required": "El campo zone_id es requerido"
 	}
 }
