@@ -42,8 +42,8 @@ func NewManager[T any](rules ...Rule[T]) (*Manager[T], error) {
 	return m, nil
 }
 
-// Build sorts the rules using Kahn's algorithm. Ties keep registration order,
-// so the execution order is deterministic.
+// Build sorts the rules by dependency level using Kahn's algorithm.
+// Each level keeps registration order and finishes before newly ready rules run.
 func (m *Manager[T]) Build() error {
 	index := make(map[string]int, len(m.rules))
 	for i, r := range m.rules {
@@ -66,24 +66,25 @@ func (m *Manager[T]) Build() error {
 		}
 	}
 
-	// Process the ready rules in registration order (lowest index first)
+	// Collect a complete ready level before unlocking the next one.
 	ordered := make([]Rule[T], 0, len(m.rules))
 	done := make([]bool, len(m.rules))
 	for len(ordered) < len(m.rules) {
-		next := -1
+		ready := []int{}
 		for i := range m.rules {
 			if !done[i] && inDegree[i] == 0 {
-				next = i
-				break
+				ready = append(ready, i)
 			}
 		}
-		if next == -1 {
+		if len(ready) == 0 {
 			return fmt.Errorf("dependency cycle between rules: %s", m.pending(done))
 		}
-		done[next] = true
-		ordered = append(ordered, m.rules[next])
-		for _, d := range dependents[next] {
-			inDegree[d]--
+		for _, next := range ready {
+			done[next] = true
+			ordered = append(ordered, m.rules[next])
+			for _, d := range dependents[next] {
+				inDegree[d]--
+			}
 		}
 	}
 
