@@ -33,7 +33,7 @@ func ExactTimesValid(db *services.SQLiteContext, rules *types.RuleContext) error
 	//
 	// 1. Get the rule
 
-	const ruleID = "frequencies_exact_times_zero_when_timed_trip_uses_frequencies"
+	const ruleID = "frequencies_exact_times_valid"
 
 	//
 	// 2. Create the validation context

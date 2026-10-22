@@ -10,7 +10,7 @@ import (
 
 func TestRowLocalDependencies(t *testing.T) {
 	const presence = "frequencies_trip_id_field"
-	const value = "frequencies_headway_secs_positive_and_aligns_trip"
+	const value = "frequencies_headway_secs_valid"
 	config := testutils.Config(presence, types.SEVERITY_INFO)
 	config.SetRule(value, types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{presence}})
 	db, _ := testutils.Fixture(t, map[string]any{"trip_id": "", "headway_secs": "bad"}, config)
@@ -38,7 +38,7 @@ func TestRowLocalDependencies(t *testing.T) {
 	}
 }
 func TestMalformedValueDoesNotSuppressIndependentChecks(t *testing.T) {
-	ids := []string{"frequency_start_time_valid", "frequencies_headway_secs_positive_and_aligns_trip", "frequencies_exact_times_zero_when_timed_trip_uses_frequencies", "frequencies_trip_id_references_trips_table"}
+	ids := []string{"frequencies_start_time_valid", "frequencies_headway_secs_valid", "frequencies_exact_times_valid", "frequencies_trip_id_foreign"}
 	config := &types.GtfsRules{}
 	for _, id := range ids {
 		config.SetRule(id, types.RuleContext{Severity: types.SEVERITY_ERROR})
@@ -54,15 +54,15 @@ func TestMalformedValueDoesNotSuppressIndependentChecks(t *testing.T) {
 func TestRunnerRegistersEveryCheck(t *testing.T) {
 	for _, tc := range []struct{ id, field, value string }{
 		{"frequencies_trip_id_field", "trip_id", ""},
-		{"frequencies_trip_id_references_trips_table", "trip_id", "bad"},
+		{"frequencies_trip_id_foreign", "trip_id", "bad"},
 		{"frequencies_exact_times_field", "exact_times", ""},
-		{"frequencies_exact_times_zero_when_timed_trip_uses_frequencies", "exact_times", "bad"},
+		{"frequencies_exact_times_valid", "exact_times", "bad"},
 		{"frequencies_headway_secs_field", "headway_secs", ""},
-		{"frequencies_headway_secs_positive_and_aligns_trip", "headway_secs", "bad"},
+		{"frequencies_headway_secs_valid", "headway_secs", "bad"},
 		{"frequencies_end_time_field", "end_time", ""},
-		{"frequency_end_time_valid", "end_time", "bad"},
+		{"frequencies_end_time_valid", "end_time", "bad"},
 		{"frequencies_start_time_field", "start_time", ""},
-		{"frequency_start_time_valid", "start_time", "bad"},
+		{"frequencies_start_time_valid", "start_time", "bad"},
 	} {
 		t.Run(tc.id, func(t *testing.T) {
 			config := testutils.Config(tc.id, types.SEVERITY_ERROR)

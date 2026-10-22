@@ -9,7 +9,7 @@ import (
 )
 
 func TestHeadwaySecsValid(t *testing.T) {
-	const id = "frequencies_headway_secs_positive_and_aligns_trip"
+	const id = "frequencies_headway_secs_valid"
 	for _, tc := range []struct {
 		value any
 		count int

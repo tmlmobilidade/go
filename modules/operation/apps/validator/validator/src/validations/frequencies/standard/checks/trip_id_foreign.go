@@ -21,13 +21,13 @@ Identifies a trip to which the specified headway of service applies.
 [frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
-func TripIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+func TripIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "frequencies_trip_id_references_trips_table"
+	const ruleID = "frequencies_trip_id_foreign"
 
 	//
 	// 2. Create the validation context

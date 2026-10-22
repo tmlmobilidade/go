@@ -9,7 +9,7 @@ import (
 )
 
 func TestTripIdValid(t *testing.T) {
-	const id = "frequencies_trip_id_references_trips_table"
+	const id = "frequencies_trip_id_foreign"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -17,7 +17,7 @@ func TestTripIdValid(t *testing.T) {
 		t.Run(fmt.Sprint(tc.value), func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, map[string]any{"trip_id": tc.value}, config)
-			if err := checks.TripIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.TripIdForeign(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "trip_id", types.SEVERITY_ERROR, tc.count)
@@ -26,36 +26,36 @@ func TestTripIdValid(t *testing.T) {
 	t.Run("MissingColumn", func(t *testing.T) {
 		config := testutils.Config(id, types.SEVERITY_ERROR)
 		_, ctx := testutils.Fixture(t, nil, config)
-		if err := checks.TripIdValid(ctx, config.Rule(id)); err != nil {
+		if err := checks.TripIdForeign(ctx, config.Rule(id)); err != nil {
 			t.Fatal(err)
 		}
 		testutils.AssertFindings(t, id, "trip_id", types.SEVERITY_ERROR, 0)
 	})
-	testutils.CheckInvalid(t, id, "trip_id", checks.TripIdValid, map[string]any{"trip_id": "bad"})
+	testutils.CheckInvalid(t, id, "trip_id", checks.TripIdForeign, map[string]any{"trip_id": "bad"})
 }
 func TestTripReferenceReadsCurrentSQLite(t *testing.T) {
-	const id = "frequencies_trip_id_references_trips_table"
+	const id = "frequencies_trip_id_foreign"
 	config := testutils.Config(id, types.SEVERITY_ERROR)
 	db, ctx := testutils.Fixture(t, map[string]any{"trip_id": "A"}, config)
-	if err := checks.TripIdValid(ctx, config.Rule(id)); err != nil {
+	if err := checks.TripIdForeign(ctx, config.Rule(id)); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := db.Exec("DELETE FROM trips"); err != nil {
 		t.Fatal(err)
 	}
-	if err := checks.TripIdValid(ctx, config.Rule(id)); err != nil {
+	if err := checks.TripIdForeign(ctx, config.Rule(id)); err != nil {
 		t.Fatal(err)
 	}
 	testutils.AssertFindings(t, id, "trip_id", types.SEVERITY_ERROR, 1)
 }
 func TestMissingTripsTableReturnsError(t *testing.T) {
-	const id = "frequencies_trip_id_references_trips_table"
+	const id = "frequencies_trip_id_foreign"
 	config := testutils.Config(id, types.SEVERITY_ERROR)
 	db, ctx := testutils.Fixture(t, map[string]any{"trip_id": "A"}, config)
 	if _, err := db.Exec("DROP TABLE trips"); err != nil {
 		t.Fatal(err)
 	}
-	if err := checks.TripIdValid(ctx, config.Rule(id)); err == nil {
+	if err := checks.TripIdForeign(ctx, config.Rule(id)); err == nil {
 		t.Fatal("SQLite error swallowed")
 	}
 	testutils.AssertFindings(t, id, "trip_id", types.SEVERITY_ERROR, 0)

@@ -27,7 +27,7 @@ func HeadwaySecsValid(db *services.SQLiteContext, rules *types.RuleContext) erro
 	//
 	// 1. Get the rule
 
-	const ruleID = "frequencies_headway_secs_positive_and_aligns_trip"
+	const ruleID = "frequencies_headway_secs_valid"
 
 	//
 	// 2. Create the validation context

@@ -11,7 +11,7 @@ import (
 )
 
 func TestExactTimesValid(t *testing.T) {
-	const id = "frequencies_exact_times_zero_when_timed_trip_uses_frequencies"
+	const id = "frequencies_exact_times_valid"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -36,7 +36,7 @@ func TestExactTimesValid(t *testing.T) {
 	testutils.CheckInvalid(t, id, "exact_times", checks.ExactTimesValid, map[string]any{"exact_times": "bad"})
 }
 func TestExactTimesOptions(t *testing.T) {
-	const id = "frequencies_exact_times_zero_when_timed_trip_uses_frequencies"
+	const id = "frequencies_exact_times_valid"
 	for _, tc := range []struct {
 		options []string
 		count   int

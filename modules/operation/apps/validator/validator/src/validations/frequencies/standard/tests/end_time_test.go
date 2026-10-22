@@ -9,7 +9,7 @@ import (
 )
 
 func TestEndTimeValid(t *testing.T) {
-	const id = "frequency_end_time_valid"
+	const id = "frequencies_end_time_valid"
 	for _, tc := range []struct {
 		value any
 		count int

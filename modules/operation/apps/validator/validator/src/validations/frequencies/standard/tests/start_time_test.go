@@ -9,7 +9,7 @@ import (
 )
 
 func TestStartTimeValid(t *testing.T) {
-	const id = "frequency_start_time_valid"
+	const id = "frequencies_start_time_valid"
 	for _, tc := range []struct {
 		value any
 		count int

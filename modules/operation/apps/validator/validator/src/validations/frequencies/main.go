@@ -49,20 +49,20 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"frequencies_start_time_field": func() {
 				check("frequencies_start_time_field", frequencies_fields.StartTimeField(db, rules.Rule("frequencies_start_time_field")))
 			},
-			"frequencies_trip_id_references_trips_table": func() {
-				check("frequencies_trip_id_references_trips_table", frequencies_standard.TripIdValid(db, rules.Rule("frequencies_trip_id_references_trips_table")))
+			"frequencies_trip_id_foreign": func() {
+				check("frequencies_trip_id_foreign", frequencies_standard.TripIdForeign(db, rules.Rule("frequencies_trip_id_foreign")))
 			},
-			"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": func() {
-				check("frequencies_exact_times_zero_when_timed_trip_uses_frequencies", frequencies_standard.ExactTimesValid(db, rules.Rule("frequencies_exact_times_zero_when_timed_trip_uses_frequencies")))
+			"frequencies_exact_times_valid": func() {
+				check("frequencies_exact_times_valid", frequencies_standard.ExactTimesValid(db, rules.Rule("frequencies_exact_times_valid")))
 			},
-			"frequencies_headway_secs_positive_and_aligns_trip": func() {
-				check("frequencies_headway_secs_positive_and_aligns_trip", frequencies_standard.HeadwaySecsValid(db, rules.Rule("frequencies_headway_secs_positive_and_aligns_trip")))
+			"frequencies_headway_secs_valid": func() {
+				check("frequencies_headway_secs_valid", frequencies_standard.HeadwaySecsValid(db, rules.Rule("frequencies_headway_secs_valid")))
 			},
-			"frequency_end_time_valid": func() {
-				check("frequency_end_time_valid", frequencies_standard.EndTimeValid(db, rules.Rule("frequency_end_time_valid")))
+			"frequencies_end_time_valid": func() {
+				check("frequencies_end_time_valid", frequencies_standard.EndTimeValid(db, rules.Rule("frequencies_end_time_valid")))
 			},
-			"frequency_start_time_valid": func() {
-				check("frequency_start_time_valid", frequencies_standard.StartTimeValid(db, rules.Rule("frequency_start_time_valid")))
+			"frequencies_start_time_valid": func() {
+				check("frequencies_start_time_valid", frequencies_standard.StartTimeValid(db, rules.Rule("frequencies_start_time_valid")))
 			},
 		}, nil)
 		return nil
