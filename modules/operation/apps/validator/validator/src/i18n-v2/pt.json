@@ -1235,5 +1235,103 @@
 	"trip_headsign_max_two_per_route": {
 		"generic": "Cada linha não pode ter mais do que dois valores distintos de \"trip_headsign\".",
 		"max_two": "O route_id \"%s\" deve ter no máximo dois valores distintos de \"%s\"; encontrados %d: %s"
+	},
+	"transfers_from_stop_id_field": {
+		"informational": "O campo from_stop_id é informativo",
+		"recommended": "O campo from_stop_id é recomendado",
+		"required": "O campo from_stop_id é obrigatório"
+	},
+	"transfers_to_stop_id_field": {
+		"informational": "O campo to_stop_id é informativo",
+		"recommended": "O campo to_stop_id é recomendado",
+		"required": "O campo to_stop_id é obrigatório"
+	},
+	"transfers_from_route_id_field": {
+		"informational": "O campo from_route_id é informativo",
+		"recommended": "O campo from_route_id é recomendado",
+		"required": "O campo from_route_id é obrigatório"
+	},
+	"transfers_to_route_id_field": {
+		"informational": "O campo to_route_id é informativo",
+		"recommended": "O campo to_route_id é recomendado",
+		"required": "O campo to_route_id é obrigatório"
+	},
+	"transfers_from_trip_id_field": {
+		"informational": "O campo from_trip_id é informativo",
+		"recommended": "O campo from_trip_id é recomendado",
+		"required": "O campo from_trip_id é obrigatório"
+	},
+	"transfers_to_trip_id_field": {
+		"informational": "O campo to_trip_id é informativo",
+		"recommended": "O campo to_trip_id é recomendado",
+		"required": "O campo to_trip_id é obrigatório"
+	},
+	"transfers_transfer_type_field": {
+		"informational": "O campo transfer_type é informativo",
+		"recommended": "O campo transfer_type é recomendado",
+		"required": "O campo transfer_type é obrigatório"
+	},
+	"transfers_min_transfer_time_field": {
+		"informational": "O campo min_transfer_time é informativo",
+		"recommended": "O campo min_transfer_time é recomendado",
+		"required": "O campo min_transfer_time é obrigatório"
+	},
+	"transfer_from_stop_id_references_stops_table": {
+		"generic": "O campo \"from_stop_id\" deve referenciar uma paragem definida em stops.txt.",
+		"invalid_location_type": "O campo \"from_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser uma paragem (location_type=0) ou estação (location_type=1)",
+		"must_be_stop_for_transfer_type_4_5": "O campo \"from_stop_id\" \"%s\" deve referenciar uma paragem (location_type=0) quando transfer_type é %d. Estações (location_type=1) não são permitidas para transfer_type 4 ou 5",
+		"not_found": "O campo \"from_stop_id\" \"%s\" não existe em stops.txt",
+		"recommended": "O campo \"from_stop_id\" é recomendado",
+		"required": "O campo \"from_stop_id\" é obrigatório"
+	},
+	"transfer_from_route_id_references_routes_table": {
+		"forbidden": "O campo \"from_route_id\" é proibido",
+		"generic": "O campo \"from_route_id\" deve referenciar uma linha definida em routes.txt.",
+		"not_found": "O campo \"from_route_id\" \"%s\" não existe em routes.txt",
+		"recommended": "O campo \"from_route_id\" é recomendado",
+		"trip_must_belong_to_route": "Quando from_trip_id e from_route_id estão definidos, from_trip_id \"%s\" deve pertencer a from_route_id \"%s\". A viagem referencia a rota \"%s\""
+	},
+	"transfer_from_trip_id_references_trips_table": {
+		"generic": "O campo \"from_trip_id\" deve referenciar uma viagem definida em trips.txt.",
+		"not_found": "O campo \"from_trip_id\" \"%s\" não existe em trips.txt",
+		"recommended": "O campo \"from_trip_id\" é recomendado",
+		"required": "O campo \"from_trip_id\" é obrigatório",
+		"trip_must_belong_to_route": "Quando from_trip_id e from_route_id estão definidos, from_trip_id \"%s\" deve pertencer a from_route_id \"%s\". A viagem referencia a rota \"%s\""
+	},
+	"transfer_to_stop_id_references_stops_table": {
+		"generic": "O campo \"to_stop_id\" deve referenciar uma paragem definida em stops.txt.",
+		"invalid_location_type": "O campo \"to_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser uma paragem (location_type=0) ou estação (location_type=1)",
+		"must_be_different_from_from_stop_id": "O campo \"to_stop_id\" \"%s\" deve ser diferente do \"from_stop_id\" \"%s\". Uma transferência não pode ter a mesma paragem para origem e destino",
+		"must_be_stop_for_transfer_type_4_5": "O campo \"to_stop_id\" \"%s\" deve referenciar uma paragem (location_type=0) quando transfer_type é %d. Estações (location_type=1) não são permitidas para transfer_type 4 ou 5",
+		"not_found": "O campo \"to_stop_id\" \"%s\" não existe em stops.txt",
+		"recommended": "O campo \"to_stop_id\" é recomendado",
+		"required": "O campo \"to_stop_id\" é obrigatório"
+	},
+	"transfer_to_route_id_references_routes_table": {
+		"forbidden": "O campo \"to_route_id\" é proibido",
+		"generic": "O campo \"to_route_id\" deve referenciar uma linha definida em routes.txt.",
+		"not_found": "O campo \"to_route_id\" \"%s\" não existe em routes.txt",
+		"recommended": "O campo \"to_route_id\" é recomendado",
+		"trip_must_belong_to_route": "Quando to_trip_id e to_route_id estão definidos, to_trip_id \"%s\" deve pertencer a to_route_id \"%s\". A viagem referencia a rota \"%s\""
+	},
+	"transfer_to_trip_id_references_trips_table": {
+		"generic": "O campo \"to_trip_id\" deve referenciar uma viagem definida em trips.txt.",
+		"not_found": "O campo \"to_trip_id\" \"%s\" não existe em trips.txt",
+		"recommended": "O campo \"to_trip_id\" é recomendado",
+		"required": "O campo \"to_trip_id\" é obrigatório",
+		"trip_must_belong_to_route": "Quando to_trip_id e to_route_id estão definidos, to_trip_id \"%s\" deve pertencer a to_route_id \"%s\". A viagem referencia a rota \"%s\""
+	},
+	"transfer_type_valid_gtfs_enum": {
+		"generic": "O campo \"transfer_type\" deve conter um dos valores previstos pelo GTFS.",
+		"invalid": "O campo \"transfer_type\" deve ser 0, 1, 2, 3, 4 ou 5, recebido: %s",
+		"not_allowed": "O campo \"transfer_type\" \"%s\" não é permitido",
+		"required": "O campo \"transfer_type\" é obrigatório"
+	},
+	"transfers_min_transfer_time_non_negative_seconds": {
+		"forbidden": "O campo \"min_transfer_time\" é proibido",
+		"generic": "O campo \"min_transfer_time\" deve conter um tempo não negativo em segundos.",
+		"invalid": "O campo \"transfer_duration\" deve ser maior que 0. Recebido: \"%s\"",
+		"recommended": "O campo \"min_transfer_time\" é recomendado",
+		"required": "O campo \"min_transfer_time\" é obrigatório"
 	}
 }

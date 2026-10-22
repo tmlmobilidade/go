@@ -1235,5 +1235,103 @@
 	"trip_headsign_max_two_per_route": {
 		"generic": "Each route must not have more than two distinct \"trip_headsign\" values.",
 		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
+	},
+	"transfers_from_stop_id_field": {
+		"informational": "The from_stop_id field is informational",
+		"recommended": "The from_stop_id field is recommended",
+		"required": "The from_stop_id field is required"
+	},
+	"transfers_to_stop_id_field": {
+		"informational": "The to_stop_id field is informational",
+		"recommended": "The to_stop_id field is recommended",
+		"required": "The to_stop_id field is required"
+	},
+	"transfers_from_route_id_field": {
+		"informational": "The from_route_id field is informational",
+		"recommended": "The from_route_id field is recommended",
+		"required": "The from_route_id field is required"
+	},
+	"transfers_to_route_id_field": {
+		"informational": "The to_route_id field is informational",
+		"recommended": "The to_route_id field is recommended",
+		"required": "The to_route_id field is required"
+	},
+	"transfers_from_trip_id_field": {
+		"informational": "The from_trip_id field is informational",
+		"recommended": "The from_trip_id field is recommended",
+		"required": "The from_trip_id field is required"
+	},
+	"transfers_to_trip_id_field": {
+		"informational": "The to_trip_id field is informational",
+		"recommended": "The to_trip_id field is recommended",
+		"required": "The to_trip_id field is required"
+	},
+	"transfers_transfer_type_field": {
+		"informational": "The transfer_type field is informational",
+		"recommended": "The transfer_type field is recommended",
+		"required": "The transfer_type field is required"
+	},
+	"transfers_min_transfer_time_field": {
+		"informational": "The min_transfer_time field is informational",
+		"recommended": "The min_transfer_time field is recommended",
+		"required": "The min_transfer_time field is required"
+	},
+	"transfer_from_stop_id_references_stops_table": {
+		"generic": "The \"from_stop_id\" field must reference a stop defined in stops.txt.",
+		"invalid_location_type": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
+		"must_be_stop_for_transfer_type_4_5": "Field \"from_stop_id\" \"%s\" must reference a stop (location_type=0) when transfer_type is %d. Stations (location_type=1) are not allowed for transfer_type 4 or 5",
+		"not_found": "Field \"from_stop_id\" \"%s\" does not exist in stops.txt",
+		"recommended": "Field \"from_stop_id\" is recommended",
+		"required": "Field \"from_stop_id\" is required"
+	},
+	"transfer_from_route_id_references_routes_table": {
+		"forbidden": "Field \"from_route_id\" is forbidden",
+		"generic": "The \"from_route_id\" field must reference a route defined in routes.txt.",
+		"not_found": "Field \"from_route_id\" \"%s\" does not exist in routes.txt",
+		"recommended": "Field \"from_route_id\" is recommended",
+		"trip_must_belong_to_route": "When both from_trip_id and from_route_id are defined, from_trip_id \"%s\" must belong to from_route_id \"%s\". Trip references route \"%s\""
+	},
+	"transfer_from_trip_id_references_trips_table": {
+		"generic": "The \"from_trip_id\" field must reference a trip defined in trips.txt.",
+		"not_found": "Field \"from_trip_id\" \"%s\" does not exist in trips.txt",
+		"recommended": "Field \"from_trip_id\" is recommended",
+		"required": "Field \"from_trip_id\" is required",
+		"trip_must_belong_to_route": "When both from_trip_id and from_route_id are defined, from_trip_id \"%s\" must belong to from_route_id \"%s\". Trip references route \"%s\""
+	},
+	"transfer_to_stop_id_references_stops_table": {
+		"generic": "The \"to_stop_id\" field must reference a stop defined in stops.txt.",
+		"invalid_location_type": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
+		"must_be_different_from_from_stop_id": "Field \"to_stop_id\" \"%s\" must be different from \"from_stop_id\" \"%s\". A transfer cannot have the same stop for both from and to",
+		"must_be_stop_for_transfer_type_4_5": "Field \"to_stop_id\" \"%s\" must reference a stop (location_type=0) when transfer_type is %d. Stations (location_type=1) are not allowed for transfer_type 4 or 5",
+		"not_found": "Field \"to_stop_id\" \"%s\" does not exist in stops.txt",
+		"recommended": "Field \"to_stop_id\" is recommended",
+		"required": "Field \"to_stop_id\" is required"
+	},
+	"transfer_to_route_id_references_routes_table": {
+		"forbidden": "Field \"to_route_id\" is forbidden",
+		"generic": "The \"to_route_id\" field must reference a route defined in routes.txt.",
+		"not_found": "Field \"to_route_id\" \"%s\" does not exist in routes.txt",
+		"recommended": "Field \"to_route_id\" is recommended",
+		"trip_must_belong_to_route": "When both to_trip_id and to_route_id are defined, to_trip_id \"%s\" must belong to to_route_id \"%s\". Trip references route \"%s\""
+	},
+	"transfer_to_trip_id_references_trips_table": {
+		"generic": "The \"to_trip_id\" field must reference a trip defined in trips.txt.",
+		"not_found": "Field \"to_trip_id\" \"%s\" does not exist in trips.txt",
+		"recommended": "Field \"to_trip_id\" is recommended",
+		"required": "Field \"to_trip_id\" is required",
+		"trip_must_belong_to_route": "When both to_trip_id and to_route_id are defined, to_trip_id \"%s\" must belong to to_route_id \"%s\". Trip references route \"%s\""
+	},
+	"transfer_type_valid_gtfs_enum": {
+		"generic": "The \"transfer_type\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"transfer_type\" must be 0, 1, 2, 3, 4, or 5, received: %s",
+		"not_allowed": "Field \"transfer_type\" \"%s\" is not allowed",
+		"required": "Field \"transfer_type\" is required"
+	},
+	"transfers_min_transfer_time_non_negative_seconds": {
+		"forbidden": "Field \"min_transfer_time\" is forbidden",
+		"generic": "The \"min_transfer_time\" field must contain a non-negative time in seconds.",
+		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\"",
+		"recommended": "Field \"min_transfer_time\" is recommended",
+		"required": "Field \"min_transfer_time\" is required"
 	}
 }
