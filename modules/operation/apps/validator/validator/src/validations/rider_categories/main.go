@@ -7,68 +7,60 @@ import (
 	"main/services"
 	"main/types"
 	registry "main/validations"
-	validations "main/validations/rider_categories/validations"
+	rider_categories_fields "main/validations/rider_categories/fields/checks"
+	rider_categories_standard "main/validations/rider_categories/standard/checks"
 )
 
-func init() {
-	registry.Register("rider_categories", RunValidations)
-}
-
-func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	runner, dagErr := services.NewRuleRunner(gtfs, rules, "rider_categories")
-	if dagErr != nil {
-		lib.AppLogger.Error(dagErr.Error())
+func init() { registry.RegisterWithTables("rider_categories", RunValidations) }
+func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*services.SQLiteTables) {
+	runner, err := services.NewRuleRunner(gtfs, rules, "rider_categories")
+	if err != nil {
+		lib.AppLogger.Error(err.Error())
 		return
 	}
-	lib.AppLogger.Debug("Running RiderCategories Validations...")
-
-	lib.AppLogger.Debug("Pre-computing rider_categories data...")
-	riderCategoriesCache := make(map[string]types.RiderCategoryRaw)
-	err := gtfs.IterateRiderCategories(func(i int, rawRiderCategory types.RiderCategoryRaw) error {
-		if rawRiderCategory.RiderCategoryId == "" {
-			return nil
-		}
-		riderCategoriesCache[rawRiderCategory.RiderCategoryId] = rawRiderCategory
-		return nil
-	})
+	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
 	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error pre-computing rider categories: %v", err))
+		lib.AppLogger.Error(err.Error())
+		return
 	}
-	lib.AppLogger.Debug(fmt.Sprintf("Pre-computed rider categories for %d rider categories", len(riderCategoriesCache)))
-
-	// Create progress tracker
 	tracker := lib.CreateProgressTracker(gtfs, "rider_categories", config.ProgressThresholdLarge)
-
-	// Iterate over all rider categories
-	err = gtfs.IterateRiderCategories(func(i int, rawRiderCategory types.RiderCategoryRaw) error {
+	err = tables.ForEachRow("rider_categories", func(row *services.SQLiteRow) error {
+		db := row.Context()
 		tracker.Track()
-		riderCategory := validations.ParseRiderCategories(rawRiderCategory, i)
-
-		if riderCategory == (types.RiderCategory{}) {
-			return nil
+		check := func(id string, err error) {
+			if err != nil {
+				ctx := lib.NewValidationContext("N/A", "rider_categories.txt", id, db.Row, services.AppMessageService)
+				ctx.AddError(fmt.Sprintf("SQLite read failed: %v", err))
+			}
 		}
-
-		// Validate rider_category_id
 		runner.Run(services.RuleActions{
-			"rider_category_id_unique": func() {
-				validations.RiderCategoryIdValidation(&riderCategory, i, &gtfs, rules.Rule("rider_category_id_unique"))
+			"rider_categories_rider_category_id_field": func() {
+				check("rider_categories_rider_category_id_field", rider_categories_fields.RiderCategoryIdField(db, rules.Rule("rider_categories_rider_category_id_field")))
 			},
-			"rider_category_name_non_empty": func() {
-				validations.RiderCategoryNameValidation(&riderCategory, i, rules.Rule("rider_category_name_non_empty"))
+			"rider_categories_rider_category_name_field": func() {
+				check("rider_categories_rider_category_name_field", rider_categories_fields.RiderCategoryNameField(db, rules.Rule("rider_categories_rider_category_name_field")))
+			},
+			"rider_categories_is_default_fare_category_field": func() {
+				check("rider_categories_is_default_fare_category_field", rider_categories_fields.IsDefaultFareCategoryField(db, rules.Rule("rider_categories_is_default_fare_category_field")))
+			},
+			"rider_categories_eligibility_url_field": func() {
+				check("rider_categories_eligibility_url_field", rider_categories_fields.EligibilityUrlField(db, rules.Rule("rider_categories_eligibility_url_field")))
+			},
+			"rider_category_id_unique": func() {
+				check("rider_category_id_unique", rider_categories_standard.RiderCategoryIdUnique(db, rules.Rule("rider_category_id_unique")))
 			},
 			"rider_categories_at_most_one_default_fare_category": func() {
-				validations.IsDefaultFareCategoryValidation(&riderCategory, i, rules.Rule("rider_categories_at_most_one_default_fare_category"))
+				check("rider_categories_at_most_one_default_fare_category", rider_categories_standard.IsDefaultFareCategoryValid(db, rules.Rule("rider_categories_at_most_one_default_fare_category")))
 			},
 			"rider_categories_eligibility_url_valid_http_url": func() {
-				validations.EligibilityUrlValidation(&riderCategory, i, rules.Rule("rider_categories_eligibility_url_valid_http_url"))
+				check("rider_categories_eligibility_url_valid_http_url", rider_categories_standard.EligibilityUrlValid(db, rules.Rule("rider_categories_eligibility_url_valid_http_url")))
 			},
 		}, nil)
-
 		return nil
 	})
 	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error iterating over rider categories: %v", err))
-	} else {
-		lib.AppLogger.Info(fmt.Sprintf("Completed rider_categories.txt validation: %d rows processed", tracker.GetProcessedCount()))
+		lib.AppLogger.Error(fmt.Sprintf("Error validating rider_categories: %v", err))
+		return
 	}
+	lib.AppLogger.Info(fmt.Sprintf("Completed rider_categories.txt validation: %d rows processed", tracker.GetProcessedCount()))
 }
