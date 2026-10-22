@@ -9,7 +9,7 @@ import (
 )
 
 func TestMinWidthValid(t *testing.T) {
-	const id = "pathway_min_width_positive"
+	const id = "pathways_min_width_valid"
 	for _, tc := range []struct {
 		value any
 		count int

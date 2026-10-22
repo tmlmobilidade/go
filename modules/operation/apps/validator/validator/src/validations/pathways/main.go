@@ -70,35 +70,35 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"pathways_pathway_mode_field": func() {
 				check("pathways_pathway_mode_field", pathways_fields.PathwayModeField(db, rules.Rule("pathways_pathway_mode_field")))
 			},
-			"pathway_max_slope_allowed_for_pathway_mode": func() {
-				check("pathway_max_slope_allowed_for_pathway_mode", pathways_standard.MaxSlopeValid(db, rules.Rule("pathway_max_slope_allowed_for_pathway_mode")))
+			"pathways_max_slope_valid": func() {
+				check("pathways_max_slope_valid", pathways_standard.MaxSlopeValid(db, rules.Rule("pathways_max_slope_valid")))
 			},
-			"pathway_traversal_time_non_negative_seconds": func() {
-				check("pathway_traversal_time_non_negative_seconds", pathways_standard.TraversalTimeValid(db, rules.Rule("pathway_traversal_time_non_negative_seconds")))
+			"pathways_traversal_time_valid": func() {
+				check("pathways_traversal_time_valid", pathways_standard.TraversalTimeValid(db, rules.Rule("pathways_traversal_time_valid")))
 			},
-			"pathway_to_stop_id_references_stops_table": func() {
-				check("pathway_to_stop_id_references_stops_table", pathways_standard.ToStopIdValid(db, rules.Rule("pathway_to_stop_id_references_stops_table")))
+			"pathways_to_stop_id_foreign": func() {
+				check("pathways_to_stop_id_foreign", pathways_standard.ToStopIdForeign(db, rules.Rule("pathways_to_stop_id_foreign")))
 			},
-			"pathway_length_non_negative": func() {
-				check("pathway_length_non_negative", pathways_standard.LengthValid(db, rules.Rule("pathway_length_non_negative")))
+			"pathways_length_valid": func() {
+				check("pathways_length_valid", pathways_standard.LengthValid(db, rules.Rule("pathways_length_valid")))
 			},
-			"pathway_min_width_positive": func() {
-				check("pathway_min_width_positive", pathways_standard.MinWidthValid(db, rules.Rule("pathway_min_width_positive")))
+			"pathways_min_width_valid": func() {
+				check("pathways_min_width_valid", pathways_standard.MinWidthValid(db, rules.Rule("pathways_min_width_valid")))
 			},
-			"pathway_stair_count": func() {
-				check("pathway_stair_count", pathways_standard.StairCountValid(db, rules.Rule("pathway_stair_count")))
+			"pathways_stair_count_valid": func() {
+				check("pathways_stair_count_valid", pathways_standard.StairCountValid(db, rules.Rule("pathways_stair_count_valid")))
 			},
-			"pathway_from_stop_id_references_stops_table": func() {
-				check("pathway_from_stop_id_references_stops_table", pathways_standard.FromStopIdValid(db, rules.Rule("pathway_from_stop_id_references_stops_table")))
+			"pathways_from_stop_id_foreign": func() {
+				check("pathways_from_stop_id_foreign", pathways_standard.FromStopIdForeign(db, rules.Rule("pathways_from_stop_id_foreign")))
 			},
-			"pathway_id_unique": func() {
-				check("pathway_id_unique", pathways_standard.PathwayIdValid(db, rules.Rule("pathway_id_unique")))
+			"pathways_pathway_id_unique": func() {
+				check("pathways_pathway_id_unique", pathways_standard.PathwayIdUnique(db, rules.Rule("pathways_pathway_id_unique")))
 			},
-			"pathway_is_bidirectional_valid_gtfs_enum": func() {
-				check("pathway_is_bidirectional_valid_gtfs_enum", pathways_standard.IsBidirectionalValid(db, rules.Rule("pathway_is_bidirectional_valid_gtfs_enum")))
+			"pathways_is_bidirectional_valid": func() {
+				check("pathways_is_bidirectional_valid", pathways_standard.IsBidirectionalValid(db, rules.Rule("pathways_is_bidirectional_valid")))
 			},
-			"pathway_mode_valid_gtfs_enum": func() {
-				check("pathway_mode_valid_gtfs_enum", pathways_standard.PathwayModeValid(db, rules.Rule("pathway_mode_valid_gtfs_enum")))
+			"pathways_pathway_mode_valid": func() {
+				check("pathways_pathway_mode_valid", pathways_standard.PathwayModeValid(db, rules.Rule("pathways_pathway_mode_valid")))
 			},
 		}, nil)
 		return nil

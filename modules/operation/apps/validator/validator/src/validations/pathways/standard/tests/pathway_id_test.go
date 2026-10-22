@@ -9,7 +9,7 @@ import (
 )
 
 func TestPathwayIdValid(t *testing.T) {
-	const id = "pathway_id_unique"
+	const id = "pathways_pathway_id_unique"
 	for _, tc := range []struct {
 		name  string
 		value any
@@ -23,7 +23,7 @@ func TestPathwayIdValid(t *testing.T) {
 			if _, err := db.Exec("INSERT INTO pathways(pathway_id) VALUES (?)", tc.other); err != nil {
 				t.Fatal(err)
 			}
-			if err := checks.PathwayIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.PathwayIdUnique(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "pathway_id", types.SEVERITY_ERROR, tc.count)
@@ -31,17 +31,17 @@ func TestPathwayIdValid(t *testing.T) {
 			if _, err := db.Exec("UPDATE pathways SET pathway_id='changed' WHERE rowid=4"); err != nil {
 				t.Fatal(err)
 			}
-			if err := checks.PathwayIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.PathwayIdUnique(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "pathway_id", types.SEVERITY_ERROR, 0)
 		})
 	}
-	t.Run("ReadFailure", func(t *testing.T) { testutils.AssertReadFailure(t, checks.PathwayIdValid, id) })
+	t.Run("ReadFailure", func(t *testing.T) { testutils.AssertReadFailure(t, checks.PathwayIdUnique, id) })
 	t.Run("MissingColumn", func(t *testing.T) {
 		config := testutils.Config(id, types.SEVERITY_ERROR)
 		_, ctx := testutils.Fixture(t, nil, config)
-		if err := checks.PathwayIdValid(ctx, config.Rule(id)); err != nil {
+		if err := checks.PathwayIdUnique(ctx, config.Rule(id)); err != nil {
 			t.Fatal(err)
 		}
 		testutils.AssertFindings(t, id, "pathway_id", types.SEVERITY_ERROR, 0)

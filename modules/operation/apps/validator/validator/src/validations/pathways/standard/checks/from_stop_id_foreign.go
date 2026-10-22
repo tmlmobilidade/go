@@ -9,49 +9,48 @@ import (
 
 /*
 # Attributes
-
 - File: [pathways.txt]
-- Field: to_stop_id
+- Field: from_stop_id
 - Presence: Required
-- Type: Foreign ID referencing [stops.stop_id]
+- Type: Foreign ID referencing stops.stop_id
 
 # Description
-
-Identifies the stop where the pathway ends.
+Identifies the stop where the pathway starts.
 
 Must contain a stop_id that identifies a platform (location_type=0 or empty), entrance/exit (location_type=2), generic node (location_type=3) or boarding area (location_type=4).
 
 Values for stop_id that identify stations (location_type=1), or stops (location_type=0 or empty) with stop_access=1, are forbidden.
 
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+
 [stops.stop_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func ToStopIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+func FromStopIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "pathway_to_stop_id_references_stops_table"
+	const ruleID = "pathways_from_stop_id_foreign"
 
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("to_stop_id", "pathways.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("from_stop_id", "pathways.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
-	// 3. Get the to_stop_id value
+	// 3. Get the from_stop_id value
 
-	value, err := db.Pathways.Field("to_stop_id")
+	value, err := db.Pathways.Field("from_stop_id")
 	if err != nil {
 		return err
 	}
 
 	//
-	// 4. Skip empty to_stop_id values
+	// 4. Skip empty from_stop_id values
 
 	if value == "" {
 		return nil
@@ -81,7 +80,8 @@ func ToStopIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 		locationType := 0
 		if values["location_type"] != "" {
 			locationType, err = strconv.Atoi(values["location_type"])
-			if err != nil { // Stop format is validated by the stops checks.
+			if err != nil {
+				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid_location_type_format", value))
 				return nil
 			}
 		}
@@ -97,7 +97,8 @@ func ToStopIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 			access := 0
 			if values["stop_access"] != "" {
 				access, err = strconv.Atoi(values["stop_access"])
-				if err != nil { // Stop format is validated by the stops checks.
+				if err != nil {
+					ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid_stop_access_format", value))
 					return nil
 				}
 			}
@@ -112,7 +113,7 @@ func ToStopIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	}
 
 	//
-	// 7. Report a missing to_stop_id reference
+	// 7. Report a missing from_stop_id reference
 
 	if !found {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))

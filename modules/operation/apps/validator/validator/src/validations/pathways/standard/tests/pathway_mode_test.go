@@ -9,7 +9,7 @@ import (
 )
 
 func TestPathwayModeValid(t *testing.T) {
-	const id = "pathway_mode_valid_gtfs_enum"
+	const id = "pathways_pathway_mode_valid"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -34,7 +34,7 @@ func TestPathwayModeValid(t *testing.T) {
 	testutils.CheckInvalid(t, id, "pathway_mode", checks.PathwayModeValid, map[string]any{"pathway_mode": "bad"})
 }
 func TestPathwayModeOptions(t *testing.T) {
-	const id = "pathway_mode_valid_gtfs_enum"
+	const id = "pathways_pathway_mode_valid"
 	for _, tc := range []struct {
 		options []string
 		count   int

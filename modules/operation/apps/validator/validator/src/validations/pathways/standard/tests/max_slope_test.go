@@ -9,7 +9,7 @@ import (
 )
 
 func TestMaxSlopeValid(t *testing.T) {
-	const id = "pathway_max_slope_allowed_for_pathway_mode"
+	const id = "pathways_max_slope_valid"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -34,7 +34,7 @@ func TestMaxSlopeValid(t *testing.T) {
 	testutils.CheckInvalid(t, id, "max_slope", checks.MaxSlopeValid, map[string]any{"max_slope": "bad", "pathway_mode": "2"})
 }
 func TestSlopeModes(t *testing.T) {
-	const id = "pathway_max_slope_allowed_for_pathway_mode"
+	const id = "pathways_max_slope_valid"
 	for _, mode := range []any{"1", "3", nil, "bad"} {
 		config := testutils.Config(id, types.SEVERITY_ERROR)
 		_, ctx := testutils.Fixture(t, map[string]any{"max_slope": "-0.2", "pathway_mode": mode}, config)

@@ -9,7 +9,7 @@ import (
 )
 
 func TestStairCountValid(t *testing.T) {
-	const id = "pathway_stair_count"
+	const id = "pathways_stair_count_valid"
 	for _, tc := range []struct {
 		value any
 		count int

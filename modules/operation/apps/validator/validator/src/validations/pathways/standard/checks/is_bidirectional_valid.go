@@ -35,7 +35,7 @@ func IsBidirectionalValid(db *services.SQLiteContext, rules *types.RuleContext) 
 	//
 	// 1. Get the rule
 
-	const ruleID = "pathway_is_bidirectional_valid_gtfs_enum"
+	const ruleID = "pathways_is_bidirectional_valid"
 
 	//
 	// 2. Create the validation context

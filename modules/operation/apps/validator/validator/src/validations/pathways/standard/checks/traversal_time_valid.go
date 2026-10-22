@@ -27,7 +27,7 @@ func TraversalTimeValid(db *services.SQLiteContext, rules *types.RuleContext) er
 	//
 	// 1. Get the rule
 
-	const ruleID = "pathway_traversal_time_non_negative_seconds"
+	const ruleID = "pathways_traversal_time_valid"
 
 	//
 	// 2. Create the validation context

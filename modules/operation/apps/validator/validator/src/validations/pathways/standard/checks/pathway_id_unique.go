@@ -23,13 +23,13 @@ Example: When two escalators are side-by-side in opposite directions, or when a 
 
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
-func PathwayIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+func PathwayIdUnique(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "pathway_id_unique"
+	const ruleID = "pathways_pathway_id_unique"
 
 	//
 	// 2. Create the validation context

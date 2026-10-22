@@ -9,7 +9,7 @@ import (
 )
 
 func TestLengthValid(t *testing.T) {
-	const id = "pathway_length_non_negative"
+	const id = "pathways_length_valid"
 	for _, tc := range []struct {
 		value any
 		count int

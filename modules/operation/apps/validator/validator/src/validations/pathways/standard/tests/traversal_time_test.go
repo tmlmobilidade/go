@@ -9,7 +9,7 @@ import (
 )
 
 func TestTraversalTimeValid(t *testing.T) {
-	const id = "pathway_traversal_time_non_negative_seconds"
+	const id = "pathways_traversal_time_valid"
 	for _, tc := range []struct {
 		value any
 		count int

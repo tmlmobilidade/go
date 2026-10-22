@@ -26,7 +26,7 @@ func StairCountValid(db *services.SQLiteContext, rules *types.RuleContext) error
 	//
 	// 1. Get the rule
 
-	const ruleID = "pathway_stair_count"
+	const ruleID = "pathways_stair_count_valid"
 
 	//
 	// 2. Create the validation context

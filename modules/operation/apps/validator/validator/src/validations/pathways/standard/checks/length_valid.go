@@ -29,7 +29,7 @@ func LengthValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 	// 1. Get the rule
 
-	const ruleID = "pathway_length_non_negative"
+	const ruleID = "pathways_length_valid"
 
 	//
 	// 2. Create the validation context

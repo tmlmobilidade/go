@@ -9,7 +9,7 @@ import (
 )
 
 func TestToStopIdValid(t *testing.T) {
-	const id = "pathway_to_stop_id_references_stops_table"
+	const id = "pathways_to_stop_id_foreign"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -17,7 +17,7 @@ func TestToStopIdValid(t *testing.T) {
 		t.Run(fmt.Sprint(tc.value), func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, map[string]any{"pathway_mode": "2", "to_stop_id": tc.value}, config)
-			if err := checks.ToStopIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.ToStopIdForeign(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "to_stop_id", types.SEVERITY_ERROR, tc.count)
@@ -26,15 +26,15 @@ func TestToStopIdValid(t *testing.T) {
 	t.Run("MissingColumn", func(t *testing.T) {
 		config := testutils.Config(id, types.SEVERITY_ERROR)
 		_, ctx := testutils.Fixture(t, nil, config)
-		if err := checks.ToStopIdValid(ctx, config.Rule(id)); err != nil {
+		if err := checks.ToStopIdForeign(ctx, config.Rule(id)); err != nil {
 			t.Fatal(err)
 		}
 		testutils.AssertFindings(t, id, "to_stop_id", types.SEVERITY_ERROR, 0)
 	})
-	testutils.CheckInvalid(t, id, "to_stop_id", checks.ToStopIdValid, map[string]any{"to_stop_id": "bad", "pathway_mode": "2"})
+	testutils.CheckInvalid(t, id, "to_stop_id", checks.ToStopIdForeign, map[string]any{"to_stop_id": "bad", "pathway_mode": "2"})
 }
 func TestToStopIdStopAttributes(t *testing.T) {
-	const id = "pathway_to_stop_id_references_stops_table"
+	const id = "pathways_to_stop_id_foreign"
 	for _, tc := range []struct {
 		location, access string
 		count            int
@@ -47,7 +47,7 @@ func TestToStopIdStopAttributes(t *testing.T) {
 			if _, err := db.Exec("UPDATE stops SET location_type=?,stop_access=?", tc.location, tc.access); err != nil {
 				t.Fatal(err)
 			}
-			if err := checks.ToStopIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.ToStopIdForeign(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "to_stop_id", types.SEVERITY_ERROR, tc.count)
@@ -59,7 +59,7 @@ func TestToStopIdStopAttributes(t *testing.T) {
 		if _, err := db.Exec("DROP TABLE stops"); err != nil {
 			t.Fatal(err)
 		}
-		if err := checks.ToStopIdValid(ctx, config.Rule(id)); err == nil {
+		if err := checks.ToStopIdForeign(ctx, config.Rule(id)); err == nil {
 			t.Fatal("SQLite failure swallowed")
 		}
 	})

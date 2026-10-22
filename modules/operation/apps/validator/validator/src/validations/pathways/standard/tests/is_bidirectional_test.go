@@ -9,7 +9,7 @@ import (
 )
 
 func TestIsBidirectionalValid(t *testing.T) {
-	const id = "pathway_is_bidirectional_valid_gtfs_enum"
+	const id = "pathways_is_bidirectional_valid"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -34,7 +34,7 @@ func TestIsBidirectionalValid(t *testing.T) {
 	testutils.CheckInvalid(t, id, "is_bidirectional", checks.IsBidirectionalValid, map[string]any{"is_bidirectional": "bad", "pathway_mode": "2"})
 }
 func TestIsBidirectionalOptions(t *testing.T) {
-	const id = "pathway_is_bidirectional_valid_gtfs_enum"
+	const id = "pathways_is_bidirectional_valid"
 	for _, tc := range []struct {
 		options []string
 		count   int
@@ -49,7 +49,7 @@ func TestIsBidirectionalOptions(t *testing.T) {
 	}
 }
 func TestExitGateDirection(t *testing.T) {
-	const id = "pathway_is_bidirectional_valid_gtfs_enum"
+	const id = "pathways_is_bidirectional_valid"
 	for _, tc := range []struct {
 		mode     any
 		wildcard bool

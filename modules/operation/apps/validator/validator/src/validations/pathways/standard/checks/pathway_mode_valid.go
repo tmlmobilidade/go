@@ -38,7 +38,7 @@ func PathwayModeValid(db *services.SQLiteContext, rules *types.RuleContext) erro
 	//
 	// 1. Get the rule
 
-	const ruleID = "pathway_mode_valid_gtfs_enum"
+	const ruleID = "pathways_pathway_mode_valid"
 
 	//
 	// 2. Create the validation context

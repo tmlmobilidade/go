@@ -10,7 +10,7 @@ import (
 
 func TestRowLocalDependencies(t *testing.T) {
 	const presence = "pathways_pathway_mode_field"
-	const value = "pathway_traversal_time_non_negative_seconds"
+	const value = "pathways_traversal_time_valid"
 	config := testutils.Config(presence, types.SEVERITY_INFO)
 	config.SetRule(value, types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{presence}})
 	db, _ := testutils.Fixture(t, map[string]any{"pathway_mode": "", "traversal_time": "bad"}, config)
@@ -38,7 +38,7 @@ func TestRowLocalDependencies(t *testing.T) {
 	}
 }
 func TestMalformedValueDoesNotSkipOtherChecks(t *testing.T) {
-	ids := []string{"pathway_traversal_time_non_negative_seconds", "pathway_mode_valid_gtfs_enum", "pathway_from_stop_id_references_stops_table"}
+	ids := []string{"pathways_traversal_time_valid", "pathways_pathway_mode_valid", "pathways_from_stop_id_foreign"}
 	config := &types.GtfsRules{}
 	for _, id := range ids {
 		config.SetRule(id, types.RuleContext{Severity: types.SEVERITY_ERROR})
@@ -65,16 +65,16 @@ func TestRunnerRegistersEveryCheck(t *testing.T) {
 		{"pathways_is_bidirectional_field", "is_bidirectional", ""},
 		{"pathways_signposted_as_field", "signposted_as", ""},
 		{"pathways_pathway_mode_field", "pathway_mode", ""},
-		{"pathway_max_slope_allowed_for_pathway_mode", "max_slope", "bad"},
-		{"pathway_traversal_time_non_negative_seconds", "traversal_time", "bad"},
-		{"pathway_to_stop_id_references_stops_table", "to_stop_id", "bad"},
-		{"pathway_length_non_negative", "length", "bad"},
-		{"pathway_min_width_positive", "min_width", "bad"},
-		{"pathway_stair_count", "stair_count", "bad"},
-		{"pathway_from_stop_id_references_stops_table", "from_stop_id", "bad"},
-		{"pathway_id_unique", "pathway_id", "A"},
-		{"pathway_is_bidirectional_valid_gtfs_enum", "is_bidirectional", "bad"},
-		{"pathway_mode_valid_gtfs_enum", "pathway_mode", "bad"},
+		{"pathways_max_slope_valid", "max_slope", "bad"},
+		{"pathways_traversal_time_valid", "traversal_time", "bad"},
+		{"pathways_to_stop_id_foreign", "to_stop_id", "bad"},
+		{"pathways_length_valid", "length", "bad"},
+		{"pathways_min_width_valid", "min_width", "bad"},
+		{"pathways_stair_count_valid", "stair_count", "bad"},
+		{"pathways_from_stop_id_foreign", "from_stop_id", "bad"},
+		{"pathways_pathway_id_unique", "pathway_id", "A"},
+		{"pathways_is_bidirectional_valid", "is_bidirectional", "bad"},
+		{"pathways_pathway_mode_valid", "pathway_mode", "bad"},
 	} {
 		t.Run(tc.id, func(t *testing.T) {
 			config := testutils.Config(tc.id, types.SEVERITY_ERROR)
@@ -82,7 +82,7 @@ func TestRunnerRegistersEveryCheck(t *testing.T) {
 			values[tc.field] = tc.value
 			db, _ := testutils.Fixture(t, values, config)
 			count := uint64(1)
-			if tc.id == "pathway_id_unique" {
+			if tc.id == "pathways_pathway_id_unique" {
 				if _, err := db.Exec("INSERT INTO pathways(pathway_id) VALUES ('A')"); err != nil {
 					t.Fatal(err)
 				}
