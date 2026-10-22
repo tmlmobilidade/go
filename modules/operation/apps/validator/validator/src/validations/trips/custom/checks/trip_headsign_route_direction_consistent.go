@@ -22,20 +22,41 @@ Trips with the same route_id and direction_id must share one trip_headsign.
 Missing values and invalid directions are handled by their own rules.
 */
 func TripHeadsignRouteDirectionConsistent(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "trip_headsign_consistent_per_route_direction"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("trip_headsign", "trips.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Check if the trip_headsign validation should run
+
 	if ctx.ShouldSkip() {
 		return nil
 	}
+
+	//
+	// 4. Get the route_id value
+
 	route, err := db.Trips.Field("route_id")
 	if err != nil {
 		return err
 	}
 	values := map[int]map[string]bool{}
 	firstRows := map[int]int{}
+
+	//
+	// 5. Collect trip_headsign values for the route_id group
+
 	err = trips_utils.ForGroup(db, "route_id", func(row *services.SQLiteRow) error {
 		fields, err := row.Fields("trip_headsign", "direction_id")
 		if err != nil {
@@ -60,6 +81,10 @@ func TripHeadsignRouteDirectionConsistent(db *services.SQLiteContext, rules *typ
 	if err != nil {
 		return err
 	}
+
+	//
+	// 6. Check the trip_headsign values for each direction
+
 	for direction := 0; direction <= 1; direction++ {
 		if len(values[direction]) <= 1 {
 			continue
@@ -75,5 +100,9 @@ func TripHeadsignRouteDirectionConsistent(db *services.SQLiteContext, rules *typ
 		sort.Strings(keys)
 		groupCtx.AddMessageWithSeverity(groupCtx.GetTranslatedMessage("inconsistent_direction", route, direction, "trip_headsign", strings.Join(keys, ", ")))
 	}
+
+	//
+	// 7. Return success
+
 	return nil
 }

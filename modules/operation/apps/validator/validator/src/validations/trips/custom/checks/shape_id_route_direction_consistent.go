@@ -22,20 +22,41 @@ Trips with the same route_id and direction_id must share one shape_id.
 Missing values and invalid directions are handled by their own rules.
 */
 func ShapeIdRouteDirectionConsistent(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "trips_shape_id_consistent_per_route_direction"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("shape_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Check if the shape_id validation should run
+
 	if ctx.ShouldSkip() {
 		return nil
 	}
+
+	//
+	// 4. Get the route_id value
+
 	route, err := db.Trips.Field("route_id")
 	if err != nil {
 		return err
 	}
 	values := map[int]map[string]bool{}
 	firstRows := map[int]int{}
+
+	//
+	// 5. Collect shape_id values for the route_id group
+
 	err = trips_utils.ForGroup(db, "route_id", func(row *services.SQLiteRow) error {
 		fields, err := row.Fields("shape_id", "direction_id")
 		if err != nil {
@@ -60,6 +81,10 @@ func ShapeIdRouteDirectionConsistent(db *services.SQLiteContext, rules *types.Ru
 	if err != nil {
 		return err
 	}
+
+	//
+	// 6. Check the shape_id values for each direction
+
 	for direction := 0; direction <= 1; direction++ {
 		if len(values[direction]) <= 1 {
 			continue
@@ -75,5 +100,9 @@ func ShapeIdRouteDirectionConsistent(db *services.SQLiteContext, rules *types.Ru
 		sort.Strings(keys)
 		groupCtx.AddMessageWithSeverity(groupCtx.GetTranslatedMessage("inconsistent_direction", route, direction, "shape_id", strings.Join(keys, ", ")))
 	}
+
+	//
+	// 7. Return success
+
 	return nil
 }

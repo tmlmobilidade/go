@@ -10,32 +10,40 @@ import (
 	"strings"
 )
 
-/*
-# Attributes
-  - File: [trips.txt]
-  - Field: direction_id
-  - Presence: Optional
-  - Type: Enum
-
-# Description
-
-Validates if direction_id is unique within each pattern_id.
-All trips with the same pattern_id must have the same direction_id.
-If a pattern_id has trips with different direction_ids, report error.
-*/
 func DirectionIdPatternConsistent(db *services.SQLiteContext, rules *types.RuleContext) error {
-	const ruleID = "trips_direction_id_consistent_for_all_patterns_in_trips"
+	//
+
+	//
+	// 1. Get the rule
+
+	const ruleID = "trips_direction_id_pattern_consistent"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("direction_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Check if the direction_id is consistent for all patterns in trips
+
 	if ctx.ShouldSkip() {
 		return nil
 	}
+
+	//
+	// 4. Get the pattern_id value
+
 	pattern, err := db.Trips.Field("pattern_id")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 5. Check if the direction_id is consistent for all patterns in trips
+
 	values := map[string]bool{}
 	err = trips_utils.ForGroup(db, "pattern_id", func(row *services.SQLiteRow) error {
 		value, err := row.Field("direction_id")
@@ -52,9 +60,14 @@ func DirectionIdPatternConsistent(db *services.SQLiteContext, rules *types.RuleC
 		}
 		return nil
 	})
+
 	if err != nil {
 		return err
 	}
+
+	//
+	// 6. Check if the direction_id is consistent for all patterns in trips
+
 	if len(values) > 1 {
 		keys := make([]string, 0, len(values))
 		for value := range values {
@@ -63,5 +76,9 @@ func DirectionIdPatternConsistent(db *services.SQLiteContext, rules *types.RuleC
 		sort.Slice(keys, func(i, j int) bool { a, _ := strconv.Atoi(keys[i]); b, _ := strconv.Atoi(keys[j]); return a < b })
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("different_direction_ids_in_pattern", pattern, strings.Join(keys, ", ")))
 	}
+
+	//
+	// 7. Return success
+
 	return nil
 }

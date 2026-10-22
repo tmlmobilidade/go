@@ -22,10 +22,10 @@ func WheelchairAccessibleValid(db *services.SQLiteContext, rules *types.RuleCont
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
-	
+
 	//
 	// 3. Get the wheelchair_accessible value
-	
+
 	value, err := db.Trips.Field("wheelchair_accessible")
 	if err != nil {
 		return err
@@ -41,7 +41,7 @@ func WheelchairAccessibleValid(db *services.SQLiteContext, rules *types.RuleCont
 	}
 
 	//
-	// 6. Return success
+	// 5. Return success
 
 	return nil
 }

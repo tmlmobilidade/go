@@ -20,24 +20,55 @@ import (
 Validates if the pattern_id is in the correct format. Must be in the defalut format "X at XXXX_X_X" or the formats specified in the rules.
 */
 func PatternIdFormat(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "trips_pattern_id_matches_feed_pattern_id_syntax"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("pattern_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the pattern_id value
+
 	value, err := db.Trips.Field("pattern_id")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Skip empty pattern_id values
+
 	if value == "" {
 		return nil
 	}
+
+	//
+	// 5. Check if the pattern_id validation should run
+
 	if ctx.ShouldSkip() {
 		return nil
 	}
-	// 3. Validate pattern_id is valid
+
+	//
+	// 6. Get the default pattern_id format
+
 	expectedFormat := defaultPatternIDFormat
+
+	//
+	// 7. Get the default pattern_id expression
+
 	allowedRegexes := []*regexp.Regexp{regexp.MustCompile(defaultPatternIDRegex)}
+
+	//
+	// 8. Check the configured pattern_id options
 
 	if rules != nil && rules.Options != nil && len(*rules.Options) > 0 {
 		expectedFormats := make([]string, 0)
@@ -59,8 +90,14 @@ func PatternIdFormat(db *services.SQLiteContext, rules *types.RuleContext) error
 		}
 	}
 
-	// 4. Validate pattern_id is valid
+	//
+	// 9. Initialize the pattern_id format result
+
 	isValidFormat := false
+
+	//
+	// 10. Check the pattern_id against the allowed expressions
+
 	for _, allowedRegex := range allowedRegexes {
 		if allowedRegex.MatchString(value) {
 			isValidFormat = true
@@ -68,11 +105,17 @@ func PatternIdFormat(db *services.SQLiteContext, rules *types.RuleContext) error
 		}
 	}
 
-	// 5. Validate pattern_id is invalid
+	//
+	// 11. Report an invalid pattern_id format
+
 	if !isValidFormat {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", expectedFormat, value))
 		return nil
 	}
+
+	//
+	// 12. Return success
+
 	return nil
 }
 

@@ -35,22 +35,55 @@ Both directions of a route reference a shape named after the route and the direc
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func ShapeIdRouteDirectionMatch(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "trips_shape_id_matches_route_id_and_direction_id"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("shape_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the shape_id, route_id, direction_id values
+
 	values, err := db.Trips.Fields("shape_id", "route_id", "direction_id")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Convert the direction_id to an integer
+
 	direction, err := strconv.Atoi(values["direction_id"])
+
+	//
+	// 5. Check if the shape_id validation should run
+
 	if values["shape_id"] == "" || values["route_id"] == "" || err != nil || direction < 0 || direction > 1 || ctx.ShouldSkip() {
 		return nil
 	}
+
+	//
+	// 6. Build the expected shape_id value
+
 	expected := fmt.Sprintf("%s_%d", values["route_id"], direction)
+
+	//
+	// 7. Check if the shape_id matches the route and direction
+
 	if values["shape_id"] != expected {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_matching", values["shape_id"], expected, values["route_id"], direction))
 	}
+
+	//
+	// 8. Return success
+
 	return nil
 }
