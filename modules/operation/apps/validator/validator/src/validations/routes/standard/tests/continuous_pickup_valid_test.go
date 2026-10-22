@@ -8,7 +8,7 @@ import (
 )
 
 func TestContinuousPickupValid(t *testing.T) {
-	const id = "routes_continuous_pickup_valid_gtfs_enum"
+	const id = "routes_continuous_pickup_valid"
 	for _, tc := range []struct {
 		name     string
 		value    any
@@ -48,7 +48,7 @@ func TestContinuousPickupValid(t *testing.T) {
 				values["continuous_pickup"] = tc.value
 			}
 			_, ctx := testutils.Fixture(t, values, config)
-			if err := checks.ContinuousPickupValid(ctx, config.Rule("routes_continuous_pickup_valid_gtfs_enum"), tc.windows); err != nil {
+			if err := checks.ContinuousPickupValid(ctx, config.Rule("routes_continuous_pickup_valid"), tc.windows); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "continuous_pickup", tc.severity, tc.count)
@@ -57,7 +57,7 @@ func TestContinuousPickupValid(t *testing.T) {
 	for name, config := range map[string]*types.GtfsRules{"NilRules": nil, "MissingRule": {}} {
 		t.Run(name, func(t *testing.T) {
 			_, ctx := testutils.Fixture(t, map[string]any{"continuous_pickup": ""}, config)
-			if err := checks.ContinuousPickupValid(ctx, config.Rule("routes_continuous_pickup_valid_gtfs_enum"), nil); err != nil {
+			if err := checks.ContinuousPickupValid(ctx, config.Rule("routes_continuous_pickup_valid"), nil); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "continuous_pickup", types.SEVERITY_IGNORE, 0)
@@ -67,7 +67,7 @@ func TestContinuousPickupValid(t *testing.T) {
 		config := testutils.Config(id, types.SEVERITY_ERROR)
 		connection, ctx := testutils.Fixture(t, map[string]any{"continuous_pickup": "0"}, config)
 		connection.Close()
-		if err := checks.ContinuousPickupValid(ctx, config.Rule("routes_continuous_pickup_valid_gtfs_enum"), nil); err == nil {
+		if err := checks.ContinuousPickupValid(ctx, config.Rule("routes_continuous_pickup_valid"), nil); err == nil {
 			t.Fatal("SQLite error was swallowed")
 		}
 		testutils.AssertFindings(t, id, "continuous_pickup", types.SEVERITY_ERROR, 0)

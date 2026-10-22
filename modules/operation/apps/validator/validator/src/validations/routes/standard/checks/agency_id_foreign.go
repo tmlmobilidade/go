@@ -12,7 +12,7 @@ func AgencyIdUnique(db *services.SQLiteContext, rules *types.RuleContext) error 
 	//
 	// 1. Get the rule
 
-	const ruleID = "routes_agency_id_unique"
+	const ruleID = "routes_agency_id_foreign"
 
 	//
 	// 2. Create the validation context

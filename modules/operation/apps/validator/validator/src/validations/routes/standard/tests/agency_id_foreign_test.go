@@ -8,7 +8,7 @@ import (
 )
 
 func TestAgencyIdUnique(t *testing.T) {
-	const id = "routes_agency_id_unique"
+	const id = "routes_agency_id_foreign"
 	for _, tc := range []struct {
 		name   string
 		values map[string]any
@@ -24,7 +24,7 @@ func TestAgencyIdUnique(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
 
-			if err := checks.AgencyIdUnique(ctx, config.Rule("routes_agency_id_unique")); err != nil {
+			if err := checks.AgencyIdUnique(ctx, config.Rule("routes_agency_id_foreign")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "agency_id", types.SEVERITY_ERROR, tc.count)

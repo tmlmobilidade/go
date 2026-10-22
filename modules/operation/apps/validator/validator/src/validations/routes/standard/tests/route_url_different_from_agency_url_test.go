@@ -8,7 +8,7 @@ import (
 )
 
 func TestRouteUrlDifferentAgencyUrl(t *testing.T) {
-	const id = "routes_route_url_different_agency_url"
+	const id = "routes_route_url_different_from_agency_url"
 	for _, tc := range []struct {
 		name   string
 		values map[string]any
@@ -25,7 +25,7 @@ func TestRouteUrlDifferentAgencyUrl(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
 
-			if err := checks.RouteUrlDifferentAgencyUrl(ctx, config.Rule("routes_route_url_different_agency_url")); err != nil {
+			if err := checks.RouteUrlDifferentAgencyUrl(ctx, config.Rule("routes_route_url_different_from_agency_url")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "route_url", types.SEVERITY_ERROR, tc.count)

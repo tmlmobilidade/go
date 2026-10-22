@@ -12,7 +12,7 @@ func RouteUrlDifferentAgencyUrl(db *services.SQLiteContext, rules *types.RuleCon
 	//
 	// 1. Get the rule
 
-	const ruleID = "routes_route_url_different_agency_url"
+	const ruleID = "routes_route_url_different_from_agency_url"
 
 	//
 	// 2. Create the validation context

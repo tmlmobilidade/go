@@ -122,14 +122,14 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 
 			//
 			// Standard
-			"routes_agency_id_unique": func() {
-				check("routes_agency_id_unique", routes_standard.AgencyIdUnique(db, gtfsRules.Rule("routes_agency_id_unique")))
+			"routes_agency_id_foreign": func() {
+				check("routes_agency_id_foreign", routes_standard.AgencyIdUnique(db, gtfsRules.Rule("routes_agency_id_foreign")))
 			},
-			"routes_continuous_drop_off_valid_gtfs_enum": func() {
-				check("routes_continuous_drop_off_valid_gtfs_enum", routes_standard.ContinuousDropOffValid(db, gtfsRules.Rule("routes_continuous_drop_off_valid_gtfs_enum"), routesWithWindows))
+			"routes_continuous_drop_off_valid": func() {
+				check("routes_continuous_drop_off_valid", routes_standard.ContinuousDropOffValid(db, gtfsRules.Rule("routes_continuous_drop_off_valid"), routesWithWindows))
 			},
-			"routes_continuous_pickup_valid_gtfs_enum": func() {
-				check("routes_continuous_pickup_valid_gtfs_enum", routes_standard.ContinuousPickupValid(db, gtfsRules.Rule("routes_continuous_pickup_valid_gtfs_enum"), routesWithWindows))
+			"routes_continuous_pickup_valid": func() {
+				check("routes_continuous_pickup_valid", routes_standard.ContinuousPickupValid(db, gtfsRules.Rule("routes_continuous_pickup_valid"), routesWithWindows))
 			},
 			"routes_network_id_foreign": func() {
 				check("routes_network_id_foreign", routes_standard.NetworkIdForeign(db, gtfsRules.Rule("routes_network_id_foreign")))
@@ -149,8 +149,8 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 			"routes_route_type_valid": func() {
 				check("routes_route_type_valid", routes_standard.RouteTypeValid(db, gtfsRules.Rule("routes_route_type_valid")))
 			},
-			"routes_route_url_different_agency_url": func() {
-				check("routes_route_url_different_agency_url", routes_standard.RouteUrlDifferentAgencyUrl(db, gtfsRules.Rule("routes_route_url_different_agency_url")))
+			"routes_route_url_different_from_agency_url": func() {
+				check("routes_route_url_different_from_agency_url", routes_standard.RouteUrlDifferentAgencyUrl(db, gtfsRules.Rule("routes_route_url_different_from_agency_url")))
 			},
 			"routes_route_url_valid": func() {
 				check("routes_route_url_valid", routes_standard.RouteUrlValid(db, gtfsRules.Rule("routes_route_url_valid")))

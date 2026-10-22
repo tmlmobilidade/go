@@ -37,7 +37,7 @@ func ContinuousDropOffValid(db *services.SQLiteContext, rules *types.RuleContext
 	//
 	// 1. Get the rule
 
-	const ruleID = "routes_continuous_drop_off_valid_gtfs_enum"
+	const ruleID = "routes_continuous_drop_off_valid"
 
 	//
 	// 2. Create the validation context
