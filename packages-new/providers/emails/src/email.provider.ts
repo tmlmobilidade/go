@@ -82,7 +82,7 @@ export class EmailProvider {
 	/**
 	 * Create an SMTP transporter with the current OAuth2 access token.
 	 */
-	private createSmtpTransporter(accessToken: string): nodemailer.Transporter {
+	private createSmtpTransporter(accessToken: string): Transporter {
 		return createTransport(
 			{
 				auth: {
@@ -93,7 +93,6 @@ export class EmailProvider {
 					type: 'OAuth2',
 					user: process.env.TML_PROVIDER_EMAIL_AUTH_USER,
 				},
-				from: process.env.TML_PROVIDER_EMAIL_FROM,
 				host: process.env.TML_PROVIDER_EMAIL_SERVER_HOST,
 				port: Number(process.env.TML_PROVIDER_EMAIL_SERVER_PORT),
 			},
