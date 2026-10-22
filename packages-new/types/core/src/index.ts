@@ -7,4 +7,5 @@ export * from './notifications/index.js';
 export * from './organizations/index.js';
 export * from './platform/index.js';
 export * from './roles/index.js';
+export * from './simplified-agencies/index.js';
 export * from './users/index.js';
