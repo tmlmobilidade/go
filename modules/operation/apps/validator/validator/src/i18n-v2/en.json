@@ -1580,5 +1580,34 @@
 		"invalid": "Field \"start_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
 		"recommended": "Field \"start_time\" is recommended",
 		"required": "Field \"start_time\" is required"
+	},
+	"levels_level_id_field": {
+		"informational": "The level_id field is informational",
+		"recommended": "The level_id field is recommended",
+		"required": "The level_id field is required"
+	},
+	"levels_level_index_field": {
+		"informational": "The level_index field is informational",
+		"recommended": "The level_index field is recommended",
+		"required": "The level_index field is required"
+	},
+	"levels_level_name_field": {
+		"informational": "The level_name field is informational",
+		"recommended": "The level_name field is recommended",
+		"required": "The level_name field is required"
+	},
+	"level_id_unique": {
+		"duplicate": "Duplicate field \"level_id\" \"%s\" found. Field \"level_id\" must be unique",
+		"forbidden": "Field \"level_id\" is forbidden",
+		"generic": "The \"level_id\" field must be unique across levels.txt.",
+		"recommended": "Field \"level_id\" is recommended",
+		"required": "Field \"level_id\" is required"
+	},
+	"level_index_required": {
+		"forbidden": "Field \"level_index\" is forbidden",
+		"generic": "The \"level_index\" field must be present and contain a valid number.",
+		"invalid": "Field \"level_index\" must be a non-negative integer",
+		"recommended": "Field \"level_index\" is recommended",
+		"required": "Field \"level_index\" is required"
 	}
 }

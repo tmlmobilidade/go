@@ -1580,5 +1580,34 @@
 		"invalid": "El campo \"start_time\" debe ser una hora válida con el formato HH:MM:SS; se recibió: %s",
 		"recommended": "Se recomienda el campo \"start_time\"",
 		"required": "El campo \"start_time\" es obligatorio"
+	},
+	"levels_level_id_field": {
+		"informational": "El campo level_id es informativo",
+		"recommended": "El campo level_id es recomendado",
+		"required": "El campo level_id es requerido"
+	},
+	"levels_level_index_field": {
+		"informational": "El campo level_index es informativo",
+		"recommended": "El campo level_index es recomendado",
+		"required": "El campo level_index es requerido"
+	},
+	"levels_level_name_field": {
+		"informational": "El campo level_name es informativo",
+		"recommended": "El campo level_name es recomendado",
+		"required": "El campo level_name es requerido"
+	},
+	"level_id_unique": {
+		"duplicate": "Se encontró el campo \"level_id\" \"%s\" duplicado. El campo \"level_id\" debe ser único",
+		"forbidden": "El campo \"level_id\" está prohibido",
+		"generic": "El campo \"level_id\" debe ser único en levels.txt.",
+		"recommended": "Se recomienda el campo \"level_id\"",
+		"required": "El campo \"level_id\" es obligatorio"
+	},
+	"level_index_required": {
+		"forbidden": "El campo \"level_index\" está prohibido",
+		"generic": "El campo \"level_index\" debe estar presente y contener un número válido.",
+		"invalid": "El campo \"level_index\" debe ser un número entero no negativo",
+		"recommended": "Se recomienda el campo \"level_index\"",
+		"required": "El campo \"level_index\" es obligatorio"
 	}
 }
