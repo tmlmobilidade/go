@@ -35,7 +35,6 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-postgres": "*",
-		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-utils-exec": "*"
 	},
 	"devDependencies": {
