@@ -5,14 +5,14 @@ import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { render } from 'react-email';
 
-import { DebugCode } from '../components/DebugCode/index.js';
-import { Greeting } from '../components/Greeting/index.js';
-import { MainButton } from '../components/MainButton/index.js';
-import { Paragraph } from '../components/Paragraph/index.js';
-import { Span } from '../components/Span/index.js';
-import { Wrapper } from '../components/Wrapper/index.js';
-import { emailProvider } from '../email.provider.js';
-import { type SendEmailProps } from '../types.js';
+import { DebugCode } from '../../components/DebugCode/index.js';
+import { Greeting } from '../../components/Greeting/index.js';
+import { MainButton } from '../../components/MainButton/index.js';
+import { Paragraph } from '../../components/Paragraph/index.js';
+import { Span } from '../../components/Span/index.js';
+import { Wrapper } from '../../components/Wrapper/index.js';
+import { emailProvider } from '../../email.provider.js';
+import { type SendEmailProps } from '../../types.js';
 
 /* * */
 

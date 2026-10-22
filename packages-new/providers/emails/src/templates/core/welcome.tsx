@@ -3,14 +3,14 @@
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { render } from 'react-email';
 
-import { Anchor } from '../components/Anchor/index.js';
-import { Greeting } from '../components/Greeting/index.js';
-import { MainButton } from '../components/MainButton/index.js';
-import { Paragraph } from '../components/Paragraph/index.js';
-import { Wrapper } from '../components/Wrapper/index.js';
-import { GO_HOMEPAGE_URL } from '../constants.js';
-import { emailProvider } from '../email.provider.js';
-import { type SendEmailProps } from '../types.js';
+import { Anchor } from '../../components/Anchor/index.js';
+import { Greeting } from '../../components/Greeting/index.js';
+import { MainButton } from '../../components/MainButton/index.js';
+import { Paragraph } from '../../components/Paragraph/index.js';
+import { Wrapper } from '../../components/Wrapper/index.js';
+import { GO_HOMEPAGE_URL } from '../../constants.js';
+import { emailProvider } from '../../email.provider.js';
+import { type SendEmailProps } from '../../types.js';
 
 /* * */
 
