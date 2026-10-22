@@ -1609,5 +1609,65 @@
 		"invalid": "Field \"level_index\" must be a non-negative integer",
 		"recommended": "Field \"level_index\" is recommended",
 		"required": "Field \"level_index\" is required"
+	},
+	"fare_rules_fare_id_field": {
+		"informational": "The fare_id field is informational",
+		"recommended": "The fare_id field is recommended",
+		"required": "The fare_id field is required"
+	},
+	"fare_rules_route_id_field": {
+		"informational": "The route_id field is informational",
+		"recommended": "The route_id field is recommended",
+		"required": "The route_id field is required"
+	},
+	"fare_rules_origin_id_field": {
+		"informational": "The origin_id field is informational",
+		"recommended": "The origin_id field is recommended",
+		"required": "The origin_id field is required"
+	},
+	"fare_rules_destination_id_field": {
+		"informational": "The destination_id field is informational",
+		"recommended": "The destination_id field is recommended",
+		"required": "The destination_id field is required"
+	},
+	"fare_rules_contains_id_field": {
+		"informational": "The contains_id field is informational",
+		"recommended": "The contains_id field is recommended",
+		"required": "The contains_id field is required"
+	},
+	"fare_rule_fare_id_references_fare_attributes": {
+		"forbidden": "Field \"fare_id\" is forbidden",
+		"generic": "The \"fare_id\" field must reference a fare defined in fare_attributes.txt.",
+		"invalid": "Field \"fare_id\" \"%s\" is not a valid fare_id from fare_attributes.txt",
+		"recommended": "Field \"fare_id\" is recommended",
+		"required": "Field \"fare_id\" is required"
+	},
+	"fare_rule_route_id_references_routes": {
+		"forbidden": "Field \"route_id\" is forbidden",
+		"generic": "The \"route_id\" field must reference a route defined in routes.txt.",
+		"invalid": "Field \"route_id\" \"%s\" is not a valid route_id from routes.txt",
+		"recommended": "Field \"route_id\" is recommended",
+		"required": "Field \"route_id\" is required"
+	},
+	"fare_rule_origin_id_references_zones_stops": {
+		"forbidden": "Field \"origin_id\" is forbidden",
+		"generic": "The \"origin_id\" field must reference a zone defined in stops.txt.",
+		"invalid": "Field \"origin_id\" \"%s\" must be a valid ID from stops.txt",
+		"recommended": "Field \"origin_id\" is recommended",
+		"required": "Field \"origin_id\" is required"
+	},
+	"fare_rule_destination_id_references_zones_stops": {
+		"forbidden": "Field \"destination_id\" is forbidden",
+		"generic": "The \"destination_id\" field must reference a zone defined in stops.txt.",
+		"invalid": "Field \"destination_id\" \"%s\" must be a valid ID from stops.txt",
+		"recommended": "Field \"destination_id\" is recommended",
+		"required": "Field \"destination_id\" is required"
+	},
+	"fare_rule_contains_id_references_zones_stops": {
+		"forbidden": "Field \"contains_id\" is forbidden",
+		"generic": "The \"contains_id\" field must reference a zone defined in stops.txt.",
+		"invalid": "Field \"contains_id\" \"%s\" must be a valid ID from stops.txt",
+		"recommended": "Field \"contains_id\" is recommended",
+		"required": "Field \"contains_id\" is required"
 	}
 }

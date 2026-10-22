@@ -1609,5 +1609,65 @@
 		"invalid": "El campo \"level_index\" debe ser un número entero no negativo",
 		"recommended": "Se recomienda el campo \"level_index\"",
 		"required": "El campo \"level_index\" es obligatorio"
+	},
+	"fare_rules_fare_id_field": {
+		"informational": "El campo fare_id es informativo",
+		"recommended": "El campo fare_id es recomendado",
+		"required": "El campo fare_id es requerido"
+	},
+	"fare_rules_route_id_field": {
+		"informational": "El campo route_id es informativo",
+		"recommended": "El campo route_id es recomendado",
+		"required": "El campo route_id es requerido"
+	},
+	"fare_rules_origin_id_field": {
+		"informational": "El campo origin_id es informativo",
+		"recommended": "El campo origin_id es recomendado",
+		"required": "El campo origin_id es requerido"
+	},
+	"fare_rules_destination_id_field": {
+		"informational": "El campo destination_id es informativo",
+		"recommended": "El campo destination_id es recomendado",
+		"required": "El campo destination_id es requerido"
+	},
+	"fare_rules_contains_id_field": {
+		"informational": "El campo contains_id es informativo",
+		"recommended": "El campo contains_id es recomendado",
+		"required": "El campo contains_id es requerido"
+	},
+	"fare_rule_fare_id_references_fare_attributes": {
+		"forbidden": "El campo \"fare_id\" está prohibido",
+		"generic": "El campo \"fare_id\" debe hacer referencia a una tarifa definida en fare_attributes.txt.",
+		"invalid": "El campo \"fare_id\" \"%s\" no es un fare_id válido de fare_attributes.txt",
+		"recommended": "Se recomienda el campo \"fare_id\"",
+		"required": "El campo \"fare_id\" es obligatorio"
+	},
+	"fare_rule_route_id_references_routes": {
+		"forbidden": "El campo \"route_id\" está prohibido",
+		"generic": "El campo \"route_id\" debe hacer referencia a una ruta definida en routes.txt.",
+		"invalid": "El campo \"route_id\" \"%s\" no es un route_id válido de routes.txt",
+		"recommended": "Se recomienda el campo \"route_id\"",
+		"required": "El campo \"route_id\" es obligatorio"
+	},
+	"fare_rule_origin_id_references_zones_stops": {
+		"forbidden": "El campo \"origin_id\" está prohibido",
+		"generic": "El campo \"origin_id\" debe hacer referencia a una zona definida en stops.txt.",
+		"invalid": "El campo \"origin_id\" \"%s\" debe ser un identificador válido de stops.txt",
+		"recommended": "Se recomienda el campo \"origin_id\"",
+		"required": "El campo \"origin_id\" es obligatorio"
+	},
+	"fare_rule_destination_id_references_zones_stops": {
+		"forbidden": "El campo \"destination_id\" está prohibido",
+		"generic": "El campo \"destination_id\" debe hacer referencia a una zona definida en stops.txt.",
+		"invalid": "El campo \"destination_id\" \"%s\" debe ser un identificador válido de stops.txt",
+		"recommended": "Se recomienda el campo \"destination_id\"",
+		"required": "El campo \"destination_id\" es obligatorio"
+	},
+	"fare_rule_contains_id_references_zones_stops": {
+		"forbidden": "El campo \"contains_id\" está prohibido",
+		"generic": "El campo \"contains_id\" debe hacer referencia a una zona definida en stops.txt.",
+		"invalid": "El campo \"contains_id\" \"%s\" debe ser un identificador válido de stops.txt",
+		"recommended": "Se recomienda el campo \"contains_id\"",
+		"required": "El campo \"contains_id\" es obligatorio"
 	}
 }
