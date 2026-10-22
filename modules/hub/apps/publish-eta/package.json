@@ -18,7 +18,6 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/external": "*",
-		"@tmlmobilidade/go-clients-ssh": "*",
 		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
@@ -26,15 +25,9 @@
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-hub": "*",
-		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-sql": "*",
-		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/gtfs-rt": "*",
-		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/go-utils-sql": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
