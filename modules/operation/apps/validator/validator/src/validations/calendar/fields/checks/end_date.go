@@ -37,7 +37,7 @@ func EndDateValidation(db *services.SQLiteContext, rules *types.RuleContext) err
 	}
 
 	//
-	// 2. Get the date value
+	// 3. Get the date value
 
 	date, err := db.Calendar.Field("end_date")
 	if err != nil {
@@ -45,7 +45,7 @@ func EndDateValidation(db *services.SQLiteContext, rules *types.RuleContext) err
 	}
 
 	//
-	// 3. Validate date is present
+	// 4. Validate date is present
 
 	if date == "" {
 		if ctx.ShouldSkip() {
@@ -58,7 +58,7 @@ func EndDateValidation(db *services.SQLiteContext, rules *types.RuleContext) err
 	}
 
 	//
-	// 4. Return success
+	// 5. Return success
 
 	return nil
 }

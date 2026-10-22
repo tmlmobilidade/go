@@ -55,7 +55,7 @@ func DateValidFormat(db *services.SQLiteContext, rules *types.RuleContext) error
 	}
 
 	//
-	// 5. Validate date is a valid service date
+	// 4. Validate date is a valid service date
 
 	if !lib.IsValidServiceDate(startDate) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", startDate))
@@ -66,7 +66,7 @@ func DateValidFormat(db *services.SQLiteContext, rules *types.RuleContext) error
 	}
 
 	//
-	// 6. Return success
+	// 5. Return success
 
 	return nil
 }
