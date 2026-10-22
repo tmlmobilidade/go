@@ -1,9 +1,10 @@
 /* * */
 
-import { type SupportedCountryCode } from '@/levels.js';
-import * as location from '@/location/index.js';
 import { locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { type Location, type LocationItem, type LocationSlot, type LocationTreeNode } from '@tmlmobilidade/go-types-locations';
+
+import { type SupportedCountryCode } from './levels.js';
+import * as location from './location/index.js';
 
 /* * */
 
