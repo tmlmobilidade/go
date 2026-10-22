@@ -9,7 +9,7 @@ import (
 )
 
 func TestFareIdValid(t *testing.T) {
-	const id = "fare_rule_fare_id_references_fare_attributes"
+	const id = "fare_rules_fare_id_foreign"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -17,7 +17,7 @@ func TestFareIdValid(t *testing.T) {
 		t.Run(fmt.Sprint(tc.value), func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, map[string]any{"fare_id": tc.value}, config)
-			if err := checks.FareIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.FareIdForeign(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "fare_id", types.SEVERITY_ERROR, tc.count)
@@ -26,37 +26,37 @@ func TestFareIdValid(t *testing.T) {
 	t.Run("MissingColumn", func(t *testing.T) {
 		config := testutils.Config(id, types.SEVERITY_ERROR)
 		_, ctx := testutils.Fixture(t, nil, config)
-		if err := checks.FareIdValid(ctx, config.Rule(id)); err != nil {
+		if err := checks.FareIdForeign(ctx, config.Rule(id)); err != nil {
 			t.Fatal(err)
 		}
 		testutils.AssertFindings(t, id, "fare_id", types.SEVERITY_ERROR, 0)
 	})
-	testutils.CheckInvalid(t, id, "fare_id", checks.FareIdValid, map[string]any{"fare_id": "missing"})
+	testutils.CheckInvalid(t, id, "fare_id", checks.FareIdForeign, map[string]any{"fare_id": "missing"})
 }
 func TestFareIdLiveReference(t *testing.T) {
-	const id = "fare_rule_fare_id_references_fare_attributes"
+	const id = "fare_rules_fare_id_foreign"
 	config := testutils.Config(id, types.SEVERITY_ERROR)
 	db, ctx := testutils.Fixture(t, map[string]any{"fare_id": "A"}, config)
-	if err := checks.FareIdValid(ctx, config.Rule(id)); err != nil {
+	if err := checks.FareIdForeign(ctx, config.Rule(id)); err != nil {
 		t.Fatal(err)
 	}
 	testutils.AssertFindings(t, id, "fare_id", types.SEVERITY_ERROR, 0)
 	if _, err := db.Exec("DELETE FROM fare_attributes WHERE fare_id='A'"); err != nil {
 		t.Fatal(err)
 	}
-	if err := checks.FareIdValid(ctx, config.Rule(id)); err != nil {
+	if err := checks.FareIdForeign(ctx, config.Rule(id)); err != nil {
 		t.Fatal(err)
 	}
 	testutils.AssertFindings(t, id, "fare_id", types.SEVERITY_ERROR, 1)
 }
 func TestFareIdMissingReferenceTable(t *testing.T) {
-	const id = "fare_rule_fare_id_references_fare_attributes"
+	const id = "fare_rules_fare_id_foreign"
 	config := testutils.Config(id, types.SEVERITY_ERROR)
 	db, ctx := testutils.Fixture(t, map[string]any{"fare_id": "A"}, config)
 	if _, err := db.Exec("DROP TABLE fare_attributes"); err != nil {
 		t.Fatal(err)
 	}
-	if err := checks.FareIdValid(ctx, config.Rule(id)); err == nil {
+	if err := checks.FareIdForeign(ctx, config.Rule(id)); err == nil {
 		t.Fatal("SQLite error swallowed")
 	}
 	testutils.AssertFindings(t, id, "fare_id", types.SEVERITY_ERROR, 0)

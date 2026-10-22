@@ -49,20 +49,20 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"fare_rules_contains_id_field": func() {
 				check("fare_rules_contains_id_field", fare_rules_fields.ContainsIdField(db, rules.Rule("fare_rules_contains_id_field")))
 			},
-			"fare_rule_fare_id_references_fare_attributes": func() {
-				check("fare_rule_fare_id_references_fare_attributes", fare_rules_standard.FareIdValid(db, rules.Rule("fare_rule_fare_id_references_fare_attributes")))
+			"fare_rules_fare_id_foreign": func() {
+				check("fare_rules_fare_id_foreign", fare_rules_standard.FareIdForeign(db, rules.Rule("fare_rules_fare_id_foreign")))
 			},
-			"fare_rule_route_id_references_routes": func() {
-				check("fare_rule_route_id_references_routes", fare_rules_standard.RouteIdValid(db, rules.Rule("fare_rule_route_id_references_routes")))
+			"fare_rules_route_id_foreign": func() {
+				check("fare_rules_route_id_foreign", fare_rules_standard.RouteIdForeign(db, rules.Rule("fare_rules_route_id_foreign")))
 			},
-			"fare_rule_origin_id_references_zones_stops": func() {
-				check("fare_rule_origin_id_references_zones_stops", fare_rules_standard.OriginIdValid(db, rules.Rule("fare_rule_origin_id_references_zones_stops")))
+			"fare_rules_origin_id_foreign": func() {
+				check("fare_rules_origin_id_foreign", fare_rules_standard.OriginIdForeign(db, rules.Rule("fare_rules_origin_id_foreign")))
 			},
-			"fare_rule_destination_id_references_zones_stops": func() {
-				check("fare_rule_destination_id_references_zones_stops", fare_rules_standard.DestinationIdValid(db, rules.Rule("fare_rule_destination_id_references_zones_stops")))
+			"fare_rules_destination_id_foreign": func() {
+				check("fare_rules_destination_id_foreign", fare_rules_standard.DestinationIdForeign(db, rules.Rule("fare_rules_destination_id_foreign")))
 			},
-			"fare_rule_contains_id_references_zones_stops": func() {
-				check("fare_rule_contains_id_references_zones_stops", fare_rules_standard.ContainsIdValid(db, rules.Rule("fare_rule_contains_id_references_zones_stops")))
+			"fare_rules_contains_id_foreign": func() {
+				check("fare_rules_contains_id_foreign", fare_rules_standard.ContainsIdForeign(db, rules.Rule("fare_rules_contains_id_foreign")))
 			},
 		}, nil)
 		return nil

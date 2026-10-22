@@ -10,7 +10,7 @@ import (
 
 func TestRowLocalDependencies(t *testing.T) {
 	const presence = "fare_rules_fare_id_field"
-	const value = "fare_rule_route_id_references_routes"
+	const value = "fare_rules_route_id_foreign"
 	config := testutils.Config(presence, types.SEVERITY_INFO)
 	config.SetRule(value, types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{presence}})
 	db, _ := testutils.Fixture(t, map[string]any{"fare_id": "", "route_id": "missing"}, config)
@@ -40,15 +40,15 @@ func TestRowLocalDependencies(t *testing.T) {
 func TestRunnerRegistersEveryCheck(t *testing.T) {
 	for _, tc := range []struct{ id, field, value string }{
 		{"fare_rules_fare_id_field", "fare_id", ""},
-		{"fare_rule_fare_id_references_fare_attributes", "fare_id", "missing"},
+		{"fare_rules_fare_id_foreign", "fare_id", "missing"},
 		{"fare_rules_route_id_field", "route_id", ""},
-		{"fare_rule_route_id_references_routes", "route_id", "missing"},
+		{"fare_rules_route_id_foreign", "route_id", "missing"},
 		{"fare_rules_origin_id_field", "origin_id", ""},
-		{"fare_rule_origin_id_references_zones_stops", "origin_id", "missing"},
+		{"fare_rules_origin_id_foreign", "origin_id", "missing"},
 		{"fare_rules_destination_id_field", "destination_id", ""},
-		{"fare_rule_destination_id_references_zones_stops", "destination_id", "missing"},
+		{"fare_rules_destination_id_foreign", "destination_id", "missing"},
 		{"fare_rules_contains_id_field", "contains_id", ""},
-		{"fare_rule_contains_id_references_zones_stops", "contains_id", "missing"},
+		{"fare_rules_contains_id_foreign", "contains_id", "missing"},
 	} {
 		t.Run(tc.id, func(t *testing.T) {
 			config := testutils.Config(tc.id, types.SEVERITY_ERROR)

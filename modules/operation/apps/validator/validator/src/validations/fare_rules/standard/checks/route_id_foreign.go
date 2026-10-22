@@ -30,13 +30,13 @@ If fare class "b" is valid on route "TSW" and "TSE", the fare_rules.txt file wou
 [fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
 [routes.route_id]: https://gtfs.org/schedule/reference/#routestxt
 */
-func RouteIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+func RouteIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_rule_route_id_references_routes"
+	const ruleID = "fare_rules_route_id_foreign"
 
 	//
 	// 2. Create the validation context

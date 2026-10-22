@@ -29,13 +29,13 @@ The destination_id and destination_id fields could be used together to specify t
 [fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func DestinationIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+func DestinationIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_rule_destination_id_references_zones_stops"
+	const ruleID = "fare_rules_destination_id_foreign"
 
 	//
 	// 2. Create the validation context

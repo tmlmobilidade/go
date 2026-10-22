@@ -21,13 +21,13 @@ Identifies a fare class.
 [fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
 [fare_attributes.fare_id]: https://gtfs.org/schedule/reference/#fare_attributestxt
 */
-func FareIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+func FareIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_rule_fare_id_references_fare_attributes"
+	const ruleID = "fare_rules_fare_id_foreign"
 
 	//
 	// 2. Create the validation context

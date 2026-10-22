@@ -32,13 +32,13 @@ Because all contains_id zones must be matched for the fare to apply, an itinerar
 [fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func ContainsIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+func ContainsIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_rule_contains_id_references_zones_stops"
+	const ruleID = "fare_rules_contains_id_foreign"
 
 	//
 	// 2. Create the validation context

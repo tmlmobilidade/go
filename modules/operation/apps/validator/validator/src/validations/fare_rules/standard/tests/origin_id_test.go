@@ -9,7 +9,7 @@ import (
 )
 
 func TestOriginIdValid(t *testing.T) {
-	const id = "fare_rule_origin_id_references_zones_stops"
+	const id = "fare_rules_origin_id_foreign"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -17,7 +17,7 @@ func TestOriginIdValid(t *testing.T) {
 		t.Run(fmt.Sprint(tc.value), func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, map[string]any{"origin_id": tc.value}, config)
-			if err := checks.OriginIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.OriginIdForeign(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "origin_id", types.SEVERITY_ERROR, tc.count)
@@ -26,37 +26,37 @@ func TestOriginIdValid(t *testing.T) {
 	t.Run("MissingColumn", func(t *testing.T) {
 		config := testutils.Config(id, types.SEVERITY_ERROR)
 		_, ctx := testutils.Fixture(t, nil, config)
-		if err := checks.OriginIdValid(ctx, config.Rule(id)); err != nil {
+		if err := checks.OriginIdForeign(ctx, config.Rule(id)); err != nil {
 			t.Fatal(err)
 		}
 		testutils.AssertFindings(t, id, "origin_id", types.SEVERITY_ERROR, 0)
 	})
-	testutils.CheckInvalid(t, id, "origin_id", checks.OriginIdValid, map[string]any{"origin_id": "missing"})
+	testutils.CheckInvalid(t, id, "origin_id", checks.OriginIdForeign, map[string]any{"origin_id": "missing"})
 }
 func TestOriginIdLiveReference(t *testing.T) {
-	const id = "fare_rule_origin_id_references_zones_stops"
+	const id = "fare_rules_origin_id_foreign"
 	config := testutils.Config(id, types.SEVERITY_ERROR)
 	db, ctx := testutils.Fixture(t, map[string]any{"origin_id": "A"}, config)
-	if err := checks.OriginIdValid(ctx, config.Rule(id)); err != nil {
+	if err := checks.OriginIdForeign(ctx, config.Rule(id)); err != nil {
 		t.Fatal(err)
 	}
 	testutils.AssertFindings(t, id, "origin_id", types.SEVERITY_ERROR, 0)
 	if _, err := db.Exec("DELETE FROM stops WHERE zone_id='A'"); err != nil {
 		t.Fatal(err)
 	}
-	if err := checks.OriginIdValid(ctx, config.Rule(id)); err != nil {
+	if err := checks.OriginIdForeign(ctx, config.Rule(id)); err != nil {
 		t.Fatal(err)
 	}
 	testutils.AssertFindings(t, id, "origin_id", types.SEVERITY_ERROR, 1)
 }
 func TestOriginIdMissingReferenceTable(t *testing.T) {
-	const id = "fare_rule_origin_id_references_zones_stops"
+	const id = "fare_rules_origin_id_foreign"
 	config := testutils.Config(id, types.SEVERITY_ERROR)
 	db, ctx := testutils.Fixture(t, map[string]any{"origin_id": "A"}, config)
 	if _, err := db.Exec("DROP TABLE stops"); err != nil {
 		t.Fatal(err)
 	}
-	if err := checks.OriginIdValid(ctx, config.Rule(id)); err == nil {
+	if err := checks.OriginIdForeign(ctx, config.Rule(id)); err == nil {
 		t.Fatal("SQLite error swallowed")
 	}
 	testutils.AssertFindings(t, id, "origin_id", types.SEVERITY_ERROR, 0)

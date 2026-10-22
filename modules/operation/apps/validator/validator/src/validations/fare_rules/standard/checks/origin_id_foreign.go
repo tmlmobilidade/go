@@ -29,13 +29,13 @@ If fare class "b" is valid for all travel originating from either zone "2" or zo
 [fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
-func OriginIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+func OriginIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_rule_origin_id_references_zones_stops"
+	const ruleID = "fare_rules_origin_id_foreign"
 
 	//
 	// 2. Create the validation context
