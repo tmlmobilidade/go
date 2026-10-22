@@ -7,70 +7,69 @@ import (
 	"main/services"
 	"main/types"
 	registry "main/validations"
-	validations "main/validations/frequencies/validations"
+	frequencies_fields "main/validations/frequencies/fields/checks"
+	frequencies_standard "main/validations/frequencies/standard/checks"
 )
 
-func init() {
-	registry.Register("frequencies", RunValidations)
-}
-
-func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	runner, dagErr := services.NewRuleRunner(gtfs, rules, "frequencies")
-	if dagErr != nil {
-		lib.AppLogger.Error(dagErr.Error())
+func init() { registry.RegisterWithTables("frequencies", RunValidations) }
+func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*services.SQLiteTables) {
+	runner, err := services.NewRuleRunner(gtfs, rules, "frequencies")
+	if err != nil {
+		lib.AppLogger.Error(err.Error())
 		return
 	}
-	lib.AppLogger.Debug("Running Frequencies Validations...")
-
-	// Pre-compute frequencies per trip_id for performance
-	// This avoids N+1 queries in trip_id validation
-	lib.AppLogger.Debug("Pre-computing frequencies per trip_id...")
-	frequencyTripIdCache := make(map[string][]types.FrequenciesRaw)
-
-	err := gtfs.IterateFrequencies(func(i int, rawFrequency types.FrequenciesRaw) error {
-		if rawFrequency.TripId == "" {
-			return nil
-		}
-		frequencyTripIdCache[rawFrequency.TripId] = append(frequencyTripIdCache[rawFrequency.TripId], rawFrequency)
-		return nil
-	})
+	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
 	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error pre-computing frequencies per trip_id: %v", err))
+		lib.AppLogger.Error(err.Error())
+		return
 	}
-	lib.AppLogger.Debug(fmt.Sprintf("Pre-computed frequencies for %d trips", len(frequencyTripIdCache)))
-
-	// Create progress tracker
 	tracker := lib.CreateProgressTracker(gtfs, "frequencies", config.ProgressThresholdSmall)
-
-	err = gtfs.IterateFrequencies(func(i int, rawFrequency types.FrequenciesRaw) error {
+	err = tables.ForEachRow("frequencies", func(row *services.SQLiteRow) error {
+		db := row.Context()
 		tracker.Track()
-
-		parsedFrequency := validations.ParseFrequencies(&rawFrequency, i)
-
-		// Validate trip_id
+		check := func(id string, err error) {
+			if err != nil {
+				ctx := lib.NewValidationContext("N/A", "frequencies.txt", id, db.Row, services.AppMessageService)
+				ctx.AddError(fmt.Sprintf("SQLite read failed: %v", err))
+			}
+		}
 		runner.Run(services.RuleActions{
+			"frequencies_trip_id_field": func() {
+				check("frequencies_trip_id_field", frequencies_fields.TripIdField(db, rules.Rule("frequencies_trip_id_field")))
+			},
+			"frequencies_exact_times_field": func() {
+				check("frequencies_exact_times_field", frequencies_fields.ExactTimesField(db, rules.Rule("frequencies_exact_times_field")))
+			},
+			"frequencies_headway_secs_field": func() {
+				check("frequencies_headway_secs_field", frequencies_fields.HeadwaySecsField(db, rules.Rule("frequencies_headway_secs_field")))
+			},
+			"frequencies_end_time_field": func() {
+				check("frequencies_end_time_field", frequencies_fields.EndTimeField(db, rules.Rule("frequencies_end_time_field")))
+			},
+			"frequencies_start_time_field": func() {
+				check("frequencies_start_time_field", frequencies_fields.StartTimeField(db, rules.Rule("frequencies_start_time_field")))
+			},
 			"frequencies_trip_id_references_trips_table": func() {
-				validations.TripIdValidation(parsedFrequency, i, &gtfs, rules.Rule("frequencies_trip_id_references_trips_table"))
-			},
-			"frequency_end_time_valid": func() {
-				validations.EndTimeValidation(parsedFrequency, i, rules.Rule("frequency_end_time_valid"))
-			},
-			"frequency_start_time_valid": func() {
-				validations.StartTimeValidation(parsedFrequency, i, rules.Rule("frequency_start_time_valid"))
-			},
-			"frequencies_headway_secs_positive_and_aligns_trip": func() {
-				validations.HeadwaySecsValidation(parsedFrequency, i, rules.Rule("frequencies_headway_secs_positive_and_aligns_trip"))
+				check("frequencies_trip_id_references_trips_table", frequencies_standard.TripIdValid(db, rules.Rule("frequencies_trip_id_references_trips_table")))
 			},
 			"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": func() {
-				validations.ExactTimesValidation(parsedFrequency, i, rules.Rule("frequencies_exact_times_zero_when_timed_trip_uses_frequencies"))
+				check("frequencies_exact_times_zero_when_timed_trip_uses_frequencies", frequencies_standard.ExactTimesValid(db, rules.Rule("frequencies_exact_times_zero_when_timed_trip_uses_frequencies")))
+			},
+			"frequencies_headway_secs_positive_and_aligns_trip": func() {
+				check("frequencies_headway_secs_positive_and_aligns_trip", frequencies_standard.HeadwaySecsValid(db, rules.Rule("frequencies_headway_secs_positive_and_aligns_trip")))
+			},
+			"frequency_end_time_valid": func() {
+				check("frequency_end_time_valid", frequencies_standard.EndTimeValid(db, rules.Rule("frequency_end_time_valid")))
+			},
+			"frequency_start_time_valid": func() {
+				check("frequency_start_time_valid", frequencies_standard.StartTimeValid(db, rules.Rule("frequency_start_time_valid")))
 			},
 		}, nil)
-
 		return nil
 	})
 	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error iterating frequencies: %v", err))
-	} else {
-		lib.AppLogger.Info(fmt.Sprintf("Completed frequencies.txt validation: %d rows processed", tracker.GetProcessedCount()))
+		lib.AppLogger.Error(fmt.Sprintf("Error validating frequencies: %v", err))
+		return
 	}
+	lib.AppLogger.Info(fmt.Sprintf("Completed frequencies.txt validation: %d rows processed", tracker.GetProcessedCount()))
 }
