@@ -48,23 +48,24 @@ type SQLiteRow struct {
 // Named handles support table-wide existence checks from any source table.
 // Field reads are bound only to the current table; other rows require Table(name).At(row).
 type SQLiteContext struct {
-	Row            int
-	Agency         *SQLiteRow
-	BookingRules   *SQLiteRow
-	Calendar       *SQLiteRow
-	CalendarDates  *SQLiteRow
-	FareAttributes *SQLiteRow
-	FeedInfo       *SQLiteRow
-	Levels         *SQLiteRow
-	RouteNetworks  *SQLiteRow
-	Routes         *SQLiteRow
-	Shapes         *SQLiteRow
-	StopTimes      *SQLiteRow
-	Stops          *SQLiteRow
-	Transfers      *SQLiteRow
-	Trips          *SQLiteRow
-	Vehicles       *SQLiteRow
-	source         *SQLiteRow
+	Row             int
+	Agency          *SQLiteRow
+	BookingRules    *SQLiteRow
+	Calendar        *SQLiteRow
+	CalendarDates   *SQLiteRow
+	FareAttributes  *SQLiteRow
+	FeedInfo        *SQLiteRow
+	Levels          *SQLiteRow
+	RiderCategories *SQLiteRow
+	RouteNetworks   *SQLiteRow
+	Routes          *SQLiteRow
+	Shapes          *SQLiteRow
+	StopTimes       *SQLiteRow
+	Stops           *SQLiteRow
+	Transfers       *SQLiteRow
+	Trips           *SQLiteRow
+	Vehicles        *SQLiteRow
+	source          *SQLiteRow
 }
 
 func (r *SQLiteRow) Context() *SQLiteContext {
@@ -82,6 +83,7 @@ func (r *SQLiteRow) Context() *SQLiteContext {
 	ctx.FareAttributes = bind("fare_attributes")
 	ctx.FeedInfo = bind("feed_info")
 	ctx.Levels = bind("levels")
+	ctx.RiderCategories = bind("rider_categories")
 	ctx.RouteNetworks = bind("route_networks")
 	ctx.Routes = bind("routes")
 	ctx.Shapes = bind("shapes")
