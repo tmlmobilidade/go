@@ -40,7 +40,7 @@ func ShapeDistTraveledNonDecreasing(db *services.SQLiteContext, rules *types.Rul
 				continue
 			}
 
-			// 2. Report the decrease on the current point, using its source row.
+			// 3. Report the decrease on the current point, using its source row.
 			ctx := lib.NewValidationContext("shape_dist_traveled", "shapes.txt", ruleID, point.Row, services.AppMessageService)
 			if rules != nil {
 				rule := rules
@@ -54,7 +54,7 @@ func ShapeDistTraveledNonDecreasing(db *services.SQLiteContext, rules *types.Rul
 	}
 
 	//
-	// 3. Return success
+	// 4. Return success
 
 	return nil
 }
