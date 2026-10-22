@@ -39,7 +39,7 @@ func LocationTypeValid(db *services.SQLiteContext, rulesContext *types.RuleConte
 	}
 
 	//
-	// 6. Return success
+	// 5. Return success
 
 	return nil
 }

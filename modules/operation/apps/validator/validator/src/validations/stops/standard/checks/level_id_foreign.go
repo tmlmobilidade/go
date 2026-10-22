@@ -31,7 +31,7 @@ func LevelIdForeign(db *services.SQLiteContext, rulesContext *types.RuleContext)
 	}
 
 	//
-	// 5. Validate the level_id is a foreign key
+	// 4. Validate the level_id is a foreign key
 
 	if !db.Levels.Exists("level_id", value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
@@ -39,7 +39,7 @@ func LevelIdForeign(db *services.SQLiteContext, rulesContext *types.RuleContext)
 	}
 
 	//
-	// 6. Return success
+	// 5. Return success
 
 	return nil
 }

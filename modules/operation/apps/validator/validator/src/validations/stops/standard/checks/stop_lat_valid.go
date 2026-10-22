@@ -9,7 +9,7 @@ import (
 
 func StopLatValid(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
 	//
-	
+
 	//
 	// 1. Get the rule
 
@@ -31,7 +31,6 @@ func StopLatValid(db *services.SQLiteContext, rulesContext *types.RuleContext) e
 		return err
 	}
 
-
 	//
 	// 4. Convert the stop_lat to a float
 
@@ -39,8 +38,8 @@ func StopLatValid(db *services.SQLiteContext, rulesContext *types.RuleContext) e
 	if err != nil {
 		return err
 	}
-	
-	// 
+
+	//
 	// 5. Check if the stop_lat is a valid latitude
 
 	if !lib.ValidateLatitude(number) {
@@ -49,7 +48,7 @@ func StopLatValid(db *services.SQLiteContext, rulesContext *types.RuleContext) e
 	}
 
 	//
-	// 5. Return success
+	// 6. Return success
 
 	return nil
 }

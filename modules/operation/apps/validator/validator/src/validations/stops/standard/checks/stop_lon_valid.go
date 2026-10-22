@@ -9,7 +9,7 @@ import (
 
 func StopLonValid(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
 	//
-	
+
 	//
 	// 1. Get the rule
 
@@ -31,7 +31,6 @@ func StopLonValid(db *services.SQLiteContext, rulesContext *types.RuleContext) e
 		return err
 	}
 
-
 	//
 	// 4. Convert the stop_lon to a float
 
@@ -39,8 +38,8 @@ func StopLonValid(db *services.SQLiteContext, rulesContext *types.RuleContext) e
 	if err != nil {
 		return err
 	}
-	
-	// 
+
+	//
 	// 5. Check if the stop_lon is a valid longitude
 
 	if !lib.ValidateLongitude(number) {
@@ -49,7 +48,7 @@ func StopLonValid(db *services.SQLiteContext, rulesContext *types.RuleContext) e
 	}
 
 	//
-	// 5. Return success
+	// 6. Return success
 
 	return nil
 }
