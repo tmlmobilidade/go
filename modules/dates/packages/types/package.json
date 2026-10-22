@@ -18,8 +18,6 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-types-core": "*",
-		"@tmlmobilidade/go-types-offer": "*",
-		"@tmlmobilidade/go-types-shared": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {

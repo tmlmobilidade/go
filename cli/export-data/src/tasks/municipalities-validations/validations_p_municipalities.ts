@@ -32,16 +32,16 @@
 
 // 	message('A obter collections...');
 
-// 	// const [stopsCol, validationsCol, municipalitiesCol] =
-// 	// 	await Promise.all([
-// 	// 		goDb.infrastructure.stops.getCollection(),
-// 	// 		simplifiedApexValidations.getCollection(),
-// 	// 		// goDb.locations.municipalities.getCollection(),
-// 	// 	]);
+// 	const [stopsCol, validationsCol, municipalitiesCol] =
+// 		await Promise.all([
+// 			goDb.infrastructure.stops.getCollection(),
+// 			simplifiedApexValidations.getCollection(),
+// 			goDb.locations.municipalities.getCollection(),
+// 		]);
 
-// 	// if (!stopsCol || !validationsCol || !municipalitiesCol) {
-// 	// 	throw new Error('Missing collections');
-// 	// }
+// 	if (!stopsCol || !validationsCol || !municipalitiesCol) {
+// 		throw new Error('Missing collections');
+// 	}
 
 // 	//
 // 	// Calendar

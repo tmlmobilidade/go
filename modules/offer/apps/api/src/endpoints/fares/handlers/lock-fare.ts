@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Fare } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -20,7 +19,10 @@ export async function lockFareHandler(request: FastifyRequest<{ Params: { id: st
 	const fareData = await goDb.offer.fares.findById(request.params.id);
 
 	if (!fareData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Fare not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -32,7 +34,10 @@ export async function lockFareHandler(request: FastifyRequest<{ Params: { id: st
 	// If no permission found, deny access
 
 	if (!userFarePermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock fares');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to lock/unlock fares',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,17 +52,23 @@ export async function lockFareHandler(request: FastifyRequest<{ Params: { id: st
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock fare. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: toggle lock fare. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	// If authorized, toggle the lock status of the fare
-	await goDb.offer.fares.updateOne({ _id: request.params.id }, { is_locked: !fareData.is_locked });
+	await goDb.offer.fares.updateOne({ _id: request.params.id }, { is_locked: !fareData.is_locked, updated_by: request.me._id });
 	const foundFare = await goDb.offer.fares.findById(request.params.id);
 	if (!foundFare) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Fare not found',
+			status_code: '404',
+		});
 	}
 
-	return reply.send({ data: foundFare, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, foundFare);
 
 	//
 }

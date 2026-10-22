@@ -32,7 +32,7 @@
 		"@tmlmobilidade/consts": "*",
 		"archiver": "8.0.0",
 		"chalk": "6.0.1",
-		"dotenv": "18.0.7",
+		"dotenv": "18.0.9",
 		"mongodb": "7.7.0"
 	},
 	"devDependencies": {

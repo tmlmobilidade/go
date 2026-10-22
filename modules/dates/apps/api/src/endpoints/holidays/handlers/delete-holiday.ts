@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
@@ -14,10 +13,13 @@ export async function deleteHolidayHandler(request: FastifyRequest<{ Params: { i
 	//
 
 	const { id } = request.params;
-	const holiday = await goDb.offer.holidays.findById(id);
+	const holiday = await goDb.dates.holidays.findById(id);
 
 	if (!holiday) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Holiday not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -29,7 +31,10 @@ export async function deleteHolidayHandler(request: FastifyRequest<{ Params: { i
 	// If no permission found, deny access
 
 	if (!userHolidayPermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete holidays');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to delete holidays',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -44,12 +49,15 @@ export async function deleteHolidayHandler(request: FastifyRequest<{ Params: { i
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this holiday. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to delete this holiday. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
 
-	await goDb.offer.holidays.deleteById(id);
+	await goDb.dates.holidays.deleteById(id);
 
-	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, undefined);
 }

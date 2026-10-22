@@ -1,12 +1,11 @@
 'use client';
 
-import { DatesSelector } from '@/components/annotations/detail/AnnotationsDatesSelector';
-import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
-import { AnnotationsDetailHeader } from '@/components/annotations/detail/AnnotationsDetailHeader';
-import { AnnotationSchema } from '@tmlmobilidade/go-types-dates';
-import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Grid, Pane, Section } from '@tmlmobilidade/ui';
 
-import { useAnnotationsAgenciesData } from '../../shared/use-users-agencies-data';
+import { AnnotationsDatesSelector } from '../AnnotationsDatesSelector';
+import { AnnotationsDetailBasicInfo } from '../AnnotationsDetailBasicInfo';
+import { AnnotationsDetailHeader } from '../AnnotationsDetailHeader';
+import { useAnnotationsDetailData } from '../use-annotations-detail-data';
 
 /* * */
 
@@ -14,60 +13,25 @@ export function AnnotationsDetail() {
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	const annotationsDetailContext = useAnnotationsDetailContext();
-
-	// Bypass permissions to show all agency labels in read-only mode
-	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useAnnotationsAgenciesData();
+	const { error, isLoading } = useAnnotationsDetailData();
 
 	//
 	// B. Render components
 
-	if (annotationsDetailContext.flags.isLoading) {
-		return <LoadingOverlay />;
-	}
-
-	if (annotationsDetailContext.flags.error) {
-		return <ErrorDisplay message={annotationsDetailContext.flags.error.message} />;
-	}
-
 	return (
-		<Pane header={[<AnnotationsDetailHeader key="annotations-detail-header" />]}>
-			<Section>
-				<Grid columns="a" gap="lg">
-
-					<TextInput
-						label="Título"
-						placeholder="Ex: Greve de transportes"
-						readOnly={annotationsDetailContext.flags.isReadOnly}
-						required={!AnnotationSchema.shape.title.isOptional()}
-						w="100%"
-						{...annotationsDetailContext.data.form.getInputProps('title')}
-					/>
-
-					<Textarea
-						label="Descrição"
-						placeholder="Descrição da ocorrência"
-						readOnly={annotationsDetailContext.flags.isReadOnly}
-						required={!AnnotationSchema.shape.description.isOptional()}
-						w="100%"
-						{...annotationsDetailContext.data.form.getInputProps('description')}
-					/>
-
-					<MultiSelect
-						data={agencyOptions}
-						disabled={annotationsDetailContext.flags.isReadOnly}
-						label="Operadores afetados"
-						value={annotationsDetailContext.data.form.values.agency_ids || []}
-						{...annotationsDetailContext.data.form.getInputProps('agency_ids')}
-					/>
-
-					<DatesSelector />
-
-				</Grid>
-			</Section>
+		<Pane header={[<AnnotationsDetailHeader key="header" />]} isLoading={isLoading}>
+			{error ? (
+				<ErrorDisplay message={error} />
+			) : (
+				<Section>
+					<Grid columns="a" gap="lg">
+						<AnnotationsDetailBasicInfo />
+						<AnnotationsDatesSelector />
+					</Grid>
+				</Section>
+			)}
 		</Pane>
 	);
 

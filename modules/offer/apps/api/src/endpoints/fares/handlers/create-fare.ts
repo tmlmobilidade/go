@@ -1,9 +1,8 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateFareDto, type Fare } from '@tmlmobilidade/go-types-offer';
+import { type CreateFareDto, CreateFareSchema, type Fare } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -15,6 +14,18 @@ export async function createFareHandler(request: FastifyRequest<{ Body: CreateFa
 	//
 
 	//
+	// Validate the client contract before using the request data.
+
+	const validatedFare = CreateFareSchema.safeParse(request.body);
+
+	if (!validatedFare.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedFare.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
 	// Get the resource permissions for fares for the current user.
 
 	const userFarePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.fares.scope, PermissionCatalog.all.fares.actions.create);
@@ -23,7 +34,10 @@ export async function createFareHandler(request: FastifyRequest<{ Body: CreateFa
 	// If no permission found, deny access
 
 	if (!userFarePermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create fares');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create fares',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -34,31 +48,34 @@ export async function createFareHandler(request: FastifyRequest<{ Body: CreateFa
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.fares.scope,
-		value: request.body.agency_ids,
+		value: validatedFare.data.agency_ids,
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create fares for these agencies. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create fares for these agencies. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
 	// Create the new fare
 
 	const newFare = await goDb.offer.fares.insertOne({
-		created_by: request.me._id,
 		currency_type: 'EUR',
 		is_locked: false,
 		payment_method: '0',
 		price: 0,
 		transfers: '0',
+		...validatedFare.data,
+		created_by: request.me._id,
 		updated_by: request.me._id,
-		...request.body,
 	});
 
 	//
 	// Send the response
 
-	reply.send({ data: newFare, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, newFare);
 
 	//
 }

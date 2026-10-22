@@ -1,0 +1,79 @@
+{
+	"annotations": {
+		"create": {
+			"title": "Nueva anotación"
+		},
+		"dates": {
+			"prompt": "Seleccione las fechas de la incidencia",
+			"removeMonth": "Quitar mes",
+			"selectMonth": "Seleccionar mes"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Seguro que desea eliminar esta incidencia? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar anotación"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores afectados"
+			},
+			"description": {
+				"label": "Descripción",
+				"placeholder": "Descripción de la incidencia"
+			},
+			"title": {
+				"label": "Título",
+				"placeholder": "Ej.: Huelga de transportes"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"dates": "Fechas",
+				"id": "#ID",
+				"title": "Título"
+			},
+			"title": "Anotaciones"
+		}
+	},
+	"holidays": {
+		"create": {
+			"title": "Nuevo festivo"
+		},
+		"dates": {
+			"prompt": "Seleccione las fechas del festivo",
+			"removeMonth": "Quitar mes",
+			"selectMonth": "Seleccionar mes"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Seguro que desea eliminar este festivo? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar festivo"
+		},
+		"empty": "Seleccione un festivo",
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores afectados"
+			},
+			"description": {
+				"label": "Descripción",
+				"placeholder": "Descripción del festivo"
+			},
+			"title": {
+				"label": "Título",
+				"placeholder": "Ej.: 25 de abril"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"dates": "Fechas",
+				"id": "#ID",
+				"title": "Título"
+			},
+			"title": "Festivos"
+		}
+	}
+}

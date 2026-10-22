@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Fare } from '@tmlmobilidade/go-types-offer';
@@ -24,7 +23,10 @@ export async function listFaresHandler(request: FastifyRequest, reply: FastifyRe
 	});
 
 	if (!agencyAccess.allowAll && !agencyAccess.values.length) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read fares');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read fares',
+			status_code: '403',
+		});
 	}
 
 	const queryFilters: Filter<Fare> = agencyAccess.allowAll ? {} : { agency_ids: { $in: agencyAccess.values } };
@@ -34,6 +36,6 @@ export async function listFaresHandler(request: FastifyRequest, reply: FastifyRe
 
 	const allFares = await goDb.offer.fares.findMany(queryFilters, { sort: { created_at: -1 } });
 
-	return reply.send({ data: allFares, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, allFares);
 	//
 }

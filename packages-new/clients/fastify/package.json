@@ -38,7 +38,7 @@
 	"dependencies": {
 		"@fastify/cookie": "11.1.3",
 		"@fastify/cors": "11.3.1",
-		"@fastify/multipart": "10.1.3",
+		"@fastify/multipart": "10.1.6",
 		"@fastify/one-line-logger": "2.2.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
@@ -48,7 +48,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.12.5"
+		"fastify": "5.12.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

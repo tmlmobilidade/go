@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Typology } from '@tmlmobilidade/go-types-offer';
@@ -27,7 +26,10 @@ export async function listTypologiesHandler(request: FastifyRequest, reply: Fast
 	});
 
 	if (!agencyAccess.allowAll && !agencyAccess.values.length) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read typologies',
+			status_code: '403',
+		});
 	}
 
 	const queryFilters: Filter<Typology> = agencyAccess.allowAll ? {} : { agency_ids: { $in: agencyAccess.values } };
@@ -37,6 +39,6 @@ export async function listTypologiesHandler(request: FastifyRequest, reply: Fast
 
 	const allTypologies = await goDb.offer.typologies.findMany(queryFilters, { sort: { created_at: -1 } });
 
-	return reply.send({ data: allTypologies, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, allTypologies);
 	//
 }

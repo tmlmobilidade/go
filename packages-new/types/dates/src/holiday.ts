@@ -13,7 +13,7 @@ export const HolidaySchema = BaseDocumentSchema.extend({
 	title: z.string().min(1),
 });
 
-export const CreateHolidaySchema = HolidaySchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true });
+export const CreateHolidaySchema = HolidaySchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
 export const UpdateHolidaySchema = CreateHolidaySchema.partial();
 
 /* * */

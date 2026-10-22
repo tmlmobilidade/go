@@ -6,6 +6,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { createHolidayHandler } from './handlers/create-holiday.js';
 import { deleteHolidayHandler } from './handlers/delete-holiday.js';
 import { getHolidayHandler } from './handlers/get-holiday.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listHolidaysHandler } from './handlers/list-holidays.js';
 import { lockHolidayHandler } from './handlers/lock-holiday.js';
 import { updateHolidayHandler } from './handlers/update-holiday.js';
@@ -29,13 +30,19 @@ server.register(
 		);
 
 		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.holidays.scope, [PermissionCatalog.all.holidays.actions.read, PermissionCatalog.all.holidays.actions.create, PermissionCatalog.all.holidays.actions.update]) },
+			listAgenciesHandler,
+		);
+
+		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.holidays.scope, [PermissionCatalog.all.holidays.actions.read]) },
 			getHolidayHandler,
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.holidays.scope, [PermissionCatalog.all.holidays.actions.create]) },
 			createHolidayHandler,
 		);

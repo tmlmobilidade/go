@@ -1,9 +1,8 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateZoneDto, type Zone } from '@tmlmobilidade/go-types-offer';
+import { type CreateZoneDto, CreateZoneSchema, type Zone } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -15,6 +14,18 @@ export async function createZoneHandler(request: FastifyRequest<{ Body: CreateZo
 	//
 
 	//
+	// Validate the client contract before using the request data.
+
+	const validatedZone = CreateZoneSchema.safeParse(request.body);
+
+	if (!validatedZone.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedZone.error.message,
+			status_code: '400',
+		});
+	}
+
+	//
 	// Get the resource permissions for zones for the current user.
 
 	const userZonePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.zones.scope, PermissionCatalog.all.zones.actions.create);
@@ -23,7 +34,10 @@ export async function createZoneHandler(request: FastifyRequest<{ Body: CreateZo
 	// If no permission found, deny access
 
 	if (!userZonePermissions) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create zones');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create zones',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -34,20 +48,23 @@ export async function createZoneHandler(request: FastifyRequest<{ Body: CreateZo
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.zones.scope,
-		value: request.body.agency_ids,
+		value: validatedZone.data.agency_ids,
 	});
 
 	if (!hasPermissionForAllAgencies) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create zones for these agencies. You must have permission for all agencies involved.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create zones for these agencies. You must have permission for all agencies involved.',
+			status_code: '403',
+		});
 	}
 
 	//
 	// Create the new zone
 
 	const newZone = await goDb.offer.zones.insertOne({
-		...request.body,
+		...validatedZone.data,
 		created_by: request.me._id,
-		geojson: request.body.geojson ?? { features: [], type: 'FeatureCollection' },
+		geojson: validatedZone.data.geojson ?? { features: [], type: 'FeatureCollection' },
 		is_locked: false,
 		updated_by: request.me._id,
 	});
@@ -55,7 +72,7 @@ export async function createZoneHandler(request: FastifyRequest<{ Body: CreateZo
 	//
 	// Send the response
 
-	reply.send({ data: newZone, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, newZone);
 
 	//
 }

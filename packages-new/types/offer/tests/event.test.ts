@@ -34,6 +34,7 @@ describe('stored event contracts', () => {
 		assert.equal('_id' in parsed, false);
 		assert.equal('associated_patterns' in parsed, false);
 		assert.equal('created_at' in parsed, false);
-		assert.equal(parsed.created_by, 'user');
+		assert.equal('created_by' in parsed, false);
+		assert.equal('updated_by' in parsed, false);
 	});
 });

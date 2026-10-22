@@ -170,7 +170,6 @@
 		"prd:tracker:pt-tml-ttsl": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ttsl-*",
 		"prd:tracker:pt-tmp-unir": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tmp-unir-*",
 		"prd:tracker:rawdb-sync": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-rawdb-sync",
-
 		"repo:assets": "bash ./scripts/set-public-symlinks.sh",
 		"repo:build": "turbo build --filter=./packages-new/**/* && turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/*",
 		"repo:deps": "npx --yes @tmlmobilidade/repo-deps",
@@ -179,21 +178,20 @@
 		"repo:lint:fix": "turbo lint:fix",
 		"repo:load-env-prd": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -f ./environments/prd/.env.prd --",
 		"repo:load-env-stg": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -f ./environments/stg/.env.stg --",
-		"repo:ncu": "npx --yes npm-check-updates@latest --cacheClear --cooldown 7d --workspaces --upgrade",
 		"repo:rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"repo:routes": "bash ./scripts/generate-routes.sh",
 		"repo:sql": "bash ./scripts/generate-sql-registry.sh",
 		"repo:sql:check": "bash ./scripts/generate-sql-registry.sh --check"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "21.2.3",
-		"@commitlint/config-conventional": "21.2.3",
+		"@commitlint/cli": "21.2.4",
+		"@commitlint/config-conventional": "21.2.4",
 		"@tmlmobilidade/eslint": "*",
 		"husky": "9.1.7",
-		"playwright-core": "1.64.0",
-		"turbo": "2.11.7"
+		"playwright-core": "1.64.1",
+		"turbo": "2.11.10"
 	},
-	"packageManager": "npm@12.2.0",
+	"packageManager": "npm@12.2.1",
 	"workspaces": [
 		"!**/.next",
 		"modules/**/*",
@@ -203,6 +201,8 @@
 	],
 	"overrides": {
 		"eslint": "10.9.1",
+		"react": "19.2.8",
+		"react-dom": "19.2.8",
 		"zod": "3.25.76"
 	},
 	"allowScripts": {

@@ -37,8 +37,8 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/utils": "*",
-		"oci-common": "2.142.2",
-		"oci-objectstorage": "2.142.2"
+		"oci-common": "2.144.0",
+		"oci-objectstorage": "2.144.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Fare } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -22,7 +21,10 @@ export async function getFareHandler(request: FastifyRequest<{ Params: { id: str
 	const fareData = await goDb.offer.fares.findById(request.params.id);
 
 	if (!fareData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Fare not found',
+			status_code: '404',
+		});
 	}
 
 	const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
@@ -34,17 +36,16 @@ export async function getFareHandler(request: FastifyRequest<{ Params: { id: str
 	const canReadFare = agencyAccess.allowAll || fareData.agency_ids.some(agencyId => agencyAccess.values.includes(agencyId));
 
 	if (!canReadFare) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this fare');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read this fare',
+			status_code: '403',
+		});
 	}
 
 	//
 	// Fetch the fare data
 
-	return reply.send({
-		data: fareData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, fareData);
 
 	//
 }

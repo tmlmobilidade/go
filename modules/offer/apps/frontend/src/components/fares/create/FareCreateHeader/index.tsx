@@ -1,9 +1,11 @@
 'use client';
 
-import { useFareCreateContext } from '@/components/fares/create/FareCreate.context';
-import { closeCreateFareModal } from '@/components/fares/create/FareCreate.modal';
-import { IconUpload } from '@tabler/icons-react';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, CreateButton, HasPermission, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { closeCreateFareModal } from '../FareCreate.modal';
+import { useFaresCreateFormContext } from '../FaresCreateForm.context';
 
 /* * */
 
@@ -13,7 +15,9 @@ export function FareCreateHeader() {
 	//
 	// A. Setup variables
 
-	const fareCreateContext = useFareCreateContext();
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = useFaresCreateFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'name' });
 
 	//
 	// B. Render components
@@ -21,17 +25,12 @@ export function FareCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateFareModal} type="close" />
-			<Tag label="Nova Tarifa" variant="muted" />
-			<Label size="lg" singleLine>{fareCreateContext.data.form.values.name}</Label>
+			<Tag label={t('default:fares.create.title')} variant="muted" />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-			<Button
-				disabled={!fareCreateContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Publicar"
-				loading={fareCreateContext.flags.isSaving}
-				onClick={fareCreateContext.actions.create}
-				variant="primary"
-			/>
+			<HasPermission action={PermissionCatalog.all.fares.actions.create} scope={PermissionCatalog.all.fares.scope}>
+				<CreateButton isDisabled={!capabilities.createEnabled} isLoading={status.isCreating} onClick={actions.create} />
+			</HasPermission>
 		</Toolbar>
 	);
 

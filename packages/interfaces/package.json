@@ -45,8 +45,8 @@
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"mongodb": "7.7.0",
-		"oci-common": "2.142.2",
-		"oci-objectstorage": "2.142.2",
+		"oci-common": "2.144.0",
+		"oci-objectstorage": "2.144.0",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
