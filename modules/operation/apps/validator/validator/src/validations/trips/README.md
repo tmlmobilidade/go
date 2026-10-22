@@ -54,3 +54,27 @@ Its prerequisites are `trips_route_id_references_routes_table`,
 `trips_direction_id_valid_enum`, and
 `trips_shape_id_references_shapes_table_when_present`; they must be enabled and
 pass before this check runs. Missing fields are handled by those rules.
+
+## Validator structure
+
+Checks read current SQLite values through `SQLiteContext` and are split into
+`fields/checks`, `standard/checks`, and `custom/checks`, with mirrored tests.
+Presence uses `trips_<field>_field`; existing value and group rule IDs remain.
+The old presence-only IDs for headsign, short name, block and pattern are replaced
+by the corresponding field rules. Configure dependent value/group checks with
+`depends_on` entries for their required field checks.
+
+`main.go` registers one action map and executes row, route, pattern, and shape
+phases through `RuleRunner`. Each group receives the outcomes of its own rows.
+Pattern groups run before shape groups so only reported pattern conflicts
+suppress duplicate shape findings. Group queries read SQLite directly; the run
+retains only row identities, rule outcomes, validated stop-sequence hashes, and
+reusable geometry results. The legacy parser, group orchestrators, and full-feed
+precompute are removed.
+
+Stop-sequence and stop-coordinate findings identify the `trips.txt` row being
+validated, even though their inputs include `stop_times.txt`. This keeps those
+findings under the trip rule's configured severity.
+
+Run `go test ./validations/trips/...` and `go build .` from the validator's `src`
+directory. Translations for the migrated checks live in `i18n-v2` (en/pt/es).
