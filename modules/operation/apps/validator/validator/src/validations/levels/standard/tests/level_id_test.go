@@ -9,7 +9,7 @@ import (
 )
 
 func TestLevelIdUnique(t *testing.T) {
-	const id = "level_id_unique"
+	const id = "levels_level_id_unique"
 	for _, tc := range []struct {
 		name  string
 		value any

@@ -43,9 +43,11 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"levels_level_name_field": func() {
 				check("levels_level_name_field", levels_fields.LevelNameField(db, rules.Rule("levels_level_name_field")))
 			},
-			"level_id_unique": func() { check("level_id_unique", levels_standard.LevelIdUnique(db, rules.Rule("level_id_unique"))) },
-			"level_index_required": func() {
-				check("level_index_required", levels_standard.LevelIndexValid(db, rules.Rule("level_index_required")))
+			"levels_level_id_unique": func() {
+				check("levels_level_id_unique", levels_standard.LevelIdUnique(db, rules.Rule("levels_level_id_unique")))
+			},
+			"levels_level_index_valid": func() {
+				check("levels_level_index_valid", levels_standard.LevelIndexValid(db, rules.Rule("levels_level_index_valid")))
 			},
 		}, nil)
 		return nil

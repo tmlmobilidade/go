@@ -12,7 +12,7 @@ func LevelIdUnique(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 	// 1. Get the rule
 
-	const ruleID = "level_id_unique"
+	const ruleID = "levels_level_id_unique"
 
 	//
 	// 2. Create the validation context

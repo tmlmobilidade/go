@@ -10,7 +10,7 @@ import (
 
 func TestRowLocalDependencies(t *testing.T) {
 	const presence = "levels_level_name_field"
-	const value = "level_index_required"
+	const value = "levels_level_index_valid"
 	config := testutils.Config(presence, types.SEVERITY_INFO)
 	config.SetRule(value, types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{presence}})
 	db, _ := testutils.Fixture(t, map[string]any{"level_name": "", "level_index": "bad"}, config)
@@ -38,17 +38,17 @@ func TestRowLocalDependencies(t *testing.T) {
 	}
 }
 func TestMalformedIndexDoesNotSuppressDuplicateCheck(t *testing.T) {
-	config := testutils.Config("level_index_required", types.SEVERITY_ERROR)
-	config.SetRule("level_id_unique", types.RuleContext{Severity: types.SEVERITY_ERROR})
+	config := testutils.Config("levels_level_index_valid", types.SEVERITY_ERROR)
+	config.SetRule("levels_level_id_unique", types.RuleContext{Severity: types.SEVERITY_ERROR})
 	db, _ := testutils.Fixture(t, map[string]any{"level_id": "A", "level_index": "bad"}, config)
 	if _, err := db.Exec("INSERT INTO levels(level_id,level_index) VALUES ('A','1')"); err != nil {
 		t.Fatal(err)
 	}
 	levels.RunValidations(*types.NewGtfsFromSQLite(db, ""), config)
-	if got := services.AppMessageService.RuleIssueCount("level_id_unique"); got != 2 {
+	if got := services.AppMessageService.RuleIssueCount("levels_level_id_unique"); got != 2 {
 		t.Fatalf("duplicates: %d", got)
 	}
-	if got := services.AppMessageService.RuleIssueCount("level_index_required"); got != 1 {
+	if got := services.AppMessageService.RuleIssueCount("levels_level_index_valid"); got != 1 {
 		t.Fatalf("indices: %d", got)
 	}
 }
@@ -57,14 +57,14 @@ func TestRunnerRegistersEveryCheck(t *testing.T) {
 		{"levels_level_id_field", "level_id", ""},
 		{"levels_level_index_field", "level_index", ""},
 		{"levels_level_name_field", "level_name", ""},
-		{"level_id_unique", "level_id", "A"},
-		{"level_index_required", "level_index", "bad"},
+		{"levels_level_id_unique", "level_id", "A"},
+		{"levels_level_index_valid", "level_index", "bad"},
 	} {
 		t.Run(tc.id, func(t *testing.T) {
 			config := testutils.Config(tc.id, types.SEVERITY_ERROR)
 			db, _ := testutils.Fixture(t, map[string]any{tc.field: tc.value}, config)
 			count := uint64(1)
-			if tc.id == "level_id_unique" {
+			if tc.id == "levels_level_id_unique" {
 				if _, err := db.Exec("INSERT INTO levels(level_id) VALUES ('A')"); err != nil {
 					t.Fatal(err)
 				}

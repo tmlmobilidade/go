@@ -10,7 +10,7 @@ import (
 )
 
 func TestLevelIndexValid(t *testing.T) {
-	const id = "level_index_required"
+	const id = "levels_level_index_valid"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -35,7 +35,7 @@ func TestLevelIndexValid(t *testing.T) {
 	testutils.CheckInvalid(t, id, "level_index", checks.LevelIndexValid, map[string]any{"level_index": "bad"})
 }
 func TestLevelIndexReadsCurrentSQLite(t *testing.T) {
-	const id = "level_index_required"
+	const id = "levels_level_index_valid"
 	config := testutils.Config(id, types.SEVERITY_ERROR)
 	db, ctx := testutils.Fixture(t, map[string]any{"level_index": "-1"}, config)
 	if err := checks.LevelIndexValid(ctx, config.Rule(id)); err != nil {
