@@ -27,21 +27,43 @@ Indicates the type of connection for the specified (from_stop_id, to_stop_id) pa
 [transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
 */
 func TransferTypeField(db *services.SQLiteContext, rules *types.RuleContext) error {
-	// 1. Create the validation context.
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "transfers_transfer_type_field"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("transfer_type", "transfers.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
-	// 2. Read current SQLite values. Presence is independent of value validation.
+
+	//
+	// 3. Get the transfer_type value
+
 	value, err := db.Transfers.Field("transfer_type")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Check if the transfer_type validation should run
+
 	if value != "" || ctx.ShouldIgnore() {
 		return nil
 	}
+
+	//
+	// 5. Report the missing field with the configured severity
+
 	ctx.AddMessageWithSeverity(ctx.GetSeverityMessage("required", "recommended", "informational"))
+
+	//
+	// 6. Return success
 
 	return nil
 }

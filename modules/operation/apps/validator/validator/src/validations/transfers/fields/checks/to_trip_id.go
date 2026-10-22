@@ -29,30 +29,60 @@ Conditionally Required:
 [transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
 */
 func ToTripIdField(db *services.SQLiteContext, rules *types.RuleContext) error {
-	// 1. Create the validation context.
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "transfers_to_trip_id_field"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("to_trip_id", "transfers.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
-	// 2. Read current SQLite values. Presence is independent of value validation.
+
+	//
+	// 3. Get the to_trip_id value
+
 	value, err := db.Transfers.Field("to_trip_id")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Check if the to_trip_id validation should run
+
 	if value != "" || ctx.ShouldIgnore() {
 		return nil
 	}
+
+	//
+	// 5. Get the transfer_type value
+
 	kind, err := db.Transfers.Field("transfer_type")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 6. Convert the to_trip_id to an integer
+
 	transferType, _ := strconv.Atoi(kind)
+
+	//
+	// 7. Check the to_trip_id required
+
 	if transferType == 4 || transferType == 5 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("required"))
 	} else {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("recommended"))
 	}
+
+	//
+	// 8. Return success
 
 	return nil
 }

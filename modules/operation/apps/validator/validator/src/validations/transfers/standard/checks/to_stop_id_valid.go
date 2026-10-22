@@ -26,31 +26,61 @@ Conditionally Required:
 [transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
 */
 func ToStopIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
-	// 1. Create the validation context.
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "transfer_to_stop_id_references_stops_table"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("to_stop_id", "transfers.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
-	// 2. Presence is handled by the field check.
+
+	//
+	// 3. Get the to_stop_id, transfer_type, from_stop_id values
+
 	fields, err := db.Transfers.Fields("to_stop_id", "transfer_type", "from_stop_id")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Get the to_stop_id value
+
 	value := fields["to_stop_id"]
+
+	//
+	// 5. Skip empty to_stop_id values
+
 	if value == "" {
 		return nil
 	}
-	// 3. Validate the reference, using the first stop definition as before.
+
+	//
+	// 6. Check if the to_stop_id reference exists
+
 	if !db.Stops.Exists("stop_id", value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 		return nil
 	}
+
+	//
+	// 7. Get the stops table
+
 	stops, err := db.Table("stops")
 	if err != nil {
 		return err
 	}
 	seen := false
+
+	//
+	// 8. Check the matching stops and their access restrictions
+
 	err = stops.ForEachMatching("stop_id", value, func(row *services.SQLiteRow) error {
 		if seen {
 			return nil
@@ -84,5 +114,9 @@ func ToStopIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	if err != nil {
 		return err
 	}
+
+	//
+	// 9. Return success
+
 	return nil
 }

@@ -29,29 +29,58 @@ Indicates the type of connection for the specified (from_stop_id, to_stop_id) pa
 [transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
 */
 func TransferTypeValid(db *services.SQLiteContext, rules *types.RuleContext) error {
-	// 1. Create the validation context.
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "transfer_type_valid_gtfs_enum"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("transfer_type", "transfers.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
-	// 2. Parse the current field; missing values belong to the presence rule.
+
+	//
+	// 3. Get the transfer_type value
+
 	value, err := db.Transfers.Field("transfer_type")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Skip empty transfer_type values
+
 	if value == "" {
 		return nil
 	}
+
+	//
+	// 5. Convert the transfer_type to an integer
+
 	kind, err := strconv.Atoi(value)
+
+	//
+	// 6. Check if the transfer_type is valid
+
 	if err != nil || kind < 0 || kind > 5 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 		return nil
 	}
-	// 3. Apply the configured allowed values.
+
+	//
+	// 7. Check the configured transfer_type options
+
 	if rules != nil && rules.Options != nil && !slices.Contains(*rules.Options, types.ALL_OPTIONS) && !slices.Contains(*rules.Options, strconv.Itoa(kind)) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", strconv.Itoa(kind)))
 	}
+
+	//
+	// 8. Return success
 
 	return nil
 }
