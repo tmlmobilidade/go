@@ -8,7 +8,7 @@ import (
 )
 
 func TestTotalCapacityValid(t *testing.T) {
-	const id = "vehicles_total_capacity_non_negative"
+	const id = "vehicles_total_capacity_valid"
 	for _, tc := range []struct {
 		value string
 		count int

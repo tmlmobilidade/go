@@ -40,7 +40,7 @@ func VehicleTypeValid(db *services.SQLiteContext, rules *types.RuleContext) erro
 	//
 	// 1. Get the rule
 
-	const ruleID = "vehicles_vehicle_type_valid_enum"
+	const ruleID = "vehicles_vehicle_type_valid"
 
 	//
 	// 2. Create the validation context

@@ -34,7 +34,7 @@ func WheelchairAccessibleValid(db *services.SQLiteContext, rules *types.RuleCont
 	//
 	// 1. Get the rule
 
-	const ruleID = "vehicles_wheelchair_accessible_valid_gtfs_enum"
+	const ruleID = "vehicles_wheelchair_accessible_valid"
 
 	//
 	// 2. Create the validation context

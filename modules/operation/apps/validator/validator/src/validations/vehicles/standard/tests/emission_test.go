@@ -8,7 +8,7 @@ import (
 )
 
 func TestEmissionValid(t *testing.T) {
-	const id = "vehicles_emission_valid_enum"
+	const id = "vehicles_emission_valid"
 	for _, tc := range []struct {
 		value string
 		count int

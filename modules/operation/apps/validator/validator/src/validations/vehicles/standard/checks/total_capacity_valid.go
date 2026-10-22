@@ -24,7 +24,7 @@ func TotalCapacityValid(db *services.SQLiteContext, rules *types.RuleContext) er
 	//
 	// 1. Get the rule
 
-	const ruleID = "vehicles_total_capacity_non_negative"
+	const ruleID = "vehicles_total_capacity_valid"
 
 	//
 	// 2. Create the validation context

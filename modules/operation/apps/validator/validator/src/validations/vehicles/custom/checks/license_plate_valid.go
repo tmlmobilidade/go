@@ -27,7 +27,7 @@ func LicensePlateValid(db *services.SQLiteContext, rules *types.RuleContext) err
 	//
 	// 1. Get the rule
 
-	const ruleID = "vehicles_license_plate_format_per_market_rules"
+	const ruleID = "vehicles_license_plate_valid"
 
 	//
 	// 2. Create the validation context

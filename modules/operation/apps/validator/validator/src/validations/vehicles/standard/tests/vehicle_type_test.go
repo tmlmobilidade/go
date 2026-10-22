@@ -8,7 +8,7 @@ import (
 )
 
 func TestVehicleTypeValid(t *testing.T) {
-	const id = "vehicles_vehicle_type_valid_enum"
+	const id = "vehicles_vehicle_type_valid"
 	for _, tc := range []struct {
 		value string
 		count int

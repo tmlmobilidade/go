@@ -8,7 +8,7 @@ import (
 )
 
 func TestLicensePlateValid(t *testing.T) {
-	const id = "vehicles_license_plate_format_per_market_rules"
+	const id = "vehicles_license_plate_valid"
 	for _, tc := range []struct {
 		value string
 		count int

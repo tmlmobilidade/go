@@ -8,7 +8,7 @@ import (
 )
 
 func TestWheelchairAccessibleValid(t *testing.T) {
-	const id = "vehicles_wheelchair_accessible_valid_gtfs_enum"
+	const id = "vehicles_wheelchair_accessible_valid"
 	for _, tc := range []struct {
 		value string
 		count int

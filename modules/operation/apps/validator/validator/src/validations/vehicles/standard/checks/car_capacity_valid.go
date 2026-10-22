@@ -26,7 +26,7 @@ func CarCapacityValid(db *services.SQLiteContext, rules *types.RuleContext) erro
 	//
 	// 1. Get the rule
 
-	const ruleID = "vehicles_car_capacity_non_negative"
+	const ruleID = "vehicles_car_capacity_valid"
 
 	//
 	// 2. Create the validation context

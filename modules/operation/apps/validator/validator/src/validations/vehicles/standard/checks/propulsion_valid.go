@@ -45,7 +45,7 @@ func PropulsionValid(db *services.SQLiteContext, rules *types.RuleContext) error
 	//
 	// 1. Get the rule
 
-	const ruleID = "vehicles_propulsion_valid_enum"
+	const ruleID = "vehicles_propulsion_valid"
 
 	//
 	// 2. Create the validation context

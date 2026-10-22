@@ -8,7 +8,7 @@ import (
 )
 
 func TestRegistrationDateValid(t *testing.T) {
-	const id = "vehicles_registration_date_valid_day_granularity"
+	const id = "vehicles_registration_date_valid"
 	for _, tc := range []struct {
 		value string
 		count int

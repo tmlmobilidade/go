@@ -8,7 +8,7 @@ import (
 )
 
 func TestVehicleIdUnique(t *testing.T) {
-	const id = "vehicle_id_unique"
+	const id = "vehicles_vehicle_id_unique"
 	for _, tc := range []struct {
 		value string
 		count int

@@ -87,35 +87,35 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"vehicles_agency_id_foreign": func() {
 				check(db, "vehicles_agency_id_foreign", vehicles_standard.AgencyIdForeign(db, rules.Rule("vehicles_agency_id_foreign")))
 			},
-			"vehicle_id_unique": func() {
-				check(db, "vehicle_id_unique", vehicles_standard.VehicleIdUnique(db, rules.Rule("vehicle_id_unique")))
+			"vehicles_vehicle_id_unique": func() {
+				check(db, "vehicles_vehicle_id_unique", vehicles_standard.VehicleIdUnique(db, rules.Rule("vehicles_vehicle_id_unique")))
 			},
-			"vehicles_propulsion_valid_enum": func() {
-				check(db, "vehicles_propulsion_valid_enum", vehicles_standard.PropulsionValid(db, rules.Rule("vehicles_propulsion_valid_enum")))
+			"vehicles_propulsion_valid": func() {
+				check(db, "vehicles_propulsion_valid", vehicles_standard.PropulsionValid(db, rules.Rule("vehicles_propulsion_valid")))
 			},
-			"vehicles_total_capacity_non_negative": func() {
-				check(db, "vehicles_total_capacity_non_negative", vehicles_standard.TotalCapacityValid(db, rules.Rule("vehicles_total_capacity_non_negative")))
+			"vehicles_total_capacity_valid": func() {
+				check(db, "vehicles_total_capacity_valid", vehicles_standard.TotalCapacityValid(db, rules.Rule("vehicles_total_capacity_valid")))
 			},
-			"vehicles_registration_date_valid_day_granularity": func() {
-				check(db, "vehicles_registration_date_valid_day_granularity", vehicles_standard.RegistrationDateValid(db, rules.Rule("vehicles_registration_date_valid_day_granularity")))
+			"vehicles_registration_date_valid": func() {
+				check(db, "vehicles_registration_date_valid", vehicles_standard.RegistrationDateValid(db, rules.Rule("vehicles_registration_date_valid")))
 			},
-			"vehicles_bicycles_rack_count_non_negative": func() {
-				check(db, "vehicles_bicycles_rack_count_non_negative", vehicles_standard.BicyclesCapacityValid(db, rules.Rule("vehicles_bicycles_rack_count_non_negative")))
+			"vehicles_bicycles_capacity_valid": func() {
+				check(db, "vehicles_bicycles_capacity_valid", vehicles_standard.BicyclesCapacityValid(db, rules.Rule("vehicles_bicycles_capacity_valid")))
 			},
-			"vehicles_vehicle_type_valid_enum": func() {
-				check(db, "vehicles_vehicle_type_valid_enum", vehicles_standard.VehicleTypeValid(db, rules.Rule("vehicles_vehicle_type_valid_enum")))
+			"vehicles_vehicle_type_valid": func() {
+				check(db, "vehicles_vehicle_type_valid", vehicles_standard.VehicleTypeValid(db, rules.Rule("vehicles_vehicle_type_valid")))
 			},
-			"vehicles_car_capacity_non_negative": func() {
-				check(db, "vehicles_car_capacity_non_negative", vehicles_standard.CarCapacityValid(db, rules.Rule("vehicles_car_capacity_non_negative")))
+			"vehicles_car_capacity_valid": func() {
+				check(db, "vehicles_car_capacity_valid", vehicles_standard.CarCapacityValid(db, rules.Rule("vehicles_car_capacity_valid")))
 			},
-			"vehicles_wheelchair_accessible_valid_gtfs_enum": func() {
-				check(db, "vehicles_wheelchair_accessible_valid_gtfs_enum", vehicles_standard.WheelchairAccessibleValid(db, rules.Rule("vehicles_wheelchair_accessible_valid_gtfs_enum")))
+			"vehicles_wheelchair_accessible_valid": func() {
+				check(db, "vehicles_wheelchair_accessible_valid", vehicles_standard.WheelchairAccessibleValid(db, rules.Rule("vehicles_wheelchair_accessible_valid")))
 			},
-			"vehicles_emission_valid_enum": func() {
-				check(db, "vehicles_emission_valid_enum", vehicles_standard.EmissionValid(db, rules.Rule("vehicles_emission_valid_enum")))
+			"vehicles_emission_valid": func() {
+				check(db, "vehicles_emission_valid", vehicles_standard.EmissionValid(db, rules.Rule("vehicles_emission_valid")))
 			},
-			"vehicles_license_plate_format_per_market_rules": func() {
-				check(db, "vehicles_license_plate_format_per_market_rules", vehicles_custom.LicensePlateValid(db, rules.Rule("vehicles_license_plate_format_per_market_rules")))
+			"vehicles_license_plate_valid": func() {
+				check(db, "vehicles_license_plate_valid", vehicles_custom.LicensePlateValid(db, rules.Rule("vehicles_license_plate_valid")))
 			},
 		}
 	}, tracker.Track)

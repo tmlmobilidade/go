@@ -24,7 +24,7 @@ func RegistrationDateValid(db *services.SQLiteContext, rules *types.RuleContext)
 	//
 	// 1. Get the rule
 
-	const ruleID = "vehicles_registration_date_valid_day_granularity"
+	const ruleID = "vehicles_registration_date_valid"
 
 	//
 	// 2. Create the validation context

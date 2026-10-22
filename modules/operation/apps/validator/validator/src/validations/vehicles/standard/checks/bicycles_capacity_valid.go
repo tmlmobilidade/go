@@ -24,7 +24,7 @@ func BicyclesCapacityValid(db *services.SQLiteContext, rules *types.RuleContext)
 	//
 	// 1. Get the rule
 
-	const ruleID = "vehicles_bicycles_rack_count_non_negative"
+	const ruleID = "vehicles_bicycles_capacity_valid"
 
 	//
 	// 2. Create the validation context
