@@ -152,7 +152,7 @@ export function AlertsExtractProperties() {
 								label={filter.label}
 								onChange={value => field.onChange(value ?? undefined)}
 								placeholder={t('alerts:extract.AlertsExtractProperties.date_placeholder')}
-								value={field.value}
+								value={form.getValues(filter.name) ?? null}
 							/>
 						)}
 					/>

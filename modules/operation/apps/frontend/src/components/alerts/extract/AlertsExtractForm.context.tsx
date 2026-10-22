@@ -1,11 +1,11 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Extraction, type OperationAlertsV1ExtractionCreate, OperationAlertsV1ExtractionCreateSchema, OperationAlertsV1ExtractionPropertiesSchema, OperationAlertsV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
+import { type Extraction, type OperationAlertsV1ExtractionCreate, OperationAlertsV1ExtractionCreateSchema, OperationAlertsV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
 import { type AlertReferenceType } from '@tmlmobilidade/go-types-operation';
 import { filterPermissionResourceValues, hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAlertsListFilterActivePeriod } from '../list/filters/AlertsListFilterActivePeriod/use-alerts-list-filter-active-period';
@@ -52,7 +52,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 	//
 	// B. Setup form with the active list filters
 
-	const { form, isDirty, isValid, unblock } = useStandardForm<OperationAlertsV1ExtractionCreate, typeof OperationAlertsV1ExtractionCreateSchema>({
+	const { form, isDirty, unblock } = useStandardForm<OperationAlertsV1ExtractionCreate, typeof OperationAlertsV1ExtractionCreateSchema>({
 		defaultValues: {
 			properties: {
 				active_period_filter_end: filterActivePeriod.value_end ?? undefined,
@@ -85,6 +85,12 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 	});
 
 	const propertiesValue = useStandardFormWatch({ control: form.control, name: 'properties' });
+	const isValid = form.formState.isValid;
+
+	// Validate the properties together so changing a start date also updates the end date error.
+	useEffect(() => {
+		void form.trigger();
+	}, [form, propertiesValue]);
 
 	//
 	// C. Handle actions
@@ -110,15 +116,6 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 	//
 	// D. Setup flags from the current form values
 
-	const validatedProperties = useMemo(() => {
-		try {
-			const result = OperationAlertsV1ExtractionPropertiesSchema.safeParse(propertiesValue);
-			return result.success ? result.data : null;
-		} catch {
-			return null;
-		}
-	}, [propertiesValue]);
-
 	const hasExtractPermission = useMemo(() => {
 		if (!hasPermission(meData?.permissions, { action: PermissionCatalog.all.alerts.actions.read, scope: PermissionCatalog.all.alerts.scope })) return false;
 		const permittedAgencyIds = filterPermissionResourceValues<string>({
@@ -140,7 +137,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 
 	const { createEnabled, editEnabled } = useStandardFormCapabilities({
 		create: { hasPermission: hasExtractPermission, isCreating: isExtracting },
-		form: { isDirty, isValid: isValid && !!validatedProperties },
+		form: { isDirty, isValid },
 	});
 
 	//
