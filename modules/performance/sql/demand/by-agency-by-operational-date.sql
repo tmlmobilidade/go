@@ -16,8 +16,8 @@ FROM (
     SELECT agency_id, operational_date, toInt64(1) AS passenger_qty
     FROM simplified_apex.validations WHERE is_passenger = 1
     UNION ALL
-    SELECT agency_id, operational_date, toInt64(ifNull(group_dimension, 1)) AS passenger_qty
-    FROM simplified_apex.banking_taps
+    SELECT agency_id, operational_date, toInt64(1) AS passenger_qty
+    FROM simplified_apex.banking_taps WHERE is_ok = true
 )
 WHERE operational_date >= {start_date:UInt32}
   AND operational_date <= {end_date:UInt32}

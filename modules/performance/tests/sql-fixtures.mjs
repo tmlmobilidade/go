@@ -7,9 +7,11 @@ const selectRows = rows => rows.map(row => `SELECT ${Object.entries(row).map(([k
 const validation = changes => ({ operational_date: 20240101, agency_id: 'LA77N', agency_code: '41', created_at: start, is_passenger: 1, line_id: '1001', pattern_id: '1001_0_1', category: 'subscription', product_id: 'p1', ...changes });
 const ride = (id, changes) => ({ _id: id, agency_id: 'LA77N', operational_date: 20240101, start_time_scheduled: start, start_time_observed: start + 360000, processing_status: 'complete', passengers_observed: 10, extension_scheduled: 1000, apex_validations_qty: 1, apex_sales_qty: 1, apex_sales_amount: 100, passengers_observed_prepaid_amount: 50, passengers_observed_subscription_qty: 2, route_short_name: '1001', shape_id: '1001_0_1', ...changes });
 const validations = [validation(), validation({ created_at: start + 1, category: null, product_id: null, pattern_id: null }), validation({ agency_id: 'BNA17', agency_code: '42', created_at: end - 1, line_id: null, pattern_id: null }), validation({ created_at: end, operational_date: 20240102 }), validation({ created_at: start - 1, operational_date: 20231231 }), validation({ is_passenger: 0 }), validation({ agency_id: 'OTHER' }), validation({ created_at: start - 7 * 86400000, operational_date: 20231225 })];
-const bankingTap = changes => ({ agency_id: 'LA77N', agency_code: '41', created_at: start, operational_date: 20240101, line_id: '1001', pattern_id: '1001_0_1', product_id: 'bank-product', group_dimension: 3, ...changes });
+const bankingTap = changes => ({ agency_id: 'LA77N', agency_code: '41', created_at: start, operational_date: 20240101, line_id: '1001', pattern_id: '1001_0_1', product_id: 'bank-product', group_dimension: 0, is_ok: 1, ...changes });
 const bankingTaps = [
  bankingTap(),
+ bankingTap({ is_ok: 0 }),
+ bankingTap({ is_ok: 0, created_at: start - 7 * 86400000, operational_date: 20231225 }),
  bankingTap({ group_dimension: null, product_id: '' }),
  bankingTap({ agency_id: 'BNA17', agency_code: '42', created_at: end - 1, group_dimension: 2, line_id: '', pattern_id: '' }),
  bankingTap({ agency_id: 'YA15B', agency_code: '43', group_dimension: 4 }),
@@ -84,16 +86,16 @@ export function fixtureSelect(sql, metric) {
 export function assertFixture(metric, rows) {
  const agency = id => rows.find(row => row.row_properties.agency_id === id);
  if (/^demand_by_(category|product)_/.test(metric) && metric.endsWith('_by_day')) {
-  assert.equal(rows.reduce((sum, row) => sum + row.row_numbers.qty, 0), 13);
+  assert.equal(rows.reduce((sum, row) => sum + row.row_numbers.qty, 0), 7);
   const booleanHoliday = metric.startsWith('demand_by_category_') || metric.startsWith('demand_by_product_by_pattern_');
   for (const row of rows) {
    if (booleanHoliday) assert.equal(row.row_booleans.holiday, false);
    else assert.equal(row.row_strings.holiday, '0');
   }
-  if (metric.startsWith('demand_by_category_')) assert.equal(rows.filter(row => row.row_properties.category === 'banking_taps').reduce((sum, row) => sum + row.row_numbers.qty, 0), 10);
+  if (metric.startsWith('demand_by_category_')) assert.equal(rows.filter(row => row.row_properties.category === 'banking_taps').reduce((sum, row) => sum + row.row_numbers.qty, 0), 4);
   if (metric.startsWith('demand_by_product_')) {
    const quantity = product => rows.filter(row => row.row_properties.product_id === product).reduce((sum, row) => sum + row.row_numbers.qty, 0);
-   assert.equal(quantity('bank-product'), 9);
+   assert.equal(quantity('bank-product'), 3);
    assert.equal(quantity('unknown-product'), 2);
   }
  }
@@ -123,13 +125,13 @@ export function assertFixture(metric, rows) {
  }
 
  if (metric === 'demand_by_agency_by_day') {
-  assert.equal(agency('41').row_numbers.qty, 6);
-  assert.equal(agency('42').row_numbers.qty, 3);
-  assert.equal(agency('43').row_numbers.qty, 4);
+  assert.equal(agency('41').row_numbers.qty, 4);
+  assert.equal(agency('42').row_numbers.qty, 2);
+  assert.equal(agency('43').row_numbers.qty, 1);
  }
- if (['demand_by_line_by_day', 'demand_by_pattern_by_day'].includes(metric)) assert.equal(rows.reduce((sum, row) => sum + row.row_numbers.qty, 0), 13);
- if (metric === 'demand_by_line_by_day') assert.equal(rows.find(row => row.row_properties.line_id === 'no-line').row_numbers.qty, 3);
- if (metric === 'demand_by_pattern_by_day') assert.equal(rows.find(row => row.row_properties.pattern_id === 'no-pattern').row_numbers.qty, 4);
+ if (['demand_by_line_by_day', 'demand_by_pattern_by_day'].includes(metric)) assert.equal(rows.reduce((sum, row) => sum + row.row_numbers.qty, 0), 7);
+ if (metric === 'demand_by_line_by_day') assert.equal(rows.find(row => row.row_properties.line_id === 'no-line').row_numbers.qty, 2);
+ if (metric === 'demand_by_pattern_by_day') assert.equal(rows.find(row => row.row_properties.pattern_id === 'no-pattern').row_numbers.qty, 3);
  if (metric === 'supply_by_agency_by_day') {
   assert.equal(agency('LA77N').row_numbers.scheduled_rides, 4);
   assert.equal(agency('LA77N').row_numbers.accomplished_rides, 3);
@@ -153,8 +155,8 @@ export function assertFixture(metric, rows) {
  }
  if (metric === 'realtime_demand') {
   const total = rows.find(row => row.row_path.join('/') === 'total');
-  assert.equal(total.row_numbers.now, 13); assert.equal(total.row_numbers.last_week, 6);
-  assert.equal(rows.find(row => row.row_path.join('/') === 'agencies/43').row_numbers.now, 4);
+  assert.equal(total.row_numbers.now, 7); assert.equal(total.row_numbers.last_week, 2);
+  assert.equal(rows.find(row => row.row_path.join('/') === 'agencies/43').row_numbers.now, 1);
  }
 }
 

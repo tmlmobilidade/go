@@ -13,8 +13,8 @@ WITH counts AS (
         SELECT agency_id, agency_code, created_at, toFloat64(1) AS passenger_qty
         FROM simplified_apex.validations FINAL WHERE is_passenger = 1
         UNION ALL
-        SELECT agency_id, agency_code, created_at, toFloat64(ifNull(group_dimension, 1)) AS passenger_qty
-        FROM simplified_apex.banking_taps FINAL
+        SELECT agency_id, agency_code, created_at, toFloat64(1) AS passenger_qty
+        FROM simplified_apex.banking_taps FINAL WHERE is_ok = true
     )
     WHERE agency_id IN {agency_ids:Array(String)}
       AND ((created_at >= {current_start:Int64} AND created_at <= {reference_at:UInt64})

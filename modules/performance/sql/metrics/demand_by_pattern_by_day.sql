@@ -14,8 +14,8 @@ WITH counts AS (
             SELECT agency_id, created_at, pattern_id, toFloat64(1) AS passenger_qty
             FROM simplified_apex.validations FINAL WHERE is_passenger = 1
             UNION ALL
-            SELECT agency_id, created_at, nullIf(pattern_id, '') AS pattern_id, toFloat64(ifNull(group_dimension, 1)) AS passenger_qty
-            FROM simplified_apex.banking_taps FINAL
+            SELECT agency_id, created_at, nullIf(pattern_id, '') AS pattern_id, toFloat64(1) AS passenger_qty
+            FROM simplified_apex.banking_taps FINAL WHERE is_ok = true
         )
     ) AS v
     WHERE agency_id IN {agency_ids:Array(String)}

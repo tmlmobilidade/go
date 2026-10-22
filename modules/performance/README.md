@@ -16,9 +16,9 @@ The API reconstructs the existing JSON shape from these rows; it performs no met
 
 ## Passenger demand
 
-Validation-based demand metrics add passenger validations (one passenger each) and `simplified_apex.banking_taps` weighted by `group_dimension` (falling back to one when null), matching ride passenger accounting. This applies to daily agency/line/pattern totals, category/product breakdowns, realtime comparisons, and Hub's operational-date output. Monthly/yearly rollups and rankings inherit the updated daily totals. Category breakdowns label banking taps as `banking_taps`; product breakdowns retain the tap's product ID, with empty IDs treated as unknown.
+Validation-based demand metrics add passenger validations (one passenger each) and `simplified_apex.banking_taps` with `is_ok = true` counted as one passenger per banking-tap row, regardless of `group_dimension` (including zero, null, and positive values). This applies to daily agency/line/pattern totals, category/product breakdowns, realtime comparisons, and Hub's operational-date output. Monthly/yearly rollups and rankings inherit the updated daily totals. Category breakdowns label banking taps as `banking_taps`; product breakdowns retain the tap's product ID, with empty IDs treated as unknown.
 
-Ride-based pattern/hour demand and failed-circulation estimates already use `passengers_observed`, which includes banking taps; they must not add taps again. Taps follow the ride examiner's existing inclusion rule, without an additional `is_ok` filter.
+Ride-based pattern/hour demand and failed-circulation estimates consume stored `passengers_observed` values; those ride counters are calculated separately by the ride examiner. Counting tap rows in Performance does not recalculate stored rides.
 
 The next daily refresh rebuilds supported dashboard history. Hub's older months refresh daily; realtime refreshes its comparison months.
 

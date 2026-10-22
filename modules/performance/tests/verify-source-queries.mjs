@@ -35,7 +35,7 @@ try {
   const params = { start_date: 20240101, end_date: 20240101, exclude_months: [] };
   const rows = await (await client.query({ query, query_params: params, format: 'JSONEachRow' })).json();
   const totals = Object.fromEntries(rows.map(row => [row.agency_id, Number(row.qty)]));
-  assert.deepEqual(totals, { LA77N: 6, BNA17: 3, YA15B: 4, OTHER: 4 });
+  assert.deepEqual(totals, { LA77N: 4, BNA17: 2, YA15B: 1, OTHER: 2 });
   const excluded = await (await client.query({ query, query_params: { ...params, exclude_months: ['202401'] }, format: 'JSONEachRow' })).json();
   assert.deepEqual(excluded, []);
   const productionSelect = sql.slice(sql.indexOf('SELECT\n'));
