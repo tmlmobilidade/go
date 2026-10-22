@@ -137,7 +137,7 @@ function goTimepointDays(
 	pattern: Pattern,
 	operationalDates: OperationalDate[],
 	periods: Awaited<ReturnType<typeof goDb.offer.yearPeriods.findMany>>,
-	holidaysList: Awaited<ReturnType<typeof goDb.offer.holidays.findMany>>,
+	holidaysList: Awaited<ReturnType<typeof goDb.dates.holidays.findMany>>,
 	eventsList: Awaited<ReturnType<typeof goDb.offer.events.findMany>>,
 ) {
 	const mergedRules = resolvePatternRules(pattern, eventsList);
@@ -194,7 +194,7 @@ async function main() {
 		goDb.core.agencies.findById(agency),
 		loadAgencyPatterns(agency, onlyRouted),
 		goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
-		goDb.offer.holidays.findMany({ agency_ids: { $in: [agency] } }),
+		goDb.dates.holidays.findMany({ agency_ids: { $in: [agency] } }),
 		goDb.offer.events.findMany({ agency_ids: { $in: [agency] } }),
 	]);
 	if (!agencyRecord) throw new Error(`Agency ${agency} not found`);

@@ -29,7 +29,7 @@ mock.module('@tmlmobilidade/go-interfaces-godb', {
 					findMany: async () => AGENCIES,
 				},
 			},
-			offer: {
+			dates: {
 				holidays: {
 					insertOne: async (data: Record<string, unknown>) => {
 						WRITES.push(data);

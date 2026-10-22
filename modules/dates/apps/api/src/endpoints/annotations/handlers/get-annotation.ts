@@ -16,7 +16,7 @@ export async function getAnnotationHandler(request: FastifyRequest<{ Params: { i
 	//
 	// Get the Annotation from the database
 
-	const annotationData = await goDb.offer.annotations.findById(request.params.id);
+	const annotationData = await goDb.dates.annotations.findById(request.params.id);
 
 	if (!annotationData) {
 		return sendErrorApiResponse(reply, {

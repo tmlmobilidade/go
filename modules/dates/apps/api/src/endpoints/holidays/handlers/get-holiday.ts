@@ -16,7 +16,7 @@ export async function getHolidayHandler(request: FastifyRequest<{ Params: { id: 
 	//
 	// Get the Holiday from the database
 
-	const holidayData = await goDb.offer.holidays.findById(request.params.id);
+	const holidayData = await goDb.dates.holidays.findById(request.params.id);
 
 	if (!holidayData) {
 		return sendErrorApiResponse(reply, {

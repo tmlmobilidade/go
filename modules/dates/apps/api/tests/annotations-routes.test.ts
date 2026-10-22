@@ -25,7 +25,7 @@ mock.module('@tmlmobilidade/go-interfaces-godb', {
 	namedExports: {
 		goDb: {
 			core: { agencies: { findMany: async () => AGENCIES } },
-			offer: {
+			dates: {
 				annotations: {
 					insertOne: async (data: Record<string, unknown>) => {
 						WRITES.push(data);

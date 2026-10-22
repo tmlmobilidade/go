@@ -40,7 +40,7 @@ const collection = {
 };
 
 mock.module('@tmlmobilidade/go-interfaces-godb', {
-	namedExports: { goDb: { offer: Object.fromEntries(resources.map(resource => [resource.plural, collection])) } },
+	namedExports: { goDb: { dates: Object.fromEntries(resources.map(resource => [resource.plural, collection])) } },
 });
 
 function permission(scope: string, action: string, agencyIds = ['A']): Permission {
