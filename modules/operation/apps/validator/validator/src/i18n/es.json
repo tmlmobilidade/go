@@ -161,7 +161,7 @@
 		"not_allowed": "El campo \"external_sound\" \"%s\" no está permitido",
 		"required": "El campo \"external_sound\" es obligatorio"
 	},
-	"fare_attributes_agency_id_references_agency_table": {
+	"fare_attributes_agency_id_foreign": {
 		"forbidden": "El campo \"agency_id\" está prohibido",
 		"generic": "El campo \"agency_id\" debe hacer referencia a una agencia definida en agency.txt.",
 		"not_found": "El campo \"agency_id\" \"%s\" no existe en agency.txt",
@@ -180,28 +180,28 @@
 		"required": "Falta el archivo obligatorio \"%s\"",
 		"warning": "Se recomienda el archivo \"%s\""
 	},
-	"fare_attributes_id_unique": {
+	"fare_attributes_fare_id_unique": {
 		"duplicate": "Se encontró el campo \"fare_id\" \"%s\" duplicado. El campo \"fare_id\" debe ser único",
 		"forbidden": "El campo \"fare_id\" está prohibido",
 		"generic": "El campo \"fare_id\" debe ser único en fare_attributes.txt.",
 		"recommended": "Se recomienda el campo \"fare_id\"",
 		"required": "El campo \"fare_id\" es obligatorio"
 	},
-	"fare_attributes_payment_method_valid_gtfs_enum": {
+	"fare_attributes_payment_method_valid": {
 		"forbidden": "El campo \"payment_method\" está prohibido",
 		"generic": "El campo \"payment_method\" debe contener uno de los valores permitidos por GTFS.",
 		"invalid": "El campo \"payment_method\" debe ser 0 o 1. Se recibió \"%s\"",
 		"recommended": "Se recomienda el campo \"payment_method\"",
 		"required": "El campo \"payment_method\" es obligatorio"
 	},
-	"fare_attributes_transfer_duration_valid_seconds_range": {
+	"fare_attributes_transfer_duration_valid": {
 		"forbidden": "El campo \"transfer_duration\" está prohibido",
 		"generic": "El campo \"transfer_duration\" debe contener una duración en segundos dentro del intervalo permitido.",
 		"invalid": "El campo \"transfer_duration\" debe ser mayor que 0. Se recibió \"%s\"",
 		"recommended": "Se recomienda el campo \"transfer_duration\"",
 		"required": "El campo \"transfer_duration\" es obligatorio"
 	},
-	"fare_attributes_transfers_valid_gtfs_enum": {
+	"fare_attributes_transfers_valid": {
 		"generic": "El campo \"transfers\" debe contener uno de los valores permitidos por GTFS.",
 		"invalid": "El campo \"transfer_duration\" debe ser mayor que 0. Se recibió \"%s\""
 	},
@@ -238,42 +238,42 @@
 	"fare_media_values_parse": {
 		"generic": "No se pudieron analizar los valores de fare_media.txt."
 	},
-	"fare_price_valid_non_negative_decimal": {
+	"fare_attributes_price_valid": {
 		"forbidden": "El campo \"price\" está prohibido",
 		"generic": "El campo \"price\" debe contener un valor decimal no negativo.",
 		"invalid": "El campo \"price\" debe ser no negativo. Se recibió \"%s\"",
 		"recommended": "Se recomienda el campo \"price\"",
 		"required": "El campo \"price\" es obligatorio"
 	},
-	"fare_rule_contains_id_references_zones_stops": {
+	"fare_rules_contains_id_foreign": {
 		"forbidden": "El campo \"contains_id\" está prohibido",
 		"generic": "El campo \"contains_id\" debe hacer referencia a una zona definida en stops.txt.",
 		"invalid": "El campo \"contains_id\" \"%s\" debe ser un identificador válido de stops.txt",
 		"recommended": "Se recomienda el campo \"contains_id\"",
 		"required": "El campo \"contains_id\" es obligatorio"
 	},
-	"fare_rule_destination_id_references_zones_stops": {
+	"fare_rules_destination_id_foreign": {
 		"forbidden": "El campo \"destination_id\" está prohibido",
 		"generic": "El campo \"destination_id\" debe hacer referencia a una zona definida en stops.txt.",
 		"invalid": "El campo \"destination_id\" \"%s\" debe ser un identificador válido de stops.txt",
 		"recommended": "Se recomienda el campo \"destination_id\"",
 		"required": "El campo \"destination_id\" es obligatorio"
 	},
-	"fare_rule_fare_id_references_fare_attributes": {
+	"fare_rules_fare_id_foreign": {
 		"forbidden": "El campo \"fare_id\" está prohibido",
 		"generic": "El campo \"fare_id\" debe hacer referencia a una tarifa definida en fare_attributes.txt.",
 		"invalid": "El campo \"fare_id\" \"%s\" no es un fare_id válido de fare_attributes.txt",
 		"recommended": "Se recomienda el campo \"fare_id\"",
 		"required": "El campo \"fare_id\" es obligatorio"
 	},
-	"fare_rule_origin_id_references_zones_stops": {
+	"fare_rules_origin_id_foreign": {
 		"forbidden": "El campo \"origin_id\" está prohibido",
 		"generic": "El campo \"origin_id\" debe hacer referencia a una zona definida en stops.txt.",
 		"invalid": "El campo \"origin_id\" \"%s\" debe ser un identificador válido de stops.txt",
 		"recommended": "Se recomienda el campo \"origin_id\"",
 		"required": "El campo \"origin_id\" es obligatorio"
 	},
-	"fare_rule_route_id_references_routes": {
+	"fare_rules_route_id_foreign": {
 		"forbidden": "El campo \"route_id\" está prohibido",
 		"generic": "El campo \"route_id\" debe hacer referencia a una ruta definida en routes.txt.",
 		"invalid": "El campo \"route_id\" \"%s\" no es un route_id válido de routes.txt",
@@ -372,7 +372,7 @@
 		"networks_forbidden_when_network_id": "networks.txt está prohibido cuando existe network_id en routes.txt",
 		"route_networks_forbidden_when_network_id": "route_networks.txt está prohibido cuando existe network_id en routes.txt"
 	},
-	"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": {
+	"frequencies_exact_times_valid": {
 		"forbidden": "El campo \"exact_times\" está prohibido",
 		"generic": "El campo \"exact_times\" debe ser 0 cuando un viaje con horarios fijos se presta mediante frequencies.txt.",
 		"invalid": "El campo \"exact_times\" debe ser 0 o 1; se recibió: %s",
@@ -385,14 +385,14 @@
 		"required": "Falta el archivo obligatorio \"%s\"",
 		"warning": "Se recomienda el archivo \"%s\""
 	},
-	"frequencies_headway_secs_positive_and_aligns_trip": {
+	"frequencies_headway_secs_valid": {
 		"forbidden": "El campo \"headway_secs\" está prohibido",
 		"generic": "El campo \"headway_secs\" debe ser positivo y coherente con la duración del viaje.",
 		"invalid": "El campo \"headway_secs\" debe ser un número entero positivo; se recibió: %s",
 		"recommended": "Se recomienda el campo \"headway_secs\"",
 		"required": "El campo \"headway_secs\" es obligatorio"
 	},
-	"frequencies_trip_id_references_trips_table": {
+	"frequencies_trip_id_foreign": {
 		"forbidden": "El campo \"trip_id\" está prohibido",
 		"generic": "El campo \"trip_id\" debe hacer referencia a un viaje definido en trips.txt.",
 		"not_found": "El campo \"trip_id\" \"%s\" no existe en trips.txt",
@@ -402,14 +402,14 @@
 	"frequencies_values_parse": {
 		"generic": "No se pudieron analizar los valores de frequencies.txt."
 	},
-	"frequency_end_time_valid": {
+	"frequencies_end_time_valid": {
 		"forbidden": "El campo \"end_time\" está prohibido",
 		"generic": "El campo \"end_time\" debe contener una hora válida.",
 		"invalid": "El campo \"end_time\" debe ser una hora válida con el formato HH:MM:SS; se recibió: %s",
 		"recommended": "Se recomienda el campo \"end_time\"",
 		"required": "El campo \"end_time\" es obligatorio"
 	},
-	"frequency_start_time_valid": {
+	"frequencies_start_time_valid": {
 		"forbidden": "El campo \"start_time\" está prohibido",
 		"generic": "El campo \"start_time\" debe contener una hora válida.",
 		"invalid": "El campo \"start_time\" debe ser una hora válida con el formato HH:MM:SS; se recibió: %s",
@@ -431,14 +431,14 @@
 		"not_allowed": "El campo \"kneeling\" \"%s\" no está permitido",
 		"required": "El campo \"kneeling\" es obligatorio"
 	},
-	"level_id_unique": {
+	"levels_level_id_unique": {
 		"duplicate": "Se encontró el campo \"level_id\" \"%s\" duplicado. El campo \"level_id\" debe ser único",
 		"forbidden": "El campo \"level_id\" está prohibido",
 		"generic": "El campo \"level_id\" debe ser único en levels.txt.",
 		"recommended": "Se recomienda el campo \"level_id\"",
 		"required": "El campo \"level_id\" es obligatorio"
 	},
-	"level_index_required": {
+	"levels_level_index_valid": {
 		"forbidden": "El campo \"level_index\" está prohibido",
 		"generic": "El campo \"level_index\" debe estar presente y contener un número válido.",
 		"invalid": "El campo \"level_index\" debe ser un número entero no negativo",
@@ -500,7 +500,7 @@
 		"not_allowed": "El campo \"passenger_counting\" \"%s\" no está permitido",
 		"required": "El campo \"passenger_counting\" es obligatorio"
 	},
-	"pathway_from_stop_id_references_stops_table": {
+	"pathways_from_stop_id_foreign": {
 		"forbidden": "El campo \"from_stop_id\" está prohibido",
 		"forbidden_stop_access_1": "El campo \"from_stop_id\" \"%s\" hace referencia a una parada (location_type=0 o vacío) con stop_access=1. Las paradas con stop_access=1 están prohibidas en los pasos peatonales",
 		"generic": "El campo \"from_stop_id\" debe hacer referencia a una parada definida en stops.txt.",
@@ -512,14 +512,14 @@
 		"recommended": "Se recomienda el campo \"from_stop_id\"",
 		"required": "El campo \"from_stop_id\" es obligatorio"
 	},
-	"pathway_id_unique": {
+	"pathways_pathway_id_unique": {
 		"duplicate": "Se encontró el campo \"pathway_id\" \"%s\" duplicado. El campo \"pathway_id\" debe ser único",
 		"forbidden": "El campo \"pathway_id\" está prohibido",
 		"generic": "El campo \"pathway_id\" debe ser único en pathways.txt.",
 		"recommended": "Se recomienda el campo \"pathway_id\"",
 		"required": "El campo \"pathway_id\" es obligatorio"
 	},
-	"pathway_is_bidirectional_valid_gtfs_enum": {
+	"pathways_is_bidirectional_valid": {
 		"exit_gate_bidirectional": "El campo \"is_bidirectional\" debe ser 0 cuando \"pathway_mode\" es 7 (puerta de salida). Las puertas de salida no pueden ser bidireccionales",
 		"forbidden": "El campo \"is_bidirectional\" está prohibido",
 		"generic": "El campo \"is_bidirectional\" debe contener uno de los valores permitidos por GTFS.",
@@ -528,21 +528,21 @@
 		"recommended": "Se recomienda el campo \"is_bidirectional\"",
 		"required": "El campo \"is_bidirectional\" es obligatorio"
 	},
-	"pathway_length_non_negative": {
+	"pathways_length_valid": {
 		"forbidden": "El campo \"length\" está prohibido",
 		"generic": "El campo \"length\" debe contener una longitud no negativa en metros.",
 		"negative": "El campo \"length\" \"%f\" debe ser un número no negativo",
 		"recommended": "Se recomienda el campo \"length\"",
 		"required": "El campo \"length\" es obligatorio"
 	},
-	"pathway_max_slope_allowed_for_pathway_mode": {
+	"pathways_max_slope_valid": {
 		"forbidden": "El campo \"max_slope\" está prohibido",
 		"generic": "El campo \"max_slope\" debe contener una pendiente permitida para el tipo de paso peatonal indicado.",
 		"not_allowed_pathway_mode": "El campo \"max_slope\" no está permitido para pathway_mode \"%s\"",
 		"recommended": "Se recomienda el campo \"max_slope\"",
 		"required": "El campo \"max_slope\" es obligatorio"
 	},
-	"pathway_min_width_positive": {
+	"pathways_min_width_valid": {
 		"forbidden": "El campo \"min_width\" está prohibido",
 		"generic": "El campo \"min_width\" debe contener una anchura positiva en metros.",
 		"invalid": "El campo \"min_width\" \"%s\" no es un número válido",
@@ -550,7 +550,7 @@
 		"recommended": "Se recomienda el campo \"min_width\"",
 		"required": "El campo \"min_width\" es obligatorio"
 	},
-	"pathway_mode_valid_gtfs_enum": {
+	"pathways_pathway_mode_valid": {
 		"forbidden": "El campo \"pathway_mode\" está prohibido",
 		"generic": "El campo \"pathway_mode\" debe contener uno de los valores permitidos por GTFS.",
 		"invalid": "El campo \"pathway_mode\" debe ser 0, 1, 2, 3, 4 o 5; se recibió: %s",
@@ -570,13 +570,13 @@
 		"recommended": "Se recomienda el campo \"signposted_as\"",
 		"required": "El campo \"signposted_as\" es obligatorio"
 	},
-	"pathway_stair_count": {
+	"pathways_stair_count_valid": {
 		"forbidden": "El campo \"stair_count\" está prohibido",
 		"generic": "El campo \"stair_count\" debe contener un número válido de escalones.",
 		"recommended": "Se recomienda el campo \"stair_count\"",
 		"required": "El campo \"stair_count\" es obligatorio"
 	},
-	"pathway_to_stop_id_references_stops_table": {
+	"pathways_to_stop_id_foreign": {
 		"forbidden": "El campo \"to_stop_id\" está prohibido",
 		"forbidden_stop_access_1": "El campo \"to_stop_id\" \"%s\" hace referencia a una parada (location_type=0 o vacío) con stop_access=1. Las paradas con stop_access=1 están prohibidas en los pasos peatonales",
 		"generic": "El campo \"to_stop_id\" debe hacer referencia a una parada definida en stops.txt.",
@@ -586,7 +586,7 @@
 		"recommended": "Se recomienda el campo \"to_stop_id\"",
 		"required": "El campo \"to_stop_id\" es obligatorio"
 	},
-	"pathway_traversal_time_non_negative_seconds": {
+	"pathways_traversal_time_valid": {
 		"forbidden": "El campo \"traversal_time\" está prohibido",
 		"generic": "El campo \"traversal_time\" debe contener un tiempo no negativo en segundos.",
 		"negative": "El campo \"traversal_time\" \"%s\" debe ser un número no negativo",
@@ -611,7 +611,7 @@
 		"not_allowed": "El campo \"rear_display\" \"%s\" no está permitido",
 		"required": "El campo \"rear_display\" es obligatorio"
 	},
-	"rider_categories_at_most_one_default_fare_category": {
+	"rider_categories_is_default_fare_category_valid": {
 		"forbidden": "El campo \"is_default_fare_category\" está prohibido",
 		"generic": "Solo una categoría de pasajeros puede marcarse como categoría de tarifa predeterminada.",
 		"invalid": "El campo \"is_default_fare_category\" debe ser 0 o 1",
@@ -619,7 +619,7 @@
 		"recommended": "Se recomienda el campo \"is_default_fare_category\"",
 		"required": "El campo \"is_default_fare_category\" es obligatorio"
 	},
-	"rider_categories_eligibility_url_valid_http_url": {
+	"rider_categories_eligibility_url_valid": {
 		"forbidden": "El campo \"eligibility_url\" está prohibido",
 		"generic": "El campo \"eligibility_url\" debe contener una URL HTTP válida.",
 		"invalid": "El campo \"eligibility_url\" debe ser una URL válida",
@@ -634,7 +634,7 @@
 	"rider_categories_values_parse": {
 		"generic": "No se pudieron analizar los valores de rider_categories.txt."
 	},
-	"rider_category_id_unique": {
+	"rider_categories_rider_category_id_unique": {
 		"duplicate": "Se encontró el campo \"rider_category_id\" \"%s\" duplicado. El campo \"rider_category_id\" debe ser único",
 		"forbidden": "El campo \"rider_category_id\" está prohibido",
 		"generic": "El campo \"rider_category_id\" debe ser único en rider_categories.txt.",
@@ -734,7 +734,7 @@
 		"required": "El campo \"route_url\" es obligatorio",
 		"same_as_agency_url": "El campo \"route_url\" debe ser distinto del campo \"agency_url\" de la agencia"
 	},
-	"routes_continuous_drop_off_valid_gtfs_enum": {
+	"routes_continuous_drop_off_valid": {
 		"forbidden": "El campo \"continuous_drop_off\" está prohibido",
 		"forbidden_with_window": "El campo \"continuous_drop_off\" debe ser 1 o estar vacío si se define start_pickup_drop_off_window o end_pickup_drop_off_window",
 		"generic": "El campo \"continuous_drop_off\" debe contener uno de los valores permitidos por GTFS.",
@@ -742,7 +742,7 @@
 		"recommended": "Se recomienda el campo \"continuous_drop_off\"",
 		"required": "El campo \"continuous_drop_off\" es obligatorio"
 	},
-	"routes_continuous_pickup_valid_gtfs_enum": {
+	"routes_continuous_pickup_valid": {
 		"forbidden": "El campo \"continuous_pickup\" está prohibido",
 		"forbidden_with_window": "El campo \"continuous_pickup\" debe ser 1 o estar vacío si se define start_pickup_drop_off_window o end_pickup_drop_off_window",
 		"generic": "El campo \"continuous_pickup\" debe contener uno de los valores permitidos por GTFS.",
@@ -988,7 +988,7 @@
 		"recommended": "Se recomienda el campo \"stop_short_name\"",
 		"required": "El campo \"stop_short_name\" es obligatorio"
 	},
-	"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence": {
+	"stop_times_arrival_departure_time_sequence": {
 		"decreasing": "Los campos \"arrival_time\" y \"departure_time\" no deben disminuir según \"stop_sequence\" para trip_id \"%s\"; el stop_sequence anterior \"%d\" termina a las \"%s\" y el stop_sequence actual \"%d\" comienza a las \"%s\"",
 		"generic": "Las horas de llegada y salida no deben retroceder entre paradas consecutivas del mismo viaje."
 	},
@@ -1303,14 +1303,14 @@
 		"recommended": "Se recomienda el campo \"zone_id\"",
 		"required": "El campo \"zone_id\" es obligatorio"
 	},
-	"transfer_from_route_id_references_routes_table": {
+	"transfers_from_route_id_foreign": {
 		"forbidden": "El campo \"from_route_id\" está prohibido",
 		"generic": "El campo \"from_route_id\" debe hacer referencia a una ruta definida en routes.txt.",
 		"not_found": "El campo \"from_route_id\" \"%s\" no existe en routes.txt",
 		"recommended": "Se recomienda el campo \"from_route_id\"",
 		"trip_must_belong_to_route": "Cuando se definen from_trip_id y from_route_id, from_trip_id \"%s\" debe pertenecer a from_route_id \"%s\". El viaje hace referencia a la ruta \"%s\""
 	},
-	"transfer_from_stop_id_references_stops_table": {
+	"transfers_from_stop_id_foreign": {
 		"generic": "El campo \"from_stop_id\" debe hacer referencia a una parada definida en stops.txt.",
 		"invalid_location_type": "El campo \"from_stop_id\" \"%s\" hace referencia a una parada con un location_type no válido: \"%d\". Debe ser una parada (location_type=0) o una estación (location_type=1)",
 		"must_be_stop_for_transfer_type_4_5": "El campo \"from_stop_id\" \"%s\" debe hacer referencia a una parada (location_type=0) cuando transfer_type es %d. Las estaciones (location_type=1) no están permitidas para transfer_type 4 o 5",
@@ -1318,21 +1318,21 @@
 		"recommended": "Se recomienda el campo \"from_stop_id\"",
 		"required": "El campo \"from_stop_id\" es obligatorio"
 	},
-	"transfer_from_trip_id_references_trips_table": {
+	"transfers_from_trip_id_foreign": {
 		"generic": "El campo \"from_trip_id\" debe hacer referencia a un viaje definido en trips.txt.",
 		"not_found": "El campo \"from_trip_id\" \"%s\" no existe en trips.txt",
 		"recommended": "Se recomienda el campo \"from_trip_id\"",
 		"required": "El campo \"from_trip_id\" es obligatorio",
 		"trip_must_belong_to_route": "Cuando se definen from_trip_id y from_route_id, from_trip_id \"%s\" debe pertenecer a from_route_id \"%s\". El viaje hace referencia a la ruta \"%s\""
 	},
-	"transfer_to_route_id_references_routes_table": {
+	"transfers_to_route_id_foreign": {
 		"forbidden": "El campo \"to_route_id\" está prohibido",
 		"generic": "El campo \"to_route_id\" debe hacer referencia a una ruta definida en routes.txt.",
 		"not_found": "El campo \"to_route_id\" \"%s\" no existe en routes.txt",
 		"recommended": "Se recomienda el campo \"to_route_id\"",
 		"trip_must_belong_to_route": "Cuando se definen to_trip_id y to_route_id, to_trip_id \"%s\" debe pertenecer a to_route_id \"%s\". El viaje hace referencia a la ruta \"%s\""
 	},
-	"transfer_to_stop_id_references_stops_table": {
+	"transfers_to_stop_id_foreign": {
 		"generic": "El campo \"to_stop_id\" debe hacer referencia a una parada definida en stops.txt.",
 		"invalid_location_type": "El campo \"to_stop_id\" \"%s\" hace referencia a una parada con un location_type no válido: \"%d\". Debe ser una parada (location_type=0) o una estación (location_type=1)",
 		"must_be_different_from_from_stop_id": "El campo \"to_stop_id\" \"%s\" debe ser distinto de \"from_stop_id\" \"%s\". Un transbordo no puede tener la misma parada de origen y destino",
@@ -1341,14 +1341,14 @@
 		"recommended": "Se recomienda el campo \"to_stop_id\"",
 		"required": "El campo \"to_stop_id\" es obligatorio"
 	},
-	"transfer_to_trip_id_references_trips_table": {
+	"transfers_to_trip_id_foreign": {
 		"generic": "El campo \"to_trip_id\" debe hacer referencia a un viaje definido en trips.txt.",
 		"not_found": "El campo \"to_trip_id\" \"%s\" no existe en trips.txt",
 		"recommended": "Se recomienda el campo \"to_trip_id\"",
 		"required": "El campo \"to_trip_id\" es obligatorio",
 		"trip_must_belong_to_route": "Cuando se definen to_trip_id y to_route_id, to_trip_id \"%s\" debe pertenecer a to_route_id \"%s\". El viaje hace referencia a la ruta \"%s\""
 	},
-	"transfer_type_valid_gtfs_enum": {
+	"transfers_transfer_type_valid": {
 		"generic": "El campo \"transfer_type\" debe contener uno de los valores permitidos por GTFS.",
 		"invalid": "El campo \"transfer_type\" debe ser 0, 1, 2, 3, 4 o 5; se recibió: %s",
 		"not_allowed": "El campo \"transfer_type\" \"%s\" no está permitido",
@@ -1359,7 +1359,7 @@
 		"required": "Falta el archivo obligatorio \"%s\"",
 		"warning": "Se recomienda el archivo \"%s\""
 	},
-	"transfers_min_transfer_time_non_negative_seconds": {
+	"transfers_min_transfer_time_valid": {
 		"forbidden": "El campo \"min_transfer_time\" está prohibido",
 		"generic": "El campo \"min_transfer_time\" debe contener un tiempo no negativo en segundos.",
 		"invalid": "El campo \"transfer_duration\" debe ser mayor que 0. Se recibió \"%s\"",
@@ -1369,15 +1369,15 @@
 	"transfers_values_parse": {
 		"generic": "No se pudieron analizar los valores de transfers.txt."
 	},
-	"trip_headsign_consistent_for_all_patterns_in_trips": {
+	"trips_trip_headsign_pattern_consistent": {
 		"different_headsigns_in_pattern": "pattern_id %s tiene viajes con distintos trip_headsign: %s. Todos los viajes con el mismo pattern_id deben tener el mismo trip_headsign",
 		"generic": "El campo \"trip_headsign\" debe ser coherente en todos los viajes del mismo patrón."
 	},
-	"trip_headsign_consistent_per_route_direction": {
+	"trips_trip_headsign_route_direction_consistent": {
 		"generic": "El campo \"trip_headsign\" debe ser coherente para cada combinación de ruta y sentido.",
 		"inconsistent_direction": "La ruta \"%s\" con direction_id %d debe tener un único valor de \"%s\"; se encontraron: %s"
 	},
-	"trip_headsign_max_two_per_route": {
+	"trips_trip_headsign_max_two_per_route": {
 		"generic": "Cada ruta no debe tener más de dos valores distintos de \"trip_headsign\".",
 		"max_two": "La ruta \"%s\" debe tener como máximo dos valores distintos de \"%s\"; se encontraron %d: %s"
 	},
@@ -1387,18 +1387,18 @@
 		"recommended": "Se recomienda el campo \"trip_headsign\"",
 		"required": "El campo \"trip_headsign\" es obligatorio"
 	},
-	"trip_id_limit_max_length": {
+	"trips_trip_id_max_length": {
 		"generic": "El campo \"trip_id\" no debe superar el número máximo de caracteres permitido.",
 		"too_long": "El campo \"trip_id\" debe tener como máximo 36 caracteres"
 	},
-	"trip_id_unique": {
+	"trips_trip_id_unique": {
 		"duplicate": "Se encontró el campo \"trip_id\" \"%s\" duplicado. El campo \"trip_id\" debe ser único",
 		"forbidden": "El campo \"trip_id\" está prohibido",
 		"generic": "El campo \"trip_id\" debe ser único en trips.txt.",
 		"recommended": "Se recomienda el campo \"trip_id\"",
 		"required": "El campo \"trip_id\" es obligatorio"
 	},
-	"trip_path_stop_coordinates_referenced_from_stops": {
+	"trips_stop_coordinates": {
 		"generic": "Las coordenadas de las paradas a lo largo del recorrido deben coincidir con las declaradas en stops.txt.",
 		"invalid_distance_to_shape": "Las coordenadas (%.6f, %.6f) de la parada \"%s\" están demasiado lejos de las geometrías; la geometría más cercana es \"%s\", en la secuencia %d, en (%.6f, %.6f) (%.2f m)"
 	},
@@ -1408,7 +1408,7 @@
 		"recommended": "Se recomienda el campo \"trip_short_name\"",
 		"required": "El campo \"trip_short_name\" es obligatorio"
 	},
-	"trips_bikes_allowed_valid_gtfs_enum": {
+	"trips_bikes_allowed_valid": {
 		"forbidden": "El campo \"bikes_allowed\" está prohibido",
 		"generic": "El campo \"bikes_allowed\" debe contener uno de los valores permitidos por GTFS.",
 		"invalid": "El campo \"bikes_allowed\" debe ser 0, 1 o 2",
@@ -1422,18 +1422,18 @@
 		"recommended": "Se recomienda el campo \"block_id\"",
 		"required": "El campo \"block_id\" es obligatorio"
 	},
-	"trips_direction_id_consistent_for_all_patterns_in_trips": {
+	"trips_direction_id_pattern_consistent": {
 		"different_direction_ids_in_pattern": "pattern_id %s tiene viajes con distintos direction_id: %s. Todos los viajes con el mismo pattern_id deben tener el mismo direction_id",
 		"generic": "El campo \"direction_id\" debe ser coherente en todos los viajes del mismo patrón."
 	},
-	"trips_direction_id_matches_feed_pattern_direction": {
+	"trips_direction_pattern_id_match": {
 		"generic": "El campo \"direction_id\" debe coincidir con el sentido declarado en \"pattern_id\".",
 		"invalid_direction_id": "El campo \"direction_id\" debe ser un número entero entre 0 y 1; se recibió: %s",
 		"invalid_pattern_id": "El campo \"pattern_id\" debe ser un identificador válido con el formato \"XXXX_[0|1]_1\"; se recibió: %s",
 		"not_matching": "El campo \"direction_id\" \"%s\" no coincide con pattern_id \"%s\"",
 		"required": "Los campos \"pattern_id\" y \"direction_id\" son obligatorios para validar la correspondencia"
 	},
-	"trips_direction_id_valid_enum": {
+	"trips_direction_id_valid": {
 		"forbidden": "El campo \"direction_id\" está prohibido",
 		"generic": "El campo \"direction_id\" debe contener uno de los valores permitidos por GTFS.",
 		"invalid": "El campo \"direction_id\" debe ser 0 o 1",
@@ -1446,15 +1446,15 @@
 		"required": "Falta el archivo obligatorio \"%s\"",
 		"warning": "Se recomienda el archivo \"%s\""
 	},
-	"trips_one_pattern_id_per_shape_id_group": {
+	"trips_one_pattern_per_shape": {
 		"generic": "Cada \"shape_id\" debe estar asociado a un único \"pattern_id\".",
 		"multiple_shape_id_in_unique_pattern_id": "El campo \"shape_id\" \"%s\" se utiliza en varios pattern_id"
 	},
-	"trips_one_shape_id_per_pattern_id_group": {
+	"trips_one_shape_per_pattern": {
 		"different_shape_id": "Se encontraron distintos shape_id para el mismo pattern_id: %s",
 		"generic": "Cada \"pattern_id\" debe estar asociado a un único \"shape_id\"."
 	},
-	"trips_pattern_id_matches_feed_pattern_id_syntax": {
+	"trips_pattern_id_format": {
 		"generic": "El campo \"pattern_id\" debe seguir la sintaxis definida para el conjunto de datos.",
 		"invalid": "El campo \"pattern_id\" debe ser un identificador válido con el formato \"%s\"; se recibió: \"%s\""
 	},
@@ -1464,40 +1464,40 @@
 		"recommended": "Se recomienda el campo \"pattern_id\"",
 		"required": "El campo \"pattern_id\" es obligatorio"
 	},
-	"trips_pattern_id_single_trip_signature_per_pattern": {
+	"trips_pattern_single_signature": {
 		"generic": "Todos los viajes que comparten un \"pattern_id\" deben recorrer la misma secuencia de paradas.",
 		"multiple_stop_sequence_variations": "Para pattern_id %s, hay viajes con distintas secuencias de paradas"
 	},
-	"trips_pattern_id_trip_has_required_fields_for_grouping": {
+	"trips_pattern_required_fields": {
 		"direction_id_not_found": "No se encontró el campo \"direction_id\"",
 		"generic": "El viaje debe tener los campos necesarios para agruparse por \"pattern_id\".",
 		"route_id_not_found": "No se encontró el campo \"route_id\"",
 		"shape_id_not_found": "No se encontró el campo \"shape_id\"",
 		"trip_headsign_not_found": "No se encontró el campo \"trip_headsign\""
 	},
-	"trips_route_id_consistent_for_all_patterns_in_trips": {
+	"trips_route_id_pattern_consistent": {
 		"different_route_ids_in_pattern": "pattern_id %s tiene viajes con distintos route_id: %s. Todos los viajes con el mismo pattern_id deben tener el mismo route_id",
 		"generic": "El campo \"route_id\" debe ser coherente en todos los viajes del mismo patrón."
 	},
-	"trips_route_id_references_routes_table": {
+	"trips_route_id_foreign": {
 		"forbidden": "El campo \"route_id\" está prohibido",
 		"generic": "El campo \"route_id\" debe hacer referencia a una ruta definida en routes.txt.",
 		"not_found": "El campo \"route_id\" \"%s\" no existe en routes.txt",
 		"recommended": "Se recomienda el campo \"route_id\"",
 		"required": "El campo \"route_id\" es obligatorio"
 	},
-	"trips_service_id_references_calendar_service": {
+	"trips_service_id_foreign": {
 		"forbidden": "El campo \"service_id\" está prohibido",
 		"generic": "El campo \"service_id\" debe hacer referencia a un servicio definido en calendar.txt o calendar_dates.txt.",
 		"not_found": "El campo \"service_id\" \"%s\" no existe en calendar.txt ni en calendar_dates.txt",
 		"recommended": "Se recomienda el campo \"service_id\"",
 		"required": "El campo \"service_id\" es obligatorio"
 	},
-	"trips_shape_id_consistent_per_route_direction": {
+	"trips_shape_id_route_direction_consistent": {
 		"generic": "El campo \"shape_id\" debe ser coherente para cada combinación de ruta y sentido.",
 		"inconsistent_direction": "La ruta \"%s\" con direction_id %d debe tener un único valor de \"%s\"; se encontraron: %s"
 	},
-	"trips_shape_id_matches_route_id_and_direction_id": {
+	"trips_shape_id_route_direction_match": {
 		"generic": "El campo \"shape_id\" debe coincidir con la combinación de \"route_id\" y \"direction_id\".",
 		"not_matching": "El campo \"shape_id\" \"%s\" debe ser \"%s\", combinando route_id \"%s\" y direction_id \"%d\""
 	},
@@ -1505,18 +1505,18 @@
 		"generic": "Cada ruta no debe tener más de dos valores distintos de \"shape_id\".",
 		"max_two": "La ruta \"%s\" debe tener como máximo dos valores distintos de \"%s\"; se encontraron %d: %s"
 	},
-	"trips_pattern_id_needs_to_be_the_same_as_shape_id": {
+	"trips_pattern_id_same_shape_id": {
 		"generic": "El campo \"pattern_id\" debe ser igual al campo \"shape_id\".",
 		"not_matching": "El campo \"pattern_id\" \"%s\" es distinto del campo \"shape_id\" \"%s\"; deben ser iguales"
 	},
-	"trips_shape_id_references_shapes_table_when_present": {
+	"trips_shape_id_foreign": {
 		"forbidden": "El campo \"shape_id\" está prohibido",
 		"generic": "El campo \"shape_id\" debe hacer referencia a una geometría definida en shapes.txt.",
 		"not_found": "El campo \"shape_id\" \"%s\" no existe en shapes.txt",
 		"recommended": "Se recomienda el campo \"shape_id\"",
 		"required": "El campo \"shape_id\" es obligatorio"
 	},
-	"trips_stop_sequence_increasing_by_one_along_trip": {
+	"trips_stop_sequence": {
 		"consecutive_stop_ids": "El mismo stop_id \"%s\" no puede aparecer en paradas consecutivas del viaje \"%s\"",
 		"generic": "El campo \"stop_sequence\" debe aumentar de uno en uno a lo largo del viaje.",
 		"invalid": "El campo \"stop_sequence\" debe ser un número entero no negativo",
@@ -1527,7 +1527,7 @@
 	"trips_values_parse": {
 		"generic": "No se pudieron analizar los valores de trips.txt."
 	},
-	"trips_wheelchair_accessible_valid_gtfs_enum": {
+	"trips_wheelchair_accessible_valid": {
 		"forbidden": "El campo \"wheelchair_accessible\" está prohibido",
 		"generic": "El campo \"wheelchair_accessible\" debe contener uno de los valores permitidos por GTFS.",
 		"invalid": "El campo \"wheelchair_accessible\" debe ser 0, 1 o 2; se recibió: %s",
@@ -1545,7 +1545,7 @@
 		"recommended": "Se recomienda el campo \"agency_id\" cuando solo hay una agencia",
 		"required": "El campo \"agency_id\" es obligatorio cuando hay más de una agencia"
 	},
-	"vehicle_id_unique": {
+	"vehicles_vehicle_id_unique": {
 		"duplicate": "Se encontró el campo \"vehicle_id\" \"%s\" duplicado. El campo \"vehicle_id\" debe ser único",
 		"forbidden": "El campo \"vehicle_id\" está prohibido",
 		"generic": "El campo \"vehicle_id\" debe ser único en vehicles.txt.",
@@ -1564,21 +1564,21 @@
 		"recommended": "Se recomienda el campo \"model\"",
 		"required": "El campo \"model\" es obligatorio"
 	},
-	"vehicles_bicycles_rack_count_non_negative": {
+	"vehicles_bicycles_capacity_valid": {
 		"forbidden": "El campo \"bicycles_capacity\" está prohibido",
 		"generic": "El campo \"bicycles_capacity\" debe contener un número no negativo.",
 		"invalid": "El campo \"bicycles_capacity\" \"%s\" debe ser un número entero no negativo",
 		"recommended": "Se recomienda el campo \"bicycles_capacity\"",
 		"required": "El campo \"bicycles_capacity\" es obligatorio"
 	},
-	"vehicles_car_capacity_non_negative": {
+	"vehicles_car_capacity_valid": {
 		"forbidden": "El campo \"car_capacity\" está prohibido",
 		"generic": "El campo \"car_capacity\" debe contener un número no negativo.",
 		"invalid": "El campo \"car_capacity\" \"%s\" debe ser un número entero no negativo",
 		"recommended": "Se recomienda el campo \"car_capacity\"",
 		"required": "El campo \"car_capacity\" es obligatorio"
 	},
-	"vehicles_emission_valid_enum": {
+	"vehicles_emission_valid": {
 		"forbidden": "El campo \"emission\" está prohibido",
 		"generic": "El campo \"emission\" debe contener uno de los valores permitidos.",
 		"invalid": "El campo \"emission\" \"%s\" no es un tipo de emisiones válido",
@@ -1591,7 +1591,7 @@
 		"required": "Falta el archivo obligatorio \"%s\"",
 		"warning": "Se recomienda el archivo \"%s\""
 	},
-	"vehicles_license_plate_format_per_market_rules": {
+	"vehicles_license_plate_valid": {
 		"duplicate": "Se encontró el campo \"license_plate\" \"%s\" duplicado. El campo \"license_plate\" debe ser único",
 		"forbidden": "El campo \"license_plate\" está prohibido",
 		"generic": "El campo \"license_plate\" debe seguir el formato de matrícula previsto.",
@@ -1599,7 +1599,7 @@
 		"recommended": "Se recomienda el campo \"license_plate\"",
 		"required": "El campo \"license_plate\" es obligatorio"
 	},
-	"vehicles_propulsion_valid_enum": {
+	"vehicles_propulsion_valid": {
 		"forbidden": "El campo \"propulsion\" está prohibido",
 		"generic": "El campo \"propulsion\" debe contener uno de los valores permitidos.",
 		"invalid": "El campo \"propulsion\" \"%s\" no es un tipo de propulsión válido",
@@ -1607,14 +1607,14 @@
 		"recommended": "Se recomienda el campo \"propulsion\"",
 		"required": "El campo \"propulsion\" es obligatorio"
 	},
-	"vehicles_registration_date_valid_day_granularity": {
+	"vehicles_registration_date_valid": {
 		"forbidden": "El campo \"registration_date\" está prohibido",
 		"generic": "El campo \"registration_date\" debe contener una fecha válida con precisión de día.",
 		"invalid": "El campo \"registration_date\" \"%s\" no es una fecha válida; debe tener el formato YYYYMMDD",
 		"recommended": "Se recomienda el campo \"registration_date\"",
 		"required": "El campo \"registration_date\" es obligatorio"
 	},
-	"vehicles_total_capacity_non_negative": {
+	"vehicles_total_capacity_valid": {
 		"forbidden": "El campo \"total_capacity\" está prohibido",
 		"generic": "El campo \"total_capacity\" debe contener un número no negativo.",
 		"invalid": "El campo \"total_capacity\" \"%s\" debe ser un número entero no negativo",
@@ -1624,7 +1624,7 @@
 	"vehicles_values_parse": {
 		"generic": "No se pudieron analizar los valores de vehicles.txt."
 	},
-	"vehicles_vehicle_type_valid_enum": {
+	"vehicles_vehicle_type_valid": {
 		"forbidden": "El campo \"vehicle_type\" está prohibido",
 		"generic": "El campo \"vehicle_type\" debe contener uno de los valores permitidos.",
 		"invalid": "El campo \"vehicle_type\" \"%s\" no es un tipo de vehículo válido",
@@ -1632,7 +1632,7 @@
 		"recommended": "Se recomienda el campo \"vehicle_type\"",
 		"required": "El campo \"vehicle_type\" es obligatorio"
 	},
-	"vehicles_wheelchair_accessible_valid_gtfs_enum": {
+	"vehicles_wheelchair_accessible_valid": {
 		"forbidden": "El campo \"wheelchair_accessible\" está prohibido",
 		"generic": "El campo \"wheelchair_accessible\" debe contener uno de los valores permitidos por GTFS.",
 		"invalid": "El campo \"wheelchair_accessible\" debe ser 0, 1 o 2; se recibió: %s",
