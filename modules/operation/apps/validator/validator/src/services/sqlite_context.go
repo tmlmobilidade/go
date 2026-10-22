@@ -61,6 +61,7 @@ type SQLiteContext struct {
 	Shapes         *SQLiteRow
 	StopTimes      *SQLiteRow
 	Stops          *SQLiteRow
+	Transfers      *SQLiteRow
 	Trips          *SQLiteRow
 	Vehicles       *SQLiteRow
 	source         *SQLiteRow
@@ -86,6 +87,7 @@ func (r *SQLiteRow) Context() *SQLiteContext {
 	ctx.Shapes = bind("shapes")
 	ctx.StopTimes = bind("stop_times")
 	ctx.Stops = bind("stops")
+	ctx.Transfers = bind("transfers")
 	ctx.Trips = bind("trips")
 	ctx.Vehicles = bind("vehicles")
 	return ctx
