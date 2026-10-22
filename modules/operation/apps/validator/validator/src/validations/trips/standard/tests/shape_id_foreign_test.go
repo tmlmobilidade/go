@@ -8,7 +8,7 @@ import (
 )
 
 func TestShapeIdForeign(t *testing.T) {
-	const id = "trips_shape_id_references_shapes_table_when_present"
+	const id = "trips_shape_id_foreign"
 	for _, tc := range []struct {
 		value string
 		count int

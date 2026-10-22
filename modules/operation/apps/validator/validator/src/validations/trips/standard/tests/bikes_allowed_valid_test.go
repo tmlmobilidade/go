@@ -8,7 +8,7 @@ import (
 )
 
 func TestBikesAllowedValid(t *testing.T) {
-	const id = "trips_bikes_allowed_valid_gtfs_enum"
+	const id = "trips_bikes_allowed_valid"
 	for _, tc := range []struct {
 		value string
 		count int

@@ -25,7 +25,7 @@ func PatternSingleSignature(db *services.SQLiteContext, rules *types.RuleContext
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_pattern_id_single_trip_signature_per_pattern"
+	const ruleID = "trips_pattern_single_signature"
 
 	//
 	// 2. Create the validation context

@@ -8,7 +8,7 @@ import (
 )
 
 func TestRouteIdForeign(t *testing.T) {
-	const id = "trips_route_id_references_routes_table"
+	const id = "trips_route_id_foreign"
 	for _, tc := range []struct {
 		value string
 		count int

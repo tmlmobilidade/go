@@ -14,7 +14,7 @@ func StopSequence(db *services.SQLiteContext, rules *types.RuleContext, hashes m
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_stop_sequence_increasing_by_one_along_trip"
+	const ruleID = "trips_stop_sequence"
 
 	//
 	// 2. Create the validation context

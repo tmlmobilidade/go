@@ -25,7 +25,7 @@ func TripIdMaxLength(db *services.SQLiteContext, rules *types.RuleContext) error
 	//
 	// 1. Get the rule
 
-	const ruleID = "trip_id_limit_max_length"
+	const ruleID = "trips_trip_id_max_length"
 
 	//
 	// 2. Create the validation context

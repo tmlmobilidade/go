@@ -25,7 +25,7 @@ func PatternIdSameShapeId(db *services.SQLiteContext, rules *types.RuleContext) 
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_pattern_id_needs_to_be_the_same_as_shape_id"
+	const ruleID = "trips_pattern_id_same_shape_id"
 
 	//
 	// 2. Create the validation context

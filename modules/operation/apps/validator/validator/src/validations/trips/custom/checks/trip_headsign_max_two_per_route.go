@@ -26,7 +26,7 @@ func TripHeadsignMaxTwoPerRoute(db *services.SQLiteContext, rules *types.RuleCon
 	//
 	// 1. Get the rule
 
-	const ruleID = "trip_headsign_max_two_per_route"
+	const ruleID = "trips_trip_headsign_max_two_per_route"
 
 	//
 	// 2. Create the validation context

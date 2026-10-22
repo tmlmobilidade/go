@@ -78,78 +78,78 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"trips_pattern_id_field": func() {
 				check("trips_pattern_id_field", trips_fields.PatternIdField(db, rules.Rule("trips_pattern_id_field")))
 			},
-			"trip_id_unique": func() { check("trip_id_unique", trips_standard.TripIdUnique(db, rules.Rule("trip_id_unique"))) },
-			"trips_route_id_references_routes_table": func() {
-				check("trips_route_id_references_routes_table", trips_standard.RouteIdForeign(db, rules.Rule("trips_route_id_references_routes_table")))
+			"trips_trip_id_unique": func() { check("trips_trip_id_unique", trips_standard.TripIdUnique(db, rules.Rule("trips_trip_id_unique"))) },
+			"trips_route_id_foreign": func() {
+				check("trips_route_id_foreign", trips_standard.RouteIdForeign(db, rules.Rule("trips_route_id_foreign")))
 			},
-			"trips_shape_id_references_shapes_table_when_present": func() {
-				check("trips_shape_id_references_shapes_table_when_present", trips_standard.ShapeIdForeign(db, rules.Rule("trips_shape_id_references_shapes_table_when_present")))
+			"trips_shape_id_foreign": func() {
+				check("trips_shape_id_foreign", trips_standard.ShapeIdForeign(db, rules.Rule("trips_shape_id_foreign")))
 			},
-			"trips_service_id_references_calendar_service": func() {
-				check("trips_service_id_references_calendar_service", trips_standard.ServiceIdForeign(db, rules.Rule("trips_service_id_references_calendar_service")))
+			"trips_service_id_foreign": func() {
+				check("trips_service_id_foreign", trips_standard.ServiceIdForeign(db, rules.Rule("trips_service_id_foreign")))
 			},
-			"trips_direction_id_valid_enum": func() {
-				check("trips_direction_id_valid_enum", trips_standard.DirectionIdValid(db, rules.Rule("trips_direction_id_valid_enum")))
+			"trips_direction_id_valid": func() {
+				check("trips_direction_id_valid", trips_standard.DirectionIdValid(db, rules.Rule("trips_direction_id_valid")))
 			},
-			"trips_bikes_allowed_valid_gtfs_enum": func() {
-				check("trips_bikes_allowed_valid_gtfs_enum", trips_standard.BikesAllowedValid(db, rules.Rule("trips_bikes_allowed_valid_gtfs_enum")))
+			"trips_bikes_allowed_valid": func() {
+				check("trips_bikes_allowed_valid", trips_standard.BikesAllowedValid(db, rules.Rule("trips_bikes_allowed_valid")))
 			},
-			"trips_wheelchair_accessible_valid_gtfs_enum": func() {
-				check("trips_wheelchair_accessible_valid_gtfs_enum", trips_standard.WheelchairAccessibleValid(db, rules.Rule("trips_wheelchair_accessible_valid_gtfs_enum")))
+			"trips_wheelchair_accessible_valid": func() {
+				check("trips_wheelchair_accessible_valid", trips_standard.WheelchairAccessibleValid(db, rules.Rule("trips_wheelchair_accessible_valid")))
 			},
-			"trip_id_limit_max_length": func() {
-				check("trip_id_limit_max_length", trips_custom.TripIdMaxLength(db, rules.Rule("trip_id_limit_max_length")))
+			"trips_trip_id_max_length": func() {
+				check("trips_trip_id_max_length", trips_custom.TripIdMaxLength(db, rules.Rule("trips_trip_id_max_length")))
 			},
-			"trips_pattern_id_needs_to_be_the_same_as_shape_id": func() {
-				check("trips_pattern_id_needs_to_be_the_same_as_shape_id", trips_custom.PatternIdSameShapeId(db, rules.Rule("trips_pattern_id_needs_to_be_the_same_as_shape_id")))
+			"trips_pattern_id_same_shape_id": func() {
+				check("trips_pattern_id_same_shape_id", trips_custom.PatternIdSameShapeId(db, rules.Rule("trips_pattern_id_same_shape_id")))
 			},
-			"trips_shape_id_matches_route_id_and_direction_id": func() {
-				check("trips_shape_id_matches_route_id_and_direction_id", trips_custom.ShapeIdRouteDirectionMatch(db, rules.Rule("trips_shape_id_matches_route_id_and_direction_id")))
+			"trips_shape_id_route_direction_match": func() {
+				check("trips_shape_id_route_direction_match", trips_custom.ShapeIdRouteDirectionMatch(db, rules.Rule("trips_shape_id_route_direction_match")))
 			},
-			"trips_direction_id_matches_feed_pattern_direction": func() {
-				check("trips_direction_id_matches_feed_pattern_direction", trips_custom.DirectionPatternIdMatch(db, rules.Rule("trips_direction_id_matches_feed_pattern_direction")))
+			"trips_direction_pattern_id_match": func() {
+				check("trips_direction_pattern_id_match", trips_custom.DirectionPatternIdMatch(db, rules.Rule("trips_direction_pattern_id_match")))
 			},
-			"trips_pattern_id_matches_feed_pattern_id_syntax": func() {
-				check("trips_pattern_id_matches_feed_pattern_id_syntax", trips_custom.PatternIdFormat(db, rules.Rule("trips_pattern_id_matches_feed_pattern_id_syntax")))
+			"trips_pattern_id_format": func() {
+				check("trips_pattern_id_format", trips_custom.PatternIdFormat(db, rules.Rule("trips_pattern_id_format")))
 			},
-			"trips_route_id_consistent_for_all_patterns_in_trips": func() {
-				check("trips_route_id_consistent_for_all_patterns_in_trips", trips_custom.RouteIdPatternConsistent(db, rules.Rule("trips_route_id_consistent_for_all_patterns_in_trips")))
+			"trips_route_id_pattern_consistent": func() {
+				check("trips_route_id_pattern_consistent", trips_custom.RouteIdPatternConsistent(db, rules.Rule("trips_route_id_pattern_consistent")))
 			},
-			"trips_direction_id_consistent_for_all_patterns_in_trips": func() {
-				check("trips_direction_id_consistent_for_all_patterns_in_trips", trips_custom.DirectionIdPatternConsistent(db, rules.Rule("trips_direction_id_consistent_for_all_patterns_in_trips")))
+			"trips_direction_id_pattern_consistent": func() {
+				check("trips_direction_id_pattern_consistent", trips_custom.DirectionIdPatternConsistent(db, rules.Rule("trips_direction_id_pattern_consistent")))
 			},
-			"trip_headsign_consistent_for_all_patterns_in_trips": func() {
-				check("trip_headsign_consistent_for_all_patterns_in_trips", trips_custom.TripHeadsignPatternConsistent(db, rules.Rule("trip_headsign_consistent_for_all_patterns_in_trips")))
+			"trips_trip_headsign_pattern_consistent": func() {
+				check("trips_trip_headsign_pattern_consistent", trips_custom.TripHeadsignPatternConsistent(db, rules.Rule("trips_trip_headsign_pattern_consistent")))
 			},
 			"trips_shape_id_max_two_per_route": func() {
 				check("trips_shape_id_max_two_per_route", trips_custom.ShapeIdMaxTwoPerRoute(db, rules.Rule("trips_shape_id_max_two_per_route")))
 			},
-			"trips_shape_id_consistent_per_route_direction": func() {
-				check("trips_shape_id_consistent_per_route_direction", trips_custom.ShapeIdRouteDirectionConsistent(db, rules.Rule("trips_shape_id_consistent_per_route_direction")))
+			"trips_shape_id_route_direction_consistent": func() {
+				check("trips_shape_id_route_direction_consistent", trips_custom.ShapeIdRouteDirectionConsistent(db, rules.Rule("trips_shape_id_route_direction_consistent")))
 			},
-			"trip_headsign_max_two_per_route": func() {
-				check("trip_headsign_max_two_per_route", trips_custom.TripHeadsignMaxTwoPerRoute(db, rules.Rule("trip_headsign_max_two_per_route")))
+			"trips_trip_headsign_max_two_per_route": func() {
+				check("trips_trip_headsign_max_two_per_route", trips_custom.TripHeadsignMaxTwoPerRoute(db, rules.Rule("trips_trip_headsign_max_two_per_route")))
 			},
-			"trip_headsign_consistent_per_route_direction": func() {
-				check("trip_headsign_consistent_per_route_direction", trips_custom.TripHeadsignRouteDirectionConsistent(db, rules.Rule("trip_headsign_consistent_per_route_direction")))
+			"trips_trip_headsign_route_direction_consistent": func() {
+				check("trips_trip_headsign_route_direction_consistent", trips_custom.TripHeadsignRouteDirectionConsistent(db, rules.Rule("trips_trip_headsign_route_direction_consistent")))
 			},
-			"trips_pattern_id_trip_has_required_fields_for_grouping": func() {
-				check("trips_pattern_id_trip_has_required_fields_for_grouping", trips_custom.PatternRequiredFields(db, rules.Rule("trips_pattern_id_trip_has_required_fields_for_grouping")))
+			"trips_pattern_required_fields": func() {
+				check("trips_pattern_required_fields", trips_custom.PatternRequiredFields(db, rules.Rule("trips_pattern_required_fields")))
 			},
-			"trips_one_shape_id_per_pattern_id_group": func() {
-				check("trips_one_shape_id_per_pattern_id_group", trips_custom.OneShapePerPattern(db, rules.Rule("trips_one_shape_id_per_pattern_id_group"), reported))
+			"trips_one_shape_per_pattern": func() {
+				check("trips_one_shape_per_pattern", trips_custom.OneShapePerPattern(db, rules.Rule("trips_one_shape_per_pattern"), reported))
 			},
-			"trips_one_pattern_id_per_shape_id_group": func() {
-				check("trips_one_pattern_id_per_shape_id_group", trips_custom.OnePatternPerShape(db, rules.Rule("trips_one_pattern_id_per_shape_id_group"), reported))
+			"trips_one_pattern_per_shape": func() {
+				check("trips_one_pattern_per_shape", trips_custom.OnePatternPerShape(db, rules.Rule("trips_one_pattern_per_shape"), reported))
 			},
-			"trips_stop_sequence_increasing_by_one_along_trip": func() {
-				check("trips_stop_sequence_increasing_by_one_along_trip", trips_custom.StopSequence(db, rules.Rule("trips_stop_sequence_increasing_by_one_along_trip"), hashes))
+			"trips_stop_sequence": func() {
+				check("trips_stop_sequence", trips_custom.StopSequence(db, rules.Rule("trips_stop_sequence"), hashes))
 			},
-			"trips_pattern_id_single_trip_signature_per_pattern": func() {
-				check("trips_pattern_id_single_trip_signature_per_pattern", trips_custom.PatternSingleSignature(db, rules.Rule("trips_pattern_id_single_trip_signature_per_pattern"), hashes))
+			"trips_pattern_single_signature": func() {
+				check("trips_pattern_single_signature", trips_custom.PatternSingleSignature(db, rules.Rule("trips_pattern_single_signature"), hashes))
 			},
-			"trip_path_stop_coordinates_referenced_from_stops": func() {
-				check("trip_path_stop_coordinates_referenced_from_stops", trips_custom.StopCoordinates(db, rules.Rule("trip_path_stop_coordinates_referenced_from_stops"), &geometry))
+			"trips_stop_coordinates": func() {
+				check("trips_stop_coordinates", trips_custom.StopCoordinates(db, rules.Rule("trips_stop_coordinates"), &geometry))
 			},
 		}
 		for id := range all {

@@ -27,7 +27,7 @@ func TripHeadsignPatternConsistent(db *services.SQLiteContext, rules *types.Rule
 	//
 	// 1. Get the rule
 
-	const ruleID = "trip_headsign_consistent_for_all_patterns_in_trips"
+	const ruleID = "trips_trip_headsign_pattern_consistent"
 
 	//
 	// 2. Create the validation context

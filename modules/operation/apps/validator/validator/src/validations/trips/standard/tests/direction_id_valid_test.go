@@ -8,7 +8,7 @@ import (
 )
 
 func TestDirectionIdValid(t *testing.T) {
-	const id = "trips_direction_id_valid_enum"
+	const id = "trips_direction_id_valid"
 	for _, tc := range []struct {
 		value string
 		count int

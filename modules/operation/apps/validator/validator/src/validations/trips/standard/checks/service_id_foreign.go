@@ -35,10 +35,10 @@ func ServiceIdForeign(db *services.SQLiteContext, rules *types.RuleContext) erro
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
-	
+
 	//
 	// 3. Get the service_id value
-	
+
 	value, err := db.Trips.Field("service_id")
 	if err != nil {
 		return err

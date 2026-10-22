@@ -25,7 +25,7 @@ func DirectionPatternIdMatch(db *services.SQLiteContext, rules *types.RuleContex
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_direction_id_matches_feed_pattern_direction"
+	const ruleID = "trips_direction_pattern_id_match"
 
 	//
 	// 2. Create the validation context

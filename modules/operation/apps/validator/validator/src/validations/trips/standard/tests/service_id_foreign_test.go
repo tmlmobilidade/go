@@ -8,7 +8,7 @@ import (
 )
 
 func TestServiceIdForeign(t *testing.T) {
-	const id = "trips_service_id_references_calendar_service"
+	const id = "trips_service_id_foreign"
 	for _, tc := range []struct {
 		value string
 		count int

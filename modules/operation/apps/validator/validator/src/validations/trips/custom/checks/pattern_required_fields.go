@@ -25,7 +25,7 @@ func PatternRequiredFields(db *services.SQLiteContext, rules *types.RuleContext)
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_pattern_id_trip_has_required_fields_for_grouping"
+	const ruleID = "trips_pattern_required_fields"
 
 	//
 	// 2. Create the validation context

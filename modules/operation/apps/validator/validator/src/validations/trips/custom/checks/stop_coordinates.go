@@ -15,7 +15,7 @@ func StopCoordinates(db *services.SQLiteContext, rules *types.RuleContext, geome
 	//
 	// 1. Get the rule
 
-	const ruleID = "trip_path_stop_coordinates_referenced_from_stops"
+	const ruleID = "trips_stop_coordinates"
 
 	//
 	// 2. Create the validation context

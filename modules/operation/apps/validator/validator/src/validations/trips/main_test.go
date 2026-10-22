@@ -76,7 +76,7 @@ func TestEveryCheckHasOneAction(t *testing.T) {
 }
 
 func TestRouteDependenciesDoNotBlockOtherRoutes(t *testing.T) {
-	const rowRule = "trips_direction_id_valid_enum"
+	const rowRule = "trips_direction_id_valid"
 	const groupRule = "trips_shape_id_max_two_per_route"
 	config := testutils.Config(rowRule, types.SEVERITY_ERROR)
 	config.SetRule(groupRule, types.RuleContext{Severity: types.SEVERITY_WARNING, DependsOn: []string{rowRule}})
@@ -102,8 +102,8 @@ func TestRouteDependenciesDoNotBlockOtherRoutes(t *testing.T) {
 }
 
 func TestPatternShapeConflictSuppression(t *testing.T) {
-	const patternRule = "trips_one_shape_id_per_pattern_id_group"
-	const shapeRule = "trips_one_pattern_id_per_shape_id_group"
+	const patternRule = "trips_one_shape_per_pattern"
+	const shapeRule = "trips_one_pattern_per_shape"
 	for _, tc := range []struct {
 		name                     string
 		severity                 types.Severity
@@ -138,8 +138,8 @@ func TestPatternShapeConflictSuppression(t *testing.T) {
 }
 
 func TestPatternSignaturesUseValidatedStopSequences(t *testing.T) {
-	const sequenceRule = "trips_stop_sequence_increasing_by_one_along_trip"
-	const signatureRule = "trips_pattern_id_single_trip_signature_per_pattern"
+	const sequenceRule = "trips_stop_sequence"
+	const signatureRule = "trips_pattern_single_signature"
 	config := testutils.Config(sequenceRule, types.SEVERITY_ERROR)
 	config.SetRule(signatureRule, types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{sequenceRule}})
 	db, _ := testutils.Fixture(t, map[string]any{"trip_id": "T1", "pattern_id": "P1"}, config)

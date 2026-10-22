@@ -25,7 +25,7 @@ func PatternIdFormat(db *services.SQLiteContext, rules *types.RuleContext) error
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_pattern_id_matches_feed_pattern_id_syntax"
+	const ruleID = "trips_pattern_id_format"
 
 	//
 	// 2. Create the validation context

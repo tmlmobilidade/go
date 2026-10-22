@@ -28,7 +28,7 @@ func RouteIdPatternConsistent(db *services.SQLiteContext, rules *types.RuleConte
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_route_id_consistent_for_all_patterns_in_trips"
+	const ruleID = "trips_route_id_pattern_consistent"
 
 	//
 	// 2. Create the validation context

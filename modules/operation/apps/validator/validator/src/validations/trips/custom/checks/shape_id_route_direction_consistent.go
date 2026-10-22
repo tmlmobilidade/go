@@ -27,7 +27,7 @@ func ShapeIdRouteDirectionConsistent(db *services.SQLiteContext, rules *types.Ru
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_shape_id_consistent_per_route_direction"
+	const ruleID = "trips_shape_id_route_direction_consistent"
 
 	//
 	// 2. Create the validation context

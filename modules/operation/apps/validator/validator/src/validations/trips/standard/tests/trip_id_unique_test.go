@@ -8,7 +8,7 @@ import (
 )
 
 func TestTripIdUnique(t *testing.T) {
-	const id = "trip_id_unique"
+	const id = "trips_trip_id_unique"
 	config := testutils.Config(id, types.SEVERITY_ERROR)
 	db, ctx := testutils.Fixture(t, map[string]any{"trip_id": "T1"}, config)
 	if err := checks.TripIdUnique(ctx, config.Rule(id)); err != nil {
@@ -24,5 +24,5 @@ func TestTripIdUnique(t *testing.T) {
 	testutils.AssertFindings(t, id, "trip_id", types.SEVERITY_ERROR, 1)
 }
 func TestTripIdUniqueReadFailure(t *testing.T) {
-	testutils.AssertReadFailure(t, checks.TripIdUnique, "trip_id_unique")
+	testutils.AssertReadFailure(t, checks.TripIdUnique, "trips_trip_id_unique")
 }

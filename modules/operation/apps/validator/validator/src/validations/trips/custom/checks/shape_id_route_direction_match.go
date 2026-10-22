@@ -40,7 +40,7 @@ func ShapeIdRouteDirectionMatch(db *services.SQLiteContext, rules *types.RuleCon
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_shape_id_matches_route_id_and_direction_id"
+	const ruleID = "trips_shape_id_route_direction_match"
 
 	//
 	// 2. Create the validation context

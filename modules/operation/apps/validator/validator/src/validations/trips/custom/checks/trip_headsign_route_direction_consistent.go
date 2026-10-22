@@ -27,7 +27,7 @@ func TripHeadsignRouteDirectionConsistent(db *services.SQLiteContext, rules *typ
 	//
 	// 1. Get the rule
 
-	const ruleID = "trip_headsign_consistent_per_route_direction"
+	const ruleID = "trips_trip_headsign_route_direction_consistent"
 
 	//
 	// 2. Create the validation context

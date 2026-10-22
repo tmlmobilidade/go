@@ -13,7 +13,7 @@ func OnePatternPerShape(db *services.SQLiteContext, rules *types.RuleContext, re
 	//
 	// 1. Get the rule
 
-	const ruleID = "trips_one_pattern_id_per_shape_id_group"
+	const ruleID = "trips_one_pattern_per_shape"
 
 	//
 	// 2. Create the validation context
