@@ -14,7 +14,7 @@ func IsDefaultFareCategoryValid(db *services.SQLiteContext, rules *types.RuleCon
 	//
 	// 1. Get the rule
 
-	const ruleID = "rider_categories_at_most_one_default_fare_category"
+	const ruleID = "rider_categories_is_default_fare_category_valid"
 
 	//
 	// 2. Create the validation context

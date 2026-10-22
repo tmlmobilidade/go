@@ -46,14 +46,14 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"rider_categories_eligibility_url_field": func() {
 				check("rider_categories_eligibility_url_field", rider_categories_fields.EligibilityUrlField(db, rules.Rule("rider_categories_eligibility_url_field")))
 			},
-			"rider_category_id_unique": func() {
-				check("rider_category_id_unique", rider_categories_standard.RiderCategoryIdUnique(db, rules.Rule("rider_category_id_unique")))
+			"rider_categories_rider_category_id_unique": func() {
+				check("rider_categories_rider_category_id_unique", rider_categories_standard.RiderCategoryIdUnique(db, rules.Rule("rider_categories_rider_category_id_unique")))
 			},
-			"rider_categories_at_most_one_default_fare_category": func() {
-				check("rider_categories_at_most_one_default_fare_category", rider_categories_standard.IsDefaultFareCategoryValid(db, rules.Rule("rider_categories_at_most_one_default_fare_category")))
+			"rider_categories_is_default_fare_category_valid": func() {
+				check("rider_categories_is_default_fare_category_valid", rider_categories_standard.IsDefaultFareCategoryValid(db, rules.Rule("rider_categories_is_default_fare_category_valid")))
 			},
-			"rider_categories_eligibility_url_valid_http_url": func() {
-				check("rider_categories_eligibility_url_valid_http_url", rider_categories_standard.EligibilityUrlValid(db, rules.Rule("rider_categories_eligibility_url_valid_http_url")))
+			"rider_categories_eligibility_url_valid": func() {
+				check("rider_categories_eligibility_url_valid", rider_categories_standard.EligibilityUrlValid(db, rules.Rule("rider_categories_eligibility_url_valid")))
 			},
 		}, nil)
 		return nil

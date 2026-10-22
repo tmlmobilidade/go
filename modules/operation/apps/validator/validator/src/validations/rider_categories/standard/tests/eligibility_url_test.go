@@ -9,7 +9,7 @@ import (
 )
 
 func TestEligibilityUrlValid(t *testing.T) {
-	const id = "rider_categories_eligibility_url_valid_http_url"
+	const id = "rider_categories_eligibility_url_valid"
 	for _, tc := range []struct {
 		value any
 		count int

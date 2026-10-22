@@ -9,7 +9,7 @@ import (
 )
 
 func TestRiderCategoryIdUnique(t *testing.T) {
-	const id = "rider_category_id_unique"
+	const id = "rider_categories_rider_category_id_unique"
 	for _, tc := range []struct {
 		name  string
 		value any

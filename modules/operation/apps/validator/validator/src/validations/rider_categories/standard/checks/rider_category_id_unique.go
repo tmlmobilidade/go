@@ -12,7 +12,7 @@ func RiderCategoryIdUnique(db *services.SQLiteContext, rules *types.RuleContext)
 	//
 	// 1. Get the rule
 
-	const ruleID = "rider_category_id_unique"
+	const ruleID = "rider_categories_rider_category_id_unique"
 
 	//
 	// 2. Create the validation context

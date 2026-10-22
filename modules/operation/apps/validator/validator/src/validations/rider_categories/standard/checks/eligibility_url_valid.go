@@ -12,7 +12,7 @@ func EligibilityUrlValid(db *services.SQLiteContext, rules *types.RuleContext) e
 	//
 	// 1. Get the rule
 
-	const ruleID = "rider_categories_eligibility_url_valid_http_url"
+	const ruleID = "rider_categories_eligibility_url_valid"
 
 	//
 	// 2. Create the validation context

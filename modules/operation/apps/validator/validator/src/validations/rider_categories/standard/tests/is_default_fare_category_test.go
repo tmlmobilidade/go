@@ -9,7 +9,7 @@ import (
 )
 
 func TestIsDefaultFareCategoryValid(t *testing.T) {
-	const id = "rider_categories_at_most_one_default_fare_category"
+	const id = "rider_categories_is_default_fare_category_valid"
 	for _, tc := range []struct {
 		value any
 		count int
@@ -34,7 +34,7 @@ func TestIsDefaultFareCategoryValid(t *testing.T) {
 	})
 }
 func TestDefaultOptionsAndMultipleDefaults(t *testing.T) {
-	const id = "rider_categories_at_most_one_default_fare_category"
+	const id = "rider_categories_is_default_fare_category_valid"
 	for _, tc := range []struct {
 		options []string
 		count   int
