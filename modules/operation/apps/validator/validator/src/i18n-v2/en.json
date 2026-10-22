@@ -1333,5 +1333,47 @@
 		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\"",
 		"recommended": "Field \"min_transfer_time\" is recommended",
 		"required": "Field \"min_transfer_time\" is required"
+	},
+	"rider_categories_at_most_one_default_fare_category": {
+		"forbidden": "Field \"is_default_fare_category\" is forbidden",
+		"generic": "Only one rider category may be marked as the default fare category.",
+		"invalid": "Field \"is_default_fare_category\" must be 0 or 1",
+		"not_allowed": "Field \"is_default_fare_category\" \"%s\" is not allowed",
+		"recommended": "Field \"is_default_fare_category\" is recommended",
+		"required": "Field \"is_default_fare_category\" is required"
+	},
+	"rider_categories_eligibility_url_field": {
+		"informational": "The eligibility_url field is informational",
+		"recommended": "The eligibility_url field is recommended",
+		"required": "The eligibility_url field is required"
+	},
+	"rider_categories_eligibility_url_valid_http_url": {
+		"forbidden": "Field \"eligibility_url\" is forbidden",
+		"generic": "The \"eligibility_url\" field must contain a valid HTTP URL.",
+		"invalid": "Field \"eligibility_url\" must be a valid URL",
+		"recommended": "Field \"eligibility_url\" is recommended",
+		"required": "Field \"eligibility_url\" is required"
+	},
+	"rider_categories_is_default_fare_category_field": {
+		"informational": "The is_default_fare_category field is informational",
+		"recommended": "The is_default_fare_category field is recommended",
+		"required": "The is_default_fare_category field is required"
+	},
+	"rider_categories_rider_category_id_field": {
+		"informational": "The rider_category_id field is informational",
+		"recommended": "The rider_category_id field is recommended",
+		"required": "The rider_category_id field is required"
+	},
+	"rider_categories_rider_category_name_field": {
+		"informational": "The rider_category_name field is informational",
+		"recommended": "The rider_category_name field is recommended",
+		"required": "The rider_category_name field is required"
+	},
+	"rider_category_id_unique": {
+		"duplicate": "Duplicate field \"rider_category_id\" \"%s\" found. Field \"rider_category_id\" must be unique",
+		"forbidden": "Field \"rider_category_id\" is forbidden",
+		"generic": "The \"rider_category_id\" field must be unique across rider_categories.txt.",
+		"recommended": "Field \"rider_category_id\" is recommended",
+		"required": "Field \"rider_category_id\" is required"
 	}
 }

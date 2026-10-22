@@ -1333,5 +1333,47 @@
 		"invalid": "O campo \"transfer_duration\" deve ser maior que 0. Recebido: \"%s\"",
 		"recommended": "O campo \"min_transfer_time\" é recomendado",
 		"required": "O campo \"min_transfer_time\" é obrigatório"
+	},
+	"rider_categories_at_most_one_default_fare_category": {
+		"forbidden": "O campo \"is_default_fare_category\" é proibido",
+		"generic": "Só pode existir uma categoria de passageiro marcada como tarifa por omissão.",
+		"invalid": "O campo \"is_default_fare_category\" deve ser 0 ou 1",
+		"not_allowed": "O campo \"is_default_fare_category\" \"%s\" não é permitido",
+		"recommended": "O campo \"is_default_fare_category\" é recomendado",
+		"required": "O campo \"is_default_fare_category\" é obrigatório"
+	},
+	"rider_categories_eligibility_url_field": {
+		"informational": "O campo eligibility_url é informativo",
+		"recommended": "O campo eligibility_url é recomendado",
+		"required": "O campo eligibility_url é obrigatório"
+	},
+	"rider_categories_eligibility_url_valid_http_url": {
+		"forbidden": "O campo \"eligibility_url\" é proibido",
+		"generic": "O campo \"eligibility_url\" deve conter um URL HTTP válido.",
+		"invalid": "O campo \"eligibility_url\" deve ser um URL válido",
+		"recommended": "O campo \"eligibility_url\" é recomendado",
+		"required": "O campo \"eligibility_url\" é obrigatório"
+	},
+	"rider_categories_is_default_fare_category_field": {
+		"informational": "O campo is_default_fare_category é informativo",
+		"recommended": "O campo is_default_fare_category é recomendado",
+		"required": "O campo is_default_fare_category é obrigatório"
+	},
+	"rider_categories_rider_category_id_field": {
+		"informational": "O campo rider_category_id é informativo",
+		"recommended": "O campo rider_category_id é recomendado",
+		"required": "O campo rider_category_id é obrigatório"
+	},
+	"rider_categories_rider_category_name_field": {
+		"informational": "O campo rider_category_name é informativo",
+		"recommended": "O campo rider_category_name é recomendado",
+		"required": "O campo rider_category_name é obrigatório"
+	},
+	"rider_category_id_unique": {
+		"duplicate": "Campo \"rider_category_id\" \"%s\" duplicado encontrado. O campo \"rider_category_id\" deve ser único",
+		"forbidden": "O campo \"rider_category_id\" é proibido",
+		"generic": "O campo \"rider_category_id\" deve ser único em rider_categories.txt.",
+		"recommended": "O campo \"rider_category_id\" é recomendado",
+		"required": "O campo \"rider_category_id\" é obrigatório"
 	}
 }
