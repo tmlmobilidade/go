@@ -103,7 +103,7 @@ test('event-only read, create and update permissions can load agency labels', as
 		PERMISSIONS = [{ action, resources: { agency_ids: ['A'] }, scope: 'events' }];
 		const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
 		assert.equal(response.statusCode, 200);
-		assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris' }]);
+		assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: 'CCFL' }]);
 	}
 });
 
@@ -131,4 +131,12 @@ test('event creation stores rule definitions without redundant parent identity',
 	assert.equal(WRITES.length, 1);
 	assert.equal('event' in response.json().data.rules[0], false);
 	assert.deepEqual(WRITES[0].rules, response.json().data.rules);
+});
+
+test('agency labels default missing short names', async () => {
+	PERMISSIONS = [{ action: 'read', resources: { agency_ids: ['A'] }, scope: 'events' }];
+	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris' }];
+	const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
+	assert.equal(response.statusCode, 200);
+	assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: '' }]);
 });

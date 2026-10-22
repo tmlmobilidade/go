@@ -56,7 +56,7 @@ after(async () => {
 beforeEach(() => {
 	PERMISSIONS = [{ action: 'create', resources: { agency_ids: ['A'] }, scope: 'holidays' }];
 	WRITES = [];
-	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris', private_field: 'must not appear' }];
+	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris', private_field: 'must not appear', short_name: 'CCFL' }];
 });
 
 /* * */
@@ -103,7 +103,7 @@ test('holiday-only read, create and update permissions can load agency labels', 
 		PERMISSIONS = [{ action, resources: { agency_ids: ['A'] }, scope: 'holidays' }];
 		const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
 		assert.equal(response.statusCode, 200);
-		assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris' }]);
+		assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: 'CCFL' }]);
 	}
 });
 
@@ -118,4 +118,11 @@ test('an empty agency lookup returns a successful empty list', async () => {
 	const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
 	assert.equal(response.statusCode, 200);
 	assert.deepEqual(response.json().data, []);
+});
+
+test('holiday labels tolerate agencies without short names', async () => {
+	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris' }];
+	const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
+	assert.equal(response.statusCode, 200);
+	assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: '' }]);
 });

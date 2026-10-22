@@ -17,6 +17,7 @@ interface UseAnnotationsAgenciesDataProps {
 /* * */
 
 interface UseAnnotationsAgenciesDataReturnType {
+	data: AnnotationsAgencyItem[]
 	error: null | string
 	ids: string[]
 	isLoading: boolean
@@ -84,11 +85,12 @@ export function useAnnotationsAgenciesData({ permissions }: UseAnnotationsAgenci
 	// D. Return value
 
 	return useMemo(() => ({
+		data: agenciesData,
 		error: data?.error ?? error?.message ?? (permissions ? meError : null) ?? null,
 		ids: idsData,
 		isLoading: isLoading || (!!permissions && meLoading),
 		isValidating: isValidating || (!!permissions && meValidating),
 		options: optionsData,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.error, error, idsData, isLoading, isValidating, optionsData, data?.timestamp, permissions, meError, meLoading, meValidating]);
+	}), [agenciesData, data?.error, error, idsData, isLoading, isValidating, optionsData, data?.timestamp, permissions, meError, meLoading, meValidating]);
 };
