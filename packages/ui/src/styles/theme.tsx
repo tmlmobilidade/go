@@ -34,6 +34,7 @@ import { IconCaretLeftFilled } from '@tabler/icons-react';
 import DropdownBase from './mantine/base/dropdown.module.css';
 import InputBase from './mantine/base/input.module.css';
 import MultiSelectBase from './mantine/base/multi-select-input.module.css';
+import SelectOptionsBase from './mantine/base/select-options.module.css';
 
 /* * */
 
@@ -162,6 +163,7 @@ export const themeData: MantineThemeOverride = createTheme({
 			classNames: {
 				...DropdownBase,
 				...MultiSelectBase,
+				...SelectOptionsBase,
 			},
 		}),
 
@@ -213,6 +215,7 @@ export const themeData: MantineThemeOverride = createTheme({
 		Select: Select.extend({
 			classNames: {
 				...DropdownBase,
+				...SelectOptionsBase,
 			},
 		}),
 

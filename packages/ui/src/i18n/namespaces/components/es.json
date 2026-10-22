@@ -36,6 +36,9 @@
 				"placeholder": "Longitud (-180 a 180)"
 			}
 		},
+		"MultiSelect": {
+			"placeholder": "Seleccione una o más opciones..."
+		},
 		"SearchField": {
 			"placeholder": "Buscar...",
 			"tags": {
@@ -45,7 +48,8 @@
 			}
 		},
 		"Select": {
-			"nothing_found": "No se encontraron resultados"
+			"nothing_found": "No se encontraron resultados",
+			"placeholder": "Seleccione una opción..."
 		}
 	},
 	"layout": {

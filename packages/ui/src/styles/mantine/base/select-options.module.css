@@ -1,0 +1,17 @@
+.option {
+	--select-option-font-size: var(--font-size-sm);
+	padding: 6px 10px;
+	color: var(--color-system-text-100);
+	border-radius: var(--border-radius-sm);
+}
+
+.option[data-checked] {
+	color: var(--color-primary);
+	background-color: var(--color-system-background-200);
+}
+
+.option:hover:not([data-combobox-disabled]),
+.option[data-combobox-selected]:not([data-combobox-disabled]) {
+	color: var(--color-primary);
+	background-color: var(--color-system-background-200);
+}
