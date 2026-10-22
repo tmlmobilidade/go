@@ -881,5 +881,148 @@
 		"informational": "The zone_id field is informational",
 		"recommended": "The zone_id field is recommended",
 		"required": "The zone_id field is required"
+	},
+	"vehicles_agency_id_field": {
+		"informational": "The agency_id field is informational",
+		"recommended": "The agency_id field is recommended",
+		"required": "The agency_id field is required"
+	},
+	"vehicles_vehicle_id_field": {
+		"informational": "The vehicle_id field is informational",
+		"recommended": "The vehicle_id field is recommended",
+		"required": "The vehicle_id field is required"
+	},
+	"vehicles_license_plate_field": {
+		"informational": "The license_plate field is informational",
+		"recommended": "The license_plate field is recommended",
+		"required": "The license_plate field is required"
+	},
+	"vehicles_make_field": {
+		"informational": "The make field is informational",
+		"recommended": "The make field is recommended",
+		"required": "The make field is required"
+	},
+	"vehicles_model_field": {
+		"informational": "The model field is informational",
+		"recommended": "The model field is recommended",
+		"required": "The model field is required"
+	},
+	"vehicles_registration_date_field": {
+		"informational": "The registration_date field is informational",
+		"recommended": "The registration_date field is recommended",
+		"required": "The registration_date field is required"
+	},
+	"vehicles_vehicle_type_field": {
+		"informational": "The vehicle_type field is informational",
+		"recommended": "The vehicle_type field is recommended",
+		"required": "The vehicle_type field is required"
+	},
+	"vehicles_emission_field": {
+		"informational": "The emission field is informational",
+		"recommended": "The emission field is recommended",
+		"required": "The emission field is required"
+	},
+	"vehicles_propulsion_field": {
+		"informational": "The propulsion field is informational",
+		"recommended": "The propulsion field is recommended",
+		"required": "The propulsion field is required"
+	},
+	"vehicles_wheelchair_accessible_field": {
+		"informational": "The wheelchair_accessible field is informational",
+		"recommended": "The wheelchair_accessible field is recommended",
+		"required": "The wheelchair_accessible field is required"
+	},
+	"vehicles_bicycles_capacity_field": {
+		"informational": "The bicycles_capacity field is informational",
+		"recommended": "The bicycles_capacity field is recommended",
+		"required": "The bicycles_capacity field is required"
+	},
+	"vehicles_total_capacity_field": {
+		"informational": "The total_capacity field is informational",
+		"recommended": "The total_capacity field is recommended",
+		"required": "The total_capacity field is required"
+	},
+	"vehicles_car_capacity_field": {
+		"informational": "The car_capacity field is informational",
+		"recommended": "The car_capacity field is recommended",
+		"required": "The car_capacity field is required"
+	},
+	"vehicle_id_unique": {
+		"duplicate": "Duplicate field \"vehicle_id\" \"%s\" found. Field \"vehicle_id\" must be unique",
+		"forbidden": "Field \"vehicle_id\" is forbidden",
+		"generic": "The \"vehicle_id\" field must be unique across vehicles.txt.",
+		"recommended": "Field \"vehicle_id\" is recommended",
+		"required": "Field \"vehicle_id\" is required"
+	},
+	"vehicles_propulsion_valid_enum": {
+		"forbidden": "Field \"propulsion\" is forbidden",
+		"generic": "The \"propulsion\" field must contain one of the allowed values.",
+		"invalid": "Field \"propulsion\" \"%s\" is not a valid propulsion type",
+		"not_allowed": "Field \"propulsion\" \"%s\" is not allowed",
+		"recommended": "Field \"propulsion\" is recommended",
+		"required": "Field \"propulsion\" is required"
+	},
+	"vehicles_total_capacity_non_negative": {
+		"forbidden": "Field \"total_capacity\" is forbidden",
+		"generic": "The \"total_capacity\" field must contain a non-negative number.",
+		"invalid": "Field \"total_capacity\" \"%s\" must be a non-negative integer",
+		"recommended": "Field \"total_capacity\" is recommended",
+		"required": "Field \"total_capacity\" is required"
+	},
+	"vehicles_registration_date_valid_day_granularity": {
+		"forbidden": "Field \"registration_date\" is forbidden",
+		"generic": "The \"registration_date\" field must contain a valid date with day granularity.",
+		"invalid": "Field \"registration_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
+		"recommended": "Field \"registration_date\" is recommended",
+		"required": "Field \"registration_date\" is required"
+	},
+	"vehicles_bicycles_rack_count_non_negative": {
+		"forbidden": "Field \"bicycles_capacity\" is forbidden",
+		"generic": "The \"bicycles_capacity\" field must contain a non-negative number.",
+		"invalid": "Field \"bicycles_capacity\" \"%s\" must be a non-negative integer",
+		"recommended": "Field \"bicycles_capacity\" is recommended",
+		"required": "Field \"bicycles_capacity\" is required"
+	},
+	"vehicles_vehicle_type_valid_enum": {
+		"forbidden": "Field \"vehicle_type\" is forbidden",
+		"generic": "The \"vehicle_type\" field must contain one of the allowed values.",
+		"invalid": "Field \"vehicle_type\" \"%s\" is not a valid vehicle type",
+		"not_allowed": "Field \"vehicle_type\" \"%s\" is not allowed",
+		"recommended": "Field \"vehicle_type\" is recommended",
+		"required": "Field \"vehicle_type\" is required"
+	},
+	"vehicles_car_capacity_non_negative": {
+		"forbidden": "Field \"car_capacity\" is forbidden",
+		"generic": "The \"car_capacity\" field must contain a non-negative number.",
+		"invalid": "Field \"car_capacity\" \"%s\" must be a non-negative integer",
+		"recommended": "Field \"car_capacity\" is recommended",
+		"required": "Field \"car_capacity\" is required"
+	},
+	"vehicles_wheelchair_accessible_valid_gtfs_enum": {
+		"forbidden": "Field \"wheelchair_accessible\" is forbidden",
+		"generic": "The \"wheelchair_accessible\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"wheelchair_accessible\" must be 0, 1, or 2, received: %s",
+		"not_allowed": "Field \"wheelchair_accessible\" \"%s\" is not allowed",
+		"recommended": "Field \"wheelchair_accessible\" is recommended",
+		"required": "Field \"wheelchair_accessible\" is required"
+	},
+	"vehicles_emission_valid_enum": {
+		"forbidden": "Field \"emission\" is forbidden",
+		"generic": "The \"emission\" field must contain one of the allowed values.",
+		"invalid": "Field \"emission\" \"%s\" is not a valid emission type",
+		"not_allowed": "Field \"emission\" \"%s\" is not allowed",
+		"recommended": "Field \"emission\" is recommended",
+		"required": "Field \"emission\" is required"
+	},
+	"vehicles_license_plate_format_per_market_rules": {
+		"duplicate": "Duplicate field \"license_plate\" \"%s\" found. Field \"license_plate\" must be unique",
+		"forbidden": "Field \"license_plate\" is forbidden",
+		"generic": "The \"license_plate\" field must follow the expected license plate format.",
+		"invalid": "Field \"license_plate\" \"%s\" has an invalid format, must be in the format XXXXXX (or a valid MMSI for the ferry transport mode)",
+		"recommended": "Field \"license_plate\" is recommended",
+		"required": "Field \"license_plate\" is required"
+	},
+	"vehicles_agency_id_foreign": {
+		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt"
 	}
 }

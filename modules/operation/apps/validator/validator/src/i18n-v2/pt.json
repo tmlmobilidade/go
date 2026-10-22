@@ -881,5 +881,148 @@
 		"informational": "O campo zone_id é informativo",
 		"recommended": "O campo zone_id é recomendado",
 		"required": "O campo zone_id é obrigatório"
+	},
+	"vehicles_agency_id_field": {
+		"informational": "O campo agency_id é informativo",
+		"recommended": "O campo agency_id é recomendado",
+		"required": "O campo agency_id é obrigatório"
+	},
+	"vehicles_vehicle_id_field": {
+		"informational": "O campo vehicle_id é informativo",
+		"recommended": "O campo vehicle_id é recomendado",
+		"required": "O campo vehicle_id é obrigatório"
+	},
+	"vehicles_license_plate_field": {
+		"informational": "O campo license_plate é informativo",
+		"recommended": "O campo license_plate é recomendado",
+		"required": "O campo license_plate é obrigatório"
+	},
+	"vehicles_make_field": {
+		"informational": "O campo make é informativo",
+		"recommended": "O campo make é recomendado",
+		"required": "O campo make é obrigatório"
+	},
+	"vehicles_model_field": {
+		"informational": "O campo model é informativo",
+		"recommended": "O campo model é recomendado",
+		"required": "O campo model é obrigatório"
+	},
+	"vehicles_registration_date_field": {
+		"informational": "O campo registration_date é informativo",
+		"recommended": "O campo registration_date é recomendado",
+		"required": "O campo registration_date é obrigatório"
+	},
+	"vehicles_vehicle_type_field": {
+		"informational": "O campo vehicle_type é informativo",
+		"recommended": "O campo vehicle_type é recomendado",
+		"required": "O campo vehicle_type é obrigatório"
+	},
+	"vehicles_emission_field": {
+		"informational": "O campo emission é informativo",
+		"recommended": "O campo emission é recomendado",
+		"required": "O campo emission é obrigatório"
+	},
+	"vehicles_propulsion_field": {
+		"informational": "O campo propulsion é informativo",
+		"recommended": "O campo propulsion é recomendado",
+		"required": "O campo propulsion é obrigatório"
+	},
+	"vehicles_wheelchair_accessible_field": {
+		"informational": "O campo wheelchair_accessible é informativo",
+		"recommended": "O campo wheelchair_accessible é recomendado",
+		"required": "O campo wheelchair_accessible é obrigatório"
+	},
+	"vehicles_bicycles_capacity_field": {
+		"informational": "O campo bicycles_capacity é informativo",
+		"recommended": "O campo bicycles_capacity é recomendado",
+		"required": "O campo bicycles_capacity é obrigatório"
+	},
+	"vehicles_total_capacity_field": {
+		"informational": "O campo total_capacity é informativo",
+		"recommended": "O campo total_capacity é recomendado",
+		"required": "O campo total_capacity é obrigatório"
+	},
+	"vehicles_car_capacity_field": {
+		"informational": "O campo car_capacity é informativo",
+		"recommended": "O campo car_capacity é recomendado",
+		"required": "O campo car_capacity é obrigatório"
+	},
+	"vehicle_id_unique": {
+		"duplicate": "Campo \"vehicle_id\" \"%s\" duplicado encontrado. O campo \"vehicle_id\" deve ser único",
+		"forbidden": "O campo \"vehicle_id\" é proibido",
+		"generic": "O campo \"vehicle_id\" deve ser único em vehicles.txt.",
+		"recommended": "O campo \"vehicle_id\" é recomendado",
+		"required": "O campo \"vehicle_id\" é obrigatório"
+	},
+	"vehicles_propulsion_valid_enum": {
+		"forbidden": "O campo \"propulsion\" é proibido",
+		"generic": "O campo \"propulsion\" deve conter um dos valores permitidos.",
+		"invalid": "O campo \"propulsion\" \"%s\" não é um tipo de propulsão válido",
+		"not_allowed": "O campo \"propulsion\" \"%s\" não é permitido",
+		"recommended": "O campo \"propulsion\" é recomendado",
+		"required": "O campo \"propulsion\" é obrigatório"
+	},
+	"vehicles_total_capacity_non_negative": {
+		"forbidden": "O campo \"total_capacity\" é proibido",
+		"generic": "O campo \"total_capacity\" deve conter um número não negativo.",
+		"invalid": "O campo \"total_capacity\" \"%s\" deve ser um número inteiro não negativo",
+		"recommended": "O campo \"total_capacity\" é recomendado",
+		"required": "O campo \"total_capacity\" é obrigatório"
+	},
+	"vehicles_registration_date_valid_day_granularity": {
+		"forbidden": "O campo \"registration_date\" é proibido",
+		"generic": "O campo \"registration_date\" deve conter uma data válida com granularidade diária.",
+		"invalid": "O campo \"registration_date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
+		"recommended": "O campo \"registration_date\" é recomendado",
+		"required": "O campo \"registration_date\" é obrigatório"
+	},
+	"vehicles_bicycles_rack_count_non_negative": {
+		"forbidden": "O campo \"bicycles_capacity\" é proibido",
+		"generic": "O campo \"bicycles_capacity\" deve conter um número não negativo.",
+		"invalid": "O campo \"bicycles_capacity\" \"%s\" deve ser um número inteiro não negativo",
+		"recommended": "O campo \"bicycles_capacity\" é recomendado",
+		"required": "O campo \"bicycles_capacity\" é obrigatório"
+	},
+	"vehicles_vehicle_type_valid_enum": {
+		"forbidden": "O campo \"vehicle_type\" é proibido",
+		"generic": "O campo \"vehicle_type\" deve conter um dos valores permitidos.",
+		"invalid": "O campo \"vehicle_type\" \"%s\" não é um tipo de veículo válido",
+		"not_allowed": "O campo \"vehicle_type\" \"%s\" não é permitido",
+		"recommended": "O campo \"vehicle_type\" é recomendado",
+		"required": "O campo \"vehicle_type\" é obrigatório"
+	},
+	"vehicles_car_capacity_non_negative": {
+		"forbidden": "O campo \"car_capacity\" é proibido",
+		"generic": "O campo \"car_capacity\" deve conter um número não negativo.",
+		"invalid": "O campo \"car_capacity\" \"%s\" deve ser um número inteiro não negativo",
+		"recommended": "O campo \"car_capacity\" é recomendado",
+		"required": "O campo \"car_capacity\" é obrigatório"
+	},
+	"vehicles_wheelchair_accessible_valid_gtfs_enum": {
+		"forbidden": "O campo \"wheelchair_accessible\" é proibido",
+		"generic": "O campo \"wheelchair_accessible\" deve conter um dos valores previstos pelo GTFS.",
+		"invalid": "O campo \"wheelchair_accessible\" deve ser 0, 1 ou 2, recebido: %s",
+		"not_allowed": "O campo \"wheelchair_accessible\" \"%s\" não é permitido",
+		"recommended": "O campo \"wheelchair_accessible\" é recomendado",
+		"required": "O campo \"wheelchair_accessible\" é obrigatório"
+	},
+	"vehicles_emission_valid_enum": {
+		"forbidden": "O campo \"emission\" é proibido",
+		"generic": "O campo \"emission\" deve conter um dos valores permitidos.",
+		"invalid": "O campo \"emission\" \"%s\" não é um tipo de emissão válido",
+		"not_allowed": "O campo \"emission\" \"%s\" não é permitido",
+		"recommended": "O campo \"emission\" é recomendado",
+		"required": "O campo \"emission\" é obrigatório"
+	},
+	"vehicles_license_plate_format_per_market_rules": {
+		"duplicate": "Campo \"license_plate\" \"%s\" duplicado encontrado. O campo \"license_plate\" deve ser único",
+		"forbidden": "O campo \"license_plate\" é proibido",
+		"generic": "O campo \"license_plate\" deve seguir o formato de matrícula previsto.",
+		"invalid": "O campo \"license_plate\" \"%s\" tem um formato inválido, deve ser no formato XXXXXX (ou um MMSI válido no caso do modo de transporte ferry)",
+		"recommended": "O campo \"license_plate\" é recomendado",
+		"required": "O campo \"license_plate\" é obrigatório"
+	},
+	"vehicles_agency_id_foreign": {
+		"not_found": "O campo \"agency_id\" \"%s\" não existe em agency.txt"
 	}
 }
