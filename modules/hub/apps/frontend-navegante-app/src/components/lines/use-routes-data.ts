@@ -26,7 +26,7 @@ export function useRoutesData(): UseRoutesDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiRoute[]>>(API_ROUTES.hub.NETWORK_ROUTES, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiRoute[]>>(API_ROUTES.hub.NETWORK_ROUTES('F5157'), {
 		fetcher: async url => await fetchApiData<HubV1ApiRoute[]>({ options: { credentials: 'omit' }, url }),
 	});
 
