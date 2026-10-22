@@ -97,8 +97,8 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 
 			//
 			// Standard
-			"stop_times_arrival_departure_time_non_decreasing_by_stop_sequence": func() {
-				check(db, "stop_times_arrival_departure_time_non_decreasing_by_stop_sequence", stop_times_standard.ArrivalDepartureTimeSequence(db, rules.Rule("stop_times_arrival_departure_time_non_decreasing_by_stop_sequence")))
+			"stop_times_arrival_departure_time_sequence": func() {
+				check(db, "stop_times_arrival_departure_time_sequence", stop_times_standard.ArrivalDepartureTimeSequence(db, rules.Rule("stop_times_arrival_departure_time_sequence")))
 			},
 			"stop_times_arrival_time_valid": func() {
 				check(db, "stop_times_arrival_time_valid", stop_times_standard.ArrivalTimeValid(db, rules.Rule("stop_times_arrival_time_valid")))

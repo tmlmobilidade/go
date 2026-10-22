@@ -38,7 +38,7 @@ func ArrivalDepartureTimeSequence(db *services.SQLiteContext, rules *types.RuleC
 	//
 	// 1. Get the rule and severity
 
-	const ruleID = "stop_times_arrival_departure_time_non_decreasing_by_stop_sequence"
+	const ruleID = "stop_times_arrival_departure_time_sequence"
 	ctx := lib.NewValidationContext("arrival_time", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
