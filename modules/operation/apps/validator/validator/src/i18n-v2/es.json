@@ -1375,5 +1375,149 @@
 		"generic": "El campo \"rider_category_id\" debe ser único en rider_categories.txt.",
 		"recommended": "Se recomienda el campo \"rider_category_id\"",
 		"required": "El campo \"rider_category_id\" es obligatorio"
+	},
+	"pathways_max_slope_field": {
+		"informational": "El campo max_slope es informativo",
+		"recommended": "El campo max_slope es recomendado",
+		"required": "El campo max_slope es requerido"
+	},
+	"pathways_traversal_time_field": {
+		"informational": "El campo traversal_time es informativo",
+		"recommended": "El campo traversal_time es recomendado",
+		"required": "El campo traversal_time es requerido"
+	},
+	"pathways_to_stop_id_field": {
+		"informational": "El campo to_stop_id es informativo",
+		"recommended": "El campo to_stop_id es recomendado",
+		"required": "El campo to_stop_id es requerido"
+	},
+	"pathways_length_field": {
+		"informational": "El campo length es informativo",
+		"recommended": "El campo length es recomendado",
+		"required": "El campo length es requerido"
+	},
+	"pathways_min_width_field": {
+		"informational": "El campo min_width es informativo",
+		"recommended": "El campo min_width es recomendado",
+		"required": "El campo min_width es requerido"
+	},
+	"pathways_reversed_signposted_as_field": {
+		"informational": "El campo reversed_signposted_as es informativo",
+		"recommended": "El campo reversed_signposted_as es recomendado",
+		"required": "El campo reversed_signposted_as es requerido"
+	},
+	"pathways_stair_count_field": {
+		"informational": "El campo stair_count es informativo",
+		"recommended": "El campo stair_count es recomendado",
+		"required": "El campo stair_count es requerido"
+	},
+	"pathways_from_stop_id_field": {
+		"informational": "El campo from_stop_id es informativo",
+		"recommended": "El campo from_stop_id es recomendado",
+		"required": "El campo from_stop_id es requerido"
+	},
+	"pathways_pathway_id_field": {
+		"informational": "El campo pathway_id es informativo",
+		"recommended": "El campo pathway_id es recomendado",
+		"required": "El campo pathway_id es requerido"
+	},
+	"pathways_is_bidirectional_field": {
+		"informational": "El campo is_bidirectional es informativo",
+		"recommended": "El campo is_bidirectional es recomendado",
+		"required": "El campo is_bidirectional es requerido"
+	},
+	"pathways_signposted_as_field": {
+		"informational": "El campo signposted_as es informativo",
+		"recommended": "El campo signposted_as es recomendado",
+		"required": "El campo signposted_as es requerido"
+	},
+	"pathways_pathway_mode_field": {
+		"informational": "El campo pathway_mode es informativo",
+		"recommended": "El campo pathway_mode es recomendado",
+		"required": "El campo pathway_mode es requerido"
+	},
+	"pathway_max_slope_allowed_for_pathway_mode": {
+		"forbidden": "El campo \"max_slope\" está prohibido",
+		"generic": "El campo \"max_slope\" debe contener una pendiente permitida para el tipo de paso peatonal indicado.",
+		"not_allowed_pathway_mode": "El campo \"max_slope\" no está permitido para pathway_mode \"%s\"",
+		"recommended": "Se recomienda el campo \"max_slope\"",
+		"required": "El campo \"max_slope\" es obligatorio"
+	},
+	"pathway_traversal_time_non_negative_seconds": {
+		"forbidden": "El campo \"traversal_time\" está prohibido",
+		"generic": "El campo \"traversal_time\" debe contener un tiempo no negativo en segundos.",
+		"negative": "El campo \"traversal_time\" \"%s\" debe ser un número no negativo",
+		"recommended": "Se recomienda el campo \"traversal_time\"",
+		"required": "El campo \"traversal_time\" es obligatorio",
+		"invalid": "El campo \"traversal_time\" \"%s\" tiene un valor numérico no válido"
+	},
+	"pathway_to_stop_id_references_stops_table": {
+		"forbidden": "El campo \"to_stop_id\" está prohibido",
+		"forbidden_stop_access_1": "El campo \"to_stop_id\" \"%s\" hace referencia a una parada (location_type=0 o vacío) con stop_access=1. Las paradas con stop_access=1 están prohibidas en los pasos peatonales",
+		"generic": "El campo \"to_stop_id\" debe hacer referencia a una parada definida en stops.txt.",
+		"invalid_location_type_pathway": "El campo \"to_stop_id\" \"%s\" hace referencia a una parada con un location_type no válido: \"%d\". Debe ser un andén (0 o vacío), una entrada/salida (2), un nodo genérico (3) o una zona de embarque (4)",
+		"invalid_location_type_station": "El campo \"to_stop_id\" \"%s\" hace referencia a una estación (location_type=1). Las estaciones están prohibidas en los pasos peatonales",
+		"not_found": "El campo \"to_stop_id\" \"%s\" no existe en stops.txt",
+		"recommended": "Se recomienda el campo \"to_stop_id\"",
+		"required": "El campo \"to_stop_id\" es obligatorio"
+	},
+	"pathway_length_non_negative": {
+		"forbidden": "El campo \"length\" está prohibido",
+		"generic": "El campo \"length\" debe contener una longitud no negativa en metros.",
+		"negative": "El campo \"length\" \"%f\" debe ser un número no negativo",
+		"recommended": "Se recomienda el campo \"length\"",
+		"required": "El campo \"length\" es obligatorio",
+		"invalid": "El campo \"length\" \"%s\" tiene un valor numérico no válido"
+	},
+	"pathway_min_width_positive": {
+		"forbidden": "El campo \"min_width\" está prohibido",
+		"generic": "El campo \"min_width\" debe contener una anchura positiva en metros.",
+		"invalid": "El campo \"min_width\" \"%s\" no es un número válido",
+		"negative": "El campo \"min_width\" debe ser un número positivo",
+		"recommended": "Se recomienda el campo \"min_width\"",
+		"required": "El campo \"min_width\" es obligatorio"
+	},
+	"pathway_stair_count": {
+		"forbidden": "El campo \"stair_count\" está prohibido",
+		"generic": "El campo \"stair_count\" debe contener un número válido de escalones.",
+		"recommended": "Se recomienda el campo \"stair_count\"",
+		"required": "El campo \"stair_count\" es obligatorio",
+		"invalid": "El campo \"stair_count\" \"%s\" tiene un valor numérico no válido"
+	},
+	"pathway_from_stop_id_references_stops_table": {
+		"forbidden": "El campo \"from_stop_id\" está prohibido",
+		"forbidden_stop_access_1": "El campo \"from_stop_id\" \"%s\" hace referencia a una parada (location_type=0 o vacío) con stop_access=1. Las paradas con stop_access=1 están prohibidas en los pasos peatonales",
+		"generic": "El campo \"from_stop_id\" debe hacer referencia a una parada definida en stops.txt.",
+		"invalid_location_type_format": "El campo \"from_stop_id\" \"%s\" hace referencia a una parada cuyo \"location_type\" no es un número entero válido",
+		"invalid_location_type_pathway": "El campo \"from_stop_id\" \"%s\" hace referencia a una parada con un location_type no válido: \"%d\". Debe ser un andén (0 o vacío), una entrada/salida (2), un nodo genérico (3) o una zona de embarque (4)",
+		"invalid_location_type_station": "El campo \"from_stop_id\" \"%s\" hace referencia a una estación (location_type=1). Las estaciones están prohibidas en los pasos peatonales",
+		"invalid_stop_access_format": "El campo \"from_stop_id\" \"%s\" hace referencia a una parada cuyo \"stop_access\" no es un número entero válido",
+		"not_found": "El campo \"from_stop_id\" \"%s\" no existe en stops.txt",
+		"recommended": "Se recomienda el campo \"from_stop_id\"",
+		"required": "El campo \"from_stop_id\" es obligatorio"
+	},
+	"pathway_id_unique": {
+		"duplicate": "Se encontró el campo \"pathway_id\" \"%s\" duplicado. El campo \"pathway_id\" debe ser único",
+		"forbidden": "El campo \"pathway_id\" está prohibido",
+		"generic": "El campo \"pathway_id\" debe ser único en pathways.txt.",
+		"recommended": "Se recomienda el campo \"pathway_id\"",
+		"required": "El campo \"pathway_id\" es obligatorio"
+	},
+	"pathway_is_bidirectional_valid_gtfs_enum": {
+		"exit_gate_bidirectional": "El campo \"is_bidirectional\" debe ser 0 cuando \"pathway_mode\" es 7 (puerta de salida). Las puertas de salida no pueden ser bidireccionales",
+		"forbidden": "El campo \"is_bidirectional\" está prohibido",
+		"generic": "El campo \"is_bidirectional\" debe contener uno de los valores permitidos por GTFS.",
+		"invalid": "El campo \"is_bidirectional\" debe ser 0 o 1; se recibió: %s",
+		"not_allowed": "El campo \"is_bidirectional\" \"%s\" no está permitido",
+		"recommended": "Se recomienda el campo \"is_bidirectional\"",
+		"required": "El campo \"is_bidirectional\" es obligatorio"
+	},
+	"pathway_mode_valid_gtfs_enum": {
+		"forbidden": "El campo \"pathway_mode\" está prohibido",
+		"generic": "El campo \"pathway_mode\" debe contener uno de los valores permitidos por GTFS.",
+		"invalid": "El campo \"pathway_mode\" debe ser 0, 1, 2, 3, 4 o 5; se recibió: %s",
+		"not_allowed": "El campo \"pathway_mode\" \"%s\" no está permitido",
+		"recommended": "Se recomienda el campo \"pathway_mode\"",
+		"required": "El campo \"pathway_mode\" es obligatorio"
 	}
 }

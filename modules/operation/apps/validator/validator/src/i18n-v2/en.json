@@ -1375,5 +1375,149 @@
 		"generic": "The \"rider_category_id\" field must be unique across rider_categories.txt.",
 		"recommended": "Field \"rider_category_id\" is recommended",
 		"required": "Field \"rider_category_id\" is required"
+	},
+	"pathways_max_slope_field": {
+		"informational": "The max_slope field is informational",
+		"recommended": "The max_slope field is recommended",
+		"required": "The max_slope field is required"
+	},
+	"pathways_traversal_time_field": {
+		"informational": "The traversal_time field is informational",
+		"recommended": "The traversal_time field is recommended",
+		"required": "The traversal_time field is required"
+	},
+	"pathways_to_stop_id_field": {
+		"informational": "The to_stop_id field is informational",
+		"recommended": "The to_stop_id field is recommended",
+		"required": "The to_stop_id field is required"
+	},
+	"pathways_length_field": {
+		"informational": "The length field is informational",
+		"recommended": "The length field is recommended",
+		"required": "The length field is required"
+	},
+	"pathways_min_width_field": {
+		"informational": "The min_width field is informational",
+		"recommended": "The min_width field is recommended",
+		"required": "The min_width field is required"
+	},
+	"pathways_reversed_signposted_as_field": {
+		"informational": "The reversed_signposted_as field is informational",
+		"recommended": "The reversed_signposted_as field is recommended",
+		"required": "The reversed_signposted_as field is required"
+	},
+	"pathways_stair_count_field": {
+		"informational": "The stair_count field is informational",
+		"recommended": "The stair_count field is recommended",
+		"required": "The stair_count field is required"
+	},
+	"pathways_from_stop_id_field": {
+		"informational": "The from_stop_id field is informational",
+		"recommended": "The from_stop_id field is recommended",
+		"required": "The from_stop_id field is required"
+	},
+	"pathways_pathway_id_field": {
+		"informational": "The pathway_id field is informational",
+		"recommended": "The pathway_id field is recommended",
+		"required": "The pathway_id field is required"
+	},
+	"pathways_is_bidirectional_field": {
+		"informational": "The is_bidirectional field is informational",
+		"recommended": "The is_bidirectional field is recommended",
+		"required": "The is_bidirectional field is required"
+	},
+	"pathways_signposted_as_field": {
+		"informational": "The signposted_as field is informational",
+		"recommended": "The signposted_as field is recommended",
+		"required": "The signposted_as field is required"
+	},
+	"pathways_pathway_mode_field": {
+		"informational": "The pathway_mode field is informational",
+		"recommended": "The pathway_mode field is recommended",
+		"required": "The pathway_mode field is required"
+	},
+	"pathway_max_slope_allowed_for_pathway_mode": {
+		"forbidden": "Field \"max_slope\" is forbidden",
+		"generic": "The \"max_slope\" field must contain a slope allowed for the given pathway mode.",
+		"not_allowed_pathway_mode": "Field \"max_slope\" is not allowed for pathway_mode \"%s\"",
+		"recommended": "Field \"max_slope\" is recommended",
+		"required": "Field \"max_slope\" is required"
+	},
+	"pathway_traversal_time_non_negative_seconds": {
+		"forbidden": "Field \"traversal_time\" is forbidden",
+		"generic": "The \"traversal_time\" field must contain a non-negative time in seconds.",
+		"negative": "Field \"traversal_time\" \"%s\" must be a non-negative number",
+		"recommended": "Field \"traversal_time\" is recommended",
+		"required": "Field \"traversal_time\" is required",
+		"invalid": "Field \"traversal_time\" \"%s\" has an invalid numeric value"
+	},
+	"pathway_to_stop_id_references_stops_table": {
+		"forbidden": "Field \"to_stop_id\" is forbidden",
+		"forbidden_stop_access_1": "Field \"to_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
+		"generic": "The \"to_stop_id\" field must reference a stop defined in stops.txt.",
+		"invalid_location_type_pathway": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
+		"invalid_location_type_station": "Field \"to_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
+		"not_found": "Field \"to_stop_id\" \"%s\" does not exist in stops.txt",
+		"recommended": "Field \"to_stop_id\" is recommended",
+		"required": "Field \"to_stop_id\" is required"
+	},
+	"pathway_length_non_negative": {
+		"forbidden": "Field \"length\" is forbidden",
+		"generic": "The \"length\" field must contain a non-negative length in meters.",
+		"negative": "Field \"length\" \"%f\" must be a non-negative number",
+		"recommended": "Field \"length\" is recommended",
+		"required": "Field \"length\" is required",
+		"invalid": "Field \"length\" \"%s\" has an invalid numeric value"
+	},
+	"pathway_min_width_positive": {
+		"forbidden": "Field \"min_width\" is forbidden",
+		"generic": "The \"min_width\" field must contain a positive width in meters.",
+		"invalid": "Field \"min_width\" \"%s\" is not a valid number",
+		"negative": "Field \"min_width\" must be a positive number",
+		"recommended": "Field \"min_width\" is recommended",
+		"required": "Field \"min_width\" is required"
+	},
+	"pathway_stair_count": {
+		"forbidden": "Field \"stair_count\" is forbidden",
+		"generic": "The \"stair_count\" field must contain a valid number of stairs.",
+		"recommended": "Field \"stair_count\" is recommended",
+		"required": "Field \"stair_count\" is required",
+		"invalid": "Field \"stair_count\" \"%s\" has an invalid numeric value"
+	},
+	"pathway_from_stop_id_references_stops_table": {
+		"forbidden": "Field \"from_stop_id\" is forbidden",
+		"forbidden_stop_access_1": "Field \"from_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
+		"generic": "The \"from_stop_id\" field must reference a stop defined in stops.txt.",
+		"invalid_location_type_format": "Field \"from_stop_id\" \"%s\" references a stop whose \"location_type\" is not a valid integer",
+		"invalid_location_type_pathway": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
+		"invalid_location_type_station": "Field \"from_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
+		"invalid_stop_access_format": "Field \"from_stop_id\" \"%s\" references a stop whose \"stop_access\" is not a valid integer",
+		"not_found": "Field \"from_stop_id\" \"%s\" does not exist in stops.txt",
+		"recommended": "Field \"from_stop_id\" is recommended",
+		"required": "Field \"from_stop_id\" is required"
+	},
+	"pathway_id_unique": {
+		"duplicate": "Duplicate field \"pathway_id\" \"%s\" found. Field \"pathway_id\" must be unique",
+		"forbidden": "Field \"pathway_id\" is forbidden",
+		"generic": "The \"pathway_id\" field must be unique across pathways.txt.",
+		"recommended": "Field \"pathway_id\" is recommended",
+		"required": "Field \"pathway_id\" is required"
+	},
+	"pathway_is_bidirectional_valid_gtfs_enum": {
+		"exit_gate_bidirectional": "Field \"is_bidirectional\" must be 0 when \"pathway_mode\" is 7 (exit gate). Exit gates cannot be bidirectional",
+		"forbidden": "Field \"is_bidirectional\" is forbidden",
+		"generic": "The \"is_bidirectional\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"is_bidirectional\" must be 0 or 1, received: %s",
+		"not_allowed": "Field \"is_bidirectional\" \"%s\" is not allowed",
+		"recommended": "Field \"is_bidirectional\" is recommended",
+		"required": "Field \"is_bidirectional\" is required"
+	},
+	"pathway_mode_valid_gtfs_enum": {
+		"forbidden": "Field \"pathway_mode\" is forbidden",
+		"generic": "The \"pathway_mode\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"pathway_mode\" must be 0, 1, 2, 3, 4, or 5, received: %s",
+		"not_allowed": "Field \"pathway_mode\" \"%s\" is not allowed",
+		"recommended": "Field \"pathway_mode\" is recommended",
+		"required": "Field \"pathway_mode\" is required"
 	}
 }
