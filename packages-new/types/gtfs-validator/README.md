@@ -40,7 +40,7 @@ Parser diagnostics remain runtime errors. They are excluded from the catalogue a
 
 Before importing a GTFS into SQLite, the Go validator requires every supported rule in the rules JSON file, with an explicit severity (`ignore` to disable it). Missing sections report their missing rules too. Renaming `agency_id_unique` to `agency_id` reports `missing rules: agency.agency_id_unique`. Unsupported sections such as `translations` and `attributions` are ignored. File-presence settings (`_file`) are required for supported GTFS sections; the internal `file_validation._file` setting is optional.
 
-A stored config key can differ from the emitted rule id. For example, `frequencies.trip_id` emits `frequencies_trip_id_references_trips_table`. Catalogue entries carry both `config_key` and `id`, and `setRuleSeverity` always writes under `config_key`.
+A stored config key can differ from the emitted rule id. For example, `frequencies.trip_id` emits `frequencies_trip_id_foreign`. Catalogue entries carry both `config_key` and `id`, and `setRuleSeverity` always writes under `config_key`.
 
 ### Rule dependencies
 

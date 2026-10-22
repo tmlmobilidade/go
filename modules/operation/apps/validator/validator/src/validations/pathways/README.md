@@ -2,7 +2,7 @@
 
 `main.go` runs 12 presence checks and 10 standard checks through one row-scoped
 RuleRunner action map. Checks read current SQLite values through `Pathways`.
-Presence rules use `pathways_<field>_field`; standard checks retain their rule IDs.
+Presence rules use `pathways_<field>_field`; standard checks use simplified rule IDs.
 Configure dependencies explicitly with `depends_on`. Signage checks are now
 presence-only field checks. Numeric parsing occurs inside the relevant value
 check, so malformed values no longer suppress independent checks on the row.

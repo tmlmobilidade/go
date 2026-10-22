@@ -8,7 +8,7 @@ tables share schema information without caching row values.
   is_default_fare_category, and eligibility_url. Rule IDs follow
   `rider_categories_<field>_field`.
 - `standard/checks`: unique IDs, default-category enum/options, and URL format.
-  These retain their existing value-rule IDs.
+  These use simplified value-rule IDs.
 - Mirrored `fields/tests` and `standard/tests` use real SQLite fixtures.
 
 Configure presence independently from value checks, including the new
@@ -17,6 +17,6 @@ Configure presence independently from value checks, including the new
 and apply independently on each row. Malformed enum values do not suppress
 unrelated checks.
 
-The retained `rider_categories_at_most_one_default_fare_category` rule validates
+The `rider_categories_is_default_fare_category_valid` rule validates
 0/1 and configured options, matching its previous implementation. It does not
 check default-category uniqueness or fare-product membership.

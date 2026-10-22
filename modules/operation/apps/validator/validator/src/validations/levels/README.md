@@ -5,8 +5,8 @@ values are read directly through the existing `SQLiteContext.Levels` binding.
 
 - `fields/checks`: presence under `levels_level_id_field`,
   `levels_level_index_field`, and `levels_level_name_field`.
-- `standard/checks`: unique IDs (`level_id_unique`) and non-negative float32
-  indices (`level_index_required`), preserving the existing value-rule IDs.
+- `standard/checks`: unique IDs (`levels_level_id_unique`) and non-negative float32
+  indices (`levels_level_index_valid`), using the simplified value-rule IDs.
 - Mirrored check tests and runner tests use real file-backed SQLite fixtures.
 
 Configure presence separately from values; the old presence-only `level_name`

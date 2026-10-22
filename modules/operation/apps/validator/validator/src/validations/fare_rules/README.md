@@ -29,7 +29,7 @@ For examples that demonstrate how to specify a fare structure with `fare_rules.t
 
 `main.go` registers five presence and five standard checks through a row-scoped
 RuleRunner. Checks read current values through `SQLiteContext.FareRules`.
-Presence uses `fare_rules_<field>_field`; reference checks retain existing IDs.
+Presence uses `fare_rules_<field>_field`; reference checks use simplified IDs.
 Configure presence separately and declare dependencies with `depends_on`.
 Dependency outcomes apply to the current row only.
 

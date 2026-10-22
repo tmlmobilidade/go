@@ -7,7 +7,7 @@ unused raw-frequency cache and whole-row parser have been removed.
 - `fields/checks`: presence for trip_id, start_time, end_time, headway_secs,
   and exact_times, using `frequencies_<field>_field` IDs.
 - `standard/checks`: trip references, time format, positive headways, and
-  exact_times enum/options, retaining the existing value-rule IDs.
+  exact_times enum/options, using the simplified value-rule IDs.
 - Mirrored tests use file-backed SQLite fixtures. Runner tests live in `tests`.
 
 Presence and values are independently configurable. Declare dependencies with
