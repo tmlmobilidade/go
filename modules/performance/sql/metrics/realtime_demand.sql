@@ -7,10 +7,16 @@ SELECT 'realtime_demand', {run_id:UUID}, row_date, row_properties, row_path,
 FROM (
 WITH counts AS (
     SELECT agency_code AS agency,
-           toFloat64(countIf(created_at >= {current_start:Int64} AND created_at <= {reference_at:UInt64})) AS now,
-           toFloat64(countIf(created_at >= {previous_start:Int64} AND created_at <= {previous_until:Int64})) AS last_week
-    FROM simplified_apex.validations FINAL
-    WHERE agency_id IN {agency_ids:Array(String)} AND is_passenger = 1
+           sumIf(passenger_qty, created_at >= {current_start:Int64} AND created_at <= {reference_at:UInt64}) AS now,
+           sumIf(passenger_qty, created_at >= {previous_start:Int64} AND created_at <= {previous_until:Int64}) AS last_week
+    FROM (
+        SELECT agency_id, agency_code, created_at, toFloat64(1) AS passenger_qty
+        FROM simplified_apex.validations FINAL WHERE is_passenger = 1
+        UNION ALL
+        SELECT agency_id, agency_code, created_at, toFloat64(ifNull(group_dimension, 1)) AS passenger_qty
+        FROM simplified_apex.banking_taps FINAL
+    )
+    WHERE agency_id IN {agency_ids:Array(String)}
       AND ((created_at >= {current_start:Int64} AND created_at <= {reference_at:UInt64})
            OR (created_at >= {previous_start:Int64} AND created_at <= {previous_until:Int64}))
     GROUP BY agency

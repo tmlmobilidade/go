@@ -7,9 +7,18 @@ SELECT 'demand_by_product_by_pattern_by_day', {run_id:UUID}, row_date, row_prope
 FROM (
 WITH counts AS (
     SELECT if(toHour(local_time) < 4, subtractDays(toDate(local_time), 1), toDate(local_time)) AS day,
-           ifNull(v.pattern_id, 'no-pattern') AS dimension, ifNull(v.product_id, 'unknown-product') AS extra_dimension, toFloat64(count()) AS qty
-    FROM (SELECT *, fromUnixTimestamp64Milli(created_at, 'Europe/Lisbon') AS local_time FROM simplified_apex.validations FINAL) AS v
-    WHERE agency_id IN {agency_ids:Array(String)} AND is_passenger = 1
+           ifNull(v.pattern_id, 'no-pattern') AS dimension, ifNull(v.product_id, 'unknown-product') AS extra_dimension, sum(passenger_qty) AS qty
+    FROM (
+        SELECT *, fromUnixTimestamp64Milli(created_at, 'Europe/Lisbon') AS local_time
+        FROM (
+            SELECT agency_id, created_at, pattern_id, product_id, toFloat64(1) AS passenger_qty
+            FROM simplified_apex.validations FINAL WHERE is_passenger = 1
+            UNION ALL
+            SELECT agency_id, created_at, nullIf(pattern_id, '') AS pattern_id, nullIf(product_id, '') AS product_id, toFloat64(ifNull(group_dimension, 1)) AS passenger_qty
+            FROM simplified_apex.banking_taps FINAL
+        )
+    ) AS v
+    WHERE agency_id IN {agency_ids:Array(String)}
       AND created_at >= toUnixTimestamp64Milli(toDateTime64(concat(toString({start_date:Date}), ' 04:00:00'), 3, 'Europe/Lisbon'))
       AND created_at < toUnixTimestamp64Milli(toDateTime64(concat(toString(addDays({end_date:Date}, 1)), ' 04:00:00'), 3, 'Europe/Lisbon'))
     GROUP BY day, dimension, extra_dimension

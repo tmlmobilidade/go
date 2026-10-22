@@ -4,9 +4,20 @@ const start = 1704081600000;
 const end = start + 86400000;
 const value = input => input === null ? 'NULL' : typeof input === 'number' ? String(input) : `'${input.replaceAll("'", "''")}'`;
 const selectRows = rows => rows.map(row => `SELECT ${Object.entries(row).map(([key, item]) => `${value(item)} AS ${key}`).join(', ')}`).join(' UNION ALL ');
-const validation = changes => ({ agency_id: 'LA77N', agency_code: '41', created_at: start, is_passenger: 1, line_id: '1001', pattern_id: '1001_0_1', category: 'subscription', product_id: 'p1', ...changes });
+const validation = changes => ({ operational_date: 20240101, agency_id: 'LA77N', agency_code: '41', created_at: start, is_passenger: 1, line_id: '1001', pattern_id: '1001_0_1', category: 'subscription', product_id: 'p1', ...changes });
 const ride = (id, changes) => ({ _id: id, agency_id: 'LA77N', operational_date: 20240101, start_time_scheduled: start, start_time_observed: start + 360000, processing_status: 'complete', passengers_observed: 10, extension_scheduled: 1000, apex_validations_qty: 1, apex_sales_qty: 1, apex_sales_amount: 100, passengers_observed_prepaid_amount: 50, passengers_observed_subscription_qty: 2, route_short_name: '1001', shape_id: '1001_0_1', ...changes });
-const validations = [validation(), validation({ created_at: start + 1, category: null, product_id: null, pattern_id: null }), validation({ agency_id: 'BNA17', agency_code: '42', created_at: end - 1, line_id: null, pattern_id: null }), validation({ created_at: end }), validation({ created_at: start - 1 }), validation({ is_passenger: 0 }), validation({ agency_id: 'OTHER' }), validation({ created_at: start - 7 * 86400000 })];
+const validations = [validation(), validation({ created_at: start + 1, category: null, product_id: null, pattern_id: null }), validation({ agency_id: 'BNA17', agency_code: '42', created_at: end - 1, line_id: null, pattern_id: null }), validation({ created_at: end, operational_date: 20240102 }), validation({ created_at: start - 1, operational_date: 20231231 }), validation({ is_passenger: 0 }), validation({ agency_id: 'OTHER' }), validation({ created_at: start - 7 * 86400000, operational_date: 20231225 })];
+const bankingTap = changes => ({ agency_id: 'LA77N', agency_code: '41', created_at: start, operational_date: 20240101, line_id: '1001', pattern_id: '1001_0_1', product_id: 'bank-product', group_dimension: 3, ...changes });
+const bankingTaps = [
+ bankingTap(),
+ bankingTap({ group_dimension: null, product_id: '' }),
+ bankingTap({ agency_id: 'BNA17', agency_code: '42', created_at: end - 1, group_dimension: 2, line_id: '', pattern_id: '' }),
+ bankingTap({ agency_id: 'YA15B', agency_code: '43', group_dimension: 4 }),
+ bankingTap({ created_at: end, operational_date: 20240102 }),
+ bankingTap({ created_at: start - 1, operational_date: 20231231 }),
+ bankingTap({ agency_id: 'OTHER' }),
+ bankingTap({ created_at: start - 7 * 86400000, operational_date: 20231225, group_dimension: 5 }),
+];
 const noSales = { apex_validations_qty: null, apex_sales_qty: null, apex_sales_amount: null, passengers_observed_prepaid_amount: null, passengers_observed_subscription_qty: null };
 const rides = [ride('a'), ride('b', { ...noSales, start_time_scheduled: start + 1000, start_time_observed: start + 1000, passengers_observed: 0, extension_scheduled: 2000 }), ride('c', { ...noSales, start_time_scheduled: start + 2000, start_time_observed: null, passengers_observed: 0, extension_scheduled: 3000 }), ride('d', { ...noSales, agency_id: 'BNA17', start_time_scheduled: start + 3000, start_time_observed: 0, passengers_observed: null, extension_scheduled: 4000 }), ride('e', { start_time_scheduled: end, operational_date: 20240102 }), ride('h', { start_time_scheduled: start + 4000, passengers_observed: 5, extension_scheduled: 6000, processing_status: 'incomplete' }), ride('old-low', { start_time_scheduled: start - 86400000, operational_date: 20231231, passengers_observed: 0 }), ride('old-high', { start_time_scheduled: start - 2 * 86400000, operational_date: 20231230, passengers_observed: 10 })];
 const analyses = rides.map(r => ({ ride_id: r._id, agency_id: r.agency_id, operational_date: r.operational_date, grade_status: ['b', 'h'].includes(r._id) ? 'fail' : 'pass' }));
@@ -40,6 +51,7 @@ function inputRows(metric) {
 }
 const rawTables = {
  'simplified_apex.validations': validations,
+ 'simplified_apex.banking_taps': bankingTaps,
  'operation.rides': rides,
  'operation.ride_analysis_simple_three_vehicle_events': analyses,
  'operation.ride_analysis_simple_one_apex_validation': analyses,
@@ -72,13 +84,18 @@ export function fixtureSelect(sql, metric) {
 export function assertFixture(metric, rows) {
  const agency = id => rows.find(row => row.row_properties.agency_id === id);
  if (/^demand_by_(category|product)_/.test(metric) && metric.endsWith('_by_day')) {
-  assert.equal(rows.reduce((sum, row) => sum + row.row_numbers.qty, 0), 3);
+  assert.equal(rows.reduce((sum, row) => sum + row.row_numbers.qty, 0), 13);
   const booleanHoliday = metric.startsWith('demand_by_category_') || metric.startsWith('demand_by_product_by_pattern_');
   for (const row of rows) {
    if (booleanHoliday) assert.equal(row.row_booleans.holiday, false);
    else assert.equal(row.row_strings.holiday, '0');
   }
-  if (metric.startsWith('demand_by_product_')) assert.ok(rows.some(row => row.row_properties.product_id === 'unknown-product'));
+  if (metric.startsWith('demand_by_category_')) assert.equal(rows.filter(row => row.row_properties.category === 'banking_taps').reduce((sum, row) => sum + row.row_numbers.qty, 0), 10);
+  if (metric.startsWith('demand_by_product_')) {
+   const quantity = product => rows.filter(row => row.row_properties.product_id === product).reduce((sum, row) => sum + row.row_numbers.qty, 0);
+   assert.equal(quantity('bank-product'), 9);
+   assert.equal(quantity('unknown-product'), 2);
+  }
  }
  if (/_by_(month|year)$/.test(metric) && !['mean_demand_by_line_by_month', 'top_mean_demand_by_line_by_month'].includes(metric)) {
   assert.equal(rows.length, 1);
@@ -106,9 +123,13 @@ export function assertFixture(metric, rows) {
  }
 
  if (metric === 'demand_by_agency_by_day') {
-  assert.equal(agency('41').row_numbers.qty, 2);
-  assert.equal(agency('42').row_numbers.qty, 1);
+  assert.equal(agency('41').row_numbers.qty, 6);
+  assert.equal(agency('42').row_numbers.qty, 3);
+  assert.equal(agency('43').row_numbers.qty, 4);
  }
+ if (['demand_by_line_by_day', 'demand_by_pattern_by_day'].includes(metric)) assert.equal(rows.reduce((sum, row) => sum + row.row_numbers.qty, 0), 13);
+ if (metric === 'demand_by_line_by_day') assert.equal(rows.find(row => row.row_properties.line_id === 'no-line').row_numbers.qty, 3);
+ if (metric === 'demand_by_pattern_by_day') assert.equal(rows.find(row => row.row_properties.pattern_id === 'no-pattern').row_numbers.qty, 4);
  if (metric === 'supply_by_agency_by_day') {
   assert.equal(agency('LA77N').row_numbers.scheduled_rides, 4);
   assert.equal(agency('LA77N').row_numbers.accomplished_rides, 3);
@@ -132,6 +153,18 @@ export function assertFixture(metric, rows) {
  }
  if (metric === 'realtime_demand') {
   const total = rows.find(row => row.row_path.join('/') === 'total');
-  assert.equal(total.row_numbers.now, 3); assert.equal(total.row_numbers.last_week, 1);
+  assert.equal(total.row_numbers.now, 13); assert.equal(total.row_numbers.last_week, 6);
+  assert.equal(rows.find(row => row.row_path.join('/') === 'agencies/43').row_numbers.now, 4);
  }
+}
+
+export function fixtureHubDemandSelect(sql) {
+ let query = sql.slice(sql.indexOf('SELECT\n'));
+ const definitions = [];
+ for (const table of ['simplified_apex.validations', 'simplified_apex.banking_taps']) {
+  const alias = 'fixture_' + table.replaceAll('.', '_');
+  query = query.replaceAll(table, alias);
+  definitions.push(`${alias} AS (${selectRows(rawTables[table])})`);
+ }
+ return `WITH ${definitions.join(', ')} ${query}`;
 }
