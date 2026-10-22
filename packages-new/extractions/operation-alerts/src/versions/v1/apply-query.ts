@@ -32,6 +32,9 @@ export async function buildAlertsExtractionQuery(extraction: OperationAlertsV1Ex
 
 	//
 	// Restrict the selected operators and reference types to the permitted values
+	//
+	// Empty permission intersections must remain empty: the pipeline uses $in: []
+	// to match no alerts instead of widening the extraction.
 
 	validatedProperties.agency_ids = filterPermissionResourceValues<string>({
 		action: PermissionCatalog.all.alerts.actions.read,

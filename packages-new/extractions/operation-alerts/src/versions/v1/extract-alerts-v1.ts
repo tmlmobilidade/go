@@ -62,6 +62,7 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 	const outputFilePath = path.join(context.output_path, fileName);
 	const csvHeader = csvStringify([], { columns: csvColumns, header: true });
 
+	// Write the header before processing alerts so empty results still produce a valid CSV.
 	fs.writeFileSync(outputFilePath, csvHeader, { encoding: 'utf-8', flush: true });
 
 	const csvWriter = new BatchWriter<OperationAlertsV1OutputRow>({
@@ -70,6 +71,7 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 			const csvData = csvStringify(outputRows, { columns: csvColumns, header: false });
 			fs.appendFileSync(outputFilePath, csvData, { encoding: 'utf-8', flush: true });
 		},
+		// Do not retry appends: a partially written batch could be duplicated.
 		max_retries: 0,
 		title: 'operation_alerts_v1',
 	});

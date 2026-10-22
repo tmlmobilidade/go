@@ -13,7 +13,7 @@ export function parseAlertsExtraction(alert: Alert): OperationAlertsV1OutputRow 
 	//
 
 	//
-	// Format the dates as ISO strings, leaving absent optional dates empty
+	// Format dates as UTC ISO 8601 strings, leaving absent optional dates empty
 
 	const formattedActivePeriodStartDate = new Date(alert.active_period_start_date).toISOString();
 	const formattedActivePeriodEndDate = alert.active_period_end_date ? new Date(alert.active_period_end_date).toISOString() : '';
@@ -23,7 +23,8 @@ export function parseAlertsExtraction(alert: Alert): OperationAlertsV1OutputRow 
 	const formattedUpdatedAt = new Date(alert.updated_at).toISOString();
 
 	//
-	// Serialize the references, municipalities and coordinates
+	// Preserve the reference hierarchy and stored coordinate order as JSON.
+	// Separate municipality IDs with "|" in a single CSV cell.
 
 	const formattedReferences = JSON.stringify(alert.references ?? []);
 	const formattedMunicipalityIds = (alert.municipality_ids ?? []).join('|');

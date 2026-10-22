@@ -13,7 +13,7 @@ export function buildAlertsExtractionPipeline(properties: OperationAlertsV1Extra
 	//
 
 	//
-	// Prepare the optional active period bounds
+	// Prepare the optional bounds for the active period start date
 
 	const activePeriodFilter = {
 		...(properties.active_period_filter_start !== undefined ? { $gte: properties.active_period_filter_start } : {}),
@@ -22,6 +22,9 @@ export function buildAlertsExtractionPipeline(properties: OperationAlertsV1Extra
 
 	//
 	// Match the selected filters and preserve the list ordering
+	//
+	// Both date ranges compare the period's start date with inclusive bounds,
+	// matching the Alerts list.
 
 	return [
 		{
