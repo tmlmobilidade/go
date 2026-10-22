@@ -1024,5 +1024,216 @@
 	},
 	"vehicles_agency_id_foreign": {
 		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt"
+	},
+	"trips_route_id_field": {
+		"informational": "The route_id field is informational",
+		"recommended": "The route_id field is recommended",
+		"required": "The route_id field is required"
+	},
+	"trips_service_id_field": {
+		"informational": "The service_id field is informational",
+		"recommended": "The service_id field is recommended",
+		"required": "The service_id field is required"
+	},
+	"trips_trip_id_field": {
+		"informational": "The trip_id field is informational",
+		"recommended": "The trip_id field is recommended",
+		"required": "The trip_id field is required"
+	},
+	"trips_trip_headsign_field": {
+		"informational": "The trip_headsign field is informational",
+		"recommended": "The trip_headsign field is recommended",
+		"required": "The trip_headsign field is required"
+	},
+	"trips_trip_short_name_field": {
+		"informational": "The trip_short_name field is informational",
+		"recommended": "The trip_short_name field is recommended",
+		"required": "The trip_short_name field is required"
+	},
+	"trips_direction_id_field": {
+		"informational": "The direction_id field is informational",
+		"recommended": "The direction_id field is recommended",
+		"required": "The direction_id field is required"
+	},
+	"trips_block_id_field": {
+		"informational": "The block_id field is informational",
+		"recommended": "The block_id field is recommended",
+		"required": "The block_id field is required"
+	},
+	"trips_shape_id_field": {
+		"informational": "The shape_id field is informational",
+		"recommended": "The shape_id field is recommended",
+		"required": "The shape_id field is required"
+	},
+	"trips_wheelchair_accessible_field": {
+		"informational": "The wheelchair_accessible field is informational",
+		"recommended": "The wheelchair_accessible field is recommended",
+		"required": "The wheelchair_accessible field is required"
+	},
+	"trips_bikes_allowed_field": {
+		"informational": "The bikes_allowed field is informational",
+		"recommended": "The bikes_allowed field is recommended",
+		"required": "The bikes_allowed field is required"
+	},
+	"trips_pattern_id_field": {
+		"informational": "The pattern_id field is informational",
+		"recommended": "The pattern_id field is recommended",
+		"required": "The pattern_id field is required"
+	},
+	"trips_route_id_consistent_for_all_patterns_in_trips": {
+		"different_route_ids_in_pattern": "pattern_id %s has trips with different route_ids: %s. All trips with the same pattern_id must have the same route_id",
+		"generic": "The \"route_id\" field must be consistent across all trips of the same pattern."
+	},
+	"trips_pattern_id_matches_feed_pattern_id_syntax": {
+		"generic": "The \"pattern_id\" field must follow the syntax defined for the feed.",
+		"invalid": "Field \"pattern_id\" must be a valid ID in the format \"%s\", received: \"%s\""
+	},
+	"trip_id_unique": {
+		"duplicate": "Duplicate field \"trip_id\" \"%s\" found. Field \"trip_id\" must be unique",
+		"forbidden": "Field \"trip_id\" is forbidden",
+		"generic": "The \"trip_id\" field must be unique across trips.txt.",
+		"recommended": "Field \"trip_id\" is recommended",
+		"required": "Field \"trip_id\" is required"
+	},
+	"trips_shape_id_matches_route_id_and_direction_id": {
+		"generic": "The \"shape_id\" field must match the combination of \"route_id\" and \"direction_id\".",
+		"not_matching": "Field \"shape_id\" \"%s\" should be \"%s\", combining route_id \"%s\" and direction_id %d"
+	},
+	"trips_route_id_references_routes_table": {
+		"forbidden": "Field \"route_id\" is forbidden",
+		"generic": "The \"route_id\" field must reference a route defined in routes.txt.",
+		"not_found": "Field \"route_id\" \"%s\" does not exist in routes.txt",
+		"recommended": "Field \"route_id\" is recommended",
+		"required": "Field \"route_id\" is required"
+	},
+	"trips_block_id_in_allowed_set": {
+		"forbidden": "Field \"block_id\" is forbidden",
+		"generic": "The \"block_id\" field must contain an allowed block identifier.",
+		"recommended": "Field \"block_id\" is recommended",
+		"required": "Field \"block_id\" is required"
+	},
+	"trips_pattern_id_single_trip_signature_per_pattern": {
+		"generic": "All trips sharing a \"pattern_id\" must serve the same sequence of stops.",
+		"multiple_stop_sequence_variations": "For pattern_id %s, there are trips with multiple stop sequence variations"
+	},
+	"trips_pattern_id_present_and_references_consistent": {
+		"forbidden": "Field \"pattern_id\" is forbidden",
+		"generic": "The \"pattern_id\" field must be present and consistent with the trip's references.",
+		"recommended": "Field \"pattern_id\" is recommended",
+		"required": "Field \"pattern_id\" is required"
+	},
+	"trips_one_pattern_id_per_shape_id_group": {
+		"generic": "Each \"shape_id\" must be associated with only one \"pattern_id\".",
+		"multiple_shape_id_in_unique_pattern_id": "Field \"shape_id\" \"%s\" is used in multiple pattern_ids"
+	},
+	"trips_bikes_allowed_valid_gtfs_enum": {
+		"forbidden": "Field \"bikes_allowed\" is forbidden",
+		"generic": "The \"bikes_allowed\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"bikes_allowed\" must be 0, 1, or 2",
+		"not_allowed": "Field \"bikes_allowed\" \"%s\" is not allowed",
+		"recommended": "Field \"bikes_allowed\" is recommended",
+		"required": "Field \"bikes_allowed\" is required"
+	},
+	"trip_path_stop_coordinates_referenced_from_stops": {
+		"generic": "The coordinates of the stops along the path must match those declared in stops.txt.",
+		"invalid_distance_to_shape": "Coordinates (%.6f, %.6f) of stop \"%s\" are too far from the shapes, the closest shape \"%s\" in sequence %d at (%.6f, %.6f) (%.2f m)"
+	},
+	"trip_headsign_consistent_for_all_patterns_in_trips": {
+		"different_headsigns_in_pattern": "pattern_id %s has trips with different trip_headsigns: %s. All trips with the same pattern_id must have the same trip_headsign",
+		"generic": "The \"trip_headsign\" field must be consistent across all trips of the same pattern."
+	},
+	"trips_shape_id_consistent_per_route_direction": {
+		"generic": "The \"shape_id\" field must be consistent for each route and direction combination.",
+		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s"
+	},
+	"trips_direction_id_valid_enum": {
+		"forbidden": "Field \"direction_id\" is forbidden",
+		"generic": "The \"direction_id\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"direction_id\" must be 0 or 1",
+		"not_allowed": "Field \"direction_id\" \"%s\" is not allowed",
+		"recommended": "Field \"direction_id\" is recommended",
+		"required": "Field \"direction_id\" is required"
+	},
+	"trip_headsign_present_when_short_name_absent": {
+		"forbidden": "Field \"trip_headsign\" is forbidden",
+		"generic": "The \"trip_headsign\" field must be present when \"trip_short_name\" is absent.",
+		"recommended": "Field \"trip_headsign\" is recommended",
+		"required": "Field \"trip_headsign\" is required"
+	},
+	"trips_direction_id_consistent_for_all_patterns_in_trips": {
+		"different_direction_ids_in_pattern": "pattern_id %s has trips with different direction_ids: %s. All trips with the same pattern_id must have the same direction_id",
+		"generic": "The \"direction_id\" field must be consistent across all trips of the same pattern."
+	},
+	"trips_service_id_references_calendar_service": {
+		"forbidden": "Field \"service_id\" is forbidden",
+		"generic": "The \"service_id\" field must reference a service defined in calendar.txt or calendar_dates.txt.",
+		"not_found": "Field \"service_id\" \"%s\" does not exist in calendar.txt or calendar_dates.txt",
+		"recommended": "Field \"service_id\" is recommended",
+		"required": "Field \"service_id\" is required"
+	},
+	"trips_direction_id_matches_feed_pattern_direction": {
+		"generic": "The \"direction_id\" field must match the direction declared in \"pattern_id\".",
+		"invalid_direction_id": "Field \"direction_id\" must be an integer between 0 and 1, received: %s",
+		"invalid_pattern_id": "Field \"pattern_id\" must be a valid ID in the format \"XXXX_[0|1]_1\", received: %s",
+		"not_matching": "Field \"direction_id\" \"%s\" does not match the pattern_id \"%s\"",
+		"required": "Fields \"pattern_id\" and \"direction_id\" are required to validate the match"
+	},
+	"trips_wheelchair_accessible_valid_gtfs_enum": {
+		"forbidden": "Field \"wheelchair_accessible\" is forbidden",
+		"generic": "The \"wheelchair_accessible\" field must contain one of the values allowed by GTFS.",
+		"invalid": "Field \"wheelchair_accessible\" must be 0, 1, or 2, received: %s",
+		"not_allowed": "Field \"wheelchair_accessible\" \"%s\" is not allowed"
+	},
+	"trips_stop_sequence_increasing_by_one_along_trip": {
+		"consecutive_stop_ids": "The same stop_id \"%s\" cannot appear consecutively (one directly after another) in trip \"%s\"",
+		"generic": "The \"stop_sequence\" field must increase by one along the trip.",
+		"invalid": "Field \"stop_sequence\" must be a non-negative integer",
+		"invalid_shape_dist": "Field \"shape_dist_traveled\" must be a valid number to validate stop_sequence",
+		"non_increasing_sequence": "The values of \"stop_sequence\" must increase along the trip ('%s')",
+		"non_increasing_shape_dist": "The values of \"shape_dist_traveled\" must increase along the trip ('%s')"
+	},
+	"trip_short_name_exclusivity": {
+		"forbidden": "Field \"trip_short_name\" is forbidden",
+		"generic": "The \"trip_short_name\" field must not be shared by different trips.",
+		"recommended": "Field \"trip_short_name\" is recommended",
+		"required": "Field \"trip_short_name\" is required"
+	},
+	"trips_shape_id_max_two_per_route": {
+		"generic": "Each route must not have more than two distinct \"shape_id\" values.",
+		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
+	},
+	"trips_one_shape_id_per_pattern_id_group": {
+		"different_shape_id": "Different shape_id's found for the same pattern_id: %s",
+		"generic": "Each \"pattern_id\" must be associated with only one \"shape_id\"."
+	},
+	"trips_shape_id_references_shapes_table_when_present": {
+		"forbidden": "Field \"shape_id\" is forbidden",
+		"generic": "The \"shape_id\" field must reference a shape defined in shapes.txt.",
+		"not_found": "Field \"shape_id\" \"%s\" does not exist in shapes.txt",
+		"recommended": "Field \"shape_id\" is recommended",
+		"required": "Field \"shape_id\" is required"
+	},
+	"trip_id_limit_max_length": {
+		"generic": "The \"trip_id\" field must not exceed the maximum allowed number of characters.",
+		"too_long": "Field \"trip_id\" must be less than or equal to 36 characters"
+	},
+	"trip_headsign_consistent_per_route_direction": {
+		"generic": "The \"trip_headsign\" field must be consistent for each route and direction combination.",
+		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s"
+	},
+	"trips_pattern_id_trip_has_required_fields_for_grouping": {
+		"direction_id_not_found": "Field \"direction_id\" not found",
+		"generic": "The trip must have the fields required to be grouped by \"pattern_id\".",
+		"route_id_not_found": "Field \"route_id\" not found",
+		"shape_id_not_found": "Field \"shape_id\" not found",
+		"trip_headsign_not_found": "Field \"trip_headsign\" not found"
+	},
+	"trips_pattern_id_needs_to_be_the_same_as_shape_id": {
+		"generic": "The \"pattern_id\" field must be equal to the \"shape_id\" field.",
+		"not_matching": "Field \"pattern_id\" \"%s\" is different from the field \"shape_id\" \"%s\", they need to be the same"
+	},
+	"trip_headsign_max_two_per_route": {
+		"generic": "Each route must not have more than two distinct \"trip_headsign\" values.",
+		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
 	}
 }

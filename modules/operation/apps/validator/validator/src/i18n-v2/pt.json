@@ -1024,5 +1024,216 @@
 	},
 	"vehicles_agency_id_foreign": {
 		"not_found": "O campo \"agency_id\" \"%s\" não existe em agency.txt"
+	},
+	"trips_route_id_field": {
+		"informational": "O campo route_id é informativo",
+		"recommended": "O campo route_id é recomendado",
+		"required": "O campo route_id é obrigatório"
+	},
+	"trips_service_id_field": {
+		"informational": "O campo service_id é informativo",
+		"recommended": "O campo service_id é recomendado",
+		"required": "O campo service_id é obrigatório"
+	},
+	"trips_trip_id_field": {
+		"informational": "O campo trip_id é informativo",
+		"recommended": "O campo trip_id é recomendado",
+		"required": "O campo trip_id é obrigatório"
+	},
+	"trips_trip_headsign_field": {
+		"informational": "O campo trip_headsign é informativo",
+		"recommended": "O campo trip_headsign é recomendado",
+		"required": "O campo trip_headsign é obrigatório"
+	},
+	"trips_trip_short_name_field": {
+		"informational": "O campo trip_short_name é informativo",
+		"recommended": "O campo trip_short_name é recomendado",
+		"required": "O campo trip_short_name é obrigatório"
+	},
+	"trips_direction_id_field": {
+		"informational": "O campo direction_id é informativo",
+		"recommended": "O campo direction_id é recomendado",
+		"required": "O campo direction_id é obrigatório"
+	},
+	"trips_block_id_field": {
+		"informational": "O campo block_id é informativo",
+		"recommended": "O campo block_id é recomendado",
+		"required": "O campo block_id é obrigatório"
+	},
+	"trips_shape_id_field": {
+		"informational": "O campo shape_id é informativo",
+		"recommended": "O campo shape_id é recomendado",
+		"required": "O campo shape_id é obrigatório"
+	},
+	"trips_wheelchair_accessible_field": {
+		"informational": "O campo wheelchair_accessible é informativo",
+		"recommended": "O campo wheelchair_accessible é recomendado",
+		"required": "O campo wheelchair_accessible é obrigatório"
+	},
+	"trips_bikes_allowed_field": {
+		"informational": "O campo bikes_allowed é informativo",
+		"recommended": "O campo bikes_allowed é recomendado",
+		"required": "O campo bikes_allowed é obrigatório"
+	},
+	"trips_pattern_id_field": {
+		"informational": "O campo pattern_id é informativo",
+		"recommended": "O campo pattern_id é recomendado",
+		"required": "O campo pattern_id é obrigatório"
+	},
+	"trips_route_id_consistent_for_all_patterns_in_trips": {
+		"different_route_ids_in_pattern": "pattern_id %s tem viagens com route_ids diferentes: %s. Todas as viagens com o mesmo pattern_id devem ter o mesmo route_id",
+		"generic": "O campo \"route_id\" deve ser consistente entre todas as viagens do mesmo pattern."
+	},
+	"trips_pattern_id_matches_feed_pattern_id_syntax": {
+		"generic": "O campo \"pattern_id\" deve seguir a sintaxe definida para o feed.",
+		"invalid": "O campo \"pattern_id\" deve ser um ID válido no formato \"%s\", recebido: \"%s\""
+	},
+	"trip_id_unique": {
+		"duplicate": "Campo \"trip_id\" \"%s\" duplicado encontrado. O campo \"trip_id\" deve ser único",
+		"forbidden": "O campo \"trip_id\" é proibido",
+		"generic": "O campo \"trip_id\" deve ser único em trips.txt.",
+		"recommended": "O campo \"trip_id\" é recomendado",
+		"required": "O campo \"trip_id\" é obrigatório"
+	},
+	"trips_shape_id_matches_route_id_and_direction_id": {
+		"generic": "O campo \"shape_id\" deve corresponder à combinação de \"route_id\" e \"direction_id\".",
+		"not_matching": "O campo \"shape_id\" \"%s\" deve ser \"%s\", combinando route_id \"%s\" e direction_id \"%d\""
+	},
+	"trips_route_id_references_routes_table": {
+		"forbidden": "O campo \"route_id\" é proibido",
+		"generic": "O campo \"route_id\" deve referenciar uma linha definida em routes.txt.",
+		"not_found": "O campo \"route_id\" \"%s\" não existe em routes.txt",
+		"recommended": "O campo \"route_id\" é recomendado",
+		"required": "O campo \"route_id\" é obrigatório"
+	},
+	"trips_block_id_in_allowed_set": {
+		"forbidden": "O campo \"block_id\" é proibido",
+		"generic": "O campo \"block_id\" deve conter um identificador de bloco permitido.",
+		"recommended": "O campo \"block_id\" é recomendado",
+		"required": "O campo \"block_id\" é obrigatório"
+	},
+	"trips_pattern_id_single_trip_signature_per_pattern": {
+		"generic": "Todas as viagens com o mesmo \"pattern_id\" devem servir a mesma sequência de paragens.",
+		"multiple_stop_sequence_variations": "Para o pattern_id %s, existem viagens com múltiplas variações de sequência de paragens"
+	},
+	"trips_pattern_id_present_and_references_consistent": {
+		"forbidden": "O campo \"pattern_id\" é proibido",
+		"generic": "O campo \"pattern_id\" deve estar preenchido e ser coerente com as referências da viagem.",
+		"recommended": "O campo \"pattern_id\" é recomendado",
+		"required": "O campo \"pattern_id\" é obrigatório"
+	},
+	"trips_one_pattern_id_per_shape_id_group": {
+		"generic": "Cada \"shape_id\" só pode estar associado a um \"pattern_id\".",
+		"multiple_shape_id_in_unique_pattern_id": "O shape_id \"%s\" é utilizado em múltiplos pattern_ids"
+	},
+	"trips_bikes_allowed_valid_gtfs_enum": {
+		"forbidden": "O campo \"bikes_allowed\" é proibido",
+		"generic": "O campo \"bikes_allowed\" deve conter um dos valores previstos pelo GTFS.",
+		"invalid": "O campo \"bikes_allowed\" deve ser 0, 1 ou 2",
+		"not_allowed": "O campo \"bikes_allowed\" \"%s\" não é permitido",
+		"recommended": "O campo \"bikes_allowed\" é recomendado",
+		"required": "O campo \"bikes_allowed\" é obrigatório"
+	},
+	"trip_path_stop_coordinates_referenced_from_stops": {
+		"generic": "As coordenadas das paragens do percurso devem corresponder às declaradas em stops.txt.",
+		"invalid_distance_to_shape": "As coordenadas (%.6f, %.6f) desta paragem (%s) estao demasiado distantes das shapes, a shape mais proxima \"%s\" na sequencia %d em (%.6f, %.6f) (%.2f m)"
+	},
+	"trip_headsign_consistent_for_all_patterns_in_trips": {
+		"different_headsigns_in_pattern": "pattern_id %s tem viagens com headsigns diferentes: %s. Todas as viagens com o mesmo pattern_id devem ter o mesmo headsign",
+		"generic": "O campo \"trip_headsign\" deve ser consistente entre todas as viagens do mesmo pattern."
+	},
+	"trips_shape_id_consistent_per_route_direction": {
+		"generic": "O campo \"shape_id\" deve ser consistente para cada combinação de linha e sentido.",
+		"inconsistent_direction": "O route_id \"%s\" com direction_id %d deve ter um único valor de \"%s\"; encontrados: %s"
+	},
+	"trips_direction_id_valid_enum": {
+		"forbidden": "O campo \"direction_id\" é proibido",
+		"generic": "O campo \"direction_id\" deve conter um dos valores previstos pelo GTFS.",
+		"invalid": "O campo \"direction_id\" deve ser 0 ou 1",
+		"not_allowed": "O campo \"direction_id\" \"%s\" não é permitido",
+		"recommended": "O campo \"direction_id\" é recomendado",
+		"required": "O campo \"direction_id\" é obrigatório"
+	},
+	"trip_headsign_present_when_short_name_absent": {
+		"forbidden": "O campo \"trip_headsign\" é proibido",
+		"generic": "O campo \"trip_headsign\" deve estar preenchido quando \"trip_short_name\" não existe.",
+		"recommended": "O campo \"trip_headsign\" é recomendado",
+		"required": "O campo \"trip_headsign\" é obrigatório"
+	},
+	"trips_direction_id_consistent_for_all_patterns_in_trips": {
+		"different_direction_ids_in_pattern": "pattern_id %s tem viagens com direction_ids diferentes: %s. Todas as viagens com o mesmo pattern_id devem ter o mesmo direction_id",
+		"generic": "O campo \"direction_id\" deve ser consistente entre todas as viagens do mesmo pattern."
+	},
+	"trips_service_id_references_calendar_service": {
+		"forbidden": "O campo \"service_id\" é proibido",
+		"generic": "O campo \"service_id\" deve referenciar um serviço definido em calendar.txt ou calendar_dates.txt.",
+		"not_found": "O campo \"service_id\" \"%s\" não existe em calendar.txt ou calendar_dates.txt",
+		"recommended": "O campo \"service_id\" é recomendado",
+		"required": "O campo \"service_id\" é obrigatório"
+	},
+	"trips_direction_id_matches_feed_pattern_direction": {
+		"generic": "O campo \"direction_id\" deve corresponder ao sentido declarado no \"pattern_id\".",
+		"invalid_direction_id": "O campo \"direction_id\" deve ser um número inteiro entre 0 e 1, recebido: %s",
+		"invalid_pattern_id": "O campo \"pattern_id\" deve ser um ID válido no formato \"XXXX_[0|1]_1\", recebido: %s",
+		"not_matching": "O campo \"direction_id\" \"%s\" não corresponde do pattern_id \"%s\"",
+		"required": "Os campos \"pattern_id\" e \"direction_id\" são obrigatórios para validar a correspondência"
+	},
+	"trips_wheelchair_accessible_valid_gtfs_enum": {
+		"forbidden": "O campo \"wheelchair_accessible\" é proibido",
+		"generic": "O campo \"wheelchair_accessible\" deve conter um dos valores previstos pelo GTFS.",
+		"invalid": "O campo \"wheelchair_accessible\" deve ser 0, 1 ou 2, recebido: %s",
+		"not_allowed": "O campo \"wheelchair_accessible\" \"%s\" não é permitido"
+	},
+	"trips_stop_sequence_increasing_by_one_along_trip": {
+		"consecutive_stop_ids": "Não é possível ter a mesma paragem \"%s\", diretamente uma depois da outra na viagem \"%s\"",
+		"generic": "O campo \"stop_sequence\" deve crescer de um em um ao longo da viagem.",
+		"invalid": "O campo \"stop_sequence\" deve ser um número inteiro não negativo",
+		"invalid_shape_dist": "O campo \"shape_dist_traveled\" deve ser um número válido para validar stop_sequence",
+		"non_increasing_sequence": "Os valores de \"stop_sequence\" devem ser crescentes ao longo da viagem ('%s')",
+		"non_increasing_shape_dist": "Os valores de \"shape_dist_traveled\" devem ser crescentes ao longo da viagem ('%s')"
+	},
+	"trip_short_name_exclusivity": {
+		"forbidden": "O campo \"trip_short_name\" é proibido",
+		"generic": "O campo \"trip_short_name\" não pode ser partilhado por viagens diferentes.",
+		"recommended": "O campo \"trip_short_name\" é recomendado",
+		"required": "O campo \"trip_short_name\" é obrigatório"
+	},
+	"trips_shape_id_max_two_per_route": {
+		"generic": "Cada linha não pode ter mais do que dois valores distintos de \"shape_id\".",
+		"max_two": "O route_id \"%s\" deve ter no máximo dois valores distintos de \"%s\"; encontrados %d: %s"
+	},
+	"trips_one_shape_id_per_pattern_id_group": {
+		"different_shape_id": "Encontrados shape_id's diferentes para o mesmo pattern_id: %s",
+		"generic": "Cada \"pattern_id\" só pode estar associado a um \"shape_id\"."
+	},
+	"trips_shape_id_references_shapes_table_when_present": {
+		"forbidden": "O campo \"shape_id\" é proibido",
+		"generic": "O campo \"shape_id\" deve referenciar uma shape definida em shapes.txt.",
+		"not_found": "O campo \"shape_id\" \"%s\" não existe em shapes.txt",
+		"recommended": "O campo \"shape_id\" é recomendado",
+		"required": "O campo \"shape_id\" é obrigatório"
+	},
+	"trip_id_limit_max_length": {
+		"generic": "O campo \"trip_id\" não pode exceder o número máximo de caracteres permitido.",
+		"too_long": "O campo \"trip_id\" deve ter no máximo 36 caracteres"
+	},
+	"trip_headsign_consistent_per_route_direction": {
+		"generic": "O campo \"trip_headsign\" deve ser consistente para cada combinação de linha e sentido.",
+		"inconsistent_direction": "O route_id \"%s\" com direction_id %d deve ter um único valor de \"%s\"; encontrados: %s"
+	},
+	"trips_pattern_id_trip_has_required_fields_for_grouping": {
+		"direction_id_not_found": "O campo \"direction_id\" não foi encontrado",
+		"generic": "A viagem deve ter preenchidos os campos necessários para ser agrupada por \"pattern_id\".",
+		"route_id_not_found": "O campo \"route_id\" não foi encontrado",
+		"shape_id_not_found": "O campo \"shape_id\" não foi encontrado",
+		"trip_headsign_not_found": "O campo \"trip_headsign\" não foi encontrado"
+	},
+	"trips_pattern_id_needs_to_be_the_same_as_shape_id": {
+		"generic": "O campo \"pattern_id\" deve ser igual ao campo \"shape_id\".",
+		"not_matching": "O campo \"pattern_id\" \"%s\" é diferente do campo \"shape_id\" \"%s\", devem ser iguais."
+	},
+	"trip_headsign_max_two_per_route": {
+		"generic": "Cada linha não pode ter mais do que dois valores distintos de \"trip_headsign\".",
+		"max_two": "O route_id \"%s\" deve ter no máximo dois valores distintos de \"%s\"; encontrados %d: %s"
 	}
 }
