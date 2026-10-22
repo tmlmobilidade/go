@@ -2,12 +2,12 @@
 
 import { render } from 'react-email';
 
-import { DebugCode } from '../components/DebugCode/index.js';
-import { MainButton } from '../components/MainButton/index.js';
-import { Paragraph } from '../components/Paragraph/index.js';
-import { Wrapper } from '../components/Wrapper/index.js';
-import { emailProvider } from '../email.provider.js';
-import { type SendEmailProps } from '../types.js';
+import { DebugCode } from '../../components/DebugCode/index.js';
+import { MainButton } from '../../components/MainButton/index.js';
+import { Paragraph } from '../../components/Paragraph/index.js';
+import { Wrapper } from '../../components/Wrapper/index.js';
+import { emailProvider } from '../../email.provider.js';
+import { type SendEmailProps } from '../../types.js';
 
 /* * */
 

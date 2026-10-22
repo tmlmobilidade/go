@@ -18,10 +18,9 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@fastify/multipart": "10.1.1",
+		"@fastify/multipart": "10.1.6",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
-		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-core-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
@@ -38,9 +37,9 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/node": "26.4.0",
+		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.12",
+		"tsx": "4.23.15",
 		"typescript": "6.0.3"
 	}
 }
