@@ -8,7 +8,7 @@ import (
 )
 
 func TestFromRouteIdValid(t *testing.T) {
-	const id = "transfer_from_route_id_references_routes_table"
+	const id = "transfers_from_route_id_foreign"
 	for _, tc := range []struct {
 		name   string
 		values map[string]any
@@ -28,11 +28,11 @@ func TestFromRouteIdValid(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
-			if err := checks.FromRouteIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.FromRouteIdForeign(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "from_route_id", types.SEVERITY_ERROR, tc.count)
 		})
 	}
-	testutils.CheckInvalid(t, id, "from_route_id", checks.FromRouteIdValid, map[string]any{"from_route_id": "missing"})
+	testutils.CheckInvalid(t, id, "from_route_id", checks.FromRouteIdForeign, map[string]any{"from_route_id": "missing"})
 }

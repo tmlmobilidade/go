@@ -8,7 +8,7 @@ import (
 )
 
 func TestMinTransferTimeValid(t *testing.T) {
-	const id = "transfers_min_transfer_time_non_negative_seconds"
+	const id = "transfers_min_transfer_time_valid"
 	for _, tc := range []struct {
 		name   string
 		values map[string]any

@@ -8,7 +8,7 @@ import (
 )
 
 func TestToTripIdValid(t *testing.T) {
-	const id = "transfer_to_trip_id_references_trips_table"
+	const id = "transfers_to_trip_id_foreign"
 	for _, tc := range []struct {
 		name   string
 		values map[string]any
@@ -28,11 +28,11 @@ func TestToTripIdValid(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
-			if err := checks.ToTripIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.ToTripIdForeign(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "to_trip_id", types.SEVERITY_ERROR, tc.count)
 		})
 	}
-	testutils.CheckInvalid(t, id, "to_trip_id", checks.ToTripIdValid, map[string]any{"to_trip_id": "missing"})
+	testutils.CheckInvalid(t, id, "to_trip_id", checks.ToTripIdForeign, map[string]any{"to_trip_id": "missing"})
 }

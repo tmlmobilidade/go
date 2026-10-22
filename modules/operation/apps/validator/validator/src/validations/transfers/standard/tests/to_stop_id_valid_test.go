@@ -8,7 +8,7 @@ import (
 )
 
 func TestToStopIdValid(t *testing.T) {
-	const id = "transfer_to_stop_id_references_stops_table"
+	const id = "transfers_to_stop_id_foreign"
 	for _, tc := range []struct {
 		name   string
 		values map[string]any
@@ -35,11 +35,11 @@ func TestToStopIdValid(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			_, ctx := testutils.Fixture(t, tc.values, config)
-			if err := checks.ToStopIdValid(ctx, config.Rule(id)); err != nil {
+			if err := checks.ToStopIdForeign(ctx, config.Rule(id)); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "to_stop_id", types.SEVERITY_ERROR, tc.count)
 		})
 	}
-	testutils.CheckInvalid(t, id, "to_stop_id", checks.ToStopIdValid, map[string]any{"to_stop_id": "missing"})
+	testutils.CheckInvalid(t, id, "to_stop_id", checks.ToStopIdForeign, map[string]any{"to_stop_id": "missing"})
 }

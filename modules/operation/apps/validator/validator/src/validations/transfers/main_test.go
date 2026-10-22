@@ -10,7 +10,7 @@ import (
 
 func TestPresenceDependenciesAreRowLocal(t *testing.T) {
 	const presence = "transfers_from_stop_id_field"
-	const value = "transfers_min_transfer_time_non_negative_seconds"
+	const value = "transfers_min_transfer_time_valid"
 	config := testutils.Config(presence, types.SEVERITY_INFO)
 	config.SetRule(value, types.RuleContext{Severity: types.SEVERITY_ERROR, DependsOn: []string{presence}})
 	db, _ := testutils.Fixture(t, map[string]any{"from_stop_id": "", "transfer_type": "2", "min_transfer_time": "bad"}, config)
@@ -41,8 +41,8 @@ func TestPresenceDependenciesAreRowLocal(t *testing.T) {
 }
 
 func TestMalformedTimeDoesNotSkipUnrelatedChecks(t *testing.T) {
-	const timeRule = "transfers_min_transfer_time_non_negative_seconds"
-	const stopRule = "transfer_from_stop_id_references_stops_table"
+	const timeRule = "transfers_min_transfer_time_valid"
+	const stopRule = "transfers_from_stop_id_foreign"
 	config := testutils.Config(timeRule, types.SEVERITY_ERROR)
 	config.SetRule(stopRule, types.RuleContext{Severity: types.SEVERITY_ERROR})
 	db, _ := testutils.Fixture(t, map[string]any{"from_stop_id": "unknown", "min_transfer_time": "bad"}, config)
@@ -65,14 +65,14 @@ func TestRunnerRegistersEveryTransferCheck(t *testing.T) {
 		{"transfers_to_trip_id_field", "to_trip_id", ""},
 		{"transfers_transfer_type_field", "transfer_type", ""},
 		{"transfers_min_transfer_time_field", "min_transfer_time", ""},
-		{"transfer_from_stop_id_references_stops_table", "from_stop_id", "missing"},
-		{"transfer_from_route_id_references_routes_table", "from_route_id", "missing"},
-		{"transfer_from_trip_id_references_trips_table", "from_trip_id", "missing"},
-		{"transfer_to_stop_id_references_stops_table", "to_stop_id", "missing"},
-		{"transfer_to_route_id_references_routes_table", "to_route_id", "missing"},
-		{"transfer_to_trip_id_references_trips_table", "to_trip_id", "missing"},
-		{"transfer_type_valid_gtfs_enum", "transfer_type", "missing"},
-		{"transfers_min_transfer_time_non_negative_seconds", "min_transfer_time", "missing"},
+		{"transfers_from_stop_id_foreign", "from_stop_id", "missing"},
+		{"transfers_from_route_id_foreign", "from_route_id", "missing"},
+		{"transfers_from_trip_id_foreign", "from_trip_id", "missing"},
+		{"transfers_to_stop_id_foreign", "to_stop_id", "missing"},
+		{"transfers_to_route_id_foreign", "to_route_id", "missing"},
+		{"transfers_to_trip_id_foreign", "to_trip_id", "missing"},
+		{"transfers_transfer_type_valid", "transfer_type", "missing"},
+		{"transfers_min_transfer_time_valid", "min_transfer_time", "missing"},
 	} {
 		t.Run(tc.id, func(t *testing.T) {
 			config := testutils.Config(tc.id, types.SEVERITY_ERROR)

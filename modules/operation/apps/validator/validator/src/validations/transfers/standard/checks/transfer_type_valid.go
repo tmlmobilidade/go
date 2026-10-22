@@ -34,7 +34,7 @@ func TransferTypeValid(db *services.SQLiteContext, rules *types.RuleContext) err
 	//
 	// 1. Get the rule
 
-	const ruleID = "transfer_type_valid_gtfs_enum"
+	const ruleID = "transfers_transfer_type_valid"
 
 	//
 	// 2. Create the validation context

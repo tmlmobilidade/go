@@ -8,7 +8,7 @@ import (
 )
 
 func TestTransferTypeValid(t *testing.T) {
-	const id = "transfer_type_valid_gtfs_enum"
+	const id = "transfers_transfer_type_valid"
 	for _, tc := range []struct {
 		name   string
 		values map[string]any
@@ -41,7 +41,7 @@ func TestTransferTypeValid(t *testing.T) {
 	testutils.CheckInvalid(t, id, "transfer_type", checks.TransferTypeValid, map[string]any{"transfer_type": "missing"})
 }
 func TestTransferTypeOptions(t *testing.T) {
-	const id = "transfer_type_valid_gtfs_enum"
+	const id = "transfers_transfer_type_valid"
 	for _, tc := range []struct {
 		name    string
 		options []string

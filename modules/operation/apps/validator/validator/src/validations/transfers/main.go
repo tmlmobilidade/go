@@ -58,29 +58,29 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"transfers_min_transfer_time_field": func() {
 				check("transfers_min_transfer_time_field", transfers_fields.MinTransferTimeField(db, rules.Rule("transfers_min_transfer_time_field")))
 			},
-			"transfer_from_stop_id_references_stops_table": func() {
-				check("transfer_from_stop_id_references_stops_table", transfers_standard.FromStopIdValid(db, rules.Rule("transfer_from_stop_id_references_stops_table")))
+			"transfers_from_stop_id_foreign": func() {
+				check("transfers_from_stop_id_foreign", transfers_standard.FromStopIdForeign(db, rules.Rule("transfers_from_stop_id_foreign")))
 			},
-			"transfer_from_route_id_references_routes_table": func() {
-				check("transfer_from_route_id_references_routes_table", transfers_standard.FromRouteIdValid(db, rules.Rule("transfer_from_route_id_references_routes_table")))
+			"transfers_from_route_id_foreign": func() {
+				check("transfers_from_route_id_foreign", transfers_standard.FromRouteIdForeign(db, rules.Rule("transfers_from_route_id_foreign")))
 			},
-			"transfer_from_trip_id_references_trips_table": func() {
-				check("transfer_from_trip_id_references_trips_table", transfers_standard.FromTripIdValid(db, rules.Rule("transfer_from_trip_id_references_trips_table")))
+			"transfers_from_trip_id_foreign": func() {
+				check("transfers_from_trip_id_foreign", transfers_standard.FromTripIdForeign(db, rules.Rule("transfers_from_trip_id_foreign")))
 			},
-			"transfer_to_stop_id_references_stops_table": func() {
-				check("transfer_to_stop_id_references_stops_table", transfers_standard.ToStopIdValid(db, rules.Rule("transfer_to_stop_id_references_stops_table")))
+			"transfers_to_stop_id_foreign": func() {
+				check("transfers_to_stop_id_foreign", transfers_standard.ToStopIdForeign(db, rules.Rule("transfers_to_stop_id_foreign")))
 			},
-			"transfer_to_route_id_references_routes_table": func() {
-				check("transfer_to_route_id_references_routes_table", transfers_standard.ToRouteIdValid(db, rules.Rule("transfer_to_route_id_references_routes_table")))
+			"transfers_to_route_id_foreign": func() {
+				check("transfers_to_route_id_foreign", transfers_standard.ToRouteIdForeign(db, rules.Rule("transfers_to_route_id_foreign")))
 			},
-			"transfer_to_trip_id_references_trips_table": func() {
-				check("transfer_to_trip_id_references_trips_table", transfers_standard.ToTripIdValid(db, rules.Rule("transfer_to_trip_id_references_trips_table")))
+			"transfers_to_trip_id_foreign": func() {
+				check("transfers_to_trip_id_foreign", transfers_standard.ToTripIdForeign(db, rules.Rule("transfers_to_trip_id_foreign")))
 			},
-			"transfer_type_valid_gtfs_enum": func() {
-				check("transfer_type_valid_gtfs_enum", transfers_standard.TransferTypeValid(db, rules.Rule("transfer_type_valid_gtfs_enum")))
+			"transfers_transfer_type_valid": func() {
+				check("transfers_transfer_type_valid", transfers_standard.TransferTypeValid(db, rules.Rule("transfers_transfer_type_valid")))
 			},
-			"transfers_min_transfer_time_non_negative_seconds": func() {
-				check("transfers_min_transfer_time_non_negative_seconds", transfers_standard.MinTransferTimeValid(db, rules.Rule("transfers_min_transfer_time_non_negative_seconds")))
+			"transfers_min_transfer_time_valid": func() {
+				check("transfers_min_transfer_time_valid", transfers_standard.MinTransferTimeValid(db, rules.Rule("transfers_min_transfer_time_valid")))
 			},
 		}, nil)
 		return nil
