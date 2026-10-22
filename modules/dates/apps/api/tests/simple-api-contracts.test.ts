@@ -112,6 +112,15 @@ for (const resource of resources) {
 			assert.equal(WRITES.length, 0);
 		});
 
+		test('rejects missing agencies on create and empty agencies on create/update without writes', async () => {
+			const withoutAgencies = { code: 'CODE', [resource.label]: 'Record' };
+			assert.equal((await invoke(handlers.create, withoutAgencies, [permission(resource.plural, 'create')])).httpStatus, 400);
+			for (const action of ['create', 'update'] as const) {
+				assert.equal((await invoke(handlers[action], { ...validBody, agency_ids: [] }, [permission(resource.plural, action)])).httpStatus, 400);
+			}
+			assert.equal(WRITES.length, 0);
+		});
+
 		test('requires permissions for all agencies on create', async () => {
 			const result = await invoke(handlers.create, { ...validBody, agency_ids: ['A', 'B'] }, [permission(resource.plural, 'create')]);
 			assert.equal(result.httpStatus, 403);

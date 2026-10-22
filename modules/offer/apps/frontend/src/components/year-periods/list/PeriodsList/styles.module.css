@@ -15,3 +15,9 @@
 		flex: 1;
 	}
 }
+
+.name {
+	align-items: center;
+	display: flex;
+	gap: var(--size-spacing-sm);
+}

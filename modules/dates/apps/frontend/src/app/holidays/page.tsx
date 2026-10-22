@@ -1,13 +1,9 @@
-'use client';
+/* * */
 
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
+import { HolidaysEmptyState } from '@/components/holidays/list/HolidaysEmptyState';
 
 /* * */
 
-export default function Page() {
-	return (
-		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione um Feriado" />
-		</Surface>
-	);
+export default async function Page() {
+	return <HolidaysEmptyState />;
 }

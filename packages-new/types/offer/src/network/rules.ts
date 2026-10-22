@@ -111,7 +111,10 @@ export const EventReplacementSchema = EventDerivedBaseSchema.extend({
 	year_period_ids: z.array(z.string()),
 });
 
-export const EventRuleSchema = z.discriminatedUnion('kind', [EventRestrictionSchema, EventReplacementSchema]);
+/** Rule definitions stored inside an Event. The parent supplies its identity. */
+export const EventRestrictionDefinitionSchema = EventRestrictionSchema.omit({ event: true });
+export const EventReplacementDefinitionSchema = EventReplacementSchema.omit({ event: true });
+export const EventRuleSchema = z.discriminatedUnion('kind', [EventRestrictionDefinitionSchema, EventReplacementDefinitionSchema]);
 
 /* * */
 
@@ -142,4 +145,6 @@ export type ScheduleRule = z.infer<typeof ScheduleRuleSchema>;
 export type ManualRule = z.infer<typeof ManualRuleSchema>;
 export type EventRestrictionRule = z.infer<typeof EventRestrictionSchema>;
 export type EventReplacementRule = z.infer<typeof EventReplacementSchema>;
+export type EventRestrictionDefinition = z.infer<typeof EventRestrictionDefinitionSchema>;
+export type EventReplacementDefinition = z.infer<typeof EventReplacementDefinitionSchema>;
 export type EventRule = z.infer<typeof EventRuleSchema>;

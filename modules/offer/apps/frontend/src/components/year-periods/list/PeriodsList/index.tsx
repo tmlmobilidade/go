@@ -1,6 +1,5 @@
 'use client';
 
-import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { PeriodsListCellAgency } from '@/components/year-periods/list/PeriodsListCellAgency';
 import { PeriodsListHeader } from '@/components/year-periods/list/PeriodsListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
@@ -8,8 +7,13 @@ import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { ColorSwatch, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
+import styles from './styles.module.css';
+
+import { usePeriodsDetailYearPeriodId } from '../../detail/use-periods-detail-year-period-id';
 import { PeriodsListFiltersBar } from '../PeriodsListFiltersBar';
+import { usePeriodsListData } from '../use-periods-list-data';
 
 /* * */
 
@@ -20,30 +24,32 @@ export function PeriodsList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const periodsListContext = usePeriodsListContext();
+	const { data, error, isLoading } = usePeriodsListData();
+	const { yearPeriodId } = usePeriodsDetailYearPeriodId();
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<YearPeriod>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
-			title: '#ID',
+			title: t('default:periods.list.columns.id'),
 			width: 100,
 		},
 		{
 			accessor: 'name',
 			render: item => (
-				<div style={{ alignItems: 'center', display: 'flex', gap: '8px' }}>
+				<div className={styles.name}>
 					<ColorSwatch color={item.color || '#3b82f6'} size={14} />
 					<Text>{item.name}</Text>
 				</div>
 			),
-			title: 'Nome',
+			title: t('default:periods.list.columns.name'),
 			width: 400,
 		},
 		{
 			accessor: 'agency_ids',
 			render: item => <PeriodsListCellAgency agencyIds={item.agency_ids} />,
-			title: 'Operadores',
+			title: t('default:periods.list.columns.agency_ids'),
 			width: 300,
 		},
 	];
@@ -59,12 +65,12 @@ export function PeriodsList() {
 	//
 	// C. Render components
 
-	if (periodsListContext.flags.loading) {
+	if (isLoading) {
 		return <LoadingOverlay />;
 	}
 
-	if (periodsListContext.flags.error) {
-		return <ErrorDisplay message={periodsListContext.flags.error.message} />;
+	if (error) {
+		return <ErrorDisplay message={error} />;
 	}
 
 	return (
@@ -76,8 +82,9 @@ export function PeriodsList() {
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={periodsListContext.data.filtered}
+				records={data}
 				rowIdAccessor="_id"
+				selectedId={yearPeriodId}
 			/>
 		</Pane>
 	);

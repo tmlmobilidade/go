@@ -240,15 +240,18 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('dates', 'api_url')}`,
 
 		// ANNOTATIONS
+		ANNOTATIONS_CREATE: `${getModuleConfig('dates', 'api_url')}/annotations/create`,
 		ANNOTATIONS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}`,
 		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}/lock`,
 		ANNOTATIONS_LIST: `${getModuleConfig('dates', 'api_url')}/annotations/list`,
 		ANNOTATIONS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/annotations/list-agencies`,
 
 		// HOLIDAYS
+		HOLIDAYS_CREATE: `${getModuleConfig('dates', 'api_url')}/holidays/create`,
 		HOLIDAYS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/holidays/${encodeURIComponent(id)}`,
 		HOLIDAYS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/holidays/${encodeURIComponent(id)}/lock`,
 		HOLIDAYS_LIST: `${getModuleConfig('dates', 'api_url')}/holidays`,
+		HOLIDAYS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/holidays/list-agencies`,
 	},
 
 	hub: {
@@ -349,14 +352,18 @@ export const API_ROUTES = Object.freeze({
 		AGENCIES_LIST: `${getModuleConfig('offer', 'api_url')}/agencies`,
 
 		// EVENTS
+		EVENTS_CREATE: `${getModuleConfig('offer', 'api_url')}/events/create`,
 		EVENTS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}`,
 		EVENTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}/lock`,
 		EVENTS_LIST: `${getModuleConfig('offer', 'api_url')}/events`,
+		EVENTS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/events/list-agencies`,
 
 		// FARES
+		FARES_CREATE: `${getModuleConfig('offer', 'api_url')}/fares/create`,
 		FARES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}`,
 		FARES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}/lock`,
 		FARES_LIST: `${getModuleConfig('offer', 'api_url')}/fares`,
+		FARES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/fares/list-agencies`,
 
 		// GTFS
 		GTFS_PARSE: `${getModuleConfig('offer', 'api_url')}/gtfs/parse`,
@@ -385,23 +392,30 @@ export const API_ROUTES = Object.freeze({
 		SHAPES_ROUTE_PREVIEW: `${getModuleConfig('offer', 'api_url')}/shapes/route-preview`,
 
 		// TYPOLOGIES
+		TYPOLOGIES_CREATE: `${getModuleConfig('offer', 'api_url')}/typologies/create`,
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${encodeURIComponent(id)}`,
 		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${encodeURIComponent(id)}/lock`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'api_url')}/typologies`,
+		TYPOLOGIES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/typologies/list-agencies`,
+		TYPOLOGIES_LIST_FARES: `${getModuleConfig('offer', 'api_url')}/typologies/list-fares`,
 
 		// VKM
 		VKM_CALCULATE: `${getModuleConfig('offer', 'api_url')}/vkm/calculate`,
 
 		// YEAR-PERIODS
 		YEAR_PERIODS_CHECK_CONFLICTS: `${getModuleConfig('offer', 'api_url')}/year-periods/check-conflicts`,
+		YEAR_PERIODS_CREATE: `${getModuleConfig('offer', 'api_url')}/year-periods/create`,
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}`,
 		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}/lock`,
 		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'api_url')}/year-periods`,
+		YEAR_PERIODS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/year-periods/list-agencies`,
 
 		// ZONES
+		ZONES_CREATE: `${getModuleConfig('offer', 'api_url')}/zones/create`,
 		ZONES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${encodeURIComponent(id)}`,
 		ZONES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${encodeURIComponent(id)}/lock`,
 		ZONES_LIST: `${getModuleConfig('offer', 'api_url')}/zones`,
+		ZONES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/zones/list-agencies`,
 	},
 
 	operation: {

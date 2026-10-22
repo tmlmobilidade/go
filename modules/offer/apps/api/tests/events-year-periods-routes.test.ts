@@ -52,7 +52,7 @@ const cookies = { session_token: 'test-session' };
 
 test('Offer event creation authenticates, validates and serializes a standard response', async () => {
 	PERMISSIONS = [{ action: 'create', resources: { agency_ids: ['A'] }, scope: 'events' }];
-	const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], code: 'EVENT', created_by: 'spoof', title: 'Event' }, url: '/events' });
+	const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], code: 'EVENT', created_by: 'spoof', title: 'Event' }, url: '/events/create' });
 	assert.equal(response.statusCode, 200);
 	const payload = response.json();
 	assert.equal(payload.status_code, '200');

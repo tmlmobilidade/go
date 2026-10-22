@@ -6,6 +6,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { createFareHandler } from './handlers/create-fare.js';
 import { deleteFareHandler } from './handlers/delete-fare.js';
 import { getFareHandler } from './handlers/get-fare.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listFaresHandler } from './handlers/list-fares.js';
 import { lockFareHandler } from './handlers/lock-fare.js';
 import { updateFareHandler } from './handlers/update-fare.js';
@@ -32,6 +33,12 @@ server.register(
 		);
 
 		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.nav, PermissionCatalog.all.fares.actions.create, PermissionCatalog.all.fares.actions.update]) },
+			listAgenciesHandler,
+		);
+
+		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware([
 				{ actions: [PermissionCatalog.all.fares.actions.nav], scope: PermissionCatalog.all.fares.scope },
@@ -41,7 +48,7 @@ server.register(
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.create]) },
 			createFareHandler,
 		);

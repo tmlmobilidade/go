@@ -10,9 +10,10 @@
 	"scripts": {
 		"build": "next build",
 		"dev": "next dev -p 51008",
-		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ./src",
-		"start": "next start"
+		"lint": "eslint ./src ./tests && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src ./tests",
+		"start": "next start",
+		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.46.0",
@@ -30,6 +31,7 @@
 		"next": "16.3.4",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
+		"react-i18next": "17.0.12",
 		"swr": "2.5.1"
 	},
 	"devDependencies": {
@@ -37,6 +39,7 @@
 		"@types/node": "26.4.0",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.5",
+		"tsx": "4.23.12",
 		"typescript": "6.0.3"
 	}
 }

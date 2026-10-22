@@ -1,15 +1,14 @@
 /* * */
 
 import { AnnotationsDetail } from '@/components/annotations/detail/AnnotationsDetail';
-import { AnnotationsDetailContextProvider } from '@/components/annotations/detail/AnnotationsDetail.context';
+import { AnnotationsDetailFormContextProvider } from '@/components/annotations/detail/AnnotationsDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<AnnotationsDetailContextProvider annotationId={id}>
+		<AnnotationsDetailFormContextProvider>
 			<AnnotationsDetail />
-		</AnnotationsDetailContextProvider>
+		</AnnotationsDetailFormContextProvider>
 	);
 }

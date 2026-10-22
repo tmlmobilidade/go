@@ -11,8 +11,6 @@ import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 //
 
-import { haveSameAgencies } from '../utils/same-agencies.js';
-
 /**
  * Check for date conflicts with existing periods.
  * Returns information about which periods would be affected by assigning the given dates.
@@ -82,16 +80,15 @@ export async function checkYearPeriodsConflictsHandler(request: FastifyRequest<{
 
 	//
 	// Find conflicts
-	// A conflict only occurs when EXACTLY the same set of agencies is used
-	// Different agency combinations can coexist on the same dates
+	// A date conflicts whenever the periods share at least one agency.
 
 	const conflicts: { dates: OperationalDate[], year_period: YearPeriod }[] = [];
 
 	for (const otherPeriod of agencyPeriods) {
 		if (!otherPeriod.dates || otherPeriod.dates.length === 0) continue;
 
-		// Only consider it a conflict if the agency sets are EXACTLY the same
-		if (!haveSameAgencies(validatedRequest.data.agency_ids, otherPeriod.agency_ids)) continue;
+		// Ignore unrelated periods, including any returned by a broad query.
+		if (!otherPeriod.agency_ids.some(id => validatedRequest.data.agency_ids.includes(id))) continue;
 
 		// Find dates that conflict between the new dates and this year period
 		const conflictingDates = findCommonDates(validatedRequest.data.dates, otherPeriod.dates);
