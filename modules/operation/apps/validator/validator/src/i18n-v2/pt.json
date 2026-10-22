@@ -1519,5 +1519,66 @@
 		"not_allowed": "O campo \"pathway_mode\" \"%s\" não é permitido",
 		"recommended": "O campo \"pathway_mode\" é recomendado",
 		"required": "O campo \"pathway_mode\" é obrigatório"
+	},
+	"frequencies_trip_id_field": {
+		"informational": "O campo trip_id é informativo",
+		"recommended": "O campo trip_id é recomendado",
+		"required": "O campo trip_id é obrigatório"
+	},
+	"frequencies_exact_times_field": {
+		"informational": "O campo exact_times é informativo",
+		"recommended": "O campo exact_times é recomendado",
+		"required": "O campo exact_times é obrigatório"
+	},
+	"frequencies_headway_secs_field": {
+		"informational": "O campo headway_secs é informativo",
+		"recommended": "O campo headway_secs é recomendado",
+		"required": "O campo headway_secs é obrigatório"
+	},
+	"frequencies_end_time_field": {
+		"informational": "O campo end_time é informativo",
+		"recommended": "O campo end_time é recomendado",
+		"required": "O campo end_time é obrigatório"
+	},
+	"frequencies_start_time_field": {
+		"informational": "O campo start_time é informativo",
+		"recommended": "O campo start_time é recomendado",
+		"required": "O campo start_time é obrigatório"
+	},
+	"frequencies_trip_id_references_trips_table": {
+		"forbidden": "O campo \"trip_id\" é proibido",
+		"generic": "O campo \"trip_id\" deve referenciar uma viagem definida em trips.txt.",
+		"not_found": "O campo \"trip_id\" \"%s\" não existe em trips.txt",
+		"recommended": "O campo \"trip_id\" é recomendado",
+		"required": "O campo \"trip_id\" é obrigatório"
+	},
+	"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": {
+		"forbidden": "O campo \"exact_times\" é proibido",
+		"generic": "O campo \"exact_times\" deve ser 0 quando a viagem com horários definidos é servida por frequencies.txt.",
+		"invalid": "O campo \"exact_times\" deve ser 0 ou 1, recebido: %s",
+		"not_allowed": "O campo \"exact_times\" \"%s\" não é permitido",
+		"recommended": "O campo \"exact_times\" é recomendado",
+		"required": "O campo \"exact_times\" é obrigatório"
+	},
+	"frequencies_headway_secs_positive_and_aligns_trip": {
+		"forbidden": "O campo \"headway_secs\" é proibido",
+		"generic": "O campo \"headway_secs\" deve ser positivo e compatível com a duração da viagem.",
+		"invalid": "O campo \"headway_secs\" deve ser um número inteiro positivo, recebido: %s",
+		"recommended": "O campo \"headway_secs\" é recomendado",
+		"required": "O campo \"headway_secs\" é obrigatório"
+	},
+	"frequency_end_time_valid": {
+		"forbidden": "O campo \"end_time\" é proibido",
+		"generic": "O campo \"end_time\" deve conter uma hora válida.",
+		"invalid": "O campo \"end_time\" deve ser uma hora válida, formato esperado: HH:MM:SS, recebido: %s",
+		"recommended": "O campo \"end_time\" é recomendado",
+		"required": "O campo \"end_time\" é obrigatório"
+	},
+	"frequency_start_time_valid": {
+		"forbidden": "O campo \"start_time\" é proibido",
+		"generic": "O campo \"start_time\" deve conter uma hora válida.",
+		"invalid": "O campo \"start_time\" deve ser uma hora válida, formato esperado: HH:MM:SS, recebido: %s",
+		"recommended": "O campo \"start_time\" é recomendado",
+		"required": "O campo \"start_time\" é obrigatório"
 	}
 }

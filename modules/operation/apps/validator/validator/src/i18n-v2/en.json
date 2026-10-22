@@ -1519,5 +1519,66 @@
 		"not_allowed": "Field \"pathway_mode\" \"%s\" is not allowed",
 		"recommended": "Field \"pathway_mode\" is recommended",
 		"required": "Field \"pathway_mode\" is required"
+	},
+	"frequencies_trip_id_field": {
+		"informational": "The trip_id field is informational",
+		"recommended": "The trip_id field is recommended",
+		"required": "The trip_id field is required"
+	},
+	"frequencies_exact_times_field": {
+		"informational": "The exact_times field is informational",
+		"recommended": "The exact_times field is recommended",
+		"required": "The exact_times field is required"
+	},
+	"frequencies_headway_secs_field": {
+		"informational": "The headway_secs field is informational",
+		"recommended": "The headway_secs field is recommended",
+		"required": "The headway_secs field is required"
+	},
+	"frequencies_end_time_field": {
+		"informational": "The end_time field is informational",
+		"recommended": "The end_time field is recommended",
+		"required": "The end_time field is required"
+	},
+	"frequencies_start_time_field": {
+		"informational": "The start_time field is informational",
+		"recommended": "The start_time field is recommended",
+		"required": "The start_time field is required"
+	},
+	"frequencies_trip_id_references_trips_table": {
+		"forbidden": "Field \"trip_id\" is forbidden",
+		"generic": "The \"trip_id\" field must reference a trip defined in trips.txt.",
+		"not_found": "Field \"trip_id\" \"%s\" does not exist in trips.txt",
+		"recommended": "Field \"trip_id\" is recommended",
+		"required": "Field \"trip_id\" is required"
+	},
+	"frequencies_exact_times_zero_when_timed_trip_uses_frequencies": {
+		"forbidden": "Field \"exact_times\" is forbidden",
+		"generic": "The \"exact_times\" field must be 0 when a trip with fixed times is served through frequencies.txt.",
+		"invalid": "Field \"exact_times\" must be 0 or 1, received: %s",
+		"not_allowed": "Field \"exact_times\" \"%s\" is not allowed",
+		"recommended": "Field \"exact_times\" is recommended",
+		"required": "Field \"exact_times\" is required"
+	},
+	"frequencies_headway_secs_positive_and_aligns_trip": {
+		"forbidden": "Field \"headway_secs\" is forbidden",
+		"generic": "The \"headway_secs\" field must be positive and consistent with the trip duration.",
+		"invalid": "Field \"headway_secs\" must be a positive integer, received: %s",
+		"recommended": "Field \"headway_secs\" is recommended",
+		"required": "Field \"headway_secs\" is required"
+	},
+	"frequency_end_time_valid": {
+		"forbidden": "Field \"end_time\" is forbidden",
+		"generic": "The \"end_time\" field must contain a valid time.",
+		"invalid": "Field \"end_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
+		"recommended": "Field \"end_time\" is recommended",
+		"required": "Field \"end_time\" is required"
+	},
+	"frequency_start_time_valid": {
+		"forbidden": "Field \"start_time\" is forbidden",
+		"generic": "The \"start_time\" field must contain a valid time.",
+		"invalid": "Field \"start_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
+		"recommended": "Field \"start_time\" is recommended",
+		"required": "Field \"start_time\" is required"
 	}
 }
