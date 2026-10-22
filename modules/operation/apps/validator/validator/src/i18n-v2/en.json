@@ -1669,5 +1669,86 @@
 		"invalid": "Field \"contains_id\" \"%s\" must be a valid ID from stops.txt",
 		"recommended": "Field \"contains_id\" is recommended",
 		"required": "Field \"contains_id\" is required"
+	},
+	"agency_id_matched_with_agency_name": {
+		"no_match": "The match between the field \"agency_id\" \"%s\" and the field \"agency_name\" \"%s\" is not valid. For the agency_id \"%s\" the name \"%s\" is expected"
+	},
+	"calendar_dates_file_missing": {
+		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present"
+	},
+	"calendar_file_missing": {
+		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present"
+	},
+	"calendar_service_id_unique_non_empty": {
+		"duplicate": "Duplicate field \"service_id\" \"%s\" found. Field \"service_id\" must be unique",
+		"forbidden": "Field \"service_id\" is forbidden",
+		"recommended": "Field \"service_id\" is recommended",
+		"required": "Field \"service_id\" is required"
+	},
+	"calendar_start_end_dates_valid_yyyymmdd_order": {
+		"forbidden": "Field \"service_date\" is forbidden",
+		"invalid": "Field \"service_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
+		"recommended": "Field \"service_date\" is recommended",
+		"required": "Field \"service_date\" is required"
+	},
+	"fare_attributes_agency_id_references_agency_table": {
+		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt"
+	},
+	"fare_attributes_currency_type_valid": {
+		"invalid": "Field \"currency_type\" \"%s\" is not a valid ISO 4217 currency code, see https://en.wikipedia.org/wiki/ISO_4217"
+	},
+	"fare_attributes_id_unique": {
+		"duplicate": "Duplicate field \"fare_id\" \"%s\" found. Field \"fare_id\" must be unique"
+	},
+	"fare_attributes_payment_method_valid_gtfs_enum": {
+		"invalid": "Field \"payment_method\" must be 0 or 1. Got \"%s\""
+	},
+	"fare_attributes_transfer_duration_valid_seconds_range": {
+		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\""
+	},
+	"fare_attributes_transfers_valid_gtfs_enum": {
+		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\""
+	},
+	"fare_media_id_unique": {
+		"duplicate": "Duplicate field \"fare_media_id\" \"%s\" found. Field \"fare_media_id\" must be unique",
+		"forbidden": "Field \"fare_media_id\" is forbidden",
+		"recommended": "Field \"fare_media_id\" is recommended",
+		"required": "Field \"fare_media_id\" is required"
+	},
+	"fare_media_name_non_empty": {
+		"forbidden": "Field \"fare_media_name\" is forbidden",
+		"recommended": "Field \"fare_media_name\" is recommended",
+		"required": "Field \"fare_media_name\" is required",
+		"warning": "Field \"fare_media_name\" is recommended for fare media type 2 (transit cards) or 4 (mobile apps)"
+	},
+	"fare_media_type_valid": {
+		"forbidden": "Field \"fare_media_type\" is forbidden",
+		"invalid": "Field \"fare_media_type\" must be 0, 1, 2, 3, or 4, received: %s",
+		"not_allowed": "Field \"fare_media_type\" \"%s\" is not allowed",
+		"recommended": "Field \"fare_media_type\" is recommended",
+		"required": "Field \"fare_media_type\" is required"
+	},
+	"fare_price_valid_non_negative_decimal": {
+		"invalid": "Field \"price\" must be non-negative. Got \"%s\""
+	},
+	"feed_info_file_missing": {
+		"feed_info_required_when_translations": "feed_info.txt is required when translations.txt is present"
+	},
+	"file_not_found_in_rules": {
+		"not_supported": "The file \"%s\" is not supported by the validator and was ignored"
+	},
+	"file_validation": {
+		"not_supported": "The file \"%s\" is not supported by the validator and was ignored"
+	},
+	"file_validation_gtfs_feed_file_presence_and_integrity_rule": {
+		"forbidden": "Forbidden file \"%s\" is present",
+		"networks_forbidden_when_network_id": "networks.txt is forbidden when network_id exists in routes.txt",
+		"route_networks_forbidden_when_network_id": "route_networks.txt is forbidden when network_id exists in routes.txt"
+	},
+	"levels_file_missing": {
+		"levels_required_when_elevator": "levels.txt is required when pathways.txt contains elevators (pathway_mode=5)"
+	},
+	"stops_file_missing": {
+		"stops_required_when_locations_missing": "stops.txt is required when locations.geojson is not present"
 	}
 }

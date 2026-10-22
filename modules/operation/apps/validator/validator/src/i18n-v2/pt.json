@@ -1669,5 +1669,86 @@
 		"invalid": "O campo \"contains_id\" \"%s\" deve ser um ID válido de stops.txt",
 		"recommended": "O campo \"contains_id\" é recomendado",
 		"required": "O campo \"contains_id\" é obrigatório"
+	},
+	"agency_id_matched_with_agency_name": {
+		"no_match": "A correspondência entre o campo \"agency_id\" \"%s\" e o campo \"agency_name\" \"%s\" não é válida. Para o agency_id \"%s\" é esperado o nome \"%s\""
+	},
+	"calendar_dates_file_missing": {
+		"calendar_files_required": "calendar.txt ou calendar_dates.txt devem ser presentes"
+	},
+	"calendar_file_missing": {
+		"calendar_files_required": "calendar.txt ou calendar_dates.txt devem ser presentes"
+	},
+	"calendar_service_id_unique_non_empty": {
+		"duplicate": "Campo \"service_id\" \"%s\" duplicado encontrado. O campo \"service_id\" deve ser único",
+		"forbidden": "O campo \"service_id\" é proibido",
+		"recommended": "O campo \"service_id\" é recomendado",
+		"required": "O campo \"service_id\" é obrigatório"
+	},
+	"calendar_start_end_dates_valid_yyyymmdd_order": {
+		"forbidden": "O campo \"service_date\" é proibido",
+		"invalid": "O campo \"service_date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
+		"recommended": "O campo \"service_date\" é recomendado",
+		"required": "O campo \"service_date\" é obrigatório"
+	},
+	"fare_attributes_agency_id_references_agency_table": {
+		"not_found": "O campo \"agency_id\" \"%s\" não existe em agency.txt"
+	},
+	"fare_attributes_currency_type_valid": {
+		"invalid": "O campo \"currency_type\" \"%s\" não é um código de moeda ISO 4217 válido, consulte https://en.wikipedia.org/wiki/ISO_4217"
+	},
+	"fare_attributes_id_unique": {
+		"duplicate": "Campo \"fare_id\" \"%s\" duplicado encontrado. O campo \"fare_id\" deve ser único"
+	},
+	"fare_attributes_payment_method_valid_gtfs_enum": {
+		"invalid": "O campo \"payment_method\" deve ser 0 ou 1. Recebido: \"%s\""
+	},
+	"fare_attributes_transfer_duration_valid_seconds_range": {
+		"invalid": "O campo \"transfer_duration\" deve ser maior que 0. Recebido: \"%s\""
+	},
+	"fare_attributes_transfers_valid_gtfs_enum": {
+		"invalid": "O campo \"transfer_duration\" deve ser maior que 0. Recebido: \"%s\""
+	},
+	"fare_media_id_unique": {
+		"duplicate": "Campo \"fare_media_id\" \"%s\" duplicado encontrado. O campo \"fare_media_id\" deve ser único",
+		"forbidden": "O campo \"fare_media_id\" é proibido",
+		"recommended": "O campo \"fare_media_id\" é recomendado",
+		"required": "O campo \"fare_media_id\" é obrigatório"
+	},
+	"fare_media_name_non_empty": {
+		"forbidden": "O campo \"fare_media_name\" é proibido",
+		"recommended": "O campo \"fare_media_name\" é recomendado",
+		"required": "O campo \"fare_media_name\" é obrigatório",
+		"warning": "O campo \"fare_media_name\" é recomendado para fare media de tipo 2 (transit cards) ou 4 (mobile apps)"
+	},
+	"fare_media_type_valid": {
+		"forbidden": "O campo \"fare_media_type\" é proibido",
+		"invalid": "O campo \"fare_media_type\" deve ser 0, 1, 2, 3 ou 4, recebido: %s",
+		"not_allowed": "O campo \"fare_media_type\" \"%s\" não é permitido",
+		"recommended": "O campo \"fare_media_type\" é recomendado",
+		"required": "O campo \"fare_media_type\" é obrigatório"
+	},
+	"fare_price_valid_non_negative_decimal": {
+		"invalid": "O campo \"price\" não pode ser negativo. Recebido: \"%s\""
+	},
+	"feed_info_file_missing": {
+		"feed_info_required_when_translations": "feed_info.txt é obrigatório quando translations.txt está presente"
+	},
+	"file_not_found_in_rules": {
+		"not_supported": "O ficheiro \"%s\" não é suportado pelo validador e foi ignorado"
+	},
+	"file_validation": {
+		"not_supported": "O ficheiro \"%s\" não é suportado pelo validador e foi ignorado"
+	},
+	"file_validation_gtfs_feed_file_presence_and_integrity_rule": {
+		"forbidden": "O ficheiro \"%s\" é proibido",
+		"networks_forbidden_when_network_id": "networks.txt é proibido quando network_id existe em routes.txt",
+		"route_networks_forbidden_when_network_id": "route_networks.txt é proibido quando network_id existe em routes.txt"
+	},
+	"levels_file_missing": {
+		"levels_required_when_elevator": "levels.txt é obrigatório quando pathways.txt contém elevadores (pathway_mode=5)"
+	},
+	"stops_file_missing": {
+		"stops_required_when_locations_missing": "stops.txt é obrigatório quando locations.geojson não está presente"
 	}
 }
