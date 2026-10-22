@@ -24,25 +24,54 @@ This field is recommended for walkways (pathway_mode=1), fare gates (pathway_mod
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
 func LengthValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "pathway_length_non_negative"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("length", "pathways.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the length value
+
 	value, err := db.Pathways.Field("length")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Skip empty length values
+
 	if value == "" {
 		return nil
 	}
+
+	//
+	// 5. Convert the length to a float
+
 	parsed, err := strconv.ParseFloat(value, 32)
 	if err != nil {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 		return nil
 	}
+
+	//
+	// 6. Check if the length is non-negative
+
 	if parsed < 0 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("negative", float32(parsed)))
 	}
+
+	//
+	// 7. Return success
+
 	return nil
 }

@@ -27,23 +27,48 @@ Values for stop_id that identify stations (location_type=1), or stops (location_
 [stops.stop_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func ToStopIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "pathway_to_stop_id_references_stops_table"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("to_stop_id", "pathways.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the to_stop_id value
+
 	value, err := db.Pathways.Field("to_stop_id")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Skip empty to_stop_id values
+
 	if value == "" {
 		return nil
 	}
+
+	//
+	// 5. Get the stops table
+
 	table, err := db.Table("stops")
 	if err != nil {
 		return err
 	}
 	found := false
+
+	//
+	// 6. Check the matching stops and their access restrictions
+
 	err = table.ForEachMatching("stop_id", value, func(row *services.SQLiteRow) error {
 		if found {
 			return nil
@@ -85,9 +110,16 @@ func ToStopIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	if err != nil {
 		return err
 	}
+
+	//
+	// 7. Report a missing to_stop_id reference
+
 	if !found {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 	}
+
+	//
+	// 8. Return success
 
 	return nil
 }

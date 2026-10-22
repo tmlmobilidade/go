@@ -24,24 +24,53 @@ Example: When two escalators are side-by-side in opposite directions, or when a 
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
 func PathwayIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "pathway_id_unique"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("pathway_id", "pathways.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the pathway_id value
+
 	value, err := db.Pathways.Field("pathway_id")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Skip empty pathway_id values
+
 	if value == "" {
 		return nil
 	}
+
+	//
+	// 5. Count matching pathway_id values
+
 	_, count, err := db.Pathways.FieldWithCount("pathway_id")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 6. Check if the pathway_id is unique
+
 	if count > 1 {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("duplicate", value))
 	}
+
+	//
+	// 7. Return success
+
 	return nil
 }

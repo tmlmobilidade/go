@@ -33,23 +33,52 @@ Valid options are:
 [pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
 */
 func PathwayModeValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "pathway_mode_valid_gtfs_enum"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("pathway_mode", "pathways.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the pathway_mode value
+
 	value, err := db.Pathways.Field("pathway_mode")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Skip empty pathway_mode values
+
 	if value == "" {
 		return nil
 	}
+
+	//
+	// 5. Convert the pathway_mode to an integer
+
 	parsed, err := strconv.Atoi(value)
+
+	//
+	// 6. Check if the pathway_mode is a valid option
+
 	if err != nil || !slices.Contains([]int{1, 2, 3, 4, 5, 6, 7}, parsed) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 		return nil
 	}
+
+	//
+	// 7. Check the configured pathway_mode options
+
 	if rules != nil && rules.Options != nil {
 		if slices.Contains(*rules.Options, types.ALL_OPTIONS) {
 			return nil
@@ -59,5 +88,9 @@ func PathwayModeValid(db *services.SQLiteContext, rules *types.RuleContext) erro
 			return nil
 		}
 	}
+
+	//
+	// 8. Return success
+
 	return nil
 }
