@@ -20,6 +20,7 @@
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix",
+		"prepack": "npm run build && chmod +x dist/index.js",
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"devDependencies": {

@@ -45,7 +45,6 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/writers": "*",
 		"papaparse": "5.7.0"
