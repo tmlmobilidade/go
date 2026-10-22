@@ -59,7 +59,7 @@ func AgencyEmailField(db *services.SQLiteContext, ruleContext *types.RuleContext
 	}
 
 	//
-	// 6. Return success
+	// 5. Return success
 
 	return nil
 }
