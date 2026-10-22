@@ -7,40 +7,52 @@ import (
 	"main/services"
 	"main/types"
 	registry "main/validations"
-	validations "main/validations/levels/validations"
+	levels_fields "main/validations/levels/fields/checks"
+	levels_standard "main/validations/levels/standard/checks"
 )
 
-func init() {
-	registry.Register("levels", RunValidations)
-}
-
-func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	runner, dagErr := services.NewRuleRunner(gtfs, rules, "levels")
-	if dagErr != nil {
-		lib.AppLogger.Error(dagErr.Error())
+func init() { registry.RegisterWithTables("levels", RunValidations) }
+func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*services.SQLiteTables) {
+	runner, err := services.NewRuleRunner(gtfs, rules, "levels")
+	if err != nil {
+		lib.AppLogger.Error(err.Error())
 		return
 	}
-	lib.AppLogger.Debug("Running Validations for levels.txt")
-
-	// Create progress tracker
+	tables, err := services.ValidationTables(gtfs.DB(), prepared...)
+	if err != nil {
+		lib.AppLogger.Error(err.Error())
+		return
+	}
 	tracker := lib.CreateProgressTracker(gtfs, "levels", config.ProgressThresholdLarge)
-
-	err := gtfs.IterateLevels(func(row int, rawLevel types.LevelsRaw) error {
+	err = tables.ForEachRow("levels", func(row *services.SQLiteRow) error {
+		db := row.Context()
 		tracker.Track()
-		level := validations.ParseLevel(rawLevel, row)
-
-		if level == (types.Levels{}) {
-			return nil
+		check := func(id string, err error) {
+			if err != nil {
+				ctx := lib.NewValidationContext("N/A", "levels.txt", id, db.Row, services.AppMessageService)
+				ctx.AddError(fmt.Sprintf("SQLite read failed: %v", err))
+			}
 		}
-
 		runner.Run(services.RuleActions{
-			"level_id_unique":      func() { validations.LevelIdValidation(&level, row, gtfs, rules.Rule("level_id_unique")) },
-			"level_index_required": func() { validations.LevelIndexValidation(&level, row, rules.Rule("level_index_required")) },
-			"level_name":           func() { validations.LevelNameValidation(&level, row, rules.Rule("level_name")) },
+			"levels_level_id_field": func() {
+				check("levels_level_id_field", levels_fields.LevelIdField(db, rules.Rule("levels_level_id_field")))
+			},
+			"levels_level_index_field": func() {
+				check("levels_level_index_field", levels_fields.LevelIndexField(db, rules.Rule("levels_level_index_field")))
+			},
+			"levels_level_name_field": func() {
+				check("levels_level_name_field", levels_fields.LevelNameField(db, rules.Rule("levels_level_name_field")))
+			},
+			"level_id_unique": func() { check("level_id_unique", levels_standard.LevelIdUnique(db, rules.Rule("level_id_unique"))) },
+			"level_index_required": func() {
+				check("level_index_required", levels_standard.LevelIndexValid(db, rules.Rule("level_index_required")))
+			},
 		}, nil)
 		return nil
 	})
 	if err != nil {
-		lib.AppLogger.Error(fmt.Sprintf("Error iterating levels: %v", err))
+		lib.AppLogger.Error(fmt.Sprintf("Error validating levels: %v", err))
+		return
 	}
+	lib.AppLogger.Info(fmt.Sprintf("Completed levels.txt validation: %d rows processed", tracker.GetProcessedCount()))
 }
