@@ -103,7 +103,7 @@ test('period-only read, create and update permissions can load agency labels', a
 		PERMISSIONS = [{ action, resources: { agency_ids: ['A'] }, scope: 'year_periods' }];
 		const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
 		assert.equal(response.statusCode, 200);
-		assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris' }]);
+		assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: 'CCFL' }]);
 	}
 });
 
@@ -118,4 +118,12 @@ test('an empty agency lookup returns a successful empty list', async () => {
 	const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
 	assert.equal(response.statusCode, 200);
 	assert.deepEqual(response.json().data, []);
+});
+
+test('agency labels default missing short names', async () => {
+	PERMISSIONS = [{ action: 'read', resources: { agency_ids: ['A'] }, scope: 'year_periods' }];
+	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris' }];
+	const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
+	assert.equal(response.statusCode, 200);
+	assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: '' }]);
 });

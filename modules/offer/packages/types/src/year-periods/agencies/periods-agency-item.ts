@@ -9,6 +9,7 @@ export const PeriodsAgencyItemSchema = AgencySchema.pick({
 	_id: true,
 	code: true,
 	name: true,
+	short_name: true,
 });
 
 /**

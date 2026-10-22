@@ -63,7 +63,7 @@ after(async () => {
 beforeEach(() => {
 	PERMISSIONS = [];
 	WRITES = [];
-	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris', private_field: 'omit' }];
+	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris', private_field: 'omit', short_name: 'CCFL' }];
 	FARES = [{ _id: 'fare', agency_ids: ['A'], name: 'Fare', payment_method: '0', price: 1, private_field: 'omit' }];
 	FARE_QUERY = undefined;
 });
@@ -107,12 +107,20 @@ for (const resource of resources) {
 			PERMISSIONS = [{ action, resources: { agency_ids: ['A'] }, scope: resource.name }];
 			const response = await server.inject({ cookies, method: 'GET', url: relative(resource.agencyUrl) });
 			assert.equal(response.statusCode, 200);
-			assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris' }]);
+			assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: 'CCFL' }]);
 		}
 		AGENCIES = [];
 		const empty = await server.inject({ cookies, method: 'GET', url: relative(resource.agencyUrl) });
 		assert.equal(empty.statusCode, 200);
 		assert.deepEqual(empty.json().data, []);
+	});
+
+	test(`${resource.name}: agency labels default missing short names`, async () => {
+		PERMISSIONS = [{ action: 'nav', resources: { agency_ids: ['A'] }, scope: resource.name }];
+		AGENCIES = [{ _id: 'A', code: '1', name: 'Carris' }];
+		const response = await server.inject({ cookies, method: 'GET', url: relative(resource.agencyUrl) });
+		assert.equal(response.statusCode, 200);
+		assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: '' }]);
 	});
 
 	test(`${resource.name}: unrelated permissions do not grant agency lookup access`, async () => {
