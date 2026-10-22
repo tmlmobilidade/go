@@ -1,0 +1,27 @@
+package trips_standard_test
+
+import (
+	"main/types"
+	checks "main/validations/trips/standard/checks"
+	testutils "main/validations/trips/utils"
+	"testing"
+)
+
+func TestShapeIdForeign(t *testing.T) {
+	const id = "trips_shape_id_references_shapes_table_when_present"
+	for _, tc := range []struct {
+		value string
+		count int
+	}{{"R1_0", 0},
+		{"", 0}, {"missing", 1}, {"' OR 1=1 --", 1}} {
+		t.Run(tc.value, func(t *testing.T) {
+			config := testutils.Config(id, types.SEVERITY_ERROR)
+			_, ctx := testutils.Fixture(t, map[string]any{"shape_id": tc.value}, config)
+			if err := checks.ShapeIdForeign(ctx, config.Rule(id)); err != nil {
+				t.Fatal(err)
+			}
+			testutils.AssertFindings(t, id, "shape_id", types.SEVERITY_ERROR, tc.count)
+		})
+	}
+	testutils.CheckInvalid(t, id, "shape_id", checks.ShapeIdForeign, map[string]any{"shape_id": "missing"})
+}
