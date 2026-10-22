@@ -55,6 +55,7 @@ type SQLiteContext struct {
 	CalendarDates   *SQLiteRow
 	FareAttributes  *SQLiteRow
 	FeedInfo        *SQLiteRow
+	Frequencies     *SQLiteRow
 	Levels          *SQLiteRow
 	Pathways        *SQLiteRow
 	RiderCategories *SQLiteRow
@@ -83,6 +84,7 @@ func (r *SQLiteRow) Context() *SQLiteContext {
 	ctx.CalendarDates = bind("calendar_dates")
 	ctx.FareAttributes = bind("fare_attributes")
 	ctx.FeedInfo = bind("feed_info")
+	ctx.Frequencies = bind("frequencies")
 	ctx.Levels = bind("levels")
 	ctx.Pathways = bind("pathways")
 	ctx.RiderCategories = bind("rider_categories")
