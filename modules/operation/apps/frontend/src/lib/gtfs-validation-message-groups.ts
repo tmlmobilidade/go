@@ -10,8 +10,7 @@ import { type SeverityStatus } from '@tmlmobilidade/go-types-shared';
  * A rule that reported both errors and warnings should read as an error.
  */
 const SEVERITY_RANK: Record<SeverityStatus, number> = {
-	error: 4,
-	forbidden: 3,
+	error: 3,
 	ignore: 0,
 	info: 1,
 	warning: 2,
