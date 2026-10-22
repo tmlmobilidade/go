@@ -8,7 +8,6 @@ import { Greeting } from '../../components/Greeting/index.js';
 import { MainButton } from '../../components/MainButton/index.js';
 import { Paragraph } from '../../components/Paragraph/index.js';
 import { Wrapper } from '../../components/Wrapper/index.js';
-import { GO_HOMEPAGE_URL } from '../../constants.js';
 import { emailProvider } from '../../email.provider.js';
 import { type SendEmailProps } from '../../types.js';
 
@@ -32,7 +31,7 @@ export default function WelcomeTemplate({ firstName, resetPasswordUrl }: Welcome
 			<Paragraph>É um prazer dar-te as boas vindas ao GO.</Paragraph>
 			<Paragraph>Esta plataforma é o resultado de uma enorme vontade de evoluir o setor dos transportes públicos.</Paragraph>
 			<Paragraph>
-				<Anchor href={GO_HOMEPAGE_URL} spaceAfter text="Na página inicial do GO" />
+				<Anchor href={PAGE_ROUTES.root.BASE} spaceAfter text="Na página inicial do GO" />
 				encontras documentação útil sobre a plataforma, o GTFS e a API APEX, assim como novidades e outros conteúdos interessantes. Estes recursos são atualizados regularmente e estão disponíveis para consulta a qualquer momento.
 			</Paragraph>
 			<Paragraph>Comprometemo-nos a ser transparentes e a manter uma atitude de colaboração contigo. Se tiveres alguma dúvida ou sugestão não hesites em falar connosco respondendo a este email.</Paragraph>
