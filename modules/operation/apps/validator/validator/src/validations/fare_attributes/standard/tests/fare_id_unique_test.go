@@ -8,7 +8,7 @@ import (
 )
 
 func TestFareIdUnique(t *testing.T) {
-	const id = "fare_attributes_id_unique"
+	const id = "fare_attributes_fare_id_unique"
 	for _, tc := range []struct {
 		name, value string
 		count       int
@@ -32,7 +32,7 @@ func TestFareIdUnique(t *testing.T) {
 				}
 			}
 
-			if err := checks.FareIdUnique(ctx, config.Rule("fare_attributes_id_unique")); err != nil {
+			if err := checks.FareIdUnique(ctx, config.Rule("fare_attributes_fare_id_unique")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "fare_id", types.SEVERITY_ERROR, tc.count)

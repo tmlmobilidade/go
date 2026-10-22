@@ -32,7 +32,7 @@ func PaymentMethodValid(db *services.SQLiteContext, rules *types.RuleContext) er
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_attributes_payment_method_valid_gtfs_enum"
+	const ruleID = "fare_attributes_payment_method_valid"
 
 	//
 	// 2. Create the validation context

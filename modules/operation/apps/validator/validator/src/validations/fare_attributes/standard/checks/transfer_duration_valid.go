@@ -26,7 +26,7 @@ func TransferDurationValid(db *services.SQLiteContext, rules *types.RuleContext)
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_attributes_transfer_duration_valid_seconds_range"
+	const ruleID = "fare_attributes_transfer_duration_valid"
 
 	//
 	// 2. Create the validation context

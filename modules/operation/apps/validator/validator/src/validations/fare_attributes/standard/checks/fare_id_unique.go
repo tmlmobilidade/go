@@ -26,7 +26,7 @@ func FareIdUnique(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_attributes_id_unique"
+	const ruleID = "fare_attributes_fare_id_unique"
 
 	//
 	// 2. Create the validation context

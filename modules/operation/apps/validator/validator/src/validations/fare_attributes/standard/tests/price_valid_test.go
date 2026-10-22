@@ -8,7 +8,7 @@ import (
 )
 
 func TestPriceValid(t *testing.T) {
-	const id = "fare_price_valid_non_negative_decimal"
+	const id = "fare_attributes_price_valid"
 	for _, tc := range []struct {
 		name  string
 		value any
@@ -33,7 +33,7 @@ func TestPriceValid(t *testing.T) {
 			}
 			_, ctx := testutils.Fixture(t, values, config, "A1")
 
-			if err := checks.PriceValid(ctx, config.Rule("fare_price_valid_non_negative_decimal")); err != nil {
+			if err := checks.PriceValid(ctx, config.Rule("fare_attributes_price_valid")); err != nil {
 				t.Fatal(err)
 			}
 			testutils.AssertFindings(t, id, "price", types.SEVERITY_ERROR, tc.count)

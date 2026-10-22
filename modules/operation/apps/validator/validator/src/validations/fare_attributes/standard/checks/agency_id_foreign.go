@@ -30,7 +30,7 @@ func AgencyIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_attributes_agency_id_references_agency_table"
+	const ruleID = "fare_attributes_agency_id_foreign"
 
 	//
 	// 2. Create the validation context

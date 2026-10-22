@@ -28,7 +28,7 @@ func PriceValid(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 	// 1. Get the rule
 
-	const ruleID = "fare_price_valid_non_negative_decimal"
+	const ruleID = "fare_attributes_price_valid"
 
 	//
 	// 2. Create the validation context
