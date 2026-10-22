@@ -38,7 +38,7 @@ export function AlertsExtractProperties() {
 		values: [...AlertReferenceTypeValues],
 	});
 
-	const filters = [
+	const selectionFields = [
 		{
 			data: agenciesOptions,
 			isLoading: agenciesLoading,
@@ -67,7 +67,7 @@ export function AlertsExtractProperties() {
 		},
 	];
 
-	const dateFilters = [
+	const dateFields = [
 		{ label: t('alerts:extract.AlertsExtractProperties.fields.publish_date_filter_start.label'), name: 'properties.publish_date_filter_start' as const, optional: false },
 		{ label: t('alerts:extract.AlertsExtractProperties.fields.publish_date_filter_end.label'), name: 'properties.publish_date_filter_end' as const, optional: false },
 		{ label: t('alerts:extract.AlertsExtractProperties.fields.active_period_filter_start.label'), name: 'properties.active_period_filter_start' as const, optional: true },
@@ -97,26 +97,31 @@ export function AlertsExtractProperties() {
 				)}
 			/>
 			<Grid columns="ab" gap="md">
-				{filters.map(filter => (
+				{selectionFields.map(selectionField => (
 					<StandardFormController
-						key={filter.name}
+						key={selectionField.name}
 						control={form.control}
-						name={filter.name}
+						name={selectionField.name}
 						render={({ field, fieldState }) => {
 							const selectedValues: string[] = field.value ?? [];
-							const isUnfiltered = filter.data.length > 0 && filter.data.length === selectedValues.length && filter.data.every(option => selectedValues.includes(option.value));
+							const hasAvailableOptions = selectionField.data.length > 0;
+							const hasSameNumberOfSelectedOptions = selectionField.data.length === selectedValues.length;
+							const areAllOptionsSelected =
+								hasAvailableOptions
+								&& hasSameNumberOfSelectedOptions
+								&& selectionField.data.every(option => selectedValues.includes(option.value));
 
 							// Show all selected options as "No filter", keeping the explicit values in the form.
 							return (
 								<MultiSelect
 									classNames={{ pillsList: styles.selectedFilters }}
-									data={filter.data}
-									disabled={!capabilities?.editEnabled || filter.isLoading}
+									data={selectionField.data}
+									disabled={!capabilities?.editEnabled || selectionField.isLoading}
 									error={fieldState.error?.message}
-									label={filter.label}
+									label={selectionField.label}
 									onChange={field.onChange}
-									placeholder={isUnfiltered ? t('alerts:extract.AlertsExtractProperties.no_filter') : t('alerts:extract.AlertsExtractProperties.placeholder')}
-									value={isUnfiltered ? [] : selectedValues}
+									placeholder={areAllOptionsSelected ? t('alerts:extract.AlertsExtractProperties.no_filter') : t('alerts:extract.AlertsExtractProperties.placeholder')}
+									value={areAllOptionsSelected ? [] : selectedValues}
 									w="100%"
 									withAsterisk
 								/>
@@ -139,20 +144,20 @@ export function AlertsExtractProperties() {
 				/>
 			</Grid>
 			<Grid columns="ab" gap="md">
-				{dateFilters.map(filter => (
+				{dateFields.map(dateField => (
 					<StandardFormController
-						key={filter.name}
+						key={dateField.name}
 						control={form.control}
-						name={filter.name}
+						name={dateField.name}
 						render={({ field, fieldState }) => (
 							<DateTimeInput
-								clearable={filter.optional}
+								clearable={dateField.optional}
 								disabled={!capabilities?.editEnabled}
 								error={fieldState.error?.message}
-								label={filter.label}
+								label={dateField.label}
 								onChange={value => field.onChange(value ?? undefined)}
 								placeholder={t('alerts:extract.AlertsExtractProperties.date_placeholder')}
-								value={form.getValues(filter.name) ?? null}
+								value={form.getValues(dateField.name) ?? null}
 							/>
 						)}
 					/>

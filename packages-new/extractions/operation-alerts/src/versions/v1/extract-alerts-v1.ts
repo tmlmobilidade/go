@@ -28,12 +28,12 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 	//
 	// Fetch alerts matching the filters and permissions
 
-	const aggregationResult = await goDb.operation.alerts.aggregate(pipeline);
+	const foundAlerts = await goDb.operation.alerts.aggregate(pipeline);
 
 	//
 	// Prepare the CSV file and batch writer
 
-	const columns = [
+	const csvColumns = [
 		'_id',
 		'agency_id',
 		'title',
@@ -59,16 +59,16 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 	] satisfies (keyof OperationAlertsV1OutputRow)[];
 
 	const fileName = `operation-alerts-v1-${extraction._id}.csv`;
-	const filePath = path.join(context.output_path, fileName);
-	const csvHeader = csvStringify([], { columns, header: true });
+	const outputFilePath = path.join(context.output_path, fileName);
+	const csvHeader = csvStringify([], { columns: csvColumns, header: true });
 
-	fs.writeFileSync(filePath, csvHeader, { encoding: 'utf-8', flush: true });
+	fs.writeFileSync(outputFilePath, csvHeader, { encoding: 'utf-8', flush: true });
 
-	const writer = new BatchWriter<OperationAlertsV1OutputRow>({
+	const csvWriter = new BatchWriter<OperationAlertsV1OutputRow>({
 		batch_size: 100_000,
 		insertFn: async (outputRows) => {
-			const csvData = csvStringify(outputRows, { columns, header: false });
-			fs.appendFileSync(filePath, csvData, { encoding: 'utf-8', flush: true });
+			const csvData = csvStringify(outputRows, { columns: csvColumns, header: false });
+			fs.appendFileSync(outputFilePath, csvData, { encoding: 'utf-8', flush: true });
 		},
 		max_retries: 0,
 		title: 'operation_alerts_v1',
@@ -77,7 +77,7 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 	//
 	// Parse the aggregation result into CSV
 
-	for (const foundAlert of aggregationResult) {
+	for (const foundAlert of foundAlerts) {
 		//
 
 		//
@@ -85,8 +85,8 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 
 		if (normalizedSearch) {
 			const normalizedAlertId = normalizeString(foundAlert._id);
-			const normalizedTitle = normalizeString(foundAlert.title);
-			const matchesSearch = normalizedAlertId.includes(normalizedSearch) || normalizedTitle.includes(normalizedSearch);
+			const normalizedAlertTitle = normalizeString(foundAlert.title);
+			const matchesSearch = normalizedAlertId.includes(normalizedSearch) || normalizedAlertTitle.includes(normalizedSearch);
 
 			if (!matchesSearch) continue;
 		}
@@ -98,8 +98,8 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 
 		const validatedOutputRow = OperationAlertsV1OutputRowSchema.parse(outputRow);
 
-		await writer.write(validatedOutputRow);
+		await csvWriter.write(validatedOutputRow);
 	}
 
-	await writer.flush();
+	await csvWriter.flush();
 }

@@ -117,7 +117,13 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 	// D. Setup flags from the current form values
 
 	const hasExtractPermission = useMemo(() => {
-		if (!hasPermission(meData?.permissions, { action: PermissionCatalog.all.alerts.actions.read, scope: PermissionCatalog.all.alerts.scope })) return false;
+		const hasReadAlertsPermission = hasPermission(meData?.permissions, {
+			action: PermissionCatalog.all.alerts.actions.read,
+			scope: PermissionCatalog.all.alerts.scope,
+		});
+
+		if (!hasReadAlertsPermission) return false;
+
 		const permittedAgencyIds = filterPermissionResourceValues<string>({
 			action: PermissionCatalog.all.alerts.actions.read,
 			permissions: meData.permissions,
@@ -125,6 +131,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 			scope: PermissionCatalog.all.alerts.scope,
 			values: propertiesValue?.agency_ids,
 		});
+
 		const permittedReferenceTypes = filterPermissionResourceValues<AlertReferenceType>({
 			action: PermissionCatalog.all.alerts.actions.read,
 			permissions: meData.permissions,
@@ -132,7 +139,11 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 			scope: PermissionCatalog.all.alerts.scope,
 			values: propertiesValue?.reference_type,
 		});
-		return permittedAgencyIds.length > 0 && permittedReferenceTypes.length > 0;
+
+		const hasPermittedAgencySelection = permittedAgencyIds.length > 0;
+		const hasPermittedReferenceTypeSelection = permittedReferenceTypes.length > 0;
+
+		return hasPermittedAgencySelection && hasPermittedReferenceTypeSelection;
 	}, [meData?.permissions, propertiesValue?.agency_ids, propertiesValue?.reference_type]);
 
 	const { createEnabled, editEnabled } = useStandardFormCapabilities({
