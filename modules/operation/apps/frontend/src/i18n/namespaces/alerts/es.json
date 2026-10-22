@@ -49,16 +49,55 @@
 			"action": {
 				"error_title": "Error al solicitar la exportación",
 				"success_title": "Exportación solicitada"
-			},
+			}
+		},
+		"AlertsExtractFooter": {
 			"button": {
-				"label": "Exportar CSV"
-			},
-			"description": "La exportación utiliza los filtros y la búsqueda actuales de la lista. El archivo CSV estará disponible en la lista de exportaciones.",
-			"total": "Alertas en la lista filtrada: {{total}}.",
-			"unavailable": "Revise los filtros y los permisos. Debe haber al menos una alerta en la lista para exportar."
+				"label": "Exportar"
+			}
 		},
 		"AlertsExtractHeader": {
 			"title": "Exportar alertas"
+		},
+		"AlertsExtractProperties": {
+			"date_placeholder": "Seleccione una fecha...",
+			"fields": {
+				"active_period_filter_end": {
+					"label": "Validez hasta"
+				},
+				"active_period_filter_start": {
+					"label": "Validez desde"
+				},
+				"agency_ids": {
+					"label": "Operador"
+				},
+				"causes": {
+					"label": "Causa"
+				},
+				"effects": {
+					"label": "Efecto"
+				},
+				"publish_date_filter_end": {
+					"label": "Publicación hasta"
+				},
+				"publish_date_filter_start": {
+					"label": "Publicación desde"
+				},
+				"publish_status": {
+					"label": "Estado"
+				},
+				"reference_type": {
+					"label": "Referencia"
+				},
+				"search": {
+					"label": "Búsqueda"
+				},
+				"version": {
+					"label": "Versión"
+				}
+			},
+			"no_filter": "Sin filtro",
+			"placeholder": "Seleccione una o más opciones..."
 		}
 	},
 	"list": {

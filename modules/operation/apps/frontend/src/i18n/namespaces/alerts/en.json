@@ -77,16 +77,55 @@
 			"action": {
 				"error_title": "Failed to request export",
 				"success_title": "Export requested"
-			},
+			}
+		},
+		"AlertsExtractFooter": {
 			"button": {
-				"label": "Export CSV"
-			},
-			"description": "The export uses the list's current filters and search. The CSV file will be available in the exports list.",
-			"total": "Alerts in the filtered list: {{total}}.",
-			"unavailable": "Check the filters and permissions. At least one alert must be present in the list to export."
+				"label": "Export"
+			}
 		},
 		"AlertsExtractHeader": {
 			"title": "Export alerts"
+		},
+		"AlertsExtractProperties": {
+			"date_placeholder": "Select a date...",
+			"fields": {
+				"active_period_filter_end": {
+					"label": "Active period until"
+				},
+				"active_period_filter_start": {
+					"label": "Active period from"
+				},
+				"agency_ids": {
+					"label": "Agency"
+				},
+				"causes": {
+					"label": "Cause"
+				},
+				"effects": {
+					"label": "Effect"
+				},
+				"publish_date_filter_end": {
+					"label": "Publication until"
+				},
+				"publish_date_filter_start": {
+					"label": "Publication from"
+				},
+				"publish_status": {
+					"label": "Status"
+				},
+				"reference_type": {
+					"label": "Reference"
+				},
+				"search": {
+					"label": "Search"
+				},
+				"version": {
+					"label": "Version"
+				}
+			},
+			"no_filter": "No filter",
+			"placeholder": "Select one or more options..."
 		}
 	},
 	"list": {

@@ -17,7 +17,7 @@ export const openAlertsExtractModal = () => {
 		closeOnEscape: false,
 		modalId: MODAL_ID,
 		padding: 0,
-		size: 'md',
+		size: 'xl',
 		withCloseButton: false,
 	});
 };
