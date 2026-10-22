@@ -61,13 +61,13 @@ export interface CalendarDatesRules {
 
 export interface FareAttributesRules {
 	_file: RuleSeverity
-	fare_attributes_agency_id_references_agency_table: RuleConfig
+	fare_attributes_agency_id_foreign: RuleConfig
 	fare_attributes_currency_type_valid: RuleConfig
-	fare_attributes_id_unique: RuleConfig
-	fare_attributes_payment_method_valid_gtfs_enum: RuleConfig
-	fare_attributes_transfer_duration_valid_seconds_range: RuleConfig
-	fare_attributes_transfers_valid_gtfs_enum: RuleConfig
-	fare_price_valid_non_negative_decimal: RuleConfig
+	fare_attributes_fare_id_unique: RuleConfig
+	fare_attributes_payment_method_valid: RuleConfig
+	fare_attributes_transfer_duration_valid: RuleConfig
+	fare_attributes_transfers_valid: RuleConfig
+	fare_attributes_price_valid: RuleConfig
 }
 
 export interface FareMediaRules {
@@ -79,11 +79,11 @@ export interface FareMediaRules {
 
 export interface FareRulesRules {
 	_file: RuleSeverity
-	fare_rule_contains_id_references_zones_stops: RuleConfig
-	fare_rule_destination_id_references_zones_stops: RuleConfig
-	fare_rule_fare_id_references_fare_attributes: RuleConfig
-	fare_rule_origin_id_references_zones_stops: RuleConfig
-	fare_rule_route_id_references_routes: RuleConfig
+	fare_rules_contains_id_foreign: RuleConfig
+	fare_rules_destination_id_foreign: RuleConfig
+	fare_rules_fare_id_foreign: RuleConfig
+	fare_rules_origin_id_foreign: RuleConfig
+	fare_rules_route_id_foreign: RuleConfig
 }
 
 export interface FeedInfoRules {
@@ -106,41 +106,41 @@ export interface FileValidationRules {
 
 export interface FrequenciesRules {
 	_file: RuleSeverity
-	frequencies_exact_times_zero_when_timed_trip_uses_frequencies: RuleConfig
-	frequencies_headway_secs_positive_and_aligns_trip: RuleConfig
-	frequencies_trip_id_references_trips_table: RuleConfig
-	frequency_end_time_valid: RuleConfig
-	frequency_start_time_valid: RuleConfig
+	frequencies_exact_times_valid: RuleConfig
+	frequencies_headway_secs_valid: RuleConfig
+	frequencies_trip_id_foreign: RuleConfig
+	frequencies_end_time_valid: RuleConfig
+	frequencies_start_time_valid: RuleConfig
 }
 
 export interface LevelsRules {
 	_file: RuleSeverity
-	level_id_unique: RuleConfig
-	level_index_required: RuleConfig
+	levels_level_id_unique: RuleConfig
+	levels_level_index_valid: RuleConfig
 	level_name: RuleConfig
 }
 
 export interface PathwaysRules {
 	_file: RuleSeverity
-	pathway_from_stop_id_references_stops_table: RuleConfig
-	pathway_id_unique: RuleConfig
-	pathway_is_bidirectional_valid_gtfs_enum: RuleConfig
-	pathway_length_non_negative: RuleConfig
-	pathway_max_slope_allowed_for_pathway_mode: RuleConfig
-	pathway_min_width_positive: RuleConfig
-	pathway_mode_valid_gtfs_enum: RuleConfig
+	pathways_from_stop_id_foreign: RuleConfig
+	pathways_pathway_id_unique: RuleConfig
+	pathways_is_bidirectional_valid: RuleConfig
+	pathways_length_valid: RuleConfig
+	pathways_max_slope_valid: RuleConfig
+	pathways_min_width_valid: RuleConfig
+	pathways_pathway_mode_valid: RuleConfig
 	pathway_reversed_signposted_as: RuleConfig
 	pathway_signposted_as: RuleConfig
-	pathway_stair_count: RuleConfig
-	pathway_to_stop_id_references_stops_table: RuleConfig
-	pathway_traversal_time_non_negative_seconds: RuleConfig
+	pathways_stair_count_valid: RuleConfig
+	pathways_to_stop_id_foreign: RuleConfig
+	pathways_traversal_time_valid: RuleConfig
 }
 
 export interface RiderCategoriesRules {
 	_file: RuleSeverity
-	rider_categories_at_most_one_default_fare_category: RuleConfig
-	rider_categories_eligibility_url_valid_http_url: RuleConfig
-	rider_category_id_unique: RuleConfig
+	rider_categories_is_default_fare_category_valid: RuleConfig
+	rider_categories_eligibility_url_valid: RuleConfig
+	rider_categories_rider_category_id_unique: RuleConfig
 	rider_category_name_non_empty: RuleConfig
 }
 
@@ -157,8 +157,8 @@ export interface RoutesRules {
 	route_text_color_valid_hex_contrast: RuleConfig
 	route_type_valid_gtfs_enum: RuleConfig
 	route_url_valid_http_url: RuleConfig
-	routes_continuous_drop_off_valid_gtfs_enum: RuleConfig
-	routes_continuous_pickup_valid_gtfs_enum: RuleConfig
+	routes_continuous_drop_off_valid: RuleConfig
+	routes_continuous_pickup_valid: RuleConfig
 	routes_line_id_required: RuleConfig
 	routes_line_long_name_present_when_line_id_present: RuleConfig
 	routes_line_short_name_present_when_line_id_present: RuleConfig
@@ -183,7 +183,7 @@ export interface ShapesRules {
 
 export interface StopTimesRules {
 	_file: RuleSeverity
-	stop_times_arrival_departure_time_non_decreasing_by_stop_sequence: RuleConfig
+	stop_times_arrival_departure_time_sequence: RuleConfig
 	stop_times_arrival_time_ordering_with_departure_and_frequencies: RuleConfig
 	stop_times_continuous_drop_off_valid_gtfs_enum: RuleConfig
 	stop_times_continuous_pickup_valid_gtfs_enum: RuleConfig
@@ -238,64 +238,64 @@ export interface StopsRules {
 
 export interface TransfersRules {
 	_file: RuleSeverity
-	transfer_from_route_id_references_routes_table: RuleConfig
-	transfer_from_stop_id_references_stops_table: RuleConfig
-	transfer_from_trip_id_references_trips_table: RuleConfig
-	transfer_to_route_id_references_routes_table: RuleConfig
-	transfer_to_stop_id_references_stops_table: RuleConfig
-	transfer_to_trip_id_references_trips_table: RuleConfig
-	transfer_type_valid_gtfs_enum: RuleConfig
-	transfers_min_transfer_time_non_negative_seconds: RuleConfig
+	transfers_from_route_id_foreign: RuleConfig
+	transfers_from_stop_id_foreign: RuleConfig
+	transfers_from_trip_id_foreign: RuleConfig
+	transfers_to_route_id_foreign: RuleConfig
+	transfers_to_stop_id_foreign: RuleConfig
+	transfers_to_trip_id_foreign: RuleConfig
+	transfers_transfer_type_valid: RuleConfig
+	transfers_min_transfer_time_valid: RuleConfig
 }
 
 export interface TripsRules {
 	_file: RuleSeverity
-	trip_headsign_consistent_for_all_patterns_in_trips: RuleConfig
-	trip_headsign_consistent_per_route_direction: RuleConfig
-	trip_headsign_max_two_per_route: RuleConfig
+	trips_trip_headsign_pattern_consistent: RuleConfig
+	trips_trip_headsign_route_direction_consistent: RuleConfig
+	trips_trip_headsign_max_two_per_route: RuleConfig
 	trip_headsign_present_when_short_name_absent: RuleConfig
-	trip_id_limit_max_length: RuleConfig
-	trip_id_unique: RuleConfig
-	trip_path_stop_coordinates_referenced_from_stops: RuleConfig
+	trips_trip_id_max_length: RuleConfig
+	trips_trip_id_unique: RuleConfig
+	trips_stop_coordinates: RuleConfig
 	trip_short_name_exclusivity: RuleConfig
-	trips_bikes_allowed_valid_gtfs_enum: RuleConfig
+	trips_bikes_allowed_valid: RuleConfig
 	trips_block_id_in_allowed_set: RuleConfig
-	trips_direction_id_consistent_for_all_patterns_in_trips: RuleConfig
-	trips_direction_id_matches_feed_pattern_direction: RuleConfig
-	trips_direction_id_valid_enum: RuleConfig
-	trips_one_pattern_id_per_shape_id_group: RuleConfig
-	trips_one_shape_id_per_pattern_id_group: RuleConfig
-	trips_pattern_id_matches_feed_pattern_id_syntax: RuleConfig
-	trips_pattern_id_needs_to_be_the_same_as_shape_id: RuleConfig
+	trips_direction_id_pattern_consistent: RuleConfig
+	trips_direction_pattern_id_match: RuleConfig
+	trips_direction_id_valid: RuleConfig
+	trips_one_pattern_per_shape: RuleConfig
+	trips_one_shape_per_pattern: RuleConfig
+	trips_pattern_id_format: RuleConfig
+	trips_pattern_id_same_shape_id: RuleConfig
 	trips_pattern_id_present_and_references_consistent: RuleConfig
-	trips_pattern_id_single_trip_signature_per_pattern: RuleConfig
-	trips_pattern_id_trip_has_required_fields_for_grouping: RuleConfig
-	trips_route_id_consistent_for_all_patterns_in_trips: RuleConfig
-	trips_route_id_references_routes_table: RuleConfig
-	trips_service_id_references_calendar_service: RuleConfig
-	trips_shape_id_consistent_per_route_direction: RuleConfig
-	trips_shape_id_matches_route_id_and_direction_id: RuleConfig
+	trips_pattern_single_signature: RuleConfig
+	trips_pattern_required_fields: RuleConfig
+	trips_route_id_pattern_consistent: RuleConfig
+	trips_route_id_foreign: RuleConfig
+	trips_service_id_foreign: RuleConfig
+	trips_shape_id_route_direction_consistent: RuleConfig
+	trips_shape_id_route_direction_match: RuleConfig
 	trips_shape_id_max_two_per_route: RuleConfig
-	trips_shape_id_references_shapes_table_when_present: RuleConfig
-	trips_stop_sequence_increasing_by_one_along_trip: RuleConfig
-	trips_wheelchair_accessible_valid_gtfs_enum: RuleConfig
+	trips_shape_id_foreign: RuleConfig
+	trips_stop_sequence: RuleConfig
+	trips_wheelchair_accessible_valid: RuleConfig
 }
 
 export interface VehiclesRules {
 	_file: RuleSeverity
 	vehicle_agency_id_references_agency_table: RuleConfig
-	vehicle_id_unique: RuleConfig
+	vehicles_vehicle_id_unique: RuleConfig
 	vehicle_make_required: RuleConfig
 	vehicle_model_required: RuleConfig
-	vehicles_bicycles_rack_count_non_negative: RuleConfig
-	vehicles_car_capacity_non_negative: RuleConfig
-	vehicles_emission_valid_enum: RuleConfig
-	vehicles_license_plate_format_per_market_rules: RuleConfig
-	vehicles_propulsion_valid_enum: RuleConfig
-	vehicles_registration_date_valid_day_granularity: RuleConfig
-	vehicles_total_capacity_non_negative: RuleConfig
-	vehicles_vehicle_type_valid_enum: RuleConfig
-	vehicles_wheelchair_accessible_valid_gtfs_enum: RuleConfig
+	vehicles_bicycles_capacity_valid: RuleConfig
+	vehicles_car_capacity_valid: RuleConfig
+	vehicles_emission_valid: RuleConfig
+	vehicles_license_plate_valid: RuleConfig
+	vehicles_propulsion_valid: RuleConfig
+	vehicles_registration_date_valid: RuleConfig
+	vehicles_total_capacity_valid: RuleConfig
+	vehicles_vehicle_type_valid: RuleConfig
+	vehicles_wheelchair_accessible_valid: RuleConfig
 }
 
 /**
