@@ -27,7 +27,8 @@
 		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-sql": "*"
+		"@tmlmobilidade/go-utils-sql": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
