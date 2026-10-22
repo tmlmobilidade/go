@@ -6,35 +6,39 @@ import (
 	"main/types"
 )
 
-/*
-# Attributes
-
-  - File: [trips.txt]
-  - Field: route_id
-  - Presence: Required
-  - Type: Foreign Key referencing routes.route_id
-
-# Description
-
-Identifies a route.
-
-[trips.txt]: https://gtfs.org/schedule/reference/#trips
-*/
 func RouteIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
-	const ruleID = "trips_route_id_references_routes_table"
+	//
+
+	//
+	// 1. Get the rule
+
+	const ruleID = "trips_route_id_foreign"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("route_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the route_id value
+
 	value, err := db.Trips.Field("route_id")
 	if err != nil {
 		return err
 	}
-	if value == "" {
-		return nil
-	}
+
+	//
+	// 4. Check if the route_id exists in the routes table
+
 	if !db.Routes.Exists("route_id", value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 	}
+
+	//
+	// 5. Return success
+
 	return nil
 }

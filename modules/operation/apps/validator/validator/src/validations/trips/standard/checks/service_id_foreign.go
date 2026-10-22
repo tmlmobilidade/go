@@ -21,20 +21,38 @@ Identifies a service.
 [trips.txt]: https://gtfs.org/schedule/reference/#trips
 */
 func ServiceIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
-	const ruleID = "trips_service_id_references_calendar_service"
+	//
+
+	//
+	// 1. Get the rule
+
+	const ruleID = "trips_service_id_foreign"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("service_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+	
+	//
+	// 3. Get the service_id value
+	
 	value, err := db.Trips.Field("service_id")
 	if err != nil {
 		return err
 	}
-	if value == "" {
-		return nil
-	}
-	if !db.Calendar.Exists("service_id", value) && !db.CalendarDates.Exists("service_id", value) {
+
+	//
+	// 4. Check if the service_id exists in the calendar or calendar_dates table
+
+	if !db.Calendar.Exists("service_id", value) || !db.CalendarDates.Exists("service_id", value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 	}
+
+	//
+	// 5. Return success
+
 	return nil
 }

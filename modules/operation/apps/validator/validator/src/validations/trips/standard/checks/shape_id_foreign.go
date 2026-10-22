@@ -6,34 +6,39 @@ import (
 	"main/types"
 )
 
-/*
-# Attributes
-  - File: [trips.txt]
-  - Field: shape_id
-  - Presence: Required
-  - Type: Foreign Key referencing shapes.shape_id
-
-# Description
-
-Identifies a geospatial shape describing the vehicle travel path for a trip.
-
-[trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
-*/
 func ShapeIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
-	const ruleID = "trips_shape_id_references_shapes_table_when_present"
+	//
+
+	//
+	// 1. Get the rule
+
+	const ruleID = "trips_shape_id_foreign"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("shape_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the shape_id value
+
 	value, err := db.Trips.Field("shape_id")
 	if err != nil {
 		return err
 	}
-	if value == "" {
-		return nil
-	}
+
+	//
+	// 4. Check if the shape_id exists in the shapes table
+
 	if !db.Shapes.Exists("shape_id", value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 	}
+
+	//
+	// 5. Return success
+
 	return nil
 }
