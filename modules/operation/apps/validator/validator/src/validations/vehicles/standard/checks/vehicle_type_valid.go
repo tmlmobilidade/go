@@ -35,32 +35,69 @@ Valid options are:
 https://gtfs.org/documentation/schedule/reference/#routestxt:~:text=and%20Far%20Rockaway).-,route_type,-Enum
 */
 func VehicleTypeValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "vehicles_vehicle_type_valid_enum"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("vehicle_type", "vehicles.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the vehicle_type value
+
 	// Read the current SQLite row, rather than a parsed snapshot.
 	value, err := db.Vehicles.Field("vehicle_type")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Skip empty vehicle_type values
+
 	// Presence belongs to the field check.
 	if value == "" {
 		return nil
 	}
+
+	//
+	// 5. Convert the vehicle_type to an integer
+
 	parsed, err := strconv.Atoi(value)
 	if err != nil {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 		return nil
 	}
+
+	//
+	// 6. Get the valid vehicle_type options
+
 	validOptions := []int{0, 1, 2, 3, 4, 5, 6, 7, 11, 12}
+
+	//
+	// 7. Check if the vehicle_type is a valid option
+
 	if !slices.Contains(validOptions, parsed) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 		return nil
 	}
+
+	//
+	// 8. Check the configured vehicle_type options
+
 	if rules != nil && rules.Options != nil && !slices.Contains(*rules.Options, types.ALL_OPTIONS) && !slices.Contains(*rules.Options, strconv.Itoa(parsed)) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
 	}
+
+	//
+	// 9. Return success
+
 	return nil
 }
