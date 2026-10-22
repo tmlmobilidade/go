@@ -30,28 +30,61 @@ The destination_id and destination_id fields could be used together to specify t
 [stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
 */
 func DestinationIdValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
 	const ruleID = "fare_rule_destination_id_references_zones_stops"
+
+	//
+	// 2. Create the validation context
+
 	ctx := lib.NewValidationContext("destination_id", "fare_rules.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
+
+	//
+	// 3. Get the destination_id value
+
 	value, err := db.FareRules.Field("destination_id")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 4. Skip empty destination_id values
+
 	if value == "" {
 		return nil
 	}
+
+	//
+	// 5. Get the stops table
+
 	table, err := db.Table("stops")
 	if err != nil {
 		return err
 	}
+
+	//
+	// 6. Check if the destination_id reference exists
+
 	exists, err := table.Exists("zone_id", value)
 	if err != nil {
 		return err
 	}
+
+	//
+	// 7. Report a missing destination_id reference
+
 	if !exists {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", value))
 	}
+
+	//
+	// 8. Return success
+
 	return nil
 }
