@@ -6,6 +6,8 @@ import { DemandByProductVisualization } from '@/components/visualizations/Demand
 import { DemandVisualization } from '@/components/visualizations/Demand/DemandVisualization';
 import { AgencyType } from '@/constants';
 import { useNetworkContext } from '@/contexts/Network.context';
+import { parsePerformanceFilterDate } from '@/utils/filter-date';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { DateInput, MonthPicker, MultiSelect, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
@@ -68,12 +70,12 @@ export default function DemandByTopic() {
 		setGroupBy(value);
 	};
 
-	const handleChangeStartDate = (date: null | string) => {
-		setStartDate(Dates.fromISO(date || ''));
+	const handleChangeStartDate = (date: null | OperationalDateInt | string) => {
+		setStartDate(parsePerformanceFilterDate(date));
 	};
 
-	const handleChangeEndDate = (date: null | string) => {
-		setEndDate(Dates.fromISO(date || ''));
+	const handleChangeEndDate = (date: null | OperationalDateInt | string) => {
+		setEndDate(parsePerformanceFilterDate(date));
 	};
 
 	//
@@ -146,22 +148,22 @@ export default function DemandByTopic() {
 
 					{timeView === 'daily' && (
 						<>
-							<DateInput label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<DateInput label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<DateInput label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate?.operational_date_int ?? null} />
+							<DateInput label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate?.operational_date_int ?? null} />
 						</>
 					)}
 
 					{timeView === 'monthly' && (
 						<>
-							<MonthPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<MonthPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<MonthPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate?.js_date ?? null} />
+							<MonthPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate?.js_date ?? null} />
 						</>
 					)}
 
 					{timeView === 'annual' && (
 						<>
-							<YearPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate.js_date} />
-							<YearPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate.js_date} />
+							<YearPicker label="Data de Início" locale="pt" onChange={handleChangeStartDate} placeholder="Selecionar data" value={startDate?.js_date ?? null} />
+							<YearPicker label="Data de Fim" locale="pt" onChange={handleChangeEndDate} placeholder="Selecionar data" value={endDate?.js_date ?? null} />
 						</>
 					)}
 

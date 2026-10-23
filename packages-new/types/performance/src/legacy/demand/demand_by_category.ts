@@ -14,7 +14,7 @@ const DemandByCategorySchema = MetricBaseSchema.extend({
 		}),
 	),
 	properties: z.object({
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 	}),
 });
 
@@ -32,7 +32,7 @@ export const DemandByCategoryByAgencyByDaySchema = DemandByCategorySchema.extend
 	metric: z.literal('demand_by_category_by_agency_by_day'),
 	properties: z.object({
 		agency_id: z.string(),
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 	}),
 });
 
@@ -46,7 +46,7 @@ export const DemandByCategoryByAgencyByMonthSchema = DemandByCategorySchema.exte
 	metric: z.literal('demand_by_category_by_agency_by_month'),
 	properties: z.object({
 		agency_id: z.string(),
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 	}),
 });
 
@@ -60,7 +60,7 @@ export const DemandByCategoryByAgencyByYearSchema = DemandByCategorySchema.exten
 	metric: z.literal('demand_by_category_by_agency_by_year'),
 	properties: z.object({
 		agency_id: z.string(),
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 	}),
 });
 
@@ -77,7 +77,7 @@ export const DemandByCategoryByLineByDaySchema = DemandByCategorySchema.extend({
 	),
 	metric: z.literal('demand_by_category_by_line_by_day'),
 	properties: z.object({
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 		line_id: z.string(),
 	}),
 });
@@ -91,7 +91,7 @@ export const DemandByCategoryByLineByMonthSchema = DemandByCategorySchema.extend
 	),
 	metric: z.literal('demand_by_category_by_line_by_month'),
 	properties: z.object({
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 		line_id: z.string(),
 	}),
 });
@@ -105,7 +105,7 @@ export const DemandByCategoryByLineByYearSchema = DemandByCategorySchema.extend(
 	),
 	metric: z.literal('demand_by_category_by_line_by_year'),
 	properties: z.object({
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 		line_id: z.string(),
 	}),
 });
@@ -123,7 +123,7 @@ export const DemandByCategoryByPatternByDaySchema = DemandByCategorySchema.exten
 	),
 	metric: z.literal('demand_by_category_by_pattern_by_day'),
 	properties: z.object({
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 		pattern_id: z.string(),
 	}),
 });
@@ -137,7 +137,7 @@ export const DemandByCategoryByPatternByMonthSchema = DemandByCategorySchema.ext
 	),
 	metric: z.literal('demand_by_category_by_pattern_by_month'),
 	properties: z.object({
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 		pattern_id: z.string(),
 	}),
 });
@@ -151,7 +151,7 @@ export const DemandByCategoryByPatternByYearSchema = DemandByCategorySchema.exte
 	),
 	metric: z.literal('demand_by_category_by_pattern_by_year'),
 	properties: z.object({
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+		category: z.enum(['prepaid', 'subscription', 'on_board_sale', 'banking_taps']),
 		pattern_id: z.string(),
 	}),
 });

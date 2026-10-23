@@ -1,7 +1,7 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -9,7 +9,7 @@ import styles from '../styles.module.css';
 
 /* * */
 
-export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
+export function PathTableColumnStop({ pathItem }: { pathItem: PatternsDetailPathItem }) {
 	//
 
 	//

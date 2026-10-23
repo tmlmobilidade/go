@@ -17,16 +17,17 @@
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src ./tests && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src ./tests",
-		"test": "node --import tsx --test tests/*.test.ts"
+		"test": "node --experimental-test-module-mocks --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
+		"@fastify/multipart": "10.1.6",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-offer-pckg-types": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-types-offer": "*",
@@ -35,16 +36,16 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
-		"adm-zip": "0.6.0",
+		"adm-zip": "0.6.1",
 		"papaparse": "5.7.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/adm-zip": "0.5.8",
-		"@types/node": "26.4.0",
+		"@types/adm-zip": "0.6.0",
+		"@types/node": "26.6.5",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.12",
+		"tsx": "4.23.15",
 		"typescript": "6.0.3"
 	}
 }

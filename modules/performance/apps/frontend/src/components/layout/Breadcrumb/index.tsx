@@ -1,10 +1,10 @@
 /* * */
 
-import { Breadcrumbs } from '@tmlmobilidade/ui';
+import { Breadcrumbs, keepUrlParams } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
-export default function Breadcrumb({ items }: { items: { href: string, title: string }[] }) {
+export default function Breadcrumb({ items }: { items: { href?: string, title: string }[] }) {
 	//
 
 	// A. Setup variables
@@ -15,7 +15,7 @@ export default function Breadcrumb({ items }: { items: { href: string, title: st
 	const breadcrumbsData = items.map((item, index) => {
 		const isLastItem = index === items.length - 1;
 
-		if (isLastItem) {
+		if (isLastItem || !item.href) {
 			return (
 				<span key={index} className={`${styles.breadcrumbItem} ${styles.activeBreadcrumbItem}`}>
 					{item.title}
@@ -24,7 +24,7 @@ export default function Breadcrumb({ items }: { items: { href: string, title: st
 		}
 
 		return (
-			<a key={index} className={styles.breadcrumbItem} href={item.href}>
+			<a key={index} className={styles.breadcrumbItem} href={keepUrlParams(item.href)}>
 				{item.title}
 			</a>
 		);

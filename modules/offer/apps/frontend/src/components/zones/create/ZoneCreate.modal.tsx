@@ -1,8 +1,7 @@
 'use client';
 
 import { ZoneCreate } from '@/components/zones/create/ZoneCreate';
-import { ZoneCreateContextProvider } from '@/components/zones/create/ZoneCreate.context';
-import { DataProviders } from '@/providers/data-providers';
+import { ZonesCreateFormContextProvider } from '@/components/zones/create/ZonesCreateForm.context';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,13 +13,11 @@ const MODAL_ID = 'create-zone-modal';
 export const openCreateZoneModal = () => {
 	openModal({
 		children: (
-			<DataProviders>
-				<MeContextProvider>
-					<ZoneCreateContextProvider>
-						<ZoneCreate />
-					</ZoneCreateContextProvider>
-				</MeContextProvider>
-			</DataProviders>
+			<MeContextProvider>
+				<ZonesCreateFormContextProvider>
+					<ZoneCreate />
+				</ZonesCreateFormContextProvider>
+			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,

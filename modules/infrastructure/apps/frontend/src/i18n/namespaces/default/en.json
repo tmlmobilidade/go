@@ -347,6 +347,9 @@
 			"FilterFacilities": {
 				"label": "Facilities"
 			},
+			"FilterLegacyId": {
+				"label": "Legacy ID"
+			},
 			"FilterLifecycleStatus": {
 				"label": "Status"
 			},

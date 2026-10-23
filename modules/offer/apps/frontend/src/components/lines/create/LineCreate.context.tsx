@@ -2,7 +2,8 @@
 
 import { closeCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateLineDto, CreateLineSchema, type LineNormalized } from '@tmlmobilidade/go-types-offer';
+import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
+import { type CreateLineDto, CreateLineSchema } from '@tmlmobilidade/go-types-offer';
 import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -48,7 +49,7 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { mutate: linesListMutate } = useSWR<LineNormalized[]>(API_ROUTES.offer.LINES_LIST);
+	const { mutate: linesListMutate } = useSWR<PopulatedLine[]>(API_ROUTES.offer.LINES_LIST);
 
 	//
 	// C. Setup form
@@ -59,7 +60,7 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<LineNormalized>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.LINES_LIST }),
+		fetchFn: async () => await fetchApiData<PopulatedLine>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.LINES_LIST }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			linesListMutate();

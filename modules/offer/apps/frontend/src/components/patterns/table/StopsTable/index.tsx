@@ -3,7 +3,7 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { StopsTableHeader } from '@/components/patterns/table/StopsTableHeader';
 import { StopsTableRow } from '@/components/patterns/table/StopsTableRow';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 
 import styles from '../styles.module.css';
 
@@ -25,7 +25,7 @@ export function StopsTable() {
 			<div className={styles.tableScroll}>
 				<StopsTableHeader />
 				<div className={styles.body}>
-					{patternDetailContext.data.form.values.path.map((pathItem: PopulatedPath, index) => (
+					{patternDetailContext.data.form.values.path.map((pathItem: PatternsDetailPathItem, index) => (
 						<StopsTableRow key={index} pathItem={pathItem} rowIndex={index} />
 					))}
 				</div>

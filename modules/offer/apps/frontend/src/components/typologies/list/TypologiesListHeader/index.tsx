@@ -1,9 +1,15 @@
+'use client';
+
 /* * */
 
 import { openCreateTypologyModal } from '@/components/typologies/create/TypologyCreate.modal';
-import { useTypologiesListContext } from '@/components/typologies/list/TypologiesList.context';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Button, HasPermission, ListHeader, SearchField } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useTypologiesListFilterSearch } from '../filters/TypologiesListFilterSearch/use-typologies-list-filter-search';
+import { useTypologiesListData } from '../use-typologies-list-data';
 
 /* * */
 
@@ -13,19 +19,23 @@ export function TypologiesListHeader() {
 	//
 	// A. Setup variables
 
-	const typologiesListContext = useTypologiesListContext();
+	const { data } = useTypologiesListData();
+	const search = useTypologiesListFilterSearch();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps singleLine>Tipologias</Label>
-			<Spacer />
-			<SearchField onChange={typologiesListContext.filters.search.set} value={typologiesListContext.filters.search.value} />
-			<Button disabled={!typologiesListContext.flags.canCreate} label="Nova tipologia" leftSection={<IconPlus />} onClick={openCreateTypologyModal} />
-		</Toolbar>
+		<ListHeader
+			count={data.length}
+			search={<SearchField onChange={search.set} value={search.value} />}
+			title={t('default:typologies.list.title')}
+			actions={(
+				<HasPermission action={PermissionCatalog.all.typologies.actions.create} scope={PermissionCatalog.all.typologies.scope}>
+					<Button label={t('default:typologies.create.title')} leftSection={<IconPlus />} onClick={openCreateTypologyModal} />
+				</HasPermission>
+			)}
+		/>
 	);
-
-	//
 }

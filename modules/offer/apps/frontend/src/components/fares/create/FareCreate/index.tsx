@@ -8,7 +8,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function FareCreate() {
 	return (
-		<Pane header={[<FareCreateHeader />]}>
+		<Pane header={[<FareCreateHeader key="header" />]}>
 			<FareCreateBasicInfo />
 		</Pane>
 	);
