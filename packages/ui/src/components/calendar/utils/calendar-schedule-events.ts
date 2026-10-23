@@ -1,12 +1,12 @@
 import { type ScheduleEventData } from '@mantine/schedule';
 import { Dates } from '@tmlmobilidade/dates';
-import { type CalendarDate, type CalendarEventType, type OperationalDate, toCalendarDate } from '@tmlmobilidade/types';
+import { type CalendarDate, type OperationalDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 
 import { EVENT_TYPE_DEFS } from '../../../icons/event-types';
 
 /* * */
 
-export type CalendarScheduleEventType = CalendarEventType;
+export type CalendarScheduleEventType = keyof typeof EVENT_TYPE_DEFS;
 
 export interface CalendarSchedulePayload {
 	agencyIds?: string[]

@@ -2,7 +2,7 @@
 
 import { openCalendarDayCounterModal } from '@/components/calendar/day-counter/CalendarDayCounterModal/CalendarDayCounter.modal';
 import { IconCalculator } from '@tabler/icons-react';
-import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/types';
+import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Button, type CalendarScheduleEventType, Checkbox, ColorSwatch, DatePicker, EVENT_TYPE_DEFS, Select } from '@tmlmobilidade/ui';
 import { useEffect, useState } from 'react';
 

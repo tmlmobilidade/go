@@ -1,7 +1,7 @@
 'use client';
 
 import { useCalendarDayCounterContext } from '@/components/calendar/day-counter/CalendarDayCounter.context';
-import { type IsoWeekday, WEEKDAYS } from '@tmlmobilidade/types';
+import { type IsoWeekday, WEEKDAYS } from '@tmlmobilidade/go-types-offer';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
 
 /* * */

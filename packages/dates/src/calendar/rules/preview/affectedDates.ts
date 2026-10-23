@@ -1,6 +1,6 @@
 /* * */
 
-import { calendarKey, CalendarKey, calendarWeekday, datesFromCalendarKey, keyToYYYYMMDD } from '@/calendar/utils/index.js';
+import { calendarKey, calendarWeekday, datesFromCalendarKey, keyToYYYYMMDD } from '@/calendar/utils/index.js';
 import { Event, Holiday, ManualRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { CalendarDate, OperationalDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 
@@ -11,11 +11,11 @@ interface CalendarContext {
 	/** End date of the calendar range */
 	endDate: CalendarDate
 	/** Optional events list for event_id matching */
-	events?: Event[]
+	events?: Pick<Event, '_id' | 'dates'>[]
 	/** Available holidays for accurate weekday calculations */
-	holidays: Holiday[]
+	holidays: Pick<Holiday, 'dates'>[]
 	/** Available periods for matching rule criteria */
-	periods: YearPeriod[]
+	periods: Pick<YearPeriod, '_id' | 'dates'>[]
 	/** Start date of the calendar range */
 	startDate: CalendarDate
 }
@@ -40,7 +40,7 @@ function buildActivePeriodDateSet(rule: ManualRule, ctx: CalendarContext): Set<O
 	return activePeriodDates;
 }
 
-function isInPeriod(rule: ManualRule, key: CalendarKey, activePeriodDates: Set<OperationalDate>): boolean {
+function isInPeriod(rule: ManualRule, key: CalendarDate, activePeriodDates: Set<OperationalDate>): boolean {
 	if (!rule.year_period_ids?.length) return false;
 
 	const op = keyToYYYYMMDD(key) as OperationalDate;
@@ -52,7 +52,7 @@ function isInPeriod(rule: ManualRule, key: CalendarKey, activePeriodDates: Set<O
  * Determines if a manual rule applies to a specific calendar date.
  * Checks both period membership and weekday matching.
  */
-function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: CalendarContext, activePeriodDates: Set<OperationalDate>): boolean {
+function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarDate, ctx: CalendarContext, activePeriodDates: Set<OperationalDate>): boolean {
 	const weekday = calendarWeekday(key, ctx.holidays);
 
 	// 1) YearPeriod required
@@ -85,7 +85,7 @@ function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: Calendar
  * @returns Object with count and array of affected CalendarDate values
  */
 export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContext) {
-	const affected: CalendarKey[] = [];
+	const affected: CalendarDate[] = [];
 
 	const startKey = ctx.startDate;
 	const endKey = ctx.endDate;
@@ -124,9 +124,8 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 	}
 
 	let current = datesFromCalendarKey(from);
-	const end = datesFromCalendarKey(to);
 
-	while (current.unix_milliseconds <= end.unix_milliseconds) {
+	while (current.calendar_date <= to) {
 		const key = calendarKey(current);
 
 		if (ruleAppliesToCivilKey(rule, key, ctx, activePeriodDates)) {

@@ -7,6 +7,7 @@ export * from './components/CalendarScheduleYearDay';
 export * from './components/DayPeriodsTimepoints';
 export * from './components/MiniCalendar';
 export * from './components/TimeChip';
+export * from './hooks/use-calendar-schedule-data';
 export * from './utils/calendar-schedule-events';
 export { MonthView, Schedule, ScheduleEvent, ScheduleHeader, YearView } from '@mantine/schedule';
 export type { DateStringValue, DateTimeStringValue, MonthViewProps, ScheduleEventData, ScheduleEventProps, ScheduleProps, ScheduleViewLevel, YearViewProps } from '@mantine/schedule';

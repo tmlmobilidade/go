@@ -1,5 +1,7 @@
 'use client';
 
+import clsx from 'clsx';
+
 import styles from './styles.module.css';
 
 /* * */
@@ -44,7 +46,7 @@ export function SegmentedMultiSelect<T extends SegmentedValue>({
 		<div className={`${styles.card} ${fullWidth && styles.fullWidth} ${className}`}>
 			{title && <div className={styles.title}>{title}</div>}
 
-			<div aria-label={title ?? 'Selector'} className={cn(styles.bar, wrap && styles.wrap)} role="group">
+			<div aria-label={title ?? 'Selector'} className={clsx(styles.bar, wrap && styles.wrap)} role="group">
 				{options.map((opt) => {
 					const selected = value.includes(opt.value);
 					return (

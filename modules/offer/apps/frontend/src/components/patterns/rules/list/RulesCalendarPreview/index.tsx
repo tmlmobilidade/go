@@ -10,11 +10,11 @@ import { buildAffectedDaysDetails, CalendarKey, Dates, datesFromCalendarKey, FOR
 import { type HHMM, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
 import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { AlertMessage, buildCalendarScheduleRuleImpactEvents, CalendarSchedule, CalendarScheduleSources, CloseButton, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, ScheduleEventData, Section, Surface, Text } from '@tmlmobilidade/ui';
+import { useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
-import { useLocaleContext } from '../../../../../../../../../../packages/ui/src/contexts/Locale.context';
 import { RulesCalendarPreviewHeader } from '../RulesCalendarPreviewHeader';
 import { RulesGroup } from '../RulesCalendarPreviewRulesGroup';
 
@@ -103,8 +103,8 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 
 		if (event.payload.type === 'annotation') route = PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(event.payload.sourceId);
 		if (event.payload.type === 'holiday') route = PAGE_ROUTES.dates.HOLIDAYS_DETAIL(event.payload.sourceId);
-		if (event.payload.type === 'event') route = PAGE_ROUTES.dates.EVENTS_DETAIL(event.payload.sourceId);
-		if (event.payload.type === 'period') route = PAGE_ROUTES.dates.YEAR_PERIODS_DETAIL(event.payload.sourceId);
+		if (event.payload.type === 'event') route = PAGE_ROUTES.offer.EVENTS_DETAIL(event.payload.sourceId);
+		if (event.payload.type === 'period') route = PAGE_ROUTES.offer.YEAR_PERIODS_DETAIL(event.payload.sourceId);
 
 		if (route) window.open(route, '_blank', 'noopener,noreferrer');
 	};

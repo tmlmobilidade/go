@@ -1,7 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Annotation } from '@tmlmobilidade/types';
+import { type Annotation } from '@tmlmobilidade/go-types-dates';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,12 +35,12 @@ export function AnnotationsContextProvider({ agencyId, children }: PropsWithChil
 	//
 	// A. Fetch data
 
-	const { data } = useSWR<Annotation[]>(API_ROUTES.dates.ANNOTATIONS_LIST);
+	const { data } = useSWR<ApiResponse<Annotation[]>>(API_ROUTES.dates.ANNOTATIONS_LIST, { fetcher: async url => await fetchApiData<Annotation[]>({ url }) });
 
 	//
 	// B. Transform data
 
-	const annotations = useMemo(() => data?.filter(annotation => !agencyId || annotation.agency_ids.includes(agencyId)) ?? [], [agencyId, data]);
+	const annotations = useMemo(() => data?.data?.filter(annotation => !agencyId || annotation.agency_ids.includes(agencyId)) ?? [], [agencyId, data]);
 
 	//
 	// C. Render components

@@ -1,0 +1,322 @@
+{
+	"events": {
+		"create": {
+			"title": "Novo evento"
+		},
+		"dates": {
+			"prompt": "Selecione as datas do evento",
+			"removeMonth": "Remover mês",
+			"selectMonth": "Selecionar mês"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "Tem a certeza que deseja apagar este evento? Esta ação não pode ser revertida.",
+			"confirmTitle": "Apagar evento"
+		},
+		"empty": "Selecione um evento",
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores afetados"
+			},
+			"code": {
+				"description": "Apenas letras maiúsculas, números e underscores. Máximo de {{max}} caracteres.",
+				"label": "Código",
+				"placeholder": "Ex: MARAT_LIS"
+			},
+			"description": {
+				"label": "Descrição",
+				"placeholder": "Descrição do evento"
+			},
+			"title": {
+				"label": "Título",
+				"placeholder": "Ex: Maratona de Lisboa"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"dates": "Datas",
+				"id": "#ID",
+				"title": "Título"
+			},
+			"title": "Eventos"
+		},
+		"ruleCard": {
+			"allDay": "Todo o dia {{dates}}",
+			"allLines": "Todas as linhas",
+			"days_one": "dia",
+			"days_other": "dias",
+			"exceptLines": "Todas exceto {{lines}}",
+			"lines_one": "{{count}} linha",
+			"lines_other": "{{count}} linhas",
+			"namedLines": "Linhas {{lines}}",
+			"noLines": "Nenhuma linha",
+			"onDates": "(nos dias {{dates}})",
+			"operateAs": "Funcionará como {{replacement}}",
+			"timeWindow": "{{start}} às {{end}} {{dates}}"
+		},
+		"ruleEditor": {
+			"affectedDates": "2. Que dias serão afetados por esta regra?",
+			"affectedLines": "3. Que linhas serão afetadas por esta regra?",
+			"all": "Todos",
+			"allDay": "Evento de dia completo",
+			"allLines": "Aplica-se a todas as linhas",
+			"cancel": "Cancelar",
+			"create": "Criar",
+			"dayType": "Tipo de dia",
+			"edit": "Editar",
+			"endTime": "Hora de fim",
+			"endTimeDescription": "Após a meia-noite, usar 24+ horas. Ex.: 02:00 → 26:00",
+			"eventTime": "4. Quando decorre o evento?",
+			"excludeLines": "Todas exceto estas linhas",
+			"excludeLinesDescription": "Todas as linhas serão afetadas, exceto estas.",
+			"includeLines": "Apenas estas linhas",
+			"includeLinesDescription": "Apenas estas linhas serão afetadas.",
+			"newRule": "Nova Regra",
+			"noPatterns": "Sem patterns associados",
+			"operateAs": "O(s) dia(s) selecionado(s) irão funcionar como:",
+			"patterns": "Patterns associados",
+			"periods": "Períodos",
+			"replacement": "Substituição de oferta",
+			"replacementDescription": "Aplicar oferta de outro tipo de dia nestas datas",
+			"replacementExample": "Exemplo: O dia 17/02/2026 (terça-feira) passa a funcionar como Sábado · Período Escolar.",
+			"restriction": "Restrição de oferta",
+			"restrictionDescription": "Esta regra irá remover toda a oferta durante a duração do evento",
+			"restrictionExample": "Ex: Dia 17/02/26 (terça-feira) tem oferta removida entre as 14h e 18h",
+			"restrictionTimeDescription": "A oferta é suspensa durante o período definido aqui",
+			"ruleType": "1. Tipo de regra",
+			"sameWeekday": "Mesmo dia da semana",
+			"sameWeekdayDescription": "Cada data funciona como o seu próprio dia da semana real, mas no período selecionado. Ex: uma terça-feira funciona como terça-feira · Período de Verão.",
+			"selectDates": "Selecione as datas afetadas por esta regra",
+			"serviceType": "4. Que tipo de oferta se aplica nestes dias?",
+			"startTime": "Hora de início",
+			"startTimeDescription": "Formato HH:MM no dia operacional. Ex.: 10:00",
+			"viewPatterns": "Ver patterns associados",
+			"weekdays": "Dias úteis",
+			"weekend": "Fim de semana"
+		},
+		"rules": {
+			"create": "Nova regra",
+			"description": "Definem como a oferta deve ser calculada nos dias do evento. Estas regras substituem o comportamento normal do calendário.",
+			"empty": "Nenhuma regra definida",
+			"title": "Regras de oferta"
+		}
+	},
+	"fares": {
+		"create": {
+			"title": "Nova tarifa"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "Tem a certeza que deseja apagar esta tarifa? Esta ação não pode ser revertida.",
+			"confirmTitle": "Apagar tarifa"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: T1-BORDO"
+			},
+			"currency_type": {
+				"label": "Moeda"
+			},
+			"name": {
+				"label": "Nome",
+				"placeholder": "Ex: navegante® a bordo T1"
+			},
+			"payment_method": {
+				"label": "Método de pagamento"
+			},
+			"price": {
+				"label": "Preço"
+			},
+			"transfers": {
+				"label": "Transbordos"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nome"
+			},
+			"select": "Selecione uma tarifa",
+			"title": "Tarifas"
+		},
+		"noAccess": "Não tem permissão para aceder a esta página.",
+		"options": {
+			"currency": {
+				"eur": "€ Euro"
+			},
+			"paymentMethod": {
+				"onboard": "Pagamento ao motorista (navegante® a bordo)",
+				"prepaid": "Pré-pagamento (navegante® pré-pago)"
+			},
+			"transfers": {
+				"none": "Não são permitidos transbordos",
+				"one": "Apenas é permitido 1 transbordo",
+				"two": "São permitidos até 2 transbordos",
+				"unlimited": "Transbordos ilimitados"
+			}
+		}
+	},
+	"networkLocks": {
+		"line": "Bloqueado pela linha. Desbloqueie a linha primeiro.",
+		"route": "Bloqueado pela rota. Desbloqueie a rota primeiro."
+	},
+	"periods": {
+		"assignment": {
+			"acknowledge": "Compreendo e quero continuar",
+			"blockedConflict": "A atribuição está bloqueada: existe um período em conflito bloqueado ou sem permissão de atualização para todos os seus operadores.",
+			"checking": "A verificar conflitos...",
+			"conflictMessage": "{count} datas serão removidas dos períodos: {periods}.",
+			"conflictTitle": "Aviso de conflito",
+			"create": "Criar novo período",
+			"dayCount_one": "{{count}} dia",
+			"dayCount_other": "{{count}} dias",
+			"existing": "Atribuir a período existente",
+			"mode": "Atribuir",
+			"noPeriods": "Não há períodos editáveis com este conjunto de operadores. Selecione todos os operadores do período ou crie um novo período.",
+			"period": "Selecionar período",
+			"range": "Intervalo de datas selecionado",
+			"search": "Procurar...",
+			"submit": "Atribuir período",
+			"title": "Atribuir datas"
+		},
+		"create": {
+			"title": "Novo período"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "Tem a certeza que deseja apagar este período? Esta ação não pode ser revertida.",
+			"confirmTitle": "Apagar período",
+			"openCalendar": "Atribuir datas"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: 1"
+			},
+			"color": {
+				"label": "Cor"
+			},
+			"name": {
+				"label": "Nome",
+				"placeholder": "Ex: Período Escolar 2025/2026"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"id": "#ID",
+				"name": "Nome"
+			},
+			"title": "Períodos"
+		}
+	},
+	"typologies": {
+		"create": {
+			"title": "Nova tipologia"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "Tem a certeza que deseja apagar esta tipologia? Esta ação não pode ser revertida.",
+			"confirmTitle": "Apagar tipologia"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: LONGA"
+			},
+			"color": {
+				"label": "Cor do fundo"
+			},
+			"default_onboard_fare_ids": {
+				"label": "Tarifas de bordo por defeito"
+			},
+			"default_prepaid_fare_id": {
+				"label": "Tarifa pré-paga por defeito"
+			},
+			"name": {
+				"label": "Nome",
+				"placeholder": "Ex: Linha longa"
+			},
+			"text_color": {
+				"label": "Cor do texto"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nome"
+			},
+			"select": "Selecione uma tipologia",
+			"title": "Tipologias"
+		},
+		"noAccess": "Não tem permissão para aceder a esta página.",
+		"preview": "Linha de exemplo",
+		"sections": {
+			"basic": "Configuração básica",
+			"fares": "Tarifas associadas",
+			"styles": "Estilos"
+		}
+	},
+	"zones": {
+		"create": {
+			"title": "Nova zona"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "Tem a certeza que deseja apagar esta zona? Esta ação não pode ser revertida.",
+			"confirmTitle": "Apagar zona"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: 1101"
+			},
+			"geojson": {
+				"invalid": "Ficheiro GeoJSON inválido",
+				"label": "GeoJSON"
+			},
+			"name": {
+				"label": "Nome",
+				"placeholder": "Ex: Lisboa"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nome"
+			},
+			"select": "Selecione uma zona",
+			"title": "Zonas"
+		},
+		"noAccess": "Não tem permissão para aceder a esta página.",
+		"sections": {
+			"basic": "Configuração básica",
+			"geometry": "Geometria"
+		}
+	}
+}

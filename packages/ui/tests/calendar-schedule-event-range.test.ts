@@ -1,5 +1,5 @@
 import { type ScheduleEventData } from '@mantine/schedule';
-import { validateOperationalDate } from '@tmlmobilidade/types';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
@@ -65,4 +65,17 @@ describe('filterCalendarScheduleEventsForDate', () => {
 		assert.deepEqual(filterCalendarScheduleEventsForDate([event], '2026-02-14'), [event]);
 		assert.deepEqual(filterCalendarScheduleEventsForDate([event], '2026-02-15'), []);
 	});
+});
+
+it('groups consecutive period days across a leap day and keeps the end exclusive', () => {
+	const events = buildCalendarScheduleEvents({ yearPeriods: [{
+		_id: 'leap-period',
+		dates: ['20280228', '20280229', '20280301', '20280301'].map(validateOperationalDate),
+		name: 'Leap period',
+	}] });
+	assert.equal(events.length, 1);
+	assert.equal(events[0].start, '2028-02-28 00:00:00');
+	assert.equal(events[0].end, '2028-03-02 00:00:00');
+	assert.deepEqual(filterCalendarScheduleEventsForDate(events, '2028-03-01'), events);
+	assert.deepEqual(filterCalendarScheduleEventsForDate(events, '2028-03-02'), []);
 });

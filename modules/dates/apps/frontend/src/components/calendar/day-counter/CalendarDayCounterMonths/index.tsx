@@ -1,7 +1,7 @@
 'use client';
 
 import { useCalendarDayCounterContext } from '@/components/calendar/day-counter/CalendarDayCounter.context';
-import { MONTH_OPTIONS } from '@tmlmobilidade/types';
+import { MONTH_OPTIONS } from '@tmlmobilidade/go-types-offer';
 import { Section, SegmentedMultiSelect, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

@@ -2,7 +2,7 @@
 
 import styles from './styles.module.css';
 
-import { CopyButton } from '../../../buttons';
+import { CopyButton } from '../../../../buttons';
 import { Tooltip } from '../../../common';
 import { Text } from '../../../display';
 import { Surface } from '../../../layout';

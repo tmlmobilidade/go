@@ -97,7 +97,7 @@ export function yyyymmddToKey(yyyymmdd: string): CalendarKey {
 
 export function isHoliday(
 	input: CalendarKey | Dates,
-	holidays: Holiday[],
+	holidays: Pick<Holiday, 'dates'>[],
 	tz: TimezoneIdentified = DEFAULT_CAL_TZ,
 ): boolean {
 	const key = input instanceof Dates ? calendarKey(input, tz) : input;
@@ -109,7 +109,7 @@ export function isHoliday(
 /**
  * ISO weekday (1..7 Mon..Sun) for a calendar key or Dates (civil day).
  */
-export function calendarWeekday(input: CalendarKey | Dates, holidays: Holiday[] | null, tz: TimezoneIdentified = DEFAULT_CAL_TZ): IsoWeekday {
+export function calendarWeekday(input: CalendarKey | Dates, holidays: null | Pick<Holiday, 'dates'>[], tz: TimezoneIdentified = DEFAULT_CAL_TZ): IsoWeekday {
 	const key = input instanceof Dates ? calendarKey(input, tz) : input;
 
 	if (holidays && isHoliday(key, holidays, tz)) {

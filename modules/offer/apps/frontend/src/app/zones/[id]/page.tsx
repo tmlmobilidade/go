@@ -1,13 +1,14 @@
+/* * */
+
 import { ZoneDetail } from '@/components/zones/detail/ZoneDetail';
-import { ZoneDetailContextProvider } from '@/components/zones/detail/ZoneDetail.context';
+import { ZonesDetailFormContextProvider } from '@/components/zones/detail/ZonesDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<ZoneDetailContextProvider zoneId={id}>
+		<ZonesDetailFormContextProvider>
 			<ZoneDetail />
-		</ZoneDetailContextProvider>
+		</ZonesDetailFormContextProvider>
 	);
 }

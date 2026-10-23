@@ -1,5 +1,7 @@
 'use client';
 
+import 'dayjs/locale/es';
+import 'dayjs/locale/pt';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { type PropsWithChildren } from 'react';
 

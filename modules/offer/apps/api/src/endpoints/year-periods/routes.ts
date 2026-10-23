@@ -1,0 +1,85 @@
+/* * */
+
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { checkYearPeriodsConflictsHandler } from './handlers/check-conflicts.js';
+import { createYearPeriodHandler } from './handlers/create-year-period.js';
+import { deleteYearPeriodHandler } from './handlers/delete-year-period.js';
+import { getYearPeriodHandler } from './handlers/get-year-period.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
+import { listYearPeriodsHandler } from './handlers/list-year-periods.js';
+import { lockYearPeriodHandler } from './handlers/lock-year-period.js';
+import { updateYearPeriodDatesHandler } from './handlers/update-year-period-dates.js';
+import { updateYearPeriodHandler } from './handlers/update-year-period.js';
+
+/* * */
+
+const NAMESPACE = '/year-periods';
+
+/* * */
+
+const server = FastifyService.getInstance().server;
+
+server.register(
+	(instance, opts, next) => {
+		//
+
+		instance.get(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.read]) },
+			listYearPeriodsHandler,
+		);
+
+		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.read, PermissionCatalog.all.year_periods.actions.create, PermissionCatalog.all.year_periods.actions.update]) },
+			listAgenciesHandler,
+		);
+
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.read]) },
+			getYearPeriodHandler,
+		);
+
+		instance.post(
+			'/create',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.create]) },
+			createYearPeriodHandler,
+		);
+
+		instance.post(
+			'/check-conflicts',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.read]) },
+			checkYearPeriodsConflictsHandler,
+		);
+
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.update]) },
+			updateYearPeriodHandler,
+		);
+
+		instance.put(
+			'/:id/dates',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.update]) },
+			updateYearPeriodDatesHandler,
+		);
+
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.lock]) },
+			lockYearPeriodHandler,
+		);
+
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.delete]) },
+			deleteYearPeriodHandler,
+		);
+
+		next();
+	},
+	{ prefix: NAMESPACE },
+);

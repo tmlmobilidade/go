@@ -1,7 +1,7 @@
 'use client';
 
 import { type ScheduleProps } from '@mantine/schedule';
-import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/types';
+import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { type ComponentPropsWithoutRef, type MouseEvent, useEffect, useState } from 'react';
 
 /* * */

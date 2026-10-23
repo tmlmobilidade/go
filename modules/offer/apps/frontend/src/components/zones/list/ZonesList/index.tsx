@@ -1,14 +1,17 @@
 'use client';
 
-import { useZonesListContext } from '@/components/zones/list/ZonesList.context';
+import { ZonesListFiltersBar } from '@/components/zones/list/filters/ZonesListFiltersBar';
 import { ZonesListCellAgencies } from '@/components/zones/list/ZonesListCellAgencies';
-import { ZonesListFiltersBar } from '@/components/zones/list/ZonesListFiltersBar';
 import { ZonesListHeader } from '@/components/zones/list/ZonesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Zone } from '@tmlmobilidade/go-types-offer';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+
+import { useZonesDetailZoneId } from '../../detail/use-zones-detail-zone-id';
+import { useZonesListData } from '../use-zones-list-data';
 
 /* * */
 
@@ -19,33 +22,34 @@ export function ZonesList() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
 
-	const zonesList = useZonesListContext();
+	const { data, error, isLoading } = useZonesListData();
+	const { zoneId } = useZonesDetailZoneId();
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<Zone>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
-			title: '#ID',
+			title: t('default:zones.list.columns.id'),
 			width: 100,
 		},
 		{
 			accessor: 'code',
 			render: item => <Text>{item.code}</Text>,
-			title: 'Código',
+			title: t('default:zones.list.columns.code'),
 			width: 200,
 		},
 		{
 			accessor: 'name',
 			render: item => <Text>{item.name}</Text>,
-			title: 'Nome',
+			title: t('default:zones.list.columns.name'),
 			width: 300,
 		},
 		{
 			accessor: 'agency_ids',
 			render: item => <ZonesListCellAgencies agencyIds={item.agency_ids} />,
-			title: 'Operadores',
+			title: t('default:zones.list.columns.agency_ids'),
 			width: 200,
 		},
 	];
@@ -60,12 +64,12 @@ export function ZonesList() {
 	//
 	// C. Render components
 
-	if (zonesList.flags.loading) {
+	if (isLoading) {
 		return <LoadingOverlay />;
 	}
 
-	if (zonesList.flags.error) {
-		return <ErrorDisplay message={zonesList.flags.error.message} />;
+	if (error) {
+		return <ErrorDisplay message={error} />;
 	}
 
 	return (
@@ -77,9 +81,9 @@ export function ZonesList() {
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={zonesList.data.filtered}
+				records={data}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={zoneId}
 			/>
 		</Pane>
 	);

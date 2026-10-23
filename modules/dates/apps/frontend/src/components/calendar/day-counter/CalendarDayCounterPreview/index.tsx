@@ -36,8 +36,8 @@ export function CalendarDayCounterPreview() {
 
 		if (event.payload.type === 'annotation') route = PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(event.payload.sourceId);
 		if (event.payload.type === 'holiday') route = PAGE_ROUTES.dates.HOLIDAYS_DETAIL(event.payload.sourceId);
-		if (event.payload.type === 'event') route = PAGE_ROUTES.dates.EVENTS_DETAIL(event.payload.sourceId);
-		if (event.payload.type === 'period') route = PAGE_ROUTES.dates.YEAR_PERIODS_DETAIL(event.payload.sourceId);
+		if (event.payload.type === 'event') route = PAGE_ROUTES.offer.EVENTS_DETAIL(event.payload.sourceId);
+		if (event.payload.type === 'period') route = PAGE_ROUTES.offer.YEAR_PERIODS_DETAIL(event.payload.sourceId);
 
 		if (route) window.open(route, '_blank', 'noopener,noreferrer');
 	};
