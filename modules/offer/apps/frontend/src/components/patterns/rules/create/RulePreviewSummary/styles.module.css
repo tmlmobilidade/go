@@ -1,0 +1,25 @@
+.root {
+	flex-shrink: 0;
+}
+
+.summaryHeader {
+	display: flex;
+	gap: var(--size-spacing-md);
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.summaryHeader > :first-child {
+	min-width: 0;
+}
+
+.summaryHeader > :last-child {
+	flex-shrink: 0;
+}
+
+@media (width <= 700px) {
+	.summaryHeader {
+		flex-direction: column;
+	}
+}

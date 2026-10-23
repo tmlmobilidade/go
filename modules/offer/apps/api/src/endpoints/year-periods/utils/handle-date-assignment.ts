@@ -1,7 +1,7 @@
 /* * */
 
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
-import { type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type ClientSession, type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -14,6 +14,7 @@ interface YearPeriodDateAssignmentArgs {
 	agencyIds: string[]
 	existingDates?: OperationalDate[]
 	newDates: OperationalDate[]
+	session?: ClientSession
 	userPermissions: Permission[]
 	yearPeriodId?: string
 }
@@ -27,7 +28,7 @@ type YearPeriodDateAssignmentResult = { dates: OperationalDate[], error?: never 
  * A period has one shared dates array: changing [A, B] affects both operators.
  * Validate every affected period's lock and update permission before any writes.
  */
-export async function handleYearPeriodDateAssignment({ actorId, agencyIds, existingDates = [], newDates, userPermissions, yearPeriodId }: YearPeriodDateAssignmentArgs): Promise<YearPeriodDateAssignmentResult> {
+export async function handleYearPeriodDateAssignment({ actorId, agencyIds, existingDates = [], newDates, session, userPermissions, yearPeriodId }: YearPeriodDateAssignmentArgs): Promise<YearPeriodDateAssignmentResult> {
 	//
 
 	//
@@ -36,7 +37,7 @@ export async function handleYearPeriodDateAssignment({ actorId, agencyIds, exist
 	const mergedDates = mergeDateArrays(existingDates, newDates);
 	const query: Filter<YearPeriod> = { agency_ids: { $in: agencyIds } };
 	if (yearPeriodId) query._id = { $ne: yearPeriodId };
-	const periods = await goDb.offer.yearPeriods.findMany(query);
+	const periods = await goDb.offer.yearPeriods.findMany(query, { session });
 	const conflicts = periods
 		.filter(period => period._id !== yearPeriodId && period.agency_ids.some(id => agencyIds.includes(id)))
 		.map(period => ({ dates: findCommonDates(mergedDates, period.dates ?? []), period }))
@@ -64,10 +65,10 @@ export async function handleYearPeriodDateAssignment({ actorId, agencyIds, exist
 	// Apply the authorized removals, preserving the authenticated audit actor
 
 	for (const { dates, period } of conflicts) {
-		await goDb.offer.yearPeriods.updateById(period._id, {
+		await goDb.offer.yearPeriods.updateOne({ _id: period._id }, {
 			dates: removeDatesFromArray(period.dates ?? [], dates),
 			updated_by: actorId,
-		});
+		}, { session });
 	}
 	return { dates: mergedDates };
 }

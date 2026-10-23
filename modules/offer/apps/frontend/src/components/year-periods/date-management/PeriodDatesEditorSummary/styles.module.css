@@ -1,0 +1,8 @@
+.summary {
+	flex: 0 0 auto;
+	min-width: max-content;
+}
+
+.summary > * {
+	white-space: nowrap;
+}

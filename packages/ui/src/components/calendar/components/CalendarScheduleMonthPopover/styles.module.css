@@ -1,0 +1,19 @@
+.target {
+	position: fixed;
+	pointer-events: none;
+}
+
+.dropdown {
+	max-width: none;
+	max-height: var(--calendar-schedule-month-popover-max-height, min(520px, calc(100vh - 24px)));
+	padding: 0;
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	box-shadow: var(--mantine-shadow-lg);
+}
+
+.arrow {
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+}

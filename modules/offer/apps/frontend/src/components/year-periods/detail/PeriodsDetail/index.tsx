@@ -20,7 +20,7 @@ export function PeriodsDetail() {
 	const { data, error, isLoading } = usePeriodsDetailData();
 	const router = useRouter();
 	const { t } = useTranslation();
-	const handleOpenCalendar = () => router.push(keepUrlParams(PAGE_ROUTES.offer.YEAR_PERIODS_LIST));
+	const handleOpenCalendar = () => router.push(keepUrlParams(PAGE_ROUTES.offer.YEAR_PERIODS_DATES_DETAIL(data?._id ?? '')));
 
 	//
 	// B. Render components

@@ -174,7 +174,7 @@
 			"acknowledge": "Compreendo e quero continuar",
 			"blockedConflict": "A atribuição está bloqueada: existe um período em conflito bloqueado ou sem permissão de atualização para todos os seus operadores.",
 			"checking": "A verificar conflitos...",
-			"conflictMessage": "{{count}} datas serão removidas dos períodos: {{periods}}.",
+			"conflictMessage": "{count} datas serão removidas dos períodos: {periods}.",
 			"conflictTitle": "Aviso de conflito",
 			"create": "Criar novo período",
 			"dayCount_one": "{{count}} dia",

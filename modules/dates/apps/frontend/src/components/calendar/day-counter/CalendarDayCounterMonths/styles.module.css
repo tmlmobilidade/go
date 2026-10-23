@@ -1,0 +1,10 @@
+.selector [role='group'] {
+	grid-template-columns: repeat(6, minmax(0, 1fr));
+	grid-auto-flow: row;
+}
+
+@media (width <= 1200px) {
+	.selector [role='group'] {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}

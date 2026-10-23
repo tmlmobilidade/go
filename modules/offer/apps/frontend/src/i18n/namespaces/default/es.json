@@ -174,7 +174,7 @@
 			"acknowledge": "Entiendo y deseo continuar",
 			"blockedConflict": "Asignación bloqueada: un período en conflicto está bloqueado o faltan permisos de actualización para todos sus operadores.",
 			"checking": "Comprobando conflictos...",
-			"conflictMessage": "Se eliminarán {{count}} fechas de los períodos: {{periods}}.",
+			"conflictMessage": "Se eliminarán {count} fechas de los períodos: {periods}.",
 			"conflictTitle": "Aviso de conflicto",
 			"create": "Crear un nuevo período",
 			"dayCount_one": "{{count}} día",

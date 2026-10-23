@@ -93,6 +93,9 @@ export const PAGE_ROUTES = Object.freeze({
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/typologies/${encodeURIComponent(id)}`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'frontend_url')}/typologies`,
 
+		// YEAR_PERIODS_DATES
+		YEAR_PERIODS_DATES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/year-periods/${encodeURIComponent(id)}/dates`,
+
 		// YEAR_PERIODS
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/year-periods/${encodeURIComponent(id)}`,
 		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'frontend_url')}/year-periods`,
@@ -407,6 +410,7 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_CHECK_CONFLICTS: `${getModuleConfig('offer', 'api_url')}/year-periods/check-conflicts`,
 		YEAR_PERIODS_CREATE: `${getModuleConfig('offer', 'api_url')}/year-periods/create`,
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}`,
+		YEAR_PERIODS_DETAIL_DATES: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}/dates`,
 		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}/lock`,
 		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'api_url')}/year-periods`,
 		YEAR_PERIODS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/year-periods/list-agencies`,

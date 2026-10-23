@@ -5,6 +5,7 @@ import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
 import { ManualRule, ManualRuleSchema } from '@tmlmobilidade/go-types-offer';
+import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { useForm, type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -28,7 +29,7 @@ interface RuleCreateContextState {
 		form: UseFormReturnType<ManualRule>
 		ruleImpact: null | {
 			count: number
-			dates: string[]
+			dates: CalendarDate[]
 		}
 		ruleSummary: { long: string, short: string }
 	}
@@ -65,7 +66,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isEventExceptionEnabled, setIsEventExceptionEnabled] = useState(Boolean(initialValues?.event_id));
 
-	const [previewYear, setPreviewYear] = useState(Dates.now('Europe/Lisbon').js_date.getFullYear());
+	const [previewYear, setPreviewYear] = useState(Number(Dates.now('local').toFormat('yyyy')));
 
 	//
 	// B. Fetch data
@@ -98,8 +99,8 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	[eventsContext.data.raw, form.values, periodsContext.data.raw]);
 
 	const ruleImpact = useMemo(() => {
-		const startDate = Dates.fromISO(`${previewYear}-01-01`).js_date;
-		const endDate = Dates.fromISO(`${previewYear}-12-31`).js_date;
+		const startDate = toCalendarDate(`${previewYear}-01-01`);
+		const endDate = toCalendarDate(`${previewYear}-12-31`);
 
 		return getManualRuleAffectedDates(
 			form.values,

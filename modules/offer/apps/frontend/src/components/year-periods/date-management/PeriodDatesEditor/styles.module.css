@@ -1,0 +1,31 @@
+.root {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	min-height: 100%;
+	padding: var(--size-spacing-md);
+}
+
+.instructions {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+	padding: var(--size-spacing-sm) var(--size-spacing-md);
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
+	border-radius: var(--border-radius-sm);
+}
+
+.instructions svg {
+	flex: 0 0 auto;
+	color: var(--color-primary);
+}
+
+.calendarScroll {
+	min-height: 0;
+	overflow: auto;
+}
+
+.calendar {
+	min-width: 780px;
+}

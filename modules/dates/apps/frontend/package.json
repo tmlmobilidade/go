@@ -32,7 +32,8 @@
 		"react": "19.3.1",
 		"react-dom": "19.3.1",
 		"react-i18next": "17.1.3",
-		"swr": "2.5.1"
+		"swr": "2.5.1",
+		"@tmlmobilidade/go-types-offer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

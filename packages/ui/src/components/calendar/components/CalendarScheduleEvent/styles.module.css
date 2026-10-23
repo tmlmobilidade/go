@@ -1,0 +1,33 @@
+.event {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	min-width: 0;
+}
+
+.event > span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.event[data-period] {
+	font-weight: 700;
+}
+
+.event[data-period]::before {
+	width: 3px;
+	align-self: stretch;
+	border-radius: var(--mantine-radius-xl);
+	background-color: currentcolor;
+	content: '';
+	flex: 0 0 3px;
+	opacity: 0.75;
+}
+
+.tooltip {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	max-width: 320px;
+}

@@ -1,12 +1,13 @@
-import { PeriodsCalendar } from '@/components/year-periods/calendar/PeriodsCalendar';
-import { EventsCalendarProvider } from '@tmlmobilidade/ui';
+'use client';
+
+import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default function Page() {
 	return (
-		<EventsCalendarProvider>
-			<PeriodsCalendar />
-		</EventsCalendarProvider>
+		<Surface align="center" justify="center" variant="transparent">
+			<NoDataLabel text="Selecione um Período" />
+		</Surface>
 	);
 }

@@ -76,10 +76,9 @@ scan_frontend_routes() {
 
         # Check if path contains any dynamic parameters (e.g., [id], [routeId], etc.)
         if [[ "$dir_path" =~ \[([a-zA-Z][a-zA-Z0-9]*)\] ]]; then
-            # Extract all dynamic parameters and their positions
+            # Extract dynamic parameters and static path segments for the route name
             local temp_path="$dir_path"
             local base_path=""
-            local route_params=""
             local param_names=()
             local path_segments=()
 
@@ -124,15 +123,6 @@ scan_frontend_routes() {
                 base_path=""
             fi
 
-            # Build route_params from param_names
-            for param in "${param_names[@]}"; do
-                if [ -z "$route_params" ]; then
-                    route_params="\${${param}}"
-                else
-                    route_params="${route_params}/\${${param}}"
-                fi
-            done
-
             # Generate route name based on base_path and parameter names
             # For nested routes (multiple params), use the last param name to create unique route name
             if [ ${#param_names[@]} -gt 1 ]; then
@@ -149,12 +139,11 @@ scan_frontend_routes() {
                 local route_name=$(to_snake_case "${base_path}_DETAIL")
             fi
             route_name=$(sanitize_route_name "$route_name")
-            # Build route path with all parameters
-            if [ -z "$base_path" ]; then
-                local route_path="/${route_params}"
-            else
-                local route_path="/${base_path}/${route_params}"
-            fi
+            # Preserve the original segment order when replacing dynamic parameters.
+            # For example, year-periods/[id]/dates becomes year-periods/${id}/dates.
+            local ordered_path=$(echo "$dir_path" | sed -E 's/\[([a-zA-Z][a-zA-Z0-9]*)\]/${\1}/g')
+            ordered_path=$(echo "$ordered_path" | sed "s|^${module_name}/||")
+            local route_path="/${ordered_path}"
             routes+=("${route_name}:${route_path}")
         else
             # It's a list route
@@ -693,4 +682,3 @@ cp "${TEMP_FILE}" "${OUTPUT_FILE}"
 npm --workspace @tmlmobilidade/consts run lint:fix
 
 printf "${GREEN}Routes generated successfully at: ${OUTPUT_FILE}${NC}\n"
-

@@ -170,7 +170,7 @@
 			"acknowledge": "I understand and want to continue",
 			"blockedConflict": "Assignment blocked: a conflicting period is locked or you lack update permission for all its operators.",
 			"checking": "Checking conflicts...",
-			"conflictMessage": "{{count}} dates will be removed from periods: {{periods}}.",
+			"conflictMessage": "{count} dates will be removed from periods: {periods}.",
 			"conflictTitle": "Conflict warning",
 			"create": "Create a new period",
 			"dayCount_one": "{{count}} day",

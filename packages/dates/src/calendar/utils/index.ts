@@ -2,14 +2,15 @@
 
 import { Dates } from '@/dates.js';
 import { Holiday, IsoWeekday } from '@tmlmobilidade/go-types-offer';
-import { type TimezoneIdentified } from '@tmlmobilidade/go-types-shared';
+import { CalendarDate, type TimezoneIdentified } from '@tmlmobilidade/go-types-shared';
 import { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
 export const DEFAULT_CAL_TZ = 'Europe/Lisbon';
 
-export type CalendarKey = `${number}-${number}-${number}`; // "YYYY-MM-DD"
+/** @deprecated Use CalendarDate for civil calendar labels. */
+export type CalendarKey = CalendarDate;
 
 /* * */
 
@@ -46,8 +47,8 @@ export function calendarKey(d: Dates, tz: TimezoneIdentified = DEFAULT_CAL_TZ): 
 /**
  * CalendarKey -> Dates at noon Lisbon (stable for civil-day iteration)
  */
-export function datesFromCalendarKey(key: CalendarKey): Dates {
-	return Dates.fromFormat(`${key} 12:00`, 'yyyy-MM-dd HH:mm', DEFAULT_CAL_TZ);
+export function datesFromCalendarKey(key: CalendarKey, tz: TimezoneIdentified = DEFAULT_CAL_TZ): Dates {
+	return Dates.fromFormat(`${key} 12:00`, 'yyyy-MM-dd HH:mm', tz);
 }
 
 /**
@@ -96,7 +97,7 @@ export function yyyymmddToKey(yyyymmdd: string): CalendarKey {
 
 export function isHoliday(
 	input: CalendarKey | Dates,
-	holidays: Holiday[],
+	holidays: Pick<Holiday, 'dates'>[],
 	tz: TimezoneIdentified = DEFAULT_CAL_TZ,
 ): boolean {
 	const key = input instanceof Dates ? calendarKey(input, tz) : input;
@@ -108,7 +109,7 @@ export function isHoliday(
 /**
  * ISO weekday (1..7 Mon..Sun) for a calendar key or Dates (civil day).
  */
-export function calendarWeekday(input: CalendarKey | Dates, holidays: Holiday[] | null, tz: TimezoneIdentified = DEFAULT_CAL_TZ): IsoWeekday {
+export function calendarWeekday(input: CalendarKey | Dates, holidays: null | Pick<Holiday, 'dates'>[], tz: TimezoneIdentified = DEFAULT_CAL_TZ): IsoWeekday {
 	const key = input instanceof Dates ? calendarKey(input, tz) : input;
 
 	if (holidays && isHoliday(key, holidays, tz)) {

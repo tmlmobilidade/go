@@ -41,6 +41,7 @@ const collection = {
 	updateOne: async (_query: unknown, data: Record<string, unknown>) => {
 		WRITES.push(data);
 		ROW = { ...ROW, ...data };
+		return ROW;
 	},
 };
 
