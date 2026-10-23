@@ -60,7 +60,7 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<PopulatedLine>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.LINES_LIST }),
+		fetchFn: async () => await fetchApiData<PopulatedLine>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.LINES_CREATE }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			linesListMutate();

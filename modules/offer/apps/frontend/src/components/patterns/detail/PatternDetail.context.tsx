@@ -7,16 +7,15 @@ import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
+import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { PatternsDetail, PatternsDetailPathItem, type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
+import { PatternsDetail, PatternsDetailPathItem, type PopulatedLine, type RoutesDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { EventReplacementRule, EventRestrictionRule, ManualRule, Path, Pattern, ScheduleRule, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { DetailContextStateTemplate, fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
@@ -47,7 +46,9 @@ interface PatternDetailContextState {
 		stopsParameterRules: StopsParameterExtended[]
 		typologyData?: PopulatedLine['typology_data']
 	}
-	flags: DetailContextStateTemplate['flags']
+	flags: DetailContextStateTemplate['flags'] & {
+		inheritedLock: 'line' | 'route' | null
+	}
 	geojson: {
 		pattern_line: MapOverlayPatternShapeLineData | null
 		pattern_stops: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null
@@ -86,9 +87,17 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		fetcher: async url => await fetchApiData<PatternsDetail>({ url }),
 	});
 
-	const { data: lineData, mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
 		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
+		refreshInterval: 10_000,
 	});
+
+	const routeId = patternData?.data?.route_id;
+	const { data: routeData, error: routeError, isLoading: routeLoading } = useSWR<ApiResponse<RoutesDetail>>(routeId ? API_ROUTES.offer.ROUTES_DETAIL(routeId) : null, {
+		fetcher: async url => await fetchApiData<RoutesDetail>({ url }),
+		refreshInterval: 10_000,
+	});
+	const inheritedLock = lineData?.data?.is_locked ? 'line' : routeData?.data?.is_locked ? 'route' : null;
 
 	const typologyData = lineData?.data?.typology_data;
 
@@ -327,14 +336,11 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const addComment = useCallback(async (comment: string) => {
 		try {
-			const commentToAdd = {
-				created_at: Dates.now('Europe/Lisbon').unix_milliseconds,
-				created_by: 'will-be-set-by-api',
-				message: comment,
-				type: 'note',
-				updated_at: Dates.now('Europe/Lisbon').unix_milliseconds,
-			};
-			const res = await fetchData(API_ROUTES.offer.PATTERNS_DETAIL_COMMENT(patternId), 'POST', commentToAdd);
+			const res = await fetchApiData<Pattern>({
+				body: { message: comment },
+				method: 'POST',
+				url: API_ROUTES.offer.PATTERNS_DETAIL_COMMENT(patternId),
+			});
 
 			if (res.error) {
 				useToast.error({ message: res.error, title: 'Erro ao adicionar comentário' });
@@ -401,18 +407,18 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	});
 
 	const { canDelete, canLock, canSave, isReadOnly } = useDetailState({
-		hasError: !!patternError,
+		hasError: !!patternError || !!lineError || !!routeError,
 		isDeleted: null,
 		isDeleting,
 		isDirty: form.isDirty(),
-		isLoading: patternLoading,
-		isLocked: patternData?.data?.is_locked,
+		isLoading: patternLoading || lineLoading || routeLoading || !lineData?.data || !routeData?.data,
+		isLocked: patternData?.data?.is_locked || !!inheritedLock,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
 		permissions: {
 			delete: permissions.delete,
-			lock: permissions.lock,
+			lock: permissions.lock && !inheritedLock,
 			read: permissions.read,
 			update: permissions.update,
 		},
@@ -452,8 +458,9 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			canLock,
 			canSave,
 			error: patternError,
+			inheritedLock,
 			isDeleting,
-			isLoading: patternLoading,
+			isLoading: patternLoading || lineLoading || routeLoading || !lineData?.data || !routeData?.data,
 			isLocking,
 			isReadOnly,
 			isSaving: isSaving,
@@ -462,7 +469,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			pattern_line: patternLineFC,
 			pattern_stops: patternStopsFC,
 		},
-	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, lineData?.data?.agency_id, form, patternId, lineId, rulesForUI, patternData?.data, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
+	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, form, patternId, lineId, rulesForUI, patternData?.data, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC, inheritedLock, lineLoading, routeLoading, lineData?.data, routeData?.data]);
 
 	//
 	// H. Render components

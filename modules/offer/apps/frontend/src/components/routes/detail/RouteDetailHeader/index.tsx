@@ -6,6 +6,7 @@ import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Button, CloseButton, DeleteButton, keepUrlParams, LockButton, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function RouteDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const { t } = useTranslation();
 	const routeDetailContext = useRouteDetailContext();
 
 	//
@@ -44,8 +46,9 @@ export function RouteDetailHeader() {
 
 			<LockButton
 				isDisabled={!routeDetailContext.flags.canLock}
-				isLocked={routeDetailContext.data.route.is_locked}
+				isLocked={routeDetailContext.data.route.is_locked || !!routeDetailContext.flags.isLockedByLine}
 				onClick={routeDetailContext.actions.lock}
+				tooltip={routeDetailContext.flags.isLockedByLine ? t('default:networkLocks.line') : undefined}
 			/>
 
 			<Button
