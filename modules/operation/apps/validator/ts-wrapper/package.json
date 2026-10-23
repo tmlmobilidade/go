@@ -31,7 +31,7 @@
 	},
 	"scripts": {
 		"build": "tsc -p tsconfig.json && resolve-tspaths && node ./dist/scripts/postinstall.js",
-		"build:binary": "bash ../validator/compile-local.sh && npm run build",
+		"build:binary": "bash ../validator/compile.sh && npm run build",
 		"lint": "eslint ./src && tsc -p tsconfig.json --noEmit --noEmit",
 		"lint:fix": "eslint --fix ./src",
 		"postinstall": "if [ -f dist/scripts/postinstall.js ]; then node ./dist/scripts/postinstall.js; elif [ -f scripts/postinstall.ts ]; then tsx ./scripts/postinstall.ts; else echo 'validator postinstall skipped: sources not copied yet (binary is fetched by the build script)'; fi",

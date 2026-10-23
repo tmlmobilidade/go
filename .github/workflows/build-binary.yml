@@ -33,7 +33,7 @@ jobs:
 
       - name: Build binaries
         shell: bash
-        run: bash modules/operation/apps/validator/validator/compile.sh
+        run: bash modules/operation/apps/validator/validator/compile.sh --all
 
       - name: Create or update GitHub release binaries
         shell: bash

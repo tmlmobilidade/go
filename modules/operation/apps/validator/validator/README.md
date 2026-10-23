@@ -2,6 +2,32 @@
 
 A high-performance GTFS (General Transit Feed Specification) validation tool written in Go. The validator processes GTFS feeds, applies configurable validation rules, and reports errors and warnings in a structured format.
 
+## Building the binary
+
+From the repository root, `npm run repo:validator-binary` builds for the current
+machine. It uses `compile.sh` (default: `--local`), clears `ts-wrapper/bin` and
+`ts-wrapper/dist/bin`, and writes the executable to both directories. Go is required.
+
+To build all four release binaries (Linux and macOS, amd64 and arm64), run:
+
+```sh
+bash modules/operation/apps/validator/validator/compile.sh --all
+```
+
+Starting the worker with `npm run dev:operation:gtfs-validator` automatically runs
+`compile.sh` through the worker's `predev` hook before starting the Node process.
+
+For previews and other deployments, the module build workflow sets up Go and runs
+the same `compile.sh` before building the worker image. The shared Node Dockerfile
+copies the binary explicitly, because Turbo prune excludes ignored binaries,
+and refreshes the wrapper's `dist/bin` after the TypeScript build. Kubernetes
+starts the worker with the binary already present. Rebuild the worker image to
+deploy Go changes; no app-specific Dockerfile is needed.
+
+For a manual Docker build, compile the image platform's binary first. Use
+`compile.sh --all` when the image platform differs from the host. A missing binary
+for the image platform causes the Docker build to fail.
+
 ## Architecture Overview
 
 The GTFS Validator follows a modular, concurrent architecture designed for efficiency and extensibility. The system is organized into several key components:
