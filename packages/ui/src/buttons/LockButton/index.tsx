@@ -12,11 +12,12 @@ interface LockButtonProps {
 	isLoading?: boolean
 	isLocked: boolean
 	onClick: () => void
+	tooltip?: string
 }
 
 /* * */
 
-export function LockButton({ isDisabled, isLoading, isLocked, onClick }: LockButtonProps) {
+export function LockButton({ isDisabled, isLoading, isLocked, onClick, tooltip }: LockButtonProps) {
 	//
 
 	//
@@ -36,26 +37,28 @@ export function LockButton({ isDisabled, isLoading, isLocked, onClick }: LockBut
 	if (isLocked) {
 		return (
 			<Tooltip
-				label="Desbloquear"
+				label={tooltip ?? 'Desbloquear'}
 				position="bottom"
 				withArrow
 			>
-				<ActionIcon
-					color="var(--color-status-success-primary)"
-					disabled={isDisabled}
-					loading={isLoading}
-					onClick={handleClick}
-					variant="subtle"
-				>
-					<IconLockFilled />
-				</ActionIcon>
+				<span>
+					<ActionIcon
+						color="var(--color-status-success-primary)"
+						disabled={isDisabled}
+						loading={isLoading}
+						onClick={handleClick}
+						variant="subtle"
+					>
+						<IconLockFilled />
+					</ActionIcon>
+				</span>
 			</Tooltip>
 		);
 	}
 
 	return (
 		<Tooltip
-			label="Bloquear"
+			label={tooltip ?? 'Bloquear'}
 			position="bottom"
 			withArrow
 		>
