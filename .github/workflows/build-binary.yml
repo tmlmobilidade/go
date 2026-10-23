@@ -35,15 +35,20 @@ jobs:
         shell: bash
         run: bash modules/operation/apps/validator/validator/compile.sh
 
-      - name: Create GitHub release with binaries
+      - name: Create or update GitHub release binaries
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           RELEASE_TAG="validator-build-${GITHUB_RUN_NUMBER}"
-          gh release create "$RELEASE_TAG" \
-            --target "$GITHUB_SHA" \
-            --title "Validator build ${GITHUB_RUN_NUMBER}" \
-            --notes "Validator binaries built from commit ${GITHUB_SHA}." \
+          if ! gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" \
+              --target "$GITHUB_SHA" \
+              --title "Validator build ${GITHUB_RUN_NUMBER}" \
+              --notes "Validator binaries built from commit ${GITHUB_SHA}."
+          fi
+
+          gh release upload "$RELEASE_TAG" --clobber \
             modules/operation/apps/validator/ts-wrapper/bin/validator-linux-amd64 \
             modules/operation/apps/validator/ts-wrapper/bin/validator-linux-arm64 \
             modules/operation/apps/validator/ts-wrapper/bin/validator-darwin-amd64 \
