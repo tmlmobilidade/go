@@ -29,6 +29,10 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 	// Actions must use the initialized client that still matches the current configuration.
 	const identify = useCallback((value: AnalyticsUserProperties | null) => {
 		if (!ready || !initialized || initializationRef.current !== initialized || initialized.client.getOptOut()) return false;
+		// End capture before logout or an identity change reaches the replay SDK.
+		if (value === null || (value._id !== undefined && value._id !== initialized.client.getUserId())) {
+			initialized.replay.stop();
+		}
 		return identifyAnalyticsUser(initialized.client, value, handleError);
 	}, [handleError, initialized, ready]);
 
