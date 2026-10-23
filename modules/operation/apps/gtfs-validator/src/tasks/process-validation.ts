@@ -85,7 +85,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		const foundAgency = await goDb.core.agencies.findById(gtfsValidation.agency_id);
 		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.agency_id}`);
-		// The Go decoder validates completeness, severities and dependencies.
+		// Pass the flat rule-ID map through; the Go decoder validates each rule's settings and dependencies.
 		const rulesContent = JSON.stringify(foundAgency.plans?.validation_rules ?? {});
 
 		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });

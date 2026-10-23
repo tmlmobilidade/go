@@ -232,7 +232,7 @@ Dependencies come only from `depends_on` in the supplied rules JSON. Omitting it
 
 Run `npm run repo:validator-rules` to generate only `packages-new/types/gtfs-validator/src/rules-new/rule-ids.ts`. The generator reads IDs from the validation implementations; it does not generate a catalogue or define dependencies.
 
-Legacy rules grouped by GTFS file are flattened when parsed; the runtime always stores `types.GtfsRules` as a map from rule ID to `types.RuleContext`. Each check receives only its own context, for example `AgencyEmailField(db, rules.Rule("agency_email_field"))`. Use `ignore` to disable a rule. Fixed runtime diagnostics such as `file_validation` and `file_not_found_in_rules` are not configurable.
+Rules grouped by GTFS file are rejected. The runtime stores `types.GtfsRules` as a map from rule ID to `types.RuleContext`: `agency_id_unique` is read directly, without an `agency` section or an `agency.` prefix. Each check receives only its own context, for example `AgencyEmailField(db, rules.Rule("agency_email_field"))`. Use `ignore` to disable a rule. The generated list's technical diagnostic IDs, including `file_validation` and `file_not_found_in_rules`, are accepted as flat entries, but their runtime severities remain fixed.
 
 ## Performance Considerations
 

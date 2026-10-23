@@ -74,6 +74,9 @@ func FileNode(file string) string { return file + "_file_present" }
 
 // Legacy rule IDs use singular as well as plural GTFS file names.
 func FileForRuleID(id string) string {
+	if id == "file_validation" || id == "file_not_found_in_rules" {
+		return "file_validation"
+	}
 	best, length := "", 0
 	for _, file := range append(slices.Clone(types.GtfsRuleFiles), "file_validation") {
 		prefixes := []string{file}

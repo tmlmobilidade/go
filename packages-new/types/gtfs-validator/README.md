@@ -38,7 +38,7 @@ The legacy configuration types are compile-time only. `normalizeValidationRules`
 
 Parser diagnostics remain runtime errors. They are excluded from the catalogue and generated rule IDs because they are not stored in agency validation settings.
 
-Before importing a GTFS into SQLite, the Go validator requires every supported rule in the rules JSON file, with an explicit severity (`ignore` to disable it). Missing sections report their missing rules too. Renaming `agency_id_unique` to `agency_id` reports `missing rules: agency.agency_id_unique`. Unsupported sections such as `translations` and `attributions` are ignored. File-presence settings (`_file`) are required for supported GTFS sections; the internal `file_validation._file` setting is optional.
+The Go validator reads a flat rule-ID map, optionally wrapped in `validation_rules`. For example, `{"agency_id_unique":{"severity":"warning"}}` configures that rule directly; there is no `agency` section or `agency.` lookup prefix. Omitted rules default to `ignore`. Grouped file sections are rejected. File-presence settings use `<file>_file_missing` entries instead of `_file` inside a section. The older grouped TypeScript exports above describe legacy editor data, not the current Go input contract.
 
 A stored config key can differ from the emitted rule id. For example, `frequencies.trip_id` emits `frequencies_trip_id_foreign`. Catalogue entries carry both `config_key` and `id`, and `setRuleSeverity` always writes under `config_key`.
 
