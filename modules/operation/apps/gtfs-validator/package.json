@@ -13,9 +13,9 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"predev": "bash ../validator/validator/compile.sh",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint:fix": "eslint --fix .",
+		"predev": "bash ../validator/validator/compile.sh"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
