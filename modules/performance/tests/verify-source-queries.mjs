@@ -3,7 +3,7 @@ import { ClickHouseDatabaseClient } from '@tmlmobilidade/go-clients-clickhouse';
 import { readFile, readdir } from 'node:fs/promises';
 import { MetricSchema } from '@tmlmobilidade/go-types-performance';
 import { formatMetrics } from '../packages/scripts/dist/read.js';
-import { assertFixture, fixtureParams, fixtureSelect } from './sql-fixtures.mjs';
+import { assertFixture, fixtureHubDemandSelect, fixtureParams, fixtureSelect } from './sql-fixtures.mjs';
 
 const directory = new URL('../sql/metrics/', import.meta.url);
 const files = (await readdir(directory)).filter(file => file.endsWith('.sql')).sort();
@@ -28,6 +28,18 @@ try {
    const productionSelect = sql.slice(sql.indexOf('\nSELECT ') + 1);
    await (await client.query({ query: 'EXPLAIN PLAN ' + productionSelect, query_params: params, format: 'JSONEachRow' })).json();
   }
+ }
+ if (client) {
+  const sql = await readFile(new URL('../sql/demand/by-agency-by-operational-date.sql', import.meta.url), 'utf8');
+  const query = fixtureHubDemandSelect(sql);
+  const params = { start_date: 20240101, end_date: 20240101, exclude_months: [] };
+  const rows = await (await client.query({ query, query_params: params, format: 'JSONEachRow' })).json();
+  const totals = Object.fromEntries(rows.map(row => [row.agency_id, Number(row.qty)]));
+  assert.deepEqual(totals, { LA77N: 4, BNA17: 2, YA15B: 1, OTHER: 2 });
+  const excluded = await (await client.query({ query, query_params: { ...params, exclude_months: ['202401'] }, format: 'JSONEachRow' })).json();
+  assert.deepEqual(excluded, []);
+  const productionSelect = sql.slice(sql.indexOf('SELECT\n'));
+  await (await client.query({ query: 'EXPLAIN PLAN ' + productionSelect, query_params: params, format: 'JSONEachRow' })).json();
  }
  console.info(`Verified ${files.length} metric SQL files${client ? ' against ClickHouse fixtures' : ' (static)'}.`);
 } finally {

@@ -10,7 +10,7 @@ import { haveSameAgencies } from '../utils/same-agencies.js';
 
 /**
  * Updates an existing period by ID.
- * If dates are provided, merges with existing dates and handles conflicts by removing those dates from other periods of the same agency.
+ * If dates are provided, merges with existing dates and handles conflicts by removing those dates from other periods sharing any operator.
  * @param request Fastify request containing period ID in params and update data in body
  * @param reply Fastify reply
  */
@@ -88,7 +88,11 @@ export async function updateYearPeriodHandler(request: FastifyRequest<{ Body: Up
 	}
 
 	//
-	// If dates are provided, handle conflicts with other periods of the same agency
+	// If dates are provided, handle conflicts with other periods sharing any operator
+
+	if (periodData.is_locked) {
+		return sendErrorApiResponse(reply, { error: 'YearPeriod is locked. Unlock it before making changes.', status_code: '409' });
+	}
 
 	const agenciesChanged = validatedYearPeriod.data.agency_ids && !haveSameAgencies(validatedYearPeriod.data.agency_ids, periodData.agency_ids);
 	const reassignExistingDates = agenciesChanged && validatedYearPeriod.data.dates === undefined && periodData.dates?.length;
@@ -96,13 +100,16 @@ export async function updateYearPeriodHandler(request: FastifyRequest<{ Body: Up
 	if (validatedYearPeriod.data.dates?.length || reassignExistingDates) {
 		const newDates = validatedYearPeriod.data.dates ?? [];
 		const existingDates = periodData.dates || [];
-		validatedYearPeriod.data.dates = await handleYearPeriodDateAssignment(
-			validatedYearPeriod.data.agency_ids ?? periodData.agency_ids,
-			newDates,
-			request.me._id,
-			periodData._id,
+		const assignment = await handleYearPeriodDateAssignment({
+			actorId: request.me._id,
+			agencyIds: validatedYearPeriod.data.agency_ids ?? periodData.agency_ids,
 			existingDates,
-		);
+			newDates,
+			userPermissions: request.permissions,
+			yearPeriodId: periodData._id,
+		});
+		if (assignment.error) return sendErrorApiResponse(reply, assignment.error);
+		validatedYearPeriod.data.dates = assignment.dates;
 	}
 
 	//

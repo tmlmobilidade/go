@@ -10,12 +10,13 @@
 	"scripts": {
 		"build": "next build",
 		"dev": "next dev -p 51008",
-		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ./src",
-		"start": "next start"
+		"lint": "eslint ./src ./tests && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src ./tests",
+		"start": "next start",
+		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.46.0",
+		"@tabler/icons-react": "3.49.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-dates-pckg-types": "*",
@@ -27,16 +28,18 @@
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"dayjs": "1.11.23",
-		"next": "16.3.4",
-		"react": "19.2.8",
-		"react-dom": "19.2.8",
+		"next": "16.4.2",
+		"react": "19.3.1",
+		"react-dom": "19.3.1",
+		"react-i18next": "17.1.3",
 		"swr": "2.5.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/node": "26.4.0",
-		"@types/react": "19.2.18",
-		"@types/react-dom": "19.2.5",
+		"@types/node": "26.6.5",
+		"@types/react": "19.3.0",
+		"@types/react-dom": "19.3.0",
+		"tsx": "4.23.15",
 		"typescript": "6.0.3"
 	}
 }

@@ -7,6 +7,7 @@ import { checkYearPeriodsConflictsHandler } from './handlers/check-conflicts.js'
 import { createYearPeriodHandler } from './handlers/create-year-period.js';
 import { deleteYearPeriodHandler } from './handlers/delete-year-period.js';
 import { getYearPeriodHandler } from './handlers/get-year-period.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listYearPeriodsHandler } from './handlers/list-year-periods.js';
 import { lockYearPeriodHandler } from './handlers/lock-year-period.js';
 import { updateYearPeriodHandler } from './handlers/update-year-period.js';
@@ -30,13 +31,19 @@ server.register(
 		);
 
 		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.read, PermissionCatalog.all.year_periods.actions.create, PermissionCatalog.all.year_periods.actions.update]) },
+			listAgenciesHandler,
+		);
+
+		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.read]) },
 			getYearPeriodHandler,
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.create]) },
 			createYearPeriodHandler,
 		);

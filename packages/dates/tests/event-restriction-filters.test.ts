@@ -89,7 +89,6 @@ describe('resolvePatternRules', () => {
 				all_day: false,
 				dates: [d('20260101')],
 				end_time: '',
-				event: { id: '01_JAN', title: 'Jan 1' },
 				kind: 'event_restriction',
 				lines_mode: 'all',
 				start_time: '',
@@ -110,5 +109,17 @@ describe('resolvePatternRules', () => {
 
 		assert.ok(derived?.kind === 'event_restriction');
 		assert.deepEqual(derived.timepoints, [t('06:00'), t('07:00')]);
+		assert.deepEqual(derived.event, { id: event._id, title: event.title });
+
+		const renamed = resolvePatternRules(pattern, [{ ...event, rules: [{
+			dates: [d('20260101')],
+			kind: 'event_replacement',
+			lines_mode: 'all',
+			weekdays: [6],
+			year_period_ids: ['school'],
+		}], title: 'Updated title' }]);
+		const replacement = renamed.find(rule => rule.kind === 'event_replacement');
+		assert.ok(replacement?.kind === 'event_replacement');
+		assert.deepEqual(replacement.event, { id: event._id, title: 'Updated title' });
 	});
 });

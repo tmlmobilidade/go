@@ -6,6 +6,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { createZoneHandler } from './handlers/create-zone.js';
 import { deleteZoneHandler } from './handlers/delete-zone.js';
 import { getZoneHandler } from './handlers/get-zone.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listZonesHandler } from './handlers/list-zones.js';
 import { lockZoneHandler } from './handlers/lock-zone.js';
 import { updateZoneHandler } from './handlers/update-zone.js';
@@ -32,6 +33,12 @@ server.register(
 		);
 
 		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.zones.scope, [PermissionCatalog.all.zones.actions.nav, PermissionCatalog.all.zones.actions.create, PermissionCatalog.all.zones.actions.update]) },
+			listAgenciesHandler,
+		);
+
+		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware([
 				{ actions: [PermissionCatalog.all.zones.actions.nav], scope: PermissionCatalog.all.zones.scope },
@@ -41,7 +48,7 @@ server.register(
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.zones.scope, [PermissionCatalog.all.zones.actions.create]) },
 			createZoneHandler,
 		);

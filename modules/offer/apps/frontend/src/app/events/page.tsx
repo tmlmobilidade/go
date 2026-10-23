@@ -1,13 +1,9 @@
-'use client';
+/* * */
 
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
+import { EventsEmptyState } from '@/components/events/list/EventsEmptyState';
 
 /* * */
 
-export default function Page() {
-	return (
-		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione um Evento" />
-		</Surface>
-	);
+export default async function Page() {
+	return <EventsEmptyState />;
 }

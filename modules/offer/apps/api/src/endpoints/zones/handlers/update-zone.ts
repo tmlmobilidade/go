@@ -87,6 +87,16 @@ export async function updateZoneHandler(request: FastifyRequest<{ Body: UpdateZo
 	}
 
 	//
+	// Locked records must be unlocked through the dedicated lock action first.
+
+	if (zoneData.is_locked) {
+		return sendErrorApiResponse(reply, {
+			error: 'Cannot update a locked zone. Unlock it first.',
+			status_code: '409',
+		});
+	}
+
+	//
 	// Update the zone with parsed client fields and the authenticated updater.
 
 	const updatedZone = await goDb.offer.zones.updateById(zoneData._id, {

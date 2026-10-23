@@ -6,7 +6,7 @@ import { z } from 'zod';
 /* * */
 
 export const AnnotationSchema = BaseDocumentSchema.extend({
-	agency_ids: z.array(z.string()).default([]),
+	agency_ids: z.array(z.string()).min(1),
 	dates: z.array(OperationalDateSchema).default([]),
 	description: z.string().optional(),
 	is_locked: z.boolean().default(false),

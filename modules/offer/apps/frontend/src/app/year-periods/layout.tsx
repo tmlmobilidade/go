@@ -1,9 +1,8 @@
 /* * */
 
 import { PeriodsList } from '@/components/year-periods/list/PeriodsList';
-import { PeriodsListContextProvider } from '@/components/year-periods/list/PeriodsList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
-import { type PropsWithChildren } from 'react';
+import { Fragment, type PropsWithChildren } from 'react';
 
 /* * */
 
@@ -12,10 +11,8 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="periods"
 			panes={[
-				<PeriodsListContextProvider key="list">
-					<PeriodsList />
-				</PeriodsListContextProvider>,
-				children,
+				<PeriodsList key="list" />,
+				<Fragment key="children">{children}</Fragment>,
 			]}
 		/>
 	);

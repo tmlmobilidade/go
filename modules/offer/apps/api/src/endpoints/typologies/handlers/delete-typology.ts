@@ -56,6 +56,16 @@ export async function deleteTypologyHandler(request: FastifyRequest<{ Params: { 
 	}
 
 	//
+	// Locked records must be unlocked through the dedicated lock action first.
+
+	if (typology.is_locked) {
+		return sendErrorApiResponse(reply, {
+			error: 'Cannot delete a locked typology. Unlock it first.',
+			status_code: '409',
+		});
+	}
+
+	//
 
 	await goDb.offer.typologies.deleteById(id);
 

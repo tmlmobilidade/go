@@ -130,6 +130,27 @@ for (const resource of resources) {
 			assert.equal(WRITES.length, 0);
 		});
 
+		test('ordinary create/update requests cannot control lock state', async () => {
+			const created = await invoke(handlers.create, { ...validBody, is_locked: true }, [permission(resource.plural, 'create')]);
+			assert.equal(created.httpStatus, 200);
+			assert.equal(WRITES[0].is_locked, false);
+			WRITES = [];
+			const updated = await invoke(handlers.update, { is_locked: true, name: 'Edited' }, [permission(resource.plural, 'update')]);
+			assert.equal(updated.httpStatus, 200);
+			assert.equal('is_locked' in WRITES[0], false);
+		});
+
+		test('locked records reject update and deletion without writes, even with lock permission', async () => {
+			ROW = { ...ROW, is_locked: true };
+			for (const action of ['update', 'delete'] as const) {
+				const result = await invoke(handlers[action], { is_locked: false, name: 'Edited' }, [permission(resource.plural, action), permission(resource.plural, 'lock')]);
+				assert.equal(result.httpStatus, 409);
+				assert.match(result.response.error ?? '', /locked/);
+			}
+			assert.deepEqual(WRITES, []);
+			assert.deepEqual(DELETED, []);
+		});
+
 		test('requires permissions for all agencies on create', async () => {
 			const result = await invoke(handlers.create, { ...validBody, agency_ids: ['A', 'B'] }, [permission(resource.plural, 'create')]);
 			assert.equal(result.httpStatus, 403);

@@ -42,7 +42,7 @@ server.register(
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.create]) },
 			createAnnotationHandler,
 		);

@@ -1,15 +1,14 @@
 /* * */
 
 import { EventsDetail } from '@/components/events/detail/EventsDetail';
-import { EventsDetailContextProvider } from '@/components/events/detail/EventsDetail.context';
+import { EventsDetailFormContextProvider } from '@/components/events/detail/EventsDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<EventsDetailContextProvider eventId={id}>
+		<EventsDetailFormContextProvider>
 			<EventsDetail />
-		</EventsDetailContextProvider>
+		</EventsDetailFormContextProvider>
 	);
 }

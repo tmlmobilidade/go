@@ -56,6 +56,16 @@ export async function deleteFareHandler(request: FastifyRequest<{ Params: { id: 
 	}
 
 	//
+	// Locked records must be unlocked through the dedicated lock action first.
+
+	if (fare.is_locked) {
+		return sendErrorApiResponse(reply, {
+			error: 'Cannot delete a locked fare. Unlock it first.',
+			status_code: '409',
+		});
+	}
+
+	//
 
 	await goDb.offer.fares.deleteById(id);
 
