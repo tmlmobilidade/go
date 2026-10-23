@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"fmt"
+	dbops "main/services/database"
 	"strings"
 )
 
@@ -43,6 +44,20 @@ func PrepareSQLiteTables(db *sql.DB) (*SQLiteTables, error) {
 		}
 		table.prepared = result
 		result.tables[strings.ToLower(name)] = table
+	}
+	// Build these once, before validations open concurrent read cursors. Match
+	// ForEachMatching's NULL-as-empty expression so SQLite can use the index.
+	for _, lookup := range [][2]string{{"stop_times", "trip_id"}, {"stops", "stop_id"}, {"shapes", "shape_id"}} {
+		table := result.tables[lookup[0]]
+		if table == nil || !table.columns[lookup[1]] {
+			continue
+		}
+		index := dbops.SanitizeColumnName("idx_validation_" + lookup[0] + "_" + lookup[1])
+		query := "CREATE INDEX IF NOT EXISTS " + index + " ON " + dbops.SanitizeTableName(table.name) +
+			" (COALESCE(" + dbops.SanitizeColumnName(lookup[1]) + ", ''))"
+		if _, err := db.Exec(query); err != nil {
+			return nil, fmt.Errorf("prepare lookup index for %s.%s: %w", table.name, lookup[1], err)
+		}
 	}
 	return result, nil
 }

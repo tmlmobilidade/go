@@ -275,3 +275,41 @@ func (t *SQLiteTable) ForEachMatching(field, value string, fn func(*SQLiteRow) e
 	}
 	return rows.Err()
 }
+
+// ForEachMatchingFields streams the requested values with their source row in
+// one query, avoiding a separate Fields query per match. Values are not cached.
+// Missing columns and NULLs have the same empty-string semantics as Fields.
+func (t *SQLiteTable) ForEachMatchingFields(field, value string, fields []string, fn func(*SQLiteRow, map[string]string) error) error {
+	if len(fields) == 0 {
+		return fmt.Errorf("at least one field is required")
+	}
+	columns := []string{"source.rowid"}
+	var rowID int
+	values := make([]sql.NullString, len(fields))
+	targets := make([]any, len(fields)+1)
+	targets[0] = &rowID
+	for i, name := range fields {
+		columns = append(columns, t.column("source", name))
+		targets[i+1] = &values[i]
+	}
+	query := "SELECT " + strings.Join(columns, ", ") + " FROM " + dbops.SanitizeTableName(t.name) +
+		" AS source WHERE COALESCE(" + t.column("source", field) + ", '') = ? ORDER BY source.rowid"
+	rows, err := t.db.Query(query, value)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		if err := rows.Scan(targets...); err != nil {
+			return err
+		}
+		result := make(map[string]string, len(fields))
+		for i, name := range fields {
+			result[name] = values[i].String
+		}
+		if err := fn(t.At(rowID-1), result); err != nil {
+			return err
+		}
+	}
+	return rows.Err()
+}

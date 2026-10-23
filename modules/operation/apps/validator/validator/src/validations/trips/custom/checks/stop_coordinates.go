@@ -68,11 +68,8 @@ func StopCoordinates(db *services.SQLiteContext, rules *types.RuleContext, geome
 	//
 	// 8. Collect the matching rows
 
-	err = times.ForEachMatching("trip_id", trip["trip_id"], func(row *services.SQLiteRow) error {
-		id, err := row.Field("stop_id")
-		if err != nil {
-			return err
-		}
+	err = times.ForEachMatchingFields("trip_id", trip["trip_id"], []string{"stop_id"}, func(_ *services.SQLiteRow, fields map[string]string) error {
+		id := fields["stop_id"]
 		if id != "" && !seen[id] {
 			ids = append(ids, id)
 			seen[id] = true
@@ -88,13 +85,9 @@ func StopCoordinates(db *services.SQLiteContext, rules *types.RuleContext, geome
 
 	for _, id := range ids {
 		found := false
-		err = stops.ForEachMatching("stop_id", id, func(row *services.SQLiteRow) error {
+		err = stops.ForEachMatchingFields("stop_id", id, []string{"stop_lat", "stop_lon"}, func(_ *services.SQLiteRow, fields map[string]string) error {
 			if found {
 				return nil
-			}
-			fields, err := row.Fields("stop_lat", "stop_lon")
-			if err != nil {
-				return err
 			}
 			if fields["stop_lat"] == "" || fields["stop_lon"] == "" {
 				return nil

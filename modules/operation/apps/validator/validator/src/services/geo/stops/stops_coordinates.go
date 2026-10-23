@@ -216,50 +216,58 @@ func BuildStopClosestShapePointsDistanceMapPerStopShape(
 
 		// For each shape serving this stop:
 		for _, shapeID := range stopShapeIDs {
-			data := shapeChunkedCache[shapeID]
-			if data == nil {
-				continue
-			}
-
-			minDistance := math.MaxFloat64
-			closestCoord := types.Coordinates{}
-			foundDistance := false
-
-			// Find the closest (chunked/interpolated) point along the shape
-			for _, coordinate := range data.ChunkedCoordinates {
-				distance := lib.HaversineDistance(stopPoint, coordinate)
-				if distance < minDistance {
-					minDistance = distance
-					closestCoord = coordinate
-					foundDistance = true
-					// Early exit if found below threshold
-					if distance < MAX_STOP_DISTANCE_TO_CLOSEST_SHAPE_POINT_METERS {
-						break
-					}
-				}
-			}
-
-			// Report if minimum distance is a violation (strictly > allowed threshold)
-			if foundDistance && minDistance > MAX_STOP_DISTANCE_TO_CLOSEST_SHAPE_POINT_METERS {
-				// Find closest original shape point for reporting
-				closestSeq := 0
-				closestLat := closestCoord.Lat
-				closestLon := closestCoord.Lng
-				if data != nil {
-					closestSeq, closestLat, closestLon = data.FindClosestOriginalPoint(stopPoint)
-				}
-				key := StopShapeCacheKey(stop.StopId, shapeID)
-				result[key] = types.StopClosestShapePointsInfo{
-					ShapeID:           shapeID,
-					DistanceMeters:    minDistance,
-					ClosestShapePtLat: closestLat,
-					ClosestShapePtLon: closestLon,
-					ClosestShapePtSeq: closestSeq,
-				}
+			if info := stopShapeDistanceViolation(stopPoint, shapeID, shapeChunkedCache[shapeID]); info != nil {
+				result[StopShapeCacheKey(stop.StopId, shapeID)] = *info
 			}
 		}
 	}
 
 	lib.AppLogger.Accent("Stop-to-shape distance cache built")
 	return result
+}
+
+// StopShapeDistanceViolation checks a single pair without allocating bulk cache
+// maps or logging per pair. The caller caches both violations and nil results.
+func StopShapeDistanceViolation(stop types.StopCoordinatesValidation, shapeID string, data *shapes_coordinates.ShapeChunkedData) *types.StopClosestShapePointsInfo {
+	if stop.StopId == "" {
+		return nil
+	}
+	lat, err := strconv.ParseFloat(stop.StopLat, 64)
+	if err != nil {
+		return nil
+	}
+	lon, err := strconv.ParseFloat(stop.StopLon, 64)
+	if err != nil {
+		return nil
+	}
+	return stopShapeDistanceViolation(types.Coordinates{Lat: lat, Lng: lon}, shapeID, data)
+}
+
+func stopShapeDistanceViolation(stopPoint types.Coordinates, shapeID string, data *shapes_coordinates.ShapeChunkedData) *types.StopClosestShapePointsInfo {
+	if data == nil {
+		return nil
+	}
+	minDistance := math.MaxFloat64
+	foundDistance := false
+	for _, coordinate := range data.ChunkedCoordinates {
+		distance := lib.HaversineDistance(stopPoint, coordinate)
+		if distance < minDistance {
+			minDistance = distance
+			foundDistance = true
+			if distance < MAX_STOP_DISTANCE_TO_CLOSEST_SHAPE_POINT_METERS {
+				return nil
+			}
+		}
+	}
+	if !foundDistance || minDistance <= MAX_STOP_DISTANCE_TO_CLOSEST_SHAPE_POINT_METERS {
+		return nil
+	}
+	seq, lat, lon := data.FindClosestOriginalPoint(stopPoint)
+	return &types.StopClosestShapePointsInfo{
+		ShapeID:           shapeID,
+		DistanceMeters:    minDistance,
+		ClosestShapePtLat: lat,
+		ClosestShapePtLon: lon,
+		ClosestShapePtSeq: seq,
+	}
 }

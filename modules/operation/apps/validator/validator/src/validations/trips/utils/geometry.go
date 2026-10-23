@@ -30,11 +30,7 @@ func (g *Geometry) Distance(db *services.SQLiteContext, stop types.StopCoordinat
 			return nil, err
 		}
 		points := []types.ShapeCoordinatesValidation{}
-		err = table.ForEachMatching("shape_id", shapeID, func(row *services.SQLiteRow) error {
-			fields, err := row.Fields("shape_pt_lat", "shape_pt_lon", "shape_pt_sequence")
-			if err != nil {
-				return err
-			}
+		err = table.ForEachMatchingFields("shape_id", shapeID, []string{"shape_pt_lat", "shape_pt_lon", "shape_pt_sequence"}, func(_ *services.SQLiteRow, fields map[string]string) error {
 			if fields["shape_pt_lat"] != "" && fields["shape_pt_lon"] != "" {
 				points = append(points, types.ShapeCoordinatesValidation{ShapeId: shapeID, ShapePtLat: fields["shape_pt_lat"], ShapePtLon: fields["shape_pt_lon"], ShapePtSeq: fields["shape_pt_sequence"]})
 			}
@@ -50,11 +46,7 @@ func (g *Geometry) Distance(db *services.SQLiteContext, stop types.StopCoordinat
 		g.pairs[key] = nil
 		return nil, nil
 	}
-	distances := stops_coordinates.BuildStopClosestShapePointsDistanceMapPerStopShape([]types.StopCoordinatesValidation{stop}, map[string][]string{stop.StopId: {shapeID}}, map[string]*shapes_coordinates.ShapeChunkedData{shapeID: shape})
-	if result, ok := distances[stops_coordinates.StopShapeCacheKey(stop.StopId, shapeID)]; ok {
-		g.pairs[key] = &result
-		return &result, nil
-	}
-	g.pairs[key] = nil
-	return nil, nil
+	result := stops_coordinates.StopShapeDistanceViolation(stop, shapeID, shape)
+	g.pairs[key] = result
+	return result, nil
 }
