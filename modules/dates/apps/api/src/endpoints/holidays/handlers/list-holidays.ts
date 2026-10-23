@@ -47,7 +47,7 @@ export async function listHolidaysHandler(request: FastifyRequest, reply: Fastif
 	//
 	// Fetch holidays based on query filters
 
-	const allHolidays = await goDb.offer.holidays.findMany(queryFilters);
+	const allHolidays = await goDb.dates.holidays.findMany(queryFilters);
 
 	return sendSuccessApiResponse(reply, allHolidays);
 

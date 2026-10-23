@@ -1,7 +1,7 @@
 'use client';
 
-import { type EventRule, EventRuleSchema, type HHMM } from '@tmlmobilidade/go-types-offer';
-import { useForm, type UseFormReturnType, zodResolver } from '@tmlmobilidade/ui';
+import { type Event, type EventRule, EventRuleSchema, type HHMM } from '@tmlmobilidade/go-types-offer';
+import { type StandardFormContextValue, useStandardForm, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
 import { closeCreateRuleModal } from './RuleCreate.modal';
@@ -26,10 +26,6 @@ function getInitialRuleValues(initialValues?: EventRule): EventRule {
 		all_day: false,
 		dates: [],
 		end_time: '' as HHMM,
-		event: {
-			id: '',
-			title: '',
-		},
 		kind: 'event_restriction',
 		lines_mode: 'all',
 		start_time: '' as HHMM,
@@ -40,21 +36,13 @@ function getInitialRuleValues(initialValues?: EventRule): EventRule {
 
 interface EventData {
 	agency_ids: string[]
-	dates: string[]
+	dates: Event['dates']
 }
 
-interface RuleCreateContextState {
-	actions: {
-		deleteRule?: () => void
-		submitRule: () => void
-	}
-	data: {
-		eventData: EventData
-		form: UseFormReturnType<EventRule>
-	}
-	flags: {
-		isEditing: boolean
-	}
+interface RuleCreateContextState extends StandardFormContextValue<EventRule> {
+	eventData: EventData
+	isEditing: boolean
+	values: EventRule
 }
 
 interface RuleCreateContextProviderProps {
@@ -84,40 +72,30 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 	//
 	// A. Setup form
 
-	const form = useForm<EventRule>({
-		initialValues: getInitialRuleValues(initialValues),
-		mode: 'controlled',
-		validate: zodResolver(EventRuleSchema),
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
+	const { form, isDirty, unblock } = useStandardForm<EventRule, typeof EventRuleSchema>({
+		defaultValues: { ...getInitialRuleValues(initialValues), dates: initialValues?.dates ?? eventData.dates },
+		schema: EventRuleSchema,
 	});
+	// Subscribe to edits, then read the typed form values (the watch hook returns deep partials).
+	useStandardFormWatch({ control: form.control });
+	const values = form.getValues();
+	const isValid = EventRuleSchema.safeParse(values).success;
 
 	//
 	// B. Handle actions
 
-	const handleSubmitRule = useCallback(() => {
-		if (form.values.kind === 'event_restriction' && form.values.all_day) {
-			form.setFieldValue('start_time', ALL_DAY_RESTRICTION_START_TIME);
-			form.setFieldValue('end_time', ALL_DAY_RESTRICTION_END_TIME);
+	const handleSubmitRule = useCallback(async () => {
+		const current = form.getValues();
+		if (current.kind === 'event_restriction' && current.all_day) {
+			form.setValue('start_time', ALL_DAY_RESTRICTION_START_TIME);
+			form.setValue('end_time', ALL_DAY_RESTRICTION_END_TIME);
 		}
-
-		// Validate form
-		const validation = form.validate();
-		if (validation.hasErrors) {
-			return;
-		}
-
-		// Get the rule values and add the generated name
-		const ruleValues = {
-			...form.getValues(),
-		};
-
-		// Call the onSubmit callback
-		onSubmit(ruleValues);
-
-		// Close the modal
-		closeCreateRuleModal();
-	}, [form, onSubmit]);
+		await form.handleSubmit((validatedRule) => {
+			onSubmit(validatedRule);
+			unblock();
+			closeCreateRuleModal();
+		})();
+	}, [form, onSubmit, unblock]);
 
 	const handleDeleteRule = useCallback(() => {
 		if (onDelete) {
@@ -129,25 +107,33 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 	//
 	// C. Define context value
 
-	const contextValue: RuleCreateContextState = useMemo(() => ({
+	const stateValue: RuleCreateContextState = useMemo(() => ({
 		actions: {
-			deleteRule: onDelete ? handleDeleteRule : undefined,
-			submitRule: handleSubmitRule,
+			create: handleSubmitRule,
+			delete: onDelete ? handleDeleteRule : undefined,
+			update: handleSubmitRule,
 		},
-		data: {
-			eventData,
-			form,
+		capabilities: {
+			createEnabled: isValid,
+			deleteEnabled: !!onDelete,
+			editEnabled: true,
+			updateEnabled: isValid,
 		},
-		flags: {
-			isEditing: Boolean(initialValues),
-		},
-	}), [eventData, form, handleDeleteRule, handleSubmitRule, initialValues, onDelete]);
+		eventData,
+		form,
+		isDirty,
+		isEditing: Boolean(initialValues),
+		isValid,
+		status: {},
+		unblock,
+		values,
+	}), [eventData, form, handleDeleteRule, handleSubmitRule, initialValues, onDelete, isDirty, isValid, unblock, values]);
 
 	//
 	// D. Render components
 
 	return (
-		<RuleCreateContext.Provider value={contextValue}>
+		<RuleCreateContext.Provider value={stateValue}>
 			{children}
 		</RuleCreateContext.Provider>
 	);

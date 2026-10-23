@@ -2,6 +2,7 @@
 
 import { WEEKDAYS } from '@tmlmobilidade/go-types-offer';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import { useRuleCreateContext } from '../RuleCreate.context';
 
@@ -40,21 +41,23 @@ export function RuleCreateWeekdays() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const createRuleContext = useRuleCreateContext();
 
 	//
 	// B. Handle actions
 
-	const currentWeekdays = createRuleContext.data.form.values.kind === 'event_replacement' ? createRuleContext.data.form.values.weekdays || [] : [];
+	const currentWeekdays = createRuleContext.values.kind === 'event_replacement' ? createRuleContext.values.weekdays || [] : [];
 	const selectedPresetKey = getSelectedPresetKey(currentWeekdays);
 
 	const applyPreset = (key: null | WeekdayPresetKey) => {
 		if (!key) {
-			createRuleContext.data.form.setFieldValue('weekdays', undefined);
+			createRuleContext.form.setValue('weekdays', []);
 			return;
 		}
 
-		createRuleContext.data.form.setFieldValue('weekdays', [...WEEKDAY_PRESETS[key]]);
+		createRuleContext.form.setValue('weekdays', [...WEEKDAY_PRESETS[key]]);
 	};
 
 	//
@@ -64,7 +67,7 @@ export function RuleCreateWeekdays() {
 		<Section gap="md">
 
 			<Section gap="xs" padding="none">
-				<Text>Tipo de dia</Text>
+				<Text>{t('default:events.ruleEditor.dayType')}</Text>
 			</Section>
 
 			{/* Quick Select Tags */}
@@ -72,16 +75,16 @@ export function RuleCreateWeekdays() {
 				onChange={applyPreset}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
-					{ label: 'Dias úteis', value: 'business' },
-					{ label: 'Fim de semana', value: 'weekend' },
+					{ label: t('default:events.ruleEditor.all'), value: 'all' },
+					{ label: t('default:events.ruleEditor.weekdays'), value: 'business' },
+					{ label: t('default:events.ruleEditor.weekend'), value: 'weekend' },
 				]}
 			/>
 
 			<WeekdaySelector
 				value={currentWeekdays}
 				onChange={(selectedDays) => {
-					createRuleContext.data.form.setFieldValue('weekdays', selectedDays.length > 0 ? selectedDays : undefined);
+					createRuleContext.form.setValue('weekdays', selectedDays);
 				}}
 			/>
 

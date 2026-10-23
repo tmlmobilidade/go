@@ -2,7 +2,6 @@
 
 import { PeriodAssignContent } from '@/components/year-periods/calendar/PeriodAssignContent';
 import { PeriodAssignHeader } from '@/components/year-periods/calendar/PeriodAssignHeader';
-import { PeriodsListContextProvider } from '@/components/year-periods/list/PeriodsList.context';
 import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -10,9 +9,7 @@ import { Pane } from '@tmlmobilidade/ui';
 export function PeriodAssign() {
 	return (
 		<Pane header={[<PeriodAssignHeader key="period-assign-header" />]}>
-			<PeriodsListContextProvider>
-				<PeriodAssignContent />
-			</PeriodsListContextProvider>
+			<PeriodAssignContent />
 		</Pane>
 	);
 }

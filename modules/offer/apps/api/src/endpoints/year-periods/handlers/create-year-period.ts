@@ -9,7 +9,7 @@ import { handleYearPeriodDateAssignment } from '../utils/handle-date-assignment.
 
 /**
  * Creates a new period.
- * If dates are provided, handles conflicts by removing those dates from other periods of the same agency.
+ * If dates are provided, handles conflicts with any shared operator after lock and permission checks.
  * @param request Fastify request containing period data
  * @param reply Fastify reply
  */
@@ -60,11 +60,18 @@ export async function createYearPeriodHandler(request: FastifyRequest<{ Body: Cr
 	}
 
 	//
-	// If dates are provided, handle conflicts with other periods of the same agency set
+	// If dates are provided, handle conflicts with other periods sharing any operator
 
 	if (validatedYearPeriod.data.dates && validatedYearPeriod.data.dates.length > 0) {
 		const newDates = validatedYearPeriod.data.dates;
-		validatedYearPeriod.data.dates = await handleYearPeriodDateAssignment(validatedYearPeriod.data.agency_ids, newDates, request.me._id);
+		const assignment = await handleYearPeriodDateAssignment({
+			actorId: request.me._id,
+			agencyIds: validatedYearPeriod.data.agency_ids,
+			newDates,
+			userPermissions: request.permissions,
+		});
+		if (assignment.error) return sendErrorApiResponse(reply, assignment.error);
+		validatedYearPeriod.data.dates = assignment.dates;
 	}
 
 	//

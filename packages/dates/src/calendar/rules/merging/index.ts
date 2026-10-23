@@ -1,4 +1,4 @@
-import { Event, EventReplacementRule, EventRestrictionRule, EventRule, Pattern, ScheduleRule } from '@tmlmobilidade/go-types-offer';
+import { Event, EventReplacementDefinition, EventReplacementRule, EventRestrictionDefinition, EventRestrictionRule, EventRule, Pattern, ScheduleRule } from '@tmlmobilidade/go-types-offer';
 
 function eventRuleAffectsLine(rule: EventRule, lineId: string): boolean {
 	switch (rule.lines_mode) {
@@ -16,7 +16,7 @@ function eventRuleAffectsLine(rule: EventRule, lineId: string): boolean {
 function buildEventDerivedRestriction(args: {
 	event: Event
 	pattern: Pattern
-	rule: EventRestrictionRule
+	rule: EventRestrictionDefinition
 }): EventRestrictionRule | null {
 	const { event, pattern, rule } = args;
 
@@ -45,7 +45,7 @@ function buildEventDerivedRestriction(args: {
 function buildEventDerivedReplacement(args: {
 	event: Event
 	pattern: Pattern
-	rule: EventReplacementRule
+	rule: EventReplacementDefinition
 }): EventReplacementRule | null {
 	const { event, pattern, rule } = args;
 

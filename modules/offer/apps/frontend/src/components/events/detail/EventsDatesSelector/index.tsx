@@ -1,24 +1,27 @@
 'use client';
 
-import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
+import { useEventsDetailFormContext } from '@/components/events/detail/EventsDetailForm.context';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
-import { Button, MiniCalendar, Section, Text, TimeChip } from '@tmlmobilidade/ui';
+import { Button, MiniCalendar, Section, Text, TimeChip, useStandardFormWatch } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function DatesSelector() {
+export function EventsDatesSelector() {
 	//
 
 	//
 	// A. Setup variables
 
-	const eventsDetailContext = useEventsDetailContext();
-	const isDisabled = eventsDetailContext.flags.isReadOnly;
-	const dates = useMemo(() => eventsDetailContext.data.form.values.dates ?? [], [eventsDetailContext.data.form.values.dates]);
+	const eventsDetailContext = useEventsDetailFormContext();
+	const { i18n, t } = useTranslation();
+	const isDisabled = !eventsDetailContext.capabilities.editEnabled;
+	const formDates = useStandardFormWatch({ control: eventsDetailContext.form.control, name: 'dates' });
+	const dates = useMemo(() => formDates ?? [], [formDates]);
 	const [displayedMonth, setDisplayedMonth] = useState<Date>();
 
 	//
@@ -77,41 +80,31 @@ export function DatesSelector() {
 	//
 	// C. Handle actions
 
+	const setDates = (value: OperationalDate[]) => eventsDetailContext.form.setValue('dates', value, { shouldDirty: true, shouldValidate: true });
+
 	const handleSelect = (date: Date) => {
 		const operationalDate = dayjs(date).format('YYYYMMDD') as OperationalDate;
 		const isSelected = dates.includes(operationalDate);
 
 		if (isSelected) {
 			// Remove date from event
-			eventsDetailContext.data.form.setFieldValue(
-				'dates',
-				dates.filter(d => d !== operationalDate),
-			);
+			setDates(dates.filter(d => d !== operationalDate));
 		} else {
 			// Add date to event
-			eventsDetailContext.data.form.setFieldValue(
-				'dates',
-				[...dates, operationalDate],
-			);
+			setDates([...dates, operationalDate]);
 		}
 	};
 
 	const handleRemove = (operationalDate: OperationalDate) => {
-		eventsDetailContext.data.form.setFieldValue(
-			'dates',
-			dates.filter(d => d !== operationalDate),
-		);
+		setDates(dates.filter(d => d !== operationalDate));
 	};
 
 	const handleToggleDisplayedMonth = () => {
 		if (isAllDisplayedMonthSelected) {
-			eventsDetailContext.data.form.setFieldValue(
-				'dates',
-				dates.filter(d => !displayedMonthDates.includes(d)),
-			);
+			setDates(dates.filter(d => !displayedMonthDates.includes(d)));
 		} else {
 			const newDates = [...new Set([...dates, ...displayedMonthDates])].sort() as OperationalDate[];
-			eventsDetailContext.data.form.setFieldValue('dates', newDates);
+			setDates(newDates);
 		}
 	};
 
@@ -120,7 +113,7 @@ export function DatesSelector() {
 
 	return (
 		<Section gap="md" padding="none">
-			<Text size="sm">Selecione as datas da ocorrência</Text>
+			<Text size="sm" weight="semibold">{t('default:events.dates.prompt')}</Text>
 
 			<Section flexDirection="row" gap="md" padding="none">
 				<Section alignItems="center" gap="md" padding="none" width="fit-content">
@@ -137,43 +130,40 @@ export function DatesSelector() {
 						}}
 					/>
 					{!isDisabled && (
-						<Button className={styles.calendarMonthButton} label={isAllDisplayedMonthSelected ? 'Remover mês' : 'Selecionar mês'} onClick={handleToggleDisplayedMonth} size="xs" variant="transparent" />
+						<Button className={styles.calendarMonthButton} label={isAllDisplayedMonthSelected ? t('default:events.dates.removeMonth') : t('default:events.dates.selectMonth')} onClick={handleToggleDisplayedMonth} size="xs" variant="transparent" />
 					)}
 				</Section>
 
 				{dates.length > 0 && (
-					<div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--mantine-spacing-md)', minWidth: 0 }}>
+					<div className={styles.months}>
 						{Array.from(groupedByMonth.entries()).map(([monthKey, monthDates]) => {
 							const [yyyy, mm] = monthKey.split('-');
 							const monthLabel = new Date(Number(yyyy), Number(mm) - 1, 1)
-								.toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' });
+								.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' });
 
 							const removeMonth = () => {
-								eventsDetailContext.data.form.setFieldValue(
-									'dates',
-									dates.filter(d => !monthDates.includes(d)),
-								);
+								setDates(dates.filter(d => !monthDates.includes(d)));
 							};
 
 							return (
 								<Section key={monthKey} gap="xs" padding="none">
-									<div style={{ alignItems: 'center', display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-										<Text fw={600} size="sm" style={{ textTransform: 'capitalize' }}>{monthLabel}</Text>
+									<div className={styles.monthHeader}>
+										<Text className={styles.monthLabel} fw={600} size="sm">{monthLabel}</Text>
 										{!isDisabled && (
 											<button
 												className={styles.monthSmallButton}
 												onClick={removeMonth}
 												type="button"
 											>
-												Remover mês
+												{t('default:events.dates.removeMonth')}
 											</button>
 										)}
 									</div>
-									<div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+									<div className={styles.days}>
 										{monthDates.map((date) => {
 											const jsDate = new Date(Number(date.slice(0, 4)), Number(date.slice(4, 6)) - 1, Number(date.slice(6, 8)));
 											const day = jsDate.getDate();
-											const weekdayShort = jsDate.toLocaleDateString('pt-PT', { weekday: 'short' }).slice(0, 3);
+											const weekdayShort = jsDate.toLocaleDateString(i18n.language, { weekday: 'short' }).slice(0, 3);
 											return (
 												<TimeChip
 													key={date}

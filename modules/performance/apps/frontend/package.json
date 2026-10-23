@@ -15,7 +15,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.46.0",
+		"@tabler/icons-react": "3.49.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-performance": "*",
@@ -23,17 +23,17 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/ui": "*",
 		"luxon": "3.7.2",
-		"next": "16.3.4",
-		"next-intl": "4.14.1",
-		"react": "19.2.8",
+		"next": "16.4.2",
+		"next-intl": "4.14.9",
+		"react": "19.3.1",
 		"swr": "2.5.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/luxon": "3.7.5",
-		"@types/node": "26.4.0",
-		"@types/react": "19.2.18",
-		"@types/react-dom": "19.2.5",
+		"@types/luxon": "3.7.6",
+		"@types/node": "26.6.5",
+		"@types/react": "19.3.0",
+		"@types/react-dom": "19.3.0",
 		"typescript": "6.0.3"
 	}
 }
