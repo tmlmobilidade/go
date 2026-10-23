@@ -24,7 +24,6 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 	const clearError = useCallback(() => setError(undefined), []);
 	const { apiKey, experimentDeploymentKey, options } = useAnalyticsConfiguration(configuration, handleError, clearError);
 	const ready = Boolean(apiKey) && initialized?.apiKey === apiKey && initialized?.options === options;
-	const { startReplay, stopReplay } = useReplay(initialized, initializationRef, ready, handleError);
 
 	// Actions must use the initialized client that still matches the current configuration.
 	const identify = useCallback((value: AnalyticsUserProperties | null) => {
@@ -83,7 +82,9 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 	}, [identify, user]);
 
 	// Register flag polling after synchronizing Analytics identity for this user.
-	const replayEnabled = useReplayFlag(initialized, experimentDeploymentKey, user?._id, ready, handleError);
+	const replayActivationId = useReplayFlag(initialized, experimentDeploymentKey, user?._id, ready, handleError);
+	const replayEnabled = Boolean(replayActivationId);
+	const { startReplay, stopReplay } = useReplay(initialized, initializationRef, ready, replayActivationId, handleError);
 
 	return useMemo(() => ({
 		actions: { identify, startReplay, stopReplay, track },

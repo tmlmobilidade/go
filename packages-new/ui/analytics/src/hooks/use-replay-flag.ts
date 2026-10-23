@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { type AnalyticsInitialization } from '../types/analytics';
-import { createExperimentClient, fetchReplayFlag } from '../utils/experiment-client';
+import { createExperimentClient, fetchReplayActivation } from '../utils/experiment-client';
 
 /* * */
 
 const REPLAY_FLAG_REFRESH_INTERVAL_MS = 30_000;
 
-/** Polls the remote decision for the authenticated user without starting replay capture. */
+/** Polls the remote activation ID for the authenticated user without starting replay capture. */
 export function useReplayFlag(
 	initialized: AnalyticsInitialization | undefined,
 	deploymentKey: string | undefined,
@@ -22,7 +22,7 @@ export function useReplayFlag(
 		if (!ready || !initialized || !deploymentKey || !userId) return undefined;
 		return { deploymentKey, initialized, userId };
 	}, [deploymentKey, initialized, ready, userId]);
-	const [decision, setDecision] = useState<{ enabled: boolean; request: typeof request }>();
+	const [decision, setDecision] = useState<{ activationId: string | undefined; request: typeof request }>();
 
 	useEffect(() => {
 		if (!request) return;
@@ -36,8 +36,8 @@ export function useReplayFlag(
 		const refresh = async () => {
 			if (!isCurrent()) return;
 			try {
-				const enabled = await fetchReplayFlag(experiment, { device_id: client.getDeviceId(), user_id: request.userId });
-				if (isCurrent()) setDecision({ enabled, request });
+				const activationId = await fetchReplayActivation(experiment, { device_id: client.getDeviceId(), user_id: request.userId });
+				if (isCurrent()) setDecision({ activationId, request });
 			} catch (cause: unknown) {
 				if (isCurrent()) {
 					setDecision(undefined);
@@ -58,7 +58,8 @@ export function useReplayFlag(
 		};
 	}, [onError, request]);
 
-	if (!request || decision?.request !== request) return false;
+	if (!request || decision?.request !== request) return undefined;
 	const { client } = request.initialized;
-	return decision.enabled && !client.getOptOut() && client.getUserId() === request.userId;
+	if (client.getOptOut() || client.getUserId() !== request.userId) return undefined;
+	return decision.activationId;
 }

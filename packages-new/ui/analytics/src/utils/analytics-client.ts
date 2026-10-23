@@ -15,7 +15,7 @@ export function initializeAnalyticsClient(apiKey: string, options: AnalyticsCont
 		client,
 		options,
 		promise: client.init(apiKey, { autocapture: false, serverZone: 'EU', ...options }).promise,
-		replay: createSessionReplayController(client, (cause) => {
+		replay: createSessionReplayController(apiKey, client, (cause) => {
 			if (!client.getOptOut()) onError(cause);
 		}),
 	};

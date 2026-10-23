@@ -11,17 +11,22 @@ export function useReplay(
 	initialized: AnalyticsInitialization | undefined,
 	initializationRef: RefObject<AnalyticsInitialization | undefined>,
 	ready: boolean,
+	activationId: string | undefined,
 	onError: (cause: unknown) => void,
 ) {
+	const userId = initialized?.client.getUserId();
+
 	const startReplay = useCallback(async () => {
-		if (!ready || !initialized || initializationRef.current !== initialized) return false;
+		if (!ready || !initialized || initializationRef.current !== initialized || !activationId) return false;
+		// A callback retained by the previous user must not authorize the new identity.
+		if (!userId || initialized.client.getUserId() !== userId) return false;
 		try {
-			return await initialized.replay.start();
+			return await initialized.replay.start(activationId);
 		} catch (cause: unknown) {
 			if (initializationRef.current === initialized && !initialized.client.getOptOut()) onError(cause);
 			return false;
 		}
-	}, [initializationRef, initialized, onError, ready]);
+	}, [activationId, initializationRef, initialized, onError, ready, userId]);
 
 	const stopReplay = useCallback(() => {
 		initializationRef.current?.replay.stop();
