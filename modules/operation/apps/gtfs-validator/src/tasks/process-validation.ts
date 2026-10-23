@@ -3,7 +3,7 @@
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { GtfsValidator } from '@tmlmobilidade/go-operation-validator';
+import { getValidatorInfo, GtfsValidator } from '@tmlmobilidade/go-operation-validator';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
@@ -96,7 +96,8 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// Perform the GTFS validation using the GtfsValidator library
 		// and update the GTFS validation document in MongoDB with the results.
 
-		Logger.info({ message: 'Performing the actual GTFS validation...' });
+		const validatorInfo = await getValidatorInfo();
+		Logger.info({ message: `Performing GTFS validation with ${validatorInfo.binaryPath} (${validatorInfo.platform})...` });
 
 		const gtfsValidationResult = await GtfsValidator(gtfsFilePath, {
 			lang: 'pt',
