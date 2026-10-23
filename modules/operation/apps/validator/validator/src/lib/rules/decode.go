@@ -49,9 +49,6 @@ func DecodeConfig(data []byte) (types.GtfsRules, error) {
 		if file == "" {
 			return result, fmt.Errorf("%s: unknown file prefix", id)
 		}
-		if id == FileNode(file) {
-			return result, fmt.Errorf("%s: reserved file-presence node", id)
-		}
 		if id == file+"_file_missing" && len(config.DependsOn) > 0 {
 			return result, fmt.Errorf("%s.depends_on: file-presence rules cannot have prerequisites", id)
 		}

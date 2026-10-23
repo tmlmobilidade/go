@@ -213,20 +213,20 @@ The rules file accepts a flat object keyed by rule ID, either directly or inside
     },
     "agency_id_unique": {
       "severity": "warning",
-      "depends_on": ["agency_file_present"]
+      "depends_on": ["agency_file_missing"]
     }
   }
 }
 ```
 
-`<group>_file_missing` configures the file-presence severity previously stored as `<group>._file`. File-presence rules have no prerequisites. The synthetic `<group>_file_present` node is a valid prerequisite for rules in that group; it does not need its own configuration entry.
+`<group>_file_missing` configures the file-presence severity previously stored as `<group>._file` and is a valid prerequisite for rules in that group. It passes when the table exists and fails when it is missing, even when its severity is `ignore` or its configuration entry is omitted. File-presence rules have no prerequisites.
 
 Each rule can have:
 
 - **severity**: `error`, `warning`, `info`, `ignore`, or `forbidden`
 - **options**: An array of allowed string values
 - **compare**: An array of `{ "key": "field_name", "value": "expected_value" }` objects
-- **depends_on**: Rule IDs from the same file, or its synthetic file-presence node, that must pass before this rule runs
+- **depends_on**: Rule IDs from the same file, including `<file>_file_missing`, that must pass before this rule runs
 
 Dependencies come only from `depends_on` in the supplied rules JSON. Omitting it or supplying an empty array means the rule has no prerequisites. Unknown dependencies, cycles, and dependencies on incompatible execution phases are rejected before the GTFS is imported. Execution scopes are declared in `lib/rules/scopes.go`; they do not add dependencies.
 

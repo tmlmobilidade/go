@@ -46,10 +46,10 @@ A stored config key can differ from the emitted rule id. For example, `frequenci
 
 The validator uses only the `depends_on` arrays in the supplied rules JSON. Missing or empty arrays mean no prerequisites. There is no static dependency file in the Go binary. The legacy TypeScript catalogue is retained for existing consumers and is not the runtime dependency source.
 
-Rules may depend on the synthetic `<section>_file_present` node. This tests whether the file was imported, independently of the agency's `_file` severity. Compound rules depend on the checks whose results they need; file availability is inherited transitively:
+Rules may depend on `<file>_file_missing`. This prerequisite passes when the table exists and fails when it is missing, independently of its configured severity (including `ignore` or an omitted configuration entry). Compound rules depend on the checks whose results they need; file availability is inherited transitively:
 
 ```text
-agency_file_present
+agency_file_missing
   ├─ agency_id_unique ────┐
   └─ agency_name_present ┴─ agency_id_matched_with_agency_name
 ```

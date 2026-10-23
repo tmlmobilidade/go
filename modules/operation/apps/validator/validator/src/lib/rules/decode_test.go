@@ -33,6 +33,19 @@ func TestDecodeEveryGeneratedRuleID(t *testing.T) {
 	if !reflect.DeepEqual(got, want) {
 		t.Fatal("the decoder did not preserve the complete flat rule list")
 	}
+	// Every file prerequisite uses the same ID exposed in the generated contract.
+	for id, context := range got {
+		file := FileForRuleID(id)
+		if id != file+"_file_missing" {
+			context.DependsOn = []string{file + "_file_missing"}
+			got[id] = context
+		}
+	}
+	for _, file := range types.GtfsRuleFiles {
+		if err := ValidateDependencies(ForFile(&got, file), file); err != nil {
+			t.Fatalf("%s: %v", file, err)
+		}
+	}
 }
 
 func TestDecodeRejectsFileSections(t *testing.T) {

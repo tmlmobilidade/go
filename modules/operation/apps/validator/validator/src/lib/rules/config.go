@@ -70,7 +70,9 @@ func FileSeverity(config *types.GtfsRules, file string) types.Severity {
 	return config.Rule(file + "_file_missing").Severity
 }
 
-func FileNode(file string) string { return file + "_file_present" }
+// FileNode uses the configured file rule ID. It passes when the table exists,
+// independently of the severity used to report a missing file.
+func FileNode(file string) string { return file + "_file_missing" }
 
 // Legacy rule IDs use singular as well as plural GTFS file names.
 func FileForRuleID(id string) string {
