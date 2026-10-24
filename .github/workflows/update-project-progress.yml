@@ -1,0 +1,92 @@
+
+name: Update Project Progress
+
+on:
+  issues:
+    types: [opened, closed, reopened]
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  update-progress:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set progress to Idea or Done
+        env:
+          GH_TOKEN: ${{ secrets.GO_REPO_TOKEN_ISSUES }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+          ACTION: ${{ github.event.action }}
+          PROJECT_ID: ${{ vars.ISSUE_PROJECT_ID }}
+          FIELD_ID: ${{ vars.PROGRESS_FIELD_ID }}
+          IDEA_OPTION_ID: ${{ vars.PROGRESS_IDEA_OPTION_ID }}
+          DONE_OPTION_ID: ${{ vars.PROGRESS_DONE_OPTION_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          case "$ACTION" in
+            opened|reopened)
+              OPTION_ID="$IDEA_OPTION_ID"
+              ;;
+            closed)
+              OPTION_ID="$DONE_OPTION_ID"
+              ;;
+            *)
+              exit 0
+              ;;
+          esac
+
+          # Find the issue in the project.
+          ITEM_ID=$(gh api graphql \
+            -f query='
+              query($id: ID!) {
+                node(id: $id) {
+                  ... on Issue {
+                    projectItems(first: 100) {
+                      nodes {
+                        id
+                        project { id }
+                      }
+                    }
+                  }
+                }
+              }' \
+            -f id="$ISSUE_NODE_ID" \
+            --jq ".data.node.projectItems.nodes[]
+              | select(.project.id == \"$PROJECT_ID\")
+              | .id" | head -n 1)
+
+          if [ -z "$ITEM_ID" ]; then
+            echo "Issue is not in the configured project; skipping."
+            exit 0
+          fi
+
+          # Update the single-select Progress field.
+          gh api graphql \
+            -f query='
+              mutation(
+                $project: ID!,
+                $item: ID!,
+                $field: ID!,
+                $option: String!
+              ) {
+                updateProjectV2ItemFieldValue(
+                  input: {
+                    projectId: $project
+                    itemId: $item
+                    fieldId: $field
+                    value: { singleSelectOptionId: $option }
+                  }
+                ) {
+                  projectV2Item { id }
+                }
+              }' \
+            -f project="$PROJECT_ID" \
+            -f item="$ITEM_ID" \
+            -f field="$FIELD_ID" \
+            -f option="$OPTION_ID"
+
+          echo "Progress updated successfully."
