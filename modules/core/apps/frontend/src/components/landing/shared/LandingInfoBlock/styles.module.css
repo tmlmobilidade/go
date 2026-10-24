@@ -1,0 +1,42 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: column;
+	max-width: 650px;
+	align-items: flex-start;
+	gap: 15px;
+	padding-top: 30px;
+}
+
+/* * */
+/* RULE */
+
+.rule {
+	width: 60px;
+	height: 8px;
+	background: var(--color-primary);
+	border-radius: 99px;
+}
+
+/* * */
+/* TITLE */
+
+.title {
+	margin: 0;
+	font-size: 40px;
+	font-weight: 700;
+	line-height: 1.1;
+	letter-spacing: -0.04em;
+}
+
+/* * */
+/* DESCRIPTION */
+
+.description {
+	font-size: 24px;
+	line-height: 1.28;
+	letter-spacing: -0.02em;
+	padding-bottom: 15px;
+}

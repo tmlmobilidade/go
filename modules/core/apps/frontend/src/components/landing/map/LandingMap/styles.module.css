@@ -1,0 +1,9 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	position: relative;
+	height: min(500px, 38vw);
+	min-height: 420px;
+	overflow: hidden;
+}

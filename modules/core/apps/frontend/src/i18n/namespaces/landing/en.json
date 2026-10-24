@@ -1,0 +1,71 @@
+{
+	"LandingModules": {
+		"infrastructure": {
+			"stops": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Stops are the backbone of the transport network."
+			},
+			"title": "Infrastructure"
+		},
+		"intro": {
+			"description": "GO is organized into 4 essential modules that complete the cycle of responsibilities of a transport authority.",
+			"title": "Developed in a modular way — use only what you need."
+		},
+		"meetings": {
+			"actions": {
+				"schedule_meeting": "Schedule meeting",
+				"send_email": "Send email"
+			},
+			"description": "In person or by Teams, we are available to talk about what you need.",
+			"title": "Let's schedule a meeting?"
+		},
+		"offer": {
+			"offer": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Stops are the backbone of the transport network."
+			},
+			"title": "Offer"
+		},
+		"operation": {
+			"alerts": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Alerts"
+			},
+			"plans": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Plans"
+			},
+			"rides": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Rides"
+			},
+			"title": "Operation"
+		},
+		"performance": {
+			"performance": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Performance"
+			},
+			"title": "Performance"
+		}
+	},
+	"LandingOverview": {
+		"actions": {
+			"explore": "Explore",
+			"login": "Login"
+		},
+		"description": "GO is a platform that responds to the needs of transport authorities and operators in an agile and intuitive way.",
+		"title": "A new way to work with public transport in Portugal."
+	},
+	"LandingOverviewLinks": {
+		"label": "Quick links",
+		"links": {
+			"apex": "APEX System",
+			"documentation": "Documentation",
+			"gtfs": "GTFS Standard",
+			"open_data": "Open Data API",
+			"open_services": "Open Services",
+			"roadmap": "Roadmap"
+		}
+	}
+}
