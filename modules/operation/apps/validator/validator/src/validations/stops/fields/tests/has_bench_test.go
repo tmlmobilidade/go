@@ -1,0 +1,11 @@
+package stops_fields_test
+
+import (
+	checks "main/validations/stops/fields/checks"
+	testutils "main/validations/stops/utils"
+	"testing"
+)
+
+func TestHasBenchField(t *testing.T) {
+	testutils.CheckPresence(t, "has_bench", checks.HasBenchField, 1)
+}

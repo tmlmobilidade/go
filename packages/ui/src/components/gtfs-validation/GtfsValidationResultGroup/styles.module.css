@@ -1,0 +1,244 @@
+.group {
+	container-type: inline-size;
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.header {
+	display: grid;
+	grid-template-columns: 16px 190px 76px minmax(0, 1fr) 120px;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+	width: 100%;
+	padding: var(--size-spacing-md) var(--size-spacing-sm);
+	text-align: left;
+	cursor: pointer;
+	background: none;
+	border: none;
+
+	&:hover,
+	&[aria-expanded='true'] {
+		background-color: color-mix(in srgb, var(--color-system-text-100) 4%, var(--color-system-background-100));
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--color-system-text-200);
+		outline-offset: -2px;
+	}
+}
+
+.chevron {
+	color: var(--color-system-text-200);
+	transition: transform 150ms ease;
+
+	&[data-open='true'] {
+		transform: rotate(90deg);
+	}
+}
+
+.metadata {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	min-width: 0;
+}
+
+.fileName {
+	font-weight: 600;
+	overflow-wrap: anywhere;
+}
+
+.field {
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-200);
+	overflow-wrap: anywhere;
+}
+
+.severity {
+	width: fit-content;
+
+	> div {
+		justify-content: center;
+	}
+}
+
+.headline {
+	min-width: 0;
+	line-height: var(--font-line-height);
+	overflow-wrap: anywhere;
+	white-space: normal;
+}
+
+.occurrences {
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-200);
+	text-align: right;
+	white-space: nowrap;
+}
+
+/* * *
+ * Details continue the full-width row, using the page's surface and separators.
+ */
+
+.detail {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	padding: var(--size-spacing-md);
+	margin: 0;
+	animation: detail-reveal 150ms ease;
+}
+
+@keyframes detail-reveal {
+	from {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.detail {
+		animation: none;
+	}
+
+	.chevron {
+		transition: none;
+	}
+}
+
+.detailHeader {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	align-self: stretch;
+	justify-content: space-between;
+	padding: 0 var(--size-spacing-sm);
+}
+
+.ruleId {
+	min-width: 0;
+	font-family: var(--font-family-monospace);
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-200);
+	overflow-wrap: anywhere;
+}
+
+.occurrenceTableContainer {
+	min-width: 0;
+	overflow-x: auto;
+}
+
+.occurrenceTable {
+	width: 100%;
+	min-width: 560px;
+	text-align: left;
+	table-layout: fixed;
+	border-collapse: collapse;
+
+	th,
+	td {
+		padding: var(--size-spacing-sm);
+		vertical-align: top;
+		overflow-wrap: anywhere;
+	}
+
+	th {
+		font-size: var(--font-size-sm);
+		font-weight: var(--font-weight-medium);
+		color: var(--color-system-text-200);
+	}
+
+	tbody tr {
+		border-top: 1px solid var(--color-system-border-100);
+	}
+}
+
+.rowsColumn {
+	width: 28%;
+}
+
+.occurrenceBody {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	align-items: flex-start;
+	min-width: 0;
+}
+
+.occurrenceMessage {
+	margin: 0;
+	font-size: var(--font-size-md);
+	line-height: var(--font-line-height);
+	overflow-wrap: anywhere;
+}
+
+.occurrenceRows > div {
+	flex-wrap: wrap;
+}
+
+.showAll {
+	align-self: flex-start;
+	padding: 0;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-200);
+	text-decoration: underline;
+	cursor: pointer;
+	background: none;
+	border: none;
+
+	&:hover {
+		color: var(--color-system-text-100);
+	}
+}
+
+@container (max-width: 680px) {
+	.header {
+		grid-template-areas:
+			'chevron metadata severity'
+			'. message message'
+			'. occurrences occurrences';
+		grid-template-columns: 16px minmax(0, 1fr) max-content;
+	}
+
+	.chevron {
+		grid-area: chevron;
+	}
+
+	.metadata {
+		grid-area: metadata;
+	}
+
+	.header > .severity {
+		grid-area: severity;
+	}
+
+	.header > .headline {
+		grid-area: message;
+	}
+
+	.occurrences {
+		grid-area: occurrences;
+	}
+}
+
+.link {
+	display: inline-flex;
+	gap: 4px;
+	align-items: center;
+	margin-left: auto;
+	font-size: var(--font-size-md);
+	color: var(--color-system-text-200);
+	white-space: nowrap;
+	text-decoration: underline;
+	cursor: pointer;
+
+	&:hover {
+		color: var(--color-system-text-100);
+	}
+}

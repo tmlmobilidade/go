@@ -1,0 +1,50 @@
+package stop_times_fields
+
+import (
+	"main/lib"
+	"main/services"
+	"main/types"
+)
+
+func EndPickupDropOffWindowField(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
+	const ruleID = "stop_times_end_pickup_drop_off_window_field"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("end_pickup_drop_off_window", "stop_times.txt", ruleID, db.Row, services.AppMessageService)
+	if rules != nil {
+		ctx.WithSeverity(rules.Severity)
+	}
+
+	//
+	// 3. Get the end_pickup_drop_off_window value
+
+	values, err := db.StopTimes.Fields("end_pickup_drop_off_window", "arrival_time", "departure_time")
+	if err != nil {
+		return err
+	}
+
+	//
+	// 4. Check if the end_pickup_drop_off_window is required
+
+	if values["end_pickup_drop_off_window"] == "" && values["arrival_time"] == "" && values["departure_time"] == "" {
+		if ctx.ShouldSkip() {
+			return nil
+		}
+
+		message := ctx.GetSeverityMessage("required", "recommended", "informational")
+		ctx.AddMessageWithSeverity(message)
+		return nil
+	}
+
+	//
+	// 5. Return success
+
+	return nil
+}

@@ -1,0 +1,17 @@
+@media (width <= 768px) {
+	.table,
+	.table tbody,
+	.table tr,
+	.table td {
+		display: block;
+		width: 100%;
+	}
+
+	.table thead {
+		display: none;
+	}
+
+	.table td + td {
+		padding-top: 0;
+	}
+}
