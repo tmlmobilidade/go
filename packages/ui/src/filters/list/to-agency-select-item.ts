@@ -16,17 +16,24 @@ interface AgencySelectItem {
 
 /**
  * Agency option shared by every picker.
- * The name is the label and the id is the detail. The code stays searchable.
+ * The name is the label; references without a name fall back to their ID.
+ * Codes and IDs appear in the detail and all agency identifiers stay searchable.
  */
 export function toAgencySelectItem(agency: AgencyOptionSource): AgencySelectItem {
+	const label = agency.name || agency._id;
+	const identifiers = [agency.code, agency._id].filter(Boolean);
+	const description = agency.code || label !== agency._id
+		? identifiers.map(identifier => `[${identifier}]`).join(' ')
+		: undefined;
+
 	return {
-		// Description should be the agency code and the ID
-		description: `[${agency.code}] [${agency._id}]`,
-		// Keywords should be the ID, code, short name and name of the agency
+		// Description includes the available agency code and ID.
+		description,
+		// Keywords include the ID, code, short name and name.
 		keywords: [agency._id, agency.code, agency.short_name, agency.name].filter(Boolean).join(' '),
-		// Label should be the agency name
-		label: agency.name,
-		// Value should be the agency ID
+		// References without a name remain identifiable by ID.
+		label,
+		// The selected value remains the agency ID.
 		value: agency._id,
 	};
 }

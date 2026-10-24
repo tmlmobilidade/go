@@ -23,7 +23,7 @@ export function AgencyPermissionMultiselect({ disabled, onChange, options, value
 
 	const optionsWithAllowAll = useMemo(() => {
 		const copyOfOptions = [...options];
-		copyOfOptions.unshift({ label: 'Todas as agências', value: AllowAllFlagValue });
+		copyOfOptions.unshift({ label: 'Todas as agências', pinned: true, value: AllowAllFlagValue });
 		return copyOfOptions;
 	}, [options]);
 
