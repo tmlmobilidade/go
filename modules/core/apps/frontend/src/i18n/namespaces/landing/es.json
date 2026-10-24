@@ -1,4 +1,12 @@
 {
+	"LandingFooter": {
+		"links": {
+			"github": "GitHub",
+			"infrastructure": "Infraestructura",
+			"roadmap": "Roadmap",
+			"status": "Estado"
+		}
+	},
 	"LandingModules": {
 		"infrastructure": {
 			"stops": {

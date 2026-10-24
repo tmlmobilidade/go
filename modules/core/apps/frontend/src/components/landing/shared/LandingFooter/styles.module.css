@@ -3,11 +3,12 @@
 
 .footer {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	gap: 50px;
-	align-items: flex-start;
+	align-items: flex-end;
 	justify-content: flex-start;
 	width: 100%;
+	padding-top: 30px;
 }
 
 /* * */
@@ -15,14 +16,14 @@
 
 .links {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	gap: 20px;
 	justify-content: flex-start;
 }
 
 .link {
 	color: var(--color-system-text-300);
-	font-size: 30px;
+	font-size: 20px;
 	font-weight: 400;
 	line-height: 1;
 	text-decoration: none;
@@ -36,5 +37,5 @@
 /* TML MOBILIDADE */
 
 .tmlmobilidade {
-	width: 180px;
+	width: 150px;
 }
