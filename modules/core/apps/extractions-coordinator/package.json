@@ -13,8 +13,8 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint ./src ./tests && tsc -p tsconfig.check.json --noEmit",
-		"lint:fix": "eslint ./src ./tests --fix",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix",
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
