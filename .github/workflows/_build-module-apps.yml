@@ -67,17 +67,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Set up Go for GTFS validator
-        if: inputs.module == 'operation' && matrix.app == 'gtfs-validator'
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: modules/operation/apps/validator/validator/src/go.mod
-          cache-dependency-path: modules/operation/apps/validator/validator/src/go.sum
-
-      - name: Build GTFS validator binary
-        if: inputs.module == 'operation' && matrix.app == 'gtfs-validator'
-        run: bash modules/operation/apps/validator/validator/compile.sh
-
       - name: Determine Dockerfile
         id: dockerfile
         run: |
