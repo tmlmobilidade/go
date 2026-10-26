@@ -11,7 +11,6 @@ import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
 import { exportPlanGtfs, type PlanExportConfig, writeSharedFiles } from './main.js';
@@ -19,7 +18,12 @@ import { createSteppWriters } from './writers.js';
 
 /* * */
 
-/** Extracts a merged STePP feed from the agency's Operation plans active in the date range. */
+/**
+ * Extracts a merged STePP feed from the agency's Operation plans active in the date range.
+ * @param context - The context of the extraction task.
+ * @param extraction - The extraction task.
+ * @returns The result of the extraction task.
+ */
 export async function extractOperationGtfsSteppV1(context: ExtractionTaskContext, extraction: OperationGtfsSteppV1Extraction): Promise<ExtractionTaskResult> {
 	const properties = OperationGtfsSteppV1ExtractionPropertiesSchema.parse(extraction.properties);
 	const timer = new Timer();
@@ -77,7 +81,7 @@ export async function extractOperationGtfsSteppV1(context: ExtractionTaskContext
 			const response = await fetch(url);
 			if (!response.ok || !response.body) throw new Error(`Cannot download plan "${plan._id}" GTFS (HTTP ${response.status})`);
 			const zipPath = path.join(workdir, 'source.zip');
-			await pipeline(Readable.fromWeb(response.body), fs.createWriteStream(zipPath));
+			await pipeline(response.body, fs.createWriteStream(zipPath));
 			Logger.info(`${planPrefix} Downloaded ${fs.statSync(zipPath).size} bytes in ${stageTimer.get(true)}.`);
 			stage = 'unzip';
 			const sourceDirectory = path.join(workdir, 'source');

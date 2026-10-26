@@ -14,12 +14,25 @@ const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 /* * */
 
+/**
+ * Returns the value of the given field in the given row.
+ * @param row - The row to get the value from.
+ * @param field - The field to get the value from.
+ * @param fileName - The name of the file the row is from.
+ * @returns The value of the given field in the given row.
+ */
 function requiredValue(row: CsvRow, field: string, fileName: string): string {
 	const value = row[field];
 	if (!value) throw new Error(`Missing ${field} in ${fileName}.`);
 	return value;
 }
 
+/**
+ * Converts a date string to a UTC timestamp.
+ * @param value - The date string to convert.
+ * @param field - The field the date string is from.
+ * @returns The UTC timestamp of the given date string.
+ */
 function toUtcTimestamp(value: string, field: string): number {
 	if (!/^\d{8}$/.test(value)) throw new Error(`Invalid ${field}: "${value}". Expected YYYYMMDD.`);
 	const year = Number(value.slice(0, 4));
@@ -33,11 +46,22 @@ function toUtcTimestamp(value: string, field: string): number {
 	return date.getTime();
 }
 
+/**
+ * Converts a UTC timestamp to a date string.
+ * @param timestamp - The UTC timestamp to convert.
+ * @returns The date string of the given UTC timestamp.
+ */
 function fromUtcTimestamp(timestamp: number): string {
 	return new Date(timestamp).toISOString().slice(0, 10).replaceAll('-', '');
 }
 
-/** Resolves actual operating dates from the source calendars inside the inclusive export range. */
+/**
+ * Resolves actual operating dates from the source calendars inside the inclusive export range.
+ * @param sourceDirectory - The directory containing the source calendars.
+ * @param startDate - The start date of the export range.
+ * @param endDate - The end date of the export range.
+ * @returns A map of service IDs to sets of dates.
+ */
 export async function readServiceDates(sourceDirectory: string, startDate: string, endDate: string): Promise<Map<string, Set<string>>> {
 	const rangeStart = toUtcTimestamp(startDate, 'start_date');
 	const rangeEnd = toUtcTimestamp(endDate, 'end_date');
@@ -100,7 +124,12 @@ export async function readServiceDates(sourceDirectory: string, startDate: strin
 	return services;
 }
 
-/** Builds both calendar representations from the same resolved dates, matching the STePP export. */
+/**
+ * Builds both calendar representations from the same resolved dates, matching the STePP export.
+ * @param serviceId - The ID of the service to build the calendar rows for.
+ * @param dates - The dates to build the calendar rows for.
+ * @returns The calendar rows for the given service ID and dates.
+ */
 export function buildCalendarRows(serviceId: string, dates: Set<string>) {
 	const sortedDates = Array.from(dates).sort();
 	if (sortedDates.length === 0) throw new Error(`Service "${serviceId}" has no operating dates.`);

@@ -20,12 +20,21 @@ const COLUMNS = {
 	trips: ['route_id', 'service_id', 'trip_id', 'trip_headsign', 'direction_id', 'shape_id', 'bikes_allowed', 'wheelchair_accessible', 'block_id', 'trip_short_name'],
 } as const;
 
+/**
+ * Escapes a cell value for CSV.
+ * @param value - The value to escape.
+ * @returns The escaped value.
+ */
 function escapeCell(value: number | string | undefined): string {
 	const text = String(value ?? '');
 	return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
-/** Buffers CSV rows without retaining a complete feed in memory. */
+/**
+ * Buffers CSV rows without retaining a complete feed in memory.
+ * @param filePath - The path to the CSV file to write.
+ * @param columns - The columns to write.
+ */
 export class SteppCsvWriter {
 	private buffer: string;
 
@@ -47,6 +56,11 @@ export class SteppCsvWriter {
 
 export type SteppWriters = Record<keyof typeof COLUMNS, SteppCsvWriter>;
 
+/**
+ * Creates the STePP writers.
+ * @param outputDirectory - The directory to write the STePP files to.
+ * @returns The STePP writers.
+ */
 export async function createSteppWriters(outputDirectory: string): Promise<SteppWriters> {
 	await fs.mkdir(outputDirectory, { recursive: true });
 	const writers = {} as SteppWriters;

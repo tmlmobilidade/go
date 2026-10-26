@@ -45,25 +45,57 @@ const CONTRACTS: Record<string, string> = { 41: 'TML 24/2020', 42: 'TML 25/2020'
 
 /* * */
 
+/**
+ * Returns the value of the given field in the given row.
+ * @param row - The row to get the value from.
+ * @param field - The field to get the value from.
+ * @returns The value of the given field in the given row.
+ */
 function required(row: Row, field: string): string {
-	if (!row[field]) throw new Error(`Missing ${field} in ${JSON.stringify(row)}`);
-	return row[field];
+	const value = row[field];
+	if (!value) throw new Error(`Missing ${field} in ${JSON.stringify(row)}`);
+	return value;
 }
 
+/**
+ * Converts a string to a number.
+ * @param value - The string to convert.
+ * @returns The number of the given string.
+ */
 function number(value: string | undefined): number | undefined {
 	return value === undefined || value === '' ? undefined : Number(value);
 }
 
+/**
+ * Picks the given fields from the given row.
+ * @param row - The row to pick the fields from.
+ * @param fields - The fields to pick.
+ * @returns A new row with the picked fields.
+ */
 function pick(row: Row, fields: string[]): Row {
 	return Object.fromEntries(fields.map(field => [field, row[field] ?? '']));
 }
 
+/**
+ * Returns the row with the given ID from the given map.
+ * @param rows - The map to get the row from.
+ * @param id - The ID of the row to get.
+ * @param table - The table the row is from.
+ * @returns The row with the given ID from the given map.
+ */
 function referenced<T>(rows: Map<string, T>, id: string, table: string): T {
 	const row = rows.get(id);
 	if (row === undefined) throw new Error(`Missing ${table} "${id}"`);
 	return row;
 }
 
+/**
+ * Reads a CSV file.
+ * @param config - The configuration of the plan export.
+ * @param name - The name of the CSV file to read.
+ * @param callback - The callback to call for each row.
+ * @param optional - Whether the CSV file is optional.
+ */
 async function readCsv(config: PlanExportConfig, name: string, callback: (row: Row) => Promise<void>, optional = false) {
 	const filePath = path.join(config.sourceDirectory, `${name}.txt`);
 	const prefix = `[STePP plan ${config.planId}]`;
@@ -88,6 +120,13 @@ async function readCsv(config: PlanExportConfig, name: string, callback: (row: R
 	}
 }
 
+/**
+ * Reads a CSV file by the given field.
+ * @param config - The configuration of the plan export.
+ * @param name - The name of the CSV file to read.
+ * @param field - The field to read the rows by.
+ * @returns A map of the IDs to the rows.
+ */
 async function readById(config: PlanExportConfig, name: string, field: string): Promise<Map<string, Row>> {
 	const rows = new Map<string, Row>();
 	await readCsv(config, name, async (row) => {
@@ -98,18 +137,35 @@ async function readById(config: PlanExportConfig, name: string, field: string): 
 	return rows;
 }
 
+/**
+ * Returns the source row for the given row.
+ * @param config - The configuration of the plan export.
+ * @param row - The row to get the source row for.
+ * @returns The source row for the given row.
+ */
 function rowSource(config: PlanExportConfig, row: OutputRow): SharedRow {
 	return { activeFrom: config.planActiveFrom, createdAt: config.planCreatedAt, endDate: config.endDate, planId: config.planId, row: { ...row }, startDate: config.startDate };
 }
 
-/** Uses original plan dates, since clipping can give several plans the same export start. */
+/**
+ * Uses original plan dates, since clipping can give several plans the same export start.
+ * @param current - The current shared row.
+ * @param previous - The previous shared row.
+ * @returns Whether the current shared row is newer than the previous shared row.
+ */
 function isNewerSource(current: SharedRow, previous: SharedRow): boolean {
 	if (current.activeFrom !== previous.activeFrom) return current.activeFrom > previous.activeFrom;
 	if (current.createdAt !== previous.createdAt) return current.createdAt > previous.createdAt;
 	return current.planId > previous.planId;
 }
 
-/** Keeps public IDs stable and lets the latest plan supply route and stop names. */
+/**
+ * Keeps public IDs stable and lets the latest plan supply route and stop names.
+ * @param config - The configuration of the plan export.
+ * @param table - The table to merge the shared row for.
+ * @param id - The ID of the row to merge.
+ * @param row - The row to merge.
+ */
 function mergeSharedRow(config: PlanExportConfig, table: 'agency' | 'routes' | 'stops', id: string, row: OutputRow) {
 	const key = `${table}:${id}`;
 	const signature = JSON.stringify(row);
@@ -175,7 +231,11 @@ function mergeSharedRow(config: PlanExportConfig, table: 'agency' | 'routes' | '
 
 /* * */
 
-/** Writes one final definition per public ID after every plan has been merged. */
+/**
+ * Writes one final definition per public ID after every plan has been merged.
+ * @param sharedRows - The shared rows to write.
+ * @param writers - The writers to write the shared rows to.
+ */
 export async function writeSharedFiles(sharedRows: PlanExportConfig['sharedRows'], writers: SteppWriters) {
 	for (const table of ['agency', 'routes', 'stops'] as const) {
 		for (const [key, source] of sharedRows) {
@@ -184,7 +244,11 @@ export async function writeSharedFiles(sharedRows: PlanExportConfig['sharedRows'
 	}
 }
 
-/** Converts one normalized Operation plan into the shared STePP feed. */
+/**
+ * Converts one normalized Operation plan into the shared STePP feed.
+ * @param config - The configuration of the plan export.
+ * @returns The number of trips exported.
+ */
 export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> {
 	const { sourceDirectory, writers } = config;
 	const timer = new Timer();
