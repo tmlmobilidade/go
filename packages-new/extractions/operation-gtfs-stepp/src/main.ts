@@ -230,12 +230,15 @@ export async function writeSharedFiles(sharedRows: PlanExportConfig['sharedRows'
 		for (const date of source.dates ?? []) dates.add(date);
 		services.set(id, dates);
 	}
+	const mergedCalendarDates: ReturnType<typeof buildCalendarRows>['calendarDates'] = [];
 	for (const [id, dates] of services) {
 		if (!dates.size) continue;
 		const { calendar, calendarDates } = buildCalendarRows(id, dates);
 		await writers.calendar.write(calendar);
-		for (const row of calendarDates) await writers.calendar_dates.write(row);
+		for (const row of calendarDates) mergedCalendarDates.push(row);
 	}
+	mergedCalendarDates.sort((a, b) => a.date.localeCompare(b.date) || a.service_id.localeCompare(b.service_id));
+	for (const row of mergedCalendarDates) await writers.calendar_dates.write(row);
 	let exportedTrips = 0;
 	for (const table of ['agency', 'routes', 'stops', 'trips'] as const) {
 		for (const [key, source] of sharedRows) {

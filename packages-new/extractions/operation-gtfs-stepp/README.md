@@ -36,7 +36,8 @@ and no holiday collection is queried.
 - Service dates from disjoint plan ranges are combined under the original service
   ID. In overlapping ranges, the latest plan's calendar wins, including removed
   operating dates. One calendar row and one addition per operating date are
-  generated for each referenced service.
+  generated for each referenced service. `calendar_dates.txt` is sorted by date
+  ascending across all services, then by service ID for dates shared by services.
 - Existing `routes_stepp.txt` rows from the selected plan are preserved once per
   used route, including their circular flag. Missing extension fields fall back
   to `routes.txt`, then the first/last active stop names. Without a source

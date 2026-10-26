@@ -114,6 +114,7 @@ test('preserves normalized schedules and exports only services and references ac
 		]);
 
 		const dates = await readRows(outputDirectory, 'calendar_dates.txt');
+		assert.deepEqual(dates.map(row => row.date), ['20261005', '20261006', '20261007']);
 		assert.deepEqual(dates.map(row => `${row.service_id}:${row.date}:${row.exception_type}`).sort(), ['extra:20261006:1', 'service:20261005:1', 'service:20261007:1']);
 		const calendar = await readRows(outputDirectory, 'calendar.txt');
 		assert.deepEqual(calendar.map(row => row.service_id).sort(), ['extra', 'service']);
