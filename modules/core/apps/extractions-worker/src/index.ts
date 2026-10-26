@@ -4,6 +4,7 @@ import { type ExtractionsCoordinatorResponse } from '@tmlmobilidade/go-core-pckg
 import { getExtractionsCoordinatorUrl } from '@tmlmobilidade/go-core-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type ExtractionTaskContext } from '@tmlmobilidade/go-types-extractions';
+import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { runOnInterval, startHeartbeat } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { zipDirectory } from '@tmlmobilidade/go-utils-zip';
@@ -50,6 +51,18 @@ async function main() {
 
 	if (!currentExtraction) {
 		Logger.error({ message: `Extraction not found: ${extractionId}` });
+		return;
+	}
+
+	//
+	// Only run extractions from this worker's environment, including local development.
+	// Legacy extractions without a source environment belong to production.
+
+	const currentEnvironment = getCurrentEnvironment();
+	const sourceEnvironment = currentExtraction.source_environment === undefined ? 'prd' : currentExtraction.source_environment;
+
+	if (sourceEnvironment !== currentEnvironment) {
+		Logger.warning({ message: `Skipping extraction ${extractionId}: source environment "${sourceEnvironment}" does not match worker environment "${currentEnvironment}".` });
 		return;
 	}
 
