@@ -1,11 +1,18 @@
 /* * */
 
-import { PatternsController } from '@/endpoints/patterns/patterns.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
+import { commentPatternHandler } from './handlers/comment-pattern.js';
+import { createPatternHandler } from './handlers/create-pattern.js';
+import { deletePatternHandler } from './handlers/delete-pattern.js';
+import { getPatternHandler } from './handlers/get-pattern.js';
 import { getPatternStopHandler } from './handlers/get-stop.js';
+import { importPatternGtfsHandler } from './handlers/import-pattern-gtfs.js';
+import { listPatternShapesHandler } from './handlers/list-pattern-shapes.js';
 import { listPatternsStopsHandler } from './handlers/list-stops.js';
+import { lockPatternHandler } from './handlers/lock-pattern.js';
+import { updatePatternHandler } from './handlers/update-pattern.js';
 
 /* * */
 
@@ -22,7 +29,7 @@ server.register(
 		instance.get(
 			'/shapes',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.read]) },
-			PatternsController.getShapesByAgencies,
+			listPatternShapesHandler,
 		);
 
 		instance.get(
@@ -40,43 +47,43 @@ server.register(
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.read]) },
-			PatternsController.getById,
+			getPatternHandler,
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.create]) },
-			PatternsController.create,
+			createPatternHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
-			PatternsController.update,
+			updatePatternHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.lock]) },
-			PatternsController.lock,
+			lockPatternHandler,
 		);
 
 		instance.post(
 			'/:id/import-gtfs',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
-			PatternsController.importFromGtfs,
+			importPatternGtfsHandler,
 		);
 
 		instance.post(
 			'/:id/comment',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
-			PatternsController.comment,
+			commentPatternHandler,
 		);
 
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.delete]) },
-			PatternsController.delete,
+			deletePatternHandler,
 		);
 
 		next();

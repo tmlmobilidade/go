@@ -1,12 +1,17 @@
 /* * */
 
-import { LinesController } from '@/endpoints/lines/lines.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
+import { createRouteHandler } from './handlers/create-route.js';
+import { deleteRouteHandler } from './handlers/delete-route.js';
+import { getRouteHandler } from './handlers/get-route.js';
+import { lockRouteHandler } from './handlers/lock-route.js';
+import { updateRouteHandler } from './handlers/update-route.js';
+
 /* * */
 
-const NAMESPACE = '/lines';
+const NAMESPACE = '/routes';
 
 /* * */
 
@@ -17,39 +22,33 @@ server.register(
 		//
 
 		instance.get(
-			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.read]) },
-			LinesController.getAll,
-		);
-
-		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.read]) },
-			LinesController.getById,
+			getRouteHandler,
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.create]) },
-			LinesController.create,
+			createRouteHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
-			LinesController.update,
+			updateRouteHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.lock]) },
-			LinesController.lock,
+			lockRouteHandler,
 		);
 
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.delete]) },
-			LinesController.delete,
+			deleteRouteHandler,
 		);
 
 		next();

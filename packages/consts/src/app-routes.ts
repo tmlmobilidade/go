@@ -370,24 +370,25 @@ export const API_ROUTES = Object.freeze({
 		GTFS_PARSE: `${getModuleConfig('offer', 'api_url')}/gtfs/parse`,
 
 		// LINES
+		LINES_CREATE: `${getModuleConfig('offer', 'api_url')}/lines/create`,
 		LINES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}`,
 		LINES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}/lock`,
 		LINES_LIST: `${getModuleConfig('offer', 'api_url')}/lines`,
 
 		// PATTERNS
+		PATTERNS_CREATE: `${getModuleConfig('offer', 'api_url')}/patterns/create`,
 		PATTERNS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}`,
 		PATTERNS_DETAIL_COMMENT: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/comment`,
 		PATTERNS_DETAIL_IMPORT_GTFS: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/import-gtfs`,
 		PATTERNS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/lock`,
-		PATTERNS_LIST: `${getModuleConfig('offer', 'api_url')}/patterns`,
 		PATTERNS_SHAPES: `${getModuleConfig('offer', 'api_url')}/patterns/shapes`,
 		PATTERNS_STOPS: `${getModuleConfig('offer', 'api_url')}/patterns/stops`,
 		PATTERNS_STOPS_DETAIL: (stopId: string) => `${getModuleConfig('offer', 'api_url')}/patterns/stops/${encodeURIComponent(stopId)}`,
 
 		// ROUTES
+		ROUTES_CREATE: `${getModuleConfig('offer', 'api_url')}/routes/create`,
 		ROUTES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/routes/${encodeURIComponent(id)}`,
 		ROUTES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/routes/${encodeURIComponent(id)}/lock`,
-		ROUTES_LIST: `${getModuleConfig('offer', 'api_url')}/routes`,
 
 		// SHAPES
 		SHAPES_ROUTE_PREVIEW: `${getModuleConfig('offer', 'api_url')}/shapes/route-preview`,

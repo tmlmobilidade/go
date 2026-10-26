@@ -63,7 +63,7 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.ROUTES_LIST }),
+		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.ROUTES_CREATE }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			lineMutate();

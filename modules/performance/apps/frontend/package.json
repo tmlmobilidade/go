@@ -23,7 +23,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/ui": "*",
 		"luxon": "3.7.2",
-		"next": "16.4.2",
+		"next": "16.4.3",
 		"next-intl": "4.14.9",
 		"react": "19.3.1",
 		"swr": "2.5.1"

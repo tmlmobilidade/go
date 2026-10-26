@@ -41,7 +41,9 @@ export const CreateLineSchema = LineSchema.omit({
 	_id: true,
 	created_at: true,
 	created_by: true,
+	is_locked: true,
 	updated_at: true,
+	updated_by: true,
 });
 
 export const UpdateLineSchema = CreateLineSchema.partial();

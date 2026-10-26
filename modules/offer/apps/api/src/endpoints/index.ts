@@ -1,8 +1,8 @@
 import '@/endpoints/agencies/agencies.routes.js';
-import '@/endpoints/lines/lines.routes.js';
-import '@/endpoints/routes/routes.routes.js';
+import '@/endpoints/lines/routes.js';
+import '@/endpoints/routes/routes.js';
 import '@/endpoints/typologies/routes.js';
-import '@/endpoints/patterns/patterns.routes.js';
+import '@/endpoints/patterns/routes.js';
 import '@/endpoints/gtfs/gtfs.routes.js';
 import '@/endpoints/fares/routes.js';
 import '@/endpoints/vkm/vkm.routes.js';
