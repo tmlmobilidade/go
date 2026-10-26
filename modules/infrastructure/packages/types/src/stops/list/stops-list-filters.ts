@@ -11,7 +11,7 @@ export const StopsListFiltersSchema = z.object({
 		.array(z.string())
 		.default([]),
 
-	district_ids: z
+	legacy_ids: z
 		.array(z.string())
 		.default([]),
 
@@ -19,15 +19,15 @@ export const StopsListFiltersSchema = z.object({
 		.array(LifecycleStatusSchema)
 		.default([]),
 
-	locality_ids: z
+	location_primary_ids: z
 		.array(z.string())
 		.default([]),
 
-	municipality_ids: z
+	location_secondary_ids: z
 		.array(z.string())
 		.default([]),
 
-	parish_ids: z
+	location_tertiary_ids: z
 		.array(z.string())
 		.default([]),
 

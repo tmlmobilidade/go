@@ -13,7 +13,6 @@ import { exportFeedInfoFile } from './exports/feedInfo.js';
 import { fetchAllEvents } from './fetchers/events.js';
 import { fetchAllFares } from './fetchers/fare.js';
 import { fetchAllHolidays } from './fetchers/holidays.js';
-import { fetchAllMunicipalities } from './fetchers/municipality.js';
 import { fetchAllTypologies } from './fetchers/typology.js';
 import { fetchAllYearPeriods } from './fetchers/year-periods.js';
 import { fetchAllZones } from './fetchers/zone.js';
@@ -161,16 +160,12 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 
 		Logger.info({ message: 'Fetching stops...' });
 		const allStopsData = await goDb.infrastructure.stops.findMany({}, { sort: { _id: 1 } });
-		const allStopsMap = new Map(allStopsData.map(stop => [stop._id, stop]));
+		const allStopsMap = new Map(allStopsData.map(stop => [String(stop._id), stop]));
 		Logger.success(`Loaded ${allStopsMap.size} stops`);
 
 		Logger.info({ message: 'Fetching all zones...' });
 		const allZonesMap = await fetchAllZones();
 		Logger.success(`Loaded ${allZonesMap.size} zones`);
-
-		Logger.info({ message: 'Fetching all municipalities...' });
-		const allMunicipalitiesMap = await fetchAllMunicipalities();
-		Logger.success(`Loaded ${allMunicipalitiesMap.size} municipalities`);
 
 		Logger.info({ message: 'Fetching all periods...' });
 		const allPeriodsMap = await fetchAllYearPeriods();
@@ -259,7 +254,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 					if (patternData.path) {
 						for (const pathItem of patternData.path) {
 							// Track referenced stop
-							referencedStopCodes.add(pathItem.stop_id);
+							referencedStopCodes.add(String(pathItem.stop_id));
 						}
 					}
 
@@ -299,18 +294,9 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 			//
 
 			// Skip stops that are not referenced
-			if (!exportConfig.stops_export_all && !referencedStopCodes.has(stopData._id)) continue;
+			if (!exportConfig.stops_export_all && !referencedStopCodes.has(String(stopData._id))) continue;
 
-			const municipalityData = stopData.municipality_id
-				? allMunicipalitiesMap.get(stopData.municipality_id)
-				: undefined;
-
-			if (!municipalityData) {
-				Logger.error({ message: `Stop ${stopData._id} has no municipality data` });
-				continue;
-			}
-
-			await exportStop(stopData, municipalityData, exportConfig);
+			await exportStop(stopData, exportConfig);
 		}
 
 		Logger.success(`Exported ${allStopsData.length} stops to stops.txt`);

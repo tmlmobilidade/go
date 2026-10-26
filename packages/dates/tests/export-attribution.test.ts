@@ -1,7 +1,7 @@
 import type { GtfsIncludeContribution } from '../src/calendar/rules/export-attribution/types.js';
-import type { Event, EventReplacementRule, HHMM, Holiday, ManualRule, OperationalDate, ScheduleRule, UnixMilliseconds, YearPeriod } from '@tmlmobilidade/types';
+import type { OperationalDate, UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 
-import { hhmm } from '@tmlmobilidade/types';
+import { type Event, type EventReplacementRule, type HHMM, hhmm, type Holiday, type ManualRule, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
@@ -18,7 +18,7 @@ const t = (value: string) => hhmm(value) as HHMM;
 
 const documentFields = {
 	created_at: 1_700_000_000_000 as UnixMilliseconds,
-	created_by: null,
+	created_by: 'user',
 	is_locked: false,
 	updated_at: 1_700_000_000_000 as UnixMilliseconds,
 };
@@ -27,7 +27,6 @@ function testEvent(overrides: Partial<Event> & Pick<Event, '_id' | 'code' | 'dat
 	return {
 		...documentFields,
 		agency_ids: ['test-agency'],
-		associated_patterns: [],
 		description: '',
 		rules: [],
 		...overrides,
@@ -573,9 +572,7 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 
 		assert.equal(jan1Contributions.filter(c => c.kind === 'operating').length, 0);
 		assert.ok(jan1Contributions.every(
-			c => c.kind === 'base_off'
-				&& c.rule._id === 'dom_include'
-				&& c.excludeRule?._id === 'jan_exclude',
+			c => c.kind === 'base_off' && c.rule._id === 'dom_include' && c.excludeRule?._id === 'jan_exclude',
 		));
 
 		const sundayContributions = collectGtfsIncludeContributionsForDate(
@@ -660,9 +657,7 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 		assert.equal(contributions.filter(c => c.kind === 'operating').length, 0);
 		assert.equal(contributions.filter(c => c.kind === 'base_off').length, 3);
 		assert.ok(contributions.every(
-			c => c.kind === 'base_off'
-				&& c.rule._id === 'all_du'
-				&& c.excludeRule?._id === 'dec24_exclude',
+			c => c.kind === 'base_off' && c.rule._id === 'all_du' && c.excludeRule?._id === 'dec24_exclude',
 		));
 
 		assertOperatingMatchesComputeActiveRules(

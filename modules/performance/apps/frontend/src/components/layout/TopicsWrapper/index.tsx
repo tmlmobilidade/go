@@ -3,6 +3,7 @@
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import Dashboards from '@/components/layout/Dashboards';
 import { TopicDefinition } from '@/constants';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Divider } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -13,8 +14,8 @@ export default function TopicsWrapper({ children, topic }: { children?: React.Re
 	// A. Setup variables
 
 	const breadcrumbsData = [
-		{ href: '/performance', title: 'Performance' },
-		{ href: topic.key, title: topic.label },
+		{ href: PAGE_ROUTES.performance.BASE, title: 'Performance' },
+		{ href: topic.href, title: topic.label },
 	];
 
 	const hasDashboards = topic.dashboards.filter(dashboard => dashboard.visible).length > 0;

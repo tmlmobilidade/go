@@ -7,15 +7,15 @@ import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
+import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { PatternsDetail, PatternsDetailPathItem, type PopulatedLine, type RoutesDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { EventReplacementRule, EventRestrictionRule, type LineNormalized, ManualRule, Path, Pattern, PopulatedPath, PopulatedPattern, ScheduleRule, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
+import { EventReplacementRule, EventRestrictionRule, ManualRule, Path, Pattern, ScheduleRule, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { DetailContextStateTemplate, fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
@@ -30,7 +30,7 @@ interface PatternDetailContextState {
 		deleteRule: (ruleId: string) => void
 		duplicateRule: (rule: ManualRule) => void
 		editRule: (rule: ManualRule) => void
-		enrichPath: (path: Path[]) => Promise<PopulatedPath[]>
+		enrichPath: (path: Path[]) => Promise<PatternsDetailPathItem[]>
 		mutate: () => Promise<ApiResponse<Pattern> | undefined>
 		openRuleModal: (rule?: ManualRule) => void
 		openRulesCalendarPreviewModal: () => void
@@ -42,11 +42,13 @@ interface PatternDetailContextState {
 		id: string
 		lineId: string
 		mergedRules: ScheduleRule[]
-		pattern: null | PopulatedPattern
+		pattern: null | PatternsDetail
 		stopsParameterRules: StopsParameterExtended[]
-		typologyData?: LineNormalized['typology_data']
+		typologyData?: PopulatedLine['typology_data']
 	}
-	flags: DetailContextStateTemplate['flags']
+	flags: DetailContextStateTemplate['flags'] & {
+		inheritedLock: 'line' | 'route' | null
+	}
 	geojson: {
 		pattern_line: MapOverlayPatternShapeLineData | null
 		pattern_stops: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null
@@ -81,13 +83,21 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// B. Fetch data
 
-	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<ApiResponse<PopulatedPattern>>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), {
-		fetcher: async url => await fetchApiData<PopulatedPattern>({ url }),
+	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<ApiResponse<PatternsDetail>>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), {
+		fetcher: async url => await fetchApiData<PatternsDetail>({ url }),
 	});
 
-	const { data: lineData, mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
-		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
+		refreshInterval: 10_000,
 	});
+
+	const routeId = patternData?.data?.route_id;
+	const { data: routeData, error: routeError, isLoading: routeLoading } = useSWR<ApiResponse<RoutesDetail>>(routeId ? API_ROUTES.offer.ROUTES_DETAIL(routeId) : null, {
+		fetcher: async url => await fetchApiData<RoutesDetail>({ url }),
+		refreshInterval: 10_000,
+	});
+	const inheritedLock = lineData?.data?.is_locked ? 'line' : routeData?.data?.is_locked ? 'route' : null;
 
 	const typologyData = lineData?.data?.typology_data;
 
@@ -115,7 +125,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	// C. Editable pattern data
 
 	const editablePath = useMemo(
-		() => (form.values.path ?? patternData?.data?.path ?? []) as PopulatedPath[],
+		() => (form.values.path ?? patternData?.data?.path ?? []) as PatternsDetailPathItem[],
 		[form.values.path, patternData?.data?.path],
 	);
 	const editableShape = form.values.shape ?? patternData?.data?.shape;
@@ -318,7 +328,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		const onDelete = rule?._id ? () => handleDeleteStopParameter(rule._id) : undefined;
 
 		const defaultParameter = (form.getValues().parameters ?? []).find((p): p is StopsParameter => p.kind === 'default');
-		openCreateParameterModal(lineData?.data?.agency_id || '', onSubmit, (form.getValues().path ?? patternData?.data?.path) as PopulatedPath[], rule, onDelete, defaultParameter);
+		openCreateParameterModal(lineData?.data?.agency_id || '', onSubmit, (form.getValues().path ?? patternData?.data?.path) as PatternsDetailPathItem[], rule, onDelete, defaultParameter);
 	}, [lineData?.data?.agency_id, patternData?.data, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter, form]);
 
 	//
@@ -326,14 +336,11 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const addComment = useCallback(async (comment: string) => {
 		try {
-			const commentToAdd = {
-				created_at: Dates.now('Europe/Lisbon').unix_milliseconds,
-				created_by: 'will-be-set-by-api',
-				message: comment,
-				type: 'note',
-				updated_at: Dates.now('Europe/Lisbon').unix_milliseconds,
-			};
-			const res = await fetchData(API_ROUTES.offer.PATTERNS_DETAIL_COMMENT(patternId), 'POST', commentToAdd);
+			const res = await fetchApiData<Pattern>({
+				body: { message: comment },
+				method: 'POST',
+				url: API_ROUTES.offer.PATTERNS_DETAIL_COMMENT(patternId),
+			});
 
 			if (res.error) {
 				useToast.error({ message: res.error, title: 'Erro ao adicionar comentário' });
@@ -348,15 +355,15 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	}, [patternId, patternMutate]);
 
 	// Used to fetch stops when we revert a path change from the history
-	const enrichPath = useCallback(async (path: Path[]): Promise<PopulatedPath[]> => {
-		const stopIds = [...new Set(path.map(p => p.stop_id))];
+	const enrichPath = useCallback(async (path: Path[]): Promise<PatternsDetailPathItem[]> => {
+		const stopIds = [...new Set(path.map(p => String(p.stop_id)))];
 		const results = await Promise.all(
 			stopIds.map(id => fetchApiData<Stop>({ url: API_ROUTES.offer.PATTERNS_STOPS_DETAIL(String(id)) })),
 		);
 		const stopsMap = new Map(
-			results.flatMap(r => r.data ? [[r.data._id, r.data]] : []),
+			results.flatMap(r => r.data ? [[String(r.data._id), r.data]] : []),
 		);
-		return path.map(p => ({ ...p, stop: stopsMap.get(p.stop_id) ?? null }));
+		return path.map(p => ({ ...p, stop: stopsMap.get(String(p.stop_id)) ?? null }));
 	}, []);
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({
@@ -400,18 +407,18 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	});
 
 	const { canDelete, canLock, canSave, isReadOnly } = useDetailState({
-		hasError: !!patternError,
+		hasError: !!patternError || !!lineError || !!routeError,
 		isDeleted: null,
 		isDeleting,
 		isDirty: form.isDirty(),
-		isLoading: patternLoading,
-		isLocked: patternData?.data?.is_locked,
+		isLoading: patternLoading || lineLoading || routeLoading || !lineData?.data || !routeData?.data,
+		isLocked: patternData?.data?.is_locked || !!inheritedLock,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
 		permissions: {
 			delete: permissions.delete,
-			lock: permissions.lock,
+			lock: permissions.lock && !inheritedLock,
 			read: permissions.read,
 			update: permissions.update,
 		},
@@ -451,8 +458,9 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			canLock,
 			canSave,
 			error: patternError,
+			inheritedLock,
 			isDeleting,
-			isLoading: patternLoading,
+			isLoading: patternLoading || lineLoading || routeLoading || !lineData?.data || !routeData?.data,
 			isLocking,
 			isReadOnly,
 			isSaving: isSaving,
@@ -461,7 +469,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			pattern_line: patternLineFC,
 			pattern_stops: patternStopsFC,
 		},
-	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, lineData?.data?.agency_id, form, patternId, lineId, rulesForUI, patternData?.data, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
+	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, form, patternId, lineId, rulesForUI, patternData?.data, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC, inheritedLock, lineLoading, routeLoading, lineData?.data, routeData?.data]);
 
 	//
 	// H. Render components

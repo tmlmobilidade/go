@@ -20,7 +20,10 @@
 				"label": "Descripción"
 			},
 			"generate_text": {
-				"label": "Generar texto automático"
+				"accept_proposal": "Aceptar propuesta",
+				"label": "Generar texto automático",
+				"loading": "Generando texto automático...",
+				"title": "Propuesta"
 			},
 			"info_url": {
 				"description": "Opcionalmente incluya la URL de un sitio web donde se pueda obtener más información",
@@ -32,6 +35,15 @@
 			"user_instructions": {
 				"label": "Información adicional para la generación del texto automático (opcional)",
 				"placeholder": "Ej.: Desvío por la calle X, sentido Y, debido a Z."
+			}
+		}
+	},
+	"detail": {
+		"SectionTextsForm": {
+			"fields": {
+				"image": {
+					"label": "Imagen"
+				}
 			}
 		}
 	}

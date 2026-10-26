@@ -1,19 +1,19 @@
 /* * */
 
-import { DistrictSchema, LocalitySchema, MunicipalitySchema, ParishSchema } from '@tmlmobilidade/go-types-locations';
+import { LocationItemSchema } from '@tmlmobilidade/go-types-locations';
 import { z } from 'zod';
 
 /* * */
 
 export const StopsLocationResponseSchema = z.object({
-	districts: z.array(DistrictSchema),
-	localities: z.array(LocalitySchema),
-	municipalities: z.array(MunicipalitySchema),
-	parishes: z.array(ParishSchema),
+	neighbourhood: z.array(LocationItemSchema),
+	primary: z.array(LocationItemSchema),
+	secondary: z.array(LocationItemSchema),
+	tertiary: z.array(LocationItemSchema),
 });
 
 /**
- * The response schema for listing stops locations.
- * It is intended for use in the stops module to filter the locations.
+ * The response schema for listing stops locations: for each slot, the divisions
+ * that have at least one stop the user can access. Intended for stop filters.
  */
 export type StopsLocationResponse = z.infer<typeof StopsLocationResponseSchema>;

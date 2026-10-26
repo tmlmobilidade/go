@@ -7,16 +7,13 @@ import { z } from 'zod';
 
 export const StopsListResponseSchema = StopSchema.pick({
 	_id: true,
-	district_id: true,
 	is_deleted: true,
 	latitude: true,
 	legacy_ids: true,
 	lifecycle_status: true,
-	locality_id: true,
+	location: true,
 	longitude: true,
-	municipality_id: true,
 	name: true,
-	parish_id: true,
 });
 
 /**

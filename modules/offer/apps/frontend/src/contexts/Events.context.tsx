@@ -35,7 +35,7 @@ export const EventsContextProvider = ({ agencyId, children }: PropsWithChildren<
 	//
 	// A. Fetch data
 
-	const { data: eventsData } = useSWR<ApiResponse<Event[]>>(API_ROUTES.dates.EVENTS_LIST, {
+	const { data: eventsData } = useSWR<ApiResponse<Event[]>>(API_ROUTES.offer.EVENTS_LIST, {
 		fetcher: async url => await fetchApiData<Event[]>({ url }),
 	});
 

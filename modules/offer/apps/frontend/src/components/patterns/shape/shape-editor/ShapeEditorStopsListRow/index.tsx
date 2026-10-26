@@ -3,8 +3,8 @@
 /* * */
 
 import { IconCirclePlus, IconX } from '@tabler/icons-react';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { IconButton, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -43,7 +43,7 @@ function SegmentInfo({ afterStopId, beforeStopId, distance }: {
 
 /* * */
 
-export function StopsListRow({ index, isAdding, nextPathItem, onAdd, onCancel, onSelect, pathItem }: { index: number, isAdding: boolean, nextPathItem: PopulatedPath | undefined, onAdd: (index: number) => void, onCancel: () => void, onSelect: (stop: null | Stop) => void, pathItem: PopulatedPath }) {
+export function StopsListRow({ index, isAdding, nextPathItem, onAdd, onCancel, onSelect, pathItem }: { index: number, isAdding: boolean, nextPathItem: PatternsDetailPathItem | undefined, onAdd: (index: number) => void, onCancel: () => void, onSelect: (stop: null | Stop) => void, pathItem: PatternsDetailPathItem }) {
 	//
 
 	//

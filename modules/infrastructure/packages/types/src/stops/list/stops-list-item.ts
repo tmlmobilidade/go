@@ -7,10 +7,10 @@ import { StopsListResponseSchema } from './stops-list-response.js';
 /* * */
 
 export const StopsListItemSchema = StopsListResponseSchema.extend({
-	district_name: z.string(),
-	locality_name: z.string(),
-	municipality_name: z.string(),
-	parish_name: z.string(),
+	neighbourhood_name: z.string().nullable(),
+	primary_location_name: z.string(),
+	secondary_location_name: z.string(),
+	tertiary_location_name: z.string(),
 });
 
 /**

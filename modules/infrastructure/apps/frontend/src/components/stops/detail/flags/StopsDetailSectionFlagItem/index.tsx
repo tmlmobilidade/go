@@ -1,14 +1,13 @@
 'use client';
 
+import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
+import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-data';
 import { useStopsAgenciesData } from '@/components/stops/shared/use-stops-agencies-data';
 import { IconEqual, IconEqualNot } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Checkbox, DeleteButton, Grid, MultiSelect, Section, StandardFormController, Surface, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { useStopsDetailFormContext } from '../../StopsDetailForm.context';
-import { useStopsDetailData } from '../../use-stops-detail-data';
 
 /* * */
 

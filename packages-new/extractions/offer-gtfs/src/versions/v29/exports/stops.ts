@@ -4,7 +4,6 @@
 import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { type GtfsStrictV29Stops } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { type Municipality } from '@tmlmobilidade/go-types-locations';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 
@@ -55,18 +54,14 @@ interface ExportsStopTemporaryWorkaround {
 /**
  * Parses stop data into GTFS stops.txt format
  * @param stopData - The stop data
- * @param municipalityData - The municipality data
  * @param agencyId - The agency id for which to extract stop_id
  * @returns The formatted stop row
  */
 export function parseStop(
 	stopData: Stop,
-	municipalityData: Municipality,
 	agencyId: string,
 ): ExportsStopTemporaryWorkaround {
 	try {
-		const availabilityToBinary = (value?: string): 0 | 1 => (value === 'available' ? 1 : 0);
-
 		return {
 			stop_id: getAgencyStopId(stopData, agencyId),
 			stop_code: getAgencyStopId(stopData, agencyId),
@@ -84,8 +79,8 @@ export function parseStop(
 			level_id: '',
 			platform_code: '',
 			stop_id_stepp: '0',
-			municipality: municipalityData?._id || '',
-			region: municipalityData?.district_id || '',
+			municipality: String(stopData.location.secondary.code),
+			region: String(stopData.location.primary.osm_id),
 			real_time_information: '',
 			schedule: '',
 			network_map: '',
@@ -101,12 +96,12 @@ export function parseStop(
 			preservation_state: '',
 			slot: '',
 			zone_shift: '',
-			has_bench: availabilityToBinary(stopData?.has_bench),
-			has_shelter: availabilityToBinary(stopData?.has_shelter),
-			has_network_map: availabilityToBinary(stopData?.has_network_map),
-			has_pip_real_time: availabilityToBinary(stopData?.has_mupi), // Check if this is correct
-			has_schedules: availabilityToBinary(stopData?.has_schedules),
-			has_stop_sign: availabilityToBinary(stopData?.has_stop_sign),
+			has_bench: 0,
+			has_shelter: stopData.shelter?.status === 'ok' ? 1 : 0,
+			has_network_map: 0,
+			has_pip_real_time: 0,
+			has_schedules: 0,
+			has_stop_sign: 0,
 			has_tariffs_information: 0,
 			public_visible: 0,
 		};
@@ -118,16 +113,14 @@ export function parseStop(
 /**
  * Exports a single stop to stops.txt
  * @param stopData - The stop data
- * @param municipalityData - The municipality data
  * @param exportConfig - The export configuration
  */
 export async function exportStop(
 	stopData: Stop,
-	municipalityData: Municipality,
 	exportConfig: GtfsV29ExportConfig,
 ) {
 	// Use the first agency_id in exportConfig.agency_ids for this export
 	const agencyId = exportConfig.agency_ids[0];
-	const parsedStop = parseStop(stopData, municipalityData, agencyId);
+	const parsedStop = parseStop(stopData, agencyId);
 	await exportConfig.writers.stops.write(parsedStop as GtfsStrictV29Stops);
 }

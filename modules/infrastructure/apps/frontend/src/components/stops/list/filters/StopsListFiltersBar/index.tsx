@@ -4,13 +4,12 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 
 import { StopsListFilterAgency } from '../StopsListFilterAgency';
 import { StopsListFilterConnections } from '../StopsListFilterConnections';
-import { StopsListFilterDistrict } from '../StopsListFilterDistrict';
-import { StopsListFilterEquipment } from '../StopsListFilterEquipment';
 import { StopsListFilterFacilities } from '../StopsListFilterFacilities';
+import { StopsListFilterLegacyId } from '../StopsListFilterLegacyId';
 import { StopsListFilterLifecycleStatus } from '../StopsListFilterLifecycleStatus';
-import { StopsListFilterLocality } from '../StopsListFilterLocality';
-import { StopsListFilterMunicipality } from '../StopsListFilterMunicipality';
-import { StopsListFilterParish } from '../StopsListFilterParish';
+import { StopsListFilterLocationPrimary } from '../StopsListFilterLocationPrimary';
+import { StopsListFilterLocationSecondary } from '../StopsListFilterLocationSecondary';
+import { StopsListFilterLocationTertiary } from '../StopsListFilterLocationTertiary';
 
 /* * */
 
@@ -18,14 +17,13 @@ export function StopsListFiltersBar() {
 	return (
 		<FiltersBar>
 			<StopsListFilterAgency />
+			<StopsListFilterLegacyId />
+			<StopsListFilterLocationPrimary />
+			<StopsListFilterLocationSecondary />
+			<StopsListFilterLocationTertiary />
 			<StopsListFilterLifecycleStatus />
 			<StopsListFilterFacilities />
 			<StopsListFilterConnections />
-			<StopsListFilterEquipment />
-			<StopsListFilterDistrict />
-			<StopsListFilterMunicipality />
-			<StopsListFilterParish />
-			<StopsListFilterLocality />
 		</FiltersBar>
 	);
 }

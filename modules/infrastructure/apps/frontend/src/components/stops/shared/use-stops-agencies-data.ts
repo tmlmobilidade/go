@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type StopsAgencyItem, type StopsAgencyRequest } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, type SelectDataItem } from '@tmlmobilidade/ui';
+import { fetchApiData, type SelectDataItem, toAgencySelectItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -42,19 +42,14 @@ export function useStopsAgenciesData(request: StopsAgencyRequest): UseStopsAgenc
 		// Skip if no data is available
 		if (!data?.data?.length) return [];
 		// Map data to array of IDs
-		return data.data.map(item => item._id);
+		return [...new Set(data.data.map(item => item._id))];
 	}, [data?.data]);
 
 	const optionsData = useMemo(() => {
 		// Skip if no data is available
 		if (!data?.data?.length) return [];
 		// Map data to SelectDataItem format
-		return data.data.map((item): SelectDataItem => ({
-			checked: false,
-			disabled: false,
-			label: `[${item._id}] ${item.code} - ${item.name}`,
-			value: item._id,
-		}));
+		return [...new Map(data.data.map(item => [item._id, item])).values()].map(toAgencySelectItem);
 	}, [data?.data]);
 
 	//
@@ -62,10 +57,10 @@ export function useStopsAgenciesData(request: StopsAgencyRequest): UseStopsAgenc
 
 	return useMemo(() => ({
 		data: data?.data,
-		error: error?.error,
+		error: data?.error ?? error?.message,
 		ids: idsData,
 		isLoading,
 		options: optionsData,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, error?.error, idsData, isLoading, optionsData, data?.timestamp]);
+	}), [data?.data, data?.error, error?.message, idsData, isLoading, optionsData, data?.timestamp]);
 };

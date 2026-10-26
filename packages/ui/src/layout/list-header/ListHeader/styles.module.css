@@ -1,0 +1,17 @@
+/* * */
+/* GAP */
+
+.gap {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+/* SEARCH */
+/* ponytail: Search grows until 400px, */
+/* then the gap takes the rest. */
+/* below 180px the title ellipsizes */
+
+.search {
+	flex: 1 1 180px;
+	max-width: 400px;
+}

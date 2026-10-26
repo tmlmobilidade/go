@@ -50,23 +50,23 @@ export function StopsList() {
 			width: 150,
 		},
 		{
-			accessor: 'district_name',
-			title: t('default:stops.list.Table.columns.district_name'),
+			accessor: 'location.primary.name',
+			title: t('default:stops.list.Table.columns.location_primary_name'),
 			width: 250,
 		},
 		{
-			accessor: 'municipality_name',
-			title: t('default:stops.list.Table.columns.municipality_name'),
-			width: 250,
-		},
-		{
-			accessor: 'parish_name',
-			title: t('default:stops.list.Table.columns.parish_name'),
+			accessor: 'location.secondary.name',
+			title: t('default:stops.list.Table.columns.location_secondary_name'),
 			width: 400,
 		},
 		{
-			accessor: 'locality_name',
-			title: t('default:stops.list.Table.columns.locality_name'),
+			accessor: 'location.tertiary.name',
+			title: t('default:stops.list.Table.columns.location_tertiary_name'),
+			width: 250,
+		},
+		{
+			accessor: 'location.neighbourhood.name',
+			title: t('default:stops.list.Table.columns.location_neighbourhood_name'),
 			width: 250,
 		},
 	];

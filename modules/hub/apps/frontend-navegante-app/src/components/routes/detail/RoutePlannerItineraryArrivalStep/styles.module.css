@@ -1,0 +1,21 @@
+.destination {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 72px;
+	gap: 10px;
+	align-items: center;
+	min-height: 32px;
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1.3;
+	color: var(--color-system-text-100);
+	overflow-wrap: anywhere;
+}
+
+.destination > span {
+	justify-content: flex-end;
+	font-size: 17px;
+}
+
+.destination strong {
+	font-weight: inherit;
+}

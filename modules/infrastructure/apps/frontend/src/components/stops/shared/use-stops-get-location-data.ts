@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type StopsGetLocationRequest, type StopsGetLocationResponse } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type StopsGetLocationRequest } from '@tmlmobilidade/go-infrastructure-pckg-types';
+import { type Location } from '@tmlmobilidade/go-types-locations';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -10,7 +11,7 @@ import useSWRImmutable from 'swr/immutable';
 /* * */
 
 interface UseStopsGetLocationDataReturnType {
-	data: StopsGetLocationResponse
+	data: Location
 	error: null | string
 	isLoading: boolean
 	timestamp: null | UnixMilliseconds
@@ -27,8 +28,8 @@ export function useStopsGetLocationData(request: StopsGetLocationRequest): UseSt
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading } = useSWRImmutable<ApiResponse<StopsGetLocationResponse>>([API_ROUTES.infrastructure.STOPS_GET_STOP_LOCATION, request], {
-		fetcher: async ([url, request]: [string, StopsGetLocationRequest]) => await fetchApiData<StopsGetLocationResponse>({ body: request, method: 'POST', url }),
+	const { data, error, isLoading } = useSWRImmutable<ApiResponse<Location>>([API_ROUTES.infrastructure.STOPS_GET_STOP_LOCATION, request], {
+		fetcher: async ([url, request]: [string, StopsGetLocationRequest]) => await fetchApiData<Location>({ body: request, method: 'POST', url }),
 	});
 
 	//

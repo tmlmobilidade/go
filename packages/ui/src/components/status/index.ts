@@ -1,5 +1,6 @@
 export * from './DelayStatusDisplay';
 export * from './GradeStatusDisplay';
+export * from './LifecycleStatusDisplay';
 export * from './OperationalStatusDisplay';
 export * from './ProcessingStatusDisplay';
 export * from './PublishStatusDisplay';

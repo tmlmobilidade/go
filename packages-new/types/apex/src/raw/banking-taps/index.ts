@@ -1,2 +1,3 @@
-export * from '@/raw/banking-taps/banking-tap-v40.js';
-export * from '@/raw/banking-taps/banking-tap.js';
+export * from './banking-tap-v40.js';
+export * from './banking-tap-v70.js';
+export * from './banking-tap.js';

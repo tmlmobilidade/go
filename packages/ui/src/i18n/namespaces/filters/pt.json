@@ -1,5 +1,8 @@
 {
 	"ListFilter": {
+		"empty": "Nenhuma opção disponível",
+		"no_results": "Nenhum resultado encontrado",
+		"search": "Pesquisar...",
 		"toggle_all": "Selecionar tudo"
 	},
 	"TagFilter": {

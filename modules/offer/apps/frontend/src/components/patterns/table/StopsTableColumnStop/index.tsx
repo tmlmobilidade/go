@@ -1,21 +1,19 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
-import { Text, useLocationsContext } from '@tmlmobilidade/ui';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
+import { Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import styles from '../styles.module.css';
 
 /* * */
 
-export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
+export function PathTableColumnStop({ pathItem }: { pathItem: PatternsDetailPathItem }) {
 	//
 
 	//
 	// A. Setup variables
-
-	const locationsContext = useLocationsContext();
 
 	//
 	// B. Handle actions
@@ -27,26 +25,11 @@ export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
 	};
 
 	const stopLocationInfo = useMemo(() => {
-		if (!pathItem.stop) return null;
-
-		const municipalityData = pathItem.stop.municipality_id
-			? locationsContext.actions.getMunicipality(pathItem.stop.municipality_id)
-			: undefined;
-
-		const localityData = pathItem.stop.locality_id
-			? locationsContext.actions.getLocality(pathItem.stop.locality_id)
-			: undefined;
-
-		const localityName = localityData?.name;
-		const municipalityName = municipalityData?.name;
-
-		if (!localityName && !municipalityName) return null;
-		if (localityName && !municipalityName) return localityName;
-		if (!localityName && municipalityName) return municipalityName;
-		if (localityName === municipalityName) return localityName;
-
-		return `${localityName}, ${municipalityName}`;
-	}, [pathItem.stop, locationsContext]);
+		const location = pathItem.stop?.location;
+		if (!location) return null;
+		const { neighbourhood, secondary } = location;
+		return neighbourhood && neighbourhood.name !== secondary.name ? `${neighbourhood.name}, ${secondary.name}` : secondary.name;
+	}, [pathItem.stop?.location]);
 
 	//
 	// C. Render components

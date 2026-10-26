@@ -1,6 +1,6 @@
-import type { Event, Holiday, ManualRule, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
+import type { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
-import { hhmm } from '@tmlmobilidade/types';
+import { type Event, hhmm, type Holiday, type ManualRule, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
@@ -17,7 +17,7 @@ const ferPeriod = {
 	_id: 'fer',
 	agency_ids: [] as string[],
 	created_at: 1 as never,
-	created_by: null,
+	created_by: 'user',
 	dates: [
 		d('20260615'),
 		d('20260616'),

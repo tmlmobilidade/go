@@ -10,7 +10,7 @@ import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRolesDetailFormContext } from '../RolesDetailForm.context';
 import { useRolesAgenciesData } from '../use-roles-agencies-data';
 import { useRolesDetailData } from '../use-roles-detail-data';
-import { useRolesMunicipalitiesData } from '../use-roles-municipalities-data';
+import { useRolesLocationsData } from '../use-roles-locations-data';
 
 /* * */
 
@@ -25,7 +25,7 @@ export function RolesDetail() {
 	const { capabilities, form } = useRolesDetailFormContext();
 
 	const { options: rolesAgenciesOptions } = useRolesAgenciesData();
-	const { options: rolesMunicipalitiesOptions } = useRolesMunicipalitiesData();
+	const { options: rolesLocationsOptions } = useRolesLocationsData();
 
 	const permissionsValue = useStandardFormWatch({ control: form.control, name: 'permissions' });
 
@@ -80,7 +80,7 @@ export function RolesDetail() {
 					description={item.description}
 					disabled={!capabilities.editEnabled}
 					enabledPermissions={permissionsValue}
-					municipalitiesOptions={rolesMunicipalitiesOptions}
+					locationsOptions={rolesLocationsOptions}
 					onResourceToggle={handlePermissionResourceToggle}
 					onToggle={handlePermissionToggle}
 					rolesData={[]}

@@ -1,11 +1,12 @@
 'use client';
 
+import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-data';
 import { Divider, Pane } from '@tmlmobilidade/ui';
 
 import { StopsDetailSectionFlags } from '../flags/StopsDetailSectionFlags';
-import { StopsDetailSectionGeneral } from '../general/StopsDetailSectionGeneral';
 import { StopsDetailHeader } from '../StopsDetailHeader';
-import { useStopsDetailData } from '../use-stops-detail-data';
+import { StopsDetailSectionGeneral } from '../StopsDetailSectionGeneral';
+import { StopsDetailSectionShelter } from '../StopsDetailSectionShelter';
 
 /* * */
 
@@ -25,6 +26,7 @@ export function StopsDetail() {
 			<Divider />
 			<StopsDetailSectionGeneral />
 			<StopsDetailSectionFlags />
+			<StopsDetailSectionShelter />
 		</Pane>
 	);
 }

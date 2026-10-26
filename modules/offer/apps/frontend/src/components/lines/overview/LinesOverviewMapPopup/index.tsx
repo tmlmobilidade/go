@@ -4,6 +4,7 @@ import { LineTag } from '@/components/common/LineTag';
 import { useLinesOverviewContext } from '@/components/lines/overview/LinesOverview.context';
 import { getPatternLabel, groupFeaturesByLine } from '@/utils/lines-overview';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { keepUrlParams } from '@tmlmobilidade/ui';
 import { Popup } from '@vis.gl/react-maplibre';
 
 import styles from './styles.module.css';
@@ -25,7 +26,7 @@ export function LinesOverviewMapPopup() {
 	// B. Handle actions
 
 	const handleLineClick = (line_id: string) => {
-		window.open(PAGE_ROUTES.offer.LINES_DETAIL(line_id), '_blank');
+		window.open(keepUrlParams(PAGE_ROUTES.offer.LINES_DETAIL(line_id)), '_blank');
 	};
 
 	const handlePatternMouseEnter = (patternId: string) => {
@@ -74,7 +75,7 @@ export function LinesOverviewMapPopup() {
 									<a
 										key={pattern.pattern_id}
 										className={styles.popupPatternLink}
-										href={PAGE_ROUTES.offer.PATTERN_DETAIL(pattern.line_id, pattern.pattern_id, pattern.route_id)}
+										href={keepUrlParams(PAGE_ROUTES.offer.PATTERN_DETAIL(pattern.line_id, pattern.pattern_id, pattern.route_id))}
 										onBlur={handlePatternsMouseLeave}
 										onFocus={() => handlePatternMouseEnter(pattern.pattern_id)}
 										onMouseEnter={() => handlePatternMouseEnter(pattern.pattern_id)}

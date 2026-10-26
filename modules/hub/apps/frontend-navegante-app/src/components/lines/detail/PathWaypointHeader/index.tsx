@@ -1,7 +1,7 @@
 /* * */
 
-import { useStopsContext } from '@/components/stops/Stops.context';
-import { formatStopLocation } from '@/utils/format-stop-location';
+import { useStopsData } from '@/components/stops/use-stops-data';
+import { formatStopLocation } from '@/utils/transit/format-stop-location';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
 import { type HubV1ApiPatternWaypoint } from '@tmlmobilidade/go-types-hub';
 import { useClipboard } from '@tmlmobilidade/ui';
@@ -12,21 +12,23 @@ import styles from './styles.module.css';
 /* * */
 
 interface Props {
+	controlsId: string
 	isFirstStop?: boolean
 	isLastStop?: boolean
 	isSelected: boolean
+	onToggle: () => void
 	waypointData: HubV1ApiPatternWaypoint
 }
 
 /* * */
 
-export function PathWaypointHeader({ isFirstStop, isLastStop, isSelected, waypointData }: Props) {
+export function PathWaypointHeader({ controlsId, isFirstStop, isLastStop, isSelected, onToggle, waypointData }: Props) {
 	//
 
 	//
 	// A. Setup variables
 
-	const stopsContext = useStopsContext();
+	const { data: stops } = useStopsData();
 	const { t } = useTranslation();
 
 	const stopIdClipboard = useClipboard();
@@ -34,13 +36,12 @@ export function PathWaypointHeader({ isFirstStop, isLastStop, isSelected, waypoi
 	//
 	// B. Fetch data
 
-	const stopData = stopsContext.actions.getStopById(waypointData.stop_id);
+	const stopData = stops.find(stop => String(stop._id) === String(waypointData.stop_id));
 
 	//
 	// C. Handle actions
 
 	const handleClickStopId = () => {
-		if (!isSelected) return;
 		stopIdClipboard.copy(waypointData.stop_id);
 	};
 	//
@@ -51,24 +52,42 @@ export function PathWaypointHeader({ isFirstStop, isLastStop, isSelected, waypoi
 	}
 
 	return (
-		<div
-			className={`${styles.container} ${isFirstStop && styles.isFirstStop} ${isLastStop && styles.isLastStop} ${isSelected && styles.isSelected}`}
-			role="button"
-			aria-label={t(`default:lines.LinesDetailPath.stop_details_name`, '', {
-				index: waypointData.stop_sequence,
-				stop_name: stopData.name,
-			})}
-		>
-			<p className={styles.stopName}>
+		<div className={`${styles.container} ${isFirstStop && styles.isFirstStop} ${isLastStop && styles.isLastStop} ${isSelected && styles.isSelected}`}>
+			<button
+				aria-controls={isSelected ? controlsId : undefined}
+				aria-expanded={isSelected}
+				className={styles.stopName}
+				onClick={onToggle}
+				type="button"
+				aria-label={t('default:lines.LinesDetailPath.stop_details_name', '', {
+					index: waypointData.stop_sequence,
+					stop_name: stopData.name,
+				})}
+			>
 				{stopData.name}
-			</p>
+			</button>
 
-			<div aria-hidden={true} className={styles.subHeaderWrapper}>
+			<div className={styles.subHeaderWrapper}>
 				<p className={styles.stopLocation}>{formatStopLocation(stopData.locality_name, stopData.municipality_name)}</p>
-				<p className={`${styles.stopId} ${stopIdClipboard.copied && styles.isCopied}`} onClick={handleClickStopId}>
-					#{stopData._id}
-					{stopIdClipboard.copied ? <IconCheck className={styles.stopIdCopyIcon} /> : <IconCopy className={styles.stopIdCopyIcon} />}
-				</p>
+				{isSelected ? (
+					<button
+						className={`${styles.stopId} ${stopIdClipboard.copied && styles.isCopied}`}
+						onClick={handleClickStopId}
+						type="button"
+						aria-label={stopIdClipboard.copied
+							? t('default:common.CopyBadge.copied')
+							: t('default:common.CopyBadge.copy', '', { value: stopData._id })}
+					>
+						#{stopData._id}
+						{stopIdClipboard.copied
+							? <IconCheck aria-hidden="true" className={styles.stopIdCopyIcon} />
+							: <IconCopy aria-hidden="true" className={styles.stopIdCopyIcon} />}
+					</button>
+				) : (
+					<p className={styles.stopId}>
+						#{stopData._id}
+					</p>
+				)}
 			</div>
 		</div>
 	);

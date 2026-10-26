@@ -1,0 +1,1154 @@
+{
+	"list": {
+		"RidesList": {
+			"columns": {
+				"analysis_ended_at_last_stop_grade": {
+					"label": "Last Stop"
+				},
+				"analysis_expected_apex_validation_interval_grade": {
+					"label": "APEX Int."
+				},
+				"analysis_simple_three_vehicle_events_grade": {
+					"label": "3 Events"
+				},
+				"analysis_transaction_sequentiality": {
+					"label": "APEX Seq."
+				},
+				"driver_ids": {
+					"label": "Driver IDs"
+				},
+				"duration_observed": {
+					"label": "Observed"
+				},
+				"duration_scheduled": {
+					"label": "Duration"
+				},
+				"end_time_observed": {
+					"label": "Observed"
+				},
+				"end_time_scheduled": {
+					"label": "Arrival"
+				},
+				"favorites": {
+					"label": "Favorites"
+				},
+				"headsign": {
+					"label": "Pattern"
+				},
+				"operational_date": {
+					"label": "Operational Date"
+				},
+				"operational_status": {
+					"label": "Status"
+				},
+				"passengers_observed": {
+					"label": "Pax"
+				},
+				"seen_last_at": {
+					"label": ""
+				},
+				"start_time_observed": {
+					"label": "Observed"
+				},
+				"start_time_scheduled": {
+					"label": "Departure"
+				},
+				"vehicle_ids": {
+					"label": "Vehicle IDs"
+				}
+			}
+		},
+		"RidesListFilterAcceptanceStatus": {
+			"label": "Acceptance"
+		},
+		"RidesListFilterAgency": {
+			"label": "Agency"
+		},
+		"RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop": {
+			"label": "Ended at Last Stop"
+		},
+		"RidesListFilterAnalysisExpectedApexValidationInterval": {
+			"label": "Validation Interval"
+		},
+		"RidesListFilterAnalysisSimpleThreeEvents": {
+			"label": "3 Checkpoints"
+		},
+		"RidesListFilterAnalysisTransactionSequentiality": {
+			"label": "APEX Sequentiality"
+		},
+		"RidesListFilterDateRange": {
+			"label": "Date Range"
+		},
+		"RidesListFilterDriver": {
+			"label": "Driver"
+		},
+		"RidesListFilterEndDelayStatus": {
+			"label": "Arrival Delay"
+		},
+		"RidesListFilterLine": {
+			"label": "Line"
+		},
+		"RidesListFilterOperationalStatus": {
+			"label": "Status"
+		},
+		"RidesListFilterStartDelayStatus": {
+			"label": "Departure Delay"
+		},
+		"RidesListFilterTicketingStatus": {
+			"label": "Ticketing",
+			"options": {
+				"has_ticketing": "With ticketing",
+				"no_ticketing": "Without ticketing"
+			}
+		},
+		"RidesListFilterVehicle": {
+			"label": "Vehicle"
+		},
+		"RidesListHeader": {
+			"export": "Export rides",
+			"title": "Rides"
+		}
+	},
+	"rides": {
+		"acceptance": {
+			"RideAcceptance": {
+				"title": "Activity"
+			},
+			"RideAcceptanceCommentList": {
+				"acceptance_status": {
+					"accepted": "Acceptance was approved",
+					"justification_required": "The ride requires justification",
+					"rejected": "Acceptance was rejected",
+					"under_review": "Acceptance is under review"
+				},
+				"crud": {
+					"archive": "Acceptance was archived",
+					"create": "Acceptance was created by the system",
+					"delete": "Acceptance was deleted",
+					"restore": "Acceptance was restored",
+					"update": "Acceptance was updated"
+				},
+				"justification": {
+					"updated": "Justification was updated"
+				},
+				"lock": {
+					"lock": "Acceptance was locked",
+					"unlock": "Acceptance was unlocked"
+				},
+				"note": {
+					"created": "Acceptance was created by the system"
+				},
+				"summary": {
+					"performed": "A new ride analysis was performed"
+				},
+				"system": "System"
+			},
+			"RideAcceptanceJustification": {
+				"SubmitButton": {
+					"label": "Justify"
+				},
+				"fields": {
+					"cause": {
+						"label": "Justification reason",
+						"placeholder": "Select a justification reason"
+					},
+					"manual_trip_id": {
+						"label": "Manual ride ID (optional)"
+					},
+					"message": {
+						"label": "Justification message"
+					}
+				},
+				"readonly": {
+					"cause": {
+						"label": "Justification reason"
+					},
+					"manual_trip_id": {
+						"label": "Manual ride ID"
+					},
+					"message": {
+						"label": "Justification message"
+					}
+				},
+				"title": "Justification"
+			},
+			"RideAcceptanceStatus": {
+				"confirm": {
+					"aria_label": "Confirm new status"
+				},
+				"edit": {
+					"aria_label": "Edit status"
+				}
+			}
+		},
+		"analysis": {
+			"RideAnalysisAnalyses": {
+				"table": {
+					"columns": {
+						"grade_status": {
+							"label": "Status"
+						},
+						"id": {
+							"label": "ID"
+						},
+						"reason": {
+							"label": "Reason"
+						}
+					}
+				}
+			},
+			"RideAnalysisApexBankingTaps": {
+				"description": "Bank card taps associated with this ride.",
+				"table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"created_at": {
+							"label": "Created at"
+						},
+						"event_type": {
+							"label": "Event Type"
+						},
+						"id_on_board_refund": {
+							"label": "On-board Refund ID"
+						},
+						"id_on_board_sale": {
+							"label": "On-board Sale ID"
+						},
+						"id_validation": {
+							"label": "Validation ID"
+						},
+						"is_passenger": {
+							"label": "Passenger"
+						},
+						"mac_sam_serial_number": {
+							"label": "SAM SN"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						},
+						"tx_valid": {
+							"label": "Tx Valid"
+						},
+						"validation_status": {
+							"label": "Validation Status"
+						},
+						"vehicle_id": {
+							"label": "Vehicle ID"
+						}
+					}
+				},
+				"title": "Bank Card Taps (CUT)"
+			},
+			"RideAnalysisApexLocations": {
+				"description": "APEX locations associated with this ride.",
+				"table": {
+					"columns": {
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"id_apex_location": {
+							"label": "APEX Location ID"
+						},
+						"mac_sam_serial_number": {
+							"label": "SAM SN"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						},
+						"vehicle_id": {
+							"label": "Vehicle ID"
+						}
+					}
+				},
+				"title": "APEX Locations"
+			},
+			"RideAnalysisApexOnBoardRefunds": {
+				"description": "APEX refunds associated with this ride.",
+				"table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"card_type": {
+							"label": "Card Type"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"id_on_board_refund": {
+							"label": "On-board Refund ID"
+						},
+						"id_on_board_sale": {
+							"label": "On-board Sale ID"
+						},
+						"id_validation": {
+							"label": "Validation ID"
+						},
+						"payment_method": {
+							"label": "Payment Method"
+						},
+						"price": {
+							"label": "Price"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"product_quantity": {
+							"label": "Qty"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						}
+					}
+				},
+				"title": "APEX On-board Refunds"
+			},
+			"RideAnalysisApexOnBoardSales": {
+				"description": "APEX sales associated with this ride.",
+				"table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"card_type": {
+							"label": "Card Type"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"id_on_board_refund": {
+							"label": "On-board Refund ID"
+						},
+						"id_on_board_sale": {
+							"label": "On-board Sale ID"
+						},
+						"id_validation": {
+							"label": "Validation ID"
+						},
+						"payment_method": {
+							"label": "Payment Method"
+						},
+						"price": {
+							"label": "Price"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"product_quantity": {
+							"label": "Qty"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						}
+					}
+				},
+				"title": "APEX On-board Sales"
+			},
+			"RideAnalysisApexValidations": {
+				"description": "APEX validations associated with this ride.",
+				"table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"event_type": {
+							"label": "Event"
+						},
+						"id_on_board_refund": {
+							"label": "Refund ID"
+						},
+						"id_on_board_sale": {
+							"label": "Sale ID"
+						},
+						"id_validation": {
+							"label": "Validation ID"
+						},
+						"mac_sam_serial_number": {
+							"label": "SAM SN"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"status": {
+							"label": "Status"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						},
+						"tx_valid": {
+							"label": "Tx Valid"
+						},
+						"vehicle_id": {
+							"label": "Vehicle ID"
+						}
+					}
+				},
+				"title": "APEX Validations"
+			},
+			"RideAnalysisMap": {
+				"description": "Mapped vehicle events",
+				"switches": {
+					"geofences": {
+						"label": "Geofences"
+					},
+					"observed_path": {
+						"label": "Observed Route"
+					},
+					"scheduled_path": {
+						"label": "Planned Route"
+					}
+				},
+				"title": "Geographic View"
+			},
+			"RideAnalysisMetadata": {
+				"description": "General information about this ride",
+				"fields": {
+					"apex_validations_qty": {
+						"label": "Validations (APEX TXs)"
+					},
+					"driver_ids": {
+						"label": "Driver IDs"
+					},
+					"end_delay": {
+						"label": "Arrival Delay"
+					},
+					"observed_end_time": {
+						"label": "Observed End Time"
+					},
+					"observed_start_time": {
+						"label": "Observed Start Time"
+					},
+					"on_board_sales": {
+						"label": "On-board Sales"
+					},
+					"operational_date": {
+						"label": "Operational Day"
+					},
+					"passengers": {
+						"label": "Passengers"
+					},
+					"prepaid_validations": {
+						"label": "Prepaid Validations"
+					},
+					"scheduled_end_time": {
+						"label": "Planned End Time"
+					},
+					"scheduled_start_time": {
+						"label": "Planned Start Time"
+					},
+					"shape_id": {
+						"label": "Shape ID"
+					},
+					"start_delay": {
+						"label": "Departure Delay"
+					},
+					"subscription_validations_qty": {
+						"label": "Pass Validations"
+					},
+					"trip_id": {
+						"label": "Trip ID"
+					},
+					"vehicle_ids": {
+						"label": "Vehicle IDs"
+					}
+				},
+				"title": "Metadata"
+			},
+			"RideAnalysisPath": {
+				"description": "Passenger distribution by stop",
+				"table": {
+					"columns": {
+						"passengers_observed": {
+							"label": "Pax"
+						},
+						"passengers_observed_banking_taps_qty": {
+							"label": "CUT"
+						},
+						"passengers_observed_prepaid": {
+							"label": "Prepaid"
+						},
+						"passengers_observed_sales": {
+							"label": "Sales"
+						},
+						"passengers_observed_subscription_qty": {
+							"label": "Val."
+						},
+						"seen_at": {
+							"label": "Interval"
+						},
+						"stop_name": {
+							"label": "Stop"
+						},
+						"stop_sequence": {
+							"label": "Seq."
+						}
+					}
+				},
+				"title": "Stop View"
+			},
+			"RideAnalysisPerformance": {
+				"description": "Ride performance data.",
+				"title": "Performance"
+			},
+			"RideAnalysisResult": {
+				"description": "Results of the ride analyses.",
+				"labels": {
+					"AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP": {
+						"description": "A ride must have at least one event at the first stop.",
+						"title": "At least one event at the first stop"
+					},
+					"ENDED_AT_LAST_STOP": {
+						"description": "A ride must end at the last stop.",
+						"title": "Ended at the last stop"
+					},
+					"EXPECTED_APEX_VALIDATION_INTERVAL": {
+						"description": "The interval between validations is organic and reflects the natural variation in passenger validation times.",
+						"title": "APEX validation interval"
+					},
+					"EXPECTED_DRIVER_ID_QTY": {
+						"description": "A ride may have no more than two different driver IDs.",
+						"title": "No more than two drivers"
+					},
+					"EXPECTED_START_TIME": {
+						"description": "A ride must start after the planned time and less than 5 minutes late.",
+						"title": "On-time start"
+					},
+					"EXPECTED_VEHICLE_EVENT_DELAY": {
+						"description": "Events must be delivered within 10 seconds of being generated.",
+						"title": "Excessive event delivery delay"
+					},
+					"EXPECTED_VEHICLE_EVENT_INTERVAL": {
+						"description": "The average interval between events must not exceed 20 seconds.",
+						"title": "Average interval between events"
+					},
+					"EXPECTED_VEHICLE_EVENT_QTY": {
+						"description": "A ride must have at least 10 vehicle events.",
+						"title": "Fewer than 10 vehicle events"
+					},
+					"EXPECTED_VEHICLE_ID_QTY": {
+						"description": "A ride may have no more than two different vehicle IDs.",
+						"title": "No more than two vehicles"
+					},
+					"MATCHING_APEX_LOCATIONS": {
+						"description": "Location transactions must match vehicle events.",
+						"title": "Matching location transactions"
+					},
+					"MATCHING_VEHICLE_IDS": {
+						"description": "Vehicle IDs received in events must match the IDs in APEX transactions.",
+						"title": "Matching vehicle IDs"
+					},
+					"SIMPLE_ONE_APEX_VALIDATION": {
+						"description": "A ride must have at least one validation transaction.",
+						"title": "At least one validation transaction"
+					},
+					"SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION": {
+						"description": "A ride must have at least one event or validation transaction.",
+						"title": "At least one event or validation transaction"
+					},
+					"SIMPLE_THREE_VEHICLE_EVENTS": {
+						"description": "A ride must have at least three events, at the beginning, middle and end of the trip.",
+						"title": "At least three events"
+					},
+					"TRANSACTION_SEQUENTIALITY": {
+						"description": "All transactions generated by the validator were delivered.",
+						"title": "APEX Transaction Sequentiality"
+					}
+				},
+				"no_data": "No Data",
+				"title": "Analysis Results"
+			},
+			"RideAnalysisResultItem": {
+				"statuses": {
+					"fail": "Fail",
+					"failed": "Error",
+					"pass": "Pass"
+				}
+			},
+			"RideAnalysisVehicleEvents": {
+				"description": "GTFS-RT events generated by the vehicle.",
+				"table": {
+					"columns": {
+						"_id": {
+							"label": "ID"
+						},
+						"activity": {
+							"label": "Activity"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"door": {
+							"label": "Door"
+						},
+						"driver_id": {
+							"label": "Driver ID"
+						},
+						"latitude": {
+							"label": "Latitude"
+						},
+						"longitude": {
+							"label": "Longitude"
+						},
+						"odometer": {
+							"label": "Odometer"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						},
+						"vehicle_id": {
+							"label": "Vehicle ID"
+						}
+					}
+				},
+				"title": "Vehicle Events"
+			}
+		},
+		"detail": {
+			"RidesDetailAcceptanceStatusTag": {
+				"accepted": "Accepted",
+				"justification_required": "Justification Required",
+				"rejected": "Rejected",
+				"under_review": "Under Review"
+			},
+			"RidesDetailHeader": {
+				"favorites": {
+					"add": "Add to favorites",
+					"remove": "Remove from favorites"
+				}
+			},
+			"RidesDetailViewNavigation": {
+				"acceptance": {
+					"label": "Acceptance"
+				},
+				"analysis": {
+					"label": "Analysis"
+				},
+				"audit": {
+					"label": "Audit"
+				}
+			}
+		},
+		"extract": {
+			"RidesExtract": {
+				"fields": {
+					"version": {
+						"label": "Version"
+					}
+				}
+			},
+			"RidesExtractHeader": {
+				"title": "Export rides"
+			},
+			"RidesExtractV1Footer": {
+				"button": {
+					"label": "Export"
+				}
+			},
+			"RidesExtractV1Properties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Agencies",
+						"placeholder": "Select one or more agencies..."
+					},
+					"start_time_scheduled_end": {
+						"label": "End date"
+					},
+					"start_time_scheduled_start": {
+						"label": "Start date"
+					}
+				}
+			},
+			"RidesExtractV2Footer": {
+				"button": {
+					"label": "Export"
+				}
+			},
+			"RidesExtractV2Properties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Agencies",
+						"placeholder": "Select one or more agencies..."
+					},
+					"analysis_at_least_one_vehicle_event_on_last_stop_grades": {
+						"label": "Ended at Last Stop"
+					},
+					"analysis_expected_apex_validation_interval_grades": {
+						"label": "Validation Interval"
+					},
+					"analysis_simple_three_vehicle_events_grades": {
+						"label": "3 Checkpoints"
+					},
+					"analysis_transaction_sequentiality_grades": {
+						"label": "APEX Sequentiality"
+					},
+					"driver_ids": {
+						"label": "Driver",
+						"placeholder": "Add one or more drivers..."
+					},
+					"end_delay_statuses": {
+						"label": "Arrival Delay"
+					},
+					"operational_statuses": {
+						"label": "Status"
+					},
+					"search": {
+						"label": "Search",
+						"placeholder": "Ride ID or destination..."
+					},
+					"start_delay_statuses": {
+						"label": "Departure Delay"
+					},
+					"start_time_scheduled_end": {
+						"label": "End date"
+					},
+					"start_time_scheduled_start": {
+						"label": "Start date"
+					},
+					"vehicle_ids": {
+						"label": "Vehicle",
+						"placeholder": "Add one or more vehicles..."
+					}
+				}
+			},
+			"RidesExtractV3Footer": {
+				"button": {
+					"label": "Export"
+				}
+			},
+			"RidesExtractV3Properties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Agencies",
+						"placeholder": "Select one or more agencies..."
+					},
+					"analysis_at_least_one_vehicle_event_on_last_stop_grades": {
+						"label": "Ended at Last Stop"
+					},
+					"analysis_expected_apex_validation_interval_grades": {
+						"label": "Validation Interval"
+					},
+					"analysis_simple_three_vehicle_events_grades": {
+						"label": "3 Checkpoints"
+					},
+					"analysis_transaction_sequentiality_grades": {
+						"label": "APEX Sequentiality"
+					},
+					"driver_ids": {
+						"label": "Driver",
+						"placeholder": "Add one or more drivers..."
+					},
+					"end_delay_statuses": {
+						"label": "Arrival Delay"
+					},
+					"operational_statuses": {
+						"label": "Status"
+					},
+					"search": {
+						"label": "Search",
+						"placeholder": "Ride ID or destination..."
+					},
+					"start_delay_statuses": {
+						"label": "Departure Delay"
+					},
+					"start_time_scheduled_end": {
+						"label": "End date"
+					},
+					"start_time_scheduled_start": {
+						"label": "Start date"
+					},
+					"vehicle_ids": {
+						"label": "Vehicle",
+						"placeholder": "Add one or more vehicles..."
+					}
+				}
+			}
+		}
+	},
+	"sams": {
+		"detail": {
+			"SamsDetailBasicInfos": {
+				"description": "Basic SAM information",
+				"fields": {
+					"agency_id": {
+						"label": "Agency"
+					},
+					"latest_apex_version": {
+						"label": "APEX version used"
+					},
+					"seen_first_at": {
+						"label": "First seen"
+					},
+					"seen_last_at": {
+						"label": "Last seen"
+					},
+					"status": {
+						"label": "SAM status"
+					},
+					"system_status": {
+						"label": "SAM status in the system"
+					},
+					"transactions_expected": {
+						"label": "Expected transactions"
+					},
+					"transactions_found": {
+						"label": "Found transactions"
+					},
+					"transactions_missing": {
+						"label": "Missing transactions"
+					}
+				},
+				"title": "Basic Information"
+			},
+			"SamsDetailCalendar": {
+				"day": {
+					"label": "Daily"
+				},
+				"description": "SAM analysis calendar",
+				"month": {
+					"label": "Monthly"
+				},
+				"title": "Analysis Calendar"
+			},
+			"SamsDetailList": {
+				"SamsDetailListFilterApexVersion": {
+					"label": "APEX version (transactions)"
+				},
+				"SamsDetailListFilterDate": {
+					"label": "Analysis interval"
+				},
+				"description": "List of completed SAM analyses",
+				"title": "Analysis list"
+			}
+		},
+		"export": {
+			"SamsExportModal": {
+				"ExportButton": {
+					"label": "Export analyses"
+				},
+				"title": "Export Analyses"
+			}
+		},
+		"list": {
+			"SamsFiltersApexVersion": {
+				"label": "APEX Version"
+			},
+			"SamsFiltersDate": {
+				"label": "Observation Dates"
+			},
+			"SamsFiltersStatus": {
+				"label": "Status",
+				"options": {
+					"complete": "Complete",
+					"error": "Error",
+					"incomplete": "Incomplete",
+					"waiting": "Waiting"
+				}
+			},
+			"SamsListFilterAgency": {
+				"label": "Agency"
+			},
+			"SamsListFilterFavorites": {
+				"label": "Favorites"
+			},
+			"SamsListHeader": {
+				"title": "SAMs"
+			},
+			"SamsListStatus": {
+				"completed": "Complete",
+				"failed": "Failed",
+				"processing": "Processing",
+				"waiting": "Waiting"
+			}
+		}
+	},
+	"vehicles": {
+		"NoDataLabel": {
+			"text": "Select a Vehicle"
+		},
+		"create": {
+			"VehiclesCreateHeader": {
+				"title": "New Vehicle"
+			},
+			"VehiclesCreateInfos": {
+				"fields": {
+					"_id": {
+						"label": "Vehicle ID",
+						"placeholder": "Enter the vehicle ID"
+					},
+					"agency_id": {
+						"label": "Vehicle operator"
+					},
+					"available_seats": {
+						"label": "Seating capacity",
+						"placeholder": "Enter the seating capacity"
+					},
+					"available_standing": {
+						"label": "Standing capacity",
+						"placeholder": "Enter the standing capacity"
+					},
+					"emission": {
+						"label": "Emission class",
+						"placeholder": "Select the vehicle emission class"
+					},
+					"license_plate": {
+						"label": "Vehicle registration plate",
+						"placeholder": "AA00AA"
+					},
+					"make": {
+						"label": "Vehicle make",
+						"placeholder": "Enter the vehicle make"
+					},
+					"model": {
+						"label": "Vehicle model",
+						"placeholder": "Enter the vehicle model"
+					},
+					"owner": {
+						"label": "Vehicle owner",
+						"placeholder": "Enter the vehicle owner"
+					},
+					"propulsion": {
+						"label": "Propulsion",
+						"placeholder": "Select the vehicle propulsion"
+					},
+					"registration_date": {
+						"label": "Vehicle registration date"
+					},
+					"start_date": {
+						"label": "Operation start date"
+					},
+					"typology": {
+						"label": "Vehicle type",
+						"placeholder": "Select the vehicle type"
+					}
+				}
+			}
+		},
+		"detail": {
+			"VehiclesDetailFunctionalities": {
+				"description": "Vehicle features, such as bicycle acceptance, contactless payment, passenger counting, etc.",
+				"fields": {
+					"bicycles": {
+						"label": "Accepts bicycles"
+					},
+					"climatization": {
+						"label": "Has air conditioning"
+					},
+					"consumption_meter": {
+						"label": "Consumption measurement"
+					},
+					"contactless": {
+						"label": "Accepts contactless payment"
+					},
+					"corridor": {
+						"label": "Has an aisle"
+					},
+					"external_sound": {
+						"label": "External audio"
+					},
+					"folding_system": {
+						"label": "Folding system"
+					},
+					"front_display": {
+						"label": "Front display"
+					},
+					"internal_sound": {
+						"label": "Internal audio"
+					},
+					"kneeling": {
+						"label": "Kneeling"
+					},
+					"lowered_floor": {
+						"label": "Low floor"
+					},
+					"onboard_monitor": {
+						"label": "On-board monitor"
+					},
+					"passenger_counting": {
+						"label": "Active passenger counting"
+					},
+					"ramp": {
+						"label": "Has a ramp"
+					},
+					"rear_display": {
+						"label": "Rear display"
+					},
+					"side_display": {
+						"label": "Side display"
+					},
+					"static_information": {
+						"label": "Static information"
+					},
+					"wheelchair": {
+						"label": "Wheelchair accessible"
+					}
+				},
+				"title": "Features"
+			},
+			"VehiclesDetailHeader": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "Are you sure you want to delete this vehicle? This action cannot be undone.",
+						"title": "Delete Vehicle"
+					}
+				}
+			},
+			"VehiclesDetailIdentification": {
+				"description": "Vehicle, owner and operator identifiers.",
+				"fields": {
+					"_id": {
+						"label": "Vehicle ID"
+					},
+					"agency_id": {
+						"label": "Vehicle operator"
+					},
+					"license_plate": {
+						"label": "Vehicle registration plate"
+					},
+					"owner": {
+						"label": "Vehicle owner"
+					},
+					"registration_date": {
+						"label": "Vehicle registration date"
+					},
+					"start_date": {
+						"label": "Operation start date"
+					}
+				},
+				"title": "Identification"
+			},
+			"VehiclesDetailMap": {
+				"description": "Last reported vehicle position.",
+				"title": "Current Position Map"
+			},
+			"VehiclesDetailSpecifications": {
+				"description": "Vehicle specifications, such as make, model, seating capacity, etc.",
+				"fields": {
+					"available_seats": {
+						"label": "Seating capacity"
+					},
+					"available_standing": {
+						"label": "Standing capacity"
+					},
+					"emission": {
+						"label": "Emission class"
+					},
+					"make": {
+						"label": "Vehicle make"
+					},
+					"model": {
+						"label": "Vehicle model"
+					},
+					"propulsion": {
+						"label": "Propulsion"
+					},
+					"typology": {
+						"label": "Vehicle type"
+					}
+				},
+				"title": "Specifications"
+			}
+		},
+		"import": {
+			"VehiclesImportFile": {
+				"cancel": "Cancel",
+				"fileLabel": "Select a valid file to create or update a vehicle",
+				"submit": "Create vehicles",
+				"unknownError": "Unknown error.",
+				"uploadLabel": "Vehicle import file"
+			},
+			"VehiclesImportHeader": {
+				"title": "Import Vehicle"
+			}
+		},
+		"list": {
+			"VehiclesList": {
+				"columns": {
+					"agency_id": {
+						"label": "Agency"
+					},
+					"id": {
+						"label": "#ID"
+					},
+					"license_plate": {
+						"label": "Registration Plate"
+					},
+					"registration_date": {
+						"label": "Registration Date"
+					}
+				}
+			},
+			"VehiclesListExport": {
+				"activeFilters": "Active list filters",
+				"cancel": "Cancel",
+				"filters": {
+					"agency": "Agencies",
+					"search": "Search"
+				},
+				"noFilters": "No active filters. The export will include all vehicles in the current list.",
+				"submit": "Export",
+				"title": "Export vehicles",
+				"toast": {
+					"error": {
+						"message": "Error starting the export",
+						"title": "Error"
+					},
+					"success": {
+						"message": "The export has started",
+						"title": "Success"
+					}
+				}
+			},
+			"VehiclesListFilterAgency": {
+				"label": "Agencies"
+			},
+			"VehiclesListHeader": {
+				"title": "Vehicles"
+			},
+			"VehiclesListHeaderMenu": {
+				"create": "New vehicle",
+				"export": "Export vehicles",
+				"import": "Import vehicle"
+			}
+		},
+		"shared": {
+			"emission": {
+				"EURO_I": "Euro 1",
+				"EURO_II": "Euro 2",
+				"EURO_III": "Euro 3",
+				"EURO_IV": "Euro 4",
+				"EURO_V": "Euro 5",
+				"EURO_VI": "Euro 6"
+			},
+			"propulsion": {
+				"biodiesel": "Biodiesel",
+				"diesel": "Diesel",
+				"electricity": "Electricity",
+				"gasoline": "Petrol",
+				"hybrid": "Hybrid",
+				"lpg_auto": "LPG (Liquefied Petroleum Gas)",
+				"mixture": "Mixture",
+				"natural_gas": "Natural Gas"
+			},
+			"typology": {
+				"bus": "Bus",
+				"cable car": "Cable Car",
+				"cable_tram": "Cable Tram",
+				"ferry": "Ferry",
+				"funicular": "Funicular",
+				"monorail": "Monorail",
+				"rail": "Train",
+				"subway": "Metro",
+				"tram": "Tram",
+				"trolleybus": "Trolleybus"
+			}
+		}
+	}
+}

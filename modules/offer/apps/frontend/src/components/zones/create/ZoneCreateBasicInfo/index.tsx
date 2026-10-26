@@ -1,9 +1,13 @@
 'use client';
 
-import { useAgenciesData } from '@/components/common/use-agencies-data';
-import { useZoneCreateContext } from '@/components/zones/create/ZoneCreate.context';
-import { ZoneSchema } from '@tmlmobilidade/go-types-offer';
-import { MultiSelect, Section, TextInput } from '@tmlmobilidade/ui';
+import { CreateZoneSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { ErrorDisplay, MultiSelect, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useZonesAgenciesData } from '../../shared/use-zones-agencies-data';
+import { useZonesCreateFormContext } from '../ZonesCreateForm.context';
+
 /* * */
 
 export function ZoneCreateBasicInfo() {
@@ -12,40 +16,69 @@ export function ZoneCreateBasicInfo() {
 	//
 	// A. Setup variables
 
-	const zoneCreateContext = useZoneCreateContext();
-	const { options: allAgencyOptions } = useAgenciesData();
+	const { t } = useTranslation();
+	const { capabilities, form } = useZonesCreateFormContext();
+	const { error, isLoading, options } = useZonesAgenciesData({ permissions: { actions: [PermissionCatalog.all.zones.actions.create], scope: PermissionCatalog.all.zones.scope } });
 
 	//
-	// B. Render Components
+	// B. Render components
 
 	return (
 		<Section gap="md">
-			<TextInput
-				label="Nome"
-				placeholder="Ex: Lisboa"
-				required={!ZoneSchema.shape.name.isOptional()}
-				w="100%"
-				{...zoneCreateContext.data.form.getInputProps('name')}
+			{error && <ErrorDisplay message={error} />}
+
+			<StandardFormController
+				control={form.control}
+				name="name"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label={t('default:zones.fields.name.label')}
+						maxLength={CreateZoneSchema.shape.name.maxLength}
+						onChange={field.onChange}
+						placeholder={t('default:zones.fields.name.placeholder')}
+						readOnly={!capabilities.editEnabled}
+						value={field.value ?? ''}
+						w="100%"
+						withAsterisk={!CreateZoneSchema.shape.name.isOptional()}
+					/>
+				)}
 			/>
 
-			<TextInput
-				label="Código"
-				placeholder="Ex: 1101"
-				required={!ZoneSchema.shape.code.isOptional()}
-				w="100%"
-				{...zoneCreateContext.data.form.getInputProps('code')}
+			<StandardFormController
+				control={form.control}
+				name="code"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label={t('default:zones.fields.code.label')}
+						maxLength={CreateZoneSchema.shape.code.maxLength}
+						onChange={field.onChange}
+						placeholder={t('default:zones.fields.code.placeholder')}
+						readOnly={!capabilities.editEnabled}
+						value={field.value ?? ''}
+						w="100%"
+						withAsterisk={!CreateZoneSchema.shape.code.isOptional()}
+					/>
+				)}
 			/>
 
-			<MultiSelect
-				key={zoneCreateContext.data.form.key('agency_ids')}
-				data={allAgencyOptions}
-				label="Operadores"
-				required={!ZoneSchema.shape.agency_ids.isOptional()}
-				w="100%"
-				{...zoneCreateContext.data.form.getInputProps('agency_ids')}
+			<StandardFormController
+				control={form.control}
+				name="agency_ids"
+				render={({ field, fieldState }) => (
+					<MultiSelect
+						data={options}
+						disabled={!capabilities.editEnabled || isLoading || !!error}
+						error={fieldState.error?.message}
+						label={t('default:zones.fields.agency_ids.label')}
+						onChange={field.onChange}
+						value={field.value ?? []}
+						w="100%"
+						withAsterisk={!CreateZoneSchema.shape.agency_ids.isOptional()}
+					/>
+				)}
 			/>
 		</Section>
 	);
-
-	//
 }

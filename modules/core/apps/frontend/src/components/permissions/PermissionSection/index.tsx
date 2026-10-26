@@ -4,7 +4,7 @@ import { PermissionSectionItem } from '@/components/permissions/PermissionSectio
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Role } from '@tmlmobilidade/go-types-core';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
-import { Collapsible, Grid, Section, type SelectDataItem } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, type SelectDataItem, type TreeSelectDataItem } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,7 +15,7 @@ interface PermissionSectionProps {
 	disabled?: boolean
 	enabledPermissions: Permission[]
 	enabledRoleIds?: string[]
-	municipalitiesOptions: SelectDataItem[]
+	locationsOptions: TreeSelectDataItem[]
 	onResourceToggle?: (permission: Permission) => void
 	onToggle: (permission: Permission) => void
 	rolesData: Role[]
@@ -25,7 +25,7 @@ interface PermissionSectionProps {
 
 /* * */
 
-export function PermissionSection({ agenciesOptions, configActions, description, disabled, enabledPermissions, enabledRoleIds, municipalitiesOptions, onResourceToggle, onToggle, rolesData, scope, title }: PermissionSectionProps) {
+export function PermissionSection({ agenciesOptions, configActions, description, disabled, enabledPermissions, enabledRoleIds, locationsOptions, onResourceToggle, onToggle, rolesData, scope, title }: PermissionSectionProps) {
 	return (
 		<Collapsible description={description} title={title}>
 			<Section gap="md">
@@ -38,7 +38,7 @@ export function PermissionSection({ agenciesOptions, configActions, description,
 							disabled={disabled}
 							enabledPermissions={enabledPermissions}
 							enabledRoleIds={enabledRoleIds}
-							municipalitiesOptions={municipalitiesOptions}
+							locationsOptions={locationsOptions}
 							onResourceToggle={onResourceToggle}
 							onToggle={onToggle}
 							rolesData={rolesData}

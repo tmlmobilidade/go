@@ -4,12 +4,12 @@ import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Role } from '@tmlmobilidade/go-types-core';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
-import { Grid, type SelectDataItem } from '@tmlmobilidade/ui';
+import { Grid, type SelectDataItem, type TreeSelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { AgencyPermissionMultiselect } from '../AgencyPermissionMultiselect';
 import { AlertReferenceTypePermissionMultiselect } from '../AlertReferenceTypePermissionMultiselect';
-import { MunicipalityPermissionMultiselect } from '../MunicipalityPermissionMultiselect';
+import { LocationPermissionTreeSelect } from '../LocationPermissionTreeSelect';
 import { PermissionSectionItemCard } from '../PermissionSectionItemCard';
 
 /* * */
@@ -20,7 +20,7 @@ interface PermissionSectionItemProps {
 	disabled?: boolean
 	enabledPermissions: Permission[]
 	enabledRoleIds?: string[]
-	municipalitiesOptions: SelectDataItem[]
+	locationsOptions: TreeSelectDataItem[]
 	onResourceToggle: (permission: Permission) => void
 	onToggle: (permission: Permission) => void
 	rolesData: Role	[]
@@ -29,7 +29,7 @@ interface PermissionSectionItemProps {
 
 /* * */
 
-export function PermissionSectionItem({ agenciesOptions, configAction, disabled, enabledPermissions, enabledRoleIds, municipalitiesOptions, onResourceToggle, onToggle, rolesData, scope }: PermissionSectionItemProps) {
+export function PermissionSectionItem({ agenciesOptions, configAction, disabled, enabledPermissions, enabledRoleIds, locationsOptions, onResourceToggle, onToggle, rolesData, scope }: PermissionSectionItemProps) {
 	//
 
 	//
@@ -49,10 +49,10 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 		return currentPermissionEntry.resources['agency_ids'] || [];
 	})();
 
-	const selectedMunicipalityIds = (() => {
+	const selectedLocationIds = (() => {
 		if (!currentPermissionEntry) return [];
 		if (!('resources' in currentPermissionEntry)) return [];
-		return currentPermissionEntry.resources['municipality_ids'] || [];
+		return currentPermissionEntry.resources['location_ids'] || [];
 	})();
 
 	const selectedAlertReferenceTypeIds = (() => {
@@ -109,12 +109,12 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 					/>
 				)}
 
-				{onResourceToggle && configAction.resources?.includes('MUNICIPALITIES') && (
-					<MunicipalityPermissionMultiselect
+				{onResourceToggle && configAction.resources?.includes('LOCATIONS') && (
+					<LocationPermissionTreeSelect
 						disabled={disabled || hasPermissionFromRole}
-						onChange={(inputValue: string[]) => handleResourceToggle({ municipality_ids: inputValue })}
-						options={municipalitiesOptions}
-						value={selectedMunicipalityIds}
+						onChange={(inputValue: string[]) => handleResourceToggle({ location_ids: inputValue })}
+						options={locationsOptions}
+						value={selectedLocationIds}
 					/>
 				)}
 			</Grid>
