@@ -15,13 +15,26 @@ type SQLiteTables struct {
 }
 
 func PrepareSQLiteTables(db *sql.DB) (*SQLiteTables, error) {
+	//
+
+	//
+	// Check if database connection is nil
+
 	if db == nil {
 		return nil, fmt.Errorf("database connection is nil")
 	}
+
+	//
+	// List all tables in the database
+
 	rows, err := db.Query("SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT GLOB 'sqlite_*' ORDER BY name")
 	if err != nil {
 		return nil, fmt.Errorf("list SQLite tables: %w", err)
 	}
+
+	//
+	// Extract table names
+
 	var names []string
 	for rows.Next() {
 		var name string
@@ -36,6 +49,10 @@ func PrepareSQLiteTables(db *sql.DB) (*SQLiteTables, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	//
+	// Prepare table handles
+
 	result := &SQLiteTables{db: db, tables: make(map[string]*SQLiteTable, len(names))}
 	for _, name := range names {
 		table, err := NewSQLiteTable(db, name)
