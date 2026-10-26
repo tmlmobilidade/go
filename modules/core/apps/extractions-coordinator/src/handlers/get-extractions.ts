@@ -2,6 +2,7 @@
 
 import { type ExtractionsCoordinatorResponse } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -38,12 +39,21 @@ export async function getExtractionsHandler(): Promise<ExtractionsCoordinatorRes
 		IS_BUSY = true;
 
 		//
+		// Legacy extractions belong to production. Every environment claims only its own jobs.
+
+		const currentEnvironment = getCurrentEnvironment();
+		const environmentFilter = currentEnvironment === 'prd'
+			? { $or: [{ source_environment: 'prd' }, { source_environment: { $exists: false } }] }
+			: { source_environment: currentEnvironment };
+
+		//
 		// Release stuck extractions before fetching new ones
 
 		const extractionsCollection = await goDb.core.extractions.getCollection();
 
 		const updateResult = await extractionsCollection.updateMany(
 			{
+				...environmentFilter,
 				processing_status: 'processing',
 				updated_at: { $lt: Dates.now('utc').minus({ minutes: 3 }).unix_milliseconds },
 			},
@@ -63,6 +73,7 @@ export async function getExtractionsHandler(): Promise<ExtractionsCoordinatorRes
 
 		const foundWaitingExtractions = await goDb.core.extractions.findMany(
 			{
+				...environmentFilter,
 				processing_status: 'waiting',
 			},
 			{
