@@ -123,7 +123,6 @@ export function AlertsExtractProperties() {
 									placeholder={areAllOptionsSelected ? t('alerts:extract.AlertsExtractProperties.no_filter') : t('alerts:extract.AlertsExtractProperties.placeholder')}
 									value={areAllOptionsSelected ? [] : selectedValues}
 									w="100%"
-									withAsterisk
 								/>
 							);
 						}}
