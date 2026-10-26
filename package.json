@@ -69,6 +69,8 @@
 		"dev:exporter": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-exporter-*",
 		"dev:exporter-api": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-exporter-api",
 		"dev:exporter-merged": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-exporter-export-gtfs-merged",
+
+		"dev:go-import-gtfs": "turbo run dev --filter=@tmlmobilidade/go-import-gtfs",
 		"dev:hub": "npm run build:hub:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-*",
 		"dev:hub:api": "npm run build:hub:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-api",
 		"dev:hub:enable-app": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-enable-app",
@@ -197,6 +199,7 @@
 		"modules/**/*",
 		"packages/**/*",
 		"packages-new/**/*",
+		"packages-golang/**/*",
 		"cli/*"
 	],
 	"overrides": {

@@ -9,15 +9,15 @@ import "database/sql"
 type SQLiteDatabaseConfig struct {
 	// The database instance to use.
 	// If not provided, a temporary database will be created.
-	DatabaseInstance *sql.DB
+	DatabaseInstance *sql.DB `json:"-"`
 
 	// Optional custom instance name.
 	// If not provided, a random name will be generated.
-	InstanceName string
+	InstanceName string `json:"instanceName,omitempty"`
 
 	// Optional custom database file path.
 	// If not provided, a temporary file path will be generated.
-	InstancePath string
+	InstancePath string `json:"instancePath,omitempty"`
 
 	// If true, the database will be created in memory.
 	// Defaults to false.
@@ -25,7 +25,7 @@ type SQLiteDatabaseConfig struct {
 	// Also, multiple instances will not share the same data.
 	// Use only for testing or ephemeral data storage.
 	// If true, InstancePath is ignored.
-	Memory bool
+	Memory bool `json:"memory,omitempty"`
 }
 
 /* * */

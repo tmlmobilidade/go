@@ -1,0 +1,11 @@
+{
+	"name": "@tmlmobilidade/go-import-gtfs",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "go build -o dist/import-gtfs .",
+		"dev": "go run ./cli.go",
+		"lint": "go vet ./...",
+		"test": "go test ./..."
+	}
+}
