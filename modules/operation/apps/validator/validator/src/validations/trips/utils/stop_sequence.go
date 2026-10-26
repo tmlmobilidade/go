@@ -14,7 +14,8 @@ type SequencePoint struct {
 	Distance float64
 }
 
-// StopSequence reads current SQLite values without merging distinct source rows.
+// StopSequence streams current SQLite values in one query per trip without
+// merging distinct source rows.
 // Gaps in stop_sequence are valid; distances may be equal, but must not decrease.
 func StopSequence(db *services.SQLiteContext, tripID string) ([]SequencePoint, string, error) {
 	table, err := db.Table("stop_times")
@@ -23,11 +24,7 @@ func StopSequence(db *services.SQLiteContext, tripID string) ([]SequencePoint, s
 	}
 	points := []SequencePoint{}
 	diagnostic := ""
-	err = table.ForEachMatching("trip_id", tripID, func(row *services.SQLiteRow) error {
-		fields, err := row.Fields("stop_id", "stop_sequence", "shape_dist_traveled")
-		if err != nil {
-			return err
-		}
+	err = table.ForEachMatchingFields("trip_id", tripID, []string{"stop_id", "stop_sequence", "shape_dist_traveled"}, func(_ *services.SQLiteRow, fields map[string]string) error {
 		sequence, err := strconv.Atoi(fields["stop_sequence"])
 		if err != nil {
 			diagnostic = "invalid"
