@@ -56,11 +56,8 @@ func TripHeadsignPatternConsistent(db *services.SQLiteContext, rules *types.Rule
 	//
 	// 5. Collect trip_headsign values for the pattern_id group
 
-	err = trips_utils.ForGroup(db, "pattern_id", func(row *services.SQLiteRow) error {
-		value, err := row.Field("trip_headsign")
-		if err != nil {
-			return err
-		}
+	err = trips_utils.ForGroupFields(db, "pattern_id", []string{"trip_headsign"}, func(_ *services.SQLiteRow, fields map[string]string) error {
+		value := fields["trip_headsign"]
 		values[value] = true
 		return nil
 	})

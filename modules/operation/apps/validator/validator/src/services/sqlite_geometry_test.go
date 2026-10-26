@@ -21,7 +21,7 @@ func TestGeometryLookupFields(t *testing.T) {
 		(12, NULL, 'null-key'), (13, '', 'empty-key'), (14, 'T2', 'other');
 		CREATE TABLE stops (stop_id TEXT);
 		CREATE TABLE shapes (shape_id TEXT);
-		CREATE TABLE trips (trip_id TEXT);`)
+		CREATE TABLE trips (trip_id TEXT, route_id TEXT, pattern_id TEXT, shape_id TEXT);`)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +69,10 @@ func TestGeometryLookupFields(t *testing.T) {
 			}
 		})
 	}
-	for _, lookup := range [][2]string{{"stop_times", "trip_id"}, {"stops", "stop_id"}, {"shapes", "shape_id"}, {"trips", "trip_id"}} {
+	for _, lookup := range [][2]string{
+		{"stop_times", "trip_id"}, {"stops", "stop_id"}, {"shapes", "shape_id"},
+		{"trips", "trip_id"}, {"trips", "route_id"}, {"trips", "pattern_id"}, {"trips", "shape_id"},
+	} {
 		var id, parent, unused int
 		var detail string
 		query := "EXPLAIN QUERY PLAN SELECT rowid FROM " + lookup[0] + " AS source WHERE COALESCE(source." + lookup[1] + ", '') = ? ORDER BY rowid"

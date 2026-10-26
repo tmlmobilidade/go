@@ -57,17 +57,12 @@ func TripHeadsignRouteDirectionConsistent(db *services.SQLiteContext, rules *typ
 	//
 	// 5. Collect trip_headsign values for the route_id group
 
-	err = trips_utils.ForGroup(db, "route_id", func(row *services.SQLiteRow) error {
-		fields, err := row.Fields("trip_headsign", "direction_id")
-		if err != nil {
-			return err
-		}
+	err = trips_utils.ForGroupFields(db, "route_id", []string{"trip_headsign", "direction_id"}, func(row *services.SQLiteRow, fields map[string]string) error {
 		value := fields["trip_headsign"]
 		if value == "" {
 			return nil
 		}
-		direction := 0
-		direction, err = strconv.Atoi(fields["direction_id"])
+		direction, err := strconv.Atoi(fields["direction_id"])
 		if err != nil || direction < 0 || direction > 1 {
 			return nil
 		}

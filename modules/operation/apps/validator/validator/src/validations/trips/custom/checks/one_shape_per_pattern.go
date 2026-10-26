@@ -46,11 +46,8 @@ func OneShapePerPattern(db *services.SQLiteContext, rules *types.RuleContext, re
 	//
 	// 6. Collect shape_id values for the pattern_id group
 
-	err = trips_utils.ForGroup(db, "pattern_id", func(row *services.SQLiteRow) error {
-		value, err := row.Field("shape_id")
-		if err != nil {
-			return err
-		}
+	err = trips_utils.ForGroupFields(db, "pattern_id", []string{"shape_id"}, func(_ *services.SQLiteRow, fields map[string]string) error {
+		value := fields["shape_id"]
 		if value != "" {
 			shapes[value] = true
 		}

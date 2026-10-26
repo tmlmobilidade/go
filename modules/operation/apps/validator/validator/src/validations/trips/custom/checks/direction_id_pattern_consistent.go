@@ -45,11 +45,8 @@ func DirectionIdPatternConsistent(db *services.SQLiteContext, rules *types.RuleC
 	// 5. Check if the direction_id is consistent for all patterns in trips
 
 	values := map[string]bool{}
-	err = trips_utils.ForGroup(db, "pattern_id", func(row *services.SQLiteRow) error {
-		value, err := row.Field("direction_id")
-		if err != nil {
-			return err
-		}
+	err = trips_utils.ForGroupFields(db, "pattern_id", []string{"direction_id"}, func(_ *services.SQLiteRow, fields map[string]string) error {
+		value := fields["direction_id"]
 		parsed, err := strconv.Atoi(value)
 		if err != nil {
 			return nil

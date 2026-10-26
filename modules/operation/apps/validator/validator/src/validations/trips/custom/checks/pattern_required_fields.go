@@ -45,11 +45,7 @@ func PatternRequiredFields(db *services.SQLiteContext, rules *types.RuleContext)
 	//
 	// 4. Collect pattern_id values for the pattern_id group
 
-	return trips_utils.ForGroup(db, "pattern_id", func(row *services.SQLiteRow) error {
-		fields, err := row.Fields("shape_id", "route_id", "direction_id", "trip_headsign")
-		if err != nil {
-			return err
-		}
+	return trips_utils.ForGroupFields(db, "pattern_id", []string{"shape_id", "route_id", "direction_id", "trip_headsign"}, func(row *services.SQLiteRow, fields map[string]string) error {
 		for _, field := range []string{"shape_id", "route_id", "direction_id", "trip_headsign"} {
 			if fields[field] == "" {
 				rowCtx := lib.NewValidationContext("pattern_id", "trips.txt", ruleID, row.Row, services.AppMessageService)
