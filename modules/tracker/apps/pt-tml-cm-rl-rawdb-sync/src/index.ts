@@ -3,7 +3,7 @@
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
-// import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { type HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams, handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -58,7 +58,7 @@ async function main() {
 					await handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents({
 						batchWriter: writer,
 						configItem: config,
-						flushCallback: async () => undefined, // setRidesAsWaiting,
+						flushCallback: setRidesAsWaiting,
 						timeChunk: chunk,
 					});
 				} catch (error) {
@@ -75,7 +75,7 @@ async function main() {
 						onChunk: async chunk => await handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents({
 							batchWriter: writer,
 							configItem: config,
-							flushCallback: async () => undefined, // setRidesAsWaiting,
+							flushCallback: setRidesAsWaiting,
 							timeChunk: chunk,
 						}),
 						order: 'desc',

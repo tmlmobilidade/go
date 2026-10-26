@@ -94,7 +94,7 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 	// B. Fetch data
 
 	const { data: yearPeriodsData, error: yearPeriodsError, isLoading: yearPeriodsLoading } = useSWR<ApiResponse<YearPeriod[]>>(
-		canReadYearPeriods ? API_ROUTES.dates.YEAR_PERIODS_LIST : null);
+		canReadYearPeriods ? API_ROUTES.offer.YEAR_PERIODS_LIST : null);
 
 	const { data: annotationsData, error: annotationsError, isLoading: annotationsLoading } = useSWR<ApiResponse<Annotation[]>>(
 		canReadAnnotations ? API_ROUTES.dates.ANNOTATIONS_LIST : null,
@@ -105,7 +105,7 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 	);
 
 	const { data: eventsData, error: eventsError, isLoading: eventsLoading } = useSWR<ApiResponse<Event[]>>(
-		canReadEvents ? API_ROUTES.dates.EVENTS_LIST : null,
+		canReadEvents ? API_ROUTES.offer.EVENTS_LIST : null,
 	);
 
 	const { data: agenciesData } = useSWR<ApiResponse<Agency[]>>(API_ROUTES.core.AGENCIES_LIST);

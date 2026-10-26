@@ -5,11 +5,12 @@ import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLin
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { RoutePlannerTime } from '@/components/routes/common/RoutePlannerTime';
 import { RoutePlannerItineraryDetailStep } from '@/components/routes/detail/RoutePlannerItineraryDetailStep';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/itinerary/alerts';
 import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerLegRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
 import { getDurationMinutes } from '@/utils/route-planner/presentation/format';
 import { getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
-import { IconAlertTriangle, IconChevronDown } from '@tabler/icons-react';
+import { IconAlertTriangle, IconChevronDown, IconCircleArrowRightFilled } from '@tabler/icons-react';
 import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
 import { type MotisPlanLeg, type MotisPlanPlace } from '@tmlmobilidade/go-types-motis';
 import { useMemo, useState } from 'react';
@@ -38,6 +39,7 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, is
 	//
 	// A. Setup variables
 
+	const { push } = useBottomSheet();
 	const { linesByShortName } = useLinesData();
 	const { t } = useTranslation();
 	const [isStopsExpanded, setIsStopsExpanded] = useState(false);
@@ -137,10 +139,17 @@ export function RoutePlannerItineraryDetailLeg({ alerts: allAlerts, isActive, is
 				{alerts.length > 0 && (
 					<div className={styles.warningList}>
 						{alerts.slice(0, 3).map(alert => (
-							<div key={alert._id} className={styles.warningItem} data-kind="alert">
-								<IconAlertTriangle size={15} />
+							<button
+								key={alert._id}
+								className={styles.warningItem}
+								data-kind="alert"
+								onClick={() => push({ entityId: alert._id, view: 'alerts-detail' })}
+								type="button"
+							>
+								<IconAlertTriangle aria-hidden="true" size={15} />
 								<span>{alert.title}</span>
-							</div>
+								<IconCircleArrowRightFilled aria-hidden="true" size={16} />
+							</button>
 						))}
 					</div>
 				)}

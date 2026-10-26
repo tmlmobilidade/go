@@ -1,6 +1,6 @@
 /* * */
 
-import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { ListHeader, LoadingActivity } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { AlertsListFilterSearch } from '../filters/AlertsListFilterSearch';
@@ -16,17 +16,17 @@ export function AlertsListHeader() {
 
 	const { t } = useTranslation();
 
-	const { isLoading, isValidating, timestamp } = useAlertsListData();
+	const { data, isLoading, isValidating, timestamp } = useAlertsListData();
 
 	//
 	// B. Render components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps>{t('alerts:list.AlertsListHeader.title')}</Label>
-			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
-			<Spacer shrink />
-			<AlertsListFilterSearch />
-		</Toolbar>
+		<ListHeader
+			activity={<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />}
+			count={data?.length}
+			search={<AlertsListFilterSearch />}
+			title={t('alerts:list.AlertsListHeader.title')}
+		/>
 	);
 }

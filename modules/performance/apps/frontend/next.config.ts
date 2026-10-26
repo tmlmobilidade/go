@@ -1,5 +1,6 @@
 /* * */
 
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type NextConfig } from 'next';
 
 /* * */
@@ -20,7 +21,7 @@ const nextConfig: NextConfig = {
 		return [
 			{
 				basePath: false,
-				destination: '/performance',
+				destination: PAGE_ROUTES.performance.BASE,
 				permanent: true,
 				source: '/',
 			},

@@ -1,5 +1,8 @@
 {
 	"ListFilter": {
+		"empty": "No options available",
+		"no_results": "No results found",
+		"search": "Search...",
 		"toggle_all": "Select all"
 	},
 	"TagFilter": {

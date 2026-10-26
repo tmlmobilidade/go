@@ -8,7 +8,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function AnnotationCreate() {
 	return (
-		<Pane header={[<AnnotationCreateHeader />]}>
+		<Pane header={[<AnnotationCreateHeader key="header" />]}>
 			<AnnotationCreateBasicInfo />
 		</Pane>
 	);

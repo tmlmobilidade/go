@@ -1,5 +1,5 @@
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 
 /* * */
 
@@ -82,12 +82,12 @@ export interface RoutePreviewRecalculationPlan {
 
 interface PathStopEntry {
 	pathIndex: number
-	pathItem: PopulatedPath
+	pathItem: PatternsDetailPathItem
 }
 
 /* * */
 
-function createStopPoint(pathItem: PopulatedPath): RoutePreviewPoint {
+function createStopPoint(pathItem: PatternsDetailPathItem): RoutePreviewPoint {
 	return {
 		key: `stop:${pathItem._id}`,
 		lat: pathItem.stop?.latitude ?? 0,
@@ -96,7 +96,7 @@ function createStopPoint(pathItem: PopulatedPath): RoutePreviewPoint {
 	};
 }
 
-function getPathStops(path: PopulatedPath[]): PathStopEntry[] {
+function getPathStops(path: PatternsDetailPathItem[]): PathStopEntry[] {
 	return path.flatMap((pathItem, pathIndex) => (
 		pathItem.stop ? [{ pathIndex, pathItem }] : []
 	));
@@ -104,7 +104,7 @@ function getPathStops(path: PopulatedPath[]): PathStopEntry[] {
 
 /* * */
 
-export function buildRoutePreviewModel(path: PopulatedPath[], anchors: RoutePreviewAnchor[]) {
+export function buildRoutePreviewModel(path: PatternsDetailPathItem[], anchors: RoutePreviewAnchor[]) {
 	const pathStops = getPathStops(path);
 
 	if (!pathStops.length) {

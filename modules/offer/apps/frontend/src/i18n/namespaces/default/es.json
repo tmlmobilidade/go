@@ -1,0 +1,322 @@
+{
+	"events": {
+		"create": {
+			"title": "Nuevo evento"
+		},
+		"dates": {
+			"prompt": "Seleccione las fechas del evento",
+			"removeMonth": "Quitar mes",
+			"selectMonth": "Seleccionar mes"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Seguro que desea eliminar este evento? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar evento"
+		},
+		"empty": "Seleccione un evento",
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores afectados"
+			},
+			"code": {
+				"description": "Solo letras mayúsculas, números y guiones bajos. Máximo de {{max}} caracteres.",
+				"label": "Código",
+				"placeholder": "Ej.: MARAT_LIS"
+			},
+			"description": {
+				"label": "Descripción",
+				"placeholder": "Descripción del evento"
+			},
+			"title": {
+				"label": "Título",
+				"placeholder": "Ej.: Maratón de Lisboa"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"dates": "Fechas",
+				"id": "#ID",
+				"title": "Título"
+			},
+			"title": "Eventos"
+		},
+		"ruleCard": {
+			"allDay": "Todo el día {{dates}}",
+			"allLines": "Todas las líneas",
+			"days_one": "día",
+			"days_other": "días",
+			"exceptLines": "Todas excepto {{lines}}",
+			"lines_one": "{{count}} línea",
+			"lines_other": "{{count}} líneas",
+			"namedLines": "Líneas {{lines}}",
+			"noLines": "Ninguna línea",
+			"onDates": "(en las fechas {{dates}})",
+			"operateAs": "Funcionará como {{replacement}}",
+			"timeWindow": "{{start}} a {{end}} {{dates}}"
+		},
+		"ruleEditor": {
+			"affectedDates": "2. ¿Qué días afecta esta regla?",
+			"affectedLines": "3. ¿Qué líneas afecta esta regla?",
+			"all": "Todos",
+			"allDay": "Evento de día completo",
+			"allLines": "Se aplica a todas las líneas",
+			"cancel": "Cancelar",
+			"create": "Crear",
+			"dayType": "Tipo de día",
+			"edit": "Editar",
+			"endTime": "Hora de fin",
+			"endTimeDescription": "Después de medianoche, usar 24+ horas. Ej.: 02:00 → 26:00",
+			"eventTime": "4. ¿Cuándo tiene lugar el evento?",
+			"excludeLines": "Todas excepto estas líneas",
+			"excludeLinesDescription": "Se verán afectadas todas las líneas excepto estas.",
+			"includeLines": "Solo estas líneas",
+			"includeLinesDescription": "Solo se verán afectadas estas líneas.",
+			"newRule": "Nueva regla",
+			"noPatterns": "Sin patrones asociados",
+			"operateAs": "Los días seleccionados funcionarán como:",
+			"patterns": "Patrones asociados",
+			"periods": "Períodos",
+			"replacement": "Sustitución de oferta",
+			"replacementDescription": "Aplicar la oferta de otro tipo de día en estas fechas",
+			"replacementExample": "Ejemplo: el 17/02/2026 (martes) funciona como sábado · Período escolar.",
+			"restriction": "Restricción de oferta",
+			"restrictionDescription": "Esta regla eliminará toda la oferta durante el evento",
+			"restrictionExample": "Ej.: el 17/02/26 (martes) no hay oferta entre las 14 y las 18 horas",
+			"restrictionTimeDescription": "La oferta se suspende durante el período definido aquí",
+			"ruleType": "1. Tipo de regla",
+			"sameWeekday": "Mismo día de la semana",
+			"sameWeekdayDescription": "Cada fecha funciona como su día de la semana real, en el período seleccionado. Ej.: martes · Período de verano.",
+			"selectDates": "Seleccione las fechas afectadas por esta regla",
+			"serviceType": "4. ¿Qué tipo de oferta se aplica estos días?",
+			"startTime": "Hora de inicio",
+			"startTimeDescription": "Formato HH:MM en el día operativo. Ej.: 10:00",
+			"viewPatterns": "Ver patrones asociados",
+			"weekdays": "Días laborables",
+			"weekend": "Fin de semana"
+		},
+		"rules": {
+			"create": "Nueva regla",
+			"description": "Definen cómo calcular la oferta en los días del evento. Estas reglas sustituyen el comportamiento normal del calendario.",
+			"empty": "No hay reglas definidas",
+			"title": "Reglas de oferta"
+		}
+	},
+	"fares": {
+		"create": {
+			"title": "Nueva tarifa"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Eliminar esta tarifa? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar tarifa"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: T1-BORDO"
+			},
+			"currency_type": {
+				"label": "Moneda"
+			},
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Ej.: navegante® a bordo T1"
+			},
+			"payment_method": {
+				"label": "Método de pago"
+			},
+			"price": {
+				"label": "Precio"
+			},
+			"transfers": {
+				"label": "Transbordos"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nombre"
+			},
+			"select": "Seleccione una tarifa",
+			"title": "Tarifas"
+		},
+		"noAccess": "No tiene permiso para acceder a esta página.",
+		"options": {
+			"currency": {
+				"eur": "€ Euro"
+			},
+			"paymentMethod": {
+				"onboard": "Pago al conductor (navegante® a bordo)",
+				"prepaid": "Prepago (navegante® pré-pago)"
+			},
+			"transfers": {
+				"none": "Sin transbordos",
+				"one": "Un transbordo",
+				"two": "Hasta dos transbordos",
+				"unlimited": "Transbordos ilimitados"
+			}
+		}
+	},
+	"networkLocks": {
+		"line": "Bloqueado por la línea. Desbloquee primero la línea.",
+		"route": "Bloqueado por la ruta. Desbloquee primero la ruta."
+	},
+	"periods": {
+		"assignment": {
+			"acknowledge": "Entiendo y deseo continuar",
+			"blockedConflict": "Asignación bloqueada: un período en conflicto está bloqueado o faltan permisos de actualización para todos sus operadores.",
+			"checking": "Comprobando conflictos...",
+			"conflictMessage": "Se eliminarán {{count}} fechas de los períodos: {{periods}}.",
+			"conflictTitle": "Aviso de conflicto",
+			"create": "Crear un nuevo período",
+			"dayCount_one": "{{count}} día",
+			"dayCount_other": "{{count}} días",
+			"existing": "Asignar a un período existente",
+			"mode": "Asignar",
+			"noPeriods": "No hay períodos editables para este conjunto de operadores. Seleccione todos los operadores del período o cree uno nuevo.",
+			"period": "Seleccionar período",
+			"range": "Intervalo de fechas seleccionado",
+			"search": "Buscar...",
+			"submit": "Asignar período",
+			"title": "Asignar fechas"
+		},
+		"create": {
+			"title": "Nuevo período"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Desea eliminar este período? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar período",
+			"openCalendar": "Asignar fechas"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ej.: 1"
+			},
+			"color": {
+				"label": "Color"
+			},
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Ej.: Período escolar 2025/2026"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"id": "#ID",
+				"name": "Nombre"
+			},
+			"title": "Períodos"
+		}
+	},
+	"typologies": {
+		"create": {
+			"title": "Nueva tipología"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Eliminar esta tipología? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar tipología"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: LONGA"
+			},
+			"color": {
+				"label": "Color de fondo"
+			},
+			"default_onboard_fare_ids": {
+				"label": "Tarifas a bordo predeterminadas"
+			},
+			"default_prepaid_fare_id": {
+				"label": "Tarifa prepago predeterminada"
+			},
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Ej.: Línea larga"
+			},
+			"text_color": {
+				"label": "Color del texto"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nombre"
+			},
+			"select": "Seleccione una tipología",
+			"title": "Tipologías"
+		},
+		"noAccess": "No tiene permiso para acceder a esta página.",
+		"preview": "Línea de ejemplo",
+		"sections": {
+			"basic": "Configuración básica",
+			"fares": "Tarifas asociadas",
+			"styles": "Estilos"
+		}
+	},
+	"zones": {
+		"create": {
+			"title": "Nueva zona"
+		},
+		"detail": {
+			"cancel": "Cancelar",
+			"confirm": "Eliminar",
+			"confirmMessage": "¿Eliminar esta zona? Esta acción no se puede deshacer.",
+			"confirmTitle": "Eliminar zona"
+		},
+		"fields": {
+			"agency_ids": {
+				"label": "Operadores"
+			},
+			"code": {
+				"label": "Código",
+				"placeholder": "Ex: 1101"
+			},
+			"geojson": {
+				"invalid": "Archivo GeoJSON no válido",
+				"label": "GeoJSON"
+			},
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Ej.: Lisboa"
+			}
+		},
+		"list": {
+			"columns": {
+				"agency_ids": "Operadores",
+				"code": "Código",
+				"id": "#ID",
+				"name": "Nombre"
+			},
+			"select": "Seleccione una zona",
+			"title": "Zonas"
+		},
+		"noAccess": "No tiene permiso para acceder a esta página.",
+		"sections": {
+			"basic": "Configuración básica",
+			"geometry": "Geometría"
+		}
+	}
+}

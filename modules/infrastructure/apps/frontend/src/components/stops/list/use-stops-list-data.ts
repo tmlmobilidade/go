@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { useStopsListFilterAgency } from './filters/StopsListFilterAgency/use-stops-list-filter-agency';
-import { useStopsListFilterLocationNeighbourhood } from './filters/StopsListFilterLocationNeighberhood/use-stops-list-filter-location-neighberhood';
+import { useStopsListFilterLegacyId } from './filters/StopsListFilterLegacyId/use-stops-list-filter-legacy-id';
 import { useStopsListFilterLocationPrimary } from './filters/StopsListFilterLocationPrimary/use-stops-list-filter-location-primary';
 import { useStopsListFilterLocationSecondary } from './filters/StopsListFilterLocationSecondary/use-stops-list-filter-location-secondary';
 import { useStopsListFilterLocationTertiary } from './filters/StopsListFilterLocationTertiary/use-stops-list-filter-location-tertiary';
@@ -34,7 +34,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	// A. Setup variables
 
 	const filterAgency = useStopsListFilterAgency();
-	const filterLocationNeighbourhood = useStopsListFilterLocationNeighbourhood();
+	const filterLegacyId = useStopsListFilterLegacyId();
 	const filterLocationPrimary = useStopsListFilterLocationPrimary();
 	const filterLocationSecondary = useStopsListFilterLocationSecondary();
 	const filterLocationTertiary = useStopsListFilterLocationTertiary();
@@ -45,12 +45,12 @@ export function useStopsListData(): UseStopsListDataReturnType {
 
 	const query = useMemo<StopsListFilters>(() => ({
 		agency_ids: filterAgency.value,
+		legacy_ids: filterLegacyId.value,
 		lifecycle_statuses: [],
-		location_neighbourhood_ids: filterLocationNeighbourhood.value,
 		location_primary_ids: filterLocationPrimary.value,
 		location_secondary_ids: filterLocationSecondary.value,
 		location_tertiary_ids: filterLocationTertiary.value,
-	}), [filterAgency.value, filterLocationNeighbourhood.value, filterLocationPrimary.value, filterLocationSecondary.value, filterLocationTertiary.value]);
+	}), [filterAgency.value, filterLegacyId.value, filterLocationPrimary.value, filterLocationSecondary.value, filterLocationTertiary.value]);
 
 	//
 	// C. Fetch data
@@ -74,7 +74,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	}, [data?.data]);
 
 	const searchResultsData = useSearch<StopsListItem>({
-		accessors: ['_id', 'name'],
+		accessors: ['_id', 'name', 'legacy_ids'],
 		data: populatedStops,
 		query: filterSearch.value,
 	});
