@@ -29,20 +29,23 @@ func ShapeIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error 
 	if err != nil {
 		return err
 	}
-	// Requiredness is checked by the field rule.
+
+	//
+	// 4. Requiredness is checked by the field rule.
+	
 	if value == "" {
 		return nil
 	}
 
 	//
-	// 4. Check if the shape_id exists in the shapes table
+	// 5. Check if the shape_id exists in the shapes table
 
 	if !db.Shapes.Exists("shape_id", value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 	}
 
 	//
-	// 5. Return success
+	// 6. Return success
 
 	return nil
 }
