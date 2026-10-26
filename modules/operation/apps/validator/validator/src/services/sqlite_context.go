@@ -280,6 +280,39 @@ func (t *SQLiteTable) ForEachMatching(field, value string, fn func(*SQLiteRow) e
 // one query, avoiding a separate Fields query per match. Values are not cached.
 // Missing columns and NULLs have the same empty-string semantics as Fields.
 func (t *SQLiteTable) ForEachMatchingFields(field, value string, fields []string, fn func(*SQLiteRow, map[string]string) error) error {
+	return t.forEachMatchingFields(field, []any{value}, fields, fn)
+}
+
+// ForEachMatchingValuesFields reads several lookup keys in bounded queries.
+// Repeated keys are visited once. Rows are ordered by rowid within each batch;
+// callers that need key order must collect the results and apply that order.
+func (t *SQLiteTable) ForEachMatchingValuesFields(field string, keys []string, fields []string, fn func(*SQLiteRow, map[string]string) error) error {
+	if len(fields) == 0 {
+		return fmt.Errorf("at least one field is required")
+	}
+	const batchSize = 500 // Stay below SQLite's parameter limit, including older builds.
+	seen := make(map[string]bool, len(keys))
+	batch := make([]any, 0, min(len(keys), batchSize))
+	for _, key := range keys {
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		batch = append(batch, key)
+		if len(batch) == batchSize {
+			if err := t.forEachMatchingFields(field, batch, fields, fn); err != nil {
+				return err
+			}
+			batch = batch[:0]
+		}
+	}
+	if len(batch) > 0 {
+		return t.forEachMatchingFields(field, batch, fields, fn)
+	}
+	return nil
+}
+
+func (t *SQLiteTable) forEachMatchingFields(field string, keys []any, fields []string, fn func(*SQLiteRow, map[string]string) error) error {
 	if len(fields) == 0 {
 		return fmt.Errorf("at least one field is required")
 	}
@@ -292,9 +325,13 @@ func (t *SQLiteTable) ForEachMatchingFields(field, value string, fields []string
 		columns = append(columns, t.column("source", name))
 		targets[i+1] = &values[i]
 	}
+	condition := " = ?"
+	if len(keys) > 1 {
+		condition = " IN (" + strings.TrimSuffix(strings.Repeat("?,", len(keys)), ",") + ")"
+	}
 	query := "SELECT " + strings.Join(columns, ", ") + " FROM " + dbops.SanitizeTableName(t.name) +
-		" AS source WHERE COALESCE(" + t.column("source", field) + ", '') = ? ORDER BY source.rowid"
-	rows, err := t.db.Query(query, value)
+		" AS source WHERE COALESCE(" + t.column("source", field) + ", '')" + condition + " ORDER BY source.rowid"
+	rows, err := t.db.Query(query, keys...)
 	if err != nil {
 		return err
 	}

@@ -81,32 +81,37 @@ func StopCoordinates(db *services.SQLiteContext, rules *types.RuleContext, geome
 	}
 
 	//
-	// 9. Check the stop_id values
+	// 9. Read each stop's first complete coordinates in batches.
+	// Keep invalid nonempty coordinates: the geometry check handles them.
 
-	for _, id := range ids {
-		found := false
-		err = stops.ForEachMatchingFields("stop_id", id, []string{"stop_lat", "stop_lon"}, func(_ *services.SQLiteRow, fields map[string]string) error {
-			if found {
-				return nil
-			}
-			if fields["stop_lat"] == "" || fields["stop_lon"] == "" {
-				return nil
-			}
-			found = true
-			stop := types.StopCoordinatesValidation{StopId: id, StopLat: fields["stop_lat"], StopLon: fields["stop_lon"]}
-			info, err := geometry.Distance(db, stop, trip["shape_id"])
-			if err != nil {
-				return err
-			}
-			if info != nil {
-				lat, _ := strconv.ParseFloat(stop.StopLat, 64)
-				lon, _ := strconv.ParseFloat(stop.StopLon, 64)
-				ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid_distance_to_shape", lat, lon, id, info.ShapeID, info.ClosestShapePtSeq, info.ClosestShapePtLat, info.ClosestShapePtLon, info.DistanceMeters))
-			}
+	coordinates := make(map[string]types.StopCoordinatesValidation, len(ids))
+	err = stops.ForEachMatchingValuesFields("stop_id", ids, []string{"stop_id", "stop_lat", "stop_lon"}, func(_ *services.SQLiteRow, fields map[string]string) error {
+		id := fields["stop_id"]
+		if _, found := coordinates[id]; found || fields["stop_lat"] == "" || fields["stop_lon"] == "" {
 			return nil
-		})
+		}
+		coordinates[id] = types.StopCoordinatesValidation{StopId: id, StopLat: fields["stop_lat"], StopLon: fields["stop_lon"]}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	// Check in the original served-stop order, retaining each trip's findings
+	// even when the geometry result is shared with another trip.
+	for _, id := range ids {
+		stop, found := coordinates[id]
+		if !found {
+			continue
+		}
+		info, err := geometry.Distance(db, stop, trip["shape_id"])
 		if err != nil {
 			return err
+		}
+		if info != nil {
+			lat, _ := strconv.ParseFloat(stop.StopLat, 64)
+			lon, _ := strconv.ParseFloat(stop.StopLon, 64)
+			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid_distance_to_shape", lat, lon, id, info.ShapeID, info.ClosestShapePtSeq, info.ClosestShapePtLat, info.ClosestShapePtLon, info.DistanceMeters))
 		}
 	}
 
