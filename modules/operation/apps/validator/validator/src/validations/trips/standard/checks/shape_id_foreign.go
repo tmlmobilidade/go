@@ -29,6 +29,10 @@ func ShapeIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error 
 	if err != nil {
 		return err
 	}
+	// Requiredness is checked by the field rule.
+	if value == "" {
+		return nil
+	}
 
 	//
 	// 4. Check if the shape_id exists in the shapes table

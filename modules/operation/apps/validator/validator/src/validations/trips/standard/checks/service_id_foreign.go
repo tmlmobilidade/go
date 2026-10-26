@@ -43,11 +43,15 @@ func ServiceIdForeign(db *services.SQLiteContext, rules *types.RuleContext) erro
 	if err != nil {
 		return err
 	}
+	// Requiredness is checked by the field rule.
+	if value == "" {
+		return nil
+	}
 
 	//
 	// 4. Check if the service_id exists in the calendar or calendar_dates table
 
-	if !db.Calendar.Exists("service_id", value) || !db.CalendarDates.Exists("service_id", value) {
+	if !db.Calendar.Exists("service_id", value) && !db.CalendarDates.Exists("service_id", value) {
 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
 	}
 

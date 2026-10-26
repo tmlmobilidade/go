@@ -59,6 +59,21 @@ func PrepareSQLiteTables(db *sql.DB) (*SQLiteTables, error) {
 			return nil, fmt.Errorf("prepare lookup index for %s.%s: %w", table.name, lookup[1], err)
 		}
 	}
+
+	// Foreign-key checks use raw equality, which cannot use the COALESCE
+	// indexes above. Keep both forms so NULL handling stays unchanged.
+	for _, lookup := range [][2]string{{"routes", "route_id"}, {"shapes", "shape_id"}, {"calendar", "service_id"}, {"calendar_dates", "service_id"}} {
+		table := result.tables[lookup[0]]
+		if table == nil || !table.columns[lookup[1]] {
+			continue
+		}
+		index := dbops.SanitizeColumnName("idx_validation_foreign_" + lookup[0] + "_" + lookup[1])
+		query := "CREATE INDEX IF NOT EXISTS " + index + " ON " + dbops.SanitizeTableName(table.name) +
+			" (" + dbops.SanitizeColumnName(lookup[1]) + ")"
+		if _, err := db.Exec(query); err != nil {
+			return nil, fmt.Errorf("prepare foreign-key index for %s.%s: %w", table.name, lookup[1], err)
+		}
+	}
 	return result, nil
 }
 

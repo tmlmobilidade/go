@@ -29,6 +29,10 @@ func RouteIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error 
 	if err != nil {
 		return err
 	}
+	// Requiredness is checked by the field rule.
+	if value == "" {
+		return nil
+	}
 
 	//
 	// 4. Check if the route_id exists in the routes table
