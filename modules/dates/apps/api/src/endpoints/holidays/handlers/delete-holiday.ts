@@ -13,7 +13,7 @@ export async function deleteHolidayHandler(request: FastifyRequest<{ Params: { i
 	//
 
 	const { id } = request.params;
-	const holiday = await goDb.offer.holidays.findById(id);
+	const holiday = await goDb.dates.holidays.findById(id);
 
 	if (!holiday) {
 		return sendErrorApiResponse(reply, {
@@ -57,7 +57,7 @@ export async function deleteHolidayHandler(request: FastifyRequest<{ Params: { i
 
 	//
 
-	await goDb.offer.holidays.deleteById(id);
+	await goDb.dates.holidays.deleteById(id);
 
 	return sendSuccessApiResponse(reply, undefined);
 }

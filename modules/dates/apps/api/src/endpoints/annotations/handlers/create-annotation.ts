@@ -55,7 +55,7 @@ export async function createAnnotationHandler(request: FastifyRequest<{ Body: Cr
 	//
 	// Insert the new annotation
 
-	const insertResult = await goDb.offer.annotations.insertOne({
+	const insertResult = await goDb.dates.annotations.insertOne({
 		...validatedAnnotation.data,
 		created_by: request.me._id,
 		updated_by: request.me._id,

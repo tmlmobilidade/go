@@ -16,7 +16,7 @@ export async function lockAnnotationHandler(request: FastifyRequest<{ Params: { 
 	//
 	// Get the Annotation from the database
 
-	const annotationData = await goDb.offer.annotations.findById(request.params.id);
+	const annotationData = await goDb.dates.annotations.findById(request.params.id);
 
 	if (!annotationData) {
 		return sendErrorApiResponse(reply, {
@@ -59,8 +59,8 @@ export async function lockAnnotationHandler(request: FastifyRequest<{ Params: { 
 	}
 
 	// If authorized, toggle the lock status of the annotation
-	await goDb.offer.annotations.updateOne({ _id: request.params.id }, { is_locked: !annotationData.is_locked, updated_by: request.me._id });
-	const foundAnnotation = await goDb.offer.annotations.findById(request.params.id);
+	await goDb.dates.annotations.updateOne({ _id: request.params.id }, { is_locked: !annotationData.is_locked, updated_by: request.me._id });
+	const foundAnnotation = await goDb.dates.annotations.findById(request.params.id);
 	if (!foundAnnotation) {
 		return sendErrorApiResponse(reply, {
 			error: 'Annotation not found',

@@ -58,12 +58,12 @@ export function AlertCreateStepSummaryAi() {
 
 	const hasPermissionToCreate = useMemo(() => {
 		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
-			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredPermission: { action: 'create', scope: 'alerts' },
 			requiredValue: agencyIdValue,
 			resourceKey: 'agency_ids',
 		});
 		const permissionForReferenceType = hasPermissionResource(meData?.permissions, {
-			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredPermission: { action: 'create', scope: 'alerts' },
 			requiredValue: referenceTypeValue,
 			resourceKey: 'reference_types',
 		});
@@ -72,12 +72,12 @@ export function AlertCreateStepSummaryAi() {
 
 	const hasPermissionToUpdateTexts = useMemo(() =>	{
 		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
-			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredPermission: { action: 'update_texts', scope: 'alerts' },
 			requiredValue: agencyIdValue,
 			resourceKey: 'agency_ids',
 		});
 		const permissionForReferenceType = hasPermissionResource(meData?.permissions, {
-			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredPermission: { action: 'update_texts', scope: 'alerts' },
 			requiredValue: referenceTypeValue,
 			resourceKey: 'reference_types',
 		});
@@ -101,6 +101,10 @@ export function AlertCreateStepSummaryAi() {
 	//
 	// D. Render components
 
+	if (!hasPermissionToCreate && !hasPermissionToUpdateTexts) {
+		return null;
+	}
+
 	return (
 		<Section gap="md">
 			<Surface variant="bordered" withBackground>
@@ -112,7 +116,7 @@ export function AlertCreateStepSummaryAi() {
 							name="auto_texts"
 							render={({ field }) => (
 								<Switch
-									checked={field.value ?? false}
+									checked={field.value}
 									disabled={!hasPermissionToUpdateTexts}
 									label={t('alerts:create.summary.auto_texts.label')}
 									onChange={e => field.onChange(e.currentTarget.checked)}
@@ -148,16 +152,16 @@ export function AlertCreateStepSummaryAi() {
 
 							{composeData && (
 								<Section gap="sm" padding="none">
-									<Label size="md" variant="muted" caps>Proposta</Label>
+									<Label size="md" variant="muted" caps>{t('alerts:create.summary.generate_text.title')}</Label>
 									<Text weight="semibold">{composeData.pt.title}</Text>
 									<Text>{composeData.pt.description}</Text>
-									{!isProposalAccepted && <Inline onClick={handleAcceptProposal} dotted>Aceitar proposta</Inline>}
+									{!isProposalAccepted && <Inline onClick={handleAcceptProposal} dotted>{t('alerts:create.summary.generate_text.accept_proposal')}</Inline>}
 								</Section>
 							)}
 
 							<LoadingThinking
 								size="md"
-								text="Generating summary..."
+								text={t('alerts:create.summary.generate_text.loading')}
 								visible={isLoadingComposeData || isValidatingComposeData}
 							/>
 

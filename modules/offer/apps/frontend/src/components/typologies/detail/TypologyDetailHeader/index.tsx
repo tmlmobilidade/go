@@ -1,11 +1,13 @@
 'use client';
 
-import { useTypologyDetailContext } from '@/components/typologies/detail/TypologyDetail.context';
-import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+
+import { useTypologiesDetailFormContext } from '../TypologiesDetailForm.context';
+import { useTypologiesDetailTypologyId } from '../use-typologies-detail-typology-id';
 
 /* * */
 
@@ -15,51 +17,31 @@ export function TypologyDetailHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = useTypologiesDetailFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'name' });
 	const router = useRouter();
-	const typologyDetailContext = useTypologyDetailContext();
+	const { typologyId } = useTypologiesDetailTypologyId();
+	const close = () => router.push(keepUrlParams(PAGE_ROUTES.offer.TYPOLOGIES_LIST));
 
 	//
-	// B. Handle actions
-
-	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.offer.TYPOLOGIES_LIST));
-	};
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
-
-			<CloseButton onClick={handleClose} type="close" />
-
-			<IdTag id={typologyDetailContext.data.typology._id} copyOnClick />
-
+			<CloseButton onClick={close} type="close" />
+			<IdTag id={typologyId} copyOnClick />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-
-			<LockButton
-				isDisabled={!typologyDetailContext.flags.canLock}
-				isLocked={typologyDetailContext.data.typology.is_locked}
-				onClick={typologyDetailContext.actions.lock}
-			/>
-
-			<Button
-				disabled={!typologyDetailContext.flags.canSave}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={typologyDetailContext.flags.isSaving}
-				onClick={typologyDetailContext.actions.save}
-				variant="primary"
-			/>
-
-			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar esta tipologia? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Tipologia"
-				isDisabled={!typologyDetailContext.flags.canDelete}
-				onDelete={typologyDetailContext.actions.delete}
-				showConfirmation
-			/>
-
+			<HasPermission action={PermissionCatalog.all.typologies.actions.lock} scope={PermissionCatalog.all.typologies.scope}>
+				<LockButton isDisabled={!capabilities.lockEnabled} isLoading={status.isLocking} isLocked={!!status.isLocked} onClick={actions.lock} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.typologies.actions.update} scope={PermissionCatalog.all.typologies.scope}>
+				<UpdateButton isDisabled={!capabilities.updateEnabled} isLoading={status.isUpdating} onClick={actions.update} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.typologies.actions.delete} scope={PermissionCatalog.all.typologies.scope}>
+				<DeleteButton cancelLabel={t('default:typologies.detail.cancel')} confirmLabel={t('default:typologies.detail.confirm')} confirmMessage={t('default:typologies.detail.confirmMessage')} confirmTitle={t('default:typologies.detail.confirmTitle')} isDisabled={!capabilities.deleteEnabled} isLoading={status.isDeleting} onDelete={actions.delete} showConfirmation />
+			</HasPermission>
 		</Toolbar>
 	);
 

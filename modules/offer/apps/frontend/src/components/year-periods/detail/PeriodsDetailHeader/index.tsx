@@ -1,11 +1,13 @@
 'use client';
 
-import { usePeriodsDetailContext } from '@/components/year-periods/detail/PeriodsDetail.context';
-import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+
+import { usePeriodsDetailFormContext } from '../PeriodsDetailForm.context';
+import { usePeriodsDetailYearPeriodId } from '../use-periods-detail-year-period-id';
 
 /* * */
 
@@ -15,54 +17,31 @@ export function PeriodsDetailHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = usePeriodsDetailFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'name' });
 	const router = useRouter();
-	const periodsDetailContext = usePeriodsDetailContext();
+	const { yearPeriodId } = usePeriodsDetailYearPeriodId();
+	const close = () => router.push(keepUrlParams(PAGE_ROUTES.offer.YEAR_PERIODS_LIST));
 
 	//
-	// B. Handle actions
-
-	const handleClose = () => {
-		const destUrl = keepUrlParams(PAGE_ROUTES.offer.YEAR_PERIODS_LIST);
-		router.push(destUrl);
-	};
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
-
-			<CloseButton onClick={handleClose} type="close" />
-
-			<IdTag id={periodsDetailContext.data.period._id} copyOnClick />
-
+			<CloseButton onClick={close} type="close" />
+			<IdTag id={yearPeriodId} copyOnClick />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-
-			<LockButton
-				isDisabled={!periodsDetailContext.flags.canLock}
-				isLoading={periodsDetailContext.flags.isLocking}
-				isLocked={periodsDetailContext.data.period.is_locked}
-				onClick={periodsDetailContext.actions.lock}
-			/>
-
-			<Button
-				disabled={!periodsDetailContext.flags.canSave}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={periodsDetailContext.flags.isSaving}
-				onClick={periodsDetailContext.actions.save}
-				variant="primary"
-			/>
-
-			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar este período? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Período"
-				isDisabled={!periodsDetailContext.flags.canDelete}
-				isLoading={periodsDetailContext.flags.isDeleting}
-				onDelete={periodsDetailContext.actions.delete}
-				showConfirmation
-			/>
-
+			<HasPermission action={PermissionCatalog.all.year_periods.actions.lock} scope={PermissionCatalog.all.year_periods.scope}>
+				<LockButton isDisabled={!capabilities.lockEnabled} isLoading={status.isLocking} isLocked={!!status.isLocked} onClick={actions.lock} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.year_periods.actions.update} scope={PermissionCatalog.all.year_periods.scope}>
+				<UpdateButton isDisabled={!capabilities.updateEnabled} isLoading={status.isUpdating} onClick={actions.update} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.year_periods.actions.delete} scope={PermissionCatalog.all.year_periods.scope}>
+				<DeleteButton cancelLabel={t('default:periods.detail.cancel')} confirmLabel={t('default:periods.detail.confirm')} confirmMessage={t('default:periods.detail.confirmMessage')} confirmTitle={t('default:periods.detail.confirmTitle')} isDisabled={!capabilities.deleteEnabled} isLoading={status.isDeleting} onDelete={actions.delete} showConfirmation />
+			</HasPermission>
 		</Toolbar>
 	);
 

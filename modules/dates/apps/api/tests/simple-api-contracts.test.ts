@@ -40,7 +40,7 @@ const collection = {
 };
 
 mock.module('@tmlmobilidade/go-interfaces-godb', {
-	namedExports: { goDb: { offer: Object.fromEntries(resources.map(resource => [resource.plural, collection])) } },
+	namedExports: { goDb: { dates: Object.fromEntries(resources.map(resource => [resource.plural, collection])) } },
 });
 
 function permission(scope: string, action: string, agencyIds = ['A']): Permission {
@@ -108,6 +108,15 @@ for (const resource of resources) {
 					assert.equal(result.httpStatus, 400);
 					assert.equal(result.response.data, null);
 				}
+			}
+			assert.equal(WRITES.length, 0);
+		});
+
+		test('rejects missing agencies on create and empty agencies on create/update without writes', async () => {
+			const withoutAgencies = { code: 'CODE', [resource.label]: 'Record' };
+			assert.equal((await invoke(handlers.create, withoutAgencies, [permission(resource.plural, 'create')])).httpStatus, 400);
+			for (const action of ['create', 'update'] as const) {
+				assert.equal((await invoke(handlers[action], { ...validBody, agency_ids: [] }, [permission(resource.plural, action)])).httpStatus, 400);
 			}
 			assert.equal(WRITES.length, 0);
 		});

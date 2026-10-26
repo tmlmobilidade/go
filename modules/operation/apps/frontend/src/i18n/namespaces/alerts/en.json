@@ -48,7 +48,10 @@
 				"label": "Description"
 			},
 			"generate_text": {
-				"label": "Generate Automatic Text"
+				"accept_proposal": "Accept Proposal",
+				"label": "Generate Automatic Text",
+				"loading": "Generating automatic text...",
+				"title": "Proposal"
 			},
 			"info_url": {
 				"description": "Optionally include the URL of a website with more information",

@@ -6,7 +6,7 @@ import { z } from 'zod';
 /* * */
 
 export const YearPeriodSchema = BaseDocumentSchema.extend({
-	agency_ids: z.array(z.string()).default([]),
+	agency_ids: z.array(z.string()).min(1),
 	code: z.string().optional(),
 	color: z.string().optional(),
 	dates: z.array(OperationalDateSchema).optional(),

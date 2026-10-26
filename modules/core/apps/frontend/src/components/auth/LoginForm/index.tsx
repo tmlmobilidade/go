@@ -1,6 +1,7 @@
 'use client';
 
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
+import { getSafeRedirectToUrl } from '@/utils/get-safe-redirect-to-url';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Session } from '@tmlmobilidade/go-types-core';
 import { fetchApiData, PasswordInput, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
@@ -38,7 +39,7 @@ export function LoginForm() {
 				message: t('unauthenticated:LoginForm.success.description'),
 				title: t('unauthenticated:LoginForm.success.title'),
 			});
-			window.location.href = redirectToValue;
+			window.location.href = getSafeRedirectToUrl(redirectToValue);
 		},
 	});
 
@@ -72,6 +73,4 @@ export function LoginForm() {
 			/>
 		</AuthenticationForm>
 	);
-
-	//
 }

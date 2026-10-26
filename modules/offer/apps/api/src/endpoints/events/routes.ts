@@ -6,6 +6,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { createEventHandler } from './handlers/create-event.js';
 import { deleteEventHandler } from './handlers/delete-event.js';
 import { getEventHandler } from './handlers/get-event.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listEventsHandler } from './handlers/list-events.js';
 import { lockEventHandler } from './handlers/lock-event.js';
 import { updateEventHandler } from './handlers/update-event.js';
@@ -29,13 +30,19 @@ server.register(
 		);
 
 		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.events.scope, [PermissionCatalog.all.events.actions.read, PermissionCatalog.all.events.actions.create, PermissionCatalog.all.events.actions.update]) },
+			listAgenciesHandler,
+		);
+
+		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.events.scope, [PermissionCatalog.all.events.actions.read]) },
 			getEventHandler,
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.events.scope, [PermissionCatalog.all.events.actions.create]) },
 			createEventHandler,
 		);

@@ -16,7 +16,7 @@ export async function lockHolidayHandler(request: FastifyRequest<{ Params: { id:
 	//
 	// Get the Holiday from the database
 
-	const holidayData = await goDb.offer.holidays.findById(request.params.id);
+	const holidayData = await goDb.dates.holidays.findById(request.params.id);
 
 	if (!holidayData) {
 		return sendErrorApiResponse(reply, {
@@ -59,8 +59,8 @@ export async function lockHolidayHandler(request: FastifyRequest<{ Params: { id:
 	}
 
 	// If authorized, toggle the lock status of the holiday
-	await goDb.offer.holidays.updateOne({ _id: request.params.id }, { is_locked: !holidayData.is_locked, updated_by: request.me._id });
-	const foundHoliday = await goDb.offer.holidays.findById(request.params.id);
+	await goDb.dates.holidays.updateOne({ _id: request.params.id }, { is_locked: !holidayData.is_locked, updated_by: request.me._id });
+	const foundHoliday = await goDb.dates.holidays.findById(request.params.id);
 	if (!foundHoliday) {
 		return sendErrorApiResponse(reply, {
 			error: 'Holiday not found',

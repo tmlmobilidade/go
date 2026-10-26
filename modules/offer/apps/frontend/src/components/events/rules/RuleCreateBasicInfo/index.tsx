@@ -2,8 +2,9 @@
 
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { IconClockPlay } from '@tabler/icons-react';
-import { type EventReplacementRule, type HHMM } from '@tmlmobilidade/go-types-offer';
-import { Checkbox, Divider, Grid, Section, SegmentedControl, Switch, Text, TextInput } from '@tmlmobilidade/ui';
+import { type HHMM } from '@tmlmobilidade/go-types-offer';
+import { Checkbox, Divider, Grid, Section, SegmentedControl, StandardFormController, Switch, Text, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -20,11 +21,13 @@ export function RuleCreateBasicInfo() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const createRuleContext = useRuleCreateContext();
 
-	const isRestrictionRule = createRuleContext.data.form.values.kind === 'event_restriction';
-	const isReplacementRule = createRuleContext.data.form.values.kind === 'event_replacement';
-	const replacementValues = isReplacementRule ? createRuleContext.data.form.values as EventReplacementRule : null;
+	const isRestrictionRule = createRuleContext.values.kind === 'event_restriction';
+	const isReplacementRule = createRuleContext.values.kind === 'event_replacement';
+	const replacementValues = createRuleContext.values.kind === 'event_replacement' ? createRuleContext.values : null;
 
 	//
 	// B. Handle actions
@@ -36,17 +39,12 @@ export function RuleCreateBasicInfo() {
 		return `${digits.slice(0, 2)}:${digits.slice(2)}` as HHMM;
 	};
 
-	const handleUpdateOperationalTime = (field: 'end_time' | 'start_time') => (e: React.ChangeEvent<HTMLInputElement>) => {
-		const formattedValue = formatTimeInput(e.target.value);
-		createRuleContext.data.form.setFieldValue(field, formattedValue);
-	};
-
 	const handleToggleAllDay = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const enabled = e.currentTarget.checked;
 
-		createRuleContext.data.form.setFieldValue('all_day', enabled);
-		createRuleContext.data.form.setFieldValue('start_time', (enabled ? '04:00' : '') as HHMM);
-		createRuleContext.data.form.setFieldValue('end_time', (enabled ? '29:59' : '') as HHMM);
+		createRuleContext.form.setValue('all_day', enabled);
+		createRuleContext.form.setValue('start_time', (enabled ? '04:00' : '') as HHMM);
+		createRuleContext.form.setValue('end_time', (enabled ? '29:59' : '') as HHMM);
 	};
 
 	//
@@ -57,19 +55,29 @@ export function RuleCreateBasicInfo() {
 
 			{/* Rule Type */}
 			<div className={styles.sectionWrapper}>
-				<Text size="lg">1. Tipo de regra</Text>
+				<Text size="lg">{t('default:events.ruleEditor.ruleType')}</Text>
 				<Section gap="sm">
 					<SegmentedControl
-						onChange={value => createRuleContext.data.form.setFieldValue('kind', value as 'event_replacement' | 'event_restriction')}
-						value={createRuleContext.data.form.values.kind}
+						value={createRuleContext.values.kind}
 						data={[
-							{ label: 'Restrição de oferta', value: 'event_restriction' },
-							{ label: 'Substituição de oferta', value: 'event_replacement' },
+							{ label: t('default:events.ruleEditor.restriction'), value: 'event_restriction' },
+							{ label: t('default:events.ruleEditor.replacement'), value: 'event_replacement' },
 						]}
+						onChange={(value) => {
+							if (value === 'event_replacement') {
+								createRuleContext.form.setValue('weekdays', []);
+								createRuleContext.form.setValue('year_period_ids', []);
+							} else {
+								createRuleContext.form.setValue('all_day', false);
+								createRuleContext.form.setValue('start_time', '' as HHMM);
+								createRuleContext.form.setValue('end_time', '' as HHMM);
+							}
+							createRuleContext.form.setValue('kind', value as 'event_replacement' | 'event_restriction');
+						}}
 					/>
 					{/* <Spacer orientation="vertical" size="md" /> */}
-					<Text c="dimmed">{isReplacementRule ? 'Aplicar oferta de outro tipo de dia nestas datas' : 'Esta regra irá remover toda a oferta durante a duração do evento'}</Text>
-					<Text c="dimmed" size="sm">{isReplacementRule ? 'Exemplo: O dia 17/02/2026 (terça-feira) passa a funcionar como Sábado · Período Escolar.' : 'Ex: Dia 17/02/26 (terça-feira) tem oferta removida entre as 14h e 18h'}</Text>
+					<Text c="dimmed">{isReplacementRule ? t('default:events.ruleEditor.replacementDescription') : t('default:events.ruleEditor.restrictionDescription')}</Text>
+					<Text c="dimmed" size="sm">{isReplacementRule ? t('default:events.ruleEditor.replacementExample') : t('default:events.ruleEditor.restrictionExample')}</Text>
 				</Section>
 			</div>
 
@@ -77,7 +85,7 @@ export function RuleCreateBasicInfo() {
 
 			{/* Days */}
 			<div className={styles.sectionWrapper}>
-				<Text size="lg">2. Que dias serão afetados por esta regra?</Text>
+				<Text size="lg">{t('default:events.ruleEditor.affectedDates')}</Text>
 				<RuleCreateDates />
 			</div>
 
@@ -85,7 +93,7 @@ export function RuleCreateBasicInfo() {
 
 			{/* Lines */}
 			<div className={styles.sectionWrapper}>
-				<Text size="lg">3. Que linhas serão afetadas por esta regra?</Text>
+				<Text size="lg">{t('default:events.ruleEditor.affectedLines')}</Text>
 				<RuleCreateLines />
 			</div>
 
@@ -94,19 +102,19 @@ export function RuleCreateBasicInfo() {
 			{/* Replacement rule conditions */}
 			{isReplacementRule && (
 				<div className={styles.sectionWrapper}>
-					<Text size="lg">4. Que tipo de oferta se aplica nestes dias?</Text>
-					<Text c="dimmed" size="sm">O(s) dia(s) selecionado(s) irão funcionar como:</Text>
+					<Text size="lg">{t('default:events.ruleEditor.serviceType')}</Text>
+					<Text c="dimmed" size="sm">{t('default:events.ruleEditor.operateAs')}</Text>
 
 					<Section>
 						<Switch
 							checked={Boolean(replacementValues?.same_weekday)}
-							description="Cada data funciona como o seu próprio dia da semana real, mas no período selecionado. Ex: uma terça-feira funciona como terça-feira · Período de Verão."
-							label="Mesmo dia da semana"
+							description={t('default:events.ruleEditor.sameWeekdayDescription')}
+							label={t('default:events.ruleEditor.sameWeekday')}
 							onChange={(e) => {
 								const enabled = e.currentTarget.checked;
-								createRuleContext.data.form.setFieldValue('same_weekday', enabled);
+								createRuleContext.form.setValue('same_weekday', enabled);
 								if (enabled) {
-									createRuleContext.data.form.setFieldValue('weekdays', []);
+									createRuleContext.form.setValue('weekdays', []);
 								}
 							}}
 						/>
@@ -123,36 +131,45 @@ export function RuleCreateBasicInfo() {
 			{/* Restriction rule conditions */}
 			{isRestrictionRule && (
 				<div className={styles.sectionWrapper}>
-					<Text size="lg">4. Quando decorre o evento?</Text>
-					<Text c="dimmed" size="sm">A oferta é suspensa durante o período definido aqui</Text>
+					<Text size="lg">{t('default:events.ruleEditor.eventTime')}</Text>
+					<Text c="dimmed" size="sm">{t('default:events.ruleEditor.restrictionTimeDescription')}</Text>
 
 					<Checkbox
-						key={createRuleContext.data.form.key('all_day')}
-						label="Evento de dia completo"
-						{...createRuleContext.data.form.getInputProps('all_day', { type: 'checkbox' })}
+						checked={isRestrictionRule && createRuleContext.values.kind === 'event_restriction' && createRuleContext.values.all_day}
+						label={t('default:events.ruleEditor.allDay')}
 						onChange={handleToggleAllDay}
 					/>
 
-					{createRuleContext.data.form.values.kind === 'event_restriction' && !createRuleContext.data.form.values.all_day && (
+					{createRuleContext.values.kind === 'event_restriction' && !createRuleContext.values.all_day && (
 						<Grid columns="ab" gap="sm">
-
-							<TextInput
-								key={createRuleContext.data.form.key('start_time')}
-								description="Formato HH:MM no dia operacional. Ex.: 10:00"
-								label="Hora de início"
-								leftSection={<IconClockPlay size={18} />}
-								{...createRuleContext.data.form.getInputProps('start_time')}
-								onChange={handleUpdateOperationalTime('start_time')}
+							<StandardFormController
+								control={createRuleContext.form.control}
+								name="start_time"
+								render={({ field, fieldState }) => (
+									<TextInput
+										description={t('default:events.ruleEditor.startTimeDescription')}
+										error={fieldState.error?.message}
+										label={t('default:events.ruleEditor.startTime')}
+										leftSection={<IconClockPlay size={18} />}
+										onChange={event => field.onChange(formatTimeInput(event.currentTarget.value))}
+										value={field.value ?? ''}
+									/>
+								)}
 							/>
-							<TextInput
-								key={createRuleContext.data.form.key('end_time')}
-								description="Após a meia-noite, usar 24+ horas. Ex.: 02:00 → 26:00"
-								label="Hora de fim"
-								leftSection={<IconClockPlay size={18} />}
-								{...createRuleContext.data.form.getInputProps('end_time')}
-								onChange={handleUpdateOperationalTime('end_time')}
+							<StandardFormController
+								control={createRuleContext.form.control}
+								name="end_time"
+								render={({ field, fieldState }) => (
+									<TextInput
+										description={t('default:events.ruleEditor.endTimeDescription')}
+										error={fieldState.error?.message}
+										label={t('default:events.ruleEditor.endTime')}
+										leftSection={<IconClockPlay size={18} />}
+										onChange={event => field.onChange(formatTimeInput(event.currentTarget.value))}
+										value={field.value ?? ''}
+									/>
+								)}
 							/>
-
 						</Grid>
 					)}
 				</div>
