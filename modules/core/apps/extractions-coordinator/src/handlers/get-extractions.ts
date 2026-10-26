@@ -39,12 +39,12 @@ export async function getExtractionsHandler(): Promise<ExtractionsCoordinatorRes
 		IS_BUSY = true;
 
 		//
-		// Legacy extractions belong to production. Local development remains unfiltered.
+		// Legacy extractions belong to production. Every environment claims only its own jobs.
 
 		const currentEnvironment = getCurrentEnvironment();
 		const environmentFilter = currentEnvironment === 'prd'
 			? { $or: [{ source_environment: 'prd' }, { source_environment: { $exists: false } }] }
-			: { ...(currentEnvironment !== 'dev' && { source_environment: currentEnvironment }) };
+			: { source_environment: currentEnvironment };
 
 		//
 		// Release stuck extractions before fetching new ones
