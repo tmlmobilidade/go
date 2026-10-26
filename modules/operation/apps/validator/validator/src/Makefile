@@ -2,7 +2,7 @@ APP_NAME := gtfs-validator
 MAIN_PKG := ./
 BIN_DIR := ../../../../../bin
 
-.PHONY: all build run test clean help
+.PHONY: all build run dev test clean help
 
 all: build
 
@@ -14,7 +14,7 @@ run: build
 	$(BIN_DIR)/$(APP_NAME) $(ARGS)
 
 dev:
-	go run main.go version.go -out=output.json -rules=../tml-rules.json -lang=pt -log=debug --input=$(INPUT)
+	go run $(MAIN_PKG) -out=output.json -rules=../tml-rules.json -lang=pt -log=debug --input=$(INPUT)
 test:
 	go test ./...
 
