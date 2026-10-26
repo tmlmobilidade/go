@@ -140,12 +140,13 @@
 			"ValidationRules": {
 				"description": "Lista de regras que serão aplicadas à validação do GTFS.",
 				"invalid": "Não é possível guardar as regras:",
+				"invalidSeverities": "Severidades inválidas nas regras indicadas.",
 				"title": "Regras de validação do GTFS"
 			},
 			"header": {
 				"save": "Guardar"
 			},
-			"validationError": "Não é possível guardar. Corrija os campos indicados abaixo."
+			"validationError": "Não é possível guardar o operador."
 		},
 		"list": {
 			"Header": {
@@ -328,7 +329,6 @@
 			"all": "Todas as agências",
 			"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
 			"label": "Operadores"
-
 		},
 		"AlertReferenceTypePermissionMultiselect": {
 			"alertReferenceTypeOptionsWithAllowAll": {

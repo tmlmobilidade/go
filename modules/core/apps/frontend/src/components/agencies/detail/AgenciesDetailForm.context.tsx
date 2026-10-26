@@ -4,8 +4,9 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency, type AgencyPlans, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
-import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
+import { fetchApiData, useHandleAction, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAgenciesListData } from '../list/use-agencies-list-data';
 import { useAgenciesDetailAgencyId } from './use-agencies-detail-agency-id';
@@ -33,6 +34,8 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const { agencyId } = useAgenciesDetailAgencyId();
 
 	const { data: meData } = useMeData();
@@ -54,10 +57,11 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// C. Handle actions
 
-	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
-		fetchFn: async () => {
-			const body = UpdateAgencySchema.parse(form.getValues());
-			return await fetchApiData<Agency>({ body, method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) });
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction<Agency, UpdateAgencyDto>({
+		fetchFn: async body => await fetchApiData<Agency>({ body, method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) }),
+		labels: { error_title: t('default:agencies.detail.validationError') },
+		onError: (error) => {
+			console.error('Failed to save agency', agencyId, error);
 		},
 		onSuccess: (response) => {
 			form.reset(response.data);
@@ -88,13 +92,25 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 		update: {
 			hasPermission: hasUpdatePermission,
 			isUpdating: isUpdating,
+			validateOnSubmit: true,
 		},
 	});
 
 	const handleSave = useCallback(async () => {
-		if (!updateEnabled || isUpdating || !await form.trigger()) return;
-		await handleUpdate();
-	}, [form, handleUpdate, isUpdating, updateEnabled]);
+		if (!updateEnabled || isUpdating) return;
+		const result = UpdateAgencySchema.safeParse(form.getValues());
+		if (!result.success) {
+			const severityIssues = result.error.issues.filter(issue => issue.path[0] === 'plans' && issue.path[1] === 'validation_rules' && issue.path.at(-1) === 'severity');
+			useToast.error({
+				message: severityIssues.length
+					? severityIssues.map(issue => String(issue.path[2])).join(', ')
+					: result.error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('\n'),
+				title: t(severityIssues.length ? 'default:agencies.detail.ValidationRules.invalidSeverities' : 'default:agencies.detail.validationError'),
+			});
+			return;
+		}
+		await handleUpdate(result.data);
+	}, [form, handleUpdate, isUpdating, t, updateEnabled]);
 
 	//
 	// E. Return state

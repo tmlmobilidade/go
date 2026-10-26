@@ -6,7 +6,6 @@ import { AgenciesDetailFinancials } from '@/components/agencies/detail/AgenciesD
 import { AgenciesDetailHeader } from '@/components/agencies/detail/AgenciesDetailHeader';
 import { AgenciesDetailOpenData } from '@/components/agencies/detail/AgenciesDetailOpenData';
 import { AgenciesDetailPlans } from '@/components/agencies/detail/AgenciesDetailPlans';
-import { AgenciesDetailValidationErrors } from '@/components/agencies/detail/AgenciesDetailValidationErrors';
 import { AgenciesDetailValidationRules } from '@/components/agencies/detail/AgenciesDetailValidationRules';
 import { Pane } from '@tmlmobilidade/ui';
 
@@ -24,7 +23,6 @@ export function AgenciesDetail() {
 			header={[<AgenciesDetailHeader key="header" />]}
 			isLoading={isLoading}
 		>
-			<AgenciesDetailValidationErrors />
 			<AgenciesDetailBasicInfo />
 			<AgenciesDetailFinancials />
 			<AgenciesDetailOpenData />
