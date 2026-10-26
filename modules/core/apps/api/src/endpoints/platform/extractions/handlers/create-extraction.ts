@@ -6,6 +6,8 @@ import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { type Extraction, type ExtractionCreate, ExtractionCreateSchema } from '@tmlmobilidade/go-types-extractions';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 
+import { getUserExtractions } from '../utils/get-user-extractions.js';
+
 /**
  * Create a new extraction for the current user.
  * @param request The request object
@@ -46,10 +48,10 @@ export async function createExtractionHandler(request: FastifyRequest<{ Body: Ex
 	});
 
 	//
-	// Retrieve all extractions again for the current user
+	// Retrieve extractions again for the current user and environment
 	// so the frontend is able to immediately mutate the extractions list
 
-	const foundExtractions = await goDb.core.extractions.findMany({ created_by: request.me._id });
+	const foundExtractions = await getUserExtractions(request.me._id);
 
 	sendSuccessApiResponse(reply, foundExtractions ?? []);
 }
