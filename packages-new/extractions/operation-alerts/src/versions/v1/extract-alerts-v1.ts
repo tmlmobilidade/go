@@ -46,7 +46,8 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 		'active_period_end_date',
 		'publish_start_date',
 		'publish_end_date',
-		'references',
+		{ header: 'Lines', key: 'lines' },
+		{ header: 'Stops', key: 'stops' },
 		'municipality_ids',
 		'coordinates',
 		'info_url',
@@ -56,7 +57,7 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 		'created_by',
 		'updated_at',
 		'updated_by',
-	] satisfies (keyof OperationAlertsV1OutputRow)[];
+	] satisfies (keyof OperationAlertsV1OutputRow | { header: string, key: keyof OperationAlertsV1OutputRow })[];
 
 	const fileName = `operation-alerts-v1-${extraction._id}.csv`;
 	const outputFilePath = path.join(context.output_path, fileName);

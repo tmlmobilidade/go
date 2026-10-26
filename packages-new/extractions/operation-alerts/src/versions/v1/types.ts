@@ -23,10 +23,11 @@ export const OperationAlertsV1OutputRowSchema = AlertSchema.pick({
 	external_id: z.string(),
 	file_id: z.string(),
 	info_url: z.string(),
+	lines: z.string(),
 	municipality_ids: z.string(),
 	publish_end_date: z.string(),
 	publish_start_date: z.string(),
-	references: z.string(),
+	stops: z.string(),
 	updated_at: z.string().datetime(),
 	updated_by: z.string(),
 });

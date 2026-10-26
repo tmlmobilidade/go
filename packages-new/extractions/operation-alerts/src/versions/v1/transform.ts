@@ -23,10 +23,36 @@ export function parseAlertsExtraction(alert: Alert): OperationAlertsV1OutputRow 
 	const formattedUpdatedAt = new Date(alert.updated_at).toISOString();
 
 	//
-	// Preserve the reference hierarchy and stored coordinate order as JSON.
-	// Separate municipality IDs with "|" in a single CSV cell.
+	// Flatten the selected reference IDs into separate line and stop columns.
+	// Parent and child IDs swap roles between line and stop alerts.
+	// General notices and ride references leave both columns empty.
 
-	const formattedReferences = JSON.stringify(alert.references ?? []);
+	const referencedLineIds = new Set<string>();
+	const referencedStopIds = new Set<string>();
+
+	for (const reference of alert.references ?? []) {
+		if (alert.reference_type === 'lines') {
+			if (reference.parent_id) referencedLineIds.add(reference.parent_id);
+
+			for (const stopId of reference.child_ids) {
+				if (stopId) referencedStopIds.add(stopId);
+			}
+		} else if (alert.reference_type === 'stops') {
+			if (reference.parent_id) referencedStopIds.add(reference.parent_id);
+
+			for (const lineId of reference.child_ids) {
+				if (lineId) referencedLineIds.add(lineId);
+			}
+		}
+	}
+
+	// Keep unique IDs in their selected order, separated by "|" within each CSV cell.
+	const formattedLines = Array.from(referencedLineIds).join('|');
+	const formattedStops = Array.from(referencedStopIds).join('|');
+
+	//
+	// Preserve the stored coordinate order as JSON and separate municipality IDs with "|".
+
 	const formattedMunicipalityIds = (alert.municipality_ids ?? []).join('|');
 	const formattedCoordinates = alert.coordinates ? JSON.stringify(alert.coordinates) : '';
 
@@ -47,12 +73,13 @@ export function parseAlertsExtraction(alert: Alert): OperationAlertsV1OutputRow 
 		external_id: alert.external_id ?? '',
 		file_id: alert.file_id ?? '',
 		info_url: alert.info_url ?? '',
+		lines: formattedLines,
 		municipality_ids: formattedMunicipalityIds,
 		publish_end_date: formattedPublishEndDate,
 		publish_start_date: formattedPublishStartDate,
 		publish_status: alert.publish_status,
 		reference_type: alert.reference_type,
-		references: formattedReferences,
+		stops: formattedStops,
 		title: alert.title,
 		updated_at: formattedUpdatedAt,
 		updated_by: alert.updated_by ?? '',
