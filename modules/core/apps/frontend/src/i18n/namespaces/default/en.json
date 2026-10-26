@@ -186,7 +186,8 @@
 			},
 			"header": {
 				"save": "Save"
-			}
+			},
+			"validationError": "Unable to save. Correct the fields listed below."
 		},
 		"list": {
 			"Header": {

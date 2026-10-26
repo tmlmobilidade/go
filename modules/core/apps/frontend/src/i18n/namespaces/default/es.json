@@ -156,7 +156,8 @@
 			},
 			"header": {
 				"save": "Guardar"
-			}
+			},
+			"validationError": "No se puede guardar. Corrija los campos indicados a continuación."
 		},
 		"list": {
 			"Header": {

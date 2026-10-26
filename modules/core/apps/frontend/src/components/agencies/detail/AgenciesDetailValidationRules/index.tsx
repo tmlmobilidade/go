@@ -5,6 +5,7 @@ import { Collapsible, GtfsValidationRulesEditor, Section } from '@tmlmobilidade/
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
+import { getAgenciesDetailValidationRules } from '../get-agencies-detail-validation-rules';
 
 export function AgenciesDetailValidationRules() {
 	//
@@ -20,7 +21,7 @@ export function AgenciesDetailValidationRules() {
 
 	const handleChange = (rules: AgencyPlans['validation_rules']) => {
 		if (!capabilities.editEnabled) return;
-		form.setValue('plans.validation_rules', rules, { shouldDirty: true, shouldValidate: true });
+		form.setValue('plans.validation_rules', getAgenciesDetailValidationRules(rules), { shouldDirty: true, shouldValidate: true });
 	};
 
 	//
