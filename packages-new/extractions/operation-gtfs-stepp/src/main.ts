@@ -22,6 +22,7 @@ interface Trip {
 interface SharedRow {
 	activeFrom: number
 	createdAt: number
+	dates?: Set<string>
 	endDate: string
 	planId: string
 	row: OutputRow
@@ -31,7 +32,6 @@ interface SharedRow {
 export interface PlanExportConfig {
 	agencyCode: string
 	endDate: string
-	namespaceIds: boolean
 	planActiveFrom: number
 	planCreatedAt: number
 	planId: string
@@ -160,88 +160,101 @@ function isNewerSource(current: SharedRow, previous: SharedRow): boolean {
 }
 
 /**
- * Keeps public IDs stable and lets the latest plan supply route and stop names.
+ * Keeps source IDs stable and selects the complete definition from the latest plan.
  * @param config - The configuration of the plan export.
- * @param table - The table to merge the shared row for.
- * @param id - The ID of the row to merge.
- * @param row - The row to merge.
+ * @param table - The table containing the definition.
+ * @param id - The original ID of the definition or row group.
+ * @param row - The row to merge (empty for streamed groups).
  */
-function mergeSharedRow(config: PlanExportConfig, table: 'agency' | 'routes' | 'stops', id: string, row: OutputRow) {
+function mergeSharedRow(config: PlanExportConfig, table: 'agency' | 'routes' | 'routes_stepp' | 'shapes' | 'stops' | 'trips', id: string, row: OutputRow) {
 	const key = `${table}:${id}`;
-	const signature = JSON.stringify(row);
 	const current = rowSource(config, row);
 	const previous = config.sharedRows.get(key);
-	if (previous !== undefined && JSON.stringify(previous.row) !== signature) {
-		const fields = new Set([...Object.keys(previous.row), ...Object.keys(row)]);
-		const differences = Array.from(fields)
+	const replace = previous === undefined || isNewerSource(current, previous);
+	if (previous && JSON.stringify(previous.row) !== JSON.stringify(row)) {
+		const differences = [...new Set([...Object.keys(previous.row), ...Object.keys(row)])]
 			.filter(field => previous.row[field] !== row[field])
 			.map(field => ({ current: row[field] ?? null, field, previous: previous.row[field] ?? null }));
-		const idField = { agency: 'agency_id', routes: 'route_id', stops: 'stop_id' }[table];
-		const mutableNames: string[] = { agency: [], routes: ['route_long_name', 'route_short_name'], stops: ['stop_name'] }[table];
-		if (differences.every(diff => mutableNames.includes(diff.field))) {
-			const replace = isNewerSource(current, previous);
-			const chosen = replace ? current : previous;
-			Logger.info({
-				attributes: {
-					chosen_plan_id: chosen.planId,
-					current_active_from: current.activeFrom,
-					current_plan_id: current.planId,
-					differences,
-					event: 'operation_gtfs_stepp.name_merge',
-					file: `${table}.txt`,
-					id,
-					previous_active_from: previous.activeFrom,
-					previous_plan_id: previous.planId,
-					replaced: replace,
-				},
-				message: [
-					`${replace ? 'Updated' : 'Kept'} ${table}.txt names for ${idField} ${JSON.stringify(id)} using newer plan ${JSON.stringify(chosen.planId)} (active_from ${chosen.activeFrom}).`,
-					...differences.map(diff => `  ${diff.field}: plan ${JSON.stringify(previous.planId)} = ${JSON.stringify(diff.previous)}; plan ${JSON.stringify(current.planId)} = ${JSON.stringify(diff.current)}`),
-				].join('\n'),
-			});
-			if (replace) config.sharedRows.set(key, current);
-			return;
-		}
-		const message = [
-			`Cannot merge conflicting ${table}.txt data for ${idField} ${JSON.stringify(id)}.`,
-			`Retained definition: plan ${JSON.stringify(previous.planId)}, exported dates ${previous.startDate}–${previous.endDate}.`,
-			`Conflicting definition: plan ${JSON.stringify(config.planId)}, exported dates ${config.startDate}–${config.endDate}.`,
-			`Different fields (${differences.length}):`,
-			...differences.map(diff => `  ${diff.field}: plan ${JSON.stringify(previous.planId)} = ${JSON.stringify(diff.previous)}; plan ${JSON.stringify(config.planId)} = ${JSON.stringify(diff.current)}`),
-			`The merged feed permits route and stop name changes, but other fields must agree for the same ${idField}. Compare these fields in the two normalized plan attachments.`,
-		].join('\n');
-		Logger.error({
+		const chosen = replace ? current : previous;
+		Logger.info({
 			attributes: {
-				current_plan_id: config.planId,
-				current_row: row,
+				chosen_plan_id: chosen.planId,
+				current_active_from: current.activeFrom,
+				current_plan_id: current.planId,
 				differences,
-				event: 'operation_gtfs_stepp.shared_row_conflict',
+				event: 'operation_gtfs_stepp.definition_merge',
 				file: `${table}.txt`,
 				id,
+				previous_active_from: previous.activeFrom,
 				previous_plan_id: previous.planId,
-				previous_row: previous.row,
+				replaced: replace,
 			},
-			message,
+			message: [
+				`Selected ${table}.txt definition ${JSON.stringify(id)} using newer plan ${JSON.stringify(chosen.planId)} (active_from ${chosen.activeFrom}).`,
+				...differences.map(diff => `  ${diff.field}: plan ${JSON.stringify(previous.planId)} = ${JSON.stringify(diff.previous)}; plan ${JSON.stringify(current.planId)} = ${JSON.stringify(diff.current)}`),
+			].join('\n'),
 		});
-		throw new Error(message);
 	}
-	// Advance the name source even when values match, so an older plan cannot undo it later.
-	if (previous === undefined || (table !== 'agency' && isNewerSource(current, previous))) config.sharedRows.set(key, current);
+	if (replace) config.sharedRows.set(key, current);
+}
+
+/** Identifies a complete streamed group from one source plan. */
+function groupSource(id: string, planId: string): string {
+	return JSON.stringify([id, planId]);
 }
 
 /* * */
 
 /**
- * Writes one final definition per public ID after every plan has been merged.
+ * Writes final definitions, complete row groups and merged calendars with original IDs.
  * @param sharedRows - The shared rows to write.
  * @param writers - The writers to write the shared rows to.
  */
 export async function writeSharedFiles(sharedRows: PlanExportConfig['sharedRows'], writers: SteppWriters) {
-	for (const table of ['agency', 'routes', 'stops'] as const) {
+	const usedServices = new Set<string>();
+	for (const [key, source] of sharedRows) {
+		if (key.startsWith('trips:')) usedServices.add(String(source.row.service_id));
+	}
+	const services = new Map<string, Set<string>>();
+	// Resolve overlapping dates oldest first; disjoint months remain in the union.
+	const calendars = [...sharedRows.entries()].filter(([key]) => key.startsWith('calendar:'))
+		.map(([, source]) => source)
+		.sort((a, b) => isNewerSource(a, b) ? 1 : isNewerSource(b, a) ? -1 : 0);
+	for (const source of calendars) {
+		const id = String(source.row.service_id);
+		if (!usedServices.has(id)) continue;
+		const dates = services.get(id) ?? new Set<string>();
+		for (const date of dates) {
+			if (date >= source.startDate && date <= source.endDate) dates.delete(date);
+		}
+		for (const date of source.dates ?? []) dates.add(date);
+		services.set(id, dates);
+	}
+	for (const [id, dates] of services) {
+		if (!dates.size) continue;
+		const { calendar, calendarDates } = buildCalendarRows(id, dates);
+		await writers.calendar.write(calendar);
+		for (const row of calendarDates) await writers.calendar_dates.write(row);
+	}
+	let exportedTrips = 0;
+	for (const table of ['agency', 'routes', 'stops', 'trips'] as const) {
 		for (const [key, source] of sharedRows) {
-			if (key.startsWith(`${table}:`)) await writers[table].write(source.row);
+			if (!key.startsWith(`${table}:`)) continue;
+			if (table === 'trips' && !services.get(String(source.row.service_id))?.size) continue;
+			await writers[table].write(source.row);
+			if (table === 'trips') exportedTrips++;
 		}
 	}
+	for (const [table, ownerTable] of [['stop_times', 'trips'], ['shapes', 'shapes'], ['routes_stepp', 'routes_stepp']] as const) {
+		const sources = new Set<string>();
+		for (const [key, source] of sharedRows) {
+			if (!key.startsWith(`${ownerTable}:`)) continue;
+			if (ownerTable === 'trips' && !services.get(String(source.row.service_id))?.size) continue;
+			sources.add(groupSource(key.slice(ownerTable.length + 1), source.planId));
+		}
+		await writers[table].writeSelected(sources);
+	}
+	return exportedTrips;
 }
 
 /**
@@ -254,8 +267,11 @@ export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> 
 	const timer = new Timer();
 	const prefix = `[STePP plan ${config.planId}]`;
 	Logger.info(`${prefix} Resolving service dates inside ${config.startDate}–${config.endDate}...`);
-	const services = await readServiceDates(sourceDirectory, config.startDate, config.endDate);
-	Logger.info(`${prefix} Found ${services.size} services with operating dates in the export range.`);
+	const services = await readServiceDates(sourceDirectory, config.startDate, config.endDate, true);
+	for (const [id, dates] of services) {
+		config.sharedRows.set(`calendar:${groupSource(id, config.planId)}`, { ...rowSource(config, { service_id: id }), dates });
+	}
+	Logger.info(`${prefix} Found ${services.size} service definitions for calendar merging.`);
 	const routes = await readById(config, 'routes', 'route_id');
 	const trips = new Map<string, Trip>();
 	const usedRoutes = new Set<string>();
@@ -265,9 +281,6 @@ export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> 
 	let skippedTrips = 0;
 	let exportedStopTimes = 0;
 	let exportedShapePoints = 0;
-
-	// Only internal identifiers need a plan namespace. Stops and routes keep their public IDs.
-	const scopedId = (id: string) => config.namespaceIds ? `plan_${encodeURIComponent(config.planId)}:${encodeURIComponent(id)}` : id;
 
 	await readCsv(config, 'trips', async (row) => {
 		if (!services.get(required(row, 'service_id'))?.size) {
@@ -288,7 +301,7 @@ export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> 
 
 	Logger.info(`${prefix} Selected ${trips.size} trips, ${usedRoutes.size} routes, ${usedServices.size} services and ${usedShapes.size} shapes; skipped ${skippedTrips} trips with no service in the range.`);
 	if (trips.size === 0) {
-		Logger.warning(`${prefix} No active trips in ${config.startDate}–${config.endDate}; this plan contributes no rows.`);
+		Logger.warning(`${prefix} No active trips in ${config.startDate}–${config.endDate}; this plan contributes only calendar overrides, if any.`);
 		return 0;
 	}
 
@@ -317,7 +330,7 @@ export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> 
 		if (!trip.first || sequence < trip.first.sequence) trip.first = { sequence, stopId };
 		if (!trip.last || sequence > trip.last.sequence) trip.last = { sequence, stopId };
 		usedStops.add(stopId);
-		await writers.stop_times.write({ ...row, trip_id: scopedId(required(row, 'trip_id')) });
+		await writers.stop_times.writeCandidate(row, groupSource(required(row, 'trip_id'), config.planId));
 		exportedStopTimes++;
 	});
 
@@ -333,6 +346,7 @@ export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> 
 	});
 	for (const id of usedStops) if (!stops.has(id)) throw new Error(`Missing stop "${id}" referenced by stop_times.txt`);
 
+	for (const id of usedShapes) mergeSharedRow(config, 'shapes', id, {});
 	const foundShapes = new Set<string>();
 	await readCsv(config, 'shapes', async (row) => {
 		const id = required(row, 'shape_id');
@@ -345,7 +359,7 @@ export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> 
 			shape_pt_sequence: number(row.shape_pt_sequence),
 		});
 		foundShapes.add(id);
-		await writers.shapes.write({ ...row, shape_id: scopedId(id) });
+		await writers.shapes.writeCandidate(row, groupSource(id, config.planId));
 		exportedShapePoints++;
 	});
 	for (const id of usedShapes) if (!foundShapes.has(id)) throw new Error(`Missing shape "${id}" referenced by trips.txt`);
@@ -362,15 +376,15 @@ export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> 
 		const output = {
 			...row,
 			bikes_allowed: row.bikes_allowed ?? '0',
-			block_id: row.block_id ? scopedId(row.block_id) : undefined,
+			block_id: row.block_id || undefined,
 			direction_id: row.direction_id ?? derivedDirection,
-			service_id: scopedId(required(row, 'service_id')),
-			shape_id: scopedId(required(row, 'shape_id')),
-			trip_id: scopedId(id),
+			service_id: required(row, 'service_id'),
+			shape_id: required(row, 'shape_id'),
+			trip_id: id,
 			wheelchair_accessible: row.wheelchair_accessible ?? '0',
 		};
 		GtfsStrictV30SteppTripsSchema.parse(output);
-		await writers.trips.write(output);
+		mergeSharedRow(config, 'trips', id, output);
 		const key = JSON.stringify([routeId, row.shape_id, row.trip_headsign]);
 		const circular = trip.first.stopId === trip.last.stopId;
 		const previous = patterns.get(key);
@@ -396,6 +410,8 @@ export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> 
 	}, true);
 
 	for (const routeId of usedRoutes) {
+		mergeSharedRow(config, 'routes_stepp', routeId, {});
+		const seenExtensions = new Set<string>();
 		const route = referenced(routes, routeId, 'route');
 		const routePatterns = Array.from(patterns.values()).filter(pattern => pattern.routeId === routeId);
 		const extensions = routeExtensions.get(routeId);
@@ -415,18 +431,13 @@ export async function exportPlanGtfs(config: PlanExportConfig): Promise<number> 
 			};
 			GtfsStrictV30SteppRouteSteppSchema.parse(output);
 			// Multiple directions may share a route ID, as in the Offer STePP format.
-			const key = `routes_stepp:${JSON.stringify(output)}`;
-			if (config.sharedRows.has(key)) continue;
-			config.sharedRows.set(key, rowSource(config, output));
-			await writers.routes_stepp.write(output);
+			const key = JSON.stringify(output);
+			if (seenExtensions.has(key)) continue;
+			seenExtensions.add(key);
+			await writers.routes_stepp.writeCandidate(output, groupSource(routeId, config.planId));
 		}
 	}
 
-	for (const id of usedServices) {
-		const { calendar, calendarDates } = buildCalendarRows(scopedId(id), referenced(services, id, 'service'));
-		await writers.calendar.write(calendar);
-		for (const row of calendarDates) await writers.calendar_dates.write(row);
-	}
 	Logger.success({
 		attributes: { duration_ms: timer.getMs(), plan_id: config.planId, routes: usedRoutes.size, services: usedServices.size, shape_points: exportedShapePoints, stop_times: exportedStopTimes, stops: usedStops.size, trips: trips.size },
 		message: `${prefix} Prepared ${trips.size} trips, ${exportedStopTimes} stop times, ${usedStops.size} referenced stops, ${exportedShapePoints} shape points and ${usedServices.size} calendars in ${timer.get()}.`,

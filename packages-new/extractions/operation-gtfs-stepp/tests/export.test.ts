@@ -55,7 +55,6 @@ async function withExport(callback: (options: ExportOptions, outputDirectory: st
 		await callback({
 			agencyCode: '41',
 			endDate: '20261007',
-			namespaceIds: false,
 			planActiveFrom: 20261001,
 			planCreatedAt: 1,
 			planId: 'plan',
@@ -73,10 +72,6 @@ async function withExport(callback: (options: ExportOptions, outputDirectory: st
 async function closeWriters(options: ExportOptions) {
 	await writeSharedFiles(options.sharedRows, options.writers);
 	await Promise.all(Object.values(options.writers).map(writer => writer.close()));
-}
-
-function namespaced(planId: string, id: string) {
-	return `plan_${encodeURIComponent(planId)}:${encodeURIComponent(id)}`;
 }
 
 /* * */
@@ -196,41 +191,95 @@ test('derives circularity from stop sequence rather than source row order', asyn
 	}, files);
 });
 
-test('merges plans with overlapping IDs while preserving every trip, calendar and shape reference', async () => {
-	await withExport(async (options, outputDirectory, directory) => {
-		const otherSource = path.join(directory, 'other-source');
-		await writeFeed(otherSource, makeFeed());
-		const planIds = ['first/plan', 'second:plan'];
-		await exportPlanGtfs({ ...options, namespaceIds: true, planId: planIds[0] });
-		await exportPlanGtfs({ ...options, namespaceIds: true, planId: planIds[1], sourceDirectory: otherSource });
-		await closeWriters(options);
+for (const newestFirst of [false, true]) {
+	test(`preserves original IDs across two months and replaces complete groups with the latest plan processed ${newestFirst ? 'first' : 'last'}`, async () => {
+		const oldFeed = makeFeed();
+		oldFeed['stop_times.txt'] += 'trip,25:30:00,25:30:00,A,30,2000,,0,0,,,1\n';
+		oldFeed['shapes.txt'] += 'shape,38.720,-9.120,3,2000\n';
+		await withExport(async (options, outputDirectory, directory) => {
+			const newerFeed = makeFeed();
+			newerFeed['calendar.txt'] = newerFeed['calendar.txt'].replaceAll('202610', '202611').replace('20261131', '20261130');
+			newerFeed['stop_times.txt'] = newerFeed['stop_times.txt'].replaceAll('25:', '26:');
+			newerFeed['shapes.txt'] = newerFeed['shapes.txt'].replace('38.710', '38.715');
+			newerFeed['trips.txt'] = newerFeed['trips.txt'].replace('Source trip', 'Latest trip');
+			const newerSource = path.join(directory, 'newer-source');
+			await writeFeed(newerSource, newerFeed);
+			const older = { ...options, planId: 'E468Y' };
+			const newer = { ...options, endDate: '20261104', planActiveFrom: 20261101, planId: 'LI43M', sourceDirectory: newerSource, startDate: '20261102' };
+			for (const plan of newestFirst ? [newer, older] : [older, newer]) {
+				await exportPlanGtfs(plan);
+				await Promise.all(Object.values(options.writers).map(writer => writer.close()));
+			}
+			await closeWriters(options);
 
-		const trips = await readRows(outputDirectory, 'trips.txt');
-		const calendar = await readRows(outputDirectory, 'calendar.txt');
-		const dates = await readRows(outputDirectory, 'calendar_dates.txt');
-		const shapes = await readRows(outputDirectory, 'shapes.txt');
-		const stopTimes = await readRows(outputDirectory, 'stop_times.txt');
-		assert.deepEqual(trips.map(row => row.trip_id).sort(), planIds.map(id => namespaced(id, 'trip')).sort());
-		assert.equal(calendar.length, 2);
-		assert.equal(dates.length, 6);
-		assert.equal(shapes.length, 4);
-		assert.equal(stopTimes.length, 4);
-		for (const planId of planIds) {
-			const trip = trips.find(row => row.trip_id === namespaced(planId, 'trip'));
-			assert.equal(trip?.service_id, namespaced(planId, 'service'));
-			assert.equal(trip?.shape_id, namespaced(planId, 'shape'));
-			assert.equal(trip?.route_id, '1009');
-			assert.ok(calendar.some(row => row.service_id === trip?.service_id));
-			assert.equal(dates.filter(row => row.service_id === trip?.service_id).length, 3);
-			assert.equal(shapes.filter(row => row.shape_id === trip?.shape_id).length, 2);
-			assert.deepEqual(stopTimes.filter(row => row.trip_id === trip?.trip_id).map(row => row.stop_id), ['A', 'B']);
-		}
-		assert.equal((await readRows(outputDirectory, 'agency.txt')).length, 1);
-		assert.equal((await readRows(outputDirectory, 'routes.txt')).length, 1);
-		assert.equal((await readRows(outputDirectory, 'routes_stepp.txt')).length, 1);
-		assert.equal((await readRows(outputDirectory, 'stops.txt')).length, 2);
+			assert.deepEqual((await readdir(outputDirectory)).sort(), OUTPUT_FILES);
+			const trips = await readRows(outputDirectory, 'trips.txt');
+			assert.equal(trips.length, 1);
+			assert.equal(trips[0].trip_id, 'trip');
+			assert.equal(trips[0].service_id, 'service');
+			assert.equal(trips[0].shape_id, 'shape');
+			assert.equal(trips[0].block_id, 'block');
+			assert.equal(trips[0].trip_short_name, 'Latest trip');
+			const calendar = await readRows(outputDirectory, 'calendar.txt');
+			assert.equal(calendar.length, 1);
+			assert.equal(calendar[0].start_date, '20261005');
+			assert.equal(calendar[0].end_date, '20261104');
+			const dates = await readRows(outputDirectory, 'calendar_dates.txt');
+			assert.deepEqual(dates.map(row => row.date), ['20261005', '20261006', '20261007', '20261102', '20261103', '20261104']);
+			assert.ok(dates.every(row => row.service_id === 'service'));
+			const shapes = await readRows(outputDirectory, 'shapes.txt');
+			assert.equal(shapes.length, 2);
+			assert.ok(shapes.every(row => row.shape_id === 'shape'));
+			assert.equal(shapes[1].shape_pt_lat, '38.715');
+			const stopTimes = await readRows(outputDirectory, 'stop_times.txt');
+			assert.equal(stopTimes.length, 2);
+			assert.ok(stopTimes.every(row => row.trip_id === 'trip' && row.arrival_time?.startsWith('26:')));
+			assert.equal((await readRows(outputDirectory, 'routes_stepp.txt')).length, 1);
+		}, oldFeed);
 	});
-});
+}
+
+for (const newestFirst of [false, true]) {
+	test(`uses the latest service dates on overlaps, including removals, processed ${newestFirst ? 'first' : 'last'}`, async () => {
+		await withExport(async (options, outputDirectory, directory) => {
+			const newerFeed = makeFeed();
+			newerFeed['calendar_dates.txt'] += 'service,20261006,2\nservice,20261008,1\n';
+			const newerSource = path.join(directory, 'newer-source');
+			await writeFeed(newerSource, newerFeed);
+			const older = { ...options, planId: 'older' };
+			const newer = { ...options, endDate: '20261008', planActiveFrom: 20261006, planId: 'newer', sourceDirectory: newerSource, startDate: '20261006' };
+			for (const plan of newestFirst ? [newer, older] : [older, newer]) await exportPlanGtfs(plan);
+			await closeWriters(options);
+			assert.deepEqual((await readRows(outputDirectory, 'calendar_dates.txt')).map(row => row.date), ['20261005', '20261007', '20261008']);
+			assert.equal((await readRows(outputDirectory, 'calendar.txt')).length, 1);
+		});
+	});
+}
+
+for (const newestFirst of [false, true]) {
+	test(`preserves distinct IDs and uses newer shared shapes processed ${newestFirst ? 'first' : 'last'}`, async () => {
+		await withExport(async (options, outputDirectory, directory) => {
+			const newerFeed = makeFeed();
+			newerFeed['trips.txt'] = newerFeed['trips.txt'].replace('1009,service,trip,', '1009,new-service,new-trip,');
+			newerFeed['calendar.txt'] = newerFeed['calendar.txt'].replace('service,', 'new-service,');
+			newerFeed['stop_times.txt'] = newerFeed['stop_times.txt'].replaceAll('\ntrip,', '\nnew-trip,');
+			newerFeed['shapes.txt'] = newerFeed['shapes.txt'].replace('38.710', '38.715');
+			const newerSource = path.join(directory, 'newer-source');
+			await writeFeed(newerSource, newerFeed);
+			const older = { ...options, planId: 'older' };
+			const newer = { ...options, planActiveFrom: 20261005, planId: 'newer', sourceDirectory: newerSource };
+			for (const plan of newestFirst ? [newer, older] : [older, newer]) await exportPlanGtfs(plan);
+			await closeWriters(options);
+			assert.deepEqual((await readRows(outputDirectory, 'trips.txt')).map(row => row.trip_id).sort(), ['new-trip', 'trip']);
+			assert.deepEqual((await readRows(outputDirectory, 'calendar.txt')).map(row => row.service_id).sort(), ['new-service', 'service']);
+			assert.equal((await readRows(outputDirectory, 'calendar_dates.txt')).length, 6);
+			assert.equal((await readRows(outputDirectory, 'stop_times.txt')).length, 4);
+			const shapes = await readRows(outputDirectory, 'shapes.txt');
+			assert.equal(shapes.length, 2);
+			assert.equal(shapes[1].shape_pt_lat, '38.715');
+		});
+	});
+}
 
 for (const newestFirst of [false, true]) {
 	test(`uses the latest plan's route and stop names when processed ${newestFirst ? 'first' : 'last'}`, async (context) => {
@@ -242,8 +291,8 @@ for (const newestFirst of [false, true]) {
 			const newerSource = path.join(directory, 'newer-source');
 			await writeFeed(newerSource, updated);
 			// Both plans have the same clipped dates; precedence uses their original active_from.
-			const older = { ...options, namespaceIds: true, planActiveFrom: 20261001, planCreatedAt: 20, planId: 'older' };
-			const newer = { ...options, namespaceIds: true, planActiveFrom: 20261005, planCreatedAt: 10, planId: 'newer', sourceDirectory: newerSource };
+			const older = { ...options, planActiveFrom: 20261001, planCreatedAt: 20, planId: 'older' };
+			const newer = { ...options, planActiveFrom: 20261005, planCreatedAt: 10, planId: 'newer', sourceDirectory: newerSource };
 			const ordered = newestFirst ? [newer, older] : [older, newer];
 			await exportPlanGtfs(ordered[0]);
 			// Flushing streaming writers must not lock in an obsolete public definition.
@@ -260,12 +309,12 @@ for (const newestFirst of [false, true]) {
 			assert.equal(stops.length, 2);
 			assert.equal(stops.find(row => row.stop_id === 'B')?.stop_name, 'Renamed terminal');
 			const trips = await readRows(outputDirectory, 'trips.txt');
-			assert.equal(trips.length, 2);
+			assert.equal(trips.length, 1);
 			assert.ok(trips.every(row => row.route_id === '1009'));
 			const stopTimes = await readRows(outputDirectory, 'stop_times.txt');
-			assert.equal(stopTimes.length, 4);
+			assert.equal(stopTimes.length, 2);
 			assert.ok(stopTimes.every(row => stops.some(stop => stop.stop_id === row.stop_id)));
-			const nameLogs = logs.mock.calls.map(call => call.arguments[0]).filter(log => typeof log === 'object' && !(log instanceof Error) && log.attributes?.event === 'operation_gtfs_stepp.name_merge');
+			const nameLogs = logs.mock.calls.map(call => call.arguments[0]).filter(log => typeof log === 'object' && !(log instanceof Error) && log.attributes?.event === 'operation_gtfs_stepp.definition_merge');
 			assert.equal(nameLogs.length, 2);
 			for (const log of nameLogs) {
 				assert.ok(typeof log === 'object' && !(log instanceof Error));
@@ -280,14 +329,20 @@ for (const newestFirst of [false, true]) {
 test('an identical newer plan prevents an older plan from reverting its names', async () => {
 	await withExport(async (options, outputDirectory, directory) => {
 		const intermediate = makeFeed();
+		intermediate['trips.txt'] = intermediate['trips.txt'].replace('Source trip', 'Intermediate trip');
+		intermediate['stop_times.txt'] = intermediate['stop_times.txt'].replaceAll('25:', '26:');
+		intermediate['shapes.txt'] = intermediate['shapes.txt'].replace('38.710', '38.715');
 		intermediate['routes.txt'] = intermediate['routes.txt'].replace('Terminal A - Terminal B', 'Intermediate route name');
 		intermediate['stops.txt'] = intermediate['stops.txt'].replace('B,002,Terminal B', 'B,002,Intermediate stop name');
 		const intermediateSource = path.join(directory, 'intermediate-source');
 		await writeFeed(intermediateSource, intermediate);
-		await exportPlanGtfs({ ...options, namespaceIds: true, planActiveFrom: 20261001, planId: 'first' });
-		await exportPlanGtfs({ ...options, namespaceIds: true, planActiveFrom: 20261005, planId: 'latest' });
-		await exportPlanGtfs({ ...options, namespaceIds: true, planActiveFrom: 20261003, planId: 'intermediate', sourceDirectory: intermediateSource });
+		await exportPlanGtfs({ ...options, planActiveFrom: 20261001, planId: 'first' });
+		await exportPlanGtfs({ ...options, planActiveFrom: 20261005, planId: 'latest' });
+		await exportPlanGtfs({ ...options, planActiveFrom: 20261003, planId: 'intermediate', sourceDirectory: intermediateSource });
 		await closeWriters(options);
+		assert.equal((await readRows(outputDirectory, 'trips.txt'))[0].trip_short_name, 'Source trip');
+		assert.equal((await readRows(outputDirectory, 'stop_times.txt'))[0].arrival_time, '25:10:00');
+		assert.equal((await readRows(outputDirectory, 'shapes.txt'))[1].shape_pt_lat, '38.710');
 		assert.equal((await readRows(outputDirectory, 'routes.txt'))[0].route_long_name, 'Terminal A - Terminal B');
 		assert.equal((await readRows(outputDirectory, 'stops.txt')).find(row => row.stop_id === 'B')?.stop_name, 'Terminal B');
 	});
@@ -300,12 +355,18 @@ for (const tie of [
 	test(`breaks equal active_from ties by ${tie.name}`, async () => {
 		await withExport(async (options, outputDirectory, directory) => {
 			const newer = makeFeed();
+			newer['trips.txt'] = newer['trips.txt'].replace('Source trip', 'Latest trip');
+			newer['stop_times.txt'] = newer['stop_times.txt'].replaceAll('25:', '26:');
+			newer['shapes.txt'] = newer['shapes.txt'].replace('38.710', '38.715');
 			newer['routes.txt'] = newer['routes.txt'].replace('Terminal A - Terminal B', 'Latest route name');
 			const newerSource = path.join(directory, 'newer-source');
 			await writeFeed(newerSource, newer);
-			await exportPlanGtfs({ ...options, namespaceIds: true, planCreatedAt: tie.newerCreatedAt, planId: tie.newerId, sourceDirectory: newerSource });
-			await exportPlanGtfs({ ...options, namespaceIds: true, planCreatedAt: tie.olderCreatedAt, planId: tie.olderId });
+			await exportPlanGtfs({ ...options, planCreatedAt: tie.newerCreatedAt, planId: tie.newerId, sourceDirectory: newerSource });
+			await exportPlanGtfs({ ...options, planCreatedAt: tie.olderCreatedAt, planId: tie.olderId });
 			await closeWriters(options);
+			assert.equal((await readRows(outputDirectory, 'trips.txt'))[0].trip_short_name, 'Latest trip');
+			assert.equal((await readRows(outputDirectory, 'stop_times.txt'))[0].arrival_time, '26:10:00');
+			assert.equal((await readRows(outputDirectory, 'shapes.txt'))[1].shape_pt_lat, '38.715');
 			const routes = await readRows(outputDirectory, 'routes.txt');
 			assert.equal(routes.length, 1);
 			assert.equal(routes[0].route_long_name, 'Latest route name');
@@ -318,59 +379,85 @@ for (const conflict of [
 	{ field: 'route_desc', fileName: 'routes.txt', from: 'Source route description', to: 'Different route' },
 	{ field: 'stop_desc', fileName: 'stops.txt', from: 'Source B description', to: 'Different stop description' },
 ]) {
-	test(`rejects conflicting ${conflict.fileName} metadata across merged plans`, async (context) => {
-		const logs = context.mock.method(Logger, 'error', () => {});
-		await withExport(async (options, _outputDirectory, directory) => {
-			const conflicting = makeFeed();
-			conflicting[conflict.fileName] = conflicting[conflict.fileName].replace(conflict.from, conflict.to);
-			const otherSource = path.join(directory, 'conflicting-source');
-			await writeFeed(otherSource, conflicting);
-			await exportPlanGtfs({ ...options, namespaceIds: true, planId: 'first' });
-			// Route and stop provenance follows the newest plan, even when its names match.
-			await exportPlanGtfs({ ...options, namespaceIds: true, planId: 'identical' });
-			const previousPlan = conflict.fileName === 'agency.txt' ? 'first' : 'identical';
-			await assert.rejects(exportPlanGtfs({ ...options, endDate: '20261009', namespaceIds: true, planId: 'second', sourceDirectory: otherSource, startDate: '20261008' }), (error: unknown) => {
-				assert.ok(error instanceof Error);
-				assert.match(error.message, /conflict/i);
-				assert.ok(error.message.includes(conflict.fileName));
-				assert.ok(error.message.includes(`plan "${previousPlan}", exported dates 20261005–20261007`));
-				assert.ok(error.message.includes('plan "second", exported dates 20261008–20261009'));
-				assert.ok(error.message.includes(`${conflict.field}: plan "${previousPlan}" = ${JSON.stringify(conflict.from)}; plan "second" = ${JSON.stringify(conflict.to)}`));
-				return true;
-			});
-			assert.equal(logs.mock.callCount(), 1);
-			const log = logs.mock.calls[0].arguments[0];
+	test(`uses the latest ${conflict.fileName} values for a repeated ID`, async (context) => {
+		const logs = context.mock.method(Logger, 'info', () => {});
+		await withExport(async (options, outputDirectory, directory) => {
+			const updated = makeFeed();
+			updated[conflict.fileName] = updated[conflict.fileName].replace(conflict.from, conflict.to);
+			const otherSource = path.join(directory, 'updated-source');
+			await writeFeed(otherSource, updated);
+			await exportPlanGtfs({ ...options, planId: 'first' });
+			await exportPlanGtfs({ ...options, planId: 'identical' });
+			await exportPlanGtfs({ ...options, planActiveFrom: 20261005, planId: 'second', sourceDirectory: otherSource });
+			await closeWriters(options);
+			assert.ok((await readRows(outputDirectory, conflict.fileName)).some(row => row[conflict.field] === conflict.to));
+			const mergeLogs = logs.mock.calls.map(call => call.arguments[0]).filter(log => typeof log === 'object' && !(log instanceof Error) && log.attributes?.event === 'operation_gtfs_stepp.definition_merge');
+			assert.equal(mergeLogs.length, 1);
+			const log = mergeLogs[0];
 			assert.ok(typeof log === 'object' && !(log instanceof Error));
 			assert.deepEqual(log.attributes?.differences, [{ current: conflict.to, field: conflict.field, previous: conflict.from }]);
-			assert.equal(log.attributes?.previous_plan_id, previousPlan);
-			assert.equal(log.attributes?.current_plan_id, 'second');
+			assert.equal(log.attributes?.previous_plan_id, 'identical');
+			assert.equal(log.attributes?.chosen_plan_id, 'second');
 		});
 	});
 }
 
-test('reports every changed route field, including empty and quoted values', async (context) => {
-	const logs = context.mock.method(Logger, 'error', () => {});
-	await withExport(async (options, _outputDirectory, directory) => {
-		const conflicting = makeFeed();
-		conflicting['routes.txt'] = 'route_id,agency_id,route_short_name,route_long_name,route_desc,route_type\n1009,41,1009,"New ""quoted"" name",,3\n';
-		const otherSource = path.join(directory, 'conflicting-source');
-		await writeFeed(otherSource, conflicting);
-		await exportPlanGtfs({ ...options, namespaceIds: true, planId: 'first' });
-		await assert.rejects(exportPlanGtfs({ ...options, namespaceIds: true, planId: 'LI43M', sourceDirectory: otherSource }), (error: unknown) => {
-			assert.ok(error instanceof Error);
-			assert.ok(error.message.includes('route_id "1009"'));
-			assert.ok(error.message.includes('Different fields (2)'));
-			assert.ok(error.message.includes(`plan "LI43M" = ${JSON.stringify('New "quoted" name')}`));
-			assert.ok(error.message.includes('route_desc: plan "first" = "Source route description"; plan "LI43M" = ""'));
-			return true;
+for (const newestFirst of [false, true]) {
+	test(`honors a newer service with no operating dates processed ${newestFirst ? 'first' : 'last'}`, async () => {
+		await withExport(async (options, outputDirectory, directory) => {
+			const newerFeed = makeFeed();
+			newerFeed['calendar_dates.txt'] += 'service,20261005,2\nservice,20261006,2\nservice,20261007,2\n';
+			const newerSource = path.join(directory, 'newer-source');
+			await writeFeed(newerSource, newerFeed);
+			const newer = { ...options, planActiveFrom: 20261005, planId: 'newer', sourceDirectory: newerSource };
+			for (const plan of newestFirst ? [newer, options] : [options, newer]) await exportPlanGtfs(plan);
+			await closeWriters(options);
+			for (const file of ['trips.txt', 'stop_times.txt', 'calendar.txt', 'calendar_dates.txt']) {
+				assert.deepEqual(await readRows(outputDirectory, file), []);
+			}
 		});
-		const log = logs.mock.calls[0].arguments[0];
-		assert.ok(typeof log === 'object' && !(log instanceof Error));
-		assert.deepEqual(log.attributes?.differences, [
-			{ current: 'New "quoted" name', field: 'route_long_name', previous: 'Terminal A - Terminal B' },
-			{ current: '', field: 'route_desc', previous: 'Source route description' },
-		]);
 	});
+}
+
+test('replaces the complete STePP route extension group with the latest plan', async () => {
+	const olderFeed = makeFeed();
+	olderFeed['routes_stepp.txt'] = 'route_id,route_origin,route_destination,circular,path_type,contract\n1009,Old origin,Old destination,0,1,Old contract\n1009,Other origin,Other destination,0,1,Old contract\n';
+	await withExport(async (options, outputDirectory, directory) => {
+		const newerFeed = makeFeed();
+		newerFeed['routes_stepp.txt'] = 'route_id,route_origin,route_destination,circular,path_type,contract\n1009,New origin,New destination,0,3,New contract\n';
+		const newerSource = path.join(directory, 'newer-source');
+		await writeFeed(newerSource, newerFeed);
+		await exportPlanGtfs({ ...options, planActiveFrom: 20261005, planId: 'newer', sourceDirectory: newerSource });
+		await exportPlanGtfs(options);
+		await closeWriters(options);
+		assert.deepEqual(await readRows(outputDirectory, 'routes_stepp.txt'), [{ circular: '0', contract: 'New contract', path_type: '3', route_destination: 'New destination', route_id: '1009', route_origin: 'New origin' }]);
+	}, olderFeed);
+});
+
+test('keeps the numeric service IDs from the January example without plan prefixes', async () => {
+	const olderFeed = makeFeed();
+	const calendarHeader = olderFeed['calendar.txt'].split('\n')[0] + '\n';
+	olderFeed['calendar.txt'] = calendarHeader;
+	olderFeed['calendar_dates.txt'] += '26,20260101,1\n4,20260102,1\n5,20260103,1\n6,20260104,1\n';
+	olderFeed['trips.txt'] = olderFeed['trips.txt'].split('\n')[0] + '\n' + ['26', '4', '5', '6'].map(id => `1009,${id},trip-${id},Terminal B,1,shape,2,1,block,Source trip\n`).join('');
+	const sourceStopTimes = olderFeed['stop_times.txt'];
+	olderFeed['stop_times.txt'] = sourceStopTimes.split('\n')[0] + '\n' + ['26', '4', '5', '6'].map(id => sourceStopTimes.split('\n').slice(1).join('\n').replaceAll('trip,', `trip-${id},`)).join('');
+	await withExport(async (options, outputDirectory, directory) => {
+		const newerFeed = makeFeed();
+		newerFeed['calendar.txt'] = calendarHeader;
+		newerFeed['calendar_dates.txt'] += '1,20260105,1\n1,20260106,1\n1,20260107,1\n1,20260108,1\n1,20260109,1\n';
+		newerFeed['trips.txt'] = newerFeed['trips.txt'].replace('1009,service,trip,', '1009,1,trip,');
+		const newerSource = path.join(directory, 'newer-source');
+		await writeFeed(newerSource, newerFeed);
+		await exportPlanGtfs({ ...options, endDate: '20260104', planActiveFrom: 20260101, planId: 'E468Y', startDate: '20260101' });
+		await exportPlanGtfs({ ...options, endDate: '20260109', planActiveFrom: 20260105, planId: 'LI43M', sourceDirectory: newerSource, startDate: '20260105' });
+		await closeWriters(options);
+		const dates = await readRows(outputDirectory, 'calendar_dates.txt');
+		assert.deepEqual(dates.sort((a, b) => String(a.date).localeCompare(String(b.date))).map(row => [row.date, row.exception_type, row.service_id]), [
+			['20260101', '1', '26'], ['20260102', '1', '4'], ['20260103', '1', '5'], ['20260104', '1', '6'],
+			['20260105', '1', '1'], ['20260106', '1', '1'], ['20260107', '1', '1'], ['20260108', '1', '1'], ['20260109', '1', '1'],
+		]);
+	}, olderFeed);
 });
 
 for (const reference of [

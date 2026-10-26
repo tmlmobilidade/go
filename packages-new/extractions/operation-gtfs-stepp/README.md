@@ -24,20 +24,24 @@ and no holiday collection is queried.
 
 ## Merging and metadata
 
-- A single plan keeps its identifiers. For multiple plans, trip, service, shape
-  and nonempty block IDs use `plan_<encoded plan ID>:<encoded source ID>` to keep
-  references separate even when source IDs repeat.
-- Agency, route and stop IDs stay unchanged. Identical exported rows are shared.
-  For each route or stop, the latest plan supplies `route_long_name`,
-  `route_short_name`, and `stop_name`. Latest means greatest original `active_from`,
-  then `created_at`, then plan ID for deterministic ties, regardless of processing
-  order or clipped export dates. One final row per public ID is written after all
-  plans have been merged. Differences in other fields still fail with diagnostics.
-- Existing `routes_stepp.txt` rows are preserved once per used route, including
-  their circular flag. These rows have no standard pattern key, so all rows for
-  a used route are retained. Missing extension fields fall back to `routes.txt`,
-  then the first/last active stop names. Without a source extension, circularity
-  is computed for each active shape/headsign from its trips' ordered endpoints.
+- All plans keep their original agency, route, stop, trip, service, shape and block
+  IDs. No plan prefix or URL encoding is added.
+- Repeated IDs use the latest plan's complete definition. Latest means greatest
+  original `active_from`, then `created_at`, then plan ID for deterministic ties,
+  regardless of processing order or clipped export dates. Stop times are selected
+  as a complete group per trip, shape points as a complete group per shape, and
+  STePP extension rows as a complete group per route. Older trailing rows cannot
+  survive a shorter replacement. The selected trip schedule and geometry apply
+  to all exported dates referencing those IDs.
+- Service dates from disjoint plan ranges are combined under the original service
+  ID. In overlapping ranges, the latest plan's calendar wins, including removed
+  operating dates. One calendar row and one addition per operating date are
+  generated for each referenced service.
+- Existing `routes_stepp.txt` rows from the selected plan are preserved once per
+  used route, including their circular flag. Missing extension fields fall back
+  to `routes.txt`, then the first/last active stop names. Without a source
+  extension, circularity is computed for each active shape/headsign from its
+  trips' ordered endpoints.
 - Missing `path_type` defaults to `1` (base path). A missing contract uses the same
   agency-code mapping as Offer (`41`–`44`); other agencies use an empty value.
 - Existing binary directions and accessibility flags are preserved. Missing
@@ -54,18 +58,19 @@ report download/unzip durations, source filenames, CSV record counts, selected
 and skipped trips, and the exported row counts. A failed plan identifies the
 processing stage.
 
-Conflicting agency, route or stop definitions report the file and public ID,
-both plan IDs and export ranges, and every differing field with both values.
-Values are JSON-quoted so empty strings and special characters are visible.
-The same details are available in structured log attributes. Name changes log
-both values and the winning plan instead of stopping the extraction. Route and
-stop provenance advances to the latest plan even when its names are identical.
-Other conflicting fields still stop the extraction. Signed download URLs are
-not logged.
+Changed definitions report the file, original ID, both plan IDs, differing fields
+and the winning plan in structured log attributes. The latest plan wins even
+when its values match an earlier plan, preventing an intermediate plan from
+reverting them. Signed download URLs are not logged.
+
+Large stop-time, shape and route-extension groups are staged on disk while plans
+are processed. Only winning groups enter the final CSVs; staging files are
+removed before the worker creates the ZIP.
 
 ## Validation
 
 Run `npm run build`, `npm test`, and `npm exec eslint src` from this package.
 Fixtures cover calendar exceptions, range boundaries, source-field preservation,
-merged references, latest-plan names in either processing order, deterministic
-ties, conflicting non-name fields and missing referenced data.
+original IDs across months, merged references and dates, overlapping calendar
+removals, complete group replacement in either processing order, deterministic
+ties, latest metadata and missing referenced data.

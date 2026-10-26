@@ -50,7 +50,7 @@ export async function extractOperationGtfsSteppV1(context: ExtractionTaskContext
 	}, { sort: { active_from: 1 } });
 
 	Logger.info(`${prefix} Found ${plans.length} normalized plans overlapping the requested range.`);
-	Logger.info(`${prefix} Route and stop names use the latest plan by active_from, then created_at, then plan ID.`);
+	Logger.info(`${prefix} Repeated IDs use the latest plan by active_from, then created_at, then plan ID.`);
 	if (!plans.length) throw new Error('No normalized Operation plans are available for this agency and date range');
 	for (const plan of plans) {
 		Logger.info({
@@ -93,7 +93,6 @@ export async function extractOperationGtfsSteppV1(context: ExtractionTaskContext
 			const planTrips = await exportPlanGtfs({
 				agencyCode: agency.code,
 				endDate: String(Math.min(Number(properties.end_date), plan.active_until)),
-				namespaceIds: plans.length > 1,
 				planActiveFrom: plan.active_from,
 				planCreatedAt: plan.created_at,
 				planId: plan._id,
@@ -116,9 +115,10 @@ export async function extractOperationGtfsSteppV1(context: ExtractionTaskContext
 	}
 
 	if (!exportedTrips) throw new Error('The matching plans contain no trips operating in the requested date range');
-	Logger.info(`${prefix} Writing the final agency, route and stop definitions with the latest names...`);
-	await writeSharedFiles(sharedRows, writers);
+	Logger.info(`${prefix} Writing final definitions and calendars with original IDs and latest-plan precedence...`);
+	const mergedTrips = await writeSharedFiles(sharedRows, writers);
+	if (!mergedTrips) throw new Error('The merged plans contain no trips operating in the requested date range');
 	Logger.info(`${prefix} Flushing ${Object.keys(writers).length} output files...`);
 	for (const writer of Object.values(writers)) await writer.close();
-	Logger.success(`${prefix} Prepared ${Object.keys(writers).length} files and ${exportedTrips} trips from ${plans.length} plans in ${timer.get()}. Ready for the worker to ZIP and upload.`);
+	Logger.success(`${prefix} Prepared ${Object.keys(writers).length} files and ${mergedTrips} trips from ${plans.length} plans in ${timer.get()}. Ready for the worker to ZIP and upload.`);
 }

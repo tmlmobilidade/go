@@ -1,5 +1,6 @@
 /* * */
 
+import { streamCsvFile } from '@tmlmobilidade/go-utils-exec';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -37,12 +38,14 @@ function escapeCell(value: number | string | undefined): string {
  */
 export class SteppCsvWriter {
 	private buffer: string;
+	private candidates?: SteppCsvWriter;
 
 	constructor(private filePath: string, private columns: readonly string[]) {
 		this.buffer = `${columns.join(',')}\n`;
 	}
 
 	async close() {
+		await this.candidates?.close();
 		if (!this.buffer) return;
 		await fs.appendFile(this.filePath, this.buffer);
 		this.buffer = '';
@@ -51,6 +54,26 @@ export class SteppCsvWriter {
 	async write(row: OutputRow) {
 		this.buffer += `${this.columns.map(column => escapeCell(row[column])).join(',')}\n`;
 		if (this.buffer.length >= 64 * 1024) await this.close();
+	}
+
+	/** Stage large row groups on disk until the winning plan is known. */
+	async writeCandidate(row: OutputRow, source: string) {
+		if (!this.candidates) {
+			await fs.writeFile(`${this.filePath}.candidates`, '');
+			this.candidates = new SteppCsvWriter(`${this.filePath}.candidates`, [...this.columns, '__source']);
+		}
+		await this.candidates.write({ ...row, __source: source });
+	}
+
+	/** Write only complete groups belonging to the selected plans. */
+	async writeSelected(sources: Set<string>) {
+		if (!this.candidates) return;
+		await this.candidates.close();
+		await streamCsvFile<Record<string, string>>(`${this.filePath}.candidates`, async (row) => {
+			if (sources.has(row.__source)) await this.write(row);
+		});
+		await fs.unlink(`${this.filePath}.candidates`);
+		this.candidates = undefined;
 	}
 }
 

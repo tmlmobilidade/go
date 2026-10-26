@@ -60,9 +60,10 @@ function fromUtcTimestamp(timestamp: number): string {
  * @param sourceDirectory - The directory containing the source calendars.
  * @param startDate - The start date of the export range.
  * @param endDate - The end date of the export range.
+ * @param includeInactive - Retain empty services so newer plans can remove overlapping dates.
  * @returns A map of service IDs to sets of dates.
  */
-export async function readServiceDates(sourceDirectory: string, startDate: string, endDate: string): Promise<Map<string, Set<string>>> {
+export async function readServiceDates(sourceDirectory: string, startDate: string, endDate: string, includeInactive = false): Promise<Map<string, Set<string>>> {
 	const rangeStart = toUtcTimestamp(startDate, 'start_date');
 	const rangeEnd = toUtcTimestamp(endDate, 'end_date');
 	if (rangeStart > rangeEnd) throw new Error(`start_date (${startDate}) is after end_date (${endDate}).`);
@@ -113,13 +114,15 @@ export async function readServiceDates(sourceDirectory: string, startDate: strin
 				dates.add(date);
 				services.set(serviceId, dates);
 			} else {
-				services.get(serviceId)?.delete(date);
+				const dates = services.get(serviceId) ?? new Set<string>();
+				dates.delete(date);
+				services.set(serviceId, dates);
 			}
 		});
 	}
 
 	for (const [serviceId, dates] of services) {
-		if (dates.size === 0) services.delete(serviceId);
+		if (!includeInactive && dates.size === 0) services.delete(serviceId);
 	}
 	return services;
 }
