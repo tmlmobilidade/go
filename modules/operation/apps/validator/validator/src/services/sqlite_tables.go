@@ -47,7 +47,7 @@ func PrepareSQLiteTables(db *sql.DB) (*SQLiteTables, error) {
 	}
 	// Build these once, before validations open concurrent read cursors. Match
 	// ForEachMatching's NULL-as-empty expression so SQLite can use the index.
-	for _, lookup := range [][2]string{{"stop_times", "trip_id"}, {"stops", "stop_id"}, {"shapes", "shape_id"}} {
+	for _, lookup := range [][2]string{{"stop_times", "trip_id"}, {"stops", "stop_id"}, {"shapes", "shape_id"}, {"trips", "trip_id"}} {
 		table := result.tables[lookup[0]]
 		if table == nil || !table.columns[lookup[1]] {
 			continue
@@ -61,8 +61,23 @@ func PrepareSQLiteTables(db *sql.DB) (*SQLiteTables, error) {
 	}
 
 	// Foreign-key checks use raw equality, which cannot use the COALESCE
-	// indexes above. Keep both forms so NULL handling stays unchanged.
-	for _, lookup := range [][2]string{{"routes", "route_id"}, {"shapes", "shape_id"}, {"calendar", "service_id"}, {"calendar_dates", "service_id"}} {
+	// indexes above. Cover the referenced columns across all validators, and
+	// keep both forms so NULL handling stays unchanged.
+	for _, lookup := range [][2]string{
+		{"agency", "agency_id"},
+		{"booking_rules", "booking_rule_id"},
+		{"calendar", "service_id"},
+		{"calendar_dates", "service_id"},
+		{"fare_attributes", "fare_id"},
+		{"levels", "level_id"},
+		{"route_networks", "network_id"},
+		{"routes", "route_id"},
+		{"shapes", "shape_id"},
+		{"stops", "stop_id"},
+		{"stops", "zone_id"},
+		{"stops", "parent_station"}, // ParentStationForeign currently counts equal parent values.
+		{"trips", "trip_id"},
+	} {
 		table := result.tables[lookup[0]]
 		if table == nil || !table.columns[lookup[1]] {
 			continue

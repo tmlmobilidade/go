@@ -47,16 +47,11 @@ func TestAgencyIdForeignWithoutAgencyDefinitions(t *testing.T) {
 	}{
 		{"EmptyAgencyTable", "DELETE FROM agency"},
 		{"MissingAgencyTable", "DROP TABLE agency"},
-		{"MissingAgencyIdColumn", "ALTER TABLE agency DROP COLUMN agency_id"},
+		{"MissingAgencyIdColumn", "DROP TABLE agency; CREATE TABLE agency (agency_name TEXT)"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			config := testutils.Config(id, types.SEVERITY_ERROR)
 			db, ctx := testutils.Fixture(t, map[string]any{"agency_id": "A1"}, config)
-			if tc.name == "MissingAgencyIdColumn" {
-				if _, err := db.Exec("ALTER TABLE agency ADD COLUMN agency_name TEXT"); err != nil {
-					t.Fatal(err)
-				}
-			}
 			if _, err := db.Exec(tc.sql); err != nil {
 				t.Fatal(err)
 			}
