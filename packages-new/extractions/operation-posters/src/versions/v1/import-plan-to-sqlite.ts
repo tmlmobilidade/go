@@ -80,7 +80,7 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 			});
 			try {
 				const [agencyHolidays, agencyYearPeriods] = await Promise.all([
-					goDb.offer.holidays.findMany({ agency_ids: { $in: [plan.agency_id] } }),
+					goDb.dates.holidays.findMany({ agency_ids: { $in: [plan.agency_id] } }),
 					goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [plan.agency_id] } }),
 				]);
 				const calendar: GtfsCalendar = {
