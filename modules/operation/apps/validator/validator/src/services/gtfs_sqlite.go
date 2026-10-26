@@ -72,14 +72,25 @@ func (g *GtfsSQLite) DB() *sql.DB {
 
 // ImportGTFSZipToSQLite reads and imports a GTFS zip file into SQLite
 func ImportGTFSZipToSQLite(zipPath, sqlitePath string) (*GtfsSQLite, error) {
+	//
+
+	//
+	// 1. Check if zip file exists
+
 	if _, err := os.Stat(zipPath); os.IsNotExist(err) {
 		return nil, fmt.Errorf("zip file does not exist: %s", zipPath)
 	}
+
+	//
+	// 2. Create new SQLite database
 
 	gtfsDB, err := NewGtfsSQLite(sqlitePath)
 	if err != nil {
 		return nil, err
 	}
+
+	//
+	// 3. Open zip file
 
 	zr, err := zip.OpenReader(zipPath)
 	if err != nil {
@@ -88,14 +99,21 @@ func ImportGTFSZipToSQLite(zipPath, sqlitePath string) (*GtfsSQLite, error) {
 	}
 	defer zr.Close()
 
+	//
+	// 4. Create mutex to serialize all database operations
+
 	// Mutex to serialize all database operations and prevent SQLite locking issues
 	// SQLite doesn't handle concurrent writes well, so we serialize all DB operations
 	var dbMutex sync.Mutex
 
 	// Process files sequentially to avoid SQLite locking issues
 	// Even with WAL mode, concurrent writes can cause locking
+
 	for _, file := range zr.File {
-		if file.FileInfo().IsDir() || isMacOSMetadata(file.Name) {
+		//
+		// 5. Check if file is a directory
+
+		if file.FileInfo().IsDir() {
 			lib.AppLogger.Debug("Skipping ZIP metadata: " + file.Name)
 			continue
 		}

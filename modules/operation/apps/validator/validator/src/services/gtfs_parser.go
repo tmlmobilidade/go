@@ -14,12 +14,18 @@ import (
 // It returns a Gtfs struct with SQLite database connection. The database file is kept during validation
 // and should be cleaned up by calling gtfs.Close() after use.
 func ReadGTFSZip(zipPath string) (types.Gtfs, error) {
+	//
+
+	//
+	// 1. Check if zip file exists
+
 	if _, err := os.Stat(zipPath); os.IsNotExist(err) {
 		return types.Gtfs{}, fmt.Errorf("file %s does not exist", zipPath)
 	}
 
 	//
-	// 1. Create a temporary SQLite database for this GTFS import
+	// 2. Create a temporary SQLite database for this GTFS import
+
 	tmpDB, err := os.CreateTemp("", "gtfs_*.db")
 	if err != nil {
 		return types.Gtfs{}, fmt.Errorf("failed to create temporary database: %w", err)
@@ -29,7 +35,8 @@ func ReadGTFSZip(zipPath string) (types.Gtfs, error) {
 	lib.AppLogger.Debug(fmt.Sprintf("Created temporary SQLite database: %s", tmpDBPath))
 
 	//
-	// 2. Import GTFS zip to SQLite using streaming parser
+	// 3. Import GTFS zip to SQLite using streaming parser
+
 	gtfsDB, err := ImportGTFSZipToSQLite(zipPath, tmpDBPath)
 	if err != nil {
 		os.Remove(tmpDBPath) // Clean up on error
@@ -38,7 +45,8 @@ func ReadGTFSZip(zipPath string) (types.Gtfs, error) {
 	gtfsDB.Close() // Close the import connection
 
 	//
-	// 3. Open a new connection for the Gtfs struct
+	// 4. Open a new connection for the Gtfs struct
+
 	db, err := sql.Open("sqlite", tmpDBPath)
 	if err != nil {
 		os.Remove(tmpDBPath) // Clean up on error
@@ -46,11 +54,13 @@ func ReadGTFSZip(zipPath string) (types.Gtfs, error) {
 	}
 
 	//
-	// 4. Create Gtfs struct with SQLite connection
+	// 5. Create Gtfs struct with SQLite connection
+
 	gtfs := types.NewGtfsFromSQLite(db, tmpDBPath)
 
 	//
-	// 5. Load ID map from SQLite
+	// 6. Load ID map from SQLite
+
 	gtfsIdsMap, err := LoadIdMapFromSQLite(db)
 	if err != nil {
 		gtfs.Close()
