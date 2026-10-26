@@ -71,5 +71,6 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 		lib.AppLogger.Error(fmt.Sprintf("Error validating frequencies: %v", err))
 		return
 	}
+	tracker.Complete()
 	lib.AppLogger.Info(fmt.Sprintf("Completed frequencies.txt validation: %d rows processed", tracker.GetProcessedCount()))
 }

@@ -152,5 +152,6 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 		lib.AppLogger.Error(fmt.Sprintf("Error validating stop_times: %v", err))
 		return
 	}
+	tracker.Complete()
 	lib.AppLogger.Info(fmt.Sprintf("Completed stop_times.txt validation: %d rows processed", tracker.GetProcessedCount()))
 }

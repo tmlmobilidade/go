@@ -109,6 +109,7 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error iterating agencies: %v", err))
 	} else {
+		tracker.Complete()
 		lib.AppLogger.Info(fmt.Sprintf("Completed fare_attributes.txt validation: %d rows processed", tracker.GetProcessedCount()))
 	}
 }

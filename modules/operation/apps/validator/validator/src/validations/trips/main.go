@@ -200,5 +200,6 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			runner.Run(actions(table.At(current.row).Context(), scope), current.statuses)
 		}
 	}
+	tracker.Complete()
 	lib.AppLogger.Info(fmt.Sprintf("Completed trips.txt validation: %d rows processed", tracker.GetProcessedCount()))
 }

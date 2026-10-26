@@ -70,10 +70,11 @@ func NewRuleRunner(gtfs types.Gtfs, config *types.GtfsRules, group string) (*Rul
 	return &RuleRunner{manager: manager, known: known, section: section, dependencies: dependencies, fileNode: rules.FileNode(group), filePresent: filePresent}, nil
 }
 
-// RunTable executes one action registration in dependency order across a table.
+// RunTable executes all rules in dependency order for each independent group.
 // Row prerequisites are checked independently. A grouped rule requires every
 // member's prerequisites to pass and runs once using the group's first row.
 // Empty group keys still receive row checks, but do not form a group.
+// onRow reports completed validation, including grouped rules and their dependents.
 func (r *RuleRunner) RunTable(table *SQLiteTable, scope, groupField string, actions func(*SQLiteContext) RuleActions, onRow func()) error {
 	if scope == "" || groupField == "" {
 		return fmt.Errorf("table validation requires a group scope and field")
@@ -85,82 +86,77 @@ func (r *RuleRunner) RunTable(table *SQLiteTable, scope, groupField string, acti
 		}
 	}
 
-	var rows []int
-	var groups [][]int
-	groupIndexes := map[string]int{}
-	err := table.ForEachRow(func(row *SQLiteRow) error {
-		key, err := row.Field(groupField)
-		if err != nil {
-			return err
-		}
-		index := len(rows)
-		rows = append(rows, row.Row)
-		if key != "" {
-			group, exists := groupIndexes[key]
-			if !exists {
-				group = len(groups)
-				groupIndexes[key] = group
-				groups = append(groups, nil)
-			}
-			groups[group] = append(groups[group], index)
-		}
-		if onRow != nil {
-			onRow()
-		}
-		return nil
-	})
+	groups, err := table.rowGroups(groupField)
 	if err != nil {
 		return err
 	}
 
-	statuses := make(map[string][]rules.Status, len(order))
-	for _, id := range order {
-		outcomes := make([]rules.Status, len(rows))
-		for i := range outcomes {
-			outcomes[i] = rules.Skipped
+	for _, group := range groups {
+		// Register once per row, rather than rebuilding every rule's closures
+		// and SQLite context for every rule on every row. Keep only this group's
+		// actions and outcomes in memory, sharing its SQLite reads across rules.
+		rows, err := table.readValidationRows(group.rows)
+		if err != nil {
+			return err
 		}
-		statuses[id] = outcomes
-		if id == r.fileNode {
+		rowActions := make([]RuleActions, len(group.rows))
+		for i, row := range rows {
+			rowActions[i] = actions(row.Context())
+		}
+		statuses := make(map[string][]rules.Status, len(order))
+		for _, id := range order {
+			outcomes := make([]rules.Status, len(group.rows))
 			for i := range outcomes {
-				outcomes[i] = rules.Failed
-				if r.filePresent {
-					outcomes[i] = rules.Passed
-				}
+				outcomes[i] = rules.Skipped
 			}
-			continue
-		}
-		if rules.SeverityFor(r.section, id) == types.SEVERITY_IGNORE {
-			continue
-		}
-		run := func(members []int) {
-			for _, dependency := range r.dependencies[id] {
-				for _, member := range members {
-					if statuses[dependency][member] != rules.Passed {
-						return
+			statuses[id] = outcomes
+			if id == r.fileNode {
+				for i := range outcomes {
+					outcomes[i] = rules.Failed
+					if r.filePresent {
+						outcomes[i] = rules.Passed
 					}
 				}
+				continue
 			}
-			action, exists := actions(table.At(rows[members[0]]).Context())[id]
-			if !exists {
-				return
+			if rules.SeverityFor(r.section, id) == types.SEVERITY_IGNORE {
+				continue
 			}
-			before := AppMessageService.RuleIssueCount(id)
-			action()
-			status := rules.Passed
-			if AppMessageService.RuleIssueCount(id) != before {
-				status = rules.Failed
+			run := func(first, end int) {
+				for _, dependency := range r.dependencies[id] {
+					for member := first; member < end; member++ {
+						if statuses[dependency][member] != rules.Passed {
+							return
+						}
+					}
+				}
+				action, exists := rowActions[first][id]
+				if !exists {
+					return
+				}
+				before := AppMessageService.RuleIssueCount(id)
+				action()
+				status := rules.Passed
+				if AppMessageService.RuleIssueCount(id) != before {
+					status = rules.Failed
+				}
+				for member := first; member < end; member++ {
+					outcomes[member] = status
+				}
 			}
-			for _, member := range members {
-				outcomes[member] = status
+			if rules.ExecutionScope(id) == scope {
+				if group.grouped {
+					run(0, len(group.rows))
+				}
+			} else {
+				for i := range group.rows {
+					run(i, i+1)
+				}
 			}
 		}
-		if rules.ExecutionScope(id) == scope {
-			for _, members := range groups {
-				run(members)
-			}
-		} else {
-			for i := range rows {
-				run([]int{i})
+		if onRow != nil {
+			for range group.rows {
+				onRow()
 			}
 		}
 	}

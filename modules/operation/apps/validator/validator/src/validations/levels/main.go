@@ -56,5 +56,6 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 		lib.AppLogger.Error(fmt.Sprintf("Error validating levels: %v", err))
 		return
 	}
+	tracker.Complete()
 	lib.AppLogger.Info(fmt.Sprintf("Completed levels.txt validation: %d rows processed", tracker.GetProcessedCount()))
 }

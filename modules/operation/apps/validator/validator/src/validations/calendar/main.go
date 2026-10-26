@@ -135,6 +135,7 @@ func RunValidations(gtfs types.Gtfs, gtfsRules *types.GtfsRules, prepared ...*se
 	if err != nil {
 		lib.AppLogger.Error(fmt.Sprintf("Error iterating calendars: %v", err))
 	} else {
+		tracker.Complete()
 		lib.AppLogger.Info(fmt.Sprintf("Completed calendar.txt validation: %d rows processed", tracker.GetProcessedCount()))
 	}
 }

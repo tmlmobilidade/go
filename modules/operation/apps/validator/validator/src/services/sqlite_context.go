@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"main/lib"
 	dbops "main/services/database"
+	"sort"
 	"strings"
 )
 
@@ -42,6 +43,9 @@ type SQLiteRow struct {
 	Row     int
 	context *SQLiteContext
 	name    string
+	// Only RunTable's current group uses prefetched values. At/Context callers
+	// continue to read SQLite directly; no values are cached on shared tables.
+	values map[string]string
 }
 
 // SQLiteContext exposes the current validation row and access to other tables.
@@ -137,6 +141,101 @@ func (t *SQLiteTable) ForEachRow(fn func(*SQLiteRow) error) error {
 	return rows.Err()
 }
 
+type sqliteRowGroup struct {
+	rows    []int
+	grouped bool
+}
+
+// rowGroups reads keys and source row IDs together, avoiding a query per row.
+// Groups and their members retain source order. Empty keys remain independent
+// rows and never participate in a grouped check.
+func (t *SQLiteTable) rowGroups(field string) ([]sqliteRowGroup, error) {
+	query := "SELECT source.rowid, COALESCE(" + t.column("source", field) + ", '') FROM " +
+		dbops.SanitizeTableName(t.name) + " AS source ORDER BY source.rowid"
+	rows, err := t.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var groups []sqliteRowGroup
+	indexes := map[string]int{}
+	for rows.Next() {
+		var rowID int
+		var key string
+		if err := rows.Scan(&rowID, &key); err != nil {
+			return nil, err
+		}
+		index, exists := indexes[key]
+		if key == "" || !exists {
+			index = len(groups)
+			groups = append(groups, sqliteRowGroup{grouped: key != ""})
+			if key != "" {
+				indexes[key] = index
+			}
+		}
+		groups[index].rows = append(groups[index].rows, rowID-1)
+	}
+	return groups, rows.Err()
+}
+
+// readValidationRows loads one group's values in bounded queries. Validation
+// does not modify the imported tables, so its row rules can share these reads.
+// The returned rows and values are discarded after the group finishes.
+func (t *SQLiteTable) readValidationRows(ids []int) ([]*SQLiteRow, error) {
+	fields := make([]string, 0, len(t.columns))
+	for name := range t.columns {
+		fields = append(fields, name)
+	}
+	sort.Strings(fields)
+	columns := []string{"source.rowid"}
+	for _, name := range fields {
+		columns = append(columns, t.column("source", name))
+	}
+	result := make([]*SQLiteRow, 0, len(ids))
+	const batchSize = 500
+	for start := 0; start < len(ids); start += batchSize {
+		batch := ids[start:min(start+batchSize, len(ids))]
+		args := make([]any, len(batch))
+		for i, id := range batch {
+			args[i] = id + 1
+		}
+		query := "SELECT " + strings.Join(columns, ", ") + " FROM " + dbops.SanitizeTableName(t.name) +
+			" AS source WHERE source.rowid IN (" + strings.TrimSuffix(strings.Repeat("?,", len(batch)), ",") + ") ORDER BY source.rowid"
+		rows, err := t.db.Query(query, args...)
+		if err != nil {
+			return nil, err
+		}
+		var rowID int
+		values := make([]sql.NullString, len(fields))
+		targets := make([]any, len(fields)+1)
+		targets[0] = &rowID
+		for i := range fields {
+			targets[i+1] = &values[i]
+		}
+		for rows.Next() {
+			if err := rows.Scan(targets...); err != nil {
+				rows.Close()
+				return nil, err
+			}
+			row := t.At(rowID - 1)
+			row.values = make(map[string]string, len(fields))
+			for i, name := range fields {
+				row.values[name] = values[i].String
+			}
+			result = append(result, row)
+		}
+		err = rows.Err()
+		rows.Close()
+		if err != nil {
+			return nil, err
+		}
+	}
+	if len(result) != len(ids) {
+		return nil, fmt.Errorf("read %s validation group: expected %d rows, got %d", t.name, len(ids), len(result))
+	}
+	return result, nil
+}
+
 // column returns SQL NULL for an absent CSV header, so required-field rules can
 // validate it without treating it as a failed database query.
 func (t *SQLiteTable) column(alias, field string) string {
@@ -154,6 +253,13 @@ func (r *SQLiteRow) Fields(fields ...string) (map[string]string, error) {
 	}
 	if len(fields) == 0 {
 		return nil, fmt.Errorf("at least one field is required")
+	}
+	if r.values != nil {
+		result := make(map[string]string, len(fields))
+		for _, field := range fields {
+			result[field] = r.values[field]
+		}
+		return result, nil
 	}
 	columns := make([]string, len(fields))
 	values := make([]sql.NullString, len(fields))
@@ -174,6 +280,9 @@ func (r *SQLiteRow) Fields(fields ...string) (map[string]string, error) {
 }
 
 func (r *SQLiteRow) Field(field string) (string, error) {
+	if r.values != nil {
+		return r.values[field], nil
+	}
 	values, err := r.Fields(field)
 	return values[field], err
 }

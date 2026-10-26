@@ -105,6 +105,7 @@ func TestForeignLookupIndexes(t *testing.T) {
 		{"fare_attributes", "fare_id"}, {"levels", "level_id"},
 		{"route_networks", "network_id"}, {"routes", "route_id"},
 		{"shapes", "shape_id"}, {"stops", "stop_id"},
+		{"stop_times", "stop_id"}, {"stop_times", "location_id"},
 		{"stops", "zone_id"}, {"stops", "parent_station"}, {"trips", "trip_id"},
 	} {
 		t.Run(lookup[0]+"/"+lookup[1], func(t *testing.T) {
@@ -195,5 +196,82 @@ func TestGeometryIndexesSkipMissingColumns(t *testing.T) {
 	}
 	if _, err := PrepareSQLiteTables(db); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestValidationRowsPreserveValuesAndSourceRows(t *testing.T) {
+	db, err := sql.Open("sqlite", filepath.Join(t.TempDir(), "rows.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if _, err := db.Exec("CREATE TABLE stop_times (trip_id TEXT, stop_id TEXT)"); err != nil {
+		t.Fatal(err)
+	}
+	tx, err := db.Begin()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var ids []int
+	// More than one batch, with gaps in source row IDs and NULL/empty values.
+	for i := 0; i < 503; i++ {
+		id := i*2 + 1
+		ids = append(ids, id)
+		var stop any = "stop"
+		if i%3 == 0 {
+			stop = nil
+		} else if i%3 == 1 {
+			stop = ""
+		}
+		if _, err := tx.Exec("INSERT INTO stop_times (rowid, trip_id, stop_id) VALUES (?, 'trip', ?)", id+1, stop); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := tx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	table, err := NewSQLiteTable(db, "stop_times")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rows, err := table.readValidationRows(ids)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i, row := range rows {
+		if row.Row != ids[i] {
+			t.Fatalf("source row = %d, want %d", row.Row, ids[i])
+		}
+		want, err := table.At(ids[i]).Fields("trip_id", "stop_id", "absent")
+		if err != nil {
+			t.Fatal(err)
+		}
+		got, err := row.Context().StopTimes.Fields("trip_id", "stop_id", "absent")
+		if err != nil || !reflect.DeepEqual(got, want) {
+			t.Fatalf("got %v, %v; want %v", got, err, want)
+		}
+		got["trip_id"] = "changed"
+		if value, err := row.Field("trip_id"); err != nil || value != "trip" {
+			t.Fatalf("field = %q, %v", value, err)
+		}
+		if _, err := row.Fields(); err == nil {
+			t.Fatal("empty projection should fail")
+		}
+	}
+	// Group-local values must never turn ordinary table handles into stale reads.
+	if _, err := db.Exec("UPDATE stop_times SET trip_id = 'updated'"); err != nil {
+		t.Fatal(err)
+	}
+	if value, err := table.At(ids[0]).Field("trip_id"); err != nil || value != "updated" {
+		t.Fatalf("live read = %q, %v", value, err)
+	}
+	if _, err := table.readValidationRows([]int{99999}); err == nil {
+		t.Fatal("missing source row should fail")
+	}
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := table.readValidationRows(ids); err == nil {
+		t.Fatal("closed database should fail")
 	}
 }

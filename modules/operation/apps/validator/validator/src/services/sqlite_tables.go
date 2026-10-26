@@ -96,6 +96,8 @@ func PrepareSQLiteTables(db *sql.DB) (*SQLiteTables, error) {
 		{"fare_attributes", "fare_id"},
 		{"routes", "route_id"},
 		{"shapes", "shape_id"},
+		{"stop_times", "stop_id"},
+		{"stop_times", "location_id"},
 		{"stops", "stop_id"},
 		{"stops", "zone_id"},
 		{"stops", "parent_station"}, // ParentStationForeign currently counts equal parent values.
