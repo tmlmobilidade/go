@@ -5,16 +5,16 @@ Imports a local or remote GTFS ZIP into SQLite and returns an absolute `.db` pat
 From this package directory, run the CLI:
 
 ```sh
-go run ./cli.go -path /data/gtfs.zip -instance-path /data/gtfs.db
-go run ./cli.go -url https://example.com/gtfs.zip
-go run ./cli.go -config '{"source":{"path":"./gtfs.zip"},"sqlite_config":{"instancePath":"./gtfs.db"}}'
+go run ./src/cli.go -path /data/gtfs.zip -instance-path /data/gtfs.db
+go run ./src/cli.go -url https://example.com/gtfs.zip
+go run ./src/cli.go -config '{"source":{"path":"./gtfs.zip"},"sqlite_config":{"instancePath":"./gtfs.db"}}'
 ```
 
 Flags: `-path` or `-url` (exactly one required), optional `-instance-name`,
 `-instance-path`, and `-memory`. Use `-h` or `--help` for help and examples:
 
 ```sh
-go run ./cli.go --help
+go run ./src/cli.go --help
 ```
 
 Alternatively, `-config` accepts a JSON object matching `ImportGtfsConfig`:

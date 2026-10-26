@@ -1,4 +1,4 @@
-package main
+package importgtfs_test
 
 import (
 	"archive/zip"
@@ -12,7 +12,7 @@ import (
 
 func TestCLIJSONConfig(t *testing.T) {
 	binary := filepath.Join(t.TempDir(), "import-gtfs")
-	if output, err := exec.Command("go", "build", "-o", binary, ".").CombinedOutput(); err != nil {
+	if output, err := exec.Command("go", "build", "-o", binary, "../src/cli.go").CombinedOutput(); err != nil {
 		t.Fatalf("build CLI: %v\n%s", err, output)
 	}
 	archivePath := filepath.Join(t.TempDir(), "gtfs.zip")

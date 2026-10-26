@@ -1,3 +1,6 @@
+//go:build ignore
+
+// Run this entry point explicitly so it can live alongside the importgtfs library.
 package main
 
 /* * */
@@ -37,11 +40,11 @@ func main() {
 		flag.PrintDefaults()
 		fmt.Fprintln(output, `
 Examples (from the package directory):
-  go run ./cli.go -path ./gtfs.zip
-  go run ./cli.go -path ./gtfs.zip -instance-path ./gtfs.db
-  go run ./cli.go -url https://example.com/gtfs.zip
-  go run ./cli.go -path ./gtfs.zip -memory
-  go run ./cli.go -config '{"source":{"path":"./gtfs.zip"},"sqlite_config":{"instancePath":"./gtfs.db"}}'
+  go run ./src/cli.go -path ./gtfs.zip
+  go run ./src/cli.go -path ./gtfs.zip -instance-path ./gtfs.db
+  go run ./src/cli.go -url https://example.com/gtfs.zip
+  go run ./src/cli.go -path ./gtfs.zip -memory
+  go run ./src/cli.go -config '{"source":{"path":"./gtfs.zip"},"sqlite_config":{"instancePath":"./gtfs.db"}}'
 
 JSON configuration:
   Uses source.path or source.url and optional sqlite_config with instanceName,
