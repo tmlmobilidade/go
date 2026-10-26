@@ -8,7 +8,7 @@ export type CreateMetricsRegistryOptions = {
 	 * Trailing `_` added automatically when missing.
 	 */
 	name?: string
-	/** Collect Node process default metrics. Default true. */
+	/** Collect Node process default metrics plus CPU and RAM usage ratios. Default true. */
 	collectDefaults?: boolean
 };
 
