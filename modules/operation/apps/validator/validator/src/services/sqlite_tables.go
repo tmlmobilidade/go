@@ -45,6 +45,7 @@ func PrepareSQLiteTables(db *sql.DB) (*SQLiteTables, error) {
 		table.prepared = result
 		result.tables[strings.ToLower(name)] = table
 	}
+	
 	// Build these once, before validations open concurrent read cursors. Match
 	// ForEachMatching's NULL-as-empty expression so SQLite can use the index.
 	for _, lookup := range [][2]string{{"stop_times", "trip_id"}, {"stops", "stop_id"}, {"shapes", "shape_id"}, {"trips", "trip_id"}} {
