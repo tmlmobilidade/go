@@ -13,13 +13,15 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix",
-		"start": "node dist/index.js"
+		"lint": "eslint ./src ./tests && tsc -p tsconfig.check.json --noEmit",
+		"lint:fix": "eslint ./src ./tests --fix",
+		"start": "node dist/index.js",
+		"test": "node --experimental-test-module-mocks --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-core-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"fastify": "5.12.7"

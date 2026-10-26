@@ -13,9 +13,10 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix",
-		"start": "node dist/index.js"
+		"lint": "eslint ./src ./tests && tsc -p tsconfig.check.json --noEmit",
+		"lint:fix": "eslint ./src ./tests --fix",
+		"start": "node dist/index.js",
+		"test": "node --experimental-test-module-mocks --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@fastify/multipart": "10.1.6",
@@ -31,6 +32,7 @@
 		"@tmlmobilidade/go-types-extractions": "*",
 		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/strings": "*"

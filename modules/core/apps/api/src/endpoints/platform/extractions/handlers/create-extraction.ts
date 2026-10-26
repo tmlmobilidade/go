@@ -4,6 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { type Extraction, type ExtractionCreate, ExtractionCreateSchema } from '@tmlmobilidade/go-types-extractions';
+import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Create a new extraction for the current user.
@@ -41,6 +42,7 @@ export async function createExtractionHandler(request: FastifyRequest<{ Body: Ex
 		is_locked: false,
 		processing_status: 'waiting',
 		retries: 0,
+		source_environment: getCurrentEnvironment(),
 	});
 
 	//
