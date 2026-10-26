@@ -1,6 +1,6 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, ApiResponseErrorSchema } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { describe, mock, test } from 'node:test';
 
@@ -127,6 +127,15 @@ for (const resource of resources) {
 			assert.equal(WRITES.length, 0);
 		});
 
+		test('rejects missing agencies on create and empty agencies on create/update without writes', async () => {
+			const withoutAgencies = { code: 'CODE', [resource.label]: 'Record' };
+			assert.equal((await invoke(handlers.create, withoutAgencies, [permission(resource.scope, 'create')])).httpStatus, 400);
+			for (const action of ['create', 'update'] as const) {
+				assert.equal((await invoke(handlers[action], { ...validBody, agency_ids: [] }, [permission(resource.scope, action)])).httpStatus, 400);
+			}
+			assert.equal(WRITES.length, 0);
+		});
+
 		test('requires permissions for all agencies on create', async () => {
 			const result = await invoke(handlers.create, { ...validBody, agency_ids: ['A', 'B'] }, [permission(resource.scope, 'create')]);
 			assert.equal(result.httpStatus, 403);
@@ -244,11 +253,11 @@ describe('period conflicts and assignment', () => {
 		LIST_QUERY = undefined;
 	});
 
-	test('reports only overlapping dates for the exact agency set and excludes the current ID', async () => {
+	test('reports overlapping dates for any shared operator and excludes the current ID', async () => {
 		ROWS = [period('same', ['B', 'A'], [firstDate, thirdDate]), period('different', ['A']), period('none', ['B', 'A'], [thirdDate])];
 		const result = await invoke(periodHandlers.check, { agency_ids: ['A', 'B'], dates: [firstDate, secondDate], year_period_id: 'record' }, [permission('year_periods', 'read', ['A', 'B'])]);
 		assert.equal(result.httpStatus, 200);
-		assert.deepEqual(result.response.data, { conflicts: [{ dates: [firstDate], year_period: ROWS[0] }] });
+		assert.deepEqual(result.response.data, { conflicts: [{ dates: [firstDate], year_period: ROWS[0] }, { dates: [firstDate], year_period: ROWS[1] }] });
 		assert.deepEqual(LIST_QUERY, { _id: { $ne: 'record' }, agency_ids: { $in: ['A', 'B'] } });
 		assert.deepEqual(WRITES, []);
 	});
@@ -260,17 +269,17 @@ describe('period conflicts and assignment', () => {
 		assert.deepEqual(WRITES, []);
 	});
 
-	test('merges dates and removes overlap only from periods with the exact agency set', async () => {
+	test('merges dates and removes overlap from every period sharing an operator', async () => {
 		ROWS = [period('same', ['A'], [firstDate, thirdDate]), period('different', ['A', 'B'], [firstDate])];
-		const result = await handleYearPeriodDateAssignment(['A'], [secondDate], 'actor', 'record', [firstDate]);
-		assert.deepEqual(result, [firstDate, secondDate]);
-		assert.deepEqual(WRITES, [{ dates: [thirdDate], updated_by: 'actor' }]);
+		const result = await handleYearPeriodDateAssignment({ actorId: 'actor', agencyIds: ['A'], existingDates: [firstDate], newDates: [secondDate], userPermissions: [permission('year_periods', 'update', ['A', 'B'])], yearPeriodId: 'record' });
+		assert.deepEqual(result, { dates: [firstDate, secondDate] });
+		assert.deepEqual(WRITES, [{ dates: [thirdDate], updated_by: 'actor' }, { dates: [], updated_by: 'actor' }]);
 		assert.deepEqual(LIST_QUERY, { _id: { $ne: 'record' }, agency_ids: { $in: ['A'] } });
 	});
 
 	test('creates and assigns without a client audit actor', async () => {
 		ROWS = [period('old', ['A'], [firstDate, thirdDate])];
-		const result = await invoke(periodHandlers.create, { agency_ids: ['A'], dates: [firstDate], name: 'New' }, [permission('year_periods', 'create')]);
+		const result = await invoke(periodHandlers.create, { agency_ids: ['A'], dates: [firstDate], name: 'New' }, [permission('year_periods', 'create'), permission('year_periods', 'update')]);
 		assert.equal(result.httpStatus, 200);
 		assert.deepEqual(WRITES[0], { dates: [thirdDate], updated_by: 'actor' });
 		assert.equal(WRITES[1].created_by, 'actor');
@@ -290,6 +299,44 @@ describe('period conflicts and assignment', () => {
 		const result = await invoke(periodHandlers.update, { agency_ids: ['B'] }, [permission('year_periods', 'update', ['A', 'B'])]);
 		assert.equal(result.httpStatus, 200);
 		assert.deepEqual(WRITES, [{ dates: [thirdDate], updated_by: 'actor' }, { agency_ids: ['B'], dates: [firstDate], updated_by: 'actor' }]);
+	});
+
+	test('blocks an assignment before all writes when any conflicting period is locked', async () => {
+		ROWS = [period('unlocked', ['A'], [firstDate]), { ...period('locked', ['A', 'B'], [firstDate]), is_locked: true }];
+		const result = await invoke(periodHandlers.update, { dates: [firstDate] }, [permission('year_periods', 'update', ['A', 'B'])]);
+		assert.equal(result.httpStatus, 409);
+		assert.equal(ApiResponseErrorSchema.safeParse(result.response).success, true);
+		assert.deepEqual(WRITES, []);
+	});
+
+	test('requires update access to all operators of shared conflicts before any writes', async () => {
+		ROWS = [period('unlocked', ['A']), period('shared', ['A', 'B'])];
+		const result = await invoke(periodHandlers.update, { dates: [firstDate] }, [permission('year_periods', 'update', ['A'])]);
+		assert.equal(result.httpStatus, 403);
+		assert.deepEqual(WRITES, []);
+	});
+
+	test('create permission alone cannot remove dates from an existing period', async () => {
+		ROWS = [period('other', ['A'])];
+		const result = await invoke(periodHandlers.create, { agency_ids: ['A'], dates: [firstDate], name: 'New' }, [permission('year_periods', 'create')]);
+		assert.equal(result.httpStatus, 403);
+		assert.deepEqual(WRITES, []);
+	});
+
+	test('cannot assign to a locked target period', async () => {
+		ROW = { ...period('record', ['A']), is_locked: true };
+		const result = await invoke(periodHandlers.update, { dates: [secondDate] }, [permission('year_periods', 'update')]);
+		assert.equal(result.httpStatus, 409);
+		assert.equal(ApiResponseErrorSchema.safeParse(result.response).success, true);
+		assert.deepEqual(WRITES, []);
+		assert.equal(LIST_QUERY, undefined);
+	});
+
+	test('ignores locked periods with no overlapping dates or operators', async () => {
+		ROWS = [{ ...period('other-date', ['A'], [thirdDate]), is_locked: true }, { ...period('other-agency', ['B']), is_locked: true }];
+		const result = await invoke(periodHandlers.update, { dates: [secondDate] }, [permission('year_periods', 'update')]);
+		assert.equal(result.httpStatus, 200);
+		assert.deepEqual(WRITES, [{ dates: [firstDate, secondDate], updated_by: 'actor' }]);
 	});
 
 	test('preserves explicit date clearing without reassigning old dates', async () => {

@@ -56,6 +56,16 @@ export async function deleteZoneHandler(request: FastifyRequest<{ Params: { id: 
 	}
 
 	//
+	// Locked records must be unlocked through the dedicated lock action first.
+
+	if (zone.is_locked) {
+		return sendErrorApiResponse(reply, {
+			error: 'Cannot delete a locked zone. Unlock it first.',
+			status_code: '409',
+		});
+	}
+
+	//
 
 	await goDb.offer.zones.deleteById(id);
 

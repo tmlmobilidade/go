@@ -23,16 +23,15 @@
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/strings": "*",
-		"adm-zip": "0.6.0",
+		"adm-zip": "0.6.1",
 		"papaparse": "5.7.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/adm-zip": "0.5.8",
-		"@types/node": "26.4.0",
+		"@types/node": "26.6.5",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.12",
+		"tsx": "4.23.15",
 		"typescript": "6.0.3"
 	}
 }

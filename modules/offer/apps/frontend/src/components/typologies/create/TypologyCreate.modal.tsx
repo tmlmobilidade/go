@@ -1,7 +1,7 @@
 'use client';
 
+import { TypologiesCreateFormContextProvider } from '@/components/typologies/create/TypologiesCreateForm.context';
 import { TypologyCreate } from '@/components/typologies/create/TypologyCreate';
-import { TypologyCreateContextProvider } from '@/components/typologies/create/TypologyCreate.context';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,9 +14,9 @@ export const openCreateTypologyModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<TypologyCreateContextProvider>
+				<TypologiesCreateFormContextProvider>
 					<TypologyCreate />
-				</TypologyCreateContextProvider>
+				</TypologiesCreateFormContextProvider>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,

@@ -47,7 +47,7 @@ export async function listAnnotationsHandler(request: FastifyRequest, reply: Fas
 	//
 	// Fetch annotations based on query filters
 
-	const allAnnotations = await goDb.offer.annotations.findMany(queryFilters);
+	const allAnnotations = await goDb.dates.annotations.findMany(queryFilters);
 
 	return sendSuccessApiResponse(reply, allAnnotations);
 

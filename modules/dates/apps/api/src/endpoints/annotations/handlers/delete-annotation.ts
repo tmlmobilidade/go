@@ -13,7 +13,7 @@ export async function deleteAnnotationHandler(request: FastifyRequest<{ Params: 
 	//
 
 	const { id } = request.params;
-	const annotation = await goDb.offer.annotations.findById(id);
+	const annotation = await goDb.dates.annotations.findById(id);
 
 	if (!annotation) {
 		return sendErrorApiResponse(reply, {
@@ -57,7 +57,7 @@ export async function deleteAnnotationHandler(request: FastifyRequest<{ Params: 
 
 	//
 
-	await goDb.offer.annotations.deleteById(id);
+	await goDb.dates.annotations.deleteById(id);
 
 	return sendSuccessApiResponse(reply, undefined);
 }

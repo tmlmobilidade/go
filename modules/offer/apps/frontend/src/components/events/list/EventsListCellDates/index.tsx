@@ -18,7 +18,7 @@ export function EventsListCellDates({ dates }: EventsListCellDatesProps) {
 	//
 	// A. Transform data
 
-	const preparedTags = dates
+	const preparedTags = [...dates]
 		.sort((a, b) => Number(a) - Number(b))
 		.map((item): TagProps => {
 			return {

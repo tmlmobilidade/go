@@ -1,6 +1,5 @@
 'use client';
 
-import { EventPeriodsProviders } from '@/components/events/shared/EventPeriodsProviders';
 import { PeriodAssign } from '@/components/year-periods/calendar/PeriodAssign';
 import { PeriodAssignContextProvider } from '@/components/year-periods/calendar/PeriodAssign.context';
 import { type CalendarKey } from '@tmlmobilidade/dates';
@@ -24,13 +23,11 @@ interface AssignPeriodModalProps {
 export const openAsignPeriodModal = (dateRange: AssignPeriodModalProps['dateRange'], clearSelection: () => void) => {
 	openModal({
 		children: (
-			<EventPeriodsProviders>
-				<MeContextProvider>
-					<PeriodAssignContextProvider dateRange={dateRange}>
-						<PeriodAssign />
-					</PeriodAssignContextProvider>
-				</MeContextProvider>
-			</EventPeriodsProviders>
+			<MeContextProvider>
+				<PeriodAssignContextProvider dateRange={dateRange}>
+					<PeriodAssign />
+				</PeriodAssignContextProvider>
+			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,

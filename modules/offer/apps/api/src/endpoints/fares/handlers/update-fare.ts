@@ -87,6 +87,16 @@ export async function updateFareHandler(request: FastifyRequest<{ Body: UpdateFa
 	}
 
 	//
+	// Locked records must be unlocked through the dedicated lock action first.
+
+	if (fareData.is_locked) {
+		return sendErrorApiResponse(reply, {
+			error: 'Cannot update a locked fare. Unlock it first.',
+			status_code: '409',
+		});
+	}
+
+	//
 	// Update the fare with parsed client fields and the authenticated updater.
 
 	const updatedFare = await goDb.offer.fares.updateById(fareData._id, {

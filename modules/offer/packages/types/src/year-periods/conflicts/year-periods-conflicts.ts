@@ -7,7 +7,7 @@ import { z } from 'zod';
 /* * */
 
 export const YearPeriodsConflictsRequestSchema = z.object({
-	agency_ids: z.array(z.string()),
+	agency_ids: YearPeriodSchema.shape.agency_ids,
 	dates: z.array(OperationalDateSchema),
 	year_period_id: z.string().optional(),
 });
