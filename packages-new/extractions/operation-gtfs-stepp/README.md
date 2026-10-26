@@ -68,6 +68,26 @@ Large stop-time, shape and route-extension groups are staged on disk while plans
 are processed. Only winning groups enter the final CSVs; staging files are
 removed before the worker creates the ZIP.
 
+## Code structure
+
+The package follows the versioned layout used by `offer-gtfs`:
+
+```text
+src/
+  index.ts                 Public extraction export
+  versions/v1/
+    index.ts               Extraction setup, permissions and plan processing
+    main.ts                Per-plan export orchestration
+    types.ts               Shared export contracts
+    exports/               Agency, calendars, routes, STePP routes, shapes,
+                           stop times, stops, trips and final merged output
+    fetchers/              Source downloads, CSV reading and active trip selection
+    utils/                 Calendar helpers, merge precedence, row helpers and writers
+```
+
+`v1` matches the `operation-gtfs-stepp-v1` extraction version. The exported
+function remains `extractOperationGtfsSteppV1` at the package root.
+
 ## Validation
 
 Run `npm run build`, `npm test`, and `npm exec eslint src` from this package.

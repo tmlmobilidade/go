@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
 
-import { buildCalendarRows, readServiceDates } from '../src/calendar.js';
+import { buildCalendarRows, readServiceDates } from '../src/versions/v1/utils/calendar.js';
 
 /* * */
 

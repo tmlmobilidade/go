@@ -8,8 +8,9 @@ import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
 
-import { exportPlanGtfs, writeSharedFiles } from '../src/main.js';
-import { createSteppWriters } from '../src/writers.js';
+import { writeSharedFiles } from '../src/versions/v1/exports/index.js';
+import { exportPlanGtfs } from '../src/versions/v1/main.js';
+import { createSteppWriters } from '../src/versions/v1/utils/writers.js';
 
 /* * */
 
