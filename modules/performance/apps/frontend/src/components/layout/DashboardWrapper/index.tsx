@@ -2,6 +2,7 @@
 
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { DashboardDefinition, TopicDefinition } from '@/constants';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 import styles from './styles.module.css';
 
@@ -11,9 +12,9 @@ export default function DashboardWrapper({ children, dashboard, topic }: { child
 	// A. Setup variables
 
 	const breadcrumbsData = [
-		{ href: '/performance', title: 'Performance' },
-		{ href: `/performance/${topic.key}`, title: topic.label },
-		{ href: `/performance/${topic.key}/${dashboard.key}`, title: dashboard.label },
+		{ href: PAGE_ROUTES.performance.BASE, title: 'Performance' },
+		{ href: topic.href, title: topic.label },
+		{ href: dashboard.href, title: dashboard.label },
 	];
 
 	// B. Render components

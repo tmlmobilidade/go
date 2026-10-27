@@ -16,6 +16,7 @@ import styles from './styles.module.css';
 import { useCssVariable } from '../../../../hooks';
 import { Divider } from '../../../layout/Divider';
 import { useMapViewContext } from '../../view/MapViewContext';
+import { getBusCandidateRoadLayerIds, isBusCandidateRoadFeature } from './road-snapping';
 
 /* * */
 
@@ -99,29 +100,6 @@ function normalizePatternShapeLineData(
 	return lineData;
 }
 
-const BUS_CANDIDATE_ROAD_LAYER_IDS = [
-	'tunnel_motorway_link',
-	'tunnel_link',
-	'tunnel_minor',
-	'tunnel_secondary_tertiary',
-	'tunnel_trunk_primary',
-	'tunnel_motorway',
-
-	'road_motorway_link',
-	'road_link',
-	'road_minor',
-	'road_secondary_tertiary',
-	'road_trunk_primary',
-	'road_motorway',
-
-	'bridge_motorway_link',
-	'bridge_link',
-	'bridge_street',
-	'bridge_secondary_tertiary',
-	'bridge_trunk_primary',
-	'bridge_motorway',
-];
-
 const THICKNESS_CONFIG = {
 	lg: {
 		directionIcon: [0.14, 0.7],
@@ -200,7 +178,7 @@ export function MapOverlayPatternShape({
 	const thicknessConfig = THICKNESS_CONFIG[thickness];
 
 	const mapViewContext = useMapViewContext();
-	const primaryHexColor = useCssVariable('--color-primary');
+	const primaryHexColor = useCssVariable('--color-primary') || '#000000';
 	const normalizedLineData = useMemo(() => normalizePatternShapeLineData(lineData), [lineData]);
 
 	const anchorPreviewLayerId = useMemo(
@@ -365,7 +343,7 @@ export function MapOverlayPatternShape({
 		const map = mapViewContext.ref.map.current;
 		if (!map) return [];
 
-		return BUS_CANDIDATE_ROAD_LAYER_IDS.filter(layerId => map.getLayer(layerId));
+		return getBusCandidateRoadLayerIds(map.getStyle()?.layers ?? []);
 	}, [mapViewContext.ref.map]);
 
 	const getSnappedBaseRoadAnchor = useCallback(
@@ -381,17 +359,14 @@ export function MapOverlayPatternShape({
 				.queryRenderedFeatures(queryBox, {
 					layers: roadLayerIds,
 				})
-				.filter(feature =>
-					feature.geometry?.type === 'LineString' ||
-					feature.geometry?.type === 'MultiLineString',
-				);
+				.filter(isBusCandidateRoadFeature);
 
 			if (roadFeatures.length === 0) return null;
 
 			const candidates = roadFeatures
 				.map((feature) => {
 					const snapped = nearestPointOnLine(
-						feature as unknown as Feature<LineString>,
+						feature,
 						[event.lngLat.lng, event.lngLat.lat],
 						{ units: 'meters' },
 					);
@@ -1018,7 +993,7 @@ export function MapOverlayPatternShape({
 						layout={{
 							'text-anchor': 'center',
 							'text-field': ['get', 'sequence'],
-							'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+							'text-font': ['Noto Sans Bold'],
 							'text-offset': [0, 0],
 							'text-size': zoomInterpolate(
 								thicknessConfig.label[0],

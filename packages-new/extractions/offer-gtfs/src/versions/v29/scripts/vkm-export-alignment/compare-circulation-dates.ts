@@ -114,7 +114,7 @@ function analyzePattern(
 	gtfsTrips: GtfsTripEntry[],
 	serviceDates: Map<string, Set<string>>,
 	periods: Awaited<ReturnType<typeof goDb.offer.yearPeriods.findMany>>,
-	holidaysList: Awaited<ReturnType<typeof goDb.offer.holidays.findMany>>,
+	holidaysList: Awaited<ReturnType<typeof goDb.dates.holidays.findMany>>,
 	eventsList: Awaited<ReturnType<typeof goDb.offer.events.findMany>>,
 ): PatternReport {
 	const extensionM = getPatternExtensionMeters(pattern, 'go');
@@ -335,7 +335,7 @@ async function resolvePatternsToAnalyze(
 	gtfsIndex: ReturnType<typeof loadGtfsExportIndex>,
 	operationalDates: OperationalDate[],
 	periods: Awaited<ReturnType<typeof goDb.offer.yearPeriods.findMany>>,
-	holidaysList: Awaited<ReturnType<typeof goDb.offer.holidays.findMany>>,
+	holidaysList: Awaited<ReturnType<typeof goDb.dates.holidays.findMany>>,
 	eventsList: Awaited<ReturnType<typeof goDb.offer.events.findMany>>,
 ): Promise<Pattern[]> {
 	const agencyLines = await goDb.offer.lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
@@ -391,7 +391,7 @@ async function main() {
 	const gtfsIndex = loadGtfsExportIndex(gtfsDir, start, endOp);
 	const [periods, holidaysList, eventsList] = await Promise.all([
 		goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
-		goDb.offer.holidays.findMany({ agency_ids: { $in: [agency] } }),
+		goDb.dates.holidays.findMany({ agency_ids: { $in: [agency] } }),
 		goDb.offer.events.findMany({ agency_ids: { $in: [agency] } }),
 	]);
 

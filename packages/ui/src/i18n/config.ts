@@ -5,7 +5,7 @@ import ICU from 'i18next-icu';
 import { initReactI18next } from 'react-i18next';
 
 import { DEFAULT_LOCALE_CODE } from './locales';
-import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from './resources';
+import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtShared } from './resources';
 
 /* * */
 
@@ -24,6 +24,10 @@ export function createI18nInstance(resources: Resource = {}) {
 		},
 		lng: DEFAULT_LOCALE_CODE,
 		resources: {
+			en: {
+				...i18nResourceKeysEnShared,
+				...(resources.en ?? {}),
+			},
 			es: {
 				...i18nResourceKeysEsShared,
 				...(resources.es ?? {}),

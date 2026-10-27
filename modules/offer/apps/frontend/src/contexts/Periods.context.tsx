@@ -35,7 +35,7 @@ export const PeriodsContextProvider = ({ agencyId, children }: PropsWithChildren
 	//
 	// A. Fetch data
 
-	const { data: periodsData } = useSWR<ApiResponse<YearPeriod[]>>(API_ROUTES.dates.YEAR_PERIODS_LIST, {
+	const { data: periodsData } = useSWR<ApiResponse<YearPeriod[]>>(API_ROUTES.offer.YEAR_PERIODS_LIST, {
 		fetcher: async url => await fetchApiData<YearPeriod[]>({ url }),
 	});
 

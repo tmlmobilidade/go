@@ -78,17 +78,9 @@ export function useRoutePlannerPlanning({ dispatch, state: { destination, origin
 		dispatch({ type: 'plan-started', viewMode: options.viewMode ?? 'results' });
 		try {
 			const usesCurrentLocation = requestOrigin.isCurrentLocation || requestDestination.isCurrentLocation;
-			if (usesCurrentLocation) setIsResolvingCurrentLocation(true);
-			const freshLocation = usesCurrentLocation ? await requestCurrentOrigin() : null;
-			if (!isMountedRef.current || planRequestRef.current !== requestId) return;
-			setIsResolvingCurrentLocation(false);
-			const resolvedOrigin = requestOrigin.isCurrentLocation ? freshLocation : requestOrigin;
-			const resolvedDestination = requestDestination.isCurrentLocation ? freshLocation : requestDestination;
-			if (!resolvedOrigin || !resolvedDestination) {
-				dispatch({ error: t('default:routes.RoutePlanner.errors.current_location_unavailable'), type: 'plan-error' });
-				return;
-			}
-			if (freshLocation) dispatch({ location: freshLocation, type: 'refresh-current-location' });
+			const resolvedOrigin = requestOrigin.isCurrentLocation ? latestKnownOrigin ?? requestOrigin : requestOrigin;
+			const resolvedDestination = requestDestination.isCurrentLocation ? latestKnownOrigin ?? requestDestination : requestDestination;
+			if (usesCurrentLocation && latestKnownOrigin) dispatch({ location: latestKnownOrigin, type: 'refresh-current-location' });
 			const data = await requestPlan({ destination: resolvedDestination, origin: resolvedOrigin, travelTime: requestTravelTime });
 			if (!isMountedRef.current || planRequestRef.current !== requestId) return;
 			if (!data) throw new Error('Route plan returned no data');
@@ -99,7 +91,7 @@ export function useRoutePlannerPlanning({ dispatch, state: { destination, origin
 		} finally {
 			if (isMountedRef.current && planRequestRef.current === requestId) setIsResolvingCurrentLocation(false);
 		}
-	}, [destination, dispatch, origin, requestCurrentOrigin, requestPlan, resetPlanRequest, t, travelTime]);
+	}, [destination, dispatch, latestKnownOrigin, origin, requestPlan, resetPlanRequest, t, travelTime]);
 
 	// C. Restore saved routes and active trips
 

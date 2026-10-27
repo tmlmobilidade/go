@@ -1,6 +1,6 @@
 'use client';
 
-import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { ListHeader, LoadingActivity } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { RidesListFilterSearch } from '../filters/RidesListFilterSearch';
@@ -17,18 +17,18 @@ export function RidesListHeader() {
 
 	const { t } = useTranslation();
 
-	const { isLoading, isValidating, timestamp } = useRidesListData();
+	const { data, isLoading, isValidating, timestamp } = useRidesListData();
 
 	//
 	// B. Render components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps>{t('default:list.RidesListHeader.title')}</Label>
-			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
-			<Spacer shrink />
-			<RidesListFilterSearch />
-			<RidesListHeaderMenu />
-		</Toolbar>
+		<ListHeader
+			actions={<RidesListHeaderMenu />}
+			activity={<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />}
+			count={data?.length}
+			search={<RidesListFilterSearch />}
+			title={t('default:list.RidesListHeader.title')}
+		/>
 	);
 }

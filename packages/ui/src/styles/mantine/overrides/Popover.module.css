@@ -2,7 +2,7 @@
 /* DROPDOWN */
 
 .dropdown {
-	padding: 3px;
+	padding: 0;
 	background-color: var(--color-system-background-100);
 	border: 2px solid var(--color-primary);
 	border-radius: 6px;

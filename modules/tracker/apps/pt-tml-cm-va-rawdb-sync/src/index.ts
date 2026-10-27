@@ -1,0 +1,100 @@
+/* * */
+
+import { getEarliestDate } from '@tmlmobilidade/consts';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
+import { type HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams, handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { BatchWriter, performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+
+/* * */
+
+const config = {
+	agency_id: 'LA77N',
+	collection: rawDb.vehicleEvents.ptTmlCmVa,
+} as const satisfies HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams['configItem'];
+
+/* * */
+
+const writer = new BatchWriter<SimplifiedVehicleEvent>({
+	batch_size: 10_000,
+	insertFn: async (data) => {
+		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
+	},
+	title: await labDb.operation.simplifiedVehicleEvents.getTableName(),
+});
+
+/* * */
+
+async function main() {
+	//
+
+	//
+
+	try {
+		//
+		Logger.init();
+
+		const globalTimer = new Timer();
+
+		//
+		// Get the earliest date from which we have data to sync,
+		// and perform the sync in time chunks until we reach the current date.
+
+		const earliestDate = getEarliestDate();
+
+		//
+		// Divide the time range into chunks
+		// and sync each one sequentially.
+
+		await performInTimeChunks({
+			endDate: Dates.now('utc').minus({ minutes: 10 }).unix_milliseconds,
+			intervalHrs: 2,
+			onChunk: async (chunk) => {
+				try {
+					await handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents({
+						batchWriter: writer,
+						configItem: config,
+						flushCallback: setRidesAsWaiting,
+						timeChunk: chunk,
+					});
+				} catch (error) {
+					// Verify if the error is related to
+					// the distinct query being too big
+					const keywords = ['distinct', 'too', 'big'];
+					if (!keywords.some(keyword => error.message?.toLowerCase().includes(keyword))) throw error;
+					Logger.info({ message: `Distinct query too big — splitting chunk into smaller chunks... (${error.message})` });
+					// If it is, we need to repeat the process by splitting
+					// the current chunk into smaller chunks
+					await performInTimeChunks({
+						endDate: chunk.end,
+						intervalHrs: 10 / 60, // 10 minutes
+						onChunk: async chunk => await handleSyncRawVehicleEventsIntoSimplifiedVehicleEvents({
+							batchWriter: writer,
+							configItem: config,
+							flushCallback: setRidesAsWaiting,
+							timeChunk: chunk,
+						}),
+						order: 'desc',
+						startDate: chunk.start,
+					});
+				}
+			},
+			order: 'desc',
+			startDate: earliestDate.unix_milliseconds,
+		});
+
+		Logger.terminate(`Run took ${globalTimer.get()}.`);
+
+		//
+	} catch (err) {
+		Logger.critical({ error: err, message: 'An error occurred. Halting execution.' });
+	}
+}
+
+/* * */
+
+await runOnInterval(main, { intervalMs: '30m' });

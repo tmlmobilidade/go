@@ -1,9 +1,9 @@
 /* * */
 
-import { locationPermissionMatch } from '@/utils/location-permission-match.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type StopsLocationRequest, StopsLocationRequestSchema, type StopsLocationResponse } from '@tmlmobilidade/go-infrastructure-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationPermissionMatch } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 
 /* * */

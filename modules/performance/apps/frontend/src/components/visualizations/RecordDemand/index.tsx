@@ -5,7 +5,8 @@ import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyTypeWithAll } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
-import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/types';
+import { getMetricAgencyData } from '@/utils/agencies';
+import { type RealtimeDemand, TopDemandByAgency } from '@tmlmobilidade/go-types-performance';
 import { Progress, Tooltip } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
@@ -53,14 +54,14 @@ export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 		// Get current passengers
 		const currentData = selectedAgency === 'all'
 			? realtimeLatest.data.total
-			: realtimeLatest.data.agencies?.[selectedAgency];
+			: getMetricAgencyData(realtimeLatest.data.agencies, selectedAgency);
 
 		if (!currentData) return null;
 
 		// Get record data
 		const recordData = selectedAgency === 'all'
 			? topDemandLatest.data.total
-			: topDemandLatest.data.agencies?.[selectedAgency];
+			: getMetricAgencyData(topDemandLatest.data.agencies, selectedAgency);
 
 		if (!recordData) return null;
 

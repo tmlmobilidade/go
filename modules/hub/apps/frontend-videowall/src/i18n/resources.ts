@@ -1,8 +1,9 @@
 'use client';
 
+import namespaceDefaultEn from '@/i18n/namespaces/default/en.json' with { type: 'json' };
 import namespaceDefaultEs from '@/i18n/namespaces/default/es.json' with { type: 'json' };
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
-import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
+import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
  * Resource keys for i18n translations in Portuguese.
@@ -22,4 +23,12 @@ export const i18nResourceKeysPt = {
 export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
 	default: namespaceDefaultEs,
+} as const;
+
+/**
+ * Resource keys for i18n translations in English.
+ */
+export const i18nResourceKeysEn = {
+	...i18nResourceKeysEnShared,
+	default: namespaceDefaultEn,
 } as const;
