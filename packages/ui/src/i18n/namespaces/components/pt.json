@@ -11,6 +11,44 @@
 			"label": "Guardar"
 		}
 	},
+	"changelog": {
+		"back": "Todas as novidades",
+		"categories": {
+			"bug_fix": "Correções",
+			"improvement": "Melhorias",
+			"new_feature": "Novidades"
+		},
+		"category_counts": {
+			"bug_fix": "{count, plural, =1 {1 correção} other {# correções}}",
+			"improvement": "{count, plural, =1 {1 melhoria} other {# melhorias}}",
+			"new_feature": "{count, plural, =1 {1 novidade} other {# novidades}}"
+		},
+		"close": "Fechar novidades",
+		"empty": "Ainda não há novidades publicadas. Volte em breve.",
+		"error": "Não foi possível carregar as novidades.",
+		"loading": "A carregar novidades…",
+		"mark_all_read": "Marcar todas como lidas",
+		"mark_read_error": "Não foi possível marcar as atualizações como lidas",
+		"mark_read_success": "Atualizações marcadas como lidas",
+		"modules": {
+			"core": "Base",
+			"dates": "Datas",
+			"exporter": "Exportações",
+			"hub": "Hub",
+			"infrastructure": "Infraestrutura",
+			"offer": "Oferta",
+			"operation": "Operação",
+			"performance": "Desempenho",
+			"platform": "Plataforma"
+		},
+		"open_release": "Ver atualização",
+		"read_release": "Lida",
+		"retry": "Tentar novamente",
+		"subtitle": "Descubra as novas funcionalidades, melhorias e correções na plataforma.",
+		"title": "Novidades no GO",
+		"unread": "Atualização por ler",
+		"unread_count": "Atualizações por ler"
+	},
 	"files": {
 		"FileItem": {
 			"actions": {
@@ -62,6 +100,10 @@
 			"seconds_ago": "Atualizado há {count, plural, =1 {1 segundo} other {# segundos}}"
 		}
 	},
+	"operational_banner": {
+		"dismiss": "Fechar aviso",
+		"until": "Até {end}"
+	},
 	"sidebar": {
 		"Sidebar": {
 			"agencies": "Operadores",
@@ -103,6 +145,10 @@
 			"offer": "Oferta",
 			"operation": "Operação",
 			"overview": "Visão Geral"
+		},
+		"SidebarNews": {
+			"tooltip": "Novidades",
+			"unread_tooltip": "Novidades — atualizações por ler"
 		},
 		"SidebarNotifications": {
 			"label": "Notificações",

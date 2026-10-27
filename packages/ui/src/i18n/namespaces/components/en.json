@@ -11,6 +11,44 @@
 			"label": "Save"
 		}
 	},
+	"changelog": {
+		"back": "All updates",
+		"categories": {
+			"bug_fix": "Fixes",
+			"improvement": "Improvements",
+			"new_feature": "New features"
+		},
+		"category_counts": {
+			"bug_fix": "{count, plural, =1 {1 fix} other {# fixes}}",
+			"improvement": "{count, plural, =1 {1 improvement} other {# improvements}}",
+			"new_feature": "{count, plural, =1 {1 new feature} other {# new features}}"
+		},
+		"close": "Close updates",
+		"empty": "No updates have been published yet. Check back soon.",
+		"error": "Updates could not be loaded.",
+		"loading": "Loading updates…",
+		"mark_all_read": "Mark all as read",
+		"mark_read_error": "Could not mark updates as read",
+		"mark_read_success": "Updates marked as read",
+		"modules": {
+			"core": "Core",
+			"dates": "Dates",
+			"exporter": "Exports",
+			"hub": "Hub",
+			"infrastructure": "Infrastructure",
+			"offer": "Offer",
+			"operation": "Operation",
+			"performance": "Performance",
+			"platform": "Platform"
+		},
+		"open_release": "View update",
+		"read_release": "Read",
+		"retry": "Try again",
+		"subtitle": "Discover new features, improvements, and fixes across the platform.",
+		"title": "What’s new in GO",
+		"unread": "Unread update",
+		"unread_count": "Unread updates"
+	},
 	"files": {
 		"FileItem": {
 			"actions": {
@@ -62,6 +100,10 @@
 			"seconds_ago": "Updated {count, plural, =1 {1 second} other {# seconds}} ago"
 		}
 	},
+	"operational_banner": {
+		"dismiss": "Dismiss notice",
+		"until": "Until {end}"
+	},
 	"sidebar": {
 		"Sidebar": {
 			"agencies": "Agencies",
@@ -103,6 +145,10 @@
 			"offer": "Offer",
 			"operation": "Operation",
 			"overview": "Overview"
+		},
+		"SidebarNews": {
+			"tooltip": "What’s new",
+			"unread_tooltip": "What’s new — unread updates"
 		},
 		"SidebarNotifications": {
 			"label": "Notifications",

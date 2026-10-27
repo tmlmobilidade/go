@@ -1,0 +1,15 @@
+.button {
+	position: relative;
+	flex-shrink: 0;
+}
+
+.unread {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	width: 6px;
+	height: 6px;
+	pointer-events: none;
+	background-color: var(--color-primary);
+	border-radius: 50%;
+}

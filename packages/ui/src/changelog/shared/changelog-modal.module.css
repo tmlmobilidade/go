@@ -1,0 +1,10 @@
+.content {
+	overflow: hidden;
+	color: var(--color-system-text-100);
+	background: var(--color-system-background-100);
+	border-radius: var(--border-radius-sm);
+}
+
+.body {
+	padding: 0;
+}
