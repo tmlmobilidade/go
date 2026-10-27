@@ -58,17 +58,17 @@ export type GtfsRow = Record<string, null | string>;
 /**
  * The opened SQLite database and its GTFS tables.
  * Missing or empty source files have undefined table handles.
- * calendar_dates exposes raw rows when no time_range filter is configured.
- * With a nonempty filter, it contains resolved active dates (exception_type = 1),
- * including expanded weekly calendars and applied exceptions.
+ * calendar_dates groups added service dates (exception_type = 1) by service ID.
+ * With a nonempty time_range filter, dates include expanded weekly calendars
+ * and applied exceptions. Raw rows remain accessible through _db.
  * Call _db.cleanup() to close the database and delete its file, if any.
  */
-export interface GtfsSQLTables {
+export interface GtfsSQLTables<T = GtfsRow> {
 	_db: SQLiteDatabase
-	calendar_dates: SQLiteTableInstance<GtfsRow> | undefined
-	routes: SQLiteTableInstance<GtfsRow> | undefined
-	shapes: SQLiteTableInstance<GtfsRow> | undefined
-	stop_times: SQLiteTableInstance<GtfsRow> | undefined
-	stops: SQLiteTableInstance<GtfsRow> | undefined
-	trips: SQLiteTableInstance<GtfsRow> | undefined
+	calendar_dates: Record<string, OperationalDateInt[]>
+	routes: SQLiteTableInstance<T> | undefined
+	shapes: SQLiteTableInstance<T> | undefined
+	stop_times: SQLiteTableInstance<T> | undefined
+	stops: SQLiteTableInstance<T> | undefined
+	trips: SQLiteTableInstance<T> | undefined
 }

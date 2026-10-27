@@ -12,11 +12,14 @@ import { type GtfsSQLTables, type ImportGtfsConfig } from './types.js';
  * Imports a GTFS ZIP using the bundled Go CLI and opens its SQLite table handles.
  * Relative source and output paths resolve against the caller's working directory.
  * The caller owns the resulting database and its cleanup. Import failures reject.
+ * T describes the complete table bundle; it does not validate or convert row values.
+ * Custom bundles must account for missing tables in the source archive.
  */
-export async function importGtfsToDatabase(config: ImportGtfsConfig): Promise<GtfsSQLTables> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Each table in the caller's bundle can have its own row type.
+export async function importGtfsToDatabase<T extends GtfsSQLTables<any> = GtfsSQLTables>(config: ImportGtfsConfig): Promise<T> {
 	const executablePath = fileURLToPath(new URL('./bin/import-gtfs', import.meta.url));
 	const stdout = await importGtfs(executablePath, config);
-	return initGtfsSqlTables(config.sqlite_config?.memory ? stdout : stdout.toString('utf8').trim());
+	return initGtfsSqlTables<T>(config.sqlite_config?.memory ? stdout : stdout.toString('utf8').trim());
 }
 
 /** Collect stdout as data while forwarding telemetry from stderr as it arrives. */

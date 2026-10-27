@@ -37,11 +37,25 @@ logs; other values produce OpenTelemetry JSON.
 `_db` is a `SQLiteDatabase`. Each table handle is a `SQLiteTableInstance` with
 `all`, `get`, `has`, `stream`, and the other SQLite client methods. Columns are
 read from SQLite; empty fields are `null` and other values remain strings.
-`calendar_dates` exposes raw table
-rows when `time_range` is omitted. With a nonempty filter, it instead exposes
-resolved active service dates after expanding weekly calendars and applying exceptions. Missing or empty source
-files produce `undefined` handles; header-only files produce empty tables.
+`calendar_dates` is a `Record<string, OperationalDateInt[]>` keyed by service ID,
+containing distinct numeric dates with `exception_type: '1'`. It is empty when
+no calendar-date rows exist. With a nonempty filter, these are resolved active
+service dates after expanding weekly calendars and applying exceptions. Without
+that filter, only explicit additions from `calendar_dates.txt` are included;
+weekly calendars are not expanded. Raw calendar rows remain available through
+`_db.databaseInstance`. Missing or empty source files produce `undefined` table
+handles; header-only files produce empty tables.
 Other imported GTFS tables remain accessible through `_db.databaseInstance`.
+
+Pass a complete table bundle type to preserve each table's row type:
+
+```ts
+const gtfs = await importGtfsToDatabase<GtfsHubV1SQLTables>(config);
+```
+
+The generic describes the returned bundle without validating or converting row
+values. Missing tables still return `undefined`, so custom bundles must reflect
+the tables guaranteed by the source archive.
 
 Optional `time_range` accepts the same dates as the legacy importer:
 
