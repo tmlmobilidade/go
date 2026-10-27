@@ -112,6 +112,13 @@
 			"just_now": "Ahora mismo"
 		}
 	},
+	"plans": {
+		"list": {
+			"PlansListCellOverlap": {
+				"overlap_warning": "Existen otros planes con fechas de validez superpuestas."
+			}
+		}
+	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {

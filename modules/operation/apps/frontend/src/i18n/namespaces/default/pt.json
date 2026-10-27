@@ -109,6 +109,13 @@
 			"title": "Circulações"
 		}
 	},
+	"plans": {
+		"list": {
+			"PlansListCellOverlap": {
+				"overlap_warning": "Existem outros planos com datas de validade sobrepostas."
+			}
+		}
+	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {
