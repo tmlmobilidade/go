@@ -84,6 +84,14 @@ func TestCLIJSONConfig(t *testing.T) {
 	if err != nil || strings.TrimSpace(string(output)) != outputPath {
 		t.Fatalf("JSON-only import failed: %v, %s", err, output)
 	}
+	// Memory mode emits a SQLite image instead of a path, without temporary output.
+	memoryCommand := exec.Command(binary, "-path", archivePath, "-memory")
+	memoryCommand.Env = append(os.Environ(), "TMPDIR="+filepath.Join(t.TempDir(), "missing"))
+	memoryOutput, err := memoryCommand.Output()
+	requireNoError(t, err)
+	if !strings.HasPrefix(string(memoryOutput), "SQLite format 3\x00") {
+		t.Fatalf("expected binary SQLite output, got %q", memoryOutput)
+	}
 	for _, config := range []string{"", "{", `{} {}`, `{"unknown":true}`, `{"source":{"path":3}}`, `{"sqlite_config":{"databaseInstance":{}}}`} {
 		command := exec.Command(binary, "-config", config)
 		output, err := command.CombinedOutput()

@@ -37,11 +37,13 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-sqlite": "*",
-		"@tmlmobilidade/go-types-shared": "*"
+		"@tmlmobilidade/go-types-shared": "*",
+		"better-sqlite3": "13.0.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-golang-import-gtfs": "*",
 		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/better-sqlite3": "9.6.0",
 		"@types/node": "26.6.5",
 		"typescript": "6.0.3"
 	}

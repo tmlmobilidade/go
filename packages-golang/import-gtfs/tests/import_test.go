@@ -384,3 +384,33 @@ func TestCalendarOnlyDiscreteDates(t *testing.T) {
 		t.Fatalf("calendar dates: %d %s", count, date)
 	}
 }
+
+func TestImportGtfsToMemory(t *testing.T) {
+	source := localSource(t, makeArchive(t, map[string]string{"stops.txt": "stop_id,value\n001,\n"}))
+	// A nonexistent temporary directory makes accidental database file creation fail.
+	t.Setenv("TMPDIR", filepath.Join(t.TempDir(), "missing"))
+	database, err := importgtfs.ImportGtfsToMemory(importgtfs.ImportGtfsConfig{Source: source})
+	requireNoError(t, err)
+	defer database.Cleanup()
+	var id string
+	var value *string
+	requireNoError(t, database.DatabaseInstance.QueryRow("SELECT stop_id, value FROM stops").Scan(&id, &value))
+	if id != "001" || value != nil {
+		t.Fatalf("unexpected row: %q, %v", id, value)
+	}
+	var sequence int
+	var name, path string
+	requireNoError(t, database.DatabaseInstance.QueryRow("PRAGMA database_list").Scan(&sequence, &name, &path))
+	if path != "" {
+		t.Fatalf("memory database persisted to %s", path)
+	}
+	// Caller-owned instances stay open on a failed import and retain their data.
+	_, err = importgtfs.ImportGtfsToMemory(importgtfs.ImportGtfsConfig{
+		Source:        importgtfs.ImportGtfsConfigSource{Path: "missing.zip"},
+		Sqlite_config: sqlite.SQLiteDatabaseConfig{DatabaseInstance: database.DatabaseInstance},
+	})
+	if err == nil {
+		t.Fatal("invalid archive succeeded")
+	}
+	requireNoError(t, database.DatabaseInstance.QueryRow("SELECT stop_id FROM stops").Scan(&id))
+}

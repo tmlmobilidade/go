@@ -9,7 +9,7 @@ import { importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 
 const gtfs = await importGtfsToDatabase({
     source: { path: './gtfs.zip' },
-    sqlite_config: { instancePath: './gtfs.db' },
+    sqlite_config: { memory: true },
 });
 
 try {
@@ -22,8 +22,12 @@ try {
 
 Use `source: { url: 'https://example.com/gtfs.zip' }` for downloads. Optional
 `sqlite_config` accepts `instanceName`, `instancePath`, and `memory`. Live database
-instances cannot be passed between processes. Memory databases are exported to a
-temporary `.db` file. Relative paths use the caller's working directory.
+instances cannot be passed between processes. Set `sqlite_config: { memory: true }`
+to receive an in-memory database; `instancePath` is ignored and no database file
+is created. Go transfers a binary SQLite image over stdout, which TypeScript
+opens in memory. Memory addresses cannot be shared between these processes.
+The transfer temporarily holds database copies in memory. Relative paths use
+the caller's working directory.
 
 The wrapper passes JSON directly to the CLI without a shell. Import errors reject
 the promise with the CLI's stderr.
@@ -61,8 +65,8 @@ The resolved `calendar_dates` rows have `exception_type: '1'`; the imported
 dates have `null` custom fields. Other GTFS tables and existing database rows are
 retained. An omitted or empty filter preserves raw import behavior.
 
-The caller owns the database connection and file. Call `_db.cleanup()` to close
-and delete the file (including a custom output path), or call
+The caller owns the database connection and any output file. Call `_db.cleanup()` to close
+and release its memory or delete its file (including a custom output path), or call
 `_db.databaseInstance.close()` to close the connection and retain the file.
 
 From the repository root, build with:

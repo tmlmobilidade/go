@@ -34,7 +34,8 @@ type ImportGtfsConfig struct {
 	Source ImportGtfsConfigSource `json:"source"`
 
 	// Optional SQLite configuration. Defaults to a temporary database file.
-	// Memory databases are exported to a temporary file after importing.
+	// ImportGtfsToDatabase exports memory databases to a temporary file.
+	// Use ImportGtfsToMemory to retain a live in-memory database instead.
 	Sqlite_config sqlite.SQLiteDatabaseConfig `json:"sqlite_config"`
 
 	// Resolve service dates and filter trips and their dependencies. Omit for a raw import.

@@ -6,6 +6,7 @@ package main
 /* * */
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -13,6 +14,7 @@ import (
 	"os"
 	"strings"
 
+	sqlite3 "github.com/mattn/go-sqlite3"
 	importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
 )
 
@@ -31,7 +33,7 @@ func main() {
 	flag.StringVar(&config.Source.Url, "url", "", "GTFS ZIP URL (use either -path or -url)")
 	flag.StringVar(&config.Sqlite_config.InstanceName, "instance-name", "", "Custom database instance name")
 	flag.StringVar(&config.Sqlite_config.InstancePath, "instance-path", "", "Output database path (defaults to a temporary file)")
-	flag.BoolVar(&config.Sqlite_config.Memory, "memory", false, "Import in memory, then export to a temporary database file (ignores -instance-path)")
+	flag.BoolVar(&config.Sqlite_config.Memory, "memory", false, "Return a binary SQLite database on stdout without writing a database file (ignores -instance-path)")
 
 	flag.Usage = func() {
 		output := flag.CommandLine.Output()
@@ -43,7 +45,7 @@ Examples (from the package directory):
   go run ./src/cli.go -path ./gtfs.zip
   go run ./src/cli.go -path ./gtfs.zip -instance-path ./gtfs.db
   go run ./src/cli.go -url https://example.com/gtfs.zip
-  go run ./src/cli.go -path ./gtfs.zip -memory
+  go run ./src/cli.go -path ./gtfs.zip -memory > ./gtfs.db
   go run ./src/cli.go -config '{"source":{"path":"./gtfs.zip"},"sqlite_config":{"instancePath":"./gtfs.db"}}'
 
 JSON configuration:
@@ -57,7 +59,8 @@ JSON configuration:
   A source flag replaces the JSON source. Database instances cannot be passed as JSON.
 
 Output:
-  Prints the absolute database path to stdout. Diagnostics go to stderr.
+  Prints the absolute database path to stdout, or binary SQLite bytes with -memory.
+  Diagnostics go to stderr.
   Temporary output files are the caller's responsibility to remove.
 
 Exit codes:
@@ -112,6 +115,15 @@ Exit codes:
 		os.Exit(2)
 	}
 
+	// Memory pointers cannot cross process boundaries. Transfer a SQLite image instead.
+	if config.Sqlite_config.Memory {
+		if err := writeMemoryDatabase(config); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		return
+	}
+
 	// Keep stdout limited to the resulting path for use in scripts.
 	instancePath, err := importgtfs.ImportGtfsToDatabase(config)
 	if err != nil {
@@ -119,4 +131,25 @@ Exit codes:
 		os.Exit(1)
 	}
 	fmt.Println(instancePath)
+}
+
+func writeMemoryDatabase(config importgtfs.ImportGtfsConfig) error {
+	database, err := importgtfs.ImportGtfsToMemory(config)
+	if err != nil {
+		return err
+	}
+	defer database.DatabaseInstance.Close()
+	connection, err := database.DatabaseInstance.Conn(context.Background())
+	if err != nil {
+		return err
+	}
+	defer connection.Close()
+	return connection.Raw(func(driverConnection any) error {
+		contents, err := driverConnection.(*sqlite3.SQLiteConn).Serialize("main")
+		if err != nil {
+			return err
+		}
+		_, err = os.Stdout.Write(contents)
+		return err
+	})
 }

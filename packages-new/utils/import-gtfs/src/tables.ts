@@ -1,16 +1,17 @@
 /* * */
 
 import { type SQLiteColumn, SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
+import BSQLite3 from 'better-sqlite3';
 
 import { type GtfsRow, type GtfsSQLTables } from './types.js';
 
 /* * */
 
 /**
- * Opens the imported file and registers only tables already present in SQLite.
+ * Opens the imported file or in-memory image and registers existing SQLite tables.
  */
-export function initGtfsSqlTables(instancePath: string): GtfsSQLTables {
-	const database = new SQLiteDatabase({ instancePath });
+export function initGtfsSqlTables(source: Buffer | string): GtfsSQLTables {
+	const database = new SQLiteDatabase(typeof source === 'string' ? { instancePath: source } : { databaseInstance: new BSQLite3(source), memory: true });
 
 	// Read the actual headers rather than imposing a GTFS schema.
 	const registerTable = (tableName: string) => {

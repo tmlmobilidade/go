@@ -1,6 +1,6 @@
 # Import GTFS
 
-Imports a local or remote GTFS ZIP into SQLite and returns an absolute `.db` path.
+Imports a local or remote GTFS ZIP into SQLite, in memory or in a database file.
 
 From this package directory, run the CLI:
 
@@ -11,7 +11,7 @@ go run ./src/cli.go -config '{"source":{"path":"./gtfs.zip"},"sqlite_config":{"i
 ```
 
 Flags: `-path` or `-url` (exactly one required), optional `-instance-name`,
-`-instance-path`, and `-memory`. Use `-h` or `--help` for help and examples:
+`-instance-path`, and `-memory` (binary SQLite output instead of a path). Use `-h` or `--help` for help and examples:
 
 ```sh
 go run ./src/cli.go --help
@@ -25,7 +25,7 @@ supplied as JSON. Explicit CLI flags override JSON settings, including
 Invalid JSON and unknown properties exit with code 2.
 
 The CLI prints the database
-path to stdout and errors to stderr. Exit codes are 0 for success, 1 for import
+path to stdout, or binary SQLite bytes when `memory` is true, and errors to stderr. Exit codes are 0 for success, 1 for import
 failure, and 2 for invalid arguments.
 
 Run `npm run build` to create `dist/import-gtfs`, or invoke the CLI from the
@@ -47,6 +47,24 @@ instancePath, err := importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig
 
 Use `Source: importgtfs.ImportGtfsConfigSource{Url: "https://example.com/gtfs.zip"}`
 for downloads. Provide exactly one source. `Sqlite_config` is optional.
+
+For a live in-memory result, use `ImportGtfsToMemory` instead of the file-returning
+API. Close it when finished:
+
+```go
+database, err := importgtfs.ImportGtfsToMemory(importgtfs.ImportGtfsConfig{
+    Source: importgtfs.ImportGtfsConfigSource{Path: "/data/gtfs.zip"},
+})
+if err != nil {
+    return err
+}
+defer database.Cleanup()
+// Query database.DatabaseInstance or register tables on database.
+```
+
+This API ignores `InstancePath` and creates no database file. A supplied
+`DatabaseInstance` must be in memory and stays open, including after errors.
+The file-returning `ImportGtfsToDatabase` retains its export behavior for compatibility.
 
 Optional `time_range` selects active service dates and filters the imported feed:
 

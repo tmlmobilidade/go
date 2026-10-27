@@ -40,7 +40,7 @@ export interface ImportGtfsConfig {
 	/**
 	 * Optional SQLite configuration. Defaults to a temporary database file.
 	 * Database instances cannot be shared with the Go process.
-	 * Memory databases are exported to a temporary file after importing.
+	 * With memory: true, the result stays in memory and instancePath is ignored.
 	 */
 	sqlite_config?: Omit<SQLiteDatabaseConfig, 'databaseInstance'>
 
@@ -61,7 +61,7 @@ export type GtfsRow = Record<string, null | string>;
  * calendar_dates exposes raw rows when no time_range filter is configured.
  * With a nonempty filter, it contains resolved active dates (exception_type = 1),
  * including expanded weekly calendars and applied exceptions.
- * Call _db.cleanup() to close and delete the database when finished.
+ * Call _db.cleanup() to close the database and delete its file, if any.
  */
 export interface GtfsSQLTables {
 	_db: SQLiteDatabase
