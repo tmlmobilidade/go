@@ -16,6 +16,8 @@ import (
 	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
 )
 
+// requireNoError stops the current test when a setup or database operation fails.
+// Helper makes Go report the calling line, where the failed operation happened.
 func requireNoError(t *testing.T, err error) {
 	t.Helper()
 	if err != nil {
@@ -23,6 +25,7 @@ func requireNoError(t *testing.T, err error) {
 	}
 }
 
+// makeArchive creates a ZIP in memory from file names and text contents.
 func makeArchive(t *testing.T, files map[string]string) []byte {
 	t.Helper()
 	var buffer bytes.Buffer
@@ -37,6 +40,7 @@ func makeArchive(t *testing.T, files map[string]string) []byte {
 	return buffer.Bytes()
 }
 
+// localSource writes a test ZIP into a directory automatically removed after the test.
 func localSource(t *testing.T, content []byte) importgtfs.ImportGtfsConfigSource {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "gtfs.zip")
@@ -44,6 +48,7 @@ func localSource(t *testing.T, content []byte) importgtfs.ImportGtfsConfigSource
 	return importgtfs.ImportGtfsConfigSource{Path: path}
 }
 
+// TestImportGtfsToDatabase checks the same data through each source and output mode.
 func TestImportGtfsToDatabase(t *testing.T) {
 	// Deliberately incomplete GTFS with custom fields and duplicate identifiers.
 	var records bytes.Buffer
@@ -62,6 +67,7 @@ func TestImportGtfsToDatabase(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.Write(archive) }))
 	defer server.Close()
 
+	// Each named subtest imports independently, then opens the resulting file to check it.
 	for _, mode := range []string{"path", "url", "memory", "instance", "memory instance", "temporary"} {
 		t.Run(mode, func(t *testing.T) {
 			config := importgtfs.ImportGtfsConfig{
@@ -85,6 +91,8 @@ func TestImportGtfsToDatabase(t *testing.T) {
 				t.Cleanup(func() { database.Close() })
 				config.Sqlite_config.DatabaseInstance = database
 			}
+
+			// Run the import and check the returned output location.
 			path, err := importgtfs.ImportGtfsToDatabase(config)
 			requireNoError(t, err)
 			if !filepath.IsAbs(path) {
@@ -96,6 +104,8 @@ func TestImportGtfsToDatabase(t *testing.T) {
 			if mode == "temporary" && filepath.Base(path) != "custom.db" {
 				t.Fatalf("instance name ignored: %s", path)
 			}
+
+			// Reopen read-only and verify row counts, original text, and skipped files.
 			database, err := sql.Open("sqlite3", path+"?mode=ro")
 			requireNoError(t, err)
 			defer database.Close()
@@ -124,6 +134,7 @@ func TestImportGtfsToDatabase(t *testing.T) {
 	}
 }
 
+// TestImportEmptyFields distinguishes missing cells from literal spaces, zero, and "NULL".
 func TestImportEmptyFields(t *testing.T) {
 	archive := makeArchive(t, map[string]string{
 		"stops.txt": "id,value,other\n001,previous,previous\n002,,\"\"\n003, ,0\n004,NULL,\n",
@@ -149,6 +160,7 @@ func TestImportEmptyFields(t *testing.T) {
 	}
 }
 
+// TestImportRollback checks that malformed CSV undoes all new rows, keeping existing data.
 func TestImportRollback(t *testing.T) {
 	database, err := sql.Open("sqlite3", ":memory:")
 	requireNoError(t, err)
@@ -163,6 +175,8 @@ func TestImportRollback(t *testing.T) {
 	if err == nil || path != "" {
 		t.Fatalf("malformed CSV succeeded: %q, %v", path, err)
 	}
+
+	// Only the original row should remain after the import fails.
 	var id string
 	requireNoError(t, database.QueryRow("SELECT id FROM stops").Scan(&id))
 	var count int
@@ -172,6 +186,7 @@ func TestImportRollback(t *testing.T) {
 	}
 }
 
+// TestImportSourceErrors rejects missing, conflicting, unavailable, and invalid ZIP sources.
 func TestImportSourceErrors(t *testing.T) {
 	server := httptest.NewServer(http.NotFoundHandler())
 	defer server.Close()
@@ -185,12 +200,15 @@ func TestImportSourceErrors(t *testing.T) {
 	}
 }
 
+// TestImportTimeRange checks date boundaries, individual dates, and combined filters.
 func TestImportTimeRange(t *testing.T) {
 	archive := makeArchive(t, map[string]string{
 		"nested/calendar_dates.txt": "service_id,date,exception_type,custom\n001,20260228,1,keep\n001,20260301,1,keep\n002,20260302,1,keep\n002,20260303,1,keep\n",
 		"calendar.txt":              "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday\n001,20260101,20261231,0,0,0,0,0,0,0\n",
 		"trips.txt":                 "service_id,trip_id\n001,trip\n002,other\n",
 	})
+
+	// Each case gives the requested filter and the dates expected to survive.
 	rangeConfig := &importgtfs.ImportGtfsConfigDateRange{Start: 20260228, End: 20260302}
 	for _, test := range []struct {
 		name   string
@@ -231,6 +249,8 @@ func TestImportTimeRange(t *testing.T) {
 			if !reflect.DeepEqual(got, test.want) {
 				t.Fatalf("dates = %v, want %v", got, test.want)
 			}
+
+			// Filtering replaces weekly calendars and retains only trips with active service.
 			calendarCount, tripCount := 1, 2
 			if test.name != "omitted" && test.name != "empty" {
 				calendarCount = 0
@@ -255,6 +275,7 @@ func TestImportTimeRange(t *testing.T) {
 	}
 }
 
+// TestImportInvalidTimeRange checks that invalid dates fail before any output is created.
 func TestImportInvalidTimeRange(t *testing.T) {
 	for _, filter := range []*importgtfs.ImportGtfsConfigTimeRange{
 		{Date_range: &importgtfs.ImportGtfsConfigDateRange{Start: 20260302, End: 20260301}},
@@ -278,6 +299,8 @@ func TestImportInvalidTimeRange(t *testing.T) {
 	}
 }
 
+// TestImportResolvesCalendarAndPrunesDependencies checks weekly schedules, exceptions,
+// and removal of unused trips, stop times, routes, shapes, and stops.
 func TestImportResolvesCalendarAndPrunesDependencies(t *testing.T) {
 	archive := makeArchive(t, map[string]string{
 		"calendar.txt":       "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday\nweekly,20261001,20261130,1,1,0,1,0,0,0\nremoved,20261027,20261027,0,1,0,0,0,0,0\noff,20261001,20261130,0,0,0,0,0,0,1\n",
@@ -288,6 +311,8 @@ func TestImportResolvesCalendarAndPrunesDependencies(t *testing.T) {
 		"shapes.txt":         "shape_id,shape_pt_sequence\ns1,1\ns1,2\ns2,1\ns3,1\n",
 		"stops.txt":          "stop_id,parent_station\nchild,parent\nparent,grandparent\ngrandparent,\nunused,\n",
 	})
+
+	// Check both disk and memory-export modes against the same connected GTFS tables.
 	source := localSource(t, archive)
 	for _, memory := range []bool{false, true} {
 		t.Run(fmt.Sprintf("memory=%v", memory), func(t *testing.T) {
@@ -305,6 +330,8 @@ func TestImportResolvesCalendarAndPrunesDependencies(t *testing.T) {
 			defer database.Close()
 			dates, err := sqlite.Query[map[string]any](database, "SELECT * FROM calendar_dates ORDER BY service_id,date")
 			requireNoError(t, err)
+
+			// Added exceptions keep custom fields; dates generated from weekdays have none.
 			expected := []map[string]any{
 				{"service_id": "extra", "date": "20261028", "exception_type": "1", "custom": "extra"},
 				{"service_id": "weekly", "date": "20261026", "exception_type": "1", "custom": nil},
@@ -325,6 +352,8 @@ func TestImportResolvesCalendarAndPrunesDependencies(t *testing.T) {
 	}
 }
 
+// TestFilteredImportPreservesExistingRowsAndRollsBack checks that filtering affects
+// only new data and that a later failed import leaves no rows or temporary tables behind.
 func TestFilteredImportPreservesExistingRowsAndRollsBack(t *testing.T) {
 	database, err := sql.Open("sqlite3", ":memory:")
 	requireNoError(t, err)
@@ -349,6 +378,8 @@ func TestFilteredImportPreservesExistingRowsAndRollsBack(t *testing.T) {
 			t.Fatalf("%s: existing data changed: %d", table, count)
 		}
 	}
+
+	// Try another import with an invalid exception and verify the previous data survives.
 	config.Source = localSource(t, makeArchive(t, map[string]string{"calendar_dates.txt": "service_id,date,exception_type\nnew,20261027,invalid\n"}))
 	if _, err := importgtfs.ImportGtfsToDatabase(config); err == nil {
 		t.Fatal("invalid exception succeeded")
@@ -364,6 +395,8 @@ func TestFilteredImportPreservesExistingRowsAndRollsBack(t *testing.T) {
 	}
 }
 
+// TestCalendarOnlyDiscreteDates generates active dates without an exception file.
+// Repeated dates, inactive weekdays, and dates outside the service period add no rows.
 func TestCalendarOnlyDiscreteDates(t *testing.T) {
 	path, err := importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig{
 		Source: localSource(t, makeArchive(t, map[string]string{
@@ -385,6 +418,8 @@ func TestCalendarOnlyDiscreteDates(t *testing.T) {
 	}
 }
 
+// TestImportGtfsToMemory checks that the live database needs no output file
+// and that a supplied connection remains usable after a failed import.
 func TestImportGtfsToMemory(t *testing.T) {
 	source := localSource(t, makeArchive(t, map[string]string{"stops.txt": "stop_id,value\n001,\n"}))
 	// A nonexistent temporary directory makes accidental database file creation fail.
@@ -398,6 +433,8 @@ func TestImportGtfsToMemory(t *testing.T) {
 	if id != "001" || value != nil {
 		t.Fatalf("unexpected row: %q, %v", id, value)
 	}
+
+	// SQLite reports an empty file path when the database really lives in memory.
 	var sequence int
 	var name, path string
 	requireNoError(t, database.DatabaseInstance.QueryRow("PRAGMA database_list").Scan(&sequence, &name, &path))

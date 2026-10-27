@@ -12,11 +12,16 @@ import (
 	"testing"
 )
 
+// TestCLIJSONConfig runs the actual command-line program and checks configuration,
+// output files, date filtering, log output, and invalid-argument exit codes.
 func TestCLIJSONConfig(t *testing.T) {
+	// Build a disposable executable so the test exercises the same entry point as users.
 	binary := filepath.Join(t.TempDir(), "import-gtfs")
 	if output, err := exec.Command("go", "build", "-ldflags=-w", "-o", binary, "../src/cli.go").CombinedOutput(); err != nil {
 		t.Fatalf("build CLI: %v\n%s", err, output)
 	}
+
+	// Create a small input ZIP with a stop and three possible service dates.
 	archivePath := filepath.Join(t.TempDir(), "gtfs.zip")
 	archive, err := os.Create(archivePath)
 	if err != nil {
@@ -40,6 +45,8 @@ func TestCLIJSONConfig(t *testing.T) {
 	if err := archive.Close(); err != nil {
 		t.Fatal(err)
 	}
+
+	// Start with JSON settings that explicit command-line flags will replace.
 	outputPath := filepath.Join(t.TempDir(), "output.db")
 	config, err := json.Marshal(map[string]any{
 		"source":        map[string]string{"url": "invalid-url"},
@@ -52,6 +59,7 @@ func TestCLIJSONConfig(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	// Explicit flags replace the JSON source and override both string and boolean settings.
 	command := exec.Command(binary, "-config", string(config), "-path", archivePath, "-instance-path", outputPath, "-memory=false")
 	var diagnostics bytes.Buffer
@@ -64,6 +72,8 @@ func TestCLIJSONConfig(t *testing.T) {
 	if strings.TrimSpace(string(output)) != outputPath {
 		t.Fatalf("unexpected output: %s", output)
 	}
+
+	// Logs must be valid JSON on stderr, separate from the output path on stdout.
 	var completion struct {
 		Body       string         `json:"body"`
 		Attributes map[string]any `json:"attributes"`
@@ -77,6 +87,8 @@ func TestCLIJSONConfig(t *testing.T) {
 	if !strings.HasPrefix(completion.Body, "GTFS tables imported in ") || completion.Attributes["elapsed_ms"] == nil {
 		t.Fatalf("missing completion telemetry: %s", diagnostics.String())
 	}
+
+	// Check the database file signature, then query it to verify the date selection.
 	contents, err := os.ReadFile(outputPath)
 	if err != nil || !strings.HasPrefix(string(contents), "SQLite format 3") {
 		t.Fatalf("missing SQLite output: %v", err)
@@ -90,6 +102,8 @@ func TestCLIJSONConfig(t *testing.T) {
 	if count != 1 || date != "20261027" || exception != "1" {
 		t.Fatalf("JSON time_range not applied: %d, %s, %s", count, date, exception)
 	}
+
+	// JSON alone must also work when no overriding flags are supplied.
 	config, err = json.Marshal(map[string]any{
 		"source":        map[string]string{"path": archivePath},
 		"sqlite_config": map[string]string{"instancePath": outputPath},
@@ -101,6 +115,7 @@ func TestCLIJSONConfig(t *testing.T) {
 	if err != nil || strings.TrimSpace(string(output)) != outputPath {
 		t.Fatalf("JSON-only import failed: %v, %s", err, output)
 	}
+
 	// Memory mode emits a SQLite image instead of a path, without temporary output.
 	memoryCommand := exec.Command(binary, "-path", archivePath, "-memory")
 	memoryCommand.Env = append(os.Environ(), "ENVIRONMENT=dev", "TMPDIR="+filepath.Join(t.TempDir(), "missing"))
@@ -114,6 +129,8 @@ func TestCLIJSONConfig(t *testing.T) {
 	if !strings.Contains(diagnostics.String(), "✓ GTFS tables imported in ") {
 		t.Fatalf("missing development telemetry: %s", diagnostics.String())
 	}
+
+	// Bad JSON, unknown properties, and unsupported values must exit with code 2.
 	for _, config := range []string{"", "{", `{} {}`, `{"unknown":true}`, `{"source":{"path":3}}`, `{"sqlite_config":{"databaseInstance":{}}}`} {
 		command := exec.Command(binary, "-config", config)
 		command.Env = append(os.Environ(), "ENVIRONMENT=prd")
