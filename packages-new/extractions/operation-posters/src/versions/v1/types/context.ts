@@ -13,7 +13,6 @@ import {
 	type OperationPostersV1ShapesExt,
 	type OperationPostersV1Stops,
 	type OperationPostersV1StopTimes,
-	type OperationPostersV1StopTimesExt,
 	type OperationPostersV1StopToCanvasExt,
 	type OperationPostersV1Trips,
 } from '@tmlmobilidade/go-types-operation';
@@ -42,7 +41,6 @@ export interface OperationPostersV1Context {
 		shapes: BatchWriter<OperationPostersV1Shapes>
 		shapes_ext: BatchWriter<OperationPostersV1ShapesExt>
 		stop_times: BatchWriter<OperationPostersV1StopTimes>
-		stop_times_ext: BatchWriter<OperationPostersV1StopTimesExt>
 		stops: BatchWriter<OperationPostersV1Stops>
 		stops_to_canvas_ext: BatchWriter<OperationPostersV1StopToCanvasExt>
 		trips: BatchWriter<OperationPostersV1Trips>

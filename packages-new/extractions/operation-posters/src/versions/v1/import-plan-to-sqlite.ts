@@ -110,7 +110,7 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 		await exportCalendarFiles(context, sqlGtfs, exportConfig, calendarsByService);
 		const routeIds = await exportRoutesFile(context, sqlGtfs, exportConfig);
 		await exportTripsFile(context, sqlGtfs, routeIds);
-		await exportStopTimesFile(context, sqlGtfs, exportConfig);
+		await exportStopTimesFile(context, sqlGtfs);
 		await exportShapesFiles(context, sqlGtfs);
 		await exportStopsFile(context, sqlGtfs, exportConfig, routeIds);
 		for (const plan of plans) await exportAgencyFile(context, plan);

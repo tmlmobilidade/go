@@ -87,11 +87,6 @@ export function initOperationPostersV1Context(runId: string, workdirPath: string
 			newline: '\r\n',
 		}),
 		stop_times: createWriter('stop_times.txt'),
-		stop_times_ext: createWriter('stop_timesExt.txt', {
-			fields: ['trip_id', 'stop_id', 'stop_sequence', 'billboard_importance', 'billboard_alignment_id', 'route_stop_sequence', 'index', 'note'],
-			include_bom: true,
-			newline: '\r\n',
-		}),
 		stops: createWriter('stops.txt'),
 		stops_to_canvas_ext: createWriter('stopsToCanvasExt.txt', {
 			fields: [...stopsToCanvasFields],

@@ -4,13 +4,13 @@ import { OperationPostersV1ShapesSchema } from '@tmlmobilidade/go-types-operatio
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
-import { buildVariantNotes } from '../utils/build-variant-notes.js';
+import { buildShapeExtensions } from '../utils/build-shape-extensions.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
 /**
- * Export geometry and explicit pattern ordering to match the letters in stop-time notes.
+ * Export geometry and one extension per pattern, including ordering for the main pattern.
  * @param context - The export context and file writers.
  * @param sqlTables - The SQL tables to export from.
  */
@@ -20,7 +20,7 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 	//
 	// Export shapes.txt and shapesExt.txt
 
-	const { shapeSequences } = buildVariantNotes(sqlTables.trips.all());
+	const shapeExtensions = buildShapeExtensions(sqlTables.trips.all());
 	const exportedShapeIds = new Set<string>();
 	let exportedRows = 0;
 	let extensionRows = 0;
@@ -32,8 +32,8 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 		//
 		// Export shapes.txt
 
-		const sequence = shapeSequences.get(shapeData.shape_id);
-		if (!sequence) continue;
+		const extension = shapeExtensions.get(shapeData.shape_id);
+		if (!extension) continue;
 		await context.writers.shapes.write(OperationPostersV1ShapesSchema.parse(shapeData));
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
@@ -43,16 +43,8 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 		//
 		// Export shapesExt.txt
 
-		const extension = {
-			direction_description: '',
-			note: '',
-			priority_number: sequence === 1 ? 1 : 2,
-			sequence_number: sequence,
-			shape_id: shapeData.shape_id,
-			via_text: '',
-		};
 		exportedShapeIds.add(shapeData.shape_id);
-		if (!extension.note.trim()) continue;
+		// The main pattern still needs sequence/priority even though its note is blank.
 		await context.writers.shapes_ext.write(extension);
 		extensionRows++;
 	}
@@ -63,5 +55,5 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 	await context.writers.shapes.flush();
 	await context.writers.shapes_ext.flush();
 
-	Logger.info({ message: `Exported shapes.txt for ${exportedShapeIds.size} patterns and ${extensionRows} rows in shapesExt.txt with notes.` });
+	Logger.info({ message: `Exported shapes.txt for ${exportedShapeIds.size} patterns and ${extensionRows} rows in shapesExt.txt with pattern ordering and notes.` });
 }
