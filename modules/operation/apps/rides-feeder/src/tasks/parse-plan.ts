@@ -3,12 +3,13 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getRideHash, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { GtfsStrictV30RoutesSchema, GtfsStrictV30ShapesSchema, GtfsStrictV30StopsSchema, GtfsStrictV30StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type HashableRide, type HashedShape, type HashedTrip, type Plan, RideSchema } from '@tmlmobilidade/go-types-operation';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { startHeartbeat } from '@tmlmobilidade/go-utils-exec';
+import { GtfsStrictV30SQLTables, type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
 import { toHashedShape } from '../utils/to-hashed-shape.js';
@@ -81,7 +82,7 @@ export async function parsePlanTask(planData: Plan) {
 			},
 		};
 
-		const importedGtfsSql = await importGtfsStrictV30ToDatabase(importConfig);
+		const importedGtfsSql = await importGtfsToDatabase<GtfsStrictV30SQLTables>(importConfig);
 
 		Logger.success(`Imported Plan ${planData._id} in ${importTimer.get()}.`);
 
@@ -128,10 +129,17 @@ export async function parsePlanTask(planData: Plan) {
 				// as well as other commonly used variables in the next steps.
 
 				const calendarDatesData = importedGtfsSql.calendar_dates[currentTrip.service_id];
-				const routeData = importedGtfsSql.routes.get('route_id', currentTrip.route_id);
-				const shapeData = importedGtfsSql.shapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
-				const stopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [currentTrip.trip_id]);
-				const stopsData = importedGtfsSql.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times WHERE trip_id = ?)', [currentTrip.trip_id]);
+				const rawRouteData = importedGtfsSql.routes.get('route_id', currentTrip.route_id);
+				const rawshapeData = importedGtfsSql.shapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
+				const rawstopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [currentTrip.trip_id]);
+				const rawstopsData = importedGtfsSql.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times WHERE trip_id = ?)', [currentTrip.trip_id]);
+
+				//
+				// Parse data
+				const routeData = GtfsStrictV30RoutesSchema.parse(rawRouteData);
+				const shapeData = rawshapeData.map(shape => GtfsStrictV30ShapesSchema.parse(shape));
+				const stopTimesData = rawstopTimesData.map(stopTime => GtfsStrictV30StopTimesSchema.parse(stopTime));
+				const stopsData = rawstopsData.map(stop => GtfsStrictV30StopsSchema.parse(stop));
 
 				//
 				// Validate the required data for this trip
