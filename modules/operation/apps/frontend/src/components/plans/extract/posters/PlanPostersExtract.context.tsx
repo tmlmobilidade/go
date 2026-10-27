@@ -5,7 +5,7 @@ import { usePlansExtractListData } from '@/components/plans/shared/use-plans-ext
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type Extraction, type OperationPostersV1ExtractionCreate, type OperationPostersV1ExtractionProperties } from '@tmlmobilidade/go-types-extractions';
-import { fetchApiData, type SelectDataItem, useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, openExtractionsListModal, type SelectDataItem, useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { closePlanPostersExtractModal } from './PlanPostersExtract.modal';
@@ -179,6 +179,7 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 			}
 			useToast.success({ message: 'A exportação dos PDFs foi iniciada', title: 'Sucesso' });
 			closePlanPostersExtractModal();
+			openExtractionsListModal();
 		} catch (error) {
 			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao iniciar a exportação dos PDFs', title: 'Erro' });
 		} finally {
