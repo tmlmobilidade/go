@@ -116,9 +116,17 @@ func TestCLIJSONConfig(t *testing.T) {
 	}
 	for _, config := range []string{"", "{", `{} {}`, `{"unknown":true}`, `{"source":{"path":3}}`, `{"sqlite_config":{"databaseInstance":{}}}`} {
 		command := exec.Command(binary, "-config", config)
+		command.Env = append(os.Environ(), "ENVIRONMENT=prd")
 		output, err := command.CombinedOutput()
 		if exit, ok := err.(*exec.ExitError); !ok || exit.ExitCode() != 2 {
 			t.Fatalf("config %q: expected exit 2, got %v: %s", config, err, output)
+		}
+		var diagnostic struct {
+			Severity_text string `json:"severity_text"`
+		}
+		line := strings.SplitN(string(output), "\n", 2)[0]
+		if err := json.Unmarshal([]byte(line), &diagnostic); err != nil || diagnostic.Severity_text != "ERROR" {
+			t.Fatalf("config %q: expected telemetry error, got %s", config, output)
 		}
 	}
 }

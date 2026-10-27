@@ -23,6 +23,15 @@ import (
 /* * */
 
 func main() {
+	// Keep telemetry on stderr so stdout remains a path or a binary SQLite image.
+	telemetry.Logger = telemetry.CreateLogger(func(record telemetry.LogRecord) {
+		if os.Getenv("ENVIRONMENT") == "dev" {
+			render.RenderDevTo(record, os.Stderr, os.Stderr)
+		} else {
+			render.RenderStructuredTo(record, os.Stderr, os.Stderr)
+		}
+	})
+
 	// Map CLI arguments to the importer's configuration.
 	var config importgtfs.ImportGtfsConfig
 	var help bool
@@ -38,11 +47,10 @@ func main() {
 	flag.BoolVar(&config.Sqlite_config.Memory, "memory", false, "Return a binary SQLite database on stdout without writing a database file (ignores -instance-path)")
 
 	flag.Usage = func() {
-		output := flag.CommandLine.Output()
-		fmt.Fprintln(output, "Import a GTFS ZIP into SQLite with dynamic TEXT columns and no GTFS validation.")
-		fmt.Fprintf(output, "\nUsage: %s (-config JSON | -path GTFS.zip | -url URL) [options]\n\nOptions:\n", os.Args[0])
+		telemetry.Logger.Info("Import a GTFS ZIP into SQLite with dynamic TEXT columns and no GTFS validation.")
+		telemetry.Logger.Info("Usage: " + os.Args[0] + " (-config JSON | -path GTFS.zip | -url URL) [options]\n\nOptions:")
 		flag.PrintDefaults()
-		fmt.Fprintln(output, `
+		telemetry.Logger.Info(`
 Examples (from the package directory):
   go run ./src/cli.go -path ./gtfs.zip
   go run ./src/cli.go -path ./gtfs.zip -instance-path ./gtfs.db
@@ -94,7 +102,7 @@ Exit codes:
 			}
 		}
 		if err != nil {
-			fmt.Fprintln(os.Stderr, "Invalid JSON config:", err)
+			telemetry.Logger.Error(telemetry.LogEntry{Message: "Invalid JSON config", Error: err})
 			os.Exit(2)
 		}
 		if hasSource {
@@ -112,19 +120,10 @@ Exit codes:
 		})
 	}
 	if flag.NArg() != 0 || (config.Source.Path == "") == (config.Source.Url == "") {
-		fmt.Fprintln(os.Stderr, "Provide exactly one of -path or -url, with no positional arguments.")
+		telemetry.Logger.Error("Provide exactly one of -path or -url, with no positional arguments.")
 		flag.Usage()
 		os.Exit(2)
 	}
-
-	// Keep telemetry on stderr so stdout remains a path or a binary SQLite image.
-	telemetry.Logger = telemetry.CreateLogger(func(record telemetry.LogRecord) {
-		if os.Getenv("ENVIRONMENT") == "dev" {
-			render.RenderDevTo(record, os.Stderr, os.Stderr)
-		} else {
-			render.RenderStructuredTo(record, os.Stderr, os.Stderr)
-		}
-	})
 
 	// Memory pointers cannot cross process boundaries. Transfer a SQLite image instead.
 	if config.Sqlite_config.Memory {
@@ -141,7 +140,10 @@ Exit codes:
 		telemetry.Logger.Error(err)
 		os.Exit(1)
 	}
-	fmt.Println(instancePath)
+	if _, err := io.WriteString(os.Stdout, instancePath+"\n"); err != nil {
+		telemetry.Logger.Error(err)
+		os.Exit(1)
+	}
 }
 
 func writeMemoryDatabase(config importgtfs.ImportGtfsConfig) error {

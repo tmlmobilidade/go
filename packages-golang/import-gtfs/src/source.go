@@ -26,7 +26,7 @@ func prepareSourcePath(source ImportGtfsConfigSource) (string, func(), error) {
 		return source.Path, cleanup, nil
 	}
 
-	telemetry.Logger.Progress("Downloading GTFS archive")
+	telemetry.Logger.Progress("Downloading GTFS archive from " + source.Url)
 	client := http.Client{Timeout: 30 * time.Minute}
 	response, err := client.Get(source.Url)
 	if err != nil {
