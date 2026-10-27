@@ -42,6 +42,7 @@ export function ParametersListView() {
 			{/* Actions */}
 			<Section flexDirection="row" gap="sm" padding="none">
 				<Button
+					disabled={!patternDetailContext.capabilities.editEnabled}
 					label="Nova configuração"
 					leftSection={<IconPlus size={16} />}
 					onClick={() => patternDetailContext.actions.openStopsParameterModal()}

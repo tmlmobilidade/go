@@ -146,13 +146,13 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	const [isLoadingRoute, setIsLoadingRoute] = useState(false);
 
 	// Stable ref so pushToHistory can sync parameters without stale closures
-	const formRef = useRef(patternDetailContext.data.form);
-	formRef.current = patternDetailContext.data.form;
+	const formRef = useRef(patternDetailContext.form);
+	formRef.current = patternDetailContext.form;
 
 	// Local intermediate state — only written back to the pattern form on submit
 	const [initialPath] = useState<PatternsDetailPathItem[]>(() => {
 		const populatedPath = patternDetailContext.data.pattern?.path ?? [];
-		const path = patternDetailContext.data.form.values.path ?? populatedPath;
+		const path = patternDetailContext.data.path ?? populatedPath;
 		const stopsById = new Map(populatedPath.map(pathItem => [pathItem.stop_id, pathItem.stop]));
 
 		return path.map(pathItem => ({
@@ -161,7 +161,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		}));
 	});
 	const [initialShape] = useState<Shape | undefined>(() =>
-		patternDetailContext.data.form.values.shape,
+		patternDetailContext.data.shape,
 	);
 
 	const [localPath, setLocalPath] = useState<PatternsDetailPathItem[]>(initialPath);
@@ -210,8 +210,8 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 				)),
 			};
 		});
-		form.setFieldValue('parameters', updatedParameters);
-	}, []);
+		patternDetailContext.actions.applyChanges({ parameters: updatedParameters });
+	}, [patternDetailContext.actions]);
 
 	const path = localPath;
 
@@ -464,10 +464,10 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	}, [initialPath, initialShape, pushToHistory]);
 
 	const submit = useCallback(() => {
-		patternDetailContext.data.form.setFieldValue('path', localPath);
-		patternDetailContext.data.form.setFieldValue('shape', localShape);
+		if (!patternDetailContext.capabilities.editEnabled) return;
+		patternDetailContext.actions.applyChanges({ path: localPath, shape: localShape });
 		onClose();
-	}, [localPath, localShape, onClose, patternDetailContext.data.form]);
+	}, [localPath, localShape, onClose, patternDetailContext.capabilities.editEnabled, patternDetailContext.actions]);
 
 	const cancel = useCallback(() => {
 		onClose();

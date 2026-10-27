@@ -8,7 +8,7 @@ import { ShapeEditorModal } from '@/components/patterns/shape/shape-editor/Shape
 import { IconFileZip, IconShape } from '@tabler/icons-react';
 import { type Pattern } from '@tmlmobilidade/go-types-offer';
 import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -27,33 +27,34 @@ export function PatternDetailSectionShape() {
 	// B. Transform data
 
 	const shapeExtensionCardValue = useMemo(() => {
-		if (!patternDetailContext.data.form.values?.shape?.extension) return null;
-		if (patternDetailContext.data.form.values?.shape?.extension > 1000) return `${(patternDetailContext.data.form.values.shape.extension / 1000).toFixed(3)} km`;
-		else return `${patternDetailContext.data.form.values.shape.extension} m`;
-	}, [patternDetailContext.data.form.values]);
+		if (!patternDetailContext.data.shape?.extension) return null;
+		if (patternDetailContext.data.shape?.extension > 1000) return `${(patternDetailContext.data.shape.extension / 1000).toFixed(3)} km`;
+		else return `${patternDetailContext.data.shape.extension} m`;
+	}, [patternDetailContext.data]);
 
 	const agencyData = useMemo(() => {
 		return linesListContext.data.agencies.find(agency => agency._id === patternDetailContext.data.agency_id);
 	}, [linesListContext.data.agencies, patternDetailContext.data.agency_id]);
 
 	const shapeCost = useMemo(() => {
-		if (!patternDetailContext.data.form.values?.shape?.extension || !agencyData?.financials) return null;
-		const shapeExtensionInKm = patternDetailContext.data.form.values?.shape?.extension / 1000;
+		if (!patternDetailContext.data.shape?.extension || !agencyData?.financials) return null;
+		const shapeExtensionInKm = patternDetailContext.data.shape?.extension / 1000;
 		const shapeCostRaw = shapeExtensionInKm * agencyData.financials.price_per_km;
 		return `${shapeCostRaw.toFixed(2)} €`;
-	}, [agencyData, patternDetailContext.data.form.values]);
+	}, [agencyData, patternDetailContext.data]);
 
 	//
 	// C. Handle actions
 
-	const handleLoadPattern = (pattern: Pattern) => {
-		patternDetailContext.data.form.setFieldValue('path', pattern.path);
-		patternDetailContext.data.form.setFieldValue('shape', pattern.shape);
-		patternDetailContext.data.form.setFieldValue('parameters', pattern.parameters);
+	const handleLoadPattern = async (pattern: Pattern) => {
+		if (!patternDetailContext.capabilities.editEnabled) return;
+		const path = await patternDetailContext.actions.enrichPath(pattern.path ?? []);
+		patternDetailContext.actions.applyChanges({ parameters: pattern.parameters, path, shape: pattern.shape });
 		useToast.info({ message: 'Percurso carregado. Clique em Guardar para confirmar.' });
 	};
 
 	const handleOpenGtfsImportModal = () => {
+		if (!patternDetailContext.capabilities.editEnabled) return;
 		openGtfsImportModal({
 			currentShapeExtension: patternDetailContext.data.pattern?.shape?.extension || 0,
 			currentStopCount: patternDetailContext.data.pattern?.path?.length || 0,
@@ -61,6 +62,15 @@ export function PatternDetailSectionShape() {
 			patternId: patternDetailContext.data.id,
 		});
 	};
+
+	const handleOpenEditor = () => {
+		if (!patternDetailContext.capabilities.editEnabled) return;
+		setIsEditorOpen(true);
+	};
+
+	useEffect(() => {
+		if (!patternDetailContext.capabilities.editEnabled) setIsEditorOpen(false);
+	}, [patternDetailContext.capabilities.editEnabled]);
 
 	//
 	// D. Render components
@@ -89,11 +99,13 @@ export function PatternDetailSectionShape() {
 
 				<Section flexDirection="row" gap="sm">
 					<Button
+						disabled={!patternDetailContext.capabilities.editEnabled}
 						label="Editar percurso"
 						leftSection={<IconShape />}
-						onClick={() => setIsEditorOpen(true)}
+						onClick={handleOpenEditor}
 					/>
 					<Button
+						disabled={!patternDetailContext.capabilities.editEnabled}
 						label="Importar ficheiro GTFS"
 						leftSection={<IconFileZip />}
 						onClick={handleOpenGtfsImportModal}
@@ -102,7 +114,7 @@ export function PatternDetailSectionShape() {
 				</Section>
 
 				{/* SHAPE EDITOR MODAL */}
-				<ShapeEditorModal onClose={() => setIsEditorOpen(false)} opened={isEditorOpen} />
+				{patternDetailContext.capabilities.editEnabled && <ShapeEditorModal onClose={() => setIsEditorOpen(false)} opened={isEditorOpen} />}
 			</Section>
 
 		</Collapsible>

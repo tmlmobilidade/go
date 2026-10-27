@@ -41,6 +41,7 @@ export function PatternDetailSectionRules() {
 				{/* Actions */}
 				<Section flexDirection="row" gap="sm" padding="none">
 					<Button
+						disabled={!patternDetailContext.capabilities.editEnabled}
 						label="Nova regra"
 						leftSection={<IconPlus size={16} />}
 						onClick={() => patternDetailContext.actions.openRuleModal()}

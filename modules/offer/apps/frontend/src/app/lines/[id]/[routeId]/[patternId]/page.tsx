@@ -12,7 +12,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
 	return (
 		<LinesListContextProvider>
 			<RouteDetailContextProvider lineId={id} routeId={routeId}>
-				<PatternDetailContextProvider lineId={id} patternId={patternId}>
+				<PatternDetailContextProvider key={patternId}>
 					<PatternDetail />
 				</PatternDetailContextProvider>
 			</RouteDetailContextProvider>

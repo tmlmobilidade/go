@@ -35,15 +35,17 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 	// B. Handle actions
 
 	const handleOpen = () => {
+		if (!patternDetailContext.capabilities.editEnabled) return;
 		patternDetailContext.actions.openRuleModal(rule as ManualRule);
 	};
 
 	const handleDuplicate = () => {
+		if (!patternDetailContext.capabilities.editEnabled) return;
 		patternDetailContext.actions.duplicateRule(rule as ManualRule);
 	};
 
 	const handleDelete = () => {
-		if (!rule._id) return;
+		if (!patternDetailContext.capabilities.editEnabled || !rule._id) return;
 
 		openConfirmModal({
 			centered: true,
@@ -52,7 +54,7 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 			confirmProps: { variant: 'danger' },
 			labels: { cancel: 'Cancelar', confirm: 'Eliminar' },
 			onConfirm: () => {
-				if (!rule._id) return;
+				if (!patternDetailContext.capabilities.editEnabled || !rule._id) return;
 
 				patternDetailContext.actions.deleteRule(rule._id);
 			},
@@ -69,7 +71,7 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 	// C. Render components
 
 	return (
-		<div className={styles.container} onClick={handleOpen}>
+		<div className={styles.container} data-read-only={!patternDetailContext.capabilities.editEnabled || undefined} onClick={!patternDetailContext.capabilities.editEnabled ? undefined : handleOpen}>
 			<Section gap="md" justifyContent="space-between" padding="none">
 
 				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
@@ -105,27 +107,29 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 				<DayPeriodsTimepoints timepoints={times} variant="compact" />
 			</Section>
 
-			<div className={styles.actions} onClick={handleActionsClick}>
-				<Menu icon={IconDots} label="Ações da regra" menuPosition="bottom-end">
-					<MenuItem
-						leftSection={<IconPencil size={20} />}
-						onClick={handleOpen}
-						title="Abrir"
-					/>
-					<MenuItem
-						leftSection={<IconCopy size={20} />}
-						onClick={handleDuplicate}
-						title="Duplicar"
-					/>
-					<MenuDivider />
-					<MenuItem
-						color="var(--color-status-danger-primary)"
-						leftSection={<IconTrash size={20} />}
-						onClick={handleDelete}
-						title="Eliminar"
-					/>
-				</Menu>
-			</div>
+			{patternDetailContext.capabilities.editEnabled && (
+				<div className={styles.actions} onClick={handleActionsClick}>
+					<Menu icon={IconDots} label="Ações da regra" menuPosition="bottom-end">
+						<MenuItem
+							leftSection={<IconPencil size={20} />}
+							onClick={handleOpen}
+							title="Abrir"
+						/>
+						<MenuItem
+							leftSection={<IconCopy size={20} />}
+							onClick={handleDuplicate}
+							title="Duplicar"
+						/>
+						<MenuDivider />
+						<MenuItem
+							color="var(--color-status-danger-primary)"
+							leftSection={<IconTrash size={20} />}
+							onClick={handleDelete}
+							title="Eliminar"
+						/>
+					</Menu>
+				</div>
+			)}
 
 		</div>
 	);

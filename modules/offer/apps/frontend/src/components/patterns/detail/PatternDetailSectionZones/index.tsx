@@ -22,7 +22,7 @@ export function PatternDetailSectionZones() {
 	return (
 		<Collapsible title="Afetação">
 			<Section>
-				{patternDetailContext.data.form.values.path?.length ? (
+				{patternDetailContext.data.path?.length ? (
 					<StopsTable />
 				) : (
 					<Text c="var(--color-system-text-200)" size="sm">

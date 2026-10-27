@@ -28,6 +28,7 @@ export default function ParametersListViewCard({ parameter }: ParametersListView
 	// B. Handle actions
 
 	const handleEdit = () => {
+		if (!patternDetailContext.capabilities.editEnabled) return;
 		patternDetailContext.actions.openStopsParameterModal(parameter as StopsParameter);
 	};
 
@@ -35,7 +36,7 @@ export default function ParametersListViewCard({ parameter }: ParametersListView
 	// C. Render components
 
 	return (
-		<div className={styles.container} onClick={handleEdit}>
+		<div className={styles.container} data-read-only={!patternDetailContext.capabilities.editEnabled || undefined} onClick={!patternDetailContext.capabilities.editEnabled ? undefined : handleEdit}>
 			<Section gap="md" padding="none">
 
 				{/* Summary:
@@ -63,6 +64,7 @@ export default function ParametersListViewCard({ parameter }: ParametersListView
 
 			<IconButton
 				icon={<IconArrowRight size={20} />}
+				isDisabled={!patternDetailContext.capabilities.editEnabled}
 				onClick={handleEdit}
 			/>
 

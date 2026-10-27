@@ -6,7 +6,7 @@ import { GtfsStepConfirmation } from '@/components/patterns/detail/PatternDetail
 import { GtfsStepDropzone } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepDropzone';
 import { GtfsStepSelection } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepSelection';
 import { type Pattern } from '@tmlmobilidade/go-types-offer';
-import { openModal } from '@tmlmobilidade/ui';
+import { closeModal, openModal } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
 /* * */
@@ -121,4 +121,10 @@ export function openGtfsImportModal({ currentShapeExtension, currentStopCount, o
 		size: 'xl',
 		title: 'Importar ficheiro GTFS',
 	});
+}
+
+/* * */
+
+export function closeGtfsImportModal() {
+	closeModal(MODAL_ID);
 }

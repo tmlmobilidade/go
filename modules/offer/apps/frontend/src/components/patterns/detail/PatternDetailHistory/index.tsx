@@ -2,7 +2,7 @@
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { IconHistory } from '@tabler/icons-react';
-import { type UpdatePatternDto } from '@tmlmobilidade/go-types-offer';
+import { type PatternsDetailFormDto } from '@tmlmobilidade/go-offer-pckg-types';
 import { CommentInput, CommentItemField, CommentItemNote, Menu } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { useCallback, useMemo, useState } from 'react';
@@ -19,16 +19,17 @@ export function PatternDetailHistory() {
 
 	const [revertingIndex, setRevertingIndex] = useState<null | number>(null);
 
-	const handleRevert = useCallback(async (idx: number, revertData: Partial<UpdatePatternDto>) => {
+	const handleRevert = useCallback(async (idx: number, revertData: Partial<PatternsDetailFormDto>) => {
+		if (!patternDetailContext.capabilities.editEnabled) return;
 		setRevertingIndex(idx);
 		if (revertData.path) {
 			const enrichedPath = await patternDetailContext.actions.enrichPath(revertData.path);
 			revertData = { ...revertData, path: enrichedPath };
 		}
-		patternDetailContext.data.form.setValues(revertData);
+		patternDetailContext.actions.applyChanges(revertData);
 		useToast.info({ message: 'Campos revertidos. Clique em Guardar para persistir as alterações.' });
 		setRevertingIndex(null);
-	}, [patternDetailContext.data.form, patternDetailContext.actions]);
+	}, [patternDetailContext.capabilities.editEnabled, patternDetailContext.actions]);
 
 	const commentItems = useMemo(() => {
 		const allComments = (patternDetailContext.data.pattern.comments || []);
@@ -40,7 +41,7 @@ export function PatternDetailHistory() {
 						key={idx}
 						comment={comment}
 						loading={revertingIndex === idx}
-						onRevert={revertData => handleRevert(idx, revertData)}
+						onRevert={!patternDetailContext.capabilities.editEnabled ? undefined : revertData => handleRevert(idx, revertData)}
 					/>
 				);
 			}
@@ -59,11 +60,11 @@ export function PatternDetailHistory() {
 			...items,
 			<CommentInput
 				key="comment-input"
-				disabled={patternDetailContext.flags.isReadOnly}
+				disabled={!patternDetailContext.capabilities.editEnabled}
 				onSubmit={patternDetailContext.actions.addComment}
 			/>,
 		];
-	}, [handleRevert, revertingIndex, patternDetailContext.actions.addComment, patternDetailContext.data.pattern.comments, patternDetailContext.flags.isReadOnly]);
+	}, [handleRevert, revertingIndex, patternDetailContext.actions.addComment, patternDetailContext.data.pattern.comments, patternDetailContext.capabilities.editEnabled]);
 
 	//
 	// C. Render components

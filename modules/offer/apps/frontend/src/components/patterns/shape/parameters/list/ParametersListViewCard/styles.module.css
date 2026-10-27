@@ -19,3 +19,11 @@
 .container:hover {
   background-color: var(--color-system-background-200);
 }
+
+.container[data-read-only] {
+	cursor: default;
+}
+
+.container[data-read-only]:hover {
+	background-color: var(--color-system-background-100);
+}

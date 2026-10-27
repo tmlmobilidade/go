@@ -41,3 +41,11 @@
   top: var(--size-spacing-sm);
   right: var(--size-spacing-sm);
 }
+
+.container[data-read-only] {
+	cursor: default;
+}
+
+.container[data-read-only]:hover {
+	background-color: var(--color-system-background-100);
+}

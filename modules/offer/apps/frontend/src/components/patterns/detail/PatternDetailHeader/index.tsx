@@ -49,25 +49,25 @@ export function PatternDetailHeader() {
 			<PatternDetailHistory />
 
 			<LockButton
-				isDisabled={!patternDetailContext.flags.canLock}
-				isLocked={patternDetailContext.data.pattern.is_locked || !!patternDetailContext.flags.inheritedLock}
+				isDisabled={!patternDetailContext.capabilities.lockEnabled}
+				isLocked={patternDetailContext.data.pattern.is_locked || !!patternDetailContext.inheritedLock}
 				onClick={patternDetailContext.actions.lock}
-				tooltip={patternDetailContext.flags.inheritedLock === 'line' ? t('default:networkLocks.line') : patternDetailContext.flags.inheritedLock === 'route' ? t('default:networkLocks.route') : undefined}
+				tooltip={patternDetailContext.inheritedLock === 'line' ? t('default:networkLocks.line') : patternDetailContext.inheritedLock === 'route' ? t('default:networkLocks.route') : undefined}
 			/>
 
 			<Button
-				disabled={!patternDetailContext.flags.canSave}
+				disabled={!patternDetailContext.capabilities.updateEnabled}
 				icon={<IconUpload size={28} />}
 				label="Guardar"
-				loading={patternDetailContext.flags.isSaving}
-				onClick={patternDetailContext.actions.save}
+				loading={patternDetailContext.status.isUpdating}
+				onClick={patternDetailContext.actions.update}
 				variant="primary"
 			/>
 
 			<DeleteButton
 				confirmMessage="Tem a certeza que deseja apagar este Pattern? Esta ação não pode ser revertida."
 				confirmTitle="Apagar Pattern"
-				isDisabled={!patternDetailContext.flags.canDelete}
+				isDisabled={!patternDetailContext.capabilities.deleteEnabled}
 				onDelete={patternDetailContext.actions.delete}
 				showConfirmation
 			/>
