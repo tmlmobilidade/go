@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	sqlite "github.com/tmlmobilidade/go/packages-golang/clients/sqlite/src"
+	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
 )
 
 type testRow struct {
