@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { createMetricsRegistry } from '../src/prometheus/create-registry.js';
+import { createMetricsRegistry } from '../src/metrics/create-registry.js';
 
 describe('createMetricsRegistry usage', () => {
 	it('exposes process cpu and memory usage ratios', async () => {

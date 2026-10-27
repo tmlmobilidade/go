@@ -24,6 +24,9 @@
 		"access": "public"
 	},
 	"type": "module",
+	"dependencies": {
+		"@prometheus-io/client": "0.16.1"
+	},
 	"files": [
 		"dist"
 	],

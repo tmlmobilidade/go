@@ -3,7 +3,7 @@
 import fastifyMultipart from '@fastify/multipart';
 import { getModuleConfig } from '@tmlmobilidade/consts';
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
-import { registerPrometheusMetrics } from '@tmlmobilidade/go-utils-metrics';
+import { registerPrometheusMetrics } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
