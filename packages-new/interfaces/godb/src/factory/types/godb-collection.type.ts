@@ -41,7 +41,11 @@ export interface GoDbCollection<T extends Document> {
 
 	insertOne(doc: InsertableDocument<T>, options?: MinimalOptions): Promise<T>
 
+	insertOneIfAbsent(doc: T, options?: MinimalOptions): Promise<T>
+
 	insertOneUnsafe(doc: T, options?: MinimalOptions): Promise<T>
+
+	replaceOne(filter: Filter<T>, doc: T, options?: MinimalOptions & { upsert?: boolean }): Promise<null | T>
 
 	/**
 	 * @deprecated Use `updateOne` instead.

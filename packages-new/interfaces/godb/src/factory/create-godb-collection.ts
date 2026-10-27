@@ -15,8 +15,10 @@ import { findMany } from './methods/find-many.js';
 import { findOne } from './methods/find-one.js';
 import { getCollection } from './methods/get-collection.js';
 import { insertMany } from './methods/insert-many.js';
+import { insertOneIfAbsent } from './methods/insert-one-if-absent.js';
 import { insertOneUnsafe } from './methods/insert-one-unsafe.js';
 import { insertOne } from './methods/insert-one.js';
+import { replaceOne } from './methods/replace-one.js';
 import { updateById } from './methods/update-by-id.js';
 import { updateOne } from './methods/update-one.js';
 import { upsertManyUnsafe } from './methods/upsert-many-unsafe.js';
@@ -82,7 +84,11 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		insertOne: (doc, clientSession) => insertOne<T>(context, doc, clientSession),
 
+		insertOneIfAbsent: (doc, options) => insertOneIfAbsent<T>(context, doc, options),
+
 		insertOneUnsafe: (doc, clientSession) => insertOneUnsafe<T>(context, doc, clientSession),
+
+		replaceOne: (filter, doc, options) => replaceOne<T>(context, filter, doc, options),
 
 		updateById: (_id, updateFields, clientSession) => updateById<T>(context, _id, updateFields, clientSession),
 
