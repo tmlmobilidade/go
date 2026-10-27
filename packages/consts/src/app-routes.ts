@@ -20,6 +20,14 @@ export const PAGE_ROUTES = Object.freeze({
 		// CHANGE_PASSWORD
 		CHANGE_PASSWORD_LIST: `${getModuleConfig('core', 'frontend_url')}/change-password`,
 
+		// DEV_BANNERS
+		DEV_BANNERS_DETAIL: (bannerId: string) => `${getModuleConfig('core', 'frontend_url')}/dev/banners/${encodeURIComponent(bannerId)}`,
+		DEV_BANNERS_LIST: `${getModuleConfig('core', 'frontend_url')}/dev/banners`,
+
+		// DEV_CHANGELOG
+		DEV_CHANGELOG_DETAIL: (releaseId: string) => `${getModuleConfig('core', 'frontend_url')}/dev/changelog/${encodeURIComponent(releaseId)}`,
+		DEV_CHANGELOG_LIST: `${getModuleConfig('core', 'frontend_url')}/dev/changelog`,
+
 		// HOME
 		HOME_LIST: `${getModuleConfig('core', 'frontend_url')}/home`,
 

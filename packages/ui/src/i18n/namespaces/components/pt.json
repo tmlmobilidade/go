@@ -109,7 +109,9 @@
 			"agencies": "Operadores",
 			"alerts": "Alertas",
 			"annotations": "Anotações",
+			"banners": "Avisos Operacionais",
 			"calendar": "Calendário",
+			"changelog": "Novidades",
 			"collapse_sidebar_aria": "Recolher barra lateral",
 			"events": "Eventos & Exceções",
 			"fares": "Tarifas",
@@ -141,6 +143,7 @@
 		"SidebarGroups": {
 			"core": "Base",
 			"dates": "Datas",
+			"dev": "Dev",
 			"infrastructure": "Infraestrutura",
 			"offer": "Oferta",
 			"operation": "Operação",

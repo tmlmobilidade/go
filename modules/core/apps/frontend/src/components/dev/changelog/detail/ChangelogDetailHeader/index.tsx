@@ -1,0 +1,66 @@
+'use client';
+
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { ChangelogReleaseSchema } from '@tmlmobilidade/go-types-core';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Button, CloseButton, HasPermission, IdTag, keepUrlParams, openChangelogPreviewModal, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+
+import { usePublicationToggle } from '../../../shared/use-publication-toggle';
+import { useChangelogDetailFormContext } from '../ChangelogDetailForm.context';
+
+/* * */
+
+export function ChangelogDetailHeader() {
+	//
+
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation();
+	const router = useRouter();
+	const { actions, capabilities, data, form, isDirty, publication, status } = useChangelogDetailFormContext();
+	const values = useStandardFormWatch({ control: form.control });
+	const preview = ChangelogReleaseSchema.safeParse({
+		...data,
+		...values,
+		published_at: data?.published_at ?? Date.now(),
+		published_by: data?.created_by,
+		status: 'published',
+	});
+	const catalog = PermissionCatalog.all.changelogs;
+	const handleStatusChange = usePublicationToggle({ canPublishContent: preview.success, kind: 'changelog', onAction: publication.change, status: data?.status });
+
+	//
+	// B. Handle actions
+
+	const handleClose = () => router.push(keepUrlParams(PAGE_ROUTES.core.DEV_CHANGELOG_LIST));
+
+	const handlePreview = () => {
+		if (!preview.success) return;
+		openChangelogPreviewModal({ release: { ...preview.data, is_seen: false }, title: t('default:dev.actions.preview') });
+	};
+
+	//
+	// C. Render components
+
+	if (!data) return null;
+
+	return (
+		<Toolbar>
+			<CloseButton onClick={handleClose} type="close" />
+			<IdTag id={data._id} copyOnClick />
+			<PublishStatusDisplay
+				disabled={!publication.can_publish || isDirty || publication.is_busy || !!data.is_locked}
+				onChange={handleStatusChange}
+				value={data.status}
+			/>
+			<Spacer />
+			<Button disabled={!preview.success} label={t('default:dev.actions.preview')} onClick={handlePreview} variant="secondary" />
+			<HasPermission action={catalog.actions.update} scope={catalog.scope}>
+				<UpdateButton isDisabled={!capabilities.updateEnabled} isLoading={status.isUpdating} onClick={actions.update} />
+			</HasPermission>
+		</Toolbar>
+	);
+}

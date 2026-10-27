@@ -228,6 +228,94 @@
 			}
 		}
 	},
+	"dev": {
+		"actions": {
+			"addChange": {
+				"bug_fix": "Add fix",
+				"improvement": "Add improvement",
+				"new_feature": "Add new feature"
+			},
+			"cancel": "Cancel",
+			"down": "Move down",
+			"preview": "Preview",
+			"remove": "Remove change",
+			"up": "Move up"
+		},
+		"banners": {
+			"archive": "Archive",
+			"create": "New banner",
+			"publish": "Activate",
+			"select": "Select a banner",
+			"title": "Operational banners",
+			"unpublish": "Deactivate"
+		},
+		"changelog": {
+			"archive": "Archive",
+			"create": "New release",
+			"publish": "Publish",
+			"select": "Select a release",
+			"title": "Changelog releases",
+			"unpublish": "Unpublish"
+		},
+		"confirm": {
+			"archive": "This content will be archived and will no longer be available to users.",
+			"publish": "Saved content will become available to users according to its scope and schedule.",
+			"unpublish": "This content will no longer be available to users."
+		},
+		"fields": {
+			"activity": "Activity",
+			"changes": "Changes",
+			"description": "Description",
+			"dismissible": "Allow users to dismiss this notice",
+			"ends_at": "Ends at",
+			"id": "#ID",
+			"kind": "Notice type",
+			"link_label": "Link label",
+			"link_url": "Link URL",
+			"message": "Message",
+			"modules": "Modules",
+			"publication": "Publication",
+			"published_at": "Published at",
+			"schedule": "Schedule",
+			"scope": "Scope",
+			"severity": "Severity",
+			"starts_at": "Starts at",
+			"status": "Status",
+			"summary": "Summary",
+			"title": "Title"
+		},
+		"hints": {
+			"emptyChanges": "Add at least one change before publishing.",
+			"incomplete": "Fill in the required fields before publishing."
+		},
+		"kinds": {
+			"announcement": "Announcement",
+			"incident": "Incident",
+			"maintenance": "Maintenance"
+		},
+		"noAccess": "You do not have access to this area.",
+		"scope": {
+			"modules": "Specific modules",
+			"platform": "Entire platform"
+		},
+		"sections": {
+			"content": "Content"
+		},
+		"severities": {
+			"critical": "Critical",
+			"info": "Information",
+			"warning": "Warning"
+		},
+		"statuses": {
+			"active": "Active",
+			"archived": "Archived",
+			"draft": "Draft",
+			"expired": "Expired",
+			"published": "Published",
+			"scheduled": "Scheduled"
+		},
+		"untitled": "Untitled draft"
+	},
 	"home": {
 		"Wiki": {
 			"list": {
