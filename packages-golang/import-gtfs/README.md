@@ -25,7 +25,7 @@ supplied as JSON. Explicit CLI flags override JSON settings, including
 Invalid JSON and unknown properties exit with code 2.
 
 The CLI prints the database
-path to stdout, or binary SQLite bytes when `memory` is true, and errors to stderr. Exit codes are 0 for success, 1 for import
+path to stdout, or binary SQLite bytes when `memory` is true, and telemetry logs and errors to stderr. Exit codes are 0 for success, 1 for import
 failure, and 2 for invalid arguments.
 
 Run `npm run build` to create `dist/import-gtfs`, or invoke the CLI from the
@@ -124,3 +124,9 @@ The build and dev scripts use `-ldflags=-w` to skip DWARF debug information,
 avoiding macOS linker padding failures when combining debug information.
 For direct CLI commands on affected toolchains, use
 `go run -ldflags=-w ./src/cli.go` followed by the import arguments.
+
+Telemetry reports downloads, table imports, date filtering, and transaction completion
+with elapsed time. `ENVIRONMENT=dev` uses readable glyphs; other values emit
+OpenTelemetry JSON. The CLI routes all telemetry to stderr to preserve stdout.
+Go callers use the shared `telemetry.Logger` and can replace it with a custom
+logger before importing.

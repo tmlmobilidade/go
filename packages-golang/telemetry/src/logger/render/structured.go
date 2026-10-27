@@ -2,11 +2,13 @@ package render
 
 import (
 	"encoding/json"
-	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/levels"
-	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/types"
+	"io"
 	"os"
 	"reflect"
 	"time"
+
+	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/levels"
+	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/types"
 )
 
 type OtelLogRecord struct {
@@ -33,6 +35,11 @@ func exceptionAttributes(err error) map[string]any {
 }
 
 func RenderStructured(record types.LogRecord) {
+	RenderStructuredTo(record, os.Stdout, os.Stderr)
+}
+
+// RenderStructuredTo renders to the supplied output streams.
+func RenderStructuredTo(record types.LogRecord, stdout, stderr io.Writer) {
 	severity, ok := levels.SEVERITY[record.Level]
 	if !ok {
 		panic("telemetry: unknown log level: " + string(record.Level))
@@ -46,9 +53,9 @@ func RenderStructured(record types.LogRecord) {
 	}
 	line := OtelLogRecord{Attributes: attributes, Body: record.Message, Severity_number: severity.Number,
 		Severity_text: severity.Text, Timestamp: time.Now().UTC().Format("2006-01-02T15:04:05.000Z")}
-	output := os.Stdout
+	output := stdout
 	if severity.Number >= levels.SEVERITY["error"].Number {
-		output = os.Stderr
+		output = stderr
 	}
 	if err := json.NewEncoder(output).Encode(line); err != nil {
 		panic(err)

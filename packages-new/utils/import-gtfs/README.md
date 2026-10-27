@@ -30,7 +30,9 @@ The transfer temporarily holds database copies in memory. Relative paths use
 the caller's working directory.
 
 The wrapper passes JSON directly to the CLI without a shell. Import errors reject
-the promise with the CLI's stderr.
+the promise with the CLI's stderr. Telemetry is forwarded to the parent's stderr
+as it arrives, in both file and memory modes. `ENVIRONMENT=dev` selects readable
+logs; other values produce OpenTelemetry JSON.
 
 `_db` is a `SQLiteDatabase`. Each table handle is a `SQLiteTableInstance` with
 `all`, `get`, `has`, `stream`, and the other SQLite client methods. Columns are

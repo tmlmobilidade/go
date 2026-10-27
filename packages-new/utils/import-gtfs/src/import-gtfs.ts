@@ -1,15 +1,10 @@
 /* * */
 
-import { execFile, spawn } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { promisify } from 'node:util';
 
 import { initGtfsSqlTables } from './tables.js';
 import { type GtfsSQLTables, type ImportGtfsConfig } from './types.js';
-
-/* * */
-
-const execFileAsync = promisify(execFile);
 
 /* * */
 
@@ -20,15 +15,12 @@ const execFileAsync = promisify(execFile);
  */
 export async function importGtfsToDatabase(config: ImportGtfsConfig): Promise<GtfsSQLTables> {
 	const executablePath = fileURLToPath(new URL('./bin/import-gtfs', import.meta.url));
-	if (config.sqlite_config?.memory) {
-		return initGtfsSqlTables(await importGtfsToMemory(executablePath, config));
-	}
-	const { stdout } = await execFileAsync(executablePath, ['-config', JSON.stringify(config)], { encoding: 'utf8' });
-	return initGtfsSqlTables(stdout.trim());
+	const stdout = await importGtfs(executablePath, config);
+	return initGtfsSqlTables(config.sqlite_config?.memory ? stdout : stdout.toString('utf8').trim());
 }
 
-/** Collect binary stdout without execFile's output size limit. */
-async function importGtfsToMemory(executablePath: string, config: ImportGtfsConfig): Promise<Buffer> {
+/** Collect stdout as data while forwarding telemetry from stderr as it arrives. */
+async function importGtfs(executablePath: string, config: ImportGtfsConfig): Promise<Buffer> {
 	return new Promise((resolve, reject) => {
 		const child = spawn(executablePath, ['-config', JSON.stringify(config)], {
 			stdio: ['ignore', 'pipe', 'pipe'],
@@ -38,6 +30,7 @@ async function importGtfsToMemory(executablePath: string, config: ImportGtfsConf
 		child.stdout.on('data', (chunk: Buffer) => chunks.push(chunk));
 		child.stderr.setEncoding('utf8').on('data', (chunk: string) => {
 			stderr += chunk;
+			process.stderr.write(chunk);
 		});
 		child.on('error', reject);
 		child.on('close', (code, signal) => {

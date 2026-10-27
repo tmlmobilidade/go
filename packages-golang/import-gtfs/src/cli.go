@@ -16,6 +16,8 @@ import (
 
 	sqlite3 "github.com/mattn/go-sqlite3"
 	importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
+	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
+	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/render"
 )
 
 /* * */
@@ -115,10 +117,19 @@ Exit codes:
 		os.Exit(2)
 	}
 
+	// Keep telemetry on stderr so stdout remains a path or a binary SQLite image.
+	telemetry.Logger = telemetry.CreateLogger(func(record telemetry.LogRecord) {
+		if os.Getenv("ENVIRONMENT") == "dev" {
+			render.RenderDevTo(record, os.Stderr, os.Stderr)
+		} else {
+			render.RenderStructuredTo(record, os.Stderr, os.Stderr)
+		}
+	})
+
 	// Memory pointers cannot cross process boundaries. Transfer a SQLite image instead.
 	if config.Sqlite_config.Memory {
 		if err := writeMemoryDatabase(config); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			telemetry.Logger.Error(err)
 			os.Exit(1)
 		}
 		return
@@ -127,7 +138,7 @@ Exit codes:
 	// Keep stdout limited to the resulting path for use in scripts.
 	instancePath, err := importgtfs.ImportGtfsToDatabase(config)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		telemetry.Logger.Error(err)
 		os.Exit(1)
 	}
 	fmt.Println(instancePath)

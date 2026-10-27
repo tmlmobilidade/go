@@ -2,10 +2,11 @@ package render
 
 import (
 	"fmt"
-	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/levels"
-	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/presentation"
-	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/types"
+	"io"
 	"os"
+
+	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/levels"
+	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/types"
 )
 
 var STYLE = map[levels.LogLevel]struct {
@@ -25,18 +26,27 @@ func errorStack(err error) string {
 }
 
 func RenderDev(record types.LogRecord) {
+	RenderDevTo(record, os.Stdout, os.Stderr)
+}
+
+// RenderDevTo renders to the supplied output streams.
+func RenderDevTo(record types.LogRecord, stdout, stderr io.Writer) {
 	style, ok := STYLE[record.Level]
 	if !ok {
 		panic("telemetry: unknown log level: " + string(record.Level))
 	}
-	output := os.Stdout
+	output := stdout
 	if style.stderr {
-		output = os.Stderr
+		output = stderr
 	}
-	presentation.Spacer(record.SpacesBefore)
+	for i := 0; i < record.SpacesBefore; i++ {
+		fmt.Fprintln(stdout)
+	}
 	fmt.Fprintf(output, "%s %s\n", style.glyph, record.Message)
 	if stack := errorStack(record.Error); stack != "" {
 		fmt.Fprintln(output, stack)
 	}
-	presentation.Spacer(record.SpacesAfter)
+	for i := 0; i < record.SpacesAfter; i++ {
+		fmt.Fprintln(stdout)
+	}
 }

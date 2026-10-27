@@ -2,6 +2,7 @@ package importgtfs_test
 
 import (
 	"archive/zip"
+	"bytes"
 	"database/sql"
 	"encoding/json"
 	"os"
@@ -53,12 +54,28 @@ func TestCLIJSONConfig(t *testing.T) {
 	}
 	// Explicit flags replace the JSON source and override both string and boolean settings.
 	command := exec.Command(binary, "-config", string(config), "-path", archivePath, "-instance-path", outputPath, "-memory=false")
+	var diagnostics bytes.Buffer
+	command.Stderr = &diagnostics
+	command.Env = append(os.Environ(), "ENVIRONMENT=prd")
 	output, err := command.Output()
 	if err != nil {
 		t.Fatalf("JSON import failed: %v", err)
 	}
 	if strings.TrimSpace(string(output)) != outputPath {
 		t.Fatalf("unexpected output: %s", output)
+	}
+	var completion struct {
+		Body       string         `json:"body"`
+		Attributes map[string]any `json:"attributes"`
+	}
+	lines := strings.Split(strings.TrimSpace(diagnostics.String()), "\n")
+	for _, line := range lines {
+		if err := json.Unmarshal([]byte(line), &completion); err != nil {
+			t.Fatalf("invalid telemetry: %v: %s", err, line)
+		}
+	}
+	if !strings.HasPrefix(completion.Body, "GTFS tables imported in ") || completion.Attributes["elapsed_ms"] == nil {
+		t.Fatalf("missing completion telemetry: %s", diagnostics.String())
 	}
 	contents, err := os.ReadFile(outputPath)
 	if err != nil || !strings.HasPrefix(string(contents), "SQLite format 3") {
@@ -86,11 +103,16 @@ func TestCLIJSONConfig(t *testing.T) {
 	}
 	// Memory mode emits a SQLite image instead of a path, without temporary output.
 	memoryCommand := exec.Command(binary, "-path", archivePath, "-memory")
-	memoryCommand.Env = append(os.Environ(), "TMPDIR="+filepath.Join(t.TempDir(), "missing"))
+	memoryCommand.Env = append(os.Environ(), "ENVIRONMENT=dev", "TMPDIR="+filepath.Join(t.TempDir(), "missing"))
+	diagnostics.Reset()
+	memoryCommand.Stderr = &diagnostics
 	memoryOutput, err := memoryCommand.Output()
 	requireNoError(t, err)
 	if !strings.HasPrefix(string(memoryOutput), "SQLite format 3\x00") {
 		t.Fatalf("expected binary SQLite output, got %q", memoryOutput)
+	}
+	if !strings.Contains(diagnostics.String(), "✓ GTFS tables imported in ") {
+		t.Fatalf("missing development telemetry: %s", diagnostics.String())
 	}
 	for _, config := range []string{"", "{", `{} {}`, `{"unknown":true}`, `{"source":{"path":3}}`, `{"sqlite_config":{"databaseInstance":{}}}`} {
 		command := exec.Command(binary, "-config", config)

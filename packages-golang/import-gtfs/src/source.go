@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
 )
 
 /* * */
@@ -24,6 +26,7 @@ func prepareSourcePath(source ImportGtfsConfigSource) (string, func(), error) {
 		return source.Path, cleanup, nil
 	}
 
+	telemetry.Logger.Progress("Downloading GTFS archive")
 	client := http.Client{Timeout: 30 * time.Minute}
 	response, err := client.Get(source.Url)
 	if err != nil {

@@ -15,7 +15,7 @@ telemetry.Logger.Success(timer.Get())
 
 `ENVIRONMENT=dev` selects glyph output; other values select OpenTelemetry JSON lines. Selection happens at package initialization. Error and critical JSON logs go to stderr; other JSON logs go to stdout. Development warnings also go to stderr. Presentation helpers always print to stdout, including in production.
 
-Level methods accept strings, Go errors, and `LogEntry` values or pointers. An empty entry message defaults to the attached error's message; `MessageOverride` can supply an explicitly empty message. Unsupported input types panic. `CreateLogger` accepts a custom renderer.
+Level methods accept strings, Go errors, and `LogEntry` values or pointers. An empty entry message defaults to the attached error's message; `MessageOverride` can supply an explicitly empty message. Unsupported input types panic. `CreateLogger` accepts a custom renderer. The render subpackage also exposes `RenderDevTo` and `RenderStructuredTo`, which accept separate stdout and stderr writers for applications that reserve stdout for data.
 
 Go errors do not automatically carry stacks. Errors implementing `StackTrace() string` retain that stack in both renderers; otherwise `exception.stacktrace` is omitted. Exception types use the concrete Go type name. Attributes must be JSON-serializable; serialization and output errors panic.
 

@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
+	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
 )
 
 /* * */
@@ -104,6 +105,8 @@ func ImportGtfsToMemory(config ImportGtfsConfig) (*sqlite.SQLiteDatabase, error)
 }
 
 func importGtfsTables(config ImportGtfsConfig, instance *sql.DB, archive *zip.ReadCloser, dateFilter func(string) bool) error {
+	timer := telemetry.NewTimer()
+	telemetry.Logger.Info("Importing GTFS tables")
 	transaction, err := instance.Begin()
 	if err != nil {
 		return err
@@ -123,11 +126,16 @@ func importGtfsTables(config ImportGtfsConfig, instance *sql.DB, archive *zip.Re
 			target = prefix + tableName
 			staged[tableName] = target
 		}
+		telemetry.Logger.Progress(telemetry.LogEntry{
+			Message:    "Importing GTFS table " + fileName,
+			Attributes: map[string]any{"table": tableName},
+		})
 		if err := importTable(transaction, file, target, dateFilter != nil); err != nil {
 			return fmt.Errorf("import %s: %w", file.Name, err)
 		}
 	}
 	if dateFilter != nil {
+		telemetry.Logger.Progress("Filtering GTFS service dates and dependencies")
 		if err := filterServiceDates(transaction, staged, prefix, config.Time_range, dateFilter); err != nil {
 			return err
 		}
@@ -136,5 +144,9 @@ func importGtfsTables(config ImportGtfsConfig, instance *sql.DB, archive *zip.Re
 		return err
 	}
 
+	telemetry.Logger.Success(telemetry.LogEntry{
+		Message:    "GTFS tables imported in " + timer.Get(),
+		Attributes: map[string]any{"elapsed_ms": timer.GetMs()},
+	})
 	return nil
 }
