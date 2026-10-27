@@ -48,7 +48,12 @@ Examples (from the package directory):
 
 JSON configuration:
   Uses source.path or source.url and optional sqlite_config with instanceName,
-  instancePath, and memory. Explicit CLI flags override JSON values.
+  instancePath, and memory. Optional time_range selects active service dates using
+  date_range (inclusive start/end YYYYMMDD integers) and/or discrete_dates.
+  Both filters must match when supplied together. Empty discrete_dates is ignored.
+  Weekly calendars are expanded and exceptions applied. Trips and their stop times,
+  routes, shapes, and stops are filtered to selected services.
+  Explicit CLI flags override JSON values.
   A source flag replaces the JSON source. Database instances cannot be passed as JSON.
 
 Output:

@@ -1,4 +1,4 @@
-module github.com/tmlmobilidade/go/packages-golang/clients/sqlite
+module github.com/tmlmobilidade/go/packages-golang/sqlite
 
 go 1.26.0
 

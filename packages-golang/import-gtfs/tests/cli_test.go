@@ -2,6 +2,7 @@ package importgtfs_test
 
 import (
 	"archive/zip"
+	"database/sql"
 	"encoding/json"
 	"os"
 	"os/exec"
@@ -25,9 +26,13 @@ func TestCLIJSONConfig(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := file.Write([]byte("id\n001\n")); err != nil {
+	if _, err := file.Write([]byte("stop_id\n001\n")); err != nil {
 		t.Fatal(err)
 	}
+	file, err = writer.Create("calendar_dates.txt")
+	requireNoError(t, err)
+	_, err = file.Write([]byte("service_id,date,exception_type\n001,20261001,1\n001,20261027,1\n001,20261031,1\n"))
+	requireNoError(t, err)
 	if err := writer.Close(); err != nil {
 		t.Fatal(err)
 	}
@@ -38,6 +43,10 @@ func TestCLIJSONConfig(t *testing.T) {
 	config, err := json.Marshal(map[string]any{
 		"source":        map[string]string{"url": "invalid-url"},
 		"sqlite_config": map[string]any{"instancePath": "ignored.db", "memory": true},
+		"time_range": map[string]any{
+			"date_range":     map[string]int{"start": 20261001, "end": 20261031},
+			"discrete_dates": []int{20261027, 20261101},
+		},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -54,6 +63,15 @@ func TestCLIJSONConfig(t *testing.T) {
 	contents, err := os.ReadFile(outputPath)
 	if err != nil || !strings.HasPrefix(string(contents), "SQLite format 3") {
 		t.Fatalf("missing SQLite output: %v", err)
+	}
+	database, err := sql.Open("sqlite3", outputPath)
+	requireNoError(t, err)
+	defer database.Close()
+	var count int
+	var date, exception string
+	requireNoError(t, database.QueryRow("SELECT COUNT(*), date, exception_type FROM calendar_dates").Scan(&count, &date, &exception))
+	if count != 1 || date != "20261027" || exception != "1" {
+		t.Fatalf("JSON time_range not applied: %d, %s, %s", count, date, exception)
 	}
 	config, err = json.Marshal(map[string]any{
 		"source":        map[string]string{"path": archivePath},

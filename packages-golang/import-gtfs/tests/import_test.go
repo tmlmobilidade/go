@@ -12,8 +12,8 @@ import (
 	"reflect"
 	"testing"
 
-	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
 	importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
+	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
 )
 
 func requireNoError(t *testing.T, err error) {
@@ -182,5 +182,205 @@ func TestImportSourceErrors(t *testing.T) {
 		if path, err := importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig{Source: source}); err == nil || path != "" {
 			t.Fatalf("invalid source succeeded: %+v", source)
 		}
+	}
+}
+
+func TestImportTimeRange(t *testing.T) {
+	archive := makeArchive(t, map[string]string{
+		"nested/calendar_dates.txt": "service_id,date,exception_type,custom\n001,20260228,1,keep\n001,20260301,1,keep\n002,20260302,1,keep\n002,20260303,1,keep\n",
+		"calendar.txt":              "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday\n001,20260101,20261231,0,0,0,0,0,0,0\n",
+		"trips.txt":                 "service_id,trip_id\n001,trip\n002,other\n",
+	})
+	rangeConfig := &importgtfs.ImportGtfsConfigDateRange{Start: 20260228, End: 20260302}
+	for _, test := range []struct {
+		name   string
+		filter *importgtfs.ImportGtfsConfigTimeRange
+		want   []string
+	}{
+		{"omitted", nil, []string{"20260228", "20260301", "20260302", "20260303"}},
+		{"empty", &importgtfs.ImportGtfsConfigTimeRange{}, []string{"20260228", "20260301", "20260302", "20260303"}},
+		{"range", &importgtfs.ImportGtfsConfigTimeRange{Date_range: rangeConfig}, []string{"20260228", "20260301", "20260302"}},
+		{"discrete", &importgtfs.ImportGtfsConfigTimeRange{Discrete_dates: []int{20260303, 20260228, 20260228}}, []string{"20260228", "20260303"}},
+		{"intersection", &importgtfs.ImportGtfsConfigTimeRange{Date_range: rangeConfig, Discrete_dates: []int{20260303, 20260301}}, []string{"20260301"}},
+		{"single day", &importgtfs.ImportGtfsConfigTimeRange{Date_range: &importgtfs.ImportGtfsConfigDateRange{Start: 20260301, End: 20260301}}, []string{"20260301"}},
+		{"no matches", &importgtfs.ImportGtfsConfigTimeRange{Discrete_dates: []int{20270101}}, []string{}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			path, err := importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig{
+				Source:        localSource(t, archive),
+				Sqlite_config: sqlite.SQLiteDatabaseConfig{InstancePath: filepath.Join(t.TempDir(), "dates.db")},
+				Time_range:    test.filter,
+			})
+			requireNoError(t, err)
+			database, err := sql.Open("sqlite3", path)
+			requireNoError(t, err)
+			defer database.Close()
+			rows, err := database.Query("SELECT date, exception_type, custom FROM calendar_dates ORDER BY date")
+			requireNoError(t, err)
+			defer rows.Close()
+			got := []string{}
+			for rows.Next() {
+				var date, exception, custom string
+				requireNoError(t, rows.Scan(&date, &exception, &custom))
+				got = append(got, date)
+				if custom != "keep" || (date == "20260301" && exception != "1") {
+					t.Fatal("filter changed raw fields")
+				}
+			}
+			requireNoError(t, rows.Err())
+			if !reflect.DeepEqual(got, test.want) {
+				t.Fatalf("dates = %v, want %v", got, test.want)
+			}
+			calendarCount, tripCount := 1, 2
+			if test.name != "omitted" && test.name != "empty" {
+				calendarCount = 0
+				services := map[string]bool{}
+				for _, date := range got {
+					if date <= "20260301" {
+						services["001"] = true
+					} else {
+						services["002"] = true
+					}
+				}
+				tripCount = len(services)
+			}
+			for table, want := range map[string]int{"calendar": calendarCount, "trips": tripCount} {
+				var count int
+				requireNoError(t, database.QueryRow("SELECT COUNT(*) FROM "+table).Scan(&count))
+				if count != want {
+					t.Fatalf("%s changed: %d rows", table, count)
+				}
+			}
+		})
+	}
+}
+
+func TestImportInvalidTimeRange(t *testing.T) {
+	for _, filter := range []*importgtfs.ImportGtfsConfigTimeRange{
+		{Date_range: &importgtfs.ImportGtfsConfigDateRange{Start: 20260302, End: 20260301}},
+		{Date_range: &importgtfs.ImportGtfsConfigDateRange{Start: 20260230, End: 20260301}},
+		{Date_range: &importgtfs.ImportGtfsConfigDateRange{Start: 20260301}},
+		{Discrete_dates: []int{20260229}},
+		{Discrete_dates: []int{202603}},
+	} {
+		outputPath := filepath.Join(t.TempDir(), "invalid.db")
+		path, err := importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig{
+			Source:        localSource(t, makeArchive(t, map[string]string{"calendar_dates.txt": "date\n20260301\n"})),
+			Sqlite_config: sqlite.SQLiteDatabaseConfig{InstancePath: outputPath},
+			Time_range:    filter,
+		})
+		if err == nil || path != "" {
+			t.Fatalf("invalid time range succeeded: %+v", filter)
+		}
+		if _, err := os.Stat(outputPath); !os.IsNotExist(err) {
+			t.Fatalf("invalid time range created output: %v", err)
+		}
+	}
+}
+
+func TestImportResolvesCalendarAndPrunesDependencies(t *testing.T) {
+	archive := makeArchive(t, map[string]string{
+		"calendar.txt":       "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday\nweekly,20261001,20261130,1,1,0,1,0,0,0\nremoved,20261027,20261027,0,1,0,0,0,0,0\noff,20261001,20261130,0,0,0,0,0,0,1\n",
+		"calendar_dates.txt": "service_id,date,exception_type,custom\nweekly,20261027,2,removal\nweekly,20261028,1,addition\nweekly,20261101,1,outside\nremoved,20261027,2,removal\nextra,20261028,1,extra\n",
+		"trips.txt":          "trip_id,service_id,route_id,shape_id,custom\nt1,weekly,r1,s1,kept\nt2,removed,r2,s2,removed\nt3,off,r3,s3,removed\nt4,extra,r1,,kept\n",
+		"stop_times.txt":     "trip_id,stop_id,stop_sequence\nt1,child,1\nt2,unused,1\nt3,unused,1\nt4,child,1\n",
+		"routes.txt":         "route_id\nr1\nr2\nr3\n",
+		"shapes.txt":         "shape_id,shape_pt_sequence\ns1,1\ns1,2\ns2,1\ns3,1\n",
+		"stops.txt":          "stop_id,parent_station\nchild,parent\nparent,grandparent\ngrandparent,\nunused,\n",
+	})
+	source := localSource(t, archive)
+	for _, memory := range []bool{false, true} {
+		t.Run(fmt.Sprintf("memory=%v", memory), func(t *testing.T) {
+			path, err := importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig{
+				Source:        source,
+				Sqlite_config: sqlite.SQLiteDatabaseConfig{InstancePath: filepath.Join(t.TempDir(), "filtered.db"), Memory: memory},
+				Time_range:    &importgtfs.ImportGtfsConfigTimeRange{Date_range: &importgtfs.ImportGtfsConfigDateRange{Start: 20261026, End: 20261029}},
+			})
+			requireNoError(t, err)
+			if memory {
+				t.Cleanup(func() { os.RemoveAll(filepath.Dir(path)) })
+			}
+			database, err := sql.Open("sqlite3", path)
+			requireNoError(t, err)
+			defer database.Close()
+			dates, err := sqlite.Query[map[string]any](database, "SELECT * FROM calendar_dates ORDER BY service_id,date")
+			requireNoError(t, err)
+			expected := []map[string]any{
+				{"service_id": "extra", "date": "20261028", "exception_type": "1", "custom": "extra"},
+				{"service_id": "weekly", "date": "20261026", "exception_type": "1", "custom": nil},
+				{"service_id": "weekly", "date": "20261028", "exception_type": "1", "custom": "addition"},
+				{"service_id": "weekly", "date": "20261029", "exception_type": "1", "custom": nil},
+			}
+			if !reflect.DeepEqual(dates, expected) {
+				t.Fatalf("resolved dates = %#v", dates)
+			}
+			for table, want := range map[string]int{"calendar": 0, "trips": 2, "stop_times": 2, "routes": 1, "shapes": 2, "stops": 3} {
+				var count int
+				requireNoError(t, database.QueryRow("SELECT COUNT(*) FROM "+table).Scan(&count))
+				if count != want {
+					t.Fatalf("%s count = %d, want %d", table, count, want)
+				}
+			}
+		})
+	}
+}
+
+func TestFilteredImportPreservesExistingRowsAndRollsBack(t *testing.T) {
+	database, err := sql.Open("sqlite3", ":memory:")
+	requireNoError(t, err)
+	defer database.Close()
+	_, err = database.Exec("CREATE TABLE trips(trip_id TEXT,service_id TEXT); INSERT INTO trips VALUES('old','old'); CREATE TABLE calendar_dates(service_id TEXT,date TEXT,exception_type TEXT); INSERT INTO calendar_dates VALUES('old','20200101','1')")
+	requireNoError(t, err)
+	config := importgtfs.ImportGtfsConfig{
+		Source: localSource(t, makeArchive(t, map[string]string{
+			"calendar_dates.txt": "service_id,date,exception_type\nnew,20261027,1\nexcluded,20261028,1\n",
+			"trips.txt":          "trip_id,service_id\nnew,new\nexcluded,excluded\n",
+		})),
+		Sqlite_config: sqlite.SQLiteDatabaseConfig{DatabaseInstance: database},
+		Time_range:    &importgtfs.ImportGtfsConfigTimeRange{Discrete_dates: []int{20261027}},
+	}
+	path, err := importgtfs.ImportGtfsToDatabase(config)
+	requireNoError(t, err)
+	defer os.RemoveAll(filepath.Dir(path))
+	for _, table := range []string{"trips", "calendar_dates"} {
+		var count int
+		requireNoError(t, database.QueryRow("SELECT COUNT(*) FROM "+table).Scan(&count))
+		if count != 2 {
+			t.Fatalf("%s: existing data changed: %d", table, count)
+		}
+	}
+	config.Source = localSource(t, makeArchive(t, map[string]string{"calendar_dates.txt": "service_id,date,exception_type\nnew,20261027,invalid\n"}))
+	if _, err := importgtfs.ImportGtfsToDatabase(config); err == nil {
+		t.Fatal("invalid exception succeeded")
+	}
+	var count int
+	requireNoError(t, database.QueryRow("SELECT COUNT(*) FROM calendar_dates").Scan(&count))
+	if count != 2 {
+		t.Fatal("failed filtered import changed existing data")
+	}
+	requireNoError(t, database.QueryRow("SELECT COUNT(*) FROM sqlite_temp_master WHERE type='table'").Scan(&count))
+	if count != 0 {
+		t.Fatalf("staging tables leaked: %d", count)
+	}
+}
+
+func TestCalendarOnlyDiscreteDates(t *testing.T) {
+	path, err := importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig{
+		Source: localSource(t, makeArchive(t, map[string]string{
+			"calendar.txt": "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday\nweekly,20261001,20261031,1,1,1,1,1,0,0\n",
+			"trips.txt":    "service_id,trip_id\nweekly,001\n",
+		})),
+		Sqlite_config: sqlite.SQLiteDatabaseConfig{InstancePath: filepath.Join(t.TempDir(), "calendar-only.db")},
+		Time_range:    &importgtfs.ImportGtfsConfigTimeRange{Discrete_dates: []int{20261027, 20261027, 20261031, 20261102}},
+	})
+	requireNoError(t, err)
+	database, err := sql.Open("sqlite3", path)
+	requireNoError(t, err)
+	defer database.Close()
+	var count int
+	var date string
+	requireNoError(t, database.QueryRow("SELECT COUNT(*),date FROM calendar_dates").Scan(&count, &date))
+	if count != 1 || date != "20261027" {
+		t.Fatalf("calendar dates: %d %s", count, date)
 	}
 }

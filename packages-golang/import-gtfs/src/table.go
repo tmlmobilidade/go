@@ -29,7 +29,7 @@ func isGtfsTable(tableName string) bool {
 }
 
 // Streams CSV rows into a prepared statement without loading the file into memory.
-func importTable(transaction *sql.Tx, file *zip.File, tableName string) error {
+func importTable(transaction *sql.Tx, file *zip.File, tableName string, temporary bool) error {
 	stream, err := file.Open()
 	if err != nil {
 		return err
@@ -56,7 +56,11 @@ func importTable(transaction *sql.Tx, file *zip.File, tableName string) error {
 		definitions[i] = columns[i] + " TEXT"
 		placeholders[i] = "?"
 	}
-	if _, err := transaction.Exec("CREATE TABLE IF NOT EXISTS " + quoteIdentifier(tableName) + " (" + strings.Join(definitions, ", ") + ")"); err != nil {
+	create := "CREATE TABLE IF NOT EXISTS "
+	if temporary {
+		create = "CREATE TEMP TABLE IF NOT EXISTS "
+	}
+	if _, err := transaction.Exec(create + quoteIdentifier(tableName) + " (" + strings.Join(definitions, ", ") + ")"); err != nil {
 		return err
 	}
 	statement, err := transaction.Prepare("INSERT INTO " + quoteIdentifier(tableName) + " (" + strings.Join(columns, ", ") + ") VALUES (" + strings.Join(placeholders, ", ") + ")")

@@ -32,9 +32,34 @@ the promise with the CLI's stderr.
 `all`, `get`, `has`, `stream`, and the other SQLite client methods. Columns are
 read from SQLite; empty fields are `null` and other values remain strings.
 `calendar_dates` exposes raw table
-rows, without expanding or filtering service dates. Missing or empty source
+rows when `time_range` is omitted. With a nonempty filter, it instead exposes
+resolved active service dates after expanding weekly calendars and applying exceptions. Missing or empty source
 files produce `undefined` handles; header-only files produce empty tables.
 Other imported GTFS tables remain accessible through `_db.databaseInstance`.
+
+Optional `time_range` accepts the same dates as the legacy importer:
+
+```ts
+time_range: {
+    date_range: {
+        start: OperationalDateIntSchema.parse(20261001),
+        end: OperationalDateIntSchema.parse(20261031),
+    },
+    discrete_dates: [OperationalDateIntSchema.parse(20261027)],
+},
+```
+
+Import `OperationalDateIntSchema` from `@tmlmobilidade/go-types-shared`.
+The range includes both endpoints. When both filters are supplied, dates must
+match both. An omitted filter, `{}`, or an empty `discrete_dates` array imports
+all dates. Invalid configuration dates or reversed ranges reject the import.
+A nonempty filter expands `calendar.txt` weekdays, applies `calendar_dates.txt`
+additions/removals, and keeps trips with selected active dates. It then keeps only
+referenced stop times, routes, shapes, and stops (including parent stations).
+The resolved `calendar_dates` rows have `exception_type: '1'`; the imported
+`calendar` table is empty. Custom exception fields are preserved; generated weekly
+dates have `null` custom fields. Other GTFS tables and existing database rows are
+retained. An omitted or empty filter preserves raw import behavior.
 
 The caller owns the database connection and file. Call `_db.cleanup()` to close
 and delete the file (including a custom output path), or call

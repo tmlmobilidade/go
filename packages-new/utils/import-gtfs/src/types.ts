@@ -1,6 +1,7 @@
 /* * */
 
 import { type SQLiteDatabase, type SQLiteDatabaseConfig, type SQLiteTableInstance } from '@tmlmobilidade/go-clients-sqlite';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -14,6 +15,18 @@ export type ImportGtfsConfigSource = {
 	path?: never
 	url: string
 };
+
+/**
+ * Optional inclusive date range and discrete service dates.
+ * When both are set, a date must match both. An empty discrete list is ignored.
+ */
+export interface ImportGtfsConfigTimeRange {
+	date_range?: {
+		end: OperationalDateInt
+		start: OperationalDateInt
+	}
+	discrete_dates?: OperationalDateInt[]
+}
 
 /**
  * Configuration passed to the Go GTFS importer as JSON.
@@ -30,6 +43,9 @@ export interface ImportGtfsConfig {
 	 * Memory databases are exported to a temporary file after importing.
 	 */
 	sqlite_config?: Omit<SQLiteDatabaseConfig, 'databaseInstance'>
+
+	/** Resolve service dates and filter trips and their dependencies. Omit for a raw import. */
+	time_range?: ImportGtfsConfigTimeRange
 }
 
 /* * */
@@ -42,7 +58,9 @@ export type GtfsRow = Record<string, null | string>;
 /**
  * The opened SQLite database and its GTFS tables.
  * Missing or empty source files have undefined table handles.
- * calendar_dates exposes raw rows without expanding or filtering service dates.
+ * calendar_dates exposes raw rows when no time_range filter is configured.
+ * With a nonempty filter, it contains resolved active dates (exception_type = 1),
+ * including expanded weekly calendars and applied exceptions.
  * Call _db.cleanup() to close and delete the database when finished.
  */
 export interface GtfsSQLTables {

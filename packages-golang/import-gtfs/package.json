@@ -9,6 +9,6 @@
 		"test": "go test ./..."
 	},
 	"devDependencies": {
-		"@tmlmobilidade/go-golang-clients-sqlite": "*"
+		"@tmlmobilidade/go-golang-sqlite": "*"
 	}
 }

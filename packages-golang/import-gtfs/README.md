@@ -48,6 +48,39 @@ instancePath, err := importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig
 Use `Source: importgtfs.ImportGtfsConfigSource{Url: "https://example.com/gtfs.zip"}`
 for downloads. Provide exactly one source. `Sqlite_config` is optional.
 
+Optional `time_range` selects active service dates and filters the imported feed:
+
+```json
+{
+    "source": { "path": "./gtfs.zip" },
+    "time_range": {
+        "date_range": { "start": 20261001, "end": 20261031 },
+        "discrete_dates": [20261027]
+    }
+}
+```
+
+In Go, set `Time_range` to `&importgtfs.ImportGtfsConfigTimeRange{}` with
+`Date_range: &importgtfs.ImportGtfsConfigDateRange{Start: 20261001, End: 20261031}`
+and/or `Discrete_dates: []int{20261027}`. Dates are YYYYMMDD integers. The range
+includes both endpoints; when both filters are supplied, dates must match both.
+An omitted filter, empty object, or empty discrete list imports all dates.
+Invalid configuration dates and reversed ranges fail before importing.
+
+With a nonempty filter, weekly `calendar.txt` schedules expand to individual
+service dates. `calendar_dates.txt` additions and removals are applied afterwards.
+The resulting `calendar_dates` contains only active dates (`exception_type = 1`);
+`calendar` is left empty to avoid reintroducing unselected service dates. Custom
+exception columns are preserved; generated weekly dates have NULL custom fields.
+Calendar files must contain the columns needed to resolve their service dates.
+
+Trips without selected active dates are removed, followed by their stop times,
+routes, shapes, and stops. Referenced parent stations are retained recursively.
+Missing optional files are supported. Other GTFS tables retain their raw rows.
+Filtering is staged inside the import transaction and affects only incoming data;
+existing database rows are retained. Omit `time_range` (or pass an empty filter)
+to retain the raw import behavior, including unmodified calendars and exceptions.
+
 Recognized GTFS `.txt` files become tables named after the file, including files
 inside archive directories. Headers define the columns; all values are stored as
 `TEXT`, preserving leading zeros and custom columns. Empty CSV fields (including
@@ -55,7 +88,8 @@ quoted empty strings) become SQL `NULL`; whitespace and other text are preserved
 quoted fields, and multiline CSV values are supported. Empty files are skipped;
 header-only files create empty tables. Other files are ignored.
 
-This package does not check required GTFS files, fields, values, or relationships.
+Raw imports do not check required GTFS files, fields, values, or relationships.
+Date filtering checks the calendar and reference columns it needs.
 Unreadable ZIPs, malformed CSV, and SQL errors return an error. Table creation and
 row inserts run in one transaction, so a failed import rolls them back. Existing
 tables receive additional rows and must be compatible with the CSV headers.
