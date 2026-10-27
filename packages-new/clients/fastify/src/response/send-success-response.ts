@@ -51,6 +51,12 @@ export function sendSuccessApiResponse<T>(reply: FastifyReply<T>, data: T, optio
 	if (cacheControlHeader) reply.header('Cache-Control', cacheControlHeader);
 
 	//
+	// Set a timestamp for the response in UTC milliseconds
+
+	const nowUnixMilliseconds = Dates.now('utc').unix_milliseconds;
+	reply.header('Go-Upstream-Timestamp', nowUnixMilliseconds.toString());
+
+	//
 	// Return with the prepared response
 
 	const response: ApiResponseSuccess<T> = {
@@ -58,7 +64,7 @@ export function sendSuccessApiResponse<T>(reply: FastifyReply<T>, data: T, optio
 		error: null,
 		generated_at: options?.generated_at || null,
 		status_code: statusCodeValue,
-		timestamp: Dates.now('local').unix_milliseconds,
+		timestamp: nowUnixMilliseconds,
 	};
 
 	return reply.send(response);
