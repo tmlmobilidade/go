@@ -2,15 +2,16 @@
  * Options for creating a Prometheus metrics registry.
  * Framework-agnostic — usable from Fastify APIs, workers, CLI, etc.
  */
-export type CreateMetricsRegistryOptions = {
+export interface CreateMetricsRegistryOptions {
+	/** Collect Node process default metrics plus CPU and RAM usage ratios. Default true. */
+	collectDefaults?: boolean
+
 	/**
 	 * Prefix for default + HTTP metric names (e.g. `core_api` → `core_api_process_cpu_…`).
 	 * Trailing `_` added automatically when missing.
 	 */
 	name?: string
-	/** Collect Node process default metrics plus CPU and RAM usage ratios. Default true. */
-	collectDefaults?: boolean
-};
+}
 
 /**
  * Options for attaching Prometheus scrape + HTTP metrics to Fastify.

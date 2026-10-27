@@ -1,21 +1,17 @@
-import { totalmem } from 'node:os';
-
-import {
-	collectDefaultMetrics,
-	Counter,
-	Gauge,
-	Histogram,
-	Registry,
-	Summary,
-} from '@prometheus-io/client';
+/* * */
 
 import type { CreateMetricsRegistryOptions } from './types.js';
 
-export type MetricsRegistry = {
-	registry: Registry
+import { collectDefaultMetrics, Counter, Gauge, Histogram, Registry, Summary } from '@prometheus-io/client';
+import { totalmem } from 'node:os';
+
+/* * */
+
+export interface MetricsRegistry {
 	contentType: string
 	prefix: string
-};
+	registry: Registry
+}
 
 function normalizePrefix(name: string): string {
 	let trimmed = name.trim();
@@ -33,8 +29,8 @@ export function createMetricsRegistry(
 	options: CreateMetricsRegistryOptions = {},
 ): MetricsRegistry {
 	const {
-		name = 'api',
 		collectDefaults = true,
+		name = 'api',
 	} = options;
 
 	const prefix = normalizePrefix(name);

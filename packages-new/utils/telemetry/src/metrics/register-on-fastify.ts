@@ -1,25 +1,26 @@
-import { createMetricsRegistry } from './create-registry.js';
-import { createHttpMetrics } from './http-metrics.js';
 import type { RegisterPrometheusMetricsOptions } from './types.js';
 
-type MetricsRequest = {
-	method: string
-	url: string
-	routeOptions?: { url?: string }
-	__metricsStart?: bigint
-};
+import { createMetricsRegistry } from './create-registry.js';
+import { createHttpMetrics } from './http-metrics.js';
 
-type MetricsReply = {
+interface MetricsRequest {
+	__metricsStart?: bigint
+	method: string
+	routeOptions?: { url?: string }
+	url: string
+}
+
+interface MetricsReply {
 	header: (name: string, value: string) => unknown
 	statusCode: number
-};
+}
 
 // Do not import FastifyInstance. This package installs its own fastify, and that
 // copy is a different type from the server the caller built.
-type MetricsHttpServer = {
+interface MetricsHttpServer {
 	addHook(name: string, hook: (...args: any[]) => any): any
 	get(path: string, handler: (...args: any[]) => any): any
-};
+}
 
 /**
  * Attach Prometheus scrape endpoint (+ optional HTTP metrics) to a Fastify server.

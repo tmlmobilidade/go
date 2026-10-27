@@ -24,9 +24,6 @@
 		"access": "public"
 	},
 	"type": "module",
-	"dependencies": {
-		"@prometheus-io/client": "0.16.1"
-	},
 	"files": [
 		"dist"
 	],
@@ -38,6 +35,9 @@
 		"lint:fix": "eslint ./src/ --fix",
 		"test": "tsx --test tests/*.test.ts",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
+	},
+	"dependencies": {
+		"@prometheus-io/client": "0.16.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

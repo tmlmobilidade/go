@@ -1,11 +1,11 @@
-import { Counter, Histogram } from '@prometheus-io/client';
-
 import type { MetricsRegistry } from './create-registry.js';
 
-export type HttpMetrics = {
+import { Counter, Histogram } from '@prometheus-io/client';
+
+export interface HttpMetrics {
 	duration: Histogram<'method' | 'route' | 'status_code'>
 	total: Counter<'method' | 'route' | 'status_code'>
-};
+}
 
 /**
  * HTTP request metrics shared by Fastify (and future adapters).
