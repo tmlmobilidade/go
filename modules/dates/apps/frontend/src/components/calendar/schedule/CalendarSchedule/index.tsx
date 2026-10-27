@@ -85,10 +85,10 @@ export function CalendarSchedule() {
 	};
 
 	useEffect(() => {
-		if (scheduleData.isLoading || !selectedAgencyId) return;
+		if (scheduleData.isLoading || !scheduleData.hasAgenciesData || !selectedAgencyId) return;
 		if (scheduleData.agencyOptions.some(option => option.value === selectedAgencyId)) return;
 		void setSelectedAgencyId(null);
-	}, [scheduleData.agencyOptions, scheduleData.isLoading, selectedAgencyId, setSelectedAgencyId]);
+	}, [scheduleData.agencyOptions, scheduleData.hasAgenciesData, scheduleData.isLoading, selectedAgencyId, setSelectedAgencyId]);
 
 	//
 	// D. Handle loading and error states
