@@ -2,6 +2,7 @@ import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { type ServiceId, type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { buildOperationalDateRange, buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, Dates, getActivePeriodId, getTimepointsRemovedByEventRestriction, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap, yyyymmddToKey } from '@tmlmobilidade/dates';
 import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { TripDirectionRegistry } from '@/versions/v29/utils/trip-direction-registry.js';
 import { DayPeriod, type Event, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type Pattern, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
@@ -588,6 +589,11 @@ export async function exportTripsForPattern(
 
 		// Step 3: Export trips
 		const headsign = patternData.headsign.replaceAll(',', '').replace(/  +/g, ' ').trim();
+		const directionId = TripDirectionRegistry.resolve({
+			route_id: routeData.code,
+			shape_id: shapeId,
+			trip_headsign: headsign,
+		});
 
 		const sortedTripRows = resolvedTripRows.sort((a, b) => {
 			const timeDiff = timepointToOperationalMinutes(a.timepoint) - timepointToOperationalMinutes(b.timepoint);
@@ -616,7 +622,7 @@ export async function exportTripsForPattern(
 			const tripData: GtfsStrictV29Trips = {
 				bikes_allowed: '0',
 				calendar_desc: '', // TODO: derive a readable description if needed
-				direction_id: patternData.direction,
+				direction_id: directionId,
 				pattern_id: patternData.code,
 				pattern_short_name: headsign,
 				route_id: routeData.code,
