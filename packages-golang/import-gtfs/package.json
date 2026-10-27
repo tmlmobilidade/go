@@ -1,11 +1,14 @@
 {
-	"name": "@tmlmobilidade/go-import-gtfs",
+	"name": "@tmlmobilidade/go-golang-import-gtfs",
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"build": "go build -o dist/import-gtfs ./src/cli.go",
-		"dev": "go run ./src/cli.go",
+		"build": "go build -ldflags=-w -o dist/import-gtfs ./src/cli.go",
+		"dev": "go run -ldflags=-w ./src/cli.go",
 		"lint": "go vet ./...",
 		"test": "go test ./..."
+	},
+	"devDependencies": {
+		"@tmlmobilidade/go-golang-clients-sqlite": "*"
 	}
 }

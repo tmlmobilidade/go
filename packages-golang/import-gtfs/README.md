@@ -35,7 +35,7 @@ To call the importer from Go:
 
 ```go
 import (
-    sqlite "github.com/tmlmobilidade/go/packages-golang/clients/sqlite/src"
+    sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
     importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
 )
 
@@ -50,7 +50,8 @@ for downloads. Provide exactly one source. `Sqlite_config` is optional.
 
 Recognized GTFS `.txt` files become tables named after the file, including files
 inside archive directories. Headers define the columns; all values are stored as
-`TEXT`, preserving leading zeros, blank values, and custom columns. UTF-8 BOMs,
+`TEXT`, preserving leading zeros and custom columns. Empty CSV fields (including
+quoted empty strings) become SQL `NULL`; whitespace and other text are preserved. UTF-8 BOMs,
 quoted fields, and multiline CSV values are supported. Empty files are skipped;
 header-only files create empty tables. Other files are ignored.
 
@@ -66,4 +67,8 @@ Without a custom disk path, output is placed in a temporary directory; callers
 own the returned file and its cleanup. Failed imports remove importer-created
 temporary output. Local source archives and caller-owned databases are retained.
 
-Run `go test ./...`, `go vet ./...`, or `go build ./...` from this directory.
+Run `go test ./...`, `go vet ./...`, or `npm run build` from this directory.
+The build and dev scripts use `-ldflags=-w` to skip DWARF debug information,
+avoiding macOS linker padding failures when combining debug information.
+For direct CLI commands on affected toolchains, use
+`go run -ldflags=-w ./src/cli.go` followed by the import arguments.

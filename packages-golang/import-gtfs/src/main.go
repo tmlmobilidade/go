@@ -12,7 +12,7 @@ import (
 /* * */
 
 // Imports GTFS text files into SQLite and returns the database file path.
-// Columns come from CSV headers and values are preserved as TEXT, including blanks.
+// Columns come from CSV headers. Empty fields become NULL; other values remain TEXT.
 // Missing files, required fields and GTFS relationships are not validated.
 // Existing tables are appended to; SQL and CSV errors roll back the entire import.
 // Supplied database instances remain open. Memory databases are exported to disk.

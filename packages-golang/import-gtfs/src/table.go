@@ -75,7 +75,10 @@ func importTable(transaction *sql.Tx, file *zip.File, tableName string) error {
 			return err
 		}
 		for i, value := range record {
-			values[i] = value
+			values[i] = nil
+			if value != "" {
+				values[i] = value
+			}
 		}
 		if _, err := statement.Exec(values...); err != nil {
 			return err

@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	sqlite "github.com/tmlmobilidade/go/packages-golang/clients/sqlite/src"
+	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
 )
 
 /* * */

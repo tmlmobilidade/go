@@ -9,9 +9,10 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
-	sqlite "github.com/tmlmobilidade/go/packages-golang/clients/sqlite/src"
+	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
 	importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
 )
 
@@ -103,10 +104,11 @@ func TestImportGtfsToDatabase(t *testing.T) {
 			if count != 3100 {
 				t.Fatalf("row count = %d", count)
 			}
-			var id, value, blank string
+			var id, value string
+			var blank *string
 			requireNoError(t, database.QueryRow(`SELECT stop_id, custom_field, "quoted""column" FROM stops LIMIT 1`).Scan(&id, &value, &blank))
-			if id != "001" || value != "line one, café\nline two" || blank != "" {
-				t.Fatalf("values changed: %q, %q, %q", id, value, blank)
+			if id != "001" || value != "line one, café\nline two" || blank != nil {
+				t.Fatalf("values changed: %q, %q, %v", id, value, blank)
 			}
 			requireNoError(t, database.QueryRow("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table'").Scan(&count))
 			if count != 3 {
@@ -119,6 +121,31 @@ func TestImportGtfsToDatabase(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestImportEmptyFields(t *testing.T) {
+	archive := makeArchive(t, map[string]string{
+		"stops.txt": "id,value,other\n001,previous,previous\n002,,\"\"\n003, ,0\n004,NULL,\n",
+	})
+	path, err := importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig{
+		Source:        localSource(t, archive),
+		Sqlite_config: sqlite.SQLiteDatabaseConfig{InstancePath: filepath.Join(t.TempDir(), "empty-fields.db")},
+	})
+	requireNoError(t, err)
+	database, err := sql.Open("sqlite3", path)
+	requireNoError(t, err)
+	defer database.Close()
+	rows, err := sqlite.Query[map[string]any](database, "SELECT * FROM stops ORDER BY id")
+	requireNoError(t, err)
+	expected := []map[string]any{
+		{"id": "001", "value": "previous", "other": "previous"},
+		{"id": "002", "value": nil, "other": nil},
+		{"id": "003", "value": " ", "other": "0"},
+		{"id": "004", "value": "NULL", "other": nil},
+	}
+	if !reflect.DeepEqual(rows, expected) {
+		t.Fatalf("unexpected empty field handling: %#v", rows)
 	}
 }
 
