@@ -8,8 +8,8 @@ import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Files } from '@tmlmobilidade/go-utils-files';
+import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
@@ -159,7 +159,7 @@ async function main() {
 			await exportTripsFile(context, planData, importedGtfsSql);
 			await exportStopTimesFile(context, planData, importedGtfsSql);
 			await exportShapesFile(context, planData, importedGtfsSql);
-			await exportCalendarDatesFile(context, planData, importedGtfsSql);
+			// await exportCalendarDatesFile(context, planData, importedGtfsSql);
 
 			Logger.success(`Exported plan ${planData._id} files in ${exportTimer.get()}.`);
 
