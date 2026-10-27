@@ -46,11 +46,16 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 	const aggregationResult = await goDb.operation.plans.aggregate(pipeline);
 
 	//
-	// Add temporal status to the results and filter by its value
+	// Check overlaps before filtering so hidden plans still trigger the warning.
+	// Validity dates are inclusive, including plans sharing a boundary date.
 
 	const resultsWithTemporalStatus = aggregationResult.map((result: PlansListItem) => {
 		return {
 			...result,
+			has_overlapping_plans: aggregationResult.some((other) => {
+				if (other._id === result._id || other.agency_id !== result.agency_id) return false;
+				return other.active_from <= result.active_until && other.active_until >= result.active_from;
+			}),
 			temporal_status: getPlanTemporalStatus(result.active_from, result.active_until),
 		};
 	});
