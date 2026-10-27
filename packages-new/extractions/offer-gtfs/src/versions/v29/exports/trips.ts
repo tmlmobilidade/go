@@ -549,6 +549,7 @@ export async function exportTripsForPattern(
 	startDate: Dates,
 	endDate: Dates,
 	serviceRegistry: ServiceRegistry,
+	tripDirectionRegistry: TripDirectionRegistry,
 	exportConfig: GtfsV29ExportConfig,
 ): Promise<TripSchedule[]> {
 	try {
@@ -589,7 +590,7 @@ export async function exportTripsForPattern(
 
 		// Step 3: Export trips
 		const headsign = patternData.headsign.replaceAll(',', '').replace(/  +/g, ' ').trim();
-		const directionId = TripDirectionRegistry.resolve({
+		const directionId = tripDirectionRegistry.resolve({
 			route_id: routeData.code,
 			shape_id: shapeId,
 			trip_headsign: headsign,
