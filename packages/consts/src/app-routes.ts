@@ -180,6 +180,19 @@ export const API_ROUTES = Object.freeze({
 		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
+		// BANNERS
+		BANNERS_DETAIL_DISMISS: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/banners/${encodeURIComponent(id)}/dismiss`,
+		BANNERS_LIST: `${getModuleConfig('core', 'api_url')}/platform/banners`,
+
+		// CHANGELOG
+		CHANGELOG_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/changelog/${encodeURIComponent(id)}`,
+		CHANGELOG_LIST: `${getModuleConfig('core', 'api_url')}/platform/changelog`,
+		CHANGELOG_SEEN: `${getModuleConfig('core', 'api_url')}/platform/changelog/seen`,
+
+		// CHANGELOG-RELEASES
+		CHANGELOG_RELEASES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/changelog-releases/${encodeURIComponent(id)}`,
+		CHANGELOG_RELEASES_LIST: `${getModuleConfig('core', 'api_url')}/changelog-releases`,
+
 		// EXTRACTIONS
 		EXTRACTIONS_CREATE: `${getModuleConfig('core', 'api_url')}/platform/extractions/create`,
 		EXTRACTIONS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/delete/${encodeURIComponent(id)}`,
@@ -196,6 +209,10 @@ export const API_ROUTES = Object.freeze({
 
 		// NOTIFICATIONS
 		NOTIFICATIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/notifications/list`,
+
+		// OPERATIONAL-BANNERS
+		OPERATIONAL_BANNERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/operational-banners/${encodeURIComponent(id)}`,
+		OPERATIONAL_BANNERS_LIST: `${getModuleConfig('core', 'api_url')}/operational-banners`,
 
 		// ORGANIZATIONS
 		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,
