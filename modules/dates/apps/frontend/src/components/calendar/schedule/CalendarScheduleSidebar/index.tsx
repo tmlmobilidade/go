@@ -3,8 +3,9 @@
 import { openCalendarDayCounterModal } from '@/components/calendar/day-counter/CalendarDayCounterModal/CalendarDayCounter.modal';
 import { IconCalculator } from '@tabler/icons-react';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
-import { Button, type CalendarScheduleEventType, Checkbox, ColorSwatch, DatePicker, EVENT_TYPE_DEFS, Select } from '@tmlmobilidade/ui';
+import { Button, type CalendarScheduleEventType, Checkbox, ColorSwatch, DatePicker, EVENT_TYPE_DEFS, Select, Tooltip } from '@tmlmobilidade/ui';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -38,6 +39,7 @@ export function CalendarScheduleSidebar({ agencyOptions, canShowPeriods, counts,
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const [displayedMonth, setDisplayedMonth] = useState<CalendarDate>(date);
 
 	const selectOptions = [
@@ -111,26 +113,31 @@ export function CalendarScheduleSidebar({ agencyOptions, canShowPeriods, counts,
 						const isPeriodUnavailable = type === 'period' && !canShowPeriods;
 
 						return (
-							<Checkbox
+							<Tooltip
 								key={type}
-								checked={isPeriodUnavailable ? false : enabledTypes[type]}
-								disabled={isPeriodUnavailable}
-								onChange={() => onToggle(type)}
-								label={(
-									<span className={styles.label}>
-										<ColorSwatch color={EVENT_TYPE_DEFS[type].color} size={10} />
-										<span>{label}</span>
-										<span className={styles.count}>({counts[type]})</span>
-									</span>
-								)}
-							/>
+								disabled={!isPeriodUnavailable || selectedAgencyId !== null}
+								events={{ focus: true, hover: true, touch: true }}
+								label={t('default:calendar.schedule.periods.selectAgency')}
+								withArrow
+							>
+								<span tabIndex={isPeriodUnavailable && selectedAgencyId === null ? 0 : undefined}>
+									<Checkbox
+										checked={isPeriodUnavailable ? false : enabledTypes[type]}
+										disabled={isPeriodUnavailable}
+										onChange={() => onToggle(type)}
+										label={(
+											<span className={styles.label}>
+												<ColorSwatch color={EVENT_TYPE_DEFS[type].color} size={10} />
+												<span>{label}</span>
+												<span className={styles.count}>({counts[type]})</span>
+											</span>
+										)}
+									/>
+								</span>
+							</Tooltip>
 						);
 					})}
 				</div>
-
-				{selectedAgencyId === null && (
-					<p className={styles.hint}>Selecione um operador para visualizar os períodos.</p>
-				)}
 			</section>
 
 			<Button

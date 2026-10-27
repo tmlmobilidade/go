@@ -71,7 +71,8 @@ function groupConsecutiveDates(dates: OperationalDate[]): CalendarDate[][] {
 		}
 
 		const nextCalendarDate = getNextCalendarDate(previousDate);
-		if (date === nextCalendarDate) {
+		// Start a new segment each year: annual views index events by their start year.
+		if (date === nextCalendarDate && date.slice(0, 4) === previousDate.slice(0, 4)) {
 			currentGroup.push(date);
 		} else {
 			groups.push([date]);

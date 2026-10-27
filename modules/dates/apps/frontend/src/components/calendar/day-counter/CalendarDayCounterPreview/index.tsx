@@ -57,6 +57,7 @@ export function CalendarDayCounterPreview() {
 					onEventClick={handleEventClick}
 					sources={dayCounterContext.data.sources}
 					view="year"
+					yearPeriodDisplay="muted"
 					yearViewProps={{ highlightToday: false, viewSelectProps: { views: ['year'] } }}
 				/>
 			</Surface>

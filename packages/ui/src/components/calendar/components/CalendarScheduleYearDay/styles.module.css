@@ -30,10 +30,6 @@
 	border-radius: 50%;
 }
 
-.indicator[data-type='period'] {
-	--event-type-color: var(--color-system-text-200);
-}
-
 .indicator[data-type='holiday'] {
 	--event-type-color: #8b5cf6;
 }
@@ -62,4 +58,31 @@
 .tooltipArrow {
 	background-color: var(--color-system-background-100);
 	border: 1px solid var(--color-system-border-100);
+}
+
+/* Periods describe the whole day; dots are reserved for additional occurrences. */
+.dayContent[data-period-display] {
+	--period-transparency: 90%;
+}
+
+.dayContent[data-period-display]::before {
+	position: absolute;
+	inset: 1px;
+	content: '';
+	pointer-events: none;
+	background: var(--period-background, color-mix(in srgb, var(--period-color), transparent var(--period-transparency)));
+	border: 1px solid color-mix(in srgb, var(--period-color), transparent 35%);
+	border-radius: var(--border-radius-sm, 4px);
+}
+
+.dayContent[data-period-display='muted'] {
+	--period-transparency: 96%;
+}
+
+.dayContent[data-period-display='muted']::before {
+	border-color: color-mix(in srgb, var(--period-color), transparent 80%);
+}
+
+.dayContent > [data-year-day-number] {
+	position: relative;
 }

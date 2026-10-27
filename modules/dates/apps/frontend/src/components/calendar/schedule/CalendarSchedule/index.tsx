@@ -124,6 +124,7 @@ export function CalendarSchedule() {
 					onDayClick={handleDayClick}
 					onEventClick={handleEventClick}
 					onViewChange={handleViewChange}
+					periodDisplay="background"
 					sources={scheduleData.sources}
 					view={view}
 					yearViewProps={{ viewSelectProps: { views: ['month', 'year'] } }}

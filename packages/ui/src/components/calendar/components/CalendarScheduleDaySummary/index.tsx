@@ -1,5 +1,8 @@
+'use client';
+
 import { type ScheduleEventData, type ScheduleProps } from '@mantine/schedule';
 import { type CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -9,14 +12,6 @@ import { type CalendarScheduleEventType, type CalendarSchedulePayload, isCalenda
 /* * */
 
 const EVENT_TYPE_ORDER: CalendarScheduleEventType[] = ['period', 'holiday', 'annotation', 'event', 'rule-impact'];
-
-const EVENT_TYPE_LABELS: Record<CalendarScheduleEventType, string> = {
-	'annotation': 'Anotações',
-	'event': 'Eventos',
-	'holiday': 'Feriados',
-	'period': 'Períodos',
-	'rule-impact': 'Dias afetados',
-};
 
 /* * */
 
@@ -46,10 +41,12 @@ export function CalendarScheduleDaySummary({ date, events, locale, onEventClick 
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const scheduleEvents = events.filter((event): event is ScheduleEventData<CalendarSchedulePayload> => isCalendarSchedulePayload(event.payload));
 	const groupedEvents = EVENT_TYPE_ORDER.map(type => ({
 		events: scheduleEvents.filter(event => event.payload.type === type),
-		label: EVENT_TYPE_LABELS[type],
+		label: t(`shared:components.calendar.types.${type}`),
 		type,
 	})).filter(group => group.events.length > 0);
 
@@ -90,7 +87,7 @@ export function CalendarScheduleDaySummary({ date, events, locale, onEventClick 
 										<div className={styles.eventTitle}>{event.title}</div>
 										{agencyNames && agencyNames.length > 0 && (
 											<div className={styles.eventMeta}>
-												{agencyNames.length === 1 ? 'Operador' : 'Operadores'}: {agencyNames.join(', ')}
+												{t(agencyNames.length === 1 ? 'shared:components.calendar.agency' : 'shared:components.calendar.agencies')}: {agencyNames.join(', ')}
 											</div>
 										)}
 										{event.payload.description && <div className={styles.eventMeta}>{event.payload.description}</div>}

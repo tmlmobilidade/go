@@ -64,15 +64,8 @@
 	gap: var(--size-spacing-xs);
 }
 
-.count,
-.hint {
+.count {
 	color: var(--color-system-text-300);
-}
-
-.hint {
-	margin: 0;
-	font-size: var(--font-size-xs);
-	line-height: 1.4;
 }
 
 .dayCounterButton {

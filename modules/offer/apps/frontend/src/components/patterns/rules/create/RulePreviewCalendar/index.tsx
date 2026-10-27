@@ -82,6 +82,7 @@ export function RulePreviewCalendar({ affectedDates, onVisibleYearChange }: Rule
 			onEventClick={handleEventClick}
 			sources={sources}
 			view="year"
+			yearPeriodDisplay="muted"
 			yearViewProps={{ viewSelectProps: { views: ['year'] } }}
 		/>
 	);

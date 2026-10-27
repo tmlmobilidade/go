@@ -140,5 +140,27 @@
 		"Topbar": {
 			"show_sidebar_aria": "Show sidebar"
 		}
+	},
+	"calendar": {
+		"month": "Month",
+		"year": "Year",
+		"today": "Today",
+		"previous": "Previous",
+		"next": "Next",
+		"selectMonth": "Select month",
+		"selectYear": "Select year",
+		"switchToMonthView": "Switch to month view",
+		"switchToYearView": "Switch to year view",
+		"viewSelectLabel": "Calendar view",
+		"more": "+{count} events",
+		"agency": "Operator",
+		"agencies": "Operators",
+		"types": {
+			"annotation": "Annotations",
+			"event": "Events",
+			"holiday": "Holidays",
+			"period": "Periods",
+			"rule-impact": "Affected days"
+		}
 	}
 }

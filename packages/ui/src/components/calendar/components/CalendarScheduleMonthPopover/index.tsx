@@ -27,16 +27,16 @@ const MIDDLEWARES = {
 
 export interface CalendarScheduleMonthPopoverProps {
 	locale: string
-	onClose: () => void
 	onDismiss: () => void
 	onEventClick?: ScheduleProps['onEventClick']
-	onKeepOpen: () => void
+	onPointerEnter: () => void
+	onPointerLeave: () => void
 	state: CalendarScheduleMonthPopoverState
 }
 
 /* * */
 
-export function CalendarScheduleMonthPopover({ locale, onClose, onDismiss, onEventClick, onKeepOpen, state }: CalendarScheduleMonthPopoverProps) {
+export function CalendarScheduleMonthPopover({ locale, onDismiss, onEventClick, onPointerEnter, onPointerLeave, state }: CalendarScheduleMonthPopoverProps) {
 	//
 
 	//
@@ -51,6 +51,7 @@ export function CalendarScheduleMonthPopover({ locale, onClose, onDismiss, onEve
 			onChange={opened => !opened && onDismiss()}
 			position="top"
 			preventPositionChangeWhenVisible={false}
+			returnFocus={false}
 			opened
 			withArrow
 			withinPortal
@@ -58,7 +59,11 @@ export function CalendarScheduleMonthPopover({ locale, onClose, onDismiss, onEve
 			<Popover.Target>
 				<span className={styles.target} style={state.target} />
 			</Popover.Target>
-			<Popover.Dropdown onMouseEnter={onKeepOpen} onMouseLeave={onClose}>
+			<Popover.Dropdown
+				onPointerEnter={onPointerEnter}
+				onPointerLeave={onPointerLeave}
+				onPointerMove={event => event.stopPropagation()}
+			>
 				<CalendarScheduleDaySummary
 					date={state.date}
 					events={state.events}

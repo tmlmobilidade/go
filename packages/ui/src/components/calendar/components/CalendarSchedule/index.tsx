@@ -1,9 +1,11 @@
 'use client';
 
-import { type MonthViewProps, Schedule, ScheduleEvent, type ScheduleEventData, type ScheduleEventProps, type ScheduleProps, type ScheduleViewLevel } from '@mantine/schedule';
+import { UnstyledButton } from '@mantine/core';
+import { type MonthViewProps, Schedule, type ScheduleEventData, type ScheduleProps, type ScheduleViewLevel } from '@mantine/schedule';
 import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -17,19 +19,7 @@ import { useCalendarScheduleMonthPopover } from './useCalendarScheduleMonthPopov
 
 /* * */
 
-const DEFAULT_LABELS = {
-	month: 'Mês',
-	moreLabel: (count: number) => `+${count} eventos`,
-	next: 'Seguinte',
-	previous: 'Anterior',
-	selectMonth: 'Selecionar mês',
-	selectYear: 'Selecionar ano',
-	switchToMonthView: 'Mudar para a vista mensal',
-	switchToYearView: 'Mudar para a vista anual',
-	today: 'Hoje',
-	viewSelectLabel: 'Vista do calendário',
-	year: 'Ano',
-};
+const EMPTY_EVENTS: ScheduleEventData[] = [];
 
 const SCHEDULE_HEADER_CLASS_NAMES = {
 	header: styles.scheduleHeader,
@@ -43,6 +33,7 @@ const SCHEDULE_HEADER_CLASS_NAMES = {
 const MONTH_VIEW_CLASS_NAMES = {
 	...SCHEDULE_HEADER_CLASS_NAMES,
 	monthView: styles.monthView,
+	monthViewBackgroundEvent: styles.monthViewBackgroundEvent,
 	monthViewDay: styles.monthViewDay,
 	monthViewDayLabel: styles.monthViewDayLabel,
 	monthViewEvents: styles.monthViewEvents,
@@ -65,6 +56,7 @@ const YEAR_VIEW_CLASS_NAMES = {
 
 type CalendarScheduleMonthViewProps = Omit<NonNullable<ScheduleProps['monthViewProps']>, 'classNames' | 'getDayProps' | 'renderEvent'>;
 type CalendarScheduleYearViewProps = Omit<NonNullable<ScheduleProps['yearViewProps']>, 'classNames' | 'renderDay'>;
+type CalendarScheduleMonthViewRuntimeProps = NonNullable<ScheduleProps['monthViewProps']> & Pick<ScheduleProps, 'renderEventBody'>;
 type CalendarScheduleYearViewRuntimeProps = NonNullable<ScheduleProps['yearViewProps']> & Pick<ScheduleProps, 'mode'>;
 type MonthEventRenderProps = Parameters<NonNullable<MonthViewProps['renderEvent']>>[1];
 
@@ -86,19 +78,25 @@ export interface CalendarScheduleProps extends Omit<ScheduleProps, 'classNames' 
 	isDateRangeDateApplicable?: (date: CalendarDate, action: CalendarScheduleDateRangeAction) => boolean
 	monthViewProps?: CalendarScheduleMonthViewProps
 	onSelectedDateRangeChange?: (value: CalendarScheduleDateRange | null) => void
+	periodDisplay?: 'background' | 'default'
 	selectedDateRange?: CalendarScheduleDateRange | null
 	sources?: CalendarScheduleSources
+	/** Show event-summary tooltips on year-view days. Defaults to true. */
+	withDayTooltips?: boolean
+	/** Faint period context in previews; none when the caller supplies its own day backgrounds. */
+	yearPeriodDisplay?: 'background' | 'muted' | 'none'
 	yearViewProps?: CalendarScheduleYearViewProps
 }
 
 /* * */
 
-export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAction, defaultView = 'month', events = [], eventTypeFilters, isDateRangeDateApplicable, labels, locale = 'pt', mode = 'default', monthViewProps, onDayClick, onEventClick, onSelectedDateRangeChange, onViewChange, selectedDateRange, sources, view, withEventResize, withEventsDragAndDrop, yearViewProps, ...props }: CalendarScheduleProps) {
+export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAction, defaultView = 'month', events = EMPTY_EVENTS, eventTypeFilters, isDateRangeDateApplicable, labels, locale = 'pt', mode = 'default', monthViewProps, onDayClick, onEventClick, onSelectedDateRangeChange, onViewChange, periodDisplay = 'default', selectedDateRange, sources, view, withDayTooltips = true, withEventResize, withEventsDragAndDrop, withInteractiveBackgroundEvents, yearPeriodDisplay = 'background', yearViewProps, ...props }: CalendarScheduleProps) {
 	//
 
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const [uncontrolledView, setUncontrolledView] = useState<ScheduleViewLevel>(defaultView);
 	const resolvedView = view ?? uncontrolledView;
 	const isDateRangeSelectionEnabled = resolvedView === 'year' && mode !== 'static' && Boolean(onSelectedDateRangeChange);
@@ -126,7 +124,7 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 		weekday: 'narrow',
 	}), [locale]);
 
-	const monthPopover = useCalendarScheduleMonthPopover(resolvedEvents);
+	const monthPopover = useCalendarScheduleMonthPopover(resolvedEvents, props.date);
 
 	const dateRangeSelection = useCalendarScheduleDateRange({
 		enabled: isDateRangeSelectionEnabled,
@@ -136,23 +134,21 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 		value: selectedDateRange,
 	});
 
+	const renderCalendarEventBody = (event: ScheduleEventData) => <CalendarScheduleEvent event={event} withTooltip={false} />;
 	const renderMonthEvent = (event: ScheduleEventData, eventProps: MonthEventRenderProps) => {
-		const runtimeProps = eventProps as MonthEventRenderProps & { mod?: ScheduleEventProps['mod'] };
+		if (event.display === 'background' && (periodDisplay === 'background' || !withInteractiveBackgroundEvents)) {
+			return (
+				<UnstyledButton {...eventProps} tabIndex={-1} aria-hidden>
+					<span className={styles.backgroundEventLabel}>{event.title}</span>
+				</UnstyledButton>
+			);
+		}
 
-		return (
-			<ScheduleEvent
-				className={styles.monthViewStaticEvent}
-				event={event}
-				mod={runtimeProps.mod}
-				mode="static"
-				renderEventBody={calendarEvent => <CalendarScheduleEvent event={calendarEvent} withTooltip={false} />}
-				style={eventProps.style}
-				aria-hidden
-				autoSize
-				nowrap
-			/>
-		);
+		return <UnstyledButton {...eventProps} />;
 	};
+	const displayEvents = useMemo(() => resolvedView === 'month' && periodDisplay === 'background'
+		? resolvedEvents.map(event => isCalendarSchedulePayload(event.payload) && event.payload.type === 'period' ? { ...event, display: 'background' as const } : event)
+		: resolvedEvents, [resolvedEvents, resolvedView, periodDisplay]);
 
 	const renderYearDay = (date: string, dayEvents: ScheduleEventData[]) => (
 		<CalendarScheduleYearDay
@@ -160,10 +156,12 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 			events={filterCalendarScheduleEventsForDate(dayEvents, date)}
 			locale={locale}
 			onEventClick={onEventClick}
+			periodDisplay={yearPeriodDisplay}
+			withTooltip={withDayTooltips}
 		/>
 	);
 
-	const resolvedMonthViewProps: ScheduleProps['monthViewProps'] = {
+	const resolvedMonthViewProps: CalendarScheduleMonthViewRuntimeProps = {
 		...monthViewProps,
 		classNames: MONTH_VIEW_CLASS_NAMES,
 		getDayProps: monthPopover.actions.getDayProps,
@@ -179,11 +177,12 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 			popoverProps: { disabled: true, withinPortal: true, ...monthViewProps?.moreEventsProps?.popoverProps },
 		},
 		renderEvent: renderMonthEvent,
+		renderEventBody: renderCalendarEventBody,
 		scrollAreaProps: {
 			...monthViewProps?.scrollAreaProps,
 			classNames: { content: styles.monthViewScrollContent },
 			onScroll: (event) => {
-				monthPopover.actions.setState(null);
+				monthPopover.actions.dismiss();
 				monthViewProps?.scrollAreaProps?.onScroll?.(event);
 			},
 		},
@@ -225,7 +224,7 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 	// C. Handle actions
 
 	const handleViewChange = (nextView: ScheduleViewLevel) => {
-		monthPopover.actions.setState(null);
+		monthPopover.actions.dismiss();
 		dateRangeSelection.resetHover();
 		setUncontrolledView(nextView);
 		onViewChange?.(nextView);
@@ -235,14 +234,14 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 	// D. Render components
 
 	return (
-		<div className={clsx(styles.container, className)}>
+		<div {...(resolvedView === 'month' ? monthPopover.containerProps : {})} className={clsx(styles.container, className)}>
 			{monthPopover.state && resolvedView === 'month' && (
 				<CalendarScheduleMonthPopover
 					locale={locale}
-					onClose={monthPopover.actions.close}
-					onDismiss={() => monthPopover.actions.setState(null)}
+					onDismiss={monthPopover.actions.dismiss}
 					onEventClick={onEventClick}
-					onKeepOpen={monthPopover.actions.keepOpen}
+					onPointerEnter={monthPopover.actions.keepOpen}
+					onPointerLeave={monthPopover.actions.scheduleClose}
 					state={monthPopover.state}
 				/>
 			)}
@@ -251,8 +250,7 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 				{...props}
 				className={styles.scheduleRoot}
 				date={props.date}
-				events={resolvedEvents}
-				labels={{ ...DEFAULT_LABELS, ...labels }}
+				events={displayEvents}
 				locale={locale}
 				mode={resolvedView === 'year' ? 'default' : mode}
 				monthViewProps={resolvedMonthViewProps}
@@ -261,7 +259,22 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 				view={resolvedView}
 				withEventResize={resolvedView === 'year' ? undefined : withEventResize}
 				withEventsDragAndDrop={resolvedView === 'year' ? undefined : withEventsDragAndDrop}
+				withInteractiveBackgroundEvents={periodDisplay === 'background' ? false : withInteractiveBackgroundEvents}
 				yearViewProps={resolvedYearViewProps}
+				labels={{
+					month: t('shared:components.calendar.month'),
+					moreLabel: count => t('shared:components.calendar.more', '', { count }),
+					next: t('shared:components.calendar.next'),
+					previous: t('shared:components.calendar.previous'),
+					selectMonth: t('shared:components.calendar.selectMonth'),
+					selectYear: t('shared:components.calendar.selectYear'),
+					switchToMonthView: t('shared:components.calendar.switchToMonthView'),
+					switchToYearView: t('shared:components.calendar.switchToYearView'),
+					today: t('shared:components.calendar.today'),
+					viewSelectLabel: t('shared:components.calendar.viewSelectLabel'),
+					year: t('shared:components.calendar.year'),
+					...labels,
+				}}
 			/>
 		</div>
 	);

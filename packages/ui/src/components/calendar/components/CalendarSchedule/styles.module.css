@@ -370,11 +370,6 @@
 	pointer-events: none;
 }
 
-.monthViewStaticEvent,
-.monthViewStaticEvent * {
-	pointer-events: none;
-}
-
 @container (width <= 1120px) {
 	.yearViewMonths {
 		grid-template-columns: repeat(3, minmax(250px, 340px));
@@ -392,4 +387,39 @@
 		grid-template-columns: minmax(250px, 340px);
 		justify-content: center;
 	}
+}
+
+/* Reserve a label row only in weeks with background period labels. */
+.monthViewWeek:has(.backgroundEventLabel) {
+	--calendar-period-label-height: 30px;
+
+	flex-basis: calc(52px + var(--month-view-max-events, 2) * 24px + var(--calendar-period-label-height));
+}
+
+.monthViewWeek:has(.backgroundEventLabel) .monthViewEvents {
+	margin-top: var(--calendar-period-label-height);
+}
+
+.monthViewWeek:has(.backgroundEventLabel) .monthViewBackgroundEvent {
+	top: calc(-1 * var(--calendar-period-label-height));
+}
+
+.monthViewBackgroundEvent {
+	display: flex;
+	align-items: flex-start;
+}
+
+.backgroundEventLabel {
+	display: block;
+	min-width: 0;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	overflow: hidden;
+	font-size: var(--font-size-sm);
+	line-height: var(--font-size-md);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.yearViewDay[data-outside] [data-period-display]::before {
+	display: none;
 }

@@ -147,6 +147,7 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 						onEventClick={handleEventClick}
 						sources={sources}
 						view="year"
+						yearPeriodDisplay="muted"
 						yearViewProps={{ viewSelectProps: { views: ['year'] } }}
 					/>
 				</Pane>

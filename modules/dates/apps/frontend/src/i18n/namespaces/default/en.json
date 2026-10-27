@@ -1,4 +1,11 @@
 {
+	"calendar": {
+		"schedule": {
+			"periods": {
+				"selectAgency": "Select an operator to view periods."
+			}
+		}
+	},
 	"annotations": {
 		"create": {
 			"title": "New annotation"

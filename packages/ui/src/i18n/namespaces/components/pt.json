@@ -140,5 +140,27 @@
 		"Topbar": {
 			"show_sidebar_aria": "Mostrar barra lateral"
 		}
+	},
+	"calendar": {
+		"month": "Mês",
+		"year": "Ano",
+		"today": "Hoje",
+		"previous": "Anterior",
+		"next": "Seguinte",
+		"selectMonth": "Selecionar mês",
+		"selectYear": "Selecionar ano",
+		"switchToMonthView": "Mudar para a vista mensal",
+		"switchToYearView": "Mudar para a vista anual",
+		"viewSelectLabel": "Vista do calendário",
+		"more": "+{count} eventos",
+		"agency": "Operador",
+		"agencies": "Operadores",
+		"types": {
+			"annotation": "Anotações",
+			"event": "Eventos",
+			"holiday": "Feriados",
+			"period": "Períodos",
+			"rule-impact": "Dias afetados"
+		}
 	}
 }

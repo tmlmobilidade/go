@@ -79,3 +79,26 @@ it('groups consecutive period days across a leap day and keeps the end exclusive
 	assert.deepEqual(filterCalendarScheduleEventsForDate(events, '2028-03-01'), events);
 	assert.deepEqual(filterCalendarScheduleEventsForDate(events, '2028-03-02'), []);
 });
+
+it('splits consecutive period dates at New Year so annual views include January', () => {
+	const events = buildCalendarScheduleEvents({ yearPeriods: [{
+		_id: 'school-holidays',
+		color: '#42c96b',
+		dates: ['20251230', '20251231', '20260101', '20260102', '20260103', '20260104'].map(validateOperationalDate),
+		name: 'School holidays',
+	}] });
+
+	assert.equal(events.length, 2);
+	assert.equal(events[0].start, '2025-12-30 00:00:00');
+	assert.equal(events[0].end, '2026-01-01 00:00:00');
+	assert.equal(events[1].start, '2026-01-01 00:00:00');
+	assert.equal(events[1].end, '2026-01-05 00:00:00');
+	assert.equal(new Set(events.map(event => event.id)).size, 2);
+	const annualEvents = events.filter(event => String(event.start).startsWith('2026'));
+	for (const day of ['01', '02', '03', '04']) {
+		assert.deepEqual(filterCalendarScheduleEventsForDate(annualEvents, `2026-01-${day}`), [events[1]]);
+	}
+	assert.deepEqual(filterCalendarScheduleEventsForDate(annualEvents, '2026-01-05'), []);
+	assert.deepEqual(events[1].payload, events[0].payload);
+	assert.equal(events[1].color, '#42c96b');
+});
