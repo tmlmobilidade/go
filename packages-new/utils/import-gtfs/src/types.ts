@@ -66,9 +66,9 @@ export type GtfsRow = Record<string, null | string>;
 export interface GtfsSQLTables<T = GtfsRow> {
 	_db: SQLiteDatabase
 	calendar_dates: Record<string, OperationalDateInt[]>
-	routes: SQLiteTableInstance<T> | undefined
-	shapes: SQLiteTableInstance<T> | undefined
-	stop_times: SQLiteTableInstance<T> | undefined
-	stops: SQLiteTableInstance<T> | undefined
-	trips: SQLiteTableInstance<T> | undefined
+	routes: SQLiteTableInstance<T>
+	shapes: SQLiteTableInstance<T>
+	stop_times: SQLiteTableInstance<T>
+	stops: SQLiteTableInstance<T>
+	trips: SQLiteTableInstance<T>
 }

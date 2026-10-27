@@ -17,7 +17,7 @@ export function initGtfsSqlTables<T extends GtfsSQLTables<any> = GtfsSQLTables>(
 	// Read the actual headers rather than imposing a GTFS schema.
 	const registerTable = (tableName: string) => {
 		const header = database.databaseInstance.prepare(`PRAGMA table_info("${tableName}")`).all() as { name: string }[];
-		if (!header.length) return undefined;
+		if (!header.length) throw new Error(`Table ${tableName} not found`);
 		const columns: SQLiteColumn<GtfsRow>[] = header.map(column => ({ name: column.name, type: 'TEXT' }));
 		return database.registerTable<GtfsRow>(tableName, { columns });
 	};
