@@ -37,6 +37,9 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-sqlite": "*",
+		"@tmlmobilidade/go-types-gtfs": "*",
+		"@tmlmobilidade/go-types-gtfs-strict": "*",
+		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-shared": "*"
 	},
 	"devDependencies": {

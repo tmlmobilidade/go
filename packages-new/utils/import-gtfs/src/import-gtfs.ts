@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 import { initGtfsSqlTables } from './tables.js';
-import { type GtfsSQLTables, type ImportGtfsConfig } from './types.js';
+import { type GtfsSQLTables, type ImportGtfsConfig } from './types/index.js';
 
 /* * */
 
@@ -15,8 +15,8 @@ import { type GtfsSQLTables, type ImportGtfsConfig } from './types.js';
  * T describes the complete table bundle; it does not validate or convert row values.
  * Custom bundles must account for missing tables in the source archive.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Each table in the caller's bundle can have its own row type.
-export async function importGtfsToDatabase<T extends GtfsSQLTables<any> = GtfsSQLTables>(config: ImportGtfsConfig): Promise<T> {
+
+export async function importGtfsToDatabase<T extends GtfsSQLTables>(config: ImportGtfsConfig): Promise<T> {
 	const executablePath = fileURLToPath(new URL('./bin/import-gtfs', import.meta.url));
 	const stdout = await importGtfs(executablePath, config);
 	return initGtfsSqlTables<T>(config.sqlite_config?.memory ? stdout : stdout.toString('utf8').trim());
