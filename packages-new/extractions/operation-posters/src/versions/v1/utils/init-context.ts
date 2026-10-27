@@ -54,7 +54,6 @@ export function initOperationPostersV1Context(runId: string, workdirPath: string
 	}
 
 	const calendarAssignmentsFields = ['day_type_id', 'service_id'] as const;
-	const calendarExtFields = ['service_id', 'index', 'comment'] as const;
 	const dayTypesFields = ['day_type_id', 'name', 'sequence_number', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
 	const stopsToCanvasFields = ['stop_id', 'canvas_profile', 'direction_id'] as const;
 
@@ -68,10 +67,6 @@ export function initOperationPostersV1Context(runId: string, workdirPath: string
 			quotes: value => !calendarAssignmentsFields.some(field => field === value),
 		}),
 		calendar_dates: createWriter('calendar_dates.txt'),
-		calendar_ext: createWriter('calendarExt.txt', {
-			fields: [...calendarExtFields],
-			quotes: value => !calendarExtFields.some(field => field === value),
-		}),
 		calendars: createWriter('calendar.txt'),
 		day_types_ext: createWriter('day_typesExt.txt', {
 			fields: [...dayTypesFields],

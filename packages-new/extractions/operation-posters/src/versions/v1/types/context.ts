@@ -4,7 +4,6 @@ import {
 	type OperationPostersV1Agency,
 	type OperationPostersV1CalendarAssignmentsExt,
 	type OperationPostersV1CalendarDates,
-	type OperationPostersV1CalendarExt,
 	type OperationPostersV1Calendars,
 	type OperationPostersV1DayTypesExt,
 	type OperationPostersV1FeedInfo,
@@ -35,7 +34,6 @@ export interface OperationPostersV1Context {
 		agency: BatchWriter<OperationPostersV1Agency>
 		calendar_assignments_ext: BatchWriter<OperationPostersV1CalendarAssignmentsExt>
 		calendar_dates: BatchWriter<OperationPostersV1CalendarDates>
-		calendar_ext: BatchWriter<OperationPostersV1CalendarExt>
 		calendars: BatchWriter<OperationPostersV1Calendars>
 		day_types_ext: BatchWriter<OperationPostersV1DayTypesExt>
 		feed_info: BatchWriter<OperationPostersV1FeedInfo>
