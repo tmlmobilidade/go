@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsStrictV30Routes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 
 import { getLetterIndex } from './get-letter-index.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
@@ -20,17 +20,15 @@ export interface VariantNote {
 /**
  * Identify alternative patterns within each route and direction using the original pattern IDs.
  * @param trips - The trips to build variant notes for.
- * @param routes - The routes providing the variant names.
  * @returns A map of shape sequences and a map of trip notes.
  */
-export function buildVariantNotes(trips: GtfsStrictV30Trips[], routes: GtfsStrictV30Routes[]): { shapeSequences: Map<string, number>, tripNotes: Map<string, VariantNote> } {
+export function buildVariantNotes(trips: GtfsStrictV30Trips[]): { shapeSequences: Map<string, number>, tripNotes: Map<string, VariantNote> } {
 	//
 
 	//
 	// Group trips by route and direction.
 
 	const groups = new Map<string, GtfsStrictV30Trips[]>();
-	const routeNames = new Map(routes.map(route => [route.route_id, route.route_long_name]));
 
 	for (const trip of trips) {
 		//
@@ -80,8 +78,7 @@ export function buildVariantNotes(trips: GtfsStrictV30Trips[], routes: GtfsStric
 			shapeSequences.set(trip.shape_id, sequence);
 			if (sequence === 1) continue;
 			const index = getLetterIndex(sequence - 1);
-			const note = routeNames.get(trip.route_id);
-			if (note === undefined) throw new Error(`Cannot build variant note: route ${trip.route_id} was not found.`);
+			const note = 'O número da linha com uma letra corresponde a outro percurso da mesma linha';
 			tripNotes.set(trip.trip_id, { index, note });
 		}
 	}

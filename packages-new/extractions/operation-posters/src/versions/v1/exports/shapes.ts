@@ -20,7 +20,7 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 	//
 	// Export shapes.txt and shapesExt.txt
 
-	const { shapeSequences } = buildVariantNotes(sqlTables.trips.all(), sqlTables.routes.all());
+	const { shapeSequences } = buildVariantNotes(sqlTables.trips.all());
 	const exportedShapeIds = new Set<string>();
 	let exportedRows = 0;
 	let extensionRows = 0;

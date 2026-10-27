@@ -16,7 +16,7 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 	// Export stop times and annotations using the final trip IDs from calendar processing.
 
 	const routes = sqlTables.routes.all();
-	const { tripNotes: variantNotes } = buildVariantNotes(sqlTables.trips.all(), routes);
+	const { tripNotes: variantNotes } = buildVariantNotes(sqlTables.trips.all());
 	const { clause, parameters } = getCanvasLineFilter(routes.map(route => route.route_id), exportConfig);
 	const filterClauses = clause ? [clause] : [];
 
