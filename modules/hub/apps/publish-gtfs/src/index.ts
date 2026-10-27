@@ -159,7 +159,7 @@ async function main() {
 			await exportTripsFile(context, planData, importedGtfsSql);
 			await exportStopTimesFile(context, planData, importedGtfsSql);
 			await exportShapesFile(context, planData, importedGtfsSql);
-			// await exportCalendarDatesFile(context, planData, importedGtfsSql);
+			await exportCalendarDatesFile(context, planData, importedGtfsSql);
 
 			Logger.success(`Exported plan ${planData._id} files in ${exportTimer.get()}.`);
 
