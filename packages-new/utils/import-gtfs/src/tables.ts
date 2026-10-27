@@ -1,7 +1,6 @@
 /* * */
 
-import { type SQLiteColumn, SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
-import BSQLite3 from 'better-sqlite3';
+import { BSQLite3, type SQLiteColumn, SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
 
 import { type GtfsRow, type GtfsSQLTables } from './types.js';
 
