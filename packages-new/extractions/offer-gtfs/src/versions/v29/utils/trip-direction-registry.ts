@@ -2,7 +2,7 @@
 
 import { type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 
-/* * */		
+/* * */
 
 type TripDirectionReference = Pick<GtfsStrictV30Trips, 'route_id' | 'shape_id' | 'trip_headsign'>;
 
