@@ -1,7 +1,7 @@
 /* * */
 
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
-import { locationPermissionMatch, locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
+import { locationsDb } from '@tmlmobilidade/go-interfaces-locationsdb';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type InfrastructureNodesV1Extraction, InfrastructureNodesV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
@@ -19,93 +19,65 @@ export async function buildNodesExtractionQuery(extraction: InfrastructureNodesV
 	//
 
 	//
-	// Validate properties and permissions
+	// Validate extraction properties
 
 	const validatedProperties = InfrastructureNodesV1ExtractionPropertiesSchema.parse(extraction.properties);
-	const userPermissions = await authProvider.getPermissionsFromUserId(extraction.created_by);
-	const permissionChecks = [{ action: PermissionCatalog.all.stops.actions.export, scope: PermissionCatalog.all.stops.scope }];
 
-	const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
-		checks: permissionChecks,
+	//
+	// Verify user permissions
+
+	const userPermissions = await authProvider.getPermissionsFromUserId(extraction.created_by);
+
+	const allowedAgencyIds = PermissionCatalog.getPermissionResourceAccess({
+		checks: [{ action: 'read', scope: 'stops' }],
 		permissions: userPermissions,
 		resource_key: 'agency_ids',
 	});
 
-	const locationAccess = PermissionCatalog.getPermissionResourceAccess({
-		checks: permissionChecks,
+	const allowedLocationIds = PermissionCatalog.getPermissionResourceAccess({
+		checks: [{ action: 'read', scope: 'stops' }],
 		permissions: userPermissions,
 		resource_key: 'location_ids',
 	});
 
-	const hasAgencyAccess = agencyAccess.allowAll || agencyAccess.values.length > 0;
-	const hasLocationAccess = locationAccess.allowAll || locationAccess.values.length > 0;
-
-	if (!hasAgencyAccess || !hasLocationAccess) {
-		throw new Error('User does not have permission to export stops');
-	}
-
 	//
 	// Select agencies matching the selection and permissions
 
-	let selectedAgencyIds: string[] | undefined;
-
-	if (!agencyAccess.allowAll) {
-		selectedAgencyIds = agencyAccess.values;
-	}
-
-	if (validatedProperties.agency_ids?.length) {
-		selectedAgencyIds = validatedProperties.agency_ids.filter(agencyId => agencyAccess.allowAll || agencyAccess.values.includes(agencyId));
-	}
+	const selectedAgencyIds = validatedProperties.agency_ids?.filter(agencyId => allowedAgencyIds.allowAll || allowedAgencyIds.values.includes(agencyId)) ?? [];
 
 	//
-	// Build location filters
+	// Build location filters based on extraction properties
 
 	const additionalFilters: Filter<Stop>[] = [];
+
 	const locationSlots = [...LOCATION_PERMISSION_SLOTS, 'neighbourhood'] as const;
 
 	for (const locationSlot of locationSlots) {
-		let locationIds = validatedProperties[`location_${locationSlot}_ids`];
-
-		if (locationSlot === 'secondary') {
-			locationIds = locationIds ?? validatedProperties.municipality_ids;
-		}
-
+		// Get location IDs from extraction properties
+		const locationIds = validatedProperties[`location_${locationSlot}_ids`];
+		// Skip if no location IDs are provided
 		if (!locationIds?.length) continue;
-
-		const locationOsmIds = locationIds.map(Number);
-		additionalFilters.push({ [`location.${locationSlot}.osm_id`]: { $in: locationOsmIds } });
+		// Get location OSM IDs matching permissions
+		const allowedLocationOsmIds = locationIds
+			.filter(locationId => allowedLocationIds.allowAll || allowedLocationIds.values.includes(locationId))
+			.map(Number);
+		// Add location filter to additional filters if there are any allowed location OSM IDs
+		additionalFilters.push({ [`location.${locationSlot}.osm_id`]: { $in: allowedLocationOsmIds } });
 	}
 
 	//
-	// Apply location permissions
+	// Limit nodes extraction to Portugal
 
-	if (!locationAccess.allowAll) {
-		additionalFilters.push(locationPermissionMatch(locationAccess.values));
-	}
-
-	//
-	// Build the search filter
-
-	const escapedSearch = validatedProperties.search?.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-	if (escapedSearch) {
-		additionalFilters.push({
-			$or: [
-				{ _id: { $options: 'i', $regex: escapedSearch } },
-				{ name: { $options: 'i', $regex: escapedSearch } },
-			],
-		});
-	}
+	const foundLevelTwoLocations = await locationsDb.findLocationsByCountryAndAdminLevel('PT', '2');
+	if (!foundLevelTwoLocations.length) throw new Error('Portugal not found in locations database');
+	if (foundLevelTwoLocations[0].code !== 'PT') throw new Error('Portugal not found in locations database');
 
 	//
 	// Build the stop filter
 
-	const [country] = await locationsDb.findLocationsByCountryAndAdminLevel('PT', '2');
-	if (!country) throw new Error('Portugal not found in locations database');
-
 	const filter: Filter<Stop> = {
 		'is_deleted': false,
-		'location.country.osm_id': Number(country.id),
+		'location.country.osm_id': Number(foundLevelTwoLocations[0].id),
 	};
 
 	if (selectedAgencyIds) {
@@ -118,14 +90,6 @@ export async function buildNodesExtractionQuery(extraction: InfrastructureNodesV
 
 	if (validatedProperties.lifecycle_statuses?.length) {
 		filter.lifecycle_status = { $in: validatedProperties.lifecycle_statuses };
-	}
-
-	if (validatedProperties.facilities?.length) {
-		filter.facilities = { $in: validatedProperties.facilities };
-	}
-
-	if (validatedProperties.connections?.length) {
-		filter.connections = { $in: validatedProperties.connections };
 	}
 
 	return {

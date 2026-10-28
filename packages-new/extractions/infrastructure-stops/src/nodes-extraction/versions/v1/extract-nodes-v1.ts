@@ -37,11 +37,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	for (const stop of foundStops) {
 		stop.flags = stop.flags.map((stopFlag) => {
 			const selectedFlagAgencyIds = stopFlag.agency_ids.filter(agencyId => !selectedAgencyIds || selectedAgencyIds.includes(agencyId));
-
-			return {
-				...stopFlag,
-				agency_ids: selectedFlagAgencyIds,
-			};
+			return { ...stopFlag, agency_ids: selectedFlagAgencyIds };
 		});
 	}
 
@@ -56,6 +52,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 		goDb.core.agencies.findMany({ _id: { $in: uniqueAgencyIds } }, { projection: { _id: 1, code: 1 } }),
 		getCodespacesByMunicipality(),
 	]);
+
 	const agencyCodesById = new Map(agencies.map(agency => [agency._id, agency.code]));
 
 	//
@@ -64,19 +61,20 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	const outputRows: InfrastructureNodesV1OutputRow[] = [];
 
 	for (const stop of foundStops) {
+		// Skip if no agency IDs are present in the stop flags
 		if (!stop.flags.some(stopFlag => stopFlag.agency_ids.length > 0)) continue;
-
+		// Get municipality OSM ID and codespace
 		const municipalityOsmId = stop.location.secondary.osm_id;
 		const namespace = codespacesByMunicipality.get(municipalityOsmId);
 		if (!namespace) throw new Error(`Codespace not found for stop ${stop._id} and municipality ${municipalityOsmId}`);
-
+		// Parse nodes extraction
 		const validFrom = Dates.fromUnixMilliseconds(stop.created_at).calendar_date;
 		const stopRows = parseNodesExtraction({
 			namespace,
 			stop,
 			valid_from: validFrom,
 		}, agencyCodesById);
-
+		// Add rows to output rows
 		outputRows.push(...stopRows);
 	}
 
@@ -86,15 +84,17 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	if (!outputRows.length) throw new Error('No nodes found matching the extraction filters');
 
 	for (const [rowIndex, outputRow] of outputRows.entries()) {
+		// Build invalid field names
 		const invalidFieldNames: string[] = [];
-
+		// Check each field value
 		for (const [fieldName, fieldValue] of Object.entries(outputRow)) {
+			// Skip valid_to field
 			if (fieldName === 'valid_to') continue;
-
+			// Check if field value is missing, blank string, or invalid number
 			const isMissing = fieldValue === null || fieldValue === undefined;
 			const isBlankString = typeof fieldValue === 'string' && !fieldValue.trim();
 			const isInvalidNumber = typeof fieldValue === 'number' && !Number.isFinite(fieldValue);
-
+			// Add field name to invalid field names if field value is missing, blank string, or invalid number
 			if (isMissing || isBlankString || isInvalidNumber) {
 				invalidFieldNames.push(fieldName);
 			}
@@ -108,21 +108,7 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	//
 	// Write nodes.txt
 
-	const csvContent = csvStringify(outputRows, {
-		columns: [
-			'operator_id',
-			'operator_stop_id',
-			'stop_name',
-			'lat',
-			'lon',
-			'quay_id',
-			'stop_place_id',
-			'mode',
-			'valid_from',
-			'valid_to',
-		] satisfies (keyof InfrastructureNodesV1OutputRow)[],
-		header: true,
-	});
+	const csvContent = csvStringify(outputRows, { header: true });
 
 	const outputFilePath = path.join(context.output_path, 'nodes.txt');
 	fs.writeFileSync(outputFilePath, csvContent, { encoding: 'utf-8', flush: true });
