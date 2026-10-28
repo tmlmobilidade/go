@@ -30,28 +30,31 @@ export function useStopsExtractFormContext() {
 /* * */
 
 export function StopsExtractFormContextProvider({ children, onClose, schema, showFacilitiesAndConnections = true }: PropsWithChildren<{ onClose: () => void, schema: StopsExtractionCreateSchema, showFacilitiesAndConnections?: boolean }>) {
+	//
+
+	//
+	// A. Setup variables
+
 	const { data: meData } = useMeData();
 	const { mutate } = useExtractionsListData();
+
 	const filterAgency = useStopsListFilterAgency();
-	const filterConnections = useStopsListFilterConnections();
-	const filterFacilities = useStopsListFilterFacilities();
 	const filterLifecycleStatus = useStopsListFilterLifecycleStatus();
 	const filterLocationPrimary = useStopsListFilterLocationPrimary();
 	const filterLocationSecondary = useStopsListFilterLocationSecondary();
 	const filterLocationTertiary = useStopsListFilterLocationTertiary();
-	const filterSearch = useStopsListFilterSearch();
+
+	//
+	// B. Setup form
 
 	const { form, isDirty, isValid, unblock } = useStandardForm<StopsExtractionCreate, StopsExtractionCreateSchema>({
 		defaultValues: {
 			properties: {
 				agency_ids: filterAgency.isActive ? filterAgency.value : undefined,
-				connections: showFacilitiesAndConnections && filterConnections.isActive ? filterConnections.value : undefined,
-				facilities: showFacilitiesAndConnections && filterFacilities.isActive ? filterFacilities.value : undefined,
 				lifecycle_statuses: filterLifecycleStatus.isActive ? filterLifecycleStatus.value : undefined,
 				location_primary_ids: filterLocationPrimary.isActive ? filterLocationPrimary.value : undefined,
 				location_secondary_ids: filterLocationSecondary.isActive ? filterLocationSecondary.value : undefined,
 				location_tertiary_ids: filterLocationTertiary.isActive ? filterLocationTertiary.value : undefined,
-				search: filterSearch.value,
 			},
 			send_email_notification: false,
 			version: schema.shape.version.value,
