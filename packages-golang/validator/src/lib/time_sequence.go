@@ -1,8 +1,7 @@
-package stop_times
+package lib
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
-	stopTimesTypes "main/types/stop_times"
+	stopTimesTypes "main/types"
 	"strconv"
 	"strings"
 )
@@ -49,7 +48,7 @@ func LastStopTime(stopTime stopTimesTypes.TimeSequenceStop) (int, string, bool) 
 
 // ParseStopTimeSeconds parses a GTFS stop time into seconds since midnight.
 func ParseStopTimeSeconds(value string) (int, bool) {
-	if !lib.ValidateTime(value) {
+	if !ValidateTime(value) {
 		return 0, false
 	}
 

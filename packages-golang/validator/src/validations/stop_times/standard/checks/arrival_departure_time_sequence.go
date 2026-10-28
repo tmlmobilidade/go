@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
-	stopTimesLib "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/stop_times"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 )
 
@@ -103,11 +102,11 @@ func ArrivalDepartureTimeSequence(db *services.SQLiteContext, rules *types.RuleC
 
 	for i := 1; i < len(stopTimes); i++ {
 		previous, current := stopTimes[i-1], stopTimes[i]
-		previousTime, previousLabel, ok := stopTimesLib.LastStopTime(previous)
+		previousTime, previousLabel, ok := lib.LastStopTime(previous)
 		if !ok {
 			continue
 		}
-		currentTime, currentLabel, ok := stopTimesLib.FirstStopTime(current)
+		currentTime, currentLabel, ok := lib.FirstStopTime(current)
 		if !ok {
 			continue
 		}
