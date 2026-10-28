@@ -229,6 +229,8 @@ Run `npm run repo:validator-rules` to generate only `packages-new/types/gtfs-val
 
 Rules grouped by GTFS file are rejected. The runtime stores `types.GtfsRules` as a map from rule ID to `types.RuleContext`: `agency_id_unique` is read directly, without an `agency` section or an `agency.` prefix. Each check receives only its own context, for example `AgencyEmailField(db, rules.Rule("agency_email_field"))`. Use `ignore` to disable a rule. The generated list's technical diagnostic IDs, including `file_validation` and `file_not_found_in_rules`, are accepted as flat entries, but their runtime severities remain fixed.
 
+For the flat checks/tests layout and shared DAG entry point, see [Validation structure](src/validations/README.md).
+
 ## Performance Considerations
 
 - **Concurrent Validations**: Table validations run concurrently to maximize CPU utilization
