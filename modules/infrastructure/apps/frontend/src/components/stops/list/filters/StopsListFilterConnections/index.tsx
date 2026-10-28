@@ -23,7 +23,7 @@ export function StopsListFilterConnections() {
 	return (
 		<ListFilter
 			active={filterConnections.isActive}
-			label={t('default:stops.list.FilterConnections.label')}
+			label={t('stops:list.StopsListFilterConnections.label')}
 			onChange={filterConnections.set}
 			options={filterConnections.options}
 			isMultiple
