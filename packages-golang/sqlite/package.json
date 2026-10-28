@@ -5,6 +5,7 @@
 	"scripts": {
 		"build": "go build ./...",
 		"lint": "go vet ./...",
-		"test": "go test ./..."
+		"test": "go test ./...",
+		"tidy": "go mod tidy"
 	}
 }
