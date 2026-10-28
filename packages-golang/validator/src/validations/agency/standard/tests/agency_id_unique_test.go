@@ -2,15 +2,15 @@ package agency_standard_test
 
 import (
 	"database/sql"
+	"main/types"
+	"path/filepath"
+	"testing"
+
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/test_helpers"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	agency "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency"
 	agency_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/standard/checks"
 	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/utils"
-	"main/types"
-	"path/filepath"
-	"testing"
 )
 
 func TestAgencyIdUniqueDependsOnInformationalPresence(t *testing.T) {
@@ -56,14 +56,20 @@ func TestAgencyIdUnique(t *testing.T) {
 		{"duplicate ignored", []map[string]string{{"agency_id": "001"}, {"agency_id": "001"}}, 1, types.SEVERITY_IGNORE, 0},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			gtfs, cleanup, err := (test_helpers.MockGtfs{TableData: map[string][]map[string]string{
-				"agency": tc.rows,
-			}}).ToGtfsWithDB()
+			sqliteDB, err := sql.Open("sqlite", filepath.Join(t.TempDir(), "agency.db"))
 			if err != nil {
 				t.Fatal(err)
 			}
-			defer cleanup()
-			table, err := services.NewSQLiteTable(gtfs.DB(), "agency")
+			t.Cleanup(func() { sqliteDB.Close() })
+			if _, err := sqliteDB.Exec("CREATE TABLE agency (agency_id TEXT)"); err != nil {
+				t.Fatal(err)
+			}
+			for _, row := range tc.rows {
+				if _, err := sqliteDB.Exec("INSERT INTO agency (agency_id) VALUES (?)", row["agency_id"]); err != nil {
+					t.Fatal(err)
+				}
+			}
+			table, err := services.NewSQLiteTable(sqliteDB, "agency")
 			if err != nil {
 				t.Fatal(err)
 			}
