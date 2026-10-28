@@ -5,7 +5,7 @@ import { type HubV1ApiPatternWaypoint, type HubV1ApiScheduledArrival, type HubV1
 
 /* * */
 
-export function parseTripPath(stopTimesRaw: GtfsStopTimes[], allStopsParsedMap: Map<string, HubV1ApiStop>) {
+export function parseTripPath(stopTimesRaw: Pick<GtfsStopTimes, 'arrival_time' | 'drop_off_type' | 'pickup_type' | 'shape_dist_traveled' | 'stop_id' | 'stop_sequence'>[], allStopsParsedMap: Map<string, HubV1ApiStop>) {
 	const stopTimesAsSimplifiedPath: { id: string, stop_sequence: number }[] = [];
 	const stopTimesAsCompletePath: HubV1ApiPatternWaypoint[] = [];
 
