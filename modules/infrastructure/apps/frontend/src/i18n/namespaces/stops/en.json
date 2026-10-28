@@ -376,7 +376,7 @@
 		},
 		"StopsListHeaderMenu": {
 			"extract_nodes_button": {
-				"label": "Export Nodes"
+				"label": "Export Nodes (IMT Portugal)"
 			},
 			"extract_stops_button": {
 				"label": "Export Stops"

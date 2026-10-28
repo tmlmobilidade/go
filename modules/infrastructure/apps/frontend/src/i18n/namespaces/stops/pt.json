@@ -384,7 +384,7 @@
 		},
 		"StopsListHeaderMenu": {
 			"extract_nodes_button": {
-				"label": "Exportar Nodes"
+				"label": "Exportar Nós (IMT)"
 			},
 			"extract_stops_button": {
 				"label": "Exportar Paragens"
