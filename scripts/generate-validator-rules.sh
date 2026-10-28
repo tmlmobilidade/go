@@ -18,7 +18,7 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 VALIDATOR_DIR="${PROJECT_ROOT}/packages-golang/validator"
-OUTPUT_DIR="${1:-${PROJECT_ROOT}/packages-new/types/gtfs-validator/src/rules-new}"
+OUTPUT_DIR="${1:-${PROJECT_ROOT}/packages-new/types/gtfs-validator/src/rules}"
 TARGET="${OUTPUT_DIR}/rule-ids.ts"
 
 if ! command -v go > /dev/null 2>&1; then

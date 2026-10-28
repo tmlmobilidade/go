@@ -1,6 +1,6 @@
 // rules-ids writes the TypeScript rule IDs discovered in the Go validation implementations.
 // Use `npm run repo:validator-rules` from the repository root to generate
-// packages-new/types/gtfs-validator/src/rules-new/rule-ids.ts.
+// packages-new/types/gtfs-validator/src/rules/rule-ids.ts.
 package main
 
 import (
