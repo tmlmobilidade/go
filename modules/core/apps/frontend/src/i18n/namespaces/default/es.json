@@ -831,8 +831,8 @@
 						"label": "Solicitud caducada"
 					},
 					"none": {
-						"description": "Sin autorización de captura para este usuario.",
-						"label": "Sin autorización"
+						"description": "No se ha solicitado una captura para este usuario.",
+						"label": "Sin solicitud de captura"
 					},
 					"pending": {
 						"description": "Solicitud válida hasta {{deadline}} (hora de Lisboa). Los cinco minutos comienzan con el primer inicio aceptado.",

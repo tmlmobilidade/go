@@ -828,8 +828,8 @@
 						"label": "Request expired"
 					},
 					"none": {
-						"description": "No capture is authorized for this user.",
-						"label": "Not authorized"
+						"description": "No capture has been requested for this user.",
+						"label": "No capture requested"
 					},
 					"pending": {
 						"description": "Request valid until {{deadline}} (Lisbon time). The five-minute window begins with the first accepted start.",

@@ -830,8 +830,8 @@
 						"label": "Pedido expirado"
 					},
 					"none": {
-						"description": "Sem autorização de captura para este utilizador.",
-						"label": "Sem autorização"
+						"description": "Não foi pedida uma captura para este utilizador.",
+						"label": "Sem pedido de captura"
 					},
 					"pending": {
 						"description": "Pedido válido até {{deadline}} (hora de Lisboa). Os cinco minutos começam no primeiro início aceite.",
