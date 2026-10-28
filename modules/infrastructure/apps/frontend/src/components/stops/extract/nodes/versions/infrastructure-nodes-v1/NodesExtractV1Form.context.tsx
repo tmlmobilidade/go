@@ -45,13 +45,13 @@ export function NodesExtractV1FormContextProvider({ children }: PropsWithChildre
 
 	const initialProperties = useMemo((): InfrastructureNodesV1ExtractionProperties | null => {
 		return {
-			agency_ids: filterAgency.isActive ? filterAgency.value : undefined,
-			lifecycle_statuses: filterLifecycleStatus.isActive ? filterLifecycleStatus.value : undefined,
+			agency_ids: filterAgency.value,
+			lifecycle_statuses: filterLifecycleStatus.value,
 			location_primary_ids: filterLocationPrimary.isActive ? filterLocationPrimary.value : undefined,
 			location_secondary_ids: filterLocationSecondary.isActive ? filterLocationSecondary.value : undefined,
 			location_tertiary_ids: filterLocationTertiary.isActive ? filterLocationTertiary.value : undefined,
 		};
-	}, [filterAgency.isActive, filterAgency.value, filterLifecycleStatus.isActive, filterLifecycleStatus.value, filterLocationPrimary.isActive, filterLocationPrimary.value, filterLocationSecondary.isActive, filterLocationSecondary.value, filterLocationTertiary.isActive, filterLocationTertiary.value]);
+	}, [filterAgency.value, filterLifecycleStatus.value, filterLocationPrimary.isActive, filterLocationPrimary.value, filterLocationSecondary.isActive, filterLocationSecondary.value, filterLocationTertiary.isActive, filterLocationTertiary.value]);
 
 	const { form, isDirty, isValid, unblock } = useStandardForm<InfrastructureNodesV1ExtractionProperties, typeof InfrastructureNodesV1ExtractionPropertiesSchema>({
 		apiData: initialProperties,

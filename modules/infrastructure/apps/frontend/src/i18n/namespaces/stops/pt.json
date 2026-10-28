@@ -255,23 +255,27 @@
 			"fields": {
 				"agency_ids": {
 					"label": "Operador",
-					"placeholder": "Sem filtro"
+					"placeholder": "Selecione um ou mais operadores"
+				},
+				"lifecycle_statuses": {
+					"label": "Estado",
+					"placeholder": "Selecione um ou mais estados"
 				},
 				"location_neighbourhood_ids": {
 					"label": "Localidade",
-					"placeholder": "Sem filtro"
+					"placeholder": "Selecione uma ou mais localidades"
 				},
 				"location_primary_ids": {
 					"label": "Distrito",
-					"placeholder": "Sem filtro"
+					"placeholder": "Selecione um ou mais distritos"
 				},
 				"location_secondary_ids": {
 					"label": "Município",
-					"placeholder": "Sem filtro"
+					"placeholder": "Selecione um ou mais municípios"
 				},
 				"location_tertiary_ids": {
 					"label": "Freguesia",
-					"placeholder": "Sem filtro"
+					"placeholder": "Selecione uma ou mais freguesias"
 				}
 			}
 		},
@@ -290,23 +294,27 @@
 			"fields": {
 				"agency_ids": {
 					"label": "Operador",
-					"placeholder": "Sem filtro"
+					"placeholder": "Todos os operadores"
+				},
+				"lifecycle_statuses": {
+					"label": "Estado",
+					"placeholder": "Todos os estados"
 				},
 				"location_neighbourhood_ids": {
 					"label": "Localidade",
-					"placeholder": "Sem filtro"
+					"placeholder": "Todas as localidades"
 				},
 				"location_primary_ids": {
 					"label": "Distrito",
-					"placeholder": "Sem filtro"
+					"placeholder": "Todos os distritos"
 				},
 				"location_secondary_ids": {
 					"label": "Município",
-					"placeholder": "Sem filtro"
+					"placeholder": "Todos os municípios"
 				},
 				"location_tertiary_ids": {
 					"label": "Freguesia",
-					"placeholder": "Sem filtro"
+					"placeholder": "Todas as freguesias"
 				}
 			}
 		}

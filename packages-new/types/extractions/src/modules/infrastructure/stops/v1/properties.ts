@@ -7,10 +7,10 @@ import { z } from 'zod';
 /* * */
 
 export const InfrastructureStopsV1ExtractionPropertiesSchema = z.object({
-	agency_ids: z.array(z.string()).optional(),
+	agency_ids: z.array(z.string()).min(1),
 	connections: StopSchema.shape.connections.optional(),
 	facilities: StopSchema.shape.facilities.optional(),
-	lifecycle_statuses: z.array(LifecycleStatusSchema).optional(),
+	lifecycle_statuses: z.array(LifecycleStatusSchema).min(1),
 	location_neighbourhood_ids: z.array(z.string()).optional(),
 	location_primary_ids: z.array(z.string()).optional(),
 	location_secondary_ids: z.array(z.string()).optional(),
