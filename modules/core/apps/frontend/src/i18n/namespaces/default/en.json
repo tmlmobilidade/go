@@ -780,6 +780,20 @@
 					"label": "New User"
 				}
 			},
+			"RolesAndOrganization": {
+				"description": "The permissions assigned to the user in the system and the organizations they belong to.",
+				"fields": {
+					"organization": {
+						"label": "Organization",
+						"placeholder": "Select an option..."
+					},
+					"roles": {
+						"label": "Roles",
+						"placeholder": "Select an option..."
+					}
+				},
+				"title": "Roles & Organizations"
+			},
 			"SessionReplay": {
 				"authorize": {
 					"label": "Enable Session Replay",
@@ -817,20 +831,6 @@
 				"success": {
 					"title": "Session Replay"
 				}
-			},
-			"RolesAndOrganization": {
-				"description": "The permissions assigned to the user in the system and the organizations they belong to.",
-				"fields": {
-					"organization": {
-						"label": "Organization",
-						"placeholder": "Select an option..."
-					},
-					"roles": {
-						"label": "Roles",
-						"placeholder": "Select an option..."
-					}
-				},
-				"title": "Roles & Organizations"
 			}
 		},
 		"list": {

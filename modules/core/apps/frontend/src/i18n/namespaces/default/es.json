@@ -783,6 +783,20 @@
 					"label": "Nuevo usuario"
 				}
 			},
+			"RolesAndOrganization": {
+				"description": "El conjunto de permisos que el usuario tiene asignado en el sistema y las organizaciones a las que pertenece.",
+				"fields": {
+					"organization": {
+						"label": "Organización",
+						"placeholder": "Seleccione una opción..."
+					},
+					"roles": {
+						"label": "Roles",
+						"placeholder": "Seleccione una opción..."
+					}
+				},
+				"title": "Roles y organizaciones"
+			},
 			"SessionReplay": {
 				"authorize": {
 					"label": "Activar Session Replay",
@@ -820,20 +834,6 @@
 				"success": {
 					"title": "Session Replay"
 				}
-			},
-			"RolesAndOrganization": {
-				"description": "El conjunto de permisos que el usuario tiene asignado en el sistema y las organizaciones a las que pertenece.",
-				"fields": {
-					"organization": {
-						"label": "Organización",
-						"placeholder": "Seleccione una opción..."
-					},
-					"roles": {
-						"label": "Roles",
-						"placeholder": "Seleccione una opción..."
-					}
-				},
-				"title": "Roles y organizaciones"
 			}
 		},
 		"list": {

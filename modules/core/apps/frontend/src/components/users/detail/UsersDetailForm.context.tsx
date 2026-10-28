@@ -19,7 +19,7 @@ interface UsersDetailFormContextValue extends StandardFormContextValue<UpdateUse
 	sessionReplay: UseUsersDetailSessionReplayReturnType
 }
 
-const UsersDetailFormContext = createContext<UsersDetailFormContextValue | undefined>(undefined);
+const UsersDetailFormContext = createContext<undefined | UsersDetailFormContextValue>(undefined);
 
 export function useUsersDetailFormContext() {
 	const context = useContext(UsersDetailFormContext);
