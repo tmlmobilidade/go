@@ -62,7 +62,7 @@ export function useUsersDetailSessionReplay({ authorization, isLoading, onChange
 	});
 
 	const { action: handleCancel, isLoading: isCancelling } = useHandleAction<UserSessionReplayResponse, string>({
-		fetchFn: async activationId => await fetchApiData<UserSessionReplayResponse>({ method: 'DELETE', url: API_ROUTES.core.USERS_DETAIL_SESSION_REPLAY_VAR(userId, activationId) }),
+		fetchFn: async activationId => await fetchApiData<UserSessionReplayResponse>({ method: 'DELETE', url: API_ROUTES.core.USERS_DETAIL_SESSION_REPLAY_VAR(activationId, userId) }),
 		labels: {
 			error_title: t('default:users.detail.SessionReplay.error.title'),
 			success_message: t('default:users.detail.SessionReplay.cancel.success'),
