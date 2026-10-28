@@ -1,6 +1,6 @@
 /* * */
 
-import { StopSchema } from '@tmlmobilidade/go-types-infrastructure';
+import { StopConnectionSchema, StopFacilitySchema } from '@tmlmobilidade/go-types-infrastructure';
 import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -8,8 +8,8 @@ import { z } from 'zod';
 
 export const InfrastructureStopsV1ExtractionPropertiesSchema = z.object({
 	agency_ids: z.array(z.string()).min(1),
-	connections: StopSchema.shape.connections.optional(),
-	facilities: StopSchema.shape.facilities.optional(),
+	connections: StopConnectionSchema.optional(),
+	facilities: StopFacilitySchema.optional(),
 	lifecycle_statuses: z.array(LifecycleStatusSchema).min(1),
 	location_neighbourhood_ids: z.array(z.string()).optional(),
 	location_primary_ids: z.array(z.string()).optional(),
