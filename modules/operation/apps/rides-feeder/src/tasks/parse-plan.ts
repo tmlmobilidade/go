@@ -7,8 +7,8 @@ import { type HashableRide, type HashedShape, type HashedTrip, type Plan, RideSc
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { startHeartbeat } from '@tmlmobilidade/go-utils-exec';
+import { GtfsStrictV30SQLTables, type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
 import { sanitizeRideId } from '../utils/sanitize-ride-id.js';
@@ -82,7 +82,15 @@ export async function parsePlanTask(planData: Plan) {
 			},
 		};
 
-		const importedGtfsSql = await importGtfsStrictV30ToDatabase(importConfig);
+		const importedGtfsSql = await importGtfsToDatabase<GtfsStrictV30SQLTables>(importConfig);
+
+		// Staging indexes are dropped by the importer; index the final lookup tables.
+		importedGtfsSql._db.databaseInstance.exec(`
+			CREATE INDEX IF NOT EXISTS idx_feeder_shapes_shape_id ON shapes(shape_id);
+			CREATE INDEX IF NOT EXISTS idx_feeder_stop_times_trip_id ON stop_times(trip_id);
+			CREATE INDEX IF NOT EXISTS idx_feeder_routes_route_id ON routes(route_id);
+			CREATE INDEX IF NOT EXISTS idx_feeder_stops_stop_id ON stops(stop_id);
+		`);
 
 		Logger.success(`Imported Plan ${planData._id} in ${importTimer.get()}.`);
 
@@ -133,6 +141,9 @@ export async function parsePlanTask(planData: Plan) {
 				const shapeData = importedGtfsSql.shapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
 				const stopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [currentTrip.trip_id]);
 				const stopsData = importedGtfsSql.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times WHERE trip_id = ?)', [currentTrip.trip_id]);
+
+				//
+				// Parse data
 
 				//
 				// Validate the required data for this trip
