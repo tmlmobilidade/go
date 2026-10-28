@@ -49,6 +49,10 @@ export async function syncLinesRoutesPatterns(plan: Plan, importedGtfsSql: GtfsS
 
 	const timer = new Timer();
 
+	const totalTrips = importedGtfsSql.trips.size;
+	Logger.info(`Parsing ${totalTrips} trips for plan ${plan._id}`);
+
+	let tripCount = 0;
 	for await (const tripItem of importedGtfsSql.trips.stream('ORDER BY shape_id, trip_id')) {
 		const sourceTrip: GtfsTrips = tripItem;
 		const trip = HubV1GtfsTripsSchema.parse({
@@ -77,6 +81,11 @@ export async function syncLinesRoutesPatterns(plan: Plan, importedGtfsSql: GtfsS
 		parsePatternTrip(trip, route, polyline, validDates, tripPath, patterns);
 		context.patterns.set(trip.pattern_id, patterns);
 		updateLinesRoutes(context, trip, route, tripPath);
+
+		tripCount++;
+		if (tripCount % 5000 === 0) {
+			Logger.info(`Parsed ${tripCount} of ${totalTrips} trips for plan ${plan._id}`);
+		}
 	}
 
 	Logger.success(`Parsed lines, routes and patterns for plan ${plan._id} (${timer.get()})`);
