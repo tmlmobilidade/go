@@ -1,5 +1,7 @@
 # # #
 
+FROM golang:1.26 AS golang
+
 FROM node:lts-slim AS base
 
 
@@ -41,6 +43,9 @@ RUN turbo prune --docker @tmlmobilidade/go-${MODULE}-${APP}
 # First install dependencies, as they change less often.
 
 FROM base AS builder
+
+COPY --from=golang /usr/local/go /usr/local/go
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 WORKDIR /app
 

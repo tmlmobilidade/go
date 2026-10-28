@@ -1,0 +1,10 @@
+{
+	"name": "@tmlmobilidade/go-golang-sqlite",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "go build ./...",
+		"lint": "go vet ./...",
+		"test": "go test ./..."
+	}
+}
