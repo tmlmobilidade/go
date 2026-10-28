@@ -4,8 +4,8 @@ import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { HubV1ApiLineSchema, HubV1ApiPatternSchema, HubV1ApiRouteSchema, HubV1ApiStopSchema, HubV1GtfsRoutesSchema } from '@tmlmobilidade/go-types-hub';
 import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 
 import { type Network, type NetworkContext } from '../types/network.js';
 import { getActivePlans } from '../utils/get-active-plans.js';
