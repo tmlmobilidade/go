@@ -71,20 +71,20 @@ export async function getExtractionsHandler(): Promise<ExtractionsCoordinatorRes
 		// Find the next Extraction that is waiting to be processed.
 		// Sort the query by descending date to prioritize the most recent Extractions.
 
-		// const foundWaitingExtractions = await goDb.core.extractions.findMany(
-		// 	{
-		// 		...environmentFilter,
-		// 		processing_status: 'waiting',
-		// 	},
-		// 	{
-		// 		limit: 1,
-		// 		projection: { _id: 1 },
-		// 		sort: { created_at: 1 },
-		// 	},
-		// );
+		const foundWaitingExtractions = await goDb.core.extractions.findMany(
+			{
+				...environmentFilter,
+				processing_status: 'waiting',
+			},
+			{
+				limit: 1,
+				projection: { _id: 1 },
+				sort: { created_at: 1 },
+			},
+		);
 
 		/* === FOR TESTING === */
-		const foundWaitingExtractions = await goDb.core.extractions.findMany({ _id: 'TM57F' });
+		// const foundWaitingExtractions = await goDb.core.extractions.findMany({ _id: 'MRGG3' });
 		/* === FOR TESTING === */
 
 		if (!foundWaitingExtractions.length) {
