@@ -1,6 +1,6 @@
 import { type TaskProps } from '@/types.js';
 import { yyyymmddToDashed } from '@/utils/dates-helper.js';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /* * */
 
@@ -38,7 +38,7 @@ interface SupplyMetricDoc {
 export async function calculateSupplyMetrics({ context, message }: TaskProps): Promise<SupplyMetricResult[]> {
 	message('Calculating supply metrics...');
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 
 	// Fetch supply documents
 	message('Fetching supply metrics...');

@@ -5,7 +5,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsSQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 
 import { type NetworkContext } from '../types/network.js';
 import { parseStop } from '../utils/parse-stop.js';

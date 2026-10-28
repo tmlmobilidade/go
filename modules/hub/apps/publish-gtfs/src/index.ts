@@ -9,8 +9,8 @@ import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Files } from '@tmlmobilidade/go-utils-files';
+import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
@@ -102,22 +102,6 @@ async function main() {
 
 		const context = initExportGtfsContext();
 		await organizationsCollection.updateOne({ _id: organization._id }, { $set: { 'open_data.plans.status': 'processing', 'open_data.plans.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
-
-		// await plansCollection.updateMany({ _id: { $in: activePlans.map(plan => plan._id) } }, {
-		// 	$set: {
-		// 		'apps.hub_publish_gtfs.message': null,
-		// 		'apps.hub_publish_gtfs.status': 'waiting',
-		// 		'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
-		// 	},
-		// });
-
-		// await plansCollection.updateMany({ _id: { $nin: activePlans.map(plan => plan._id) } }, {
-		// 	$set: {
-		// 		'apps.hub_publish_gtfs.message': null,
-		// 		'apps.hub_publish_gtfs.status': 'skipped',
-		// 		'apps.hub_publish_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds,
-		// 	},
-		// });
 
 		//
 		// For each plan, validate it and import its GTFS into

@@ -1,9 +1,12 @@
 'use client';
 
-import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
-import { useHolidayCreateContext } from '@/components/holidays/create/HolidayCreate.context';
-import { HolidaySchema } from '@tmlmobilidade/go-types-offer';
-import { MultiSelect, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { CreateHolidaySchema } from '@tmlmobilidade/go-types-dates';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { ErrorDisplay, MultiSelect, Section, StandardFormController, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useHolidaysAgenciesData } from '../../shared/use-holidays-agencies-data';
+import { useHolidaysCreateFormContext } from '../HolidaysCreateForm.context';
 
 /* * */
 
@@ -13,40 +16,69 @@ export function HolidayCreateBasicInfo() {
 	//
 	// A. Setup variables
 
-	const holidayCreateContext = useHolidayCreateContext();
-
-	const { options: allAgencyOptions } = useAnnotationsAgenciesData();
+	const { t } = useTranslation();
+	const { capabilities, form } = useHolidaysCreateFormContext();
+	const { error, isLoading, options } = useHolidaysAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.holidays.actions.create],
+			scope: PermissionCatalog.all.holidays.scope,
+		},
+	});
 
 	//
-	// B. Render Components
+	// B. Render components
 
 	return (
 		<Section gap="md">
-			<TextInput
-				key={holidayCreateContext.data.form.key('title')}
-				label="Título"
-				placeholder="Ex: 25 de Abril"
-				required={!HolidaySchema.shape.title.isOptional()}
-				w="100%"
-				{...holidayCreateContext.data.form.getInputProps('title')}
+			{error && <ErrorDisplay message={error} />}
+			<StandardFormController
+				control={form.control}
+				name="title"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label={t('default:holidays.fields.title.label')}
+						onChange={field.onChange}
+						placeholder={t('default:holidays.fields.title.placeholder')}
+						readOnly={!capabilities.editEnabled}
+						value={field.value ?? ''}
+						w="100%"
+						withAsterisk={!CreateHolidaySchema.shape.title.isOptional()}
+					/>
+				)}
 			/>
-
-			<Textarea
-				key={holidayCreateContext.data.form.key('description')}
-				label="Descrição"
-				minRows={2}
-				placeholder="Descreva o evento ou observação..."
-				required={!HolidaySchema.shape.description.isOptional()}
-				w="100%"
-				{...holidayCreateContext.data.form.getInputProps('description')}
+			<StandardFormController
+				control={form.control}
+				name="description"
+				render={({ field, fieldState }) => (
+					<Textarea
+						error={fieldState.error?.message}
+						label={t('default:holidays.fields.description.label')}
+						minRows={2}
+						onChange={field.onChange}
+						placeholder={t('default:holidays.fields.description.placeholder')}
+						readOnly={!capabilities.editEnabled}
+						value={field.value ?? ''}
+						w="100%"
+						withAsterisk={!CreateHolidaySchema.shape.description.isOptional()}
+					/>
+				)}
 			/>
-
-			<MultiSelect
-				key={holidayCreateContext.data.form.key('agency_ids')}
-				data={allAgencyOptions}
-				label="Operadores afetados"
-				w="100%"
-				{...holidayCreateContext.data.form.getInputProps('agency_ids')}
+			<StandardFormController
+				control={form.control}
+				name="agency_ids"
+				render={({ field, fieldState }) => (
+					<MultiSelect
+						data={options}
+						disabled={!capabilities.editEnabled || isLoading || !!error}
+						error={fieldState.error?.message}
+						label={t('default:holidays.fields.agency_ids.label')}
+						onChange={field.onChange}
+						value={field.value ?? []}
+						w="100%"
+						withAsterisk={!CreateHolidaySchema.shape.agency_ids.isOptional()}
+					/>
+				)}
 			/>
 		</Section>
 	);

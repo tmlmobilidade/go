@@ -1,7 +1,11 @@
+'use client';
+
 /* * */
 
-import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
 import { ListFilter } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useAnnotationsListFilterAgencies } from './use-annotations-list-filter-agencies';
 
 /* * */
 
@@ -11,17 +15,18 @@ export function AnnotationsListFilterAgencies() {
 	//
 	// A. Setup variables
 
-	const annotationsListContext = useAnnotationsListContext();
+	const agency = useAnnotationsListFilterAgencies();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<ListFilter
-			active={annotationsListContext.filters.agency.isActive}
-			label="Operadores"
-			onChange={annotationsListContext.filters.agency.set}
-			options={annotationsListContext.filters.agency.options}
+			active={agency.isActive}
+			label={t('default:annotations.list.columns.agency_ids')}
+			onChange={agency.set}
+			options={agency.options}
 			isMultiple
 			withToggleAll
 		/>

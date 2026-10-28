@@ -1,7 +1,7 @@
 /* * */
 
 import { type GtfsTripDirection } from '@tmlmobilidade/go-types-gtfs';
-import { type Stop, StopIdSchema, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
+import { StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { BaseDocumentSchema, CommentSchema } from '@tmlmobilidade/go-types-shared';
 import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
@@ -102,13 +102,13 @@ export const PatternSchema = BaseDocumentSchema.extend({
 	direction: PatternDirectionSchema.default('outbound'),
 	headsign: z.string().trim().min(1).max(100),
 	is_locked: z.boolean().default(false),
-	line_id: z.string(),
+	line_id: z.string().min(1),
 	origin: z.string().trim().min(1).max(100),
 
 	parameters: StopsParametersListSchema.optional(),
 
 	path: z.array(PathSchema).optional(),
-	route_id: z.string(),
+	route_id: z.string().min(1),
 	rules: z.array(ScheduleRuleSchema).optional().default([]),
 	shape: ShapeSchema.optional(),
 });
@@ -117,41 +117,20 @@ export const PatternSimplifiedSchema = z.object({
 	_id: z.string(),
 	code: z.string().trim().min(1).max(10),
 	headsign: z.string().trim().min(1).max(100),
-	line_id: z.string(),
-	route_id: z.string(),
-});
-
-export const PatternShapeMapItemSchema = z.object({
-	agency_id: z.string(),
-	color: z.string(),
-	destination: z.string(),
-	encoded_polyline: z.string(),
-	headsign: z.string(),
-	line_code: z.string(),
-	line_id: z.string(),
-	line_name: z.string(),
-	line_text_color: z.string(),
-	origin: z.string(),
-	pattern_code: z.string(),
-	pattern_id: z.string(),
-	route_id: z.string(),
-});
-
-export const PatternStopSearchItemSchema = StopSchema.pick({
-	_id: true,
-	name: true,
-});
-
-export const PatternStopSearchQuerySchema = z.object({
-	limit: z.coerce.number().int().min(1).max(25).default(25),
-	query: z.string().trim().min(2).max(100),
+	line_id: z.string().min(1),
+	route_id: z.string().min(1),
 });
 
 /* * */
 
-export const CreatePatternSchema = PatternSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true });
+const PatternWritableSchema = PatternSchema
+	.omit({ _id: true, comments: true, created_at: true, created_by: true, is_locked: true, updated_at: true, updated_by: true })
+	.extend({ rules: PatternUpdateRulesSchema.default([]) });
 
-export const UpdatePatternSchema = CreatePatternSchema
+// The API initializes the default stop parameters when creating a pattern.
+export const CreatePatternSchema = PatternWritableSchema.omit({ parameters: true });
+
+export const UpdatePatternSchema = PatternWritableSchema
 	.partial()
 	.extend({
 		rules: PatternUpdateRulesSchema,
@@ -162,15 +141,10 @@ export const UpdatePatternSchema = CreatePatternSchema
 export type Pattern = z.infer<typeof PatternSchema>;
 export type CreatePatternDto = z.infer<typeof CreatePatternSchema>;
 export type UpdatePatternDto = z.infer<typeof UpdatePatternSchema>;
-export type PopulatedPattern = Omit<Pattern, 'path'> & { path: PopulatedPath[] };
 
 export type PatternSimplified = z.infer<typeof PatternSimplifiedSchema>;
-export type PatternShapeMapItem = z.infer<typeof PatternShapeMapItemSchema>;
-export type PatternStopSearchItem = z.infer<typeof PatternStopSearchItemSchema>;
-export type PatternStopSearchQuery = z.infer<typeof PatternStopSearchQuerySchema>;
 
 export type Path = z.infer<typeof PathSchema>;
-export type PopulatedPath = Path & { stop: null | Stop };
 
 export type Shape = z.infer<typeof ShapeSchema>;
 

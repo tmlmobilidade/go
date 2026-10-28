@@ -4,8 +4,8 @@ import { getQualifiedPatternId, getQualifiedRouteId, getQualifiedServiceId, getQ
 import { type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
 import { type HubV1ApiStop, HubV1GtfsTripsSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { type GtfsSQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 
 import { type NetworkContext } from '../types/network.js';
 import { getEncodedPolyline } from '../utils/get-encoded-polyline.js';

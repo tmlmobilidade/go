@@ -4,8 +4,8 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Attachment } from '@tmlmobilidade/go-types-core';
 import { type HashablePlanMetadata } from '@tmlmobilidade/go-types-operation';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { getZipFileHash } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { getZipFileHash } from '@tmlmobilidade/go-utils-zip';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -62,7 +62,7 @@ export async function getPlanHash({ activeFrom, activeUntil, operationGtfsAttach
 		operationGtfsNormalizedAttachmentData = await storageProvider.findById(operationGtfsNormalizedAttachmentId);
 	}
 
-	if (!operationGtfsNormalizedAttachmentData?.url) {
+	if (operationGtfsNormalizedAttachmentId && !operationGtfsNormalizedAttachmentData?.url) {
 		Logger.error({ attributes: { operationGtfsNormalizedAttachmentId, planId }, message: 'Operation GTFS normalized attachment not found in Storage' });
 	}
 

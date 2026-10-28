@@ -1,11 +1,13 @@
 'use client';
 
-import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
-import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+
+import { useAnnotationsDetailFormContext } from '../AnnotationsDetailForm.context';
+import { useAnnotationsDetailAnnotationId } from '../use-annotations-detail-annotation-id';
 
 /* * */
 
@@ -15,51 +17,31 @@ export function AnnotationsDetailHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = useAnnotationsDetailFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'title' });
 	const router = useRouter();
-	const annotationsDetailContext = useAnnotationsDetailContext();
+	const { annotationId } = useAnnotationsDetailAnnotationId();
+	const close = () => router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_LIST));
 
 	//
-	// B. Handle actions
-
-	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_LIST));
-	};
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
-
-			<CloseButton onClick={handleClose} type="close" />
-
-			<IdTag id={annotationsDetailContext.data.annotation._id} copyOnClick />
-
+			<CloseButton onClick={close} type="close" />
+			<IdTag id={annotationId} copyOnClick />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-
-			<LockButton
-				isDisabled={!annotationsDetailContext.flags.canLock}
-				isLocked={annotationsDetailContext.data.annotation.is_locked}
-				onClick={annotationsDetailContext.actions.lock}
-			/>
-
-			<Button
-				disabled={!annotationsDetailContext.flags.canSave}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={annotationsDetailContext.flags.isSaving}
-				onClick={annotationsDetailContext.actions.save}
-				variant="primary"
-			/>
-
-			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Anotação"
-				isDisabled={!annotationsDetailContext.flags.canDelete}
-				onDelete={annotationsDetailContext.actions.delete}
-				showConfirmation
-			/>
-
+			<HasPermission action={PermissionCatalog.all.annotations.actions.lock} scope={PermissionCatalog.all.annotations.scope}>
+				<LockButton isDisabled={!capabilities.lockEnabled} isLoading={status.isLocking} isLocked={!!status.isLocked} onClick={actions.lock} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.annotations.actions.update} scope={PermissionCatalog.all.annotations.scope}>
+				<UpdateButton isDisabled={!capabilities.updateEnabled} isLoading={status.isUpdating} onClick={actions.update} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.annotations.actions.delete} scope={PermissionCatalog.all.annotations.scope}>
+				<DeleteButton cancelLabel={t('default:annotations.detail.cancel')} confirmLabel={t('default:annotations.detail.confirm')} confirmMessage={t('default:annotations.detail.confirmMessage')} confirmTitle={t('default:annotations.detail.confirmTitle')} isDisabled={!capabilities.deleteEnabled} isLoading={status.isDeleting} onDelete={actions.delete} showConfirmation />
+			</HasPermission>
 		</Toolbar>
 	);
 

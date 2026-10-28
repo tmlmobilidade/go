@@ -53,17 +53,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// CALENDAR
 		CALENDAR_LIST: `${getModuleConfig('dates', 'frontend_url')}/calendar`,
 
-		// EVENTS
-		EVENTS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/events/${encodeURIComponent(id)}`,
-		EVENTS_LIST: `${getModuleConfig('dates', 'frontend_url')}/events`,
-
 		// HOLIDAYS
 		HOLIDAYS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/holidays/${encodeURIComponent(id)}`,
 		HOLIDAYS_LIST: `${getModuleConfig('dates', 'frontend_url')}/holidays`,
-
-		// YEAR_PERIODS
-		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/year-periods/${encodeURIComponent(id)}`,
-		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'frontend_url')}/year-periods`,
 	},
 
 	infrastructure: {
@@ -78,6 +70,10 @@ export const PAGE_ROUTES = Object.freeze({
 	offer: {
 		// BASE
 		BASE: `${getModuleConfig('offer', 'frontend_url')}`,
+
+		// EVENTS
+		EVENTS_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/events/${encodeURIComponent(id)}`,
+		EVENTS_LIST: `${getModuleConfig('offer', 'frontend_url')}/events`,
 
 		// FARES
 		FARES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/fares/${encodeURIComponent(id)}`,
@@ -96,6 +92,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/typologies/${encodeURIComponent(id)}`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'frontend_url')}/typologies`,
+
+		// YEAR_PERIODS
+		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/year-periods/${encodeURIComponent(id)}`,
+		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'frontend_url')}/year-periods`,
 
 		// ZONES
 		ZONES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/zones/${encodeURIComponent(id)}`,
@@ -243,26 +243,18 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('dates', 'api_url')}`,
 
 		// ANNOTATIONS
+		ANNOTATIONS_CREATE: `${getModuleConfig('dates', 'api_url')}/annotations/create`,
 		ANNOTATIONS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}`,
 		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}/lock`,
 		ANNOTATIONS_LIST: `${getModuleConfig('dates', 'api_url')}/annotations/list`,
 		ANNOTATIONS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/annotations/list-agencies`,
 
-		// EVENTS
-		EVENTS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/events/${encodeURIComponent(id)}`,
-		EVENTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/events/${encodeURIComponent(id)}/lock`,
-		EVENTS_LIST: `${getModuleConfig('dates', 'api_url')}/events`,
-
 		// HOLIDAYS
+		HOLIDAYS_CREATE: `${getModuleConfig('dates', 'api_url')}/holidays/create`,
 		HOLIDAYS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/holidays/${encodeURIComponent(id)}`,
 		HOLIDAYS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/holidays/${encodeURIComponent(id)}/lock`,
 		HOLIDAYS_LIST: `${getModuleConfig('dates', 'api_url')}/holidays`,
-
-		// YEAR-PERIODS
-		YEAR_PERIODS_CHECK_CONFLICTS: `${getModuleConfig('dates', 'api_url')}/year-periods/check-conflicts`,
-		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/year-periods/${encodeURIComponent(id)}`,
-		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/year-periods/${encodeURIComponent(id)}/lock`,
-		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
+		HOLIDAYS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/holidays/list-agencies`,
 	},
 
 	hub: {
@@ -282,15 +274,15 @@ export const API_ROUTES = Object.freeze({
 		// DEBUG
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
-		// FEEDBACK
-		FEEDBACK_LIST: `${getModuleConfig('hub', 'api_url')}/v1/feedback`,
-
 		// ETA
 		ETA_BY_STOP: (organizationId: string, id: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta/by-stop/${encodeURIComponent(id)}`,
 		ETA_BY_TRIP: (organizationId: string, id: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta/by-trip/${encodeURIComponent(id)}`,
 		ETA_GTFS: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta/gtfs`,
 		ETA_GTFS_PB: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta/gtfs.pb`,
 		ETA_LIST: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta`,
+
+		// FEEDBACK
+		FEEDBACK_LIST: `${getModuleConfig('hub', 'api_url')}/v1/feedback`,
 
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/metrics/demand-by-agency-by-operational-date`,
@@ -347,49 +339,72 @@ export const API_ROUTES = Object.freeze({
 		// AGENCIES
 		AGENCIES_LIST: `${getModuleConfig('offer', 'api_url')}/agencies`,
 
+		// EVENTS
+		EVENTS_CREATE: `${getModuleConfig('offer', 'api_url')}/events/create`,
+		EVENTS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}`,
+		EVENTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}/lock`,
+		EVENTS_LIST: `${getModuleConfig('offer', 'api_url')}/events`,
+		EVENTS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/events/list-agencies`,
+
 		// FARES
+		FARES_CREATE: `${getModuleConfig('offer', 'api_url')}/fares/create`,
 		FARES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}`,
 		FARES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}/lock`,
 		FARES_LIST: `${getModuleConfig('offer', 'api_url')}/fares`,
+		FARES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/fares/list-agencies`,
 
 		// GTFS
 		GTFS_PARSE: `${getModuleConfig('offer', 'api_url')}/gtfs/parse`,
 
 		// LINES
+		LINES_CREATE: `${getModuleConfig('offer', 'api_url')}/lines/create`,
 		LINES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}`,
 		LINES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}/lock`,
 		LINES_LIST: `${getModuleConfig('offer', 'api_url')}/lines`,
 
 		// PATTERNS
+		PATTERNS_CREATE: `${getModuleConfig('offer', 'api_url')}/patterns/create`,
 		PATTERNS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}`,
 		PATTERNS_DETAIL_COMMENT: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/comment`,
 		PATTERNS_DETAIL_IMPORT_GTFS: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/import-gtfs`,
 		PATTERNS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/lock`,
-		PATTERNS_LIST: `${getModuleConfig('offer', 'api_url')}/patterns`,
 		PATTERNS_SHAPES: `${getModuleConfig('offer', 'api_url')}/patterns/shapes`,
 		PATTERNS_STOPS: `${getModuleConfig('offer', 'api_url')}/patterns/stops`,
 		PATTERNS_STOPS_DETAIL: (stopId: string) => `${getModuleConfig('offer', 'api_url')}/patterns/stops/${encodeURIComponent(stopId)}`,
 
 		// ROUTES
+		ROUTES_CREATE: `${getModuleConfig('offer', 'api_url')}/routes/create`,
 		ROUTES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/routes/${encodeURIComponent(id)}`,
 		ROUTES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/routes/${encodeURIComponent(id)}/lock`,
-		ROUTES_LIST: `${getModuleConfig('offer', 'api_url')}/routes`,
 
 		// SHAPES
 		SHAPES_ROUTE_PREVIEW: `${getModuleConfig('offer', 'api_url')}/shapes/route-preview`,
 
 		// TYPOLOGIES
+		TYPOLOGIES_CREATE: `${getModuleConfig('offer', 'api_url')}/typologies/create`,
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${encodeURIComponent(id)}`,
 		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${encodeURIComponent(id)}/lock`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'api_url')}/typologies`,
+		TYPOLOGIES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/typologies/list-agencies`,
+		TYPOLOGIES_LIST_FARES: `${getModuleConfig('offer', 'api_url')}/typologies/list-fares`,
 
 		// VKM
 		VKM_CALCULATE: `${getModuleConfig('offer', 'api_url')}/vkm/calculate`,
 
+		// YEAR-PERIODS
+		YEAR_PERIODS_CHECK_CONFLICTS: `${getModuleConfig('offer', 'api_url')}/year-periods/check-conflicts`,
+		YEAR_PERIODS_CREATE: `${getModuleConfig('offer', 'api_url')}/year-periods/create`,
+		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}`,
+		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}/lock`,
+		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'api_url')}/year-periods`,
+		YEAR_PERIODS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/year-periods/list-agencies`,
+
 		// ZONES
+		ZONES_CREATE: `${getModuleConfig('offer', 'api_url')}/zones/create`,
 		ZONES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${encodeURIComponent(id)}`,
 		ZONES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${encodeURIComponent(id)}/lock`,
 		ZONES_LIST: `${getModuleConfig('offer', 'api_url')}/zones`,
+		ZONES_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/zones/list-agencies`,
 	},
 
 	operation: {

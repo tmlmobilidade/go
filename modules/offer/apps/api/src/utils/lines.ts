@@ -1,7 +1,8 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Fare, type FareSimplified, type Line, type LineNormalized, type Route, type RouteSimplified, type Typology, type TypologySimplified } from '@tmlmobilidade/go-types-offer';
+import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
+import { type Fare, type FareSimplified, type Line, type Route, type RouteSimplified, type Typology, type TypologySimplified } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
@@ -34,7 +35,7 @@ async function getLinesRoutes(lineIds: string[]): Promise<(Pick<Route, 'line_id'
 	) as (Pick<Route, 'line_id'> & RouteSimplified)[];
 }
 
-export async function populateLines(linesData: Line[]): Promise<LineNormalized[]> {
+export async function populateLines(linesData: Line[]): Promise<PopulatedLine[]> {
 	if (!linesData.length) return [];
 
 	const typologyIds = [...new Set(linesData.map(line => line.typology).filter(Boolean))] as string[];
@@ -84,7 +85,7 @@ export async function populateLines(linesData: Line[]): Promise<LineNormalized[]
 	});
 }
 
-export async function populateLine(lineData: Line): Promise<LineNormalized> {
+export async function populateLine(lineData: Line): Promise<PopulatedLine> {
 	const [populatedLine] = await populateLines([lineData]);
 	return populatedLine;
 }
