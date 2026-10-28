@@ -5,28 +5,22 @@ A high-performance GTFS (General Transit Feed Specification) validation tool wri
 ## Building the binary
 
 From the repository root, `npm run repo:validator-binary` builds for the current
-machine. It uses `compile.sh` (default: `--local`), clears `ts-wrapper/bin` and
-`ts-wrapper/dist/bin`, and writes the executable to both directories. Go is required.
+machine. It uses `compile.sh` (default: `--local`), clears `bin` and `dist/bin`
+under `modules/operation/apps/validator/ts-wrapper`, and writes the executable
+to both directories. Go is required.
 
 To build all four release binaries (Linux and macOS, amd64 and arm64), run:
 
 ```sh
-bash modules/operation/apps/validator/validator/compile.sh --all
+bash packages-golang/validator/compile.sh --all
 ```
 
 Starting the worker with `npm run dev:operation:gtfs-validator` automatically runs
 `compile.sh` through the worker's `predev` hook before starting the Node process.
 
-For previews and other deployments, the module build workflow sets up Go and runs
-the same `compile.sh` before building the worker image. The shared Node Dockerfile
-copies the binary explicitly, because Turbo prune excludes ignored binaries,
-and refreshes the wrapper's `dist/bin` after the TypeScript build. Kubernetes
-starts the worker with the binary already present. Rebuild the worker image to
-deploy Go changes; no app-specific Dockerfile is needed.
-
-For a manual Docker build, compile the image platform's binary first. Use
-`compile.sh --all` when the image platform differs from the host. A missing binary
-for the image platform causes the Docker build to fail.
+The `build-binary.yml` release workflow runs `compile.sh --all` and uploads the
+four binaries to a GitHub release. Container packaging is a separate step;
+running this script locally does not rebuild or deploy the worker image.
 
 ## Architecture Overview
 

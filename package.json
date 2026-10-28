@@ -188,7 +188,7 @@
 		"repo:routes": "bash ./scripts/generate-routes.sh",
 		"repo:sql": "bash ./scripts/generate-sql-registry.sh",
 		"repo:sql:check": "bash ./scripts/generate-sql-registry.sh --check",
-		"repo:validator-binary": "bash modules/operation/apps/validator/validator/compile.sh",
+		"repo:validator-binary": "bash packages-golang/validator/compile.sh",
 		"repo:validator-rules": "bash ./scripts/generate-validator-rules.sh",
 		"repo:validator-rules:check": "bash ./scripts/generate-validator-rules.sh --check"
 	},

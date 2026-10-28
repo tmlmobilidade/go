@@ -3,8 +3,10 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-BIN_DIR="$SCRIPT_DIR/../ts-wrapper/bin"
-RUNTIME_BIN_DIR="$SCRIPT_DIR/../ts-wrapper/dist/bin"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
+WRAPPER_DIR="$REPO_ROOT/modules/operation/apps/validator/ts-wrapper"
+BIN_DIR="$WRAPPER_DIR/bin"
+RUNTIME_BIN_DIR="$WRAPPER_DIR/dist/bin"
 VALIDATOR_GO_CACHE_DIR="${GOCACHE:-${TMPDIR:-/tmp}/go-plans-validator-cache}"
 
 case "${1:---local}" in
@@ -41,9 +43,9 @@ for TARGET in "${TARGETS[@]}"; do
 
 	echo "Building GTFS validator binary: $BINARY_PATH"
 	(
-		cd "$SCRIPT_DIR/src"
+		cd "$SCRIPT_DIR"
 		CGO_ENABLED=0 GOCACHE="$VALIDATOR_GO_CACHE_DIR" GOOS="$TARGET_OS" GOARCH="$TARGET_ARCH" \
-			go build -o "$BINARY_PATH" .
+			go build -o "$BINARY_PATH" ./src
 	)
 	chmod +x "$BINARY_PATH"
 	# The compiled TypeScript wrapper executes the binary from dist/bin.
