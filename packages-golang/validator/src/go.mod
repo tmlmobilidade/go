@@ -24,4 +24,10 @@ require (
 	modernc.org/libc v1.66.10 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
+	github.com/tmlmobilidade/go/packages-golang/import-gtfs v0.0.0
+	github.com/tmlmobilidade/go/packages-golang/telemetry v0.0.0
 )
+
+replace github.com/tmlmobilidade/go/packages-golang/import-gtfs => ../import-gtfs
+
+replace github.com/tmlmobilidade/go/packages-golang/telemetry => ../telemetry
