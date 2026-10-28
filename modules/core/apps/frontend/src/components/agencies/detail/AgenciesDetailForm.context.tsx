@@ -9,6 +9,7 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useMemo
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesListData } from '../list/use-agencies-list-data';
+import { getAgenciesDetailValidationRules } from './get-agencies-detail-validation-rules';
 import { useAgenciesDetailAgencyId } from './use-agencies-detail-agency-id';
 import { useAgenciesDetailData } from './use-agencies-detail-data';
 
@@ -98,7 +99,16 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 
 	const handleSave = useCallback(async () => {
 		if (!updateEnabled || isUpdating) return;
-		const result = UpdateAgencySchema.safeParse(form.getValues());
+		const values = form.getValues();
+		const result = UpdateAgencySchema.safeParse({
+			...values,
+			...(values.plans && {
+				plans: {
+					...values.plans,
+					validation_rules: getAgenciesDetailValidationRules(values.plans.validation_rules),
+				},
+			}),
+		});
 		if (!result.success) {
 			const severityIssues = result.error.issues.filter(issue => issue.path[0] === 'plans' && issue.path[1] === 'validation_rules' && issue.path.at(-1) === 'severity');
 			useToast.error({
