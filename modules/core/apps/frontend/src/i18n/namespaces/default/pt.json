@@ -806,8 +806,8 @@
 					"success": "Pedido de captura autorizado para este utilizador."
 				},
 				"cancel": {
-					"label": "Cancelar Session Replay",
-					"success": "Pedido de captura cancelado."
+					"label": "Parar Session Replay",
+					"success": "Paragem solicitada. Os dados já enviados ao Amplitude são mantidos."
 				},
 				"error": {
 					"title": "Não foi possível gerir o Session Replay"
@@ -818,12 +818,16 @@
 						"label": "Janela ativa"
 					},
 					"cancelled": {
-						"description": "O pedido foi cancelado. É necessário autorizar outra captura.",
-						"label": "Cancelada"
+						"description": "A autorização foi interrompida. Isto não elimina dados já enviados ao Amplitude.",
+						"label": "Parada"
+					},
+					"completed": {
+						"description": "A janela de captura de cinco minutos terminou. A disponibilidade do replay pode ser confirmada no Amplitude.",
+						"label": "Terminada"
 					},
 					"expired": {
-						"description": "O prazo terminou. É necessário autorizar outra captura.",
-						"label": "Expirada"
+						"description": "O pedido expirou sem iniciar a captura. É necessário autorizar outra captura.",
+						"label": "Pedido expirado"
 					},
 					"none": {
 						"description": "Sem autorização de captura para este utilizador.",
