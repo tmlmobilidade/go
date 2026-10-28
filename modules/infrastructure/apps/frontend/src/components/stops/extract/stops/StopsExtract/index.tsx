@@ -26,7 +26,7 @@ export function StopsExtract() {
 		<Pane header={[<StopsExtractHeader key="header" />]}>
 			<Section>
 				<Select
-					label={t('default:rides.extract.RidesExtract.fields.version.label')}
+					label={t('stops:extract.StopsExtract.fields.version.label')}
 					onChange={setSelectedVersion}
 					value={selectedVersion}
 					data={[

@@ -3,6 +3,9 @@
 import namespaceDefaultEn from '@/i18n/namespaces/default/en.json' with { type: 'json' };
 import namespaceDefaultEs from '@/i18n/namespaces/default/es.json' with { type: 'json' };
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
+import namespaceStopsEn from '@/i18n/namespaces/stops/en.json' with { type: 'json' };
+import namespaceStopsEs from '@/i18n/namespaces/stops/es.json' with { type: 'json' };
+import namespaceStopsPt from '@/i18n/namespaces/stops/pt.json' with { type: 'json' };
 import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
@@ -15,6 +18,7 @@ import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtS
 export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
 	default: namespaceDefaultPt,
+	stops: namespaceStopsPt,
 } as const;
 
 /**
@@ -23,6 +27,7 @@ export const i18nResourceKeysPt = {
 export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
 	default: namespaceDefaultEs,
+	stops: namespaceStopsEs,
 } as const;
 
 /**
@@ -31,4 +36,5 @@ export const i18nResourceKeysEs = {
 export const i18nResourceKeysEn = {
 	...i18nResourceKeysEnShared,
 	default: namespaceDefaultEn,
+	stops: namespaceStopsEn,
 } as const;
