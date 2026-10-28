@@ -4,7 +4,6 @@ import { useStopsAgenciesData } from '@/components/stops/shared/use-stops-agenci
 import { useStopsLocationsData } from '@/components/stops/shared/use-stops-locations-data';
 import { StopConnectionValues, StopFacilityValues } from '@tmlmobilidade/go-types-infrastructure';
 import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { LifecycleStatusValues } from '@tmlmobilidade/go-types-shared';
 import { Grid, MultiSelect, Section, Select, type SelectDataItem, StandardFormController } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -15,14 +14,16 @@ import { useStopsExtractFormContext } from '../StopsExtractForm.context';
 
 export function StopsExtractProperties({ showFacilitiesAndConnections = true, versions }: { showFacilitiesAndConnections?: boolean, versions: SelectDataItem[] }) {
 	//
+
+	//
 	// A. Setup variables
+
 	const { t } = useTranslation();
 	const { capabilities, form } = useStopsExtractFormContext();
-	const request = {
-		permissions: { actions: [PermissionCatalog.all.stops.actions.export], scope: PermissionCatalog.all.stops.scope },
-	};
-	const { isLoading: agenciesLoading, options: agenciesOptions } = useStopsAgenciesData(request);
-	const { isLoading: locationsLoading, options: locationsOptions } = useStopsLocationsData(request);
+
+	const { isLoading: agenciesLoading, options: agenciesOptions } = useStopsAgenciesData({ permissions: { actions: ['read'], scope: 'stops' } });
+	const { isLoading: locationsLoading, options: locationsOptions } = useStopsLocationsData({ permissions: { actions: ['read'], scope: 'stops' } });
+
 	const filters = [
 		{
 			data: agenciesOptions,

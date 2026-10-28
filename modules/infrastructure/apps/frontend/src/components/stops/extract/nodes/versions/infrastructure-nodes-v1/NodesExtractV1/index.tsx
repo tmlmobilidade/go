@@ -1,13 +1,19 @@
 'use client';
 
-import { NodesExtractV1FormContextProvider } from '../NodesExtractFormV1.context';
+import { Divider } from '@tmlmobilidade/ui';
+
+import { NodesExtractV1Footer } from '../NodesExtractV1Footer';
+import { NodesExtractV1FormContextProvider } from '../NodesExtractV1Form.context';
+import { NodesExtractV1Properties } from '../NodesExtractV1Properties';
 
 /* * */
 
 export function NodesExtractV1() {
 	return (
 		<NodesExtractV1FormContextProvider>
-			ioudfoj
+			<NodesExtractV1Properties />
+			<Divider />
+			<NodesExtractV1Footer />
 		</NodesExtractV1FormContextProvider>
 	);
 }
