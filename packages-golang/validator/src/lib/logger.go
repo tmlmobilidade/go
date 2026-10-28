@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
 )
 
 // Level defines the severity of the log message
@@ -14,7 +15,7 @@ type Level int
 const (
 	Info Level = iota
 	Error
-	Debug 
+	Debug
 )
 
 var levelNames = []string{"info", "error", "debug"}
@@ -144,7 +145,7 @@ var AppLogger = NewLogger(true, Debug)
 
 // PerformanceTracker represents a timer for tracking operation performance
 type PerformanceTracker struct {
-	start     time.Time
+	timer     *telemetry.Timer
 	operation string
 	logger    *Logger
 }
@@ -153,7 +154,7 @@ type PerformanceTracker struct {
 func (l *Logger) StartPerformanceTracker(operation string) *PerformanceTracker {
 	l.Info(fmt.Sprintf("[%s] Starting operation", operation))
 	return &PerformanceTracker{
-		start:     time.Now(),
+		timer:     telemetry.NewTimer(),
 		operation: operation,
 		logger:    l,
 	}
@@ -161,7 +162,7 @@ func (l *Logger) StartPerformanceTracker(operation string) *PerformanceTracker {
 
 // End stops the performance tracker and logs the duration
 func (pt *PerformanceTracker) End() {
-	duration := time.Since(pt.start)
+	duration := pt.timer.Get()
 	pt.logger.Info(fmt.Sprintf("[%s] Operation completed in %v", pt.operation, duration))
 }
 

@@ -34,7 +34,7 @@ The GTFS Validator follows a modular, concurrent architecture designed for effic
 
 ### Core Components
 
-1. **GTFS Loader** - Handles reading and parsing GTFS zip files
+1. **GTFS Loader** - Opens existing GTFS SQLite databases
 2. **SQLite Storage** - Stores GTFS data in a temporary SQLite database for efficient access
 3. **Validation Registry** - Manages registration and discovery of validation functions
 4. **Rules Engine** - Processes configurable validation rules from JSON files
@@ -44,7 +44,7 @@ The GTFS Validator follows a modular, concurrent architecture designed for effic
 ### High-Level Flow
 
 ```
-GTFS Zip File → SQLite Import → File Validation → Table Validations (Concurrent) → Results Output
+Existing GTFS SQLite Database → ID Map Preparation → File Validation → Table Validations (Concurrent) → Results Output
 ```
 
 ### Architecture Diagram
@@ -56,8 +56,8 @@ classDiagram
         +runValidations()
     }
     
-    class ImportGtfs {
-        +ImportGtfsToDatabase()
+    class GTFSSQLite {
+        +ReadGTFSSQLite()
     }
     
     class Gtfs {
@@ -83,8 +83,8 @@ classDiagram
         +RunValidations()
     }
     
-    Main --> ImportGtfs : loads zip
-    ImportGtfs --> Gtfs : supplies database
+    Main --> GTFSSQLite : opens SQLite
+    GTFSSQLite --> Gtfs : supplies database
     Main --> RulesParser : loads rules
     RulesParser --> GtfsRules : parses
     Main --> Registry : queries
@@ -103,42 +103,19 @@ classDiagram
 
 ## GTFS Loading Process
 
-The validator loads feeds through the shared [import-gtfs](../import-gtfs/) package.
-SQLite remains the storage layer for validation queries. The validator supplies
-its existing pure-Go connection, so `CGO_ENABLED=0` builds remain supported.
-The shared packages require Go 1.26 or newer.
+The validator accepts an existing SQLite database produced by [import-gtfs](../import-gtfs/).
+Run the importer separately, then pass its output path with `-input /path/to/gtfs.db`.
+The flow is `import-gtfs → SQLite → validator → validation results`.
+The validator uses shared `telemetry` timing. Its integration test uses `import-gtfs`
+to verify that the producer output can be loaded and prepared for validation.
+ZIP input is no longer supported by the validator.
 
-### Step 1: Zip File Reading
+`ReadGTFSSQLite()` opens the database without creating missing files, rebuilds the
+validator's `id_map`, and loads ID lookups into memory. Validation then prepares
+its indexes and derived tables. The input must be writable and is retained after
+validation; only the connection is closed. Repeated validation rebuilds the ID map.
 
-The process begins when `ReadGTFSZip()` is called with a path to a GTFS zip file:
-
-1. **Temporary Database Creation**: The validator creates a temporary database and supplies its connection to `ImportGtfsToDatabase`.
-2. **Database Configuration**: The shared importer configures WAL, synchronous writes, memory temporary storage, and a single connection during import. After import, the validator restores the connection pool for nested and concurrent validation queries.
-
-### Step 2: File Processing
-
-Each file in the GTFS zip archive is processed sequentially:
-
-1. **File Filtering**: Standard GTFS `.txt` files and the validator's registered table names are imported. This includes TML extensions such as `vehicles`, `municipalities`, `archives`, `periods`, and `afetacao`. Unrecognized files are ignored. Nested ZIP folders are supported.
-2. **CSV Parsing**: The shared importer streams CSV rows, handles UTF-8 BOMs and multiline quoted fields, and uses the header to define `TEXT` columns, including custom fields.
-3. **Transactional Import**: All rows are imported in one transaction. Malformed CSV or SQL errors fail the import and roll it back. Empty cells become SQL `NULL`; whitespace and leading zeros are preserved. No date filter is applied, so validation sees the original service dates.
-4. **ID Mapping**: After import, the validator builds its `id_map` from the imported tables, retaining duplicate IDs, per-field composite-key lookups, and zero-based source row indices. Missing ID columns remain available for field validation to report.
-5. **Cleanup**: Failed imports close the connection and remove temporary database files. Successful imports remain open until validation finishes, when the database and any WAL/SHM sidecars are removed.
-
-### Step 3: Data Structure Creation
-
-After all files are imported:
-
-1. **Gtfs Struct**: A `Gtfs` struct is created with a connection to the SQLite database
-2. **ID Map Loading**: The ID map is loaded into memory for fast primary key lookups
-3. **Iterator Methods**: The `Gtfs` struct provides iterator methods (e.g., `IterateStops()`, `IterateTrips()`) that stream data from SQLite
-
-### Benefits of SQLite Storage
-
-- **Memory Efficiency**: Large feeds don't need to be fully loaded into memory
-- **Fast Queries**: SQLite provides efficient querying and indexing
-- **Concurrent Access**: Multiple validations can read from the database concurrently
-- **Temporary Storage**: The database is automatically cleaned up after validation completes
+The validator uses the pure-Go SQLite driver, so `CGO_ENABLED=0` remains supported.
 
 ## Validation Processing
 
@@ -217,7 +194,7 @@ Each validation message contains:
 
 ### Command-Line Options
 
-- `-input`: Path to the GTFS zip file (required)
+- `-input`: Path to the GTFS SQLite database (required)
 - `-rules`: Path to the validation rules JSON file (optional)
 - `-out` / `-o`: Path to write output file (optional)
 - `-log`: Log level (debug, info, error)

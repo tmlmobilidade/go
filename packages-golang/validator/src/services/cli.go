@@ -13,7 +13,7 @@ var displayVersion string
 func SetDisplayVersion(v string) { displayVersion = v }
 
 type CliOptions struct {
-	InputPath  string // Path to the GTFS zip file
+	InputPath  string // Path to the GTFS SQLite database
 	OutputPath string // Path to the output file
 	LogLevel   string // Log level (debug, info, error)
 	RulesPath  string // Path to the rules file
@@ -38,7 +38,7 @@ func NewCLI(title string) *CLI {
 }
 
 func (c *CLI) Parse() {
-	flag.StringVar(&c.Options.InputPath, "input", "", "Path to the GTFS zip file")
+	flag.StringVar(&c.Options.InputPath, "input", "", "Path to the GTFS SQLite database")
 	flag.StringVar(&c.Options.OutputPath, "out", "", "Path to the output file")
 	flag.StringVar(&c.Options.OutputPath, "o", "", "Path to the output file")
 	flag.StringVar(&c.Options.LogLevel, "log", "info", "Log level (debug, info, error)")

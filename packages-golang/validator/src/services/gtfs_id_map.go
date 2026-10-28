@@ -18,13 +18,14 @@ func prepareGtfsIDMap(db *sql.DB) (types.GtfsIdMap, error) {
 	}
 	defer tx.Rollback()
 	if _, err := tx.Exec(`
-        CREATE TABLE id_map (
+        CREATE TABLE IF NOT EXISTS id_map (
             file TEXT NOT NULL,
             key TEXT NOT NULL,
             row_index INTEGER NOT NULL,
             PRIMARY KEY (file, key, row_index)
         );
-        CREATE INDEX idx_id_map_file_key ON id_map(file, key);
+        CREATE INDEX IF NOT EXISTS idx_id_map_file_key ON id_map(file, key);
+        DELETE FROM id_map;
     `); err != nil {
 		return nil, err
 	}
