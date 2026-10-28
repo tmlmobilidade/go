@@ -17,7 +17,7 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-VALIDATOR_DIR="${PROJECT_ROOT}/modules/operation/apps/validator/validator/src"
+VALIDATOR_DIR="${PROJECT_ROOT}/packages-golang/validator"
 OUTPUT_DIR="${1:-${PROJECT_ROOT}/packages-new/types/gtfs-validator/src/rules-new}"
 TARGET="${OUTPUT_DIR}/rule-ids.ts"
 
@@ -33,7 +33,8 @@ if [ "${CHECK_ONLY}" = false ]; then
     printf 'Generating validator rule IDs from the Go validator...\n'
 fi
 
-if ! (cd "${VALIDATOR_DIR}" && go run ./cmd/rules-ids --output-dir "${TEMP_DIR}"); then
+# Rule discovery resolves the validations directory relative to src.
+if ! (cd "${VALIDATOR_DIR}/src" && go run ./cmd/rules-ids --output-dir "${TEMP_DIR}"); then
     printf 'The rules-ids command failed. Nothing was written.\n' >&2
     exit 1
 fi
