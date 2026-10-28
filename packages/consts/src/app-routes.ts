@@ -227,6 +227,8 @@ export const API_ROUTES = Object.freeze({
 		USERS_CREATE: `${getModuleConfig('core', 'api_url')}/users/create`,
 		USERS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/delete/${encodeURIComponent(id)}`,
 		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}`,
+		USERS_DETAIL_SESSION_REPLAY: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/session-replay`,
+		USERS_DETAIL_SESSION_REPLAY_VAR: (activationId: string, id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/session-replay/${encodeURIComponent(activationId)}`,
 		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
 		USERS_LIST: `${getModuleConfig('core', 'api_url')}/users/list`,
 		USERS_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/users/list-agencies`,
@@ -234,8 +236,6 @@ export const API_ROUTES = Object.freeze({
 		USERS_LIST_ORGANIZATIONS: `${getModuleConfig('core', 'api_url')}/users/list-organizations`,
 		USERS_LIST_ROLES: `${getModuleConfig('core', 'api_url')}/users/list-roles`,
 		USERS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/lock/${encodeURIComponent(id)}`,
-		USERS_SESSION_REPLAY_AUTHORIZE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/session-replay`,
-		USERS_SESSION_REPLAY_CANCEL: (id: string, activationId: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/session-replay/${encodeURIComponent(activationId)}`,
 		USERS_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/update/${encodeURIComponent(id)}`,
 	},
 
