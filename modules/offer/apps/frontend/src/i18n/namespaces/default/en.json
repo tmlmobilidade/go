@@ -184,8 +184,41 @@
 			"submit": "Assign period",
 			"title": "Assign dates"
 		},
+		"calendar": {
+			"readOnly": "Read only",
+			"readOnlyPermissions": "Editing this period’s settings or dates requires update permission for every associated operator.",
+			"readOnlyLocked": "This period is locked and cannot be edited.",
+			"cancelSelection": "Cancel selection (Esc)",
+			"selectEnd": "Select the last day of the range or press Esc to cancel.",
+			"discardChanges": "Discard changes",
+			"settingsChanged": "Pending settings changes",
+			"title": "Period calendar",
+			"settings": "Period settings",
+			"legend": "Periods shown in the calendar",
+			"overviewHint": "Select an operator. Choose a period in the list, legend or an assigned calendar day to view and edit its dates.",
+			"selectAgencies": "Select an operator to view the calendar.",
+			"sharedScope": "Dates in this period apply to: {agencies}.",
+			"editDates": "Edit dates",
+			"saveSettingsFirst": "Save or revert your settings changes before editing dates.",
+			"editHint": "Start on an assigned day to remove dates, or on a free day to add them. Then select the last day of the range. Changes apply to every operator of this period.",
+			"changes": "{added, plural, one {# date added} other {# dates added}} · {removed, plural, one {# date removed} other {# dates removed}}",
+			"noChanges": "No pending changes",
+			"lastRange": "Last range: {count, plural, one {# day} other {# days}}",
+			"selectRange": "Select a date range in the calendar",
+			"cancelEditing": "Cancel editing",
+			"saveDates": "Save dates",
+			"backToPeriod": "Back to period"
+		},
 		"create": {
 			"title": "New period"
+		},
+		"dateManagement": {
+			"coverage": {
+				"complete": "All dates have a period",
+				"description": "Dates without a period for at least one operator of this period.",
+				"missing": "{count, plural, one {# date without a period} other {# dates without a period}}",
+				"moreRanges": "+ {count, plural, one {# more range} other {# more ranges}}"
+			}
 		},
 		"detail": {
 			"cancel": "Cancel",

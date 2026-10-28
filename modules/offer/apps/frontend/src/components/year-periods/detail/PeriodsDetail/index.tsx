@@ -1,8 +1,8 @@
 'use client';
 
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Section } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { PeriodDatesEditor } from '@/components/year-periods/date-management/PeriodDatesEditor';
+import { PeriodDatesEditorSummary } from '@/components/year-periods/date-management/PeriodDatesEditorSummary';
+import { Collapsible, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { PeriodsDetailBasicInfo } from '../PeriodsDetailBasicInfo';
@@ -18,9 +18,7 @@ export function PeriodsDetail() {
 	// A. Setup variables
 
 	const { data, error, isLoading } = usePeriodsDetailData();
-	const router = useRouter();
 	const { t } = useTranslation();
-	const handleOpenCalendar = () => router.push(keepUrlParams(PAGE_ROUTES.offer.YEAR_PERIODS_DATES_DETAIL(data?._id ?? '')));
 
 	//
 	// B. Render components
@@ -29,11 +27,11 @@ export function PeriodsDetail() {
 	if (isLoading || !data) return <LoadingOverlay />;
 
 	return (
-		<Pane header={[<PeriodsDetailHeader key="header" />]}>
-			<Section gap="lg">
+		<Pane footer={[<PeriodDatesEditorSummary key="summary" />]} header={[<PeriodsDetailHeader key="header" />]}>
+			<Collapsible description={data.code ? `${data.name} · ${data.code}` : data.name} title={t('default:periods.calendar.settings')}>
 				<PeriodsDetailBasicInfo />
-				<Button label={t('default:periods.detail.openCalendar')} onClick={handleOpenCalendar} />
-			</Section>
+			</Collapsible>
+			<PeriodDatesEditor />
 		</Pane>
 	);
 }

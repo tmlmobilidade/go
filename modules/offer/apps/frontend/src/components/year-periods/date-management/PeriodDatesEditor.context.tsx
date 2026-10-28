@@ -1,58 +1,43 @@
 'use client';
 
+import { usePeriodsCalendarContext } from '@/components/year-periods/calendar/PeriodsCalendar.context';
+import { usePeriodsCalendarAgency } from '@/components/year-periods/calendar/use-periods-calendar-agency';
 import { usePeriodsDetailData } from '@/components/year-periods/detail/use-periods-detail-data';
+import { createPeriodDatesDraft, getPeriodRangeDates, reducePeriodDatesDraft } from '@/components/year-periods/shared/periods-date-draft';
 import { getPeriodsPermissions } from '@/components/year-periods/shared/periods-permissions';
-import { usePeriodsAssignmentReview, type UsePeriodsAssignmentReviewReturnType } from '@/components/year-periods/shared/use-periods-assignment-review';
 import { usePeriodsData } from '@/components/year-periods/shared/use-periods-data';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
-import { type UpdateYearPeriodDatesDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { type CalendarDate, type OperationalDate, toCalendarDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
-import { useCalendarScheduleData } from '@tmlmobilidade/ui';
-import { type CalendarScheduleDateRange, type CalendarScheduleSources, fetchApiData, useHandleAction, useMeData, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { type CalendarScheduleDateRange, type CalendarScheduleSources, useCalendarScheduleData, useMeData } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
 
 /* * */
 
-export type PeriodDatesEditorSelectionAction = 'add' | 'remove';
-
 interface PeriodDatesEditorContextState {
 	actions: {
-		acknowledgeConflicts: () => void
+		cancelSelection: () => void
 		resetChanges: () => void
-		saveChanges: () => Promise<void>
-		setSelectedRange: (value: CalendarScheduleDateRange | null) => void
-		setVisibleDate: (value: string) => void
+		setSelectedRange: (range: CalendarScheduleDateRange | null) => void
+		setVisibleDate: (date: string) => void
 	}
-	assignmentReview: UsePeriodsAssignmentReviewReturnType
 	data: {
 		addedDates: CalendarDate[]
-		conflictError: null | string
-		conflicts: { dates: OperationalDate[], yearPeriod: YearPeriod }[]
-		conflictWarning: null | string
+		calendarAgencyIds: string[]
 		previewDates: CalendarDate[]
 		removedDates: CalendarDate[]
 		selectedRange: CalendarScheduleDateRange | null
 		selectedRangeDayCount: number
-		selectionAction: null | PeriodDatesEditorSelectionAction
+		selectionAction: 'add' | 'remove' | null
 		sources: CalendarScheduleSources
 		visibleDate: CalendarDate
 	}
 	flags: {
 		can_edit: boolean
-		can_save: boolean
-		conflict_acknowledged: boolean
 		error: Error | null
 		has_changes: boolean
-		is_checking_conflicts: boolean
 		is_loading: boolean
-		is_saving: boolean
+		is_locked: boolean
+		is_permission_restricted: boolean
 	}
-}
-
-interface DraftChanges {
-	added: Set<CalendarDate>
-	removed: Set<CalendarDate>
 }
 
 /* * */
@@ -61,43 +46,8 @@ const PeriodDatesEditorContext = createContext<PeriodDatesEditorContextState | u
 
 export function usePeriodDatesEditorContext() {
 	const context = useContext(PeriodDatesEditorContext);
-	if (!context) throw new Error('usePeriodDatesEditorContext must be used within a PeriodDatesEditorContextProvider');
+	if (!context) throw new Error('usePeriodDatesEditorContext must be used within PeriodDatesEditorContextProvider');
 	return context;
-}
-
-/* * */
-
-function getRangeDates(range: CalendarScheduleDateRange): CalendarDate[] {
-	const end = range.end ?? range.start;
-	const cursor = new Date(`${range.start}T00:00:00Z`);
-	const endTimestamp = new Date(`${end}T00:00:00Z`).getTime();
-	const dates: CalendarDate[] = [];
-
-	while (cursor.getTime() <= endTimestamp) {
-		dates.push(toCalendarDate(cursor.toISOString().slice(0, 10)));
-		cursor.setUTCDate(cursor.getUTCDate() + 1);
-	}
-
-	return dates;
-}
-
-function toOperationalDates(dates: CalendarDate[]): OperationalDate[] {
-	return dates.map(date => validateOperationalDate(date.replaceAll('-', '')));
-}
-
-function filterSourcesByAgencies(sources: CalendarScheduleSources, agencyIds: Set<string>, currentPeriodId?: string): CalendarScheduleSources {
-	const isRelevant = (source: { agency_ids?: string[] }) => {
-		if (!source.agency_ids?.length) return true;
-		return source.agency_ids.some(agencyId => agencyIds.has(agencyId));
-	};
-
-	return {
-		agencies: sources.agencies?.filter(agency => agencyIds.has(agency._id)),
-		annotations: sources.annotations?.filter(isRelevant),
-		events: sources.events?.filter(isRelevant),
-		holidays: sources.holidays?.filter(isRelevant),
-		yearPeriods: sources.yearPeriods?.filter(period => period._id !== currentPeriodId && isRelevant(period)),
-	};
 }
 
 /* * */
@@ -108,174 +58,97 @@ export function PeriodDatesEditorContextProvider({ children }: PropsWithChildren
 	//
 	// A. Setup variables
 
-	const { data: period, error: periodError, isLoading: periodLoading, mutate: detailMutate } = usePeriodsDetailData();
+	const { data: period, error: periodError, isLoading: periodLoading } = usePeriodsDetailData();
 	const { data: me, error: meError, isLoading: meLoading } = useMeData();
-	const { mutate: listMutate } = usePeriodsData();
-	const scheduleData = useCalendarScheduleData(null);
-	const [selectedRange, setSelectedRangeState] = useState<CalendarScheduleDateRange | null>(null);
-	const [selectionAction, setSelectionAction] = useState<null | PeriodDatesEditorSelectionAction>(null);
-	const [visibleDate, setVisibleDateState] = useState<CalendarDate>(() => Dates.now('local').calendar_date);
-	const [draftChanges, setDraftChanges] = useState<DraftChanges>(() => ({ added: new Set(), removed: new Set() }));
+	const { data: allPeriods, error: listError, isLoading: listLoading } = usePeriodsData();
+	const calendarAgency = usePeriodsCalendarAgency();
+	const schedule = useCalendarScheduleData(null);
+	const calendar = usePeriodsCalendarContext();
+	const [draft, dispatch] = useReducer(reducePeriodDatesDraft, undefined, createPeriodDatesDraft);
 
 	//
 	// B. Transform data
 
+	const calendarAgencyIds = useMemo(() => {
+		const id = period?.agency_ids.find(id => id === calendarAgency.value) ?? period?.agency_ids.find(id => calendarAgency.options.some(option => option.value === id));
+		return id ? [id] : [];
+	}, [calendarAgency.value, calendarAgency.options, period?.agency_ids]);
+
 	const initialDates = useMemo(() => new Set((period?.dates ?? []).map(toCalendarDate)), [period?.dates]);
+
 	const previewDates = useMemo(() => {
 		const dates = new Set(initialDates);
-		draftChanges.removed.forEach(date => dates.delete(date));
-		draftChanges.added.forEach(date => dates.add(date));
-		return Array.from(dates).sort();
-	}, [draftChanges, initialDates]);
+		draft.removed.forEach(date => dates.delete(date));
+		draft.added.forEach(date => dates.add(date));
+		return [...dates].sort();
+	}, [draft.added, draft.removed, initialDates]);
+
 	const previewDateSet = useMemo(() => new Set(previewDates), [previewDates]);
-	const sources = useMemo(
-		() => filterSourcesByAgencies(scheduleData.sources, new Set(period?.agency_ids ?? []), period?._id),
-		[period?._id, period?.agency_ids, scheduleData.sources],
-	);
-	const addedDates = useMemo(() => Array.from(draftChanges.added).sort(), [draftChanges]);
-	const removedDates = useMemo(() => Array.from(draftChanges.removed).sort(), [draftChanges]);
-	const selectedRangeDayCount = selectedRange ? getRangeDates(selectedRange).length : 0;
-	const hasChanges = addedDates.length > 0 || removedDates.length > 0;
+	const addedDates = useMemo(() => [...draft.added].sort(), [draft.added]);
+	const removedDates = useMemo(() => [...draft.removed].sort(), [draft.removed]);
+
+	const sources = useMemo(() => {
+		const relevant = (source: { agency_ids?: string[] }) => !source.agency_ids?.length || source.agency_ids.some(id => calendarAgencyIds.includes(id));
+		return {
+			agencies: schedule.sources.agencies.filter(agency => calendarAgencyIds.includes(agency._id)),
+			holidays: schedule.sources.holidays.filter(relevant),
+			yearPeriods: allPeriods.filter(item => item._id !== period?._id && relevant(item)),
+		};
+	}, [allPeriods, calendarAgencyIds, period?._id, schedule.sources]);
+
 	const permissions = getPeriodsPermissions({ currentAgencyIds: period?.agency_ids, selectedAgencyIds: period?.agency_ids ?? [], userPermissions: me?.permissions });
-	const reviewRequest = useMemo(() => period && addedDates.length ? {
-		agency_ids: [...period.agency_ids].sort(),
-		dates: toOperationalDates(addedDates),
-		year_period_id: period._id,
-	} : null, [addedDates, period]);
-	const review = usePeriodsAssignmentReview({ request: reviewRequest, userPermissions: me?.permissions });
-	const conflicts = useMemo(() => review.conflicts.map(conflict => ({ dates: conflict.dates, yearPeriod: conflict.year_period })), [review.conflicts]);
-	const conflictError = review.error;
-	const conflictAcknowledged = review.acknowledged;
-	const isCheckingConflicts = review.isChecking;
-	const conflictWarning = conflicts.length ? conflicts.map(conflict => conflict.yearPeriod.name).join(', ') : null;
+	const isLoading = periodLoading || listLoading || meLoading || schedule.isLoading || calendarAgency.isLoading;
+	const error = periodError ?? listError ?? meError ?? calendarAgency.error ?? schedule.error?.message;
+	const canEdit = !!period && !period.is_locked && permissions.edit && !isLoading && !error;
 
 	//
 	// C. Handle actions
 
-	const acknowledgeConflicts = useCallback(() => {
-		review.acknowledge();
-	}, [review]);
-
-	const resetChanges = useCallback(() => {
-		setDraftChanges({ added: new Set(), removed: new Set() });
-		setSelectedRangeState(null);
-		setSelectionAction(null);
-	}, []);
-
-	const { action: saveRequest, isLoading: isSaving } = useHandleAction({
-		fetchFn: async (body: UpdateYearPeriodDatesDto) => await fetchApiData<YearPeriod>({ body, method: 'PUT', url: API_ROUTES.offer.YEAR_PERIODS_DETAIL_DATES(period?._id ?? '') }),
-		onSuccess: (response) => {
-			detailMutate(response, { revalidate: false });
-			listMutate();
-			resetChanges();
-		},
-	});
-	const capabilities = useStandardFormCapabilities({
-		form: { isDirty: hasChanges, isValid: true },
-		loading: { isLoading: periodLoading || meLoading || !period || !!periodError || !!meError },
-		locked: { isLocked: period?.is_locked },
-		update: { hasPermission: permissions.update, isUpdating: isSaving },
-	});
-	const editEnabled = capabilities.editEnabled && permissions.edit && !!period && !periodLoading && !meLoading && !periodError && !meError;
-	const canSave = capabilities.updateEnabled && !isCheckingConflicts && !conflictError && (!addedDates.length || review.isReady);
-
-	const setSelectedRange = useCallback((value: CalendarScheduleDateRange | null) => {
-		if (!editEnabled) return;
-		setSelectedRangeState(value);
-
-		if (!value) {
-			setSelectionAction(null);
-			return;
-		}
-
-		if (!value.end) {
-			setSelectionAction(previewDateSet.has(value.start) ? 'remove' : 'add');
-			return;
-		}
-
-		const action = selectionAction ?? (previewDateSet.has(value.start) ? 'remove' : 'add');
-		const rangeDates = getRangeDates(value);
-		setDraftChanges((current) => {
-			const added = new Set(current.added);
-			const removed = new Set(current.removed);
-
-			for (const date of rangeDates) {
-				if (action === 'add') {
-					removed.delete(date);
-					if (initialDates.has(date)) added.delete(date);
-					else added.add(date);
-				} else {
-					added.delete(date);
-					if (initialDates.has(date)) removed.add(date);
-					else removed.delete(date);
-				}
-			}
-
-			return { added, removed };
-		});
-	}, [initialDates, editEnabled, previewDateSet, selectionAction]);
-
-	const setVisibleDate = useCallback((value: string) => {
-		setVisibleDateState(toCalendarDate(value.slice(0, 10)));
-	}, []);
-
-	const saveChanges = useCallback(async () => {
-		if (!period || !canSave) return;
-		await saveRequest({ add_dates: toOperationalDates(addedDates), remove_dates: toOperationalDates(removedDates) });
-	}, [addedDates, canSave, period, removedDates, saveRequest]);
+	const resetChanges = useCallback(() => dispatch({ type: 'reset' }), []);
+	const cancelSelection = useCallback(() => dispatch({ type: 'cancel' }), []);
+	const setSelectedRange = useCallback((range: CalendarScheduleDateRange | null) => {
+		if (!canEdit) return;
+		dispatch({ initialDates, previewDates: previewDateSet, range, type: 'select' });
+	}, [canEdit, initialDates, previewDateSet]);
 
 	useEffect(() => {
-		setSelectedRangeState(null);
-		setSelectionAction(null);
-		setDraftChanges({ added: new Set(), removed: new Set() });
-		setVisibleDateState(Dates.now('local').calendar_date);
-	}, [period?._id]);
+		resetChanges();
+	}, [period?._id, resetChanges]);
 
 	//
-	// D. Define context value
+	// D. Return context value
 
-	const contextValue = useMemo<PeriodDatesEditorContextState>(() => ({
+	const value = useMemo<PeriodDatesEditorContextState>(() => ({
 		actions: {
-			acknowledgeConflicts,
+			cancelSelection,
 			resetChanges,
-			saveChanges,
 			setSelectedRange,
-			setVisibleDate,
+			setVisibleDate: calendar.actions.setDate,
 		},
-		assignmentReview: review,
 		data: {
 			addedDates,
-			conflictError,
-			conflicts,
-			conflictWarning,
+			calendarAgencyIds,
 			previewDates,
 			removedDates,
-			selectedRange,
-			selectedRangeDayCount,
-			selectionAction,
+			selectedRange: draft.selectedRange,
+			selectedRangeDayCount: draft.selectedRange?.end ? getPeriodRangeDates(draft.selectedRange).length : 0,
+			selectionAction: draft.selectionAction,
 			sources,
-			visibleDate,
+			visibleDate: calendar.data.date,
 		},
 		flags: {
-			can_edit: editEnabled,
-			can_save: canSave,
-			conflict_acknowledged: conflictAcknowledged,
-			error: scheduleData.error ?? (periodError ? new Error(periodError) : null),
-			has_changes: hasChanges,
-			is_checking_conflicts: isCheckingConflicts,
-			is_loading: scheduleData.isLoading || periodLoading || meLoading,
-			is_saving: isSaving,
+			can_edit: canEdit,
+			error: error ? new Error(error) : null,
+			has_changes: addedDates.length > 0 || removedDates.length > 0,
+			is_loading: isLoading,
+			is_locked: !!period?.is_locked,
+			is_permission_restricted: !!period && !meLoading && !meError && !permissions.edit,
 		},
-	}), [review, acknowledgeConflicts, addedDates, canSave, conflictAcknowledged, conflictError, conflicts, conflictWarning, hasChanges, isCheckingConflicts, isSaving, editEnabled, periodError, periodLoading, meLoading, previewDates, removedDates, resetChanges, saveChanges, scheduleData.error, scheduleData.isLoading, selectedRange, selectedRangeDayCount, selectionAction, setSelectedRange, setVisibleDate, sources, visibleDate]);
-
-	//
-	// E. Render components
+	}), [period, meLoading, meError, permissions.edit, addedDates, calendar.actions.setDate, calendar.data.date, calendarAgencyIds, canEdit, cancelSelection, draft.selectedRange, draft.selectionAction, error, isLoading, previewDates, removedDates, resetChanges, setSelectedRange, sources]);
 
 	return (
-		<PeriodDatesEditorContext.Provider value={contextValue}>
+		<PeriodDatesEditorContext.Provider value={value}>
 			{children}
 		</PeriodDatesEditorContext.Provider>
 	);
-
-	//
 }

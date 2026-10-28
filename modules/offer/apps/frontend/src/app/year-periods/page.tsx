@@ -1,13 +1,7 @@
-'use client';
-
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
+import { PeriodsOverview } from '@/components/year-periods/calendar/PeriodsOverview';
 
 /* * */
 
-export default function Page() {
-	return (
-		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione um Período" />
-		</Surface>
-	);
+export default async function Page() {
+	return <PeriodsOverview />;
 }

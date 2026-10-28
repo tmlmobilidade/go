@@ -1,12 +1,15 @@
-import { PeriodDatesEditor } from '@/components/year-periods/date-management/PeriodDatesEditor';
 import { PeriodDatesEditorContextProvider } from '@/components/year-periods/date-management/PeriodDatesEditor.context';
+import { PeriodsDetail } from '@/components/year-periods/detail/PeriodsDetail';
+import { PeriodsDetailFormContextProvider } from '@/components/year-periods/detail/PeriodsDetailForm.context';
 
 /* * */
 
 export default async function Page() {
 	return (
 		<PeriodDatesEditorContextProvider>
-			<PeriodDatesEditor />
+			<PeriodsDetailFormContextProvider>
+				<PeriodsDetail />
+			</PeriodsDetailFormContextProvider>
 		</PeriodDatesEditorContextProvider>
 	);
 }

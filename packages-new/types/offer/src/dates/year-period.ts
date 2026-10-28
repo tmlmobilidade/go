@@ -19,6 +19,7 @@ export const UpdateYearPeriodSchema = CreateYearPeriodSchema.partial();
 
 export const UpdateYearPeriodDatesSchema = z.object({
 	add_dates: z.array(OperationalDateSchema).default([]),
+	period: UpdateYearPeriodSchema.omit({ dates: true, is_locked: true }).optional(),
 	remove_dates: z.array(OperationalDateSchema).default([]),
 }).superRefine((value, context) => {
 	const removedDates = new Set(value.remove_dates);

@@ -8,13 +8,14 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { applyYearPeriodDateChanges } from '../utils/apply-date-changes.js';
 import { handleYearPeriodDateAssignment } from '../utils/handle-date-assignment.js';
+import { haveSameAgencies } from '../utils/same-agencies.js';
 
 /* * */
 
 type DateUpdateResult = { data: YearPeriod, error?: never } | { data?: never, error: { error: string, status_code: '403' | '404' | '409' } };
 
 /**
- * Applies explicit date changes and authorized conflict transfers atomically.
+ * Saves period settings, explicit date changes and authorized conflict transfers atomically.
  * Read the target and conflicts in the same transaction to avoid stale updates.
  */
 export async function updateYearPeriodDatesHandler(request: FastifyRequest<{ Body: UpdateYearPeriodDatesDto, Params: { id: string } }>, reply: FastifyReply<YearPeriod>) {
@@ -47,21 +48,33 @@ export async function updateYearPeriodDatesHandler(request: FastifyRequest<{ Bod
 		}
 		if (period.is_locked) return { error: { error: 'YearPeriod is locked. Unlock it before making changes.', status_code: '409' } };
 
+		const metadata = changes.data.period ?? {};
+		const agencyIds = metadata.agency_ids ?? period.agency_ids;
+		if (!PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.year_periods.actions.update,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.year_periods.scope,
+			value: agencyIds,
+		})) {
+			return { error: { error: 'You are not authorized to update the selected operators.', status_code: '403' } };
+		}
+
 		//
 		// Preflight all affected periods before transferring dates
 
 		const dates = applyYearPeriodDateChanges(period.dates ?? [], changes.data.add_dates, changes.data.remove_dates);
 		const assignment = await handleYearPeriodDateAssignment({
 			actorId: request.me._id,
-			agencyIds: period.agency_ids,
-			newDates: changes.data.add_dates,
+			agencyIds,
+			newDates: haveSameAgencies(agencyIds, period.agency_ids) ? changes.data.add_dates : dates,
 			session,
 			userPermissions: request.permissions,
 			yearPeriodId: period._id,
 		});
 		if (assignment.error) return { error: assignment.error };
 
-		const data = await goDb.offer.yearPeriods.updateOne({ _id: period._id }, { dates, updated_by: request.me._id }, { session });
+		const data = await goDb.offer.yearPeriods.updateOne({ _id: period._id }, { ...metadata, dates, updated_by: request.me._id }, { session });
 		return { data };
 	});
 

@@ -1,18 +1,20 @@
 'use client';
 
+import { PeriodsCalendar } from '@/components/year-periods/calendar/PeriodsCalendar';
+import { PeriodsCalendarLegend } from '@/components/year-periods/calendar/PeriodsCalendarLegend';
+import { usePeriodsDetailFormContext } from '@/components/year-periods/detail/PeriodsDetailForm.context';
 import { usePeriodsDetailData } from '@/components/year-periods/detail/use-periods-detail-data';
+import { usePeriodsData } from '@/components/year-periods/shared/use-periods-data';
 import { IconInfoCircle } from '@tabler/icons-react';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CalendarDate } from '@tmlmobilidade/go-types-shared';
-import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, type CalendarScheduleDateRangeAction, ErrorDisplay, isCalendarSchedulePayload, LoadingOverlay, Pane, type ScheduleEventData, Surface, Text, useLocaleContext } from '@tmlmobilidade/ui';
+import { Alert, type CalendarScheduleDateRangeAction, ErrorDisplay, LoadingOverlay, Text } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 import { usePeriodDatesEditorContext } from '../PeriodDatesEditor.context';
-import { PeriodDatesEditorConflict } from '../PeriodDatesEditorConflict';
-import { PeriodDatesEditorHeader } from '../PeriodDatesEditorHeader';
-import { PeriodDatesEditorSummary } from '../PeriodDatesEditorSummary';
+import { PeriodDatesEditorCalendarHeader } from '../PeriodDatesEditorCalendarHeader';
 
 /* * */
 
@@ -23,83 +25,52 @@ export function PeriodDatesEditor() {
 	// A. Setup variables
 
 	const { data: period, error, isLoading } = usePeriodsDetailData();
-	const editorContext = usePeriodDatesEditorContext();
-	const localeContext = useLocaleContext();
+	const { data: periods } = usePeriodsData();
+	const editor = usePeriodDatesEditorContext();
+	const form = usePeriodsDetailFormContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
 
-	const previewEvents = useMemo(
-		() => buildCalendarScheduleRuleImpactEvents(editorContext.data.previewDates),
-		[editorContext.data.previewDates],
-	);
-	const previewDateSet = useMemo(() => new Set(editorContext.data.previewDates), [editorContext.data.previewDates]);
-	const conflictFooter = (
-		editorContext.flags.is_checking_conflicts
-		|| editorContext.data.conflictError
-		|| editorContext.data.conflictWarning
-	) ? <PeriodDatesEditorConflict key="conflict" /> : null;
-	const isDateRangeDateApplicable = useCallback((date: CalendarDate, action: CalendarScheduleDateRangeAction) => {
-		return action === 'remove' ? previewDateSet.has(date) : !previewDateSet.has(date);
-	}, [previewDateSet]);
+	const previewDateSet = useMemo(() => new Set(editor.data.previewDates), [editor.data.previewDates]);
+	const visiblePeriods = useMemo(() => periods.filter(item => item.agency_ids.some(id => editor.data.calendarAgencyIds.includes(id))).map(item => item._id === period?._id ? period : item), [periods, period, editor.data.calendarAgencyIds]);
+	const isDateRangeDateApplicable = useCallback((date: CalendarDate, action: CalendarScheduleDateRangeAction) => action === 'remove' ? previewDateSet.has(date) : !previewDateSet.has(date), [previewDateSet]);
 
 	//
-	// C. Handle actions
+	// C. Render components
 
-	const handleEventClick = (event: ScheduleEventData) => {
-		if (!isCalendarSchedulePayload(event.payload)) return;
-
-		let route: string | undefined;
-		if (event.payload.type === 'annotation') route = PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(event.payload.sourceId);
-		if (event.payload.type === 'holiday') route = PAGE_ROUTES.dates.HOLIDAYS_DETAIL(event.payload.sourceId);
-		if (event.payload.type === 'event') route = PAGE_ROUTES.offer.EVENTS_DETAIL(event.payload.sourceId);
-		if (event.payload.type === 'period') route = PAGE_ROUTES.offer.YEAR_PERIODS_DETAIL(event.payload.sourceId);
-
-		if (route) window.open(route, '_blank', 'noopener,noreferrer');
-	};
-
-	//
-	// D. Render components
-
-	if (isLoading || editorContext.flags.is_loading) return <LoadingOverlay />;
+	if (isLoading || editor.flags.is_loading) return <LoadingOverlay />;
 	if (error) return <ErrorDisplay message={error} />;
-	if (editorContext.flags.error) return <ErrorDisplay message={editorContext.flags.error.message} />;
-	if (!period) return <ErrorDisplay message="Período não encontrado" />;
-
+	if (editor.flags.error) return <ErrorDisplay message={editor.flags.error.message} />;
+	if (!period) return null;
 	return (
-		<Pane
-			footer={[conflictFooter, <PeriodDatesEditorSummary key="summary" />]}
-			header={[<PeriodDatesEditorHeader key="header" />]}
-		>
-			<div className={styles.root}>
+		<div className={styles.root}>
+			{(editor.flags.is_permission_restricted || editor.flags.is_locked) && (
+				<Alert title={t('default:periods.calendar.readOnly')} variant="warning">
+					<Text size="sm">
+						{t(editor.flags.is_permission_restricted ? 'default:periods.calendar.readOnlyPermissions' : 'default:periods.calendar.readOnlyLocked')}
+					</Text>
+				</Alert>
+			)}
+			{form.capabilities.editEnabled && (
 				<div className={styles.instructions}>
 					<IconInfoCircle size={20} aria-hidden />
-					<Text size="sm">Comece num dia atribuído para remover datas, ou num dia livre para adicionar. Depois, selecione o último dia do intervalo.</Text>
+					<Text size="sm">{t('default:periods.calendar.editHint')}</Text>
 				</div>
-
-				<div className={styles.calendarScroll}>
-					<Surface className={styles.calendar} height="full" variant="plain">
-						<CalendarSchedule
-							date={editorContext.data.visibleDate}
-							dateChanges={{ added: editorContext.data.addedDates, removed: editorContext.data.removedDates }}
-							dateRangeSelectionAction={editorContext.data.selectionAction}
-							events={previewEvents}
-							eventTypeFilters={{ annotation: false, event: false }}
-							isDateRangeDateApplicable={isDateRangeDateApplicable}
-							locale={localeContext.data.locale}
-							onDateChange={editorContext.actions.setVisibleDate}
-							onEventClick={handleEventClick}
-							onSelectedDateRangeChange={editorContext.flags.can_edit ? editorContext.actions.setSelectedRange : undefined}
-							selectedDateRange={editorContext.data.selectedRange}
-							sources={editorContext.data.sources}
-							view="year"
-							yearViewProps={{ highlightToday: false, viewSelectProps: { views: ['year'] } }}
-						/>
-					</Surface>
-				</div>
-			</div>
-		</Pane>
+			)}
+			<PeriodDatesEditorCalendarHeader />
+			<PeriodsCalendarLegend disabled={form.status.isUpdating} periods={visiblePeriods} selectedPeriodId={period._id} />
+			<PeriodsCalendar
+				agencyIds={editor.data.calendarAgencyIds}
+				date={editor.data.visibleDate}
+				editorProps={form.capabilities.editEnabled && editor.flags.can_edit ? { dateChanges: { added: editor.data.addedDates, removed: editor.data.removedDates }, dateRangeSelectionAction: editor.data.selectionAction, isDateRangeDateApplicable, onSelectedDateRangeChange: editor.actions.setSelectedRange, selectedDateRange: editor.data.selectedRange } : undefined}
+				onDateChange={editor.actions.setVisibleDate}
+				periods={visiblePeriods}
+				previewDates={editor.data.previewDates}
+				selectedPeriodId={period._id}
+				sources={editor.data.sources}
+			/>
+		</div>
 	);
-
-	//
 }

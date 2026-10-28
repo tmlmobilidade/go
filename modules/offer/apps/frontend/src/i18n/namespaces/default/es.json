@@ -188,8 +188,41 @@
 			"submit": "Asignar período",
 			"title": "Asignar fechas"
 		},
+		"calendar": {
+			"readOnly": "Solo lectura",
+			"readOnlyPermissions": "Para editar la configuración o las fechas de este período, se necesita permiso de actualización para todos los operadores asociados.",
+			"readOnlyLocked": "Este período está bloqueado y no se puede editar.",
+			"cancelSelection": "Cancelar selección (Esc)",
+			"selectEnd": "Seleccione el último día del intervalo o pulse Esc para cancelar.",
+			"discardChanges": "Descartar cambios",
+			"settingsChanged": "Cambios de configuración pendientes",
+			"title": "Calendario de períodos",
+			"settings": "Configuración del período",
+			"legend": "Períodos mostrados en el calendario",
+			"overviewHint": "Seleccione un operador. Elija un período en la lista, en la leyenda o en un día del calendario para ver y editar sus fechas.",
+			"selectAgencies": "Seleccione un operador para ver el calendario.",
+			"sharedScope": "Las fechas de este período se aplican a: {agencies}.",
+			"editDates": "Editar fechas",
+			"saveSettingsFirst": "Guarde o revierta los cambios de configuración antes de editar fechas.",
+			"editHint": "Empiece en un día asignado para quitar fechas, o en un día libre para añadirlas. Después, seleccione el último día del intervalo. Los cambios se aplican a todos los operadores de este período.",
+			"changes": "{added, plural, one {# fecha añadida} other {# fechas añadidas}} · {removed, plural, one {# fecha eliminada} other {# fechas eliminadas}}",
+			"noChanges": "Sin cambios pendientes",
+			"lastRange": "Último intervalo: {count, plural, one {# día} other {# días}}",
+			"selectRange": "Seleccione un intervalo en el calendario",
+			"cancelEditing": "Cancelar edición",
+			"saveDates": "Guardar fechas",
+			"backToPeriod": "Volver al período"
+		},
 		"create": {
 			"title": "Nuevo período"
+		},
+		"dateManagement": {
+			"coverage": {
+				"complete": "Todas las fechas tienen período",
+				"description": "Fechas sin período para al menos uno de los operadores de este período.",
+				"missing": "{count, plural, one {# fecha sin período} other {# fechas sin período}}",
+				"moreRanges": "+ {count, plural, one {# intervalo adicional} other {# intervalos adicionales}}"
+			}
 		},
 		"detail": {
 			"cancel": "Cancelar",

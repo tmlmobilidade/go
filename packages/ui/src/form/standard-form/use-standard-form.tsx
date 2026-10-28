@@ -12,6 +12,7 @@ import { usePreventNavigation } from '../../hooks/use-prevent-navigation';
 interface UseStandardFormProps<T, TSchema extends ZodType> {
 	apiData?: null | T
 	defaultValues?: DefaultValues<T>
+	hasUnsavedChanges?: boolean
 	mode?: 'controlled' | 'uncontrolled'
 	schema?: TSchema
 }
@@ -28,12 +29,13 @@ export interface UseStandardFormReturnType<T> {
  * and state management using Mantine's useForm and Zod schema.
  * It also handles form initialization with API data and prevents
  * navigation if the form is dirty.
+ * @param hasUnsavedChanges Include pending changes managed outside the form in navigation protection.
  * @param schema The Zod schema to validate the form data.
  * @param apiData Optional initial data to populate the form.
  * @param defaultValues Optional initial values to set when creating new forms.
  * @returns The form methods and state from React Hook Form.
  */
-export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultValues, schema }: UseStandardFormProps<T, TSchema>): UseStandardFormReturnType<T> {
+export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultValues, hasUnsavedChanges = false, schema }: UseStandardFormProps<T, TSchema>): UseStandardFormReturnType<T> {
 	//
 
 	//
@@ -73,7 +75,7 @@ export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultVa
 	//
 	// Prevent navigation if form is dirty
 
-	const unblock = usePreventNavigation(isDirty);
+	const unblock = usePreventNavigation(isDirty || hasUnsavedChanges);
 
 	//
 	// Return hook values and functions

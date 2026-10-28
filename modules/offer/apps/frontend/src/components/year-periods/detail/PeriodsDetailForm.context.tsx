@@ -6,6 +6,8 @@ import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAc
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
+import { usePeriodDatesEditorContext } from '../date-management/PeriodDatesEditor.context';
+import { getPeriodsDetailReviewRequest, getPeriodsDetailUpdate } from '../shared/periods-detail-update';
 import { getPeriodsPermissions } from '../shared/periods-permissions';
 import { usePeriodsAssignmentReview, type UsePeriodsAssignmentReviewReturnType } from '../shared/use-periods-assignment-review';
 import { usePeriodsData } from '../shared/use-periods-data';
@@ -39,6 +41,7 @@ export function PeriodsDetailFormContextProvider({ children }: PropsWithChildren
 	// A. Setup variables
 
 	const router = useRouter();
+	const editor = usePeriodDatesEditorContext();
 
 	const { data: me, error: meError, isLoading: meLoading } = useMeData();
 
@@ -49,21 +52,24 @@ export function PeriodsDetailFormContextProvider({ children }: PropsWithChildren
 	//
 	// B. Setup form
 
-	const { form, isDirty, unblock } = useStandardForm<UpdateYearPeriodDto, typeof UpdateYearPeriodSchema>({
+	const { form, isDirty: isMetadataDirty, unblock } = useStandardForm<UpdateYearPeriodDto, typeof UpdateYearPeriodSchema>({
 		apiData: period,
+		hasUnsavedChanges: editor.flags.has_changes,
 		schema: UpdateYearPeriodSchema,
 	});
 	const values = useStandardFormWatch({ control: form.control });
 	// Check current values: the shared form hook only counts recorded errors.
+	const isDirty = isMetadataDirty || editor.flags.has_changes;
 	const isValid = UpdateYearPeriodSchema.safeParse(values).success;
 
 	//
 	// C. Handle actions
 
-	// Date assignment is a separate workflow; metadata saves must not reassign dates.
+	// Save settings and date deltas together so conflict transfers share one transaction.
 	const { action: handleUpdateRequest, isLoading: isUpdating } = useHandleAction({
-		fetchFn: async (data: UpdateYearPeriodDto) => await fetchApiData<YearPeriod>({ body: UpdateYearPeriodSchema.omit({ dates: true }).parse(data), method: 'PUT', url: API_ROUTES.offer.YEAR_PERIODS_DETAIL(yearPeriodId) }),
+		fetchFn: async (data: UpdateYearPeriodDto) => await fetchApiData<YearPeriod>({ body: getPeriodsDetailUpdate(data, editor.data.addedDates, editor.data.removedDates), method: 'PUT', url: API_ROUTES.offer.YEAR_PERIODS_DETAIL_DATES(yearPeriodId) }),
 		onSuccess: (response) => {
+			editor.actions.resetChanges();
 			form.reset(response.data);
 			detailMutate(response, { revalidate: false });
 			listMutate();
@@ -96,13 +102,8 @@ export function PeriodsDetailFormContextProvider({ children }: PropsWithChildren
 		userPermissions: me?.permissions,
 	});
 
-	const agenciesChanged = !!period && (period.agency_ids.length !== values.agency_ids?.length || !period.agency_ids.every(id => values.agency_ids?.includes(id)));
-	const needsReview = agenciesChanged && !!period?.dates?.length;
-	const reviewRequest = useMemo(() => needsReview && permissions.update ? {
-		agency_ids: [...(values.agency_ids ?? [])].sort(),
-		dates: period?.dates ?? [],
-		year_period_id: yearPeriodId,
-	} : null, [needsReview, permissions.update, values.agency_ids, period?.dates, yearPeriodId]);
+	const reviewRequest = useMemo(() => permissions.update ? getPeriodsDetailReviewRequest(period, values.agency_ids ?? [], editor.data.addedDates, editor.data.previewDates) : null, [permissions.update, period, values.agency_ids, editor.data.addedDates, editor.data.previewDates]);
+
 	const assignmentReview = usePeriodsAssignmentReview({ request: reviewRequest, userPermissions: me?.permissions });
 
 	//
@@ -134,10 +135,10 @@ export function PeriodsDetailFormContextProvider({ children }: PropsWithChildren
 		},
 	});
 
-	const deleteEnabled = standardCapabilities.deleteEnabled && !busy;
-	const editEnabled = standardCapabilities.editEnabled && permissions.edit && !loading;
-	const lockEnabled = standardCapabilities.lockEnabled && !busy;
-	const updateEnabled = standardCapabilities.updateEnabled && !busy && (!needsReview || assignmentReview.isReady);
+	const deleteEnabled = standardCapabilities.deleteEnabled && !busy && !(editor.data.selectedRange && !editor.data.selectedRange.end);
+	const editEnabled = standardCapabilities.editEnabled && permissions.edit && !loading && !busy;
+	const lockEnabled = standardCapabilities.lockEnabled && !busy && !(editor.data.selectedRange && !editor.data.selectedRange.end);
+	const updateEnabled = standardCapabilities.updateEnabled && !busy && (!reviewRequest || assignmentReview.isReady) && !(editor.data.selectedRange && !editor.data.selectedRange.end);
 
 	const handleDelete = useCallback(() => {
 		if (!deleteEnabled) return;
