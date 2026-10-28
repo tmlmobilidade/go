@@ -11,6 +11,8 @@ export const VehicleEmissionValues = [
 	'EURO_IV',
 	'EURO_V',
 	'EURO_VI',
+	'EURO_VII',
+	'N/A',
 ] as const;
 
 export const VehicleEmissionSchema = z
