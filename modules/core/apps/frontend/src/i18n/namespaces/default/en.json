@@ -743,6 +743,10 @@
 			}
 		},
 		"detail": {
+			"Amplitude": {
+				"description": "Authorize and manage Session Replay captures to support this user.",
+				"title": "Amplitude"
+			},
 			"BasicInfo": {
 				"description": "Basic user information",
 				"fields": {

@@ -746,6 +746,10 @@
 			}
 		},
 		"detail": {
+			"Amplitude": {
+				"description": "Autorizar y gestionar capturas de Session Replay para dar soporte a este usuario.",
+				"title": "Amplitude"
+			},
 			"BasicInfo": {
 				"description": "Información básica del usuario",
 				"fields": {
