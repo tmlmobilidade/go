@@ -1,18 +1,16 @@
 import { type Types } from '@amplitude/analytics-browser';
 
+import { type AnalyticsReplayActivation } from '../types/replay/activation';
 import { type AnalyticsReplayController } from '../types/replay/controller';
+import { getReplayTimeRemaining } from './replay-authorization';
 import { createReplayCapture } from './replay-capture';
-import { getReplayDeadline } from './replay-deadline';
 
 /* * */
 
-export const REPLAY_DURATION_MS = 300_000;
-
-/** Resumes an activation only until its original five-minute deadline, including after reloads. */
-export function createSessionReplayController(apiKey: string, client: Types.BrowserClient, onError: (cause: unknown) => void): AnalyticsReplayController {
+/** Captures only within the window already granted by GO, without creating a local allowance. */
+export function createSessionReplayController(client: Types.BrowserClient, onError: (cause: unknown) => void): AnalyticsReplayController {
 	let capture: ReturnType<typeof createReplayCapture> | undefined;
-	let activeActivationId: string | undefined;
-	let deadline: number | undefined;
+	let activeActivation: AnalyticsReplayActivation | undefined;
 	let timeout: ReturnType<typeof setTimeout> | undefined;
 	let transition = Promise.resolve();
 	let starting = Promise.resolve(false);
@@ -27,40 +25,48 @@ export function createSessionReplayController(apiKey: string, client: Types.Brow
 	const stop = () => {
 		const previous = capture;
 		capture = undefined;
-		activeActivationId = undefined;
-		deadline = undefined;
+		activeActivation = undefined;
 		clearTimeout(timeout);
+		document.removeEventListener('visibilitychange', checkDeadline);
 		if (previous) {
 			previous.pause();
 			void enqueue(() => previous.finish()).catch(onError);
 		}
 	};
 
+	const checkDeadline = () => {
+		if (activeActivation && getReplayTimeRemaining(activeActivation) <= 0) stop();
+	};
+
 	return {
-		start: (activationId) => {
+		start: (activation) => {
 			const userId = client.getUserId();
-			if (client.getOptOut() || !userId || !activationId) return Promise.resolve(false);
-			if (capture && activeActivationId === activationId && (deadline === undefined || Date.now() < deadline)) return starting;
+			if (client.getOptOut() || !userId) return Promise.resolve(false);
+			if (getReplayTimeRemaining(activation) <= 0) {
+				stop();
+				return Promise.resolve(false);
+			}
+			if (capture && activeActivation?.activationId === activation.activationId) return starting;
 			stop();
 			const current = createReplayCapture(client);
 			capture = current;
-			activeActivationId = activationId;
+			activeActivation = activation;
 			starting = enqueue(async () => {
 				if (capture !== current || client.getUserId() !== userId || client.getOptOut()) {
 					if (capture === current) stop();
 					return false;
 				}
-				const expiresAt = getReplayDeadline(apiKey, userId, activationId, REPLAY_DURATION_MS);
-				if (Date.now() >= expiresAt) {
+				const remaining = getReplayTimeRemaining(activation);
+				if (remaining <= 0) {
 					stop();
 					return false;
 				}
-				deadline = expiresAt;
 				// The deadline also applies while the SDK is still loading.
 				timeout = setTimeout(() => {
 					if (capture === current) stop();
-				}, expiresAt - Date.now());
-				if (!await current.start() || capture !== current || client.getOptOut() || client.getUserId() !== userId || Date.now() >= expiresAt) {
+				}, remaining);
+				document.addEventListener('visibilitychange', checkDeadline);
+				if (!await current.start() || capture !== current || client.getOptOut() || client.getUserId() !== userId || getReplayTimeRemaining(activation) <= 0) {
 					if (capture === current) stop();
 					return false;
 				}

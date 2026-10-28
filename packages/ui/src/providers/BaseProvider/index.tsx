@@ -4,6 +4,7 @@ import { MantineProvider, MantineProviderProps } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type AnalyticsContextProps, AnalyticsContextProvider } from '@tmlmobilidade/go-ui-analytics';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren, Suspense, useMemo } from 'react';
@@ -39,12 +40,12 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 	//
 	// A. Setup variables
 
-	const { data: meData, isLoading: isMeLoading } = useMeData();
+	const { data: meData, isAuthenticated } = useMeData();
 	const analyticsUser = useMemo<AnalyticsContextProps['user']>(() => {
 		if (analytics?.user !== undefined) return analytics.user;
-		if (isMeLoading) return undefined;
+		if (isAuthenticated === undefined) return undefined;
 		return meData ? { _id: meData._id, email: meData.email, name: `${meData.first_name} ${meData.last_name}` } : null;
-	}, [analytics?.user, isMeLoading, meData]);
+	}, [analytics?.user, isAuthenticated, meData]);
 
 	const analyticsOptions = useMemo<AnalyticsContextProps['options']>(() => ({
 		appVersion: version,
@@ -89,8 +90,8 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 							<AnalyticsContextProvider
 								apiKey={analytics?.apiKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY}
 								configurationUrl={analytics?.configurationUrl ?? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/analytics`}
-								experimentDeploymentKey={analytics?.experimentDeploymentKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_EXPERIMENT_DEPLOYMENT_KEY}
 								options={analyticsOptions}
+								replayUrl={analytics?.replayUrl ?? API_ROUTES.core.ME_SESSION_REPLAY}
 								user={analyticsUser}
 							>
 								<SWRConfig value={swrSettings}>

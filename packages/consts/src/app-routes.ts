@@ -192,6 +192,8 @@ export const API_ROUTES = Object.freeze({
 
 		// ME
 		ME_LIST: `${getModuleConfig('core', 'api_url')}/platform/me/list`,
+		ME_SESSION_REPLAY: `${getModuleConfig('core', 'api_url')}/platform/me/session-replay`,
+		ME_SESSION_REPLAY_START: `${getModuleConfig('core', 'api_url')}/platform/me/session-replay/start`,
 		ME_UPDATE_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/me/update-preferences`,
 
 		// NOTIFICATIONS
@@ -232,6 +234,8 @@ export const API_ROUTES = Object.freeze({
 		USERS_LIST_ORGANIZATIONS: `${getModuleConfig('core', 'api_url')}/users/list-organizations`,
 		USERS_LIST_ROLES: `${getModuleConfig('core', 'api_url')}/users/list-roles`,
 		USERS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/lock/${encodeURIComponent(id)}`,
+		USERS_SESSION_REPLAY_AUTHORIZE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/session-replay`,
+		USERS_SESSION_REPLAY_CANCEL: (id: string, activationId: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/session-replay/${encodeURIComponent(activationId)}`,
 		USERS_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/update/${encodeURIComponent(id)}`,
 	},
 

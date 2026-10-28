@@ -10,7 +10,7 @@ import { type AnalyticsContextProps } from '../types/analytics';
 
 /* * */
 
-/** Connects the current user's remote flag to one capture of up to five minutes. */
+/** Connects the current user's GO authorization to one capture of up to five minutes. */
 function SessionReplayCapture() {
 	const { flags: { replayEnabled } } = useAnalyticsContext();
 	useSessionReplay(replayEnabled);

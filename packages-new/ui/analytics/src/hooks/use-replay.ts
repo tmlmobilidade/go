@@ -3,6 +3,7 @@
 import { type RefObject, useCallback } from 'react';
 
 import { type AnalyticsInitialization } from '../types/analytics';
+import { type AnalyticsReplayActivation } from '../types/replay/activation';
 
 /* * */
 
@@ -11,22 +12,22 @@ export function useReplay(
 	initialized: AnalyticsInitialization | undefined,
 	initializationRef: RefObject<AnalyticsInitialization | undefined>,
 	ready: boolean,
-	activationId: string | undefined,
+	activation: AnalyticsReplayActivation | undefined,
 	onError: (cause: unknown) => void,
 ) {
 	const userId = initialized?.client.getUserId();
 
 	const startReplay = useCallback(async () => {
-		if (!ready || !initialized || initializationRef.current !== initialized || !activationId) return false;
+		if (!ready || !initialized || initializationRef.current !== initialized || !activation) return false;
 		// A callback retained by the previous user must not authorize the new identity.
 		if (!userId || initialized.client.getUserId() !== userId) return false;
 		try {
-			return await initialized.replay.start(activationId);
+			return await initialized.replay.start(activation);
 		} catch (cause: unknown) {
 			if (initializationRef.current === initialized && !initialized.client.getOptOut()) onError(cause);
 			return false;
 		}
-	}, [activationId, initializationRef, initialized, onError, ready, userId]);
+	}, [activation, initializationRef, initialized, onError, ready, userId]);
 
 	const stopReplay = useCallback(() => {
 		initializationRef.current?.replay.stop();

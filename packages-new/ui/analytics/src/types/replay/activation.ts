@@ -1,10 +1,7 @@
-import { z } from 'zod';
-
-/* * */
-
-/** Change this ID in the flag payload to authorize another support capture. */
-export const AnalyticsReplayActivation = z.object({
-	activationId: z.string().trim().min(1),
-});
-
-export type AnalyticsReplayActivation = z.infer<typeof AnalyticsReplayActivation>;
+/** A server-owned activation with local clock deadlines used only to stop capture. */
+export interface AnalyticsReplayActivation {
+	activationId: string
+	deadline: number
+	expiresAt: number
+	monotonicDeadline: number
+}

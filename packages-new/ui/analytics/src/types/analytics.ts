@@ -11,9 +11,9 @@ export { type AnalyticsReplayController } from './replay/controller';
 export interface AnalyticsContextProps {
 	apiKey?: string
 	configurationUrl?: string
-	/** Public deployment key from an Amplitude Experiment client-side deployment. */
-	experimentDeploymentKey?: string
 	options?: Types.BrowserOptions
+	/** Authenticated GO endpoint for the current user's replay authorization. */
+	replayUrl?: string
 	/** Undefined leaves identity unchanged; null clears the authenticated user. */
 	user?: AnalyticsUserProperties | null
 }
@@ -33,7 +33,7 @@ export interface AnalyticsContextState {
 	}
 }
 
-export type AnalyticsConfiguration = Pick<AnalyticsContextProps, 'apiKey' | 'experimentDeploymentKey' | 'options'>;
+export type AnalyticsConfiguration = Pick<AnalyticsContextProps, 'apiKey' | 'options'>;
 
 export interface AnalyticsInitialization {
 	apiKey: string

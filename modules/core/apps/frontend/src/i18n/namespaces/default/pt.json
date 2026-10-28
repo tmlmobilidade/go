@@ -782,6 +782,44 @@
 					"label": "Novo Utizador"
 				}
 			},
+			"SessionReplay": {
+				"authorize": {
+					"label": "Ativar Session Replay",
+					"success": "Pedido de captura autorizado para este utilizador."
+				},
+				"cancel": {
+					"label": "Cancelar Session Replay",
+					"success": "Pedido de captura cancelado."
+				},
+				"error": {
+					"title": "Não foi possível gerir o Session Replay"
+				},
+				"states": {
+					"active": {
+						"description": "Janela de captura autorizada até {{deadline}} (hora de Lisboa).",
+						"label": "Janela ativa"
+					},
+					"cancelled": {
+						"description": "O pedido foi cancelado. É necessário autorizar outra captura.",
+						"label": "Cancelada"
+					},
+					"expired": {
+						"description": "O prazo terminou. É necessário autorizar outra captura.",
+						"label": "Expirada"
+					},
+					"none": {
+						"description": "Sem autorização de captura para este utilizador.",
+						"label": "Sem autorização"
+					},
+					"pending": {
+						"description": "Pedido válido até {{deadline}} (hora de Lisboa). Os cinco minutos começam no primeiro início aceite.",
+						"label": "Pendente"
+					}
+				},
+				"success": {
+					"title": "Session Replay"
+				}
+			},
 			"RolesAndOrganization": {
 				"description": "O conjunto de permissões que o utilizador tem atribuído no sistema e as organizações a que pertence.",
 				"fields": {

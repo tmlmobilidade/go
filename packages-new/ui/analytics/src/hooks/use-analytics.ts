@@ -8,12 +8,12 @@ import { type AnalyticsUserProperties } from '../types/user-properties';
 import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client';
 import { useAnalyticsConfiguration } from './use-analytics-configuration';
 import { useReplay } from './use-replay';
-import { useReplayFlag } from './use-replay-flag';
+import { useReplayAuthorization } from './use-replay-authorization';
 
 /* * */
 
 /** Coordinates the SDK lifecycle, user identity and explicit analytics actions. */
-export function useAnalytics({ user, ...configuration }: AnalyticsContextProps): AnalyticsContextState {
+export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsContextProps): AnalyticsContextState {
 	// Keep the current initialization available to callbacks, including pending async operations.
 	const initializationRef = useRef<AnalyticsInitialization | undefined>(undefined);
 	const [error, setError] = useState<Error | undefined>(undefined);
@@ -22,7 +22,7 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 		setError(cause instanceof Error ? cause : new Error(String(cause)));
 	}, []);
 	const clearError = useCallback(() => setError(undefined), []);
-	const { apiKey, experimentDeploymentKey, options } = useAnalyticsConfiguration(configuration, handleError, clearError);
+	const { apiKey, options } = useAnalyticsConfiguration(configuration, handleError, clearError);
 	const ready = Boolean(apiKey) && initialized?.apiKey === apiKey && initialized?.options === options;
 
 	// Actions must use the initialized client that still matches the current configuration.
@@ -81,10 +81,10 @@ export function useAnalytics({ user, ...configuration }: AnalyticsContextProps):
 		if (user !== undefined) identify(user);
 	}, [identify, user]);
 
-	// Register flag polling after synchronizing Analytics identity for this user.
-	const replayActivationId = useReplayFlag(initialized, experimentDeploymentKey, user?._id, ready, handleError);
-	const replayEnabled = Boolean(replayActivationId);
-	const { startReplay, stopReplay } = useReplay(initialized, initializationRef, ready, replayActivationId, handleError);
+	// Register authorization polling after synchronizing Analytics identity for this user.
+	const replayActivation = useReplayAuthorization(initialized, replayUrl, user?._id, ready, handleError);
+	const replayEnabled = Boolean(replayActivation);
+	const { startReplay, stopReplay } = useReplay(initialized, initializationRef, ready, replayActivation, handleError);
 
 	return useMemo(() => ({
 		actions: { identify, startReplay, stopReplay, track },

@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useUsersDetailUserId } from '../use-users-detail-user-id';
 import { useUsersDetailFormContext } from '../UsersDetailForm.context';
+import { UsersDetailSessionReplay } from '../UsersDetailSessionReplay';
 
 /* * */
 
@@ -45,6 +46,13 @@ export function UsersDetailHeader() {
 			<Label size="lg" singleLine>{emailValue}</Label>
 
 			<Spacer />
+
+			<HasPermission
+				action={PermissionCatalog.all.users.actions.manage_session_replay}
+				scope={PermissionCatalog.all.users.scope}
+			>
+				<UsersDetailSessionReplay />
+			</HasPermission>
 
 			<HasPermission
 				action={PermissionCatalog.all.users.actions.update}

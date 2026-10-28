@@ -780,6 +780,44 @@
 					"label": "New User"
 				}
 			},
+			"SessionReplay": {
+				"authorize": {
+					"label": "Enable Session Replay",
+					"success": "Capture request authorized for this user."
+				},
+				"cancel": {
+					"label": "Cancel Session Replay",
+					"success": "Capture request cancelled."
+				},
+				"error": {
+					"title": "Unable to manage Session Replay"
+				},
+				"states": {
+					"active": {
+						"description": "Capture window authorized until {{deadline}} (Lisbon time).",
+						"label": "Active window"
+					},
+					"cancelled": {
+						"description": "The request was cancelled. Another capture must be authorized.",
+						"label": "Cancelled"
+					},
+					"expired": {
+						"description": "The deadline has passed. Another capture must be authorized.",
+						"label": "Expired"
+					},
+					"none": {
+						"description": "No capture is authorized for this user.",
+						"label": "Not authorized"
+					},
+					"pending": {
+						"description": "Request valid until {{deadline}} (Lisbon time). The five-minute window begins with the first accepted start.",
+						"label": "Pending"
+					}
+				},
+				"success": {
+					"title": "Session Replay"
+				}
+			},
 			"RolesAndOrganization": {
 				"description": "The permissions assigned to the user in the system and the organizations they belong to.",
 				"fields": {
