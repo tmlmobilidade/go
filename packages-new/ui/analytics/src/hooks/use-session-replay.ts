@@ -6,7 +6,7 @@ import { useAnalyticsContext } from './use-analytics-context';
 
 /* * */
 
-/** Opt a user into one capture of up to five minutes; disabling or unmounting ends it earlier. */
+/** Internal lifecycle for the provider-owned capture; disabling or unmounting ends it. */
 export function useSessionReplay(enabled: boolean) {
 	const { actions: { startReplay, stopReplay }, flags: { ready } } = useAnalyticsContext();
 
