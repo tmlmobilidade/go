@@ -3,7 +3,6 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getRideHash, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { GtfsStrictV30RoutesSchema, GtfsStrictV30ShapesSchema, GtfsStrictV30StopsSchema, GtfsStrictV30StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type HashableRide, type HashedShape, type HashedTrip, type Plan, RideSchema } from '@tmlmobilidade/go-types-operation';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
@@ -83,6 +82,14 @@ export async function parsePlanTask(planData: Plan) {
 		};
 
 		const importedGtfsSql = await importGtfsToDatabase<GtfsStrictV30SQLTables>(importConfig);
+
+		// Staging indexes are dropped by the importer; index the final lookup tables.
+		importedGtfsSql._db.databaseInstance.exec(`
+			CREATE INDEX IF NOT EXISTS idx_feeder_shapes_shape_id ON shapes(shape_id);
+			CREATE INDEX IF NOT EXISTS idx_feeder_stop_times_trip_id ON stop_times(trip_id);
+			CREATE INDEX IF NOT EXISTS idx_feeder_routes_route_id ON routes(route_id);
+			CREATE INDEX IF NOT EXISTS idx_feeder_stops_stop_id ON stops(stop_id);
+		`);
 
 		Logger.success(`Imported Plan ${planData._id} in ${importTimer.get()}.`);
 
