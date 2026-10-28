@@ -4,21 +4,30 @@ import { IconFileDownload } from '@tabler/icons-react';
 import { Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { useStopsExtractFormContext } from '../StopsExtractForm.context';
+import { useStopsExtractV1FormContext } from '../StopsExtractV1Form.context';
 
 /* * */
 
-export function StopsExtractFooter() {
+export function StopsExtractV1Footer() {
+	//
+
+	//
+	// A. Setup variables
+
 	const { t } = useTranslation();
-	const { actions, capabilities, status } = useStopsExtractFormContext();
+
+	const { actions, capabilities, status } = useStopsExtractV1FormContext();
+
+	//
+	// B. Render components
 
 	return (
 		<Toolbar>
 			<Spacer />
 			<Button
-				disabled={!capabilities?.createEnabled}
+				disabled={!capabilities.createEnabled}
 				icon={<IconFileDownload size={20} />}
-				label={t('default:stops.extract.StopsExtractFooter.button.label')}
+				label={t('default:stops.extract.StopsExtractV1Footer.button.label')}
 				loading={status.isCreating}
 				onClick={actions.create}
 			/>
