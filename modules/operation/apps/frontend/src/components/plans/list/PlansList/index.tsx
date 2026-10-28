@@ -46,7 +46,7 @@ export function PlansList() {
 				/>
 			),
 			title: 'Operador',
-			width: 180,
+			width: 200,
 		},
 		{
 			accessor: 'active_dates',

@@ -11,6 +11,7 @@ import { GtfsStrictV30SQLTables, type ImportGtfsConfig, importGtfsToDatabase } f
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
+import { sanitizeRideId } from '../utils/sanitize-ride-id.js';
 import { toHashedShape } from '../utils/to-hashed-shape.js';
 import { toHashedTrip } from '../utils/to-hashed-trip.js';
 import { hashedShapesWriter, hashedTripsWriter, ridesWriter } from '../utils/writers.js';
@@ -230,7 +231,7 @@ export async function parsePlanTask(planData: Plan) {
 					//
 					// Setup the required variables for the Ride document.
 
-					const uniqueIdValueForRide = `${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`;
+					const uniqueIdValueForRide = sanitizeRideId(`${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`);
 
 					const startTimeScheduledString = stopTimesData[0].arrival_time;
 					const startTimeScheduledUnixMilliseconds = fromOperationalDateTimeToUnixMilliseconds({
