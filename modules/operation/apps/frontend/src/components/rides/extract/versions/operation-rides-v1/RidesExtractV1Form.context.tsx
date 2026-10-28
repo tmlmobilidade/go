@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OperationRidesV1ExtractionCreate, type OperationRidesV1ExtractionProperties, OperationRidesV1ExtractionPropertiesSchema, OperationRidesV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
-import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -79,10 +79,7 @@ export function RidesExtractV1FormContextProvider({ children }: PropsWithChildre
 	// D. Setup flags
 
 	const hasExtractPermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
-			action: PermissionCatalog.all.rides.actions.analysis_read,
-			scope: PermissionCatalog.all.rides.scope,
-		});
+		return hasPermission(meData?.permissions, { action: 'analysis_read', scope: 'rides' });
 	}, [meData?.permissions]);
 
 	const { createEnabled, editEnabled } = useStandardFormCapabilities({
