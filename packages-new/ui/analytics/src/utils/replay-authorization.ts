@@ -17,7 +17,7 @@ async function requestReplayAuthorization(url: string, userId: string, signal: A
 		signal,
 	});
 	if (!response.ok) throw new Error(`Unable to load replay authorization (${response.status})`);
-	const result = await response.json() as { data?: unknown; error?: string | null };
+	const result = await response.json() as { data?: unknown, error?: null | string };
 	if (result.error) throw new Error(result.error);
 	const value = UserSessionReplayResponseSchema.parse(result.data);
 	if (value.user_id !== userId) throw new Error('Replay authorization belongs to a different session user');

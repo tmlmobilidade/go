@@ -17,7 +17,7 @@ export function useReplayAuthorization(initialized: AnalyticsInitialization | un
 		if (!ready || !initialized || !replayUrl || !userId) return undefined;
 		return { initialized, replayUrl, userId };
 	}, [initialized, ready, replayUrl, userId]);
-	const [decision, setDecision] = useState<{ activation: AnalyticsReplayActivation | undefined; request: typeof request }>();
+	const [decision, setDecision] = useState<{ activation: AnalyticsReplayActivation | undefined, request: typeof request }>();
 
 	useEffect(() => {
 		if (!request) return;
