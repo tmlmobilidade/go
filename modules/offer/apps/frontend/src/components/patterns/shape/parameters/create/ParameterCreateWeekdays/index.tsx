@@ -46,18 +46,18 @@ export function ParameterCreateWeekdays() {
 	//
 	// B. Handle actions
 
-	if (createParameterContext.data.form.values.kind === 'default') return null;
+	if (createParameterContext.data.values.kind === 'default') return null;
 
-	const currentWeekdays = createParameterContext.data.form.values.weekdays || [];
+	const currentWeekdays = createParameterContext.data.values.weekdays || [];
 	const selectedPresetKey = getSelectedPresetKey(currentWeekdays);
 
 	const applyPreset = (key: null | WeekdayPresetKey) => {
 		if (!key) {
-			createParameterContext.data.form.setFieldValue('weekdays', undefined);
+			createParameterContext.form.setValue('weekdays', [], { shouldDirty: true, shouldValidate: true });
 			return;
 		}
 
-		createParameterContext.data.form.setFieldValue('weekdays', [...WEEKDAY_PRESETS[key]]);
+		createParameterContext.form.setValue('weekdays', [...WEEKDAY_PRESETS[key]], { shouldDirty: true, shouldValidate: true });
 	};
 
 	//
@@ -84,7 +84,7 @@ export function ParameterCreateWeekdays() {
 			<WeekdaySelector
 				value={currentWeekdays}
 				onChange={(selectedDays) => {
-					createParameterContext.data.form.setFieldValue('weekdays', selectedDays.length > 0 ? selectedDays : undefined);
+					createParameterContext.form.setValue('weekdays', selectedDays, { shouldDirty: true, shouldValidate: true });
 				}}
 			/>
 

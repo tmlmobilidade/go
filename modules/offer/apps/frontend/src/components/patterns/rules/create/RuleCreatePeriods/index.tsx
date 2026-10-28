@@ -40,17 +40,17 @@ export function RuleCreatePeriods() {
 	//
 	// B. Handle actions
 
-	const currentPeriodIds = createRuleContext.data.form.values.year_period_ids || [];
+	const currentPeriodIds = createRuleContext.data.values.year_period_ids || [];
 	const selectedPresetKey = getSelectedPresetKey(currentPeriodIds, allPeriodIds);
 
 	const applyPreset = (key: null | PeriodPresetKey) => {
 		if (!key) {
-			createRuleContext.data.form.setFieldValue('year_period_ids', []);
+			createRuleContext.form.setValue('year_period_ids', [], { shouldDirty: true, shouldValidate: true });
 			return;
 		}
 
 		// select all
-		createRuleContext.data.form.setFieldValue('year_period_ids', [...allPeriodIds]);
+		createRuleContext.form.setValue('year_period_ids', [...allPeriodIds], { shouldDirty: true, shouldValidate: true });
 	};
 
 	//
@@ -75,7 +75,7 @@ export function RuleCreatePeriods() {
 			<SegmentedMultiSelect
 				value={currentPeriodIds}
 				onChange={(selectedPeriods) => {
-					createRuleContext.data.form.setFieldValue('year_period_ids', selectedPeriods);
+					createRuleContext.form.setValue('year_period_ids', selectedPeriods, { shouldDirty: true, shouldValidate: true });
 				}}
 				options={PERIOD_OPTIONS.map(o => ({
 					ariaLabel: o.label,
@@ -83,6 +83,12 @@ export function RuleCreatePeriods() {
 					value: o.value,
 				}))}
 			/>
+			{createRuleContext.form.formState.errors.year_period_ids?.message && (
+				<Text c="var(--color-status-danger-primary)">
+					{createRuleContext.form.formState.errors.year_period_ids.message}
+				</Text>
+			)}
+
 		</Section>
 	);
 }

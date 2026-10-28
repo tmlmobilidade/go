@@ -15,7 +15,7 @@ export function RuleCreateMonths() {
 	const createRuleContext = useRuleCreateContext();
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Section gap="md">
@@ -26,9 +26,9 @@ export function RuleCreateMonths() {
 			</Section>
 
 			<SegmentedMultiSelect
-				value={createRuleContext.data.form.values.months || []}
+				value={createRuleContext.data.values.months || []}
 				onChange={(selectedDays) => {
-					createRuleContext.data.form.setFieldValue('months', selectedDays.length > 0 ? selectedDays : undefined);
+					createRuleContext.form.setValue('months', selectedDays.length > 0 ? selectedDays : undefined, { shouldDirty: true, shouldValidate: true });
 				}}
 				options={MONTH_OPTIONS.map(o => ({
 					ariaLabel: o.label,

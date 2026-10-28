@@ -1,7 +1,7 @@
 /* * */
 
 import { IconClockHour4, IconClockPause, IconPlayerTrackNext, IconSortAscendingNumbers } from '@tabler/icons-react';
-import { NumberInput, Text, TextInput, Tooltip } from '@tmlmobilidade/ui';
+import { NumberInput, StandardFormController, Text, TextInput, Tooltip } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import styles from '../styles.module.css';
@@ -59,16 +59,24 @@ export function ParameterCreateTable() {
 						<PathTableColumnStop pathItem={pathItem} />
 
 						<div className={styles.column}>
-							<NumberInput
-								aria-label={`Velocidade média para a sequência ${index + 1}`}
-								defaultValue={20}
-								leftSection={<IconPlayerTrackNext size={18} />}
-								min={0}
-								placeholder="Velocidade média (km/h)"
-								step={1}
-								suffix=" km/h"
-								{...parameterCreateContext.data.form.getInputProps(`path.${index}.avg_speed`)}
-								disabled={index === 0}
+							<StandardFormController
+								control={parameterCreateContext.form.control}
+								name={`path.${index}.avg_speed`}
+								render={({ field, fieldState }) => (
+									<NumberInput
+										aria-label={`Velocidade média para a sequência ${index + 1}`}
+										disabled={index === 0}
+										error={fieldState.error?.message}
+										leftSection={<IconPlayerTrackNext size={18} />}
+										min={0}
+										placeholder="Velocidade média (km/h)"
+
+										step={1}
+										suffix=" km/h"
+										{...field}
+										value={field.value ?? ''}
+									/>
+								)}
 							/>
 						</div>
 
@@ -79,16 +87,23 @@ export function ParameterCreateTable() {
 						</div>
 
 						<div className={styles.column}>
-							<NumberInput
-								aria-label={`Tempo de paragem para a sequência ${index + 1}`}
-								defaultValue={30}
-								leftSection={<IconClockPause size={20} />}
-								max={900}
-								min={0}
-								placeholder="Tempo de paragem (segundos)"
-								step={10}
-								suffix=" seg"
-								{...parameterCreateContext.data.form.getInputProps(`path.${index}.dwell_time`)}
+							<StandardFormController
+								control={parameterCreateContext.form.control}
+								name={`path.${index}.dwell_time`}
+								render={({ field, fieldState }) => (
+									<NumberInput
+										aria-label={`Tempo de paragem para a sequência ${index + 1}`}
+										error={fieldState.error?.message}
+										leftSection={<IconClockPause size={20} />}
+										max={900}
+										min={0}
+										placeholder="Tempo de paragem (segundos)"
+										step={10}
+										suffix=" seg"
+										{...field}
+										value={field.value ?? ''}
+									/>
+								)}
 							/>
 						</div>
 

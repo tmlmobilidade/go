@@ -7,7 +7,7 @@ import { RuleCreatePeriods } from '@/components/patterns/rules/create/RuleCreate
 import { RuleCreateSchedule } from '@/components/patterns/rules/create/RuleCreateSchedule';
 import { RuleCreateWeekdays } from '@/components/patterns/rules/create/RuleCreateWeekdays';
 import { hhmm } from '@tmlmobilidade/go-types-offer';
-import { Divider, Section, Switch, Text } from '@tmlmobilidade/ui';
+import { Divider, Section, StandardFormController, Switch, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -31,12 +31,19 @@ export function RuleCreateBasicInfo() {
 			<div className={styles.sectionWrapper}>
 				<Text size="lg">1. O que acontece com estes horários?</Text>
 				<Section>
-					<Switch
-						checked={createRuleContext.data.form.values.operating_mode === 'include'}
-						description="Define se esta regra ativa ou desativa os horários quando as condições abaixo se verificam."
-						label={createRuleContext.data.form.values.operating_mode === 'exclude' ? 'Horários não operam nestes dias' : 'Horários operam nestes dias'}
-						onChange={e => createRuleContext.data.form.setFieldValue('operating_mode', e.currentTarget.checked ? 'include' : 'exclude')}
+					<StandardFormController
+						control={createRuleContext.form.control}
+						name="operating_mode"
+						render={({ field }) => (
+							<Switch
+								checked={field.value === 'include'}
+								description="Define se esta regra ativa ou desativa os horários quando as condições abaixo se verificam."
+								label={field.value === 'exclude' ? 'Horários não operam nestes dias' : 'Horários operam nestes dias'}
+								onChange={event => field.onChange(event.currentTarget.checked ? 'include' : 'exclude')}
+							/>
+						)}
 					/>
+
 				</Section>
 			</div>
 
@@ -47,15 +54,18 @@ export function RuleCreateBasicInfo() {
 				<Text size="lg">2. Que horários esta regra afeta?</Text>
 				<Text c="dimmed" size="sm">Também pode colar ou arrastar vários horários de uma folha de cálculo. Ex: 10:00 13:00 15:00 ou 1000 1300 1500</Text>
 
-				<RuleCreateSchedule
-					value={createRuleContext.data.form.values.timepoints || []}
-					onChange={(newTimes) => {
-						createRuleContext.data.form.setFieldValue(
-							'timepoints',
-							newTimes.length > 0 ? newTimes.map(time => hhmm(time)) : undefined,
-						);
-					}}
+				<StandardFormController
+					control={createRuleContext.form.control}
+					name="timepoints"
+					render={({ field, fieldState }) => (
+						<RuleCreateSchedule
+							error={fieldState.error?.message}
+							onChange={newTimes => field.onChange(newTimes.map(time => hhmm(time)))}
+							value={field.value ?? []}
+						/>
+					)}
 				/>
+
 			</div>
 
 			<Divider />

@@ -26,7 +26,7 @@ export function ParameterCreateFooter() {
 
 			<Button label="Cancelar" onClick={closeCreateParameterModal} variant="danger" />
 			<Button
-				disabled={!parameterCreateContext.data.form.isValid()}
+				disabled={!parameterCreateContext.capabilities.createEnabled}
 				label={parameterCreateContext.flags.isEditing ? 'Editar' : 'Criar'}
 				onClick={parameterCreateContext.actions.submitParameter}
 			/>

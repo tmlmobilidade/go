@@ -17,7 +17,7 @@ export function ParameterCreateHeader() {
 	// A. Setup variables
 
 	const ruleCreateContext = useParameterCreateContext();
-	const isDefaultRule = ruleCreateContext.data.form?.values.kind === 'default';
+	const isDefaultRule = ruleCreateContext.data.values.kind === 'default';
 
 	//
 	// B. Render components

@@ -18,14 +18,14 @@ export function ParameterCreateModifiers() {
 	// A. Setup variables
 
 	const ctx = useParameterCreateContext();
-	const isOverride = ctx.data.form.values.kind === 'override';
+	const isOverride = ctx.data.values.kind === 'override';
 	const [open, setOpen] = useState(false);
 	const [fixedSpeed, setFixedSpeed] = useState<number>(20);
 	const [fixedDwellTime, setFixedDwellTime] = useState<number>(30);
 	const [speedFactor, setSpeedFactor] = useState<number>(1);
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<div className={styles.container}>

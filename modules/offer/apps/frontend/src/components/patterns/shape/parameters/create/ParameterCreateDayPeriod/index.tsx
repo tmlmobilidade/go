@@ -19,7 +19,7 @@ export function ParameterCreateDayPeriod() {
 	//
 	// B. Handle actions
 
-	const currentPeriods = createParameterContext.data.form.values.kind === 'override' ? createParameterContext.data.form.values.day_periods || [] : [];
+	const currentPeriods = createParameterContext.data.values.kind === 'override' ? createParameterContext.data.values.day_periods || [] : [];
 
 	//
 	// C. Render components
@@ -34,11 +34,12 @@ export function ParameterCreateDayPeriod() {
 			<SegmentedMultiSelect
 				value={currentPeriods}
 				onChange={(selectedPeriods) => {
-					createParameterContext.data.form.setFieldValue(
+					createParameterContext.form.setValue(
 						'day_periods',
 						selectedPeriods.length > 0
 							? (selectedPeriods as DayPeriod[])
 							: undefined,
+						{ shouldDirty: true, shouldValidate: true },
 					);
 				}}
 				options={Object.entries(DAY_PERIOD_LABELS).map(([key, label]) => ({

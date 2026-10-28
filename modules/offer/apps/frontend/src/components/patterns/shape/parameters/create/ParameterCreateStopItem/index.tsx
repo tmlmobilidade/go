@@ -5,7 +5,7 @@
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { IconArrowNarrowDown, IconClockPause, IconGauge } from '@tabler/icons-react';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
-import { Divider, NumberInput, Text } from '@tmlmobilidade/ui';
+import { Divider, NumberInput, StandardFormController, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -38,7 +38,7 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 		: null;
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<div className={styles.card}>
@@ -52,16 +52,24 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 						#{pathItem.stop_id}
 					</Text>
 				</div>
-				<NumberInput
-					aria-label={`Tempo de paragem para a sequência ${index + 1}`}
-					leftSection={<IconClockPause size={14} />}
-					max={900}
-					min={0}
-					placeholder="seg"
-					size="xs"
-					step={10}
-					suffix=" seg"
-					{...ctx.data.form.getInputProps(`path.${index}.dwell_time`)}
+				<StandardFormController
+					control={ctx.form.control}
+					name={`path.${index}.dwell_time`}
+					render={({ field, fieldState }) => (
+						<NumberInput
+							aria-label={`Tempo de paragem para a sequência ${index + 1}`}
+							error={fieldState.error?.message}
+							leftSection={<IconClockPause size={14} />}
+							max={900}
+							min={0}
+							placeholder="seg"
+							size="xs"
+							step={10}
+							suffix=" seg"
+							{...field}
+							value={field.value ?? ''}
+						/>
+					)}
 				/>
 			</div>
 
@@ -85,15 +93,23 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 									{[distanceLabel, travelTime].filter(Boolean).join(' · ')}
 								</Text>
 							</div>
-							<NumberInput
-								aria-label={`Velocidade média do segmento ${index + 1}`}
-								leftSection={<IconGauge size={14} />}
-								min={0}
-								placeholder="km/h"
-								size="xs"
-								step={1}
-								suffix=" km/h"
-								{...ctx.data.form.getInputProps(`path.${index + 1}.avg_speed`)}
+							<StandardFormController
+								control={ctx.form.control}
+								name={`path.${index + 1}.avg_speed`}
+								render={({ field, fieldState }) => (
+									<NumberInput
+										aria-label={`Velocidade média do segmento ${index + 1}`}
+										error={fieldState.error?.message}
+										leftSection={<IconGauge size={14} />}
+										min={0}
+										placeholder="km/h"
+										size="xs"
+										step={1}
+										suffix=" km/h"
+										{...field}
+										value={field.value ?? ''}
+									/>
+								)}
 							/>
 						</>
 					)}

@@ -33,7 +33,6 @@
 		"@tmlmobilidade/utils": "*",
 		"@vis.gl/react-maplibre": "8.1.3",
 		"dayjs": "1.11.23",
-		"mantine-form-zod-resolver": "1.3.0",
 		"next": "16.4.2",
 		"react": "19.3.1",
 		"react-dom": "19.3.1",

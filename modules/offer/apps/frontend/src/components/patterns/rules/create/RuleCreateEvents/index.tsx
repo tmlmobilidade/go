@@ -3,7 +3,7 @@
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { useEventsContext } from '@/contexts/Events.context';
 import { Dates, FORMATS } from '@tmlmobilidade/dates';
-import { Section, Select, Switch } from '@tmlmobilidade/ui';
+import { Section, Select, StandardFormController, Switch } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,12 +17,12 @@ export function RuleCreateEvents() {
 	const { data: eventsData } = useEventsContext();
 
 	const EVENT_OPTIONS = eventsData.raw.map(event => ({
-		label: `${event.title} (${event.dates.sort().map(date => Dates.fromOperationalDate(date, 'Europe/Lisbon').toLocaleString(FORMATS.DATE_FULL, 'pt-PT')).join(', ')})`,
+		label: `${event.title} (${event.dates.toSorted().map(date => Dates.fromOperationalDate(date, 'Europe/Lisbon').toLocaleString(FORMATS.DATE_FULL, 'pt-PT')).join(', ')})`,
 		value: event._id,
 	}));
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Section gap="md">
@@ -35,22 +35,28 @@ export function RuleCreateEvents() {
 						const enabled = event.currentTarget.checked;
 						createRuleContext.actions.setEventExceptionEnabled(enabled);
 						if (enabled) {
-							createRuleContext.data.form.setFieldValue('year_period_ids', []);
-							createRuleContext.data.form.setFieldValue('weekdays', []);
+							createRuleContext.form.setValue('year_period_ids', [], { shouldDirty: true, shouldValidate: true });
+							createRuleContext.form.setValue('weekdays', [], { shouldDirty: true, shouldValidate: true });
 						} else {
-							createRuleContext.data.form.setFieldValue('event_id', undefined);
+							createRuleContext.form.setValue('event_id', undefined, { shouldDirty: true, shouldValidate: true });
 						}
 					}}
 				/>
 			</Section>
 
 			{createRuleContext.flags.isEventExceptionEnabled && (
-				<Select
-					key={createRuleContext.data.form.key('event_id')}
-					data={EVENT_OPTIONS}
-					value={createRuleContext.data.form.values.event_id || []}
-					w="100%"
-					{...createRuleContext.data.form.getInputProps('event_id')}
+				<StandardFormController
+					control={createRuleContext.form.control}
+					name="event_id"
+					render={({ field, fieldState }) => (
+						<Select
+							data={EVENT_OPTIONS}
+							error={fieldState.error?.message}
+							w="100%"
+							{...field}
+							value={field.value ?? null}
+						/>
+					)}
 				/>
 			)}
 		</Section>

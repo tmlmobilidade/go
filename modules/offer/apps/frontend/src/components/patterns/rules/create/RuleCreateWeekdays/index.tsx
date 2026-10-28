@@ -44,16 +44,16 @@ export function RuleCreateWeekdays() {
 	//
 	// B. Handle actions
 
-	const currentWeekdays = createRuleContext.data.form.values.weekdays || [];
+	const currentWeekdays = createRuleContext.data.values.weekdays || [];
 	const selectedPresetKey = getSelectedPresetKey(currentWeekdays);
 
 	const applyPreset = (key: null | WeekdayPresetKey) => {
 		if (!key) {
-			createRuleContext.data.form.setFieldValue('weekdays', undefined);
+			createRuleContext.form.setValue('weekdays', undefined, { shouldDirty: true, shouldValidate: true });
 			return;
 		}
 
-		createRuleContext.data.form.setFieldValue('weekdays', [...WEEKDAY_PRESETS[key]]);
+		createRuleContext.form.setValue('weekdays', [...WEEKDAY_PRESETS[key]], { shouldDirty: true, shouldValidate: true });
 	};
 
 	//
@@ -81,9 +81,15 @@ export function RuleCreateWeekdays() {
 			<WeekdaySelector
 				value={currentWeekdays}
 				onChange={(selectedDays) => {
-					createRuleContext.data.form.setFieldValue('weekdays', selectedDays.length > 0 ? selectedDays : undefined);
+					createRuleContext.form.setValue('weekdays', selectedDays.length > 0 ? selectedDays : undefined, { shouldDirty: true, shouldValidate: true });
 				}}
 			/>
+
+			{createRuleContext.form.formState.errors.weekdays?.message && (
+				<Text c="var(--color-status-danger-primary)">
+					{createRuleContext.form.formState.errors.weekdays.message}
+				</Text>
+			)}
 
 		</Section>
 	);

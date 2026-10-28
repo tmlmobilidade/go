@@ -41,7 +41,7 @@ export function RuleCreateFooter() {
 
 			<Button label="Cancelar" onClick={closeCreateRuleModal} variant="danger" />
 			<Button
-				disabled={!ruleCreateContext.data.form.isValid()}
+				disabled={!ruleCreateContext.capabilities.createEnabled}
 				label={ruleCreateContext.flags.isEditing ? 'Editar' : 'Criar'}
 				onClick={ruleCreateContext.actions.submitRule}
 			/>

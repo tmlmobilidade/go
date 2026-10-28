@@ -21,7 +21,7 @@ export function ParameterCreateBasicInfo() {
 
 	const createParameterContext = useParameterCreateContext();
 
-	const isDefaultRule = createParameterContext.data.form?.values.kind === 'default';
+	const isDefaultRule = createParameterContext.data.values.kind === 'default';
 
 	//
 	// B. Render components

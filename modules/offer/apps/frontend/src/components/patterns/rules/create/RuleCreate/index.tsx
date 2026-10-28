@@ -68,7 +68,7 @@ export function RuleCreate() {
 						<div className={styles.drawerContent}>
 							<RulePreviewSummary
 								summary={createRuleContext.data.ruleSummary.long}
-								timepointCount={createRuleContext.data.form.values.timepoints?.length ?? 0}
+								timepointCount={createRuleContext.data.values.timepoints?.length ?? 0}
 							/>
 
 							<Surface>
