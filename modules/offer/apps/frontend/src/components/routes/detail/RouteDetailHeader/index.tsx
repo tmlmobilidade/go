@@ -2,9 +2,9 @@
 
 import { OfferBreadcrumbs } from '@/components/common/OfferBreadcrumbs';
 import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
-import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, keepUrlParams, LockButton, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, HasPermission, keepUrlParams, LockButton, Section, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -35,38 +35,56 @@ export function RouteDetailHeader() {
 
 			<CloseButton onClick={handleGoBack} type="back" />
 
-			<div style={{ width: '100%' }}>
+			<Section padding="none">
 				<OfferBreadcrumbs
 					items={{
 						lineId: routeDetailContext.data.route.line_id,
 						routeId: routeDetailContext.data.id,
 					}}
 				/>
-			</div>
+			</Section>
 
-			<LockButton
-				isDisabled={!routeDetailContext.flags.canLock}
-				isLocked={routeDetailContext.data.route.is_locked || !!routeDetailContext.flags.isLockedByLine}
-				onClick={routeDetailContext.actions.lock}
-				tooltip={routeDetailContext.flags.isLockedByLine ? t('default:networkLocks.line') : undefined}
-			/>
+			<HasPermission
+				action={PermissionCatalog.all.lines.actions.lock}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.lines.scope}
+				value={routeDetailContext.data.line.agency_id}
+			>
+				<LockButton
+					isDisabled={!routeDetailContext.capabilities.lockEnabled}
+					isLocked={routeDetailContext.data.route.is_locked || !!routeDetailContext.isLockedByLine}
+					onClick={routeDetailContext.actions.lock}
+					tooltip={routeDetailContext.isLockedByLine ? t('default:networkLocks.line') : undefined}
+				/>
+			</HasPermission>
 
-			<Button
-				disabled={!routeDetailContext.flags.canSave}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={routeDetailContext.flags.isSaving}
-				onClick={routeDetailContext.actions.save}
-				variant="primary"
-			/>
+			<HasPermission
+				action={PermissionCatalog.all.lines.actions.update}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.lines.scope}
+				value={routeDetailContext.data.line.agency_id}
+			>
+				<UpdateButton
+					isDisabled={!routeDetailContext.capabilities.updateEnabled}
+					isLoading={routeDetailContext.status.isUpdating}
+					onClick={routeDetailContext.actions.update}
+				/>
+			</HasPermission>
 
-			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar esta rota? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Rota"
-				isDisabled={!routeDetailContext.flags.canDelete}
-				onDelete={routeDetailContext.actions.delete}
-				showConfirmation
-			/>
+			<HasPermission
+				action={PermissionCatalog.all.lines.actions.delete}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.lines.scope}
+				value={routeDetailContext.data.line.agency_id}
+			>
+				<DeleteButton
+					confirmMessage="Tem a certeza que deseja apagar esta rota? Esta ação não pode ser revertida."
+					confirmTitle="Apagar Rota"
+					isDisabled={!routeDetailContext.capabilities.deleteEnabled}
+					onDelete={routeDetailContext.actions.delete}
+					showConfirmation
+				/>
+			</HasPermission>
 
 		</Toolbar>
 	);

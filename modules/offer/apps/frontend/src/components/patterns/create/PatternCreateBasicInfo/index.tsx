@@ -2,7 +2,7 @@
 
 import { usePatternCreateContext } from '@/components/patterns/create/PatternCreate.context';
 import { PatternSchema } from '@tmlmobilidade/go-types-offer';
-import { Section, TextInput } from '@tmlmobilidade/ui';
+import { Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -19,40 +19,72 @@ export function PatternCreateBasicInfo() {
 
 	return (
 		<Section gap="md">
-			<TextInput
-				key={patternCreateContext.data.form.key('code')}
-				label="Código"
-				placeholder="Ex: 1001_0_1"
-				required={!PatternSchema.shape.code.isOptional()}
-				w="100%"
-				{...patternCreateContext.data.form.getInputProps('code')}
+			<StandardFormController
+				control={patternCreateContext.form.control}
+				name="code"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label="Código"
+						placeholder="Ex: 1001_0_1"
+						readOnly={!patternCreateContext.capabilities.editEnabled}
+						required={!PatternSchema.shape.code.isOptional()}
+						w="100%"
+						{...field}
+						value={field.value ?? ''}
+					/>
+				)}
 			/>
 
-			<TextInput
-				key={patternCreateContext.data.form.key('origin')}
-				label="Origem"
-				placeholder="Ex: Reboleira (Estação)"
-				required={!PatternSchema.shape.origin.isOptional()}
-				w="100%"
-				{...patternCreateContext.data.form.getInputProps('origin')}
+			<StandardFormController
+				control={patternCreateContext.form.control}
+				name="origin"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label="Origem"
+						placeholder="Ex: Reboleira (Estação)"
+						readOnly={!patternCreateContext.capabilities.editEnabled}
+						required={!PatternSchema.shape.origin.isOptional()}
+						w="100%"
+						{...field}
+						value={field.value ?? ''}
+					/>
+				)}
 			/>
 
-			<TextInput
-				key={patternCreateContext.data.form.key('destination')}
-				label="Destino"
-				placeholder="Ex: Reboleira (Estação)"
-				required={!PatternSchema.shape.destination.isOptional()}
-				w="100%"
-				{...patternCreateContext.data.form.getInputProps('destination')}
+			<StandardFormController
+				control={patternCreateContext.form.control}
+				name="destination"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label="Destino"
+						placeholder="Ex: Reboleira (Estação)"
+						readOnly={!patternCreateContext.capabilities.editEnabled}
+						required={!PatternSchema.shape.destination.isOptional()}
+						w="100%"
+						{...field}
+						value={field.value ?? ''}
+					/>
+				)}
 			/>
 
-			<TextInput
-				key={patternCreateContext.data.form.key('headsign')}
-				label="Bandeira/Headsign"
-				placeholder="Ex: Reboleira (Estação)"
-				required={!PatternSchema.shape.headsign.isOptional()}
-				w="100%"
-				{...patternCreateContext.data.form.getInputProps('headsign')}
+			<StandardFormController
+				control={patternCreateContext.form.control}
+				name="headsign"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label="Bandeira/Headsign"
+						placeholder="Ex: Reboleira (Estação)"
+						readOnly={!patternCreateContext.capabilities.editEnabled}
+						required={!PatternSchema.shape.headsign.isOptional()}
+						w="100%"
+						{...field}
+						value={field.value ?? ''}
+					/>
+				)}
 			/>
 		</Section>
 	);

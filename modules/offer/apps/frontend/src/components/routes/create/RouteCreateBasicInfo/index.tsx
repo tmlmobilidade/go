@@ -2,7 +2,7 @@
 
 import { useRouteCreateContext } from '@/components/routes/create/RouteCreate.context';
 import { RouteSchema } from '@tmlmobilidade/go-types-offer';
-import { Section, TextInput } from '@tmlmobilidade/ui';
+import { Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -19,22 +19,38 @@ export function RouteCreateBasicInfo() {
 
 	return (
 		<Section gap="md">
-			<TextInput
-				key={routeCreateContext.data.form.key('code')}
-				label="Código"
-				placeholder="Ex: 1234_0"
-				required={!RouteSchema.shape.code.isOptional()}
-				w="100%"
-				{...routeCreateContext.data.form.getInputProps('code')}
+			<StandardFormController
+				control={routeCreateContext.form.control}
+				name="code"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label="Código"
+						placeholder="Ex: 1234_0"
+						readOnly={!routeCreateContext.capabilities.editEnabled}
+						required={!RouteSchema.shape.code.isOptional()}
+						w="100%"
+						{...field}
+						value={field.value ?? ''}
+					/>
+				)}
 			/>
 
-			<TextInput
-				key={routeCreateContext.data.form.key('name')}
-				label="Nome"
-				placeholder="Ex: Alfragide (Estr Seminario) - Reboleira (Estação)"
-				required={!RouteSchema.shape.name.isOptional()}
-				w="100%"
-				{...routeCreateContext.data.form.getInputProps('name')}
+			<StandardFormController
+				control={routeCreateContext.form.control}
+				name="name"
+				render={({ field, fieldState }) => (
+					<TextInput
+						error={fieldState.error?.message}
+						label="Nome"
+						placeholder="Ex: Alfragide (Estr Seminario) - Reboleira (Estação)"
+						readOnly={!routeCreateContext.capabilities.editEnabled}
+						required={!RouteSchema.shape.name.isOptional()}
+						w="100%"
+						{...field}
+						value={field.value ?? ''}
+					/>
+				)}
 			/>
 		</Section>
 	);

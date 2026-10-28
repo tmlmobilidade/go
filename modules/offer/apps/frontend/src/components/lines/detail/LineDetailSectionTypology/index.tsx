@@ -4,8 +4,8 @@ import { useLineDetailContext } from '@/components/lines/detail/LineDetail.conte
 import { useFaresContext } from '@/contexts/Fares.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
 import { FARE_PAYMENT_METHOD, interchangeModeOptions, LineSchema } from '@tmlmobilidade/go-types-offer';
-import { Collapsible, MultiSelect, openConfirmModal, Section, Select, Text } from '@tmlmobilidade/ui';
-import { useMemo, useRef } from 'react';
+import { Collapsible, MultiSelect, openConfirmModal, Section, Select, StandardFormController, Text, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -16,6 +16,7 @@ export function LineDetailSectionTypology() {
 	// A. Setup variables
 
 	const lineDetailContext = useLineDetailContext();
+	const lineDetailContextValues = useStandardFormWatch({ control: lineDetailContext.form.control });
 	const faresContext = useFaresContext();
 	const typologiesContext = useTypologiesContext();
 
@@ -47,28 +48,8 @@ export function LineDetailSectionTypology() {
 	//
 	// B. Handle actions
 
-	const previousTypologyRef = useRef<null | string | undefined>(undefined);
-
-	const revertTypology = () => {
-		if (previousTypologyRef.current !== undefined) {
-			lineDetailContext.data.form.setFieldValue(
-				'typology',
-				previousTypologyRef.current, // may be string OR null
-			);
-		}
-
-		previousTypologyRef.current = undefined;
-	};
-
 	const handleTypologyChange = (typology_id: null | string) => {
-		if (!typology_id) return;
-
-		const currentValue = lineDetailContext.data.form.values.typology;
-
-		// Snapshot only once
-		if (previousTypologyRef.current === undefined) {
-			previousTypologyRef.current = currentValue ?? null;
-		}
+		if (!typology_id || !lineDetailContext.capabilities.editEnabled) return;
 
 		const selectedTypologyData = typologiesContext.data.raw.find(item => item._id === typology_id);
 
@@ -80,20 +61,12 @@ export function LineDetailSectionTypology() {
 			children: <Text>Ao alterar a tipologia irá também substituir as tarifas associadas a esta linha. Isto terá impacto no preço dos bilhetes de bordo (navegante® a bordo) e pré-pagos (navegante® pré-pago). Tem a certeza que pretende continuar com a alteração de tipologia?</Text>,
 			closeOnClickOutside: true,
 			labels: { cancel: 'Cancelar', confirm: 'Confirmar' },
-			onCancel: () => {
-				revertTypology();
-			},
-			onClose: () => {
-				// Defer state update to avoid setState during render
-				setTimeout(() => {
-					revertTypology();
-				}, 0);
-			},
-			onConfirm: async () => {
-				lineDetailContext.data.form.setFieldValue('typology', typology_id);
-				lineDetailContext.data.form.setFieldValue('prepaid_fare_id', selectedTypologyData.default_prepaid_fare_id || null);
-				lineDetailContext.data.form.setFieldValue('onboard_fare_ids', selectedTypologyData.default_onboard_fare_ids || []);
-				previousTypologyRef.current = undefined;
+			onConfirm: () => {
+				lineDetailContext.actions.applyChanges({
+					onboard_fare_ids: selectedTypologyData.default_onboard_fare_ids || [],
+					prepaid_fare_id: selectedTypologyData.default_prepaid_fare_id || null,
+					typology: typology_id,
+				});
 			},
 			title: <Text size="xl">Alterar Tipologia</Text>,
 			w: 500,
@@ -101,51 +74,71 @@ export function LineDetailSectionTypology() {
 	};
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Collapsible title="Tipologia e Tarifas">
 			<Section gap="sm">
 				<Select
-					key={lineDetailContext.data.form.key('typology')}
 					clearable={false}
 					data={typologyOptions}
-					disabled={lineDetailContext.flags.isReadOnly}
 					label="Tipologia"
 					onChange={handleTypologyChange}
+					readOnly={!lineDetailContext.capabilities.editEnabled}
 					required={!LineSchema.shape.typology.isOptional()}
-					value={lineDetailContext.data.form.values.typology}
+					value={lineDetailContextValues.typology}
 					w="100%"
 				/>
 
-				<Select
-					key={lineDetailContext.data.form.key('interchange')}
-					data={interchangeModeOptions}
-					disabled={lineDetailContext.flags.isReadOnly}
-					label="APEX Interchange"
-					required={!LineSchema.shape.interchange.isOptional()}
-					w="100%"
-					{...lineDetailContext.data.form.getInputProps('interchange')}
+				<StandardFormController
+					control={lineDetailContext.form.control}
+					name="interchange"
+					render={({ field, fieldState }) => (
+						<Select
+							data={interchangeModeOptions}
+							error={fieldState.error?.message}
+							label="APEX Interchange"
+							readOnly={!lineDetailContext.capabilities.editEnabled}
+							required={!LineSchema.shape.interchange.isOptional()}
+							w="100%"
+							{...field}
+							value={field.value ?? null}
+						/>
+					)}
 				/>
 
-				<Select
-					key={lineDetailContext.data.form.key('prepaid_fare_id')}
-					data={prepaidFareOptions}
-					disabled={lineDetailContext.flags.isReadOnly}
-					label="Tarifa navegante® pré-pago"
-					required={!LineSchema.shape.prepaid_fare_id.isOptional()}
-					w="100%"
-					{...lineDetailContext.data.form.getInputProps('prepaid_fare_id')}
+				<StandardFormController
+					control={lineDetailContext.form.control}
+					name="prepaid_fare_id"
+					render={({ field, fieldState }) => (
+						<Select
+							data={prepaidFareOptions}
+							error={fieldState.error?.message}
+							label="Tarifa navegante® pré-pago"
+							readOnly={!lineDetailContext.capabilities.editEnabled}
+							required={!LineSchema.shape.prepaid_fare_id.isOptional()}
+							w="100%"
+							{...field}
+							value={field.value ?? null}
+						/>
+					)}
 				/>
 
-				<MultiSelect
-					key={lineDetailContext.data.form.key('onboard_fare_ids')}
-					data={onboardFareOptions}
-					disabled={lineDetailContext.flags.isReadOnly}
-					label="Tarifas de bordo (navegante® a bordo)"
-					required={!LineSchema.shape.onboard_fare_ids.isOptional()}
-					w="100%"
-					{...lineDetailContext.data.form.getInputProps('onboard_fare_ids')}
+				<StandardFormController
+					control={lineDetailContext.form.control}
+					name="onboard_fare_ids"
+					render={({ field, fieldState }) => (
+						<MultiSelect
+							data={onboardFareOptions}
+							error={fieldState.error?.message}
+							label="Tarifas de bordo (navegante® a bordo)"
+							readOnly={!lineDetailContext.capabilities.editEnabled}
+							required={!LineSchema.shape.onboard_fare_ids.isOptional()}
+							w="100%"
+							{...field}
+							value={field.value ?? []}
+						/>
+					)}
 				/>
 			</Section>
 		</Collapsible>

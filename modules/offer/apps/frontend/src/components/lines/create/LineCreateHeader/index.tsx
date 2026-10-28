@@ -2,8 +2,8 @@
 
 import { useLineCreateContext } from '@/components/lines/create/LineCreate.context';
 import { closeCreateLineModal } from '@/components/lines/create/LineCreate.modal';
-import { IconUpload } from '@tabler/icons-react';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, CreateButton, HasPermission, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,6 +14,7 @@ export function LineCreateHeader() {
 	// A. Setup variables
 
 	const lineCreateContext = useLineCreateContext();
+	const lineCreateContextValues = useStandardFormWatch({ control: lineCreateContext.form.control });
 
 	//
 	// B. Render components
@@ -22,16 +23,15 @@ export function LineCreateHeader() {
 		<Toolbar>
 			<CloseButton onClick={closeCreateLineModal} type="close" />
 			<Tag label="Nova Linha" variant="muted" />
-			<Label size="lg" singleLine>{lineCreateContext.data.form.values.code}</Label>
+			<Label size="lg" singleLine>{lineCreateContextValues.code}</Label>
 			<Spacer />
-			<Button
-				disabled={!lineCreateContext.flags.isValid}
-				icon={<IconUpload size={28} />}
-				label="Publicar"
-				loading={lineCreateContext.flags.isSaving}
-				onClick={lineCreateContext.actions.create}
-				variant="primary"
-			/>
+			<HasPermission action={PermissionCatalog.all.lines.actions.create} scope={PermissionCatalog.all.lines.scope}>
+				<CreateButton
+					isDisabled={!lineCreateContext.capabilities.createEnabled}
+					isLoading={lineCreateContext.status.isCreating}
+					onClick={lineCreateContext.actions.create}
+				/>
+			</HasPermission>
 		</Toolbar>
 	);
 

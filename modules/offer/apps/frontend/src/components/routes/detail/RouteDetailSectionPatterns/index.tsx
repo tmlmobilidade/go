@@ -17,6 +17,7 @@ export function RouteDetailSectionPatterns() {
 	const routeDetailContext = useRouteDetailContext();
 
 	const handleAddPattern = () => {
+		if (routeDetailContext.status.isLocked) return;
 		openCreatePatternModal(routeDetailContext.data.line._id, routeDetailContext.data.route._id);
 	};
 
@@ -31,7 +32,7 @@ export function RouteDetailSectionPatterns() {
 		<Collapsible description="Todos os percursos desta rota. No máximo, uma rota pode ter dois percursos: o de ida e o de volta." title="Patterns" defaultOpen>
 			<Section gap="sm">
 				<Section padding="none">
-					{routeDetailContext.data.route.patterns.sort((a, b) => a.code.localeCompare(b.code)).map((pattern, index) => (
+					{routeDetailContext.data.route.patterns.toSorted((a, b) => a.code.localeCompare(b.code)).map((pattern, index) => (
 						<RouteDetailPattern key={pattern._id ?? index} patternData={pattern} />
 					))}
 				</Section>
@@ -42,7 +43,7 @@ export function RouteDetailSectionPatterns() {
 					scope={PermissionCatalog.all.lines.scope}
 					value={routeDetailContext.data.line.agency_id}
 				>
-					<Button label="Adicionar Pattern" onClick={handleAddPattern} fullWidth />
+					<Button disabled={routeDetailContext.status.isLocked} label="Adicionar Pattern" onClick={handleAddPattern} fullWidth />
 				</HasPermission>
 			</Section>
 		</Collapsible>

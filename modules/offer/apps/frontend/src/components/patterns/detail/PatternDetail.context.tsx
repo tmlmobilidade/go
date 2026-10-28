@@ -1,9 +1,11 @@
 'use client';
 
+import { useLinesDetailData } from '@/components/lines/detail/use-lines-detail-data';
 import { closeGtfsImportModal } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImport.modal';
 import { closeCreateRuleModal, openCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
 import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
 import { closeCreateParameterModal, openCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
+import { useRoutesDetailData } from '@/components/routes/detail/use-routes-detail-data';
 import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
@@ -23,9 +25,7 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 
 import { getPatternsDetailFormValues } from './patterns-detail-form-values';
 import { usePatternsDetailData } from './use-patterns-detail-data';
-import { usePatternsDetailLineData } from './use-patterns-detail-line-data';
 import { usePatternsDetailPatternId } from './use-patterns-detail-pattern-id';
-import { usePatternsDetailRouteData } from './use-patterns-detail-route-data';
 
 /* * */
 
@@ -94,8 +94,8 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 	// B. Fetch data
 
 	const { data: pattern, error: patternError, isLoading: patternLoading, mutate: patternMutate } = usePatternsDetailData(patternId);
-	const { data: line, error: lineError, isLoading: lineLoading, mutate: lineMutate } = usePatternsDetailLineData(lineId);
-	const { data: route, error: routeError, isLoading: routeLoading } = usePatternsDetailRouteData(pattern?.route_id ?? '');
+	const { data: line, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useLinesDetailData(lineId);
+	const { data: route, error: routeError, isLoading: routeLoading } = useRoutesDetailData(pattern?.route_id ?? '');
 
 	const inheritedLock = line?.is_locked ? 'line' : route?.is_locked ? 'route' : null;
 

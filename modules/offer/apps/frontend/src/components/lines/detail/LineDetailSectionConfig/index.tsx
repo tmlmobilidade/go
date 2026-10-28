@@ -1,9 +1,10 @@
 /* * */
 
+import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
-import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { LineSchema, transportTypeOptions } from '@tmlmobilidade/go-types-offer';
-import { Collapsible, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Collapsible, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 /* * */
 
 export function LineDetailSectionConfig() {
@@ -13,7 +14,7 @@ export function LineDetailSectionConfig() {
 	// A. Setup variables
 
 	const lineDetailContext = useLineDetailContext();
-	const linesListContext = useLinesListContext();
+	const { options: agencyOptions } = useAgenciesData({ permissions: { actions: [lineDetailContext.capabilities.editEnabled ? PermissionCatalog.all.lines.actions.update : PermissionCatalog.all.lines.actions.read], scope: PermissionCatalog.all.lines.scope } });
 
 	//
 	// B. Render components
@@ -21,45 +22,73 @@ export function LineDetailSectionConfig() {
 	return (
 		<Collapsible title="Configuração da Linha" defaultOpen>
 			<Section gap="sm">
-				<TextInput
-					key={lineDetailContext.data.form.key('code')}
-					disabled={lineDetailContext.flags.isReadOnly}
-					label="Código"
-					placeholder="Ex: 1001"
-					required={!LineSchema.shape.code.isOptional()}
-					w="100%"
-					{...lineDetailContext.data.form.getInputProps('code')}
+				<StandardFormController
+					control={lineDetailContext.form.control}
+					name="code"
+					render={({ field, fieldState }) => (
+						<TextInput
+							error={fieldState.error?.message}
+							label="Código"
+							placeholder="Ex: 1001"
+							readOnly={!lineDetailContext.capabilities.editEnabled}
+							required={!LineSchema.shape.code.isOptional()}
+							w="100%"
+							{...field}
+							value={field.value ?? ''}
+						/>
+					)}
 				/>
 
-				<TextInput
-					key={lineDetailContext.data.form.key('name')}
-					disabled={lineDetailContext.flags.isReadOnly}
-					label="Nome"
-					placeholder="Ex: 1001"
-					required={!LineSchema.shape.name.isOptional()}
-					w="100%"
-					{...lineDetailContext.data.form.getInputProps('name')}
+				<StandardFormController
+					control={lineDetailContext.form.control}
+					name="name"
+					render={({ field, fieldState }) => (
+						<TextInput
+							error={fieldState.error?.message}
+							label="Nome"
+							placeholder="Ex: 1001"
+							readOnly={!lineDetailContext.capabilities.editEnabled}
+							required={!LineSchema.shape.name.isOptional()}
+							w="100%"
+							{...field}
+							value={field.value ?? ''}
+						/>
+					)}
 				/>
 
 				<Grid columns="ab" gap="sm">
-					<Select
-						key={lineDetailContext.data.form.key('agency_id')}
-						data={linesListContext.data.agencyOptions}
-						disabled={lineDetailContext.flags.isReadOnly}
-						label="Operador"
-						required={!LineSchema.shape.agency_id.isOptional()}
-						w="100%"
-						{...lineDetailContext.data.form.getInputProps('agency_id')}
+					<StandardFormController
+						control={lineDetailContext.form.control}
+						name="agency_id"
+						render={({ field, fieldState }) => (
+							<Select
+								data={agencyOptions}
+								error={fieldState.error?.message}
+								label="Operador"
+								readOnly={!lineDetailContext.capabilities.editEnabled}
+								required={!LineSchema.shape.agency_id.isOptional()}
+								w="100%"
+								{...field}
+								value={field.value ?? null}
+							/>
+						)}
 					/>
 
-					<Select
-						key={lineDetailContext.data.form.key('transport_type')}
-						data={transportTypeOptions}
-						disabled={lineDetailContext.flags.isReadOnly}
-						label="Tipo de Veículo"
-						required={!LineSchema.shape.transport_type.isOptional()}
-						w="100%"
-						{...lineDetailContext.data.form.getInputProps('transport_type')}
+					<StandardFormController
+						control={lineDetailContext.form.control}
+						name="transport_type"
+						render={({ field, fieldState }) => (
+							<Select
+								data={transportTypeOptions}
+								error={fieldState.error?.message}
+								label="Tipo de Veículo"
+								readOnly={!lineDetailContext.capabilities.editEnabled}
+								required={!LineSchema.shape.transport_type.isOptional()}
+								w="100%"
+								{...field}
+								value={field.value ?? null}
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>

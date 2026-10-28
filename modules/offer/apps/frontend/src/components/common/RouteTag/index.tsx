@@ -1,6 +1,6 @@
 /* * */
 
-import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
+import { useRoutesDetailData } from '@/components/routes/detail/use-routes-detail-data';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
@@ -11,10 +11,8 @@ export function RouteTag({ onClick, route_id }: { onClick?: () => void, route_id
 	//
 	// A. Setup variables
 
-	const routeDetailContext = useRouteDetailContext();
-	const routeCode = routeDetailContext.data.route?._id === route_id
-		? routeDetailContext.data.route.code
-		: route_id;
+	const { data: route } = useRoutesDetailData(route_id);
+	const routeCode = route?.code ?? route_id;
 
 	//
 	// B. Render components

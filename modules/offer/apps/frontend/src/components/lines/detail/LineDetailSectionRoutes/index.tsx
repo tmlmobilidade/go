@@ -17,6 +17,7 @@ export function LineDetailSectionRoutes() {
 	const lineDetailContext = useLineDetailContext();
 
 	const handleAddRoute = () => {
+		if (lineDetailContext.status.isLocked) return;
 		openCreateRouteModal(lineDetailContext.data.id);
 	};
 
@@ -27,7 +28,7 @@ export function LineDetailSectionRoutes() {
 		<Collapsible description="Todas as variantes desta linha, incluindo a base." title="Rotas" defaultOpen>
 			<Section gap="sm">
 				<Section padding="none">
-					{(lineDetailContext.data.line?.routes?.sort((a, b) => a.code.localeCompare(b.code)) ?? []).map((route, index) => (
+					{(lineDetailContext.data.line?.routes?.toSorted((a, b) => a.code.localeCompare(b.code)) ?? []).map((route, index) => (
 						<LineDetailRoute key={route._id ?? index} lineId={lineDetailContext.data.line?._id} routeData={route} />
 					))}
 				</Section>
@@ -38,7 +39,7 @@ export function LineDetailSectionRoutes() {
 					scope={PermissionCatalog.all.lines.scope}
 					value={lineDetailContext.data.line.agency_id}
 				>
-					<Button label="Adicionar Rota" onClick={handleAddRoute} fullWidth />
+					<Button disabled={!!lineDetailContext.data.line?.is_locked} label="Adicionar Rota" onClick={handleAddRoute} fullWidth />
 				</HasPermission>
 			</Section>
 		</Collapsible>

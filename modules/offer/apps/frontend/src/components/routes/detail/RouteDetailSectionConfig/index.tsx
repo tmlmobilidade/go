@@ -2,7 +2,7 @@
 
 import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
 import { pathTypeOptions, RouteSchema } from '@tmlmobilidade/go-types-offer';
-import { Collapsible, Section, Select, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,34 +20,55 @@ export function RouteDetailSectionConfig() {
 	return (
 		<Collapsible title="Configuração da Rota" defaultOpen>
 			<Section gap="sm">
-				<TextInput
-					key={routeDetailContext.data.form.key('code')}
-					disabled={routeDetailContext.flags.isReadOnly}
-					label="Código"
-					placeholder="Ex: 1234_0"
-					required={!RouteSchema.shape.code.isOptional()}
-					w="100%"
-					{...routeDetailContext.data.form.getInputProps('code')}
+				<StandardFormController
+					control={routeDetailContext.form.control}
+					name="code"
+					render={({ field, fieldState }) => (
+						<TextInput
+							error={fieldState.error?.message}
+							label="Código"
+							placeholder="Ex: 1234_0"
+							readOnly={!routeDetailContext.capabilities.editEnabled}
+							required={!RouteSchema.shape.code.isOptional()}
+							w="100%"
+							{...field}
+							value={field.value ?? ''}
+						/>
+					)}
 				/>
 
-				<TextInput
-					key={routeDetailContext.data.form.key('name')}
-					disabled={routeDetailContext.flags.isReadOnly}
-					label="Nome"
-					placeholder="Ex: Alfragide (Estr Seminario) - Reboleira (Estação)"
-					required={!RouteSchema.shape.name.isOptional()}
-					w="100%"
-					{...routeDetailContext.data.form.getInputProps('name')}
+				<StandardFormController
+					control={routeDetailContext.form.control}
+					name="name"
+					render={({ field, fieldState }) => (
+						<TextInput
+							error={fieldState.error?.message}
+							label="Nome"
+							placeholder="Ex: Alfragide (Estr Seminario) - Reboleira (Estação)"
+							readOnly={!routeDetailContext.capabilities.editEnabled}
+							required={!RouteSchema.shape.name.isOptional()}
+							w="100%"
+							{...field}
+							value={field.value ?? ''}
+						/>
+					)}
 				/>
 
-				<Select
-					key={routeDetailContext.data.form.key('path_type')}
-					data={pathTypeOptions}
-					disabled={routeDetailContext.flags.isReadOnly}
-					label="Tipo de Trajeto"
-					required={!RouteSchema.shape.path_type.isOptional()}
-					w="100%"
-					{...routeDetailContext.data.form.getInputProps('path_type')}
+				<StandardFormController
+					control={routeDetailContext.form.control}
+					name="path_type"
+					render={({ field, fieldState }) => (
+						<Select
+							data={pathTypeOptions}
+							error={fieldState.error?.message}
+							label="Tipo de Trajeto"
+							readOnly={!routeDetailContext.capabilities.editEnabled}
+							required={!RouteSchema.shape.path_type.isOptional()}
+							w="100%"
+							{...field}
+							value={field.value ?? null}
+						/>
+					)}
 				/>
 			</Section>
 		</Collapsible>
