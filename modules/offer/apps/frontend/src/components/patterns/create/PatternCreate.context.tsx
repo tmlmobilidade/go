@@ -59,7 +59,7 @@ export const PatternCreateContextProvider = ({ children, lineId, routeId }: Prop
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Pattern>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.PATTERNS_LIST }),
+		fetchFn: async () => await fetchApiData<Pattern>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.PATTERNS_CREATE }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			routeMutate();

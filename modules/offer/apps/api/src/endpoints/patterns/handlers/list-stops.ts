@@ -1,10 +1,9 @@
 /* * */
 
 import { createPatternStopsSearchFilter, PATTERN_STOPS_SEARCH_PROJECTION } from '@/utils/pattern-stops-search.js';
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type PatternsStopSearchItem, type PatternsStopSearchQuery, PatternsStopSearchQuerySchema } from '@tmlmobilidade/go-offer-pckg-types';
+import { type PatternsStopSearchItem, PatternsStopSearchItemSchema, type PatternsStopSearchQuery, PatternsStopSearchQuerySchema } from '@tmlmobilidade/go-offer-pckg-types';
 
 /**
  * Searches Stops by ID or name and returns a bounded list of compact results.
@@ -16,7 +15,7 @@ export async function listPatternsStopsHandler(request: FastifyRequest<{ Queryst
 
 	const parsedQuery = PatternsStopSearchQuerySchema.safeParse(request.query);
 	if (!parsedQuery.success) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, parsedQuery.error.message);
+		return sendErrorApiResponse(reply, { error: parsedQuery.error.message, status_code: '400' });
 	}
 
 	const foundStops = await goDb.infrastructure.stops.findMany(
@@ -27,5 +26,5 @@ export async function listPatternsStopsHandler(request: FastifyRequest<{ Queryst
 		},
 	);
 
-	return sendSuccessApiResponse(reply, foundStops);
+	return sendSuccessApiResponse(reply, PatternsStopSearchItemSchema.array().parse(foundStops));
 }

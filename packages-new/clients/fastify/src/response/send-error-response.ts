@@ -43,13 +43,19 @@ export function sendErrorApiResponse<T>(reply: FastifyReply<T>, options: SendErr
 	if (cacheControlHeader) reply.header('Cache-Control', cacheControlHeader);
 
 	//
+	// Set a timestamp for the response in UTC milliseconds
+
+	const nowUnixMilliseconds = Dates.now('utc').unix_milliseconds;
+	reply.header('Go-Upstream-Timestamp', nowUnixMilliseconds.toString());
+
+	//
 	// Return with the prepared response
 
 	const response: ApiResponseError = {
 		data: null,
 		error: options.error,
 		status_code: options.status_code,
-		timestamp: Dates.now('local').unix_milliseconds,
+		timestamp: nowUnixMilliseconds,
 	};
 
 	return reply.send(response);

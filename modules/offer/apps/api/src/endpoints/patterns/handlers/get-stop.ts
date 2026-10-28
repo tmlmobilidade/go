@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Stop, StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
 
@@ -17,12 +16,12 @@ export async function getPatternStopHandler(request: FastifyRequest<{ Params: { 
 
 	const parsedStopId = StopIdSchema.safeParse(request.params.stopId);
 	if (!parsedStopId.success) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, parsedStopId.error.message);
+		return sendErrorApiResponse(reply, { error: parsedStopId.error.message, status_code: '400' });
 	}
 
 	const foundStop = await goDb.infrastructure.stops.findById(parsedStopId.data);
 	if (!foundStop) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found.');
+		return sendErrorApiResponse(reply, { error: 'Stop not found.', status_code: '404' });
 	}
 
 	return sendSuccessApiResponse(reply, foundStop);
