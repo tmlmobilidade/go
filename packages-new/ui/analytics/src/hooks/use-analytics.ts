@@ -63,7 +63,10 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 		promise.then(() => {
 			if (!active) return;
 			client.setOptOut(options?.optOut ?? false);
-			setInitialized(initialization);
+			// Publish a new lifecycle identity so reusing the SDK also restarts identity synchronization and polling.
+			const activatedInitialization = { ...initialization };
+			initializationRef.current = activatedInitialization;
+			setInitialized(activatedInitialization);
 		}).catch((cause: unknown) => {
 			if (active) handleError(cause);
 		});
