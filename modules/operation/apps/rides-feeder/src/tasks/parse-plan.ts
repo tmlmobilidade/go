@@ -3,7 +3,8 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getRideHash, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type HashableRide, type HashedShape, type Plan, RideSchema } from '@tmlmobilidade/go-types-operation';
+import { GtfsStrictV30RoutesSchema, GtfsStrictV30ShapesSchema, GtfsStrictV30StopsSchema, GtfsStrictV30StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type HashableRide, type HashedShape, type HashedTrip, type Plan, RideSchema } from '@tmlmobilidade/go-types-operation';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { startHeartbeat } from '@tmlmobilidade/go-utils-exec';
@@ -88,7 +89,8 @@ export async function parsePlanTask(planData: Plan) {
 		//
 		// Setup variables to save formatted entities found in this Plan
 
-		const processedShapeIds = new Map<string, Pick<HashedShape, '_id' | 'extension'>>();
+		const processedShapeIds = new Map<string, HashedShape>();
+		const processedTripIds = new Map<string, HashedTrip[]>();
 
 		const savedRideIds = new Set<string>();
 		const savedHashedTripIds = new Set<string>();
@@ -101,14 +103,6 @@ export async function parsePlanTask(planData: Plan) {
 			//
 
 			const outputsTimer = new Timer();
-
-			// Staging indexes are dropped by the importer; index the final lookup tables.
-			importedGtfsSql._db.databaseInstance.exec(`
-				CREATE INDEX IF NOT EXISTS idx_feeder_shapes_shape_id ON shapes(shape_id);
-				CREATE INDEX IF NOT EXISTS idx_feeder_stop_times_trip_id ON stop_times(trip_id);
-				CREATE INDEX IF NOT EXISTS idx_feeder_routes_route_id ON routes(route_id);
-				CREATE INDEX IF NOT EXISTS idx_feeder_stops_stop_id ON stops(stop_id);
-			`);
 
 			Logger.title(`Generating Rides and HashedTrips...`);
 
@@ -136,6 +130,9 @@ export async function parsePlanTask(planData: Plan) {
 
 				const calendarDatesData = importedGtfsSql.calendar_dates[currentTrip.service_id];
 				const routeData = importedGtfsSql.routes.get('route_id', currentTrip.route_id);
+				const shapeData = importedGtfsSql.shapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
+				const stopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [currentTrip.trip_id]);
+				const stopsData = importedGtfsSql.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times WHERE trip_id = ?)', [currentTrip.trip_id]);
 
 				//
 				// Parse data
@@ -154,23 +151,17 @@ export async function parsePlanTask(planData: Plan) {
 					continue;
 				}
 
-				const stopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ?', [currentTrip.trip_id]);
-				if (!stopTimesData.length) {
+				if (!shapeData || shapeData.length === 0) {
+					Logger.error({ message: `Trip "${currentTrip.trip_id}" has no shape data. Skipping...` });
+					continue;
+				}
+
+				if (!stopTimesData || stopTimesData.length === 0) {
 					Logger.error({ message: `Trip "${currentTrip.trip_id}" has no stop_times data. Skipping...` });
 					continue;
 				}
 
-				// SQLite returns TEXT sequences. Order once before conversion and first/last access.
-				for (const stopTime of stopTimesData) {
-					const sequence = Number(stopTime.stop_sequence);
-					if (stopTime.stop_sequence == null || String(stopTime.stop_sequence).trim() === '' || !Number.isSafeInteger(sequence) || sequence < 0) {
-						throw new Error(`Invalid stop sequence for trip "${currentTrip.trip_id}" for Plan "${planData._id}".`);
-					}
-				}
-				stopTimesData.sort((a, b) => Number(a.stop_sequence) - Number(b.stop_sequence));
-
-				const stopsData = importedGtfsSql.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times WHERE trip_id = ?)', [currentTrip.trip_id]);
-				if (!stopsData.length) {
+				if (!stopsData || stopsData.length === 0) {
 					Logger.error({ message: `Trip "${currentTrip.trip_id}" has no stops data. Skipping...` });
 					continue;
 				}
@@ -183,37 +174,41 @@ export async function parsePlanTask(planData: Plan) {
 				// Otherwise, transform the shape data into a HashedShape
 				// and save it to the database.
 
-				let shape = processedShapeIds.get(currentTrip.shape_id);
-				if (!shape) {
-					const shapeData = importedGtfsSql.shapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
-					if (!shapeData.length) {
-						Logger.error({ message: `Trip "${currentTrip.trip_id}" has no shape data. Skipping...` });
-						continue;
-					}
+				if (!processedShapeIds.has(currentTrip.shape_id)) {
 					const hashedShapeItem = toHashedShape(planData, currentTrip, shapeData);
 					await hashedShapesWriter.write(hashedShapeItem);
 					savedHashedShapeIds.add(hashedShapeItem._id);
-					shape = { _id: hashedShapeItem._id, extension: hashedShapeItem.extension };
-					processedShapeIds.set(currentTrip.shape_id, shape);
+					processedShapeIds.set(currentTrip.shape_id, hashedShapeItem);
 				}
 
-				const uniqueIdValueForHashedShape = shape._id;
-				const extensionScheduledInMeters = shape.extension;
+				const uniqueIdValueForHashedShape = processedShapeIds.get(currentTrip.shape_id)?._id;
+				const extensionScheduledInMeters = processedShapeIds.get(currentTrip.shape_id)?.extension;
+
+				if (!uniqueIdValueForHashedShape) throw new Error(`[${planData._id}] Hashed shape not found for trip "${currentTrip.trip_id}".`);
 
 				/* * */
 				/* HASHED TRIP */
 
 				//
-				// Deduplicate by canonical content: shape and start time alone do not identify a schedule.
+				// If this trip has been processed already, skip it.
+				// Otherwise, transform the trip data into a HashedTrip and save it to the database.
+				// HashedTrip items are harder to keep track of because they change more often, and in plans
+				// with individual trips per operational day, the amount of data would quickly become too large
+				// to fit in memory. Hoewver, shape_id + start time are a good enough unique identifier for the trip
+				// when inside the plan, so we can use that to identify the hashed trip during the parsing process.
 
-				const hashedTripItems = toHashedTrip(planData, currentTrip, stopTimesData, stopsData);
-				const uniqueIdValueForHashedTrip = hashedTripItems[0]?._id;
-				if (!uniqueIdValueForHashedTrip) throw new Error(`[${planData._id}] Hashed trip not found for trip "${currentTrip.trip_id}".`);
+				const keyForHashedTrip = `${currentTrip.shape_id}-${stopTimesData[0].arrival_time}`;
 
-				if (!savedHashedTripIds.has(uniqueIdValueForHashedTrip)) {
+				if (!processedTripIds.has(keyForHashedTrip)) {
+					const hashedTripItems = toHashedTrip(planData, currentTrip, stopTimesData, stopsData);
 					await hashedTripsWriter.write(hashedTripItems);
-					savedHashedTripIds.add(uniqueIdValueForHashedTrip);
+					savedHashedTripIds.add(hashedTripItems[0]._id);
+					processedTripIds.set(keyForHashedTrip, hashedTripItems);
 				}
+
+				const uniqueIdValueForHashedTrip = processedTripIds.get(keyForHashedTrip)?.[0]._id;
+
+				if (!uniqueIdValueForHashedTrip) throw new Error(`[${planData._id}] Hashed trip not found for trip "${currentTrip.trip_id}".`);
 
 				/* * */
 				/* RIDES */

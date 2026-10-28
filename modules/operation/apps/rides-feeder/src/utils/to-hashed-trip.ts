@@ -6,15 +6,16 @@ import { type CreateHashedTrip, CreateHashedTripSchema, type HashedTrip, HashedT
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import crypto from 'crypto';
 
-const HashedTripMetadataSchema = HashedTripSchema.pick({ _id: true, updated_at: true });
-
 /**
  * Transforms the GTFS trip data into a HashedTrip.
  * @param planData The plan data.
  * @param tripData The GTFS trip data to transform into a HashedTrip.
- * @param stopTimesData The GTFS stop times data, ordered numerically by stop_sequence by the caller.
+ * @param stopTimesData The GTFS stop times data to transform into a HashedTrip.
  * @param stopsData The GTFS stops data to transform into a HashedTrip.
  * @returns The HashedTrip items.
+ * @cost In normal circumstances, this function costs between 5ms and 100ms to complete.
+ * For plans with 20.000 trips this means 15 minutes, and for plans with 150.000 trips this means 2 hours,
+ * just for running the function. This is why it is important to store the resulting values in memory and reuse them.
  */
 export function toHashedTrip(planData: Plan, tripData: GtfsStrictV30Trips, stopTimesData: GtfsStrictV30StopTimes[], stopsData: GtfsStrictV30Stops[]): HashedTrip[] {
 	//
@@ -23,24 +24,20 @@ export function toHashedTrip(planData: Plan, tripData: GtfsStrictV30Trips, stopT
 	// Extract commonly used variables to avoid
 	// repeated lookups and calculations.
 
-	const lastStopTime = stopTimesData[stopTimesData.length - 1];
-	if (!lastStopTime) throw new Error(`No stop times for trip "${tripData.trip_id}" for Plan "${planData._id}".`);
+	const sortedStopTimesData = stopTimesData?.sort((a, b) => a.stop_sequence - b.stop_sequence);
 
-	const stopsById = new Map<string, GtfsStrictV30Stops>();
-	for (const stop of stopsData) {
-		// Preserve the first-match behavior of Array.find for duplicate stop IDs.
-		if (!stopsById.has(stop.stop_id)) stopsById.set(stop.stop_id, stop);
-	}
+	const lastStopTime = sortedStopTimesData[sortedStopTimesData.length - 1];
 
 	//
 	// Build the HashedTrip data, including formatting the path data by combining
-	// properties from the ordered stop_times and stops.
+	// properties from stop_times and stops. Sort it by stop_sequence to ensure
+	// the order is stable for hashing.
 
 	const formattedCreateHashedTripItems: CreateHashedTrip[] = [];
 
-	for (const stopTime of stopTimesData) {
+	for (const stopTime of sortedStopTimesData) {
 		// Get the corresponding stop data for this stop_time
-		const stopData = stopsById.get(stopTime.stop_id);
+		const stopData = stopsData.find(stop => stop.stop_id === stopTime.stop_id);
 		if (!stopData) throw new Error(`Stop "${stopTime.stop_id}" not found for trip "${tripData.trip_id}" for Plan "${planData._id}".`);
 		// Normalize the shape_dist_traveled to meters, if necessary
 		const normalizedShapeDistTraveled = toMetersFromKilometersOrMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
@@ -64,21 +61,30 @@ export function toHashedTrip(planData: Plan, tripData: GtfsStrictV30Trips, stopT
 		formattedCreateHashedTripItems.push(validatedCreateHashedTripItem);
 	}
 
+	const sortedCreateHashedTripItems = formattedCreateHashedTripItems.sort((a, b) => {
+		return a.stop_sequence - b.stop_sequence;
+	});
+
 	//
-	// Hash the canonical payload. All stop rows share the same content ID.
+	// Hash the object contents and check if it already exists in the database.
+	// The hash value is the _id of the HashedTrip item.
 
 	const uniqueIdValueForHashedTrip = crypto
 		.createHash('sha256')
-		.update(JSON.stringify(formattedCreateHashedTripItems))
+		.update(JSON.stringify(sortedCreateHashedTripItems))
 		.digest('hex');
 
 	//
-	// Payload fields are already validated; validate generated metadata once.
+	// Check if there are rows with this unique ID value.
+	// If there are no rows, save the HashedTrip items to the database.
 
-	const metadata = HashedTripMetadataSchema.parse({
-		_id: uniqueIdValueForHashedTrip,
-		updated_at: Dates.now('utc').unix_milliseconds,
+	const hashedTripItems = sortedCreateHashedTripItems.map((item): HashedTrip => {
+		return HashedTripSchema.parse({
+			...item,
+			_id: uniqueIdValueForHashedTrip,
+			updated_at: Dates.now('utc').unix_milliseconds,
+		});
 	});
 
-	return formattedCreateHashedTripItems.map((item): HashedTrip => ({ ...item, ...metadata }));
+	return hashedTripItems;
 }
