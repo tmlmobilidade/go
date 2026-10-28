@@ -3,71 +3,65 @@ package services
 import (
 	"database/sql"
 	"fmt"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	"main/types"
 	"os"
+
+	importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
+	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
 
 	_ "modernc.org/sqlite"
 )
 
-// ReadGTFSZip reads and parses a GTFS zip file at the specified path using SQLite for efficient streaming.
-// It returns a Gtfs struct with SQLite database connection. The database file is kept during validation
-// and should be cleaned up by calling gtfs.Close() after use.
+// ReadGTFSZip loads a feed with the shared importer and prepares validator ID lookups.
+// The caller owns the returned connection and temporary database file.
 func ReadGTFSZip(zipPath string) (types.Gtfs, error) {
-	//
-
-	//
-	// 1. Check if zip file exists
-
-	if _, err := os.Stat(zipPath); os.IsNotExist(err) {
-		return types.Gtfs{}, fmt.Errorf("file %s does not exist", zipPath)
-	}
-
-	//
-	// 2. Create a temporary SQLite database for this GTFS import
-
 	tmpDB, err := os.CreateTemp("", "gtfs_*.db")
 	if err != nil {
-		return types.Gtfs{}, fmt.Errorf("failed to create temporary database: %w", err)
+		return types.Gtfs{}, fmt.Errorf("create temporary GTFS database: %w", err)
 	}
 	tmpDBPath := tmpDB.Name()
-	tmpDB.Close()
-	lib.AppLogger.Debug(fmt.Sprintf("Created temporary SQLite database: %s", tmpDBPath))
-
-	//
-	// 3. Import GTFS zip to SQLite using streaming parser
-
-	gtfsDB, err := ImportGTFSZipToSQLite(zipPath, tmpDBPath)
-	if err != nil {
-		os.Remove(tmpDBPath) // Clean up on error
-		return types.Gtfs{}, fmt.Errorf("failed to import GTFS to SQLite: %w", err)
+	completed := false
+	defer func() {
+		if !completed {
+			for _, suffix := range []string{"", "-wal", "-shm"} {
+				os.Remove(tmpDBPath + suffix)
+			}
+		}
+	}()
+	if err := tmpDB.Close(); err != nil {
+		return types.Gtfs{}, err
 	}
-	gtfsDB.Close() // Close the import connection
 
-	//
-	// 4. Open a new connection for the Gtfs struct
-
+	// Supply the pure-Go driver so the validator can still build with CGO_ENABLED=0.
+	// ZIP reading, CSV parsing and transactional inserts belong to import-gtfs.
 	db, err := sql.Open("sqlite", tmpDBPath)
 	if err != nil {
-		os.Remove(tmpDBPath) // Clean up on error
-		return types.Gtfs{}, fmt.Errorf("failed to open database: %w", err)
+		return types.Gtfs{}, err
 	}
-
-	//
-	// 5. Create Gtfs struct with SQLite connection
+	defer func() {
+		if !completed {
+			db.Close()
+		}
+	}()
+	_, err = importgtfs.ImportGtfsToDatabase(importgtfs.ImportGtfsConfig{
+		AdditionalTables: config.GTFSTables,
+		Source:           importgtfs.ImportGtfsConfigSource{Path: zipPath},
+		Sqlite_config:    sqlite.SQLiteDatabaseConfig{DatabaseInstance: db},
+	})
+	if err != nil {
+		return types.Gtfs{}, fmt.Errorf("import GTFS: %w", err)
+	}
 
 	gtfs := types.NewGtfsFromSQLite(db, tmpDBPath)
-
-	//
-	// 6. Load ID map from SQLite
-
-	gtfsIdsMap, err := LoadIdMapFromSQLite(db)
+	gtfs.IdMap, err = prepareGtfsIDMap(db)
 	if err != nil {
-		gtfs.Close()
-		os.Remove(tmpDBPath)
-		return types.Gtfs{}, fmt.Errorf("failed to load ID map: %w", err)
+		return types.Gtfs{}, fmt.Errorf("prepare GTFS ID map: %w", err)
 	}
-	gtfs.IdMap = gtfsIdsMap
 
+	// The importer serializes writes. Validation callbacks need additional
+	// connections to query related rows while their outer cursor stays open.
+	db.SetMaxOpenConns(0)
+	completed = true
 	return *gtfs, nil
 }

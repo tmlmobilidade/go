@@ -38,6 +38,10 @@ type ImportGtfsConfigDateRange struct {
 
 // Groups the source, output database settings, and date selection.
 type ImportGtfsConfig struct {
+	// Extra table names (without .txt) to import alongside standard GTFS files.
+	// Useful for application-specific extensions such as vehicles or municipalities.
+	AdditionalTables []string `json:"additional_tables,omitempty"`
+
 	// Required local archive path or HTTP URL.
 	Source ImportGtfsConfigSource `json:"source"`
 

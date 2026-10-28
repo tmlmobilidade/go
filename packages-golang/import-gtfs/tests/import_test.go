@@ -135,6 +135,36 @@ func TestImportGtfsToDatabase(t *testing.T) {
 }
 
 // TestImportEmptyFields distinguishes missing cells from literal spaces, zero, and "NULL".
+func TestImportAdditionalTables(t *testing.T) {
+	source := localSource(t, makeArchive(t, map[string]string{
+		"stops.txt":           "stop_id\n001\n",
+		"nested/vehicles.txt": "vehicle_id,custom\nV1,\n",
+		"unknown.txt":         "custom\nignored\n",
+	}))
+	for _, additional := range [][]string{nil, {"vehicles"}} {
+		database, err := importgtfs.ImportGtfsToMemory(importgtfs.ImportGtfsConfig{
+			Source:           source,
+			AdditionalTables: additional,
+		})
+		requireNoError(t, err)
+		var count int
+		requireNoError(t, database.DatabaseInstance.QueryRow("SELECT COUNT(*) FROM sqlite_schema WHERE type = 'table' AND name = 'vehicles'").Scan(&count))
+		if count != len(additional) {
+			t.Fatalf("vehicles table count = %d for additional tables %v", count, additional)
+		}
+		requireNoError(t, database.DatabaseInstance.QueryRow("SELECT COUNT(*) FROM stops").Scan(&count))
+		if count != 1 {
+			t.Fatalf("standard GTFS table missing: %d", count)
+		}
+		requireNoError(t, database.DatabaseInstance.QueryRow("SELECT COUNT(*) FROM sqlite_schema WHERE type = 'table' AND name = 'unknown'").Scan(&count))
+		if count != 0 {
+			t.Fatal("unrequested extension was imported")
+		}
+		requireNoError(t, database.Cleanup())
+	}
+}
+
+// TestImportEmptyFields distinguishes missing cells from literal spaces, zero, and "NULL".
 func TestImportEmptyFields(t *testing.T) {
 	archive := makeArchive(t, map[string]string{
 		"stops.txt": "id,value,other\n001,previous,previous\n002,,\"\"\n003, ,0\n004,NULL,\n",

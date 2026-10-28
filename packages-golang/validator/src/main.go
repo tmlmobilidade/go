@@ -154,6 +154,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error reading GTFS: %v", err)
 	}
+	defer func() {
+		if err := gtfs.Close(); err != nil {
+			lib.AppLogger.Error(fmt.Sprintf("Error closing database: %v", err))
+		}
+		if gtfs.DBPath() != "" {
+			for _, suffix := range []string{"", "-wal", "-shm"} {
+				if err := os.Remove(gtfs.DBPath() + suffix); err != nil && !os.IsNotExist(err) {
+					lib.AppLogger.Debug(fmt.Sprintf("Error removing temp database file: %v", err))
+				}
+			}
+		}
+	}()
 
 	// If there are errors in the GTFS, print the errors and exit
 	if services.AppMessageService.TotalErrors() > 0 {
@@ -172,19 +184,6 @@ func main() {
 	runValidations(gtfs, tracker, rules)
 
 	//
-	// 4. Clean up database file
-	defer func() {
-		if err := gtfs.Close(); err != nil {
-			lib.AppLogger.Error(fmt.Sprintf("Error closing database: %v", err))
-		}
-		if gtfs.DBPath() != "" {
-			if err := os.Remove(gtfs.DBPath()); err != nil {
-				lib.AppLogger.Debug(fmt.Sprintf("Error removing temp database file: %v", err))
-			}
-		}
-	}()
-
-	//
-	// 5. Output Summary
+	// 4. Output Summary
 	outputSummary()
 }

@@ -1,10 +1,12 @@
 module github.com/tmlmobilidade/go/packages-golang/validator
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/fatih/color v1.18.0
 	github.com/olekukonko/tablewriter v0.0.5
+	github.com/tmlmobilidade/go/packages-golang/import-gtfs v0.0.0
+	github.com/tmlmobilidade/go/packages-golang/sqlite v0.0.0
 	main/types v1.0.0
 	modernc.org/sqlite v1.40.1
 )
@@ -17,8 +19,10 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
+	github.com/mattn/go-sqlite3 v1.14.48 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
+	github.com/tmlmobilidade/go/packages-golang/telemetry v0.0.0 // indirect
 	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b // indirect
 	golang.org/x/sys v0.36.0 // indirect
 	modernc.org/libc v1.66.10 // indirect
@@ -29,3 +33,5 @@ require (
 replace github.com/tmlmobilidade/go/packages-golang/import-gtfs => ../import-gtfs
 
 replace github.com/tmlmobilidade/go/packages-golang/telemetry => ../telemetry
+
+replace github.com/tmlmobilidade/go/packages-golang/sqlite => ../sqlite
