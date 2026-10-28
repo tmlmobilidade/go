@@ -25,7 +25,6 @@ import (
 	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_attributes"
 	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_leg_join_rules"
 	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_leg_rules"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_media"
 	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_products"
 	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_rules"
 	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_transfer_rules"

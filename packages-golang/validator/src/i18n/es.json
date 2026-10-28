@@ -1710,25 +1710,6 @@
 	"fare_attributes_transfers_valid": {
 		"invalid": "El campo \"transfer_duration\" debe ser mayor que 0. Se recibió \"%s\""
 	},
-	"fare_media_id_unique": {
-		"duplicate": "Se encontró el campo \"fare_media_id\" \"%s\" duplicado. El campo \"fare_media_id\" debe ser único",
-		"forbidden": "El campo \"fare_media_id\" está prohibido",
-		"recommended": "Se recomienda el campo \"fare_media_id\"",
-		"required": "El campo \"fare_media_id\" es obligatorio"
-	},
-	"fare_media_name_non_empty": {
-		"forbidden": "El campo \"fare_media_name\" está prohibido",
-		"recommended": "Se recomienda el campo \"fare_media_name\"",
-		"required": "El campo \"fare_media_name\" es obligatorio",
-		"warning": "Se recomienda el campo \"fare_media_name\" para los tipos de soporte de pago 2 (tarjetas de transporte) o 4 (aplicaciones móviles)"
-	},
-	"fare_media_type_valid": {
-		"forbidden": "El campo \"fare_media_type\" está prohibido",
-		"invalid": "El campo \"fare_media_type\" debe ser 0, 1, 2, 3 o 4; se recibió: %s",
-		"not_allowed": "El campo \"fare_media_type\" \"%s\" no está permitido",
-		"recommended": "Se recomienda el campo \"fare_media_type\"",
-		"required": "El campo \"fare_media_type\" es obligatorio"
-	},
 	"fare_attributes_price_valid": {
 		"invalid": "El campo \"price\" debe ser no negativo. Se recibió \"%s\""
 	},

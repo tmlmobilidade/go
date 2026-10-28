@@ -65,5 +65,4 @@ var GtfsRuleFiles = []string{
 	"pathways",
 	"levels",
 	"feed_info",
-	"fare_media",
 }

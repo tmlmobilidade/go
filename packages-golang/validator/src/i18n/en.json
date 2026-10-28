@@ -1710,25 +1710,6 @@
 	"fare_attributes_transfers_valid": {
 		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\""
 	},
-	"fare_media_id_unique": {
-		"duplicate": "Duplicate field \"fare_media_id\" \"%s\" found. Field \"fare_media_id\" must be unique",
-		"forbidden": "Field \"fare_media_id\" is forbidden",
-		"recommended": "Field \"fare_media_id\" is recommended",
-		"required": "Field \"fare_media_id\" is required"
-	},
-	"fare_media_name_non_empty": {
-		"forbidden": "Field \"fare_media_name\" is forbidden",
-		"recommended": "Field \"fare_media_name\" is recommended",
-		"required": "Field \"fare_media_name\" is required",
-		"warning": "Field \"fare_media_name\" is recommended for fare media type 2 (transit cards) or 4 (mobile apps)"
-	},
-	"fare_media_type_valid": {
-		"forbidden": "Field \"fare_media_type\" is forbidden",
-		"invalid": "Field \"fare_media_type\" must be 0, 1, 2, 3, or 4, received: %s",
-		"not_allowed": "Field \"fare_media_type\" \"%s\" is not allowed",
-		"recommended": "Field \"fare_media_type\" is recommended",
-		"required": "Field \"fare_media_type\" is required"
-	},
 	"fare_attributes_price_valid": {
 		"invalid": "Field \"price\" must be non-negative. Got \"%s\""
 	},

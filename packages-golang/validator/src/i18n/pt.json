@@ -1710,25 +1710,6 @@
 	"fare_attributes_transfers_valid": {
 		"invalid": "O campo \"transfer_duration\" deve ser maior que 0. Recebido: \"%s\""
 	},
-	"fare_media_id_unique": {
-		"duplicate": "Campo \"fare_media_id\" \"%s\" duplicado encontrado. O campo \"fare_media_id\" deve ser único",
-		"forbidden": "O campo \"fare_media_id\" é proibido",
-		"recommended": "O campo \"fare_media_id\" é recomendado",
-		"required": "O campo \"fare_media_id\" é obrigatório"
-	},
-	"fare_media_name_non_empty": {
-		"forbidden": "O campo \"fare_media_name\" é proibido",
-		"recommended": "O campo \"fare_media_name\" é recomendado",
-		"required": "O campo \"fare_media_name\" é obrigatório",
-		"warning": "O campo \"fare_media_name\" é recomendado para fare media de tipo 2 (transit cards) ou 4 (mobile apps)"
-	},
-	"fare_media_type_valid": {
-		"forbidden": "O campo \"fare_media_type\" é proibido",
-		"invalid": "O campo \"fare_media_type\" deve ser 0, 1, 2, 3 ou 4, recebido: %s",
-		"not_allowed": "O campo \"fare_media_type\" \"%s\" não é permitido",
-		"recommended": "O campo \"fare_media_type\" é recomendado",
-		"required": "O campo \"fare_media_type\" é obrigatório"
-	},
 	"fare_attributes_price_valid": {
 		"invalid": "O campo \"price\" não pode ser negativo. Recebido: \"%s\""
 	},
