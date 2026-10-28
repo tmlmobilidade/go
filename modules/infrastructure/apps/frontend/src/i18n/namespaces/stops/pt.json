@@ -1,14 +1,13 @@
 {
 	"extract": {
+		"NodesExtract": {
+			"label": "Versão"
+		},
 		"NodesExtractHeader": {
 			"title": "Exportar Nós (IMT)"
 		},
 		"StopsExtract": {
-			"fields": {
-				"version": {
-					"label": "Versão"
-				}
-			}
+			"label": "Versão"
 		},
 		"StopsExtractFooter": {
 			"button": {
