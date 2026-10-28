@@ -114,7 +114,7 @@ func (m MockGtfs) ToGtfsWithDB() (*types.Gtfs, func(), error) {
 		db.Close()
 	}
 
-	// Create id_map table (same schema as gtfs_sqlite.go)
+	// Create id_map table (same schema as gtfs_id_map.go)
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS id_map (
 			file TEXT NOT NULL,

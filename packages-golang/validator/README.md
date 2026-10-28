@@ -56,8 +56,8 @@ classDiagram
         +runValidations()
     }
     
-    class GtfsSQLite {
-        +ImportGTFSZipToSQLite()
+    class ImportGtfs {
+        +ImportGtfsToDatabase()
     }
     
     class Gtfs {
@@ -83,8 +83,8 @@ classDiagram
         +RunValidations()
     }
     
-    Main --> GtfsSQLite : loads zip
-    GtfsSQLite --> Gtfs : creates
+    Main --> ImportGtfs : loads zip
+    ImportGtfs --> Gtfs : supplies database
     Main --> RulesParser : loads rules
     RulesParser --> GtfsRules : parses
     Main --> Registry : queries
@@ -103,30 +103,27 @@ classDiagram
 
 ## GTFS Loading Process
 
-The validator uses SQLite as an intermediate storage layer to efficiently handle large GTFS feeds without loading everything into memory.
+The validator loads feeds through the shared [import-gtfs](../import-gtfs/) package.
+SQLite remains the storage layer for validation queries. The validator supplies
+its existing pure-Go connection, so `CGO_ENABLED=0` builds remain supported.
+The shared packages require Go 1.26 or newer.
 
 ### Step 1: Zip File Reading
 
 The process begins when `ReadGTFSZip()` is called with a path to a GTFS zip file:
 
-1. **Temporary Database Creation**: A temporary SQLite database file is created to store the GTFS data
-2. **Database Configuration**: The SQLite database is configured with:
-   - WAL (Write-Ahead Logging) mode for better concurrency
-   - Optimized pragmas for performance (synchronous=NORMAL, temp_store=MEMORY)
-   - Single connection pool to serialize writes and avoid locking issues
+1. **Temporary Database Creation**: The validator creates a temporary database and supplies its connection to `ImportGtfsToDatabase`.
+2. **Database Configuration**: The shared importer configures WAL, synchronous writes, memory temporary storage, and a single connection during import. After import, the validator restores the connection pool for nested and concurrent validation queries.
 
 ### Step 2: File Processing
 
 Each file in the GTFS zip archive is processed sequentially:
 
-1. **File Filtering**: Every CSV-style `.txt` file is imported, including custom files without registered validations. Directories, macOS metadata, and other file formats are skipped. The filename without its extension becomes the table name; nested ZIP folders are ignored. Conflicting table names are reported as import errors.
-2. **CSV Parsing**: Each `.txt` file is read as CSV with:
-   - UTF-8 BOM removal
-   - UTF-8 encoding validation
-   - Header row extraction
-3. **Table Creation**: The first CSV record defines the SQLite columns, preserving their names and order, including custom fields absent from Go structs. Every column uses `TEXT`.
-4. **Batch Insertion**: All following CSV records are inserted using transactions. Values retain whitespace, empty strings, and leading zeros; import does not convert them to numbers or validate them against Go structs.
-5. **ID Mapping**: Primary keys are indexed in a separate `id_map` table for fast lookups
+1. **File Filtering**: Standard GTFS `.txt` files and the validator's registered table names are imported. This includes TML extensions such as `vehicles`, `municipalities`, `archives`, `periods`, and `afetacao`. Unrecognized files are ignored. Nested ZIP folders are supported.
+2. **CSV Parsing**: The shared importer streams CSV rows, handles UTF-8 BOMs and multiline quoted fields, and uses the header to define `TEXT` columns, including custom fields.
+3. **Transactional Import**: All rows are imported in one transaction. Malformed CSV or SQL errors fail the import and roll it back. Empty cells become SQL `NULL`; whitespace and leading zeros are preserved. No date filter is applied, so validation sees the original service dates.
+4. **ID Mapping**: After import, the validator builds its `id_map` from the imported tables, retaining duplicate IDs, per-field composite-key lookups, and zero-based source row indices. Missing ID columns remain available for field validation to report.
+5. **Cleanup**: Failed imports close the connection and remove temporary database files. Successful imports remain open until validation finishes, when the database and any WAL/SHM sidecars are removed.
 
 ### Step 3: Data Structure Creation
 

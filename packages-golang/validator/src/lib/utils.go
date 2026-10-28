@@ -65,7 +65,7 @@ func ParseStringToPrimitive[T any](str string, t *T) (msg string) {
 		*t = any(int64(f)).(T)
 		return
 	case int:
-		f, err := strconv.ParseInt(str, 10, 64)
+		f, err := strconv.ParseInt(str, 10, strconv.IntSize)
 		if err != nil {
 			return i18n.AppTranslator.Get("parser.int", str)
 		}
@@ -100,7 +100,7 @@ func ParseStringToPrimitive[T any](str string, t *T) (msg string) {
 		*t = any(uint64(f)).(T)
 		return
 	case uint:
-		f, err := strconv.ParseUint(str, 10, 64)
+		f, err := strconv.ParseUint(str, 10, strconv.IntSize)
 		if err != nil {
 			return i18n.AppTranslator.Get("parser.uint", str)
 		}
