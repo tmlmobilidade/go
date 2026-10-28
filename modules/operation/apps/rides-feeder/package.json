@@ -15,7 +15,8 @@
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix",
-		"start": "node dist/index.js"
+		"start": "node dist/index.js",
+		"test": "node --import tsx --experimental-test-module-mocks --test tests/*.test.mjs"
 	},
 	"dependencies": {
 		"@tmlmobilidade/geo": "*",
