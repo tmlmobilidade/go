@@ -1,4 +1,4 @@
-package stop_times
+package types
 
 // TimeSequenceStop contains the fields required to compare a stop_time with
 // the previous stop in the same trip.
