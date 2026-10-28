@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { ExtractionsListActionDelete } from '../ExtractionsListActionDelete';
 import { ExtractionsListActionDownload } from '../ExtractionsListActionDownload';
 import { ExtractionsListActionLock } from '../ExtractionsListActionLock';
-import { ExtractionsListFooter } from '../ExtractionsListFooter';
+import { ExtractionsListActionReload } from '../ExtractionsListActionReload';
 import { ExtractionsListHeader } from '../ExtractionsListHeader';
 import { ExtractionsListFilterBar } from '../filters/ExtractionsListFilterBar';
 import { useExtractionsListData } from '../use-extractions-list-data';
@@ -56,6 +56,12 @@ export function ExtractionsList() {
 			width: 'fill',
 		},
 		{
+			accessor: 'reload',
+			render: item => <ExtractionsListActionReload extractionItem={item} />,
+			title: null,
+			width: 70,
+		},
+		{
 			accessor: 'remove',
 			render: item => <ExtractionsListActionDelete extractionItem={item} />,
 			title: null,
@@ -68,7 +74,6 @@ export function ExtractionsList() {
 
 	return (
 		<Pane
-			footer={[<ExtractionsListFooter key="footer" />]}
 			header={[
 				<ExtractionsListHeader key="header" />,
 				<ExtractionsListFilterBar key="filter-bar" />,
