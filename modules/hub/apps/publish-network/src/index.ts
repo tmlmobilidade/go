@@ -2,8 +2,9 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { GtfsHubV1SQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
+import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type ImportGtfsConfig, importGtfsHubV1ToDatabase } from '@tmlmobilidade/import-gtfs';
 
 import { syncLinesRoutesPatterns } from './tasks/sync-lines-routes-patterns.js';
 import { syncStops } from './tasks/sync-stops.js';
@@ -34,7 +35,7 @@ async function main() {
 		},
 	};
 
-	const importedGtfsSql = await importGtfsHubV1ToDatabase(importConfig);
+	const importedGtfsSql = await importGtfsToDatabase<GtfsHubV1SQLTables>(importConfig);
 
 	//
 	// Export GTFS files from the merged dataset

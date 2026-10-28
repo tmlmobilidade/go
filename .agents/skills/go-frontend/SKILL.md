@@ -1,6 +1,6 @@
 ---
 name: go-frontend
-description: GO module frontend conventions (modules/*/apps/frontend). Load when adding or editing a list, detail or create view, a filter, a data hook, a form context, a page under app/, or i18n keys in any GO frontend app.
+description: GO module frontend conventions (modules/*/apps/frontend). Load when adding or editing a list, detail or create view, a filter, a data hook, a form context or a page under app/.
 ---
 
 Reference: `modules/core/apps/frontend` is the canonical app. Base TML patterns (component folders, lettered section comments, CSS modules) come from the `tml-frontend` skill; this file carries only what GO adds. When a rule here and the exemplar disagree, the exemplar wins: open it.
@@ -161,10 +161,6 @@ Filter state lives in the URL. Each filter is a folder with the component and it
 | Date range | `useFilterStateDateRange(key, defaultStart, defaultEnd)` | `DateRangeFilter active={f.isActive} startDate={f.value_start} endDate={f.value_end} onStartDateChange={f.setStart} onEndDateChange={f.setEnd}` |
 
 The hook carries a JSDoc line naming the filter and returns the ui package's `UseFilterState<Kind>ReturnType`. Options for enum filters map `<Enum>Values` through `t('shared:status.<enum>.<value>')`; options for entity filters come from a `shared/` data hook. `XListFiltersBar` lists every filter inside `FiltersBar`.
-
-## i18n
-
-Keys mirror the component tree: `default:<feature>.<view>.<Component>.<part>`, for example `default:agencies.detail.SectionBasicInfo.fields.name.label` or `default:users.list.Header.NewUserButton.label`. Add every key to both `pt.json` and `es.json` under `src/i18n/namespaces/default/`. Portuguese is the primary language. Shared keys come from `shared:`.
 
 ## Do not
 

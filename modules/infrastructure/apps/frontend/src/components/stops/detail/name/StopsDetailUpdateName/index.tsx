@@ -62,22 +62,22 @@ export function StopsDetailUpdateName() {
 						<Section gap="sm" padding="none">
 							{/* Name */}
 							<Section gap="xs" padding="none">
-								<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.stop_name')}</Label>
-								<Text size="base" weight="semibold">{nameValue || t('default:stops.shared.not_available')}</Text>
+								<Label size="sm" variant="muted" caps>{t('stops:detail.StopsDetailUpdateName.fields.name.label')}</Label>
+								<Text size="base" weight="semibold">{nameValue || t('stops:detail.StopsDetailUpdateName.not_available')}</Text>
 							</Section>
 							<Divider />
 
 							{/* Short Name */}
 							<Section gap="xs" padding="none">
-								<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.short_name')}</Label>
-								<Text size="base" weight="semibold">{shortNameValue || t('default:stops.shared.not_available')}</Text>
+								<Label size="sm" variant="muted" caps>{t('stops:detail.StopsDetailUpdateName.fields.short_name.label')}</Label>
+								<Text size="base" weight="semibold">{shortNameValue || t('stops:detail.StopsDetailUpdateName.not_available')}</Text>
 							</Section>
 							<Divider />
 
 							{/* TTS Name */}
 							<Section gap="xs" padding="none">
-								<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.tts_name')}</Label>
-								<Text size="base" weight="semibold">{ttsNameValue || t('default:stops.shared.not_available')}</Text>
+								<Label size="sm" variant="muted" caps>{t('stops:detail.StopsDetailUpdateName.fields.tts_name.label')}</Label>
+								<Text size="base" weight="semibold">{ttsNameValue || t('stops:detail.StopsDetailUpdateName.not_available')}</Text>
 							</Section>
 						</Section>
 					</Section>

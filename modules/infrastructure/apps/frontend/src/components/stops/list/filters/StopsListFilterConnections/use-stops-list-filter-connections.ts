@@ -15,7 +15,7 @@ export function useStopsListFilterConnections(): UseFilterStateListReturnType<St
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() => StopConnectionValues.map(item => ({
-		label: t(`default:stops.shared.stop_connection.${item}`),
+		label: t(`stops:list.StopsListFilterConnections.options.${item}`),
 		value: item,
 	})), [t]);
 

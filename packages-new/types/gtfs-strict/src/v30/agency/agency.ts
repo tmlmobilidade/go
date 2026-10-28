@@ -1,6 +1,6 @@
 /* * */
 
-import { LanguageTagSchema, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
+import { LanguageTagSchema, nullAsUndefined, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -9,10 +9,10 @@ export const GtfsStrictV30AgencySchema = z.object({
 	agency_email: z.string(),
 	agency_fare_url: z.string(),
 	agency_id: z.string(),
-	agency_lang: LanguageTagSchema.default('pt'),
+	agency_lang: nullAsUndefined(LanguageTagSchema.default('pt')),
 	agency_name: z.string(),
 	agency_phone: z.string(),
-	agency_timezone: TimezoneIdentifiedSchema.default('Europe/Lisbon'),
+	agency_timezone: nullAsUndefined(TimezoneIdentifiedSchema.default('Europe/Lisbon')),
 	agency_url: z.string().url(),
 });
 
