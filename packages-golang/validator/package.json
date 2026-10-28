@@ -1,0 +1,17 @@
+{
+	"name": "@tmlmobilidade/go-golang-validator",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "go build -ldflags=-w -o dist/validator ./src",
+		"build:binary": "bash ./compile.sh",
+		"dev": "go run -ldflags=-w ./src",
+		"lint": "go vet ./...",
+		"test": "go test ./..."
+	},
+	"devDependencies": {
+		"@tmlmobilidade/go-golang-import-gtfs": "*",
+		"@tmlmobilidade/go-golang-sqlite": "*",
+		"@tmlmobilidade/go-golang-telemetry": "*"
+	}
+}

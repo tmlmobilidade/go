@@ -16,7 +16,8 @@ bash packages-golang/validator/compile.sh --all
 ```
 
 Starting the worker with `npm run dev:operation:gtfs-validator` automatically runs
-`compile.sh` through the worker's `predev` hook before starting the Node process.
+the wrapper's `build:binary` through the worker's `predev` hook. This compiles
+the Go binary and builds the TypeScript wrapper before starting the Node process.
 
 The `build-binary.yml` release workflow runs `compile.sh --all` and uploads the
 four binaries to a GitHub release. Container packaging is a separate step;

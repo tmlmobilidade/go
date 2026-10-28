@@ -15,7 +15,7 @@
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix .",
-		"predev": "bash ../../../../packages-golang/validator/compile.sh"
+		"predev": "npm run build:binary --workspace=@tmlmobilidade/go-operation-validator"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
