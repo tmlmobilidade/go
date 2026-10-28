@@ -1,7 +1,7 @@
 /* * */
 
 import { getRequestLogContext } from '@/hooks/request-log-context.js';
-import { sendErrorApiResponse } from '@/response/error-response.js';
+import { sendErrorApiResponse } from '@/response/send-error-response.js';
 import { type FastifyInstance } from '@/types.js';
 import { HttpException } from '@tmlmobilidade/consts';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';

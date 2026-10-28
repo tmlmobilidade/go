@@ -20,7 +20,10 @@
 				"label": "Descripción"
 			},
 			"generate_text": {
-				"label": "Generar texto automático"
+				"accept_proposal": "Aceptar propuesta",
+				"label": "Generar texto automático",
+				"loading": "Generando texto automático...",
+				"title": "Propuesta"
 			},
 			"info_url": {
 				"description": "Opcionalmente incluya la URL de un sitio web donde se pueda obtener más información",
