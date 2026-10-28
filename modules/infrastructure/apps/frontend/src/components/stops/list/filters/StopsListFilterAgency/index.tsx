@@ -23,6 +23,7 @@ export function StopsListFilterAgency() {
 	return (
 		<ListFilter
 			active={filterAgency.isActive}
+			isLoading={filterAgency.isLoading}
 			label={t('stops:list.StopsListFilterAgency.label')}
 			onChange={filterAgency.set}
 			options={filterAgency.options}

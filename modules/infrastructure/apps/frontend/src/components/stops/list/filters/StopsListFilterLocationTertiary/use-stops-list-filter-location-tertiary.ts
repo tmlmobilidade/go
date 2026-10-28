@@ -11,9 +11,9 @@ import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobil
 export function useStopsListFilterLocationTertiary(): UseFilterStateListReturnType {
 	//
 
-	const { ids, options } = useStopsLocationsData({
+	const { ids, isLoading, options } = useStopsLocationsData({
 		permissions: { actions: [PermissionCatalog.all.stops.actions.read], scope: PermissionCatalog.all.stops.scope },
 	});
 
-	return useFilterStateList('location_tertiary', ids.tertiary, options.tertiary);
+	return useFilterStateList('location_tertiary', ids.tertiary, options.tertiary, isLoading);
 }

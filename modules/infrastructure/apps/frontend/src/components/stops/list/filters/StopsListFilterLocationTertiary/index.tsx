@@ -23,6 +23,7 @@ export function StopsListFilterLocationTertiary() {
 	return (
 		<ListFilter
 			active={filterLocationTertiary.isActive}
+			isLoading={filterLocationTertiary.isLoading}
 			label={t('stops:list.StopsListFilterLocationTertiary.label')}
 			onChange={filterLocationTertiary.set}
 			options={filterLocationTertiary.options}

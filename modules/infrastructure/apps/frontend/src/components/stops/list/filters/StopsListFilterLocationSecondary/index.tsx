@@ -23,6 +23,7 @@ export function StopsListFilterLocationSecondary() {
 	return (
 		<ListFilter
 			active={filterLocationSecondary.isActive}
+			isLoading={filterLocationSecondary.isLoading}
 			label={t('stops:list.StopsListFilterLocationSecondary.label')}
 			onChange={filterLocationSecondary.set}
 			options={filterLocationSecondary.options}
