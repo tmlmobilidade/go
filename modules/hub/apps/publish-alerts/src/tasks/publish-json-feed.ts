@@ -15,10 +15,10 @@ import { transformReferenceTypeStopsIntoJson } from '../transform/json/reference
 
 /* * */
 
-export async function publishJsonFeed() {
+export async function publishJsonFeed(agencyId: string) {
 	//
 
-	Logger.title('Starting build of JSON feed...');
+	Logger.info({ message: `Starting build of JSON feed` });
 
 	const globalTimer = new Timer();
 
@@ -35,6 +35,7 @@ export async function publishJsonFeed() {
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
+					agency_id: agencyId,
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_milliseconds },
 					publish_status: 'published',
 				},
@@ -135,9 +136,10 @@ export async function publishJsonFeed() {
 	//
 	// Save the result in API Cache
 
-	await cacheDb.set('hub:v1:alerts:published:json', JSON.stringify(result));
+	const agencyAlerts = result.filter(alert => alert.agency_id === agencyId);
+	await cacheDb.set(`hub:v1:${agencyId}:alerts:published:json`, JSON.stringify(agencyAlerts));
 
-	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
+	Logger.success({ message: `Finished publishing JSON feed (${globalTimer.get()})` });
 
 	//
 };

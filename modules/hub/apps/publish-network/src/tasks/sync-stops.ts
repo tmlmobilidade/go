@@ -1,147 +1,57 @@
 /* * */
 
-import { decodeStopFlags, getQualifiedLineId } from '@tmlmobilidade/go-hub-pckg-utils';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubV1ApiStop, HubV1ApiStopSchema, type HubV1GtfsStops } from '@tmlmobilidade/go-types-hub';
+import { getQualifiedLineId, getQualifiedPatternId, getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
-import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+
+import { type NetworkContext } from '../types/network.js';
+import { parseStop } from '../utils/parse-stop.js';
 
 /* * */
 
-interface QueryResult extends HubV1GtfsStops {
-	agency_ids: null | string
-	pattern_ids: null | string
-	route_ids: null | string
-	route_short_names: null | string
+interface StopReference {
+	route_id: string
+	shape_id: string
+	stop_id: string
 }
 
 /* * */
 
-export async function syncStops(importedGtfsSql: GtfsSQLTables) {
-	//
-
-	Logger.title(`Sync Stops`);
-	const globalTimer = new Timer();
-
-	//
-	// Aggregate stops with their associated routes, lines and shapes
-	// from the imported GTFS database
-
-	const allGtfsStops = importedGtfsSql.stops.query<QueryResult>(`
-		SELECT
-			s.*,
-			r.agency_ids,
-			r.pattern_ids,
-			r.route_ids,
-			r.route_short_names
-		FROM
-			stops s
-		LEFT JOIN (
-			SELECT
-				st.stop_id,
-				json_group_array(DISTINCT r.agency_id) AS agency_ids,
-				json_group_array(DISTINCT json_object('agency_id', r.agency_id, 'route_short_name', r.route_short_name)) AS route_short_names,
-				json_group_array(DISTINCT r.route_id) AS route_ids,
-				json_group_array(DISTINCT t.pattern_id) AS pattern_ids
-			FROM
-				stop_times st
-			JOIN
-				trips t ON st.trip_id = t.trip_id
-			JOIN
-				routes r ON t.route_id = r.route_id
-			GROUP BY
-				st.stop_id
-		) r ON s.stop_id = r.stop_id;
+export async function syncStops(plan: Plan, importedGtfsSql: GtfsSQLTables, context: NetworkContext, aliases: Map<string, Stop>): Promise<Map<string, HubV1ApiStop>> {
+	const references = importedGtfsSql.stop_times.query<StopReference>(`
+		SELECT DISTINCT st.stop_id, t.route_id, t.shape_id
+		FROM stop_times st
+		JOIN trips t ON st.trip_id = t.trip_id
 	`);
+	const stops = new Map<string, HubV1ApiStop>();
 
-	//
-	// For each item, update its entry in the database
-
-	const exportedStopsData: HubV1ApiStop[] = [];
-	let updatedStopsCounter = 0;
-
-	for (const gtfsStop of allGtfsStops) {
-		try {
-			//
-
-			if (!gtfsStop.agency_ids?.length) {
-				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no agency IDs.` });
-				continue;
-			}
-
-			if (!gtfsStop.route_short_names?.length) {
-				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no line IDs.` });
-				continue;
-			}
-
-			if (!gtfsStop.route_ids?.length) {
-				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no route IDs.` });
-				continue;
-			}
-
-			if (!gtfsStop.pattern_ids?.length) {
-				Logger.error({ message: `Skip processing: stop ${gtfsStop.stop_id} has no pattern IDs.` });
-				continue;
-			}
-
-			//
-			// Parse the flags object
-
-			const decodedFlags = decodeStopFlags(gtfsStop.flags);
-
-			//
-			// Build the associated line IDs from the route short names
-
-			const parsedRouteShortNames: { agency_id: string, route_short_name: string }[] = JSON.parse(gtfsStop.route_short_names);
-			const associatedLineIds = parsedRouteShortNames.map(route => getQualifiedLineId(route.agency_id, route.route_short_name));
-
-			//
-			// Build the final stop object
-
-			const validatedStop: HubV1ApiStop = {
-				_id: gtfsStop.stop_id,
-				agency_ids: JSON.parse(gtfsStop.agency_ids),
-				district_id: gtfsStop.district_id,
-				district_name: gtfsStop.district_name,
-				flags: decodedFlags,
-				latitude: gtfsStop.stop_lat,
-				legacy_ids: gtfsStop.legacy_ids ? JSON.parse(gtfsStop.legacy_ids) : [],
-				lifecycle_status: gtfsStop.lifecycle_status,
-				line_ids: associatedLineIds,
-				locality_id: gtfsStop.locality_id,
-				locality_name: gtfsStop.locality_name,
-				longitude: gtfsStop.stop_lon,
-				municipality_id: gtfsStop.municipality_id,
-				municipality_name: gtfsStop.municipality_name,
-				name: gtfsStop.stop_name,
-				parish_id: gtfsStop.parish_id,
-				parish_name: gtfsStop.parish_name,
-				pattern_ids: JSON.parse(gtfsStop.pattern_ids),
-				route_ids: JSON.parse(gtfsStop.route_ids),
-				short_name: gtfsStop.stop_name,
-				tts_name: gtfsStop.tts_stop_name || gtfsStop.stop_name,
-			};
-
-			const parsedStop = HubV1ApiStopSchema.parse(validatedStop);
-
-			await cacheDb.setNew(`hub:v1:network:stops:${gtfsStop.stop_id}`, parsedStop);
-
-			exportedStopsData.push(parsedStop);
-
-			updatedStopsCounter++;
-
-			//
-		} catch (error) {
-			Logger.error({ error, message: `Error processing stop ${gtfsStop.stop_id}: ${JSON.stringify(gtfsStop)}` });
-			process.exit(1);
-			continue;
+	for (const reference of references) {
+		let sourceStop = aliases.get(reference.stop_id);
+		if (!sourceStop) {
+			const foundStop = await goDb.infrastructure.stops.findById(reference.stop_id);
+			if (!foundStop || foundStop.is_deleted) throw new Error(`Stop ${reference.stop_id} not found for agency ${plan.agency_id}`);
+			sourceStop = foundStop;
+			aliases.set(reference.stop_id, sourceStop);
 		}
+
+		let stop = context.stops.get(sourceStop._id);
+		if (!stop) {
+			stop = parseStop(sourceStop, plan.agency_id);
+			context.stops.set(stop._id, stop);
+		}
+
+		const routeId = getQualifiedRouteId(plan.agency_id, reference.route_id);
+		const route = context.route_data.get(routeId);
+		if (!route) throw new Error(`Route ${routeId} not found for plan ${plan._id}`);
+
+		stop.line_ids = Array.from(new Set([...stop.line_ids, getQualifiedLineId(plan.agency_id, route.route_short_name)]));
+		stop.route_ids = Array.from(new Set([...stop.route_ids, routeId]));
+		stop.pattern_ids = Array.from(new Set([...stop.pattern_ids, getQualifiedPatternId(plan.agency_id, reference.shape_id)]));
+		stops.set(reference.stop_id, stop);
 	}
 
-	//
-	// Save to the database
-
-	await cacheDb.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
-
-	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
-};
+	return stops;
+}

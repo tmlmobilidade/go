@@ -4,6 +4,7 @@ export * from './eta/index.js';
 export * from './feedback/index.js';
 export * from './lines/index.js';
 export * from './motis/index.js';
+export * from './organizations/index.js';
 export * from './patterns/index.js';
 export * from './plans/index.js';
 export * from './routes/index.js';

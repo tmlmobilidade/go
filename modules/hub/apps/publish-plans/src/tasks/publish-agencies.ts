@@ -7,24 +7,18 @@ import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
-export async function publishAgencies() {
+export async function publishAgencies(agencyIds: string[]) {
 	//
 
 	Logger.title('Publishing agencies JSON feed...');
 
 	const globalTimer = new Timer();
-
-	//
-	// Retrieve all plans
-
-	const allAgenciesData = await goDb.core.agencies.findMany();
-
-	Logger.info({ message: `Retrieved ${allAgenciesData.length} agencies...` });
+	const agencies = await goDb.core.agencies.findMany({ _id: { $in: agencyIds } });
 
 	//
 	// Parse the agencies into the Hub V1 API schema
 
-	const parsedAgencies: HubV1ApiAgency[] = allAgenciesData.map((agencyData) => {
+	const parsedAgencies: HubV1ApiAgency[] = agencies.map((agencyData) => {
 		return HubV1ApiAgencySchema.parse({
 			_id: agencyData._id,
 			code: agencyData.code,
@@ -35,7 +29,6 @@ export async function publishAgencies() {
 			primary_language: agencyData.primary_language,
 			services: {
 				eta_enabled: agencyData.open_data.services.eta_enabled,
-				gtfs_enabled: agencyData.open_data.services.gtfs_enabled,
 				positions_enabled: agencyData.open_data.services.positions_enabled,
 				service_alerts_enabled: agencyData.open_data.services.service_alerts_enabled,
 			},
@@ -48,6 +41,5 @@ export async function publishAgencies() {
 	// Save the result in API Cache
 
 	await cacheDb.setNew('hub:v1:agencies:json', parsedAgencies);
-
-	Logger.success(`Finished publishing ${parsedAgencies.length} agencies JSON feed. (${globalTimer.get()})`);
+	Logger.success({ message: `Finished publishing ${parsedAgencies.length} agencies JSON feed. (${globalTimer.get()})` });
 };

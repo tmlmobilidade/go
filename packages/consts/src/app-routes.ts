@@ -171,6 +171,9 @@ export const API_ROUTES = Object.freeze({
 		AGENCIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}/lock`,
 		AGENCIES_LIST: `${getModuleConfig('core', 'api_url')}/agencies`,
 
+		// AGENCY-ORGANIZATIONS
+		AGENCY_ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/agency-organizations`,
+
 		// APP-CONFIGS
 		APP_CONFIGS_BANNER: `${getModuleConfig('core', 'api_url')}/app-configs/banner`,
 
@@ -258,14 +261,14 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('hub', 'api_url')}`,
 
-		// AGENCIES
-		AGENCIES_LIST: `${getModuleConfig('hub', 'api_url')}/v1/agencies`,
-
 		// ALERTS
 		ALERTS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs`,
 		ALERTS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs.pb`,
 		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
+
+		// CORE
+		CORE_AGENCIES_LIST: `${getModuleConfig('hub', 'api_url')}/v1/agencies`,
 
 		// DEBUG
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,

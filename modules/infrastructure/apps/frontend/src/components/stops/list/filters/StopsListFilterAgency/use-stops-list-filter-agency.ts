@@ -1,7 +1,7 @@
 'use client';
 
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+import { useAgencyFilterOptions, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 import { useStopsAgenciesData } from '../../../shared/use-stops-agencies-data';
 
@@ -16,5 +16,7 @@ export function useStopsListFilterAgency(): UseFilterStateListReturnType {
 		permissions: { actions: [PermissionCatalog.all.stops.actions.read], scope: PermissionCatalog.all.stops.scope },
 	});
 
-	return useFilterStateList('agency', ids, options);
+	const groupedOptions = useAgencyFilterOptions(options);
+
+	return useFilterStateList('agency', ids, groupedOptions);
 }

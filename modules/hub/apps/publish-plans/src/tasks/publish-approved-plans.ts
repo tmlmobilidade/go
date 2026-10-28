@@ -9,7 +9,7 @@ import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
-export async function publishApprovedPlans() {
+export async function publishApprovedPlans(agencyIds: string[]) {
 	//
 
 	Logger.title('Publishing approved plans JSON feed...');
@@ -19,7 +19,7 @@ export async function publishApprovedPlans() {
 	//
 	// Retrieve all plans
 
-	const allPlansData = await goDb.operation.plans.findMany();
+	const allPlansData = await goDb.operation.plans.findMany({ agency_id: { $in: agencyIds } });
 
 	Logger.info({ message: `Retrieved ${allPlansData.length} approved plans...` });
 
