@@ -8,47 +8,9 @@ import (
 	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
-	file_validation "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/files"
 	"log"
 	"main/types"
 	"sync"
-
-	// Import all validation packages to trigger their init() functions
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/afetacao"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/archives"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/areas"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/attributions"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/booking_rules"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/calendar"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/calendar_dates"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_attributes"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_leg_join_rules"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_leg_rules"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_products"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_rules"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_transfer_rules"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/feed_info"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/frequencies"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/levels"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/location_group_stops"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/location_groups"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/municipalities"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/networks"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/pathways"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/periods"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/rider_categories"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/route_networks"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/routes"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/shapes"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stop_areas"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stop_times"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stops"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/timeframes"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/transfers"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/translations"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips"
-	_ "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/vehicles"
 )
 
 func init() {
@@ -168,7 +130,7 @@ func main() {
 	// 2. Check File Requirements
 	// File validations add messages directly to AppMessageService
 	// Missing files block their own DAGs; independent available files still run.
-	file_validation.NewFileValidation().Validate(gtfs, rules)
+	validations.NewFileValidation().Validate(gtfs, rules)
 
 	//
 	// 3. Run Validations for each file
