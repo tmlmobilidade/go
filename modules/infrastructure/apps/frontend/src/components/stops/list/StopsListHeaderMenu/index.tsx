@@ -7,8 +7,8 @@ import { type ComponentProps, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { openStopsCreateModal } from '../../create/StopsCreate.modal';
-import { openNodesExtractModal } from '../../extract/NodesExtract.modal';
-import { openStopsExtractModal } from '../../extract/StopsExtract.modal';
+import { openNodesExtractModal } from '../../extract/nodes/NodesExtract.modal';
+import { openStopsExtractModal } from '../../extract/stops/StopsExtract.modal';
 
 /* * */
 

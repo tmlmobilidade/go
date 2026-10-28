@@ -3,12 +3,14 @@
 import { InfrastructureNodesV1ExtractionCreateSchema, InfrastructureNodesV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
 import { useTranslation } from 'react-i18next';
 
+import { StopsExtractForm } from '../../shared/StopsExtractForm';
 import { closeNodesExtractModal } from '../NodesExtract.modal';
-import { StopsExtractForm } from '../shared/StopsExtractForm';
 
 /* * */
 
 export function NodesExtract() {
+	//
+
 	const { t } = useTranslation();
 
 	return (

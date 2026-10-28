@@ -69,8 +69,7 @@ export async function buildNodesExtractionQuery(extraction: InfrastructureNodesV
 	// Limit nodes extraction to Portugal
 
 	const foundLevelTwoLocations = await locationsDb.findLocationsByCountryAndAdminLevel('PT', '2');
-	if (!foundLevelTwoLocations.length) throw new Error('Portugal not found in locations database');
-	if (foundLevelTwoLocations[0].code !== 'PT') throw new Error('Portugal not found in locations database');
+	if (!foundLevelTwoLocations.length) throw new Error('No location level 2 found for Portugal');
 
 	//
 	// Build the stop filter
