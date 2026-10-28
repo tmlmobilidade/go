@@ -554,9 +554,10 @@
 		"forbidden_stop_location": "El campo \"location_group_id\" está prohibido si se define stop_id o location_id"
 	},
 	"stop_times_location_group_id_forbidden": {
-		"informational": "El campo location_group_id es informativo",
-		"recommended": "El campo location_group_id es recomendado",
-		"required": "El campo location_group_id es requerido"
+		"forbidden": "El campo \"location_group_id\" está prohibido cuando \"stop_id\" o \"location_id\" está definido"
+	},
+	"stop_times_location_id_forbidden": {
+		"forbidden": "El campo \"location_id\" está prohibido cuando \"stop_id\" o \"location_group_id\" está definido"
 	},
 	"stop_times_pickup_booking_rule_id_field": {
 		"informational": "El campo pickup_booking_rule_id es informativo",

@@ -227,6 +227,7 @@ export const GtfsValidatorRuleIdValues = [
 	'stop_times_file_missing',
 	'stop_times_location_group_id_field',
 	'stop_times_location_group_id_forbidden',
+	'stop_times_location_id_forbidden',
 	'stop_times_pickup_booking_rule_id_field',
 	'stop_times_pickup_booking_rule_id_foreign',
 	'stop_times_pickup_type_field',

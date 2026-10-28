@@ -124,6 +124,9 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"stop_times_location_group_id_forbidden": func() {
 				check(db, "stop_times_location_group_id_forbidden", stop_times_standard.LocationGroupIdForbidden(db, rules.Rule("stop_times_location_group_id_forbidden")))
 			},
+			"stop_times_location_id_forbidden": func() {
+				check(db, "stop_times_location_id_forbidden", stop_times_standard.LocationIdForbidden(db, rules.Rule("stop_times_location_id_forbidden")))
+			},
 			"stop_times_pickup_booking_rule_id_foreign": func() {
 				check(db, "stop_times_pickup_booking_rule_id_foreign", stop_times_standard.PickupBookingRuleIdForeign(db, rules.Rule("stop_times_pickup_booking_rule_id_foreign")))
 			},
