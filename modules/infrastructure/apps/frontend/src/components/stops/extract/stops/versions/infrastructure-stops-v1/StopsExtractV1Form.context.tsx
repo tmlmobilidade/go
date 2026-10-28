@@ -8,7 +8,7 @@ import { useStopsListFilterLocationTertiary } from '@/components/stops/list/filt
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type InfrastructureStopsV1ExtractionCreate, type InfrastructureStopsV1ExtractionProperties, InfrastructureStopsV1ExtractionPropertiesSchema, InfrastructureStopsV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { closeStopsExtractModal } from '../../StopsExtract.modal';
@@ -45,20 +45,18 @@ export function StopsExtractV1FormContextProvider({ children }: PropsWithChildre
 
 	const initialProperties = useMemo((): InfrastructureStopsV1ExtractionProperties | null => {
 		return {
-			agency_ids: filterAgency.isActive ? filterAgency.value : undefined,
-			lifecycle_statuses: filterLifecycleStatus.isActive ? filterLifecycleStatus.value : undefined,
+			agency_ids: filterAgency.value,
+			lifecycle_statuses: filterLifecycleStatus.value,
 			location_primary_ids: filterLocationPrimary.isActive ? filterLocationPrimary.value : undefined,
 			location_secondary_ids: filterLocationSecondary.isActive ? filterLocationSecondary.value : undefined,
 			location_tertiary_ids: filterLocationTertiary.isActive ? filterLocationTertiary.value : undefined,
 		};
-	}, [filterAgency.isActive, filterAgency.value, filterLifecycleStatus.isActive, filterLifecycleStatus.value, filterLocationPrimary.isActive, filterLocationPrimary.value, filterLocationSecondary.isActive, filterLocationSecondary.value, filterLocationTertiary.isActive, filterLocationTertiary.value]);
+	}, [filterAgency.value, filterLifecycleStatus.value, filterLocationPrimary.isActive, filterLocationPrimary.value, filterLocationSecondary.isActive, filterLocationSecondary.value, filterLocationTertiary.isActive, filterLocationTertiary.value]);
 
 	const { form, isDirty, isValid, unblock } = useStandardForm<InfrastructureStopsV1ExtractionProperties, typeof InfrastructureStopsV1ExtractionPropertiesSchema>({
 		apiData: initialProperties,
 		schema: InfrastructureStopsV1ExtractionPropertiesSchema,
 	});
-
-	const agencyIdsValue = useStandardFormWatch({ control: form.control, name: 'agency_ids' });
 
 	//
 	// C. Handle actions
@@ -95,9 +93,7 @@ export function StopsExtractV1FormContextProvider({ children }: PropsWithChildre
 		},
 		form: {
 			isDirty,
-			// The extraction query matches rides with has(agency_ids, agency_id),
-			// so an empty selection would always produce an empty file.
-			isValid: isValid && !!agencyIdsValue?.length,
+			isValid,
 		},
 	});
 
