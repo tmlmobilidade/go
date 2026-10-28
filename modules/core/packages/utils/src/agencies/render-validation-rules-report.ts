@@ -1,7 +1,7 @@
 /* * */
 
 import { type Agency } from '@tmlmobilidade/go-types-core';
-import { isRuleSeverity, ruleCatalogue, type RuleCatalogueEntry, type RuleSeverity } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type GtfsValidatorRuleId, GtfsValidatorRuleIdValues } from '@tmlmobilidade/go-types-gtfs-validator';
 import { type SeverityStatus, SeverityStatusSchema } from '@tmlmobilidade/go-types-shared';
 
 /* * */
@@ -10,16 +10,21 @@ import { type SeverityStatus, SeverityStatusSchema } from '@tmlmobilidade/go-typ
 // A. Define the agency input and report cell types
 
 type ReportAgency = Pick<Agency, '_id' | 'name' | 'short_name'> & { plans?: { validation_rules?: unknown } };
-type CellState = 'fixed' | 'invalid' | 'missing' | RuleSeverity | SeverityStatus;
+type CellState = 'invalid' | 'missing' | SeverityStatus;
 interface Cell { label: string, state: CellState, title: string }
 
-const severityLabels: Record<RuleSeverity | SeverityStatus, string> = {
+const severityLabels: Record<SeverityStatus, string> = {
 	error: 'Erro',
-	forbidden: 'Proibido',
 	ignore: 'Ignorado',
 	info: 'Informação',
 	warning: 'Aviso',
 };
+
+// File-level IDs provide the table names, including names containing underscores.
+const ruleFiles = GtfsValidatorRuleIdValues
+	.filter(id => id.endsWith('_file_missing'))
+	.map(id => id.slice(0, -'_file_missing'.length))
+	.sort((a, b) => b.length - a.length);
 
 /* * */
 
@@ -57,50 +62,25 @@ function parseRules(value: unknown): { invalid: boolean, rules: Record<string, u
 /* * */
 
 /**
- * Resolve one catalogue rule for one agency without replacing missing settings with defaults.
+ * Resolve one generated rule for one agency without replacing missing settings with defaults.
  */
-function getCell(config: ReturnType<typeof parseRules>, entry: RuleCatalogueEntry): Cell {
-	//
-	// A. Resolve fixed notices from the catalogue
-
-	if (!entry.editable) {
-		const severities = entry.severities ?? (entry.severity ? [entry.severity] : []);
-		return { label: severities.map(severity => severityLabels[severity]).join(' / '), state: 'fixed', title: 'Aviso técnico: severidade definida pelo validador, não configurável por operador.' };
-	}
-	const path = `${entry.group}.${entry.config_key}`;
-	const invalid: Cell = { label: 'Inválido', state: 'invalid', title: `${path}: configuração ou severidade inválida.` };
-	const missing: Cell = { label: 'Não configurado', state: 'missing', title: `${path}: configuração em falta. Não equivale a uma regra explicitamente ignorada.` };
-
-	//
-	// B. Distinguish missing settings from invalid configuration shapes
+function getCell(config: ReturnType<typeof parseRules>, ruleId: GtfsValidatorRuleId): Cell {
+	const invalid: Cell = { label: 'Inválido', state: 'invalid', title: `${ruleId}: configuração ou severidade inválida.` };
+	const missing: Cell = { label: 'Não configurado', state: 'missing', title: `${ruleId}: configuração em falta. Não equivale a uma regra explicitamente ignorada.` };
 
 	if (config.invalid) return invalid;
-	if (Object.hasOwn(config.rules, entry.id)) {
-		const rule = config.rules[entry.id];
-		if (!isRecord(rule)) return invalid;
-		const severity = SeverityStatusSchema.safeParse(rule.severity);
-		if (!severity.success) return invalid;
-		return { label: severityLabels[severity.data], state: severity.data, title: `${entry.id}: ${severity.data}` };
-	}
-	if (!(entry.group in config.rules)) return missing;
-	const section = config.rules[entry.group];
-	if (!isRecord(section)) return invalid;
-	if (!(entry.config_key in section)) return missing;
-
-	//
-	// C. Read and validate the configured severity
-
-	const value = section[entry.config_key];
-	if (entry.config_key !== '_file' && !isRecord(value)) return invalid;
-	const severity = entry.config_key === '_file' ? value : (value as Record<string, unknown>).severity;
-	if (!isRuleSeverity(severity)) return invalid;
-	return { label: severityLabels[severity], state: severity, title: `${path}: ${severity}` };
+	if (!Object.hasOwn(config.rules, ruleId)) return missing;
+	const rule = config.rules[ruleId];
+	if (!isRecord(rule)) return invalid;
+	const severity = SeverityStatusSchema.safeParse(rule.severity);
+	if (!severity.success) return invalid;
+	return { label: severityLabels[severity.data], state: severity.data, title: `${ruleId}: ${severity.data}` };
 }
 
 /* * */
 
 /**
- * Render a standalone HTML snapshot comparing every catalogue rule across agencies.
+ * Render a standalone HTML snapshot comparing every generated rule across agencies.
  * Styles and filtering are embedded so the report can be opened without a server.
  */
 export function renderAgencyValidationRulesReport(agencies: ReportAgency[], generatedAt = new Date()): string {
@@ -119,10 +99,11 @@ export function renderAgencyValidationRulesReport(agencies: ReportAgency[], gene
 	let incomplete = 0;
 
 	//
-	// C. Render every catalogue rule across all agencies
+	// C. Render every generated rule across all agencies
 
-	const rows = ruleCatalogue.map((entry) => {
-		const cells = columns.map(agency => getCell(agency.config, entry));
+	const rows = GtfsValidatorRuleIdValues.map((ruleId) => {
+		const group = ruleFiles.find(file => ruleId.startsWith(`${file}_`)) ?? 'Geral';
+		const cells = columns.map(agency => getCell(agency.config, ruleId));
 
 		//
 		// A. Compare cell states and identify ignored or incomplete settings
@@ -137,8 +118,8 @@ export function renderAgencyValidationRulesReport(agencies: ReportAgency[], gene
 		if (different) differences++;
 		if (hasIgnored) ignored++;
 		if (hasIncomplete) incomplete++;
-		return `<tr data-different="${different}" data-ignored="${hasIgnored}" data-incomplete="${hasIncomplete}" data-search="${escapeHtml(`${entry.group} ${entry.id}`)}">
-			<th scope="row"><code>${escapeHtml(entry.id)}</code><small>${escapeHtml(entry.group)}${entry.editable ? '' : ' · Fixo'}<span data-difference-label${different ? '' : ' hidden'}> · Diferenças</span></small></th>
+		return `<tr data-different="${different}" data-ignored="${hasIgnored}" data-incomplete="${hasIncomplete}" data-search="${escapeHtml(`${group} ${ruleId}`)}">
+			<th scope="row"><code>${escapeHtml(ruleId)}</code><small>${escapeHtml(group)}<span data-difference-label${different ? '' : ' hidden'}> · Diferenças</span></small></th>
 			${cells.map((cell, index) => `<td data-agency="${index}" data-state="${cell.state}"><span class="badge ${cell.state}" title="${escapeHtml(cell.title)}">${escapeHtml(cell.label)}</span></td>`).join('')}
 		</tr>`;
 	}).join('\n');
@@ -187,10 +168,8 @@ tbody tr:hover td { background: #f8fafc; }
 .warning { color: #854d0e; background: #fef3c7; }
 .ignore { color: #475569; background: #e2e8f0; }
 .info { color: #075985; background: #e0f2fe; }
-.forbidden { color: #6b21a8; background: #f3e8ff; }
 .missing { color: #075985; background: #e0f2fe; border: 1px dashed #0284c7; }
 .invalid { color: #9a3412; background: #ffedd5; border: 1px dashed #c2410c; }
-.fixed { color: #334155; background: #f1f5f9; }
 [hidden] { display: none !important; }
 #empty { padding: 20px; }
 @media (max-width: 600px) { body { padding: 12px; } th:first-child { min-width: 220px; max-width: 250px; } }
@@ -200,11 +179,11 @@ tbody tr:hover td { background: #f8fafc; }
 <h1>Regras de validação por operador</h1>
 <p>Comparação das severidades guardadas por operador. Gerado em ${escapeHtml(generatedAt.toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon' }))} (Europe/Lisbon).</p>
 <div class="summary">
-<span><strong id="agency-count">${columns.length}</strong> operadores selecionados</span><span><strong>${ruleCatalogue.length}</strong> regras</span>
+<span><strong id="agency-count">${columns.length}</strong> operadores selecionados</span><span><strong>${GtfsValidatorRuleIdValues.length}</strong> regras</span>
 <span><strong id="differences-count">${differences}</strong> com diferenças</span><span><strong id="ignored-count">${ignored}</strong> com operadores a ignorar</span><span><strong id="incomplete-count">${incomplete}</strong> por configurar ou corrigir</span>
 </div>
-<p>«Ignorado» indica uma regra desativada explicitamente. «Não configurado» indica uma regra em falta; o validador exige a configuração completa. «Inválido» indica um valor que precisa de correção.</p>
-<p>As linhas «Fixo» são avisos técnicos do validador. A comparação considera apenas severidades, não opções nem dependências. Este relatório é uma fotografia dos dados e não altera configurações.</p>
+<p>«Ignorado» indica uma regra desativada explicitamente. «Não configurado» indica uma regra em falta; o validador ignora regras sem configuração. «Inválido» indica um valor que precisa de correção.</p>
+<p>A comparação considera apenas severidades, não opções nem dependências. Este relatório é uma fotografia dos dados e não altera configurações.</p>
 <div class="controls">
 <details class="agency-picker" id="agency-picker">
 <summary>Operadores (<span id="agency-selection-count">${columns.length}</span>)</summary>
@@ -218,9 +197,9 @@ tbody tr:hover td { background: #f8fafc; }
 <option value="all">Todas as regras</option><option value="different">Com diferenças entre operadores</option>
 <option value="ignored">Ignoradas por algum operador</option><option value="incomplete">Não configuradas ou inválidas</option>
 </select></label>
-<span id="count" role="status">${ruleCatalogue.length} de ${ruleCatalogue.length} regras</span>
+<span id="count" role="status">${GtfsValidatorRuleIdValues.length} de ${GtfsValidatorRuleIdValues.length} regras</span>
 </div>
-<div class="legend" aria-label="Legenda">${Object.entries(severityLabels).map(([state, label]) => `<span class="badge ${state}">${label}</span>`).join('')}<span class="badge missing">Não configurado</span><span class="badge invalid">Inválido</span><span class="badge fixed">Fixo</span></div>
+<div class="legend" aria-label="Legenda">${Object.entries(severityLabels).map(([state, label]) => `<span class="badge ${state}">${label}</span>`).join('')}<span class="badge missing">Não configurado</span><span class="badge invalid">Inválido</span></div>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Comparação de regras por operador">
 <table>
 <thead><tr><th scope="col">rule_id / ficheiro</th>${columns.map((agency, index) => `<th data-agency="${index}" scope="col">${escapeHtml(agency._id)}<small>${escapeHtml(agency.short_name || agency.name || 'Sem nome')}</small></th>`).join('')}</tr></thead>
