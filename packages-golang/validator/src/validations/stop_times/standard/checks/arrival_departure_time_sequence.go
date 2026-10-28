@@ -1,13 +1,14 @@
 package stop_times_standard
 
 import (
+	"main/types"
+
+	"sort"
+	"strconv"
+
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	stopTimesLib "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/stop_times"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
-	"main/types"
-	stopTimesTypes "main/types/stop_times"
-	"sort"
-	"strconv"
 )
 
 /*
@@ -66,7 +67,7 @@ func ArrivalDepartureTimeSequence(db *services.SQLiteContext, rules *types.RuleC
 	//
 	// 4. Read this trip's sequence and times from SQLite
 
-	var stopTimes []stopTimesTypes.TimeSequenceStop
+	var stopTimes []types.TimeSequenceStop
 	err = table.ForEachMatching("trip_id", tripID, func(row *services.SQLiteRow) error {
 		values, err := row.Fields("stop_sequence", "arrival_time", "departure_time")
 		if err != nil {
@@ -78,7 +79,7 @@ func ArrivalDepartureTimeSequence(db *services.SQLiteContext, rules *types.RuleC
 			return nil
 		}
 		arrival, departure := values["arrival_time"], values["departure_time"]
-		stopTimes = append(stopTimes, stopTimesTypes.TimeSequenceStop{
+		stopTimes = append(stopTimes, types.TimeSequenceStop{
 			Row: row.Row, StopSequence: sequence, ArrivalTime: &arrival, DepartureTime: &departure,
 		})
 		return nil
