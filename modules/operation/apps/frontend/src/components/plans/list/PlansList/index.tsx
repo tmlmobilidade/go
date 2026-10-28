@@ -47,7 +47,7 @@ export function PlansList() {
 				/>
 			),
 			title: 'Operador',
-			width: 180,
+			width: 200,
 		},
 		{
 			accessor: 'has_overlapping_plans',
