@@ -8,8 +8,8 @@ import { OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Files } from '@tmlmobilidade/go-utils-files';
+import { GtfsStandardSQLTables, type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
@@ -146,7 +146,7 @@ async function main() {
 
 			const importTimer = new Timer();
 
-			const importedGtfsSql = await importGtfsToDatabase(importConfig);
+			const importedGtfsSql = await importGtfsToDatabase<GtfsStandardSQLTables>(importConfig);
 
 			Logger.success(`Imported plan ${planData._id} in ${importTimer.get()}.`);
 

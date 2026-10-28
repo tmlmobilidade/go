@@ -1,12 +1,13 @@
 /* * */
 
 import { GtfsTernarySchema, GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
+import { nullAsUndefined } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const GtfsStrictV30TripsSchema = z.object({
-	bikes_allowed: GtfsTernarySchema.optional(),
+	bikes_allowed: nullAsUndefined(GtfsTernarySchema.optional()),
 	block_id: z.string().optional(),
 	direction_id: GtfsTripDirectionSchema,
 	route_id: z.string(),
@@ -14,7 +15,7 @@ export const GtfsStrictV30TripsSchema = z.object({
 	shape_id: z.string(),
 	trip_headsign: z.string(),
 	trip_id: z.string(),
-	wheelchair_accessible: GtfsTernarySchema.optional(),
+	wheelchair_accessible: nullAsUndefined(GtfsTernarySchema.optional()),
 });
 
 /**

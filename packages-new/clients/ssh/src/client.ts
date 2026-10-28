@@ -61,6 +61,14 @@ export class SshTunnel {
 
 			this._server = server;
 
+			// tunnel-ssh pipes accepted sockets without handling their errors.
+			server.on('connection', (socket) => {
+				socket.on('error', (error) => {
+					Logger.error({ error, message: 'SSH Tunnel Socket Error' });
+					socket.destroy();
+				});
+			});
+
 			server.on('error', (error) => {
 				Logger.error({ error, message: 'SSH Tunnel Error' });
 			});
