@@ -36,9 +36,9 @@ export function NodesExtractV1Properties() {
 						data={agenciesOptions}
 						disabled={!capabilities.editEnabled}
 						error={fieldState.error?.message}
-						label={t('default:rides.extract.NodesExtractV1Properties.fields.agency_ids.label')}
+						label={t('stops:extract.NodesExtractV1Properties.fields.agency_ids.label')}
 						onChange={field.onChange}
-						placeholder={t('default:rides.extract.NodesExtractV1Properties.fields.agency_ids.placeholder')}
+						placeholder={t('stops:extract.NodesExtractV1Properties.fields.agency_ids.placeholder')}
 						value={field.value ?? []}
 						w="100%"
 						withAsterisk
@@ -56,10 +56,10 @@ export function NodesExtractV1Properties() {
 							data={locationsOptions.primary}
 							disabled={!capabilities?.editEnabled}
 							error={fieldState.error?.message}
-							label={t('default:stops.extract.NodesExtractV1Properties.fields.location_primary_ids.label')}
+							label={t('stops:extract.NodesExtractV1Properties.fields.location_primary_ids.label')}
 							loading={locationsLoading}
 							onChange={field.onChange}
-							placeholder={t('default:stops.extract.NodesExtractV1Properties.fields.location_primary_ids.placeholder')}
+							placeholder={t('stops:extract.NodesExtractV1Properties.fields.location_primary_ids.placeholder')}
 							value={field.value ?? []}
 							w="100%"
 						/>
@@ -74,10 +74,10 @@ export function NodesExtractV1Properties() {
 							data={locationsOptions.secondary}
 							disabled={!capabilities?.editEnabled}
 							error={fieldState.error?.message}
-							label={t('default:stops.extract.NodesExtractV1Properties.fields.location_secondary_ids.label')}
+							label={t('stops:extract.NodesExtractV1Properties.fields.location_secondary_ids.label')}
 							loading={locationsLoading}
 							onChange={field.onChange}
-							placeholder={t('default:stops.extract.NodesExtractV1Properties.fields.location_secondary_ids.placeholder')}
+							placeholder={t('stops:extract.NodesExtractV1Properties.fields.location_secondary_ids.placeholder')}
 							value={field.value ?? []}
 							w="100%"
 						/>
@@ -92,10 +92,10 @@ export function NodesExtractV1Properties() {
 							data={locationsOptions.tertiary}
 							disabled={!capabilities?.editEnabled}
 							error={fieldState.error?.message}
-							label={t('default:stops.extract.NodesExtractV1Properties.fields.location_tertiary_ids.label')}
+							label={t('stops:extract.NodesExtractV1Properties.fields.location_tertiary_ids.label')}
 							loading={locationsLoading}
 							onChange={field.onChange}
-							placeholder={t('default:stops.extract.NodesExtractV1Properties.fields.location_tertiary_ids.placeholder')}
+							placeholder={t('stops:extract.NodesExtractV1Properties.fields.location_tertiary_ids.placeholder')}
 							value={field.value ?? []}
 							w="100%"
 						/>
@@ -110,10 +110,10 @@ export function NodesExtractV1Properties() {
 							data={locationsOptions.neighbourhood}
 							disabled={!capabilities?.editEnabled}
 							error={fieldState.error?.message}
-							label={t('default:stops.extract.NodesExtractV1Properties.fields.location_neighbourhood_ids.label')}
+							label={t('stops:extract.NodesExtractV1Properties.fields.location_neighbourhood_ids.label')}
 							loading={locationsLoading}
 							onChange={field.onChange}
-							placeholder={t('default:stops.extract.NodesExtractV1Properties.fields.location_neighbourhood_ids.placeholder')}
+							placeholder={t('stops:extract.NodesExtractV1Properties.fields.location_neighbourhood_ids.placeholder')}
 							value={field.value ?? []}
 							w="100%"
 						/>

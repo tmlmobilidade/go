@@ -27,7 +27,7 @@ export function NodesExtractV1Footer() {
 			<Button
 				disabled={!capabilities.createEnabled}
 				icon={<IconFileDownload size={20} />}
-				label={t('default:stops.extract.NodesExtractV1Footer.button.label')}
+				label={t('stops:extract.NodesExtractV1Footer.button.label')}
 				loading={status.isCreating}
 				onClick={actions.create}
 			/>

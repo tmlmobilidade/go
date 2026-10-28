@@ -27,7 +27,7 @@ export function StopsExtractV1Footer() {
 			<Button
 				disabled={!capabilities.createEnabled}
 				icon={<IconFileDownload size={20} />}
-				label={t('default:stops.extract.StopsExtractV1Footer.button.label')}
+				label={t('stops:extract.StopsExtractV1Footer.button.label')}
 				loading={status.isCreating}
 				onClick={actions.create}
 			/>

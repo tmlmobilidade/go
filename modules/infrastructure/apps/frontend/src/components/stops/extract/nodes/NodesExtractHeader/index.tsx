@@ -21,7 +21,7 @@ export function NodesExtractHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeNodesExtractModal} type="close" />
-			<Label size="lg" singleLine>{t('default:stops.extract.NodesExtractHeader.title')}</Label>
+			<Label size="lg" singleLine>{t('stops:extract.NodesExtractHeader.title')}</Label>
 		</Toolbar>
 	);
 }

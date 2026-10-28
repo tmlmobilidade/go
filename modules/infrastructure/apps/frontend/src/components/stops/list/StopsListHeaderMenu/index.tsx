@@ -34,19 +34,19 @@ export function StopsListHeaderMenu() {
 		if (hasPermission(meData?.permissions, { action: PermissionCatalog.all.stops.actions.create, scope: PermissionCatalog.all.stops.scope })) {
 			actions.push({
 				icon: <IconPlus />,
-				label: t('default:stops.list.HeaderMenu.NewStopButton.label'),
+				label: t('stops:list.StopsListHeaderMenu.new_stop_button.label'),
 				onClick: openStopsCreateModal,
 			});
 		}
 		if (hasPermission(meData?.permissions, { action: PermissionCatalog.all.stops.actions.export, scope: PermissionCatalog.all.stops.scope })) {
 			actions.push({
 				icon: <IconFileDownload />,
-				label: t('default:stops.list.HeaderMenu.ExtractStopsButton.label'),
+				label: t('stops:list.StopsListHeaderMenu.extract_stops_button.label'),
 				onClick: openStopsExtractModal,
 			});
 			actions.push({
 				icon: <IconFileDownload />,
-				label: t('default:stops.list.HeaderMenu.ExtractNodesButton.label'),
+				label: t('stops:list.StopsListHeaderMenu.extract_nodes_button.label'),
 				onClick: openNodesExtractModal,
 			});
 		}

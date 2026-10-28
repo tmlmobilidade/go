@@ -23,7 +23,7 @@ export function StopsListFilterLocationPrimary() {
 	return (
 		<ListFilter
 			active={filterLocationPrimary.isActive}
-			label={t('default:stops.list.FilterLocationPrimary.label')}
+			label={t('stops:list.StopsListFilterLocationPrimary.label')}
 			onChange={filterLocationPrimary.set}
 			options={filterLocationPrimary.options}
 			isMultiple

@@ -1,95 +1,318 @@
 {
-	"extract": {
-		"Header": {
-			"title": "Export stops"
+	"create": {
+		"StopsCreateFormContextProvider": {
+			"fields": {
+				"agency_ids": {
+					"required": "Select at least one permitted agency."
+				}
+			}
 		},
+		"StopsCreateFormStepsContextProvider": {
+			"location": {
+				"label": "Location"
+			},
+			"names": {
+				"label": "Names"
+			},
+			"summary": {
+				"label": "Summary"
+			}
+		},
+		"StopsCreateModalControls": {
+			"back_button": {
+				"label": "Back"
+			},
+			"cancel_button": {
+				"label": "Cancel"
+			},
+			"create_button": {
+				"label": "Create Stop"
+			},
+			"next_button": {
+				"label": "Next"
+			}
+		},
+		"StopsCreateModalHeader": {
+			"step": "Step {current} of {total}",
+			"title": "New stop"
+		},
+		"StopsCreateStepLocationDetails": {
+			"fields": {
+				"location_neighbourhood": {
+					"label": "Locality"
+				},
+				"location_primary": {
+					"label": "District"
+				},
+				"location_secondary": {
+					"label": "Municipality"
+				},
+				"location_tertiary": {
+					"label": "Civil parish"
+				}
+			},
+			"not_available": "N/A"
+		},
+		"StopsCreateStepNames": {
+			"fields": {
+				"agency_ids": {
+					"description": "Select the agencies associated with this stop's harmonized stop sign.",
+					"empty": "No agencies are available under your stop creation permissions. Contact an administrator.",
+					"label": "Agencies",
+					"loading": "Loading available agencies…",
+					"required": "Select at least one permitted agency.",
+					"unavailable": "The agencies could not be loaded. The stop cannot be created until they are available."
+				},
+				"name": {
+					"description": "This is the main name and will be displayed on digital channels.",
+					"label": "Full Stop Name"
+				},
+				"short_name": {
+					"description": "This automatically abbreviated version will be used where space is limited, such as stop signs and printed timetables.",
+					"label": "Short Name (automatic)"
+				},
+				"tts_name": {
+					"description": "The name to be used by the TTS (Text-to-Speech) system.",
+					"label": "TTS Name (automatic)"
+				}
+			}
+		},
+		"StopsCreateStepSummary": {
+			"fields": {
+				"agency_ids": {
+					"label": "Agencies"
+				},
+				"short_name": {
+					"label": "Short name"
+				},
+				"tts_name": {
+					"label": "TTS name"
+				}
+			}
+		}
+	},
+	"detail": {
+		"StopsDetailHeader": {
+			"delete_button": {
+				"confirm_message": "Are you sure you want to delete this stop? The stop will no longer be available for future use.",
+				"confirm_title": "Delete Stop"
+			},
+			"deleted_tag": {
+				"label": "Deleted Stop"
+			}
+		},
+		"StopsDetailLocation": {
+			"fields": {
+				"location_neighbourhood": {
+					"label": "Locality"
+				},
+				"location_primary": {
+					"label": "District"
+				},
+				"location_secondary": {
+					"label": "Municipality"
+				},
+				"location_tertiary": {
+					"label": "Civil parish"
+				}
+			},
+			"not_available": "N/A"
+		},
+		"StopsDetailSectionFlagItem": {
+			"fields": {
+				"agency_ids": {
+					"label": "Agencies"
+				},
+				"is_harmonized": {
+					"label": "Stop sign aligned with the unique identifiers"
+				},
+				"short_name": {
+					"label": "Current Operator Name",
+					"placeholder": "Current Operator Name"
+				},
+				"stop_id": {
+					"label": "Current Operator ID",
+					"placeholder": "Current Operator ID"
+				}
+			}
+		},
+		"StopsDetailSectionFlags": {
+			"add_flag_button": {
+				"label": "Add New Stop Sign"
+			},
+			"description": "Manage this stop's IDs.",
+			"fields": {
+				"legacy_ids": {
+					"label": "Other IDs (Legacy)"
+				},
+				"unique_id": {
+					"label": "Unique Stop Code"
+				}
+			},
+			"not_available": "N/A",
+			"title": "Identifiers and Stop Signs"
+		},
+		"StopsDetailSectionGeneral": {
+			"description": "General information about this stop.",
+			"title": "Stop Details"
+		},
+		"StopsDetailSectionShelter": {
+			"description": "Information about the shelter.",
+			"fields": {
+				"shelter_code": {
+					"label": "Shelter Code"
+				},
+				"shelter_installation_date": {
+					"label": "Shelter Installation Date"
+				},
+				"shelter_maintainer": {
+					"label": "Shelter Managing Entity"
+				},
+				"shelter_make": {
+					"label": "Shelter Make"
+				},
+				"shelter_model": {
+					"label": "Shelter Model"
+				},
+				"shelter_status": {
+					"label": "Shelter Condition"
+				}
+			},
+			"title": "Shelter"
+		},
+		"StopsDetailUpdateCoordinates": {
+			"coordinates": "Coordinates",
+			"edit_link": "Edit",
+			"not_available": "N/A",
+			"open_in_google_maps": "Open in Google Maps"
+		},
+		"StopsDetailUpdateCoordinatesModal": {
+			"fields": {
+				"latitude": {
+					"label": "Latitude"
+				},
+				"longitude": {
+					"label": "Longitude"
+				}
+			}
+		},
+		"StopsDetailUpdateCoordinatesModalHeader": {
+			"title": "Change stop coordinates",
+			"update_button": {
+				"label": "Change coordinates"
+			}
+		},
+		"StopsDetailUpdateName": {
+			"fields": {
+				"name": {
+					"label": "Stop Name"
+				},
+				"short_name": {
+					"label": "Short Name"
+				},
+				"tts_name": {
+					"label": "TTS Name"
+				}
+			},
+			"not_available": "N/A"
+		},
+		"StopsDetailUpdateNameModal": {
+			"fields": {
+				"name": {
+					"description": "This is the main name and will be displayed on digital channels.",
+					"label": "Full Stop Name"
+				},
+				"short_name": {
+					"description": "This automatically abbreviated version will be used where space is limited, such as stop signs and printed timetables.",
+					"label": "Short Name (automatic)"
+				},
+				"tts_name": {
+					"description": "The name to be used by the TTS (Text-to-Speech) system.",
+					"label": "TTS Name (automatic)"
+				}
+			}
+		},
+		"StopsDetailUpdateNameModalHeader": {
+			"title": "Change stop name",
+			"update_button": {
+				"label": "Change name"
+			}
+		}
+	},
+	"extract": {
 		"NodesExtract": {
+			"label": "Version"
+		},
+		"NodesExtractHeader": {
 			"title": "Export nodes"
 		},
-		"StopsExtractFooter": {
+		"NodesExtractV1Footer": {
 			"button": {
 				"label": "Export"
 			}
 		},
-		"StopsExtractProperties": {
+		"NodesExtractV1Properties": {
 			"fields": {
 				"agency_ids": {
-					"label": "Agency"
-				},
-				"connections": {
-					"label": "Connections"
-				},
-				"facilities": {
-					"label": "Facilities"
-				},
-				"lifecycle_statuses": {
-					"label": "Status"
+					"label": "Agency",
+					"placeholder": "No filter"
 				},
 				"location_neighbourhood_ids": {
-					"label": "Locality"
+					"label": "Locality",
+					"placeholder": "No filter"
 				},
 				"location_primary_ids": {
-					"label": "District"
+					"label": "District",
+					"placeholder": "No filter"
 				},
 				"location_secondary_ids": {
-					"label": "Municipality"
+					"label": "Municipality",
+					"placeholder": "No filter"
 				},
 				"location_tertiary_ids": {
-					"label": "Civil parish"
-				},
-				"version": {
-					"label": "Version"
+					"label": "Civil parish",
+					"placeholder": "No filter"
 				}
-			},
-			"placeholder": "No filter"
+			}
+		},
+		"StopsExtract": {
+			"label": "Version"
+		},
+		"StopsExtractHeader": {
+			"title": "Export stops"
+		},
+		"StopsExtractV1Footer": {
+			"button": {
+				"label": "Export"
+			}
+		},
+		"StopsExtractV1Properties": {
+			"fields": {
+				"agency_ids": {
+					"label": "Agency",
+					"placeholder": "No filter"
+				},
+				"location_neighbourhood_ids": {
+					"label": "Locality",
+					"placeholder": "No filter"
+				},
+				"location_primary_ids": {
+					"label": "District",
+					"placeholder": "No filter"
+				},
+				"location_secondary_ids": {
+					"label": "Municipality",
+					"placeholder": "No filter"
+				},
+				"location_tertiary_ids": {
+					"label": "Civil parish",
+					"placeholder": "No filter"
+				}
+			}
 		}
 	},
 	"list": {
-		"FilterAgency": {
-			"label": "Agency"
-		},
-		"FilterConnections": {
-			"label": "Connections"
-		},
-		"FilterEquipment": {
-			"label": "Equipment"
-		},
-		"FilterFacilities": {
-			"label": "Facilities"
-		},
-		"FilterLegacyId": {
-			"label": "Legacy ID"
-		},
-		"FilterLifecycleStatus": {
-			"label": "Status"
-		},
-		"FilterLocationNeighbourhood": {
-			"label": "Locality"
-		},
-		"FilterLocationPrimary": {
-			"label": "District"
-		},
-		"FilterLocationSecondary": {
-			"label": "Municipality"
-		},
-		"FilterLocationTertiary": {
-			"label": "Civil parish"
-		},
-		"Header": {
-			"title": "Stops"
-		},
-		"HeaderMenu": {
-			"ExtractNodesButton": {
-				"label": "Export Nodes"
-			},
-			"ExtractStopsButton": {
-				"label": "Export Stops"
-			},
-			"NewStopButton": {
-				"label": "New Stop"
-			}
-		},
-		"Table": {
+		"StopsList": {
 			"columns": {
 				"id": "#ID",
 				"latitude": "Latitude",
@@ -100,46 +323,67 @@
 				"longitude": "Longitude",
 				"name": "Stop Name"
 			}
-		}
-	},
-	"shared": {
-		"not_available": "N/A",
-		"road_type": {
-			"complementary_itinerary": "Complementary Route",
-			"highway": "Motorway",
-			"main_itinerary": "Main Route",
-			"national_road": "National Road",
-			"regional_road": "Regional Road",
-			"secondary_road": "Secondary Road",
-			"unknown": "Unknown"
 		},
-		"stop_connection": {
-			"airport": "Airport",
-			"bike_parking": "Bicycle parking",
-			"bike_sharing": "Public bicycle sharing",
-			"boat": "Boat",
-			"car_parking": "Car park",
-			"ferry": "Ferry",
-			"light_rail": "Light rail",
-			"subway": "Metro",
-			"train": "Train"
+		"StopsListFilterAgency": {
+			"label": "Agency"
 		},
-		"stop_equipment": {
-			"mini_pip": "Mini PIP",
-			"mupi": "MUPI",
-			"pip": "PIP"
+		"StopsListFilterConnections": {
+			"label": "Connections",
+			"options": {
+				"airport": "Airport",
+				"bike_parking": "Bicycle parking",
+				"bike_sharing": "Public bicycle sharing",
+				"boat": "Boat",
+				"car_parking": "Car park",
+				"ferry": "Ferry",
+				"light_rail": "Light rail",
+				"subway": "Metro",
+				"train": "Train"
+			}
 		},
-		"stop_facility": {
-			"beach": "Beach",
-			"fire_station": "Fire station",
-			"health_clinic": "Clinic",
-			"historic_building": "Historic Building",
-			"hospital": "Hospital",
-			"police_station": "Police station",
-			"school": "School",
-			"shopping": "Shopping Area",
-			"transit_office": "navegante® Service Centre",
-			"university": "University"
+		"StopsListFilterFacilities": {
+			"label": "Facilities",
+			"options": {
+				"beach": "Beach",
+				"fire_station": "Fire station",
+				"health_clinic": "Clinic",
+				"historic_building": "Historic Building",
+				"hospital": "Hospital",
+				"police_station": "Police station",
+				"school": "School",
+				"shopping": "Shopping Area",
+				"transit_office": "navegante® Service Centre",
+				"university": "University"
+			}
+		},
+		"StopsListFilterLegacyId": {
+			"label": "Legacy ID"
+		},
+		"StopsListFilterLifecycleStatus": {
+			"label": "Status"
+		},
+		"StopsListFilterLocationPrimary": {
+			"label": "District"
+		},
+		"StopsListFilterLocationSecondary": {
+			"label": "Municipality"
+		},
+		"StopsListFilterLocationTertiary": {
+			"label": "Civil parish"
+		},
+		"StopsListHeader": {
+			"title": "Stops"
+		},
+		"StopsListHeaderMenu": {
+			"extract_nodes_button": {
+				"label": "Export Nodes"
+			},
+			"extract_stops_button": {
+				"label": "Export Stops"
+			},
+			"new_stop_button": {
+				"label": "New Stop"
+			}
 		}
 	}
 }
