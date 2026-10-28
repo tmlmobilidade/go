@@ -1,12 +1,13 @@
 /* * */
 
 import { GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs';
+import { nullAsUndefined } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const HubV1GtfsCalendarDatesSchema = GtfsCalendarDatesSchema.extend({
-	exception_type: z.literal('1').default('1'),
+	exception_type: nullAsUndefined(z.literal('1').default('1')),
 });
 
 /**
