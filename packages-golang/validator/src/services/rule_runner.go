@@ -2,7 +2,7 @@ package services
 
 import (
 	"fmt"
-	"main/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"main/types"
 )
 

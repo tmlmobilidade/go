@@ -1,7 +1,7 @@
 package test_helpers
 
 import (
-	"main/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	"main/types"
 	"strconv"
 )

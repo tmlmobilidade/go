@@ -2,10 +2,10 @@ package agency_utils
 
 import (
 	"database/sql"
-	"main/lib"
-	"main/lib/rules"
-	"main/services"
-	dbops "main/services/database"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
 	"main/types"
 	"path/filepath"
 	"testing"

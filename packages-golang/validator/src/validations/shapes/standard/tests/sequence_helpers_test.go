@@ -2,8 +2,8 @@ package shapes_standard_test
 
 import (
 	"database/sql"
-	"main/services"
-	testutils "main/validations/shapes/utils"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/shapes/utils"
 	"testing"
 )
 

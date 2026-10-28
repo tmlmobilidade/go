@@ -1,9 +1,9 @@
 package vehicles_custom_test
 
 import (
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/vehicles/custom/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/vehicles/utils"
 	"main/types"
-	checks "main/validations/vehicles/custom/checks"
-	testutils "main/validations/vehicles/utils"
 	"testing"
 )
 

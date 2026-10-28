@@ -3,7 +3,7 @@ package utils
 import (
 	"sort"
 
-	"main/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	"main/types"
 )
 

@@ -2,9 +2,9 @@ package services
 
 import (
 	"fmt"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"io"
-	"main/lib"
-	ruleset "main/lib/rules"
 	"main/types"
 	"os"
 )

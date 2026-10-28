@@ -1,8 +1,8 @@
 package file_validation
 
 import (
-	ruleset "main/lib/rules"
-	"main/services"
+	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 	"testing"
 )

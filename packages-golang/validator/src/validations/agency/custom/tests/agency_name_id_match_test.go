@@ -2,12 +2,12 @@ package agency_custom_test
 
 import (
 	"database/sql"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	agency "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/custom/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/utils"
 	"main/types"
-	agency "main/validations/agency"
-	checks "main/validations/agency/custom/checks"
-	testutils "main/validations/agency/utils"
 	"path/filepath"
 	"testing"
 )

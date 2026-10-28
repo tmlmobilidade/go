@@ -1,7 +1,7 @@
 package stop_times
 
 import (
-	"main/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	stopTimesTypes "main/types/stop_times"
 	"strconv"
 	"strings"

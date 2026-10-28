@@ -1,14 +1,14 @@
 package stops_standard
 
 import (
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 )
 
 func StopDescDifferentStopName(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
 	//
-	
+
 	//
 	// 1. Get the rule
 
@@ -37,7 +37,7 @@ func StopDescDifferentStopName(db *services.SQLiteContext, rulesContext *types.R
 	if err != nil {
 		return err
 	}
-	
+
 	//
 	// 5. Check if the stop_desc is different from the stop_name
 

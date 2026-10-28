@@ -1,8 +1,8 @@
 package lib
 
 import (
-	"main/i18n"
-	"main/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/i18n"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"main/types"
 )
 

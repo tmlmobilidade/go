@@ -1,9 +1,9 @@
 package trips_utils
 
 import (
-	"main/services"
-	shapes_coordinates "main/services/geo/shapes"
-	stops_coordinates "main/services/geo/stops"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	shapes_coordinates "github.com/tmlmobilidade/go/packages-golang/validator/src/services/geo/shapes"
+	stops_coordinates "github.com/tmlmobilidade/go/packages-golang/validator/src/services/geo/stops"
 	"main/types"
 )
 

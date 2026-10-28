@@ -2,14 +2,14 @@ package shapes
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	shapes_custom "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/shapes/custom/checks"
+	shapes_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/shapes/fields/checks"
+	shapes_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/shapes/standard/checks"
 	"main/types"
-	registry "main/validations"
-	shapes_custom "main/validations/shapes/custom/checks"
-	shapes_fields "main/validations/shapes/fields/checks"
-	shapes_standard "main/validations/shapes/standard/checks"
 )
 
 func init() {

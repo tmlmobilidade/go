@@ -1,10 +1,10 @@
 package fare_rules_test
 
 import (
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	fare_rules "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_rules"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_rules/utils"
 	"main/types"
-	fare_rules "main/validations/fare_rules"
-	testutils "main/validations/fare_rules/utils"
 	"testing"
 )
 

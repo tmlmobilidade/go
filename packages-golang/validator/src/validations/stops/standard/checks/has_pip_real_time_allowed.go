@@ -1,8 +1,8 @@
 package stops_standard
 
 import (
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 	"slices"
 )
@@ -38,7 +38,7 @@ func HasPipRealTimeAllowed(db *services.SQLiteContext, rulesContext *types.RuleC
 		if slices.Contains(*rulesContext.Options, types.ALL_OPTIONS) {
 			return nil
 		}
-		
+
 		if !slices.Contains(*rulesContext.Options, value) {
 			ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_allowed", value))
 			return nil

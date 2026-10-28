@@ -2,14 +2,14 @@ package agency
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	agency_custom "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/custom/checks"
+	agency_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/fields/checks"
+	agency_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/standard/checks"
 	"main/types"
-	registry "main/validations"
-	agency_custom "main/validations/agency/custom/checks"
-	agency_fields "main/validations/agency/fields/checks"
-	agency_standard "main/validations/agency/standard/checks"
 )
 
 func init() {

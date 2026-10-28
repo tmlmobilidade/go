@@ -1,18 +1,18 @@
 package stops_fields
 
 import (
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 )
 
 func TtsStopNameField(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
 	//
-	
+
 	//
 	// 1. Get the rule
 
-	const ruleID = "stops_tts_stop_name_field"		
+	const ruleID = "stops_tts_stop_name_field"
 
 	//
 	// 2. Create the validation context
@@ -37,7 +37,7 @@ func TtsStopNameField(db *services.SQLiteContext, rulesContext *types.RuleContex
 		if ctx.ShouldIgnore() {
 			return nil
 		}
-	
+
 		message := ctx.GetSeverityMessage("required", "recommended", "informational")
 		ctx.AddMessageWithSeverity(message)
 		return nil
@@ -47,4 +47,4 @@ func TtsStopNameField(db *services.SQLiteContext, rulesContext *types.RuleContex
 	// 5. Return success
 
 	return nil
-}	
+}

@@ -1,9 +1,9 @@
 package calendar_dates_standard_test
 
 import (
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/calendar_dates/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/calendar_dates/utils"
 	"main/types"
-	checks "main/validations/calendar_dates/standard/checks"
-	testutils "main/validations/calendar_dates/utils"
 	"testing"
 )
 

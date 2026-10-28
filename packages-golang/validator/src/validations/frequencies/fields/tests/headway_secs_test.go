@@ -1,8 +1,8 @@
 package frequencies_fields_test
 
 import (
-	checks "main/validations/frequencies/fields/checks"
-	testutils "main/validations/frequencies/utils"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/frequencies/fields/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/frequencies/utils"
 	"testing"
 )
 

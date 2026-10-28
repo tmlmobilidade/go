@@ -1,10 +1,10 @@
 package frequencies_test
 
 import (
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	frequencies "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/frequencies"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/frequencies/utils"
 	"main/types"
-	frequencies "main/validations/frequencies"
-	testutils "main/validations/frequencies/utils"
 	"testing"
 )
 

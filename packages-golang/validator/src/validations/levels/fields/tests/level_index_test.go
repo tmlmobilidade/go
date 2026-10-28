@@ -1,8 +1,8 @@
 package levels_fields_test
 
 import (
-	checks "main/validations/levels/fields/checks"
-	testutils "main/validations/levels/utils"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/levels/fields/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/levels/utils"
 	"testing"
 )
 

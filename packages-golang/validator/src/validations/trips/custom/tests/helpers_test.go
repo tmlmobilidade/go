@@ -1,9 +1,9 @@
 package trips_custom_test
 
 import (
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/utils"
 	"main/types"
-	testutils "main/validations/trips/utils"
 	"testing"
 )
 

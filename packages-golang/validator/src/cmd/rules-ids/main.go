@@ -6,7 +6,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"main/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"os"
 	"path/filepath"
 )

@@ -1,8 +1,8 @@
 package stop_times_fields_test
 
 import (
-	checks "main/validations/stop_times/fields/checks"
-	testutils "main/validations/stop_times/utils"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stop_times/fields/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stop_times/utils"
 	"testing"
 )
 

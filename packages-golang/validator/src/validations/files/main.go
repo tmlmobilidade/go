@@ -2,10 +2,10 @@ package file_validation
 
 import (
 	"fmt"
-	"main/i18n"
-	"main/lib"
-	ruleset "main/lib/rules"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/i18n"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 	"strings"
 )

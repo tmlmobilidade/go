@@ -1,10 +1,10 @@
 package transfers_test
 
 import (
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	transfers "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/transfers"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/transfers/utils"
 	"main/types"
-	transfers "main/validations/transfers"
-	testutils "main/validations/transfers/utils"
 	"testing"
 )
 

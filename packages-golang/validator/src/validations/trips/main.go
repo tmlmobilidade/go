@@ -2,16 +2,16 @@ package trips
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	ruleset "main/lib/rules"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	trips_custom "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/custom/checks"
+	trips_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/fields/checks"
+	trips_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/standard/checks"
+	trips_utils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/utils"
 	"main/types"
-	registry "main/validations"
-	trips_custom "main/validations/trips/custom/checks"
-	trips_fields "main/validations/trips/fields/checks"
-	trips_standard "main/validations/trips/standard/checks"
-	trips_utils "main/validations/trips/utils"
 )
 
 func init() { registry.RegisterWithTables("trips", RunValidations) }
@@ -78,7 +78,9 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules, prepared ...*servic
 			"trips_pattern_id_field": func() {
 				check("trips_pattern_id_field", trips_fields.PatternIdField(db, rules.Rule("trips_pattern_id_field")))
 			},
-			"trips_trip_id_unique": func() { check("trips_trip_id_unique", trips_standard.TripIdUnique(db, rules.Rule("trips_trip_id_unique"))) },
+			"trips_trip_id_unique": func() {
+				check("trips_trip_id_unique", trips_standard.TripIdUnique(db, rules.Rule("trips_trip_id_unique")))
+			},
 			"trips_route_id_foreign": func() {
 				check("trips_route_id_foreign", trips_standard.RouteIdForeign(db, rules.Rule("trips_route_id_foreign")))
 			},

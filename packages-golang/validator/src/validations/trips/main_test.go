@@ -1,13 +1,13 @@
 package trips_test
 
 import (
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	trips "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/utils"
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"main/services"
 	"main/types"
-	trips "main/validations/trips"
-	testutils "main/validations/trips/utils"
 	"path/filepath"
 	"strconv"
 	"testing"

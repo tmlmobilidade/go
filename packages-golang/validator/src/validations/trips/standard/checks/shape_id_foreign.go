@@ -1,8 +1,8 @@
 package trips_standard
 
 import (
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 )
 
@@ -32,7 +32,7 @@ func ShapeIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error 
 
 	//
 	// 4. Requiredness is checked by the field rule.
-	
+
 	if value == "" {
 		return nil
 	}

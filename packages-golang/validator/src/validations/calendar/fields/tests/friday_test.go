@@ -1,8 +1,8 @@
 package calendar_fields_test
 
 import (
-	checks "main/validations/calendar/fields/checks"
-	testutils "main/validations/calendar/utils"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/calendar/fields/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/calendar/utils"
 	"testing"
 )
 

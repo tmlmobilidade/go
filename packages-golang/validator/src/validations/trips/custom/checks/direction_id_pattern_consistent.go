@@ -1,10 +1,10 @@
 package trips_custom
 
 import (
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	trips_utils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/utils"
 	"main/types"
-	trips_utils "main/validations/trips/utils"
 	"sort"
 	"strconv"
 	"strings"

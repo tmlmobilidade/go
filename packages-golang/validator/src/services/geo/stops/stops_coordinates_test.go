@@ -1,8 +1,8 @@
 package stops
 
 import (
-	"main/lib"
-	shapes "main/services/geo/shapes"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	shapes "github.com/tmlmobilidade/go/packages-golang/validator/src/services/geo/shapes"
 	"main/types"
 	"math"
 	"math/rand"

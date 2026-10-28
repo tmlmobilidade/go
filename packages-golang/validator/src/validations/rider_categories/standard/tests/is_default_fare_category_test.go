@@ -2,9 +2,9 @@ package rider_categories_standard_test
 
 import (
 	"fmt"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/rider_categories/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/rider_categories/utils"
 	"main/types"
-	checks "main/validations/rider_categories/standard/checks"
-	testutils "main/validations/rider_categories/utils"
 	"testing"
 )
 

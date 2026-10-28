@@ -2,13 +2,13 @@ package frequencies
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	frequencies_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/frequencies/fields/checks"
+	frequencies_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/frequencies/standard/checks"
 	"main/types"
-	registry "main/validations"
-	frequencies_fields "main/validations/frequencies/fields/checks"
-	frequencies_standard "main/validations/frequencies/standard/checks"
 )
 
 func init() { registry.RegisterWithTables("frequencies", RunValidations) }

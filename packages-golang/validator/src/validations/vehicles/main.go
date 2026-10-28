@@ -2,14 +2,14 @@ package vehicles
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	vehicles_custom "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/vehicles/custom/checks"
+	vehicles_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/vehicles/fields/checks"
+	vehicles_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/vehicles/standard/checks"
 	"main/types"
-	registry "main/validations"
-	vehicles_custom "main/validations/vehicles/custom/checks"
-	vehicles_fields "main/validations/vehicles/fields/checks"
-	vehicles_standard "main/validations/vehicles/standard/checks"
 )
 
 func init() {

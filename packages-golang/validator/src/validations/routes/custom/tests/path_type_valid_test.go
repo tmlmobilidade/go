@@ -1,9 +1,9 @@
 package routes_custom_test
 
 import (
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/routes/custom/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/routes/utils"
 	"main/types"
-	checks "main/validations/routes/custom/checks"
-	testutils "main/validations/routes/utils"
 	"testing"
 )
 

@@ -1,17 +1,17 @@
 package stops_fields
 
 import (
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 )
 
 func StopIdField(db *services.SQLiteContext, rulesContext *types.RuleContext) error {
 	//
-	
+
 	//
 	// 1. Get the rule
-	
+
 	const ruleID = "stops_stop_id_field"
 
 	//
@@ -37,7 +37,7 @@ func StopIdField(db *services.SQLiteContext, rulesContext *types.RuleContext) er
 		if ctx.ShouldIgnore() {
 			return nil
 		}
-		
+
 		message := ctx.GetSeverityMessage("required", "recommended", "informational")
 		ctx.AddMessageWithSeverity(message)
 		return nil

@@ -4,9 +4,9 @@ import (
 	"cmp"
 	"encoding/json"
 	"fmt"
-	"main/i18n"
-	"main/lib"
-	ruleset "main/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/i18n"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"main/types"
 	"os"
 	"slices"
@@ -14,7 +14,7 @@ import (
 	"strings"
 	"sync"
 
-	"main/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
 
 	"github.com/olekukonko/tablewriter"
 )

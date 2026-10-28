@@ -1,9 +1,9 @@
 package feed_info_standard_test
 
 import (
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/feed_info/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/feed_info/utils"
 	"main/types"
-	checks "main/validations/feed_info/standard/checks"
-	testutils "main/validations/feed_info/utils"
 	"testing"
 )
 

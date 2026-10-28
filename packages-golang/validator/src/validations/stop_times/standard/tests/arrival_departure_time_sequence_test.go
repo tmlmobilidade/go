@@ -2,10 +2,10 @@ package stop_times_standard_test
 
 import (
 	"database/sql"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stop_times/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stop_times/utils"
 	"main/types"
-	checks "main/validations/stop_times/standard/checks"
-	testutils "main/validations/stop_times/utils"
 	"testing"
 )
 

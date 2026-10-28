@@ -3,8 +3,8 @@ package stops_utils
 import (
 	"database/sql"
 	"fmt"
-	ruleset "main/lib/rules"
-	"main/services"
+	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 	"path/filepath"
 	"sort"

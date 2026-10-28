@@ -2,13 +2,13 @@ package agency_standard_test
 
 import (
 	"database/sql"
-	"main/lib/rules"
-	"main/lib/test_helpers"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/test_helpers"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	agency "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency"
+	agency_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/utils"
 	"main/types"
-	agency "main/validations/agency"
-	agency_standard "main/validations/agency/standard/checks"
-	testutils "main/validations/agency/utils"
 	"path/filepath"
 	"testing"
 )

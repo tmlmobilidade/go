@@ -1,7 +1,7 @@
 package validations
 
 import (
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 	"sync"
 )

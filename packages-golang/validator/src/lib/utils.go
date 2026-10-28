@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"main/i18n"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/i18n"
 	"maps"
 	"reflect"
 	"strconv"

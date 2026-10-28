@@ -1,9 +1,9 @@
 package fare_attributes_standard_test
 
 import (
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_attributes/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_attributes/utils"
 	"main/types"
-	checks "main/validations/fare_attributes/standard/checks"
-	testutils "main/validations/fare_attributes/utils"
 	"testing"
 )
 

@@ -2,9 +2,9 @@ package fare_rules_standard_test
 
 import (
 	"fmt"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_rules/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_rules/utils"
 	"main/types"
-	checks "main/validations/fare_rules/standard/checks"
-	testutils "main/validations/fare_rules/utils"
 	"testing"
 )
 

@@ -3,14 +3,14 @@ package file_validation
 import (
 	"database/sql"
 	"fmt"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 	"os"
 	"reflect"
 	"strings"
 	"testing"
 
-	dbops "main/services/database"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
 
 	_ "modernc.org/sqlite"
 )

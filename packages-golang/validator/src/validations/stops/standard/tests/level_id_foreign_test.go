@@ -2,8 +2,8 @@ package stops_standard_test
 
 import (
 	"database/sql"
-	checks "main/validations/stops/standard/checks"
-	testutils "main/validations/stops/utils"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stops/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stops/utils"
 	"testing"
 )
 

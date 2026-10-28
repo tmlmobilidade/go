@@ -2,10 +2,10 @@ package levels_standard_test
 
 import (
 	"fmt"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/levels/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/levels/utils"
 	"main/types"
-	checks "main/validations/levels/standard/checks"
-	testutils "main/validations/levels/utils"
 	"testing"
 )
 

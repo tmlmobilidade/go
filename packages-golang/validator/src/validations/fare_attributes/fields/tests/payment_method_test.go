@@ -1,8 +1,8 @@
 package fare_attributes_fields_test
 
 import (
-	checks "main/validations/fare_attributes/fields/checks"
-	testutils "main/validations/fare_attributes/utils"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_attributes/fields/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_attributes/utils"
 	"testing"
 )
 

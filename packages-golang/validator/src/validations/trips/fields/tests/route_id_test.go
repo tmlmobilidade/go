@@ -1,8 +1,8 @@
 package trips_fields_test
 
 import (
-	checks "main/validations/trips/fields/checks"
-	testutils "main/validations/trips/utils"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/fields/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/utils"
 	"testing"
 )
 

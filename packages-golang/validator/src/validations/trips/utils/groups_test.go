@@ -1,7 +1,7 @@
 package trips_utils
 
 import (
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"reflect"
 	"testing"
 )

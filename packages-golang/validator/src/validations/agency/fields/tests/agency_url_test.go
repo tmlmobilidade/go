@@ -1,9 +1,9 @@
 package agency_fields_test
 
 import (
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/fields/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/agency/utils"
 	"main/types"
-	checks "main/validations/agency/fields/checks"
-	testutils "main/validations/agency/utils"
 	"testing"
 )
 

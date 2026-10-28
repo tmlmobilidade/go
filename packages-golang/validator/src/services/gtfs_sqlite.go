@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"encoding/csv"
 	"fmt"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/i18n"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	"io"
-	"main/i18n"
-	"main/lib"
 	"main/types"
 	"os"
 	"path"
@@ -16,8 +16,8 @@ import (
 	"sync"
 	"unicode/utf8"
 
-	"main/config"
-	dbops "main/services/database"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
 
 	_ "modernc.org/sqlite"
 )

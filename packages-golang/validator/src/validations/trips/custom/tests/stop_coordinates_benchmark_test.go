@@ -3,11 +3,11 @@ package trips_custom_test
 import (
 	"database/sql"
 	"fmt"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/custom/checks"
+	trips_utils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/trips/utils"
 	"main/types"
-	checks "main/validations/trips/custom/checks"
-	trips_utils "main/validations/trips/utils"
 	"path/filepath"
 	"testing"
 )

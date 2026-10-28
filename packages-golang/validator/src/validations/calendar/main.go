@@ -2,13 +2,13 @@ package calendar
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	calendar_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/calendar/fields/checks"
+	calendar_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/calendar/standard/checks"
 	"main/types"
-	registry "main/validations"
-	calendar_fields "main/validations/calendar/fields/checks"
-	calendar_standard "main/validations/calendar/standard/checks"
 )
 
 func init() {

@@ -1,10 +1,10 @@
 package pathways_standard_test
 
 import (
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/pathways/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/pathways/utils"
 	"main/types"
-	checks "main/validations/pathways/standard/checks"
-	testutils "main/validations/pathways/utils"
 	"testing"
 )
 

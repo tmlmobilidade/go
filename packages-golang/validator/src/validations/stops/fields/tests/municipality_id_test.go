@@ -1,8 +1,8 @@
 package stops_fields_test
 
 import (
-	checks "main/validations/stops/fields/checks"
-	testutils "main/validations/stops/utils"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stops/fields/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stops/utils"
 	"testing"
 )
 

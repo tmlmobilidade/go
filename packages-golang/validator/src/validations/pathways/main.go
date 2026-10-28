@@ -2,13 +2,13 @@ package pathways
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	pathways_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/pathways/fields/checks"
+	pathways_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/pathways/standard/checks"
 	"main/types"
-	registry "main/validations"
-	pathways_fields "main/validations/pathways/fields/checks"
-	pathways_standard "main/validations/pathways/standard/checks"
 )
 
 func init() { registry.RegisterWithTables("pathways", RunValidations) }

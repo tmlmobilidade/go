@@ -2,13 +2,13 @@ package fare_attributes
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	fare_attributes_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_attributes/fields/checks"
+	fare_attributes_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_attributes/standard/checks"
 	"main/types"
-	registry "main/validations"
-	fare_attributes_fields "main/validations/fare_attributes/fields/checks"
-	fare_attributes_standard "main/validations/fare_attributes/standard/checks"
 )
 
 func init() {

@@ -1,6 +1,6 @@
 package routes_utils
 
-import "main/services"
+import "github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 
 // RoutesWithWindows builds the lookup once, shared by both continuous-service checks.
 func RoutesWithWindows(tables *services.SQLiteTables) (map[string]bool, error) {

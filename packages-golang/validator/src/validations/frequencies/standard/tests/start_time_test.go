@@ -2,9 +2,9 @@ package frequencies_standard_test
 
 import (
 	"fmt"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/frequencies/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/frequencies/utils"
 	"main/types"
-	checks "main/validations/frequencies/standard/checks"
-	testutils "main/validations/frequencies/utils"
 	"testing"
 )
 

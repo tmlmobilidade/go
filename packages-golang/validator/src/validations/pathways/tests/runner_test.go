@@ -1,10 +1,10 @@
 package pathways_test
 
 import (
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	pathways "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/pathways"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/pathways/utils"
 	"main/types"
-	pathways "main/validations/pathways"
-	testutils "main/validations/pathways/utils"
 	"testing"
 )
 

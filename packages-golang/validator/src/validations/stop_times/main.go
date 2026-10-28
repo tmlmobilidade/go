@@ -2,13 +2,13 @@ package stop_times
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	stop_times_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stop_times/fields/checks"
+	stop_times_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stop_times/standard/checks"
 	"main/types"
-	registry "main/validations"
-	stop_times_fields "main/validations/stop_times/fields/checks"
-	stop_times_standard "main/validations/stop_times/standard/checks"
 )
 
 func init() {

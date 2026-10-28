@@ -2,13 +2,13 @@ package stops
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	stops_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stops/fields/checks"
+	stops_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stops/standard/checks"
 	"main/types"
-	registry "main/validations"
-	stops_fields "main/validations/stops/fields/checks"
-	stops_standard "main/validations/stops/standard/checks"
 )
 
 func init() {

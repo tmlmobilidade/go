@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"main/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"main/types"
 	"os"
 	"path/filepath"

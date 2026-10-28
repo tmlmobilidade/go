@@ -5,9 +5,9 @@ import (
 	"sort"
 	"strconv"
 
-	"main/lib"
-	"main/services"
-	shapes_coordinates "main/services/geo/shapes"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	shapes_coordinates "github.com/tmlmobilidade/go/packages-golang/validator/src/services/geo/shapes"
 	"main/types"
 )
 

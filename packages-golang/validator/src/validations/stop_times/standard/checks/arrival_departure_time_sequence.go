@@ -1,9 +1,9 @@
 package stop_times_standard
 
 import (
-	"main/lib"
-	stopTimesLib "main/lib/stop_times"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	stopTimesLib "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/stop_times"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 	stopTimesTypes "main/types/stop_times"
 	"sort"

@@ -1,9 +1,9 @@
 package routes_standard_test
 
 import (
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/routes/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/routes/utils"
 	"main/types"
-	checks "main/validations/routes/standard/checks"
-	testutils "main/validations/routes/utils"
 	"testing"
 )
 

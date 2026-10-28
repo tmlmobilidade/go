@@ -3,8 +3,8 @@ package services
 import (
 	"database/sql"
 	"fmt"
-	"main/lib"
-	dbops "main/services/database"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
 	"sort"
 	"strings"
 )

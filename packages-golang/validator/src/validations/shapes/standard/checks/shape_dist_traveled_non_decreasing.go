@@ -1,10 +1,10 @@
 package shapes_standard
 
 import (
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/validations/shapes/utils"
 	"main/types"
-	"main/validations/shapes/utils"
 )
 
 // ShapeDistTraveledNonDecreasing compares distances in sequence order.

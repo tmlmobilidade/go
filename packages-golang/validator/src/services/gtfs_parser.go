@@ -3,7 +3,7 @@ package services
 import (
 	"database/sql"
 	"fmt"
-	"main/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	"main/types"
 	"os"
 

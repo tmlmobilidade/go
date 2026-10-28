@@ -1,6 +1,6 @@
 package trips_utils
 
-import "main/services"
+import "github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 
 // ForGroupFields streams the requested fields and source rows in one group
 // query, avoiding a separate field lookup for every member. Values stay live.

@@ -2,15 +2,15 @@ package routes
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	routes_custom "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/routes/custom/checks"
+	routes_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/routes/fields/checks"
+	routes_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/routes/standard/checks"
+	routes_utils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/routes/utils"
 	"main/types"
-	registry "main/validations"
-	routes_custom "main/validations/routes/custom/checks"
-	routes_fields "main/validations/routes/fields/checks"
-	routes_standard "main/validations/routes/standard/checks"
-	routes_utils "main/validations/routes/utils"
 )
 
 func init() {

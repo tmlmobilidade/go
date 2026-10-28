@@ -2,12 +2,12 @@ package fare_media
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	validations "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fare_media/validations"
 	"main/types"
-	registry "main/validations"
-	validations "main/validations/fare_media/validations"
 )
 
 func init() {

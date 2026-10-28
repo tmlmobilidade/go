@@ -2,13 +2,13 @@ package transfers
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	transfers_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/transfers/fields/checks"
+	transfers_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/transfers/standard/checks"
 	"main/types"
-	registry "main/validations"
-	transfers_fields "main/validations/transfers/fields/checks"
-	transfers_standard "main/validations/transfers/standard/checks"
 )
 
 func init() { registry.RegisterWithTables("transfers", RunValidations) }

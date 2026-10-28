@@ -1,8 +1,8 @@
 package stops_fields
 
 import (
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
 	"main/types"
 )
 
@@ -37,7 +37,7 @@ func HasTariffsInformationField(db *services.SQLiteContext, rulesContext *types.
 		if ctx.ShouldIgnore() {
 			return nil
 		}
-	
+
 		message := ctx.GetSeverityMessage("required", "recommended", "informational")
 		ctx.AddMessageWithSeverity(message)
 		return nil

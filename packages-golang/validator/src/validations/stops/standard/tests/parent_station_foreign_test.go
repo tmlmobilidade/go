@@ -3,11 +3,11 @@ package stops_standard_test
 import (
 	"database/sql"
 	"fmt"
-	ruleset "main/lib/rules"
-	"main/services"
+	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stops/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/stops/utils"
 	"main/types"
-	checks "main/validations/stops/standard/checks"
-	testutils "main/validations/stops/utils"
 	"testing"
 )
 

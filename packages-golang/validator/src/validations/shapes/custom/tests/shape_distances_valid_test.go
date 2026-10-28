@@ -3,11 +3,11 @@ package shapes_custom_test
 import (
 	"database/sql"
 	"fmt"
-	"main/lib"
-	ruleset "main/lib/rules"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/shapes/custom/checks"
 	"main/types"
-	checks "main/validations/shapes/custom/checks"
 	"path/filepath"
 	"testing"
 )

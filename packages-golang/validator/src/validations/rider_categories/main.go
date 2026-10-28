@@ -2,13 +2,13 @@ package rider_categories
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	rider_categories_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/rider_categories/fields/checks"
+	rider_categories_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/rider_categories/standard/checks"
 	"main/types"
-	registry "main/validations"
-	rider_categories_fields "main/validations/rider_categories/fields/checks"
-	rider_categories_standard "main/validations/rider_categories/standard/checks"
 )
 
 func init() { registry.RegisterWithTables("rider_categories", RunValidations) }

@@ -1,9 +1,9 @@
 package transfers_standard_test
 
 import (
+	checks "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/transfers/standard/checks"
+	testutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/transfers/utils"
 	"main/types"
-	checks "main/validations/transfers/standard/checks"
-	testutils "main/validations/transfers/utils"
 	"testing"
 )
 

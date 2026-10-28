@@ -2,13 +2,13 @@ package levels
 
 import (
 	"fmt"
-	"main/config"
-	"main/lib"
-	"main/services"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
+	levels_fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/levels/fields/checks"
+	levels_standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/levels/standard/checks"
 	"main/types"
-	registry "main/validations"
-	levels_fields "main/validations/levels/fields/checks"
-	levels_standard "main/validations/levels/standard/checks"
 )
 
 func init() { registry.RegisterWithTables("levels", RunValidations) }

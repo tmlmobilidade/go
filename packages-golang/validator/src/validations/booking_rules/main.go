@@ -1,9 +1,9 @@
 package booking_rules
 
 import (
-	"main/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	registry "github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
 	"main/types"
-	registry "main/validations"
 )
 
 func init() {
