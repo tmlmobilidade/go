@@ -451,6 +451,17 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"vehicles_license_plate_valid":         custom.LicensePlateValid,
 	})
 
+	// These checks consume shared intermediate results. They wait for completion,
+	// not success; configured DependsOn still controls per-row failure blocking.
+	for i := range definitions {
+		switch definitions[i].ID {
+		case "trips_pattern_single_signature":
+			definitions[i].After = []string{"trips_stop_sequence"}
+		case "trips_one_pattern_per_shape":
+			definitions[i].After = []string{"trips_one_shape_per_pattern"}
+		}
+	}
+
 	findings := &validationutils.Findings{}
 	definitions = append(definitions, services.RuleDefinition{
 		ID: types.RuleIDGtfsFeedFilePresenceAndIntegrity, Always: true,

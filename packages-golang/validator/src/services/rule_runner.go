@@ -2,6 +2,8 @@ package services
 
 import (
 	"fmt"
+	"runtime"
+	"slices"
 	"sort"
 	"time"
 
@@ -20,6 +22,7 @@ type RuleDefinition struct {
 	GroupField string
 	Check      func(*SQLiteContext, *types.RuleContext) error
 	Run        func() rules.Status // Feed-level checks have no row context.
+	After      []string            // Completion-only ordering for shared intermediate results.
 	Always     bool                // Presence checks also run when their diagnostic is ignored.
 }
 
@@ -32,10 +35,11 @@ type ruleOutcome struct {
 }
 
 type RuleRunner struct {
-	config      *types.GtfsRules
-	tables      *SQLiteTables
-	definitions map[string]RuleDefinition
-	order       []string
+	config       *types.GtfsRules
+	tables       *SQLiteTables
+	definitions  map[string]RuleDefinition
+	order        []string
+	dependencies map[string][]string
 }
 
 // NewRuleRunner creates a single graph for the entire validation run. Execution
@@ -69,269 +73,277 @@ func NewRuleRunner(config *types.GtfsRules, tables *SQLiteTables, definitions []
 			}
 		}
 	}
-	// Preserve a deterministic preference for row, route, pattern, then shape
-	// checks (pattern diagnostics suppress duplicate shape diagnostics). Explicit
-	// dependencies always take precedence, including dependencies across scopes.
-	rank := func(field string) int {
-		switch field {
-		case "":
-			return 0
-		case "route_id":
-			return 1
-		case "pattern_id":
-			return 2
-		default:
-			return 3
-		}
-	}
-	sort.SliceStable(ids, func(i, j int) bool {
-		a, b := r.definitions[ids[i]], r.definitions[ids[j]]
-		if a.Table != b.Table {
-			return a.Table < b.Table
-		}
-		if rank(a.GroupField) != rank(b.GroupField) {
-			return rank(a.GroupField) < rank(b.GroupField)
-		}
-		return a.ID < b.ID
-	})
-	visited := map[string]bool{}
-	var visit func(string)
-	visit = func(id string) {
-		if visited[id] {
-			return
-		}
-		visited[id] = true
-		for _, dependency := range config.Rule(id).DependsOn {
-			visit(dependency)
-		}
-		r.order = append(r.order, id)
-	}
+	// IDs only break ties in the ready queue. Tables never determine scheduling.
+	sort.Strings(ids)
+	r.order = ids
+	r.dependencies = make(map[string][]string, len(ids))
+	graph := make([]rules.Rule[struct{}], 0, len(ids))
 	for _, id := range ids {
-		visit(id)
+		deps := slices.Clone(config.Rule(id).DependsOn)
+		for _, dependency := range r.definitions[id].After {
+			if _, exists := r.definitions[dependency]; !exists {
+				return nil, fmt.Errorf("rule %q waits for unregistered rule %q", id, dependency)
+			}
+			if !slices.Contains(deps, dependency) {
+				deps = append(deps, dependency)
+			}
+		}
+		r.dependencies[id] = deps
+		graph = append(graph, rules.Rule[struct{}]{ID: id, DependsOn: deps})
+	}
+	if _, err := rules.NewManager(graph...); err != nil {
+		return nil, err
 	}
 	return r, nil
 }
 
-// Run completes prerequisites before dependents. Same-table dependencies use
-// the affected rows (including every member of a group); dependencies on other
-// data sources require the prerequisite's complete result to pass. No rows,
-// ignored checks, and unavailable implementations produce Skipped, not Passed.
+// Run uses a bounded worker pool over the global dependency graph.
 func (r *RuleRunner) Run() (map[string]rules.Status, error) {
+	return r.RunWithConcurrency(min(4, runtime.GOMAXPROCS(0)))
+}
+
+// RunWithConcurrency starts ready rules as slots become available, without a
+// table or level barrier. A completion immediately releases its dependents.
+// Same-table dependencies retain per-row results; cross-table dependencies must
+// pass as a whole. Only the coordinator publishes outcomes and manages the DAG.
+func (r *RuleRunner) RunWithConcurrency(limit int) (map[string]rules.Status, error) {
+	if limit < 1 {
+		return nil, fmt.Errorf("rule concurrency must be positive")
+	}
 	outcomes := map[string]*ruleOutcome{}
-	remaining := map[string]int{}
+	pending := map[string]int{}
+	consumers := map[string]int{}
+	dependents := map[string][]string{}
 	retainRows := map[string]bool{}
+	queue := []string{}
 	for _, id := range r.order {
-		outcomes[id] = &ruleOutcome{status: rules.Skipped}
+		pending[id] = len(r.dependencies[id])
+		if pending[id] == 0 {
+			queue = append(queue, id)
+		}
+		for _, dependency := range r.dependencies[id] {
+			dependents[dependency] = append(dependents[dependency], id)
+		}
 		for _, dependency := range r.config.Rule(id).DependsOn {
-			remaining[dependency]++
+			consumers[dependency]++
 			source, target := r.definitions[dependency], r.definitions[id]
 			if source.Table != "" && source.Table == target.Table {
 				retainRows[dependency] = true
 			}
 		}
 	}
-	for id := range retainRows {
-		outcomes[id].rows = map[int]rules.Status{}
+	type completion struct {
+		id      string
+		outcome *ruleOutcome
+		err     error
 	}
-	record := func(id string, status rules.Status, members []int) {
-		outcome := outcomes[id]
-		if !outcome.seen || status == rules.Failed || (status == rules.Skipped && outcome.status == rules.Passed) {
-			outcome.status = status
-		}
-		outcome.seen = true
-		if outcome.rows != nil {
-			for _, member := range members {
-				if status != rules.Passed {
-					outcome.rows[member] = status
-				}
-			}
-		}
-	}
-	ready := func(id string, members []int) bool {
-		for _, dependency := range r.config.Rule(id).DependsOn {
-			source := r.definitions[dependency]
-			outcome := outcomes[dependency]
-			if source.Table != "" && source.Table == r.definitions[id].Table && len(members) > 0 {
-				if !outcome.seen || outcome.rows == nil {
-					return false
-				}
-				for _, member := range members {
-					if status, exists := outcome.rows[member]; exists && status != rules.Passed {
-						return false
-					}
-				}
-			} else if outcome.status != rules.Passed {
-				return false
-			}
-		}
-		return true
-	}
-	active := func(id string) bool {
-		return r.definitions[id].Always || rules.SeverityFor(r.config, id) != types.SEVERITY_IGNORE
-	}
-	enabled := 0
-	for _, id := range r.order {
-		if active(id) {
-			enabled++
-		}
-	}
-	lib.AppLogger.Info(fmt.Sprintf("Global validation graph ready: %d rules, %d enabled (including file checks)", len(r.order), enabled))
-	type ruleProgress struct {
-		started time.Time
-		rows    int
-		groups  int
-	}
-	progress := map[string]*ruleProgress{}
-	lastProgress := time.Now()
-	begin := func(id string) *ruleProgress {
-		if progress[id] == nil {
-			progress[id] = &ruleProgress{started: time.Now()}
-			lib.AppLogger.Info("Running " + id)
-		}
-		return progress[id]
-	}
-	finish := func(ids []string) {
-		for _, id := range ids {
-			if current := progress[id]; current != nil {
-				status := map[rules.Status]string{rules.Passed: "passed", rules.Failed: "failed", rules.Skipped: "skipped"}[outcomes[id].status]
-				lib.AppLogger.Info(fmt.Sprintf("Completed %s: %s (%s)", id, status, time.Since(current.started).Round(time.Millisecond)))
-			} else if !active(id) {
-				lib.AppLogger.Debug("Skipped " + id + ": ignored")
-			} else {
-				reason := "prerequisites did not pass or no applicable rows/groups"
-				definition := r.definitions[id]
-				if definition.Check == nil && definition.Run == nil {
-					reason = "no implementation"
-				} else if definition.Table != "" && (r.tables == nil || !r.tables.Has(definition.Table)) {
-					reason = "source table missing"
-				}
-				lib.AppLogger.Info("Skipped " + id + ": " + reason)
-			}
+	done := make(chan completion, limit)
+	running := 0
+	var firstError error
+	lib.AppLogger.Info(fmt.Sprintf("Global validation graph ready: %d rules, concurrency %d", len(r.order), limit))
+	for len(queue) > 0 || running > 0 {
+		for firstError == nil && len(queue) > 0 && running < limit {
+			id := queue[0]
+			queue = queue[1:]
+			// Published prerequisite results are immutable. Workers never access
+			// the coordinator's maps or each other's in-progress outcomes.
+			prerequisites := map[string]*ruleOutcome{}
 			for _, dependency := range r.config.Rule(id).DependsOn {
-				remaining[dependency]--
-				if remaining[dependency] == 0 {
-					outcomes[dependency].rows = nil
-				}
+				prerequisites[dependency] = outcomes[dependency]
+			}
+			running++
+			go func() {
+				outcome, err := r.execute(id, prerequisites, retainRows[id])
+				done <- completion{id, outcome, err}
+			}()
+		}
+		if running == 0 {
+			break
+		}
+		result := <-done
+		running--
+		outcomes[result.id] = result.outcome
+		if result.err != nil && firstError == nil {
+			firstError = fmt.Errorf("rule %s: %w", result.id, result.err)
+		}
+		for _, dependency := range r.config.Rule(result.id).DependsOn {
+			consumers[dependency]--
+			if consumers[dependency] == 0 {
+				// Replace, rather than mutate, an outcome that workers may hold.
+				previous := outcomes[dependency]
+				outcomes[dependency] = &ruleOutcome{status: previous.status, seen: previous.seen}
+			}
+		}
+		for _, id := range dependents[result.id] {
+			pending[id]--
+			if pending[id] == 0 {
+				queue = append(queue, id)
 			}
 		}
 	}
-	for start := 0; start < len(r.order); {
-		id := r.order[start]
-		definition := r.definitions[id]
-		if definition.Check == nil || !active(id) {
-			if definition.Run != nil && active(id) && ready(id, nil) {
-				begin(id)
-				record(id, definition.Run(), nil)
-			}
-			finish([]string{id})
-			start++
-			continue
-		}
-		// Adjacent rules using the same rows share bounded reads. This avoids
-		// retaining per-row closures or re-reading each field for every rule.
-		end := start + 1
-		for end < len(r.order) {
-			next := r.definitions[r.order[end]]
-			if next.Check == nil || next.Table != definition.Table || next.GroupField != definition.GroupField {
-				break
-			}
-			end++
-		}
-		batch := r.order[start:end]
-		if r.tables == nil || !r.tables.Has(definition.Table) {
-			finish(batch)
-			start = end
-			continue
-		}
-		table, err := r.tables.Table(definition.Table)
-		if err != nil {
-			return nil, err
-		}
-		run := func(members []int, grouped bool) error {
-			rows, err := table.readValidationRows(members)
-			if err != nil {
-				return err
-			}
-			for _, id := range batch {
-				check := r.definitions[id]
-				evaluate := func(row *SQLiteRow, members []int) {
-					status := rules.Skipped
-					if active(id) && ready(id, members) {
-						current := begin(id)
-						before := AppMessageService.RuleIssueCount(id)
-						if err := check.Check(row.Context(), r.config.Rule(id)); err != nil {
-							ctx := lib.NewValidationContext("N/A", check.Table+".txt", id, row.Row, AppMessageService)
-							ctx.AddError(fmt.Sprintf("SQLite read failed: %v", err))
-							status = rules.Failed
-						} else if AppMessageService.RuleIssueCount(id) != before {
-							status = rules.Failed
-						} else {
-							status = rules.Passed
-						}
-						current.rows += len(members)
-						if check.GroupField != "" {
-							current.groups++
-						}
-						if time.Since(lastProgress) >= 5*time.Second {
-							lib.AppLogger.Info(fmt.Sprintf("Running %s: %d rows, %d groups checked (%s)", id, current.rows, current.groups, time.Since(current.started).Round(time.Second)))
-							lastProgress = time.Now()
-						}
-					}
-					record(id, status, members)
-				}
-				if check.GroupField != "" {
-					if grouped {
-						evaluate(rows[0], members)
-					} else {
-						record(id, rules.Skipped, members)
-					}
-				} else {
-					for _, row := range rows {
-						evaluate(row, []int{row.Row})
-					}
-				}
-			}
-			return nil
-		}
-		if definition.GroupField != "" {
-			groups, err := table.rowGroups(definition.GroupField)
-			if err != nil {
-				return nil, err
-			}
-			for _, group := range groups {
-				if err := run(group.rows, group.grouped); err != nil {
-					return nil, err
-				}
-			}
-		} else {
-			const batchSize = 500
-			members := make([]int, 0, batchSize)
-			err := table.ForEachRow(func(row *SQLiteRow) error {
-				members = append(members, row.Row)
-				if len(members) < batchSize {
-					return nil
-				}
-				if err := run(members, false); err != nil {
-					return err
-				}
-				members = members[:0]
-				return nil
-			})
-			if err != nil {
-				return nil, err
-			}
-			if len(members) > 0 {
-				if err := run(members, false); err != nil {
-					return nil, err
-				}
-			}
-		}
-		finish(batch)
-		start = end
+	// Running workers are drained before an error returns, so callers may safely
+	// close SQLite and read/clear messages. No further work starts after an error.
+	if firstError != nil {
+		return nil, firstError
+	}
+	if len(outcomes) != len(r.order) {
+		return nil, fmt.Errorf("rule graph stalled: completed %d of %d rules", len(outcomes), len(r.order))
 	}
 	statuses := make(map[string]rules.Status, len(outcomes))
 	for id, outcome := range outcomes {
 		statuses[id] = outcome.status
 	}
 	return statuses, nil
+}
+
+// execute owns one rule's row buffers, progress, and outcome for its entire run.
+func (r *RuleRunner) execute(id string, prerequisites map[string]*ruleOutcome, retainRows bool) (*ruleOutcome, error) {
+	definition := r.definitions[id]
+	outcome := &ruleOutcome{status: rules.Skipped}
+	if retainRows {
+		outcome.rows = map[int]rules.Status{}
+	}
+	record := func(status rules.Status, members []int) {
+		if !outcome.seen || status == rules.Failed || (status == rules.Skipped && outcome.status == rules.Passed) {
+			outcome.status = status
+		}
+		outcome.seen = true
+		if outcome.rows != nil && status != rules.Passed {
+			for _, member := range members {
+				outcome.rows[member] = status
+			}
+		}
+	}
+	ready := func(members []int) bool {
+		for dependency, result := range prerequisites {
+			source := r.definitions[dependency]
+			if source.Table != "" && source.Table == definition.Table && len(members) > 0 {
+				if !result.seen || result.rows == nil {
+					return false
+				}
+				for _, member := range members {
+					if status, exists := result.rows[member]; exists && status != rules.Passed {
+						return false
+					}
+				}
+			} else if result.status != rules.Passed {
+				return false
+			}
+		}
+		return true
+	}
+	if !definition.Always && rules.SeverityFor(r.config, id) == types.SEVERITY_IGNORE {
+		lib.AppLogger.Debug("Skipped " + id + ": ignored")
+		return outcome, nil
+	}
+	if definition.Run == nil && definition.Check == nil {
+		lib.AppLogger.Info("Skipped " + id + ": no implementation")
+		return outcome, nil
+	}
+	if definition.Check != nil && !r.tables.Has(definition.Table) {
+		lib.AppLogger.Info("Skipped " + id + ": source table missing")
+		return outcome, nil
+	}
+	// Avoid scanning a table when no row can be eligible. A partially failed
+	// same-table prerequisite still allows its successful rows to continue.
+	for dependency, result := range prerequisites {
+		rowDependency := definition.Check != nil && definition.Table != "" && r.definitions[dependency].Table == definition.Table
+		if (rowDependency && (!result.seen || result.rows == nil)) || (!rowDependency && result.status != rules.Passed) {
+			lib.AppLogger.Info("Skipped " + id + ": prerequisite " + dependency + " did not pass")
+			return outcome, nil
+		}
+	}
+	started := time.Now()
+	lib.AppLogger.Info("Running " + id)
+	defer func() {
+		status := map[rules.Status]string{rules.Passed: "passed", rules.Failed: "failed", rules.Skipped: "skipped"}[outcome.status]
+		lib.AppLogger.Info(fmt.Sprintf("Completed %s: %s (%s)", id, status, time.Since(started).Round(time.Millisecond)))
+	}()
+	if definition.Run != nil {
+		if ready(nil) {
+			record(definition.Run(), nil)
+		}
+		return outcome, nil
+	}
+	table, err := r.tables.Table(definition.Table)
+	if err != nil {
+		outcome.status = rules.Failed
+		return outcome, err
+	}
+	checkedRows, checkedGroups := 0, 0
+	lastProgress := started
+	evaluate := func(row *SQLiteRow, members []int) {
+		status := rules.Skipped
+		if ready(members) {
+			before := AppMessageService.RuleIssueCount(id)
+			if err := definition.Check(row.Context(), r.config.Rule(id)); err != nil {
+				ctx := lib.NewValidationContext("N/A", definition.Table+".txt", id, row.Row, AppMessageService)
+				ctx.AddError(fmt.Sprintf("SQLite read failed: %v", err))
+				status = rules.Failed
+			} else if AppMessageService.RuleIssueCount(id) != before {
+				status = rules.Failed
+			} else {
+				status = rules.Passed
+			}
+			checkedRows += len(members)
+			if definition.GroupField != "" {
+				checkedGroups++
+			}
+			if time.Since(lastProgress) >= 5*time.Second {
+				lib.AppLogger.Info(fmt.Sprintf("Running %s: %d rows, %d groups checked (%s)", id, checkedRows, checkedGroups, time.Since(started).Round(time.Second)))
+				lastProgress = time.Now()
+			}
+		}
+		record(status, members)
+	}
+	run := func(members []int, grouped bool) error {
+		if definition.GroupField != "" && !grouped {
+			record(rules.Skipped, members)
+			return nil
+		}
+		rows, err := table.readValidationRows(members)
+		if err != nil {
+			return err
+		}
+		if definition.GroupField != "" {
+			evaluate(rows[0], members)
+		} else {
+			for _, row := range rows {
+				evaluate(row, []int{row.Row})
+			}
+		}
+		return nil
+	}
+	if definition.GroupField != "" {
+		var groups []sqliteRowGroup
+		groups, err = table.rowGroups(definition.GroupField)
+		if err == nil {
+			for _, group := range groups {
+				if err = run(group.rows, group.grouped); err != nil {
+					break
+				}
+			}
+		}
+	} else {
+		const batchSize = 500
+		members := make([]int, 0, batchSize)
+		err = table.ForEachRow(func(row *SQLiteRow) error {
+			members = append(members, row.Row)
+			if len(members) < batchSize {
+				return nil
+			}
+			if err := run(members, false); err != nil {
+				return err
+			}
+			members = members[:0]
+			return nil
+		})
+		if err == nil && len(members) > 0 {
+			err = run(members, false)
+		}
+	}
+	if err != nil {
+		outcome.status = rules.Failed
+	}
+	return outcome, err
 }
