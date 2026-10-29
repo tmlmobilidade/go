@@ -48,8 +48,19 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// B. Setup form
 
+	const agencyFormData = useMemo(() => {
+		if (!agencyData?.plans) return agencyData;
+		return {
+			...agencyData,
+			plans: {
+				...agencyData.plans,
+				validation_rules: getAgenciesDetailValidationRules(agencyData.plans.validation_rules),
+			},
+		};
+	}, [agencyData]);
+
 	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
-		apiData: agencyData,
+		apiData: agencyFormData,
 		schema: UpdateAgencySchema,
 	});
 
