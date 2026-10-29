@@ -15,7 +15,7 @@
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix .",
-		"predev": "npm run build:binary --workspace=@tmlmobilidade/go-operation-validator"
+		"predev": "npm run build --workspace=@tmlmobilidade/go-golang-import-gtfs && npm run build --workspace=@tmlmobilidade/go-utils-import-gtfs && npm run build:binary --workspace=@tmlmobilidade/go-operation-validator"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
@@ -27,6 +27,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-files": "*",
+		"@tmlmobilidade/go-utils-import-gtfs": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*"

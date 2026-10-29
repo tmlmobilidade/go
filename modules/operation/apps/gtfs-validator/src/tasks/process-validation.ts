@@ -9,6 +9,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getTmpWorkdirPath } from '@tmlmobilidade/go-utils-files';
+import { importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 import { join } from 'node:path';
@@ -78,6 +79,16 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		fs.writeFileSync(gtfsFilePath, Buffer.from(fileBuffer));
 
+		// Import all source tables without date filtering before validation.
+		Logger.info({ message: 'Importing GTFS into SQLite...' });
+		const gtfsSqlitePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.sqlite`);
+		const importedGtfs = await importGtfsToDatabase({
+			source: { path: gtfsFilePath },
+			sqlite_config: { instancePath: gtfsSqlitePath },
+		});
+		// Close the connection while keeping the file for the Go validator.
+		importedGtfs._db.databaseInstance.close();
+
 		//
 		// Get the agency-specific validation rules, if they exist,
 		// and download them to the working directory. Throw an error
@@ -99,7 +110,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		const validatorInfo = await getValidatorInfo();
 		Logger.info({ message: `Performing GTFS validation with ${validatorInfo.binaryPath} (${validatorInfo.platform})...` });
 
-		const gtfsValidationResult = await GtfsValidator(gtfsFilePath, {
+		const gtfsValidationResult = await GtfsValidator(gtfsSqlitePath, {
 			lang: 'pt',
 			log_level: 'debug',
 			out_file: gtfsValidationResultPath,
@@ -158,7 +169,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		//
 		// Cleanup the working directory by removing
-		// the downloaded GTFS file and the validation result file.
+		// the downloaded GTFS file, SQLite database, and validation result file.
 
 		try {
 			fs.rmSync(tempWorkdirPath, { force: true, recursive: true });

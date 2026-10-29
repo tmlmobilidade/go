@@ -4,15 +4,16 @@ import (
 	"cmp"
 	"encoding/json"
 	"fmt"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/i18n"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
-	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"main/types"
 	"os"
 	"slices"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/i18n"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
 
