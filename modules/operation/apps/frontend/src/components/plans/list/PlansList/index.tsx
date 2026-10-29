@@ -3,7 +3,6 @@
 import { PlansListFiltersBar } from '@/components/plans/list/filters/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { PlansListCellFeedDates } from '@/components/plans/list/table/PlansListCellFeedDates';
-import { PlansListCellOverlap } from '@/components/plans/list/table/PlansListCellOverlap';
 import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agencies-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
@@ -50,22 +49,17 @@ export function PlansList() {
 			width: 200,
 		},
 		{
-			accessor: 'has_overlapping_plans',
-			render: item => <PlansListCellOverlap value={item.has_overlapping_plans} />,
-			title: '',
-			width: 40,
-		},
-		{
 			accessor: 'active_dates',
 			render: item => (
 				<PlansListCellFeedDates
 					activeFrom={item.active_from}
 					activeUntil={item.active_until}
+					hasOverlap={item.has_overlapping_plans}
 					temporalStatus={item.temporal_status}
 				/>
 			),
 			title: 'Datas de Validade',
-			width: 310,
+			width: 350,
 		},
 		{
 			accessor: 'apps.rides_feeder',
