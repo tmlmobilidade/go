@@ -18,75 +18,98 @@ import { type InfrastructureNodesV1OutputRow } from './types.js';
  * @param extraction The extraction to run.
  */
 export async function extractInfrastructureNodesV1(context: ExtractionTaskContext, extraction: InfrastructureNodesV1Extraction): Promise<ExtractionTaskResult> {
-	// A. Prepare the shared filters and permissions
+	//
+
+	//
+	// Prepare filters and permissions
 
 	const { filter, projection, selectedAgencyIds } = await buildNodesExtractionQuery(extraction);
 
-	// B. Fetch stops matching the filters and permissions
+	//
+	// Fetch stops matching the filters and permissions
 
-	const stops = await goDb.infrastructure.stops.findMany(filter, { projection });
-	if (!stops.length) throw new Error('No stops found matching the nodes extraction filters');
+	const foundStops = await goDb.infrastructure.stops.findMany(filter, { projection });
+	if (!foundStops.length) throw new Error('No stops found matching the nodes extraction filters');
 
-	for (const stop of stops) {
-		stop.flags = stop.flags.map(flag => ({
-			...flag,
-			agency_ids: flag.agency_ids.filter(id => !selectedAgencyIds || selectedAgencyIds.includes(id)),
-		}));
+	//
+	// Keep the selected agencies in each stop flag
+
+	for (const stop of foundStops) {
+		stop.flags = stop.flags.map((stopFlag) => {
+			const selectedFlagAgencyIds = stopFlag.agency_ids.filter(agencyId => !selectedAgencyIds || selectedAgencyIds.includes(agencyId));
+			return { ...stopFlag, agency_ids: selectedFlagAgencyIds };
+		});
 	}
 
-	// C. Fetch operators and municipality codespaces
+	//
+	// Fetch operators and municipality codespaces
 
-	const agencyIds = [...new Set(stops.flatMap(stop => stop.flags.flatMap(flag => flag.agency_ids)))];
+	const stopFlags = foundStops.flatMap(stop => stop.flags);
+	const flagAgencyIds = stopFlags.flatMap(stopFlag => stopFlag.agency_ids);
+	const uniqueAgencyIds = [...new Set(flagAgencyIds)];
+
 	const [agencies, codespacesByMunicipality] = await Promise.all([
-		goDb.core.agencies.findMany({ _id: { $in: agencyIds } }, { projection: { _id: 1, code: 1 } }),
+		goDb.core.agencies.findMany({ _id: { $in: uniqueAgencyIds } }, { projection: { _id: 1, code: 1 } }),
 		getCodespacesByMunicipality(),
 	]);
+
 	const agencyCodesById = new Map(agencies.map(agency => [agency._id, agency.code]));
 
-	// D. Generate nodes.txt
+	//
+	// Build nodes.txt rows
 
-	const rows: InfrastructureNodesV1OutputRow[] = [];
+	const outputRows: InfrastructureNodesV1OutputRow[] = [];
 
-	for (const stop of stops) {
-		for (const flag of stop.flags) {
-			for (const agencyId of flag.agency_ids) {
-				const namespace = codespacesByMunicipality.get(stop.location.secondary.osm_id);
-				if (!namespace) throw new Error(`Codespace not found for stop ${stop._id} and municipality ${stop.location.secondary.osm_id}`);
+	for (const stop of foundStops) {
+		// Skip if no agency IDs are present in the stop flags
+		if (!stop.flags.some(stopFlag => stopFlag.agency_ids.length > 0)) continue;
+		// Get municipality OSM ID and codespace
+		const municipalityOsmId = stop.location.secondary.osm_id;
+		const namespace = codespacesByMunicipality.get(municipalityOsmId);
+		if (!namespace) throw new Error(`Codespace not found for stop ${stop._id} and municipality ${municipalityOsmId}`);
+		// Parse nodes extraction
+		const validFrom = Dates.fromUnixMilliseconds(stop.created_at).calendar_date;
+		const stopRows = parseNodesExtraction({
+			namespace,
+			stop,
+			valid_from: validFrom,
+		}, agencyCodesById);
+		// Add rows to output rows
+		outputRows.push(...stopRows);
+	}
 
-				const operatorStop = { ...stop, flags: [{ ...flag, agency_ids: [agencyId] }] };
+	//
+	// Validate required fields before writing nodes.txt
 
-				rows.push(...parseNodesExtraction({
-					namespace,
-					stop: operatorStop,
-					valid_from: Dates.fromUnixMilliseconds(stop.created_at).calendar_date,
-				}, agencyCodesById));
+	if (!outputRows.length) throw new Error('No nodes found matching the extraction filters');
+
+	for (const [rowIndex, outputRow] of outputRows.entries()) {
+		// Build invalid field names
+		const invalidFieldNames: string[] = [];
+		// Check each field value
+		for (const [fieldName, fieldValue] of Object.entries(outputRow)) {
+			// Skip valid_to field
+			if (fieldName === 'valid_to') continue;
+			// Check if field value is missing, blank string, or invalid number
+			const isMissing = fieldValue === null || fieldValue === undefined;
+			const isBlankString = typeof fieldValue === 'string' && !fieldValue.trim();
+			const isInvalidNumber = typeof fieldValue === 'number' && !Number.isFinite(fieldValue);
+			// Add field name to invalid field names if field value is missing, blank string, or invalid number
+			if (isMissing || isBlankString || isInvalidNumber) {
+				invalidFieldNames.push(fieldName);
 			}
 		}
-	}
 
-	// E. Validate required fields before writing nodes.txt
-
-	if (!rows.length) throw new Error('No nodes found matching the extraction filters');
-
-	for (const [index, row] of rows.entries()) {
-		const invalidFields = Object.entries(row)
-			.filter(([field, value]) => field !== 'valid_to' && (
-				value === null
-				|| value === undefined
-				|| (typeof value === 'string' && !value.trim())
-				|| (typeof value === 'number' && !Number.isFinite(value))
-			))
-			.map(([field]) => field);
-
-		if (invalidFields.length) {
-			throw new Error(`Nodes row ${index + 1} has empty or invalid required fields: ${invalidFields.join(', ')}`);
+		if (invalidFieldNames.length) {
+			throw new Error(`Nodes row ${rowIndex + 1} has empty or invalid required fields: ${invalidFieldNames.join(', ')}`);
 		}
 	}
 
-	const csv = csvStringify(rows, {
-		columns: ['operator_id', 'operator_stop_id', 'stop_name', 'lat', 'lon', 'quay_id', 'stop_place_id', 'mode', 'valid_from', 'valid_to'] satisfies (keyof InfrastructureNodesV1OutputRow)[],
-		header: true,
-	});
+	//
+	// Write nodes.txt
 
-	fs.writeFileSync(path.join(context.output_path, 'nodes.txt'), csv, { encoding: 'utf-8', flush: true });
+	const csvContent = csvStringify(outputRows, { header: true });
+
+	const outputFilePath = path.join(context.output_path, 'nodes.txt');
+	fs.writeFileSync(outputFilePath, csvContent, { encoding: 'utf-8', flush: true });
 }

@@ -1,6 +1,6 @@
 /* * */
 
-import { NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeIntegerSchema, nullAsUndefined } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { GtfsPickupDropoffTypeSchema } from '../shared/pickup-dropoff-type.js';
@@ -11,19 +11,19 @@ import { GtfsRouteTypeSchema } from './route-type.js';
 /* * */
 
 export const GtfsRoutesSchema = z.object({
-	agency_id: z.string().default(''),
-	cemv_support: GtfsTernarySchema.default('0'),
-	continuous_drop_off: GtfsPickupDropoffTypeSchema.default('1'),
-	continuous_pickup: GtfsPickupDropoffTypeSchema.default('1'),
-	route_color: RouteColorSchema.default(''),
-	route_desc: z.string().default(''),
+	agency_id: nullAsUndefined(z.string().default('')),
+	cemv_support: nullAsUndefined(GtfsTernarySchema.default('0')),
+	continuous_drop_off: nullAsUndefined(GtfsPickupDropoffTypeSchema.default('1')),
+	continuous_pickup: nullAsUndefined(GtfsPickupDropoffTypeSchema.default('1')),
+	route_color: nullAsUndefined(RouteColorSchema.default('')),
+	route_desc: nullAsUndefined(z.string().default('')),
 	route_id: z.string(),
-	route_long_name: z.string().default(''),
-	route_short_name: z.string().default(''),
+	route_long_name: nullAsUndefined(z.string().default('')),
+	route_short_name: nullAsUndefined(z.string().default('')),
 	route_sort_order: NonNegativeIntegerSchema.optional(),
-	route_text_color: RouteColorSchema.default(''),
+	route_text_color: nullAsUndefined(RouteColorSchema.default('')),
 	route_type: GtfsRouteTypeSchema,
-	route_url: z.string().default(''),
+	route_url: nullAsUndefined(z.string().default('')),
 });
 
 /**

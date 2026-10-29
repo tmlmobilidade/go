@@ -35,12 +35,12 @@ export function StopsCreateModalControls() {
 			<Grid columns="ab" gap="md">
 				<Button
 					disabled={status.isCreating}
-					label={isFirstStep ? t('default:stops.create.Controls.CancelButton.label') : t('default:stops.create.Controls.BackButton.label')}
+					label={isFirstStep ? t('stops:create.StopsCreateModalControls.cancel_button.label') : t('stops:create.StopsCreateModalControls.back_button.label')}
 					onClick={isFirstStep ? closeStopsCreateModal : stepsActions.prev}
 				/>
 				<Button
 					disabled={!progress.current?.isValid || (isLastStep && !capabilities?.createEnabled)}
-					label={isLastStep ? t('default:stops.create.Controls.CreateButton.label') : t('default:stops.create.Controls.NextButton.label')}
+					label={isLastStep ? t('stops:create.StopsCreateModalControls.create_button.label') : t('stops:create.StopsCreateModalControls.next_button.label')}
 					loading={status.isCreating}
 					onClick={isLastStep ? formActions.create : stepsActions.next}
 				/>

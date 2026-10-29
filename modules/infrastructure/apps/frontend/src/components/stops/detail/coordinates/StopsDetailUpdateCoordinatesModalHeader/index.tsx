@@ -33,10 +33,10 @@ export function StopsDetailUpdateCoordinatesModalHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleClose} type="close" />
-			<Label size="lg" singleLine>{t('default:stops.detail.UpdateCoordinatesModal.Header.title')}</Label>
+			<Label size="lg" singleLine>{t('stops:detail.StopsDetailUpdateCoordinatesModalHeader.title')}</Label>
 			<Spacer />
 			<Button
-				label={t('default:stops.detail.UpdateCoordinatesModal.Header.UpdateButton.label')}
+				label={t('stops:detail.StopsDetailUpdateCoordinatesModalHeader.update_button.label')}
 				loading={status.isUpdating}
 				onClick={actions.update}
 			/>

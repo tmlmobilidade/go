@@ -84,7 +84,7 @@ export async function getExtractionsHandler(): Promise<ExtractionsCoordinatorRes
 		);
 
 		/* === FOR TESTING === */
-		// const foundWaitingExtractions = await goDb.core.extractions.findMany({ _id: '7NAYB' })
+		// const foundWaitingExtractions = await goDb.core.extractions.findMany({ _id: 'MRGG3' });
 		/* === FOR TESTING === */
 
 		if (!foundWaitingExtractions.length) {
