@@ -236,6 +236,7 @@
 				"new_feature": "Adicionar novidade"
 			},
 			"cancel": "Cancelar",
+			"delete": "Eliminar",
 			"down": "Mover para baixo",
 			"preview": "Pré-visualizar",
 			"remove": "Remover alteração",
@@ -244,6 +245,12 @@
 		"banners": {
 			"archive": "Arquivar",
 			"create": "Novo aviso",
+			"detail": {
+				"BannersDetailHeader": {
+					"deleteConfirmationMessage": "Este aviso será eliminado permanentemente. Esta ação não pode ser anulada.",
+					"deleteConfirmationTitle": "Eliminar aviso"
+				}
+			},
 			"publish": "Ativar",
 			"select": "Selecione um aviso",
 			"title": "Avisos operacionais",
@@ -252,6 +259,12 @@
 		"changelog": {
 			"archive": "Arquivar",
 			"create": "Nova publicação",
+			"detail": {
+				"ChangelogDetailHeader": {
+					"deleteConfirmationMessage": "Esta atualização será eliminada permanentemente. Esta ação não pode ser anulada.",
+					"deleteConfirmationTitle": "Eliminar atualização"
+				}
+			},
 			"publish": "Publicar",
 			"select": "Selecione uma publicação",
 			"title": "Novidades",

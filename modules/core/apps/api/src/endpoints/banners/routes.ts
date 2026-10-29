@@ -2,6 +2,7 @@ import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clien
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { createBannerHandler } from './handlers/create-banner.js';
+import { deleteBannerHandler } from './handlers/delete-banner.js';
 import { getBannerHandler } from './handlers/get-banner.js';
 import { listBannersHandler } from './handlers/list-banners.js';
 import { updateBannerHandler } from './handlers/update-banner.js';
@@ -35,6 +36,12 @@ server.register(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.banners.scope, [PermissionCatalog.all.banners.actions.update]) },
 			updateBannerHandler,
+		);
+
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.banners.scope, [PermissionCatalog.all.banners.actions.delete]) },
+			deleteBannerHandler,
 		);
 
 		next();

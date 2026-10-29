@@ -3,7 +3,7 @@
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { ChangelogSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, CloseButton, HasPermission, IdTag, keepUrlParams, openChangelogPreviewModal, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, openChangelogPreviewModal, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -58,6 +58,18 @@ export function ChangelogDetailHeader() {
 			<Button disabled={!preview.success} label={t('default:dev.actions.preview')} onClick={handlePreview} variant="secondary" />
 			<HasPermission action={catalog.actions.update} scope={catalog.scope}>
 				<UpdateButton isDisabled={!capabilities.updateEnabled} isLoading={status.isUpdating} onClick={actions.update} />
+			</HasPermission>
+			<HasPermission action={catalog.actions.delete} scope={catalog.scope}>
+				<DeleteButton
+					cancelLabel={t('default:dev.actions.cancel')}
+					confirmLabel={t('default:dev.actions.delete')}
+					confirmMessage={t('default:dev.changelog.detail.ChangelogDetailHeader.deleteConfirmationMessage')}
+					confirmTitle={t('default:dev.changelog.detail.ChangelogDetailHeader.deleteConfirmationTitle')}
+					isDisabled={!capabilities.deleteEnabled}
+					isLoading={status.isDeleting}
+					onDelete={actions.delete}
+					showConfirmation
+				/>
 			</HasPermission>
 		</Toolbar>
 	);

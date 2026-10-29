@@ -236,6 +236,7 @@
 				"new_feature": "Add new feature"
 			},
 			"cancel": "Cancel",
+			"delete": "Delete",
 			"down": "Move down",
 			"preview": "Preview",
 			"remove": "Remove change",
@@ -244,6 +245,12 @@
 		"banners": {
 			"archive": "Archive",
 			"create": "New banner",
+			"detail": {
+				"BannersDetailHeader": {
+					"deleteConfirmationMessage": "This banner will be permanently deleted. This action cannot be undone.",
+					"deleteConfirmationTitle": "Delete banner"
+				}
+			},
 			"publish": "Activate",
 			"select": "Select a banner",
 			"title": "Operational banners",
@@ -252,6 +259,12 @@
 		"changelog": {
 			"archive": "Archive",
 			"create": "New release",
+			"detail": {
+				"ChangelogDetailHeader": {
+					"deleteConfirmationMessage": "This changelog will be permanently deleted. This action cannot be undone.",
+					"deleteConfirmationTitle": "Delete changelog"
+				}
+			},
 			"publish": "Publish",
 			"select": "Select a release",
 			"title": "Changelog releases",

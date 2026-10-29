@@ -3,7 +3,7 @@
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { BannerSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { BannerNotice, Button, CloseButton, HasPermission, IdTag, keepUrlParams, openModal, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { BannerNotice, Button, CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, openModal, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -62,6 +62,18 @@ export function BannersDetailHeader() {
 			<Button disabled={!preview.success} label={t('default:dev.actions.preview')} onClick={handlePreview} variant="secondary" />
 			<HasPermission action={catalog.actions.update} scope={catalog.scope}>
 				<UpdateButton isDisabled={!capabilities.updateEnabled} isLoading={status.isUpdating} onClick={actions.update} />
+			</HasPermission>
+			<HasPermission action={catalog.actions.delete} scope={catalog.scope}>
+				<DeleteButton
+					cancelLabel={t('default:dev.actions.cancel')}
+					confirmLabel={t('default:dev.actions.delete')}
+					confirmMessage={t('default:dev.banners.detail.BannersDetailHeader.deleteConfirmationMessage')}
+					confirmTitle={t('default:dev.banners.detail.BannersDetailHeader.deleteConfirmationTitle')}
+					isDisabled={!capabilities.deleteEnabled}
+					isLoading={status.isDeleting}
+					onDelete={actions.delete}
+					showConfirmation
+				/>
 			</HasPermission>
 		</Toolbar>
 	);
