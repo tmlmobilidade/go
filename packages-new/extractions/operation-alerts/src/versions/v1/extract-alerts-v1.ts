@@ -69,7 +69,14 @@ export async function extractOperationAlertsV1(context: ExtractionTaskContext, e
 	const csvWriter = new BatchWriter<OperationAlertsV1OutputRow>({
 		batch_size: 100_000,
 		insertFn: async (outputRows) => {
-			const csvData = csvStringify(outputRows, { columns: csvColumns, header: false });
+			const csvData = csvStringify(outputRows, {
+				cast: {
+					// Replace line breaks inside cells so each alert occupies a single CSV line.
+					string: cellValue => cellValue.replaceAll(/[\r\n\u2028\u2029]+/g, ' '),
+				},
+				columns: csvColumns,
+				header: false,
+			});
 			fs.appendFileSync(outputFilePath, csvData, { encoding: 'utf-8', flush: true });
 		},
 		// Do not retry appends: a partially written batch could be duplicated.
