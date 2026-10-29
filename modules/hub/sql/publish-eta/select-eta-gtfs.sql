@@ -58,6 +58,7 @@ stops AS (
     LEFT JOIN trip_summary AS ts
         ON ts.hashed_trip_id = e.hashed_trip_id
     WHERE estimated_arrival_unix IS NOT NULL
+      AND ({agency_id:String} = '' OR e.agency_id = {agency_id:String})
     ORDER BY trip_id, stop_sequence, stop_id
     LIMIT 1 BY trip_id, stop_id
 ),

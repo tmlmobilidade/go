@@ -20,12 +20,14 @@ import { groupEtasByTrip } from './trip-updates-to-etas.js';
  *
  * @param etas - Trip-stop ETAs to write into the trip-keyed cache
  */
-export async function cacheEtasByTrip(etas: TripStopEta[]) {
+export async function cacheEtasByTrip(etas: TripStopEta[], agencyId?: string) {
 	//
+
+	const prefix: 'hub:v1:realtime:eta' | `hub:v1:${string}:realtime:eta` = agencyId ? `hub:v1:${agencyId}:realtime:eta` : 'hub:v1:realtime:eta';
 
 	await Promise.all([...groupEtasByTrip(etas).entries()].map(async ([tripId, tripEtas]) => {
 		const sorted = [...tripEtas].sort((a, b) => a.stop_sequence - b.stop_sequence);
-		await cacheDb.set(`hub:v1:realtime:eta:by-trip:${tripId}`, JSON.stringify(sorted), TTL_REALTIME);
+		await cacheDb.set(`${prefix}:by-trip:${tripId}`, JSON.stringify(sorted), TTL_REALTIME);
 	}));
 
 	//

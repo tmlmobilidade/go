@@ -1,5 +1,6 @@
 /* * */
 
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -25,6 +26,13 @@ async function main() {
 	// Run all tasks sequentially
 
 	if (ITERATION % 15 === 0) {
+		const agencies = await goDb.core.agencies.findMany({ 'open_data.services.eta_enabled': true }, { projection: { _id: 1 } });
+
+		for (const agency of agencies) {
+			await Promise.all([publishEtas(agency._id), publishTripUpdates(agency._id)]);
+		}
+
+		// Keep global feeds available for existing consumers.
 		await Promise.all([
 			publishEtas(), // Every 15 iterations * 1s + execution time ≈ 30 seconds
 			publishTripUpdates(), // Every 15 iterations * 1s + execution time ≈ 30 seconds

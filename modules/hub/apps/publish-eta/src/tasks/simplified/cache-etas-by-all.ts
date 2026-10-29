@@ -18,12 +18,14 @@ import { type TripStopEta } from '../types.js';
  *
  * @param etas - Trip-stop ETAs to merge into the all-ETAs cache
  */
-export async function cacheEtasByAll(etas: TripStopEta[]) {
+export async function cacheEtasByAll(etas: TripStopEta[], agencyId?: string) {
 	//
+
+	const prefix: 'hub:v1:realtime:eta' | `hub:v1:${string}:realtime:eta` = agencyId ? `hub:v1:${agencyId}:realtime:eta` : 'hub:v1:realtime:eta';
 
 	if (!etas.length) return;
 
-	const raw = await cacheDb.get('hub:v1:realtime:eta:all');
+	const raw = await cacheDb.get(`${prefix}:all`);
 	const allEtas: Record<string, unknown>[] = raw ? JSON.parse(raw) : [];
 	const tripIds = new Set(etas.map(eta => eta.trip_id));
 	const merged = [
@@ -31,7 +33,7 @@ export async function cacheEtasByAll(etas: TripStopEta[]) {
 		...etas,
 	];
 
-	await cacheDb.set('hub:v1:realtime:eta:all', JSON.stringify(merged), TTL_REALTIME);
+	await cacheDb.set(`${prefix}:all`, JSON.stringify(merged), TTL_REALTIME);
 
 	//
 };

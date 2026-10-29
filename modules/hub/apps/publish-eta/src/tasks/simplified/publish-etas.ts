@@ -16,11 +16,14 @@ import { getExternalEtas } from './get-external-etas.js';
 /**
  * Publishes the simplified (non-GTFS) trip-stop ETA caches.
  *
+ * With an agency ID, writes under `hub:v1:{agencyId}:realtime:eta`
+ * and includes only that agency. Omitting it preserves the global feed.
+ *
  * Rebuilds `eta:all`, `eta:by-trip:*`, and `eta:by-stop:*` from ClickHouse.
  * External feeds can later merge into those same keys via
- * {@link cacheEtasByTrip}, {@link cacheEtasByStop}, and {@link cacheEtasInAll}.
+ * {@link cacheEtasByTrip}, {@link cacheEtasByStop}, and {@link cacheEtasByAll}.
  */
-export async function publishEtas() {
+export async function publishEtas(agencyId?: string) {
 	//
 
 	Logger.title('Publishing trip stop ETAs...');
@@ -28,15 +31,15 @@ export async function publishEtas() {
 	const globalTimer = new Timer();
 
 	// Rebuild ETA caches from ClickHouse SQL aggregations
-	await cacheAllEtasFromClickHouse();
-	await cacheEtasFromClickHouseByTrip();
-	await cacheEtasFromClickHouseByStop();
+	await cacheAllEtasFromClickHouse(agencyId);
+	await cacheEtasFromClickHouseByTrip(agencyId);
+	await cacheEtasFromClickHouseByStop(agencyId);
 
-	for (const feed of EXTERNAL_FEEDS) {
+	for (const feed of EXTERNAL_FEEDS.filter(feed => !agencyId || feed.agencyId === agencyId)) {
 		const etas = await getExternalEtas(feed);
-		await cacheEtasByTrip(etas);
-		await cacheEtasByStop(etas);
-		await cacheEtasByAll(etas);
+		await cacheEtasByTrip(etas, agencyId);
+		await cacheEtasByStop(etas, agencyId);
+		await cacheEtasByAll(etas, agencyId);
 	}
 
 	Logger.success(`Finished publishing trip stop ETAs (${globalTimer.get()})`);

@@ -21,14 +21,16 @@ import { getClickHouseEtas } from './get-clickhouse-etas.js';
  *
  * @returns The ClickHouse ETAs that were written to cache
  */
-export async function cacheAllEtasFromClickHouse(): Promise<TripStopEta[]> {
+export async function cacheAllEtasFromClickHouse(agencyId?: string): Promise<TripStopEta[]> {
 	//
+
+	const prefix: 'hub:v1:realtime:eta' | `hub:v1:${string}:realtime:eta` = agencyId ? `hub:v1:${agencyId}:realtime:eta` : 'hub:v1:realtime:eta';
 
 	const timer = new Timer();
 
-	const etas = await getClickHouseEtas();
+	const etas = await getClickHouseEtas(agencyId);
 
-	await cacheDb.set('hub:v1:realtime:eta:all', JSON.stringify(etas), TTL_REALTIME);
+	await cacheDb.set(`${prefix}:all`, JSON.stringify(etas), TTL_REALTIME);
 
 	Logger.info({ message: `Cached ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfter: 1 });
 

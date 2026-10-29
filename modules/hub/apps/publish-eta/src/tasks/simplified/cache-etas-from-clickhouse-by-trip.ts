@@ -21,16 +21,18 @@ import { type ClickHouseEtaKeyValue } from '../types.js';
  * For writing in-memory `TripStopEta[]` from an external feed (e.g. CP), use
  * {@link cacheEtasByTrip} instead.
  */
-export async function cacheEtasFromClickHouseByTrip() {
+export async function cacheEtasFromClickHouseByTrip(agencyId?: string) {
 	//
+
+	const prefix: 'hub:v1:realtime:eta' | `hub:v1:${string}:realtime:eta` = agencyId ? `hub:v1:${agencyId}:realtime:eta` : 'hub:v1:realtime:eta';
 
 	const timer = new Timer();
 
 	Logger.info({ message: 'Retrieving trip stop ETAs grouped by trip from ClickHouse...' });
 
-	const etasByTrip = await labDb.queryFromFile<ClickHouseEtaKeyValue>(sqlPath('hub', 'publish-eta/select-eta-by-trip.sql'));
+	const etasByTrip = await labDb.queryFromFile<ClickHouseEtaKeyValue>(sqlPath('hub', 'publish-eta/select-eta-by-trip.sql'), { agency_id: agencyId ?? '' });
 
-	await Promise.all(etasByTrip.map(row => cacheDb.set(`hub:v1:realtime:eta:by-trip:${row.key}`, row.value, TTL_REALTIME)));
+	await Promise.all(etasByTrip.map(row => cacheDb.set(`${prefix}:by-trip:${row.key}`, row.value, TTL_REALTIME)));
 
 	Logger.info({ message: `Cached ${etasByTrip.length} trip ETA groups in ${timer.get()}`, spacesAfter: 1 });
 

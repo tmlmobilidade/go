@@ -29,5 +29,6 @@ SELECT
     ) AS value
 FROM eta.pred_trip_stop_etas
 FINAL
+WHERE ({agency_id:String} = '' OR agency_id = {agency_id:String})
 GROUP BY plan_id, agency_id, trip_id
 ORDER BY key;

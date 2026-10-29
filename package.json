@@ -132,6 +132,7 @@
 		"prd:core:extractions": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-core-extractions-coordinator --filter=@tmlmobilidade/go-core-extractions-worker",
 		"prd:core:ui": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-core-frontend --filter=@tmlmobilidade/go-core-api",
 		"prd:dates": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-dates-*",
+		"prd:hub:api": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-api",
 		"prd:hub:eta": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-eta",
 		"prd:hub:publish-eta": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-eta",
 		"prd:hub:publish-gtfs": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-gtfs",
