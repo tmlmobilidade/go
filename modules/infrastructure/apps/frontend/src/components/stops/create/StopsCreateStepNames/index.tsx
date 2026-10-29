@@ -35,11 +35,11 @@ export function StopsCreateStepNames() {
 	}, [nameValue]);
 
 	const agenciesMessage = agencies.isLoading
-		? t('default:stops.create.StepNames.fields.agency_ids.loading')
+		? t('stops:create.StopsCreateStepNames.fields.agency_ids.loading')
 		: agencies.error || !agencies.data
-			? t('default:stops.create.StepNames.fields.agency_ids.unavailable')
+			? t('stops:create.StopsCreateStepNames.fields.agency_ids.unavailable')
 			: !agencies.ids.length
-				? t('default:stops.create.StepNames.fields.agency_ids.empty')
+				? t('stops:create.StopsCreateStepNames.fields.agency_ids.empty')
 				: null;
 
 	//
@@ -57,9 +57,9 @@ export function StopsCreateStepNames() {
 						render={({ field }) => (
 							<MultiSelect
 								data={agencies.options}
-								description={t('default:stops.create.StepNames.fields.agency_ids.description')}
-								error={!agenciesValid ? t('default:stops.create.StepNames.fields.agency_ids.required') : undefined}
-								label={t('default:stops.create.StepNames.fields.agency_ids.label')}
+								description={t('stops:create.StopsCreateStepNames.fields.agency_ids.description')}
+								error={!agenciesValid ? t('stops:create.StopsCreateStepNames.fields.agency_ids.required') : undefined}
+								label={t('stops:create.StopsCreateStepNames.fields.agency_ids.label')}
 								onChange={field.onChange}
 								value={field.value ?? []}
 								w="100%"
@@ -73,9 +73,9 @@ export function StopsCreateStepNames() {
 					name="name"
 					render={({ field, fieldState }) => (
 						<TextInput
-							description={t('default:stops.create.StepNames.fields.name.description')}
+							description={t('stops:create.StopsCreateStepNames.fields.name.description')}
 							error={fieldState.error?.message}
-							label={t('default:stops.create.StepNames.fields.name.label')}
+							label={t('stops:create.StopsCreateStepNames.fields.name.label')}
 							onChange={field.onChange}
 							value={field.value ?? ''}
 							w="100%"
@@ -90,15 +90,15 @@ export function StopsCreateStepNames() {
 
 			<Section gap="sm">
 				<TextInput
-					description={t('default:stops.create.StepNames.fields.short_name.description')}
-					label={t('default:stops.create.StepNames.fields.short_name.label')}
+					description={t('stops:create.StopsCreateStepNames.fields.short_name.description')}
+					label={t('stops:create.StopsCreateStepNames.fields.short_name.label')}
 					value={automaticShortName}
 					w="100%"
 					readOnly
 				/>
 				<TextInput
-					description={t('default:stops.create.StepNames.fields.tts_name.description')}
-					label={t('default:stops.create.StepNames.fields.tts_name.label')}
+					description={t('stops:create.StopsCreateStepNames.fields.tts_name.description')}
+					label={t('stops:create.StopsCreateStepNames.fields.tts_name.label')}
 					value={automaticTtsName}
 					w="100%"
 					readOnly
