@@ -33,7 +33,7 @@ export async function fetchReplayActivation(url: string, userId: string, signal:
 		response = await requestReplayAuthorization(url, userId, signal, pending.activation_id);
 	}
 	const { activation, server_now: serverNow } = response.value;
-	if (signal.aborted || !activation || activation.started_at === null || activation.expires_at === null) return undefined;
+	if (signal.aborted || activation?.started_at == null || activation.expires_at === null) return undefined;
 	const remaining = activation.expires_at - serverNow;
 	// Subtract the whole request duration conservatively, rather than adding network time to the window.
 	const deadline = response.requestedAt + remaining;
