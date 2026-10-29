@@ -3,7 +3,7 @@
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ChangelogListItem } from '@tmlmobilidade/go-core-pckg-types';
 import { ChangelogItemCategoryValues } from '@tmlmobilidade/go-types-core';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, PublishStatusDisplay, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, PublishStatusDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -39,8 +39,8 @@ export function ChangelogList() {
 			width: 260,
 		},
 		{
-			accessor: 'status',
-			render: item => <PublishStatusDisplay value={item.status} />,
+			accessor: 'publish_status',
+			render: item => <PublishStatusDisplay value={item.publish_status} />,
 			title: t('default:dev.fields.publication'),
 			width: 130,
 		},
@@ -60,12 +60,7 @@ export function ChangelogList() {
 			title: t('default:dev.fields.changes'),
 			width: 340,
 		},
-		{
-			accessor: 'published_at',
-			render: item => item.published_at && <UnixMillisecondsDisplay value={item.published_at} showDate />,
-			title: t('default:dev.fields.published_at'),
-			width: 180,
-		},
+
 	];
 
 	//

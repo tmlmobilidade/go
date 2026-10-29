@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangelogItemCategoryValues, type ChangelogReader } from '@tmlmobilidade/go-types-core';
+import { ChangelogItemCategoryValues, type ChangelogPlatformResponse } from '@tmlmobilidade/go-types-core';
 import { useTranslation } from 'react-i18next';
 
 import categoryStyles from '../../shared/changelog-categories.module.css';
@@ -11,7 +11,7 @@ import { ChangelogMeta } from '../../shared/ChangelogMeta';
 
 /* * */
 
-export function ChangelogDetail({ release }: { release: ChangelogReader }) {
+export function ChangelogDetail({ release }: { release: ChangelogPlatformResponse }) {
 	//
 	// A. Setup variables
 
@@ -22,7 +22,7 @@ export function ChangelogDetail({ release }: { release: ChangelogReader }) {
 
 	return (
 		<article className={styles.root}>
-			<ChangelogMeta publishedAt={release.published_at} scope={release.scope} />
+			<ChangelogMeta scope={release.scope} />
 			<h2 className={styles.title} tabIndex={-1}>{release.title}</h2>
 			<p className={styles.summary}>{release.summary}</p>
 			{ChangelogItemCategoryValues.map((category) => {

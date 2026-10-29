@@ -35,9 +35,7 @@ export async function createChangelogHandler(request: FastifyRequest<{ Body: Cre
 		...content,
 		created_by: request.me._id,
 		is_locked: false,
-		published_at: null,
-		published_by: null,
-		status: 'draft',
+		publish_status: 'draft',
 		updated_by: request.me._id,
 	});
 

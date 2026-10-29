@@ -35,6 +35,7 @@
 		"mark_read_error": "Could not mark updates as read",
 		"mark_read_success": "Updates marked as read",
 		"modules": {
+			"apex": "Apex",
 			"core": "Core",
 			"dates": "Dates",
 			"exporter": "Exports",
@@ -43,7 +44,8 @@
 			"offer": "Offer",
 			"operation": "Operation",
 			"performance": "Performance",
-			"platform": "Platform"
+			"platform": "Platform",
+			"tracker": "Tracker"
 		},
 		"open_release": "View update",
 		"read_release": "Read",

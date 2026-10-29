@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type MarkChangelogSeenDto, type MarkChangelogSeenResult, MarkChangelogSeenSchema } from '@tmlmobilidade/go-types-core';
+import { type ChangelogSeenPlatformRequest, ChangelogSeenPlatformRequestSchema, type ChangelogSeenPlatformResponse } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -12,13 +12,13 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function markReleasesSeenHandler(request: FastifyRequest<{ Body: MarkChangelogSeenDto }>, reply: FastifyReply<MarkChangelogSeenResult>) {
+export async function markReleasesSeenHandler(request: FastifyRequest<{ Body: ChangelogSeenPlatformRequest }>, reply: FastifyReply<ChangelogSeenPlatformResponse>) {
 	//
 
 	//
 	// Validate the explicitly displayed releases
 
-	const validated = MarkChangelogSeenSchema.safeParse(request.body);
+	const validated = ChangelogSeenPlatformRequestSchema.safeParse(request.body);
 
 	if (!validated.success) {
 		return sendErrorApiResponse(reply, {
@@ -32,7 +32,7 @@ export async function markReleasesSeenHandler(request: FastifyRequest<{ Body: Ma
 
 	const { release_ids: releaseIds } = validated.data;
 	const userId = request.me._id;
-	const releases = await goDb.core.changelogs.findMany({ _id: { $in: releaseIds }, status: 'published' });
+	const releases = await goDb.core.changelogs.findMany({ _id: { $in: releaseIds }, publish_status: 'published' });
 
 	if (releases.length !== releaseIds.length) {
 		return sendErrorApiResponse(reply, {

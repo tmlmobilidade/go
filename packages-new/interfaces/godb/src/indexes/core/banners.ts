@@ -4,5 +4,5 @@ import { type Banner } from '@tmlmobilidade/go-types-core';
 /* * */
 
 export const bannersIndexes: SimplifiedMongoIndex<Banner>[] = [
-	{ key: [['status', 1], ['published_at', -1]] },
+	{ key: [['publish_status', 1], ['created_at', -1]] },
 ];

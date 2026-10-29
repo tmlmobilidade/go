@@ -81,7 +81,7 @@ export function ChangelogDetailFormContextProvider({ children }: PropsWithChildr
 	const { action: handlePublication, isLoading: isPublishing } = useHandleAction<Changelog, 'archive' | 'publish' | 'unpublish'>({
 		fetchFn: action =>
 			fetchApiData<Changelog>({
-				body: { status: ({ archive: 'archived', publish: 'published', unpublish: 'draft' } as const)[action] },
+				body: { publish_status: ({ archive: 'archived', publish: 'published', unpublish: 'draft' } as const)[action] },
 				method: 'PUT',
 				url: API_ROUTES.core.CHANGELOGS_DETAIL(id),
 			}),
@@ -109,7 +109,7 @@ export function ChangelogDetailFormContextProvider({ children }: PropsWithChildr
 			if (!canUpdate || isDirty || isBusy || !data || data.is_locked) return;
 			if (
 				action === 'publish' &&
-				!ChangelogSchema.safeParse({ ...data, published_at: data.published_at ?? Date.now(), published_by: me?._id, status: 'published' })
+				!ChangelogSchema.safeParse({ ...data, publish_status: 'published' })
 					.success
 			) {
 				useToast.warning({ message: t('default:dev.hints.incomplete') });
@@ -117,7 +117,7 @@ export function ChangelogDetailFormContextProvider({ children }: PropsWithChildr
 			}
 			handlePublication(action);
 		},
-		[canUpdate, data, handlePublication, isBusy, isDirty, me?._id, t],
+		[canUpdate, data, handlePublication, isBusy, isDirty, t],
 	);
 
 	//

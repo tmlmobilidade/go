@@ -40,8 +40,8 @@ export function BannersList() {
 			width: 260,
 		},
 		{
-			accessor: 'status',
-			render: item => <PublishStatusDisplay value={item.status} />,
+			accessor: 'publish_status',
+			render: item => <PublishStatusDisplay value={item.publish_status} />,
 			title: t('default:dev.fields.publication'),
 			width: 130,
 		},

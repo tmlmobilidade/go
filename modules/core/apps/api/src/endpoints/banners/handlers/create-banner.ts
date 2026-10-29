@@ -36,9 +36,7 @@ export async function createBannerHandler(request: FastifyRequest<{ Body: Create
 		created_by: request.me._id,
 		dismissal_version: 1,
 		is_locked: false,
-		published_at: null,
-		published_by: null,
-		status: 'draft',
+		publish_status: 'draft',
 		updated_by: request.me._id,
 	});
 

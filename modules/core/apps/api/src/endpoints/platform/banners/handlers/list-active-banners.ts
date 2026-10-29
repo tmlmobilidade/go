@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Banner, type BannerReader, BannerReaderSchema, type BannersQuery, BannersQuerySchema } from '@tmlmobilidade/go-types-core';
+import { type Banner, type BannerPlatformResponse, BannerPlatformResponseSchema, type BannersPlatformRequest, BannersPlatformRequestSchema } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -13,7 +13,7 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listActiveBannersHandler(request: FastifyRequest<{ Querystring: BannersQuery }>, reply: FastifyReply<BannerReader[]>) {
+export async function listActiveBannersHandler(request: FastifyRequest<{ Querystring: BannersPlatformRequest }>, reply: FastifyReply<BannerPlatformResponse[]>) {
 	//
 
 	// Prevent HTTP caches from storing notices filtered by this user's dismissals and the current schedule.
@@ -22,7 +22,7 @@ export async function listActiveBannersHandler(request: FastifyRequest<{ Queryst
 	//
 	// Validate the requested module
 
-	const query = BannersQuerySchema.safeParse(request.query);
+	const query = BannersPlatformRequestSchema.safeParse(request.query);
 
 	if (!query.success) {
 		return sendErrorApiResponse(reply, {
@@ -44,7 +44,7 @@ export async function listActiveBannersHandler(request: FastifyRequest<{ Queryst
 			{ $or: [{ ends_at: null }, { ends_at: { $gt: time } }] },
 			{ $or: [{ 'scope.type': 'platform' }, ...(moduleId ? [{ 'scope.module_ids': moduleId, 'scope.type': 'modules' }] : [])] },
 		],
-		status: 'published',
+		publish_status: 'published',
 	};
 
 	//
@@ -61,8 +61,8 @@ export async function listActiveBannersHandler(request: FastifyRequest<{ Queryst
 
 	const result = banners
 		.filter(banner => !banner.dismissible || dismissed.get(banner._id) !== banner.dismissal_version)
-		.sort((a, b) => rank[a.severity] - rank[b.severity] || (b.published_at ?? 0) - (a.published_at ?? 0) || b._id.localeCompare(a._id))
-		.map(banner => BannerReaderSchema.parse(banner));
+		.sort((a, b) => rank[a.severity] - rank[b.severity] || b.created_at - a.created_at || b._id.localeCompare(a._id))
+		.map(banner => BannerPlatformResponseSchema.parse(banner));
 
 	return sendSuccessApiResponse(reply, result);
 }

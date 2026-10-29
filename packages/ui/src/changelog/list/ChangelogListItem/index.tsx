@@ -1,7 +1,7 @@
 'use client';
 
 import { IconArrowRight, IconCheck } from '@tabler/icons-react';
-import { ChangelogItemCategoryValues, type ChangelogSummary } from '@tmlmobilidade/go-types-core';
+import { ChangelogItemCategoryValues, type ChangelogSummaryPlatformResponse } from '@tmlmobilidade/go-types-core';
 import { useTranslation } from 'react-i18next';
 
 import categoryStyles from '../../shared/changelog-categories.module.css';
@@ -14,7 +14,7 @@ import { ChangelogMeta } from '../../shared/ChangelogMeta';
 
 interface ChangelogListItemProps {
 	onOpen: () => void
-	release: ChangelogSummary
+	release: ChangelogSummaryPlatformResponse
 }
 
 /* * */
@@ -32,7 +32,7 @@ export function ChangelogListItem({ onOpen, release }: ChangelogListItemProps) {
 		<li className={styles.item} data-release-id={release._id}>
 			<button className={styles.card} data-seen={release.is_seen} onClick={onOpen} type="button">
 				<span className={styles.header}>
-					<ChangelogMeta muted={release.is_seen} publishedAt={release.published_at} scope={release.scope} />
+					<ChangelogMeta muted={release.is_seen} scope={release.scope} />
 					{release.is_seen && (
 						<span className={styles.state}>
 							<IconCheck size={14} aria-hidden />

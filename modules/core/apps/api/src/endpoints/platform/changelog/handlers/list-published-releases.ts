@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Changelog, type ChangelogsQuery, ChangelogsQuerySchema, type ChangelogSummary, ChangelogSummarySchema } from '@tmlmobilidade/go-types-core';
+import { type Changelog, type ChangelogsPlatformRequest, ChangelogsPlatformRequestSchema, type ChangelogSummaryPlatformResponse, ChangelogSummaryPlatformResponseSchema } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
@@ -12,7 +12,7 @@ import { type Changelog, type ChangelogsQuery, ChangelogsQuerySchema, type Chang
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listPublishedReleasesHandler(request: FastifyRequest<{ Querystring: ChangelogsQuery }>, reply: FastifyReply<ChangelogSummary[]>) {
+export async function listPublishedReleasesHandler(request: FastifyRequest<{ Querystring: ChangelogsPlatformRequest }>, reply: FastifyReply<ChangelogSummaryPlatformResponse[]>) {
 	//
 
 	// Prevent HTTP caches from storing release summaries with this user's seen state.
@@ -21,7 +21,7 @@ export async function listPublishedReleasesHandler(request: FastifyRequest<{ Que
 	//
 	// Validate the optional module filter
 
-	const query = ChangelogsQuerySchema.safeParse(request.query);
+	const query = ChangelogsPlatformRequestSchema.safeParse(request.query);
 
 	if (!query.success) {
 		return sendErrorApiResponse(reply, {
@@ -39,14 +39,14 @@ export async function listPublishedReleasesHandler(request: FastifyRequest<{ Que
 	const filter: Filter<Changelog> = moduleId
 		? {
 			$or: [{ 'scope.type': 'platform' }, { 'scope.module_ids': moduleId, 'scope.type': 'modules' }],
-			status: 'published',
+			publish_status: 'published',
 		}
-		: { status: 'published' };
+		: { publish_status: 'published' };
 
 	//
 	// Load all matching releases and their per-user seen state
 
-	const releases = await goDb.core.changelogs.findMany(filter, { sort: [['published_at', -1], ['_id', -1]] });
+	const releases = await goDb.core.changelogs.findMany(filter, { sort: [['created_at', -1], ['_id', -1]] });
 	const views = await goDb.core.changelogViews.findMany({ release_id: { $in: releases.map(release => release._id) }, user_id: userId });
 	const seenIds = new Set(views.map(view => view.release_id));
 
@@ -58,7 +58,7 @@ export async function listPublishedReleasesHandler(request: FastifyRequest<{ Que
 
 		for (const item of release.items) counts[item.category]++;
 
-		return ChangelogSummarySchema.parse({ ...release, category_counts: counts, is_seen: seenIds.has(release._id) });
+		return ChangelogSummaryPlatformResponseSchema.parse({ ...release, category_counts: counts, is_seen: seenIds.has(release._id) });
 	});
 
 	return sendSuccessApiResponse(reply, items);

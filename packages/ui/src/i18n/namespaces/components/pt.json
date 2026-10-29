@@ -35,6 +35,7 @@
 		"mark_read_error": "Não foi possível marcar as atualizações como lidas",
 		"mark_read_success": "Atualizações marcadas como lidas",
 		"modules": {
+			"apex": "Apex",
 			"core": "Base",
 			"dates": "Datas",
 			"exporter": "Exportações",
@@ -43,7 +44,8 @@
 			"offer": "Oferta",
 			"operation": "Operação",
 			"performance": "Desempenho",
-			"platform": "Plataforma"
+			"platform": "Plataforma",
+			"tracker": "Tracker"
 		},
 		"open_release": "Ver atualização",
 		"read_release": "Lida",

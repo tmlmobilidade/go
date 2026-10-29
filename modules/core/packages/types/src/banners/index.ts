@@ -1,4 +1,5 @@
 import { BannerSchema } from '@tmlmobilidade/go-types-core';
+import { PublishStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,17 +11,16 @@ export const BannerListItemSchema = BannerSchema.innerType().pick({
 	ends_at: true,
 	kind: true,
 	message: true,
-	published_at: true,
+	publish_status: true,
 	scope: true,
 	severity: true,
 	starts_at: true,
-	status: true,
 	title: true,
 	updated_at: true,
 });
 export type BannerListItem = z.infer<typeof BannerListItemSchema>;
 
 export const BannerManagementQuerySchema = z.object({
-	status: z.enum(['draft', 'published', 'archived']).optional(),
+	publish_status: PublishStatusSchema.optional(),
 });
 export type BannerManagementQuery = z.infer<typeof BannerManagementQuerySchema>;

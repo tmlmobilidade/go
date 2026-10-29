@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type DismissBannerDto, type DismissBannerResult, DismissBannerSchema } from '@tmlmobilidade/go-types-core';
+import { type BannerDismissPlatformRequest, BannerDismissPlatformRequestSchema, type BannerDismissPlatformResponse } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -12,13 +12,13 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function dismissBannerHandler(request: FastifyRequest<{ Body: DismissBannerDto, Params: { id: string } }>, reply: FastifyReply<DismissBannerResult>) {
+export async function dismissBannerHandler(request: FastifyRequest<{ Body: BannerDismissPlatformRequest, Params: { id: string } }>, reply: FastifyReply<BannerDismissPlatformResponse>) {
 	//
 
 	//
 	// Validate the requested banner version
 
-	const validated = DismissBannerSchema.safeParse(request.body);
+	const validated = BannerDismissPlatformRequestSchema.safeParse(request.body);
 
 	if (!validated.success) {
 		return sendErrorApiResponse(reply, {
@@ -46,7 +46,7 @@ export async function dismissBannerHandler(request: FastifyRequest<{ Body: Dismi
 	const time = Dates.now('utc').unix_milliseconds;
 	const scopeMatches = banner.scope.type === 'platform' || (moduleId !== undefined && banner.scope.module_ids.includes(moduleId));
 
-	const isActive = banner.status === 'published' && scopeMatches && (banner.starts_at === null || banner.starts_at <= time) && (banner.ends_at === null || time < banner.ends_at);
+	const isActive = banner.publish_status === 'published' && scopeMatches && (banner.starts_at === null || banner.starts_at <= time) && (banner.ends_at === null || time < banner.ends_at);
 
 	if (!isActive) {
 		return sendErrorApiResponse(reply, {

@@ -1,6 +1,6 @@
 'use client';
 
-import { ContentModuleIdSchema, ContentModuleIdValues, type ContentScope } from '@tmlmobilidade/go-types-core';
+import { ModuleIdSchema, ModuleIdValues, type ModuleScope } from '@tmlmobilidade/go-types-shared';
 import { Label, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -9,8 +9,8 @@ import { useTranslation } from 'react-i18next';
 interface ContentScopeProps {
 	disabled: boolean
 	error?: string
-	onChange: (value: ContentScope) => void
-	value?: ContentScope
+	onChange: (value: ModuleScope) => void
+	value?: ModuleScope
 }
 
 /* * */
@@ -23,7 +23,7 @@ export function ContentScope({ disabled, error, onChange, value }: ContentScopeP
 
 	const { t } = useTranslation();
 	const type = value?.type ?? 'platform';
-	const options = ContentModuleIdValues.map(id => ({ label: t(`shared:components.changelog.modules.${id}`), value: id }));
+	const options = ModuleIdValues.map(id => ({ label: t(`shared:components.changelog.modules.${id}`), value: id }));
 
 	//
 	// B. Render components
@@ -51,7 +51,7 @@ export function ContentScope({ disabled, error, onChange, value }: ContentScopeP
 					value={value?.type === 'modules' ? value.module_ids : []}
 					w="100%"
 					onChange={(ids) => {
-						const parsed = ids.map(id => ContentModuleIdSchema.parse(id));
+						const parsed = ids.map(id => ModuleIdSchema.parse(id));
 						if (parsed.length) onChange({ module_ids: [parsed[0], ...parsed.slice(1)], type: 'modules' });
 					}}
 				/>

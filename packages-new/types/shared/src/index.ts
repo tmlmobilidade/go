@@ -2,6 +2,7 @@ export * from './api/index.js';
 export * from './conditions/index.js';
 export * from './datetime/index.js';
 export * from './documents/index.js';
+export * from './modules/index.js';
 export * from './numbers/index.js';
 export * from './status/index.js';
 export * from './theme/index.js';

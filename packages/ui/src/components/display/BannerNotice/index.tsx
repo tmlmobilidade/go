@@ -3,7 +3,7 @@
 /* * */
 
 import { IconAlertCircle, IconServerCog, IconSpeakerphone, IconX } from '@tabler/icons-react';
-import { type BannerKind, type BannerReader } from '@tmlmobilidade/go-types-core';
+import { type BannerKind, type BannerPlatformResponse } from '@tmlmobilidade/go-types-core';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +18,7 @@ export const BANNER_KIND_ICONS: Record<BannerKind, typeof IconAlertCircle> = {
 };
 
 interface BannerNoticeProps {
-	banner: Pick<BannerReader, 'dismissible' | 'ends_at' | 'kind' | 'link' | 'message' | 'severity' | 'starts_at' | 'title'>
+	banner: Pick<BannerPlatformResponse, 'dismissible' | 'ends_at' | 'kind' | 'link' | 'message' | 'severity' | 'starts_at' | 'title'>
 	onDismiss?: () => void
 }
 

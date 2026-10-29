@@ -91,7 +91,7 @@ export function BannersDetailFormContextProvider({ children }: PropsWithChildren
 	const { action: handlePublication, isLoading: isPublishing } = useHandleAction<Banner, 'archive' | 'publish' | 'unpublish'>({
 		fetchFn: action =>
 			fetchApiData<Banner>({
-				body: { status: ({ archive: 'archived', publish: 'published', unpublish: 'draft' } as const)[action] },
+				body: { publish_status: ({ archive: 'archived', publish: 'published', unpublish: 'draft' } as const)[action] },
 				method: 'PUT',
 				url: API_ROUTES.core.BANNERS_DETAIL(id),
 			}),
@@ -117,13 +117,13 @@ export function BannersDetailFormContextProvider({ children }: PropsWithChildren
 	const changePublication = useCallback(
 		(action: 'archive' | 'publish' | 'unpublish') => {
 			if (!canUpdate || isDirty || isBusy || !data || data.is_locked) return;
-			if (action === 'publish' && !BannerSchema.safeParse({ ...data, published_at: data.published_at ?? Date.now(), published_by: me?._id, status: 'published' }).success) {
+			if (action === 'publish' && !BannerSchema.safeParse({ ...data, publish_status: 'published' }).success) {
 				useToast.warning({ message: t('default:dev.hints.incomplete') });
 				return;
 			}
 			handlePublication(action);
 		},
-		[canUpdate, data, handlePublication, isBusy, isDirty, me?._id, t],
+		[canUpdate, data, handlePublication, isBusy, isDirty, t],
 	);
 
 	//

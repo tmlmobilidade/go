@@ -29,8 +29,8 @@ export async function listBannersHandler(request: FastifyRequest<{ Querystring: 
 	//
 	// Retrieve documents in management order
 
-	const { status } = query.data;
-	const documents = await goDb.core.banners.findMany(status ? { status } : {}, { sort: [['updated_at', -1], ['_id', -1]] });
+	const { publish_status: publishStatus } = query.data;
+	const documents = await goDb.core.banners.findMany(publishStatus ? { publish_status: publishStatus } : {}, { sort: [['updated_at', -1], ['_id', -1]] });
 
 	//
 	// Return only the fields needed by the management list

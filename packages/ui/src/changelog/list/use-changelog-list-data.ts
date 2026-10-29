@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type ChangelogSummary, type MarkChangelogSeenDto, type MarkChangelogSeenResult } from '@tmlmobilidade/go-types-core';
+import { type ChangelogSeenPlatformRequest, type ChangelogSeenPlatformResponse, type ChangelogSummaryPlatformResponse } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useCallback, useMemo, useRef } from 'react';
@@ -14,7 +14,7 @@ import { useHandleAction } from '../../fetch/use-handle-action';
 /* * */
 
 interface UseChangelogListDataReturnType {
-	data: ChangelogSummary[]
+	data: ChangelogSummaryPlatformResponse[]
 	error: Error | undefined
 	isLoading: boolean
 	isMarkingRead: boolean
@@ -27,18 +27,18 @@ interface UseChangelogListDataReturnType {
 /* * */
 
 // Reject API errors so SWR can expose them and retry the request.
-export async function getAllChangelogSummaries(): Promise<ChangelogSummary[]> {
-	const response = await fetchApiData<ChangelogSummary[]>({ url: API_ROUTES.core.CHANGELOG_LIST });
+export async function getAllChangelogSummaries(): Promise<ChangelogSummaryPlatformResponse[]> {
+	const response = await fetchApiData<ChangelogSummaryPlatformResponse[]>({ url: API_ROUTES.core.CHANGELOG_LIST });
 	if (response.error || !response.data) throw new Error(response.error || 'Empty changelog response');
 	return response.data;
 }
 
 /* * */
 
-export async function markChangelogsRead(releaseIds: string[]): Promise<ApiResponse<MarkChangelogSeenResult>> {
+export async function markChangelogsRead(releaseIds: string[]): Promise<ApiResponse<ChangelogSeenPlatformResponse>> {
 	// The acknowledgement endpoint accepts at most 100 release IDs per request.
 	for (let index = 0; index < releaseIds.length; index += 100) {
-		const response = await fetchApiData<MarkChangelogSeenResult, MarkChangelogSeenDto>({
+		const response = await fetchApiData<ChangelogSeenPlatformResponse, ChangelogSeenPlatformRequest>({
 			body: { release_ids: releaseIds.slice(index, index + 100) },
 			method: 'POST',
 			url: API_ROUTES.core.CHANGELOG_SEEN,
@@ -61,7 +61,7 @@ export function useChangelogListData(): UseChangelogListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, mutate } = useSWR<ChangelogSummary[], Error>(
+	const { data, error, isLoading, mutate } = useSWR<ChangelogSummaryPlatformResponse[], Error>(
 		[API_ROUTES.core.CHANGELOG_LIST, 'all-summaries'],
 		getAllChangelogSummaries,
 		{ refreshInterval: 600_000, revalidateOnFocus: false },
@@ -70,7 +70,7 @@ export function useChangelogListData(): UseChangelogListDataReturnType {
 	//
 	// C. Handle actions
 
-	const markRead = useHandleAction<MarkChangelogSeenResult, string[]>({
+	const markRead = useHandleAction<ChangelogSeenPlatformResponse, string[]>({
 		fetchFn: markChangelogsRead,
 		labels: {
 			error_title: t('shared:components.changelog.mark_read_error'),

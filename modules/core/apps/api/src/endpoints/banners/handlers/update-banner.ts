@@ -18,16 +18,16 @@ export async function updateBannerHandler(request: FastifyRequest<{ Body: Update
 	//
 	// Validate the requested content and optional publication status
 
-	let patch: UpdateBannerDto;
+	const validated = UpdateBannerSchema.safeParse(request.body);
 
-	try {
-		patch = UpdateBannerSchema.parse(request.body);
-	} catch (error) {
+	if (!validated.success) {
 		return sendErrorApiResponse(reply, {
-			error: error instanceof Error ? error.message : 'Invalid update',
+			error: validated.error.message,
 			status_code: '400',
 		});
 	}
+
+	const patch = validated.data;
 
 	//
 	// Find the current document and reject changes to locked content
@@ -57,19 +57,12 @@ export async function updateBannerHandler(request: FastifyRequest<{ Body: Update
 	const materialFields = ['title', 'message', 'kind', 'severity', 'scope', 'link', 'starts_at', 'ends_at', 'dismissible'] as const;
 	const materiallyChanged = materialFields.some(field => !isDeepStrictEqual(previous[field], merged[field]));
 
-	// Record publication metadata only when entering the published state.
-	const publication = merged.status === 'published' && previous.status !== 'published'
-		? { published_at: Date.now(), published_by: request.me._id }
-		: {};
-
 	//
 	// Validate the complete document, including partial schedule edits
 
 	const candidate = BannerSchema.safeParse({
 		...merged,
-		...publication,
 		dismissal_version: previous.dismissal_version + Number(materiallyChanged),
-		updated_at: Math.max(Date.now(), previous.updated_at + 1),
 		updated_by: request.me._id,
 	});
 
@@ -81,16 +74,13 @@ export async function updateBannerHandler(request: FastifyRequest<{ Body: Update
 	}
 
 	//
-	// Save only if no other request has updated this document in the meantime
+	// Save the editable fields and dismissal version
 
-	const updated = await goDb.core.banners.replaceOne({ _id: request.params.id, updated_at: previous.updated_at }, candidate.data);
-
-	if (!updated) {
-		return sendErrorApiResponse(reply, {
-			error: 'Banner changed while saving; reload and retry',
-			status_code: '409',
-		});
-	}
+	const updated = await goDb.core.banners.updateOne({ _id: request.params.id }, {
+		...patch,
+		dismissal_version: candidate.data.dismissal_version,
+		updated_by: request.me._id,
+	});
 
 	return sendSuccessApiResponse(reply, updated);
 }

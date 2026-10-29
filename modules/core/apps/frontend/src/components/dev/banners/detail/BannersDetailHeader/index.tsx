@@ -25,12 +25,10 @@ export function BannersDetailHeader() {
 	const preview = BannerSchema.safeParse({
 		...data,
 		...values,
-		published_at: data?.published_at ?? Date.now(),
-		published_by: data?.created_by,
-		status: 'published',
+		publish_status: 'published',
 	});
 	const catalog = PermissionCatalog.all.banners;
-	const handleStatusChange = usePublicationToggle({ canPublishContent: preview.success, kind: 'banners', onAction: publication.change, status: data?.status });
+	const handleStatusChange = usePublicationToggle({ canPublishContent: preview.success, kind: 'banners', onAction: publication.change, status: data?.publish_status });
 
 	//
 	// B. Handle actions
@@ -58,7 +56,7 @@ export function BannersDetailHeader() {
 			<PublishStatusDisplay
 				disabled={!publication.can_publish || isDirty || publication.is_busy || !!data.is_locked}
 				onChange={handleStatusChange}
-				value={data.status}
+				value={data.publish_status}
 			/>
 			<Spacer />
 			<Button disabled={!preview.success} label={t('default:dev.actions.preview')} onClick={handlePreview} variant="secondary" />

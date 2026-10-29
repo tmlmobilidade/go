@@ -41,7 +41,7 @@ export function useBannersListData(): UseBannersListDataReturnType {
 		() => ({
 			data: (data?.data ?? []).filter(
 				item =>
-					status.value.includes(item.status) &&
+					status.value.includes(item.publish_status) &&
 					`${item._id} ${item.title} ${item.message}`.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()),
 			),
 			error: data?.error ?? error?.message ?? null,

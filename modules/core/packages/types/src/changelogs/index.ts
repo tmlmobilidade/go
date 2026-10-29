@@ -1,13 +1,13 @@
 import { ChangelogItemSchema, ChangelogSchema } from '@tmlmobilidade/go-types-core';
+import { PublishStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const ChangelogListItemSchema = ChangelogSchema.innerType().pick({
+export const ChangelogListItemSchema = ChangelogSchema.pick({
 	_id: true,
-	published_at: true,
+	publish_status: true,
 	scope: true,
-	status: true,
 	summary: true,
 	title: true,
 	updated_at: true,
@@ -22,6 +22,6 @@ export const ChangelogListItemSchema = ChangelogSchema.innerType().pick({
 export type ChangelogListItem = z.infer<typeof ChangelogListItemSchema>;
 
 export const ChangelogManagementQuerySchema = z.object({
-	status: z.enum(['draft', 'published', 'archived']).optional(),
+	publish_status: PublishStatusSchema.optional(),
 });
 export type ChangelogManagementQuery = z.infer<typeof ChangelogManagementQuerySchema>;
