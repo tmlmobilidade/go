@@ -63,7 +63,7 @@ export function ChangelogCreateFormContextProvider({ children }: PropsWithChildr
 			unblock();
 			closeChangelogCreateModal();
 			mutate();
-			router.push(keepUrlParams(PAGE_ROUTES.core.DEV_CHANGELOG_DETAIL(response.data._id)));
+			router.push(keepUrlParams(PAGE_ROUTES.core.DEV_CHANGELOGS_DETAIL(response.data._id)));
 		},
 	});
 	const capabilities = useStandardFormCapabilities({ create: { hasPermission: canCreate, isCreating: isCreating }, form: { isDirty, isValid } });

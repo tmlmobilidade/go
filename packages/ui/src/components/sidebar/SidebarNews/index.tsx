@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { openChangelogListModal } from '../../../changelog/list/ChangelogList.modal';
-import { useChangelogListData } from '../../../changelog/list/use-changelog-list-data';
+import { openChangelogListModal } from '../../../changelogs/list/ChangelogList.modal';
+import { useChangelogListData } from '../../../changelogs/list/use-changelog-list-data';
 import { Tooltip } from '../../common/Tooltip';
 
 /* * */

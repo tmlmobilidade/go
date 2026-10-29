@@ -213,7 +213,7 @@ export const sidebarNavigationGroups = [
 			},
 			{
 				_id: 'changelog',
-				href: PAGE_ROUTES.core.DEV_CHANGELOG_LIST,
+				href: PAGE_ROUTES.core.DEV_CHANGELOGS_LIST,
 				icon: <IconNews />,
 				permissions: [{ action: 'read', scope: 'changelogs' }],
 			},

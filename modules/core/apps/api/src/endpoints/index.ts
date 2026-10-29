@@ -8,5 +8,5 @@ import './organizations/routes.js';
 import './home/routes.js';
 import './changelogs/routes.js';
 import './banners/routes.js';
-import './platform/changelog/routes.js';
+import './platform/changelogs/routes.js';
 import './platform/banners/routes.js';

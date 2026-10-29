@@ -33,7 +33,7 @@ export function ChangelogDetailHeader() {
 	//
 	// B. Handle actions
 
-	const handleClose = () => router.push(keepUrlParams(PAGE_ROUTES.core.DEV_CHANGELOG_LIST));
+	const handleClose = () => router.push(keepUrlParams(PAGE_ROUTES.core.DEV_CHANGELOGS_LIST));
 
 	const handlePreview = () => {
 		if (!preview.success) return;

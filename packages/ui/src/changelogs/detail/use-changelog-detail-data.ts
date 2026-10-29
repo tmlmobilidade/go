@@ -24,7 +24,7 @@ export function useChangelogDetailData(releaseId: null | string): UseChangelogDe
 	// A. Fetch data
 
 	const { data, error, isLoading, mutate } = useSWR<ApiResponse<ChangelogPlatformResponse>, Error>(
-		releaseId ? API_ROUTES.core.CHANGELOG_DETAIL(releaseId) : null,
+		releaseId ? API_ROUTES.core.CHANGELOGS_PUBLISHED_DETAIL(releaseId) : null,
 		async (url: string) => {
 			const response = await fetchApiData<ChangelogPlatformResponse>({ url });
 			// Reject API errors so SWR can expose them and retry the request.

@@ -67,7 +67,7 @@ export function ChangelogList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: ChangelogListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.core.DEV_CHANGELOG_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.core.DEV_CHANGELOGS_DETAIL(item._id)));
 	};
 
 	//

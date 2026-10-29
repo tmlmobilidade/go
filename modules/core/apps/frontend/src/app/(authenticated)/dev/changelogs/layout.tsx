@@ -1,6 +1,6 @@
 /* * */
 
-import { ChangelogLayout } from '@/components/dev/changelog/ChangelogLayout';
+import { ChangelogLayout } from '@/components/dev/changelogs/ChangelogLayout';
 import { type PropsWithChildren } from 'react';
 
 /* * */

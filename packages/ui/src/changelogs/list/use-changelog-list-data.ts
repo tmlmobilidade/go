@@ -28,7 +28,7 @@ interface UseChangelogListDataReturnType {
 
 // Reject API errors so SWR can expose them and retry the request.
 export async function getAllChangelogSummaries(): Promise<ChangelogSummaryPlatformResponse[]> {
-	const response = await fetchApiData<ChangelogSummaryPlatformResponse[]>({ url: API_ROUTES.core.CHANGELOG_LIST });
+	const response = await fetchApiData<ChangelogSummaryPlatformResponse[]>({ url: API_ROUTES.core.CHANGELOGS_PUBLISHED });
 	if (response.error || !response.data) throw new Error(response.error || 'Empty changelog response');
 	return response.data;
 }
@@ -41,7 +41,7 @@ export async function markChangelogsRead(releaseIds: string[]): Promise<ApiRespo
 		const response = await fetchApiData<ChangelogSeenPlatformResponse, ChangelogSeenPlatformRequest>({
 			body: { release_ids: releaseIds.slice(index, index + 100) },
 			method: 'POST',
-			url: API_ROUTES.core.CHANGELOG_SEEN,
+			url: API_ROUTES.core.CHANGELOGS_SEEN,
 		});
 		if (response.error) return response;
 		if (!response.data?.success) return { data: null, error: 'Could not mark changelog releases as read', status_code: '500', timestamp: response.timestamp };
@@ -62,7 +62,7 @@ export function useChangelogListData(): UseChangelogListDataReturnType {
 	// B. Fetch data
 
 	const { data, error, isLoading, mutate } = useSWR<ChangelogSummaryPlatformResponse[], Error>(
-		[API_ROUTES.core.CHANGELOG_LIST, 'all-summaries'],
+		[API_ROUTES.core.CHANGELOGS_PUBLISHED, 'all-summaries'],
 		getAllChangelogSummaries,
 		{ refreshInterval: 600_000, revalidateOnFocus: false },
 	);

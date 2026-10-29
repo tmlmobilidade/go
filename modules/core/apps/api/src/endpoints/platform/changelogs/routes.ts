@@ -6,7 +6,7 @@ import { markReleasesSeenHandler } from './handlers/mark-releases-seen.js';
 
 /* * */
 
-const NAMESPACE = '/platform/changelog';
+const NAMESPACE = '/platform/changelogs';
 
 /* * */
 
@@ -16,9 +16,9 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', { preHandler: authorizationMiddleware() }, listPublishedReleasesHandler);
+		instance.get('/published', { preHandler: authorizationMiddleware() }, listPublishedReleasesHandler);
 
-		instance.get('/:id', { preHandler: authorizationMiddleware() }, getPublishedReleaseHandler);
+		instance.get('/published/:id', { preHandler: authorizationMiddleware() }, getPublishedReleaseHandler);
 
 		instance.post('/seen', { preHandler: authorizationMiddleware() }, markReleasesSeenHandler);
 
