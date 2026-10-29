@@ -1,6 +1,7 @@
 /* * */
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { authorizeSessionReplayHandler } from './handlers/authorize-session-replay.js';
 import { cancelSessionReplayHandler } from './handlers/cancel-session-replay.js';
@@ -40,9 +41,9 @@ server.register(
 
 		instance.get('/:id', { preHandler: authorizationMiddleware('users', ['read']) }, getUserHandler);
 
-		instance.post('/:id/session-replay', { preHandler: authorizationMiddleware('users', ['manage_session_replay']) }, authorizeSessionReplayHandler);
+		instance.post('/:id/session-replay', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.manage_session_replay]) }, authorizeSessionReplayHandler);
 
-		instance.delete('/:id/session-replay/:activationId', { preHandler: authorizationMiddleware('users', ['manage_session_replay']) }, cancelSessionReplayHandler);
+		instance.delete('/:id/session-replay/:activationId', { preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.manage_session_replay]) }, cancelSessionReplayHandler);
 
 		instance.post('/create', { preHandler: authorizationMiddleware('users', ['create']) }, createUserHandler);
 
