@@ -6,6 +6,7 @@ import { useState } from 'react';
 import styles from './styles.module.css';
 
 import { type SelectDataItem } from '../../../components/inputs/Select';
+import { SelectOption } from '../../../components/inputs/SelectOption';
 
 /* * */
 
@@ -16,11 +17,6 @@ interface ListFilterOptionsProps {
 }
 
 const PAGE_SIZE = 50;
-
-function optionLabel(option: SelectDataItem) {
-	if (!option.description) return option.label;
-	return <>{option.label} <Text c="dimmed" component="span" size="xs">{option.description}</Text></>;
-}
 
 /* * */
 
@@ -50,7 +46,7 @@ export function ListFilterOptions({ emptyMessage, onSelect, options }: ListFilte
 						key={option.value}
 						checked={!!option.checked}
 						disabled={option.disabled}
-						label={optionLabel(option)}
+						label={<SelectOption option={option} />}
 						onChange={() => onSelect(option)}
 						value={option.value}
 					/>

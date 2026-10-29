@@ -1,4 +1,7 @@
 {
+	"FiltersBar": {
+		"label": "Filtrar por"
+	},
 	"ListFilter": {
 		"empty": "Nenhuma opção disponível",
 		"no_results": "Nenhum resultado encontrado",
