@@ -17,64 +17,64 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 	// Keep the current initialization available to callbacks, including pending async operations.
 	const initializationRef = useRef<AnalyticsInitialization | undefined>(undefined);
 	const [error, setError] = useState<Error | undefined>(undefined);
-	const [initialized, setInitialized] = useState<AnalyticsInitialization | undefined>(undefined);
+	const [initialization, setInitialization] = useState<AnalyticsInitialization | undefined>(undefined);
 	const handleError = useCallback((cause: unknown) => {
 		setError(cause instanceof Error ? cause : new Error(String(cause)));
 	}, []);
 	const clearError = useCallback(() => setError(undefined), []);
 	const { apiKey, options } = useAnalyticsConfiguration(configuration, handleError, clearError);
-	const ready = Boolean(apiKey) && initialized?.apiKey === apiKey && initialized?.options === options;
+	const ready = Boolean(apiKey) && initialization?.apiKey === apiKey && initialization?.options === options;
 
 	// Actions must use the initialized client that still matches the current configuration.
-	const identify = useCallback((value: AnalyticsUserProperties | null) => {
-		if (!ready || !initialized || initializationRef.current !== initialized || initialized.client.getOptOut()) return false;
+	const identify = useCallback((userProperties: AnalyticsUserProperties | null) => {
+		if (!ready || !initialization || initializationRef.current !== initialization || initialization.client.getOptOut()) return false;
 		// End capture before logout or an identity change reaches the replay SDK.
-		if (value === null || (value._id !== undefined && value._id !== initialized.client.getUserId())) {
-			initialized.replay.stop();
+		if (userProperties === null || (userProperties._id !== undefined && userProperties._id !== initialization.client.getUserId())) {
+			initialization.replay.stop();
 		}
-		return identifyAnalyticsUser(initialized.client, value, handleError);
-	}, [handleError, initialized, ready]);
+		return identifyAnalyticsUser(initialization.client, userProperties, handleError);
+	}, [handleError, initialization, ready]);
 
 	const track = useCallback(async (event: AnalyticsEventInput, properties?: Record<string, unknown>) => {
-		if (!ready || !initialized || initializationRef.current !== initialized) return false;
+		if (!ready || !initialization || initializationRef.current !== initialization) return false;
 		clearError();
 
-		return trackAnalyticsEvent(initialized, event, properties, (cause) => {
+		return trackAnalyticsEvent(initialization, event, properties, (cause) => {
 			// A failure from a replaced or opted-out client must not overwrite the current error state.
-			if (initializationRef.current === initialized && !initialized.client.getOptOut()) handleError(cause);
+			if (initializationRef.current === initialization && !initialization.client.getOptOut()) handleError(cause);
 		});
-	}, [clearError, handleError, initialized, ready]);
+	}, [clearError, handleError, initialization, ready]);
 
 	// Initialize after render, reusing the pending initialization when the effect runs again.
 	useEffect(() => {
 		setError(undefined);
 		if (!apiKey) return;
 
-		let initialization = initializationRef.current;
-		if (initialization?.apiKey !== apiKey || initialization.options !== options) {
-			initialization = initializeAnalyticsClient(apiKey, options, handleError);
-			initializationRef.current = initialization;
+		let pendingInitialization = initializationRef.current;
+		if (pendingInitialization?.apiKey !== apiKey || pendingInitialization.options !== options) {
+			pendingInitialization = initializeAnalyticsClient(apiKey, options, handleError);
+			initializationRef.current = pendingInitialization;
 		}
 
-		const { client, promise } = initialization;
+		const { client, promise: initializationPromise } = pendingInitialization;
 		// Ignore initialization results that arrive after this effect has been cleaned up.
-		let active = true;
+		let isInitializationActive = true;
 
-		promise.then(() => {
-			if (!active) return;
+		initializationPromise.then(() => {
+			if (!isInitializationActive) return;
 			client.setOptOut(options?.optOut ?? false);
 			// Publish a new lifecycle identity so reusing the SDK also restarts identity synchronization and polling.
-			const activatedInitialization = { ...initialization };
+			const activatedInitialization = { ...pendingInitialization };
 			initializationRef.current = activatedInitialization;
-			setInitialized(activatedInitialization);
+			setInitialization(activatedInitialization);
 		}).catch((cause: unknown) => {
-			if (active) handleError(cause);
+			if (isInitializationActive) handleError(cause);
 		});
 
 		return () => {
 			// Stop capture and disable this client on reconfiguration or provider unmount.
-			active = false;
-			initialization.replay.stop();
+			isInitializationActive = false;
+			pendingInitialization.replay.stop();
 			client.setOptOut(true);
 		};
 	}, [apiKey, handleError, options]);
@@ -85,9 +85,9 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 	}, [identify, user]);
 
 	// Register authorization polling after synchronizing Analytics identity for this user.
-	const replayActivation = useReplayAuthorization(initialized, replayUrl, user?._id, ready, handleError);
+	const replayActivation = useReplayAuthorization(initialization, replayUrl, user?._id, ready, handleError);
 	const replayEnabled = Boolean(replayActivation);
-	const { startReplay, stopReplay } = useReplay(initialized, initializationRef, ready, replayActivation, handleError);
+	const { startReplay, stopReplay } = useReplay(initialization, initializationRef, ready, replayActivation, handleError);
 
 	return useMemo(() => ({
 		actions: { identify, startReplay, stopReplay, track },
