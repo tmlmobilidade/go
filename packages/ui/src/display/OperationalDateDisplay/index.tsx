@@ -4,7 +4,7 @@ import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 
-import { Tag } from '../../components/tags';
+import { IdTag } from '../../components/tags';
 
 /* * */
 
@@ -26,5 +26,5 @@ export function OperationalDateDisplay({ value }: OperationalDateDisplayProps) {
 
 	if (!operationalDateValue) return;
 
-	return <Tag label={operationalDateValue} variant="muted" />;
+	return <IdTag id={operationalDateValue} />;
 }
