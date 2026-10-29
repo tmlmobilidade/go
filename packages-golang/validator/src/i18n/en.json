@@ -1,594 +1,610 @@
 {
 	"agency_email_field": {
-		"generic": "Checks the presence requirements for \"agency_email\" in agency.txt.",
+		"generic": "The \"agency_email\" field is not populated.",
 		"informational": "The agency_email field is informational",
 		"recommended": "The agency_email field is recommended",
 		"required": "The agency_email field is required"
 	},
 	"agency_email_valid": {
-		"generic": "Checks that \"agency_email\" contains a valid email address.",
+		"generic": "The \"agency_email\" field contains an invalid email address.",
 		"invalid": "Field \"agency_email\" \"%s\" is not a valid email address",
 		"not_allowed": "Field \"agency_email\" \"%s\" is not allowed"
 	},
 	"agency_fare_url_field": {
-		"generic": "Checks the presence requirements for \"agency_fare_url\" in agency.txt.",
+		"generic": "The \"agency_fare_url\" field is not populated.",
 		"informational": "The agency_fare_url field is informational",
 		"recommended": "The agency_fare_url field is recommended",
 		"required": "The agency_fare_url field is required"
 	},
 	"agency_fare_url_valid": {
-		"generic": "Checks that \"agency_fare_url\" contains a valid URL.",
+		"generic": "The \"agency_fare_url\" field contains an invalid URL.",
 		"invalid": "Field \"agency_fare_url\" \"%s\" is not a valid URL",
 		"not_allowed": "Field \"agency_fare_url\" \"%s\" is not allowed"
 	},
 	"agency_file_missing": {
-		"generic": "Checks that agency.txt is present when required."
+		"generic": "The file agency.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"agency_id_field": {
-		"generic": "Checks the presence requirements for \"agency_id\" in agency.txt.",
+		"generic": "The \"agency_id\" field is not populated.",
 		"informational": "The agency_id field is informational",
 		"recommended": "The agency_id field is recommended",
 		"required": "The agency_id field is required"
 	},
 	"agency_id_matched_with_agency_name": {
-		"generic": "Checks that agency_id and agency_name match the configured identifier/name pairs.",
+		"generic": "The \"agency_id\" and \"agency_name\" values do not match the configured pairs.",
 		"no_match": "The match between the field \"agency_id\" \"%s\" and the field \"agency_name\" \"%s\" is not valid. For the agency_id \"%s\" the name \"%s\" is expected"
 	},
 	"agency_id_unique": {
 		"duplicate": "The \"agency_id\" \"%s\" field must be unique",
-		"generic": "Checks that \"agency_id\" is unique in agency.txt."
+		"generic": "The \"agency_id\" field contains duplicate values."
 	},
 	"agency_id_valid": {
-		"generic": "Checks that \"agency_id\" belongs to the configured set of allowed values.",
+		"generic": "The \"agency_id\" value is not in the allowed set.",
 		"not_allowed": "The \"agency_id\" \"%s\" is not allowed"
 	},
 	"agency_lang_field": {
-		"generic": "Checks the presence requirements for \"agency_lang\" in agency.txt.",
+		"generic": "The \"agency_lang\" field is not populated.",
 		"informational": "The agency_lang field is informational",
 		"recommended": "The agency_lang field is recommended",
 		"required": "The agency_lang field is required"
 	},
 	"agency_lang_valid": {
-		"generic": "Checks that \"agency_lang\" contains a valid language code.",
+		"generic": "The \"agency_lang\" field contains an invalid language code.",
 		"invalid": "Field \"agency_lang\" \"%s\" is not a valid language code",
 		"not_allowed": "Field \"agency_lang\" \"%s\" is not allowed"
 	},
 	"agency_name_field": {
-		"generic": "Checks the presence requirements for \"agency_name\" in agency.txt.",
+		"generic": "The \"agency_name\" field is not populated.",
 		"informational": "The agency_name field is informational",
 		"recommended": "The agency_name field is recommended",
 		"required": "The agency_name field is required"
 	},
 	"agency_name_id_match": {
-		"generic": "Checks that agency_id and agency_name match the configured identifier/name pairs.",
+		"generic": "The \"agency_id\" and \"agency_name\" values do not match the configured pairs.",
 		"no_match": "The match between the field \"agency_id\" \"%s\" and the field \"agency_name\" \"%s\" is not valid. For the agency_id \"%s\" the name \"%s\" is expected"
 	},
 	"agency_name_valid": {
-		"generic": "Checks that \"agency_name\" belongs to the configured set of allowed values.",
+		"generic": "The \"agency_name\" value is not in the allowed set.",
 		"not_allowed": "Field \"agency_name\" \"%s\" is not allowed"
 	},
 	"agency_phone_field": {
-		"generic": "Checks the presence requirements for \"agency_phone\" in agency.txt.",
+		"generic": "The \"agency_phone\" field is not populated.",
 		"informational": "The agency_phone field is informational",
 		"recommended": "The agency_phone field is recommended",
 		"required": "The agency_phone field is required"
 	},
 	"agency_phone_valid": {
-		"generic": "Checks that \"agency_phone\" contains a valid phone number.",
+		"generic": "The \"agency_phone\" field contains an invalid phone number.",
 		"invalid": "Field \"agency_phone\" \"%s\" is not a valid phone number",
 		"not_allowed": "Field \"agency_phone\" \"%s\" is not allowed"
 	},
 	"agency_timezone_field": {
-		"generic": "Checks the presence requirements for \"agency_timezone\" in agency.txt.",
+		"generic": "The \"agency_timezone\" field is not populated.",
 		"informational": "The agency_timezone field is informational",
 		"recommended": "The agency_timezone field is recommended",
 		"required": "The agency_timezone field is required"
 	},
 	"agency_timezone_valid": {
-		"generic": "Checks that \"agency_timezone\" contains a valid time zone.",
+		"generic": "The \"agency_timezone\" field contains an invalid time zone.",
 		"invalid": "Field \"agency_timezone\" \"%s\" is not a valid timezone",
 		"not_allowed": "Field \"agency_timezone\" \"%s\" is not allowed"
 	},
 	"agency_url_field": {
-		"generic": "Checks the presence requirements for \"agency_url\" in agency.txt.",
+		"generic": "The \"agency_url\" field is not populated.",
 		"informational": "The agency_url field is informational",
 		"recommended": "The agency_url field is recommended",
 		"required": "The agency_url field is required"
 	},
 	"agency_url_valid": {
-		"generic": "Checks that \"agency_url\" contains a valid URL.",
+		"generic": "The \"agency_url\" field contains an invalid URL.",
 		"invalid": "Field \"agency_url\" \"%s\" is not a valid URL",
 		"not_allowed": "Field \"agency_url\" \"%s\" is not allowed"
 	},
 	"calendar_dates_date_field": {
-		"generic": "Checks the presence requirements for \"date\" in calendar_dates.txt.",
+		"generic": "The \"date\" field is not populated.",
 		"informational": "The date field is informational",
 		"recommended": "The date field is recommended",
 		"required": "The date field is required"
 	},
 	"calendar_dates_date_valid": {
-		"generic": "Checks that \"date\" contains a valid date in YYYYMMDD format.",
+		"generic": "The \"date\" field contains an invalid date or a format other than YYYYMMDD.",
 		"invalid": "The date value \"%s\" is invalid; it must be a valid date in YYYYMMDD format"
 	},
 	"calendar_dates_exception_type_field": {
-		"generic": "Checks the presence requirements for \"exception_type\" in calendar_dates.txt.",
+		"generic": "The \"exception_type\" field is not populated.",
 		"informational": "The exception_type field is informational",
 		"recommended": "The exception_type field is recommended",
 		"required": "The exception_type field is required"
 	},
 	"calendar_dates_exception_type_valid": {
-		"generic": "Checks that \"exception_type\" is one of the allowed integers: 1 or 2.",
+		"generic": "The \"exception_type\" field contains an invalid or disallowed value.",
 		"invalid": "The exception_type value \"%s\" is invalid; it must be 1 or 2"
 	},
 	"calendar_dates_file_missing": {
 		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present",
-		"generic": "Checks that calendar_dates.txt is present when required."
+		"generic": "The file calendar_dates.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"calendar_dates_service_id_field": {
-		"generic": "Checks the presence requirements for \"service_id\" in calendar_dates.txt.",
+		"generic": "The \"service_id\" field is not populated.",
 		"informational": "The service_id field is informational",
 		"recommended": "The service_id field is recommended",
 		"required": "The service_id field is required"
 	},
 	"calendar_dates_service_id_foreign": {
-		"generic": "Checks that \"service_id\" references a value defined in calendar.txt.",
+		"generic": "The \"service_id\" reference to calendar.txt is invalid.",
 		"not_found": "The service_id \"%s\" does not exist in calendar.txt"
 	},
 	"calendar_end_date_field": {
-		"generic": "Checks the presence requirements for \"end_date\" in calendar.txt.",
+		"generic": "The \"end_date\" field is not populated.",
 		"informational": "The end_date field is informational",
 		"recommended": "The end_date field is recommended",
 		"required": "The end_date field is required"
 	},
 	"calendar_end_date_valid_yyyymmdd": {
-		"generic": "Checks that end_date contains a valid date in YYYYMMDD format."
+		"generic": "The \"end_date\" field contains an invalid date or a format other than YYYYMMDD."
 	},
 	"calendar_file_missing": {
 		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present",
-		"generic": "Checks that calendar.txt is present when required."
+		"generic": "The file calendar.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"calendar_friday_field": {
-		"generic": "Checks the presence requirements for \"friday\" in calendar.txt.",
+		"generic": "The \"friday\" field is not populated.",
 		"informational": "The friday field is informational",
 		"recommended": "The friday field is recommended",
 		"required": "The friday field is required"
 	},
 	"calendar_friday_valid": {
-		"generic": "Checks that \"friday\" is 0 or 1 to indicate whether service runs on that weekday.",
+		"generic": "The \"friday\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"friday\" has an invalid value \"%s\"; it must be 0 or 1"
 	},
 	"calendar_monday_field": {
-		"generic": "Checks the presence requirements for \"monday\" in calendar.txt.",
+		"generic": "The \"monday\" field is not populated.",
 		"informational": "The monday field is informational",
 		"recommended": "The monday field is recommended",
 		"required": "The monday field is required"
 	},
 	"calendar_monday_valid": {
-		"generic": "Checks that \"monday\" is 0 or 1 to indicate whether service runs on that weekday.",
+		"generic": "The \"monday\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"monday\" has an invalid value \"%s\"; it must be 0 or 1"
 	},
 	"calendar_saturday_field": {
-		"generic": "Checks the presence requirements for \"saturday\" in calendar.txt.",
+		"generic": "The \"saturday\" field is not populated.",
 		"informational": "The saturday field is informational",
 		"recommended": "The saturday field is recommended",
 		"required": "The saturday field is required"
 	},
 	"calendar_saturday_valid": {
-		"generic": "Checks that \"saturday\" is 0 or 1 to indicate whether service runs on that weekday.",
+		"generic": "The \"saturday\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"saturday\" has an invalid value \"%s\"; it must be 0 or 1"
 	},
 	"calendar_service_id_field": {
-		"generic": "Checks the presence requirements for \"service_id\" in calendar.txt.",
+		"generic": "The \"service_id\" field is not populated.",
 		"informational": "The service_id field is informational",
 		"recommended": "The service_id field is recommended",
 		"required": "The service_id field is required"
 	},
 	"calendar_service_id_unique": {
 		"duplicate": "The \"service_id\" value \"%s\" must be unique",
-		"generic": "Checks that \"service_id\" is unique in calendar.txt."
+		"generic": "The \"service_id\" field contains duplicate values."
 	},
 	"calendar_service_id_unique_non_empty": {
 		"duplicate": "Duplicate field \"service_id\" \"%s\" found. Field \"service_id\" must be unique",
 		"forbidden": "Field \"service_id\" is forbidden",
-		"generic": "Checks that service_id is provided and is unique in calendar.txt.",
+		"generic": "The \"service_id\" field is empty or contains duplicate values.",
 		"recommended": "Field \"service_id\" is recommended",
 		"required": "Field \"service_id\" is required"
 	},
 	"calendar_start_date_field": {
-		"generic": "Checks the presence requirements for \"start_date\" in calendar.txt.",
+		"generic": "The \"start_date\" field is not populated.",
 		"informational": "The start_date field is informational",
 		"recommended": "The start_date field is recommended",
 		"required": "The start_date field is required"
 	},
 	"calendar_start_date_valid_yyyymmdd": {
-		"generic": "Checks that start_date contains a valid date in YYYYMMDD format."
+		"generic": "The \"start_date\" field contains an invalid date or a format other than YYYYMMDD."
 	},
 	"calendar_start_end_dates_valid": {
-		"generic": "Checks that start_date is earlier than end_date.",
+		"generic": "The \"start_date\" date is not earlier than \"end_date\".",
 		"invalid": "The \"start_date\" value \"%s\" must be earlier than \"end_date\""
 	},
 	"calendar_start_end_dates_valid_format": {
-		"generic": "Checks the format and validity of service dates using YYYYMMDD.",
+		"generic": "The service dates are invalid or do not use the YYYYMMDD format.",
 		"invalid": "Date value \"%s\" in \"start_date\" or \"end_date\" is invalid; it must be a valid date in YYYYMMDD format"
 	},
 	"calendar_start_end_dates_valid_yyyymmdd_order": {
 		"forbidden": "Field \"service_date\" is forbidden",
-		"generic": "Checks the format and validity of service dates using YYYYMMDD.",
+		"generic": "The service dates are invalid or do not use the YYYYMMDD format.",
 		"invalid": "Field \"service_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
 		"recommended": "Field \"service_date\" is recommended",
 		"required": "Field \"service_date\" is required"
 	},
 	"calendar_sunday_field": {
-		"generic": "Checks the presence requirements for \"sunday\" in calendar.txt.",
+		"generic": "The \"sunday\" field is not populated.",
 		"informational": "The sunday field is informational",
 		"recommended": "The sunday field is recommended",
 		"required": "The sunday field is required"
 	},
 	"calendar_sunday_valid": {
-		"generic": "Checks that \"sunday\" is 0 or 1 to indicate whether service runs on that weekday.",
+		"generic": "The \"sunday\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"sunday\" has an invalid value \"%s\"; it must be 0 or 1"
 	},
 	"calendar_thursday_field": {
-		"generic": "Checks the presence requirements for \"thursday\" in calendar.txt.",
+		"generic": "The \"thursday\" field is not populated.",
 		"informational": "The thursday field is informational",
 		"recommended": "The thursday field is recommended",
 		"required": "The thursday field is required"
 	},
 	"calendar_thursday_valid": {
-		"generic": "Checks that \"thursday\" is 0 or 1 to indicate whether service runs on that weekday.",
+		"generic": "The \"thursday\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"thursday\" has an invalid value \"%s\"; it must be 0 or 1"
 	},
 	"calendar_tuesday_field": {
-		"generic": "Checks the presence requirements for \"tuesday\" in calendar.txt.",
+		"generic": "The \"tuesday\" field is not populated.",
 		"informational": "The tuesday field is informational",
 		"recommended": "The tuesday field is recommended",
 		"required": "The tuesday field is required"
 	},
 	"calendar_tuesday_valid": {
-		"generic": "Checks that \"tuesday\" is 0 or 1 to indicate whether service runs on that weekday.",
+		"generic": "The \"tuesday\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"tuesday\" has an invalid value \"%s\"; it must be 0 or 1"
 	},
 	"calendar_wednesday_field": {
-		"generic": "Checks the presence requirements for \"wednesday\" in calendar.txt.",
+		"generic": "The \"wednesday\" field is not populated.",
 		"informational": "The wednesday field is informational",
 		"recommended": "The wednesday field is recommended",
 		"required": "The wednesday field is required"
 	},
 	"calendar_wednesday_valid": {
-		"generic": "Checks that \"wednesday\" is 0 or 1 to indicate whether service runs on that weekday.",
+		"generic": "The \"wednesday\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"wednesday\" has an invalid value \"%s\"; it must be 0 or 1"
 	},
 	"fare_attributes_agency_id_field": {
 		"forbidden": "Field \"agency_id\" is forbidden",
-		"generic": "Field \"agency_id\" is required when there is more than one agency",
+		"generic": "The \"agency_id\" field is not populated.",
 		"informational": "Field \"agency_id\" is recommended when there is only one agency",
 		"recommended": "Field \"agency_id\" is recommended when there is only one agency",
 		"required": "Field \"agency_id\" is required when there is more than one agency"
 	},
 	"fare_attributes_agency_id_foreign": {
-		"generic": "Checks that \"agency_id\" references a value defined in agency.txt.",
+		"generic": "The \"agency_id\" reference to agency.txt is invalid.",
 		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt"
 	},
 	"fare_attributes_currency_type_field": {
 		"forbidden": "Field \"currency_type\" is forbidden",
-		"generic": "Field \"currency_type\" is required",
+		"generic": "The \"currency_type\" field is not populated.",
 		"informational": "Field \"currency_type\" is recommended",
 		"recommended": "Field \"currency_type\" is recommended",
 		"required": "Field \"currency_type\" is required"
 	},
 	"fare_attributes_currency_type_valid": {
-		"generic": "Checks that \"currency_type\" contains a valid ISO 4217 currency code.",
+		"generic": "The \"currency_type\" field contains an invalid ISO 4217 currency code.",
 		"invalid": "Field \"currency_type\" \"%s\" is not a valid ISO 4217 currency code, see https://en.wikipedia.org/wiki/ISO_4217"
 	},
 	"fare_attributes_fare_id_field": {
 		"forbidden": "Field \"fare_id\" is forbidden",
-		"generic": "Field \"fare_id\" is required",
+		"generic": "The \"fare_id\" field is not populated.",
 		"informational": "Field \"fare_id\" is recommended",
 		"recommended": "Field \"fare_id\" is recommended",
 		"required": "Field \"fare_id\" is required"
 	},
 	"fare_attributes_fare_id_unique": {
 		"duplicate": "Duplicate field \"fare_id\" \"%s\" found. Field \"fare_id\" must be unique",
-		"generic": "Checks that \"fare_id\" is unique in fare_attributes.txt."
+		"generic": "The \"fare_id\" field contains duplicate values."
 	},
 	"fare_attributes_file_missing": {
-		"generic": "Checks that fare_attributes.txt is present when required."
+		"generic": "The file fare_attributes.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"fare_attributes_payment_method_field": {
 		"forbidden": "Field \"payment_method\" is forbidden",
-		"generic": "Field \"payment_method\" is required",
+		"generic": "The \"payment_method\" field is not populated.",
 		"informational": "Field \"payment_method\" is recommended",
 		"recommended": "Field \"payment_method\" is recommended",
 		"required": "Field \"payment_method\" is required"
 	},
 	"fare_attributes_payment_method_valid": {
-		"generic": "Checks that \"payment_method\" is one of the allowed integers: 0 or 1.",
+		"generic": "The \"payment_method\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"payment_method\" must be 0 or 1. Got \"%s\""
 	},
 	"fare_attributes_price_field": {
 		"forbidden": "Field \"price\" is forbidden",
-		"generic": "Field \"price\" is required",
+		"generic": "The \"price\" field is not populated.",
 		"informational": "Field \"price\" is recommended",
 		"recommended": "Field \"price\" is recommended",
 		"required": "Field \"price\" is required"
 	},
 	"fare_attributes_price_valid": {
-		"generic": "Checks that \"price\" contains a non-negative number.",
+		"generic": "The \"price\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"price\" must be non-negative. Got \"%s\""
 	},
 	"fare_attributes_transfer_duration_field": {
 		"forbidden": "Field \"transfer_duration\" is forbidden",
-		"generic": "Field \"transfer_duration\" is required",
+		"generic": "The \"transfer_duration\" field is not populated.",
 		"informational": "Field \"transfer_duration\" is recommended",
 		"recommended": "Field \"transfer_duration\" is recommended",
 		"required": "Field \"transfer_duration\" is required"
 	},
 	"fare_attributes_transfer_duration_valid": {
-		"generic": "Checks that \"transfer_duration\" contains a duration greater than zero.",
+		"generic": "The \"transfer_duration\" field contains an invalid, zero, or negative value.",
 		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\""
 	},
 	"fare_attributes_transfers_field": {
 		"forbidden": "Field \"transfers\" is forbidden",
-		"generic": "Field \"transfers\" is required",
+		"generic": "The \"transfers\" field is not populated.",
 		"informational": "Field \"transfers\" is recommended",
 		"recommended": "Field \"transfers\" is recommended",
 		"required": "Field \"transfers\" is required"
 	},
 	"fare_attributes_transfers_valid": {
-		"generic": "Checks that \"transfers\" is one of the allowed integers: 0, 1, or 2.",
+		"generic": "The \"transfers\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\""
 	},
 	"fare_rules_contains_id_field": {
-		"generic": "Checks the presence requirements for \"contains_id\" in fare_rules.txt.",
+		"generic": "The \"contains_id\" field is not populated.",
 		"informational": "The contains_id field is informational",
 		"recommended": "The contains_id field is recommended",
 		"required": "The contains_id field is required"
 	},
 	"fare_rules_contains_id_foreign": {
 		"forbidden": "Field \"contains_id\" is forbidden",
-		"generic": "The \"contains_id\" field must reference a zone defined in stops.txt.",
+		"generic": "The \"contains_id\" reference to stops.txt is invalid.",
 		"invalid": "Field \"contains_id\" \"%s\" must be a valid ID from stops.txt",
 		"recommended": "Field \"contains_id\" is recommended",
 		"required": "Field \"contains_id\" is required"
 	},
 	"fare_rules_destination_id_field": {
-		"generic": "Checks the presence requirements for \"destination_id\" in fare_rules.txt.",
+		"generic": "The \"destination_id\" field is not populated.",
 		"informational": "The destination_id field is informational",
 		"recommended": "The destination_id field is recommended",
 		"required": "The destination_id field is required"
 	},
 	"fare_rules_destination_id_foreign": {
 		"forbidden": "Field \"destination_id\" is forbidden",
-		"generic": "The \"destination_id\" field must reference a zone defined in stops.txt.",
+		"generic": "The \"destination_id\" reference to stops.txt is invalid.",
 		"invalid": "Field \"destination_id\" \"%s\" must be a valid ID from stops.txt",
 		"recommended": "Field \"destination_id\" is recommended",
 		"required": "Field \"destination_id\" is required"
 	},
 	"fare_rules_fare_id_field": {
-		"generic": "Checks the presence requirements for \"fare_id\" in fare_rules.txt.",
+		"generic": "The \"fare_id\" field is not populated.",
 		"informational": "The fare_id field is informational",
 		"recommended": "The fare_id field is recommended",
 		"required": "The fare_id field is required"
 	},
 	"fare_rules_fare_id_foreign": {
 		"forbidden": "Field \"fare_id\" is forbidden",
-		"generic": "The \"fare_id\" field must reference a fare defined in fare_attributes.txt.",
+		"generic": "The \"fare_id\" reference to fare_attributes.txt is invalid.",
 		"invalid": "Field \"fare_id\" \"%s\" is not a valid fare_id from fare_attributes.txt",
 		"recommended": "Field \"fare_id\" is recommended",
 		"required": "Field \"fare_id\" is required"
 	},
 	"fare_rules_file_missing": {
-		"generic": "Checks that fare_rules.txt is present when required."
+		"generic": "The file fare_rules.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"fare_rules_origin_id_field": {
-		"generic": "Checks the presence requirements for \"origin_id\" in fare_rules.txt.",
+		"generic": "The \"origin_id\" field is not populated.",
 		"informational": "The origin_id field is informational",
 		"recommended": "The origin_id field is recommended",
 		"required": "The origin_id field is required"
 	},
 	"fare_rules_origin_id_foreign": {
 		"forbidden": "Field \"origin_id\" is forbidden",
-		"generic": "The \"origin_id\" field must reference a zone defined in stops.txt.",
+		"generic": "The \"origin_id\" reference to stops.txt is invalid.",
 		"invalid": "Field \"origin_id\" \"%s\" must be a valid ID from stops.txt",
 		"recommended": "Field \"origin_id\" is recommended",
 		"required": "Field \"origin_id\" is required"
 	},
 	"fare_rules_route_id_field": {
-		"generic": "Checks the presence requirements for \"route_id\" in fare_rules.txt.",
+		"generic": "The \"route_id\" field is not populated.",
 		"informational": "The route_id field is informational",
 		"recommended": "The route_id field is recommended",
 		"required": "The route_id field is required"
 	},
 	"fare_rules_route_id_foreign": {
 		"forbidden": "Field \"route_id\" is forbidden",
-		"generic": "The \"route_id\" field must reference a route defined in routes.txt.",
+		"generic": "The \"route_id\" reference to routes.txt is invalid.",
 		"invalid": "Field \"route_id\" \"%s\" is not a valid route_id from routes.txt",
 		"recommended": "Field \"route_id\" is recommended",
 		"required": "Field \"route_id\" is required"
 	},
 	"feed_info_default_lang_field": {
-		"generic": "Checks the presence requirements for \"default_lang\" in feed_info.txt.",
+		"generic": "The \"default_lang\" field is not populated.",
 		"informational": "The default_lang field is informational",
 		"recommended": "The default_lang field is recommended",
 		"required": "The default_lang field is required"
 	},
 	"feed_info_default_lang_valid": {
-		"generic": "Checks that \"default_lang\" contains a valid language code.",
+		"generic": "The \"default_lang\" field contains an invalid language code.",
 		"invalid": "Field \"default_lang\" \"%s\" is not a valid language code"
 	},
 	"feed_info_feed_contact_email_field": {
-		"generic": "Checks the presence requirements for \"feed_contact_email\" in feed_info.txt.",
+		"generic": "The \"feed_contact_email\" field is not populated.",
 		"informational": "The feed_contact_email field is informational",
 		"recommended": "The feed_contact_email field is recommended",
 		"required": "The feed_contact_email field is required"
 	},
 	"feed_info_feed_contact_email_valid": {
-		"generic": "Checks that \"feed_contact_email\" contains a valid email address.",
+		"generic": "The \"feed_contact_email\" field contains an invalid email address.",
 		"invalid": "Field \"feed_contact_email\" \"%s\" is not a valid email address"
 	},
 	"feed_info_feed_contact_url_field": {
-		"generic": "Checks the presence requirements for \"feed_contact_url\" in feed_info.txt.",
+		"generic": "The \"feed_contact_url\" field is not populated.",
 		"informational": "The feed_contact_url field is informational",
 		"recommended": "The feed_contact_url field is recommended",
 		"required": "The feed_contact_url field is required"
 	},
 	"feed_info_feed_contact_url_valid": {
-		"generic": "Checks that \"feed_contact_url\" contains a valid URL.",
+		"generic": "The \"feed_contact_url\" field contains an invalid URL.",
 		"invalid": "Field \"feed_contact_url\" \"%s\" is not a valid URL"
 	},
 	"feed_info_feed_end_date_field": {
-		"generic": "Checks the presence requirements for \"feed_end_date\" in feed_info.txt.",
+		"generic": "The \"feed_end_date\" field is not populated.",
 		"informational": "The feed_end_date field is informational",
 		"recommended": "The feed_end_date field is recommended",
 		"required": "The feed_end_date field is required"
 	},
 	"feed_info_feed_end_date_format": {
-		"generic": "Checks that \"feed_end_date_format\" contains a valid date in YYYYMMDD format.",
+		"generic": "The \"feed_end_date\" field contains an invalid date or a format other than YYYYMMDD.",
 		"informational": "The \"feed_end_date\" field is expected to contain a valid date in YYYYMMDD format",
 		"invalid": "The \"feed_end_date\" field must contain a valid date in YYYYMMDD format",
 		"recommended": "The \"feed_end_date\" field should contain a valid date in YYYYMMDD format"
 	},
 	"feed_info_feed_lang_field": {
-		"generic": "Checks the presence requirements for \"feed_lang\" in feed_info.txt.",
+		"generic": "The \"feed_lang\" field is not populated.",
 		"informational": "The feed_lang field is informational",
 		"recommended": "The feed_lang field is recommended",
 		"required": "The feed_lang field is required"
 	},
 	"feed_info_feed_lang_valid": {
-		"generic": "Checks that \"feed_lang\" contains a valid language code.",
+		"generic": "The \"feed_lang\" field contains an invalid language code.",
 		"invalid": "Field \"feed_lang\" \"%s\" is not a valid language code"
 	},
 	"feed_info_feed_publisher_name_field": {
-		"generic": "Checks the presence requirements for \"feed_publisher_name\" in feed_info.txt.",
+		"generic": "The \"feed_publisher_name\" field is not populated.",
 		"informational": "The feed_publisher_name field is informational",
 		"recommended": "The feed_publisher_name field is recommended",
 		"required": "The feed_publisher_name field is required"
 	},
 	"feed_info_feed_publisher_url_field": {
-		"generic": "Checks the presence requirements for \"feed_publisher_url\" in feed_info.txt.",
+		"generic": "The \"feed_publisher_url\" field is not populated.",
 		"informational": "The feed_publisher_url field is informational",
 		"recommended": "The feed_publisher_url field is recommended",
 		"required": "The feed_publisher_url field is required"
 	},
 	"feed_info_feed_publisher_url_valid": {
-		"generic": "Checks that \"feed_publisher_url\" contains a valid URL.",
+		"generic": "The \"feed_publisher_url\" field contains an invalid URL.",
 		"invalid": "Field \"feed_publisher_url\" \"%s\" is not a valid URL"
 	},
 	"feed_info_feed_start_date_field": {
-		"generic": "Checks the presence requirements for \"feed_start_date\" in feed_info.txt.",
+		"generic": "The \"feed_start_date\" field is not populated.",
 		"informational": "The feed_start_date field is informational",
 		"recommended": "The feed_start_date field is recommended",
 		"required": "The feed_start_date field is required"
 	},
 	"feed_info_feed_start_date_format": {
-		"generic": "Checks that \"feed_start_date_format\" contains a valid date in YYYYMMDD format.",
+		"generic": "The \"feed_start_date\" field contains an invalid date or a format other than YYYYMMDD.",
 		"informational": "The \"feed_start_date\" field is expected to contain a valid date in YYYYMMDD format",
 		"invalid": "The \"feed_start_date\" field must contain a valid date in YYYYMMDD format",
 		"recommended": "The \"feed_start_date\" field should contain a valid date in YYYYMMDD format"
 	},
 	"feed_info_feed_version_field": {
-		"generic": "Checks the presence requirements for \"feed_version\" in feed_info.txt.",
+		"generic": "The \"feed_version\" field is not populated.",
 		"informational": "The feed_version field is informational",
 		"recommended": "The feed_version field is recommended",
 		"required": "The feed_version field is required"
 	},
 	"feed_info_file_missing": {
 		"feed_info_required_when_translations": "feed_info.txt is required when translations.txt is present",
-		"generic": "Checks that feed_info.txt is present when required."
+		"generic": "The file feed_info.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"feed_info_start_end_dates_valid": {
-		"generic": "Checks that feed_start_date is earlier than feed_end_date.",
+		"generic": "The \"feed_start_date\" date is not earlier than \"feed_end_date\".",
 		"invalid": "The \"feed_start_date\" value \"%s\" must be earlier than the \"feed_end_date\" value \"%s\""
 	},
 	"file_not_found_in_rules": {
-		"generic": "Reports files that the validator does not support and therefore ignores.",
+		"generic": "The file is not supported by the validator and was ignored.",
 		"not_supported": "The file \"%s\" is not supported by the validator and was ignored"
 	},
 	"file_validation": {
-		"generic": "Reports files that the validator does not support and therefore ignores.",
+		"generic": "The GTFS data could not be processed or validated.",
 		"not_supported": "The file \"%s\" is not supported by the validator and was ignored"
 	},
 	"file_validation_gtfs_feed_file_presence_and_integrity_rule": {
 		"forbidden": "Forbidden file \"%s\" is present",
-		"generic": "Checks for forbidden files and incompatible use of network files with routes.network_id.",
+		"generic": "The GTFS feed contains files that are not allowed in this context.",
 		"networks_forbidden_when_network_id": "networks.txt is forbidden when network_id exists in routes.txt",
 		"route_networks_forbidden_when_network_id": "route_networks.txt is forbidden when network_id exists in routes.txt"
 	},
 	"frequencies_end_time_field": {
-		"generic": "Checks the presence requirements for \"end_time\" in frequencies.txt.",
+		"generic": "The \"end_time\" field is not populated.",
 		"informational": "The end_time field is informational",
 		"recommended": "The end_time field is recommended",
 		"required": "The end_time field is required"
 	},
 	"frequencies_end_time_valid": {
 		"forbidden": "Field \"end_time\" is forbidden",
-		"generic": "The \"end_time\" field must contain a valid time.",
+		"generic": "The \"end_time\" field contains an invalid time.",
 		"invalid": "Field \"end_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
 		"recommended": "Field \"end_time\" is recommended",
 		"required": "Field \"end_time\" is required"
 	},
 	"frequencies_exact_times_field": {
-		"generic": "Checks the presence requirements for \"exact_times\" in frequencies.txt.",
+		"generic": "The \"exact_times\" field is not populated.",
 		"informational": "The exact_times field is informational",
 		"recommended": "The exact_times field is recommended",
 		"required": "The exact_times field is required"
 	},
 	"frequencies_exact_times_valid": {
 		"forbidden": "Field \"exact_times\" is forbidden",
-		"generic": "The \"exact_times\" field must be 0 when a trip with fixed times is served through frequencies.txt.",
+		"generic": "The \"exact_times\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"exact_times\" must be 0 or 1, received: %s",
 		"not_allowed": "Field \"exact_times\" \"%s\" is not allowed",
 		"recommended": "Field \"exact_times\" is recommended",
 		"required": "Field \"exact_times\" is required"
 	},
 	"frequencies_file_missing": {
-		"generic": "Checks that frequencies.txt is present when required."
+		"generic": "The file frequencies.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"frequencies_headway_secs_field": {
-		"generic": "Checks the presence requirements for \"headway_secs\" in frequencies.txt.",
+		"generic": "The \"headway_secs\" field is not populated.",
 		"informational": "The headway_secs field is informational",
 		"recommended": "The headway_secs field is recommended",
 		"required": "The headway_secs field is required"
 	},
 	"frequencies_headway_secs_valid": {
 		"forbidden": "Field \"headway_secs\" is forbidden",
-		"generic": "The \"headway_secs\" field must be positive and consistent with the trip duration.",
+		"generic": "The \"headway_secs\" field contains an invalid interval; the value is not a positive integer.",
 		"invalid": "Field \"headway_secs\" must be a positive integer, received: %s",
 		"recommended": "Field \"headway_secs\" is recommended",
 		"required": "Field \"headway_secs\" is required"
 	},
 	"frequencies_start_time_field": {
-		"generic": "Checks the presence requirements for \"start_time\" in frequencies.txt.",
+		"generic": "The \"start_time\" field is not populated.",
 		"informational": "The start_time field is informational",
 		"recommended": "The start_time field is recommended",
 		"required": "The start_time field is required"
 	},
 	"frequencies_start_time_valid": {
 		"forbidden": "Field \"start_time\" is forbidden",
-		"generic": "The \"start_time\" field must contain a valid time.",
+		"generic": "The \"start_time\" field contains an invalid time.",
 		"invalid": "Field \"start_time\" must be a valid time, expected format: HH:MM:SS, got: %s",
 		"recommended": "Field \"start_time\" is recommended",
 		"required": "Field \"start_time\" is required"
 	},
 	"frequencies_trip_id_field": {
-		"generic": "Checks the presence requirements for \"trip_id\" in frequencies.txt.",
+		"generic": "The \"trip_id\" field is not populated.",
 		"informational": "The trip_id field is informational",
 		"recommended": "The trip_id field is recommended",
 		"required": "The trip_id field is required"
 	},
 	"frequencies_trip_id_foreign": {
 		"forbidden": "Field \"trip_id\" is forbidden",
-		"generic": "The \"trip_id\" field must reference a trip defined in trips.txt.",
+		"generic": "The \"trip_id\" reference to trips.txt is invalid.",
 		"not_found": "Field \"trip_id\" \"%s\" does not exist in trips.txt",
 		"recommended": "Field \"trip_id\" is recommended",
 		"required": "Field \"trip_id\" is required"
 	},
 	"levels_file_missing": {
-		"generic": "Checks that levels.txt is present when required.",
-		"levels_required_when_elevator": "levels.txt is required when pathways.txt contains elevators (pathway_mode=5)"
+		"generic": "The file levels.txt is missing.",
+		"levels_required_when_elevator": "levels.txt is required when pathways.txt contains elevators (pathway_mode=5)",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"levels_level_id_field": {
-		"generic": "Checks the presence requirements for \"level_id\" in levels.txt.",
+		"generic": "The \"level_id\" field is not populated.",
 		"informational": "The level_id field is informational",
 		"recommended": "The level_id field is recommended",
 		"required": "The level_id field is required"
@@ -596,34 +612,36 @@
 	"levels_level_id_unique": {
 		"duplicate": "Duplicate field \"level_id\" \"%s\" found. Field \"level_id\" must be unique",
 		"forbidden": "Field \"level_id\" is forbidden",
-		"generic": "The \"level_id\" field must be unique across levels.txt.",
+		"generic": "The \"level_id\" field contains duplicate values.",
 		"recommended": "Field \"level_id\" is recommended",
 		"required": "Field \"level_id\" is required"
 	},
 	"levels_level_index_field": {
-		"generic": "Checks the presence requirements for \"level_index\" in levels.txt.",
+		"generic": "The \"level_index\" field is not populated.",
 		"informational": "The level_index field is informational",
 		"recommended": "The level_index field is recommended",
 		"required": "The level_index field is required"
 	},
 	"levels_level_index_valid": {
 		"forbidden": "Field \"level_index\" is forbidden",
-		"generic": "The \"level_index\" field must be present and contain a valid number.",
+		"generic": "The \"level_index\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"level_index\" must be a non-negative integer",
 		"recommended": "Field \"level_index\" is recommended",
 		"required": "Field \"level_index\" is required"
 	},
 	"levels_level_name_field": {
-		"generic": "Checks the presence requirements for \"level_name\" in levels.txt.",
+		"generic": "The \"level_name\" field is not populated.",
 		"informational": "The level_name field is informational",
 		"recommended": "The level_name field is recommended",
 		"required": "The level_name field is required"
 	},
 	"pathways_file_missing": {
-		"generic": "Checks that pathways.txt is present when required."
+		"generic": "The file pathways.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"pathways_from_stop_id_field": {
-		"generic": "Checks the presence requirements for \"from_stop_id\" in pathways.txt.",
+		"generic": "The \"from_stop_id\" field is not populated.",
 		"informational": "The from_stop_id field is informational",
 		"recommended": "The from_stop_id field is recommended",
 		"required": "The from_stop_id field is required"
@@ -631,7 +649,7 @@
 	"pathways_from_stop_id_foreign": {
 		"forbidden": "Field \"from_stop_id\" is forbidden",
 		"forbidden_stop_access_1": "Field \"from_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
-		"generic": "The \"from_stop_id\" field must reference a stop defined in stops.txt.",
+		"generic": "The \"from_stop_id\" reference to stops.txt is invalid.",
 		"invalid_location_type_format": "Field \"from_stop_id\" \"%s\" references a stop whose \"location_type\" is not a valid integer",
 		"invalid_location_type_pathway": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
 		"invalid_location_type_station": "Field \"from_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
@@ -641,7 +659,7 @@
 		"required": "Field \"from_stop_id\" is required"
 	},
 	"pathways_is_bidirectional_field": {
-		"generic": "Checks the presence requirements for \"is_bidirectional\" in pathways.txt.",
+		"generic": "The \"is_bidirectional\" field is not populated.",
 		"informational": "The is_bidirectional field is informational",
 		"recommended": "The is_bidirectional field is recommended",
 		"required": "The is_bidirectional field is required"
@@ -649,55 +667,55 @@
 	"pathways_is_bidirectional_valid": {
 		"exit_gate_bidirectional": "Field \"is_bidirectional\" must be 0 when \"pathway_mode\" is 7 (exit gate). Exit gates cannot be bidirectional",
 		"forbidden": "Field \"is_bidirectional\" is forbidden",
-		"generic": "The \"is_bidirectional\" field must contain one of the values allowed by GTFS.",
+		"generic": "The \"is_bidirectional\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"is_bidirectional\" must be 0 or 1, received: %s",
 		"not_allowed": "Field \"is_bidirectional\" \"%s\" is not allowed",
 		"recommended": "Field \"is_bidirectional\" is recommended",
 		"required": "Field \"is_bidirectional\" is required"
 	},
 	"pathways_length_field": {
-		"generic": "Checks the presence requirements for \"length\" in pathways.txt.",
+		"generic": "The \"length\" field is not populated.",
 		"informational": "The length field is informational",
 		"recommended": "The length field is recommended",
 		"required": "The length field is required"
 	},
 	"pathways_length_valid": {
 		"forbidden": "Field \"length\" is forbidden",
-		"generic": "The \"length\" field must contain a non-negative length in meters.",
+		"generic": "The \"length\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"length\" \"%s\" has an invalid numeric value",
 		"negative": "Field \"length\" \"%f\" must be a non-negative number",
 		"recommended": "Field \"length\" is recommended",
 		"required": "Field \"length\" is required"
 	},
 	"pathways_max_slope_field": {
-		"generic": "Checks the presence requirements for \"max_slope\" in pathways.txt.",
+		"generic": "The \"max_slope\" field is not populated.",
 		"informational": "The max_slope field is informational",
 		"recommended": "The max_slope field is recommended",
 		"required": "The max_slope field is required"
 	},
 	"pathways_max_slope_valid": {
 		"forbidden": "Field \"max_slope\" is forbidden",
-		"generic": "The \"max_slope\" field must contain a slope allowed for the given pathway mode.",
+		"generic": "The \"max_slope\" field is populated for a pathway mode that does not allow it.",
 		"not_allowed_pathway_mode": "Field \"max_slope\" is not allowed for pathway_mode \"%s\"",
 		"recommended": "Field \"max_slope\" is recommended",
 		"required": "Field \"max_slope\" is required"
 	},
 	"pathways_min_width_field": {
-		"generic": "Checks the presence requirements for \"min_width\" in pathways.txt.",
+		"generic": "The \"min_width\" field is not populated.",
 		"informational": "The min_width field is informational",
 		"recommended": "The min_width field is recommended",
 		"required": "The min_width field is required"
 	},
 	"pathways_min_width_valid": {
 		"forbidden": "Field \"min_width\" is forbidden",
-		"generic": "The \"min_width\" field must contain a positive width in meters.",
+		"generic": "The \"min_width\" field contains an invalid, zero, or negative value.",
 		"invalid": "Field \"min_width\" \"%s\" is not a valid number",
 		"negative": "Field \"min_width\" must be a positive number",
 		"recommended": "Field \"min_width\" is recommended",
 		"required": "Field \"min_width\" is required"
 	},
 	"pathways_pathway_id_field": {
-		"generic": "Checks the presence requirements for \"pathway_id\" in pathways.txt.",
+		"generic": "The \"pathway_id\" field is not populated.",
 		"informational": "The pathway_id field is informational",
 		"recommended": "The pathway_id field is recommended",
 		"required": "The pathway_id field is required"
@@ -705,51 +723,51 @@
 	"pathways_pathway_id_unique": {
 		"duplicate": "Duplicate field \"pathway_id\" \"%s\" found. Field \"pathway_id\" must be unique",
 		"forbidden": "Field \"pathway_id\" is forbidden",
-		"generic": "The \"pathway_id\" field must be unique across pathways.txt.",
+		"generic": "The \"pathway_id\" field contains duplicate values.",
 		"recommended": "Field \"pathway_id\" is recommended",
 		"required": "Field \"pathway_id\" is required"
 	},
 	"pathways_pathway_mode_field": {
-		"generic": "Checks the presence requirements for \"pathway_mode\" in pathways.txt.",
+		"generic": "The \"pathway_mode\" field is not populated.",
 		"informational": "The pathway_mode field is informational",
 		"recommended": "The pathway_mode field is recommended",
 		"required": "The pathway_mode field is required"
 	},
 	"pathways_pathway_mode_valid": {
 		"forbidden": "Field \"pathway_mode\" is forbidden",
-		"generic": "The \"pathway_mode\" field must contain one of the values allowed by GTFS.",
+		"generic": "The \"pathway_mode\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"pathway_mode\" must be 0, 1, 2, 3, 4, or 5, received: %s",
 		"not_allowed": "Field \"pathway_mode\" \"%s\" is not allowed",
 		"recommended": "Field \"pathway_mode\" is recommended",
 		"required": "Field \"pathway_mode\" is required"
 	},
 	"pathways_reversed_signposted_as_field": {
-		"generic": "Checks the presence requirements for \"reversed_signposted_as\" in pathways.txt.",
+		"generic": "The \"reversed_signposted_as\" field is not populated.",
 		"informational": "The reversed_signposted_as field is informational",
 		"recommended": "The reversed_signposted_as field is recommended",
 		"required": "The reversed_signposted_as field is required"
 	},
 	"pathways_signposted_as_field": {
-		"generic": "Checks the presence requirements for \"signposted_as\" in pathways.txt.",
+		"generic": "The \"signposted_as\" field is not populated.",
 		"informational": "The signposted_as field is informational",
 		"recommended": "The signposted_as field is recommended",
 		"required": "The signposted_as field is required"
 	},
 	"pathways_stair_count_field": {
-		"generic": "Checks the presence requirements for \"stair_count\" in pathways.txt.",
+		"generic": "The \"stair_count\" field is not populated.",
 		"informational": "The stair_count field is informational",
 		"recommended": "The stair_count field is recommended",
 		"required": "The stair_count field is required"
 	},
 	"pathways_stair_count_valid": {
 		"forbidden": "Field \"stair_count\" is forbidden",
-		"generic": "The \"stair_count\" field must contain a valid number of stairs.",
+		"generic": "The \"stair_count\" field contains an invalid number of stairs.",
 		"invalid": "Field \"stair_count\" \"%s\" has an invalid numeric value",
 		"recommended": "Field \"stair_count\" is recommended",
 		"required": "Field \"stair_count\" is required"
 	},
 	"pathways_to_stop_id_field": {
-		"generic": "Checks the presence requirements for \"to_stop_id\" in pathways.txt.",
+		"generic": "The \"to_stop_id\" field is not populated.",
 		"informational": "The to_stop_id field is informational",
 		"recommended": "The to_stop_id field is recommended",
 		"required": "The to_stop_id field is required"
@@ -757,7 +775,7 @@
 	"pathways_to_stop_id_foreign": {
 		"forbidden": "Field \"to_stop_id\" is forbidden",
 		"forbidden_stop_access_1": "Field \"to_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
-		"generic": "The \"to_stop_id\" field must reference a stop defined in stops.txt.",
+		"generic": "The \"to_stop_id\" reference to stops.txt is invalid.",
 		"invalid_location_type_pathway": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
 		"invalid_location_type_station": "Field \"to_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
 		"not_found": "Field \"to_stop_id\" \"%s\" does not exist in stops.txt",
@@ -765,51 +783,53 @@
 		"required": "Field \"to_stop_id\" is required"
 	},
 	"pathways_traversal_time_field": {
-		"generic": "Checks the presence requirements for \"traversal_time\" in pathways.txt.",
+		"generic": "The \"traversal_time\" field is not populated.",
 		"informational": "The traversal_time field is informational",
 		"recommended": "The traversal_time field is recommended",
 		"required": "The traversal_time field is required"
 	},
 	"pathways_traversal_time_valid": {
 		"forbidden": "Field \"traversal_time\" is forbidden",
-		"generic": "The \"traversal_time\" field must contain a non-negative time in seconds.",
+		"generic": "The \"traversal_time\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"traversal_time\" \"%s\" has an invalid numeric value",
 		"negative": "Field \"traversal_time\" \"%s\" must be a non-negative number",
 		"recommended": "Field \"traversal_time\" is recommended",
 		"required": "Field \"traversal_time\" is required"
 	},
 	"rider_categories_eligibility_url_field": {
-		"generic": "Checks the presence requirements for \"eligibility_url\" in rider_categories.txt.",
+		"generic": "The \"eligibility_url\" field is not populated.",
 		"informational": "The eligibility_url field is informational",
 		"recommended": "The eligibility_url field is recommended",
 		"required": "The eligibility_url field is required"
 	},
 	"rider_categories_eligibility_url_valid": {
 		"forbidden": "Field \"eligibility_url\" is forbidden",
-		"generic": "The \"eligibility_url\" field must contain a valid HTTP URL.",
+		"generic": "The \"eligibility_url\" field contains an invalid HTTP URL.",
 		"invalid": "Field \"eligibility_url\" must be a valid URL",
 		"recommended": "Field \"eligibility_url\" is recommended",
 		"required": "Field \"eligibility_url\" is required"
 	},
 	"rider_categories_file_missing": {
-		"generic": "Checks that rider_categories.txt is present when required."
+		"generic": "The file rider_categories.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"rider_categories_is_default_fare_category_field": {
-		"generic": "Checks the presence requirements for \"is_default_fare_category\" in rider_categories.txt.",
+		"generic": "The \"is_default_fare_category\" field is not populated.",
 		"informational": "The is_default_fare_category field is informational",
 		"recommended": "The is_default_fare_category field is recommended",
 		"required": "The is_default_fare_category field is required"
 	},
 	"rider_categories_is_default_fare_category_valid": {
 		"forbidden": "Field \"is_default_fare_category\" is forbidden",
-		"generic": "Only one rider category may be marked as the default fare category.",
+		"generic": "The \"is_default_fare_category\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"is_default_fare_category\" must be 0 or 1",
 		"not_allowed": "Field \"is_default_fare_category\" \"%s\" is not allowed",
 		"recommended": "Field \"is_default_fare_category\" is recommended",
 		"required": "Field \"is_default_fare_category\" is required"
 	},
 	"rider_categories_rider_category_id_field": {
-		"generic": "Checks the presence requirements for \"rider_category_id\" in rider_categories.txt.",
+		"generic": "The \"rider_category_id\" field is not populated.",
 		"informational": "The rider_category_id field is informational",
 		"recommended": "The rider_category_id field is recommended",
 		"required": "The rider_category_id field is required"
@@ -817,781 +837,791 @@
 	"rider_categories_rider_category_id_unique": {
 		"duplicate": "Duplicate field \"rider_category_id\" \"%s\" found. Field \"rider_category_id\" must be unique",
 		"forbidden": "Field \"rider_category_id\" is forbidden",
-		"generic": "The \"rider_category_id\" field must be unique across rider_categories.txt.",
+		"generic": "The \"rider_category_id\" field contains duplicate values.",
 		"recommended": "Field \"rider_category_id\" is recommended",
 		"required": "Field \"rider_category_id\" is required"
 	},
 	"rider_categories_rider_category_name_field": {
-		"generic": "Checks the presence requirements for \"rider_category_name\" in rider_categories.txt.",
+		"generic": "The \"rider_category_name\" field is not populated.",
 		"informational": "The rider_category_name field is informational",
 		"recommended": "The rider_category_name field is recommended",
 		"required": "The rider_category_name field is required"
 	},
 	"routes_agency_id_field": {
-		"generic": "Checks the presence requirements for \"agency_id\" in routes.txt.",
+		"generic": "The \"agency_id\" field is not populated.",
 		"informational": "The agency_id field is informational",
 		"recommended": "The agency_id field is recommended",
 		"required": "The agency_id field is required"
 	},
 	"routes_agency_id_foreign": {
-		"generic": "Checks that \"agency_id\" references a value defined in agency.txt.",
+		"generic": "The \"agency_id\" reference to agency.txt is invalid.",
 		"not_found": "Field \"agency_id\" value \"%s\" was not found in agency.txt"
 	},
 	"routes_continuous_drop_off_field": {
-		"generic": "Checks the presence requirements for \"continuous_drop_off\" in routes.txt.",
+		"generic": "The \"continuous_drop_off\" field is not populated.",
 		"informational": "The continuous_drop_off field is informational",
 		"recommended": "The continuous_drop_off field is recommended",
 		"required": "The continuous_drop_off field is required"
 	},
 	"routes_continuous_drop_off_valid": {
 		"forbidden_with_window": "Field \"continuous_drop_off\" must be empty or 1 when a trip on this route has a pickup/drop-off window in stop_times.txt",
-		"generic": "Checks whether continuous_drop_off enables continuous service and respects pickup/drop-off window restrictions.",
+		"generic": "The \"continuous_drop_off\" value is incompatible with continuous-service conditions or pickup/drop-off windows.",
 		"recommended": "Field \"continuous_drop_off\" is recommended to enable continuous service; an empty value or 1 disables it",
 		"required": "Field \"continuous_drop_off\" must enable continuous service; an empty value or 1 disables it"
 	},
 	"routes_continuous_pickup_field": {
-		"generic": "Checks the presence requirements for \"continuous_pickup\" in routes.txt.",
+		"generic": "The \"continuous_pickup\" field is not populated.",
 		"informational": "The continuous_pickup field is informational",
 		"recommended": "The continuous_pickup field is recommended",
 		"required": "The continuous_pickup field is required"
 	},
 	"routes_continuous_pickup_valid": {
 		"forbidden_with_window": "Field \"continuous_pickup\" must be empty or 1 when a trip on this route has a pickup/drop-off window in stop_times.txt",
-		"generic": "Checks whether continuous_pickup enables continuous service and respects pickup/drop-off window restrictions.",
+		"generic": "The \"continuous_pickup\" value is incompatible with continuous-service conditions or pickup/drop-off windows.",
 		"recommended": "Field \"continuous_pickup\" is recommended to enable continuous service; an empty value or 1 disables it",
 		"required": "Field \"continuous_pickup\" must enable continuous service; an empty value or 1 disables it"
 	},
 	"routes_file_missing": {
-		"generic": "Checks that routes.txt is present when required."
+		"generic": "The file routes.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"routes_line_id_equal_route_short_name": {
-		"generic": "Checks that line_id matches route_short_name.",
+		"generic": "The \"line_id\" and \"route_short_name\" values differ.",
 		"not_equal_to_route_short_name": "Field \"line_id\" value \"%s\" must equal the \"route_short_name\" value \"%s\""
 	},
 	"routes_line_id_field": {
-		"generic": "Checks the presence requirements for \"line_id\" in routes.txt.",
+		"generic": "The \"line_id\" field is not populated.",
 		"informational": "The line_id field is informational",
 		"recommended": "The line_id field is recommended",
 		"required": "The line_id field is required"
 	},
 	"routes_line_long_name_field": {
-		"generic": "Checks the presence requirements for \"line_long_name\" in routes.txt.",
+		"generic": "The \"line_long_name\" field is not populated.",
 		"informational": "The line_long_name field is informational",
 		"recommended": "The line_long_name field is recommended",
 		"required": "The line_long_name field is required"
 	},
 	"routes_line_short_name_equal_route_short_name": {
-		"generic": "Checks that line_short_name matches route_short_name.",
+		"generic": "The \"line_short_name\" and \"route_short_name\" values differ.",
 		"not_equal_to_route_short_name": "Field \"line_short_name\" value \"%s\" must equal the \"route_short_name\" value \"%s\""
 	},
 	"routes_line_short_name_field": {
-		"generic": "Checks the presence requirements for \"line_short_name\" in routes.txt.",
+		"generic": "The \"line_short_name\" field is not populated.",
 		"informational": "The line_short_name field is informational",
 		"recommended": "The line_short_name field is recommended",
 		"required": "The line_short_name field is required"
 	},
 	"routes_network_id_field": {
-		"generic": "Checks the presence requirements for \"network_id\" in routes.txt.",
+		"generic": "The \"network_id\" field is not populated.",
 		"informational": "The network_id field is informational",
 		"recommended": "The network_id field is recommended",
 		"required": "The network_id field is required"
 	},
 	"routes_network_id_foreign": {
-		"generic": "Checks that \"network_id\" references a value defined in route_networks.txt.",
+		"generic": "The \"network_id\" reference to route_networks.txt is invalid.",
 		"not_found": "Field \"network_id\" value \"%s\" was not found in route_networks.txt"
 	},
 	"routes_path_type_field": {
-		"generic": "Checks the presence requirements for \"path_type\" in routes.txt.",
+		"generic": "The \"path_type\" field is not populated.",
 		"informational": "The path_type field is informational",
 		"recommended": "The path_type field is recommended",
 		"required": "The path_type field is required"
 	},
 	"routes_path_type_valid": {
-		"generic": "Checks that \"path_type\" is one of the allowed integers: 1, 2, or 3.",
+		"generic": "The \"path_type\" field contains an invalid or disallowed value.",
 		"not_valid": "Field \"path_type\" value \"%s\" must be one of: 1, 2, 3"
 	},
 	"routes_route_color_field": {
-		"generic": "Checks the presence requirements for \"route_color\" in routes.txt.",
+		"generic": "The \"route_color\" field is not populated.",
 		"informational": "The route_color field is informational",
 		"recommended": "The route_color field is recommended",
 		"required": "The route_color field is required"
 	},
 	"routes_route_color_valid": {
-		"generic": "Checks that \"route_color\" contains a six-digit hexadecimal color without #.",
+		"generic": "The \"route_color\" field does not contain a valid six-digit hexadecimal color without #.",
 		"not_valid": "Field \"route_color\" value \"%s\" must be a six-digit hexadecimal color without #"
 	},
 	"routes_route_desc_field": {
-		"generic": "Checks the presence requirements for \"route_desc\" in routes.txt.",
+		"generic": "The \"route_desc\" field is not populated.",
 		"informational": "The route_desc field is informational",
 		"recommended": "The route_desc field is recommended",
 		"required": "The route_desc field is required"
 	},
 	"routes_route_id_field": {
-		"generic": "Checks the presence requirements for \"route_id\" in routes.txt.",
+		"generic": "The \"route_id\" field is not populated.",
 		"informational": "The route_id field is informational",
 		"recommended": "The route_id field is recommended",
 		"required": "The route_id field is required"
 	},
 	"routes_route_id_format": {
-		"generic": "Checks that route_id combines route_short_name and route_sort_order with an underscore.",
+		"generic": "The \"route_id\" field does not match \"route_short_name\" and \"route_sort_order\" joined by an underscore.",
 		"invalid": "The \"route_id\" value \"%s\" must be \"%s\", formed from \"route_short_name\" \"%s\" and \"route_sort_order\" \"%s\" separated by an underscore"
 	},
 	"routes_route_id_unique": {
 		"duplicate": "The \"route_id\" value \"%s\" must be unique in routes.txt",
-		"generic": "Checks that \"route_id\" is unique in routes.txt."
+		"generic": "The \"route_id\" field contains duplicate values."
 	},
 	"routes_route_long_name_field": {
-		"generic": "Checks the presence requirements for \"route_long_name\" in routes.txt.",
+		"generic": "The \"route_long_name\" field is not populated.",
 		"informational": "The route_long_name field is informational",
 		"recommended": "The route_long_name field is recommended",
 		"required": "The route_long_name field is required"
 	},
 	"routes_route_short_name_field": {
-		"generic": "Checks the presence requirements for \"route_short_name\" in routes.txt.",
+		"generic": "The \"route_short_name\" field is not populated.",
 		"informational": "The route_short_name field is informational",
 		"recommended": "The route_short_name field is recommended",
 		"required": "The route_short_name field is required"
 	},
 	"routes_route_sort_order_field": {
-		"generic": "Checks the presence requirements for \"route_sort_order\" in routes.txt.",
+		"generic": "The \"route_sort_order\" field is not populated.",
 		"informational": "The route_sort_order field is informational",
 		"recommended": "The route_sort_order field is recommended",
 		"required": "The route_sort_order field is required"
 	},
 	"routes_route_sort_order_valid": {
-		"generic": "Checks that \"route_sort_order\" contains a non-negative integer.",
+		"generic": "The \"route_sort_order\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"route_sort_order\" value \"%s\" must be a non-negative integer"
 	},
 	"routes_route_text_color_field": {
-		"generic": "Checks the presence requirements for \"route_text_color\" in routes.txt.",
+		"generic": "The \"route_text_color\" field is not populated.",
 		"informational": "The route_text_color field is informational",
 		"recommended": "The route_text_color field is recommended",
 		"required": "The route_text_color field is required"
 	},
 	"routes_route_text_color_valid": {
-		"generic": "Checks that \"route_text_color\" contains a six-digit hexadecimal color without #.",
+		"generic": "The \"route_text_color\" field does not contain a valid six-digit hexadecimal color without #.",
 		"invalid": "Field \"route_text_color\" value \"%s\" must be a six-digit hexadecimal color without #"
 	},
 	"routes_route_type_field": {
-		"generic": "Checks the presence requirements for \"route_type\" in routes.txt.",
+		"generic": "The \"route_type\" field is not populated.",
 		"informational": "The route_type field is informational",
 		"recommended": "The route_type field is recommended",
 		"required": "The route_type field is required"
 	},
 	"routes_route_type_valid": {
-		"generic": "Checks that \"route_type\" is one of the allowed integers: 1, 2, 3, 4, 5, 6, 7, 11, or 12.",
+		"generic": "The \"route_type\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"route_type\" value \"%s\" must be one of: 1, 2, 3, 4, 5, 6, 7, 11, 12"
 	},
 	"routes_route_url_different_from_agency_url": {
-		"generic": "Checks that route_url differs from the URL of the associated agency.",
+		"generic": "The \"route_url\" field repeats the associated agency URL.",
 		"invalid": "The \"route_url\" value \"%s\" must differ from the URL of the route's agency"
 	},
 	"routes_route_url_field": {
-		"generic": "Checks the presence requirements for \"route_url\" in routes.txt.",
+		"generic": "The \"route_url\" field is not populated.",
 		"informational": "The route_url field is informational",
 		"recommended": "The route_url field is recommended",
 		"required": "The route_url field is required"
 	},
 	"routes_route_url_valid": {
-		"generic": "Checks that \"route_url\" contains a valid URL.",
+		"generic": "The \"route_url\" field contains an invalid URL.",
 		"invalid": "Field \"route_url\" \"%s\" is not a valid URL"
 	},
 	"shape_dist_traveled_non_decreasing_with_sequence": {
-		"generic": "Checks that shape_dist_traveled does not decrease along the ordered points of a shape.",
+		"generic": "The \"shape_dist_traveled\" values decrease along the shape.",
 		"not_increasing": "The \"shape_dist_traveled\" values for shape_id \"%s\" must not decrease in sequence order"
 	},
 	"shape_pt_sequence_strictly_increasing": {
-		"generic": "Checks that shape_pt_sequence is unique and strictly increasing within each shape.",
+		"generic": "The \"shape_pt_sequence\" values are duplicated or are not strictly increasing within the shape.",
 		"not_increasing": "The \"shape_pt_sequence\" values for shape_id \"%s\" must be unique and strictly increasing in sequence order"
 	},
 	"shapes_file_missing": {
-		"generic": "Checks that shapes.txt is present when required."
+		"generic": "The file shapes.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"shapes_shape_dist_traveled_block_valid": {
-		"generic": "Compares cumulative recorded distance with geometric distance in each shape block, using the configured tolerance.",
+		"generic": "The recorded cumulative distance differs from the geometric block distance beyond the configured tolerance.",
 		"invalid_distances": "The total expected distance (shape_dist_traveled) for shape \"%s\" is %.2f meters, the actual geometric distance is %.2f meters (diff: %.2f meters)"
 	},
 	"shapes_shape_dist_traveled_field": {
-		"generic": "Checks the presence requirements for \"shape_dist_traveled\" in shapes.txt.",
+		"generic": "The \"shape_dist_traveled\" field is not populated.",
 		"informational": "The shape_dist_traveled field is informational",
 		"recommended": "The shape_dist_traveled field is recommended",
 		"required": "The shape_dist_traveled field is required"
 	},
 	"shapes_shape_dist_traveled_segment_valid": {
-		"generic": "Compares each shape_dist_traveled increment with the distance between consecutive coordinates, using the configured tolerance.",
+		"generic": "The \"shape_dist_traveled\" increment differs from the distance between consecutive points beyond the configured tolerance.",
 		"invalid_distances": "Between points (%s, %s) and (%s, %s), shape_dist_traveled increases by %.2f meters but the Haversine distance is %.2f meters. Shape %s, sequences %d to %d; tolerance %.2f meters."
 	},
 	"shapes_shape_dist_traveled_valid": {
-		"generic": "Checks that \"shape_dist_traveled\" contains a non-negative number.",
+		"generic": "The \"shape_dist_traveled\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"shape_dist_traveled\" value \"%s\" must be a non-negative number"
 	},
 	"shapes_shape_id_field": {
-		"generic": "Checks the presence requirements for \"shape_id\" in shapes.txt.",
+		"generic": "The \"shape_id\" field is not populated.",
 		"informational": "The shape_id field is informational",
 		"recommended": "The shape_id field is recommended",
 		"required": "The shape_id field is required"
 	},
 	"shapes_shape_point_spacing_valid": {
-		"generic": "Checks that consecutive shape points do not exceed the configured distance limit.",
+		"generic": "The distance between consecutive shape points exceeds the configured limit.",
 		"invalid_consistent_distance": "Shape %s has coordinates (%.6f, %.6f) at sequence %d too far from (%.6f, %.6f) at sequence %d: %.2f meters exceeds the %.2f meter limit."
 	},
 	"shapes_shape_pt_lat_field": {
-		"generic": "Checks the presence requirements for \"shape_pt_lat\" in shapes.txt.",
+		"generic": "The \"shape_pt_lat\" field is not populated.",
 		"informational": "The shape_pt_lat field is informational",
 		"recommended": "The shape_pt_lat field is recommended",
 		"required": "The shape_pt_lat field is required"
 	},
 	"shapes_shape_pt_lat_valid": {
-		"generic": "Checks that \"shape_pt_lat\" contains a latitude between -90 and 90 degrees.",
+		"generic": "The \"shape_pt_lat\" field contains an invalid latitude; the allowed range is -90 to 90 degrees.",
 		"invalid": "Field \"shape_pt_lat\" value \"%s\" must be a valid latitude between -90 and 90"
 	},
 	"shapes_shape_pt_lon_field": {
-		"generic": "Checks the presence requirements for \"shape_pt_lon\" in shapes.txt.",
+		"generic": "The \"shape_pt_lon\" field is not populated.",
 		"informational": "The shape_pt_lon field is informational",
 		"recommended": "The shape_pt_lon field is recommended",
 		"required": "The shape_pt_lon field is required"
 	},
 	"shapes_shape_pt_lon_valid": {
-		"generic": "Checks that \"shape_pt_lon\" contains a longitude between -180 and 180 degrees.",
+		"generic": "The \"shape_pt_lon\" field contains an invalid longitude; the allowed range is -180 to 180 degrees.",
 		"invalid": "Field \"shape_pt_lon\" value \"%s\" must be a valid longitude between -180 and 180"
 	},
 	"shapes_shape_pt_sequence_field": {
-		"generic": "Checks the presence requirements for \"shape_pt_sequence\" in shapes.txt.",
+		"generic": "The \"shape_pt_sequence\" field is not populated.",
 		"informational": "The shape_pt_sequence field is informational",
 		"recommended": "The shape_pt_sequence field is recommended",
 		"required": "The shape_pt_sequence field is required"
 	},
 	"shapes_shape_pt_sequence_non_negative": {
-		"generic": "Checks that \"shape_pt_sequence\" contains a non-negative integer.",
+		"generic": "The \"shape_pt_sequence\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"shape_pt_sequence\" must be a non-negative integer"
 	},
 	"stop_times_arrival_departure_time_sequence": {
 		"decreasing": "Fields \"arrival_time\" and \"departure_time\" must not decrease by \"stop_sequence\" for trip_id \"%s\"; previous stop_sequence \"%d\" ends at \"%s\" and current stop_sequence \"%d\" starts at \"%s\"",
-		"generic": "Checks that arrival and departure times do not go backwards as stop_sequence increases within a trip."
+		"generic": "Arrival or departure times go backwards between consecutive stops of the trip."
 	},
 	"stop_times_arrival_time_field": {
-		"generic": "Checks the presence requirements for \"arrival_time\" in stop_times.txt.",
+		"generic": "The \"arrival_time\" field is not populated.",
 		"informational": "The arrival_time field is informational",
 		"recommended": "The arrival_time field is recommended",
 		"required": "The arrival_time field is required"
 	},
 	"stop_times_arrival_time_valid": {
-		"generic": "Checks that \"arrival_time\" contains a valid GTFS time in HH:MM:SS format.",
+		"generic": "The \"arrival_time\" field contains an invalid time.",
 		"invalid": "Field \"arrival_time\" value \"%s\" must be a valid time in HH:MM:SS format"
 	},
 	"stop_times_continuous_drop_off_field": {
-		"generic": "Checks the presence requirements for \"continuous_drop_off\" in stop_times.txt.",
+		"generic": "The \"continuous_drop_off\" field is not populated.",
 		"informational": "The continuous_drop_off field is informational",
 		"recommended": "The continuous_drop_off field is recommended",
 		"required": "The continuous_drop_off field is required"
 	},
 	"stop_times_continuous_drop_off_valid_gtfs_enum": {
 		"forbidden_with_window": "Field \"continuous_drop_off\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
-		"generic": "Checks the allowed values of continuous_drop_off and its compatibility with pickup/drop-off windows.",
+		"generic": "The \"continuous_drop_off\" value is invalid or incompatible with pickup/drop-off windows.",
 		"invalid": "Field \"continuous_drop_off\" must be an integer between 0 and 3"
 	},
 	"stop_times_continuous_pickup_field": {
-		"generic": "Checks the presence requirements for \"continuous_pickup\" in stop_times.txt.",
+		"generic": "The \"continuous_pickup\" field is not populated.",
 		"informational": "The continuous_pickup field is informational",
 		"recommended": "The continuous_pickup field is recommended",
 		"required": "The continuous_pickup field is required"
 	},
 	"stop_times_continuous_pickup_valid_gtfs_enum": {
 		"forbidden_with_window": "Field \"continuous_pickup\" must be 1 or empty if start_pickup_drop_off_window or end_pickup_drop_off_window is defined",
-		"generic": "Checks the allowed values of continuous_pickup and its compatibility with pickup/drop-off windows.",
+		"generic": "The \"continuous_pickup\" value is invalid or incompatible with pickup/drop-off windows.",
 		"invalid": "Field \"continuous_pickup\" must be an integer between 0 and 3"
 	},
 	"stop_times_departure_time_field": {
-		"generic": "Checks the presence requirements for \"departure_time\" in stop_times.txt.",
+		"generic": "The \"departure_time\" field is not populated.",
 		"informational": "The departure_time field is informational",
 		"recommended": "The departure_time field is recommended",
 		"required": "The departure_time field is required"
 	},
 	"stop_times_departure_time_valid": {
-		"generic": "Checks that \"departure_time\" contains a valid GTFS time in HH:MM:SS format.",
+		"generic": "The \"departure_time\" field contains an invalid time.",
 		"invalid": "Field \"departure_time\" value \"%s\" must be a valid time in HH:MM:SS format"
 	},
 	"stop_times_drop_off_booking_rule_id_field": {
-		"generic": "Checks the presence requirements for \"drop_off_booking_rule_id\" in stop_times.txt.",
+		"generic": "The \"drop_off_booking_rule_id\" field is not populated.",
 		"informational": "The drop_off_booking_rule_id field is informational",
 		"recommended": "The drop_off_booking_rule_id field is recommended",
 		"required": "The drop_off_booking_rule_id field is required"
 	},
 	"stop_times_drop_off_booking_rule_id_foreign": {
-		"generic": "Checks that \"drop_off_booking_rule_id\" references a value defined in booking_rules.txt.",
+		"generic": "The \"drop_off_booking_rule_id\" reference to booking_rules.txt is invalid.",
 		"not_found": "Field \"drop_off_booking_rule_id\" value \"%s\" does not exist in booking_rules.txt"
 	},
 	"stop_times_drop_off_type_field": {
-		"generic": "Checks the presence requirements for \"drop_off_type\" in stop_times.txt.",
+		"generic": "The \"drop_off_type\" field is not populated.",
 		"informational": "The drop_off_type field is informational",
 		"recommended": "The drop_off_type field is recommended",
 		"required": "The drop_off_type field is required"
 	},
 	"stop_times_drop_off_type_valid": {
-		"generic": "Checks that \"drop_off_type\" is one of the allowed integers: 0, 1, 2, or 3.",
+		"generic": "The \"drop_off_type\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"drop_off_type\" value \"%s\" must be an integer between 0 and 3"
 	},
 	"stop_times_end_pickup_drop_off_window_field": {
-		"generic": "Checks the presence requirements for \"end_pickup_drop_off_window\" in stop_times.txt.",
+		"generic": "The \"end_pickup_drop_off_window\" field is not populated.",
 		"informational": "The end_pickup_drop_off_window field is informational",
 		"recommended": "The end_pickup_drop_off_window field is recommended",
 		"required": "The end_pickup_drop_off_window field is required"
 	},
 	"stop_times_end_pickup_drop_off_window_valid": {
 		"forbidden_arrival_departure": "Field \"end_pickup_drop_off_window\" is forbidden if arrival_time or departure_time are defined",
-		"generic": "Checks the time format, conditional presence, and compatibility of end_pickup_drop_off_window with arrival and departure times.",
+		"generic": "The \"end_pickup_drop_off_window\" field is missing, contains an invalid time, or conflicts with arrival and departure times.",
 		"invalid": "Field \"end_pickup_drop_off_window\" value \"%s\" must be a valid time in HH:MM:SS format",
 		"required_location_group_id_start_pickup_dropoff": "Field \"end_pickup_drop_off_window\" is required if \"location_group_id\", \"location_id\" or \"start_pickup_drop_off_window\" is defined"
 	},
 	"stop_times_file_missing": {
-		"generic": "Checks that stop_times.txt is present when required."
+		"generic": "The file stop_times.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"stop_times_location_group_id_field": {
 		"forbidden_stop_location": "Field \"location_group_id\" is forbidden if stop_id or location_id are defined",
-		"generic": "Checks the presence requirements for \"location_group_id\" in stop_times.txt."
+		"generic": "The \"location_group_id\" value conflicts with \"stop_id\" or \"location_id\"."
 	},
 	"stop_times_location_group_id_forbidden": {
 		"forbidden": "Field \"location_group_id\" is forbidden when \"stop_id\" or \"location_id\" is defined",
-		"generic": "Checks that location_group_id is empty when stop_id or location_id is provided."
+		"generic": "The \"location_group_id\" field is populated together with \"stop_id\" or \"location_id\"."
 	},
 	"stop_times_location_id_forbidden": {
 		"forbidden": "Field \"location_id\" is forbidden when \"stop_id\" or \"location_group_id\" is defined",
-		"generic": "Checks that location_id is empty when stop_id or location_group_id is provided."
+		"generic": "The \"location_id\" field is populated together with \"stop_id\" or \"location_group_id\"."
 	},
 	"stop_times_pickup_booking_rule_id_field": {
-		"generic": "Checks the presence requirements for \"pickup_booking_rule_id\" in stop_times.txt.",
+		"generic": "The \"pickup_booking_rule_id\" field is not populated.",
 		"informational": "The pickup_booking_rule_id field is informational",
 		"recommended": "The pickup_booking_rule_id field is recommended",
 		"required": "The pickup_booking_rule_id field is required"
 	},
 	"stop_times_pickup_booking_rule_id_foreign": {
-		"generic": "Checks that \"pickup_booking_rule_id\" references a value defined in booking_rules.txt.",
+		"generic": "The \"pickup_booking_rule_id\" reference to booking_rules.txt is invalid.",
 		"not_found": "Field \"pickup_booking_rule_id\" value \"%s\" does not exist in booking_rules.txt"
 	},
 	"stop_times_pickup_type_field": {
-		"generic": "Checks the presence requirements for \"pickup_type\" in stop_times.txt.",
+		"generic": "The \"pickup_type\" field is not populated.",
 		"informational": "The pickup_type field is informational",
 		"recommended": "The pickup_type field is recommended",
 		"required": "The pickup_type field is required"
 	},
 	"stop_times_pickup_type_valid": {
-		"generic": "Checks that \"pickup_type\" is one of the allowed integers: 0, 1, 2, or 3.",
+		"generic": "The \"pickup_type\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"pickup_type\" value \"%s\" must be an integer between 0 and 3"
 	},
 	"stop_times_shape_dist_traveled_field": {
-		"generic": "Checks the presence requirements for \"shape_dist_traveled\" in stop_times.txt.",
+		"generic": "The \"shape_dist_traveled\" field is not populated.",
 		"informational": "The shape_dist_traveled field is informational",
 		"recommended": "The shape_dist_traveled field is recommended",
 		"required": "The shape_dist_traveled field is required"
 	},
 	"stop_times_shape_dist_traveled_valid": {
-		"generic": "Checks that \"shape_dist_traveled\" contains a non-negative number.",
+		"generic": "The \"shape_dist_traveled\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"shape_dist_traveled\" value \"%s\" must be a non-negative number"
 	},
 	"stop_times_start_pickup_drop_off_window_field": {
-		"generic": "Checks the presence requirements for \"start_pickup_drop_off_window\" in stop_times.txt.",
+		"generic": "The \"start_pickup_drop_off_window\" field is not populated.",
 		"informational": "The start_pickup_drop_off_window field is informational",
 		"recommended": "The start_pickup_drop_off_window field is recommended",
 		"required": "The start_pickup_drop_off_window field is required"
 	},
 	"stop_times_start_pickup_drop_off_window_valid": {
 		"forbidden_arrival_departure": "Field \"start_pickup_drop_off_window\" is forbidden if arrival_time or departure_time are defined",
-		"generic": "Checks the time format, conditional presence, and compatibility of start_pickup_drop_off_window with arrival and departure times.",
+		"generic": "The \"start_pickup_drop_off_window\" field is missing, contains an invalid time, or conflicts with arrival and departure times.",
 		"invalid": "Field \"start_pickup_drop_off_window\" value \"%s\" must be a valid time in HH:MM:SS format",
 		"required_location_group_id_start_pickup_dropoff": "Field \"start_pickup_drop_off_window\" is required if \"location_group_id\", \"location_id\" or \"end_pickup_drop_off_window\" is defined"
 	},
 	"stop_times_stop_headsign_field": {
-		"generic": "Checks the presence requirements for \"stop_headsign\" in stop_times.txt.",
+		"generic": "The \"stop_headsign\" field is not populated.",
 		"informational": "The stop_headsign field is informational",
 		"recommended": "The stop_headsign field is recommended",
 		"required": "The stop_headsign field is required"
 	},
 	"stop_times_stop_id_field": {
-		"generic": "Checks the presence requirements for \"stop_id\" in stop_times.txt.",
+		"generic": "The \"stop_id\" field is not populated.",
 		"informational": "The stop_id field is informational",
 		"recommended": "The stop_id field is recommended",
 		"required": "The stop_id field is required"
 	},
 	"stop_times_stop_id_foreign": {
-		"generic": "Checks that \"stop_id\" references a value defined in stops.txt.",
+		"generic": "The \"stop_id\" reference to stops.txt is invalid.",
 		"not_found": "Field \"stop_id\" value \"%s\" does not exist in stops.txt"
 	},
 	"stop_times_timepoint_field": {
-		"generic": "Checks the presence requirements for \"timepoint\" in stop_times.txt.",
+		"generic": "The \"timepoint\" field is not populated.",
 		"informational": "The timepoint field is informational",
 		"recommended": "The timepoint field is recommended",
 		"required": "The timepoint field is required"
 	},
 	"stop_times_timepoint_valid": {
-		"generic": "Checks that \"timepoint\" is one of the allowed integers: 0 or 1.",
+		"generic": "The \"timepoint\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"timepoint\" value \"%s\" must be 0 or 1"
 	},
 	"stop_times_trip_id_field": {
-		"generic": "Checks the presence requirements for \"trip_id\" in stop_times.txt.",
+		"generic": "The \"trip_id\" field is not populated.",
 		"informational": "The trip_id field is informational",
 		"recommended": "The trip_id field is recommended",
 		"required": "The trip_id field is required"
 	},
 	"stop_times_trip_id_foreign": {
-		"generic": "Checks that \"trip_id\" references a value defined in trips.txt.",
+		"generic": "The \"trip_id\" reference to trips.txt is invalid.",
 		"not_found": "Field \"trip_id\" value \"%s\" does not exist in trips.txt"
 	},
 	"stops_file_missing": {
-		"generic": "Checks that stops.txt is present when required.",
-		"stops_required_when_locations_missing": "stops.txt is required when locations.geojson is not present"
+		"generic": "The file stops.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"stops_required_when_locations_missing": "stops.txt is required when locations.geojson is not present",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"stops_has_bench_allowed": {
-		"generic": "Checks that \"has_bench\" belongs to the configured set of allowed values.",
+		"generic": "The \"has_bench\" value is not in the allowed set.",
 		"not_allowed": "Field \"has_bench\" value \"%s\" is not allowed"
 	},
 	"stops_has_bench_field": {
-		"generic": "Checks the presence requirements for \"has_bench\" in stops.txt.",
+		"generic": "The \"has_bench\" field is not populated.",
 		"informational": "The has_bench field is informational",
 		"recommended": "The has_bench field is recommended",
 		"required": "The has_bench field is required"
 	},
 	"stops_has_bench_valid": {
-		"generic": "Checks that \"has_bench\" is one of the allowed integers: 0, 1, 2, or 3.",
+		"generic": "The \"has_bench\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"has_bench\" value \"%s\" must be 0, 1, 2 or 3"
 	},
 	"stops_has_network_map_allowed": {
-		"generic": "Checks that \"has_network_map\" belongs to the configured set of allowed values.",
+		"generic": "The \"has_network_map\" value is not in the allowed set.",
 		"not_allowed": "Field \"has_network_map\" value \"%s\" is not allowed"
 	},
 	"stops_has_network_map_field": {
-		"generic": "Checks the presence requirements for \"has_network_map\" in stops.txt.",
+		"generic": "The \"has_network_map\" field is not populated.",
 		"informational": "The has_network_map field is informational",
 		"recommended": "The has_network_map field is recommended",
 		"required": "The has_network_map field is required"
 	},
 	"stops_has_network_map_valid": {
-		"generic": "Checks that \"has_network_map\" is one of the allowed integers: 0, 1, 2, or 3.",
+		"generic": "The \"has_network_map\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"has_network_map\" value \"%s\" must be 0, 1, 2 or 3"
 	},
 	"stops_has_pip_real_time_allowed": {
-		"generic": "Checks that \"has_pip_real_time\" belongs to the configured set of allowed values.",
+		"generic": "The \"has_pip_real_time\" value is not in the allowed set.",
 		"not_allowed": "Field \"has_pip_real_time\" value \"%s\" is not allowed"
 	},
 	"stops_has_pip_real_time_field": {
-		"generic": "Checks the presence requirements for \"has_pip_real_time\" in stops.txt.",
+		"generic": "The \"has_pip_real_time\" field is not populated.",
 		"informational": "The has_pip_real_time field is informational",
 		"recommended": "The has_pip_real_time field is recommended",
 		"required": "The has_pip_real_time field is required"
 	},
 	"stops_has_pip_real_time_valid": {
-		"generic": "Checks that \"has_pip_real_time\" is one of the allowed integers: 0, 1, or 2.",
+		"generic": "The \"has_pip_real_time\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"has_pip_real_time\" value \"%s\" must be 0, 1 or 2"
 	},
 	"stops_has_schedules_allowed": {
-		"generic": "Checks that \"has_schedules\" belongs to the configured set of allowed values.",
+		"generic": "The \"has_schedules\" value is not in the allowed set.",
 		"not_allowed": "Field \"has_schedules\" value \"%s\" is not allowed"
 	},
 	"stops_has_schedules_field": {
-		"generic": "Checks the presence requirements for \"has_schedules\" in stops.txt.",
+		"generic": "The \"has_schedules\" field is not populated.",
 		"informational": "The has_schedules field is informational",
 		"recommended": "The has_schedules field is recommended",
 		"required": "The has_schedules field is required"
 	},
 	"stops_has_schedules_valid": {
-		"generic": "Checks that \"has_schedules\" is one of the allowed integers: 0, 1, 2, or 3.",
+		"generic": "The \"has_schedules\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"has_schedules\" value \"%s\" must be 0, 1, 2 or 3"
 	},
 	"stops_has_shelter_allowed": {
-		"generic": "Checks that \"has_shelter\" belongs to the configured set of allowed values.",
+		"generic": "The \"has_shelter\" value is not in the allowed set.",
 		"not_allowed": "Field \"has_shelter\" value \"%s\" is not allowed"
 	},
 	"stops_has_shelter_field": {
-		"generic": "Checks the presence requirements for \"has_shelter\" in stops.txt.",
+		"generic": "The \"has_shelter\" field is not populated.",
 		"informational": "The has_shelter field is informational",
 		"recommended": "The has_shelter field is recommended",
 		"required": "The has_shelter field is required"
 	},
 	"stops_has_shelter_valid": {
-		"generic": "Checks that \"has_shelter\" is one of the allowed integers: 0, 1, 2, or 3.",
+		"generic": "The \"has_shelter\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"has_shelter\" value \"%s\" must be 0, 1, 2 or 3"
 	},
 	"stops_has_stop_sign_allowed": {
-		"generic": "Checks that \"has_stop_sign\" belongs to the configured set of allowed values.",
+		"generic": "The \"has_stop_sign\" value is not in the allowed set.",
 		"not_allowed": "Field \"has_stop_sign\" value \"%s\" is not allowed"
 	},
 	"stops_has_stop_sign_field": {
-		"generic": "Checks the presence requirements for \"has_stop_sign\" in stops.txt.",
+		"generic": "The \"has_stop_sign\" field is not populated.",
 		"informational": "The has_stop_sign field is informational",
 		"recommended": "The has_stop_sign field is recommended",
 		"required": "The has_stop_sign field is required"
 	},
 	"stops_has_stop_sign_valid": {
-		"generic": "Checks that \"has_stop_sign\" is one of the allowed integers: 0, 1, 2, or 3.",
+		"generic": "The \"has_stop_sign\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"has_stop_sign\" value \"%s\" must be 0, 1, 2 or 3"
 	},
 	"stops_has_tariffs_information_allowed": {
-		"generic": "Checks that \"has_tariffs_information\" belongs to the configured set of allowed values.",
+		"generic": "The \"has_tariffs_information\" value is not in the allowed set.",
 		"not_allowed": "Field \"has_tariffs_information\" value \"%s\" is not allowed"
 	},
 	"stops_has_tariffs_information_field": {
-		"generic": "Checks the presence requirements for \"has_tariffs_information\" in stops.txt.",
+		"generic": "The \"has_tariffs_information\" field is not populated.",
 		"informational": "The has_tariffs_information field is informational",
 		"recommended": "The has_tariffs_information field is recommended",
 		"required": "The has_tariffs_information field is required"
 	},
 	"stops_has_tariffs_information_valid": {
-		"generic": "Checks that \"has_tariffs_information\" is one of the allowed integers: 0, 1, 2, or 3.",
+		"generic": "The \"has_tariffs_information\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"has_tariffs_information\" value \"%s\" must be 0, 1, 2 or 3"
 	},
 	"stops_level_id_field": {
-		"generic": "Checks the presence requirements for \"level_id\" in stops.txt.",
+		"generic": "The \"level_id\" field is not populated.",
 		"informational": "The level_id field is informational",
 		"recommended": "The level_id field is recommended",
 		"required": "The level_id field is required"
 	},
 	"stops_level_id_foreign": {
-		"generic": "Checks that \"level_id\" references a value defined in levels.txt.",
+		"generic": "The \"level_id\" reference to levels.txt is invalid.",
 		"not_found": "Field \"level_id\" value \"%s\" does not exist in levels.txt"
 	},
 	"stops_location_type_allowed": {
-		"generic": "Checks that \"location_type\" belongs to the configured set of allowed values.",
+		"generic": "The \"location_type\" value is not in the allowed set.",
 		"not_allowed": "Field \"location_type\" value \"%s\" is not allowed"
 	},
 	"stops_location_type_field": {
-		"generic": "Checks the presence requirements for \"location_type\" in stops.txt.",
+		"generic": "The \"location_type\" field is not populated.",
 		"informational": "The location_type field is informational",
 		"recommended": "The location_type field is recommended",
 		"required": "The location_type field is required"
 	},
 	"stops_location_type_valid": {
-		"generic": "Checks that \"location_type\" is one of the allowed integers: 0, 1, 2, 3, or 4.",
+		"generic": "The \"location_type\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"location_type\" value \"%s\" must be 0, 1, 2, 3 or 4"
 	},
 	"stops_municipality_id_allowed": {
-		"generic": "Checks that \"municipality_id\" belongs to the configured set of allowed values.",
+		"generic": "The \"municipality_id\" value is not in the allowed set.",
 		"not_allowed": "Field \"municipality_id\" value \"%s\" is not allowed"
 	},
 	"stops_municipality_id_field": {
-		"generic": "Checks the presence requirements for \"municipality_id\" in stops.txt.",
+		"generic": "The \"municipality_id\" field is not populated.",
 		"informational": "The municipality_id field is informational",
 		"recommended": "The municipality_id field is recommended",
 		"required": "The municipality_id field is required"
 	},
 	"stops_parent_station_empty_location_types": {
-		"generic": "Checks that parent_station is provided when location_type is 2, 3, or 4.",
+		"generic": "The \"parent_station\" field is missing for a \"location_type\" value of 2, 3, or 4.",
 		"required_location_type": "Field \"parent_station\" is required when \"location_type\" is 2, 3 or 4"
 	},
 	"stops_parent_station_field": {
-		"generic": "Checks the presence requirements for \"parent_station\" in stops.txt.",
+		"generic": "The \"parent_station\" field is not populated.",
 		"informational": "The parent_station field is informational",
 		"recommended": "The parent_station field is recommended",
 		"required": "The parent_station field is required"
 	},
 	"stops_parent_station_for_location_type_one": {
 		"forbidden": "Field \"location_type\" must be 1 (station)",
-		"generic": "Checks that location_type is 1, identifying a station."
+		"generic": "The \"location_type\" field does not have the station value 1."
 	},
 	"stops_parent_station_foreign": {
 		"duplicate": "The value of field \"parent_station\" is duplicated in stops.txt",
-		"generic": "Checks for repeated parent_station values in stops.txt."
+		"generic": "The \"parent_station\" field contains repeated values."
 	},
 	"stops_parish_id_allowed": {
-		"generic": "Checks that \"parish_id\" belongs to the configured set of allowed values.",
+		"generic": "The \"parish_id\" value is not in the allowed set.",
 		"not_allowed": "Field \"parish_id\" value \"%s\" is not allowed"
 	},
 	"stops_parish_id_field": {
-		"generic": "Checks the presence requirements for \"parish_id\" in stops.txt.",
+		"generic": "The \"parish_id\" field is not populated.",
 		"informational": "The parish_id field is informational",
 		"recommended": "The parish_id field is recommended",
 		"required": "The parish_id field is required"
 	},
 	"stops_platform_code_allowed": {
-		"generic": "Checks that \"platform_code\" belongs to the configured set of allowed values.",
+		"generic": "The \"platform_code\" value is not in the allowed set.",
 		"not_allowed": "Field \"platform_code\" value \"%s\" is not allowed"
 	},
 	"stops_platform_code_field": {
-		"generic": "Checks the presence requirements for \"platform_code\" in stops.txt.",
+		"generic": "The \"platform_code\" field is not populated.",
 		"informational": "The platform_code field is informational",
 		"recommended": "The platform_code field is recommended",
 		"required": "The platform_code field is required"
 	},
 	"stops_public_visible_field": {
-		"generic": "Checks the presence requirements for \"public_visible\" in stops.txt.",
+		"generic": "The \"public_visible\" field is not populated.",
 		"informational": "The public_visible field is informational",
 		"recommended": "The public_visible field is recommended",
 		"required": "The public_visible field is required"
 	},
 	"stops_public_visible_valid": {
-		"generic": "Checks that \"public_visible\" is one of the allowed integers: 0 or 1.",
+		"generic": "The \"public_visible\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"public_visible\" value \"%s\" must be 0 or 1"
 	},
 	"stops_region_id_allowed": {
-		"generic": "Checks that \"region_id\" belongs to the configured set of allowed values.",
+		"generic": "The \"region_id\" value is not in the allowed set.",
 		"not_allowed": "Field \"region_id\" value \"%s\" is not allowed"
 	},
 	"stops_region_id_field": {
-		"generic": "Checks the presence requirements for \"region_id\" in stops.txt.",
+		"generic": "The \"region_id\" field is not populated.",
 		"informational": "The region_id field is informational",
 		"recommended": "The region_id field is recommended",
 		"required": "The region_id field is required"
 	},
 	"stops_shelter_code_field": {
-		"generic": "Checks the presence requirements for \"shelter_code\" in stops.txt.",
+		"generic": "The \"shelter_code\" field is not populated.",
 		"informational": "The shelter_code field is informational",
 		"recommended": "The shelter_code field is recommended",
 		"required": "The shelter_code field is required"
 	},
 	"stops_shelter_maintainer_field": {
-		"generic": "Checks the presence requirements for \"shelter_maintainer\" in stops.txt.",
+		"generic": "The \"shelter_maintainer\" field is not populated.",
 		"informational": "The shelter_maintainer field is informational",
 		"recommended": "The shelter_maintainer field is recommended",
 		"required": "The shelter_maintainer field is required"
 	},
 	"stops_stop_access_differente_location_type_zero": {
 		"forbidden": "Field \"stop_access\" is forbidden when \"location_type\" is not 0",
-		"generic": "Checks that stop_access is empty when location_type is not 0."
+		"generic": "The \"location_type\" value does not allow \"stop_access\"."
 	},
 	"stops_stop_access_field": {
-		"generic": "Checks the presence requirements for \"stop_access\" in stops.txt.",
+		"generic": "The \"stop_access\" field is not populated.",
 		"informational": "The stop_access field is informational",
 		"recommended": "The stop_access field is recommended",
 		"required": "The stop_access field is required"
 	},
 	"stops_stop_access_forbidden_parent_station": {
 		"forbidden": "Field \"stop_access\" is forbidden when \"parent_station\" is empty",
-		"generic": "Checks that stop_access is empty when parent_station is absent."
+		"generic": "There is no \"parent_station\" value to allow \"stop_access\"."
 	},
 	"stops_stop_access_valid": {
-		"generic": "Checks that \"stop_access\" is one of the allowed integers: 0 or 1.",
+		"generic": "The \"stop_access\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"stop_access\" value \"%s\" must be 0 or 1"
 	},
 	"stops_stop_code_field": {
-		"generic": "Checks the presence requirements for \"stop_code\" in stops.txt.",
+		"generic": "The \"stop_code\" field is not populated.",
 		"informational": "The stop_code field is informational",
 		"recommended": "The stop_code field is recommended",
 		"required": "The stop_code field is required"
 	},
 	"stops_stop_code_unique": {
 		"duplicate": "Field \"stop_code\" value \"%s\" must be unique",
-		"generic": "Checks that \"stop_code\" is unique in stops.txt."
+		"generic": "The \"stop_code\" field contains duplicate values."
 	},
 	"stops_stop_desc_different_stop_name": {
 		"duplicate": "Field \"stop_desc\" value \"%s\" must differ from \"stop_name\" value \"%s\"",
-		"generic": "Checks that stop_desc differs from stop_name."
+		"generic": "The \"stop_desc\" and \"stop_name\" fields have the same value."
 	},
 	"stops_stop_desc_field": {
-		"generic": "Checks the presence requirements for \"stop_desc\" in stops.txt.",
+		"generic": "The \"stop_desc\" field is not populated.",
 		"informational": "The stop_desc field is informational",
 		"recommended": "The stop_desc field is recommended",
 		"required": "The stop_desc field is required"
 	},
 	"stops_stop_id_field": {
-		"generic": "Checks the presence requirements for \"stop_id\" in stops.txt.",
+		"generic": "The \"stop_id\" field is not populated.",
 		"informational": "The stop_id field is informational",
 		"recommended": "The stop_id field is recommended",
 		"required": "The stop_id field is required"
 	},
 	"stops_stop_id_unique": {
 		"duplicate": "Field \"stop_id\" value \"%s\" must be unique",
-		"generic": "Checks that \"stop_id\" is unique in stops.txt."
+		"generic": "The \"stop_id\" field contains duplicate values."
 	},
 	"stops_stop_lat_field": {
-		"generic": "Checks the presence requirements for \"stop_lat\" in stops.txt.",
+		"generic": "The \"stop_lat\" field is not populated.",
 		"informational": "The stop_lat field is informational",
 		"recommended": "The stop_lat field is recommended",
 		"required": "The stop_lat field is required"
 	},
 	"stops_stop_lat_valid": {
-		"generic": "Checks that \"stop_lat\" contains a latitude between -90 and 90 degrees.",
+		"generic": "The \"stop_lat\" field contains an invalid latitude; the allowed range is -90 to 90 degrees.",
 		"invalid": "Field \"stop_lat\" value \"%s\" must be a valid latitude between -90 and 90"
 	},
 	"stops_stop_lon_field": {
-		"generic": "Checks the presence requirements for \"stop_lon\" in stops.txt.",
+		"generic": "The \"stop_lon\" field is not populated.",
 		"informational": "The stop_lon field is informational",
 		"recommended": "The stop_lon field is recommended",
 		"required": "The stop_lon field is required"
 	},
 	"stops_stop_lon_valid": {
-		"generic": "Checks that \"stop_lon\" contains a longitude between -180 and 180 degrees.",
+		"generic": "The \"stop_lon\" field contains an invalid longitude; the allowed range is -180 to 180 degrees.",
 		"invalid": "Field \"stop_lon\" value \"%s\" must be a valid longitude between -180 and 180"
 	},
 	"stops_stop_name_field": {
-		"generic": "Checks the presence requirements for \"stop_name\" in stops.txt.",
+		"generic": "The \"stop_name\" field is not populated.",
 		"informational": "The stop_name field is informational",
 		"recommended": "The stop_name field is recommended",
 		"required": "The stop_name field is required"
 	},
 	"stops_stop_short_name_field": {
-		"generic": "Checks the presence requirements for \"stop_short_name\" in stops.txt.",
+		"generic": "The \"stop_short_name\" field is not populated.",
 		"informational": "The stop_short_name field is informational",
 		"recommended": "The stop_short_name field is recommended",
 		"required": "The stop_short_name field is required"
 	},
 	"stops_stop_timezone_field": {
-		"generic": "Checks the presence requirements for \"stop_timezone\" in stops.txt.",
+		"generic": "The \"stop_timezone\" field is not populated.",
 		"informational": "The stop_timezone field is informational",
 		"recommended": "The stop_timezone field is recommended",
 		"required": "The stop_timezone field is required"
 	},
 	"stops_stop_timezone_valid": {
-		"generic": "Checks that \"stop_timezone\" contains a valid time zone.",
+		"generic": "The \"stop_timezone\" field contains an invalid time zone.",
 		"invalid": "Field \"stop_timezone\" value \"%s\" must be a valid timezone"
 	},
 	"stops_stop_url_field": {
-		"generic": "Checks the presence requirements for \"stop_url\" in stops.txt.",
+		"generic": "The \"stop_url\" field is not populated.",
 		"informational": "The stop_url field is informational",
 		"recommended": "The stop_url field is recommended",
 		"required": "The stop_url field is required"
 	},
 	"stops_stop_url_valid": {
-		"generic": "Checks that \"stop_url\" contains a valid URL.",
+		"generic": "The \"stop_url\" field contains an invalid URL.",
 		"invalid": "Field \"stop_url\" value \"%s\" must be a valid URL"
 	},
 	"stops_tts_stop_name_field": {
-		"generic": "Checks the presence requirements for \"tts_stop_name\" in stops.txt.",
+		"generic": "The \"tts_stop_name\" field is not populated.",
 		"informational": "The tts_stop_name field is informational",
 		"recommended": "The tts_stop_name field is recommended",
 		"required": "The tts_stop_name field is required"
 	},
 	"stops_wheelchair_boarding_allowed": {
-		"generic": "Checks that \"wheelchair_boarding\" belongs to the configured set of allowed values.",
+		"generic": "The \"wheelchair_boarding\" value is not in the allowed set.",
 		"not_allowed": "Field \"wheelchair_boarding\" value \"%s\" is not allowed"
 	},
 	"stops_wheelchair_boarding_field": {
-		"generic": "Checks the presence requirements for \"wheelchair_boarding\" in stops.txt.",
+		"generic": "The \"wheelchair_boarding\" field is not populated.",
 		"informational": "The wheelchair_boarding field is informational",
 		"recommended": "The wheelchair_boarding field is recommended",
 		"required": "The wheelchair_boarding field is required"
 	},
 	"stops_wheelchair_boarding_valid": {
-		"generic": "Checks that \"wheelchair_boarding\" is one of the allowed integers: 0, 1, or 2.",
+		"generic": "The \"wheelchair_boarding\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"wheelchair_boarding\" value \"%s\" must be 0, 1 or 2"
 	},
 	"stops_zone_id_field": {
-		"generic": "Checks the presence requirements for \"zone_id\" in stops.txt.",
+		"generic": "The \"zone_id\" field is not populated.",
 		"informational": "The zone_id field is informational",
 		"recommended": "The zone_id field is recommended",
 		"required": "The zone_id field is required"
 	},
 	"transfers_file_missing": {
-		"generic": "Checks that transfers.txt is present when required."
+		"generic": "The file transfers.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"transfers_from_route_id_field": {
-		"generic": "Checks the presence requirements for \"from_route_id\" in transfers.txt.",
+		"generic": "The \"from_route_id\" field is not populated.",
 		"informational": "The from_route_id field is informational",
 		"recommended": "The from_route_id field is recommended",
 		"required": "The from_route_id field is required"
 	},
 	"transfers_from_route_id_foreign": {
 		"forbidden": "Field \"from_route_id\" is forbidden",
-		"generic": "The \"from_route_id\" field must reference a route defined in routes.txt.",
+		"generic": "The \"from_route_id\" reference to routes.txt is invalid.",
 		"not_found": "Field \"from_route_id\" \"%s\" does not exist in routes.txt",
 		"recommended": "Field \"from_route_id\" is recommended",
 		"trip_must_belong_to_route": "When both from_trip_id and from_route_id are defined, from_trip_id \"%s\" must belong to from_route_id \"%s\". Trip references route \"%s\""
 	},
 	"transfers_from_stop_id_field": {
-		"generic": "Checks the presence requirements for \"from_stop_id\" in transfers.txt.",
+		"generic": "The \"from_stop_id\" field is not populated.",
 		"informational": "The from_stop_id field is informational",
 		"recommended": "The from_stop_id field is recommended",
 		"required": "The from_stop_id field is required"
 	},
 	"transfers_from_stop_id_foreign": {
-		"generic": "The \"from_stop_id\" field must reference a stop defined in stops.txt.",
+		"generic": "The \"from_stop_id\" reference to stops.txt is invalid.",
 		"invalid_location_type": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
 		"must_be_stop_for_transfer_type_4_5": "Field \"from_stop_id\" \"%s\" must reference a stop (location_type=0) when transfer_type is %d. Stations (location_type=1) are not allowed for transfer_type 4 or 5",
 		"not_found": "Field \"from_stop_id\" \"%s\" does not exist in stops.txt",
@@ -1599,52 +1629,52 @@
 		"required": "Field \"from_stop_id\" is required"
 	},
 	"transfers_from_trip_id_field": {
-		"generic": "Checks the presence requirements for \"from_trip_id\" in transfers.txt.",
+		"generic": "The \"from_trip_id\" field is not populated.",
 		"informational": "The from_trip_id field is informational",
 		"recommended": "The from_trip_id field is recommended",
 		"required": "The from_trip_id field is required"
 	},
 	"transfers_from_trip_id_foreign": {
-		"generic": "The \"from_trip_id\" field must reference a trip defined in trips.txt.",
+		"generic": "The \"from_trip_id\" reference to trips.txt is invalid.",
 		"not_found": "Field \"from_trip_id\" \"%s\" does not exist in trips.txt",
 		"recommended": "Field \"from_trip_id\" is recommended",
 		"required": "Field \"from_trip_id\" is required",
 		"trip_must_belong_to_route": "When both from_trip_id and from_route_id are defined, from_trip_id \"%s\" must belong to from_route_id \"%s\". Trip references route \"%s\""
 	},
 	"transfers_min_transfer_time_field": {
-		"generic": "Checks the presence requirements for \"min_transfer_time\" in transfers.txt.",
+		"generic": "The \"min_transfer_time\" field is not populated.",
 		"informational": "The min_transfer_time field is informational",
 		"recommended": "The min_transfer_time field is recommended",
 		"required": "The min_transfer_time field is required"
 	},
 	"transfers_min_transfer_time_valid": {
 		"forbidden": "Field \"min_transfer_time\" is forbidden",
-		"generic": "The \"min_transfer_time\" field must contain a non-negative time in seconds.",
+		"generic": "The \"min_transfer_time\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"transfer_duration\" must be greater than 0. Got \"%s\"",
 		"recommended": "Field \"min_transfer_time\" is recommended",
 		"required": "Field \"min_transfer_time\" is required"
 	},
 	"transfers_to_route_id_field": {
-		"generic": "Checks the presence requirements for \"to_route_id\" in transfers.txt.",
+		"generic": "The \"to_route_id\" field is not populated.",
 		"informational": "The to_route_id field is informational",
 		"recommended": "The to_route_id field is recommended",
 		"required": "The to_route_id field is required"
 	},
 	"transfers_to_route_id_foreign": {
 		"forbidden": "Field \"to_route_id\" is forbidden",
-		"generic": "The \"to_route_id\" field must reference a route defined in routes.txt.",
+		"generic": "The \"to_route_id\" reference to routes.txt is invalid.",
 		"not_found": "Field \"to_route_id\" \"%s\" does not exist in routes.txt",
 		"recommended": "Field \"to_route_id\" is recommended",
 		"trip_must_belong_to_route": "When both to_trip_id and to_route_id are defined, to_trip_id \"%s\" must belong to to_route_id \"%s\". Trip references route \"%s\""
 	},
 	"transfers_to_stop_id_field": {
-		"generic": "Checks the presence requirements for \"to_stop_id\" in transfers.txt.",
+		"generic": "The \"to_stop_id\" field is not populated.",
 		"informational": "The to_stop_id field is informational",
 		"recommended": "The to_stop_id field is recommended",
 		"required": "The to_stop_id field is required"
 	},
 	"transfers_to_stop_id_foreign": {
-		"generic": "The \"to_stop_id\" field must reference a stop defined in stops.txt.",
+		"generic": "The \"to_stop_id\" reference to stops.txt is invalid.",
 		"invalid_location_type": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
 		"must_be_different_from_from_stop_id": "Field \"to_stop_id\" \"%s\" must be different from \"from_stop_id\" \"%s\". A transfer cannot have the same stop for both from and to",
 		"must_be_stop_for_transfer_type_4_5": "Field \"to_stop_id\" \"%s\" must reference a stop (location_type=0) when transfer_type is %d. Stations (location_type=1) are not allowed for transfer_type 4 or 5",
@@ -1653,310 +1683,314 @@
 		"required": "Field \"to_stop_id\" is required"
 	},
 	"transfers_to_trip_id_field": {
-		"generic": "Checks the presence requirements for \"to_trip_id\" in transfers.txt.",
+		"generic": "The \"to_trip_id\" field is not populated.",
 		"informational": "The to_trip_id field is informational",
 		"recommended": "The to_trip_id field is recommended",
 		"required": "The to_trip_id field is required"
 	},
 	"transfers_to_trip_id_foreign": {
-		"generic": "The \"to_trip_id\" field must reference a trip defined in trips.txt.",
+		"generic": "The \"to_trip_id\" reference to trips.txt is invalid.",
 		"not_found": "Field \"to_trip_id\" \"%s\" does not exist in trips.txt",
 		"recommended": "Field \"to_trip_id\" is recommended",
 		"required": "Field \"to_trip_id\" is required",
 		"trip_must_belong_to_route": "When both to_trip_id and to_route_id are defined, to_trip_id \"%s\" must belong to to_route_id \"%s\". Trip references route \"%s\""
 	},
 	"transfers_transfer_type_field": {
-		"generic": "Checks the presence requirements for \"transfer_type\" in transfers.txt.",
+		"generic": "The \"transfer_type\" field is not populated.",
 		"informational": "The transfer_type field is informational",
 		"recommended": "The transfer_type field is recommended",
 		"required": "The transfer_type field is required"
 	},
 	"transfers_transfer_type_valid": {
-		"generic": "The \"transfer_type\" field must contain one of the values allowed by GTFS.",
+		"generic": "The \"transfer_type\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"transfer_type\" must be 0, 1, 2, 3, 4, or 5, received: %s",
 		"not_allowed": "Field \"transfer_type\" \"%s\" is not allowed",
 		"required": "Field \"transfer_type\" is required"
 	},
 	"trip_headsign_present_when_short_name_absent": {
 		"forbidden": "Field \"trip_headsign\" is forbidden",
-		"generic": "The \"trip_headsign\" field must be present when \"trip_short_name\" is absent.",
+		"generic": "The \"trip_headsign\" field is missing and \"trip_short_name\" is empty.",
 		"recommended": "Field \"trip_headsign\" is recommended",
 		"required": "Field \"trip_headsign\" is required"
 	},
 	"trip_short_name_exclusivity": {
 		"forbidden": "Field \"trip_short_name\" is forbidden",
-		"generic": "The \"trip_short_name\" field must not be shared by different trips.",
+		"generic": "The \"trip_short_name\" value is shared by different trips.",
 		"recommended": "Field \"trip_short_name\" is recommended",
 		"required": "Field \"trip_short_name\" is required"
 	},
 	"trips_bikes_allowed_field": {
-		"generic": "Checks the presence requirements for \"bikes_allowed\" in trips.txt.",
+		"generic": "The \"bikes_allowed\" field is not populated.",
 		"informational": "The bikes_allowed field is informational",
 		"recommended": "The bikes_allowed field is recommended",
 		"required": "The bikes_allowed field is required"
 	},
 	"trips_bikes_allowed_valid": {
 		"forbidden": "Field \"bikes_allowed\" is forbidden",
-		"generic": "The \"bikes_allowed\" field must contain one of the values allowed by GTFS.",
+		"generic": "The \"bikes_allowed\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"bikes_allowed\" must be 0, 1, or 2",
 		"not_allowed": "Field \"bikes_allowed\" \"%s\" is not allowed",
 		"recommended": "Field \"bikes_allowed\" is recommended",
 		"required": "Field \"bikes_allowed\" is required"
 	},
 	"trips_block_id_field": {
-		"generic": "Checks the presence requirements for \"block_id\" in trips.txt.",
+		"generic": "The \"block_id\" field is not populated.",
 		"informational": "The block_id field is informational",
 		"recommended": "The block_id field is recommended",
 		"required": "The block_id field is required"
 	},
 	"trips_block_id_in_allowed_set": {
 		"forbidden": "Field \"block_id\" is forbidden",
-		"generic": "The \"block_id\" field must contain an allowed block identifier.",
+		"generic": "The \"block_id\" value is not in the allowed set.",
 		"recommended": "Field \"block_id\" is recommended",
 		"required": "Field \"block_id\" is required"
 	},
 	"trips_direction_id_field": {
-		"generic": "Checks the presence requirements for \"direction_id\" in trips.txt.",
+		"generic": "The \"direction_id\" field is not populated.",
 		"informational": "The direction_id field is informational",
 		"recommended": "The direction_id field is recommended",
 		"required": "The direction_id field is required"
 	},
 	"trips_direction_id_pattern_consistent": {
 		"different_direction_ids_in_pattern": "pattern_id %s has trips with different direction_ids: %s. All trips with the same pattern_id must have the same direction_id",
-		"generic": "The \"direction_id\" field must be consistent across all trips of the same pattern."
+		"generic": "Trips with the same \"pattern_id\" have different \"direction_id\" values."
 	},
 	"trips_direction_id_valid": {
 		"forbidden": "Field \"direction_id\" is forbidden",
-		"generic": "The \"direction_id\" field must contain one of the values allowed by GTFS.",
+		"generic": "The \"direction_id\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"direction_id\" must be 0 or 1",
 		"not_allowed": "Field \"direction_id\" \"%s\" is not allowed",
 		"recommended": "Field \"direction_id\" is recommended",
 		"required": "Field \"direction_id\" is required"
 	},
 	"trips_direction_pattern_id_match": {
-		"generic": "The \"direction_id\" field must match the direction declared in \"pattern_id\".",
+		"generic": "The \"direction_id\" value does not match the direction in \"pattern_id\".",
 		"invalid_direction_id": "Field \"direction_id\" must be an integer between 0 and 1, received: %s",
 		"invalid_pattern_id": "Field \"pattern_id\" must be a valid ID in the format \"XXXX_[0|1]_1\", received: %s",
 		"not_matching": "Field \"direction_id\" \"%s\" does not match the pattern_id \"%s\"",
 		"required": "Fields \"pattern_id\" and \"direction_id\" are required to validate the match"
 	},
 	"trips_file_missing": {
-		"generic": "Checks that trips.txt is present when required."
+		"generic": "The file trips.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"trips_one_pattern_per_shape": {
-		"generic": "Each \"shape_id\" must be associated with only one \"pattern_id\".",
+		"generic": "The same \"shape_id\" is associated with more than one \"pattern_id\".",
 		"multiple_shape_id_in_unique_pattern_id": "Field \"shape_id\" \"%s\" is used in multiple pattern_ids"
 	},
 	"trips_one_shape_per_pattern": {
 		"different_shape_id": "Different shape_id's found for the same pattern_id: %s",
-		"generic": "Each \"pattern_id\" must be associated with only one \"shape_id\"."
+		"generic": "The same \"pattern_id\" is associated with more than one \"shape_id\"."
 	},
 	"trips_pattern_id_field": {
-		"generic": "Checks the presence requirements for \"pattern_id\" in trips.txt.",
+		"generic": "The \"pattern_id\" field is not populated.",
 		"informational": "The pattern_id field is informational",
 		"recommended": "The pattern_id field is recommended",
 		"required": "The pattern_id field is required"
 	},
 	"trips_pattern_id_format": {
-		"generic": "The \"pattern_id\" field must follow the syntax defined for the feed.",
+		"generic": "The \"pattern_id\" field does not follow the format defined for the GTFS feed.",
 		"invalid": "Field \"pattern_id\" must be a valid ID in the format \"%s\", received: \"%s\""
 	},
 	"trips_pattern_id_present_and_references_consistent": {
 		"forbidden": "Field \"pattern_id\" is forbidden",
-		"generic": "The \"pattern_id\" field must be present and consistent with the trip's references.",
+		"generic": "The \"pattern_id\" field is missing or inconsistent with the trip references.",
 		"recommended": "Field \"pattern_id\" is recommended",
 		"required": "Field \"pattern_id\" is required"
 	},
 	"trips_pattern_id_same_shape_id": {
-		"generic": "The \"pattern_id\" field must be equal to the \"shape_id\" field.",
+		"generic": "The \"pattern_id\" and \"shape_id\" values differ.",
 		"not_matching": "Field \"pattern_id\" \"%s\" is different from the field \"shape_id\" \"%s\", they need to be the same"
 	},
 	"trips_pattern_required_fields": {
 		"direction_id_not_found": "Field \"direction_id\" not found",
-		"generic": "The trip must have the fields required to be grouped by \"pattern_id\".",
+		"generic": "The trip has missing fields that prevent grouping by \"pattern_id\".",
 		"route_id_not_found": "Field \"route_id\" not found",
 		"shape_id_not_found": "Field \"shape_id\" not found",
 		"trip_headsign_not_found": "Field \"trip_headsign\" not found"
 	},
 	"trips_pattern_single_signature": {
-		"generic": "All trips sharing a \"pattern_id\" must serve the same sequence of stops.",
+		"generic": "Trips with the same \"pattern_id\" have different stop sequences.",
 		"multiple_stop_sequence_variations": "For pattern_id %s, there are trips with multiple stop sequence variations"
 	},
 	"trips_route_id_field": {
-		"generic": "Checks the presence requirements for \"route_id\" in trips.txt.",
+		"generic": "The \"route_id\" field is not populated.",
 		"informational": "The route_id field is informational",
 		"recommended": "The route_id field is recommended",
 		"required": "The route_id field is required"
 	},
 	"trips_route_id_foreign": {
 		"forbidden": "Field \"route_id\" is forbidden",
-		"generic": "The \"route_id\" field must reference a route defined in routes.txt.",
+		"generic": "The \"route_id\" reference to routes.txt is invalid.",
 		"not_found": "Field \"route_id\" \"%s\" does not exist in routes.txt",
 		"recommended": "Field \"route_id\" is recommended",
 		"required": "Field \"route_id\" is required"
 	},
 	"trips_route_id_pattern_consistent": {
 		"different_route_ids_in_pattern": "pattern_id %s has trips with different route_ids: %s. All trips with the same pattern_id must have the same route_id",
-		"generic": "The \"route_id\" field must be consistent across all trips of the same pattern."
+		"generic": "Trips with the same \"pattern_id\" have different \"route_id\" values."
 	},
 	"trips_service_id_field": {
-		"generic": "Checks the presence requirements for \"service_id\" in trips.txt.",
+		"generic": "The \"service_id\" field is not populated.",
 		"informational": "The service_id field is informational",
 		"recommended": "The service_id field is recommended",
 		"required": "The service_id field is required"
 	},
 	"trips_service_id_foreign": {
 		"forbidden": "Field \"service_id\" is forbidden",
-		"generic": "The \"service_id\" field must reference a service defined in calendar.txt or calendar_dates.txt.",
+		"generic": "The \"service_id\" reference to calendar.txt or calendar_dates.txt is invalid.",
 		"not_found": "Field \"service_id\" \"%s\" does not exist in calendar.txt or calendar_dates.txt",
 		"recommended": "Field \"service_id\" is recommended",
 		"required": "Field \"service_id\" is required"
 	},
 	"trips_shape_id_field": {
-		"generic": "Checks the presence requirements for \"shape_id\" in trips.txt.",
+		"generic": "The \"shape_id\" field is not populated.",
 		"informational": "The shape_id field is informational",
 		"recommended": "The shape_id field is recommended",
 		"required": "The shape_id field is required"
 	},
 	"trips_shape_id_foreign": {
 		"forbidden": "Field \"shape_id\" is forbidden",
-		"generic": "The \"shape_id\" field must reference a shape defined in shapes.txt.",
+		"generic": "The \"shape_id\" reference to shapes.txt is invalid.",
 		"not_found": "Field \"shape_id\" \"%s\" does not exist in shapes.txt",
 		"recommended": "Field \"shape_id\" is recommended",
 		"required": "Field \"shape_id\" is required"
 	},
 	"trips_shape_id_max_two_per_route": {
-		"generic": "Each route must not have more than two distinct \"shape_id\" values.",
+		"generic": "The same route has more than two distinct \"shape_id\" values.",
 		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
 	},
 	"trips_shape_id_route_direction_consistent": {
-		"generic": "The \"shape_id\" field must be consistent for each route and direction combination.",
+		"generic": "The same route and direction combination has different \"shape_id\" values.",
 		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s"
 	},
 	"trips_shape_id_route_direction_match": {
-		"generic": "The \"shape_id\" field must match the combination of \"route_id\" and \"direction_id\".",
+		"generic": "The \"shape_id\" value does not match the \"route_id\" and \"direction_id\" combination.",
 		"not_matching": "Field \"shape_id\" \"%s\" should be \"%s\", combining route_id \"%s\" and direction_id %d"
 	},
 	"trips_stop_coordinates": {
-		"generic": "The coordinates of the stops along the path must match those declared in stops.txt.",
+		"generic": "Some stops are too far from the trip shape.",
 		"invalid_distance_to_shape": "Coordinates (%.6f, %.6f) of stop \"%s\" are too far from the shapes, the closest shape \"%s\" in sequence %d at (%.6f, %.6f) (%.2f m)"
 	},
 	"trips_stop_sequence": {
 		"consecutive_stop_ids": "The same stop_id \"%s\" cannot appear consecutively (one directly after another) in trip \"%s\"",
-		"generic": "The \"stop_sequence\" field must increase by one along the trip.",
+		"generic": "The \"stop_sequence\" values do not increase by one along the trip.",
 		"invalid": "Field \"stop_sequence\" must be a non-negative integer",
 		"invalid_shape_dist": "Field \"shape_dist_traveled\" must be a valid number to validate stop_sequence",
 		"non_increasing_sequence": "The values of \"stop_sequence\" must increase along the trip ('%s')",
 		"non_increasing_shape_dist": "The values of \"shape_dist_traveled\" must increase along the trip ('%s')"
 	},
 	"trips_trip_headsign_field": {
-		"generic": "Checks the presence requirements for \"trip_headsign\" in trips.txt.",
+		"generic": "The \"trip_headsign\" field is not populated.",
 		"informational": "The trip_headsign field is informational",
 		"recommended": "The trip_headsign field is recommended",
 		"required": "The trip_headsign field is required"
 	},
 	"trips_trip_headsign_max_two_per_route": {
-		"generic": "Each route must not have more than two distinct \"trip_headsign\" values.",
+		"generic": "The same route has more than two distinct \"trip_headsign\" values.",
 		"max_two": "Route \"%s\" must have at most two distinct \"%s\" values; found %d: %s"
 	},
 	"trips_trip_headsign_pattern_consistent": {
 		"different_headsigns_in_pattern": "pattern_id %s has trips with different trip_headsigns: %s. All trips with the same pattern_id must have the same trip_headsign",
-		"generic": "The \"trip_headsign\" field must be consistent across all trips of the same pattern."
+		"generic": "Trips with the same \"pattern_id\" have different \"trip_headsign\" values."
 	},
 	"trips_trip_headsign_route_direction_consistent": {
-		"generic": "The \"trip_headsign\" field must be consistent for each route and direction combination.",
+		"generic": "The same route and direction combination has different \"trip_headsign\" values.",
 		"inconsistent_direction": "Route \"%s\" with direction_id %d must have a single \"%s\" value; found: %s"
 	},
 	"trips_trip_id_field": {
-		"generic": "Checks the presence requirements for \"trip_id\" in trips.txt.",
+		"generic": "The \"trip_id\" field is not populated.",
 		"informational": "The trip_id field is informational",
 		"recommended": "The trip_id field is recommended",
 		"required": "The trip_id field is required"
 	},
 	"trips_trip_id_max_length": {
-		"generic": "The \"trip_id\" field must not exceed the maximum allowed number of characters.",
+		"generic": "The \"trip_id\" field exceeds the maximum allowed length.",
 		"too_long": "Field \"trip_id\" must be less than or equal to 36 characters"
 	},
 	"trips_trip_id_unique": {
 		"duplicate": "Duplicate field \"trip_id\" \"%s\" found. Field \"trip_id\" must be unique",
 		"forbidden": "Field \"trip_id\" is forbidden",
-		"generic": "The \"trip_id\" field must be unique across trips.txt.",
+		"generic": "The \"trip_id\" field contains duplicate values.",
 		"recommended": "Field \"trip_id\" is recommended",
 		"required": "Field \"trip_id\" is required"
 	},
 	"trips_trip_short_name_field": {
-		"generic": "Checks the presence requirements for \"trip_short_name\" in trips.txt.",
+		"generic": "The \"trip_short_name\" field is not populated.",
 		"informational": "The trip_short_name field is informational",
 		"recommended": "The trip_short_name field is recommended",
 		"required": "The trip_short_name field is required"
 	},
 	"trips_wheelchair_accessible_field": {
-		"generic": "Checks the presence requirements for \"wheelchair_accessible\" in trips.txt.",
+		"generic": "The \"wheelchair_accessible\" field is not populated.",
 		"informational": "The wheelchair_accessible field is informational",
 		"recommended": "The wheelchair_accessible field is recommended",
 		"required": "The wheelchair_accessible field is required"
 	},
 	"trips_wheelchair_accessible_valid": {
 		"forbidden": "Field \"wheelchair_accessible\" is forbidden",
-		"generic": "The \"wheelchair_accessible\" field must contain one of the values allowed by GTFS.",
+		"generic": "The \"wheelchair_accessible\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"wheelchair_accessible\" must be 0, 1, or 2, received: %s",
 		"not_allowed": "Field \"wheelchair_accessible\" \"%s\" is not allowed"
 	},
 	"vehicles_agency_id_field": {
-		"generic": "Checks the presence requirements for \"agency_id\" in vehicles.txt.",
+		"generic": "The \"agency_id\" field is not populated.",
 		"informational": "The agency_id field is informational",
 		"recommended": "The agency_id field is recommended",
 		"required": "The agency_id field is required"
 	},
 	"vehicles_agency_id_foreign": {
-		"generic": "Checks that \"agency_id\" references a value defined in agency.txt.",
+		"generic": "The \"agency_id\" reference to agency.txt is invalid.",
 		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt"
 	},
 	"vehicles_bicycles_capacity_field": {
-		"generic": "Checks the presence requirements for \"bicycles_capacity\" in vehicles.txt.",
+		"generic": "The \"bicycles_capacity\" field is not populated.",
 		"informational": "The bicycles_capacity field is informational",
 		"recommended": "The bicycles_capacity field is recommended",
 		"required": "The bicycles_capacity field is required"
 	},
 	"vehicles_bicycles_capacity_valid": {
 		"forbidden": "Field \"bicycles_capacity\" is forbidden",
-		"generic": "The \"bicycles_capacity\" field must contain a non-negative number.",
+		"generic": "The \"bicycles_capacity\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"bicycles_capacity\" \"%s\" must be a non-negative integer",
 		"recommended": "Field \"bicycles_capacity\" is recommended",
 		"required": "Field \"bicycles_capacity\" is required"
 	},
 	"vehicles_car_capacity_field": {
-		"generic": "Checks the presence requirements for \"car_capacity\" in vehicles.txt.",
+		"generic": "The \"car_capacity\" field is not populated.",
 		"informational": "The car_capacity field is informational",
 		"recommended": "The car_capacity field is recommended",
 		"required": "The car_capacity field is required"
 	},
 	"vehicles_car_capacity_valid": {
 		"forbidden": "Field \"car_capacity\" is forbidden",
-		"generic": "The \"car_capacity\" field must contain a non-negative number.",
+		"generic": "The \"car_capacity\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"car_capacity\" \"%s\" must be a non-negative integer",
 		"recommended": "Field \"car_capacity\" is recommended",
 		"required": "Field \"car_capacity\" is required"
 	},
 	"vehicles_emission_field": {
-		"generic": "Checks the presence requirements for \"emission\" in vehicles.txt.",
+		"generic": "The \"emission\" field is not populated.",
 		"informational": "The emission field is informational",
 		"recommended": "The emission field is recommended",
 		"required": "The emission field is required"
 	},
 	"vehicles_emission_valid": {
 		"forbidden": "Field \"emission\" is forbidden",
-		"generic": "The \"emission\" field must contain one of the allowed values.",
+		"generic": "The \"emission\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"emission\" \"%s\" is not a valid emission type",
 		"not_allowed": "Field \"emission\" \"%s\" is not allowed",
 		"recommended": "Field \"emission\" is recommended",
 		"required": "Field \"emission\" is required"
 	},
 	"vehicles_file_missing": {
-		"generic": "Checks that vehicles.txt is present when required."
+		"generic": "The file vehicles.txt is missing.",
+		"required": "Required file %s is missing from the GTFS feed.",
+		"warning": "File %s is missing from the GTFS feed."
 	},
 	"vehicles_license_plate_field": {
-		"generic": "Checks the presence requirements for \"license_plate\" in vehicles.txt.",
+		"generic": "The \"license_plate\" field is not populated.",
 		"informational": "The license_plate field is informational",
 		"recommended": "The license_plate field is recommended",
 		"required": "The license_plate field is required"
@@ -1964,65 +1998,65 @@
 	"vehicles_license_plate_valid": {
 		"duplicate": "Duplicate field \"license_plate\" \"%s\" found. Field \"license_plate\" must be unique",
 		"forbidden": "Field \"license_plate\" is forbidden",
-		"generic": "The \"license_plate\" field must follow the expected license plate format.",
+		"generic": "The \"license_plate\" field contains an invalid license plate format.",
 		"invalid": "Field \"license_plate\" \"%s\" has an invalid format, must be in the format XXXXXX (or a valid MMSI for the ferry transport mode)",
 		"recommended": "Field \"license_plate\" is recommended",
 		"required": "Field \"license_plate\" is required"
 	},
 	"vehicles_make_field": {
-		"generic": "Checks the presence requirements for \"make\" in vehicles.txt.",
+		"generic": "The \"make\" field is not populated.",
 		"informational": "The make field is informational",
 		"recommended": "The make field is recommended",
 		"required": "The make field is required"
 	},
 	"vehicles_model_field": {
-		"generic": "Checks the presence requirements for \"model\" in vehicles.txt.",
+		"generic": "The \"model\" field is not populated.",
 		"informational": "The model field is informational",
 		"recommended": "The model field is recommended",
 		"required": "The model field is required"
 	},
 	"vehicles_propulsion_field": {
-		"generic": "Checks the presence requirements for \"propulsion\" in vehicles.txt.",
+		"generic": "The \"propulsion\" field is not populated.",
 		"informational": "The propulsion field is informational",
 		"recommended": "The propulsion field is recommended",
 		"required": "The propulsion field is required"
 	},
 	"vehicles_propulsion_valid": {
 		"forbidden": "Field \"propulsion\" is forbidden",
-		"generic": "The \"propulsion\" field must contain one of the allowed values.",
+		"generic": "The \"propulsion\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"propulsion\" \"%s\" is not a valid propulsion type",
 		"not_allowed": "Field \"propulsion\" \"%s\" is not allowed",
 		"recommended": "Field \"propulsion\" is recommended",
 		"required": "Field \"propulsion\" is required"
 	},
 	"vehicles_registration_date_field": {
-		"generic": "Checks the presence requirements for \"registration_date\" in vehicles.txt.",
+		"generic": "The \"registration_date\" field is not populated.",
 		"informational": "The registration_date field is informational",
 		"recommended": "The registration_date field is recommended",
 		"required": "The registration_date field is required"
 	},
 	"vehicles_registration_date_valid": {
 		"forbidden": "Field \"registration_date\" is forbidden",
-		"generic": "The \"registration_date\" field must contain a valid date with day granularity.",
+		"generic": "The \"registration_date\" field contains an invalid date.",
 		"invalid": "Field \"registration_date\" \"%s\" is not a valid date, must be in format YYYYMMDD",
 		"recommended": "Field \"registration_date\" is recommended",
 		"required": "Field \"registration_date\" is required"
 	},
 	"vehicles_total_capacity_field": {
-		"generic": "Checks the presence requirements for \"total_capacity\" in vehicles.txt.",
+		"generic": "The \"total_capacity\" field is not populated.",
 		"informational": "The total_capacity field is informational",
 		"recommended": "The total_capacity field is recommended",
 		"required": "The total_capacity field is required"
 	},
 	"vehicles_total_capacity_valid": {
 		"forbidden": "Field \"total_capacity\" is forbidden",
-		"generic": "The \"total_capacity\" field must contain a non-negative number.",
+		"generic": "The \"total_capacity\" field contains an invalid or negative numeric value.",
 		"invalid": "Field \"total_capacity\" \"%s\" must be a non-negative integer",
 		"recommended": "Field \"total_capacity\" is recommended",
 		"required": "Field \"total_capacity\" is required"
 	},
 	"vehicles_vehicle_id_field": {
-		"generic": "Checks the presence requirements for \"vehicle_id\" in vehicles.txt.",
+		"generic": "The \"vehicle_id\" field is not populated.",
 		"informational": "The vehicle_id field is informational",
 		"recommended": "The vehicle_id field is recommended",
 		"required": "The vehicle_id field is required"
@@ -2030,33 +2064,33 @@
 	"vehicles_vehicle_id_unique": {
 		"duplicate": "Duplicate field \"vehicle_id\" \"%s\" found. Field \"vehicle_id\" must be unique",
 		"forbidden": "Field \"vehicle_id\" is forbidden",
-		"generic": "The \"vehicle_id\" field must be unique across vehicles.txt.",
+		"generic": "The \"vehicle_id\" field contains duplicate values.",
 		"recommended": "Field \"vehicle_id\" is recommended",
 		"required": "Field \"vehicle_id\" is required"
 	},
 	"vehicles_vehicle_type_field": {
-		"generic": "Checks the presence requirements for \"vehicle_type\" in vehicles.txt.",
+		"generic": "The \"vehicle_type\" field is not populated.",
 		"informational": "The vehicle_type field is informational",
 		"recommended": "The vehicle_type field is recommended",
 		"required": "The vehicle_type field is required"
 	},
 	"vehicles_vehicle_type_valid": {
 		"forbidden": "Field \"vehicle_type\" is forbidden",
-		"generic": "The \"vehicle_type\" field must contain one of the allowed values.",
+		"generic": "The \"vehicle_type\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"vehicle_type\" \"%s\" is not a valid vehicle type",
 		"not_allowed": "Field \"vehicle_type\" \"%s\" is not allowed",
 		"recommended": "Field \"vehicle_type\" is recommended",
 		"required": "Field \"vehicle_type\" is required"
 	},
 	"vehicles_wheelchair_accessible_field": {
-		"generic": "Checks the presence requirements for \"wheelchair_accessible\" in vehicles.txt.",
+		"generic": "The \"wheelchair_accessible\" field is not populated.",
 		"informational": "The wheelchair_accessible field is informational",
 		"recommended": "The wheelchair_accessible field is recommended",
 		"required": "The wheelchair_accessible field is required"
 	},
 	"vehicles_wheelchair_accessible_valid": {
 		"forbidden": "Field \"wheelchair_accessible\" is forbidden",
-		"generic": "The \"wheelchair_accessible\" field must contain one of the values allowed by GTFS.",
+		"generic": "The \"wheelchair_accessible\" field contains an invalid or disallowed value.",
 		"invalid": "Field \"wheelchair_accessible\" must be 0, 1, or 2, received: %s",
 		"not_allowed": "Field \"wheelchair_accessible\" \"%s\" is not allowed",
 		"recommended": "Field \"wheelchair_accessible\" is recommended",

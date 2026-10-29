@@ -20,9 +20,9 @@ func FileMissing(v *validationutils.Findings, gtfs types.Gtfs, rules *types.Gtfs
 	if !gtfs.HasTable(table) {
 		switch severity {
 		case types.SEVERITY_ERROR:
-			v.AddMissingFile(file, fmt.Sprintf(i18n.AppTranslator.Get(table+"_file_missing.required"), file), severity)
+			v.AddMissingFile(file, i18n.AppTranslator.Get(table+"_file_missing.required", file), severity)
 		case types.SEVERITY_WARNING:
-			v.AddMissingFile(file, fmt.Sprintf(i18n.AppTranslator.Get(table+"_file_missing.warning"), file), severity)
+			v.AddMissingFile(file, i18n.AppTranslator.Get(table+"_file_missing.warning", file), severity)
 		case types.SEVERITY_INFO:
 			v.AddMissingFile(file, i18n.AppTranslator.Get(table+"_file_missing.generic"), severity)
 		}

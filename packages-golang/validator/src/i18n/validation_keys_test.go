@@ -5,11 +5,52 @@ import (
 	"go/parser"
 	"go/token"
 	"io/fs"
+	"main/types"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
 )
+
+func TestGenericMessagesDescribeFindings(t *testing.T) {
+	for _, language := range []string{"en", "pt", "es"} {
+		translator := NewTranslator(language)
+		for key, message := range translator.translations {
+			if !strings.HasSuffix(key, ".generic") {
+				continue
+			}
+			t.Run(language+"/"+key, func(t *testing.T) {
+				for _, description := range []string{"Checks ", "Reports ", "Compares ", "Verifica ", "Assinala ", "Compara ", "Comprueba ", "Verifica si ", "Informa "} {
+					if strings.HasPrefix(message, description) {
+						t.Errorf("generic message describes a check instead of a finding: %q", message)
+					}
+				}
+				if strings.Contains(message, "%") {
+					t.Errorf("generic message requires formatting arguments: %q", message)
+				}
+			})
+		}
+	}
+}
+
+// File-presence keys are assembled dynamically and cannot be discovered by
+// the literal call-site checks below.
+func TestMissingFileTranslations(t *testing.T) {
+	for _, language := range []string{"en", "pt", "es"} {
+		translator := NewTranslator(language)
+		for _, table := range types.GtfsRuleFiles {
+			for _, suffix := range []string{"required", "warning"} {
+				key := table + "_file_missing." + suffix
+				t.Run(language+"/"+key, func(t *testing.T) {
+					message := translator.Get(key, table+".txt")
+					if message == key || !strings.Contains(message, table+".txt") || strings.Contains(message, "%!") {
+						t.Fatalf("invalid missing-file message: %q", message)
+					}
+				})
+			}
+		}
+	}
+}
 
 // Check the actual call sites, including contexts for several rules in one file.
 func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
