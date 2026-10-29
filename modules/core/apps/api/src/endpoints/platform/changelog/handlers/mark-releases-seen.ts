@@ -42,16 +42,25 @@ export async function markReleasesSeenHandler(request: FastifyRequest<{ Body: Ch
 	}
 
 	//
-	// Preserve the first acknowledgement for each release
+	// Merge acknowledgements into the current user's state
+
+	const user = await goDb.core.users.findById(userId);
+
+	if (!user) {
+		return sendErrorApiResponse(reply, { error: 'User not found', status_code: '404' });
+	}
 
 	const seenAt = Dates.now('utc').unix_milliseconds;
-
-	await Promise.all(releaseIds.map(releaseId => goDb.core.changelogViews.insertOneIfAbsent({
-		_id: JSON.stringify([userId, releaseId]),
-		release_id: releaseId,
+	const seen = user.seen_changelogs ?? [];
+	const seenIds = new Set(seen.map(entry => entry.changelog_id));
+	const newEntries = releaseIds.filter(releaseId => !seenIds.has(releaseId)).map(releaseId => ({
+		changelog_id: releaseId,
 		seen_at: seenAt,
-		user_id: userId,
-	})));
+	}));
+
+	if (newEntries.length) {
+		await goDb.core.users.updateOne({ _id: userId }, { seen_changelogs: [...seen, ...newEntries] });
+	}
 
 	return sendSuccessApiResponse(reply, { success: true });
 }

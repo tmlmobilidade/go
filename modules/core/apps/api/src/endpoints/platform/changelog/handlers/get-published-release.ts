@@ -32,9 +32,9 @@ export async function getPublishedReleaseHandler(request: FastifyRequest<{ Param
 	//
 	// Attach this user’s seen state without acknowledging the release
 
-	const view = await goDb.core.changelogViews.findOne({ release_id: request.params.id, user_id: request.me._id });
+	const isSeen = (request.me.seen_changelogs ?? []).some(entry => entry.changelog_id === release._id);
 
-	const result = ChangelogPlatformResponseSchema.parse({ ...release, is_seen: view !== null });
+	const result = ChangelogPlatformResponseSchema.parse({ ...release, is_seen: isSeen });
 
 	return sendSuccessApiResponse(reply, result);
 }

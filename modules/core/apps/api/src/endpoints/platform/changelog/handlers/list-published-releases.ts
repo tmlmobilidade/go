@@ -31,7 +31,6 @@ export async function listPublishedReleasesHandler(request: FastifyRequest<{ Que
 	}
 
 	const { module_id: moduleId } = query.data;
-	const userId = request.me._id;
 
 	//
 	// Match published releases for the requested module, including platform updates
@@ -47,8 +46,7 @@ export async function listPublishedReleasesHandler(request: FastifyRequest<{ Que
 	// Load all matching releases and their per-user seen state
 
 	const releases = await goDb.core.changelogs.findMany(filter, { sort: [['created_at', -1], ['_id', -1]] });
-	const views = await goDb.core.changelogViews.findMany({ release_id: { $in: releases.map(release => release._id) }, user_id: userId });
-	const seenIds = new Set(views.map(view => view.release_id));
+	const seenIds = new Set((request.me.seen_changelogs ?? []).map(entry => entry.changelog_id));
 
 	//
 	// Return compact summaries; readers derive unread counts from is_seen

@@ -63,28 +63,23 @@ export async function dismissBannerHandler(request: FastifyRequest<{ Body: Banne
 	}
 
 	//
-	// Save the dismissal without replacing a newer version
+	// Merge the dismissal into the current user's state
 
-	const dismissal = {
-		_id: JSON.stringify([userId, id]),
-		banner_id: id,
-		dismissal_version: version,
-		dismissed_at: time,
-		user_id: userId,
-	};
+	const user = await goDb.core.users.findById(userId);
 
-	try {
-		// A delayed request cannot overwrite a dismissal of a newer version.
-		await goDb.core.bannerDismissals.replaceOne({ _id: dismissal._id, dismissal_version: { $lte: version } }, dismissal, { upsert: true });
-	} catch (error) {
-		if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
-			return sendErrorApiResponse(reply, {
-				error: 'Banner dismissal changed; refresh and retry',
-				status_code: '409',
-			});
-		}
+	if (!user) {
+		return sendErrorApiResponse(reply, { error: 'User not found', status_code: '404' });
+	}
 
-		throw error;
+	const dismissals = user.dismissed_banners ?? [];
+	const previous = dismissals.find(entry => entry.banner_id === id);
+
+	if (!previous || previous.dismissal_version < version) {
+		const updatedDismissals = [
+			...dismissals.filter(entry => entry.banner_id !== id),
+			{ banner_id: id, dismissal_version: version, dismissed_at: time },
+		];
+		await goDb.core.users.updateOne({ _id: userId }, { dismissed_banners: updatedDismissals });
 	}
 
 	return sendSuccessApiResponse(reply, { success: true });

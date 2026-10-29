@@ -35,7 +35,6 @@ export async function listActiveBannersHandler(request: FastifyRequest<{ Queryst
 	// Include only published notices whose scope and schedule apply now
 
 	const { module_id: moduleId } = query.data;
-	const userId = request.me._id;
 	const time = Dates.now('utc').unix_milliseconds;
 
 	const filter: Filter<Banner> = {
@@ -48,10 +47,10 @@ export async function listActiveBannersHandler(request: FastifyRequest<{ Queryst
 	};
 
 	//
-	// Load applicable banners and user dismissals
+	// Load applicable banners and read dismissals from the authenticated user
 
 	const banners = await goDb.core.banners.findMany(filter);
-	const dismissals = await goDb.core.bannerDismissals.findMany({ banner_id: { $in: banners.map(banner => banner._id) }, user_id: userId });
+	const dismissals = request.me.dismissed_banners ?? [];
 
 	const dismissed = new Map(dismissals.map(dismissal => [dismissal.banner_id, dismissal.dismissal_version]));
 	const rank = { critical: 0, info: 2, warning: 1 };
