@@ -39,15 +39,12 @@ func TestMissingFileTranslations(t *testing.T) {
 	for _, language := range []string{"en", "pt", "es"} {
 		translator := NewTranslator(language)
 		for _, table := range types.GtfsRuleFiles {
-			for _, suffix := range []string{"required", "warning"} {
-				key := table + "_file_missing." + suffix
-				t.Run(language+"/"+key, func(t *testing.T) {
-					message := translator.Get(key, table+".txt")
-					if message == key || !strings.Contains(message, table+".txt") || strings.Contains(message, "%!") {
-						t.Fatalf("invalid missing-file message: %q", message)
-					}
-				})
-			}
+			t.Run(language+"/"+table, func(t *testing.T) {
+				message := translator.Get("file_missing.message", table+".txt")
+				if message == "file_missing.message" || !strings.Contains(message, table+".txt") || strings.Contains(message, "%!") {
+					t.Fatalf("invalid missing-file message: %q", message)
+				}
+			})
 		}
 	}
 }

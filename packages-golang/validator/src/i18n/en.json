@@ -21,11 +21,6 @@
 		"invalid": "Field \"agency_fare_url\" \"%s\" is not a valid URL",
 		"not_allowed": "Field \"agency_fare_url\" \"%s\" is not allowed"
 	},
-	"agency_file_missing": {
-		"generic": "The file agency.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
-	},
 	"agency_id_field": {
 		"generic": "The \"agency_id\" field is not populated.",
 		"informational": "The agency_id field is informational",
@@ -123,10 +118,7 @@
 		"invalid": "The exception_type value \"%s\" is invalid; it must be 1 or 2"
 	},
 	"calendar_dates_file_missing": {
-		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present",
-		"generic": "The file calendar_dates.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
+		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present"
 	},
 	"calendar_dates_service_id_field": {
 		"generic": "The \"service_id\" field is not populated.",
@@ -148,10 +140,7 @@
 		"generic": "The \"end_date\" field contains an invalid date or a format other than YYYYMMDD."
 	},
 	"calendar_file_missing": {
-		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present",
-		"generic": "The file calendar.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
+		"calendar_files_required": "Either calendar.txt or calendar_dates.txt must be present"
 	},
 	"calendar_friday_field": {
 		"generic": "The \"friday\" field is not populated.",
@@ -297,11 +286,6 @@
 		"duplicate": "Duplicate field \"fare_id\" \"%s\" found. Field \"fare_id\" must be unique",
 		"generic": "The \"fare_id\" field contains duplicate values."
 	},
-	"fare_attributes_file_missing": {
-		"generic": "The file fare_attributes.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
-	},
 	"fare_attributes_payment_method_field": {
 		"forbidden": "Field \"payment_method\" is forbidden",
 		"generic": "The \"payment_method\" field is not populated.",
@@ -384,11 +368,6 @@
 		"invalid": "Field \"fare_id\" \"%s\" is not a valid fare_id from fare_attributes.txt",
 		"recommended": "Field \"fare_id\" is recommended",
 		"required": "Field \"fare_id\" is required"
-	},
-	"fare_rules_file_missing": {
-		"generic": "The file fare_rules.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
 	},
 	"fare_rules_origin_id_field": {
 		"generic": "The \"origin_id\" field is not populated.",
@@ -503,14 +482,14 @@
 		"required": "The feed_version field is required"
 	},
 	"feed_info_file_missing": {
-		"feed_info_required_when_translations": "feed_info.txt is required when translations.txt is present",
-		"generic": "The file feed_info.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
+		"feed_info_required_when_translations": "feed_info.txt is required when translations.txt is present"
 	},
 	"feed_info_start_end_dates_valid": {
 		"generic": "The \"feed_start_date\" date is not earlier than \"feed_end_date\".",
 		"invalid": "The \"feed_start_date\" value \"%s\" must be earlier than the \"feed_end_date\" value \"%s\""
+	},
+	"file_missing": {
+		"message": "The file %s is missing."
 	},
 	"file_not_found_in_rules": {
 		"generic": "The file is not supported by the validator and was ignored.",
@@ -553,11 +532,6 @@
 		"recommended": "Field \"exact_times\" is recommended",
 		"required": "Field \"exact_times\" is required"
 	},
-	"frequencies_file_missing": {
-		"generic": "The file frequencies.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
-	},
 	"frequencies_headway_secs_field": {
 		"generic": "The \"headway_secs\" field is not populated.",
 		"informational": "The headway_secs field is informational",
@@ -598,10 +572,7 @@
 		"required": "Field \"trip_id\" is required"
 	},
 	"levels_file_missing": {
-		"generic": "The file levels.txt is missing.",
-		"levels_required_when_elevator": "levels.txt is required when pathways.txt contains elevators (pathway_mode=5)",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
+		"levels_required_when_elevator": "levels.txt is required when pathways.txt contains elevators (pathway_mode=5)"
 	},
 	"levels_level_id_field": {
 		"generic": "The \"level_id\" field is not populated.",
@@ -634,11 +605,6 @@
 		"informational": "The level_name field is informational",
 		"recommended": "The level_name field is recommended",
 		"required": "The level_name field is required"
-	},
-	"pathways_file_missing": {
-		"generic": "The file pathways.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
 	},
 	"pathways_from_stop_id_field": {
 		"generic": "The \"from_stop_id\" field is not populated.",
@@ -809,11 +775,6 @@
 		"recommended": "Field \"eligibility_url\" is recommended",
 		"required": "Field \"eligibility_url\" is required"
 	},
-	"rider_categories_file_missing": {
-		"generic": "The file rider_categories.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
-	},
 	"rider_categories_is_default_fare_category_field": {
 		"generic": "The \"is_default_fare_category\" field is not populated.",
 		"informational": "The is_default_fare_category field is informational",
@@ -880,11 +841,6 @@
 		"generic": "The \"continuous_pickup\" value is incompatible with continuous-service conditions or pickup/drop-off windows.",
 		"recommended": "Field \"continuous_pickup\" is recommended to enable continuous service; an empty value or 1 disables it",
 		"required": "Field \"continuous_pickup\" must enable continuous service; an empty value or 1 disables it"
-	},
-	"routes_file_missing": {
-		"generic": "The file routes.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
 	},
 	"routes_line_id_equal_route_short_name": {
 		"generic": "The \"line_id\" and \"route_short_name\" values differ.",
@@ -1026,11 +982,6 @@
 		"generic": "The \"shape_pt_sequence\" values are duplicated or are not strictly increasing within the shape.",
 		"not_increasing": "The \"shape_pt_sequence\" values for shape_id \"%s\" must be unique and strictly increasing in sequence order"
 	},
-	"shapes_file_missing": {
-		"generic": "The file shapes.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
-	},
 	"shapes_shape_dist_traveled_block_valid": {
 		"generic": "The recorded cumulative distance differs from the geometric block distance beyond the configured tolerance.",
 		"invalid_distances": "The total expected distance (shape_dist_traveled) for shape \"%s\" is %.2f meters, the actual geometric distance is %.2f meters (diff: %.2f meters)"
@@ -1167,11 +1118,6 @@
 		"invalid": "Field \"end_pickup_drop_off_window\" value \"%s\" must be a valid time in HH:MM:SS format",
 		"required_location_group_id_start_pickup_dropoff": "Field \"end_pickup_drop_off_window\" is required if \"location_group_id\", \"location_id\" or \"start_pickup_drop_off_window\" is defined"
 	},
-	"stop_times_file_missing": {
-		"generic": "The file stop_times.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
-	},
 	"stop_times_location_group_id_field": {
 		"forbidden_stop_location": "Field \"location_group_id\" is forbidden if stop_id or location_id are defined",
 		"generic": "The \"location_group_id\" value conflicts with \"stop_id\" or \"location_id\"."
@@ -1263,10 +1209,7 @@
 		"not_found": "Field \"trip_id\" value \"%s\" does not exist in trips.txt"
 	},
 	"stops_file_missing": {
-		"generic": "The file stops.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"stops_required_when_locations_missing": "stops.txt is required when locations.geojson is not present",
-		"warning": "File %s is missing from the GTFS feed."
+		"stops_required_when_locations_missing": "stops.txt is required when locations.geojson is not present"
 	},
 	"stops_has_bench_allowed": {
 		"generic": "The \"has_bench\" value is not in the allowed set.",
@@ -1596,11 +1539,6 @@
 		"recommended": "The zone_id field is recommended",
 		"required": "The zone_id field is required"
 	},
-	"transfers_file_missing": {
-		"generic": "The file transfers.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
-	},
 	"transfers_from_route_id_field": {
 		"generic": "The \"from_route_id\" field is not populated.",
 		"informational": "The from_route_id field is informational",
@@ -1769,11 +1707,6 @@
 		"invalid_pattern_id": "Field \"pattern_id\" must be a valid ID in the format \"XXXX_[0|1]_1\", received: %s",
 		"not_matching": "Field \"direction_id\" \"%s\" does not match the pattern_id \"%s\"",
 		"required": "Fields \"pattern_id\" and \"direction_id\" are required to validate the match"
-	},
-	"trips_file_missing": {
-		"generic": "The file trips.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
 	},
 	"trips_one_pattern_per_shape": {
 		"generic": "The same \"shape_id\" is associated with more than one \"pattern_id\".",
@@ -1983,11 +1916,6 @@
 		"not_allowed": "Field \"emission\" \"%s\" is not allowed",
 		"recommended": "Field \"emission\" is recommended",
 		"required": "Field \"emission\" is required"
-	},
-	"vehicles_file_missing": {
-		"generic": "The file vehicles.txt is missing.",
-		"required": "Required file %s is missing from the GTFS feed.",
-		"warning": "File %s is missing from the GTFS feed."
 	},
 	"vehicles_license_plate_field": {
 		"generic": "The \"license_plate\" field is not populated.",

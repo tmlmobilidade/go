@@ -21,11 +21,6 @@
 		"invalid": "El campo \"agency_fare_url\" \"%s\" no es una URL válida",
 		"not_allowed": "El campo \"agency_fare_url\" \"%s\" no está permitido"
 	},
-	"agency_file_missing": {
-		"generic": "El archivo agency.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
-	},
 	"agency_id_field": {
 		"generic": "El campo \"agency_id\" no está cumplimentado.",
 		"informational": "El campo agency_id es informativo",
@@ -123,10 +118,7 @@
 		"invalid": "El valor \"%s\" del campo exception_type no es válido; debe ser 1 o 2"
 	},
 	"calendar_dates_file_missing": {
-		"calendar_files_required": "Debe estar presente calendar.txt o calendar_dates.txt",
-		"generic": "El archivo calendar_dates.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
+		"calendar_files_required": "Debe estar presente calendar.txt o calendar_dates.txt"
 	},
 	"calendar_dates_service_id_field": {
 		"generic": "El campo \"service_id\" no está cumplimentado.",
@@ -148,10 +140,7 @@
 		"generic": "El campo \"end_date\" contiene una fecha no válida o un formato distinto de YYYYMMDD."
 	},
 	"calendar_file_missing": {
-		"calendar_files_required": "Debe estar presente calendar.txt o calendar_dates.txt",
-		"generic": "El archivo calendar.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
+		"calendar_files_required": "Debe estar presente calendar.txt o calendar_dates.txt"
 	},
 	"calendar_friday_field": {
 		"generic": "El campo \"friday\" no está cumplimentado.",
@@ -297,11 +286,6 @@
 		"duplicate": "Se encontró el campo \"fare_id\" \"%s\" duplicado. El campo \"fare_id\" debe ser único",
 		"generic": "El campo \"fare_id\" contiene valores duplicados."
 	},
-	"fare_attributes_file_missing": {
-		"generic": "El archivo fare_attributes.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
-	},
 	"fare_attributes_payment_method_field": {
 		"forbidden": "El campo \"payment_method\" está prohibido",
 		"generic": "El campo \"payment_method\" no está cumplimentado.",
@@ -384,11 +368,6 @@
 		"invalid": "El campo \"fare_id\" \"%s\" no es un fare_id válido de fare_attributes.txt",
 		"recommended": "Se recomienda el campo \"fare_id\"",
 		"required": "El campo \"fare_id\" es obligatorio"
-	},
-	"fare_rules_file_missing": {
-		"generic": "El archivo fare_rules.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
 	},
 	"fare_rules_origin_id_field": {
 		"generic": "El campo \"origin_id\" no está cumplimentado.",
@@ -503,14 +482,14 @@
 		"required": "El campo feed_version es requerido"
 	},
 	"feed_info_file_missing": {
-		"feed_info_required_when_translations": "feed_info.txt es obligatorio cuando translations.txt está presente",
-		"generic": "El archivo feed_info.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
+		"feed_info_required_when_translations": "feed_info.txt es obligatorio cuando translations.txt está presente"
 	},
 	"feed_info_start_end_dates_valid": {
 		"generic": "La fecha \"feed_start_date\" no es anterior a \"feed_end_date\".",
 		"invalid": "La fecha \"%s\" del campo \"feed_start_date\" debe ser anterior a la fecha \"%s\" del campo \"feed_end_date\""
+	},
+	"file_missing": {
+		"message": "El archivo %s no está presente."
 	},
 	"file_not_found_in_rules": {
 		"generic": "El archivo no es compatible con el validador y se ha ignorado.",
@@ -553,11 +532,6 @@
 		"recommended": "Se recomienda el campo \"exact_times\"",
 		"required": "El campo \"exact_times\" es obligatorio"
 	},
-	"frequencies_file_missing": {
-		"generic": "El archivo frequencies.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
-	},
 	"frequencies_headway_secs_field": {
 		"generic": "El campo \"headway_secs\" no está cumplimentado.",
 		"informational": "El campo headway_secs es informativo",
@@ -598,10 +572,7 @@
 		"required": "El campo \"trip_id\" es obligatorio"
 	},
 	"levels_file_missing": {
-		"generic": "El archivo levels.txt no está presente.",
-		"levels_required_when_elevator": "levels.txt es obligatorio cuando pathways.txt contiene ascensores (pathway_mode=5)",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
+		"levels_required_when_elevator": "levels.txt es obligatorio cuando pathways.txt contiene ascensores (pathway_mode=5)"
 	},
 	"levels_level_id_field": {
 		"generic": "El campo \"level_id\" no está cumplimentado.",
@@ -634,11 +605,6 @@
 		"informational": "El campo level_name es informativo",
 		"recommended": "El campo level_name es recomendado",
 		"required": "El campo level_name es requerido"
-	},
-	"pathways_file_missing": {
-		"generic": "El archivo pathways.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
 	},
 	"pathways_from_stop_id_field": {
 		"generic": "El campo \"from_stop_id\" no está cumplimentado.",
@@ -809,11 +775,6 @@
 		"recommended": "Se recomienda el campo \"eligibility_url\"",
 		"required": "El campo \"eligibility_url\" es obligatorio"
 	},
-	"rider_categories_file_missing": {
-		"generic": "El archivo rider_categories.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
-	},
 	"rider_categories_is_default_fare_category_field": {
 		"generic": "El campo \"is_default_fare_category\" no está cumplimentado.",
 		"informational": "El campo is_default_fare_category es informativo",
@@ -880,11 +841,6 @@
 		"generic": "El valor de \"continuous_pickup\" es incompatible con las condiciones del servicio continuo o con las ventanas de recogida y bajada.",
 		"recommended": "Se recomienda que el campo \"continuous_pickup\" permita el servicio continuo; un valor vacío o 1 lo desactiva",
 		"required": "El campo \"continuous_pickup\" debe permitir el servicio continuo; un valor vacío o 1 lo desactiva"
-	},
-	"routes_file_missing": {
-		"generic": "El archivo routes.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
 	},
 	"routes_line_id_equal_route_short_name": {
 		"generic": "Los valores de \"line_id\" y \"route_short_name\" son diferentes.",
@@ -1026,11 +982,6 @@
 		"generic": "Los valores de \"shape_pt_sequence\" están duplicados o no son estrictamente crecientes en el trazado.",
 		"not_increasing": "Los valores de \"shape_pt_sequence\" para el shape_id \"%s\" deben ser únicos y estrictamente crecientes en orden de secuencia"
 	},
-	"shapes_file_missing": {
-		"generic": "El archivo shapes.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
-	},
 	"shapes_shape_dist_traveled_block_valid": {
 		"generic": "La distancia acumulada registrada difiere de la distancia geométrica del bloque más allá de la tolerancia configurada.",
 		"invalid_distances": "La distancia total prevista (shape_dist_traveled) para la geometría \"%s\" es de %.2f metros; la distancia geométrica real es de %.2f metros (diferencia: %.2f metros)"
@@ -1167,11 +1118,6 @@
 		"invalid": "El valor \"%s\" del campo \"end_pickup_drop_off_window\" debe ser una hora válida en formato HH:MM:SS",
 		"required_location_group_id_start_pickup_dropoff": "El campo \"end_pickup_drop_off_window\" es obligatorio si se define \"location_group_id\", \"location_id\" o \"start_pickup_drop_off_window\""
 	},
-	"stop_times_file_missing": {
-		"generic": "El archivo stop_times.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
-	},
 	"stop_times_location_group_id_field": {
 		"forbidden_stop_location": "El campo \"location_group_id\" está prohibido si se define stop_id o location_id",
 		"generic": "El valor de \"location_group_id\" entra en conflicto con \"stop_id\" o \"location_id\"."
@@ -1263,10 +1209,7 @@
 		"not_found": "El valor \"%s\" del campo \"trip_id\" no existe en trips.txt"
 	},
 	"stops_file_missing": {
-		"generic": "El archivo stops.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"stops_required_when_locations_missing": "stops.txt es obligatorio cuando locations.geojson no está presente",
-		"warning": "El archivo %s no está presente en el GTFS."
+		"stops_required_when_locations_missing": "stops.txt es obligatorio cuando locations.geojson no está presente"
 	},
 	"stops_has_bench_allowed": {
 		"generic": "El valor de \"has_bench\" no pertenece al conjunto de valores permitidos.",
@@ -1596,11 +1539,6 @@
 		"recommended": "El campo zone_id es recomendado",
 		"required": "El campo zone_id es requerido"
 	},
-	"transfers_file_missing": {
-		"generic": "El archivo transfers.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
-	},
 	"transfers_from_route_id_field": {
 		"generic": "El campo \"from_route_id\" no está cumplimentado.",
 		"informational": "El campo from_route_id es informativo",
@@ -1769,11 +1707,6 @@
 		"invalid_pattern_id": "El campo \"pattern_id\" debe ser un identificador válido con el formato \"XXXX_[0|1]_1\"; se recibió: %s",
 		"not_matching": "El campo \"direction_id\" \"%s\" no coincide con pattern_id \"%s\"",
 		"required": "Los campos \"pattern_id\" y \"direction_id\" son obligatorios para validar la correspondencia"
-	},
-	"trips_file_missing": {
-		"generic": "El archivo trips.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
 	},
 	"trips_one_pattern_per_shape": {
 		"generic": "El mismo \"shape_id\" está asociado a más de un \"pattern_id\".",
@@ -1983,11 +1916,6 @@
 		"not_allowed": "El campo \"emission\" \"%s\" no está permitido",
 		"recommended": "Se recomienda el campo \"emission\"",
 		"required": "El campo \"emission\" es obligatorio"
-	},
-	"vehicles_file_missing": {
-		"generic": "El archivo vehicles.txt no está presente.",
-		"required": "El archivo obligatorio %s no está presente en el GTFS.",
-		"warning": "El archivo %s no está presente en el GTFS."
 	},
 	"vehicles_license_plate_field": {
 		"generic": "El campo \"license_plate\" no está cumplimentado.",

@@ -205,6 +205,9 @@ func groupedMessages(messages []types.Message) []types.RuleMessage {
 // Rules whose sentence has not been translated yet fall back to their humanised id,
 // so a missing entry reads as a plain description instead of leaking a raw key.
 func genericRuleMessage(ruleID string) string {
+	if table, found := strings.CutSuffix(ruleID, "_file_missing"); found {
+		return i18n.AppTranslator.Get("file_missing.message", table+".txt")
+	}
 	key := ruleID + ".generic"
 	if message := i18n.AppTranslator.Get(key); message != key {
 		return message
