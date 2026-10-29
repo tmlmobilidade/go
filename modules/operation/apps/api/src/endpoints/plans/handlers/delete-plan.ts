@@ -19,10 +19,7 @@ export async function deletePlanHandler(request: FastifyRequest<{ Params: { id: 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
 	if (!foundPlan) {
-		return sendErrorApiResponse(reply, {
-			error: `Plan with ID ${request.params.id} not found`,
-			status_code: '404',
-		});
+		return sendSuccessApiResponse(reply, undefined);
 	}
 
 	//
@@ -46,32 +43,11 @@ export async function deletePlanHandler(request: FastifyRequest<{ Params: { id: 
 	//
 	// Actually delete the plan
 
-	if (!foundPlan.attachments.apex_config) {
-		return sendErrorApiResponse(reply, {
-			error: 'Plan APEX configuration attachment not found',
-			status_code: '404',
-		});
-	}
-
-	if (!foundPlan.attachments.operation_gtfs) {
-		return sendErrorApiResponse(reply, {
-			error: 'Plan operation GTFS attachment not found',
-			status_code: '404',
-		});
-	}
-
-	if (!foundPlan.attachments.operation_gtfs_normalized) {
-		return sendErrorApiResponse(reply, {
-			error: 'Plan operation GTFS normalized attachment not found',
-			status_code: '404',
-		});
-	}
-
 	await storageProvider.batchDelete([
 		foundPlan.attachments.apex_config,
 		foundPlan.attachments.operation_gtfs,
 		foundPlan.attachments.operation_gtfs_normalized,
-	], {
+	].filter((attachmentId): attachmentId is string => !!attachmentId), {
 		onRollback: async (_, error) => {
 			throw error;
 		},
