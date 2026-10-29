@@ -812,8 +812,8 @@
 				},
 				"states": {
 					"active": {
-						"description": "Capture window authorized until {{deadline}} (Lisbon time).",
-						"label": "Active window"
+						"description": "Capture is authorized until {{deadline}} (Lisbon time).",
+						"label": "Active"
 					},
 					"cancelled": {
 						"description": "The authorization was stopped. This does not delete data already sent to Amplitude.",

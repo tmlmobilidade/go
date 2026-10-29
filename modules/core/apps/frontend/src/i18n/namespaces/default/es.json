@@ -815,8 +815,8 @@
 				},
 				"states": {
 					"active": {
-						"description": "Ventana de captura autorizada hasta {{deadline}} (hora de Lisboa).",
-						"label": "Ventana activa"
+						"description": "La captura está autorizada hasta {{deadline}} (hora de Lisboa).",
+						"label": "Activo"
 					},
 					"cancelled": {
 						"description": "La autorización se ha interrumpido. Esto no elimina los datos ya enviados a Amplitude.",

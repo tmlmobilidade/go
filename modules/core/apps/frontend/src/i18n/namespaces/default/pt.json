@@ -814,8 +814,8 @@
 				},
 				"states": {
 					"active": {
-						"description": "Janela de captura autorizada até {{deadline}} (hora de Lisboa).",
-						"label": "Janela ativa"
+						"description": "A captura está autorizada até {{deadline}} (hora de Lisboa).",
+						"label": "Ativo"
 					},
 					"cancelled": {
 						"description": "A autorização foi interrompida. Isto não elimina dados já enviados ao Amplitude.",

@@ -27,16 +27,24 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 
 	// Actions must use the initialized client that still matches the current configuration.
 	const identify = useCallback((userProperties: AnalyticsUserProperties | null) => {
-		if (!ready || !initialization || initializationRef.current !== initialization || initialization.client.getOptOut()) return false;
+		if (
+			!ready
+			|| !initialization
+			|| initializationRef.current !== initialization
+			|| initialization.client.getOptOut()
+		) return false;
+
 		// End capture before logout or an identity change reaches the replay SDK.
 		if (userProperties === null || (userProperties._id !== undefined && userProperties._id !== initialization.client.getUserId())) {
 			initialization.replay.stop();
 		}
+
 		return identifyAnalyticsUser(initialization.client, userProperties, handleError);
 	}, [handleError, initialization, ready]);
 
 	const track = useCallback(async (event: AnalyticsEventInput, properties?: Record<string, unknown>) => {
 		if (!ready || !initialization || initializationRef.current !== initialization) return false;
+
 		clearError();
 
 		return trackAnalyticsEvent(initialization, event, properties, (cause) => {
@@ -85,9 +93,22 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 	}, [identify, user]);
 
 	// Register authorization polling after synchronizing Analytics identity for this user.
-	const replayActivation = useReplayAuthorization(initialization, replayUrl, user?._id, ready, handleError);
+	const replayActivation = useReplayAuthorization({
+		initialization,
+		onError: handleError,
+		ready,
+		replayUrl,
+		userId: user?._id,
+	});
+
 	const replayEnabled = Boolean(replayActivation);
-	const { startReplay, stopReplay } = useReplay(initialization, initializationRef, ready, replayActivation, handleError);
+	const { startReplay, stopReplay } = useReplay({
+		activation: replayActivation,
+		initialization,
+		initializationRef,
+		onError: handleError,
+		ready,
+	});
 
 	return useMemo(() => ({
 		actions: { identify, startReplay, stopReplay, track },

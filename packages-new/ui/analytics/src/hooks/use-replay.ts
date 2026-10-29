@@ -7,20 +7,31 @@ import { type AnalyticsReplayActivation } from '../types/replay/activation';
 
 /* * */
 
+interface UseReplayProps {
+	activation: AnalyticsReplayActivation | undefined
+	initialization: AnalyticsInitialization | undefined
+	initializationRef: RefObject<AnalyticsInitialization | undefined>
+	onError: (cause: unknown) => void
+	ready: boolean
+}
+
+/* * */
+
 /** Binds capture actions to the current analytics initialization without starting capture automatically. */
-export function useReplay(
-	initialization: AnalyticsInitialization | undefined,
-	initializationRef: RefObject<AnalyticsInitialization | undefined>,
-	ready: boolean,
-	activation: AnalyticsReplayActivation | undefined,
-	onError: (cause: unknown) => void,
-) {
+export function useReplay({ activation, initialization, initializationRef, onError, ready }: UseReplayProps) {
 	const userId = initialization?.client.getUserId();
 
 	const startReplay = useCallback(async () => {
-		if (!ready || !initialization || initializationRef.current !== initialization || !activation) return false;
+		if (
+			!ready
+			|| !initialization
+			|| initializationRef.current !== initialization
+			|| !activation
+		) return false;
+
 		// A callback retained by the previous user must not authorize the new identity.
 		if (!userId || initialization.client.getUserId() !== userId) return false;
+
 		try {
 			return await initialization.replay.start(activation);
 		} catch (cause: unknown) {
