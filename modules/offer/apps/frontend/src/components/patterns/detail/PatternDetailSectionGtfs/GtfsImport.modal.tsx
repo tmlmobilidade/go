@@ -5,7 +5,7 @@
 import { GtfsStepConfirmation } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepConfirmation';
 import { GtfsStepDropzone } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepDropzone';
 import { GtfsStepSelection } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepSelection';
-import { type Pattern } from '@tmlmobilidade/go-types-offer';
+import { type PatternsDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { closeModal, openModal } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
@@ -44,7 +44,7 @@ export interface GtfsRoute {
 interface GtfsImportModalContentProps {
 	currentShapeExtension: number
 	currentStopCount: number
-	onLoad: (pattern: Pattern) => void
+	onLoad: (pattern: PatternsDetail) => void
 	patternId: string
 }
 
@@ -101,7 +101,7 @@ function GtfsImportModalContent({ currentShapeExtension, currentStopCount, onLoa
 interface OpenGtfsImportModalProps {
 	currentShapeExtension: number
 	currentStopCount: number
-	onLoad: (pattern: Pattern) => void
+	onLoad: (pattern: PatternsDetail) => void
 	patternId: string
 }
 

@@ -351,5 +351,27 @@
 			"basic": "Configuración básica",
 			"geometry": "Geometría"
 		}
+	},
+	"patterns": {
+		"shapeEditor": {
+			"apply": "Aplicar",
+			"anchorIssuesTitle": "Desvíos con segmentos sin identificar",
+			"anchorIssuesDescription": "Algunos desvíos no identifican una única ocurrencia entre paradas. Al recalcular se eliminarán esos desvíos. Se conservarán los desvíos identificados sin ambigüedad.",
+			"missingSegment": "segmento inexistente",
+			"recalculate": "Recalcular recorrido",
+			"cancel": "Cancelar",
+			"undo": "Deshacer",
+			"redo": "Rehacer",
+			"dismiss": "Cerrar",
+			"convert": "Convertir y editar",
+			"importedTitle": "Trazado importado de GTFS",
+			"importedDescription": "Este recorrido se ha importado directamente de GTFS y no contiene puntos intermedios calculados por nuestra plataforma.",
+			"convertDescription": "Para editar paradas y desvíos es necesario convertir el trazado al formato editable, recalculando el recorrido.",
+			"conversionWarning": "El recorrido resultante puede diferir ligeramente del original.",
+			"conversionHistory": "Esta conversión se guarda en el historial local y se puede deshacer antes de aplicar.",
+			"missingStops": "Todas las paradas necesitan coordenadas antes de recalcular el recorrido.",
+			"unknownError": "Error desconocido",
+			"routeErrorTitle": "Error al recalcular el recorrido"
+		}
 	}
 }

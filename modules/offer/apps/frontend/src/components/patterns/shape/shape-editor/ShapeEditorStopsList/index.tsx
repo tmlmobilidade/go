@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 import styles from './styles.module.css';
 
-import { useStopsEditorContext } from '../ShapeEditor.context';
+import { useShapeEditorContext } from '../ShapeEditor.context';
 import { StopsListRow } from '../ShapeEditorStopsListRow';
 
 /* * */
@@ -21,12 +21,12 @@ export function StopsList() {
 	//
 	// A. Setup variables
 
-	const stopsEditorContext = useStopsEditorContext();
+	const shapeEditorContext = useShapeEditorContext();
 
 	const [addStopIndex, setAddStopIndex] = useState<null | number>(null);
 	const [highlightedStopId, setHighlightedStopId] = useState<null | string>(null);
 
-	const path = stopsEditorContext.data.path as PatternsDetailPathItem[];
+	const path = shapeEditorContext.data.path as PatternsDetailPathItem[];
 
 	//
 	// B. Handle actions
@@ -37,7 +37,7 @@ export function StopsList() {
 			setHighlightedStopId(moved._id);
 			setTimeout(() => setHighlightedStopId(null), 900);
 		}
-		void stopsEditorContext.actions.reorderStops(newPath);
+		void shapeEditorContext.actions.reorderStops(newPath);
 	};
 
 	const handleStartAddStop = (index: number) => {
@@ -50,7 +50,7 @@ export function StopsList() {
 
 	const handleSelectStop = (stop: null | Stop) => {
 		if (!stop || addStopIndex === null) return;
-		void stopsEditorContext.actions.addStop(stop, addStopIndex + 1);
+		void shapeEditorContext.actions.addStop(stop, addStopIndex + 1);
 		handleCancelAddStop();
 	};
 

@@ -11,8 +11,8 @@ const StopsParameterCommonSchema = z.object({
 
 	name: z.string().optional(),
 	path: z.array(z.object({
-		avg_speed: z.number(),
-		dwell_time: z.number(),
+		avg_speed: z.number().finite().nonnegative(),
+		dwell_time: z.number().finite().nonnegative(),
 		stop_id: StopIdSchema,
 	})),
 	vehicle_type: z.string().optional(),

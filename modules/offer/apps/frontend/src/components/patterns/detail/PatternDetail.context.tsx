@@ -354,14 +354,10 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 
 	// Used to fetch stops when we revert a path change from the history
 	const enrichPath = useCallback(async (path: Path[]): Promise<PatternsDetailPathItem[]> => {
-		const stopIds = [...new Set(path.map(p => String(p.stop_id)))];
-		const results = await Promise.all(
-			stopIds.map(id => fetchApiData<Stop>({ url: API_ROUTES.offer.PATTERNS_STOPS_DETAIL(String(id)) })),
-		);
-		const stopsMap = new Map(
-			results.flatMap(r => r.data ? [[String(r.data._id), r.data]] : []),
-		);
-		return path.map(p => ({ ...p, stop: stopsMap.get(String(p.stop_id)) ?? null }));
+		const stopIds = [...new Set(path.map(item => item.stop_id))];
+		const results = await Promise.all(stopIds.map(id => fetchApiData<Stop>({ url: API_ROUTES.offer.PATTERNS_STOPS_DETAIL(id) })));
+		const stops = new Map(results.flatMap(result => result.data ? [[result.data._id, result.data] as const] : []));
+		return path.map(item => ({ ...item, stop: stops.get(item.stop_id) ?? null }));
 	}, []);
 
 	const { action: saveRequest, isLoading: isSaving } = useHandleAction({

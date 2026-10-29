@@ -155,7 +155,7 @@ test('Invalid create/update requests return 400 with no writes', async () => {
 test('Update preserves old history and creates server audit/activity without persisting enriched path stops', async () => {
 	const note = { ...audit, message: 'Original', type: 'note' };
 	PATTERNS[0].comments = [note];
-	assert.equal((await invoke('update', { data: { comments: [], created_by: 'spoof', headsign: 'Changed', is_locked: true, path: [{ _id: 'path', stop: { _id: 'spoof' }, stop_id: '100001' }], updated_by: 'spoof' } })).status, 200);
+	assert.equal((await invoke('update', { data: { comments: [], created_by: 'spoof', headsign: 'Changed', is_locked: true, parameters: [{ kind: 'default', path: [{ avg_speed: 10, dwell_time: 30, stop_id: '100001' }] }], path: [{ _id: 'path', stop: { _id: 'spoof' }, stop_id: '100001' }], updated_by: 'spoof' } })).status, 200);
 	const saved = WRITES[0].data;
 	assert.equal(saved?.updated_by, 'actor');
 	assert.equal(saved?.created_by, undefined);
@@ -271,4 +271,58 @@ test('Pattern updates preserve event-linked rules with optional narrowing and st
 	assert.equal(savedRules[0].event_id, 'event');
 	assert.deepEqual(savedRules[0].year_period_ids, []);
 	assert.equal('name' in savedRules[0], false);
+});
+
+test('explicit null clears persisted shape geometry', async () => {
+	PATTERNS[0].shape = { extension: 100, geojson: { geometry: { coordinates: [[-9.1, 38.7], [-9.2, 38.8]], type: 'LineString' }, type: 'Feature' } };
+	assert.equal((await invoke('update', { data: { shape: null } })).status, 200);
+	assert.equal(PATTERNS[0].shape, null);
+	assert.equal(WRITES[0].data?.shape, null);
+});
+
+test('path edits reject duplicate occurrence IDs and mismatched positional parameter values', async () => {
+	const path = [{ _id: 'one', stop_id: '100001' }, { _id: 'one', stop_id: '100001' }];
+	assert.equal((await invoke('update', { data: { path } })).status, 400);
+	assert.equal((await invoke('update', { data: { parameters: [{ kind: 'default', path: [{ avg_speed: 10, dwell_time: 30, stop_id: '100001' }] }] } })).status, 400);
+	assert.deepEqual(WRITES, []);
+});
+
+test('creation initializes one default parameter row for every supplied path occurrence', async () => {
+	const path = [{ _id: 'one', stop_id: '100001' }, { _id: 'two', stop_id: '100001' }];
+	const result = await invoke('create', { data: { ...body, path } });
+	assert.equal(result.status, 200);
+	const parameters = result.response.data?.parameters as { path: { avg_speed: number, dwell_time: number, stop_id: string }[] }[];
+	assert.deepEqual(parameters[0].path, [{ avg_speed: 0, dwell_time: 30, stop_id: '100001' }, { avg_speed: 0, dwell_time: 30, stop_id: '100001' }]);
+});
+
+test('GTFS imports preserve repeated-stop identities/settings by visit order without writing', async () => {
+	PATTERNS[0].path = [
+		{ _id: 'A1', allow_pickup: false, stop_id: '100001', zones: ['first'] },
+		{ _id: 'A2', allow_pickup: true, stop_id: '100001', zones: ['second'] },
+	];
+	PATTERNS[0].parameters = [{ kind: 'default', path: [{ avg_speed: 10, dwell_time: 20, stop_id: '100001' }, { avg_speed: 25, dwell_time: 50, stop_id: '100001' }] }];
+	const imported = await invoke('import', { data: { ...gtfs, path: [
+		{ ...gtfs.path[0], avg_speed: 0, stop_sequence: 1 },
+		{ ...gtfs.path[0], avg_speed: 0, stop_sequence: 2 },
+		{ ...gtfs.path[0], avg_speed: 0, stop_sequence: 3 },
+	] } });
+	assert.equal(imported.status, 200);
+	const path = imported.response.data?.path as Row[];
+	assert.equal(path[0]._id, 'A1');
+	assert.equal(path[1]._id, 'A2');
+	assert.equal(new Set(path.map(item => item._id)).size, 3);
+	assert.deepEqual(path.map(item => item.allow_pickup), [false, true, true]);
+	assert.deepEqual(path.map(item => item.zones), [['first'], ['second'], []]);
+	const parameters = imported.response.data?.parameters as { path: { avg_speed: number }[] }[];
+	assert.deepEqual(parameters[0].path.map(item => item.avg_speed), [10, 25, 0]);
+	assert.deepEqual(WRITES, []);
+});
+
+test('GTFS import rejects duplicate sequences and decreasing distances without writing', async () => {
+	for (const data of [
+		{ ...gtfs, path: [gtfs.path[0], gtfs.path[0]] },
+		{ ...gtfs, shape: [gtfs.shape[0], gtfs.shape[0]] },
+		{ ...gtfs, path: [{ ...gtfs.path[0], shape_dist_traveled: 100 }, { ...gtfs.path[0], shape_dist_traveled: 50, stop_sequence: 2 }] },
+	]) assert.equal((await invoke('import', { data })).status, 400);
+	assert.deepEqual(WRITES, []);
 });

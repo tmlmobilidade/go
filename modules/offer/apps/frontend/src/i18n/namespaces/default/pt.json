@@ -351,5 +351,27 @@
 			"basic": "Configuração básica",
 			"geometry": "Geometria"
 		}
+	},
+	"patterns": {
+		"shapeEditor": {
+			"apply": "Aplicar",
+			"anchorIssuesTitle": "Desvios com segmentos por identificar",
+			"anchorIssuesDescription": "Alguns desvios não identificam uma única ocorrência entre paragens. Ao recalcular, esses desvios serão removidos. Os desvios identificados sem ambiguidade serão mantidos.",
+			"missingSegment": "segmento inexistente",
+			"recalculate": "Recalcular percurso",
+			"cancel": "Cancelar",
+			"undo": "Desfazer",
+			"redo": "Refazer",
+			"dismiss": "Dispensar",
+			"convert": "Converter e editar",
+			"importedTitle": "Shape importado do GTFS",
+			"importedDescription": "Este percurso foi importado diretamente do GTFS e não contém informação de pontos intermédios calculados pela nossa plataforma.",
+			"convertDescription": "Para poder editar paragens e desvios, é necessário converter a shape para o formato editável, recalculando o percurso.",
+			"conversionWarning": "O trajeto resultante pode diferir ligeiramente do original.",
+			"conversionHistory": "Esta conversão fica registada no histórico local e pode ser desfeita antes de aplicar.",
+			"missingStops": "Todas as paragens precisam de coordenadas antes de recalcular o percurso.",
+			"unknownError": "Erro desconhecido",
+			"routeErrorTitle": "Erro ao recalcular percurso"
+		}
 	}
 }

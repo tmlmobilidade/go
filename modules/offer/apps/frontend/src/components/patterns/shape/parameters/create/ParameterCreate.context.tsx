@@ -1,7 +1,7 @@
 'use client';
 
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { StopsParameterExtended } from '@/utils/stops-parameters';
+import { copyDefaultStopParameters, StopsParameterExtended } from '@/utils/stops-parameters';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Path, StopsParameter, StopsParameterSchema } from '@tmlmobilidade/go-types-offer';
 import { buildParameterSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/go-utils-offer';
@@ -132,12 +132,7 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 	const handleApplyDefaultSpeeds = useCallback(() => {
 		if (!defaultParameter) return;
 		const currentPath = form.getValues().path;
-		const defaultPathMap = new Map(defaultParameter.path.map(p => [p.stop_id, p]));
-		const newPath = currentPath.map((p) => {
-			const def = defaultPathMap.get(p.stop_id);
-			if (!def) return p;
-			return { ...p, avg_speed: def.avg_speed, dwell_time: def.dwell_time };
-		});
+		const newPath = copyDefaultStopParameters(currentPath, defaultParameter.path);
 		form.setValue('path', newPath, { shouldDirty: true, shouldValidate: true });
 	}, [defaultParameter, form]);
 

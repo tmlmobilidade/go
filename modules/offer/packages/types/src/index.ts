@@ -8,6 +8,7 @@ export * from './patterns/patterns-import-gtfs-request.js';
 export * from './patterns/patterns-shape-map.js';
 export * from './patterns/patterns-stop-search.js';
 export * from './routes/routes-detail.js';
+export * from './shapes/shapes-route-preview.js';
 export * from './typologies/index.js';
 export * from './year-periods/index.js';
 export * from './zones/index.js';

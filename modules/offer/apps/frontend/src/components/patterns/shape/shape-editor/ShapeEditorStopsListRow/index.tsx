@@ -9,21 +9,17 @@ import { IconButton, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
-import { useStopsEditorContext } from '../ShapeEditor.context';
+import { useShapeEditorContext } from '../ShapeEditor.context';
 import { ShapeEditorStopSelect } from '../ShapeEditorStopSelect';
 
 /* * */
 
-function SegmentInfo({ afterStopId, beforeStopId, distance }: {
-	afterStopId: string
-	beforeStopId: string
-	distance: number
-}) {
-	const stopsEditorContext = useStopsEditorContext();
-	const isLoading = stopsEditorContext.flags.isLoadingRoute;
+function SegmentInfo({ afterPathItemId, beforePathItemId, distance }: { afterPathItemId: string, beforePathItemId: string,	distance: number }) {
+	const shapeEditorContext = useShapeEditorContext();
+	const isLoading = shapeEditorContext.flags.isLoadingRoute;
 
-	const anchorCount = stopsEditorContext.data.anchors?.filter(
-		a => a.after_stop_id === afterStopId && a.before_stop_id === beforeStopId,
+	const anchorCount = shapeEditorContext.data.anchors?.filter(
+		a => a.after_path_item_id === afterPathItemId && a.before_path_item_id === beforePathItemId,
 	).length ?? 0;
 
 	return (
@@ -79,8 +75,8 @@ export function StopsListRow({ index, isAdding, nextPathItem, onAdd, onCancel, o
 
 					{nextPathItem && (
 						<SegmentInfo
-							afterStopId={pathItem.stop_id}
-							beforeStopId={nextPathItem.stop_id}
+							afterPathItemId={pathItem._id}
+							beforePathItemId={nextPathItem._id}
 							distance={nextPathItem.distance_delta ?? 0}
 						/>
 					)}

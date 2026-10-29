@@ -1,14 +1,14 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { buildRoutePreviewModel } from '@/utils/route-preview';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { MapOverlayPatternShape, type MapOverlayPatternShapeLineData, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
 
-import { buildRoutePreviewModel } from '../../../../../utils/route-preview';
-import { useStopsEditorContext } from '../ShapeEditor.context';
+import { useShapeEditorContext } from '../ShapeEditor.context';
 import { InitialStopSelector } from '../ShapeEditorInitialSelector';
 import { StopsList } from '../ShapeEditorStopsList';
 
@@ -21,14 +21,15 @@ export function ShapeEditorContent() {
 	// A. Setup variables
 
 	const patternDetailContext = usePatternDetailContext();
-	const stopsEditorContext = useStopsEditorContext();
+	const shapeEditorContext = useShapeEditorContext();
 
 	const lineData = useMemo(() => {
-		const legs = stopsEditorContext.data.routeData?.legs ?? stopsEditorContext.data.shape?.legs;
+		if (shapeEditorContext.flags.needsMigration) return patternDetailContext.geojson.pattern_line;
+		const legs = shapeEditorContext.data.routeData?.legs ?? shapeEditorContext.data.shape?.legs;
 		const routePreviewLegSegments = new Map(
 			buildRoutePreviewModel(
-				stopsEditorContext.data.path as PatternsDetailPathItem[],
-				stopsEditorContext.data.anchors,
+				shapeEditorContext.data.path as PatternsDetailPathItem[],
+				shapeEditorContext.data.anchors,
 			).legSegments.map(segment => [
 				`${segment.leg_from_index}:${segment.leg_to_index}`,
 				segment,
@@ -75,17 +76,18 @@ export function ShapeEditorContent() {
 
 		return patternDetailContext.geojson.pattern_line;
 	}, [
-		stopsEditorContext.data.shape?.legs,
+		shapeEditorContext.flags.needsMigration,
+		shapeEditorContext.data.shape?.legs,
 		patternDetailContext.data.id,
 		patternDetailContext.data.typologyData?.color,
 		patternDetailContext.geojson.pattern_line,
-		stopsEditorContext.data.anchors,
-		stopsEditorContext.data.path,
-		stopsEditorContext.data.routeData,
+		shapeEditorContext.data.anchors,
+		shapeEditorContext.data.path,
+		shapeEditorContext.data.routeData,
 	]);
 
 	const stopsData = useMemo(() => ({
-		features: (stopsEditorContext.data.path as PatternsDetailPathItem[])
+		features: (shapeEditorContext.data.path as PatternsDetailPathItem[])
 			.filter(pathItem => pathItem.stop)
 			.map((pathItem, index) => ({
 				geometry: {
@@ -100,7 +102,7 @@ export function ShapeEditorContent() {
 				type: 'Feature' as const,
 			})),
 		type: 'FeatureCollection' as const,
-	}), [stopsEditorContext.data.path]);
+	}), [shapeEditorContext.data.path]);
 
 	//
 	// B. Handle actions
@@ -121,8 +123,8 @@ export function ShapeEditorContent() {
 			return;
 		}
 
-		const afterPathItem = stopsEditorContext.data.path[anchor.segment.from_index];
-		const beforePathItem = stopsEditorContext.data.path[anchor.segment.to_index];
+		const afterPathItem = shapeEditorContext.data.path[anchor.segment.from_index];
+		const beforePathItem = shapeEditorContext.data.path[anchor.segment.to_index];
 
 		if (!afterPathItem || !beforePathItem) {
 			useToast.error({
@@ -132,9 +134,9 @@ export function ShapeEditorContent() {
 			return;
 		}
 
-		await stopsEditorContext.actions.addShapeAnchor({
-			after_stop_id: afterPathItem.stop_id,
-			before_stop_id: beforePathItem.stop_id,
+		await shapeEditorContext.actions.addShapeAnchor({
+			after_path_item_id: afterPathItem._id,
+			before_path_item_id: beforePathItem._id,
 			lat: anchor.lat,
 			lon: anchor.lon,
 			type: 'via',
@@ -145,14 +147,14 @@ export function ShapeEditorContent() {
 		anchor: { lat: number, lon: number, segment?: { from_index?: number, to_index?: number } },
 		draggingAnchorId: null | string,
 	) => {
-		const { anchors, path } = stopsEditorContext.data;
+		const { anchors, path } = shapeEditorContext.data;
 
 		if (draggingAnchorId !== null) {
 			// Moving an existing anchor — swap its position in the anchors array
 			const nextAnchors = anchors.map(a =>
 				a._id === draggingAnchorId ? { ...a, lat: anchor.lat, lon: anchor.lon } : a,
 			);
-			await stopsEditorContext.actions.previewRoute(path as PatternsDetailPathItem[], nextAnchors);
+			await shapeEditorContext.actions.previewRoute(path as PatternsDetailPathItem[], nextAnchors);
 		} else if (anchor.segment?.from_index !== undefined && anchor.segment?.to_index !== undefined) {
 			// Dropping a new anchor — build a temporary anchor for preview
 			const afterPathItem = path[anchor.segment.from_index];
@@ -162,30 +164,30 @@ export function ShapeEditorContent() {
 
 			const tempAnchor = {
 				_id: '__preview__',
-				after_stop_id: afterPathItem.stop_id,
-				before_stop_id: beforePathItem.stop_id,
+				after_path_item_id: afterPathItem._id,
+				before_path_item_id: beforePathItem._id,
 				lat: anchor.lat,
 				lon: anchor.lon,
 				sequence: anchors.filter(a =>
-					a.after_stop_id === afterPathItem.stop_id && a.before_stop_id === beforePathItem.stop_id,
+					a.after_path_item_id === afterPathItem._id && a.before_path_item_id === beforePathItem._id,
 				).length,
 				type: 'via' as const,
 			};
 
-			await stopsEditorContext.actions.previewRoute(path as PatternsDetailPathItem[], [...anchors, tempAnchor]);
+			await shapeEditorContext.actions.previewRoute(path as PatternsDetailPathItem[], [...anchors, tempAnchor]);
 		}
-	}, [stopsEditorContext.actions, stopsEditorContext.data]);
+	}, [shapeEditorContext.actions, shapeEditorContext.data]);
 
 	//
 	// C. Render components
 
-	if (!stopsEditorContext.data.path.length) {
+	if (!shapeEditorContext.data.path.length) {
 		return (
 			<InitialStopSelector
-				isLoading={stopsEditorContext.flags.isLoadingRoute}
+				isLoading={shapeEditorContext.flags.isLoadingRoute}
 				lineColor={patternDetailContext.data.typologyData?.color || undefined}
 				lineData={patternDetailContext.geojson.pattern_line}
-				onInitialize={(s1, s2) => void stopsEditorContext.actions.initializePath(s1, s2)}
+				onInitialize={(s1, s2) => void shapeEditorContext.actions.initializePath(s1, s2)}
 			/>
 		);
 	}
@@ -199,15 +201,15 @@ export function ShapeEditorContent() {
 			<div className={styles.mapWrapper}>
 				<MapView id="shapeMapView">
 					<MapOverlayPatternShape
-						anchorsData={stopsEditorContext.data.anchors}
-						enableAnchorPreview={stopsEditorContext.flags.isEditableShape}
+						anchorsData={shapeEditorContext.data.anchors}
+						enableAnchorPreview={shapeEditorContext.flags.isEditableShape}
 						id="pattern-shape"
 						lineColor={patternDetailContext.data.typologyData?.color || undefined}
 						lineData={lineData}
 						onAnchorDragPreview={(event, draggingId) => void handleAnchorDragPreview(event, draggingId)}
 						onAnchorDrop={handleAnchorDrop}
-						onAnchorMove={(anchorId, event) => void stopsEditorContext.actions.moveShapeAnchor(anchorId, event.lat, event.lon)}
-						onAnchorRemove={anchorId => void stopsEditorContext.actions.removeShapeAnchor(anchorId)}
+						onAnchorMove={(anchorId, event) => void shapeEditorContext.actions.moveShapeAnchor(anchorId, event.lat, event.lon)}
+						onAnchorRemove={anchorId => void shapeEditorContext.actions.removeShapeAnchor(anchorId)}
 						stopsData={stopsData}
 					/>
 				</MapView>

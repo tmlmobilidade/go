@@ -32,10 +32,10 @@ export const directionOptions: { label: string, value: typeof PatternDirectionVa
 /* * */
 
 export const PathSchema = z.object({
-	_id: z.string(),
+	_id: z.string().min(1),
 	allow_drop_off: z.boolean().default(true),
 	allow_pickup: z.boolean().default(true),
-	distance_delta: z.number().nullable().default(null),
+	distance_delta: z.number().finite().nonnegative().nullable().default(null),
 	stop_id: StopIdSchema,
 	timepoint: z.boolean().default(true),
 	zones: z.array(z.string()).optional(),
@@ -43,49 +43,54 @@ export const PathSchema = z.object({
 
 /* * */
 
-const ShapeAnchorSchema = z.object({
-	_id: z.string(),
-	after_stop_id: StopIdSchema,
-	before_stop_id: StopIdSchema,
-	lat: z.number(),
-	lon: z.number(),
-	sequence: z.number().default(0),
+export const ShapeAnchorSchema = z.object({
+	_id: z.string().min(1),
+	after_path_item_id: z.string().min(1).optional(),
+	after_stop_id: StopIdSchema.optional(),
+	before_path_item_id: z.string().min(1).optional(),
+	before_stop_id: StopIdSchema.optional(),
+	lat: z.number().finite().min(-90).max(90),
+	lon: z.number().finite().min(-180).max(180),
+	sequence: z.number().int().nonnegative().default(0),
 	type: z.enum(['via', 'through']).default('via'),
-});
+}).refine(anchor => (
+	(Boolean(anchor.after_path_item_id) && Boolean(anchor.before_path_item_id))
+	|| (!anchor.after_path_item_id && !anchor.before_path_item_id && Boolean(anchor.after_stop_id) && Boolean(anchor.before_stop_id))
+), { message: 'An anchor must identify both ends of one path segment.' });
 
 const ShapeLegSchema = z.object({
-	distance: z.number(),
-	duration: z.number(),
+	distance: z.number().finite().nonnegative(),
+	duration: z.number().finite().nonnegative(),
 	encoded_polyline: z.string().optional(),
-	from_index: z.number(),
+	from_index: z.number().int().nonnegative(),
 	geojson: z.object({
 		geometry: z.object({
-			coordinates: z.array(z.array(z.number())),
-			type: z.string().default('LineString'),
+			coordinates: z.array(z.tuple([z.number().finite().min(-180).max(180), z.number().finite().min(-90).max(90)])),
+			type: z.literal('LineString').default('LineString'),
 		}),
 		properties: z.object({
-			distance: z.number(),
-			duration: z.number(),
-			from_index: z.number(),
-			to_index: z.number(),
+			distance: z.number().finite().nonnegative(),
+			duration: z.number().finite().nonnegative(),
+			from_index: z.number().int().nonnegative(),
+			to_index: z.number().int().nonnegative(),
 		}),
-		type: z.string().default('Feature'),
+		type: z.literal('Feature').default('Feature'),
 	}),
 	geometry: z.array(z.tuple([z.number(), z.number()])),
-	to_index: z.number(),
+	to_index: z.number().int().nonnegative(),
 });
 
 export const ShapeSchema = z.object({
 	anchors: z.array(ShapeAnchorSchema).optional(),
 	encoded_polyline: z.string().optional(),
-	extension: z.number(),
+	extension: z.number().finite().nonnegative(),
 	geojson: z.object({
 		geometry: z.object({
-			coordinates: z.array(z.array(z.number())),
-			type: z.string().default('LineString'),
+			coordinates: z.array(z.tuple([z.number().finite().min(-180).max(180), z.number().finite().min(-90).max(90)])),
+			type: z.literal('LineString').default('LineString'),
 		}),
 		properties: z.object({}).optional(),
-		type: z.string().default('Feature'),
+		type: z.literal('Feature').default('Feature'),
 	}),
 	legs: z.array(ShapeLegSchema).optional(),
 });
@@ -110,7 +115,7 @@ export const PatternSchema = BaseDocumentSchema.extend({
 	path: z.array(PathSchema).optional(),
 	route_id: z.string().min(1),
 	rules: z.array(PatternUpdateRuleSchema).default([]),
-	shape: ShapeSchema.optional(),
+	shape: ShapeSchema.nullable().optional(),
 });
 
 /** Read-only scheduling projection with rules resolved from current Events. */
@@ -118,8 +123,23 @@ export const ResolvedPatternSchema = PatternSchema.extend({
 	rules: z.array(ScheduleRuleSchema).default([]),
 });
 
+/** Validate positional travel-time values against stable path occurrences before a write. */
+export const PatternPathParametersSchema = z.object({
+	parameters: StopsParametersListSchema.optional(),
+	path: z.array(PathSchema).default([]),
+}).superRefine((value, context) => {
+	if (new Set(value.path.map(item => item._id)).size !== value.path.length) {
+		context.addIssue({ code: z.ZodIssueCode.custom, message: 'Path occurrence IDs must be unique.', path: ['path'] });
+	}
+	for (const [parameterIndex, parameter] of (value.parameters ?? []).entries()) {
+		if (parameter.path.length !== value.path.length || parameter.path.some((item, index) => item.stop_id !== value.path[index]?.stop_id)) {
+			context.addIssue({ code: z.ZodIssueCode.custom, message: 'Travel-time parameters must match each path occurrence in order.', path: ['parameters', parameterIndex, 'path'] });
+		}
+	}
+});
+
 export const PatternSimplifiedSchema = z.object({
-	_id: z.string(),
+	_id: z.string().min(1),
 	code: z.string().trim().min(1).max(10),
 	headsign: z.string().trim().min(1).max(100),
 	line_id: z.string().min(1),
@@ -151,6 +171,8 @@ export type UpdatePatternDto = z.infer<typeof UpdatePatternSchema>;
 export type PatternSimplified = z.infer<typeof PatternSimplifiedSchema>;
 
 export type Path = z.infer<typeof PathSchema>;
+
+export type ShapeAnchor = z.infer<typeof ShapeAnchorSchema>;
 
 export type Shape = z.infer<typeof ShapeSchema>;
 

@@ -6,7 +6,7 @@ import { usePatternDetailContext } from '@/components/patterns/detail/PatternDet
 import { openGtfsImportModal } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImport.modal';
 import { ShapeEditorModal } from '@/components/patterns/shape/shape-editor/ShapeEditor.modal';
 import { IconFileZip, IconShape } from '@tabler/icons-react';
-import { type Pattern } from '@tmlmobilidade/go-types-offer';
+import { type PatternsDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -46,10 +46,9 @@ export function PatternDetailSectionShape() {
 	//
 	// C. Handle actions
 
-	const handleLoadPattern = async (pattern: Pattern) => {
+	const handleLoadPattern = (pattern: PatternsDetail) => {
 		if (!patternDetailContext.capabilities.editEnabled) return;
-		const path = await patternDetailContext.actions.enrichPath(pattern.path ?? []);
-		patternDetailContext.actions.applyChanges({ parameters: pattern.parameters, path, shape: pattern.shape });
+		patternDetailContext.actions.applyChanges({ parameters: pattern.parameters, path: pattern.path, shape: pattern.shape });
 		useToast.info({ message: 'Percurso carregado. Clique em Guardar para confirmar.' });
 	};
 

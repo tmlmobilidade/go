@@ -9,7 +9,7 @@ import { useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
 
-import { useStopsEditorContext } from '../ShapeEditor.context';
+import { useShapeEditorContext } from '../ShapeEditor.context';
 
 /* * */
 
@@ -19,14 +19,14 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Pattern
 	//
 	// A. Setup variables
 
-	const stopsEditorContext = useStopsEditorContext();
+	const shapeEditorContext = useShapeEditorContext();
 
 	const enterTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const exitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 	const [isExpanded, setIsExpanded] = useState(false);
 
-	const stopItem = stopsEditorContext.data.path[rowIndex];
+	const stopItem = shapeEditorContext.data.path[rowIndex];
 
 	const stopLocationInfo = useMemo(() => {
 		const location = pathItem.stop?.location;
@@ -39,14 +39,14 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Pattern
 	// B. Handle actions
 
 	const handleDelete = () => {
-		stopsEditorContext.actions.removeStop(rowIndex);
+		shapeEditorContext.actions.removeStop(rowIndex);
 	};
 
 	const handleToogle = (field: 'allow_drop_off' | 'allow_pickup' | 'timepoint') => {
 		const currentValue = stopItem ? stopItem[field] : undefined;
 		if (currentValue === undefined) return;
 
-		stopsEditorContext.actions.updateStop(rowIndex, { [field]: !currentValue });
+		shapeEditorContext.actions.updateStop(rowIndex, { [field]: !currentValue });
 	};
 
 	const clearEnterTimeout = () => {

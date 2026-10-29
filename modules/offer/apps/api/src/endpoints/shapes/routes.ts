@@ -1,8 +1,9 @@
 /* * */
 
-import { ShapesController } from '@/endpoints/shapes/shapes.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { routePreviewHandler } from './handlers/route-preview.js';
 
 /* * */
 
@@ -16,8 +17,8 @@ server.register(
 	(instance, opts, next) => {
 		instance.post(
 			'/route-preview',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.read]) },
-			ShapesController.routePreview,
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
+			routePreviewHandler,
 		);
 
 		next();

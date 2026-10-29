@@ -3,10 +3,9 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Pattern } from '@tmlmobilidade/go-types-offer';
-import { Button, closeModal, Divider, Grid, Section, Text, useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
-import { useState } from 'react';
+import { type PatternsDetail, PatternsDetailSchema, PatternsImportGtfsRequestSchema } from '@tmlmobilidade/go-offer-pckg-types';
+import { Button, closeModal, Divider, fetchApiData, Grid, Section, Text, useToast } from '@tmlmobilidade/ui';
+import { useEffect, useRef, useState } from 'react';
 
 import { GtfsTrip } from './GtfsImport.modal';
 
@@ -17,7 +16,7 @@ interface GtfsStepConfirmationProps {
 	currentStopCount: number
 	modalId: string
 	onBack: () => void
-	onLoad: (pattern: Pattern) => void
+	onLoad: (pattern: PatternsDetail) => void
 	patternId: string
 	selectedTrip: GtfsTrip
 }
@@ -28,32 +27,43 @@ export function GtfsStepConfirmation({ currentShapeExtension, currentStopCount, 
 	//
 
 	const [isImporting, setIsImporting] = useState(false);
+	const mounted = useRef(true);
+	const request = useRef<AbortController | null>(null);
+
+	useEffect(() => {
+		mounted.current = true;
+		return () => {
+			mounted.current = false;
+			request.current?.abort();
+		};
+	}, []);
 
 	const newStopCount = selectedTrip.path.length;
 	const newShapeExtension = selectedTrip.shape.points[selectedTrip.shape.points.length - 1]?.shape_dist_traveled || 0;
 
 	const handleConfirmImport = async () => {
+		if (request.current || !mounted.current) return;
+		const controller = new AbortController();
+		request.current = controller;
+		setIsImporting(true);
 		try {
-			setIsImporting(true);
-			const result = await fetchData<Pattern>(
-				API_ROUTES.offer.PATTERNS_DETAIL_IMPORT_GTFS(patternId),
-				'POST',
-				{
-					path: selectedTrip.path,
-					shape: selectedTrip.shape.points,
-				},
-			);
-			if (result.error) {
-				useToast.error({ message: result.error });
-				setIsImporting(false);
-				return;
-			}
+			const result = await fetchApiData<PatternsDetail>({
+				body: PatternsImportGtfsRequestSchema.parse({ path: selectedTrip.path, shape: selectedTrip.shape.points }),
+				method: 'POST',
+				options: { signal: controller.signal },
+				url: API_ROUTES.offer.PATTERNS_DETAIL_IMPORT_GTFS(patternId),
+			});
+			if (!mounted.current || controller.signal.aborted) return;
+			if (result.error || !result.data) throw new Error(result.error || 'No import preview returned');
+			onLoad(PatternsDetailSchema.parse(result.data));
 			closeModal(modalId);
-			onLoad(result.data as Pattern);
 		} catch (error) {
-			console.log(error);
-			useToast.error({ message: 'Erro ao importar percurso' });
-			setIsImporting(false);
+			if (mounted.current && !controller.signal.aborted) {
+				useToast.error({ message: error instanceof Error ? error.message : 'Erro ao importar percurso' });
+			}
+		} finally {
+			if (request.current === controller) request.current = null;
+			if (mounted.current) setIsImporting(false);
 		}
 	};
 
