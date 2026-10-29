@@ -1,6 +1,7 @@
 {
 	"banner": {
 		"dismiss": "Dismiss notice",
+		"dismiss_error": "Could not dismiss the notice. Please try again.",
 		"until": "Until {end}"
 	},
 	"buttons": {

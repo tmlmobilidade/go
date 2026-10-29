@@ -2,6 +2,7 @@
 
 /* * */
 
+import { Loader } from '@mantine/core';
 import { IconAlertCircle, IconServerCog, IconSpeakerphone, IconX } from '@tabler/icons-react';
 import { type BannerKind, type BannerPlatformResponse } from '@tmlmobilidade/go-types-core';
 import { useState } from 'react';
@@ -19,7 +20,7 @@ export const BANNER_KIND_ICONS: Record<BannerKind, typeof IconAlertCircle> = {
 
 interface BannerNoticeProps {
 	banner: Pick<BannerPlatformResponse, 'dismissible' | 'ends_at' | 'kind' | 'link' | 'message' | 'severity' | 'starts_at' | 'title'>
-	onDismiss?: () => void
+	onDismiss?: () => Promise<void> | void
 }
 
 /* * */
@@ -31,6 +32,7 @@ export function BannerNotice({ banner, onDismiss }: BannerNoticeProps) {
 	// A. Setup variables
 
 	const { i18n, t } = useTranslation();
+	const [isDismissing, setIsDismissing] = useState(false);
 	const [isExpanded, setIsExpanded] = useState(false);
 	const KindIcon = BANNER_KIND_ICONS[banner.kind];
 
@@ -39,7 +41,21 @@ export function BannerNotice({ banner, onDismiss }: BannerNoticeProps) {
 	const schedule = banner.ends_at && t('shared:components.banner.until', '', { end: formatTime(banner.ends_at) });
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleDismiss = async () => {
+		if (!onDismiss || isDismissing) return;
+
+		setIsDismissing(true);
+		try {
+			await onDismiss();
+		} finally {
+			setIsDismissing(false);
+		}
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<div className={styles.root} data-expanded={isExpanded} data-severity={banner.severity} role="status">
@@ -55,8 +71,8 @@ export function BannerNotice({ banner, onDismiss }: BannerNoticeProps) {
 				</a>
 			)}
 			{banner.dismissible && (
-				<button aria-label={t('shared:components.banner.dismiss')} className={styles.dismiss} disabled={!onDismiss} onClick={onDismiss} type="button">
-					<IconX size={16} />
+				<button aria-busy={isDismissing} aria-label={t('shared:components.banner.dismiss')} className={styles.dismiss} disabled={!onDismiss || isDismissing} onClick={handleDismiss} type="button">
+					{isDismissing ? <Loader color="currentColor" size={16} /> : <IconX size={16} />}
 				</button>
 			)}
 		</div>

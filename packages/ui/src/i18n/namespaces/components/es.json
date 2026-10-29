@@ -1,6 +1,7 @@
 {
 	"banner": {
 		"dismiss": "Cerrar aviso",
+		"dismiss_error": "No se ha podido descartar el aviso. Inténtalo de nuevo.",
 		"until": "Hasta {end}"
 	},
 	"buttons": {

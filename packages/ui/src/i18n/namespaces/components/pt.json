@@ -1,6 +1,7 @@
 {
 	"banner": {
 		"dismiss": "Fechar aviso",
+		"dismiss_error": "Não foi possível dispensar o aviso. Tente novamente.",
 		"until": "Até {end}"
 	},
 	"buttons": {
