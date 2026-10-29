@@ -118,6 +118,4 @@ export function ChangePasswordForm() {
 			</div>
 		</AuthenticationForm>
 	);
-
-	//
 }

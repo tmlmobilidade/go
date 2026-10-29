@@ -61,6 +61,4 @@ export function SendPasswordResetEmailForm() {
 			/>
 		</AuthenticationForm>
 	);
-
-	//
 }
