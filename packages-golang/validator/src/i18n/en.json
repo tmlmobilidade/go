@@ -1917,20 +1917,6 @@
 		"recommended": "Field \"emission\" is recommended",
 		"required": "Field \"emission\" is required"
 	},
-	"vehicles_license_plate_field": {
-		"generic": "The \"license_plate\" field is not populated.",
-		"informational": "The license_plate field is informational",
-		"recommended": "The license_plate field is recommended",
-		"required": "The license_plate field is required"
-	},
-	"vehicles_license_plate_valid": {
-		"duplicate": "Duplicate field \"license_plate\" \"%s\" found. Field \"license_plate\" must be unique",
-		"forbidden": "Field \"license_plate\" is forbidden",
-		"generic": "The \"license_plate\" field contains an invalid license plate format.",
-		"invalid": "Field \"license_plate\" \"%s\" has an invalid format, must be in the format XXXXXX (or a valid MMSI for the ferry transport mode)",
-		"recommended": "Field \"license_plate\" is recommended",
-		"required": "Field \"license_plate\" is required"
-	},
 	"vehicles_make_field": {
 		"generic": "The \"make\" field is not populated.",
 		"informational": "The make field is informational",
@@ -1982,6 +1968,20 @@
 		"invalid": "Field \"total_capacity\" \"%s\" must be a non-negative integer",
 		"recommended": "Field \"total_capacity\" is recommended",
 		"required": "Field \"total_capacity\" is required"
+	},
+	"vehicles_vehicle_code_field": {
+		"generic": "The \"vehicle_code\" field is not populated.",
+		"informational": "The vehicle_code field is informational",
+		"recommended": "The vehicle_code field is recommended",
+		"required": "The vehicle_code field is required"
+	},
+	"vehicles_vehicle_code_valid": {
+		"duplicate": "The \"vehicle_code\" value \"%s\" is duplicated within the same vehicle_type.",
+		"forbidden": "Field \"vehicle_code\" is forbidden",
+		"generic": "The \"vehicle_code\" field contains an invalid or duplicate vehicle identifier.",
+		"invalid": "The \"vehicle_code\" value \"%s\" is invalid for the vehicle type: use a registration plate for road vehicles or an MMSI for ferries.",
+		"recommended": "Field \"vehicle_code\" is recommended",
+		"required": "Field \"vehicle_code\" is required"
 	},
 	"vehicles_vehicle_id_field": {
 		"generic": "The \"vehicle_id\" field is not populated.",

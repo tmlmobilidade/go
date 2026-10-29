@@ -1917,20 +1917,6 @@
 		"recommended": "O campo \"emission\" é recomendado",
 		"required": "O campo \"emission\" é obrigatório"
 	},
-	"vehicles_license_plate_field": {
-		"generic": "O campo \"license_plate\" não está preenchido.",
-		"informational": "O campo license_plate é informativo",
-		"recommended": "O campo license_plate é recomendado",
-		"required": "O campo license_plate é obrigatório"
-	},
-	"vehicles_license_plate_valid": {
-		"duplicate": "Campo \"license_plate\" \"%s\" duplicado encontrado. O campo \"license_plate\" deve ser único",
-		"forbidden": "O campo \"license_plate\" é proibido",
-		"generic": "O campo \"license_plate\" contém uma matrícula com formato inválido.",
-		"invalid": "O campo \"license_plate\" \"%s\" tem um formato inválido, deve ser no formato XXXXXX (ou um MMSI válido no caso do modo de transporte ferry)",
-		"recommended": "O campo \"license_plate\" é recomendado",
-		"required": "O campo \"license_plate\" é obrigatório"
-	},
 	"vehicles_make_field": {
 		"generic": "O campo \"make\" não está preenchido.",
 		"informational": "O campo make é informativo",
@@ -1982,6 +1968,20 @@
 		"invalid": "O campo \"total_capacity\" \"%s\" deve ser um número inteiro não negativo",
 		"recommended": "O campo \"total_capacity\" é recomendado",
 		"required": "O campo \"total_capacity\" é obrigatório"
+	},
+	"vehicles_vehicle_code_field": {
+		"generic": "O campo \"vehicle_code\" não está preenchido.",
+		"informational": "O campo vehicle_code é informativo",
+		"recommended": "O campo vehicle_code é recomendado",
+		"required": "O campo vehicle_code é obrigatório"
+	},
+	"vehicles_vehicle_code_valid": {
+		"duplicate": "O valor \"%s\" do campo \"vehicle_code\" está duplicado para o mesmo vehicle_type.",
+		"forbidden": "O campo \"vehicle_code\" é proibido",
+		"generic": "O campo \"vehicle_code\" contém um identificador de veículo inválido ou duplicado.",
+		"invalid": "O valor \"%s\" do campo \"vehicle_code\" não é válido para o tipo de veículo: utilize uma matrícula para veículos rodoviários ou um MMSI para ferries.",
+		"recommended": "O campo \"vehicle_code\" é recomendado",
+		"required": "O campo \"vehicle_code\" é obrigatório"
 	},
 	"vehicles_vehicle_id_field": {
 		"generic": "O campo \"vehicle_id\" não está preenchido.",

@@ -6,6 +6,6 @@ import (
 	"testing"
 )
 
-func TestLicensePlateField(t *testing.T) {
-	validationutils.VehiclesCheckPresence(t, "license_plate", fields.LicensePlateField)
+func TestVehicleCodeField(t *testing.T) {
+	validationutils.VehiclesCheckPresence(t, "vehicle_code", fields.VehicleCodeField)
 }

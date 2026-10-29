@@ -6,32 +6,32 @@ import (
 	"main/types"
 )
 
-func LicensePlateField(db *services.SQLiteContext, rules *types.RuleContext) error {
+func VehicleCodeField(db *services.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
 	// 1. Get the rule
 
-	const ruleID = "vehicles_license_plate_field"
+	const ruleID = "vehicles_vehicle_code_field"
 
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("license_plate", "vehicles.txt", ruleID, db.Row, services.AppMessageService)
+	ctx := lib.NewValidationContext("vehicle_code", "vehicles.txt", ruleID, db.Row, services.AppMessageService)
 	if rules != nil {
 		ctx.WithSeverity(rules.Severity)
 	}
 
 	//
-	// 3. Get the license_plate value
+	// 3. Get the vehicle_code value
 
-	value, err := db.Vehicles.Field("license_plate")
+	value, err := db.Vehicles.Field("vehicle_code")
 	if err != nil {
 		return err
 	}
 
 	//
-	// 4. Check if the license_plate is required
+	// 4. Check if the vehicle_code is required
 
 	if value == "" {
 		if ctx.ShouldIgnore() {

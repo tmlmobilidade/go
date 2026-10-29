@@ -441,7 +441,7 @@ type Afetacao struct {
 type Vehicle struct {
 	VehicleId            *string `json:"vehicle_id"`
 	AgencyId             *string `json:"agency_id"`
-	LicensePlate         *string `json:"license_plate"`
+	VehicleCode         *string `json:"vehicle_code"`
 	Make                 *string `json:"make"`
 	Model                *string `json:"model"`
 	RegistrationDate     *string `json:"registration_date"`

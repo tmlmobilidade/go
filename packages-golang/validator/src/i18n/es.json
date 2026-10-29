@@ -1917,20 +1917,6 @@
 		"recommended": "Se recomienda el campo \"emission\"",
 		"required": "El campo \"emission\" es obligatorio"
 	},
-	"vehicles_license_plate_field": {
-		"generic": "El campo \"license_plate\" no está cumplimentado.",
-		"informational": "El campo license_plate es informativo",
-		"recommended": "El campo license_plate es recomendado",
-		"required": "El campo license_plate es requerido"
-	},
-	"vehicles_license_plate_valid": {
-		"duplicate": "Se encontró el campo \"license_plate\" \"%s\" duplicado. El campo \"license_plate\" debe ser único",
-		"forbidden": "El campo \"license_plate\" está prohibido",
-		"generic": "El campo \"license_plate\" contiene una matrícula con formato no válido.",
-		"invalid": "El campo \"license_plate\" \"%s\" tiene un formato no válido; debe tener el formato XXXXXX (o un MMSI válido para el modo de transporte en ferry)",
-		"recommended": "Se recomienda el campo \"license_plate\"",
-		"required": "El campo \"license_plate\" es obligatorio"
-	},
 	"vehicles_make_field": {
 		"generic": "El campo \"make\" no está cumplimentado.",
 		"informational": "El campo make es informativo",
@@ -1982,6 +1968,20 @@
 		"invalid": "El campo \"total_capacity\" \"%s\" debe ser un número entero no negativo",
 		"recommended": "Se recomienda el campo \"total_capacity\"",
 		"required": "El campo \"total_capacity\" es obligatorio"
+	},
+	"vehicles_vehicle_code_field": {
+		"generic": "El campo \"vehicle_code\" no está cumplimentado.",
+		"informational": "El campo vehicle_code es informativo",
+		"recommended": "El campo vehicle_code es recomendado",
+		"required": "El campo vehicle_code es requerido"
+	},
+	"vehicles_vehicle_code_valid": {
+		"duplicate": "El valor \"%s\" del campo \"vehicle_code\" está duplicado para el mismo vehicle_type.",
+		"forbidden": "El campo \"vehicle_code\" está prohibido",
+		"generic": "El campo \"vehicle_code\" contiene un identificador de vehículo no válido o duplicado.",
+		"invalid": "El valor \"%s\" del campo \"vehicle_code\" no es válido para el tipo de vehículo: utilice una matrícula para vehículos de carretera o un MMSI para ferris.",
+		"recommended": "Se recomienda el campo \"vehicle_code\"",
+		"required": "El campo \"vehicle_code\" es obligatorio"
 	},
 	"vehicles_vehicle_id_field": {
 		"generic": "El campo \"vehicle_id\" no está cumplimentado.",

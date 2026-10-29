@@ -427,7 +427,7 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 	bind("vehicles", services.RuleChecks{
 		"vehicles_agency_id_field":             fields.VehiclesAgencyIdField,
 		"vehicles_vehicle_id_field":            fields.VehicleIdField,
-		"vehicles_license_plate_field":         fields.LicensePlateField,
+		"vehicles_vehicle_code_field":         fields.VehicleCodeField,
 		"vehicles_make_field":                  fields.MakeField,
 		"vehicles_model_field":                 fields.ModelField,
 		"vehicles_registration_date_field":     fields.RegistrationDateField,
@@ -448,7 +448,7 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"vehicles_car_capacity_valid":          standard.CarCapacityValid,
 		"vehicles_wheelchair_accessible_valid": standard.VehiclesWheelchairAccessibleValid,
 		"vehicles_emission_valid":              standard.EmissionValid,
-		"vehicles_license_plate_valid":         custom.LicensePlateValid,
+		"vehicles_vehicle_code_valid":         custom.VehicleCodeValid,
 	})
 
 	// These checks consume shared intermediate results. They wait for completion,

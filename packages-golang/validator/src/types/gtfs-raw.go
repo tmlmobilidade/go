@@ -418,7 +418,7 @@ type PeriodRaw struct {
 type VehicleRaw struct {
 	VehicleId            string `gtfs:"vehicle_id"`
 	AgencyId             string `gtfs:"agency_id"`
-	LicensePlate         string `gtfs:"license_plate"`
+	VehicleCode         string `gtfs:"vehicle_code"`
 	Make                 string `gtfs:"make"`
 	Model                string `gtfs:"model"`
 	RegistrationDate     string `gtfs:"registration_date"`
@@ -575,7 +575,7 @@ func (g *Gtfs) GetCachedRowsById(cache map[string][]int, table, id string) ([]in
 
 // GetRowsByField returns the row indices for a given table and column value from the actual table data.
 // Unlike GetRowsById which queries the id_map table, this queries the real table directly.
-// This is useful for checking uniqueness of non-primary-key fields (e.g., license_plate).
+// This is useful for checking uniqueness of non-primary-key fields (e.g., vehicle_code).
 func (g *Gtfs) GetRowsByField(table, column, value string) ([]int, error) {
 	if g.db == nil {
 		return nil, fmt.Errorf("database connection is nil")

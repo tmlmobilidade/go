@@ -174,13 +174,8 @@ func ValidateMMSI(mmsi string) bool {
 	return mmsiRegex.MatchString(mmsi)
 }
 
-// ValidateLicensePlate checks the license plate of the vehicle unit. For the
-// ferry transport mode the MMSI is used instead, so both formats are accepted.
+// ValidateLicensePlate checks a road vehicle registration plate.
 func ValidateLicensePlate(licensePlate string) bool {
-	if ValidateMMSI(licensePlate) {
-		return true
-	}
-
 	licensePlate = normalizeLicensePlate(licensePlate)
 
 	if len(licensePlate) != 6 {
