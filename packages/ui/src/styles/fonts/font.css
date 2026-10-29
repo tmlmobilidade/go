@@ -1,0 +1,27 @@
+:root {
+
+	/* FAMILY */
+	--font-family-default: "Work_Sans", sans-serif;
+	--font-family-monospace: 'JetBrains_Mono', courier, monospace;
+
+	/* SIZE */
+	--font-size-xs: 12px;
+	--font-size-sm: 14px;
+	--font-size-md: 16px;
+	--font-size-lg: 18px;
+	--font-size-xl: 20px;
+
+	/* WEIGHT */
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
+	--font-weight-bold: 700;
+	--font-weight-black: 900;
+
+	/* LINE-HEIGHT */
+	--font-line-height: 1.4;
+
+}
+
+* {
+	font-family: var(--font-family-default);
+}

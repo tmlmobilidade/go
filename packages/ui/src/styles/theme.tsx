@@ -9,10 +9,19 @@ import '@mantine/dropzone/styles.layer.css';
 /* * */
 
 import './system/reset.css';
-import './system/font.css';
 import './system/color.css';
 import './system/size.css';
 import './system/utils.css';
+
+/* * */
+
+import './fonts/jetbrains-mono-700.css';
+import './fonts/jetbrains-mono-900.css';
+import './fonts/work-sans-500.css';
+import './fonts/work-sans-600.css';
+import './fonts/work-sans-700.css';
+import './fonts/work-sans-900.css';
+import './fonts/font.css';
 
 /* * */
 
