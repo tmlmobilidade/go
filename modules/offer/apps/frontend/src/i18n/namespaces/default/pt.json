@@ -165,6 +165,10 @@
 			}
 		}
 	},
+	"networkLocks": {
+		"line": "Bloqueado pela linha. Desbloqueie a linha primeiro.",
+		"route": "Bloqueado pela rota. Desbloqueie a rota primeiro."
+	},
 	"periods": {
 		"assignment": {
 			"acknowledge": "Compreendo e quero continuar",

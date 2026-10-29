@@ -28,7 +28,7 @@ export async function updateHolidayHandler(request: FastifyRequest<{ Body: Updat
 	//
 	// Get the Holiday from the database
 
-	const holidayData = await goDb.offer.holidays.findById(request.params.id);
+	const holidayData = await goDb.dates.holidays.findById(request.params.id);
 
 	if (!holidayData) {
 		return sendErrorApiResponse(reply, {
@@ -89,7 +89,7 @@ export async function updateHolidayHandler(request: FastifyRequest<{ Body: Updat
 	//
 	// Update the holiday with parsed client fields and the authenticated updater.
 
-	const updatedHoliday = await goDb.offer.holidays.updateById(holidayData._id, {
+	const updatedHoliday = await goDb.dates.holidays.updateById(holidayData._id, {
 		...validatedHoliday.data,
 		updated_by: request.me._id,
 	});

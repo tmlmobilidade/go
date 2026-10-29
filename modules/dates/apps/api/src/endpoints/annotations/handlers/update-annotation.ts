@@ -28,7 +28,7 @@ export async function updateAnnotationHandler(request: FastifyRequest<{ Body: Up
 	//
 	// Get the Annotation from the database
 
-	const annotationData = await goDb.offer.annotations.findById(request.params.id);
+	const annotationData = await goDb.dates.annotations.findById(request.params.id);
 
 	if (!annotationData) {
 		return sendErrorApiResponse(reply, {
@@ -89,7 +89,7 @@ export async function updateAnnotationHandler(request: FastifyRequest<{ Body: Up
 	//
 	// Update the annotation with parsed client fields and the authenticated updater.
 
-	const updatedAnnotation = await goDb.offer.annotations.updateById(annotationData._id, {
+	const updatedAnnotation = await goDb.dates.annotations.updateById(annotationData._id, {
 		...validatedAnnotation.data,
 		updated_by: request.me._id,
 	});

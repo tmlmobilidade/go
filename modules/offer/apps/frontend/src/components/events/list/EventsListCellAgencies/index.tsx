@@ -1,6 +1,8 @@
-/* * */
+'use client';
 
-import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
+import { AgencyTagGroup } from '@tmlmobilidade/ui';
+
+import { useEventsAgenciesData } from '../../shared/use-events-agencies-data';
 
 /* * */
 
@@ -14,14 +16,16 @@ export function EventsListCellAgencies({ agencyIds }: EventsListCellAgenciesProp
 	//
 
 	//
-	// A. Transform data
+	// A. Fetch data
 
-	const preparedTags = agencyIds.map((item): TagProps => ({ label: item, variant: 'muted' }));
+	const { data } = useEventsAgenciesData();
 
 	//
 	// B. Render components
 
-	return <TagGroup limit={4} tags={preparedTags} />;
+	return (
+		<AgencyTagGroup agencyIds={agencyIds} data={data} />
+	);
 
 	//
 }

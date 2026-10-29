@@ -8,6 +8,7 @@ import { after, beforeEach, mock, test } from 'node:test';
 
 let PERMISSIONS: Permission[];
 let WRITES: Record<string, unknown>[];
+let AGENCIES: Record<string, unknown>[];
 
 mock.module('@tmlmobilidade/go-providers-auth', {
 	namedExports: {
@@ -23,7 +24,8 @@ mock.module('@tmlmobilidade/go-providers-auth', {
 mock.module('@tmlmobilidade/go-interfaces-godb', {
 	namedExports: {
 		goDb: {
-			offer: {
+			core: { agencies: { findMany: async () => AGENCIES } },
+			dates: {
 				annotations: {
 					insertOne: async (data: Record<string, unknown>) => {
 						WRITES.push(data);
@@ -50,6 +52,7 @@ after(async () => {
 beforeEach(() => {
 	PERMISSIONS = [{ action: 'create', resources: { agency_ids: ['A'] }, scope: 'annotations' }];
 	WRITES = [];
+	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris', private_field: 'omit', short_name: 'CCFL' }];
 });
 
 /* * */
@@ -87,4 +90,22 @@ test('creation is not registered at collection or list URLs', async () => {
 		assert.equal(response.statusCode, 404);
 	}
 	assert.deepEqual(WRITES, []);
+});
+
+const agenciesPath = API_ROUTES.dates.ANNOTATIONS_LIST_AGENCIES.replace(getModuleConfig('dates', 'api_url'), '');
+
+test('annotation feature permissions can load picked agency labels including short names', async () => {
+	for (const action of ['read', 'create'] as const) {
+		PERMISSIONS = [{ action, resources: { agency_ids: ['A'] }, scope: 'annotations' }];
+		const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
+		assert.equal(response.statusCode, 200);
+		assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: 'CCFL' }]);
+	}
+});
+
+test('annotation labels tolerate agencies without short names', async () => {
+	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris' }];
+	const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
+	assert.equal(response.statusCode, 200);
+	assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: '' }]);
 });
