@@ -3,10 +3,8 @@ package services
 import (
 	"fmt"
 	"sort"
-	"strings"
 	"time"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"main/types"
@@ -178,9 +176,37 @@ func (r *RuleRunner) Run() (map[string]rules.Status, error) {
 		}
 	}
 	lib.AppLogger.Info(fmt.Sprintf("Global validation graph ready: %d rules, %d enabled (including file checks)", len(r.order), enabled))
-	rowCounts := map[string]int{}
+	type ruleProgress struct {
+		started time.Time
+		rows    int
+		groups  int
+	}
+	progress := map[string]*ruleProgress{}
+	lastProgress := time.Now()
+	begin := func(id string) *ruleProgress {
+		if progress[id] == nil {
+			progress[id] = &ruleProgress{started: time.Now()}
+			lib.AppLogger.Info("Running " + id)
+		}
+		return progress[id]
+	}
 	finish := func(ids []string) {
 		for _, id := range ids {
+			if current := progress[id]; current != nil {
+				status := map[rules.Status]string{rules.Passed: "passed", rules.Failed: "failed", rules.Skipped: "skipped"}[outcomes[id].status]
+				lib.AppLogger.Info(fmt.Sprintf("Completed %s: %s (%s)", id, status, time.Since(current.started).Round(time.Millisecond)))
+			} else if !active(id) {
+				lib.AppLogger.Debug("Skipped " + id + ": ignored")
+			} else {
+				reason := "prerequisites did not pass or no applicable rows/groups"
+				definition := r.definitions[id]
+				if definition.Check == nil && definition.Run == nil {
+					reason = "no implementation"
+				} else if definition.Table != "" && (r.tables == nil || !r.tables.Has(definition.Table)) {
+					reason = "source table missing"
+				}
+				lib.AppLogger.Info("Skipped " + id + ": " + reason)
+			}
 			for _, dependency := range r.config.Rule(id).DependsOn {
 				remaining[dependency]--
 				if remaining[dependency] == 0 {
@@ -194,6 +220,7 @@ func (r *RuleRunner) Run() (map[string]rules.Status, error) {
 		definition := r.definitions[id]
 		if definition.Check == nil || !active(id) {
 			if definition.Run != nil && active(id) && ready(id, nil) {
+				begin(id)
 				record(id, definition.Run(), nil)
 			}
 			finish([]string{id})
@@ -220,25 +247,6 @@ func (r *RuleRunner) Run() (map[string]rules.Status, error) {
 		if err != nil {
 			return nil, err
 		}
-		label := batch[0]
-		if len(batch) > 1 {
-			label += " ... " + batch[len(batch)-1]
-		}
-		lib.AppLogger.Info(fmt.Sprintf("Validating %s: %s (rules %d-%d/%d)", definition.Table, label, start+1, end, len(r.order)))
-		lib.AppLogger.Debug("Batch rule IDs: " + strings.Join(batch, ", "))
-		totalRows, counted := rowCounts[definition.Table]
-		if !counted {
-			totalRows, err = table.Count()
-			if err != nil {
-				return nil, err
-			}
-			rowCounts[definition.Table] = totalRows
-		}
-		progressLabel := fmt.Sprintf("%s [rules %d-%d/%d]", definition.Table, start+1, end, len(r.order))
-		progress := lib.NewProgressTracker(progressLabel, totalRows, config.ProgressThresholdLarge)
-		started := time.Now()
-		lastProgress := started
-		processedRows, processedGroups := 0, 0
 		run := func(members []int, grouped bool) error {
 			rows, err := table.readValidationRows(members)
 			if err != nil {
@@ -249,6 +257,7 @@ func (r *RuleRunner) Run() (map[string]rules.Status, error) {
 				evaluate := func(row *SQLiteRow, members []int) {
 					status := rules.Skipped
 					if active(id) && ready(id, members) {
+						current := begin(id)
 						before := AppMessageService.RuleIssueCount(id)
 						if err := check.Check(row.Context(), r.config.Rule(id)); err != nil {
 							ctx := lib.NewValidationContext("N/A", check.Table+".txt", id, row.Row, AppMessageService)
@@ -258,6 +267,14 @@ func (r *RuleRunner) Run() (map[string]rules.Status, error) {
 							status = rules.Failed
 						} else {
 							status = rules.Passed
+						}
+						current.rows += len(members)
+						if check.GroupField != "" {
+							current.groups++
+						}
+						if time.Since(lastProgress) >= 5*time.Second {
+							lib.AppLogger.Info(fmt.Sprintf("Running %s: %d rows, %d groups checked (%s)", id, current.rows, current.groups, time.Since(current.started).Round(time.Second)))
+							lastProgress = time.Now()
 						}
 					}
 					record(id, status, members)
@@ -273,17 +290,6 @@ func (r *RuleRunner) Run() (map[string]rules.Status, error) {
 						evaluate(row, []int{row.Row})
 					}
 				}
-			}
-			processedRows += len(members)
-			for range members {
-				progress.Track()
-			}
-			if grouped {
-				processedGroups++
-			}
-			if time.Since(lastProgress) >= 5*time.Second {
-				lib.AppLogger.Info(fmt.Sprintf("Validating %s [%s]: %d rows, %d groups processed in %s", definition.Table, label, processedRows, processedGroups, time.Since(started).Round(time.Second)))
-				lastProgress = time.Now()
 			}
 			return nil
 		}
@@ -320,8 +326,6 @@ func (r *RuleRunner) Run() (map[string]rules.Status, error) {
 				}
 			}
 		}
-		progress.Complete()
-		lib.AppLogger.Debug(fmt.Sprintf("Completed %s [%s] in %s", definition.Table, label, time.Since(started).Round(time.Millisecond)))
 		finish(batch)
 		start = end
 	}
