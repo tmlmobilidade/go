@@ -43,7 +43,7 @@ export function PlansListCellFeedDates({ activeFrom, activeUntil, hasOverlap, te
 			{hasOverlap && (
 				<Tooltip
 					events={{ focus: true, hover: true, touch: true }}
-					label={t('default:plans.list.PlansListCellOverlap.overlap_warning')}
+					label={t('default:plans.list.PlansListCellFeedDates.has_overlap')}
 				>
 					<IconAlertTriangle className={styles.warning} size={24} />
 				</Tooltip>

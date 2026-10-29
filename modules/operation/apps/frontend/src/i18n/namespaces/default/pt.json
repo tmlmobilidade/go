@@ -111,8 +111,8 @@
 	},
 	"plans": {
 		"list": {
-			"PlansListCellOverlap": {
-				"overlap_warning": "Existem outros planos com datas de validade sobrepostas."
+			"PlansListCellFeedDates": {
+				"has_overlap": "As datas deste plano estão sobrepostas com outros planos. Apenas um único plano deve estar ativo para um determinado período."
 			}
 		}
 	},
