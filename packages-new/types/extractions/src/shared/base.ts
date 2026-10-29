@@ -10,6 +10,7 @@ export const ExtractionBaseSchema = BaseDocumentSchema.extend({
 	downloaded_at: UnixMillisecondsSchema.nullable().default(null),
 	processing_status: ProcessingStatusSchema.default('waiting'),
 	retries: z.number().min(0).default(0),
+	source_environment: z.string().min(1).default('prd'),
 });
 
 export type ExtractionBase = z.infer<typeof ExtractionBaseSchema>;

@@ -37,26 +37,26 @@ export function StopsCreateStepLocationDetails() {
 			<Grid columns="ab" gap="md">
 				<ValueDisplay
 					isLoading={isLoading}
-					label={t('default:stops.create.StepLocationDetails.fields.location_primary.label')}
-					value={locationData?.primary.name ?? t('default:stops.shared.not_available')}
+					label={t('stops:create.StopsCreateStepLocationDetails.fields.location_primary.label')}
+					value={locationData?.primary.name ?? t('stops:create.StopsCreateStepLocationDetails.not_available')}
 					variant="bordered"
 				/>
 				<ValueDisplay
 					isLoading={isLoading}
-					label={t('default:stops.create.StepLocationDetails.fields.location_secondary.label')}
-					value={locationData?.secondary.name ?? t('default:stops.shared.not_available')}
+					label={t('stops:create.StopsCreateStepLocationDetails.fields.location_secondary.label')}
+					value={locationData?.secondary.name ?? t('stops:create.StopsCreateStepLocationDetails.not_available')}
 					variant="bordered"
 				/>
 				<ValueDisplay
 					isLoading={isLoading}
-					label={t('default:stops.create.StepLocationDetails.fields.location_tertiary.label')}
-					value={locationData?.tertiary.name ?? t('default:stops.shared.not_available')}
+					label={t('stops:create.StopsCreateStepLocationDetails.fields.location_tertiary.label')}
+					value={locationData?.tertiary.name ?? t('stops:create.StopsCreateStepLocationDetails.not_available')}
 					variant="bordered"
 				/>
 				<ValueDisplay
 					isLoading={isLoading}
-					label={t('default:stops.create.StepLocationDetails.fields.location_neighbourhood.label')}
-					value={locationData?.neighbourhood?.name ?? t('default:stops.shared.not_available')}
+					label={t('stops:create.StopsCreateStepLocationDetails.fields.location_neighbourhood.label')}
+					value={locationData?.neighbourhood?.name ?? t('stops:create.StopsCreateStepLocationDetails.not_available')}
 					variant="bordered"
 				/>
 			</Grid>
