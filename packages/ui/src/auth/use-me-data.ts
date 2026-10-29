@@ -23,13 +23,13 @@ interface UseMeDataReturnType {
 
 /* * */
 
-export function useMeData(): UseMeDataReturnType {
+export function useMeData(enabled = true): UseMeDataReturnType {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<User>, Error>(API_ROUTES.core.ME_LIST, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<User>, Error>(enabled ? API_ROUTES.core.ME_LIST : null, {
 		fetcher: fetchMeData,
 		refreshInterval: 60_000, // 1 minute
 	});

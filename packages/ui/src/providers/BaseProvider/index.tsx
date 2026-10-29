@@ -40,7 +40,8 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 	//
 	// A. Setup variables
 
-	const { data: meData, isAuthenticated } = useMeData();
+	const analyticsApiKey = analytics?.apiKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
+	const { data: meData, isAuthenticated } = useMeData(analyticsApiKey !== '');
 	const analyticsUser = useMemo<AnalyticsContextProps['user']>(() => {
 		if (analytics?.user !== undefined) return analytics.user;
 		if (isAuthenticated === undefined) return undefined;
@@ -88,7 +89,7 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 					<Suspense fallback={<LoadingSection fullHeight />}>
 						<VersionContextProvider version={version}>
 							<AnalyticsContextProvider
-								apiKey={analytics?.apiKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY}
+								apiKey={analyticsApiKey}
 								configurationUrl={analytics?.configurationUrl ?? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/analytics`}
 								options={analyticsOptions}
 								replayUrl={analytics?.replayUrl ?? API_ROUTES.core.ME_SESSION_REPLAY}
