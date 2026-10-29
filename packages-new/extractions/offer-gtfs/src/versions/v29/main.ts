@@ -4,8 +4,8 @@ import { exportAgencyFile, exportCalendarDates, exportCalendarMap, exportFareAtt
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { rewriteServiceIds, rewriteTripIds } from '@/versions/v29/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 
@@ -91,8 +91,8 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 		const serviceRegistry = new ServiceRegistry();
 
 		// Define export date range
-		const exportStartDate = Dates.fromOperationalDate(exportConfig.calendars_clip_start_date, 'Europe/Lisbon');
-		const exportEndDate = Dates.fromOperationalDate(exportConfig.calendars_clip_end_date, 'Europe/Lisbon');
+		const exportStartDate = Dates.fromOperationalDateInt(exportConfig.calendars_clip_start_date, 'Europe/Lisbon');
+		const exportEndDate = Dates.fromOperationalDateInt(exportConfig.calendars_clip_end_date, 'Europe/Lisbon');
 
 		//
 		// 1.

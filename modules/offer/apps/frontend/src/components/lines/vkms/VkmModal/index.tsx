@@ -70,7 +70,8 @@ export const openVkmModal = () => {
 
 /* * */
 
-function formatOperationalDate(value: string) {
+function formatOperationalDate(date: number) {
+	const value = String(date);
 	return `${value.slice(6, 8)}/${value.slice(4, 6)}/${value.slice(0, 4)}`;
 }
 

@@ -1,8 +1,9 @@
 'use client';
 
-import { Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
 import { type IsoWeekday, type ManualRule, type Month, MONTH_OPTIONS } from '@tmlmobilidade/go-types-offer';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { getManualRuleAffectedDates } from '@tmlmobilidade/go-utils-offer';
 import { useCalendarScheduleData } from '@tmlmobilidade/ui';
 import { type CalendarScheduleSources } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';

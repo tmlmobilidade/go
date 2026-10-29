@@ -1,6 +1,6 @@
 /* * */
 
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { createHash } from 'node:crypto';
 
 /* * */
@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 export type ServiceId = string;
 
 export interface ServiceIdInfo {
-	dates: Set<OperationalDate>
+	dates: Set<OperationalDateInt>
 	serviceId: ServiceId
 }
 
@@ -18,7 +18,7 @@ export interface ServiceRuleTokenEntry {
 }
 
 export interface ServiceRuleMapInfo {
-	dates: Set<OperationalDate>
+	dates: Set<OperationalDateInt>
 	ruleTokens: ServiceRuleTokenEntry[]
 	serviceId: ServiceId
 }
@@ -32,7 +32,7 @@ export class ServiceRegistry {
 	private servicesByDateHash = new Map<string, ServiceId>();
 
 	// Map: serviceId -> date set
-	private servicesById = new Map<ServiceId, Set<OperationalDate>>();
+	private servicesById = new Map<ServiceId, Set<OperationalDateInt>>();
 
 	// Map: serviceId -> ruleToken -> Set of pattern codes
 	private serviceRuleTokens = new Map<ServiceId, Map<string, Set<string>>>();
@@ -43,7 +43,7 @@ export class ServiceRegistry {
 
 	// Map: rule-token serviceId -> date set (the externally visible service registry).
 	// Populated by registerServiceId() after resolveRuleToken() produces the final token.
-	private tokenServices = new Map<ServiceId, Set<OperationalDate>>();
+	private tokenServices = new Map<ServiceId, Set<OperationalDateInt>>();
 
 	/**
 	 * Resolves the final rule token name for a given (ruleToken, serviceId) pair.
@@ -77,7 +77,7 @@ export class ServiceRegistry {
 	 * This is what populates calendar_dates.txt — the hash-based internal serviceId is
 	 * never exposed outside the registry.
 	 */
-	registerServiceId(serviceId: ServiceId, dates: Set<OperationalDate>): void {
+	registerServiceId(serviceId: ServiceId, dates: Set<OperationalDateInt>): void {
 		const existing = this.tokenServices.get(serviceId);
 
 		if (!existing) {
@@ -155,7 +155,7 @@ export class ServiceRegistry {
 	 * @param dates - Set of operational dates
 	 * @returns The serviceId for this date set
 	 */
-	getOrCreateServiceId(dates: Set<OperationalDate>): ServiceId {
+	getOrCreateServiceId(dates: Set<OperationalDateInt>): ServiceId {
 		// Create a hash of the sorted dates for lookup
 		const sortedDates = Array.from(dates).sort();
 		const dateHash = sortedDates.join(',');
@@ -207,7 +207,7 @@ export class ServiceRegistry {
 	 * @param dates - Set of operational dates
 	 * @returns A stable serviceId
 	 */
-	private generateServiceId(dates: Set<OperationalDate>): string {
+	private generateServiceId(dates: Set<OperationalDateInt>): string {
 		const sortedDates = Array.from(dates).sort();
 		const dateString = sortedDates.join(',');
 		const hash = createHash('sha256').update(dateString).digest('hex').slice(0, 12);

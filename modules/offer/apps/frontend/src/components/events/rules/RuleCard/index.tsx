@@ -2,8 +2,8 @@
 
 import { usePeriodsData } from '@/components/year-periods/shared/use-periods-data';
 import { IconArrowRight, IconCalendarCancel, IconCalendarRepeat } from '@tabler/icons-react';
-import { Dates, FORMATS } from '@tmlmobilidade/dates';
 import { EventRule, type Line } from '@tmlmobilidade/go-types-offer';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,8 +34,8 @@ export function RuleCard({ disabled, lines, onEdit, rule }: RuleCardProps) {
 	const isReplacement = rule.kind === 'event_replacement';
 
 	const eventDates = rule.dates?.map(d =>
-		Dates.fromOperationalDate(d, 'Europe/Lisbon')
-			.toLocaleString(FORMATS.DATE_SHORT, i18n.language),
+		Dates.fromOperationalDateInt(d, 'Europe/Lisbon')
+			.toLocaleString('short', i18n.language),
 	).join(', ') ?? '';
 
 	const eventDatesSuffix = t('default:events.ruleCard.onDates', { dates: eventDates });

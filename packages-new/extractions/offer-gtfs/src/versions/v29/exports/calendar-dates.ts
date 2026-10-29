@@ -3,9 +3,10 @@
 import { ExportedCalendarDatesRow, GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { getDayType, getPeriodForDate } from '@/versions/v29/utils/calendar-helpers.js';
 import { type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
-import { Dates, isHoliday } from '@tmlmobilidade/dates';
 import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { isHoliday } from '@tmlmobilidade/go-utils-offer';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
@@ -37,7 +38,7 @@ export async function exportCalendarDates(
 
 		for (const serviceInfo of allServices.values()) {
 			for (const date of serviceInfo.dates) {
-				const dateObj = Dates.fromOperationalDate(date, 'Europe/Lisbon');
+				const dateObj = Dates.fromOperationalDateInt(date, 'Europe/Lisbon');
 
 				const row: ExportedCalendarDatesRow = {
 					date: OperationalDateIntSchema.parse(date),

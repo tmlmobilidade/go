@@ -1,5 +1,5 @@
 import { UpdateYearPeriodDatesSchema } from '@tmlmobilidade/go-types-offer';
-import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
@@ -7,43 +7,43 @@ import { applyYearPeriodDateChanges } from '../src/endpoints/year-periods/utils/
 
 /* * */
 
-const date = validateOperationalDate;
+const date = (value: number | string) => OperationalDateIntSchema.parse(value);
 
 describe('applyYearPeriodDateChanges', () => {
 	it('applies additions and removals in one change set', () => {
 		const result = applyYearPeriodDateChanges(
-			[date('20260101'), date('20260102'), date('20260103')],
-			[date('20260104')],
-			[date('20260102')],
+			[date(20260101), date(20260102), date(20260103)],
+			[date(20260104)],
+			[date(20260102)],
 		);
 
-		assert.deepEqual(result, [date('20260101'), date('20260103'), date('20260104')]);
+		assert.deepEqual(result, [date(20260101), date(20260103), date(20260104)]);
 	});
 
 	it('deduplicates and sorts added dates', () => {
 		const result = applyYearPeriodDateChanges(
-			[date('20260103')],
-			[date('20260102'), date('20260101'), date('20260102')],
+			[date(20260103)],
+			[date(20260102), date(20260101), date(20260102)],
 			[],
 		);
 
-		assert.deepEqual(result, [date('20260101'), date('20260102'), date('20260103')]);
+		assert.deepEqual(result, [date(20260101), date(20260102), date(20260103)]);
 	});
 
 	it('ignores removals that are not assigned to the period', () => {
 		const result = applyYearPeriodDateChanges(
-			[date('20260101')],
+			[date(20260101)],
 			[],
-			[date('20260102')],
+			[date(20260102)],
 		);
 
-		assert.deepEqual(result, [date('20260101')]);
+		assert.deepEqual(result, [date(20260101)]);
 	});
 
 	it('rejects a date present in both additions and removals', () => {
 		const result = UpdateYearPeriodDatesSchema.safeParse({
-			add_dates: [date('20260101')],
-			remove_dates: [date('20260101')],
+			add_dates: [date(20260101)],
+			remove_dates: [date(20260101)],
 		});
 
 		assert.equal(result.success, false);

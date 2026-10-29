@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -9,7 +9,7 @@ export const YearPeriodSchema = BaseDocumentSchema.extend({
 	agency_ids: z.array(z.string()).min(1),
 	code: z.string().optional(),
 	color: z.string().optional(),
-	dates: z.array(OperationalDateSchema).optional(),
+	dates: z.array(OperationalDateIntSchema).optional(),
 	is_locked: z.boolean().default(false),
 	name: z.string().min(1),
 });
@@ -18,9 +18,9 @@ export const CreateYearPeriodSchema = YearPeriodSchema.omit({ _id: true, created
 export const UpdateYearPeriodSchema = CreateYearPeriodSchema.partial();
 
 export const UpdateYearPeriodDatesSchema = z.object({
-	add_dates: z.array(OperationalDateSchema).default([]),
+	add_dates: z.array(OperationalDateIntSchema).default([]),
 	period: UpdateYearPeriodSchema.omit({ dates: true, is_locked: true }).optional(),
-	remove_dates: z.array(OperationalDateSchema).default([]),
+	remove_dates: z.array(OperationalDateIntSchema).default([]),
 }).superRefine((value, context) => {
 	const removedDates = new Set(value.remove_dates);
 	const overlappingDates = value.add_dates.filter(date => removedDates.has(date));

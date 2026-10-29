@@ -1,6 +1,6 @@
-import { resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Pattern, type ResolvedPattern } from '@tmlmobilidade/go-types-offer';
+import { resolvePatternRules } from '@tmlmobilidade/go-utils-offer';
 
 export async function mergePatternWithEventRules(pattern: Pattern): Promise<ResolvedPattern> {
 	const line = await goDb.offer.lines.findById(pattern.line_id);

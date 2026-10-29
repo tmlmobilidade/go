@@ -3,9 +3,10 @@
 import { useEventsContext } from '@/contexts/Events.context';
 import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
 import { ManualRule, ManualRuleSchema } from '@tmlmobilidade/go-types-offer';
 import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { buildRuleSummary, getManualRuleAffectedDates } from '@tmlmobilidade/go-utils-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type StandardFormContextValue, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';

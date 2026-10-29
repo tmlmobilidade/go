@@ -1,8 +1,8 @@
 'use client';
 
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
-import { Dates } from '@tmlmobilidade/dates';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { MultiSelect, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -23,12 +23,12 @@ export function RuleCreateDates() {
 
 	const dateOptions = [...eventDates].sort().map(date => ({
 		label: (() => {
-			const jsDate = Dates.fromOperationalDate(date as OperationalDate, 'Europe/Lisbon').js_date;
+			const jsDate = Dates.fromOperationalDateInt(date, 'Europe/Lisbon').js_date;
 			const dateStr = jsDate.toLocaleDateString(i18n.language, { day: '2-digit', month: '2-digit', year: '2-digit' });
 			const weekdayShort = jsDate.toLocaleDateString(i18n.language, { weekday: 'short' }).replace('.', '');
 			return `${dateStr} (${weekdayShort})`;
 		})(),
-		value: date,
+		value: String(date),
 	}));
 
 	//
@@ -39,12 +39,12 @@ export function RuleCreateDates() {
 			<MultiSelect
 				data={dateOptions}
 				placeholder={t('default:events.ruleEditor.selectDates')}
-				value={[...(createRuleContext.values.dates ?? [])].sort()}
+				value={[...(createRuleContext.values.dates ?? [])].sort().map(String)}
 				w="100%"
 				onChange={(selected) => {
 					createRuleContext.form.setValue(
 						'dates',
-						(selected as OperationalDate[]).sort(),
+						selected.map(date => OperationalDateIntSchema.parse(date)).sort(),
 					);
 				}}
 			/>

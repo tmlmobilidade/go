@@ -2,7 +2,7 @@
 /* * */
 
 import { type GtfsStrictV29Agency, type GtfsStrictV29CalendarDates, type GtfsStrictV29FeedInfo, type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { GtfsTMLFareAttributes, GtfsTMLFareRules } from '@tmlmobilidade/types';
 import { type CsvWriter } from '@tmlmobilidade/writers';
 
@@ -20,12 +20,12 @@ export interface GtfsV29ExportConfig {
 	/**
 	 * Start date used to clip calendars — trips outside this range are excluded
 	 */
-	calendars_clip_start_date: OperationalDate
+	calendars_clip_start_date: OperationalDateInt
 
 	/**
 	 * End date used to clip calendars — trips outside this range are excluded
 	 */
-	calendars_clip_end_date: OperationalDate
+	calendars_clip_end_date: OperationalDateInt
 
 	/**
 	 * Whether to clip calendars to the specified date range
@@ -35,12 +35,12 @@ export interface GtfsV29ExportConfig {
 	/**
 	 * Feed end date written to feed_info.txt — informational only
 	 */
-	feed_end_date: OperationalDate
+	feed_end_date: OperationalDateInt
 
 	/**
 	 * Feed start date written to feed_info.txt — informational only
 	 */
-	feed_start_date: OperationalDate
+	feed_start_date: OperationalDateInt
 
 	/**
 	 * Lines to exclude from export (array of line IDs)

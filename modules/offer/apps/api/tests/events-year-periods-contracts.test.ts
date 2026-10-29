@@ -1,6 +1,6 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type ApiResponse, ApiResponseErrorSchema } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, ApiResponseErrorSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { describe, mock, test } from 'node:test';
 
@@ -236,10 +236,9 @@ const periodHandlers = {
 } as Record<string, Handler>;
 
 // Branded operational dates use the same canonical parser as production requests.
-const { OperationalDateSchema } = await import('@tmlmobilidade/go-types-shared');
-const firstDate = OperationalDateSchema.parse('20261020');
-const secondDate = OperationalDateSchema.parse('20261021');
-const thirdDate = OperationalDateSchema.parse('20261022');
+const firstDate = OperationalDateIntSchema.parse(20261020);
+const secondDate = OperationalDateIntSchema.parse(20261021);
+const thirdDate = OperationalDateIntSchema.parse(20261022);
 
 function period(id: string, agencyIds: string[], dates = [firstDate]) {
 	return { _id: id, agency_ids: agencyIds, created_at: 1_792_368_000_000, created_by: 'original', dates, is_locked: false, name: id, updated_at: 1_792_368_000_000 };

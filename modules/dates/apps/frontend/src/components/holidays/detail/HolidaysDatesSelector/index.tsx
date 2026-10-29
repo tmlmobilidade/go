@@ -1,7 +1,7 @@
 'use client';
 
 import { useHolidaysDetailFormContext } from '@/components/holidays/detail/HolidaysDetailForm.context';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, OperationalDateIntSchema, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Button, MiniCalendar, Section, Text, TimeChip, useStandardFormWatch } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
@@ -35,11 +35,11 @@ export function HolidaysDatesSelector() {
 		const year = displayedMonth.getFullYear();
 		const month = displayedMonth.getMonth();
 		const daysInMonth = new Date(year, month + 1, 0).getDate();
-		const result: OperationalDate[] = [];
+		const result: OperationalDateInt[] = [];
 		for (let d = 1; d <= daysInMonth; d++) {
 			const mm = String(month + 1).padStart(2, '0');
 			const dd = String(d).padStart(2, '0');
-			result.push(`${year}${mm}${dd}` as OperationalDate);
+			result.push(OperationalDateIntSchema.parse(`${year}${mm}${dd}`));
 		}
 		return result;
 	}, [displayedMonth]);
@@ -51,9 +51,9 @@ export function HolidaysDatesSelector() {
 
 	/** Dates grouped by "YYYY-MM" key, sorted chronologically */
 	const groupedByMonth = useMemo(() => {
-		const map = new Map<string, OperationalDate[]>();
+		const map = new Map<string, OperationalDateInt[]>();
 		for (const d of [...dates].sort()) {
-			const key = `${d.slice(0, 4)}-${d.slice(4, 6)}`;
+			const key = toCalendarDate(d).slice(0, 7);
 			const existing = map.get(key);
 			if (existing) existing.push(d);
 			else map.set(key, [d]);
@@ -64,7 +64,7 @@ export function HolidaysDatesSelector() {
 	const initialMonth = useMemo(() => {
 		// Prefer showing month of the most recently selected date; fallback to current month
 		if (dates.length > 0) {
-			const last = dates[dates.length - 1];
+			const last = toCalendarDate(dates[dates.length - 1]).replaceAll('-', '');
 			// last is YYYYMMDD
 			const yyyy = Number.parseInt(last.slice(0, 4), 10);
 			const mm = Number.parseInt(last.slice(4, 6), 10);
@@ -80,10 +80,10 @@ export function HolidaysDatesSelector() {
 	//
 	// C. Handle actions
 
-	const setDates = (value: OperationalDate[]) => holidaysDetailContext.form.setValue('dates', value, { shouldDirty: true, shouldValidate: true });
+	const setDates = (value: OperationalDateInt[]) => holidaysDetailContext.form.setValue('dates', value, { shouldDirty: true, shouldValidate: true });
 
 	const handleSelect = (date: Date) => {
-		const operationalDate = dayjs(date).format('YYYYMMDD') as OperationalDate;
+		const operationalDate = OperationalDateIntSchema.parse(dayjs(date).format('YYYYMMDD'));
 		const isSelected = dates.includes(operationalDate);
 
 		if (isSelected) {
@@ -95,7 +95,7 @@ export function HolidaysDatesSelector() {
 		}
 	};
 
-	const handleRemove = (operationalDate: OperationalDate) => {
+	const handleRemove = (operationalDate: OperationalDateInt) => {
 		setDates(dates.filter(d => d !== operationalDate));
 	};
 
@@ -103,7 +103,7 @@ export function HolidaysDatesSelector() {
 		if (isAllDisplayedMonthSelected) {
 			setDates(dates.filter(d => !displayedMonthDates.includes(d)));
 		} else {
-			const newDates = [...new Set([...dates, ...displayedMonthDates])].sort() as OperationalDate[];
+			const newDates = [...new Set([...dates, ...displayedMonthDates])].sort((left, right) => left - right);
 			setDates(newDates);
 		}
 	};
@@ -121,7 +121,7 @@ export function HolidaysDatesSelector() {
 						displayedMonth={displayedMonth}
 						onDisplayedMonthChange={setDisplayedMonth}
 						isDateSelected={(date) => {
-							const operationalDate = dayjs(date).format('YYYYMMDD') as OperationalDate;
+							const operationalDate = OperationalDateIntSchema.parse(dayjs(date).format('YYYYMMDD'));
 							return selectedSet.has(operationalDate);
 						}}
 						onDayClick={(date) => {
@@ -161,7 +161,7 @@ export function HolidaysDatesSelector() {
 									</div>
 									<div className={styles.days}>
 										{monthDates.map((date) => {
-											const jsDate = new Date(Number(date.slice(0, 4)), Number(date.slice(4, 6)) - 1, Number(date.slice(6, 8)));
+											const jsDate = dayjs(toCalendarDate(date)).toDate();
 											const day = jsDate.getDate();
 											const weekdayShort = jsDate.toLocaleDateString(i18n.language, { weekday: 'short' }).slice(0, 3);
 											return (

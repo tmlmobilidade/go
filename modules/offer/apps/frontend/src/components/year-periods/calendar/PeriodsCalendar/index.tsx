@@ -2,7 +2,7 @@
 
 import { getPeriodsCalendarDays } from '@/components/year-periods/shared/periods-calendar-days';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { type CalendarDate, toCalendarDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type CalendarDate, OperationalDateIntSchema, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { CalendarSchedule, type CalendarScheduleProps, type CalendarScheduleSources, isCalendarSchedulePayload, useLocaleContext } from '@tmlmobilidade/ui';
 import { type CSSProperties, useMemo } from 'react';
 
@@ -41,7 +41,7 @@ export function PeriodsCalendar({ agencyIds, date, editorProps, onDateChange, on
 		...sources,
 		yearPeriods: periods.filter(period => period.agency_ids.some(id => agencyIds.includes(id))).map(period => ({
 			...period,
-			dates: [...days.entries()].filter(([, owners]) => owners.some(owner => owner._id === period._id)).map(([date]) => validateOperationalDate(date.replaceAll('-', ''))),
+			dates: [...days.entries()].filter(([, owners]) => owners.some(owner => owner._id === period._id)).map(([date]) => OperationalDateIntSchema.parse(date.replaceAll('-', ''))),
 		})),
 	}), [sources, periods, agencyIds, days]);
 

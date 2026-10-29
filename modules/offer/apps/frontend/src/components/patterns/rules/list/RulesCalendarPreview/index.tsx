@@ -6,9 +6,10 @@ import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconArrowBarToLeft, IconArrowBarToRight, IconHandClick } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { buildAffectedDaysDetails, CalendarKey, Dates, datesFromCalendarKey, FORMATS } from '@tmlmobilidade/dates';
 import { type HHMM, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
 import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { Dates, datesFromCalendarKey } from '@tmlmobilidade/go-utils-dates';
+import { buildAffectedDaysDetails } from '@tmlmobilidade/go-utils-offer';
 import { AlertMessage, buildCalendarScheduleRuleImpactEvents, CalendarSchedule, CalendarScheduleSources, CloseButton, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, ScheduleEventData, Section, Surface, Text } from '@tmlmobilidade/ui';
 import { useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
@@ -39,7 +40,7 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 	const holidaysContext = useHolidaysContext();
 	const periodsContext = usePeriodsContext();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-	const [selectedDate, setSelectedDate] = useState<CalendarKey | null>(null);
+	const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(null);
 	const [visibleDate, setVisibleDate] = useState<CalendarDate>(() => Dates.now('local').calendar_date);
 	const previewYear = Number(visibleDate.slice(0, 4));
 	const periods = periodsContext.data.raw;
@@ -76,7 +77,7 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 	const formattedSelectedDate = useMemo(() => {
 		if (!selectedDate) return '';
 		const date = datesFromCalendarKey(selectedDate);
-		return date.toLocaleString(FORMATS.DATE_HUGE, localeContext.data.locale);
+		return date.toLocaleString({ day: 'numeric', month: 'long', weekday: 'long', year: 'numeric' }, localeContext.data.locale);
 	}, [localeContext.data.locale, selectedDate]);
 
 	//

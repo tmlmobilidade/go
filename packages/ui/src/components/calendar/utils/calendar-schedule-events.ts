@@ -1,6 +1,6 @@
 import { type ScheduleEventData } from '@mantine/schedule';
-import { Dates } from '@tmlmobilidade/dates';
-import { type CalendarDate, type OperationalDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { type CalendarDate, type OperationalDateInt, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { EVENT_TYPE_DEFS } from '../../../icons/event-types';
 
@@ -30,7 +30,7 @@ export interface CalendarScheduleSources {
 		_id: string
 		agency_ids?: string[]
 		color?: string
-		dates?: OperationalDate[]
+		dates?: OperationalDateInt[]
 		name: string
 	}[]
 }
@@ -43,14 +43,14 @@ export interface CalendarScheduleRuleImpactPayload extends CalendarSchedulePaylo
 interface DatedScheduleSource {
 	_id: string
 	agency_ids?: string[]
-	dates: OperationalDate[]
+	dates: OperationalDateInt[]
 	description?: string
 	title: string
 }
 
 /* * */
 
-function getUniqueCalendarDates(dates: OperationalDate[]): CalendarDate[] {
+function getUniqueCalendarDates(dates: OperationalDateInt[]): CalendarDate[] {
 	return Array.from(new Set(dates.map(toCalendarDate))).sort();
 }
 
@@ -58,7 +58,7 @@ function getNextCalendarDate(date: CalendarDate): CalendarDate {
 	return Dates.fromFormat(date, 'yyyy-MM-dd', 'utc').plus({ days: 1 }).calendar_date;
 }
 
-function groupConsecutiveDates(dates: OperationalDate[]): CalendarDate[][] {
+function groupConsecutiveDates(dates: OperationalDateInt[]): CalendarDate[][] {
 	const sortedDates = getUniqueCalendarDates(dates);
 
 	return sortedDates.reduce<CalendarDate[][]>((groups, date) => {

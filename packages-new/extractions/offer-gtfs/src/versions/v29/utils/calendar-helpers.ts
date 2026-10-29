@@ -1,8 +1,9 @@
 /* * */
 
-import { calendarWeekday, Dates } from '@tmlmobilidade/dates';
 import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { calendarWeekday } from '@tmlmobilidade/go-utils-offer';
 
 /* * */
 
@@ -13,7 +14,7 @@ import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
  * @returns The period code ('1', '2', or '3'), or period ID
  */
 export function getPeriodForDate(
-	date: OperationalDate,
+	date: OperationalDateInt,
 	periods: Map<string, YearPeriod>,
 ): string {
 	// Check each period to see if the date falls within its dates
@@ -37,11 +38,11 @@ export function getPeriodForDate(
  * @returns The day type (1, 2, or 3)
  */
 export function getDayType(
-	date: OperationalDate,
+	date: OperationalDateInt,
 	holidays: Holiday[],
 ): 1 | 2 | 3 {
 	// Parse the date and get the day of week using calendarWeekday
-	const dateObj = Dates.fromOperationalDate(date, 'Europe/Lisbon');
+	const dateObj = Dates.fromOperationalDateInt(date, 'Europe/Lisbon');
 	const dayOfWeek = calendarWeekday(dateObj, holidays, 'Europe/Lisbon'); // 1 = Monday, 7 = Sunday
 
 	// Determine day type based on day of week

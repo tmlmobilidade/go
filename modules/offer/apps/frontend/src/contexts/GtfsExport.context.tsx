@@ -5,7 +5,7 @@ import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OfferGtfsV29ExtractionCreate } from '@tmlmobilidade/go-types-extractions';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
-import { type OperationalDate, type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useForm } from '@tmlmobilidade/ui';
 import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
@@ -138,10 +138,10 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 		const createFileExportDto: OfferGtfsV29ExtractionCreate = {
 			properties: {
 				agency_ids: values.agency_ids,
-				calendars_clip_end_date: String(values.clip_end_date) as OperationalDate,
-				calendars_clip_start_date: String(values.clip_start_date) as OperationalDate,
-				feed_end_date: String(values.feed_end_date) as OperationalDate,
-				feed_start_date: String(values.feed_start_date) as OperationalDate,
+				calendars_clip_end_date: OperationalDateIntSchema.parse(values.clip_end_date),
+				calendars_clip_start_date: OperationalDateIntSchema.parse(values.clip_start_date),
+				feed_end_date: OperationalDateIntSchema.parse(values.feed_end_date),
+				feed_start_date: OperationalDateIntSchema.parse(values.feed_start_date),
 				lines_exclude: values.lines_exclude,
 				lines_include: values.lines_include,
 				lines_mode: values.lines_mode,

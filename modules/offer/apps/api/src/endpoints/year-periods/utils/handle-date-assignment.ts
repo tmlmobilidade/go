@@ -1,25 +1,25 @@
 /* * */
 
-import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
 import { type ClientSession, type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
 interface YearPeriodDateAssignmentArgs {
 	actorId: string
 	agencyIds: string[]
-	existingDates?: OperationalDate[]
-	newDates: OperationalDate[]
+	existingDates?: OperationalDateInt[]
+	newDates: OperationalDateInt[]
 	session?: ClientSession
 	userPermissions: Permission[]
 	yearPeriodId?: string
 }
 
-type YearPeriodDateAssignmentResult = { dates: OperationalDate[], error?: never } | { dates?: never, error: { error: string, status_code: '403' | '409' } };
+type YearPeriodDateAssignmentResult = { dates: OperationalDateInt[], error?: never } | { dates?: never, error: { error: string, status_code: '403' | '409' } };
 
 /* * */
 

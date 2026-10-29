@@ -5,8 +5,8 @@ import { useEventsContext } from '@/contexts/Events.context';
 import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, type CalendarScheduleSources, isCalendarSchedulePayload, type ScheduleEventData, useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 

@@ -8,7 +8,7 @@ import { beforeEach, mock, test } from 'node:test';
 interface PeriodRecord {
 	_id: string
 	agency_ids: string[]
-	dates: string[]
+	dates: number[]
 	is_locked: boolean
 	name: string
 	updated_by?: string
@@ -81,96 +81,96 @@ async function invoke(body: unknown, agencyIds = ['A', 'B']) {
 
 beforeEach(() => {
 	PERIODS = [
-		{ _id: 'target', agency_ids: ['A'], dates: ['20260101', '20260102'], is_locked: false, name: 'Target' },
-		{ _id: 'shared', agency_ids: ['A', 'B'], dates: ['20260103', '20260104'], is_locked: false, name: 'Shared' },
+		{ _id: 'target', agency_ids: ['A'], dates: [20260101, 20260102], is_locked: false, name: 'Target' },
+		{ _id: 'shared', agency_ids: ['A', 'B'], dates: [20260103, 20260104], is_locked: false, name: 'Shared' },
 	];
 	operations.length = 0;
 	FAIL_TARGET_WRITE = false;
 });
 
 test('adds and removes dates and transfers any shared-operator conflicts in one session', async () => {
-	const result = await invoke({ add_dates: ['20260103'], remove_dates: ['20260101'] });
+	const result = await invoke({ add_dates: [20260103], remove_dates: [20260101] });
 	assert.equal(result.status, 200);
-	assert.deepEqual(PERIODS.map(period => period.dates), [['20260102', '20260103'], ['20260104']]);
+	assert.deepEqual(PERIODS.map(period => period.dates), [[20260102, 20260103], [20260104]]);
 	assert.ok(PERIODS.every(period => period.updated_by === 'actor'));
 	assert.deepEqual(operations, ['write:shared', 'write:target', 'commit', 'end']);
 });
 
 test('blocks a locked conflicting period before any writes', async () => {
 	PERIODS[1].is_locked = true;
-	assert.equal((await invoke({ add_dates: ['20260103'] })).status, 409);
+	assert.equal((await invoke({ add_dates: [20260103] })).status, 409);
 	assert.ok(!operations.some(operation => operation.startsWith('write:')));
 });
 
 test('requires update access to all operators of a conflicting period', async () => {
-	assert.equal((await invoke({ add_dates: ['20260103'] }, ['A'])).status, 403);
+	assert.equal((await invoke({ add_dates: [20260103] }, ['A'])).status, 403);
 	assert.ok(!operations.some(operation => operation.startsWith('write:')));
 });
 
 test('blocks a locked target and an unauthorized target', async () => {
 	PERIODS[0].is_locked = true;
-	assert.equal((await invoke({ remove_dates: ['20260101'] })).status, 409);
+	assert.equal((await invoke({ remove_dates: [20260101] })).status, 409);
 	PERIODS[0].is_locked = false;
-	assert.equal((await invoke({ remove_dates: ['20260101'] }, ['B'])).status, 403);
+	assert.equal((await invoke({ remove_dates: [20260101] }, ['B'])).status, 403);
 	assert.ok(!operations.some(operation => operation.startsWith('write:')));
 });
 
 test('rolls back conflict removals if the target write fails', async () => {
 	const before = structuredClone(PERIODS);
 	FAIL_TARGET_WRITE = true;
-	await assert.rejects(invoke({ add_dates: ['20260103'] }), /target write failed/);
+	await assert.rejects(invoke({ add_dates: [20260103] }), /target write failed/);
 	assert.deepEqual(PERIODS, before);
 	assert.deepEqual(operations, ['write:shared', 'abort', 'end']);
 });
 
 test('rejects overlapping additions and removals before accessing storage', async () => {
-	assert.equal((await invoke({ add_dates: ['20260101'], remove_dates: ['20260101'] })).status, 400);
+	assert.equal((await invoke({ add_dates: [20260101], remove_dates: [20260101] })).status, 400);
 	assert.deepEqual(operations, []);
 });
 
 test('removes dates without transferring them to another period', async () => {
-	assert.equal((await invoke({ remove_dates: ['20260101'] })).status, 200);
-	assert.deepEqual(PERIODS[0].dates, ['20260102']);
+	assert.equal((await invoke({ remove_dates: [20260101] })).status, 200);
+	assert.deepEqual(PERIODS[0].dates, [20260102]);
 	assert.deepEqual(operations, ['write:target', 'commit', 'end']);
 });
 
 test('saves settings and date changes together for all four operators', async () => {
 	const agencies = ['A', 'B', 'C', 'D'];
 	PERIODS[0].agency_ids = agencies;
-	const result = await invoke({ add_dates: ['20260103'], period: { agency_ids: agencies, name: 'Renamed period' }, remove_dates: ['20260101'] }, agencies);
+	const result = await invoke({ add_dates: [20260103], period: { agency_ids: agencies, name: 'Renamed period' }, remove_dates: [20260101] }, agencies);
 	assert.equal(result.status, 200);
 	assert.equal(PERIODS[0].name, 'Renamed period');
 	assert.deepEqual(PERIODS[0].agency_ids, agencies);
-	assert.deepEqual(PERIODS.map(period => period.dates), [['20260102', '20260103'], ['20260104']]);
+	assert.deepEqual(PERIODS.map(period => period.dates), [[20260102, 20260103], [20260104]]);
 	assert.deepEqual(operations, ['write:shared', 'write:target', 'commit', 'end']);
 });
 
 test('changing operators reviews and transfers remaining dates, excluding removals', async () => {
 	PERIODS[1].agency_ids = ['B'];
-	PERIODS[1].dates = ['20260101', '20260102', '20260103'];
-	const result = await invoke({ period: { agency_ids: ['B'], name: 'Moved' }, remove_dates: ['20260101'] });
+	PERIODS[1].dates = [20260101, 20260102, 20260103];
+	const result = await invoke({ period: { agency_ids: ['B'], name: 'Moved' }, remove_dates: [20260101] });
 	assert.equal(result.status, 200);
 	assert.deepEqual(PERIODS[0].agency_ids, ['B']);
-	assert.deepEqual(PERIODS[0].dates, ['20260102']);
-	assert.deepEqual(PERIODS[1].dates, ['20260101', '20260103']);
+	assert.deepEqual(PERIODS[0].dates, [20260102]);
+	assert.deepEqual(PERIODS[1].dates, [20260101, 20260103]);
 });
 
 test('denies unauthorized replacement operators before saving settings or dates', async () => {
 	const before = structuredClone(PERIODS);
-	assert.equal((await invoke({ period: { agency_ids: ['B'], name: 'Moved' }, remove_dates: ['20260101'] }, ['A'])).status, 403);
+	assert.equal((await invoke({ period: { agency_ids: ['B'], name: 'Moved' }, remove_dates: [20260101] }, ['A'])).status, 403);
 	assert.deepEqual(PERIODS, before);
 	assert.ok(!operations.some(operation => operation.startsWith('write:')));
 });
 
 test('rejects invalid settings before accessing storage', async () => {
-	assert.equal((await invoke({ add_dates: ['20260103'], period: { name: '' } })).status, 400);
+	assert.equal((await invoke({ add_dates: [20260103], period: { name: '' } })).status, 400);
 	assert.deepEqual(operations, []);
 });
 
 test('failed combined saves roll back both settings and conflict transfers', async () => {
 	const before = structuredClone(PERIODS);
 	FAIL_TARGET_WRITE = true;
-	await assert.rejects(invoke({ add_dates: ['20260103'], period: { name: 'Renamed' }, remove_dates: ['20260101'] }), /target write failed/);
+	await assert.rejects(invoke({ add_dates: [20260103], period: { name: 'Renamed' }, remove_dates: [20260101] }), /target write failed/);
 	assert.deepEqual(PERIODS, before);
 	assert.deepEqual(operations, ['write:shared', 'abort', 'end']);
 });
@@ -179,6 +179,6 @@ test('settings-only saves preserve dates without reassigning them', async () => 
 	const result = await invoke({ period: { name: 'Renamed' } });
 	assert.equal(result.status, 200);
 	assert.equal(PERIODS[0].name, 'Renamed');
-	assert.deepEqual(PERIODS[0].dates, ['20260101', '20260102']);
+	assert.deepEqual(PERIODS[0].dates, [20260101, 20260102]);
 	assert.deepEqual(operations, ['write:target', 'commit', 'end']);
 });

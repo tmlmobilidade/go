@@ -1,7 +1,7 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */

@@ -1,5 +1,5 @@
 import { type ScheduleEventData } from '@mantine/schedule';
-import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
@@ -25,7 +25,7 @@ describe('filterCalendarScheduleEventsForDate', () => {
 		const [event] = buildCalendarScheduleEvents({
 			yearPeriods: [{
 				_id: '2KIUJ',
-				dates: ['20260214', '20260215', '20260216', '20260217', '20260218'].map(validateOperationalDate),
+				dates: [20260214, 20260215, 20260216, 20260217, 20260218].map(date => OperationalDateIntSchema.parse(date)),
 				name: 'Período de férias escolares',
 			}],
 		});
@@ -70,7 +70,7 @@ describe('filterCalendarScheduleEventsForDate', () => {
 it('groups consecutive period days across a leap day and keeps the end exclusive', () => {
 	const events = buildCalendarScheduleEvents({ yearPeriods: [{
 		_id: 'leap-period',
-		dates: ['20280228', '20280229', '20280301', '20280301'].map(validateOperationalDate),
+		dates: [20280228, 20280229, 20280301, 20280301].map(date => OperationalDateIntSchema.parse(date)),
 		name: 'Leap period',
 	}] });
 	assert.equal(events.length, 1);
@@ -84,7 +84,7 @@ it('splits consecutive period dates at New Year so annual views include January'
 	const events = buildCalendarScheduleEvents({ yearPeriods: [{
 		_id: 'school-holidays',
 		color: '#42c96b',
-		dates: ['20251230', '20251231', '20260101', '20260102', '20260103', '20260104'].map(validateOperationalDate),
+		dates: [20251230, 20251231, 20260101, 20260102, 20260103, 20260104].map(date => OperationalDateIntSchema.parse(date)),
 		name: 'School holidays',
 	}] });
 

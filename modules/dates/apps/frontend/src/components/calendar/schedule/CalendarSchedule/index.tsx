@@ -1,8 +1,8 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type CalendarScheduleEventType, ErrorDisplay, isCalendarSchedulePayload, LoadingOverlay, type ScheduleEventData, type ScheduleViewLevel, CalendarSchedule as UICalendarSchedule, useLocaleContext, useQueryState } from '@tmlmobilidade/ui';
 import { useCalendarScheduleData } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';

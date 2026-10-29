@@ -1,13 +1,13 @@
-import { mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
 export function applyYearPeriodDateChanges(
-	existingDates: OperationalDate[],
-	addDates: OperationalDate[],
-	removeDates: OperationalDate[],
-): OperationalDate[] {
+	existingDates: OperationalDateInt[],
+	addDates: OperationalDateInt[],
+	removeDates: OperationalDateInt[],
+): OperationalDateInt[] {
 	const datesAfterRemoval = removeDatesFromArray(existingDates, removeDates);
 	return mergeDateArrays(datesAfterRemoval, addDates);
 }

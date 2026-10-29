@@ -1,8 +1,8 @@
 'use client';
 
 import { IconMoon, IconSun, IconSunset } from '@tabler/icons-react';
-import { groupTimesByDayPeriod } from '@tmlmobilidade/dates';
 import { DAY_PERIOD_LABELS, DayPeriod, HHMM } from '@tmlmobilidade/go-types-offer';
+import { groupTimesByDayPeriod } from '@tmlmobilidade/go-utils-offer';
 import React, { JSX } from 'react';
 
 import styles from './styles.module.css';

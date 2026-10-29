@@ -1,7 +1,7 @@
 import { HHMMSchema } from '@/dates/common.js';
 import { MONTHS } from '@/dates/months.js';
 import { WEEKDAYS } from '@/dates/weekdays.js';
-import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -69,7 +69,7 @@ export const EventDerivedBaseSchema = z.object({
 	name: z.string().optional(),
 
 	// applies on these operational dates
-	dates: z.array(OperationalDateSchema),
+	dates: z.array(OperationalDateIntSchema),
 
 	lines_mode: LinesModeSchema,
 	lines_to_exclude: z.array(z.string()).optional(),

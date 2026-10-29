@@ -29,14 +29,11 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
-		"lint": "eslint ./src/ ./tests/ && tsc --noEmit",
+		"lint": "eslint ./src/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix",
-		"test": "tsx --test tests/*.test.ts",
 		"watch": "tsc-watch -p tsconfig.build.json --onSuccess 'resolve-tspaths -p tsconfig.build.json'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types-core": "*",
-		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"luxon": "3.7.2"
 	},

@@ -2,7 +2,7 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { useEventsContext } from '@/contexts/Events.context';
-import { Dates, FORMATS } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Section, Select, StandardFormController, Switch } from '@tmlmobilidade/ui';
 
 /* * */
@@ -17,7 +17,7 @@ export function RuleCreateEvents() {
 	const { data: eventsData } = useEventsContext();
 
 	const EVENT_OPTIONS = eventsData.raw.map(event => ({
-		label: `${event.title} (${event.dates.toSorted().map(date => Dates.fromOperationalDate(date, 'Europe/Lisbon').toLocaleString(FORMATS.DATE_FULL, 'pt-PT')).join(', ')})`,
+		label: `${event.title} (${event.dates.toSorted().map(date => Dates.fromOperationalDateInt(date, 'Europe/Lisbon').toLocaleString({ day: 'numeric', month: 'long' }, 'pt-PT')).join(', ')})`,
 		value: event._id,
 	}));
 

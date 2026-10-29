@@ -13,7 +13,7 @@ const second = toCalendarDate('2027-01-02');
 const third = toCalendarDate('2027-01-03');
 const initialDates = new Set([first]);
 const agencies = ['A', 'B', 'C', 'D'];
-const period = YearPeriodSchema.parse({ _id: 'school', agency_ids: agencies, created_at: 1792368000000, created_by: 'actor', dates: ['20270101'], name: 'School', updated_at: 1792368000000 });
+const period = YearPeriodSchema.parse({ _id: 'school', agency_ids: agencies, created_at: 1792368000000, created_by: 'actor', dates: [20270101], name: 'School', updated_at: 1792368000000 });
 
 /* * */
 
@@ -45,16 +45,16 @@ test('cancelling an unfinished range preserves earlier completed changes', () =>
 
 test('combined save sends date deltas and writable settings without sending stale full dates or lock changes', () => {
 	const request = getPeriodsDetailUpdate({ ...period, is_locked: true, name: 'Renamed' }, [second], [first]);
-	assert.deepEqual(request.add_dates, ['20270102']);
-	assert.deepEqual(request.remove_dates, ['20270101']);
+	assert.deepEqual(request.add_dates, [20270102]);
+	assert.deepEqual(request.remove_dates, [20270101]);
 	assert.deepEqual(request.period, { agency_ids: agencies, name: 'Renamed' });
 });
 
 test('review checks all operators for additions, and all remaining dates when changing operators', () => {
 	const additions = getPeriodsDetailReviewRequest(period, agencies, [second], [first, second]);
-	assert.deepEqual(additions, { agency_ids: agencies, dates: ['20270102'], year_period_id: 'school' });
+	assert.deepEqual(additions, { agency_ids: agencies, dates: [20270102], year_period_id: 'school' });
 	const moved = getPeriodsDetailReviewRequest(period, ['Z'], [third], [second, third]);
-	assert.deepEqual(moved, { agency_ids: ['Z'], dates: ['20270102', '20270103'], year_period_id: 'school' });
+	assert.deepEqual(moved, { agency_ids: ['Z'], dates: [20270102, 20270103], year_period_id: 'school' });
 	assert.equal(getPeriodsDetailReviewRequest(period, agencies, [], []), null);
 	assert.equal(getPeriodsDetailReviewRequest(period, ['Z'], [], []), null);
 });
