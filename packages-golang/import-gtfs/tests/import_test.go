@@ -134,14 +134,15 @@ func TestImportGtfsToDatabase(t *testing.T) {
 	}
 }
 
-// TestImportEmptyFields distinguishes missing cells from literal spaces, zero, and "NULL".
+// TestImportAdditionalTables checks default vehicles support and opt-in custom tables.
 func TestImportAdditionalTables(t *testing.T) {
 	source := localSource(t, makeArchive(t, map[string]string{
 		"stops.txt":           "stop_id\n001\n",
 		"nested/vehicles.txt": "vehicle_id,custom\nV1,\n",
+		"municipalities.txt":  "municipality_id\nM1\n",
 		"unknown.txt":         "custom\nignored\n",
 	}))
-	for _, additional := range [][]string{nil, {"vehicles"}} {
+	for _, additional := range [][]string{nil, {"municipalities"}} {
 		database, err := importgtfs.ImportGtfsToMemory(importgtfs.ImportGtfsConfig{
 			Source:           source,
 			AdditionalTables: additional,
@@ -149,8 +150,16 @@ func TestImportAdditionalTables(t *testing.T) {
 		requireNoError(t, err)
 		var count int
 		requireNoError(t, database.DatabaseInstance.QueryRow("SELECT COUNT(*) FROM sqlite_schema WHERE type = 'table' AND name = 'vehicles'").Scan(&count))
-		if count != len(additional) {
+		if count != 1 {
 			t.Fatalf("vehicles table count = %d for additional tables %v", count, additional)
+		}
+		requireNoError(t, database.DatabaseInstance.QueryRow("SELECT COUNT(*) FROM vehicles WHERE vehicle_id = 'V1'").Scan(&count))
+		if count != 1 {
+			t.Fatal("vehicles row was not imported")
+		}
+		requireNoError(t, database.DatabaseInstance.QueryRow("SELECT COUNT(*) FROM sqlite_schema WHERE type = 'table' AND name = 'municipalities'").Scan(&count))
+		if count != len(additional) {
+			t.Fatalf("municipalities table count = %d for additional tables %v", count, additional)
 		}
 		requireNoError(t, database.DatabaseInstance.QueryRow("SELECT COUNT(*) FROM stops").Scan(&count))
 		if count != 1 {
