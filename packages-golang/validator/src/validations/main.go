@@ -2,6 +2,10 @@ package validations
 
 import (
 	"fmt"
+	"main/types"
+	"sort"
+	"sync"
+
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	rulegraph "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
@@ -9,9 +13,6 @@ import (
 	fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fields/checks"
 	standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/standard/checks"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/utils"
-	"main/types"
-	"sort"
-	"sync"
 )
 
 // RuleDefinitions binds every check to its data and execution scope. Tables
@@ -91,7 +92,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"calendar_dates_service_id_field":     fields.CalendarDatesServiceIdField,
 		"calendar_dates_date_valid":           standard.CalendarDatesDateValid,
 		"calendar_dates_exception_type_valid": standard.ExceptionTypeValid,
-		"calendar_dates_service_id_foreign":   standard.CalendarDatesServiceIdForeign,
 	})
 	bind("fare_attributes", services.RuleChecks{
 		"fare_attributes_fare_id_field":           fields.FareAttributesFareIdField,

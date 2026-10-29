@@ -38,7 +38,6 @@ export const GtfsValidatorRuleIdValues = [
 	'calendar_dates_exception_type_valid',
 	'calendar_dates_file_missing',
 	'calendar_dates_service_id_field',
-	'calendar_dates_service_id_foreign',
 	'calendar_end_date_field',
 	'calendar_end_date_valid_yyyymmdd',
 	'calendar_file_missing',
