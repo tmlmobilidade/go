@@ -15,11 +15,24 @@ interface UseReplayProps {
 	ready: boolean
 }
 
+export interface UseReplayReturnType {
+	startReplay: () => Promise<boolean>
+	stopReplay: () => void
+}
+
 /* * */
 
 /** Binds capture actions to the current analytics initialization without starting capture automatically. */
-export function useReplay({ activation, initialization, initializationRef, onError, ready }: UseReplayProps) {
+export function useReplay({ activation, initialization, initializationRef, onError, ready }: UseReplayProps): UseReplayReturnType {
+	//
+
+	//
+	// A. Setup variables
+
 	const userId = initialization?.client.getUserId();
+
+	//
+	// B. Handle actions
 
 	const startReplay = useCallback(async () => {
 		if (
@@ -43,6 +56,9 @@ export function useReplay({ activation, initialization, initializationRef, onErr
 	const stopReplay = useCallback(() => {
 		initializationRef.current?.replay.stop();
 	}, [initializationRef]);
+
+	//
+	// C. Return actions
 
 	return { startReplay, stopReplay };
 }

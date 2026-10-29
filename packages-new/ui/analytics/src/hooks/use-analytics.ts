@@ -14,6 +14,11 @@ import { useReplayAuthorization } from './use-replay-authorization';
 
 /** Coordinates the SDK lifecycle, user identity and explicit analytics actions. */
 export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsContextProps): AnalyticsContextState {
+	//
+
+	//
+	// A. Setup variables
+
 	// Keep the current initialization available to callbacks, including pending async operations.
 	const initializationRef = useRef<AnalyticsInitialization | undefined>(undefined);
 	const [error, setError] = useState<Error | undefined>(undefined);
@@ -25,7 +30,9 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 	const { apiKey, options } = useAnalyticsConfiguration(configuration, handleError, clearError);
 	const ready = Boolean(apiKey) && initialization?.apiKey === apiKey && initialization?.options === options;
 
-	// Actions must use the initialized client that still matches the current configuration.
+	//
+	// B. Handle actions
+
 	const identify = useCallback((userProperties: AnalyticsUserProperties | null) => {
 		if (
 			!ready
@@ -52,6 +59,9 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 			if (initializationRef.current === initialization && !initialization.client.getOptOut()) handleError(cause);
 		});
 	}, [clearError, handleError, initialization, ready]);
+
+	//
+	// C. Setup effects
 
 	// Initialize after render, reusing the pending initialization when the effect runs again.
 	useEffect(() => {
@@ -92,6 +102,9 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 		if (user !== undefined) identify(user);
 	}, [identify, user]);
 
+	//
+	// D. Setup replay
+
 	// Register authorization polling after synchronizing Analytics identity for this user.
 	const replayActivation = useReplayAuthorization({
 		initialization,
@@ -109,6 +122,9 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 		onError: handleError,
 		ready,
 	});
+
+	//
+	// E. Return state
 
 	return useMemo(() => ({
 		actions: { identify, startReplay, stopReplay, track },

@@ -22,7 +22,12 @@ const REPLAY_AUTHORIZATION_REFRESH_INTERVAL_MS = 30_000;
 const REPLAY_AUTHORIZATION_REQUEST_TIMEOUT_MS = 10_000;
 
 /** Polls GO for the current user's activation, ignoring responses from replaced identities. */
-export function useReplayAuthorization({ initialization, onError, ready, replayUrl, userId }: UseReplayAuthorizationProps) {
+export function useReplayAuthorization({ initialization, onError, ready, replayUrl, userId }: UseReplayAuthorizationProps): AnalyticsReplayActivation | undefined {
+	//
+
+	//
+	// A. Setup variables
+
 	const authorizationContext = useMemo(() => {
 		if (!ready || !initialization || !replayUrl || !userId) return undefined;
 		return { initialization, replayUrl, userId };
@@ -31,6 +36,9 @@ export function useReplayAuthorization({ initialization, onError, ready, replayU
 		activation: AnalyticsReplayActivation | undefined
 		context: typeof authorizationContext
 	}>();
+
+	//
+	// B. Setup effects
 
 	useEffect(() => {
 		if (!authorizationContext) return;
@@ -110,6 +118,9 @@ export function useReplayAuthorization({ initialization, onError, ready, replayU
 			window.removeEventListener('pageshow', handlePageShow);
 		};
 	}, [authorizationContext, onError]);
+
+	//
+	// C. Return activation
 
 	if (!authorizationContext || authorizationState?.context !== authorizationContext) return undefined;
 
