@@ -7,7 +7,7 @@ import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 import { StopsParametersListSchema } from './parameters.js';
-import { PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
+import { PatternUpdateRuleSchema, PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
 
 /* * */
 
@@ -109,8 +109,13 @@ export const PatternSchema = BaseDocumentSchema.extend({
 
 	path: z.array(PathSchema).optional(),
 	route_id: z.string().min(1),
-	rules: z.array(ScheduleRuleSchema).optional().default([]),
+	rules: z.array(PatternUpdateRuleSchema).default([]),
 	shape: ShapeSchema.optional(),
+});
+
+/** Read-only scheduling projection with rules resolved from current Events. */
+export const ResolvedPatternSchema = PatternSchema.extend({
+	rules: z.array(ScheduleRuleSchema).default([]),
 });
 
 export const PatternSimplifiedSchema = z.object({
@@ -139,6 +144,7 @@ export const UpdatePatternSchema = PatternWritableSchema
 /* * */
 
 export type Pattern = z.infer<typeof PatternSchema>;
+export type ResolvedPattern = z.infer<typeof ResolvedPatternSchema>;
 export type CreatePatternDto = z.infer<typeof CreatePatternSchema>;
 export type UpdatePatternDto = z.infer<typeof UpdatePatternSchema>;
 

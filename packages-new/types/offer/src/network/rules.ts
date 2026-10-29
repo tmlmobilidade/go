@@ -39,7 +39,8 @@ export const ManualRuleBaseSchema = z.object({
 	year_period_ids: z.array(z.string()),
 });
 
-export const ManualRuleSchema = ManualRuleBaseSchema.superRefine((data, ctx) => {
+/** Ordinary rules match weekday AND period; event-linked rules may narrow either. */
+function validateManualRule(data: z.infer<typeof ManualRuleBaseSchema>, ctx: z.RefinementCtx) {
 	if (!data.event_id) {
 		if (!data.weekdays?.length) {
 			ctx.addIssue({
@@ -56,7 +57,9 @@ export const ManualRuleSchema = ManualRuleBaseSchema.superRefine((data, ctx) => 
 			});
 		}
 	}
-});
+}
+
+export const ManualRuleSchema = ManualRuleBaseSchema.superRefine(validateManualRule);
 
 /* * */
 
@@ -126,18 +129,8 @@ export const ScheduleRuleSchema = z.discriminatedUnion('kind', [
 
 export const PatternUpdateRuleBaseSchema = ManualRuleBaseSchema.omit({ name: true });
 
-export const PatternUpdateRuleSchema = PatternUpdateRuleBaseSchema.superRefine((data, ctx) => {
-	const hasEvent = Boolean(data.event_id);
-	const hasWeekdays = Boolean(data.weekdays?.length);
-
-	if (!hasEvent && !hasWeekdays) {
-		ctx.addIssue({
-			code: z.ZodIssueCode.custom,
-			message: 'Selecione pelo menos um dia da semana.',
-			path: ['weekdays'],
-		});
-	}
-});
+// Names are generated for presentation and are not owned by persisted Pattern rules.
+export const PatternUpdateRuleSchema = PatternUpdateRuleBaseSchema.superRefine(validateManualRule);
 
 export const PatternUpdateRulesSchema = z.array(PatternUpdateRuleSchema).optional();
 

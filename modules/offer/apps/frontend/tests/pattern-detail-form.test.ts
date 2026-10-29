@@ -23,7 +23,7 @@ function createPattern() {
 		path: [{ _id: 'path', stop: null, stop_id: '100001' }],
 		route_id: 'route',
 		rules: [
-			{ _id: 'manual', kind: 'manual', operating_mode: 'include', timepoints: ['08:00'], weekdays: [1], year_period_ids: [] },
+			{ _id: 'manual', kind: 'manual', operating_mode: 'include', timepoints: ['08:00'], weekdays: [1], year_period_ids: ['school'] },
 			{ _id: 'derived', all_day: true, dates: ['20261027'], end_time: '', event: { id: 'event', title: 'Event' }, kind: 'event_restriction', lines_mode: 'all', start_time: '' },
 		],
 		updated_at: 1792368000000,

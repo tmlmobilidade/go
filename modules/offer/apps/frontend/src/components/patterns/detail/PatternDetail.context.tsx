@@ -38,7 +38,7 @@ interface PatternDetailContextState extends StandardFormContextValue<PatternsDet
 		duplicateRule: (rule: ManualRule) => void
 		editRule: (rule: ManualRule) => void
 		enrichPath: (path: Path[]) => Promise<PatternsDetailPathItem[]>
-		mutate: () => Promise<ApiResponse<Pattern> | undefined>
+		mutate: () => Promise<ApiResponse<PatternsDetail> | undefined>
 		openRuleModal: (rule?: ManualRule) => void
 		openRulesCalendarPreviewModal: () => void
 		openStopsParameterModal: (rule?: StopsParameter) => void

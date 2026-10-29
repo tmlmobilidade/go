@@ -253,3 +253,22 @@ test('Client rule contracts reject derived event rules and accept only manual de
 	assert.equal((await invoke('update', { data: { rules } })).status, 400);
 	assert.deepEqual(WRITES, []);
 });
+
+test('Pattern create and update reject ordinary rules missing weekdays or periods before writing', async () => {
+	const manual = { _id: 'manual', kind: 'manual', operating_mode: 'include', timepoints: ['08:00'], weekdays: [1], year_period_ids: ['school'] };
+	for (const invalid of [{ weekdays: [] }, { year_period_ids: [] }]) {
+		const rules = [{ ...manual, ...invalid }];
+		assert.equal((await invoke('create', { data: { ...body, rules } })).status, 400);
+		assert.equal((await invoke('update', { data: { rules } })).status, 400);
+	}
+	assert.deepEqual(WRITES, []);
+});
+
+test('Pattern updates preserve event-linked rules with optional narrowing and strip display metadata', async () => {
+	const rules = [{ _id: 'manual', event_id: 'event', kind: 'manual', name: 'Generated summary', operating_mode: 'include', timepoints: ['08:00'], weekdays: [], year_period_ids: [] }];
+	assert.equal((await invoke('update', { data: { rules } })).status, 200);
+	const savedRules = WRITES[0].data?.rules as Row[];
+	assert.equal(savedRules[0].event_id, 'event');
+	assert.deepEqual(savedRules[0].year_period_ids, []);
+	assert.equal('name' in savedRules[0], false);
+});
