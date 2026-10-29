@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type ChangelogRelease } from '@tmlmobilidade/go-types-core';
+import { type Changelog } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
@@ -11,7 +11,7 @@ import { type ChangelogRelease } from '@tmlmobilidade/go-types-core';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getChangelogReleaseHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<ChangelogRelease>) {
+export async function getChangelogHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Changelog>) {
 	//
 
 	//

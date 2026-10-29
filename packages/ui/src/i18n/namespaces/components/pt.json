@@ -1,4 +1,8 @@
 {
+	"banner": {
+		"dismiss": "Fechar aviso",
+		"until": "Até {end}"
+	},
 	"buttons": {
 		"CreateButton": {
 			"label": "Criar"
@@ -99,10 +103,6 @@
 			"minutes_ago": "Atualizado há {count, plural, =1 {1 minuto} other {# minutos}}",
 			"seconds_ago": "Atualizado há {count, plural, =1 {1 segundo} other {# segundos}}"
 		}
-	},
-	"operational_banner": {
-		"dismiss": "Fechar aviso",
-		"until": "Até {end}"
 	},
 	"sidebar": {
 		"Sidebar": {

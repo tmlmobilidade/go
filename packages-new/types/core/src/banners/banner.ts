@@ -6,27 +6,27 @@ import { ContentScopeSchema } from '../platform/content-scope.js';
 
 /* * */
 
-export const OperationalBannerKindValues = ['maintenance', 'incident', 'announcement'] as const;
-export const OperationalBannerKindSchema = z.enum(OperationalBannerKindValues);
-export type OperationalBannerKind = z.infer<typeof OperationalBannerKindSchema>;
+export const BannerKindValues = ['maintenance', 'incident', 'announcement'] as const;
+export const BannerKindSchema = z.enum(BannerKindValues);
+export type BannerKind = z.infer<typeof BannerKindSchema>;
 
-export const OperationalBannerSeverityValues = ['info', 'warning', 'critical'] as const;
-export const OperationalBannerSeveritySchema = z.enum(OperationalBannerSeverityValues);
-export type OperationalBannerSeverity = z.infer<typeof OperationalBannerSeveritySchema>;
+export const BannerSeverityValues = ['info', 'warning', 'critical'] as const;
+export const BannerSeveritySchema = z.enum(BannerSeverityValues);
+export type BannerSeverity = z.infer<typeof BannerSeveritySchema>;
 
-export const OperationalBannerLinkSchema = z.object({
+export const BannerLinkSchema = z.object({
 	label: z.string().trim().min(1),
 	url: z.string().url().refine(value => /^https?:\/\//i.test(value), 'Banner links must use HTTP or HTTPS'),
 });
 
-const OperationalBannerContentSchema = z.object({
+const BannerContentSchema = z.object({
 	dismissible: z.boolean().default(false),
 	ends_at: UnixMillisecondsSchema.nullable().default(null),
-	kind: OperationalBannerKindSchema,
-	link: OperationalBannerLinkSchema.nullable().default(null),
+	kind: BannerKindSchema,
+	link: BannerLinkSchema.nullable().default(null),
 	message: z.string().trim().default(''),
 	scope: ContentScopeSchema,
-	severity: OperationalBannerSeveritySchema.default('info'),
+	severity: BannerSeveritySchema.default('info'),
 	starts_at: UnixMillisecondsSchema.nullable().default(null),
 	title: z.string().trim().default(''),
 });
@@ -37,9 +37,9 @@ function validateBannerSchedule(document: { ends_at?: null | number, starts_at?:
 	}
 }
 
-export const OperationalBannerSchema = BaseDocumentSchema
+export const BannerSchema = BaseDocumentSchema
 	.merge(ContentPublicationSchema)
-	.merge(OperationalBannerContentSchema)
+	.merge(BannerContentSchema)
 	.extend({ dismissal_version: z.number().int().positive().default(1) })
 	.superRefine((document, context) => {
 		validateContentPublication(document, context);
@@ -49,10 +49,10 @@ export const OperationalBannerSchema = BaseDocumentSchema
 		if (!document.message) context.addIssue({ code: z.ZodIssueCode.custom, message: 'A published banner requires a message', path: ['message'] });
 	});
 
-export const CreateOperationalBannerSchema = OperationalBannerContentSchema.superRefine(validateBannerSchedule);
+export const CreateBannerSchema = BannerContentSchema.superRefine(validateBannerSchedule);
 // Partial schedule edits are validated again against the complete stored document.
-export const UpdateOperationalBannerSchema = OperationalBannerContentSchema.partial().extend({ status: PublishStatusSchema.optional() }).superRefine(validateBannerSchedule);
+export const UpdateBannerSchema = BannerContentSchema.partial().extend({ status: PublishStatusSchema.optional() }).superRefine(validateBannerSchedule);
 
-export type OperationalBanner = z.infer<typeof OperationalBannerSchema>;
-export type CreateOperationalBannerDto = z.infer<typeof CreateOperationalBannerSchema>;
-export type UpdateOperationalBannerDto = z.infer<typeof UpdateOperationalBannerSchema>;
+export type Banner = z.infer<typeof BannerSchema>;
+export type CreateBannerDto = z.infer<typeof CreateBannerSchema>;
+export type UpdateBannerDto = z.infer<typeof UpdateBannerSchema>;

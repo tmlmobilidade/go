@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type OperationalBanner, OperationalBannerSchema, type UpdateOperationalBannerDto, UpdateOperationalBannerSchema } from '@tmlmobilidade/go-types-core';
+import { type Banner, BannerSchema, type UpdateBannerDto, UpdateBannerSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
@@ -13,8 +13,8 @@ import { useBannersDetailId } from './use-banners-detail-id';
 
 /* * */
 
-interface BannersDetailFormContextValue extends StandardFormContextValue<UpdateOperationalBannerDto> {
-	data: null | OperationalBanner
+interface BannersDetailFormContextValue extends StandardFormContextValue<UpdateBannerDto> {
+	data: Banner | null
 	error: null | string
 	publication: { can_publish: boolean, change: (action: 'archive' | 'publish' | 'unpublish') => void, is_busy: boolean }
 }
@@ -53,7 +53,7 @@ export function BannersDetailFormContextProvider({ children }: PropsWithChildren
 	//
 	// B. Set up validation and unsaved-change protection
 
-	const { form, isDirty, unblock } = useStandardForm<UpdateOperationalBannerDto, typeof UpdateOperationalBannerSchema>({
+	const { form, isDirty, unblock } = useStandardForm<UpdateBannerDto, typeof UpdateBannerSchema>({
 		apiData: data,
 		defaultValues: {
 			dismissible: false,
@@ -66,21 +66,21 @@ export function BannersDetailFormContextProvider({ children }: PropsWithChildren
 			starts_at: null,
 			title: '',
 		},
-		schema: UpdateOperationalBannerSchema,
+		schema: UpdateBannerSchema,
 	});
 	const values = useStandardFormWatch({ control: form.control });
 	// Errors recorded before the first save attempt are not re-validated on change, so validate current values instead.
-	const isValid = UpdateOperationalBannerSchema.safeParse(values).success;
+	const isValid = UpdateBannerSchema.safeParse(values).success;
 
 	//
 	// C. Save content or change publication state
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: () =>
-			fetchApiData<OperationalBanner>({
-				body: UpdateOperationalBannerSchema.parse(form.getValues()),
+			fetchApiData<Banner>({
+				body: UpdateBannerSchema.parse(form.getValues()),
 				method: 'PUT',
-				url: API_ROUTES.core.OPERATIONAL_BANNERS_DETAIL(id),
+				url: API_ROUTES.core.BANNERS_DETAIL(id),
 			}),
 		onSuccess: (response) => {
 			form.reset(response.data);
@@ -88,12 +88,12 @@ export function BannersDetailFormContextProvider({ children }: PropsWithChildren
 			mutateList();
 		},
 	});
-	const { action: handlePublication, isLoading: isPublishing } = useHandleAction<OperationalBanner, 'archive' | 'publish' | 'unpublish'>({
+	const { action: handlePublication, isLoading: isPublishing } = useHandleAction<Banner, 'archive' | 'publish' | 'unpublish'>({
 		fetchFn: action =>
-			fetchApiData<OperationalBanner>({
+			fetchApiData<Banner>({
 				body: { status: ({ archive: 'archived', publish: 'published', unpublish: 'draft' } as const)[action] },
 				method: 'PUT',
-				url: API_ROUTES.core.OPERATIONAL_BANNERS_DETAIL(id),
+				url: API_ROUTES.core.BANNERS_DETAIL(id),
 			}),
 		onSuccess: (response) => {
 			form.reset(response.data);
@@ -117,7 +117,7 @@ export function BannersDetailFormContextProvider({ children }: PropsWithChildren
 	const changePublication = useCallback(
 		(action: 'archive' | 'publish' | 'unpublish') => {
 			if (!canUpdate || isDirty || isBusy || !data || data.is_locked) return;
-			if (action === 'publish' && !OperationalBannerSchema.safeParse({ ...data, published_at: data.published_at ?? Date.now(), published_by: me?._id, status: 'published' }).success) {
+			if (action === 'publish' && !BannerSchema.safeParse({ ...data, published_at: data.published_at ?? Date.now(), published_by: me?._id, status: 'published' }).success) {
 				useToast.warning({ message: t('default:dev.hints.incomplete') });
 				return;
 			}

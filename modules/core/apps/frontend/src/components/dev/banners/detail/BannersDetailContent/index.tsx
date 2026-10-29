@@ -1,6 +1,6 @@
 'use client';
 
-import { OperationalBannerKindSchema, OperationalBannerKindValues, OperationalBannerSeveritySchema, OperationalBannerSeverityValues } from '@tmlmobilidade/go-types-core';
+import { BannerKindSchema, BannerKindValues, BannerSeveritySchema, BannerSeverityValues } from '@tmlmobilidade/go-types-core';
 import { Collapsible, Section, Select, StandardFormController, Textarea, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -10,11 +10,11 @@ import { useBannersDetailFormContext } from '../BannersDetailForm.context';
 
 /* * */
 
-const kindIcon = (value: string) => <BannerKindIcon kind={OperationalBannerKindSchema.parse(value)} />;
+const kindIcon = (value: string) => <BannerKindIcon kind={BannerKindSchema.parse(value)} />;
 
 /* * */
 
-const severityDot = (value: string) => <BannerSeverityDot severity={OperationalBannerSeveritySchema.parse(value)} />;
+const severityDot = (value: string) => <BannerSeverityDot severity={BannerSeveritySchema.parse(value)} />;
 
 /* * */
 
@@ -71,7 +71,7 @@ export function BannersDetailContent() {
 					render={({ field, fieldState }) => (
 						<Select
 							clearable={false}
-							data={OperationalBannerKindValues.map(value => ({ label: t(`default:dev.kinds.${value}`), value }))}
+							data={BannerKindValues.map(value => ({ label: t(`default:dev.kinds.${value}`), value }))}
 							disabled={!capabilities?.editEnabled}
 							error={fieldState.error?.message}
 							label={t('default:dev.fields.kind')}
@@ -80,7 +80,7 @@ export function BannersDetailContent() {
 							value={field.value}
 							w="100%"
 							onChange={(value) => {
-								if (value) field.onChange(OperationalBannerKindSchema.parse(value));
+								if (value) field.onChange(BannerKindSchema.parse(value));
 							}}
 						/>
 					)}
@@ -91,7 +91,7 @@ export function BannersDetailContent() {
 					render={({ field, fieldState }) => (
 						<Select
 							clearable={false}
-							data={OperationalBannerSeverityValues.map(value => ({ label: t(`default:dev.severities.${value}`), value }))}
+							data={BannerSeverityValues.map(value => ({ label: t(`default:dev.severities.${value}`), value }))}
 							disabled={!capabilities?.editEnabled}
 							error={fieldState.error?.message}
 							label={t('default:dev.fields.severity')}
@@ -99,10 +99,10 @@ export function BannersDetailContent() {
 							value={field.value}
 							w="100%"
 							onChange={(value) => {
-								if (value) field.onChange(OperationalBannerSeveritySchema.parse(value));
+								if (value) field.onChange(BannerSeveritySchema.parse(value));
 							}}
 							renderOption={({ option }) => (
-								<BannerDisplayLabel color={BANNER_SEVERITY_COLORS[OperationalBannerSeveritySchema.parse(option.value)]} icon={severityDot(option.value)} label={option.label} />
+								<BannerDisplayLabel color={BANNER_SEVERITY_COLORS[BannerSeveritySchema.parse(option.value)]} icon={severityDot(option.value)} label={option.label} />
 							)}
 						/>
 					)}

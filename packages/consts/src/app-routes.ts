@@ -189,17 +189,19 @@ export const API_ROUTES = Object.freeze({
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
 		// BANNERS
+		BANNERS_ACTIVE: `${getModuleConfig('core', 'api_url')}/platform/banners/active`,
+		BANNERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/banners/${encodeURIComponent(id)}`,
 		BANNERS_DETAIL_DISMISS: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/banners/${encodeURIComponent(id)}/dismiss`,
-		BANNERS_LIST: `${getModuleConfig('core', 'api_url')}/platform/banners`,
+		BANNERS_LIST: `${getModuleConfig('core', 'api_url')}/banners`,
 
 		// CHANGELOG
 		CHANGELOG_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/changelog/${encodeURIComponent(id)}`,
 		CHANGELOG_LIST: `${getModuleConfig('core', 'api_url')}/platform/changelog`,
 		CHANGELOG_SEEN: `${getModuleConfig('core', 'api_url')}/platform/changelog/seen`,
 
-		// CHANGELOG-RELEASES
-		CHANGELOG_RELEASES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/changelog-releases/${encodeURIComponent(id)}`,
-		CHANGELOG_RELEASES_LIST: `${getModuleConfig('core', 'api_url')}/changelog-releases`,
+		// CHANGELOGS
+		CHANGELOGS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/changelogs/${encodeURIComponent(id)}`,
+		CHANGELOGS_LIST: `${getModuleConfig('core', 'api_url')}/changelogs`,
 
 		// EXTRACTIONS
 		EXTRACTIONS_CREATE: `${getModuleConfig('core', 'api_url')}/platform/extractions/create`,
@@ -217,10 +219,6 @@ export const API_ROUTES = Object.freeze({
 
 		// NOTIFICATIONS
 		NOTIFICATIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/notifications/list`,
-
-		// OPERATIONAL-BANNERS
-		OPERATIONAL_BANNERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/operational-banners/${encodeURIComponent(id)}`,
-		OPERATIONAL_BANNERS_LIST: `${getModuleConfig('core', 'api_url')}/operational-banners`,
 
 		// ORGANIZATIONS
 		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,

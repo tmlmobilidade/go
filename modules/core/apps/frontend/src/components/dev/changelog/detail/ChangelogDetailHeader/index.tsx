@@ -1,7 +1,7 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { ChangelogReleaseSchema } from '@tmlmobilidade/go-types-core';
+import { ChangelogSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, CloseButton, HasPermission, IdTag, keepUrlParams, openChangelogPreviewModal, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -22,7 +22,7 @@ export function ChangelogDetailHeader() {
 	const router = useRouter();
 	const { actions, capabilities, data, form, isDirty, publication, status } = useChangelogDetailFormContext();
 	const values = useStandardFormWatch({ control: form.control });
-	const preview = ChangelogReleaseSchema.safeParse({
+	const preview = ChangelogSchema.safeParse({
 		...data,
 		...values,
 		published_at: data?.published_at ?? Date.now(),

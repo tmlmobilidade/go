@@ -1,7 +1,7 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type OperationalBannerListItem } from '@tmlmobilidade/go-core-pckg-types';
+import { type BannerListItem } from '@tmlmobilidade/go-core-pckg-types';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, PublishStatusDisplay, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ export function BannersList() {
 	const { id } = useBannersDetailId();
 	const { data, error, isLoading } = useBannersListData();
 
-	const columns: DataTableColumn<OperationalBannerListItem>[] = [
+	const columns: DataTableColumn<BannerListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} copyOnClick />,
@@ -88,7 +88,7 @@ export function BannersList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: OperationalBannerListItem) => {
+	const handleRowClick = (item: BannerListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.core.DEV_BANNERS_DETAIL(item._id)));
 	};
 

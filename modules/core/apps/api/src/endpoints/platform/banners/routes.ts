@@ -15,7 +15,7 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', { preHandler: authorizationMiddleware() }, listActiveBannersHandler);
+		instance.get('/active', { preHandler: authorizationMiddleware() }, listActiveBannersHandler);
 
 		instance.post('/:id/dismiss', { preHandler: authorizationMiddleware() }, dismissBannerHandler);
 

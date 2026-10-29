@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type DismissOperationalBannerDto, type DismissOperationalBannerResult, DismissOperationalBannerSchema } from '@tmlmobilidade/go-types-core';
+import { type DismissBannerDto, type DismissBannerResult, DismissBannerSchema } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -12,13 +12,13 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function dismissBannerHandler(request: FastifyRequest<{ Body: DismissOperationalBannerDto, Params: { id: string } }>, reply: FastifyReply<DismissOperationalBannerResult>) {
+export async function dismissBannerHandler(request: FastifyRequest<{ Body: DismissBannerDto, Params: { id: string } }>, reply: FastifyReply<DismissBannerResult>) {
 	//
 
 	//
 	// Validate the requested banner version
 
-	const validated = DismissOperationalBannerSchema.safeParse(request.body);
+	const validated = DismissBannerSchema.safeParse(request.body);
 
 	if (!validated.success) {
 		return sendErrorApiResponse(reply, {

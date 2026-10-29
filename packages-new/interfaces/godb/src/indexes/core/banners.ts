@@ -1,8 +1,8 @@
 import { type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
-import { type OperationalBanner } from '@tmlmobilidade/go-types-core';
+import { type Banner } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
-export const bannersIndexes: SimplifiedMongoIndex<OperationalBanner>[] = [
+export const bannersIndexes: SimplifiedMongoIndex<Banner>[] = [
 	{ key: [['status', 1], ['published_at', -1]] },
 ];

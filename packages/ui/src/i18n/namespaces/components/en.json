@@ -1,4 +1,8 @@
 {
+	"banner": {
+		"dismiss": "Dismiss notice",
+		"until": "Until {end}"
+	},
 	"buttons": {
 		"CreateButton": {
 			"label": "Create"
@@ -99,10 +103,6 @@
 			"minutes_ago": "Updated {count, plural, =1 {1 minute} other {# minutes}} ago",
 			"seconds_ago": "Updated {count, plural, =1 {1 second} other {# seconds}} ago"
 		}
-	},
-	"operational_banner": {
-		"dismiss": "Dismiss notice",
-		"until": "Until {end}"
 	},
 	"sidebar": {
 		"Sidebar": {

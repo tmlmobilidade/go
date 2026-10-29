@@ -1,8 +1,8 @@
 import { type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
-import { type ChangelogRelease } from '@tmlmobilidade/go-types-core';
+import { type Changelog } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
-export const changelogsIndexes: SimplifiedMongoIndex<ChangelogRelease>[] = [
+export const changelogsIndexes: SimplifiedMongoIndex<Changelog>[] = [
 	{ key: [['status', 1], ['published_at', -1], ['_id', -1]] },
 ];

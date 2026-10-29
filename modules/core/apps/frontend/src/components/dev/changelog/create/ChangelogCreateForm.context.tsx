@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type ChangelogRelease, type CreateChangelogReleaseDto, CreateChangelogReleaseSchema } from '@tmlmobilidade/go-types-core';
+import { type Changelog, type CreateChangelogDto, CreateChangelogSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,7 @@ import { closeChangelogCreateModal } from './ChangelogCreate.modal';
 
 /* * */
 
-const ChangelogCreateFormContext = createContext<StandardFormContextValue<CreateChangelogReleaseDto> | undefined>(undefined);
+const ChangelogCreateFormContext = createContext<StandardFormContextValue<CreateChangelogDto> | undefined>(undefined);
 
 /* * */
 
@@ -42,9 +42,9 @@ export function ChangelogCreateFormContextProvider({ children }: PropsWithChildr
 	//
 	// B. Set up the draft form
 
-	const { form, isDirty, isValid, unblock } = useStandardForm<CreateChangelogReleaseDto, typeof CreateChangelogReleaseSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateChangelogDto, typeof CreateChangelogSchema>({
 		defaultValues: { items: [], scope: { type: 'platform' }, summary: '', title: '' },
-		schema: CreateChangelogReleaseSchema,
+		schema: CreateChangelogSchema,
 	});
 
 	//
@@ -52,10 +52,10 @@ export function ChangelogCreateFormContextProvider({ children }: PropsWithChildr
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleAction({
 		fetchFn: () =>
-			fetchApiData<ChangelogRelease>({
-				body: CreateChangelogReleaseSchema.parse(form.getValues()),
+			fetchApiData<Changelog>({
+				body: CreateChangelogSchema.parse(form.getValues()),
 				method: 'POST',
-				url: API_ROUTES.core.CHANGELOG_RELEASES_LIST,
+				url: API_ROUTES.core.CHANGELOGS_LIST,
 			}),
 		onSuccess: (response) => {
 			if (!response.data) return;

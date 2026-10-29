@@ -1,7 +1,7 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type ChangelogReleaseListItem } from '@tmlmobilidade/go-core-pckg-types';
+import { type ChangelogListItem } from '@tmlmobilidade/go-core-pckg-types';
 import { ChangelogItemCategoryValues } from '@tmlmobilidade/go-types-core';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, PublishStatusDisplay, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -25,7 +25,7 @@ export function ChangelogList() {
 	const { id } = useChangelogDetailId();
 	const { data, error, isLoading } = useChangelogListData();
 
-	const columns: DataTableColumn<ChangelogReleaseListItem>[] = [
+	const columns: DataTableColumn<ChangelogListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} copyOnClick />,
@@ -71,7 +71,7 @@ export function ChangelogList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: ChangelogReleaseListItem) => {
+	const handleRowClick = (item: ChangelogListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.core.DEV_CHANGELOG_DETAIL(item._id)));
 	};
 

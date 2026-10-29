@@ -2,24 +2,24 @@ import { UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { ContentModuleIdSchema } from '../platform/content-scope.js';
-import { OperationalBannerSchema } from './banner.js';
+import { BannerSchema } from './banner.js';
 
 /* * */
 
-export const OperationalBannersQuerySchema = z.object({ module_id: ContentModuleIdSchema.optional() });
-export type OperationalBannersQuery = z.infer<typeof OperationalBannersQuerySchema>;
+export const BannersQuerySchema = z.object({ module_id: ContentModuleIdSchema.optional() });
+export type BannersQuery = z.infer<typeof BannersQuerySchema>;
 
-export const DismissOperationalBannerSchema = z.object({
+export const DismissBannerSchema = z.object({
 	dismissal_version: z.number().int().positive(),
 	module_id: ContentModuleIdSchema.optional(),
 });
-export type DismissOperationalBannerDto = z.infer<typeof DismissOperationalBannerSchema>;
+export type DismissBannerDto = z.infer<typeof DismissBannerSchema>;
 
 // Reader responses exclude editorial audit and publication controls.
-export const OperationalBannerReaderSchema = OperationalBannerSchema.innerType().pick({
+export const BannerReaderSchema = BannerSchema.innerType().pick({
 	_id: true, dismissal_version: true, dismissible: true, ends_at: true, kind: true, link: true, message: true, published_at: true, scope: true, severity: true, starts_at: true, title: true,
 }).extend({ published_at: UnixMillisecondsSchema });
-export type OperationalBannerReader = z.infer<typeof OperationalBannerReaderSchema>;
+export type BannerReader = z.infer<typeof BannerReaderSchema>;
 
-export const DismissOperationalBannerResultSchema = z.object({ success: z.literal(true) });
-export type DismissOperationalBannerResult = z.infer<typeof DismissOperationalBannerResultSchema>;
+export const DismissBannerResultSchema = z.object({ success: z.literal(true) });
+export type DismissBannerResult = z.infer<typeof DismissBannerResultSchema>;

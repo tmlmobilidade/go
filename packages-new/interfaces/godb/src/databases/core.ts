@@ -1,7 +1,7 @@
 /* * */
 
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { type Agency, AgencySchema, type AppConfig, AppConfigSchema, type Attachment, AttachmentSchema, type BannerDismissal, BannerDismissalSchema, type ChangelogRelease, ChangelogReleaseSchema, type ChangelogView, ChangelogViewSchema, type OperationalBanner, OperationalBannerSchema, type Organization, OrganizationSchema, type Role, RoleSchema, type Session, SessionSchema, type User, UserSchema, type VerificationToken, VerificationTokenSchema } from '@tmlmobilidade/go-types-core';
+import { type Agency, AgencySchema, type AppConfig, AppConfigSchema, type Attachment, AttachmentSchema, type Banner, type BannerDismissal, BannerDismissalSchema, BannerSchema, type Changelog, ChangelogSchema, type ChangelogView, ChangelogViewSchema, type Organization, OrganizationSchema, type Role, RoleSchema, type Session, SessionSchema, type User, UserSchema, type VerificationToken, VerificationTokenSchema } from '@tmlmobilidade/go-types-core';
 import { type Extraction, ExtractionSchema } from '@tmlmobilidade/go-types-extractions';
 
 import { createGoDbCollection } from '../factory/create-godb-collection.js';
@@ -21,8 +21,8 @@ export class CoreDatabase {
 	public readonly appConfigs: GoDbCollection<AppConfig>;
 	public readonly attachments: GoDbCollection<Attachment>;
 	public readonly bannerDismissals: GoDbCollection<BannerDismissal>;
-	public readonly banners: GoDbCollection<OperationalBanner>;
-	public readonly changelogs: GoDbCollection<ChangelogRelease>;
+	public readonly banners: GoDbCollection<Banner>;
+	public readonly changelogs: GoDbCollection<Changelog>;
 	public readonly changelogViews: GoDbCollection<ChangelogView>;
 	public readonly extractions: GoDbCollection<Extraction>;
 	public readonly organizations: GoDbCollection<Organization>;
@@ -42,11 +42,11 @@ export class CoreDatabase {
 		this.appConfigs = createGoDbCollection<AppConfig>({ collectionName: 'app-configs', database: this.database, indexDescription: null, schema: AppConfigSchema });
 		this.attachments = createGoDbCollection<Attachment>({ collectionName: 'attachments', database: this.database, indexDescription: null, schema: AttachmentSchema });
 		this.bannerDismissals = createGoDbCollection<BannerDismissal>({ collectionName: 'banner-dismissals', database: this.database, indexDescription: bannerDismissalsIndexes, schema: BannerDismissalSchema });
-		this.changelogs = createGoDbCollection<ChangelogRelease>({ collectionName: 'changelogs', database: this.database, indexDescription: changelogsIndexes, schema: ChangelogReleaseSchema });
+		this.changelogs = createGoDbCollection<Changelog>({ collectionName: 'changelogs', database: this.database, indexDescription: changelogsIndexes, schema: ChangelogSchema });
 		this.changelogViews = createGoDbCollection<ChangelogView>({ collectionName: 'changelog-views', database: this.database, indexDescription: changelogViewsIndexes, schema: ChangelogViewSchema });
 		this.extractions = createGoDbCollection<Extraction>({ collectionName: 'extractions', database: this.database, indexDescription: extractionsIndexes, schema: ExtractionSchema });
 		this.organizations = createGoDbCollection<Organization>({ collectionName: 'organizations', database: this.database, indexDescription: null, schema: OrganizationSchema });
-		this.banners = createGoDbCollection<OperationalBanner>({ collectionName: 'banners', database: this.database, indexDescription: bannersIndexes, schema: OperationalBannerSchema });
+		this.banners = createGoDbCollection<Banner>({ collectionName: 'banners', database: this.database, indexDescription: bannersIndexes, schema: BannerSchema });
 		this.roles = createGoDbCollection<Role>({ collectionName: 'roles', database: this.database, indexDescription: null, schema: RoleSchema });
 		this.sessions = createGoDbCollection<Session>({ collectionName: 'sessions', database: this.database, indexDescription: null, schema: SessionSchema });
 		this.users = createGoDbCollection<User>({ collectionName: 'users', database: this.database, indexDescription: null, schema: UserSchema });

@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type OperationalBanner } from '@tmlmobilidade/go-types-core';
+import { type Banner } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -12,10 +12,10 @@ import { useBannersDetailId } from './use-banners-detail-id';
 /* * */
 
 interface UseBannersDetailDataReturnType {
-	data: null | OperationalBanner
+	data: Banner | null
 	error: null | string
 	isLoading: boolean
-	mutate: (data?: ApiResponse<OperationalBanner>) => void
+	mutate: (data?: ApiResponse<Banner>) => void
 }
 
 /* * */
@@ -27,9 +27,9 @@ export function useBannersDetailData(): UseBannersDetailDataReturnType {
 	// A. Fetch data
 
 	const { id } = useBannersDetailId();
-	const { data, error, isLoading, mutate } = useSWR<ApiResponse<OperationalBanner>, Error>(
-		id ? API_ROUTES.core.OPERATIONAL_BANNERS_DETAIL(id) : null,
-		{ fetcher: (url: string) => fetchApiData<OperationalBanner>({ url }), refreshInterval: 0 },
+	const { data, error, isLoading, mutate } = useSWR<ApiResponse<Banner>, Error>(
+		id ? API_ROUTES.core.BANNERS_DETAIL(id) : null,
+		{ fetcher: (url: string) => fetchApiData<Banner>({ url }), refreshInterval: 0 },
 	);
 
 	//

@@ -1,9 +1,9 @@
-import { OperationalBannerSchema } from '@tmlmobilidade/go-types-core';
+import { BannerSchema } from '@tmlmobilidade/go-types-core';
 import { z } from 'zod';
 
 /* * */
 
-export const OperationalBannerListItemSchema = OperationalBannerSchema.innerType().pick({
+export const BannerListItemSchema = BannerSchema.innerType().pick({
 	_id: true,
 	dismissal_version: true,
 	dismissible: true,
@@ -18,7 +18,7 @@ export const OperationalBannerListItemSchema = OperationalBannerSchema.innerType
 	title: true,
 	updated_at: true,
 });
-export type OperationalBannerListItem = z.infer<typeof OperationalBannerListItemSchema>;
+export type BannerListItem = z.infer<typeof BannerListItemSchema>;
 
 export const BannerManagementQuerySchema = z.object({
 	status: z.enum(['draft', 'published', 'archived']).optional(),

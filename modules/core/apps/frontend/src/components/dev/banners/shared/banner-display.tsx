@@ -1,13 +1,13 @@
 'use client';
 
 import { IconCircleFilled } from '@tabler/icons-react';
-import { type OperationalBannerKind, type OperationalBannerSeverity } from '@tmlmobilidade/go-types-core';
-import { OPERATIONAL_BANNER_KIND_ICONS, Section } from '@tmlmobilidade/ui';
+import { type BannerKind, type BannerSeverity } from '@tmlmobilidade/go-types-core';
+import { BANNER_KIND_ICONS, Section } from '@tmlmobilidade/ui';
 import { type ReactNode } from 'react';
 
 /* * */
 
-export const BANNER_SEVERITY_COLORS: Record<OperationalBannerSeverity, string> = {
+export const BANNER_SEVERITY_COLORS: Record<BannerSeverity, string> = {
 	critical: 'var(--color-status-danger-primary)',
 	info: 'var(--color-primary)',
 	warning: 'var(--color-status-warning-primary)',
@@ -15,17 +15,17 @@ export const BANNER_SEVERITY_COLORS: Record<OperationalBannerSeverity, string> =
 
 /* * */
 
-export function BannerKindIcon({ kind }: { kind: OperationalBannerKind }) {
+export function BannerKindIcon({ kind }: { kind: BannerKind }) {
 	//
 
-	const Icon = OPERATIONAL_BANNER_KIND_ICONS[kind];
+	const Icon = BANNER_KIND_ICONS[kind];
 
 	return <Icon size={18} aria-hidden />;
 }
 
 /* * */
 
-export function BannerSeverityDot({ severity }: { severity: OperationalBannerSeverity }) {
+export function BannerSeverityDot({ severity }: { severity: BannerSeverity }) {
 	//
 
 	return <IconCircleFilled color={BANNER_SEVERITY_COLORS[severity]} size={14} aria-hidden />;

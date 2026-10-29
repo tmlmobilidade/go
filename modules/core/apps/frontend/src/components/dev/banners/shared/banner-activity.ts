@@ -1,9 +1,9 @@
-import { type OperationalBanner } from '@tmlmobilidade/go-types-core';
+import { type Banner } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
 /** Publication and scheduled visibility are separate states. End times are exclusive. */
-export function getBannerActivity(banner: Pick<OperationalBanner, 'ends_at' | 'starts_at' | 'status'>, now = Date.now()) {
+export function getBannerActivity(banner: Pick<Banner, 'ends_at' | 'starts_at' | 'status'>, now = Date.now()) {
 	//
 
 	if (banner.status !== 'published') return banner.status;

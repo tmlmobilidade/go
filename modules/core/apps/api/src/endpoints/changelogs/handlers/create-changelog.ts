@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type ChangelogRelease, type CreateChangelogReleaseDto, CreateChangelogReleaseSchema } from '@tmlmobilidade/go-types-core';
+import { type Changelog, type CreateChangelogDto, CreateChangelogSchema } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
@@ -11,13 +11,13 @@ import { type ChangelogRelease, type CreateChangelogReleaseDto, CreateChangelogR
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function createChangelogReleaseHandler(request: FastifyRequest<{ Body: CreateChangelogReleaseDto }>, reply: FastifyReply<ChangelogRelease>) {
+export async function createChangelogHandler(request: FastifyRequest<{ Body: CreateChangelogDto }>, reply: FastifyReply<Changelog>) {
 	//
 
 	//
 	// Validate the editable content
 
-	const validated = CreateChangelogReleaseSchema.safeParse(request.body);
+	const validated = CreateChangelogSchema.safeParse(request.body);
 
 	if (!validated.success) {
 		return sendErrorApiResponse(reply, {

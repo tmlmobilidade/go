@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type ChangelogReleaseListItem } from '@tmlmobilidade/go-core-pckg-types';
+import { type ChangelogListItem } from '@tmlmobilidade/go-core-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -12,11 +12,11 @@ import { useListFilters } from '../../shared/use-list-filters';
 /* * */
 
 interface UseChangelogListDataReturnType {
-	data: ChangelogReleaseListItem[]
+	data: ChangelogListItem[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: (data?: ApiResponse<ChangelogReleaseListItem[]>) => void
+	mutate: (data?: ApiResponse<ChangelogListItem[]>) => void
 	timestamp?: UnixMilliseconds
 }
 
@@ -29,8 +29,8 @@ export function useChangelogListData(): UseChangelogListDataReturnType {
 	// A. Fetch data
 
 	const { search, status } = useListFilters();
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<ChangelogReleaseListItem[]>, Error>(API_ROUTES.core.CHANGELOG_RELEASES_LIST, {
-		fetcher: (url: string) => fetchApiData<ChangelogReleaseListItem[]>({ url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<ChangelogListItem[]>, Error>(API_ROUTES.core.CHANGELOGS_LIST, {
+		fetcher: (url: string) => fetchApiData<ChangelogListItem[]>({ url }),
 		refreshInterval: 30000,
 	});
 

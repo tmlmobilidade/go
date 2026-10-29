@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateOperationalBannerDto, CreateOperationalBannerSchema, type OperationalBanner } from '@tmlmobilidade/go-types-core';
+import { type Banner, type CreateBannerDto, CreateBannerSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,7 @@ import { closeBannersCreateModal } from './BannersCreate.modal';
 
 /* * */
 
-const BannersCreateFormContext = createContext<StandardFormContextValue<CreateOperationalBannerDto> | undefined>(undefined);
+const BannersCreateFormContext = createContext<StandardFormContextValue<CreateBannerDto> | undefined>(undefined);
 
 /* * */
 
@@ -42,7 +42,7 @@ export function BannersCreateFormContextProvider({ children }: PropsWithChildren
 	//
 	// B. Set up the draft form
 
-	const { form, isDirty, isValid, unblock } = useStandardForm<CreateOperationalBannerDto, typeof CreateOperationalBannerSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateBannerDto, typeof CreateBannerSchema>({
 		defaultValues: {
 			dismissible: false,
 			ends_at: null,
@@ -54,7 +54,7 @@ export function BannersCreateFormContextProvider({ children }: PropsWithChildren
 			starts_at: null,
 			title: '',
 		},
-		schema: CreateOperationalBannerSchema,
+		schema: CreateBannerSchema,
 	});
 
 	//
@@ -62,10 +62,10 @@ export function BannersCreateFormContextProvider({ children }: PropsWithChildren
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleAction({
 		fetchFn: () =>
-			fetchApiData<OperationalBanner>({
-				body: CreateOperationalBannerSchema.parse(form.getValues()),
+			fetchApiData<Banner>({
+				body: CreateBannerSchema.parse(form.getValues()),
 				method: 'POST',
-				url: API_ROUTES.core.OPERATIONAL_BANNERS_LIST,
+				url: API_ROUTES.core.BANNERS_LIST,
 			}),
 		onSuccess: (response) => {
 			if (!response.data) return;

@@ -1,9 +1,9 @@
-import { ChangelogItemSchema, ChangelogReleaseSchema } from '@tmlmobilidade/go-types-core';
+import { ChangelogItemSchema, ChangelogSchema } from '@tmlmobilidade/go-types-core';
 import { z } from 'zod';
 
 /* * */
 
-export const ChangelogReleaseListItemSchema = ChangelogReleaseSchema.innerType().pick({
+export const ChangelogListItemSchema = ChangelogSchema.innerType().pick({
 	_id: true,
 	published_at: true,
 	scope: true,
@@ -19,7 +19,7 @@ export const ChangelogReleaseListItemSchema = ChangelogReleaseSchema.innerType()
 		new_feature: items.filter(item => item.category === 'new_feature').length,
 	},
 }));
-export type ChangelogReleaseListItem = z.infer<typeof ChangelogReleaseListItemSchema>;
+export type ChangelogListItem = z.infer<typeof ChangelogListItemSchema>;
 
 export const ChangelogManagementQuerySchema = z.object({
 	status: z.enum(['draft', 'published', 'archived']).optional(),

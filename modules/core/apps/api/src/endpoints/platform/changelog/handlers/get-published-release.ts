@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type ChangelogReleaseReader, ChangelogReleaseReaderSchema } from '@tmlmobilidade/go-types-core';
+import { type ChangelogReader, ChangelogReaderSchema } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
@@ -11,7 +11,7 @@ import { type ChangelogReleaseReader, ChangelogReleaseReaderSchema } from '@tmlm
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getPublishedReleaseHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<ChangelogReleaseReader>) {
+export async function getPublishedReleaseHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<ChangelogReader>) {
 	//
 
 	// Prevent HTTP caches from storing release details with this user's seen state.
@@ -34,7 +34,7 @@ export async function getPublishedReleaseHandler(request: FastifyRequest<{ Param
 
 	const view = await goDb.core.changelogViews.findOne({ release_id: request.params.id, user_id: request.me._id });
 
-	const result = ChangelogReleaseReaderSchema.parse({ ...release, is_seen: view !== null });
+	const result = ChangelogReaderSchema.parse({ ...release, is_seen: view !== null });
 
 	return sendSuccessApiResponse(reply, result);
 }

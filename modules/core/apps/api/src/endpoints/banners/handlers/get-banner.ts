@@ -2,16 +2,16 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type OperationalBanner } from '@tmlmobilidade/go-types-core';
+import { type Banner } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
 /**
- * Get an operational banner document for management.
+ * Get an banner document for management.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getOperationalBannerHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<OperationalBanner>) {
+export async function getBannerHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Banner>) {
 	//
 
 	//
@@ -21,7 +21,7 @@ export async function getOperationalBannerHandler(request: FastifyRequest<{ Para
 
 	if (!document) {
 		return sendErrorApiResponse(reply, {
-			error: 'Operational banner not found',
+			error: 'Banner not found',
 			status_code: '404',
 		});
 	}

@@ -1,14 +1,14 @@
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
-import { createOperationalBannerHandler } from './handlers/create-operational-banner.js';
-import { getOperationalBannerHandler } from './handlers/get-operational-banner.js';
-import { listOperationalBannersHandler } from './handlers/list-operational-banners.js';
-import { updateOperationalBannerHandler } from './handlers/update-operational-banner.js';
+import { createBannerHandler } from './handlers/create-banner.js';
+import { getBannerHandler } from './handlers/get-banner.js';
+import { listBannersHandler } from './handlers/list-banners.js';
+import { updateBannerHandler } from './handlers/update-banner.js';
 
 /* * */
 
-const NAMESPACE = '/operational-banners';
+const NAMESPACE = '/banners';
 const server = FastifyService.getInstance().server;
 
 server.register(
@@ -16,25 +16,25 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.banners.scope, [PermissionCatalog.all.banners.actions.read]) },
-			listOperationalBannersHandler,
+			listBannersHandler,
 		);
 
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.banners.scope, [PermissionCatalog.all.banners.actions.read]) },
-			getOperationalBannerHandler,
+			getBannerHandler,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.banners.scope, [PermissionCatalog.all.banners.actions.update]) },
-			createOperationalBannerHandler,
+			createBannerHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.banners.scope, [PermissionCatalog.all.banners.actions.update]) },
-			updateOperationalBannerHandler,
+			updateBannerHandler,
 		);
 
 		next();

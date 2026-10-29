@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type ChangelogRelease, ChangelogReleaseSchema, type UpdateChangelogReleaseDto, UpdateChangelogReleaseSchema } from '@tmlmobilidade/go-types-core';
+import { type Changelog, ChangelogSchema, type UpdateChangelogDto, UpdateChangelogSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
@@ -13,8 +13,8 @@ import { useChangelogDetailId } from './use-changelog-detail-id';
 
 /* * */
 
-interface ChangelogDetailFormContextValue extends StandardFormContextValue<UpdateChangelogReleaseDto> {
-	data: ChangelogRelease | null
+interface ChangelogDetailFormContextValue extends StandardFormContextValue<UpdateChangelogDto> {
+	data: Changelog | null
 	error: null | string
 	publication: { can_publish: boolean, change: (action: 'archive' | 'publish' | 'unpublish') => void, is_busy: boolean }
 }
@@ -53,24 +53,24 @@ export function ChangelogDetailFormContextProvider({ children }: PropsWithChildr
 	//
 	// B. Set up validation and unsaved-change protection
 
-	const { form, isDirty, unblock } = useStandardForm<UpdateChangelogReleaseDto, typeof UpdateChangelogReleaseSchema>({
+	const { form, isDirty, unblock } = useStandardForm<UpdateChangelogDto, typeof UpdateChangelogSchema>({
 		apiData: data,
 		defaultValues: { items: [], scope: { type: 'platform' }, summary: '', title: '' },
-		schema: UpdateChangelogReleaseSchema,
+		schema: UpdateChangelogSchema,
 	});
 	const values = useStandardFormWatch({ control: form.control });
 	// Errors recorded before the first save attempt are not re-validated on change, so validate current values instead.
-	const isValid = UpdateChangelogReleaseSchema.safeParse(values).success;
+	const isValid = UpdateChangelogSchema.safeParse(values).success;
 
 	//
 	// C. Save content or change publication state
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: () =>
-			fetchApiData<ChangelogRelease>({
-				body: UpdateChangelogReleaseSchema.parse(form.getValues()),
+			fetchApiData<Changelog>({
+				body: UpdateChangelogSchema.parse(form.getValues()),
 				method: 'PUT',
-				url: API_ROUTES.core.CHANGELOG_RELEASES_DETAIL(id),
+				url: API_ROUTES.core.CHANGELOGS_DETAIL(id),
 			}),
 		onSuccess: (response) => {
 			form.reset(response.data);
@@ -78,12 +78,12 @@ export function ChangelogDetailFormContextProvider({ children }: PropsWithChildr
 			mutateList();
 		},
 	});
-	const { action: handlePublication, isLoading: isPublishing } = useHandleAction<ChangelogRelease, 'archive' | 'publish' | 'unpublish'>({
+	const { action: handlePublication, isLoading: isPublishing } = useHandleAction<Changelog, 'archive' | 'publish' | 'unpublish'>({
 		fetchFn: action =>
-			fetchApiData<ChangelogRelease>({
+			fetchApiData<Changelog>({
 				body: { status: ({ archive: 'archived', publish: 'published', unpublish: 'draft' } as const)[action] },
 				method: 'PUT',
-				url: API_ROUTES.core.CHANGELOG_RELEASES_DETAIL(id),
+				url: API_ROUTES.core.CHANGELOGS_DETAIL(id),
 			}),
 		onSuccess: (response) => {
 			form.reset(response.data);
@@ -109,7 +109,7 @@ export function ChangelogDetailFormContextProvider({ children }: PropsWithChildr
 			if (!canUpdate || isDirty || isBusy || !data || data.is_locked) return;
 			if (
 				action === 'publish' &&
-				!ChangelogReleaseSchema.safeParse({ ...data, published_at: data.published_at ?? Date.now(), published_by: me?._id, status: 'published' })
+				!ChangelogSchema.safeParse({ ...data, published_at: data.published_at ?? Date.now(), published_by: me?._id, status: 'published' })
 					.success
 			) {
 				useToast.warning({ message: t('default:dev.hints.incomplete') });

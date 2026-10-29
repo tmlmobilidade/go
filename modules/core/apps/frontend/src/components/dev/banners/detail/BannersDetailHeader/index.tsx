@@ -1,9 +1,9 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { OperationalBannerSchema } from '@tmlmobilidade/go-types-core';
+import { BannerSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, CloseButton, HasPermission, IdTag, keepUrlParams, openModal, OperationalBannerNotice, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { BannerNotice, Button, CloseButton, HasPermission, IdTag, keepUrlParams, openModal, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +22,7 @@ export function BannersDetailHeader() {
 	const router = useRouter();
 	const { actions, capabilities, data, form, isDirty, publication, status } = useBannersDetailFormContext();
 	const values = useStandardFormWatch({ control: form.control });
-	const preview = OperationalBannerSchema.safeParse({
+	const preview = BannerSchema.safeParse({
 		...data,
 		...values,
 		published_at: data?.published_at ?? Date.now(),
@@ -40,7 +40,7 @@ export function BannersDetailHeader() {
 	const handlePreview = () => {
 		if (!preview.success) return;
 		openModal({
-			children: <OperationalBannerNotice banner={preview.data} />,
+			children: <BannerNotice banner={preview.data} />,
 			size: 'xl',
 			title: t('default:dev.actions.preview'),
 		});

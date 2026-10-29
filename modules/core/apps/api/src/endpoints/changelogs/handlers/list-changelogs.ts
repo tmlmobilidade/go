@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { type ChangelogManagementQuery, ChangelogManagementQuerySchema, type ChangelogReleaseListItem, ChangelogReleaseListItemSchema } from '@tmlmobilidade/go-core-pckg-types';
+import { type ChangelogListItem, ChangelogListItemSchema, type ChangelogManagementQuery, ChangelogManagementQuerySchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /* * */
@@ -11,7 +11,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listChangelogReleasesHandler(request: FastifyRequest<{ Querystring: ChangelogManagementQuery }>, reply: FastifyReply<ChangelogReleaseListItem[]>) {
+export async function listChangelogsHandler(request: FastifyRequest<{ Querystring: ChangelogManagementQuery }>, reply: FastifyReply<ChangelogListItem[]>) {
 	//
 
 	//
@@ -35,7 +35,7 @@ export async function listChangelogReleasesHandler(request: FastifyRequest<{ Que
 	//
 	// Return only the fields needed by the management list
 
-	const items = ChangelogReleaseListItemSchema.array().parse(documents);
+	const items = ChangelogListItemSchema.array().parse(documents);
 
 	return sendSuccessApiResponse(reply, items);
 }

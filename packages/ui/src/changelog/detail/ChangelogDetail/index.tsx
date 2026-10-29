@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangelogItemCategoryValues, type ChangelogReleaseReader } from '@tmlmobilidade/go-types-core';
+import { ChangelogItemCategoryValues, type ChangelogReader } from '@tmlmobilidade/go-types-core';
 import { useTranslation } from 'react-i18next';
 
 import categoryStyles from '../../shared/changelog-categories.module.css';
@@ -11,7 +11,7 @@ import { ChangelogMeta } from '../../shared/ChangelogMeta';
 
 /* * */
 
-export function ChangelogDetail({ release }: { release: ChangelogReleaseReader }) {
+export function ChangelogDetail({ release }: { release: ChangelogReader }) {
 	//
 	// A. Setup variables
 

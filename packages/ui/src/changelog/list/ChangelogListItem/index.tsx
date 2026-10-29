@@ -1,7 +1,7 @@
 'use client';
 
 import { IconArrowRight, IconCheck } from '@tabler/icons-react';
-import { ChangelogItemCategoryValues, type ChangelogReleaseSummary } from '@tmlmobilidade/go-types-core';
+import { ChangelogItemCategoryValues, type ChangelogSummary } from '@tmlmobilidade/go-types-core';
 import { useTranslation } from 'react-i18next';
 
 import categoryStyles from '../../shared/changelog-categories.module.css';
@@ -14,7 +14,7 @@ import { ChangelogMeta } from '../../shared/ChangelogMeta';
 
 interface ChangelogListItemProps {
 	onOpen: () => void
-	release: ChangelogReleaseSummary
+	release: ChangelogSummary
 }
 
 /* * */

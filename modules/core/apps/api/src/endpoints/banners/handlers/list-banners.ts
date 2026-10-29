@@ -1,17 +1,17 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { type BannerManagementQuery, BannerManagementQuerySchema, type OperationalBannerListItem, OperationalBannerListItemSchema } from '@tmlmobilidade/go-core-pckg-types';
+import { type BannerListItem, BannerListItemSchema, type BannerManagementQuery, BannerManagementQuerySchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /* * */
 
 /**
- * List operational banners.
+ * List banners.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listOperationalBannersHandler(request: FastifyRequest<{ Querystring: BannerManagementQuery }>, reply: FastifyReply<OperationalBannerListItem[]>) {
+export async function listBannersHandler(request: FastifyRequest<{ Querystring: BannerManagementQuery }>, reply: FastifyReply<BannerListItem[]>) {
 	//
 
 	//
@@ -35,7 +35,7 @@ export async function listOperationalBannersHandler(request: FastifyRequest<{ Qu
 	//
 	// Return only the fields needed by the management list
 
-	const items = OperationalBannerListItemSchema.array().parse(documents);
+	const items = BannerListItemSchema.array().parse(documents);
 
 	return sendSuccessApiResponse(reply, items);
 }

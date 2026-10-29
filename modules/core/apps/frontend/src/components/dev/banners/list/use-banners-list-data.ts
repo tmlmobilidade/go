@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type OperationalBannerListItem } from '@tmlmobilidade/go-core-pckg-types';
+import { type BannerListItem } from '@tmlmobilidade/go-core-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -12,11 +12,11 @@ import { useListFilters } from '../../shared/use-list-filters';
 /* * */
 
 interface UseBannersListDataReturnType {
-	data: OperationalBannerListItem[]
+	data: BannerListItem[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: (data?: ApiResponse<OperationalBannerListItem[]>) => void
+	mutate: (data?: ApiResponse<BannerListItem[]>) => void
 	timestamp?: UnixMilliseconds
 }
 
@@ -29,8 +29,8 @@ export function useBannersListData(): UseBannersListDataReturnType {
 	// A. Fetch data
 
 	const { search, status } = useListFilters();
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<OperationalBannerListItem[]>, Error>(API_ROUTES.core.OPERATIONAL_BANNERS_LIST, {
-		fetcher: (url: string) => fetchApiData<OperationalBannerListItem[]>({ url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<BannerListItem[]>, Error>(API_ROUTES.core.BANNERS_LIST, {
+		fetcher: (url: string) => fetchApiData<BannerListItem[]>({ url }),
 		refreshInterval: 30000,
 	});
 

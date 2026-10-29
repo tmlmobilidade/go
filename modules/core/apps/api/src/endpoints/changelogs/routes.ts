@@ -1,14 +1,14 @@
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
-import { createChangelogReleaseHandler } from './handlers/create-changelog-release.js';
-import { getChangelogReleaseHandler } from './handlers/get-changelog-release.js';
-import { listChangelogReleasesHandler } from './handlers/list-changelog-releases.js';
-import { updateChangelogReleaseHandler } from './handlers/update-changelog-release.js';
+import { createChangelogHandler } from './handlers/create-changelog.js';
+import { getChangelogHandler } from './handlers/get-changelog.js';
+import { listChangelogsHandler } from './handlers/list-changelogs.js';
+import { updateChangelogHandler } from './handlers/update-changelog.js';
 
 /* * */
 
-const NAMESPACE = '/changelog-releases';
+const NAMESPACE = '/changelogs';
 const server = FastifyService.getInstance().server;
 
 server.register(
@@ -16,25 +16,25 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.changelogs.scope, [PermissionCatalog.all.changelogs.actions.read]) },
-			listChangelogReleasesHandler,
+			listChangelogsHandler,
 		);
 
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.changelogs.scope, [PermissionCatalog.all.changelogs.actions.read]) },
-			getChangelogReleaseHandler,
+			getChangelogHandler,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.changelogs.scope, [PermissionCatalog.all.changelogs.actions.update]) },
-			createChangelogReleaseHandler,
+			createChangelogHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.changelogs.scope, [PermissionCatalog.all.changelogs.actions.update]) },
-			updateChangelogReleaseHandler,
+			updateChangelogHandler,
 		);
 
 		next();

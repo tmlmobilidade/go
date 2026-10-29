@@ -19,16 +19,16 @@ export const ChangelogItemSchema = z.object({
 
 export type ChangelogItem = z.infer<typeof ChangelogItemSchema>;
 
-const ChangelogReleaseContentSchema = z.object({
+const ChangelogContentSchema = z.object({
 	items: z.array(ChangelogItemSchema).default([]).refine(items => new Set(items.map(item => item._id)).size === items.length, 'Change item IDs must be unique within a release'),
 	scope: ContentScopeSchema,
 	summary: z.string().trim().default(''),
 	title: z.string().trim().default(''),
 });
 
-export const ChangelogReleaseSchema = BaseDocumentSchema
+export const ChangelogSchema = BaseDocumentSchema
 	.merge(ContentPublicationSchema)
-	.merge(ChangelogReleaseContentSchema)
+	.merge(ChangelogContentSchema)
 	.superRefine((document, context) => {
 		validateContentPublication(document, context);
 		if (document.status !== 'published') return;
@@ -38,9 +38,9 @@ export const ChangelogReleaseSchema = BaseDocumentSchema
 	});
 
 // Creation starts as a draft; updates can change status, but not audit metadata or locks.
-export const CreateChangelogReleaseSchema = ChangelogReleaseContentSchema;
-export const UpdateChangelogReleaseSchema = ChangelogReleaseContentSchema.partial().extend({ status: PublishStatusSchema.optional() });
+export const CreateChangelogSchema = ChangelogContentSchema;
+export const UpdateChangelogSchema = ChangelogContentSchema.partial().extend({ status: PublishStatusSchema.optional() });
 
-export type ChangelogRelease = z.infer<typeof ChangelogReleaseSchema>;
-export type CreateChangelogReleaseDto = z.infer<typeof CreateChangelogReleaseSchema>;
-export type UpdateChangelogReleaseDto = z.infer<typeof UpdateChangelogReleaseSchema>;
+export type Changelog = z.infer<typeof ChangelogSchema>;
+export type CreateChangelogDto = z.infer<typeof CreateChangelogSchema>;
+export type UpdateChangelogDto = z.infer<typeof UpdateChangelogSchema>;

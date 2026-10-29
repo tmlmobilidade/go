@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type ContentModuleId, ContentModuleIdSchema, type OperationalBannerReader } from '@tmlmobilidade/go-types-core';
+import { type BannerReader, type ContentModuleId, ContentModuleIdSchema } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
@@ -11,8 +11,8 @@ import { fetchApiData } from '../../../fetch/fetch-api-data';
 /* * */
 
 interface UseActiveBannersDataReturnType {
-	data: OperationalBannerReader[]
-	dismiss: (banner: OperationalBannerReader) => Promise<void>
+	data: BannerReader[]
+	dismiss: (banner: BannerReader) => Promise<void>
 }
 
 /* * */
@@ -31,10 +31,10 @@ export function useActiveBannersData(): UseActiveBannersDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, mutate } = useSWR<ApiResponse<OperationalBannerReader[]>>(API_ROUTES.core.BANNERS_LIST, {
+	const { data, mutate } = useSWR<ApiResponse<BannerReader[]>>(API_ROUTES.core.BANNERS_ACTIVE, {
 		fetcher: (url: string) => {
 			const moduleId = getCurrentModuleId();
-			return fetchApiData<OperationalBannerReader[]>({ url: moduleId ? `${url}?module_id=${moduleId}` : url });
+			return fetchApiData<BannerReader[]>({ url: moduleId ? `${url}?module_id=${moduleId}` : url });
 		},
 		refreshInterval: 60_000,
 	});
@@ -42,7 +42,7 @@ export function useActiveBannersData(): UseActiveBannersDataReturnType {
 	//
 	// B. Handle actions
 
-	const dismiss = useCallback(async (banner: OperationalBannerReader) => {
+	const dismiss = useCallback(async (banner: BannerReader) => {
 		await fetchApiData({
 			body: { dismissal_version: banner.dismissal_version, module_id: getCurrentModuleId() },
 			method: 'POST',

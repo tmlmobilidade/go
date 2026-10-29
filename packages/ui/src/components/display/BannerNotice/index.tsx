@@ -3,7 +3,7 @@
 /* * */
 
 import { IconAlertCircle, IconServerCog, IconSpeakerphone, IconX } from '@tabler/icons-react';
-import { type OperationalBannerKind, type OperationalBannerReader } from '@tmlmobilidade/go-types-core';
+import { type BannerKind, type BannerReader } from '@tmlmobilidade/go-types-core';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,20 +11,20 @@ import styles from './styles.module.css';
 
 /* * */
 
-export const OPERATIONAL_BANNER_KIND_ICONS: Record<OperationalBannerKind, typeof IconAlertCircle> = {
+export const BANNER_KIND_ICONS: Record<BannerKind, typeof IconAlertCircle> = {
 	announcement: IconSpeakerphone,
 	incident: IconAlertCircle,
 	maintenance: IconServerCog,
 };
 
-interface OperationalBannerNoticeProps {
-	banner: Pick<OperationalBannerReader, 'dismissible' | 'ends_at' | 'kind' | 'link' | 'message' | 'severity' | 'starts_at' | 'title'>
+interface BannerNoticeProps {
+	banner: Pick<BannerReader, 'dismissible' | 'ends_at' | 'kind' | 'link' | 'message' | 'severity' | 'starts_at' | 'title'>
 	onDismiss?: () => void
 }
 
 /* * */
 
-export function OperationalBannerNotice({ banner, onDismiss }: OperationalBannerNoticeProps) {
+export function BannerNotice({ banner, onDismiss }: BannerNoticeProps) {
 	//
 
 	//
@@ -32,11 +32,11 @@ export function OperationalBannerNotice({ banner, onDismiss }: OperationalBanner
 
 	const { i18n, t } = useTranslation();
 	const [isExpanded, setIsExpanded] = useState(false);
-	const KindIcon = OPERATIONAL_BANNER_KIND_ICONS[banner.kind];
+	const KindIcon = BANNER_KIND_ICONS[banner.kind];
 
 	const formatTime = (value: number) => new Date(value).toLocaleString(i18n.resolvedLanguage, { dateStyle: 'short', timeStyle: 'short', timeZone: 'Europe/Lisbon' });
 
-	const schedule = banner.ends_at && t('shared:components.operational_banner.until', '', { end: formatTime(banner.ends_at) });
+	const schedule = banner.ends_at && t('shared:components.banner.until', '', { end: formatTime(banner.ends_at) });
 
 	//
 	// B. Render components
@@ -55,7 +55,7 @@ export function OperationalBannerNotice({ banner, onDismiss }: OperationalBanner
 				</a>
 			)}
 			{banner.dismissible && (
-				<button aria-label={t('shared:components.operational_banner.dismiss')} className={styles.dismiss} disabled={!onDismiss} onClick={onDismiss} type="button">
+				<button aria-label={t('shared:components.banner.dismiss')} className={styles.dismiss} disabled={!onDismiss} onClick={onDismiss} type="button">
 					<IconX size={16} />
 				</button>
 			)}
