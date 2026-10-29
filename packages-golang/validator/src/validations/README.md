@@ -23,21 +23,27 @@ matching tests live directly in each category's `tests` directory. Filenames
 carry the GTFS context, for example `trips_route_id.go`, instead of introducing
 another directory level. Shared helpers and fixtures live directly in `utils`.
 
-`main.go` contains registration and all DAG orchestration. Table dispatch still
-selects the correct SQLite rows and grouped execution scope, but every action
-binds to these same shared category packages. Each check keeps its existing rule
-ID, diagnostic fields, severity handling, and dependency behavior. Colliding Go
-helper/function names are qualified with their GTFS context.
+`main.go` binds every check in `RuleDefinitions` and exposes `Run` for the complete
+feed. `services.RuleRunner` builds one global DAG. Table names and grouping fields
+identify a check's data; they do not partition the dependency graph. Rule IDs,
+diagnostic fields, severity settings, and options are preserved.
 
-The supplied `depends_on` edges control execution, with all ready rules finishing
-before the next dependency level. Information, warning, and error findings block
-dependents. Outcomes remain local to their row or group; unrelated data continues.
-Feed-wide presence checks use `rules.Manager` without a source row.
+Any configured `depends_on` edge may cross tables or execution scopes. Within a
+table, prerequisites must pass for the affected row or every member of a group.
+Across tables, the prerequisite must finish and pass across all source rows/groups.
+Information, warning, and error findings block dependents, as do ignored checks,
+unavailable implementations, missing tables, and checks with no rows. Independent
+rules continue. File-presence checks participate in the same graph and use actual
+table existence regardless of their diagnostic severity.
 
-Integration tests live in `standard/tests`. The layout test verifies that every
-exported check is bound in `main.go`, that checks/tests are flat, and that no GTFS
-file directories return. Previously empty validators remain registered as empty
-functions in `main.go`; this restructuring does not add new rule behavior.
+The runner shares bounded SQLite reads between adjacent rules using the same
+rows. It retains row outcomes only for same-table dependencies and releases them
+after the final dependent; it does not retain action closures for every feed row.
+
+Integration tests cover global ordering, cross-scope blocking, and actual calendar
+checks. The layout test verifies that every exported check is bound in `main.go`
+and that checks/tests remain flat. Legacy per-table entry points delegate to the
+same global run; they no longer select separate rule sections.
 
 From `packages-golang/validator`, run:
 
@@ -54,7 +60,7 @@ Transit agencies with service represented in this dataset.
 **Primary key**: agency_id
 
 `main.go` collects the actions from `fields/checks`, `standard/checks`, and `custom/checks` and runs
-one DAG for each row. The folders organize implementations; execution order and
+one global DAG, retaining row outcomes for local prerequisites. The folders organize implementations; execution order and
 prerequisites come only from each rule's configured `depends_on` list.
 Each category keeps its checks in `checks/` and its tests in `tests/`.
 Shared SQLite test helpers live in `utils/`. Email validation belongs to

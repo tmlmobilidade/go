@@ -45,13 +45,6 @@ func DecodeConfig(data []byte) (types.GtfsRules, error) {
 		if !slices.Contains(Severities, config.Severity) {
 			return result, fmt.Errorf("%s: invalid severity %q", id, config.Severity)
 		}
-		file := FileForRuleID(id)
-		if file == "" {
-			return result, fmt.Errorf("%s: unknown file prefix", id)
-		}
-		if id == file+"_file_missing" && len(config.DependsOn) > 0 {
-			return result, fmt.Errorf("%s.depends_on: file-presence rules cannot have prerequisites", id)
-		}
 		result[id] = config
 	}
 	return result, nil

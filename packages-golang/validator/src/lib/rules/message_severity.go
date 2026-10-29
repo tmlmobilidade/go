@@ -18,13 +18,12 @@ func ConfigureMessageSeverities(config *types.GtfsRules) {
 	values := map[string]types.Severity{}
 	for _, id := range RuleIDs(config) {
 		context := config.Rule(id)
-		name := FileForRuleID(id)
-		if name == "file_validation" {
+		if id == "file_validation" || id == "file_not_found_in_rules" || id == types.RuleIDGtfsFeedFilePresenceAndIntegrity {
 			continue
 		}
-		values[name+"/"+id+"/"] = context.Severity
+		values[id+"/"] = context.Severity
 		if key := RuleMessageKey(id); key != id {
-			values[name+"/"+key] = context.Severity
+			values[key] = context.Severity
 		}
 	}
 	messageSeverities.Store(&values)
@@ -40,12 +39,12 @@ func ResolveMessageSeverity(file, id, field string, fallback types.Severity) typ
 	return severity
 }
 
-func MessageSeverityOverride(file, id, field string) (types.Severity, bool) {
+func MessageSeverityOverride(_ string, id, field string) (types.Severity, bool) {
 	values := messageSeverities.Load()
 	if values == nil {
 		return "", false
 	}
-	prefix := strings.TrimSuffix(file, ".txt") + "/" + id + "/"
+	prefix := id + "/"
 	severity, ok := (*values)[prefix+field]
 	if !ok {
 		severity, ok = (*values)[prefix]

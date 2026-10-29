@@ -50,15 +50,7 @@ func TestFlatValidationLayoutAndCheckBindings(t *testing.T) {
 	called := map[string]bool{}
 	hasDAG := false
 	ast.Inspect(main, func(node ast.Node) bool {
-		call, ok := node.(*ast.CallExpr)
-		if !ok {
-			return true
-		}
-		target := call.Fun
-		if generic, ok := target.(*ast.IndexExpr); ok {
-			target = generic.X
-		}
-		selector, ok := target.(*ast.SelectorExpr)
+		selector, ok := node.(*ast.SelectorExpr)
 		if !ok {
 			return true
 		}

@@ -43,7 +43,7 @@ type SQLiteRow struct {
 	Row     int
 	context *SQLiteContext
 	name    string
-	// Only RunTable's current group uses prefetched values. At/Context callers
+	// Only the runner's current batch/group uses prefetched values. At/Context callers
 	// continue to read SQLite directly; no values are cached on shared tables.
 	values map[string]string
 }

@@ -12,12 +12,14 @@ import (
 // RulesParser handles parsing of GTFS validation rules from JSON files
 type RulesParser struct {
 	rulesPath string
+	knownIDs  []string
 }
 
 // NewRulesParser creates a new rules parser with the specified rules file path
-func NewRulesParser(rulesPath string) *RulesParser {
+func NewRulesParser(rulesPath string, knownIDs ...string) *RulesParser {
 	return &RulesParser{
 		rulesPath: rulesPath,
+		knownIDs:  knownIDs,
 	}
 }
 
@@ -59,14 +61,9 @@ func (rp *RulesParser) ParseRules() (*types.GtfsRules, error) {
 	return &rules, nil
 }
 
-// validateRules checks dependency scopes without grouping stored configuration.
+// validateRules checks the complete dependency graph, independent of data sources.
 func (rp *RulesParser) validateRules(config *types.GtfsRules) error {
-	for _, file := range append(types.GtfsRuleFiles[:len(types.GtfsRuleFiles):len(types.GtfsRuleFiles)], "file_validation") {
-		if err := ruleset.ValidateDependencies(ruleset.ForFile(config, file), file); err != nil {
-			return fmt.Errorf("Invalid depends_on in '%s': %w", file, err)
-		}
-	}
-	return nil
+	return ruleset.ValidateDependencies(config, rp.knownIDs...)
 }
 
 // ParseRulesFromFile is a convenience function to parse rules from a file path

@@ -83,7 +83,7 @@ func RenderTypeScript(sourceDir string) (map[string][]byte, error) {
 					}
 				}
 			case *ast.CompositeLit:
-				if selector, ok := node.Type.(*ast.SelectorExpr); ok && selector.Sel.Name == "RuleActions" {
+				if selector, ok := node.Type.(*ast.SelectorExpr); ok && selector.Sel.Name == "RuleChecks" {
 					for _, element := range node.Elts {
 						if pair, ok := element.(*ast.KeyValueExpr); ok {
 							if id := literal(pair.Key); id != "" {

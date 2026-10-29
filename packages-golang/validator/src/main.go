@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/config"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/i18n"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	ruleset "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
@@ -10,62 +9,31 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
 	"log"
 	"main/types"
-	"sync"
 )
 
 func init() {
 	services.SetDisplayVersion("1.0.0")
 }
 
-func runValidations(gtfs types.Gtfs, tracker *lib.PerformanceTracker, rules *types.GtfsRules) {
-	// Prepare all imported tables before starting any validation goroutine.
+func runValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
+	preparation := lib.AppLogger.StartPerformanceTracker("Preparing SQLite validation tables and indexes")
 	tables, err := services.PrepareSQLiteTables(gtfs.DB())
+	preparation.End()
 	if err != nil {
 		services.AppMessageService.AddMessage(types.Message{
 			FileName: "N/A", Field: "N/A", RuleID: "file_validation",
-			Severity: types.SEVERITY_ERROR, Message: fmt.Sprintf("Error preparing SQLite tables: %v", err),
+			Severity: types.SEVERITY_ERROR, Message: fmt.Sprintf("Error preparing GTFS validation: %v", err),
 		})
-		tracker.End()
 		return
 	}
-
-	// Create a wait group to wait for all validations to complete
-	var wg sync.WaitGroup
-
-	// List of all possible GTFS tables (from config)
-	gtfsTables := config.GTFSTables
-
-	// Run Validations for each file concurrently
-	for _, fileName := range gtfsTables {
-		// Check if table exists in database
-		if !tables.Has(fileName) {
-			continue
-		}
-
-		// Check if validation is registered for this table
-		validationFn, ok := validations.Get(fileName)
-		if !ok {
-			services.AppMessageService.AddMessage(types.Message{
-				Rows:     []int{},
-				Field:    "N/A",
-				FileName: fileName,
-				Message:  fmt.Sprintf(i18n.AppTranslator.Get("file_not_found_in_rules.not_supported"), fileName),
-				RuleID:   "file_not_found_in_rules",
-				Severity: types.SEVERITY_WARNING,
-			})
-			continue
-		}
-
-		wg.Add(1)
-		go func(name string, fn validations.ValidationFunction) {
-			defer wg.Done()
-			fn(gtfs, rules, tables)
-		}(fileName, validationFn)
+	tracker := lib.AppLogger.StartPerformanceTracker("Validating GTFS rules")
+	defer tracker.End()
+	if _, err := validations.Run(gtfs, rules, tables); err != nil {
+		services.AppMessageService.AddMessage(types.Message{
+			FileName: "N/A", Field: "N/A", RuleID: "file_validation",
+			Severity: types.SEVERITY_ERROR, Message: fmt.Sprintf("Error validating GTFS: %v", err),
+		})
 	}
-
-	// Wait for all validations to complete
-	wg.Wait()
-	tracker.End()
 }
 
 func outputSummary() {
@@ -93,7 +61,7 @@ func main() {
 	}
 
 	// 0.3 Parse Rules
-	rules, err := services.NewRulesParser(services.AppCLI.Options.RulesPath).ParseRules()
+	rules, err := services.NewRulesParser(services.AppCLI.Options.RulesPath, validations.RuleIDs()...).ParseRules()
 	if err != nil {
 		log.Fatalf("Error parsing rules: %v", err)
 	}
@@ -111,6 +79,7 @@ func main() {
 	//
 	// 1. Open the existing GTFS SQLite database
 	gtfs, err := services.ReadGTFSSQLite(services.AppCLI.Options.InputPath)
+	tracker.End()
 	if err != nil {
 		log.Fatalf("Error reading GTFS: %v", err)
 	}
@@ -127,16 +96,10 @@ func main() {
 	}
 
 	//
-	// 2. Check File Requirements
-	// File validations add messages directly to AppMessageService
-	// Missing files block their own DAGs; independent available files still run.
-	validations.NewFileValidation().Validate(gtfs, rules)
+	// 2. Execute every configured rule in the global dependency graph.
+	runValidations(gtfs, rules)
 
 	//
-	// 3. Run Validations for each file
-	runValidations(gtfs, tracker, rules)
-
-	//
-	// 4. Output Summary
+	// 3. Output Summary
 	outputSummary()
 }

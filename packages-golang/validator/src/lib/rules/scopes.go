@@ -5,8 +5,8 @@ func ExecutionScope(id string) string {
 	return executionScopes[id]
 }
 
-// executionScopes describe grouped validators whose prerequisites must run in
-// the same scope. This is execution metadata, not a configuration allowlist.
+// executionScopes describe which rows a grouped validator checks. Dependencies
+// may target any scope; the global runner resolves their relevant outcomes.
 var executionScopes = map[string]string{
 	"trips_pattern_required_fields":                    "pattern",
 	"trips_pattern_single_signature":                   "pattern",

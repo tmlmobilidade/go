@@ -14,41 +14,12 @@ import (
 )
 
 func TestTripsEveryCheckHasOneAction(t *testing.T) {
-	source, err := parser.ParseFile(token.NewFileSet(), filepath.Join("..", "..", "main.go"), nil, 0)
-	if err != nil {
-		t.Fatal(err)
-	}
-	var runner *ast.FuncDecl
-	for _, declaration := range source.Decls {
-		if function, ok := declaration.(*ast.FuncDecl); ok && function.Name.Name == "RunTripsValidations" {
-			runner = function
-			break
-		}
-	}
-	if runner == nil {
-		t.Fatal("missing trips DAG runner")
-	}
 	actions := map[string]int{}
-	ast.Inspect(runner, func(node ast.Node) bool {
-		literal, ok := node.(*ast.CompositeLit)
-		if !ok {
-			return true
+	for _, definition := range validations.RuleDefinitions(types.Gtfs{}, nil) {
+		if definition.Table == "trips" {
+			actions[definition.ID]++
 		}
-		selector, ok := literal.Type.(*ast.SelectorExpr)
-		if !ok || selector.Sel.Name != "RuleActions" {
-			return true
-		}
-		for _, element := range literal.Elts {
-			pair := element.(*ast.KeyValueExpr)
-			key := pair.Key.(*ast.BasicLit)
-			id, err := strconv.Unquote(key.Value)
-			if err != nil {
-				t.Fatal(err)
-			}
-			actions[id]++
-		}
-		return true
-	})
+	}
 	files, err := filepath.Glob(filepath.Join("..", "..", "*", "checks", "trips_*.go"))
 	if err != nil {
 		t.Fatal(err)
