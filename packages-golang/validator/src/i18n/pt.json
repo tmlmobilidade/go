@@ -127,7 +127,7 @@
 		"required": "O campo service_id é obrigatório"
 	},
 	"calendar_dates_service_id_foreign": {
-		"generic": "A referência do campo \"service_id\" a calendar.txt não é válida.",
+		"generic": "O campo \"service_id\" contém uma referência inválida a calendar.txt.",
 		"not_found": "O service_id \"%s\" não existe em calendar.txt"
 	},
 	"calendar_end_date_field": {
@@ -261,7 +261,7 @@
 		"required": "O campo \"agency_id\" é obrigatório quando existe mais do que uma agência"
 	},
 	"fare_attributes_agency_id_foreign": {
-		"generic": "A referência do campo \"agency_id\" a agency.txt não é válida.",
+		"generic": "O campo \"agency_id\" contém uma referência inválida a agency.txt.",
 		"not_found": "O campo \"agency_id\" \"%s\" não existe em agency.txt"
 	},
 	"fare_attributes_currency_type_field": {
@@ -338,7 +338,7 @@
 	},
 	"fare_rules_contains_id_foreign": {
 		"forbidden": "O campo \"contains_id\" é proibido",
-		"generic": "A referência do campo \"contains_id\" a stops.txt não é válida.",
+		"generic": "O campo \"contains_id\" contém uma referência inválida a stops.txt.",
 		"invalid": "O campo \"contains_id\" \"%s\" deve ser um ID válido de stops.txt",
 		"recommended": "O campo \"contains_id\" é recomendado",
 		"required": "O campo \"contains_id\" é obrigatório"
@@ -351,7 +351,7 @@
 	},
 	"fare_rules_destination_id_foreign": {
 		"forbidden": "O campo \"destination_id\" é proibido",
-		"generic": "A referência do campo \"destination_id\" a stops.txt não é válida.",
+		"generic": "O campo \"destination_id\" contém uma referência inválida a stops.txt.",
 		"invalid": "O campo \"destination_id\" \"%s\" deve ser um ID válido de stops.txt",
 		"recommended": "O campo \"destination_id\" é recomendado",
 		"required": "O campo \"destination_id\" é obrigatório"
@@ -364,7 +364,7 @@
 	},
 	"fare_rules_fare_id_foreign": {
 		"forbidden": "O campo \"fare_id\" é proibido",
-		"generic": "A referência do campo \"fare_id\" a fare_attributes.txt não é válida.",
+		"generic": "O campo \"fare_id\" contém uma referência inválida a fare_attributes.txt.",
 		"invalid": "O campo \"fare_id\" \"%s\" não é um fare_id válido de fare_attributes.txt",
 		"recommended": "O campo \"fare_id\" é recomendado",
 		"required": "O campo \"fare_id\" é obrigatório"
@@ -377,7 +377,7 @@
 	},
 	"fare_rules_origin_id_foreign": {
 		"forbidden": "O campo \"origin_id\" é proibido",
-		"generic": "A referência do campo \"origin_id\" a stops.txt não é válida.",
+		"generic": "O campo \"origin_id\" contém uma referência inválida a stops.txt.",
 		"invalid": "O campo \"origin_id\" \"%s\" deve ser um ID válido de stops.txt",
 		"recommended": "O campo \"origin_id\" é recomendado",
 		"required": "O campo \"origin_id\" é obrigatório"
@@ -390,7 +390,7 @@
 	},
 	"fare_rules_route_id_foreign": {
 		"forbidden": "O campo \"route_id\" é proibido",
-		"generic": "A referência do campo \"route_id\" a routes.txt não é válida.",
+		"generic": "O campo \"route_id\" contém uma referência inválida a routes.txt.",
 		"invalid": "O campo \"route_id\" \"%s\" não é um route_id válido de routes.txt",
 		"recommended": "O campo \"route_id\" é recomendado",
 		"required": "O campo \"route_id\" é obrigatório"
@@ -566,7 +566,7 @@
 	},
 	"frequencies_trip_id_foreign": {
 		"forbidden": "O campo \"trip_id\" é proibido",
-		"generic": "A referência do campo \"trip_id\" a trips.txt não é válida.",
+		"generic": "O campo \"trip_id\" contém uma referência inválida a trips.txt.",
 		"not_found": "O campo \"trip_id\" \"%s\" não existe em trips.txt",
 		"recommended": "O campo \"trip_id\" é recomendado",
 		"required": "O campo \"trip_id\" é obrigatório"
@@ -615,7 +615,7 @@
 	"pathways_from_stop_id_foreign": {
 		"forbidden": "O campo \"from_stop_id\" é proibido",
 		"forbidden_stop_access_1": "O campo \"from_stop_id\" \"%s\" referencia uma paragem (location_type=0 ou vazio) com stop_access=1. Paragens com stop_access=1 são proibidas para pathways",
-		"generic": "A referência do campo \"from_stop_id\" a stops.txt não é válida.",
+		"generic": "O campo \"from_stop_id\" contém uma referência inválida a stops.txt.",
 		"invalid_location_type_format": "O campo \"from_stop_id\" \"%s\" referencia uma paragem cujo \"location_type\" não é um número inteiro válido",
 		"invalid_location_type_pathway": "O campo \"from_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser plataforma (0 ou vazio), entrada/saída (2), nó (3) ou área de embarque (4)",
 		"invalid_location_type_station": "O campo \"from_stop_id\" \"%s\" referencia uma estação (location_type=1). Estações são proibidas para pathways",
@@ -741,7 +741,7 @@
 	"pathways_to_stop_id_foreign": {
 		"forbidden": "O campo \"to_stop_id\" é proibido",
 		"forbidden_stop_access_1": "O campo \"to_stop_id\" \"%s\" referencia uma paragem (location_type=0 ou vazio) com stop_access=1. Paragens com stop_access=1 são proibidas para pathways",
-		"generic": "A referência do campo \"to_stop_id\" a stops.txt não é válida.",
+		"generic": "O campo \"to_stop_id\" contém uma referência inválida a stops.txt.",
 		"invalid_location_type_pathway": "O campo \"to_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser plataforma (0 ou vazio), entrada/saída (2), nó genérico (3) ou área de embarque (4)",
 		"invalid_location_type_station": "O campo \"to_stop_id\" \"%s\" referencia uma estação (location_type=1). Estações são proibidas para pathways",
 		"not_found": "O campo \"to_stop_id\" \"%s\" não existe em stops.txt",
@@ -815,7 +815,7 @@
 		"required": "O campo agency_id é obrigatório"
 	},
 	"routes_agency_id_foreign": {
-		"generic": "A referência do campo \"agency_id\" a agency.txt não é válida.",
+		"generic": "O campo \"agency_id\" contém uma referência inválida a agency.txt.",
 		"not_found": "O valor \"%s\" do campo \"agency_id\" não foi encontrado em agency.txt"
 	},
 	"routes_continuous_drop_off_field": {
@@ -875,7 +875,7 @@
 		"required": "O campo network_id é obrigatório"
 	},
 	"routes_network_id_foreign": {
-		"generic": "A referência do campo \"network_id\" a route_networks.txt não é válida.",
+		"generic": "O campo \"network_id\" contém uma referência inválida a route_networks.txt.",
 		"not_found": "O valor \"%s\" do campo \"network_id\" não foi encontrado em route_networks.txt"
 	},
 	"routes_path_type_field": {
@@ -1093,7 +1093,7 @@
 		"required": "O campo drop_off_booking_rule_id é obrigatório"
 	},
 	"stop_times_drop_off_booking_rule_id_foreign": {
-		"generic": "A referência do campo \"drop_off_booking_rule_id\" a booking_rules.txt não é válida.",
+		"generic": "O campo \"drop_off_booking_rule_id\" contém uma referência inválida a booking_rules.txt.",
 		"not_found": "O valor \"%s\" do campo \"drop_off_booking_rule_id\" não existe em booking_rules.txt"
 	},
 	"stop_times_drop_off_type_field": {
@@ -1137,7 +1137,7 @@
 		"required": "O campo pickup_booking_rule_id é obrigatório"
 	},
 	"stop_times_pickup_booking_rule_id_foreign": {
-		"generic": "A referência do campo \"pickup_booking_rule_id\" a booking_rules.txt não é válida.",
+		"generic": "O campo \"pickup_booking_rule_id\" contém uma referência inválida a booking_rules.txt.",
 		"not_found": "O valor \"%s\" do campo \"pickup_booking_rule_id\" não existe em booking_rules.txt"
 	},
 	"stop_times_pickup_type_field": {
@@ -1185,7 +1185,7 @@
 		"required": "O campo stop_id é obrigatório"
 	},
 	"stop_times_stop_id_foreign": {
-		"generic": "A referência do campo \"stop_id\" a stops.txt não é válida.",
+		"generic": "O campo \"stop_id\" contém uma referência inválida a stops.txt.",
 		"not_found": "O valor \"%s\" do campo \"stop_id\" não existe em stops.txt"
 	},
 	"stop_times_timepoint_field": {
@@ -1205,7 +1205,7 @@
 		"required": "O campo trip_id é obrigatório"
 	},
 	"stop_times_trip_id_foreign": {
-		"generic": "A referência do campo \"trip_id\" a trips.txt não é válida.",
+		"generic": "O campo \"trip_id\" contém uma referência inválida a trips.txt.",
 		"not_found": "O valor \"%s\" do campo \"trip_id\" não existe em trips.txt"
 	},
 	"stops_file_missing": {
@@ -1316,7 +1316,7 @@
 		"required": "O campo level_id é obrigatório"
 	},
 	"stops_level_id_foreign": {
-		"generic": "A referência do campo \"level_id\" a levels.txt não é válida.",
+		"generic": "O campo \"level_id\" contém uma referência inválida a levels.txt.",
 		"not_found": "O valor \"%s\" do campo \"level_id\" não existe em levels.txt"
 	},
 	"stops_location_type_allowed": {
@@ -1547,7 +1547,7 @@
 	},
 	"transfers_from_route_id_foreign": {
 		"forbidden": "O campo \"from_route_id\" é proibido",
-		"generic": "A referência do campo \"from_route_id\" a routes.txt não é válida.",
+		"generic": "O campo \"from_route_id\" contém uma referência inválida a routes.txt.",
 		"not_found": "O campo \"from_route_id\" \"%s\" não existe em routes.txt",
 		"recommended": "O campo \"from_route_id\" é recomendado",
 		"trip_must_belong_to_route": "Quando from_trip_id e from_route_id estão definidos, from_trip_id \"%s\" deve pertencer a from_route_id \"%s\". A viagem referencia a rota \"%s\""
@@ -1559,7 +1559,7 @@
 		"required": "O campo from_stop_id é obrigatório"
 	},
 	"transfers_from_stop_id_foreign": {
-		"generic": "A referência do campo \"from_stop_id\" a stops.txt não é válida.",
+		"generic": "O campo \"from_stop_id\" contém uma referência inválida a stops.txt.",
 		"invalid_location_type": "O campo \"from_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser uma paragem (location_type=0) ou estação (location_type=1)",
 		"must_be_stop_for_transfer_type_4_5": "O campo \"from_stop_id\" \"%s\" deve referenciar uma paragem (location_type=0) quando transfer_type é %d. Estações (location_type=1) não são permitidas para transfer_type 4 ou 5",
 		"not_found": "O campo \"from_stop_id\" \"%s\" não existe em stops.txt",
@@ -1573,7 +1573,7 @@
 		"required": "O campo from_trip_id é obrigatório"
 	},
 	"transfers_from_trip_id_foreign": {
-		"generic": "A referência do campo \"from_trip_id\" a trips.txt não é válida.",
+		"generic": "O campo \"from_trip_id\" contém uma referência inválida a trips.txt.",
 		"not_found": "O campo \"from_trip_id\" \"%s\" não existe em trips.txt",
 		"recommended": "O campo \"from_trip_id\" é recomendado",
 		"required": "O campo \"from_trip_id\" é obrigatório",
@@ -1600,7 +1600,7 @@
 	},
 	"transfers_to_route_id_foreign": {
 		"forbidden": "O campo \"to_route_id\" é proibido",
-		"generic": "A referência do campo \"to_route_id\" a routes.txt não é válida.",
+		"generic": "O campo \"to_route_id\" contém uma referência inválida a routes.txt.",
 		"not_found": "O campo \"to_route_id\" \"%s\" não existe em routes.txt",
 		"recommended": "O campo \"to_route_id\" é recomendado",
 		"trip_must_belong_to_route": "Quando to_trip_id e to_route_id estão definidos, to_trip_id \"%s\" deve pertencer a to_route_id \"%s\". A viagem referencia a rota \"%s\""
@@ -1612,7 +1612,7 @@
 		"required": "O campo to_stop_id é obrigatório"
 	},
 	"transfers_to_stop_id_foreign": {
-		"generic": "A referência do campo \"to_stop_id\" a stops.txt não é válida.",
+		"generic": "O campo \"to_stop_id\" contém uma referência inválida a stops.txt.",
 		"invalid_location_type": "O campo \"to_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser uma paragem (location_type=0) ou estação (location_type=1)",
 		"must_be_different_from_from_stop_id": "O campo \"to_stop_id\" \"%s\" deve ser diferente do \"from_stop_id\" \"%s\". Uma transferência não pode ter a mesma paragem para origem e destino",
 		"must_be_stop_for_transfer_type_4_5": "O campo \"to_stop_id\" \"%s\" deve referenciar uma paragem (location_type=0) quando transfer_type é %d. Estações (location_type=1) não são permitidas para transfer_type 4 ou 5",
@@ -1627,7 +1627,7 @@
 		"required": "O campo to_trip_id é obrigatório"
 	},
 	"transfers_to_trip_id_foreign": {
-		"generic": "A referência do campo \"to_trip_id\" a trips.txt não é válida.",
+		"generic": "O campo \"to_trip_id\" contém uma referência inválida a trips.txt.",
 		"not_found": "O campo \"to_trip_id\" \"%s\" não existe em trips.txt",
 		"recommended": "O campo \"to_trip_id\" é recomendado",
 		"required": "O campo \"to_trip_id\" é obrigatório",
@@ -1755,7 +1755,7 @@
 	},
 	"trips_route_id_foreign": {
 		"forbidden": "O campo \"route_id\" é proibido",
-		"generic": "A referência do campo \"route_id\" a routes.txt não é válida.",
+		"generic": "O campo \"route_id\" contém uma referência inválida a routes.txt.",
 		"not_found": "O campo \"route_id\" \"%s\" não existe em routes.txt",
 		"recommended": "O campo \"route_id\" é recomendado",
 		"required": "O campo \"route_id\" é obrigatório"
@@ -1772,7 +1772,7 @@
 	},
 	"trips_service_id_foreign": {
 		"forbidden": "O campo \"service_id\" é proibido",
-		"generic": "A referência do campo \"service_id\" a calendar.txt ou calendar_dates.txt não é válida.",
+		"generic": "O campo \"service_id\" contém uma referência inválida a calendar.txt ou calendar_dates.txt.",
 		"not_found": "O campo \"service_id\" \"%s\" não existe em calendar.txt ou calendar_dates.txt",
 		"recommended": "O campo \"service_id\" é recomendado",
 		"required": "O campo \"service_id\" é obrigatório"
@@ -1785,7 +1785,7 @@
 	},
 	"trips_shape_id_foreign": {
 		"forbidden": "O campo \"shape_id\" é proibido",
-		"generic": "A referência do campo \"shape_id\" a shapes.txt não é válida.",
+		"generic": "O campo \"shape_id\" contém uma referência inválida a shapes.txt.",
 		"not_found": "O campo \"shape_id\" \"%s\" não existe em shapes.txt",
 		"recommended": "O campo \"shape_id\" é recomendado",
 		"required": "O campo \"shape_id\" é obrigatório"
@@ -1874,7 +1874,7 @@
 		"required": "O campo agency_id é obrigatório"
 	},
 	"vehicles_agency_id_foreign": {
-		"generic": "A referência do campo \"agency_id\" a agency.txt não é válida.",
+		"generic": "O campo \"agency_id\" contém uma referência inválida a agency.txt.",
 		"not_found": "O campo \"agency_id\" \"%s\" não existe em agency.txt"
 	},
 	"vehicles_bicycles_capacity_field": {

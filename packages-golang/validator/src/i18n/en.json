@@ -127,7 +127,7 @@
 		"required": "The service_id field is required"
 	},
 	"calendar_dates_service_id_foreign": {
-		"generic": "The \"service_id\" reference to calendar.txt is invalid.",
+		"generic": "The \"service_id\" field contains an invalid reference to calendar.txt.",
 		"not_found": "The service_id \"%s\" does not exist in calendar.txt"
 	},
 	"calendar_end_date_field": {
@@ -261,7 +261,7 @@
 		"required": "Field \"agency_id\" is required when there is more than one agency"
 	},
 	"fare_attributes_agency_id_foreign": {
-		"generic": "The \"agency_id\" reference to agency.txt is invalid.",
+		"generic": "The \"agency_id\" field contains an invalid reference to agency.txt.",
 		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt"
 	},
 	"fare_attributes_currency_type_field": {
@@ -338,7 +338,7 @@
 	},
 	"fare_rules_contains_id_foreign": {
 		"forbidden": "Field \"contains_id\" is forbidden",
-		"generic": "The \"contains_id\" reference to stops.txt is invalid.",
+		"generic": "The \"contains_id\" field contains an invalid reference to stops.txt.",
 		"invalid": "Field \"contains_id\" \"%s\" must be a valid ID from stops.txt",
 		"recommended": "Field \"contains_id\" is recommended",
 		"required": "Field \"contains_id\" is required"
@@ -351,7 +351,7 @@
 	},
 	"fare_rules_destination_id_foreign": {
 		"forbidden": "Field \"destination_id\" is forbidden",
-		"generic": "The \"destination_id\" reference to stops.txt is invalid.",
+		"generic": "The \"destination_id\" field contains an invalid reference to stops.txt.",
 		"invalid": "Field \"destination_id\" \"%s\" must be a valid ID from stops.txt",
 		"recommended": "Field \"destination_id\" is recommended",
 		"required": "Field \"destination_id\" is required"
@@ -364,7 +364,7 @@
 	},
 	"fare_rules_fare_id_foreign": {
 		"forbidden": "Field \"fare_id\" is forbidden",
-		"generic": "The \"fare_id\" reference to fare_attributes.txt is invalid.",
+		"generic": "The \"fare_id\" field contains an invalid reference to fare_attributes.txt.",
 		"invalid": "Field \"fare_id\" \"%s\" is not a valid fare_id from fare_attributes.txt",
 		"recommended": "Field \"fare_id\" is recommended",
 		"required": "Field \"fare_id\" is required"
@@ -377,7 +377,7 @@
 	},
 	"fare_rules_origin_id_foreign": {
 		"forbidden": "Field \"origin_id\" is forbidden",
-		"generic": "The \"origin_id\" reference to stops.txt is invalid.",
+		"generic": "The \"origin_id\" field contains an invalid reference to stops.txt.",
 		"invalid": "Field \"origin_id\" \"%s\" must be a valid ID from stops.txt",
 		"recommended": "Field \"origin_id\" is recommended",
 		"required": "Field \"origin_id\" is required"
@@ -390,7 +390,7 @@
 	},
 	"fare_rules_route_id_foreign": {
 		"forbidden": "Field \"route_id\" is forbidden",
-		"generic": "The \"route_id\" reference to routes.txt is invalid.",
+		"generic": "The \"route_id\" field contains an invalid reference to routes.txt.",
 		"invalid": "Field \"route_id\" \"%s\" is not a valid route_id from routes.txt",
 		"recommended": "Field \"route_id\" is recommended",
 		"required": "Field \"route_id\" is required"
@@ -566,7 +566,7 @@
 	},
 	"frequencies_trip_id_foreign": {
 		"forbidden": "Field \"trip_id\" is forbidden",
-		"generic": "The \"trip_id\" reference to trips.txt is invalid.",
+		"generic": "The \"trip_id\" field contains an invalid reference to trips.txt.",
 		"not_found": "Field \"trip_id\" \"%s\" does not exist in trips.txt",
 		"recommended": "Field \"trip_id\" is recommended",
 		"required": "Field \"trip_id\" is required"
@@ -615,7 +615,7 @@
 	"pathways_from_stop_id_foreign": {
 		"forbidden": "Field \"from_stop_id\" is forbidden",
 		"forbidden_stop_access_1": "Field \"from_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
-		"generic": "The \"from_stop_id\" reference to stops.txt is invalid.",
+		"generic": "The \"from_stop_id\" field contains an invalid reference to stops.txt.",
 		"invalid_location_type_format": "Field \"from_stop_id\" \"%s\" references a stop whose \"location_type\" is not a valid integer",
 		"invalid_location_type_pathway": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
 		"invalid_location_type_station": "Field \"from_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
@@ -741,7 +741,7 @@
 	"pathways_to_stop_id_foreign": {
 		"forbidden": "Field \"to_stop_id\" is forbidden",
 		"forbidden_stop_access_1": "Field \"to_stop_id\" \"%s\" references a stop (location_type=0 or empty) with stop_access=1. Stops with stop_access=1 are forbidden for pathways",
-		"generic": "The \"to_stop_id\" reference to stops.txt is invalid.",
+		"generic": "The \"to_stop_id\" field contains an invalid reference to stops.txt.",
 		"invalid_location_type_pathway": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be platform (0 or empty), entrance/exit (2), generic node (3), or boarding area (4)",
 		"invalid_location_type_station": "Field \"to_stop_id\" \"%s\" references a station (location_type=1). Stations are forbidden for pathways",
 		"not_found": "Field \"to_stop_id\" \"%s\" does not exist in stops.txt",
@@ -815,7 +815,7 @@
 		"required": "The agency_id field is required"
 	},
 	"routes_agency_id_foreign": {
-		"generic": "The \"agency_id\" reference to agency.txt is invalid.",
+		"generic": "The \"agency_id\" field contains an invalid reference to agency.txt.",
 		"not_found": "Field \"agency_id\" value \"%s\" was not found in agency.txt"
 	},
 	"routes_continuous_drop_off_field": {
@@ -875,7 +875,7 @@
 		"required": "The network_id field is required"
 	},
 	"routes_network_id_foreign": {
-		"generic": "The \"network_id\" reference to route_networks.txt is invalid.",
+		"generic": "The \"network_id\" field contains an invalid reference to route_networks.txt.",
 		"not_found": "Field \"network_id\" value \"%s\" was not found in route_networks.txt"
 	},
 	"routes_path_type_field": {
@@ -1093,7 +1093,7 @@
 		"required": "The drop_off_booking_rule_id field is required"
 	},
 	"stop_times_drop_off_booking_rule_id_foreign": {
-		"generic": "The \"drop_off_booking_rule_id\" reference to booking_rules.txt is invalid.",
+		"generic": "The \"drop_off_booking_rule_id\" field contains an invalid reference to booking_rules.txt.",
 		"not_found": "Field \"drop_off_booking_rule_id\" value \"%s\" does not exist in booking_rules.txt"
 	},
 	"stop_times_drop_off_type_field": {
@@ -1137,7 +1137,7 @@
 		"required": "The pickup_booking_rule_id field is required"
 	},
 	"stop_times_pickup_booking_rule_id_foreign": {
-		"generic": "The \"pickup_booking_rule_id\" reference to booking_rules.txt is invalid.",
+		"generic": "The \"pickup_booking_rule_id\" field contains an invalid reference to booking_rules.txt.",
 		"not_found": "Field \"pickup_booking_rule_id\" value \"%s\" does not exist in booking_rules.txt"
 	},
 	"stop_times_pickup_type_field": {
@@ -1185,7 +1185,7 @@
 		"required": "The stop_id field is required"
 	},
 	"stop_times_stop_id_foreign": {
-		"generic": "The \"stop_id\" reference to stops.txt is invalid.",
+		"generic": "The \"stop_id\" field contains an invalid reference to stops.txt.",
 		"not_found": "Field \"stop_id\" value \"%s\" does not exist in stops.txt"
 	},
 	"stop_times_timepoint_field": {
@@ -1205,7 +1205,7 @@
 		"required": "The trip_id field is required"
 	},
 	"stop_times_trip_id_foreign": {
-		"generic": "The \"trip_id\" reference to trips.txt is invalid.",
+		"generic": "The \"trip_id\" field contains an invalid reference to trips.txt.",
 		"not_found": "Field \"trip_id\" value \"%s\" does not exist in trips.txt"
 	},
 	"stops_file_missing": {
@@ -1316,7 +1316,7 @@
 		"required": "The level_id field is required"
 	},
 	"stops_level_id_foreign": {
-		"generic": "The \"level_id\" reference to levels.txt is invalid.",
+		"generic": "The \"level_id\" field contains an invalid reference to levels.txt.",
 		"not_found": "Field \"level_id\" value \"%s\" does not exist in levels.txt"
 	},
 	"stops_location_type_allowed": {
@@ -1547,7 +1547,7 @@
 	},
 	"transfers_from_route_id_foreign": {
 		"forbidden": "Field \"from_route_id\" is forbidden",
-		"generic": "The \"from_route_id\" reference to routes.txt is invalid.",
+		"generic": "The \"from_route_id\" field contains an invalid reference to routes.txt.",
 		"not_found": "Field \"from_route_id\" \"%s\" does not exist in routes.txt",
 		"recommended": "Field \"from_route_id\" is recommended",
 		"trip_must_belong_to_route": "When both from_trip_id and from_route_id are defined, from_trip_id \"%s\" must belong to from_route_id \"%s\". Trip references route \"%s\""
@@ -1559,7 +1559,7 @@
 		"required": "The from_stop_id field is required"
 	},
 	"transfers_from_stop_id_foreign": {
-		"generic": "The \"from_stop_id\" reference to stops.txt is invalid.",
+		"generic": "The \"from_stop_id\" field contains an invalid reference to stops.txt.",
 		"invalid_location_type": "Field \"from_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
 		"must_be_stop_for_transfer_type_4_5": "Field \"from_stop_id\" \"%s\" must reference a stop (location_type=0) when transfer_type is %d. Stations (location_type=1) are not allowed for transfer_type 4 or 5",
 		"not_found": "Field \"from_stop_id\" \"%s\" does not exist in stops.txt",
@@ -1573,7 +1573,7 @@
 		"required": "The from_trip_id field is required"
 	},
 	"transfers_from_trip_id_foreign": {
-		"generic": "The \"from_trip_id\" reference to trips.txt is invalid.",
+		"generic": "The \"from_trip_id\" field contains an invalid reference to trips.txt.",
 		"not_found": "Field \"from_trip_id\" \"%s\" does not exist in trips.txt",
 		"recommended": "Field \"from_trip_id\" is recommended",
 		"required": "Field \"from_trip_id\" is required",
@@ -1600,7 +1600,7 @@
 	},
 	"transfers_to_route_id_foreign": {
 		"forbidden": "Field \"to_route_id\" is forbidden",
-		"generic": "The \"to_route_id\" reference to routes.txt is invalid.",
+		"generic": "The \"to_route_id\" field contains an invalid reference to routes.txt.",
 		"not_found": "Field \"to_route_id\" \"%s\" does not exist in routes.txt",
 		"recommended": "Field \"to_route_id\" is recommended",
 		"trip_must_belong_to_route": "When both to_trip_id and to_route_id are defined, to_trip_id \"%s\" must belong to to_route_id \"%s\". Trip references route \"%s\""
@@ -1612,7 +1612,7 @@
 		"required": "The to_stop_id field is required"
 	},
 	"transfers_to_stop_id_foreign": {
-		"generic": "The \"to_stop_id\" reference to stops.txt is invalid.",
+		"generic": "The \"to_stop_id\" field contains an invalid reference to stops.txt.",
 		"invalid_location_type": "Field \"to_stop_id\" \"%s\" references a stop with invalid location_type \"%d\". Must be a stop (location_type=0) or station (location_type=1)",
 		"must_be_different_from_from_stop_id": "Field \"to_stop_id\" \"%s\" must be different from \"from_stop_id\" \"%s\". A transfer cannot have the same stop for both from and to",
 		"must_be_stop_for_transfer_type_4_5": "Field \"to_stop_id\" \"%s\" must reference a stop (location_type=0) when transfer_type is %d. Stations (location_type=1) are not allowed for transfer_type 4 or 5",
@@ -1627,7 +1627,7 @@
 		"required": "The to_trip_id field is required"
 	},
 	"transfers_to_trip_id_foreign": {
-		"generic": "The \"to_trip_id\" reference to trips.txt is invalid.",
+		"generic": "The \"to_trip_id\" field contains an invalid reference to trips.txt.",
 		"not_found": "Field \"to_trip_id\" \"%s\" does not exist in trips.txt",
 		"recommended": "Field \"to_trip_id\" is recommended",
 		"required": "Field \"to_trip_id\" is required",
@@ -1755,7 +1755,7 @@
 	},
 	"trips_route_id_foreign": {
 		"forbidden": "Field \"route_id\" is forbidden",
-		"generic": "The \"route_id\" reference to routes.txt is invalid.",
+		"generic": "The \"route_id\" field contains an invalid reference to routes.txt.",
 		"not_found": "Field \"route_id\" \"%s\" does not exist in routes.txt",
 		"recommended": "Field \"route_id\" is recommended",
 		"required": "Field \"route_id\" is required"
@@ -1772,7 +1772,7 @@
 	},
 	"trips_service_id_foreign": {
 		"forbidden": "Field \"service_id\" is forbidden",
-		"generic": "The \"service_id\" reference to calendar.txt or calendar_dates.txt is invalid.",
+		"generic": "The \"service_id\" field contains an invalid reference to calendar.txt or calendar_dates.txt.",
 		"not_found": "Field \"service_id\" \"%s\" does not exist in calendar.txt or calendar_dates.txt",
 		"recommended": "Field \"service_id\" is recommended",
 		"required": "Field \"service_id\" is required"
@@ -1785,7 +1785,7 @@
 	},
 	"trips_shape_id_foreign": {
 		"forbidden": "Field \"shape_id\" is forbidden",
-		"generic": "The \"shape_id\" reference to shapes.txt is invalid.",
+		"generic": "The \"shape_id\" field contains an invalid reference to shapes.txt.",
 		"not_found": "Field \"shape_id\" \"%s\" does not exist in shapes.txt",
 		"recommended": "Field \"shape_id\" is recommended",
 		"required": "Field \"shape_id\" is required"
@@ -1874,7 +1874,7 @@
 		"required": "The agency_id field is required"
 	},
 	"vehicles_agency_id_foreign": {
-		"generic": "The \"agency_id\" reference to agency.txt is invalid.",
+		"generic": "The \"agency_id\" field contains an invalid reference to agency.txt.",
 		"not_found": "Field \"agency_id\" \"%s\" does not exist in agency.txt"
 	},
 	"vehicles_bicycles_capacity_field": {
