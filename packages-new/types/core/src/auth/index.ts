@@ -1,2 +1,2 @@
-export * from './session.js';
-export * from './verification-token.js';
+export * from './sessions/index.js';
+export * from './verification-tokens/index.js';

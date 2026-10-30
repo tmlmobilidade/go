@@ -11,10 +11,6 @@ import { mergeObjects } from '@tmlmobilidade/utils';
 
 /* * */
 
-export const AUTH_SESSION_COOKIE_NAME = 'session_token';
-
-/* * */
-
 class AuthProviderClass {
 	//
 
@@ -107,14 +103,6 @@ class AuthProviderClass {
 		userData.password_hash = null;
 		// Return the user data
 		return userData;
-	}
-
-	/**
-	 * Logout a user by removing their session.
-	 * @param sessionToken The session token to logout.
-	 */
-	async logout(sessionToken: string): Promise<void> {
-		await goDb.core.sessions.deleteOne({ token: { $eq: sessionToken } });
 	}
 
 	/**
