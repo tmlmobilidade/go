@@ -2,8 +2,8 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-types-core';
 
 /**
  * Download an extraction for the current user.

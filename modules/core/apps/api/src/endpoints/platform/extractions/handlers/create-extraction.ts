@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
+import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-types-core';
 import { type Extraction, type ExtractionCreate, ExtractionCreateSchema } from '@tmlmobilidade/go-types-extractions';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 
