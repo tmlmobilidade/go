@@ -746,6 +746,10 @@
 			}
 		},
 		"detail": {
+			"Amplitude": {
+				"description": "Autorizar y gestionar capturas de Session Replay para dar soporte a este usuario.",
+				"title": "Amplitude"
+			},
 			"BasicInfo": {
 				"description": "Información básica del usuario",
 				"fields": {
@@ -796,6 +800,48 @@
 					}
 				},
 				"title": "Roles y organizaciones"
+			},
+			"SessionReplay": {
+				"authorize": {
+					"label": "Activar Session Replay",
+					"success": "Solicitud de captura autorizada para este usuario."
+				},
+				"cancel": {
+					"label": "Detener Session Replay",
+					"success": "Parada solicitada. Se conservan los datos ya enviados a Amplitude."
+				},
+				"error": {
+					"title": "No se ha podido gestionar Session Replay"
+				},
+				"states": {
+					"active": {
+						"description": "La captura está autorizada hasta {{deadline}} (hora de Lisboa).",
+						"label": "Activo"
+					},
+					"cancelled": {
+						"description": "La autorización se ha interrumpido. Esto no elimina los datos ya enviados a Amplitude.",
+						"label": "Detenida"
+					},
+					"completed": {
+						"description": "La ventana de captura de cinco minutos ha terminado. La disponibilidad del replay puede comprobarse en Amplitude.",
+						"label": "Finalizada"
+					},
+					"expired": {
+						"description": "La solicitud ha caducado sin iniciar la captura. Es necesario autorizar otra captura.",
+						"label": "Solicitud caducada"
+					},
+					"none": {
+						"description": "No se ha solicitado una captura para este usuario.",
+						"label": "Sin solicitud de captura"
+					},
+					"pending": {
+						"description": "Solicitud válida hasta {{deadline}} (hora de Lisboa). Los cinco minutos comienzan con el primer inicio aceptado.",
+						"label": "Pendiente"
+					}
+				},
+				"success": {
+					"title": "Session Replay"
+				}
 			}
 		},
 		"list": {

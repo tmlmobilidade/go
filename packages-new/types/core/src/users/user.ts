@@ -4,6 +4,8 @@ import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { BaseDocumentSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
+import { UserSessionReplayAuthorizationSchema } from './session-replay-authorization.js';
+
 /* * */
 
 export const UserPreferenceValueSchema = z.union([
@@ -31,10 +33,11 @@ export const UserSchema = BaseDocumentSchema.extend({
 	role_ids: z.array(z.string()).default([]),
 	seen_last_at: UnixMillisecondsSchema.nullable().default(null),
 	session_ids: z.array(z.string()).default([]),
+	session_replay: UserSessionReplayAuthorizationSchema.nullish(),
 	verification_token_ids: z.array(z.string()).default([]),
 });
 
-export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, session_replay: true, updated_at: true });
 export const UpdateUserSchema = CreateUserSchema.omit({ created_by: true, session_ids: true, verification_token_ids: true }).partial();
 
 export type User = z.infer<typeof UserSchema>;

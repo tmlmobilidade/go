@@ -743,6 +743,10 @@
 			}
 		},
 		"detail": {
+			"Amplitude": {
+				"description": "Authorize and manage Session Replay captures to support this user.",
+				"title": "Amplitude"
+			},
 			"BasicInfo": {
 				"description": "Basic user information",
 				"fields": {
@@ -793,6 +797,48 @@
 					}
 				},
 				"title": "Roles & Organizations"
+			},
+			"SessionReplay": {
+				"authorize": {
+					"label": "Enable Session Replay",
+					"success": "Capture request authorized for this user."
+				},
+				"cancel": {
+					"label": "Stop Session Replay",
+					"success": "Stop requested. Data already sent to Amplitude is retained."
+				},
+				"error": {
+					"title": "Unable to manage Session Replay"
+				},
+				"states": {
+					"active": {
+						"description": "Capture is authorized until {{deadline}} (Lisbon time).",
+						"label": "Active"
+					},
+					"cancelled": {
+						"description": "The authorization was stopped. This does not delete data already sent to Amplitude.",
+						"label": "Stopped"
+					},
+					"completed": {
+						"description": "The five-minute capture window has ended. Replay availability can be checked in Amplitude.",
+						"label": "Finished"
+					},
+					"expired": {
+						"description": "The request expired without starting capture. Another capture must be authorized.",
+						"label": "Request expired"
+					},
+					"none": {
+						"description": "No capture has been requested for this user.",
+						"label": "No capture requested"
+					},
+					"pending": {
+						"description": "Request valid until {{deadline}} (Lisbon time). The five-minute window begins with the first accepted start.",
+						"label": "Pending"
+					}
+				},
+				"success": {
+					"title": "Session Replay"
+				}
 			}
 		},
 		"list": {

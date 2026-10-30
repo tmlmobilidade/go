@@ -1,0 +1,41 @@
+{
+	"name": "@tmlmobilidade/go-ui-analytics",
+	"description": "Shared analytics context, hooks and event types for GO web applications.",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./index.ts",
+			"default": "./index.ts"
+		},
+		"./server": {
+			"types": "./server.ts",
+			"default": "./server.ts"
+		}
+	},
+	"scripts": {
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix"
+	},
+	"peerDependencies": {
+		"react": "19.x"
+	},
+	"dependencies": {
+		"@amplitude/analytics-browser": "2.45.8",
+		"@amplitude/plugin-session-replay-browser": "1.36.2",
+		"@tmlmobilidade/go-types-core": "*",
+		"zod": "3.25.76"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/eslint": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.4.0",
+		"@types/react": "19.2.18",
+		"typescript": "6.0.3"
+	}
+}
