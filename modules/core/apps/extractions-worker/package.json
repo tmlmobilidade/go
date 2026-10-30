@@ -22,6 +22,7 @@
 		"@tmlmobilidade/go-core-pckg-utils": "*",
 		"@tmlmobilidade/go-extractions-infrastructure-stops": "*",
 		"@tmlmobilidade/go-extractions-offer-gtfs": "*",
+		"@tmlmobilidade/go-extractions-operation-posters": "*",
 		"@tmlmobilidade/go-extractions-operation-rides": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",

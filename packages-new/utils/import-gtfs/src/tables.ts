@@ -13,12 +13,26 @@ import { type GtfsSQLTables } from './types/index.js';
 
 export function initGtfsSqlTables<T extends GtfsSQLTables>(source: Buffer | string): T {
 	const database = new SQLiteDatabase(typeof source === 'string' ? { instancePath: source } : { databaseInstance: new BSQLite3(source), memory: true });
+	// The Go importer's filtering indexes belong to temporary tables. Recreate
+	// lookup indexes on the final tables before consumers query or rewrite them.
+	const indexedColumnsByTable: Record<string, string[]> = {
+		calendar_dates: ['service_id'],
+		routes: ['route_id'],
+		shapes: ['shape_id'],
+		stop_times: ['trip_id', 'stop_id'],
+		stops: ['stop_id'],
+		trips: ['trip_id', 'shape_id', 'service_id', 'route_id'],
+	};
 
 	// Read the actual headers rather than imposing a GTFS schema.
 	const registerTable = (tableName: string) => {
 		const header = database.databaseInstance.prepare(`PRAGMA table_info("${tableName}")`).all() as { name: string }[];
 		if (!header.length) throw new Error(`Table ${tableName} not found`);
-		const columns: SQLiteColumn<any>[] = header.map(column => ({ name: column.name, type: 'TEXT' }));
+		const columns: SQLiteColumn<any>[] = header.map(column => ({
+			indexed: indexedColumnsByTable[tableName]?.includes(column.name),
+			name: column.name,
+			type: 'TEXT',
+		}));
 		return database.registerTable<any>(tableName, { columns });
 	};
 

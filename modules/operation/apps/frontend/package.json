@@ -19,6 +19,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-operation-pckg-types": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-core": "*",
