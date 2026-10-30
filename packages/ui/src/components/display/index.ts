@@ -1,5 +1,6 @@
 export * from './AlertCard';
 export * from './AlertMessage';
+export * from './BannerNotice';
 export * from './ErrorDisplay';
 export * from './Highlight';
 export * from './Indicator';

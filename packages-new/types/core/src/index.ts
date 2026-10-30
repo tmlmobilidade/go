@@ -2,6 +2,8 @@ export * from './agencies/index.js';
 export * from './app-configs/index.js';
 export * from './attachments/index.js';
 export * from './auth/index.js';
+export * from './banners/index.js';
+export * from './changelogs/index.js';
 export * from './home/index.js';
 export * from './notifications/index.js';
 export * from './organizations/index.js';

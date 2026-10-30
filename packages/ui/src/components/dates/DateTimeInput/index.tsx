@@ -168,12 +168,15 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				error={props.error}
 				label={props.label}
 				leftSection={<IconCalendar size={20} />}
-				onChange={setDateInputValue}
 				placeholder={props.placeholder ?? 'Selecione uma data...'}
 				popoverProps={{ withinPortal: false }}
 				readOnly={props.readOnly}
 				type="default"
 				value={dateInputValue}
+				onChange={(value) => {
+					setDateInputValue(value ?? undefined);
+					if (!value) props.onChange?.(null);
+				}}
 			/>
 			<MantineTimePicker
 				classNames={{ dropdown: styles.timePicker_dropdown, root: styles.timePicker_root, wrapper: styles.timePicker_wrapper }}

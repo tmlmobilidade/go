@@ -1,4 +1,9 @@
 {
+	"banner": {
+		"dismiss": "Cerrar aviso",
+		"dismiss_error": "No se ha podido descartar el aviso. Inténtalo de nuevo.",
+		"until": "Hasta {end}"
+	},
 	"buttons": {
 		"CreateButton": {
 			"label": "Crear"
@@ -10,6 +15,46 @@
 		"UpdateButton": {
 			"label": "Guardar"
 		}
+	},
+	"changelog": {
+		"back": "Todas las novedades",
+		"categories": {
+			"bug_fix": "Correcciones",
+			"improvement": "Mejoras",
+			"new_feature": "Novedades"
+		},
+		"category_counts": {
+			"bug_fix": "{count, plural, =1 {1 corrección} other {# correcciones}}",
+			"improvement": "{count, plural, =1 {1 mejora} other {# mejoras}}",
+			"new_feature": "{count, plural, =1 {1 novedad} other {# novedades}}"
+		},
+		"close": "Cerrar novedades",
+		"empty": "Todavía no hay novedades publicadas. Vuelve pronto.",
+		"error": "No se han podido cargar las novedades.",
+		"loading": "Cargando novedades…",
+		"mark_all_read": "Marcar todas como leídas",
+		"mark_read_error": "No se han podido marcar las actualizaciones como leídas",
+		"mark_read_success": "Actualizaciones marcadas como leídas",
+		"modules": {
+			"apex": "Apex",
+			"core": "Base",
+			"dates": "Fechas",
+			"exporter": "Exportaciones",
+			"hub": "Hub",
+			"infrastructure": "Infraestructura",
+			"offer": "Oferta",
+			"operation": "Operación",
+			"performance": "Rendimiento",
+			"platform": "Plataforma",
+			"tracker": "Tracker"
+		},
+		"open_release": "Ver actualización",
+		"read_release": "Leída",
+		"retry": "Volver a intentar",
+		"subtitle": "Descubre las nuevas funciones, mejoras y correcciones de la plataforma.",
+		"title": "Novedades en GO",
+		"unread": "Actualización sin leer",
+		"unread_count": "Actualizaciones sin leer"
 	},
 	"files": {
 		"FileItem": {
@@ -67,7 +112,9 @@
 			"agencies": "Operadores",
 			"alerts": "Alertas",
 			"annotations": "Anotaciones",
+			"banners": "Avisos operativos",
 			"calendar": "Calendario",
+			"changelog": "Novedades",
 			"collapse_sidebar_aria": "Contraer barra lateral",
 			"events": "Eventos y excepciones",
 			"fares": "Tarifas",
@@ -99,10 +146,15 @@
 		"SidebarGroups": {
 			"core": "Base",
 			"dates": "Fechas",
+			"dev": "Dev",
 			"infrastructure": "Infraestructura",
 			"offer": "Oferta",
 			"operation": "Operación",
 			"overview": "Vista General"
+		},
+		"SidebarNews": {
+			"tooltip": "Novedades",
+			"unread_tooltip": "Novedades — actualizaciones sin leer"
 		},
 		"SidebarNotifications": {
 			"label": "Notificaciones",

@@ -6,13 +6,14 @@ import { IconChevronLeft } from '@tabler/icons-react';
 /* * */
 
 interface CloseButtonProps {
+	ariaLabel?: string
 	onClick?: () => void
 	type?: 'back' | 'close'
 }
 
 /* * */
 
-export function CloseButton({ onClick, type = 'back' }: CloseButtonProps) {
+export function CloseButton({ ariaLabel, onClick, type = 'back' }: CloseButtonProps) {
 	//
 
 	//
@@ -26,10 +27,10 @@ export function CloseButton({ onClick, type = 'back' }: CloseButtonProps) {
 	// B. Render components
 
 	if (type === 'back') {
-		return <MantineCloseButton icon={<IconChevronLeft />} onClick={handleClick} size="lg" />;
+		return <MantineCloseButton aria-label={ariaLabel} icon={<IconChevronLeft />} onClick={handleClick} size="lg" />;
 	}
 
-	return <MantineCloseButton onClick={handleClick} size="lg" />;
+	return <MantineCloseButton aria-label={ariaLabel} onClick={handleClick} size="lg" />;
 
 	//
 }

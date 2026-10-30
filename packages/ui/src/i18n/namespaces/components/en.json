@@ -1,4 +1,9 @@
 {
+	"banner": {
+		"dismiss": "Dismiss notice",
+		"dismiss_error": "Could not dismiss the notice. Please try again.",
+		"until": "Until {end}"
+	},
 	"buttons": {
 		"CreateButton": {
 			"label": "Create"
@@ -10,6 +15,46 @@
 		"UpdateButton": {
 			"label": "Save"
 		}
+	},
+	"changelog": {
+		"back": "All updates",
+		"categories": {
+			"bug_fix": "Fixes",
+			"improvement": "Improvements",
+			"new_feature": "New features"
+		},
+		"category_counts": {
+			"bug_fix": "{count, plural, =1 {1 fix} other {# fixes}}",
+			"improvement": "{count, plural, =1 {1 improvement} other {# improvements}}",
+			"new_feature": "{count, plural, =1 {1 new feature} other {# new features}}"
+		},
+		"close": "Close updates",
+		"empty": "No updates have been published yet. Check back soon.",
+		"error": "Updates could not be loaded.",
+		"loading": "Loading updates…",
+		"mark_all_read": "Mark all as read",
+		"mark_read_error": "Could not mark updates as read",
+		"mark_read_success": "Updates marked as read",
+		"modules": {
+			"apex": "Apex",
+			"core": "Core",
+			"dates": "Dates",
+			"exporter": "Exports",
+			"hub": "Hub",
+			"infrastructure": "Infrastructure",
+			"offer": "Offer",
+			"operation": "Operation",
+			"performance": "Performance",
+			"platform": "Platform",
+			"tracker": "Tracker"
+		},
+		"open_release": "View update",
+		"read_release": "Read",
+		"retry": "Try again",
+		"subtitle": "Discover new features, improvements, and fixes across the platform.",
+		"title": "What’s new in GO",
+		"unread": "Unread update",
+		"unread_count": "Unread updates"
 	},
 	"files": {
 		"FileItem": {
@@ -67,7 +112,9 @@
 			"agencies": "Agencies",
 			"alerts": "Alerts",
 			"annotations": "Annotations",
+			"banners": "Operational Notices",
 			"calendar": "Calendar",
+			"changelog": "What's New",
 			"collapse_sidebar_aria": "Collapse sidebar",
 			"events": "Events & Exceptions",
 			"fares": "Fares",
@@ -99,10 +146,15 @@
 		"SidebarGroups": {
 			"core": "Core",
 			"dates": "Dates",
+			"dev": "Dev",
 			"infrastructure": "Infrastructure",
 			"offer": "Offer",
 			"operation": "Operation",
 			"overview": "Overview"
+		},
+		"SidebarNews": {
+			"tooltip": "What’s new",
+			"unread_tooltip": "What’s new — unread updates"
 		},
 		"SidebarNotifications": {
 			"label": "Notifications",

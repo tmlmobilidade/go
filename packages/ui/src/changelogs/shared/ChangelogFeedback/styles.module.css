@@ -1,0 +1,15 @@
+.root {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-items: center;
+	justify-content: center;
+	min-height: 180px;
+	padding: 24px;
+	color: var(--color-system-text-200);
+	text-align: center;
+}
+
+.root p {
+	margin: 0;
+}

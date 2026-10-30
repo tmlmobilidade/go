@@ -161,7 +161,6 @@
 						"title": "Regras de validação do GTFS"
 					}
 				},
-
 				"toasts": {
 					"error": {
 						"message": "Não foi possível ler o ficheiro JSON. Verifique o conteúdo.",
@@ -228,6 +227,106 @@
 				"label": "Carregar imagem"
 			}
 		}
+	},
+	"dev": {
+		"actions": {
+			"addChange": {
+				"bug_fix": "Adicionar correção",
+				"improvement": "Adicionar melhoria",
+				"new_feature": "Adicionar novidade"
+			},
+			"cancel": "Cancelar",
+			"delete": "Eliminar",
+			"down": "Mover para baixo",
+			"preview": "Pré-visualizar",
+			"remove": "Remover alteração",
+			"up": "Mover para cima"
+		},
+		"banners": {
+			"archive": "Arquivar",
+			"create": "Novo aviso",
+			"detail": {
+				"BannersDetailHeader": {
+					"deleteConfirmationMessage": "Este aviso será eliminado permanentemente. Esta ação não pode ser anulada.",
+					"deleteConfirmationTitle": "Eliminar aviso"
+				}
+			},
+			"publish": "Ativar",
+			"select": "Selecione um aviso",
+			"title": "Avisos operacionais",
+			"unpublish": "Desativar"
+		},
+		"changelog": {
+			"archive": "Arquivar",
+			"create": "Nova publicação",
+			"detail": {
+				"ChangelogDetailHeader": {
+					"deleteConfirmationMessage": "Esta atualização será eliminada permanentemente. Esta ação não pode ser anulada.",
+					"deleteConfirmationTitle": "Eliminar atualização"
+				}
+			},
+			"publish": "Publicar",
+			"select": "Selecione uma publicação",
+			"title": "Novidades",
+			"unpublish": "Retirar publicação"
+		},
+		"confirm": {
+			"archive": "Este conteúdo será arquivado e deixará de estar disponível aos utilizadores.",
+			"publish": "O conteúdo guardado ficará disponível aos utilizadores, respeitando o âmbito e o agendamento.",
+			"unpublish": "Este conteúdo deixará de estar disponível aos utilizadores."
+		},
+		"fields": {
+			"activity": "Atividade",
+			"changes": "Alterações",
+			"description": "Descrição",
+			"dismissible": "Permitir que os utilizadores dispensem este aviso",
+			"ends_at": "Fim",
+			"id": "#ID",
+			"kind": "Tipo de aviso",
+			"link_label": "Texto da ligação",
+			"link_url": "URL da ligação",
+			"message": "Mensagem",
+			"modules": "Módulos",
+			"publication": "Publicação",
+			"schedule": "Agendamento",
+			"scope": "Âmbito",
+			"severity": "Gravidade",
+			"starts_at": "Início",
+			"status": "Estado",
+			"summary": "Resumo",
+			"title": "Título"
+		},
+		"hints": {
+			"emptyChanges": "Adicione pelo menos uma alteração para publicar.",
+			"incomplete": "Preencha os campos obrigatórios antes de publicar."
+		},
+		"kinds": {
+			"announcement": "Anúncio",
+			"incident": "Incidente",
+			"maintenance": "Manutenção"
+		},
+		"noAccess": "Não tem acesso a esta área.",
+		"scope": {
+			"modules": "Módulos específicos",
+			"platform": "Toda a plataforma"
+		},
+		"sections": {
+			"content": "Conteúdo"
+		},
+		"severities": {
+			"critical": "Crítico",
+			"info": "Informação",
+			"warning": "Aviso"
+		},
+		"statuses": {
+			"active": "Ativo",
+			"archived": "Arquivado",
+			"draft": "Rascunho",
+			"expired": "Expirado",
+			"published": "Publicado",
+			"scheduled": "Agendado"
+		},
+		"untitled": "Rascunho sem título"
 	},
 	"home": {
 		"Wiki": {
@@ -370,7 +469,6 @@
 			"all": "Todas as agências",
 			"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
 			"label": "Operadores"
-
 		},
 		"AlertReferenceTypePermissionMultiselect": {
 			"alertReferenceTypeOptionsWithAllowAll": {

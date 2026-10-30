@@ -230,6 +230,106 @@
 			}
 		}
 	},
+	"dev": {
+		"actions": {
+			"addChange": {
+				"bug_fix": "Añadir corrección",
+				"improvement": "Añadir mejora",
+				"new_feature": "Añadir novedad"
+			},
+			"cancel": "Cancelar",
+			"delete": "Eliminar",
+			"down": "Mover abajo",
+			"preview": "Vista previa",
+			"remove": "Eliminar cambio",
+			"up": "Mover arriba"
+		},
+		"banners": {
+			"archive": "Archivar",
+			"create": "Nuevo aviso",
+			"detail": {
+				"BannersDetailHeader": {
+					"deleteConfirmationMessage": "Este aviso se eliminará permanentemente. Esta acción no se puede deshacer.",
+					"deleteConfirmationTitle": "Eliminar aviso"
+				}
+			},
+			"publish": "Activar",
+			"select": "Seleccione un aviso",
+			"title": "Avisos operativos",
+			"unpublish": "Desactivar"
+		},
+		"changelog": {
+			"archive": "Archivar",
+			"create": "Nueva publicación",
+			"detail": {
+				"ChangelogDetailHeader": {
+					"deleteConfirmationMessage": "Esta actualización se eliminará permanentemente. Esta acción no se puede deshacer.",
+					"deleteConfirmationTitle": "Eliminar actualización"
+				}
+			},
+			"publish": "Publicar",
+			"select": "Seleccione una publicación",
+			"title": "Novedades",
+			"unpublish": "Retirar publicación"
+		},
+		"confirm": {
+			"archive": "Este contenido se archivará y dejará de estar disponible para los usuarios.",
+			"publish": "El contenido guardado estará disponible para los usuarios según su ámbito y programación.",
+			"unpublish": "Este contenido dejará de estar disponible para los usuarios."
+		},
+		"fields": {
+			"activity": "Actividad",
+			"changes": "Cambios",
+			"description": "Descripción",
+			"dismissible": "Permitir que los usuarios descarten este aviso",
+			"ends_at": "Fin",
+			"id": "#ID",
+			"kind": "Tipo de aviso",
+			"link_label": "Texto del enlace",
+			"link_url": "URL del enlace",
+			"message": "Mensaje",
+			"modules": "Módulos",
+			"publication": "Publicación",
+			"schedule": "Programación",
+			"scope": "Ámbito",
+			"severity": "Gravedad",
+			"starts_at": "Inicio",
+			"status": "Estado",
+			"summary": "Resumen",
+			"title": "Título"
+		},
+		"hints": {
+			"emptyChanges": "Añada al menos un cambio para publicar.",
+			"incomplete": "Complete los campos obligatorios antes de publicar."
+		},
+		"kinds": {
+			"announcement": "Anuncio",
+			"incident": "Incidente",
+			"maintenance": "Mantenimiento"
+		},
+		"noAccess": "No tiene acceso a esta área.",
+		"scope": {
+			"modules": "Módulos específicos",
+			"platform": "Toda la plataforma"
+		},
+		"sections": {
+			"content": "Contenido"
+		},
+		"severities": {
+			"critical": "Crítico",
+			"info": "Información",
+			"warning": "Aviso"
+		},
+		"statuses": {
+			"active": "Activo",
+			"archived": "Archivado",
+			"draft": "Borrador",
+			"expired": "Caducado",
+			"published": "Publicado",
+			"scheduled": "Programado"
+		},
+		"untitled": "Borrador sin título"
+	},
 	"home": {
 		"Wiki": {
 			"list": {
@@ -371,7 +471,6 @@
 			"all": "Todas las agencias",
 			"description": "Operadores a los que el usuario tiene acceso para esta acción.",
 			"label": "Operadores"
-
 		},
 		"AlertReferenceTypePermissionMultiselect": {
 			"alertReferenceTypeOptionsWithAllowAll": {

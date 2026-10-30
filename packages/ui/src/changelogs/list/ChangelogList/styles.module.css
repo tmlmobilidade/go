@@ -1,0 +1,33 @@
+.root {
+	min-height: 260px;
+	max-height: 65vh;
+	padding: var(--size-spacing-lg);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+}
+
+.root > p:first-child {
+	margin-bottom: var(--size-spacing-md);
+}
+
+.subtitle {
+	margin: 0 0 20px;
+	font-size: 16px;
+	line-height: 1.6;
+	color: var(--color-system-text-200);
+}
+
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+@media (width <= 480px) {
+	.root {
+		padding: var(--size-spacing-md);
+	}
+}

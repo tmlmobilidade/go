@@ -6,6 +6,7 @@ import { Spacer } from '../../layout/Spacer';
 import { EnvironmentTag } from '../../tags/EnvironmentTag';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarExtractions } from '../SidebarExtractions';
+import { SidebarNews } from '../SidebarNews';
 import { SidebarNotifications } from '../SidebarNotifications';
 import { SidebarOptions } from '../SidebarOptions';
 
@@ -25,6 +26,7 @@ export function SidebarFooter() {
 	return (
 		<div className={styles.footer}>
 			<SidebarExtractions />
+			{sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarNews />}
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarNotifications />}
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarOptions />}
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && <Spacer />}
