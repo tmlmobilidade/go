@@ -36,7 +36,7 @@ export function useMeData(): UseMeDataReturnType {
 
 	return useMemo(() => ({
 		data: data?.data,
-		error: error?.error,
+		error: data?.error ?? error?.message ?? null,
 		isLoading,
 		isValidating,
 		mutate,
