@@ -101,10 +101,12 @@ class AuthProviderClass {
 	 */
 	async login(loginDto: LoginDto): Promise<Session> {
 		const userData = await goDb.core.users.findOne({ email: { $eq: loginDto.email } });
-		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
-
-		const passwordHashMatch = await bcrypt.compare(loginDto.password, (userData as any).password_hash ?? '');
-		if (!passwordHashMatch) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid password');
+		// Use a fixed valid verifier so unknown accounts also perform bcrypt work.
+		const dummyHash = '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';
+		const passwordHashMatch = await bcrypt.compare(loginDto.password, userData?.password_hash || dummyHash);
+		if (!userData?.password_hash || !passwordHashMatch) {
+			throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid email or password');
+		}
 
 		const createdSession = await goDb.core.sessions.insertOne({
 			expires_at: Dates.now('utc').plus({ days: 30 }).unix_milliseconds,
