@@ -24,9 +24,9 @@ export function StopsCreateModalHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeStopsCreateModal} type="close" />
-			<Label size="lg" singleLine>{t('default:stops.create.Header.title')}</Label>
+			<Label size="lg" singleLine>{t('stops:create.StopsCreateModalHeader.title')}</Label>
 			<Spacer />
-			<Label size="md" caps singleLine>{t('default:stops.create.Header.step', { current: progress.current?.order + 1, total: progress.steps.length })}</Label>
+			<Label size="md" caps singleLine>{t('stops:create.StopsCreateModalHeader.step', { current: progress.current?.order + 1, total: progress.steps.length })}</Label>
 		</Toolbar>
 	);
 }
