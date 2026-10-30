@@ -5,17 +5,25 @@ import { z } from 'zod';
 /* * */
 
 const sharedConditions = {
-	minLength: 8,
-	minLowerCase: 1,
-	minNumber: 1,
-	minSpecialChar: 1,
-	minUpperCase: 1,
+	minLength: 15,
+	minLowerCase: 0,
+	minNumber: 0,
+	minSpecialChar: 0,
+	minUpperCase: 0,
 };
 
 export const PasswordRequirementsSchema = z
 	.object({ password: z.string() })
 	.superRefine(({ password }, checkPassComplexity) => {
 		const errObj = {
+			commonPassword: {
+				message: 'Choose a less common password',
+				valid: !['123456789012345', 'passwordpassword', 'qwertyuiopasdfgh'].includes(password.toLowerCase()),
+			},
+			maxBytes: {
+				message: 'Password must be at most 72 UTF-8 bytes',
+				valid: new TextEncoder().encode(password).length <= 72,
+			},
 			minLength: sharedConditions.minLength > 0 ? {
 				message: `Password must be at least ${sharedConditions.minLength} characters long`,
 				valid: password.length >= sharedConditions.minLength,
@@ -38,5 +46,5 @@ export const PasswordRequirementsSchema = z
 			} : undefined,
 		};
 
-		checkPassComplexity.addIssue({ code: z.ZodIssueCode.custom, message: JSON.stringify(errObj), path: ['password'] });
+		if (Object.values(errObj).some(condition => condition && !condition.valid)) checkPassComplexity.addIssue({ code: z.ZodIssueCode.custom, message: JSON.stringify(errObj), path: ['password'] });
 	});
