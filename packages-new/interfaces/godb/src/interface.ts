@@ -1,6 +1,6 @@
 /* * */
 
-import { type MongoClient, MongoDatabaseClient } from '@tmlmobilidade/go-clients-mongo';
+import { type ClientSession, type MongoClient, MongoDatabaseClient, withTransaction } from '@tmlmobilidade/go-clients-mongo';
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
 import { CoreDatabase } from './databases/core.js';
@@ -37,9 +37,13 @@ class GoDBClass {
 		return GoDBClass._instance;
 	}
 
+	public async withTransaction<R>(callback: (session: ClientSession) => Promise<R>): Promise<R> {
+		return withTransaction(this.mongoClient, callback);
+	}
+
 	//
 	// Constructor
-	private constructor(mongoClient: MongoClient) {
+	private constructor(private readonly mongoClient: MongoClient) {
 		this.core = new CoreDatabase(mongoClient);
 		this.dates = new DatesDatabase(mongoClient);
 		this.infrastructure = new InfrastructureDatabase(mongoClient);

@@ -8,6 +8,7 @@ import { z } from 'zod';
 export const SessionSchema = BaseDocumentSchema
 	.pick({ _id: true, created_at: true, updated_at: true })
 	.extend({
+		credential_version: z.number().int().nonnegative().default(0),
 		expires_at: UnixMillisecondsSchema,
 		token: z.string(),
 		user_id: z.string(),

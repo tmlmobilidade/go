@@ -89,6 +89,10 @@ class AuthProviderClass {
 		const userData = await goDb.core.users.findOne({ _id: { $eq: sessionData.user_id } });
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
 
+		if ((sessionData.credential_version ?? 0) !== (userData.credential_version ?? 0)) {
+			throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session revoked');
+		}
+
 		(userData as any).password_hash = undefined;
 		return userData;
 	}
@@ -107,6 +111,7 @@ class AuthProviderClass {
 		if (!passwordHashMatch) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid password');
 
 		const createdSession = await goDb.core.sessions.insertOne({
+			credential_version: userData.credential_version ?? 0,
 			expires_at: Dates.now('utc').plus({ days: 30 }).unix_milliseconds,
 			token: generateRandomToken(),
 			user_id: userData._id.toString(),
