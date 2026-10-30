@@ -31,6 +31,7 @@ export function getSafeRedirectToUrl(value: null | string): string {
 		// that would prevent the user from being redirected to the desired URL.
 		const destination = new URL(value, 'https://go.invalid');
 		if (destination.origin !== 'https://go.invalid') return fallbackUrl;
+		if (destination.pathname.startsWith('//')) return fallbackUrl;
 		// Return the safe redirect to URL.
 		return `${destination.pathname}${destination.search}${destination.hash}`;
 	} catch {
