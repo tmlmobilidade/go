@@ -110,7 +110,8 @@ export function PlanPostersExtractBody() {
 						/>
 					)}
 
-					{(context.data.contentMode === 'lines' || context.data.contentMode === 'lines_stops') && (
+					{/* TODO: Re-enable after route export is implemented by hitouch */}
+					{/* {(context.data.contentMode === 'lines' || context.data.contentMode === 'lines_stops') && (
 						<TagsInput
 							description={t('shared:filters.TagFilter.description')}
 							label={context.data.filterMode === 'include' ? 'IDs das linhas a exportar' : 'IDs das linhas a excluir'}
@@ -120,7 +121,7 @@ export function PlanPostersExtractBody() {
 							value={context.data.lineIds}
 							w="100%"
 						/>
-					)}
+					)} */}
 
 					{(context.data.contentMode === 'stops' || context.data.contentMode === 'lines_stops') && (
 						<TagsInput
