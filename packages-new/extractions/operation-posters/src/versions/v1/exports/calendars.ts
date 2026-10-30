@@ -34,8 +34,21 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 	//
 	// Get all unique Shape IDs from trips
 
-	const allShapeIds = sqlTables.trips.all().map(trip => trip.shape_id).sort();
-	const allUniqueShapeIds = Array.from(new Set(allShapeIds));
+	const allUniqueShapeIds = sqlTables.trips.distinct('shape_id').sort();
+	const totalTrips = sqlTables.trips.size;
+	const database = sqlTables._db.databaseInstance;
+	const deleteTrip = database.prepare('DELETE FROM trips WHERE trip_id = ?');
+	const deleteStopTimes = database.prepare('DELETE FROM stop_times WHERE trip_id = ?');
+	let processedShapes = 0;
+	let processedTrips = 0;
+	let processedGroups = 0;
+	let lastProgressAt = Date.now();
+
+	const logProgress = () => {
+		if (Date.now() - lastProgressAt < 5_000 && processedShapes !== allUniqueShapeIds.length) return;
+		Logger.info({ message: `Rebuilding poster calendars: ${processedShapes}/${allUniqueShapeIds.length} shapes, ${processedTrips}/${totalTrips} trips read.` });
+		lastProgressAt = Date.now();
+	};
 
 	Logger.info({ message: `Found ${allUniqueShapeIds.length} unique shape IDs in trips.` });
 
@@ -69,6 +82,9 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 		const equalTrips: Record<string, { sample_stop_times: GtfsStrictV30StopTimes[], sample_trip: GtfsStrictV30Trips, service_ids: string[], start_time: string, trip_ids: string[] }> = {};
 
 		for (const tripData of allTripsForThisShapeId) {
+			processedTrips++;
+			logProgress();
+			await yieldToEventLoop(processedTrips);
 			// Get stop_times for this trip
 			const stopTimesForTrip = sqlTables.stop_times.all('WHERE trip_id = ? ORDER BY CAST(stop_sequence AS INTEGER) ASC', [tripData.trip_id]);
 			if (!stopTimesForTrip?.length) continue;
@@ -137,60 +153,67 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 			// representing their actual operational patterns (e.g., weekday, weekend, only on monday),
 			// we can proceed to rebuild the trips, stop_times, calendar and the calendar_dates tables.
 
-			for (const combinedDatesData of Object.values(combinedDatesMap)) {
-				//
-
-				//
-				// Setup a service ID, or reuse an existing one if
-				// the exact set of dates already exists.
-
-				const sortedDates = Array.from(combinedDatesData.dates).sort();
-
-				const serviceIdKey = `${calendar.plan_id}|${combinedDatesData.period}|${combinedDatesData.day_type}|${sortedDates.join('|')}`;
-
-				if (!updatedServiceIds[serviceIdKey]) {
-					updatedServiceIds[serviceIdKey] = {
-						_id: generateRandomString(),
-						calendar,
-						dates: sortedDates,
-						day_type: combinedDatesData.day_type,
-						period: combinedDatesData.period,
-					};
+			// Commit each merged group together, deleting its source trips only once.
+			// Keep trips without active dates unchanged, as before.
+			if (!Object.keys(combinedDatesMap).length) continue;
+			database.transaction(() => {
+				for (const tripId of equalTripsData.trip_ids) {
+					deleteTrip.run(tripId);
+					deleteStopTimes.run(tripId);
 				}
 
-				//
-				// Delete original entries from trips and stop_times
+				for (const combinedDatesData of Object.values(combinedDatesMap)) {
+					//
 
-				equalTripsData.trip_ids.forEach((tripId) => {
-					sqlTables._db.databaseInstance.prepare('DELETE FROM trips WHERE trip_id = ?').run(tripId);
-					sqlTables._db.databaseInstance.prepare('DELETE FROM stop_times WHERE trip_id = ?').run(tripId);
-				});
+					//
+					// Setup a service ID, or reuse an existing one if
+					// the exact set of dates already exists.
 
-				//
-				// Recreate trips and stop_times with new service_id,
-				// and a new trip_id. Notice that before there were multiple trips
-				// with different service_ids, but now there will be only one trip with the updated service_id.
-				// This is because we are merging identical services into a single one. Before, there were more trips
-				// spread across multiple service_ids, now there will be fewer trips but with more dates on each service.
+					const sortedDates = Array.from(combinedDatesData.dates).sort();
 
-				const newTripId = `${equalTripsData.sample_trip.shape_id}||${equalTripsData.start_time}|${combinedDatesData.period}|${combinedDatesData.day_type}|${updatedServiceIds[serviceIdKey]._id}`;
+					const serviceIdKey = `${calendar.plan_id}|${combinedDatesData.period}|${combinedDatesData.day_type}|${sortedDates.join('|')}`;
 
-				sqlTables.trips.write({ ...equalTripsData.sample_trip, service_id: updatedServiceIds[serviceIdKey]._id, trip_id: newTripId });
-				equalTripsData.sample_stop_times.forEach(st => sqlTables.stop_times.write({ ...st, trip_id: newTripId }));
+					if (!updatedServiceIds[serviceIdKey]) {
+						updatedServiceIds[serviceIdKey] = {
+							_id: generateRandomString(),
+							calendar,
+							dates: sortedDates,
+							day_type: combinedDatesData.day_type,
+							period: combinedDatesData.period,
+						};
+					}
 
-				//
-				// Flush changes to trips and stop_times tables to ensure
-				// all deletions and insertions are committed.
+					//
+					// Recreate trips and stop_times with new service_id,
+					// and a new trip_id. Notice that before there were multiple trips
+					// with different service_ids, but now there will be only one trip with the updated service_id.
+					// This is because we are merging identical services into a single one. Before, there were more trips
+					// spread across multiple service_ids, now there will be fewer trips but with more dates on each service.
 
-				sqlTables.trips.flush();
-				sqlTables.stop_times.flush();
+					const newTripId = `${equalTripsData.sample_trip.shape_id}||${equalTripsData.start_time}|${combinedDatesData.period}|${combinedDatesData.day_type}|${updatedServiceIds[serviceIdKey]._id}`;
 
-				//
-			}
+					sqlTables.trips.write({ ...equalTripsData.sample_trip, service_id: updatedServiceIds[serviceIdKey]._id, trip_id: newTripId });
+					equalTripsData.sample_stop_times.forEach(st => sqlTables.stop_times.write({ ...st, trip_id: newTripId }));
+
+					//
+					// Flush changes to trips and stop_times tables to ensure
+					// all deletions and insertions are committed.
+
+					sqlTables.trips.flush();
+					sqlTables.stop_times.flush();
+
+					//
+				}
+			})();
+			processedGroups++;
+			logProgress();
+			await yieldToEventLoop(processedGroups);
 
 			//
 		}
 
+		processedShapes++;
+		logProgress();
 		await yieldToEventLoop();
 
 		//
@@ -198,6 +221,8 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 
 	//
 	// Output calendar dates and day-type assignments for the merged services.
+
+	Logger.info({ message: 'Writing rebuilt calendar files...' });
 
 	const calendarAssignmentsExtRows: OperationPostersV1CalendarAssignmentsExt[] = [];
 	let exportedDates = 0;
