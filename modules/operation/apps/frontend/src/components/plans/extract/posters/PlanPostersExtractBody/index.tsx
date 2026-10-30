@@ -91,7 +91,7 @@ export function PlanPostersExtractBody() {
 						value={context.data.contentMode}
 						data={[
 							{ label: 'Tudo', value: 'all' },
-							{ label: 'Linhas', value: 'lines' },
+							// { label: 'Linhas', value: 'lines' },
 							{ label: 'Paragens', value: 'stops' },
 							{ label: t('default:posterExport.linesAndStops'), value: 'lines_stops' },
 						]}

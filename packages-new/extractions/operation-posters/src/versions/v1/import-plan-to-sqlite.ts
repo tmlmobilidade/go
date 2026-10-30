@@ -92,15 +92,12 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 			// 2. Merge the GTFS tables with the combined database
 
 			try {
-				const [agencyHolidays, agencyYearPeriods] = await Promise.all([
-					goDb.dates.holidays.findMany({ agency_ids: { $in: [plan.agency_id] } }),
-					goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [plan.agency_id] } }),
-				]);
+				const agencyHolidays = await goDb.dates.holidays.findMany({ agency_ids: { $in: [plan.agency_id] } });
 				const calendar: GtfsCalendar = {
 					dates: buildDatesMap({
 						end: validateOperationalDate(String(plan.active_until)),
 						start: validateOperationalDate(String(plan.active_from)),
-					}, agencyHolidays, agencyYearPeriods),
+					}, agencyHolidays),
 					plan_id: plan._id,
 				};
 

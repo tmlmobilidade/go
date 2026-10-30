@@ -23,20 +23,6 @@ export function getWeekdayNames(weekdayIndexes: string[]): string[] {
 }
 
 /**
- * Get period names in Portuguese from period indexes.
- * @param periodIndexes Array of period indexes (1=School Period, 2=School Holidays, 3=Summer Period)
- * @returns Array of period names in Portuguese.
- */
-export function getPeriodName(period: string): string {
-	switch (period) {
-		case '1': return 'Período Escolar';
-		case '2': return 'Férias Escolares';
-		case '3': return 'Período de Verão';
-		default: return '';
-	}
-}
-
-/**
  * Get formatted dates in Portuguese from an array of OperationalDate (YYYYMMDD).
  *
  * Rules:

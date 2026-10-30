@@ -1,6 +1,6 @@
 /* * */
 
-import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type Holiday } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
 
@@ -9,31 +9,18 @@ import { type GtfsDate } from '../types/gtfs-date.js';
 /* * */
 
 /**
- * Get the Hitouch period ID for a given period.
- * @param period - The period to get the Hitouch period ID for.
- * @returns The Hitouch period ID.
- */
-function getHitouchPeriodId(period?: YearPeriod): GtfsDate['period'] {
-	if (period?.code === '3' || period?._id === 'UW2U0' || period?.name?.toLowerCase().includes('verão')) return '3';
-	if (period?.code === '2' || period?._id === '2KIUJ' || period?.name?.toLowerCase().includes('férias')) return '2';
-	return '1';
-}
-
-/**
  * Build a map of dates to GtfsDate objects.
  * @param dateRange - The date range to build the map for.
  * @param holidays - The holidays to build the map for.
- * @param periods - The periods to build the map for.
  * @returns A map of dates to GtfsDate objects.
  */
-export function buildDatesMap(dateRange: { end: OperationalDate, start: OperationalDate }, holidays: Holiday[], periods: YearPeriod[]): Map<OperationalDate, GtfsDate> {
+export function buildDatesMap(dateRange: { end: OperationalDate, start: OperationalDate }, holidays: Holiday[]): Map<OperationalDate, GtfsDate> {
 	//
 
 	//
-	// Build maps of holidays and periods by date
+	// A. Collect holiday names by operating date
 
 	const holidayByDate = new Map<OperationalDate, string[]>();
-	const periodByDate = new Map<OperationalDate, YearPeriod>();
 
 	for (const holiday of holidays) {
 		for (const date of holiday.dates) {
@@ -43,11 +30,8 @@ export function buildDatesMap(dateRange: { end: OperationalDate, start: Operatio
 		}
 	}
 
-	for (const period of periods) {
-		for (const date of period.dates ?? []) {
-			periodByDate.set(date, period);
-		}
-	}
+	//
+	// B. Classify dates as weekdays, Saturdays or Sundays and holidays
 
 	const datesMap = new Map<OperationalDate, GtfsDate>();
 
@@ -68,7 +52,6 @@ export function buildDatesMap(dateRange: { end: OperationalDate, start: Operatio
 			day_type: dayType,
 			holiday: holiday ? '1' : '0',
 			notes: holidayNames.join(' / '),
-			period: getHitouchPeriodId(periodByDate.get(date)),
 		});
 	}
 

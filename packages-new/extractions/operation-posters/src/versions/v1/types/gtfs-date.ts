@@ -9,7 +9,6 @@ export interface GtfsDate {
 	day_type: '1' | '2' | '3'
 	holiday: '0' | '1'
 	notes?: string
-	period: '1' | '2' | '3'
 }
 
 export interface GtfsCalendar {

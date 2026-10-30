@@ -51,10 +51,10 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 		}
 
 		//
-		// 2. Assign the service to its matching period and day type
+		// 2. Assign the service to its matching day type
 
 		for (const dayType of DAY_TYPES) {
-			if (service.day_type !== dayType.day_type || service.period !== dayType.period) continue;
+			if (service.day_type !== dayType.day_type) continue;
 			assignments.push({ day_type_id: dayType._id, service_id: service._id });
 		}
 

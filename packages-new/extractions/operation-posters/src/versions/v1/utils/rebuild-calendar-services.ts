@@ -6,7 +6,7 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 import { type OperationPostersV1Tables } from '../types/context.js';
-import { type GtfsCalendar } from '../types/gtfs-date.js';
+import { type GtfsCalendar, type GtfsDate } from '../types/gtfs-date.js';
 import { yieldToEventLoop } from './yield-to-event-loop.js';
 
 /* * */
@@ -14,8 +14,7 @@ import { yieldToEventLoop } from './yield-to-event-loop.js';
 interface CalendarService {
 	_id: string
 	dates: OperationalDate[]
-	day_type: string
-	period: string
+	day_type: GtfsDate['day_type']
 }
 
 interface TripGroup {
@@ -28,13 +27,12 @@ interface TripGroup {
 
 interface DateGroup {
 	dates: Set<OperationalDate>
-	day_type: string
-	period: string
+	day_type: GtfsDate['day_type']
 }
 
 /* * */
 
-/** Merge identical trip schedules and rebuild services by plan, period and day type. */
+/** Merge identical trip schedules and rebuild services by plan and day type. */
 export async function rebuildCalendarServices(tables: OperationPostersV1Tables, calendarsByService: Map<string, GtfsCalendar>): Promise<CalendarService[]> {
 	//
 
@@ -76,17 +74,17 @@ export async function rebuildCalendarServices(tables: OperationPostersV1Tables, 
 			deleteStopTimes.run(tripId);
 		}
 		//
-		// Reuse services with identical dates, periods and day types within the same plan
+		// Reuse services with identical dates and day types within the same plan
 
 		for (const dateGroup of dateGroups) {
 			const dates = [...dateGroup.dates].sort();
-			const key = `${calendar.plan_id}|${dateGroup.period}|${dateGroup.day_type}|${dates.join('|')}`;
+			const key = `${calendar.plan_id}|${dateGroup.day_type}|${dates.join('|')}`;
 			let service = services.get(key);
 			if (!service) {
-				service = { _id: generateRandomString(), dates, day_type: dateGroup.day_type, period: dateGroup.period };
+				service = { _id: generateRandomString(), dates, day_type: dateGroup.day_type };
 				services.set(key, service);
 			}
-			const tripId = `${group.trip.shape_id}||${group.startTime}|${service.period}|${service.day_type}|${service._id}`;
+			const tripId = `${group.trip.shape_id}||${group.startTime}|${service.day_type}|${service._id}`;
 			tables.trips.write({ ...group.trip, service_id: service._id, trip_id: tripId });
 			for (const stopTime of group.stopTimes) tables.stop_times.write({ ...stopTime, trip_id: tripId });
 			tables.trips.flush();
@@ -151,9 +149,9 @@ function groupServiceDates(tables: OperationPostersV1Tables, serviceIds: string[
 	//
 
 	//
-	// A. Prepare date groups for each period and day type
+	// A. Prepare date groups for each day type
 
-	const groups = new Map<string, DateGroup>();
+	const groups = new Map<GtfsDate['day_type'], DateGroup>();
 
 	//
 	// B. Merge operating dates using the plan's generated date metadata
@@ -163,10 +161,10 @@ function groupServiceDates(tables: OperationPostersV1Tables, serviceIds: string[
 			const date = validateOperationalDate(String(gtfsDate));
 			const metadata = calendar.dates.get(date);
 			if (!metadata) throw new Error(`Date ${date} for service_id ${serviceId} has no generated date metadata.`);
-			const key = `${metadata.period}|${metadata.day_type}`;
+			const key = metadata.day_type;
 			let group = groups.get(key);
 			if (!group) {
-				group = { dates: new Set(), day_type: metadata.day_type, period: metadata.period };
+				group = { dates: new Set(), day_type: metadata.day_type };
 				groups.set(key, group);
 			}
 			group.dates.add(date);
