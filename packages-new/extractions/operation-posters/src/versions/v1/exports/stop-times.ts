@@ -5,18 +5,23 @@ import { OperationPostersV1StopTimesSchema } from '@tmlmobilidade/go-types-opera
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
+import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
+import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportStopTimesFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables) {
+export async function exportStopTimesFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig) {
 	//
-	// Export all stop times using the final trip IDs from calendar processing.
+	// Export stop times for the same selected routes as trips.txt.
+	// Use the final trip IDs from calendar processing.
 	// Pattern annotations belong to shapesExt.txt.
 
 	let exportedRows = 0;
+	const { clause, parameters } = getCanvasLineFilter(sqlTables.trips.distinct('route_id'), exportConfig);
+	const tripFilter = clause ? `WHERE trip_id IN (SELECT trip_id FROM trips WHERE ${clause})` : '';
 
-	for (const row of sqlTables.stop_times.all('ORDER BY trip_id ASC, CAST(stop_sequence AS INTEGER) ASC')) {
+	for (const row of sqlTables.stop_times.all(`${tripFilter} ORDER BY trip_id ASC, CAST(stop_sequence AS INTEGER) ASC`, parameters)) {
 		const stopTimeData = GtfsStrictV30StopTimesSchema.parse(row);
 		const data = OperationPostersV1StopTimesSchema.parse({
 			arrival_time: stopTimeData.arrival_time,

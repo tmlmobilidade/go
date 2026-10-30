@@ -4,17 +4,21 @@ import { OperationPostersV1TripsSchema } from '@tmlmobilidade/go-types-operation
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
+import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
+import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportTripsFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, routeIds: ReadonlyMap<string, string>) {
+export async function exportTripsFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, routeIds: ReadonlyMap<string, string>, exportConfig: ExportHitouchConfig) {
 	//
 	// Export trips.txt
 
 	let exportedRows = 0;
+	const { clause, parameters } = getCanvasLineFilter([...routeIds.keys()], exportConfig);
+	const tripFilter = clause ? `WHERE ${clause}` : '';
 
-	for (const tripData of sqlTables.trips.all('ORDER BY trip_id ASC')) {
+	for (const tripData of sqlTables.trips.all(`${tripFilter} ORDER BY trip_id ASC`, parameters)) {
 		const routeId = routeIds.get(tripData.route_id);
 		if (!routeId) throw new Error(`Cannot export trip ${tripData.trip_id}: route ${tripData.route_id} was not exported.`);
 

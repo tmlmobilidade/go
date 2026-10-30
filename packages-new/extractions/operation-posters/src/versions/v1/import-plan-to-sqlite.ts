@@ -29,6 +29,8 @@ import { mergeGtfsTables } from './utils/merge-gtfs-tables.js';
 
 export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouchOptions & { workdir?: string }): Promise<ExportHitouchConfig> {
 	//
+
+	//
 	// A. Validate every plan before importing any GTFS
 
 	if (!plans.length) throw new Error('At least one plan is required for poster export.');
@@ -61,23 +63,34 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 		workdir: options?.workdir ?? `/tmp/hitouch/${runId}`,
 	};
 
+	//
+	// C. Setup the output directory and context
+
 	if (fs.existsSync(exportConfig.workdir)) {
 		fs.rmSync(exportConfig.workdir, { recursive: true });
 	}
+
+	//
+	// D. Initialize the context and calendars map
+
 	const context = initOperationPostersV1Context(runId, exportConfig.workdir);
 	const calendarsByService = new Map<string, GtfsCalendar>();
 	let sqlGtfs: OperationPostersV1Tables | undefined;
 
 	try {
-		//
-		// C. Import every selected GTFS before exporting any content
-
 		for (const plan of plans) {
+			//
+			// 1. Import the GTFS file for the current plan
+
 			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: plan.attachments.operation_gtfs_normalized });
 			const importedGtfs = await importGtfsToDatabase<OperationPostersV1Tables>({
 				source: { url: operationFileUrl },
 				time_range: { date_range: { end: plan.active_until, start: plan.active_from } },
 			});
+
+			//
+			// 2. Merge the GTFS tables with the combined database
+
 			try {
 				const [agencyHolidays, agencyYearPeriods] = await Promise.all([
 					goDb.dates.holidays.findMany({ agency_ids: { $in: [plan.agency_id] } }),
@@ -97,20 +110,23 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 				}
 				Logger.info({ message: `Imported plan ${plan._id} into the combined poster database.` });
 			} finally {
+				//
+				// 3. Cleanup the imported GTFS database
+
 				if (importedGtfs !== sqlGtfs) importedGtfs._db.cleanup();
 			}
 		}
 
 		//
-		// D. Export the combined database once
+		// E. Export the combined database once
 
 		Logger.info({ message: `Exporting ${plans.length} plans to one HiTouch GTFS...` });
 		const exportTimer = new Timer();
 
 		await exportCalendarFiles(context, sqlGtfs, exportConfig, calendarsByService);
 		const routeIds = await exportRoutesFile(context, sqlGtfs, exportConfig);
-		await exportTripsFile(context, sqlGtfs, routeIds);
-		await exportStopTimesFile(context, sqlGtfs);
+		await exportTripsFile(context, sqlGtfs, routeIds, exportConfig);
+		await exportStopTimesFile(context, sqlGtfs, exportConfig);
 		await exportShapesFiles(context, sqlGtfs);
 		await exportStopsFile(context, sqlGtfs, exportConfig, routeIds);
 		for (const plan of plans) await exportAgencyFile(context, plan);
