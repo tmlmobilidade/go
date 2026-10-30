@@ -1,6 +1,7 @@
 'use client';
 
 import { UnstyledButton } from '@mantine/core';
+import { useDatesContext } from '@mantine/dates';
 import { type MonthViewProps, Schedule, type ScheduleEventData, type ScheduleProps, type ScheduleViewLevel } from '@mantine/schedule';
 import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import clsx from 'clsx';
@@ -90,13 +91,15 @@ export interface CalendarScheduleProps extends Omit<ScheduleProps, 'classNames' 
 
 /* * */
 
-export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAction, defaultView = 'month', events = EMPTY_EVENTS, eventTypeFilters, isDateRangeDateApplicable, labels, locale = 'pt', mode = 'default', monthViewProps, onDayClick, onEventClick, onSelectedDateRangeChange, onViewChange, periodDisplay = 'default', selectedDateRange, sources, view, withDayTooltips = true, withEventResize, withEventsDragAndDrop, withInteractiveBackgroundEvents, yearPeriodDisplay = 'background', yearViewProps, ...props }: CalendarScheduleProps) {
+export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAction, defaultView = 'month', events = EMPTY_EVENTS, eventTypeFilters, isDateRangeDateApplicable, labels, locale: localeOverride, mode = 'default', monthViewProps, onDayClick, onEventClick, onSelectedDateRangeChange, onViewChange, periodDisplay = 'default', selectedDateRange, sources, view, withDayTooltips = true, withEventResize, withEventsDragAndDrop, withInteractiveBackgroundEvents, yearPeriodDisplay = 'background', yearViewProps, ...props }: CalendarScheduleProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const datesContext = useDatesContext();
+	const locale = datesContext.getLocale(localeOverride);
 	const [uncontrolledView, setUncontrolledView] = useState<ScheduleViewLevel>(defaultView);
 	const resolvedView = view ?? uncontrolledView;
 	const isDateRangeSelectionEnabled = resolvedView === 'year' && mode !== 'static' && Boolean(onSelectedDateRangeChange);

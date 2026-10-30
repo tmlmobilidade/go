@@ -161,6 +161,22 @@
 			"holiday": "Feriados",
 			"period": "Períodos",
 			"rule-impact": "Dias afetados"
+		},
+		"nextMonth": "Mês seguinte",
+		"previousMonth": "Mês anterior",
+		"nextYear": "Ano seguinte",
+		"previousYear": "Ano anterior",
+		"nextDecade": "Década seguinte",
+		"previousDecade": "Década anterior",
+		"daysCopied": "Número de dias copiado",
+		"copyDays": "Copiar número de dias",
+		"copyAffectedDays": "Copiar número de dias afetados",
+		"affectedDays": "{count, plural, one {dia afetado} other {dias afetados}}",
+		"noTimepoints": "Sem horários"
+	},
+	"common": {
+		"WeekdaySelector": {
+			"sundayAndHolidays": "{{day}} e feriados"
 		}
 	}
 }

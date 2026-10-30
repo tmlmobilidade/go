@@ -1,16 +1,15 @@
 'use client';
 
-import { type IsoWeekday, type ManualRule, type Month, MONTH_OPTIONS } from '@tmlmobilidade/go-types-offer';
-import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { type ManualRule } from '@tmlmobilidade/go-types-offer';
+import { type CalendarDate, type IsoWeekday, type Month, MONTHS, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getManualRuleAffectedDates } from '@tmlmobilidade/go-utils-offer';
-import { useCalendarScheduleData } from '@tmlmobilidade/ui';
-import { type CalendarScheduleSources } from '@tmlmobilidade/ui';
+import { type CalendarScheduleSources, useCalendarScheduleData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
 
-const ALL_MONTHS = MONTH_OPTIONS.map(option => option.value);
+const ALL_MONTHS = Object.values(MONTHS).sort((a, b) => a - b);
 
 /* * */
 

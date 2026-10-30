@@ -3,7 +3,25 @@
 		"schedule": {
 			"periods": {
 				"selectAgency": "Seleccione un operador para ver los períodos."
-			}
+			},
+			"allAgencies": "Todos los operadores",
+			"filtersTitle": "Filtrar eventos",
+			"countDays": "Contar días"
+		},
+		"dayCounter": {
+			"title": "Contar días del calendario",
+			"description": "Seleccione los criterios para calcular los días afectados.",
+			"clearCriteria": "Borrar criterios",
+			"done": "Finalizar",
+			"selectAgency": "Seleccione un operador",
+			"selectAgencyFirst": "Seleccione primero un operador.",
+			"noPeriods": "No hay períodos disponibles para este operador.",
+			"all": "Todos",
+			"months": "Meses",
+			"dayType": "Tipo de día",
+			"businessDays": "Días laborables",
+			"weekend": "Fin de semana",
+			"sundayAndHolidays": "{day} y festivos"
 		}
 	},
 	"annotations": {

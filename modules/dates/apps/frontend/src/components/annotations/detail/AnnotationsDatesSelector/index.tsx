@@ -4,7 +4,7 @@ import { useAnnotationsDetailFormContext } from '@/components/annotations/detail
 import { type OperationalDateInt, OperationalDateIntSchema, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Button, MiniCalendar, Section, Text, TimeChip, useStandardFormWatch } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -22,16 +22,30 @@ export function AnnotationsDatesSelector() {
 	const isDisabled = !annotationsDetailContext.capabilities.editEnabled;
 	const formDates = useStandardFormWatch({ control: annotationsDetailContext.form.control, name: 'dates' });
 	const dates = useMemo(() => formDates ?? [], [formDates]);
-	const [displayedMonth, setDisplayedMonth] = useState<Date>();
+	const [selectedMonth, setDisplayedMonth] = useState<Date>();
 
 	//
 	// B. Local mini-calendar state (controlled month)
 
 	const selectedSet = useMemo(() => new Set(dates), [dates]);
 
+	const initialMonth = useMemo(() => {
+		// Prefer showing month of the most recently selected date; fallback to current month
+		if (dates.length > 0) {
+			const last = toCalendarDate(dates[dates.length - 1]).replaceAll('-', '');
+			// last is YYYYMMDD
+			const yyyy = Number.parseInt(last.slice(0, 4), 10);
+			const mm = Number.parseInt(last.slice(4, 6), 10);
+			return new Date(yyyy, mm - 1, 1);
+		}
+		return new Date();
+	}, [dates]);
+
+	// Follow loaded form dates until the user navigates or edits this calendar.
+	const displayedMonth = selectedMonth ?? initialMonth;
+
 	/** All operational dates in the currently displayed month */
 	const displayedMonthDates = useMemo(() => {
-		if (!displayedMonth) return [];
 		const year = displayedMonth.getFullYear();
 		const month = displayedMonth.getMonth();
 		const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -61,26 +75,13 @@ export function AnnotationsDatesSelector() {
 		return map;
 	}, [dates]);
 
-	const initialMonth = useMemo(() => {
-		// Prefer showing month of the most recently selected date; fallback to current month
-		if (dates.length > 0) {
-			const last = toCalendarDate(dates[dates.length - 1]).replaceAll('-', '');
-			// last is YYYYMMDD
-			const yyyy = Number.parseInt(last.slice(0, 4), 10);
-			const mm = Number.parseInt(last.slice(4, 6), 10);
-			return new Date(yyyy, mm - 1, 1);
-		}
-		return new Date();
-	}, [dates]);
-
-	useEffect(() => {
-		setDisplayedMonth(prev => prev ?? initialMonth);
-	}, [initialMonth]);
-
 	//
 	// C. Handle actions
 
-	const setDates = (value: OperationalDateInt[]) => annotationsDetailContext.form.setValue('dates', value, { shouldDirty: true, shouldValidate: true });
+	const setDates = (value: OperationalDateInt[]) => {
+		setDisplayedMonth(displayedMonth);
+		annotationsDetailContext.form.setValue('dates', value, { shouldDirty: true, shouldValidate: true });
+	};
 
 	const handleSelect = (date: Date) => {
 		const operationalDate = OperationalDateIntSchema.parse(dayjs(date).format('YYYYMMDD'));

@@ -1,8 +1,11 @@
 'use client';
 
 import { useCalendarDayCounterContext } from '@/components/calendar/day-counter/CalendarDayCounter.context';
-import { type IsoWeekday, WEEKDAYS } from '@tmlmobilidade/go-types-offer';
-import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
+import { type IsoWeekday, WEEKDAYS } from '@tmlmobilidade/go-types-shared';
+import { getWeekdayOptions } from '@tmlmobilidade/go-utils-dates';
+import { Section, SelectChipGroup, Text, useLocaleContext, WeekdaySelector } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -11,16 +14,6 @@ const WEEKDAY_PRESETS = {
 	business: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
 	weekend: [WEEKDAYS.Sat, WEEKDAYS.Sun],
 } as const;
-
-const WEEKDAY_LABELS: Record<IsoWeekday, string> = {
-	[WEEKDAYS.Fri]: '6ª',
-	[WEEKDAYS.Mon]: '2ª',
-	[WEEKDAYS.Sat]: 'Sáb',
-	[WEEKDAYS.Sun]: 'Dom e Fer',
-	[WEEKDAYS.Thu]: '5ª',
-	[WEEKDAYS.Tue]: '3ª',
-	[WEEKDAYS.Wed]: '4ª',
-};
 
 type WeekdayPresetKey = keyof typeof WEEKDAY_PRESETS;
 
@@ -42,34 +35,46 @@ export function CalendarDayCounterWeekdays() {
 	// A. Setup variables
 
 	const dayCounterContext = useCalendarDayCounterContext();
+	const { t } = useTranslation();
+	const { data: { locale } } = useLocaleContext();
+
+	//
+	// B. Transform data
+
+	const weekdayLabels = useMemo(() => {
+		return Object.fromEntries(getWeekdayOptions(locale).map(({ label, value }) => [
+			value,
+			value === WEEKDAYS.Sun ? t('default:calendar.dayCounter.sundayAndHolidays', '', { day: label }) : label,
+		]));
+	}, [locale, t]);
 	const selectedPresetKey = getSelectedPresetKey(dayCounterContext.filters.weekdays);
 
 	//
-	// B. Handle actions
+	// C. Handle actions
 
 	const handlePresetChange = (value: null | WeekdayPresetKey) => {
 		dayCounterContext.actions.setWeekdays(value ? [...WEEKDAY_PRESETS[value]] : []);
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Section gap="md" padding="none">
-			<Text>Tipo de dia</Text>
+			<Text>{t('default:calendar.dayCounter.dayType')}</Text>
 
 			<SelectChipGroup<WeekdayPresetKey>
 				onChange={handlePresetChange}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
-					{ label: 'Dias úteis', value: 'business' },
-					{ label: 'Fim de semana', value: 'weekend' },
+					{ label: t('default:calendar.dayCounter.all'), value: 'all' },
+					{ label: t('default:calendar.dayCounter.businessDays'), value: 'business' },
+					{ label: t('default:calendar.dayCounter.weekend'), value: 'weekend' },
 				]}
 			/>
 
 			<WeekdaySelector
-				labels={WEEKDAY_LABELS}
+				labels={weekdayLabels}
 				onChange={dayCounterContext.actions.setWeekdays}
 				value={dayCounterContext.filters.weekdays}
 				wrap

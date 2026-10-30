@@ -24,12 +24,7 @@ interface CalendarScheduleSidebarProps {
 
 const ALL_AGENCIES_VALUE = '__all_agencies__';
 
-const FILTER_TYPES: { label: string, type: CalendarScheduleEventType }[] = [
-	{ label: 'Períodos', type: 'period' },
-	{ label: 'Feriados', type: 'holiday' },
-	{ label: 'Anotações', type: 'annotation' },
-	{ label: 'Eventos', type: 'event' },
-];
+const FILTER_TYPES: CalendarScheduleEventType[] = ['period', 'holiday', 'annotation', 'event'];
 
 /* * */
 
@@ -43,7 +38,7 @@ export function CalendarScheduleSidebar({ agencyOptions, canShowPeriods, counts,
 	const [displayedMonth, setDisplayedMonth] = useState<CalendarDate>(date);
 
 	const selectOptions = [
-		{ label: 'Todos os operadores', value: ALL_AGENCIES_VALUE },
+		{ label: t('default:calendar.schedule.allAgencies'), value: ALL_AGENCIES_VALUE },
 		...agencyOptions,
 	];
 
@@ -84,10 +79,14 @@ export function CalendarScheduleSidebar({ agencyOptions, canShowPeriods, counts,
 				value={date}
 				weekendDays={[0, 6]}
 				ariaLabels={{
-					monthLevelControl: 'Selecionar mês',
-					nextMonth: 'Mês seguinte',
-					previousMonth: 'Mês anterior',
-					yearLevelControl: 'Selecionar ano',
+					monthLevelControl: t('shared:components.calendar.selectMonth'),
+					nextDecade: t('shared:components.calendar.nextDecade'),
+					nextMonth: t('shared:components.calendar.nextMonth'),
+					nextYear: t('shared:components.calendar.nextYear'),
+					previousDecade: t('shared:components.calendar.previousDecade'),
+					previousMonth: t('shared:components.calendar.previousMonth'),
+					previousYear: t('shared:components.calendar.previousYear'),
+					yearLevelControl: t('shared:components.calendar.selectYear'),
 				}}
 				classNames={{
 					calendarHeaderControl: styles.miniCalendarHeaderControl,
@@ -100,16 +99,16 @@ export function CalendarScheduleSidebar({ agencyOptions, canShowPeriods, counts,
 			<Select
 				clearable={false}
 				data={selectOptions}
-				label="Operador"
+				label={t('shared:components.calendar.agency')}
 				onChange={handleAgencyChange}
 				value={selectedAgencyId ?? ALL_AGENCIES_VALUE}
 			/>
 
 			<section className={styles.section}>
-				<h2 className={styles.title}>Filtrar eventos</h2>
+				<h2 className={styles.title}>{t('default:calendar.schedule.filtersTitle')}</h2>
 
 				<div className={styles.filters}>
-					{FILTER_TYPES.map(({ label, type }) => {
+					{FILTER_TYPES.map((type) => {
 						const isPeriodUnavailable = type === 'period' && !canShowPeriods;
 
 						return (
@@ -128,7 +127,7 @@ export function CalendarScheduleSidebar({ agencyOptions, canShowPeriods, counts,
 										label={(
 											<span className={styles.label}>
 												<ColorSwatch color={EVENT_TYPE_DEFS[type].color} size={10} />
-												<span>{label}</span>
+												<span>{t(`shared:components.calendar.types.${type}`)}</span>
 												<span className={styles.count}>({counts[type]})</span>
 											</span>
 										)}
@@ -143,7 +142,7 @@ export function CalendarScheduleSidebar({ agencyOptions, canShowPeriods, counts,
 			<Button
 				className={styles.dayCounterButton}
 				icon={<IconCalculator size={18} />}
-				label="Contar dias"
+				label={t('default:calendar.schedule.countDays')}
 				onClick={() => openCalendarDayCounterModal(selectedAgencyId)}
 			/>
 		</aside>

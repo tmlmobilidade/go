@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
+
 import styles from './styles.module.css';
 
 import { CopyButton } from '../../../../buttons';
@@ -18,12 +20,20 @@ export interface CalendarAffectedDaysCountProps {
 /* * */
 
 export function CalendarAffectedDaysCount({ className, count, layout = 'stacked' }: CalendarAffectedDaysCountProps) {
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Render components
+
 	return (
 		<CopyButton value={String(count)}>
 			{({ copied, copy }) => (
-				<Tooltip label={copied ? 'Número de dias copiado' : 'Copiar número de dias'} position="bottom" withArrow>
+				<Tooltip label={t(copied ? 'shared:components.calendar.daysCopied' : 'shared:components.calendar.copyDays')} position="bottom" withArrow>
 					<button
-						aria-label={copied ? 'Número de dias copiado' : 'Copiar número de dias afetados'}
+						aria-label={t(copied ? 'shared:components.calendar.daysCopied' : 'shared:components.calendar.copyAffectedDays')}
 						className={`${styles.root} ${className ?? ''}`}
 						data-layout={layout}
 						onClick={copy}
@@ -31,7 +41,7 @@ export function CalendarAffectedDaysCount({ className, count, layout = 'stacked'
 					>
 						<Surface align="center" className={styles.surface} justify="center" variant="primary" withBackground>
 							<Text c="var(--color-primary)" size={layout === 'inline' ? 'lg' : 'xl'} weight="bold">{count}</Text>
-							<Text size="sm" weight="extra-bold">{count === 1 ? 'dia afetado' : 'dias afetados'}</Text>
+							<Text size="sm" weight="extra-bold">{t('shared:components.calendar.affectedDays', '', { count })}</Text>
 						</Surface>
 					</button>
 				</Tooltip>

@@ -5,6 +5,7 @@ import { CalendarDayCounterMonths } from '@/components/calendar/day-counter/Cale
 import { CalendarDayCounterPeriods } from '@/components/calendar/day-counter/CalendarDayCounterPeriods';
 import { CalendarDayCounterWeekdays } from '@/components/calendar/day-counter/CalendarDayCounterWeekdays';
 import { Divider, Section, Select } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -17,6 +18,7 @@ export function CalendarDayCounterCriteria() {
 	// A. Setup variables
 
 	const dayCounterContext = useCalendarDayCounterContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -28,9 +30,9 @@ export function CalendarDayCounterCriteria() {
 					clearable={false}
 					data={dayCounterContext.data.agencyOptions}
 					disabled={dayCounterContext.flags.is_loading}
-					label="Operador"
+					label={t('shared:components.calendar.agency')}
 					onChange={dayCounterContext.actions.setAgencyId}
-					placeholder="Selecione um operador"
+					placeholder={t('default:calendar.dayCounter.selectAgency')}
 					value={dayCounterContext.filters.agencyId}
 					w="100%"
 				/>

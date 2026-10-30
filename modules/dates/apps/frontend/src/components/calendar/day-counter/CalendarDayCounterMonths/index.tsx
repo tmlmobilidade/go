@@ -1,8 +1,10 @@
 'use client';
 
 import { useCalendarDayCounterContext } from '@/components/calendar/day-counter/CalendarDayCounter.context';
-import { MONTH_OPTIONS } from '@tmlmobilidade/go-types-offer';
-import { Section, SegmentedMultiSelect, Text } from '@tmlmobilidade/ui';
+import { getMonthOptions } from '@tmlmobilidade/go-utils-dates';
+import { Section, SegmentedMultiSelect, Text, useLocaleContext } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -15,18 +17,25 @@ export function CalendarDayCounterMonths() {
 	// A. Setup variables
 
 	const dayCounterContext = useCalendarDayCounterContext();
+	const { t } = useTranslation();
+	const { data: { locale } } = useLocaleContext();
 
 	//
-	// B. Render components
+	// B. Transform data
+
+	const monthOptions = useMemo(() => getMonthOptions(locale), [locale]);
+
+	//
+	// C. Render components
 
 	return (
 		<Section gap="md" padding="none">
-			<Text>Meses</Text>
+			<Text>{t('default:calendar.dayCounter.months')}</Text>
 
 			<SegmentedMultiSelect
 				className={styles.selector}
 				onChange={dayCounterContext.actions.setMonths}
-				options={[...MONTH_OPTIONS]}
+				options={monthOptions}
 				size="sm"
 				value={dayCounterContext.filters.months}
 			/>
