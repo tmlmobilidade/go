@@ -6,7 +6,6 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PasswordRequirementsSchema, type Session } from '@tmlmobilidade/go-types-core';
 import { fetchApiData, PasswordInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
-import bcrypt from 'bcryptjs';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -63,7 +62,7 @@ export function ChangePasswordForm() {
 	// C. Handle actions
 
 	const { action: handleChangePassword, isLoading: isChangingPassword } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Session>({ body: { password_hash: bcrypt.hashSync(passwordValue), token: tokenValue }, method: 'POST', url: API_ROUTES.core.AUTH_CHANGE_PASSWORD }),
+		fetchFn: async () => await fetchApiData<Session>({ body: { password: passwordValue, token: tokenValue }, method: 'POST', url: API_ROUTES.core.AUTH_CHANGE_PASSWORD }),
 		onError: ({ message }) => {
 			useToast.error({
 				message: message ?? t('unauthenticated:ChangePasswordForm.error_message.description'),
