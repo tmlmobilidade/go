@@ -1,7 +1,8 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type AuthChangePasswordRequest, AuthChangePasswordRequestSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import bcrypt from 'bcryptjs';
@@ -9,8 +10,23 @@ import bcrypt from 'bcryptjs';
 /**
  * Change user password
  */
-export async function changePasswordHandler(request: FastifyRequest<{ Body: { password: string, token: string } }>, reply: FastifyReply<void>) {
+export async function changePasswordHandler(request: FastifyRequest<{ Body: AuthChangePasswordRequest }>, reply: FastifyReply<void>) {
+	//
+
+	//
+	// Verify if the request body is valid
+
+	const validatedRequest = AuthChangePasswordRequestSchema.safeParse(request.body);
+
+	if (!validatedRequest.success) {
+		sendErrorApiResponse(reply, {
+			error: validatedRequest.error.message,
+			status_code: '400',
+		});
+	}
+
 	const { password, token } = request.body ?? {};
+
 	const isValidPassword = typeof password === 'string' && password.length >= 15 && Buffer.byteLength(password, 'utf8') <= 72;
 	const commonPasswords = ['123456789012345', 'passwordpassword', 'qwertyuiopasdfgh'];
 	const isCommonPassword = typeof password === 'string' && commonPasswords.includes(password.toLowerCase());
