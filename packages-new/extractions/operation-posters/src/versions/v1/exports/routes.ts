@@ -2,10 +2,9 @@
 
 import { type GtfsStrictV30Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { OperationPostersV1RoutesSchema, type OperationPostersV1RoutesToCanvasExt } from '@tmlmobilidade/go-types-operation';
-import { GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-import { type OperationPostersV1Context } from '../types/context.js';
+import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
 import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
 import { getPosterRouteId } from '../utils/get-poster-route-id.js';
@@ -13,7 +12,7 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportRoutesFile(context: OperationPostersV1Context, sqlTables: GtfsStrictV30SQLTables, exportConfig: ExportHitouchConfig): Promise<Map<string, string>> {
+export async function exportRoutesFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig): Promise<Map<string, string>> {
 	//
 	// Export routes.txt
 

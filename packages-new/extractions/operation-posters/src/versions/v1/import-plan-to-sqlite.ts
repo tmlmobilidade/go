@@ -4,8 +4,8 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
-import { importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 
@@ -74,7 +74,7 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 
 		for (const plan of plans) {
 			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: plan.attachments.operation_gtfs_normalized });
-			const importedGtfs = await importGtfsStrictV30ToDatabase({
+			const importedGtfs = await importGtfsToDatabase<OperationPostersV1Tables>({
 				source: { url: operationFileUrl },
 				time_range: { date_range: { end: plan.active_until, start: plan.active_from } },
 			});

@@ -1,5 +1,6 @@
 /* * */
 
+import { GtfsStrictV30ShapesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { OperationPostersV1ShapesSchema } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -28,13 +29,13 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 	//
 	// Export shapes
 
-	for (const shapeData of sqlTables.shapes.all('ORDER BY shape_id ASC, shape_pt_sequence ASC')) {
+	for (const shapeData of sqlTables.shapes.all('ORDER BY shape_id ASC, CAST(shape_pt_sequence AS INTEGER) ASC')) {
 		//
 		// Export shapes.txt
 
 		const extension = shapeExtensions.get(shapeData.shape_id);
 		if (!extension) continue;
-		await context.writers.shapes.write(OperationPostersV1ShapesSchema.parse(shapeData));
+		await context.writers.shapes.write(OperationPostersV1ShapesSchema.parse(GtfsStrictV30ShapesSchema.parse(shapeData)));
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
 

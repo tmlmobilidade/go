@@ -1,5 +1,6 @@
 /* * */
 
+import { GtfsStrictV30StopsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { OperationPostersV1StopsSchema, type OperationPostersV1StopToCanvasExt } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -16,7 +17,8 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 
 	let exportedRows = 0;
 
-	for (const stopData of sqlTables.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times)')) {
+	for (const row of sqlTables.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times)')) {
+		const stopData = GtfsStrictV30StopsSchema.parse(row);
 		// SQLite returns null for absent optional fields; normalize them before validation.
 		const data = OperationPostersV1StopsSchema.parse({
 			location_type: stopData.location_type ?? '0',

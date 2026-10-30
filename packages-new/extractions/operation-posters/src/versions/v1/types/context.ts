@@ -17,7 +17,7 @@ import {
 	type OperationPostersV1Trips,
 } from '@tmlmobilidade/go-types-operation';
 import { type BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { type GtfsStrictV30SQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsStrictV30SQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 
 /* * */
 

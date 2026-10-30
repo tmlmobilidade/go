@@ -1,5 +1,6 @@
 /* * */
 
+import { GtfsStrictV30StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { OperationPostersV1StopTimesSchema } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -15,7 +16,8 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 
 	let exportedRows = 0;
 
-	for (const stopTimeData of sqlTables.stop_times.all('ORDER BY trip_id ASC, stop_sequence ASC')) {
+	for (const row of sqlTables.stop_times.all('ORDER BY trip_id ASC, CAST(stop_sequence AS INTEGER) ASC')) {
+		const stopTimeData = GtfsStrictV30StopTimesSchema.parse(row);
 		const data = OperationPostersV1StopTimesSchema.parse({
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,

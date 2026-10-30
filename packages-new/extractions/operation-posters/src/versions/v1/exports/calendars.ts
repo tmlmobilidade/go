@@ -70,7 +70,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 
 		for (const tripData of allTripsForThisShapeId) {
 			// Get stop_times for this trip
-			const stopTimesForTrip = sqlTables.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [tripData.trip_id]);
+			const stopTimesForTrip = sqlTables.stop_times.all('WHERE trip_id = ? ORDER BY CAST(stop_sequence AS INTEGER) ASC', [tripData.trip_id]);
 			if (!stopTimesForTrip?.length) continue;
 			// Stringify stop_times to use as a key.
 			// This ignores trip_id to group trips with same stop_times but different trip_ids,
