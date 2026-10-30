@@ -5,8 +5,8 @@ import { z } from 'zod';
 /* * */
 
 export const AuthLoginRequestSchema = z.object({
+	email: z.string().email(),
 	password: z.string(),
-	token: z.string().email(),
 });
 
 /**
