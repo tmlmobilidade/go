@@ -10,7 +10,9 @@ import { type OperationPostersV1Context } from '../types/context.js';
 
 export async function exportDayTypesFile(context: OperationPostersV1Context) {
 	//
-	// Export day types file
+
+	//
+	// A. Export day types file
 
 	const dayTypesExtRows: OperationPostersV1DayTypesExt[] = DAY_TYPES.map((dayType) => {
 		return {
@@ -26,6 +28,9 @@ export async function exportDayTypesFile(context: OperationPostersV1Context) {
 			wednesday: '',
 		};
 	});
+
+	//
+	// B. Write and flush the day types file
 
 	await context.writers.day_types_ext.write(dayTypesExtRows);
 	await context.writers.day_types_ext.flush();

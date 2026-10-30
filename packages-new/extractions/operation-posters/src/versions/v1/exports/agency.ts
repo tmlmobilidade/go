@@ -11,10 +11,15 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 export async function exportAgencyFile(context: OperationPostersV1Context, planData: Plan) {
 	//
-	// Export agency file
+
+	//
+	// A. Export agency file
 
 	const agency = await goDb.core.agencies.findById(planData.agency_id);
 	if (!agency) throw new Error(`Agency ${planData.agency_id} not found for poster export.`);
+
+	//
+	// B. Validate and write the agency file
 
 	const data = OperationPostersV1AgencySchema.parse({
 		agency_email: agency.open_data?.details?.email,
@@ -27,6 +32,9 @@ export async function exportAgencyFile(context: OperationPostersV1Context, planD
 		agency_url: agency.open_data?.details?.website_url,
 	});
 	await context.writers.agency.write(data);
+
+	//
+	// C. Flush and yield to the event loop
 
 	await context.writers.agency.flush();
 	await yieldToEventLoop();

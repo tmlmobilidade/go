@@ -9,9 +9,14 @@ import { type OperationPostersV1Context } from '../types/context.js';
 
 export async function exportFeedInfoFile(context: OperationPostersV1Context, feedInfo: OperationPostersV1FeedInfo) {
 	//
-	// Export feed_info.txt file
+
+	//
+	// A. Export feed_info.txt file
 
 	await context.writers.feed_info.write(OperationPostersV1FeedInfoSchema.parse(feedInfo));
+
+	//
+	// B. Flush the feed info file
 
 	await context.writers.feed_info.flush();
 

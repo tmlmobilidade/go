@@ -13,7 +13,9 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 export async function exportStopsFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig, routeIds: ReadonlyMap<string, string>) {
 	//
-	// Export stops.txt
+
+	//
+	// A. Validate and write stops referenced by stop times
 
 	let exportedRows = 0;
 
@@ -41,49 +43,51 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 	Logger.info({ message: 'Exported stops.txt file.' });
 
 	//
-	// Export stop canvas profiles by stop and direction.
-	// When lines and stops are selected, scope the stops to those lines' trips as well.
+	// B. Skip stop poster targets for line-only exports
 
 	if (exportConfig.content_mode === 'lines') {
 		return Logger.info({ message: 'Skipped stopsToCanvasExt.txt file for line poster export.' });
 	}
 
-	const isLineExport = exportConfig.content_mode === 'lines_stops';
-	const isStopExport = (exportConfig.content_mode === 'stops' || exportConfig.content_mode === 'lines_stops') && exportConfig.stop_ids.length > 0;
+	//
+	// C. Combine the selected line and stop filters
 
-	const canvasFilterClauses: string[] = [];
-	const canvasFilterParameters: string[] = [];
+	const clauses: string[] = [];
+	const parameters: string[] = [];
 
-	if (isLineExport) {
-		const { clause, parameters } = getCanvasLineFilter([...routeIds.keys()], exportConfig);
-		canvasFilterClauses.push(clause);
-		canvasFilterParameters.push(...parameters);
+	if (exportConfig.content_mode === 'lines_stops') {
+		const lineFilter = getCanvasLineFilter([...routeIds.keys()], exportConfig);
+		clauses.push(lineFilter.clause);
+		parameters.push(...lineFilter.parameters);
 	}
 
-	if (isStopExport) {
-		const stopPlaceholders = exportConfig.stop_ids.map(() => '?').join(', ');
-		canvasFilterClauses.push(`stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${stopPlaceholders})`);
-		canvasFilterParameters.push(...exportConfig.stop_ids);
+	if ((exportConfig.content_mode === 'stops' || exportConfig.content_mode === 'lines_stops') && exportConfig.stop_ids.length) {
+		const placeholders = exportConfig.stop_ids.map(() => '?').join(', ');
+		clauses.push(`stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${placeholders})`);
+		parameters.push(...exportConfig.stop_ids);
 	}
 
-	const canvasFilter = canvasFilterClauses.length ? `WHERE ${canvasFilterClauses.join(' AND ')}` : '';
+	//
+	// D. Select one Canvas target per stop and direction
 
-	const stopsToCanvasExtRows = sqlTables._db.databaseInstance.prepare(
+	const canvasFilter = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+	const targets = sqlTables.stop_times.query<{ direction_id: number, stop_id: string }>(
 		` SELECT DISTINCT stop_times.stop_id, trips.direction_id
 		FROM stop_times
 		INNER JOIN trips ON trips.trip_id = stop_times.trip_id
 		${canvasFilter}
 		ORDER BY stop_times.stop_id ASC, trips.direction_id ASC `,
-	).all(...canvasFilterParameters).map((row: { direction_id: number, stop_id: string }): OperationPostersV1StopToCanvasExt => ({
+		parameters,
+	).map((row): OperationPostersV1StopToCanvasExt => ({
 		canvas_profile: exportConfig.canvas_profile,
 		direction_id: row.direction_id,
 		stop_id: row.stop_id,
 	}));
 
 	//
-	// If no stop directions were found, skip the export
+	// E. Reject filters that leave no stop poster targets
 
-	if (!stopsToCanvasExtRows.length) {
+	if (!targets.length) {
 		if (exportConfig.content_mode === 'lines_stops') {
 			throw new Error('The selected line and stop filters remove every stop poster target.');
 		}
@@ -94,12 +98,10 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 	}
 
 	//
-	// Output the stops to canvas ext data
+	// F. Write and flush stopsToCanvasExt.txt
 
-	await context.writers.stops_to_canvas_ext.write(stopsToCanvasExtRows);
+	await context.writers.stops_to_canvas_ext.write(targets);
 	await context.writers.stops_to_canvas_ext.flush();
 
 	Logger.info({ message: 'Exported stopsToCanvasExt.txt file.' });
-
-	//
 }

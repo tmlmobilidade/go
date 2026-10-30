@@ -19,7 +19,7 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 	//
 
 	//
-	// Export shapes.txt and shapesExt.txt
+	// A. Export shapes.txt and shapesExt.txt
 
 	const shapeExtensions = buildShapeExtensions(sqlTables.trips.all());
 	const exportedShapeIds = new Set<string>();
@@ -27,11 +27,11 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 	let extensionRows = 0;
 
 	//
-	// Export shapes
+	// B. Export shapes
 
 	for (const shapeData of sqlTables.shapes.all('ORDER BY shape_id ASC, CAST(shape_pt_sequence AS INTEGER) ASC')) {
 		//
-		// Export shapes.txt
+		// 1. Export shapes.txt
 
 		const extension = shapeExtensions.get(shapeData.shape_id);
 		if (!extension) continue;
@@ -42,7 +42,7 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 		if (exportedShapeIds.has(shapeData.shape_id)) continue;
 
 		//
-		// Export shapesExt.txt
+		// 2. Export shapesExt.txt
 
 		exportedShapeIds.add(shapeData.shape_id);
 		// The main pattern still needs sequence/priority even though its note is blank.
@@ -51,7 +51,7 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 	}
 
 	//
-	// Flush and Log
+	// C. Flush and Log
 
 	await context.writers.shapes.flush();
 	await context.writers.shapes_ext.flush();

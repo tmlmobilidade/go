@@ -12,15 +12,26 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 export async function exportTripsFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, routeIds: ReadonlyMap<string, string>, exportConfig: ExportHitouchConfig) {
 	//
-	// Export trips.txt
+
+	//
+	// A. Export trips.txt
 
 	let exportedRows = 0;
 	const { clause, parameters } = getCanvasLineFilter([...routeIds.keys()], exportConfig);
 	const tripFilter = clause ? `WHERE ${clause}` : '';
 
+	//
+	// B. Export the trips
+
 	for (const tripData of sqlTables.trips.all(`${tripFilter} ORDER BY trip_id ASC`, parameters)) {
+		//
+		// 1. Get the route ID
+
 		const routeId = routeIds.get(tripData.route_id);
 		if (!routeId) throw new Error(`Cannot export trip ${tripData.trip_id}: route ${tripData.route_id} was not exported.`);
+
+		//
+		// 2. Validate and write the trip
 
 		const data = OperationPostersV1TripsSchema.parse({
 			direction_id: tripData.direction_id,
@@ -35,6 +46,9 @@ export async function exportTripsFile(context: OperationPostersV1Context, sqlTab
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
 	}
+
+	//
+	// C. Flush the trips file
 
 	await context.writers.trips.flush();
 

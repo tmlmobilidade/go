@@ -13,13 +13,21 @@ import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 export async function exportStopTimesFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig) {
 	//
-	// Export stop times for the same selected routes as trips.txt.
+
+	//
+	// A. Export stop times for the same selected routes as trips.txt.
 	// Use the final trip IDs from calendar processing.
 	// Pattern annotations belong to shapesExt.txt.
+
+	//
+	// B. Prepare the stop times filter
 
 	let exportedRows = 0;
 	const { clause, parameters } = getCanvasLineFilter(sqlTables.trips.distinct('route_id'), exportConfig);
 	const tripFilter = clause ? `WHERE trip_id IN (SELECT trip_id FROM trips WHERE ${clause})` : '';
+
+	//
+	// C. Export the stop times
 
 	for (const row of sqlTables.stop_times.all(`${tripFilter} ORDER BY trip_id ASC, CAST(stop_sequence AS INTEGER) ASC`, parameters)) {
 		const stopTimeData = GtfsStrictV30StopTimesSchema.parse(row);
@@ -38,6 +46,9 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
 	}
+
+	//
+	// D. Flush the stop times file
 
 	await context.writers.stop_times.flush();
 
