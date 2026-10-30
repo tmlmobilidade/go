@@ -2,13 +2,12 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateUserDto, type LoginDto, type Organization, type Session, type User } from '@tmlmobilidade/go-types-core';
+import { type CreateUserDto, type Organization, type User } from '@tmlmobilidade/go-types-core';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import { mergeObjects } from '@tmlmobilidade/utils';
-import bcrypt from 'bcryptjs';
 
 /* * */
 
@@ -108,29 +107,6 @@ class AuthProviderClass {
 		userData.password_hash = null;
 		// Return the user data
 		return userData;
-	}
-
-	/**
-	 * Login a user.
-	 * @param loginDto The login credentials (email and password).
-	 * @returns The newly created session for the logged in user.
-	 * @throws An HTTP UNAUTHORIZED error code if user not found or password is incorrect.
-	 */
-	async login(loginDto: LoginDto): Promise<Session> {
-		// Get the user data
-		const userData = await goDb.core.users.findOne({ email: { $eq: loginDto.email } });
-		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
-		// Compare the password hash
-		const passwordHashMatch = await bcrypt.compare(loginDto.password, userData.password_hash ?? '');
-		if (!passwordHashMatch) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid password');
-		// Create the session
-		const createdSession = await goDb.core.sessions.insertOne({
-			expires_at: Dates.now('utc').plus({ days: 30 }).unix_milliseconds,
-			token: generateRandomToken(),
-			user_id: userData._id.toString(),
-		});
-		// Return the created session
-		return createdSession;
 	}
 
 	/**
