@@ -1,11 +1,12 @@
 /* * */
 
 import { GtfsStrictV30StopsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { OperationPostersV1StopsSchema, type OperationPostersV1StopToCanvasExt } from '@tmlmobilidade/go-types-operation';
+import { OperationPostersV1StopsSchema } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
+import { buildStopCanvasTargets } from '../utils/build-stop-canvas-targets.js';
 import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
@@ -68,21 +69,23 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 	}
 
 	//
-	// D. Select one Canvas target per stop and direction
+	// D. Count stops per trip and choose one Canvas target per stop and direction
 
 	const canvasFilter = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
-	const targets = sqlTables.stop_times.query<{ direction_id: number, stop_id: string }>(
-		` SELECT DISTINCT stop_times.stop_id, trips.direction_id
+	const servingRoutes = sqlTables.stop_times.query<{ direction_id: number, route_id: string, stop_count: number, stop_id: string }>(
+		` WITH trip_stop_counts AS (
+			SELECT trip_id, COUNT(*) AS stop_count FROM stop_times GROUP BY trip_id
+		)
+		SELECT stop_times.stop_id, trips.direction_id, trips.route_id, MAX(trip_stop_counts.stop_count) AS stop_count
 		FROM stop_times
 		INNER JOIN trips ON trips.trip_id = stop_times.trip_id
+		INNER JOIN trip_stop_counts ON trip_stop_counts.trip_id = trips.trip_id
 		${canvasFilter}
+		GROUP BY stop_times.stop_id, trips.direction_id, trips.route_id
 		ORDER BY stop_times.stop_id ASC, trips.direction_id ASC `,
 		parameters,
-	).map((row): OperationPostersV1StopToCanvasExt => ({
-		canvas_profile: exportConfig.canvas_profile,
-		direction_id: row.direction_id,
-		stop_id: row.stop_id,
-	}));
+	);
+	const targets = buildStopCanvasTargets(servingRoutes, exportConfig);
 
 	//
 	// E. Reject filters that leave no stop poster targets
