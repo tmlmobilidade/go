@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendResetPasswordEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -34,5 +34,5 @@ export async function sendPasswordResetEmailHandler(request: FastifyRequest<{ Bo
 		to: request.body.email,
 	});
 	// Send a success response
-	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, undefined);
 }

@@ -1,6 +1,6 @@
 /* * */
 
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, ApiResponseErrorSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -100,12 +100,18 @@ export async function fetchApiData<T, K = unknown>(params: FetchApiDataParams<K>
 			method: validatedParams.method,
 			...validatedParams.options,
 		});
-		// If the response is not ok, throw an error
-		if (!response.ok) throw new Error(`HTTP ${response.status} - ${response.statusText}`);
-		// Decode the response body
-		const responseData: ApiResponse<T> = await response.json();
-		// If the response has an error, throw an error
-		if (responseData.error) throw new Error(responseData.error);
+		const responseData = await response.json().catch(() => null);
+		if (!response.ok) {
+			const parsedError = ApiResponseErrorSchema.safeParse({
+				data: null,
+				error: typeof responseData?.error === 'string' ? responseData.error : `HTTP ${response.status} - ${response.statusText}`,
+				status_code: String(response.status),
+				timestamp: Dates.now('utc').unix_milliseconds,
+			});
+			if (parsedError.success) return parsedError.data;
+			throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+		}
+		if (!responseData) throw new Error('Invalid API response');
 		// Return the response data
 		return responseData;
 	} catch (error) {
