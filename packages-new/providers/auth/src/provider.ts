@@ -5,8 +5,9 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateUserDto, type LoginDto, type Organization, type Session, type User } from '@tmlmobilidade/go-types-core';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 import { generateRandomToken } from '@tmlmobilidade/strings';
-import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
+import { mergeObjects } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 
 /* * */
@@ -16,6 +17,8 @@ export const AUTH_SESSION_COOKIE_NAME = 'session_token';
 /* * */
 
 class AuthProviderClass {
+	//
+
 	private static _instance: AuthProviderClass;
 
 	private constructor() {}
@@ -56,21 +59,30 @@ class AuthProviderClass {
 	 * @throws An HTTP UNAUTHORIZED error code if user not found.
 	 */
 	async getPermissionsFromUserId(userId: string): Promise<Permission[]> {
+		//
+
+		//
+		// Get the user data
+
 		const userData = await goDb.core.users.findById(userId);
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found.');
+
+		//
+		// Get the roles data
 
 		const rolesData = await goDb.core.roles.findMany({ _id: { $in: userData.role_ids } });
 		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions];
 
+		//
+		// Merge the permissions
+
 		const permissionsMap = new Map<string, Permission>();
+
 		for (const permission of allPermissions) {
 			const key = `${permission.scope}:${permission.action}`;
-			if (permissionsMap.has(key)) {
-				const existingPermission = permissionsMap.get(key)!;
-				permissionsMap.set(key, mergeObjects(existingPermission, permission));
-			} else {
-				permissionsMap.set(key, permission);
-			}
+			const foundPermission = permissionsMap.get(key);
+			if (foundPermission) permissionsMap.set(key, mergeObjects(foundPermission, permission));
+			else permissionsMap.set(key, permission);
 		}
 
 		return Array.from(permissionsMap.values());
@@ -83,13 +95,18 @@ class AuthProviderClass {
 	 * @throws An HTTP UNAUTHORIZED error code if user or session not found.
 	 */
 	async getUserFromSessionToken(sessionToken: string): Promise<User> {
-		const sessionData = await goDb.core.sessions.findOne({ expires_at: { $gt: Dates.now('utc').unix_milliseconds }, token: { $eq: sessionToken } });
+		// Get the session data
+		const sessionData = await goDb.core.sessions.findOne({
+			expires_at: { $gt: Dates.now('utc').unix_milliseconds },
+			token: { $eq: sessionToken },
+		});
 		if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
-
+		// Get the user data
 		const userData = await goDb.core.users.findOne({ _id: { $eq: sessionData.user_id } });
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
-
-		(userData as any).password_hash = undefined;
+		// Delete the password hash from the user data
+		userData.password_hash = null;
+		// Return the user data
 		return userData;
 	}
 
@@ -100,18 +117,19 @@ class AuthProviderClass {
 	 * @throws An HTTP UNAUTHORIZED error code if user not found or password is incorrect.
 	 */
 	async login(loginDto: LoginDto): Promise<Session> {
+		// Get the user data
 		const userData = await goDb.core.users.findOne({ email: { $eq: loginDto.email } });
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
-
-		const passwordHashMatch = await bcrypt.compare(loginDto.password, (userData as any).password_hash ?? '');
+		// Compare the password hash
+		const passwordHashMatch = await bcrypt.compare(loginDto.password, userData.password_hash ?? '');
 		if (!passwordHashMatch) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid password');
-
+		// Create the session
 		const createdSession = await goDb.core.sessions.insertOne({
 			expires_at: Dates.now('utc').plus({ days: 30 }).unix_milliseconds,
 			token: generateRandomToken(),
 			user_id: userData._id.toString(),
 		});
-
+		// Return the created session
 		return createdSession;
 	}
 
@@ -129,15 +147,17 @@ class AuthProviderClass {
 	 * @returns The verification token for email verification.
 	 */
 	async register(createUserDto: CreateUserDto): Promise<string> {
-		const insertNewUserResult = await goDb.core.users.insertOne(createUserDto as any);
-
+		// Insert the new user
+		const insertNewUserResult = await goDb.core.users.insertOne(createUserDto);
+		// Generate the verification token
 		const verificationToken = generateRandomToken();
+		// Insert the verification token
 		await goDb.core.verificationTokens.insertOne({
 			expires_at: Dates.now('utc').plus({ days: 7 }).unix_milliseconds,
 			token: verificationToken,
 			user_id: insertNewUserResult._id,
 		});
-
+		// Return the verification token
 		return verificationToken;
 	}
 }
