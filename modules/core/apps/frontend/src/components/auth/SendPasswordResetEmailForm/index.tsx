@@ -2,6 +2,7 @@
 
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { AuthSendPasswordResetEmailRequest } from '@tmlmobilidade/go-core-pckg-types';
 import { type Session } from '@tmlmobilidade/go-types-core';
 import { fetchApiData, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +23,11 @@ export function SendPasswordResetEmailForm() {
 	// B. Handle actions
 
 	const { action: handleSendResetPasswordEmail, isLoading: isSendingResetPasswordEmail } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Session>({ body: { email: emailValue }, method: 'POST', url: API_ROUTES.core.AUTH_SEND_PASSWORD_RESET_EMAIL }),
+		fetchFn: async () => await fetchApiData<Session, AuthSendPasswordResetEmailRequest>({
+			body: { email: emailValue },
+			method: 'POST',
+			url: API_ROUTES.core.AUTH_SEND_PASSWORD_RESET_EMAIL,
+		}),
 		onError: ({ message }) => {
 			useToast.error({
 				message: message ?? t('unauthenticated:SendPasswordResetEmailForm.error.description'),
