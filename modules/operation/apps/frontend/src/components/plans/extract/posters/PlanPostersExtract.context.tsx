@@ -58,6 +58,8 @@ export function usePlanPostersExtractFormContext() {
 
 export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChildren) => {
 	//
+
+	//
 	// A. Setup variables
 
 	const [loading, setLoading] = useState(false);
@@ -92,6 +94,8 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 		}));
 	}, [plansData.data, setValues]);
 
+	//
+
 	const setPlanId = useCallback((agencyId: string, value: null | string) => {
 		if (!agencyIds.includes(agencyId)) return;
 		const selectedPlan = plansData.data.find(plan => plan._id === value && plan.agency_id === agencyId);
@@ -105,17 +109,25 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 		}));
 	}, [agencyIds, plansData.data, setValues]);
 
+	//
+
 	const setContentMode = useCallback((value: OperationPostersV1ExtractionProperties['content_mode']) => {
 		setValues({ content_mode: value, line_ids: [], lines_mode: 'include', stop_ids: [], stops_mode: 'include' });
 	}, [setValues]);
+
+	//
 
 	const setFilterMode = useCallback((value: NonNullable<OperationPostersV1ExtractionProperties['lines_mode']>) => {
 		setValues({ line_ids: [], lines_mode: value, stop_ids: [], stops_mode: value });
 	}, [setValues]);
 
+	//
+
 	const setCanvasProfile = useCallback((value: null | string) => setFieldValue('canvas_profile', value ?? ''), [setFieldValue]);
 	const setLineIds = useCallback((value: string[]) => setFieldValue('line_ids', value), [setFieldValue]);
 	const setStopIds = useCallback((value: string[]) => setFieldValue('stop_ids', value), [setFieldValue]);
+
+	//
 
 	useEffect(() => {
 		const availableAgencyIds = agencyIds.filter(id => agencyOptions.some(option => option.value === id));

@@ -134,7 +134,7 @@ export function PlanPostersExtractBody() {
 						/>
 					)}
 
-					{context.data.contentMode !== 'all' && (
+					{context.data.contentMode !== 'all' && context.data.contentMode !== 'lines' && (
 						<Select
 							data={canvasProfileOptions}
 							description="Este perfil será aplicado às paragens exportadas"
