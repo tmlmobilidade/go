@@ -60,7 +60,7 @@ export function EventsDetailRules() {
 	// C. Render components
 
 	return (
-		<Section padding="none">
+		<Section gap="md" padding="none">
 			<Divider />
 			<Text size="lg">{t('default:events.rules.title')}</Text>
 			<Text c="dimmed" size="sm">{t('default:events.rules.description')}</Text>
