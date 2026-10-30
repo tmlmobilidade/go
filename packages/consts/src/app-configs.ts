@@ -18,13 +18,13 @@ type ModuleConfigGroup = Partial<Record<FrontendNamedUrlKey, null | string>> & {
 
 const DEFAULT_PRD_CONFIG: Omit<ModuleConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
-	cors_origin: new RegExp(`https://go.tmlmobilidade.pt$`),
+	cors_origin: /^https:\/\/go\.tmlmobilidade\.pt$/,
 	frontend_port: 3000,
 };
 
 const DEFAULT_STG_CONFIG: Omit<ModuleConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
-	cors_origin: new RegExp(`https://*.go-stg.tmlmobilidade.pt$`),
+	cors_origin: /^https:\/\/[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.go-stg\.tmlmobilidade\.pt$/,
 	frontend_port: 3000,
 };
 
@@ -62,13 +62,11 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			api_url: 'https://go.tmlmobilidade.pt/dates/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/dates',
 			...DEFAULT_PRD_CONFIG,
-			cors_origin: true,
 		},
 		stg: {
 			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/dates/api`,
 			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/dates`,
 			...DEFAULT_STG_CONFIG,
-			cors_origin: true,
 		},
 	},
 
