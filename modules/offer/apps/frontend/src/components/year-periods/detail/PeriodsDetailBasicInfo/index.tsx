@@ -45,6 +45,23 @@ export function PeriodsDetailBasicInfo() {
 				/>
 				<StandardFormController
 					control={form.control}
+					name="short_name"
+					render={({ field, fieldState }) => (
+						<TextInput
+							description={t('default:periods.fields.short_name.description')}
+							error={fieldState.error?.message}
+							label={t('default:periods.fields.short_name.label')}
+							onChange={field.onChange}
+							placeholder={t('default:periods.fields.short_name.placeholder')}
+							readOnly={!capabilities.editEnabled}
+							value={field.value ?? ''}
+							w="100%"
+							withAsterisk={!CreateYearPeriodSchema.shape.short_name.isOptional()}
+						/>
+					)}
+				/>
+				<StandardFormController
+					control={form.control}
 					name="code"
 					render={({ field, fieldState }) => (
 						<TextInput

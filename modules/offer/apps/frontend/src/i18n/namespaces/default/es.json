@@ -245,6 +245,11 @@
 			"name": {
 				"label": "Nombre",
 				"placeholder": "Ej.: Período escolar 2025/2026"
+			},
+			"short_name": {
+				"label": "Nombre corto",
+				"placeholder": "Ej.: ESC",
+				"description": "Abreviatura para identificar el periodo en nombres de servicio."
 			}
 		},
 		"list": {

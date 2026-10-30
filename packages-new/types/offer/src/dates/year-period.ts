@@ -7,11 +7,12 @@ import { z } from 'zod';
 
 export const YearPeriodSchema = BaseDocumentSchema.extend({
 	agency_ids: z.array(z.string()).min(1),
-	code: z.string().optional(),
+	code: z.string().trim().min(1),
 	color: z.string().optional(),
 	dates: z.array(OperationalDateIntSchema).optional(),
 	is_locked: z.boolean().default(false),
 	name: z.string().min(1),
+	short_name: z.string().trim().min(1),
 });
 
 export const CreateYearPeriodSchema = YearPeriodSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });

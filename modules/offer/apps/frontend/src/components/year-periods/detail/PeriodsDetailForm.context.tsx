@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type UpdateYearPeriodDto, UpdateYearPeriodSchema, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { CreateYearPeriodSchema, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
@@ -52,15 +52,16 @@ export function PeriodsDetailFormContextProvider({ children }: PropsWithChildren
 	//
 	// B. Setup form
 
-	const { form, isDirty: isMetadataDirty, unblock } = useStandardForm<UpdateYearPeriodDto, typeof UpdateYearPeriodSchema>({
+	const { form, isDirty: isMetadataDirty, unblock } = useStandardForm<UpdateYearPeriodDto, typeof CreateYearPeriodSchema>({
 		apiData: period,
 		hasUnsavedChanges: editor.flags.has_changes,
-		schema: UpdateYearPeriodSchema,
+		schema: CreateYearPeriodSchema,
 	});
 	const values = useStandardFormWatch({ control: form.control });
 	// Check current values: the shared form hook only counts recorded errors.
 	const isDirty = isMetadataDirty || editor.flags.has_changes;
-	const isValid = UpdateYearPeriodSchema.safeParse(values).success;
+	// This editor submits full metadata; required fields also apply when saving date changes.
+	const isValid = CreateYearPeriodSchema.safeParse(values).success;
 
 	//
 	// C. Handle actions
