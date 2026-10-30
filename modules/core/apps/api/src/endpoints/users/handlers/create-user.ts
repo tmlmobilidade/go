@@ -7,12 +7,14 @@ import { authProvider } from '@tmlmobilidade/go-providers-auth';
 import { sendWelcomeEmail } from '@tmlmobilidade/go-providers-emails';
 import { type CreateUserDto, type User } from '@tmlmobilidade/go-types-core';
 
+import { toPublicUser } from '../public-user.js';
+
 /**
  * Create a new user in the database.
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function createUserHandler(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply<User>) {
+export async function createUserHandler(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply<Omit<User, 'password_hash'>>) {
 	//
 
 	//
@@ -55,5 +57,5 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
 		});
 	}
 
-	return sendSuccessApiResponse(reply, newUser);
+	return sendSuccessApiResponse(reply, toPublicUser(newUser));
 }

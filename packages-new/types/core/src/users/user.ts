@@ -34,7 +34,7 @@ export const UserSchema = BaseDocumentSchema.extend({
 	verification_token_ids: z.array(z.string()).default([]),
 });
 
-export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, password_hash: true, updated_at: true });
 export const UpdateUserSchema = CreateUserSchema.omit({ created_by: true, session_ids: true, verification_token_ids: true }).partial();
 
 export type User = z.infer<typeof UserSchema>;
