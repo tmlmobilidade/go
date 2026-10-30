@@ -75,6 +75,62 @@
 			}
 		}
 	},
+	"extract": {
+		"AlertsExtract": {
+			"action": {
+				"error_title": "Failed to request export",
+				"success_title": "Export requested"
+			}
+		},
+		"AlertsExtractFooter": {
+			"button": {
+				"label": "Export"
+			}
+		},
+		"AlertsExtractHeader": {
+			"title": "Export alerts"
+		},
+		"AlertsExtractProperties": {
+			"date_placeholder": "Select a date...",
+			"fields": {
+				"active_period_filter_end": {
+					"label": "Active period until"
+				},
+				"active_period_filter_start": {
+					"label": "Active period from"
+				},
+				"agency_ids": {
+					"label": "Agency"
+				},
+				"causes": {
+					"label": "Cause"
+				},
+				"effects": {
+					"label": "Effect"
+				},
+				"publish_date_filter_end": {
+					"label": "Publication until"
+				},
+				"publish_date_filter_start": {
+					"label": "Publication from"
+				},
+				"publish_status": {
+					"label": "Status"
+				},
+				"reference_type": {
+					"label": "Reference"
+				},
+				"search": {
+					"label": "Search"
+				},
+				"version": {
+					"label": "Version"
+				}
+			},
+			"no_filter": "No filter",
+			"placeholder": "Select one or more options..."
+		}
+	},
 	"list": {
 		"AlertsList": {
 			"columns": {
@@ -108,6 +164,11 @@
 			}
 		},
 		"AlertsListHeader": {
+			"actions": {
+				"extract": {
+					"label": "Export alerts"
+				}
+			},
 			"title": "Alerts"
 		},
 		"filters": {

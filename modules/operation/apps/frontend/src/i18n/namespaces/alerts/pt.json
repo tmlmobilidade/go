@@ -75,6 +75,62 @@
 			}
 		}
 	},
+	"extract": {
+		"AlertsExtract": {
+			"action": {
+				"error_title": "Erro ao solicitar a exportação",
+				"success_title": "Exportação solicitada"
+			}
+		},
+		"AlertsExtractFooter": {
+			"button": {
+				"label": "Exportar"
+			}
+		},
+		"AlertsExtractHeader": {
+			"title": "Exportar alertas"
+		},
+		"AlertsExtractProperties": {
+			"date_placeholder": "Selecione uma data...",
+			"fields": {
+				"active_period_filter_end": {
+					"label": "Validade até"
+				},
+				"active_period_filter_start": {
+					"label": "Validade desde"
+				},
+				"agency_ids": {
+					"label": "Operador"
+				},
+				"causes": {
+					"label": "Causa"
+				},
+				"effects": {
+					"label": "Efeito"
+				},
+				"publish_date_filter_end": {
+					"label": "Publicação até"
+				},
+				"publish_date_filter_start": {
+					"label": "Publicação desde"
+				},
+				"publish_status": {
+					"label": "Estado"
+				},
+				"reference_type": {
+					"label": "Referência"
+				},
+				"search": {
+					"label": "Pesquisa"
+				},
+				"version": {
+					"label": "Versão"
+				}
+			},
+			"no_filter": "Sem filtro",
+			"placeholder": "Selecione uma ou mais opções..."
+		}
+	},
 	"list": {
 		"AlertsList": {
 			"columns": {
@@ -108,6 +164,11 @@
 			}
 		},
 		"AlertsListHeader": {
+			"actions": {
+				"extract": {
+					"label": "Exportar alertas"
+				}
+			},
 			"title": "Alertas"
 		},
 		"filters": {

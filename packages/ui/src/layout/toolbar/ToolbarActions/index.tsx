@@ -7,6 +7,7 @@ import { Fragment, type PropsWithChildren } from 'react';
 /* * */
 
 export interface ToolbarActionsItemType {
+	disabled?: boolean
 	icon: React.ReactNode
 	label: string
 	onClick: () => void
@@ -47,6 +48,7 @@ export function ToolbarActions({ groups }: PropsWithChildren<ToolbarActionsProps
 						{group.actions.map(action => (
 							<Menu.Item
 								key={action.label}
+								disabled={action.disabled}
 								leftSection={action.icon}
 								onClick={action.onClick}
 							>
