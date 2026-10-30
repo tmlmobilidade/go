@@ -39,7 +39,7 @@ export function ChangePasswordForm() {
 
 	const validationErrors: PasswordValidation[] = useMemo(() => {
 		const errors: PasswordValidation[] = [];
-		const result = PasswordRequirementsSchema.safeParse({ password: passwordValue });
+		const result = PasswordRequirementsSchema.safeParse(passwordValue);
 		if (result.error) {
 			errors.push(...result.error.issues
 				.map(issue => Object.values(JSON.parse(issue.message)))
