@@ -21,6 +21,8 @@ interface PosterWriterOptions<T> {
 
 export function initOperationPostersV1Context(runId: string, workdirPath: string): OperationPostersV1Context {
 	//
+
+	//
 	// A. Setup the working directory
 
 	fs.mkdirSync(workdirPath, { recursive: true });
@@ -30,14 +32,20 @@ export function initOperationPostersV1Context(runId: string, workdirPath: string
 	};
 
 	//
-	// B. Setup the batch writers
+	// B. Define the CSV batch writer factory
 
 	function createWriter<T extends object>(filename: string, options: PosterWriterOptions<T> = {}): BatchWriter<T> {
+		//
+		// 1. Prepare the output path and default CSV settings
+
 		const filePath = path.join(workdir.path, filename);
 		const newline = options.newline ?? '\n';
 		return new BatchWriter<T>({
 			batch_size: options.batch_size ?? 100_000,
 			insertFn: async (data) => {
+				//
+				// 2. Serialize and append the batch with a header only on the first write
+
 				const fileAlreadyExists = fs.existsSync(filePath);
 				const csvData = Papa.unparse(options.fields ? { data, fields: options.fields } : data, {
 					header: !fileAlreadyExists,
@@ -53,9 +61,15 @@ export function initOperationPostersV1Context(runId: string, workdirPath: string
 		});
 	}
 
+	//
+	// C. Define the extension files' column order
+
 	const calendarAssignmentsFields = ['day_type_id', 'service_id'] as const;
 	const dayTypesFields = ['day_type_id', 'name', 'sequence_number', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
 	const stopsToCanvasFields = ['stop_id', 'canvas_profile', 'direction_id'] as const;
+
+	//
+	// D. Configure file writers, batch sizes and CSV formats
 
 	const writers: OperationPostersV1Context['writers'] = {
 		agency: createWriter('agency.txt', {
@@ -98,7 +112,7 @@ export function initOperationPostersV1Context(runId: string, workdirPath: string
 	};
 
 	//
-	// C. Return the export context
+	// E. Return the export context
 
 	return { run_id: runId, workdir, writers };
 }

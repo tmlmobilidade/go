@@ -6,5 +6,10 @@
  * @returns The poster route ID.
  */
 export function getPosterRouteId(routeId: string): string {
+	//
+
+	//
+	// A. Remove the trailing numeric variant suffix from the source route ID
+
 	return routeId.replace(/_\d+$/, '');
 }

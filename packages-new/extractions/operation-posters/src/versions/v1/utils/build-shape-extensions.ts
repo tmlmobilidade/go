@@ -13,6 +13,11 @@ import { getPosterRouteId } from './get-poster-route-id.js';
  * @returns Pattern ordering, priority and notes keyed by shape ID.
  */
 export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, OperationPostersV1ShapesExt> {
+	//
+
+	//
+	// A. Group trips by poster route and direction
+
 	const groups = new Map<string, GtfsStrictV30Trips[]>();
 	for (const trip of trips) {
 		const key = JSON.stringify([getPosterRouteId(trip.route_id), trip.direction_id]);
@@ -21,12 +26,21 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, O
 		groups.set(key, group);
 	}
 
+	//
+	// B. Order each group's patterns and build one extension per shape
+
 	const extensions = new Map<string, OperationPostersV1ShapesExt>();
 	for (const group of groups.values()) {
+		//
+		// 1. Prefer the main pattern and sort the remaining variants
+
 		const sortedTrips = [...group].sort((a, b) => a.shape_id.localeCompare(b.shape_id) || a.trip_id.localeCompare(b.trip_id));
 		const baseRouteId = getPosterRouteId(sortedTrips[0].route_id);
 		const mainTrip = sortedTrips.find(trip => trip.route_id === `${baseRouteId}_0` || trip.shape_id.startsWith(`${baseRouteId}_0_`)) ?? sortedTrips[0];
 		const shapeIds = [mainTrip.shape_id, ...new Set(sortedTrips.filter(trip => trip.shape_id !== mainTrip.shape_id).map(trip => trip.shape_id))];
+
+		//
+		// 2. Assign sequence, priority and the variant note
 
 		for (const [index, shapeId] of shapeIds.entries()) {
 			const sequence = index + 1;
