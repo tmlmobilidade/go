@@ -184,9 +184,13 @@
 					}
 				}
 			},
+			"ValidationRules": {
+				"invalidSeverities": "Invalid severities in the listed rules."
+			},
 			"header": {
 				"save": "Save"
-			}
+			},
+			"validationError": "Unable to save the agency."
 		},
 		"list": {
 			"Header": {

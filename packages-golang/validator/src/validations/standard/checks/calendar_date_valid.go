@@ -1,0 +1,65 @@
+package standard
+
+import (
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	"main/types"
+)
+
+/*
+# Attributes
+
+  - File: [calendar.txt]
+  - Field: [start_date, end_date]
+  - Presence: Required
+  - Type: Date
+
+# Description
+
+Start service day for the service interval.
+
+End service day for the service interval. This service day is included in the interval.
+
+[calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
+*/
+func CalendarDateValid(db *services.SQLiteContext, rules *types.RuleContext) error {
+	//
+
+	//
+	// 1. Get the rule
+
+	const ruleID = "calendar_start_end_dates_valid"
+
+	//
+	// 2. Create the validation context
+
+	ctx := lib.NewValidationContext("dates", "calendar.txt", ruleID, db.Row, services.AppMessageService)
+	if rules != nil {
+		ctx.WithSeverity(rules.Severity)
+	}
+
+	//
+	// 3. Get the date value
+
+	startDate, err := db.Calendar.Field("start_date")
+	if err != nil {
+		return err
+	}
+
+	endDate, err := db.Calendar.Field("end_date")
+	if err != nil {
+		return err
+	}
+
+	//
+	// 4. Validate start_date is before end_date
+
+	if startDate >= endDate {
+		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("invalid", startDate))
+	}
+
+	//
+	// 5. Return success
+
+	return nil
+}

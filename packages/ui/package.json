@@ -48,6 +48,7 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
+		"@tmlmobilidade/go-types-gtfs-validator": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-types-offer": "*",
