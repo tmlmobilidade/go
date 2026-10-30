@@ -6,7 +6,7 @@ import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/go-t
 /**
  * Authenticate a user from a login request and create a new session.
  */
-export async function loginHandler(request: FastifyRequest<{ Body: LoginDto }>, reply: FastifyReply<Session>) {
+export async function loginHandler(request: FastifyRequest<{ Body: LoginDto }>, reply: FastifyReply<Omit<Session, 'token'>>) {
 	//
 
 	//
@@ -43,5 +43,6 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginDto }>, 
 	//
 	// Send the session data in the response
 
-	return sendSuccessApiResponse(reply, newSession);
+	const { token: _token, ...sessionMetadata } = newSession;
+	return sendSuccessApiResponse(reply, sessionMetadata);
 }

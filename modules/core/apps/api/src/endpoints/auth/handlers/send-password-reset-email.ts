@@ -3,6 +3,7 @@
 import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { hashAuthToken } from '@tmlmobilidade/go-providers-auth';
 import { sendResetPasswordEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomToken } from '@tmlmobilidade/strings';
@@ -22,7 +23,7 @@ export async function sendPasswordResetEmailHandler(request: FastifyRequest<{ Bo
 	// with an expiration time of 1 hour
 	await goDb.core.verificationTokens.insertOne({
 		expires_at: Dates.now('utc').plus({ hours: 1 }).unix_milliseconds,
-		token: randomToken,
+		token: hashAuthToken(randomToken),
 		user_id: foundUser._id,
 	});
 	// Send the password reset email to the user

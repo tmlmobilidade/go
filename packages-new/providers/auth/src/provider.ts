@@ -9,6 +9,8 @@ import { generateRandomToken } from '@tmlmobilidade/strings';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 
+import { hashAuthToken } from './hash-auth-token.js';
+
 /* * */
 
 export const AUTH_SESSION_COOKIE_NAME = 'session_token';
@@ -83,7 +85,7 @@ class AuthProviderClass {
 	 * @throws An HTTP UNAUTHORIZED error code if user or session not found.
 	 */
 	async getUserFromSessionToken(sessionToken: string): Promise<User> {
-		const sessionData = await goDb.core.sessions.findOne({ token: { $eq: sessionToken } });
+		const sessionData = await goDb.core.sessions.findOne({ token: { $eq: hashAuthToken(sessionToken) } });
 		if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
 
 		const userData = await goDb.core.users.findOne({ _id: { $eq: sessionData.user_id } });
@@ -106,13 +108,14 @@ class AuthProviderClass {
 		const passwordHashMatch = await bcrypt.compare(loginDto.password, (userData as any).password_hash ?? '');
 		if (!passwordHashMatch) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid password');
 
+		const sessionToken = generateRandomToken();
 		const createdSession = await goDb.core.sessions.insertOne({
 			expires_at: Dates.now('utc').plus({ days: 30 }).unix_milliseconds,
-			token: generateRandomToken(),
+			token: hashAuthToken(sessionToken),
 			user_id: userData._id.toString(),
 		});
 
-		return createdSession;
+		return { ...createdSession, token: sessionToken };
 	}
 
 	/**
@@ -120,7 +123,7 @@ class AuthProviderClass {
 	 * @param sessionToken The session token to logout.
 	 */
 	async logout(sessionToken: string): Promise<void> {
-		await goDb.core.sessions.deleteOne({ token: { $eq: sessionToken } });
+		await goDb.core.sessions.deleteOne({ token: { $eq: hashAuthToken(sessionToken) } });
 	}
 
 	/**
@@ -134,7 +137,7 @@ class AuthProviderClass {
 		const verificationToken = generateRandomToken();
 		await goDb.core.verificationTokens.insertOne({
 			expires_at: Dates.now('utc').plus({ days: 7 }).unix_milliseconds,
-			token: verificationToken,
+			token: hashAuthToken(verificationToken),
 			user_id: insertNewUserResult._id,
 		});
 
