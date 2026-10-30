@@ -83,7 +83,7 @@ class AuthProviderClass {
 	 * @throws An HTTP UNAUTHORIZED error code if user or session not found.
 	 */
 	async getUserFromSessionToken(sessionToken: string): Promise<User> {
-		const sessionData = await goDb.core.sessions.findOne({ token: { $eq: sessionToken } });
+		const sessionData = await goDb.core.sessions.findOne({ expires_at: { $gt: Dates.now('utc').unix_milliseconds }, token: { $eq: sessionToken } });
 		if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
 
 		const userData = await goDb.core.users.findOne({ _id: { $eq: sessionData.user_id } });
