@@ -63,8 +63,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"agency_phone_valid":                 standard.AgencyPhoneValid,
 		"agency_fare_url_valid":              standard.AgencyFareUrlValid,
 		"agency_id_matched_with_agency_name": custom.AgencyNameIdMatch,
-	})
-	bind("calendar", services.RuleChecks{
 		"calendar_service_id_field":             fields.ServiceIdValidation,
 		"calendar_start_date_field":             fields.StartDateValidation,
 		"calendar_end_date_field":               fields.EndDateValidation,
@@ -85,15 +83,11 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"calendar_friday_valid":                 standard.FridayValid,
 		"calendar_saturday_valid":               standard.SaturdayValid,
 		"calendar_sunday_valid":                 standard.SundayValid,
-	})
-	bind("calendar_dates", services.RuleChecks{
 		"calendar_dates_date_field":           fields.DateField,
 		"calendar_dates_exception_type_field": fields.ExceptionTypeField,
 		"calendar_dates_service_id_field":     fields.CalendarDatesServiceIdField,
 		"calendar_dates_date_valid":           standard.CalendarDatesDateValid,
 		"calendar_dates_exception_type_valid": standard.ExceptionTypeValid,
-	})
-	bind("fare_attributes", services.RuleChecks{
 		"fare_attributes_fare_id_field":           fields.FareAttributesFareIdField,
 		"fare_attributes_price_field":             fields.PriceField,
 		"fare_attributes_currency_type_field":     fields.CurrencyTypeField,
@@ -108,8 +102,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"fare_attributes_transfers_valid":         standard.TransfersValid,
 		"fare_attributes_agency_id_foreign":       standard.FareAttributesAgencyIdForeign,
 		"fare_attributes_transfer_duration_valid": standard.TransferDurationValid,
-	})
-	bind("fare_rules", services.RuleChecks{
 		"fare_rules_fare_id_field":          fields.FareRulesFareIdField,
 		"fare_rules_route_id_field":         fields.FareRulesRouteIdField,
 		"fare_rules_origin_id_field":        fields.OriginIdField,
@@ -120,8 +112,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"fare_rules_origin_id_foreign":      standard.OriginIdForeign,
 		"fare_rules_destination_id_foreign": standard.DestinationIdForeign,
 		"fare_rules_contains_id_foreign":    standard.ContainsIdForeign,
-	})
-	bind("feed_info", services.RuleChecks{
 		"feed_info_default_lang_field":        fields.DefaultLangField,
 		"feed_info_feed_lang_field":           fields.FeedLangField,
 		"feed_info_feed_publisher_name_field": fields.FeedPublisherNameField,
@@ -139,8 +129,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"feed_info_feed_end_date_format":      standard.FeedEndDateFormat,
 		"feed_info_feed_start_date_format":    standard.FeedStartDateFormat,
 		"feed_info_start_end_dates_valid":     standard.FeedStartEndDateValid,
-	})
-	bind("frequencies", services.RuleChecks{
 		"frequencies_trip_id_field":      fields.FrequenciesTripIdField,
 		"frequencies_exact_times_field":  fields.ExactTimesField,
 		"frequencies_headway_secs_field": fields.HeadwaySecsField,
@@ -151,15 +139,11 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"frequencies_headway_secs_valid": standard.HeadwaySecsValid,
 		"frequencies_end_time_valid":     standard.EndTimeValid,
 		"frequencies_start_time_valid":   standard.StartTimeValid,
-	})
-	bind("levels", services.RuleChecks{
 		"levels_level_id_field":    fields.LevelsLevelIdField,
 		"levels_level_index_field": fields.LevelIndexField,
 		"levels_level_name_field":  fields.LevelNameField,
 		"levels_level_id_unique":   standard.LevelIdUnique,
 		"levels_level_index_valid": standard.LevelIndexValid,
-	})
-	bind("pathways", services.RuleChecks{
 		"pathways_max_slope_field":              fields.MaxSlopeField,
 		"pathways_traversal_time_field":         fields.TraversalTimeField,
 		"pathways_to_stop_id_field":             fields.PathwaysToStopIdField,
@@ -182,8 +166,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"pathways_pathway_id_unique":            standard.PathwayIdUnique,
 		"pathways_is_bidirectional_valid":       standard.IsBidirectionalValid,
 		"pathways_pathway_mode_valid":           standard.PathwayModeValid,
-	})
-	bind("rider_categories", services.RuleChecks{
 		"rider_categories_rider_category_id_field":        fields.RiderCategoryIdField,
 		"rider_categories_rider_category_name_field":      fields.RiderCategoryNameField,
 		"rider_categories_is_default_fare_category_field": fields.IsDefaultFareCategoryField,
@@ -191,8 +173,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"rider_categories_rider_category_id_unique":       standard.RiderCategoryIdUnique,
 		"rider_categories_is_default_fare_category_valid": standard.IsDefaultFareCategoryValid,
 		"rider_categories_eligibility_url_valid":          standard.EligibilityUrlValid,
-	})
-	bind("routes", services.RuleChecks{
 		"routes_agency_id_field":           fields.RoutesAgencyIdField,
 		"routes_continuous_drop_off_field": fields.RoutesContinuousDropOffField,
 		"routes_continuous_pickup_field":   fields.RoutesContinuousPickupField,
@@ -237,8 +217,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"routes_line_short_name_equal_route_short_name": custom.LineShortNameEqualRouteShortName,
 		"routes_path_type_valid":                        custom.PathTypeValid,
 		"routes_route_id_format":                        custom.RouteIdFormat,
-	})
-	bind("shapes", services.RuleChecks{
 		"shapes_shape_id_field":                            fields.ShapesShapeIdField,
 		"shapes_shape_pt_lat_field":                        fields.ShapePtLatField,
 		"shapes_shape_pt_lon_field":                        fields.ShapePtLonField,
@@ -253,8 +231,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"shapes_shape_point_spacing_valid":                 custom.ShapePointsCoordinatesConsistent,
 		"shapes_shape_dist_traveled_segment_valid":         custom.ShapePointsCoordinatesDistances,
 		"shapes_shape_dist_traveled_block_valid":           custom.ShapeDistancesValid,
-	})
-	bind("stop_times", services.RuleChecks{
 		"stop_times_arrival_time_field":                  fields.ArrivalTimeField,
 		"stop_times_continuous_drop_off_field":           fields.StopTimesContinuousDropOffField,
 		"stop_times_continuous_pickup_field":             fields.StopTimesContinuousPickupField,
@@ -288,8 +264,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"stop_times_stop_id_foreign":                     standard.StopIdForeign,
 		"stop_times_timepoint_valid":                     standard.TimepointValid,
 		"stop_times_trip_id_foreign":                     standard.StopTimesTripIdForeign,
-	})
-	bind("stops", services.RuleChecks{
 		"stops_stop_id_field":                             fields.StopsStopIdField,
 		"stops_stop_code_field":                           fields.StopCodeField,
 		"stops_stop_name_field":                           fields.StopNameField,
@@ -357,8 +331,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"stops_has_stop_sign_valid":                       standard.HasStopSignValid,
 		"stops_has_tariffs_information_allowed":           standard.HasTariffsInformationAllowed,
 		"stops_has_tariffs_information_valid":             standard.HasTariffsInformationValid,
-	})
-	bind("transfers", services.RuleChecks{
 		"transfers_from_stop_id_field":      fields.TransfersFromStopIdField,
 		"transfers_to_stop_id_field":        fields.TransfersToStopIdField,
 		"transfers_from_route_id_field":     fields.FromRouteIdField,
@@ -375,8 +347,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"transfers_to_trip_id_foreign":      standard.ToTripIdForeign,
 		"transfers_transfer_type_valid":     standard.TransferTypeValid,
 		"transfers_min_transfer_time_valid": standard.MinTransferTimeValid,
-	})
-	bind("trips", services.RuleChecks{
 		"trips_route_id_field":                           fields.TripsRouteIdField,
 		"trips_service_id_field":                         fields.TripsServiceIdField,
 		"trips_trip_id_field":                            fields.TripsTripIdField,
@@ -423,8 +393,6 @@ func RuleDefinitions(gtfs types.Gtfs, config *types.GtfsRules, prepared ...*serv
 		"trips_stop_coordinates": func(db *services.SQLiteContext, context *types.RuleContext) error {
 			return custom.StopCoordinates(db, context, &geometry)
 		},
-	})
-	bind("vehicles", services.RuleChecks{
 		"vehicles_agency_id_field":             fields.VehiclesAgencyIdField,
 		"vehicles_vehicle_id_field":            fields.VehicleIdField,
 		"vehicles_vehicle_code_field":         fields.VehicleCodeField,
