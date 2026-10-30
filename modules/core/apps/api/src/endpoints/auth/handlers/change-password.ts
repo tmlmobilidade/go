@@ -63,12 +63,17 @@ export async function changePasswordHandler(request: FastifyRequest<{ Body: Auth
 	);
 
 	//
-	// Once the token is validated, delete it from the database
+	// Once the token is validated, delete all tokens for the current user
 
-	await goDb.core.verificationTokens.deleteOne({ token: { $eq: request.body.token } });
+	await goDb.core.verificationTokens.deleteMany({ user_id: { $eq: foundVerificationToken.user_id } });
 
 	//
-	// Send the password reset post alert email to the user
+	// Also delete all sessions for the current user
+
+	await goDb.core.sessions.deleteMany({ user_id: { $eq: foundVerificationToken.user_id } });
+
+	//
+	// Send the password changed email to the user
 
 	await sendPasswordChangedEmail({
 		data: {
