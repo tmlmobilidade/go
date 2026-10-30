@@ -129,7 +129,7 @@ class AuthProviderClass {
 	 * @returns The verification token for email verification.
 	 */
 	async register(createUserDto: CreateUserDto): Promise<string> {
-		const insertNewUserResult = await goDb.core.users.insertOne(createUserDto as any);
+		const insertNewUserResult = await goDb.core.users.insertOne({ ...createUserDto, password_hash: null } as any);
 
 		const verificationToken = generateRandomToken();
 		await goDb.core.verificationTokens.insertOne({

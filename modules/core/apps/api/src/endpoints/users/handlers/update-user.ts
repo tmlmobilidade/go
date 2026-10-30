@@ -16,7 +16,7 @@ export async function updateUserHandler(request: FastifyRequest<{ Body: UpdateUs
 	// Set the updated_by field to the current user id
 	request.body.updated_by = request.me._id;
 	// Validate the request body against the UpdateUserDto schema
-	const validatedUserData = UpdateUserSchema.omit({ password_hash: true }).strict().safeParse(request.body);
+	const validatedUserData = UpdateUserSchema.strict().safeParse(request.body);
 	if (!validatedUserData.success) {
 		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
 	}

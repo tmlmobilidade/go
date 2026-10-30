@@ -23,7 +23,6 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
 	const verificationToken = await authProvider.register({
 		...request.body,
 		created_by: request.me._id,
-		password_hash: null,
 		updated_by: request.me._id,
 	});
 

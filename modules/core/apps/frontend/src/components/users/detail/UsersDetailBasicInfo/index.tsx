@@ -1,10 +1,11 @@
 'use client';
 
 import { IconMail, IconPhone } from '@tabler/icons-react';
-import { Collapsible, Grid, PasswordInput, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
-import bcrypt from 'bcryptjs';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Button, Collapsible, fetchApiData, Grid, Section, StandardFormController, TextInput, useHandleAction } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
+import { useUsersDetailData } from '../use-users-detail-data';
 import { useUsersDetailFormContext } from '../UsersDetailForm.context';
 
 /* * */
@@ -22,10 +23,19 @@ export function UsersDetailBasicInfo() {
 	//
 	// B. Handle actions
 
-	function handleChangePassword(value: string) {
-		const passwordHash = bcrypt.hashSync(value);
-		form.setValue('password_hash', passwordHash, { shouldDirty: true });
-	}
+	const { data: userData } = useUsersDetailData();
+	const { action: handleSendPasswordResetEmail, isLoading: isSendingPasswordResetEmail } = useHandleAction({
+		fetchFn: async () => await fetchApiData<undefined>({
+			body: { email: userData?.email },
+			method: 'POST',
+			url: API_ROUTES.core.AUTH_SEND_PASSWORD_RESET_EMAIL,
+		}),
+		labels: {
+			success_message: t('unauthenticated:SendPasswordResetEmailForm.success.description'),
+			success_title: t('unauthenticated:SendPasswordResetEmailForm.success.title'),
+		},
+		onSuccess: () => undefined,
+	});
 
 	//
 	// C. Render components
@@ -115,13 +125,12 @@ export function UsersDetailBasicInfo() {
 						)}
 					/>
 
-					<PasswordInput
-						autoComplete="new-password"
-						disabled={!capabilities.editEnabled}
-						label={t('default:users.detail.BasicInfo.fields.password.label')}
-						maxLength={255}
-						onChange={event => handleChangePassword(event.target.value)}
-						placeholder={t('default:users.detail.BasicInfo.fields.password.placeholder')}
+					<Button
+						disabled={!capabilities.editEnabled || !userData?.email || isSendingPasswordResetEmail}
+						label={t('unauthenticated:SendPasswordResetEmailForm.submit.label')}
+						loading={isSendingPasswordResetEmail}
+						onClick={() => handleSendPasswordResetEmail()}
+						type="button"
 					/>
 
 				</Grid>
