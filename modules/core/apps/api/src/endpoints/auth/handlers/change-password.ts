@@ -3,6 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AuthChangePasswordRequest, AuthChangePasswordRequestSchema, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { sendPasswordChangedEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import bcrypt from 'bcryptjs';
 
@@ -56,7 +57,7 @@ export async function changePasswordHandler(request: FastifyRequest<{ Body: Auth
 
 	const hashedPassword = await bcrypt.hash(request.body.password, 12);
 
-	await goDb.core.users.updateOne(
+	const updatedUser = await goDb.core.users.updateOne(
 		{ _id: { $eq: foundVerificationToken.user_id } },
 		{ password_hash: hashedPassword },
 	);
@@ -65,6 +66,16 @@ export async function changePasswordHandler(request: FastifyRequest<{ Body: Auth
 	// Once the token is validated, delete it from the database
 
 	await goDb.core.verificationTokens.deleteOne({ token: { $eq: request.body.token } });
+
+	//
+	// Send the password reset post alert email to the user
+
+	await sendPasswordChangedEmail({
+		data: {
+			firstName: updatedUser.first_name,
+		},
+		to: updatedUser.email,
+	});
 
 	//
 	// Send a success response
