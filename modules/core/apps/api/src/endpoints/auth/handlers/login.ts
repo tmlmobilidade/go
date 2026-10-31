@@ -3,7 +3,8 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AuthLoginRequest, AuthLoginRequestSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AUTH_SESSION_COOKIE_NAME, type Session } from '@tmlmobilidade/go-types-core';
+import { hashAuthToken } from '@tmlmobilidade/go-providers-auth';
+import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import bcrypt from 'bcryptjs';
@@ -11,7 +12,7 @@ import bcrypt from 'bcryptjs';
 /**
  * Authenticate a user from a login request and create a new session.
  */
-export async function loginHandler(request: FastifyRequest<{ Body: AuthLoginRequest }>, reply: FastifyReply<Session>) {
+export async function loginHandler(request: FastifyRequest<{ Body: AuthLoginRequest }>, reply: FastifyReply<void>) {
 	//
 
 	//
@@ -55,16 +56,18 @@ export async function loginHandler(request: FastifyRequest<{ Body: AuthLoginRequ
 
 	const sessionDurationInDays = 30; // days
 
-	const newAuthSession = await goDb.core.sessions.insertOne({
+	const randomToken = generateRandomToken();
+
+	await goDb.core.sessions.insertOne({
 		// Sessions expire in 30 days
 		expires_at: Dates.now('utc').plus({ days: sessionDurationInDays }).unix_milliseconds,
 		// Generate a random token
-		token: generateRandomToken(),
+		token: hashAuthToken(randomToken),
 		// Set the user ID
 		user_id: userData._id,
 	});
 
-	reply.setCookie(AUTH_SESSION_COOKIE_NAME, newAuthSession.token, {
+	reply.setCookie(AUTH_SESSION_COOKIE_NAME, randomToken, {
 		httpOnly: true,
 		maxAge: sessionDurationInDays * 24 * 60 * 60, // days to seconds
 		path: '/',
@@ -75,5 +78,5 @@ export async function loginHandler(request: FastifyRequest<{ Body: AuthLoginRequ
 	//
 	// Send the session data in the response
 
-	return sendSuccessApiResponse(reply, newAuthSession);
+	return sendSuccessApiResponse(reply, undefined);
 }
