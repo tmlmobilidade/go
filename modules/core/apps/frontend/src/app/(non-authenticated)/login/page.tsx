@@ -8,7 +8,13 @@ import { cookies } from 'next/headers';
 /* * */
 
 export default async function Page() {
+	//
+
+	//
+	// A. Setup variables
+
 	const sessionToken = (await cookies()).get('session_token')?.value;
+
 	if (sessionToken) {
 		try {
 			const response = await fetch(API_ROUTES.core.ME_LIST, {
@@ -24,5 +30,6 @@ export default async function Page() {
 			// A failed session check must not prevent a fresh login.
 		}
 	}
+
 	return <LoginForm />;
 }
