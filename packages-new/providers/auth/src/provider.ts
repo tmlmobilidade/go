@@ -2,11 +2,10 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateUserDto, type Organization, type User } from '@tmlmobilidade/go-types-core';
+import { type Organization, type User } from '@tmlmobilidade/go-types-core';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
-import { generateRandomToken } from '@tmlmobilidade/strings';
 import { mergeObjects } from '@tmlmobilidade/utils';
 
 /* * */
@@ -103,26 +102,6 @@ class AuthProviderClass {
 		userData.password_hash = null;
 		// Return the user data
 		return userData;
-	}
-
-	/**
-	 * Register a new user.
-	 * @param createUserDto The data to create the user.
-	 * @returns The verification token for email verification.
-	 */
-	async register(createUserDto: CreateUserDto): Promise<string> {
-		// Insert the new user
-		const insertNewUserResult = await goDb.core.users.insertOne(createUserDto);
-		// Generate the verification token
-		const verificationToken = generateRandomToken();
-		// Insert the verification token
-		await goDb.core.verificationTokens.insertOne({
-			expires_at: Dates.now('utc').plus({ days: 7 }).unix_milliseconds,
-			token: verificationToken,
-			user_id: insertNewUserResult._id,
-		});
-		// Return the verification token
-		return verificationToken;
 	}
 }
 

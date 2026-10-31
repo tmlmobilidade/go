@@ -1,7 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-types-core';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type Extraction } from '@tmlmobilidade/go-types-extractions';
 
 import { getUserExtractions } from '../utils/get-user-extractions.js';
@@ -13,18 +12,6 @@ import { getUserExtractions } from '../utils/get-user-extractions.js';
  */
 export async function listExtractionsHandler(request: FastifyRequest, reply: FastifyReply<Extraction[]>) {
 	//
-
-	//
-	// Extract the session token from authentication cookie
-
-	const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
-
-	if (!sessionToken) {
-		return sendErrorApiResponse(reply, {
-			error: 'Session token not found',
-			status_code: '401',
-		});
-	}
 
 	//
 	// Retrieve extractions for the current user and environment

@@ -4,6 +4,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AuthSendPasswordResetEmailRequest, AuthSendPasswordResetEmailRequestSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { hashAuthToken } from '@tmlmobilidade/go-providers-auth';
 import { sendResetPasswordEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomToken } from '@tmlmobilidade/strings';
@@ -46,7 +47,7 @@ export async function sendPasswordResetEmailHandler(request: FastifyRequest<{ Bo
 
 	await goDb.core.verificationTokens.insertOne({
 		expires_at: Dates.now('utc').plus({ hours: 1 }).unix_milliseconds,
-		token: randomToken,
+		token: hashAuthToken(randomToken),
 		user_id: foundUser._id,
 	});
 

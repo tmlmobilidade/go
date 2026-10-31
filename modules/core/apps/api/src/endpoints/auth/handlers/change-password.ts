@@ -3,6 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AuthChangePasswordRequest, AuthChangePasswordRequestSchema, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { hashAuthToken } from '@tmlmobilidade/go-providers-auth';
 import { sendPasswordChangedEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import bcrypt from 'bcryptjs';
@@ -42,7 +43,7 @@ export async function changePasswordHandler(request: FastifyRequest<{ Body: Auth
 
 	const foundVerificationToken = await goDb.core.verificationTokens.findOne({
 		expires_at: { $gt: Dates.now('utc').unix_milliseconds },
-		token: { $eq: request.body.token },
+		token: { $eq: hashAuthToken(request.body.token) },
 	});
 
 	if (!foundVerificationToken) {
