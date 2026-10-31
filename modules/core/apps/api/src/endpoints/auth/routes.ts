@@ -19,10 +19,6 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.addHook('onRequest', async (_request, reply) => {
-			reply.header('Cache-Control', 'no-store');
-		});
-
 		instance.post('/login', loginHandler);
 
 		instance.get('/logout', logoutHandler);
