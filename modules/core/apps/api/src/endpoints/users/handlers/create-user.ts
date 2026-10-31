@@ -42,11 +42,10 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
 	// Generate a verification token and send it to the user
 
 	const randomToken = generateRandomToken();
-	const hashedRandomToken = hashAuthToken(randomToken);
 
 	const newVerificationTokenData = await goDb.core.verificationTokens.insertOne({
 		expires_at: Dates.now('utc').plus({ days: 7 }).unix_milliseconds,
-		token: hashedRandomToken,
+		token: hashAuthToken(randomToken),
 		user_id: newUserData._id,
 	});
 
@@ -63,7 +62,7 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
 	await sendWelcomeEmail({
 		data: {
 			firstName: request.body.first_name,
-			resetPasswordUrl: `${PAGE_ROUTES.core.CHANGE_PASSWORD_LIST}?token=${hashedRandomToken}&email=${encodeURIComponent(request.body.email)}`,
+			resetPasswordUrl: `${PAGE_ROUTES.core.CHANGE_PASSWORD_LIST}?token=${randomToken}&email=${encodeURIComponent(request.body.email)}`,
 		},
 		to: request.body.email,
 	});
