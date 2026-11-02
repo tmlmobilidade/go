@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules"
 )
 
 func main() {

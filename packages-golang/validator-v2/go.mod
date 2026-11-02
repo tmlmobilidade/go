@@ -1,4 +1,4 @@
-module github.com/tmlmobilidade/go/packages-golang/validator
+module github.com/tmlmobilidade/go/packages-golang/validator-v2
 
 go 1.26.0
 
