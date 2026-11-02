@@ -34,7 +34,7 @@ if [ "${CHECK_ONLY}" = false ]; then
 fi
 
 # Use the v2 generator with an explicit source directory.
-if ! (cd "${VALIDATOR_DIR}" && go run ./src/generate-rules-ids --source-dir "${VALIDATOR_DIR}/src/validations" --output-dir "${TEMP_DIR}"); then
+if ! (cd "${VALIDATOR_DIR}" && go run ./src/script --source-dir "${VALIDATOR_DIR}/src/validations" --output-dir "${TEMP_DIR}"); then
     printf 'The rules-ids command failed. Nothing was written.\n' >&2
     exit 1
 fi

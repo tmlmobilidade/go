@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/generate-rules-ids/typescript/consts"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/generate-rules-ids/typescript/utils"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/script/typescript/consts"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/script/typescript/utils"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 

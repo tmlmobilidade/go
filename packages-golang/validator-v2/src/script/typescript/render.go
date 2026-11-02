@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/generate-rules-ids/typescript/consts"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/generate-rules-ids/typescript/utils"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/script/typescript/consts"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/script/typescript/utils"
 )
 
 // RenderTypeScript generates the rule-ID values, Zod schema, and inferred type.
