@@ -3,8 +3,9 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"build": "go build ./...",
+		"build": "GO111MODULE=on go build ./...",
 		"lint": "go vet ./...",
-		"test": "go test ./..."
+		"test": "go test ./...",
+		"tidy": "go mod tidy"
 	}
 }

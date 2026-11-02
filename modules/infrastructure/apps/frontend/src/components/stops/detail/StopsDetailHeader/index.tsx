@@ -49,7 +49,7 @@ export function StopsDetailHeader() {
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={stopId} copyOnClick />
 
-			{data?.is_deleted && <Tag label={t('default:stops.detail.Header.DeletedTag.label')} variant="danger" />}
+			{data?.is_deleted && <Tag label={t('stops:detail.StopsDetailHeader.deleted_tag.label')} variant="danger" />}
 
 			<LifecycleStatusDisplay
 				disabled={!capabilities.editEnabled}
@@ -95,8 +95,8 @@ export function StopsDetailHeader() {
 				value={data?.location ? locationSlotOsmIds(data.location) : ''}
 			>
 				<DeleteButton
-					confirmMessage={t('default:stops.detail.Header.DeleteButton.confirm_message')}
-					confirmTitle={t('default:stops.detail.Header.DeleteButton.confirm_title')}
+					confirmMessage={t('stops:detail.StopsDetailHeader.delete_button.confirm_message')}
+					confirmTitle={t('stops:detail.StopsDetailHeader.delete_button.confirm_title')}
 					isDeleted={data?.is_deleted}
 					isDisabled={!capabilities.deleteEnabled}
 					isLoading={status.isDeleting}

@@ -24,7 +24,7 @@ export function StopsDetailLocation() {
 
 	const location = data?.location;
 
-	const notAvailable = t('default:stops.shared.not_available');
+	const notAvailable = t('stops:detail.StopsDetailLocation.not_available');
 
 	//
 	// C. Render components
@@ -39,22 +39,22 @@ export function StopsDetailLocation() {
 						</div> */}
 						<Section gap="sm" padding="none">
 							<Section gap="xs" padding="none">
-								<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.location_primary')}</Label>
+								<Label size="sm" variant="muted" caps>{t('stops:detail.StopsDetailLocation.fields.location_primary.label')}</Label>
 								<Text size="base" weight="semibold">{location?.primary.name ?? notAvailable}</Text>
 							</Section>
 							<Divider />
 							<Section gap="xs" padding="none">
-								<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.location_secondary')}</Label>
+								<Label size="sm" variant="muted" caps>{t('stops:detail.StopsDetailLocation.fields.location_secondary.label')}</Label>
 								<Text size="base" weight="semibold">{location?.secondary.name ?? notAvailable}</Text>
 							</Section>
 							<Divider />
 							<Section gap="xs" padding="none">
-								<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.location_tertiary')}</Label>
+								<Label size="sm" variant="muted" caps>{t('stops:detail.StopsDetailLocation.fields.location_tertiary.label')}</Label>
 								<Text size="base" weight="semibold">{location?.tertiary.name ?? notAvailable}</Text>
 							</Section>
 							<Divider />
 							<Section gap="xs" padding="none">
-								<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.location_neighbourhood')}</Label>
+								<Label size="sm" variant="muted" caps>{t('stops:detail.StopsDetailLocation.fields.location_neighbourhood.label')}</Label>
 								<Text size="base" weight="semibold">{location?.neighbourhood?.name ?? notAvailable}</Text>
 							</Section>
 						</Section>

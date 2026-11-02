@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RidesExtractHeader } from '../RidesExtractHeader';
-import { RidesExtractV1 } from '../versions/v1/RidesExtractV1';
-import { RidesExtractV2 } from '../versions/v2/RidesExtractV2';
+import { RidesExtractV1 } from '../versions/operation-rides-v1/RidesExtractV1';
+import { RidesExtractV2 } from '../versions/operation-rides-v2/RidesExtractV2';
 
 /* * */
 

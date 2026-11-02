@@ -34,7 +34,7 @@ export function StopsDetailUpdateCoordinatesModal() {
 							<TextInput
 								disabled={field.disabled}
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.UpdateCoordinatesModal.fields.latitude.label')}
+								label={t('stops:detail.StopsDetailUpdateCoordinatesModal.fields.latitude.label')}
 								onChange={event => field.onChange(event.target.value)}
 								value={field.value ?? ''}
 								variant="bordered"
@@ -49,7 +49,7 @@ export function StopsDetailUpdateCoordinatesModal() {
 							<TextInput
 								disabled={field.disabled}
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.UpdateCoordinatesModal.fields.longitude.label')}
+								label={t('stops:detail.StopsDetailUpdateCoordinatesModal.fields.longitude.label')}
 								onChange={event => field.onChange(event.target.value)}
 								value={field.value ?? ''}
 								variant="bordered"

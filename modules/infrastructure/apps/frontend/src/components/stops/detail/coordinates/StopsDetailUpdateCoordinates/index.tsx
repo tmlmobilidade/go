@@ -52,7 +52,7 @@ export function StopsDetailUpdateCoordinates() {
 
 	const coordinatesDisplay = useMemo(() => {
 		if (typeof latitudeValue !== 'number' || typeof longitudeValue !== 'number') {
-			return t('default:stops.shared.not_available');
+			return t('stops:detail.StopsDetailUpdateCoordinates.not_available');
 		}
 		return `${latitudeValue.toFixed(6)}, ${longitudeValue.toFixed(6)}`;
 	}, [latitudeValue, longitudeValue, t]);
@@ -73,7 +73,7 @@ export function StopsDetailUpdateCoordinates() {
 						<IconMapPin size={22} stroke={1.5} />
 					</div> */}
 					<Section gap="xs" padding="none">
-						<Label size="sm" variant="muted" caps>{t('default:stops.detail.SectionGeneral.coordinates')}</Label>
+						<Label size="sm" variant="muted" caps>{t('stops:detail.StopsDetailUpdateCoordinates.coordinates')}</Label>
 						<Text size="base" weight="semibold">{coordinatesDisplay}</Text>
 					</Section>
 				</Section>
@@ -82,13 +82,13 @@ export function StopsDetailUpdateCoordinates() {
 						icon={<IconPencil size={18} stroke={1.5} />}
 						isDisabled={!canUpdateCoordinates}
 						onClick={openStopsDetailUpdateCoordinatesModal}
-						tooltip={t('default:stops.detail.SectionGeneral.edit_link')}
+						tooltip={t('stops:detail.StopsDetailUpdateCoordinates.edit_link')}
 						variant="subtle"
 					/>
 					<IconButton
 						icon={<IconBrandGoogleMaps size={18} stroke={1.5} />}
 						onClick={() => window.open(googleMapsHref, '_blank')}
-						tooltip={t('default:stops.detail.SectionGeneral.open_in_google_maps')}
+						tooltip={t('stops:detail.StopsDetailUpdateCoordinates.open_in_google_maps')}
 						variant="subtle"
 					/>
 				</Section>
