@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/generate-rules-ids/typescript"
 )
 
 func main() {
@@ -15,8 +17,10 @@ func main() {
 
 	//
 	// A. Read the flags
-	
+
 	outputDir := flag.String("output-dir", "", "directory for the generated rule-ids.ts file")
+	sourceDir := flag.String("source-dir", "src/validations", "directory containing the Go validation implementations")
+
 	flag.Parse()
 	if *outputDir == "" {
 		fmt.Fprintln(os.Stderr, "rules-ids: --output-dir is required")
@@ -26,7 +30,7 @@ func main() {
 	//
 	// B. Generate the rule IDs
 
-	output, err := rules.TypeScript()
+	output, err := typescript.RenderTypeScript(*sourceDir)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "rules-ids:", err)
 		os.Exit(1)
