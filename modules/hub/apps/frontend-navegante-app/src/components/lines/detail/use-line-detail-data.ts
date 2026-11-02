@@ -42,7 +42,7 @@ export function useLineDetailData(lineId: null | string): UseLineDetailDataRetur
 
 	const line = useMemo(() => lines.find(item => item._id === lineId), [lineId, lines]);
 	const patternIds = line?.pattern_ids ?? [];
-	const patternsKey = line ? [API_ROUTES.hub.NETWORK_PATTERNS(line._id), ...patternIds] : null;
+	const patternsKey = line ? [API_ROUTES.hub.NETWORK_PATTERNS('F5157', line._id), ...patternIds] : null;
 	const { data: fetchedPatterns, error: patternsError, isLoading: isPatternsLoading } = useSWR<HubV1ApiPattern[][]>(patternsKey, async () => await fetchPatterns(patternIds));
 
 	//

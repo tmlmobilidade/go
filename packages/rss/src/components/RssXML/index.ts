@@ -34,6 +34,7 @@ export function rssFeed(itemsXml: string, channelOptions: RssChannelOptions): st
 		'<?xml version="1.0" encoding="UTF-8"?>',
 		rssOpenTag,
 		'<channel>',
+		`<title>${escapeXml(channelOptions.channelTitle)}</title>`,
 		`<link>${escapeXml(channelOptions.channelLink)}</link>`,
 		`<description>${escapeXml(channelOptions.channelDescription)}</description>`,
 		`<language>${escapeXml(channelOptions.channelLanguage)}</language>`,

@@ -21,6 +21,7 @@
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-hub": "*",

@@ -119,7 +119,7 @@ class CacheDbClass {
 	 */
 	public async scan(pattern: string): Promise<string[]> {
 		const foundKeys = new Set<string>();
-		for await (const scanResult of this.client.scanIterator({ MATCH: pattern, TYPE: 'string' })) {
+		for await (const scanResult of this.client.scanIterator({ COUNT: 1000, MATCH: pattern, TYPE: 'string' })) {
 			// Scan result is an array of keys because Redis just goes over all keys
 			// in the database without any specific order or pagination and returns
 			// only the ones that match the requested pattern.
