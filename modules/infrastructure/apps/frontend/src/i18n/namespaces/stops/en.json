@@ -257,6 +257,10 @@
 					"label": "Agency",
 					"placeholder": "No filter"
 				},
+				"coordinates": {
+					"description": "Latitude, longitude inherited from the list filter. Fixed radius of 100 m.",
+					"label": "Coordinates (100 m)"
+				},
 				"location_neighbourhood_ids": {
 					"label": "Locality",
 					"placeholder": "No filter"
@@ -291,6 +295,10 @@
 				"agency_ids": {
 					"label": "Agency",
 					"placeholder": "No filter"
+				},
+				"coordinates": {
+					"description": "Latitude, longitude inherited from the list filter. Fixed radius of 100 m.",
+					"label": "Coordinates (100 m)"
 				},
 				"location_neighbourhood_ids": {
 					"label": "Locality",

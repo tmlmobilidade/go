@@ -9,6 +9,7 @@ import { z } from 'zod';
 export const InfrastructureStopsV1ExtractionPropertiesSchema = z.object({
 	agency_ids: z.array(z.string()).min(1),
 	connections: StopConnectionSchema.optional(),
+	coordinates: z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]).optional(),
 	facilities: StopFacilitySchema.optional(),
 	lifecycle_statuses: z.array(LifecycleStatusSchema).min(1),
 	location_neighbourhood_ids: z.array(z.string()).optional(),

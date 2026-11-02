@@ -257,6 +257,10 @@
 					"label": "Operador",
 					"placeholder": "Selecione um ou mais operadores"
 				},
+				"coordinates": {
+					"description": "Latitude, longitude herdadas do filtro da lista. Raio fixo de 100 m.",
+					"label": "Coordenadas (100 m)"
+				},
 				"lifecycle_statuses": {
 					"label": "Estado",
 					"placeholder": "Selecione um ou mais estados"
@@ -295,6 +299,10 @@
 				"agency_ids": {
 					"label": "Operador",
 					"placeholder": "Todos os operadores"
+				},
+				"coordinates": {
+					"description": "Latitude, longitude herdadas do filtro da lista. Raio fixo de 100 m.",
+					"label": "Coordenadas (100 m)"
 				},
 				"lifecycle_statuses": {
 					"label": "Estado",

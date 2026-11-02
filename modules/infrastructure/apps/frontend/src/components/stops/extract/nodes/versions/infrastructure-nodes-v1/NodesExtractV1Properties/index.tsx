@@ -3,7 +3,7 @@
 import { useStopsListFilterLifecycleStatus } from '@/components/stops/list/filters/StopsListFilterLifecycleStatus/use-stops-list-filter-lifecycle-status';
 import { useStopsAgenciesData } from '@/components/stops/shared/use-stops-agencies-data';
 import { useStopsLocationsData } from '@/components/stops/shared/use-stops-locations-data';
-import { MultiSelect, Section, StandardFormController } from '@tmlmobilidade/ui';
+import { MultiSelect, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useNodesExtractV1FormContext } from '../NodesExtractV1Form.context';
@@ -19,6 +19,7 @@ export function NodesExtractV1Properties() {
 	const { t } = useTranslation();
 
 	const { capabilities, form } = useNodesExtractV1FormContext();
+	const coordinates = useStandardFormWatch({ control: form.control, name: 'coordinates' });
 
 	const { options: agenciesOptions } = useStopsAgenciesData({ permissions: { actions: ['read'], scope: 'stops' } });
 	const { isLoading: locationsLoading, options: locationsOptions } = useStopsLocationsData({ permissions: { actions: ['read'], scope: 'stops' } });
@@ -29,6 +30,15 @@ export function NodesExtractV1Properties() {
 
 	return (
 		<Section gap="md">
+
+			{coordinates && (
+				<TextInput
+					description={t('stops:extract.NodesExtractV1Properties.fields.coordinates.description')}
+					label={t('stops:extract.NodesExtractV1Properties.fields.coordinates.label')}
+					value={`${coordinates[1]}, ${coordinates[0]}`}
+					readOnly
+				/>
+			)}
 
 			<StandardFormController
 				control={form.control}

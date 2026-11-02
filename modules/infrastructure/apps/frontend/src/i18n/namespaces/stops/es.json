@@ -257,6 +257,10 @@
 					"label": "Operador",
 					"placeholder": "Sin filtro"
 				},
+				"coordinates": {
+					"description": "Latitud, longitud heredadas del filtro de la lista. Radio fijo de 100 m.",
+					"label": "Coordenadas (100 m)"
+				},
 				"location_neighbourhood_ids": {
 					"label": "Localidad",
 					"placeholder": "Sin filtro"
@@ -291,6 +295,10 @@
 				"agency_ids": {
 					"label": "Operador",
 					"placeholder": "Sin filtro"
+				},
+				"coordinates": {
+					"description": "Latitud, longitud heredadas del filtro de la lista. Radio fijo de 100 m.",
+					"label": "Coordenadas (100 m)"
 				},
 				"location_neighbourhood_ids": {
 					"label": "Localidad",

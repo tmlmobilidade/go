@@ -12,6 +12,7 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { filterStopsByCoordinates } from '../../../filter-stops-by-coordinates.js';
 import { type InfrastructureStopsV1OutputRow, InfrastructureStopsV1OutputRowSchema } from './types.js';
 
 /**
@@ -59,7 +60,7 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 		{ $sort: { created_at: -1 } },
 	];
 
-	const aggregationResult = await goDb.infrastructure.stops.aggregate(pipeline);
+	const aggregationResult = filterStopsByCoordinates(await goDb.infrastructure.stops.aggregate(pipeline), validatedProperties.coordinates);
 
 	const fileName = `infrastructure-stops-v1-${extraction._id}.csv`;
 

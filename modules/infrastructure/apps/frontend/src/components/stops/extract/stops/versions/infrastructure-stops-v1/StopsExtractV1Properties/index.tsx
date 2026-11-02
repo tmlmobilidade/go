@@ -2,7 +2,7 @@
 
 import { useStopsAgenciesData } from '@/components/stops/shared/use-stops-agencies-data';
 import { useStopsLocationsData } from '@/components/stops/shared/use-stops-locations-data';
-import { Grid, MultiSelect, Section, StandardFormController } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useStopsExtractV1FormContext } from '../StopsExtractV1Form.context';
@@ -18,6 +18,7 @@ export function StopsExtractV1Properties() {
 	const { t } = useTranslation();
 
 	const { capabilities, form } = useStopsExtractV1FormContext();
+	const coordinates = useStandardFormWatch({ control: form.control, name: 'coordinates' });
 
 	const { options: agenciesOptions } = useStopsAgenciesData({ permissions: { actions: ['read'], scope: 'stops' } });
 	const { isLoading: locationsLoading, options: locationsOptions } = useStopsLocationsData({ permissions: { actions: ['read'], scope: 'stops' } });
@@ -27,6 +28,15 @@ export function StopsExtractV1Properties() {
 
 	return (
 		<Section gap="md">
+
+			{coordinates && (
+				<TextInput
+					description={t('stops:extract.StopsExtractV1Properties.fields.coordinates.description')}
+					label={t('stops:extract.StopsExtractV1Properties.fields.coordinates.label')}
+					value={`${coordinates[1]}, ${coordinates[0]}`}
+					readOnly
+				/>
+			)}
 
 			<StandardFormController
 				control={form.control}
