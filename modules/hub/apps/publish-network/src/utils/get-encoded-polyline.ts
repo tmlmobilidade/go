@@ -7,7 +7,7 @@ import { type GtfsSQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 
 /* * */
 
-const encodedPolylineCache = new Map<string, EncodedPolyline>();
+const encodedPolylineCaches = new WeakMap<GtfsSQLTables, Map<string, EncodedPolyline>>();
 
 /**
  * Retrieves an encoded polyline from the database.
@@ -18,6 +18,11 @@ const encodedPolylineCache = new Map<string, EncodedPolyline>();
  */
 export async function getEncodedPolyline(importedGtfsSql: GtfsSQLTables, shapeId: string): Promise<EncodedPolyline> {
 	//
+	let encodedPolylineCache = encodedPolylineCaches.get(importedGtfsSql);
+	if (!encodedPolylineCache) {
+		encodedPolylineCache = new Map();
+		encodedPolylineCaches.set(importedGtfsSql, encodedPolylineCache);
+	}
 
 	//
 	// Check if the encoded polyline is already cached

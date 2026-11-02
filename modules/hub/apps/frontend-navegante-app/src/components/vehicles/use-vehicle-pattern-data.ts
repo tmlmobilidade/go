@@ -23,7 +23,7 @@ export function useVehiclePatternData(patternId: null | string | undefined): Use
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading } = useSWR<ApiResponse<HubV1ApiPattern[]>>(patternId ? API_ROUTES.hub.NETWORK_PATTERNS(patternId) : null, {
+	const { data, error, isLoading } = useSWR<ApiResponse<HubV1ApiPattern[]>>(patternId ? API_ROUTES.hub.NETWORK_PATTERNS('F5157', patternId) : null, {
 		fetcher: async url => await fetchApiData<HubV1ApiPattern[]>({ options: { credentials: 'omit' }, url }),
 	});
 
