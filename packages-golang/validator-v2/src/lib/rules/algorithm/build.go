@@ -13,6 +13,11 @@ import (
 * RunRowWithConcurrency schedules execution as dependencies finish.
  */
 func Build[T any](m *types.Manager[T]) error {
+	//
+
+	//
+	// 1. Index the rules and reject duplicate IDs
+
 	index := make(map[string]int, len(m.Rules))
 	for i, r := range m.Rules {
 		if _, exists := index[r.ID]; exists {
@@ -20,6 +25,9 @@ func Build[T any](m *types.Manager[T]) error {
 		}
 		index[r.ID] = i
 	}
+
+	//
+	// 2. Count dependencies and record the rules each prerequisite unlocks
 
 	inDegree := make([]int, len(m.Rules))
 	dependents := make([][]int, len(m.Rules))
@@ -34,7 +42,10 @@ func Build[T any](m *types.Manager[T]) error {
 		}
 	}
 
-	// Collect a complete ready level before unlocking the next one.
+	//
+	// 3. Collect ready rules in registration order and detect dependency cycles
+
+	// Each iteration collects a complete ready level before unlocking the next one.
 	ordered := make([]types.Rule[T], 0, len(m.Rules))
 	done := make([]bool, len(m.Rules))
 	for len(ordered) < len(m.Rules) {
@@ -55,6 +66,9 @@ func Build[T any](m *types.Manager[T]) error {
 			}
 		}
 	}
+
+	//
+	// 4. Save the validated dependency order
 
 	m.Ordered = ordered
 	return nil

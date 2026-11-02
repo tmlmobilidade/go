@@ -16,7 +16,11 @@ import (
 * callbacks finish before this function returns. Scheduling state is local to a run.
  */
 func RunRowWithConcurrency[T any](m *types.Manager[T], row T, limit int) (map[string]types.Status, error) {
-	
+	//
+
+	//
+	// 1. Validate the worker limit and prepared manager
+
 	if limit < 1 {
 		return nil, fmt.Errorf("rule concurrency must be positive")
 	}
@@ -24,7 +28,10 @@ func RunRowWithConcurrency[T any](m *types.Manager[T], row T, limit int) (map[st
 		return nil, fmt.Errorf("build the rule manager before running rows")
 	}
 
-	// Validate and prepare the execution graph before starting any callbacks.
+	//
+	// 2. Validate callbacks and prepare dependency counts and the initial ready queue
+
+	// No callbacks start until the entire execution graph has been checked.
 	index := make(map[string]int, len(m.Ordered))
 	pending := make([]int, len(m.Ordered))
 	dependents := make([][]int, len(m.Ordered))
@@ -50,29 +57,46 @@ func RunRowWithConcurrency[T any](m *types.Manager[T], row T, limit int) (map[st
 		}
 	}
 
+	//
+	// 3. Initialize this run's results and dependency-failure flags
+
 	statuses := make(map[string]types.Status, len(m.Ordered))
 	blocked := make([]bool, len(m.Ordered))
+
+	//
+	// 4. Define how a completion releases dependent rules
+
 	// Only the coordinator updates statuses, dependency counts, and the queue.
 	complete := func(i int, status types.Status) {
+		// Store the final outcome before making dependent rules ready.
 		statuses[m.Ordered[i].ID] = status
 		for _, child := range dependents[i] {
 			if status != types.Passed {
 				blocked[child] = true
 			}
+			// Even a blocked rule waits until all its prerequisites have finished.
 			pending[child]--
 			if pending[child] == 0 {
 				queue = append(queue, child)
 			}
 		}
 	}
+	//
+	// 5. Create the worker completion channel and scheduling counters
+
+	// completion carries one worker's result back to the coordinator.
 	type completion struct {
-		index  int
-		status types.Status
+		index  int          // Position of the completed rule in m.Ordered
+		status types.Status // Final outcome reported by its callback
 	}
 	done := make(chan completion, min(limit, len(m.Ordered)))
 	running := 0
 	head := 0
+	//
+	// 6. Process ready rules and completions until all started work finishes
+
 	for head < len(queue) || running > 0 {
+		// Fill free worker slots. Skipped rules do not need a worker.
 		for head < len(queue) {
 			next := queue[head]
 			if !blocked[next] && running == limit {
@@ -80,6 +104,7 @@ func RunRowWithConcurrency[T any](m *types.Manager[T], row T, limit int) (map[st
 			}
 			head++
 			if blocked[next] {
+				// Propagate the skip to downstream rules without executing the check.
 				complete(next, types.Skipped)
 				continue
 			}
@@ -88,11 +113,16 @@ func RunRowWithConcurrency[T any](m *types.Manager[T], row T, limit int) (map[st
 				done <- completion{index: i, status: m.Ordered[i].Run(row)}
 			}(next)
 		}
+		// Process one completion, then immediately reconsider the ready queue.
+		// This lets E start after C finishes while an unrelated rule B is still running.
 		if running > 0 {
 			result := <-done
 			running--
 			complete(result.index, result.status)
 		}
 	}
+	//
+	// 7. Return every rule's final status after all workers finish
+
 	return statuses, nil
 }

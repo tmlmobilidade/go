@@ -20,6 +20,11 @@ import (
 * This function prepares the manager without running any checks.
  */
 func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleContext) types.Status) (*types.Manager[T], error) {
+	//
+
+	//
+	// 1. Decode the rules.json object
+
 	var entries map[string]json.RawMessage
 	if err := json.Unmarshal(data, &entries); err != nil {
 		return nil, fmt.Errorf("parse rules JSON: %w", err)
@@ -27,6 +32,9 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 	if entries == nil {
 		return nil, fmt.Errorf("rules must be an object")
 	}
+	//
+	// 2. Read the optional validation_rules wrapper
+
 	if wrapped, exists := entries["validation_rules"]; exists {
 		entries = nil
 		if err := json.Unmarshal(wrapped, &entries); err != nil {
@@ -36,6 +44,9 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 			return nil, fmt.Errorf("validation_rules: expected a rules object")
 		}
 	}
+
+	//
+	// 3. Collect configured and registered rule IDs
 
 	// JSON object order is not significant. IDs only break ties between ready rules.
 	ids := make([]string, 0, len(entries)+len(checks))
@@ -47,12 +58,20 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 			ids = append(ids, id)
 		}
 	}
+	//
+	// 4. Sort IDs to keep graph construction deterministic
+
 	sort.Strings(ids)
+
+	//
+	// 5. Decode each rule's configuration and validate its implementation
+
 	rules := make([]types.Rule[T], 0, len(ids))
 	for _, id := range ids {
 		if id == "" {
 			return nil, fmt.Errorf("rule ID must not be empty")
 		}
+		// Registered rules omitted from the JSON remain in the graph as skipped rules.
 		config := ruletypes.RuleContext{Severity: "ignore"}
 		if raw, configured := entries[id]; configured {
 			raw = bytes.TrimSpace(raw)
@@ -74,13 +93,20 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 		if config.Severity != "ignore" && check == nil {
 			return nil, fmt.Errorf("rule %q has no implementation", id)
 		}
+		// Bind the configuration and check to this rule without executing it yet.
 		rules = append(rules, types.Rule[T]{
 			ID:        id,
 			DependsOn: slices.Clone(config.DependsOn),
 			Run: func(row T) types.Status {
+				//
+				// 1. Skip ignored rules so their dependents cannot treat them as passed
+
 				if config.Severity == "ignore" {
 					return types.Skipped
 				}
+				//
+				// 2. Copy the configuration for this invocation
+
 				// Give each invocation its own configuration, including slice fields.
 				// A check cannot change a later row's config or the dependency graph.
 				context := config
@@ -93,9 +119,15 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 					compare := slices.Clone(*config.Compare)
 					context.Compare = &compare
 				}
+				//
+				// 3. Run the check with its individual configuration
+
 				return check(row, &context)
 			},
 		})
 	}
+	//
+	// 6. Validate the dependency graph and return the prepared manager
+
 	return NewManager(rules...)
 }
