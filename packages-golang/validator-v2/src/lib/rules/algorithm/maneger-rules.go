@@ -32,6 +32,7 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 	if entries == nil {
 		return nil, fmt.Errorf("rules must be an object")
 	}
+	
 	//
 	// 2. Read the optional validation_rules wrapper
 
@@ -58,6 +59,7 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 			ids = append(ids, id)
 		}
 	}
+
 	//
 	// 4. Sort IDs to keep graph construction deterministic
 
@@ -126,6 +128,7 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 			},
 		})
 	}
+
 	//
 	// 6. Validate the dependency graph and return the prepared manager
 
