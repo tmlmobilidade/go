@@ -341,6 +341,12 @@
 			"FilterConnections": {
 				"label": "Conexões"
 			},
+			"FilterCoordinates": {
+				"description": "Latitude, longitude em graus decimais. Raio fixo de 100 m.",
+				"invalid": "Coordenadas inválidas. Use latitude (-90 a 90), longitude (-180 a 180), separadas por vírgula.",
+				"label": "Coordenadas (100 m)",
+				"placeholder": "Ex.: 38.7223, -9.1393"
+			},
 			"FilterEquipment": {
 				"label": "Equipamentos"
 			},

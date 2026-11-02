@@ -335,6 +335,12 @@
 			"FilterConnections": {
 				"label": "Conexiones"
 			},
+			"FilterCoordinates": {
+				"description": "Latitud, longitud en grados decimales. Radio fijo de 100 m.",
+				"invalid": "Coordenadas no válidas. Use latitud (-90 a 90), longitud (-180 a 180), separadas por coma.",
+				"label": "Coordenadas (100 m)",
+				"placeholder": "Ej.: 38.7223, -9.1393"
+			},
 			"FilterEquipment": {
 				"label": "Equipamientos"
 			},
