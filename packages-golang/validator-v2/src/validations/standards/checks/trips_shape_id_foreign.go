@@ -1,9 +1,10 @@
 package standard
 
 import (
+	"main/types"
+
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
-	"main/types"
 )
 
 func ShapeIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {

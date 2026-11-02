@@ -1,9 +1,7 @@
 package custom
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
-	"main/types"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
 )
 
 /*
@@ -19,7 +17,7 @@ The `pattern_id` must be the same as the `shape_id`, so that the pattern identif
 
 Trips without `shape_id` or `pattern_id` are left alone: there is nothing to compare, and their own rules already report the problem.
 */
-func PatternIdSameShapeId(db *services.SQLiteContext, rules *types.RuleContext) error {
+func PatternIdSameShapeId(db *sqlite.SQLiteContext, rules *types.RuleContext) error {
 	//
 
 	//
