@@ -5,8 +5,8 @@ type SQLiteRow struct {
 	Table   *SQLiteTable
 	Row     int
 	context *SQLiteContext
-	name    string
+	Name    string
 	// Only the runner's current batch/group uses prefetched values. At/Context callers
 	// continue to read SQLite directly; no values are cached on shared tables.
-	values map[string]string
+	Values map[string]string
 }
