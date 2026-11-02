@@ -9,6 +9,8 @@ import (
 // Arguments fill placeholders in the translated message.
 func GetTranslatedMessage(context *types.ValidationContext, key string, args ...any) string {
 	//
+
+	//
 	// 1. Resolve the rule's translation key and format the message
 
 	return i18n.AppTranslator.Get(context.RuleID+"."+key, args...)

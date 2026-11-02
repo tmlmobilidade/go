@@ -8,6 +8,8 @@ import (
 // GetRequiredMessage selects the required message for errors and recommended otherwise.
 func GetRequiredMessage(context *types.ValidationContext, requiredKey, recommendedKey string) string {
 	//
+
+	//
 	// 1. Select the translated message for the configured severity
 
 	if context.Severity == rules.SEVERITY_ERROR {

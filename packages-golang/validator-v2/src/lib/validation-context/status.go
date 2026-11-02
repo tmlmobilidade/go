@@ -9,6 +9,8 @@ import (
 // Otherwise it returns Passed; the scheduler separately decides whether to skip a rule.
 func Status(context *types.ValidationContext) types.RuleStatus {
 	//
+
+	//
 	// 1. Return the outcome of this check invocation
 
 	if context.Failed {

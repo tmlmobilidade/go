@@ -1,9 +1,9 @@
 package validationcontext
 
 import (
-	messageseverity "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/message-severity"
+	messageseverity "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/severity"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context/types"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	messages "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
@@ -26,19 +26,14 @@ func AddMessage(context *types.ValidationContext, message string, severity rules
 	//
 	// 2. Apply message-level configuration and suppress ignored findings
 
-	if override, configured := messageseverity.MessageSeverityOverride(context.FileName, id, context.Field); configured {
-		severity = override
-	}
+	severity = messageseverity.ResolveMessageSeverity(context.FileName, id, context.Field, severity)
 	if severity == rules.SEVERITY_IGNORE {
 		return
 	}
 
 	//
-	// 3. Report forbidden content as an error and record the failed rule outcome
+	// 3. Record the failed rule outcome for emitted findings
 
-	if severity == rules.SEVERITY_FORBIDDEN {
-		severity = rules.SEVERITY_ERROR
-	}
 	if severity == rules.SEVERITY_ERROR || severity == rules.SEVERITY_WARNING || severity == rules.SEVERITY_INFO {
 		context.Failed = true
 	}

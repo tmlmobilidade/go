@@ -1,7 +1,6 @@
-package message_severity
+package severity
 
 import (
-	"sort"
 	"sync/atomic"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
@@ -11,6 +10,7 @@ import (
 var messageSeverities atomic.Pointer[map[string]rules.Severities]
 
 // ConfigureMessageSeverities prepares message overrides for a validation run.
+// Configure before starting workers; this process-wide configuration must stay stable during the run.
 // Nil disables overrides; an empty map ignores unconfigured nontechnical findings.
 func ConfigureMessageSeverities(config map[string]rules.RuleConfig) {
 	//
@@ -24,34 +24,22 @@ func ConfigureMessageSeverities(config map[string]rules.RuleConfig) {
 	}
 
 	//
-	// 2. Visit rule IDs in deterministic order
+	// 2. Copy each configured rule's severity under its own ID
 
-	ids := make([]string, 0, len(config))
-	for id := range config {
-		ids = append(ids, id)
-	}
-	sort.Strings(ids)
-
-	//
-	// 3. Copy severities and field-specific diagnostic aliases
-
-	values := make(map[string]rules.Severities)
-	for _, id := range ids {
+	values := make(map[string]rules.Severities, len(config))
+	for id, rule := range config {
 		if id == "file_validation" || id == "file_not_found_in_rules" || id == rules.RuleIDGtfsFeedFilePresenceAndIntegrity {
 			continue
 		}
-		severity := config[id].Severity
+		severity := rule.Severity
 		if severity == "" {
 			severity = rules.SEVERITY_IGNORE
 		}
-		values[id+"/"] = severity
-		if key := RuleMessageKey(id); key != id {
-			values[key] = severity
-		}
+		values[id] = severity
 	}
 
 	//
-	// 4. Publish the completed snapshot atomically
+	// 3. Publish the completed snapshot atomically
 
 	messageSeverities.Store(&values)
 }

@@ -1,4 +1,4 @@
-package message_severity
+package severity
 
 import (
 	"strings"
@@ -9,6 +9,8 @@ import (
 // isTechnicalNotice identifies parser and file-level diagnostics that can be emitted
 // without an explicit per-row rule configuration.
 func isTechnicalNotice(id string) bool {
+	//
+
 	//
 	// 1. Recognize parser, missing-file, and feed-level diagnostic IDs
 

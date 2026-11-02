@@ -11,6 +11,8 @@ import (
 // LoadSQLiteTable loads metadata for an existing SQLite table without fetching row values.
 func LoadSQLiteTable(db *sql.DB, name string) (*types.SQLiteTable, error) {
 	//
+
+	//
 	// 1. Check if the database connection is nil
 
 	if db == nil {

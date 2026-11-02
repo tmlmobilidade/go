@@ -2,12 +2,13 @@ package validationcontext
 
 import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context/types"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
 // NewValidationContext prepares one check's location, receiver, and configured severity.
 // Supplying ruleContext makes its severity authoritative for this rule's findings.
-func NewValidationContext(field, fileName, ruleID string, row int, messageAdder types.MessageAdder, ruleContext ...*rules.RuleContext) *types.ValidationContext {
+func NewValidationContext(field, fileName, ruleID string, row int, messageAdder messages.MessageAdder, ruleContext ...*rules.RuleContext) *types.ValidationContext {
 	//
 
 	//

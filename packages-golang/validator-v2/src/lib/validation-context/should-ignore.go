@@ -8,6 +8,8 @@ import (
 // ShouldIgnore reports whether the configured severity is ignore.
 func ShouldIgnore(context *types.ValidationContext) bool {
 	//
+
+	//
 	// 1. Check the configured severity
 
 	return context.Severity == rules.SEVERITY_IGNORE

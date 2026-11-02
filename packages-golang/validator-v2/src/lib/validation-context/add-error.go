@@ -9,6 +9,8 @@ import (
 // An optional rule ID identifies a more specific diagnostic than the context's rule.
 func AddError(context *types.ValidationContext, message string, ruleID ...string) {
 	//
+
+	//
 	// 1. Delegate finding creation and severity resolution
 
 	AddMessage(context, message, rules.SEVERITY_ERROR, ruleID...)
