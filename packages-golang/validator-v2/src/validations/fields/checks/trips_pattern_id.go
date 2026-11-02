@@ -1,12 +1,14 @@
 package fields
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
-	"main/types"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
-func PatternIdField(db *services.SQLiteContext, rules *types.RuleContext) error {
+func PatternIdField(db *sqlite.SQLiteContext, ruleContext *rules.RuleContext, messageAdder messages.MessageAdder) error {
 	//
 
 	//
@@ -17,15 +19,12 @@ func PatternIdField(db *services.SQLiteContext, rules *types.RuleContext) error 
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("pattern_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {
-		ctx.WithSeverity(rules.Severity)
-	}
+	ctx := context.NewValidationContext("pattern_id", "trips.txt", ruleID, db.Row, messageAdder, ruleContext)
 
 	//
 	// 3. Get the pattern_id value
 
-	value, err := db.Trips.Field("pattern_id")
+	value, err := queries.Field(db.Trips, "pattern_id")
 	if err != nil {
 		return err
 	}
@@ -34,11 +33,11 @@ func PatternIdField(db *services.SQLiteContext, rules *types.RuleContext) error 
 	// 4. Check if the pattern_id is required
 
 	if value == "" {
-		if ctx.ShouldIgnore() {
+		if context.ShouldIgnore(ctx) {
 			return nil
 		}
 
-		ctx.AddMessageWithSeverity(ctx.GetSeverityMessage("required", "recommended", "informational"))
+		context.AddMessage(ctx, context.GetSeverityMessage(ctx, "required", "recommended", "informational"))
 		return nil
 	}
 

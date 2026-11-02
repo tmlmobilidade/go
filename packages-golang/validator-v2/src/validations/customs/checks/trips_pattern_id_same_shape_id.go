@@ -53,7 +53,7 @@ func PatternIdSameShapeId(db *sqlite.SQLiteContext, ruleContext *rules.RuleConte
 	// 5. Check if pattern_id matches the shape_id
 
 	if values["pattern_id"] != values["shape_id"] {
-		context.AddMessageWithSeverity(ctx, context.GetTranslatedMessage(ctx, "not_matching", values["pattern_id"], values["shape_id"]))
+		context.AddMessage(ctx, context.GetTranslatedMessage(ctx, "not_matching", values["pattern_id"], values["shape_id"]))
 	}
 
 	//

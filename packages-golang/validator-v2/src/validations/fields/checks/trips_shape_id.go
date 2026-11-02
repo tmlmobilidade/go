@@ -1,12 +1,14 @@
 package fields
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
-	"main/types"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
-func TripsShapeIdField(db *services.SQLiteContext, rules *types.RuleContext) error {
+func TripsShapeIdField(db *sqlite.SQLiteContext, ruleContext *rules.RuleContext, messageAdder messages.MessageAdder) error {
 	//
 
 	//
@@ -17,15 +19,12 @@ func TripsShapeIdField(db *services.SQLiteContext, rules *types.RuleContext) err
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("shape_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {
-		ctx.WithSeverity(rules.Severity)
-	}
+	ctx := context.NewValidationContext("shape_id", "trips.txt", ruleID, db.Row, messageAdder, ruleContext)
 
 	//
 	// 3. Get the shape_id value
 
-	value, err := db.Trips.Field("shape_id")
+	value, err := queries.Field(db.Trips, "shape_id")
 	if err != nil {
 		return err
 	}
@@ -34,11 +33,11 @@ func TripsShapeIdField(db *services.SQLiteContext, rules *types.RuleContext) err
 	// 4. Check if the shape_id is required
 
 	if value == "" {
-		if ctx.ShouldIgnore() {
+		if context.ShouldIgnore(ctx) {
 			return nil
 		}
 
-		ctx.AddMessageWithSeverity(ctx.GetSeverityMessage("required", "recommended", "informational"))
+		context.AddMessage(ctx, context.GetSeverityMessage(ctx, "required", "recommended", "informational"))
 		return nil
 	}
 

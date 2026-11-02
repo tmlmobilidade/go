@@ -7,7 +7,7 @@ import (
 )
 
 // NewValidationContext prepares one check's location, receiver, and configured severity.
-// Supplying ruleContext makes its severity authoritative for this rule's findings.
+// Supplying ruleContext sets the default severity; AddMessage may explicitly override it.
 func NewValidationContext(field, fileName, ruleID string, row int, messageAdder messages.MessageAdder, ruleContext ...*rules.RuleContext) *types.ValidationContext {
 	//
 
@@ -23,12 +23,11 @@ func NewValidationContext(field, fileName, ruleID string, row int, messageAdder 
 	// 2. Return the context for this check invocation
 
 	return &types.ValidationContext{
-		Field:          field,
-		FileName:       fileName,
-		RuleID:         ruleID,
-		Row:            row,
-		Severity:       severity,
-		MessageAdder:   messageAdder,
-		HasRuleContext: len(ruleContext) > 0,
+		Field:        field,
+		FileName:     fileName,
+		RuleID:       ruleID,
+		Row:          row,
+		Severity:     severity,
+		MessageAdder: messageAdder,
 	}
 }

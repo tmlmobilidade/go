@@ -16,7 +16,12 @@ func (service *MessageService) AddMessage(message types.Message) {
 	//
 	// 1. Apply configuration and suppress ignored findings
 
-	message.Severity = severity.ResolveMessageSeverity(message.FileName, message.RuleID, message.Field, message.Severity)
+	if !message.SeverityResolved {
+		message.Severity = severity.ResolveMessageSeverity(message.FileName, message.RuleID, message.Field, message.Severity)
+	}
+	if message.Severity == rules.SEVERITY_FORBIDDEN {
+		message.Severity = rules.SEVERITY_ERROR
+	}
 	if message.Severity == rules.SEVERITY_IGNORE {
 		return
 	}

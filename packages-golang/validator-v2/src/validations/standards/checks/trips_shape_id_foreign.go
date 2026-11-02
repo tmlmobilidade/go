@@ -1,13 +1,14 @@
 package standard
 
 import (
-	"main/types"
-
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/services"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
-func ShapeIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error {
+func ShapeIdForeign(db *sqlite.SQLiteContext, ruleContext *rules.RuleContext, messageAdder messages.MessageAdder) error {
 	//
 
 	//
@@ -18,15 +19,12 @@ func ShapeIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error 
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("shape_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {
-		ctx.WithSeverity(rules.Severity)
-	}
+	ctx := context.NewValidationContext("shape_id", "trips.txt", ruleID, db.Row, messageAdder, ruleContext)
 
 	//
 	// 3. Get the shape_id value
 
-	value, err := db.Trips.Field("shape_id")
+	value, err := queries.Field(db.Trips, "shape_id")
 	if err != nil {
 		return err
 	}
@@ -41,8 +39,12 @@ func ShapeIdForeign(db *services.SQLiteContext, rules *types.RuleContext) error 
 	//
 	// 5. Check if the shape_id exists in the shapes table
 
-	if !db.Shapes.Exists("shape_id", value) {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_found", value))
+	exists, err := queries.Exists(db.Shapes.Table, "shape_id", value)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		context.AddMessage(ctx, context.GetTranslatedMessage(ctx, "not_found", value))
 	}
 
 	//

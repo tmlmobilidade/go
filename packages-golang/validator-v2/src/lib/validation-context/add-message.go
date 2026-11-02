@@ -7,28 +7,25 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
-// AddMessage resolves the effective severity and reports a finding to the receiver.
-// An optional rule ID overrides the context's default ID for this finding only.
-func AddMessage(context *types.ValidationContext, message string, severity rules.Severities, ruleID ...string) {
+// AddMessage reports a finding using configured severity unless an explicit override is supplied.
+// A nonempty override takes precedence over configuration; ignore suppresses the finding.
+func AddMessage(context *types.ValidationContext, message string, severityOverride ...rules.Severities) {
 	//
+	// 1. Resolve configuration, then apply the optional severity override
 
-	//
-	// 1. Resolve the finding's rule ID and explicit context severity
-
-	id := context.RuleID
-	if len(ruleID) > 0 {
-		id = ruleID[0]
-	}
-	if context.HasRuleContext && id == context.RuleID {
-		severity = context.Severity
+	severity := messageseverity.ResolveMessageSeverity(context.FileName, context.RuleID, context.Field, context.Severity)
+	if len(severityOverride) > 0 && severityOverride[0] != "" {
+		severity = severityOverride[0]
 	}
 
 	//
-	// 2. Apply message-level configuration and suppress ignored findings
+	// 2. Suppress ignored findings and normalize forbidden content to errors
 
-	severity = messageseverity.ResolveMessageSeverity(context.FileName, id, context.Field, severity)
 	if severity == rules.SEVERITY_IGNORE {
 		return
+	}
+	if severity == rules.SEVERITY_FORBIDDEN {
+		severity = rules.SEVERITY_ERROR
 	}
 
 	//
@@ -39,14 +36,15 @@ func AddMessage(context *types.ValidationContext, message string, severity rules
 	}
 
 	//
-	// 4. Send the finding with its original source location
+	// 4. Send the resolved severity so the collector does not apply configuration again
 
 	context.MessageAdder.AddMessage(messages.Message{
-		Field:    context.Field,
-		FileName: context.FileName,
-		Rows:     []int{context.Row},
-		Message:  message,
-		Severity: severity,
-		RuleID:   id,
+		Field:            context.Field,
+		FileName:         context.FileName,
+		Rows:             []int{context.Row},
+		Message:          message,
+		Severity:         severity,
+		RuleID:           context.RuleID,
+		SeverityResolved: true,
 	})
 }
