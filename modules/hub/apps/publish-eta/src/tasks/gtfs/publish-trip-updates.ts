@@ -12,10 +12,10 @@ import { getExternalTripUpdates } from './get-external-trip-updates.js';
 
 /* * */
 
-export async function publishTripUpdates(agencyId?: string) {
+export async function publishTripUpdates(agencyId: string) {
 	//
 
-	const prefix: 'hub:v1:realtime:eta' | `hub:v1:${string}:realtime:eta` = agencyId ? `hub:v1:${agencyId}:realtime:eta` : 'hub:v1:realtime:eta';
+	const prefix = `hub:v1:${agencyId}:realtime:eta` as const;
 
 	Logger.title('Publishing GTFS-RT TripUpdate feed...');
 
@@ -35,7 +35,7 @@ export async function publishTripUpdates(agencyId?: string) {
 	const clickhouseTripUpdates = await getClickHouseTripUpdates(agencyId);
 	clickhouseTripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
 
-	for (const feed of EXTERNAL_FEEDS.filter(feed => !agencyId || feed.agencyId === agencyId)) {
+	for (const feed of EXTERNAL_FEEDS.filter(feed => feed.agencyId === agencyId)) {
 		Logger.info({ message: `Retrieving TripUpdates from ${feed.label} API...` });
 		const tripUpdates = await getExternalTripUpdates(feed);
 		tripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));

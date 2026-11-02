@@ -11,17 +11,17 @@ import { type TripStopEta } from '../types.js';
  * Merges in-memory trip-stop ETAs into the full simplified ETA list cache.
  *
  * Replaces any existing entries whose `trip_id` appears in `etas`, then
- * appends the new ones to `hub:v1:realtime:eta:all`.
+ * appends the new ones to `hub:v1:{agencyId}:realtime:eta:all`.
  *
  * Use this for external feeds that produce `TripStopEta[]` in process (e.g. CP).
  * For a full rebuild from ClickHouse, use {@link cacheAllEtasFromClickHouse} instead.
  *
  * @param etas - Trip-stop ETAs to merge into the all-ETAs cache
  */
-export async function cacheEtasByAll(etas: TripStopEta[], agencyId?: string) {
+export async function cacheEtasByAll(etas: TripStopEta[], agencyId: string) {
 	//
 
-	const prefix: 'hub:v1:realtime:eta' | `hub:v1:${string}:realtime:eta` = agencyId ? `hub:v1:${agencyId}:realtime:eta` : 'hub:v1:realtime:eta';
+	const prefix = `hub:v1:${agencyId}:realtime:eta` as const;
 
 	if (!etas.length) return;
 

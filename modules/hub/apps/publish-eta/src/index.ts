@@ -31,12 +31,6 @@ async function main() {
 		for (const agency of agencies) {
 			await Promise.all([publishEtas(agency._id), publishTripUpdates(agency._id)]);
 		}
-
-		// Keep global feeds available for existing consumers.
-		await Promise.all([
-			publishEtas(), // Every 15 iterations * 1s + execution time ≈ 30 seconds
-			publishTripUpdates(), // Every 15 iterations * 1s + execution time ≈ 30 seconds
-		]);
 	}
 
 	ITERATION++;

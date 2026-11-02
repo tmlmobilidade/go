@@ -12,7 +12,7 @@ import { groupEtasByTrip } from './trip-updates-to-etas.js';
  * Writes in-memory trip-stop ETAs into the per-trip simplified ETA cache.
  *
  * Groups by `trip_id` and overwrites
- * `hub:v1:realtime:eta:by-trip:{tripId}` with the sorted ETA list as JSON.
+ * `hub:v1:{agencyId}:realtime:eta:by-trip:{tripId}` with the sorted ETA list as JSON.
  *
  * Use this for external feeds that produce `TripStopEta[]` in process (e.g. CP).
  * For a full rebuild from ClickHouse SQL, use
@@ -20,10 +20,10 @@ import { groupEtasByTrip } from './trip-updates-to-etas.js';
  *
  * @param etas - Trip-stop ETAs to write into the trip-keyed cache
  */
-export async function cacheEtasByTrip(etas: TripStopEta[], agencyId?: string) {
+export async function cacheEtasByTrip(etas: TripStopEta[], agencyId: string) {
 	//
 
-	const prefix: 'hub:v1:realtime:eta' | `hub:v1:${string}:realtime:eta` = agencyId ? `hub:v1:${agencyId}:realtime:eta` : 'hub:v1:realtime:eta';
+	const prefix = `hub:v1:${agencyId}:realtime:eta` as const;
 
 	await Promise.all([...groupEtasByTrip(etas).entries()].map(async ([tripId, tripEtas]) => {
 		const sorted = [...tripEtas].sort((a, b) => a.stop_sequence - b.stop_sequence);

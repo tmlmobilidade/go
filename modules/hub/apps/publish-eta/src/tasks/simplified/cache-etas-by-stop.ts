@@ -12,7 +12,7 @@ import { groupEtasByStop } from './trip-updates-to-etas.js';
  * Upserts in-memory trip-stop ETAs into the per-stop simplified ETA cache.
  *
  * Groups by `stop_id`, then merges into the existing Redis value at
- * `hub:v1:realtime:eta:by-stop:{stopId}` (replace same trip+sequence, append otherwise).
+ * `hub:v1:{agencyId}:realtime:eta:by-stop:{stopId}` (replace same trip+sequence, append otherwise).
  *
  * Use this for external feeds that produce `TripStopEta[]` in process (e.g. CP).
  * For a full rebuild from ClickHouse SQL, use
@@ -20,10 +20,10 @@ import { groupEtasByStop } from './trip-updates-to-etas.js';
  *
  * @param etas - Trip-stop ETAs to merge into the stop-keyed cache
  */
-export async function cacheEtasByStop(etas: TripStopEta[], agencyId?: string) {
+export async function cacheEtasByStop(etas: TripStopEta[], agencyId: string) {
 	//
 
-	const prefix: 'hub:v1:realtime:eta' | `hub:v1:${string}:realtime:eta` = agencyId ? `hub:v1:${agencyId}:realtime:eta` : 'hub:v1:realtime:eta';
+	const prefix = `hub:v1:${agencyId}:realtime:eta` as const;
 
 	await Promise.all([...groupEtasByStop(etas).entries()].map(async ([stopId, stopEtas]) => {
 		const existing = await cacheDb.get(`${prefix}:by-stop:${stopId}`);

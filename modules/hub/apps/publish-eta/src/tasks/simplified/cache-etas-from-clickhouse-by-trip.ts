@@ -15,22 +15,22 @@ import { type ClickHouseEtaKeyValue } from '../types.js';
  *
  * Runs `select-eta-by-trip.sql`, which returns one pre-aggregated JSON blob
  * of trip-stop ETAs per trip, then writes each to
- * `hub:v1:realtime:eta:by-trip:{tripId}`.
+ * `hub:v1:{agencyId}:realtime:eta:by-trip:{tripId}`.
  *
  * Use this for the main ClickHouse-sourced ETA pipeline (full replace).
  * For writing in-memory `TripStopEta[]` from an external feed (e.g. CP), use
  * {@link cacheEtasByTrip} instead.
  */
-export async function cacheEtasFromClickHouseByTrip(agencyId?: string) {
+export async function cacheEtasFromClickHouseByTrip(agencyId: string) {
 	//
 
-	const prefix: 'hub:v1:realtime:eta' | `hub:v1:${string}:realtime:eta` = agencyId ? `hub:v1:${agencyId}:realtime:eta` : 'hub:v1:realtime:eta';
+	const prefix = `hub:v1:${agencyId}:realtime:eta` as const;
 
 	const timer = new Timer();
 
 	Logger.info({ message: 'Retrieving trip stop ETAs grouped by trip from ClickHouse...' });
 
-	const etasByTrip = await labDb.queryFromFile<ClickHouseEtaKeyValue>(sqlPath('hub', 'publish-eta/select-eta-by-trip.sql'), { agency_id: agencyId ?? '' });
+	const etasByTrip = await labDb.queryFromFile<ClickHouseEtaKeyValue>(sqlPath('hub', 'publish-eta/select-eta-by-trip.sql'), { agency_id: agencyId });
 
 	await Promise.all(etasByTrip.map(row => cacheDb.set(`${prefix}:by-trip:${row.key}`, row.value, TTL_REALTIME)));
 
