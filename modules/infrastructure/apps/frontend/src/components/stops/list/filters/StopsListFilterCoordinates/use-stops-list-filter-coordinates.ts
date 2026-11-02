@@ -19,18 +19,9 @@ interface UseStopsListFilterCoordinatesReturnType extends UseFilterStateTextRetu
 export function useStopsListFilterCoordinates(): UseStopsListFilterCoordinatesReturnType {
 	//
 
-	//
-	// A. Setup variables
-
 	const filterCoordinates = useFilterStateText('coordinates');
 
-	//
-	// B. Validate coordinates
-
 	const coordinates = useMemo(() => parseStopsListCoordinates(filterCoordinates.value), [filterCoordinates.value]);
-
-	//
-	// C. Return data
 
 	return useMemo(() => ({
 		...filterCoordinates,
