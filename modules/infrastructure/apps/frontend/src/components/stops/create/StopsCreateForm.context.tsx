@@ -74,7 +74,7 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleAction({
 		fetchFn: async () => {
-			if (!agenciesValid) throw new Error(t('default:stops.create.StepNames.fields.agency_ids.required'));
+			if (!agenciesValid) throw new Error(t('stops:create.StopsCreateFormContextProvider.fields.agency_ids.required'));
 			return await fetchApiData<Stop>({ body: form.getValues(), method: 'POST', url: API_ROUTES.infrastructure.STOPS_CREATE });
 		},
 		onSuccess: (response) => {

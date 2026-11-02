@@ -4,9 +4,8 @@ import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PasswordRequirementsSchema, type Session } from '@tmlmobilidade/go-types-core';
-import { PasswordInput, useQueryState } from '@tmlmobilidade/ui';
+import { fetchApiData, PasswordInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,8 +28,6 @@ export function ChangePasswordForm() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [tokenValue] = useQueryState('token');
 	const [emailValue] = useQueryState('email');
@@ -55,7 +52,6 @@ export function ChangePasswordForm() {
 				valid: false,
 			});
 		}
-
 		return errors;
 	}, [passwordValue, confirmPasswordValue]);
 
@@ -64,41 +60,35 @@ export function ChangePasswordForm() {
 	}, [validationErrors]);
 
 	//
-	// B. Handle actions
+	// C. Handle actions
 
-	const handleSubmit = async () => {
-		// Update loading state
-		setIsLoading(true);
-		// Hash the password before sending it to the server
-		const passwordHash = bcrypt.hashSync(passwordValue);
-		// Send the request to change the password
-		const response = await fetchData<Session>(
-			API_ROUTES.core.AUTH_CHANGE_PASSWORD,
-			'POST',
-			{ password_hash: passwordHash, token: tokenValue },
-		);
-		// Update loading state
-		setIsLoading(false);
-		// Handle response error
-		if (!response.isOk) {
-			useToast.error({ message: response.error ?? t('unauthenticated:ChangePasswordForm.error_message.description'), title: t('unauthenticated:ChangePasswordForm.error_message.title') });
-			return;
-		}
-		// Show success message and redirect to login page
-		useToast.success({ message: t('unauthenticated:ChangePasswordForm.success.description'), title: t('unauthenticated:ChangePasswordForm.success.title') });
-		window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
-	};
+	const { action: handleChangePassword, isLoading: isChangingPassword } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Session>({ body: { password_hash: bcrypt.hashSync(passwordValue), token: tokenValue }, method: 'POST', url: API_ROUTES.core.AUTH_CHANGE_PASSWORD }),
+		onError: ({ message }) => {
+			useToast.error({
+				message: message ?? t('unauthenticated:ChangePasswordForm.error_message.description'),
+				title: t('unauthenticated:ChangePasswordForm.error_message.title'),
+			});
+		},
+		onSuccess: async () => {
+			// Show success message and redirect to login page
+			useToast.success({ message: t('unauthenticated:ChangePasswordForm.success.description'), title: t('unauthenticated:ChangePasswordForm.success.title') });
+			// Wait for a few seconds before redirecting to login page
+			await new Promise(resolve => setTimeout(resolve, 3_000));
+			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
+		},
+	});
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<AuthenticationForm
 			description={t('unauthenticated:ChangePasswordForm.description')}
 			footerLabel={t('unauthenticated:ChangePasswordForm.footer.label')}
 			footerUrl={PAGE_ROUTES.core.LOGIN_LIST}
-			loading={isLoading}
-			onSubmit={handleSubmit}
+			loading={isChangingPassword}
+			onSubmit={handleChangePassword}
 			submitDisabled={isDisabled}
 			submitLabel={t('unauthenticated:ChangePasswordForm.submit.label')}
 			title={t('unauthenticated:ChangePasswordForm.title')}
@@ -106,14 +96,14 @@ export function ChangePasswordForm() {
 			<input defaultValue={emailValue} name="email" type="email" readOnly />
 			<PasswordInput
 				key="password"
-				disabled={isLoading}
+				disabled={isChangingPassword}
 				onChange={e => setPasswordValue(e.target.value)}
 				placeholder={t('unauthenticated:ChangePasswordForm.fields.password.placeholder')}
 				value={passwordValue}
 			/>
 			<PasswordInput
 				key="password-confirm"
-				disabled={isLoading}
+				disabled={isChangingPassword}
 				onChange={e => setConfirmPasswordValue(e.target.value)}
 				placeholder={t('unauthenticated:ChangePasswordForm.fields.confirm_password.placeholder')}
 				value={confirmPasswordValue}
@@ -128,6 +118,4 @@ export function ChangePasswordForm() {
 			</div>
 		</AuthenticationForm>
 	);
-
-	//
 }

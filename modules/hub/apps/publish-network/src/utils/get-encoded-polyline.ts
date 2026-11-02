@@ -3,7 +3,7 @@
 import { EncodedPolyline, GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
 import { HubV1GtfsShapes } from '@tmlmobilidade/go-types-hub';
 import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsSQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 
 /* * */
 

@@ -3,8 +3,8 @@
 import { decodeStopFlags, getQualifiedLineId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiStop, HubV1ApiStopSchema, type HubV1GtfsStops } from '@tmlmobilidade/go-types-hub';
+import { type GtfsSQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 
 /* * */
 
@@ -105,7 +105,7 @@ export async function syncStops(importedGtfsSql: GtfsSQLTables) {
 				district_name: gtfsStop.district_name,
 				flags: decodedFlags,
 				latitude: gtfsStop.stop_lat,
-				legacy_ids: gtfsStop.legacy_ids ? JSON.parse(gtfsStop.legacy_ids) : [],
+				legacy_ids: gtfsStop.legacy_ids ? gtfsStop.legacy_ids.split('|').filter(Boolean) : [],
 				lifecycle_status: gtfsStop.lifecycle_status,
 				line_ids: associatedLineIds,
 				locality_id: gtfsStop.locality_id,

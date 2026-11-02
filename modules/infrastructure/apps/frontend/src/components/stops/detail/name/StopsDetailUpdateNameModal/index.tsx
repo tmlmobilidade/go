@@ -55,10 +55,10 @@ export function StopsDetailUpdateNameModal() {
 					name="name"
 					render={({ field, fieldState }) => (
 						<TextInput
-							description={t('default:stops.detail.UpdateNameModal.fields.name.description')}
+							description={t('stops:detail.StopsDetailUpdateNameModal.fields.name.description')}
 							disabled={field.disabled}
 							error={fieldState.error?.message}
-							label={t('default:stops.detail.UpdateNameModal.fields.name.label')}
+							label={t('stops:detail.StopsDetailUpdateNameModal.fields.name.label')}
 							onChange={field.onChange}
 							value={field.value ?? ''}
 							w="100%"
@@ -73,15 +73,15 @@ export function StopsDetailUpdateNameModal() {
 
 			<Section gap="sm">
 				<TextInput
-					description={t('default:stops.detail.UpdateNameModal.fields.short_name.description')}
-					label={t('default:stops.detail.UpdateNameModal.fields.short_name.label')}
+					description={t('stops:detail.StopsDetailUpdateNameModal.fields.short_name.description')}
+					label={t('stops:detail.StopsDetailUpdateNameModal.fields.short_name.label')}
 					value={automaticShortName}
 					w="100%"
 					readOnly
 				/>
 				<TextInput
-					description={t('default:stops.detail.UpdateNameModal.fields.tts_name.description')}
-					label={t('default:stops.detail.UpdateNameModal.fields.tts_name.label')}
+					description={t('stops:detail.StopsDetailUpdateNameModal.fields.tts_name.description')}
+					label={t('stops:detail.StopsDetailUpdateNameModal.fields.tts_name.label')}
 					value={automaticTtsName}
 					w="100%"
 					readOnly

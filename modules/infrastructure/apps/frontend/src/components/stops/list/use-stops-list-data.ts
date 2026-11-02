@@ -96,9 +96,9 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	return useMemo(() => ({
 		data: filteredData,
 		error: error?.error,
-		isLoading,
+		isLoading: isLoading || filterAgency.isLoading || filterLocationPrimary.isLoading || filterLocationSecondary.isLoading || filterLocationTertiary.isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [filteredData, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [filteredData, data?.timestamp, error, filterAgency.isLoading, filterLocationPrimary.isLoading, filterLocationSecondary.isLoading, filterLocationTertiary.isLoading, isLoading, isValidating, mutate]);
 };

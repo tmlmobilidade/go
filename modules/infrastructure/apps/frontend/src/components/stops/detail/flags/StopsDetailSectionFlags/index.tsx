@@ -59,23 +59,23 @@ export function StopsDetailSectionFlags() {
 
 	return (
 		<Collapsible
-			description={t('default:stops.detail.SectionFlags.description')}
-			title={t('default:stops.detail.SectionFlags.title')}
+			description={t('stops:detail.StopsDetailSectionFlags.description')}
+			title={t('stops:detail.StopsDetailSectionFlags.title')}
 		>
 
 			<Section gap="md">
 
 				<Grid columns="abb" gap="md">
 					<ValueDisplay
-						label={t('default:stops.detail.SectionFlags.fields.unique_id.label')}
-						value={data?._id ?? t('default:stops.shared.not_available')}
+						label={t('stops:detail.StopsDetailSectionFlags.fields.unique_id.label')}
+						value={data?._id ?? t('stops:detail.StopsDetailSectionFlags.not_available')}
 						variant="primary"
 						elevated
 						strong
 					/>
 					<ValueDisplay
-						label={t('default:stops.detail.SectionFlags.fields.legacy_ids.label')}
-						value={allNonUniqueIds.length > 0 ? allNonUniqueIds.join(', ') : t('default:stops.shared.not_available')}
+						label={t('stops:detail.StopsDetailSectionFlags.fields.legacy_ids.label')}
+						value={allNonUniqueIds.length > 0 ? allNonUniqueIds.join(', ') : t('stops:detail.StopsDetailSectionFlags.not_available')}
 					/>
 				</Grid>
 
@@ -83,7 +83,7 @@ export function StopsDetailSectionFlags() {
 					<StopsDetailSectionFlagItem key={`flag-${index}`} index={index} />
 				))}
 
-				<Button label={t('default:stops.detail.SectionFlags.AddFlagButton.label')} onClick={handleAddLegacyId} />
+				<Button label={t('stops:detail.StopsDetailSectionFlags.add_flag_button.label')} onClick={handleAddLegacyId} />
 
 			</Section>
 

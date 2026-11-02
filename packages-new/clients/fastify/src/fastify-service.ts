@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/* * */
 
 import '@fastify/cors';
 import '@fastify/cookie';
@@ -9,7 +8,6 @@ import '@fastify/multipart';
 
 import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fastify from 'fastify';
 
@@ -113,13 +111,8 @@ export class FastifyService {
 	 * Registers default routes (`/` and `/health`).
 	 */
 	private _setupDefaultRoutes() {
-		this.server.get('/', (_req, res) => {
-			res.send('Jusi was here!');
-		});
-
-		this.server.get('/health', (_, res) => {
-			res.status(HTTP_STATUS.OK).send({ status: 'ok' });
-		});
+		this.server.get('/', (_req, res) => res.send('Jusi was here!'));
+		this.server.get('/health', (_, res) => res.status(200).send({ status: 'ok' }));
 	}
 
 	/**

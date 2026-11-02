@@ -27,6 +27,7 @@
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/go-utils-zip": "*"

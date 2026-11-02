@@ -25,8 +25,8 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-geo": "*",
-		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/import-gtfs": "*"
+		"@tmlmobilidade/go-utils-import-gtfs": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

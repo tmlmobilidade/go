@@ -46,7 +46,7 @@ export function PlansList() {
 				/>
 			),
 			title: 'Operador',
-			width: 180,
+			width: 200,
 		},
 		{
 			accessor: 'active_dates',
@@ -54,11 +54,12 @@ export function PlansList() {
 				<PlansListCellFeedDates
 					activeFrom={item.active_from}
 					activeUntil={item.active_until}
+					hasOverlap={item.has_overlapping_plans}
 					temporalStatus={item.temporal_status}
 				/>
 			),
 			title: 'Datas de Validade',
-			width: 310,
+			width: 350,
 		},
 		{
 			accessor: 'apps.rides_feeder',

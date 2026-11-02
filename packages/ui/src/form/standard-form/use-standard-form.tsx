@@ -41,6 +41,7 @@ export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultVa
 
 	const form = useForm<z.input<TSchema>>({
 		defaultValues,
+		mode: 'all',
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
 

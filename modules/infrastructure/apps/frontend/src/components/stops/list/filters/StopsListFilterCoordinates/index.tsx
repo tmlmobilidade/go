@@ -14,10 +14,10 @@ export function StopsListFilterCoordinates() {
 	return (
 		<TextFilter
 			active={filterCoordinates.isActive}
-			description={t(filterCoordinates.isInvalid ? 'default:stops.list.FilterCoordinates.invalid' : 'default:stops.list.FilterCoordinates.description')}
-			label={t('default:stops.list.FilterCoordinates.label')}
+			description={t(filterCoordinates.isInvalid ? 'stops:list.StopsListFilterCoordinates.invalid' : 'stops:list.StopsListFilterCoordinates.description')}
+			label={t('stops:list.StopsListFilterCoordinates.label')}
 			onChange={filterCoordinates.set}
-			placeholder={t('default:stops.list.FilterCoordinates.placeholder')}
+			placeholder={t('stops:list.StopsListFilterCoordinates.placeholder')}
 			value={filterCoordinates.value}
 		/>
 	);
