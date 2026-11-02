@@ -1,7 +1,11 @@
 package custom
 
 import (
+	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
 /*
@@ -17,7 +21,7 @@ The `pattern_id` must be the same as the `shape_id`, so that the pattern identif
 
 Trips without `shape_id` or `pattern_id` are left alone: there is nothing to compare, and their own rules already report the problem.
 */
-func PatternIdSameShapeId(db *sqlite.SQLiteContext, rules *types.RuleContext) error {
+func PatternIdSameShapeId(db *sqlite.SQLiteContext, ruleContext *rules.RuleContext, messageAdder messages.MessageAdder) error {
 	//
 
 	//
@@ -28,15 +32,12 @@ func PatternIdSameShapeId(db *sqlite.SQLiteContext, rules *types.RuleContext) er
 	//
 	// 2. Create the validation context
 
-	ctx := lib.NewValidationContext("pattern_id", "trips.txt", ruleID, db.Row, services.AppMessageService)
-	if rules != nil {
-		ctx.WithSeverity(rules.Severity)
-	}
+	ctx := context.NewValidationContext("pattern_id", "trips.txt", ruleID, db.Row, messageAdder)
 
 	//
 	// 3. Get the pattern_id, shape_id values
 
-	values, err := db.Trips.Fields("pattern_id", "shape_id")
+	values, err := queries.Fields(db.Trips, "pattern_id", "shape_id")
 	if err != nil {
 		return err
 	}
@@ -44,7 +45,7 @@ func PatternIdSameShapeId(db *sqlite.SQLiteContext, rules *types.RuleContext) er
 	//
 	// 4. Check if the pattern_id validation should run
 
-	if values["pattern_id"] == "" || values["shape_id"] == "" || ctx.ShouldSkip() {
+	if values["pattern_id"] == "" || values["shape_id"] == "" || context.ShouldSkip(ctx) {
 		return nil
 	}
 
@@ -52,7 +53,7 @@ func PatternIdSameShapeId(db *sqlite.SQLiteContext, rules *types.RuleContext) er
 	// 5. Check if pattern_id matches the shape_id
 
 	if values["pattern_id"] != values["shape_id"] {
-		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("not_matching", values["pattern_id"], values["shape_id"]))
+		context.AddMessageWithSeverity(ctx, context.GetTranslatedMessage(ctx, "not_matching", values["pattern_id"], values["shape_id"]))
 	}
 
 	//
