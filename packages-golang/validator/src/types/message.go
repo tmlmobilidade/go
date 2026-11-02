@@ -1,14 +1,5 @@
 package types
 
-type Message struct {
-	Rows     []int    `json:"rows"`
-	Field    string   `json:"field"`
-	FileName string   `json:"file_name"`
-	Message  string   `json:"message"`
-	RuleID   string   `json:"rule_id"`
-	Severity Severity `json:"severity"`
-}
-
 // RuleMessage collapses every message a rule reported into a single summary entry.
 // Message is the rule's generic sentence, meant to be read on its own without the
 // detail; Messages carries its informational messages, warnings, and errors.

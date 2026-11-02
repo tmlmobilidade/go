@@ -2,10 +2,6 @@ package types
 
 const ALL_OPTIONS = "all_options"
 
-// RuleIDGtfsFeedFilePresenceAndIntegrity is the rule_id for forbidden-file checks.
-// Missing-file checks emit <table>_file_missing instead.
-const RuleIDGtfsFeedFilePresenceAndIntegrity = "file_validation_gtfs_feed_file_presence_and_integrity_rule"
-
 // RuleIDFeedInfoValuesParse is the rule_id for feed_info row parsing errors.
 const RuleIDFeedInfoValuesParse = "feed_info_values_parse"
 
