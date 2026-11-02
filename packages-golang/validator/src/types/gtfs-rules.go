@@ -2,19 +2,6 @@ package types
 
 const ALL_OPTIONS = "all_options"
 
-type Compare struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
-// RuleContext contains the configuration supplied to one validation rule.
-type RuleContext struct {
-	Severity  Severity   `json:"severity"`
-	Options   *[]string  `json:"options,omitempty"`
-	Compare   *[]Compare `json:"compare,omitempty"`
-	DependsOn []string   `json:"depends_on,omitempty"` // DependsOn lists rule IDs that must pass before this rule runs
-}
-
 // RuleIDGtfsFeedFilePresenceAndIntegrity is the rule_id for forbidden-file checks.
 // Missing-file checks emit <table>_file_missing instead.
 const RuleIDGtfsFeedFilePresenceAndIntegrity = "file_validation_gtfs_feed_file_presence_and_integrity_rule"

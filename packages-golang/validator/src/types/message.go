@@ -1,15 +1,5 @@
 package types
 
-type Severity string
-
-const (
-	SEVERITY_IGNORE    Severity = "ignore"
-	SEVERITY_INFO      Severity = "info"
-	SEVERITY_ERROR     Severity = "error"
-	SEVERITY_WARNING   Severity = "warning"
-	SEVERITY_FORBIDDEN Severity = "forbidden"
-)
-
 type Message struct {
 	Rows     []int    `json:"rows"`
 	Field    string   `json:"field"`

@@ -45,16 +45,6 @@ func CreateTableIfNotExists(db *sql.DB, table string, headers []string) error {
 	return nil
 }
 
-// SanitizeColumnName quotes a CSV header for SQLite without changing its name.
-func SanitizeColumnName(name string) string {
-	return `"` + strings.ReplaceAll(name, `"`, `""`) + `"`
-}
-
-// SanitizeTableName quotes a file's table name without changing it.
-func SanitizeTableName(name string) string {
-	return `"` + strings.ReplaceAll(name, `"`, `""`) + `"`
-}
-
 // TableExists checks if a table exists in the database
 func TableExists(db *sql.DB, tableName string) (bool, error) {
 	//
@@ -79,27 +69,4 @@ func TableExists(db *sql.DB, tableName string) (bool, error) {
 		return false, fmt.Errorf("failed to check if table exists: %w", err)
 	}
 	return true, nil
-}
-
-// GetTableCount returns the number of rows in a table
-func GetTableCount(db *sql.DB, tableName string) (int, error) {
-	//
-
-	//
-	// 1. Check if database connection is nil
-
-	if db == nil {
-		return 0, fmt.Errorf("database connection is nil")
-	}
-
-	//
-	// 2. Get table count
-
-	query := fmt.Sprintf("SELECT COUNT(*) FROM %s", SanitizeTableName(tableName))
-	var count int
-	err := db.QueryRow(query).Scan(&count)
-	if err != nil {
-		return 0, fmt.Errorf("failed to get table count for %s: %w", tableName, err)
-	}
-	return count, nil
 }
