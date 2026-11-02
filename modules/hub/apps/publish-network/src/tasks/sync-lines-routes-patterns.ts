@@ -67,7 +67,8 @@ export async function syncLinesRoutesPatterns(plan: Plan, importedGtfsSql: GtfsS
 		const route = context.route_data.get(trip.route_id);
 		if (!route) throw new Error(`Route ${trip.route_id} not found for plan ${plan._id}`);
 
-		const stopTimes = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence', [sourceTrip.trip_id]).map((stopTime) => {
+		// Imported GTFS sequences are TEXT, so order them numerically.
+		const stopTimes = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY CAST(stop_sequence AS INTEGER)', [sourceTrip.trip_id]).map((stopTime) => {
 			const stop = stops.get(stopTime.stop_id);
 			if (!stop) throw new Error(`Stop ${stopTime.stop_id} not found for plan ${plan._id}`);
 			return { ...stopTime, stop_id: stop._id };

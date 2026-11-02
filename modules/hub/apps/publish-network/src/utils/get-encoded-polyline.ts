@@ -33,12 +33,13 @@ export async function getEncodedPolyline(importedGtfsSql: GtfsSQLTables, shapeId
 
 	//
 	// If not, fetch the encoded polyline from the database
+	// Imported GTFS sequences are TEXT, so order them numerically.
 
 	const foundShapeData = importedGtfsSql.shapes.query<HubV1GtfsShapes>(`
 		SELECT *
 		FROM shapes
 		WHERE shape_id = ?
-		ORDER BY shape_id, shape_pt_sequence;
+		ORDER BY CAST(shape_pt_sequence AS INTEGER);
 	`, [shapeId]);
 
 	//
