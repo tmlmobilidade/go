@@ -4,6 +4,7 @@ import { exportAgencyFile, exportCalendarDates, exportCalendarMap, exportFareAtt
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { rewriteServiceIds, rewriteTripIds } from '@/versions/v29/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
+import { TripDirectionRegistry } from '@/versions/v29/utils/trip-direction-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -89,6 +90,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 
 		// Initialize service registry for calendar deduplication
 		const serviceRegistry = new ServiceRegistry();
+		const tripDirectionRegistry = new TripDirectionRegistry();
 
 		// Define export date range
 		const exportStartDate = Dates.fromOperationalDate(exportConfig.calendars_clip_start_date, 'Europe/Lisbon');
@@ -269,6 +271,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 						exportStartDate,
 						exportEndDate,
 						serviceRegistry,
+						tripDirectionRegistry,
 						exportConfig,
 					);
 
