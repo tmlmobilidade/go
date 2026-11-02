@@ -2,7 +2,8 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
+import { authProvider } from '@tmlmobilidade/go-providers-auth';
+import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-types-core';
 import { type User } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
@@ -39,7 +40,7 @@ export async function getMeHandler(request: FastifyRequest, reply: FastifyReply<
 		userData = await authProvider.getUserFromSessionToken(sessionToken);
 		if (!userData) throw new Error('User not found');
 	} catch {
-		await authProvider.logout(sessionToken);
+		await goDb.core.sessions.deleteOne({ token: { $eq: sessionToken } });
 		reply.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true });
 		return sendErrorApiResponse(reply, { error: 'User not found', status_code: '401' });
 	}

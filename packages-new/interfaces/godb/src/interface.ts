@@ -24,6 +24,15 @@ class GoDBClass {
 	public readonly operation: OperationDatabase;
 	public readonly performance: PerformanceDatabase;
 
+	private constructor(private readonly mongoClient: MongoClient) {
+		this.core = new CoreDatabase(mongoClient);
+		this.dates = new DatesDatabase(mongoClient);
+		this.infrastructure = new InfrastructureDatabase(mongoClient);
+		this.offer = new OfferDatabase(mongoClient);
+		this.operation = new OperationDatabase(mongoClient);
+		this.performance = new PerformanceDatabase(mongoClient);
+	}
+
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
 	 * @param options Optional Mongo client connection options.
@@ -36,19 +45,14 @@ class GoDBClass {
 		}
 		return GoDBClass._instance;
 	}
-
-	//
-	// Constructor
-	private constructor(mongoClient: MongoClient) {
-		this.core = new CoreDatabase(mongoClient);
-		this.dates = new DatesDatabase(mongoClient);
-		this.infrastructure = new InfrastructureDatabase(mongoClient);
-		this.offer = new OfferDatabase(mongoClient);
-		this.operation = new OperationDatabase(mongoClient);
-		this.performance = new PerformanceDatabase(mongoClient);
-	}
 }
 
-/* * */
-
+/**
+ * The singleton instance of the GoDB interface.
+ * Use it to access the database collections.
+ * @example
+ * ```ts
+ * const stopData = await goDb.core.stops.findOne({ _id: { $eq: '1234567890' } });
+ * ```
+ */
 export const goDb = asyncSingletonProxy(GoDBClass);

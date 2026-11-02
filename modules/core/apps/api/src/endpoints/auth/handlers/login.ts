@@ -1,40 +1,75 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
-import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/go-types-core';
+import { type AuthLoginRequest, AuthLoginRequestSchema } from '@tmlmobilidade/go-core-pckg-types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { hashAuthToken } from '@tmlmobilidade/go-providers-auth';
+import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-types-core';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { generateRandomToken } from '@tmlmobilidade/strings';
+import bcrypt from 'bcryptjs';
+
 /**
  * Authenticate a user from a login request and create a new session.
  */
-export async function loginHandler(request: FastifyRequest<{ Body: LoginDto }>, reply: FastifyReply<Session>) {
+export async function loginHandler(request: FastifyRequest<{ Body: AuthLoginRequest }>, reply: FastifyReply<void>) {
 	//
 
 	//
 	// Validate the request body
 
-	const validationResult = LoginDtoSchema.safeParse(request.body);
+	const validatedRequest = AuthLoginRequestSchema.safeParse(request.body);
 
-	if (!validationResult.success) {
+	if (!validatedRequest.success) {
 		return sendErrorApiResponse(reply, {
-			error: validationResult.error.message,
+			error: validatedRequest.error.message,
 			status_code: '400',
 		});
 	}
 
 	//
-	// Try to login the user
+	// Get the user data
 
-	const newSession = await authProvider.login({
-		email: validationResult.data.email,
-		password: validationResult.data.password,
-	});
+	const userData = await goDb.core.users.findOne({ email: { $eq: validatedRequest.data.email } });
+
+	if (!userData) {
+		return sendErrorApiResponse(reply, {
+			error: 'User not found',
+			status_code: '401',
+		});
+	}
 
 	//
-	// Set the session token cookie in the response
+	// Compare the password hash
 
-	reply.setCookie(AUTH_SESSION_COOKIE_NAME, newSession.token, {
+	const passwordHashMatch = await bcrypt.compare(validatedRequest.data.password, userData.password_hash ?? '');
+
+	if (!passwordHashMatch) {
+		return sendErrorApiResponse(reply, {
+			error: 'Invalid password',
+			status_code: '401',
+		});
+	}
+
+	//
+	// Create the session and set its value in the response cookie
+
+	const sessionDurationInDays = 30; // days
+
+	const randomToken = generateRandomToken();
+
+	await goDb.core.sessions.insertOne({
+		// Sessions expire in 30 days
+		expires_at: Dates.now('utc').plus({ days: sessionDurationInDays }).unix_milliseconds,
+		// Generate a random token
+		token: hashAuthToken(randomToken),
+		// Set the user ID
+		user_id: userData._id,
+	});
+
+	reply.setCookie(AUTH_SESSION_COOKIE_NAME, randomToken, {
 		httpOnly: true,
-		maxAge: 30 * 24 * 60 * 60, // 30 days
+		maxAge: sessionDurationInDays * 24 * 60 * 60, // days to seconds
 		path: '/',
 		sameSite: 'lax',
 		secure: true,
@@ -43,5 +78,5 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginDto }>, 
 	//
 	// Send the session data in the response
 
-	return sendSuccessApiResponse(reply, newSession);
+	return sendSuccessApiResponse(reply, undefined);
 }

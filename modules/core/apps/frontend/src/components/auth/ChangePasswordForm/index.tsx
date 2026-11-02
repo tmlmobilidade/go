@@ -3,10 +3,10 @@
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PasswordRequirementsSchema, type Session } from '@tmlmobilidade/go-types-core';
+import { AuthChangePasswordRequest, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
+import { type Session } from '@tmlmobilidade/go-types-core';
 import { fetchApiData, PasswordInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
-import bcrypt from 'bcryptjs';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -40,7 +40,7 @@ export function ChangePasswordForm() {
 
 	const validationErrors: PasswordValidation[] = useMemo(() => {
 		const errors: PasswordValidation[] = [];
-		const result = PasswordRequirementsSchema.safeParse({ password: passwordValue });
+		const result = PasswordRequirementsSchema.safeParse(passwordValue);
 		if (result.error) {
 			errors.push(...result.error.issues
 				.map(issue => Object.values(JSON.parse(issue.message)))
@@ -63,7 +63,11 @@ export function ChangePasswordForm() {
 	// C. Handle actions
 
 	const { action: handleChangePassword, isLoading: isChangingPassword } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Session>({ body: { password_hash: bcrypt.hashSync(passwordValue), token: tokenValue }, method: 'POST', url: API_ROUTES.core.AUTH_CHANGE_PASSWORD }),
+		fetchFn: async () => await fetchApiData<Session, AuthChangePasswordRequest>({
+			body: { password: passwordValue, token: tokenValue },
+			method: 'POST',
+			url: API_ROUTES.core.AUTH_CHANGE_PASSWORD,
+		}),
 		onError: ({ message }) => {
 			useToast.error({
 				message: message ?? t('unauthenticated:ChangePasswordForm.error_message.description'),
