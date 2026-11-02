@@ -5,28 +5,21 @@ import (
 
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
+	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
 )
 
 // Exists checks a value across the table without loading matching rows.
 func Exists(t *types.SQLiteTable, field string, value string) (bool, error) {
 	//
-
+	
 	//
-	// 1. Get the column name
-
-	column := "NULL"
-	if t.Columns[field] {
-		column = "source." + dbops.SanitizeName(field)
-	}
-
-	//
-	// 2. Build the query
+	// 1. Build the query
 
 	query := "SELECT EXISTS(SELECT 1 FROM " + dbops.SanitizeName(t.Name) +
-		" AS source WHERE " + column + " = ?)"
+		" AS source WHERE " + utils.Column(t, "source", field) + " = ?)"
 
 	//
-	// 3. Execute the query
+	// 2. Execute the query
 
 	var exists bool
 	if err := t.DB.QueryRow(query, value).Scan(&exists); err != nil {
@@ -34,7 +27,7 @@ func Exists(t *types.SQLiteTable, field string, value string) (bool, error) {
 	}
 
 	//
-	// 4. Return the result
+	// 3. Return the result
 
 	return exists, nil
 }

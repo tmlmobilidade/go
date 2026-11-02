@@ -8,5 +8,5 @@ import (
 // It shares table metadata and the connection pool, never row values.
 type SQLiteTables struct {
 	db     *sql.DB
-	tables map[string]*SQLiteTable
+	Tables map[string]*SQLiteTable
 }

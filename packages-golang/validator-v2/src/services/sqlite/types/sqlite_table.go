@@ -9,5 +9,5 @@ type SQLiteTable struct {
 	DB       *sql.DB
 	Name     string
 	Columns  map[string]bool
-	prepared *SQLiteTables
+	Prepared *SQLiteTables
 }
