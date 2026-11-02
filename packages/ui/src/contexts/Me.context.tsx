@@ -97,7 +97,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		setIsLoggingOut(true);
 		try {
 			// Call the logout endpoint
-			await fetch(API_ROUTES.core.AUTH_LOGOUT, { credentials: 'include' });
+			await fetch(API_ROUTES.core.AUTH_LOGOUT, { credentials: 'include', method: 'POST' });
 			// Clear the SWR cache without revalidating — the session is already gone,
 			// so a revalidate would 401 and surface ErrorDisplay before redirect.
 			meMutate();
