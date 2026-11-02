@@ -27,10 +27,11 @@ export function StopsListMap() {
 	//
 	// B. Transform data
 
-	const boundaryData = useMemo(() => {
+	// The boundary depends on the centre, so it also appears when no stops match.
+	const coordinateBoundaryData = useMemo(() => {
 		if (!coordinates) return null;
-		const boundary = circle(coordinates, STOPS_COORDINATES_RADIUS_METERS, { steps: 128, units: 'meters' });
-		return featureCollection([{ ...boundary, properties: { id: 'coordinate-boundary' } }]);
+		const coordinateBoundary = circle(coordinates, STOPS_COORDINATES_RADIUS_METERS, { steps: 128, units: 'meters' });
+		return featureCollection([{ ...coordinateBoundary, properties: { id: 'coordinate-boundary' } }]);
 	}, [coordinates]);
 
 	const mapData = useMemo<FeatureCollection<Point, MapOverlayMultipleStopsDataProps>>(() => {
@@ -67,7 +68,14 @@ export function StopsListMap() {
 	return (
 		<Pane>
 			<MapView id="stops-list">
-				{boundaryData && <MapOverlayPolygon color="#1971c2" data={boundaryData} fillOpacity={0.05} id="stops-coordinate-boundary" />}
+				{coordinateBoundaryData && (
+					<MapOverlayPolygon
+						color="#1971c2"
+						data={coordinateBoundaryData}
+						fillOpacity={0.05}
+						id="stops-coordinate-boundary"
+					/>
+				)}
 				<MapOverlayMultipleStops
 					data={mapData}
 					id="stops-list"

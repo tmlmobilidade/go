@@ -7,7 +7,7 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { filterStopsByCoordinates } from '../../../filter-stops-by-coordinates.js';
+import { filterStopsByCoordinatesRadius } from '../../../filter-stops-by-coordinates-radius.js';
 import { buildNodesExtractionQuery } from './apply-query.js';
 import { getCodespacesByMunicipality } from './codespaces.js';
 import { parseNodesExtraction } from './transform.js';
@@ -29,7 +29,12 @@ export async function extractInfrastructureNodesV1(context: ExtractionTaskContex
 	//
 	// Fetch stops matching the filters and permissions
 
-	const foundStops = filterStopsByCoordinates(await goDb.infrastructure.stops.findMany(filter, { projection }), coordinates);
+	const permittedStops = await goDb.infrastructure.stops.findMany(filter, { projection });
+
+	//
+	// Apply the coordinate radius to the permitted stops
+
+	const foundStops = filterStopsByCoordinatesRadius(permittedStops, coordinates);
 	if (!foundStops.length) throw new Error('No stops found matching the nodes extraction filters');
 
 	//

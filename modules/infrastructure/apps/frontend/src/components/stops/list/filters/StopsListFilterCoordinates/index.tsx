@@ -8,8 +8,17 @@ import { useStopsListFilterCoordinates } from './use-stops-list-filter-coordinat
 /* * */
 
 export function StopsListFilterCoordinates() {
+	//
+
+	//
+	// A. Setup variables
+
 	const { t } = useTranslation();
+
 	const filterCoordinates = useStopsListFilterCoordinates();
+
+	//
+	// B. Render components
 
 	return (
 		<TextFilter

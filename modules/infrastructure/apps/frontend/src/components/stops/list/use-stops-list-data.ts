@@ -85,7 +85,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	//
 	// E. Apply the coordinate filter to the shared list and map results
 
-	const filteredData = useMemo(() => {
+	const coordinateFilteredStops = useMemo(() => {
 		if (!coordinates) return searchResultsData;
 		return searchResultsData?.filter(stop => isWithinStopsListCoordinatesRadius(coordinates, stop));
 	}, [searchResultsData, coordinates]);
@@ -94,11 +94,11 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	// F. Return data
 
 	return useMemo(() => ({
-		data: filteredData,
+		data: coordinateFilteredStops,
 		error: error?.error,
 		isLoading: isLoading || filterAgency.isLoading || filterLocationPrimary.isLoading || filterLocationSecondary.isLoading || filterLocationTertiary.isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [filteredData, data?.timestamp, error, filterAgency.isLoading, filterLocationPrimary.isLoading, filterLocationSecondary.isLoading, filterLocationTertiary.isLoading, isLoading, isValidating, mutate]);
+	}), [coordinateFilteredStops, data?.timestamp, error, filterAgency.isLoading, filterLocationPrimary.isLoading, filterLocationSecondary.isLoading, filterLocationTertiary.isLoading, isLoading, isValidating, mutate]);
 };

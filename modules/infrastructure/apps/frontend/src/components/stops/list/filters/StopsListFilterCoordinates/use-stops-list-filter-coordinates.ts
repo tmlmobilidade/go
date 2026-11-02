@@ -8,19 +8,34 @@ import { parseStopsListCoordinates } from './coordinates';
 /* * */
 
 interface UseStopsListFilterCoordinatesReturnType extends UseFilterStateTextReturnType {
-	coordinates: [number, number] | null
+	coordinates: [longitude: number, latitude: number] | null
 	isInvalid: boolean
 }
 
-/** Manages the coordinate filter and validates its URL state. */
+/**
+ * Manages the coordinate filter for the stops list and validates its URL state.
+ * @returns The URL state and the validated search centre in GeoJSON order.
+ */
 export function useStopsListFilterCoordinates(): UseStopsListFilterCoordinatesReturnType {
-	const filter = useFilterStateText('coordinates');
-	const coordinates = useMemo(() => parseStopsListCoordinates(filter.value), [filter.value]);
+	//
+
+	//
+	// A. Setup variables
+
+	const filterCoordinates = useFilterStateText('coordinates');
+
+	//
+	// B. Validate coordinates
+
+	const coordinates = useMemo(() => parseStopsListCoordinates(filterCoordinates.value), [filterCoordinates.value]);
+
+	//
+	// C. Return data
 
 	return useMemo(() => ({
-		...filter,
+		...filterCoordinates,
 		coordinates,
 		isActive: coordinates !== null,
-		isInvalid: Boolean(filter.value.trim()) && coordinates === null,
-	}), [filter, coordinates]);
+		isInvalid: Boolean(filterCoordinates.value.trim()) && coordinates === null,
+	}), [filterCoordinates, coordinates]);
 }
