@@ -6,6 +6,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/tmlmobilidade/go/packages-golang/telemetry v0.0.0
+	github.com/tmlmobilidade/go/packages-golang/validator v0.0.0
 	main/types v1.0.0
 	modernc.org/sqlite v1.40.1
 
@@ -27,8 +28,6 @@ require (
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 )
-
-replace main/types => ./src/types
 
 replace github.com/tmlmobilidade/go/packages-golang/import-gtfs => ../import-gtfs
 
