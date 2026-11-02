@@ -2,7 +2,7 @@
 
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 

@@ -5,13 +5,15 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Files } from '@tmlmobilidade/go-utils-files';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 import fs from 'fs';
 
-import { exportRidesFile } from './export-rides.js';
-import { exportSamsAnalysisFile } from './export-sams-analysis.js';
+import { exportPlanFile } from './export-plan.js';
 import { exportStopsFile } from './export-stops.js';
 import { exportVehiclesFile } from './export-vehicles.js';
+
+// TODO: fix imports of this both files
+// import { exportSamsAnalysisFile } from './export-sams-analysis.js';
+// import { exportRidesFile } from './export-rides.js';
 
 /* * */
 
@@ -25,7 +27,10 @@ async function main() {
 
 	const globalTimer = new Timer();
 
-	const waitingFileExports = await goDb.core.exports.findMany({ processing_status: ProcessingStatusSchema.enum.waiting });
+	const waitingFileExports = await goDb.core.exports.findMany({
+		processing_status: 'waiting',
+		type: { $in: ['plan', 'stop', 'vehicle'] },
+	});
 
 	Logger.info({ message: `Found ${waitingFileExports.length} waiting file exports.` });
 
@@ -38,11 +43,18 @@ async function main() {
 			//
 			// Process the file export.
 			switch (fileExport.type) {
+				case 'gtfs':
+					// TODO: Implement GTFS export.
+					continue;
+				case 'plan': {
+					await exportPlanFile(fileExport);
+					continue;
+				}
 				case 'ride':
-					pathToFile = await exportRidesFile(fileExport);
+					// pathToFile = await exportRidesFile(fileExport);
 					break;
 				case 'sams_analysis':
-					pathToFile = await exportSamsAnalysisFile(fileExport);
+					// pathToFile = await exportSamsAnalysisFile(fileExport);
 					break;
 				case 'stop':
 					pathToFile = await exportStopsFile(fileExport);
@@ -50,11 +62,8 @@ async function main() {
 				case 'vehicle':
 					pathToFile = await exportVehiclesFile(fileExport);
 					break;
-				case 'gtfs':
-				default:
-					// TODO: Implement GTFS export
-					Logger.error({ message: `GTFS export not implemented yet.` });
-					Logger.error({ message: `Unknown file export type: ${fileExport.type}.` });
+				case 'plan_posters':
+					// These export types are excluded from this worker's queue.
 					continue;
 			}
 
@@ -76,8 +85,7 @@ async function main() {
 				await goDb.core.exports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
 			}
 		} catch (error) {
-			Logger.error(error);
-			Logger.error({ message: `Error processing file export ${fileExport._id} (${fileExport.type}): ${error instanceof Error ? error.message : 'Unknown error'}.` });
+			Logger.error({ error: error instanceof Error ? error : undefined, message: `Error processing file export ${fileExport._id} (${fileExport.type}): ${error instanceof Error ? error.message : 'Unknown error'}.` });
 			await goDb.core.exports.updateById(fileExport._id, { processing_status: 'error' });
 			continue;
 		}
