@@ -2,7 +2,7 @@ package types
 
 // SQLiteRow identifies a source row. Row is its zero-based data-row index.
 type SQLiteRow struct {
-	table   *SQLiteTable
+	Table   *SQLiteTable
 	Row     int
 	context *SQLiteContext
 	name    string
