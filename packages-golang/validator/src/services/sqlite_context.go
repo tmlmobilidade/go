@@ -1,0 +1,461 @@
+package services
+
+import (
+	"database/sql"
+	"fmt"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
+	"sort"
+	"strings"
+)
+
+// SQLiteTable shares a database connection and column names, never row values.
+type SQLiteTable struct {
+	db       *sql.DB
+	name     string
+	columns  map[string]bool
+	prepared *SQLiteTables
+}
+
+func NewSQLiteTable(db *sql.DB, name string) (*SQLiteTable, error) {
+	if db == nil {
+		return nil, fmt.Errorf("database connection is nil")
+	}
+	rows, err := db.Query("SELECT * FROM " + dbops.SanitizeTableName(name) + " LIMIT 0")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	columns, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+	table := &SQLiteTable{db: db, name: name, columns: make(map[string]bool, len(columns))}
+	for _, column := range columns {
+		table.columns[column] = true
+	}
+	return table, nil
+}
+
+// SQLiteRow identifies a source row. Row is its zero-based data-row index.
+type SQLiteRow struct {
+	table   *SQLiteTable
+	Row     int
+	context *SQLiteContext
+	name    string
+	// Only the runner's current batch/group uses prefetched values. At/Context callers
+	// continue to read SQLite directly; no values are cached on shared tables.
+	values map[string]string
+}
+
+// SQLiteContext exposes the current validation row and access to other tables.
+// Named handles support table-wide existence checks from any source table.
+// Field reads are bound only to the current table; other rows require Table(name).At(row).
+type SQLiteContext struct {
+	Row             int
+	Agency          *SQLiteRow
+	BookingRules    *SQLiteRow
+	Calendar        *SQLiteRow
+	CalendarDates   *SQLiteRow
+	FareAttributes  *SQLiteRow
+	FareRules       *SQLiteRow
+	FeedInfo        *SQLiteRow
+	Frequencies     *SQLiteRow
+	Levels          *SQLiteRow
+	Pathways        *SQLiteRow
+	RiderCategories *SQLiteRow
+	RouteNetworks   *SQLiteRow
+	Routes          *SQLiteRow
+	Shapes          *SQLiteRow
+	StopTimes       *SQLiteRow
+	Stops           *SQLiteRow
+	Transfers       *SQLiteRow
+	Trips           *SQLiteRow
+	Vehicles        *SQLiteRow
+	source          *SQLiteRow
+}
+
+func (r *SQLiteRow) Context() *SQLiteContext {
+	ctx := &SQLiteContext{Row: r.Row, source: r}
+	bind := func(name string) *SQLiteRow {
+		if strings.EqualFold(r.table.name, name) {
+			return r
+		}
+		return &SQLiteRow{Row: -1, context: ctx, name: name}
+	}
+	ctx.Agency = bind("agency")
+	ctx.BookingRules = bind("booking_rules")
+	ctx.Calendar = bind("calendar")
+	ctx.CalendarDates = bind("calendar_dates")
+	ctx.FareAttributes = bind("fare_attributes")
+	ctx.FareRules = bind("fare_rules")
+	ctx.FeedInfo = bind("feed_info")
+	ctx.Frequencies = bind("frequencies")
+	ctx.Levels = bind("levels")
+	ctx.Pathways = bind("pathways")
+	ctx.RiderCategories = bind("rider_categories")
+	ctx.RouteNetworks = bind("route_networks")
+	ctx.Routes = bind("routes")
+	ctx.Shapes = bind("shapes")
+	ctx.StopTimes = bind("stop_times")
+	ctx.Stops = bind("stops")
+	ctx.Transfers = bind("transfers")
+	ctx.Trips = bind("trips")
+	ctx.Vehicles = bind("vehicles")
+	return ctx
+}
+
+// Table selects any imported table. It does not fetch or cache field values.
+func (c *SQLiteContext) Table(name string) (*SQLiteTable, error) {
+	if c.source.table.prepared != nil {
+		return c.source.table.prepared.Table(name)
+	}
+	if strings.EqualFold(name, c.source.table.name) {
+		return c.source.table, nil
+	}
+	return NewSQLiteTable(c.source.table.db, name)
+}
+
+// At selects a row by zero-based index.
+func (t *SQLiteTable) At(row int) *SQLiteRow {
+	return &SQLiteRow{table: t, Row: row}
+}
+
+// ForEachRow reads row IDs only. Callbacks may query fields through the row context.
+// The database pool must allow another connection while this cursor is open.
+func (t *SQLiteTable) ForEachRow(fn func(*SQLiteRow) error) error {
+	rows, err := t.db.Query("SELECT rowid FROM " + dbops.SanitizeTableName(t.name) + " ORDER BY rowid")
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var rowID int
+		if err := rows.Scan(&rowID); err != nil {
+			return err
+		}
+		if err := fn(t.At(rowID - 1)); err != nil {
+			return err
+		}
+	}
+	return rows.Err()
+}
+
+type sqliteRowGroup struct {
+	rows    []int
+	grouped bool
+}
+
+// rowGroups reads keys and source row IDs together, avoiding a query per row.
+// Groups and their members retain source order. Empty keys remain independent
+// rows and never participate in a grouped check.
+func (t *SQLiteTable) rowGroups(field string) ([]sqliteRowGroup, error) {
+	query := "SELECT source.rowid, COALESCE(" + t.column("source", field) + ", '') FROM " +
+		dbops.SanitizeTableName(t.name) + " AS source ORDER BY source.rowid"
+	rows, err := t.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var groups []sqliteRowGroup
+	indexes := map[string]int{}
+	for rows.Next() {
+		var rowID int
+		var key string
+		if err := rows.Scan(&rowID, &key); err != nil {
+			return nil, err
+		}
+		index, exists := indexes[key]
+		if key == "" || !exists {
+			index = len(groups)
+			groups = append(groups, sqliteRowGroup{grouped: key != ""})
+			if key != "" {
+				indexes[key] = index
+			}
+		}
+		groups[index].rows = append(groups[index].rows, rowID-1)
+	}
+	return groups, rows.Err()
+}
+
+// readValidationRows loads one group's values in bounded queries. Validation
+// does not modify the imported tables, so its row rules can share these reads.
+// The returned rows and values are discarded after the group finishes.
+func (t *SQLiteTable) readValidationRows(ids []int) ([]*SQLiteRow, error) {
+	fields := make([]string, 0, len(t.columns))
+	for name := range t.columns {
+		fields = append(fields, name)
+	}
+	sort.Strings(fields)
+	columns := []string{"source.rowid"}
+	for _, name := range fields {
+		columns = append(columns, t.column("source", name))
+	}
+	result := make([]*SQLiteRow, 0, len(ids))
+	const batchSize = 500
+	for start := 0; start < len(ids); start += batchSize {
+		batch := ids[start:min(start+batchSize, len(ids))]
+		args := make([]any, len(batch))
+		for i, id := range batch {
+			args[i] = id + 1
+		}
+		query := "SELECT " + strings.Join(columns, ", ") + " FROM " + dbops.SanitizeTableName(t.name) +
+			" AS source WHERE source.rowid IN (" + strings.TrimSuffix(strings.Repeat("?,", len(batch)), ",") + ") ORDER BY source.rowid"
+		rows, err := t.db.Query(query, args...)
+		if err != nil {
+			return nil, err
+		}
+		var rowID int
+		values := make([]sql.NullString, len(fields))
+		targets := make([]any, len(fields)+1)
+		targets[0] = &rowID
+		for i := range fields {
+			targets[i+1] = &values[i]
+		}
+		for rows.Next() {
+			if err := rows.Scan(targets...); err != nil {
+				rows.Close()
+				return nil, err
+			}
+			row := t.At(rowID - 1)
+			row.values = make(map[string]string, len(fields))
+			for i, name := range fields {
+				row.values[name] = values[i].String
+			}
+			result = append(result, row)
+		}
+		err = rows.Err()
+		rows.Close()
+		if err != nil {
+			return nil, err
+		}
+	}
+	if len(result) != len(ids) {
+		return nil, fmt.Errorf("read %s validation group: expected %d rows, got %d", t.name, len(ids), len(result))
+	}
+	return result, nil
+}
+
+// column returns SQL NULL for an absent CSV header, so required-field rules can
+// validate it without treating it as a failed database query.
+func (t *SQLiteTable) column(alias, field string) string {
+	if !t.columns[field] {
+		return "NULL"
+	}
+	return alias + "." + dbops.SanitizeColumnName(field)
+}
+
+// Fields requests only the named fields in one query. Missing columns and SQL
+// NULL values are represented by empty strings, just like empty CSV cells.
+func (r *SQLiteRow) Fields(fields ...string) (map[string]string, error) {
+	if r.table == nil {
+		return nil, fmt.Errorf("select a row from %s before reading fields", r.name)
+	}
+	if len(fields) == 0 {
+		return nil, fmt.Errorf("at least one field is required")
+	}
+	if r.values != nil {
+		result := make(map[string]string, len(fields))
+		for _, field := range fields {
+			result[field] = r.values[field]
+		}
+		return result, nil
+	}
+	columns := make([]string, len(fields))
+	values := make([]sql.NullString, len(fields))
+	targets := make([]any, len(fields))
+	for i, field := range fields {
+		columns[i] = r.table.column("source", field)
+		targets[i] = &values[i]
+	}
+	query := "SELECT " + strings.Join(columns, ", ") + " FROM " + dbops.SanitizeTableName(r.table.name) + " AS source WHERE source.rowid = ?"
+	if err := r.table.db.QueryRow(query, r.Row+1).Scan(targets...); err != nil {
+		return nil, fmt.Errorf("read %s row %d: %w", r.table.name, r.Row, err)
+	}
+	result := make(map[string]string, len(fields))
+	for i, field := range fields {
+		result[field] = values[i].String
+	}
+	return result, nil
+}
+
+func (r *SQLiteRow) Field(field string) (string, error) {
+	if r.values != nil {
+		return r.values[field], nil
+	}
+	values, err := r.Fields(field)
+	return values[field], err
+}
+
+// Exists checks a value across the table without loading matching rows.
+func (t *SQLiteTable) Exists(field string, value string) (bool, error) {
+	query := "SELECT EXISTS(SELECT 1 FROM " + dbops.SanitizeTableName(t.name) +
+		" AS source WHERE " + t.column("source", field) + " = ?)"
+	var exists bool
+	if err := t.db.QueryRow(query, value).Scan(&exists); err != nil {
+		return false, fmt.Errorf("check %s.%s: %w", t.name, field, err)
+	}
+	return exists, nil
+}
+
+// FieldWithCount reads a field and counts equal values in this table in one query.
+func (r *SQLiteRow) FieldWithCount(field string) (string, int, error) {
+	if r.table == nil {
+		return "", 0, fmt.Errorf("select a row from %s before reading fields", r.name)
+	}
+	table := dbops.SanitizeTableName(r.table.name)
+	column := r.table.column("source", field)
+	query := "SELECT " + column + ", (SELECT COUNT(*) FROM " + table + " AS other WHERE " + r.table.column("other", field) + " = " + column + ") FROM " + table + " AS source WHERE source.rowid = ?"
+	var value sql.NullString
+	var count int
+	if err := r.table.db.QueryRow(query, r.Row+1).Scan(&value, &count); err != nil {
+		return "", 0, fmt.Errorf("read %s.%s row %d: %w", r.table.name, field, r.Row, err)
+	}
+	return value.String, count, nil
+}
+
+// Count returns the number of imported rows in this table.
+func (t *SQLiteTable) Count() (int, error) {
+	var count int
+	err := t.db.QueryRow("SELECT COUNT(*) FROM " + dbops.SanitizeTableName(t.name)).Scan(&count)
+	return count, err
+}
+
+// HasColumn reports whether a field header was imported.
+func (r *SQLiteRow) HasColumn(field string) bool { return r.table != nil && r.table.columns[field] }
+
+// Exists checks the named table, independent of the current source row.
+// Query failures are logged and return false. Use Table(name).Exists when the
+// caller needs to handle the error directly.
+func (r *SQLiteRow) Exists(field, value string) bool {
+	table := r.table
+	if table == nil {
+		var err error
+		table, err = r.context.Table(r.name)
+		if err != nil {
+			lib.AppLogger.Error(fmt.Sprintf("SQLite existence check failed: %v", err))
+			return false
+		}
+	}
+	exists, err := table.Exists(field, value)
+	if err != nil {
+		lib.AppLogger.Error(fmt.Sprintf("SQLite existence check failed: %v", err))
+		return false
+	}
+	return exists
+}
+
+// ExistsMatching checks that all requested values occur in the same row.
+func (t *SQLiteTable) ExistsMatching(fields map[string]string) (bool, error) {
+	if len(fields) == 0 {
+		return false, fmt.Errorf("at least one field is required")
+	}
+	conditions := make([]string, 0, len(fields))
+	values := make([]any, 0, len(fields))
+	for field, value := range fields {
+		conditions = append(conditions, t.column("source", field)+" = ?")
+		values = append(values, value)
+	}
+	query := "SELECT EXISTS(SELECT 1 FROM " + dbops.SanitizeTableName(t.name) + " AS source WHERE " + strings.Join(conditions, " AND ") + ")"
+	var exists bool
+	if err := t.db.QueryRow(query, values...).Scan(&exists); err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
+// ForEachMatching selects source rows whose field equals the supplied value.
+// Values are bound parameters; callers can request just the fields they need.
+func (t *SQLiteTable) ForEachMatching(field, value string, fn func(*SQLiteRow) error) error {
+	query := "SELECT rowid FROM " + dbops.SanitizeTableName(t.name) + " AS source WHERE COALESCE(" + t.column("source", field) + ", '') = ? ORDER BY rowid"
+	rows, err := t.db.Query(query, value)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var rowID int
+		if err := rows.Scan(&rowID); err != nil {
+			return err
+		}
+		if err := fn(t.At(rowID - 1)); err != nil {
+			return err
+		}
+	}
+	return rows.Err()
+}
+
+// ForEachMatchingFields streams the requested values with their source row in
+// one query, avoiding a separate Fields query per match. Values are not cached.
+// Missing columns and NULLs have the same empty-string semantics as Fields.
+func (t *SQLiteTable) ForEachMatchingFields(field, value string, fields []string, fn func(*SQLiteRow, map[string]string) error) error {
+	return t.forEachMatchingFields(field, []any{value}, fields, fn)
+}
+
+// ForEachMatchingValuesFields reads several lookup keys in bounded queries.
+// Repeated keys are visited once. Rows are ordered by rowid within each batch;
+// callers that need key order must collect the results and apply that order.
+func (t *SQLiteTable) ForEachMatchingValuesFields(field string, keys []string, fields []string, fn func(*SQLiteRow, map[string]string) error) error {
+	if len(fields) == 0 {
+		return fmt.Errorf("at least one field is required")
+	}
+	const batchSize = 500 // Stay below SQLite's parameter limit, including older builds.
+	seen := make(map[string]bool, len(keys))
+	batch := make([]any, 0, min(len(keys), batchSize))
+	for _, key := range keys {
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		batch = append(batch, key)
+		if len(batch) == batchSize {
+			if err := t.forEachMatchingFields(field, batch, fields, fn); err != nil {
+				return err
+			}
+			batch = batch[:0]
+		}
+	}
+	if len(batch) > 0 {
+		return t.forEachMatchingFields(field, batch, fields, fn)
+	}
+	return nil
+}
+
+func (t *SQLiteTable) forEachMatchingFields(field string, keys []any, fields []string, fn func(*SQLiteRow, map[string]string) error) error {
+	if len(fields) == 0 {
+		return fmt.Errorf("at least one field is required")
+	}
+	columns := []string{"source.rowid"}
+	var rowID int
+	values := make([]sql.NullString, len(fields))
+	targets := make([]any, len(fields)+1)
+	targets[0] = &rowID
+	for i, name := range fields {
+		columns = append(columns, t.column("source", name))
+		targets[i+1] = &values[i]
+	}
+	condition := " = ?"
+	if len(keys) > 1 {
+		condition = " IN (" + strings.TrimSuffix(strings.Repeat("?,", len(keys)), ",") + ")"
+	}
+	query := "SELECT " + strings.Join(columns, ", ") + " FROM " + dbops.SanitizeTableName(t.name) +
+		" AS source WHERE COALESCE(" + t.column("source", field) + ", '')" + condition + " ORDER BY source.rowid"
+	rows, err := t.db.Query(query, keys...)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		if err := rows.Scan(targets...); err != nil {
+			return err
+		}
+		result := make(map[string]string, len(fields))
+		for i, name := range fields {
+			result[name] = values[i].String
+		}
+		if err := fn(t.At(rowID-1), result); err != nil {
+			return err
+		}
+	}
+	return rows.Err()
+}

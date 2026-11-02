@@ -1,0 +1,33 @@
+.rule {
+	overflow-wrap: anywhere;
+}
+
+.toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	cursor: pointer;
+}
+
+.chevron {
+	flex-shrink: 0;
+	transition: transform 200ms ease;
+}
+
+.chevron[data-expanded='true'] {
+	transform: rotate(90deg);
+}
+
+.settingsRow {
+	--table-highlight-on-hover-color: transparent;
+}
+
+/* The settings row is always rendered so it can animate; hide its border while collapsed. */
+.settingsRow[data-expanded='false'] {
+	border-bottom-color: transparent;
+}
+
+.settings {
+	padding: var(--size-spacing-lg) var(--table-horizontal-spacing, var(--mantine-spacing-xs));
+	padding-left: calc(var(--table-horizontal-spacing, var(--mantine-spacing-xs)) + 18px);
+}

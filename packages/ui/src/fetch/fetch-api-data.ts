@@ -1,6 +1,6 @@
 /* * */
 
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, ApiResponseErrorSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
@@ -100,8 +100,19 @@ export async function fetchApiData<T, K = unknown>(params: FetchApiDataParams<K>
 			method: validatedParams.method,
 			...validatedParams.options,
 		});
-		// If the response is not ok, throw an error
-		if (!response.ok) throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+		// Preserve the API's validation details and HTTP status for failed requests.
+		if (!response.ok) {
+			const errorBody: unknown = await response.json().catch(() => undefined);
+			const apiError = ApiResponseErrorSchema.safeParse(errorBody);
+			if (apiError.success) return apiError.data;
+			const status = ApiResponseErrorSchema.shape.status_code.safeParse(String(response.status));
+			return {
+				data: null,
+				error: `HTTP ${response.status} - ${response.statusText}`,
+				status_code: status.success ? status.data : '500',
+				timestamp: Dates.now('utc').unix_milliseconds,
+			};
+		}
 		// Decode the response body
 		const responseData: ApiResponse<T> = await response.json();
 		// If the response has an error, throw an error

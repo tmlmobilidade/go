@@ -1,6 +1,7 @@
 {
 	"recommendations": [
 		"dbcode.dbcode",
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+		"golang.go"
 	]
 }
