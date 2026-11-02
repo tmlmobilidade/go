@@ -2,7 +2,7 @@
 
 import { AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { ListFilter } from '@tmlmobilidade/ui';
+import { ListFilter, useAgencyFilterOptions } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';
 
 /* * */
@@ -59,6 +59,8 @@ export function AgenciesSelector({ defaultToAll = true, isMultiple = true, onCha
 		}));
 	}, [selectedAgencies, agenciesContext.data.agencies]);
 
+	const groupedOptions = useAgencyFilterOptions(parsedOptions);
+
 	//
 	// C. Render components
 
@@ -68,7 +70,7 @@ export function AgenciesSelector({ defaultToAll = true, isMultiple = true, onCha
 			isMultiple={isMultiple}
 			label="Operador"
 			onChange={onChange}
-			options={parsedOptions}
+			options={groupedOptions}
 			withToggleAll
 		/>
 	);

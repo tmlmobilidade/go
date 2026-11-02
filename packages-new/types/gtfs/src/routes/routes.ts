@@ -20,7 +20,7 @@ export const GtfsRoutesSchema = z.object({
 	route_id: z.string(),
 	route_long_name: nullAsUndefined(z.string().default('')),
 	route_short_name: nullAsUndefined(z.string().default('')),
-	route_sort_order: NonNegativeIntegerSchema.optional(),
+	route_sort_order: nullAsUndefined(NonNegativeIntegerSchema.optional()),
 	route_text_color: nullAsUndefined(RouteColorSchema.default('')),
 	route_type: GtfsRouteTypeSchema,
 	route_url: nullAsUndefined(z.string().default('')),

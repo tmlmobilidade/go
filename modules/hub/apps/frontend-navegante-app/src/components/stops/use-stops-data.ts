@@ -26,7 +26,7 @@ export function useStopsData(): UseStopsDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiStop[]>>(API_ROUTES.hub.NETWORK_STOPS, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiStop[]>>(API_ROUTES.hub.NETWORK_STOPS('F5157'), {
 		fetcher: async url => await fetchApiData<HubV1ApiStop[]>({ options: { credentials: 'omit' }, url }),
 	});
 

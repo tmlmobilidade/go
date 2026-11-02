@@ -1,6 +1,7 @@
 'use client';
 
 import { OrganizationsDetailHeader } from '@/components/organizations/detail/OrganizationsDetailHeader';
+import { OrganizationsDetailOpenData } from '@/components/organizations/detail/OrganizationsDetailOpenData';
 import { OrganizationsDetailBasicInfo } from '@/components/organizations/detail/OrganizationSectionBasicInfo';
 import { OrganizationsDetailQuickLinks } from '@/components/organizations/detail/OrganizationSectionQuickLinks';
 import { Pane } from '@tmlmobilidade/ui';
@@ -17,6 +18,7 @@ export function OrganizationsDetail() {
 	return (
 		<Pane header={[<OrganizationsDetailHeader key="header" />]} isLoading={isLoading}>
 			<OrganizationsDetailBasicInfo />
+			<OrganizationsDetailOpenData />
 			<OrganizationsDetailQuickLinks />
 		</Pane>
 	);
