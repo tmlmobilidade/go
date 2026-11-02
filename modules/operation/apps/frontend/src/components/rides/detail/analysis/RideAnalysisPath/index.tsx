@@ -5,28 +5,11 @@ import { useRidesDetailApexRefundsData } from '@/components/rides/detail/shared/
 import { useRidesDetailApexSalesData } from '@/components/rides/detail/shared/use-rides-detail-apex-sales-data';
 import { useRidesDetailApexValidationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-validations-data';
 import { useRidesDetailHashedTripData } from '@/components/rides/detail/shared/use-rides-detail-hashed-trip-data';
-import { type SimplifiedApexBankingTap, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, DataTable, DataTableColumn, DataTableScroller, IdTag, Label, NumberDisplay, Section, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-/* * */
-
-interface TableData {
-	passengers_observed: number
-	passengers_observed_banking_taps_qty: number
-	passengers_observed_prepaid_amount: number
-	passengers_observed_prepaid_qty: number
-	passengers_observed_sales_amount: number
-	passengers_observed_sales_qty: number
-	passengers_observed_subscription_qty: number
-	seen_first_at: UnixMilliseconds
-	seen_last_at: UnixMilliseconds
-	stop_id: string
-	stop_name: string
-	stop_sequence: number
-}
+import { getRideAnalysisPathData, type RideAnalysisPathRow } from './get-ride-analysis-path-data';
 
 /* * */
 
@@ -44,20 +27,20 @@ export function RideAnalysisPath() {
 	const { data: simplifiedApexSalesData } = useRidesDetailApexSalesData();
 	const { data: simplifiedApexRefundsData } = useRidesDetailApexRefundsData();
 
-	const columns: DataTableColumn<TableData>[] = [
+	const columns: DataTableColumn<RideAnalysisPathRow>[] = [
 		{
-			accessor: 'stop_sequence',
+			accessor: 'stop_sequences',
 			center: true,
-			render: item => `#${item.stop_sequence}`,
+			render: item => item.stop_sequences.map(sequence => `#${sequence}`).join(', ') || '—',
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.stop_sequence.label'),
-			width: 50,
+			width: 100,
 		},
 		{
 			accessor: 'stop_name',
 			render: item => (
 				<Section alignItems="center" flexDirection="row" gap="md" padding="none">
-					<IdTag id={item.stop_id} copyOnClick />
-					<Label>{item.stop_name}</Label>
+					{item.stop_id && <IdTag id={item.stop_id} copyOnClick />}
+					<Label>{item.stop_name ?? t(`default:rides.analysis.RideAnalysisPath.labels.${item.stop_id ? 'outside_route' : 'without_stop'}`)}</Label>
 				</Section>
 			),
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.stop_name.label'),
@@ -122,81 +105,13 @@ export function RideAnalysisPath() {
 	//
 	// C. Transform data
 
-	const validationsByStopId: Record<string, SimplifiedApexValidation[]> = useMemo(() => {
-		if (!simplifiedApexValidationsData) return {};
-		return simplifiedApexValidationsData
-			.filter(validation => validation.is_passenger)
-			.reduce((acc, validation) => {
-				if (!validation.stop_id) return acc;
-				acc[validation.stop_id] = (acc[validation.stop_id] || []).concat(validation);
-				return acc;
-			}, {});
-	}, [simplifiedApexValidationsData]);
-
-	const bankingTapsByStopId: Record<string, SimplifiedApexBankingTap[]> = useMemo(() => {
-		if (!simplifiedApexBankingTapsData) return {};
-		return simplifiedApexBankingTapsData.reduce((acc, bankingTap) => {
-			if (!bankingTap.stop_id) return acc;
-			acc[bankingTap.stop_id] = (acc[bankingTap.stop_id] || []).concat(bankingTap);
-			return acc;
-		}, {});
-	}, [simplifiedApexBankingTapsData]);
-
-	const salesByStopId: Record<string, SimplifiedApexOnBoardSale[]> = useMemo(() => {
-		if (!simplifiedApexSalesData) return {};
-		return simplifiedApexSalesData.reduce((acc, sale) => {
-			if (!sale.stop_id) return acc;
-			acc[sale.stop_id] = (acc[sale.stop_id] || []).concat(sale);
-			return acc;
-		}, {});
-	}, [simplifiedApexSalesData]);
-
-	const refundsByStopId: Record<string, SimplifiedApexOnBoardRefund[]> = useMemo(() => {
-		if (!simplifiedApexRefundsData) return {};
-		return simplifiedApexRefundsData.reduce((acc, refund) => {
-			if (!refund.stop_id) return acc;
-			acc[refund.stop_id] = (acc[refund.stop_id] || []).concat(refund);
-			return acc;
-		}, {});
-	}, [simplifiedApexRefundsData]);
-
-	const tableData: TableData[] = useMemo(() => {
-		// Skip if no hashed trip data
-		if (!hashedTripData) return [];
-		// From the hashed trip data calculate required data
-		return hashedTripData
-			.sort((a, b) => a.stop_sequence - b.stop_sequence)
-			.map((item) => {
-				// Get oldest and latest timestamp of all APEX transactions
-				const seenFirstAt = Math.min(...[
-					...(validationsByStopId[item.stop_id]?.map(validation => validation.created_at) || []),
-					...(bankingTapsByStopId[item.stop_id]?.map(bankingTap => bankingTap.created_at) || []),
-					...(salesByStopId[item.stop_id]?.map(sale => sale.created_at) || []),
-					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || []),
-				]) as UnixMilliseconds;
-				const seenLastAt = Math.max(...[
-					...(validationsByStopId[item.stop_id]?.map(validation => validation.created_at) || []),
-					...(bankingTapsByStopId[item.stop_id]?.map(bankingTap => bankingTap.created_at) || []),
-					...(salesByStopId[item.stop_id]?.map(sale => sale.created_at) || []),
-					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || []),
-				]) as UnixMilliseconds;
-				// Return the data
-				return {
-					passengers_observed: validationsByStopId[item.stop_id]?.filter(validation => validation.is_passenger).length || 0,
-					passengers_observed_banking_taps_qty: bankingTapsByStopId[item.stop_id]?.length || 0,
-					passengers_observed_prepaid_amount: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'prepaid' && validation.is_passenger).reduce((acc, validation) => acc + validation.units_qty, 0) || 0,
-					passengers_observed_prepaid_qty: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'prepaid' && validation.is_passenger).length || 0,
-					passengers_observed_sales_amount: salesByStopId[item.stop_id]?.filter(sale => sale.is_passenger).reduce((acc, sale) => acc + (sale.price * sale.product_quantity), 0) || 0,
-					passengers_observed_sales_qty: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'on_board_sale' && validation.is_passenger).length || 0,
-					passengers_observed_subscription_qty: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'subscription' && validation.is_passenger).length || 0,
-					seen_first_at: seenFirstAt,
-					seen_last_at: seenLastAt,
-					stop_id: item.stop_id,
-					stop_name: item.stop_name,
-					stop_sequence: item.stop_sequence,
-				} satisfies TableData;
-			});
-	}, [bankingTapsByStopId, hashedTripData, refundsByStopId, salesByStopId, validationsByStopId]);
+	const tableData = useMemo(() => getRideAnalysisPathData({
+		bankingTaps: simplifiedApexBankingTapsData ?? [],
+		hashedTrip: hashedTripData ?? [],
+		refunds: simplifiedApexRefundsData ?? [],
+		sales: simplifiedApexSalesData ?? [],
+		validations: simplifiedApexValidationsData ?? [],
+	}), [hashedTripData, simplifiedApexBankingTapsData, simplifiedApexRefundsData, simplifiedApexSalesData, simplifiedApexValidationsData]);
 
 	//
 	// B. Render components
@@ -210,7 +125,7 @@ export function RideAnalysisPath() {
 				<DataTable
 					columns={columns}
 					records={tableData}
-					rowIdAccessor="stop_id"
+					rowIdAccessor="row_id"
 				/>
 			</DataTableScroller>
 		</Collapsible>

@@ -82,6 +82,8 @@ export async function main() {
 				vehicle_events: analysisData.vehicle_events,
 			});
 
+			if (!augmentedRideData) return;
+
 			const augmentRideTime = augmentRideTimer.get();
 
 			//

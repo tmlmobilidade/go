@@ -17,9 +17,9 @@ import { getObservedExtension } from '../utils/get-observed-extension.js';
  * Augments the ride data with additional information from the analysis data.
  * @param rideData The ride data to augment.
  * @param analysisData The analysis data containing vehicle events, APEX transactions, and other related information.
- * @returns The original Ride with augmented data.
+ * @returns The augmented Ride, or null if another processing request superseded this analysis.
  */
-export async function augmentRide(analysisData: AnalysisData): Promise<Ride> {
+export async function augmentRide(analysisData: AnalysisData): Promise<null | Ride> {
 	//
 
 	const augmentedRide = Object.assign({}, analysisData.ride);
@@ -118,7 +118,20 @@ export async function augmentRide(analysisData: AnalysisData): Promise<Ride> {
 	//
 	// Perform the update and inserts into GoDB and LabDB.
 
-	await goDb.operation.rides.updateById(validatedRide._id, validatedRide);
+	// A new transaction can queue this ride while its analysis is in progress.
+	// Only publish results if this is still the processing run we fetched.
+	const ridesCollection = await goDb.operation.rides.getCollection();
+	const updateResult = await ridesCollection.updateOne(
+		{
+			_id: validatedRide._id,
+			processing_status: 'processing',
+			updated_at: analysisData.ride.updated_at,
+		},
+		{ $set: validatedRide },
+	);
+
+	if (!updateResult.acknowledged) throw new Error(`Failed to update ride ${validatedRide._id}`);
+	if (!updateResult.matchedCount) return null;
 
 	await writers.rides.write(validatedRide);
 

@@ -1071,5 +1071,15 @@
 				"trolleybus": "Trolebús"
 			}
 		}
+	},
+	"rides": {
+		"analysis": {
+			"RideAnalysisPath": {
+				"labels": {
+					"outside_route": "Fuera del recorrido",
+					"without_stop": "Sin parada"
+				}
+			}
+		}
 	}
 }

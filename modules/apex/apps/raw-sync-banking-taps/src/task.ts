@@ -17,7 +17,7 @@ import { ZodError } from 'zod';
 const writer = new BatchWriter<SimplifiedApexBankingTap>({
 	batch_size: 10_000,
 	insertFn: async (data) => {
-		await labDb.simplifiedApex.bankingTaps.insert('JSONEachRow', data);
+		await labDb.simplifiedApex.bankingTaps.insert('JSONEachRow', data, { waitForAsyncInsert: true });
 	},
 	title: await labDb.simplifiedApex.bankingTaps.getTableName(),
 });
