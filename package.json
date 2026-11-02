@@ -136,6 +136,7 @@
 		"prd:hub:eta": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-eta",
 		"prd:hub:publish-eta": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-eta",
 		"prd:hub:publish-gtfs": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-gtfs",
+		"prd:hub:publish-network": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-network",
 		"prd:hub:publish-vehicles": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-vehicles",
 		"prd:hub:ui:navegante-app": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
 		"prd:infrastructure": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-*",
