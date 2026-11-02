@@ -7,7 +7,6 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/tmlmobilidade/go/packages-golang/telemetry v0.0.0
 	github.com/tmlmobilidade/go/packages-golang/validator v0.0.0
-	main/types v1.0.0
 	modernc.org/sqlite v1.40.1
 
 	// 

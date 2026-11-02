@@ -8,7 +8,7 @@ import (
 	"sort"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/algorithm/types"
-	ruletypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/types"
+	ruletypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
 /*
@@ -32,7 +32,7 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 	if entries == nil {
 		return nil, fmt.Errorf("rules must be an object")
 	}
-	
+
 	//
 	// 2. Read the optional validation_rules wrapper
 
@@ -74,7 +74,9 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 			return nil, fmt.Errorf("rule ID must not be empty")
 		}
 		// Registered rules omitted from the JSON remain in the graph as skipped rules.
-		config := ruletypes.RuleContext{Severity: "ignore"}
+		config := ruletypes.RuleConfig{
+			RuleContext: ruletypes.RuleContext{Severity: ruletypes.SEVERITY_IGNORE},
+		}
 		if raw, configured := entries[id]; configured {
 			raw = bytes.TrimSpace(raw)
 			if len(raw) == 0 || raw[0] != '{' {
@@ -87,12 +89,13 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 			}
 		}
 		switch config.Severity {
-		case "ignore", "info", "warning", "error", "forbidden":
+		case ruletypes.SEVERITY_IGNORE, ruletypes.SEVERITY_INFO, ruletypes.SEVERITY_WARNING,
+			ruletypes.SEVERITY_ERROR, ruletypes.SEVERITY_FORBIDDEN:
 		default:
 			return nil, fmt.Errorf("rule %q: invalid severity %q", id, config.Severity)
 		}
 		check := checks[id]
-		if config.Severity != "ignore" && check == nil {
+		if config.Severity != ruletypes.SEVERITY_IGNORE && check == nil {
 			return nil, fmt.Errorf("rule %q has no implementation", id)
 		}
 		// Bind the configuration and check to this rule without executing it yet.
@@ -103,16 +106,15 @@ func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleC
 				//
 				// 1. Skip ignored rules so their dependents cannot treat them as passed
 
-				if config.Severity == "ignore" {
+				if config.Severity == ruletypes.SEVERITY_IGNORE {
 					return types.Skipped
 				}
 				//
 				// 2. Copy the configuration for this invocation
 
-				// Give each invocation its own configuration, including slice fields.
-				// A check cannot change a later row's config or the dependency graph.
-				context := config
-				context.DependsOn = slices.Clone(config.DependsOn)
+				// Pass only validation settings; dependencies remain with the algorithm.
+				// Copy slice fields so a check cannot change a later row's configuration.
+				context := config.RuleContext
 				if config.Options != nil {
 					options := slices.Clone(*config.Options)
 					context.Options = &options
