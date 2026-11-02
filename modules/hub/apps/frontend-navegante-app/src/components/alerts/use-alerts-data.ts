@@ -26,7 +26,7 @@ export function useAlertsData(): UseAlertsDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiAlert[]>>(API_ROUTES.hub.ALERTS_LIST, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiAlert[]>>(API_ROUTES.hub.ALERTS_LIST('F5157'), {
 		fetcher: async url => await fetchApiData<HubV1ApiAlert[]>({ options: { credentials: 'omit' }, url }),
 	});
 

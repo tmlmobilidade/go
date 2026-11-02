@@ -261,24 +261,27 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('hub', 'api_url')}`,
 
+		// AGENCIES
+		AGENCIES_LIST: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/agencies`,
+
 		// ALERTS
-		ALERTS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs`,
-		ALERTS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs.pb`,
-		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
-		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
+		ALERTS_GTFS: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/alerts/gtfs`,
+		ALERTS_GTFS_PB: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/alerts/gtfs.pb`,
+		ALERTS_LIST: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/alerts`,
+		ALERTS_RSS: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/alerts.rss`,
 
 		// CORE
-		CORE_AGENCIES_LIST: `${getModuleConfig('hub', 'api_url')}/v1/agencies`,
+		CORE_ORGANIZATIONS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/organizations`,
 
 		// DEBUG
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
 		// ETA
-		ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-stop/${encodeURIComponent(id)}`,
-		ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/eta/by-trip/${encodeURIComponent(id)}`,
-		ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/eta/gtfs`,
-		ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/eta/gtfs.pb`,
-		ETA_LIST: `${getModuleConfig('hub', 'api_url')}/v1/eta`,
+		ETA_BY_STOP: (organizationId: string, stopId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta/by-stop/${encodeURIComponent(stopId)}`,
+		ETA_BY_TRIP: (organizationId: string, tripId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta/by-trip/${encodeURIComponent(tripId)}`,
+		ETA_GTFS: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta/gtfs`,
+		ETA_GTFS_PB: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta/gtfs.pb`,
+		ETA_LIST: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/eta`,
 
 		// FEEDBACK
 		FEEDBACK_LIST: `${getModuleConfig('hub', 'api_url')}/v1/feedback`,
@@ -291,40 +294,24 @@ export const API_ROUTES = Object.freeze({
 		MOTIS_PLAN: `${getModuleConfig('hub', 'api_url')}/v1/motis/plan`,
 
 		// NETWORK
-		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
-		NETWORK_LINES_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/lines/${encodeURIComponent(id)}`,
-		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${encodeURIComponent(id)}`,
-		NETWORK_ROUTES: `${getModuleConfig('hub', 'api_url')}/v1/network/routes`,
-		NETWORK_ROUTES_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/routes/${encodeURIComponent(id)}`,
-		NETWORK_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/shapes/${encodeURIComponent(id)}`,
-		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
-		NETWORK_STOPS_DETAIL: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/stops/${encodeURIComponent(id)}`,
+		NETWORK_LINES: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/network/lines`,
+		NETWORK_LINES_DETAIL: (organizationId: string, lineId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/network/lines/${encodeURIComponent(lineId)}`,
+		NETWORK_PATTERNS: (organizationId: string, patternId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/network/patterns/${encodeURIComponent(patternId)}`,
+		NETWORK_ROUTES: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/network/routes`,
+		NETWORK_ROUTES_DETAIL: (organizationId: string, routeId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/network/routes/${encodeURIComponent(routeId)}`,
+		NETWORK_SHAPES: (organizationId: string, shapeId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/network/shapes/${encodeURIComponent(shapeId)}`,
+		NETWORK_STOPS: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/network/stops`,
+		NETWORK_STOPS_DETAIL: (organizationId: string, stopId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/network/stops/${encodeURIComponent(stopId)}`,
 
 		// PLANS
-		PLANS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs`,
-		PLANS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs/cm`,
-		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
-
-		// REALTIME
-		REALTIME_ETA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta`,
-		REALTIME_ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}`,
-		REALTIME_ETA_BY_STOP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs`,
-		REALTIME_ETA_BY_STOP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs.pb`,
-		REALTIME_ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}`,
-		REALTIME_ETA_BY_TRIP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs`,
-		REALTIME_ETA_BY_TRIP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs.pb`,
-		REALTIME_ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs`,
-		REALTIME_ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs.pb`,
-		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
-		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
-		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
-		REALTIME_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs.pb`,
+		PLANS_GTFS: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/plans/gtfs`,
+		PLANS_LIST: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/plans`,
 
 		// VEHICLES
-		VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/metadata`,
-		VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/positions`,
-		VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/positions/gtfs`,
-		VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/vehicles/positions/gtfs.pb`,
+		VEHICLES_METADATA: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/vehicles/metadata`,
+		VEHICLES_POSITIONS: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/vehicles/positions`,
+		VEHICLES_POSITIONS_GTFS: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/vehicles/positions/gtfs`,
+		VEHICLES_POSITIONS_GTFS_PB: (organizationId: string) => `${getModuleConfig('hub', 'api_url')}/v1/${encodeURIComponent(organizationId)}/vehicles/positions/gtfs.pb`,
 	},
 
 	infrastructure: {
