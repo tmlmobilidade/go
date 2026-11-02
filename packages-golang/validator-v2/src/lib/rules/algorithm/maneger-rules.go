@@ -1,0 +1,101 @@
+package algorithm
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"slices"
+	"sort"
+
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/algorithm/types"
+	ruletypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/types"
+)
+
+/*
+* ManagerRules builds an executable dependency graph from rules.json contents.
+* It accepts a flat rule-ID object, optionally wrapped in validation_rules.
+* Checks are Go implementations keyed by those same IDs. JSON supplies configuration,
+* not executable functions. Omitted or ignored rules are skipped during execution.
+* Enabled rules require a check; unknown dependencies and cycles are rejected by Build.
+* This function prepares the manager without running any checks.
+ */
+func ManagerRules[T any](data []byte, checks map[string]func(T, *ruletypes.RuleContext) types.Status) (*types.Manager[T], error) {
+	var entries map[string]json.RawMessage
+	if err := json.Unmarshal(data, &entries); err != nil {
+		return nil, fmt.Errorf("parse rules JSON: %w", err)
+	}
+	if entries == nil {
+		return nil, fmt.Errorf("rules must be an object")
+	}
+	if wrapped, exists := entries["validation_rules"]; exists {
+		entries = nil
+		if err := json.Unmarshal(wrapped, &entries); err != nil {
+			return nil, fmt.Errorf("validation_rules: %w", err)
+		}
+		if entries == nil {
+			return nil, fmt.Errorf("validation_rules: expected a rules object")
+		}
+	}
+
+	// JSON object order is not significant. IDs only break ties between ready rules.
+	ids := make([]string, 0, len(entries)+len(checks))
+	for id := range entries {
+		ids = append(ids, id)
+	}
+	for id := range checks {
+		if _, configured := entries[id]; !configured {
+			ids = append(ids, id)
+		}
+	}
+	sort.Strings(ids)
+	rules := make([]types.Rule[T], 0, len(ids))
+	for _, id := range ids {
+		if id == "" {
+			return nil, fmt.Errorf("rule ID must not be empty")
+		}
+		config := ruletypes.RuleContext{Severity: "ignore"}
+		if raw, configured := entries[id]; configured {
+			raw = bytes.TrimSpace(raw)
+			if len(raw) == 0 || raw[0] != '{' {
+				return nil, fmt.Errorf("rule %q: expected a rule object", id)
+			}
+			decoder := json.NewDecoder(bytes.NewReader(raw))
+			decoder.DisallowUnknownFields()
+			if err := decoder.Decode(&config); err != nil {
+				return nil, fmt.Errorf("rule %q: %w", id, err)
+			}
+		}
+		switch config.Severity {
+		case "ignore", "info", "warning", "error", "forbidden":
+		default:
+			return nil, fmt.Errorf("rule %q: invalid severity %q", id, config.Severity)
+		}
+		check := checks[id]
+		if config.Severity != "ignore" && check == nil {
+			return nil, fmt.Errorf("rule %q has no implementation", id)
+		}
+		rules = append(rules, types.Rule[T]{
+			ID:        id,
+			DependsOn: slices.Clone(config.DependsOn),
+			Run: func(row T) types.Status {
+				if config.Severity == "ignore" {
+					return types.Skipped
+				}
+				// Give each invocation its own configuration, including slice fields.
+				// A check cannot change a later row's config or the dependency graph.
+				context := config
+				context.DependsOn = slices.Clone(config.DependsOn)
+				if config.Options != nil {
+					options := slices.Clone(*config.Options)
+					context.Options = &options
+				}
+				if config.Compare != nil {
+					compare := slices.Clone(*config.Compare)
+					context.Compare = &compare
+				}
+				return check(row, &context)
+			},
+		})
+	}
+	return NewManager(rules...)
+}
