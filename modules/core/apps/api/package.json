@@ -21,6 +21,7 @@
 		"@fastify/multipart": "10.1.6",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
+		"@tmlmobilidade/go-clients-redis": "*",
 		"@tmlmobilidade/go-core-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
