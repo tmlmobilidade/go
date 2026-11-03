@@ -1,8 +1,8 @@
-package validationcontext
+package context
 
 import (
 	algorithmtypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validation-context"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
 )
 
 // Status returns the rule context outcome after its callback finishes.

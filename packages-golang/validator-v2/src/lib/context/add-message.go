@@ -1,9 +1,9 @@
-package validationcontext
+package context
 
 import (
 	messages "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validation-context"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
 )
 
 // AddMessage reports a finding using configured severity unless an explicit override is supplied.

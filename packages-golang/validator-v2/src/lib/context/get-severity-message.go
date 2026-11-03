@@ -1,8 +1,8 @@
-package validationcontext
+package context
 
 import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validation-context"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
 )
 
 // GetSeverityMessage selects required, recommended, or informational wording.

@@ -1,7 +1,7 @@
 package fields
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"

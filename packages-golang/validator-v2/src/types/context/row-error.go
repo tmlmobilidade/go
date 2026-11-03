@@ -1,4 +1,4 @@
-package validation_context_types
+package context_types
 
 import "fmt"
 

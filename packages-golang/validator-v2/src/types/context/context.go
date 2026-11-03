@@ -1,4 +1,4 @@
-package validation_context_types
+package context_types
 
 import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
