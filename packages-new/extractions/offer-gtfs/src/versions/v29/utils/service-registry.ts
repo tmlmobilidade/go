@@ -8,6 +8,7 @@ import { createHash } from 'node:crypto';
 export type ServiceId = string;
 
 export interface ServiceIdInfo {
+	agencyId: string
 	dates: Set<OperationalDateInt>
 	serviceId: ServiceId
 }
@@ -25,10 +26,10 @@ export interface ServiceRuleMapInfo {
 
 /**
  * Global registry of service IDs and their corresponding date sets.
- * This ensures that patterns with identical schedules share the same serviceId.
+ * This ensures that patterns within one agency with identical schedules share the same serviceId.
  */
 export class ServiceRegistry {
-	// Map: hash of dates -> serviceId (for quick lookup)
+	// Map: agency + dates -> serviceId (for quick lookup)
 	private servicesByDateHash = new Map<string, ServiceId>();
 
 	// Map: serviceId -> date set
@@ -44,6 +45,9 @@ export class ServiceRegistry {
 	// Map: rule-token serviceId -> date set (the externally visible service registry).
 	// Populated by registerServiceId() after resolveRuleToken() produces the final token.
 	private tokenServices = new Map<ServiceId, Set<OperationalDateInt>>();
+
+	// A service belongs to one agency, whose periods classify its calendar dates.
+	private serviceAgencies = new Map<ServiceId, string>();
 
 	/**
 	 * Resolves the final rule token name for a given (ruleToken, serviceId) pair.
@@ -77,7 +81,12 @@ export class ServiceRegistry {
 	 * This is what populates calendar_dates.txt — the hash-based internal serviceId is
 	 * never exposed outside the registry.
 	 */
-	registerServiceId(serviceId: ServiceId, dates: Set<OperationalDateInt>): void {
+	registerServiceId(serviceId: ServiceId, dates: Set<OperationalDateInt>, agencyId: string): void {
+		const existingAgency = this.serviceAgencies.get(serviceId);
+		if (existingAgency && existingAgency !== agencyId) {
+			throw new Error(`Service ID "${serviceId}" cannot be shared by agencies ${existingAgency} and ${agencyId}`);
+		}
+		this.serviceAgencies.set(serviceId, agencyId);
 		const existing = this.tokenServices.get(serviceId);
 
 		if (!existing) {
@@ -145,20 +154,22 @@ export class ServiceRegistry {
 	getAllServices(): Map<ServiceId, ServiceIdInfo> {
 		const result = new Map<string, ServiceIdInfo>();
 		for (const [serviceId, dates] of this.tokenServices.entries()) {
-			result.set(serviceId, { dates, serviceId });
+			const agencyId = this.serviceAgencies.get(serviceId);
+			if (!agencyId) throw new Error(`Service ID "${serviceId}" has no owning agency`);
+			result.set(serviceId, { agencyId, dates, serviceId });
 		}
 		return result;
 	}
 
 	/**
-	 * Gets or creates a serviceId for a given set of dates
+	 * Gets or creates an agency-scoped serviceId for a given set of dates
 	 * @param dates - Set of operational dates
 	 * @returns The serviceId for this date set
 	 */
-	getOrCreateServiceId(dates: Set<OperationalDateInt>): ServiceId {
+	getOrCreateServiceId(dates: Set<OperationalDateInt>, agencyId: string): ServiceId {
 		// Create a hash of the sorted dates for lookup
 		const sortedDates = Array.from(dates).sort();
-		const dateHash = sortedDates.join(',');
+		const dateHash = JSON.stringify([agencyId, sortedDates]);
 
 		// Check if we already have a serviceId for this exact date set
 		const existingServiceId = this.servicesByDateHash.get(dateHash);
@@ -167,7 +178,7 @@ export class ServiceRegistry {
 		}
 
 		// Generate a new serviceId
-		const newServiceId = this.generateServiceId(dates);
+		const newServiceId = this.generateServiceId(dates, agencyId);
 
 		// Store the mapping
 		this.servicesById.set(newServiceId, new Set(dates));
@@ -207,9 +218,9 @@ export class ServiceRegistry {
 	 * @param dates - Set of operational dates
 	 * @returns A stable serviceId
 	 */
-	private generateServiceId(dates: Set<OperationalDateInt>): string {
+	private generateServiceId(dates: Set<OperationalDateInt>, agencyId: string): string {
 		const sortedDates = Array.from(dates).sort();
-		const dateString = sortedDates.join(',');
+		const dateString = JSON.stringify([agencyId, sortedDates]);
 		const hash = createHash('sha256').update(dateString).digest('hex').slice(0, 12);
 		return `SVC_${hash}`;
 	}

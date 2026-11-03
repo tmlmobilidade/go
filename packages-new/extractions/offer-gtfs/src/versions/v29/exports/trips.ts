@@ -360,6 +360,7 @@ function resolveTripRows(
 	schedules: Map<string, RuleTimepointSchedule>,
 	serviceRegistry: ServiceRegistry,
 	{
+		agencyId,
 		events,
 		exportDates,
 		holidays,
@@ -367,6 +368,7 @@ function resolveTripRows(
 		periods,
 		t,
 	}: {
+		agencyId: string
 		events: Event[]
 		exportDates: readonly OperationalDateInt[]
 		holidays: Holiday[]
@@ -462,9 +464,9 @@ function resolveTripRows(
 				? `${includeRuleName}-OFF-${excludeRuleNames.join('-')}`
 				: includeRuleName;
 
-			const hashServiceId = serviceRegistry.getOrCreateServiceId(resultingDates);
+			const hashServiceId = serviceRegistry.getOrCreateServiceId(resultingDates, agencyId);
 			const resolvedRuleToken = serviceRegistry.resolveRuleToken(ruleToken, hashServiceId);
-			serviceRegistry.registerServiceId(resolvedRuleToken, resultingDates);
+			serviceRegistry.registerServiceId(resolvedRuleToken, resultingDates, agencyId);
 
 			resolvedRows.push({
 				dates: resultingDates,
@@ -520,6 +522,7 @@ export function debugResolvePatternTripRows(
 	serviceRegistry: ServiceRegistry,
 	locale: string,
 	t: OfferSchedulingTranslator,
+	agencyId: string,
 ): ResolvedTripRow[] {
 	const allRules = resolvePatternRules(patternData, events);
 	const schedules = buildTimepointSchedules(allRules, periods, holidays, events, startDate, endDate);
@@ -529,6 +532,7 @@ export function debugResolvePatternTripRows(
 
 	const exportDates = buildOperationalDateRange(startDate.js_date, endDate.js_date);
 	return resolveTripRows(schedules, serviceRegistry, {
+		agencyId,
 		events,
 		exportDates,
 		holidays,
@@ -554,6 +558,7 @@ export async function exportTripsForPattern(
 	exportConfig: GtfsV29ExportConfig,
 	locale: string,
 	t: OfferSchedulingTranslator,
+	agencyId: string,
 ): Promise<TripSchedule[]> {
 	try {
 		const allRules = resolvePatternRules(patternData, events);
@@ -581,6 +586,7 @@ export async function exportTripsForPattern(
 
 		// Step 2: Resolve final trip rows from canonical calendars + OFF excludes.
 		const resolvedTripRows = resolveTripRows(schedules, serviceRegistry, {
+			agencyId,
 			events,
 			exportDates,
 			holidays,

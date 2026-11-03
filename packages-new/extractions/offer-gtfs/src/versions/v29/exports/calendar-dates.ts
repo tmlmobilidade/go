@@ -1,7 +1,8 @@
 /* * */
 
 import { ExportedCalendarDatesRow, GtfsV29ExportConfig } from '@/versions/v29/types.js';
-import { getDayType, getPeriodForDate } from '@/versions/v29/utils/calendar-helpers.js';
+import { getDayType } from '@/versions/v29/utils/calendar-helpers.js';
+import { createV29PeriodResolver } from '@/versions/v29/utils/period-mapping.js';
 import { type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
@@ -33,10 +34,17 @@ export async function exportCalendarDates(
 		Logger.info({ message: `Exporting ${allServices.size} unique service IDs...` });
 
 		const holidaysArray = Array.from(holidays.values());
+		const periodResolvers = new Map<string, ReturnType<typeof createV29PeriodResolver>>();
 
 		let totalRows = 0;
 
 		for (const serviceInfo of allServices.values()) {
+			let resolvePeriod = periodResolvers.get(serviceInfo.agencyId);
+			if (!resolvePeriod) {
+				resolvePeriod = createV29PeriodResolver(serviceInfo.agencyId, periods.values());
+				periodResolvers.set(serviceInfo.agencyId, resolvePeriod);
+			}
+
 			for (const date of serviceInfo.dates) {
 				const dateObj = Dates.fromOperationalDateInt(date, 'Europe/Lisbon');
 
@@ -45,7 +53,7 @@ export async function exportCalendarDates(
 					day_type: String(getDayType(date, holidaysArray)) as '1' | '2' | '3',
 					exception_type: '1', // Service added (all our dates are service additions)
 					holiday: isHoliday(dateObj, holidaysArray) ? '1' : '0',
-					period: String(getPeriodForDate(date, periods)) as '1' | '2' | '3',
+					period: resolvePeriod(date),
 					service_id: serviceInfo.serviceId,
 				};
 

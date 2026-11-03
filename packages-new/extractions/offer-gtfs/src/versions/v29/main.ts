@@ -191,7 +191,8 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 
 		for (const [lineIndex, lineData] of allLinesData.entries()) {
 			//
-			const lineAgencyData = agenciesMap.get(lineData.agency_id) ?? allAgenciesData[0];
+			const lineAgencyData = agenciesMap.get(lineData.agency_id);
+			if (!lineAgencyData) throw new Error(`No agency ${lineData.agency_id} for line ${lineData._id}`);
 
 			// 3.0.
 			// Update progress
@@ -280,6 +281,7 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 						exportConfig,
 						lineAgencyData.primary_language,
 						translator,
+						lineAgencyData._id,
 					);
 
 					await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, lineData.agency_id);
