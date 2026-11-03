@@ -1,13 +1,9 @@
 package severity
 
 import (
-	"sync/atomic"
-
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/consts"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
-
-// messageSeverities publishes an immutable configuration snapshot to running checks.
-var messageSeverities atomic.Pointer[map[string]rules.Severities]
 
 // ConfigureMessageSeverities prepares message overrides for a validation run.
 // Configure before starting workers; this process-wide configuration must stay stable during the run.
@@ -19,7 +15,7 @@ func ConfigureMessageSeverities(config map[string]rules.RuleConfig) {
 	// 1. Clear overrides when no configuration is supplied
 
 	if config == nil {
-		messageSeverities.Store(nil)
+		consts.MessageSeverities.Store(nil)
 		return
 	}
 
@@ -41,5 +37,5 @@ func ConfigureMessageSeverities(config map[string]rules.RuleConfig) {
 	//
 	// 3. Publish the completed snapshot atomically
 
-	messageSeverities.Store(&values)
+	consts.MessageSeverities.Store(&values)
 }
