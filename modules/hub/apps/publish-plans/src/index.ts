@@ -22,8 +22,13 @@ async function main() {
 	//
 	// Get a set of agency IDs where open data is enabled in an organization
 
-	const organizations = await goDb.core.organizations.findMany({ 'agency_ids.0': { $exists: true }, 'open_data.enabled': true });
-	const agencyIds = Array.from(new Set(organizations.flatMap(organization => organization.agency_ids)));
+	const collection = await goDb.core.organizations.getCollection();
+	const agencyIds = await collection.aggregate([
+		{ $match: { 'agency_ids.0': { $exists: true }, 'open_data.enabled': true } },
+		{ $unwind: '$agency_ids' },
+		{ $group: { _id: null, agency_ids: { $addToSet: '$agency_ids' } } },
+		{ $project: { _id: 0, agency_ids: 1 } },
+	]).toArray()[0]?.agency_ids ?? [];
 
 	//
 	// Run all tasks sequentially
