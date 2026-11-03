@@ -4,6 +4,7 @@ import (
 	"slices"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/severity"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/utils"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
@@ -51,11 +52,11 @@ func (service *MessageService) AddMessage(message types.Message) {
 
 	for index, existing := range service.messages {
 		if existing.Message == message.Message && existing.FileName == message.FileName && existing.RuleID == message.RuleID && existing.Severity == message.Severity {
-			service.messages[index].Rows = retainedRows(append(existing.Rows, message.Rows...))
+			service.messages[index].Rows = utils.RetainedRows(append(existing.Rows, message.Rows...))
 			return
 		}
 	}
-	message.Rows = retainedRows(message.Rows)
+	message.Rows = utils.RetainedRows(message.Rows)
 	service.messages = append(service.messages, message)
 
 	//
@@ -67,18 +68,4 @@ func (service *MessageService) AddMessage(message types.Message) {
 	case rules.SEVERITY_WARNING:
 		service.warningCount++
 	}
-}
-
-// retainedRows bounds the displayed sample while preserving the latest occurrence.
-func retainedRows(rows []int) []int {
-	//
-
-	//
-	// 1. Keep up to 100 rows, with the latest occurrence in the last slot
-
-	if len(rows) > 100 {
-		rows[99] = rows[len(rows)-1]
-		return slices.Clone(rows[:100])
-	}
-	return rows
 }

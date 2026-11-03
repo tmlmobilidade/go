@@ -6,6 +6,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/output"
 )
 
+// OutputSummary writes the report to a file, or stdout when no path is provided.
+// The caller handles logging and process exit when output fails.
+func (service *MessageService) OutputSummary(outputPath string) error {
+	//
+
+	//
+	// 1. Save the report when an output path is configured
+
+	if outputPath != "" {
+		return service.WriteToFile(outputPath)
+	}
+
+	//
+	// 2. Print the report to stdout otherwise
+
+	return service.PrintJSON()
+}
+
 // PrintJSON writes the current report to standard output.
 func (service *MessageService) PrintJSON() error {
 	//

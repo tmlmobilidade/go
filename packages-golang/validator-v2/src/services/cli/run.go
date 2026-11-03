@@ -8,7 +8,7 @@ import (
 	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/cli/utils"
 )
 
-func Run(cli *types.CLI) {
+func Run(cli *types.CLI) error {
 	utils.Parse(cli)
 
 	if cli.Options.Version {
@@ -16,5 +16,5 @@ func Run(cli *types.CLI) {
 		os.Exit(0)
 	}
 
-	Validate(cli)
+	return Validate(cli)
 }
