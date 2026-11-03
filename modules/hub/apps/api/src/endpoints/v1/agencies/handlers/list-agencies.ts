@@ -18,7 +18,6 @@ export async function listAgenciesHandler(request: FastifyRequest, reply: Fastif
 	const parsedAgencies: HubV1ApiAgency[] = [];
 	for (const agency of foundAgencies) {
 		try {
-			console.log(agency);
 			parsedAgencies.push(HubV1ApiAgencySchema.parse(agency));
 		} catch (error) {
 			console.error(`Failed to parse agency ${agency._id}: ${error}`);
