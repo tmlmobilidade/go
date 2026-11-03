@@ -56,7 +56,7 @@ func ValidateDependencies(config *types.GtfsRules, knownIDs ...string) error {
 	return err
 }
 
-var Severities = []types.Severity{types.SEVERITY_ERROR, types.SEVERITY_WARNING, types.SEVERITY_INFO, types.SEVERITY_IGNORE, types.SEVERITY_FORBIDDEN}
+// var Severities = []types.Severity{types.SEVERITY_ERROR, types.SEVERITY_WARNING, types.SEVERITY_INFO, types.SEVERITY_IGNORE, types.SEVERITY_FORBIDDEN}
 
 func DefaultConfig() types.GtfsRules { return types.GtfsRules{} }
 
