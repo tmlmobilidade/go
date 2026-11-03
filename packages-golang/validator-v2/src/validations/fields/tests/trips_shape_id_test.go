@@ -1,11 +1,11 @@
 package fields_test
 
 import (
-	fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fields/checks"
-	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/utils"
+	fields "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/fields/checks"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/utils"
 	"testing"
 )
 
 func TestTripsShapeIdField(t *testing.T) {
-	validationutils.TripsCheckPresence(t, "shape_id", fields.TripsShapeIdField)
+	testutil.Presence(t, "shape_id", "trips_shape_id_field", fields.TripsShapeIdField)
 }

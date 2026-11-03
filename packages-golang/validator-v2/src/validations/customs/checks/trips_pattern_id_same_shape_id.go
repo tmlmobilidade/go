@@ -32,7 +32,7 @@ func PatternIdSameShapeId(db *sqlite.SQLiteContext, ruleContext *rules.RuleConte
 	//
 	// 2. Create the validation context
 
-	ctx := context.NewValidationContext("pattern_id", "trips.txt", ruleID, db.Row, messageAdder)
+	ctx := context.NewValidationContext("pattern_id", "trips.txt", ruleID, db.Row, messageAdder, ruleContext)
 
 	//
 	// 3. Get the pattern_id, shape_id values

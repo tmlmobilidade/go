@@ -96,11 +96,15 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 			if method.Sel.Name != "GetTranslatedMessage" && method.Sel.Name != "GetRequiredMessage" && method.Sel.Name != "GetSeverityMessage" {
 				return true
 			}
-			// The helper's own forwarding calls do not construct a context.
-			if filepath.Base(path) == "validation_context.go" {
+			// Shared helpers forward contexts; only validations construct rule contexts.
+			if !strings.HasPrefix(filepath.ToSlash(path), "../validations/") {
 				return true
 			}
-			context, ok := method.X.(*ast.Ident)
+			if len(call.Args) == 0 {
+				t.Errorf("%s: missing validation context", positions.Position(call.Pos()))
+				return true
+			}
+			context, ok := call.Args[0].(*ast.Ident)
 			if !ok || context.Obj == nil {
 				t.Errorf("%s: cannot resolve validation context", positions.Position(call.Pos()))
 				return true
@@ -127,11 +131,11 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 			if method.Sel.Name == "GetSeverityMessage" {
 				count = 3
 			}
-			if len(call.Args) < count {
+			if len(call.Args) < count+1 {
 				t.Errorf("%s: missing detail keys", positions.Position(call.Pos()))
 				return true
 			}
-			for _, argument := range call.Args[:count] {
+			for _, argument := range call.Args[1 : count+1] {
 				key, ok := argument.(*ast.BasicLit)
 				if !ok {
 					t.Errorf("%s: expected a literal detail key", positions.Position(argument.Pos()))
