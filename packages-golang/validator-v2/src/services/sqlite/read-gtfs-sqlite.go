@@ -22,14 +22,17 @@ func ReadGTFSSQLite(databasePath string) (*sql.DB, error) {
 	if databasePath == "" {
 		return nil, fmt.Errorf("GTFS SQLite database path is required")
 	}
+
 	absolutePath, err := filepath.Abs(databasePath)
 	if err != nil {
 		return nil, fmt.Errorf("resolve GTFS SQLite database path: %w", err)
 	}
+
 	info, err := os.Stat(absolutePath)
 	if err != nil {
 		return nil, fmt.Errorf("open GTFS SQLite database %q: %w", absolutePath, err)
 	}
+	
 	if !info.Mode().IsRegular() {
 		return nil, fmt.Errorf("GTFS SQLite database %q is not a regular file", absolutePath)
 	}
