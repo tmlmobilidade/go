@@ -1,0 +1,167 @@
+name: Mark Inactive Issues Stale
+
+on:
+  schedule:
+    # Daily. The inactivity window is 3 days, so a finer schedule adds nothing.
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  mark-stale:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set Progress to Stale for inactive open issues
+        env:
+          GH_TOKEN: ${{ secrets.GO_REPO_TOKEN_ISSUES }}
+          FIELD_ID: ${{ vars.PROGRESS_FIELD_ID }}
+          STALE_OPTION_ID: ${{ vars.PROGRESS_STALE_OPTION_ID }}
+          ORG: tmlmobilidade
+          INACTIVITY_DAYS: '3'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$FIELD_ID" || -z "$STALE_OPTION_ID" ]]; then
+            echo "Error: Progress field ID or Stale option ID is missing."
+            exit 1
+          fi
+
+          cutoff_epoch=$(date -u -d "${INACTIVITY_DAYS} days ago" +%s)
+          search_query="org:${ORG} is:issue is:open"
+          cursor=""
+          marked=0
+          skipped=0
+          failed=0
+
+          query='
+            query($searchQuery: String!, $cursor: String) {
+              search(query: $searchQuery, type: ISSUE, first: 50, after: $cursor) {
+                pageInfo { hasNextPage endCursor }
+                nodes {
+                  ... on Issue {
+                    id
+                    url
+                    createdAt
+                    comments(last: 1) {
+                      nodes { createdAt }
+                    }
+                    timelineItems(
+                      itemTypes: [CONNECTED_EVENT, CROSS_REFERENCED_EVENT]
+                      last: 50
+                    ) {
+                      nodes {
+                        __typename
+                        ... on ConnectedEvent {
+                          subject {
+                            ... on PullRequest {
+                              commits(last: 1) {
+                                nodes { commit { committedDate } }
+                              }
+                            }
+                          }
+                        }
+                        ... on CrossReferencedEvent {
+                          source {
+                            ... on PullRequest {
+                              commits(last: 1) {
+                                nodes { commit { committedDate } }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }'
+
+          set_stale() {
+            gh api graphql \
+              -H "GraphQL-Features: issue_fields" \
+              -f query='
+                mutation($issueId: ID!, $fieldId: ID!, $optionId: ID!) {
+                  setIssueFieldValue(input: {
+                    issueId: $issueId
+                    issueFields: [{
+                      fieldId: $fieldId
+                      singleSelectOptionId: $optionId
+                    }]
+                  }) {
+                    issue { id title }
+                  }
+                }' \
+              -f issueId="$1" \
+              -f fieldId="$FIELD_ID" \
+              -f optionId="$STALE_OPTION_ID" \
+              >/dev/null
+          }
+
+          while true; do
+            if [[ -n "$cursor" ]]; then
+              page=$(gh api graphql \
+                -H "GraphQL-Features: issue_fields" \
+                -f query="$query" \
+                -f searchQuery="$search_query" \
+                -f cursor="$cursor")
+            else
+              page=$(gh api graphql \
+                -H "GraphQL-Features: issue_fields" \
+                -f query="$query" \
+                -f searchQuery="$search_query" \
+                -F cursor=null)
+            fi
+
+            while IFS= read -r issue; do
+              [[ -z "$issue" || "$issue" == "null" ]] && continue
+
+              issue_id=$(jq -r '.id' <<<"$issue")
+              issue_url=$(jq -r '.url' <<<"$issue")
+
+              # Latest of creation, the last issue comment, and the latest commit on a linked pull request.
+              last_activity=$(jq -r '
+                [
+                  .createdAt,
+                  (.comments.nodes[0].createdAt // empty),
+                  (.timelineItems.nodes[]?
+                    | if .__typename == "ConnectedEvent" then
+                        .subject.commits.nodes[0].commit.committedDate // empty
+                      elif .__typename == "CrossReferencedEvent" then
+                        .source.commits.nodes[0].commit.committedDate // empty
+                      else empty end)
+                ]
+                | map(select(. != null and . != ""))
+                | max
+              ' <<<"$issue")
+
+              last_epoch=$(date -u -d "$last_activity" +%s)
+              if (( last_epoch > cutoff_epoch )); then
+                skipped=$((skipped + 1))
+                continue
+              fi
+
+              if set_stale "$issue_id"; then
+                echo "Stale: $issue_url (last activity $last_activity)"
+                marked=$((marked + 1))
+              else
+                echo "Failed: $issue_url"
+                failed=$((failed + 1))
+              fi
+            done < <(jq -c '.data.search.nodes[]?' <<<"$page")
+
+            has_next=$(jq -r '.data.search.pageInfo.hasNextPage' <<<"$page")
+            if [[ "$has_next" != "true" ]]; then
+              break
+            fi
+            cursor=$(jq -r '.data.search.pageInfo.endCursor' <<<"$page")
+          done
+
+          echo "Done. marked=$marked skipped_active=$skipped failed=$failed"
+          if (( failed > 0 )); then
+            exit 1
+          fi
